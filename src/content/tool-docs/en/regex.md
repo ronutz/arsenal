@@ -19,6 +19,8 @@ Regular expression Denial of Service (ReDoS) happens when a pattern can backtrac
 
 Regex syntax varies between languages, and this tool uses the JavaScript flavour defined by the ECMAScript specification, with its flags (global, ignore-case, multiline, dotall, unicode, and sticky) and its support for named groups and lookarounds. If you are writing regex for JavaScript, or for anything that shares its semantics, what you see here is what you will get. For any other engine, see Flavours below.
 
+Under the pattern, a button per flag adds it to the flags field or takes it out, each named with its RegExp property (`g global`, `i ignoreCase` and so on); the field can still be typed.
+
 ## Flavours
 
 The tester runs one engine, ECMAScript, but the patterns network and security engineers write rarely stay in JavaScript. An NGINX `location ~` block, a BIG-IP iRule and a web application firewall (WAF) signature each hand the pattern to a different engine, and the same characters can mean different things there. The **Portability** section reads your pattern's tokens and lists every construct whose support or meaning differs between three flavours:

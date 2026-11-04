@@ -12,6 +12,8 @@ Recebe duas cores, escritas em qualquer notação que o CSS Color Level 4 define
 - **color()**: `srgb`, `srgb-linear`, `display-p3`, `display-p3-linear`, `xyz`, `xyz-d65`, `xyz-d50`.
 - `none` como componente vale zero, como diz a especificação.
 
+Ao lado de cada campo, o seletor de cores do navegador abre na cor que o campo tem e escreve nele a cor escolhida como `#rrggbb`, então dá para escolher uma cor sem digitar.
+
 ## O que calcula
 
 - **Luminância relativa** (WCAG 2.2): cada canal sRGB é linearizado (c / 12.92 até 0.04045, senão ((c + 0.055) / 1.055) ^ 2.4) e ponderado, L = 0.2126 R + 0.7152 G + 0.0722 B. O WCAG 2.0 e o 2.1 escreviam o limiar como 0.03928; para valores de canal de 8 bits, os dois limiares classificam todos os valores do mesmo jeito.

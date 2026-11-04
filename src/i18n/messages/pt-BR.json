@@ -2064,7 +2064,9 @@
           "plumbing": "O encanamento das credenciais, comum a todos os métodos: os agentes da access policy preenchem as variáveis de sessão que o SSO consome; a ligação clássica é uma Logon Page (ou uma porta de entrada sem senha) seguida de SSO Credential Mapping, levando session.logon.last.* para session.sso.token.last.*.",
           "poisons": "{name} fica do lado que contamina: configure mal o objeto dele e o SSO de todos os métodos na sessão daquele usuário pode parar, com exceção dos dois métodos de formulário."
         }
-      }
+      },
+      "pickLabel": "Ou escolha um método",
+      "allMethods": "Todos os oito"
     },
     "f5-awaf-declarative-policy-explainer": {
       "name": "Explicador de política declarativa do AWAF",
@@ -4444,7 +4446,8 @@
             "when1": "Quando as características de link do lado do cliente e do lado do servidor diferem e cada pilha deve ser ajustada ao seu lado."
           }
         }
-      }
+      },
+      "pickLabel": "Perfis da tabela"
     },
     "f5-lb-method-chooser": {
       "name": "Seletor de métodos de balanceamento",
@@ -5080,7 +5083,10 @@
       "clear": "Limpar",
       "share": {
         "carries": "{licence, select, yes {O link leva só a linha da service check date lida da sua licença, nunca a licença em si.} other {O link leva a versão ou a data como foi digitada, e nada mais.}}"
-      }
+      },
+      "pickDateLabel": "Ou escolha uma service check date",
+      "pickVersionLabel": "Ou escolha uma versão da K7727",
+      "pickVersionNone": "Escolha uma"
     },
     "f5-ssl-profile-explainer": {
       "name": "Explicador de perfil SSL do F5",
@@ -12243,7 +12249,9 @@
           "assumedUtc": "Um timestamp sem offset foi lido como UTC. Acrescente Z ou um offset (-03:00) para deixar explícito.",
           "negative": "O segundo instante é anterior ao primeiro; o intervalo aparece como uma duração positiva, com o sentido indicado."
         }
-      }
+      },
+      "pickLabel": "Ou escolha (UTC, salvo se o campo trouxer um offset)",
+      "pickAria": "{field}: escolher data e hora"
     },
     "timezone-meeting-planner": {
       "name": "Planejador de reunião multifuso",
@@ -12288,7 +12296,11 @@
         "Fri": "sex",
         "Sat": "sáb",
         "Sun": "dom"
-      }
+      },
+      "pickLabel": "Ou escolha (UTC, salvo se o campo trouxer um offset)",
+      "pickAria": "{field}: escolher data e hora",
+      "addZone": "Adicionar um fuso horário",
+      "addZonePrompt": "Escolha um fuso para adicionar"
     },
     "p0f-signature-explainer": {
       "name": "Explicador de assinatura TCP/IP passiva p0f",
@@ -12688,7 +12700,9 @@
       },
       "share": {
         "carries": "O link leva a linha como foi digitada."
-      }
+      },
+      "mtuPresetsLabel": "MTUs de referência",
+      "tokensLabel": "Tokens da pilha"
     },
     "bfd-timers": {
       "name": "Calculadora de timers do BFD",
@@ -12955,7 +12969,8 @@
       },
       "share": {
         "carries": "O link leva os nomes de métodos como foram digitados, e mais nada."
-      }
+      },
+      "pickLabel": "Métodos para comparar (até quatro)"
     },
     "cron-expression-explainer": {
       "name": "Explicador de expressões cron",
@@ -20520,7 +20535,9 @@
       },
       "share": {
         "carries": "O link leva as duas cores como foram digitadas, e mais nada."
-      }
+      },
+      "pickForeground": "Escolher a cor do primeiro plano",
+      "pickBackground": "Escolher a cor do fundo"
     },
     "css-specificity-calculator": {
       "name": "Calculadora de especificidade CSS",
@@ -27572,7 +27589,8 @@
         "daySolved": "{date}, resolvido em {time}",
         "hintCellTarget": "apontada pela dica",
         "hintCellWrong": "errada, segundo a dica",
-        "hintRule": "Dica mostra o próximo passo que a lógica garante a partir do seu tabuleiro e explica por quê; se houver um erro, aponta o erro primeiro. Ela soma {s} segundos, igual a Conferir."
+        "hintRule": "Dica mostra o próximo passo que a lógica garante a partir do seu tabuleiro e explica por quê; se houver um erro, aponta o erro primeiro. Ela soma {s} segundos, igual a Conferir.",
+        "daySolvedPractice": "{date}, resolvido no treino em {time}"
       },
       "access-points": {
         "metaTitle": "Access Points | /dev/fun",
@@ -27583,7 +27601,7 @@
         "cardName": "Access Points",
         "cardBlurb": "Cubra cada zona do andar com um access point, sem dois se encostarem. Andar novo todo dia.",
         "modeLabel": "Qual desafio jogar",
-        "practiceNote": "Os desafios dos últimos sete dias, para treinar; os que você resolveu no dia aparecem com um ✓ e o tempo. Eles não contam para a sua sequência.",
+        "practiceNote": "Os desafios dos últimos sete dias, para treinar: um ✓ e o tempo marcam os que você resolveu no dia, um ↻ e o tempo, os que você resolveu no treino. Eles não contam para a sua sequência.",
         "practiceDaysLabel": "Desafios anteriores",
         "checksUsed": "{n, plural, one {# conferência (+{s} s)} other {# conferências (+{s} s)}}",
         "clockHint": "O relógio começa a contar no seu primeiro movimento.",
@@ -27635,7 +27653,7 @@
         "cardName": "Bit Balance",
         "cardBlurb": "Preencha uma grade 6×6 com bits: três de cada por linha, nada de três seguidos, todo sinal respeitado. Grade nova todo dia.",
         "modeLabel": "Qual desafio jogar",
-        "practiceNote": "Os desafios dos últimos sete dias, para treinar; os que você resolveu no dia aparecem com um ✓ e o tempo. Eles não contam para a sua sequência.",
+        "practiceNote": "Os desafios dos últimos sete dias, para treinar: um ✓ e o tempo marcam os que você resolveu no dia, um ↻ e o tempo, os que você resolveu no treino. Eles não contam para a sua sequência.",
         "practiceDaysLabel": "Desafios anteriores",
         "checksUsed": "{n, plural, one {# conferência (+{s} s)} other {# conferências (+{s} s)}}",
         "clockHint": "O relógio começa a contar no seu primeiro movimento.",
@@ -27689,7 +27707,7 @@
         "cardName": "Patch Path",
         "cardBlurb": "Passe um único cabo por todas as células do patch panel, portas em ordem, desviando das canaletas. Patch panel novo todo dia.",
         "modeLabel": "Qual desafio jogar",
-        "practiceNote": "Os desafios dos últimos sete dias, para treinar; os que você resolveu no dia aparecem com um ✓ e o tempo. Eles não contam para a sua sequência.",
+        "practiceNote": "Os desafios dos últimos sete dias, para treinar: um ✓ e o tempo marcam os que você resolveu no dia, um ↻ e o tempo, os que você resolveu no treino. Eles não contam para a sua sequência.",
         "practiceDaysLabel": "Desafios anteriores",
         "checksUsed": "{n, plural, one {# conferência (+{s} s)} other {# conferências (+{s} s)}}",
         "clockHint": "O relógio começa a contar no seu primeiro movimento.",
@@ -45107,7 +45125,8 @@
       "errorMtu": "Informe um MTU de {min} a {max} octetos.",
       "errorIpv6Mtu": "O IPv6 exige que todo link carregue pacotes de pelo menos {min} octetos; informe um MTU de {min} ou mais.",
       "errorChoice": "Escolha uma das opções oferecidas.",
-      "scope": "os ACKs, as opções do TCP, a janela e o round trip, o slow start, perdas e retransmissões, e tudo o que a aplicação acrescenta."
+      "scope": "os ACKs, as opções do TCP, a janela e o round trip, o slow start, perdas e retransmissões, e tudo o que a aplicação acrescenta.",
+      "mtuPresets": "Valores prontos de MTU"
     },
     "ethernet-frame-builder": {
       "title": "Monte um frame e meça",
@@ -46401,7 +46420,8 @@
       "errorDuplicate": "{vs} tem o mesmo destino, a mesma origem e a mesma porta de outro virtual server; deixe cada um diferente.",
       "errorPacketSource": "A origem do pacote precisa ser um endereço só, como 192.168.2.1.",
       "errorPacketDestination": "O destino do pacote precisa ser um endereço só, sem máscara, como 192.168.1.200.",
-      "errorPacketPort": "A porta do pacote precisa ser um número de 1 a 65535."
+      "errorPacketPort": "A porta do pacote precisa ser um número de 1 a 65535.",
+      "portAnyOf": "Todas as portas (*) no {vs}"
     },
     "fortigate-session-dirty": {
       "title": "Mude uma política do FortiGate com uma sessão em andamento",
@@ -48242,5 +48262,9 @@
       "rfc9844": "RFC 9844, Entering IPv6 Zone Identifiers in User Interfaces, agosto de 2025: seção 1",
       "rfc4541": "RFC 4541, Considerations for Internet Group Management Protocol (IGMP) and Multicast Listener Discovery (MLD) Snooping Switches, maio de 2006: seções 2.1.2, 3 e 4"
     }
+  },
+  "stepper": {
+    "decrease": "Diminuir {label}",
+    "increase": "Aumentar {label}"
   }
 }

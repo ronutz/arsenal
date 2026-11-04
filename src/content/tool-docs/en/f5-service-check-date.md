@@ -20,7 +20,7 @@ The check applies to an upgrade, which F5 defines as a change in the first or se
 
 ## Using it
 
-Type a BIG-IP version (`17.1.3`, `21.1`, `16.1.x`) or a service check date (`20230611`, `2023-06-11`, or `2023/06/11`); the tool detects which you gave and answers accordingly. Because this encodes vendor documentation rather than a fixed standard, and F5 adds a row with each release, confirm any value against F5 K7727 or the target system's `/etc/version_date` before a production upgrade.
+Type a BIG-IP version (`17.1.3`, `21.1`, `16.1.x`) or a service check date (`20230611`, `2023-06-11`, or `2023/06/11`); the tool detects which you gave and answers accordingly. Without a keyboard, use the two controls under the field: the date picker fills it with a service check date in `yyyy-mm-dd` form, and the version list holds every row of the K7727 table the tool carries, by F5's own label, and fills the field with a version that row covers (`17.1.x` for a branch, the first version of a range such as `10.2.2 - 10.2.4`). Either one fills the field exactly as typing would. Because this encodes vendor documentation rather than a fixed standard, and F5 adds a row with each release, confirm any value against F5 K7727 or the target system's `/etc/version_date` before a production upgrade.
 
 ## Pasting a licence or tmsh output
 

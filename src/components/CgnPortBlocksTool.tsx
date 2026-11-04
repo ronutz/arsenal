@@ -12,6 +12,13 @@
 // answer differently. Everything is computed in the browser.
 // Styling reuses the CIDR tool's vocabulary (tabs, stats, tables) and the
 // shared note classes: no new CSS classes.
+//
+// NO KEYBOARD NEEDED (03/11/2026): every number on the three forms has up and
+// down arrows (StepperField) inside the bounds run() reads, some of them taken
+// from the fields beside it (a block size up to the usable ports, a + k at
+// most 16, a PSID below 2^k); the PSID keeps the base it was typed in (0x34
+// up is 0x35). The four UTC times are date and time pickers that still store
+// the engine's one accepted form, YYYY-MM-DDTHH:MM:SSZ.
 // ============================================================================
 "use client";
 
@@ -26,6 +33,8 @@ import {
   type PortRange,
 } from "@/lib/tools/cgn-port-blocks"; // the engine
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
+import { StepperField, stepperKeyDown } from "@/components/NumberStepper"; // up and down arrows for the numbers (03/11/2026)
+import { PORT_SPACE } from "@/lib/tools/cgn-port-blocks/compute"; // 65,536, the bound of several counts
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
 import { CGN_PORT_BLOCKS_SHARE } from "@/lib/tools/cgn-port-blocks/share"; // this tool's share spec: the open tab and its fields as typed
@@ -84,6 +93,101 @@ const FORM: Record<Mode, { name: string; numeric: boolean }[]> = {
     { name: "port", numeric: true }, // reverse: a port
   ],
 }; // FORM
+
+/** The fields that hold a UTC time to the second: shown as date and time pickers. */
+const TIME_FIELDS = new Set(["revTime", "configFrom", "configUntil", "recordTime"]); // deterministic mode's four times
+
+/** The largest port number (PORT_MAX in compute.ts). */
+const PORT_MAX = 65535; // 2^16 - 1
+/** The subscriber count's bound (MAX_SUBSCRIBERS in compute.ts). */
+const MAX_SUBSCRIBERS = 4294967296; // 2^32
+/** The compression ratio's bound (MAX_ADDRESSES in compute.ts). */
+const MAX_RATIO = 16777216; // 2^24
+
+/**
+ * A whole number typed in a field, or null when the field holds none (empty, or not digits).
+ * @param text the field's text
+ * @returns the number, or null
+ */
+function wholeOf(text: string | undefined): number | null {
+  // Digits only, as the engine's intField reads them.
+  return text !== undefined && /^\d{1,10}$/.test(text.trim()) ? Number(text.trim()) : null;
+} // wholeOf
+
+/** What the arrows of one numeric field need: the number they step, how a stepped number is written, and the bounds. */
+interface StepSpec { value: string; write: (v: string) => string; min: number; max?: number; integer: true }
+
+/**
+ * The arrows of a field, with the bounds run() applies to it (some depend on the fields beside it), or null for a field
+ * that is not a number (an address, a range, a list or a time).
+ * @param mode the open tab
+ * @param name the field
+ * @param f the tab's fields as typed
+ * @returns the field's arrows, or null
+ */
+function stepSpecOf(mode: Mode, name: string, f: Fields): StepSpec | null {
+  // A plain number: the text is the number, written back as it is stepped.
+  const plain = (min: number, max?: number): StepSpec => ({ value: f[name] ?? "", write: (v) => v, min, max, integer: true }); // every count here is whole
+  // The usable ports of one address, from the range field when it reads as first-last (else the default 1024-65535).
+  const range = /^(\d{1,5})\s*-\s*(\d{1,5})$/.exec((f.portRange ?? "").trim()); // "1024-65535"
+  // Their count: last - first + 1 for a forward range, else the default's 64,512.
+  const ports = range && Number(range[2]) >= Number(range[1]) && Number(range[2]) <= PORT_MAX ? Number(range[2]) - Number(range[1]) + 1 : 64512;
+  // The block size typed, for the blocks-per-subscriber bound.
+  const blockSize = wholeOf(f.blockSize); // or null
+  // a and k, each bounding the other (a + k at most 16).
+  const a = wholeOf(f.offset), k = wholeOf(f.psidLength); // or null
+  // Port blocks.
+  if (mode === "blocks" && name === "blockSize") return plain(1, ports); // 1 to the usable ports
+  if (mode === "blocks" && name === "blocksPerSubscriber") return plain(1, blockSize && blockSize >= 1 && blockSize <= ports ? Math.max(1, Math.floor(ports / blockSize)) : PORT_SPACE); // the blocks one address holds
+  if (mode === "blocks" && name === "subscribers") return plain(1, MAX_SUBSCRIBERS); // 1 to 2^32
+  // Deterministic mapping.
+  if (mode === "deterministic" && name === "compressionRatio") return plain(1, MAX_RATIO); // C, at least 1
+  if (mode === "deterministic" && name === "dynamicFactor") return plain(0, PORT_SPACE); // D, 0 or more
+  if (mode === "deterministic" && name === "maxPorts") return plain(1, PORT_SPACE); // M
+  if (mode === "deterministic" && name === "revPort") return plain(0, PORT_MAX); // a port
+  // MAP port sets.
+  if (mode === "map" && name === "offset") return plain(0, 16 - (k !== null && k <= 16 ? k : 0)); // a, leaving room for k
+  if (mode === "map" && name === "psidLength") return plain(0, 16 - (a !== null && a <= 16 ? a : 0)); // k, leaving room for a
+  if (mode === "map" && name === "port") return plain(0, PORT_MAX); // a port
+  if (mode === "map" && name === "psid") {
+    // The PSID as typed: 0x hexadecimal or decimal, stepped as a number and written back in the same base.
+    const text = (f.psid ?? "").trim(); // "0x34" or "52"
+    // Hexadecimal when it starts with 0x and holds hex digits.
+    const hex = /^0x[0-9a-f]{1,4}$/i.test(text); // the base typed
+    // The PSID's upper bound: 2^k - 1 once k is known, else the 16-bit maximum.
+    const max = k !== null && k <= 16 ? 2 ** k - 1 : PORT_MAX; // inside the k bits
+    // The number the arrows step, and the text they write.
+    return { value: hex ? String(parseInt(text.slice(2), 16)) : text, write: (v) => (hex ? "0x" + Number(v).toString(16) : v), min: 0, max, integer: true };
+  } // psid
+  // Not a number.
+  return null;
+} // stepSpecOf
+
+/**
+ * A stored UTC time as a date and time picker shows it ("2026-10-19T14:32:52Z" gives "2026-10-19T14:32:52").
+ * @param text the stored text
+ * @returns the picker's value, or "" when the text is not the engine's form
+ */
+function pickerValueOf(text: string): string {
+  // The one form the engine accepts, without its Z.
+  const m = /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})Z$/.exec(text.trim());
+  // The local-time form the picker takes (read here as UTC, as the label says), or empty.
+  return m ? m[1] : "";
+} // pickerValueOf
+
+/**
+ * A picker's value as the engine's UTC form ("2026-10-19T14:32" gives "2026-10-19T14:32:00Z").
+ * @param v the picker's value ("" when cleared)
+ * @returns the stored text
+ */
+function utcOfPicker(v: string): string {
+  // Cleared: the field is empty again.
+  if (v === "") return "";
+  // A browser leaves the seconds out when they are zero: put them back, and drop any fraction.
+  const full = v.length === 16 ? v + ":00" : v.slice(0, 19); // YYYY-MM-DDTHH:MM:SS
+  // The engine's form.
+  return full + "Z";
+} // utcOfPicker
 
 /** Build the API request object of a mode from its form fields (empty fields are left out). */
 function requestOf(mode: Mode, f: Fields, logFormat: string): Record<string, unknown> {
@@ -195,22 +299,48 @@ export default function CgnPortBlocksTool() {
             <button type="button" className="b64-copy" onClick={() => setFields((prev) => ({ ...prev, [mode]: {} }))}>{t("clear")}</button>
           </div>
         </div>
-        {FORM[mode].map(({ name, numeric }) => (
-          <div key={`${mode}-${name}`} className="cidr-input-row">
-            <label className="cidr-label" htmlFor={`cgn-${mode}-${name}`}>{t(`fields.${mode}.${name}`)}</label>
+        {FORM[mode].map(({ name, numeric }) => {
+          // The field's id and its visible name.
+          const id = `cgn-${mode}-${name}`; // also the label's htmlFor
+          const label = t(`fields.${mode}.${name}`); // as the label shows it
+          // Its arrows, when it is a number.
+          const spec = stepSpecOf(mode, name, fields[mode]); // or null
+          // A stepped number, stored as typing would store it.
+          const write = (v: string) => setField(name, spec ? spec.write(v) : v); // the PSID keeps its base
+          // The field as it was, typed text in and out.
+          const input = (
             <input
-              id={`cgn-${mode}-${name}`}
+              id={id}
               className="cidr-input mono"
               type="text"
               inputMode={numeric ? "numeric" : "text"}
               value={fields[mode][name] ?? ""}
               onChange={(e) => setField(name, e.target.value)}
+              // Arrow Up and Down step a number from the keyboard; other fields keep their keys.
+              onKeyDown={spec ? stepperKeyDown({ value: spec.value, onValue: write, min: spec.min, max: spec.max, integer: true }) : undefined}
               placeholder={t(`placeholders.${mode}.${name}`)}
               autoComplete="off"
               spellCheck={false}
             />
-          </div>
-        ))}
+          ); // the input
+          // The row: label, then the field as a picker, with arrows, or as it was.
+          return (
+            <div key={`${mode}-${name}`} className="cidr-input-row">
+              <label className="cidr-label" htmlFor={id}>{label}</label>
+              {TIME_FIELDS.has(name) ? (
+                // A UTC time: a date and time picker to the second, stored in the engine's form (with its Z).
+                <input id={id} className="cidr-input mono" type="datetime-local" step={1} value={pickerValueOf(fields[mode][name] ?? "")} onChange={(e) => setField(name, utcOfPicker(e.target.value))} />
+              ) : spec ? (
+                // A number: up and down arrows beside it, inside the bounds run() applies.
+                <StepperField value={spec.value} onValue={write} min={spec.min} max={spec.max} integer label={label} inputId={id}>
+                  {input}
+                </StepperField>
+              ) : (
+                input
+              )}
+            </div>
+          ); // the row
+        })}
         {/* The RFC 7422 message size: NAT444 (150 bytes) or DS-Lite (175 bytes). */}
         {mode === "blocks" && (
           <div className="cidr-input-row">

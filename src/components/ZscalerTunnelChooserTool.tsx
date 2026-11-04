@@ -22,10 +22,15 @@
 // Share results (2026-11-01): a button under the recommendation card builds a
 // link that carries every field of the form; an arriving link replaces the
 // whole form, and the page chooses again.
+//
+// UP AND DOWN ARROWS (03/11/2026): the bandwidth has a down and an up arrow
+// beside it (src/components/NumberStepper.tsx), 1 to 100,000 Mbps (the
+// engine's scope), and steps with Arrow Up and Down.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
+import { StepperField, stepperKeyDown } from "@/components/NumberStepper"; // the up and down arrows, and their keys
 import { chooseLocalisable, type ChooserInput, type ChooserResult } from "@/lib/tools/zscaler-tunnel-chooser/compute"; // the reading with sentence ids (02/11/2026)
 import { engineTexts, plainText, type EngineText } from "@/lib/tools/engine-text"; // engine sentences in the page's language
 // PAGE LANGUAGE (02/11/2026): the steps, basis, prerequisites, notes and errors arrive as EngineTexts from
@@ -132,17 +137,24 @@ export default function ZscalerTunnelChooserTool() {
 
       <section className="lbm-chooser">
       <div className="lbm-chooser-row">
-        <label className="lbm-chooser-label" htmlFor="ztc-mbps-input">
-          <span>{t("mbpsLabel")}</span>
-          <input
-            id="ztc-mbps-input"
-            className="cidr-input mono"
-            inputMode="numeric"
-            placeholder={t("mbpsPlaceholder")}
-            value={form.mbps}
-            onChange={(e) => set({ mbps: e.target.value })}
-          />
-        </label>
+        {/* A div holding the label and the field (it was a label around both): the arrows are buttons, which a label
+            must not contain. The same class, so the column and the type look as before. */}
+        <div className="lbm-chooser-label">
+          <label htmlFor="ztc-mbps-input">{t("mbpsLabel")}</label>
+          {/* Up and down arrows: one Mbps a press, 1 to 100,000 (requirePositiveMbps' range), set as typing would. */}
+          <StepperField value={form.mbps} onValue={(v) => set({ mbps: v })} min={1} max={100000} label={t("mbpsLabel")} inputId="ztc-mbps-input">
+            <input
+              id="ztc-mbps-input"
+              className="cidr-input mono"
+              inputMode="numeric"
+              placeholder={t("mbpsPlaceholder")}
+              value={form.mbps}
+              onChange={(e) => set({ mbps: e.target.value })}
+              // Arrow Up and Down (Page Up and Down: ten) step the bandwidth from the keyboard.
+              onKeyDown={stepperKeyDown({ value: form.mbps, onValue: (v) => set({ mbps: v }), min: 1, max: 100000 })}
+            />
+          </StepperField>
+        </div>
         <YesNo id="ztc-ha" label={t("haLabel")} value={form.ha} onChange={(v) => set({ ha: v })} t={t} />
         <YesNo id="ztc-static" label={t("staticIpLabel")} value={form.staticIp} onChange={(v) => set({ staticIp: v })} t={t} />
         <YesNo id="ztc-enc" label={t("encryptionLabel")} value={form.encryption} onChange={(v) => set({ encryption: v })} t={t} />

@@ -16,6 +16,11 @@
 // inPageLanguage(); input errors are shown through engineTexts().error. The
 // English page reads exactly as before. The engine is imported from compute
 // directly (not the index, which also pulls the manifest and the vectors).
+//
+// NO KEYBOARD NEEDED (03/11/2026): the distance has up and down arrows
+// (StepperField), one metre a press from 1 to the engine's 10,000; its label
+// now stands beside the field rather than around it, so the arrows' names do
+// not join the field's.
 // ============================================================================
 
 import { useMemo, useState } from "react"; // state, and the share encoding memoised
@@ -33,6 +38,7 @@ import ShareResultsButton from "@/components/ShareResultsButton"; // the site's 
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // a shared link fills the page as typing would
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is given
 import { CABLE_SHARE } from "@/lib/tools/cable-run-planner/share"; // this tool's share spec: the four fields
+import { StepperField, stepperKeyDown } from "@/components/NumberStepper"; // up and down arrows for the distance (03/11/2026)
 
 /** Share results with nothing to share: the button is disabled. */
 const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // module constant
@@ -76,6 +82,14 @@ export default function CableRunPlannerTool() {
     setSpeed(s.speedMbps); setDistance(s.distanceM); setEnv(s.environment as Environment); setPoe(s.poe as PoeClass); // the form
     plan(s.speedMbps, s.distanceM, s.environment as Environment, s.poe as PoeClass); // the plan
   });
+
+  /** Set the distance and plan again, as typing does (the arrows call this too). */
+  function setDistanceText(v: string) {
+    // The field's text.
+    setDistance(v);
+    // The plan for it.
+    plan(speedMbps, v, environment, poe);
+  }
 
   function loadExample() {
     setSpeed(EXAMPLE.speedMbps);
@@ -127,19 +141,26 @@ export default function CableRunPlannerTool() {
         </select>
       </label>
 
-      <label className="cidr-label">
+      {/* The distance: its label tied by id, then the field with its up and down arrows (03/11/2026). */}
+      <label className="cidr-label" htmlFor="crp-distance">
         {t("distanceLabel")}
+      </label>
+      {/* One metre a press, 1 to 10,000: the engine reads a distance in (0, 10000] metres. */}
+      <StepperField value={distanceM} onValue={setDistanceText} min={1} max={10000} label={t("distanceLabel")} inputId="crp-distance">
         <input
+          id="crp-distance"
           className="cidr-input mono"
           inputMode="numeric"
           placeholder={t("distancePlaceholder")}
           value={distanceM}
           onChange={(e) => {
-            setDistance(e.target.value);
-            plan(speedMbps, e.target.value, environment, poe);
+            // The typed text, set and planned as the arrows do.
+            setDistanceText(e.target.value);
           }}
+          // Arrow Up and Down step the distance from the keyboard.
+          onKeyDown={stepperKeyDown({ value: distanceM, onValue: setDistanceText, min: 1, max: 10000 })}
         />
-      </label>
+      </StepperField>
 
       <label className="cidr-label">
         {t("envLabel")}

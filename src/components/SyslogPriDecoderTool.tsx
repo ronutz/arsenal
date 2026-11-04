@@ -9,10 +9,15 @@
 // the formula and a note when the facility band is implementation-varying.
 // Encode mode: pick a facility and a severity and get the PRI and its wire form.
 // Everything runs in the browser.
+//
+// UP AND DOWN ARROWS (03/11/2026): the PRI field has a down and an up arrow
+// beside it (src/components/NumberStepper.tsx), 0 to 191, and steps with Arrow
+// Up and Down; a PRI typed in angle brackets keeps them (<34> steps to <35>).
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
+import { StepperField, stepperKeyDown } from "@/components/NumberStepper"; // the up and down arrows, and their keys
 import { decodePri, encodePri, FACILITIES, SEVERITIES } from "@/lib/tools/syslog-pri-decoder";
 import { usePrefill } from "@/lib/use-prefill";
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
@@ -37,6 +42,13 @@ export default function SyslogPriDecoderTool() {
 
   const decoded = useMemo(() => (input.trim() ? decodePri(input) : null), [input]);
   const encoded = useMemo(() => encodePri(facility, severity), [facility, severity]);
+
+  // The arrows step the number inside any angle brackets the reader typed, and write the brackets back.
+  const bracketed = /^\s*<\d{1,3}>\s*$/.test(input); // "<34>"
+  /** The PRI's number for the arrows: the digits inside the brackets, or the field as typed. */
+  const priNumber = bracketed ? input.replace(/[^\d]/g, "") : input; // "34", or "134"
+  /** Set the field from the arrows, as typing would: in brackets when it was. */
+  const setPriFromArrows = (v: string) => setInput(bracketed ? `<${v}>` : v); // "<35>", or "135"
 
   // The field's value goes to usePrefill too, so a Clear, an Example or an edit drops the handed-over value from the
   // address (#input=), and a share or reload no longer carries it (RT01, 2026-10-20).
@@ -82,20 +94,25 @@ export default function SyslogPriDecoderTool() {
                 <button type="button" className="b64-copy" onClick={() => setInput("")}>{t("clear")}</button>
               </div>
             </div>
-            <input
-              id="syslogpri-input"
-              className="cidr-input mono"
-              type="text"
-              inputMode="numeric"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder={t("decodeInputPlaceholder")}
-              autoComplete="off"
-              autoCorrect="off"
-              autoCapitalize="off"
-              spellCheck={false}
-              aria-describedby="syslogpri-privacy"
-            />
+            {/* Up and down arrows: one PRI a press, 0 to 191 (decodePri's range), brackets kept when typed. */}
+            <StepperField value={priNumber} onValue={setPriFromArrows} min={0} max={191} integer label={t("decodeInputLabel")} inputId="syslogpri-input">
+              <input
+                id="syslogpri-input"
+                className="cidr-input mono"
+                type="text"
+                inputMode="numeric"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                // Arrow Up and Down (Page Up and Down: ten) step the PRI from the keyboard.
+                onKeyDown={stepperKeyDown({ value: priNumber, onValue: setPriFromArrows, min: 0, max: 191, integer: true })}
+                placeholder={t("decodeInputPlaceholder")}
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="off"
+                spellCheck={false}
+                aria-describedby="syslogpri-privacy"
+              />
+            </StepperField>
             <p id="syslogpri-privacy" className="cidr-privacy">
               <span className="cidr-lock" aria-hidden="true">
                 ●

@@ -20,7 +20,7 @@ A verificação se aplica a um upgrade, que a F5 define como uma mudança no pri
 
 ## Como usar
 
-Digite uma versão do BIG-IP (`17.1.3`, `21.1`, `16.1.x`) ou uma service check date (`20230611`, `2023-06-11` ou `2023/06/11`); a ferramenta detecta qual você forneceu e responde de acordo. Como isto codifica documentação de fabricante e não um padrão fixo, e a F5 adiciona uma linha a cada release, confirme qualquer valor na F5 K7727 ou no `/etc/version_date` do sistema de destino antes de um upgrade em produção.
+Digite uma versão do BIG-IP (`17.1.3`, `21.1`, `16.1.x`) ou uma service check date (`20230611`, `2023-06-11` ou `2023/06/11`); a ferramenta detecta qual você forneceu e responde de acordo. Sem teclado, use os dois controles abaixo do campo: o seletor de data preenche o campo com uma service check date no formato `aaaa-mm-dd`, e a lista de versões traz cada linha da tabela K7727 que a ferramenta carrega, com o rótulo da própria F5, e preenche o campo com uma versão coberta por aquela linha (`17.1.x` para um branch, a primeira versão de uma faixa como `10.2.2 - 10.2.4`). Os dois preenchem o campo exatamente como a digitação faria. Como isto codifica documentação de fabricante e não um padrão fixo, e a F5 adiciona uma linha a cada release, confirme qualquer valor na F5 K7727 ou no `/etc/version_date` do sistema de destino antes de um upgrade em produção.
 
 ## Como colar a licença ou a saída do tmsh
 

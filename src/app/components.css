@@ -510,6 +510,24 @@
   flex: 0 0 7rem;
   min-width: 5rem;
 }
+/* The host count with its up and down arrows (03/11/2026): the field and the
+   two arrows share up to 11.5rem and shrink before the row overflows. */
+.cidr-req-hosts-field { flex: 0 1 11.5rem; }
+/* The field inside takes the room the arrows leave, from no width of its own. */
+.cidr-req-hosts-field > .cidr-req-hosts { width: 0; }
+/* On a phone the name, the count with its arrows and the remove button do not fit one line: the name takes its own
+   line, the count and its arrows grow to fill the next, and the requirements sit further apart so each pair reads as
+   one. */
+@media (max-width: 40rem) {
+  /* A little more space between requirements than inside one. */
+  .cidr-reqs { gap: 0.9rem; }
+  /* A requirement may take two lines. */
+  .cidr-req-row { flex-wrap: wrap; }
+  /* The name across the first. */
+  .cidr-req-name { flex: 1 1 100%; }
+  /* The count fills the second, beside the remove button. */
+  .cidr-req-hosts-field { flex: 1 1 auto; }
+}
 .cidr-req-remove {
   flex: 0 0 auto;
   width: 2.2rem;
@@ -618,6 +636,21 @@ pre.cidr-input { max-width: 100%; overflow-x: auto; }
 .bfd-timers-table td { width: 32%; }
 /* An input as wide as its cell and no wider, a little tighter than the site's default field. */
 .bfd-timers-table .cidr-input { min-width: 0; width: 100%; padding: 0.45rem 0.55rem; font-size: 0.9rem; }
+/* Each field now has up and down arrows beside it (03/11/2026). On a phone a third of the table is too narrow for a
+   field and two 44 px arrows, so each row becomes a two-column grid: the field's name takes its own line, systems A
+   and B share the line under it, and each field's arrows stack, up above down. */
+@media (max-width: 40rem) {
+  /* A row: two equal columns. */
+  .bfd-timers-table tr { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  /* The field's name, and the head's first cell, across both. */
+  .bfd-timers-table th[scope="row"], .bfd-timers-table thead th:first-child { grid-column: 1 / -1; min-width: 0; }
+  /* A cell takes its column, not a third of the table. */
+  .bfd-timers-table td { width: auto; }
+  /* The arrows stack, up above down, beside the field. */
+  .bfd-num .num-stepper { flex-direction: column-reverse; }
+  /* The field keeps its own height, centred against them. */
+  .bfd-num > .cidr-input { align-self: center; }
+}
 .cidr-section-title {
   font-size: 0.8rem;
   font-weight: 600;
@@ -6985,6 +7018,8 @@ p.vendor-hub-strip { margin: -1rem 0 1.75rem; }
   flex: 1 1 auto;
   min-width: 0;
 }
+/* The box with its up and down arrows (03/11/2026) takes the room the Now button leaves. */
+.epoch-num { flex: 1 1 auto; }
 .epoch-now-btn {
   flex: 0 0 auto;
   padding: 0 1rem;
@@ -13358,6 +13393,11 @@ main[data-view="list"] .boss-viewer-blurb {
 .ws-paste-area { width: 100%; margin-top: 0.3rem; }
 .ws-paste-controls { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.5rem; }
 .ws-delay { max-width: 6rem; }
+/* The delay with its up and down arrows (03/11/2026): the field keeps room for four digits, and on a narrow screen
+   the Send block button takes the next line rather than squeezing it. */
+.ws-paste-controls { flex-wrap: wrap; }
+/* At least four digits in view beside the arrows. */
+.ws-field--inline .num-field > .ws-delay { min-width: 4.5rem; }
 .ws-snippets { max-width: 14rem; }
 
 /* WebSerial Tier 2: console + detected-token side panel */
@@ -13469,7 +13509,8 @@ main[data-view="list"] .boss-viewer-blurb {
 }
 .rca-event {
   display: grid;
-  grid-template-columns: minmax(9rem, 1.4fr) 4.5rem minmax(6rem, 2fr) auto;
+  /* The order's column holds the field and its two arrows (03/11/2026): 11.5rem leaves the field about seven digits. */
+  grid-template-columns: minmax(9rem, 1.4fr) 11.5rem minmax(6rem, 2fr) auto;
   gap: 0.4rem;
   align-items: center;
 }
@@ -13499,13 +13540,17 @@ main[data-view="list"] .boss-viewer-blurb {
 @media (max-width: 640px) {
   .rca-event {
     /* minmax(0, 1fr), not 1fr (01/11/2026): a 1fr track keeps its content's min-content width, so the kind select
-       (its longest option) pushed the page to 431 px at 390 (wave 4C's helper, seen in passing). */
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+       (its longest option) pushed the page to 431 px at 390 (wave 4C's helper, seen in passing).
+       Since the order has arrows (03/11/2026), half a row left it 53 px: the kind and the order take a row each, and the
+       note shares the last row with the remove button (the same three rows as before, in the same order). */
+    grid-template-columns: minmax(0, 1fr) auto;
   }
   .rca-event > * {
     min-width: 0;
   }
-  .rca-event-note {
+  /* The kind and the order, each across the row. */
+  .rca-event-kind,
+  .rca-event-order-field {
     grid-column: 1 / -1;
   }
 }
@@ -18410,6 +18455,9 @@ main[data-view="list"] .boss-viewer-item.has-share > .boss-viewer-card { padding
   margin-top: 0.6rem;
 }
 .panos-traffic-field { display: flex; flex-direction: column; gap: 0.2rem; font-size: 0.78rem; }
+/* The ACL evaluator's packet grid (03/11/2026): its port fields carry up and down arrows (two 44 px buttons), so its
+   columns start at 12rem; a phone shows one field per row and the five digits of a port stay in view. */
+.panos-traffic.acl-traffic { grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); }
 .panos-traffic-field span { color: var(--text-secondary); }
 .panos-traffic-field input {
   padding: 0.35rem 0.5rem;
@@ -18751,6 +18799,8 @@ main[data-view="list"] .boss-viewer-item.has-share > .boss-viewer-card { padding
 /* Narrow fields beside wider ones. */
 .idx-area-field { flex: 0 1 16rem; }
 .idx-n-field { flex: 0 1 9rem; }
+/* N with its two arrows beside it (03/11/2026): wide enough for the arrows and four digits, never wider than its row. */
+.idx-n-field.idx-n-stepped { flex: 0 1 13rem; }
 /* The base filter row reuses the preset row layout. */
 .idx-bases { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
 /* Base badges. */
@@ -20293,6 +20343,31 @@ main[data-view="list"] .boss-viewer-item.has-share > .boss-viewer-card { padding
    inline style; the layout is the shared tool vocabulary.
    --------------------------------------------------------------------------- */
 /* A small swatch beside a colour's code: the colour itself, with a hairline so white reads on white. */
+/* The APM SSO explainer's method buttons (03/11/2026): pressed with a finger, so 44 px tall like the arrows. */
+.apm-pick .tcl-chip { min-height: 2.75rem; }
+/* A colour field and its picker on one row (03/11/2026): the field takes the room left. */
+.ccf-field-row { display: flex; align-items: stretch; gap: 0.35rem; min-width: 0; }
+/* The picker: a 44 px swatch button in the arrows' quiet style, showing the field's colour. */
+.ccf-picker {
+  flex: 0 0 2.75rem;
+  width: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0.2rem;
+  background: var(--canvas-primary);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+/* Pointing at it lights it in the accent, as the arrows do. */
+.ccf-picker:hover { border-color: var(--accent-primary); }
+/* Focus from the keyboard. */
+.ccf-picker:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+/* The colour well fills the button (Chromium and Safari wrap it in padding of their own). */
+.ccf-picker::-webkit-color-swatch-wrapper { padding: 0; }
+/* The well itself, borderless and rounded to match (Chromium and Safari). */
+.ccf-picker::-webkit-color-swatch { border: none; border-radius: var(--radius-sm); }
+/* The same in Firefox. */
+.ccf-picker::-moz-color-swatch { border: none; border-radius: var(--radius-sm); }
 .ccf-swatch { display: inline-block; width: 1.1rem; height: 1.1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); background: var(--ccf-color, transparent); vertical-align: middle; }
 /* The preview block paints the background and writes in the foreground. */
 .ccf-preview { padding: 1rem 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); background: var(--ccf-bg, var(--surface-base)); color: var(--ccf-fg, var(--text-primary)); display: flex; flex-direction: column; gap: 0.5rem; }
@@ -23707,6 +23782,87 @@ html.presenter-covering body {
 .lab-result .lab-table {
   overflow-wrap: break-word;
 }
+/* A virtual server's port cell in the BIG-IP precedence lab (BigipVsPrecedenceLab.tsx): the port field with its up and
+   down arrows, then the "*" (every port) toggle, on one row; the table scrolls in its wrapper on a phone. */
+.lab-port-cell {
+  display: flex;
+  align-items: stretch;
+  gap: 0.35rem;
+}
+/* The field and its arrows take the room left. */
+.lab-port-cell > .num-field {
+  flex: 1 1 auto;
+}
+/* The "*" toggle: a 44 px touch target matching the arrows beside it. */
+.lab-port-any {
+  flex: 0 0 auto;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0;
+  background: var(--canvas-primary);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+/* Pointing at it lights it in the accent. */
+.lab-port-any:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+/* Pressed: the virtual server listens on every port. */
+.lab-port-any[aria-pressed="true"] {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: var(--canvas-primary);
+}
+/* Keyboard focus. */
+.lab-port-any:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+/* Preset values under a lab's field (the MTUs in the Ethernet transfer budget lab): one tap each, wrapping on a phone. */
+.lab-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+/* One preset: a 44 px touch target that reads as a quiet secondary control. */
+.lab-preset {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0.3rem 0.75rem;
+  background: var(--canvas-primary);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+/* Pointing at a preset lights it in the accent. */
+.lab-preset:hover:not(:disabled) {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+/* The preset the field holds now. */
+.lab-preset[aria-pressed="true"] {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: var(--canvas-primary);
+}
+/* A preset the current settings refuse (576 over IPv6) fades and does nothing. */
+.lab-preset:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+/* Keyboard focus. */
+.lab-preset:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
 .lab-actions {
   display: flex;
   flex-wrap: wrap;
@@ -24093,4 +24249,160 @@ html.presenter-covering body {
   .cv-page .cv-job, .cv-page .cv-cred, .cv-page .cv-bio { break-inside: avoid; }
   /* Links print as their text (the address and profiles are already written out). */
   .cv-page a { text-decoration: none; }
+}
+
+/* ===========================================================================
+   Up and down arrows beside numeric fields (src/components/NumberStepper.tsx;
+   PRIME 03/11/2026: values set "through the click of a mouse (or press of the
+   touchscreen)"). The field and its two arrows share one row; the field
+   shrinks before anything wraps, so a phone keeps them together.
+   =========================================================================== */
+/* The row: the input, then the arrows. */
+.num-field { display: flex; align-items: stretch; gap: 0.35rem; min-width: 0; }
+/* The input takes the room left and may shrink below its usual minimum. */
+.num-field > input { flex: 1 1 auto; min-width: 0; }
+/* A number field's own spin buttons are hidden beside the arrows (two pairs of arrows read as a mistake); its Arrow
+   Up and Down keys still step it natively. */
+.num-field > input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+/* The same, for WebKit and Blink, which draw the spin buttons as pseudo-elements. */
+.num-field > input[type="number"]::-webkit-inner-spin-button,
+.num-field > input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+/* The two arrows, never squeezed. */
+.num-stepper { display: inline-flex; gap: 0.3rem; flex: 0 0 auto; }
+/* One arrow: a 44 px touch target that reads as a quiet secondary control. */
+.num-stepper-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0;
+  background: var(--canvas-primary);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+/* Pointing at an arrow lights it in the accent. */
+.num-stepper-btn:hover:not(:disabled) { border-color: var(--accent-primary); color: var(--accent-primary); }
+/* Pressed: the raised surface, so a hold is visible. */
+.num-stepper-btn:active:not(:disabled) { background: var(--surface-elevated); }
+/* At a bound the arrow fades and does nothing. */
+.num-stepper-btn:disabled { opacity: 0.4; cursor: default; }
+/* Focus, when a screen reader or a script puts it there. */
+.num-stepper-btn:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+/* The arrow drawing itself. */
+.num-stepper-icon { display: block; }
+
+/* ===========================================================================
+   F5XC rate-limit calculator (rl-; src/components/F5xcRateLimitCalculatorTool.tsx).
+   The form was two inline-styled columns at every width; with up and down
+   arrows beside four of its fields (03/11/2026) a phone's half column left
+   the input a few characters wide, so the grid narrows to one column there.
+   =========================================================================== */
+/* The form: two equal columns. */
+.rl-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; margin-top: 0.75rem; }
+/* On a phone, one column: each field and its arrows get the full width. */
+@media (max-width: 40rem) { .rl-grid { grid-template-columns: minmax(0, 1fr); } }
+/* The lockout duration and its unit: side by side while each keeps 11rem, else stacked. */
+.rl-lockout-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)); gap: 0.5rem; }
+
+/* ===========================================================================
+   FortiOS debug flow builder (ffd-; src/components/FortiosFlowDebugBuilderTool.tsx):
+   the protocol buttons under the protocol field (03/11/2026), so a protocol is
+   set with a mouse or a finger as well as typed.
+   =========================================================================== */
+/* The row of buttons: it wraps, and takes no width of its own, so the field grid's column keeps the width it had. */
+.ffd-proto-chips { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.45rem; width: 0; min-width: 100%; }
+/* One protocol: a 44 px touch target in the quiet secondary look of the arrows beside the numeric fields. */
+.ffd-proto-chip {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0 0.7rem;
+  font-size: 0.82rem;
+  background: var(--surface-base);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+/* Pointing at one lights it in the accent. */
+.ffd-proto-chip:hover { border-color: var(--accent-primary); color: var(--text-primary); }
+/* The protocol the field holds: accent border, raised surface, full-strength text. */
+.ffd-proto-chip[aria-pressed="true"] { border-color: var(--accent-primary); background: var(--surface-elevated); color: var(--accent-primary); font-weight: 700; }
+/* Keyboard focus. */
+.ffd-proto-chip:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+
+/* ===========================================================================
+   F5 service check date (scd-; src/components/F5ServiceCheckDateTool.tsx): the
+   date picker and the version list under the field (03/11/2026), so a date or
+   a version is set with a mouse or a finger as well as typed.
+   =========================================================================== */
+/* The two pickers: side by side, stacked when the row is narrow. */
+.scd-pickers { display: flex; flex-wrap: wrap; gap: 0.6rem 1rem; margin-top: 0.75rem; }
+/* One picker: its label over its control, never wider than the row. */
+.scd-picker { display: flex; flex-direction: column; gap: 0.35rem; flex: 1 1 13rem; min-width: 0; }
+/* The control fills its picker. */
+.scd-picker .cidr-input { width: 100%; box-sizing: border-box; min-height: 2.75rem; }
+
+/* ===========================================================================
+   Fields without a keyboard, K5's tools (03/11/2026; PRIME: "look for fields
+   that currently require typing and that could be upgraded to work without a
+   keyboard as well"). Layout only for the fields given arrows above
+   (.num-field) and for the new pickers and buttons; the shared .num-* rules
+   are untouched.
+   =========================================================================== */
+/* Incident timeline: the order field and its arrows fill their grid cell. */
+.rca-event-order-field { min-width: 0; }
+/* SNMP rate table: a reading time and its arrows in one table cell. */
+.snmp-time-field { min-width: 0; }
+/* At phone width the readings table is a list: a cell is about 70 px there, too narrow for a time and its two arrows
+   on one row, so each row's name heads its two cells, and each cell names its column itself (data-label). */
+@media (max-width: 640px) {
+  /* The column heads move into the cells. */
+  .snmp-readings thead { display: none; }
+  /* Rows and cells stack, each as wide as the table. */
+  .snmp-readings, .snmp-readings tbody, .snmp-readings tr, .snmp-readings th, .snmp-readings td { display: block; width: auto; }
+  /* The row's name, a little closer to its cells. */
+  .snmp-readings th[scope="row"] { min-width: 0; padding-bottom: 0.15rem; }
+  /* Each cell under its own small column name. */
+  .snmp-readings td { padding-top: 0.2rem; }
+  /* The column's name (First, Second), styled as the hidden heads were. */
+  .snmp-readings td::before { content: attr(data-label); display: block; margin-bottom: 0.25rem; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-tertiary); }
+}
+/* A date-and-time picker (or the zone select) under a typed field: its short label, then the control. */
+.time-pick { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 0.6rem; margin: 0.4rem 0 0.9rem; }
+/* The picker's label: quieter than the field's own. */
+.time-pick-label { font-size: 0.8rem; color: var(--text-secondary); }
+/* The picker keeps its natural width, never wider than the row. */
+.time-pick-input { width: auto; max-width: 100%; min-width: 0; }
+/* A preset chip that cannot be pressed now (the HTTP methods past four): faded, and no hover. */
+.tcl-chip:disabled { opacity: 0.45; cursor: not-allowed; }
+/* No hover colour on a disabled chip. */
+.tcl-chip:disabled:hover { border-color: var(--border-subtle); color: var(--text-secondary); }
+/* Chips meant to be tapped (the new rows of method, profile, flag and token buttons): 44 px tall on a touch screen. */
+@media (pointer: coarse) {
+  /* The row's chips reach the touch-target height; their text stays centred. */
+  .tcl-presets-row--tap .tcl-chip { min-height: 2.75rem; display: inline-flex; align-items: center; }
+}
+
+/* ===========================================================================
+   Tap-sized chips, site-wide (PRIME 03/11/2026 22:14: "Apply the new button
+   size site-wide"). Every chip, pill or preset that is a button (presets such
+   as the MTU values, filter chips, method and flag toggles, the theme chips)
+   is at least 44 x 44 px on a touch screen, the size of the numeric fields'
+   arrows. A mouse keeps the compact chips; chips that are links or labels
+   inside text are untouched (the selector names buttons only). A button
+   centres its own content, so only its minimum size changes.
+   =========================================================================== */
+@media (pointer: coarse) {
+  /* Any button whose class names a chip, a pill or a preset. */
+  button[class*="-chip"],
+  button[class*="-pill"],
+  button[class*="preset"] { min-height: 2.75rem; min-width: 2.75rem; }
 }

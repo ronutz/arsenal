@@ -10,6 +10,8 @@ O horário comercial é sinalizado para 09:00-17:59 local, de segunda a sexta - 
 
 O horário de verão é o que as regras do fuso disserem para aquela data específica: Berlim é UTC+2 em julho e UTC+1 em janeiro; São Paulo é UTC-3 o ano inteiro desde que o Brasil aboliu o horário de verão em 2019. Planejar com uma data real é exatamente o ponto.
 
+Abaixo do instante, um seletor de data e hora o define sem digitar: a escolha mantém os segundos e o offset do campo, e escreve Z (UTC) quando não havia nenhum. Abaixo dos fusos, uma lista com todos os fusos IANA que o navegador conhece acrescenta o escolhido como uma nova linha.
+
 ## Compartilhar resultado
 
 Abaixo da tabela, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva o instante da reunião e os fusos, um por linha, como foram digitados depois do `#`, assim que a página tem um plano. As leituras locais são calculadas com os dados de fuso do navegador que abre o link, que é o que a página sempre usa. O popover diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.

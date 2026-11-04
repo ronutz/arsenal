@@ -30,6 +30,14 @@
 // never the licence (spec: src/lib/tools/f5-service-check-date/share.ts). An
 // arriving link (useShareArrival) fills the field as typing would and
 // computes; the address loses the value at once.
+//
+// WITHOUT A KEYBOARD (03/11/2026, PRIME: values set "through the click of a
+// mouse (or press of the touchscreen)"): under the field, a date picker and a
+// version list fill it as typing would. The date picker writes yyyy-mm-dd
+// (one of the three forms the engine reads), within the engine's 1990 to 2100;
+// the list holds every K7727 row the tool carries, by F5's own label, and
+// writes a version that row covers (17.1.x for a branch, 10.2.2 for "10.2.2 -
+// 10.2.4"). Each shows the field's value when it holds one of its own.
 // ============================================================================
 
 import { useCallback, useMemo, useState } from "react";
@@ -37,6 +45,9 @@ import { useTranslations } from "next-intl";
 import {
   run,
   ServiceCheckError,
+  parseServiceCheckDate,
+  LICENSE_CHECK_TABLE,
+  ANY_PATCH,
   type LookupResult,
 } from "@/lib/tools/f5-service-check-date";
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
@@ -49,6 +60,37 @@ const EXAMPLE = "17.1.3";
 
 /** Nothing to share (the button is disabled): a constant, so the button sees no change. */
 const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
+
+/** The version list: each K7727 row by F5's label, with a version the engine reads that the row covers. */
+const VERSION_CHOICES = LICENSE_CHECK_TABLE.map((e) => ({
+  // F5's label, shown in the list ("17.1.x", "11.3.0", "10.2.2 - 10.2.4").
+  label: e.label,
+  // A branch row: major.minor.x; a single release or a range: its first version.
+  value: e.hi[2] === ANY_PATCH ? `${e.lo[0]}.${e.lo[1]}.x` : e.lo.join("."),
+}));
+
+/** The years the engine accepts in a service check date (compute.ts parseServiceCheckDate), as the picker's bounds. */
+const DATE_MIN = "1990-01-01";
+// The last day it accepts.
+const DATE_MAX = "2100-12-31";
+
+/**
+ * The field's value as the date picker shows it: yyyy-mm-dd when the field holds a valid service check date in any
+ * of its three forms, otherwise nothing (the picker is then empty).
+ *
+ * @param text the field's text
+ * @returns the ISO date, or ""
+ */
+function pickerDate(text: string): string {
+  // The engine's own reading of a date.
+  try {
+    // Its ISO form.
+    return parseServiceCheckDate(text).iso;
+  } catch {
+    // Not a date (a version, a licence, or nothing).
+    return "";
+  }
+}
 
 export default function F5ServiceCheckDateTool() {
   const t = useTranslations("tools.f5-service-check-date");
@@ -93,6 +135,15 @@ export default function F5ServiceCheckDateTool() {
     setValue(e.target.value);
     compute(e.target.value);
   }
+  // The field set from the date picker or the version list, exactly as typing the same text would set it.
+  const fill = (text: string) => {
+    // The field shows it.
+    setValue(text);
+    // The page answers.
+    compute(text);
+  };
+  // The list's selection: the row whose version the field holds, if any.
+  const pickedVersion = VERSION_CHOICES.some((c) => c.value === value.trim()) ? value.trim() : "";
 
   return (
     <div className="cidr-tool jwt-tool">
@@ -125,6 +176,42 @@ export default function F5ServiceCheckDateTool() {
           </span>
           {t("runsLocally")}
         </p>
+        {/* Without a keyboard: a date picker and the version list, each filling the field above as typing would. */}
+        <div className="scd-pickers">
+          <div className="scd-picker">
+            {/* The date picker's name. */}
+            <label className="cidr-label" htmlFor="scd-date">{t("pickDateLabel")}</label>
+            <input
+              id="scd-date"
+              type="date"
+              className="cidr-input mono"
+              // The field's date, when it holds one.
+              value={pickerDate(value)}
+              // The years the engine accepts.
+              min={DATE_MIN}
+              max={DATE_MAX}
+              // A picked date fills the field in yyyy-mm-dd; a cleared picker leaves the field as it is.
+              onChange={(e) => { if (e.target.value) fill(e.target.value); }}
+            />
+          </div>
+          <div className="scd-picker">
+            {/* The version list's name. */}
+            <label className="cidr-label" htmlFor="scd-version">{t("pickVersionLabel")}</label>
+            <select
+              id="scd-version"
+              className="cidr-input mono"
+              // The field's version, when it is one of the list's.
+              value={pickedVersion}
+              // A chosen row fills the field with its version; the first entry leaves the field as it is.
+              onChange={(e) => { if (e.target.value) fill(e.target.value); }}
+            >
+              {/* No row chosen. */}
+              <option value="">{t("pickVersionNone")}</option>
+              {/* Every K7727 row, newest first, by F5's label. */}
+              {VERSION_CHOICES.map((c) => <option key={c.label} value={c.value}>{c.label}</option>)}
+            </select>
+          </div>
+        </div>
         {/* Paste affordance: the same field also accepts a pasted
             /config/bigip.license or tmsh show sys license output. */}
         <p className="cidr-privacy" style={{ marginTop: "0.25rem" }}>

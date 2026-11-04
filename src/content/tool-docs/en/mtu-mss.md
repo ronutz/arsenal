@@ -6,6 +6,8 @@ Enter a link MTU (Maximum Transmission Unit) and, optionally, the encapsulation 
 
 Start with the MTU, then add tokens in any order: `v6` (IPv6 outer header for tunnels), `pppoe`, `gre`, `ipip`, `6in4` (or `sit`), `vxlan`, `geneve`, `wireguard` (or `wg`), `vlan` (or `dot1q`), `qinq`, `mpls` or `mpls2`..`mpls8`, and `+N` for a custom overhead in bytes. So `1500 vxlan` is the canonical overlay question, `1500 gre v6` is GRE over IPv6, `9000 vxlan vlan` is a tagged jumbo underlay, `1500 mpls2` is a link carrying two labels, and `1500 +57` models a measured IPsec cost.
 
+Without a keyboard, the arrows beside the field step the MTU from 68 to 65535 and keep the tokens after it, the 1500 and 9000 buttons set it in one press, and a button per token adds that token or takes it out (a token typed under another name, such as `wg` or `dot1q`, shows its button pressed). The counted tokens, `mpls2` to `mpls8` and `+N`, are typed.
+
 ## The one distinction that matters
 
 Overheads sit on different sides of the MTU line, and the tool lists every layer with its side.

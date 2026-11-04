@@ -19,6 +19,8 @@ Regular expression Denial of Service (ReDoS) acontece quando um padrão pode faz
 
 A sintaxe de regex varia entre linguagens, e esta ferramenta usa o dialeto do JavaScript definido pela especificação ECMAScript, com suas flags (global, ignore-case, multiline, dotall, unicode e sticky) e seu suporte a grupos nomeados e lookarounds. Se você está escrevendo regex para JavaScript, ou para qualquer coisa que compartilhe sua semântica, o que você vê aqui é o que você vai obter. Para qualquer outro motor, veja Dialetos, abaixo.
 
+Abaixo do padrão, um botão por flag a acrescenta ao campo de flags ou a retira, cada um com o nome da sua propriedade de RegExp (`g global`, `i ignoreCase` e assim por diante); o campo continua podendo ser digitado.
+
 ## Dialetos
 
 O testador roda um único motor, o ECMAScript, mas os padrões que engenheiros de rede e de segurança escrevem raramente ficam no JavaScript. Um bloco `location ~` do NGINX, uma iRule do BIG-IP e uma assinatura de web application firewall (WAF) entregam o padrão cada um a um motor diferente, e os mesmos caracteres podem significar outra coisa ali. A seção **Portabilidade** lê os tokens do seu padrão e lista cada construção cujo suporte ou significado muda entre três dialetos:

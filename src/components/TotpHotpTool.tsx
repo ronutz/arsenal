@@ -23,10 +23,16 @@
 // published key or is emptied, with a note asking for the secret, so no code is
 // shown for a key the sender did not use. An empty secret box shows no decode
 // error (it is waiting for a secret, not holding a bad one).
+//
+// UP AND DOWN ARROWS (03/11/2026): the time step, the HOTP counter and the
+// typed Unix time have a down and an up arrow beside them (src/components/
+// NumberStepper.tsx), one second or one count a press, set as typing would;
+// the time's arrows are off while "Use current time" drives it.
 // ============================================================================
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
+import { StepperField } from "@/components/NumberStepper"; // the up and down arrows beside the numeric fields
 import {
   run,
   OTP_ALGORITHMS,
@@ -271,28 +277,34 @@ export default function TotpHotpTool() {
             <label className="cidr-label" htmlFor="otp-step">
               {t("stepLabel")}
             </label>
-            <input
-              id="otp-step"
-              type="number"
-              min={1}
-              className="cidr-input mono otp-num"
-              value={step}
-              onChange={(e) => setStep(Math.max(1, Number(e.target.value) || 1))}
-            />
+            {/* Up and down arrows: one whole second a press, from 1 (the field's own floor; the engine truncates the step). */}
+            <StepperField value={step} onValue={(v) => setStep(Math.max(1, Number(v) || 1))} min={1} integer label={t("stepLabel")} inputId="otp-step">
+              <input
+                id="otp-step"
+                type="number"
+                min={1}
+                className="cidr-input mono otp-num"
+                value={step}
+                onChange={(e) => setStep(Math.max(1, Number(e.target.value) || 1))}
+              />
+            </StepperField>
           </div>
         ) : (
           <div className="otp-param">
             <label className="cidr-label" htmlFor="otp-counter">
               {t("counterLabel")}
             </label>
-            <input
-              id="otp-counter"
-              type="number"
-              min={0}
-              className="cidr-input mono otp-num"
-              value={counter}
-              onChange={(e) => setCounter(Math.max(0, Math.trunc(Number(e.target.value) || 0)))}
-            />
+            {/* Up and down arrows: one count a press, from 0, as the field's own handler clamps it. */}
+            <StepperField value={counter} onValue={(v) => setCounter(Math.max(0, Math.trunc(Number(v) || 0)))} min={0} integer label={t("counterLabel")} inputId="otp-counter">
+              <input
+                id="otp-counter"
+                type="number"
+                min={0}
+                className="cidr-input mono otp-num"
+                value={counter}
+                onChange={(e) => setCounter(Math.max(0, Math.trunc(Number(e.target.value) || 0)))}
+              />
+            </StepperField>
           </div>
         )}
       </div>
@@ -312,15 +324,20 @@ export default function TotpHotpTool() {
               />
               {t("useCurrentTime")}
             </label>
-            <input
-              id="otp-time"
-              type="number"
-              className="cidr-input mono otp-num"
-              value={timestamp}
-              disabled={useNow}
-              onChange={(e) => setManualTime(Math.max(0, Math.trunc(Number(e.target.value) || 0)))}
-              aria-label={t("manualTime")}
-            />
+            {/* Up and down arrows: one second a press, from 0; off with the field while the live clock drives it. */}
+            <StepperField value={timestamp} onValue={(v) => setManualTime(Math.max(0, Math.trunc(Number(v) || 0)))} min={0} integer label={t("manualTime")} inputId="otp-time" disabled={useNow}>
+              <input
+                id="otp-time"
+                type="number"
+                // The arrows' floor, given to the native stepping too (it had none, and the handler clamps at 0).
+                min={0}
+                className="cidr-input mono otp-num"
+                value={timestamp}
+                disabled={useNow}
+                onChange={(e) => setManualTime(Math.max(0, Math.trunc(Number(e.target.value) || 0)))}
+                aria-label={t("manualTime")}
+              />
+            </StepperField>
           </div>
         </div>
       )}

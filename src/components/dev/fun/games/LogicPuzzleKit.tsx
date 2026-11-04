@@ -42,7 +42,7 @@ import { addDays } from "@/lib/fun/daily";
 // The time format.
 import { formatDuration } from "@/lib/fun/share";
 // The one storage key's helpers.
-import { loadRecord, recordResult, saveDailyState } from "@/lib/fun/storage";
+import { loadRecord, recordResult, saveDailyState, updateRecord } from "@/lib/fun/storage";
 // The switch that stands the site's single-key shortcuts down.
 import { setSiteShortcutsSuppressed } from "@/lib/pageCapabilities";
 
@@ -300,6 +300,8 @@ export interface PuzzleSession<P, B> {
   hint: () => void;
   /** The earlier days already solved as the daily puzzle, with their final times (read from the saved daily states). */
   solvedDays: Record<string, number>;
+  /** The earlier days solved in practice, with the best final time (extra.practiceSolved, the last seven days). */
+  practiceSolved: Record<string, number>;
   /** Whether the round is finished. */
   done: boolean;
   /** The final time with penalties, once finished. */
@@ -465,6 +467,26 @@ export function usePuzzleSession<P, B>(cfg: PuzzleSessionConfig<P, B>): PuzzleSe
       save(b, raw, k, h, true, total);
       // Recorded: a daily round counts for the streak and the best time; practice only counts as played.
       if (day) recordResult(cfgRef.current.gameId, mode === "daily" ? { dayKey: day, won: true, score: Math.round(total), higherIsBetter: false, daily: true } : { dayKey: day, won: true, daily: false });
+      // A practice solve is remembered for its day's chip (PRIME 03/11/2026 18:17, "Ok to all"): the best time per day,
+      // inside the game's own record (extra.practiceSolved, merged, never replacing extra), kept for the days practice
+      // offers and dropped after them, so the record cannot grow without bound.
+      if (day && mode === "practice") {
+        // The oldest day practice still offers.
+        const oldest = cfgRef.current.today ? addDays(cfgRef.current.today, -PRACTICE_DAYS) : day;
+        // Read, change, write in one step.
+        updateRecord(cfgRef.current.gameId, (r) => {
+          // The stored map, if it is one.
+          const prev = r.extra.practiceSolved && typeof r.extra.practiceSolved === "object" ? (r.extra.practiceSolved as Record<string, unknown>) : {};
+          // The days still on offer, with a usable time, carried over.
+          const kept: Record<string, number> = {};
+          // Each stored day: kept when practice still offers it and its time is a real duration.
+          for (const [d, t] of Object.entries(prev)) if (d >= oldest && typeof t === "number" && Number.isFinite(t) && t >= 0) kept[d] = t;
+          // This day's best: the new time when it beats the old one (or there is none).
+          kept[day] = kept[day] === undefined ? total : Math.min(kept[day], total);
+          // The record with the map merged into extra.
+          return { ...r, extra: { ...r.extra, practiceSolved: kept } };
+        });
+      }
       // The shell re-reads the record.
       setVersion((v) => v + 1);
     },
@@ -557,12 +579,20 @@ export function usePuzzleSession<P, B>(cfg: PuzzleSessionConfig<P, B>): PuzzleSe
 
   // The earlier days solved as the daily puzzle, with their final times.
   const [solvedDays, setSolvedDays] = useState<Record<string, number>>({});
+  // The earlier days solved in practice, with their best times.
+  const [practiceSolved, setPracticeSolved] = useState<Record<string, number>>({});
   // Read after mount, on a switch of mode, and after each recorded result (the record keeps seven days of states).
   useEffect(() => {
     // Nothing before mount.
     if (practiceDays.length === 0) return;
+    // The game's record: its saved daily states and its practice solves.
+    const rec = loadRecord(cfgRef.current.gameId);
     // The saved daily states.
-    const daily = loadRecord(cfgRef.current.gameId).daily;
+    const daily = rec.daily;
+    // The practice solves, if the stored value is a map.
+    const prac = rec.extra.practiceSolved && typeof rec.extra.practiceSolved === "object" ? (rec.extra.practiceSolved as Record<string, unknown>) : {};
+    // The days found solved in practice.
+    const fromPractice: Record<string, number> = {};
     // The days found solved.
     const found: Record<string, number> = {};
     // Each earlier day on offer.
@@ -571,9 +601,15 @@ export function usePuzzleSession<P, B>(cfg: PuzzleSessionConfig<P, B>): PuzzleSe
       const sv = daily[d] as Partial<SavedRound<B>> | undefined;
       // Finished, with a usable final time.
       if (sv && typeof sv === "object" && sv.d === true && typeof sv.t === "number" && Number.isFinite(sv.t) && sv.t >= 0) found[d] = sv.t;
+      // Its best practice time, if any.
+      const pt = prac[d];
+      // A usable time.
+      if (typeof pt === "number" && Number.isFinite(pt) && pt >= 0) fromPractice[d] = pt;
     }
     // Shown.
     setSolvedDays(found);
+    // Shown too.
+    setPracticeSolved(fromPractice);
   }, [practiceDays, mode, version]);
 
   // Switch to today's puzzle (the round on screen saved first).
@@ -615,7 +651,7 @@ export function usePuzzleSession<P, B>(cfg: PuzzleSessionConfig<P, B>): PuzzleSe
     // The moves.
     move, undo, canUndo: history.length > 0 && !done, clear, untouched,
     // Checks, hints, the days solved, and the clock.
-    checks, check, hints, hint, solvedDays, done, finalMs, shownMs, started,
+    checks, check, hints, hint, solvedDays, practiceSolved, done, finalMs, shownMs, started,
     // Switching.
     playDaily, playPractice, version,
     // The frame: a daily puzzle, or practice as free play.
@@ -649,6 +685,8 @@ export interface KitLabels {
   hintsUsed: string;
   /** A solved earlier day's accessible name, from its label and its final time ("Mon 2 Nov, solved in 1:23"). */
   daySolved: (date: string, time: string) => string;
+  /** A day solved only in practice: its accessible name ("Mon 2 Nov, solved in practice in 1:40"). */
+  daySolvedPractice: (date: string, time: string) => string;
   /** The mode switch's group label. */
   modeLabel: string;
 }
@@ -705,20 +743,28 @@ export function PuzzleModeBar<P, B>(props: { session: PuzzleSession<P, B>; label
               const label = dayLabel(d, props.locale);
               // Its final time when it was solved as the daily puzzle.
               const solved = s.solvedDays[d];
-              // The day's button: a solved day carries a tick and its time, and says so in its name.
+              // Its best practice time, shown only when the day was not solved as the daily (the day's own result wins).
+              const practised = solved === undefined ? s.practiceSolved[d] : undefined;
+              // The day's button: a solved day carries a tick and its time, a day solved in practice a replay mark and
+              // its time, and each says so in its name (the marks are not the only signal).
               return (
                 <button
                   key={d}
                   type="button"
-                  className={`fg-chip fg-lpk-day${solved !== undefined ? " fg-lpk-day-solved" : ""}`}
+                  className={`fg-chip fg-lpk-day${solved !== undefined ? " fg-lpk-day-solved" : practised !== undefined ? " fg-lpk-day-practised" : ""}`}
                   aria-pressed={s.day === d}
-                  aria-label={solved !== undefined ? l.daySolved(label, formatDuration(solved)) : undefined}
+                  aria-label={solved !== undefined ? l.daySolved(label, formatDuration(solved)) : practised !== undefined ? l.daySolvedPractice(label, formatDuration(practised)) : undefined}
                   onClick={() => s.playPractice(d)}
                 >
                   {label}
                   {solved !== undefined && (
                     <span className="fg-lpk-day-mark" aria-hidden="true">
                       ✓ {formatDuration(solved)}
+                    </span>
+                  )}
+                  {practised !== undefined && (
+                    <span className="fg-lpk-day-mark fg-lpk-day-mark-practice" aria-hidden="true">
+                      ↻ {formatDuration(practised)}
                     </span>
                   )}
                 </button>

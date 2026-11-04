@@ -27,11 +27,17 @@
 // Portuguese on the pt-BR page and exactly as before in English (event notes
 // and the free-text notes stay as typed). The engine is imported from compute
 // directly (not the index, which also pulls the manifest and the vectors).
+//
+// UP AND DOWN ARROWS (03/11/2026): each event's order and the three clock
+// fields have a down and an up arrow beside them (src/components/
+// NumberStepper.tsx), one unit a press, so the timeline is set with a mouse or
+// a finger too; the clock fields also step with Arrow Up and Down.
 // ============================================================================
 "use client";
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
+import { StepperField, stepperKeyDown } from "@/components/NumberStepper"; // the up and down arrows, and their keys on a text field
 import {
   runLocalisable,
   artifactToMarkdown,
@@ -189,6 +195,13 @@ export default function IncidentTimelineRcaBuilderTool() {
     setTouched(true);
     setEvents((cur) => cur.map((e) => (e.id === id ? { ...e, note } : e)));
   };
+  /** One clock field of one event, as typed (or as its arrows set it); kept as text until all three parse. */
+  const setClockField = (id: string, k: keyof ClockDraft, v: string) => {
+    // Typing clock evidence counts as engaging with the form.
+    setTouched(true);
+    // The event's draft with this field replaced (a blank draft when the event had none).
+    setClocks((cur) => ({ ...cur, [id]: { ...(cur[id] ?? { reported: "", offset: "", uncertainty: "" }), [k]: v } }));
+  };
 
   // ---- factor observation + confirmation ----
   const toggleFactorObserved = (domain: FactorDomain) => {
@@ -282,13 +295,19 @@ export default function IncidentTimelineRcaBuilderTool() {
                   </option>
                 ))}
               </select>
-              <input
-                type="number"
-                className="cidr-input rca-event-order mono"
-                value={e.order}
-                onChange={(ev) => setEventOrder(e.id, Number(ev.target.value))}
-                aria-label={t("form.eventOrder")}
-              />
+              {/* Up and down arrows: one whole place a press (the engine types the order as an integer and takes any finite one, so
+                  neither end is bounded);
+                  named with the event's kind, so each row's arrows say which order they move. */}
+              <StepperField value={e.order} onValue={(v) => setEventOrder(e.id, Number(v))} step={1} integer label={`${t("form.eventOrder")}: ${t(`eventKinds.${e.kind}`)}`} inputId={`rca-order-${e.id}`} className="rca-event-order-field">
+                <input
+                  id={`rca-order-${e.id}`}
+                  type="number"
+                  className="cidr-input rca-event-order mono"
+                  value={e.order}
+                  onChange={(ev) => setEventOrder(e.id, Number(ev.target.value))}
+                  aria-label={t("form.eventOrder")}
+                />
+              </StepperField>
               <input
                 type="text"
                 className="cidr-input rca-event-note"
@@ -330,20 +349,20 @@ export default function IncidentTimelineRcaBuilderTool() {
                     <label className="cidr-label" htmlFor={`rca-clock-${e.id}-${k}`}>
                       {t(`clock.${k}`)}
                     </label>
-                    <input
-                      id={`rca-clock-${e.id}-${k}`}
-                      className="cidr-input mono"
-                      inputMode="numeric"
-                      value={clocks[e.id]?.[k] ?? ""}
-                      onChange={(ev) => {
-                        // Typing clock evidence counts as engaging with the form.
-                        setTouched(true);
-                        setClocks((cur) => ({
-                          ...cur,
-                          [e.id]: { ...(cur[e.id] ?? { reported: "", offset: "", uncertainty: "" }), [k]: ev.target.value },
-                        }));
-                      }}
-                    />
+                    {/* Up and down arrows: one whole millisecond a press, set as typing would, inside parseClock's safe
+                        integers (the uncertainty 0 or more); an empty field starts at 0 (the shared stepper's rule). */}
+                    <StepperField value={clocks[e.id]?.[k] ?? ""} onValue={(v) => setClockField(e.id, k, v)} min={k === "uncertainty" ? 0 : -Number.MAX_SAFE_INTEGER} max={Number.MAX_SAFE_INTEGER} integer label={`${t("clock.eventLabel", { n: pos + 1, kind: t(`eventKinds.${e.kind}`) })}: ${t(`clock.${k}`)}`} inputId={`rca-clock-${e.id}-${k}`}>
+                      <input
+                        id={`rca-clock-${e.id}-${k}`}
+                        className="cidr-input mono"
+                        inputMode="numeric"
+                        value={clocks[e.id]?.[k] ?? ""}
+                        // The field as typed, through the same setter the arrows use.
+                        onChange={(ev) => setClockField(e.id, k, ev.target.value)}
+                        // Arrow Up and Down (Page Up and Down: ten) step the milliseconds from the keyboard.
+                        onKeyDown={stepperKeyDown({ value: clocks[e.id]?.[k] ?? "", onValue: (v) => setClockField(e.id, k, v), min: k === "uncertainty" ? 0 : -Number.MAX_SAFE_INTEGER, max: Number.MAX_SAFE_INTEGER, integer: true })}
+                      />
+                    </StepperField>
                   </div>
                 ))}
               </div>

@@ -8,7 +8,9 @@
 // THE BFD-VERSUS-HELLOS LAB (2026-10-26), embedded in "BFD: when a link is up
 // and dead at the same time" as <Lab id="bfd-versus-hellos" />. Two selects (what the route
 // depends on, how BFD runs) and three number inputs (remote Desired Min TX,
-// local Required Min RX, remote Detect Mult); the result is the two detection
+// local Required Min RX, remote Detect Mult), each with up and down arrows
+// beside it (one millisecond or one probe a press, inside what the model
+// accepts); the result is the two detection
 // times side by side and a three-step account of who notices the dead path
 // and when the route goes. The model is
 // src/lib/labs/bfd-versus-hellos/compute.ts; its checked cases are the golden
@@ -18,6 +20,8 @@
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import LabFrame, { LabField, LabSelect } from "./LabFrame";
+// Up and down arrows beside the three number fields, so they are set with a mouse or a finger too.
+import { StepperField } from "@/components/NumberStepper";
 import {
   BfdVersusHellosError,
   compute,
@@ -34,6 +38,8 @@ import {
 
 /** The lab's id: its namespace, its anchor and its element ids. */
 const ID = "bfd-versus-hellos";
+/** The lowest interval the arrows reach: the model takes anything above 0 ms, so the first whole millisecond. */
+const MIN_ARROW_MS = 1;
 
 /** The form as typed: number fields stay text so the reader can edit freely. */
 interface Form {
@@ -168,13 +174,24 @@ export default function BfdVersusHellosLab() {
             <LabSelect id={`${ID}-bfd`} value={form.bfd} options={bfdOptions} onChange={(v) => setForm({ ...form, bfd: v as BfdMode })} />
           </LabField>
           <LabField id={`${ID}-remote-tx`} label={t("remoteTx")}>
-            <input id={`${ID}-remote-tx`} className="lab-input" type="number" inputMode="decimal" min={0} max={MAX_INTERVAL_MS} step="any" value={form.remoteTxMs} aria-invalid={badInterval ? "true" : undefined} onChange={(e) => setForm({ ...form, remoteTxMs: e.target.value })} />
+            {/* Arrows: one millisecond a press, from 1 (the model refuses 0) to its 60,000 ms ceiling; a typed fraction still counts. */}
+            <StepperField value={form.remoteTxMs} onValue={(v) => setForm((f) => ({ ...f, remoteTxMs: v }))} min={MIN_ARROW_MS} max={MAX_INTERVAL_MS} step={1} label={t("remoteTx")} inputId={`${ID}-remote-tx`}>
+              {/* Native min agrees with the arrows (the model refuses 0); step stays "any" so a fraction typed is not flagged. */}
+              <input id={`${ID}-remote-tx`} className="lab-input" type="number" inputMode="decimal" min={MIN_ARROW_MS} max={MAX_INTERVAL_MS} step="any" value={form.remoteTxMs} aria-invalid={badInterval ? "true" : undefined} onChange={(e) => setForm({ ...form, remoteTxMs: e.target.value })} />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-local-rx`} label={t("localRx")}>
-            <input id={`${ID}-local-rx`} className="lab-input" type="number" inputMode="decimal" min={0} max={MAX_INTERVAL_MS} step="any" value={form.localRxMs} aria-invalid={badInterval ? "true" : undefined} onChange={(e) => setForm({ ...form, localRxMs: e.target.value })} />
+            {/* The same bounds as the remote TX: both intervals are checked together. */}
+            <StepperField value={form.localRxMs} onValue={(v) => setForm((f) => ({ ...f, localRxMs: v }))} min={MIN_ARROW_MS} max={MAX_INTERVAL_MS} step={1} label={t("localRx")} inputId={`${ID}-local-rx`}>
+              {/* Native min agrees with the arrows; step stays "any" for a typed fraction. */}
+              <input id={`${ID}-local-rx`} className="lab-input" type="number" inputMode="decimal" min={MIN_ARROW_MS} max={MAX_INTERVAL_MS} step="any" value={form.localRxMs} aria-invalid={badInterval ? "true" : undefined} onChange={(e) => setForm({ ...form, localRxMs: e.target.value })} />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-remote-mult`} label={t("remoteMult")}>
-            <input id={`${ID}-remote-mult`} className="lab-input" type="number" inputMode="decimal" min={1} max={MAX_MULT} step={1} value={form.remoteMult} aria-invalid={err === "bad-mult" ? "true" : undefined} onChange={(e) => setForm({ ...form, remoteMult: e.target.value })} />
+            {/* Arrows: one missed packet a press, 1 to 255 (the model's whole-number range). */}
+            <StepperField value={form.remoteMult} onValue={(v) => setForm((f) => ({ ...f, remoteMult: v }))} min={1} max={MAX_MULT} step={1} label={t("remoteMult")} inputId={`${ID}-remote-mult`}>
+              <input id={`${ID}-remote-mult`} className="lab-input" type="number" inputMode="decimal" min={1} max={MAX_MULT} step={1} value={form.remoteMult} aria-invalid={err === "bad-mult" ? "true" : undefined} onChange={(e) => setForm({ ...form, remoteMult: e.target.value })} />
+            </StepperField>
           </LabField>
         </>
       }

@@ -9,12 +9,19 @@
 // Share results (2026-11-01): a button under the result builds a link that
 // carries the box as typed. An arriving link (useShareArrival) fills the box
 // as a paste would.
+//
+// UP AND DOWN ARROWS (03/11/2026): the box has a down and an up arrow beside
+// it (src/components/NumberStepper.tsx, and Arrow Up and Down), 1 to 3999 as
+// the engine reads. They step the value the box holds and write it back in the
+// form the reader used: a number stays a number (1994 to 1995), a numeral
+// becomes the next canonical numeral (MCMXCIV to MCMXCV).
 // ============================================================================
 "use client";
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { analyzeRoman, RomanInputError, type RomanAnalysis } from "@/lib/tools/roman-numerals";
+import { analyzeRoman, toRoman, RomanInputError, type RomanAnalysis } from "@/lib/tools/roman-numerals"; // toRoman: the arrows answer a numeral with a numeral (03/11/2026)
+import { StepperField, stepperKeyDown } from "@/components/NumberStepper"; // the up and down arrows, and their keys
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import { ROMAN_SHARE, encodeRomanShare } from "@/lib/tools/roman-numerals/share"; // this tool's share spec: the box as typed
@@ -43,6 +50,14 @@ export default function RomanNumeralsTool() {
   // What Share results carries: the box, once the page has a reading (memoised).
   const share = useMemo(() => encodeRomanShare({ input }, !!result?.ok), [input, result]); // the encoding
 
+  // ---- Up and down arrows (03/11/2026). ----
+  /** The value the box holds, for the arrows: the reading's number when it reads, else the box as typed. */
+  const stepBase = result && result.ok ? String(result.data.value) : input; // "1994" for MCMXCIV
+  /** Whether the reader is writing numerals (letters), so the arrows answer in numerals. */
+  const asNumeral = result !== null && result.ok && result.data.kind === "fromNumeral"; // MCMXCIV, not 1994
+  /** Set the box from the arrows, as typing would: the next number, or its canonical numeral. */
+  const setFromArrows = (v: string) => setInput(asNumeral ? toRoman(Number(v)).canonical : v); // "MCMXCV" or "1995"
+
   return (
     <div className="cidr-tool jwt-tool json-tool tmsh-tool">
       <div className="cidr-input-row">
@@ -53,14 +68,19 @@ export default function RomanNumeralsTool() {
             <button type="button" className="b64-copy" onClick={() => setInput("")}>{t("clear")}</button>
           </div>
         </div>
-        <input
-          id="roman-input"
-          className="cidr-input mono json-input"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder={t("inputPlaceholder")}
-          autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
-        />
+        {/* Up and down arrows: one a press, 1 to 3999 (the engine's range), in the form the box is written in. */}
+        <StepperField value={stepBase} onValue={setFromArrows} min={1} max={3999} integer label={t("inputLabel")} inputId="roman-input">
+          <input
+            id="roman-input"
+            className="cidr-input mono json-input"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            // Arrow Up and Down (Page Up and Down: ten) step the value from the keyboard.
+            onKeyDown={stepperKeyDown({ value: stepBase, onValue: setFromArrows, min: 1, max: 3999, integer: true })}
+            placeholder={t("inputPlaceholder")}
+            autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
+          />
+        </StepperField>
         <p className="cidr-privacy">
           <span className="cidr-lock" aria-hidden="true">●</span>
           {t("runsLocally")}

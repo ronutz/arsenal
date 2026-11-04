@@ -10,6 +10,8 @@ Somar "um mês" é aritmética de calendário: um mês tem de 28 a 31 dias e um 
 
 Um timestamp sem offset é lido como UTC e a suposição é anotada. Adicione Z ou um offset explícito (por exemplo -03:00) e a resposta nunca depende da máquina em que a ferramenta roda.
 
+Abaixo de cada instante, um seletor de data e hora o define sem digitar. A escolha mantém os segundos e o offset que o campo já tinha, e escreve Z (UTC) quando não havia nenhum; um offset diferente de Z, ou uma data sozinha, continua sendo digitado.
+
 ## Compartilhar resultado
 
 Abaixo do resultado, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva o modo e os campos dele depois do `#`, assim que a página tem um resultado: os dois instantes para o intervalo entre eles, ou o início, a duração e somar ou subtrair. Os campos do outro modo não vão. Instantes e durações não identificam nada seu. O popover diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.

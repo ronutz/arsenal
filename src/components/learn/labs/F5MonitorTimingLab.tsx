@@ -14,11 +14,17 @@
 // with the F5 document that decides it. The model is
 // src/lib/labs/f5-monitor-timing/compute.ts; its checked cases are the golden
 // vectors beside it. Words: "learnLabs.f5-monitor-timing".
+// Each number input carries up and down arrows, one second a press; their
+// bounds follow the model, including its two links (the Timeout is never
+// shorter than the Interval, and the server answers again after it goes
+// silent), so the arrows never make a refusal.
 // ============================================================================
 
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import LabFrame, { LabField } from "./LabFrame";
+// Up and down arrows beside each number input.
+import { StepperField } from "@/components/NumberStepper";
 import {
   compute,
   DEFAULT_INPUT,
@@ -56,6 +62,12 @@ function toForm(i: MonitorTimingInput): Form {
 function readNumber(s: string): number {
   // Blank means nothing was entered; a decimal comma is read as a point (and then refused as not whole).
   return s.trim() === "" ? Number.NaN : Number(s.trim().replace(",", "."));
+}
+
+/** A whole number inside a range, or null when the field holds anything else (so a bound that depends on it is left alone). */
+function wholeOrNull(n: number, lo: number, hi: number): number | null {
+  // An integer inside the range (NaN fails Number.isInteger).
+  return Number.isInteger(n) && n >= lo && n <= hi ? n : null;
 }
 
 /** The fields each refusal points at, for aria-invalid. */
@@ -134,27 +146,38 @@ export default function F5MonitorTimingLab() {
                 : null;
   // The fields to mark invalid.
   const bad = new Set<keyof MonitorTimingInput>(err ? FIELDS_AT_FAULT[err] : []);
+  // The Interval and the Timeout when valid, for their linked bounds (the Timeout may not be shorter).
+  const intervalNow = wholeOrNull(input.intervalS, 1, MAX_INTERVAL_S);
+  // The Timeout.
+  const timeoutNow = wholeOrNull(input.timeoutS, 1, MAX_TIMEOUT_S);
+  // The silent second and the answering one when valid (the second comes after the first).
+  const failNow = wholeOrNull(input.failAtS, 1, MAX_TIMELINE_S - 1);
+  // The answering second.
+  const recoverNow = wholeOrNull(input.recoverAtS, 2, MAX_TIMELINE_S);
 
   /** A whole number of seconds, formatted. */
   const sec = (n: number): string => nf.format(n);
   /** The member's status, worded. */
   const statusText = (s: MemberStatus): string => (s === "up" ? t("statusUp") : s === "down" ? t("statusDown") : t("statusPending"));
 
-  /** One number input, labelled, with its own id and invalid state. */
+  /** One number input, labelled, with its own id and invalid state, and up and down arrows (one second a press, min to max). */
   const field = (key: keyof MonitorTimingInput, slug: string, label: string, min: number, max: number) => (
     <LabField id={`${ID}-${slug}`} label={label}>
-      <input
-        id={`${ID}-${slug}`}
-        className="lab-input"
-        type="number"
-        inputMode="decimal"
-        min={min}
-        max={max}
-        step={1}
-        value={form[key]}
-        aria-invalid={bad.has(key) ? "true" : undefined}
-        onChange={(e) => setForm({ ...form, [key]: e.target.value })}
-      />
+      {/* The arrows set the field as if typed; the input's own min and max are the same bounds. */}
+      <StepperField value={form[key]} onValue={(v) => setForm((f) => ({ ...f, [key]: v }))} min={min} max={max} step={1} label={label} inputId={`${ID}-${slug}`}>
+        <input
+          id={`${ID}-${slug}`}
+          className="lab-input"
+          type="number"
+          inputMode="decimal"
+          min={min}
+          max={max}
+          step={1}
+          value={form[key]}
+          aria-invalid={bad.has(key) ? "true" : undefined}
+          onChange={(e) => setForm({ ...form, [key]: e.target.value })}
+        />
+      </StepperField>
     </LabField>
   );
 
@@ -265,12 +288,14 @@ export default function F5MonitorTimingLab() {
       labId={ID}
       controls={
         <>
-          {field("intervalS", "interval", t("interval"), 1, MAX_INTERVAL_S)}
-          {field("timeoutS", "timeout", t("timeout"), 1, MAX_TIMEOUT_S)}
+          {/* The Interval's ceiling is the Timeout, and the Timeout's floor the Interval, when the other one is valid. */}
+          {field("intervalS", "interval", t("interval"), 1, timeoutNow === null ? MAX_INTERVAL_S : Math.min(MAX_INTERVAL_S, timeoutNow))}
+          {field("timeoutS", "timeout", t("timeout"), intervalNow ?? 1, MAX_TIMEOUT_S)}
           {field("upIntervalS", "up-interval", t("upInterval"), 0, MAX_INTERVAL_S)}
           {field("timeUntilUpS", "time-until-up", t("timeUntilUp"), 0, MAX_TIMEOUT_S)}
-          {field("failAtS", "fail-at", t("failAt"), 1, MAX_TIMELINE_S - 1)}
-          {field("recoverAtS", "recover-at", t("recoverAt"), 2, MAX_TIMELINE_S)}
+          {/* The silent second stays before the answering one, and the answering one after it. */}
+          {field("failAtS", "fail-at", t("failAt"), 1, recoverNow === null ? MAX_TIMELINE_S - 1 : recoverNow - 1)}
+          {field("recoverAtS", "recover-at", t("recoverAt"), failNow === null ? 2 : failNow + 1, MAX_TIMELINE_S)}
         </>
       }
       result={r ? resultBlock(r) : <p className="lab-error">{errText}</p>}

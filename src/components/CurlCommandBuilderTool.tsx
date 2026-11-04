@@ -17,6 +17,12 @@
 // visible, disabled, while there is no command. An arriving link
 // (useShareArrival) replaces the whole form, and the command is built; nothing
 // is run.
+//
+// No keyboard needed (03/11/2026): the port, the two timeouts and the retry
+// count have up and down arrows (StepperField), whole numbers for the port
+// and the retry count; an empty field starts at its bound nearest 0. Their labels
+// now stand beside the fields (htmlFor) rather than around them, so the
+// arrows' names do not join the field's.
 // ============================================================================
 
 import { useMemo, useState } from "react";
@@ -34,6 +40,7 @@ import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving 
 import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
 import { CURL_BUILDER_SHARE, encodeCurlBuilder } from "@/lib/tools/curl-command-builder/share"; // this tool's share spec: the form's copy
 import { shareableBuilderState } from "@/lib/tools/curl-command-builder/compute"; // the copy, and the count the popover gives
+import { StepperField, stepperKeyDown } from "@/components/NumberStepper"; // up and down arrows for the four numbers (03/11/2026)
 
 /** Group display order for the protocol picker. */
 const GROUPS = ["web", "transfer", "mail", "messaging", "lookup"] as const;
@@ -162,10 +169,14 @@ export default function CurlCommandBuilderTool() {
               </label>
             )}
             {p.key !== "file" && (
-              <label className="curlb-field curlb-field--narrow">
-                <span className="curlb-field-label">{t("ui.port")}</span>
-                <input className="curlb-input" value={s.port ?? ""} onChange={(e) => up({ port: e.target.value })} placeholder={p.port} spellCheck={false} />
-              </label>
+              <div className="curlb-field curlb-field--narrow">
+                {/* The label beside the field, tied by id. */}
+                <label className="curlb-field-label" htmlFor="curlb-port">{t("ui.port")}</label>
+                {/* Up and down arrows: whole numbers, 1 to 65535. */}
+                <StepperField value={s.port ?? ""} onValue={(v) => up({ port: v })} min={1} max={65535} integer start={Number(p.port) || undefined} label={t("ui.port")} inputId="curlb-port">
+                  <input id="curlb-port" className="curlb-input" inputMode="numeric" value={s.port ?? ""} onChange={(e) => up({ port: e.target.value })} onKeyDown={stepperKeyDown({ value: s.port ?? "", onValue: (v) => up({ port: v }), min: 1, max: 65535, integer: true, start: Number(p.port) || undefined })} placeholder={p.port} spellCheck={false} />
+                </StepperField>
+              </div>
             )}
             {p.pathKind !== "none" && (
               <label className="curlb-field curlb-field--wide">
@@ -339,18 +350,30 @@ export default function CurlCommandBuilderTool() {
               <span className="curlb-field-label">{t("ui.cacert")}</span>
               <input className="curlb-input" value={s.cacert ?? ""} onChange={(e) => up({ cacert: e.target.value })} placeholder="ca.pem" spellCheck={false} />
             </label>
-            <label className="curlb-field curlb-field--narrow">
-              <span className="curlb-field-label">{t("ui.connectTimeout")}</span>
-              <input className="curlb-input" value={s.connectTimeout ?? ""} onChange={(e) => up({ connectTimeout: e.target.value })} placeholder="5" spellCheck={false} />
-            </label>
-            <label className="curlb-field curlb-field--narrow">
-              <span className="curlb-field-label">{t("ui.maxTime")}</span>
-              <input className="curlb-input" value={s.maxTime ?? ""} onChange={(e) => up({ maxTime: e.target.value })} placeholder="30" spellCheck={false} />
-            </label>
-            <label className="curlb-field curlb-field--narrow">
-              <span className="curlb-field-label">{t("ui.retry")}</span>
-              <input className="curlb-input" value={s.retry ?? ""} onChange={(e) => up({ retry: e.target.value })} placeholder="3" spellCheck={false} />
-            </label>
+            <div className="curlb-field curlb-field--narrow">
+              {/* The label beside the field, tied by id. */}
+              <label className="curlb-field-label" htmlFor="curlb-connectTimeout">{t("ui.connectTimeout")}</label>
+              {/* Up and down arrows: seconds, 0 or more (curl also reads fractions), one a press. */}
+              <StepperField value={s.connectTimeout ?? ""} onValue={(v) => up({ connectTimeout: v })} min={0} label={t("ui.connectTimeout")} inputId="curlb-connectTimeout">
+                <input id="curlb-connectTimeout" className="curlb-input" inputMode="decimal" value={s.connectTimeout ?? ""} onChange={(e) => up({ connectTimeout: e.target.value })} onKeyDown={stepperKeyDown({ value: s.connectTimeout ?? "", onValue: (v) => up({ connectTimeout: v }), min: 0 })} placeholder="5" spellCheck={false} />
+              </StepperField>
+            </div>
+            <div className="curlb-field curlb-field--narrow">
+              {/* The label beside the field, tied by id. */}
+              <label className="curlb-field-label" htmlFor="curlb-maxTime">{t("ui.maxTime")}</label>
+              {/* Up and down arrows: seconds, 0 or more (curl also reads fractions), one a press. */}
+              <StepperField value={s.maxTime ?? ""} onValue={(v) => up({ maxTime: v })} min={0} label={t("ui.maxTime")} inputId="curlb-maxTime">
+                <input id="curlb-maxTime" className="curlb-input" inputMode="decimal" value={s.maxTime ?? ""} onChange={(e) => up({ maxTime: e.target.value })} onKeyDown={stepperKeyDown({ value: s.maxTime ?? "", onValue: (v) => up({ maxTime: v }), min: 0 })} placeholder="30" spellCheck={false} />
+              </StepperField>
+            </div>
+            <div className="curlb-field curlb-field--narrow">
+              {/* The label beside the field, tied by id. */}
+              <label className="curlb-field-label" htmlFor="curlb-retry">{t("ui.retry")}</label>
+              {/* Up and down arrows: a count, 0 or more, one a press. */}
+              <StepperField value={s.retry ?? ""} onValue={(v) => up({ retry: v })} min={0} integer label={t("ui.retry")} inputId="curlb-retry">
+                <input id="curlb-retry" className="curlb-input" inputMode="numeric" value={s.retry ?? ""} onChange={(e) => up({ retry: e.target.value })} onKeyDown={stepperKeyDown({ value: s.retry ?? "", onValue: (v) => up({ retry: v }), min: 0, integer: true })} placeholder="3" spellCheck={false} />
+              </StepperField>
+            </div>
           </div>
           <label className="curlb-check">
             <input type="checkbox" checked={!!s.insecure} onChange={(e) => up({ insecure: e.target.checked })} />

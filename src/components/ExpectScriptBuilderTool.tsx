@@ -26,6 +26,11 @@
 // tools/expect-script-builder/share.ts). An arriving link (useShareArrival)
 // sets the form as the reader would, the fields it does not carry at their
 // defaults, and the page builds the script.
+//
+// No keyboard needed (03/11/2026): the ssh port and the two timeouts have up
+// and down arrows (StepperField), whole numbers inside the engine's ranges
+// (1 to 65535; 1 to LIMITS.maxTimeout seconds). Their labels now
+// stand beside the fields (htmlFor) rather than around them.
 // ============================================================================
 
 import { useMemo, useState } from "react";
@@ -38,6 +43,7 @@ import ShareResultsButton from "@/components/ShareResultsButton"; // the site's 
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import { firstSharePlace } from "@/lib/share/text-secrets"; // the first finding and how many more places, for the popover
 import { BUILDER_ARRIVAL_BASE, BUILDER_SHARE, checkBuilderText, encodeBuilderShare } from "@/lib/tools/expect-script-builder/share"; // this tool's share spec: the form
+import { StepperField, stepperKeyDown } from "@/components/NumberStepper"; // up and down arrows for the port and the timeouts (03/11/2026)
 
 /** The form state the page starts with: the defaults with the Example laid over them. */
 const START: BuilderInput = { ...DEFAULT_INPUT, ...EXAMPLE };
@@ -206,10 +212,14 @@ export default function ExpectScriptBuilderTool() {
             )}
             {/* ssh: the port. */}
             {s.transport === "ssh" && (
-              <label className="curlb-field curlb-field--narrow">
-                <span className="curlb-field-label">{t("field.port")}</span>
-                <input className="curlb-input" value={s.port} aria-invalid={bad("port")} onChange={(e) => up({ port: e.target.value })} placeholder="22" inputMode="numeric" spellCheck={false} autoComplete="off" />
-              </label>
+              <div className="curlb-field curlb-field--narrow">
+                {/* The label beside the field, tied by id. */}
+                <label className="curlb-field-label" htmlFor="esb-port">{t("field.port")}</label>
+                {/* Up and down arrows: whole numbers, 1 to 65535, as the engine checks a port. */}
+                <StepperField value={s.port} onValue={(v) => up({ port: v })} min={1} max={65535} integer start={22} label={t("field.port")} inputId="esb-port">
+                  <input id="esb-port" className="curlb-input" value={s.port} aria-invalid={bad("port")} onChange={(e) => up({ port: e.target.value })} onKeyDown={stepperKeyDown({ value: s.port, onValue: (v) => up({ port: v }), min: 1, max: 65535, integer: true, start: 22 })} placeholder="22" inputMode="numeric" spellCheck={false} autoComplete="off" />
+                </StepperField>
+              </div>
             )}
             {/* Another program: its command line. */}
             {s.transport === "program" && (
@@ -340,14 +350,22 @@ export default function ExpectScriptBuilderTool() {
         <div className="curlb-section">
           <div className="curlb-section-title">{t("sec.run")}</div>
           <div className="curlb-grid">
-            <label className="curlb-field curlb-field--narrow">
-              <span className="curlb-field-label">{t("field.loginTimeout")}</span>
-              <input className="curlb-input" type="number" min={1} max={LIMITS.maxTimeout} value={Number.isFinite(s.loginTimeout) ? s.loginTimeout : ""} aria-invalid={bad("loginTimeout")} onChange={(e) => up({ loginTimeout: e.target.value === "" ? NaN : Number(e.target.value) })} />
-            </label>
-            <label className="curlb-field curlb-field--narrow">
-              <span className="curlb-field-label">{t("field.commandTimeout")}</span>
-              <input className="curlb-input" type="number" min={1} max={LIMITS.maxTimeout} value={Number.isFinite(s.commandTimeout) ? s.commandTimeout : ""} aria-invalid={bad("commandTimeout")} onChange={(e) => up({ commandTimeout: e.target.value === "" ? NaN : Number(e.target.value) })} />
-            </label>
+            <div className="curlb-field curlb-field--narrow">
+              {/* The label beside the field, tied by id. */}
+              <label className="curlb-field-label" htmlFor="esb-loginTimeout">{t("field.loginTimeout")}</label>
+              {/* Up and down arrows: whole seconds, 1 to LIMITS.maxTimeout, as the field's own min and max. */}
+              <StepperField value={Number.isFinite(s.loginTimeout) ? s.loginTimeout : ""} onValue={(v) => up({ loginTimeout: v === "" ? NaN : Number(v) })} min={1} max={LIMITS.maxTimeout} integer label={t("field.loginTimeout")} inputId="esb-loginTimeout">
+                <input id="esb-loginTimeout" className="curlb-input" type="number" min={1} max={LIMITS.maxTimeout} value={Number.isFinite(s.loginTimeout) ? s.loginTimeout : ""} aria-invalid={bad("loginTimeout")} onChange={(e) => up({ loginTimeout: e.target.value === "" ? NaN : Number(e.target.value) })} />
+              </StepperField>
+            </div>
+            <div className="curlb-field curlb-field--narrow">
+              {/* The label beside the field, tied by id. */}
+              <label className="curlb-field-label" htmlFor="esb-commandTimeout">{t("field.commandTimeout")}</label>
+              {/* Up and down arrows: whole seconds, 1 to LIMITS.maxTimeout, as the field's own min and max. */}
+              <StepperField value={Number.isFinite(s.commandTimeout) ? s.commandTimeout : ""} onValue={(v) => up({ commandTimeout: v === "" ? NaN : Number(v) })} min={1} max={LIMITS.maxTimeout} integer label={t("field.commandTimeout")} inputId="esb-commandTimeout">
+                <input id="esb-commandTimeout" className="curlb-input" type="number" min={1} max={LIMITS.maxTimeout} value={Number.isFinite(s.commandTimeout) ? s.commandTimeout : ""} aria-invalid={bad("commandTimeout")} onChange={(e) => up({ commandTimeout: e.target.value === "" ? NaN : Number(e.target.value) })} />
+              </StepperField>
+            </div>
             <label className="curlb-field">
               <span className="curlb-field-label">{t("field.output")}</span>
               <select className="curlb-select" value={s.output} onChange={(e) => up({ output: e.target.value as BuilderInput["output"] })}>

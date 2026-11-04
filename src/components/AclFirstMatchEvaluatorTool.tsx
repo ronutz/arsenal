@@ -11,8 +11,9 @@
 //   1. the list box (Example / Clear, D-83), the scope of what is read and a
 //      link to the ACL article for other platforms;
 //   2. when the text holds several lists, which one to evaluate, and the test
-//      packet (five short fields in a grid that wraps, and the ACK or RST box,
-//      TCP only), each in a headed panel;
+//      packet (five short fields in a grid that wraps, the two ports with up
+//      and down arrows since 03/11/2026, and the ACK or RST box, TCP only),
+//      each in a headed panel;
 //   3. the verdict first, then Share results under it (the reader's next step
 //      after the answer), then the walk with the field that ruled out every
 //      entry above the match, the lint, the entries with each address as
@@ -36,6 +37,7 @@ import { ACL_FIRST_MATCH_SHARE } from "@/lib/tools/acl-first-match-evaluator/sha
 import { analyseAclLocalisable, type AclAddress, type AclReading } from "@/lib/tools/acl-first-match-evaluator/compute"; // the engine, sentences with ids
 import { ACL_VECTORS } from "@/lib/tools/acl-first-match-evaluator/golden-vectors"; // the golden vectors, for the Example (D-83)
 import { engineTexts, type EngineText } from "@/lib/tools/engine-text"; // engine sentences in the page's language
+import { StepperField, stepperKeyDown } from "@/components/NumberStepper"; // up and down arrows for the two port fields (03/11/2026)
 
 /** Nothing to share: a constant, so the button sees no change between renders. */
 const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
@@ -160,7 +162,8 @@ export default function AclFirstMatchEvaluatorTool() {
         )}
         <section className="jwt-panel">
           <h4 className="jwt-panel-title" id="acl-pkt-h">{t("packet.title")}</h4>
-          <div className="panos-traffic" role="group" aria-labelledby="acl-pkt-h">
+          {/* acl-traffic: wider columns than the shared grid, so a port field keeps room beside its arrows (03/11/2026). */}
+          <div className="panos-traffic acl-traffic" role="group" aria-labelledby="acl-pkt-h">
             <label className="panos-traffic-field">
               <span>{t("packet.protocol")}</span>
               <input value={protocol} onChange={(e) => setProtocol(e.target.value)} list="acl-protocols" placeholder={t("packet.protocolPlaceholder")} spellCheck={false} autoComplete="off" autoCapitalize="none" />
@@ -169,18 +172,28 @@ export default function AclFirstMatchEvaluatorTool() {
               <span>{t("packet.source")}</span>
               <input value={source} onChange={(e) => setSource(e.target.value)} placeholder="10.1.20.25" inputMode="decimal" spellCheck={false} autoComplete="off" />
             </label>
-            <label className="panos-traffic-field">
-              <span>{t("packet.sourcePort")}</span>
-              <input value={srcport} onChange={(e) => setSrcport(e.target.value)} placeholder="51514" inputMode="numeric" disabled={!portsApply} spellCheck={false} autoComplete="off" />
-            </label>
+            {/* A port field: its label stands beside it (not around it, or the arrows' names would join the field's). */}
+            <div className="panos-traffic-field">
+              {/* The label, tied to the field by id. */}
+              <label htmlFor="acl-srcport"><span>{t("packet.sourcePort")}</span></label>
+              {/* Up and down arrows, whole numbers 0 to 65535 as the engine reads a port (packet.port), disabled with the field. */}
+              <StepperField value={srcport} onValue={setSrcport} min={0} max={65535} integer label={t("packet.sourcePort")} inputId="acl-srcport" disabled={!portsApply}>
+                <input id="acl-srcport" value={srcport} onChange={(e) => setSrcport(e.target.value)} onKeyDown={stepperKeyDown({ value: srcport, onValue: setSrcport, min: 0, max: 65535, integer: true })} placeholder="51514" inputMode="numeric" disabled={!portsApply} spellCheck={false} autoComplete="off" />
+              </StepperField>
+            </div>
             <label className="panos-traffic-field">
               <span>{t("packet.destination")}</span>
               <input value={destination} onChange={(e) => setDestination(e.target.value)} placeholder="10.1.99.10" inputMode="decimal" spellCheck={false} autoComplete="off" />
             </label>
-            <label className="panos-traffic-field">
-              <span>{t("packet.destinationPort")}</span>
-              <input value={dstport} onChange={(e) => setDstport(e.target.value)} placeholder="22" inputMode="numeric" disabled={!portsApply} spellCheck={false} autoComplete="off" />
-            </label>
+            {/* The destination port, laid out as the source port. */}
+            <div className="panos-traffic-field">
+              {/* The label, tied to the field by id. */}
+              <label htmlFor="acl-dstport"><span>{t("packet.destinationPort")}</span></label>
+              {/* Up and down arrows, 0 to 65535, disabled with the field. */}
+              <StepperField value={dstport} onValue={setDstport} min={0} max={65535} integer label={t("packet.destinationPort")} inputId="acl-dstport" disabled={!portsApply}>
+                <input id="acl-dstport" value={dstport} onChange={(e) => setDstport(e.target.value)} onKeyDown={stepperKeyDown({ value: dstport, onValue: setDstport, min: 0, max: 65535, integer: true })} placeholder="22" inputMode="numeric" disabled={!portsApply} spellCheck={false} autoComplete="off" />
+              </StepperField>
+            </div>
           </div>
           <datalist id="acl-protocols">{PROTOCOL_CHOICES.map((c) => <option key={c} value={c} />)}</datalist>
           <label className="panos-toggle">

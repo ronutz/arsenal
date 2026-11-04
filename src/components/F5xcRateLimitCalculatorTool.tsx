@@ -7,12 +7,22 @@
 // Periods, Burst Multiplier, Mitigation, and a lockout when Block) compute live
 // into the effective rate, burst ceiling, and exact leaky-bucket behavior.
 // Styling reuses the established tool vocabulary (cidr-* input stack, jwt-*
-// result panels, cipher-note); field grid uses inline styles, no new CSS.
+// result panels, cipher-note); the field grid is .rl-grid / .rl-lockout-grid
+// in components.css (03/11/2026: it was inline styles, which cannot narrow to
+// one column on a phone, and the arrows need the room).
 //
 // Share results (2026-11-01, wave 4B): a button under the effective rate
 // builds a link, only when pressed, carrying every field as the calculation
 // reads it (src/lib/tools/f5xc-rate-limit-calculator/share.ts, posture input,
 // a form). An arriving link sets the fields as if typed.
+//
+// Up and down arrows (03/11/2026, PRIME: values set "through the click of a
+// mouse (or press of the touchscreen)"): Number, Periods, Burst Multiplier
+// and the lockout duration each have a decrease and an increase button beside
+// them, bounded below by the engine's own checks (at least 1) and stepping as
+// each field's step attribute does (whole numbers; the burst multiplier 0.1). No upper
+// bound: the engine has none, and a lockout over 48 hours is computed and
+// flagged, which is the point.
 // ============================================================================
 
 import { useCallback, useMemo, useState } from "react";
@@ -26,8 +36,9 @@ import {
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-11-01)
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import { RATE_LIMIT_SHARE } from "@/lib/tools/f5xc-rate-limit-calculator/share"; // this tool's share spec
+// Up and down arrows beside the four number fields (03/11/2026).
+import { StepperField } from "@/components/NumberStepper";
 
-const GRID: React.CSSProperties = { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem", marginTop: "0.75rem" };
 
 export default function F5xcRateLimitCalculatorTool() {
   const t = useTranslations("tools.f5xc-rate-limit-calculator");
@@ -98,12 +109,16 @@ export default function F5xcRateLimitCalculatorTool() {
           </div>
         </div>
 
-        <div style={GRID}>
+        {/* The form: two columns, one on a phone (.rl-grid). */}
+        <div className="rl-grid">
           <div>
             <label className="cidr-label" htmlFor="rl-number">
               {t("number")}
             </label>
-            <input id="rl-number" className="cidr-input mono" type="number" min={1} value={number} onChange={(e) => setNumber(e.target.value)} />
+            {/* Up and down arrows: one request a press, never below 1 (the engine's min-number check). */}
+            <StepperField value={number} onValue={setNumber} min={1} integer label={t("number")} inputId="rl-number">
+              <input id="rl-number" className="cidr-input mono" type="number" min={1} value={number} onChange={(e) => setNumber(e.target.value)} />
+            </StepperField>
           </div>
           <div>
             <label className="cidr-label" htmlFor="rl-perperiod">
@@ -119,13 +134,19 @@ export default function F5xcRateLimitCalculatorTool() {
             <label className="cidr-label" htmlFor="rl-periods">
               {t("periods")}
             </label>
-            <input id="rl-periods" className="cidr-input mono" type="number" min={1} value={periods} onChange={(e) => setPeriods(e.target.value)} />
+            {/* Up and down arrows: one period a press, never below 1 (the engine's min-periods check). */}
+            <StepperField value={periods} onValue={setPeriods} min={1} integer label={t("periods")} inputId="rl-periods">
+              <input id="rl-periods" className="cidr-input mono" type="number" min={1} value={periods} onChange={(e) => setPeriods(e.target.value)} />
+            </StepperField>
           </div>
           <div>
             <label className="cidr-label" htmlFor="rl-burst">
               {t("burst")}
             </label>
-            <input id="rl-burst" className="cidr-input mono" type="number" min={1} step="0.1" value={burst} onChange={(e) => setBurst(e.target.value)} />
+            {/* Up and down arrows: 0.1 a press (the field's own step), never below 1 (the engine's min-burst check). */}
+            <StepperField value={burst} onValue={setBurst} min={1} step={0.1} label={t("burst")} inputId="rl-burst">
+              <input id="rl-burst" className="cidr-input mono" type="number" min={1} step="0.1" value={burst} onChange={(e) => setBurst(e.target.value)} />
+            </StepperField>
           </div>
           <div>
             <label className="cidr-label" htmlFor="rl-mitigation">
@@ -137,12 +158,16 @@ export default function F5xcRateLimitCalculatorTool() {
             </select>
           </div>
           {mitigation === "Block" && (
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem" }}>
+            // The duration and its unit side by side, stacked when the cell is narrow (.rl-lockout-grid).
+            <div className="rl-lockout-grid">
               <div>
                 <label className="cidr-label" htmlFor="rl-lockval">
                   {t("lockout")}
                 </label>
-                <input id="rl-lockval" className="cidr-input mono" type="number" min={1} value={lockoutValue} onChange={(e) => setLockoutValue(e.target.value)} />
+                {/* Up and down arrows: one unit a press, never below 1 (the engine's block-lockout check). */}
+                <StepperField value={lockoutValue} onValue={setLockoutValue} min={1} integer label={t("lockout")} inputId="rl-lockval">
+                  <input id="rl-lockval" className="cidr-input mono" type="number" min={1} value={lockoutValue} onChange={(e) => setLockoutValue(e.target.value)} />
+                </StepperField>
               </div>
               <div>
                 <label className="cidr-label" htmlFor="rl-lockunit">

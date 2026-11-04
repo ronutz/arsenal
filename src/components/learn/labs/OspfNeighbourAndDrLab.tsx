@@ -14,11 +14,17 @@
 // state (Full, 2-Way, stuck, or never neighbours) and the counts. The model is
 // src/lib/labs/ospf-neighbour-and-dr/compute.ts; its checked cases are the
 // golden vectors beside it. Words: "learnLabs.ospf-neighbour-and-dr".
+//
+// Each priority has up and down arrows beside it (PRIME 03/11/2026: values set
+// "through the click of a mouse (or press of the touchscreen)"), 0 to 255 one
+// a press; the Router IDs are addresses and stay typed.
 // ============================================================================
 
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import LabFrame, { LabField, LabSelect } from "./LabFrame";
+// Up and down arrows for the priority fields.
+import { StepperField } from "@/components/NumberStepper";
 import {
   compute,
   DEFAULT_INPUT,
@@ -270,6 +276,8 @@ export default function OspfNeighbourAndDrLab() {
                   <tr key={ROUTER_NAMES[i]}>
                     <th scope="row">{ROUTER_NAMES[i]}</th>
                     <td>
+                      {/* Up and down arrows, whole numbers only: 0 to 255, the 8-bit Router Priority the model accepts, set as if typed. */}
+                      <StepperField value={row.priority} onValue={(v) => setRow(i, "priority", v)} min={0} max={255} step={1} integer label={t("priorityOf", { router: ROUTER_NAMES[i] })} inputId={`${ID}-priority-${i + 1}`}>
                       <input
                         id={`${ID}-priority-${i + 1}`}
                         className="lab-input"
@@ -283,6 +291,7 @@ export default function OspfNeighbourAndDrLab() {
                         value={row.priority}
                         onChange={(e) => setRow(i, "priority", e.target.value)}
                       />
+                      </StepperField>
                     </td>
                     <td>
                       <input

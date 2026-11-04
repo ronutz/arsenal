@@ -22,6 +22,13 @@
 // that carries the open mode: the Build form's fields, or the pasted command
 // (unless the FortiOS check finds a credential in it), with a caution line; an
 // arriving link opens that mode and fills it.
+//
+// Up and down arrows (03/11/2026, PRIME: values set "through the click of a
+// mouse (or press of the touchscreen)"): the port (1 to 65535; it also steps
+// from Arrow Up / Down) and the packet count (from 0, which means "until
+// Ctrl+C"; the field's own min) have a decrease and an increase button beside
+// them. Their labels sit above them rather than wrapping them, so the buttons
+// are not read as part of the field's name.
 // ============================================================================
 
 import { useMemo, useState, type ReactNode } from "react";
@@ -30,6 +37,8 @@ import ShareResultsButton from "@/components/ShareResultsButton"; // the site's 
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import { firstSharePlace } from "@/lib/share/text-secrets"; // the first secret-looking name, for a popover line
 import { FORTIOS_SNIFFER_SHARE, checkSnifferPaste, encodeSniffer } from "@/lib/tools/fortios-sniffer-builder/share"; // this tool's share spec and check
+// Up and down arrows for the port and the packet count (03/11/2026).
+import { StepperField, stepperKeyDown } from "@/components/NumberStepper";
 import {
   runLocalisable,
   buildLocalisable,
@@ -50,6 +59,11 @@ type LiveDecode = { ok: true; value: SnifferResult<EngineText> } | { ok: false; 
 // The one-click example (D-83): a documented FortiOS capture command, so the
 // decode shown matches genuine CLI usage.
 const EXAMPLE = "diagnose sniffer packet any 'host 192.168.1.10 and tcp port 443' 4 0 l";
+
+/** A TCP or UDP port: the port field's arrows stay between these. */
+const PORT_MIN = 1;
+// The largest port number.
+const PORT_MAX = 65535;
 
 /** Map a note kind to the shared panel styling used across tools. */
 function noteClass(kind: SnifferNote["kind"]): string {
@@ -139,6 +153,13 @@ export default function FortiosSnifferBuilderTool() {
 
   // Decoder state.
   const [pasteInput, setPasteInput] = useState("");
+  // The packet count as its field's onChange reads it (typed or stepped): a whole number, never below 0.
+  const setCountFromText = (text: string) => {
+    // A whole number, if any.
+    const n = parseInt(text, 10);
+    // Nothing readable is 0 (until Ctrl+C); a negative is 0 too.
+    setCount(Number.isNaN(n) ? 0 : Math.max(0, n));
+  };
 
   // An arriving share link (2026-11-01): the mode opens and its fields fill (the other mode's keep theirs).
   useShareArrival(FORTIOS_SNIFFER_SHARE, (s) => {
@@ -226,17 +247,23 @@ export default function FortiosSnifferBuilderTool() {
               />
             </label>
 
-            <label className="sniff-field" htmlFor="sn-port">
-              <span className="sniff-field-label">{t("portLabel")}</span>
-              <input
-                id="sn-port"
-                className="cidr-input sniff-in"
-                value={port}
-                onChange={(e) => setPort(e.target.value)}
-                spellCheck={false}
-                placeholder="443"
-              />
-            </label>
+            <div className="sniff-field">
+              {/* The label names the field by its id (it no longer wraps it, so the arrows stay out of its name). */}
+              <label className="sniff-field-label" htmlFor="sn-port">{t("portLabel")}</label>
+              {/* Up and down arrows: one port a press, 1 to 65535; set as typing would. */}
+              <StepperField value={port} onValue={setPort} min={PORT_MIN} max={PORT_MAX} integer label={t("portLabel")} inputId="sn-port">
+                <input
+                  id="sn-port"
+                  className="cidr-input sniff-in"
+                  value={port}
+                  onChange={(e) => setPort(e.target.value)}
+                  // Arrow Up and Down (Page Up and Down: ten) step the port from the keyboard.
+                  onKeyDown={stepperKeyDown({ value: port, onValue: setPort, min: PORT_MIN, max: PORT_MAX, integer: true })}
+                  spellCheck={false}
+                  placeholder="443"
+                />
+              </StepperField>
+            </div>
 
             <label className="sniff-field" htmlFor="sn-proto">
               <span className="sniff-field-label">{t("protoLabel")}</span>
@@ -274,20 +301,22 @@ export default function FortiosSnifferBuilderTool() {
               </select>
             </label>
 
-            <label className="sniff-field" htmlFor="sn-count">
-              <span className="sniff-field-label">{t("countLabel")}</span>
-              <input
-                id="sn-count"
-                type="number"
-                min={0}
-                className="cidr-input sniff-in"
-                value={Number.isFinite(count) ? count : 0}
-                onChange={(e) => {
-                  const n = parseInt(e.target.value, 10);
-                  setCount(Number.isNaN(n) ? 0 : Math.max(0, n));
-                }}
-              />
-            </label>
+            <div className="sniff-field">
+              {/* The label names the field by its id (it no longer wraps it, so the arrows stay out of its name). */}
+              <label className="sniff-field-label" htmlFor="sn-count">{t("countLabel")}</label>
+              {/* Up and down arrows: one packet a press, from 0 (until Ctrl+C); no upper bound (the engine has none). */}
+              <StepperField value={String(Number.isFinite(count) ? count : 0)} onValue={setCountFromText} min={0} integer label={t("countLabel")} inputId="sn-count">
+                <input
+                  id="sn-count"
+                  type="number"
+                  min={0}
+                  className="cidr-input sniff-in"
+                  value={Number.isFinite(count) ? count : 0}
+                  // Typed: the same reading as the arrows.
+                  onChange={(e) => setCountFromText(e.target.value)}
+                />
+              </StepperField>
+            </div>
 
             <label className="sniff-field" htmlFor="sn-ts">
               <span className="sniff-field-label">{t("tsLabel")}</span>

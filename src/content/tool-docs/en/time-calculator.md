@@ -10,6 +10,8 @@ Adding "one month" is calendar arithmetic: a month is 28 to 31 days and a year 3
 
 A timestamp without an offset is read as UTC and the assumption is noted. Add Z or an explicit offset (for example -03:00) and the answer never depends on the machine the tool happens to run on.
 
+Under each instant, a date-and-time picker sets it without typing. A pick keeps the seconds and the offset the field already had, and writes Z (UTC) when it had none; an offset other than Z, or a date alone, is still typed.
+
 ## Share results
 
 Under the result, **Share results** builds a link to this page, only when you press it, that carries the mode and its fields after the `#`, once the page has a result: the two instants for the span between them, or the start, the duration and add or subtract. The other mode's fields are not carried. Instants and durations name nothing of yours. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.

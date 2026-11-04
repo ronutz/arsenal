@@ -55,6 +55,10 @@
 //
 // Web Serial types are not in the ambient lib set; the minimal shapes used are
 // declared locally and every call is feature-detected before use.
+//
+// No keyboard needed (03/11/2026): the paste block's per-line delay has up and
+// down arrows (StepperField), 0 to 2000 ms as the field declares; its label
+// now stands beside the field (htmlFor) rather than around it.
 // ============================================================================
 "use client";
 
@@ -65,6 +69,7 @@ import { detectTokens } from "@/lib/webserial/detectors";
 import { handoffHref } from "@/lib/handoff";
 import { highlight, OS_KEYS, type OsKey } from "@/lib/webserial/highlight";
 import { snippetsFor } from "@/lib/webserial/snippets";
+import { StepperField } from "@/components/NumberStepper"; // up and down arrows for the paste delay (03/11/2026)
 
 // -- Minimal Web Serial typings (feature-detected at runtime) ---------------
 interface SerialPortLike {
@@ -1094,17 +1099,22 @@ export default function DevOtherWebSerialTool() {
               spellCheck={false}
             />
             <div className="ws-paste-controls">
-              <label className="ws-field ws-field--inline">
-                <span>{t("pasteDelay")}</span>
-                <input
-                  type="number"
-                  className="cidr-input ws-delay"
-                  min={0}
-                  max={2000}
-                  value={pasteDelay}
-                  onChange={(e) => setPasteDelay(Number(e.target.value))}
-                />
-              </label>
+              <div className="ws-field ws-field--inline">
+                {/* The label beside the field, tied by id. */}
+                <label htmlFor="ws-delay">{t("pasteDelay")}</label>
+                {/* Up and down arrows: whole milliseconds, 0 to 2000, one a press, as the field's own min and max. */}
+                <StepperField value={pasteDelay} onValue={(v) => setPasteDelay(Number(v))} min={0} max={2000} integer label={t("pasteDelay")} inputId="ws-delay">
+                  <input
+                    id="ws-delay"
+                    type="number"
+                    className="cidr-input ws-delay"
+                    min={0}
+                    max={2000}
+                    value={pasteDelay}
+                    onChange={(e) => setPasteDelay(Number(e.target.value))}
+                  />
+                </StepperField>
+              </div>
               <button type="button" className="b64-copy" onClick={sendBlock} disabled={!block.trim()}>
                 {t("sendBlock")}
               </button>

@@ -16,6 +16,13 @@
 // Share results (2026-10-27): a button under the verdict builds a link that
 // carries every field of the form (named values, defaults included); an
 // arriving link sets the whole form.
+//
+// Up and down arrows (03/11/2026, PRIME: values set "through the click of a
+// mouse (or press of the touchscreen)"): every number field has a decrease and
+// an increase button beside it (src/components/NumberStepper.tsx), bounded by
+// the engine's own BOUNDS and stepping by the field's step; the label now sits
+// above the field instead of wrapping it, so the buttons are not read as part
+// of the field's name, and a hint is tied to its field by aria-describedby.
 // ============================================================================
 
 import { useMemo, useState } from "react";
@@ -31,6 +38,8 @@ import ShareResultsButton from "@/components/ShareResultsButton"; // the site's 
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
 import { POISONING_SHARE } from "@/lib/tools/f5-awaf-learning-poisoning-estimator/share"; // this tool's share spec
+// Up and down arrows beside each number field (03/11/2026).
+import { StepperField } from "@/components/NumberStepper";
 
 // The eye-opener example: an attacker whose IPs sit inside the Trusted range
 // drills with a single session (golden vector "trusted-attacker-is-fast").
@@ -55,6 +64,7 @@ function NumField({
   value,
   onChange,
   min = 0,
+  max,
   step = 1,
   hint,
 }: {
@@ -63,28 +73,62 @@ function NumField({
   value: number;
   onChange: (n: number) => void;
   min?: number;
+  /** The largest value the engine accepts (its BOUNDS), so neither the arrows nor the native spinner pass it. */
+  max?: number;
   step?: number;
   hint?: string;
 }) {
+  // The field's text read as its onChange always read it (decimals only when the step has them; empty is the minimum).
+  const fromText = (text: string) => {
+    // A whole number, or a decimal when the step is finer than 1.
+    const n = step < 1 ? parseFloat(text) : parseInt(text, 10);
+    // Nothing readable: the minimum.
+    onChange(Number.isNaN(n) ? min : n);
+  };
+  // The hint's id, so the field can point at it.
+  const hintId = hint ? `${id}-hint` : undefined;
+  // The label above, the field and its arrows in one row, the hint under them.
   return (
-    <label className="poison-field" htmlFor={id}>
-      <span className="poison-field-label">{label}</span>
-      <input
-        id={id}
-        type="number"
-        className="cidr-input poison-num"
-        value={Number.isFinite(value) ? value : ""}
-        min={min}
-        step={step}
-        onChange={(e) => {
-          const n = step < 1 ? parseFloat(e.target.value) : parseInt(e.target.value, 10);
-          onChange(Number.isNaN(n) ? min : n);
-        }}
-      />
-      {hint && <span className="poison-field-hint">{hint}</span>}
-    </label>
+    <div className="poison-field">
+      {/* The label names the field by its id (it no longer wraps it, so the arrows stay out of the field's name). */}
+      <label className="poison-field-label" htmlFor={id}>{label}</label>
+      {/* Up and down arrows beside the field: one step a press, inside the engine's bounds. */}
+      {/* Whole numbers only where the field reads whole numbers (every step of 1; the rating factor steps by 0.5). */}
+      <StepperField value={Number.isFinite(value) ? String(value) : ""} onValue={fromText} min={min} max={max} step={step} integer={step >= 1} label={label} inputId={id}>
+        <input
+          id={id}
+          type="number"
+          className="cidr-input poison-num"
+          value={Number.isFinite(value) ? value : ""}
+          min={min}
+          // The same upper bound as the arrows (the native spinner and the browser's own check agree with them).
+          max={max}
+          step={step}
+          // The hint, read with the field (it used to sit inside the wrapping label).
+          aria-describedby={hintId}
+          // Typing goes through the same reading as the arrows.
+          onChange={(e) => fromText(e.target.value)}
+        />
+      </StepperField>
+      {/* The hint, tied to the field by its id. */}
+      {hint && <span id={hintId} className="poison-field-hint">{hint}</span>}
+    </div>
   );
 }
+
+// The engine's bounds for each field (src/lib/tools/f5-awaf-learning-poisoning-estimator/compute.ts, BOUNDS): the
+// arrows and the native spinner stop where the engine would clamp.
+const MAX_SOURCES = 1_000_000_000; // BOUNDS.sources.max (untrusted different sources)
+// BOUNDS.sessions.max (untrusted and trusted different sessions).
+const MAX_SESSIONS = 1_000_000_000;
+// BOUNDS.timeHours.max: up to a year.
+const MAX_HOURS = 8760;
+// BOUNDS.ratingFactor.max.
+const MAX_RATING_FACTOR = 1000;
+// BOUNDS.attackerSources.max.
+const MAX_ATTACKER_SOURCES = 10_000_000;
+// BOUNDS.rate.max (requests per source per hour).
+const MAX_RATE = 1_000_000;
 
 export default function F5AwafLearningPoisoningEstimatorTool() {
   const t = useTranslations("tools.f5-awaf-learning-poisoning-estimator");
@@ -162,17 +206,17 @@ export default function F5AwafLearningPoisoningEstimatorTool() {
         </div>
 
         <div className="poison-group">
-          <NumField id="pz-us" label={t("f.untrustedSources")} value={inp.untrustedDifferentSources} onChange={(n) => set("untrustedDifferentSources", n)} min={1} hint={t("f.untrustedSourcesHint")} />
-          <NumField id="pz-usess" label={t("f.untrustedSessions")} value={inp.untrustedDifferentSessions} onChange={(n) => set("untrustedDifferentSessions", n)} min={1} />
-          <NumField id="pz-ts" label={t("f.trustedSessions")} value={inp.trustedDifferentSessions} onChange={(n) => set("trustedDifferentSessions", n)} min={1} hint={t("f.trustedSessionsHint")} />
-          <NumField id="pz-spread" label={t("f.timeSpread")} value={inp.timeSpreadHours} onChange={(n) => set("timeSpreadHours", n)} min={0} />
-          <NumField id="pz-rf" label={t("f.ratingFactor")} value={inp.ratingSlowdownFactor} onChange={(n) => set("ratingSlowdownFactor", n)} min={1} step={0.5} hint={t("f.ratingFactorHint")} />
+          <NumField id="pz-us" label={t("f.untrustedSources")} value={inp.untrustedDifferentSources} onChange={(n) => set("untrustedDifferentSources", n)} min={1} max={MAX_SOURCES} hint={t("f.untrustedSourcesHint")} />
+          <NumField id="pz-usess" label={t("f.untrustedSessions")} value={inp.untrustedDifferentSessions} onChange={(n) => set("untrustedDifferentSessions", n)} min={1} max={MAX_SESSIONS} />
+          <NumField id="pz-ts" label={t("f.trustedSessions")} value={inp.trustedDifferentSessions} onChange={(n) => set("trustedDifferentSessions", n)} min={1} max={MAX_SESSIONS} hint={t("f.trustedSessionsHint")} />
+          <NumField id="pz-spread" label={t("f.timeSpread")} value={inp.timeSpreadHours} onChange={(n) => set("timeSpreadHours", n)} min={0} max={MAX_HOURS} />
+          <NumField id="pz-rf" label={t("f.ratingFactor")} value={inp.ratingSlowdownFactor} onChange={(n) => set("ratingSlowdownFactor", n)} min={1} max={MAX_RATING_FACTOR} step={0.5} hint={t("f.ratingFactorHint")} />
         </div>
 
         <p className="cidr-label poison-subhead">{t("attackerLabel")}</p>
         <div className="poison-group">
-          <NumField id="pz-as" label={t("f.attackerSources")} value={inp.attackerDistinctSources} onChange={(n) => set("attackerDistinctSources", n)} min={1} hint={t("f.attackerSourcesHint")} />
-          <NumField id="pz-rate" label={t("f.rate")} value={inp.requestsPerSourcePerHour} onChange={(n) => set("requestsPerSourcePerHour", n)} min={1} />
+          <NumField id="pz-as" label={t("f.attackerSources")} value={inp.attackerDistinctSources} onChange={(n) => set("attackerDistinctSources", n)} min={1} max={MAX_ATTACKER_SOURCES} hint={t("f.attackerSourcesHint")} />
+          <NumField id="pz-rate" label={t("f.rate")} value={inp.requestsPerSourcePerHour} onChange={(n) => set("requestsPerSourcePerHour", n)} min={1} max={MAX_RATE} />
         </div>
 
         <p className="cidr-privacy"><span className="cidr-lock" aria-hidden="true">●</span> {t("runsLocally")}</p>

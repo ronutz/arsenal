@@ -35,14 +35,25 @@
  * - languageSwitcher: LanguageSwitcher (header)           ~89 B
  * - languageStatus:   LanguageSwitcher fallback notice    ~651 B
  * - search:           Search overlay (header)             ~565 B
- * Total ~1.35 KB vs the former ~423 KB pack.
+ * - stepper:          up and down arrows of numeric fields ~60 B (NumberStepper, any page with a number to set)
+ * Total ~1.4 KB vs the former ~423 KB pack.
  */
 export const GLOBAL_CLIENT_NAMESPACES = [
   "theme",
   "languageSwitcher",
   "languageStatus",
   "search",
+  "stepper",
 ] as const;
+
+/**
+ * Namespaces every <MessageSlice> carries on top of its own (2026-11-03). A nested NextIntlClientProvider REPLACES the
+ * outer provider's messages (use-intl 3.26.5 builds its context from its own `messages` prop alone), so a shared client
+ * control rendered inside a slice cannot reach the global set: the up and down arrows of numeric fields
+ * (NumberStepper, inside tool pages and Learn labs) name themselves from "stepper", which every slice therefore
+ * carries. Keep it tiny: it is inlined once per slice.
+ */
+export const SLICE_CARRIED_NAMESPACES = ["stepper"] as const;
 
 import type { AbstractIntlMessages } from "next-intl";
 

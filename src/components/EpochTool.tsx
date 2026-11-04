@@ -19,6 +19,11 @@
 // and is turned into the page's language by inPageLanguage() (the notes and the
 // weekday name); the format names come from the formatLabel.* messages. The
 // English page reads exactly as before.
+//
+// No keyboard needed (03/11/2026): while the box holds a number, up and down
+// arrows (StepperField, and Arrow Up and Down) step it by one in the unit it
+// was read in (a second, a millisecond...); a date in the box disables them,
+// since a step of "one" means nothing there. Now still fills the box.
 // ============================================================================
 
 import { useMemo, useState } from "react";
@@ -29,6 +34,7 @@ import { inPageLanguage } from "@/lib/tools/engine-text-page"; // a whole readin
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import { EPOCH_SHARE, encodeEpochShare } from "@/lib/tools/epoch/share"; // this tool's share spec: the box as typed
+import { StepperField, stepperKeyDown } from "@/components/NumberStepper"; // up and down arrows for a timestamp (03/11/2026)
 
 type Result = { ok: true; data: EpochAnalysis } | { ok: false; code: string };
 
@@ -88,6 +94,9 @@ export default function EpochTool() {
   // What Share results carries: the box, once the page has a reading (memoised).
   const share = useMemo(() => encodeEpochShare({ input }, !!result?.ok), [input, result]); // the encoding
 
+  // The arrows step a timestamp (a whole or decimal number, signed); a date or anything else leaves them disabled.
+  const stepsAsNumber = input.trim() === "" || /^-?\d+(\.\d+)?$/.test(input.trim());
+
   const errMsg = (code: string): string => {
     const known = ["empty", "invalid", "tooLong", "outOfRange"];
     return known.includes(code) ? t(`err_${code}`) : t("err_invalid");
@@ -106,18 +115,23 @@ export default function EpochTool() {
           </div>
         </div>
         <div className="epoch-input-wrap">
-          <input
-            id="epoch-input"
-            className="cidr-input mono saml-textarea json-input epoch-input"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder={t("inputPlaceholder")}
-            autoComplete="off"
-            autoCorrect="off"
-            autoCapitalize="off"
-            spellCheck={false}
-            aria-describedby="epoch-privacy"
-          />
+          {/* Up and down arrows: one unit a press while the box holds a number (no bounds: the engine checks the range). */}
+          <StepperField value={input.trim()} onValue={setInput} label={t("inputLabel")} inputId="epoch-input" disabled={!stepsAsNumber} className="epoch-num">
+            <input
+              id="epoch-input"
+              className="cidr-input mono saml-textarea json-input epoch-input"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              // Arrow Up and Down step a timestamp by one; in a date they keep their usual caret moves.
+              onKeyDown={(e) => { if (stepsAsNumber) stepperKeyDown({ value: input.trim(), onValue: setInput })(e); }}
+              placeholder={t("inputPlaceholder")}
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="off"
+              spellCheck={false}
+              aria-describedby="epoch-privacy"
+            />
+          </StepperField>
           <button
             type="button"
             className="epoch-now-btn"

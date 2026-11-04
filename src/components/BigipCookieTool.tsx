@@ -12,7 +12,9 @@
 //
 // ENCODE: enter a pool member address + port (+ optional route domain) and get
 // the cookie value back - the inverse operation, useful for crafting or
-// verifying a persistence value during development.
+// verifying a persistence value during development. The port and the route
+// domain have up and down arrows (03/11/2026), 0 to 65535 as the encoder
+// accepts them.
 //
 // Everything runs IN THE BROWSER via the local module - it never contacts a
 // BIG-IP and never decrypts anything. All output is escaped through React.
@@ -30,6 +32,7 @@ import ShareResultsButton from "@/components/ShareResultsButton"; // the site's 
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
 import { BIGIP_COOKIE_SHARE, encodeCookieShare } from "@/lib/tools/f5-bigip-persistence-cookie/share"; // this tool's share spec
+import { StepperField, stepperKeyDown } from "@/components/NumberStepper"; // up and down arrows for the port and the route domain (03/11/2026)
 import {
   run,
   encodeBigipCookie,
@@ -135,12 +138,26 @@ export default function BigipCookieTool() {
     encode(e.target.value, encPort, encRd);
   }
   function onPort(e: React.ChangeEvent<HTMLInputElement>) {
-    setEncPort(e.target.value);
-    encode(encAddr, e.target.value, encRd);
+    // The typed text, set as the arrows set it.
+    setPort(e.target.value);
+  }
+  /** Set the port's text and encode again (typing and the arrows alike). */
+  function setPort(v: string) {
+    // The field's text.
+    setEncPort(v);
+    // The cookie for it.
+    encode(encAddr, v, encRd);
   }
   function onRd(e: React.ChangeEvent<HTMLInputElement>) {
-    setEncRd(e.target.value);
-    encode(encAddr, encPort, e.target.value);
+    // The typed text, set as the arrows set it.
+    setRd(e.target.value);
+  }
+  /** Set the route domain's text and encode again (typing and the arrows alike). */
+  function setRd(v: string) {
+    // The field's text.
+    setEncRd(v);
+    // The cookie for it.
+    encode(encAddr, encPort, v);
   }
 
   const reason = (r: { code: string; value?: string }) =>
@@ -310,31 +327,41 @@ export default function BigipCookieTool() {
               <label className="cidr-label" htmlFor="bigip-enc-port">
                 {t("encode.portLabel")}
               </label>
-              <input
-                id="bigip-enc-port"
-                className="cidr-input mono"
-                inputMode="numeric"
-                value={encPort}
-                onChange={onPort}
-                placeholder="443"
-                autoComplete="off"
-                spellCheck={false}
-              />
+              {/* Up and down arrows: 0 to 65535, the encoder's port bound. */}
+              <StepperField value={encPort} onValue={setPort} min={0} max={65535} integer label={t("encode.portLabel")} inputId="bigip-enc-port">
+                <input
+                  id="bigip-enc-port"
+                  className="cidr-input mono"
+                  inputMode="numeric"
+                  value={encPort}
+                  onChange={onPort}
+                  // Arrow Up and Down step the port from the keyboard.
+                  onKeyDown={stepperKeyDown({ value: encPort, onValue: setPort, min: 0, max: 65535, integer: true })}
+                  placeholder="443"
+                  autoComplete="off"
+                  spellCheck={false}
+                />
+              </StepperField>
             </div>
             <div className="cidr-input-row">
               <label className="cidr-label" htmlFor="bigip-enc-rd">
                 {t("encode.routeDomainLabel")}
               </label>
-              <input
-                id="bigip-enc-rd"
-                className="cidr-input mono"
-                inputMode="numeric"
-                value={encRd}
-                onChange={onRd}
-                placeholder={t("encode.routeDomainPlaceholder")}
-                autoComplete="off"
-                spellCheck={false}
-              />
+              {/* Up and down arrows: 0 to 65535, the encoder's route-domain bound. */}
+              <StepperField value={encRd} onValue={setRd} min={0} max={65535} integer label={t("encode.routeDomainLabel")} inputId="bigip-enc-rd">
+                <input
+                  id="bigip-enc-rd"
+                  className="cidr-input mono"
+                  inputMode="numeric"
+                  value={encRd}
+                  onChange={onRd}
+                  // Arrow Up and Down step the route domain from the keyboard.
+                  onKeyDown={stepperKeyDown({ value: encRd, onValue: setRd, min: 0, max: 65535, integer: true })}
+                  placeholder={t("encode.routeDomainPlaceholder")}
+                  autoComplete="off"
+                  spellCheck={false}
+                />
+              </StepperField>
             </div>
           </div>
           <p className="cidr-privacy">

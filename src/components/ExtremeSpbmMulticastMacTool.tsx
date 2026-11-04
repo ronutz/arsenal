@@ -6,6 +6,9 @@
 // arrives with - and the workings are shown either way, since the point is
 // that the address is DERIVED rather than assigned.
 // House CSS classes only (verified); D-83 Example/Clear.
+// No keyboard needed (03/11/2026): the I-SID has up and down arrows, 0 to
+// 16,777,215 (24 bits), in the base it was typed in (0x64 up is 0x65); the
+// nickname and the MAC address stay typed (identifiers, not quantities).
 // ============================================================================
 
 import { useMemo, useState } from "react"; // state, and the share encoding memoised
@@ -19,6 +22,10 @@ import ShareResultsButton from "@/components/ShareResultsButton"; // the site's 
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // a shared link fills the page as typing would
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is given
 import { SPBM_MAC_SHARE } from "@/lib/tools/extreme-spbm-multicast-mac/share"; // this tool's share spec: the job's fields as typed
+import { StepperField, stepperKeyDown } from "@/components/NumberStepper"; // up and down arrows for the I-SID (03/11/2026)
+
+/** The largest I-SID, 24 bits (ISID_MAX in compute.ts). */
+const ISID_MAX = 0xffffff; // 16,777,215
 
 /** Golden-vector-faithful sample: the VOSS user guide's own worked example. */
 const EXAMPLE_NICKNAME = "0.00.10";
@@ -69,6 +76,22 @@ export default function ExtremeSpbmMulticastMacTool() {
   }
 
   // Share results (2026-11-01): the fields of the job the answer came from (the address, or the nickname and I-SID).
+  /** Set the I-SID's text, clear the decode field and build again (typing and the arrows alike). */
+  function setIsidText(v: string) {
+    // The field's text.
+    setIsid(v);
+    // The other job's field empties, as typing here always did.
+    setMac("");
+    // The address for it.
+    forward(nickname, v);
+  }
+  // The I-SID as typed in hexadecimal ("0x64"), which the arrows step as a number and write back in the same base.
+  const isidHex = /^0x[0-9a-f]{1,6}$/i.test(isid.trim()); // the parser's hex form
+  // The number the arrows step: the hex value in decimal, or the text itself.
+  const isidStep = isidHex ? String(parseInt(isid.trim().slice(2), 16)) : isid; // "100"
+  // A stepped I-SID, in the base it was typed in.
+  const setIsidStepped = (v: string) => setIsidText(isidHex ? "0x" + Number(v).toString(16) : v); // "0x65" or "101"
+
   const share = useMemo<ShareEncoding>(() => {
     if (!result) return NOTHING; // no answer yet
     return result.direction === "reverse" ? SPBM_MAC_SHARE.encode({ mode: "decode", mac }) : SPBM_MAC_SHARE.encode({ mode: "build", nickname, isid }); // the job's fields
@@ -101,18 +124,22 @@ export default function ExtremeSpbmMulticastMacTool() {
         <label className="cidr-label" htmlFor="spbm-isid">
           {t("isidLabel")}
         </label>
-        <input
-          id="spbm-isid"
-          className="cidr-input mono"
-          spellCheck={false}
-          value={isid}
-          placeholder="100"
-          onChange={(e) => {
-            setIsid(e.target.value);
-            setMac("");
-            forward(nickname, e.target.value);
-          }}
-        />
+        {/* Up and down arrows: 0 to 16,777,215, one a press, written back in the base typed. */}
+        <StepperField value={isidStep} onValue={setIsidStepped} min={0} max={ISID_MAX} integer label={t("isidLabel")} inputId="spbm-isid">
+          <input
+            id="spbm-isid"
+            className="cidr-input mono"
+            spellCheck={false}
+            value={isid}
+            placeholder="100"
+            onChange={(e) => {
+              // The typed text, set and built as the arrows do.
+              setIsidText(e.target.value);
+            }}
+            // Arrow Up and Down step the I-SID from the keyboard.
+            onKeyDown={stepperKeyDown({ value: isidStep, onValue: setIsidStepped, min: 0, max: ISID_MAX, integer: true })}
+          />
+        </StepperField>
       </div>
 
       <div className="ztc-result">

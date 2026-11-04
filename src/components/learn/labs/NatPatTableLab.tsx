@@ -15,11 +15,15 @@
 // behaviours side by side. The model is src/lib/labs/nat-pat-table/compute.ts;
 // its checked cases are the golden vectors beside it. Words:
 // "learnLabs.nat-pat-table".
+// The two port inputs carry up and down arrows, one port a press, 1024 to
+// 65535; the first port never passes the last, nor the last the first.
 // ============================================================================
 
 import { Fragment, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import LabFrame, { LabField, LabSelect } from "./LabFrame";
+// Up and down arrows beside the two port inputs.
+import { StepperField } from "@/components/NumberStepper";
 import {
   compute,
   DEFAULT_INPUT,
@@ -117,6 +121,12 @@ export default function NatPatTableLab() {
     // Anything else is a bug and must surface.
     else throw e;
   }
+  /** A port field's value when it holds a valid port, else null (so the other field's bound is left alone). */
+  const portOrNull = (n: number): number | null => (Number.isInteger(n) && n >= MIN_PORT && n <= MAX_PORT ? n : null);
+  // The first port, when valid: the last port's floor.
+  const firstNow = portOrNull(input.first);
+  // The last port, when valid: the first port's ceiling.
+  const lastNow = portOrNull(input.last);
   // The refusal, worded for the reader.
   const errText = err === "bad-port" ? t("errorPort", { min: MIN_PORT, max: MAX_PORT }) : err === "bad-range" ? t("errorRange") : t("errorChoice");
 
@@ -261,10 +271,18 @@ export default function NatPatTableLab() {
             <LabSelect id={`${ID}-addresses`} value={form.addresses} options={addressOptions} onChange={(v) => setForm({ ...form, addresses: v })} />
           </LabField>
           <LabField id={`${ID}-first`} label={t("first")}>
-            <input id={`${ID}-first`} className="lab-input" type="number" inputMode="numeric" min={MIN_PORT} max={MAX_PORT} step={1} value={form.first} aria-invalid={err === "bad-port" || err === "bad-range" ? "true" : undefined} onChange={(e) => setForm({ ...form, first: e.target.value })} />
+            {/* Arrows: one port a press, from 1024 up to the last port (when it is a valid one), so the range never turns over. */}
+            <StepperField value={form.first} onValue={(v) => setForm((f) => ({ ...f, first: v }))} min={MIN_PORT} max={lastNow ?? MAX_PORT} step={1} label={t("first")} inputId={`${ID}-first`}>
+              {/* The native ceiling follows the last port too, so the browser's own arrow keys agree. */}
+              <input id={`${ID}-first`} className="lab-input" type="number" inputMode="numeric" min={MIN_PORT} max={lastNow ?? MAX_PORT} step={1} value={form.first} aria-invalid={err === "bad-port" || err === "bad-range" ? "true" : undefined} onChange={(e) => setForm({ ...form, first: e.target.value })} />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-last`} label={t("last")}>
-            <input id={`${ID}-last`} className="lab-input" type="number" inputMode="numeric" min={MIN_PORT} max={MAX_PORT} step={1} value={form.last} aria-invalid={err === "bad-port" || err === "bad-range" ? "true" : undefined} onChange={(e) => setForm({ ...form, last: e.target.value })} />
+            {/* Arrows: one port a press, from the first port (when valid) up to 65535. */}
+            <StepperField value={form.last} onValue={(v) => setForm((f) => ({ ...f, last: v }))} min={firstNow ?? MIN_PORT} max={MAX_PORT} step={1} label={t("last")} inputId={`${ID}-last`}>
+              {/* The native floor follows the first port. */}
+              <input id={`${ID}-last`} className="lab-input" type="number" inputMode="numeric" min={firstNow ?? MIN_PORT} max={MAX_PORT} step={1} value={form.last} aria-invalid={err === "bad-port" || err === "bad-range" ? "true" : undefined} onChange={(e) => setForm({ ...form, last: e.target.value })} />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-mapping`} label={t("mapping")}>
             <LabSelect id={`${ID}-mapping`} value={form.mapping} options={mappingOptions} onChange={(v) => setForm({ ...form, mapping: v as Mapping })} />

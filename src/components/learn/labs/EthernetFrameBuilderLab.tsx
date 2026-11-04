@@ -13,11 +13,14 @@
 // second at line rate and the packet's share of the wire time. The model is
 // src/lib/labs/ethernet-frame-builder/compute.ts; its checked cases are the
 // golden vectors beside it. Words: "learnLabs.ethernet-frame-builder".
+// The VID and the packet size carry up and down arrows; the MAC stays typed.
 // ============================================================================
 
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import LabFrame, { LabField, LabSelect } from "./LabFrame";
+// Up and down arrows beside the VID and the packet size.
+import { StepperField } from "@/components/NumberStepper";
 import {
   compute,
   DEFAULT_INPUT,
@@ -214,13 +217,19 @@ export default function EthernetFrameBuilderLab() {
             <LabSelect id={`${ID}-tag`} value={form.tagged} options={tagOptions} onChange={(v) => setForm({ ...form, tagged: v as "yes" | "no" })} />
           </LabField>
           <LabField id={`${ID}-vid`} label={t("vid")}>
-            <input id={`${ID}-vid`} className="lab-input" type="number" inputMode="decimal" min={1} max={4094} step={1} value={form.vid} disabled={form.tagged === "no"} aria-invalid={err === "bad-vid" ? "true" : undefined} onChange={(e) => setForm({ ...form, vid: e.target.value })} />
+            {/* Arrows: one VLAN a press, 1 to 4094 (0 and 4095 are reserved); disabled with the field when untagged. */}
+            <StepperField value={form.vid} onValue={(v) => setForm((f) => ({ ...f, vid: v }))} min={1} max={4094} step={1} label={t("vid")} inputId={`${ID}-vid`} disabled={form.tagged === "no"}>
+              <input id={`${ID}-vid`} className="lab-input" type="number" inputMode="decimal" min={1} max={4094} step={1} value={form.vid} disabled={form.tagged === "no"} aria-invalid={err === "bad-vid" ? "true" : undefined} onChange={(e) => setForm({ ...form, vid: e.target.value })} />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-protocol`} label={t("protocol")}>
             <LabSelect id={`${ID}-protocol`} value={form.protocol} options={protocolOptions} onChange={(v) => setForm({ ...form, protocol: v as Protocol })} />
           </LabField>
           <LabField id={`${ID}-packet`} label={t("packet")}>
-            <input id={`${ID}-packet`} className="lab-input" type="number" inputMode="decimal" min={1} max={MAX_PAYLOAD} step={1} value={form.packet} aria-invalid={err === "bad-packet" ? "true" : undefined} onChange={(e) => setForm({ ...form, packet: e.target.value })} />
+            {/* Arrows: one octet a press, 1 to 1,500 (below 46 the model pads). */}
+            <StepperField value={form.packet} onValue={(v) => setForm((f) => ({ ...f, packet: v }))} min={1} max={MAX_PAYLOAD} step={1} label={t("packet")} inputId={`${ID}-packet`}>
+              <input id={`${ID}-packet`} className="lab-input" type="number" inputMode="decimal" min={1} max={MAX_PAYLOAD} step={1} value={form.packet} aria-invalid={err === "bad-packet" ? "true" : undefined} onChange={(e) => setForm({ ...form, packet: e.target.value })} />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-rate`} label={t("rate")}>
             <LabSelect id={`${ID}-rate`} value={form.rate} options={rateOptions} onChange={(v) => setForm({ ...form, rate: v as Rate })} />

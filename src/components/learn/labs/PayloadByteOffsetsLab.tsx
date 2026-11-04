@@ -14,11 +14,17 @@
 // the collect memory. The model is src/lib/labs/payload-byte-offsets/compute.ts;
 // its checked cases are the golden vectors beside it.
 // Words: "learnLabs.payload-byte-offsets".
+//
+// The two number fields have up and down arrows beside them (PRIME 03/11/2026:
+// values set "through the click of a mouse (or press of the touchscreen)"),
+// one KiB or one connection a press, inside the model's bounds.
 // ============================================================================
 
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import LabFrame, { LabField } from "./LabFrame";
+// Up and down arrows for the two number fields.
+import { StepperField } from "@/components/NumberStepper";
 import { compute, DEFAULT_INPUT, EXAMPLE_INPUT, MAX_COLLECT_KIB, MAX_CONNECTIONS, MAX_TEXT_CODE_POINTS, PayloadError, type PayloadErrorCode, type PayloadInput, type PayloadResult } from "@/lib/labs/payload-byte-offsets/compute";
 
 /** The lab's id: its namespace, its anchor and its element ids. */
@@ -138,10 +144,16 @@ export default function PayloadByteOffsetsLab() {
             <input id={`${ID}-find`} className="lab-input" type="text" value={form.find} aria-invalid={err === "too-long" || err === "bad-text" ? "true" : undefined} onChange={(e) => setForm({ ...form, find: e.target.value })} />
           </LabField>
           <LabField id={`${ID}-collect`} label={t("collect")}>
-            <input id={`${ID}-collect`} className="lab-input" type="number" inputMode="decimal" min={1} max={MAX_COLLECT_KIB} step={1} value={form.collectKiB} aria-invalid={err === "bad-collect" ? "true" : undefined} onChange={(e) => setForm({ ...form, collectKiB: e.target.value })} />
+            {/* Up and down arrows, whole numbers only: one KiB a press, 1 to the model's MAX_COLLECT_KIB, the field set as if typed. */}
+            <StepperField value={form.collectKiB} onValue={(v) => setForm((f) => ({ ...f, collectKiB: v }))} min={1} max={MAX_COLLECT_KIB} step={1} integer label={t("collect")} inputId={`${ID}-collect`}>
+              <input id={`${ID}-collect`} className="lab-input" type="number" inputMode="decimal" min={1} max={MAX_COLLECT_KIB} step={1} value={form.collectKiB} aria-invalid={err === "bad-collect" ? "true" : undefined} onChange={(e) => setForm({ ...form, collectKiB: e.target.value })} />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-connections`} label={t("connections")}>
-            <input id={`${ID}-connections`} className="lab-input" type="number" inputMode="decimal" min={1} max={MAX_CONNECTIONS} step={1} value={form.connections} aria-invalid={err === "bad-connections" ? "true" : undefined} onChange={(e) => setForm({ ...form, connections: e.target.value })} />
+            {/* Up and down arrows, whole numbers only: one connection a press, 1 to the model's MAX_CONNECTIONS, the field set as if typed. */}
+            <StepperField value={form.connections} onValue={(v) => setForm((f) => ({ ...f, connections: v }))} min={1} max={MAX_CONNECTIONS} step={1} integer label={t("connections")} inputId={`${ID}-connections`}>
+              <input id={`${ID}-connections`} className="lab-input" type="number" inputMode="decimal" min={1} max={MAX_CONNECTIONS} step={1} value={form.connections} aria-invalid={err === "bad-connections" ? "true" : undefined} onChange={(e) => setForm({ ...form, connections: e.target.value })} />
+            </StepperField>
           </LabField>
         </>
       }

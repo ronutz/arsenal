@@ -11,7 +11,8 @@
 // whether the authority answers, serve-stale); the result is a table of the
 // three answers a client would get at that moment, from the zone's own server
 // and from two resolvers that cached the name 20 seconds apart, with a verdict
-// on whether they agree. The model is src/lib/labs/dns-two-caches/compute.ts;
+// on whether they agree. Both number inputs carry up and down arrows (one
+// second a press). The model is src/lib/labs/dns-two-caches/compute.ts;
 // its checked cases are the golden vectors beside it.
 // Words: "learnLabs.dns-two-caches".
 // ============================================================================
@@ -19,6 +20,8 @@
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import LabFrame, { LabField, LabSelect } from "./LabFrame";
+// Up and down arrows beside the two number inputs.
+import { StepperField } from "@/components/NumberStepper";
 import {
   CHANGE_AT,
   compute,
@@ -178,10 +181,16 @@ export default function DnsTwoCachesLab() {
       controls={
         <>
           <LabField id={`${ID}-ttl`} label={t("ttl")}>
-            <input id={`${ID}-ttl`} className="lab-input" type="number" inputMode="decimal" min={1} max={MAX_TTL} step={1} value={form.ttl} aria-invalid={err === "bad-ttl" ? "true" : undefined} onChange={(e) => setForm({ ...form, ttl: e.target.value })} />
+            {/* Arrows: one second a press, 1 to 604,800 (a week, the model's ceiling). */}
+            <StepperField value={form.ttl} onValue={(v) => setForm((f) => ({ ...f, ttl: v }))} min={1} max={MAX_TTL} step={1} label={t("ttl")} inputId={`${ID}-ttl`}>
+              <input id={`${ID}-ttl`} className="lab-input" type="number" inputMode="decimal" min={1} max={MAX_TTL} step={1} value={form.ttl} aria-invalid={err === "bad-ttl" ? "true" : undefined} onChange={(e) => setForm({ ...form, ttl: e.target.value })} />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-now`} label={t("now")}>
-            <input id={`${ID}-now`} className="lab-input" type="number" inputMode="decimal" min={FILLED_B} max={MAX_NOW} step={1} value={form.now} aria-invalid={err === "bad-now" ? "true" : undefined} onChange={(e) => setForm({ ...form, now: e.target.value })} />
+            {/* Arrows: one second a press, from the second resolver's fill (20 s) to a week. */}
+            <StepperField value={form.now} onValue={(v) => setForm((f) => ({ ...f, now: v }))} min={FILLED_B} max={MAX_NOW} step={1} label={t("now")} inputId={`${ID}-now`}>
+              <input id={`${ID}-now`} className="lab-input" type="number" inputMode="decimal" min={FILLED_B} max={MAX_NOW} step={1} value={form.now} aria-invalid={err === "bad-now" ? "true" : undefined} onChange={(e) => setForm({ ...form, now: e.target.value })} />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-change`} label={t("change")}>
             <LabSelect id={`${ID}-change`} value={form.change} options={changeOptions} onChange={(v) => setForm({ ...form, change: v as Change })} />

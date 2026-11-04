@@ -14,11 +14,17 @@
 // make the page slow. The model is src/lib/labs/regex-partitions/compute.ts;
 // its checked cases are the golden vectors beside it.
 // Words: "learnLabs.regex-partitions".
+//
+// The number input has up and down arrows beside it (PRIME 03/11/2026: values
+// set "through the click of a mouse (or press of the touchscreen)"), one a a
+// press, inside the model's MIN_LENGTH to MAX_LENGTH.
 // ============================================================================
 
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import LabFrame, { LabField } from "./LabFrame";
+// Up and down arrows for the length field.
+import { StepperField } from "@/components/NumberStepper";
 import { compute, DEFAULT_INPUT, EXAMPLE_INPUT, MAX_LENGTH, MIN_LENGTH, RegexPartitionsError, type RegexPartitionsResult } from "@/lib/labs/regex-partitions/compute";
 
 /** The lab's id: its namespace, its anchor and its element ids. */
@@ -108,7 +114,10 @@ export default function RegexPartitionsLab() {
       labId={ID}
       controls={
         <LabField id={`${ID}-length`} label={t("length")}>
-          <input id={`${ID}-length`} className="lab-input" type="number" inputMode="decimal" min={MIN_LENGTH} max={MAX_LENGTH} step={1} value={length} aria-invalid={r ? undefined : "true"} onChange={(e) => setLength(e.target.value)} />
+          {/* Up and down arrows, whole numbers only: one a a press, inside the model's bounds, the field set as if typed. */}
+          <StepperField value={length} onValue={setLength} min={MIN_LENGTH} max={MAX_LENGTH} step={1} integer label={t("length")} inputId={`${ID}-length`}>
+            <input id={`${ID}-length`} className="lab-input" type="number" inputMode="decimal" min={MIN_LENGTH} max={MAX_LENGTH} step={1} value={length} aria-invalid={r ? undefined : "true"} onChange={(e) => setLength(e.target.value)} />
+          </StepperField>
         </LabField>
       }
       result={r ? resultBlock(r) : <p className="lab-error">{t("errorLength", { min: MIN_LENGTH, max: MAX_LENGTH })}</p>}

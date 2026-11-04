@@ -15,11 +15,16 @@
 // step naming who stays and who drops out, then the verdict. The model is
 // src/lib/labs/bigip-vs-precedence/compute.ts; its checked cases are the golden
 // vectors beside it. Words: "learnLabs.bigip-vs-precedence".
+// Every port field (each virtual server's and the packet's) carries up and
+// down arrows, 1 to 65535; a virtual server's port also has a "*" button that
+// switches it to every port and, pressed again, back to the number it had.
 // ============================================================================
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import LabFrame, { LabField, LabSelect } from "./LabFrame";
+// Up and down arrows for the port fields, and the arrow keys for those text fields.
+import { StepperField, stepperKeyDown } from "@/components/NumberStepper";
 import {
   compute,
   DEFAULT_INPUT,
@@ -39,6 +44,10 @@ import {
 
 /** The lab's id: its namespace, its anchor and its element ids. */
 const ID = "bigip-vs-precedence";
+/** The lowest port the model accepts (0 is refused). */
+const MIN_PORT = 1;
+/** The highest port. */
+const MAX_PORT = 65535;
 
 /** A deep copy of an input, so the form never shares rows with the model's constants. */
 function copyOf(i: VsPrecedenceInput): VsPrecedenceInput {
@@ -91,6 +100,26 @@ export default function BigipVsPrecedenceLab() {
     setInput({ ...input, virtuals: input.virtuals.map((v, j) => (j === i ? { ...v, [field]: value } : v)) });
   /** Set one packet field. */
   const setPacket = (field: keyof PacketInput, value: string) => setInput({ ...input, packet: { ...input.packet, [field]: value } });
+  /** The arrows' and arrow keys' settings for a port field: 1 to 65535, one a press, set as if typed. */
+  const portStepper = (value: string, onValue: (v: string) => void) => ({ value, onValue, min: MIN_PORT, max: MAX_PORT, step: 1 });
+  // The number each virtual server's port held before its "*" button was pressed, by row, so a second press restores it.
+  const numberBeforeAny = useRef<Record<number, string>>({});
+  /** The "*" button: a numbered port becomes "*"; "*" becomes the number it was (or the packet's port, when it never had one here). */
+  const toggleAnyPort = (i: number) => {
+    // The port as it stands.
+    const now = input.virtuals[i].port;
+    // Not yet "*": remember the number and switch to every port.
+    if (now.trim() !== "*") {
+      // Kept for the way back.
+      numberBeforeAny.current[i] = now;
+      // Every port.
+      setCell(i, "port", "*");
+      // Done.
+      return;
+    }
+    // Already "*": back to the remembered number, else the port the packet is sent to.
+    setCell(i, "port", numberBeforeAny.current[i] ?? input.packet.port);
+  };
 
   // The refusal, worded for the reader.
   const errText = (e: VsPrecedenceError): string => {
@@ -269,19 +298,38 @@ export default function BigipVsPrecedenceLab() {
                       />
                     </td>
                     <td>
-                      <input
-                        id={`${ID}-port-${i + 1}`}
-                        className="lab-input mono"
-                        type="text"
-                        inputMode="numeric"
-                        autoComplete="off"
-                        spellCheck={false}
-                        size={5}
-                        aria-label={t("portOf", { vs: vs(i) })}
-                        aria-invalid={badCell(i, "port") ? "true" : undefined}
-                        value={row.port}
-                        onChange={(e) => setCell(i, "port", e.target.value)}
-                      />
+                      {/* The port with its arrows, then the "*" (every port) button, on one row. */}
+                      <div className="lab-port-cell">
+                        {/* Arrows: one port a press, 1 to 65535; from "*" either arrow starts at 1. */}
+                        <StepperField {...portStepper(row.port, (v) => setCell(i, "port", v))} label={t("portOf", { vs: vs(i) })} inputId={`${ID}-port-${i + 1}`}>
+                          <input
+                            id={`${ID}-port-${i + 1}`}
+                            className="lab-input mono"
+                            type="text"
+                            inputMode="numeric"
+                            autoComplete="off"
+                            spellCheck={false}
+                            size={5}
+                            aria-label={t("portOf", { vs: vs(i) })}
+                            aria-invalid={badCell(i, "port") ? "true" : undefined}
+                            value={row.port}
+                            onChange={(e) => setCell(i, "port", e.target.value)}
+                            // Arrow Up and Down (Page Up and Down for ten) step the port from the keyboard.
+                            onKeyDown={stepperKeyDown(portStepper(row.port, (v) => setCell(i, "port", v)))}
+                          />
+                        </StepperField>
+                        {/* Pressed while the virtual server listens on every port; named for its row. */}
+                        <button
+                          type="button"
+                          className="lab-port-any mono"
+                          aria-pressed={row.port.trim() === "*"}
+                          aria-label={t("portAnyOf", { vs: vs(i) })}
+                          title={t("portAnyOf", { vs: vs(i) })}
+                          onClick={() => toggleAnyPort(i)}
+                        >
+                          *
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -316,23 +364,38 @@ export default function BigipVsPrecedenceLab() {
             />
           </LabField>
           <LabField id={`${ID}-packet-port`} label={t("packetPort")}>
-            <input
-              id={`${ID}-packet-port`}
-              className="lab-input mono"
-              type="text"
-              inputMode="numeric"
-              autoComplete="off"
-              spellCheck={false}
-              aria-invalid={badPacket("port") ? "true" : undefined}
-              value={input.packet.port}
-              onChange={(e) => setPacket("port", e.target.value)}
-            />
+            {/* Arrows: one port a press, 1 to 65535 (a packet always has a port, so no "*" here). */}
+            <StepperField {...portStepper(input.packet.port, (v) => setPacket("port", v))} label={t("packetPort")} inputId={`${ID}-packet-port`}>
+              <input
+                id={`${ID}-packet-port`}
+                className="lab-input mono"
+                type="text"
+                inputMode="numeric"
+                autoComplete="off"
+                spellCheck={false}
+                aria-invalid={badPacket("port") ? "true" : undefined}
+                value={input.packet.port}
+                onChange={(e) => setPacket("port", e.target.value)}
+                // Arrow Up and Down step the port from the keyboard.
+                onKeyDown={stepperKeyDown(portStepper(input.packet.port, (v) => setPacket("port", v)))}
+              />
+            </StepperField>
           </LabField>
         </>
       }
       result={r ? resultBlock(r) : <p className="lab-error">{err ? errText(err) : null}</p>}
-      onExample={() => setInput(copyOf(EXAMPLE_INPUT))}
-      onReset={() => setInput(copyOf(DEFAULT_INPUT))}
+      onExample={() => {
+        // The Example's rows; numbers remembered for the "*" buttons belong to the old rows, so they go.
+        numberBeforeAny.current = {};
+        // The Example itself.
+        setInput(copyOf(EXAMPLE_INPUT));
+      }}
+      onReset={() => {
+        // The opening rows; no remembered numbers.
+        numberBeforeAny.current = {};
+        // The opening configuration.
+        setInput(copyOf(DEFAULT_INPUT));
+      }}
       scope={t("scope")}
     />
   );

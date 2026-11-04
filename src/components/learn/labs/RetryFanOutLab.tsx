@@ -13,11 +13,17 @@
 // only at the entry point, then a verdict. The model is
 // src/lib/labs/retry-fan-out/compute.ts; its checked cases are the golden
 // vectors beside it. Words: "learnLabs.retry-fan-out".
+//
+// Each number input has up and down arrows beside it (PRIME 03/11/2026: values
+// set "through the click of a mouse (or press of the touchscreen)"), one
+// attempt a press, inside the model's MIN_ATTEMPTS to MAX_ATTEMPTS.
 // ============================================================================
 
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import LabFrame, { LabField } from "./LabFrame";
+// Up and down arrows for the three attempts fields.
+import { StepperField } from "@/components/NumberStepper";
 import { compute, DEFAULT_INPUT, EXAMPLE_INPUT, MAX_ATTEMPTS, MIN_ATTEMPTS, RetryFanOutError, type RetryFanOutInput, type RetryFanOutResult } from "@/lib/labs/retry-fan-out/compute";
 
 /** The lab's id: its namespace, its anchor and its element ids. */
@@ -134,18 +140,21 @@ export default function RetryFanOutLab() {
   /** One attempts field, its label and its invalid state. */
   const field = (key: keyof Form, labelKey: "entry" | "service1" | "service2") => (
     <LabField id={`${ID}-${key}`} label={t(labelKey)}>
-      <input
-        id={`${ID}-${key}`}
-        className="lab-input"
-        type="number"
-        inputMode="decimal"
-        min={MIN_ATTEMPTS}
-        max={MAX_ATTEMPTS}
-        step={1}
-        value={form[key]}
-        aria-invalid={isBad(form[key]) ? "true" : undefined}
-        onChange={(e) => setForm({ ...form, [key]: e.target.value })}
-      />
+      {/* Up and down arrows, whole numbers only: one attempt a press, inside the model's bounds, the field set as if typed. */}
+      <StepperField value={form[key]} onValue={(v) => setForm((f) => ({ ...f, [key]: v }))} min={MIN_ATTEMPTS} max={MAX_ATTEMPTS} step={1} integer label={t(labelKey)} inputId={`${ID}-${key}`}>
+        <input
+          id={`${ID}-${key}`}
+          className="lab-input"
+          type="number"
+          inputMode="decimal"
+          min={MIN_ATTEMPTS}
+          max={MAX_ATTEMPTS}
+          step={1}
+          value={form[key]}
+          aria-invalid={isBad(form[key]) ? "true" : undefined}
+          onChange={(e) => setForm({ ...form, [key]: e.target.value })}
+        />
+      </StepperField>
     </LabField>
   );
 

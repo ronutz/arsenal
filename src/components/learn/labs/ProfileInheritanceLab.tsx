@@ -13,11 +13,17 @@
 // followed. The model is src/lib/labs/profile-inheritance/compute.ts; its
 // checked cases are the golden vectors beside it.
 // Words: "learnLabs.profile-inheritance".
+//
+// The three timeouts have up and down arrows beside them (PRIME 03/11/2026:
+// values set "through the click of a mouse (or press of the touchscreen)"),
+// one second a press, inside the model's MIN_SECONDS to MAX_SECONDS.
 // ============================================================================
 
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import LabFrame, { LabField, LabSelect } from "./LabFrame";
+// Up and down arrows for the three timeouts.
+import { StepperField } from "@/components/NumberStepper";
 import { compute, DEFAULT_INPUT, EXAMPLE_INPUT, InheritanceError, MAX_SECONDS, MIN_SECONDS, type ChildMode, type InheritanceErrorCode, type InheritanceInput, type InheritanceResult, type ProfileValues } from "@/lib/labs/profile-inheritance/compute";
 
 /** The lab's id: its namespace, its anchor and its element ids. */
@@ -157,16 +163,25 @@ export default function ProfileInheritanceLab() {
       controls={
         <>
           <LabField id={`${ID}-parent-before`} label={t("parentBefore")}>
-            <input id={`${ID}-parent-before`} className="lab-input" type="number" inputMode="decimal" min={MIN_SECONDS} max={MAX_SECONDS} step={1} value={form.parentBefore} aria-invalid={err === "bad-seconds" && isBad(form.parentBefore) ? "true" : undefined} onChange={(e) => setForm({ ...form, parentBefore: e.target.value })} />
+            {/* Up and down arrows, whole numbers only: one second a press, inside the model's bounds, the field set as if typed. */}
+            <StepperField value={form.parentBefore} onValue={(v) => setForm((f) => ({ ...f, parentBefore: v }))} min={MIN_SECONDS} max={MAX_SECONDS} step={1} integer label={t("parentBefore")} inputId={`${ID}-parent-before`}>
+              <input id={`${ID}-parent-before`} className="lab-input" type="number" inputMode="decimal" min={MIN_SECONDS} max={MAX_SECONDS} step={1} value={form.parentBefore} aria-invalid={err === "bad-seconds" && isBad(form.parentBefore) ? "true" : undefined} onChange={(e) => setForm({ ...form, parentBefore: e.target.value })} />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-parent-after`} label={t("parentAfter")}>
-            <input id={`${ID}-parent-after`} className="lab-input" type="number" inputMode="decimal" min={MIN_SECONDS} max={MAX_SECONDS} step={1} value={form.parentAfter} aria-invalid={err === "bad-seconds" && isBad(form.parentAfter) ? "true" : undefined} onChange={(e) => setForm({ ...form, parentAfter: e.target.value })} />
+            {/* The same for the timeout after the edit. Whole numbers only. */}
+            <StepperField value={form.parentAfter} onValue={(v) => setForm((f) => ({ ...f, parentAfter: v }))} min={MIN_SECONDS} max={MAX_SECONDS} step={1} integer label={t("parentAfter")} inputId={`${ID}-parent-after`}>
+              <input id={`${ID}-parent-after`} className="lab-input" type="number" inputMode="decimal" min={MIN_SECONDS} max={MAX_SECONDS} step={1} value={form.parentAfter} aria-invalid={err === "bad-seconds" && isBad(form.parentAfter) ? "true" : undefined} onChange={(e) => setForm({ ...form, parentAfter: e.target.value })} />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-child-b`} label={t("childB")}>
             <LabSelect id={`${ID}-child-b`} value={form.childB} options={modeOptions} onChange={(v) => setForm({ ...form, childB: v as ChildMode })} />
           </LabField>
           <LabField id={`${ID}-child-b-value`} label={t("childBValue")}>
-            <input id={`${ID}-child-b-value`} className="lab-input" type="number" inputMode="decimal" min={MIN_SECONDS} max={MAX_SECONDS} step={1} value={form.childBValue} disabled={form.childB !== "custom"} aria-invalid={err === "bad-seconds" && form.childB === "custom" && isBad(form.childBValue) ? "true" : undefined} onChange={(e) => setForm({ ...form, childBValue: e.target.value })} />
+            {/* The same for child B's own value; the arrows are off with the field while child B inherits. Whole numbers only. */}
+            <StepperField value={form.childBValue} onValue={(v) => setForm((f) => ({ ...f, childBValue: v }))} min={MIN_SECONDS} max={MAX_SECONDS} step={1} integer label={t("childBValue")} inputId={`${ID}-child-b-value`} disabled={form.childB !== "custom"}>
+              <input id={`${ID}-child-b-value`} className="lab-input" type="number" inputMode="decimal" min={MIN_SECONDS} max={MAX_SECONDS} step={1} value={form.childBValue} disabled={form.childB !== "custom"} aria-invalid={err === "bad-seconds" && form.childB === "custom" && isBad(form.childBValue) ? "true" : undefined} onChange={(e) => setForm({ ...form, childBValue: e.target.value })} />
+            </StepperField>
           </LabField>
         </>
       }

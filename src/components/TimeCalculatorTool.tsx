@@ -15,6 +15,13 @@
 // shiftLocalisable() and is turned into the page's language by
 // inPageLanguage(); input errors through engineTexts().error. The English page
 // reads exactly as before.
+//
+// WITHOUT A KEYBOARD (03/11/2026): under each instant, a date-and-time picker
+// (type="datetime-local", the phone's own wheel or calendar) writes the field
+// as typing would. The field stays typed text, because the engine reads more
+// than a picker can hold (an offset, a date alone, seconds, the Examples' Z):
+// the picker shows the field's date and time, and a pick keeps the field's
+// seconds and offset, or adds Z (UTC) when it had none, as the label says.
 // ============================================================================
 "use client";
 
@@ -28,6 +35,20 @@ import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving 
 import { TIME_SHARE, encodeTimeShare, type TimeShareState } from "@/lib/tools/time-calculator/share"; // this tool's share spec: the mode and its fields
 
 type Mode = "diff" | "shift";
+
+/**
+ * An instant split for the date-and-time picker: "2024-02-28T00:00:30-03:00" gives the picker's "2024-02-28T00:00"
+ * and the tail ":30-03:00", kept when the reader picks.
+ *
+ * @param text the field as typed
+ * @returns the picker's value ("" when the field holds no date and time it can show) and the tail to keep
+ */
+function pickerParts(text: string): { local: string; tail: string } {
+  // A date, a T or a space, hours and minutes, optional seconds, an optional offset.
+  const m = /^\s*(\d{4}-\d{2}-\d{2})[T ](\d{2}:\d{2})(:\d{2}(?:\.\d+)?)?\s*(Z|[+-]\d{2}:?\d{2})?\s*$/i.exec(text);
+  // Shown and kept, or an empty picker whose pick is read as UTC.
+  return m ? { local: `${m[1]}T${m[2]}`, tail: (m[3] ?? "") + (m[4] ?? "Z") } : { local: "", tail: "Z" };
+}
 type Result = { ok: true; data: TimeAnalysis } | { ok: false; message: string };
 
 // D-83 Example samples — verbatim from this tool's golden vectors (v4, v1).
@@ -78,6 +99,29 @@ export default function TimeCalculatorTool() {
   };
   const clearAll = () => { setA(""); setB(""); setStart(""); setDuration(""); };
 
+  /**
+   * The date-and-time picker under an instant field (03/11/2026): it shows the field's date and time, and a pick
+   * writes the field as typing would, keeping the field's seconds and offset (Z when it had none).
+   *
+   * @param id the field's id (the picker's is the same with "-pick")
+   * @param text the field as typed
+   * @param set the field's setter
+   * @param label the field's label, for the picker's name
+   * @returns the labelled picker
+   */
+  const picker = (id: string, text: string, set: (v: string) => void, label: string) => {
+    // What the picker shows, and what a pick keeps.
+    const parts = pickerParts(text);
+    // The row: the short label, then the picker.
+    return (
+      <label className="time-pick" htmlFor={`${id}-pick`}>
+        <span className="time-pick-label">{t("pickLabel")}</span>
+        {/* A cleared picker (an empty value) leaves the field as it is. */}
+        <input id={`${id}-pick`} type="datetime-local" className="cidr-input mono time-pick-input" value={parts.local} aria-label={t("pickAria", { field: label })} onChange={(e) => { if (e.target.value) set(e.target.value + parts.tail); }} />
+      </label>
+    );
+  };
+
   return (
     <div className="cidr-tool jwt-tool json-tool tmsh-tool">
       <div className="cidr-input-row">
@@ -97,15 +141,21 @@ export default function TimeCalculatorTool() {
             <label className="cidr-label" htmlFor="time-a">{t("labelA")}</label>
             <input id="time-a" className="cidr-input mono json-input" value={a} onChange={(e) => setA(e.target.value)}
               placeholder="2024-02-28T00:00Z" autoComplete="off" spellCheck={false} />
+            {/* Or the same instant from a picker. */}
+            {picker("time-a", a, setA, t("labelA"))}
             <label className="cidr-label" htmlFor="time-b">{t("labelB")}</label>
             <input id="time-b" className="cidr-input mono json-input" value={b} onChange={(e) => setB(e.target.value)}
               placeholder="2024-03-01T00:00Z" autoComplete="off" spellCheck={false} />
+            {/* Or the same instant from a picker. */}
+            {picker("time-b", b, setB, t("labelB"))}
           </>
         ) : (
           <>
             <label className="cidr-label" htmlFor="time-start">{t("labelStart")}</label>
             <input id="time-start" className="cidr-input mono json-input" value={start} onChange={(e) => setStart(e.target.value)}
               placeholder="2026-01-01T00:00Z" autoComplete="off" spellCheck={false} />
+            {/* Or the same instant from a picker. */}
+            {picker("time-start", start, setStart, t("labelStart"))}
             <label className="cidr-label" htmlFor="time-dur">{t("labelDuration")}</label>
             <input id="time-dur" className="cidr-input mono json-input" value={duration} onChange={(e) => setDuration(e.target.value)}
               placeholder={t("durationPlaceholder")} autoComplete="off" spellCheck={false} />

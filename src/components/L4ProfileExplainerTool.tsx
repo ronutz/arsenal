@@ -17,12 +17,20 @@
 // position, and the observations, notes and errors arrive as EngineTexts from
 // runLocalisable(), all under engine.* in the pack, so the pt-BR page reads in
 // Portuguese; a key the pack lacks shows the engine's English.
+//
+// WITHOUT A KEYBOARD (03/11/2026): under the field, one pressed-or-not button
+// per profile in the engine's table (PROFILES) and one for "profiles", the
+// whole table. A press sets the field to that name, as typing it would; the
+// button of the card shown is pressed, an alias typed by hand included (pva
+// presses fastl4). The field is still typed; the buttons reuse the site's
+// preset-chip vocabulary (tcl-presets-row, tcl-chip), 44 px tall on a touch screen
+// (tcl-presets-row--tap).
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { type L4ProfileResult, type L4Profile } from "@/lib/tools/f5-l4-profile-explainer";
-import { runLocalisable } from "@/lib/tools/f5-l4-profile-explainer/compute"; // the reading with sentence ids (01/11/2026)
+import { runLocalisable, PROFILES } from "@/lib/tools/f5-l4-profile-explainer/compute"; // the reading with sentence ids (01/11/2026), and the table's profiles (their buttons)
 import { engineTexts, type EngineText, type EngineTexts } from "@/lib/tools/engine-text"; // engine sentences in the page's language
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
@@ -33,6 +41,9 @@ type LiveResult = { ok: true; value: L4ProfileResult<EngineText> } | { ok: false
 
 // D-83 example: the card with the most decisions on it.
 const EXAMPLE = "fastl4";
+
+/** The word that asks the engine for the whole table (one of the four it reads). */
+const CATALOG_WORD = "profiles"; // runLocalisable reads profiles, catalog, list or all
 
 /** Nothing to share (the button is disabled): a constant, so the button sees no change. */
 const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
@@ -108,6 +119,18 @@ export default function L4ProfileExplainerTool() {
         </div>
         <input id="l4p-input" className="cidr-input mono" value={input}
           onChange={(e) => setInput(e.target.value)} placeholder={t("inputPlaceholder")} spellCheck={false} aria-describedby="l4p-privacy" />
+        {/* One button per profile in the engine's table, then the whole table: a press sets the field to that name; the
+            button of the card shown is pressed. */}
+        <div className="tcl-presets-row tcl-presets-row--tap" role="group" aria-label={t("pickLabel")}>
+          {PROFILES.map((p) => (
+            <button key={p.id} type="button" className="tcl-chip mono" aria-pressed={!!live?.ok && live.value.mode === "profile" && live.value.profile?.id === p.id} onClick={() => setInput(p.id)}>
+              {p.id}
+            </button>
+          ))}
+          <button type="button" className="tcl-chip mono" aria-pressed={!!live?.ok && live.value.mode === "catalog"} onClick={() => setInput(CATALOG_WORD)}>
+            {CATALOG_WORD}
+          </button>
+        </div>
         <p id="l4p-privacy" className="cidr-privacy"><span className="cidr-lock" aria-hidden="true">&#9679;</span> {t("runsLocally")}</p>
       </div>
 

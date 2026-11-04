@@ -17,6 +17,13 @@
 // carries the command, the string and the fields by name (src/lib/tools/
 // f5-irules-string-extract/share.ts, which also holds the field table below);
 // an arriving link fills the form as typing would and leaves the address.
+//
+// Up and down arrows (03/11/2026, PRIME: values set "through the click of a
+// mouse (or press of the touchscreen)"): the skip count (from 0; the engine
+// reads a negative skip as 0) and getfield's field number (from 1, as F5
+// counts fields) have a decrease and an increase button beside them, and step
+// from Arrow Up / Down too. The terminator has none: it is a count or a
+// string, and an arrow would turn a string into a number.
 // ============================================================================
 
 import { useMemo, useState, type ReactNode } from "react";
@@ -26,7 +33,9 @@ import { TclPresets, TclRuler, TclSeg } from "@/components/TclTeachParts";
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
-import { IRULES_STRING_EXTRACT_SHARE, STRING_EXTRACT_ARGS } from "@/lib/tools/f5-irules-string-extract/share"; // this tool's share spec: the form by name, and its field table
+import { IRULES_STRING_EXTRACT_SHARE, STRING_EXTRACT_ARGS, type ExtractField } from "@/lib/tools/f5-irules-string-extract/share"; // this tool's share spec: the form by name, and its field table
+// Up and down arrows for the two numeric fields (03/11/2026).
+import { StepperField, stepperKeyDown } from "@/components/NumberStepper";
 
 /** Nothing to share: a constant, so the button sees no change between renders. */
 const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
@@ -37,6 +46,10 @@ const EXAMPLE_ID = "findstr-query";
 // Each command's argument fields after the string (optional ones may be left empty). The table lives in share.ts
 // since 2026-10-27, so each field's link name comes from the same place.
 const ARGS = STRING_EXTRACT_ARGS; // the table
+
+// The fields that hold a plain number, with the lowest one worth stepping to: a skip count from 0 (compute.ts reads a
+// negative skip as 0) and getfield's field number from 1 (fields are counted from 1). Others take text.
+const STEP_MIN: Partial<Record<ExtractField["key"], number>> = { skip: 0, field: 1 };
 
 /** Turn note parameters into strings for the sentences. */
 function strParams(p?: Record<string, string | number | boolean>): Record<string, string> {
@@ -116,12 +129,40 @@ export default function F5IrulesStringExtractTool() {
       </div>
       {/* The arguments. */}
       <div className="tcl-fields">
-        {ARGS[command].map((f, i) => (
-          <label key={`${command}-${f.key}`} className="tcl-inline-field">
-            <span className="cidr-label">{t(`field.${f.key}`)}{f.optional ? ` ${t("optional")}` : ""}</span>
-            <input id={`sx-${f.key}`} className="cidr-input mono" value={args[i] ?? ""} onChange={(e) => setArg(i, e.target.value)} spellCheck={false} autoComplete="off" />
-          </label>
-        ))}
+        {ARGS[command].map((f, i) => {
+          // This field's lowest step, when it holds a number.
+          const lo = STEP_MIN[f.key];
+          // A text field: as it was.
+          if (lo === undefined) {
+            // The label wraps the field.
+            return (
+              <label key={`${command}-${f.key}`} className="tcl-inline-field">
+                <span className="cidr-label">{t(`field.${f.key}`)}{f.optional ? ` ${t("optional")}` : ""}</span>
+                <input id={`sx-${f.key}`} className="cidr-input mono" value={args[i] ?? ""} onChange={(e) => setArg(i, e.target.value)} spellCheck={false} autoComplete="off" />
+              </label>
+            );
+          }
+          // A number field: the label above (by id, so the arrows stay out of the field's name), the arrows beside it.
+          return (
+            <div key={`${command}-${f.key}`} className="tcl-inline-field">
+              {/* The field's name, and "(optional)" where it may be left empty. */}
+              <label className="cidr-label" htmlFor={`sx-${f.key}`}>{t(`field.${f.key}`)}{f.optional ? ` ${t("optional")}` : ""}</label>
+              {/* Up and down arrows: whole numbers, one a press, never below this field's lowest; set as typing would. */}
+              <StepperField value={args[i] ?? ""} onValue={(v) => setArg(i, v)} min={lo} integer label={t(`field.${f.key}`)} inputId={`sx-${f.key}`}>
+                <input
+                  id={`sx-${f.key}`}
+                  className="cidr-input mono"
+                  value={args[i] ?? ""}
+                  onChange={(e) => setArg(i, e.target.value)}
+                  // Arrow Up and Down (Page Up and Down: ten) step the number from the keyboard.
+                  onKeyDown={stepperKeyDown({ value: args[i] ?? "", onValue: (v) => setArg(i, v), min: lo, integer: true })}
+                  spellCheck={false}
+                  autoComplete="off"
+                />
+              </StepperField>
+            </div>
+          );
+        })}
       </div>
       <TclPresets items={VECTORS.map((v) => ({ id: v.id, label: t(`preset.${v.id}`) }))} label={t("presetsLabel")} onPick={pick} active={active} />
 

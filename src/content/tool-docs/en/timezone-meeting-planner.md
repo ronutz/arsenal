@@ -10,6 +10,8 @@ Working hours are flagged for 09:00-17:59 local, Monday to Friday - the conventi
 
 Daylight saving is whatever the zone's rules say for that specific date: Berlin is UTC+2 in July and UTC+1 in January; Sao Paulo is UTC-3 year-round since Brazil abolished DST in 2019. Planning with a real date is the whole point.
 
+Under the instant, a date-and-time picker sets it without typing: a pick keeps the field's seconds and offset, and writes Z (UTC) when it had none. Under the zones, a list of every IANA zone the browser knows adds the one chosen as a new line.
+
 ## Share results
 
 Under the table, **Share results** builds a link to this page, only when you press it, that carries the meeting instant and the zones, one per line, as typed after the `#`, once the page has a plan. The local readings are worked out from the time-zone data of the browser that opens the link, which is what the page always uses. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.

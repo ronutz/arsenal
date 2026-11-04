@@ -302,6 +302,11 @@
 .fg-lpk-day-solved { border-color: var(--color-success); }
 /* Its tick and time after the date. */
 .fg-lpk-day-mark { margin-left: 0.45rem; color: var(--color-success); font-weight: 700; }
+/* A day solved only in practice: a dashed green edge, so it reads apart from a day solved on the day by its mark and
+   its edge, not by colour alone (the day being practised keeps its accent edge). */
+.fg-lpk-day-practised { border-color: var(--color-success); border-style: dashed; }
+/* Its replay mark and best time, lighter than the daily tick. */
+.fg-lpk-day-mark-practice { font-weight: 600; opacity: 0.85; }
 /* The clock, the checks and the buttons under the board. */
 .fg-lpk-hud { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; width: 100%; }
 /* The four buttons stay on one line on a phone: a little less padding below 420 px (still 44 px tall). */
@@ -791,6 +796,8 @@
 .fg-pod-field { min-width: 0; }
 /* A field fills its column. */
 .fg-pod-input { width: 100%; }
+/* The mask and the hosts carry up and down arrows (two 44 px buttons beside the box); on a phone each takes the whole row, so a dotted mask still fits beside them. */
+@media (max-width: 600px) { .fg-pod-field-stepped { grid-column: 1 / -1; } }
 /* The last try's mark beside a label. */
 .fg-pod-hint { margin-left: 0.4rem; font-size: 0.75rem; font-weight: 600; }
 /* Right. */

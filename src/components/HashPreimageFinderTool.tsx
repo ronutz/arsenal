@@ -17,10 +17,15 @@
 // share.ts, posture input-caution: whoever opens the link can repeat the
 // search). An arriving link (useShareArrival) stops any search, fills the three
 // fields and waits: a note asks for Start search, which only the reader presses.
+//
+// UP AND DOWN ARROWS (03/11/2026): the maximum length has a down and an up
+// arrow beside it (src/components/NumberStepper.tsx), from 1 to the alphabet's
+// cap, so it is set with a mouse or a finger too.
 // ============================================================================
 
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import { StepperField } from "@/components/NumberStepper"; // the up and down arrows beside the length field
 import {
   run,
   detectAlgorithm,
@@ -226,16 +231,20 @@ export default function HashPreimageFinderTool() {
         </div>
         <div className="hpf-field hpf-field--len">
           <label className="cidr-label" htmlFor="hpf-len">{t("maxLengthLabel")}</label>
-          <input
-            id="hpf-len"
-            type="number"
-            min={1}
-            max={preset.maxLength}
-            value={effectiveMax}
-            onChange={(e) => setMaxLength(Number(e.target.value) || 1)}
-            className="cidr-input hpf-len-input dig-mono"
-            disabled={running}
-          />
+          {/* Up and down arrows: one character a press, whole lengths from 1 to the alphabet's cap, set as typing would; off while
+              searching. */}
+          <StepperField value={effectiveMax} onValue={(v) => setMaxLength(Number(v) || 1)} min={1} max={preset.maxLength} integer label={t("maxLengthLabel")} inputId="hpf-len" disabled={running}>
+            <input
+              id="hpf-len"
+              type="number"
+              min={1}
+              max={preset.maxLength}
+              value={effectiveMax}
+              onChange={(e) => setMaxLength(Number(e.target.value) || 1)}
+              className="cidr-input hpf-len-input dig-mono"
+              disabled={running}
+            />
+          </StepperField>
           <span className="hpf-len-cap">{t("lengthCap", { max: preset.maxLength })}</span>
         </div>
       </div>

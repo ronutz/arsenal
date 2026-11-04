@@ -14,15 +14,26 @@
 // named values (LTM_LB_SHARE, posture input: members, method, threshold,
 // requests). An arriving link replaces the whole form and the page simulates
 // it; the address loses the values at once.
+//
+// NO KEYBOARD NEEDED (03/11/2026): every number on the form (the four per
+// member, the activation threshold and the request count) has up and down
+// arrows (StepperField) inside the bounds the simulator reads.
 // ============================================================================
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 import { useTranslations } from "next-intl";
 import { simulate, SIMULABLE_METHODS, DYNAMIC_METHODS, type Member, type Method } from "@/lib/tools/bigip-ltm-lb-simulator/compute";
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
 import { LTM_LB_SHARE } from "@/lib/tools/bigip-ltm-lb-simulator/share"; // this tool's share spec: the whole form
+import { StepperField } from "@/components/NumberStepper"; // up and down arrows for every number on the form (03/11/2026)
+
+/** The simulator's request bound (MAX_REQUESTS in compute.ts): a larger count is simulated as this many. */
+const MAX_REQUESTS = 100000; // the arrows stop here
+
+/** A field's name and the field with its arrows, kept together when a row wraps (on a phone, 03/11/2026). */
+const PAIR: CSSProperties = { display: "inline-flex", flexWrap: "wrap", alignItems: "center", gap: "0.4rem", minWidth: 0 }; // one unit
 
 interface Row {
   id: string;
@@ -75,8 +86,18 @@ export default function BigipLtmLbSimulatorTool() {
   };
 
   const num = (i: number, field: keyof Row, min: number) => (
-    <input className="cidr-input mono" style={{ width: "4.5rem" }} type="number" min={min} value={rows[i][field] as number} onChange={(e) => setField(i, field, e.target.value)} aria-label={t(`col.${field}`)} />
+    // The field's name, then the field with up and down arrows from its minimum (1 for the ratios, 0 otherwise).
+    <span style={PAIR}>
+      <span className="jwt-claim-label">{t(`col.${field}`)}</span>
+      <StepperField value={rows[i][field] as number} onValue={(v) => setField(i, field, v)} min={min} integer label={t(`col.${field}`)} inputId={`lb-${field}-${i}`}>
+        <input id={`lb-${field}-${i}`} className="cidr-input mono" style={{ width: "6rem" }} type="number" min={min} value={rows[i][field] as number} onChange={(e) => setField(i, field, e.target.value)} aria-label={t(`col.${field}`)} />
+      </StepperField>
+    </span>
   );
+  // The threshold as typed or stepped: a whole number of 0 or more.
+  const setThresholdText = (v: string) => setThreshold(Math.max(0, Math.floor(Number(v) || 0)));
+  // The request count as typed or stepped: a whole number of 0 or more.
+  const setRequestsText = (v: string) => setRequests(Math.max(0, Math.floor(Number(v) || 0)));
 
   return (
     <div className="cidr-tool jwt-tool">
@@ -102,13 +123,10 @@ export default function BigipLtmLbSimulatorTool() {
             <div key={i} style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", alignItems: "center" }}>
               <input className="cidr-input mono" style={{ width: "6rem" }} value={r.id} onChange={(e) => setField(i, "id", e.target.value)} aria-label={t("col.id")} placeholder={t("col.id")} />
               <input className="cidr-input mono" style={{ width: "8rem" }} value={r.node} onChange={(e) => setField(i, "node", e.target.value)} aria-label={t("col.node")} placeholder={t("col.node")} />
-              <span className="jwt-claim-label">{t("col.ratio")}</span>
+              {/* Each number with its own name (num() draws both, so they wrap as one). */}
               {num(i, "ratio", 1)}
-              <span className="jwt-claim-label">{t("col.nodeRatio")}</span>
               {num(i, "nodeRatio", 1)}
-              <span className="jwt-claim-label">{t("col.priority")}</span>
               {num(i, "priority", 0)}
-              <span className="jwt-claim-label">{t("col.persistence")}</span>
               {num(i, "persistence", 0)}
               {rows.length > 1 && (
                 <button type="button" className="b64-copy" onClick={() => removeRow(i)} aria-label={t("removeMember")}>
@@ -131,14 +149,26 @@ export default function BigipLtmLbSimulatorTool() {
               </option>
             ))}
           </select>
-          <label className="jwt-claim-label" htmlFor="lb-threshold">
-            {t("thresholdLabel")}
-          </label>
-          <input id="lb-threshold" className="cidr-input mono" style={{ width: "4.5rem" }} type="number" min={0} value={threshold} onChange={(e) => setThreshold(Math.max(0, Math.floor(Number(e.target.value) || 0)))} />
-          <label className="jwt-claim-label" htmlFor="lb-requests">
-            {t("requestsLabel")}
-          </label>
-          <input id="lb-requests" className="cidr-input mono" style={{ width: "6rem" }} type="number" min={0} value={requests} onChange={(e) => setRequests(Math.max(0, Math.floor(Number(e.target.value) || 0)))} />
+          {/* The threshold and its name, kept together when the row wraps. */}
+          <span style={PAIR}>
+            <label className="jwt-claim-label" htmlFor="lb-threshold">
+              {t("thresholdLabel")}
+            </label>
+            {/* Up and down arrows: 0 (off) or more active members. */}
+            <StepperField value={threshold} onValue={setThresholdText} min={0} integer label={t("thresholdLabel")} inputId="lb-threshold">
+              <input id="lb-threshold" className="cidr-input mono" style={{ width: "6rem" }} type="number" min={0} value={threshold} onChange={(e) => setThresholdText(e.target.value)} />
+            </StepperField>
+          </span>
+          {/* The request count and its name, kept together. */}
+          <span style={PAIR}>
+            <label className="jwt-claim-label" htmlFor="lb-requests">
+              {t("requestsLabel")}
+            </label>
+            {/* Up and down arrows: 0 to the simulator's 100,000. */}
+            <StepperField value={requests} onValue={setRequestsText} min={0} max={MAX_REQUESTS} integer label={t("requestsLabel")} inputId="lb-requests">
+              <input id="lb-requests" className="cidr-input mono" style={{ width: "6rem" }} type="number" min={0} max={MAX_REQUESTS} value={requests} onChange={(e) => setRequestsText(e.target.value)} />
+            </StepperField>
+          </span>
         </div>
 
         <p className="cidr-privacy">

@@ -24,6 +24,12 @@
 // look-up has nothing to share. An arriving link (useShareArrival) opens the
 // mode and sets its fields; the page computes as it does on typing (the Tcl
 // teaching engine runs locally). The address loses the values at once.
+//
+// UP AND DOWN ARROWS (03/11/2026, PRIME: values set "through the click of a
+// mouse (or press of the touchscreen)"): the translator's N has a decrease and
+// an increase button beside it, from 1 to 1000 (the engine's MAX_N), the same
+// bounds as its native spinner; its label sits above it rather than wrapping
+// it, so the buttons are not read as part of the field's name.
 // ============================================================================
 
 import { useMemo, useState, type ReactNode } from "react";
@@ -34,6 +40,8 @@ import ShareResultsButton from "@/components/ShareResultsButton"; // the site's 
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
 import { INDEX_BASE_SHARE } from "@/lib/tools/f5-bigip-index-base-finder/share"; // this tool's share spec: the open mode's fields
+// Up and down arrows beside N (03/11/2026).
+import { StepperField } from "@/components/NumberStepper";
 
 // D-83: each mode's Example button loads a golden vector verbatim.
 const EXAMPLE_LOOKUP = "lookup-path";
@@ -246,10 +254,14 @@ export default function F5BigipIndexBaseFinderTool() {
               </select>
             </label>
             {question !== "search" && (
-              <label className="tcl-inline-field idx-n-field">
-                <span className="cidr-label">{t("nLabel")}</span>
-                <input id="idx-n" className="cidr-input mono" type="number" min={1} max={1000} step={1} value={n} onChange={(e) => { setN(e.target.value); setActive(undefined); }} />
-              </label>
+              <div className="tcl-inline-field idx-n-field idx-n-stepped">
+                {/* The label names N by its id (it no longer wraps it, so the arrows stay out of the field's name). */}
+                <label className="cidr-label" htmlFor="idx-n">{t("nLabel")}</label>
+                {/* Up and down arrows: 1 to 1000, the engine's MAX_N, one a press; set as typing would (the preset mark cleared). */}
+                <StepperField value={n} onValue={(v) => { setN(v); setActive(undefined); }} min={1} max={1000} step={1} integer label={t("nLabel")} inputId="idx-n">
+                  <input id="idx-n" className="cidr-input mono" type="number" min={1} max={1000} step={1} value={n} onChange={(e) => { setN(e.target.value); setActive(undefined); }} />
+                </StepperField>
+              </div>
             )}
             {question === "field" && (
               <label className="tcl-inline-field idx-n-field">

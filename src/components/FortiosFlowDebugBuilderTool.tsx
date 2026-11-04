@@ -15,6 +15,14 @@
 // arrive as EngineTexts from buildFlowDebugLocalisable(), and the pasteable
 // text's headings are written by planToTextIn() in the page's language, all
 // under engine.* in the pack; the commands are the same in every language.
+//
+// WITHOUT A KEYBOARD (03/11/2026, PRIME: values set "through the click of a
+// mouse (or press of the touchscreen)"): the three port fields (1 to 65535)
+// and the packet count (from 1; the engine reads anything below as its
+// default of 100) have up and down arrows beside them and step from Arrow Up
+// / Down too; the protocol field gains a row of buttons, one per protocol name
+// the engine translates to a number (a pressed button clears it again), and
+// still takes a typed name or number. The addresses and the VDOM stay typed.
 // ============================================================================
 
 import { useMemo, useState } from "react";
@@ -23,6 +31,8 @@ import ShareResultsButton from "@/components/ShareResultsButton"; // the site's 
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
 import { FORTIOS_FLOW_DEBUG_SHARE } from "@/lib/tools/fortios-flow-debug-builder/share"; // this tool's share spec
+// Up and down arrows for the ports and the count (03/11/2026).
+import { StepperField, stepperKeyDown } from "@/components/NumberStepper";
 import {
   buildFlowDebugLocalisable,
   planToTextIn,
@@ -32,6 +42,19 @@ import { engineTexts, type EngineText } from "@/lib/tools/engine-text"; // engin
 
 const EMPTY = { addr: "", saddr: "", daddr: "", port: "", sport: "", dport: "", proto: "", vdom: "", count: "100" };
 const EXAMPLE = { ...EMPTY, addr: "10.1.1.5", dport: "443", proto: "tcp", count: "50" };
+
+// The fields with up and down arrows, and their bounds: a TCP or UDP port is 1 to 65535; the packet count starts at
+// 1 (compute.ts uses its default of 100 for anything below) and has no upper bound (over 200 the plan warns).
+const STEPPED: Partial<Record<keyof typeof EMPTY, { min: number; max?: number }>> = {
+  port: { min: 1, max: 65535 }, // either direction
+  sport: { min: 1, max: 65535 }, // source port
+  dport: { min: 1, max: 65535 }, // destination port
+  count: { min: 1 }, // packets to trace
+};
+
+// The protocol names the engine translates to their numbers, in its order, one button each (read from the engine so
+// the two cannot drift apart).
+import { PROTO_NAMES } from "@/lib/tools/fortios-flow-debug-builder/compute";
 /** Nothing to share: a constant, so the button sees no change between renders. */
 const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
 
@@ -45,6 +68,8 @@ export default function FortiosFlowDebugBuilderTool() {
 
   const set = (k: keyof typeof EMPTY) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setF((p) => ({ ...p, [k]: e.target.value }));
+  // A field set from its arrows or a button, exactly as typing the same text would set it.
+  const put = (k: keyof typeof EMPTY) => (v: string) => setF((p) => ({ ...p, [k]: v }));
 
   const result = useMemo<{ ok: true; plan: FlowDebugPlan<EngineText> } | { ok: false; error: unknown } | null>(() => {
     const any = Object.entries(f).some(([k, v]) => k !== "count" && k !== "vdom" && v.trim());
@@ -82,12 +107,52 @@ export default function FortiosFlowDebugBuilderTool() {
       </div>
 
       <div className="dig-kv">
-        {(["addr", "saddr", "daddr", "port", "sport", "dport", "proto", "vdom", "count"] as const).map((k) => (
-          <div key={k}>
-            <label htmlFor={`ffd-${k}`} className="cidr-label">{t(`fields.${k}`)}</label>
-            <input id={`ffd-${k}`} className="cidr-input mono" value={f[k]} onChange={set(k)} spellCheck={false} />
-          </div>
-        ))}
+        {(["addr", "saddr", "daddr", "port", "sport", "dport", "proto", "vdom", "count"] as const).map((k) => {
+          // This field's arrows, when it has them.
+          const step = STEPPED[k];
+          // The field as it always was.
+          const input = (
+            <input
+              id={`ffd-${k}`}
+              className="cidr-input mono"
+              value={f[k]}
+              onChange={set(k)}
+              // A numeric field steps from Arrow Up and Down (Page Up and Down: ten), as its buttons do.
+              onKeyDown={step ? stepperKeyDown({ value: f[k], onValue: put(k), min: step.min, max: step.max, integer: true }) : undefined}
+              spellCheck={false}
+            />
+          );
+          // The label, the field (with its arrows, or the protocol buttons under it).
+          return (
+            <div key={k}>
+              <label htmlFor={`ffd-${k}`} className="cidr-label">{t(`fields.${k}`)}</label>
+              {step ? (
+                // Up and down arrows: whole numbers (ports and packets), one a press, inside this field's bounds.
+                <StepperField value={f[k]} onValue={put(k)} min={step.min} max={step.max} integer label={t(`fields.${k}`)} inputId={`ffd-${k}`}>
+                  {input}
+                </StepperField>
+              ) : (
+                // Any other field: as typed.
+                input
+              )}
+              {/* The protocol: one button per name the engine knows; the pressed one is the field's value, and pressing it again clears it. */}
+              {k === "proto" && (
+                <div className="ffd-proto-chips" role="group" aria-label={t("fields.proto")}>
+                  {PROTO_NAMES.map((name) => {
+                    // Pressed when the field holds this name (in any case, as the engine reads it).
+                    const on = f.proto.trim().toLowerCase() === name;
+                    // The button.
+                    return (
+                      <button key={name} type="button" className="ffd-proto-chip mono" aria-pressed={on} aria-controls="ffd-proto" onClick={() => put("proto")(on ? "" : name)}>
+                        {name}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
 
       <div className="dig-input-actions">

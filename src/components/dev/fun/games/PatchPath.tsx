@@ -551,6 +551,8 @@ export default function PatchPath(props: { locale: string }) {
     hint: tc("hint"),
     hintsUsed: tc("hintsUsed", { n: s.hints, s: s.hints * PENALTY_S }),
     daySolved: (date, time) => tc("daySolved", { date, time }),
+    // A day solved only in practice, named so.
+    daySolvedPractice: (date, time) => tc("daySolvedPractice", { date, time }),
   };
 
   // The result.

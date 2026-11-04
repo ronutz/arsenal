@@ -2,6 +2,8 @@
 
 Informe de um a quatro nomes de métodos HTTP (Hypertext Transfer Protocol, protocolo de transferência de hipertexto) e a ferramenta retorna os fatos de protocolo de cada um: se é seguro, idempotente e cacheável, qual a semântica do corpo da requisição, se o CORS (Cross-Origin Resource Sharing, compartilhamento de recursos entre origens) permite que navegadores o enviem sem preflight (a requisição OPTIONS de pedido de permissão que o navegador dispara antes de qualquer requisição entre origens que não seja simples), se formulários HTML conseguem produzi-lo declarativamente e qual RFC o define. Peça dois ou mais ("get vs query") e ela também nomeia exatamente as propriedades em que diferem. A tabela cobre os nove métodos centrais da RFC 9110, o PATCH (RFC 5789), o trio WebDAV PROPFIND, REPORT e SEARCH, e a linha manchete: o QUERY, registrado pela RFC 10008 em junho de 2026 - o primeiro método HTTP novo desde o PATCH, em 2010.
 
+Abaixo do campo, um botão por método da tabela acrescenta esse método à linha ou o retira, de modo que a comparação se monta sem digitar; com quatro escolhidos, os demais esperam.
+
 ## O vocabulário, com precisão
 
 Seguro significa que o cliente não pede mudança de estado; idempotente significa que repetir a requisição idêntica deixa o servidor no mesmo estado - o que torna repetições automáticas legais. Ambos são promessas registradas na IANA sobre intenção: um cache, proxy ou camada de retry genérica pode agir sobre elas sem saber nada da sua API. Nenhum dos dois diz nada sobre o payload: um corpo de QUERY carrega a mesma tentativa de injeção que um corpo de POST, e é por isso que a nota final da ferramenta insiste em inspeção de nível POST para o QUERY.

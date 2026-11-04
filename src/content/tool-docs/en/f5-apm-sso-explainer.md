@@ -8,6 +8,8 @@ The Kerberos card carries the full prerequisite list: a delegation account in Ac
 
 The plumbing note on every lookup ties the methods to the machinery: access-policy agents populate the session variables SSO consumes, the classic wiring being a Logon Page followed by SSO Credential Mapping, feeding session.logon.last.* into session.sso.token.last.*.
 
+Type a method's name (aliases such as `ntlm`, `fbci` or `kcd` work too), or `methods` for all eight; or press the method's button under the box, which fills it in for you.
+
 Everything runs locally; nothing you type leaves the page.
 
 ## Share results

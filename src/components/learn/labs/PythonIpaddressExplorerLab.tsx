@@ -17,6 +17,11 @@
 // and the whole operation as one Python expression. The model is
 // src/lib/labs/python-ipaddress-explorer/compute.ts; its checked cases are the
 // golden vectors beside it. Words: "learnLabs.python-ipaddress-explorer".
+//
+// The new_prefix field has up and down arrows beside it (PRIME 03/11/2026:
+// values set "through the click of a mouse (or press of the touchscreen)"),
+// one bit a press from 0 to 128, the prefix lengths IPv4 and IPv6 can have;
+// a value outside them (Python's own errors) can still be typed.
 // ============================================================================
 
 import { useState } from "react";
@@ -37,9 +42,16 @@ import {
   type IpaddressResult,
   type Method,
 } from "@/lib/labs/python-ipaddress-explorer/compute";
+// Up and down arrows for the new_prefix field.
+import { StepperField } from "@/components/NumberStepper";
 
 /** The lab's id: its namespace, its anchor and its element ids. */
 const ID = "python-ipaddress-explorer";
+
+/** The arrows' lowest new_prefix: no prefix is shorter than /0. */
+const NEW_PREFIX_MIN = 0;
+/** The arrows' highest new_prefix: IPv6's 128 bits (the model takes any integer of up to four digits, to show Python's errors). */
+const NEW_PREFIX_MAX = 128;
 
 /** The message key of each call's label. */
 const CALL_KEY: Readonly<Record<Call, string>> = {
@@ -272,7 +284,11 @@ export default function PythonIpaddressExplorerLab() {
             <LabSelect id={`${ID}-method`} value={input.method} options={methodOptions} onChange={(v) => setInput({ ...input, method: v as Method })} />
           </LabField>
           <LabField id={`${ID}-new-prefix`} label={t("newPrefix")}>
-            <input id={`${ID}-new-prefix`} className="lab-input" type="number" inputMode="numeric" step={1} value={input.newPrefix} aria-invalid={err === "bad-new-prefix" ? "true" : undefined} onChange={(e) => setInput({ ...input, newPrefix: e.target.value })} />
+            {/* Up and down arrows, whole numbers only: one bit a press, 0 to 128 (the widest prefix, IPv6's), the field set as if typed. */}
+            <StepperField value={input.newPrefix} onValue={(v) => setInput((i) => ({ ...i, newPrefix: v }))} min={NEW_PREFIX_MIN} max={NEW_PREFIX_MAX} step={1} integer label={t("newPrefix")} inputId={`${ID}-new-prefix`}>
+              {/* min and max agree with the arrows, so the browser's own spinner stops where they do. */}
+              <input id={`${ID}-new-prefix`} className="lab-input" type="number" inputMode="numeric" min={NEW_PREFIX_MIN} max={NEW_PREFIX_MAX} step={1} value={input.newPrefix} aria-invalid={err === "bad-new-prefix" ? "true" : undefined} onChange={(e) => setInput({ ...input, newPrefix: e.target.value })} />
+            </StepperField>
           </LabField>
         </>
       }

@@ -20,7 +20,9 @@
 // D-83 Example/Clear row: each mode's Example is verbatim from a golden vector
 // (EXAMPLE_WRAP_REQUEST and EXAMPLE_RATE_REQUEST). Existing class vocabulary
 // only (seg-*, dcb-segs, bb-fields, cidr-*, jwt-*, tcl-verdict-*, rdap-ask-row,
-// cipher-note, hmac-build-note, ztc-empty). All compute is local.
+// cipher-note, hmac-build-note, ztc-empty), plus two of its own since the
+// arrows (03/11/2026): snmp-time-field, and snmp-readings, which lays the
+// readings table out as a list at phone width. All compute is local.
 //
 // PAGE LANGUAGE. The reading comes from runLocalisable() (every sentence an
 // EngineText) and is put into the page's language by inPageLanguage(); input
@@ -33,10 +35,20 @@
 // mode, the counter and the mode's fields as typed (a form: named values only,
 // src/lib/tools/snmp-counter-wrap-calculator/share.ts). An arriving link
 // (useShareArrival) sets them as typing would; the other mode keeps its values.
+//
+// UP AND DOWN ARROWS (03/11/2026): the utilisation, the poll interval, the
+// packet size and the two reading times have a down and an up arrow beside
+// them (src/components/NumberStepper.tsx), inside the engine's ranges, and step
+// with Arrow Up and Down. A unit typed after a number ("5 min", "40 %") stays:
+// the arrows move the number. A blank utilisation or packet size steps from
+// the value blank means (100 %, 84 octets). The counter values have none: a
+// Counter64 reading runs past the range where a step of one is exact in a
+// browser's arithmetic, and one octet either way means nothing to a rate.
 // ============================================================================
 
 import { useMemo, useState, type ReactNode } from "react"; // state, memoised readings, rich-text chunks
 import { useLocale, useTranslations } from "next-intl"; // messages and the active locale
+import { StepperField, stepperKeyDown } from "@/components/NumberStepper"; // the up and down arrows, and their keys
 import { Link } from "@/i18n/navigation"; // the locale-aware link to the Learn article
 import { runLocalisable, SPEED_PRESETS, MAX_FIELD, type CounterResult, type WrapResult, type RateResult } from "@/lib/tools/snmp-counter-wrap-calculator/compute"; // the engine, sentences with ids, and the field bound (144: a pasted snmpget line fits)
 import { EXAMPLE_WRAP_REQUEST, EXAMPLE_RATE_REQUEST } from "@/lib/tools/snmp-counter-wrap-calculator/examples"; // the Examples, the same objects the golden vectors pin
@@ -67,6 +79,25 @@ const VERDICT_CLASS: Readonly<Record<string, string>> = {
 
 /** Seconds in a year of 365.25 days (the unit the page uses for very long wrap times; a convention, stated in the docs). */
 const YEAR_SECONDS = 31_557_600; // 365.25 x 86,400
+
+/** The largest sysUpTime the engine reads (TimeTicks is a 32-bit count of hundredths of a second). */
+const MAX_TICKS_FIELD = 4_294_967_295; // 2^32 - 1, as parseTime checks
+/** The largest time in seconds the engine reads (fifteen integer digits). */
+const MAX_SECONDS_FIELD = 999_999_999_999_999; // parseTime's \d{1,15}
+
+/**
+ * A field's leading number and what follows it ("5 min" gives "5" and " min"), so the arrows step the number and keep
+ * the unit the reader typed.
+ *
+ * @param text the field as typed
+ * @returns the number's text (the whole field when it does not start with one) and the rest
+ */
+function splitUnit(text: string): { num: string; rest: string } {
+  // A number at the start, then anything (a unit, a percent sign, spaces).
+  const m = /^\s*(\d+(?:\.\d+)?)([\s\S]*)$/.exec(text);
+  // Split, or the field as it is (the arrows then start from the lower bound, as on any unreadable field).
+  return m ? { num: m[1], rest: m[2] } : { num: text, rest: "" };
+}
 
 export default function SnmpCounterWrapCalculatorTool() {
   const t = useTranslations("tools.snmp-counter-wrap-calculator"); // this tool's messages
@@ -128,6 +159,16 @@ export default function SnmpCounterWrapCalculatorTool() {
     if (mode === "wrap") { setUtilisation(""); setPoll(""); } // wrap fields
     else { setFirst(""); setSecond(""); setFirstTime(""); setSecondTime(""); setTimeUnit("s"); } // rate fields
   }; // clearAll
+
+  // ---- The up and down arrows' fields (03/11/2026). ----
+  /** The reading times' bounds: whole ticks up to 2^32 - 1, or seconds up to fifteen digits; one unit a press. */
+  const timeBounds = { min: 0, max: timeUnit === "ticks" ? MAX_TICKS_FIELD : MAX_SECONDS_FIELD, step: 1, integer: timeUnit === "ticks" }; // as parseTime reads them (ticks whole, seconds with decimals)
+  /** The utilisation's number (blank steps from 100, what blank means) and its setter keeping a typed "%". */
+  const utilParts = splitUnit(utilisation); // the number and the percent sign, if any
+  const utilStep = { value: utilisation.trim() === "" ? "100" : utilParts.num, onValue: (v: string) => setUtilisation(v + utilParts.rest) }; // as typing would set it
+  /** The poll interval's number and its setter keeping the typed unit ("5 min" steps to "6 min"). */
+  const pollParts = splitUnit(poll); // the number and the unit, if any
+  const pollStep = { value: pollParts.num, onValue: (v: string) => setPoll(v + pollParts.rest) }; // as typing would set it
 
   // ---- Number formatting in the page's language. ----
   /** A decimal text from the engine in the page's number format, at most `frac` decimals (big integers exactly). */
@@ -316,11 +357,12 @@ export default function SnmpCounterWrapCalculatorTool() {
           </div>
         </div>
 
-        {/* Rate mode: the two readings, as a two-column table that fits a phone. */}
+        {/* Rate mode: the two readings, as a two-column table that fits a phone (at phone width it becomes a list, each
+            cell named by its column through data-label, so a time keeps its arrows on its own row: snmp-readings). */}
         {mode === "rate" && (
           <>
             <div className="cidr-table-wrap">
-              <table className="cidr-table bfd-timers-table">
+              <table className="cidr-table bfd-timers-table snmp-readings">
                 <thead>
                   <tr>
                     <th scope="col">{t("readingsCol")}</th>
@@ -331,13 +373,15 @@ export default function SnmpCounterWrapCalculatorTool() {
                 <tbody>
                   <tr>
                     <th scope="row">{t("valueRow")}</th>
-                    <td><input className="cidr-input mono" value={first} onChange={(e) => setFirst(e.target.value)} placeholder="4294000000" inputMode="numeric" aria-label={`${t("firstCol")}: ${t("valueRow")}`} autoComplete="off" spellCheck={false} maxLength={MAX_FIELD} /></td>
-                    <td><input className="cidr-input mono" value={second} onChange={(e) => setSecond(e.target.value)} placeholder="1032704" inputMode="numeric" aria-label={`${t("secondCol")}: ${t("valueRow")}`} autoComplete="off" spellCheck={false} maxLength={MAX_FIELD} /></td>
+                    <td data-label={t("firstCol")}><input className="cidr-input mono" value={first} onChange={(e) => setFirst(e.target.value)} placeholder="4294000000" inputMode="numeric" aria-label={`${t("firstCol")}: ${t("valueRow")}`} autoComplete="off" spellCheck={false} maxLength={MAX_FIELD} /></td>
+                    <td data-label={t("secondCol")}><input className="cidr-input mono" value={second} onChange={(e) => setSecond(e.target.value)} placeholder="1032704" inputMode="numeric" aria-label={`${t("secondCol")}: ${t("valueRow")}`} autoComplete="off" spellCheck={false} maxLength={MAX_FIELD} /></td>
                   </tr>
                   <tr>
                     <th scope="row">{timeUnit === "s" ? t("timeRowSeconds") : t("timeRowTicks")}</th>
-                    <td><input className="cidr-input mono" value={firstTime} onChange={(e) => setFirstTime(e.target.value)} placeholder={timeUnit === "s" ? "0" : "123456700"} inputMode="decimal" aria-label={`${t("firstCol")}: ${timeUnit === "s" ? t("timeRowSeconds") : t("timeRowTicks")}`} autoComplete="off" spellCheck={false} maxLength={MAX_FIELD} /></td>
-                    <td><input className="cidr-input mono" value={secondTime} onChange={(e) => setSecondTime(e.target.value)} placeholder={timeUnit === "s" ? "30" : "123486700"} inputMode="decimal" aria-label={`${t("secondCol")}: ${timeUnit === "s" ? t("timeRowSeconds") : t("timeRowTicks")}`} autoComplete="off" spellCheck={false} maxLength={MAX_FIELD} /></td>
+                    {/* Up and down arrows on each time: one second, or one tick (1/100 s), a press, from 0 to the engine's
+                        largest; the field is named "First: Time (s)", so its arrows are too. */}
+                    <td data-label={t("firstCol")}><StepperField value={firstTime} onValue={setFirstTime} {...timeBounds} label={`${t("firstCol")}: ${timeUnit === "s" ? t("timeRowSeconds") : t("timeRowTicks")}`} inputId="snmp-time-first" className="snmp-time-field"><input id="snmp-time-first" className="cidr-input mono" value={firstTime} onChange={(e) => setFirstTime(e.target.value)} onKeyDown={stepperKeyDown({ value: firstTime, onValue: setFirstTime, ...timeBounds })} placeholder={timeUnit === "s" ? "0" : "123456700"} inputMode="decimal" aria-label={`${t("firstCol")}: ${timeUnit === "s" ? t("timeRowSeconds") : t("timeRowTicks")}`} autoComplete="off" spellCheck={false} maxLength={MAX_FIELD} /></StepperField></td>
+                    <td data-label={t("secondCol")}><StepperField value={secondTime} onValue={setSecondTime} {...timeBounds} label={`${t("secondCol")}: ${timeUnit === "s" ? t("timeRowSeconds") : t("timeRowTicks")}`} inputId="snmp-time-second" className="snmp-time-field"><input id="snmp-time-second" className="cidr-input mono" value={secondTime} onChange={(e) => setSecondTime(e.target.value)} onKeyDown={stepperKeyDown({ value: secondTime, onValue: setSecondTime, ...timeBounds })} placeholder={timeUnit === "s" ? "30" : "123486700"} inputMode="decimal" aria-label={`${t("secondCol")}: ${timeUnit === "s" ? t("timeRowSeconds") : t("timeRowTicks")}`} autoComplete="off" spellCheck={false} maxLength={MAX_FIELD} /></StepperField></td>
                   </tr>
                 </tbody>
               </table>
@@ -370,19 +414,28 @@ export default function SnmpCounterWrapCalculatorTool() {
             {mode === "wrap" && (
               <div className="bb-field">
                 <label className="cidr-label" htmlFor="snmp-util">{t("utilLabel")}</label>
-                <input id="snmp-util" className="cidr-input mono" value={utilisation} onChange={(e) => setUtilisation(e.target.value)} placeholder="100" inputMode="decimal" autoComplete="off" spellCheck={false} maxLength={64} />
+                {/* Up and down arrows: one percent a press, 1 to 100 (the engine takes above 0 to 100; below 1 is typed). */}
+                <StepperField value={utilStep.value} onValue={utilStep.onValue} min={1} max={100} label={t("utilLabel")} inputId="snmp-util">
+                  <input id="snmp-util" className="cidr-input mono" value={utilisation} onChange={(e) => setUtilisation(e.target.value)} onKeyDown={stepperKeyDown({ ...utilStep, min: 1, max: 100 })} placeholder="100" inputMode="decimal" autoComplete="off" spellCheck={false} maxLength={64} />
+                </StepperField>
               </div>
             )}
             {mode === "wrap" && (
               <div className="bb-field">
                 <label className="cidr-label" htmlFor="snmp-poll">{t("pollLabel")}</label>
-                <input id="snmp-poll" className="cidr-input mono" value={poll} onChange={(e) => setPoll(e.target.value)} placeholder={t("pollPlaceholder")} autoComplete="off" spellCheck={false} maxLength={64} />
+                {/* Up and down arrows: one of the typed unit a press (seconds when none), from 1; the unit stays. */}
+                <StepperField value={pollStep.value} onValue={pollStep.onValue} min={1} label={t("pollLabel")} inputId="snmp-poll">
+                  <input id="snmp-poll" className="cidr-input mono" value={poll} onChange={(e) => setPoll(e.target.value)} onKeyDown={stepperKeyDown({ ...pollStep, min: 1 })} placeholder={t("pollPlaceholder")} autoComplete="off" spellCheck={false} maxLength={64} />
+                </StepperField>
               </div>
             )}
             {kind === "packets" && (
               <div className="bb-field">
                 <label className="cidr-label" htmlFor="snmp-size">{t("sizeLabel")}</label>
-                <input id="snmp-size" className="cidr-input mono" value={packetSize} onChange={(e) => setPacketSize(e.target.value)} placeholder="84" inputMode="numeric" autoComplete="off" spellCheck={false} maxLength={64} aria-describedby="snmp-size-hint" />
+                {/* Up and down arrows: one octet a press, whole octets from 1 to 65535 (the engine's range); blank steps from 84. */}
+                <StepperField value={packetSize.trim() === "" ? "84" : packetSize} onValue={setPacketSize} min={1} max={65535} integer label={t("sizeLabel")} inputId="snmp-size">
+                  <input id="snmp-size" className="cidr-input mono" value={packetSize} onChange={(e) => setPacketSize(e.target.value)} onKeyDown={stepperKeyDown({ value: packetSize.trim() === "" ? "84" : packetSize, onValue: setPacketSize, min: 1, max: 65535, integer: true })} placeholder="84" inputMode="numeric" autoComplete="off" spellCheck={false} maxLength={64} aria-describedby="snmp-size-hint" />
+                </StepperField>
               </div>
             )}
           </div>

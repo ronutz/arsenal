@@ -10,7 +10,8 @@
 // TMM count, how the iRule keeps shared state, and (for a subtable) the table
 // operations each request makes; then the load on the busiest TMM, its share,
 // the TMMs left idle for this virtual server, the table work on the subtable's
-// processor, and a verdict. The model is src/lib/labs/cmp-concentration/
+// processor, and a verdict. The three number fields carry up and down arrows
+// (one a press, inside the model's ranges). The model is src/lib/labs/cmp-concentration/
 // compute.ts; its checked cases are the golden vectors beside it.
 // Words: "learnLabs.cmp-concentration".
 // ============================================================================
@@ -18,6 +19,8 @@
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import LabFrame, { LabField, LabSelect } from "./LabFrame";
+// Up and down arrows beside the three number fields.
+import { StepperField } from "@/components/NumberStepper";
 import { CmpError, compute, DEFAULT_INPUT, EXAMPLE_INPUT, MAX_RATE, MAX_TABLE_OPS, MAX_TMMS, type CmpErrorCode, type CmpInput, type CmpResult, type StatePattern } from "@/lib/labs/cmp-concentration/compute";
 
 /** The lab's id: its namespace, its anchor and its element ids. */
@@ -136,16 +139,25 @@ export default function CmpConcentrationLab() {
       controls={
         <>
           <LabField id={`${ID}-rate`} label={t("rate")}>
-            <input id={`${ID}-rate`} className="lab-input" type="number" inputMode="decimal" min={1} max={MAX_RATE} step="any" value={form.rate} aria-invalid={err === "bad-rate" ? "true" : undefined} onChange={(e) => setForm({ ...form, rate: e.target.value })} />
+            {/* Arrows: one request per second a press, 1 to the model's 10,000,000 ceiling (a typed fraction still counts). */}
+            <StepperField value={form.rate} onValue={(v) => setForm((f) => ({ ...f, rate: v }))} min={1} max={MAX_RATE} step={1} label={t("rate")} inputId={`${ID}-rate`}>
+              <input id={`${ID}-rate`} className="lab-input" type="number" inputMode="decimal" min={1} max={MAX_RATE} step="any" value={form.rate} aria-invalid={err === "bad-rate" ? "true" : undefined} onChange={(e) => setForm({ ...form, rate: e.target.value })} />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-tmms`} label={t("tmms")}>
-            <input id={`${ID}-tmms`} className="lab-input" type="number" inputMode="decimal" min={1} max={MAX_TMMS} step={1} value={form.tmms} aria-invalid={err === "bad-tmms" ? "true" : undefined} onChange={(e) => setForm({ ...form, tmms: e.target.value })} />
+            {/* Arrows: one TMM a press, 1 to 128. */}
+            <StepperField value={form.tmms} onValue={(v) => setForm((f) => ({ ...f, tmms: v }))} min={1} max={MAX_TMMS} step={1} label={t("tmms")} inputId={`${ID}-tmms`}>
+              <input id={`${ID}-tmms`} className="lab-input" type="number" inputMode="decimal" min={1} max={MAX_TMMS} step={1} value={form.tmms} aria-invalid={err === "bad-tmms" ? "true" : undefined} onChange={(e) => setForm({ ...form, tmms: e.target.value })} />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-pattern`} label={t("pattern")}>
             <LabSelect id={`${ID}-pattern`} value={form.pattern} options={patternOptions} onChange={(v) => setForm({ ...form, pattern: v as StatePattern })} />
           </LabField>
           <LabField id={`${ID}-ops`} label={t("ops")}>
-            <input id={`${ID}-ops`} className="lab-input" type="number" inputMode="decimal" min={0} max={MAX_TABLE_OPS} step={1} value={form.ops} disabled={!subtable} aria-invalid={err === "bad-ops" ? "true" : undefined} onChange={(e) => setForm({ ...form, ops: e.target.value })} />
+            {/* Arrows: one table operation a press, 0 to 100; disabled with the field when the state is not a subtable. */}
+            <StepperField value={form.ops} onValue={(v) => setForm((f) => ({ ...f, ops: v }))} min={0} max={MAX_TABLE_OPS} step={1} label={t("ops")} inputId={`${ID}-ops`} disabled={!subtable}>
+              <input id={`${ID}-ops`} className="lab-input" type="number" inputMode="decimal" min={0} max={MAX_TABLE_OPS} step={1} value={form.ops} disabled={!subtable} aria-invalid={err === "bad-ops" ? "true" : undefined} onChange={(e) => setForm({ ...form, ops: e.target.value })} />
+            </StepperField>
           </LabField>
         </>
       }

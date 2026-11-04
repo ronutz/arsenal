@@ -21,6 +21,10 @@
 // arriving link (useShareArrival) replaces the whole form, and the page
 // assembles the command; nothing is captured, run or sent, and the address
 // loses the values at once.
+//
+// NO KEYBOARD NEEDED (03/11/2026): the snap length and the packet count have
+// up and down arrows (StepperField) from the minimum each field already
+// declares (0 bytes, 1 packet).
 // ============================================================================
 
 "use client";
@@ -37,6 +41,7 @@ import {
   type Verbosity,
 } from "@/lib/tools/f5-bigip-tcpdump-builder";
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
+import { StepperField } from "@/components/NumberStepper"; // up and down arrows for the two number fields (03/11/2026)
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
 import { TCPDUMP_SHARE } from "@/lib/tools/f5-bigip-tcpdump-builder/share"; // this tool's share spec: the form as named values
@@ -234,15 +239,18 @@ export default function BigipTcpdumpBuilderTool() {
             <label className="cidr-label" htmlFor="tcp-snap">
               {t("snaplenValueLabel")}
             </label>
-            <input
-              id="tcp-snap"
-              className="cidr-input mono tcpdump-num"
-              type="number"
-              min={0}
-              value={opts.snaplenValue ?? ""}
-              placeholder={t("snaplenValuePlaceholder")}
-              onChange={(e) => set("snaplenValue", toNum(e.target.value))}
-            />
+            {/* Up and down arrows: a byte count of 0 or more, one byte a press. */}
+            <StepperField value={opts.snaplenValue ?? ""} onValue={(v) => set("snaplenValue", toNum(v))} min={0} integer label={t("snaplenValueLabel")} inputId="tcp-snap">
+              <input
+                id="tcp-snap"
+                className="cidr-input mono tcpdump-num"
+                type="number"
+                min={0}
+                value={opts.snaplenValue ?? ""}
+                placeholder={t("snaplenValuePlaceholder")}
+                onChange={(e) => set("snaplenValue", toNum(e.target.value))}
+              />
+            </StepperField>
           </div>
         )}
 
@@ -250,15 +258,18 @@ export default function BigipTcpdumpBuilderTool() {
           <label className="cidr-label" htmlFor="tcp-count">
             {t("countLabel")}
           </label>
-          <input
-            id="tcp-count"
-            className="cidr-input mono tcpdump-num"
-            type="number"
-            min={1}
-            value={opts.count ?? ""}
-            placeholder={t("countPlaceholder")}
-            onChange={(e) => set("count", toNum(e.target.value))}
-          />
+          {/* Up and down arrows: one packet or more. */}
+          <StepperField value={opts.count ?? ""} onValue={(v) => set("count", toNum(v))} min={1} integer label={t("countLabel")} inputId="tcp-count">
+            <input
+              id="tcp-count"
+              className="cidr-input mono tcpdump-num"
+              type="number"
+              min={1}
+              value={opts.count ?? ""}
+              placeholder={t("countPlaceholder")}
+              onChange={(e) => set("count", toNum(e.target.value))}
+            />
+          </StepperField>
           <p className="tcpdump-hint">{t("countHint")}</p>
         </div>
       </fieldset>

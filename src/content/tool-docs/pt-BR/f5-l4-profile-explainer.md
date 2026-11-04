@@ -10,6 +10,8 @@ A terceira é o FastHTTP, definido pela referência como recursos selecionados d
 
 Postura de referência como seu irmão do BIG-IP Zero Trust Access (antigo BIG-IP APM - Access Policy Manager): cartões e consulta agora, parsing de stanza com auditoria por opção como roadmap documentado. Tudo roda localmente.
 
+Abaixo do campo, um botão por perfil da tabela o preenche com esse nome, e `profiles` com a tabela inteira; um nome digitado à mão, nomes alternativos incluídos, funciona como antes.
+
 ## Compartilhar resultado
 
 No topo da resposta, acima do card de um perfil ou do catálogo, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva o nome como foi digitado depois do `#`: `/tools/f5-l4-profile-explainer#input=fastl4`. O popover diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.

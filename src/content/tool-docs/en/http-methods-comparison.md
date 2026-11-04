@@ -2,6 +2,8 @@
 
 Enter one to four HTTP (Hypertext Transfer Protocol) method names and the tool returns each one's protocol-level facts: whether it is safe, idempotent, and cacheable, what its request-body semantics are, whether CORS (Cross-Origin Resource Sharing) lets browsers send it without a preflight (the permission-asking OPTIONS request a browser fires before any non-simple cross-origin request), whether HTML forms can produce it declaratively, and which RFC defines it. Ask for two or more ("get vs query") and it also names exactly the properties where they differ. The table covers the nine core methods of RFC 9110, PATCH (RFC 5789), the WebDAV trio PROPFIND, REPORT, and SEARCH, and the headline row: QUERY, registered by RFC 10008 in June 2026 - the first new HTTP method since PATCH in 2010.
 
+Under the field, a button per method in the table adds that method to the line or takes it out, so a comparison is built without typing; with four named, the others wait.
+
 ## The vocabulary, precisely
 
 Safe means the client requests no state change; idempotent means repeating the identical request leaves the server in the same state, which is what makes automatic retries legal. Both are IANA-registered promises about intent - a generic cache, proxy, or retry layer can act on them without knowing anything about your API. Neither says anything about the payload: a QUERY body can carry the same injection attempt a POST body can, which is why the tool's closing note insists on POST-level inspection for QUERY.

@@ -89,6 +89,10 @@ const PROTO: Record<string, string> = {
   tcp: "6", udp: "17", icmp: "1", icmpv6: "58", gre: "47", esp: "50", ah: "51", sctp: "132",
 };
 
+/** The protocol names accepted, in the table's order: the tool's page offers one button each (03/11/2026), read from
+ *  here so the buttons and the engine cannot drift apart. */
+export const PROTO_NAMES: readonly string[] = Object.freeze(Object.keys(PROTO));
+
 export class FlowDebugError extends Error {
   constructor(message: string) {
     super(message);

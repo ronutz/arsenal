@@ -15,11 +15,15 @@
 // section, or the vendor document, behind each decision. The model is
 // src/lib/labs/kerberos-exchanges/compute.ts; its checked cases are the golden
 // vectors beside it. Words: "learnLabs.kerberos-exchanges".
+// The three number fields carry up and down arrows, one minute a press, which
+// also sets a negative offset on a phone keypad that has no minus sign.
 // ============================================================================
 
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import LabFrame, { LabField, LabSelect } from "./LabFrame";
+// Up and down arrows beside the three number fields.
+import { StepperField } from "@/components/NumberStepper";
 import {
   compute,
   DEFAULT_INPUT,
@@ -295,46 +299,54 @@ export default function KerberosExchangesLab() {
       controls={
         <>
           <LabField id={`${ID}-client-offset`} label={t("clientOffset")}>
-            {/* No decimal keypad here: the offset can be negative, and some phone keypads have no minus sign. */}
-            <input
-              id={`${ID}-client-offset`}
-              className="lab-input"
-              type="number"
-              min={OFFSET_RANGE[0]}
-              max={OFFSET_RANGE[1]}
-              step={1}
-              value={form.clientOffset}
-              aria-invalid={badOffset ? "true" : undefined}
-              onChange={(e) => setForm({ ...form, clientOffset: e.target.value })}
-            />
+            {/* No decimal keypad here: the offset can be negative, and some phone keypads have no minus sign. The arrows
+                cover that too: one minute a press, -1440 to 1440, and an empty field steps from 0. */}
+            <StepperField value={form.clientOffset} onValue={(v) => setForm((f) => ({ ...f, clientOffset: v }))} min={OFFSET_RANGE[0]} max={OFFSET_RANGE[1]} step={1} label={t("clientOffset")} inputId={`${ID}-client-offset`}>
+              <input
+                id={`${ID}-client-offset`}
+                className="lab-input"
+                type="number"
+                min={OFFSET_RANGE[0]}
+                max={OFFSET_RANGE[1]}
+                step={1}
+                value={form.clientOffset}
+                aria-invalid={badOffset ? "true" : undefined}
+                onChange={(e) => setForm({ ...form, clientOffset: e.target.value })}
+              />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-service-offset`} label={t("serviceOffset")}>
-            {/* Signed too, so the same keypad. */}
-            <input
-              id={`${ID}-service-offset`}
-              className="lab-input"
-              type="number"
-              min={OFFSET_RANGE[0]}
-              max={OFFSET_RANGE[1]}
-              step={1}
-              value={form.serviceOffset}
-              aria-invalid={badOffset ? "true" : undefined}
-              onChange={(e) => setForm({ ...form, serviceOffset: e.target.value })}
-            />
+            {/* Signed too, so the same keypad and the same arrows. */}
+            <StepperField value={form.serviceOffset} onValue={(v) => setForm((f) => ({ ...f, serviceOffset: v }))} min={OFFSET_RANGE[0]} max={OFFSET_RANGE[1]} step={1} label={t("serviceOffset")} inputId={`${ID}-service-offset`}>
+              <input
+                id={`${ID}-service-offset`}
+                className="lab-input"
+                type="number"
+                min={OFFSET_RANGE[0]}
+                max={OFFSET_RANGE[1]}
+                step={1}
+                value={form.serviceOffset}
+                aria-invalid={badOffset ? "true" : undefined}
+                onChange={(e) => setForm({ ...form, serviceOffset: e.target.value })}
+              />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-skew`} label={t("skew")}>
-            <input
-              id={`${ID}-skew`}
-              className="lab-input"
-              type="number"
-              inputMode="decimal"
-              min={SKEW_RANGE[0]}
-              max={SKEW_RANGE[1]}
-              step={1}
-              value={form.skew}
-              aria-invalid={badSkew ? "true" : undefined}
-              onChange={(e) => setForm({ ...form, skew: e.target.value })}
-            />
+            {/* Arrows: one minute a press, 1 to 99,999. */}
+            <StepperField value={form.skew} onValue={(v) => setForm((f) => ({ ...f, skew: v }))} min={SKEW_RANGE[0]} max={SKEW_RANGE[1]} step={1} label={t("skew")} inputId={`${ID}-skew`}>
+              <input
+                id={`${ID}-skew`}
+                className="lab-input"
+                type="number"
+                inputMode="decimal"
+                min={SKEW_RANGE[0]}
+                max={SKEW_RANGE[1]}
+                step={1}
+                value={form.skew}
+                aria-invalid={badSkew ? "true" : undefined}
+                onChange={(e) => setForm({ ...form, skew: e.target.value })}
+              />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-preauth`} label={t("preauth")}>
             <LabSelect id={`${ID}-preauth`} value={choice.preauth} options={preauthOptions} onChange={(v) => setChoice({ ...choice, preauth: v as Preauth })} />

@@ -2,6 +2,8 @@
 
 Preencha o que você quer rastrear — um endereço, opcionalmente portas, um protocolo, uma contagem de pacotes — e a ferramenta monta a sequência completa de `diagnose debug flow` para um FortiGate: o reset para estado limpo, o filtro, as opções de exibição, o trace e o enable, seguidos da limpeza. Cada linha é explicada individualmente. Gera texto e não contata nada.
 
+Digitar é opcional na maior parte do formulário: os campos de porta e a contagem de pacotes têm setas para cima e para baixo ao lado, e abaixo do campo de protocolo há um botão para cada nome de protocolo que a ferramenta converte no número (`tcp`, `udp`, `icmp`, `icmpv6`, `gre`, `esp`, `ah`, `sctp`); clicar de novo no botão aceso limpa o campo. Um número de protocolo, os endereços e o virtual domain continuam digitados.
+
 ## Por que um construtor, e não uma referência
 
 `diagnose debug flow` não é um comando, é uma receita de quatro ou cinco comandos que só funcionam em conjunto. A ordem importa, a limpeza importa mais, e o conjunto é usado com frequência baixa o bastante para que quase ninguém o lembre com exatidão. É exatamente o formato de problema que um construtor determinístico resolve.
@@ -22,7 +24,7 @@ Não pode saber a sua plataforma, o seu arranjo de VDOMs ou se a sua sessão est
 
 ## Compartilhar resultado
 
-Abaixo dos comandos, depois de Copiar, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva o formulário depois do `#` como valores com nome, sempre todos os campos: `addr`, `saddr`, `daddr`, `port`, `sport`, `dport`, `proto`, `vdom` e `count` como foram digitados (um vazio fica de fora), e `iprope` e `timestamp` como 1 ou 0. O botão fica desabilitado até um filtro ser digitado, porque a página não monta nada sem filtro. O popover diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
+Abaixo dos comandos, depois de Copiar, o botão **Compartilhar resultado** cria um link para esta página, só quando você clica, que leva o formulário depois do `#` como valores com nome, sempre todos os campos: `addr`, `saddr`, `daddr`, `port`, `sport`, `dport`, `proto`, `vdom` e `count` como foram digitados (um vazio fica de fora), e `iprope` e `timestamp` como 1 ou 0. O botão fica desabilitado até um filtro ser definido, porque a página não monta nada sem filtro. O popover diz primeiro o que o link leva e então oferece Copiar link e, onde o navegador tiver, a tela de compartilhamento do sistema; o endereço da página não muda.
 
 O formulário não tem segredo (o builder formata texto e não roda nada), mas os filtros citam hosts, portas e um virtual domain da sua rede, então o popover traz uma linha de cuidado antes de você copiar qualquer coisa. Todos os campos vão, não só os que diferem do padrão, então um link antigo mantém o sentido se um padrão mudar.
 

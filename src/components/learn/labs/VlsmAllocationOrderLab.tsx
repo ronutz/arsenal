@@ -14,11 +14,17 @@
 // src/lib/labs/vlsm-allocation-order/compute.ts; its cases, the article's own
 // tables, are the golden vectors beside it.
 // Words: "learnLabs.vlsm-allocation-order".
+//
+// The three host counts have up and down arrows beside them (PRIME 03/11/2026:
+// values set "through the click of a mouse (or press of the touchscreen)"),
+// one host a press, 1 to the model's MAX_HOSTS.
 // ============================================================================
 
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import LabFrame, { LabField, LabSelect } from "./LabFrame";
+// Up and down arrows for the three host counts.
+import { StepperField } from "@/components/NumberStepper";
 import {
   compute,
   DEFAULT_INPUT,
@@ -177,13 +183,22 @@ export default function VlsmAllocationOrderLab() {
       controls={
         <>
           <LabField id={`${ID}-office`} label={t("office")}>
-            <input id={`${ID}-office`} className="lab-input" type="number" inputMode="decimal" min={1} max={MAX_HOSTS} step={1} value={form.office} aria-invalid={badField(form.office) ? "true" : undefined} onChange={(e) => setForm({ ...form, office: e.target.value })} />
+            {/* Up and down arrows, whole numbers only: one host a press, 1 to the model's MAX_HOSTS, the field set as if typed. */}
+            <StepperField value={form.office} onValue={(v) => setForm((f) => ({ ...f, office: v }))} min={1} max={MAX_HOSTS} step={1} integer label={t("office")} inputId={`${ID}-office`}>
+              <input id={`${ID}-office`} className="lab-input" type="number" inputMode="decimal" min={1} max={MAX_HOSTS} step={1} value={form.office} aria-invalid={badField(form.office) ? "true" : undefined} onChange={(e) => setForm({ ...form, office: e.target.value })} />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-guest`} label={t("guest")}>
-            <input id={`${ID}-guest`} className="lab-input" type="number" inputMode="decimal" min={1} max={MAX_HOSTS} step={1} value={form.guest} aria-invalid={badField(form.guest) ? "true" : undefined} onChange={(e) => setForm({ ...form, guest: e.target.value })} />
+            {/* Up and down arrows, whole numbers only: one host a press, 1 to the model's MAX_HOSTS, the field set as if typed. */}
+            <StepperField value={form.guest} onValue={(v) => setForm((f) => ({ ...f, guest: v }))} min={1} max={MAX_HOSTS} step={1} integer label={t("guest")} inputId={`${ID}-guest`}>
+              <input id={`${ID}-guest`} className="lab-input" type="number" inputMode="decimal" min={1} max={MAX_HOSTS} step={1} value={form.guest} aria-invalid={badField(form.guest) ? "true" : undefined} onChange={(e) => setForm({ ...form, guest: e.target.value })} />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-management`} label={t("management")}>
-            <input id={`${ID}-management`} className="lab-input" type="number" inputMode="decimal" min={1} max={MAX_HOSTS} step={1} value={form.management} aria-invalid={badField(form.management) ? "true" : undefined} onChange={(e) => setForm({ ...form, management: e.target.value })} />
+            {/* Up and down arrows, whole numbers only: one host a press, 1 to the model's MAX_HOSTS, the field set as if typed. */}
+            <StepperField value={form.management} onValue={(v) => setForm((f) => ({ ...f, management: v }))} min={1} max={MAX_HOSTS} step={1} integer label={t("management")} inputId={`${ID}-management`}>
+              <input id={`${ID}-management`} className="lab-input" type="number" inputMode="decimal" min={1} max={MAX_HOSTS} step={1} value={form.management} aria-invalid={badField(form.management) ? "true" : undefined} onChange={(e) => setForm({ ...form, management: e.target.value })} />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-links`} label={t("links")}>
             <LabSelect id={`${ID}-links`} value={form.links} options={linkOptions} onChange={(v) => setForm({ ...form, links: v as LinkPrefix })} />

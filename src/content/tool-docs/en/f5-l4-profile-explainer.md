@@ -10,6 +10,8 @@ The third is FastHTTP, defined by the reference as selected features of TCP Expr
 
 Reference posture like its BIG-IP Zero Trust Access (formerly BIG-IP APM - Access Policy Manager) sibling: cards and lookup now, stanza parsing with a per-option audit as the documented roadmap. Everything runs locally.
 
+Under the field, a button per profile in the table fills it with that name, and `profiles` with the whole table; a name typed by hand, aliases included, works as before.
+
 ## Share results
 
 At the head of the answer, above a profile's card or the catalogue, **Share results** builds a link to this page, only when you press it, that carries the name as typed after the `#`: `/tools/f5-l4-profile-explainer#input=fastl4`. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.

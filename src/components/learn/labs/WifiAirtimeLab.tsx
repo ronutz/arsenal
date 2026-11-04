@@ -15,11 +15,17 @@
 // src/lib/labs/wifi-airtime/compute.ts (HPE Aruba's VHD 802.11ac VRD figures);
 // its checked cases are the golden vectors beside it.
 // Words: "learnLabs.wifi-airtime".
+//
+// Each frame size has up and down arrows beside it (PRIME 03/11/2026: values
+// set "through the click of a mouse (or press of the touchscreen)"), one byte
+// a press, inside the model's MIN_FRAME_BYTES to MAX_FRAME_BYTES.
 // ============================================================================
 
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import LabFrame, { LabField, LabSelect } from "./LabFrame";
+// Up and down arrows for the frame sizes.
+import { StepperField } from "@/components/NumberStepper";
 import {
   AirtimeError,
   compute,
@@ -220,18 +226,21 @@ export default function WifiAirtimeLab() {
               {/* Its frame size, when the slot is in use. */}
               {s.rate !== "off" && (
                 <LabField id={`${ID}-bytes-${i + 1}`} label={t("bytes", { n: i + 1 })}>
-                  <input
-                    id={`${ID}-bytes-${i + 1}`}
-                    className="lab-input"
-                    type="number"
-                    inputMode="numeric"
-                    min={MIN_FRAME_BYTES}
-                    max={MAX_FRAME_BYTES}
-                    step={1}
-                    value={s.bytes}
-                    aria-invalid={err === "bad-bytes" && errSlot === i ? "true" : undefined}
-                    onChange={(e) => setSlot(i, { bytes: e.target.value })}
-                  />
+                  {/* Up and down arrows, whole numbers only: one byte a press, inside the model's bounds, the field set as if typed. */}
+                  <StepperField value={s.bytes} onValue={(v) => setSlot(i, { bytes: v })} min={MIN_FRAME_BYTES} max={MAX_FRAME_BYTES} step={1} integer label={t("bytes", { n: i + 1 })} inputId={`${ID}-bytes-${i + 1}`}>
+                    <input
+                      id={`${ID}-bytes-${i + 1}`}
+                      className="lab-input"
+                      type="number"
+                      inputMode="numeric"
+                      min={MIN_FRAME_BYTES}
+                      max={MAX_FRAME_BYTES}
+                      step={1}
+                      value={s.bytes}
+                      aria-invalid={err === "bad-bytes" && errSlot === i ? "true" : undefined}
+                      onChange={(e) => setSlot(i, { bytes: e.target.value })}
+                    />
+                  </StepperField>
                 </LabField>
               )}
             </div>

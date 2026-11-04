@@ -12,6 +12,8 @@ Takes two colours, written in any notation CSS Color Level 4 defines, and answer
 - **color()**: `srgb`, `srgb-linear`, `display-p3`, `display-p3-linear`, `xyz`, `xyz-d65`, `xyz-d50`.
 - `none` as a component counts as zero, as the specification says.
 
+Beside each field, the browser's colour picker opens on the colour the field holds and writes the one you pick into it as `#rrggbb`, so a colour can be chosen without typing.
+
 ## What it computes
 
 - **Relative luminance** (WCAG 2.2): each sRGB channel is linearised (c / 12.92 up to 0.04045, else ((c + 0.055) / 1.055) ^ 2.4) and weighted, L = 0.2126 R + 0.7152 G + 0.0722 B. WCAG 2.0 and 2.1 wrote the threshold as 0.03928; for 8-bit channel values the two thresholds classify every value identically.

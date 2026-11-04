@@ -14,6 +14,10 @@
 // The subnet math is the cidr engine's (imported by the engine module); this
 // component only drives rounds, grades via the pure grader, and keeps score.
 // Everything is local — nothing is generated on or sent to a server.
+//
+// No keyboard needed (03/11/2026): when the answer is a prefix length (0 to
+// 32) or a host count (0 or more), the answer field has up and down arrows
+// (StepperField); an address or a mask stays typed.
 // ============================================================================
 "use client";
 
@@ -25,6 +29,7 @@ import {
   type Difficulty,
   type DrillQuestion,
 } from "@/lib/dev-other/subnet-drill/compute";
+import { StepperField, stepperKeyDown } from "@/components/NumberStepper"; // up and down arrows for a numeric answer (03/11/2026)
 
 const ROUND_SIZE = 10;
 const STORE_KEY = "ronutz:subnet-drill:stats";
@@ -142,6 +147,15 @@ export default function DevOtherSubnetDrillTool() {
       }[current.answerType]
     : "";
 
+  // The answer's arrows: a prefix length or a host count steps; an address, a mask or a yes/no does not.
+  const stepKind = current && (current.answerType === "prefix" || current.answerType === "integer") ? current.answerType : null;
+  // The number the arrows step: the answer without the "/" the grader also accepts, or without digit grouping.
+  const stepValueText = stepKind === "prefix" ? input.replace("/", "") : input.replace(/[, ]/g, "");
+  // A stepped answer, written as the reader started it ("/24" keeps its slash).
+  const stepTo = (v: string) => setInput(stepKind === "prefix" && input.trim().startsWith("/") ? "/" + v : v);
+  // The bounds: a prefix length is a whole 0 to 32; a count is a whole 0 or more.
+  const stepBounds = stepKind === "prefix" ? { min: 0, max: 32, integer: true } : { min: 0, integer: true };
+
   return (
     <div className="cidr-tool jwt-tool">
       {/* Persistent scoreboard — the state axis, always visible. */}
@@ -247,19 +261,44 @@ export default function DevOtherSubnetDrillTool() {
             </div>
           ) : (
             <div className="drill-answer-row">
-              <input
-                className="cidr-input mono"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") (feedback ? next() : submit());
-                }}
-                placeholder={answerHint}
-                disabled={!!feedback}
-                autoComplete="off"
-                spellCheck={false}
-                aria-label={promptText}
-              />
+              {(() => {
+                // The answer field as it was, with Arrow Up and Down added for a numeric answer.
+                const field = (
+                  <input
+                    id="drill-answer"
+                    className="cidr-input mono"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      // Enter grades (or moves on). Its default is cancelled, so the keypress that follows cannot
+                      // land on the Next button that takes the focus as the verdict appears (one Enter used to grade
+                      // the answer and skip to the next question at once).
+                      if (e.key === "Enter") {
+                        // No keypress, no click on the button that is about to take the focus.
+                        e.preventDefault();
+                        // Grade, or move on.
+                        if (feedback) next();
+                        else submit();
+                      }
+                      // Otherwise, for a prefix or a count, Arrow Up and Down step the answer.
+                      else if (stepKind && !feedback) stepperKeyDown({ value: stepValueText, onValue: stepTo, ...stepBounds })(e);
+                    }}
+                    // A number: the phone shows its digit keys.
+                    inputMode={stepKind ? "numeric" : undefined}
+                    placeholder={answerHint}
+                    disabled={!!feedback}
+                    autoComplete="off"
+                    spellCheck={false}
+                    aria-label={promptText}
+                  />
+                ); // the field
+                // A numeric answer: the field with its arrows, disabled once graded; any other: the field alone.
+                return stepKind ? (
+                  <StepperField value={stepValueText} onValue={stepTo} {...stepBounds} label={promptText} inputId="drill-answer" disabled={!!feedback}>
+                    {field}
+                  </StepperField>
+                ) : field;
+              })()}
               {!feedback && (
                 <button type="button" className="b64-copy" onClick={submit}>
                   {t("check")}

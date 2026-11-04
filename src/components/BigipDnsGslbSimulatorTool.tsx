@@ -16,15 +16,27 @@
 // (GSLB_SIM_SHARE, posture input: method, region, requests, pools, members).
 // An arriving link replaces the whole form and the page simulates it; the
 // address loses the values at once.
+//
+// NO KEYBOARD NEEDED (03/11/2026): the request count and every ratio have up
+// and down arrows (StepperField), and the three region fields offer the
+// regions already named on the page (a datalist), so a topology test is set
+// up by pointing.
 // ============================================================================
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 import { useTranslations } from "next-intl";
 import { simulate, SIMULABLE_METHODS, DYNAMIC_METHODS, type GslbInput, type GslbMethod } from "@/lib/tools/bigip-dns-gslb-simulator/compute";
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
 import { GSLB_SIM_SHARE } from "@/lib/tools/bigip-dns-gslb-simulator/share"; // this tool's share spec: the whole form
+import { StepperField } from "@/components/NumberStepper"; // up and down arrows for the request count and the ratios (03/11/2026)
+
+/** The simulator's request bound (MAX_REQUESTS in compute.ts): a larger count is simulated as this many. */
+const MAX_REQUESTS = 100000; // the arrows stop here
+
+/** A field's name and the field (with its arrows), kept together when a row wraps (on a phone, 03/11/2026). */
+const PAIR: CSSProperties = { display: "inline-flex", flexWrap: "wrap", alignItems: "center", gap: "0.4rem", minWidth: 0 }; // one unit
 
 /** Nothing to share: a constant, so the button sees no change between renders. */
 const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
@@ -103,6 +115,11 @@ export default function BigipDnsGslbSimulatorTool() {
     }));
   };
 
+  // The request count as typed or stepped: a whole number of 0 or more.
+  const setRequestsText = (v: string) => setRequests(Math.max(0, Math.floor(Number(v) || 0)));
+  // Every region named on the page, once each, for the region fields' suggestions.
+  const regions = [...new Set([...pools.map((p) => p.region), ...pools.flatMap((p) => p.members.map((m) => m.region))].map((r) => r.trim()).filter(Boolean))];
+
   const clearAll = () => { setPoolMethod("round-robin"); setClientRegion(""); setRequests(100); setPools([blankPool(1)]); };
   const loadExample = () => { setPoolMethod(EXAMPLE.poolMethod); setClientRegion(EXAMPLE.clientRegion); setRequests(EXAMPLE.requests); setPools(EXAMPLE.pools); };
 
@@ -126,10 +143,22 @@ export default function BigipDnsGslbSimulatorTool() {
           <select className="cidr-input mono" style={{ width: "auto" }} value={poolMethod} onChange={(e) => setPoolMethod(e.target.value as GslbMethod)}>
             {ALL_METHODS.map((m) => <option key={m} value={m}>{methodLabel(m)}</option>)}
           </select>
-          <label className="cidr-label" style={{ margin: 0 }}>{t("clientRegionLabel")}</label>
-          <input className="cidr-input mono" style={{ width: "6rem" }} value={clientRegion} onChange={(e) => setClientRegion(e.target.value)} placeholder="eu" aria-label={t("clientRegionLabel")} />
-          <label className="cidr-label" style={{ margin: 0 }}>{t("requestsLabel")}</label>
-          <input className="cidr-input mono" style={{ width: "5rem" }} type="number" min={0} value={requests} onChange={(e) => setRequests(Math.max(0, Math.floor(Number(e.target.value) || 0)))} aria-label={t("requestsLabel")} />
+          {/* The region's name and its field, kept together when the row wraps. */}
+          <span style={PAIR}>
+            <label className="cidr-label" style={{ margin: 0 }}>{t("clientRegionLabel")}</label>
+            {/* The client region: typed, or picked from the regions the pools and members name. */}
+            <input className="cidr-input mono" style={{ width: "6rem" }} value={clientRegion} onChange={(e) => setClientRegion(e.target.value)} placeholder="eu" aria-label={t("clientRegionLabel")} list="gslb-regions" />
+          </span>
+          {/* The field's name and the field with its arrows, kept together when the row wraps (03/11/2026). */}
+          <span style={PAIR}>
+            <label className="cidr-label" style={{ margin: 0 }} htmlFor="gslb-requests">{t("requestsLabel")}</label>
+            {/* Up and down arrows: 0 to the simulator's 100,000. */}
+            <StepperField value={requests} onValue={setRequestsText} min={0} max={MAX_REQUESTS} integer label={t("requestsLabel")} inputId="gslb-requests">
+              <input id="gslb-requests" className="cidr-input mono" style={{ width: "6rem" }} type="number" min={0} max={MAX_REQUESTS} value={requests} onChange={(e) => setRequestsText(e.target.value)} aria-label={t("requestsLabel")} />
+            </StepperField>
+          </span>
+          {/* The regions on the page, offered to every region field. */}
+          <datalist id="gslb-regions">{regions.map((r) => <option key={r} value={r} />)}</datalist>
         </div>
 
         {/* --- Pools, each with members --- */}
@@ -139,10 +168,20 @@ export default function BigipDnsGslbSimulatorTool() {
               <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", alignItems: "center", marginBottom: "0.5rem" }}>
                 <span className="mono" style={{ color: "var(--accent-primary)" }}>{t("poolWord")}</span>
                 <input className="cidr-input mono" style={{ width: "9rem" }} value={p.id} onChange={(e) => setPoolField(pi, "id", e.target.value)} aria-label={t("poolIdCol")} />
-                <label className="cidr-label" style={{ margin: 0 }}>{t("ratioCol")}</label>
-                <input className="cidr-input mono" style={{ width: "3.5rem" }} type="number" min={1} value={p.ratio} onChange={(e) => setPoolField(pi, "ratio", e.target.value)} aria-label={t("ratioCol")} />
-                <label className="cidr-label" style={{ margin: 0 }}>{t("regionCol")}</label>
-                <input className="cidr-input mono" style={{ width: "5rem" }} value={p.region} onChange={(e) => setPoolField(pi, "region", e.target.value)} placeholder="na" aria-label={t("regionCol")} />
+                {/* The field's name and the field with its arrows, kept together when the row wraps (03/11/2026). */}
+                <span style={PAIR}>
+                  <label className="cidr-label" style={{ margin: 0 }}>{t("ratioCol")}</label>
+                  {/* Up and down arrows: a ratio of 1 or more, as the simulator reads it. */}
+                  <StepperField value={p.ratio} onValue={(v) => setPoolField(pi, "ratio", v)} min={1} integer label={t("ratioCol")} inputId={`gslb-pool-${pi}-ratio`}>
+                    <input id={`gslb-pool-${pi}-ratio`} className="cidr-input mono" style={{ width: "6rem" }} type="number" min={1} value={p.ratio} onChange={(e) => setPoolField(pi, "ratio", e.target.value)} aria-label={t("ratioCol")} />
+                  </StepperField>
+                </span>
+                {/* The region's name and its field, kept together when the row wraps. */}
+                <span style={PAIR}>
+                  <label className="cidr-label" style={{ margin: 0 }}>{t("regionCol")}</label>
+                  {/* The pool's region: typed, or picked from the regions already named. */}
+                  <input className="cidr-input mono" style={{ width: "5rem" }} value={p.region} onChange={(e) => setPoolField(pi, "region", e.target.value)} placeholder="na" aria-label={t("regionCol")} list="gslb-regions" />
+                </span>
                 <label className="cidr-label" style={{ margin: 0 }}>{t("memberMethodLabel")}</label>
                 <select className="cidr-input mono" style={{ width: "auto" }} value={p.method} onChange={(e) => setPoolField(pi, "method", e.target.value)}>
                   {ALL_METHODS.map((m) => <option key={m} value={m}>{methodLabel(m)}</option>)}
@@ -160,10 +199,20 @@ export default function BigipDnsGslbSimulatorTool() {
                   <div key={mi} style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", alignItems: "center" }}>
                     <span className="mono" style={{ opacity: 0.6 }}>{t("memberWord")}</span>
                     <input className="cidr-input mono" style={{ width: "8rem" }} value={m.id} onChange={(e) => setMemberField(pi, mi, "id", e.target.value)} aria-label={t("memberIdCol")} />
-                    <label className="cidr-label" style={{ margin: 0 }}>{t("ratioCol")}</label>
-                    <input className="cidr-input mono" style={{ width: "3.5rem" }} type="number" min={1} value={m.ratio} onChange={(e) => setMemberField(pi, mi, "ratio", e.target.value)} aria-label={t("ratioCol")} />
-                    <label className="cidr-label" style={{ margin: 0 }}>{t("regionCol")}</label>
-                    <input className="cidr-input mono" style={{ width: "5rem" }} value={m.region} onChange={(e) => setMemberField(pi, mi, "region", e.target.value)} placeholder="na" aria-label={t("regionCol")} />
+                    {/* The field's name and the field with its arrows, kept together when the row wraps (03/11/2026). */}
+                    <span style={PAIR}>
+                      <label className="cidr-label" style={{ margin: 0 }}>{t("ratioCol")}</label>
+                      {/* Up and down arrows: a ratio of 1 or more. */}
+                      <StepperField value={m.ratio} onValue={(v) => setMemberField(pi, mi, "ratio", v)} min={1} integer label={t("ratioCol")} inputId={`gslb-member-${pi}-${mi}-ratio`}>
+                        <input id={`gslb-member-${pi}-${mi}-ratio`} className="cidr-input mono" style={{ width: "6rem" }} type="number" min={1} value={m.ratio} onChange={(e) => setMemberField(pi, mi, "ratio", e.target.value)} aria-label={t("ratioCol")} />
+                      </StepperField>
+                    </span>
+                    {/* The region's name and its field, kept together when the row wraps. */}
+                    <span style={PAIR}>
+                      <label className="cidr-label" style={{ margin: 0 }}>{t("regionCol")}</label>
+                      {/* The member's region: typed, or picked from the regions already named. */}
+                      <input className="cidr-input mono" style={{ width: "5rem" }} value={m.region} onChange={(e) => setMemberField(pi, mi, "region", e.target.value)} placeholder="na" aria-label={t("regionCol")} list="gslb-regions" />
+                    </span>
                     <label className="cidr-label" style={{ margin: 0, display: "flex", alignItems: "center", gap: "0.3rem" }}>
                       <input type="checkbox" checked={m.up} onChange={(e) => setMemberField(pi, mi, "up", e.target.checked)} /> {t("upCol")}
                     </label>

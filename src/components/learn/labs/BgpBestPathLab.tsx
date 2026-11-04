@@ -10,6 +10,8 @@
 // the decision profile, how many paths are in play, the best path before this
 // run (for the profiles that use it) and which path is being edited; the
 // edited path's attributes follow, so the controls stay one column on a phone.
+// LOCAL_PREF, MED and the IGP cost carry up and down arrows (one a press, 0 to
+// 2^32 - 1, as the model reads them); AS_PATH and the addresses stay typed.
 // The result is a table of the paths and their fate, the decision step by step
 // (each step's values, what it removed, and where one path was left), and the
 // verdict. The model is src/lib/labs/bgp-best-path/compute.ts; its checked
@@ -19,6 +21,8 @@
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import LabFrame, { LabField, LabSelect } from "./LabFrame";
+// Up and down arrows for the three whole-number attributes, and the arrow keys for those text fields.
+import { StepperField, stepperKeyDown } from "@/components/NumberStepper";
 import {
   BgpError,
   compute,
@@ -26,6 +30,7 @@ import {
   EXAMPLE_INPUT,
   LETTERS,
   LOCAL_AS,
+  MAX_U32,
   type BgpErrorCode,
   type BgpInput,
   type BgpResult,
@@ -99,6 +104,19 @@ export default function BgpBestPathLab() {
     // The new settings.
     setInput({ ...input, paths });
   };
+  /** The arrows' and arrow keys' settings for a four-octet whole-number field: 0 to 2^32 - 1, one a press, set as if typed. */
+  const u32Stepper = (field: "localPref" | "med" | "igpCost") => ({
+    // What the field shows.
+    value: ep[field],
+    // Set it the way its own onChange does.
+    onValue: (v: string) => setField(field, v),
+    // The model's range for these attributes.
+    min: 0,
+    // Four octets.
+    max: MAX_U32,
+    // One a press.
+    step: 1,
+  });
   /** True when the refusal concerns this field of the edited path. */
   const invalid = (field: keyof PathInput): "true" | undefined => (err && err.path === ei && FIELD_OF[err.code] === field ? "true" : undefined);
 
@@ -373,7 +391,10 @@ export default function BgpBestPathLab() {
             </LabField>
           )}
           <LabField id={`${ID}-local-pref`} label={t("localPref")}>
-            <input id={`${ID}-local-pref`} className="lab-input" type="text" inputMode="numeric" autoComplete="off" value={ep.localPref} aria-invalid={invalid("localPref")} onChange={(e) => setField("localPref", e.target.value)} />
+            {/* Arrows beside the field; Arrow Up and Down (Page Up and Down for ten) from the keyboard. */}
+            <StepperField {...u32Stepper("localPref")} label={t("localPref")} inputId={`${ID}-local-pref`}>
+              <input id={`${ID}-local-pref`} className="lab-input" type="text" inputMode="numeric" autoComplete="off" value={ep.localPref} aria-invalid={invalid("localPref")} onChange={(e) => setField("localPref", e.target.value)} onKeyDown={stepperKeyDown(u32Stepper("localPref"))} />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-as-path`} label={t("asPath")}>
             <input id={`${ID}-as-path`} className="lab-input mono" type="text" inputMode="numeric" autoComplete="off" spellCheck={false} value={ep.asPath} aria-invalid={invalid("asPath")} onChange={(e) => setField("asPath", e.target.value)} />
@@ -382,10 +403,16 @@ export default function BgpBestPathLab() {
             <LabSelect id={`${ID}-origin`} value={ep.origin} options={originOptions} onChange={(v) => setField("origin", v as Origin)} />
           </LabField>
           <LabField id={`${ID}-med`} label={t("med")}>
-            <input id={`${ID}-med`} className="lab-input" type="text" inputMode="numeric" autoComplete="off" value={ep.med} aria-invalid={invalid("med")} onChange={(e) => setField("med", e.target.value)} />
+            {/* Arrows too; an empty MED (absent) steps to 0, which the model reads as present and lowest. */}
+            <StepperField {...u32Stepper("med")} label={t("med")} inputId={`${ID}-med`}>
+              <input id={`${ID}-med`} className="lab-input" type="text" inputMode="numeric" autoComplete="off" value={ep.med} aria-invalid={invalid("med")} onChange={(e) => setField("med", e.target.value)} onKeyDown={stepperKeyDown(u32Stepper("med"))} />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-igp-cost`} label={t("igpCost")}>
-            <input id={`${ID}-igp-cost`} className="lab-input" type="text" inputMode="numeric" autoComplete="off" value={ep.igpCost} aria-invalid={invalid("igpCost")} onChange={(e) => setField("igpCost", e.target.value)} />
+            {/* Arrows and arrow keys for the IGP cost. */}
+            <StepperField {...u32Stepper("igpCost")} label={t("igpCost")} inputId={`${ID}-igp-cost`}>
+              <input id={`${ID}-igp-cost`} className="lab-input" type="text" inputMode="numeric" autoComplete="off" value={ep.igpCost} aria-invalid={invalid("igpCost")} onChange={(e) => setField("igpCost", e.target.value)} onKeyDown={stepperKeyDown(u32Stepper("igpCost"))} />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-bgp-id`} label={t("bgpId")}>
             <input id={`${ID}-bgp-id`} className="lab-input mono" type="text" inputMode="decimal" autoComplete="off" spellCheck={false} value={ep.bgpId} aria-invalid={invalid("bgpId")} onChange={(e) => setField("bgpId", e.target.value)} />

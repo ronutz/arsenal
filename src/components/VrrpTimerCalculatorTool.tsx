@@ -36,10 +36,18 @@
 // src/lib/tools/vrrp-timer-calculator/share.ts); in election mode the popover
 // adds the tool's caution line (router names and addresses). An arriving link
 // (useShareArrival) sets them as typing would; the other modes keep their values.
+//
+// UP AND DOWN ARROWS (03/11/2026): the priorities, the advertisement interval
+// and the VRID have a down and an up arrow beside them (src/components/
+// NumberStepper.tsx), inside the RFC's ranges the engine enforces, and step
+// with Arrow Up and Down. The interval steps in the unit typed (cs, ms by ten,
+// s; the version's own unit when bare) and keeps it; a blank interval steps
+// from the RFC default it stands for.
 // ============================================================================
 
 import { useMemo, useState, type ReactNode } from "react"; // state, memoised readings, rich-text chunks
 import { useLocale, useTranslations } from "next-intl"; // messages and the active locale
+import { StepperField, stepperKeyDown } from "@/components/NumberStepper"; // the up and down arrows, and their keys
 import { Link } from "@/i18n/navigation"; // the locale-aware link to the Learn article
 import { runLocalisable, MAX_ROUTERS, MIN_ROUTERS, type VrrpResult, type TimersResult, type ElectionResult, type MacResult, type ElectionStep } from "@/lib/tools/vrrp-timer-calculator/compute"; // the engine, sentences with ids
 import { EXAMPLE_TIMERS_REQUEST, EXAMPLE_ELECTION_REQUEST, EXAMPLE_MAC_REQUEST } from "@/lib/tools/vrrp-timer-calculator/examples"; // the Examples, the same objects the golden vectors pin
@@ -64,6 +72,36 @@ const BLANK_ROUTERS: readonly RouterForm[] = Object.freeze([
 /** The priority presets: the owner, the best Backup, the RFC's default and the lowest. */
 const PRIORITY_PRESETS = ["255", "254", "100", "1"] as const; // RFC 9568 s5.2.4
 
+/**
+ * The advertisement interval's arrows: the number to step, its bounds and step in the unit typed, and a setter that
+ * writes the unit back, so every value the arrows give is one parseInterval accepts.
+ *
+ * @param text the field as typed
+ * @param version "3" (centiseconds, or ms or s) or "2" (whole seconds)
+ * @param set the field's setter
+ * @returns the stepper's value, bounds, step and setter
+ */
+function intervalStepper(text: string, version: "3" | "2", set: (v: string) => void) {
+  // Blank stands for the RFC default (100 cs, or 1 s): the arrows step from it, bare.
+  if (text.trim() === "") return version === "3" ? { value: "100", min: 1, max: 4095, step: 1, integer: true, onValue: set } : { value: "1", min: 1, max: 255, step: 1, integer: true, onValue: set };
+  // A number, then an optional unit (the rest of the field is kept as typed: its spacing and its case).
+  const m = /^\s*(\d+(?:\.\d+)?)(\s*(cs|ms|s)?\s*)$/i.exec(text);
+  // The unit, or the version's own when bare.
+  const unit = m ? (m[3] ?? (version === "3" ? "cs" : "s")).toLowerCase() : version === "3" ? "cs" : "s";
+  // Anything else (or a sub-second unit on VRRPv2, which the engine refuses): the arrows start a bare number at the floor.
+  if (!m || (version === "2" && unit !== "s")) return version === "3" ? { value: text, min: 1, max: 4095, step: 1, integer: true, onValue: set } : { value: text, min: 1, max: 255, step: 1, integer: true, onValue: set };
+  // The setter: the stepped number, then the unit exactly as typed.
+  const onValue = (v: string) => set(v + m[2]);
+  // VRRPv2: whole seconds, 1 to 255 (RFC 3768's 8-bit field).
+  if (version === "2") return { value: m[1], min: 1, max: 255, step: 1, integer: true, onValue };
+  // VRRPv3 in milliseconds: one centisecond (10 ms) a press, 10 to 40950 ms.
+  if (unit === "ms") return { value: m[1], min: 10, max: 40950, step: 10, integer: true, onValue };
+  // VRRPv3 in seconds: one second a press, 1 to 40 (a step past 40 s would leave the 40.95 s ceiling; finer is typed).
+  if (unit === "s") return { value: m[1], min: 1, max: 40, step: 1, onValue };
+  // VRRPv3 in centiseconds: 1 to 4095 (RFC 9568's 12-bit field, erratum 8301).
+  return { value: m[1], min: 1, max: 4095, step: 1, integer: true, onValue };
+}
+
 export default function VrrpTimerCalculatorTool() {
   const t = useTranslations("tools.vrrp-timer-calculator"); // this tool's messages
   const tx = useMemo(() => engineTexts(t), [t]); // the engine's sentences in the page's language
@@ -77,6 +115,8 @@ export default function VrrpTimerCalculatorTool() {
   const [routers, setRouters] = useState<RouterForm[]>(() => BLANK_ROUTERS.map((r) => ({ ...r }))); // election: the rows
   const [vrid, setVrid] = useState(""); // MAC: the VRID
   const [family, setFamily] = useState<"ipv4" | "ipv6">("ipv4"); // MAC: the family
+  /** The interval's arrows (value, bounds, step, setter), for the Timers and the Election fields alike. */
+  const intervalArrows = intervalStepper(intervalText, version, setIntervalText); // in the unit typed, for this version
 
   /** The share state of the mode shown (the same shape the engine request is built from). */
   const state: VrrpShareState = useMemo(() => (mode === "timers"
@@ -372,11 +412,17 @@ export default function VrrpTimerCalculatorTool() {
             <div className="bb-fields">
               <div className="bb-field">
                 <label className="cidr-label" htmlFor="vrrp-priority">{t("priorityLabel")}</label>
-                <input id="vrrp-priority" className="cidr-input mono" value={priority} onChange={(e) => setPriority(e.target.value)} placeholder="100" inputMode="numeric" autoComplete="off" spellCheck={false} maxLength={64} aria-describedby="vrrp-priority-hint" />
+                {/* Up and down arrows: one a press, 1 to 255 (parsePriority's range: 0 is reserved, 255 the owner). */}
+                <StepperField value={priority} onValue={setPriority} min={1} max={255} integer label={t("priorityLabel")} inputId="vrrp-priority">
+                  <input id="vrrp-priority" className="cidr-input mono" value={priority} onChange={(e) => setPriority(e.target.value)} onKeyDown={stepperKeyDown({ value: priority, onValue: setPriority, min: 1, max: 255, integer: true })} placeholder="100" inputMode="numeric" autoComplete="off" spellCheck={false} maxLength={64} aria-describedby="vrrp-priority-hint" />
+                </StepperField>
               </div>
               <div className="bb-field">
                 <label className="cidr-label" htmlFor="vrrp-interval">{t("intervalLabel")}</label>
-                <input id="vrrp-interval" className="cidr-input mono" value={intervalText} onChange={(e) => setIntervalText(e.target.value)} placeholder={t(`intervalPlaceholder.v${version}`)} autoComplete="off" spellCheck={false} maxLength={64} aria-describedby="vrrp-interval-hint" />
+                {/* Up and down arrows: one unit a press in the unit typed, inside the version's range (intervalStepper). */}
+                <StepperField {...intervalArrows} label={t("intervalLabel")} inputId="vrrp-interval">
+                  <input id="vrrp-interval" className="cidr-input mono" value={intervalText} onChange={(e) => setIntervalText(e.target.value)} onKeyDown={stepperKeyDown(intervalArrows)} placeholder={t(`intervalPlaceholder.v${version}`)} autoComplete="off" spellCheck={false} maxLength={64} aria-describedby="vrrp-interval-hint" />
+                </StepperField>
               </div>
             </div>
             <div className="tcl-presets-row" role="group" aria-label={t("presetsLabel")}>
@@ -411,7 +457,11 @@ export default function VrrpTimerCalculatorTool() {
                   </div>
                   <div className="bb-field">
                     <label className="cidr-label" htmlFor={`vrrp-r${i}-priority`}>{t("routerPriority")}</label>
-                    <input id={`vrrp-r${i}-priority`} className="cidr-input mono" value={r.owner ? "255" : r.priority} onChange={(e) => setRouter(i, { priority: e.target.value })} disabled={r.owner} placeholder="100" inputMode="numeric" autoComplete="off" spellCheck={false} maxLength={64} />
+                    {/* Up and down arrows: one a press, 1 to 255; off with the field when the router owns the address (255). Named
+                        with the router's heading, so each router's arrows say which priority they move. */}
+                    <StepperField value={r.owner ? "255" : r.priority} onValue={(v) => setRouter(i, { priority: v })} min={1} max={255} integer label={`${t("routerHeading", { n: i + 1 })}: ${t("routerPriority")}`} inputId={`vrrp-r${i}-priority`} disabled={r.owner}>
+                      <input id={`vrrp-r${i}-priority`} className="cidr-input mono" value={r.owner ? "255" : r.priority} onChange={(e) => setRouter(i, { priority: e.target.value })} onKeyDown={stepperKeyDown({ value: r.priority, onValue: (v) => setRouter(i, { priority: v }), min: 1, max: 255, integer: true })} disabled={r.owner} placeholder="100" inputMode="numeric" autoComplete="off" spellCheck={false} maxLength={64} />
+                    </StepperField>
                   </div>
                   <div className="bb-field">
                     <label className="cidr-label" htmlFor={`vrrp-r${i}-address`}>{t("routerAddress")}</label>
@@ -427,7 +477,10 @@ export default function VrrpTimerCalculatorTool() {
             <div className="bb-fields">
               <div className="bb-field">
                 <label className="cidr-label" htmlFor="vrrp-interval-e">{t("intervalLabel")}</label>
-                <input id="vrrp-interval-e" className="cidr-input mono" value={intervalText} onChange={(e) => setIntervalText(e.target.value)} placeholder={t(`intervalPlaceholder.v${version}`)} autoComplete="off" spellCheck={false} maxLength={64} aria-describedby="vrrp-interval-e-hint" />
+                {/* Up and down arrows: the same interval and the same rules as in Timers. */}
+                <StepperField {...intervalArrows} label={t("intervalLabel")} inputId="vrrp-interval-e">
+                  <input id="vrrp-interval-e" className="cidr-input mono" value={intervalText} onChange={(e) => setIntervalText(e.target.value)} onKeyDown={stepperKeyDown(intervalArrows)} placeholder={t(`intervalPlaceholder.v${version}`)} autoComplete="off" spellCheck={false} maxLength={64} aria-describedby="vrrp-interval-e-hint" />
+                </StepperField>
               </div>
             </div>
             <p id="vrrp-interval-e-hint" className="hmac-build-note">{t(`intervalHint.v${version}`)}</p>
@@ -440,7 +493,10 @@ export default function VrrpTimerCalculatorTool() {
             <div className="bb-fields">
               <div className="bb-field">
                 <label className="cidr-label" htmlFor="vrrp-vrid">{t("vridLabel")}</label>
-                <input id="vrrp-vrid" className="cidr-input mono" value={vrid} onChange={(e) => setVrid(e.target.value)} placeholder="10" inputMode="numeric" autoComplete="off" spellCheck={false} maxLength={64} aria-describedby="vrrp-vrid-hint" />
+                {/* Up and down arrows: one a press, 1 to 255 (parseVrid's range), so the MAC's last octet follows. */}
+                <StepperField value={vrid} onValue={setVrid} min={1} max={255} integer label={t("vridLabel")} inputId="vrrp-vrid">
+                  <input id="vrrp-vrid" className="cidr-input mono" value={vrid} onChange={(e) => setVrid(e.target.value)} onKeyDown={stepperKeyDown({ value: vrid, onValue: setVrid, min: 1, max: 255, integer: true })} placeholder="10" inputMode="numeric" autoComplete="off" spellCheck={false} maxLength={64} aria-describedby="vrrp-vrid-hint" />
+                </StepperField>
               </div>
             </div>
             <p id="vrrp-vrid-hint" className="hmac-build-note">{t("vridHint")}</p>

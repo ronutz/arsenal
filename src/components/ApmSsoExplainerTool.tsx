@@ -17,12 +17,18 @@
 // id and position, and the observations, notes and errors arrive as
 // EngineTexts from runLocalisable(), all under engine.* in the pack, so the
 // pt-BR page reads in Portuguese; a key the pack lacks shows the English.
+//
+// NO KEYBOARD NEEDED (03/11/2026): the box takes one of eight method names (or
+// "methods"), a closed set, so a row of buttons under it names each method
+// and the catalogue; a press fills the box as typing that name would, and the
+// button of the method on show is pressed. Typing still works, aliases too.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { type ApmSsoResult, type SsoMethod } from "@/lib/tools/f5-apm-sso-explainer";
-import { runLocalisable } from "@/lib/tools/f5-apm-sso-explainer/compute"; // the reading with sentence ids (01/11/2026)
+import { runLocalisable, METHODS } from "@/lib/tools/f5-apm-sso-explainer/compute"; // the reading with sentence ids (01/11/2026); the method table, for the buttons
+import { TclPresets } from "@/components/TclTeachParts"; // a captioned row of pressed-or-not buttons (03/11/2026)
 import { engineTexts, type EngineText, type EngineTexts } from "@/lib/tools/engine-text"; // engine sentences in the page's language
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
@@ -78,6 +84,8 @@ export default function ApmSsoExplainerTool() {
       return { ok: false, error: e }; // shown through tx.error
     }
   }, [input]);
+  // The button to show pressed: the method whose card is on show, or the catalogue.
+  const pickedId = live && live.ok ? (live.value.mode === "catalog" ? "methods" : live.value.method?.id) : undefined;
   // An arriving share link (2026-10-27): the name fills the box as typing would, and the page shows its card.
   useShareArrival(APM_SSO_SHARE, (state) => setInput(state.input)); // as typing would
   // What Share results may carry: the name as typed, once the table knows it (memoised).
@@ -95,6 +103,11 @@ export default function ApmSsoExplainerTool() {
         </div>
         <input id="apm-input" className="cidr-input mono" value={input}
           onChange={(e) => setInput(e.target.value)} placeholder={t("inputPlaceholder")} spellCheck={false} aria-describedby="apm-privacy" />
+        {/* The eight methods and the catalogue as buttons: each id is a name the box reads, so a press is a typed name. */}
+        {/* apm-pick: the buttons 44 px tall, as a finger needs. */}
+        <div className="apm-pick">
+          <TclPresets items={[...METHODS.map((m) => ({ id: m.id, label: tx.key(`method.${m.id}.name`, m.name) })), { id: "methods", label: t("allMethods") }]} label={t("pickLabel")} onPick={(id) => setInput(id)} active={pickedId} />
+        </div>
         <p id="apm-privacy" className="cidr-privacy"><span className="cidr-lock" aria-hidden="true">&#9679;</span> {t("runsLocally")}</p>
       </div>
 

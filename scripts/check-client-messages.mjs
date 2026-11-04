@@ -15,9 +15,10 @@
 //   For every page/layout under src/app, for every CLIENT component rendered
 //   on it, the set of message namespaces that component's subtree consumes via
 //   useTranslations("ns") must be covered by:
-//       GLOBAL_CLIENT_NAMESPACES  UNION  (the namespaces on the MessageSlice
-//       that textually wraps that component, if any).
-//   A component wrapped in no slice must be covered by the global set alone.
+//       outside every slice: GLOBAL_CLIENT_NAMESPACES;
+//       inside a slice: the innermost slice's namespaces UNION
+//       SLICE_CARRIED_NAMESPACES (a nested provider REPLACES the messages above
+//       it, use-intl 3.26.5; corrected 2026-11-03).
 //
 // HOW:
 //   1. Scan every .tsx: record "use client", its useTranslations("ns") literals,
@@ -47,6 +48,10 @@ const SRC = path.join(ROOT, "src");
 const clientMsg = fs.readFileSync(path.join(SRC, "i18n/clientMessages.ts"), "utf8");
 const globalBlock = clientMsg.slice(clientMsg.indexOf("GLOBAL_CLIENT_NAMESPACES"));
 const GLOBAL = [...globalBlock.slice(0, globalBlock.indexOf("]")).matchAll(/"([^"]+)"/g)].map((m) => m[1]);
+// The namespaces every MessageSlice carries on top of its own (2026-11-03): a nested provider REPLACES the outer
+// messages, so inside a slice only the innermost slice and these are available, never the global set.
+const carriedBlock = clientMsg.slice(clientMsg.indexOf("SLICE_CARRIED_NAMESPACES ="));
+const CARRIED = [...carriedBlock.slice(0, carriedBlock.indexOf("]")).matchAll(/"([^"]+)"/g)].map((m) => m[1]);
 
 // ---- 1. scan every .tsx ----------------------------------------------------
 /** @type {Map<string, {client:boolean, ns:string[], refs:string[]}>} by component name */
@@ -139,8 +144,11 @@ function checkAppFile(p) {
     // innermost slice containing this tag position
     const idx = m.index;
     const containing = spans.filter((s) => idx >= s.start && idx < s.end);
-    const provided = [...GLOBAL];
-    for (const s of containing) provided.push(...s.ns);
+    // Outside every slice: the global set. Inside: the INNERMOST slice (the latest-starting one that contains the tag)
+    // plus the carried set, because a nested provider replaces the messages above it (corrected 2026-11-03; this guard
+    // used to count the global set inside slices too, and so missed the numeric arrows' names in every slice).
+    const innermost = containing.reduce((a, s) => (a === null || s.start > a.start ? s : a), null);
+    const provided = innermost === null ? [...GLOBAL] : [...CARRIED, ...innermost.ns];
     const missing = covered(need, provided);
     if (missing.length) {
       errors.push({

@@ -38,10 +38,18 @@
 //     full screen), and they come back when the reader leaves. The page lists
 //     the keys above the slide.
 // Every string comes in as props from the page (the "materials" namespace), so
-// this client component needs no message namespace of its own.
+// this client component needs no message namespace of its own (the go-to
+// field's arrows name themselves from the global "stepper" namespace).
+//
+// UP AND DOWN ARROWS (03/11/2026): the go-to field has a down and an up arrow
+// beside it (src/components/NumberStepper.tsx), 1 to the deck's last slide;
+// from an empty field they step from the slide shown (its placeholder), and
+// Go still moves, as before.
 // ============================================================================
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+// The up and down arrows beside the go-to field.
+import { StepperField } from "@/components/NumberStepper";
 // Row 55: the site's own shortcuts stand down while the presenter is on the page.
 import { setSiteShortcutsSuppressed } from "@/lib/pageCapabilities";
 
@@ -497,17 +505,20 @@ export default function SlidePresenter({
           }}
         >
           <label className="sr-only" htmlFor="presenter-goto-input">{labels.goTo}</label>
-          <input
-            id="presenter-goto-input"
-            className="presenter-goto-input mono"
-            type="number"
-            inputMode="numeric"
-            min={1}
-            max={total}
-            value={goText}
-            placeholder={String(n)}
-            onChange={(e) => setGoText(e.target.value)}
-          />
+          {/* Up and down arrows: one slide a press, 1 to the last; an empty field steps from the slide shown. */}
+          <StepperField value={goText === "" ? String(n) : goText} onValue={setGoText} min={1} max={total} integer label={labels.goTo} inputId="presenter-goto-input">
+            <input
+              id="presenter-goto-input"
+              className="presenter-goto-input mono"
+              type="number"
+              inputMode="numeric"
+              min={1}
+              max={total}
+              value={goText}
+              placeholder={String(n)}
+              onChange={(e) => setGoText(e.target.value)}
+            />
+          </StepperField>
           <button type="submit" className="presenter-btn">{labels.goButton}</button>
         </form>
         <div className="presenter-bar-group">

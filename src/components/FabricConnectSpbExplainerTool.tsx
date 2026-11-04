@@ -6,6 +6,14 @@
 // PAGE LANGUAGE (02/11/2026): the fact labels and explanations, notes, warnings
 // and errors arrive as EngineTexts from explainSpbLocalisable() and are shown
 // through engineTexts(t) (keys under engine.* in the pack).
+//
+// UP AND DOWN ARROWS (03/11/2026, PRIME: values set "through the click of a
+// mouse (or press of the touchscreen)"): the I-SID (1 to 16,777,215, the
+// engine's 24-bit range; one step flips it between the two B-VLANs, which is
+// the lesson) and the two B-VLANs (1 to 4094, the 802.1Q VLAN ID range; the
+// engine sets no bound) have a decrease and an increase button beside them,
+// and step from Arrow Up / Down too. The nickname has none: it is an
+// identifier written in dotted hex (1.00.01), not a quantity.
 // ============================================================================
 
 import { useMemo, useState } from "react";
@@ -16,6 +24,17 @@ import ShareResultsButton from "@/components/ShareResultsButton"; // the site's 
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // a shared link fills the page as typing would
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is given
 import { SPB_SHARE } from "@/lib/tools/fabric-connect-spb-explainer/share"; // this tool's share spec: the form as typed
+// Up and down arrows for the I-SID and the two B-VLANs (03/11/2026).
+import { StepperField, stepperKeyDown } from "@/components/NumberStepper";
+
+/** The I-SID range the engine accepts (compute.ts ISID_MIN / ISID_MAX: a 24-bit value). */
+const ISID_MIN = 1;
+// The largest 24-bit value.
+const ISID_MAX = 16777215;
+/** A B-VLAN's range: an 802.1Q VLAN ID, 1 to 4094 (the engine sets none; the arrows stop at the standard's). */
+const BVLAN_MIN = 1;
+// The largest VLAN ID (4095 is reserved).
+const BVLAN_MAX = 4094;
 
 const EMPTY = { isid: "", service: "unknown", primary: "4051", secondary: "4052", nickname: "", role: "" };
 const EXAMPLE = { isid: "20010", service: "l2vsn", primary: "4051", secondary: "4052", nickname: "1.00.01", role: "beb" };
@@ -29,6 +48,8 @@ export default function FabricConnectSpbExplainerTool() {
 
   const set = (k: keyof typeof EMPTY) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
     setF((p) => ({ ...p, [k]: e.target.value }));
+  // A field set from its arrows, exactly as typing the same text would set it.
+  const put = (k: keyof typeof EMPTY) => (v: string) => setF((p) => ({ ...p, [k]: v }));
 
   const result = useMemo<{ ok: true; data: SpbResult<EngineText> } | { ok: false; error: unknown } | null>(() => {
     if (!f.isid.trim() && !f.nickname.trim() && !f.role) return null;
@@ -67,7 +88,18 @@ export default function FabricConnectSpbExplainerTool() {
       <div className="dig-kv">
         <div>
           <label htmlFor="spb-isid" className="cidr-label">{t("fields.isid")}</label>
-          <input id="spb-isid" className="cidr-input mono" value={f.isid} onChange={set("isid")} spellCheck={false} />
+          {/* Up and down arrows: one a press, inside the 24-bit range. */}
+          <StepperField value={f.isid} onValue={put("isid")} min={ISID_MIN} max={ISID_MAX} integer label={t("fields.isid")} inputId="spb-isid">
+            <input
+              id="spb-isid"
+              className="cidr-input mono"
+              value={f.isid}
+              onChange={set("isid")}
+              // Arrow Up and Down (Page Up and Down: ten) step the I-SID from the keyboard.
+              onKeyDown={stepperKeyDown({ value: f.isid, onValue: put("isid"), min: ISID_MIN, max: ISID_MAX, integer: true })}
+              spellCheck={false}
+            />
+          </StepperField>
         </div>
         <div>
           <label htmlFor="spb-service" className="cidr-label">{t("fields.service")}</label>
@@ -77,11 +109,33 @@ export default function FabricConnectSpbExplainerTool() {
         </div>
         <div>
           <label htmlFor="spb-primary" className="cidr-label">{t("fields.primary")}</label>
-          <input id="spb-primary" className="cidr-input mono" value={f.primary} onChange={set("primary")} spellCheck={false} />
+          {/* Up and down arrows: one VLAN ID a press, 1 to 4094. */}
+          <StepperField value={f.primary} onValue={put("primary")} min={BVLAN_MIN} max={BVLAN_MAX} integer label={t("fields.primary")} inputId="spb-primary">
+            <input
+              id="spb-primary"
+              className="cidr-input mono"
+              value={f.primary}
+              onChange={set("primary")}
+              // Arrow Up and Down (Page Up and Down: ten) step the B-VLAN from the keyboard.
+              onKeyDown={stepperKeyDown({ value: f.primary, onValue: put("primary"), min: BVLAN_MIN, max: BVLAN_MAX, integer: true })}
+              spellCheck={false}
+            />
+          </StepperField>
         </div>
         <div>
           <label htmlFor="spb-secondary" className="cidr-label">{t("fields.secondary")}</label>
-          <input id="spb-secondary" className="cidr-input mono" value={f.secondary} onChange={set("secondary")} spellCheck={false} />
+          {/* Up and down arrows: one VLAN ID a press, 1 to 4094. */}
+          <StepperField value={f.secondary} onValue={put("secondary")} min={BVLAN_MIN} max={BVLAN_MAX} integer label={t("fields.secondary")} inputId="spb-secondary">
+            <input
+              id="spb-secondary"
+              className="cidr-input mono"
+              value={f.secondary}
+              onChange={set("secondary")}
+              // Arrow Up and Down (Page Up and Down: ten) step the B-VLAN from the keyboard.
+              onKeyDown={stepperKeyDown({ value: f.secondary, onValue: put("secondary"), min: BVLAN_MIN, max: BVLAN_MAX, integer: true })}
+              spellCheck={false}
+            />
+          </StepperField>
         </div>
         <div>
           <label htmlFor="spb-nick" className="cidr-label">{t("fields.nickname")}</label>

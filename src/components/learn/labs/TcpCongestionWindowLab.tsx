@@ -14,11 +14,17 @@
 // cwnd and ssthresh round trip by round trip. The model is
 // src/lib/labs/tcp-congestion-window/compute.ts; its checked cases are the
 // golden vectors beside it. Words: "learnLabs.tcp-congestion-window".
+//
+// The three number inputs have up and down arrows beside them (PRIME
+// 03/11/2026: values set "through the click of a mouse (or press of the
+// touchscreen)"), one byte or one round a press, inside the model's bounds.
 // ============================================================================
 
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import LabFrame, { LabField, LabSelect } from "./LabFrame";
+// Up and down arrows for the three number inputs.
+import { StepperField } from "@/components/NumberStepper";
 import {
   compute,
   CwndError,
@@ -238,16 +244,25 @@ export default function TcpCongestionWindowLab() {
       controls={
         <>
           <LabField id={`${ID}-smss`} label={t("smss")}>
-            <input id={`${ID}-smss`} className="lab-input" type="number" inputMode="numeric" min={1} max={MAX_SMSS} step={1} value={form.smss} aria-invalid={err === "bad-smss" ? "true" : undefined} onChange={(e) => setForm({ ...form, smss: e.target.value })} />
+            {/* Up and down arrows, whole numbers only: one byte a press, 1 to the model's MAX_SMSS, the field set as if typed. */}
+            <StepperField value={form.smss} onValue={(v) => setForm((f) => ({ ...f, smss: v }))} min={1} max={MAX_SMSS} step={1} integer label={t("smss")} inputId={`${ID}-smss`}>
+              <input id={`${ID}-smss`} className="lab-input" type="number" inputMode="numeric" min={1} max={MAX_SMSS} step={1} value={form.smss} aria-invalid={err === "bad-smss" ? "true" : undefined} onChange={(e) => setForm({ ...form, smss: e.target.value })} />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-iw`} label={t("iw")}>
             <LabSelect id={`${ID}-iw`} value={form.iw} options={iwOptions} onChange={(v) => setForm({ ...form, iw: v as IwRule })} />
           </LabField>
           <LabField id={`${ID}-ssthresh`} label={t("ssthresh")}>
-            <input id={`${ID}-ssthresh`} className="lab-input" type="number" inputMode="numeric" min={1} max={MAX_SSTHRESH} step={1} value={form.ssthresh} aria-invalid={err === "bad-ssthresh" ? "true" : undefined} onChange={(e) => setForm({ ...form, ssthresh: e.target.value })} />
+            {/* Up and down arrows, whole numbers only: one byte a press, 1 to the model's MAX_SSTHRESH, the field set as if typed. */}
+            <StepperField value={form.ssthresh} onValue={(v) => setForm((f) => ({ ...f, ssthresh: v }))} min={1} max={MAX_SSTHRESH} step={1} integer label={t("ssthresh")} inputId={`${ID}-ssthresh`}>
+              <input id={`${ID}-ssthresh`} className="lab-input" type="number" inputMode="numeric" min={1} max={MAX_SSTHRESH} step={1} value={form.ssthresh} aria-invalid={err === "bad-ssthresh" ? "true" : undefined} onChange={(e) => setForm({ ...form, ssthresh: e.target.value })} />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-loss-round`} label={t("lossRound")}>
-            <input id={`${ID}-loss-round`} className="lab-input" type="number" inputMode="numeric" min={0} max={MAX_LOSS_ROUND} step={1} value={form.lossRound} aria-invalid={err === "bad-loss-round" ? "true" : undefined} onChange={(e) => setForm({ ...form, lossRound: e.target.value })} />
+            {/* Up and down arrows, whole numbers only: one round trip a press, 0 to the model's MAX_LOSS_ROUND, the field set as if typed. */}
+            <StepperField value={form.lossRound} onValue={(v) => setForm((f) => ({ ...f, lossRound: v }))} min={0} max={MAX_LOSS_ROUND} step={1} integer label={t("lossRound")} inputId={`${ID}-loss-round`}>
+              <input id={`${ID}-loss-round`} className="lab-input" type="number" inputMode="numeric" min={0} max={MAX_LOSS_ROUND} step={1} value={form.lossRound} aria-invalid={err === "bad-loss-round" ? "true" : undefined} onChange={(e) => setForm({ ...form, lossRound: e.target.value })} />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-detection`} label={t("detection")}>
             <LabSelect id={`${ID}-detection`} value={form.detection} options={detectionOptions} onChange={(v) => setForm({ ...form, detection: v as Detection })} />

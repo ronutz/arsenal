@@ -21,6 +21,11 @@
 // 2026-11-01: the Share results row sits between two live regions (the
 // verdict, then the rest of the reading) instead of inside one, so the
 // button's and the popover's own text is never announced as a result.
+//
+// NO KEYBOARD NEEDED (03/11/2026): beside each field, the browser's colour
+// picker (input type="color"). It opens on the colour the field holds (its
+// sRGB hex, alpha left out) and writes the colour picked into the field as
+// #rrggbb, so the page reads it as if it had been typed.
 // ============================================================================
 
 import { Fragment, useMemo, useState, type CSSProperties } from "react";
@@ -31,6 +36,22 @@ import ShareResultsButton from "@/components/ShareResultsButton"; // the site's 
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
 import { COLOR_CONTRAST_SHARE } from "@/lib/tools/color-contrast-format/share"; // this tool's share spec: the pair as typed
+import { parseColor } from "@/lib/tools/color-contrast-format/compute"; // one colour read alone, for its picker's starting value (03/11/2026)
+
+/**
+ * The #rrggbb a colour picker can show for a field's text: its sRGB hex without alpha, or a fallback when the text is
+ * empty or not a colour.
+ * @param text the field's text
+ * @param which which field, for the parser's messages
+ * @param fallback the picker's colour when the text gives none
+ * @returns six-digit hex, as input type="color" requires
+ */
+function pickerHex(text: string, which: "foreground" | "background", fallback: string): string {
+  // Nothing typed: the fallback.
+  if (text.trim() === "") return fallback;
+  // The engine's reading of this one colour; its hex may carry alpha ("#00000080"), which a picker cannot show.
+  try { return parseColor(text, which).formats.hex.slice(0, 7).toLowerCase(); } catch { return fallback; } // unreadable: the fallback
+} // pickerHex
 
 /** Nothing to share (the button is disabled): a constant, so the button sees no change. */
 const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
@@ -138,11 +159,21 @@ export default function ColorContrastFormatTool() {
         <div className="tcl-two">
           <div className="tcl-inline-field">
             <label className="cidr-label" htmlFor="ccf-fg">{t("foreground")}</label>
-            <input id="ccf-fg" className="cidr-input mono" value={fg} onChange={(e) => { setFg(e.target.value); setActive(undefined); }} placeholder={t("placeholder")} spellCheck={false} autoComplete="off" />
+            {/* The field, then its colour picker on the same row. */}
+            <div className="ccf-field-row">
+              <input id="ccf-fg" className="cidr-input mono" value={fg} onChange={(e) => { setFg(e.target.value); setActive(undefined); }} placeholder={t("placeholder")} spellCheck={false} autoComplete="off" />
+              {/* The picker: opens on the field's colour (black when there is none) and writes #rrggbb into the field. */}
+              <input type="color" className="ccf-picker" value={pickerHex(fg, "foreground", "#000000")} onChange={(e) => { setFg(e.target.value); setActive(undefined); }} aria-label={t("pickForeground")} title={t("pickForeground")} />
+            </div>
           </div>
           <div className="tcl-inline-field">
             <label className="cidr-label" htmlFor="ccf-bg">{t("background")}</label>
-            <input id="ccf-bg" className="cidr-input mono" value={bg} onChange={(e) => { setBg(e.target.value); setActive(undefined); }} placeholder={t("placeholder")} spellCheck={false} autoComplete="off" />
+            {/* The field, then its colour picker on the same row. */}
+            <div className="ccf-field-row">
+              <input id="ccf-bg" className="cidr-input mono" value={bg} onChange={(e) => { setBg(e.target.value); setActive(undefined); }} placeholder={t("placeholder")} spellCheck={false} autoComplete="off" />
+              {/* The picker: opens on the field's colour (white when there is none) and writes #rrggbb into the field. */}
+              <input type="color" className="ccf-picker" value={pickerHex(bg, "background", "#ffffff")} onChange={(e) => { setBg(e.target.value); setActive(undefined); }} aria-label={t("pickBackground")} title={t("pickBackground")} />
+            </div>
           </div>
         </div>
       </div>

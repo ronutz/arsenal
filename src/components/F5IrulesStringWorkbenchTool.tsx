@@ -17,6 +17,14 @@
 // f5-irules-string-workbench/share.ts, which also holds the field table below,
 // so each field has its link name); an arriving link fills the form as typing
 // would and leaves the address.
+//
+// Up and down arrows (03/11/2026, PRIME: values set "through the click of a
+// mouse (or press of the touchscreen)"): string repeat's count has a decrease
+// and an increase button beside it, and steps from Arrow Up / Down too, from 0
+// up to the most repeats the engine allows for the string typed (it refuses a
+// result over 100,000 characters). The index fields have none: 0, end-1 and
+// 010 are read three different ways, which is the lesson, and an arrow would
+// rewrite them as plain decimals.
 // ============================================================================
 
 import { useMemo, useState, type ReactNode } from "react";
@@ -27,6 +35,8 @@ import ShareResultsButton from "@/components/ShareResultsButton"; // the site's 
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
 import { IRULES_STRING_WORKBENCH_SHARE, STRING_WORKBENCH_FIELDS, STRING_WORKBENCH_NOCASE } from "@/lib/tools/f5-irules-string-workbench/share"; // this tool's share spec: the form by name, and its field table
+// Up and down arrows for string repeat's count (03/11/2026).
+import { StepperField, stepperKeyDown } from "@/components/NumberStepper";
 
 /** Nothing to share: a constant, so the button sees no change between renders. */
 const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
@@ -43,6 +53,9 @@ const OPS = Object.keys(FIELDS) as StringOp[];
 
 // The subcommands that accept -nocase (the same list the share spec checks).
 const NOCASE = STRING_WORKBENCH_NOCASE; // map, match, compare, equal
+
+// The longest result string repeat may build (compute.ts refuses count x length above it: "too large for this page").
+const REPEAT_RESULT_MAX = 100000;
 
 /** Arguments for a subcommand with trailing empty optional fields left out. */
 function argsFor(op: StringOp, values: string[]): string[] {
@@ -88,6 +101,8 @@ export default function F5IrulesStringWorkbenchTool() {
   };
   // Change one argument.
   const setValue = (i: number, s: string) => { const next = [...values]; next[i] = s; setValues(next); setActive(undefined); };
+  // The most repeats the engine accepts for the string as typed (no limit while the string is empty).
+  const repeatMax = (values[0] ?? "").length > 0 ? Math.floor(REPEAT_RESULT_MAX / (values[0] ?? "").length) : undefined;
   // Inline code inside translated sentences.
   const rich = { c: (chunks: ReactNode) => <code>{chunks}</code> };
   // The result, when there is one.
@@ -117,12 +132,34 @@ export default function F5IrulesStringWorkbenchTool() {
 
       {/* The argument fields. */}
       <div className="tcl-fields">
-        {FIELDS[op].map((f, i) => (
-          <label key={`${op}-${f.key}`} className="tcl-inline-field">
-            <span className="cidr-label">{t(`field.${f.key}`)}{f.optional ? ` ${t("optional")}` : ""}</span>
-            <input id={`sw-${f.key}`} className="cidr-input mono" value={values[i] ?? ""} onChange={(e) => setValue(i, e.target.value)} spellCheck={false} autoComplete="off" />
-          </label>
-        ))}
+        {FIELDS[op].map((f, i) =>
+          // string repeat's count: the label above (by id, so the arrows stay out of the field's name), arrows beside it.
+          f.key === "count" ? (
+            <div key={`${op}-${f.key}`} className="tcl-inline-field">
+              {/* The field's name. */}
+              <label className="cidr-label" htmlFor={`sw-${f.key}`}>{t(`field.${f.key}`)}{f.optional ? ` ${t("optional")}` : ""}</label>
+              {/* Up and down arrows: one repeat a press, from 0 to what the engine allows for this string; set as typing would. */}
+              <StepperField value={values[i] ?? ""} onValue={(v) => setValue(i, v)} min={0} max={repeatMax} integer label={t(`field.${f.key}`)} inputId={`sw-${f.key}`}>
+                <input
+                  id={`sw-${f.key}`}
+                  className="cidr-input mono"
+                  value={values[i] ?? ""}
+                  onChange={(e) => setValue(i, e.target.value)}
+                  // Arrow Up and Down (Page Up and Down: ten) step the count from the keyboard.
+                  onKeyDown={stepperKeyDown({ value: values[i] ?? "", onValue: (v) => setValue(i, v), min: 0, max: repeatMax, integer: true })}
+                  spellCheck={false}
+                  autoComplete="off"
+                />
+              </StepperField>
+            </div>
+          ) : (
+            // Every other field: the label wraps it, as before.
+            <label key={`${op}-${f.key}`} className="tcl-inline-field">
+              <span className="cidr-label">{t(`field.${f.key}`)}{f.optional ? ` ${t("optional")}` : ""}</span>
+              <input id={`sw-${f.key}`} className="cidr-input mono" value={values[i] ?? ""} onChange={(e) => setValue(i, e.target.value)} spellCheck={false} autoComplete="off" />
+            </label>
+          ),
+        )}
         {/* -nocase, where the subcommand takes it. */}
         {NOCASE.includes(op) && (
           <label className="tcl-check"><input id="sw-nocase" type="checkbox" checked={nocase} onChange={(e) => { setNocase(e.target.checked); setActive(undefined); }} /> <code>-nocase</code></label>

@@ -15,6 +15,12 @@
 // src/lib/tools/f5-bigd-thread-calculator/share.ts). An arriving link
 // (useShareArrival) fills the field as typing would and computes; the
 // address loses the value at once.
+//
+// UP AND DOWN ARROWS (03/11/2026, PRIME: values set "through the click of a
+// mouse (or press of the touchscreen)"): the line's leading vCPU count steps
+// by one between the engine's bounds (1 to 1024) from the buttons beside the
+// field, or from Arrow Up / Down and Page Up / Down in it; the words after the
+// count (ht, normal, a platform) are kept exactly as typed.
 // ============================================================================
 "use client";
 
@@ -29,6 +35,8 @@ import ShareResultsButton from "@/components/ShareResultsButton"; // the site's 
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
 import { BIGD_SHARE } from "@/lib/tools/f5-bigd-thread-calculator/share"; // this tool's share spec: the line as typed
+// Up and down arrows for the line's vCPU count (03/11/2026).
+import { StepperField, stepperKeyDown } from "@/components/NumberStepper";
 
 // D-83 Example sample - verbatim from this tool's golden vectors
 // (platform-r10900): showcases the platform-to-hyperthreading map.
@@ -36,6 +44,42 @@ const EXAMPLE = "8 r10900";
 
 /** Nothing to share (the button is disabled): a constant, so the button sees no change. */
 const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
+
+/** The vCPU counts the engine accepts (compute.ts parseInput: "between 1 and 1024"), the arrows' bounds. */
+const VCPU_MIN = 1;
+// The largest count the engine accepts.
+const VCPU_MAX = 1024;
+
+/**
+ * The vCPU count at the start of the line: the digits that open its first word, as the engine reads them.
+ *
+ * @param line the field's text
+ * @returns those digits, or "" when the line does not start with a number
+ */
+function leadingCount(line: string): string {
+  // Digits right after any leading space.
+  const m = /^\s*(\d+)/.exec(line);
+  // The digits, or nothing.
+  return m ? m[1] : "";
+}
+
+/**
+ * The line with its leading count replaced, everything after it kept as typed ("8 ht" stepped up is "9 ht").
+ *
+ * @param line the field's text
+ * @param count the new count, as the arrows wrote it
+ * @returns the new line (the count put in front when the line had none)
+ */
+function withCount(line: string, count: string): string {
+  // The leading space and digits, if any.
+  const m = /^(\s*)(\d+)/.exec(line);
+  // A count already there: swap its digits only (a "vcpus" suffix and the words after stay).
+  if (m) return m[1] + count + line.slice(m[0].length);
+  // No count yet: it goes first, ahead of whatever words were typed.
+  const rest = line.trim();
+  // The count alone, or the count and the words.
+  return rest === "" ? count : `${count} ${rest}`;
+}
 
 export default function F5BigdThreadCalculatorTool() {
   const t = useTranslations("tools.f5-bigd-thread-calculator");
@@ -117,16 +161,21 @@ export default function F5BigdThreadCalculatorTool() {
             </button>
           </div>
         </div>
-        <input
-          id="bigd-input"
-          className="cidr-input mono"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={t("inputPlaceholder")}
-          aria-describedby="bigd-privacy"
-          autoComplete="off"
-          spellCheck={false}
-        />
+        {/* Up and down arrows for the vCPU count at the start of the line; the rest of the line is kept as typed. */}
+        <StepperField value={leadingCount(value)} onValue={(n) => onChange(withCount(value, n))} min={VCPU_MIN} max={VCPU_MAX} integer label={t("inputLabel")} inputId="bigd-input">
+          <input
+            id="bigd-input"
+            className="cidr-input mono"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            // Arrow Up and Down (Page Up and Down: ten) step the count from the keyboard, as the buttons do.
+            onKeyDown={stepperKeyDown({ value: leadingCount(value), onValue: (n) => onChange(withCount(value, n)), min: VCPU_MIN, max: VCPU_MAX, integer: true })}
+            placeholder={t("inputPlaceholder")}
+            aria-describedby="bigd-privacy"
+            autoComplete="off"
+            spellCheck={false}
+          />
+        </StepperField>
         <p id="bigd-privacy" className="cidr-privacy">
           <span className="cidr-lock" aria-hidden="true">
             🔒

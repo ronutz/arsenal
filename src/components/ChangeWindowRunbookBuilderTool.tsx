@@ -23,6 +23,9 @@
 // runbook then read in Portuguese on the pt-BR page and exactly as before in
 // English. The engine is imported from compute directly (not the index, which
 // also pulls the manifest and the vectors into the page).
+//
+// NO KEYBOARD NEEDED (03/11/2026): the three minute fields of the time budget
+// have up and down arrows (StepperField), 0 to MAX_BUDGET_MINUTES (1,440).
 // ============================================================================
 "use client";
 
@@ -50,6 +53,7 @@ import { SignalBadge } from "@/components/fieldcraft/FieldcraftShared";
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-11-01)
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // a shared link fills the form as typing would
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is given
+import { StepperField, stepperKeyDown } from "@/components/NumberStepper"; // up and down arrows for the budget's minutes (03/11/2026)
 import { RUNBOOK_SHARE, checkRunbookNotes, encodeRunbookShare, type RunbookShareState } from "@/lib/tools/change-window-runbook-builder/share"; // this tool's share spec: the form, the budget and the notes, checked
 
 // D-83 Example - verbatim the "prod-cert-rotation" snapshot vector input.
@@ -106,6 +110,13 @@ export default function ChangeWindowRunbookBuilderTool() {
   const [copied, setCopied] = useState(false);
   // The optional rollback time budget, held as typed text until all three parse.
   const [budget, setBudget] = useState({ remaining: "", rollback: "", verify: "" });
+  /** Set one budget field, typed or stepped; either way it counts as engaging with the form. */
+  const setBudgetField = (k: "remaining" | "rollback" | "verify", v: string) => {
+    // Engaged with the form.
+    setTouched(true);
+    // The field's new text.
+    setBudget((cur) => ({ ...cur, [k]: v }));
+  };
 
   // Parse the budget: all three must be whole minutes in range, otherwise none is used.
   const parsedBudget = useMemo((): TimeBudget | null | "incomplete" => {
@@ -325,17 +336,21 @@ export default function ChangeWindowRunbookBuilderTool() {
             <label className="cidr-label" htmlFor={`rb-budget-${k}`}>
               {t(`budget.${k}`)}
             </label>
-            <input
-              id={`rb-budget-${k}`}
-              className="cidr-input"
-              inputMode="numeric"
-              value={budget[k]}
-              onChange={(e) => {
-                // Typing a budget counts as engaging with the form.
-                setTouched(true);
-                setBudget((cur) => ({ ...cur, [k]: e.target.value }));
-              }}
-            />
+            {/* Up and down arrows: whole minutes, 0 to the budget's 1,440 (a day). */}
+            <StepperField value={budget[k]} onValue={(v) => setBudgetField(k, v)} min={0} max={MAX_BUDGET_MINUTES} integer label={t(`budget.${k}`)} inputId={`rb-budget-${k}`}>
+              <input
+                id={`rb-budget-${k}`}
+                className="cidr-input"
+                inputMode="numeric"
+                value={budget[k]}
+                onChange={(e) => {
+                  // Typed text, set as the arrows set it.
+                  setBudgetField(k, e.target.value);
+                }}
+                // Arrow Up and Down step the minutes from the keyboard.
+                onKeyDown={stepperKeyDown({ value: budget[k], onValue: (v) => setBudgetField(k, v), min: 0, max: MAX_BUDGET_MINUTES, integer: true })}
+              />
+            </StepperField>
           </div>
         ))}
         {parsedBudget === "incomplete" && <p className="cipher-note">{t("budget.invalid")}</p>}

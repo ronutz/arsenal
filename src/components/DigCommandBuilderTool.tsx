@@ -9,6 +9,12 @@
 // contradictory and a summary of what the query will carry. All state feeds
 // the pure engine (compute.ts); nothing is executed or sent (D-49). The page
 // opens on the Example (D-83), a vector verbatim.
+//
+// No keyboard needed (03/11/2026): the port, +bufsize, +timeout, +tries and
+// +retry have up and down arrows (StepperField), whole numbers inside the
+// ranges the engine accepts; an empty one starts at its bound nearest 0. Their
+// labels now stand beside the fields (htmlFor) rather than around them. The
+// IXFR serial stays typed: a zone serial is an identifier, not a quantity.
 // ============================================================================
 
 import { useCallback, useMemo, useState } from "react";
@@ -18,6 +24,7 @@ import ShareResultsButton from "@/components/ShareResultsButton"; // the site's 
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
 import { DIG_COMMAND_BUILDER_SHARE, isCommonDigType } from "@/lib/tools/dig-command-builder/share"; // this tool's share spec: the form as filled in
+import { StepperField, stepperKeyDown } from "@/components/NumberStepper"; // up and down arrows for the five numbers (03/11/2026)
 
 /** Nothing to share: a constant, so the button sees no change between renders. */
 const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
@@ -164,10 +171,14 @@ export default function DigCommandBuilderTool() {
               <span className="curlb-field-label">{t("ui.server")}</span>
               <input id="dcb-server" className="curlb-input" value={s.server ?? ""} onChange={(e) => up({ server: e.target.value })} placeholder="192.0.2.53, ns1.example.com" spellCheck={false} autoComplete="off" maxLength={300} />
             </label>
-            <label className="curlb-field curlb-field--narrow">
-              <span className="curlb-field-label">{t("ui.port", { port: DEFAULT_PORT[transport] })}</span>
-              <input id="dcb-port" className="curlb-input" value={s.port ?? ""} onChange={(e) => up({ port: e.target.value })} placeholder={String(DEFAULT_PORT[transport])} spellCheck={false} autoComplete="off" maxLength={5} inputMode="numeric" />
-            </label>
+            <div className="curlb-field curlb-field--narrow">
+              {/* The label beside the field, tied by id. */}
+              <label className="curlb-field-label" htmlFor="dcb-port">{t("ui.port", { port: DEFAULT_PORT[transport] })}</label>
+              {/* Up and down arrows: whole numbers, 1 to 65535 (bad-port outside). */}
+              <StepperField value={s.port ?? ""} onValue={(v) => up({ port: v })} min={1} max={65535} integer start={DEFAULT_PORT[transport]} label={t("ui.port", { port: DEFAULT_PORT[transport] })} inputId="dcb-port">
+                <input id="dcb-port" className="curlb-input" value={s.port ?? ""} onChange={(e) => up({ port: e.target.value })} onKeyDown={stepperKeyDown({ value: s.port ?? "", onValue: (v) => up({ port: v }), min: 1, max: 65535, integer: true, start: DEFAULT_PORT[transport] })} placeholder={String(DEFAULT_PORT[transport])} spellCheck={false} autoComplete="off" maxLength={5} inputMode="numeric" />
+              </StepperField>
+            </div>
             <label className="curlb-field">
               <span className="curlb-field-label">{t("ui.source")}</span>
               <input id="dcb-source" className="curlb-input" value={s.source ?? ""} onChange={(e) => up({ source: e.target.value })} placeholder="192.0.2.10#5300" spellCheck={false} autoComplete="off" maxLength={300} />
@@ -215,10 +226,14 @@ export default function DigCommandBuilderTool() {
           </div>
           <div className="curlb-section-title dcb-subtitle">{t("sec.edns")}</div>
           <div className="curlb-grid">
-            <label className="curlb-field curlb-field--narrow">
-              <span className="curlb-field-label">{t("ui.bufsize")}</span>
-              <input id="dcb-bufsize" className="curlb-input" value={s.bufsize ?? ""} onChange={(e) => up({ bufsize: e.target.value })} placeholder="1232" spellCheck={false} autoComplete="off" maxLength={5} inputMode="numeric" />
-            </label>
+            <div className="curlb-field curlb-field--narrow">
+              {/* The label beside the field, tied by id. */}
+              <label className="curlb-field-label" htmlFor="dcb-bufsize">{t("ui.bufsize")}</label>
+              {/* Up and down arrows: whole numbers, 0 to 65535 bytes (bad-bufsize outside). */}
+              <StepperField value={s.bufsize ?? ""} onValue={(v) => up({ bufsize: v })} min={0} max={65535} integer label={t("ui.bufsize")} inputId="dcb-bufsize">
+                <input id="dcb-bufsize" className="curlb-input" value={s.bufsize ?? ""} onChange={(e) => up({ bufsize: e.target.value })} onKeyDown={stepperKeyDown({ value: s.bufsize ?? "", onValue: (v) => up({ bufsize: v }), integer: true, min: 0, max: 65535 })} placeholder="1232" spellCheck={false} autoComplete="off" maxLength={5} inputMode="numeric" />
+              </StepperField>
+            </div>
             <label className="curlb-field">
               <span className="curlb-field-label">{t("ui.subnet")}</span>
               <input id="dcb-subnet" className="curlb-input" value={s.subnet ?? ""} onChange={(e) => up({ subnet: e.target.value })} placeholder="198.51.100.0/24, 0" spellCheck={false} autoComplete="off" maxLength={300} />
@@ -231,18 +246,30 @@ export default function DigCommandBuilderTool() {
           </div>
           <div className="curlb-section-title dcb-subtitle">{t("sec.timing")}</div>
           <div className="curlb-grid">
-            <label className="curlb-field curlb-field--narrow">
-              <span className="curlb-field-label">{t("ui.timeout")}</span>
-              <input id="dcb-timeout" className="curlb-input" value={s.timeout ?? ""} onChange={(e) => up({ timeout: e.target.value })} placeholder="5" spellCheck={false} autoComplete="off" maxLength={5} inputMode="numeric" />
-            </label>
-            <label className="curlb-field curlb-field--narrow">
-              <span className="curlb-field-label">{t("ui.tries")}</span>
-              <input id="dcb-tries" className="curlb-input" value={s.tries ?? ""} onChange={(e) => up({ tries: e.target.value })} placeholder="3" spellCheck={false} autoComplete="off" maxLength={4} inputMode="numeric" />
-            </label>
-            <label className="curlb-field curlb-field--narrow">
-              <span className="curlb-field-label">{t("ui.retry")}</span>
-              <input id="dcb-retry" className="curlb-input" value={s.retry ?? ""} onChange={(e) => up({ retry: e.target.value })} placeholder="2" spellCheck={false} autoComplete="off" maxLength={4} inputMode="numeric" />
-            </label>
+            <div className="curlb-field curlb-field--narrow">
+              {/* The label beside the field, tied by id. */}
+              <label className="curlb-field-label" htmlFor="dcb-timeout">{t("ui.timeout")}</label>
+              {/* Up and down arrows: whole numbers, 0 to 86400 seconds, as the engine reads +timeout. */}
+              <StepperField value={s.timeout ?? ""} onValue={(v) => up({ timeout: v })} min={0} max={86400} integer label={t("ui.timeout")} inputId="dcb-timeout">
+                <input id="dcb-timeout" className="curlb-input" value={s.timeout ?? ""} onChange={(e) => up({ timeout: e.target.value })} onKeyDown={stepperKeyDown({ value: s.timeout ?? "", onValue: (v) => up({ timeout: v }), integer: true, min: 0, max: 86400 })} placeholder="5" spellCheck={false} autoComplete="off" maxLength={5} inputMode="numeric" />
+              </StepperField>
+            </div>
+            <div className="curlb-field curlb-field--narrow">
+              {/* The label beside the field, tied by id. */}
+              <label className="curlb-field-label" htmlFor="dcb-tries">{t("ui.tries")}</label>
+              {/* Up and down arrows: whole numbers, 0 to 1000, as the engine reads +tries. */}
+              <StepperField value={s.tries ?? ""} onValue={(v) => up({ tries: v })} min={0} max={1000} integer label={t("ui.tries")} inputId="dcb-tries">
+                <input id="dcb-tries" className="curlb-input" value={s.tries ?? ""} onChange={(e) => up({ tries: e.target.value })} onKeyDown={stepperKeyDown({ value: s.tries ?? "", onValue: (v) => up({ tries: v }), integer: true, min: 0, max: 1000 })} placeholder="3" spellCheck={false} autoComplete="off" maxLength={4} inputMode="numeric" />
+              </StepperField>
+            </div>
+            <div className="curlb-field curlb-field--narrow">
+              {/* The label beside the field, tied by id. */}
+              <label className="curlb-field-label" htmlFor="dcb-retry">{t("ui.retry")}</label>
+              {/* Up and down arrows: whole numbers, 0 to 1000, as the engine reads +retry. */}
+              <StepperField value={s.retry ?? ""} onValue={(v) => up({ retry: v })} min={0} max={1000} integer label={t("ui.retry")} inputId="dcb-retry">
+                <input id="dcb-retry" className="curlb-input" value={s.retry ?? ""} onChange={(e) => up({ retry: e.target.value })} onKeyDown={stepperKeyDown({ value: s.retry ?? "", onValue: (v) => up({ retry: v }), integer: true, min: 0, max: 1000 })} placeholder="2" spellCheck={false} autoComplete="off" maxLength={4} inputMode="numeric" />
+              </StepperField>
+            </div>
           </div>
         </div>
 

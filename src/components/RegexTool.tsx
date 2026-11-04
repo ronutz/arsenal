@@ -33,6 +33,14 @@
 // credential in the pattern or the test text blocks the link and the popover
 // names the field and the line. An arriving link (useShareArrival) fills the
 // three fields as the reader would; it never gives the "Run anyway" consent.
+//
+// WITHOUT A KEYBOARD (03/11/2026): under the /pattern/flags literal, one
+// pressed-or-not button per flag the engine accepts (VALID_FLAGS: d g i m s u
+// y), named with its RegExp property. A press adds the letter to the flags
+// field, or removes it when the field has it, exactly as typing it would; the
+// field is still typed. The buttons reuse the site's preset-chip vocabulary
+// (tcl-presets-row, tcl-chip), 44 px tall on a touch screen
+// (tcl-presets-row--tap).
 // ============================================================================
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
@@ -48,6 +56,7 @@ import {
   explainPattern,
   detectReDoS,
   MAX_MATCHES,
+  VALID_FLAGS, // the flags the engine accepts (their buttons, 03/11/2026)
   // 2026-10-26: the portability view.
   portabilityOf,
   FLAVOURS,
@@ -71,6 +80,17 @@ const PORT_EXAMPLE_TEXT = "user=admin&role=ops";
 
 /** Nothing to share (the button is disabled): a constant, so the button sees no change. */
 const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
+
+/** Each flag's RegExp property, the name a flag button gives it (JavaScript identifiers, the same in every language). */
+const FLAG_PROPERTY: Readonly<Record<string, string>> = {
+  d: "hasIndices", // match start and end offsets
+  g: "global", // every match
+  i: "ignoreCase", // case-insensitive
+  m: "multiline", // ^ and $ at line breaks
+  s: "dotAll", // . matches newlines
+  u: "unicode", // code points
+  y: "sticky", // only at lastIndex
+}; // ECMAScript's names for VALID_FLAGS
 
 // Each verdict borrows an existing badge colour: indigo, amber, red.
 const VERDICT_BADGE: Record<PortVerdict, string> = {
@@ -269,6 +289,15 @@ export default function RegexTool({ initialPattern = "", initialFlags = "g", ini
             aria-label={t("flagsLabel")}
             size={6}
           />
+        </div>
+        {/* One button per flag the engine accepts: pressed when the flags field has it; a press adds or removes the letter. */}
+        <div className="tcl-presets-row tcl-presets-row--tap" role="group" aria-label={t("flagsLabel")}>
+          {VALID_FLAGS.split("").map((f) => (
+            <button key={f} type="button" className="tcl-chip mono" aria-pressed={flags.includes(f)} onClick={() => setFlags(flags.includes(f) ? flags.split(f).join("") : flags + f)}>
+              {/* The letter, then its property's name, so a reader who does not know the letters can still choose. */}
+              {f} <span className="tcl-muted">{FLAG_PROPERTY[f]}</span>
+            </button>
+          ))}
         </div>
         <p className="cidr-runs">{t("runsLocally")}</p>
       </div>

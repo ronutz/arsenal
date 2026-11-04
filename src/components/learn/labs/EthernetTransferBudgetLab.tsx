@@ -13,12 +13,17 @@
 // The model is src/lib/labs/ethernet-transfer-budget/compute.ts; its checked
 // cases are the golden vectors beside it. The bits and bytes tool does the
 // unit arithmetic with one efficiency; this lab adds the framing.
+// The size and the MTU carry up and down arrows; the MTU also has buttons for
+// the three MTUs the model knows (576, 1280 for IPv6, 1500), so it is set
+// without typing. Arrows and buttons stay inside what the transport accepts.
 // Words: "learnLabs.ethernet-transfer-budget".
 // ============================================================================
 
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import LabFrame, { LabField, LabSelect } from "./LabFrame";
+// Up and down arrows beside the size and the MTU.
+import { StepperField } from "@/components/NumberStepper";
 import {
   compute,
   DEFAULT_INPUT,
@@ -38,6 +43,8 @@ import {
 
 /** The lab's id: its namespace, its anchor and its element ids. */
 const ID = "ethernet-transfer-budget";
+/** The MTUs the model itself names: its IPv4 floor, IPv6's minimum link MTU and Ethernet's 1500. */
+const MTU_PRESETS = [MIN_MTU, IPV6_MIN_MTU, MAX_MTU] as const;
 
 /** The form as typed: number fields stay text so the reader can edit freely. */
 interface Form {
@@ -109,6 +116,11 @@ export default function EthernetTransferBudgetLab() {
             ? t("errorChoice")
             : null;
 
+  // The lowest MTU the chosen transport accepts: IPv6 refuses anything under 1280.
+  const mtuMin = form.transport === "tcp6" ? IPV6_MIN_MTU : MIN_MTU;
+  /** Set the MTU field as if typed (from its arrows or a preset button). */
+  const setMtu = (v: string) => setForm((f) => ({ ...f, mtu: v }));
+
   // The unit options.
   const unitOptions = [
     ["MB", t("unitMB")],
@@ -170,7 +182,11 @@ export default function EthernetTransferBudgetLab() {
       controls={
         <>
           <LabField id={`${ID}-size`} label={t("size")}>
-            <input id={`${ID}-size`} className="lab-input" type="number" inputMode="decimal" min={0} max={MAX_SIZE} step="any" value={form.size} aria-invalid={err === "bad-size" ? "true" : undefined} onChange={(e) => setForm({ ...form, size: e.target.value })} />
+            {/* Arrows: one unit a press, 1 to 1,000,000 (the model refuses 0; a typed fraction still counts). */}
+            <StepperField value={form.size} onValue={(v) => setForm((f) => ({ ...f, size: v }))} min={1} max={MAX_SIZE} step={1} label={t("size")} inputId={`${ID}-size`}>
+              {/* Native min agrees with the arrows (0 is refused); step stays "any" so a fraction typed is not flagged. */}
+              <input id={`${ID}-size`} className="lab-input" type="number" inputMode="decimal" min={1} max={MAX_SIZE} step="any" value={form.size} aria-invalid={err === "bad-size" ? "true" : undefined} onChange={(e) => setForm({ ...form, size: e.target.value })} />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-unit`} label={t("unit")}>
             <LabSelect id={`${ID}-unit`} value={form.unit} options={unitOptions} onChange={(v) => setForm({ ...form, unit: v as SizeUnit })} />
@@ -182,7 +198,19 @@ export default function EthernetTransferBudgetLab() {
             <LabSelect id={`${ID}-transport`} value={form.transport} options={transportOptions} onChange={(v) => setForm({ ...form, transport: v as Transport })} />
           </LabField>
           <LabField id={`${ID}-mtu`} label={t("mtu")}>
-            <input id={`${ID}-mtu`} className="lab-input" type="number" inputMode="decimal" min={MIN_MTU} max={MAX_MTU} step={1} value={form.mtu} aria-invalid={err === "bad-mtu" || err === "ipv6-mtu" ? "true" : undefined} onChange={(e) => setForm({ ...form, mtu: e.target.value })} />
+            {/* Arrows: one octet a press, from the transport's floor (576, or 1280 over IPv6) to 1500. */}
+            <StepperField value={form.mtu} onValue={setMtu} min={mtuMin} max={MAX_MTU} step={1} label={t("mtu")} inputId={`${ID}-mtu`}>
+              {/* Native min follows the transport too, so the browser's own arrow keys agree. */}
+              <input id={`${ID}-mtu`} className="lab-input" type="number" inputMode="decimal" min={mtuMin} max={MAX_MTU} step={1} value={form.mtu} aria-invalid={err === "bad-mtu" || err === "ipv6-mtu" ? "true" : undefined} onChange={(e) => setForm({ ...form, mtu: e.target.value })} />
+            </StepperField>
+            {/* The three MTUs the model knows, one tap each; pressed when the field holds it, off where the transport refuses it. */}
+            <div className="lab-presets" role="group" aria-label={t("mtuPresets")}>
+              {MTU_PRESETS.map((m) => (
+                <button key={m} type="button" className="lab-preset" aria-pressed={readNumber(form.mtu) === m} disabled={m < mtuMin} onClick={() => setMtu(String(m))}>
+                  {nf0.format(m)}
+                </button>
+              ))}
+            </div>
           </LabField>
           <LabField id={`${ID}-tag`} label={t("tag")}>
             <LabSelect id={`${ID}-tag`} value={form.tagged} options={tagOptions} onChange={(v) => setForm({ ...form, tagged: v as "yes" | "no" })} />

@@ -10,6 +10,7 @@
 // inputs (lease length, time into the lease) and three selects (lease or none,
 // where the server is, whether it answers); the result is the lease's timers
 // and a three-step account: the client's state, what it sends, how it ends.
+// Both number inputs carry up and down arrows (one second, one per cent).
 // The model is src/lib/labs/dhcp-lease-states/compute.ts; its checked cases
 // are the golden vectors beside it. Words: "learnLabs.dhcp-lease-states".
 // ============================================================================
@@ -17,6 +18,8 @@
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import LabFrame, { LabField, LabSelect } from "./LabFrame";
+// Up and down arrows beside the two number inputs.
+import { StepperField } from "@/components/NumberStepper";
 import {
   compute,
   DEFAULT_INPUT,
@@ -191,32 +194,38 @@ export default function DhcpLeaseStatesLab() {
       controls={
         <>
           <LabField id={`${ID}-lease`} label={t("lease")}>
-            <input
-              id={`${ID}-lease`}
-              className="lab-input"
-              type="number"
-              inputMode="decimal"
-              min={MIN_LEASE}
-              max={MAX_LEASE}
-              step={1}
-              value={form.lease}
-              aria-invalid={err === "bad-lease" ? "true" : undefined}
-              onChange={(e) => setForm({ ...form, lease: e.target.value })}
-            />
+            {/* Arrows: one second a press, 60 to 4,294,967,294 (the model's whole-second range). */}
+            <StepperField value={form.lease} onValue={(v) => setForm((f) => ({ ...f, lease: v }))} min={MIN_LEASE} max={MAX_LEASE} step={1} label={t("lease")} inputId={`${ID}-lease`}>
+              <input
+                id={`${ID}-lease`}
+                className="lab-input"
+                type="number"
+                inputMode="decimal"
+                min={MIN_LEASE}
+                max={MAX_LEASE}
+                step={1}
+                value={form.lease}
+                aria-invalid={err === "bad-lease" ? "true" : undefined}
+                onChange={(e) => setForm({ ...form, lease: e.target.value })}
+              />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-elapsed`} label={t("elapsed")}>
-            <input
-              id={`${ID}-elapsed`}
-              className="lab-input"
-              type="number"
-              inputMode="decimal"
-              min={0}
-              max={MAX_ELAPSED_PCT}
-              step="any"
-              value={form.elapsedPct}
-              aria-invalid={err === "bad-elapsed" ? "true" : undefined}
-              onChange={(e) => setForm({ ...form, elapsedPct: e.target.value })}
-            />
+            {/* Arrows: one per cent a press, 0 to 150 (a typed fraction still counts). */}
+            <StepperField value={form.elapsedPct} onValue={(v) => setForm((f) => ({ ...f, elapsedPct: v }))} min={0} max={MAX_ELAPSED_PCT} step={1} label={t("elapsed")} inputId={`${ID}-elapsed`}>
+              <input
+                id={`${ID}-elapsed`}
+                className="lab-input"
+                type="number"
+                inputMode="decimal"
+                min={0}
+                max={MAX_ELAPSED_PCT}
+                step="any"
+                value={form.elapsedPct}
+                aria-invalid={err === "bad-elapsed" ? "true" : undefined}
+                onChange={(e) => setForm({ ...form, elapsedPct: e.target.value })}
+              />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-start`} label={t("start")}>
             <LabSelect id={`${ID}-start`} value={form.start} options={startOptions} onChange={(v) => setForm({ ...form, start: v as ClientStart })} />

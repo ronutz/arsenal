@@ -10,11 +10,21 @@
 // story), and when two or more methods are requested, a closing panel that
 // names exactly the properties where they differ - the actual answer to
 // "GET vs QUERY". Styling reuses the established tool vocabulary (cidr-*
-// input stack, jwt-results panels, cipher-note) - no new CSS classes.
+// input stack, jwt-results panels, cipher-note) - no new CSS classes, but for
+// the touch-size modifier of the method buttons added on 03/11/2026 below.
 //
 // Share results (2026-10-27): under the panels, a button builds a link that
 // carries the line as typed (src/lib/tools/http-methods-comparison/share.ts).
 // An arriving link (useShareArrival) fills the field as typing would.
+//
+// WITHOUT A KEYBOARD (03/11/2026): under the field, one pressed-or-not button
+// per method in the engine's table (KNOWN_METHODS). A press adds the method to
+// the line, or removes it when the line has it (in any case), and the line is
+// written back as "GET vs QUERY", exactly what typing it would give; at four
+// methods, the engine's limit, the others wait. The line is still typed, and
+// the buttons reuse the site's preset-chip vocabulary (tcl-presets-row,
+// tcl-chip), 44 px tall on a touch screen
+// (tcl-presets-row--tap).
 // ============================================================================
 "use client";
 
@@ -26,6 +36,7 @@ import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
 import { HTTP_METHODS_SHARE } from "@/lib/tools/http-methods-comparison/share"; // this tool's share spec: the line as typed
 import {
   run,
+  KNOWN_METHODS, // every method in the table, one button each (03/11/2026)
   MethodCompareError,
   type MethodCompareResult,
   type MethodProperties,
@@ -37,6 +48,20 @@ const EXAMPLE = "get vs query";
 
 /** Nothing to share (the button is disabled): a constant, so the button sees no change. */
 const NOTHING: ShareEncoding = { ok: false, reason: "empty" };
+
+/** The most methods the engine compares at once (it refuses a fifth). */
+const MAX_METHODS = 4; // run() throws "too-many" past four
+
+/**
+ * The method names in a line, as the engine splits them (spaces or commas; "vs" and "versus" are only joiners).
+ *
+ * @param line the line as typed
+ * @returns the names, in order, as typed
+ */
+function methodTokens(line: string): string[] {
+  // The same split and filter as run().
+  return line.trim().split(/[\s,]+/).filter((x) => x !== "" && x.toLowerCase() !== "vs" && x.toLowerCase() !== "versus");
+}
 
 export default function HttpMethodsComparisonTool() {
   const t = useTranslations("tools.http-methods-comparison");
@@ -80,6 +105,23 @@ export default function HttpMethodsComparisonTool() {
   useShareArrival(HTTP_METHODS_SHARE, (state) => onChange(state.input)); // as typed
   // What Share results may carry: the line, while it gives a comparison.
   const share = useMemo<ShareEncoding>(() => (result ? HTTP_METHODS_SHARE.encode({ input: value }) : NOTHING), [result, value]); // memoised
+
+  // ---- Without a keyboard (03/11/2026): the method buttons. ----
+  /** The names in the line now. */
+  const picked = methodTokens(value); // as typed
+  /** The distinct methods named (upper case, as the engine counts them). */
+  const pickedIds = new Set(picked.map((x) => x.toUpperCase())); // GET, QUERY
+  /**
+   * Add a method to the line, or take it out when the line has it; the line is written back as typing it would be.
+   *
+   * @param id the method, upper case
+   */
+  const toggleMethod = (id: string) => {
+    // The names kept: all but this method (in any case) when it is there, or all of them plus it.
+    const next = pickedIds.has(id) ? picked.filter((x) => x.toUpperCase() !== id) : [...picked, id];
+    // "GET vs QUERY", through the field's own setter (the page compares at once).
+    onChange(next.join(" vs "));
+  };
 
   /** One yes/no/enum property line inside a method panel. */
   const prop = (label: string, val: string) => (
@@ -133,6 +175,15 @@ export default function HttpMethodsComparisonTool() {
           autoComplete="off"
           spellCheck={false}
         />
+        {/* One button per method in the table: pressed when the line names it; a press adds or removes it. Past four
+            named, the unpressed ones wait (the engine compares at most four). */}
+        <div className="tcl-presets-row tcl-presets-row--tap" role="group" aria-label={t("pickLabel")}>
+          {KNOWN_METHODS.map((id) => (
+            <button key={id} type="button" className="tcl-chip mono" aria-pressed={pickedIds.has(id)} disabled={!pickedIds.has(id) && pickedIds.size >= MAX_METHODS} onClick={() => toggleMethod(id)}>
+              {id}
+            </button>
+          ))}
+        </div>
         <p id="httpm-privacy" className="cidr-privacy">
           <span className="cidr-lock" aria-hidden="true">
             🔒

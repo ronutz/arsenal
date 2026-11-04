@@ -15,11 +15,19 @@
 // and final state; and a verdict. The model is
 // src/lib/labs/vrrp-master-election/compute.ts; its checked cases are the
 // golden vectors beside it. Words: "learnLabs.vrrp-master-election".
+//
+// The priorities and the interval have up and down arrows beside them (PRIME
+// 03/11/2026: values set "through the click of a mouse (or press of the
+// touchscreen)"), one a press inside the model's bounds. A priority's arrows
+// stop at 254 while another router taking part holds 255, so they never make
+// the second owner the model refuses (its attribute says the same).
 // ============================================================================
 
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import LabFrame, { LabField, LabSelect } from "./LabFrame";
+// Up and down arrows for the priorities and the interval.
+import { StepperField } from "@/components/NumberStepper";
 import {
   ADDRESSES,
   activeDownInterval,
@@ -27,6 +35,7 @@ import {
   DEFAULT_INPUT,
   EXAMPLE_INPUT,
   MAX_INTERVAL_CS,
+  OWNER_PRIORITY,
   skewTime,
   VrrpError,
   type LateRouter,
@@ -139,6 +148,8 @@ export default function VrrpMasterElectionLab() {
   };
   /** Set one router's typed priority. */
   const setPriority = (i: number, v: string) => setForm({ ...form, priorities: form.priorities.map((p, j) => (j === i ? v : p)) });
+  /** The highest priority router i may be given: 254 while another router taking part already owns the address (255). */
+  const priorityMax = (i: number): number => (form.priorities.some((p, j) => j !== i && j < n && readNumber(p) === OWNER_PRIORITY) ? OWNER_PRIORITY - 1 : OWNER_PRIORITY);
   /** Set one event. */
   const setEvent = (k: number, v: string) => setForm({ ...form, events: form.events.map((e, j) => (j === k ? (v as VrrpEvent) : e)) });
 
@@ -318,36 +329,43 @@ export default function VrrpMasterElectionLab() {
           {/* One priority per router taking part. */}
           {Array.from({ length: n }, (_, i) => (
             <LabField key={i} id={`${ID}-priority-${i + 1}`} label={t("priority", { r: i + 1 })}>
-              <input
-                id={`${ID}-priority-${i + 1}`}
-                className="lab-input"
-                type="number"
-                inputMode="numeric"
-                min={1}
-                max={255}
-                step={1}
-                value={form.priorities[i]}
-                aria-invalid={(err === "bad-priority" || err === "two-owners") && errRouter === i ? "true" : undefined}
-                onChange={(e) => setPriority(i, e.target.value)}
-              />
+              {/* Up and down arrows, whole numbers only: one a press, 1 to 255 (254 while another router owns the address), the field set as if typed. */}
+              <StepperField value={form.priorities[i]} onValue={(v) => setPriority(i, v)} min={1} max={priorityMax(i)} step={1} integer label={t("priority", { r: i + 1 })} inputId={`${ID}-priority-${i + 1}`}>
+                <input
+                  id={`${ID}-priority-${i + 1}`}
+                  className="lab-input"
+                  type="number"
+                  inputMode="numeric"
+                  min={1}
+                  // The same ceiling as the arrows, so the browser's own spinner never makes a second owner either.
+                  max={priorityMax(i)}
+                  step={1}
+                  value={form.priorities[i]}
+                  aria-invalid={(err === "bad-priority" || err === "two-owners") && errRouter === i ? "true" : undefined}
+                  onChange={(e) => setPriority(i, e.target.value)}
+                />
+              </StepperField>
             </LabField>
           ))}
           <LabField id={`${ID}-preempt`} label={t("preempt")}>
             <LabSelect id={`${ID}-preempt`} value={form.preempt} options={preemptOptions} onChange={(v) => setForm({ ...form, preempt: v })} />
           </LabField>
           <LabField id={`${ID}-interval`} label={t("interval")}>
-            <input
-              id={`${ID}-interval`}
-              className="lab-input"
-              type="number"
-              inputMode="numeric"
-              min={1}
-              max={MAX_INTERVAL_CS}
-              step={1}
-              value={form.interval}
-              aria-invalid={err === "bad-interval" ? "true" : undefined}
-              onChange={(e) => setForm({ ...form, interval: e.target.value })}
-            />
+            {/* Up and down arrows, whole numbers only: one centisecond a press, 1 to the model's MAX_INTERVAL_CS, the field set as if typed. */}
+            <StepperField value={form.interval} onValue={(v) => setForm((f) => ({ ...f, interval: v }))} min={1} max={MAX_INTERVAL_CS} step={1} integer label={t("interval")} inputId={`${ID}-interval`}>
+              <input
+                id={`${ID}-interval`}
+                className="lab-input"
+                type="number"
+                inputMode="numeric"
+                min={1}
+                max={MAX_INTERVAL_CS}
+                step={1}
+                value={form.interval}
+                aria-invalid={err === "bad-interval" ? "true" : undefined}
+                onChange={(e) => setForm({ ...form, interval: e.target.value })}
+              />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-late`} label={t("late")}>
             <LabSelect id={`${ID}-late`} value={form.late} options={lateOptions} onChange={(v) => setForm({ ...form, late: v as LateRouter })} />

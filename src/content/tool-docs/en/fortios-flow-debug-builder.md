@@ -2,6 +2,8 @@
 
 Fill in what you want to trace (an address, optionally ports, a protocol, a packet count) and the tool assembles the full `diagnose debug flow` sequence for a FortiGate: the clean-state reset, the filter, the display options, the trace and the enable, followed by the cleanup. Every line is explained individually. It generates text and contacts nothing.
 
+Typing is optional for most of the form: the port fields and the packet count have up and down arrows beside them, and under the protocol field there is one button per protocol name the tool turns into its number (`tcp`, `udp`, `icmp`, `icmpv6`, `gre`, `esp`, `ah`, `sctp`); pressing the lit one clears the field again. A protocol number, the addresses and the VDOM are still typed.
+
 ## Why a builder rather than a reference
 
 `diagnose debug flow` is not a command, it is a recipe of four or five commands that only work in combination. The order matters, the cleanup matters more, and the whole thing is used rarely enough that almost nobody remembers it exactly. That is precisely the shape of problem a deterministic builder solves.
@@ -22,7 +24,7 @@ It cannot know your platform, your VDOM layout or whether your session is being 
 
 ## Share results
 
-Under the commands, after Copy, **Share results** builds a link to this page, only when you press it, that carries the form after the `#` as named values, every field always: `addr`, `saddr`, `daddr`, `port`, `sport`, `dport`, `proto`, `vdom` and `count` as typed (an empty one is left out), and `iprope` and `timestamp` as 1 or 0. The button is disabled until a filter is typed, because the page builds nothing without one. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+Under the commands, after Copy, **Share results** builds a link to this page, only when you press it, that carries the form after the `#` as named values, every field always: `addr`, `saddr`, `daddr`, `port`, `sport`, `dport`, `proto`, `vdom` and `count` as typed (an empty one is left out), and `iprope` and `timestamp` as 1 or 0. The button is disabled until a filter is set, because the page builds nothing without one. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
 
 The form holds no secret (the builder formats text and runs nothing), but its filters name hosts, ports and a virtual domain of your network, so the popover adds a caution line before you copy anything. Every field goes, not only those that differ from the defaults, so an old link keeps its meaning if a default changes.
 

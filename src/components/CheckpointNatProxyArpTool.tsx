@@ -8,6 +8,8 @@
 // Share results (2026-11-01): a button under the verdict builds a link that
 // carries every field of the form; an arriving link replaces the whole form
 // and the page evaluates it (subnet arithmetic; nothing is sent).
+// No keyboard needed (03/11/2026): the prefix length has up and down arrows,
+// 0 to 32 as the engine reads it; the two addresses stay typed.
 // ============================================================================
 
 import { useMemo, useState } from "react";
@@ -17,6 +19,7 @@ import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving 
 import { CHECKPOINT_NAT_PROXY_ARP_SHARE, encodeNat } from "@/lib/tools/checkpoint-nat-proxy-arp/share"; // this tool's share spec
 import { evaluateNatLocalisable, type NatVerdict } from "@/lib/tools/checkpoint-nat-proxy-arp/compute"; // the reading with sentence ids (02/11/2026)
 import { engineTexts, plainText, type EngineText } from "@/lib/tools/engine-text"; // engine sentences in the page's language
+import { StepperField, stepperKeyDown } from "@/components/NumberStepper"; // up and down arrows for the prefix length (03/11/2026)
 // PAGE LANGUAGE (02/11/2026): the checks, results, remedy, findings and errors arrive as EngineTexts from
 // evaluateNatLocalisable() and are shown through engineTexts(t) (keys under engine.* in the pack).
 
@@ -68,6 +71,14 @@ export default function CheckpointNatProxyArpTool() {
       setResult(null);
       setError(e); // shown through tx.error
     }
+  }
+
+  /** Set the prefix length and evaluate again, as typing does (the arrows call this too). */
+  function setPrefixText(v: string) {
+    // The field's text.
+    setPrefix(v);
+    // The verdict for it.
+    evaluate({ prefix: v });
   }
 
   // An arriving share link (2026-11-01): the whole form is replaced by the link's values, then evaluated as on typing.
@@ -148,17 +159,24 @@ export default function CheckpointNatProxyArpTool() {
         <label className="cidr-label" htmlFor="cp-prefix">
           {t("prefixLabel")}
         </label>
-        <input
-          id="cp-prefix"
-          className="cidr-input mono"
-          spellCheck={false}
-          value={prefix}
-          placeholder="24"
-          onChange={(e) => {
-            setPrefix(e.target.value);
-            evaluate({ prefix: e.target.value });
-          }}
-        />
+        {/* Up and down arrows: a prefix length of 0 to 32 (err.prefix outside it). */}
+        <StepperField value={prefix} onValue={setPrefixText} min={0} max={32} integer label={t("prefixLabel")} inputId="cp-prefix">
+          <input
+            id="cp-prefix"
+            className="cidr-input mono"
+            spellCheck={false}
+            // A number: the phone shows its digit keys.
+            inputMode="numeric"
+            value={prefix}
+            placeholder="24"
+            onChange={(e) => {
+              // The typed text, set and evaluated as the arrows do.
+              setPrefixText(e.target.value);
+            }}
+            // Arrow Up and Down step the length from the keyboard.
+            onKeyDown={stepperKeyDown({ value: prefix, onValue: setPrefixText, min: 0, max: 32, integer: true })}
+          />
+        </StepperField>
 
         <label className="cidr-label" htmlFor="cp-autoarp">
           {t("autoArpLabel")}

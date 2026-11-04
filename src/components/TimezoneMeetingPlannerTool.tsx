@@ -15,10 +15,19 @@
 // turned into the page's language by inPageLanguage(); input errors through
 // engineTexts().error; the weekday (the runtime's English short form) is shown
 // through the weekday.* messages. The English page reads exactly as before.
+//
+// WITHOUT A KEYBOARD (03/11/2026): under the instant, a date-and-time picker
+// (type="datetime-local") writes the field as typing would; the field stays
+// typed text, because the engine requires an offset a picker cannot hold, so a
+// pick keeps the field's seconds and offset, or adds Z (UTC) when it had none,
+// as the label says. Under the zones, a select lists every IANA zone this
+// browser knows (Intl.supportedValuesOf, the same data the plan reads) and a
+// choice adds it as a new line. The list is read after the page loads, so the
+// server's and the browser's first render agree.
 // ============================================================================
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react"; // useEffect reads the zone list once on the client (03/11/2026)
 import { useTranslations } from "next-intl";
 import { planLocalisable, PlannerInputError, type PlannerAnalysis } from "@/lib/tools/timezone-meeting-planner/compute"; // the reading with sentence ids (02/11/2026)
 import { engineTexts } from "@/lib/tools/engine-text"; // engine sentences in the page's language
@@ -28,6 +37,32 @@ import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving 
 import { PLANNER_SHARE, encodePlannerShare } from "@/lib/tools/timezone-meeting-planner/share"; // this tool's share spec: the instant and the zones
 
 type Result = { ok: true; data: PlannerAnalysis } | { ok: false; message: string };
+
+/**
+ * An instant split for the date-and-time picker: "2026-07-18T15:00:30-03:00" gives the picker's "2026-07-18T15:00"
+ * and the tail ":30-03:00", kept when the reader picks.
+ *
+ * @param text the field as typed
+ * @returns the picker's value ("" when the field holds no date and time it can show) and the tail to keep
+ */
+function pickerParts(text: string): { local: string; tail: string } {
+  // A date, a T or a space, hours and minutes, optional seconds, an optional offset.
+  const m = /^\s*(\d{4}-\d{2}-\d{2})[T ](\d{2}:\d{2})(:\d{2}(?:\.\d+)?)?\s*(Z|[+-]\d{2}:?\d{2})?\s*$/i.exec(text);
+  // Shown and kept, or an empty picker whose pick is read as UTC.
+  return m ? { local: `${m[1]}T${m[2]}`, tail: (m[3] ?? "") + (m[4] ?? "Z") } : { local: "", tail: "Z" };
+}
+
+/**
+ * Every IANA zone this browser knows, or none where the runtime cannot list them.
+ *
+ * @returns the zone names, sorted as the runtime gives them
+ */
+function knownZones(): string[] {
+  // Intl.supportedValuesOf is ES2022; an older runtime simply offers no list (the field is still typed).
+  const list = (Intl as unknown as { supportedValuesOf?: (key: string) => string[] }).supportedValuesOf;
+  // The zones, or none; a runtime that throws offers none too.
+  try { return typeof list === "function" ? list("timeZone") : []; } catch { return []; }
+}
 
 // D-83 Example sample — verbatim from this tool's golden vectors (v1-july).
 const EX_INSTANT = "2026-07-18T15:00Z";
@@ -53,6 +88,27 @@ export default function TimezoneMeetingPlannerTool() {
   // What Share results carries: both fields, once the page has a plan (memoised).
   const share = useMemo(() => encodePlannerShare({ instant, zones }, !!result?.ok), [instant, zones, result]); // the encoding
 
+  // ---- Without a keyboard (03/11/2026). ----
+  /** What the instant's picker shows, and what a pick keeps. */
+  const pick = pickerParts(instant); // from the field as typed
+  /** Every zone the browser knows, read after the page loads (empty on the server and in the first render). */
+  const [allZones, setAllZones] = useState<string[]>([]); // the select's options
+  // Read once, on the client.
+  useEffect(() => setAllZones(knownZones()), []);
+  /** The zones already listed (trimmed lines), so the select does not offer them twice. */
+  const listed = new Set(zones.split(/\n+/).map((z) => z.trim()).filter(Boolean)); // as the engine reads the lines
+  /**
+   * Add a zone as a new line, as typing it would.
+   *
+   * @param zone an IANA zone name
+   */
+  const addZone = (zone: string) => {
+    // A choice of the prompt (the empty option) adds nothing.
+    if (!zone) return;
+    // The lines so far without trailing blank lines, then the new zone on its own line.
+    setZones((cur) => (cur.trim() ? `${cur.replace(/\s+$/, "")}\n${zone}` : zone));
+  };
+
   return (
     <div className="cidr-tool jwt-tool json-tool tmsh-tool">
       <div className="cidr-input-row">
@@ -71,6 +127,12 @@ export default function TimezoneMeetingPlannerTool() {
           placeholder="2026-07-18T15:00Z"
           autoComplete="off" spellCheck={false}
         />
+        {/* Or the instant from a picker: a pick keeps the field's seconds and offset (Z when it had none). */}
+        <label className="time-pick" htmlFor="tzp-instant-pick">
+          <span className="time-pick-label">{t("pickLabel")}</span>
+          {/* A cleared picker (an empty value) leaves the field as it is. */}
+          <input id="tzp-instant-pick" type="datetime-local" className="cidr-input mono time-pick-input" value={pick.local} aria-label={t("pickAria", { field: t("instantLabel") })} onChange={(e) => { if (e.target.value) setInstant(e.target.value + pick.tail); }} />
+        </label>
         <label className="cidr-label" htmlFor="tzp-zones">{t("zonesLabel")}</label>
         <textarea
           id="tzp-zones"
@@ -81,6 +143,19 @@ export default function TimezoneMeetingPlannerTool() {
           placeholder={"America/Sao_Paulo\nEurope/Berlin\nAsia/Tokyo"}
           autoComplete="off" spellCheck={false}
         />
+        {/* Or a zone from the browser's list, added as a new line; the select returns to its prompt after each choice.
+            Shown only once the list is read (a browser that cannot list zones keeps the typed field alone). */}
+        {allZones.length > 0 && (
+          <label className="time-pick" htmlFor="tzp-add-zone">
+            <span className="time-pick-label">{t("addZone")}</span>
+            <select id="tzp-add-zone" className="cidr-input mono time-pick-input" value="" onChange={(e) => addZone(e.target.value)}>
+              <option value="">{t("addZonePrompt")}</option>
+              {allZones.filter((z) => !listed.has(z)).map((z) => (
+                <option key={z} value={z}>{z}</option>
+              ))}
+            </select>
+          </label>
+        )}
         <p className="cidr-privacy">
           <span className="cidr-lock" aria-hidden="true">●</span>
           {t("runsLocally")}

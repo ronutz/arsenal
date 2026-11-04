@@ -16,11 +16,16 @@
 // the other exp_continue form would have ended. The model is
 // src/lib/labs/expect-timeout-timeline/compute.ts; its checked cases are the
 // golden vectors beside it. Words: "learnLabs.expect-timeout-timeline".
+// Each number input carries up and down arrows, one second or one line a
+// press; their bounds follow the model, including the rule that the ending
+// comes after the last progress line, so the arrows never make a refusal.
 // ============================================================================
 
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import LabFrame, { LabField, LabSelect } from "./LabFrame";
+// Up and down arrows beside each number input.
+import { StepperField } from "@/components/NumberStepper";
 import {
   compute,
   DEFAULT_INPUT,
@@ -78,6 +83,12 @@ function toForm(i: TimeoutTimelineInput): Form {
 function readNumber(s: string): number {
   // Blank means nothing was entered; a decimal comma is read as a point (and then refused as not whole).
   return s.trim() === "" ? Number.NaN : Number(s.trim().replace(",", "."));
+}
+
+/** A whole number inside a range, or null when the field holds anything else (so a bound that depends on it is left alone). */
+function wholeOrNull(n: number, lo: number, hi: number): number | null {
+  // An integer inside the range (NaN fails Number.isInteger).
+  return Number.isInteger(n) && n >= lo && n <= hi ? n : null;
 }
 
 /** The fields each refusal points at, for aria-invalid. */
@@ -149,6 +160,18 @@ export default function ExpectTimeoutTimelineLab() {
   }
   // The fields to mark invalid.
   const bad = new Set<NumberKey>(err ? FIELDS_AT_FAULT[err] : []);
+  // How many progress lines, when the field holds a valid count (for the arrows' linked bounds).
+  const linesNow = wholeOrNull(input.progressCount, 0, MAX_PROGRESS);
+  // Their spacing, when valid.
+  const everyNow = wholeOrNull(input.progressEveryS, 1, MAX_EVERY_S);
+  // The second of the ending, when there is one and it is valid.
+  const endNow = form.ending !== "silence" ? wholeOrNull(input.endAtS, 1, MAX_END_S) : null;
+  // The ending's lowest second: one after the last progress line, when there are any (never above its ceiling).
+  const endMin = linesNow && everyNow ? Math.min(MAX_END_S, linesNow * everyNow + 1) : 1;
+  // The most progress lines that still fit before the ending.
+  const linesMax = endNow !== null && everyNow !== null ? Math.max(0, Math.min(MAX_PROGRESS, Math.floor((endNow - 1) / everyNow))) : MAX_PROGRESS;
+  // The widest spacing that still fits those lines before the ending.
+  const everyMax = endNow !== null && linesNow ? Math.max(1, Math.min(MAX_EVERY_S, Math.floor((endNow - 1) / linesNow))) : MAX_EVERY_S;
   // The refusal, worded for the reader.
   const errText =
     err === "bad-timeout"
@@ -170,21 +193,24 @@ export default function ExpectTimeoutTimelineLab() {
   /** Set one select field. */
   const setSel = <K extends "timeoutMode" | "progressArm" | "ending" | "arms">(key: K) => (v: string) => setForm({ ...form, [key]: v as Form[K] });
 
-  /** One number input, labelled, with its own id and invalid state. */
+  /** One number input, labelled, with its own id and invalid state, and up and down arrows (one a press, min to max). */
   const field = (key: NumberKey, slug: string, label: string, min: number, max: number) => (
     <LabField id={`${ID}-${slug}`} label={label}>
-      <input
-        id={`${ID}-${slug}`}
-        className="lab-input"
-        type="number"
-        inputMode="numeric"
-        min={min}
-        max={max}
-        step={1}
-        value={form.numbers[key]}
-        aria-invalid={bad.has(key) ? "true" : undefined}
-        onChange={(e) => setForm({ ...form, numbers: { ...form.numbers, [key]: e.target.value } })}
-      />
+      {/* The arrows set the field as if typed; the input's own min and max are the same bounds. */}
+      <StepperField value={form.numbers[key]} onValue={(v) => setForm((f) => ({ ...f, numbers: { ...f.numbers, [key]: v } }))} min={min} max={max} step={1} label={label} inputId={`${ID}-${slug}`}>
+        <input
+          id={`${ID}-${slug}`}
+          className="lab-input"
+          type="number"
+          inputMode="numeric"
+          min={min}
+          max={max}
+          step={1}
+          value={form.numbers[key]}
+          aria-invalid={bad.has(key) ? "true" : undefined}
+          onChange={(e) => setForm({ ...form, numbers: { ...form.numbers, [key]: e.target.value } })}
+        />
+      </StepperField>
     </LabField>
   );
 
@@ -365,8 +391,9 @@ export default function ExpectTimeoutTimelineLab() {
               onChange={setSel("progressArm")}
             />
           </LabField>
-          {field("progressEveryS", "progress-every", t("progressEvery"), 1, MAX_EVERY_S)}
-          {field("progressCount", "progress-count", t("progressCount"), 0, MAX_PROGRESS)}
+          {/* Spacing and count: their ceilings shrink so the lines still come before the ending. */}
+          {field("progressEveryS", "progress-every", t("progressEvery"), 1, everyMax)}
+          {field("progressCount", "progress-count", t("progressCount"), 0, linesMax)}
           <LabField id={`${ID}-ending`} label={t("ending")}>
             <LabSelect
               id={`${ID}-ending`}
@@ -379,7 +406,8 @@ export default function ExpectTimeoutTimelineLab() {
               onChange={setSel("ending")}
             />
           </LabField>
-          {form.ending !== "silence" && field("endAtS", "end-at", t("endAt"), 1, MAX_END_S)}
+          {/* The ending's floor rises to one second after the last progress line. */}
+          {form.ending !== "silence" && field("endAtS", "end-at", t("endAt"), endMin, MAX_END_S)}
           <LabField id={`${ID}-arms`} label={t("arms")}>
             <LabSelect
               id={`${ID}-arms`}

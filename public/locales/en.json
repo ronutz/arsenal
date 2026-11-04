@@ -2064,7 +2064,9 @@
           "plumbing": "Credentials plumbing, common to all methods: access-policy agents populate the session variables SSO consumes; the classic wiring is a Logon Page (or a password-less front door) followed by SSO Credential Mapping, feeding session.logon.last.* into session.sso.token.last.*.",
           "poisons": "{name} sits on the poisons side of the split: misconfigure its object and every method's SSO in that user's session can go dark, the two form methods excepted."
         }
-      }
+      },
+      "pickLabel": "Or pick a method",
+      "allMethods": "All eight"
     },
     "f5-awaf-declarative-policy-explainer": {
       "name": "AWAF declarative-policy explainer",
@@ -4444,7 +4446,8 @@
             "when1": "When client-side and server-side link characteristics differ and each stack should be tuned to its own side."
           }
         }
-      }
+      },
+      "pickLabel": "Profiles in the table"
     },
     "f5-lb-method-chooser": {
       "name": "LB-method chooser",
@@ -5080,7 +5083,10 @@
       "clear": "Clear",
       "share": {
         "carries": "{licence, select, yes {The link carries only the service check date line read from your licence, never the licence itself.} other {The link carries the version or the date as typed, and nothing else.}}"
-      }
+      },
+      "pickDateLabel": "Or pick a service check date",
+      "pickVersionLabel": "Or pick a version from K7727",
+      "pickVersionNone": "Choose one"
     },
     "f5-ssl-profile-explainer": {
       "name": "F5 SSL profile explainer",
@@ -12243,7 +12249,9 @@
           "assumedUtc": "A timestamp without an offset was read as UTC. Add Z or an offset (-03:00) to be explicit.",
           "negative": "The second instant is earlier than the first; the span is shown as a positive duration with the direction noted."
         }
-      }
+      },
+      "pickLabel": "Or pick (UTC unless the field gives an offset)",
+      "pickAria": "{field}: pick a date and time"
     },
     "timezone-meeting-planner": {
       "name": "Multi-time-zone meeting planner",
@@ -12288,7 +12296,11 @@
         "Fri": "Fri",
         "Sat": "Sat",
         "Sun": "Sun"
-      }
+      },
+      "pickLabel": "Or pick (UTC unless the field gives an offset)",
+      "pickAria": "{field}: pick a date and time",
+      "addZone": "Add a time zone",
+      "addZonePrompt": "Choose a zone to add"
     },
     "p0f-signature-explainer": {
       "name": "p0f passive TCP/IP signature explainer",
@@ -12688,7 +12700,9 @@
       },
       "share": {
         "carries": "The link carries the line as typed."
-      }
+      },
+      "mtuPresetsLabel": "Reference MTUs",
+      "tokensLabel": "Stack tokens"
     },
     "bfd-timers": {
       "name": "BFD timer calculator",
@@ -12955,7 +12969,8 @@
       },
       "share": {
         "carries": "The link carries the method names as typed, and nothing else."
-      }
+      },
+      "pickLabel": "Methods to compare (up to four)"
     },
     "cron-expression-explainer": {
       "name": "Cron expression explainer",
@@ -20520,7 +20535,9 @@
       },
       "share": {
         "carries": "The link carries the two colours as typed, and nothing else."
-      }
+      },
+      "pickForeground": "Choose the foreground colour",
+      "pickBackground": "Choose the background colour"
     },
     "css-specificity-calculator": {
       "name": "CSS specificity calculator",
@@ -27572,7 +27589,8 @@
         "daySolved": "{date}, solved in {time}",
         "hintCellTarget": "picked out by the hint",
         "hintCellWrong": "wrong, says the hint",
-        "hintRule": "Hint shows the next step that logic forces from your board and says why; if there is a mistake, it points at that first. It adds {s} seconds, just like Check."
+        "hintRule": "Hint shows the next step that logic forces from your board and says why; if there is a mistake, it points at that first. It adds {s} seconds, just like Check.",
+        "daySolvedPractice": "{date}, solved in practice in {time}"
       },
       "access-points": {
         "metaTitle": "Access Points | /dev/fun",
@@ -27583,7 +27601,7 @@
         "cardName": "Access Points",
         "cardBlurb": "Cover every zone of the floor with one access point each, none touching. A new floor every day.",
         "modeLabel": "Which puzzle to play",
-        "practiceNote": "The last seven days' puzzles, for practice; a tick and a time mark the ones you solved on the day. They do not count towards your streak.",
+        "practiceNote": "The last seven days' puzzles, for practice: a ✓ and a time mark the ones you solved on the day, a ↻ and a time the ones you solved in practice. They do not count towards your streak.",
         "practiceDaysLabel": "Earlier puzzles",
         "checksUsed": "{n, plural, one {# check (+{s} s)} other {# checks (+{s} s)}}",
         "clockHint": "The clock starts with your first move.",
@@ -27635,7 +27653,7 @@
         "cardName": "Bit Balance",
         "cardBlurb": "Fill a 6×6 grid with bits: three of each per line, no runs of three, every sign obeyed. New grid every day.",
         "modeLabel": "Which puzzle to play",
-        "practiceNote": "The last seven days' puzzles, for practice; a tick and a time mark the ones you solved on the day. They do not count towards your streak.",
+        "practiceNote": "The last seven days' puzzles, for practice: a ✓ and a time mark the ones you solved on the day, a ↻ and a time the ones you solved in practice. They do not count towards your streak.",
         "practiceDaysLabel": "Earlier puzzles",
         "checksUsed": "{n, plural, one {# check (+{s} s)} other {# checks (+{s} s)}}",
         "clockHint": "The clock starts with your first move.",
@@ -27689,7 +27707,7 @@
         "cardName": "Patch Path",
         "cardBlurb": "Run one cable through every cell of the panel, ports in order, around the cable ducts. New panel every day.",
         "modeLabel": "Which puzzle to play",
-        "practiceNote": "The last seven days' puzzles, for practice; a tick and a time mark the ones you solved on the day. They do not count towards your streak.",
+        "practiceNote": "The last seven days' puzzles, for practice: a ✓ and a time mark the ones you solved on the day, a ↻ and a time the ones you solved in practice. They do not count towards your streak.",
         "practiceDaysLabel": "Earlier puzzles",
         "checksUsed": "{n, plural, one {# check (+{s} s)} other {# checks (+{s} s)}}",
         "clockHint": "The clock starts with your first move.",
@@ -45162,7 +45180,8 @@
       "errorMtu": "Enter an MTU from {min} to {max} octets.",
       "errorIpv6Mtu": "IPv6 needs every link to carry packets of at least {min} octets; enter an MTU of {min} or more.",
       "errorChoice": "Choose one of the options offered.",
-      "scope": "acknowledgements, TCP options, the window and the round trip, slow start, loss and retransmission, and anything the application adds."
+      "scope": "acknowledgements, TCP options, the window and the round trip, slow start, loss and retransmission, and anything the application adds.",
+      "mtuPresets": "MTU presets"
     },
     "ethernet-frame-builder": {
       "title": "Build a frame and measure it",
@@ -46456,7 +46475,8 @@
       "errorDuplicate": "{vs} has the same destination, source and port as another virtual server; make each one different.",
       "errorPacketSource": "The packet's source must be a single address, such as 192.168.2.1.",
       "errorPacketDestination": "The packet's destination must be a single address without a mask, such as 192.168.1.200.",
-      "errorPacketPort": "The packet's port must be a number from 1 to 65535."
+      "errorPacketPort": "The packet's port must be a number from 1 to 65535.",
+      "portAnyOf": "Every port (*) on {vs}"
     },
     "fortigate-session-dirty": {
       "title": "Change a FortiGate policy under a live session",
@@ -48297,5 +48317,9 @@
       "rfc9844": "RFC 9844, Entering IPv6 Zone Identifiers in User Interfaces, August 2025: section 1",
       "rfc4541": "RFC 4541, Considerations for Internet Group Management Protocol (IGMP) and Multicast Listener Discovery (MLD) Snooping Switches, May 2006: sections 2.1.2, 3 and 4"
     }
+  },
+  "stepper": {
+    "decrease": "Decrease {label}",
+    "increase": "Increase {label}"
   }
 }

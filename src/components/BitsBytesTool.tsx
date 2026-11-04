@@ -21,6 +21,13 @@
 // its names are not "input", so the #input= handoff that fills the size works
 // exactly as before) sets the four fields together, so the result is the
 // sender's; the address loses the values at once.
+//
+// NO KEYBOARD NEEDED (03/11/2026): each of the four fields has up and down
+// arrows (StepperField). They step the leading number of what is typed and
+// keep the rest ("1.5 GB" up is "2.5 GB", "2h 30min" up is "3h 30min"); an
+// empty field starts at 1 in the unit its placeholder shows first (GB,
+// Mbit/s, s), and the efficiency starts from the percentage of the preset in
+// use, rounded.
 // ============================================================================
 
 import { useCallback, useMemo, useState } from "react";
@@ -31,9 +38,27 @@ import ShareResultsButton from "@/components/ShareResultsButton"; // the site's 
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what the spec encodes
 import { BITS_BYTES_SHARE } from "@/lib/tools/bits-bytes/share"; // this tool's share spec: the four fields
+import { StepperField, stepperKeyDown } from "@/components/NumberStepper"; // up and down arrows for the four fields (03/11/2026)
 
 /** Nothing to share (the button is disabled). */
 const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // a constant, so the button sees no change
+
+/**
+ * A quantity as typed, split into the leading number the arrows step and the rest they keep ("1.5 GB" gives "1.5" and
+ * " GB", "2h 30min" gives "2" and "h 30min"); text that does not start with a number is all number, so the arrows
+ * restart it from the field's lower bound.
+ * @param text the field's text
+ * @returns the leading number and the rest
+ */
+function splitQuantity(text: string): { num: string; rest: string } {
+  // A number as the engine's parseDec reads it (a point or a comma), then everything after it.
+  const m = /^\s*(\d+(?:[.,]\d+)?)([\s\S]*)$/.exec(text);
+  // Split, or the whole text as the number.
+  return m ? { num: m[1], rest: m[2] } : { num: text, rest: "" };
+} // splitQuantity
+
+/** The unit an arrow adds to an empty quantity field: the first one each field's placeholder shows. */
+const START_UNIT = { size: " GB", rate: " Mbit/s", time: " s" } as const; // "1 GB", "1 Mbit/s", "1 s"
 
 /** The vector the Example button loads, verbatim (D-83): the 2004 calculator's own worked example. */
 const EXAMPLE_ID = "lineage-56k-modem";
@@ -56,6 +81,21 @@ export default function BitsBytesTool() {
   // Which efficiency control is in use: a preset button or a typed percentage.
   const presetIds = EFFICIENCY_PRESETS.map((p) => p.id);
   const isPreset = efficiency === "" || presetIds.includes(efficiency);
+  // The three quantities, each split into the number its arrows step and the unit they keep.
+  const sizeParts = splitQuantity(size); // "1.5" and " GB"
+  const rateParts = splitQuantity(rate); // "100" and " Mbit/s"
+  const timeParts = splitQuantity(time); // "2" and "h 30min"
+  // A stepped size written back with its unit (GB when none was typed); the size may be 0.
+  const stepSize = (v: string) => setSize(v + (sizeParts.rest !== "" ? sizeParts.rest : START_UNIT.size));
+  // A stepped rate (Mbit/s when none was typed); never 0, which the engine refuses (zero-rate).
+  const stepRate = (v: string) => setRate(v + (rateParts.rest !== "" ? rateParts.rest : START_UNIT.rate));
+  // A stepped time (seconds when none was typed); never 0, which the engine refuses (zero-time).
+  const stepTime = (v: string) => setTime(v + (timeParts.rest !== "" ? timeParts.rest : START_UNIT.time));
+  // The efficiency the arrows start from: the typed percentage, or the preset in use as a whole percentage (95 for 1460/1538).
+  const effPreset = EFFICIENCY_PRESETS.find((p) => p.id === (efficiency || "line-rate")); // the preset, when one is in use
+  const effParts = isPreset ? { num: String(Math.round((Number(effPreset?.payload ?? 1n) * 100) / Number(effPreset?.onWire ?? 1n))), rest: "%" } : splitQuantity(efficiency); // what steps, what stays
+  // A stepped percentage written back as typing would (with "%" unless the reader typed it without), which ends any preset.
+  const stepEfficiency = (v: string) => setEfficiency(v + effParts.rest);
 
   const r: BitsBytesResult = useMemo(() => run({ size, rate, time, efficiency }), [size, rate, time, efficiency]);
 
@@ -136,15 +176,24 @@ export default function BitsBytesTool() {
         <div className="bb-fields">
           <div className="bb-field">
             <label className="cidr-label" htmlFor="bb-size">{t("sizeLabel")}</label>
-            <input id="bb-size" className="cidr-input mono" value={size} onChange={(e) => setSize(e.target.value)} placeholder={t("placeholder.size")} spellCheck={false} autoComplete="off" maxLength={64} />
+            {/* Up and down arrows: the leading number, 0 or more, one unit a press. */}
+            <StepperField value={sizeParts.num} onValue={stepSize} min={0} label={t("sizeLabel")} inputId="bb-size">
+              <input id="bb-size" className="cidr-input mono" value={size} onChange={(e) => setSize(e.target.value)} onKeyDown={stepperKeyDown({ value: sizeParts.num, onValue: stepSize, min: 0 })} placeholder={t("placeholder.size")} spellCheck={false} autoComplete="off" maxLength={64} />
+            </StepperField>
           </div>
           <div className="bb-field">
             <label className="cidr-label" htmlFor="bb-rate">{t("rateLabel")}</label>
-            <input id="bb-rate" className="cidr-input mono" value={rate} onChange={(e) => setRate(e.target.value)} placeholder={t("placeholder.rate")} spellCheck={false} autoComplete="off" maxLength={64} />
+            {/* Up and down arrows: the leading number, 1 or more. */}
+            <StepperField value={rateParts.num} onValue={stepRate} min={1} label={t("rateLabel")} inputId="bb-rate">
+              <input id="bb-rate" className="cidr-input mono" value={rate} onChange={(e) => setRate(e.target.value)} onKeyDown={stepperKeyDown({ value: rateParts.num, onValue: stepRate, min: 1 })} placeholder={t("placeholder.rate")} spellCheck={false} autoComplete="off" maxLength={64} />
+            </StepperField>
           </div>
           <div className="bb-field">
             <label className="cidr-label" htmlFor="bb-time">{t("timeLabel")}</label>
-            <input id="bb-time" className="cidr-input mono" value={time} onChange={(e) => setTime(e.target.value)} placeholder={t("placeholder.time")} spellCheck={false} autoComplete="off" maxLength={64} />
+            {/* Up and down arrows: the leading number, 1 or more. */}
+            <StepperField value={timeParts.num} onValue={stepTime} min={1} label={t("timeLabel")} inputId="bb-time">
+              <input id="bb-time" className="cidr-input mono" value={time} onChange={(e) => setTime(e.target.value)} onKeyDown={stepperKeyDown({ value: timeParts.num, onValue: stepTime, min: 1 })} placeholder={t("placeholder.time")} spellCheck={false} autoComplete="off" maxLength={64} />
+            </StepperField>
           </div>
         </div>
         <p className="hmac-build-note">{t("inputsHint")}</p>
@@ -157,7 +206,10 @@ export default function BitsBytesTool() {
             ))}
           </div>
           <label className="cidr-label bb-eff-custom" htmlFor="bb-eff">{t("effCustom")}</label>
-          <input id="bb-eff" className="cidr-input mono bb-eff-input" value={isPreset ? "" : efficiency} onChange={(e) => setEfficiency(e.target.value)} placeholder="80%" spellCheck={false} autoComplete="off" maxLength={8} />
+          {/* Up and down arrows: 1 to 100 per cent, from the preset in use when nothing is typed. */}
+          <StepperField value={effParts.num} onValue={stepEfficiency} min={1} max={100} label={t("effCustom")} inputId="bb-eff">
+            <input id="bb-eff" className="cidr-input mono bb-eff-input" value={isPreset ? "" : efficiency} onChange={(e) => setEfficiency(e.target.value)} onKeyDown={stepperKeyDown({ value: effParts.num, onValue: stepEfficiency, min: 1, max: 100 })} placeholder="80%" spellCheck={false} autoComplete="off" maxLength={8} />
+          </StepperField>
         </div>
         <p className="hmac-build-note">{t("effHint")}</p>
         <p className="cidr-privacy"><span className="cidr-lock" aria-hidden="true">●</span>{t("runsLocally")}</p>

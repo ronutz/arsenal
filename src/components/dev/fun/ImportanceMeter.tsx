@@ -54,6 +54,8 @@ import { shareText } from "@/lib/fun/share";
 import ToyShare, { fillTemplate, type ToyShareLabels } from "@/components/dev/fun/ToyShare";
 // Five quick taps on the gauge, the touch route to the code.
 import { QUICK_TAP_COUNT, QUICK_TAP_CUE_FROM, useQuickTaps } from "@/lib/hooks/useQuickTaps";
+// Up and down arrows for the two numeric fields.
+import { StepperField, stepperKeyDown } from "@/components/NumberStepper";
 
 /**
  * The sequence. Typed anywhere on the page.
@@ -319,6 +321,13 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
     setForm((f) => ({ ...f, [k]: v }));
     setShown(false);
   };
+  // The deadline set by its arrows: the field shows the stepped text, the arithmetic takes its value (comma or point).
+  const setDeadlineFromArrows = (v: string) => {
+    // The text, as the arrows wrote it.
+    setDeadlineText(v);
+    // Its value.
+    set("hoursToDeadline", Number(v.replace(",", ".")) || 0);
+  };
 
   const fill = fillFraction(result.apparentUrgency);
 
@@ -398,23 +407,32 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
             <label className="cidr-label" htmlFor="im-cc">
               {labels.ccLabel}
             </label>
-            <input
-              id="im-cc"
-              className="cidr-input mono"
-              inputMode="numeric"
-              value={String(form.ccCount)}
-              onChange={(e) => set("ccCount", Number(e.target.value.replace(/\D/g, "")) || 0)}
-            />
+            {/* Up and down arrows beside the field, so the count is set with a mouse or a finger too. */}
+            <StepperField value={String(form.ccCount)} onValue={(v) => set("ccCount", Number(v) || 0)} min={0} max={9999} label={labels.ccLabel} inputId="im-cc">
+              <input
+                id="im-cc"
+                className="cidr-input mono"
+                inputMode="numeric"
+                value={String(form.ccCount)}
+                onChange={(e) => set("ccCount", Number(e.target.value.replace(/\D/g, "")) || 0)}
+                // Arrow Up and Down step the count from the keyboard.
+                onKeyDown={stepperKeyDown({ value: String(form.ccCount), onValue: (v) => set("ccCount", Number(v) || 0), min: 0, max: 9999 })}
+              />
+            </StepperField>
           </div>
 
           <div className="im-field">
             <label className="cidr-label" htmlFor="im-deadline">
               {labels.deadlineLabel}
             </label>
+            {/* Up and down arrows: one hour a press, the field's text set as if typed (a decimal comma kept). */}
+            <StepperField value={deadlineText} onValue={setDeadlineFromArrows} min={0} label={labels.deadlineLabel} inputId="im-deadline">
             <input
               id="im-deadline"
               className="cidr-input mono"
               inputMode="decimal"
+              // Arrow Up and Down step the hours from the keyboard.
+              onKeyDown={stepperKeyDown({ value: deadlineText, onValue: setDeadlineFromArrows, min: 0 })}
               // What the reader typed, not the number rebuilt from it.
               value={deadlineText}
               onChange={(e) => {
@@ -428,6 +446,7 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
                 set("hoursToDeadline", Number(clean) || 0);
               }}
             />
+            </StepperField>
           </div>
 
           <div className="im-field">

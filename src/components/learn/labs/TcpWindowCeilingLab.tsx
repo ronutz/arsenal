@@ -13,11 +13,20 @@
 // which one decides, and a note when the window or the path needs window
 // scaling. The model is src/lib/labs/tcp-window-ceiling/compute.ts; its checked
 // cases are the golden vectors beside it. Words: "learnLabs.tcp-window-ceiling".
+//
+// The three number inputs have up and down arrows beside them (PRIME
+// 03/11/2026: values set "through the click of a mouse (or press of the
+// touchscreen)"): one KiB, one millisecond or one Mbit/s a press. The model
+// takes any round-trip time or rate above 0, so their arrows (and the inputs'
+// min, which the browser's own spinner obeys) stop at 1 and never offer 0; a
+// fraction (0.2 ms on a LAN) can still be typed.
 // ============================================================================
 
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import LabFrame, { LabField } from "./LabFrame";
+// Up and down arrows for the three number inputs.
+import { StepperField } from "@/components/NumberStepper";
 import {
   compute,
   DEFAULT_INPUT,
@@ -33,6 +42,9 @@ import {
 
 /** The lab's id: its namespace, its anchor and its element ids. */
 const ID = "tcp-window-ceiling";
+
+/** The lowest round-trip time and rate the arrows and the browser's spinner reach: one whole unit, since the model refuses 0 (it takes any value above it, typed). */
+const ARROW_FLOOR = 1;
 
 /** The form as typed: number fields stay text so the reader can edit freely. */
 interface Form {
@@ -142,13 +154,24 @@ export default function TcpWindowCeilingLab() {
       controls={
         <>
           <LabField id={`${ID}-window`} label={t("window")}>
-            <input id={`${ID}-window`} className="lab-input" type="number" inputMode="decimal" min={1} max={MAX_WINDOW_KIB} step={1} value={form.windowKiB} aria-invalid={err === "bad-window" ? "true" : undefined} onChange={(e) => setForm({ ...form, windowKiB: e.target.value })} />
+            {/* Up and down arrows, whole numbers only: one KiB a press, 1 to the model's MAX_WINDOW_KIB, the field set as if typed. */}
+            <StepperField value={form.windowKiB} onValue={(v) => setForm((f) => ({ ...f, windowKiB: v }))} min={1} max={MAX_WINDOW_KIB} step={1} integer label={t("window")} inputId={`${ID}-window`}>
+              <input id={`${ID}-window`} className="lab-input" type="number" inputMode="decimal" min={1} max={MAX_WINDOW_KIB} step={1} value={form.windowKiB} aria-invalid={err === "bad-window" ? "true" : undefined} onChange={(e) => setForm({ ...form, windowKiB: e.target.value })} />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-rtt`} label={t("rtt")}>
-            <input id={`${ID}-rtt`} className="lab-input" type="number" inputMode="decimal" min={0} max={MAX_RTT_MS} step="any" value={form.rttMs} aria-invalid={err === "bad-rtt" ? "true" : undefined} onChange={(e) => setForm({ ...form, rttMs: e.target.value })} />
+            {/* Up and down arrows: one millisecond a press, 1 to the model's MAX_RTT_MS (never 0, which it refuses), the field set as if typed. */}
+            <StepperField value={form.rttMs} onValue={(v) => setForm((f) => ({ ...f, rttMs: v }))} min={ARROW_FLOOR} max={MAX_RTT_MS} step={1} label={t("rtt")} inputId={`${ID}-rtt`}>
+              {/* min is the arrows' floor too, so the browser's own spinner stops at 1 instead of offering the refused 0; a fraction typed still counts. */}
+              <input id={`${ID}-rtt`} className="lab-input" type="number" inputMode="decimal" min={ARROW_FLOOR} max={MAX_RTT_MS} step="any" value={form.rttMs} aria-invalid={err === "bad-rtt" ? "true" : undefined} onChange={(e) => setForm({ ...form, rttMs: e.target.value })} />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-rate`} label={t("rate")}>
-            <input id={`${ID}-rate`} className="lab-input" type="number" inputMode="decimal" min={0} max={MAX_RATE_MBPS} step="any" value={form.rateMbps} aria-invalid={err === "bad-rate" ? "true" : undefined} onChange={(e) => setForm({ ...form, rateMbps: e.target.value })} />
+            {/* Up and down arrows: one Mbit/s a press, 1 to the model's MAX_RATE_MBPS (never 0, which it refuses), the field set as if typed. */}
+            <StepperField value={form.rateMbps} onValue={(v) => setForm((f) => ({ ...f, rateMbps: v }))} min={ARROW_FLOOR} max={MAX_RATE_MBPS} step={1} label={t("rate")} inputId={`${ID}-rate`}>
+              {/* min is the arrows' floor too, so the browser's own spinner stops at 1 instead of offering the refused 0; a fraction typed still counts. */}
+              <input id={`${ID}-rate`} className="lab-input" type="number" inputMode="decimal" min={ARROW_FLOOR} max={MAX_RATE_MBPS} step="any" value={form.rateMbps} aria-invalid={err === "bad-rate" ? "true" : undefined} onChange={(e) => setForm({ ...form, rateMbps: e.target.value })} />
+            </StepperField>
           </LabField>
         </>
       }

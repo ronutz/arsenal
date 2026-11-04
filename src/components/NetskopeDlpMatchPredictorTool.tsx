@@ -13,10 +13,15 @@
 // identifier and the threshold, never the text (src/lib/tools/
 // netskope-dlp-match-predictor/share.ts, posture derived). An arriving link
 // fills the box with the stand-ins, and a note under the verdict says so.
+//
+// UP AND DOWN ARROWS (03/11/2026): the threshold has a down and an up arrow
+// beside it (src/components/NumberStepper.tsx), whole matches from 1 (the
+// engine's floor), and steps with Arrow Up and Down from the keyboard.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
+import { StepperField, stepperKeyDown } from "@/components/NumberStepper"; // the up and down arrows, and their keys
 import {
   predictMatchesLocalisable,
   type DlpResult,
@@ -63,6 +68,14 @@ export default function NetskopeDlpMatchPredictorTool() {
   }
 
   // An arriving share link (2026-11-01): the stand-ins fill the box, the identifier and threshold are set, and the page evaluates.
+  /** The threshold as typed (or as its arrows set it): the field shows the text, and the reading follows at once. */
+  function setThresholdText(v: string) {
+    // The field.
+    setThreshold(v);
+    // The reading with the new threshold.
+    evaluate(undefined, undefined, v);
+  }
+
   useShareArrival(DLP_SHARE, (s) => { setText(s.input); setKind(s.kind); setThreshold(s.threshold); evaluate(s.input, s.kind, s.threshold); setArrived(true); }); // the link's values
   // What Share results may carry: stand-ins for the numbers found, with the identifier and the threshold (memoised).
   const share = useMemo(() => encodeDlpShare(dlpStandIns(result && plainText(result)), result ? result.kind : kind, result ? result.threshold : 1), [result, kind]); // the encoding (the share spec reads the API's shape)
@@ -93,16 +106,19 @@ export default function NetskopeDlpMatchPredictorTool() {
         <label className="cidr-label" htmlFor="dlp-threshold">
           {t("thresholdLabel")}
         </label>
-        <input
-          id="dlp-threshold"
-          className="cidr-input mono"
-          spellCheck={false}
-          value={threshold}
-          onChange={(e) => {
-            setThreshold(e.target.value);
-            evaluate(undefined, undefined, e.target.value);
-          }}
-        />
+        {/* Up and down arrows: one match a press, whole numbers from 1 (the engine refuses less or a fraction), set as typing would. */}
+        <StepperField value={threshold} onValue={setThresholdText} min={1} integer label={t("thresholdLabel")} inputId="dlp-threshold">
+          <input
+            id="dlp-threshold"
+            className="cidr-input mono"
+            spellCheck={false}
+            value={threshold}
+            // The threshold as typed, through the same setter the arrows use.
+            onChange={(e) => setThresholdText(e.target.value)}
+            // Arrow Up and Down (Page Up and Down: ten) step the threshold from the keyboard.
+            onKeyDown={stepperKeyDown({ value: threshold, onValue: setThresholdText, min: 1, integer: true })}
+          />
+        </StepperField>
 
         <label className="cidr-label" htmlFor="dlp-text">
           {t("textLabel")}

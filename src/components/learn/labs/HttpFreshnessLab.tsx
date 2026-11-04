@@ -14,11 +14,15 @@
 // origin answers and when it cannot be reached. The model is
 // src/lib/labs/http-freshness/compute.ts; its checked cases are the golden
 // vectors beside it. Words: "learnLabs.http-freshness".
+// The five number fields carry up and down arrows, one second a press, inside
+// the model's range; an empty field (no header) steps from 0.
 // ============================================================================
 
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import LabFrame, { LabField, LabSelect } from "./LabFrame";
+// Up and down arrows beside the five number fields.
+import { StepperField } from "@/components/NumberStepper";
 import {
   compute,
   DEFAULT_INPUT,
@@ -263,22 +267,42 @@ export default function HttpFreshnessLab() {
             <input id={`${ID}-cache-control`} className="lab-input mono" type="text" autoComplete="off" spellCheck={false} value={form.cacheControl} aria-invalid={ccInvalid ? "true" : undefined} onChange={(e) => setForm({ ...form, cacheControl: e.target.value })} />
           </LabField>
           <LabField id={`${ID}-date`} label={t("date")}>
-            <input id={`${ID}-date`} className="lab-input" type="number" step={1} value={form.date} aria-invalid={err?.code === "bad-date" ? "true" : undefined} onChange={(e) => setForm({ ...form, date: e.target.value })} />
+            {/* Arrows: one second a press, either sign, inside the model's range (2^31 s each way). */}
+            <StepperField value={form.date} onValue={(v) => setForm((f) => ({ ...f, date: v }))} min={-MAX_SECONDS} max={MAX_SECONDS} step={1} label={t("date")} inputId={`${ID}-date`}>
+              {/* The native bounds match the arrows'. */}
+              <input id={`${ID}-date`} className="lab-input" type="number" min={-MAX_SECONDS} max={MAX_SECONDS} step={1} value={form.date} aria-invalid={err?.code === "bad-date" ? "true" : undefined} onChange={(e) => setForm({ ...form, date: e.target.value })} />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-age`} label={t("age")}>
-            <input id={`${ID}-age`} className="lab-input" type="number" inputMode="decimal" min={0} step={1} value={form.age} aria-invalid={err?.code === "bad-age" ? "true" : undefined} onChange={(e) => setForm({ ...form, age: e.target.value })} />
+            {/* Arrows: one second a press, 0 up; an empty Age (no header) starts at 0. */}
+            <StepperField value={form.age} onValue={(v) => setForm((f) => ({ ...f, age: v }))} min={0} max={MAX_SECONDS} step={1} label={t("age")} inputId={`${ID}-age`}>
+              {/* The native ceiling matches the arrows'. */}
+              <input id={`${ID}-age`} className="lab-input" type="number" inputMode="decimal" min={0} max={MAX_SECONDS} step={1} value={form.age} aria-invalid={err?.code === "bad-age" ? "true" : undefined} onChange={(e) => setForm({ ...form, age: e.target.value })} />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-expires`} label={t("expires")}>
-            <input id={`${ID}-expires`} className="lab-input" type="number" step={1} value={form.expires} aria-invalid={err?.code === "bad-expires" ? "true" : undefined} onChange={(e) => setForm({ ...form, expires: e.target.value })} />
+            {/* Arrows: one second a press, either sign; an empty Expires (no header) steps from 0. */}
+            <StepperField value={form.expires} onValue={(v) => setForm((f) => ({ ...f, expires: v }))} min={-MAX_SECONDS} max={MAX_SECONDS} step={1} label={t("expires")} inputId={`${ID}-expires`}>
+              {/* The native bounds match the arrows'. */}
+              <input id={`${ID}-expires`} className="lab-input" type="number" min={-MAX_SECONDS} max={MAX_SECONDS} step={1} value={form.expires} aria-invalid={err?.code === "bad-expires" ? "true" : undefined} onChange={(e) => setForm({ ...form, expires: e.target.value })} />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-last-modified`} label={t("lastModified")}>
-            <input id={`${ID}-last-modified`} className="lab-input" type="number" inputMode="decimal" min={0} step={1} value={form.lastModified} aria-invalid={err?.code === "bad-last-modified" ? "true" : undefined} onChange={(e) => setForm({ ...form, lastModified: e.target.value })} />
+            {/* Arrows: one second a press, 0 up; an empty field (no header) starts at 0. */}
+            <StepperField value={form.lastModified} onValue={(v) => setForm((f) => ({ ...f, lastModified: v }))} min={0} max={MAX_SECONDS} step={1} label={t("lastModified")} inputId={`${ID}-last-modified`}>
+              {/* The native ceiling matches the arrows'. */}
+              <input id={`${ID}-last-modified`} className="lab-input" type="number" inputMode="decimal" min={0} max={MAX_SECONDS} step={1} value={form.lastModified} aria-invalid={err?.code === "bad-last-modified" ? "true" : undefined} onChange={(e) => setForm({ ...form, lastModified: e.target.value })} />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-heuristic`} label={t("heuristic")}>
             <LabSelect id={`${ID}-heuristic`} value={form.heuristic} options={heuristicOptions} onChange={(v) => setForm({ ...form, heuristic: v as Heuristic })} />
           </LabField>
           <LabField id={`${ID}-received`} label={t("received")}>
-            <input id={`${ID}-received`} className="lab-input" type="number" inputMode="decimal" min={0} step={1} value={form.received} aria-invalid={err?.code === "bad-received" ? "true" : undefined} onChange={(e) => setForm({ ...form, received: e.target.value })} />
+            {/* Arrows: one second a press, 0 up. */}
+            <StepperField value={form.received} onValue={(v) => setForm((f) => ({ ...f, received: v }))} min={0} max={MAX_SECONDS} step={1} label={t("received")} inputId={`${ID}-received`}>
+              {/* The native ceiling matches the arrows'. */}
+              <input id={`${ID}-received`} className="lab-input" type="number" inputMode="decimal" min={0} max={MAX_SECONDS} step={1} value={form.received} aria-invalid={err?.code === "bad-received" ? "true" : undefined} onChange={(e) => setForm({ ...form, received: e.target.value })} />
+            </StepperField>
           </LabField>
         </>
       }

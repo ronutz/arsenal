@@ -11,7 +11,8 @@
 //                special-purpose (or multicast) ranges the block falls in or overlaps.
 //   • VLSM     — variable-length subnets carved from a parent block (since 2026-10-19:
 //                an optional /31 for 2-host links, 0-host rows refused, a masked
-//                parent stated, the free space listed as blocks, the order stated).
+//                parent stated, the free space listed as blocks, the order stated;
+//                since 03/11/2026 each host count has up and down arrows, from 1).
 //   • Supernet — summarize a prefix list into the minimal covering set.
 //   • Overlap  — overlaps / containment between prefixes, gaps within a scope.
 //
@@ -43,6 +44,7 @@ import { usePrefill } from "@/lib/use-prefill";
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
 import { CIDR_SHARE } from "@/lib/tools/cidr/share"; // this tool's share spec: the Subnet block as #input=
+import { StepperField, stepperKeyDown } from "@/components/NumberStepper"; // up and down arrows for the VLSM host counts (03/11/2026)
 
 /** Nothing to share: a constant, so the button sees no change between renders. */
 const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
@@ -461,15 +463,22 @@ export default function CidrTool() {
                   placeholder={t("vlsm.namePlaceholder")}
                   autoComplete="off"
                 />
-                <input
-                  className="cidr-input cidr-req-hosts mono"
-                  type="text"
-                  inputMode="numeric"
-                  value={r.hosts}
-                  onChange={(e) => setReq(i, { hosts: e.target.value.replace(/[^\d]/g, "") })}
-                  placeholder={t("vlsm.hostsPlaceholder")}
-                  autoComplete="off"
-                />
+                {/* Up and down arrows: a host count of 1 or more (0 is refused as zeroHosts). */}
+                <StepperField value={r.hosts} onValue={(v) => setReq(i, { hosts: v })} min={1} integer label={t("vlsm.th.hosts")} inputId={`cidr-req-hosts-${i}`} className="cidr-req-hosts-field">
+                  <input
+                    id={`cidr-req-hosts-${i}`}
+                    className="cidr-input cidr-req-hosts mono"
+                    type="text"
+                    inputMode="numeric"
+                    value={r.hosts}
+                    onChange={(e) => setReq(i, { hosts: e.target.value.replace(/[^\d]/g, "") })}
+                    // Arrow Up and Down step the count from the keyboard.
+                    onKeyDown={stepperKeyDown({ value: r.hosts, onValue: (v) => setReq(i, { hosts: v }), min: 1, integer: true })}
+                    placeholder={t("vlsm.hostsPlaceholder")}
+                    aria-label={t("vlsm.th.hosts")}
+                    autoComplete="off"
+                  />
+                </StepperField>
                 <button
                   type="button"
                   className="cidr-req-remove"

@@ -6,6 +6,8 @@ Informe a MTU (Maximum Transmission Unit, unidade máxima de transmissão) do li
 
 Comece pela MTU e acrescente tokens em qualquer ordem: `v6` (header externo IPv6 para túneis), `pppoe`, `gre`, `ipip`, `6in4` (ou `sit`), `vxlan`, `geneve`, `wireguard` (ou `wg`), `vlan` (ou `dot1q`), `qinq`, `mpls` ou `mpls2`..`mpls8`, e `+N` para um overhead personalizado em bytes. Assim, `1500 vxlan` é a pergunta clássica de overlay, `1500 gre v6` é GRE sobre IPv6, `9000 vxlan vlan` é um underlay jumbo com tag, `1500 mpls2` é um link levando dois labels e `1500 +57` modela um custo medido de IPsec.
 
+Sem teclado, as setas ao lado do campo sobem e descem a MTU de 68 a 65535 e mantêm os tokens que vêm depois dela, os botões 1500 e 9000 a definem com um toque, e um botão por token acrescenta esse token ou o retira (um token digitado com outro nome, como `wg` ou `dot1q`, aparece com o botão pressionado). Os tokens com contagem, `mpls2` a `mpls8` e `+N`, são digitados.
+
 ## A distinção que importa
 
 Os overheads ficam em lados diferentes da linha da MTU, e a ferramenta mostra cada camada com o seu lado.

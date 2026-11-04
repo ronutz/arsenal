@@ -5,10 +5,12 @@
 //
 // A server component that fetches the merged message pack, picks the requested
 // top-level namespaces, and wraps its children in a nested
-// NextIntlClientProvider carrying ONLY that slice. next-intl merges a nested
-// provider's messages over the outer (global) provider, so a route's client
-// components see {global chrome} + {this slice} and nothing else - keeping the
-// inlined RSC payload small.
+// NextIntlClientProvider carrying ONLY that slice. A nested provider REPLACES
+// the outer one's messages (use-intl 3.26.5 does not merge them; found on
+// 2026-11-03), so a route's client components inside a slice see {this slice}
+// plus SLICE_CARRIED_NAMESPACES (the shared controls' strings, such as the
+// numeric arrows' "stepper") and nothing else - keeping the inlined RSC
+// payload small. The global chrome lives outside every slice.
 //
 // USAGE (in a server page/layout):
 //   <MessageSlice namespaces={["tools." + slug]}>
@@ -23,7 +25,7 @@
 
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
-import { pickNamespaces } from "@/i18n/clientMessages";
+import { pickNamespaces, SLICE_CARRIED_NAMESPACES } from "@/i18n/clientMessages";
 
 export default async function MessageSlice({
   namespaces,
@@ -34,6 +36,7 @@ export default async function MessageSlice({
   children: React.ReactNode;
 }) {
   const messages = await getMessages();
-  const slice = pickNamespaces(messages, namespaces);
+  // The slice asked for, plus the namespaces every slice carries (a nested provider replaces the outer messages).
+  const slice = pickNamespaces(messages, [...SLICE_CARRIED_NAMESPACES, ...namespaces]);
   return <NextIntlClientProvider messages={slice}>{children}</NextIntlClientProvider>;
 }

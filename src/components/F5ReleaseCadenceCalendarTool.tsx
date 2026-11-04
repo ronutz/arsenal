@@ -15,6 +15,11 @@
 // the form is untouched. An arriving link (useShareArrival) sets them; an
 // absent date keeps the reader's own today. The address loses the values at
 // once.
+//
+// UP AND DOWN ARROWS (03/11/2026, PRIME: values set "through the click of a
+// mouse (or press of the touchscreen)"): the number of months has a decrease
+// and an increase button beside it, from 1 to 24 (the engine's own clamp and
+// the field's min and max). The start date is already a date picker.
 // ============================================================================
 
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -25,6 +30,8 @@ import ShareResultsButton from "@/components/ShareResultsButton"; // the site's 
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what a spec encodes
 import { CADENCE_SHARE } from "@/lib/tools/f5-release-cadence-calendar/share"; // this tool's share spec: a start date and a count
+// Up and down arrows beside the number of months (03/11/2026).
+import { StepperField } from "@/components/NumberStepper";
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -109,15 +116,18 @@ export default function F5ReleaseCadenceCalendarTool() {
           <label className="cidr-label rc-months-label" htmlFor="rc-months">
             {t("monthsLabel")}
           </label>
-          <input
-            id="rc-months"
-            type="number"
-            min={1}
-            max={24}
-            className="cidr-input mono rc-months-input"
-            value={months}
-            onChange={(e) => setMonths(parseInt(e.target.value, 10) || 1)}
-          />
+          {/* Up and down arrows: one month a press, 1 to 24 (compute.ts clamps to that range); set as typing would. */}
+          <StepperField value={String(months)} onValue={(v) => setMonths(parseInt(v, 10) || 1)} min={1} max={24} integer label={t("monthsLabel")} inputId="rc-months">
+            <input
+              id="rc-months"
+              type="number"
+              min={1}
+              max={24}
+              className="cidr-input mono rc-months-input"
+              value={months}
+              onChange={(e) => setMonths(parseInt(e.target.value, 10) || 1)}
+            />
+          </StepperField>
         </div>
       </div>
 

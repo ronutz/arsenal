@@ -35,6 +35,15 @@
 //     touches it. Since "Reset my stats" clears the counters but keeps the
 //     extra field, a tally larger than the daily rounds played is a tally
 //     from before a reset, and is dropped.
+//
+// Up and down arrows (PRIME 03/11/2026: values set "through the click of a
+// mouse (or press of the touchscreen)") on the two numbers the player sets:
+// the mask, one bit of prefix length a press from /0 to /32 (written dotted
+// when the field held a dotted mask, as a length otherwise), and the usable
+// hosts, one a press. The arrows know nothing of the answer: their bounds are
+// the same for every puzzle, the prefix length is printed in the puzzle
+// itself, and every Check still costs one of the six tries. The two addresses
+// are the puzzle and stay typed.
 // ============================================================================
 
 "use client";
@@ -88,9 +97,69 @@ import {
   type Marks,
   type Puzzle,
 } from "@/lib/fun/games/prefix-of-the-day/engine";
+// Up and down arrows for the mask and the hosts, and their keys.
+import { StepperField, stepperKeyDown } from "@/components/NumberStepper";
 
 /** The page slug, for the share card's address. */
 const SLUG = "prefix-of-the-day";
+
+/** The longest prefix length the mask's arrows reach: IPv4 has 32 bits. */
+const MASK_MAX_LENGTH = 32;
+/** The largest host count the hosts' arrows reach: parseHosts' own ceiling, the whole IPv4 space (2^32). */
+const HOSTS_MAX = 2 ** 32;
+
+/**
+ * The prefix length a mask field holds, for its arrows: "/25" or "25" as 25, a valid dotted mask as the length it
+ * spells, anything else (empty, half typed) as the text itself, from which the arrows start at /0.
+ *
+ * @param text what the mask field shows
+ * @returns the length as text, or the text unchanged
+ */
+function maskLengthOf(text: string): string {
+  // Typed as a length.
+  const len = parsePrefixLength(text);
+  // That length.
+  if (len !== null) return String(len);
+  // Typed dotted: a valid contiguous mask's number, or null.
+  const mask = parseMask(text);
+  // The length whose mask it is (parseMask takes only contiguous masks, so one of 0 to 32 matches).
+  if (mask !== null) for (let n = 0; n <= MASK_MAX_LENGTH; n += 1) if (maskOf(n) === mask) return String(n);
+  // Anything else, as typed.
+  return text;
+}
+
+/**
+ * The mask field's text after an arrow, written the way the field had it: dotted after a dotted mask, a bare
+ * length after a bare length, "/n" otherwise.
+ *
+ * @param length the new prefix length, as the arrows wrote it
+ * @param current what the field showed before
+ * @returns the new text
+ */
+function maskTextFor(length: string, current: string): string {
+  // The new length.
+  const n = Number(length);
+  // A dotted mask before (not a length): the dotted mask of the new length.
+  if (parsePrefixLength(current) === null && parseMask(current) !== null) return formatAddress(maskOf(n));
+  // A bare length before ("25"): a bare length again.
+  if (/^\s*\d{1,2}\s*$/.test(current)) return String(n);
+  // Otherwise ("/25", empty, half typed): a length with its slash, which reads as one.
+  return `/${n}`;
+}
+
+/**
+ * The host count a hosts field holds, for its arrows: its value without thousands separators, or the text itself
+ * when it holds no count (the arrows then start at 0).
+ *
+ * @param text what the hosts field shows
+ * @returns the count as plain digits, or the text unchanged
+ */
+function hostsValueOf(text: string): string {
+  // The count, separators ignored, as parseHosts reads it.
+  const n = parseHosts(text);
+  // Plain digits, or the text as it is.
+  return n === null ? text : String(n);
+}
 
 /** The share card's square per mark. */
 const EMOJI: Record<Mark, string> = { ok: "🟩", up: "⬆️", down: "⬇️" };
@@ -473,37 +542,58 @@ function Round({ puzzle, guesses, onGuess, idBase, locale, hard = false }: Round
             const locked = !!bounds && bounds[f].fixed !== null;
             // The mask field spells out a typed prefix length under it, and is described by that line.
             const means = f === "mask" && typedLength !== null;
-            // The field.
+            // The two numbers the player sets get arrows; the two addresses are the puzzle and stay typed.
+            const stepped = f === "mask" || f === "hosts";
+            // What the arrows step: the mask as a prefix length, the hosts as plain digits.
+            const stepValueText = f === "mask" ? maskLengthOf(values.mask) : hostsValueOf(values.hosts);
+            // The field set by an arrow (or Arrow Up and Down), as if the player had typed it: the mask in the form it had, the hosts as digits.
+            const setFromArrows = (next: string) => setValues((v) => ({ ...v, [f]: f === "mask" ? maskTextFor(next, v.mask) : next }));
+            // The bounds and the increment, the same for every puzzle: /0 to /32 a bit at a time, 0 to 2^32 hosts one at a time, whole numbers only.
+            const stepOpts = { min: 0, max: f === "mask" ? MASK_MAX_LENGTH : HOSTS_MAX, step: 1, integer: true };
+            // The input itself, unchanged but for the arrow keys on the two stepped fields (none while hard mode locks it).
+            const field = (
+              <input
+                id={`${idBase}-${f}`}
+                ref={(el) => {
+                  // Kept for focus.
+                  inputs.current[f] = el;
+                }}
+                className={`fg-input fg-pod-input${locked ? " fg-pod-input-locked" : ""}`}
+                type="text"
+                inputMode={f === "hosts" ? "numeric" : "decimal"}
+                autoComplete="off"
+                autoCapitalize="off"
+                spellCheck={false}
+                readOnly={locked}
+                aria-describedby={means ? maskMeansId : undefined}
+                placeholder={f === "hosts" ? "0" : f === "mask" ? t("maskPlaceholder") : "a.b.c.d"}
+                value={values[f]}
+                onChange={(e) => {
+                  // A comma in an address or a mask is a dot (hosts keep theirs: there it groups thousands).
+                  const text = f === "hosts" ? e.target.value : e.target.value.replace(/,/g, ".");
+                  // Kept.
+                  setValues((v) => ({ ...v, [f]: text }));
+                }}
+                // Arrow Up and Down (Page Up and Down: ten) step the mask and the hosts from the keyboard, unless locked.
+                onKeyDown={stepped && !locked ? stepperKeyDown({ value: stepValueText, onValue: setFromArrows, ...stepOpts }) : undefined}
+              />
+            );
+            // The field (a stepped one takes the whole row on a phone, room for its arrows).
             return (
-              <div key={f} className="fg-pod-field">
+              <div key={f} className={`fg-pod-field${stepped ? " fg-pod-field-stepped" : ""}`}>
                 <label className="fg-label" htmlFor={`${idBase}-${f}`}>
                   {t(FIELD_KEY[f])}
                   {lastMarks && <span className={`fg-pod-hint fg-pod-hint-${lastMarks[f]}`}>{t(MARK_KEY[lastMarks[f]])}</span>}
                   {locked && <span className="fg-pod-hint fg-pod-hint-locked">{t("hardLocked")}</span>}
                 </label>
-                <input
-                  id={`${idBase}-${f}`}
-                  ref={(el) => {
-                    // Kept for focus.
-                    inputs.current[f] = el;
-                  }}
-                  className={`fg-input fg-pod-input${locked ? " fg-pod-input-locked" : ""}`}
-                  type="text"
-                  inputMode={f === "hosts" ? "numeric" : "decimal"}
-                  autoComplete="off"
-                  autoCapitalize="off"
-                  spellCheck={false}
-                  readOnly={locked}
-                  aria-describedby={means ? maskMeansId : undefined}
-                  placeholder={f === "hosts" ? "0" : f === "mask" ? t("maskPlaceholder") : "a.b.c.d"}
-                  value={values[f]}
-                  onChange={(e) => {
-                    // A comma in an address or a mask is a dot (hosts keep theirs: there it groups thousands).
-                    const text = f === "hosts" ? e.target.value : e.target.value.replace(/,/g, ".");
-                    // Kept.
-                    setValues((v) => ({ ...v, [f]: text }));
-                  }}
-                />
+                {/* The mask and the hosts with their arrows beside them (off while hard mode locks the field); the addresses alone. */}
+                {stepped ? (
+                  <StepperField value={stepValueText} onValue={setFromArrows} {...stepOpts} label={t(FIELD_KEY[f])} inputId={`${idBase}-${f}`} disabled={locked}>
+                    {field}
+                  </StepperField>
+                ) : (
+                  field
+                )}
                 {/* "/25" or "25" typed: the dotted mask it stands for. */}
                 {means && (
                   <p id={maskMeansId} className="fg-pod-means fg-mono">

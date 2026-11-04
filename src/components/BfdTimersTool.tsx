@@ -9,7 +9,9 @@
 // Two modes behind one segmented control:
 //   * Timers: a two-column form (system A, system B) for the three interval
 //     fields, Detect Mult, Required Min Echo RX and Demand mode, plus the
-//     session state and the path kind; out come both directions.
+//     session state and the path kind; out come both directions. Every field
+//     has up and down arrows (03/11/2026): Detect Mult steps 1 to 255, an
+//     interval steps its number by one unit and keeps the unit as typed.
 //   * Decode: a BFD Control packet in hex, read field by field and run through
 //     RFC 5880 section 6.8.6's receive checks.
 // Styling reuses existing classes only (cidr-*, jwt-*, seg-*, tcl-verdict-*,
@@ -19,6 +21,8 @@
 
 import { useMemo, useState } from "react"; // state and derived results
 import { useLocale, useTranslations } from "next-intl"; // messages and the active locale
+import { StepperField, stepperKeyDown } from "@/components/NumberStepper"; // up and down arrows for the timer fields (03/11/2026)
+import { MAX_INTERVAL_US } from "@/lib/tools/bfd-timers/compute"; // the 32-bit interval bound, for the arrows' upper limit
 import { run, BfdError, formatDuration, GRACEFUL_RESTART_INTERVAL_US, type TimersResult, type DecodeResult, type Explanation, type DirectionResult } from "@/lib/tools/bfd-timers"; // the engine
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
@@ -27,6 +31,37 @@ import { BFD_TIMERS_SHARE, encodeBfdDecoded } from "@/lib/tools/bfd-timers/share
 
 /** Nothing to share: a constant, so the button sees no change between renders. */
 const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
+
+/**
+ * An interval as typed, split into the number the arrows step and the unit they keep ("300ms" gives "300" and "ms",
+ * "300 ms" gives "300" and " ms"); text that does not start with a number is all number, so the arrows restart it.
+ * @param text the field's text
+ * @returns its number and its unit (with any spaces before it)
+ */
+function splitInterval(text: string): { num: string; unit: string } {
+  // Digits with an optional fraction, then the rest (spaces and a unit), as the engine's INTERVAL_RE reads it.
+  const m = /^\s*(\d+(?:\.\d+)?)(\s*\S*)\s*$/.exec(text);
+  // Split, or the whole text as the number.
+  return m ? { num: m[1], unit: m[2] } : { num: text, unit: "" };
+} // splitInterval
+
+/**
+ * The largest whole interval the 32-bit field holds in a unit (MAX_INTERVAL_US, 4,294,967,295 us).
+ * @param unit the unit as typed (any case, spaces allowed), or "" for the milliseconds the arrows add
+ * @returns the bound in that unit, or none for a unit the engine does not read
+ */
+function intervalMax(unit: string): number | undefined {
+  // The unit alone, in lower case, as the engine compares it.
+  const u = unit.trim().toLowerCase();
+  // Microseconds, in any of the three spellings.
+  if (u === "us" || u === "µs" || u === "μs") return MAX_INTERVAL_US;
+  // Milliseconds (also the unit written when none was typed).
+  if (u === "ms" || u === "") return Math.floor(MAX_INTERVAL_US / 1000);
+  // Seconds.
+  if (u === "s") return Math.floor(MAX_INTERVAL_US / 1000000);
+  // Anything else is refused by the engine whatever the number: no bound to offer.
+  return undefined;
+} // intervalMax
 
 /** The form fields of one system, as typed. */
 interface SystemForm {
@@ -244,20 +279,36 @@ export default function BfdTimersTool() {
    * @param key the field
    * @returns an input cell
    */
-  const cell = (s: SystemForm, set: (v: SystemForm) => void, id: "a" | "b", key: keyof Omit<SystemForm, "demand">) => (
-    <td>
-      <input
-        id={`bfd-${id}-${key}`}
-        className="cidr-input mono"
-        value={s[key]}
-        onChange={(e) => set({ ...s, [key]: e.target.value })}
-        placeholder={t(`placeholders.${key}`)}
-        aria-label={`${id.toUpperCase()}: ${t(`fields.${FIELD_ROWS.find((r) => r.key === key)?.msg ?? "desiredMinTx"}`)}`}
-        autoComplete="off"
-        spellCheck={false}
-      />
-    </td>
-  ); // cell
+  const cell = (s: SystemForm, set: (v: SystemForm) => void, id: "a" | "b", key: keyof Omit<SystemForm, "demand">) => {
+    // The field's name ("A: Desired Min TX Interval"), for the input and for its arrows' names.
+    const name = `${id.toUpperCase()}: ${t(`fields.${FIELD_ROWS.find((r) => r.key === key)?.msg ?? "desiredMinTx"}`)}`;
+    // Detect Mult is a plain count; an interval is a number and its unit, and only the number steps.
+    const parts = key === "mult" ? { num: s[key], unit: "" } : splitInterval(s[key]);
+    // The engine's bounds: Detect Mult a whole 1 to 255; an interval up to the 32-bit field in its unit, the TX one nonzero.
+    const bounds = key === "mult" ? { min: 1, max: 255, integer: true } : { min: key === "tx" ? 1 : 0, max: intervalMax(parts.unit) };
+    // A stepped number written back as typing would: the unit kept, milliseconds when none was typed yet.
+    const write = (v: string) => set({ ...s, [key]: key === "mult" ? v : v + (parts.unit.trim() ? parts.unit : "ms") });
+    // The cell: the field with its up and down arrows (03/11/2026).
+    return (
+      <td>
+        {/* One unit a press (1 ms on "300ms"), the arrows stacked in this narrow table (bfd-num). */}
+        <StepperField value={parts.num} onValue={write} {...bounds} label={name} inputId={`bfd-${id}-${key}`} className="bfd-num">
+          <input
+            id={`bfd-${id}-${key}`}
+            className="cidr-input mono"
+            value={s[key]}
+            onChange={(e) => set({ ...s, [key]: e.target.value })}
+            // Arrow Up and Down step the number from the keyboard, the unit kept.
+            onKeyDown={stepperKeyDown({ value: parts.num, onValue: write, ...bounds })}
+            placeholder={t(`placeholders.${key}`)}
+            aria-label={name}
+            autoComplete="off"
+            spellCheck={false}
+          />
+        </StepperField>
+      </td>
+    ); // the cell
+  }; // cell
 
   // The decode verdict's flag letters, for the field table.
   const flagLetters = (r: DecodeResult): string =>

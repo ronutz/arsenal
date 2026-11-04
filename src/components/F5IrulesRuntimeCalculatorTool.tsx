@@ -19,6 +19,15 @@
 // pack by their key in the engine's NOTES (engine.note.<key>), else shown as
 // the engine writes them; the tables stay as the DevCentral spreadsheet lays
 // them out.
+//
+// UP AND DOWN ARROWS (03/11/2026, PRIME: values set "through the click of a
+// mouse (or press of the touchscreen)"): the clock (one MHz a step; a typed
+// fraction such as 2133.48 moves to the next whole MHz, as a browser's number
+// field does) and the core count (whole, one a step) have a decrease and an
+// increase button beside them, and step from Arrow Up / Down and Page Up /
+// Down too; both start at 1 (the engine takes any number, and a clock or a
+// core count below 1 computes nothing). The Cycles/Sec override has none: a
+// figure in the billions, read off a platform, does not move usefully by one.
 // ============================================================================
 
 import { useCallback, useMemo, useRef, useState } from "react";
@@ -32,6 +41,8 @@ import ShareResultsButton from "@/components/ShareResultsButton"; // the site's 
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
 import { IRULES_RUNTIME_CALCULATOR_SHARE } from "@/lib/tools/f5-irules-runtime-calculator/share"; // this tool's share spec: the four fields as typed
+// Up and down arrows for the clock and the core count (03/11/2026).
+import { StepperField, stepperKeyDown } from "@/components/NumberStepper";
 
 /** Nothing to share: a constant, so the button sees no change between renders. */
 const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled state
@@ -106,6 +117,20 @@ export default function F5IrulesRuntimeCalculatorTool() {
     setCores(EXAMPLE_CORES);
     setOverride("");
     recompute(EXAMPLE_TIMING, EXAMPLE_CLOCK, EXAMPLE_CORES, "");
+  };
+  // The clock set as its field's onChange sets it (typed or stepped): the text kept, the tables recomputed.
+  const setClock = (v: string) => {
+    // The field shows it.
+    setClockMhz(v);
+    // The tables follow.
+    recompute(timingOutput, v, cores, override);
+  };
+  // The core count set the same way.
+  const setCoreCount = (v: string) => {
+    // The field shows it.
+    setCores(v);
+    // The tables follow.
+    recompute(timingOutput, clockMhz, v, override);
   };
   const clearAll = () => {
     setTimingOutput("");
@@ -205,37 +230,43 @@ export default function F5IrulesRuntimeCalculatorTool() {
         <label className="cidr-label" htmlFor="irt-clock">
           {t("clockLabel")}
         </label>
-        <input
-          id="irt-clock"
-          className="cidr-input mono"
-          type="text"
-          inputMode="decimal"
-          value={clockMhz}
-          onChange={(e) => {
-            setClockMhz(e.target.value);
-            recompute(timingOutput, e.target.value, cores, override);
-          }}
-          placeholder="2133.48"
-          autoComplete="off"
-        />
+        {/* Up and down arrows: one MHz a press, on whole MHz (a typed fraction moves to the next whole one). */}
+        <StepperField value={clockMhz} onValue={setClock} min={1} label={t("clockLabel")} inputId="irt-clock">
+          <input
+            id="irt-clock"
+            className="cidr-input mono"
+            type="text"
+            inputMode="decimal"
+            value={clockMhz}
+            // Typed: the same setter as the arrows.
+            onChange={(e) => setClock(e.target.value)}
+            // Arrow Up and Down (Page Up and Down: ten) step the clock from the keyboard.
+            onKeyDown={stepperKeyDown({ value: clockMhz, onValue: setClock, min: 1 })}
+            placeholder="2133.48"
+            autoComplete="off"
+          />
+        </StepperField>
       </div>
       <div className="cidr-input-row">
         <label className="cidr-label" htmlFor="irt-cores">
           {t("coresLabel")}
         </label>
-        <input
-          id="irt-cores"
-          className="cidr-input mono"
-          type="text"
-          inputMode="numeric"
-          value={cores}
-          onChange={(e) => {
-            setCores(e.target.value);
-            recompute(timingOutput, clockMhz, e.target.value, override);
-          }}
-          placeholder="2"
-          autoComplete="off"
-        />
+        {/* Up and down arrows: one core a press. */}
+        <StepperField value={cores} onValue={setCoreCount} min={1} integer label={t("coresLabel")} inputId="irt-cores">
+          <input
+            id="irt-cores"
+            className="cidr-input mono"
+            type="text"
+            inputMode="numeric"
+            value={cores}
+            // Typed: the same setter as the arrows.
+            onChange={(e) => setCoreCount(e.target.value)}
+            // Arrow Up and Down (Page Up and Down: ten) step the count from the keyboard.
+            onKeyDown={stepperKeyDown({ value: cores, onValue: setCoreCount, min: 1, integer: true })}
+            placeholder="2"
+            autoComplete="off"
+          />
+        </StepperField>
       </div>
       <div className="cidr-input-row">
         <label className="cidr-label" htmlFor="irt-override">

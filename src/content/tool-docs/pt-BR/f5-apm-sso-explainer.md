@@ -8,6 +8,8 @@ O cartão do Kerberos carrega a lista completa de pré-requisitos: uma conta de 
 
 A nota de encanamento em cada consulta amarra os métodos à maquinaria: agentes da access policy populam as variáveis de sessão que o SSO consome, sendo a fiação clássica uma Logon Page seguida de SSO Credential Mapping, alimentando session.logon.last.* em session.sso.token.last.*.
 
+Digite o nome de um método (apelidos como `ntlm`, `fbci` ou `kcd` também valem), ou `methods` para ver os oito; ou clique no botão do método abaixo da caixa, que preenche o nome para você.
+
 Tudo roda localmente; nada do que você digita sai da página.
 
 ## Compartilhar resultado

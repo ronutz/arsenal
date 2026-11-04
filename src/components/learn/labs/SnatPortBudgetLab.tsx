@@ -13,11 +13,18 @@
 // reply goes, the port budget towards it, the share the peak uses and a
 // verdict. The model is src/lib/labs/snat-port-budget/compute.ts; its checked
 // cases are the golden vectors beside it. Words: "learnLabs.snat-port-budget".
+//
+// The three number fields have up and down arrows beside them (PRIME
+// 03/11/2026: values set "through the click of a mouse (or press of the
+// touchscreen)"), one a press inside the model's bounds, off with the fields
+// when there is no SNAT.
 // ============================================================================
 
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import LabFrame, { LabField, LabSelect } from "./LabFrame";
+// Up and down arrows for the three number fields.
+import { StepperField } from "@/components/NumberStepper";
 import { compute, DEFAULT_INPUT, EXAMPLE_INPUT, MAX_ADDRESSES, MAX_DEMAND, MAX_PORTS, SnatError, type ReturnPath, type SnatErrorCode, type SnatInput, type SnatMode, type SnatResult } from "@/lib/labs/snat-port-budget/compute";
 
 /** The lab's id: its namespace, its anchor and its element ids. */
@@ -153,13 +160,22 @@ export default function SnatPortBudgetLab() {
             <LabSelect id={`${ID}-return`} value={form.returnPath} options={returnOptions} onChange={(v) => setForm({ ...form, returnPath: v as ReturnPath })} />
           </LabField>
           <LabField id={`${ID}-addresses`} label={t("addresses")}>
-            <input id={`${ID}-addresses`} className="lab-input" type="number" inputMode="decimal" min={1} max={MAX_ADDRESSES} step={1} value={form.addresses} disabled={noSnat} aria-invalid={err === "bad-addresses" ? "true" : undefined} onChange={(e) => setForm({ ...form, addresses: e.target.value })} />
+            {/* Up and down arrows, whole numbers only: one address a press, 1 to the model's MAX_ADDRESSES, the field set as if typed. */}
+            <StepperField value={form.addresses} onValue={(v) => setForm((f) => ({ ...f, addresses: v }))} min={1} max={MAX_ADDRESSES} step={1} integer label={t("addresses")} inputId={`${ID}-addresses`} disabled={noSnat}>
+              <input id={`${ID}-addresses`} className="lab-input" type="number" inputMode="decimal" min={1} max={MAX_ADDRESSES} step={1} value={form.addresses} disabled={noSnat} aria-invalid={err === "bad-addresses" ? "true" : undefined} onChange={(e) => setForm({ ...form, addresses: e.target.value })} />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-ports`} label={t("ports")}>
-            <input id={`${ID}-ports`} className="lab-input" type="number" inputMode="decimal" min={1} max={MAX_PORTS} step={1} value={form.ports} disabled={noSnat} aria-invalid={err === "bad-ports" ? "true" : undefined} onChange={(e) => setForm({ ...form, ports: e.target.value })} />
+            {/* Up and down arrows, whole numbers only: one port a press, 1 to the model's MAX_PORTS, the field set as if typed. */}
+            <StepperField value={form.ports} onValue={(v) => setForm((f) => ({ ...f, ports: v }))} min={1} max={MAX_PORTS} step={1} integer label={t("ports")} inputId={`${ID}-ports`} disabled={noSnat}>
+              <input id={`${ID}-ports`} className="lab-input" type="number" inputMode="decimal" min={1} max={MAX_PORTS} step={1} value={form.ports} disabled={noSnat} aria-invalid={err === "bad-ports" ? "true" : undefined} onChange={(e) => setForm({ ...form, ports: e.target.value })} />
+            </StepperField>
           </LabField>
           <LabField id={`${ID}-demand`} label={t("demand")}>
-            <input id={`${ID}-demand`} className="lab-input" type="number" inputMode="decimal" min={0} max={MAX_DEMAND} step={1} value={form.demand} disabled={noSnat} aria-invalid={err === "bad-demand" ? "true" : undefined} onChange={(e) => setForm({ ...form, demand: e.target.value })} />
+            {/* Up and down arrows, whole numbers only: one connection a press, 0 to the model's MAX_DEMAND, the field set as if typed. */}
+            <StepperField value={form.demand} onValue={(v) => setForm((f) => ({ ...f, demand: v }))} min={0} max={MAX_DEMAND} step={1} integer label={t("demand")} inputId={`${ID}-demand`} disabled={noSnat}>
+              <input id={`${ID}-demand`} className="lab-input" type="number" inputMode="decimal" min={0} max={MAX_DEMAND} step={1} value={form.demand} disabled={noSnat} aria-invalid={err === "bad-demand" ? "true" : undefined} onChange={(e) => setForm({ ...form, demand: e.target.value })} />
+            </StepperField>
           </LabField>
         </>
       }
