@@ -65,7 +65,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     body:
       "More than 180 number fields across the tools, the Learn labs and /dev/fun now have an up and a down arrow beside them, sized for a finger: a press moves the value one step, holding repeats and speeds up, and the arrows stop at what the tool accepts. Arrow Up and Down, and Page Up and Down for ten steps, work in the field itself, and typing works as before. Fields that took one of a few values by typing now offer them directly: the APM single sign-on methods, HTTP methods, BIG-IP layer 4 profiles, regular expression flags and FortiOS protocols as buttons; colour pickers in the contrast checker; date and time pickers in the CGN, service-check, time and time-zone tools; standard MTUs as one-press values. On a touch screen every preset, filter chip and toggle chip on the site is now at least 44 pixels square, the size of the arrows. Addresses, hashes, identifiers and free text stay typed, and every tool that needs them keeps its Example button. In the subnet drill, one Enter no longer grades the answer and skips the next question at once.",
     links: [
-      { label: "Importance Meter", href: "/dev/fun/importance-meter" },
+      { label: "curl command builder", href: "/tools/curl-command-builder" },
       { label: "MTU and MSS", href: "/tools/mtu-mss" },
       { label: "VRRP timers", href: "/tools/vrrp-timer-calculator" },
     ],

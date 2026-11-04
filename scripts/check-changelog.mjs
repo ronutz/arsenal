@@ -16,7 +16,7 @@
 // data module. fs + regex only, so it runs in the plain-node prebuild chain.
 // ============================================================================
 
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -79,4 +79,50 @@ if (untitled.length) {
   for (const u of untitled) console.error(`  - ${u}: add titlePt, the title in Brazilian Portuguese`);
   process.exit(1);
 }
-console.log(`[check-changelog] OK: all ${builtSlugs.length} built tools appear in the changelog; every entry since ${PT_FROM} has its Portuguese title.`);
+// --- 3. Links that must work in every language (2026-11-04) -----------------------------------------------------
+// A changelog link is locale-agnostic: the page prefixes the reader's language, so "/dev/fun/importance-meter" becomes
+// /da/dev/fun/importance-meter/ on the Danish changelog. A route that exists in English only is answered there by a
+// cross-language 301 in public/_redirects, and check-internal-links (which reads a fallback language only in the full
+// 16-language build) rejects a link that leans on one. The twentieth package's arrows entry linked the English-only
+// Importance Meter and passed every sandbox check, then failed the full build in CI (runs 113169009709 and
+// 113169009913, 04/11/2026). Read the redirect table here, so the sandbox catches it before CI does.
+const REDIRECTS_FILE = path.join(ROOT, "public/_redirects");
+// "from to [status]" lines, comments and blanks skipped.
+const redirectLines = readFileSync(REDIRECTS_FILE, "utf8").split("\n").map((l) => l.trim()).filter((l) => l && !l.startsWith("#"));
+// Each rule's source, mapped to its destination.
+const redirectTo = new Map(redirectLines.map((l) => l.split(/\s+/)).filter((p) => p.length >= 2).map((p) => [p[0], p[1]]));
+// The site's languages: one message pack each (a redirect from any other first segment, such as /fortinet/, is a
+// vendor shortcut, not a language).
+const LANGS = new Set(readdirSync(path.join(ROOT, "src/i18n/messages")).filter((f) => f.endsWith(".json")).map((f) => f.slice(0, -5)));
+// Every href in a links: [...] list of the changelog.
+const linkHrefs = [...changelogSrc.matchAll(/\{\s*label:\s*"[^"]*",\s*href:\s*"([^"]+)"\s*\}/g)].map((m) => m[1]);
+// The ones whose page, in some language, is a redirect to another language.
+const crossLanguage = [];
+// Each link once.
+for (const href of new Set(linkHrefs)) {
+  // Only site paths are prefixed (an absolute URL is not).
+  if (!href.startsWith("/")) continue;
+  // The trailing-slash form the site serves.
+  const tail = href.endsWith("/") ? href : `${href}/`;
+  // A rule from /<lang><path>/ to a page in another language.
+  for (const [from, to] of redirectTo) {
+    // The rule's language and path.
+    const m = from.match(/^\/([a-zA-Z-]+)(\/.*)$/);
+    // Not this link's page.
+    if (!m || !LANGS.has(m[1]) || m[2] !== tail) continue;
+    // A destination in another language makes the link lean on the redirect.
+    if (to.startsWith("/") && !to.startsWith(`/${m[1]}/`)) {
+      // Recorded once per link.
+      crossLanguage.push(`${href} (in ${m[1]}: ${from} -> ${to})`);
+      // One example is enough.
+      break;
+    }
+  }
+}
+// Any such link stops the build.
+if (crossLanguage.length) {
+  console.error(`\n[check-changelog] FAIL: ${crossLanguage.length} changelog link(s) point at a page that some languages only reach through a redirect to another language:`);
+  for (const c of crossLanguage) console.error(`  - ${c}: link a page every language carries instead`);
+  process.exit(1);
+}
+console.log(`[check-changelog] OK: all ${builtSlugs.length} built tools appear in the changelog; every entry since ${PT_FROM} has its Portuguese title; ${new Set(linkHrefs).size} link(s) land in every language without a cross-language redirect.`);
