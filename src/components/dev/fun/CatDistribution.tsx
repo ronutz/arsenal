@@ -300,7 +300,8 @@ export default function CatDistribution({ data, locale }: { data: CatDistributio
           onChange={(e) => setCity(e.target.value)} placeholder="São Paulo" autoComplete="off" spellCheck={false} />
         {/* The Track button (its label was in the catalogs, unused): the System answers when asked. */}
         <button type="submit" className="btn btn-primary catd-track">{labels.track}</button>
-        {!assignment && <p className="cidr-privacy">{labels.emptyHint}</p>}
+        {/* The hint before the first answer: the privacy-line layout, in the secondary text colour (contrast pass 04/11/2026). */}
+        {!assignment && <p className="cidr-privacy catd-hint">{labels.emptyHint}</p>}
         {/* Always on the page, so a screen reader hears each new verdict: the stamp and the cat's designation. */}
         <p className="sr-only" role="status" aria-live="polite">
           {assignment ? `${labels.stamp} ${labels.nameField}: ${assignment.catName}.` : ""}

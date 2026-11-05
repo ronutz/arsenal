@@ -168,7 +168,7 @@
    thing that should attract the eye is a link. */
 :root[data-theme="reader"] {
   --color-neutral: #57534e;
-  --color-success: #15803d;
+  --color-success: #0d7c3a; /* WCAG AA pass, 04/11/2026: #15803d read 4.37:1 on the Reader surfaces */
   --color-warning: #92400e;
   --color-orange: #c2410c;
   --color-danger: #b91c1c;
@@ -217,6 +217,7 @@
 }
 
 :root[data-theme="emerald"] {
+  /* WCAG AA contrast pass (PRIME 04/11/2026, "Fix all 11"): accent-primary, accent-hover moved in lightness only, hue kept, to reach 4.5:1 on this theme's surfaces. */
   /* Semantic status tokens (D-71): light overrides, WCAG-AA on white. Severity
      aliases inherited from :root resolve through these. */
   --color-neutral: #475569;
@@ -233,8 +234,8 @@
   --text-primary: #0f1f15;
   --text-secondary: #46604f;
   --text-tertiary: #6a8073;
-  --accent-primary: #059669;
-  --accent-hover: #047857;
+  --accent-primary: #027c56;
+  --accent-hover: #046546;
   --accent-amber: #b45309;
 }
 
@@ -258,7 +259,7 @@
   --text-tertiary: #64748b;
   --accent-primary: #2563eb;
   --accent-hover: #1d4ed8;
-  --accent-amber: #b45309;
+  --accent-amber: #b15103;
 }
 
 /* Photon — light, indigo-navy accent. (nods to Neutrino) */
@@ -281,11 +282,12 @@
   --text-tertiary: #646e88;
   --accent-primary: #3730a3;
   --accent-hover: #312e81;
-  --accent-amber: #b45309;
+  --accent-amber: #b04f01;
 }
 
 /* Kevlar — light, red accent. (nods to Security Fabric) */
 :root[data-theme="kevlar"] {
+  /* WCAG AA contrast pass (PRIME 04/11/2026, "Fix all 11"): accent-primary moved in lightness only, hue kept, to reach 4.5:1 on this theme's surfaces. */
   /* accent is a hard red #dc2626 - a warm tan reads as distinct without clashing */
   --redu-brand: #c98a6b;
 
@@ -305,9 +307,9 @@
   --text-primary: #1f1413;
   --text-secondary: #5a4744;
   --text-tertiary: #836e6b;
-  --accent-primary: #dc2626;
+  --accent-primary: #d51b1f;
   --accent-hover: #b91c1c;
-  --accent-amber: #b45309;
+  --accent-amber: #b04f01;
 }
 
 /* ============================================================================
@@ -360,19 +362,27 @@
 
 /* Retro · C64 — Commodore 64 boot screen: light-blue on blue, light-blue chrome. */
 :root[data-theme="retro-c64"] {
+  /* WCAG AA contrast pass (PRIME 04/11/2026, "Fix all 11"): text-secondary, accent-primary, accent-hover, color-danger, color-success, color-warning, color-info moved in lightness only, hue kept, to reach 4.5:1 on this theme's surfaces. */
   --canvas-primary: #352879;   /* C64 blue */
   --surface-base: #3e3088;
   --surface-elevated: #473998;
   --border-subtle: #6c5eb5;    /* C64 light blue */
   --border-strong: #8b7fd4;
   --text-primary: #ffffff;     /* white for legibility on C64 blue */
-  --text-secondary: #b8aeea;
+  --text-secondary: #bbb1ed;
   --text-tertiary: #8b7fd4;
-  --accent-primary: #9d8fe8;   /* brightened light-blue, pops on the blue */
-  --accent-hover: #b8aeea;
+  --accent-primary: #bab0fe;   /* brightened light-blue, pops on the blue */
+  --accent-hover: #d1cbfe;
   --accent-amber: #b8c76f;     /* C64 yellow */
   --radius-sm: 0; --radius-md: 0; --radius-lg: 0;
   --font-prose: var(--font-jetbrains-mono), ui-monospace, monospace;
+  --color-danger: #fe9f9c; /* WCAG AA pass, 04/11/2026: was inherited, below 4.5:1 here */
+  --color-success: #3ad46c; /* WCAG AA pass, 04/11/2026: was inherited, below 4.5:1 here */
+  --color-warning: #fda620; /* WCAG AA pass, 04/11/2026: was inherited, below 4.5:1 here */
+  --color-info: #49c5fe; /* WCAG AA pass, 04/11/2026: was inherited, below 4.5:1 here */
+  --color-neutral: #aabacf; /* WCAG AA pass, 04/11/2026: was inherited, 3.55:1 here */
+  --color-orange: #ffa562; /* WCAG AA pass, 04/11/2026: was inherited, 4.02:1 here */
+  --color-wasm: #f197ff; /* WCAG AA pass, 04/11/2026: was inherited, 3.7:1 here */
 }
 
 /* Retro · Spectrum — ZX Spectrum: bright attribute colors on black. */
@@ -394,6 +404,7 @@
 
 /* Retro · CoCo — TRS-80 Color Computer green text screen, with artifact orange. */
 :root[data-theme="retro-coco"] {
+  /* WCAG AA contrast pass (PRIME 04/11/2026, "Fix all 11"): text-secondary, accent-primary, accent-hover, color-danger, color-success, color-warning, color-info moved in lightness only, hue kept, to reach 4.5:1 on this theme's surfaces. */
   /* accent is burnt orange #c84b1e - the era palette's green is the natural partner hue */
   --redu-brand: #7fb069;
 
@@ -403,13 +414,20 @@
   --border-subtle: #5e9e45;
   --border-strong: #487a35;
   --text-primary: #0c2a0c;     /* near-black green */
-  --text-secondary: #2e5a24;
+  --text-secondary: #25511b;
   --text-tertiary: #487a35;
-  --accent-primary: #c84b1e;   /* CoCo artifact orange */
-  --accent-hover: #e26536;
-  --accent-amber: #a85a00;
+  --accent-primary: #832701;   /* CoCo artifact orange */
+  --accent-hover: #651c00;
+  --accent-amber: #6e3902;
   --radius-sm: 0; --radius-md: 0; --radius-lg: 0;
   --font-prose: var(--font-jetbrains-mono), ui-monospace, monospace;
+  --color-danger: #92041e; /* WCAG AA pass, 04/11/2026: was inherited, below 4.5:1 here */
+  --color-success: #035322; /* WCAG AA pass, 04/11/2026: was inherited, below 4.5:1 here */
+  --color-warning: #663f02; /* WCAG AA pass, 04/11/2026: was inherited, below 4.5:1 here */
+  --color-info: #004d6a; /* WCAG AA pass, 04/11/2026: was inherited, below 4.5:1 here */
+  --color-neutral: #3b485a; /* WCAG AA pass, 04/11/2026: was inherited, 1.28:1 here */
+  --color-orange: #703800; /* WCAG AA pass, 04/11/2026: was inherited, 1.13:1 here */
+  --color-wasm: #7f018a; /* WCAG AA pass, 04/11/2026: was inherited, 3.15:1 here */
 }
 
 /* Retro · Apple II — HGR artifact palette: violet + orange on black, white text,
@@ -433,39 +451,55 @@
 
 /* Retro · MSX — TMS9918 palette: indigo with the distinctive MSX cyan. */
 :root[data-theme="retro-msx"] {
+  /* WCAG AA contrast pass (PRIME 04/11/2026, "Fix all 11"): text-secondary, color-danger, color-success, color-warning, color-info moved in lightness only, hue kept, to reach 4.5:1 on this theme's surfaces. */
   --canvas-primary: #353594;   /* TMS dark blue */
   --surface-base: #3e3ea0;
   --surface-elevated: #4747ac;
   --border-subtle: #5955e0;
   --border-strong: #8076f1;
   --text-primary: #ffffff;
-  --text-secondary: #b0aef0;
+  --text-secondary: #c6c5fe;
   --text-tertiary: #8076f1;
   --accent-primary: #65dbef;   /* TMS cyan */
   --accent-hover: #92e8f5;
   --accent-amber: #ded087;     /* TMS light yellow */
   --radius-sm: 0; --radius-md: 0; --radius-lg: 0;
   --font-prose: var(--font-jetbrains-mono), ui-monospace, monospace;
+  --color-danger: #feb8b4; /* WCAG AA pass, 04/11/2026: was inherited, below 4.5:1 here */
+  --color-success: #51e57c; /* WCAG AA pass, 04/11/2026: was inherited, below 4.5:1 here */
+  --color-warning: #febe70; /* WCAG AA pass, 04/11/2026: was inherited, below 4.5:1 here */
+  --color-info: #83d4fe; /* WCAG AA pass, 04/11/2026: was inherited, below 4.5:1 here */
+  --color-neutral: #bccbe1; /* WCAG AA pass, 04/11/2026: was inherited, 2.96:1 here */
+  --color-orange: #ffbc8d; /* WCAG AA pass, 04/11/2026: was inherited, 3.36:1 here */
+  --color-wasm: #f5b3ff; /* WCAG AA pass, 04/11/2026: was inherited, 3.09:1 here */
 }
 
 /* Retro · Amiga — Workbench 1.x: azure blue with the iconic Workbench orange. */
 :root[data-theme="retro-amiga"] {
+  /* WCAG AA contrast pass (PRIME 04/11/2026, "Fix all 11"): canvas-primary, surface-base, surface-elevated, accent-primary, color-danger, color-success, color-warning, color-info, accent-hover moved in lightness only, hue kept, to reach 4.5:1 on this theme's surfaces. */
   /* accent is amber #ff8800 - Amiga blue is period-correct and maximally separate */
   --redu-brand: #8ba3d9;
 
-  --canvas-primary: #0058a8;   /* Workbench blue */
-  --surface-base: #15639f;
-  --surface-elevated: #1e6da8;
+  --canvas-primary: #013c76;   /* Workbench blue */
+  --surface-base: #004575;
+  --surface-elevated: #034f80;
   --border-subtle: #4a8ac8;
   --border-strong: #7fb0e0;
   --text-primary: #ffffff;
   --text-secondary: #c8dcf0;
   --text-tertiary: #9fc0e0;
-  --accent-primary: #ff8800;   /* Workbench orange */
-  --accent-hover: #ffa033;
-  --accent-amber: #ff8800;
+  --accent-primary: #ffac6e;   /* Workbench orange */
+  --accent-hover: #ffcdaa;
+  --accent-amber: #ffac6e;
   --radius-sm: 0; --radius-md: 0; --radius-lg: 0;
   --font-prose: var(--font-jetbrains-mono), ui-monospace, monospace;
+  --color-danger: #ffa6a2; /* WCAG AA pass, 04/11/2026: was inherited, below 4.5:1 here */
+  --color-success: #40d870; /* WCAG AA pass, 04/11/2026: was inherited, below 4.5:1 here */
+  --color-warning: #fead3f; /* WCAG AA pass, 04/11/2026: was inherited, below 4.5:1 here */
+  --color-info: #5cc9fe; /* WCAG AA pass, 04/11/2026: was inherited, below 4.5:1 here */
+  --color-neutral: #afbfd4; /* WCAG AA pass, 04/11/2026: was inherited, 3.36:1 here */
+  --color-orange: #feab6e; /* WCAG AA pass, 04/11/2026: was inherited, 3.81:1 here */
+  --color-wasm: #f3a0ff; /* WCAG AA pass, 04/11/2026: was inherited, 3.51:1 here */
 }
 
 /* Retro · Macintosh — classic 1-bit System: black on white, gentle rounding and
@@ -477,7 +511,7 @@
   --color-neutral: #475569;
   --color-success: #166534;
   --color-warning: #92400e;
-  --color-orange: #c2410c;
+  --color-orange: #a93503;
   --color-danger: #b91c1c;
   --color-info: #1d4ed8;
   --canvas-primary: #d8d8d8;   /* desktop grey */
@@ -490,8 +524,9 @@
   --text-tertiary: #6e6e6e;
   --accent-primary: #2222cc;   /* restrained System-highlight blue for links */
   --accent-hover: #4444e0;
-  --accent-amber: #9a6a00;     /* muted amber so warnings still read */
+  --accent-amber: #7c5503;     /* muted amber so warnings still read */
   --radius-sm: 4px; --radius-md: 6px; --radius-lg: 8px;
+  --color-wasm: #9f18ac; /* WCAG AA pass, 04/11/2026: was inherited, 4.44:1 here */
 }
 
 /* ============================================================================
@@ -537,6 +572,7 @@
 
 /* Matrix · Red — red-pill rain. */
 :root[data-theme="matrix-red"] {
+  /* WCAG AA contrast pass (PRIME 04/11/2026, "Fix all 11"): text-secondary moved in lightness only, hue kept, to reach 4.5:1 on this theme's surfaces. */
   /* accent is bright red #ff3030 - amber holds against it and stays in the theme */
   --redu-brand: #d4a05f;
 
@@ -546,7 +582,7 @@
   --border-subtle: #2e0a0a;
   --border-strong: #501010;
   --text-primary: #ff4040;     /* lightened for legibility on black */
-  --text-secondary: #c82020;
+  --text-secondary: #e13d36;
   --text-tertiary: #921515;
   --accent-primary: #ff3030;
   --accent-hover: #ff6a6a;
@@ -587,6 +623,7 @@
 
 /* Web · Reddit — light grey with OrangeRed; softly rounded. */
 :root[data-theme="web-reddit"] {
+  /* WCAG AA contrast pass (PRIME 04/11/2026, "Fix all 11"): accent-primary, accent-hover moved in lightness only, hue kept, to reach 4.5:1 on this theme's surfaces. */
   /* accent is Reddit orange #ff4500 - the complementary blue is unmistakable */
   --redu-brand: #5a8fc7;
 
@@ -606,9 +643,9 @@
   --text-primary: #1a1a1b;
   --text-secondary: #4a4d50;
   --text-tertiary: #787c7e;
-  --accent-primary: #ff4500;   /* Reddit OrangeRed */
-  --accent-hover: #ff6a33;
-  --accent-amber: #cc5200;
+  --accent-primary: #cf3701;   /* Reddit OrangeRed */
+  --accent-hover: #ad2c00;
+  --accent-amber: #bf4c00;
   --radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px;
 }
 
@@ -618,6 +655,7 @@
    Proportional face, gentle rounding, like the real Swagger UI.
    ========================================================================== */
 :root[data-theme="swagger"] {
+  /* WCAG AA contrast pass (PRIME 04/11/2026, "Fix all 11"): accent-primary, accent-hover moved in lightness only, hue kept, to reach 4.5:1 on this theme's surfaces. */
   /* Semantic status tokens (D-71): light overrides, WCAG-AA on white. Severity
      aliases inherited from :root resolve through these. */
   --color-neutral: #475569;
@@ -634,8 +672,8 @@
   --text-primary: #3b4151;     /* Swagger UI slate text */
   --text-secondary: #5b6770;
   --text-tertiary: #828d96;
-  --accent-primary: #4a9c2d;   /* Swagger green (readable) */
-  --accent-hover: #5cb33e;
+  --accent-primary: #2f8203;   /* Swagger green (readable) */
+  --accent-hover: #256b02;
   --accent-amber: #b45309;
   --radius-sm: 4px; --radius-md: 6px; --radius-lg: 8px;
 }
@@ -645,6 +683,7 @@
    Proportional UI face like the editor chrome; lightly squared corners.
    ========================================================================== */
 :root[data-theme="vscode"] {
+  /* WCAG AA contrast pass (PRIME 04/11/2026, "Fix all 11"): accent-primary, accent-hover moved in lightness only, hue kept, to reach 4.5:1 on this theme's surfaces. */
   --canvas-primary: #1e1e1e;   /* editor background */
   --surface-base: #252526;     /* side bar */
   --surface-elevated: #2d2d2d; /* panels */
@@ -653,8 +692,8 @@
   --text-primary: #d4d4d4;     /* editor foreground */
   --text-secondary: #a0a0a0;
   --text-tertiary: #6e7681;
-  --accent-primary: #007acc;   /* VS Code blue */
-  --accent-hover: #3794ff;
+  --accent-primary: #389bef;   /* VS Code blue */
+  --accent-hover: #5eb1fe;
   --accent-amber: #d7ba7d;     /* editor gold */
   --radius-sm: 3px; --radius-md: 4px; --radius-lg: 6px;
 }

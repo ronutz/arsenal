@@ -20,7 +20,8 @@ const STORAGE_KEY = "ronutz-theme";
 
 type Theme = { id: string; name: string; swatch: string; dark: boolean };
 
-// Swatch = each theme's primary accent, for the preview dot.
+// Swatch = each theme's primary accent, for the preview dot. Eight dots follow the WCAG AA pass of 04/11/2026, which
+// moved those themes' accents in lightness so they read at 4.5:1; the dot shows the accent the theme now uses.
 const THEMES: Theme[] = [
   { id: "obsidian", name: "Obsidian", swatch: "#22d3ee", dark: true },
   // READING THEMES (PRIME 2026-08-10). Placed directly after Obsidian rather
@@ -32,19 +33,19 @@ const THEMES: Theme[] = [
   { id: "dark-energy", name: "FGT · Dark Energy", swatch: "#818cf8", dark: true },
   { id: "olivine", name: "FGT · Olivine", swatch: "#34d399", dark: true },
   { id: "penumbra", name: "FGT · Penumbra", swatch: "#fb923c", dark: true },
-  { id: "emerald", name: "FGT · Emerald", swatch: "#059669", dark: false },
+  { id: "emerald", name: "FGT · Emerald", swatch: "#027c56", dark: false },
   { id: "slate", name: "FGT · Slate", swatch: "#2563eb", dark: false },
   { id: "photon", name: "FGT · Photon", swatch: "#3730a3", dark: false },
-  { id: "kevlar", name: "FGT · Kevlar", swatch: "#dc2626", dark: false },
+  { id: "kevlar", name: "FGT · Kevlar", swatch: "#d51b1f", dark: false },
   // --- Retro set: homages to vintage machines and terminals, grouped here. ---
   { id: "retro-amber", name: "Retro · Amber", swatch: "#ffb000", dark: true },
   { id: "retro-green", name: "Retro · Green", swatch: "#33ff66", dark: true },
-  { id: "retro-c64", name: "Retro · C64", swatch: "#9d8fe8", dark: true },
+  { id: "retro-c64", name: "Retro · C64", swatch: "#bab0fe", dark: true },
   { id: "retro-spectrum", name: "Retro · Spectrum", swatch: "#ff2bd6", dark: true },
-  { id: "retro-coco", name: "Retro · CoCo", swatch: "#c84b1e", dark: false },
+  { id: "retro-coco", name: "Retro · CoCo", swatch: "#832701", dark: false },
   { id: "retro-apple2", name: "Retro · Apple II", swatch: "#c95fff", dark: true },
   { id: "retro-msx", name: "Retro · MSX", swatch: "#65dbef", dark: true },
-  { id: "retro-amiga", name: "Retro · Amiga", swatch: "#ff8800", dark: true },
+  { id: "retro-amiga", name: "Retro · Amiga", swatch: "#ffac6e", dark: true },
   { id: "retro-mac", name: "Retro · Mac", swatch: "#2222cc", dark: false },
   // --- Matrix set: digital-rain, pure black with a strong glow, three colors. ---
   { id: "matrix-green", name: "Matrix · Green", swatch: "#00ff41", dark: true },
@@ -55,10 +56,10 @@ const THEMES: Theme[] = [
   { id: "ansi", name: "Art · ANSI", swatch: "#54fefe", dark: true },
   // --- Web set: homages to classic community sites. ---
   { id: "web-slashdot", name: "Web · Slashdot", swatch: "#00692e", dark: false },
-  { id: "web-reddit", name: "Web · Reddit", swatch: "#ff4500", dark: false },
+  { id: "web-reddit", name: "Web · Reddit", swatch: "#cf3701", dark: false },
   // --- Developer-tool looks: the Swagger UI doc theme and the VS Code editor. ---
-  { id: "swagger", name: "Dev · Swagger", swatch: "#4a9c2d", dark: false },
-  { id: "vscode", name: "Dev · VS Code", swatch: "#007acc", dark: true },
+  { id: "swagger", name: "Dev · Swagger", swatch: "#2f8203", dark: false },
+  { id: "vscode", name: "Dev · VS Code", swatch: "#389bef", dark: true },
 ];
 
 // Themes grouped for the picker: the part before " · " is the group label, the

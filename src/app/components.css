@@ -4445,7 +4445,9 @@ pre.cidr-input { max-width: 100%; overflow-x: auto; }
   letter-spacing: 0.06em;
   /* Prominent pill CTA (PRIME 2026-07-09): the jump-to affordance now reads as a
      tappable control, not a quiet label. Uses the primary (navigation) accent. */
-  color: var(--accent-primary);
+  /* The accent leans about a third of the way to the text colour (contrast pass 04/11/2026): on its own accent tint
+     the plain accent fell to 4.0:1 in eight themes; at 65% the lowest of the 28 is 4.85:1 (Retro CoCo). */
+  color: color-mix(in oklab, var(--accent-primary) 65%, var(--text-primary));
   padding: 0.42rem 0.85rem;
   border: 1px solid color-mix(in srgb, var(--accent-primary) 42%, transparent);
   border-radius: var(--radius-sm);
@@ -4457,9 +4459,10 @@ pre.cidr-input { max-width: 100%; overflow-x: auto; }
 }
 .jumpnav-summary:hover,
 .jumpnav-summary:focus-visible {
-  color: var(--accent-primary);
+  color: color-mix(in oklab, var(--accent-primary) 65%, var(--text-primary));
   border-color: var(--accent-primary);
-  background: color-mix(in srgb, var(--accent-primary) 18%, var(--surface-base));
+  /* A 14% tint (was 18%), so the text keeps 4.5:1 while hovered or focused (lowest 4.58:1, Retro CoCo). */
+  background: color-mix(in srgb, var(--accent-primary) 14%, var(--surface-base));
 }
 /* Our own chevron, rotating from right-pointing (closed) to down (open). */
 .jumpnav-chevron {
@@ -9871,7 +9874,8 @@ select.cidr-input { max-width: 100%; }
 .mb-total-sub { margin: 0.4rem 0 0; font-size: 0.85rem; color: #22d3ee; }
 .mb-total-fine { margin: 0.35rem 0 0; font-size: 0.72rem; color: #7c88b0; font-style: italic; }
 
-.mb-disclaimer { margin: 1.1rem 1.25rem 0; font-size: 0.75rem; color: #5f6b91; opacity: 0.45; text-align: center; line-height: 1.5; }
+/* The disclaimer in the console's fine-print grey at full strength (contrast pass 04/11/2026; at 45% opacity it read about 1.7:1). */
+.mb-disclaimer { margin: 1.1rem 1.25rem 0; font-size: 0.75rem; color: #7c88b0; text-align: center; line-height: 1.5; }
 
 @keyframes mb-pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.04); } }
 @keyframes mb-spin { to { transform: rotate(360deg); } }
@@ -10688,7 +10692,8 @@ select.cidr-input { max-width: 100%; }
 .bingo-tagline { color: var(--accent-primary); font-weight: 600; margin: 0 0 0.75rem; }
 .bingo-intro { color: var(--text-secondary); max-width: 640px; margin: 0 auto; font-size: 0.95rem; line-height: 1.6; }
 .bingo-controls { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; justify-content: center; margin-bottom: 1rem; }
-.bingo-type-label { color: var(--text-tertiary); font-size: 0.85rem; }
+/* The label, the shuffling note and the credit use the secondary text colour (contrast pass 04/11/2026). */
+.bingo-type-label { color: var(--text-secondary); font-size: 0.85rem; }
 .bingo-type-select { background: var(--surface-base); color: var(--text-primary); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); padding: 0.5rem 0.7rem; font-size: 0.9rem; font-family: inherit; cursor: pointer; }
 .bingo-new { background: transparent; color: var(--text-secondary); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); padding: 0.5rem 0.9rem; font-size: 0.9rem; font-family: inherit; font-weight: 600; cursor: pointer; transition: color 0.15s ease, border-color 0.15s ease; }
 .bingo-new:hover { color: var(--text-primary); border-color: var(--accent-primary); }
@@ -10697,15 +10702,19 @@ select.cidr-input { max-width: 100%; }
 .bingo-cell:hover:not(:disabled) { border-color: var(--accent-primary); transform: translateY(-1px); }
 .bingo-cell:disabled { cursor: default; opacity: 0.45; }
 .bingo-cell-marked { background: rgba(34, 211, 238, 0.14); border-color: var(--accent-primary); color: var(--text-primary); }
-.bingo-cell-free { background: rgba(245, 158, 11, 0.12); border-color: var(--accent-amber); color: var(--accent-amber); font-weight: 800; letter-spacing: 0.1em; cursor: default; }
+/* FREE: the amber leans a quarter of the way to the text colour (contrast pass 04/11/2026), darker on light themes and lighter on
+   dark ones, so it reads at 4.5:1 on its own amber tint (plain amber fell to 4.2:1 on the light themes). */
+.bingo-cell-free { background: rgba(245, 158, 11, 0.12); border-color: var(--accent-amber); color: color-mix(in oklab, var(--accent-amber) 75%, var(--text-primary)); font-weight: 800; letter-spacing: 0.1em; cursor: default; }
 .bingo-cell-win { background: rgba(255, 45, 149, 0.16); border-color: #ff2d95; color: var(--text-primary); animation: bingo-win-pulse 1.4s ease-in-out infinite; }
 @keyframes bingo-win-pulse { 0%, 100% { box-shadow: 0 0 4px rgba(255, 45, 149, 0.35); } 50% { box-shadow: 0 0 14px rgba(255, 45, 149, 0.75); } }
 .bingo-banner { text-align: center; margin: 0 0 1rem; padding: 0.9rem 1rem; border-radius: var(--radius-md); border: 1px solid rgba(255, 45, 149, 0.5); background: linear-gradient(180deg, rgba(255, 45, 149, 0.14), rgba(124, 58, 237, 0.14)); animation: bingo-banner-in 0.35s ease; }
-.bingo-banner-word { margin: 0; font-size: 1.6rem; font-weight: 900; letter-spacing: 0.14em; color: #ff9ad1; }
+/* The word leans from the bingo pink toward the text colour (contrast pass 04/11/2026): a light pink on dark themes, a deep one on
+   light themes, where the fixed light pink read about 1.9:1. */
+.bingo-banner-word { margin: 0; font-size: 1.6rem; font-weight: 900; letter-spacing: 0.14em; color: color-mix(in oklab, #ff2d95 62%, var(--text-primary)); }
 .bingo-banner-sub { margin: 0.35rem 0 0; font-size: 0.85rem; color: var(--accent-primary); }
 @keyframes bingo-banner-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
-.bingo-shuffling { text-align: center; color: var(--text-tertiary); font-size: 0.8rem; margin: 0.8rem 0 0; }
-.bingo-credit { margin: 1.6rem auto 0; max-width: 640px; text-align: center; color: var(--text-tertiary); font-size: 0.78rem; line-height: 1.55; }
+.bingo-shuffling { text-align: center; color: var(--text-secondary); font-size: 0.8rem; margin: 0.8rem 0 0; }
+.bingo-credit { margin: 1.6rem auto 0; max-width: 640px; text-align: center; color: var(--text-secondary); font-size: 0.78rem; line-height: 1.55; }
 .bingo-credit-link { color: var(--accent-primary); text-decoration: underline; text-underline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) {
   .bingo-cell-win, .bingo-banner { animation: none; }
@@ -10836,8 +10845,9 @@ select.cidr-input { max-width: 100%; }
 /* PRIME 05/07/2026: /dev/fun eyebrow link back to the index, matching the
    clickable /dev/fun in the Mega Brain console frame. */
 .bingo-devfun { margin: 0 0 0.35rem; font-size: 0.8rem; }
-.bingo-devfun-link { color: #22d3ee; text-decoration: none; border-radius: 4px; padding: 0 0.15rem; transition: color 0.15s ease; }
-.bingo-devfun-link:hover, .bingo-devfun-link:focus-visible { color: #67e8f9; text-decoration: underline; outline: none; }
+/* In the theme's accent (contrast pass 04/11/2026): the fixed cyan read about 1.6:1 on the light themes. */
+.bingo-devfun-link { color: var(--accent-primary); text-decoration: none; border-radius: 4px; padding: 0 0.15rem; transition: color 0.15s ease; }
+.bingo-devfun-link:hover, .bingo-devfun-link:focus-visible { color: var(--accent-hover); text-decoration: underline; outline: none; }
 
 /* ==== /settings — shortcut customization table ============================= */
 .shortcut-settings { margin-top: 1.5rem; }
@@ -10866,7 +10876,9 @@ select.cidr-input { max-width: 100%; }
 
 /* ==== /dev/fun boss-screens viewer (gallery grid + scaled thumbnails) ====== */
 .boss-viewer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 1.1rem; margin-top: 1.6rem; }
-.boss-viewer-card { display: flex; flex-direction: column; text-align: left; background: var(--surface-1, #0b1120); border: 1px solid var(--border-strong, #1e293b); border-radius: 12px; overflow: hidden; cursor: pointer; padding: 0; transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease; }
+/* The card takes the theme's card colour (contrast pass 04/11/2026): it used --surface-1, which is not a site token, so its dark
+   fallback painted every card dark while the names followed the theme, dark on dark in the 11 light themes. */
+.boss-viewer-card { display: flex; flex-direction: column; text-align: left; background: var(--surface-base); border: 1px solid var(--border-strong, #1e293b); border-radius: 12px; overflow: hidden; cursor: pointer; padding: 0; transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease; }
 .boss-viewer-card:hover, .boss-viewer-card:focus-visible { transform: translateY(-2px); border-color: var(--accent-primary, #22d3ee); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); outline: none; }
 /* The thumbnail is a real boss screen rendered at full size, then scaled down to
    fit a fixed 16:10 window. The inner wrapper is sized to the "screen" and
@@ -10884,7 +10896,8 @@ select.cidr-input { max-width: 100%; }
 .boss-thumb-inner .boss-screen { width: 100%; height: 100%; max-width: none; aspect-ratio: auto; padding: 0.5rem 0.6rem; }
 .boss-viewer-meta { display: flex; flex-direction: column; gap: 0.35rem; padding: 0.8rem 0.9rem 0.95rem; }
 .boss-viewer-name { font-weight: 700; color: var(--text-primary, #e6ecff); font-size: 0.98rem; }
-.boss-viewer-year { color: var(--text-tertiary, #7c88b0); font-weight: 400; font-size: 0.82rem; }
+/* The year, in the secondary text colour (contrast pass 04/11/2026; the tertiary one is below 4.5:1 in most themes). */
+.boss-viewer-year { color: var(--text-secondary); font-weight: 400; font-size: 0.82rem; }
 .boss-viewer-blurb { color: var(--text-secondary, #b8c2e0); font-size: 0.85rem; line-height: 1.5; }
 @media (prefers-reduced-motion: reduce) { .boss-viewer-card:hover, .boss-viewer-card:focus-visible { transform: none; } }
 
@@ -10927,7 +10940,8 @@ select.cidr-input { max-width: 100%; }
 .copyedit-lede { color: var(--text-secondary, #b8c2e0); font-size: 1rem; line-height: 1.6; margin-bottom: 0.6rem; }
 .copyedit-caveat { color: var(--accent-amber, #f59e0b); font-size: 0.85rem; line-height: 1.55; border-left: 3px solid var(--accent-amber, #f59e0b); padding-left: 0.8rem; margin-bottom: 1.4rem; }
 .copyedit { margin-top: 1rem; }
-.copyedit-toolbar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 1rem; padding: 1rem; background: var(--surface-1, #0b1120); border: 1px solid var(--border-strong, #1e293b); border-radius: 12px; }
+/* The copy editor's panels take the theme's card colour (contrast pass 04/11/2026; the --surface-1 fallback was dark in every theme). */
+.copyedit-toolbar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 1rem; padding: 1rem; background: var(--surface-base); border: 1px solid var(--border-strong, #1e293b); border-radius: 12px; }
 .copyedit-field { display: flex; flex-direction: column; gap: 0.3rem; }
 .copyedit-field-search { flex: 1 1 16rem; }
 .copyedit-field-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-tertiary, #7c88b0); }
@@ -10941,7 +10955,7 @@ select.cidr-input { max-width: 100%; }
 .copyedit-btn { font-size: 0.88rem; }
 .copyedit-list { display: flex; flex-direction: column; gap: 0.5rem; max-height: 60vh; overflow-y: auto; padding: 0.3rem; border: 1px solid var(--border-subtle, rgba(30,41,59,0.5)); border-radius: 10px; }
 .copyedit-empty { color: var(--text-tertiary, #7c88b0); padding: 1.5rem; text-align: center; }
-.copyedit-row { display: flex; flex-direction: column; gap: 0.3rem; padding: 0.6rem 0.7rem; background: var(--surface-1, #0b1120); border: 1px solid var(--border-subtle, rgba(30,41,59,0.5)); border-radius: 8px; }
+.copyedit-row { display: flex; flex-direction: column; gap: 0.3rem; padding: 0.6rem 0.7rem; background: var(--surface-base); border: 1px solid var(--border-subtle, rgba(30,41,59,0.5)); border-radius: 8px; }
 .copyedit-row.is-changed { border-color: var(--accent-primary, #22d3ee); box-shadow: inset 3px 0 0 var(--accent-primary, #22d3ee); }
 .copyedit-row-head { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
 .copyedit-path { font-size: 0.76rem; color: var(--text-secondary, #b8c2e0); word-break: break-all; }
@@ -10952,7 +10966,7 @@ select.cidr-input { max-width: 100%; }
 .copyedit-textarea { resize: vertical; min-height: 3rem; }
 .copyedit-input:focus-visible { outline: 2px solid var(--accent-primary, #22d3ee); outline-offset: 1px; }
 .copyedit-modal { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.8); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 1.5rem; }
-.copyedit-modal-card { background: var(--surface-1, #0b1120); border: 1px solid var(--border-strong, #1e293b); border-radius: 14px; width: 100%; max-width: 46rem; max-height: 82vh; display: flex; flex-direction: column; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6); }
+.copyedit-modal-card { background: var(--surface-base); border: 1px solid var(--border-strong, #1e293b); border-radius: 14px; width: 100%; max-width: 46rem; max-height: 82vh; display: flex; flex-direction: column; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6); }
 .copyedit-modal-head { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.2rem; border-bottom: 1px solid var(--border-strong, #1e293b); }
 .copyedit-modal-title { font-size: 0.9rem; color: var(--text-primary, #e6ecff); word-break: break-all; }
 .copyedit-modal-close { background: none; border: none; color: var(--text-secondary, #b8c2e0); font-size: 1.1rem; cursor: pointer; padding: 0.2rem 0.4rem; border-radius: 6px; }
@@ -16174,12 +16188,15 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .fs-toggle {
   flex: 0 0 auto;
   background: none; border: 1px solid transparent; border-radius: 6px;
-  color: #5b6689; cursor: pointer; font-size: 0.82rem; line-height: 1;
+  /* The theme's secondary text colour (contrast pass 04/11/2026; the fixed grey was below 2:1 on several themes). */
+  color: var(--text-secondary); cursor: pointer; font-size: 0.82rem; line-height: 1;
   padding: 0.2rem 0.45rem;
   transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
 }
-.fs-toggle:hover, .fs-toggle:focus-visible { color: #22d3ee; border-color: rgba(34, 211, 238, 0.4); outline: none; }
-.fs-toggle[aria-pressed="true"] { color: #8b97bf; border-color: rgba(139, 151, 191, 0.35); background: rgba(139, 151, 191, 0.08); }
+/* Hover and keyboard focus: the theme's accent. */
+.fs-toggle:hover, .fs-toggle:focus-visible { color: var(--accent-primary); border-color: color-mix(in srgb, var(--accent-primary) 45%, transparent); outline: none; }
+/* On: a framed, lightly filled switch in the primary text colour. */
+.fs-toggle[aria-pressed="true"] { color: var(--text-primary); border-color: var(--border-strong); background: color-mix(in srgb, var(--text-secondary) 10%, transparent); }
 
 /* ============================================================================
    ZSCALER TUNNEL CHOOSER (zscaler-tunnel-chooser) - result layout.
@@ -17900,6 +17917,9 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
    thing in view. R4-02: the manifest's long cells wrap inside the panel instead of running off a phone; the field
    names keep a fixed share of the row and the status marks stay narrow. */
 .catd-track { align-self: flex-start; margin-top: 0.2rem; font-family: inherit; font-weight: 700; }
+/* The hint before the first answer: readable at 4.5:1 in every theme (contrast pass 04/11/2026; the tertiary text
+   colour of the privacy line it borrows is below that in most themes). */
+.catd-hint { color: var(--text-secondary); }
 .catd-stamp {
   padding: 0.85rem 1rem; text-align: center;
   border: 2px solid var(--accent-primary); border-radius: var(--radius-md);

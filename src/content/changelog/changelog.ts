@@ -56,6 +56,23 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // PRIME 04/11/2026 18:24: the Access Points marks were hard to tell from the fields; check the games for contrast.
+    // PRIME's answers the same evening: "Fix all 11" themes, "Build when done".
+    date: "2026-11-04",
+    time: "18:55",
+    kind: "feature",
+    title: "The games are easier to read in every theme, and fourteen themes now meet WCAG AA contrast",
+    titlePt: "Os jogos ficam mais fáceis de ler em todos os temas, e catorze temas passam a atender ao contraste AA da WCAG",
+    body:
+      "In Access Points, a mark you place is bold on a small disc, so it stands apart from any zone colour or stripe pattern, and an automatic mark is red and a little smaller, so the two differ by colour and by size; zone letters sit on small tags and the access points have a thin outline. Across the games and toys, small print that used the faintest text colour now uses the secondary one, the switches, port markers and links in Spanning Tree are drawn more firmly, a price you cannot pay yet in Incident Commander stays readable, with a dashed edge instead of a fade, and on the 11 light themes the Boss-Key Screens cards no longer show their names dark on dark. Fourteen of the 28 site themes had a secondary text, accent or status colour below 4.5:1 on their own backgrounds; each was moved in lightness only, keeping its hue (Retro Amiga's blue is a little deeper, so its orange stays bright), and those colours change across the whole site, as does the Jump to button on the tools, Learn and vendor pages, now a shade stronger. Measured in all 28 themes, the games' own text meets WCAG AA contrast; the vintage screens in Boss-Key Screens keep their original colours.",
+    links: [
+      { label: "Access Points", href: "/dev/fun/access-points" },
+      { label: "Spanning Tree", href: "/dev/fun/spanning-tree" },
+      { label: "Incident Commander", href: "/dev/fun/incident-commander" },
+      { label: "Boss-Key Screens", href: "/dev/fun/boss-screens" },
+    ],
+  },
+  {
     // PRIME 03/11/2026 19:16: arrows on every value field, and the fields that make the reader type when they need not.
     date: "2026-11-03",
     time: "22:00",
