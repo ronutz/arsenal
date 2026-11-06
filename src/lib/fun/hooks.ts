@@ -128,6 +128,11 @@ export function useReducedMotion(): boolean {
 /**
  * A stopwatch: elapsed milliseconds while running, frozen when stopped.
  *
+ * Since 06/11/2026 the time already counted is kept in a ref, not read from the displayed state: Exit the Editor's
+ * Restart resets and starts it in one handler (PRIME 06/11/2026, the screen and the clock start together), and a start
+ * that read the state would have resumed from the reset's stale value. A start while running is ignored, so a later
+ * first key cannot move the origin either.
+ *
  * @returns the elapsed time and controls to start, stop and reset it
  */
 export function useStopwatch(): { elapsed: number; running: boolean; start: () => void; stop: () => number; reset: () => void } {
@@ -137,6 +142,10 @@ export function useStopwatch(): { elapsed: number; running: boolean; start: () =
   const [running, setRunning] = useState(false);
   // The performance.now() of the (re)start, minus any time already counted.
   const origin = useRef(0);
+  // The time counted while stopped (zero after a reset), read by start whatever the displayed state says.
+  const counted = useRef(0);
+  // Whether it is running, for the controls (the state above is for rendering).
+  const on = useRef(false);
   // Tick four times a second while running; whole seconds are what is shown.
   useEffect(() => {
     // Nothing to do when stopped.
@@ -146,17 +155,25 @@ export function useStopwatch(): { elapsed: number; running: boolean; start: () =
     // Cleared when stopped or unmounted.
     return () => window.clearInterval(id);
   }, [running]);
-  // Start (or resume) from the time already counted.
+  // Start (or resume) from the time already counted; a stopwatch already running carries on.
   const start = useCallback(() => {
+    // Already running: nothing moves.
+    if (on.current) return;
     // The origin moves back by what was counted before.
-    origin.current = performance.now() - elapsed;
+    origin.current = performance.now() - counted.current;
     // Running.
+    on.current = true;
+    // Shown.
     setRunning(true);
-  }, [elapsed]);
+  }, []);
   // Stop and return the exact elapsed time.
   const stop = useCallback(() => {
-    // The precise value at this instant.
-    const final = performance.now() - origin.current;
+    // The precise value at this instant, or what was counted when it was not running.
+    const final = on.current ? performance.now() - origin.current : counted.current;
+    // Kept for a later start.
+    counted.current = final;
+    // Off.
+    on.current = false;
     // Frozen there.
     setElapsed(final);
     // Not running.
@@ -166,6 +183,10 @@ export function useStopwatch(): { elapsed: number; running: boolean; start: () =
   }, []);
   // Back to zero, stopped.
   const reset = useCallback(() => {
+    // Nothing counted.
+    counted.current = 0;
+    // Off.
+    on.current = false;
     // Zero.
     setElapsed(0);
     // Stopped.

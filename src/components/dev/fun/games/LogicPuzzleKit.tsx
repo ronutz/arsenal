@@ -5,7 +5,7 @@
 // src/components/dev/fun/games/LogicPuzzleKit.tsx
 // ----------------------------------------------------------------------------
 // WHAT THE THREE GRID PUZZLES SHARE (Access Points, Bit Balance, Patch Path;
-// PRIME 03/11/2026): the clock that starts on the first move, the "Check" and "Hint" counters and their time penalty (a hint
+// PRIME 03/11/2026): the clock that starts with the board (Start, below), the "Check" and "Hint" counters and their time penalty (a hint
 // costs what a check costs; each game's engine finds the hint, the kit counts
 // it, saves it with the round and shows its sentence under the buttons), undo
 // and clear, the saved state of today's puzzle (restored on load, a finished
@@ -29,12 +29,22 @@
 // clear; Hint does not wait, since an empty board has a first step too.
 // Each game keeps its own board, rules and drawing; this file holds no strings
 // of its own: the game passes its labels in.
+//
+// START (PRIME 06/11/2026: the board was shown "before the timer starts
+// counting"; it "needs to be revealed to the player at the same moment the
+// timer starts"). A round that has not started shows StartCover in the
+// board's place: the board's footprint, empty, with a Start button. The
+// puzzle's cells are not rendered at all until then, so nothing of it can be
+// read from the page, a screen reader or the page's source. Start (session.start)
+// starts the clock, draws the board and saves the round at once, so a reload
+// after Start resumes it running and cannot hide the board again. Hint waits
+// for Start too. Spanning Tree and Exit the Editor use the same cover.
 // ============================================================================
 
 "use client";
 
-// React's state, effects, refs and memo.
-import { useCallback, useEffect, useMemo, useRef, useState, type FocusEvent, type ReactNode } from "react";
+// React's state, effects, ids, refs and memo.
+import { useCallback, useEffect, useId, useMemo, useRef, useState, type CSSProperties, type FocusEvent, type ReactNode } from "react";
 // The time format.
 import { formatDuration } from "@/lib/fun/share";
 // The one storage key's helpers.
@@ -327,8 +337,10 @@ export interface PuzzleSession<P, B> {
   finalMs: number | null;
   /** The time to show now, penalties included. */
   shownMs: number;
-  /** Whether the clock has started. */
+  /** Whether the clock has started (the board is shown only then). */
   started: boolean;
+  /** Start the round: the clock starts, the board is shown, and the round is saved at once (PRIME 06/11/2026). */
+  start: () => void;
   /** Bumped after each recorded result, for GameShell's version prop. */
   version: number;
 }
@@ -362,7 +374,7 @@ export function usePuzzleSession<P, B>(cfg: PuzzleSessionConfig<P, B>): PuzzleSe
   const [finalMs, setFinalMs] = useState<number | null>(null);
   // The record version for GameShell.
   const [version, setVersion] = useState(0);
-  // Whether the clock has started for this round (a restored round counts as started).
+  // Whether the clock has started for this round (a restored round counts as started); the board is drawn only then.
   const [started, setStarted] = useState(false);
   // The latest round, for the clock's saves, which come from event listeners between renders.
   const live = useRef({ day, board, checks, hints, done, started });
@@ -479,6 +491,18 @@ export function usePuzzleSession<P, B>(cfg: PuzzleSessionConfig<P, B>): PuzzleSe
     [clock, save, day],
   );
 
+  // Start: the clock and the board together (PRIME 06/11/2026), saved at once so a reload resumes the round running.
+  const start = useCallback(() => {
+    // Only a round on screen that has not started and is not finished.
+    if (done || started || board === null || puzzle === null) return;
+    // The clock starts now.
+    clock.start();
+    // The board is drawn.
+    setStarted(true);
+    // Saved as a round in progress at 0:00, so a reload restores it running rather than covered again.
+    save(board, clock.now(), checks, hints, false, null);
+  }, [done, started, board, puzzle, clock, save, checks, hints]);
+
   // A move.
   const move = useCallback(
     (next: B) => {
@@ -573,7 +597,7 @@ export function usePuzzleSession<P, B>(cfg: PuzzleSessionConfig<P, B>): PuzzleSe
     // The moves.
     move, undo, canUndo: history.length > 0 && !done, clear, untouched,
     // Checks, hints and the clock.
-    checks, check, hints, hint, done, finalMs, shownMs, started,
+    checks, check, hints, hint, done, finalMs, shownMs, started, start,
     // The record's version.
     version,
   };
@@ -621,12 +645,13 @@ export function PuzzleHud<P, B>(props: { session: PuzzleSession<P, B>; labels: K
         {s.hints > 0 && <span className="fg-chip">{l.hintsUsed}</span>}
         {props.info}
       </div>
-      {/* The buttons: Check and Clear wait for a first move, Undo for something to undo; Hint only for the finish. */}
+      {/* The buttons: Check and Clear wait for a first move, Undo for something to undo, Hint for Start (the board it
+          points into is drawn only then) and stops at the finish. */}
       <div className="fg-buttons fg-lpk-buttons">
         <button type="button" className="fg-button" onClick={props.onCheck} disabled={s.done || s.untouched}>
           {l.check}
         </button>
-        <button type="button" className="fg-button" onClick={props.onHint} disabled={s.done}>
+        <button type="button" className="fg-button" onClick={props.onHint} disabled={s.done || !s.started}>
           {l.hint}
         </button>
         <button type="button" className="fg-button" onClick={s.undo} disabled={!s.canUndo}>
@@ -644,6 +669,35 @@ export function PuzzleHud<P, B>(props: { session: PuzzleSession<P, B>; labels: K
       )}
       {/* The game's own option, if any. */}
       {props.extra}
+    </div>
+  );
+}
+
+/**
+ * The board's place before Start (PRIME 06/11/2026): the board's footprint, empty, with a Start button and one line
+ * saying that the puzzle and the clock start together. The game renders this INSTEAD of its board, so none of the
+ * puzzle is on the page until Start. A click anywhere on it starts, so the target is the whole board on a phone; the
+ * button is the control a keyboard and a screen reader reach (its click reaches the cover too, so the game starts
+ * once).
+ *
+ * @param props the button's label, the line under it, what Start does, and the classes and style that give the cover
+ *              the board's size (a grid game passes "fg-grid" and its --fg-cols)
+ * @returns the cover
+ */
+export function StartCover(props: { label: string; note: string; onStart: () => void; className?: string; style?: CSSProperties }) {
+  // The line's id, so the button is described by it.
+  const noteId = useId();
+  // The cover.
+  return (
+    <div className={`fg-start${props.className ? ` ${props.className}` : ""}`} style={props.style} onClick={props.onStart}>
+      {/* The control: its click bubbles to the cover, which starts the round. */}
+      <button type="button" className="fg-button fg-button-primary fg-start-button" aria-describedby={noteId}>
+        {props.label}
+      </button>
+      {/* What Start does. */}
+      <p id={noteId} className="fg-small fg-muted fg-start-note">
+        {props.note}
+      </p>
     </div>
   );
 }

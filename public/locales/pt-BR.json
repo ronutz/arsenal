@@ -27605,7 +27605,15 @@
         "earlierPrev": "Anterior (#{n})",
         "earlierNext": "Próximo (#{n})",
         "earlierToday": "Desafio de hoje",
-        "earlierRefused": "{reason, select, future {Desafio de dia futuro não pode ser jogado: este é o de hoje.} today {Esse dia é hoje: este é o desafio de hoje, que conta normalmente.} beforeLaunch {O desafio #1 foi em {first}, então não há nenhum antes dele: este é o de hoje.} other {Esse endereço não indica um dia: este é o desafio de hoje.}}"
+        "earlierRefused": "{reason, select, future {Desafio de dia futuro não pode ser jogado: este é o de hoje.} today {Esse dia é hoje: este é o desafio de hoje, que conta normalmente.} beforeLaunch {O desafio #1 foi em {first}, então não há nenhum antes dele: este é o de hoje.} other {Esse endereço não indica um dia: este é o desafio de hoje.}}",
+        "start": "Começar",
+        "startNote": "Aperte Começar para ver o desafio. O relógio começa a contar no mesmo instante.",
+        "startSay": "O desafio está na tela e o relógio está correndo.",
+        "originsLink": "De onde vem",
+        "originsTitle": "De onde vem",
+        "originsOnSite": "Mais neste site",
+        "originsSources": "Fontes",
+        "originsRead": "acesso em {date}"
       },
       "access-points": {
         "metaTitle": "Access Points | /dev/fun",
@@ -27616,7 +27624,6 @@
         "cardName": "Access Points",
         "cardBlurb": "Cubra cada zona do andar com um access point, sem dois se encostarem. Andar novo todo dia.",
         "checksUsed": "{n, plural, one {# conferência (+{s} s)} other {# conferências (+{s} s)}}",
-        "clockHint": "O relógio começa a contar no seu primeiro movimento.",
         "autoMark": "Marcar as células que cada access point descarta",
         "sizeLine": "Andar {n}×{n} · {level, select, gentle {tranquilo} medium {médio} tricky {traiçoeiro} other {difícil}}",
         "boardLabel": "Planta do andar do escritório, {n} por {n}",
@@ -27653,6 +27660,11 @@
           "group": "{ownerKind, select, row {As linhas {owners}} column {As colunas {owners}} other {As zonas {owners}}} só têm lugar para os seus access points {keyKind, select, row {nas linhas {keys}} column {nas colunas {keys}} other {nas zonas {keys}}}, então o resto {keyKind, select, row {dessas linhas} column {dessas colunas} other {dessas zonas}} pode ser marcado com ×.",
           "lookahead": "Um access point na linha {r}, coluna {c} deixaria {kind, select, row {a linha {k}} column {a coluna {k}} other {a zona {zone}}} sem lugar para o seu, então essa célula pode ser marcada com ×.",
           "answer": "Nenhuma regra decide o próximo passo daqui, então este vem direto da resposta: a célula da linha {r}, coluna {c} leva um access point."
+        },
+        "origins": {
+          "p1": "Uma peça em cada linha e em cada coluna, sem que nenhuma ameace outra: o quebra-cabeça mais antigo desse tipo é o problema das oito rainhas, que o enxadrista amador alemão Max Bezzel propôs em 1848 sob o pseudônimo \"Schachfreund\". Franz Nauck chegou a 92 soluções; descontadas rotações e reflexões, restam 12 distintas.",
+          "p2": "O parente mais próximo é o Star Battle, um estilo holandês que Hans Eendebak criou para o World Puzzle Championship de 2003, em Arnhem: cada linha, coluna e região tem o mesmo número de estrelas, e as estrelas não podem se encostar, nem na diagonal. O GM Puzzles observa que a ideia provavelmente veio de um quebra-cabeça anterior de Tim Peeters chamado Cattle. Os Star Battles do Krazydad saem na edição impressa do The New York Times como Two Not Touch desde 20 de abril de 2020.",
+          "p3": "O LinkedIn lançou o Queens em 1º de maio de 2024, junto com outros dois jogos diários: uma rainha em cada linha, coluna e região colorida, sem nenhuma encostada em outra. O GM Puzzles o descreve como uma versão simplificada do Star Battle, e Thomas Snyder forneceu os primeiros desafios. O Access Points segue as mesmas regras, com access points no lugar das rainhas."
         }
       },
       "bit-balance": {
@@ -27664,7 +27676,6 @@
         "cardName": "Bit Balance",
         "cardBlurb": "Preencha uma grade 6×6 com bits: três de cada por linha, nada de três seguidos, todo sinal respeitado. Grade nova todo dia.",
         "checksUsed": "{n, plural, one {# conferência (+{s} s)} other {# conferências (+{s} s)}}",
-        "clockHint": "O relógio começa a contar no seu primeiro movimento.",
         "sizeLine": "Grade 6×6 · {level, select, gentle {tranquilo} medium {médio} tricky {traiçoeiro} other {difícil}}",
         "boardLabel": "Grade de bits, 6 por 6",
         "cellLabel": "Linha {r}, coluna {c}",
@@ -27703,6 +27714,11 @@
           "count": "{lk, select, row {A linha {li}} other {A coluna {li}}} já tem três {b}s, então {n, plural, one {a última célula vazia é} other {as # células vazias são}} {w}.",
           "trial": "Se a célula da linha {r}, coluna {c} fosse {b}, as regras logo quebrariam {lk, select, row {na linha {li}} other {na coluna {li}}}, então ela tem que ser {w}.",
           "answer": "Nenhuma regra resolve uma célula daqui, então esta vem direto da resposta: a célula da linha {r}, coluna {c} é {w}."
+        },
+        "origins": {
+          "p1": "Equilibrar dois símbolos numa grade é uma família de quebra-cabeças bem conhecida. A PeterFrank, fundada por Peter De Schepper e Frank Coussement, publicou o primeiro Binairo no verão europeu de 2009, no maior jornal da Bélgica. A Conceptis atribui ao autor italiano Adolfo Zanellati a invenção do mesmo conceito, o Tic-Tac-Logic, observa que a PeterFrank inventou um quebra-cabeça parecido na mesma época e registra Takuzu como o nome dele nas publicações francesas Le Figaro e Ludojeux.",
+          "p2": "O Binairo clássico pede tantos zeros quanto uns em cada linha e coluna, no máximo dois números iguais lado a lado e nenhuma linha ou coluna com exatamente o mesmo conteúdo. O 0h h1, de Martin Kool, um joguinho de lógica da Q42, usa as mesmas regras com peças coloridas.",
+          "p3": "O LinkedIn lançou o Tango em 7 de outubro de 2024: três sóis e três luas em cada linha e coluna, um sinal de igual entre células que precisam ter o mesmo símbolo e um X entre células que precisam ser diferentes. O GM Puzzles, que criou o jogo junto com o LinkedIn, conta que jogos do tipo Binary e Binairo estavam na lista de ideias das quais ele evoluiu. O Bit Balance segue as regras do Tango, sinais incluídos, com 0 e 1 no lugar de sóis e luas."
         }
       },
       "patch-path": {
@@ -27714,7 +27730,6 @@
         "cardName": "Patch Path",
         "cardBlurb": "Passe um único cabo por todas as células do patch panel, portas em ordem, desviando das canaletas. Patch panel novo todo dia.",
         "checksUsed": "{n, plural, one {# conferência (+{s} s)} other {# conferências (+{s} s)}}",
-        "clockHint": "O relógio começa a contar no seu primeiro movimento.",
         "sizeLine": "{n}×{n} · {ports} portas{ducts, plural, =0 {} one { · # canaleta} other { · # canaletas}} · {level, select, gentle {tranquilo} medium {médio} tricky {traiçoeiro} other {difícil}}",
         "boardRole": "patch panel",
         "boardLabel": "Patch panel, {n} por {n}. Próxima porta: {next} de {ports}. Use as setas para passar o cabo.",
@@ -27770,6 +27785,11 @@
           },
           "ruledOut": "{reasons}, então o cabo vai {dir}, até a linha {r}, coluna {c}.",
           "answer": "Nenhuma regra resolve este passo rápido, então ele vem direto da resposta: o cabo vai {dir}, até a linha {r}, coluna {c}."
+        },
+        "origins": {
+          "p1": "O LinkedIn lançou o Zip em 18 de março de 2025. O GM Puzzles, que ajuda a criar e editar os desafios, dá as regras: traçar um caminho por todas as células, na horizontal ou na vertical entre células vizinhas, sem cruzar a si mesmo nem as paredes, começando no 1, passando pelos outros números em ordem crescente e terminando no maior. O Patch Path mantém essas regras, com portas no lugar dos números e um único cabo comprido no lugar do caminho.",
+          "p2": "O Numberlink, da Nikoli, é um primo: liga pares de números iguais com linhas contínuas, em vez de puxar um único caminho numerado.",
+          "p3": "Por baixo está a teoria dos grafos. Um caminho que passa por cada célula exatamente uma vez é um caminho hamiltoniano, e o exemplo mais antigo é o passeio do cavalo no xadrez; acredita-se que o primeiro passeio conhecido seja obra de al-Adli ar-Rumi, um filósofo que viveu em Bagdá no século IX."
         }
       },
       "phish-or-legit": {
@@ -27825,7 +27845,12 @@
         "speedHeadline": "{correct, plural, one {# acerto} other {# acertos}} em 60 segundos",
         "speedDetail": "{wrong, plural, one {# erro} other {# erros}}, {points} pontos.",
         "shareSpeed": "Phish ou Legit contra o relógio: {correct, plural, one {# acerto} other {# acertos}} em 60 s",
-        "bestFormat": "{n, plural, one {# acerto} other {# acertos}} em 60 s"
+        "bestFormat": "{n, plural, one {# acerto} other {# acertos}} em 60 s",
+        "origins": {
+          "p1": "O Merriam-Webster data de 1996 o primeiro uso conhecido de phishing: uma grafia alternativa de fishing (pescar), com o ph provavelmente tirado de phreaking, a fraude de fazer ligações telefônicas sem pagar. Koceilah Rekouche, autor do AOHell, uma ferramenta de hacking de meados dos anos 1990 voltada para a America Online (AOL), conta no próprio relato que a palavra nasceu ali.",
+          "p2": "A letra disfarçada tem artigo próprio. Em \"The Homograph Attack\" (Communications of the ACM, fevereiro de 2002), Evgeniy Gabrilovich e Alex Gontmakher registraram um microsoft.com escrito com as letras russas с e о. Nomes de domínio internacionalizados são gravados no Domain Name System (DNS) em Punycode (RFC 3492, março de 2003), com cada label marcado pelo prefixo ACE xn-- (RFC 3490).",
+          "p3": "O Phishing Quiz da Jigsaw é um exercício conhecido do mesmo tipo."
+        }
       },
       "log-detective": {
         "metaTitle": "Detetive de Logs | /dev/fun",
@@ -27918,7 +27943,12 @@
           }
         },
         "shortUa": "User agents curtos",
-        "alreadyDoneEarlier": "Você já encerrou o caso deste dia."
+        "alreadyDoneEarlier": "Você já encerrou o caso deste dia.",
+        "origins": {
+          "p1": "Em agosto de 1986, um invasor persistente atacou os computadores do Lawrence Berkeley Laboratory (LBL), e Clifford Stoll foi atrás dele. Stoll contou depois à C-SPAN que tudo começou com uma contabilidade com apenas 75 centavos de dólar de diferença, deixados por alguém que tinha usado uns nove segundos de computador sem pagar.",
+          "p2": "Ele registrou a caçada em \"Stalking the Wily Hacker\", na Communications of the ACM de maio de 1988, e contou a história inteira em The Cuckoo's Egg (Doubleday, 1989).",
+          "p3": "Os trechos de servidor web seguem o Combined Log Format do Apache HTTP Server, que a documentação do Apache descreve como exatamente o Common Log Format com dois campos a mais, o Referer e o User-agent. Achar uma figura numa multidão de figuras comuns é também o jogo de Where's Wally? (Onde está Wally?), de Martin Handford, cujo primeiro livro chegou ao Reino Unido em 1987."
+        }
       },
       "prefix-of-the-day": {
         "metaTitle": "Prefixo do Dia | /dev/fun",
@@ -28005,7 +28035,11 @@
         "distRowMissed": "Sem acerto: {n, plural, =0 {nenhuma rodada} one {# rodada} other {# rodadas}}{today, select, yes {, incluindo a de hoje} other {}}",
         "hardTooLateEarlier": "O modo difícil só liga antes da primeira tentativa deste desafio.",
         "hardOnNowEarlier": "Modo difícil ligado para este desafio.",
-        "todayBlockEarlier": "O bloco deste dia"
+        "todayBlockEarlier": "O bloco deste dia",
+        "origins": {
+          "p1": "O formato diário vem do Wordle. Josh Wardle limitou os jogadores a uma partida por dia e abriu o jogo para o resto do mundo em outubro de 2021; são seis tentativas, e o The New York Times comprou o jogo em janeiro de 2022.",
+          "p2": "A conta é a do Classless Inter-Domain Routing (CIDR), apresentado em setembro de 1993 na RFC 1519, \"an Address Assignment and Aggregation Strategy\", de V. Fuller, T. Li, J. Yu e K. Varadhan. A RFC 4632 a substituiu em agosto de 2006 e escreve a antiga rede \"Class C\" 192.168.99.0 como o prefixo 192.168.99.0/24, a notação de endereço e comprimento do desafio de cada dia."
+        }
       },
       "aggregate": {
         "metaTitle": "Agregue | /dev/fun",
@@ -28062,7 +28096,11 @@
         "livePairsOff": "Destaque das irmãs desligado.",
         "todayBestEarlier": "Melhor deste dia {score}",
         "replayNoteEarlier": "Este desafio já foi jogado; jogar de novo um desafio anterior não conta para nenhuma pontuação.",
-        "replayDailyEarlier": "Jogar este desafio de novo"
+        "replayDailyEarlier": "Jogar este desafio de novo",
+        "origins": {
+          "p1": "O movimento é o do 2048, que Gabriele Cirulli lançou em março de 2014: as peças deslizam juntas e, quando duas com o mesmo número se encostam, viram uma só. A página dele dá crédito ao 1024, da Veewo Studio, e diz que o 2048 é conceitualmente parecido com o Threes, de Asher Vollmer, o quebra-cabeça para iOS que ele fez com Greg Wohlwend e que estreou em 6 de fevereiro de 2014.",
+          "p2": "A regra de que só irmãos se fundem é agregação de rotas. A RFC 1519 mostrou isso em 1993, descrevendo um bloco de números de rede como uma única rota \"supernetted\", 192.24.0.0 com máscara 255.248.0.0, e a RFC 4632 descreve um provedor que anuncia uma única rota agregada para o bloco maior, sem precisar de uma rota explícita para cada site do cliente."
+        }
       },
       "five-clues": {
         "metaTitle": "Cinco Pistas | /dev/fun",
@@ -28107,7 +28145,12 @@
         "markSolved": "{label} ✓ resolvido",
         "markMissed": "{label} ✗ não resolvido",
         "statusPracticeWon": "Resolvido no treino",
-        "statusPracticeLost": "Jogado no treino, ainda sem acertar"
+        "statusPracticeLost": "Jogado no treino, ainda sem acertar",
+        "origins": {
+          "p1": "Descobrir uma ligação escondida com pistas reveladas uma a uma, ganhando mais pontos com menos pistas, é uma rodada do Only Connect, o quiz que estreou na BBC Four em 15 de setembro de 2008, apresentado por Victoria Coren Mitchell: 5, 3, 2 ou 1 ponto depois da primeira, da segunda, da terceira ou da última pista.",
+          "p2": "A televisão já brincava com categorias muito antes. The $10,000 Pyramid estreou em 1973, apresentado no início por Dick Clark; na rodada bônus, o Winner's Circle, um jogador descreve seis categorias para o parceiro em 60 segundos, listando coisas que pertencem a elas.",
+          "p3": "O The New York Times transformou o agrupamento em jogo diário com o Connections, lançado em beta em junho de 2023: 16 palavras para separar em quatro grupos."
+        }
       },
       "first-match": {
         "metaTitle": "First Match | /dev/fun",
@@ -28324,7 +28367,12 @@
           "rowInPlace": "Entrada {seq}: {line}, onde a dica a põe",
           "rowMove": "Entrada {seq}: {line}; a dica a põe na entrada {hint}"
         },
-        "dailyTitleEarlier": "A política deste dia"
+        "dailyTitleEarlier": "A política deste dia",
+        "origins": {
+          "p1": "Ler uma lista de regras de cima para baixo e parar no primeiro match é uma ideia antiga. Em março de 1989, Jeffrey C. Mogul, do Western Research Laboratory da Digital Equipment Corporation, descreveu o screend, que controla os datagramas que passam por um gateway Unix, no WRL Research Report 89/4, versão prévia do artigo dele para a Summer 1989 USENIX Technical Conference. Para cada pacote, as regras são examinadas na ordem em que aparecem e, se nenhuma servir, vale uma ação padrão, normalmente a rejeição.",
+          "p2": "As access control lists (ACLs) do Cisco IOS funcionam do mesmo jeito: a primeira entrada que combina com o pacote decide se ele é permitido ou negado, e toda lista termina com um deny implícito, que não aparece escrito. Por isso a ordem importa tanto quanto as entradas: um permit amplo no topo esconde tudo o que vem abaixo.",
+          "p3": "Como quebra-cabeça, o First Match é da família dos jogos de programação em que poucas instruções, na ordem certa, levam uma máquina a fazer a coisa certa, como o TIS-100, da Zachtronics, e o Human Resource Machine, da Tomorrow Corporation."
+        }
       },
       "spanning-tree": {
         "metaTitle": "Spanning Tree | /dev/fun",
@@ -28339,7 +28387,7 @@
           "r2": "Passo 2: em cada um dos outros switches, marque a root port, a porta com o menor root path cost (a soma dos custos dos links desde a raiz). No empate: o menor bridge ID de quem envia, depois o menor port ID de quem envia, depois o menor port ID de quem recebe.",
           "r3": "Passo 3: em cada link, marque a designated port: a ponta cujo switch tem o menor root path cost; no empate, o menor bridge ID; depois, o menor port ID.",
           "r4": "Passo 4: toda porta que sobrou bloqueia. Quando a última designated port é marcada, o diagrama marca essas portas sozinho, e os loops somem.",
-          "r5": "O port ID se lê prioridade.número (128.2 é prioridade 128, porta 2), e o menor ganha. Todos os MACs aqui começam com 0000.5e00.53, o bloco reservado para documentação, então os dois últimos dígitos decidem. O relógio começa no primeiro clique; cada erro soma 10 segundos à pontuação. Os desafios do dia mudam às 00:00 do Tempo Universal Coordenado (UTC)."
+          "r5": "O port ID se lê prioridade.número (128.2 é prioridade 128, porta 2), e o menor ganha. Todos os MACs aqui começam com 0000.5e00.53, o bloco reservado para documentação, então os dois últimos dígitos decidem. O relógio começa quando você aperta Começar; cada erro soma 10 segundos à pontuação. Os desafios do dia mudam às 00:00 do Tempo Universal Coordenado (UTC)."
         },
         "modeLabel": "Modo",
         "levelLabel": "Dificuldade",
@@ -28399,7 +28447,12 @@
           "summary": "{time}, {mistakes, plural, one {# erro} other {# erros}}"
         },
         "bestScore": "{n} (segundos mais penalidades)",
-        "giveUpConfirm": "Aperte de novo para mostrar a resposta"
+        "giveUpConfirm": "Aperte de novo para mostrar a resposta",
+        "origins": {
+          "p1": "Radia Perlman desenvolveu o algoritmo de spanning tree na Digital Equipment Corporation (DEC) e o publicou em setembro de 1985, em \"An Algorithm for Distributed Computation of a Spanning Tree in an Extended LAN\", na SIGCOMM '85: bridges que só conhecem os vizinhos calculam, juntas, um subconjunto da rede que alcança todas as local area networks (LANs) sem nenhum loop. O artigo traz o poema dela \"Algorhyme\", que começa com \"I think that I shall never see\".",
+          "p2": "O Institute of Electrical and Electronics Engineers (IEEE) aprovou o 802.1D-1990, o padrão de bridges que traz o protocolo, em 31 de maio de 1990. O Rapid Spanning Tree Protocol (RSTP) veio depois, como 802.1w, em 2001, e foi incorporado ao 802.1D-2004.",
+          "p3": "Em 2011, a RFC 6325, especificação base das Routing Bridges (RBridges), com Perlman como primeira autora, trouxe na introdução uma continuação, \"Algorhyme V2\", de Ray Perlner: \"I hope that we shall one day see / A graph more lovely than a tree.\""
+        }
       },
       "whack-a-bug": {
         "metaTitle": "Whack-a-Bug | /dev/fun",
@@ -28447,7 +28500,12 @@
         "sayPaused": "A rodada ficou pausada enquanto a aba estava escondida. Ela continua em {seconds, plural, one {# segundo} other {# segundos}}.",
         "sayResumed": "A rodada continua.",
         "startDailyEarlier": "Começar a rodada deste dia",
-        "dailyDoneEarlier": "A rodada deste dia já foi. Treine à vontade."
+        "dailyDoneEarlier": "A rodada deste dia já foi. Treine à vontade.",
+        "origins": {
+          "p1": "O whack-a-mole começou no Japão: a Kato Seisakusho construiu o Mogura Taiji, e a TOGO o lançou em 1975. O jogo chegou aos Estados Unidos em 1977, onde Aaron Fechter, da Creative Engineering, o batizou de Whac-A-Mole; a Bob's Space Racers, que sempre fabricou e vendeu o jogo original, atribui a invenção a dois operadores de parque itinerante, Gerald Denton e Donny Anderson.",
+          "p2": "Bugs são mais antigos que os computadores. Em março de 1878, Thomas Edison escreveu a William Orton, presidente da Western Union, que tinha achado um \"bug\" no aparelho. Em 1947, engenheiros do Mark II, em Harvard, colaram uma mariposa no livro de registro como o \"first actual case of bug being found\", o primeiro caso real de bug encontrado; a página está guardada no National Museum of American History, do Smithsonian, e o livro provavelmente não era de Grace Hopper.",
+          "p3": "E o que você não pode acertar: o Jargon File registra \"That's not a bug, that's a feature!\" (não é bug, é feature) como um bordão comum."
+        }
       },
       "exit-the-editor": {
         "metaTitle": "Saia do Editor | /dev/fun",
@@ -28460,7 +28518,7 @@
         "rule1": "Clique ou toque no terminal e digite. No celular, a fileira de teclas traz Esc, Ctrl, Tab, as setas, ~, : e Enter; o Ctrl fica pressionado até a próxima tecla.",
         "rule2": "A fase termina quando o programa sai de forma limpa. Sair do jeito errado (um programa suspenso, um backup morto, um commit abortado) reinicia a fase.",
         "rule3": "As dicas aparecem sozinhas depois de algumas tentativas erradas, de graça; o botão Dica mostra a próxima mais cedo, por {perHint} pontos.",
-        "rule4": "Cada fase vale {max} pontos, menos {perKey} por tecla além do caminho mais curto, {perHint} por dica pedida e {perSecond} por segundo depois dos primeiros {free} (o relógio começa na sua primeira tecla), mas nunca menos de {floor}. As fases são liberadas em ordem, e o progresso fica neste navegador.",
+        "rule4": "Cada fase vale {max} pontos, menos {perKey} por tecla além do caminho mais curto, {perHint} por dica pedida e {perSecond} por segundo depois dos primeiros {free} (o relógio começa quando você aperta Começar), mas nunca menos de {floor}. As fases são liberadas em ordem, e o progresso fica neste navegador.",
         "levelsLabel": "Fases",
         "levelDone": "{score} pts{medal, select, under { · Abaixo do par} par { · Par} other {}}",
         "levelOpen": "liberada",
@@ -28571,7 +28629,7 @@
         "readScreen": "Ler a tela",
         "screenSays": "Na tela: {text}",
         "rule5": "Cada fase tem um par: as teclas da saída documentada mais curta, que aparece no cartão e no título da fase. Saia com o número exato do par e ganhe a medalha ⛳ Par; ache um caminho mais curto que ainda saia de forma limpa e ganhe a 🐦 Abaixo do par. Vale o seu menor número de teclas, então uma saída mais lenta depois nunca tira uma medalha.",
-        "rule6": "A fuga do dia é uma armadilha por dia, a mesma para todo mundo no mesmo dia UTC (Tempo Universal Coordenado): um programa das fases, num cenário novo. A tentativa começa na sua primeira tecla e conta uma vez só. Recarregar a página retoma de onde você parou, com o relógio correndo; sair do jeito errado arma a armadilha de novo, e as suas teclas e o relógio seguem contando. Saia para manter a sua sequência.",
+        "rule6": "A fuga do dia é uma armadilha por dia, a mesma para todo mundo no mesmo dia UTC (Tempo Universal Coordenado): um programa das fases, num cenário novo. A tentativa começa quando você aperta Começar e conta uma vez só. Recarregar a página retoma de onde você parou, com o relógio correndo; sair do jeito errado arma a armadilha de novo, e as suas teclas e o relógio seguem contando. Saia para manter a sua sequência.",
         "modeLabel": "Modo",
         "modeLevels": "Fases",
         "modeDaily": "Fuga do dia #{n}",
@@ -28605,7 +28663,14 @@
         },
         "dailyFailNoteEarlier": "Esta tentativa continua: a armadilha é armada de novo, e as suas teclas e o relógio seguem contando.",
         "dailyDoneNoteEarlier": "A fuga deste dia está feita. As fases estão abertas.",
-        "sayResumedEarlier": "A fuga deste dia continua de onde você parou: {keys, plural, one {# tecla} other {# teclas}} até agora, e o relógio não parou."
+        "sayResumedEarlier": "A fuga deste dia continua de onde você parou: {keys, plural, one {# tecla} other {# teclas}} até agora, e o relógio não parou.",
+        "hiddenKey": "tecla oculta",
+        "hiddenKeys": "teclas ocultas",
+        "origins": {
+          "p1": "Em agosto de 2012, um usuário do Stack Overflow perguntou como sair do Vim. Cinco anos depois, o Stack Overflow contava mais de um milhão de desenvolvedores que tinham ficado presos no Vim e precisado daquela resposta: nos horários de pico dos dias úteis, cerca de 80 pessoas por hora.",
+          "p2": "Bill Joy criou o vi em Berkeley em 1976, como o modo visual de um editor de linha chamado ex, e ele entrou na primeira Berkeley Software Distribution (BSD), lançada em 1978. Bram Moolenaar lançou o Vim, a \"Vi IMitation\", em 2 de novembro de 1991, e foi o principal desenvolvedor dele por mais de 30 anos.",
+          "p3": "O formato é o do escape room, um gênero de video game que o Crimson Room (2004), de Toshimitsu Takagi, costuma receber o crédito por popularizar: você está trancado, e a saída está em algum lugar do que você vê."
+        }
       },
       "incident-commander": {
         "metaTitle": "Incident Commander | /dev/fun",
@@ -28799,7 +28864,13 @@
         "sayOnCall": "Novo incidente: {kind}. O engenheiro de plantão assumiu.",
         "titleCount": "({n}) {title}",
         "alertChip": "{n, plural, one {Responder: {kind}} other {Responder a # incidentes}}",
-        "pmClose": "Fechar"
+        "pmClose": "Fechar",
+        "startNote": "Aperte Começar para abrir o console. O serviço começa a rodar, e o relógio com ele, a partir daí.",
+        "origins": {
+          "p1": "O comando de incidentes nasceu na linha de fogo. O projeto FIRESCOPE surgiu da trágica temporada de incêndios florestais de 1970 no sul da Califórnia, quando mais de 700 casas foram destruídas e 16 pessoas morreram; o Congresso dos Estados Unidos instituiu o projeto em 1972, e o trabalho dele incluiu o Incident Command System (ICS).",
+          "p2": "O livro de Site Reliability Engineering (SRE) do Google diz que o sistema de gestão de incidentes da empresa se baseia no Incident Command System, chama os postmortems blameless de princípio da cultura SRE e descreve a Wheel of Misfortune, um exercício de simulação de desastre parecido com um RPG de mesa, como forma de preparar engenheiros para o on-call.",
+          "p3": "O motor que continua rendendo enquanto você está fora vem dos jogos idle. O Progress Quest, lançado em 2002, dispensa qualquer interação; o Cookie Clicker saiu na web em 2013; e o Universal Paperclips (2017), de Frank Lantz, tirou o tema de um experimento mental popularizado pelo filósofo Nick Bostrom."
+        }
       }
     },
     "gamesTitle": "Jogos",

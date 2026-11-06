@@ -21,6 +21,14 @@
 // they are on the first screen and reachable from the log itself; a tap on a
 // line selects that line (focusing the log by pointer no longer jumps the
 // cursor to line 1 first) (R2-09).
+//
+// START (PRIME 06/11/2026: "Make all timed games wait for the player to start
+// them, so they have time to read about the game first"). The clock used to
+// run from the moment the case appeared. Now a case not yet started shows the
+// kit's StartCover where the log goes: no log, no question and no answers are
+// on the page, and the clock stays at 0:00 until Start. The daily case is saved
+// at Start, so a reload resumes it running; each practice case waits for its
+// own Start.
 // ============================================================================
 
 "use client";
@@ -31,6 +39,8 @@ import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent a
 import { useTranslations } from "next-intl";
 // The frame: stats, rules, result.
 import GameShell, { type ShellResult } from "./GameShell";
+// The cover that holds the log's place until Start.
+import { StartCover } from "./LogicPuzzleKit";
 // Today's UTC day.
 import { useEarlierDay, useToday } from "@/lib/fun/hooks";
 // The puzzle number of a day.
@@ -156,6 +166,8 @@ export default function LogDetective({ locale }: { locale: string }) {
   const boxRef = useRef<HTMLDivElement | null>(null);
   // Whether web lines show a shortened user agent (on by default on narrow screens, where full ones wrap a lot).
   const [shortUa, setShortUa] = useState(false);
+  // The cases started, by clock account ("daily:<day>", "practice:<seed>"): only these show their log and run their clock.
+  const [startedKeys, setStartedKeys] = useState<ReadonlySet<string>>(() => new Set());
 
   // On mount: a narrow screen starts with short user agents.
   useEffect(() => {
@@ -194,6 +206,8 @@ export default function LogDetective({ locale }: { locale: string }) {
   const results = kase ? answers.map((a, i) => (a === null ? null : isRight(kase, QUESTIONS[i], a))) : [null, null, null];
   // Finished.
   const done = step === 3;
+  // Started: Start was pressed for this case, or it was saved before (a daily case), or it is finished.
+  const started = done || startedKeys.has(caseKey);
 
   // Restore the daily case's state when the day is known.
   useEffect(() => {
@@ -211,6 +225,8 @@ export default function LogDetective({ locale }: { locale: string }) {
       setElapsed(banks.current[`daily:${today}`]);
       // Finished before.
       setRestoredDone(saved.answers.every((a) => a !== null));
+      // A saved case had started (Start saves it), so it opens uncovered and its clock runs on.
+      setStartedKeys((k) => new Set(k).add(`daily:${today}`));
     } else {
       // A fresh case.
       setAnswers([null, null, null]);
@@ -235,8 +251,8 @@ export default function LogDetective({ locale }: { locale: string }) {
 
   // The clock runs while a case is open, unfinished and on a visible page, on that case's own account.
   useEffect(() => {
-    // Not running: no case, a finished one, or a hidden page; the account's time is shown as it stands.
-    if (!kase || done || !visible || !today) {
+    // Not running: no case, one not started or finished, or a hidden page; the account's time is shown as it stands.
+    if (!kase || !started || done || !visible || !today) {
       // Shown.
       setElapsed(banks.current[caseKey] ?? 0);
       // No ticking.
@@ -273,7 +289,7 @@ export default function LogDetective({ locale }: { locale: string }) {
     };
     // timeOf reads refs only; the account key carries the mode and the day.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [kase, done, visible, caseKey]);
+  }, [kase, started, done, visible, caseKey]);
 
   // Give an answer to the open question.
   const give = useCallback(
@@ -364,6 +380,20 @@ export default function LogDetective({ locale }: { locale: string }) {
       else if (el.offsetTop + el.offsetHeight > box.scrollTop + box.clientHeight) box.scrollTop = el.offsetTop + el.offsetHeight - box.clientHeight;
     }
   }, [active]);
+
+  // Start: the case and its clock together; the daily case saved at once; the keyboard on the log.
+  const onStart = () => {
+    // Only a case on screen that has not started.
+    if (!kase || started || !today) return;
+    // Started.
+    setStartedKeys((k) => new Set(k).add(caseKey));
+    // The daily case saved at 0:00 with its answers, so a reload restores it running rather than covered again.
+    if (mode === "daily") saveDailyState(GAME_ID, today, { answers, elapsed: timeOf(caseKey) } satisfies DailySave);
+    // Said.
+    setSay(tc("startSay"));
+    // The log takes focus once it is drawn.
+    window.setTimeout(() => boxRef.current?.focus(), 0);
+  };
 
   // Start a new practice case.
   const newPractice = () => {
@@ -462,8 +492,11 @@ export default function LogDetective({ locale }: { locale: string }) {
             </span>
           </div>
 
+          {/* Before Start: the log's place, empty (no log, question or answer is on the page yet). */}
+          {!started && <StartCover label={tc("start")} note={tc("startNote")} onStart={onStart} className="fg-ld-start" />}
+
           {/* The open question; its controls are in the bar under the log (review R2-09). */}
-          {!done && (
+          {started && !done && (
             <div className="fg-ld-question">
               <p className="fg-ld-ask">{t(`q.${QUESTIONS[step]}`)}</p>
               {step > 0 && <p className="fg-muted fg-small fg-ld-pick">{t("pickLine")}</p>}
@@ -489,6 +522,7 @@ export default function LogDetective({ locale }: { locale: string }) {
           )}
 
           {/* The log. */}
+          {started && (
           <div className="fg-ld-frame">
             <p className="fg-ld-caption">
               <span className="fg-mono">{kase.server}</span> · {t(kase.format === "web" ? "formatWeb" : "formatSsh")}
@@ -521,10 +555,11 @@ export default function LogDetective({ locale }: { locale: string }) {
             </div>
             <p className="fg-muted fg-small">{t("listHint")}</p>
           </div>
+          )}
 
           {/* The open question's controls, in a bar that stays at the bottom of the screen while the board is in view, so a
               phone reaches them from the log itself (review R2-09). */}
-          {!done && (
+          {started && !done && (
             <div className="fg-ld-bar" role="group" aria-label={t(`short.${QUESTIONS[step]}`)}>
               {step === 0 ? (
                 <div className="fg-ld-choices">

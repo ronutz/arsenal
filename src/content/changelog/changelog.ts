@@ -56,6 +56,86 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // PRIME 06/11/2026 13:01: "For the games and puzzles, cite inspirations, roots and origins, folklore if any, other
+    // famous implementations, etc."
+    date: "2026-11-06",
+    time: "14:17",
+    kind: "feature",
+    title: "Every game says where it comes from",
+    titlePt: "Cada jogo conta de onde vem",
+    body:
+      "Each of the thirteen games now ends with \"Where it comes from\": the puzzles, shows, papers and people it descends from, from the eight queens of 1848 and Radia Perlman's Algorhyme to Wordle, Only Connect and LinkedIn's Queens, Tango and Zip. Every claim lists its source with the day it was read, and related glossary entries are linked. A link beside \"How to play\" jumps there. In English and Portuguese.",
+    links: [
+      { label: "Spanning Tree", href: "/dev/fun/spanning-tree" },
+      { label: "Whack-a-Bug", href: "/dev/fun/whack-a-bug" },
+      { label: "Exit the Editor", href: "/dev/fun/exit-the-editor" },
+    ],
+  },
+  {
+    // PRIME 06/11/2026 13:12: "Together with the end-of-round flash, subtly shake the playing area twice. For mobiles,
+    // a little haptic feedback as well."
+    date: "2026-11-06",
+    time: "14:17",
+    kind: "feature",
+    title: "The end-of-round flash shakes and buzzes",
+    titlePt: "O flash do fim da rodada agora treme e vibra",
+    body:
+      "With the green or red flash, the playing area now gives two small shakes, and a phone whose browser lets a page vibrate (Android's browsers do, iOS Safari does not) buzzes briefly: two short pulses for a win, two longer ones for a loss. With reduced motion the shake is left out and the ring shows on its own.",
+    links: [{ label: "Games", href: "/dev/fun" }],
+  },
+  {
+    // PRIME 06/11/2026 13:16: "In vim when pressing ctrl-c: yes, mask the actual keys with three token characters".
+    date: "2026-11-06",
+    time: "14:17",
+    kind: "feature",
+    title: "Exit the Editor masks vim's Ctrl-C hint",
+    titlePt: "Exit the Editor esconde a dica do Ctrl-C no vim",
+    body:
+      "When you press Ctrl-C in vim, the hint vim prints now shows its command as three dots, and \"Read the screen\" says \"hidden keys\" there. In English and Portuguese.",
+    links: [{ label: "Exit the Editor", href: "/dev/fun/exit-the-editor" }],
+  },
+  {
+    // PRIME 06/11/2026 12:25: "In exit the editor, the text shown on the screen sometimes reveals the escape keys.
+    // Please obfuscate the solution, when it is displayed on the terminal's welcome message."
+    date: "2026-11-06",
+    time: "12:34",
+    kind: "feature",
+    title: "Exit the Editor no longer prints the way out",
+    titlePt: "Exit the Editor não mostra mais a saída na tela",
+    body:
+      "Four programs print their own way out on their first screen: nano's help bar, man's prompt, telnet's banner and Emacs's scratch note. Those keys are now shown as a dot, and \"Read the screen\" says \"hidden key\" in their place. What a program says after a wrong key is left as it is. In English and Portuguese.",
+    links: [{ label: "Exit the Editor", href: "/dev/fun/exit-the-editor" }],
+  },
+  {
+    // PRIME 06/11/2026 12:23: "Flash the board / playing area indicating when the game or puzzle has been solved -
+    // green when successfully, red when not."
+    date: "2026-11-06",
+    time: "12:34",
+    kind: "feature",
+    title: "The playing area flashes when a round ends",
+    titlePt: "A área de jogo pisca quando uma rodada termina",
+    body:
+      "Every game flashes its playing area when a round ends: green when it was solved or won, red when it was not. A wrong way out in Exit the Editor flashes red too. A finished round shown again later does not flash, and with reduced motion the ring shows without pulsing.",
+    links: [{ label: "Games", href: "/dev/fun" }],
+  },
+  {
+    // PRIME 06/11/2026 11:20: Access Points "reveals the board before the timer starts counting"; "See if other games
+    // also need this fix." 12:23: "Make all timed games wait for the player to start them, so they have time to read
+    // about the game first."
+    date: "2026-11-06",
+    time: "12:34",
+    kind: "feature",
+    title: "Timed games wait for Start",
+    titlePt: "Os jogos cronometrados esperam você começar",
+    body:
+      "Access Points, Bit Balance, Patch Path, Spanning Tree, Exit the Editor, Log Detective and a new game of Incident Commander now open with a Start button where the board will be, so the rules can be read first. Nothing of the puzzle is on the page until Start, and the board and the clock start together. A round already started picks up where it was, clock running, after a reload. Whack-a-Bug and the Phish or Legit speed run already began with their own button. In English and Portuguese.",
+    links: [
+      { label: "Access Points", href: "/dev/fun/access-points" },
+      { label: "Log Detective", href: "/dev/fun/log-detective" },
+      { label: "Exit the Editor", href: "/dev/fun/exit-the-editor" },
+    ],
+  },
+  {
     // PRIME 05/11/2026 20:23: "Now let's focus on the build here, including the social sharing cards and related images".
     date: "2026-11-05",
     time: "21:05",

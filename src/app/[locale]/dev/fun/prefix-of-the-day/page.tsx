@@ -24,6 +24,8 @@ import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 // Only the namespaces the board needs travel to the browser.
 import MessageSlice from "@/components/MessageSlice";
+// The game's roots, at the foot of the page.
+import GameOrigins from "@/components/dev/fun/GameOrigins";
 // The crumb back to the shelf.
 import { Link } from "@/i18n/navigation";
 // The board.
@@ -85,6 +87,8 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
                 <PrefixOfTheDay locale={locale} />
               </MorePuzzlesProvider>
             </MessageSlice>
+            {/* Where the game comes from: its roots, the sources, more on this site (PRIME 06/11/2026). */}
+            <GameOrigins gameId="prefix-of-the-day" locale={locale} />
           </div>
         </section>
       </main>

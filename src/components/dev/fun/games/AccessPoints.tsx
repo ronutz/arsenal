@@ -23,6 +23,8 @@
 //     aloud; a wrong cell is pointed out first. It costs what Check costs.
 // Zones carry a letter as well as a colour, and thick walls between them, so
 // colour is never the only cue.
+// Until Start (PRIME 06/11/2026) the floor is not drawn at all: the kit's
+// StartCover holds its place, and Start shows it and starts the clock together.
 // ============================================================================
 
 "use client";
@@ -34,7 +36,7 @@ import { useTranslations } from "next-intl";
 // The frame every game sits in.
 import GameShell, { type ShellResult } from "./GameShell";
 // The shared session, its bars, the hint holder and the live line.
-import { LiveLine, PuzzleHud, gradeSavedRound, legacyPracticeMarks, useBoardHint, useBoardKeys, usePuzzleSession, type KitLabels } from "./LogicPuzzleKit";
+import { LiveLine, PuzzleHud, StartCover, gradeSavedRound, legacyPracticeMarks, useBoardHint, useBoardKeys, usePuzzleSession, type KitLabels } from "./LogicPuzzleKit";
 // The engine.
 import { AP_ID, checkErrors, conflicts, generate, isSolved, nextHint, ruledOut, type ApHint, type ApMark, type ApPuzzle, type ApUnits } from "@/lib/fun/games/access-points/engine";
 // The puzzle number.
@@ -468,6 +470,16 @@ export default function AccessPoints(props: { locale: string }) {
     setSay(`${text} ${tc("hintCost", { s: PENALTY_S })}`);
   };
 
+  // Start: the floor and the clock together, then the keyboard on the floor's first cell.
+  const onStart = () => {
+    // Started (the kit saves the round at once).
+    s.start();
+    // Said.
+    setSay(tc("startSay"));
+    // The roving tab stop takes focus once the floor is drawn.
+    window.setTimeout(() => cellRefs.current[focus]?.focus(), 0);
+  };
+
   // The kit's labels.
   const labels: KitLabels = {
     // The bar.
@@ -536,7 +548,11 @@ export default function AccessPoints(props: { locale: string }) {
         <>
           {/* The day's size and difficulty. */}
           <p className="fg-chip fg-ap-info">{t("sizeLine", { n: p.n, level: DIFFICULTY[p.weekday] })}</p>
-          {/* The floor plan. */}
+          {/* Before Start: the floor's place, empty (none of the floor is on the page yet). */}
+          {!s.started ? (
+            <StartCover label={tc("start")} note={tc("startNote")} onStart={onStart} className="fg-grid" style={{ ["--fg-cols" as string]: p.n }} />
+          ) : (
+          /* The floor plan. */
           <div
             className={`fg-grid fg-ap-board${s.done ? " fg-ap-solved" : ""}`}
             style={{ ["--fg-cols" as string]: p.n }}
@@ -610,6 +626,7 @@ export default function AccessPoints(props: { locale: string }) {
               );
             })}
           </div>
+          )}
           {/* Clock, checks, hints and buttons, the hint on show, and the auto-mark option. */}
           <PuzzleHud
             session={s}
@@ -624,8 +641,6 @@ export default function AccessPoints(props: { locale: string }) {
               </label>
             }
           />
-          {/* Before the first move: the clock waits. */}
-          {!s.started && <p className="fg-small fg-muted fg-ap-hint">{t("clockHint")}</p>}
         </>
       )}
       <LiveLine message={say} />

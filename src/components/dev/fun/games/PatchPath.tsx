@@ -32,6 +32,8 @@
 // ways ruled out, a cell's last way out), and says why in one sentence, on
 // screen and aloud; a cable off the route is pointed out first, where it
 // leaves. It costs what Check costs.
+// Until Start (PRIME 06/11/2026) the panel is not drawn at all: the kit's
+// StartCover holds its place, and Start shows it and starts the clock together.
 // ============================================================================
 
 "use client";
@@ -43,7 +45,7 @@ import { useTranslations } from "next-intl";
 // The frame every game sits in.
 import GameShell, { type ShellResult } from "./GameShell";
 // The shared session, its bars, the hint holder and the live line.
-import { LiveLine, PuzzleHud, gradeSavedRound, legacyPracticeMarks, useBoardHint, useBoardKeys, usePuzzleSession, type KitLabels } from "./LogicPuzzleKit";
+import { LiveLine, PuzzleHud, StartCover, gradeSavedRound, legacyPracticeMarks, useBoardHint, useBoardKeys, usePuzzleSession, type KitLabels } from "./LogicPuzzleKit";
 // The engine.
 import { PP_ID, canStep, checkErrors, generate, isSolved, nextHint, type PpHint, type PpPuzzle } from "@/lib/fun/games/patch-path/engine";
 // The puzzle number.
@@ -148,6 +150,8 @@ export default function PatchPath(props: { locale: string }) {
   const refusedTimer = useRef<number | null>(null);
   // The panel's description's id.
   const descId = useId();
+  // The panel, to give it the keyboard after Start.
+  const boardRef = useRef<HTMLDivElement>(null);
   // Whether a drag is in progress.
   const dragging = useRef(false);
   // A touch that landed off the pen: a tap if it ends where it began, a scroll otherwise (acted on at pointer up).
@@ -592,6 +596,17 @@ export default function PatchPath(props: { locale: string }) {
   };
 
   // The kit's labels.
+  // Start: the panel and the clock together, then the keyboard on the panel.
+  const onStart = () => {
+    // Started (the kit saves the round at once).
+    s.start();
+    // Said.
+    setSay(tc("startSay"));
+    // The panel takes focus once it is drawn.
+    window.setTimeout(() => boardRef.current?.focus(), 0);
+  };
+
+  // The kit's labels.
   const labels: KitLabels = {
     // The bar.
     time: tc("time"),
@@ -697,8 +712,14 @@ export default function PatchPath(props: { locale: string }) {
         </div>
       ) : (
         <>
+          {/* Before Start: the panel's place, empty (no port, duct or description is on the page yet). */}
+          {!s.started ? (
+            <StartCover label={tc("start")} note={tc("startNote")} onStart={onStart} className="fg-grid" style={{ ["--fg-cols" as string]: p.n }} />
+          ) : (
+          <>
           {/* The panel: cells underneath, the cable and ducts drawn over them. */}
           <div
+            ref={boardRef}
             className={`fg-grid fg-pp-board${s.done ? " fg-pp-solved" : ""}`}
             style={{ ["--fg-cols" as string]: p.n }}
             role="application"
@@ -756,6 +777,8 @@ export default function PatchPath(props: { locale: string }) {
           <p className={`fg-small fg-pp-progress${refused ? " fg-pp-refused" : " fg-muted"}`}>
             {refused ?? (nextPort > p.ports.length ? t("progressDone", { k: path.length, total: p.n * p.n }) : t("progress", { k: path.length, total: p.n * p.n, next: nextPort }))}
           </p>
+          </>
+          )}
           {/* Clock, checks, hints, the day's size and difficulty, the buttons and the hint on show. */}
           <PuzzleHud
             session={s}
@@ -765,8 +788,6 @@ export default function PatchPath(props: { locale: string }) {
             hintNote={hint?.text ?? null}
             info={<span className="fg-chip fg-pp-info">{t("sizeLine", { n: p.n, ports: p.ports.length, ducts: p.wallsH.filter(Boolean).length + p.wallsV.filter(Boolean).length, level: DIFFICULTY[p.weekday] })}</span>}
           />
-          {/* Before the first move. */}
-          {!s.started && <p className="fg-small fg-muted fg-pp-hint">{t("clockHint")}</p>}
         </>
       )}
       <LiveLine message={say} />

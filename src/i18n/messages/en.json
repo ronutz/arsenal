@@ -27605,7 +27605,15 @@
         "earlierPrev": "Previous (#{n})",
         "earlierNext": "Next (#{n})",
         "earlierToday": "Today's puzzle",
-        "earlierRefused": "{reason, select, future {A puzzle from a future day cannot be played: here is today's.} today {That day is today: here is today's puzzle, which counts as usual.} beforeLaunch {Puzzle #1 was on {first}, so there is none before it: here is today's.} other {That address does not name a day: here is today's puzzle.}}"
+        "earlierRefused": "{reason, select, future {A puzzle from a future day cannot be played: here is today's.} today {That day is today: here is today's puzzle, which counts as usual.} beforeLaunch {Puzzle #1 was on {first}, so there is none before it: here is today's.} other {That address does not name a day: here is today's puzzle.}}",
+        "start": "Start",
+        "startNote": "Press Start to see the puzzle. The clock starts at the same moment.",
+        "startSay": "The puzzle is on the screen and the clock is running.",
+        "originsLink": "Where it comes from",
+        "originsTitle": "Where it comes from",
+        "originsOnSite": "More on this site",
+        "originsSources": "Sources",
+        "originsRead": "accessed {date}"
       },
       "access-points": {
         "metaTitle": "Access Points | /dev/fun",
@@ -27616,7 +27624,6 @@
         "cardName": "Access Points",
         "cardBlurb": "Cover every zone of the floor with one access point each, none touching. A new floor every day.",
         "checksUsed": "{n, plural, one {# check (+{s} s)} other {# checks (+{s} s)}}",
-        "clockHint": "The clock starts with your first move.",
         "autoMark": "Mark the cells each access point rules out",
         "sizeLine": "{n}×{n} floor · {level, select, gentle {gentle} medium {medium} tricky {tricky} other {hard}}",
         "boardLabel": "Office floor plan, {n} by {n}",
@@ -27653,6 +27660,11 @@
           "group": "{ownerKind, select, row {Rows {owners}} column {Columns {owners}} other {Zones {owners}}} only have room for their access points in {keyKind, select, row {rows {keys}} column {columns {keys}} other {zones {keys}}}, so the rest of those {keyKind, select, row {rows} column {columns} other {zones}} can be marked ×.",
           "lookahead": "An access point at row {r}, column {c} would leave {kind, select, row {row {k}} column {column {k}} other {zone {zone}}} with nowhere to put its own, so that cell can be marked ×.",
           "answer": "No rule settles the next step from here, so this one comes straight from the answer: the cell at row {r}, column {c} holds an access point."
+        },
+        "origins": {
+          "p1": "One piece in every row and every column, none threatening another: the oldest puzzle of this kind is the eight queens problem, which the German chess enthusiast Max Bezzel posed in 1848 under the pen name \"Schachfreund\". Franz Nauck put the number of solutions at 92; set rotations and reflections aside and 12 distinct ones remain.",
+          "p2": "Its closest relative is Star Battle, a Dutch puzzle style that Hans Eendebak created for the 2003 World Puzzle Championship in Arnhem: every row, column and region holds the same number of stars, and stars may not touch, not even diagonally. GM Puzzles notes that the idea likely arose from an earlier puzzle by Tim Peeters called Cattle. Krazydad's Star Battles have run in the print edition of The New York Times as Two Not Touch since 20 April 2020.",
+          "p3": "LinkedIn launched Queens on 1 May 2024 with two other daily games: one queen in each row, column and colour region, and no two touching. GM Puzzles calls it a simplified version of Star Battle, and Thomas Snyder provided its first puzzles. Access Points plays by the same rules, with access points in place of queens."
         }
       },
       "bit-balance": {
@@ -27664,7 +27676,6 @@
         "cardName": "Bit Balance",
         "cardBlurb": "Fill a 6×6 grid with bits: three of each per line, no runs of three, every sign obeyed. New grid every day.",
         "checksUsed": "{n, plural, one {# check (+{s} s)} other {# checks (+{s} s)}}",
-        "clockHint": "The clock starts with your first move.",
         "sizeLine": "6×6 grid · {level, select, gentle {gentle} medium {medium} tricky {tricky} other {hard}}",
         "boardLabel": "Bit grid, 6 by 6",
         "cellLabel": "Row {r}, column {c}",
@@ -27703,6 +27714,11 @@
           "count": "{lk, select, row {Row {li}} other {Column {li}}} already has three {b}s, so {n, plural, one {its last empty cell is} other {its # empty cells are}} {w}.",
           "trial": "If the cell at row {r}, column {c} were {b}, the rules would soon break in {lk, select, row {row {li}} other {column {li}}}, so it must be {w}.",
           "answer": "No rule settles a cell from here, so this one comes straight from the answer: the cell at row {r}, column {c} is {w}."
+        },
+        "origins": {
+          "p1": "Balancing two symbols across a grid is a well-travelled puzzle family. PeterFrank, founded by Peter De Schepper and Frank Coussement, published its first Binairo in the summer of 2009 in Belgium's largest newspaper. Conceptis credits the Italian puzzle author Adolfo Zanellati with inventing the same concept, Tic-Tac-Logic, notes that PeterFrank invented a similar puzzle at the same time, and gives Takuzu as its name in the French publications Le Figaro and Ludojeux.",
+          "p2": "Classic Binairo asks for as many zeros as ones in every row and column, no more than two of the same number next to each other, and no two rows or columns with exactly the same content. Martin Kool's 0h h1, a little logic game by Q42, plays the same rules with coloured tiles.",
+          "p3": "LinkedIn introduced Tango on 7 October 2024: three suns and three moons in each row and column, an equals sign between cells that must hold the same symbol and an X between cells that must differ. GM Puzzles, which built it together with LinkedIn, says Binary and Binairo-type games were on the list of ideas it evolved from. Bit Balance follows Tango's rules, signs included, with 0s and 1s for suns and moons."
         }
       },
       "patch-path": {
@@ -27714,7 +27730,6 @@
         "cardName": "Patch Path",
         "cardBlurb": "Run one cable through every cell of the panel, ports in order, around the cable ducts. New panel every day.",
         "checksUsed": "{n, plural, one {# check (+{s} s)} other {# checks (+{s} s)}}",
-        "clockHint": "The clock starts with your first move.",
         "sizeLine": "{n}×{n} · {ports} ports{ducts, plural, =0 {} one { · # duct} other { · # ducts}} · {level, select, gentle {gentle} medium {medium} tricky {tricky} other {hard}}",
         "boardRole": "patch panel",
         "boardLabel": "Patch panel, {n} by {n}. Next port: {next} of {ports}. Use the arrow keys to run the cable.",
@@ -27770,6 +27785,11 @@
           },
           "ruledOut": "{reasons}, so the cable goes {dir}, to row {r}, column {c}.",
           "answer": "No rule settles this step quickly, so it comes straight from the answer: the cable goes {dir}, to row {r}, column {c}."
+        },
+        "origins": {
+          "p1": "LinkedIn introduced Zip on 18 March 2025. GM Puzzles, which helps design and edit it, gives the rules: draw a path through all cells, moving horizontally or vertically between adjacent squares, never crossing itself or a wall, starting at 1, passing the other numbers in ascending order and ending at the highest. Patch Path keeps those rules, with ports for the numbers and one long cable for the path.",
+          "p2": "Nikoli's Numberlink is a cousin: it connects pairs of the same numbers with continuous lines instead of threading one numbered path.",
+          "p3": "Underneath is graph theory. A path that visits every cell exactly once is a Hamiltonian path, and the earliest example is the knight's tour in chess; the first known tour is believed to be the work of al-Adli ar-Rumi, a philosopher who lived in Baghdad in the ninth century."
         }
       },
       "phish-or-legit": {
@@ -27825,7 +27845,12 @@
         "speedHeadline": "{correct} right in 60 seconds",
         "speedDetail": "{wrong} wrong, {points} points.",
         "shareSpeed": "Phish or Legit speed run: {correct} right in 60 s",
-        "bestFormat": "{n} right in 60 s"
+        "bestFormat": "{n} right in 60 s",
+        "origins": {
+          "p1": "Merriam-Webster dates the first known use of phishing to 1996: a respelling of fishing, with the ph probably taken from phreaking, the fraud of dodging the bill for telephone calls. Koceilah Rekouche, who wrote AOHell, a mid-1990s hacking tool aimed at America Online (AOL), says in his own account that the word was coined there.",
+          "p2": "The look-alike letter has a paper of its own. In \"The Homograph Attack\" (Communications of the ACM, February 2002), Evgeniy Gabrilovich and Alex Gontmakher registered a homographed microsoft.com spelt with the Russian letters с and о. Internationalised domain names are written in the Domain Name System (DNS) as Punycode (RFC 3492, March 2003), each label marked by the ACE prefix xn-- (RFC 3490).",
+          "p3": "Jigsaw's Phishing Quiz is a well-known exercise of the same kind."
+        }
       },
       "log-detective": {
         "metaTitle": "Log Detective | /dev/fun",
@@ -27918,7 +27943,12 @@
           }
         },
         "shortUa": "Short user agents",
-        "alreadyDoneEarlier": "You already closed this day's case."
+        "alreadyDoneEarlier": "You already closed this day's case.",
+        "origins": {
+          "p1": "In August 1986 a persistent intruder attacked the computers of Lawrence Berkeley Laboratory (LBL), and Clifford Stoll set out to trace him. Stoll later told C-SPAN that it began with accounts just seventy-five cents off, traced to someone who had used about nine seconds of computer time without paying.",
+          "p2": "He wrote the hunt up as \"Stalking the Wily Hacker\" in Communications of the ACM in May 1988 and told the whole story in The Cuckoo's Egg (Doubleday, 1989).",
+          "p3": "The web server excerpts follow the Apache HTTP Server's Combined Log Format, which Apache's documentation describes as exactly the Common Log Format with two more fields, the Referer and the User-agent. Spotting one figure in a crowd of ordinary ones is also the game of Martin Handford's Where's Wally?, whose first book reached the UK in 1987."
+        }
       },
       "prefix-of-the-day": {
         "metaTitle": "Prefix of the Day | /dev/fun",
@@ -28005,7 +28035,11 @@
         "distRowMissed": "Not solved: {n, plural, =0 {no rounds} one {# round} other {# rounds}}{today, select, yes {, including today's} other {}}",
         "hardTooLateEarlier": "Hard mode can only be turned on before this puzzle's first try.",
         "hardOnNowEarlier": "Hard mode on for this puzzle.",
-        "todayBlockEarlier": "This day's block"
+        "todayBlockEarlier": "This day's block",
+        "origins": {
+          "p1": "The daily format comes from Wordle. Josh Wardle limited players to one game per day and released it to the rest of the world in October 2021; players have six tries, and The New York Times bought the game in January 2022.",
+          "p2": "The arithmetic is Classless Inter-Domain Routing (CIDR), set out in September 1993 in RFC 1519, \"an Address Assignment and Aggregation Strategy\" by V. Fuller, T. Li, J. Yu and K. Varadhan. RFC 4632 replaced it in August 2006 and writes the legacy \"Class C\" network 192.168.99.0 as the prefix 192.168.99.0/24, the address-and-length notation of each day's puzzle."
+        }
       },
       "aggregate": {
         "metaTitle": "Aggregate | /dev/fun",
@@ -28062,7 +28096,11 @@
         "livePairsOff": "Sibling outlines off.",
         "todayBestEarlier": "This day's best {score}",
         "replayNoteEarlier": "This challenge was already played; replays of an earlier puzzle count toward no score.",
-        "replayDailyEarlier": "Replay this challenge"
+        "replayDailyEarlier": "Replay this challenge",
+        "origins": {
+          "p1": "The movement is the one from 2048, which Gabriele Cirulli released in March 2014: the tiles slide together, and when two tiles with the same number touch, they merge into one. His page credits 1024 by Veewo Studio and calls 2048 conceptually similar to Threes by Asher Vollmer, the iOS puzzle he made with Greg Wohlwend, which made its debut on 6 February 2014.",
+          "p2": "The rule that only siblings merge is route aggregation. RFC 1519 showed it in 1993, describing a block of network numbers as one \"supernetted\" route, 192.24.0.0 with mask 255.248.0.0, and RFC 4632 describes a provider that advertises a single aggregate route for the larger block, with no explicit route needed for each end site."
+        }
       },
       "five-clues": {
         "metaTitle": "Five Clues | /dev/fun",
@@ -28107,7 +28145,12 @@
         "markSolved": "{label} ✓ solved",
         "markMissed": "{label} ✗ not solved",
         "statusPracticeWon": "Solved in practice",
-        "statusPracticeLost": "Played in practice, not solved yet"
+        "statusPracticeLost": "Played in practice, not solved yet",
+        "origins": {
+          "p1": "Naming a hidden link from clues revealed one at a time, with more points for fewer clues, is a round of Only Connect, the quiz that began on BBC Four on 15 September 2008 with Victoria Coren Mitchell as host: 5, 3, 2 or 1 points after the first, second, third or final clue.",
+          "p2": "Television played with categories long before that. The $10,000 Pyramid began in 1973, hosted initially by Dick Clark; in its bonus round, the Winner's Circle, one player describes six categories to a partner within 60 seconds by listing things that belong to them.",
+          "p3": "The New York Times turned grouping into a daily game with Connections, which launched in beta in June 2023: 16 words to sort into four groups."
+        }
       },
       "first-match": {
         "metaTitle": "First Match | /dev/fun",
@@ -28324,7 +28367,12 @@
           "rowInPlace": "Entry {seq}: {line}, where the hint puts it",
           "rowMove": "Entry {seq}: {line}; the hint puts it at entry {hint}"
         },
-        "dailyTitleEarlier": "This day's policy"
+        "dailyTitleEarlier": "This day's policy",
+        "origins": {
+          "p1": "Reading a rule list from the top and stopping at the first match is an old idea. In March 1989 Jeffrey C. Mogul of Digital Equipment Corporation's Western Research Laboratory described screend, which controls the datagrams that flow through a Unix-based gateway, in WRL Research Report 89/4, a preprint of his paper for the Summer 1989 USENIX Technical Conference. For each packet its rules are searched in the order they appear, and if none matches, a default action applies, normally rejection.",
+          "p2": "Cisco IOS access control lists (ACLs) read the same way: the first entry a packet matches decides whether it is permitted or denied, and every list ends with an unwritten, implicit deny. So the order matters as much as the entries: a broad permit near the top hides everything below it.",
+          "p3": "As a puzzle, First Match belongs with the programming games in which a few instructions, put in the right order, make a machine do the right thing, such as Zachtronics' TIS-100 and Tomorrow Corporation's Human Resource Machine."
+        }
       },
       "spanning-tree": {
         "metaTitle": "Spanning Tree | /dev/fun",
@@ -28339,7 +28387,7 @@
           "r2": "Step 2: on every other switch, mark its root port, the port with the lowest root path cost (the link costs added up from the root). On a tie: the lowest sender bridge ID, then the lowest sender port ID, then the lowest receiving port ID.",
           "r3": "Step 3: on every link, mark the designated port: the end whose switch has the lower root path cost; on a tie, the lower bridge ID; then the lower port ID.",
           "r4": "Step 4: every port left over blocks. Once the last designated port is marked, the board marks them for you, and the loops are gone.",
-          "r5": "A port ID reads priority.number (128.2 is priority 128, port 2), and lower wins. Every MAC address here starts 0000.5e00.53, the block set aside for documentation, so the last two digits decide. The clock starts at your first click; each mistake adds 10 seconds to the score. The daily puzzles change at 00:00 UTC (Coordinated Universal Time)."
+          "r5": "A port ID reads priority.number (128.2 is priority 128, port 2), and lower wins. Every MAC address here starts 0000.5e00.53, the block set aside for documentation, so the last two digits decide. The clock starts when you press Start; each mistake adds 10 seconds to the score. The daily puzzles change at 00:00 UTC (Coordinated Universal Time)."
         },
         "modeLabel": "Mode",
         "levelLabel": "Difficulty",
@@ -28399,7 +28447,12 @@
           "summary": "{time}, {mistakes, plural, one {# mistake} other {# mistakes}}"
         },
         "bestScore": "{n} (seconds plus penalties)",
-        "giveUpConfirm": "Press again to show the answer"
+        "giveUpConfirm": "Press again to show the answer",
+        "origins": {
+          "p1": "Radia Perlman worked out the spanning tree algorithm at Digital Equipment Corporation (DEC) and published it in September 1985, in \"An Algorithm for Distributed Computation of a Spanning Tree in an Extended LAN\" at SIGCOMM '85: bridges that know only their neighbours compute, between them, a subset of the network that reaches every local area network (LAN) yet has no loops. The paper includes her poem \"Algorhyme\", which opens \"I think that I shall never see\".",
+          "p2": "The Institute of Electrical and Electronics Engineers (IEEE) approved 802.1D-1990, the bridge standard that carries the protocol, on 31 May 1990. The Rapid Spanning Tree Protocol (RSTP) followed as 802.1w in 2001 and was incorporated into 802.1D-2004.",
+          "p3": "In 2011 RFC 6325, the base specification of Routing Bridges (RBridges), with Perlman as first author, carried a sequel in its introduction, \"Algorhyme V2\" by Ray Perlner: \"I hope that we shall one day see / A graph more lovely than a tree.\""
+        }
       },
       "whack-a-bug": {
         "metaTitle": "Whack-a-Bug | /dev/fun",
@@ -28447,7 +28500,12 @@
         "sayPaused": "The round paused while the tab was hidden. It goes on in {seconds, plural, one {# second} other {# seconds}}.",
         "sayResumed": "Round resumed.",
         "startDailyEarlier": "Start this day's run",
-        "dailyDoneEarlier": "This day's run is in. Practise as much as you like."
+        "dailyDoneEarlier": "This day's run is in. Practise as much as you like.",
+        "origins": {
+          "p1": "Whack-a-mole began in Japan: Kato Seisakusho built Mogura Taiji, and TOGO released it in 1975. It reached the United States in 1977, where Aaron Fechter of Creative Engineering named it Whac-A-Mole; Bob's Space Racers, which has always made and sold the original game, credits its invention to two carnival operators, Gerald Denton and Donny Anderson.",
+          "p2": "Bugs are older than computers. In March 1878 Thomas Edison wrote to William Orton, president of Western Union, that he had found a \"bug\" in his apparatus. In 1947 engineers on Harvard's Mark II taped a moth into the log book as the \"first actual case of bug being found\"; the page is kept at the Smithsonian's National Museum of American History, and the log book was probably not Grace Hopper's.",
+          "p3": "And the thing you must not hit: the Jargon File lists \"That's not a bug, that's a feature!\" as a common catchphrase."
+        }
       },
       "exit-the-editor": {
         "metaTitle": "Exit the Editor | /dev/fun",
@@ -28460,7 +28518,7 @@
         "rule1": "Click or tap the terminal, then type. On a phone, the key row gives Esc, Ctrl, Tab, the arrows, ~, : and Enter; Ctrl stays down for the next key you press.",
         "rule2": "A level is cleared when the program exits cleanly. Leaving the wrong way (a suspended program, a killed backup, an aborted commit) restarts the level.",
         "rule3": "Hints appear on their own after a few wrong tries, free; the Hint button shows the next one sooner, for {perHint} points.",
-        "rule4": "A level scores {max} points, less {perKey} for each keystroke beyond the shortest way out, {perHint} for each hint you ask for and {perSecond} for each second after the first {free} (the clock starts at your first key), but never less than {floor}. Levels unlock in order, and your progress stays in this browser.",
+        "rule4": "A level scores {max} points, less {perKey} for each keystroke beyond the shortest way out, {perHint} for each hint you ask for and {perSecond} for each second after the first {free} (the clock starts when you press Start), but never less than {floor}. Levels unlock in order, and your progress stays in this browser.",
         "levelsLabel": "Levels",
         "levelDone": "{score} pts{medal, select, under { · Under par} par { · Par} other {}}",
         "levelOpen": "open",
@@ -28571,7 +28629,7 @@
         "readScreen": "Read the screen",
         "screenSays": "The screen reads: {text}",
         "rule5": "Each level has a par: the keystrokes of its shortest documented way out, shown on its card and in its header. Leave in exactly par for the ⛳ Par medal; find a shorter way that still leaves cleanly and it is the 🐦 Under par medal. Your fewest keystrokes count, so a slower clear later never takes a medal away.",
-        "rule6": "The daily escape is one trap a day, the same for everyone on a UTC (Coordinated Universal Time) day: a program from the levels, in a new scene. Your attempt starts at your first key and counts once. A reload picks it up where you left it, with the clock still running; leaving the wrong way sets the trap again, and your keystrokes and the clock carry on. Get out to keep your streak.",
+        "rule6": "The daily escape is one trap a day, the same for everyone on a UTC (Coordinated Universal Time) day: a program from the levels, in a new scene. Your attempt starts when you press Start and counts once. A reload picks it up where you left it, with the clock still running; leaving the wrong way sets the trap again, and your keystrokes and the clock carry on. Get out to keep your streak.",
         "modeLabel": "Mode",
         "modeLevels": "Levels",
         "modeDaily": "Daily escape #{n}",
@@ -28605,7 +28663,14 @@
         },
         "dailyFailNoteEarlier": "This attempt carries on: the trap is set again, and your keystrokes and the clock keep counting.",
         "dailyDoneNoteEarlier": "This day's escape is done. The levels are open.",
-        "sayResumedEarlier": "This day's escape picks up where you left it: {keys, plural, one {# keystroke} other {# keystrokes}} so far, and the clock kept running."
+        "sayResumedEarlier": "This day's escape picks up where you left it: {keys, plural, one {# keystroke} other {# keystrokes}} so far, and the clock kept running.",
+        "hiddenKey": "hidden key",
+        "hiddenKeys": "hidden keys",
+        "origins": {
+          "p1": "In August 2012 a Stack Overflow user asked how to exit Vim. Five years later Stack Overflow counted over a million developers who had got stuck in Vim and needed that answer: during peak traffic hours on weekdays, about 80 people per hour.",
+          "p2": "Bill Joy created vi at Berkeley in 1976, as the visual mode of a line editor called ex, and it was included in the first Berkeley Software Distribution (BSD), released in 1978. Bram Moolenaar released Vim, the \"Vi IMitation\", on 2 November 1991 and was its lead developer for more than 30 years.",
+          "p3": "The format is the escape room, a video game genre that Toshimitsu Takagi's Crimson Room (2004) is often credited with popularising: you are locked in, and the way out is somewhere in what you can see."
+        }
       },
       "incident-commander": {
         "metaTitle": "Incident Commander | /dev/fun",
@@ -28799,7 +28864,13 @@
         "sayOnCall": "New incident: {kind}. The on-call engineer has taken it.",
         "titleCount": "({n}) {title}",
         "alertChip": "{n, plural, one {Respond to: {kind}} other {Respond to # incidents}}",
-        "pmClose": "Close"
+        "pmClose": "Close",
+        "startNote": "Press Start to open the console. The service runs, and the clock with it, from that moment.",
+        "origins": {
+          "p1": "Incident command started on the fire line. The FIRESCOPE project grew out of the tragic 1970 wildland fire season in Southern California, when over 700 homes were destroyed and 16 lives lost; the United States Congress chartered it in 1972, and its work included the Incident Command System (ICS).",
+          "p2": "Google's Site Reliability Engineering (SRE) book says the company's incident management system is based on the Incident Command System, calls blameless postmortems a tenet of SRE culture, and describes the Wheel of Misfortune, a disaster role-play that resembles a tabletop role-playing game, as a way to prepare engineers for on-call.",
+          "p3": "The engine that keeps earning while you are away comes from idle games. Progress Quest, first released in 2002, needs no interaction at all; Cookie Clicker came out on the web in 2013; and Universal Paperclips (2017), by Frank Lantz, took its theme from a thought experiment popularised by the philosopher Nick Bostrom."
+        }
       }
     },
     "gamesTitle": "Games",

@@ -87,6 +87,28 @@
 .fg-chip-strong { color: var(--accent-primary); border-color: var(--accent-primary); }
 /* The rules box. */
 .fg-rules { border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-elevated); padding: 0.9rem 1.1rem; color: var(--text-secondary); line-height: 1.55; }
+/* The game's roots (GameOrigins, PRIME 06/11/2026): a section under the game, the prose at a reading width, the
+   sources smaller. No scroll margin of its own: the page's scroll padding already clears the sticky header when the
+   shell's link jumps here (a margin on top of it left a 90 px gap on a desktop screen). */
+.fg-origins { margin: 2.5rem auto 0; padding-top: 1.5rem; border-top: 1px solid var(--border-subtle); max-width: 46rem; }
+/* Its heading. */
+.fg-origins-title { margin: 0 0 0.75rem; font-size: 1.25rem; text-wrap: balance; }
+/* Each paragraph. */
+.fg-origins-text { margin: 0 0 0.8rem; color: var(--text-secondary); line-height: 1.65; }
+/* "On this site" and "Sources". */
+.fg-origins-sub { margin: 1.25rem 0 0.4rem; font-size: 0.95rem; }
+/* The glossary entries: a wrapping row of links. */
+.fg-origins-entries { display: flex; flex-wrap: wrap; gap: 0.35rem 1rem; margin: 0; padding: 0; list-style: none; }
+/* The sources: a numbered list, small; a long address breaks rather than widening the page. */
+.fg-origins-sources { margin: 0; padding-left: 1.25rem; font-size: 0.85rem; line-height: 1.5; color: var(--text-secondary); }
+/* One source. */
+.fg-origins-sources li { margin-bottom: 0.3rem; overflow-wrap: anywhere; }
+/* Its links look like links: the accent colour, underlined. */
+.fg-origins a { color: var(--accent-primary); text-decoration: underline; text-underline-offset: 3px; }
+/* A visible ring on keyboard focus. */
+.fg-origins a:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; border-radius: 2px; }
+/* The glossary links, a little taller, so a finger finds them in the wrapping row. */
+.fg-origins-entries a { display: inline-block; padding: 0.3rem 0; }
 /* Paragraphs and lists inside it, tight. */
 .fg-rules p, .fg-rules ul, .fg-rules ol { margin: 0 0 0.5rem; }
 /* Lists keep their bullets and numbers inside the box (the site's reset zeroes list padding). */
@@ -95,6 +117,34 @@
 .fg-rules > :last-child { margin-bottom: 0; }
 /* The board's own wrapper: centred, never wider than the page. */
 .fg-board-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; max-width: 100%; }
+/* The end of a round (PRIME 06/11/2026): the playing area flashes twice, green for a win and red otherwise, a ring
+   round it and a tint over it that fade; GameShell sets the class for FLASH_MS (1.4 s), the animation's length. The
+   ring is a shadow, so nothing in the area moves. */
+.fg-board-wrap.fg-flash-won { --fg-flash: var(--color-success); }
+/* Red for a round that ended unsolved. */
+.fg-board-wrap.fg-flash-lost { --fg-flash: var(--color-danger); }
+/* Both: the shape the ring follows, the pulse, and two subtle shakes with it (PRIME 06/11/2026 13:12). */
+.fg-flash-won, .fg-flash-lost { border-radius: var(--radius-md); animation: fg-flash 1.4s ease-out, fg-shake 0.44s ease-in-out; }
+/* Two shakes, three pixels each way, inside the page's side gutter (so the page never scrolls sideways). */
+@keyframes fg-shake {
+  0%, 100% { transform: translateX(0); }
+  12.5% { transform: translateX(-3px); }
+  37.5% { transform: translateX(3px); }
+  62.5% { transform: translateX(-3px); }
+  87.5% { transform: translateX(3px); }
+}
+/* Two pulses: on at once, dimmer, on again, then gone. */
+@keyframes fg-flash {
+  0% { box-shadow: 0 0 0 0 transparent; background-color: transparent; }
+  12% { box-shadow: 0 0 0 4px var(--fg-flash); background-color: color-mix(in srgb, var(--fg-flash) 16%, transparent); }
+  40% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--fg-flash) 45%, transparent); background-color: color-mix(in srgb, var(--fg-flash) 5%, transparent); }
+  58% { box-shadow: 0 0 0 4px var(--fg-flash); background-color: color-mix(in srgb, var(--fg-flash) 16%, transparent); }
+  100% { box-shadow: 0 0 0 4px transparent; background-color: transparent; }
+}
+/* Under reduced motion, no pulsing and no shaking: the ring simply shows for the same time, then goes with the class. */
+@media (prefers-reduced-motion: reduce) {
+  .fg-flash-won, .fg-flash-lost { animation: none; box-shadow: 0 0 0 4px var(--fg-flash); }
+}
 /* The result panel. */
 .fg-result { border: 1px solid var(--border-strong); border-radius: var(--radius-lg); padding: 1rem 1.2rem; text-align: center; background: var(--surface-elevated); }
 /* A win has a green edge. */
@@ -208,6 +258,9 @@
 .fg-buttons { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
 /* A text-only button. */
 .fg-link-button { background: none; border: none; padding: 0.35rem 0.25rem; min-height: 44px; color: var(--accent-primary); font: inherit; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+/* The same look on a link ("Where it comes from", which jumps down the page): a flex box, so its 44 px touch height
+   applies as it does to the buttons beside it. */
+a.fg-link-button { display: inline-flex; align-items: center; }
 /* Muted text and buttons. */
 .fg-muted { color: var(--text-secondary); }
 /* Small text. */
@@ -237,6 +290,24 @@
 .fg-cell-error { border-color: var(--color-danger); color: var(--color-danger); }
 /* A cell that is part of the solved state. */
 .fg-cell-done { border-color: var(--color-success); }
+
+/* ---- Start (PRIME 06/11/2026) ---------------------------------------------- */
+
+/* The board's place before Start (LogicPuzzleKit's StartCover): the board's own footprint, dashed and empty, with the
+   button and its line in the middle. A grid game adds fg-grid and its --fg-cols, so the square is exactly the board's
+   and nothing moves when the board appears; declared after the grid rules, so its display wins over fg-grid's. The
+   whole of it starts the round, so the target is the board's size on a phone. */
+.fg-start { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem; padding: 1rem; box-sizing: border-box; text-align: center; border: 2px dashed var(--border-strong); border-radius: var(--radius-md); background: var(--surface-elevated); cursor: pointer; }
+/* Hovering anywhere on it shows the whole of it can be pressed. */
+.fg-start:hover { border-color: var(--accent-primary); }
+/* The button: larger than the bar's, the one thing to press. */
+.fg-start-button { min-width: 9rem; min-height: 48px; font-size: 1.05rem; }
+/* The line under it, kept to a readable width. */
+.fg-start-note { margin: 0; max-width: 22rem; text-wrap: balance; }
+/* Log Detective's cover: the log's width, and about the height of its box. */
+.fg-ld-start { width: 100%; min-height: min(60vh, 22rem); }
+/* Incident Commander's cover: the console's width, a screen's worth of height on a phone. */
+.fg-ic-start { width: 100%; min-height: min(60vh, 24rem); }
 
 /* ---- Motion --------------------------------------------------------------- */
 
@@ -321,8 +392,6 @@
 .fg-ap-option { display: flex; align-items: center; gap: 0.5rem; min-height: 44px; color: var(--text-secondary); cursor: pointer; text-align: left; }
 /* Its checkbox, a little larger than the default. */
 .fg-ap-check { width: 1.2rem; height: 1.2rem; accent-color: var(--accent-primary); flex: none; }
-/* The note that the clock waits. */
-.fg-ap-hint { margin: 0; }
 
 /* ---- Bit Balance (fg-bb-) ------------------------------------------------- */
 
@@ -360,8 +429,6 @@
 .fg-bb-sign-bad { border-color: var(--color-danger); color: var(--color-danger); border-width: 2px; }
 /* Solved: the grid's frames turn green (the shared fg-cell-done) and the signs follow. */
 .fg-bb-solved .fg-bb-sign { border-color: var(--color-success); }
-/* The note that the clock waits. */
-.fg-bb-hint { margin: 0; }
 
 /* ---- Logic puzzle kit (fg-lpk-): shared by Access Points, Bit Balance and Patch Path ---- */
 
@@ -446,8 +513,6 @@
 .fg-pp-refused { color: var(--text-primary); font-weight: 600; }
 /* The "!" before it, so the change is not shown by colour alone. */
 .fg-pp-refused::before { content: "! "; color: var(--color-danger); font-weight: 800; }
-/* The note that the clock waits. */
-.fg-pp-hint { margin: 0; }
 
 /* ---- Log Detective (prefix fg-ld-) ---------------------------------------- */
 /* A log in its own scrolling box, three questions, a closing report.          */
@@ -1111,6 +1176,8 @@
 }
 /* The network: fills the column up to its own size a little enlarged, never wider than the screen; centred. */
 .fg-stp-board { display: block; width: 100%; max-width: var(--fg-stp-w); margin: 0 auto; height: auto; border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-elevated); touch-action: manipulation; user-select: none; }
+/* The network's place before Start: the drawing's width and proportions (set inline from its layout), centred like it. */
+.fg-stp-start { width: 100%; max-width: var(--fg-stp-w); margin: 0 auto; border-radius: var(--radius-lg); }
 /* A link. */
 .fg-stp-link { stroke: var(--text-secondary); stroke-width: 2.5; }
 /* A link with a blocked end, once marked: dashed, in the danger colour. */
@@ -1224,6 +1291,11 @@
 .fg-exit-term { position: relative; max-width: 100%; padding: 0.5rem; border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--surface-base); cursor: text; font-size: clamp(9px, calc((100vw - 64px) / 27.6), 17px); }
 /* The terminal with the keyboard: a visible ring. */
 .fg-exit-term-focus { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+/* The terminal before Start: the screen stays as an empty frame for its size, and the cover lies over it, in the
+   page's own type size rather than the terminal's (which shrinks on a phone), its edge the terminal's own. It sits
+   above the transparent input that otherwise covers the terminal (fg-exit-input, later in the page), so the tap reaches
+   Start (found by the browser check of 06/11/2026: the input took the click). */
+.fg-exit-start { position: absolute; inset: 0; z-index: 1; border: 0; border-radius: inherit; background: var(--surface-base); font-size: 1rem; }
 /* The screen: 46 columns by 16 rows of monospaced text. */
 .fg-exit-screen { margin: 0; width: 46ch; max-width: 100%; min-height: calc(16 * 1.35em); font-family: var(--font-mono); font-size: 1em; line-height: 1.35; color: var(--text-primary); white-space: pre; overflow: hidden; }
 /* One row. */

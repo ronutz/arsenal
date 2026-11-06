@@ -21,6 +21,8 @@
 // The two bits differ by digit as well as by colour. The day's difficulty sits
 // beside the clock under the grid, so the grid starts higher on a phone; the
 // share card says the checks and hints in words (review R1-10, R1-13, 03/11/2026).
+// Until Start (PRIME 06/11/2026) the grid is not drawn at all: the kit's
+// StartCover holds its place, and Start shows it and starts the clock together.
 // ============================================================================
 
 "use client";
@@ -32,7 +34,7 @@ import { useTranslations } from "next-intl";
 // The frame every game sits in.
 import GameShell, { type ShellResult } from "./GameShell";
 // The shared session, its bars, the hint holder and the live line.
-import { LiveLine, PuzzleHud, gradeSavedRound, legacyPracticeMarks, useBoardHint, useBoardKeys, usePuzzleSession, type KitLabels } from "./LogicPuzzleKit";
+import { LiveLine, PuzzleHud, StartCover, gradeSavedRound, legacyPracticeMarks, useBoardHint, useBoardKeys, usePuzzleSession, type KitLabels } from "./LogicPuzzleKit";
 // The engine.
 import { BB_ID, BB_N, checkErrors, generate, isSolved, nextHint, ruleErrors, type BbHint, type BbPuzzle } from "@/lib/fun/games/bit-balance/engine";
 // The puzzle number.
@@ -242,6 +244,17 @@ export default function BitBalance(props: { locale: string }) {
   };
 
   // The kit's labels.
+  // Start: the grid and the clock together, then the keyboard on the grid's first cell.
+  const onStart = () => {
+    // Started (the kit saves the round at once).
+    s.start();
+    // Said.
+    setSay(tc("startSay"));
+    // The roving tab stop takes focus once the grid is drawn.
+    window.setTimeout(() => cellRefs.current[focus]?.focus(), 0);
+  };
+
+  // The kit's labels.
   const labels: KitLabels = {
     // The bar.
     time: tc("time"),
@@ -309,7 +322,11 @@ export default function BitBalance(props: { locale: string }) {
         </div>
       ) : (
         <>
-          {/* The grid. */}
+          {/* Before Start: the grid's place, empty (none of the grid is on the page yet). */}
+          {!s.started ? (
+            <StartCover label={tc("start")} note={tc("startNote")} onStart={onStart} className="fg-grid" style={{ ["--fg-cols" as string]: BB_N }} />
+          ) : (
+          /* The grid. */
           <div className={`fg-grid fg-bb-board${s.done ? " fg-bb-solved" : ""}`} style={{ ["--fg-cols" as string]: BB_N }} role="group" aria-label={t("boardLabel")} {...boardKeys}>
             {board.map((v, i) => {
               // Row and column.
@@ -375,6 +392,7 @@ export default function BitBalance(props: { locale: string }) {
               );
             })}
           </div>
+          )}
           {/* Clock, checks, hints, the day's difficulty, the buttons and the hint on show. */}
           <PuzzleHud
             session={s}
@@ -384,8 +402,6 @@ export default function BitBalance(props: { locale: string }) {
             hintNote={hint?.text ?? null}
             info={<span className="fg-chip fg-bb-info">{t("sizeLine", { level: DIFFICULTY[p.weekday] })}</span>}
           />
-          {/* Before the first move. */}
-          {!s.started && <p className="fg-small fg-muted fg-bb-hint">{t("clockHint")}</p>}
         </>
       )}
       <LiveLine message={say} />

@@ -23,6 +23,10 @@
 // board as in the other logic puzzles (review R1-10).
 // Keyboard: the targets of the current step take focus in reading order; the
 // arrow keys move between them; Enter or Space marks.
+// Until Start (PRIME 06/11/2026) the network, the steps' counts and the bridge
+// IDs are not on the page at all: the kit's StartCover holds the drawing's
+// place, and Start shows the network and starts the clock together. A daily
+// round is saved at Start, so a reload resumes it running.
 // ============================================================================
 
 "use client";
@@ -34,7 +38,7 @@ import { useTranslations } from "next-intl";
 // The frame every game sits in.
 import GameShell, { type ShellResult } from "./GameShell";
 // The visible-time clock the logic puzzles share.
-import { useRoundClock } from "./LogicPuzzleKit";
+import { StartCover, useRoundClock } from "./LogicPuzzleKit";
 // Today's day.
 import { useToday } from "@/lib/fun/hooks";
 // The puzzle number, and practice seeds.
@@ -135,6 +139,10 @@ export default function SpanningTree({ locale }: { locale: string }) {
   const [version, setVersion] = useState(0);
   // "Show the answer" pressed once and waiting for the second press.
   const [armed, setArmed] = useState(false);
+  // Whether the round has started: the network is drawn only then (a restored daily round has).
+  const [started, setStarted] = useState(false);
+  // The game's frame, to find the drawing on screen and give it the keyboard after Start.
+  const frameRef = useRef<HTMLDivElement>(null);
 
   // The latest round, for the clock's saves, which come from event listeners between renders.
   const latest = useRef({ mode, level, today, marks, mistakes, over });
@@ -222,6 +230,8 @@ export default function SpanningTree({ locale }: { locale: string }) {
         setMistakes(saved.mistakes ?? [0, 0, 0]);
         // Finished or not.
         setOver(saved.done ? { won: saved.won, ms } : null);
+        // It had started.
+        setStarted(true);
         // A finished round shows its time; an unfinished one is running again at once (a reload wins no time).
         if (saved.done) clock.reset(ms);
         // Running from where it was saved.
@@ -236,6 +246,8 @@ export default function SpanningTree({ locale }: { locale: string }) {
     setMistakes([0, 0, 0]);
     // Playing.
     setOver(null);
+    // Covered until Start.
+    setStarted(false);
     // The clock's functions are stable; listing the clock itself would restart this on every tick.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, level, today, pz]);
@@ -407,6 +419,42 @@ export default function SpanningTree({ locale }: { locale: string }) {
     setVersion((v) => v + 1);
     // Announced.
     setLive(t("live.answer"));
+  };
+
+  /** Start: the network and the clock together; the daily round saved at once; the keyboard on the first target. */
+  const onStart = () => {
+    // Only a puzzle on screen that has not started.
+    if (!pz || !ans || over || started) return;
+    // The network is drawn.
+    setStarted(true);
+    // The clock starts now.
+    clock.start();
+    // A daily round saved at 0:00, so a reload restores it running rather than covered again.
+    save({ marks, mistakes, ms: clock.now(), done: false, won: false });
+    // Said.
+    setLive(tc("startSay"));
+    // Once drawn, the first target of the drawing on screen (the other orientation is hidden) takes focus.
+    window.setTimeout(() => {
+      // The drawing that is shown.
+      const shown = Array.from(frameRef.current?.querySelectorAll<HTMLElement>(".fg-stp-narrow, .fg-stp-wide") ?? []).find((el) => el.offsetParent !== null);
+      // Its first target.
+      shown?.querySelector<SVGGElement>("[data-target='1']")?.focus();
+    }, 0);
+  };
+
+  /**
+   * The network's place before Start, in one orientation: the drawing's width and proportions, nothing of it drawn.
+   *
+   * @param portrait two columns going down (a phone) or two rows going across (a wide screen)
+   * @returns the cover
+   */
+  const cover = (portrait: boolean) => {
+    // Nothing before the puzzle exists.
+    if (!pz) return null;
+    // The drawing's size only (its geometry is computed, none of it is rendered).
+    const lay = stpLayout(pz, portrait);
+    // The cover.
+    return <StartCover label={tc("start")} note={tc("startNote")} onStart={onStart} className="fg-stp-start" style={{ "--fg-stp-w": `${lay.w * 1.1}px`, aspectRatio: `${lay.w} / ${lay.h}` } as CSSProperties} />;
   };
 
   /** A new practice round. */
@@ -617,7 +665,7 @@ export default function SpanningTree({ locale }: { locale: string }) {
   // The game.
   return (
     <GameShell gameId={STP_ID} kind={mode === "daily" ? "daily" : "score"} today={today} rules={rules} result={result} onPlayAgain={newRound} formatBest={(b) => t("bestScore", { n: b })} version={version} gradeSaved={gradeSaved}>
-      <div className="fg-stp">
+      <div className="fg-stp" ref={frameRef}>
         {/* Daily or practice, easy or hard: two compact groups, on one line on a phone. */}
         <div className="fg-stp-toolbar">
           <div className="fg-buttons fg-stp-group" role="group" aria-label={t("modeLabel")}>
@@ -643,7 +691,9 @@ export default function SpanningTree({ locale }: { locale: string }) {
 
         {pz && ans && (
           <>
-            {/* The steps: on a phone the step in progress is written out and the others shrink to their number. */}
+            {/* The steps: on a phone the step in progress is written out and the others shrink to their number (after
+                Start: their counts tell the network's size). */}
+            {started && (
             <ol className="fg-stp-steps">
               {[1, 2, 3, 4].map((s) => (
                 <li key={s} className={`fg-stp-step${step === s ? " fg-stp-step-now" : ""}${step > s ? " fg-stp-step-done" : ""}`} aria-current={step === s ? "step" : undefined}>
@@ -659,10 +709,12 @@ export default function SpanningTree({ locale }: { locale: string }) {
                 </li>
               ))}
             </ol>
+            )}
 
-            {/* The network: portrait on a phone, landscape on a wide screen (the hidden one is out of the tab order). */}
-            <div className="fg-stp-narrow">{board(true)}</div>
-            <div className="fg-stp-wide">{board(false)}</div>
+            {/* The network: portrait on a phone, landscape on a wide screen (the hidden one is out of the tab order);
+                before Start, its place, empty. */}
+            <div className="fg-stp-narrow">{started ? board(true) : cover(true)}</div>
+            <div className="fg-stp-wide">{started ? board(false) : cover(false)}</div>
 
             {/* The clock and the mistakes, under the board as in the other logic puzzles (the board starts higher on a phone). */}
             <div className="fg-hud">
@@ -673,7 +725,8 @@ export default function SpanningTree({ locale }: { locale: string }) {
             {/* The reason for the last wrong move. */}
             {why && <p className="fg-stp-why" role="note">{t(`why.${why.id}`, why.args)}</p>}
 
-            {/* The bridge IDs in full, the reference the diagram abbreviates. */}
+            {/* The bridge IDs in full, the reference the diagram abbreviates (after Start: they are the puzzle). */}
+            {started && (
             <details className="fg-stp-ids">
               <summary>{t("idsTitle")}</summary>
               <p className="fg-small fg-muted">{t("idsNote")}</p>
@@ -683,15 +736,16 @@ export default function SpanningTree({ locale }: { locale: string }) {
                 ))}
               </ul>
             </details>
+            )}
 
             {/* The controls: "Show the answer" in two presses; a new practice round while playing (the result offers "Play again" after). */}
             <div className="fg-buttons">
-              {!over && (
+              {started && !over && (
                 <button type="button" className={`fg-button${armed ? " fg-stp-armed" : ""}`} onClick={giveUp}>
                   {armed ? t("giveUpConfirm") : tc("giveUp")}
                 </button>
               )}
-              {mode === "practice" && !over && (
+              {started && mode === "practice" && !over && (
                 <button type="button" className="fg-button" onClick={newRound}>
                   {tc("newRound")}
                 </button>

@@ -34,12 +34,37 @@
 //
 // The daily escape (same date): one trap a day from the engine's dailyEscape,
 // the frame in its "daily" kind (puzzle number, streak), the levels in "score".
-// The attempt starts at the first key (or hint) and counts once: its keys are
+// The attempt starts at Start and counts once: its keys are
 // saved as they are typed, with its start on the wall clock, so a reload
 // replays them and resumes it, the clock still running, rather than starting
 // afresh. Leaving the wrong way restarts the trap within the same attempt, the
 // keystrokes and the clock carrying on; the escape records the streak, and its
 // share card gives the puzzle number, keystrokes against par, and time.
+//
+// START (PRIME 06/11/2026: a board shown before its clock runs gives free
+// thinking time). Until Start, a level's or the daily's screen, its brief and
+// the daily's program are not on the page: the kit's StartCover lies over an
+// empty terminal of the same size, and keys reach nothing. Start shows them
+// and starts the clock together (a level's stopwatch, or the daily attempt's
+// wall clock, saved at once), and gives the terminal the keyboard within the
+// same tap, so a phone opens its keyboard. Choosing a level or the next one
+// shows the cover; Restart and Play again replay a level already seen, so
+// they start at once.
+//
+// THE WAY OUT IS NOT PRINTED (PRIME 06/11/2026: "the text shown on the screen
+// sometimes reveals the escape keys. Please obfuscate the solution, when it is
+// displayed on the terminal's welcome message"). Four programs print their own
+// way out on their first screen: nano's help bar (^X Exit), man's pager
+// prompt (q to quit), telnet's banner (Escape character is '^]') and Emacs's
+// scratch note (C-x C-f, the prefix of C-x C-c). The drawn screen and its
+// read-out show those keys as a dot (VEILS below); the engine keeps the real
+// text (its self-test checks man's prompt). Of the messages a program prints
+// after a wrong key, one is veiled too (PRIME 06/11/2026 13:16: "In vim when
+// pressing ctrl-c: yes, mask the actual keys with three token characters"):
+// vim's "Type :qa! and press <Enter>" shows ":qa!" or ":qa" as three dots;
+// the others (vim's E37 hint, Python's "Use exit()") are left as they are.
+// A wrong way out flashes the playing area red (GameShell's signal); a clear,
+// green, through the result.
 // ============================================================================
 
 "use client";
@@ -50,6 +75,8 @@ import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent a
 import { useTranslations } from "next-intl";
 // The frame around every game.
 import GameShell, { type ShellResult } from "./GameShell";
+// The cover that holds the terminal's place until Start.
+import { StartCover } from "./LogicPuzzleKit";
 // Today's UTC day and a stopwatch.
 import { useEarlierDay, useStopwatch, useToday } from "@/lib/fun/hooks";
 // The earlier puzzle in play (?day=), if any.
@@ -130,6 +157,37 @@ function gradeSaved(_day: string, state: unknown): 0 | 1 | null {
 
 /** Wrong tries that reveal the first, second and third hint. */
 const HINT_AT = [3, 6, 9];
+
+/** The mark a veiled key is drawn as: a bullet, as a password field masks a character (inside the Latin subset of the
+ *  terminal's font, so the column stays one cell wide). */
+const VEIL = "•";
+
+/** What the programs print that would give the way out away, each with the text veiled: on the first screens one
+ *  character for one, so the columns and the cursor stay where they were; vim's answer to Ctrl-C, on its message line
+ *  where the cursor never sits, as three dots whatever the command's length (PRIME 06/11/2026). */
+const VEILS: ReadonlyArray<readonly [RegExp, string]> = [
+  // nano's help bar: the exit chord.
+  [/\^X Exit/g, `^${VEIL} Exit`],
+  // man's pager prompt: the quit key.
+  [/ or q to quit\)/g, ` or ${VEIL} to quit)`],
+  // telnet's banner: the escape character.
+  [/Escape character is '\^\]'/g, `Escape character is '^${VEIL}'`],
+  // Emacs's scratch note: C-x, the first half of C-x C-c.
+  [/C-x C-f/g, `C-${VEIL} C-f`],
+  // vim's answer to Ctrl-C in Normal mode: the command, :qa! or :qa, as three dots.
+  [/Type {2}:qa!? {2}/g, `Type  ${VEIL.repeat(3)}  `],
+];
+
+/**
+ * One screen row with the way out veiled.
+ *
+ * @param line the row as the program draws it
+ * @returns the row as the page shows it
+ */
+function veil(line: string): string {
+  // Each veil in turn.
+  return VEILS.reduce((row, [re, to]) => row.replace(re, to), line);
+}
 /** The on-screen key row: label and key, in two groups of five (a phone shows them as two rows; R3-16). */
 const KEY_ROW: { label: string; key: Key | "Ctrl" }[] = [
   { label: "Esc", key: "Esc" },
@@ -245,6 +303,10 @@ export default function ExitTheEditor({ locale }: { locale: string }) {
   const [nowMs, setNowMs] = useState(0);
   // The stopwatch (the levels).
   const clock = useStopwatch();
+  // Whether the level on screen has started (Start pressed, or a Restart); the daily's own start is dailyStart.
+  const [levelGo, setLevelGo] = useState(false);
+  // The red flash GameShell shows for a wrong way out: a new id each time.
+  const [signal, setSignal] = useState<{ id: number; won: boolean } | null>(null);
   // The hidden input that takes the keyboard.
   const inputRef = useRef<HTMLInputElement>(null);
   // The latest state, for handlers that run between renders.
@@ -270,6 +332,9 @@ export default function ExitTheEditor({ locale }: { locale: string }) {
   const dailyDayRef = useRef<string | null>(null);
   // Wrong ways out in the daily attempt, for handlers that run between renders (a paste sends several keys at once).
   const failsRef = useRef(0);
+  // Whether the screen is covered (before Start), for the key handlers; kept in step on every render below and set
+  // at once by Start, so a key typed straight after it is not lost.
+  const coveredRef = useRef(true);
 
   // Leaving the page gives the site its shortcuts back, whatever had the focus.
   useEffect(() => () => setSiteShortcutsSuppressed(false), []);
@@ -464,9 +529,11 @@ export default function ExitTheEditor({ locale }: { locale: string }) {
    *
    * @param id the level
    * @param focus whether the keyboard goes to the terminal (not on a change of mode, which would open a phone's keyboard)
+   * @param go whether the level starts at once (Restart and Play again, on a level already seen); otherwise it waits
+   *           for Start under the cover
    */
   const begin = useCallback(
-    (id: string, focus = true) => {
+    (id: string, focus = true, go = false) => {
       // The level and its first screen.
       setLevelId(id);
       setSt(startLevel(id));
@@ -484,8 +551,13 @@ export default function ExitTheEditor({ locale }: { locale: string }) {
       setResult(null);
       // The clock reset.
       clock.reset();
-      // The keyboard goes to the terminal.
-      if (focus) window.setTimeout(() => inputRef.current?.focus(), 0);
+      // Started at once, or covered until Start.
+      setLevelGo(go);
+      coveredRef.current = !go;
+      // A replay runs from now.
+      if (go) clock.start();
+      // The keyboard goes to the terminal (once it is shown).
+      if (focus && go) window.setTimeout(() => inputRef.current?.focus(), 0);
     },
     [clock],
   );
@@ -683,8 +755,8 @@ export default function ExitTheEditor({ locale }: { locale: string }) {
     (k0: Key) => {
       // The current state.
       const cur = stRef.current;
-      // Nothing more once the level is over.
-      if (cur.outcome !== "run") return;
+      // Nothing more once the level is over, and nothing before Start (the screen is not on the page yet).
+      if (cur.outcome !== "run" || coveredRef.current) return;
       // The daily escape, or a level.
       const isDaily = modeRef.current === "daily";
       // The sticky Ctrl turns a character into a control key.
@@ -733,6 +805,8 @@ export default function ExitTheEditor({ locale }: { locale: string }) {
         } else clock.stop();
         // Announced (countTry has counted it as a wrong try).
         setSay(t(`fail.${next.term.why || "suspended"}`));
+        // The playing area flashes red.
+        setSignal((g) => ({ id: (g?.id ?? 0) + 1, won: false }));
       }
     },
     [clock, cleared, escaped, startAttempt, saveDaily, t],
@@ -862,16 +936,50 @@ export default function ExitTheEditor({ locale }: { locale: string }) {
     }
   };
 
+  // Covered until Start: the daily before its attempt starts (an escaped one is shown), a level before Start.
+  const covered = mode === "daily" ? dailyStart === null && dailyMs === null : !levelGo;
+  // Kept in step for the key handlers (Start sets it at once itself).
+  coveredRef.current = covered;
+
+  /** Start: the screen and the clock together, and the keyboard to the terminal within the same tap. */
+  const onStart = () => {
+    // Only while covered.
+    if (!coveredRef.current) return;
+    // Keys reach the terminal from now.
+    coveredRef.current = false;
+    // The daily attempt starts on the wall clock and is saved; a level's stopwatch starts.
+    if (modeRef.current === "daily") startAttempt();
+    else {
+      // Shown.
+      setLevelGo(true);
+      // Counting.
+      clock.start();
+    }
+    // Said.
+    setSay(tc("startSay"));
+    // The keyboard to the terminal now, inside the tap, so a phone opens its keyboard.
+    inputRef.current?.focus();
+  };
+
   // The screen to draw: the level's, or, once it is over, what is left on screen (the engine's finalView: the shell
   // after the program, or tmux itself when a Ctrl-C reached the job inside it).
-  const screen = useMemo(() => finalView(st), [st]);
+  const screen = useMemo(() => {
+    // The program's screen.
+    const raw = finalView(st);
+    // Its rows with the way out veiled (a new object: the engine's is left as it is).
+    return { ...raw, lines: raw.lines.map(veil) };
+  }, [st]);
 
   /** Put the terminal's text in the polite line, for a screen reader (the drawn screen is hidden from it). */
   const readScreen = () => {
     // The rows with something on them (vim's and less's "~" filler rows say nothing), without trailing blanks.
     const rows = screen.lines.map((l) => l.trim()).filter((l) => l !== "" && l !== "~");
-    // One sentence per row, so a reader pauses between them.
-    const text = rows.map((l) => (/[.!?:]$/.test(l) ? l : `${l}.`)).join(" ");
+    // One sentence per row, so a reader pauses between them; a veiled key, or a run of them, is read as such, not as
+    // "bullet".
+    const text = rows
+      .map((l) => (/[.!?:]$/.test(l) ? l : `${l}.`))
+      .join(" ")
+      .replace(new RegExp(`${VEIL}+`, "g"), (run) => ` ${t(run.length > 1 ? "hiddenKeys" : "hiddenKey")} `);
     // Announced.
     setSay(t("screenSays", { text }));
   };
@@ -906,7 +1014,7 @@ export default function ExitTheEditor({ locale }: { locale: string }) {
 
   // The page.
   return (
-    <GameShell gameId={GAME_ID} kind={mode === "daily" ? "daily" : "score"} today={today} rules={rules} result={result} onPlayAgain={() => begin(levelId)} version={version} gradeSaved={gradeSaved}>
+    <GameShell gameId={GAME_ID} kind={mode === "daily" ? "daily" : "score"} today={today} rules={rules} result={result} onPlayAgain={() => begin(levelId, true, true)} version={version} gradeSaved={gradeSaved} signal={signal}>
       {/* The polite line. */}
       <p className="fg-exit-sr" aria-live="polite">{say}</p>
       {/* Before mount: a neutral line, the same as the static HTML. */}
@@ -968,10 +1076,17 @@ export default function ExitTheEditor({ locale }: { locale: string }) {
           {/* The brief: the level's, or the day's scene; the header carries the par. */}
           <div className="fg-exit-brief">
             <p className="fg-exit-brief-title">
-              {mode === "daily" && daily ? t("dailyTitle", { n: puzzleNumber(daily.day) }) : tc("level", { n: index + 1 })}: <span className="fg-mono">{mode === "daily" && daily ? daily.prog : level.prog}</span>{" "}
+              {mode === "daily" && daily ? t("dailyTitle", { n: puzzleNumber(daily.day) }) : tc("level", { n: index + 1 })}
+              {/* The program: a level's is on its card already; the daily's is the puzzle, shown at Start. */}
+              {!(mode === "daily" && covered) && (
+                <>
+                  : <span className="fg-mono">{mode === "daily" && daily ? daily.prog : level.prog}</span>
+                </>
+              )}{" "}
               <span className="fg-exit-par">{t("levelPar", { par })}</span>
             </p>
-            <p className="fg-exit-brief-text">{mode === "daily" && daily ? t(`daily.${daily.level}`, daily.scene) : t(`levels.${level.id}.brief`)}</p>
+            {/* The scene, shown at Start. */}
+            {!covered && <p className="fg-exit-brief-text">{mode === "daily" && daily ? t(`daily.${daily.level}`, daily.scene) : t(`levels.${level.id}.brief`)}</p>}
           </div>
           {/* The readouts (one line on a phone too). */}
           <div className="fg-hud fg-exit-hud">
@@ -981,6 +1096,13 @@ export default function ExitTheEditor({ locale }: { locale: string }) {
           </div>
           {/* The terminal: a click or a tap gives it the keyboard. */}
           <div className={`fg-exit-term ${focused ? "fg-exit-term-focus" : ""}`} onClick={() => inputRef.current?.focus()}>
+            {/* Before Start: an empty screen keeps the terminal's size, and the cover lies over it. */}
+            {covered ? (
+              <>
+                <pre className="fg-exit-screen" aria-hidden="true" />
+                <StartCover label={tc("start")} note={tc("startNote")} onStart={onStart} className="fg-exit-start" />
+              </>
+            ) : (
             <pre className="fg-exit-screen" aria-hidden="true">
               {screen.lines.map((line, r) => {
                 // The row's class: reverse video for status bars.
@@ -1010,11 +1132,14 @@ export default function ExitTheEditor({ locale }: { locale: string }) {
                 );
               })}
             </pre>
+            )}
             {/* The input that takes the keyboard (and a phone's keyboard). */}
             <input
               ref={inputRef}
               className="fg-exit-input"
               aria-label={t("termLabel")}
+              // Out of the tab order while covered: Start is the stop then.
+              tabIndex={covered ? -1 : 0}
               defaultValue={SENTINEL}
               autoCapitalize="off"
               autoComplete="off"
@@ -1035,7 +1160,7 @@ export default function ExitTheEditor({ locale }: { locale: string }) {
               }}
             />
             {/* The hint to click, while it has not got the keyboard. */}
-            {!focused && st.outcome === "run" && <span className="fg-exit-tap">{t("clickToType")}</span>}
+            {!focused && !covered && st.outcome === "run" && <span className="fg-exit-tap">{t("clickToType")}</span>}
           </div>
           {/* The on-screen keys. */}
           <div className="fg-exit-keys" role="group" aria-label={t("keysLabel")}>
@@ -1045,6 +1170,8 @@ export default function ExitTheEditor({ locale }: { locale: string }) {
                 type="button"
                 className={`fg-exit-key ${k.key === "Ctrl" && ctrl ? "fg-exit-key-on" : ""}`}
                 aria-pressed={k.key === "Ctrl" ? ctrl : undefined}
+                // Nothing to type into before Start.
+                disabled={covered}
                 // Pressing a key must not take the keyboard away from the terminal.
                 onPointerDown={(e) => e.preventDefault()}
                 onClick={() => onScreenKey(k.key)}
@@ -1074,19 +1201,21 @@ export default function ExitTheEditor({ locale }: { locale: string }) {
           {/* The buttons. */}
           <div className="fg-buttons">
             {st.outcome === "run" && (
-              <button type="button" className="fg-button" onClick={askHint} disabled={shown >= 3}>
+              <button type="button" className="fg-button" onClick={askHint} disabled={covered || shown >= 3}>
                 {tc("hint")}
               </button>
             )}
             {/* The terminal's text, read out. */}
-            <button type="button" className="fg-button" onClick={readScreen}>
+            <button type="button" className="fg-button" onClick={readScreen} disabled={covered}>
               {t("readScreen")}
             </button>
             {/* A level starts again; the daily trap only after a wrong way out (the attempt itself never restarts). */}
             {mode === "levels" ? (
-              <button type="button" className={`fg-button ${st.outcome === "fail" ? "fg-button-primary" : ""}`} onClick={() => begin(levelId)}>
-                {t("restart")}
-              </button>
+              !covered && (
+                <button type="button" className={`fg-button ${st.outcome === "fail" ? "fg-button-primary" : ""}`} onClick={() => begin(levelId, true, true)}>
+                  {t("restart")}
+                </button>
+              )
             ) : (
               st.outcome === "fail" && (
                 <button type="button" className="fg-button fg-button-primary" onClick={retryDaily}>

@@ -23,6 +23,8 @@ import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 // The client-message slice for the game's strings.
 import MessageSlice from "@/components/MessageSlice";
+// The game's roots, at the foot of the page.
+import GameOrigins from "@/components/dev/fun/GameOrigins";
 // Locale-aware links.
 import { Link } from "@/i18n/navigation";
 // The game.
@@ -84,6 +86,8 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
                 <LogDetective locale={locale} />
               </MorePuzzlesProvider>
             </MessageSlice>
+            {/* Where the game comes from: its roots, the sources, more on this site (PRIME 06/11/2026). */}
+            <GameOrigins gameId="log-detective" locale={locale} />
           </div>
         </section>
       </main>

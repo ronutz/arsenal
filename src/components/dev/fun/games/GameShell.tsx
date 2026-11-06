@@ -27,15 +27,31 @@
 //     daily states and from its old practice marks (backfillResults);
 //   - "Solve the other puzzles" (PRIME 05/11/2026), right after the result:
 //     the page renders it (MorePuzzles.tsx) and hands it over through
-//     MorePuzzlesProvider, so no game passes it along.
+//     MorePuzzlesProvider, so no game passes it along;
+//   - the end-of-round flash (PRIME 06/11/2026: "Flash the board / playing
+//     area indicating when the game or puzzle has been solved - green when
+//     successfully, red when not"): when a round ends, the playing area
+//     flashes green for a win and red otherwise. A round ends when the game
+//     records its result, which it signals by bumping version (every game
+//     does, once, at the finish); a result shown again from storage, on load
+//     or after a change of mode, is not recorded again and does not flash. A
+//     game can also ask for a flash without a result (signal: Exit the
+//     Editor's wrong way out). With the flash (PRIME 06/11/2026 13:12:
+//     "subtly shake the playing area twice. For mobiles, a little haptic
+//     feedback as well") the area shakes twice, a few pixels each way, and a
+//     phone that lets a page vibrate (Android's browsers; iOS Safari does
+//     not) gives a short pattern: two light taps for a win, two longer buzzes
+//     otherwise. Reduced motion keeps the ring and drops the shake;
+//   - "Where it comes from" (PRIME 06/11/2026 13:01), beside "How to play":
+//     a link to the page's own section on the game's roots (GameOrigins).
 // The game itself is the child: the board, its controls, its own timer.
 // Strings come from devFun.games.common; the game passes its own title and rules.
 // ============================================================================
 
 "use client";
 
-// React's state and effects.
-import { useEffect, useState, type ReactNode } from "react";
+// React's state, effects and refs.
+import { useEffect, useRef, useState, type ReactNode } from "react";
 // The shell's own strings.
 import { useLocale, useTranslations } from "next-intl";
 // The countdown to the next UTC day.
@@ -54,6 +70,31 @@ import { FUN_GAMES } from "@/config/funGames";
 import { EarlierBanner, EarlierList, RefusedNote } from "./EarlierPuzzles";
 // The call-out to the other puzzles, handed over by the page.
 import { useMorePuzzles } from "../MorePuzzlesSlot";
+
+/** How long the end-of-round flash lasts, in milliseconds (two pulses; the stylesheet's animation runs this long). */
+const FLASH_MS = 1400;
+/** How long after a recorded result its panel may still arrive and flash (a game may set the two in separate renders). */
+const FLASH_WINDOW_MS = 1500;
+/** The vibration with the flash, in milliseconds on and off: two light taps for a win, two longer buzzes otherwise. */
+const HAPTIC = { won: [25, 70, 25], lost: [70, 60, 70] } as const;
+
+/**
+ * A short vibration where the device and the browser allow a page one (navigator.vibrate: Android's browsers; not
+ * iOS Safari, where it does not exist); silently nothing elsewhere.
+ *
+ * @param won whether the round was won
+ */
+function buzz(won: boolean): void {
+  // Only where the call exists.
+  if (typeof navigator === "undefined" || typeof navigator.vibrate !== "function") return;
+  // A browser may refuse it (no user gesture yet, a policy): that is not an error for the game.
+  try {
+    // The pattern.
+    navigator.vibrate([...(won ? HAPTIC.won : HAPTIC.lost)]);
+  } catch {
+    // Nothing to do.
+  }
+}
 
 /** A finished round, as the shell shows it. */
 export interface ShellResult {
@@ -89,6 +130,8 @@ export interface GameShellProps {
   gradeSaved?: GradeSaved;
   /** The marks the game's old practice list left on earlier days, filed as played later (once, on mount). */
   legacyMarks?: (r: GameRecord) => LegacyMarks | null;
+  /** A flash the game asks for without a result (a new id each time; won picks green or red). */
+  signal?: { id: number; won: boolean } | null;
   /** The board. */
   children: ReactNode;
 }
@@ -118,6 +161,16 @@ export default function GameShell(props: GameShellProps) {
   const [stale, setStale] = useState(false);
   // Whether the list of earlier puzzles is open.
   const [listOpen, setListOpen] = useState(false);
+  // The playing area's flash: green for a win, red otherwise, or none.
+  const [flash, setFlash] = useState<"won" | "lost" | null>(null);
+  // The version last seen, and when it last changed (performance.now()), or null when no recorded result waits.
+  const seenVersion = useRef(props.version ?? 0);
+  const recordedAt = useRef<number | null>(null);
+  // The signal last seen, to flash once per id.
+  const lastSignal = useRef<number | null>(null);
+  // The timer that ends the flash (kept in a ref: a game that builds a new result object on each render must not
+  // cancel it by re-running the effect).
+  const flashTimer = useRef<number | null>(null);
   // The real today, the earlier day in play and a refused request, read after mount.
   const dayReq = useDayRequest();
   // Whether this game has a daily puzzle or run (the shelf's list says).
@@ -227,6 +280,70 @@ export default function GameShell(props: GameShellProps) {
   // How many earlier puzzles there are (yesterday back to #1).
   const earlierCount = dayReq && hasDaily ? earlierDays(dayReq.today).length : 0;
 
+  // Flash the playing area for a while: green for a win, red otherwise.
+  const flashFor = (won: boolean) => {
+    // A flash already running is replaced.
+    if (flashTimer.current !== null) window.clearTimeout(flashTimer.current);
+    // The colour.
+    setFlash(won ? "won" : "lost");
+    // The phone's vibration, where there is one.
+    buzz(won);
+    // Gone again once the animation has run.
+    flashTimer.current = window.setTimeout(() => {
+      // Off.
+      setFlash(null);
+      // No timer left.
+      flashTimer.current = null;
+    }, FLASH_MS);
+  };
+
+  // The flash's timer is cleared when the shell goes.
+  useEffect(
+    () => () => {
+      // A flash still running.
+      if (flashTimer.current !== null) window.clearTimeout(flashTimer.current);
+    },
+    [],
+  );
+
+  // A round that ends now flashes the playing area: the game has just recorded a result (version moved) and its panel
+  // is there, in the same render or one soon after. Green for a win, red otherwise.
+  useEffect(() => {
+    // The version now.
+    const v = props.version ?? 0;
+    // A new recorded result: remembered with the time, waiting for its panel.
+    if (v !== seenVersion.current) {
+      // Seen.
+      seenVersion.current = v;
+      // Waiting.
+      recordedAt.current = performance.now();
+    }
+    // No recorded result waiting, or no panel yet.
+    if (recordedAt.current === null || !props.result) return;
+    // Too late: a panel that arrives long after a record is not this round's end.
+    const fresh = performance.now() - recordedAt.current <= FLASH_WINDOW_MS;
+    // Used either way.
+    recordedAt.current = null;
+    // Flashed.
+    if (fresh) flashFor(props.result.won);
+    // flashFor only sets state and a timer; the effect follows the version and the result.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.version, props.result]);
+
+  // A flash the game asks for (a new signal id), on the same terms.
+  useEffect(() => {
+    // The signal.
+    const sig = props.signal;
+    // None, or one already flashed.
+    if (!sig || sig.id === lastSignal.current) return;
+    // Remembered.
+    lastSignal.current = sig.id;
+    // Flashed.
+    flashFor(sig.won);
+    // flashFor only sets state and a timer; the effect follows the signal alone.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.signal]);
+
   // Copy the share card.
   const onCopy = async () => {
     // Nothing to copy without a result.
@@ -283,6 +400,10 @@ export default function GameShell(props: GameShellProps) {
         <button type="button" className="fg-link-button" aria-expanded={rulesOpen} onClick={() => setRulesOpen((o) => !o)}>
           {t("howToPlay")}
         </button>
+        {/* Where the game comes from: the page's section at its foot (GameOrigins), so the board stays at the top. */}
+        <a className="fg-link-button" href="#fg-origins">
+          {t("originsLink")}
+        </a>
         {/* The earlier puzzles, on a game with a daily, once there is at least one. */}
         {earlierCount > 0 && (
           <button type="button" className="fg-link-button" aria-expanded={listOpen} aria-controls="fg-earlier-list" onClick={() => setListOpen((o) => !o)}>
@@ -309,8 +430,8 @@ export default function GameShell(props: GameShellProps) {
         <EarlierList today={dayReq.today} current={earlier} basePath={basePath} results={record.results} earlierResults={record.earlierResults} />
       )}
 
-      {/* The game. */}
-      <div className="fg-board-wrap">{props.children}</div>
+      {/* The game: the playing area, which flashes at the end of a round. */}
+      <div className={`fg-board-wrap${flash ? ` fg-flash-${flash}` : ""}`}>{props.children}</div>
 
       {/* The result, once the round is over. */}
       {props.result && (

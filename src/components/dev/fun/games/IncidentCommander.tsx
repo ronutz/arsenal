@@ -19,6 +19,13 @@
 // the button was pressed, with the finished run's numbers on its card and a
 // "Close" that does what it says (R3-08, R3-13); it used to open in the frame's
 // panel at the foot of the page, with the new run's numbers and "Play again".
+//
+// START (PRIME 06/11/2026: "Make all timed games wait for the player to start
+// them, so they have time to read about the game first"). A new game used to
+// run its clock from the moment the page opened, incidents and all. Now a
+// first visit (no save) shows the rules and the kit's StartCover where the
+// console goes; nothing ticks or is saved until Start. A game already saved
+// carries on as before, with its time away credited.
 // ============================================================================
 
 "use client";
@@ -29,6 +36,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 // The frame around every game.
 import GameShell from "./GameShell";
+// The cover that holds the console's place until Start.
+import { StartCover } from "./LogicPuzzleKit";
 // Today's UTC day and the reduced-motion preference.
 import { useRealToday, useReducedMotion } from "@/lib/fun/hooks";
 // The share card, the clipboard and the time format.
@@ -104,6 +113,8 @@ export default function IncidentCommander({ locale }: { locale: string }) {
   const [s, setS] = useState<IcState | null>(null);
   // "While you were away".
   const [away, setAway] = useState<AwaySummary | null>(null);
+  // A new game waiting for Start: nothing ticks and nothing is saved until then.
+  const [awaitingStart, setAwaitingStart] = useState(false);
   // The post-mortem's report, shown under its button until closed.
   const [pm, setPm] = useState<PmReport | null>(null);
   // The report's copy button's feedback.
@@ -151,6 +162,8 @@ export default function IncidentCommander({ locale }: { locale: string }) {
       const fresh = newGame(Math.floor(Math.random() * 0x100000000));
       // Kept.
       setS(fresh);
+      // Waiting for Start.
+      setAwaitingStart(true);
       // Done.
       lastTick.current = performance.now();
       return;
@@ -177,8 +190,8 @@ export default function IncidentCommander({ locale }: { locale: string }) {
 
   // One tick a second, measured by the clock; a long gap counts as time away.
   useEffect(() => {
-    // Not loaded yet.
-    if (!s) return;
+    // Not loaded yet, or a new game waiting for Start.
+    if (!s || awaitingStart) return;
     // The interval.
     const id = window.setInterval(() => {
       // The current state.
@@ -205,13 +218,13 @@ export default function IncidentCommander({ locale }: { locale: string }) {
     }, 1000);
     // Stopped.
     return () => window.clearInterval(id);
-    // The timer only needs to start once the game exists.
-  }, [s === null]); // eslint-disable-line react-hooks/exhaustive-deps
+    // The timer only needs to start once the game exists and has started.
+  }, [s === null, awaitingStart]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Saves: every few seconds, and when the page is hidden or closed.
   useEffect(() => {
-    // Not loaded.
-    if (!s) return;
+    // Not loaded, or a new game waiting for Start (a reload then shows the cover again, nothing having happened).
+    if (!s || awaitingStart) return;
     // Save, unless the stats were reset (the save is gone): then start again.
     const write = () => {
       // The current state.
@@ -249,7 +262,7 @@ export default function IncidentCommander({ locale }: { locale: string }) {
       document.removeEventListener("visibilitychange", onVis);
       window.removeEventListener("pagehide", write);
     };
-  }, [s === null]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [s === null, awaitingStart]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // The copy buttons' feedback fades.
   useEffect(() => {
@@ -407,6 +420,23 @@ export default function IncidentCommander({ locale }: { locale: string }) {
   const riskReviewed = Math.round(BAD_REVIEWED * staged * 100);
   const riskApproved = Math.round(BAD_UNREVIEWED * staged * 100);
 
+  // Start: the clock from now, and the game saved at once, so a reload carries on rather than starting again.
+  const onStart = () => {
+    // Only a game waiting for it.
+    if (!awaitingStart || !ref.current) return;
+    // Counted from now, not from when the page opened.
+    lastTick.current = performance.now();
+    // Running.
+    setAwaitingStart(false);
+    // Saved.
+    save(ref.current);
+    saved.current = true;
+    // Said.
+    setSay(tc("startSay"));
+    // The keyboard to the incidents' heading once the console is drawn (without scrolling the page to it).
+    window.setTimeout(() => document.getElementById("fg-ic-incidents")?.focus({ preventScroll: true }), 0);
+  };
+
   // The rules.
   const rules = (
     <>
@@ -425,6 +455,11 @@ export default function IncidentCommander({ locale }: { locale: string }) {
     <GameShell gameId={GAME_ID} kind="free" today={today} rules={rules} result={null} version={version}>
       {/* The polite line. */}
       <p className="fg-ic-sr" aria-live="polite">{say}</p>
+      {/* A new game before Start: the console's place, empty; the rules are open above it on a first visit. */}
+      {awaitingStart ? (
+        <StartCover label={tc("start")} note={t("startNote")} onStart={onStart} className="fg-ic-start" />
+      ) : (
+      <>
       {/* While you were away. */}
       {away && (
         <div className="fg-ic-away" role="status">
@@ -600,6 +635,8 @@ export default function IncidentCommander({ locale }: { locale: string }) {
           {copied === "ok" ? tc("copied") : copied === "fail" ? tc("copyFailed") : t("copyStatus")}
         </button>
       </div>
+      </>
+      )}
     </GameShell>
   );
 }
