@@ -119,6 +119,16 @@ const DECLARED = new Map([
     "glossary.entries.andre-marie-ampere.context|ampère",
     "André-Marie Ampère's surname, which keeps its French spelling.",
   ],
+  // Laravel, the PHP framework the stats page's new family names (05/11/2026), and its package laravel/ui: product
+  // names keep their own spelling, as the -ável rule would otherwise read them as an unaccented Portuguese adjective.
+  [
+    "stats_page.missing.families.laravel.title|laravel",
+    "Laravel, the PHP framework's product name, in the family's title.",
+  ],
+  [
+    "stats_page.missing.families.laravel.what|laravel",
+    "Laravel and laravel/ui, the framework's and its package's names, in the family's explanation.",
+  ],
 ]);
 
 // Parse the pack once.

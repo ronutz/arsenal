@@ -7,7 +7,7 @@ date: "2026-11-02"
 tags: ["vulnerability-management", "firmware", "disclosure"]
 category: security
 status: reviewed
-updated: "2026-11-02"
+updated: "2026-11-05"
 relatedArticles: ["pxe-and-network-boot", "icmp-ping-and-traceroute", "the-disclosure-record", "memory-safety"]
 ---
 
@@ -167,7 +167,7 @@ O contraste com 2023 é a lição mais clara. A linha do tempo que a Quarkslab p
 
 Quanto aos "dezesseis anos": esse é o número da imprensa, e o histórico de código bate com ele. O NetworkPkg entrou no repositório do EDK II em 1º de novembro de 2010. A Ars Technica acrescenta que as campanhas de fuzzing iniciadas depois das PixieFail parecem não ter achado esta falha.
 
-## Onde estão as correções, conforme lido em 2 de novembro de 2026
+## Onde estão as correções, conforme lido em 2 de novembro de 2026 e atualizado em 5 de novembro
 
 Cada linha vem da página ou do repositório da própria parte, lida no horário de São Paulo indicado. São os status com mais chance de mudar, portanto os que vale reler.
 
@@ -177,7 +177,7 @@ Cada linha vem da página ou do repositório da própria parte, lida no horário
 | Registro da CVE (TianoCore) | Afetado até a edk2-stable202608; a entrada da CISA, de 30 de outubro, não registra exploração | 01:59 |
 | Boletim GHSA-99cj-7hg9-mp4m (TianoCore) | Patched versions: "Not patched currently" | 02:56 |
 | National Vulnerability Database (NVD) | Status "Deferred", sem prioridade para enriquecimento: sem nota e sem dados de produto do NVD, só os do TianoCore | 02:58 |
-| Microsoft Project Mu | Correção com cherry-pick em release/202608 em 22 de outubro e em release/202511 em 23 de outubro (UTC) | 02:17 |
+| Microsoft Project Mu | Correção com cherry-pick em release/202608 em 22 de outubro, em release/202511 em 23 de outubro e em release/202502 em 3 de novembro (UTC); primeiras releases com tag que a trazem: v2026080000.0.5 (26 de outubro) e v2025110002.0.20 (28 de outubro, UTC); ainda nenhuma tag em release/202502 | 18:36 de 5 de novembro |
 | Debian | edk2 vulnerável em bookworm, trixie, forky e sid; sem versão corrigida | 02:00 |
 | Ubuntu | edk2 em "Needs evaluation" da 16.04 à 26.10; prioridade Medium | 02:03 |
 | Red Hat | edk2 Affected no Red Hat Enterprise Linux (RHEL) 8, 9 e 10; OpenShift 4 e 5 (rhel-coreos-9) Affected; Critical | 02:03 |
@@ -186,10 +186,12 @@ Cada linha vem da página ou do repositório da própria parte, lida no horário
 | Insyde | Nenhum boletim citando a CVE; o mais recente listado é de 8 de setembro | 02:09 |
 | Phoenix Technologies | Nenhuma notificação citando a CVE | 02:09 |
 | Intel | Nenhum boletim na Security Center citando a CVE; a Intel disse à Ars Technica que nenhum produto seu sob suporte de segurança é sabidamente afetado | 02:59 |
-| Supermicro | Boletim de outubro de 2026: BIOS atualizada para uma lista de placas com Intel e Ampere (entre elas as gerações X12, X13 e X14), com a versão corrigida por placa; sem conhecimento de anúncios públicos ou uso malicioso | 02:58 |
-| Catálogo Known Exploited Vulnerabilities (KEV) da CISA | Não listada (catálogo 2026.10.30) | 02:07 |
+| Supermicro | Boletim de outubro de 2026: BIOS atualizada para placas com Intel e Ampere (entre elas as gerações X12, X13 e X14) e para placas com AMD (H11 a H15), com a versão corrigida por placa; placas mais antigas, todas as X11 da lista entre elas, marcadas como "By request"; sem conhecimento de anúncios públicos ou uso malicioso | 12:18 de 5 de novembro |
+| Catálogo Known Exploited Vulnerabilities (KEV) da CISA | Não listada (catálogo 2026.11.04) | 18:33 de 5 de novembro |
 
 A tabela tem um formato óbvio. O upstream open source corrigiu o código uma semana antes do boletim e o Project Mu acompanhou no mesmo dia, enquanto nenhuma das quatro distribuições acima entregou um pacote corrigido ainda. O lado do firmware comercial, por onde a maioria dos servidores físicos recebe correções, tem um fabricante de placas com boletim público e versões de BIOS corrigidas por placa, e silêncio nas páginas públicas de boletins dos fabricantes de firmware. Silêncio numa página pública não é inação: o próprio boletim da AMI sobre as PixieFail registra que ela avisou os clientes sob acordo de confidencialidade dois meses antes de publicar. Mas quem cuida de um parque não consegue agir sobre um aviso privado que nunca recebeu.
+
+Atualização, 5 de novembro de 2026: reli a tabela hoje. Nada mudou no essencial: nenhuma tag estável do EDK II ainda (a mais nova continua sendo a edk2-stable202608), a entrada SSVC da CISA no registro da CVE continua dizendo exploração "none", nenhuma distribuição tem pacote corrigido, e AMI, Insyde, Phoenix e Intel continuam sem boletim citando a CVE. Duas linhas cresceram: o boletim da Supermicro agora também lista placas AMD EPYC com versões de BIOS corrigidas, e o Project Mu levou a correção a um terceiro branch, o release/202502, com releases com tag nos outros dois.
 
 Há mais um sinal: um repositório de terceiros, publicado abertamente, diz ter uma prova de conceito de negação de serviço para essa falha. Eu não testei e não coloco o link. Nos termos do SSVC da CISA, uma prova de conceito pública é o degrau entre a exploração "none" e a "active", então é a primeira coisa a acompanhar no registro da CVE.
 
@@ -239,7 +241,7 @@ A terceira é a camada. Uma correção entrou no upstream em outubro; a maioria 
 
 ## Fontes
 
-Tudo lido em 2 de novembro de 2026, entre 01:58 e 02:59, horário de São Paulo; a tabela de status acima traz o horário em que cada status foi lido. O texto do boletim na oss-security, os dois commits da correção e o capítulo 24 da especificação UEFI foram lidos de novo entre 13:59 e 14:02, para o campo, o tamanho dele e os handlers.
+Tudo lido em 2 de novembro de 2026, entre 01:58 e 02:59, horário de São Paulo; a tabela de status acima traz o horário em que cada status foi lido. O texto do boletim na oss-security, os dois commits da correção e o capítulo 24 da especificação UEFI foram lidos de novo entre 13:59 e 14:02, para o campo, o tamanho dele e os handlers. O boletim da Supermicro foi lido de novo em 5 de novembro de 2026, às 12:18, num navegador, com as duas listas de placas abertas.
 
 - [Registro da CVE-2026-97631, publicado pelo TianoCore como CNA: título "Pre-boot RCE in EDK II PXE driver"; CWE-120, CWE-131 e CWE-787; EDK2 NetworkPkg afetado até a edk2-stable202608; CVSS 4.0 9.5 Critical, com attack vector Network e attack requirements Present; descobridores Alex Matrosov (Anthropic) e Dan Holmes-Mitra (Google); reservado em 24 de setembro e publicado em 22 de outubro de 2026; a entrada SSVC da CISA, de 30 de outubro, registra Exploitation none, Automatable no, Technical Impact total](https://www.cve.org/CVERecord?id=CVE-2026-97631)
 - [Boletim de segurança do TianoCore EDK II, GHSA-99cj-7hg9-mp4m, "Pre-boot RCE in EDK II PXE driver": Critical 9.5, pacote NetworkPkg, afetado "EDK II master as of 2026-09-14", patched versions "Not patched currently", a correção como o pull request 13302](https://github.com/tianocore/edk2/security/advisories/GHSA-99cj-7hg9-mp4m)
@@ -259,7 +261,7 @@ Tudo lido em 2 de novembro de 2026, entre 01:58 e 02:59, horário de São Paulo;
 - [Especificação UEFI 2.11, capítulo 24: o protocolo guarda em cache o último pacote de erro ICMP no campo IcmpError dos seus dados de modo, do tipo EFI_PXE_BASE_CODE_ICMP_ERROR, com a flag IcmpErrorReceived, e o informa com um status de erro ICMP](https://uefi.org/specs/UEFI/2.11/24_Network_Protocols_SNP_PXE_BIS.html)
 - [Especificação UEFI 2.11, capítulo 3: boot pelo protocolo Load File e boot pela rede com UDP, DHCP e TFTP](https://uefi.org/specs/UEFI/2.11/03_Boot_Manager.html)
 - [Especificação UEFI 2.11, capítulo 32: assinatura de executáveis entregues por um transporte inseguro, como uma rede](https://uefi.org/specs/UEFI/2.11/32_Secure_Boot_and_Driver_Signing.html)
-- [Microsoft Project Mu, pull requests 1989 e 1990 do mu_basecore: os três commits do EDK II com cherry-pick, em release/202608 em 22 de outubro e em release/202511 em 23 de outubro de 2026 (UTC)](https://github.com/microsoft/mu_basecore/pull/1990)
+- [Microsoft Project Mu, pull requests 1989 e 1990 do mu_basecore: os três commits do EDK II com cherry-pick, em release/202608 em 22 de outubro e em release/202511 em 23 de outubro de 2026 (UTC); na leitura de 5 de novembro com git, os mesmos três commits em release/202502, com commit em 3 de novembro de 2026, 03:11 UTC, e as tags v2026080000.0.5 (26 de outubro, 18:19 UTC) e v2025110002.0.20 (28 de outubro, 01:48 UTC) com a correção](https://github.com/microsoft/mu_basecore/pull/1990)
 - [Security tracker do Debian: edk2 vulnerável em bookworm, trixie, forky e sid, sem correção em unstable, bug 1151853, trixie anotado como problema menor](https://security-tracker.debian.org/tracker/CVE-2026-97631)
 - [Ubuntu: edk2 em "Needs evaluation" da 16.04 à 26.10, prioridade Medium, publicado em 22 de outubro e atualizado em 28 de outubro de 2026](https://ubuntu.com/security/CVE-2026-97631)
 - [Red Hat: Critical; CVSS 3.1 8.8 com attack vector Adjacent (rascunho); edk2 afetado no RHEL 8, 9 e 10; o posicionamento sobre guests virtualizados e boot pela rede](https://access.redhat.com/security/cve/CVE-2026-97631)
@@ -270,7 +272,7 @@ Tudo lido em 2 de novembro de 2026, entre 01:58 e 02:59, horário de São Paulo;
 - [AMI, Aptio V: integra as especificações UEFI, EDKII, ACPI e PI; o Aptio Community Edition é baseado no EDK II](https://www.ami.com/products/aptio-v/)
 - [Insyde, Security Pledge: a lista de boletins, com as entradas mais recentes de 8 de setembro de 2026](https://www.insyde.com/security-pledge/)
 - [Phoenix Technologies, Security Notifications](https://phoenixtech.com/security-notifications/)
-- [Supermicro, "PXE Network Boot Buffer Overflow in EDK II Vulnerability, October 2026": CVSS 4.0 9.5, as placas afetadas com Intel e Ampere e a versão de BIOS que traz a correção, sem exploração pública conhecida](https://www.supermicro.com/en/support/security_BIOS_Oct_2026)
+- [Supermicro, "PXE Network Boot Buffer Overflow in EDK II Vulnerability, October 2026": CVSS 4.0 9.5, as placas afetadas com Intel, Ampere e AMD e a versão de BIOS que traz a correção, placas mais antigas (todas as X11 da lista entre elas) marcadas como "By request", sem exploração pública conhecida](https://www.supermicro.com/en/support/security_BIOS_Oct_2026)
 - [Intel Security Center: a lista de boletins, sem boletim para a CVE-2026-97631](https://www.intel.com/content/www/us/en/security-center/default.html)
 - [Wiki da Thomas-Krenn, "Kritische PXE Boot Sicherheitslücke in EDK2", atualizado em 30 de outubro de 2026: quem é e quem não é afetado, a exigência de adivinhar endereços, a divulgação planejada para o começo de 2027 e as versões de BIOS da Supermicro por placa](https://www.thomas-krenn.com/de/wiki/Kritische_PXE_Boot_Sicherheitsl%C3%BCcke_in_EDK2)
 - [CISA, catálogo Known Exploited Vulnerabilities, versão 2026.10.30: a CVE-2026-97631 não está listada](https://www.cisa.gov/known-exploited-vulnerabilities-catalog)

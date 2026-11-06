@@ -7,6 +7,12 @@
 // SMALL REACT HOOKS shared by the /dev/fun games: today's UTC day (read once,
 // after mount, so the static HTML and the first render agree), the player's
 // reduced-motion preference, a stopwatch, and a steady tick for real-time games.
+//
+// Earlier puzzles (PRIME 05/11/2026): on a page opened with ?day=YYYY-MM-DD
+// (archive.ts), useToday() returns that earlier day, so every game draws, saves
+// and shows the earlier puzzle through the code it already has. What must stay
+// on the real today (the streak, the new-day notice, practice lists, a game
+// with no daily) reads useRealToday(); the frame reads useDayRequest().
 // ============================================================================
 
 "use client";
@@ -15,16 +21,38 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 // The UTC day of an instant.
 import { utcDayKey } from "./daily";
+// The ?day= request, checked against the clock.
+import { readDayRequest, type DayRequest } from "./archive";
 
 /**
- * Today's UTC day as YYYY-MM-DD, or null until the component has mounted.
+ * The day whose puzzle the page plays, as YYYY-MM-DD, or null until the component has mounted: today's UTC day, or
+ * the earlier day the address asks for (?day=, honoured only for a day before today, see archive.ts).
  *
  * A static page cannot know the day it will be read on, so the games render a
  * neutral state first and draw the puzzle once this returns a day.
  *
- * @returns today's day key, or null before mount
+ * @returns the day in play, or null before mount
  */
 export function useToday(): string | null {
+  // Null on the server and on the first client render.
+  const [day, setDay] = useState<string | null>(null);
+  // After mount, read the address and the clock once.
+  useEffect(() => {
+    // The checked request.
+    const req = readDayRequest();
+    // The earlier day when one is in play, today otherwise.
+    setDay(req.earlier ?? req.today);
+  }, []);
+  // The day, or null.
+  return day;
+}
+
+/**
+ * Today's UTC day as YYYY-MM-DD, whatever the address asks for, or null until the component has mounted.
+ *
+ * @returns today's day key, or null before mount
+ */
+export function useRealToday(): string | null {
   // Null on the server and on the first client render.
   const [day, setDay] = useState<string | null>(null);
   // After mount, read the clock once.
@@ -34,6 +62,40 @@ export function useToday(): string | null {
   }, []);
   // The day, or null.
   return day;
+}
+
+/**
+ * The earlier day the page plays (?day=), or null: on today's puzzle, before mount, and when the request was refused.
+ *
+ * @returns the earlier day, or null
+ */
+export function useEarlierDay(): string | null {
+  // Null until read.
+  const [day, setDay] = useState<string | null>(null);
+  // After mount, read the address and the clock once.
+  useEffect(() => {
+    // The checked request's earlier day.
+    setDay(readDayRequest().earlier);
+  }, []);
+  // The day, or null.
+  return day;
+}
+
+/**
+ * The whole request, for the frame around a game: today, the earlier day in play, a refused request; null before mount.
+ *
+ * @returns the checked request, or null before mount
+ */
+export function useDayRequest(): DayRequest | null {
+  // Null on the server and on the first client render.
+  const [req, setReq] = useState<DayRequest | null>(null);
+  // After mount, read the address and the clock once.
+  useEffect(() => {
+    // Checked against today.
+    setReq(readDayRequest());
+  }, []);
+  // The request, or null.
+  return req;
 }
 
 /**

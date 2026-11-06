@@ -15,7 +15,19 @@
 //     numbers, not a finished daily puzzle or the game's progress;
 //   - a notice when the UTC day turns while the page is open (review R2-05,
 //     03/11/2026): the countdown used to wrap round to 23:59:59 over the old
-//     puzzle; now the page offers today's puzzle instead.
+//     puzzle; now the page offers today's puzzle instead;
+//   - earlier puzzles (PRIME 05/11/2026): on a game with a daily, "Earlier
+//     puzzles (n)" opens the list of every puzzle from #1 to yesterday
+//     (EarlierPuzzles.tsx); on an earlier puzzle's page (?day=) a banner says
+//     which one it is and that it does not count toward the streak or the
+//     stats, the streak still reads the real today, and the countdown and the
+//     new-day notice stay off; a day that cannot be played gets one line and
+//     today's puzzle, and leaves the address. Days played before the marks
+//     existed get theirs once, on mount, from the game's grading of its kept
+//     daily states and from its old practice marks (backfillResults);
+//   - "Solve the other puzzles" (PRIME 05/11/2026), right after the result:
+//     the page renders it (MorePuzzles.tsx) and hands it over through
+//     MorePuzzlesProvider, so no game passes it along.
 // The game itself is the child: the board, its controls, its own timer.
 // Strings come from devFun.games.common; the game passes its own title and rules.
 // ============================================================================
@@ -31,7 +43,17 @@ import { msToNextDay, puzzleNumber, utcDayKey } from "@/lib/fun/daily";
 // The share card, the clipboard and the time format.
 import { copyText, formatDuration } from "@/lib/fun/share";
 // The record behind the stats line.
-import { liveStreak, loadRecord, resetStats, updateRecord, type GameRecord } from "@/lib/fun/storage";
+import { backfillResults, liveStreak, loadRecord, resetStats, updateRecord, type GameRecord, type GradeSaved, type LegacyMarks } from "@/lib/fun/storage";
+// The day the address asks for, checked against the clock.
+import { useDayRequest } from "@/lib/fun/hooks";
+// The earlier days.
+import { DAY_PARAM, earlierDays } from "@/lib/fun/archive";
+// Which games have a daily.
+import { FUN_GAMES } from "@/config/funGames";
+// The list, the banner and the refused-day line.
+import { EarlierBanner, EarlierList, RefusedNote } from "./EarlierPuzzles";
+// The call-out to the other puzzles, handed over by the page.
+import { useMorePuzzles } from "../MorePuzzlesSlot";
 
 /** A finished round, as the shell shows it. */
 export interface ShellResult {
@@ -51,7 +73,7 @@ export interface GameShellProps {
   gameId: string;
   /** "daily" shows the puzzle number, the streak and the countdown; "score" shows the best score; "free" shows played. */
   kind: "daily" | "score" | "free";
-  /** Today's UTC day, or null before mount (the shell then shows nothing that depends on it). */
+  /** The day whose puzzle is on the board (today's, or an earlier one on a ?day= page), or null before mount. */
   today: string | null;
   /** The rules, as a few short paragraphs or list items, shown under "How to play". */
   rules: ReactNode;
@@ -63,6 +85,10 @@ export interface GameShellProps {
   formatBest?: (best: number) => string;
   /** A counter the game bumps after it records a result, so the stats line re-reads storage. */
   version?: number;
+  /** The game's grading of a kept daily state, so days finished before the marks existed get theirs (once, on mount). */
+  gradeSaved?: GradeSaved;
+  /** The marks the game's old practice list left on earlier days, filed as played later (once, on mount). */
+  legacyMarks?: (r: GameRecord) => LegacyMarks | null;
   /** The board. */
   children: ReactNode;
 }
@@ -90,13 +116,27 @@ export default function GameShell(props: GameShellProps) {
   const [left, setLeft] = useState<number | null>(null);
   // True once the UTC day has turned since the page worked out "today".
   const [stale, setStale] = useState(false);
+  // Whether the list of earlier puzzles is open.
+  const [listOpen, setListOpen] = useState(false);
+  // The real today, the earlier day in play and a refused request, read after mount.
+  const dayReq = useDayRequest();
+  // Whether this game has a daily puzzle or run (the shelf's list says).
+  const hasDaily = FUN_GAMES.some((g) => g.id === props.gameId && g.daily);
+  // The page's path, for the list's links (read only once the request is known, so after mount).
+  const basePath = dayReq && typeof window !== "undefined" ? window.location.pathname : "";
+  // The earlier day on the board, or null.
+  const earlier = dayReq?.earlier ?? null;
+  // Bumped once when the marks of older days were filled in, so the record is read again.
+  const [filled, setFilled] = useState(0);
+  // "Solve the other puzzles", when the page gave one.
+  const more = useMorePuzzles();
 
   // Watch for the UTC day turning while the page stays open: every 30 seconds and whenever the tab comes back.
   useEffect(() => {
-    // Only games with a day of their own, and not the free-play ones.
-    if (!props.today || props.kind === "free") return;
-    // The day the page is showing.
-    const shown = props.today;
+    // Only games with a day of their own, not the free-play ones, and not on an earlier puzzle's page.
+    if (!props.today || props.kind === "free" || !dayReq || dayReq.earlier) return;
+    // The real today the page worked out.
+    const shown = dayReq.today;
     // Compare it with the clock.
     const check = () => setStale(utcDayKey(new Date()) !== shown);
     // Once now.
@@ -117,7 +157,19 @@ export default function GameShell(props: GameShellProps) {
       // The listener.
       document.removeEventListener("visibilitychange", onVis);
     };
-  }, [props.today, props.kind]);
+  }, [props.today, props.kind, dayReq]);
+
+  // A day that cannot be played leaves the address (its line stays on screen), so a reload or a copied link is today's.
+  useEffect(() => {
+    // Only after a refused request.
+    if (!dayReq?.refused) return;
+    // The address without ?day=, the rest kept.
+    const url = new URL(window.location.href);
+    // The parameter removed.
+    url.searchParams.delete(DAY_PARAM);
+    // Replaced in place: no new history entry.
+    window.history.replaceState(window.history.state, "", url.pathname + url.search + url.hash);
+  }, [dayReq]);
 
   // On mount: a first visit sees the rules open.
   useEffect(() => {
@@ -131,23 +183,34 @@ export default function GameShell(props: GameShellProps) {
     }
   }, [props.gameId]);
 
-  // Read the record after mount and on every version bump the game makes after recording a result.
+  // Once after mount, on a game with a daily: the marks of days finished before the marks existed (the grading and
+  // the old practice marks are read once; the game's functions may change identity on every render).
+  useEffect(() => {
+    // Not before the address is read, and only on a game with a daily and something to read.
+    if (!dayReq || !hasDaily || (!props.gradeSaved && !props.legacyMarks)) return;
+    // Filled in: read the record again.
+    if (backfillResults(props.gameId, props.gradeSaved, props.legacyMarks)) setFilled((n) => n + 1);
+    // Once per game and page load.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dayReq, hasDaily, props.gameId]);
+
+  // Read the record after mount, on every version bump the game makes after recording a result, and after the fill-in.
   useEffect(() => {
     // Shown in the stats line.
     setRecord(loadRecord(props.gameId));
-  }, [props.gameId, props.version]);
+  }, [props.gameId, props.version, filled]);
 
   // The countdown ticks once a second while a daily result is shown.
   useEffect(() => {
-    // Only for a finished daily puzzle.
-    if (props.kind !== "daily" || !props.result) return;
+    // Only for a finished daily puzzle, and not on an earlier puzzle's page (the next one is already out).
+    if (props.kind !== "daily" || !props.result || !dayReq || dayReq.earlier) return;
     // One update now.
     setLeft(msToNextDay(new Date()));
     // Then every second.
     const id = window.setInterval(() => setLeft(msToNextDay(new Date())), 1000);
     // Stopped when the result goes away or the page closes.
     return () => window.clearInterval(id);
-  }, [props.kind, props.result]);
+  }, [props.kind, props.result, dayReq]);
 
   // The copy button's feedback fades after two seconds.
   useEffect(() => {
@@ -159,8 +222,10 @@ export default function GameShell(props: GameShellProps) {
     return () => window.clearTimeout(id);
   }, [copied]);
 
-  // The streak to show today.
-  const streak = record && props.today ? liveStreak(record, props.today) : 0;
+  // The streak to show: always against the real today, on an earlier puzzle's page too.
+  const streak = record && dayReq ? liveStreak(record, dayReq.today) : 0;
+  // How many earlier puzzles there are (yesterday back to #1).
+  const earlierCount = dayReq && hasDaily ? earlierDays(dayReq.today).length : 0;
 
   // Copy the share card.
   const onCopy = async () => {
@@ -192,6 +257,10 @@ export default function GameShell(props: GameShellProps) {
   // The frame.
   return (
     <div className="fg-shell">
+      {/* An earlier puzzle: which one, and what it does not count toward. */}
+      {dayReq && earlier && <EarlierBanner day={earlier} today={dayReq.today} basePath={basePath} />}
+      {/* A day that cannot be played: why, and today's puzzle below. */}
+      {dayReq?.refused && <RefusedNote reason={dayReq.refused} />}
       {/* The stats line: what this browser remembers about this game. */}
       <div className="fg-stats" aria-live="polite">
         {props.kind === "daily" && props.today && (
@@ -214,6 +283,12 @@ export default function GameShell(props: GameShellProps) {
         <button type="button" className="fg-link-button" aria-expanded={rulesOpen} onClick={() => setRulesOpen((o) => !o)}>
           {t("howToPlay")}
         </button>
+        {/* The earlier puzzles, on a game with a daily, once there is at least one. */}
+        {earlierCount > 0 && (
+          <button type="button" className="fg-link-button" aria-expanded={listOpen} aria-controls="fg-earlier-list" onClick={() => setListOpen((o) => !o)}>
+            {t("earlierPuzzles", { n: earlierCount })}
+          </button>
+        )}
       </div>
 
       {/* The day turned while the page was open: today's puzzle is one reload away. */}
@@ -228,6 +303,11 @@ export default function GameShell(props: GameShellProps) {
 
       {/* The rules, folded unless this is a first visit or the player opened them. */}
       {rulesOpen && <div className="fg-rules">{props.rules}</div>}
+
+      {/* The earlier puzzles, once opened. */}
+      {listOpen && dayReq && record && (
+        <EarlierList today={dayReq.today} current={earlier} basePath={basePath} results={record.results} earlierResults={record.earlierResults} />
+      )}
 
       {/* The game. */}
       <div className="fg-board-wrap">{props.children}</div>
@@ -250,6 +330,9 @@ export default function GameShell(props: GameShellProps) {
           {props.kind === "daily" && left !== null && !stale && <p className="fg-result-next">{t("nextIn", { time: formatDuration(left) })}</p>}
         </div>
       )}
+
+      {/* The other puzzles, right after the result (and after the board while there is none). */}
+      {more}
 
       {/* The way out of the stats this browser keeps. */}
       <div className="fg-footer">

@@ -82,6 +82,9 @@ export interface BingoLabels {
   shareLine: string;
   /** "0 squares", "1 square", "2 squares" ... one wording per count of marks (index = count), plural rules applied. */
   shareSquares: string[];
+  /** How close the card is to a bingo, one wording per count of squares still to mark on the closest line (index = count,
+   *  0 to 5): "Bingo!", "One more square for a bingo", "2 more squares for a bingo" ... */
+  progress: string[];
   /** The Copy button's words. */
   share: ToyShareLabels;
 }
@@ -93,6 +96,16 @@ const SLUG = "meeting-bingo";
  *  default; 4x4 and 3x3 make a shorter game for a shorter meeting. */
 const SIZES = [5, 4, 3] as const;
 type Size = (typeof SIZES)[number];
+
+/** The balls above the card, B to O: they light up, left to right, as the closest line fills (PRIME 05/11/2026). */
+const BALLS = [
+  // Each ball: its letter, its centre and its radius in the drawing (sizes and heights vary a little, like a draw).
+  { letter: "B", cx: 34, cy: 34, r: 24 },
+  { letter: "I", cx: 104, cy: 30, r: 26 },
+  { letter: "N", cx: 174, cy: 35, r: 23 },
+  { letter: "G", cx: 244, cy: 30, r: 26 },
+  { letter: "O", cx: 314, cy: 34, r: 24 },
+] as const;
 
 /** The record id the card is saved under in the games' storage key (review R4-07). */
 const STORE_ID = "meeting-bingo";
@@ -305,6 +318,14 @@ export default function MeetingBingo({ labels, types, locale }: { labels: BingoL
     // Recomputed when the marks or the card's shape change.
   }, [marked, LINES]);
   const hasBingo = winning.size > 0;
+  // How close the card is to a bingo: the most squares marked in any one line (the FREE centre counts), and how many
+  // that line still needs.
+  const closest = useMemo(() => Math.max(0, ...LINES.map((line) => line.filter((i) => marked[i]).length)), [marked, LINES]);
+  // Squares still to mark on the closest line (0 at a bingo).
+  const toGo = size - closest;
+  // The balls lit, left to right: the closest line's share of the five, rounded down, so all five light only at a bingo
+  // (on a 5x5 card one ball per square).
+  const lit = Math.floor((closest / size) * BALLS.length);
   // Whether the card carries any mark the player made (the FREE square does not count).
   const hasMarks = marked.some((on, i) => on && i !== FREE_INDEX);
   // How many squares the player marked (the FREE centre is given, not earned), for the share line.
@@ -458,26 +479,23 @@ export default function MeetingBingo({ labels, types, locale }: { labels: BingoL
           bingo, at a fixed height so the card never moves. On a phone the slot opens up (see components.css): the
           balls are left out and the banner follows the card. */}
       <div className="bingo-marquee">
-        {/* BINGO BALLS (PRIME 2026-09-05). Decorative only, aria-hidden, drawn
-            from semantic tokens so every theme gets it for free. Three balls
-            rather than a full illustration: enough to say "bingo" above the
-            card without competing with the card for attention. */}
-        <svg
-          className="bingo-art"
-          viewBox="0 0 220 64"
-          aria-hidden="true"
-          focusable="false"
-        >
-          <circle cx="34" cy="34" r="24" className="bingo-art-ball" />
-          <circle cx="34" cy="34" r="15" className="bingo-art-face" />
-          <text x="34" y="40" textAnchor="middle" className="bingo-art-num">B</text>
-          <circle cx="110" cy="30" r="27" className="bingo-art-ball" />
-          <circle cx="110" cy="30" r="17" className="bingo-art-face" />
-          <text x="110" y="37" textAnchor="middle" className="bingo-art-num">I</text>
-          <circle cx="186" cy="36" r="22" className="bingo-art-ball" />
-          <circle cx="186" cy="36" r="14" className="bingo-art-face" />
-          <text x="186" y="42" textAnchor="middle" className="bingo-art-num">N</text>
-        </svg>
+        {/* BINGO BALLS (PRIME 2026-09-05; five of them since 05/11/2026). B to O, lit left to right as the closest line
+            fills, with the same news in words under them: the drawing is hidden from assistive technology, the line
+            is not. Drawn from semantic tokens, so every theme gets it for free. */}
+        <div className="bingo-progress">
+          <svg className="bingo-art" viewBox="0 0 348 64" aria-hidden="true" focusable="false">
+            {BALLS.map((b, k) => (
+              // A ball: lit (filled in the accent) or still to come (an outline), its face and its letter.
+              <g key={b.letter} className={`bingo-art-ballgroup${k < lit ? " bingo-art-lit" : ""}`}>
+                <circle cx={b.cx} cy={b.cy} r={b.r} className="bingo-art-ball" />
+                <circle cx={b.cx} cy={b.cy} r={Math.round(b.r * 0.62)} className="bingo-art-face" />
+                <text x={b.cx} y={b.cy + 6} textAnchor="middle" className="bingo-art-num">{b.letter}</text>
+              </g>
+            ))}
+          </svg>
+          {/* The same, in words: squares still to mark on the closest line. */}
+          <p className="bingo-progress-text">{labels.progress[Math.min(toGo, labels.progress.length - 1)]}</p>
+        </div>
 
         {hasBingo && (
           <div className="bingo-banner">

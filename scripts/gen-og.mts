@@ -41,6 +41,8 @@ import satori from "satori";
 import { Resvg } from "@resvg/resvg-js";
 // The open materials registry (2026-10-06): one social card per material.
 import { MATERIALS } from "../src/content/materials/materials";
+// The /dev/fun games' own cards (PRIME 05/11/2026): a drawing per game, centred so a cropped preview keeps it.
+import { ART_VERSION, GAME_ART, gameCard } from "./og-games.mts";
 
 const ROOT = process.cwd();
 const read = (p: string) => fs.readFileSync(path.join(ROOT, p), "utf8");
@@ -173,6 +175,7 @@ type CardInput = {
   footTag?: string;      // small mono tag bottom-right (category/code/locale)
   locale: string;
   portrait?: { dataUri: string; mode: "circle" | "panel" };
+  game?: { id: string; version: string }; // a /dev/fun game's card: drawn by og-games.mts (05/11/2026); the version is in the content hash
 };
 
 const div = (style: Record<string, unknown>, children: unknown) => ({
@@ -320,6 +323,7 @@ const EYEBROW: Record<string, Record<string, string>> = {
   guide: { en: "Study guide", "pt-BR": "Guia de estudo" },
   vendor: { en: "Vendor hub", "pt-BR": "Hub do fabricante" },
   page: { en: "ronutz.com", "pt-BR": "ronutz.com" },
+  game: { en: "/dev/fun", "pt-BR": "/dev/fun" }, // the /dev/fun games and the shelf (05/11/2026); the eyebrow is drawn by og-games.mts
 };
 
 // ---------------------------------------------------------------------------
@@ -378,6 +382,12 @@ const STATIC_PAGES: { slug: string; title: Record<string, string>; tagline: Reco
 
 const LOCALES = ["en", "pt-BR"];
 
+/** The /dev/fun games' ids, in shelf order, read from src/config/funGames.ts (structural read, like the others). */
+function funGameIds(): string[] {
+  // Every `{ id: "...", daily: ... }` entry of the shelf's list.
+  return [...read("src/config/funGames.ts").matchAll(/\{\s*id:\s*"([a-z0-9-]+)",\s*daily:/g)].map((m) => m[1]);
+}
+
 /** Build the full job list from the registries. */
 function enumerateJobs(): Job[] {
   const jobs: Job[] = [];
@@ -423,6 +433,15 @@ function enumerateJobs(): Job[] {
       const mm = messages(locale).materials?.items?.[mat.slug] ?? messages("en").materials.items[mat.slug];
       jobs.push({ kind: "page", slug: `materials-${mat.slug}`, locale, ext: "png", input: { eyebrow: EYEBROW.page[locale] ?? EYEBROW.page.en, locale, title: mm.title, tagline: mm.subtitle, color: C.cyan } });
     }
+    // The /dev/fun games (PRIME 05/11/2026: "make the graphics meaningful, related to each game"): one card per game
+    // listed in src/config/funGames.ts, and one for the shelf ("shelf"), each drawn by og-games.mts. A game listed
+    // without a drawing fails here, so a new game cannot ship with a blank card.
+    const devFun = messages(locale).devFun;
+    for (const id of [...funGameIds(), "shelf"]) {
+      if (!GAME_ART[id]) throw new Error(`[gen-og] no share-card drawing for the game "${id}" in scripts/og-games.mts`);
+      const title = id === "shelf" ? String(devFun.title) : String(devFun.games[id].cardName);
+      jobs.push({ kind: "game", slug: id, locale, ext: "png", input: { eyebrow: EYEBROW.game[locale] ?? EYEBROW.game.en, locale, title, tagline: "", color: GAME_ART[id].color, game: { id, version: ART_VERSION } } });
+    }
   }
   return jobs;
 }
@@ -434,7 +453,9 @@ async function renderJob(job: Job, manifest: Record<string, string>): Promise<"w
   const outPath = path.join(OG_DIR, key);
   if (manifest[key] === hash && fs.existsSync(outPath)) return "skipped";
 
-  const svg = await satori(card(job.input) as never, { width: 1200, height: 630, fonts: FONTS });
+  // A game's card is drawn by og-games.mts (05/11/2026); every other kind by card() above.
+  const tree = job.input.game ? gameCard(job.input.game.id, job.input.title, { locale: job.locale, games: messages(job.locale).devFun.games }) : card(job.input);
+  const svg = await satori(tree as never, { width: 1200, height: 630, fonts: FONTS });
   const png = new Resvg(svg, { fitTo: { mode: "width", value: 1200 } }).render().asPng();
   fs.mkdirSync(path.dirname(outPath), { recursive: true });
   if (job.ext === "jpeg") {

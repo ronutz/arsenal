@@ -125,6 +125,26 @@ const FIXTURE: Array<[string, ProbeFamily]> = [
   ["/en/models/", "ai"],
   // Recurring addresses no first-party document explains stay honest misses (read 2026-11-02, 30 and 90 days).
   ["/en/officialsite/", "misses"],
+  // The addresses the currency checks of 3 and 5 November 2026 named (each among the most requested of its 24-hour,
+  // 7- or 30-day window): the Laravel family, bare /actuator and Symfony's phpinfo, Next.js under a guessed folder,
+  // the admin sections and /auth/register, and the secrets the explanation now names.
+  ["/en/livewire/update/", "laravel"],
+  ["/en/admin/login/livewire/update/", "laravel"],
+  ["/en/telescope/", "laravel"],
+  ["/en/nova/", "laravel"],
+  ["/en/two-factor-challenge/", "laravel"],
+  ["/en/password/reset/", "laravel"],
+  ["/en/actuator/", "frameworks"],
+  ["/en/_profiler/phpinfo/", "frameworks"],
+  ["/en/v1/_next/static/", "platforms"],
+  ["/en/admin/users/", "logins"],
+  ["/en/auth/register/", "logins"],
+  ["/en/.kube/config/", "secrets"],
+  ["/en/.azure/config/", "secrets"],
+  ["/en/%40fs/root/.aws/credentials/", "secrets"],
+  // Laravel-sweep addresses no first-party document names stay misses, and so does this site's own build folder.
+  ["/en/filament/", "misses"],
+  ["/en/_next/static/", "misses"],
 ];
 for (const [p, want] of FIXTURE) {
   const got = probeFamily(p);

@@ -6,9 +6,11 @@
 // ----------------------------------------------------------------------------
 // FIVE CLUES, the board (PRIME 03/11/2026). A hidden IT category and up to
 // five of its members, shown one at a time, the hardest first; the player
-// guesses the category after each one. Fewer clues is better. Below it, the
-// practice archive: the previous thirty days' puzzles and a few warm-ups,
-// never a future one.
+// guesses the category after each one. Fewer clues is better. Below it,
+// practice: the warm-ups, puzzles written for practice that never come up as
+// a daily puzzle. Earlier daily puzzles are played from the shell's Earlier
+// puzzles list, back to #1 (PRIME 05/11/2026: the thirty-day archive that
+// practice used to offer is folded into that list).
 //
 // The rules and the matcher live in src/lib/fun/games/five-clues/engine.ts,
 // the puzzles in puzzles.ts beside it; this file shows clues, reads guesses
@@ -19,14 +21,13 @@
 // is on the first screen (R2-09); the category is named once at the end, in
 // the round's reveal, and no longer again in the result panel (R2-12).
 //
-// Practice marks the puzzles already played (PRIME 03/11/2026): a past day
-// whose daily round is still in the record (the last seven days) shows its
-// result, and a puzzle played in practice shows that result (kept in the
-// record's extra field as "practiced", by puzzle id, solved once is solved;
-// pruned to the archive's puzzles and the warm-ups). In the picker each
-// option reads "✓ solved" or "✗ not solved" after its name, and the line under
-// it says, with a tick or a cross drawn beside the words, how the chosen
-// puzzle went. The day's own result comes first when there are both.
+// Practice marks the warm-ups already played (PRIME 03/11/2026): the result
+// is kept in the record's extra field as "practiced", by puzzle id, solved
+// once is solved, pruned to the warm-ups. In the picker each option reads
+// "✓ solved" or "✗ not solved" after its name, and the line under it says,
+// with a tick or a cross drawn beside the words, how the chosen warm-up went.
+// Marks the old archive left on earlier daily puzzles become Earlier puzzles
+// marks (backfillMarks below).
 // ============================================================================
 
 "use client";
@@ -37,16 +38,16 @@ import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { useTranslations } from "next-intl";
 // The frame: stats, rules, result.
 import GameShell, { type ShellResult } from "./GameShell";
-// The puzzle number of a day, and the day of a puzzle number (launch day plus n - 1).
-import { addDays, LAUNCH_DAY, puzzleNumber } from "@/lib/fun/daily";
-// Today's UTC day and the reduced-motion preference.
+// The puzzle number of a day, and the day arithmetic for the old archive's marks.
+import { LAUNCH_DAY, addDays, puzzleNumber, utcDayKey } from "@/lib/fun/daily";
+// The day in play and the reduced-motion preference.
 import { useReducedMotion, useToday } from "@/lib/fun/hooks";
 // The share card.
 import { shareText } from "@/lib/fun/share";
 // The one storage key: the record, its daily states and its extra field.
-import { loadRecord, recordResult, saveDailyState, updateRecord, type GameRecord } from "@/lib/fun/storage";
+import { loadRecord, recordResult, saveDailyState, updateRecord, type GameRecord, type LegacyMarks } from "@/lib/fun/storage";
 // The rules.
-import { CLUES, GAME_ID, WARMUPS, archive, clueText, dailyFor, judge, langOf, puzzleFor, type Lang } from "@/lib/fun/games/five-clues/engine";
+import { CLUES, GAME_ID, WARMUPS, clueText, dailyFor, judge, langOf, puzzleFor, type Lang } from "@/lib/fun/games/five-clues/engine";
 // The puzzle type.
 import type { FivePuzzle } from "@/lib/fun/games/five-clues/puzzles";
 
@@ -90,14 +91,10 @@ function isOver(p: Progress): boolean {
   return p.solved || p.guesses.length >= CLUES;
 }
 
-/** How a practice puzzle went before: on its day (from the daily states) or in practice, solved or not. */
+/** How a warm-up went before in practice: solved or not. */
 interface PlayedMark {
-  /** Where the result comes from. */
-  from: "daily" | "practice";
   /** Solved. */
   solved: boolean;
-  /** For a day's round: the clues it took. */
-  clues: number;
 }
 
 /**
@@ -114,28 +111,68 @@ function readPracticed(v: unknown): Record<string, boolean> {
 }
 
 /**
- * How a practice choice went before, if it was played: the day's own round first (kept for the last seven days),
- * then practice.
+ * How a warm-up went before in practice, if it was played.
  *
- * @param key the choice: "n:<number>" for a past day, "w:<index>" for a warm-up
- * @param puzzle its puzzle
+ * @param puzzle the warm-up
  * @param record the record, or null before it is read
  * @returns the mark, or null when it was never played (or nothing is known)
  */
-function playedMark(key: string, puzzle: FivePuzzle, record: GameRecord | null): PlayedMark | null {
+function playedMark(puzzle: FivePuzzle, record: GameRecord | null): PlayedMark | null {
   // Nothing read yet.
   if (!record) return null;
-  // A past day: its daily round, if the record still holds it and it was finished.
-  if (key.startsWith("n:")) {
-    // That day's state.
-    const day = restore(record.daily[addDays(LAUNCH_DAY, Number(key.slice(2)) - 1)]);
-    // A finished round is the mark.
-    if (isOver(day)) return { from: "daily", solved: day.solved, clues: day.guesses.length };
-  }
-  // Practice: the stored result for this puzzle.
+  // The stored result for this puzzle.
   const p = readPracticed(record.extra.practiced)[puzzle.id];
   // Played in practice, solved or not.
-  return typeof p === "boolean" ? { from: "practice", solved: p, clues: 0 } : null;
+  return typeof p === "boolean" ? { solved: p } : null;
+}
+
+/**
+ * The mark of a kept daily round, for days played before the marks existed (GameShell's gradeSaved).
+ *
+ * @param _day the round's day (the saved guesses say it all)
+ * @param state the kept state
+ * @returns 1 solved, 0 every clue used, null not finished
+ */
+function gradeSaved(_day: string, state: unknown): 0 | 1 | null {
+  // The guesses as saved.
+  const p = restore(state);
+  // Finished: solved or not; otherwise no mark.
+  return isOver(p) ? (p.solved ? 1 : 0) : null;
+}
+
+/** How far back the old practice archive reached: the thirty days before today. */
+const OLD_ARCHIVE_DAYS = 30;
+
+/**
+ * The marks the old practice archive left (GameShell's legacyMarks): a past day's puzzle played in practice was kept
+ * in extra.practiced by puzzle id. Each of the last thirty days whose puzzle is there becomes an earlier puzzle played
+ * later, and the map keeps only the warm-ups, which practice still offers (PRIME 05/11/2026).
+ *
+ * @param r the record as stored
+ * @returns the marks and the extra field with the warm-ups' marks only, or null when there is nothing to move
+ */
+function legacyMarks(r: GameRecord): LegacyMarks | null {
+  // The stored marks, by puzzle id.
+  const practiced = readPracticed(r.extra.practiced);
+  // The warm-ups' ids, which stay.
+  const warm = new Set(WARMUPS.map((w) => w.id));
+  // Nothing but warm-ups: nothing to move.
+  if (Object.keys(practiced).every((id) => warm.has(id))) return null;
+  // Today's puzzle number.
+  const n = puzzleNumber(utcDayKey(new Date()));
+  // The earlier puzzles' marks.
+  const later: Record<string, number> = {};
+  // The days the archive offered, yesterday back thirty days, not before #1.
+  for (let m = n - 1; m >= Math.max(1, n - OLD_ARCHIVE_DAYS); m--) {
+    // That day's puzzle's mark, if it was played in practice.
+    const mark = practiced[puzzleFor(m).id];
+    // Filed under its day.
+    if (typeof mark === "boolean") later[addDays(LAUNCH_DAY, m - 1)] = mark ? 1 : 0;
+  }
+  // The map with only the warm-ups.
+  const kept = Object.fromEntries(Object.entries(practiced).filter(([id]) => warm.has(id)));
+  // Both.
+  return { later, extra: { ...r.extra, practiced: kept } };
 }
 
 /** A tick or a cross, drawn in the current colour; decorative (the words beside it carry the meaning). */
@@ -347,7 +384,7 @@ function squares(p: Progress): string {
 }
 
 /**
- * The game: the daily puzzle in the shell, the practice archive below it.
+ * The game: the daily puzzle in the shell, the warm-ups below it.
  *
  * @param props the page locale
  * @returns the game
@@ -359,13 +396,13 @@ export default function FiveClues({ locale }: { locale: string }) {
   const tc = useTranslations("devFun.games.common");
   // The clues' language.
   const lang = langOf(locale);
-  // Today's UTC day, null until mount.
+  // The day in play (today's, or an earlier puzzle's on a ?day= page), null until mount.
   const today = useToday();
   // Bumped after each recorded result.
   const [version, setVersion] = useState(0);
   // The day's progress, null until read.
   const [daily, setDaily] = useState<Progress | null>(null);
-  // The practice choice: "n:<number>" for a past day, "w:<index>" for a warm-up.
+  // The practice choice: "w:<index>", a warm-up.
   const [choice, setChoice] = useState("w:0");
   // The practice progress.
   const [practice, setPractice] = useState<Progress>(FRESH);
@@ -398,35 +435,28 @@ export default function FiveClues({ locale }: { locale: string }) {
   const n = today ? puzzleNumber(today) : 0;
   // The day's puzzle.
   const puzzle = useMemo(() => (today ? dailyFor(today) : null), [today]);
-  // The practice options: past days (newest first), then the warm-ups, each with its puzzle and how it went before.
+  // The practice options: the warm-ups, each with its puzzle and how it went before.
   const options = useMemo(() => {
     // Nothing before mount.
     if (!today) return [];
     // The choices with their names and puzzles.
-    const plain = [
-      ...archive(n).map((m) => ({ key: `n:${m}`, name: t("archiveDay", { n: m }), puzzle: puzzleFor(m) })),
-      ...WARMUPS.map((w, i) => ({ key: `w:${i}`, name: t("warmup", { n: i + 1 }), puzzle: w })),
-    ];
+    const plain = WARMUPS.map((w, i) => ({ key: `w:${i}`, name: t("warmup", { n: i + 1 }), puzzle: w }));
     // Each with its mark, and a label that says it in words after a tick or a cross.
     return plain.map((o) => {
       // How it went before, if it was played.
-      const mark = playedMark(o.key, o.puzzle, record);
+      const mark = playedMark(o.puzzle, record);
       // The option's text.
       const label = mark === null ? o.name : mark.solved ? t("markSolved", { label: o.name }) : t("markMissed", { label: o.name });
       // The option.
       return { ...o, mark, label };
     });
-  }, [today, n, t, record]);
+  }, [today, t, record]);
   // The practice puzzle.
-  const pPuzzle = useMemo(() => (choice.startsWith("n:") ? puzzleFor(Number(choice.slice(2))) : WARMUPS[Number(choice.slice(2))] ?? WARMUPS[0]), [choice]);
+  const pPuzzle = useMemo(() => WARMUPS[Number(choice.slice(2))] ?? WARMUPS[0], [choice]);
   // How the chosen puzzle went before, for the line under the picker.
   const chosenMark = options.find((o) => o.key === choice)?.mark ?? null;
   // That line in words.
-  const chosenText =
-    chosenMark === null ? null
-    : chosenMark.from === "daily" ? (chosenMark.solved ? t("statusDailyWon", { n: chosenMark.clues }) : t("statusDailyLost"))
-    : chosenMark.solved ? t("statusPracticeWon")
-    : t("statusPracticeLost");
+  const chosenText = chosenMark === null ? null : chosenMark.solved ? t("statusPracticeWon") : t("statusPracticeLost");
 
   // A clue spent on the daily puzzle.
   const onDaily = (guess: string, right: boolean) => {
@@ -459,8 +489,8 @@ export default function FiveClues({ locale }: { locale: string }) {
     if (isOver(next)) {
       // A free round.
       recordResult(GAME_ID, { dayKey: today, won: right, score: right ? next.guesses.length : undefined, higherIsBetter: false });
-      // The puzzles practice can offer today (the archive's and the warm-ups), so old marks do not pile up.
-      const offered = new Set([...archive(n).map((m) => puzzleFor(m).id), ...WARMUPS.map((w) => w.id)]);
+      // The puzzles practice offers (the warm-ups), so old marks do not pile up.
+      const offered = new Set(WARMUPS.map((w) => w.id));
       // The puzzle's mark, merged into the extra field: solved once stays solved.
       updateRecord(GAME_ID, (r) => {
         // The marks kept, only for puzzles still offered.
@@ -509,7 +539,7 @@ export default function FiveClues({ locale }: { locale: string }) {
   // The page body.
   return (
     <>
-      <GameShell gameId={GAME_ID} kind="daily" today={today} rules={rules} result={result} version={version}>
+      <GameShell gameId={GAME_ID} kind="daily" today={today} rules={rules} result={result} version={version} gradeSaved={gradeSaved} legacyMarks={legacyMarks}>
         <div className="fg-five-wrap">
           {puzzle && daily ? (
             <Round key={`daily-${today}`} puzzle={puzzle} lang={lang} progress={daily} onSpend={onDaily} idBase="five-daily" />
@@ -519,7 +549,7 @@ export default function FiveClues({ locale }: { locale: string }) {
         </div>
       </GameShell>
 
-      {/* Practice: past puzzles and warm-ups, never a future one. */}
+      {/* Practice: the warm-ups (earlier daily puzzles are in the shell's Earlier puzzles list). */}
       <section className="fg-five-practice" aria-labelledby="five-practice-title">
         <h2 id="five-practice-title" className="fg-five-practice-title">
           {tc("practice")}

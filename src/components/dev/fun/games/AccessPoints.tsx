@@ -9,8 +9,10 @@
 // The engine (src/lib/fun/games/access-points/engine.ts) builds the day's
 // floor; this component draws it and takes the moves:
 //   - tap cycles empty, mark (×), access point; a quick second tap or a long
-//     press places an access point directly; dragging from a cell marks every
-//     empty cell it crosses;
+//     press places an access point directly; with a mouse or a pen, dragging
+//     from a cell marks every empty cell it crosses; on a touch screen a swipe
+//     scrolls the page and marks nothing (PRIME 05/11/2026: swiping "means
+//     moving the screen, and NOT selecting multiple fields");
 //   - keyboard: arrows move, Space or Enter cycles, A places, X marks,
 //     Backspace or Delete empties;
 //   - an option marks the cells the placed access points rule out;
@@ -32,7 +34,7 @@ import { useTranslations } from "next-intl";
 // The frame every game sits in.
 import GameShell, { type ShellResult } from "./GameShell";
 // The shared session, its bars, the hint holder and the live line.
-import { LiveLine, PuzzleHud, PuzzleModeBar, dayLabel, useBoardHint, useBoardKeys, usePuzzleSession, type KitLabels } from "./LogicPuzzleKit";
+import { LiveLine, PuzzleHud, gradeSavedRound, legacyPracticeMarks, useBoardHint, useBoardKeys, usePuzzleSession, type KitLabels } from "./LogicPuzzleKit";
 // The engine.
 import { AP_ID, checkErrors, conflicts, generate, isSolved, nextHint, ruledOut, type ApHint, type ApMark, type ApPuzzle, type ApUnits } from "@/lib/fun/games/access-points/engine";
 // The puzzle number.
@@ -50,6 +52,8 @@ const DOUBLE_TAP_MS = 320;
 
 /** A long press, in milliseconds. */
 const LONG_PRESS_MS = 450;
+/** How far a finger may wobble and still be a press, in CSS pixels; further is a swipe. */
+const TAP_SLOP_PX = 10;
 
 /** Each zone's class (full names, so every class is written out in the source). */
 const ZONE_CLASS = ["fg-ap-z0", "fg-ap-z1", "fg-ap-z2", "fg-ap-z3", "fg-ap-z4", "fg-ap-z5", "fg-ap-z6", "fg-ap-z7"] as const;
@@ -162,7 +166,7 @@ export default function AccessPoints(props: { locale: string }) {
   // The last tap: cell and time, for the double tap.
   const lastTap = useRef<{ cell: number; at: number }>({ cell: -1, at: 0 });
   // Pointer gesture state: the cell pressed, whether it became a drag or a long press, the long-press timer.
-  const gesture = useRef<{ cell: number; drag: boolean; long: boolean; timer: number | null; marked: Set<number> }>({ cell: -1, drag: false, long: false, timer: null, marked: new Set() });
+  const gesture = useRef<{ cell: number; drag: boolean; long: boolean; timer: number | null; marked: Set<number>; x: number; y: number }>({ cell: -1, drag: false, long: false, timer: null, marked: new Set(), x: 0, y: 0 });
 
   // Live clashes.
   const clash = useMemo(() => (p && board ? conflicts(p, board) : new Set<number>()), [p, board]);
@@ -259,6 +263,9 @@ export default function AccessPoints(props: { locale: string }) {
     g.drag = false;
     g.long = false;
     g.marked = new Set();
+    // Where it landed, so a finger that travels can be told from one that stays.
+    g.x = e.clientX;
+    g.y = e.clientY;
     // The long-press timer places an access point.
     g.timer = window.setTimeout(() => {
       // Became a long press.
@@ -268,8 +275,24 @@ export default function AccessPoints(props: { locale: string }) {
     }, LONG_PRESS_MS);
   };
 
-  // Pointer move: crossing into another cell turns the press into a marking drag.
+  // Pointer move: with a mouse or a pen, crossing into another cell turns the press into a marking drag.
   const onMove = (e: PointerEvent<HTMLDivElement>) => {
+    // A finger moving is the page scrolling (the board lets the browser pan): it marks nothing, and once it travels
+    // past a tap's wobble or into another cell it is no long press either (the browser may not cancel the pointer
+    // when there is nothing to scroll that way).
+    if (e.pointerType === "touch") {
+      // The press.
+      const g = gesture.current;
+      // Travelled: the long press is off.
+      if (g.timer !== null && (Math.hypot(e.clientX - g.x, e.clientY - g.y) > TAP_SLOP_PX || cellAt(e) !== g.cell)) {
+        // Cancelled.
+        window.clearTimeout(g.timer);
+        // Gone.
+        g.timer = null;
+      }
+      // Nothing is marked.
+      return;
+    }
     // Only during a press.
     const g = gesture.current;
     // No press.
@@ -447,25 +470,15 @@ export default function AccessPoints(props: { locale: string }) {
 
   // The kit's labels.
   const labels: KitLabels = {
-    // Mode switch.
-    daily: tc("daily"),
-    practice: tc("practice"),
-    modeLabel: t("modeLabel"),
-    // Practice.
-    practiceNote: t("practiceNote"),
-    practiceDaysLabel: t("practiceDaysLabel"),
     // The bar.
     time: tc("time"),
     check: tc("check"),
     undo: tc("undo"),
     clear: tc("clear"),
     checksUsed: t("checksUsed", { n: s.checks, s: s.checks * PENALTY_S }),
-    // Hints, and a solved earlier day's name.
+    // Hints.
     hint: tc("hint"),
     hintsUsed: tc("hintsUsed", { n: s.hints, s: s.hints * PENALTY_S }),
-    daySolved: (date, time) => tc("daySolved", { date, time }),
-    // A day solved only in practice, named so.
-    daySolvedPractice: (date, time) => tc("daySolvedPractice", { date, time }),
   };
 
   // The result, once solved.
@@ -474,8 +487,8 @@ export default function AccessPoints(props: { locale: string }) {
     if (!s.done || s.finalMs === null || !s.day || !p) return null;
     // The time.
     const time = formatDuration(s.finalMs);
-    // The title line: number for a daily, date for practice.
-    const title = s.mode === "daily" ? t("shareTitle", { n: puzzleNumber(s.day) }) : t("shareTitlePractice", { date: dayLabel(s.day, props.locale) });
+    // The title line: the puzzle's number (on an earlier puzzle's page, share.ts adds that it was played later).
+    const title = t("shareTitle", { n: puzzleNumber(s.day) });
     // The emoji line: one signal per access point, then the time and the checks and hints used, in words (a bolt and
     // magnifying glasses meant nothing in a chat; review R1-13, as Bit Balance and Patch Path).
     const lines = ["📶".repeat(p.n), `⏱️ ${time} · ${t("shareChecks", { n: s.checks, s: s.checks * PENALTY_S })} · ${tc("shareHints", { n: s.hints, s: s.hints * PENALTY_S })}`];
@@ -492,7 +505,7 @@ export default function AccessPoints(props: { locale: string }) {
       // The share card.
       share: shareText({ title, lines, locale: props.locale, slug: AP_ID }),
     };
-  }, [s.done, s.finalMs, s.day, s.mode, s.checks, s.hints, p, t, tc, props.locale]);
+  }, [s.done, s.finalMs, s.day, s.checks, s.hints, p, t, tc, props.locale]);
 
   // The rules.
   const rules = (
@@ -513,8 +526,7 @@ export default function AccessPoints(props: { locale: string }) {
 
   // The game in its shell.
   return (
-    <GameShell gameId={AP_ID} kind={s.shell.kind} onPlayAgain={s.shell.onPlayAgain} today={today} rules={rules} result={result} version={s.version} formatBest={(ms) => formatDuration(ms)}>
-      <PuzzleModeBar session={s} labels={labels} locale={props.locale} />
+    <GameShell gameId={AP_ID} kind="daily" today={today} rules={rules} result={result} version={s.version} formatBest={(ms) => formatDuration(ms)} gradeSaved={gradeSavedRound} legacyMarks={legacyPracticeMarks}>
       {!p || !board ? (
         // Before mount: a neutral board, the same on the server and the first client render.
         <div className="fg-grid fg-ap-board fg-ap-loading" style={{ ["--fg-cols" as string]: 6 }} aria-busy="true">

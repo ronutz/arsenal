@@ -30,7 +30,7 @@ import { useTranslations } from "next-intl";
 // The frame around every game.
 import GameShell from "./GameShell";
 // Today's UTC day and the reduced-motion preference.
-import { useReducedMotion, useToday } from "@/lib/fun/hooks";
+import { useRealToday, useReducedMotion } from "@/lib/fun/hooks";
 // The share card, the clipboard and the time format.
 import { copyText, formatDuration, shareText } from "@/lib/fun/share";
 // What this browser remembers.
@@ -97,7 +97,7 @@ export default function IncidentCommander({ locale }: { locale: string }) {
   const t = useTranslations("devFun.games.incident-commander");
   const tc = useTranslations("devFun.games.common");
   // Today, after mount.
-  const today = useToday();
+  const today = useRealToday();
   // Reduced motion (the jump to the incidents is instant then).
   const reduce = useReducedMotion();
   // The game, loaded after mount.

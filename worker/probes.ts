@@ -37,6 +37,7 @@ export type ProbeFamily =
   | "wp-core"
   | "secrets"
   | "frameworks"
+  | "laravel"
   | "platforms"
   | "backdoors"
   | "logins"
@@ -64,15 +65,28 @@ export const PROBE_FAMILIES: ReadonlyArray<{ id: ProbeFamily; re: RegExp }> = [
   // Source code, keys and histories left in a folder the web server publishes (any dot-file but .well-known).
   { id: "secrets", re: /\/\.(?!well-known)[^/]+|\/ds_store\/?$/ },
   // Framework endpoints that reveal configuration or a version.
-  { id: "frameworks", re: /^\/[^/]+\/(actuator\/[a-z]+|env|manage\/env|debug\/default\/view|magento_version|healthz)\/?$/ },
+  // Since 2026-11-05 also the Actuator's own discovery page, /actuator bare (Spring Boot: "available on /actuator by
+  // default"), and Symfony's profiler page /_profiler/phpinfo (WebProfilerBundle's /phpinfo route under the /_profiler
+  // prefix its recipe mounts when@dev), both asked daily in the windows the currency checks of 3 and 5 November read.
+  { id: "frameworks", re: /^\/[^/]+\/(actuator(\/[a-z]+)?|env|manage\/env|debug\/default\/view|magento_version|healthz|_profiler\/phpinfo)\/?$/ },
+  // Laravel's own addresses (2026-11-05, the largest unexplained group in the 7- and 30-day windows read on 3 and 5
+  // November): Livewire 3's update endpoint, bare or under any guessed prefixes (/login/, /register/, /admin/login/),
+  // the Telescope, Horizon, Pulse and Nova dashboards, and the sign-in routes of Fortify and laravel/ui. Placed before
+  // logins, so an address such as /admin/login/livewire/update is read as Livewire, not as a sign-in page.
+  { id: "laravel", re: /^\/[^/]+\/(([a-z0-9_-]+\/)*livewire\/update|telescope|horizon|pulse|nova|two-factor-challenge|email\/verify|password\/reset)\/?$/ },
   // Folder names that identify another platform (Drupal, Joomla, OpenCart, Magento, cPanel, OJS).
-  { id: "platforms", re: /^\/[^/]+\/(administrator|admin\/controller\/extension\/extension|sites\/default\/files|user\/login|openid_connect\/cpanelid|plugins\/(generic|themes)|pub\/media|pub|modules)\/?$/ },
+  // Since 2026-11-05 also Next.js's build folder, _next/static, asked for under a guessed subfolder (/v1/, /client/,
+  // /frontend/...): at least one folder is required between the language and _next, so this site's own /_next/static/
+  // files, served at the root, can never match.
+  { id: "platforms", re: /^\/[^/]+\/(administrator|admin\/controller\/extension\/extension|sites\/default\/files|user\/login|openid_connect\/cpanelid|plugins\/(generic|themes)|pub\/media|pub|modules)\/?$|^\/[^/]+\/([a-z0-9_-]+\/)+_next\/static\/?$/ },
   // Names of backdoors someone else may have planted.
   { id: "backdoors", re: /^\/[^/]+\/(modules\/mod_webshell|blocks\/rce(\/lang(\/en)?)?|blocks)\/?$/ },
   // Any sign-in or admin page to try passwords on.
   // Registration, password-reset and dashboard pages since 2026-11-02 (the most-requested unclassified addresses of the
   // 7- and 90-day windows read that day: /register/, /admin/login/, /forgot-password/, /auth/login/, /dashboard/).
-  { id: "logins", re: /^\/[^/]+\/(admin|admin\/api|admin\/login|auth\/login|login|register|forgot-password|dashboard|manager|webmail|mail)\/?$/ },
+  // Since 2026-11-05 also /auth/register and the admin sections behind a sign-in (users, settings, dashboard, reports,
+  // orders, products), named exactly because "admin" alone is too common a word to follow with any folder.
+  { id: "logins", re: /^\/[^/]+\/(admin|admin\/api|admin\/login|auth\/login|auth\/register|admin\/(users|settings|dashboard|reports|orders|products)|login|register|forgot-password|dashboard|manager|webmail|mail)\/?$/ },
   // Common folder names, forgotten copies of a site, and the well-known folder itself.
   { id: "exposure", re: /^\/[^/]+\/(staging|tmp|config|files?|images|uploads|pdf|new|newsite|vendors|published|submit|\.well-known)\/?$/ },
   // The path form of an IPFS gateway.

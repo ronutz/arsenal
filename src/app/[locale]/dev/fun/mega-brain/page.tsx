@@ -21,7 +21,9 @@ import SiteFooter from "@/components/SiteFooter";
 import MegaBrainConsole, { type MegaBrainLabels } from "@/components/dev/fun/MegaBrainConsole";
 import PageCapabilities from "@/components/PageCapabilities";
 
-const MANO_HREF = "https://youtube.com/@manodeyvin";
+// The Mano Deyvin tribute links his reaction video, the one that started the joke (PRIME 05/11/2026 09:43; checked
+// 05/11/2026 09:4x through YouTube's oEmbed: "O FINCH PROMPT MAGICO DO THIAGO FINCH", by mano deyvin).
+const MANO_HREF = "https://www.youtube.com/shorts/EiHnBZJ8Xxo";
 // The XGH axioms page. Its old address (gohorseprocess.com.br/extreme-go-horse-xgh/) now redirects to the site's
 // home page; the axioms live here, axiom 1 reading "Pensou, não é XGH" (read with curl 03/11/2026 09:1x).
 const XGH_HREF = "https://gohorse.com.br/extreme-go-horse-xgh.html";
@@ -133,7 +135,6 @@ export default async function MegaBrainPage({
     godLine: t("godLine"),
     godSub: t("godSub"),
     godOff: t("godOff"),
-    disclaimer: t("disclaimer"),
     bossHint: t("bossHint"),
     bossDismiss: t("bossDismiss"),
   };

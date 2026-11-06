@@ -9887,7 +9887,8 @@
           "multicast": "The I/G bit is set, so this is a multicast (group) address rather than a single interface.",
           "notInSnapshot": "This OUI is not in the IEEE MA-L snapshot. It may be unassigned, newer than the snapshot, or from the MA-M / MA-S registries this tool does not yet include."
         }
-      }
+      },
+      "ipv4GroupsLink": "See the 32 groups, with IANA's names for them, in the multicast group to MAC mapper"
     },
     "voss-fabric-id": {
       "name": "VOSS fabric identifier decoder",
@@ -21955,7 +21956,8 @@
       "floorsLead": "Three floors, one rule.",
       "floorMain": "<name>The main floor</name><line>The catalogue: every tool with a manifest, golden vectors and a fixed shape, computing in your browser and nowhere else.</line>",
       "floorGreen": "<name>The green room</name><line>Tools whose form is still finding itself: the same privacy, labelled as early.</line>",
-      "floorRed": "<name>The red room</name><line>The one place a tool sends something out (a query built from your input, or the speed test's test data) to the official service named on screen, and only when you press Ask, Enter or Start.</line>"
+      "floorRed": "<name>The red room</name><line>The one place a tool sends something out (a query built from your input, or the speed test's test data) to the official service named on screen, and only when you press Ask, Enter or Start.</line>",
+      "devFun": "Off the floors: <link>/dev/fun</link>, daily puzzles and toys for a short break."
     },
     "rpki-origin-validation": {
       "name": "Route origin validation calculator",
@@ -25055,7 +25057,7 @@
         "ubm": "Unicast prefix (RFC 6034)",
         "relative": "Relative address (offset)"
       },
-      "ianaName": "IANA: {name}",
+      "ianaName": "IANA: <n>{name}</n>",
       "block": {
         "local-network-control": "Local Network Control Block",
         "internetwork-control": "Internetwork Control Block",
@@ -25281,7 +25283,7 @@
     "noTrackTitle": "No cookies set by the site's code, no third-party analytics, and what is counted instead",
     "noTrackBody": "The site's own code sets no cookies. It uses no third-party analytics service (such as Google Analytics or Plausible), no advertising network, no social-media tracking pixels, and no device fingerprinting, and none of its own scripts reports anything about you. The one thing on the page that does not come from the site's code is Cloudflare's bot check, a script and up to two cookies of Cloudflare's own, explained under Hosting and server logs below.\n\nWhat the site does keep is a count, made at its own server as it answers each request. Two separate records are written, and they are deliberately kept apart so that neither can be matched to the other. The first records the address asked for and whether a page was found there, the language, the visiting country as your network reports it, whether the request came from a person or from a known crawler, and, for a person, the coarse class of device (phone or tablet, desktop or laptop, or other). The second records only a referring address, when your browser sends one and a page was served, and carries nothing else at all - no page, no country, no time correlation with the first.\n\nThe counting code never writes your IP address. It never writes your browser's user agent or the network your connection comes from either; they are read only to decide whether the request came from a person or a crawler (a browser on a cloud or hosting provider's network counts as a machine) and, for a person, which class of device sent it, and what is kept is a label such as \"search engine\", \"monitoring tool\" or \"phone or tablet\". No identifier of any kind is used, so there is no visitor to profile, no session to reconstruct, and nothing to share.",
     "browserTitle": "What is stored in your browser",
-    "browserBody": "A few small things, all in your browser's local storage, none of them ever sent to this site or to anyone else, each clearable through your browser at any time: your visual theme (ronutz-theme); the language you last used, so the bare domain can send you back to it (ronutz-lang); whether glossary hints are shown (ronutz-glossary-hints); any keyboard shortcuts you rebound (ronutz-shortcuts); whether the search box starts empty each time you open it (ronutz-search-fresh); the cards-or-list density you chose on an index page (ronutz:view:*); the Guided or Directory reading you chose on the Learn and Tools pages (ronutz:hub:*); the last six pages you opened, so the home page can offer them again under \"Continue where you left off\", with a button that forgets them (ronutz:recent:v1); on two dev-room pages only, a motion switch and a practice score (ronutz-mb-motion, ronutz:subnet-drill:stats); and, in the /dev/fun games, each game's streak, scores, settings, progress and daily puzzles from the last seven days, and the Meeting Bingo card in play (ronutz:fun:v1); a game's \"Reset my stats\" button clears its streak and scores, and old daily puzzles drop out after seven days. One session-only flag (ronutz.privPreview) exists for the author's private preview of unpublished pages and is never set for a reader. Nothing else about you is stored on your device.",
+    "browserBody": "A few small things, all in your browser's local storage, none of them ever sent to this site or to anyone else, each clearable through your browser at any time: your visual theme (ronutz-theme); the language you last used, so the bare domain can send you back to it (ronutz-lang); whether glossary hints are shown (ronutz-glossary-hints); any keyboard shortcuts you rebound (ronutz-shortcuts); whether the search box starts empty each time you open it (ronutz-search-fresh); the cards-or-list density you chose on an index page (ronutz:view:*); the Guided or Directory reading you chose on the Learn and Tools pages (ronutz:hub:*); the last six pages you opened, so the home page can offer them again under \"Continue where you left off\", with a button that forgets them (ronutz:recent:v1); on two dev-room pages only, a motion switch and a practice score (ronutz-mb-motion, ronutz:subnet-drill:stats); and, in the /dev/fun games, each game's streak, scores, settings, progress and daily puzzles from the last seven days, whether each daily puzzle was solved (kept for 400 days), the 14 earlier puzzles played most recently, and the Meeting Bingo card in play (ronutz:fun:v1); a game's \"Reset my stats\" button clears its streak and scores, and old daily puzzles drop out after seven days. One session-only flag (ronutz.privPreview) exists for the author's private preview of unpublished pages and is never set for a reader. Nothing else about you is stored on your device.",
     "hostingTitle": "Hosting and server logs",
     "hostingBody": "The site is delivered through Cloudflare, which provides its hosting and content delivery. As with any website, loading a page means your device connects to a server, and Cloudflare, acting as the hosting provider, processes basic connection data, including your IP address and standard request details, in order to deliver the pages to you and to protect the site against abuse and attack. This processing is necessary to operate and secure the site (a legitimate interest under GDPR Article 6(1)(f), and the corresponding bases under LGPD Articles 7 and 10). How long Cloudflare keeps this data is set by Cloudflare's own policies, not by this site's code, and it is not used here to identify or track you.",
     "toolsTitle": "The tools run in your browser",
@@ -25314,7 +25316,8 @@
       "r20261028address": "The contact address is now shown by a button that reveals it in your browser; the notice no longer writes it in any form a harvester could read.",
       "r20261102cookie": "The language menu no longer writes a cookie. Until this revision, changing language with it also saved the chosen language in a cookie named NEXT_LOCALE, kept for a year, which nothing on the site read; the language stays where it always worked, in your browser's storage, and a visit now removes a cookie left from before.",
       "r20261103fun": "The /dev/fun games join the list of stored values: each game's streak, scores, settings, progress and last seven days of daily puzzles, and the Meeting Bingo card in play, in one key; a game's \"Reset my stats\" button clears its streak and scores.",
-      "r20261103catlink": "The Global Cat Distribution System's share link is described: it is made only when Copy is pressed, and it carries the name, and the city if one was given, after the #."
+      "r20261103catlink": "The Global Cat Distribution System's share link is described: it is made only when Copy is pressed, and it carries the name, and the city if one was given, after the #.",
+      "r20261105earlier": "The /dev/fun games also keep whether each daily puzzle was solved (for 400 days) and the 14 earlier puzzles played most recently, for the list of earlier puzzles every daily game now offers."
     },
     "backHome": "Back to home",
     "prefsTitle": "Theme, language, and what this site remembers",
@@ -27521,7 +27524,8 @@
     "changeConfirm": "Press to swap and lose the marks",
     "shareLine": "BINGO at {type} · {squares} · {size}",
     "shareSquares": "{n, plural, one {# square} other {# squares}}",
-    "ogAlt": "Meeting Bingo: a five-by-five bingo card with a full diagonal marked, beside the words Every meeting has a script. Now it has a scorecard."
+    "ogAlt": "Meeting Bingo: a five-by-five bingo card with a full diagonal marked, beside the words Every meeting has a script. Now it has a scorecard.",
+    "progress": "{n, plural, =0 {Bingo!} one {One more square for a bingo} other {# more squares for a bingo}}"
   },
   "devFun": {
     "metaTitle": "/dev/fun",
@@ -27586,11 +27590,22 @@
         "hintCost": "{s} seconds added.",
         "hintsUsed": "{n, plural, one {# hint (+{s} s)} other {# hints (+{s} s)}}",
         "shareHints": "{n, plural, =0 {no hints} one {# hint (+{s} s)} other {# hints (+{s} s)}}",
-        "daySolved": "{date}, solved in {time}",
         "hintCellTarget": "picked out by the hint",
         "hintCellWrong": "wrong, says the hint",
         "hintRule": "Hint shows the next step that logic forces from your board and says why; if there is a mistake, it points at that first. It adds {s} seconds, just like Check.",
-        "daySolvedPractice": "{date}, solved in practice in {time}"
+        "earlierPuzzles": "Earlier puzzles ({n})",
+        "earlierNote": "Every puzzle from #1 to yesterday. An earlier puzzle does not count toward your streak or your stats. ✓ solved, ✗ not solved; a solid edge means it was played on its day, a dashed edge that it was played later.",
+        "earlierNotPlayed": "not played",
+        "earlierSolved": "{when, select, onDay {solved on its day} other {solved later}}",
+        "earlierUnsolved": "{when, select, onDay {played on its day, not solved} other {played later, not solved}}",
+        "earlierDayLabel": "Puzzle #{n}, {date}: {status}",
+        "earlierBannerTitle": "Earlier puzzle #{n}, {date}",
+        "earlierBannerNote": "It does not count toward your streak or your stats.",
+        "earlierNavLabel": "Other puzzles",
+        "earlierPrev": "Previous (#{n})",
+        "earlierNext": "Next (#{n})",
+        "earlierToday": "Today's puzzle",
+        "earlierRefused": "{reason, select, future {A puzzle from a future day cannot be played: here is today's.} today {That day is today: here is today's puzzle, which counts as usual.} beforeLaunch {Puzzle #1 was on {first}, so there is none before it: here is today's.} other {That address does not name a day: here is today's puzzle.}}"
       },
       "access-points": {
         "metaTitle": "Access Points | /dev/fun",
@@ -27600,9 +27615,6 @@
         "intro": "The office needs wireless coverage and the budget stretches to exactly one access point per row, per column and per zone. Put two side by side and they shout over each other, so none may touch.",
         "cardName": "Access Points",
         "cardBlurb": "Cover every zone of the floor with one access point each, none touching. A new floor every day.",
-        "modeLabel": "Which puzzle to play",
-        "practiceNote": "The last seven days' puzzles, for practice: a ✓ and a time mark the ones you solved on the day, a ↻ and a time the ones you solved in practice. They do not count towards your streak.",
-        "practiceDaysLabel": "Earlier puzzles",
         "checksUsed": "{n, plural, one {# check (+{s} s)} other {# checks (+{s} s)}}",
         "clockHint": "The clock starts with your first move.",
         "autoMark": "Mark the cells each access point rules out",
@@ -27623,16 +27635,15 @@
         "sayDone": "Every zone covered. Solved!",
         "solvedHeadline": "Full coverage!",
         "shareTitle": "Access Points #{n}",
-        "shareTitlePractice": "Access Points (practice, {date})",
         "rules": {
           "goal": "Place one wireless access point in every row, every column and every zone of the floor.",
           "one": "Each row, each column and each zone (lettered A, B, C and so on, with walls between them) holds exactly one access point.",
           "touch": "No two access points may touch, not even at a corner: they would interfere.",
-          "tap": "Tap a cell to cycle: empty, × (no access point here), access point. A quick double tap or a long press places an access point at once; drag across cells to mark them all with ×.",
+          "tap": "Tap a cell to cycle: empty, × (no access point here), access point. A quick double tap or a long press places an access point at once. With a mouse, drag across cells to mark them all with ×; on a touch screen a swipe scrolls the page and marks nothing.",
           "keys": "Keyboard: arrow keys move, Space or Enter cycles, A places an access point, X marks, Backspace empties.",
           "check": "Your time is your score. Check marks the wrong cells and adds {s} seconds each time you use it.",
           "week": "A new floor every day at 00:00 Coordinated Universal Time (UTC), the same for everyone, with exactly one solution that reasoning alone can reach. Monday is a gentle 6×6; the floors grow to 8×8 and ask for more reasoning towards the weekend.",
-          "auto": "Placing an access point marks every cell it rules out with a lighter ×: its row, its column, its zone and the eight cells around it. Remove the access point and those marks go with it; your own × stay. The switch under the floor turns this off."
+          "auto": "Placing an access point marks every cell it rules out with a smaller red ×: its row, its column, its zone and the eight cells around it. Remove the access point and those marks go with it; your own × stay. The switch under the floor turns this off."
         },
         "shareChecks": "{n, plural, =0 {no checks} one {# check (+{s} s)} other {# checks (+{s} s)}}",
         "hint": {
@@ -27652,9 +27663,6 @@
         "intro": "A six by six register that has to balance: every row and every column carries three 0s and three 1s, no bit repeats three times in a line, and the signs between cells tell you which neighbours match.",
         "cardName": "Bit Balance",
         "cardBlurb": "Fill a 6×6 grid with bits: three of each per line, no runs of three, every sign obeyed. New grid every day.",
-        "modeLabel": "Which puzzle to play",
-        "practiceNote": "The last seven days' puzzles, for practice: a ✓ and a time mark the ones you solved on the day, a ↻ and a time the ones you solved in practice. They do not count towards your streak.",
-        "practiceDaysLabel": "Earlier puzzles",
         "checksUsed": "{n, plural, one {# check (+{s} s)} other {# checks (+{s} s)}}",
         "clockHint": "The clock starts with your first move.",
         "sizeLine": "6×6 grid · {level, select, gentle {gentle} medium {medium} tricky {tricky} other {hard}}",
@@ -27677,7 +27685,6 @@
         "sayDone": "Every line balanced. Solved!",
         "solvedHeadline": "Balanced!",
         "shareTitle": "Bit Balance #{n}",
-        "shareTitlePractice": "Bit Balance (practice, {date})",
         "rules": {
           "goal": "Fill every cell with a 0 or a 1.",
           "balance": "Each row and each column holds three 0s and three 1s.",
@@ -27706,9 +27713,6 @@
         "intro": "Somebody numbered the ports and left you one very long patch cable. Run it from port 1 to the last port through every cell of the panel, exactly once, plugging into the ports in order.",
         "cardName": "Patch Path",
         "cardBlurb": "Run one cable through every cell of the panel, ports in order, around the cable ducts. New panel every day.",
-        "modeLabel": "Which puzzle to play",
-        "practiceNote": "The last seven days' puzzles, for practice: a ✓ and a time mark the ones you solved on the day, a ↻ and a time the ones you solved in practice. They do not count towards your streak.",
-        "practiceDaysLabel": "Earlier puzzles",
         "checksUsed": "{n, plural, one {# check (+{s} s)} other {# checks (+{s} s)}}",
         "clockHint": "The clock starts with your first move.",
         "sizeLine": "{n}×{n} · {ports} ports{ducts, plural, =0 {} one { · # duct} other { · # ducts}} · {level, select, gentle {gentle} medium {medium} tricky {tricky} other {hard}}",
@@ -27722,7 +27726,6 @@
         "sayDone": "Every port patched. Solved!",
         "solvedHeadline": "Patched through!",
         "shareTitle": "Patch Path #{n}",
-        "shareTitlePractice": "Patch Path (practice, {date})",
         "refuse": {
           "order": "Port {n} comes next.",
           "last": "The last port has to be the final cell: cover every other cell first.",
@@ -27735,7 +27738,7 @@
           "goal": "Run one cable from port 1 to the highest-numbered port.",
           "order": "It passes through every cell exactly once, moving up, down, left or right, and reaches the ports in number order.",
           "ducts": "Thick bars between cells are cable ducts: the cable cannot cross them.",
-          "draw": "Drag from port 1 to run the cable, and drag back over it to pull it back; press any cell of the cable to cut it there. You can also click the cells next to the end of the cable, one at a time.",
+          "draw": "Drag from port 1 to run the cable, and drag back over it to pull it back; press any cell of the cable to cut it there. You can also click the cells next to the end of the cable, one at a time. On a touch screen, a drag that starts on the end of the cable (or on port 1) draws; a swipe anywhere else scrolls the page, and a tap cuts or extends the cable.",
           "keys": "Keyboard: focus the panel, then the arrow keys extend the cable (an arrow back along it pulls it back) and Backspace removes the last step.",
           "check": "Your time is your score. Check marks where the cable leaves the route and adds {s} seconds each time you use it.",
           "week": "A new panel every day at 00:00 Coordinated Universal Time (UTC), the same for everyone, with exactly one route. Monday is a 6×6 with plenty of ports; from Thursday the panel is 7×7, ducts turn up on some days, and the weekend panels have the fewest ports."
@@ -27914,7 +27917,8 @@
             "alert": "Many 404s from one address, then a 200 on an admin path from that same address. Keep admin panels off the public internet, behind a virtual private network (VPN) or an allow list of addresses."
           }
         },
-        "shortUa": "Short user agents"
+        "shortUa": "Short user agents",
+        "alreadyDoneEarlier": "You already closed this day's case."
       },
       "prefix-of-the-day": {
         "metaTitle": "Prefix of the Day | /dev/fun",
@@ -27998,7 +28002,10 @@
         "statBestStreak": "Best streak",
         "distTitle": "Tries per daily round",
         "distRowSolved": "{tries, plural, one {Solved in # try} other {Solved in # tries}}: {n, plural, =0 {no rounds} one {# round} other {# rounds}}{today, select, yes {, including today's} other {}}",
-        "distRowMissed": "Not solved: {n, plural, =0 {no rounds} one {# round} other {# rounds}}{today, select, yes {, including today's} other {}}"
+        "distRowMissed": "Not solved: {n, plural, =0 {no rounds} one {# round} other {# rounds}}{today, select, yes {, including today's} other {}}",
+        "hardTooLateEarlier": "Hard mode can only be turned on before this puzzle's first try.",
+        "hardOnNowEarlier": "Hard mode on for this puzzle.",
+        "todayBlockEarlier": "This day's block"
       },
       "aggregate": {
         "metaTitle": "Aggregate | /dev/fun",
@@ -28052,7 +28059,10 @@
         "shareBestOf": "{tries, plural, =1 {First try} other {Best of # tries}}: largest /{len}, score {score}",
         "pairTile": "{tile} (pair {n})",
         "livePairs": "{n, plural, =0 {No sibling pairs on the board right now.} one {One sibling pair, numbered 1 on both its tiles.} other {# sibling pairs, each numbered on both its tiles and ringed in its own pattern.}}",
-        "livePairsOff": "Sibling outlines off."
+        "livePairsOff": "Sibling outlines off.",
+        "todayBestEarlier": "This day's best {score}",
+        "replayNoteEarlier": "This challenge was already played; replays of an earlier puzzle count toward no score.",
+        "replayDailyEarlier": "Replay this challenge"
       },
       "five-clues": {
         "metaTitle": "Five Clues | /dev/fun",
@@ -28088,17 +28098,14 @@
         "sourceLead": "The clues come from",
         "won": "{n, plural, one {Got it with # clue} other {Got it with # clues}}",
         "lost": "Not this time",
-        "practiceIntro": "Replay the last 30 days, or start with a warm-up. Puzzles you have played are marked ✓ or ✗. Practice does not touch your streak.",
+        "practiceIntro": "Warm-ups: puzzles written for practice, never a daily one. The ones you have played are marked ✓ or ✗. Practice does not touch your streak; earlier daily puzzles are under Earlier puzzles, above.",
         "archiveLabel": "Puzzle",
-        "archiveDay": "#{n}",
         "warmup": "Warm-up {n}",
         "practiceBest": "{n, plural, one {Best practice round: # clue} other {Best practice round: # clues}}",
         "practiceBestNone": "No practice round solved yet",
         "nextPuzzle": "Next puzzle",
         "markSolved": "{label} ✓ solved",
         "markMissed": "{label} ✗ not solved",
-        "statusDailyWon": "{n, plural, one {Solved on its day with # clue} other {Solved on its day with # clues}}",
-        "statusDailyLost": "Played on its day, not solved",
         "statusPracticeWon": "Solved in practice",
         "statusPracticeLost": "Played in practice, not solved yet"
       },
@@ -28316,7 +28323,8 @@
           "addLabel": "Add to the list: {line} (the hint puts it at entry {seq})",
           "rowInPlace": "Entry {seq}: {line}, where the hint puts it",
           "rowMove": "Entry {seq}: {line}; the hint puts it at entry {hint}"
-        }
+        },
+        "dailyTitleEarlier": "This day's policy"
       },
       "spanning-tree": {
         "metaTitle": "Spanning Tree | /dev/fun",
@@ -28437,7 +28445,9 @@
         "comboValue": "×{mult} ({n})",
         "paused": "Paused",
         "sayPaused": "The round paused while the tab was hidden. It goes on in {seconds, plural, one {# second} other {# seconds}}.",
-        "sayResumed": "Round resumed."
+        "sayResumed": "Round resumed.",
+        "startDailyEarlier": "Start this day's run",
+        "dailyDoneEarlier": "This day's run is in. Practise as much as you like."
       },
       "exit-the-editor": {
         "metaTitle": "Exit the Editor | /dev/fun",
@@ -28592,7 +28602,10 @@
           "telnet": "telnet is connected to {host} on port {port}, where nothing ever answers. Leave telnet.",
           "tmux": "A backup, {job}, is running inside tmux session {session} on web01. Leave tmux without stopping it.",
           "git": "git commit on branch {branch} opened vim for the message, with {staged} staged. Make the commit: write a message, save, quit."
-        }
+        },
+        "dailyFailNoteEarlier": "This attempt carries on: the trap is set again, and your keystrokes and the clock keep counting.",
+        "dailyDoneNoteEarlier": "This day's escape is done. The levels are open.",
+        "sayResumedEarlier": "This day's escape picks up where you left it: {keys, plural, one {# keystroke} other {# keystrokes}} so far, and the clock kept running."
       },
       "incident-commander": {
         "metaTitle": "Incident Commander | /dev/fun",
@@ -28803,7 +28816,11 @@
     "shelfToday": "Today: {done} of {total} daily games played",
     "shelfSolved": "Solved today",
     "shelfPlayed": "Played today",
-    "shelfStreak": "Streak {n}"
+    "shelfStreak": "Streak {n}",
+    "more": {
+      "title": "Solve the other puzzles",
+      "all": "Everything on /dev/fun"
+    }
   },
   "megaBrain": {
     "bossAria": "Boss key: minimise the console",
@@ -28848,11 +28865,10 @@
     "ctxLever": "The power lever",
     "ctxLeverDetail": "Drag the lever, or press the FULL POWER button, to ramp the hype to 100%.",
     "ctxMano": "The Mano Deyvin tribute dot (amber)",
-    "ctxMano2": "A toast to Mano Deyvin; click it, then click his name to open his channel.",
+    "ctxMano2": "A toast to Mano Deyvin; click it, then click his name to watch his reaction video.",
     "ctxTitle": "Mega Brain controls",
     "devFunTitle": "Back to /dev/fun",
     "disabledTitleGoh": "If you have to think about it, it is not XGH.",
-    "disclaimer": "This does not compute, does not optimise, and does not search any term. It is a stress reliever. If you felt the dopamine, it worked.",
     "failsafeEngageAria": "Fail-safe: on burnout, engage Go Horse mode",
     "failsafeEngageTitle": "FAIL-SAFE: burnout? ENGAGE GO-HORSE FTW!",
     "failsafeRestoreAria": "Disable the fail-safe and restore the Mega Brain",
@@ -43398,7 +43414,7 @@
       "families": {
         "wp-batch": {
           "title": "WordPress: the wp2shell chain",
-          "what": "WordPress's REST API batch endpoint, which runs several API calls in one request, is the way into \"wp2shell\": CVE-2026-63030, a flaw in the batch endpoint, chained with CVE-2026-60137, an SQL injection, lets anyone run code on WordPress 6.9.0 to 6.9.4 and 7.0.0 to 7.0.1. Fixed in 6.9.5 and 7.0.2; disclosed on 17 July 2026 and in CISA's catalogue of exploited vulnerabilities since 21 July. The prefixes look for WordPress installed in a subfolder."
+          "what": "WordPress's REST API batch endpoint, which runs several API calls in one request, is the way into \"wp2shell\": CVE-2026-63030, a flaw in the batch endpoint, chained with CVE-2026-60137, an SQL injection, lets anyone run code on WordPress 6.9.0 to 6.9.4 and 7.0.0 to 7.0.1. Fixed in 6.9.5 and 7.0.2; disclosed on 17 July 2026, and both flaws have been in CISA's catalogue of exploited vulnerabilities since 21 July. The prefixes look for WordPress installed in a subfolder."
         },
         "wp-plugin": {
           "title": "WordPress plugin: Gravity SMTP",
@@ -43410,19 +43426,19 @@
         },
         "wp-core": {
           "title": "WordPress itself",
-          "what": "WordPress's own folders (wp-admin, wp-includes with the libraries it bundles, wp-content with uploads, plugins and themes), its usual install folders and its feed address. The install folders include site, news, cms and press: on this site's own counts each is asked for bare in step with the same folder followed by /wp-json/, which is how the scanners above look for WordPress installed in a subfolder. Asking confirms WordPress and looks for a folder that lists its files: an open uploads folder hands over everything ever uploaded."
+          "what": "WordPress's own folders (wp-admin, wp-includes with the libraries it bundles, wp-content with uploads, plugins and themes), its usual install folders and its feed address. The install folders include site, news, cms and press: on this site's own counts each is asked for bare in step with the same folder followed by /wp-json/, which is how the scanners above look for WordPress installed in a subfolder. Asking confirms WordPress and looks for a folder that lists its files: an open uploads folder hands over everything ever uploaded. Versions 4.7 to 7.1.3 also stage a full core upgrade in predictable, web-accessible paths, which lets anyone run code on the server during the upgrade (CVE-2026-119977, fixed in 7.1.4 on 28 October 2026, with backports to older branches in progress; in CISA's catalogue of exploited vulnerabilities since 3 November)."
         },
         "secrets": {
           "title": "Secrets and source code in a published folder",
-          "what": "Files that belong in a developer's folder and reach the web only when a server publishes the wrong one: a .git folder (the site's source and history, with any password ever committed) and Subversion's .svn folder (its record of every file in a working copy); .git-credentials (passwords Git keeps unencrypted); .env and the backup copy an editor leaves of it, .env~ (an application's secrets); .aws/credentials and .aws/config (AWS access keys and settings); .ssh/id_rsa (an SSH private key); the Antigravity CLI's OAuth token; shell and interpreter histories (every command typed, passwords on the command line included); and macOS's .DS_Store, which reveals what a folder holds."
+          "what": "Files that belong in a developer's folder and reach the web only when a server publishes the wrong one: a .git folder (the site's source and history, with any password ever committed) and Subversion's .svn folder (its record of every file in a working copy); .git-credentials (passwords Git keeps unencrypted); .env and the backup copy an editor leaves of it, .env~ (an application's secrets); .aws/credentials and .aws/config (AWS access keys and settings); .ssh/id_rsa (an SSH private key); a kubeconfig, .kube/config (the clusters, users and authentication kubectl uses to reach a Kubernetes cluster's API server); the Azure CLI's folder, .azure, where its configuration file lives; the Antigravity CLI's folder, .gemini/antigravity-cli, where it keeps its settings; /proc/self/environ behind runs of dots (on Linux, the environment the running program started with); shell and interpreter histories (every command typed, passwords on the command line included); and macOS's .DS_Store, which reveals what a folder holds. Some of these are asked for through /@fs/, the prefix Vite's development server uses to serve files from disk: CVE-2025-30208 and CVE-2025-31125 let anyone read files outside its allow list on a development server exposed to the network, both fixed by Vite 6.2.4, 6.1.3, 6.0.13, 5.4.16 and 4.5.11; the second has been in CISA's catalogue of exploited vulnerabilities since 22 January 2026."
         },
         "frameworks": {
           "title": "Framework endpoints that reveal configuration",
-          "what": "Spring Boot Actuator's env, configprops and mappings (the application's environment, its settings and every request path it handles), under /actuator/ or, in Spring Boot 1, at the root or under a prefix such as /manage; the Yii 2 debugger (request data, headers, sessions and environment variables, meant for localhost only); Magento's version page, which names its version and edition; and the Kubernetes API server's /healthz, deprecated since Kubernetes 1.16 in favour of /livez and /readyz."
+          "what": "Spring Boot Actuator's env, configprops and mappings (the application's environment, its settings and every request path it handles), under /actuator/ or, in Spring Boot 1, at the root or under a prefix such as /manage, and the Actuator's discovery page, /actuator itself, which links every endpoint it exposes; the Yii 2 debugger (request data, headers, sessions and environment variables, meant for localhost only); Symfony's profiler page /_profiler/phpinfo, which shows PHP's whole configuration and which Symfony's default setup routes only in the dev environment; Magento's version page, which names its version and edition; and the Kubernetes API server's /healthz, deprecated since Kubernetes 1.16 in favour of /livez and /readyz."
         },
         "platforms": {
           "title": "Other platforms' folders",
-          "what": "Folder names that give away other software: Drupal, Joomla, OpenCart, Magento, cPanel's sign-in and more. Naming the platform is the first step before trying its known flaws."
+          "what": "Folder names that give away other software: Drupal, Joomla, OpenCart (its admin code folder), Magento, cPanel's sign-in, Next.js's build folder, _next/static, asked for under guessed subfolders (v1, client, frontend), and more. Naming the platform is the first step before trying its known flaws."
         },
         "backdoors": {
           "title": "Backdoors someone else may have left",
@@ -43430,7 +43446,7 @@
         },
         "logins": {
           "title": "Admin, sign-in and account pages",
-          "what": "Any admin or sign-in page to try passwords on, and the pages around one: registration, to open an account, and password reset, to test which addresses have one, plus the dashboard a sign-in usually leads to."
+          "what": "Any admin or sign-in page to try passwords on, and the pages around one: registration, to open an account, and password reset, to test which addresses have one, plus the dashboard a sign-in usually leads to and the admin sections behind it (users, settings, reports, orders, products)."
         },
         "exposure": {
           "title": "Folders that should not be public",
@@ -43451,6 +43467,10 @@
         "misses": {
           "title": "Honest misses",
           "what": "Addresses that moved (the old /contribute/tools), pages that never existed, and links mistyped somewhere else on the web."
+        },
+        "laravel": {
+          "title": "Laravel and its packages",
+          "what": "Default addresses of Laravel applications. Livewire's update endpoint, /livewire/update, which every Livewire 3 component calls, is also tried under prefixes such as /login/ and /admin/login/: in Livewire 3 up to 3.6.3 it lets an unauthenticated attacker run commands on the server in specific setups, through the way component property updates are hydrated (CVE-2025-54068, fixed in 3.6.4; in CISA's catalogue of exploited vulnerabilities since 20 March 2026). Livewire 4 replaced that address with one carrying a hash of the application key, so asking for the old one looks for version 3. The dashboards of Telescope (the requests, exceptions, queries, jobs and mail an application handled), Horizon (queues), Pulse (performance) and Nova (administration) sit at /telescope, /horizon, /pulse and /nova; Telescope, Horizon and Pulse open by default only in the local environment. /two-factor-challenge, /email/verify and /password/reset are routes defined by Laravel's sign-in packages, Fortify and laravel/ui."
         }
       },
       "expandAll": "Expand all ({count})",

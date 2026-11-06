@@ -12,6 +12,9 @@
 
 // The page's metadata type.
 import type { Metadata } from "next";
+// The share card and the one description for the meta, og and twitter fields (05/11/2026).
+import { ogImages } from "@/lib/og";
+import { withDescription } from "@/lib/metaDescription";
 // Server-side strings and the locale of the request.
 import { getTranslations, setRequestLocale } from "next-intl/server";
 // The site's header and footer.
@@ -23,6 +26,9 @@ import MessageSlice from "@/components/MessageSlice";
 import { Link } from "@/i18n/navigation";
 // The game.
 import ExitTheEditor from "@/components/dev/fun/games/ExitTheEditor";
+// "Solve the other puzzles" (PRIME 05/11/2026): the call-out, rendered here, and the slot that hands it to the frame.
+import MorePuzzles from "@/components/dev/fun/MorePuzzles";
+import { MorePuzzlesProvider } from "@/components/dev/fun/MorePuzzlesSlot";
 
 /**
  * The page's title and description.
@@ -36,7 +42,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   // The game's strings.
   const t = await getTranslations({ locale, namespace: "devFun.games.exit-the-editor" });
   // Title and description.
-  return { title: t("metaTitle"), description: t("metaDescription") };
+  // The game's own share card (PRIME 05/11/2026: "make the graphics meaningful, related to each game"), drawn by
+  // scripts/og-games.mts, with the page's description in the meta, og and twitter fields alike.
+  return { title: t("metaTitle"), ...withDescription(t("metaDescription"), ogImages("game", "exit-the-editor", locale, t("title")), "dev/fun/exit-the-editor") };
 }
 
 /**
@@ -70,7 +78,10 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
               <p className="fg-intro">{t("intro")}</p>
             </div>
             <MessageSlice namespaces={["devFun.games.common", "devFun.games.exit-the-editor"]}>
-              <ExitTheEditor locale={locale} />
+              {/* "Solve the other puzzles", placed by the game's frame right after its result (PRIME 05/11/2026). */}
+              <MorePuzzlesProvider more={<MorePuzzles current="exit-the-editor" />}>
+                <ExitTheEditor locale={locale} />
+              </MorePuzzlesProvider>
             </MessageSlice>
           </div>
         </section>

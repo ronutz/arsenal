@@ -32,7 +32,7 @@ import { useTranslations } from "next-intl";
 // The frame every game sits in.
 import GameShell, { type ShellResult } from "./GameShell";
 // The shared session, its bars, the hint holder and the live line.
-import { LiveLine, PuzzleHud, PuzzleModeBar, dayLabel, useBoardHint, useBoardKeys, usePuzzleSession, type KitLabels } from "./LogicPuzzleKit";
+import { LiveLine, PuzzleHud, gradeSavedRound, legacyPracticeMarks, useBoardHint, useBoardKeys, usePuzzleSession, type KitLabels } from "./LogicPuzzleKit";
 // The engine.
 import { BB_ID, BB_N, checkErrors, generate, isSolved, nextHint, ruleErrors, type BbHint, type BbPuzzle } from "@/lib/fun/games/bit-balance/engine";
 // The puzzle number.
@@ -243,25 +243,15 @@ export default function BitBalance(props: { locale: string }) {
 
   // The kit's labels.
   const labels: KitLabels = {
-    // Mode switch.
-    daily: tc("daily"),
-    practice: tc("practice"),
-    modeLabel: t("modeLabel"),
-    // Practice.
-    practiceNote: t("practiceNote"),
-    practiceDaysLabel: t("practiceDaysLabel"),
     // The bar.
     time: tc("time"),
     check: tc("check"),
     undo: tc("undo"),
     clear: tc("clear"),
     checksUsed: t("checksUsed", { n: s.checks, s: s.checks * PENALTY_S }),
-    // Hints, and a solved earlier day's name.
+    // Hints.
     hint: tc("hint"),
     hintsUsed: tc("hintsUsed", { n: s.hints, s: s.hints * PENALTY_S }),
-    daySolved: (date, time) => tc("daySolved", { date, time }),
-    // A day solved only in practice, named so.
-    daySolvedPractice: (date, time) => tc("daySolvedPractice", { date, time }),
   };
 
   // The result.
@@ -270,8 +260,8 @@ export default function BitBalance(props: { locale: string }) {
     if (!s.done || s.finalMs === null || !s.day || !p) return null;
     // The time.
     const time = formatDuration(s.finalMs);
-    // Title: number or date.
-    const title = s.mode === "daily" ? t("shareTitle", { n: puzzleNumber(s.day) }) : t("shareTitlePractice", { date: dayLabel(s.day, props.locale) });
+    // The title line: the puzzle's number (on an earlier puzzle's page, share.ts adds that it was played later).
+    const title = t("shareTitle", { n: puzzleNumber(s.day) });
     // A balanced line of bits that says nothing about the grid, then the time and the checks and hints in words (an
     // emoji count meant nothing in a chat).
     const lines = ["⚖️ 0️⃣1️⃣0️⃣1️⃣1️⃣0️⃣", `⏱️ ${time} · ${t("shareChecks", { n: s.checks, s: s.checks * PENALTY_S })} · ${tc("shareHints", { n: s.hints, s: s.hints * PENALTY_S })}`];
@@ -288,7 +278,7 @@ export default function BitBalance(props: { locale: string }) {
       // Share text.
       share: shareText({ title, lines, locale: props.locale, slug: BB_ID }),
     };
-  }, [s.done, s.finalMs, s.day, s.mode, s.checks, s.hints, p, t, tc, props.locale]);
+  }, [s.done, s.finalMs, s.day, s.checks, s.hints, p, t, tc, props.locale]);
 
   // The rules.
   const rules = (
@@ -311,8 +301,7 @@ export default function BitBalance(props: { locale: string }) {
 
   // The game.
   return (
-    <GameShell gameId={BB_ID} kind={s.shell.kind} onPlayAgain={s.shell.onPlayAgain} today={today} rules={rules} result={result} version={s.version} formatBest={(ms) => formatDuration(ms)}>
-      <PuzzleModeBar session={s} labels={labels} locale={props.locale} />
+    <GameShell gameId={BB_ID} kind="daily" today={today} rules={rules} result={result} version={s.version} formatBest={(ms) => formatDuration(ms)} gradeSaved={gradeSavedRound} legacyMarks={legacyPracticeMarks}>
       {!p || !board ? (
         // Before mount: a neutral board.
         <div className="fg-grid fg-bb-board fg-bb-loading" style={{ ["--fg-cols" as string]: BB_N }} aria-busy="true">

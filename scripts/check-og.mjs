@@ -12,7 +12,7 @@
 // Checks:
 //   1. the generator ran (public/og/manifest.json + default.png exist);
 //   2. every built tool (TOOL_PAGES), article, glossary entry, study guide,
-//      vendor, and static page has a card for BOTH locales, at the extension
+//      vendor, static page and /dev/fun game (and the shelf, 05/11/2026) has a card for BOTH locales, at the extension
 //      src/lib/og.ts expects (jpeg for brand pages, png otherwise);
 //   3. the manifest and the files on disk agree (no orph files / missing).
 //
@@ -47,6 +47,8 @@ const guideReg = read("src/content/certifications/study-guides.ts");
 const guides = [...guideReg.slice(guideReg.indexOf("export const studyGuides")).matchAll(/slug:\s*"([a-z0-9-]+)"/g)].map((m) => m[1]);
 const vendors = ["f5", "fortinet", "netskope", "extreme"];
 const staticPages = ["home", "tools", "learn", "certifications", "glossary", "training", "about", "red-education"];
+// The /dev/fun games and the shelf (05/11/2026): every game listed in src/config/funGames.ts, and "shelf".
+const games = [...[...read("src/config/funGames.ts").matchAll(/\{\s*id:\s*"([a-z0-9-]+)",\s*daily:/g)].map((m) => m[1]), "shelf"];
 
 const kinds = [
   ["tool", tools],
@@ -55,6 +57,7 @@ const kinds = [
   ["guide", guides],
   ["vendor", vendors],
   ["page", staticPages],
+  ["game", games],
 ];
 
 // 2. every (kind, slug, locale) card exists at the expected extension

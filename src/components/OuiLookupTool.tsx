@@ -11,6 +11,13 @@
 // component imports only the pure compute module and lazy-loads the snapshot
 // with a dynamic import the first time a lookup-able value is entered - so the
 // page shell stays light and the data arrives only when it is actually needed.
+//
+// An IPv4 multicast MAC (01-00-5E, lower half) no longer lists its 32 groups
+// here (PRIME 05/11/2026, the queued multicast item): the page says why 32
+// groups share it and hands the MAC to the multicast group to MAC mapper,
+// which lists them with IANA's names (the fragment handoff, src/lib/handoff.ts,
+// so the MAC never reaches a request). The engine and the API still return
+// the 32 groups (wellKnown.ipv4Groups).
 // ============================================================================
 
 import { useCallback, useMemo, useRef, useState } from "react"; // useMemo holds the Share results encoding (2026-10-27)
@@ -18,6 +25,8 @@ import { useTranslations } from "next-intl";
 import { normalizeMacLocalisable, analyzeMacLocalisable, type OuiResult, type WellKnownMac } from "@/lib/tools/oui-lookup/compute"; // WellKnownMac added 2026-10-19; the Localisable readings 02/11/2026
 import { engineTexts, type EngineText } from "@/lib/tools/engine-text"; // PAGE LANGUAGE (02/11/2026): notes and errors in the page's language
 import { usePrefill } from "@/lib/use-prefill";
+import { Link } from "@/i18n/navigation"; // the locale-aware link to the multicast mapper (05/11/2026)
+import { handoffHref } from "@/lib/handoff"; // the MAC handed over in the fragment, never in a request (05/11/2026)
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button (2026-10-27)
 import type { ShareEncoding } from "@/lib/share/spec"; // what the button is handed
 import { OUI_LOOKUP_SHARE } from "@/lib/tools/oui-lookup/share"; // this tool's share spec: the field as #input=
@@ -165,12 +174,13 @@ export default function OuiLookupTool() {
             {/* IPv6 multicast: the low 32 bits of the group address the MAC carries (RFC 2464 s7); added 2026-10-19. */}
             {wk?.ipv6Low32 && <Field head={t("ipv6Low32Label")} code={wk.ipv6Low32} desc={t("ipv6Low32Desc")} />}
           </div>
-          {/* IPv4 multicast: the 32 groups that share this MAC (RFC 1112 s6.4); added 2026-10-19. */}
+          {/* IPv4 multicast: why 32 groups share this MAC (RFC 1112 s6.4), and the mapper that lists them with IANA's
+              names, the MAC handed over in the fragment (added 2026-10-19; the link replaced the bare list 05/11/2026). */}
           {wk?.ipv4Groups && (
             <section className="jwt-panel">{/* existing panel markup */}
               <h4 className="jwt-panel-title">{t("ipv4GroupsLabel")}</h4>{/* heading */}
               <p className="ipv6-struct-note">{t("ipv4GroupsDesc")}</p>{/* why 32: 28 significant bits, 23 copied */}
-              <p className="mono ipv6-wrap">{wk.ipv4Groups.join(", ")}</p>{/* the 32 groups, wrapping */}
+              <p><Link href={handoffHref("/tools/multicast-mac-mapper", result.formatted ?? "")}>{t("ipv4GroupsLink")}</Link></p>{/* the mapper, with this MAC */}
             </section>
           )}
           {result.notes && (result.notes.length > 0 || wk?.bridgeFiltered || wk?.vrid === 0) && (

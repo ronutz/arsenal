@@ -92,6 +92,26 @@ function freshSeed(): number {
   return (Date.now() ^ Math.floor(performance.now() * 1000)) >>> 0;
 }
 
+/**
+ * The mark of a kept daily state, for days played before the marks existed (GameShell's gradeSaved): the fifteen picks against that day's cards, with the pass mark.
+ *
+ * @param day the round's day
+ * @param state the kept state
+ * @returns 1 passed, 0 finished below the mark, null not finished
+ */
+function gradeSaved(day: string, state: unknown): 0 | 1 | null {
+  // The saved letters.
+  const picks = (state as Partial<DailySave> | null)?.picks;
+  // Finished means every card answered.
+  if (typeof picks !== "string" || picks.length < DAILY_SIZE) return null;
+  // The day's cards.
+  const cards = dailyRound(day);
+  // Each answer right or wrong, read as the game restores it ("p" phish, anything else legit).
+  const oks = Array.from(picks.slice(0, DAILY_SIZE)).map((ch, i) => cards[i] !== undefined && (ch === "p" ? "phish" : "legit") === cards[i].verdict);
+  // Passed or not.
+  return scoreRun(oks).correct >= PASS_MARK ? 1 : 0;
+}
+
 /** The card's element id: the answer buttons are described by it, so focusing one reads the card (review R2-14). */
 const CARD_ID = "fg-pol-card";
 
@@ -527,6 +547,7 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
       onPlayAgain={mode === "speed" ? startSpeed : () => startMode("practice")}
       formatBest={(b) => t("bestFormat", { n: b })}
       version={version}
+      gradeSaved={gradeSaved}
     >
       {/* The polite announcer. */}
       <p className="sr-only" aria-live="polite">

@@ -690,10 +690,12 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "panos-policy-evaluation-order": {
     Component: PanosPolicyOrderTool,
     sources: panosManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
-  },  "dhcp-option-43": {
+  },
+  "dhcp-option-43": {
     Component: DhcpOption43Tool,
     sources: dhcp43Manifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
-  },  "url-inspector": {
+  },
+  "url-inspector": {
     Component: UrlInspectorTool,
     sources: urlManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },

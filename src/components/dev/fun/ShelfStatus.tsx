@@ -18,7 +18,7 @@
 // React's state and effects.
 import { useEffect, useState } from "react";
 // Today's UTC day, read after mount.
-import { useToday } from "@/lib/fun/hooks";
+import { useRealToday } from "@/lib/fun/hooks";
 // The records and the live streak.
 import { liveStreak, loadRecord } from "@/lib/fun/storage";
 
@@ -54,7 +54,7 @@ function stateOf(gameId: string, day: string): CardState {
  */
 export function ShelfCardStatus(props: { gameId: string; solved: string; played: string; streak: string }) {
   // Today, after mount.
-  const day = useToday();
+  const day = useRealToday();
   // The card's state, once read.
   const [state, setState] = useState<CardState | null>(null);
   // Read the record when the day is known.
@@ -89,7 +89,7 @@ export function ShelfCardStatus(props: { gameId: string; solved: string; played:
  */
 export function ShelfToday(props: { gameIds: readonly string[]; label: string }) {
   // Today, after mount.
-  const day = useToday();
+  const day = useRealToday();
   // How many were played today.
   const [done, setDone] = useState<number | null>(null);
   // Count when the day is known.
@@ -106,5 +106,36 @@ export function ShelfToday(props: { gameIds: readonly string[]; label: string })
     <p className="devfun-today mono" role="status">
       {props.label.replace("{done}", String(done)).replace("{total}", String(props.gameIds.length))}
     </p>
+  );
+}
+
+/**
+ * The mark beside a game's name in "Solve the other puzzles" (PRIME 05/11/2026): a tick when today's daily is
+ * solved, a dot when it was played and not solved, nothing otherwise; the words go to a screen reader, the shape
+ * to the eye, so the mark is not colour alone.
+ *
+ * @param props the game's id and the two labels ("Solved today", "Played today")
+ * @returns the mark, or nothing before mount and for a game not played today
+ */
+export function ShelfMark(props: { gameId: string; solved: string; played: string }) {
+  // Today, after mount.
+  const day = useRealToday();
+  // Solved, played or neither, once read.
+  const [today, setToday] = useState<CardState["today"]>(null);
+  // Read the record when the day is known.
+  useEffect(() => {
+    // Not before mount.
+    if (!day) return;
+    // Read once.
+    setToday(stateOf(props.gameId, day).today);
+  }, [day, props.gameId]);
+  // Nothing to mark.
+  if (!today) return null;
+  // The mark and its words.
+  return (
+    <span className={`fg-more-mark ${today === "solved" ? "fg-more-solved" : "fg-more-played"}`}>
+      <span aria-hidden="true">{today === "solved" ? "✓" : "•"}</span>
+      <span className="sr-only">{today === "solved" ? props.solved : props.played}</span>
+    </span>
   );
 }

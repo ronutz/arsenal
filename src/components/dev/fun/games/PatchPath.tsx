@@ -12,6 +12,10 @@
 //   - drag from port 1 (or from the cable's end) to run the cable; drag back
 //     over it to pull it back; press any cell of the cable to cut it there;
 //   - or click a cell next to the cable's end to extend it;
+//   - on a touch screen (PRIME 05/11/2026: swiping "means moving the screen")
+//     a finger draws only when it lands on the pen, the cable's end (or port 1
+//     before the cable starts); anywhere else the page scrolls, and a tap
+//     (a touch that ends where it began) cuts or extends when the finger lifts;
 //   - keyboard: the panel takes focus; arrows extend the cable (an arrow back
 //     along it pulls it back), Backspace undoes a step;
 //   - a port reached out of order, or the last port before every cell is
@@ -39,7 +43,7 @@ import { useTranslations } from "next-intl";
 // The frame every game sits in.
 import GameShell, { type ShellResult } from "./GameShell";
 // The shared session, its bars, the hint holder and the live line.
-import { LiveLine, PuzzleHud, PuzzleModeBar, dayLabel, useBoardHint, useBoardKeys, usePuzzleSession, type KitLabels } from "./LogicPuzzleKit";
+import { LiveLine, PuzzleHud, gradeSavedRound, legacyPracticeMarks, useBoardHint, useBoardKeys, usePuzzleSession, type KitLabels } from "./LogicPuzzleKit";
 // The engine.
 import { PP_ID, canStep, checkErrors, generate, isSolved, nextHint, type PpHint, type PpPuzzle } from "@/lib/fun/games/patch-path/engine";
 // The puzzle number.
@@ -48,6 +52,9 @@ import { puzzleNumber } from "@/lib/fun/daily";
 import { formatDuration, shareText } from "@/lib/fun/share";
 // Today's UTC day, after mount.
 import { useToday } from "@/lib/fun/hooks";
+
+/** How far a finger may wobble and still tap, in CSS pixels; further is a scroll. */
+const TAP_SLOP_PX = 10;
 
 /** Seconds added per Check. */
 const PENALTY_S = 10;
@@ -143,6 +150,8 @@ export default function PatchPath(props: { locale: string }) {
   const descId = useId();
   // Whether a drag is in progress.
   const dragging = useRef(false);
+  // A touch that landed off the pen: a tap if it ends where it began, a scroll otherwise (acted on at pointer up).
+  const tap = useRef<{ id: number; cell: number; x: number; y: number } | null>(null);
   // The latest cable, for handlers that run between renders during a drag.
   const live = useRef<number[]>([]);
   // Kept current.
@@ -320,16 +329,13 @@ export default function PatchPath(props: { locale: string }) {
     return r >= 0 && r < p.n && c >= 0 && c < p.n ? r * p.n + c : -1;
   };
 
-  // Pointer down: start, cut, or extend.
-  const onDown = (e: PointerEvent<HTMLDivElement>) => {
-    // Primary button or touch, while playing.
-    if (e.button !== 0 || !p || s.done) return;
-    // The cell.
-    const cell = cellAt(e);
-    // Outside.
-    if (cell < 0) return;
-    // Keep the moves coming here.
-    e.currentTarget.setPointerCapture?.(e.pointerId);
+  /**
+   * Start, cut or extend the cable at a cell: what a press does (a mouse at once, a finger off the pen on lifting).
+   *
+   * @param cell the cell pressed
+   * @returns whether a drag may follow from there
+   */
+  const act = (cell: number): boolean => {
     // The cable now.
     const cable = live.current;
     // Empty: only port 1 starts it.
@@ -338,30 +344,69 @@ export default function PatchPath(props: { locale: string }) {
       const why = refusal(cable, cell);
       // Started, or refused.
       commit(why ? cable : [cell], why);
-      // Dragging only when started.
-      dragging.current = !why;
-      // Done.
-      return;
+      // A drag only when started.
+      return !why;
     }
-    // On the cable: cut back to it and drag from there.
+    // On the cable: cut back to it, and a drag may go on from there.
     if (cable.includes(cell)) {
       // Cut (or keep).
       reach(cell);
-      // Drag.
-      dragging.current = true;
-      // Done.
-      return;
+      // A drag.
+      return true;
     }
     // Next to the end: extend.
     const why = refusal(cable, cell);
     // Extended or refused.
     commit(why ? cable : [...cable, cell], why);
-    // Drag on success.
-    dragging.current = !why;
+    // A drag on success.
+    return !why;
   };
 
-  // Pointer move: follow the pointer.
+  /**
+   * Whether a cell is the pen, where a finger may start drawing: the cable's end, or port 1 before the cable starts.
+   *
+   * @param cell the cell
+   * @returns true on the pen
+   */
+  const isPen = (cell: number): boolean => {
+    // The cable now.
+    const cable = live.current;
+    // Its end, or port 1 when there is no cable yet.
+    return cable.length === 0 ? portOf.get(cell) === 1 : cell === cable[cable.length - 1];
+  };
+
+  // Pointer down: a mouse or a pen starts, cuts or extends at once; a finger does so only on the pen.
+  const onDown = (e: PointerEvent<HTMLDivElement>) => {
+    // Primary button or touch, while playing.
+    if (e.button !== 0 || !p || s.done) return;
+    // The cell.
+    const cell = cellAt(e);
+    // Outside.
+    if (cell < 0) return;
+    // A finger off the pen: the page may be scrolling; wait for it to lift.
+    if (e.pointerType === "touch" && !isPen(cell)) {
+      // Remembered as a possible tap.
+      tap.current = { id: e.pointerId, cell, x: e.clientX, y: e.clientY };
+      // Nothing yet.
+      return;
+    }
+    // Keep the moves coming here.
+    e.currentTarget.setPointerCapture?.(e.pointerId);
+    // Acted on now; a drag follows when it may.
+    dragging.current = act(cell);
+  };
+
+  // Pointer move: a waiting tap that travels becomes a scroll; a drag follows the pointer.
   const onMove = (e: PointerEvent<HTMLDivElement>) => {
+    // A touch waiting to be a tap.
+    const t0 = tap.current;
+    // Moved further than a tap's wobble: a scroll, which does nothing on the panel.
+    if (t0 && t0.id === e.pointerId) {
+      // Dropped once it travels.
+      if (Math.hypot(e.clientX - t0.x, e.clientY - t0.y) > TAP_SLOP_PX) tap.current = null;
+      // Nothing else.
+      return;
+    }
     // Only while dragging.
     if (!dragging.current || !p) return;
     // The cell.
@@ -372,9 +417,23 @@ export default function PatchPath(props: { locale: string }) {
     reach(cell);
   };
 
-  // Pointer up: the drag ends.
-  const onUp = () => {
+  // Pointer up: a waiting tap acts now; a drag ends.
+  const onUp = (e: PointerEvent<HTMLDivElement>) => {
+    // A touch that stayed where it landed.
+    const t0 = tap.current;
+    // Forgotten either way.
+    tap.current = null;
+    // A tap: cut or extend there, with no drag after it.
+    if (t0 && t0.id === e.pointerId && p && !s.done) act(t0.cell);
     // No longer dragging.
+    dragging.current = false;
+  };
+
+  // Pointer cancel (the browser took the touch to scroll): nothing happens on the panel.
+  const onCancel = () => {
+    // No tap.
+    tap.current = null;
+    // No drag.
     dragging.current = false;
   };
 
@@ -534,25 +593,15 @@ export default function PatchPath(props: { locale: string }) {
 
   // The kit's labels.
   const labels: KitLabels = {
-    // Mode switch.
-    daily: tc("daily"),
-    practice: tc("practice"),
-    modeLabel: t("modeLabel"),
-    // Practice.
-    practiceNote: t("practiceNote"),
-    practiceDaysLabel: t("practiceDaysLabel"),
     // The bar.
     time: tc("time"),
     check: tc("check"),
     undo: tc("undo"),
     clear: tc("clear"),
     checksUsed: t("checksUsed", { n: s.checks, s: s.checks * PENALTY_S }),
-    // Hints, and a solved earlier day's name.
+    // Hints.
     hint: tc("hint"),
     hintsUsed: tc("hintsUsed", { n: s.hints, s: s.hints * PENALTY_S }),
-    daySolved: (date, time) => tc("daySolved", { date, time }),
-    // A day solved only in practice, named so.
-    daySolvedPractice: (date, time) => tc("daySolvedPractice", { date, time }),
   };
 
   // The result.
@@ -561,8 +610,8 @@ export default function PatchPath(props: { locale: string }) {
     if (!s.done || s.finalMs === null || !s.day || !p) return null;
     // The time.
     const time = formatDuration(s.finalMs);
-    // Title: number or date.
-    const title = s.mode === "daily" ? t("shareTitle", { n: puzzleNumber(s.day) }) : t("shareTitlePractice", { date: dayLabel(s.day, props.locale) });
+    // The title line: the puzzle's number (on an earlier puzzle's page, share.ts adds that it was played later).
+    const title = t("shareTitle", { n: puzzleNumber(s.day) });
     // Plug, a run of cable as long as the port count, plug; then the time and the checks and hints in words.
     const lines = [`🔌${"〰️".repeat(Math.min(p.ports.length, 12))}🔌 ${p.n}×${p.n}`, `⏱️ ${time} · ${t("shareChecks", { n: s.checks, s: s.checks * PENALTY_S })} · ${tc("shareHints", { n: s.hints, s: s.hints * PENALTY_S })}`];
     // The time line: the time, then the checks and hints used, when there were any.
@@ -578,7 +627,7 @@ export default function PatchPath(props: { locale: string }) {
       // Share text.
       share: shareText({ title, lines, locale: props.locale, slug: PP_ID }),
     };
-  }, [s.done, s.finalMs, s.day, s.mode, s.checks, s.hints, p, t, tc, props.locale]);
+  }, [s.done, s.finalMs, s.day, s.checks, s.hints, p, t, tc, props.locale]);
 
   // The rules.
   const rules = (
@@ -640,8 +689,7 @@ export default function PatchPath(props: { locale: string }) {
 
   // The game.
   return (
-    <GameShell gameId={PP_ID} kind={s.shell.kind} onPlayAgain={s.shell.onPlayAgain} today={today} rules={rules} result={result} version={s.version} formatBest={(ms) => formatDuration(ms)}>
-      <PuzzleModeBar session={s} labels={labels} locale={props.locale} />
+    <GameShell gameId={PP_ID} kind="daily" today={today} rules={rules} result={result} version={s.version} formatBest={(ms) => formatDuration(ms)} gradeSaved={gradeSavedRound} legacyMarks={legacyPracticeMarks}>
       {!p || !path ? (
         // Before mount: a neutral panel.
         <div className="fg-grid fg-pp-board fg-pp-loading" style={{ ["--fg-cols" as string]: 6 }} aria-busy="true">
@@ -661,7 +709,7 @@ export default function PatchPath(props: { locale: string }) {
             onPointerDown={onDown}
             onPointerMove={onMove}
             onPointerUp={onUp}
-            onPointerCancel={onUp}
+            onPointerCancel={onCancel}
             onKeyDown={onKey}
             onContextMenu={(e) => e.preventDefault()}
             {...boardKeys}
@@ -673,7 +721,7 @@ export default function PatchPath(props: { locale: string }) {
               const hinted = hint?.target === i ? (hint.wrong ? " fg-lpk-hint-wrong" : " fg-lpk-hint-target") : hint?.area.has(i) ? " fg-lpk-hint-area" : "";
               // The cell (the panel's words and the live line carry it for a screen reader).
               return (
-                <div key={i} className={`fg-cell fg-pp-cell${onCable.has(i) ? " fg-pp-on" : ""}${i === head ? " fg-pp-head" : ""}${checked.has(i) ? " fg-cell-error fg-pp-bad" : ""}${hinted}`} aria-hidden="true">
+                <div key={i} className={`fg-cell fg-pp-cell${onCable.has(i) ? " fg-pp-on" : ""}${i === head ? " fg-pp-head" : ""}${(path.length === 0 ? port === 1 : i === head) ? " fg-pp-pen" : ""}${checked.has(i) ? " fg-cell-error fg-pp-bad" : ""}${hinted}`} aria-hidden="true">
                   {port !== undefined && <span className={`fg-pp-port${port < nextPort ? " fg-pp-port-done" : port === nextPort ? " fg-pp-port-next" : ""}`}>{port}</span>}
                 </div>
               );

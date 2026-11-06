@@ -23,6 +23,9 @@
 
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+// The share card and the one description for the meta, og and twitter fields (05/11/2026).
+import { ogImages } from "@/lib/og";
+import { withDescription } from "@/lib/metaDescription";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import { Link } from "@/i18n/navigation";
@@ -66,9 +69,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "devFun" });
+  // The shelf's own share card (PRIME 05/11/2026), a mosaic of the games drawn by scripts/og-games.mts, with the
+  // page's description in the meta, og and twitter fields alike.
   return {
     title: t("metaTitle"),
-    description: t("metaDescription"),
+    ...withDescription(t("metaDescription"), ogImages("game", "shelf", locale, t("title")), "dev/fun"),
   };
 }
 

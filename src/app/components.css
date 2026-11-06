@@ -9874,8 +9874,6 @@ select.cidr-input { max-width: 100%; }
 .mb-total-sub { margin: 0.4rem 0 0; font-size: 0.85rem; color: #22d3ee; }
 .mb-total-fine { margin: 0.35rem 0 0; font-size: 0.72rem; color: #7c88b0; font-style: italic; }
 
-/* The disclaimer in the console's fine-print grey at full strength (contrast pass 04/11/2026; at 45% opacity it read about 1.7:1). */
-.mb-disclaimer { margin: 1.1rem 1.25rem 0; font-size: 0.75rem; color: #7c88b0; text-align: center; line-height: 1.5; }
 
 @keyframes mb-pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.04); } }
 @keyframes mb-spin { to { transform: rotate(360deg); } }
@@ -17863,15 +17861,29 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 }
 .bingo-size-on { border-color: var(--accent-primary); color: var(--text-primary); }
 
-/* Bingo balls above the card. Decorative, hidden from assistive technology,
- * and built only from semantic tokens so the six themes need no additions. */
-.bingo-art { display: block; width: 100%; max-width: 220px; height: auto; margin: 0 auto 0.75rem; }
-.bingo-art-ball { fill: var(--accent-primary); opacity: 0.85; }
+/* Bingo balls above the card: B, I, N, G, O (PRIME 05/11/2026: five, not three), lit left to right as the closest
+ * line fills; the line under them says the same in words, so the drawing stays hidden from assistive technology.
+ * Built only from semantic tokens, so every theme needs no additions. */
+.bingo-progress { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; }
+.bingo-art { display: block; width: 100%; max-width: 300px; height: auto; margin: 0 auto; }
+/* One ball (its circle, face and letter): a picture, so the pointer passes through it. */
+.bingo-art-ballgroup { pointer-events: none; }
+/* A ball still to come: an outline on the card colour, its letter in the secondary text colour. */
+.bingo-art-ball { fill: var(--surface-elevated); stroke: var(--border-strong); stroke-width: 2; stroke-dasharray: 5 4; transition: fill 0.25s ease, stroke 0.25s ease; }
+/* Its face: the card colour, no edge. */
 .bingo-art-face { fill: var(--surface-elevated); }
+/* Its letter. */
 .bingo-art-num {
   font-family: var(--font-mono); font-size: 15px; font-weight: 700;
-  fill: var(--text-primary);
+  fill: var(--text-secondary);
 }
+/* A lit ball: filled in the accent, a solid edge, its letter in the primary text colour. */
+.bingo-art-lit .bingo-art-ball { fill: var(--accent-primary); stroke: var(--accent-primary); stroke-dasharray: none; }
+.bingo-art-lit .bingo-art-num { fill: var(--text-primary); }
+/* The line in words: how many squares the closest line still needs. */
+.bingo-progress-text { margin: 0; font-size: 0.85rem; color: var(--text-secondary); text-align: center; }
+/* No fill fading in for those who asked for less motion. */
+@media (prefers-reduced-motion: reduce) { .bingo-art-ball { transition: none; } }
 
 /* Review R4-06 (03/11/2026): the bingo banner used to appear above the card and push it some 115 px down, under the
    player's finger or pointer. The balls and the banner now share one slot of fixed height above the card: once
@@ -17888,8 +17900,10 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .bingo-marquee .bingo-banner-sub { margin-top: 0.15rem; font-size: 0.82rem; line-height: 1.35; }
 /* Review R4-07: armed, the New card button asks for its second press in the accent colour. */
 .bingo-new-armed, .bingo-new-armed:hover { color: var(--accent-primary); border-color: var(--accent-primary); }
-/* Review R4-06 on a phone: the card was below the fold. The decorative balls are left out, the meeting-type label
-   shares a row with its selector, and the head is tighter, which lifts the card by about 110 px. The slot opens up
+/* Review R4-06 on a phone: the card was below the fold. The balls shrink to one short row (they were left out
+   until they began to show progress, 05/11/2026), the meeting-type label
+   shares a row with its selector, and the head is tighter, which lifts the card by about 110 px (the row of balls
+   takes about 30 of them back). The slot opens up
    (display: contents) so the banner can follow the card, where it sticks to the bottom of the screen until the card
    has been scrolled past: it appears without moving a single square. */
 @media (max-width: 640px) {
@@ -17903,7 +17917,11 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   .bingo-controls .fs-toggle { min-width: 2.75rem; min-height: 2.75rem; }
   .bingo-new { flex: 1 1 8rem; min-height: 2.75rem; font-size: 0.8rem; line-height: 1.2; padding: 0.3rem 0.6rem; }
   .bingo-marquee { display: contents; }
-  .bingo-marquee .bingo-art { display: none; }
+  /* The balls stay (PRIME 05/11/2026: they show how close the card is to a bingo), as one short row between the
+     controls and the card: small balls, the line in words beside them. */
+  .bingo-progress { order: 1; flex-direction: row; justify-content: center; gap: 0.6rem; margin: 0 0 0.6rem; }
+  .bingo-marquee .bingo-art { width: 8.5rem; flex: none; }
+  .bingo-progress-text { font-size: 0.8rem; text-align: left; }
   .bingo-grid { order: 2; }
   .bingo-marquee .bingo-banner {
     order: 3; position: sticky; bottom: 0.75rem; z-index: 2; margin-top: 0.75rem;
@@ -21172,6 +21190,26 @@ main[data-hub-view="directory"] .hub-directory-head { margin-top: 1.5rem; }
   font-size: 0.85rem;
   color: var(--text-secondary);
   line-height: 1.45;
+}
+.tools-floors-fun {
+  /* /dev/fun under the three floors (PRIME 05/11/2026, "subtly"): one small line tucked under the cards, not a card. */
+  margin: -0.6rem 0 1.15rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+.tools-floors-fun-link {
+  /* The address in the code face, underlined faintly, in the line's own colour until hovered. */
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--text-secondary) 45%, transparent);
+  text-underline-offset: 0.2em;
+}
+.tools-floors-fun-link:hover,
+.tools-floors-fun-link:focus-visible {
+  /* Hover and keyboard focus take the accent and a full underline. */
+  color: var(--accent-primary);
+  text-decoration-color: currentColor;
 }
 
 .hub-paste,

@@ -95,7 +95,6 @@ export interface MegaBrainLabels {
   godLine: string;
   godSub: string;
   godOff: string;
-  disclaimer: string;
   bossHint: string;
   bossDismiss: string;
 }
@@ -123,7 +122,7 @@ export default function MegaBrainConsole({
   xgh: string[];
   /** Witty one-liners popped on each brain click, shuffle-bagged (server-provided). */
   clickPhrases: string[];
-  /** Mano Deyvin YouTube URL. */
+  /** Mano Deyvin's reaction video on YouTube (the tribute links it). */
   manoHref: string;
   /** eXtreme Go Horse reference URL. */
   xghHref: string;
@@ -689,9 +688,6 @@ export default function MegaBrainConsole({
           <p className="mb-total-fine">{labels.totalFine}</p>
         </div>
       )}
-
-
-      <p className="mb-disclaimer">{labels.disclaimer}</p>
     </div>
     {bossApp && <BossApp kind={bossApp} onDismiss={() => setBossApp(null)} onNavigate={(k) => setBossApp(k)} hint={labels.bossHint} dismissLabel={labels.bossDismiss} />}
     </>

@@ -111,8 +111,86 @@
 .fg-result-next { margin: 0.75rem 0 0; font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
 /* The notice when the UTC day turns with the page open: a message and the button that loads today's puzzle. */
 .fg-newday { display: flex; flex-wrap: wrap; gap: 0.5rem 0.75rem; align-items: center; justify-content: center; border: 1px solid var(--accent-primary); border-radius: var(--radius-md); background: var(--surface-elevated); padding: 0.6rem 0.9rem; color: var(--text-primary); text-align: center; }
+/* ---- Earlier puzzles (PRIME 05/11/2026) ----------------------------------- */
+/* The list, in the same folded panel as the rules. */
+.fg-earlier { display: flex; flex-direction: column; gap: 0.75rem; }
+/* The line above the months: what an earlier puzzle counts for, and what the marks mean. */
+.fg-earlier-note { margin: 0; font-size: 0.85rem; }
+/* One month. */
+.fg-earlier-month { display: flex; flex-direction: column; gap: 0.4rem; }
+/* Its name. */
+.fg-earlier-month-title { margin: 0; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); font-weight: 600; }
+/* Its days, as a wrapping row of links. */
+.fg-earlier-days { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+/* One day: a link at least 44 px tall, its number, its date and its mark. Not played: a thin edge. */
+.fg-earlier-day { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 44px; padding: 0 0.7rem; border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--surface-base); color: var(--text-primary); text-decoration: none; font-family: var(--font-mono); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+/* Hover and keyboard focus. */
+.fg-earlier-day:hover { border-color: var(--accent-primary); }
+/* Keyboard focus, always visible. */
+.fg-earlier-day:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+/* Played on its day: a solid, heavier edge. */
+.fg-earlier-onday { border-width: 2px; border-style: solid; }
+/* Played later: a dashed edge (shape, not colour alone). */
+.fg-earlier-later { border-width: 2px; border-style: dashed; }
+/* The day on the board: the accent edge and its number in bold. */
+.fg-earlier-day[aria-current="page"] { border-color: var(--accent-primary); font-weight: 700; }
+/* The puzzle number. */
+.fg-earlier-n { font-weight: 700; }
+/* The date. */
+.fg-earlier-date { color: var(--text-secondary); }
+/* The mark: a tick or a cross, bold. */
+.fg-earlier-mark { font-weight: 800; }
+/* Solved. */
+.fg-earlier-solved { color: var(--color-success); }
+/* Not solved. */
+.fg-earlier-unsolved { color: var(--color-danger); }
+/* The banner on an earlier puzzle's page. */
+.fg-earlier-banner { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; text-align: center; border: 1px solid var(--accent-primary); border-radius: var(--radius-md); background: var(--surface-elevated); padding: 0.7rem 0.9rem; }
+/* Which puzzle. */
+.fg-earlier-banner-title { margin: 0; font-weight: 700; color: var(--text-primary); }
+/* What it does not count toward. */
+.fg-earlier-banner-note { margin: 0; font-size: 0.85rem; color: var(--text-secondary); }
+/* The way around: previous, today's, next. */
+.fg-earlier-nav { display: flex; flex-wrap: wrap; gap: 0.4rem 0.6rem; justify-content: center; }
+/* Each one a tappable link. */
+.fg-earlier-nav-link { display: inline-flex; align-items: center; min-height: 44px; padding: 0 0.8rem; border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--surface-base); color: var(--text-primary); font-weight: 600; text-decoration: none; }
+/* Hover. */
+.fg-earlier-nav-link:hover { border-color: var(--accent-primary); }
+/* Keyboard focus, always visible. */
+.fg-earlier-nav-link:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+/* Today's puzzle, the one that counts: in the accent. */
+.fg-earlier-nav-today { background: var(--accent-primary); border-color: var(--accent-primary); color: var(--canvas-primary); }
+/* The line when the address asked for a day that cannot be played. */
+.fg-earlier-refused { margin: 0; text-align: center; border: 1px dashed var(--border-strong); border-radius: var(--radius-md); padding: 0.5rem 0.8rem; color: var(--text-secondary); font-size: 0.9rem; }
 /* The footer: reset and the storage note. */
 .fg-footer { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; align-items: center; }
+
+/* ---- "Solve the other puzzles" (PRIME 05/11/2026), right after the result ---------------------------------------
+   The other daily games as one wrapping row of pills, each a link to today's puzzle with a tick once solved (a dot
+   once played), centred like the result above it; a quiet rule sets it apart from the result. */
+.fg-more { padding-top: 1rem; border-top: 1px solid var(--border-subtle); text-align: center; }
+/* Its heading: plain, the size of a sub-heading. */
+.fg-more-title { margin: 0 0 0.6rem; font-size: 1rem; font-weight: 700; color: var(--text-primary); }
+/* The pills, wrapping, centred. */
+.fg-more-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.45rem; justify-content: center; }
+/* One game: a 44 px pill, its name and its mark. */
+.fg-more-link { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 44px; padding: 0 0.85rem; border: 1px solid var(--border-subtle); border-radius: 999px; background: var(--surface-elevated); color: var(--text-primary); font-size: 0.88rem; text-decoration: none; }
+/* Hover and keyboard focus take the accent. */
+.fg-more-link:hover, .fg-more-link:focus-visible { border-color: var(--accent-primary); color: var(--accent-primary); }
+/* The focus ring. */
+.fg-more-link:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+/* The mark after the name. */
+.fg-more-mark { font-weight: 700; line-height: 1; }
+/* Solved today: a tick in the success colour. */
+.fg-more-solved { color: var(--color-success); }
+/* Played today, not solved: a dot in the secondary text colour. */
+.fg-more-played { color: var(--text-secondary); }
+/* The link to the whole shelf, under the pills. */
+.fg-more-all { margin: 0.7rem 0 0; font-size: 0.85rem; }
+/* Quiet until hovered. */
+.fg-more-all-link { color: var(--text-secondary); text-underline-offset: 0.2em; }
+/* Hover and focus take the accent. */
+.fg-more-all-link:hover, .fg-more-all-link:focus-visible { color: var(--accent-primary); }
 
 /* ---- Controls ------------------------------------------------------------- */
 
@@ -171,9 +249,11 @@
 
 /* ---- Access Points (fg-ap-) ---------------------------------------------- */
 
-/* The floor plan: cells edge to edge, so zone walls read as one line; no page scroll while dragging marks; the
-   background shows through sub-pixel seams between rows as a grid line, not as a dark crack. */
-.fg-ap-board { gap: 0; touch-action: none; -webkit-touch-callout: none; border: 2px solid var(--text-primary); border-radius: var(--radius-sm); overflow: hidden; background: var(--border-subtle); }
+/* The floor plan: cells edge to edge, so zone walls read as one line; the background shows through sub-pixel seams
+   between rows as a grid line, not as a dark crack. A finger pans the page over it (touch-action: manipulation; PRIME
+   05/11/2026, a swipe scrolls and marks nothing), with double-tap zoom off for the quick second tap; a mouse still
+   drags to mark. */
+.fg-ap-board { gap: 0; touch-action: manipulation; -webkit-touch-callout: none; border: 2px solid var(--text-primary); border-radius: var(--radius-sm); overflow: hidden; background: var(--border-subtle); }
 /* Before mount: an empty square with the loading line. */
 .fg-ap-loading { display: flex; align-items: center; justify-content: center; border-style: dashed; border-color: var(--border-subtle); }
 /* The loading line. */
@@ -221,12 +301,14 @@
 .fg-ap-tag { position: absolute; top: 2px; left: 3px; padding: 1px 3px; border-radius: 3px; background: color-mix(in srgb, var(--surface-base) 85%, transparent); font-size: 0.65rem; font-weight: 700; color: var(--text-primary); line-height: 1; pointer-events: none; }
 /* The access point glyph, outlined in the page colour so it reads on every zone colour (PRIME 04/11/2026, contrast). */
 .fg-ap-glyph { width: 62%; height: 62%; color: var(--text-primary); pointer-events: none; filter: drop-shadow(0 0 1px var(--canvas-primary)) drop-shadow(0 0 1px var(--canvas-primary)); }
-/* A mark you placed: bold, in the text colour, on a small disc of the card colour, so it stands out from any zone
-   colour or pattern under it (PRIME 04/11/2026: the marks were hard to tell from the fields). */
-.fg-ap-x { display: grid; place-items: center; width: 1.45em; height: 1.45em; border-radius: 50%; background: color-mix(in srgb, var(--surface-base) 82%, transparent); font-size: 1.3rem; font-weight: 700; color: var(--text-primary); pointer-events: none; line-height: 1; }
+/* A mark you placed: bold, in the text colour, on a small disc of the card colour ringed in the text colour, so it
+   stands out from any zone colour or pattern under it (PRIME 04/11/2026: the marks were hard to tell from the fields)
+   and differs from an automatic mark by shape as well as size and colour (PRIME 05/11/2026: Matrix Red draws both in
+   red). */
+.fg-ap-x { display: grid; place-items: center; width: 1.45em; height: 1.45em; border-radius: 50%; background: color-mix(in srgb, var(--surface-base) 82%, transparent); font-size: 1.3rem; font-weight: 700; color: var(--text-primary); pointer-events: none; line-height: 1; box-shadow: 0 0 0 2px var(--text-primary); }
 /* An automatic mark: red, as PRIME asked, and a little smaller, so it differs from a placed mark by colour and by
    size, not by colour alone; its disc is nearly opaque, so the red reads on any zone. */
-.fg-ap-x-auto { width: 1.25em; height: 1.25em; font-size: 1.2rem; color: var(--color-danger); background: color-mix(in srgb, var(--surface-base) 88%, transparent); }
+.fg-ap-x-auto { width: 1.25em; height: 1.25em; font-size: 1.2rem; color: var(--color-danger); background: color-mix(in srgb, var(--surface-base) 88%, transparent); box-shadow: none; }
 /* A clash or a wrong cell: a red inner edge and red stripes behind the content. */
 .fg-ap-bad { box-shadow: inset 0 0 0 3px var(--color-danger); background-image: repeating-linear-gradient(45deg, color-mix(in srgb, var(--color-danger) 22%, transparent) 0 4px, transparent 4px 9px); }
 /* The glyph turns red too. */
@@ -283,33 +365,6 @@
 
 /* ---- Logic puzzle kit (fg-lpk-): shared by Access Points, Bit Balance and Patch Path ---- */
 
-/* The mode switch and the practice days, stacked and centred. */
-.fg-lpk-modes { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; width: 100%; }
-/* Daily and Practice side by side. */
-.fg-lpk-switch { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
-/* The pressed mode is filled with the accent. */
-.fg-lpk-mode[aria-pressed="true"] { background: var(--accent-primary); border-color: var(--accent-primary); color: var(--canvas-primary); }
-/* The practice block. */
-.fg-lpk-days-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; max-width: 100%; }
-/* The line above the days. */
-.fg-lpk-note { margin: 0; text-align: center; max-width: 52ch; }
-/* The seven earlier days, wrapping on a phone. */
-.fg-lpk-days { display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; }
-/* One day: a chip that is also a 44 px button. */
-.fg-lpk-day { min-height: 44px; padding: 0 0.8rem; cursor: pointer; font-family: var(--font-mono); }
-/* The day being practised. */
-.fg-lpk-day[aria-pressed="true"] { color: var(--accent-primary); border-color: var(--accent-primary); }
-/* Keyboard focus on a day. */
-.fg-lpk-day:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
-/* A day solved as the daily puzzle: a green edge (the day being practised keeps its accent edge). */
-.fg-lpk-day-solved { border-color: var(--color-success); }
-/* Its tick and time after the date. */
-.fg-lpk-day-mark { margin-left: 0.45rem; color: var(--color-success); font-weight: 700; }
-/* A day solved only in practice: a dashed green edge, so it reads apart from a day solved on the day by its mark and
-   its edge, not by colour alone (the day being practised keeps its accent edge). */
-.fg-lpk-day-practised { border-color: var(--color-success); border-style: dashed; }
-/* Its replay mark and best time, lighter than the daily tick. */
-.fg-lpk-day-mark-practice { font-weight: 600; opacity: 0.85; }
 /* The clock, the checks and the buttons under the board. */
 .fg-lpk-hud { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; width: 100%; }
 /* The four buttons stay on one line on a phone: a little less padding below 420 px (still 44 px tall). */
@@ -346,8 +401,9 @@
 
 /* ---- Patch Path (fg-pp-) -------------------------------------------------- */
 
-/* The panel: cells edge to edge under one drawing layer; no page scroll while drawing. */
-.fg-pp-board { position: relative; gap: 0; touch-action: none; -webkit-touch-callout: none; border: 2px solid var(--border-strong); border-radius: var(--radius-sm); overflow: hidden; background: var(--surface-elevated); }
+/* The panel: cells edge to edge under one drawing layer. A finger pans the page over it (PRIME 05/11/2026: a swipe
+   scrolls), except on the pen below, where it draws; double-tap zoom stays off. */
+.fg-pp-board { position: relative; gap: 0; touch-action: manipulation; -webkit-touch-callout: none; border: 2px solid var(--border-strong); border-radius: var(--radius-sm); overflow: hidden; background: var(--surface-elevated); }
 /* Keyboard focus on the panel. */
 .fg-pp-board:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 3px; }
 /* Before mount: an empty square with the loading line. */
@@ -362,6 +418,8 @@
 .fg-pp-on { background: color-mix(in srgb, var(--accent-primary) 14%, var(--surface-elevated)); }
 /* The end of the cable. */
 .fg-pp-head { box-shadow: inset 0 0 0 2px var(--accent-primary); }
+/* The pen (the cable's end, or port 1 before the cable starts): a finger landing here draws, so no page scroll. */
+.fg-pp-pen { touch-action: none; }
 /* A cell off the route after a Check: red stripes. */
 .fg-pp-bad { background-image: repeating-linear-gradient(45deg, color-mix(in srgb, var(--color-danger) 26%, transparent) 0 4px, transparent 4px 9px); }
 /* A port: a round numbered badge above the cable. */

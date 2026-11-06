@@ -43,7 +43,9 @@ import GameShell, { type ShellResult } from "./GameShell";
 // The puzzle number of a day.
 import { puzzleNumber } from "@/lib/fun/daily";
 // Today's UTC day and the reduced-motion preference.
-import { useReducedMotion, useToday } from "@/lib/fun/hooks";
+import { useEarlierDay, useReducedMotion, useToday } from "@/lib/fun/hooks";
+// The earlier puzzle in play (?day=), if any.
+import { earlierDayInPlay } from "@/lib/fun/archive";
 // The share card.
 import { shareText } from "@/lib/fun/share";
 // The one storage key.
@@ -88,6 +90,22 @@ interface SavedDaily {
   tries?: number;
   /** The board, as share-card rows, of the round with the day's best score, as it ended (or stands, mid-round). */
   bestGrid?: string[];
+}
+
+/**
+ * The mark of a kept daily state, for days played before the marks existed (GameShell's gradeSaved): a counted challenge, solved at a /24 or better; the state keeps the day's best block, so a /24 reached only in a replay marks the day solved (solved once stays solved).
+ *
+ * @param _day the challenge's day (the saved state says it all)
+ * @param state the kept state
+ * @returns 1 solved, 0 counted without a /24, null not counted yet
+ */
+function gradeSaved(_day: string, state: unknown): 0 | 1 | null {
+  // The saved day.
+  const s = state as Partial<SavedDaily> | null;
+  // Counted ("recorded" in saves written before "counted").
+  if (!s || (s.counted ?? s.recorded) !== true || typeof s.bestLen !== "number") return null;
+  // A /24 or better.
+  return s.bestLen <= 24 ? 1 : 0;
 }
 
 /** What the record's extra keeps for free play: the round in play and the mode played last. */
@@ -229,6 +247,8 @@ export default function Aggregate({ locale }: { locale: string }) {
   const tc = useTranslations("devFun.games.common");
   // Today's UTC day, null until mount.
   const today = useToday();
+  // The earlier puzzle on the board (?day=), or null: its wording says "this day's" where today's says "today's".
+  const earlierDay = useEarlierDay();
   // Whether to skip the landing pulses.
   const reduce = useReducedMotion();
   // Daily challenge or free play.
@@ -294,8 +314,9 @@ export default function Aggregate({ locale }: { locale: string }) {
       // Otherwise a fresh daily round.
       setDaily(newGame({ kind: "daily", day: today }));
     }
-    // Free play reopens where it was left, once today's challenge is counted (until then the page opens on the challenge).
-    if (counted && keptFree && !keptFree.over && extra.lastMode === "free") setMode("free");
+    // Free play reopens where it was left, once today's challenge is counted (until then the page opens on the challenge);
+    // an earlier puzzle's page always opens on its challenge, because the address asked for it.
+    if (counted && keptFree && !keptFree.over && extra.lastMode === "free" && earlierDayInPlay() === null) setMode("free");
   }, [today]);
 
   // The round on screen.
@@ -371,8 +392,9 @@ export default function Aggregate({ locale }: { locale: string }) {
       if (next.over) {
         // The day's first finished round counts, once: played, the win (a /24) and the streak (review R3-01).
         if (!dailyCounted) recordResult(GAME_ID, { dayKey: today, won: next.bestLen <= 24, score: next.score, higherIsBetter: true, daily: true });
-        // A replay counts nothing again; it can only raise the best score, as the note under the board says.
-        else updateRecord(GAME_ID, (r) => ({ ...r, best: r.best === null || next.score > r.best ? next.score : r.best }));
+        // A replay counts nothing again; it can only raise the best score, as the note under the board says (not an
+        // earlier puzzle's replay: earlier puzzles count toward no score).
+        else if (earlierDayInPlay() === null) updateRecord(GAME_ID, (r) => ({ ...r, best: r.best === null || next.score > r.best ? next.score : r.best }));
         // Marked.
         setDailyCounted(true);
         // The stats line re-reads.
@@ -596,6 +618,7 @@ export default function Aggregate({ locale }: { locale: string }) {
       onPlayAgain={playAgain}
       version={version}
       formatBest={(b) => b.toLocaleString(locale)}
+      gradeSaved={gradeSaved}
     >
       <div className="fg-agg-wrap">
         {/* Daily challenge or free play. */}
@@ -619,7 +642,7 @@ export default function Aggregate({ locale }: { locale: string }) {
             <span className="fg-readout">{game ? `/${game.bestLen}` : "-"}</span>
           </span>
           {mode === "daily" && (
-            <span className="fg-muted fg-small">{t("todayBest", { score: dayBest.score.toLocaleString(locale) })}</span>
+            <span className="fg-muted fg-small">{t(earlierDay ? "todayBestEarlier" : "todayBest", { score: dayBest.score.toLocaleString(locale) })}</span>
           )}
         </div>
         <div className="fg-agg-goals">
@@ -706,7 +729,7 @@ export default function Aggregate({ locale }: { locale: string }) {
           {/* Today's challenge again, once a round of it is over (the frame shows the countdown, not "Play again"). */}
           {game && game.over && mode === "daily" && (
             <button type="button" className="fg-button" onClick={playAgain}>
-              {t("replayDaily")}
+              {t(earlierDay ? "replayDailyEarlier" : "replayDaily")}
             </button>
           )}
         </div>
@@ -717,7 +740,7 @@ export default function Aggregate({ locale }: { locale: string }) {
           {t("learnLead")} <Link href="/learn/supernetting-and-aggregation">{t("learnLink")}</Link> ·{" "}
           <Link href="/learn/route-summarization">{t("learnLink2")}</Link>
         </p>
-        {dailyCounted && mode === "daily" && !game?.over && <p className="fg-muted fg-small">{t("replayNote")}</p>}
+        {dailyCounted && mode === "daily" && !game?.over && <p className="fg-muted fg-small">{t(earlierDay ? "replayNoteEarlier" : "replayNote")}</p>}
       </div>
     </GameShell>
   );

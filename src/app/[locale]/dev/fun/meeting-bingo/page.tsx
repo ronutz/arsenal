@@ -148,6 +148,9 @@ export default async function MeetingBingoPage({
     shareLine: t.raw("shareLine") as string,
     // "0 squares" to "25 squares", with this language's plural rules (a 5x5 card has at most 24 marks to make).
     shareSquares: Array.from({ length: 26 }, (_, n) => t("shareSquares", { n })),
+    // How close the card is to a bingo, by squares still to mark on the closest line: 0 (a bingo) to 5 (a 5x5 card has
+    // lines of five).
+    progress: Array.from({ length: 6 }, (_, n) => t("progress", { n })),
     // The Copy button: "Copy", then the games' "Copied" and "Copy failed".
     share: { copy: tCommon("copy"), copied: tCommon("copied"), copyFailed: tCommon("copyFailed") },
   };

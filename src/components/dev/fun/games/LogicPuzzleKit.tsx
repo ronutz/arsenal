@@ -5,8 +5,7 @@
 // src/components/dev/fun/games/LogicPuzzleKit.tsx
 // ----------------------------------------------------------------------------
 // WHAT THE THREE GRID PUZZLES SHARE (Access Points, Bit Balance, Patch Path;
-// PRIME 03/11/2026): the daily-or-practice switch, the clock that starts on the
-// first move, the "Check" and "Hint" counters and their time penalty (a hint
+// PRIME 03/11/2026): the clock that starts on the first move, the "Check" and "Hint" counters and their time penalty (a hint
 // costs what a check costs; each game's engine finds the hint, the kit counts
 // it, saves it with the round and shows its sentence under the buttons), undo
 // and clear, the saved state of today's puzzle (restored on load, a finished
@@ -20,13 +19,12 @@
 // round that comes back after a reload is running again at once, so a reload
 // no longer wins time. Spanning Tree borrows the same clock (useRoundClock).
 //
-// Practice offers the previous seven days' puzzles (rebuilt from their seeds),
-// never a future one, and does not touch the streak or the saved daily state;
-// a practice round is framed as free play (review R1-09): no countdown or
-// streak, and "Play again" moves on to another earlier day. The list of days
-// marks the ones solved as the daily puzzle with a tick and the time, read
-// from the saved daily states the record keeps for seven days (practice
-// rounds themselves are not stored). Check and Clear wait for a first move
+// There is no practice mode of its own (PRIME 05/11/2026, folding practice
+// into Earlier puzzles): the seven-day practice list this kit used to show is
+// gone, and an earlier day is played from GameShell's Earlier puzzles list,
+// which reaches back to puzzle #1. On such a page useToday() returns that
+// day, so the session plays it as a daily puzzle and the store files its
+// state and result apart (src/lib/fun/storage.ts). Check and Clear wait for a first move
 // (review R1-13): an untouched board has nothing to check and nothing to
 // clear; Hint does not wait, since an empty board has a first step too.
 // Each game keeps its own board, rules and drawing; this file holds no strings
@@ -37,17 +35,12 @@
 
 // React's state, effects, refs and memo.
 import { useCallback, useEffect, useMemo, useRef, useState, type FocusEvent, type ReactNode } from "react";
-// The day arithmetic.
-import { addDays } from "@/lib/fun/daily";
 // The time format.
 import { formatDuration } from "@/lib/fun/share";
 // The one storage key's helpers.
-import { loadRecord, recordResult, saveDailyState, updateRecord } from "@/lib/fun/storage";
+import { loadRecord, recordResult, saveDailyState, type GameRecord, type LegacyMarks } from "@/lib/fun/storage";
 // The switch that stands the site's single-key shortcuts down.
 import { setSiteShortcutsSuppressed } from "@/lib/pageCapabilities";
-
-/** How many earlier days practice offers. */
-export const PRACTICE_DAYS = 7;
 
 /** How often a running clock saves itself, in milliseconds. */
 const PERSIST_EVERY_MS = 5000;
@@ -240,6 +233,40 @@ interface SavedRound<B> {
 }
 
 /**
+ * The mark of a kept daily round, for days played before the marks existed (GameShell's gradeSaved): a finished
+ * round is always a solved one (the round ends only when the board is solved); anything else is not finished.
+ *
+ * @param _day the round's day (not needed: the saved round says it all)
+ * @param state the kept state
+ * @returns 1 for a finished round, null otherwise
+ */
+export function gradeSavedRound(_day: string, state: unknown): 0 | 1 | null {
+  // Only a saved round marked finished.
+  return state !== null && typeof state === "object" && (state as Partial<SavedRound<unknown>>).d === true ? 1 : null;
+}
+
+/**
+ * The marks the old practice list left (GameShell's legacyMarks): the earlier days solved in practice, kept as
+ * extra.practiceSolved (day to best time) until the list was folded into Earlier puzzles (PRIME 05/11/2026), become
+ * results of earlier puzzles played later, and the old map leaves the record.
+ *
+ * @param r the record as stored
+ * @returns the marks and the extra field without the map, or null when there is no map
+ */
+export function legacyPracticeMarks(r: GameRecord): LegacyMarks | null {
+  // No map, nothing to do.
+  if (!("practiceSolved" in r.extra)) return null;
+  // The stored map, if it is one.
+  const map = r.extra.practiceSolved && typeof r.extra.practiceSolved === "object" ? (r.extra.practiceSolved as Record<string, unknown>) : {};
+  // Each day with a usable time was solved.
+  const later = Object.fromEntries(Object.entries(map).filter(([d, ms]) => /^\d{4}-\d{2}-\d{2}$/.test(d) && typeof ms === "number" && Number.isFinite(ms) && ms >= 0).map(([d]) => [d, 1]));
+  // The extra field without the map.
+  const extra = Object.fromEntries(Object.entries(r.extra).filter(([k]) => k !== "practiceSolved"));
+  // Both.
+  return { later, extra };
+}
+
+/**
  * A usable count from a saved round (a missing or damaged field counts as none).
  *
  * @param x the stored value
@@ -270,12 +297,8 @@ export interface PuzzleSessionConfig<P, B> {
 
 /** The session a game plays in. */
 export interface PuzzleSession<P, B> {
-  /** "daily" or "practice". */
-  mode: "daily" | "practice";
-  /** The day being played (today, or a practice day), or null before mount. */
+  /** The day being played (today, or the earlier day of an earlier puzzle's page), or null before mount. */
   day: string | null;
-  /** The earlier days practice offers, most recent first. */
-  practiceDays: string[];
   /** The puzzle, or null before mount. */
   puzzle: P | null;
   /** The board, or null before mount. */
@@ -298,10 +321,6 @@ export interface PuzzleSession<P, B> {
   hints: number;
   /** Count a hint (the game finds it with its engine and shows it); it starts the clock like a move. */
   hint: () => void;
-  /** The earlier days already solved as the daily puzzle, with their final times (read from the saved daily states). */
-  solvedDays: Record<string, number>;
-  /** The earlier days solved in practice, with the best final time (extra.practiceSolved, the last seven days). */
-  practiceSolved: Record<string, number>;
   /** Whether the round is finished. */
   done: boolean;
   /** The final time with penalties, once finished. */
@@ -310,18 +329,12 @@ export interface PuzzleSession<P, B> {
   shownMs: number;
   /** Whether the clock has started. */
   started: boolean;
-  /** Switch to today's puzzle. */
-  playDaily: () => void;
-  /** Switch to a practice day. */
-  playPractice: (day: string) => void;
   /** Bumped after each recorded result, for GameShell's version prop. */
   version: number;
-  /** What GameShell needs to frame the round: a daily puzzle, or practice as free play with "Play again". */
-  shell: { kind: "daily" | "free"; onPlayAgain?: () => void };
 }
 
 /**
- * The shared session: mode, day, puzzle, board with undo, clock, checks, saving and recording.
+ * The shared session: day, puzzle, board with undo, clock, checks, saving and recording.
  *
  * @param cfg see PuzzleSessionConfig
  * @returns the session
@@ -331,16 +344,8 @@ export function usePuzzleSession<P, B>(cfg: PuzzleSessionConfig<P, B>): PuzzleSe
   const cfgRef = useRef(cfg);
   // Kept current.
   cfgRef.current = cfg;
-  // Daily or practice.
-  const [mode, setMode] = useState<"daily" | "practice">("daily");
-  // The practice day chosen.
-  const [practiceDay, setPracticeDay] = useState<string | null>(null);
-  // The day being played.
-  const day = cfg.today === null ? null : mode === "daily" ? cfg.today : practiceDay;
-  // The earlier days, most recent first.
-  const practiceDays = useMemo(() => (cfg.today ? Array.from({ length: PRACTICE_DAYS }, (_, k) => addDays(cfg.today as string, -(k + 1))) : []), [cfg.today]);
-  // Bumped by "Play again", so a practice day can start afresh even when it is the same day.
-  const [round, setRound] = useState(0);
+  // The day being played: the game's day in play (today, or an earlier puzzle's day on a ?day= page).
+  const day = cfg.today;
   // The day's puzzle, built once per day.
   const puzzle = useMemo(() => (day ? cfgRef.current.generate(day) : null), [day]);
   // The board.
@@ -360,16 +365,16 @@ export function usePuzzleSession<P, B>(cfg: PuzzleSessionConfig<P, B>): PuzzleSe
   // Whether the clock has started for this round (a restored round counts as started).
   const [started, setStarted] = useState(false);
   // The latest round, for the clock's saves, which come from event listeners between renders.
-  const live = useRef({ mode, day, board, checks, hints, done, started });
+  const live = useRef({ day, board, checks, hints, done, started });
   // Kept current on every render.
-  live.current = { mode, day, board, checks, hints, done, started };
+  live.current = { day, board, checks, hints, done, started };
 
-  // Save the daily round in progress with the clock's exact total (the page hidden or closed, a timer, a switch away).
+  // Save the round in progress with the clock's exact total (the page hidden or closed, a timer, leaving the page).
   const persist = useCallback((ms: number) => {
     // The round as it stands.
     const r = live.current;
-    // Only an unfinished daily round that has started (practice is not saved; a finished one was saved at the end).
-    if (r.mode !== "daily" || !r.day || r.board === null || !r.started || r.done) return;
+    // Only an unfinished round that has started (a finished one was saved at the end).
+    if (!r.day || r.board === null || !r.started || r.done) return;
     // The round.
     const saved: SavedRound<B> = { b: r.board, e: ms, k: r.checks, h: r.hints, d: false, t: null };
     // Into the one storage key.
@@ -390,7 +395,7 @@ export function usePuzzleSession<P, B>(cfg: PuzzleSessionConfig<P, B>): PuzzleSe
   // Leaving the page inside the site (no pagehide then): the round in progress is saved.
   useEffect(() => () => persistNow(), [persistNow]);
 
-  // A new puzzle: restore today's saved round, or start fresh.
+  // A new puzzle: restore the day's saved round, or start fresh.
   useEffect(() => {
     // Nothing before mount.
     if (!puzzle || !day) return;
@@ -398,8 +403,8 @@ export function usePuzzleSession<P, B>(cfg: PuzzleSessionConfig<P, B>): PuzzleSe
     clock.reset(0);
     // Undo history cleared.
     setHistory([]);
-    // The saved round, for the daily puzzle only.
-    const saved = mode === "daily" ? (loadRecord(cfgRef.current.gameId).daily[day] as SavedRound<B> | undefined) : undefined;
+    // The saved round (on an earlier puzzle's page the store shows that day's own round, kept apart).
+    const saved = loadRecord(cfgRef.current.gameId).daily[day] as SavedRound<B> | undefined;
     // A usable saved round.
     if (saved && typeof saved === "object" && cfgRef.current.isBoard(puzzle, saved.b)) {
       // Its time so far.
@@ -435,21 +440,21 @@ export function usePuzzleSession<P, B>(cfg: PuzzleSessionConfig<P, B>): PuzzleSe
     setFinalMs(null);
     // Not started.
     setStarted(false);
-    // The clock's functions are stable; the effect follows the puzzle and "Play again".
+    // The clock's functions are stable; the effect follows the puzzle.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [puzzle, day, mode, round]);
+  }, [puzzle, day]);
 
-  // Save today's round (daily only): board, clock, checks, hints, finished, final time.
+  // Save the day's round: board, clock, checks, hints, finished, final time.
   const save = useCallback(
     (b: B, e: number, k: number, h: number, d: boolean, t: number | null) => {
-      // Practice rounds are not saved.
-      if (mode !== "daily" || !day) return;
+      // Nothing before mount.
+      if (!day) return;
       // The round.
       const saved: SavedRound<B> = { b, e, k, h, d, t };
       // Into the one storage key.
       saveDailyState(cfgRef.current.gameId, day, saved);
     },
-    [mode, day],
+    [day],
   );
 
   // Finish: stop the clock, record, save.
@@ -465,32 +470,13 @@ export function usePuzzleSession<P, B>(cfg: PuzzleSessionConfig<P, B>): PuzzleSe
       setFinalMs(total);
       // Saved.
       save(b, raw, k, h, true, total);
-      // Recorded: a daily round counts for the streak and the best time; practice only counts as played.
-      if (day) recordResult(cfgRef.current.gameId, mode === "daily" ? { dayKey: day, won: true, score: Math.round(total), higherIsBetter: false, daily: true } : { dayKey: day, won: true, daily: false });
-      // A practice solve is remembered for its day's chip (PRIME 03/11/2026 18:17, "Ok to all"): the best time per day,
-      // inside the game's own record (extra.practiceSolved, merged, never replacing extra), kept for the days practice
-      // offers and dropped after them, so the record cannot grow without bound.
-      if (day && mode === "practice") {
-        // The oldest day practice still offers.
-        const oldest = cfgRef.current.today ? addDays(cfgRef.current.today, -PRACTICE_DAYS) : day;
-        // Read, change, write in one step.
-        updateRecord(cfgRef.current.gameId, (r) => {
-          // The stored map, if it is one.
-          const prev = r.extra.practiceSolved && typeof r.extra.practiceSolved === "object" ? (r.extra.practiceSolved as Record<string, unknown>) : {};
-          // The days still on offer, with a usable time, carried over.
-          const kept: Record<string, number> = {};
-          // Each stored day: kept when practice still offers it and its time is a real duration.
-          for (const [d, t] of Object.entries(prev)) if (d >= oldest && typeof t === "number" && Number.isFinite(t) && t >= 0) kept[d] = t;
-          // This day's best: the new time when it beats the old one (or there is none).
-          kept[day] = kept[day] === undefined ? total : Math.min(kept[day], total);
-          // The record with the map merged into extra.
-          return { ...r, extra: { ...r.extra, practiceSolved: kept } };
-        });
-      }
+      // Recorded as the daily puzzle: today's counts for the streak and the best time; an earlier puzzle's only for
+      // the played count and its mark in Earlier puzzles (storage.ts tells the two apart by the page's ?day=).
+      if (day) recordResult(cfgRef.current.gameId, { dayKey: day, won: true, score: Math.round(total), higherIsBetter: false, daily: true });
       // The shell re-reads the record.
       setVersion((v) => v + 1);
     },
-    [clock, save, day, mode],
+    [clock, save, day],
   );
 
   // A move.
@@ -577,98 +563,24 @@ export function usePuzzleSession<P, B>(cfg: PuzzleSessionConfig<P, B>): PuzzleSe
     save(board, clock.now(), checks, h, false, null);
   }, [done, board, hints, checks, clock, save]);
 
-  // The earlier days solved as the daily puzzle, with their final times.
-  const [solvedDays, setSolvedDays] = useState<Record<string, number>>({});
-  // The earlier days solved in practice, with their best times.
-  const [practiceSolved, setPracticeSolved] = useState<Record<string, number>>({});
-  // Read after mount, on a switch of mode, and after each recorded result (the record keeps seven days of states).
-  useEffect(() => {
-    // Nothing before mount.
-    if (practiceDays.length === 0) return;
-    // The game's record: its saved daily states and its practice solves.
-    const rec = loadRecord(cfgRef.current.gameId);
-    // The saved daily states.
-    const daily = rec.daily;
-    // The practice solves, if the stored value is a map.
-    const prac = rec.extra.practiceSolved && typeof rec.extra.practiceSolved === "object" ? (rec.extra.practiceSolved as Record<string, unknown>) : {};
-    // The days found solved in practice.
-    const fromPractice: Record<string, number> = {};
-    // The days found solved.
-    const found: Record<string, number> = {};
-    // Each earlier day on offer.
-    for (const d of practiceDays) {
-      // Its saved round, if any.
-      const sv = daily[d] as Partial<SavedRound<B>> | undefined;
-      // Finished, with a usable final time.
-      if (sv && typeof sv === "object" && sv.d === true && typeof sv.t === "number" && Number.isFinite(sv.t) && sv.t >= 0) found[d] = sv.t;
-      // Its best practice time, if any.
-      const pt = prac[d];
-      // A usable time.
-      if (typeof pt === "number" && Number.isFinite(pt) && pt >= 0) fromPractice[d] = pt;
-    }
-    // Shown.
-    setSolvedDays(found);
-    // Shown too.
-    setPracticeSolved(fromPractice);
-  }, [practiceDays, mode, version]);
-
-  // Switch to today's puzzle (the round on screen saved first).
-  const playDaily = useCallback(() => {
-    // Saved.
-    persistNow();
-    // Daily.
-    setMode("daily");
-  }, [persistNow]);
-  // Switch to a practice day.
-  const playPractice = useCallback(
-    (d: string) => {
-      // Saved.
-      persistNow();
-      // The day.
-      setPracticeDay(d);
-      // Practice.
-      setMode("practice");
-    },
-    [persistNow],
-  );
-  // "Play again" after a practice round: the next earlier day, round the list, on a fresh board.
-  const playAgain = useCallback(() => {
-    // Where the current day sits in the list.
-    const at = practiceDays.indexOf(practiceDay ?? "");
-    // The next one, wrapping.
-    setPracticeDay(practiceDays[(at + 1) % practiceDays.length] ?? null);
-    // A fresh round even if it comes back to the same day.
-    setRound((r) => r + 1);
-  }, [practiceDays, practiceDay]);
-
   // The time shown: final once finished, else clock plus penalties (checks and hints).
   const shownMs = done && finalMs !== null ? finalMs : clock.ms + (checks + hints) * cfg.penaltyMs;
 
   // The session.
   return {
-    // Mode and day.
-    mode, day, practiceDays, puzzle, board,
+    // The day.
+    day, puzzle, board,
     // The moves.
     move, undo, canUndo: history.length > 0 && !done, clear, untouched,
-    // Checks, hints, the days solved, and the clock.
-    checks, check, hints, hint, solvedDays, practiceSolved, done, finalMs, shownMs, started,
-    // Switching.
-    playDaily, playPractice, version,
-    // The frame: a daily puzzle, or practice as free play.
-    shell: mode === "daily" ? { kind: "daily" } : { kind: "free", onPlayAgain: playAgain },
+    // Checks, hints and the clock.
+    checks, check, hints, hint, done, finalMs, shownMs, started,
+    // The record's version.
+    version,
   };
 }
 
 /** The labels the kit's controls show (the game reads them from its own namespace). */
 export interface KitLabels {
-  /** "Daily". */
-  daily: string;
-  /** "Practice". */
-  practice: string;
-  /** The line above the practice days. */
-  practiceNote: string;
-  /** The label of the group of practice days. */
-  practiceDaysLabel: string;
   /** "Time". */
   time: string;
   /** "Check". */
@@ -683,98 +595,6 @@ export interface KitLabels {
   hint: string;
   /** "n hints (+s s)". */
   hintsUsed: string;
-  /** A solved earlier day's accessible name, from its label and its final time ("Mon 2 Nov, solved in 1:23"). */
-  daySolved: (date: string, time: string) => string;
-  /** A day solved only in practice: its accessible name ("Mon 2 Nov, solved in practice in 1:40"). */
-  daySolvedPractice: (date: string, time: string) => string;
-  /** The mode switch's group label. */
-  modeLabel: string;
-}
-
-/**
- * A short, locale-aware label for a day (weekday, day and month, in UTC).
- *
- * @param day the date as YYYY-MM-DD
- * @param locale the page's locale
- * @returns the label
- */
-export function dayLabel(day: string, locale: string): string {
-  // Formatting can throw on an unknown locale; English then.
-  try {
-    // The site writes British English, so "en" dates read the British way (Sun 1 Nov).
-    const tag = locale === "en" ? "en-GB" : locale;
-    // The day at noon UTC, so no time zone moves it.
-    return new Intl.DateTimeFormat(tag, { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" }).format(new Date(`${day}T12:00:00Z`));
-  } catch {
-    // The plain date.
-    return day;
-  }
-}
-
-/**
- * The mode switch (daily or practice) and, in practice, the earlier days, each one solved as the daily puzzle marked
- * with a tick and its time (and named so for a screen reader).
- *
- * @param props the session, the labels and the locale
- * @returns the switch
- */
-export function PuzzleModeBar<P, B>(props: { session: PuzzleSession<P, B>; labels: KitLabels; locale: string }) {
-  // Shorthands.
-  const { session: s, labels: l } = props;
-  // The bar.
-  return (
-    <div className="fg-lpk-modes">
-      {/* Daily or practice, as two pressed-or-not buttons. */}
-      <div className="fg-lpk-switch" role="group" aria-label={l.modeLabel}>
-        <button type="button" className="fg-button fg-lpk-mode" aria-pressed={s.mode === "daily"} onClick={s.playDaily}>
-          {l.daily}
-        </button>
-        <button type="button" className="fg-button fg-lpk-mode" aria-pressed={s.mode === "practice"} onClick={() => s.playPractice(s.practiceDays[0])} disabled={s.practiceDays.length === 0}>
-          {l.practice}
-        </button>
-      </div>
-      {/* In practice, the seven earlier days. */}
-      {s.mode === "practice" && (
-        <div className="fg-lpk-days-wrap">
-          <p className="fg-small fg-muted fg-lpk-note">{l.practiceNote}</p>
-          <div className="fg-lpk-days" role="group" aria-label={l.practiceDaysLabel}>
-            {s.practiceDays.map((d) => {
-              // The day's label.
-              const label = dayLabel(d, props.locale);
-              // Its final time when it was solved as the daily puzzle.
-              const solved = s.solvedDays[d];
-              // Its best practice time, shown only when the day was not solved as the daily (the day's own result wins).
-              const practised = solved === undefined ? s.practiceSolved[d] : undefined;
-              // The day's button: a solved day carries a tick and its time, a day solved in practice a replay mark and
-              // its time, and each says so in its name (the marks are not the only signal).
-              return (
-                <button
-                  key={d}
-                  type="button"
-                  className={`fg-chip fg-lpk-day${solved !== undefined ? " fg-lpk-day-solved" : practised !== undefined ? " fg-lpk-day-practised" : ""}`}
-                  aria-pressed={s.day === d}
-                  aria-label={solved !== undefined ? l.daySolved(label, formatDuration(solved)) : practised !== undefined ? l.daySolvedPractice(label, formatDuration(practised)) : undefined}
-                  onClick={() => s.playPractice(d)}
-                >
-                  {label}
-                  {solved !== undefined && (
-                    <span className="fg-lpk-day-mark" aria-hidden="true">
-                      ✓ {formatDuration(solved)}
-                    </span>
-                  )}
-                  {practised !== undefined && (
-                    <span className="fg-lpk-day-mark fg-lpk-day-mark-practice" aria-hidden="true">
-                      ↻ {formatDuration(practised)}
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
-    </div>
-  );
 }
 
 /**

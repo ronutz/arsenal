@@ -39,7 +39,9 @@ import { useTranslations } from "next-intl";
 // The frame every game sits in.
 import GameShell, { type ShellResult } from "./GameShell";
 // Today's day and the motion preference.
-import { useReducedMotion, useToday } from "@/lib/fun/hooks";
+import { useEarlierDay, useReducedMotion, useToday } from "@/lib/fun/hooks";
+// The earlier puzzle in play (?day=), if any.
+import { earlierDayInPlay } from "@/lib/fun/archive";
 // The puzzle number for the share card, and the UTC day of an instant (for the opening mode).
 import { puzzleNumber, utcDayKey } from "@/lib/fun/daily";
 // The share card.
@@ -79,6 +81,20 @@ interface DailySave {
   won: boolean;
 }
 
+/**
+ * The mark of a kept daily state, for days played before the marks existed (GameShell's gradeSaved): a finished daily, passed or not.
+ *
+ * @param _day the daily's day (the saved state says it all)
+ * @param state the kept state
+ * @returns 1 passed, 0 failed, null not finished
+ */
+function gradeSaved(_day: string, state: unknown): 0 | 1 | null {
+  // The saved daily.
+  const s = state as Partial<DailySave> | null;
+  // Finished: passed or not.
+  return s && s.done === true ? (s.won === true ? 1 : 0) : null;
+}
+
 /** What the levels keep in the record's extra field. */
 interface LevelsSave {
   /** The best score of each passed level, by key. */
@@ -105,6 +121,8 @@ export default function FirstMatch({ locale }: { locale: string }) {
   const tc = useTranslations("devFun.games.common");
   // Today's UTC day (null until mount).
   const today = useToday();
+  // The earlier puzzle on the board (?day=), or null: its wording says "this day's" where today's says "today's".
+  const earlierDay = useEarlierDay();
   // The motion preference.
   const reduce = useReducedMotion();
   // Levels or the daily.
@@ -173,6 +191,13 @@ export default function FirstMatch({ locale }: { locale: string }) {
     setBest(saved.best && typeof saved.best === "object" ? saved.best : {});
     // The level last open.
     if (typeof saved.at === "number" && saved.at >= 0 && saved.at < LEVELS.length) setAt(saved.at);
+    // An earlier puzzle's page (?day=) opens on that daily level, whatever was played before: the address asked for it.
+    if (earlierDayInPlay() !== null) {
+      // The daily.
+      setMode("daily");
+      // Nothing else decides.
+      return;
+    }
     // Today's daily level, as saved (read with the same clock useToday reads in this commit).
     const todays = record.daily[utcDayKey(new Date())] as Partial<DailySave> | undefined;
     // A first visit (no level ever passed) opens on Level 1, which teaches the rules the daily assumes (ANVIL's call at
@@ -698,7 +723,7 @@ export default function FirstMatch({ locale }: { locale: string }) {
 
   // The game.
   return (
-    <GameShell gameId={FM_ID} kind={mode === "daily" ? "daily" : "score"} today={today} rules={rules} result={result} onPlayAgain={replay} formatBest={(b) => t("bestPoints", { n: b })} version={version}>
+    <GameShell gameId={FM_ID} kind={mode === "daily" ? "daily" : "score"} today={today} rules={rules} result={result} onPlayAgain={replay} formatBest={(b) => t("bestPoints", { n: b })} version={version} gradeSaved={gradeSaved}>
       <div className="fg-fm">
         {/* Levels or the daily. */}
         <div className="fg-buttons" role="group" aria-label={t("modeLabel")}>
@@ -737,7 +762,7 @@ export default function FirstMatch({ locale }: { locale: string }) {
             {/* The policy in plain words. */}
             <section className="fg-fm-policy" aria-labelledby="fg-fm-policy-h">
               <h2 id="fg-fm-policy-h" className="fg-fm-h">
-                {mode === "levels" ? t(`levels.${level.key}.title`) : t("dailyTitle")}
+                {mode === "levels" ? t(`levels.${level.key}.title`) : t(earlierDay ? "dailyTitleEarlier" : "dailyTitle")}
               </h2>
               {mode === "levels" ? (
                 <p className="fg-fm-policy-text">{t(`levels.${level.key}.policy`)}</p>

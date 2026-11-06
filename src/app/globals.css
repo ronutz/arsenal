@@ -65,7 +65,7 @@
 
   --text-primary: #f8fafc;       /* body text — high contrast on canvas */
   --text-secondary: #94a3b8;     /* secondary text — clears WCAG-AA 4.5:1 on canvas */
-  --text-tertiary: #64748b;      /* hints, captions (large text only) */
+  --text-tertiary: #8192aa; /* hints, captions; WCAG AA for small text (PRIME 05/11/2026): was #64748b, 3.07:1 at worst; now 4.62:1, lightness moved, hue kept */
 
   --accent-primary: #22d3ee;     /* cyan — primary accent */
   --accent-hover: #67e8f9;       /* cyan, brighter — hover state */
@@ -113,7 +113,7 @@
   --border-strong: #4b4b6e;
   --text-primary: #f4f4fb;
   --text-secondary: #a4a4c6;
-  --text-tertiary: #71719a;
+  --text-tertiary: #8989b4; /* WCAG AA (PRIME 05/11/2026): was #71719a, 3.32:1 at worst on this theme's surfaces; now 4.61:1, lightness moved, hue kept */
   --accent-primary: #818cf8;
   --accent-hover: #a5b4fc;
   --accent-amber: #f59e0b;
@@ -128,7 +128,7 @@
   --border-strong: #3c5a47;
   --text-primary: #f1faf4;
   --text-secondary: #96b8a3;
-  --text-tertiary: #648571;
+  --text-tertiary: #769883; /* WCAG AA (PRIME 05/11/2026): was #648571, 3.6:1 at worst on this theme's surfaces; now 4.62:1, lightness moved, hue kept */
   --accent-primary: #34d399;
   --accent-hover: #6ee7b7;
   --accent-amber: #f59e0b;
@@ -146,7 +146,7 @@
   --border-strong: #5a4a34;
   --text-primary: #faf6ef;
   --text-secondary: #bba98c;
-  --text-tertiary: #85745c;
+  --text-tertiary: #9e8c74; /* WCAG AA (PRIME 05/11/2026): was #85745c, 3.32:1 at worst on this theme's surfaces; now 4.61:1, lightness moved, hue kept */
   --accent-primary: #fb923c;
   --accent-hover: #fdba74;
   --accent-amber: #fbbf24;
@@ -233,7 +233,7 @@
   --border-strong: #b3ccbc;
   --text-primary: #0f1f15;
   --text-secondary: #46604f;
-  --text-tertiary: #6a8073;
+  --text-tertiary: #5d7366; /* WCAG AA (PRIME 05/11/2026): was #6a8073, 3.83:1 at worst on this theme's surfaces; now 4.61:1, lightness moved, hue kept */
   --accent-primary: #027c56;
   --accent-hover: #046546;
   --accent-amber: #b45309;
@@ -256,7 +256,7 @@
   --border-strong: #b6c1ce;
   --text-primary: #0f172a;
   --text-secondary: #475569;
-  --text-tertiary: #64748b;
+  --text-tertiary: #5e6e85; /* WCAG AA (PRIME 05/11/2026): was #64748b, 4.23:1 at worst on this theme's surfaces; now 4.62:1, lightness moved, hue kept */
   --accent-primary: #2563eb;
   --accent-hover: #1d4ed8;
   --accent-amber: #b15103;
@@ -279,7 +279,7 @@
   --border-strong: #b6bed6;
   --text-primary: #0f172a;
   --text-secondary: #414c63;
-  --text-tertiary: #646e88;
+  --text-tertiary: #626c86; /* WCAG AA (PRIME 05/11/2026): was #646e88, 4.5:1 at worst on this theme's surfaces; now 4.63:1, lightness moved, hue kept */
   --accent-primary: #3730a3;
   --accent-hover: #312e81;
   --accent-amber: #b04f01;
@@ -306,7 +306,7 @@
   --border-strong: #d2b6b4;
   --text-primary: #1f1413;
   --text-secondary: #5a4744;
-  --text-tertiary: #836e6b;
+  --text-tertiary: #7c6764; /* WCAG AA (PRIME 05/11/2026): was #836e6b, 4.2:1 at worst on this theme's surfaces; now 4.65:1, lightness moved, hue kept */
   --accent-primary: #d51b1f;
   --accent-hover: #b91c1c;
   --accent-amber: #b04f01;
@@ -335,7 +335,7 @@
   --border-strong: #5a4310;
   --text-primary: #ffb000;     /* amber phosphor */
   --text-secondary: #c88a00;   /* dimmer amber, still legible on near-black */
-  --text-tertiary: #8a6000;
+  --text-tertiary: #a57a2b; /* WCAG AA (PRIME 05/11/2026): was #8a6000, 3.2:1 at worst on this theme's surfaces; now 4.61:1, lightness moved, hue kept */
   --accent-primary: #ffb000;
   --accent-hover: #ffd24a;
   --accent-amber: #ff8c00;
@@ -352,7 +352,7 @@
   --border-strong: #115a11;
   --text-primary: #33ff66;     /* phosphor green */
   --text-secondary: #1fc840;
-  --text-tertiary: #158a28;
+  --text-tertiary: #269533; /* WCAG AA (PRIME 05/11/2026): was #158a28, 4.0:1 at worst on this theme's surfaces; now 4.63:1, lightness moved, hue kept */
   --accent-primary: #39ff14;
   --accent-hover: #75ff75;
   --accent-amber: #b6ff3f;
@@ -370,7 +370,7 @@
   --border-strong: #8b7fd4;
   --text-primary: #ffffff;     /* white for legibility on C64 blue */
   --text-secondary: #bbb1ed;
-  --text-tertiary: #8b7fd4;
+  --text-tertiary: #b8aeff; /* WCAG AA (PRIME 05/11/2026): was #8b7fd4, 2.64:1 at worst on this theme's surfaces; now 4.57:1, lightness moved, hue kept */
   --accent-primary: #bab0fe;   /* brightened light-blue, pops on the blue */
   --accent-hover: #d1cbfe;
   --accent-amber: #b8c76f;     /* C64 yellow */
@@ -415,7 +415,7 @@
   --border-strong: #487a35;
   --text-primary: #0c2a0c;     /* near-black green */
   --text-secondary: #25511b;
-  --text-tertiary: #487a35;
+  --text-tertiary: #215207; /* WCAG AA (PRIME 05/11/2026): was #487a35, 2.55:1 at worst on this theme's surfaces; now 4.61:1, lightness moved, hue kept */
   --accent-primary: #832701;   /* CoCo artifact orange */
   --accent-hover: #651c00;
   --accent-amber: #6e3902;
@@ -459,7 +459,7 @@
   --border-strong: #8076f1;
   --text-primary: #ffffff;
   --text-secondary: #c6c5fe;
-  --text-tertiary: #8076f1;
+  --text-tertiary: #c4c5ff; /* WCAG AA (PRIME 05/11/2026): was #8076f1, 2.09:1 at worst on this theme's surfaces; now 4.62:1, lightness moved, hue kept */
   --accent-primary: #65dbef;   /* TMS cyan */
   --accent-hover: #92e8f5;
   --accent-amber: #ded087;     /* TMS light yellow */
@@ -521,7 +521,7 @@
   --border-strong: #000000;    /* black 1px frames, very Mac */
   --text-primary: #000000;
   --text-secondary: #3a3a3a;
-  --text-tertiary: #6e6e6e;
+  --text-tertiary: #5d5d5d; /* WCAG AA (PRIME 05/11/2026): was #6e6e6e, 3.58:1 at worst on this theme's surfaces; now 4.62:1, lightness moved, hue kept */
   --accent-primary: #2222cc;   /* restrained System-highlight blue for links */
   --accent-hover: #4444e0;
   --accent-amber: #7c5503;     /* muted amber so warnings still read */
@@ -545,7 +545,7 @@
   --border-strong: #104810;
   --text-primary: #00ff41;
   --text-secondary: #00b82f;
-  --text-tertiary: #008020;
+  --text-tertiary: #208f30; /* WCAG AA (PRIME 05/11/2026): was #008020, 3.8:1 at worst on this theme's surfaces; now 4.66:1, lightness moved, hue kept */
   --accent-primary: #00ff41;
   --accent-hover: #5bff7a;
   --accent-amber: #7fff00;
@@ -562,7 +562,7 @@
   --border-strong: #103850;
   --text-primary: #19c3ff;
   --text-secondary: #0d8fc8;
-  --text-tertiary: #0a6a92;
+  --text-tertiary: #3083ac; /* WCAG AA (PRIME 05/11/2026): was #0a6a92, 3.27:1 at worst on this theme's surfaces; now 4.65:1, lightness moved, hue kept */
   --accent-primary: #19c3ff;
   --accent-hover: #5bd8ff;
   --accent-amber: #00e0ff;
@@ -583,7 +583,7 @@
   --border-strong: #501010;
   --text-primary: #ff4040;     /* lightened for legibility on black */
   --text-secondary: #e13d36;
-  --text-tertiary: #921515;
+  --text-tertiary: #cc5147; /* WCAG AA (PRIME 05/11/2026): was #921515, 2.23:1 at worst on this theme's surfaces; now 4.61:1, lightness moved, hue kept */
   --accent-primary: #ff3030;
   --accent-hover: #ff6a6a;
   --accent-amber: #ff6a00;
@@ -642,7 +642,7 @@
   --border-strong: #a8abad;
   --text-primary: #1a1a1b;
   --text-secondary: #4a4d50;
-  --text-tertiary: #787c7e;
+  --text-tertiary: #6c7072; /* WCAG AA (PRIME 05/11/2026): was #787c7e, 3.93:1 at worst on this theme's surfaces; now 4.66:1, lightness moved, hue kept */
   --accent-primary: #cf3701;   /* Reddit OrangeRed */
   --accent-hover: #ad2c00;
   --accent-amber: #bf4c00;
@@ -671,7 +671,7 @@
   --border-strong: #b5bcc4;
   --text-primary: #3b4151;     /* Swagger UI slate text */
   --text-secondary: #5b6770;
-  --text-tertiary: #828d96;
+  --text-tertiary: #68737c; /* WCAG AA (PRIME 05/11/2026): was #828d96, 3.25:1 at worst on this theme's surfaces; now 4.64:1, lightness moved, hue kept */
   --accent-primary: #2f8203;   /* Swagger green (readable) */
   --accent-hover: #256b02;
   --accent-amber: #b45309;
@@ -691,7 +691,7 @@
   --border-strong: #505050;
   --text-primary: #d4d4d4;     /* editor foreground */
   --text-secondary: #a0a0a0;
-  --text-tertiary: #6e7681;
+  --text-tertiary: #8e96a2; /* WCAG AA (PRIME 05/11/2026): was #6e7681, 3.0:1 at worst on this theme's surfaces; now 4.61:1, lightness moved, hue kept */
   --accent-primary: #389bef;   /* VS Code blue */
   --accent-hover: #5eb1fe;
   --accent-amber: #d7ba7d;     /* editor gold */
@@ -710,7 +710,7 @@
   --border-strong: #444444;
   --text-primary: #e6e6e6;
   --text-secondary: #a8a8a8;
-  --text-tertiary: #6e6e6e;
+  --text-tertiary: #878787; /* WCAG AA (PRIME 05/11/2026): was #6e6e6e, 3.27:1 at worst on this theme's surfaces; now 4.64:1, lightness moved, hue kept */
   --accent-primary: #ffffff;   /* bright white is the only "color" */
   --accent-hover: #cfcfcf;
   --accent-amber: #bdbdbd;     /* grey, to keep the palette colorless */
@@ -730,7 +730,7 @@
   --border-strong: #44445a;
   --text-primary: #cfcfcf;     /* DOS light grey */
   --text-secondary: #9a9aae;
-  --text-tertiary: #6a6a7e;
+  --text-tertiary: #7e7e92; /* WCAG AA (PRIME 05/11/2026): was #6a6a7e, 3.47:1 at worst on this theme's surfaces; now 4.61:1, lightness moved, hue kept */
   --accent-primary: #54fefe;   /* DOS bright cyan */
   --accent-hover: #aafefe;
   --accent-amber: #fefe54;     /* DOS bright yellow */

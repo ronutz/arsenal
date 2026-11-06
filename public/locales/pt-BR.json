@@ -9887,7 +9887,8 @@
           "multicast": "O bit I/G está ligado, então este é um endereço multicast (de grupo), e não de uma única interface.",
           "notInSnapshot": "Este OUI não está no snapshot MA-L do IEEE. Pode estar não atribuído, ser mais novo que o snapshot ou vir dos registros MA-M / MA-S, que esta ferramenta ainda não inclui."
         }
-      }
+      },
+      "ipv4GroupsLink": "Veja os 32 grupos, com os nomes que a IANA dá a eles, no mapeador de grupo multicast para MAC"
     },
     "voss-fabric-id": {
       "name": "Decodificador de identificadores de fabric VOSS",
@@ -21955,7 +21956,8 @@
       "floorsLead": "Três andares, uma regra.",
       "floorMain": "<name>O andar principal</name><line>O catálogo: toda ferramenta com manifesto, golden vectors (vetores de referência) e forma fixa, calculando no seu navegador e em nenhum outro lugar.</line>",
       "floorGreen": "<name>A sala verde</name><line>Ferramentas cuja forma ainda está se encontrando: a mesma privacidade, rotuladas como iniciais.</line>",
-      "floorRed": "<name>A sala vermelha</name><line>O único lugar em que uma ferramenta envia algo para fora (uma consulta montada a partir da sua entrada ou, no teste de velocidade, dados de teste) ao serviço oficial nomeado na tela, e só quando você aperta Perguntar, Enter ou Iniciar.</line>"
+      "floorRed": "<name>A sala vermelha</name><line>O único lugar em que uma ferramenta envia algo para fora (uma consulta montada a partir da sua entrada ou, no teste de velocidade, dados de teste) ao serviço oficial nomeado na tela, e só quando você aperta Perguntar, Enter ou Iniciar.</line>",
+      "devFun": "Fora dos andares: <link>/dev/fun</link>, desafios diários e brinquedos para uma pausa curta."
     },
     "rpki-origin-validation": {
       "name": "Calculadora de validação de origem de rota",
@@ -25050,12 +25052,12 @@
         "heading": "Onde o grupo fica",
         "block": "Bloco da IANA",
         "scope": "Escopo (RFC 2365)",
-        "name": "Nome na IANA",
+        "name": "Nome na IANA (em inglês)",
         "glop": "Sistema autônomo do GLOP",
         "ubm": "Prefixo unicast (RFC 6034)",
         "relative": "Endereço relativo (offset)"
       },
-      "ianaName": "IANA: {name}",
+      "ianaName": "IANA: <n>{name}</n>",
       "block": {
         "local-network-control": "Bloco Local Network Control",
         "internetwork-control": "Bloco Internetwork Control",
@@ -25081,9 +25083,9 @@
       },
       "col": {
         "group": "Grupo",
-        "block": "Bloco e nome na IANA",
+        "block": "Bloco e nome na IANA (nome em inglês)",
         "address": "Endereço",
-        "name": "Nome na IANA"
+        "name": "Nome na IANA (em inglês)"
       },
       "thisGroup": "este grupo",
       "showAll": "Mostrar os {n}",
@@ -25281,7 +25283,7 @@
     "noTrackTitle": "Nenhum cookie gravado pelo código do site, nenhum analytics de terceiros e o que se conta em vez disso",
     "noTrackBody": "O código do próprio site não grava cookies. Não usa serviço de analytics de terceiros (como Google Analytics ou Plausible), rede de publicidade, pixel de rastreamento de redes sociais nem fingerprinting de dispositivo, e nenhum script do próprio site envia nada sobre você. A única coisa na página que não vem do código do site é a verificação contra bots da Cloudflare, um script e até dois cookies da própria Cloudflare, explicados em Hospedagem e logs do servidor, mais abaixo.\n\nO que o site guarda é uma contagem, feita no próprio servidor enquanto ele responde a cada requisição. São gravados dois registros separados, e eles são mantidos apartados de propósito, para que nenhum dos dois possa ser cruzado com o outro. O primeiro registra o endereço pedido e se havia uma página nele, o idioma, o país da visita conforme a sua rede o informa, se a requisição veio de uma pessoa ou de um crawler conhecido e, no caso de uma pessoa, o tipo geral de dispositivo (celular ou tablet, computador ou outro). O segundo registra apenas um endereço de origem (o referrer), quando o seu navegador envia um e uma página foi servida, e não carrega absolutamente mais nada: nem página, nem país, nem correlação temporal com o primeiro.\n\nO código da contagem nunca grava o seu endereço IP. Também nunca grava o user agent do seu navegador nem a rede de onde vem a sua conexão; eles são lidos só para decidir se a requisição veio de uma pessoa ou de um crawler (um navegador na rede de um provedor de nuvem ou de hospedagem conta como máquina) e, no caso de uma pessoa, que classe de dispositivo a enviou; o que fica guardado é um rótulo, como \"buscador\", \"ferramenta de monitoramento\" ou \"celular ou tablet\". Não se usa identificador de nenhum tipo; por isso não há visitante de quem traçar um perfil, nem sessão para reconstruir, nem nada para compartilhar.",
     "browserTitle": "O que fica guardado no seu navegador",
-    "browserBody": "Algumas coisas pequenas, todas no local storage (armazenamento local) do seu navegador, nenhuma delas jamais enviada a este site ou a quem quer que seja, e cada uma pode ser apagada pelo navegador a qualquer momento: o tema visual (ronutz-theme); o último idioma que você usou, para que o domínio sem caminho possa levar você de volta a ele (ronutz-lang); se as dicas do glossário aparecem (ronutz-glossary-hints); os atalhos de teclado que você remapeou (ronutz-shortcuts); se a caixa de busca começa vazia cada vez que você a abre (ronutz-search-fresh); a densidade, em cartões ou em lista, que você escolheu numa página de índice (ronutz:view:*); a leitura Guiada ou Diretório que você escolheu nas páginas Aprender e Ferramentas (ronutz:hub:*); as últimas seis páginas que você abriu, para que a página inicial as ofereça de novo em \"Continue de onde parou\", com um botão que as esquece (ronutz:recent:v1); só em duas páginas da sala dev, uma chave de animação e uma pontuação de treino (ronutz-mb-motion, ronutz:subnet-drill:stats); e, nos jogos de /dev/fun, a sequência, as pontuações, as configurações, o progresso e os desafios diários dos últimos sete dias de cada jogo, além da cartela do Bingo de reunião em jogo (ronutz:fun:v1); o botão \"Zerar minhas estatísticas\" de cada jogo apaga a sequência e as pontuações, e os desafios diários antigos saem depois de sete dias. Uma única flag que só vale durante a sessão (ronutz.privPreview) existe para a pré-visualização privada que o autor faz de páginas não publicadas, e nunca é definida para um leitor. Nada mais sobre você é armazenado no seu dispositivo.",
+    "browserBody": "Algumas coisas pequenas, todas no local storage (armazenamento local) do seu navegador, nenhuma delas jamais enviada a este site ou a quem quer que seja, e cada uma pode ser apagada pelo navegador a qualquer momento: o tema visual (ronutz-theme); o último idioma que você usou, para que o domínio sem caminho possa levar você de volta a ele (ronutz-lang); se as dicas do glossário aparecem (ronutz-glossary-hints); os atalhos de teclado que você remapeou (ronutz-shortcuts); se a caixa de busca começa vazia cada vez que você a abre (ronutz-search-fresh); a densidade, em cartões ou em lista, que você escolheu numa página de índice (ronutz:view:*); a leitura Guiada ou Diretório que você escolheu nas páginas Aprender e Ferramentas (ronutz:hub:*); as últimas seis páginas que você abriu, para que a página inicial as ofereça de novo em \"Continue de onde parou\", com um botão que as esquece (ronutz:recent:v1); só em duas páginas da sala dev, uma chave de animação e uma pontuação de treino (ronutz-mb-motion, ronutz:subnet-drill:stats); e, nos jogos de /dev/fun, a sequência, as pontuações, as configurações, o progresso e os desafios diários dos últimos sete dias de cada jogo, se cada desafio diário foi resolvido (guardado por 400 dias) e os 14 desafios anteriores jogados mais recentemente, além da cartela do Bingo de reunião em jogo (ronutz:fun:v1); o botão \"Zerar minhas estatísticas\" de cada jogo apaga a sequência e as pontuações, e os desafios diários antigos saem depois de sete dias. Uma única flag que só vale durante a sessão (ronutz.privPreview) existe para a pré-visualização privada que o autor faz de páginas não publicadas, e nunca é definida para um leitor. Nada mais sobre você é armazenado no seu dispositivo.",
     "hostingTitle": "Hospedagem e logs do servidor",
     "hostingBody": "O site é entregue pela Cloudflare, que cuida da hospedagem e da entrega de conteúdo. Como em qualquer site, carregar uma página significa que o seu dispositivo se conecta a um servidor, e a Cloudflare, como provedora de hospedagem, trata dados básicos de conexão, incluindo o seu endereço IP e os detalhes padrão da requisição, para entregar as páginas a você e proteger o site contra abusos e ataques. Esse tratamento é necessário para operar e proteger o site (legítimo interesse, nos termos do Artigo 6(1)(f) do GDPR, e as bases correspondentes dos Artigos 7 e 10 da LGPD). Por quanto tempo a Cloudflare guarda esses dados é definido pelas políticas da própria Cloudflare, não pelo código deste site, e eles não são usados aqui para identificar ou rastrear você.",
     "toolsTitle": "As ferramentas rodam no seu navegador",
@@ -25314,7 +25316,8 @@
       "r20261028address": "O endereço de contato agora aparece por um botão que o revela no seu navegador; o aviso não o escreve mais de nenhuma forma que um coletor de endereços consiga ler.",
       "r20261102cookie": "O menu de idiomas não grava mais cookie. Até esta revisão, trocar de idioma por ele também guardava o idioma escolhido num cookie chamado NEXT_LOCALE, por um ano, que nada no site lia; o idioma continua onde sempre funcionou, no armazenamento do navegador, e uma visita agora remove um cookie que tenha ficado de antes.",
       "r20261103fun": "Os jogos de /dev/fun entram na lista de valores guardados: a sequência, as pontuações, as configurações, o progresso e os desafios diários dos últimos sete dias de cada jogo, além da cartela do Bingo de reunião em jogo, numa única chave; o botão \"Zerar minhas estatísticas\" de cada jogo apaga a sequência e as pontuações.",
-      "r20261103catlink": "O link de compartilhamento do Sistema Global de Distribuição de Gatos é descrito: ele só é criado quando você clica em Copiar e leva, depois do #, o nome e a cidade, se houver uma."
+      "r20261103catlink": "O link de compartilhamento do Sistema Global de Distribuição de Gatos é descrito: ele só é criado quando você clica em Copiar e leva, depois do #, o nome e a cidade, se houver uma.",
+      "r20261105earlier": "Os jogos de /dev/fun também guardam se cada desafio diário foi resolvido (por 400 dias) e os 14 desafios anteriores jogados mais recentemente, para a lista de desafios anteriores que todo jogo diário agora oferece."
     },
     "backHome": "Voltar ao início",
     "prefsTitle": "Tema, idioma e o que este site lembra",
@@ -27521,7 +27524,8 @@
     "changeConfirm": "Aperte para trocar a cartela",
     "shareLine": "BINGO em {type} · {squares} · {size}",
     "shareSquares": "{n, plural, one {# clichê} other {# clichês}}",
-    "ogAlt": "Bingo de reunião: uma cartela cinco por cinco com uma diagonal completa marcada, ao lado da frase Toda reunião tem um roteiro. Agora tem cartela."
+    "ogAlt": "Bingo de reunião: uma cartela cinco por cinco com uma diagonal completa marcada, ao lado da frase Toda reunião tem um roteiro. Agora tem cartela.",
+    "progress": "{n, plural, =0 {Bingo!} one {Falta um clichê para o bingo} other {Faltam # clichês para o bingo}}"
   },
   "devFun": {
     "metaTitle": "/dev/fun",
@@ -27586,11 +27590,22 @@
         "hintCost": "Mais {s} segundos no relógio.",
         "hintsUsed": "{n, plural, one {# dica (+{s} s)} other {# dicas (+{s} s)}}",
         "shareHints": "{n, plural, =0 {nenhuma dica} one {# dica (+{s} s)} other {# dicas (+{s} s)}}",
-        "daySolved": "{date}, resolvido em {time}",
         "hintCellTarget": "apontada pela dica",
         "hintCellWrong": "errada, segundo a dica",
         "hintRule": "Dica mostra o próximo passo que a lógica garante a partir do seu tabuleiro e explica por quê; se houver um erro, aponta o erro primeiro. Ela soma {s} segundos, igual a Conferir.",
-        "daySolvedPractice": "{date}, resolvido no treino em {time}"
+        "earlierPuzzles": "Desafios anteriores ({n})",
+        "earlierNote": "Todos os desafios do #1 até ontem. Um desafio anterior não conta para a sua sequência nem para as estatísticas. ✓ resolvido, ✗ não resolvido; borda contínua quer dizer que foi jogado no dia, borda tracejada que foi jogado depois.",
+        "earlierNotPlayed": "não jogado",
+        "earlierSolved": "{when, select, onDay {resolvido no dia} other {resolvido depois}}",
+        "earlierUnsolved": "{when, select, onDay {jogado no dia, sem resolver} other {jogado depois, sem resolver}}",
+        "earlierDayLabel": "Desafio #{n}, {date}: {status}",
+        "earlierBannerTitle": "Desafio anterior #{n}, {date}",
+        "earlierBannerNote": "Ele não conta para a sua sequência nem para as estatísticas.",
+        "earlierNavLabel": "Outros desafios",
+        "earlierPrev": "Anterior (#{n})",
+        "earlierNext": "Próximo (#{n})",
+        "earlierToday": "Desafio de hoje",
+        "earlierRefused": "{reason, select, future {Desafio de dia futuro não pode ser jogado: este é o de hoje.} today {Esse dia é hoje: este é o desafio de hoje, que conta normalmente.} beforeLaunch {O desafio #1 foi em {first}, então não há nenhum antes dele: este é o de hoje.} other {Esse endereço não indica um dia: este é o desafio de hoje.}}"
       },
       "access-points": {
         "metaTitle": "Access Points | /dev/fun",
@@ -27600,9 +27615,6 @@
         "intro": "O escritório precisa de cobertura sem fio e o orçamento dá para exatamente um access point por linha, por coluna e por zona. Coloque dois lado a lado e um grita por cima do outro, então nenhum pode encostar em outro.",
         "cardName": "Access Points",
         "cardBlurb": "Cubra cada zona do andar com um access point, sem dois se encostarem. Andar novo todo dia.",
-        "modeLabel": "Qual desafio jogar",
-        "practiceNote": "Os desafios dos últimos sete dias, para treinar: um ✓ e o tempo marcam os que você resolveu no dia, um ↻ e o tempo, os que você resolveu no treino. Eles não contam para a sua sequência.",
-        "practiceDaysLabel": "Desafios anteriores",
         "checksUsed": "{n, plural, one {# conferência (+{s} s)} other {# conferências (+{s} s)}}",
         "clockHint": "O relógio começa a contar no seu primeiro movimento.",
         "autoMark": "Marcar as células que cada access point descarta",
@@ -27623,16 +27635,15 @@
         "sayDone": "Todas as zonas cobertas. Resolvido!",
         "solvedHeadline": "Cobertura completa!",
         "shareTitle": "Access Points #{n}",
-        "shareTitlePractice": "Access Points (treino, {date})",
         "rules": {
           "goal": "Coloque um access point sem fio em cada linha, em cada coluna e em cada zona do andar.",
           "one": "Cada linha, cada coluna e cada zona (identificadas por A, B, C e assim por diante, com paredes entre elas) leva exatamente um access point.",
           "touch": "Dois access points nunca podem se encostar, nem pela quina: um interferiria no outro.",
-          "tap": "Toque numa célula para alternar: vazia, × (aqui não tem access point), access point. Um toque duplo rápido ou um toque longo coloca o access point direto; arraste por cima das células para marcar todas com ×.",
+          "tap": "Toque numa célula para alternar: vazia, × (aqui não tem access point), access point. Um toque duplo rápido ou um toque longo coloca o access point direto. Com o mouse, arraste por cima das células para marcar todas com ×; na tela de toque, deslizar o dedo rola a página e não marca nada.",
           "keys": "No teclado: as setas andam, Espaço ou Enter alternam, A coloca um access point, X marca, Backspace esvazia.",
           "check": "Seu tempo é a sua pontuação. Conferir marca as células erradas e soma {s} segundos a cada uso.",
           "week": "Andar novo todo dia às 00:00 do Tempo Universal Coordenado (UTC), igual para todo mundo, com exatamente uma solução, que dá para alcançar só no raciocínio. Segunda-feira é um 6×6 tranquilo; os andares crescem até 8×8 e pedem mais raciocínio perto do fim de semana.",
-          "auto": "Ao colocar um access point, cada célula que ele descarta ganha um × mais claro: a linha, a coluna, a zona e as oito células em volta. Tire o access point e essas marcas saem junto; os seus próprios × ficam. A chave embaixo do andar desliga isso."
+          "auto": "Ao colocar um access point, cada célula que ele descarta ganha um × vermelho e menor: a linha, a coluna, a zona e as oito células em volta. Tire o access point e essas marcas saem junto; os seus próprios × ficam. A chave embaixo do andar desliga isso."
         },
         "shareChecks": "{n, plural, =0 {nenhuma conferência} one {# conferência (+{s} s)} other {# conferências (+{s} s)}}",
         "hint": {
@@ -27652,9 +27663,6 @@
         "intro": "Um registrador de seis por seis que precisa fechar a conta: toda linha e toda coluna têm três 0s e três 1s, nenhum bit aparece três vezes seguidas, e os sinais entre as células dizem quais vizinhos são iguais.",
         "cardName": "Bit Balance",
         "cardBlurb": "Preencha uma grade 6×6 com bits: três de cada por linha, nada de três seguidos, todo sinal respeitado. Grade nova todo dia.",
-        "modeLabel": "Qual desafio jogar",
-        "practiceNote": "Os desafios dos últimos sete dias, para treinar: um ✓ e o tempo marcam os que você resolveu no dia, um ↻ e o tempo, os que você resolveu no treino. Eles não contam para a sua sequência.",
-        "practiceDaysLabel": "Desafios anteriores",
         "checksUsed": "{n, plural, one {# conferência (+{s} s)} other {# conferências (+{s} s)}}",
         "clockHint": "O relógio começa a contar no seu primeiro movimento.",
         "sizeLine": "Grade 6×6 · {level, select, gentle {tranquilo} medium {médio} tricky {traiçoeiro} other {difícil}}",
@@ -27677,7 +27685,6 @@
         "sayDone": "Todas as linhas fecharam. Resolvido!",
         "solvedHeadline": "Fechou a conta!",
         "shareTitle": "Bit Balance #{n}",
-        "shareTitlePractice": "Bit Balance (treino, {date})",
         "rules": {
           "goal": "Preencha cada célula com 0 ou 1.",
           "balance": "Cada linha e cada coluna têm três 0s e três 1s.",
@@ -27706,9 +27713,6 @@
         "intro": "Alguém numerou as portas e deixou para você um patch cord bem comprido. Passe o cabo da porta 1 até a última por todas as células do patch panel, exatamente uma vez, encaixando nas portas em ordem.",
         "cardName": "Patch Path",
         "cardBlurb": "Passe um único cabo por todas as células do patch panel, portas em ordem, desviando das canaletas. Patch panel novo todo dia.",
-        "modeLabel": "Qual desafio jogar",
-        "practiceNote": "Os desafios dos últimos sete dias, para treinar: um ✓ e o tempo marcam os que você resolveu no dia, um ↻ e o tempo, os que você resolveu no treino. Eles não contam para a sua sequência.",
-        "practiceDaysLabel": "Desafios anteriores",
         "checksUsed": "{n, plural, one {# conferência (+{s} s)} other {# conferências (+{s} s)}}",
         "clockHint": "O relógio começa a contar no seu primeiro movimento.",
         "sizeLine": "{n}×{n} · {ports} portas{ducts, plural, =0 {} one { · # canaleta} other { · # canaletas}} · {level, select, gentle {tranquilo} medium {médio} tricky {traiçoeiro} other {difícil}}",
@@ -27722,7 +27726,6 @@
         "sayDone": "Todas as portas conectadas. Resolvido!",
         "solvedHeadline": "Tudo conectado!",
         "shareTitle": "Patch Path #{n}",
-        "shareTitlePractice": "Patch Path (treino, {date})",
         "refuse": {
           "order": "A próxima é a porta {n}.",
           "last": "A última porta tem que ser a última célula: cubra todas as outras antes.",
@@ -27735,7 +27738,7 @@
           "goal": "Passe um único cabo da porta 1 até a porta de número mais alto.",
           "order": "Ele passa por todas as células exatamente uma vez, andando para cima, para baixo, para a esquerda ou para a direita, e chega às portas na ordem dos números.",
           "ducts": "As barras grossas entre as células são canaletas: o cabo não atravessa.",
-          "draw": "Arraste a partir da porta 1 para passar o cabo e arraste de volta por cima dele para recolher; toque em qualquer célula do cabo para cortar ali. Também dá para clicar, uma de cada vez, nas células vizinhas à ponta do cabo.",
+          "draw": "Arraste a partir da porta 1 para passar o cabo e arraste de volta por cima dele para recolher; toque em qualquer célula do cabo para cortar ali. Também dá para clicar, uma de cada vez, nas células vizinhas à ponta do cabo. Na tela de toque, o arraste que começa na ponta do cabo (ou na porta 1) desenha; deslizar o dedo em qualquer outro lugar rola a página, e um toque corta ou estende o cabo.",
           "keys": "No teclado: dê foco ao patch panel; as setas estendem o cabo (uma seta para trás recolhe) e Backspace tira o último passo.",
           "check": "Seu tempo é a sua pontuação. Conferir marca onde o cabo sai do caminho certo e soma {s} segundos a cada uso.",
           "week": "Patch panel novo todo dia às 00:00 do Tempo Universal Coordenado (UTC), igual para todo mundo, com exatamente um caminho. Segunda-feira é um 6×6 com bastante porta; a partir de quinta o patch panel é 7×7, em alguns dias aparecem canaletas, e no fim de semana vêm menos portas."
@@ -27914,7 +27917,8 @@
             "alert": "Muitos 404 de um endereço e, logo depois, um 200 num caminho de administração vindo do mesmo endereço. Deixe painéis de administração fora da internet pública, atrás de uma rede privada virtual (VPN) ou de uma lista de endereços permitidos."
           }
         },
-        "shortUa": "User agents curtos"
+        "shortUa": "User agents curtos",
+        "alreadyDoneEarlier": "Você já encerrou o caso deste dia."
       },
       "prefix-of-the-day": {
         "metaTitle": "Prefixo do Dia | /dev/fun",
@@ -27998,7 +28002,10 @@
         "statBestStreak": "Melhor sequência",
         "distTitle": "Tentativas por rodada do dia",
         "distRowSolved": "{tries, plural, one {Resolvido em # tentativa} other {Resolvido em # tentativas}}: {n, plural, =0 {nenhuma rodada} one {# rodada} other {# rodadas}}{today, select, yes {, incluindo a de hoje} other {}}",
-        "distRowMissed": "Sem acerto: {n, plural, =0 {nenhuma rodada} one {# rodada} other {# rodadas}}{today, select, yes {, incluindo a de hoje} other {}}"
+        "distRowMissed": "Sem acerto: {n, plural, =0 {nenhuma rodada} one {# rodada} other {# rodadas}}{today, select, yes {, incluindo a de hoje} other {}}",
+        "hardTooLateEarlier": "O modo difícil só liga antes da primeira tentativa deste desafio.",
+        "hardOnNowEarlier": "Modo difícil ligado para este desafio.",
+        "todayBlockEarlier": "O bloco deste dia"
       },
       "aggregate": {
         "metaTitle": "Agregue | /dev/fun",
@@ -28052,7 +28059,10 @@
         "shareBestOf": "{tries, plural, =1 {De primeira} other {Melhor de # tentativas}}: maior /{len}, {score} pontos",
         "pairTile": "{tile} (par {n})",
         "livePairs": "{n, plural, =0 {Nenhum par de irmãs no tabuleiro agora.} one {Um par de irmãs, com o número 1 nas duas peças.} other {# pares de irmãs, cada um numerado nas duas peças e com um contorno próprio.}}",
-        "livePairsOff": "Destaque das irmãs desligado."
+        "livePairsOff": "Destaque das irmãs desligado.",
+        "todayBestEarlier": "Melhor deste dia {score}",
+        "replayNoteEarlier": "Este desafio já foi jogado; jogar de novo um desafio anterior não conta para nenhuma pontuação.",
+        "replayDailyEarlier": "Jogar este desafio de novo"
       },
       "five-clues": {
         "metaTitle": "Cinco Pistas | /dev/fun",
@@ -28088,17 +28098,14 @@
         "sourceLead": "As pistas vêm de",
         "won": "{n, plural, one {Acertou com # pista} other {Acertou com # pistas}}",
         "lost": "Não foi desta vez",
-        "practiceIntro": "Jogue de novo os últimos 30 dias ou comece por um aquecimento. Os desafios que você já jogou ganham ✓ ou ✗. O treino não mexe na sua sequência.",
+        "practiceIntro": "Aquecimentos: desafios feitos para treinar, que nunca são o desafio do dia. Os que você já jogou ganham ✓ ou ✗. O treino não mexe na sua sequência; os desafios diários de antes estão em Desafios anteriores, lá em cima.",
         "archiveLabel": "Desafio",
-        "archiveDay": "#{n}",
         "warmup": "Aquecimento {n}",
         "practiceBest": "{n, plural, one {Melhor treino: # pista} other {Melhor treino: # pistas}}",
         "practiceBestNone": "Nenhum treino resolvido ainda",
         "nextPuzzle": "Próximo desafio",
         "markSolved": "{label} ✓ resolvido",
         "markMissed": "{label} ✗ não resolvido",
-        "statusDailyWon": "{n, plural, one {Resolvido no dia, com # pista} other {Resolvido no dia, com # pistas}}",
-        "statusDailyLost": "Jogado no dia, sem acertar",
         "statusPracticeWon": "Resolvido no treino",
         "statusPracticeLost": "Jogado no treino, ainda sem acertar"
       },
@@ -28316,7 +28323,8 @@
           "addLabel": "Adicionar à lista: {line} (a dica a põe na entrada {seq})",
           "rowInPlace": "Entrada {seq}: {line}, onde a dica a põe",
           "rowMove": "Entrada {seq}: {line}; a dica a põe na entrada {hint}"
-        }
+        },
+        "dailyTitleEarlier": "A política deste dia"
       },
       "spanning-tree": {
         "metaTitle": "Spanning Tree | /dev/fun",
@@ -28437,7 +28445,9 @@
         "comboValue": "×{mult} ({n})",
         "paused": "Pausado",
         "sayPaused": "A rodada ficou pausada enquanto a aba estava escondida. Ela continua em {seconds, plural, one {# segundo} other {# segundos}}.",
-        "sayResumed": "A rodada continua."
+        "sayResumed": "A rodada continua.",
+        "startDailyEarlier": "Começar a rodada deste dia",
+        "dailyDoneEarlier": "A rodada deste dia já foi. Treine à vontade."
       },
       "exit-the-editor": {
         "metaTitle": "Saia do Editor | /dev/fun",
@@ -28592,7 +28602,10 @@
           "telnet": "O telnet está conectado a {host} na porta {port}, onde nada nunca responde. Saia do telnet.",
           "tmux": "Um backup, {job}, está rodando dentro da sessão {session} do tmux no web01. Saia do tmux sem parar o backup.",
           "git": "O git commit no branch {branch} abriu o vim para a mensagem, com {staged} no stage. Faça o commit: escreva uma mensagem, salve e saia."
-        }
+        },
+        "dailyFailNoteEarlier": "Esta tentativa continua: a armadilha é armada de novo, e as suas teclas e o relógio seguem contando.",
+        "dailyDoneNoteEarlier": "A fuga deste dia está feita. As fases estão abertas.",
+        "sayResumedEarlier": "A fuga deste dia continua de onde você parou: {keys, plural, one {# tecla} other {# teclas}} até agora, e o relógio não parou."
       },
       "incident-commander": {
         "metaTitle": "Incident Commander | /dev/fun",
@@ -28803,7 +28816,11 @@
     "shelfToday": "Hoje: {done} de {total} jogos do dia jogados",
     "shelfSolved": "Resolvido hoje",
     "shelfPlayed": "Jogado hoje",
-    "shelfStreak": "Sequência {n}"
+    "shelfStreak": "Sequência {n}",
+    "more": {
+      "title": "Resolva os outros desafios",
+      "all": "Tudo em /dev/fun"
+    }
   },
   "megaBrain": {
     "bossAria": "Tecla do chefe: minimiza o console",
@@ -28848,11 +28865,10 @@
     "ctxLever": "A alavanca de força",
     "ctxLeverDetail": "Arraste a alavanca, ou aperte o botão FORÇA TOTAL, para levar o hype a 100%.",
     "ctxMano": "O ponto de homenagem ao Mano (âmbar)",
-    "ctxMano2": "Um brinde ao Mano Deyvin; clique no ponto e depois no nome dele para abrir o canal.",
+    "ctxMano2": "Um brinde ao Mano Deyvin; clique no ponto e depois no nome dele para ver o react.",
     "ctxTitle": "Controles do Mega Brain",
     "devFunTitle": "Voltar para /dev/fun",
     "disabledTitleGoh": "Pensou, não é XGH.",
-    "disclaimer": "Isto não computa, não otimiza e não pesquisa termo nenhum. É um alívio de estresse. Se sentiu a dopamina, funcionou.",
     "failsafeEngageAria": "Fail-safe: em caso de burnout, acionar o modo Go Horse",
     "failsafeEngageTitle": "FAIL-SAFE: deu burnout? ACIONA O GO-HORSE FTW!",
     "failsafeRestoreAria": "Desativar o fail-safe e restaurar o Mega Brain",
@@ -43343,7 +43359,7 @@
       "families": {
         "wp-batch": {
           "title": "WordPress: a cadeia wp2shell",
-          "what": "O endpoint de batch da API REST do WordPress, que executa várias chamadas da API numa só requisição, é a porta de entrada do \"wp2shell\": a CVE-2026-63030, uma falha nesse endpoint, encadeada com a CVE-2026-60137, uma SQL injection (comandos injetados no banco de dados), permite que qualquer pessoa execute código no WordPress 6.9.0 a 6.9.4 e 7.0.0 a 7.0.1. A correção saiu nas versões 6.9.5 e 7.0.2; a falha foi divulgada em 17 de julho de 2026 e está no catálogo de vulnerabilidades exploradas da CISA desde 21 de julho. Os prefixos procuram o WordPress instalado numa subpasta."
+          "what": "O endpoint de batch da API REST do WordPress, que executa várias chamadas da API numa só requisição, é a porta de entrada do \"wp2shell\": a CVE-2026-63030, uma falha nesse endpoint, encadeada com a CVE-2026-60137, uma SQL injection (comandos injetados no banco de dados), permite que qualquer pessoa execute código no WordPress 6.9.0 a 6.9.4 e 7.0.0 a 7.0.1. A correção saiu nas versões 6.9.5 e 7.0.2; a cadeia foi divulgada em 17 de julho de 2026, e as duas falhas estão no catálogo de vulnerabilidades exploradas da CISA desde 21 de julho. Os prefixos procuram o WordPress instalado numa subpasta."
         },
         "wp-plugin": {
           "title": "Plugin do WordPress: Gravity SMTP",
@@ -43355,19 +43371,19 @@
         },
         "wp-core": {
           "title": "O próprio WordPress",
-          "what": "As pastas do próprio WordPress (wp-admin, wp-includes com as bibliotecas que ele traz, wp-content com uploads, plugins e temas), as pastas de instalação de costume e o endereço do feed. Entre as pastas de instalação estão site, news, cms e press: nas contagens do próprio site, cada uma é pedida sozinha no mesmo ritmo em que é pedida seguida de /wp-json/, que é como os scanners acima procuram um WordPress instalado numa subpasta. Consultar esses endereços confirma que é WordPress e procura uma pasta que liste os arquivos: uma pasta de uploads aberta entrega tudo o que já foi enviado."
+          "what": "As pastas do próprio WordPress (wp-admin, wp-includes com as bibliotecas que ele traz, wp-content com uploads, plugins e temas), as pastas de instalação de costume e o endereço do feed. Entre as pastas de instalação estão site, news, cms e press: nas contagens do próprio site, cada uma é pedida sozinha no mesmo ritmo em que é pedida seguida de /wp-json/, que é como os scanners acima procuram um WordPress instalado numa subpasta. Consultar esses endereços confirma que é WordPress e procura uma pasta que liste os arquivos: uma pasta de uploads aberta entrega tudo o que já foi enviado. As versões 4.7 a 7.1.3 também preparam a atualização completa do core em caminhos previsíveis e acessíveis pela web, o que permite a qualquer pessoa executar código no servidor durante a atualização (CVE-2026-119977, corrigida na 7.1.4 em 28 de outubro de 2026, com backports para as versões mais antigas em andamento; no catálogo de vulnerabilidades exploradas da CISA desde 3 de novembro)."
         },
         "secrets": {
           "title": "Segredos e código-fonte em uma pasta publicada",
-          "what": "Arquivos que pertencem à pasta de um desenvolvedor e só chegam à web quando um servidor publica a pasta errada: uma pasta .git (o código e o histórico do site, com qualquer senha que já tenha entrado num commit) e a pasta .svn do Subversion (o registro de cada arquivo de uma working copy); o .git-credentials (senhas que o Git guarda sem criptografia); o .env e a cópia de backup que um editor deixa dele, o .env~ (os segredos de uma aplicação); .aws/credentials e .aws/config (chaves de acesso e configurações da AWS); .ssh/id_rsa (uma chave privada SSH); o token OAuth da Antigravity CLI; históricos de shell e de interpretadores (cada comando digitado, inclusive senhas passadas na linha de comando); e o .DS_Store do macOS, que revela o que uma pasta contém."
+          "what": "Arquivos que pertencem à pasta de um desenvolvedor e só chegam à web quando um servidor publica a pasta errada: uma pasta .git (o código e o histórico do site, com qualquer senha que já tenha entrado num commit) e a pasta .svn do Subversion (o registro de cada arquivo de uma working copy); o .git-credentials (senhas que o Git guarda sem criptografia); o .env e a cópia de backup que um editor deixa dele, o .env~ (os segredos de uma aplicação); .aws/credentials e .aws/config (chaves de acesso e configurações da AWS); .ssh/id_rsa (uma chave privada SSH); um kubeconfig, o .kube/config (os clusters, os usuários e a autenticação que o kubectl usa para chegar ao API server de um cluster Kubernetes); a pasta da Azure CLI, a .azure, onde fica o arquivo de configuração dela; a pasta da Antigravity CLI, a .gemini/antigravity-cli, onde ela guarda as configurações; o /proc/self/environ atrás de sequências de pontos (no Linux, o ambiente com que o programa em execução foi iniciado); históricos de shell e de interpretadores (cada comando digitado, inclusive senhas passadas na linha de comando); e o .DS_Store do macOS, que revela o que uma pasta contém. Alguns desses arquivos são pedidos via /@fs/, o prefixo com que o servidor de desenvolvimento do Vite serve arquivos do disco: as CVE-2025-30208 e CVE-2025-31125 permitem a qualquer um ler arquivos fora da allow list dele num servidor de desenvolvimento exposto à rede, as duas corrigidas no Vite 6.2.4, 6.1.3, 6.0.13, 5.4.16 e 4.5.11; a segunda está no catálogo de vulnerabilidades exploradas da CISA desde 22 de janeiro de 2026."
         },
         "frameworks": {
           "title": "Endpoints de frameworks que revelam configuração",
-          "what": "O env, o configprops e o mappings do Spring Boot Actuator (o ambiente da aplicação, as configurações e cada caminho de requisição que ela atende), em /actuator/ ou, no Spring Boot 1, na raiz ou sob um prefixo como /manage; o debugger do Yii 2 (dados de requisição, headers, sessões e variáveis de ambiente, feito para uso só em localhost); a página de versão do Magento, que informa a versão e a edição; e o /healthz do API server do Kubernetes, deprecated desde a versão 1.16 em favor de /livez e /readyz."
+          "what": "O env, o configprops e o mappings do Spring Boot Actuator (o ambiente da aplicação, as configurações e cada caminho de requisição que ela atende), em /actuator/ ou, no Spring Boot 1, na raiz ou sob um prefixo como /manage, e a página de descoberta do Actuator, o próprio /actuator, com links para cada endpoint exposto; o debugger do Yii 2 (dados de requisição, headers, sessões e variáveis de ambiente, feito para uso só em localhost); a página /_profiler/phpinfo do profiler do Symfony, que mostra toda a configuração do PHP e que, na configuração padrão do Symfony, só tem rota no ambiente dev; a página de versão do Magento, que informa a versão e a edição; e o /healthz do API server do Kubernetes, deprecated desde a versão 1.16 em favor de /livez e /readyz."
         },
         "platforms": {
           "title": "Pastas de outras plataformas",
-          "what": "Nomes de pastas que entregam outros softwares: Drupal, Joomla, OpenCart, Magento, o login do cPanel e outros. Identificar a plataforma é o primeiro passo antes de testar as falhas conhecidas dela."
+          "what": "Nomes de pastas que entregam outros softwares: Drupal, Joomla, OpenCart (a pasta do código de administração), Magento, o login do cPanel, a pasta de build do Next.js, _next/static, pedida atrás de subpastas chutadas (v1, client, frontend), e outros. Identificar a plataforma é o primeiro passo antes de testar as falhas conhecidas dela."
         },
         "backdoors": {
           "title": "Backdoors que outra pessoa pode ter deixado",
@@ -43375,7 +43391,7 @@
         },
         "logins": {
           "title": "Páginas de administração, login e conta",
-          "what": "Qualquer página de administração ou de login para testar senhas, e as páginas em volta dela: cadastro, para abrir uma conta, e redefinição de senha, para testar quais endereços têm conta, além do painel ao qual um login costuma levar."
+          "what": "Qualquer página de administração ou de login para testar senhas, e as páginas em volta dela: cadastro, para abrir uma conta, e redefinição de senha, para testar quais endereços têm conta, além do painel ao qual um login costuma levar e das seções de administração atrás dele (usuários, configurações, relatórios, pedidos, produtos)."
         },
         "exposure": {
           "title": "Pastas que não deveriam ser públicas",
@@ -43396,6 +43412,10 @@
         "misses": {
           "title": "Erros honestos",
           "what": "Endereços que mudaram (o antigo /contribute/tools), páginas que nunca existiram e links digitados errado em algum outro lugar da web."
+        },
+        "laravel": {
+          "title": "Laravel e seus pacotes",
+          "what": "Endereços padrão de aplicações Laravel. O endpoint de update do Livewire, /livewire/update, que todo componente do Livewire 3 chama, é tentado também atrás de prefixos como /login/ e /admin/login/: no Livewire 3 até a 3.6.3, ele permite que um atacante sem autenticação execute comandos no servidor em configurações específicas, pela forma como as atualizações de propriedades dos componentes são hidratadas (CVE-2025-54068, corrigida na 3.6.4; no catálogo de vulnerabilidades exploradas da CISA desde 20 de março de 2026). O Livewire 4 trocou esse endereço por um que leva um hash da chave da aplicação, então pedir o antigo é procurar a versão 3. Os dashboards do Telescope (as requisições, exceptions, queries, jobs e e-mails que a aplicação tratou), do Horizon (filas), do Pulse (desempenho) e do Nova (administração) ficam em /telescope, /horizon, /pulse e /nova; Telescope, Horizon e Pulse só abrem, por padrão, no ambiente local. /two-factor-challenge, /email/verify e /password/reset são rotas definidas pelos pacotes de login do Laravel, o Fortify e o laravel/ui."
         }
       },
       "expandAll": "Expandir tudo ({count})",

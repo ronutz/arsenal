@@ -16,19 +16,43 @@
 // daily states and the game's own progress, so a finished daily puzzle cannot be
 // played again for a better result (review R2-11, 03/11/2026).
 //
+// Earlier puzzles (PRIME 05/11/2026): every daily puzzle finished on its own
+// day also leaves a one-number result for that day (1 solved, 0 played but not
+// solved), so the list of earlier puzzles can mark it. When a page plays an
+// earlier puzzle (?day=, see archive.ts), that puzzle is kept apart with no
+// change to the games: the record a game reads shows the earlier puzzle's own
+// saved state under its day (or, when there is none, the state left on its
+// own day, so a puzzle finished then is shown finished); whatever the game
+// writes under that day is filed with the earlier puzzles, and the real daily
+// states are put back as they were. A daily result for that day counts as one
+// more round played and leaves an earlier-puzzle result; it touches no streak,
+// no best score, no "Played" of daily puzzles and no on-the-day result. Earlier
+// puzzles keep their saved state for the fourteen most recently played; both
+// kinds of result are kept for 400 days. Days played before the results
+// existed get theirs once, from the daily states still kept and the marks the
+// games' old practice lists left (backfillResults, run by GameShell).
+//
 // Every read and write is wrapped: storage can be full, disabled, or throw in a
 // private window, and a game must still play without it, it just will not
 // remember.
 // ============================================================================
 
 // The day arithmetic used for streaks and for pruning old daily states.
-import { addDays, epochDay } from "./daily";
+import { addDays, epochDay, utcDayKey } from "./daily";
+// The earlier puzzle in play, read from the page's address (null on today's puzzle).
+import { earlierDayInPlay } from "./archive";
 
 /** The one key every game shares. */
 export const FUN_STORAGE_KEY = "ronutz:fun:v1";
 
 /** How many days of daily-puzzle state are kept. */
 const KEEP_DAYS = 7;
+
+/** How many earlier puzzles keep their saved state: the most recently played ones. */
+const KEEP_EARLIER_STATES = 14;
+
+/** How many days of results are kept, on the day and for earlier puzzles alike. */
+const KEEP_RESULT_DAYS = 400;
 
 /** One game's record. */
 export interface GameRecord {
@@ -54,6 +78,12 @@ export interface GameRecord {
   daily: Record<string, unknown>;
   /** Small per-game settings or progress (an idle game's save, a level reached); the game owns the shape. */
   extra: Record<string, unknown>;
+  /** Daily puzzles finished on their own day, by day: 1 solved (or won), 0 played but not solved. */
+  results: Record<string, number>;
+  /** Saved state of earlier puzzles played after their day (?day=), by day, the most recently played last. */
+  earlier: Record<string, unknown>;
+  /** Earlier puzzles finished after their day, by day: 1 solved (or won), 0 played but not solved. */
+  earlierResults: Record<string, number>;
 }
 
 /** The whole stored object. */
@@ -71,7 +101,7 @@ interface FunStore {
  */
 export function emptyRecord(): GameRecord {
   // Every counter at zero, nothing remembered.
-  return { played: 0, dailyPlayed: 0, wins: 0, streak: 0, bestStreak: 0, best: null, lastDay: null, lastWinDay: null, lastDailyDay: null, daily: {}, extra: {} };
+  return { played: 0, dailyPlayed: 0, wins: 0, streak: 0, bestStreak: 0, best: null, lastDay: null, lastWinDay: null, lastDailyDay: null, daily: {}, extra: {}, results: {}, earlier: {}, earlierResults: {} };
 }
 
 /**
@@ -125,8 +155,65 @@ function writeStore(store: FunStore): void {
 export function loadRecord(gameId: string): GameRecord {
   // The stored record, if any.
   const stored = readStore().games[gameId];
-  // Defaults first, the stored fields over them.
-  return { ...emptyRecord(), ...(stored ?? {}) };
+  // Defaults first, the stored fields over them, as the game sees it on this page.
+  return asSeen({ ...emptyRecord(), ...(stored ?? {}) }, earlierDayInPlay());
+}
+
+/**
+ * A record as a game sees it: unchanged on today's puzzle; on an earlier puzzle's page, with that day's daily state
+ * replaced by the earlier puzzle's own saved state when there is one (otherwise the state left on its own day shows).
+ *
+ * @param r the stored record, with defaults
+ * @param earlier the earlier day in play, or null
+ * @returns the record the game reads
+ */
+function asSeen(r: GameRecord, earlier: string | null): GameRecord {
+  // Today's puzzle, or no earlier state yet: the record as stored.
+  if (earlier === null || !(earlier in r.earlier)) return r;
+  // The earlier puzzle's own state under its day.
+  return { ...r, daily: { ...r.daily, [earlier]: r.earlier[earlier] } };
+}
+
+/**
+ * The record to store after a game changed what it saw on an earlier puzzle's page: what the game wrote under the
+ * earlier day is filed with the earlier puzzles (moved to the end, as the most recently played), and that day's real
+ * daily state is put back as it was; every other change stands.
+ *
+ * @param next the record as the game left it
+ * @param stored the record as stored before the change
+ * @param seen the record the game was given
+ * @param earlier the earlier day in play
+ * @returns the record to store
+ */
+function fromSeen(next: GameRecord, stored: GameRecord, seen: GameRecord, earlier: string): GameRecord {
+  // The real daily states: as the game left them, except the earlier day's, which goes back to what was stored.
+  const daily = { ...next.daily };
+  // Put back, or left out when there was none.
+  if (earlier in stored.daily) daily[earlier] = stored.daily[earlier];
+  else delete daily[earlier];
+  // The earlier puzzles' states, as the game left them.
+  const earlierStates = { ...next.earlier };
+  // The game wrote a new state under the earlier day (a save is always a new value).
+  if (earlier in next.daily && next.daily[earlier] !== seen.daily[earlier]) {
+    // Taken out first, so it goes back in at the end: the most recently played.
+    delete earlierStates[earlier];
+    // Filed with the earlier puzzles.
+    earlierStates[earlier] = next.daily[earlier];
+  }
+  // The record to store.
+  return { ...next, daily, earlier: earlierStates };
+}
+
+/**
+ * Keep the days of a result map that are no older than KEEP_RESULT_DAYS.
+ *
+ * @param results a map from day to result
+ * @param cutoff the oldest day kept, YYYY-MM-DD
+ * @returns the map without older days
+ */
+function recentResults(results: Record<string, number>, cutoff: string): Record<string, number> {
+  // YYYY-MM-DD sorts as a date.
+  return Object.fromEntries(Object.entries(results).filter(([day]) => day >= cutoff));
 }
 
 /**
@@ -139,8 +226,14 @@ export function loadRecord(gameId: string): GameRecord {
 export function updateRecord(gameId: string, change: (r: GameRecord) => GameRecord): GameRecord {
   // The current store.
   const store = readStore();
-  // The new record.
-  const next = change({ ...emptyRecord(), ...(store.games[gameId] ?? {}) });
+  // The record as stored, with defaults.
+  const stored: GameRecord = { ...emptyRecord(), ...(store.games[gameId] ?? {}) };
+  // The earlier puzzle in play on this page, if any.
+  const earlier = earlierDayInPlay();
+  // What the game sees.
+  const seen = asSeen(stored, earlier);
+  // The game's change, then, on an earlier puzzle's page, the earlier puzzle's state filed apart.
+  const next = earlier === null ? change(seen) : fromSeen(change(seen), stored, seen, earlier);
   // Daily states older than KEEP_DAYS are dropped on every write.
   const newest = Object.keys(next.daily).sort().pop();
   // With at least one day stored, keep only the recent ones.
@@ -150,6 +243,14 @@ export function updateRecord(gameId: string, change: (r: GameRecord) => GameReco
     // Keep the days on or after the cutoff (YYYY-MM-DD sorts as a date).
     next.daily = Object.fromEntries(Object.entries(next.daily).filter(([day]) => day >= cutoff));
   }
+  // Earlier puzzles keep the states of the most recently played (the last entries; the object keeps insertion order).
+  next.earlier = Object.fromEntries(Object.entries(next.earlier ?? {}).slice(-KEEP_EARLIER_STATES));
+  // Results older than KEEP_RESULT_DAYS before today drop out.
+  const oldest = addDays(utcDayKey(new Date()), -KEEP_RESULT_DAYS);
+  // On the day.
+  next.results = recentResults(next.results ?? {}, oldest);
+  // Earlier puzzles.
+  next.earlierResults = recentResults(next.earlierResults ?? {}, oldest);
   // Put the record back and save.
   store.games[gameId] = next;
   writeStore(store);
@@ -182,12 +283,29 @@ export function recordResult(
   gameId: string,
   opts: { dayKey: string; won: boolean; score?: number; higherIsBetter?: boolean; daily?: boolean },
 ): GameRecord {
+  // An earlier puzzle's daily result (its page, its day): one more round played and its own result, nothing else.
+  if (opts.daily && earlierDayInPlay() === opts.dayKey) {
+    // Inside one read-change-write.
+    return updateRecord(gameId, (r) => ({
+      ...r,
+      // A round played.
+      played: r.played + 1,
+      // Solved once stays solved (a game with several daily rounds a day records each).
+      earlierResults: { ...r.earlierResults, [opts.dayKey]: Math.max(r.earlierResults[opts.dayKey] ?? 0, opts.won ? 1 : 0) },
+    }));
+  }
   // Everything happens inside one read-change-write.
   return updateRecord(gameId, (r) => {
     // One more round played (and one more daily puzzle when it was one), and one more win if it was won.
     const out: GameRecord = { ...r, played: r.played + 1, dailyPlayed: r.dailyPlayed + (opts.daily ? 1 : 0), wins: r.wins + (opts.won ? 1 : 0), lastDay: opts.dayKey };
-    // A daily puzzle marks its day as played, for the shelf.
-    if (opts.daily) out.lastDailyDay = opts.dayKey;
+    // A daily puzzle marks its day as played, for the shelf, and leaves its result for the list of earlier puzzles
+    // (solved once stays solved: Spanning Tree's three daily levels each record a round).
+    if (opts.daily) {
+      // Played on its day.
+      out.lastDailyDay = opts.dayKey;
+      // Its result.
+      out.results = { ...out.results, [opts.dayKey]: Math.max(out.results[opts.dayKey] ?? 0, opts.won ? 1 : 0) };
+    }
     // A score updates the best when it beats it (or when there is none yet).
     if (typeof opts.score === "number" && Number.isFinite(opts.score)) {
       // Which direction counts as better.
@@ -213,6 +331,92 @@ export function recordResult(
   });
 }
 
+/** A game's grading of a saved daily state: 1 solved, 0 finished but not solved, null unfinished or not understood. */
+export type GradeSaved = (day: string, state: unknown) => 0 | 1 | null;
+
+/** What a game's old practice left: marks of earlier days (played later) and the extra field without them. */
+export interface LegacyMarks {
+  /** Earlier days and their results (1 solved, 0 not solved). */
+  later: Record<string, number>;
+  /** The game's extra field with the old practice values taken out, or null to leave it as it is. */
+  extra: Record<string, unknown> | null;
+}
+
+/**
+ * Fill in the marks of days played before the results existed (PRIME 05/11/2026, "Ticks for 3–4 Nov from saved
+ * rounds"), once: a kept daily state the game grades as finished becomes that day's on-the-day result, and the marks
+ * a game's old practice list left become results of earlier puzzles played later. A result already there is never
+ * changed (an on-the-day result also wins over a practice mark), so running it again changes nothing. It reads the
+ * record as stored, never the earlier puzzle's view: the daily states it grades were all played on their own day.
+ *
+ * @param gameId the game's stable id
+ * @param grade the game's grading of a saved daily state
+ * @param legacy the game's old practice marks, if it had any
+ * @returns whether anything was filled in (the caller then reads the record again)
+ */
+export function backfillResults(gameId: string, grade: GradeSaved | undefined, legacy?: (r: GameRecord) => LegacyMarks | null): boolean {
+  // The record as stored, with defaults.
+  const stored: GameRecord = { ...emptyRecord(), ...(readStore().games[gameId] ?? {}) };
+  // The on-the-day results to add.
+  const onDay: Record<string, number> = {};
+  // Each kept daily state without a result yet.
+  for (const [day, state] of Object.entries(grade ? stored.daily : {})) {
+    // Already marked.
+    if (typeof stored.results?.[day] === "number") continue;
+    // The game's grading; a state it cannot read gives nothing (and never stops the page).
+    let g: 0 | 1 | null = null;
+    // Graded.
+    try {
+      // Solved, not solved, or not finished.
+      g = grade!(day, state);
+    } catch {
+      // Not understood.
+      g = null;
+    }
+    // A finished day is marked.
+    if (g === 0 || g === 1) onDay[day] = g;
+  }
+  // The old practice marks, if the game had a practice list.
+  let old: LegacyMarks | null = null;
+  // Read without letting a malformed value stop the page.
+  try {
+    // The game's reading.
+    old = legacy ? legacy(stored) : null;
+  } catch {
+    // Nothing usable.
+    old = null;
+  }
+  // The earlier-puzzle results to add: a day with no on-the-day result, and only where the mark is better than what is there.
+  const later: Record<string, number> = {};
+  // Each old mark.
+  for (const [day, v] of Object.entries(old?.later ?? {})) {
+    // A real 0 or 1 only.
+    if (v !== 0 && v !== 1) continue;
+    // Played on its day: that result stands.
+    if (typeof stored.results?.[day] === "number" || day in onDay) continue;
+    // Already as good or better.
+    if ((stored.earlierResults?.[day] ?? -1) >= v) continue;
+    // Added.
+    later[day] = v;
+  }
+  // Whether the extra field changes (the old marks taken out).
+  const extraChanges = old !== null && old.extra !== null;
+  // Nothing to do.
+  if (Object.keys(onDay).length === 0 && Object.keys(later).length === 0 && !extraChanges) return false;
+  // Written in one read-change-write; results already there win over the filled-in ones.
+  updateRecord(gameId, (r) => ({
+    ...r,
+    // On the day.
+    results: { ...onDay, ...r.results },
+    // Played later: the better of the two.
+    earlierResults: { ...r.earlierResults, ...Object.fromEntries(Object.entries(later).map(([d, v]) => [d, Math.max(v, r.earlierResults[d] ?? 0)])) },
+    // The extra field without the old practice values, when the game gave one.
+    extra: extraChanges ? old!.extra! : r.extra,
+  }));
+  // Filled in.
+  return true;
+}
+
 /**
  * The streak to show today: the stored streak, or 0 when the last win is older than yesterday.
  *
@@ -231,12 +435,13 @@ export function liveStreak(r: GameRecord, todayKey: string): number {
 
 /**
  * Reset one game's stats (the "Reset my stats" button): every counter, the streaks and the best score go back to
- * nothing, while the recent daily states and the game's own progress stay. Wiping the daily states used to let a
+ * nothing, while the recent daily states, the game's own progress and the marks of solved days (on the day and
+ * earlier puzzles, with their saved states) stay. Wiping the daily states used to let a
  * finished daily puzzle be played again for a better result; wiping the progress used to lock levels again.
  *
  * @param gameId the game's stable id
  */
 export function resetStats(gameId: string): void {
   // The record with fresh counters, the kept parts carried over.
-  updateRecord(gameId, (r) => ({ ...emptyRecord(), daily: r.daily, extra: r.extra, lastDailyDay: r.lastDailyDay }));
+  updateRecord(gameId, (r) => ({ ...emptyRecord(), daily: r.daily, extra: r.extra, lastDailyDay: r.lastDailyDay, results: r.results, earlier: r.earlier, earlierResults: r.earlierResults }));
 }

@@ -9,7 +9,11 @@
 // fake terminal once it has focus (click or tap it); on a phone, a row of keys
 // gives Esc, a sticky Ctrl, Tab, the arrows, ~, : and Enter, and the phone's
 // own keyboard types the rest through a hidden input. Tab is left to the
-// browser, so the page never traps the keyboard.
+// browser, so the page never traps the keyboard. A dead key (the "~" of a US
+// International or Brazilian ABNT2 keyboard, which waits for the next key) is
+// left to the browser to compose, and its text arrives through that input, so
+// Enter ~ . reaches ssh on those keyboards too; AltGr types its character
+// rather than a Ctrl chord (PRIME 05/11/2026).
 //
 // The programs are the engine's (src/lib/fun/games/exit-the-editor); this
 // component counts keystrokes and time, reveals hints after a few wrong tries
@@ -47,7 +51,9 @@ import { useTranslations } from "next-intl";
 // The frame around every game.
 import GameShell, { type ShellResult } from "./GameShell";
 // Today's UTC day and a stopwatch.
-import { useStopwatch, useToday } from "@/lib/fun/hooks";
+import { useEarlierDay, useStopwatch, useToday } from "@/lib/fun/hooks";
+// The earlier puzzle in play (?day=), if any.
+import { earlierDayInPlay } from "@/lib/fun/archive";
 // The puzzle number of a day, and the UTC day of an instant (for the opening mode).
 import { puzzleNumber, utcDayKey } from "@/lib/fun/daily";
 // The share card and the time format.
@@ -108,6 +114,18 @@ interface DailySave {
   done: boolean;
   /** The attempt's time in milliseconds, once escaped. */
   ms?: number;
+}
+
+/**
+ * The mark of a kept daily state, for days played before the marks existed (GameShell's gradeSaved): an escape is always a solve.
+ *
+ * @param _day the attempt's day (the saved attempt says it all)
+ * @param state the kept state
+ * @returns 1 escaped, null not yet
+ */
+function gradeSaved(_day: string, state: unknown): 0 | 1 | null {
+  // Escaped.
+  return state !== null && typeof state === "object" && (state as Partial<DailySave>).done === true ? 1 : null;
 }
 
 /** Wrong tries that reveal the first, second and third hint. */
@@ -185,6 +203,8 @@ export default function ExitTheEditor({ locale }: { locale: string }) {
   const tc = useTranslations("devFun.games.common");
   // Today, after mount (the shell and the daily escape need it; the levels do not).
   const today = useToday();
+  // The earlier puzzle on the board (?day=), or null: its wording says "this day's" where today's says "today's".
+  const earlierDay = useEarlierDay();
   // The levels or the daily escape.
   const [mode, setMode] = useState<"levels" | "daily">("levels");
   // Progress, read after mount.
@@ -234,6 +254,9 @@ export default function ExitTheEditor({ locale }: { locale: string }) {
   // Keystrokes and the sticky Ctrl, for several keys sent within one event.
   const keysRef = useRef(0);
   const ctrlRef = useRef(false);
+  // A dead key is waiting for the next key (PRIME 05/11/2026: on a US International keyboard "~" is a dead key, as it
+  // is on Brazil's ABNT2, so Enter ~ . did not reach ssh): the character comes with the next key, through the input.
+  const deadRef = useRef(false);
   // The wrong-try count, carried from key to key (the engine's countTry); set for the level on mount and in begin().
   const triesRef = useRef<TryCount>({ stage: 0, best: Infinity, wrong: 0 });
   // The level strip, scrolled to the current level on a phone.
@@ -351,7 +374,7 @@ export default function ExitTheEditor({ locale }: { locale: string }) {
       setDailyMs(null);
       setResult(null);
       // A resumed attempt says so.
-      if (saved && r.keys > 0) setSay(t("sayResumed", { keys: r.keys }));
+      if (saved && r.keys > 0) setSay(t(earlierDayInPlay() !== null ? "sayResumedEarlier" : "sayResumed", { keys: r.keys }));
     },
     [dailyResult, t],
   );
@@ -373,13 +396,16 @@ export default function ExitTheEditor({ locale }: { locale: string }) {
     setSt(startLevel(next.id));
     // Counted from that level's start.
     triesRef.current = startTries(startLevel(next.id));
-    // Today, read with the same clock useToday reads in this commit.
-    const day = utcDayKey(new Date());
-    // Today's attempt, if one has started.
+    // The earlier puzzle the address asks for (?day=), if any.
+    const earlier = earlierDayInPlay();
+    // The day in play: that earlier day, or today read with the same clock useToday reads in this commit.
+    const day = earlier ?? utcDayKey(new Date());
+    // That day's attempt, if one has started.
     const saved = readDaily(day);
     // An attempt in progress always reopens; a player who has cleared a level opens on a daily not played yet (a first
-    // visit starts on Level 1, which teaches what the daily assumes), as the other daily games do.
-    if ((saved && !saved.done) || (!saved && Object.keys(p).length > 0)) {
+    // visit starts on Level 1, which teaches what the daily assumes), as the other daily games do; an earlier puzzle's
+    // page always opens on its daily escape, because the address asked for it.
+    if (earlier !== null || (saved && !saved.done) || (!saved && Object.keys(p).length > 0)) {
       // The daily escape.
       modeRef.current = "daily";
       setMode("daily");
@@ -736,18 +762,35 @@ export default function ExitTheEditor({ locale }: { locale: string }) {
   const onKeyDown = (e: ReactKeyboardEvent<HTMLInputElement>) => {
     // A phone keyboard's composed or unknown key: the input event handles it.
     if (e.nativeEvent.isComposing || e.key === "Unidentified" || e.key === "Process") return;
+    // A dead key ("~", "^", "`", "'" or '"' on US International; "~", "^", "´" and "`" on ABNT2): no character yet.
+    // The browser joins it with the next key ("~" then "." gives "~.", "~" then space gives "~", "~" then "a" gives
+    // "ã"), so it is left to the browser, and the input event sends what arrives.
+    if (e.key === "Dead") {
+      // Waiting.
+      deadRef.current = true;
+      // The browser's.
+      return;
+    }
+    // The printable key after a dead key: its text, the dead key's character included, comes through the input
+    // event, so the browser is left to insert it (taking it here would lose the "~").
+    if (deadRef.current && e.key.length === 1 && !e.metaKey) return;
+    // Any other key ends the wait (the dead key's character is lost, as it would be in the browser's own fields).
+    deadRef.current = false;
     // Tab stays with the browser (no keyboard trap); the on-screen Tab key sends it.
     if (e.key === "Tab" || e.metaKey) return;
     // The named keys.
     const named: Record<string, Key> = { Escape: "Esc", Enter: "Enter", Backspace: "Backspace", ArrowUp: "Up", ArrowDown: "Down", ArrowLeft: "Left", ArrowRight: "Right" };
+    // AltGr, which Windows reports as Ctrl and Alt together: the character it types ("~" on a German or Portuguese
+    // keyboard, "/" on ABNT2), not a Ctrl or Alt chord.
+    const altGr = e.nativeEvent.getModifierState?.("AltGraph") === true;
     // The key to send.
     let k: Key | null = null;
     // A named key.
     if (named[e.key]) k = named[e.key];
     // Ctrl with a character.
-    else if (e.ctrlKey && e.key.length === 1) k = `C-${e.key.toLowerCase()}`;
-    // A printable character.
-    else if (e.key.length === 1 && !e.altKey) k = e.key;
+    else if (e.ctrlKey && !altGr && e.key.length === 1) k = `C-${e.key.toLowerCase()}`;
+    // A printable character (typed with AltGr too).
+    else if (e.key.length === 1 && (!e.altKey || altGr)) k = e.key;
     // Alt with a character: a terminal sends Esc first (Meta).
     else if (e.key.length === 1 && e.altKey) {
       // Esc, then the key.
@@ -771,6 +814,8 @@ export default function ExitTheEditor({ locale }: { locale: string }) {
    * @param el the input
    */
   const onInput = (el: HTMLInputElement) => {
+    // A dead key's wait ends here: its character arrived (alone, joined to the next one, or composed with it).
+    deadRef.current = false;
     // What it holds now.
     const v = el.value;
     // Shorter than the sentinel: a Backspace.
@@ -861,7 +906,7 @@ export default function ExitTheEditor({ locale }: { locale: string }) {
 
   // The page.
   return (
-    <GameShell gameId={GAME_ID} kind={mode === "daily" ? "daily" : "score"} today={today} rules={rules} result={result} onPlayAgain={() => begin(levelId)} version={version}>
+    <GameShell gameId={GAME_ID} kind={mode === "daily" ? "daily" : "score"} today={today} rules={rules} result={result} onPlayAgain={() => begin(levelId)} version={version} gradeSaved={gradeSaved}>
       {/* The polite line. */}
       <p className="fg-exit-sr" aria-live="polite">{say}</p>
       {/* Before mount: a neutral line, the same as the static HTML. */}
@@ -1021,7 +1066,7 @@ export default function ExitTheEditor({ locale }: { locale: string }) {
           {st.outcome === "fail" && (
             <div className="fg-exit-fail" role="status">
               <p>{t(`fail.${st.term.why || "suspended"}`)}</p>
-              {mode === "daily" && <p className="fg-small fg-exit-fail-note">{t("dailyFailNote")}</p>}
+              {mode === "daily" && <p className="fg-small fg-exit-fail-note">{t(earlierDay ? "dailyFailNoteEarlier" : "dailyFailNote")}</p>}
             </div>
           )}
           {/* After the Python level: what changed in 3.13 (the level plays 3.12). */}
@@ -1057,7 +1102,7 @@ export default function ExitTheEditor({ locale }: { locale: string }) {
           </div>
           {mode === "levels" && last && st.outcome === "exit" && index + 1 >= LEVELS.length && <p className="fg-exit-win">{t("allDone")}</p>}
           {/* Today's escape is over: the levels meanwhile. */}
-          {dailyOver && <p className="fg-muted fg-small fg-exit-note">{t("dailyDoneNote")}</p>}
+          {dailyOver && <p className="fg-muted fg-small fg-exit-note">{t(earlierDay ? "dailyDoneNoteEarlier" : "dailyDoneNote")}</p>}
         </>
       )}
     </GameShell>

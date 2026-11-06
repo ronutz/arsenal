@@ -21,7 +21,10 @@
 // PAGE LANGUAGE. The reading comes from runLocalisable() (every sentence an
 // EngineText) and is put into the page's language by inPageLanguage(); input
 // errors through engineTexts().error. Block, scope and range names are looked
-// up by id in the pack; IANA's own names for groups are shown as published.
+// up by id in the pack; IANA's own names for groups are shown as published,
+// in English, and marked lang="en" so a screen reader on the Portuguese page
+// reads them in English (WCAG 3.1.2); the Portuguese labels say they are in
+// English (PRIME 05/11/2026, the queued multicast item).
 //
 // SHARE RESULTS. Under the headline, a button builds a link that carries the
 // field as typed (#input=), only while there is a reading
@@ -152,7 +155,7 @@ export default function MulticastMacMapperTool() {
   const groupCell = (g: Ipv4Group) => (
     <>
       {t(`block.${g.block}`)}
-      {g.registered && <><br /><span className="hmac-build-note">{t("ianaName", { name: g.registered })}</span></>}
+      {g.registered && <><br /><span className="hmac-build-note">{t.rich("ianaName", { name: g.registered, n: (c) => <span lang="en">{c}</span> })}</span></>}
     </>
   ); // groupCell
 
@@ -213,7 +216,7 @@ export default function MulticastMacMapperTool() {
               {items.map((x) => (
                 <tr key={`${x.address}|${x.name}`}>
                   <th scope="row" className="mono">{x.address}</th>
-                  <td>{x.name}</td>
+                  <td lang="en">{x.name}</td>
                 </tr>
               ))}
             </tbody>
@@ -271,7 +274,7 @@ export default function MulticastMacMapperTool() {
         <div className="jwt-claims">
           {row(t("where.block"), <>{t(`block.${r.block}`)} <span className="hmac-build-note">({r.blockRange})</span></>, "block")}
           {row(t("where.scope"), t(`scope4.${r.scope}`), "scope")}
-          {row(t("where.name"), r.registered ?? none, "name")}
+          {row(t("where.name"), r.registered ? <span lang="en">{r.registered}</span> : none, "name")}
           {r.glopAs !== null && row(t("where.glop"), String(r.glopAs), "glop")}
           {r.ubmPrefix !== null && row(t("where.ubm"), r.ubmPrefix, "ubm")}
           {r.relativeOffset !== null && row(t("where.relative"), String(r.relativeOffset), "rel")}
@@ -307,7 +310,7 @@ export default function MulticastMacMapperTool() {
         <div className="jwt-claims">
           {row(t("v6.flags"), t("v6.flagsValue", { bits: r.flags.bits, x: Number(r.flags.x), r: Number(r.flags.r), p: Number(r.flags.p), t: Number(r.flags.t) }), "flags")}
           {row(t("v6.scope"), <>{r.scope} <span className="hmac-build-note">({t(`scope6.${r.scopeId}`)})</span></>, "scope")}
-          {row(t("where.name"), r.registered ?? none, "name")}
+          {row(t("where.name"), r.registered ? <span lang="en">{r.registered}</span> : none, "name")}
           {r.zone !== null && row(t("v6.zone"), `%${r.zone}`, "zone")}
           {r.documentation && row(t("v6.documentation"), "ff0X::db8:0:0/96", "doc")}
           {r.solicitedLow24 !== null && row(t("v6.solicited"), r.solicitedLow24, "sol")}

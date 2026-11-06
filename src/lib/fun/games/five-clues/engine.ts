@@ -36,8 +36,6 @@ export const GAME_ID = "five-clues";
 /** Clues per puzzle. */
 export const CLUES = 5;
 
-/** How many past days the practice archive offers. */
-export const ARCHIVE_DAYS = 30;
 
 /** The two authored languages. */
 export type Lang = "en" | "pt";
@@ -86,20 +84,6 @@ export function dailyFor(dayKey: string): FivePuzzle {
   return puzzleFor(puzzleNumber(dayKey));
 }
 
-/**
- * The past puzzle numbers practice may offer on day n: the previous thirty days, never today or later.
- *
- * @param n today's puzzle number
- * @returns the numbers, newest first
- */
-export function archive(n: number): number[] {
-  // The numbers.
-  const out: number[] = [];
-  // From yesterday back thirty days, not before puzzle #1.
-  for (let m = n - 1; m >= Math.max(1, n - ARCHIVE_DAYS); m--) out.push(m);
-  // Newest first.
-  return out;
-}
 
 /**
  * A clue in a language.
@@ -273,7 +257,7 @@ export function judge(guess: string, p: FivePuzzle): Verdict {
 /**
  * The self-test: the pool is complete in both languages, no clue gives its answer away, the categories cannot be
  * mistaken for each other, and 400 days give valid puzzles in a fixed order with no repeat inside a pool's length
- * and no future puzzle in the practice archive.
+ * (earlier days are played from the games' Earlier puzzles list since 05/11/2026; practice keeps only the warm-ups).
  *
  * @returns what was checked and what failed
  */
@@ -354,8 +338,6 @@ export function selfTest(): SelfTestReport {
     if (prev !== undefined && n - prev !== DAILY_POOL.length) failures.push(`${day}: ${p.id} repeats after ${n - prev} days`);
     // Remembered.
     lastSeen.set(p.id, n);
-    // The archive holds only the past, at most thirty days back.
-    for (const m of archive(n)) if (m >= n || m < n - ARCHIVE_DAYS || m < 1) failures.push(`${day}: archive offers #${m}`);
     // One more.
     checked++;
   }

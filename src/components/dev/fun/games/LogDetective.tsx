@@ -32,7 +32,7 @@ import { useTranslations } from "next-intl";
 // The frame: stats, rules, result.
 import GameShell, { type ShellResult } from "./GameShell";
 // Today's UTC day.
-import { useToday } from "@/lib/fun/hooks";
+import { useEarlierDay, useToday } from "@/lib/fun/hooks";
 // The puzzle number of a day.
 import { puzzleNumber } from "@/lib/fun/daily";
 // The share card and the time format.
@@ -78,6 +78,26 @@ interface DailySave {
 }
 
 /**
+ * The mark of a kept daily state, for days played before the marks existed (GameShell's gradeSaved): three answers against that day's case, with the pass mark.
+ *
+ * @param day the case's day
+ * @param state the kept state
+ * @returns 1 passed, 0 answered but not passed, null not finished
+ */
+function gradeSaved(day: string, state: unknown): 0 | 1 | null {
+  // The saved answers.
+  const answers = (state as Partial<DailySave> | null)?.answers;
+  // Finished means three answers given.
+  if (!Array.isArray(answers) || answers.length !== 3 || answers.some((a) => a === null)) return null;
+  // The day's case.
+  const kase = dailyCase(day);
+  // The right ones.
+  const right = answers.filter((a, i) => (typeof a === "string" || typeof a === "number") && isRight(kase, QUESTIONS[i], a)).length;
+  // Passed or not.
+  return right >= PASS ? 1 : 0;
+}
+
+/**
  * Save the time spent on an unfinished daily case, keeping the answers already saved (a finished case keeps the time
  * of its last answer).
  *
@@ -108,6 +128,8 @@ export default function LogDetective({ locale }: { locale: string }) {
   const tc = useTranslations("devFun.games.common");
   // Today, after mount.
   const today = useToday();
+  // The earlier puzzle on the board (?day=), or null: its wording says "this day's" where today's says "today's".
+  const earlierDay = useEarlierDay();
   // Daily or practice.
   const [mode, setMode] = useState<"daily" | "practice">("daily");
   // The practice case's seed.
@@ -411,7 +433,7 @@ export default function LogDetective({ locale }: { locale: string }) {
 
   // The board.
   return (
-    <GameShell gameId={GAME_ID} kind={mode === "daily" ? "daily" : "free"} today={today} rules={rules} result={result} onPlayAgain={newPractice} version={version}>
+    <GameShell gameId={GAME_ID} kind={mode === "daily" ? "daily" : "free"} today={today} rules={rules} result={result} onPlayAgain={newPractice} version={version} gradeSaved={gradeSaved}>
       {/* The polite announcer. */}
       <p className="sr-only" aria-live="polite">
         {say}
@@ -546,7 +568,7 @@ export default function LogDetective({ locale }: { locale: string }) {
                   <span className="fg-ld-key fg-ld-key-success" aria-hidden="true" /> {t("legendSuccess")}
                 </span>
               </p>
-              {mode === "daily" && restoredDone && <p className="fg-muted fg-small">{t("alreadyDone")}</p>}
+              {mode === "daily" && restoredDone && <p className="fg-muted fg-small">{t(earlierDay ? "alreadyDoneEarlier" : "alreadyDone")}</p>}
             </section>
           )}
         </>

@@ -56,6 +56,191 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // PRIME 05/11/2026 20:23: "Now let's focus on the build here, including the social sharing cards and related images".
+    date: "2026-11-05",
+    time: "21:05",
+    kind: "infra",
+    title: "Every page shows a picture when its link is shared",
+    titlePt: "Toda página mostra uma imagem quando o link é compartilhado",
+    body:
+      "A link shared in a chat or a feed unfurls with the page's card, and a number of pages named a card that did not exist, so they showed no picture: most pages in the fourteen languages that fall back to English, the Advisory, Speaking and Stories pages, the Ping Identity, Zscaler, Check Point and NGINX hubs, the DHCP option 43 and URL inspector tools, and the BIG-IP persistence cookies article. Those pages now have their own card, or the English one in a language without cards of its own, and the build fails if any page names a card that does not exist.",
+    links: [
+      { label: "Advisory", href: "/advisory" },
+      { label: "Speaking", href: "/speaking" },
+      { label: "Stories", href: "/stories" },
+    ],
+  },
+  {
+    // PRIME 05/11/2026 19:39 and 19:40: the /stats currency checks of 5 and 3 November, sent to be processed.
+    date: "2026-11-05",
+    time: "19:55",
+    kind: "content",
+    title: "The stats page names a Laravel sweep and explains more of what scanners ask for",
+    titlePt: "A página de estatísticas identifica uma varredura de Laravel e explica mais do que os scanners pedem",
+    body:
+      "Requests for pages that do not exist gain a group of their own for Laravel: Livewire's update endpoint, whose flaw CVE-2025-54068 is in CISA's catalogue of exploited vulnerabilities, the Telescope, Horizon, Pulse and Nova dashboards, and the sign-in routes of Fortify and laravel/ui, until now the largest unexplained share of the week. Existing groups explain more: both flaws of the wp2shell chain in CISA's catalogue; WordPress's upgrade-window flaw fixed in 7.1.4; a kubeconfig, the Azure CLI's folder, /proc/self/environ and Vite's /@fs/ prefix among the secrets; the Actuator's discovery page and Symfony's profiler phpinfo among the frameworks; OpenCart's admin folder and Next.js's build folder under a guessed subfolder among the platforms; and the admin sections behind a sign-in. The Antigravity CLI is now named by the folder Google's own page gives. Every group reads the existing counts again, so all four windows change at once.",
+    links: [{ label: "Stats", href: "/stats" }],
+  },
+  {
+    // PRIME 05/11/2026 18:18: "You now should have access to my desktop chrome browser, check what wasn't checked
+    // before, and also process the attached .md" (the 06:37 currency check), and 18:25: the F5 article K000163902.
+    date: "2026-11-05",
+    time: "18:55",
+    kind: "content",
+    title: "Nine posts and two Learn articles read against their sources again",
+    titlePt: "Nove posts e dois artigos do Learn relidos contra as fontes",
+    body:
+      "The CVE-2026-98432 post's status table is current again: Rocky Linux fixed its kernels on 3 November, Ubuntu raised its priority to Critical with fixes in testing, Red Hat, SUSE and Oracle shipped more, AWS rewrote its exploitation line and moved the RDS and Aurora patch to 6 November, and F5 now lists BIG-IP and NGINX as not vulnerable. The PHP article adds the Siemens products with no fix, Azure Front Door's response rule, NCSC-NL's counts of 4 November, F5's statuses for the Brotli flaw it calls HTTP2shell, and the version-number cases of BIG-IP and cPanel. The refrigeration post adds the claim of responsibility, Portugal and Italy, the Belgian CCB's two warnings and the US joint factsheet of 5 November. The Hugging Face post corrects its 2 November note: OpenAI's own report records agent activity touching Hugging Face from May. Smaller fixes: the twelve Glasswing partners, the PCLOB case's stage and date, and Juniper under HPE since July 2025, in the switch lineage article too.",
+    links: [
+      { label: "The handshake that freed too soon", href: "/blog/the-handshake-that-freed-too-soon" },
+      { label: "PHP2Shell", href: "/learn/php-october-2026-vulnerabilities" },
+      { label: "The freezer on the public internet", href: "/blog/the-freezer-on-the-public-internet" },
+      { label: "When the attacker was the model", href: "/blog/when-the-attacker-was-the-model" },
+    ],
+  },
+  {
+    // PRIME 05/11/2026 11:49: "The attached image shows the sharing preview for a game. Please make the graphics
+    // meaningful, related to each game. As it is, it's not good looking."
+    date: "2026-11-05",
+    time: "13:05",
+    kind: "feature",
+    title: "Every /dev/fun game has its own share card",
+    titlePt: "Cada jogo de /dev/fun tem o próprio cartão de compartilhamento",
+    body:
+      "A game's page shared in a chat used to unfurl the site's general card, often cropped. Each game now has its own card, drawn from what the game shows: Prefix of the Day's tries with their arrows, a Five Clues round, an Access Points floor, a Bit Balance grid, a Patch Path cable, a spanning tree with its blocked links, the day's log with the attacker's line, a look-alike link with its two buttons, the Whack-a-Bug holes, Aggregate's prefix tiles, an access list with its first match, vim's empty buffer with :q!, and the incident dashboard; the shelf has a mosaic of them. Name and drawing sit on the centre line, so a cropped preview keeps both. In English and Portuguese.",
+    links: [
+      { label: "The games", href: "/dev/fun" },
+      { label: "Log Detective", href: "/dev/fun/log-detective" },
+    ],
+  },
+  {
+    // PRIME 05/11/2026 12:38 and 12:40: "List /dev/fun subtly at the top of the tools index page, below the 3 room
+    // cards." "At the end of the page of each puzzle, add a call-out "solve other puzzles" or something like that,
+    // right after the results section."
+    date: "2026-11-05",
+    time: "12:55",
+    kind: "feature",
+    title: "Solve the other puzzles, right under each game's result",
+    titlePt: "Resolva os outros desafios, logo abaixo do resultado de cada jogo",
+    body:
+      "Under the result of every game, a short list of the other daily games leads to today's puzzle of each, with a tick on the ones you have solved today and a dot on the ones you played without solving, and a link back to the whole shelf. The tools index also names /dev/fun in one quiet line under its three floors.",
+    links: [
+      { label: "The games", href: "/dev/fun" },
+      { label: "Tools", href: "/tools" },
+    ],
+  },
+  {
+    // PRIME 05/11/2026 12:24: "IN "Exit the Editor" level 8 (ssh): I'm typing "Enter", then "~", then ".", but escaping
+    // does not work. I suspect it's because I'm using the "English International" keyboard."
+    date: "2026-11-05",
+    time: "12:35",
+    kind: "feature",
+    title: "Exit the Editor understands dead keys and AltGr",
+    titlePt: "Saia do Editor entende teclas mortas e AltGr",
+    body:
+      "On a US International or Brazilian ABNT2 keyboard, ~ is a dead key that waits for the next key, and the fake terminal lost it, so Enter ~ . never reached ssh. The terminal now lets the browser compose a dead key with the next key and reads the result, so ~ then . sends ~., and ~ then space sends ~. A character typed with AltGr, such as ~ on a German or Portuguese keyboard, is now that character rather than a Ctrl chord.",
+    links: [{ label: "Exit the Editor", href: "/dev/fun/exit-the-editor" }],
+  },
+  {
+    // PRIME 05/11/2026 11:49: the queued maintenance, items 7 and 9 (first-party sources; currency re-checks).
+    date: "2026-11-05",
+    time: "12:30",
+    kind: "content",
+    title: "Shellshock and Log4Shell rest on first-party sources, and three posts are brought up to date",
+    titlePt: "Shellshock e Log4Shell passam a se apoiar em fontes primárias, e três posts são atualizados",
+    body:
+      "The article on Shellshock and Log4Shell now cites the people and projects who handled them: the reporter's and the bash maintainer's own mailing-list posts, the GNU patches, the CVE and NVD records, CERT/CC, Red Hat, Apache's security page and release notes, CERT-EU and the Cyber Safety Review Board, in place of Wikipedia, two GitHub write-ups and two press pieces. Two corrections follow from them: the bash maintainer dates the feature to August 1989 and bash-1.03, so the flaw went unnoticed for about twenty-five years, not twenty-two; and Log4j 2.16.0 did not introduce the denial-of-service flaw, it was there since 2.0-alpha1 and 2.17.0 fixed it. Three posts were read against their sources again: the Schrems III post gives the Latombe appeal's case number and stage from the Court of Justice's register and the European Data Protection Board's statement from its own letter; the firmware post's Supermicro row now lists the AMD boards and the older boards marked By request; and the refrigeration post says when Team82's write-up was read.",
+    links: [
+      { label: "The interpreter problem", href: "/learn/the-interpreter-problem" },
+      { label: "Schrems III, seen from São Paulo", href: "/blog/schrems-iii-seen-from-sao-paulo" },
+      { label: "The ICMP error that reaches the firmware", href: "/blog/the-icmp-error-that-reaches-the-firmware" },
+      { label: "The freezer on the public internet", href: "/blog/the-freezer-on-the-public-internet" },
+    ],
+  },
+  {
+    // PRIME 05/11/2026 11:49: the queued maintenance, items 6 and 8.
+    date: "2026-11-05",
+    time: "12:10",
+    kind: "tool",
+    title: "The SNMP calculator's API is documented field by field, and the OUI tool hands multicast MACs to the mapper",
+    titlePt: "A API da calculadora SNMP ganha documentação campo a campo, e a ferramenta de OUI passa MACs multicast ao mapeador",
+    body:
+      "The OpenAPI description of the SNMP counter wrap and rate calculator now spells out both modes, every request and response field, and three examples checked against the engine on every build. The OUI lookup no longer lists the 32 IPv4 groups behind a 01-00-5E address itself: it says why 32 groups share it and opens the multicast group to MAC mapper on that address, where each group comes with IANA's name for it. On the mapper's Portuguese page those names, which IANA publishes in English, are labelled as English and marked so for screen readers.",
+    links: [
+      { label: "SNMP counter wrap and rate calculator", href: "/tools/snmp-counter-wrap-calculator" },
+      { label: "OUI lookup", href: "/tools/oui-lookup" },
+      { label: "Multicast group to MAC mapper", href: "/tools/multicast-mac-mapper" },
+    ],
+  },
+  {
+    // PRIME 05/11/2026 11:49: "Ok 1, 2 and 3 now. Decision 4: Option (b)."
+    date: "2026-11-05",
+    time: "12:05",
+    kind: "feature",
+    title: "Earlier puzzles replace the practice lists, and days played before the marks get theirs",
+    titlePt: "Os desafios anteriores substituem as listas de treino, e os dias jogados antes das marcas ganham as suas",
+    body:
+      "Access Points, Bit Balance and Patch Path drop their Daily and Practice switch and its seven-day list: every earlier puzzle is in Earlier puzzles, back to #1. Five Clues keeps practice for its warm-ups, written for practice, and leaves earlier days to the same list. Days finished before the marks existed, such as 3 and 4 November, now show their tick or cross, read once from the rounds this browser kept, and a day solved in the old practice lists shows as played later. A result shared from an earlier puzzle says it was played later and links that day. In Access Points a mark you placed now has a ring, so it differs from an automatic one by shape as well as colour, which matters in themes where both are red.",
+    links: [
+      { label: "The games", href: "/dev/fun" },
+      { label: "Access Points", href: "/dev/fun/access-points" },
+      { label: "Five Clues", href: "/dev/fun/five-clues" },
+    ],
+  },
+  {
+    // PRIME 05/11/2026 11:49: "Decision 5: Option (a)."
+    date: "2026-11-05",
+    time: "12:00",
+    kind: "feature",
+    title: "The faintest text colour now reaches 4.5:1 in every theme",
+    titlePt: "A cor de texto mais fraca agora chega a 4,5:1 em todos os temas",
+    body:
+      "Captions, hints and other de-emphasised text use the theme's tertiary colour, which sat below the 4.5:1 contrast that WCAG asks for small text in 22 of the 28 themes. Each of those 22 now has a tertiary colour that reaches it on the page, on cards and on raised panels, its lightness moved and its hue kept. In four themes whose secondary text already sits at that floor (Matrix · Red, Retro · C64, Retro · CoCo and Retro · MSX) the two colours now nearly match.",
+    links: [{ label: "Tools", href: "/tools" }],
+  },
+  {
+    // PRIME 05/11/2026 10:26: "Only the three letters instead of the 5 made it confusing to me. If possible, keep them adding
+    // the two missing letters, and make them show how close the player is to a bingo."
+    date: "2026-11-05",
+    time: "10:30",
+    kind: "feature",
+    title: "Meeting Bingo's balls spell BINGO and show how close your card is",
+    titlePt: "As bolas do Bingo de reunião formam BINGO e mostram quanto falta para a sua cartela",
+    body:
+      "The balls above the card are now five, B, I, N, G and O, and they light up from left to right as your closest row, column or diagonal fills: on a 5×5 card one ball per square, and all five only at a bingo. A line under them says how many squares that line still needs. On a phone they sit in one short row above the card.",
+    links: [{ label: "Meeting Bingo", href: "/dev/fun/meeting-bingo" }],
+  },
+  {
+    // PRIME 05/11/2026: a swipe over the Access Points floor marked cells; swiping should move the screen. Same check on
+    // every game.
+    date: "2026-11-05",
+    time: "10:00",
+    kind: "feature",
+    title: "On a touch screen, a swipe over Access Points or Patch Path scrolls the page",
+    titlePt: "Na tela de toque, deslizar o dedo sobre Access Points ou Patch Path rola a página",
+    body:
+      "A finger moving across the Access Points floor used to mark every cell it crossed with ×; it now scrolls the page and marks nothing, while a tap, a double tap and a long press work as before, and a mouse can still drag to mark. In Patch Path a finger draws only when it starts on the end of the cable (or on port 1 before the cable starts); a swipe anywhere else scrolls, and a tap cuts or extends the cable when the finger lifts, so scrolling never cuts it. The other games were checked: Aggregate keeps its swipes on the board and Phish or Legit its sideways swipes on the card, because a swipe is how those two are played.",
+    links: [
+      { label: "Access Points", href: "/dev/fun/access-points" },
+      { label: "Patch Path", href: "/dev/fun/patch-path" },
+    ],
+  },
+  {
+    // PRIME 05/11/2026: "Allow users to select and play daily games from previous days - but never from future days."
+    date: "2026-11-05",
+    time: "09:59",
+    kind: "feature",
+    title: "Every daily game on /dev/fun now plays its earlier puzzles, never a future one",
+    titlePt: "Todo jogo diário de /dev/fun agora joga os desafios anteriores, nunca um do futuro",
+    body:
+      "Each of the twelve daily games has Earlier puzzles beside How to play: every puzzle from #1 to yesterday, by month, newest first, each marked ✓ or ✗ once finished, with a solid edge when it was played on its day and a dashed edge when it was played later. An earlier puzzle has its own address (?day= and its date), a banner that names it and links the puzzle before, today's and the one after, and a saved round that picks up where you left it. It does not count toward the streak, the best score or the daily Played count. The date in the address is checked against the clock on every visit: today, a future day, a day before #1 or a malformed date opens today's puzzle with one line saying why. The privacy notice names the two things this keeps in your browser.",
+    links: [
+      { label: "The games", href: "/dev/fun" },
+      { label: "Prefix of the Day", href: "/dev/fun/prefix-of-the-day" },
+      { label: "Privacy", href: "/privacy" },
+    ],
+  },
+  {
     // PRIME 04/11/2026 18:24: the Access Points marks were hard to tell from the fields; check the games for contrast.
     // PRIME's answers the same evening: "Fix all 11" themes, "Build when done".
     date: "2026-11-04",

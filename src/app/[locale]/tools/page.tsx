@@ -202,6 +202,12 @@ export default async function ToolsPage({
                   </li>
                 ))}
               </ul>
+              {/* /dev/fun, named quietly under the three floors (PRIME 05/11/2026: "List /dev/fun subtly at the top of
+                  the tools index page, below the 3 room cards"): one small line, not a fourth card, because the games
+                  are not a floor of the catalogue. The quiet door at the foot of the page stays. */}
+              <p className="tools-floors-fun">
+                {t.rich("hub.devFun", { link: (chunks) => <Link href="/dev/fun" className="tools-floors-fun-link">{chunks}</Link> })}
+              </p>
               {/* The scoped search field (wave 0, 2026-10-05; SCOUT E2): opens the one dialog inside the Use world. */}
               <HubSearch scope="use" label={t("hubSearch.label")} placeholder={t("hubSearch.placeholder")} examplesLabel={t("hubSearch.examples")} examples={["CIDR", "JWT", "BIG-IP", "FortiGate", "syslog", "regex"]} />
               {/* Guided | Directory (E7): the same switch Learn has; Directory hides the guided layer below so the

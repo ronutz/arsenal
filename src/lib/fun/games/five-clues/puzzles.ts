@@ -14,8 +14,8 @@
 // Every clue was checked against the first-party document named in `source`
 // (an RFC, an IANA registry, a manual page, a vendor's documentation); the
 // check and the quotes are in the hand-over's SOURCES.md. Puzzles marked
-// `warmup` never come up as a daily puzzle: they are the practice archive's
-// first entries, so practice has something to play before thirty days exist.
+// `warmup` never come up as a daily puzzle: they are what practice plays
+// (earlier daily puzzles are played from the Earlier puzzles list).
 //
 // Data, not code: one comment per puzzle names what it is about.
 // ============================================================================

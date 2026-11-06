@@ -36,7 +36,7 @@ import { useTranslations } from "next-intl";
 // The frame around every game.
 import GameShell, { type ShellResult } from "./GameShell";
 // Today's UTC day, the reduced-motion preference, the frame loop.
-import { useFrameLoop, useReducedMotion, useToday } from "@/lib/fun/hooks";
+import { useEarlierDay, useFrameLoop, useReducedMotion, useToday } from "@/lib/fun/hooks";
 // The puzzle number for the share card.
 import { puzzleNumber } from "@/lib/fun/daily";
 // The site's own letter shortcuts stand down while a round owns the keyboard.
@@ -114,6 +114,22 @@ function liveSave(st: ScoreState): DailySave {
 type Phase = "idle" | "countdown" | "playing" | "paused" | "done";
 
 /**
+ * The mark of a kept daily state, for days played before the marks existed (GameShell's gradeSaved): a closed run, won with any points as recorded.
+ *
+ * @param _day the run's day (the saved run says it all)
+ * @param state the kept state
+ * @returns 1 a closed run with points, 0 one without, null still running
+ */
+function gradeSaved(_day: string, state: unknown): 0 | 1 | null {
+  // The saved run.
+  const s = state as Partial<DailySave> | null;
+  // Only a closed run.
+  if (!s || s.done !== true) return null;
+  // Points are a win.
+  return typeof s.score === "number" && s.score > 0 ? 1 : 0;
+}
+
+/**
  * A bug, drawn in the current colour.
  *
  * @returns the SVG
@@ -161,6 +177,8 @@ export default function WhackABug({ locale }: { locale: string }) {
   const tc = useTranslations("devFun.games.common");
   // Today, after mount.
   const today = useToday();
+  // The earlier puzzle on the board (?day=), or null: its wording says "this day's" where today's says "today's".
+  const earlierDay = useEarlierDay();
   // Reduced motion.
   const reduce = useReducedMotion();
   // Daily or practice.
@@ -525,6 +543,7 @@ export default function WhackABug({ locale }: { locale: string }) {
       // The best score in the page's language.
       formatBest={(b) => b.toLocaleString(locale)}
       version={version}
+      gradeSaved={gradeSaved}
     >
       {/* The polite line. */}
       <p className="fg-wab-sr" aria-live="polite">{say}</p>
@@ -627,7 +646,7 @@ export default function WhackABug({ locale }: { locale: string }) {
             <div className="fg-buttons">
               {!dailyDone && (
                 <button type="button" className="fg-button fg-button-primary" onClick={() => start("daily")}>
-                  {t("startDaily")}
+                  {t(earlierDay ? "startDailyEarlier" : "startDaily")}
                 </button>
               )}
               <button type="button" className={`fg-button ${dailyDone ? "fg-button-primary" : ""}`} onClick={() => start("practice")}>
@@ -636,7 +655,7 @@ export default function WhackABug({ locale }: { locale: string }) {
             </div>
           )}
           {/* The daily is done for today. */}
-          {dailyDone && !busy && <p className="fg-muted fg-small">{t("dailyDone")}</p>}
+          {dailyDone && !busy && <p className="fg-muted fg-small">{t(earlierDay ? "dailyDoneEarlier" : "dailyDone")}</p>}
           {/* The keys, for keyboard players. */}
           <p className="fg-muted fg-small">{t("keysHint")}</p>
         </>

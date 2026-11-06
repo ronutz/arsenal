@@ -15633,19 +15633,76 @@ paths:
         - Networking
       operationId: run_snmp_counter_wrap_calculator
       summary: SNMP counter wrap and rate calculator
-      description: >-
-        How long a Counter32 or Counter64 takes to wrap at an interface speed and load, the longest
-        poll interval that cannot miss a wrap, whether RFC 2863 requires 64-bit counters at that
-        speed, and the rate from two readings of one counter, with exact 64-bit arithmetic. The
-        input is a JSON object: send it as the request body (POST) or as a JSON string (?input=).
-        Standards: RFC 2578 s7.1.6, s7.1.8, s7.1.10, RFC 2863 s3.1.6, ifCounterDiscontinuityTime,
-        RFC 3418 sysUpTime, RFC 2579 TimeStamp, RFC 2544 App. B. Stateless and side-effect-free: the
-        same input always yields the same result, and nothing is stored or logged.
+      description: >
+        Two modes, chosen by `mode` (required). With `"wrap"`, the request gives the counter's
+        `width` (32 or 64), its
+
+        `kind` (`octets` or `packets`), the interface `speed` with a unit (`"10 Gb/s"`, `"100M"`,
+        `"2.5 Gbit/s"`, or bare
+
+        bit/s), optionally the `utilisation` in percent (default 100), for packets the octets of
+        line time per packet
+
+        (`packetOctets`, default 84, the smallest Ethernet frame with its preamble and gap, RFC 2544
+        Appendix B) and a
+
+        `poll` interval. The answer gives the time between wraps at that load and at line rate (a
+        Counter32 wraps at
+
+        2^32, a Counter64 at 2^64, RFC 2578 sections 7.1.6 and 7.1.10), the other width for
+        comparison, the poll
+
+        interval below which a wrap can never be missed, the tool's own margin (half the line-rate
+        wrap time, labelled
+
+        as its choice), a verdict on the poll interval (`safe`, `no-margin`, `burst` or `wraps`),
+        and what RFC 2863
+
+        section 3.1.6 requires at that speed, quoted exactly (64-bit octet counters above 20,000,000
+        bit/s; 64-bit
+
+        packet and octet counters at 650,000,000 bit/s or faster).
+
+
+        With `"rate"`, the request gives two readings of one counter (`first`, `second`) and their
+        times (`firstTime`,
+
+        `secondTime`), in seconds or, with `"timeUnit": "ticks"`, as sysUpTime in hundredths of a
+        second (RFC 3418);
+
+        optionally the interface `speed`, which enables the line-rate checks. A reading also takes
+        the line Net-SNMP's
+
+        snmpget prints (`<OID> = Counter64: <value>`, the value only, or the type removed); a
+        Counter32 or Counter64
+
+        label that disagrees with `width` is refused. The answer gives the interval, the delta
+        allowing for one wrap of
+
+        the declared width, the rate in bit/s or packets/s, the utilisation, and a verdict (`ok`,
+        `ok-unchecked`,
+
+        `wrapped`, `unreliable` when a full cycle was possible in the interval, `impossible` when
+        the delta exceeds
+
+        what the interface could count).
+
+
+        Every number in the answer is decimal text, exact or rounded half up to six places (2^64
+        does not fit a JSON
+
+        number). Counter values sent as JSON numbers are accepted only while they are safe integers;
+        send them as
+
+        strings. Sentences come in English.
+      externalDocs:
+        description: 'Tool documentation: SNMP counter wrap and rate calculator'
+        url: https://ronutz.com/en/tools/snmp-counter-wrap-calculator/docs
       parameters:
         - name: input
           in: query
           required: true
-          description: The tool input, as a JSON string.
+          description: The request object as a URL-encoded JSON string.
           schema:
             type: string
             examples:
@@ -15654,52 +15711,405 @@ paths:
                 Gb/s","utilisation":"40","poll":"300"}
       responses:
         '200':
-          description: The computed result.
+          description: The wrap reading, or the rate from two readings.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ToolResult'
+                oneOf:
+                  - $ref: '#/components/schemas/SnmpWrapResult'
+                  - $ref: '#/components/schemas/SnmpRateResult'
+              examples:
+                wrapExample:
+                  summary: >-
+                    A Counter32 of octets at 10 Gb/s and 40 %, polled every 300 s (golden vector
+                    example-10g-40pct-300s-c32)
+                  x-request: >-
+                    {"mode":"wrap","width":32,"kind":"octets","speed":"10
+                    Gb/s","utilisation":"40","poll":"300"}
+                  value:
+                    mode: wrap
+                    width: 32
+                    kind: octets
+                    modulus: '4294967296'
+                    maxValue: '4294967295'
+                    speedBitsPerSecond: '10000000000'
+                    utilisationPercent: '40'
+                    packetOctets: null
+                    countPerSecond: '500000000'
+                    lineRateCountPerSecond: '1250000000'
+                    wrapSeconds: '8.589935'
+                    lineRateWrapSeconds: '3.435974'
+                    otherWidth:
+                      width: 64
+                      wrapSeconds: '36893488147.419103'
+                    neverMissBelowSeconds: '3.435974'
+                    marginPollSeconds: '1.717987'
+                    poll:
+                      seconds: '300'
+                      countPerPoll: '150000000000'
+                      cyclesPerPoll: '34.924597'
+                      verdict: wraps
+                      text: >-
+                        At the stated load the counter goes round at least one full cycle between
+                        polls, so the deltas are wrong and no rate computed from them can be
+                        trusted: poll more often, or use a 64-bit counter.
+                    rfc2863:
+                      band: 650m-and-above
+                      octets64Required: true
+                      packets64Required: true
+                      thisCounterRequires64: true
+                      quote: >-
+                        RFC 2863, section 3.1.6: "For interfaces that operate at 650,000,000
+                        bits/second or faster, 64-bit packet counters AND 64-bit octet counters MUST
+                        be supported."
+                    warnings:
+                      - >-
+                        RFC 2863 requires 64-bit octet counters on an interface of this speed: poll
+                        ifHCInOctets and ifHCOutOctets (Counter64) instead of the 32-bit ifInOctets
+                        and ifOutOctets.
+                    notes:
+                      - >-
+                        A single counter value means nothing on its own: "Counters have no defined
+                        "initial" value, and thus, a single value of a Counter has (in general) no
+                        information content" (RFC 2578, sections 7.1.6 and 7.1.10). Only the
+                        difference between two readings of the same counter carries information.
+                      - >-
+                        The margin is the tool's choice, not a standard's: half the line-rate wrap
+                        time, so that one lost poll (a request that timed out) still leaves less
+                        than one wrap between the two readings that remain.
+                      - >-
+                        Line rate here is the interface speed divided by 8: an interface cannot
+                        count more octets per second than its bits carry, so the line-rate figures
+                        are the fastest the counter can move.
+                rateExample:
+                  summary: >-
+                    Two ifHCInOctets readings 30000 sysUpTime ticks apart on a 10 Gb/s port (golden
+                    vector rate-example-sysuptime-c64)
+                  x-request: >-
+                    {"mode":"rate","width":64,"kind":"octets","first":"9876543210123","second":"10026543210123","firstTime":"123456700","secondTime":"123486700","timeUnit":"ticks","speed":"10
+                    Gb/s"}
+                  value:
+                    mode: rate
+                    width: 64
+                    kind: octets
+                    modulus: '18446744073709551616'
+                    maxValue: '18446744073709551615'
+                    first: '9876543210123'
+                    second: '10026543210123'
+                    timeUnit: ticks
+                    intervalSeconds: '300'
+                    delta: '150000000000'
+                    wrapped: false
+                    bitsPerSecond: '4000000000'
+                    packetsPerSecond: null
+                    speedBitsPerSecond: '10000000000'
+                    packetOctets: null
+                    utilisationPercent: '40'
+                    lineRateMaxCount: '375000000000'
+                    lineRateCycles: '0'
+                    verdict: ok
+                    verdictText: >-
+                      The readings give a usable rate: at the interface speed the counter cannot go
+                      round a full cycle in this interval.
+                    rfc2863:
+                      band: 650m-and-above
+                      octets64Required: true
+                      packets64Required: true
+                      thisCounterRequires64: true
+                      quote: >-
+                        RFC 2863, section 3.1.6: "For interfaces that operate at 650,000,000
+                        bits/second or faster, 64-bit packet counters AND 64-bit octet counters MUST
+                        be supported."
+                    warnings: []
+                    notes:
+                      - >-
+                        A counter discontinuity makes the delta meaningless. Interface counters can
+                        jump "at re-initialization of the management system, and at other times as
+                        indicated by the value of ifCounterDiscontinuityTime" (RFC 2863): read
+                        ifCounterDiscontinuityTime with every poll, and discard the pair if it
+                        changed between the two readings.
+                      - >-
+                        sysUpTime counts "hundredths of a second" since the agent's management
+                        system "was last re-initialized" (RFC 3418), and TimeTicks are kept "modulo
+                        2^32" (RFC 2578), so it goes round after about 497 days (RFC 2579).
+                      - >-
+                        A single counter value means nothing on its own: "Counters have no defined
+                        "initial" value, and thus, a single value of a Counter has (in general) no
+                        information content" (RFC 2578, sections 7.1.6 and 7.1.10). Only the
+                        difference between two readings of the same counter carries information.
         '400':
-          description: The input is missing or could not be processed.
+          description: >
+            The body is not a JSON object, the mode, width or kind is missing or unknown, a speed
+            has no unit or is written in bytes per second, a reading is not digits (or a snmpget
+            line of a counter of the declared width), a reading does not fit the width, a time is
+            not a number or a sysUpTime value, the two readings are at the same time, or the second
+            time is earlier than the first.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+              examples:
+                ticksBackwards:
+                  summary: A lower second sysUpTime (reject vector err-ticks-backwards)
+                  x-request: >-
+                    {"mode":"rate","width":32,"kind":"octets","first":"10","second":"20","firstTime":"500","secondTime":"400","timeUnit":"ticks"}
+                  value:
+                    error: invalid_input
+                    message: >-
+                      The second sysUpTime is lower than the first: either the agent was
+                      re-initialised between the readings, which restarts its counters and makes any
+                      delta meaningless, or sysUpTime passed 4294967295 hundredths of a second
+                      (about 497 days) and went round. The tool does not guess which.
       x-golden-vector-set: snmp-counter-wrap-calculator-golden-2026-11-02b
     post:
       tags:
         - Networking
       operationId: run_snmp_counter_wrap_calculator_post
       summary: SNMP counter wrap and rate calculator (POST)
-      description: >-
-        How long a Counter32 or Counter64 takes to wrap at an interface speed and load, the longest
-        poll interval that cannot miss a wrap, whether RFC 2863 requires 64-bit counters at that
-        speed, and the rate from two readings of one counter, with exact 64-bit arithmetic. The
-        input is a JSON object: send it as the request body (POST) or as a JSON string (?input=).
-        Standards: RFC 2578 s7.1.6, s7.1.8, s7.1.10, RFC 2863 s3.1.6, ifCounterDiscontinuityTime,
-        RFC 3418 sysUpTime, RFC 2579 TimeStamp, RFC 2544 App. B. Stateless and side-effect-free: the
-        same input always yields the same result, and nothing is stored or logged.
+      description: >
+        Two modes, chosen by `mode` (required). With `"wrap"`, the request gives the counter's
+        `width` (32 or 64), its
+
+        `kind` (`octets` or `packets`), the interface `speed` with a unit (`"10 Gb/s"`, `"100M"`,
+        `"2.5 Gbit/s"`, or bare
+
+        bit/s), optionally the `utilisation` in percent (default 100), for packets the octets of
+        line time per packet
+
+        (`packetOctets`, default 84, the smallest Ethernet frame with its preamble and gap, RFC 2544
+        Appendix B) and a
+
+        `poll` interval. The answer gives the time between wraps at that load and at line rate (a
+        Counter32 wraps at
+
+        2^32, a Counter64 at 2^64, RFC 2578 sections 7.1.6 and 7.1.10), the other width for
+        comparison, the poll
+
+        interval below which a wrap can never be missed, the tool's own margin (half the line-rate
+        wrap time, labelled
+
+        as its choice), a verdict on the poll interval (`safe`, `no-margin`, `burst` or `wraps`),
+        and what RFC 2863
+
+        section 3.1.6 requires at that speed, quoted exactly (64-bit octet counters above 20,000,000
+        bit/s; 64-bit
+
+        packet and octet counters at 650,000,000 bit/s or faster).
+
+
+        With `"rate"`, the request gives two readings of one counter (`first`, `second`) and their
+        times (`firstTime`,
+
+        `secondTime`), in seconds or, with `"timeUnit": "ticks"`, as sysUpTime in hundredths of a
+        second (RFC 3418);
+
+        optionally the interface `speed`, which enables the line-rate checks. A reading also takes
+        the line Net-SNMP's
+
+        snmpget prints (`<OID> = Counter64: <value>`, the value only, or the type removed); a
+        Counter32 or Counter64
+
+        label that disagrees with `width` is refused. The answer gives the interval, the delta
+        allowing for one wrap of
+
+        the declared width, the rate in bit/s or packets/s, the utilisation, and a verdict (`ok`,
+        `ok-unchecked`,
+
+        `wrapped`, `unreliable` when a full cycle was possible in the interval, `impossible` when
+        the delta exceeds
+
+        what the interface could count).
+
+
+        Every number in the answer is decimal text, exact or rounded half up to six places (2^64
+        does not fit a JSON
+
+        number). Counter values sent as JSON numbers are accepted only while they are safe integers;
+        send them as
+
+        strings. Sentences come in English.
       requestBody:
         required: true
-        description: The tool input as a JSON object.
+        description: The request object.
         content:
           application/json:
             schema:
-              type: object
-              additionalProperties: true
+              oneOf:
+                - $ref: '#/components/schemas/SnmpWrapRequest'
+                - $ref: '#/components/schemas/SnmpRateRequest'
+            examples:
+              wrap:
+                summary: A Counter32 of octets at 10 Gb/s and 40 %, polled every 300 s
+                value:
+                  mode: wrap
+                  width: 32
+                  kind: octets
+                  speed: 10 Gb/s
+                  utilisation: '40'
+                  poll: '300'
+              rate:
+                summary: Two ifHCInOctets readings 300 s apart, as sysUpTime ticks
+                value:
+                  mode: rate
+                  width: 64
+                  kind: octets
+                  first: '9876543210123'
+                  second: '10026543210123'
+                  firstTime: '123456700'
+                  secondTime: '123486700'
+                  timeUnit: ticks
+                  speed: 10 Gb/s
       responses:
         '200':
-          description: The computed result.
+          description: The wrap reading, or the rate from two readings.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ToolResult'
+                oneOf:
+                  - $ref: '#/components/schemas/SnmpWrapResult'
+                  - $ref: '#/components/schemas/SnmpRateResult'
+              examples:
+                wrapExample:
+                  summary: >-
+                    A Counter32 of octets at 10 Gb/s and 40 %, polled every 300 s (golden vector
+                    example-10g-40pct-300s-c32)
+                  x-request: >-
+                    {"mode":"wrap","width":32,"kind":"octets","speed":"10
+                    Gb/s","utilisation":"40","poll":"300"}
+                  value:
+                    mode: wrap
+                    width: 32
+                    kind: octets
+                    modulus: '4294967296'
+                    maxValue: '4294967295'
+                    speedBitsPerSecond: '10000000000'
+                    utilisationPercent: '40'
+                    packetOctets: null
+                    countPerSecond: '500000000'
+                    lineRateCountPerSecond: '1250000000'
+                    wrapSeconds: '8.589935'
+                    lineRateWrapSeconds: '3.435974'
+                    otherWidth:
+                      width: 64
+                      wrapSeconds: '36893488147.419103'
+                    neverMissBelowSeconds: '3.435974'
+                    marginPollSeconds: '1.717987'
+                    poll:
+                      seconds: '300'
+                      countPerPoll: '150000000000'
+                      cyclesPerPoll: '34.924597'
+                      verdict: wraps
+                      text: >-
+                        At the stated load the counter goes round at least one full cycle between
+                        polls, so the deltas are wrong and no rate computed from them can be
+                        trusted: poll more often, or use a 64-bit counter.
+                    rfc2863:
+                      band: 650m-and-above
+                      octets64Required: true
+                      packets64Required: true
+                      thisCounterRequires64: true
+                      quote: >-
+                        RFC 2863, section 3.1.6: "For interfaces that operate at 650,000,000
+                        bits/second or faster, 64-bit packet counters AND 64-bit octet counters MUST
+                        be supported."
+                    warnings:
+                      - >-
+                        RFC 2863 requires 64-bit octet counters on an interface of this speed: poll
+                        ifHCInOctets and ifHCOutOctets (Counter64) instead of the 32-bit ifInOctets
+                        and ifOutOctets.
+                    notes:
+                      - >-
+                        A single counter value means nothing on its own: "Counters have no defined
+                        "initial" value, and thus, a single value of a Counter has (in general) no
+                        information content" (RFC 2578, sections 7.1.6 and 7.1.10). Only the
+                        difference between two readings of the same counter carries information.
+                      - >-
+                        The margin is the tool's choice, not a standard's: half the line-rate wrap
+                        time, so that one lost poll (a request that timed out) still leaves less
+                        than one wrap between the two readings that remain.
+                      - >-
+                        Line rate here is the interface speed divided by 8: an interface cannot
+                        count more octets per second than its bits carry, so the line-rate figures
+                        are the fastest the counter can move.
+                rateExample:
+                  summary: >-
+                    Two ifHCInOctets readings 30000 sysUpTime ticks apart on a 10 Gb/s port (golden
+                    vector rate-example-sysuptime-c64)
+                  x-request: >-
+                    {"mode":"rate","width":64,"kind":"octets","first":"9876543210123","second":"10026543210123","firstTime":"123456700","secondTime":"123486700","timeUnit":"ticks","speed":"10
+                    Gb/s"}
+                  value:
+                    mode: rate
+                    width: 64
+                    kind: octets
+                    modulus: '18446744073709551616'
+                    maxValue: '18446744073709551615'
+                    first: '9876543210123'
+                    second: '10026543210123'
+                    timeUnit: ticks
+                    intervalSeconds: '300'
+                    delta: '150000000000'
+                    wrapped: false
+                    bitsPerSecond: '4000000000'
+                    packetsPerSecond: null
+                    speedBitsPerSecond: '10000000000'
+                    packetOctets: null
+                    utilisationPercent: '40'
+                    lineRateMaxCount: '375000000000'
+                    lineRateCycles: '0'
+                    verdict: ok
+                    verdictText: >-
+                      The readings give a usable rate: at the interface speed the counter cannot go
+                      round a full cycle in this interval.
+                    rfc2863:
+                      band: 650m-and-above
+                      octets64Required: true
+                      packets64Required: true
+                      thisCounterRequires64: true
+                      quote: >-
+                        RFC 2863, section 3.1.6: "For interfaces that operate at 650,000,000
+                        bits/second or faster, 64-bit packet counters AND 64-bit octet counters MUST
+                        be supported."
+                    warnings: []
+                    notes:
+                      - >-
+                        A counter discontinuity makes the delta meaningless. Interface counters can
+                        jump "at re-initialization of the management system, and at other times as
+                        indicated by the value of ifCounterDiscontinuityTime" (RFC 2863): read
+                        ifCounterDiscontinuityTime with every poll, and discard the pair if it
+                        changed between the two readings.
+                      - >-
+                        sysUpTime counts "hundredths of a second" since the agent's management
+                        system "was last re-initialized" (RFC 3418), and TimeTicks are kept "modulo
+                        2^32" (RFC 2578), so it goes round after about 497 days (RFC 2579).
+                      - >-
+                        A single counter value means nothing on its own: "Counters have no defined
+                        "initial" value, and thus, a single value of a Counter has (in general) no
+                        information content" (RFC 2578, sections 7.1.6 and 7.1.10). Only the
+                        difference between two readings of the same counter carries information.
         '400':
-          description: The input is missing or could not be processed.
+          description: >
+            The body is not a JSON object, the mode, width or kind is missing or unknown, a speed
+            has no unit or is written in bytes per second, a reading is not digits (or a snmpget
+            line of a counter of the declared width), a reading does not fit the width, a time is
+            not a number or a sysUpTime value, the two readings are at the same time, or the second
+            time is earlier than the first.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+              examples:
+                ticksBackwards:
+                  summary: A lower second sysUpTime (reject vector err-ticks-backwards)
+                  x-request: >-
+                    {"mode":"rate","width":32,"kind":"octets","first":"10","second":"20","firstTime":"500","secondTime":"400","timeUnit":"ticks"}
+                  value:
+                    error: invalid_input
+                    message: >-
+                      The second sysUpTime is lower than the first: either the agent was
+                      re-initialised between the readings, which restarts its counters and makes any
+                      delta meaningless, or sysUpTime passed 4294967295 hundredths of a second
+                      (about 497 days) and went round. The tool does not guess which.
       x-golden-vector-set: snmp-counter-wrap-calculator-golden-2026-11-02b
   /sorting-algorithm-stepper:
     get:
@@ -19472,6 +19882,374 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/BfdExplanation'
+    SnmpWrapRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - mode
+        - width
+        - kind
+        - speed
+      properties:
+        mode:
+          type: string
+          const: wrap
+        width:
+          oneOf:
+            - type: integer
+              enum:
+                - 32
+                - 64
+            - type: string
+              enum:
+                - '32'
+                - '64'
+          description: Counter32 or Counter64.
+        kind:
+          type: string
+          enum:
+            - octets
+            - packets
+        speed:
+          type: string
+          description: >-
+            The interface speed with a unit (10 Gb/s, 100M, 2.5 Gbit/s), or bare bit/s; a capital B
+            (bytes) is refused.
+        utilisation:
+          type: string
+          description: Percent, above 0 and at most 100; 100 when absent.
+        packetOctets:
+          type: string
+          description: 'Packets only: octets of line time per packet, 1 to 65535; 84 when absent.'
+        poll:
+          type: string
+          description: >-
+            The poll interval: seconds, or a number and ms, s, min or h; no verdict when absent or
+            blank.
+    SnmpRateRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - mode
+        - width
+        - kind
+        - first
+        - second
+        - firstTime
+        - secondTime
+      properties:
+        mode:
+          type: string
+          const: rate
+        width:
+          oneOf:
+            - type: integer
+              enum:
+                - 32
+                - 64
+            - type: string
+              enum:
+                - '32'
+                - '64'
+        kind:
+          type: string
+          enum:
+            - octets
+            - packets
+        first:
+          oneOf:
+            - type: string
+            - type: integer
+          description: >-
+            The first reading: decimal digits or a snmpget output line; a JSON number only while it
+            is a safe integer.
+        second:
+          oneOf:
+            - type: string
+            - type: integer
+          description: The second reading, as the first.
+        firstTime:
+          oneOf:
+            - type: string
+            - type: number
+          description: >-
+            Seconds (decimal), or sysUpTime hundredths (a whole number, or a Timeticks line) with
+            timeUnit ticks.
+        secondTime:
+          oneOf:
+            - type: string
+            - type: number
+          description: The time of the second reading, in the same unit.
+        timeUnit:
+          type: string
+          enum:
+            - s
+            - ticks
+          default: s
+        speed:
+          type: string
+          description: 'Optional: the interface speed, which enables the line-rate checks.'
+        packetOctets:
+          type: string
+          description: 'Packets only: octets of line time per packet for the line-rate checks; 84 when absent.'
+    SnmpRfc2863Reading:
+      type: object
+      required:
+        - band
+        - octets64Required
+        - packets64Required
+        - thisCounterRequires64
+        - quote
+      properties:
+        band:
+          type: string
+          enum:
+            - up-to-20m
+            - 20m-to-650m
+            - 650m-and-above
+        octets64Required:
+          type: boolean
+          description: Above 20,000,000 bit/s.
+        packets64Required:
+          type: boolean
+          description: At 650,000,000 bit/s or faster.
+        thisCounterRequires64:
+          type: boolean
+        quote:
+          type: string
+          description: The band's sentence of RFC 2863 section 3.1.6, quoted exactly.
+    SnmpWrapResult:
+      type: object
+      required:
+        - mode
+        - width
+        - kind
+        - modulus
+        - maxValue
+        - speedBitsPerSecond
+        - utilisationPercent
+        - packetOctets
+        - countPerSecond
+        - lineRateCountPerSecond
+        - wrapSeconds
+        - lineRateWrapSeconds
+        - otherWidth
+        - neverMissBelowSeconds
+        - marginPollSeconds
+        - poll
+        - rfc2863
+        - warnings
+        - notes
+      properties:
+        mode:
+          type: string
+          const: wrap
+        width:
+          type: integer
+          enum:
+            - 32
+            - 64
+        kind:
+          type: string
+          enum:
+            - octets
+            - packets
+        modulus:
+          type: string
+          description: 2^width.
+        maxValue:
+          type: string
+          description: 2^width - 1.
+        speedBitsPerSecond:
+          type: string
+        utilisationPercent:
+          type: string
+        packetOctets:
+          type:
+            - integer
+            - 'null'
+        countPerSecond:
+          type: string
+          description: Octets or packets per second at the stated utilisation.
+        lineRateCountPerSecond:
+          type: string
+        wrapSeconds:
+          type: string
+          description: Seconds between wraps at the stated utilisation.
+        lineRateWrapSeconds:
+          type: string
+          description: 'Seconds between wraps at line rate: the shortest possible.'
+        otherWidth:
+          type: object
+          required:
+            - width
+            - wrapSeconds
+          properties:
+            width:
+              type: integer
+              enum:
+                - 32
+                - 64
+            wrapSeconds:
+              type: string
+        neverMissBelowSeconds:
+          type: string
+          description: A poll interval strictly below this can never miss a wrap.
+        marginPollSeconds:
+          type: string
+          description: 'The tool''s margin: half the line-rate wrap time.'
+        poll:
+          type:
+            - object
+            - 'null'
+          required:
+            - seconds
+            - countPerPoll
+            - cyclesPerPoll
+            - verdict
+            - text
+          properties:
+            seconds:
+              type: string
+            countPerPoll:
+              type: string
+            cyclesPerPoll:
+              type: string
+              description: '1 or more: at least one full cycle between polls.'
+            verdict:
+              type: string
+              enum:
+                - safe
+                - no-margin
+                - burst
+                - wraps
+            text:
+              type: string
+        rfc2863:
+          $ref: '#/components/schemas/SnmpRfc2863Reading'
+        warnings:
+          type: array
+          items:
+            type: string
+        notes:
+          type: array
+          items:
+            type: string
+    SnmpRateResult:
+      type: object
+      required:
+        - mode
+        - width
+        - kind
+        - modulus
+        - maxValue
+        - first
+        - second
+        - timeUnit
+        - intervalSeconds
+        - delta
+        - wrapped
+        - bitsPerSecond
+        - packetsPerSecond
+        - speedBitsPerSecond
+        - packetOctets
+        - utilisationPercent
+        - lineRateMaxCount
+        - lineRateCycles
+        - verdict
+        - verdictText
+        - rfc2863
+        - warnings
+        - notes
+      properties:
+        mode:
+          type: string
+          const: rate
+        width:
+          type: integer
+          enum:
+            - 32
+            - 64
+        kind:
+          type: string
+          enum:
+            - octets
+            - packets
+        modulus:
+          type: string
+        maxValue:
+          type: string
+        first:
+          type: string
+          description: As read, leading zeros removed.
+        second:
+          type: string
+        timeUnit:
+          type: string
+          enum:
+            - s
+            - ticks
+        intervalSeconds:
+          type: string
+        delta:
+          type: string
+          description: The counted increase, allowing for one wrap.
+        wrapped:
+          type: boolean
+          description: The second value was lower, so one wrap was assumed.
+        bitsPerSecond:
+          type:
+            - string
+            - 'null'
+          description: 'Octets: delta x 8 / interval.'
+        packetsPerSecond:
+          type:
+            - string
+            - 'null'
+        speedBitsPerSecond:
+          type:
+            - string
+            - 'null'
+        packetOctets:
+          type:
+            - integer
+            - 'null'
+        utilisationPercent:
+          type:
+            - string
+            - 'null'
+        lineRateMaxCount:
+          type:
+            - string
+            - 'null'
+          description: 'With a speed: the most the counter can count in the interval.'
+        lineRateCycles:
+          type:
+            - string
+            - 'null'
+          description: That maximum divided by 2^width.
+        verdict:
+          type: string
+          enum:
+            - ok
+            - ok-unchecked
+            - wrapped
+            - unreliable
+            - impossible
+        verdictText:
+          type: string
+        rfc2863:
+          oneOf:
+            - $ref: '#/components/schemas/SnmpRfc2863Reading'
+            - type: 'null'
+        warnings:
+          type: array
+          items:
+            type: string
+        notes:
+          type: array
+          items:
+            type: string
     RpkiOriginValidationRequest:
       type: object
       required:

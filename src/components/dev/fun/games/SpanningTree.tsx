@@ -75,6 +75,22 @@ interface StpSave {
   won: boolean;
 }
 
+/**
+ * The mark of a kept daily state, for days played before the marks existed (GameShell's gradeSaved): any level solved marks the day solved, a level given up marks it played.
+ *
+ * @param _day the puzzle's day (the saved levels say it all)
+ * @param state the kept state
+ * @returns 1 a level solved, 0 a level given up and none solved, null none finished
+ */
+function gradeSaved(_day: string, state: unknown): 0 | 1 | null {
+  // The saved levels.
+  const levels = state !== null && typeof state === "object" ? Object.values(state as Record<string, Partial<StpSave> | null>) : [];
+  // A level solved.
+  if (levels.some((l) => l?.done === true && l.won === true)) return 1;
+  // A level finished (given up).
+  return levels.some((l) => l?.done === true) ? 0 : null;
+}
+
 /** No marks yet. */
 const NO_MARKS: Marks = { root: null, rp: [], dp: [], bk: [] };
 
@@ -600,7 +616,7 @@ export default function SpanningTree({ locale }: { locale: string }) {
 
   // The game.
   return (
-    <GameShell gameId={STP_ID} kind={mode === "daily" ? "daily" : "score"} today={today} rules={rules} result={result} onPlayAgain={newRound} formatBest={(b) => t("bestScore", { n: b })} version={version}>
+    <GameShell gameId={STP_ID} kind={mode === "daily" ? "daily" : "score"} today={today} rules={rules} result={result} onPlayAgain={newRound} formatBest={(b) => t("bestScore", { n: b })} version={version} gradeSaved={gradeSaved}>
       <div className="fg-stp">
         {/* Daily or practice, easy or hard: two compact groups, on one line on a phone. */}
         <div className="fg-stp-toolbar">

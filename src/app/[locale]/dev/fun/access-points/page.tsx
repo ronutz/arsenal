@@ -14,6 +14,9 @@
 
 // The page's metadata type.
 import type { Metadata } from "next";
+// The share card and the one description for the meta, og and twitter fields (05/11/2026).
+import { ogImages } from "@/lib/og";
+import { withDescription } from "@/lib/metaDescription";
 // Server-side strings and the locale for static rendering.
 import { getTranslations, setRequestLocale } from "next-intl/server";
 // The site header.
@@ -26,6 +29,9 @@ import MessageSlice from "@/components/MessageSlice";
 import { Link } from "@/i18n/navigation";
 // The game.
 import AccessPoints from "@/components/dev/fun/games/AccessPoints";
+// "Solve the other puzzles" (PRIME 05/11/2026): the call-out, rendered here, and the slot that hands it to the frame.
+import MorePuzzles from "@/components/dev/fun/MorePuzzles";
+import { MorePuzzlesProvider } from "@/components/dev/fun/MorePuzzlesSlot";
 
 /**
  * The page's title and description, in the page's locale.
@@ -39,7 +45,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   // The game's strings.
   const t = await getTranslations({ locale, namespace: "devFun.games.access-points" });
   // Title and description.
-  return { title: t("metaTitle"), description: t("metaDescription") };
+  // The game's own share card (PRIME 05/11/2026: "make the graphics meaningful, related to each game"), drawn by
+  // scripts/og-games.mts, with the page's description in the meta, og and twitter fields alike.
+  return { title: t("metaTitle"), ...withDescription(t("metaDescription"), ogImages("game", "access-points", locale, t("title")), "dev/fun/access-points") };
 }
 
 /**
@@ -73,7 +81,10 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
               <p className="fg-intro">{t("intro")}</p>
             </div>
             <MessageSlice namespaces={["devFun.games.common", "devFun.games.access-points"]}>
-              <AccessPoints locale={locale} />
+              {/* "Solve the other puzzles", placed by the game's frame right after its result (PRIME 05/11/2026). */}
+              <MorePuzzlesProvider more={<MorePuzzles current="access-points" />}>
+                <AccessPoints locale={locale} />
+              </MorePuzzlesProvider>
             </MessageSlice>
           </div>
         </section>

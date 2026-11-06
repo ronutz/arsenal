@@ -8,11 +8,22 @@
 // grid that shows how the round went without giving the answer away, and the
 // game's address. It goes to the clipboard; the player pastes it wherever they
 // like. Nothing is posted anywhere by the site, and no one is tracked by it:
-// the address carries no query string.
+// the address carries no query string, except on an earlier puzzle (PRIME
+// 05/11/2026), whose card says it was played later and whose address carries
+// that puzzle's date (?day=), so whoever opens it plays the same puzzle.
 // ============================================================================
+
+// The earlier puzzle in play (?day=), if any, and the address of a day's puzzle.
+import { DAY_PARAM, earlierDayInPlay } from "./archive";
+// The puzzle number of a day.
+import { puzzleNumber } from "./daily";
 
 /** The production origin, written into every share card. */
 export const SHARE_ORIGIN = "https://ronutz.com";
+
+/** The words after an earlier puzzle's title, by language: the games' words are authored in English and Portuguese, and
+ *  every other language reads the English ones, as it does the rest of the games' text. */
+const PLAYED_LATER: Record<string, string> = { en: "played later", "pt-BR": "jogado depois" };
 
 /**
  * The text of a share card.
@@ -22,10 +33,17 @@ export const SHARE_ORIGIN = "https://ronutz.com";
  * @returns the card as plain text, lines joined with newlines
  */
 export function shareText(opts: { title: string; lines: string[]; summary?: string; locale: string; slug: string }): string {
-  // The address of the game in the player's language, with the trailing slash the export uses.
-  const url = `${SHARE_ORIGIN}/${opts.locale}/dev/fun/${opts.slug}/`;
+  // The earlier puzzle on this page, if any (null on today's puzzle and on the server), and only when this card is that
+  // puzzle's: every daily card's title carries its number (#n), a practice round's or a toy's does not.
+  const inPlay = earlierDayInPlay();
+  const earlier = inPlay !== null && new RegExp(`#${puzzleNumber(inPlay)}(?!\\d)`).test(opts.title) ? inPlay : null;
+  // The address of the game in the player's language, with the trailing slash the export uses, and an earlier puzzle's
+  // date after it.
+  const url = `${SHARE_ORIGIN}/${opts.locale}/dev/fun/${opts.slug}/${earlier ? `?${DAY_PARAM}=${earlier}` : ""}`;
+  // The title, marked as played later on an earlier puzzle, so the card is not taken for a result of the day.
+  const title = earlier ? `${opts.title} · ${PLAYED_LATER[opts.locale] ?? PLAYED_LATER.en}` : opts.title;
   // Title, result, the optional summary, then the address, with a blank line before it.
-  return [opts.title, ...opts.lines, ...(opts.summary ? [opts.summary] : []), "", url].join("\n");
+  return [title, ...opts.lines, ...(opts.summary ? [opts.summary] : []), "", url].join("\n");
 }
 
 /**

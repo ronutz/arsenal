@@ -27,6 +27,11 @@ export interface PrivacyRevision {
 
 /** The revisions, newest first. Every date is a changelog entry's date. */
 export const PRIVACY_REVISIONS: readonly PrivacyRevision[] = [
+  // Earlier puzzles (PRIME 05/11/2026: "Allow users to select and play daily games from previous days - but never from
+  // future days"): the games' record in ronutz:fun:v1 (src/lib/fun/storage.ts) also keeps whether each daily puzzle
+  // was solved, on its day or later, for 400 days, and the saved state of the 14 earlier puzzles played most recently.
+  // The browserBody list names both in all sixteen packs; the note is in en and pt-BR.
+  { date: "2026-11-05", key: "r20261105earlier" },
   // The cat's share link (PRIME 03/11/2026, "Yes on all your suggested ideas": share lines for the toys). The Global
   // Cat Distribution System's Copy builds a link that carries the name, and the city if one was given, after the #
   // (the site's share-link format, never in a request); toolsBody named that mechanism for tools only, so one sentence

@@ -59,7 +59,9 @@ import GameShell, { type ShellResult } from "./GameShell";
 // The puzzle number of a day.
 import { puzzleNumber } from "@/lib/fun/daily";
 // Today's UTC day and the reduced-motion preference.
-import { useReducedMotion, useToday } from "@/lib/fun/hooks";
+import { useEarlierDay, useRealToday, useReducedMotion, useToday } from "@/lib/fun/hooks";
+// The earlier puzzle in play, for the tally rebuilt from the kept days.
+import { earlierDayInPlay } from "@/lib/fun/archive";
 // The share card.
 import { shareText } from "@/lib/fun/share";
 // The one storage key: the record, its daily states, its extra field, and the live streak.
@@ -264,8 +266,10 @@ function rebuildTally(daily: Record<string, unknown>, except: string | null): Ta
  * @returns the tally
  */
 function shownTally(r: GameRecord): Tally {
-  // The stored tally, else the kept days.
-  const t = readTally(r.extra.tally) ?? rebuildTally(r.daily, null);
+  // On an earlier puzzle's page the record shows that puzzle's own state under its day: it is not a daily round.
+  const earlier = earlierDayInPlay();
+  // The stored tally, else the kept days (without the earlier puzzle's state).
+  const t = readTally(r.extra.tally) ?? rebuildTally(r.daily, earlier !== null && earlier in r.earlier ? earlier : null);
   // More rounds than played: from before a reset.
   return tallyTotal(t) <= r.dailyPlayed ? t : emptyTally();
 }
@@ -288,6 +292,20 @@ function addToTally(today: string, bucket: Bucket): void {
     // The record with the new tally beside the other extra values.
     return { ...r, extra: { ...r.extra, tally: next } };
   });
+}
+
+/**
+ * The mark of a kept daily state, for days played before the marks existed (GameShell's gradeSaved): the tries against that day's answer, bucketed as the stats bucket them.
+ *
+ * @param day the round's day
+ * @param state the kept state
+ * @returns 1 solved within six tries, 0 six tries without it, null not finished
+ */
+function gradeSaved(day: string, state: unknown): 0 | 1 | null {
+  // The bucket: a try number, X, or null while the round is open.
+  const b = bucketOf(restoreGuesses(state), solve(dailyPuzzle(day)));
+  // X is a round lost; a number is a round solved.
+  return b === null ? null : b === "X" ? 0 : 1;
 }
 
 /**
@@ -782,8 +800,12 @@ export default function PrefixOfTheDay({ locale }: { locale: string }) {
   const t = useTranslations("devFun.games.prefix-of-the-day");
   // The shell's shared strings.
   const tc = useTranslations("devFun.games.common");
-  // Today's UTC day, null until mount.
+  // The day in play (today's, or an earlier puzzle's on a ?day= page), null until mount.
   const today = useToday();
+  // The earlier puzzle on the board, or null: it adds nothing to the tries tally.
+  const earlierDay = useEarlierDay();
+  // The real today, for the streak in the statistics panel.
+  const realToday = useRealToday();
   // Bumped after each recorded result, so the shell re-reads the stats.
   const [version, setVersion] = useState(0);
   // The day's tries, null until read from the store.
@@ -867,7 +889,7 @@ export default function PrefixOfTheDay({ locale }: { locale: string }) {
     // Turning it on is allowed only before the first try (or after the round); otherwise say why, politely.
     if (!hardOn && !canTurnOn) {
       // The note, shown under the switch and announced.
-      setHardNote(t("hardTooLate"));
+      setHardNote(t(earlierDay ? "hardTooLateEarlier" : "hardTooLate"));
       // Nothing changes.
       return;
     }
@@ -887,7 +909,7 @@ export default function PrefixOfTheDay({ locale }: { locale: string }) {
       saveDay(daily, false);
     }
     // What the switch did, announced: on for today, on from the next puzzle, off, or off for the rest of this round.
-    setHardNote(next ? (done ? t("hardOnNext") : t("hardOnNow")) : leftRound ? t("hardOffRound") : t("hardOff"));
+    setHardNote(next ? (done ? t("hardOnNext") : t(earlierDay ? "hardOnNowEarlier" : "hardOnNow")) : leftRound ? t("hardOffRound") : t("hardOff"));
   };
 
   // A daily try.
@@ -914,8 +936,8 @@ export default function PrefixOfTheDay({ locale }: { locale: string }) {
       recordResult(GAME_ID, { dayKey: today, won: solved, daily: true });
       // Its bucket in the tries distribution (daily rounds only), merged into the extra field.
       const b = bucketOf(next, answer);
-      // Always set at the end of a round; checked for the type.
-      if (b) addToTally(today, b);
+      // Always set at the end of a round; checked for the type. An earlier puzzle is not a daily round of its day.
+      if (b && !earlierDay) addToTally(today, b);
       // The stats line and the statistics re-read.
       setVersion((v) => v + 1);
     }
@@ -1010,11 +1032,11 @@ export default function PrefixOfTheDay({ locale }: { locale: string }) {
   // The page body.
   return (
     <>
-      <GameShell gameId={GAME_ID} kind="daily" today={today} rules={rules} result={result} version={version}>
+      <GameShell gameId={GAME_ID} kind="daily" today={today} rules={rules} result={result} version={version} gradeSaved={gradeSaved}>
         <div className="fg-pod-wrap">
           {/* The day's block, or a neutral line before mount. */}
           <div className="fg-pod-puzzle">
-            <p className="fg-pod-kicker">{t("todayBlock")}</p>
+            <p className="fg-pod-kicker">{t(earlierDay ? "todayBlockEarlier" : "todayBlock")}</p>
             <p className="fg-pod-target">{puzzle ? puzzleLabel(puzzle) : "-.-.-.-/-"}</p>
             <p className="fg-pod-tier">{today ? t(`tier${tierForDay(today)}`) : tc("loading")}</p>
           </div>
@@ -1037,7 +1059,7 @@ export default function PrefixOfTheDay({ locale }: { locale: string }) {
               </button>
               {/* What it does, or why it cannot be turned on now. */}
               <p id="pod-hard-desc" className="fg-pod-hard-desc">
-                {!hardOn && !canTurnOn ? t("hardTooLate") : t("hardDesc")}
+                {!hardOn && !canTurnOn ? t(earlierDay ? "hardTooLateEarlier" : "hardTooLate") : t("hardDesc")}
               </p>
               {/* What the last press did, for screen readers. */}
               <p className="sr-only" aria-live="polite">
@@ -1054,7 +1076,7 @@ export default function PrefixOfTheDay({ locale }: { locale: string }) {
           {/* The teaching line, after the round. */}
           {done && puzzle && <WhyPanel puzzle={puzzle} />}
           {/* The statistics, after the round (daily rounds only). */}
-          {done && today && answer && daily && <StatsPanel today={today} bucket={bucketOf(daily, answer)} version={version} />}
+          {done && today && answer && daily && <StatsPanel today={realToday ?? today} bucket={earlierDay ? null : bucketOf(daily, answer)} version={version} />}
         </div>
       </GameShell>
 
