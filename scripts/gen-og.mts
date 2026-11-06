@@ -43,9 +43,28 @@ import { Resvg } from "@resvg/resvg-js";
 import { MATERIALS } from "../src/content/materials/materials";
 // The /dev/fun games' own cards (PRIME 05/11/2026): a drawing per game, centred so a cropped preview keeps it.
 import { ART_VERSION, GAME_ART, gameCard } from "./og-games.mts";
+// The languages a card is drawn for (05/11/2026), shared with src/lib/og.ts so the pages and the cards cannot disagree.
+import { OG_CARD_LOCALES } from "../src/lib/og";
 
 const ROOT = process.cwd();
-const read = (p: string) => fs.readFileSync(path.join(ROOT, p), "utf8");
+// Each source file is read once per run and shared (05/11/2026). Until then every card re-read its sources - the
+// glossary registry and both message packs once per glossary card, nearly 3,800 times - and V8 keeps a whole file
+// alive behind any short string cut from it, so a full redraw grew past 5 GB and was killed by the out-of-memory
+// killer after 1,144 cards. Read once, every card points into the same few strings. Sources do not change mid-run.
+const SOURCES = new Map<string, string>();
+// A repository file as text, from the shared copy when it has been read already.
+const read = (p: string) => {
+  // The copy read earlier in this run, if any.
+  const hit = SOURCES.get(p);
+  // Returned as is: the same string every time.
+  if (hit !== undefined) return hit;
+  // First use: read the file and keep it.
+  const text = fs.readFileSync(path.join(ROOT, p), "utf8");
+  // Remembered for the rest of the run.
+  SOURCES.set(p, text);
+  // The text.
+  return text;
+};
 
 // ---------------------------------------------------------------------------
 // Fonts (from @fontsource, woff): Inter 400/700/800 + JetBrains Mono 400/700.
@@ -86,8 +105,16 @@ const THESIS: Record<string, string> = {
 // ---------------------------------------------------------------------------
 // Structural data reads (gate-style; see header).
 // ---------------------------------------------------------------------------
-const messages = (locale: string) =>
-  JSON.parse(read(`src/i18n/messages/${locale}.json`));
+// A message pack, parsed once per language and shared by every card (05/11/2026, for the reason given at read()).
+// Callers only read from it.
+const PACKS = new Map<string, any>();
+// The parsed pack for a language, from the shared copy when it has been parsed already.
+const messages = (locale: string) => {
+  // Parsed on first use and remembered.
+  if (!PACKS.has(locale)) PACKS.set(locale, JSON.parse(read(`src/i18n/messages/${locale}.json`)));
+  // The same object every time.
+  return PACKS.get(locale);
+};
 
 /** Tool name + blurb (first sentence) + category color for a tool id. */
 function toolCard(slug: string, locale: string) {
@@ -119,7 +146,8 @@ function vendorColor(vendor: string): string {
   return m?.[1] ?? C.cyan;
 }
 
-/** Article frontmatter title + description from the mdx file. */
+/** Article frontmatter title + description from the mdx file. `slug` here is the FILE name; the page's own slug is
+ *  its frontmatter `slug`, which enumerateJobs reads (they differ for one article, so they are kept apart). */
 function articleCard(slug: string, locale: string) {
   // Learn article first; blog posts (same frontmatter shape: title + summary)
   // fall back to the blog content tree so /blog posts get real OG cards too.
@@ -161,8 +189,50 @@ function guideCard(slug: string) {
 const firstSentence = (s: string) =>
   (s ?? "").split(/(?<=[.!?])\s/)[0]?.trim() ?? "";
 
-/** Truncate defensively; satori clamps by box, this keeps text sane. */
-const clamp = (s: string, n: number) => (s.length > n ? s.slice(0, n - 1).trimEnd() + "…" : s);
+// The longest title and tagline a card draws whole; longer text is cut by clamp() below. renderJob reads the same two
+// limits to know which cards a change to clamp() redraws.
+const TITLE_MAX = 90;
+// The tagline's limit, about three lines at the card's tagline size.
+const TAGLINE_MAX = 150;
+// The name of how clamp() cuts, part of the hash of every card it shortens: change it with clamp() so those cards,
+// and only those, are redrawn.
+const CUT_STYLE = "between-words-no-tail-word";
+// The English and Portuguese words a shortened text should not end on, because each announces a word that the
+// cut removed: articles, prepositions and conjunctions, lower-case as they appear mid-sentence.
+const TAIL_WORDS = new Set([
+  // English.
+  "a", "an", "the", "of", "to", "in", "on", "at", "by", "for", "from", "with", "and", "or", "as", "its", "that",
+  // Portuguese.
+  "o", "os", "as", "um", "uma", "de", "do", "da", "dos", "das", "em", "no", "na", "nos", "nas", "e", "ou", "por",
+  "com", "que", "se", "ao", "à", "pelo", "pela",
+]);
+
+/** Truncate defensively; satori clamps by box, this keeps text sane. Since 05/11/2026 the cut falls between words, so
+ *  a card no longer ends on half a word ("certificaçã…", "gu…", as the vendor hub cards did), nor on a word such as
+ *  "the" or "of" (TAIL_WORDS), and no comma or colon is left hanging before the ellipsis. A single word longer than the
+ *  last 30 characters is still cut inside itself. */
+const clamp = (s: string, n: number) => {
+  // Short enough: the text as written.
+  if (s.length <= n) return s;
+  // The longest start that leaves room for the ellipsis.
+  const cut = s.slice(0, n - 1);
+  // The last space in it, where a cut falls between two words.
+  const space = cut.lastIndexOf(" ");
+  // Between words when that space is near the end; otherwise (one very long token) inside the word.
+  let head = space >= n - 30 ? cut.slice(0, space) : cut;
+  // Up to three articles, prepositions or conjunctions at the end are dropped too (TAIL_WORDS): a card that ends "the
+  // four EAP codes of…" reads as cut off mid-thought, "the four EAP codes…" as shortened. Never below n - 60 characters.
+  for (let k = 0; k < 3; k += 1) {
+    // The text before its last word, and that word.
+    const m = head.match(/^(.*\S)\s+(\S+)$/u);
+    // Stop when the last word carries meaning, or when dropping it would leave too little.
+    if (!m || !TAIL_WORDS.has(m[2]) || m[1].length < n - 60) break;
+    // Drop it, and any comma or colon it leaves at the end, before looking again.
+    head = m[1].replace(/[\s,;:(-]+$/u, "");
+  }
+  // No trailing space or punctuation before the ellipsis.
+  return head.replace(/[\s,;:.(-]+$/u, "") + "…";
+};
 
 // ---------------------------------------------------------------------------
 // Card element tree (satori plain-object form; every multi-child div is flex).
@@ -214,11 +284,11 @@ function card(i: CardInput) {
         [
           txt(
             { fontFamily: "Inter", fontSize: titleSize, fontWeight: 800, color: C.text, lineHeight: 1.12, letterSpacing: -1 },
-            clamp(i.title, 90),
+            clamp(i.title, TITLE_MAX),
           ),
           txt(
             { fontFamily: "Inter", fontSize: 29, fontWeight: 400, color: C.sub, lineHeight: 1.45, marginTop: 26 },
-            clamp(i.tagline, 150),
+            clamp(i.tagline, TAGLINE_MAX),
           ),
         ],
       ),
@@ -372,6 +442,13 @@ const STATIC_PAGES: { slug: string; title: Record<string, string>; tagline: Reco
   // which is invisible on the site and very visible in a shared link.
   { slug: "practice", title: { en: "The Practice", "pt-BR": "A Prática" }, tagline: { en: "How the work is actually done - triage, escalation, evidence, and handover, written from thirty years in the room.", "pt-BR": "Como o trabalho é realmente feito - triagem, escalação, evidência e passagem de bastão, escrito a partir de trinta anos na sala." } },
   { slug: "roles", title: { en: "The Roles", "pt-BR": "Os Papéis" }, tagline: { en: "The positions this industry is made of, grouped by the path a product takes from the company that builds it to the person who depends on it.", "pt-BR": "As posições de que esta indústria é feita, agrupadas pelo caminho que um produto percorre de quem o constrói a quem depende dele." } },
+  // Three pages that call ogImages("page", ...) and had no card until 05/11/2026, so a shared link to any of them showed
+  // no image. The advisory and speaking taglines are the pages' own words (advisory.metaDescription, speaking.lede),
+  // the Portuguese advisory one shortened to fit the card's 150 characters (clamp above); the stories tagline condenses
+  // the page's lede.
+  { slug: "advisory", title: { en: "Advisory", "pt-BR": "Consultoria" }, tagline: { en: "Independent technical judgement before you commit to an architecture, supplier, platform or budget: a written decision analysis by Rodolfo Nützmann.", "pt-BR": "Parecer técnico independente antes de você se comprometer com arquitetura, fornecedor, plataforma ou orçamento: uma análise de decisão por escrito." } },
+  { slug: "speaking", title: { en: "Speaking", "pt-BR": "Palestras" }, tagline: { en: "Prepared talks, written to be enjoyed rather than endured, from someone who has been in enterprise networking since 1996.", "pt-BR": "Palestras prontas, escritas para o público curtir, e não aguentar, por quem trabalha com redes corporativas desde 1996." } },
+  { slug: "stories", title: { en: "Stories", "pt-BR": "Histórias" }, tagline: { en: "Articles put in an order that argues something none of them says alone.", "pt-BR": "Artigos colocados numa ordem que defende algo que nenhum deles diz sozinho." } },
   { slug: "glossary", title: { en: "Glossary", "pt-BR": "Glossário" }, tagline: { en: "Plain-language definitions for networking, security, and identity terms.", "pt-BR": "Definições em linguagem clara para termos de rede, segurança e identidade." } },
   { slug: "training", title: { en: "Instructor-led training", "pt-BR": "Treinamento com instrutor" }, tagline: { en: "Authorized F5, Fortinet, Netskope, and Extreme training by Rodolfo Nützmann at Red Education.", "pt-BR": "Treinamento oficial F5, Fortinet, Netskope e Extreme por Rodolfo Nützmann na Red Education." }, brand: true },
   { slug: "about", title: { en: "About", "pt-BR": "Sobre" }, tagline: { en: "Rodolfo Nützmann - senior technical instructor and the architect of ronutz.com.", "pt-BR": "Rodolfo Nützmann - instrutor técnico sênior e arquiteto do ronutz.com." }, brand: true },
@@ -380,7 +457,8 @@ const STATIC_PAGES: { slug: string; title: Record<string, string>; tagline: Reco
   { slug: "red-education", title: { en: "Red Education", "pt-BR": "Red Education" }, tagline: { en: "A global Authorized Training Center - and the home of Rodolfo Nützmann's classroom since 2021.", "pt-BR": "Um Centro de Treinamento Autorizado global - e a casa das aulas de Rodolfo Nützmann desde 2021." }, brand: true }, // 2021, as the page's lede and its thanks say (teaching through Red from 2021, full-time from 2023); the card said 2023 until 2026-10-06
 ];
 
-const LOCALES = ["en", "pt-BR"];
+// The languages drawn: the same list src/lib/og.ts points the other fourteen at English with.
+const LOCALES = [...OG_CARD_LOCALES];
 
 /** The /dev/fun games' ids, in shelf order, read from src/config/funGames.ts (structural read, like the others). */
 function funGameIds(): string[] {
@@ -398,28 +476,48 @@ function enumerateJobs(): Job[] {
   const tpStart = routeSrc.indexOf("const TOOL_PAGES");
   const tpSeg = routeSrc.slice(tpStart, routeSrc.indexOf("generateStaticParams", tpStart));
   const builtTools = [...tpSeg.matchAll(/^ {2}"?([a-z0-9-]+)"?:\s*\{/gm)].map((m) => m[1]);
-  const mdxSlugs = (dir: string) =>
+  // Each .mdx of a folder as its file name and its page slug. The page's address comes from the frontmatter `slug`
+  // (src/lib/learn.ts and src/lib/blog.ts read nothing else), which is not always the file name: the file
+  // bigip-persistence-cookies.mdx publishes /learn/f5-bigip-persistence-cookies/. Until 05/11/2026 the card was named
+  // after the file, so that page pointed at a card that was never drawn. The file name stays the fallback.
+  const mdxEntries = (dir: string) =>
     fs.existsSync(path.join(ROOT, dir))
-      ? fs.readdirSync(path.join(ROOT, dir)).filter((f) => f.endsWith(".mdx")).map((f) => f.replace(/\.mdx$/, ""))
+      ? fs.readdirSync(path.join(ROOT, dir)).filter((f) => f.endsWith(".mdx")).map((f) => {
+          // The file name without its extension, used to read the article.
+          const file = f.replace(/\.mdx$/, "");
+          // The frontmatter block, the first lines only, where `slug:` is written.
+          const head = read(`${dir}/${f}`).slice(0, 4000);
+          // The page's slug as the site publishes it, else the file name.
+          const slug = head.match(/^slug:\s*["']?([a-z0-9-]+)["']?\s*$/m)?.[1] ?? file;
+          return { file, slug };
+        })
       : [];
-  // Learn articles + blog posts share the "article" card kind (same frontmatter).
-  const articleSlugs = [...new Set([...mdxSlugs("src/content/learn/en"), ...mdxSlugs("src/content/blog/en")])];
+  // Learn articles + blog posts share the "article" card kind (same frontmatter), one card per published slug.
+  const articleEntries = [...new Map([...mdxEntries("src/content/learn/en"), ...mdxEntries("src/content/blog/en")].map((a) => [a.slug, a] as const)).values()];
   const glossaryReg = read("src/content/glossary/glossary.ts");
   const glossarySlugs = [...glossaryReg.matchAll(/slug:\s*"([a-z0-9-]+)"/g)].map((m) => m[1]);
   const guideReg = read("src/content/certifications/study-guides.ts");
   const guideSlugs = [...guideReg.slice(guideReg.indexOf("export const studyGuides")).matchAll(/slug:\s*"([a-z0-9-]+)"/g)].map((m) => m[1]);
-  const vendorSlugs = ["f5", "fortinet", "netskope", "extreme"];
+  // Every vendor family in src/config/vendors.ts (structural read of its `key:` entries). Until 05/11/2026 this was a
+  // list of the first four, so the hubs added later (Ping Identity, Zscaler, Check Point, NGINX) had no card. The hub
+  // route publishes the families that have tools; a card for a family without one is drawn and simply unused.
+  const vendorSlugs = [...read("src/config/vendors.ts").matchAll(/\{\s*key:\s*"([a-z0-9-]+)"/g)].map((m) => m[1]);
 
   for (const locale of LOCALES) {
     for (const s of builtTools) jobs.push({ kind: "tool", slug: s, locale, ext: "png", input: { eyebrow: EYEBROW.tool[locale] ?? EYEBROW.tool.en, locale, ...toolCard(s, locale) } });
-    for (const s of articleSlugs) jobs.push({ kind: "article", slug: s, locale, ext: "png", input: { eyebrow: EYEBROW.article[locale] ?? EYEBROW.article.en, locale, ...articleCard(s, locale) } });
+    for (const a of articleEntries) jobs.push({ kind: "article", slug: a.slug, locale, ext: "png", input: { eyebrow: EYEBROW.article[locale] ?? EYEBROW.article.en, locale, ...articleCard(a.file, locale) } });
     for (const s of glossarySlugs) jobs.push({ kind: "glossary", slug: s, locale, ext: "png", input: { eyebrow: EYEBROW.glossary[locale] ?? EYEBROW.glossary.en, locale, ...glossaryCard(s, locale) } });
     for (const s of guideSlugs) jobs.push({ kind: "guide", slug: s, locale, ext: "png", input: { eyebrow: EYEBROW.guide[locale] ?? EYEBROW.guide.en, locale, ...guideCard(s) } });
     for (const s of vendorSlugs) {
       const m = messages(locale);
       const label = m.tools?.vendors?.[s] ?? s;
       const lede = (m.vendorHub?.lede ?? "").replace("{vendor}", label);
-      jobs.push({ kind: "vendor", slug: s, locale, ext: "png", input: { eyebrow: EYEBROW.vendor[locale] ?? EYEBROW.vendor.en, locale, title: label, tagline: firstSentence(lede) || label, color: vendorColor(s), footTag: s } });
+      // The lede's opening clause, up to its colon ("Everything on ronutz.com for F5, through one door."): its first
+      // sentence runs past the card's 150 characters and was cut mid-word (05/11/2026), while the clause stands alone.
+      const hubLine = firstSentence(lede).split(":")[0].trim();
+      // The clause as a sentence, or the vendor's name when the lede is missing.
+      const tagline = hubLine ? `${hubLine.replace(/[.,;]+$/, "")}.` : label;
+      jobs.push({ kind: "vendor", slug: s, locale, ext: "png", input: { eyebrow: EYEBROW.vendor[locale] ?? EYEBROW.vendor.en, locale, title: label, tagline, color: vendorColor(s), footTag: s } });
     }
     for (const p of STATIC_PAGES) {
       const portrait = p.brand && BRAND_PORTRAITS[p.slug]
@@ -449,7 +547,13 @@ function enumerateJobs(): Job[] {
 async function renderJob(job: Job, manifest: Record<string, string>): Promise<"written" | "skipped"> {
   // Content hash: any change to title/tagline/color/portrait/template -> rewrite.
   const key = `${job.kind}/${job.locale}/${job.slug}.${job.ext}`;
-  const hash = crypto.createHash("sha1").update(TEMPLATE_VERSION + JSON.stringify({ ...job.input, portrait: job.input.portrait?.mode ?? null }) + (job.input.portrait ? "P" : "")).digest("hex").slice(0, 16);
+  // A card whose title or tagline clamp() shortens is drawn differently since clamp() cut between words (05/11/2026),
+  // from the same input, so its hash carries a mark and the cache redraws it once. A card whose text fits keeps the
+  // hash it had, so only the shortened cards are redrawn, not all six thousand (a TEMPLATE_VERSION bump would redraw
+  // every card in the deploy run, where the cards share a sixty-minute budget with the build).
+  const cut = (job.input.title ?? "").length > TITLE_MAX || (job.input.tagline ?? "").length > TAGLINE_MAX ? `|cut-${CUT_STYLE}` : "";
+  // The content hash: template, the card's input, its portrait mode, and the mark above.
+  const hash = crypto.createHash("sha1").update(TEMPLATE_VERSION + JSON.stringify({ ...job.input, portrait: job.input.portrait?.mode ?? null }) + (job.input.portrait ? "P" : "") + cut).digest("hex").slice(0, 16);
   const outPath = path.join(OG_DIR, key);
   if (manifest[key] === hash && fs.existsSync(outPath)) return "skipped";
 

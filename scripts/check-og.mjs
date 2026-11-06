@@ -15,6 +15,8 @@
 //      vendor, static page and /dev/fun game (and the shelf, 05/11/2026) has a card for BOTH locales, at the extension
 //      src/lib/og.ts expects (jpeg for brand pages, png otherwise);
 //   3. the manifest and the files on disk agree (no orph files / missing).
+// It checks the cards the lists above name. Whether every BUILT page points at a card that exists is checked after
+// the build, from the pages themselves, by scripts/check-og-references.mjs (05/11/2026).
 //
 // Plain node; structural reads, same technique as the other gates.
 // ============================================================================
@@ -41,12 +43,18 @@ const tpStart = routeSrc.indexOf("const TOOL_PAGES");
 const tpSeg = routeSrc.slice(tpStart, routeSrc.indexOf("generateStaticParams", tpStart));
 const tools = [...tpSeg.matchAll(/^ {2}"?([a-z0-9-]+)"?:\s*\{/gm)].map((m) => m[1]);
 
-const articles = fs.readdirSync(path.join(ROOT, "src/content/learn/en")).filter((f) => f.endsWith(".mdx")).map((f) => f.replace(/\.mdx$/, ""));
+// Each article by the slug the site publishes it under: its frontmatter `slug`, else the file name (05/11/2026: the file
+// bigip-persistence-cookies.mdx publishes /learn/f5-bigip-persistence-cookies/, and the file name missed its card).
+const articles = fs.readdirSync(path.join(ROOT, "src/content/learn/en")).filter((f) => f.endsWith(".mdx")).map((f) =>
+  // The frontmatter `slug:` line when there is one, the file name otherwise.
+  read(`src/content/learn/en/${f}`).slice(0, 4000).match(/^slug:\s*["']?([a-z0-9-]+)["']?\s*$/m)?.[1] ?? f.replace(/\.mdx$/, ""));
 const glossary = [...read("src/content/glossary/glossary.ts").matchAll(/slug:\s*"([a-z0-9-]+)"/g)].map((m) => m[1]);
 const guideReg = read("src/content/certifications/study-guides.ts");
 const guides = [...guideReg.slice(guideReg.indexOf("export const studyGuides")).matchAll(/slug:\s*"([a-z0-9-]+)"/g)].map((m) => m[1]);
-const vendors = ["f5", "fortinet", "netskope", "extreme"];
-const staticPages = ["home", "tools", "learn", "certifications", "glossary", "training", "about", "red-education"];
+// Every vendor family in src/config/vendors.ts (05/11/2026; the list of four missed the four hubs added later).
+const vendors = [...read("src/config/vendors.ts").matchAll(/\{\s*key:\s*"([a-z0-9-]+)"/g)].map((m) => m[1]);
+// The static pages, with advisory, speaking and stories since 05/11/2026 (they call ogImages and had no card).
+const staticPages = ["home", "tools", "learn", "certifications", "glossary", "training", "about", "red-education", "advisory", "speaking", "stories"];
 // The /dev/fun games and the shelf (05/11/2026): every game listed in src/config/funGames.ts, and "shelf".
 const games = [...[...read("src/config/funGames.ts").matchAll(/\{\s*id:\s*"([a-z0-9-]+)",\s*daily:/g)].map((m) => m[1]), "shelf"];
 
