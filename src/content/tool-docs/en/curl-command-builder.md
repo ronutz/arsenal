@@ -4,7 +4,7 @@ Pick a protocol, fill in fields that adapt to it, and watch the exact `curl` com
 
 ## All 27 protocols
 
-The builder covers the full protocol list of the current `curl` tool as published on curl.se: DICT, FILE, FTP, FTPS, GOPHER, GOPHERS, HTTP, HTTPS, IMAP, IMAPS, LDAP, LDAPS, MQTT, MQTTS, POP3, POP3S, RTSP, SCP, SFTP, SMB, SMBS, SMTP, SMTPS, TELNET, TFTP, WS and WSS. Selecting a protocol opens a short explainer: what it is, its default port, and whether it runs in cleartext, inside TLS, or starts in cleartext with an upgrade path. The form then only shows what that protocol understands: HTTP gets methods, headers, bodies and forms; SMTP gets an envelope; MQTT gets a topic; FTP gets listing and upload; `file://` gets just a path.
+The builder covers the full protocol list of the current `curl` tool as published on curl.se: DICT, FILE, FTP, FTPS, GOPHER, GOPHERS, HTTP, HTTPS, IMAP, IMAPS, LDAP (Lightweight Directory Access Protocol), LDAPS, MQTT, MQTTS, POP3, POP3S, RTSP, SCP, SFTP, SMB, SMBS, SMTP, SMTPS, TELNET, TFTP, WS and WSS. Selecting a protocol opens a short explainer: what it is, its default port, and whether it runs in cleartext, inside TLS, or starts in cleartext with an upgrade path. The form then only shows what that protocol understands: HTTP gets methods, headers, bodies and forms; SMTP gets an envelope; MQTT gets a topic; FTP gets listing and upload; `file://` gets just a path.
 
 ## One table, one truth
 

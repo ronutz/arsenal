@@ -30,7 +30,7 @@ export const mobileironProfile: VendorProfile = {
   timeline: [
     { year: 2007, title: "Founded with the iPhone", detail: "Mishra and Batchu start MobileIron as smartphones head for the enterprise - device management as its own discipline, not an afterthought of desktop tooling." },
     { year: 2011, title: "The BYOD standard-bearer", detail: "As bring-your-own-device becomes policy reality, MobileIron's container and selective-wipe model - work data managed, personal data untouched - becomes the reference architecture." },
-    { year: 2014, title: "IPO: MOBL", detail: "The June Nasdaq listing crowns the MDM specialist era - straight into the collision with VMware AirWatch and the platform giants entering the category." },
+    { year: 2014, title: "IPO (initial public offering): MOBL", detail: "The June Nasdaq listing crowns the MDM specialist era - straight into the collision with VMware AirWatch and the platform giants entering the category." },
     { year: 2017, title: "MDM to UEM", detail: "The category consolidates desktops, mobiles, and rugged devices under unified endpoint management; MobileIron pivots with it, adding zero-sign-on and mobile threat defense as the perimeter dissolves." },
     { year: 2020, title: "Ivanti's double acquisition", detail: "September 28, 2020: Ivanti, backed by Clearlake Capital and TA Associates, announces the ~$872 million acquisition ($7.05 per share, a 27 percent premium) - alongside Pulse Secure, both closing December 1. MobileIron's platform becomes the UEM core of Ivanti Neurons.", sourceNote: "SEC 8-K, Sept 28, 2020; close per Ivanti/Siris announcements, Dec 1, 2020." },
   ],

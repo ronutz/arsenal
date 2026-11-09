@@ -67,6 +67,8 @@ export const WORLDS: readonly World[] = [
     more: [
       { label: "=API", href: "/api" },
       { label: "nav.devFun", href: "/dev/fun" },
+      // The arcade's own page (PRIME 08/11/2026): the shelf's arcade group, listed from src/config/funGames.ts.
+      { label: "nav.arcade", href: "/arcade" },
     ],
   },
   {

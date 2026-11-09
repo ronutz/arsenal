@@ -4,7 +4,7 @@ title: "The Four BIG-IP Cookie Encodings, Byte by Byte"
 summary: "A precise walk through the four unencrypted BIG-IP persistence cookie formats: default IPv4 with its reversed address bytes and byte-swapped port, IPv4 and IPv6 in route domains, and the IPv6 form, each with a worked decode."
 concepts: ["bigip", "persistence cookie", "encoding", "ipv4", "ipv6", "route domain", "byte order", "f5"]
 relatedTools: ["f5-bigip-persistence-cookie"]
-relatedArticles: ["f5-bigip-persistence-cookies", "bigip-cookie-disclosure", "bigip-cookie-encryption"]
+relatedArticles: ["f5-bigip-persistence-cookies", "bigip-cookie-disclosure", "bigip-cookie-encryption", "big-endian-and-little-endian"]
 category: security
 order: 2
 status: reviewed
@@ -19,7 +19,7 @@ A BIG-IP persistence cookie always encodes the same thing: a pool member's addre
 
 This is the common case: a value like `1677787402.20480.0000`, three dot-separated decimal fields. The first field is the address, the second is the port, and the third is a fixed `0000`.
 
-To decode the address, write the decimal as a 32-bit hexadecimal number, then read its bytes in reverse. `1677787402` is `0x6401010A`. Its bytes are `64 01 01 0A`, and reversed that is `0A 01 01 64`, which is `10.1.1.100`. The reversal is the part that surprises people: the address is stored little-endian.
+To decode the address, write the decimal as a 32-bit hexadecimal number, then read its bytes in reverse. `1677787402` is `0x6401010A`. Its bytes are `64 01 01 0A`, and reversed that is `0A 01 01 64`, which is `10.1.1.100`. The reversal is the part that surprises people: the address is stored little-endian. What that means, and why the same bytes read as two different numbers on two kinds of processor, is in [Big-endian and little-endian: byte order explained](/learn/big-endian-and-little-endian).
 
 The port is byte-swapped rather than reversed, which for a two-byte value amounts to swapping the high and low byte. `20480` is `0x5000`; swap the bytes to get `0x0050`, which is `80`. So `1677787402.20480.0000` decodes to `10.1.1.100:80`. As a second check, a port field of `36895` is `0x901F`, swapped to `0x1F90`, which is `8080`.
 

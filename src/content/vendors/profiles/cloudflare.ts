@@ -85,7 +85,7 @@ export const cloudflareProfile: VendorProfile = {
   products: [
     {
       name: "Reverse-proxy CDN and WAF",
-      what: "The original service: traffic is pointed at Cloudflare by DNS, cached and inspected at the edge, and forwarded to the origin. Everything else was built on this path.",
+      what: "The original content delivery network (CDN) service: traffic is pointed at Cloudflare by DNS, cached and inspected at the edge, and forwarded to the origin. Everything else was built on this path.",
     },
     {
       name: "DDoS mitigation",

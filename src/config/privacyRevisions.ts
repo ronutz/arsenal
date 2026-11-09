@@ -27,6 +27,14 @@ export interface PrivacyRevision {
 
 /** The revisions, newest first. Every date is a changelog entry's date. */
 export const PRIVACY_REVISIONS: readonly PrivacyRevision[] = [
+  // The games' public scoreboard (PRIME's decisions of 08/11/2026): a finished daily puzzle of today is sent to the
+  // board unless "Share my results on the public board" is off; the "Game scores" section (en and pt-BR) lists what a
+  // row keeps and never keeps, the 400 days and how to ask for a removal; short4, noTrackBody and prefsBody (en and
+  // pt-BR) and browserBody (all sixteen packs: what is sent, and the board's values in ronutz:fun:v1) say so too. Later
+  // the same day (PRIME 23:14, "Yes move them") the arcade games moved to /arcade: short4, noTrackBody, gamesBody and
+  // the note (en and pt-BR) and browserBody (all sixteen packs) name /arcade beside /dev/fun. Where the games live
+  // changed, not what they keep or send, so the revision date stays this one.
+  { date: "2026-11-08", key: "r20261108scores" },
   // Earlier puzzles (PRIME 05/11/2026: "Allow users to select and play daily games from previous days - but never from
   // future days"): the games' record in ronutz:fun:v1 (src/lib/fun/storage.ts) also keeps whether each daily puzzle
   // was solved, on its day or later, for 400 days, and the saved state of the 14 earlier puzzles played most recently.

@@ -29,7 +29,7 @@ export const f5Profile: VendorProfile = {
       place: "Seattle, Washington",
       founders: ["Jeffrey Hussey"],
       story:
-        "Founded in Seattle in 1996 as F5 Labs, the company took its name from the top of the Fujita tornado scale - the year the movie Twister filled theaters - a fitting badge for a product built to stand in front of a storm of web traffic. Its bet was that the young web would need machines whose whole job was distributing load across servers, and the BIG/ip load balancer that followed in 1997 turned that bet into a category. Jeffrey Hussey ran the company to its 1999 IPO; John McAdam then led it through the era in which load balancing grew up into application delivery.",
+        "Founded in Seattle in 1996 as F5 Labs, the company took its name from the top of the Fujita tornado scale - the year the movie Twister filled theaters - a fitting badge for a product built to stand in front of a storm of web traffic. Its bet was that the young web would need machines whose whole job was distributing load across servers, and the BIG/ip load balancer that followed in 1997 turned that bet into a category. Jeffrey Hussey ran the company to its 1999 IPO (initial public offering); John McAdam then led it through the era in which load balancing grew up into application delivery.",
     },
   ],
   timeline: [

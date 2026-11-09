@@ -39,6 +39,13 @@
 // starts the clock, draws the board and saves the round at once, so a reload
 // after Start resumes it running and cannot hide the board again. Hint waits
 // for Start too. Spanning Tree and Exit the Editor use the same cover.
+//
+// ASSIST (PRIME 08/11/2026: Access Points' auto-mark "unchecked by default,
+// and how about adding a penalty when the player enables it?"). A game may
+// price one optional aid with assistPenaltyMs: assist() counts it once per
+// round, only while the round runs, saves it with the round (a), and the
+// finish and the shown time add it. Switching the aid off refunds nothing and
+// switching it on again costs nothing more.
 // ============================================================================
 
 "use client";
@@ -236,6 +243,8 @@ interface SavedRound<B> {
   k: number;
   /** Hints used (missing in a round saved before hints existed: none). */
   h?: number;
+  /** Whether the game's one-time assist was taken (missing in a round saved before assists existed: no). */
+  a?: boolean;
   /** Finished. */
   d: boolean;
   /** The final time with penalties, once finished. */
@@ -303,6 +312,8 @@ export interface PuzzleSessionConfig<P, B> {
   isSolved: (p: P, b: B) => boolean;
   /** Milliseconds added to the time per "Check", and per "Hint" (a hint costs what a check costs). */
   penaltyMs: number;
+  /** Milliseconds added once if the player takes the game's assist (Access Points' auto-mark); none by default. */
+  assistPenaltyMs?: number;
 }
 
 /** The session a game plays in. */
@@ -331,6 +342,10 @@ export interface PuzzleSession<P, B> {
   hints: number;
   /** Count a hint (the game finds it with its engine and shows it); it starts the clock like a move. */
   hint: () => void;
+  /** Whether the game's one-time assist has been taken this round. */
+  assisted: boolean;
+  /** Take the assist: priced once per round, only while the round is running; taking it again costs nothing. */
+  assist: () => void;
   /** Whether the round is finished. */
   done: boolean;
   /** The final time with penalties, once finished. */
@@ -368,6 +383,10 @@ export function usePuzzleSession<P, B>(cfg: PuzzleSessionConfig<P, B>): PuzzleSe
   const [checks, setChecks] = useState(0);
   // Hints used.
   const [hints, setHints] = useState(0);
+  // Whether the assist was taken this round, and the same through a ref, so every save carries it without
+  // changing each caller (a round saved before assists existed has none).
+  const [assisted, setAssisted] = useState(false);
+  const assistedRef = useRef(false);
   // Finished.
   const [done, setDone] = useState(false);
   // The final time.
@@ -388,7 +407,7 @@ export function usePuzzleSession<P, B>(cfg: PuzzleSessionConfig<P, B>): PuzzleSe
     // Only an unfinished round that has started (a finished one was saved at the end).
     if (!r.day || r.board === null || !r.started || r.done) return;
     // The round.
-    const saved: SavedRound<B> = { b: r.board, e: ms, k: r.checks, h: r.hints, d: false, t: null };
+    const saved: SavedRound<B> = { b: r.board, e: ms, k: r.checks, h: r.hints, a: assistedRef.current, d: false, t: null };
     // Into the one storage key.
     saveDailyState(cfgRef.current.gameId, r.day, saved);
   }, []);
@@ -427,6 +446,9 @@ export function usePuzzleSession<P, B>(cfg: PuzzleSessionConfig<P, B>): PuzzleSe
       setChecks(typeof saved.k === "number" ? saved.k : 0);
       // Its hints (none in a round saved before hints existed).
       setHints(savedCount(saved.h));
+      // The assist, if it was taken (none in a round saved before assists existed).
+      assistedRef.current = saved.a === true;
+      setAssisted(saved.a === true);
       // Finished or not.
       setDone(saved.d === true);
       // Its final time.
@@ -446,6 +468,9 @@ export function usePuzzleSession<P, B>(cfg: PuzzleSessionConfig<P, B>): PuzzleSe
     setChecks(0);
     // No hints.
     setHints(0);
+    // No assist.
+    assistedRef.current = false;
+    setAssisted(false);
     // Not finished.
     setDone(false);
     // No time.
@@ -462,7 +487,7 @@ export function usePuzzleSession<P, B>(cfg: PuzzleSessionConfig<P, B>): PuzzleSe
       // Nothing before mount.
       if (!day) return;
       // The round.
-      const saved: SavedRound<B> = { b, e, k, h, d, t };
+      const saved: SavedRound<B> = { b, e, k, h, a: assistedRef.current, d, t };
       // Into the one storage key.
       saveDailyState(cfgRef.current.gameId, day, saved);
     },
@@ -474,8 +499,8 @@ export function usePuzzleSession<P, B>(cfg: PuzzleSessionConfig<P, B>): PuzzleSe
     (b: B, k: number, h: number) => {
       // The exact visible time of the round, restored part included.
       const raw = clock.stop();
-      // Penalties added: one per check and one per hint.
-      const total = raw + (k + h) * cfgRef.current.penaltyMs;
+      // Penalties added: one per check and one per hint, and the assist's once if it was taken.
+      const total = raw + (k + h) * cfgRef.current.penaltyMs + (assistedRef.current ? (cfgRef.current.assistPenaltyMs ?? 0) : 0);
       // Finished.
       setDone(true);
       // Its time.
@@ -587,8 +612,21 @@ export function usePuzzleSession<P, B>(cfg: PuzzleSessionConfig<P, B>): PuzzleSe
     save(board, clock.now(), checks, h, false, null);
   }, [done, board, hints, checks, clock, save]);
 
-  // The time shown: final once finished, else clock plus penalties (checks and hints).
-  const shownMs = done && finalMs !== null ? finalMs : clock.ms + (checks + hints) * cfg.penaltyMs;
+  // The assist: priced once per round, only while the round runs (before Start nothing is on the clock to price, and
+  // after the finish the time is final); taking it again after switching it off costs nothing.
+  const assist = useCallback(() => {
+    // Only a running round, and only the first time.
+    if (done || !started || board === null || assistedRef.current) return;
+    // Taken.
+    assistedRef.current = true;
+    // Shown.
+    setAssisted(true);
+    // Saved with the round, so a reload neither forgets the cost nor charges it twice.
+    save(board, clock.now(), checks, hints, false, null);
+  }, [done, started, board, clock, save, checks, hints]);
+
+  // The time shown: final once finished, else clock plus penalties (checks, hints and the assist).
+  const shownMs = done && finalMs !== null ? finalMs : clock.ms + (checks + hints) * cfg.penaltyMs + (assisted ? (cfg.assistPenaltyMs ?? 0) : 0);
 
   // The session.
   return {
@@ -597,7 +635,7 @@ export function usePuzzleSession<P, B>(cfg: PuzzleSessionConfig<P, B>): PuzzleSe
     // The moves.
     move, undo, canUndo: history.length > 0 && !done, clear, untouched,
     // Checks, hints and the clock.
-    checks, check, hints, hint, done, finalMs, shownMs, started, start,
+    checks, check, hints, hint, assisted, assist, done, finalMs, shownMs, started, start,
     // The record's version.
     version,
   };
@@ -619,6 +657,8 @@ export interface KitLabels {
   hint: string;
   /** "n hints (+s s)". */
   hintsUsed: string;
+  /** The game's assist once taken ("auto-mark (+30 s)"); absent while not taken. */
+  assistUsed?: string;
 }
 
 /**
@@ -643,6 +683,7 @@ export function PuzzleHud<P, B>(props: { session: PuzzleSession<P, B>; labels: K
         </span>
         {s.checks > 0 && <span className="fg-chip">{l.checksUsed}</span>}
         {s.hints > 0 && <span className="fg-chip">{l.hintsUsed}</span>}
+        {s.assisted && l.assistUsed && <span className="fg-chip">{l.assistUsed}</span>}
         {props.info}
       </div>
       {/* The buttons: Check and Clear wait for a first move, Undo for something to undo, Hint for Start (the board it

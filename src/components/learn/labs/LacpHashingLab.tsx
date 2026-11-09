@@ -6,8 +6,12 @@
 // src/components/learn/labs/LacpHashingLab.tsx
 // ----------------------------------------------------------------------------
 // THE LACP HASHING LAB (2026-10-26), embedded in "Link aggregation and LACP" as
-// <Lab id="lacp-hashing" />. Three selects (members, transmit hash policy,
-// failed member) and six checkboxes (the flows the server sends). The result:
+// <Lab id="lacp-hashing" />. Four selects (members, transmit hash policy, byte
+// order, failed member) and six checkboxes (the flows the server sends). The
+// byte order (2026-11-08) opens on the HOWTO's reading, which is what a
+// big-endian processor computes, so the lab's opening results are those of its
+// first edition; a little-endian processor is the alternative, explained in
+// two or three sentences with a link to the Learn article on byte order. The result:
 // the first running flow's hash worked step by step with the Linux bonding
 // driver's documented formula, a table of every flow's hash and member before
 // and after the failure, a table of each member's load, a verdict on the
@@ -17,19 +21,22 @@
 // Words: "learnLabs.lacp-hashing".
 // ============================================================================
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import LabFrame, { LabField, LabSelect } from "./LabFrame";
 import {
   compute,
   DEFAULT_INPUT,
   EXAMPLE_INPUT,
+  BYTE_ORDERS,
   FLOWS,
-  ipToNumber,
+  ipWord,
   macByte5,
   MEMBER_MBPS,
   POLICIES,
   SERVER,
+  type ByteOrder,
   type FlowDef,
   type HashPolicy,
   type LacpInput,
@@ -78,6 +85,10 @@ export default function LacpHashingLab() {
   const memberOptions = [2, 3, 4, 5, 6, 7, 8].map((k) => [String(k), t("membersOption", { n: k })] as const);
   // The policy choices.
   const policyOptions = POLICIES.map((p) => [p, policyName(p)] as const);
+  // The byte order chosen: the HOWTO's reading (a big-endian processor) unless the reader picks the other.
+  const order: ByteOrder = input.byteOrder ?? "big";
+  // The byte-order choices, the opening one first.
+  const orderOptions = BYTE_ORDERS.map((o) => [o, t(o === "big" ? "orderBig" : "orderLittle")] as const);
   // The failure choices: none, or one of the members.
   const failOptions = [["none", t("failNone")] as const, ...Array.from({ length: input.members }, (_, i) => [String(i), t("failMember", { m: i })] as const)];
 
@@ -110,12 +121,12 @@ export default function LacpHashingLab() {
     // The starting value: MAC bytes and EtherType, or the ports.
     workSteps.push({
       where: t("stepStart"),
-      text: w.policy === "layer3+4" ? t("workPorts", { sp: String(f.srcPort), dp: String(f.dstPort), v: hex8(w.start) }) : t("workMacs", { s: hex2(macByte5(SERVER.mac)), d: hex2(macByte5(f.dstMac)), v: hex8(w.start) }),
+      text: w.policy === "layer3+4" ? t(order === "big" ? "workPorts" : "workPortsLittle", { sp: String(f.srcPort), dp: String(f.dstPort), v: hex8(w.start) }) : t("workMacs", { s: hex2(macByte5(SERVER.mac)), d: hex2(macByte5(f.dstMac)), v: hex8(w.start) }),
     });
     // The addresses and the folds, for the two policies that read them.
     if (w.afterIps !== null && w.afterFold !== null) {
       // XOR with both addresses.
-      workSteps.push({ where: t("stepIps"), text: t("workIps", { sip: SERVER.ip, sx: hex8(ipToNumber(SERVER.ip)), dip: f.dstIp, dx: hex8(ipToNumber(f.dstIp)), v: hex8(w.afterIps) }) });
+      workSteps.push({ where: t("stepIps"), text: t(order === "big" ? "workIps" : "workIpsLittle", { sip: SERVER.ip, sx: hex8(ipWord(SERVER.ip, order)), dip: f.dstIp, dx: hex8(ipWord(f.dstIp, order)), v: hex8(w.afterIps) }) });
       // The two folds.
       workSteps.push({ where: t("stepFold"), text: t("workFold", { v: hex8(w.afterFold) }) });
     }
@@ -164,6 +175,13 @@ export default function LacpHashingLab() {
           <LabField id={`${ID}-policy`} label={t("policy")}>
             <LabSelect id={`${ID}-policy`} value={input.policy} options={policyOptions} onChange={(v) => setInput({ ...input, policy: v as HashPolicy })} />
           </LabField>
+          <LabField id={`${ID}-order`} label={t("order")}>
+            <LabSelect id={`${ID}-order`} value={order} options={orderOptions} onChange={(v) => setInput({ ...input, byteOrder: v as ByteOrder })} />
+          </LabField>
+          {/* What the two byte orders are and why the driver's hash depends on them: across the whole row, under the selects. */}
+          <p className="lab-note" style={{ gridColumn: "1 / -1" }} id={`${ID}-order-note`}>
+            {t.rich("orderNote", { a: (chunks: ReactNode) => <Link href="/learn/big-endian-and-little-endian">{chunks}</Link> })}
+          </p>
           <LabField id={`${ID}-failed`} label={t("failed")}>
             <LabSelect id={`${ID}-failed`} value={input.failed === null ? "none" : String(input.failed)} options={failOptions} onChange={(v) => setInput({ ...input, failed: v === "none" ? null : Number(v) })} />
           </LabField>
@@ -186,7 +204,7 @@ export default function LacpHashingLab() {
           {/* The first running flow's hash, worked step by step with the HOWTO's formula. */}
           {first ? (
             <>
-              <p className="lab-note">{t("workTitle", { id: first.flow.id, policy: policyName(input.policy) })}</p>
+              <p className="lab-note">{t(order === "big" ? "workTitle" : "workTitleLittle", { id: first.flow.id, policy: policyName(input.policy) })}</p>
               <ol className="lab-steps">
                 {workSteps.map((s, k) => (
                   <li className="lab-step" key={k}>
@@ -276,7 +294,7 @@ export default function LacpHashingLab() {
           {movedUp.length > 0 && <p className="lab-note">{t("noteMoved", { ids: lf.format(movedUp.map((x) => x.flow.id)), n: input.members - 1 })}</p>}
         </>
       }
-      onExample={() => setInput(EXAMPLE_INPUT)}
+      onExample={() => setInput({ ...EXAMPLE_INPUT, byteOrder: order })}
       onReset={() => setInput(DEFAULT_INPUT)}
       scope={t("scope")}
     />

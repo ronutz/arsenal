@@ -29,8 +29,10 @@ import { withDescription } from "@/lib/metaDescription";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import { Link } from "@/i18n/navigation";
-// The games on the shelf, listed once.
-import { FUN_GAME_GROUPS, FUN_GAMES } from "@/config/funGames";
+// The games on the shelf, listed once, and each one's page.
+import { FUN_GAME_GROUPS, funPagePath } from "@/config/funGames";
+// Each game's and toy's small drawing, on its card (PRIME 08/11/2026).
+import GameGlyph from "@/components/dev/fun/GameGlyph";
 // Today's state on the daily cards and the line over the games (client islands; PRIME 03/11/2026).
 import { ShelfCardStatus, ShelfToday } from "@/components/dev/fun/ShelfStatus";
 
@@ -55,12 +57,17 @@ const TOYS = [
 
 // The games (PRIME 03/11/2026: "I want all of them, including the two smaller ideas", with ideas from LinkedIn's
 // daily games, and a whack-a-bug). The list lives in src/config/funGames.ts, where the guard
-// (scripts/check-fun-games.mts) holds each entry to its page under /dev/fun/<id>, its strings under devFun.games.<id>
+// (scripts/check-fun-games.mts) holds each entry to its page (/dev/fun/<id>, or /arcade/<id> for the arcade group since
+// PRIME's 23:14 of 08/11/2026), its strings under devFun.games.<id>
 // (cardName and cardBlurb for this shelf) and its engine's self-test, run before every build.
 // `daily` marks a game with a puzzle that changes at 00:00 UTC, the same for everyone.
-const GAME_GROUPS = FUN_GAME_GROUPS;
-// The games with a daily puzzle or run, for the shelf's "today" line.
-const DAILY_IDS = FUN_GAMES.filter((g) => g.daily).map((g) => g.id);
+// Since 08/11/2026 (PRIME 22:52: "Games should be only in one place") this shelf lists the daily puzzles only; the arcade
+// group is listed on /arcade alone, and one card here leads there.
+const GAME_GROUPS = FUN_GAME_GROUPS.filter((g) => g.key !== "arcade");
+// The daily puzzles, for the shelf's "today" line (the arcade's daily runs are counted on /arcade).
+const DAILY_IDS = GAME_GROUPS.flatMap((g) => g.games).filter((g) => g.daily).map((g) => g.id);
+// The arcade's games, counted for its card.
+const ARCADE_GAMES = FUN_GAME_GROUPS.find((g) => g.key === "arcade")?.games ?? [];
 
 export async function generateMetadata({
   params,
@@ -103,6 +110,12 @@ export default async function DevFunIndexPage({
               <a href="#games" className="devfun-jump-link">{t("gamesTitle")}</a>
               <a href="#toys" className="devfun-jump-link">{t("toysTitle")}</a>
             </nav>
+            {/* The games' public scoreboard (PRIME 08/11/2026): today's boards, the top tens, the countries, the totals. */}
+            <p className="fg-scores-cta">
+              <Link href="/dev/fun/scores" className="fg-scores-cta-link">
+                {t("scoresLink")}
+              </Link>
+            </p>
 
             {/* The games, by group: the daily puzzles first, then the ones you play for as long as you like. */}
             <h2 id="games" className="devfun-section-title">{t("gamesTitle")}</h2>
@@ -114,8 +127,12 @@ export default async function DevFunIndexPage({
                 <h3 className="devfun-group-title">{t(`gameGroups.${group.key}`)}</h3>
                 <div className="devfun-list devfun-games-list">
                   {group.games.map((game) => (
-                    <Link key={game.id} href={`/dev/fun/${game.id}`} className="devfun-card">
+                    <Link key={game.id} href={funPagePath(game.id)} className={`devfun-card fg-card-art fg-glyph--${game.id}`}>
                       <span className="devfun-card-top">
+                        {/* The game's drawing on its tinted tile; the card's accent comes from the same class. */}
+                        <span className="fg-card-tile" aria-hidden="true">
+                          <GameGlyph id={game.id} className="fg-glyph-card" />
+                        </span>
                         <span className="devfun-card-name">{t(`games.${game.id}.cardName`)}</span>
                         {game.daily && <span className="devfun-badge mono">{t("dailyBadge")}</span>}
                         {/* Solved or played today, and the streak, from this browser's record. */}
@@ -133,6 +150,24 @@ export default async function DevFunIndexPage({
               </div>
             ))}
 
+            {/* The arcade: its games are listed on /arcade only; one card leads there (PRIME 08/11/2026 22:52). */}
+            <div className="devfun-group">
+              <h3 className="devfun-group-title">{t("gameGroups.arcade")}</h3>
+              <div className="devfun-list devfun-games-list">
+                <Link href="/arcade" className="devfun-card">
+                  <span className="devfun-card-top">
+                    <span className="devfun-card-name">{t("arcadeCardName")}</span>
+                    <span className="devfun-card-arrow" aria-hidden="true">
+                      &#8594;
+                    </span>
+                  </span>
+                  <span className="devfun-card-desc">
+                    {t("arcadeCardBlurb", { count: ARCADE_GAMES.length, daily: ARCADE_GAMES.filter((g) => g.daily).length })}
+                  </span>
+                </Link>
+              </div>
+            </div>
+
             {/* The toys, as before. */}
             <h2 id="toys" className="devfun-section-title">{t("toysTitle")}</h2>
             <div className="devfun-list">
@@ -141,6 +176,8 @@ export default async function DevFunIndexPage({
                 const enOnly = "enOnly" in toy && toy.enOnly;
                 // Its card wears the "EN" badge on every other language's shelf (review R4-10).
                 const enBadge = enOnly && locale !== "en";
+                // The drawing's id: the toy's page slug.
+                const glyph = toy.href.split("/").pop() ?? "";
                 // The card.
                 return (
                   <Link
@@ -148,9 +185,13 @@ export default async function DevFunIndexPage({
                     href={toy.href}
                     // enOnly cards cross to the English page from every locale.
                     locale={enOnly ? "en" : undefined}
-                    className="devfun-card"
+                    className={`devfun-card fg-card-art fg-glyph--${glyph}`}
                   >
                     <span className="devfun-card-top">
+                      {/* The toy's drawing on its tinted tile. */}
+                      <span className="fg-card-tile" aria-hidden="true">
+                        <GameGlyph id={glyph} className="fg-glyph-card" />
+                      </span>
                       <span className="devfun-card-name">{t(`toys.${toy.key}.name`)}</span>
                       {toy.badged && (
                         <span className="devfun-badge mono">{t(`toys.${toy.key}.badge`)}</span>

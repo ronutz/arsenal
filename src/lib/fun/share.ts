@@ -4,7 +4,7 @@
 // ============================================================================
 // src/lib/fun/share.ts
 // ----------------------------------------------------------------------------
-// THE SHARE CARD of the /dev/fun games: a few lines of plain text, an emoji
+// THE SHARE CARD of the /dev/fun and /arcade games: a few lines of plain text, an emoji
 // grid that shows how the round went without giving the answer away, and the
 // game's address. It goes to the clipboard; the player pastes it wherever they
 // like. Nothing is posted anywhere by the site, and no one is tracked by it:
@@ -17,6 +17,8 @@
 import { DAY_PARAM, earlierDayInPlay } from "./archive";
 // The puzzle number of a day.
 import { puzzleNumber } from "./daily";
+// A game's or toy's page path: /arcade/<id> for the arcade games, /dev/fun/<slug> for the rest (08/11/2026).
+import { funPagePath } from "../../config/funGames";
 
 /** The production origin, written into every share card. */
 export const SHARE_ORIGIN = "https://ronutz.com";
@@ -29,7 +31,8 @@ const PLAYED_LATER: Record<string, string> = { en: "played later", "pt-BR": "jog
  * The text of a share card.
  *
  * @param opts the card's parts: a title line (game name and puzzle number), the result lines (usually an emoji
- *             grid), an optional summary line (time, score), the locale and the game's path below /dev/fun/
+ *             grid), an optional summary line (time, score), the locale and the game's id or the toy's slug (the page's
+ *             last segment; funPagePath puts it under /arcade or /dev/fun)
  * @returns the card as plain text, lines joined with newlines
  */
 export function shareText(opts: { title: string; lines: string[]; summary?: string; locale: string; slug: string }): string {
@@ -37,9 +40,9 @@ export function shareText(opts: { title: string; lines: string[]; summary?: stri
   // puzzle's: every daily card's title carries its number (#n), a practice round's or a toy's does not.
   const inPlay = earlierDayInPlay();
   const earlier = inPlay !== null && new RegExp(`#${puzzleNumber(inPlay)}(?!\\d)`).test(opts.title) ? inPlay : null;
-  // The address of the game in the player's language, with the trailing slash the export uses, and an earlier puzzle's
-  // date after it.
-  const url = `${SHARE_ORIGIN}/${opts.locale}/dev/fun/${opts.slug}/${earlier ? `?${DAY_PARAM}=${earlier}` : ""}`;
+  // The address of the game in the player's language, in its section (the arcade games under /arcade since 08/11/2026),
+  // with the trailing slash the export uses, and an earlier puzzle's date after it.
+  const url = `${SHARE_ORIGIN}/${opts.locale}${funPagePath(opts.slug)}/${earlier ? `?${DAY_PARAM}=${earlier}` : ""}`;
   // The title, marked as played later on an earlier puzzle, so the card is not taken for a result of the day.
   const title = earlier ? `${opts.title} · ${PLAYED_LATER[opts.locale] ?? PLAYED_LATER.en}` : opts.title;
   // Title, result, the optional summary, then the address, with a blank line before it.

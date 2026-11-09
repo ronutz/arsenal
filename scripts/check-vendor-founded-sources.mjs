@@ -674,7 +674,7 @@ if (endedStale.length > 0) {
 //
 // A guard cannot measure its own scope. If entries lose their `founded` field
 // wholesale, every check above passes over a smaller corpus and reports green.
-const MIN_WITH_YEAR = 337; // 2026-10-01. May only be raised.
+const MIN_WITH_YEAR = 380; // 2026-10-01: 337; 2026-11-08: 372 (the nine Brazil-rooted and Brazil-focused records, CI&T to Thoughtworks); 2026-11-08 later: 379 (the seven consultancy and audit networks); 2026-11-08 17:5x: 380 (KPMG). May only be raised.
 if (withYear < MIN_WITH_YEAR) {
   errors.push(
     `${withYear} entries carry a founded year, below the floor of ${MIN_WITH_YEAR}. Either years ` +

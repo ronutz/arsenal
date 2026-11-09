@@ -10,7 +10,7 @@ It runs entirely in your browser.
 
 ## The I-SID
 
-The I-SID is the heart of a fabric service. A customer VLAN mapped to an I-SID is a Layer 2 VSN; a VRF mapped to an I-SID is a Layer 3 VSN; the global routing table carried over IS-IS with no I-SID is IP Shortcuts. The number itself does not encode which of these it is - that is set by how you provision it - so the tool validates the 24-bit range and explains usage rather than guessing a type. The default Fabric Attach network I-SID (FAN) is 16777001, which the tool calls out.
+The I-SID is the heart of a fabric service. A customer VLAN mapped to an I-SID is a Layer 2 VSN; a VRF (virtual routing and forwarding) mapped to an I-SID is a Layer 3 VSN; the global routing table carried over IS-IS with no I-SID is IP Shortcuts. The number itself does not encode which of these it is - that is set by how you provision it - so the tool validates the 24-bit range and explains usage rather than guessing a type. The default Fabric Attach network I-SID (FAN) is 16777001, which the tool calls out.
 
 ## The nickname
 

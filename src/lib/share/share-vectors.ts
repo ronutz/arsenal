@@ -4,7 +4,7 @@
 // THE CENTRAL SHARE HARNESS: one golden-vector set (run by
 // scripts/run-golden-vectors.mts like any tool's) for the link format and for
 // every tool's share cases. Adding a tool's cases changes this set's id, not
-// the tool's, so a rollout across ~190 tools forces no api-sync re-check.
+// the tool's, so a rollout across ~200 tools (207 on 2026-11-08) forces no api-sync re-check.
 //
 //   FORMAT_VECTORS  the link format itself: exact links for single and named
 //                   values, every character class that must survive the
@@ -23,7 +23,7 @@ import { resolveArrival, type ShareSpec } from "./spec"; // the arrival rule
 import { SHARE_CASE_SETS } from "./cases/index"; // every tool's cases
 
 /** The set id: changes whenever a vector or a tool's cases change. */
-export const GOLDEN_VECTOR_SET_ID = "share-results-golden-2026-11-02b"; // 2026-11-02b: vrrp-timer-calculator and multicast-mac-mapper (chapters 4.2 and 4.7); 2026-11-02: the two LAN switch course tools (acl-first-match-evaluator, snmp-counter-wrap-calculator); 2026-11-01d: wave 4 (A to D: Fortinet, Check Point, Zscaler, F5 XC, NGINX, Netskope, operations, fingerprinting, Extreme, text, time, Python), the last 78 tools; 2026-11-01c: the secure-headers reveal switch's cases; 2026-11-01b: the TOTP page's own key travels; 2026-11-01: waves 3C (identity, tokens, hashing), 3A (security, WAF) and 3B (HTTP, front-end) cases added; 2026-10-27c: wave 2 (F5 BIG-IP); b: waves 1A and 1B
+export const GOLDEN_VECTOR_SET_ID = "share-results-golden-2026-11-08f"; // 2026-11-08f: bit-numbering-and-order (new, PRIME 20:37); the cases changed after the browser reads (stp-election-calculator, vlan-tag-and-trunk-calculator, ospf-cost-and-adjacency-checker, radius-packet-decoder: a redacted copy now shared, lacp-hash-and-state-reader: Huawei display); 2026-11-08e: radius-packet-decoder (LAN switch course); 2026-11-08d: ospf-cost-and-adjacency-checker (LAN switch course); 2026-11-08c: vlan-tag-and-trunk-calculator (LAN switch course); 2026-11-08b: lacp-hash-and-state-reader (LAN switch course); 2026-11-08: stp-election-calculator (LAN switch course); 2026-11-02b: vrrp-timer-calculator and multicast-mac-mapper (chapters 4.2 and 4.7); 2026-11-02: the two LAN switch course tools (acl-first-match-evaluator, snmp-counter-wrap-calculator); 2026-11-01d: wave 4 (A to D: Fortinet, Check Point, Zscaler, F5 XC, NGINX, Netskope, operations, fingerprinting, Extreme, text, time, Python), the last 78 tools; 2026-11-01c: the secure-headers reveal switch's cases; 2026-11-01b: the TOTP page's own key travels; 2026-11-01: waves 3C (identity, tokens, hashing), 3A (security, WAF) and 3B (HTTP, front-end) cases added; 2026-10-27c: wave 2 (F5 BIG-IP); b: waves 1A and 1B
 
 /** The page address the vectors build links for. */
 const BASE = "https://ronutz.com/en/tools/example-tool/"; // a tool page, with the trailing slash the static export uses

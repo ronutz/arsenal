@@ -7,7 +7,7 @@ date: "2026-11-02"
 tags: ["vulnerability-management", "linux", "tcp"]
 category: security
 status: reviewed
-updated: "2026-11-05"
+updated: "2026-11-08"
 relatedArticles: ["tcp-connection-lifecycle", "tcp-proxy-layer-4", "cvss-severity-bands-and-limits", "memory-safety"]
 ---
 
@@ -19,7 +19,7 @@ The bug was found by Xinyang Ge of Anthropic, credited in the fix, which Eric Du
 
 ## The vulnerability at a glance
 
-| Item | As read on 2 November 2026; severity and exploitation updated on 5 November |
+| Item | As read on 2 November 2026; severity and exploitation updated on 5 November, exploitation again on 8 November |
 | --- | --- |
 | Identifier and title | CVE-2026-98432, "ipv4: free inet_opt and ireq_opt after an RCU grace period" |
 | Where | The Linux kernel's IPv4 TCP handshake: the IP options a client sends with its connection request |
@@ -28,7 +28,7 @@ The bug was found by Xinyang Ge of Anthropic, credited in the fix, which Eric Du
 | Severity | 9.8 Critical, the kernel CNA's own score, added on 24 October (the announcement of 15 October carried none). Red Hat agrees with 9.8; SUSE, Oracle and Amazon score it 8.1, with attack complexity High. Ubuntu has since raised its priority to Critical and shows 9.8. The National Vulnerability Database (NVD) shows the CNA's score and none of its own |
 | Impact | In the CNA's scoring notes: kernel heap memory disclosed to the peer, "potential control-flow corruption", and a kernel crash. In Anthropic's account: commands run as root, shown in its lab on servers with a Multipath TCP listener, not published. In Red Hat's bulletin: the race could be exploited "to trigger remote code execution" |
 | Fix | Two lines in two files, merged on 5 October, in stable kernels from 11 October |
-| Exploitation | None confirmed: AWS has "no evidence that this issue has been leveraged at this time" (its bulletin as updated on 4 November), and the catalogue of known exploited vulnerabilities kept by the US Cybersecurity and Infrastructure Security Agency (CISA) does not list it (version 2026.11.04) |
+| Exploitation | None confirmed: AWS has "no evidence that this issue has been leveraged at this time" (its bulletin as updated on 4 November), and the catalogue of known exploited vulnerabilities kept by the US Cybersecurity and Infrastructure Security Agency (CISA) does not list it (version 2026.11.06, read on 8 November). FIRST's Exploit Prediction Scoring System (EPSS) put the chance of exploitation in the next 30 days at 0.76% on 8 November |
 
 Two distinctions run through everything that follows. The first is between code and exposure. Red Hat's bulletin says the flaw affects "any system running a vulnerable kernel version with IPv4 TCP networking enabled", and adds in the same bulletin: "Systems accepting inbound TCP connections are most directly exposed." Every affected kernel contains the vulnerable code; exposure depends on whether the machine accepts IPv4 TCP connections from peers that should not be trusted, and on what sits in front of it. The second is between a capability and a tool: as of 2 November, remote code execution is a result in one lab under a stated condition, not something anyone has published.
 
@@ -177,6 +177,8 @@ On exploitation, the documents agree: none reported. AWS knew of none on 1 Novem
 
 Update, 5 November 2026: AWS's bulletin, as updated on 4 November, says it has "no evidence that this issue has been leveraged at this time". Atlas's count, updated on 4 November, is 70 repositories, at least ten describing a race trigger or a proof of concept. Atlas also reports that security researchers suspect scanning for servers with multipath TCP listeners since 2 November; I have not verified that report, and no vendor and not CISA has reported exploitation.
 
+Update, 8 November 2026: CISA's catalogue still does not list the CVE (version 2026.11.06), and no vendor has reported exploitation. FIRST's EPSS gives it a 0.76% probability of exploitation in the next 30 days (8 November, 55th percentile), a model's estimate rather than an observation. The count of public repositories keeps growing: GitHub's search returned 84 naming the CVE on 8 November, and PoC Index, a public index of proof-of-concept repositories, listed 16 of them as proofs of concept, pushed between 30 October and 6 November, one under a name that claims a root shell. I have not opened or tested any of them, and I do not link them or the index; a repository's name is not evidence that its code works. On 3 November the CVE record gained four oss-security posts among its references: the Go team's notice, a reply that MPTCP can be disabled system-wide (with the warning that programs which require it will break), and a thread in which a proposed extra hardening, booting with init_on_free=1, was answered by a member of CIQ's kernel team: in his analysis it does nothing meaningful against this bug, because the kernel pointers that defeat address randomisation leak from live objects next to the freed one, not from the freed object's old contents. Install the fixed kernel; neither setting replaces it.
+
 ## The mitigations, and where the vendors disagree
 
 Every vendor says the same first thing: install the fixed kernel and reboot. AWS calls it "the only complete remediation". The interim measures differ, and the differences are instructive.
@@ -303,7 +305,12 @@ All read on 2 November 2026, between 12:20 and 12:41 São Paulo time; the status
 - [Amazon Linux, CVE-2026-98432: Important, CVSS 3.1 8.1, every listed kernel fixed between 24 and 30 October](https://explore.alas.aws.amazon.com/CVE-2026-98432.html)
 - [AWS security bulletin 2026-160-AWS, published 30 October 2026 (Pacific time) and updated 1 and 4 November: as read on 2 November, no known exploitation and which load balancers pass IP options to targets; as read on 5 November, "no evidence that this issue has been leveraged", Global Accelerator dropping packets with IP options and the new service dates; the service-by-service status and the interim steps](https://aws.amazon.com/security/security-bulletins/2026-160-aws/)
 - [F5, K000164068: Linux kernel CVE-2026-98432, published 30 October 2026: every listed product under research as read on 2 November; updated 4 November, BIG-IP, BIG-IP Next, F5 Insight and NGINX not vulnerable, the rest still under research, as read on 5 November](https://my.f5.com/manage/s/article/K000164068)
-- [CISA, Known Exploited Vulnerabilities catalogue, version 2026.10.30 and, as read on 5 November, version 2026.11.04 (the JSON feed): CVE-2026-98432 not listed in either; 32 Linux kernel entries, nine added in 2026](https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json)
+- [CISA, Known Exploited Vulnerabilities catalogue, version 2026.10.30, as read on 5 November version 2026.11.04, and as read on 8 November version 2026.11.06 (the JSON feed): CVE-2026-98432 not listed in any; 32 Linux kernel entries, nine added in 2026](https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json)
+- [FIRST, Exploit Prediction Scoring System (EPSS) API, CVE-2026-98432, read on 8 November 2026: probability 0.0076 (0.76%), percentile 0.555, scored that day](https://api.first.org/data/v1/epss?cve=CVE-2026-98432)
+- [oss-security, 30 October 2026, reply on the Go notice: MPTCP can be disabled system-wide on Linux, which upsets programs that require it](https://www.openwall.com/lists/oss-security/2026/10/30/6)
+- [oss-security, 31 October 2026: init_on_free=1 proposed as an additional interim hardening for systems that cannot take a fixed kernel yet](https://www.openwall.com/lists/oss-security/2026/10/31/5)
+- [oss-security, 2 November 2026 (US Pacific time), reply from a member of CIQ's kernel team: init_on_free=1 does nothing meaningful against this CVE, because the pointers that defeat KASLR leak from live slab objects](https://www.openwall.com/lists/oss-security/2026/11/03/1)
+- GitHub repository search for "CVE-2026-98432" (84 results on 8 November 2026) and PoC Index, a public index of proof-of-concept repositories (16 listed for this CVE on 8 November 2026): counted, not opened, and deliberately not linked
 - [CVE record CVE-2019-11477 (SACK Panic), published by Canonical as CNA: a remote denial of service, CVSS 3.0 7.5](https://cveawg.mitre.org/api/cve/CVE-2019-11477)
 - [Netflix, NFLX-2019-001, 17 June 2019: SACK Panic and the related flaws, and the workarounds](https://github.com/Netflix/security-bulletins/blob/master/advisories/third-party/2019-001.md)
 - [CVE record CVE-2018-5390, published by CERT/CC: expensive processing for every incoming packet in Linux 4.9 and later, leading to a denial of service](https://cveawg.mitre.org/api/cve/CVE-2018-5390)

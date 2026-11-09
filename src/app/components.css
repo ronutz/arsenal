@@ -19695,6 +19695,10 @@ main[data-view="list"] .boss-viewer-item.has-share > .boss-viewer-card { padding
    break at the arrow and not inside a date (2026-10-04). */
 .ccb-path td { white-space: normal; }
 .ccb-path td.ccb-validity { min-width: 8.5rem; }
+/* OSPF cost and adjacency checker (2026-11-08b): the cost table's column headings
+   may wrap, so the cost column stays inside a 390 px screen (the shared .cidr-table
+   rule keeps every heading on one line, which pushed the cost past the edge). */
+.ospf-cost-table thead th { white-space: normal; }
 /* Validity at the instant, as a small coloured word before the dates. */
 .ccb-status { display: inline-block; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; padding: 0.05rem 0.4rem; border-radius: 999px; margin-right: 0.35rem; border: 1px solid var(--border-subtle); }
 .ccb-status--valid { color: var(--color-success); border-color: color-mix(in srgb, var(--color-success) 50%, transparent); }

@@ -68,7 +68,7 @@ export const illumioProfile: VendorProfile = {
     {
       title: "Labels instead of addresses",
       detail:
-        "Policy is written against four dimensions - role, application, environment, location - and never against a VLAN, subnet or IP. A workload that moves, or is rebuilt at a new address, keeps its rules because the rules were never about where it was. This is the whole argument against topology-based segmentation, expressed as a data model.",
+        "Policy is written against four dimensions - role, application, environment, location - and never against a VLAN (virtual local area network), subnet or IP. A workload that moves, or is rebuilt at a new address, keeps its rules because the rules were never about where it was. This is the whole argument against topology-based segmentation, expressed as a data model.",
     },
     {
       title: "Four enforcement modes, deployed in order",

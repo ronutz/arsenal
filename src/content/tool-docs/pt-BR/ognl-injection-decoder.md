@@ -1,6 +1,6 @@
 ## O que faz
 
-Você está olhando um evento do WAF, ou uma linha de log da aplicação, e nela aparece algo como `%{(#_memberAccess["allowStaticMethodAccess"]=true)...}`. Esta ferramenta lê essa string e diz o que ela pretendia fazer: quais construções estão presentes, se elas equivalem a desligar o sandbox de expressões, executar um comando, ambos ou nenhum, e com qual família de boletim publicado o formato é compatível. Roda inteiramente no seu navegador e nunca avalia qualquer parte do que você cola.
+Você está olhando um evento do WAF (web application firewall), ou uma linha de log da aplicação, e nela aparece algo como `%{(#_memberAccess["allowStaticMethodAccess"]=true)...}`. Esta ferramenta lê essa string e diz o que ela pretendia fazer: quais construções estão presentes, se elas equivalem a desligar o sandbox de expressões, executar um comando, ambos ou nenhum, e com qual família de boletim publicado o formato é compatível. Roda inteiramente no seu navegador e nunca avalia qualquer parte do que você cola.
 
 ## O que não é
 

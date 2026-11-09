@@ -78,7 +78,7 @@ export const lumenProfile: VendorProfile = {
   products: [
     { name: "The IP backbone", what: "AS3356, one of the most densely connected networks on the internet, reaching most of it without paying anyone for transit. It is the asset everything else in the company is now organised around." },
     { name: "Enterprise fibre and wavelengths", what: "Dedicated capacity between customer sites and data centres, sold to the organisations for whom the public internet is not an acceptable path." },
-    { name: "Edge computing and security services", what: "Compute placed in the network rather than in a region, and DDoS mitigation delivered from a backbone large enough to absorb attacks - the same argument content delivery networks make, from the other direction." },
+    { name: "Edge computing and security services", what: "Compute placed in the network rather than in a region, and DDoS (distributed denial of service) mitigation delivered from a backbone large enough to absorb attacks - the same argument content delivery networks make, from the other direction." },
     { name: "Local exchange services", what: "The rural telephone business the company spent fifty years assembling, most of which has since been sold." },
   ],
   innovations: [

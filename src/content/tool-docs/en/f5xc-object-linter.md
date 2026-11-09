@@ -4,7 +4,7 @@ This tool is a linter for F5 Distributed Cloud (XC) configuration objects. Paste
 
 ## What it checks
 
-For an origin pool, the linter flags TLS to the origin with server verification skipped (the connection is encrypted but the origin's certificate is not validated), SNI disabled, cleartext to the origin, an absent health check, and a single origin server with no redundancy. For an HTTP load balancer, it flags no WAF attached, a plain-HTTP listener with no HTTPS, HTTPS configured without an HTTP-to-HTTPS redirect, a route that disables the WAF, a catch-all route placed before other routes (which can never match under first-match evaluation), and a wildcard domain mixed with its apex. For a WAF, it flags monitoring mode (detects but does not block) and disabled threat campaigns.
+For an origin pool, the linter flags TLS to the origin with server verification skipped (the connection is encrypted but the origin's certificate is not validated), SNI disabled, cleartext to the origin, an absent health check, and a single origin server with no redundancy. For an HTTP load balancer, it flags no WAF (web application firewall) attached, a plain-HTTP listener with no HTTPS, HTTPS configured without an HTTP-to-HTTPS redirect, a route that disables the WAF, a catch-all route placed before other routes (which can never match under first-match evaluation), and a wildcard domain mixed with its apex. For a WAF, it flags monitoring mode (detects but does not block) and disabled threat campaigns.
 
 ## Severity and grounding
 

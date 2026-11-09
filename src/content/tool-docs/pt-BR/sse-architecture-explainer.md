@@ -4,7 +4,7 @@ Descreva uma requisição — para onde vai, como é direcionada, se o dispositi
 
 ## O ponto que ela existe para fazer
 
-**DLP e proteção contra ameaças não são pilares.** São transversais: rodam dentro do mesmo passe e recebem o que os pilares descriptografaram. É por isso que um único perfil de dados cobre web, software-as-a-service e aplicações privadas igualmente, e por que a mesma regra numa arquitetura encadeada precisa ser escrita quatro vezes em quatro dialetos.
+**DLP (data loss prevention) e proteção contra ameaças não são pilares.** São transversais: rodam dentro do mesmo passe e recebem o que os pilares descriptografaram. É por isso que um único perfil de dados cobre web, software-as-a-service e aplicações privadas igualmente, e por que a mesma regra numa arquitetura encadeada precisa ser escrita quatro vezes em quatro dialetos.
 
 Os pilares tratam de **para onde o tráfego vai** — secure web gateway para a web em geral, cloud access security broker para atividade em SaaS, zero trust network access para uma aplicação privada, cloud firewall para as portas que os outros não cobrem. Mude o destino na ferramenta e observe quais pilares atuam enquanto os motores transversais permanecem constantes.
 

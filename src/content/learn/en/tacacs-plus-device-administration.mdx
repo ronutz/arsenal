@@ -3,7 +3,7 @@ slug: tacacs-plus-device-administration
 title: "TACACS+ for device administration: a login and a command, exchange by exchange"
 summary: "How a router asks a server whether an engineer may log in, whether the command just typed may run, and how it records that it ran: the three packet types of RFC 8907, the 12-byte header, the START, REPLY and CONTINUE of authentication, the per-command authorization with its name=value arguments, the START, STOP and WATCHDOG of accounting, the obfuscation the RFC refuses to call encryption, the 1993 ancestor of RFC 1492, and the method-list discipline that keeps an estate reachable when the servers are not."
 concepts: ["tacacs+", "rfc 8907", "device administration", "command authorization", "command accounting", "privilege level", "method list", "xtacacs", "rfc 1492", "aaa"]
-relatedTools: []
+relatedTools: ["radius-packet-decoder"]
 relatedArticles: ["radius-end-to-end", "accounting-who-did-what-and-when", "802-1x-and-eap-methods", "blast-radius-thinking-before-you-change-anything"]
 category: identity
 order: 233
@@ -57,5 +57,5 @@ Most estates run both protocols from the same policy servers, and the division i
 
 - [RFC 8907, The Terminal Access Controller Access-Control System Plus (TACACS+) Protocol, Dahm, Ota, Medway Gash, Carrel, Grant, September 2020: the header and flags, the three packet types, the authentication START, REPLY and CONTINUE and the status values, the authentication types, the privilege levels, the authorization arguments and statuses, the accounting flags and statuses, the obfuscation and the deployment requirement, the 1998 Draft (read 2026-10-06)](https://www.rfc-editor.org/rfc/rfc8907)
 - [RFC 1492, An Access Control Protocol, Sometimes Called TACACS, Finseth, July 1993: the ARPANET dial-up origin, port 49 for the UDP encoding and a configurable port for the TCP one, Cisco's extended version, clear-text credentials (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc1492)
-- [Cisco, TACACS+ and RADIUS Comparison, document 13838: UDP against TCP, the encrypted body and standard header, AAA separated, per-command authorization, Cisco's evaluation of RADIUS before developing TACACS+ (read 2026-10-06)](https://www.cisco.com/c/en/us/support/docs/security-vpn/remote-authentication-dial-user-service-radius/13838-10.html)
+- [Cisco, Compare TACACS + and RADIUS, document 13838, updated 30 June 2025: UDP against TCP, the encrypted body and standard header, AAA separated, per-command authorization, Cisco's evaluation of RADIUS before developing TACACS+ (read in a browser on 2026-11-08: the site refuses automated reads)](https://www.cisco.com/c/en/us/support/docs/security-vpn/remote-authentication-dial-user-service-radius/13838-10.html)
 - [Cisco IOS XE 16 Configuration Management guide, Configuration Change Notification and Logging: the device-side record of each command, who applied it and when, as the complement to command accounting (read 2026-10-06)](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/config-mgmt/configuration/xe-16/config-mgmt-xe-16-book/cm-config-logger.html)

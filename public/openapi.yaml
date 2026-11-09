@@ -1420,6 +1420,88 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       x-golden-vector-set: bigip-scripted-monitor-explainer/2026-10-27b
+  /bit-numbering-and-order:
+    get:
+      tags:
+        - Networking & addressing
+      operationId: run_bit_numbering_and_order
+      summary: Bit numbering and bit order
+      description: >-
+        Every bit of a value with its weight and its number under LSB 0, MSB 0 and 1-based
+        numbering, the field you name as bits i to j, the value bit-reversed and in the order a link
+        sends it, a printed bit string read in the order it was printed, and a MAC address in
+        canonical and bit-reversed form, with the I/G and U/L bits named. Layouts for the LACP
+        state, the TCP flags, the DNS flags, the ToS octet and the 802.1Q tag. The input is a JSON
+        object: send it as the request body (POST) or as a JSON string (?input=). Standards: Intel
+        SDM vol. 1 1.3.1, 4.2.1.2, RFC 791 App. B, RFC 1035 s2.3.2, s4.1.1, RFC 3417 s8, RFC 9542
+        s1.1, s2.1, RFC 2469 s2, s3.2, IEEE RA EUI guidelines, IEEE8023-LAG-MIB LacpState, Huawei
+        display eth-trunk Table 5-17, RFC 1662, NXP UM10204 3.1.5, RFC 2474, RFC 3168, IANA DNS and
+        TCP header flags, Linux bits.h, if_vlan.h, if_bonding.h, tcp.h. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+            examples:
+              - '0x81A0'
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-golden-vector-set: bit-numbering-and-order-golden-2026-11-08
+    post:
+      tags:
+        - Networking & addressing
+      operationId: run_bit_numbering_and_order_post
+      summary: Bit numbering and bit order (POST)
+      description: >-
+        Every bit of a value with its weight and its number under LSB 0, MSB 0 and 1-based
+        numbering, the field you name as bits i to j, the value bit-reversed and in the order a link
+        sends it, a printed bit string read in the order it was printed, and a MAC address in
+        canonical and bit-reversed form, with the I/G and U/L bits named. Layouts for the LACP
+        state, the TCP flags, the DNS flags, the ToS octet and the 802.1Q tag. The input is a JSON
+        object: send it as the request body (POST) or as a JSON string (?input=). Standards: Intel
+        SDM vol. 1 1.3.1, 4.2.1.2, RFC 791 App. B, RFC 1035 s2.3.2, s4.1.1, RFC 3417 s8, RFC 9542
+        s1.1, s2.1, RFC 2469 s2, s3.2, IEEE RA EUI guidelines, IEEE8023-LAG-MIB LacpState, Huawei
+        display eth-trunk Table 5-17, RFC 1662, NXP UM10204 3.1.5, RFC 2474, RFC 3168, IANA DNS and
+        TCP header flags, Linux bits.h, if_vlan.h, if_bonding.h, tcp.h. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-golden-vector-set: bit-numbering-and-order-golden-2026-11-08
   /bits-bytes:
     get:
       tags:
@@ -5900,13 +5982,13 @@ paths:
       operationId: run_f5_apm_sso_explainer
       summary: APM SSO method explainer
       description: >-
-        The eight SSO methods APM's own chapter defines, each card carrying the verdict that decides
-        outages: a misconfigured SSO object for any non-form method can disable SSO for every method
-        in that user's session; Form Based and Forms - Client Initiated are the only exempt ones.
-        Kerberos ships its full prerequisite list, including the line worth framing: APM Kerberos
-        SSO does not need or use a keytab file. Standards: F5 APM Single Sign-On Methods. Stateless
-        and side-effect-free: the same input always yields the same result, and nothing is stored or
-        logged.
+        The eight SSO (single sign-on) methods APM's own chapter defines, each card carrying the
+        verdict that decides outages: a misconfigured SSO object for any non-form method can disable
+        SSO for every method in that user's session; Form Based and Forms - Client Initiated are the
+        only exempt ones. Kerberos ships its full prerequisite list, including the line worth
+        framing: APM Kerberos SSO does not need or use a keytab file. Standards: F5 APM Single
+        Sign-On Methods. Stateless and side-effect-free: the same input always yields the same
+        result, and nothing is stored or logged.
       parameters:
         - name: input
           in: query
@@ -5936,13 +6018,13 @@ paths:
       operationId: run_f5_apm_sso_explainer_post
       summary: APM SSO method explainer (POST)
       description: >-
-        The eight SSO methods APM's own chapter defines, each card carrying the verdict that decides
-        outages: a misconfigured SSO object for any non-form method can disable SSO for every method
-        in that user's session; Form Based and Forms - Client Initiated are the only exempt ones.
-        Kerberos ships its full prerequisite list, including the line worth framing: APM Kerberos
-        SSO does not need or use a keytab file. Standards: F5 APM Single Sign-On Methods. Stateless
-        and side-effect-free: the same input always yields the same result, and nothing is stored or
-        logged.
+        The eight SSO (single sign-on) methods APM's own chapter defines, each card carrying the
+        verdict that decides outages: a misconfigured SSO object for any non-form method can disable
+        SSO for every method in that user's session; Form Based and Forms - Client Initiated are the
+        only exempt ones. Kerberos ships its full prerequisite list, including the line worth
+        framing: APM Kerberos SSO does not need or use a keytab file. Standards: F5 APM Single
+        Sign-On Methods. Stateless and side-effect-free: the same input always yields the same
+        result, and nothing is stored or logged.
       requestBody:
         required: true
         description: The tool input as text.
@@ -5973,12 +6055,13 @@ paths:
       operationId: run_f5_awaf_declarative_policy_explainer
       summary: AWAF declarative-policy explainer
       description: >-
-        Paste a BIG-IP Advanced WAF declarative security policy (JSON) and get a section-by-section,
-        plain-language reading grounded in F5's published schema, with security callouts that read
-        the values: transparent enforcement means monitor-only, plus signature staging, Data Guard
-        off, and cookies missing Secure or HttpOnly. Runs entirely in your browser. Standards: F5
-        BIG-IP Advanced WAF declarative policy (schema v17.1). Stateless and side-effect-free: the
-        same input always yields the same result, and nothing is stored or logged.
+        Paste a BIG-IP Advanced WAF (web application firewall) declarative security policy (JSON)
+        and get a section-by-section, plain-language reading grounded in F5's published schema, with
+        security callouts that read the values: transparent enforcement means monitor-only, plus
+        signature staging, Data Guard off, and cookies missing Secure or HttpOnly. Runs entirely in
+        your browser. Standards: F5 BIG-IP Advanced WAF declarative policy (schema v17.1). Stateless
+        and side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
       parameters:
         - name: input
           in: query
@@ -6008,12 +6091,13 @@ paths:
       operationId: run_f5_awaf_declarative_policy_explainer_post
       summary: AWAF declarative-policy explainer (POST)
       description: >-
-        Paste a BIG-IP Advanced WAF declarative security policy (JSON) and get a section-by-section,
-        plain-language reading grounded in F5's published schema, with security callouts that read
-        the values: transparent enforcement means monitor-only, plus signature staging, Data Guard
-        off, and cookies missing Secure or HttpOnly. Runs entirely in your browser. Standards: F5
-        BIG-IP Advanced WAF declarative policy (schema v17.1). Stateless and side-effect-free: the
-        same input always yields the same result, and nothing is stored or logged.
+        Paste a BIG-IP Advanced WAF (web application firewall) declarative security policy (JSON)
+        and get a section-by-section, plain-language reading grounded in F5's published schema, with
+        security callouts that read the values: transparent enforcement means monitor-only, plus
+        signature staging, Data Guard off, and cookies missing Secure or HttpOnly. Runs entirely in
+        your browser. Standards: F5 BIG-IP Advanced WAF declarative policy (schema v17.1). Stateless
+        and side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
       requestBody:
         required: true
         description: The tool input as text.
@@ -6046,11 +6130,11 @@ paths:
       description: >-
         Type a sub-violation name or "evasions" for F5's eight evasion sub-violations explained,
         each with its default and the encoding trick it catches, or paste the evasions block of a
-        declarative WAF policy to read each one back as enabled or disabled with the
-        Multiple-decoding pass count. Grounded in F5 K7929; runs entirely in your browser.
-        Standards: F5 K7929, F5 BIG-IP ASM 17.5 violations, F5 Declarative WAF schema v17.1.
-        Stateless and side-effect-free: the same input always yields the same result, and nothing is
-        stored or logged.
+        declarative WAF (web application firewall) policy to read each one back as enabled or
+        disabled with the Multiple-decoding pass count. Grounded in F5 K7929; runs entirely in your
+        browser. Standards: F5 K7929, F5 BIG-IP ASM 17.5 violations, F5 Declarative WAF schema
+        v17.1. Stateless and side-effect-free: the same input always yields the same result, and
+        nothing is stored or logged.
       parameters:
         - name: input
           in: query
@@ -6084,11 +6168,11 @@ paths:
       description: >-
         Type a sub-violation name or "evasions" for F5's eight evasion sub-violations explained,
         each with its default and the encoding trick it catches, or paste the evasions block of a
-        declarative WAF policy to read each one back as enabled or disabled with the
-        Multiple-decoding pass count. Grounded in F5 K7929; runs entirely in your browser.
-        Standards: F5 K7929, F5 BIG-IP ASM 17.5 violations, F5 Declarative WAF schema v17.1.
-        Stateless and side-effect-free: the same input always yields the same result, and nothing is
-        stored or logged.
+        declarative WAF (web application firewall) policy to read each one back as enabled or
+        disabled with the Multiple-decoding pass count. Grounded in F5 K7929; runs entirely in your
+        browser. Standards: F5 K7929, F5 BIG-IP ASM 17.5 violations, F5 Declarative WAF schema
+        v17.1. Stateless and side-effect-free: the same input always yields the same result, and
+        nothing is stored or logged.
       requestBody:
         required: true
         description: The tool input as text.
@@ -6121,13 +6205,14 @@ paths:
       operationId: run_f5_awaf_false_positive_triage
       summary: AWAF false-positive triage
       description: >-
-        The flip side of the poisoning estimator: relax a genuine Advanced WAF false positive
-        correctly, with scope, and stop before relaxing a real attack. Pick a violation category,
-        its average violation rating, and whether it is enforced, staged, or transparent, and get
-        F5's rating-based verdict and the scoped fix. Runs entirely in your browser. The input is a
-        JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: F5
-        K70544352, F5 BIG-IP ASM violation rating, F5 ASM learning. Stateless and side-effect-free:
-        the same input always yields the same result, and nothing is stored or logged.
+        The flip side of the poisoning estimator: relax a genuine Advanced WAF (web application
+        firewall) false positive correctly, with scope, and stop before relaxing a real attack. Pick
+        a violation category, its average violation rating, and whether it is enforced, staged, or
+        transparent, and get F5's rating-based verdict and the scoped fix. Runs entirely in your
+        browser. The input is a JSON object: send it as the request body (POST) or as a JSON string
+        (?input=). Standards: F5 K70544352, F5 BIG-IP ASM violation rating, F5 ASM learning.
+        Stateless and side-effect-free: the same input always yields the same result, and nothing is
+        stored or logged.
       parameters:
         - name: input
           in: query
@@ -6155,13 +6240,14 @@ paths:
       operationId: run_f5_awaf_false_positive_triage_post
       summary: AWAF false-positive triage (POST)
       description: >-
-        The flip side of the poisoning estimator: relax a genuine Advanced WAF false positive
-        correctly, with scope, and stop before relaxing a real attack. Pick a violation category,
-        its average violation rating, and whether it is enforced, staged, or transparent, and get
-        F5's rating-based verdict and the scoped fix. Runs entirely in your browser. The input is a
-        JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: F5
-        K70544352, F5 BIG-IP ASM violation rating, F5 ASM learning. Stateless and side-effect-free:
-        the same input always yields the same result, and nothing is stored or logged.
+        The flip side of the poisoning estimator: relax a genuine Advanced WAF (web application
+        firewall) false positive correctly, with scope, and stop before relaxing a real attack. Pick
+        a violation category, its average violation rating, and whether it is enforced, staged, or
+        transparent, and get F5's rating-based verdict and the scoped fix. Runs entirely in your
+        browser. The input is a JSON object: send it as the request body (POST) or as a JSON string
+        (?input=). Standards: F5 K70544352, F5 BIG-IP ASM violation rating, F5 ASM learning.
+        Stateless and side-effect-free: the same input always yields the same result, and nothing is
+        stored or logged.
       requestBody:
         required: true
         description: The tool input as a JSON object.
@@ -6192,13 +6278,14 @@ paths:
       summary: AWAF automatic-learning poisoning estimator
       description: >-
         How many requests does an attacker need to drill a hole through your BIG-IP Advanced WAF
-        policy when the Policy Builder is left in Automatic learning against untrusted traffic?
-        Enter your Loosen thresholds and the attacker's resources; it computes the minimum sources,
-        requests, and time to force one automatic relaxation, and gates on the rules that make it
-        impossible. Runs entirely in your browser. The input is a JSON object: send it as the
-        request body (POST) or as a JSON string (?input=). Standards: F5 K000134503, F5 BIG-IP ASM
-        Policy Builder, F5 BIG-IP ASM learning. Stateless and side-effect-free: the same input
-        always yields the same result, and nothing is stored or logged.
+        (web application firewall) policy when the Policy Builder is left in Automatic learning
+        against untrusted traffic? Enter your Loosen thresholds and the attacker's resources; it
+        computes the minimum sources, requests, and time to force one automatic relaxation, and
+        gates on the rules that make it impossible. Runs entirely in your browser. The input is a
+        JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: F5
+        K000134503, F5 BIG-IP ASM Policy Builder, F5 BIG-IP ASM learning. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
       parameters:
         - name: input
           in: query
@@ -6227,13 +6314,14 @@ paths:
       summary: AWAF automatic-learning poisoning estimator (POST)
       description: >-
         How many requests does an attacker need to drill a hole through your BIG-IP Advanced WAF
-        policy when the Policy Builder is left in Automatic learning against untrusted traffic?
-        Enter your Loosen thresholds and the attacker's resources; it computes the minimum sources,
-        requests, and time to force one automatic relaxation, and gates on the rules that make it
-        impossible. Runs entirely in your browser. The input is a JSON object: send it as the
-        request body (POST) or as a JSON string (?input=). Standards: F5 K000134503, F5 BIG-IP ASM
-        Policy Builder, F5 BIG-IP ASM learning. Stateless and side-effect-free: the same input
-        always yields the same result, and nothing is stored or logged.
+        (web application firewall) policy when the Policy Builder is left in Automatic learning
+        against untrusted traffic? Enter your Loosen thresholds and the attacker's resources; it
+        computes the minimum sources, requests, and time to force one automatic relaxation, and
+        gates on the rules that make it impossible. Runs entirely in your browser. The input is a
+        JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: F5
+        K000134503, F5 BIG-IP ASM Policy Builder, F5 BIG-IP ASM learning. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
       requestBody:
         required: true
         description: The tool input as a JSON object.
@@ -6333,14 +6421,14 @@ paths:
       operationId: run_f5_awaf_policy_diff
       summary: AWAF policy-diff hole checker
       description: >-
-        Paste a before and an after declarative WAF policy and it classifies every security-relevant
-        change as a relaxation or a tightening, then answers the question that matters after tuning:
-        did this open a hole? It flags relaxations that widen protection beyond a single entity
-        apart from a properly-scoped single-entity allow. Runs entirely in your browser. The input
-        is a JSON object: send it as the request body (POST) or as a JSON string (?input=).
-        Standards: F5 Advanced WAF declarative policy schema, F5 K70544352. Stateless and
-        side-effect-free: the same input always yields the same result, and nothing is stored or
-        logged.
+        Paste a before and an after declarative WAF (web application firewall) policy and it
+        classifies every security-relevant change as a relaxation or a tightening, then answers the
+        question that matters after tuning: did this open a hole? It flags relaxations that widen
+        protection beyond a single entity apart from a properly-scoped single-entity allow. Runs
+        entirely in your browser. The input is a JSON object: send it as the request body (POST) or
+        as a JSON string (?input=). Standards: F5 Advanced WAF declarative policy schema, F5
+        K70544352. Stateless and side-effect-free: the same input always yields the same result, and
+        nothing is stored or logged.
       parameters:
         - name: input
           in: query
@@ -6368,14 +6456,14 @@ paths:
       operationId: run_f5_awaf_policy_diff_post
       summary: AWAF policy-diff hole checker (POST)
       description: >-
-        Paste a before and an after declarative WAF policy and it classifies every security-relevant
-        change as a relaxation or a tightening, then answers the question that matters after tuning:
-        did this open a hole? It flags relaxations that widen protection beyond a single entity
-        apart from a properly-scoped single-entity allow. Runs entirely in your browser. The input
-        is a JSON object: send it as the request body (POST) or as a JSON string (?input=).
-        Standards: F5 Advanced WAF declarative policy schema, F5 K70544352. Stateless and
-        side-effect-free: the same input always yields the same result, and nothing is stored or
-        logged.
+        Paste a before and an after declarative WAF (web application firewall) policy and it
+        classifies every security-relevant change as a relaxation or a tightening, then answers the
+        question that matters after tuning: did this open a hole? It flags relaxations that widen
+        protection beyond a single entity apart from a properly-scoped single-entity allow. Runs
+        entirely in your browser. The input is a JSON object: send it as the request body (POST) or
+        as a JSON string (?input=). Standards: F5 Advanced WAF declarative policy schema, F5
+        K70544352. Stateless and side-effect-free: the same input always yields the same result, and
+        nothing is stored or logged.
       requestBody:
         required: true
         description: The tool input as a JSON object.
@@ -7112,11 +7200,11 @@ paths:
       operationId: run_f5_gslb_decision_flow
       summary: GSLB decision-flow explainer
       description: >-
-        The BIG-IP DNS two-tier decision, explained: pool selection at the wide IP, then the
-        preferred, alternate and fallback chain inside the pool, with the grammar validated and the
-        manual's rules cross-checked. Standards: F5 BIG-IP DNS / GTM. Stateless and
-        side-effect-free: the same input always yields the same result, and nothing is stored or
-        logged.
+        The BIG-IP DNS two-tier global server load balancing (GSLB) decision, explained: pool
+        selection at the wide IP, then the preferred, alternate and fallback chain inside the pool,
+        with the grammar validated and the manual's rules cross-checked. Standards: F5 BIG-IP DNS /
+        GTM. Stateless and side-effect-free: the same input always yields the same result, and
+        nothing is stored or logged.
       parameters:
         - name: input
           in: query
@@ -7146,11 +7234,11 @@ paths:
       operationId: run_f5_gslb_decision_flow_post
       summary: GSLB decision-flow explainer (POST)
       description: >-
-        The BIG-IP DNS two-tier decision, explained: pool selection at the wide IP, then the
-        preferred, alternate and fallback chain inside the pool, with the grammar validated and the
-        manual's rules cross-checked. Standards: F5 BIG-IP DNS / GTM. Stateless and
-        side-effect-free: the same input always yields the same result, and nothing is stored or
-        logged.
+        The BIG-IP DNS two-tier global server load balancing (GSLB) decision, explained: pool
+        selection at the wide IP, then the preferred, alternate and fallback chain inside the pool,
+        with the grammar validated and the manual's rules cross-checked. Standards: F5 BIG-IP DNS /
+        GTM. Stateless and side-effect-free: the same input always yields the same result, and
+        nothing is stored or logged.
       requestBody:
         required: true
         description: The tool input as text.
@@ -8425,9 +8513,10 @@ paths:
       summary: F5 SSL profile explainer
       description: >-
         Paste a tmsh client-ssl or server-ssl profile and get its role, the TLS protocol matrix, and
-        a security read covering chain, renegotiation, SNI, OCSP, and mutual TLS - all in your
-        browser. Standards: F5 client-ssl / server-ssl profiles. Stateless and side-effect-free: the
-        same input always yields the same result, and nothing is stored or logged.
+        a security read covering chain, renegotiation, SNI, OCSP (Online Certificate Status
+        Protocol), and mutual TLS - all in your browser. Standards: F5 client-ssl / server-ssl
+        profiles. Stateless and side-effect-free: the same input always yields the same result, and
+        nothing is stored or logged.
       parameters:
         - name: input
           in: query
@@ -8456,9 +8545,10 @@ paths:
       summary: F5 SSL profile explainer (POST)
       description: >-
         Paste a tmsh client-ssl or server-ssl profile and get its role, the TLS protocol matrix, and
-        a security read covering chain, renegotiation, SNI, OCSP, and mutual TLS - all in your
-        browser. Standards: F5 client-ssl / server-ssl profiles. Stateless and side-effect-free: the
-        same input always yields the same result, and nothing is stored or logged.
+        a security read covering chain, renegotiation, SNI, OCSP (Online Certificate Status
+        Protocol), and mutual TLS - all in your browser. Standards: F5 client-ssl / server-ssl
+        profiles. Stateless and side-effect-free: the same input always yields the same result, and
+        nothing is stored or logged.
       requestBody:
         required: true
         description: The tool input as text.
@@ -8947,10 +9037,10 @@ paths:
       summary: F5XC HTTP LB route explainer
       description: >-
         Paste the routes of an F5XC HTTP load balancer and get each route decoded in order - type,
-        path/method/header match, action, header mutations, and per-route WAF - plus a first-match
-        simulator for a test request. Standards: ves.io.schema.views.http_loadbalancer. Stateless
-        and side-effect-free: the same input always yields the same result, and nothing is stored or
-        logged.
+        path/method/header match, action, header mutations, and per-route WAF (web application
+        firewall) - plus a first-match simulator for a test request. Standards:
+        ves.io.schema.views.http_loadbalancer. Stateless and side-effect-free: the same input always
+        yields the same result, and nothing is stored or logged.
       parameters:
         - name: input
           in: query
@@ -8979,10 +9069,10 @@ paths:
       summary: F5XC HTTP LB route explainer (POST)
       description: >-
         Paste the routes of an F5XC HTTP load balancer and get each route decoded in order - type,
-        path/method/header match, action, header mutations, and per-route WAF - plus a first-match
-        simulator for a test request. Standards: ves.io.schema.views.http_loadbalancer. Stateless
-        and side-effect-free: the same input always yields the same result, and nothing is stored or
-        logged.
+        path/method/header match, action, header mutations, and per-route WAF (web application
+        firewall) - plus a first-match simulator for a test request. Standards:
+        ves.io.schema.views.http_loadbalancer. Stateless and side-effect-free: the same input always
+        yields the same result, and nothing is stored or logged.
       requestBody:
         required: true
         description: The tool input as text.
@@ -9263,10 +9353,10 @@ paths:
       operationId: run_f5xc_security_event_explainer
       summary: F5XC security event explainer
       description: >-
-        Paste an F5XC security event (WAF, Bot Defense, Service Policy, or API) and it decodes the
-        type, the action and disposition, the request context, and the specific reason it fired.
-        Stateless and side-effect-free: the same input always yields the same result, and nothing is
-        stored or logged.
+        Paste an F5XC security event (WAF (web application firewall), Bot Defense, Service Policy,
+        or API) and it decodes the type, the action and disposition, the request context, and the
+        specific reason it fired. Stateless and side-effect-free: the same input always yields the
+        same result, and nothing is stored or logged.
       parameters:
         - name: input
           in: query
@@ -9294,10 +9384,10 @@ paths:
       operationId: run_f5xc_security_event_explainer_post
       summary: F5XC security event explainer (POST)
       description: >-
-        Paste an F5XC security event (WAF, Bot Defense, Service Policy, or API) and it decodes the
-        type, the action and disposition, the request context, and the specific reason it fired.
-        Stateless and side-effect-free: the same input always yields the same result, and nothing is
-        stored or logged.
+        Paste an F5XC security event (WAF (web application firewall), Bot Defense, Service Policy,
+        or API) and it decodes the type, the action and disposition, the request context, and the
+        specific reason it fired. Stateless and side-effect-free: the same input always yields the
+        same result, and nothing is stored or logged.
       requestBody:
         required: true
         description: The tool input as text.
@@ -12147,6 +12237,88 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       x-golden-vector-set: jwt-decode-golden-v1
+  /lacp-hash-and-state-reader:
+    get:
+      tags:
+        - Networking
+      operationId: run_lacp_hash_and_state_reader
+      summary: LACP member link and state reader
+      description: >-
+        Which member of a link aggregation group carries a flow, for the one hash an implementation
+        publishes in full (the Linux bonding driver's), with every step, what a failed member moves
+        and how a run of flows spreads; Cisco's documented split shows why 2, 4 and 8 members share
+        evenly. And the LACP actor and partner state flags read bit by bit, with the timers and a
+        verdict for the pair. The input is a JSON object: send it as the request body (POST) or as a
+        JSON string (?input=). Standards: Linux bonding HOWTO, xmit_hash_policy, lacp_rate, Linux
+        bond_main.c (bond_eth_hash, bond_ip_hash, bond_vlan_srcmac_hash,
+        bond_xmit_3ad_xor_slave_get), Cisco 12023 (Catalyst 6500/6000 hash values 0 to 7),
+        IEEE8023-LAG-MIB LacpState (IEEE 802.1AX-2020), RFC 3417 s8 (BITS), Juniper show lacp
+        interfaces, Huawei S5700/S6700 V200R025C00 display eth-trunk (PortState, Status) and
+        load-balance. Stateless and side-effect-free: the same input always yields the same result,
+        and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+            examples:
+              - '{"mode":"state","format":"octet","actor":"0x3F","partner":"0x3F"}'
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-golden-vector-set: lacp-hash-and-state-reader-golden-2026-11-08b
+    post:
+      tags:
+        - Networking
+      operationId: run_lacp_hash_and_state_reader_post
+      summary: LACP member link and state reader (POST)
+      description: >-
+        Which member of a link aggregation group carries a flow, for the one hash an implementation
+        publishes in full (the Linux bonding driver's), with every step, what a failed member moves
+        and how a run of flows spreads; Cisco's documented split shows why 2, 4 and 8 members share
+        evenly. And the LACP actor and partner state flags read bit by bit, with the timers and a
+        verdict for the pair. The input is a JSON object: send it as the request body (POST) or as a
+        JSON string (?input=). Standards: Linux bonding HOWTO, xmit_hash_policy, lacp_rate, Linux
+        bond_main.c (bond_eth_hash, bond_ip_hash, bond_vlan_srcmac_hash,
+        bond_xmit_3ad_xor_slave_get), Cisco 12023 (Catalyst 6500/6000 hash values 0 to 7),
+        IEEE8023-LAG-MIB LacpState (IEEE 802.1AX-2020), RFC 3417 s8 (BITS), Juniper show lacp
+        interfaces, Huawei S5700/S6700 V200R025C00 display eth-trunk (PortState, Status) and
+        load-balance. Stateless and side-effect-free: the same input always yields the same result,
+        and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-golden-vector-set: lacp-hash-and-state-reader-golden-2026-11-08b
   /ldap-filter-explainer:
     get:
       tags:
@@ -12154,12 +12326,12 @@ paths:
       operationId: run_ldap_filter_explainer
       summary: LDAP filter explainer
       description: >-
-        Paste an LDAP search filter - get the annotated tree: operators, match types, decoded RFC
-        4515 escapes, recognised AD matching-rule OIDs, and errors anchored to the exact character.
-        The input is a JSON object: send it as the request body (POST) or as a JSON string
-        (?input=). Standards: RFC 4515 grammar; anchored errors; AD matching-rule OIDs recognized.
-        Stateless and side-effect-free: the same input always yields the same result, and nothing is
-        stored or logged.
+        Paste an LDAP (Lightweight Directory Access Protocol) search filter - get the annotated
+        tree: operators, match types, decoded RFC 4515 escapes, recognised AD matching-rule OIDs,
+        and errors anchored to the exact character. The input is a JSON object: send it as the
+        request body (POST) or as a JSON string (?input=). Standards: RFC 4515 grammar; anchored
+        errors; AD matching-rule OIDs recognized. Stateless and side-effect-free: the same input
+        always yields the same result, and nothing is stored or logged.
       parameters:
         - name: input
           in: query
@@ -12189,12 +12361,12 @@ paths:
       operationId: run_ldap_filter_explainer_post
       summary: LDAP filter explainer (POST)
       description: >-
-        Paste an LDAP search filter - get the annotated tree: operators, match types, decoded RFC
-        4515 escapes, recognised AD matching-rule OIDs, and errors anchored to the exact character.
-        The input is a JSON object: send it as the request body (POST) or as a JSON string
-        (?input=). Standards: RFC 4515 grammar; anchored errors; AD matching-rule OIDs recognized.
-        Stateless and side-effect-free: the same input always yields the same result, and nothing is
-        stored or logged.
+        Paste an LDAP (Lightweight Directory Access Protocol) search filter - get the annotated
+        tree: operators, match types, decoded RFC 4515 escapes, recognised AD matching-rule OIDs,
+        and errors anchored to the exact character. The input is a JSON object: send it as the
+        request body (POST) or as a JSON string (?input=). Standards: RFC 4515 grammar; anchored
+        errors; AD matching-rule OIDs recognized. Stateless and side-effect-free: the same input
+        always yields the same result, and nothing is stored or logged.
       requestBody:
         required: true
         description: The tool input as a JSON object.
@@ -13427,6 +13599,86 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       x-golden-vector-set: openssl-s-client-explainer/2026-10-27c
+  /ospf-cost-and-adjacency-checker:
+    get:
+      tags:
+        - Networking
+      operationId: run_ospf_cost_and_adjacency_checker
+      summary: OSPF cost and adjacency checker
+      description: >-
+        Each interface's OSPF (Open Shortest Path First) cost from the reference bandwidth by each
+        vendor's documented rule, the speeds that collapse to the same cost and the smallest
+        reference that tells them apart; and, for two neighbouring interfaces, every mismatch, the
+        packet each side drops under RFC 2328 or RFC 5340, and the neighbour state each side stalls
+        in. The input is a JSON object: send it as the request body (POST) or as a JSON string
+        (?input=). Standards: RFC 2328 s8.2, s10.4, s10.5, s10.6, s12.4.1, s16.1, C.3, D.5, RFC 2328
+        erratum 3734, RFC 5340 s4.2.2, s4.2.2.1, RFC 3101 s2.1, RFC 5709 s3.4, RFC 6549 s3.1, RFC
+        7166 s4.6, RFC 4552 s3, vendor cost pages (Cisco, Juniper, FRRouting, Extreme, Huawei,
+        Arista, AOS-CX, RouterOS), Huawei ospf mtu-enable, ospf timer hello and dead. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+            examples:
+              - '{"mode":"cost","vendor":"juniper-junos","reference":"","links":"100M, 1G, 10G"}'
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-golden-vector-set: ospf-cost-and-adjacency-checker-golden-2026-11-08b
+    post:
+      tags:
+        - Networking
+      operationId: run_ospf_cost_and_adjacency_checker_post
+      summary: OSPF cost and adjacency checker (POST)
+      description: >-
+        Each interface's OSPF (Open Shortest Path First) cost from the reference bandwidth by each
+        vendor's documented rule, the speeds that collapse to the same cost and the smallest
+        reference that tells them apart; and, for two neighbouring interfaces, every mismatch, the
+        packet each side drops under RFC 2328 or RFC 5340, and the neighbour state each side stalls
+        in. The input is a JSON object: send it as the request body (POST) or as a JSON string
+        (?input=). Standards: RFC 2328 s8.2, s10.4, s10.5, s10.6, s12.4.1, s16.1, C.3, D.5, RFC 2328
+        erratum 3734, RFC 5340 s4.2.2, s4.2.2.1, RFC 3101 s2.1, RFC 5709 s3.4, RFC 6549 s3.1, RFC
+        7166 s4.6, RFC 4552 s3, vendor cost pages (Cisco, Juniper, FRRouting, Extreme, Huawei,
+        Arista, AOS-CX, RouterOS), Huawei ospf mtu-enable, ospf timer hello and dead. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-golden-vector-set: ospf-cost-and-adjacency-checker-golden-2026-11-08b
   /oui-lookup:
     get:
       tags:
@@ -14275,6 +14527,85 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       x-golden-vector-set: pyproject-toml-explainer/2026-10-27a
+  /radius-packet-decoder:
+    get:
+      tags:
+        - Protocol & packet decoders
+      operationId: run_radius_packet_decoder
+      summary: RADIUS packet decoder
+      description: >-
+        Paste the hex of a RADIUS (Remote Authentication Dial-In User Service) packet as a capture
+        shows it and read its Code, Identifier, Length and Authenticator and every attribute in its
+        data type, named from IANA's registries, with vendor attributes, EAP and VLAN assignment
+        explained; hidden passwords are explained, never decrypted, and a short comparison sets
+        RADIUS beside TACACS+. Standards: RFC 2865 s3, s4.1, s5, s5.26, s5.44, RFC 2866 s3, s5.13,
+        RFC 2868 s3, s4, RFC 3579 s3.1-s3.3, RFC 3580 s3.31, RFC 5176 s2.3, RFC 5997 s3, s5, RFC
+        6929 s2, RFC 8044 s3, RFC 2548, RFC 3748 s4, RFC 8907, IANA RADIUS Types, IANA EAP Registry,
+        IANA Private Enterprise Numbers. Stateless and side-effect-free: the same input always
+        yields the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+            examples:
+              - >-
+                010000380f403f9473978057bd83d5cb98f4227a01066e656d6f02120dbe708d93d413ce3196e43f782a0aee0406c0a80110050600000003
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-golden-vector-set: radius-packet-decoder-golden-2026-11-08b
+    post:
+      tags:
+        - Protocol & packet decoders
+      operationId: run_radius_packet_decoder_post
+      summary: RADIUS packet decoder (POST)
+      description: >-
+        Paste the hex of a RADIUS (Remote Authentication Dial-In User Service) packet as a capture
+        shows it and read its Code, Identifier, Length and Authenticator and every attribute in its
+        data type, named from IANA's registries, with vendor attributes, EAP and VLAN assignment
+        explained; hidden passwords are explained, never decrypted, and a short comparison sets
+        RADIUS beside TACACS+. Standards: RFC 2865 s3, s4.1, s5, s5.26, s5.44, RFC 2866 s3, s5.13,
+        RFC 2868 s3, s4, RFC 3579 s3.1-s3.3, RFC 3580 s3.31, RFC 5176 s2.3, RFC 5997 s3, s5, RFC
+        6929 s2, RFC 8044 s3, RFC 2548, RFC 3748 s4, RFC 8907, IANA RADIUS Types, IANA EAP Registry,
+        IANA Private Enterprise Numbers. Stateless and side-effect-free: the same input always
+        yields the same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+              examples:
+                - >-
+                  010000380f403f9473978057bd83d5cb98f4227a01066e656d6f02120dbe708d93d413ce3196e43f782a0aee0406c0a80110050600000003
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-golden-vector-set: radius-packet-decoder-golden-2026-11-08b
   /regex:
     get:
       tags:
@@ -16190,13 +16521,14 @@ paths:
       operationId: run_sse_architecture_explainer
       summary: SSE / SASE single-pass architecture explainer
       description: >-
-        Describe a request \u2014 where it is going, how it is steered, whether the device is
-        managed, whether TLS is decrypted \u2014 and see the single pass: which SSE services engage,
-        which are pillars and which are cross-cutting, and what a chain of separate appliances would
-        have done instead. Deterministic and offline. The input is a JSON object: send it as the
-        request body (POST) or as a JSON string (?input=). Standards: Netskope One platform.
-        Stateless and side-effect-free: the same input always yields the same result, and nothing is
-        stored or logged.
+        Describe a request (where it is going, how it is steered, whether the device is managed,
+        whether TLS is decrypted) and see the single pass: which SSE services engage, which are
+        pillars and which are cross-cutting, and what a chain of separate appliances would have done
+        instead. SSE (security service edge) is the security half of SASE (secure access service
+        edge). Deterministic and offline. The input is a JSON object: send it as the request body
+        (POST) or as a JSON string (?input=). Standards: Netskope One platform. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
       parameters:
         - name: input
           in: query
@@ -16224,13 +16556,14 @@ paths:
       operationId: run_sse_architecture_explainer_post
       summary: SSE / SASE single-pass architecture explainer (POST)
       description: >-
-        Describe a request \u2014 where it is going, how it is steered, whether the device is
-        managed, whether TLS is decrypted \u2014 and see the single pass: which SSE services engage,
-        which are pillars and which are cross-cutting, and what a chain of separate appliances would
-        have done instead. Deterministic and offline. The input is a JSON object: send it as the
-        request body (POST) or as a JSON string (?input=). Standards: Netskope One platform.
-        Stateless and side-effect-free: the same input always yields the same result, and nothing is
-        stored or logged.
+        Describe a request (where it is going, how it is steered, whether the device is managed,
+        whether TLS is decrypted) and see the single pass: which SSE services engage, which are
+        pillars and which are cross-cutting, and what a chain of separate appliances would have done
+        instead. SSE (security service edge) is the security half of SASE (secure access service
+        edge). Deterministic and offline. The input is a JSON object: send it as the request body
+        (POST) or as a JSON string (?input=). Standards: Netskope One platform. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
       requestBody:
         required: true
         description: The tool input as a JSON object.
@@ -16895,6 +17228,82 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       x-golden-vector-set: ssrf-url-classifier/2026-10-19b
+  /stp-election-calculator:
+    get:
+      tags:
+        - Networking
+      operationId: run_stp_election_calculator
+      summary: Spanning tree election calculator
+      description: >-
+        The root bridge, every root port, every designated port and the ports left as alternate or
+        backup in a small switched network you describe in a few lines, each step with the
+        comparison that decided it; and the long (802.1t) and short (802.1D-1998) path costs by link
+        speed, with each vendor's documented default. The input is a JSON object: send it as the
+        request body (POST) or as a JSON string (?input=). Standards: IEEE 802.1Q RSTP YANG module
+        (bridge-id, port-id, port-role), IEEE8021-SPANNING-TREE-MIB, RFC 4188, RFC 9542 s2.1.1,
+        s2.1.4, Juniper, MikroTik, Extreme, Cisco, HPE Aruba and Arista documentation. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+            examples:
+              - '{"mode":"cost","speed":"1G"}'
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-golden-vector-set: stp-election-calculator-golden-2026-11-08b
+    post:
+      tags:
+        - Networking
+      operationId: run_stp_election_calculator_post
+      summary: Spanning tree election calculator (POST)
+      description: >-
+        The root bridge, every root port, every designated port and the ports left as alternate or
+        backup in a small switched network you describe in a few lines, each step with the
+        comparison that decided it; and the long (802.1t) and short (802.1D-1998) path costs by link
+        speed, with each vendor's documented default. The input is a JSON object: send it as the
+        request body (POST) or as a JSON string (?input=). Standards: IEEE 802.1Q RSTP YANG module
+        (bridge-id, port-id, port-role), IEEE8021-SPANNING-TREE-MIB, RFC 4188, RFC 9542 s2.1.1,
+        s2.1.4, Juniper, MikroTik, Extreme, Cisco, HPE Aruba and Arista documentation. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-golden-vector-set: stp-election-calculator-golden-2026-11-08b
   /syslog-message-parser:
     get:
       tags:
@@ -17043,12 +17452,13 @@ paths:
       operationId: run_tac_escalation_packet_builder
       summary: TAC Escalation Packet Builder
       description: >-
-        Describe the issue you are about to escalate; a fixed rule set assembles a complete
-        vendor-support packet and a checklist of the artifacts still to collect before opening the
-        case, dropping what you already have. It structures the hand-off; it does not open a case or
-        contact any vendor. The input is a JSON object: send it as the request body (POST) or as a
-        JSON string (?input=). Standards: Original ruleset (D-18). Stateless and side-effect-free:
-        the same input always yields the same result, and nothing is stored or logged.
+        Describe the issue you are about to escalate; a fixed rule set assembles a complete packet
+        for the vendor's technical assistance centre (TAC) and a checklist of the artifacts still to
+        collect before opening the case, dropping what you already have. It structures the hand-off;
+        it does not open a case or contact any vendor. The input is a JSON object: send it as the
+        request body (POST) or as a JSON string (?input=). Standards: Original ruleset (D-18).
+        Stateless and side-effect-free: the same input always yields the same result, and nothing is
+        stored or logged.
       parameters:
         - name: input
           in: query
@@ -17076,12 +17486,13 @@ paths:
       operationId: run_tac_escalation_packet_builder_post
       summary: TAC Escalation Packet Builder (POST)
       description: >-
-        Describe the issue you are about to escalate; a fixed rule set assembles a complete
-        vendor-support packet and a checklist of the artifacts still to collect before opening the
-        case, dropping what you already have. It structures the hand-off; it does not open a case or
-        contact any vendor. The input is a JSON object: send it as the request body (POST) or as a
-        JSON string (?input=). Standards: Original ruleset (D-18). Stateless and side-effect-free:
-        the same input always yields the same result, and nothing is stored or logged.
+        Describe the issue you are about to escalate; a fixed rule set assembles a complete packet
+        for the vendor's technical assistance centre (TAC) and a checklist of the artifacts still to
+        collect before opening the case, dropping what you already have. It structures the hand-off;
+        it does not open a case or contact any vendor. The input is a JSON object: send it as the
+        request body (POST) or as a JSON string (?input=). Standards: Original ruleset (D-18).
+        Stateless and side-effect-free: the same input always yields the same result, and nothing is
+        stored or logged.
       requestBody:
         required: true
         description: The tool input as a JSON object.
@@ -17796,6 +18207,92 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       x-golden-vector-set: uuid-golden-v1
+  /vlan-tag-and-trunk-calculator:
+    get:
+      tags:
+        - Networking
+      operationId: run_vlan_tag_and_trunk_calculator
+      summary: 802.1Q tag decoder and trunk VLAN calculator
+      description: >-
+        Decode an 802.1Q tag or a frame's start: TPID, PCP with its traffic type, DEI and VID with
+        the bits laid out, stacked 802.1ad tags and the EtherType that follows, named from IANA's
+        list. Or paste the trunk lines of both ends, in Cisco IOS XE, Junos, AOS-CX, RouterOS,
+        Switch Engine, Fabric Engine, Arista EOS or Huawei VRP syntax, and see which VLANs cross,
+        which one end drops, and where the native VLANs disagree. The input is a JSON object: send
+        it as the request body (POST) or as a JSON string (?input=). Standards: IEEE P802.1ad/D2.4
+        clause 9, Tables 9-1, 9-2, 6-5, G-2, IEEE ieee802-dot1q-types and ieee802-dot1q-bridge YANG
+        (2023-10-26), IEEE8021-Q-BRIDGE-MIB, RFC 9542 s2.1.1, s2.1.4, s3, IANA IEEE 802 Numbers
+        (Ethertypes), Cisco IOS XE 17.18 VLAN guide and command reference, 17.17 command reference,
+        Juniper bridging and VLANs (ELS), HPE Aruba AOS-CX 10.16 vlan trunk allowed/native, MikroTik
+        RouterOS 7.24 bridge VLAN filtering, Extreme Switch Engine 33.7.1, Fabric Engine 9.4, Arista
+        EOS 4.37.0F VLANs, Huawei S5700/S6700 V200R025C00 VLAN commands and Table 4-2. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+            examples:
+              - 81 00 a0 14 08 00
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-golden-vector-set: vlan-tag-and-trunk-calculator-golden-2026-11-08b
+    post:
+      tags:
+        - Networking
+      operationId: run_vlan_tag_and_trunk_calculator_post
+      summary: 802.1Q tag decoder and trunk VLAN calculator (POST)
+      description: >-
+        Decode an 802.1Q tag or a frame's start: TPID, PCP with its traffic type, DEI and VID with
+        the bits laid out, stacked 802.1ad tags and the EtherType that follows, named from IANA's
+        list. Or paste the trunk lines of both ends, in Cisco IOS XE, Junos, AOS-CX, RouterOS,
+        Switch Engine, Fabric Engine, Arista EOS or Huawei VRP syntax, and see which VLANs cross,
+        which one end drops, and where the native VLANs disagree. The input is a JSON object: send
+        it as the request body (POST) or as a JSON string (?input=). Standards: IEEE P802.1ad/D2.4
+        clause 9, Tables 9-1, 9-2, 6-5, G-2, IEEE ieee802-dot1q-types and ieee802-dot1q-bridge YANG
+        (2023-10-26), IEEE8021-Q-BRIDGE-MIB, RFC 9542 s2.1.1, s2.1.4, s3, IANA IEEE 802 Numbers
+        (Ethertypes), Cisco IOS XE 17.18 VLAN guide and command reference, 17.17 command reference,
+        Juniper bridging and VLANs (ELS), HPE Aruba AOS-CX 10.16 vlan trunk allowed/native, MikroTik
+        RouterOS 7.24 bridge VLAN filtering, Extreme Switch Engine 33.7.1, Fabric Engine 9.4, Arista
+        EOS 4.37.0F VLANs, Huawei S5700/S6700 V200R025C00 VLAN commands and Table 4-2. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-golden-vector-set: vlan-tag-and-trunk-calculator-golden-2026-11-08b
   /voss-exos-translator:
     get:
       tags:

@@ -88,6 +88,11 @@ import { run as cgnPortBlocksRun } from "./cgn-port-blocks"; // the CGN port-blo
 import { runApi as bfdTimersRunApi } from "./bfd-timers/compute"; // the JSON entry point of the BFD timer calculator (2026-10-19)
 import { runApi as snmpCounterWrapRunApi } from "./snmp-counter-wrap-calculator/compute"; // the JSON entry point of the SNMP counter wrap and rate calculator (2026-11-02)
 import { runApi as vrrpTimerRunApi } from "./vrrp-timer-calculator/compute"; // the JSON entry point of the VRRP timer, virtual MAC and election calculator (2026-11-02)
+import { runApi as ospfCostAdjacencyRunApi } from "./ospf-cost-and-adjacency-checker/compute"; // the JSON entry point of the OSPF cost and adjacency checker (2026-11-08)
+import { runApi as vlanTagTrunkRunApi } from "./vlan-tag-and-trunk-calculator/compute"; // the JSON entry point of the 802.1Q tag decoder and trunk VLAN calculator (2026-11-08)
+import { runApi as lacpHashAndStateRunApi } from "./lacp-hash-and-state-reader/compute"; // the JSON entry point of the LACP member link and state reader (2026-11-08)
+import { runApi as stpElectionRunApi } from "./stp-election-calculator/compute"; // the JSON entry point of the spanning tree election calculator (2026-11-08)
+import { runApi as bitNumberingRunApi } from "./bit-numbering-and-order/compute"; // the JSON entry point of the bit numbering and bit order tool (2026-11-08)
 import { run as rpkiOriginValidationRun } from "./rpki-origin-validation"; // route origin validation (2026-10-19)
 import { run as httpMethodsComparisonRun } from "./http-methods-comparison";
 import { run as cronExpressionExplainerRun } from "./cron-expression-explainer";
@@ -200,6 +205,7 @@ import { run as samlDecoderRun } from "./saml-decoder";
 import { run as secureHeadersRun } from "./secure-headers";
 import { run as ssrfUrlClassifierRun } from "./ssrf-url-classifier";
 import { run as syslogPriDecoderRun } from "./syslog-pri-decoder";
+import { runApi as radiusPacketDecoderRunApi } from "./radius-packet-decoder/compute"; // the hex of a RADIUS packet, or {"input", "mode"} as JSON (2026-11-08)
 import { run as syslogMessageParserRun } from "./syslog-message-parser";
 import { run as logLevelMapperRun } from "./log-level-mapper";
 import { run as ja4FingerprintDecoderRun } from "./ja4-fingerprint-decoder";
@@ -268,6 +274,16 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "snmp-counter-wrap-calculator", structured: true, run: (input) => snmpCounterWrapRunApi(input) },
   // Structured: the body is {"mode": "timers" | "election" | "mac", ...}; exact arithmetic, nothing fetched; the engine parses the JSON itself (2026-11-02).
   { slug: "vrrp-timer-calculator", structured: true, run: (input) => vrrpTimerRunApi(input) },
+  // Structured: the body is {"mode": "cost", ...} or {"mode": "adjacency", ...}; exact arithmetic and fixed receive checks, nothing fetched; the engine parses the JSON itself (2026-11-08).
+  { slug: "ospf-cost-and-adjacency-checker", structured: true, run: (input) => ospfCostAdjacencyRunApi(input) },
+  // Structured: the body is {"mode": "tag", "input": "<hex>"} or {"mode": "trunk", "a": {"vendor", "config"}, "b": {...}}; bit, table and set arithmetic, nothing fetched; the engine parses the JSON itself (2026-11-08).
+  { slug: "vlan-tag-and-trunk-calculator", structured: true, run: (input) => vlanTagTrunkRunApi(input) },
+  // Structured: the body is {"mode": "link" | "state", ...}; bit arithmetic only, nothing fetched; the engine parses the JSON itself (2026-11-08).
+  { slug: "lacp-hash-and-state-reader", structured: true, run: (input) => lacpHashAndStateRunApi(input) },
+  // Structured: the body is {"mode": "election", "method": ..., "topology": "<lines>"} or {"mode": "cost", "speed": ...}; nothing fetched; the engine parses the JSON itself (2026-11-08).
+  { slug: "stp-election-calculator", structured: true, run: (input) => stpElectionRunApi(input) },
+  // Structured: the body is {"mode": "value" | "printed" | "mac", "input": ..., ...}; bit arithmetic only, nothing fetched; the engine parses the JSON itself (2026-11-08).
+  { slug: "bit-numbering-and-order", structured: true, run: (input) => bitNumberingRunApi(input) },
   // Structured: the body is {"route": "<prefix> <origin AS>", "vrps": "<one VRP per line>" or SLURM JSON}; nothing fetched (2026-10-19).
   { slug: "rpki-origin-validation", structured: true, run: (input) => rpkiOriginValidationRun(JSON.parse(input)) },
   { slug: "http-methods-comparison", run: httpMethodsComparisonRun },
@@ -417,6 +433,7 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "secure-headers", run: secureHeadersRun },
   { slug: "ssrf-url-classifier", run: ssrfUrlClassifierRun },
   { slug: "syslog-pri-decoder", run: syslogPriDecoderRun },
+  { slug: "radius-packet-decoder", run: radiusPacketDecoderRunApi }, // plain hex (a packet), or JSON {"input", "mode": "packet" | "attributes"} (2026-11-08)
   // Structured: the body is {"text": "..."}, one syslog message or TCP frame; parsed by grammar, nothing fetched (rank 35, 2026-10-05).
   { slug: "syslog-message-parser", structured: true, run: (input) => syslogMessageParserRun(JSON.parse(input)) },
   // Structured: the body is {"system": "python", "level": "WARNING"}; a table lookup over the sources' ladders (2026-10-05).

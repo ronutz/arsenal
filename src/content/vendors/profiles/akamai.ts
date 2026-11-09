@@ -63,7 +63,7 @@ export const akamaiProfile: VendorProfile = {
       year: 1999,
       title: "March Madness, then the IPO",
       detail:
-        "The first public proof was the US college basketball tournament: sixty-four teams, a few days, and an audience that arrived all at once. The company listed on NASDAQ on 29 October, raising around $234M. The shares opened at $26 and closed their first day above $145.",
+        "The first public proof was the US college basketball tournament: sixty-four teams, a few days, and an audience that arrived all at once. The company listed on NASDAQ on 29 October in an initial public offering (IPO), raising around $234M. The shares opened at $26 and closed their first day above $145.",
     },
     {
       year: 2001,
@@ -98,7 +98,7 @@ export const akamaiProfile: VendorProfile = {
     },
     {
       name: "Kona and App & API Protector",
-      what: "Web application firewalling and DDoS mitigation delivered from the same edge, on the reasoning that a network already terminating the connection is the natural place to inspect it.",
+      what: "Web application firewalling and DDoS (distributed denial of service) mitigation delivered from the same edge, on the reasoning that a network already terminating the connection is the natural place to inspect it.",
     },
     {
       name: "Guardicore segmentation",

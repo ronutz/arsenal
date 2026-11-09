@@ -53,7 +53,7 @@ Fields are `key=value`, with commas inside a value for lists. Anything omitted d
 
 ## What it does not do
 
-It does not read your configuration, connect to Panorama, or collect anything. It does not model App-ID shifting mid-session, security profiles, NAT, or decryption policy. It reasons about the **order** of the rules you give it, which is the part decided at commit time and the part that is hard to see.
+It does not read your configuration, connect to Panorama, or collect anything. It does not model App-ID shifting mid-session, security profiles, NAT (network address translation), or decryption policy. It reasons about the **order** of the rules you give it, which is the part decided at commit time and the part that is hard to see.
 
 ## A note on authorization
 

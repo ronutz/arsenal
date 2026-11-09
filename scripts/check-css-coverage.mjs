@@ -81,6 +81,8 @@ const CSS_FILES = [
   "src/app/not-found.css", // the 404's self-contained stylesheet (own shell, own theme)
   "src/components/LanguageSwitcher.css",
   "src/app/fun-games.css", // the /dev/fun games (2026-11-03), imported by globals.css
+  "src/app/fun-ttl.css", // TTL (2026-11-08), the arcade game's own block, imported by globals.css after fun-games.css
+  "src/app/fun-rule-inspector.css", // Rule Inspector (2026-11-08), the arcade game's own block, imported by globals.css after fun-ttl.css
 ];
 const css = CSS_FILES.map((f) => readFileSync(f, "utf8"))
   .join("\n")

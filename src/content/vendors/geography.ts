@@ -220,6 +220,14 @@ export const LEARNING_GEOGRAPHY: Record<string, CompanyGeography> = {
     scope: "global",
     source: { label: "Wikipedia: Udemy, headquarters San Francisco, California; offices in the United States, Australia, India, Ireland, Mexico and Turkey; courses in sixteen languages (read 2026-10-05)", url: "https://en.wikipedia.org/wiki/Udemy" },
   },
+  udacity: {
+    // Mountain View since the 2011 founding (Accenture's dateline and the encyclopaedia); part of Accenture since May 2024.
+    hq: { country: "US", city: "Mountain View, California" },
+    // 195 countries by Accenture's count at the acquisition: several continents, hence global.
+    scope: "global",
+    // The page the footprint was read from, with the date.
+    source: { label: "Accenture newsroom, New York and Mountain View, 20 May 2024: Accenture completes the acquisition of Udacity, founded in 2011, which has served more than 21 million registered learners in 195 countries (read 2026-11-08)", url: "https://newsroom.accenture.com/news/2024/accenture-completes-acquisition-of-udacity" },
+  },
   pluralsight: {
     hq: { country: "US", city: "Westlake, Texas" },
     scope: "global",

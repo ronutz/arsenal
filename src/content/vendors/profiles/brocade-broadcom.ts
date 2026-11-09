@@ -36,7 +36,7 @@ export const brocadeBroadcomProfile: VendorProfile = {
       place: "Santa Clara, California",
       founders: ["Bobby R. Johnson, Jr.", "H. Earl Ferguson"],
       story:
-        "Founded in May 1996 by Johnson, who had already founded LAN-switch maker Centillion Networks, with Ferguson as founding CTO. The company spent its first months as Perennium Networks and StarRidge Networks before becoming Foundry in January 1997. It then moved with startling speed: the first gigabit Ethernet switch and the first Layer 3 switch in 1997, the first Layer 4-7 switch, ServerIron, in 1998. Its dot-com era IPO reached a $9 billion valuation on the first day of trading.",
+        "Founded in May 1996 by Johnson, who had already founded LAN-switch maker Centillion Networks, with Ferguson as founding CTO. The company spent its first months as Perennium Networks and StarRidge Networks before becoming Foundry in January 1997. It then moved with startling speed: the first gigabit Ethernet switch and the first Layer 3 switch in 1997, the first Layer 4-7 switch, ServerIron, in 1998. Its dot-com era IPO (initial public offering) reached a $9 billion valuation on the first day of trading.",
     },
   ],
   timeline: [

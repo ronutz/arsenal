@@ -259,10 +259,15 @@ export const VENDOR_ORIGINS: Record<string, CountryCode> = {
   "access-home-fleet": "US",
   watchguard: "US",
   a10: "US",
+  // Accenture (corrected 2026-11-08: it read IE, its domicile, which this file does not record): the practice began as
+  // the consulting division of Arthur Andersen, a Chicago firm founded in 1913, and was constituted in 1989 as Andersen
+  // Consulting, a unit of Andersen Worldwide Societe Cooperative, a Swiss coordinating entity; incorporated in Bermuda
+  // in 2001 and in Ireland from 2009 (Wikipedia, Accenture and Arthur Andersen; Britannica Money, Accenture; read
+  // 2026-11-08). The flag follows where the business was founded and grew, the United States.
+  accenture: "US",
   "red-education": "AU",
 
   // ---- Rest of the world --------------------------------------------------
-  accenture: "IE", // Andersen Consulting's successor; incorporated Bermuda 2001, Dublin from 2009
   "nozomi-networks": "CH",
   audiocodes: "IL",
   hcl: "IN",
@@ -522,4 +527,45 @@ export const VENDOR_ORIGINS: Record<string, CountryCode> = {
   pluralsight: "US",
   edx: "US",
   alura: "BR",
+  // ---- Added 2026-11-08: the Brazil-rooted and Brazil-focused batch of PRIME's list of 08/11/2026. Each is the
+  // FOUNDING country, as the file's header defines origin, read from each record's own sourced copy: CI&T,
+  // Campinas 1995 (investor FAQ); Sensedia, Campinas 2007 (company history); Radix, Rio de Janeiro 2010
+  // (company page and federal registry); IT Forum, a Brazilian licence of Byte in the early 1990s (IT Forum,
+  // 20 August 2025); Aranda, São Paulo 1976 (home page); SoftDesign, Porto Alegre 1997 (federal registry).
+  "ci-and-t": "BR",
+  sensedia: "BR",
+  radix: "BR",
+  "it-forum": "BR",
+  aranda: "BR",
+  softdesign: "BR",
+  // Encora took its name in Scottsdale, Arizona, in 2020 (AZ Big Media, 4 August 2020); its Brazilian part,
+  // Daitan, keeps no record of its own. Recorded as US, the country where the company named Encora was formed.
+  encora: "US",
+  // Udacity: Mountain View, California, 2011 (Accenture newsroom, 20 May 2024; Wikipedia, read 2026-11-08).
+  udacity: "US",
+  // Thoughtworks: founded in Chicago in 1993 (thoughtworks.com, About us, read 2026-11-08).
+  thoughtworks: "US",
+  // ---- Added 2026-11-08: the consultancy and audit networks of PRIME's list of 08/11/2026. Each is the FOUNDING
+  // country of the card's own subject, as the file's header defines origin; the records' sourced intros state them.
+  // Deloitte: William Welch Deloitte's London office of 1845, the card's own founding.
+  deloitte: "GB",
+  // EY: Ernst & Young was formed in 1989 by a merger of firms on both sides of the Atlantic (Ernst & Whinney, itself
+  // British and American, and Arthur Young); GB is chosen because its oldest component (Harding & Pullein, London) and
+  // its coordinating company (Ernst & Young Global Limited, London) are British. A judgement, recorded as one.
+  ey: "GB",
+  // PwC: formed in 1998 by the merger of Price Waterhouse and Coopers & Lybrand, both of London origin, with the
+  // coordinating company PwCIL incorporated in London on 24 June 1998.
+  pwc: "GB",
+  // McKinsey & Company: Chicago, 1926.
+  mckinsey: "US",
+  // Boston Consulting Group: Boston, 1963, as a unit of the Boston Safe Deposit and Trust Company.
+  bcg: "US",
+  // Bain & Company: Boston, 1973.
+  bain: "US",
+  // Avanade: announced in 2000 with headquarters in the Seattle area.
+  avanade: "US",
+  // KPMG (added 2026-11-08): formed in 1987 by the merger of Peat Marwick International and Klynveld Main Goerdeler.
+  // GB, by the same judgement as EY: its oldest component (William Barclay Peat & Co., London, 1891) and its
+  // coordinating company (KPMG International, company 12474966, 15 Canada Square, London) are British.
+  kpmg: "GB",
 };

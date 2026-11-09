@@ -15,6 +15,7 @@
 // nextdns, nortel-bay, novell, olitel, opennms-group, paessler, proteon, rcx,
 // sixdegrees, skytap, spiderlabs, supermicro, tandy-radioshack, tech-data-
 // synnex, techdec, tecnocomp, totvs, xerox
+// Added 2026-11-08 (the Brazilian batch): ci-and-t, radix, sensedia
 // ============================================================================
 
 import type { PartnerVendorOverlay } from "@/content/vendors/localized";
@@ -28,7 +29,7 @@ export const SHARD_1: Record<string, PartnerVendorOverlay> = {
     // Card line and page intro.
     tagline: "Atacou o application delivery pelo flanco do throughput, onde o tráfego é mais pesado.",
     intro:
-      "Lee Chen fundou a A10 em San Jose em 2004, depois de já ter sido cofundador da Centillion Networks e da Foundry Networks. Em vez de disputar o data center corporativo recurso por recurso, a empresa foi aonde o volume decide: carrier-grade NAT, absorção de DDoS e a camada de service providers medida em milhões de sessões simultâneas.",
+      "Lee Chen fundou a A10 em San Jose em 2004, depois de já ter sido cofundador da Centillion Networks e da Foundry Networks. Em vez de disputar o data center corporativo recurso por recurso, a empresa foi aonde o volume decide: carrier-grade NAT (tradução de endereços de rede), absorção de DDoS (negação de serviço distribuída) e a camada de service providers medida em milhões de sessões simultâneas.",
     // Body paragraphs, same count and order as English.
     body: [
       "O perfil abaixo cobre a fundação, o litígio com a Brocade, a abertura de capital em 2014, a década do CGNAT e a entrada em DDoS e em infraestrutura 5G.",
@@ -261,11 +262,11 @@ export const SHARD_1: Record<string, PartnerVendorOverlay> = {
         },
       ],
       timeline: [
-        { year: 1993, title: "Stateful inspection", detail: "Fundada em Ramat Gan sobre a ideia central de Shwed, patenteada como Stateful Inspection: um firewall que se lembra do estado das conexões. O FireWall-1 sai no ano seguinte, com o VPN-1, entre os primeiros produtos comerciais de VPN, logo atrás." },
-        { year: 1996, title: "Líder de mercado, depois o IPO", detail: "Em fevereiro, a IDC aponta a Check Point como líder mundial do mercado de firewalls, com 40 por cento de participação; a listagem na NASDAQ como CHKP vem no mesmo ano: a indústria de segurança de Israel chega ao palco mundial." },
+        { year: 1993, title: "Stateful inspection", detail: "Fundada em Ramat Gan sobre a ideia central de Shwed, patenteada como Stateful Inspection: um firewall que se lembra do estado das conexões. O FireWall-1 sai no ano seguinte, com o VPN-1, entre os primeiros produtos comerciais de VPN (rede privada virtual), logo atrás." },
+        { year: 1996, title: "Líder de mercado, depois o IPO (oferta pública inicial)", detail: "Em fevereiro, a IDC aponta a Check Point como líder mundial do mercado de firewalls, com 40 por cento de participação; a listagem na NASDAQ como CHKP vem no mesmo ano: a indústria de segurança de Israel chega ao palco mundial." },
         { year: 2009, title: "Os appliances da Nokia voltam para casa", detail: "A Check Point conclui a aquisição do negócio de appliances de segurança da Nokia (a linha de hardware que tinha levado o FireWall-1 a incontáveis data centers) e reúne software e metal sob o mesmo teto, ao lado da arquitetura Software Blades, apresentada no mesmo ano." },
         { year: 2018, title: "Comprando a entrada na era da nuvem", detail: "A Dome9 (cerca de US$ 175 milhões) traz gestão de postura de segurança em nuvem e abre uma sequência de aquisições que acrescenta a Avanan, para segurança de e-mail em nuvem, em 2021: as famílias CloudGuard e Harmony tomam forma." },
-        { year: 2023, title: "Perimeter 81 e a virada para SASE", detail: "A aquisição da Perimeter 81, por cerca de US$ 490 milhões, traz o security service edge para o portfólio do trabalho híbrido, incorporado à plataforma Infinity ao lado do Quantum (rede) e da compra da Cyberint, de inteligência de ameaças, em 2024 (cerca de US$ 186 milhões)." },
+        { year: 2023, title: "Perimeter 81 e a virada para SASE (secure access service edge)", detail: "A aquisição da Perimeter 81, por cerca de US$ 490 milhões, traz o security service edge para o portfólio do trabalho híbrido, incorporado à plataforma Infinity ao lado do Quantum (rede) e da compra da Cyberint, de inteligência de ameaças, em 2024 (cerca de US$ 186 milhões)." },
         { year: 2024, title: "O segundo CEO em trinta e um anos", detail: "Dezembro de 2024: Nadav Zafrir, cofundador da Team8 e ex-comandante da Unit 8200, torna-se apenas o segundo CEO da história da empresa; Gil Shwed passa a Executive Chairman: o inventor do firewall entrega a empresa que construiu.", sourceNote: "Página de liderança da Check Point; anunciado em 24 de julho de 2024." },
       ],
       products: [
@@ -292,7 +293,7 @@ export const SHARD_1: Record<string, PartnerVendorOverlay> = {
     name: "Conversys - a infraestrutura e as operações de rede por trás dela",
     tagline: "Integradora brasileira que cobre nuvem híbrida, redes corporativas, SD-WAN e segurança, com centro de operações de rede próprio.",
     intro:
-      "A Conversys é uma integradora brasileira cujo catálogo vai da nuvem híbrida e da infraestrutura de borda, passando por redes corporativas e SD-WAN, até segurança, e que opera um centro de operações de rede próprio ao lado da consultoria.",
+      "A Conversys é uma integradora brasileira cujo catálogo vai da nuvem híbrida e da infraestrutura de borda, passando por redes corporativas e SD-WAN (software-defined wide area network), até segurança, e que opera um centro de operações de rede próprio ao lado da consultoria.",
     // Body paragraphs, same count and order as English.
     body: [
       "O NOC é a parte dessa lista que merece atenção. Vender e instalar infraestrutura é um negócio de projeto, com data para acabar; operá-la é um relacionamento com escala de plantão, caminho de escalonamento e nível de serviço, e as duas coisas exigem empresas diferentes dentro da mesma empresa.",
@@ -354,7 +355,7 @@ export const SHARD_1: Record<string, PartnerVendorOverlay> = {
       ],
       markets: [
         "Informa mais de 400 milhões de endpoints protegidos em mais de 30.000 clientes, com vendas que vão de planos para pequenas empresas até contratos corporativos de seis dígitos por ano. O licenciamento flexível (comprar créditos de plataforma em vez de módulos avulsos) chegou a US$ 1,69 bilhão de receita recorrente anual, um sinal de demanda sobre como os clientes querem consolidar.",
-        "Os concorrentes hoje estão em três categorias ao mesmo tempo: fabricantes dedicados de endpoint, as suítes de segurança de plataforma e a Microsoft, que entrega um produto concorrente junto com o sistema operacional. A entrada em SIEM acrescentou uma quarta frente, contra incumbentes com décadas de base instalada.",
+        "Os concorrentes hoje estão em três categorias ao mesmo tempo: fabricantes dedicados de endpoint, as suítes de segurança de plataforma e a Microsoft, que entrega um produto concorrente junto com o sistema operacional. A entrada em SIEM (security information and event management) acrescentou uma quarta frente, contra incumbentes com décadas de base instalada.",
       ],
       analyst: [
         "Leader no Magic Quadrant de endpoint protection do Gartner em sete avaliações consecutivas, posicionada mais à direita em completude de visão nas três últimas, e Leader no primeiro Magic Quadrant de tecnologias de inteligência de ciberameaças.",
@@ -417,11 +418,11 @@ export const SHARD_1: Record<string, PartnerVendorOverlay> = {
       ],
       timeline: [
         { year: 1999, title: "O cofre digital", detail: "Fundada em Israel em torno de uma tecnologia de cofre para segredos e credenciais privilegiadas: isolamento de sessão, rotação de credenciais e a trilha de auditoria das contas que podem fazer tudo." },
-        { year: 2014, title: "IPO: CYBR", detail: "A CyberArk é listada na Nasdaq como porta-estandarte da categoria de privileged access management, na esteira da era pós-vazamentos em que credenciais de administrador roubadas encabeçam todo relatório de incidente." },
-        { year: 2017, title: "Segredos para máquinas", detail: "A aquisição da Conjur estende o cofre ao DevOps: gestão de segredos para aplicações, containers e pipelines de CI/CD; o privilégio nunca foi só humano." },
-        { year: 2020, title: "Identidade além do privilégio", detail: "A Idaptive (cerca de US$ 70 milhões) acrescenta gestão de acesso da força de trabalho e SSO, iniciando a ampliação do PAM para uma plataforma completa de segurança de identidade." },
+        { year: 2014, title: "IPO (oferta pública inicial): CYBR", detail: "A CyberArk é listada na Nasdaq como porta-estandarte da categoria de privileged access management, na esteira da era pós-vazamentos em que credenciais de administrador roubadas encabeçam todo relatório de incidente." },
+        { year: 2017, title: "Segredos para máquinas", detail: "A aquisição da Conjur estende o cofre ao DevOps: gestão de segredos para aplicações, containers e pipelines de CI/CD (integração e entrega contínuas); o privilégio nunca foi só humano." },
+        { year: 2020, title: "Identidade além do privilégio", detail: "A Idaptive (cerca de US$ 70 milhões) acrescenta gestão de acesso da força de trabalho e SSO (single sign-on), iniciando a ampliação do PAM para uma plataforma completa de segurança de identidade." },
         { year: 2024, title: "Venafi: a aposta na identidade de máquina", detail: "A aquisição da Venafi, por cerca de US$ 1,54 bilhão, acrescenta gestão de certificados e de identidades de máquina em escala; a essa altura, as máquinas superam muitas vezes as identidades humanas, e a CyberArk se move para dominar os dois lados.", sourceNote: "Anunciada em maio de 2024; concluída em outubro de 2024." },
-        { year: 2026, title: "A saída de US$ 25 bilhões", detail: "11 de fevereiro de 2026: a Palo Alto Networks conclui a aquisição da CyberArk (US$ 45,00 em dinheiro mais 2,2005 ações PANW por ação, cerca de US$ 25 bilhões, o maior negócio da história da indústria de segurança), tornando a identidade o terceiro pilar da plataforma da Palo Alto, ao lado da segurança de rede e do SOC.", sourceNote: "PAN 10-K FY2025 (termos); fechamento conforme os comunicados das empresas, 11 de fevereiro de 2026." },
+        { year: 2026, title: "A saída de US$ 25 bilhões", detail: "11 de fevereiro de 2026: a Palo Alto Networks conclui a aquisição da CyberArk (US$ 45,00 em dinheiro mais 2,2005 ações PANW por ação, cerca de US$ 25 bilhões, o maior negócio da história da indústria de segurança), tornando a identidade o terceiro pilar da plataforma da Palo Alto, ao lado da segurança de rede e do SOC (centro de operações de segurança).", sourceNote: "PAN 10-K FY2025 (termos); fechamento conforme os comunicados das empresas, 11 de fevereiro de 2026." },
       ],
       products: [
         { name: "Privileged Access Manager", what: "O carro-chefe: cofre, isolamento e gravação de sessões, e rotação para as contas que guardam as chaves." },
@@ -654,7 +655,7 @@ export const SHARD_1: Record<string, PartnerVendorOverlay> = {
     body: [
       "Os buscadores da época ordenavam os resultados, em grande parte, por quantas vezes um termo de busca aparecia numa página, algo trivialmente fácil de manipular e que estava sendo manipulado em larga escala. O PageRank media algo que o próprio autor da página não controla: quem mais achava que ela merecia um link.",
       "Em 1998, Page e Brin tentaram vender o PageRank à AltaVista por US$ 1 milhão, com a intenção de voltar aos estudos. A AltaVista não comprou. Eles registraram google.com em 15 de setembro de 1997 (o nome é uma grafia errada de googol, o dígito um seguido de cem zeros) e constituíram a Google Inc. em 4 de setembro de 1998, na garagem de uma pessoa amiga em Menlo Park.",
-      "O primeiro cheque veio de Andy Bechtolsheim, cofundador da Sun Microsystems, seguido de US$ 25 milhões da Kleiner Perkins e da Sequoia em 1999. O IPO de 2004 levantou US$ 1,67 bilhão.",
+      "O primeiro cheque veio de Andy Bechtolsheim, cofundador da Sun Microsystems, seguido de US$ 25 milhões da Kleiner Perkins e da Sequoia em 1999. O IPO (oferta pública inicial) de 2004 levantou US$ 1,67 bilhão.",
       "A página inicial era deliberadamente despojada enquanto todos os concorrentes viravam portais. Isso foi em parte convicção e em parte circunstância (nenhum dos fundadores era grande autor de HTML), mas chegou exatamente no momento em que a AltaVista e os seus pares estavam acrescentando compras, e-mail e notícias à página de entrada de um buscador.",
       "Uma nota de rodapé que vale guardar: o RankDex, construído por Robin Li em 1996, explorava a ordenação baseada em links num cronograma parecido. Li patenteou esse trabalho e depois fundou o Baidu. O PageRank não foi a única ideia do gênero; foi a que acabou embutida numa empresa que queria ser um buscador.",
     ],
@@ -815,7 +816,7 @@ export const SHARD_1: Record<string, PartnerVendorOverlay> = {
       innovations: [
         { title: "A aplicação das regras entregue ao sistema operacional", detail: "O agente não fica no caminho do tráfego. Ele programa o firewall que o sistema operacional já tem (iptables no Linux, a Windows Filtering Platform no Windows) e depois sai do caminho. A empresa chama isso de enforcement-for-hire, e o código que faz o trabalho está em produção desde 1998, de um lado, e desde por volta de 2007, do outro." },
         { title: "O que acontece quando o agente morre", detail: "Essa é a consequência que vale entender, porque todo agente de segurança precisa responder a ela. Um agente inline que falha ou abre o host ou o bloqueia, e as duas coisas são panes. Aqui, o sistema operacional continua aplicando a última política que recebeu, então um agente morto significa que a política para de ser atualizada, e não que para de valer. Concorrentes que instalam o próprio firewall aceitam um modo de falha mais pesado e um problema nas atualizações do sistema operacional em troca de mais controle." },
-        { title: "Rótulos em vez de endereços", detail: "A política é escrita contra quatro dimensões (função, aplicação, ambiente, localização) e nunca contra uma VLAN, uma sub-rede ou um IP. Um workload que se move, ou é reconstruído num novo endereço, mantém as suas regras porque as regras nunca foram sobre onde ele estava. É todo o argumento contra a segmentação baseada em topologia, expresso como modelo de dados." },
+        { title: "Rótulos em vez de endereços", detail: "A política é escrita contra quatro dimensões (função, aplicação, ambiente, localização) e nunca contra uma VLAN (rede local virtual), uma sub-rede ou um IP. Um workload que se move, ou é reconstruído num novo endereço, mantém as suas regras porque as regras nunca foram sobre onde ele estava. É todo o argumento contra a segmentação baseada em topologia, expresso como modelo de dados." },
         { title: "Quatro modos de aplicação, implantados em ordem", detail: "Ocioso, depois só visibilidade, depois seletivo, depois completo. Essa progressão existe porque o modo de falha honesto da segmentação não é ser contornada: é quebrar uma aplicação de produção que ninguém documentou. Poder rodar em produção vendo exatamente o que teria sido bloqueado, antes de bloquear qualquer coisa, é o que torna o projeto sobrevivível." },
       ],
       markets: [
@@ -871,13 +872,13 @@ export const SHARD_1: Record<string, PartnerVendorOverlay> = {
       ],
       timeline: [
         { year: 1996, title: "Fundada em Riga", detail: "John Tully e Arnis Riekstiņš criam a MikroTik para desenvolver roteadores e sistemas para provedores de internet sem fio, escrevendo software de rede para PCs x86 comuns." },
-        { year: 1997, title: "RouterOS", detail: "Sai o software de roteamento baseado em Linux: encaminhamento de pacotes, NAT, firewall e uma profundidade de controle incomum para todo tipo de interface de dados, em hardware que qualquer um podia comprar." },
+        { year: 1997, title: "RouterOS", detail: "Sai o software de roteamento baseado em Linux: encaminhamento de pacotes, NAT (tradução de endereços de rede), firewall e uma profundidade de controle incomum para todo tipo de interface de dados, em hardware que qualquer um podia comprar." },
         { year: 2002, title: "RouterBOARD", detail: "A MikroTik decide fazer o próprio hardware; nasce a marca RouterBOARD, que une o RouterOS a placas feitas sob medida e cria a fórmula de preço e desempenho pela qual a empresa é conhecida.", sourceNote: "Datas conforme a história da própria MikroTik." },
         { year: 2022, title: "O primeiro bilhão privado da Letônia", detail: "Avaliada em EUR 1,30 bilhão, a MikroTik torna-se a 4ª maior empresa da Letônia e a primeira empresa privada letã a superar EUR 1 bilhão em valor." },
         { year: 2023, title: "Equipe pequena, presença global", detail: "Cerca de 367 funcionários em Riga atendem clientes em quase todos os países: uma das histórias mais extremas de receita por funcionário da indústria, inteiramente privada e controlada pelos fundadores." },
       ],
       products: [
-        { name: "RouterOS", what: "O sistema operacional de rede baseado em Linux: roteamento, firewall, VPN, gestão de banda, hotspot e wireless numa única imagem; o mesmo sistema de um roteador doméstico de USD 50 à agregação de um ISP." },
+        { name: "RouterOS", what: "O sistema operacional de rede baseado em Linux: roteamento, firewall, VPN (rede privada virtual), gestão de banda, hotspot e wireless numa única imagem; o mesmo sistema de um roteador doméstico de USD 50 à agregação de um ISP." },
         { name: "RouterBOARD", what: "A linha de hardware própria da MikroTik, de minúsculos equipamentos SOHO à série CCR de cloud core routers para ISPs, além de switches e enlaces wireless de 60 GHz." },
         { name: "O ecossistema certificado", what: "Uma rede mundial de instrutores e consultores certificados cresceu em torno do RouterOS; a especialização em MikroTik virou uma habilidade vendável por si só nos mercados de ISPs." },
       ],
@@ -888,7 +889,7 @@ export const SHARD_1: Record<string, PartnerVendorOverlay> = {
       ],
       markets: [
         "A MikroTik é uma das marcas de rede mais implantadas entre ISPs e provedores de internet sem fio no mundo todo, com força especial nos mercados emergentes, inclusive no Brasil, onde equipamentos MikroTik formam a espinha dorsal de incontáveis redes de provedores no mundo dos ISPs em que eu cresci profissionalmente.",
-        "A empresa continua de capital fechado e independente numa indústria definida pela consolidação (sem IPO, sem aquisição, sem controle externo): o contraexemplo de todas as outras histórias desta seção.",
+        "A empresa continua de capital fechado e independente numa indústria definida pela consolidação (sem oferta pública inicial (IPO), sem aquisição, sem controle externo): o contraexemplo de todas as outras histórias desta seção.",
       ],
       analyst: [
         "Em 2022, a MikroTik foi apontada como a 4ª maior empresa da Letônia em valor (EUR 1,30 bilhão) e a primeira empresa privada da história do país a passar da marca de EUR 1 bilhão.",
@@ -1255,7 +1256,7 @@ export const SHARD_1: Record<string, PartnerVendorOverlay> = {
     // Body paragraphs, same count and order as English.
     body: [
       "A Proteon foi fundada em Westborough, Massachusetts, em 1972, por Howard Salwen, como uma consultoria em comunicações, e não como fabricante. Virou fabricante por causa de um contrato: no começo de 1979, o Laboratory for Computer Science do MIT pagou cem mil dólares para que ela construísse a segunda versão da sua Local Network Interface token ring, com o raciocínio de que comprar seria mais rápido do que construir. A entrega de placas funcionando levou até junho de 1981, o que é uma correção útil ao modo como essas histórias costumam ser contadas.",
-      "O que saiu disso foi o ProNET-10, uma rede de passagem de token de dez megabits lançada em junho de 1981: os primeiros produtos Token Ring comerciais, anos antes de a IBM anunciar os seus, em meados dos anos 1980. A empresa então fez algo de maior consequência e menos lembrado: em 1986, lançou o p4200, o primeiro roteador multiprotocolo disponível comercialmente, construído sobre o roteador multiprotocolo do MIT com código escrito por Noel Chiappa. E produziu o OSPF, o protocolo link-state que ainda é o protocolo de roteamento interno rodando dentro de uma grande parte das redes corporativas hoje.",
+      "O que saiu disso foi o ProNET-10, uma rede de passagem de token de dez megabits lançada em junho de 1981: os primeiros produtos Token Ring comerciais, anos antes de a IBM anunciar os seus, em meados dos anos 1980. A empresa então fez algo de maior consequência e menos lembrado: em 1986, lançou o p4200, o primeiro roteador multiprotocolo disponível comercialmente, construído sobre o roteador multiprotocolo do MIT com código escrito por Noel Chiappa. E produziu o OSPF (Open Shortest Path First), o protocolo link-state que ainda é o protocolo de roteamento interno rodando dentro de uma grande parte das redes corporativas hoje.",
       "Nada disso a salvou, e os números dizem por quê. Em 1990, a IBM detinha 57,7 por cento do mercado de adaptadores Token Ring de quatro megabits e 92,6 por cento do de dezesseis megabits, deixando para a Proteon e a Madge, as duas principais independentes, cerca de dez por cento cada. Ser a segunda depois da IBM num mercado que a IBM definiu não é uma posição, é uma sala de espera. Os resultados de 1987 mostram a pressão diretamente: 22,3 milhões de dólares em vendas, alta de quinze por cento, contra um prejuízo de 5,7 milhões, um terço de tudo o que os investidores de venture capital tinham posto.",
       // Corrected 2026-10-26 (endings apply), mirroring the English: a rename by shareholder vote, not a relaunch.
       "Em junho de 1998, a empresa mudou o próprio nome para OpenROUTE Networks, por votação dos acionistas, e daí passou por Netrix, NX Networks e NSGDatacom. A leitura que vale guardar é sobre quais invenções sobrevivem aos seus inventores. O hardware da Proteon desapareceu completamente e o seu protocolo está em produção em centenas de milhares de equipamentos, porque uma especificação pode ser implementada por qualquer um, enquanto um produto precisa ser comprado de você.",
@@ -1270,7 +1271,7 @@ export const SHARD_1: Record<string, PartnerVendorOverlay> = {
     name: "RCX",
     // Card line and page intro.
     tagline: "Parceira Fortinet de nível Expert no Brasil.",
-    intro: "Pequena integradora de Porto Alegre com nível Expert na Fortinet em SASE e SD-WAN.",
+    intro: "Pequena integradora de Porto Alegre com nível Expert na Fortinet em SASE (secure access service edge) e SD-WAN (software-defined wide area network).",
     // Body paragraphs, same count and order as English.
     body: [
       "A RCX Network Servicos de Informatica está registrada como microempresa, e a combinação desse porte jurídico com um grau de nível Expert é o que vale registrar. O nível se conquista com engenheiros certificados e se mantém com receita, então uma empresa muito pequena que o alcança concentrou as suas certificações em vez de espalhá-las: duas especializações nomeadas, em profundidade, em vez de um portfólio amplo e raso.",
@@ -1563,5 +1564,66 @@ export const SHARD_1: Record<string, PartnerVendorOverlay> = {
         "Presença centenária nas avaliações do setor de impressão e, em toda escola de negócios do planeta, o estudo de caso canônico de inventar o futuro e deixá-lo sair porta afora.",
       ],
     },
+  },
+  // ---- ci-and-t: pt-BR prose for the record (facts stay in the English record) ----
+  "ci-and-t": {
+    // Title: company verbatim, subtitle translated (the " - " separator is structural).
+    name: "CI&T - três engenheiros da Unicamp, um contrato de gerência de redes e a bolsa de Nova York",
+    // Card line (also the meta description).
+    tagline: "Fundada em Campinas em 1995 por três engenheiros de computação formados na Unicamp, lançada por um contrato com a IBM de gerência de redes de telecomunicações, e listada na Bolsa de Nova York em 2021.",
+    // Intro paragraph.
+    intro: "A CI&T foi fundada em 1995 em Campinas por Cesar Gon, Bruno Guiçardi e Fernando Matt, três engenheiros de computação formados pela Universidade Estadual de Campinas (Unicamp) no começo da década. Ela desenvolve software, produtos digitais e sistemas de dados e de inteligência artificial (IA) para grandes empresas, tem sede no polo de tecnologia de Campinas e tem ações negociadas na Bolsa de Nova York desde novembro de 2021.",
+    // Body: 6 paragraph(s), same order as the English.
+    body: [
+      "O primeiro contrato é o detalhe que vale guardar. Segundo o relato publicado em fevereiro de 2003 pela revista de pesquisa da Fundação de Amparo à Pesquisa do Estado de São Paulo (FAPESP), o contrato que consolidou a formação da empresa em 1995 foi assinado com a IBM, e era de gerência de redes de telecomunicações. Uma empresa hoje conhecida por produtos digitais e engenharia de software começou gerenciando a rede de outra, e, no relato da revista, a expansão inicial foi puxada pelo setor de telecomunicações antes de chegar à indústria, aos bancos, às seguradoras e à mídia.",
+      "O método que ela vendia naqueles anos era a componentização: construir software sob medida para cada cliente a partir de peças reutilizáveis, já desenvolvidas, algo que Gon comparava à passagem da produção artesanal para a linha de montagem na indústria automobilística. Em 2002, venceu mais de oitocentos concorrentes num projeto para a Hewlett-Packard, um sistema de reposição automática de estoques para grandes redes varejistas brasileiras; o sistema foi adotado depois pelas unidades da Hewlett-Packard no Chile, no México e nos Estados Unidos, e essa primeira exportação respondeu por um décimo do faturamento da empresa naquele ano. O mesmo artigo registra que parte da expansão foi financiada pelo programa de apoio ao setor de software do Banco Nacional de Desenvolvimento Econômico e Social (BNDES).",
+      "O registro da Unicamp defende que um estado colocou uma universidade de pesquisa numa cidade do interior para industrializá-la. Em 2003, esta empresa era esse argumento em forma de folha de pagamento: setenta por cento dos funcionários tinham vindo da Unicamp, e eles se chamavam de Geração U. A Sensedia, a empresa de interfaces de programação de aplicações, nasceu dela como spin-off em 2007, de dentro da mesma universidade.",
+      "O histórico de controle é curto e datado. Em julho de 2019, o fundo de private equity Advent comprou a participação de trinta por cento que a BNDESPar, o braço de investimentos do banco de desenvolvimento, tinha na empresa, junto com uma parte não revelada das ações dos fundadores; Gon continuou como presidente-executivo e disse que quase metade da receita já vinha do exterior, a maior parte dos Estados Unidos. Em 10 de novembro de 2021, as ações começaram a ser negociadas na Bolsa de Nova York com o ticker CINT. A empresa listada é constituída nas Ilhas Cayman, enquanto a sede continua no Pólis de Tecnologia, em Campinas.",
+      "As aquisições vieram dos dois lados da abertura de capital: a Dextra, uma desenvolvedora de software de Campinas com mais de 1.200 profissionais, em julho de 2021; a Somo, uma agência de produtos digitais do Reino Unido, em janeiro de 2022; a Box 1824, uma consultoria paulistana de estratégia e tendências, em maio de 2022; e a Transpire, uma consultoria de tecnologia de Melbourne, em agosto de 2022. Pela própria contagem, a empresa emprega hoje mais de 8.000 pessoas.",
+      "Lidas ao lado do registro da TIVIT, as duas são respostas diferentes à pergunta de onde uma empresa brasileira de serviços deve buscar capital. A TIVIT abriu capital na bolsa brasileira em 2009 e saiu dela em menos de um ano, comprada por um fundo. A CI&T foi para Nova York por meio de uma holding no exterior, vendendo engenharia entregue a partir do Brasil para uma carteira de clientes que, em 2019, já estava quase pela metade fora do país. Para um profissional de tecnologia no Brasil, o segundo modelo é o de maior consequência: significa um grande empregador cujos clientes, e portanto cujo idioma de trabalho, muitas vezes são estrangeiros, enquanto o trabalho, e as pessoas que o fazem, ficam em Campinas.",
+    ],
+    // Acquisitions: index-aligned with the English list (Dextra, Somo Global, Box 1824, Transpire); names and years stay English.
+    acquisitions: [
+      // Dextra.
+      { what: "Uma empresa brasileira de desenvolvimento de software que cria produtos digitais de ponta a ponta, com mais de 1.200 profissionais e clientes no Brasil e nos Estados Unidos.", became: "Parte da entrega local e global da CI&T, anunciada em 1º de julho de 2021, quatro meses antes da abertura de capital.", sourceNote: "Press release da CI&T, Nova York, 1º de julho de 2021." },
+      // Somo Global.
+      { what: "Uma agência de produtos digitais do Reino Unido com escritórios no Reino Unido, nos Estados Unidos e na Colômbia, que acrescentou quase 300 especialistas digitais.", became: "Parte da operação da CI&T na Europa, no Oriente Médio e na África.", sourceNote: "Press release da CI&T, Campinas, 14 de janeiro de 2022: contrato de compra e venda assinado naquele dia." },
+      // Box 1824.
+      { what: "Uma consultoria paulistana de estratégia voltada para o futuro, com cerca de quarenta estrategistas seniores, conhecida pela metodologia de pesquisa de tendências.", became: "Uma operação independente dentro do grupo, mantendo no cargo a presidente-executiva, Paula Englert.", sourceNote: "Press release da CI&T, Campinas, 31 de maio de 2022: 100% da BOX 1824 PLANEJAMENTO E MARKETING LTDA." },
+      // Transpire.
+      { what: "Uma consultoria de tecnologia de Melbourne que trabalha desde 2009 para clientes australianos, com cerca de 100 especialistas digitais.", became: "Parte da operação da CI&T na Austrália e na região Ásia-Pacífico.", sourceNote: "Press release da CI&T, Nova York, 16 de agosto de 2022: contrato de compra e venda, com conclusão prevista para o terceiro trimestre de 2022." },
+    ],
+  },
+  // ---- radix: pt-BR prose for the record (facts stay in the English record) ----
+  "radix": {
+    // Title: company verbatim, subtitle translated.
+    name: "Radix - engenharia e software sob o mesmo teto, a partir do Rio",
+    // Card line.
+    tagline: "Empresa carioca fundada em 2010 por Luiz Eduardo Rubião e sete sócios para fazer engenharia, automação e software juntos; seu primeiro grande trabalho foi a engenharia de topsides das plataformas de produção do pré-sal da Petrobras.",
+    // Intro paragraph.
+    intro: "A Radix foi fundada no Rio de Janeiro em março de 2010 por Luiz Eduardo Rubião e sete sócios, com a convicção de que uma empresa brasileira podia reunir engenharia, automação industrial e desenvolvimento de software numa só firma. O nome vem do latim e significa raiz. Hoje ela trabalha para clientes industriais e de energia em mais de trinta países, com escritórios no Rio de Janeiro, em São Paulo, em Belo Horizonte, em Houston e em Amsterdã.",
+    // Body: 4 paragraph(s), same order as the English.
+    body: [
+      "A proposta que fundou a empresa era uma observação de mercado, e não uma tecnologia. Numa entrevista de 2017, Rubião disse que combinar engenharia com software não é comum no mercado americano, onde as empresas tendem a se especializar numa coisa ou na outra, e o perfil publicado pela Upstream em 2013 descreve a fundação como uma tentativa de criar uma empresa de engenharia e software genuinamente brasileira para o setor de petróleo e gás, num mercado dominado por empresas dos Estados Unidos e da Europa. O cadastro federal registra a empresa, Radix Engenharia e Desenvolvimento de Software S/A, como aberta no Rio de Janeiro em 2 de março de 2010.",
+      "O primeiro grande contrato mostra a escala em que ela começou. Em menos de três anos, trabalhava, como subcontratada e parceira da francesa Doris Engineering, na engenharia de topsides de oito unidades flutuantes de produção, armazenamento e transferência replicantes, construídas para operar para a Petrobras no pré-sal da Bacia de Santos. Em 2013, abriu um escritório em Houston, e no começo de 2015 recebeu como sócia a Sotreq, uma das maiores revendedoras de produtos Caterpillar do mundo, para capitalizar o negócio.",
+      "O que ela vende hoje é descrito como a combinação de três tipos de tecnologia que a maioria das organizações mantém em departamentos separados: tecnologia de engenharia, tecnologia operacional (OT) e tecnologia da informação (TI). A subsidiária americana, a Radix U.S., com sede em Houston, resume isso como ligar a estratégia digital à execução no chão da fábrica, da usina e da instalação. A empresa declara mais de 1.800 pessoas e trabalhos em mais de trinta países.",
+      "Para um profissional de redes ou de segurança, a palavra interessante é a segunda. Tecnologia operacional é o mundo dos controladores, das redes de campo e dos historiadores de planta, e o registro da Nozomi Networks explica por que uma rede assim não pode simplesmente ser escaneada como uma rede de escritório, sem pôr a planta em risco. Uma empresa cujo negócio declarado é ligar dados de engenharia aos sistemas de informação está construindo exatamente as conexões que transformam esse problema num problema corporativo, e seu primeiro grande cliente, como registra o verbete da Petrobras, também opera uma das maiores redes privadas do país.",
+    ],
+  },
+  // ---- sensedia: pt-BR prose for the record (facts stay in the English record) ----
+  "sensedia": {
+    // Title: company verbatim, subtitle translated.
+    name: "Sensedia - uma spin-off que se mudou numa Kombi e vende a cola entre os sistemas",
+    // Card line.
+    tagline: "Fundada em Campinas em 2007 como especialista em arquitetura orientada a serviços, nascida como spin-off da CI&T; desde 2012 vende uma plataforma de gestão de interfaces de programação de aplicações e é um dos poucos fabricantes brasileiros presentes nos rankings globais de analistas desse mercado.",
+    // Intro paragraph.
+    intro: "A Sensedia foi fundada em Campinas em 2007 como empresa especializada em arquitetura orientada a serviços (SOA) e lançou sua plataforma de gestão de interfaces de programação de aplicações (APIs) em 2012. Ela começou como spin-off da CI&T, criada dentro da Universidade Estadual de Campinas, e os fundadores Kleber Bacili e Marcilio Oliveira se mudaram para o primeiro escritório com tudo o que tinham dentro de uma Kombi.",
+    // Body: 4 paragraph(s), same order as the English.
+    body: [
+      "A empresa conta a própria fundação com um veículo. O site diz que, no começo, tudo o que ela tinha cabia numa Kombi, que levou os equipamentos para o primeiro escritório e hoje fica na entrada da sede. O relato do NeoFeed dá o nome dos dois fundadores que fizeram a mudança, Kleber Bacili e Marcilio Oliveira, e data a spin-off da CI&T em 2007. Em 2012, o diretor de operações a descreveu como uma spin-off da CI&T criada dentro da Unicamp, e Bacili, que era diretor de tecnologia, assumiu como presidente-executivo naquele ano.",
+      "A história do produto acompanha o vocabulário do setor. Em 2012, o negócio era descrito como governança de arquitetura orientada a serviços, a disciplina de fazer os sistemas internos de uma grande empresa exporem e consumirem serviços de forma controlada. No mesmo ano, ela lançou uma plataforma de gestão de interfaces de programação de aplicações (APIs), e em 2015 criou o APIX, um evento sobre estratégia de integração e APIs. O problema não mudou entre os dois nomes; o que mudou foi que as interfaces deixaram de ser internas, e quem se conectava a elas deixou de ser só os departamentos da própria empresa.",
+      "Em 2021, um aporte liderado pela Riverwood Capital, que o NeoFeed descreveu como o primeiro cheque institucional da história da empresa, financiou a expansão para os Estados Unidos e para o resto da América Latina; a CI&T, que tinha tido uma participação, já a havia vendido muito antes. A descrição que Bacili deu do produto naquela entrevista é a mais simples que existe: uma interface de programação de aplicações (API) é uma cola digital que une dois pedaços de software. Pelo relato da própria empresa, ela foi apontada como líder no Forrester Wave de gestão de APIs no terceiro trimestre de 2022 e, em outubro de 2025, posicionada como Challenger no Magic Quadrant do Gartner para gestão de APIs.",
+      "Para um engenheiro de redes ou de segurança, o motivo para conhecê-la é o lugar em que o produto fica no caminho. Um gateway de interfaces de programação de aplicações (o API gateway) é um proxy na camada de aplicação, no mesmo ponto em que ficam um load balancer ou um web application firewall, e aplica os mesmos tipos de política: quem pode chamar, com que frequência, com qual credencial e o que fica registrado quando chama. Quando o open finance e regimes parecidos transformaram sistemas bancários em interfaces publicadas, essa camada passou a fazer parte da superfície de ataque pela qual as equipes de segurança respondem, e as empresas que a vendem entraram na conversa de segurança, tenham ou não se apresentado assim.",
+    ],
   },
 };

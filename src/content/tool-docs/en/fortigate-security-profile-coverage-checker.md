@@ -17,7 +17,7 @@ The tool walks that chain per profile and names the link that failed. Most repor
 
 That distinction is the judgement this tool exists to make, and getting it wrong in either direction would be worse than saying nothing.
 
-**Blind** means attached, configured, and doing nothing. AntiVirus, IPS, DLP and file filter all need the message body. Behind certificate inspection there is no body, so they are not partly effective: they are inert.
+**Blind** means attached, configured, and doing nothing. AntiVirus, IPS (intrusion prevention system), DLP (data loss prevention) and file filter all need the message body. Behind certificate inspection there is no body, so they are not partly effective: they are inert.
 
 **Degraded** means working with less than the full picture. Application control and web filter can still identify some traffic from handshake metadata such as SNI, so a hostname policy still applies while a URL-path policy does not.
 

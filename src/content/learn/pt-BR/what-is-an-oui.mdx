@@ -3,7 +3,7 @@ slug: what-is-an-oui
 title: "O que é um OUI e como os endereços MAC são atribuídos"
 summary: "Como é a estrutura de um endereço MAC, o que é o OUI (o prefixo do fabricante) e quem distribui esses prefixos, a diferença entre endereços de administração universal e local, e por que um MAC aleatório de Wi-Fi não tem fabricante nenhum."
 concepts: ["oui", "endereco mac", "ieee registration authority", "unicast vs multicast", "administrado localmente", "eui-48", "ma-l", "ma-m", "ma-s", "cid", "slap", "mac randomization"]
-relatedTools: ["oui-lookup", "multicast-mac-mapper"]
+relatedTools: ["oui-lookup", "multicast-mac-mapper", "bit-numbering-and-order"]
 relatedArticles: ["arp-and-mac-addresses", "the-ethernet-frame-field-by-field", "first-hop-redundancy-vrrp-and-hsrp", "multicast-what-it-costs-to-not-flood"]
 category: networking
 order: 30
@@ -31,7 +31,7 @@ O quarto produto nem chega a ser um bloco de endereços: o CID (company ID) é "
 
 ## Dois bits escondidos no primeiro octeto
 
-Antes de tratar o OUI como o nome de um fabricante, olhe dois bits do primeiro octeto: eles dizem se essa leitura faz sentido. O bit I/G, o menos significativo do primeiro octeto, "indicates either an individual address (I/G=0) or group address (I/G=1)"; o bit U/L, logo acima dele, "indicates universal (U/L=0) or local (U/L=1) administration of the address" (diretrizes da IEEE RA). A Ethernet transmite cada octeto começando pelo bit de menor ordem, "the reverse of the IETF's ordering" ([RFC 9542](https://www.rfc-editor.org/rfc/rfc9542.html)); por isso, num endereço de destino, o bit I/G é o primeiro a ir para o fio.
+Antes de tratar o OUI como o nome de um fabricante, olhe dois bits do primeiro octeto: eles dizem se essa leitura faz sentido. O bit I/G, o menos significativo do primeiro octeto, "indicates either an individual address (I/G=0) or group address (I/G=1)"; o bit U/L, logo acima dele, "indicates universal (U/L=0) or local (U/L=1) administration of the address" (diretrizes da IEEE RA). A Ethernet transmite cada octeto começando pelo bit de menor ordem, "the reverse of the IETF's ordering" ([RFC 9542](https://www.rfc-editor.org/rfc/rfc9542.html)); por isso, num endereço de destino, o bit I/G é o primeiro a ir para o fio. [Bit menos e mais significativo](/learn/least-and-most-significant-bit) explica a numeração e a ordem dos bits por trás disso, e a [ferramenta de numeração de bits](/tools/bit-numbering-and-order) mostra qualquer endereço na forma canônica e com os bits invertidos.
 
 No hexadecimal, os dois bits aparecem no segundo dígito. Se ali estiver um 2, 6, A ou E, o endereço é unicast e administrado localmente; com 3, 7, B ou F, é um endereço de grupo local; qualquer dígito ímpar indica um endereço de grupo.
 

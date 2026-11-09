@@ -10,7 +10,7 @@ Os métodos dinâmicos - Quality of Service, Completion Rate, Round-Trip Time, F
 
 ## Por que os dois níveis importam
 
-A confusão mais comum em GSLB é tratar a seleção de pool e a seleção de membro como uma única decisão. Elas são separadas, e cada uma pode usar um método diferente: um wide IP pode escolher pools por Topology (enviar clientes europeus ao pool da UE) enquanto cada pool escolhe um servidor virtual por Ratio (dar mais peso ao site maior). A ferramenta torna essa separação visível - você vê qual pool respondeu e depois qual servidor virtual dentro dele resolveu - de modo que a interação entre os dois níveis fica concreta em vez de abstrata.
+A confusão mais comum em GSLB (global server load balancing) é tratar a seleção de pool e a seleção de membro como uma única decisão. Elas são separadas, e cada uma pode usar um método diferente: um wide IP pode escolher pools por Topology (enviar clientes europeus ao pool da UE) enquanto cada pool escolhe um servidor virtual por Ratio (dar mais peso ao site maior). A ferramenta torna essa separação visível - você vê qual pool respondeu e depois qual servidor virtual dentro dele resolveu - de modo que a interação entre os dois níveis fica concreta em vez de abstrata.
 
 ## Compartilhar resultado
 

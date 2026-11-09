@@ -1,6 +1,6 @@
 # LDAP filter explainer
 
-Paste any LDAP search filter and this tool parses it exactly the way a directory server does - per RFC 4515, the string representation every LDAP client, PingDirectory search, PingFederate datastore lookup, and Active Directory query ultimately compiles into.
+Paste any LDAP (Lightweight Directory Access Protocol) search filter and this tool parses it exactly the way a directory server does - per RFC 4515, the string representation every LDAP client, PingDirectory search, PingFederate datastore lookup, and Active Directory query ultimately compiles into.
 
 ## What you get
 

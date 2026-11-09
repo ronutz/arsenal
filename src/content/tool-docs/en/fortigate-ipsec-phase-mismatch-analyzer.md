@@ -53,4 +53,4 @@ Peer names and protected subnets describe your network (the reason the popover a
 
 ## Where it fits
 
-It pairs with the FortiGate IPsec VPN article, which is organised around the same question and covers the topology choices this tool does not model. For NSE 4 candidates it supports objective 5.01.
+It pairs with the FortiGate IPsec VPN (virtual private network) article, which is organised around the same question and covers the topology choices this tool does not model. For NSE 4 candidates it supports objective 5.01.

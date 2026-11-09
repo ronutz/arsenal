@@ -33,16 +33,16 @@ export const versaProfile: VendorProfile = {
   ],
   timeline: [
     { year: 2012, title: "Founded by the Mehta brothers", detail: "Kumar and Apurva Mehta leave Juniper to start Versa in Silicon Valley; the first funding round closes in November 2012, with Sequoia Capital and Mayfield among the early backers." },
-    { year: 2015, title: "FlexVNF, Director, Analytics", detail: "The product line launches: virtualized network and security functions in software on low-cost hardware, centrally managed - virtual CPE, SD-WAN, and branch security before SASE had a name." },
+    { year: 2015, title: "FlexVNF, Director, Analytics", detail: "The product line launches: virtualized network and security functions in software on low-cost hardware, centrally managed - virtual CPE, SD-WAN (software-defined wide area network), and branch security before SASE had a name." },
     { year: 2016, title: "Kelly Ahuja takes the helm", detail: "The Cisco veteran becomes CEO, with the founders staying on as CDO and CTO." },
     { year: 2019, title: "Gartner coins SASE", detail: "When Gartner defines secure access service edge - networking and security converged as a cloud service - Versa's single-stack architecture positions it as one of the category's natural fits." },
     { year: 2021, title: "$84M round", detail: "June 2021: a round co-led by Princeville Capital and RPS Ventures brings total funding to $196 million as SASE demand accelerates." },
     { year: 2022, title: "$120M and a Gartner top score", detail: "October 27, 2022: a $120 million round (investors include Sequoia, Mayfield, and BlackRock) lifts total funding to roughly $316 million over six rounds. The same year, Versa's VOS receives the highest score in the Large Global WAN use case of Gartner's Critical Capabilities for SD-WAN.", sourceNote: "TechCrunch; Tracxn; Gartner 2022 Critical Capabilities as cited by Versa." },
-    { year: 2024, title: "VersaONE", detail: "The portfolio converges as the VersaONE Universal SASE Platform - SSE, SD-WAN, and SD-LAN on one AI-assisted stack - while Versa remains privately held and, per its CEO, pointed toward an IPO rather than a sale." },
+    { year: 2024, title: "VersaONE", detail: "The portfolio converges as the VersaONE Universal SASE Platform - SSE, SD-WAN, and SD-LAN on one AI-assisted stack - while Versa remains privately held and, per its CEO, pointed toward an IPO (initial public offering) rather than a sale." },
   ],
   products: [
     { name: "VOS (Versa Operating System)", what: "The single software stack underneath everything: routing, SD-WAN, next-generation firewall, and security services, multi-tenant by design for service providers and enterprises." },
-    { name: "VersaONE Universal SASE", what: "The converged platform - SSE (SWG, CASB, ZTNA, DLP), SD-WAN, and SD-LAN - managed through one console, deployable in cloud, on-premises, or both." },
+    { name: "VersaONE Universal SASE", what: "The converged platform - SSE (SWG, CASB (cloud access security broker), ZTNA (zero trust network access), DLP (data loss prevention)), SD-WAN, and SD-LAN - managed through one console, deployable in cloud, on-premises, or both." },
     { name: "Versa Director and Analytics", what: "Centralized orchestration and granular visibility - the management pair that has anchored the architecture since the 2015 launch." },
   ],
   innovations: [

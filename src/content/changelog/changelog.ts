@@ -56,6 +56,463 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // PRIME 2026-11-08 23:14: "Yes move them" (the arcade games' pages from /dev/fun/<game> to /arcade/<game>, with
+    // permanent redirects from the old addresses).
+    date: "2026-11-08",
+    time: "23:27",
+    kind: "infra",
+    title: "The arcade games move to /arcade",
+    titlePt: "Os jogos de arcade mudam para /arcade",
+    body:
+      "Each arcade game now lives under /arcade, beside the page that lists it: Whack-a-Bug, Aggregate, First Match, Exit the Editor, Packet Stack, TTL, Rule Inspector and Incident Commander. The old /dev/fun addresses answer with a permanent redirect in every language, an earlier puzzle's date included, so links, bookmarks and shared results keep working; share cards and the scoreboard's play links use the new addresses, and scores, streaks and saved games are unchanged.",
+    links: [{ label: "The arcade", href: "/arcade" }, { label: "Scores", href: "/dev/fun/scores" }],
+  },
+  {
+    // PRIME 2026-11-08 22:42: "Remove the course pdfs and let's serve only the ppts".
+    date: "2026-11-08",
+    time: "22:46",
+    kind: "content",
+    title: "Open materials: the courses are offered as PowerPoint decks only",
+    titlePt: "Materiais abertos: os cursos passam a ser oferecidos só como decks de PowerPoint",
+    body:
+      "The TCP/IP and LAN switch courses no longer offer the slides as PDF: each course page now lists the editable PowerPoint deck with its speaker notes, in English and Portuguese, with its size and SHA-256, and the presenter on the page still shows every slide.",
+    links: [{ label: "Open materials", href: "/materials" }],
+  },
+  {
+    // PRIME 2026-11-08: "How about we create a dedicated ronutz.com/arcade section ...?" and, to the plan, "Both": teaching games
+    // on ronutz.com/arcade. The hub opens with the first wave (Packet Stack, TTL, Rule Inspector) beside the earlier arcade games.
+    date: "2026-11-08",
+    time: "22:42",
+    kind: "feature",
+    title: "The arcade opens: a page of its own for the arcade games",
+    titlePt: "O arcade abre: uma página só para os jogos de arcade",
+    body:
+      "The arcade games now have their own page: Packet Stack, TTL and Rule Inspector, the first wave of games built on classic formulas with a theme from networks, security or operations, beside Whack-a-Bug, Aggregate, First Match, Exit the Editor and Incident Commander. They are listed there only: the /dev/fun shelf keeps the daily puzzles and the toys and leads to the arcade with one card, each arcade game's crumb leads back to it, and the games with a daily run post to the same public scoreboard. In English and Portuguese.",
+    links: [{ label: "The arcade", href: "/arcade" }, { label: "Scores", href: "/dev/fun/scores" }],
+  },
+  {
+    // PRIME 08/11/2026: the arcade's first wave ("honoring well-established and successful formulas ... "); Rule
+    // Inspector, the inspector-at-a-desk formula on a firewall policy, with a daily shift on the public scoreboard.
+    date: "2026-11-08",
+    time: "22:39",
+    kind: "feature",
+    title: "Rule Inspector: permit or deny each connection at the firewall desk",
+    titlePt: "Rule Inspector: permita ou negue cada conexão no balcão do firewall",
+    body:
+      "A new arcade game: fifteen connections reach an office's edge firewall one at a time, and the player permits or denies each against a policy read from the top, where the first matching rule decides, a state table lets the replies of connections already permitted through and drops a TCP packet that cannot open one, and the implicit deny takes the rest, as RFC 8519, RFC 6092 and Juniper's documentation set out; ports, protocols and the special-purpose address blocks of RFC 1918 and RFC 6890 come from IANA's registries. The policy tightens between the shift's three rounds and an audit at the end shows every wrong call and what decided it; the daily shift is the same for everyone and goes to the public scoreboard, where the server grades every call again, and practice shifts never run out. In English and Portuguese.",
+    links: [
+      { label: "Rule Inspector", href: "/arcade/rule-inspector" },
+      { label: "Access control lists on switches and routers", href: "/learn/access-control-lists-on-switches-and-routers" },
+      { label: "ACL first-match evaluator", href: "/tools/acl-first-match-evaluator" },
+    ],
+  },
+  {
+    // PRIME 2026-11-08 20:37: "IF not yet existing, add rich content [ explainer / article / tool / lab ] on LSB vs MSB
+    // (least and most significant bit)". The article, its lab and the tool, from documents read the same day.
+    date: "2026-11-08",
+    time: "22:26",
+    kind: "feature",
+    title: "Least and most significant bit: an article, a lab and a bit numbering tool",
+    titlePt: "Bit menos e mais significativo: um artigo, um lab e uma ferramenta de numeração de bits",
+    body:
+      "A new Learn article explains bit significance, the three ways documents number bits (LSB 0, MSB 0 and 1-based), the order bits travel on Ethernet, a UART, PPP, I2C and SPI, canonical and bit-reversed MAC addresses, masks, parity and reflected CRCs, with Huawei's PortState printed bit 1 first, the MAC address bits and the DNS flags as worked cases, and a lab that sets the eight bits of an octet. The new bit numbering and bit order tool shows every bit of a value under the three numberings, extracts bits i to j, reads a printed bit string in either order and gives a MAC address in canonical and bit-reversed form, with layouts for the LACP state, the TCP and DNS flags, the ToS octet and the 802.1Q tag.",
+    tools: ["bit-numbering-and-order"],
+    articles: ["least-and-most-significant-bit"],
+    links: [{ label: "Open the tool", href: "/tools/bit-numbering-and-order" }],
+  },
+  {
+    // PRIME 08/11/2026: the arcade's first wave ("honoring well-established and successful formulas ... "); TTL, the
+    // growing-trail formula on the Time to Live field, traceroute as a game, with a daily run on the public scoreboard.
+    date: "2026-11-08",
+    time: "22:18",
+    kind: "feature",
+    title: "TTL: steer a packet through routers that each take one off its Time to Live",
+    titlePt: "TTL: conduza um pacote por roteadores que tiram um do Time to Live cada um",
+    body:
+      "A new arcade game: twelve packets cross a small network, packet n leaving with TTL n as traceroute's probes do; every router it enters takes one off its TTL and adds a segment to its trail, the router that takes it to zero discards it with ICMP Time Exceeded, and only the host accepts it at any TTL, as RFC 791, RFC 1812, RFC 1122 and RFC 792 set out, with an IPv6 view that shows Hop Limit and ICMPv6. The daily run is the same network for everyone, survives a reload paused where it was, and goes to the public scoreboard, where the server replays every turn; practice never runs out. In English and Portuguese.",
+    links: [
+      { label: "TTL", href: "/arcade/ttl" },
+      { label: "ICMP, ping and traceroute", href: "/learn/icmp-ping-and-traceroute" },
+    ],
+  },
+  {
+    // PRIME 08/11/2026: the arcade's first wave ("honoring well-established and successful formulas ... "); Packet Stack,
+    // the falling-blocks formula on the frame on the wire, with a daily run on the public scoreboard.
+    date: "2026-11-08",
+    time: "22:01",
+    kind: "feature",
+    title: "Packet Stack: falling headers that must name the next one",
+    titlePt: "Packet Stack: headers que caem e precisam indicar o próximo",
+    body:
+      "A new arcade game on the falling-blocks formula: Ethernet, IP, TCP or UDP headers and payloads fall into a four-column well, and a full row is delivered only when every header names the block to its right (the EtherType the IP version, the Protocol number the transport, the destination port the application), as RFC 894, RFC 791, RFC 8200 and IANA's registries set them; a row that breaks the chain is dropped and stays at the bottom. The daily run is the same sixteen frames for everyone and goes to the public scoreboard, where the server replays every placement; practice never runs out. In English and Portuguese.",
+    links: [
+      { label: "Packet Stack", href: "/arcade/packet-stack" },
+      { label: "The Ethernet frame, field by field", href: "/learn/the-ethernet-frame-field-by-field" },
+    ],
+  },
+  {
+    // PRIME 2026-11-08 19:20: "Whenever there is something wrong or missing in the course decks, do correct or complement
+    // it!" The second round, from the vendors' pages read in his browser, the RFCs and the release pages read the same day.
+    date: "2026-11-08",
+    time: "21:23",
+    kind: "content",
+    title: "LAN switch course: OSPF, AAA, LACP and the vendor profiles corrected and complemented",
+    titlePt: "Curso de switches LAN: OSPF, AAA, LACP e as fichas dos fabricantes corrigidos e complementados",
+    body:
+      "The OSPF chapter now says Leader where RFC 9454 replaced master, tells a Hello mismatch from an MTU one, and gives each platform's default interface cost and Huawei's MTU and dead-interval rules; the AAA chapter says Watchdog for TACACS+ update records, lists RADIUS over DTLS (RFC 7360) and asks for Message-Authenticator since CVE-2024-3596; the link aggregation chapter explains what LACP fast asks of the partner and how Cisco and Huawei print the partner's state. The MikroTik, Arista and Juniper profiles note the releases that moved after the decks were written, slide 238 says which line leaves VLAN 1, and slide 304's notes give the binary of the address the slide shows. The PowerPoint files, the PDFs and the changed slide images are updated in both languages.",
+    links: [{ label: "The course", href: "/materials/lan-switch-operations-and-maintenance" }],
+  },
+  {
+    // PRIME 2026-11-08 19:20 ("Check everything that you need ... using my chrome. Resolve everything else that can be
+    // resolved"): the RADIUS decoder's open points closed from Huawei's Table 1-11 and Cisco's tech note 13838, read in
+    // his browser, and its Share results link no longer refused for a packet with a hidden password.
+    date: "2026-11-08",
+    time: "21:20",
+    kind: "tool",
+    title: "RADIUS packet decoder: Huawei attributes, and a shareable copy with the secrets zeroed",
+    titlePt: "Decodificador de pacotes RADIUS: atributos da Huawei e uma cópia compartilhável com os segredos zerados",
+    body:
+      "Huawei's 68 proprietary RADIUS attributes are now named and read in their documented types, with HW-Exec-Privilege's 0 to 15 levels and HW-DHCP-Option's Option 82 read as RFC 3046 defines it. Share results now carries a copy of the packet with every hidden password, key, challenge response, Message-Authenticator and secret-keyed Authenticator replaced by zeros of the same length (with Option 82's circuit and remote IDs), marked on the page that opens it, where it used to give no link at all. The missing Message-Authenticator warning now says that the requirement comes from CVE-2024-3596 and an Internet-Draft, with erratum 9034 held for document update, and RFC 5997's misprinted example reply is explained by its own Authenticator.",
+    tools: ["radius-packet-decoder"],
+    articles: ["radius-end-to-end", "tacacs-plus-device-administration"],
+    links: [{ label: "Open the decoder", href: "/tools/radius-packet-decoder" }],
+  },
+  {
+    // PRIME 2026-11-08 19:20 (complete the switch-course tools with what his Chrome can read) and 19:46 ("explain briefly
+    // inline what little-endian and big-endian processors are"): Huawei's display eth-trunk in the LACP reader, and the
+    // byte order explained beside the reader's control and in the hashing lab, which gains a switch.
+    date: "2026-11-08",
+    time: "21:13",
+    kind: "tool",
+    title: "The LACP reader reads Huawei's PortState, and the hashing lab gets a byte-order switch",
+    titlePt: "O leitor de LACP lê o PortState da Huawei, e o lab de hashing ganha uma chave de byte order",
+    body:
+      "The LACP member link and state reader now reads Huawei's display eth-trunk: type a PortState, whose eight characters run from Bit 1 (LACP_Activity) to Bit 8 (Expired), the reverse of the octet written in binary, or paste the whole output to read every member with Huawei's Selected, Unselect and ForceFwd; its link mode says what Huawei documents about load-balance and computes nothing for a hash Huawei does not publish. Beside the byte-order control, the reader and the hashing lab of the link aggregation article now say what little-endian and big-endian processors are and why the bonding hash depends on them (the member changes only when the member count is not a power of two), and the lab's new switch opens on the HOWTO's reading and offers a little-endian processor, whose results agree with the reader's engine flow by flow. The rules follow Huawei's command reference, Debian's table of architectures and the Linux source as read on 8 November 2026; 814 golden vectors pin the reader and 52 the lab.",
+    tools: ["lacp-hash-and-state-reader"],
+    articles: ["link-aggregation-and-lacp"],
+    links: [
+      { label: "Open the reader", href: "/tools/lacp-hash-and-state-reader" },
+      { label: "Try the hashing lab", href: "/learn/link-aggregation-and-lacp#lab-lacp-hashing" },
+    ],
+  },
+  {
+    // PRIME 2026-11-08 19:46: "explain ... richly in a dedicated article, with comparisons, descriptions, applications,
+    // limitations, characteristics, advantages, disadvantages, etc." The byte-order article and its glossary term.
+    date: "2026-11-08",
+    time: "20:51",
+    kind: "content",
+    title: "New article: big-endian and little-endian, byte order explained",
+    titlePt: "Novo artigo: big-endian e little-endian, a ordem dos bytes explicada",
+    body:
+      "A new Learn article lays one 32-bit value out byte by byte in both orders and follows byte order from Swift and Danny Cohen's 1980 memo through network byte order in the RFCs and POSIX, the processors that are little-endian, big-endian or both, the instructions that swap bytes, the file formats and protocols that fix an order, and what each order really costs, with the bugs it causes and how to tell what a machine is. It ends with three cases on this site: the LACP hash, which differs between x86-64 and s390x and moves a flow to another link only with three, five, six or seven members, the BIG-IP persistence cookie and UTF-16. The glossary gains the term endianness, and the UTF-16, Python bytes and BIG-IP cookie articles link to the new one.",
+    articles: ["big-endian-and-little-endian", "utf-8-and-utf-16-byte-by-byte", "python-bytes-text-and-encodings", "bigip-cookie-formats"],
+    links: [{ label: "Read the article", href: "/learn/big-endian-and-little-endian" }, { label: "Glossary: endianness", href: "/glossary/endianness" }],
+  },
+  {
+    // PRIME 2026-11-08 19:20 ("Check everything that you need ... using my chrome. Resolve everything else that can be
+    // resolved"): the OSPF checker's open points closed from the Huawei, Cisco, Arista and AOS-CX pages read in his browser.
+    date: "2026-11-08",
+    time: "20:43",
+    kind: "tool",
+    title: "OSPF cost and adjacency checker: Huawei VRP computed, Arista and AOS-CX corrected",
+    titlePt: "Verificador de custo e adjacência OSPF: Huawei VRP calculado, Arista e AOS-CX corrigidos",
+    body:
+      "Huawei VRP now gets its documented cost (the integer of bandwidth-reference over the interface bandwidth, 1 when smaller than 1), and the adjacency mode notes that Huawei sends MTU 0 and checks nothing until ospf mtu-enable, with its Hello and dead defaults and its 20 s dead-interval floor. Cisco now costs an interface faster than the reference at 1, as its own auto-cost example shows; Arista EOS documents auto-cost reference-bandwidth after all, with every Ethernet interface at 10 until it is configured, and no setting to ignore the MTU; AOS-CX is costed from its reference-bandwidth, with its ip ospf cost page's default of 1 stated as a disagreement. 220 golden vectors pin the rules, each from the vendor's own pages read on 8 November 2026.",
+    tools: ["ospf-cost-and-adjacency-checker"],
+    links: [{ label: "Open the checker", href: "/tools/ospf-cost-and-adjacency-checker" }],
+  },
+  {
+    // PRIME 2026-11-08 19:20 ("Check everything that you need ... using my chrome"): the trunk calculator's open points
+    // after Arista's, Huawei's, Cisco's and HPE Aruba's pages were read in his browser.
+    date: "2026-11-08",
+    time: "20:42",
+    kind: "tool",
+    title: "802.1Q trunk calculator: Arista EOS, Huawei VRP, and the native VLAN left out",
+    titlePt: "Calculadora de VLANs em trunk: Arista EOS, Huawei VRP e a VLAN nativa fora da lista",
+    body:
+      "The trunk calculator now reads Arista EOS and Huawei VRP lines too, so all eight vendors of the switch course can be compared, from Arista's VLAN chapter and Huawei's command reference and Table 4-2, read today. A native VLAN left out of its own allowed list is now shown as not carried on HPE Aruba AOS-CX, Arista EOS and Huawei VRP, as their own examples and command reference show, and still as not confirmed on Cisco IOS XE, whose pages do not say. The course lab's lines follow the corrected deck, and two chips keep the pitfall on four vendors; 176 golden vectors pin the rules.",
+    tools: ["vlan-tag-and-trunk-calculator"],
+    articles: ["vlans-and-8021q-trunking"],
+    links: [{ label: "Open the calculator", href: "/tools/vlan-tag-and-trunk-calculator" }, { label: "The course", href: "/materials/lan-switch-operations-and-maintenance" }],
+  },
+  {
+    // PRIME 2026-11-08 19:20: "Whenever there is something wrong or missing in the course decks, do correct or complement
+    // it!" Chapter 2.3's native VLAN and slide 272's note, after the vendors' pages were read in his browser.
+    date: "2026-11-08",
+    time: "20:07",
+    kind: "content",
+    title: "LAN switch course: the native VLAN is now allowed on every trunk",
+    titlePt: "Curso de switches LAN: a VLAN nativa agora é permitida em todo tronco",
+    body:
+      "In chapter 2.3 the trunks set VLAN 999 as the native VLAN but left it out of the allowed list on the Cisco, HPE Aruba, Arista and Huawei slides. Huawei's command reference, HPE Aruba's and Arista's own examples show such a native VLAN is not carried, so 999 is now created and allowed on all four, with a note saying why. Slide 272's note on Cisco's default path cost method is corrected too: Cisco's guide says short, while its default table and its own show example give long. Both decks, both PDFs and the presenter's images are updated, in English and Portuguese.",
+    links: [{ label: "The course", href: "/materials/lan-switch-operations-and-maintenance" }],
+  },
+  {
+    // PRIME 2026-11-08 19:20: "Check everything that you need (and weren't able to check with your own resources) using
+    // my chrome." Huawei's STP command reference and Cisco's Catalyst 9300 command references, read in his browser.
+    date: "2026-11-08",
+    time: "19:58",
+    kind: "tool",
+    title: "Spanning tree calculator: Huawei's path costs, 2.5 Gb/s, and Cisco's command reference",
+    titlePt: "Calculadora de spanning tree: os path costs da Huawei, 2,5 Gb/s e a referência de comandos da Cisco",
+    body:
+      "Huawei's S5700 and S6700 command reference, read today, puts Huawei among the vendors that default to the long (802.1t) costs and adds a 2.5 Gb/s row (8000 long, 3 short), with Huawei's own differences named. Cisco's command reference, also read, gives short as the default while its own example output shows long, so the Cisco row now quotes both and points to show spanning-tree summary.",
+    tools: ["stp-election-calculator"],
+    links: [{ label: "Open the calculator", href: "/tools/stp-election-calculator" }],
+  },
+  {
+    // PRIME 2026-11-08 17:12 ("Resolve now: ... 3. Switch-course tools for the chapters that have none"), the deferred list
+    // of 03/11: "4.6 AAA (RADIUS attribute decoder, or TACACS+ versus RADIUS)". A new tool for chapter 4.6 of the LAN Switch
+    // Operations and Maintenance course and its two Learn articles.
+    date: "2026-11-08",
+    time: "19:03",
+    kind: "tool",
+    title: "New tool: RADIUS packet decoder",
+    titlePt: "Nova ferramenta: decodificador de pacotes RADIUS",
+    body:
+      "Paste the hex of a RADIUS (Remote Authentication Dial-In User Service) packet, as plain hex or as a hex dump, and read its Code, Identifier, Length and Authenticator and every attribute in the data type IANA gives it, with vendor attributes named from Cisco, Juniper, Arista, HPE Aruba, Extreme, MikroTik and Microsoft documentation, RFC 6929 extended attributes reassembled, the EAP packet and the VLAN assignment read, and hidden passwords explained without any shared secret. Malformed packets are refused with the octet and the rule, invalid attributes are flagged, and the RFCs' tables of attributes give warnings; a short panel sets RADIUS beside TACACS+ from RFC 2865, 2866 and 8907. 167 golden vectors pin it, every example packet of RFC 2865, 5997, 5176 and 6929 among them.",
+    tools: ["radius-packet-decoder"],
+    articles: ["radius-end-to-end", "tacacs-plus-device-administration"],
+    links: [{ label: "Open the decoder", href: "/tools/radius-packet-decoder" }],
+  },
+  {
+    // PRIME 2026-11-08 17:12 ("Resolve now: ... 3. Switch-course tools for the chapters that have none"): a new tool for
+    // chapter 4.1 (OSPF) of the LAN Switch Operations and Maintenance course and its Learn article.
+    date: "2026-11-08",
+    time: "18:40",
+    kind: "tool",
+    title: "New tool: OSPF cost and adjacency checker",
+    titlePt: "Nova ferramenta: verificador de custo e adjacência OSPF",
+    body:
+      "Pick a vendor and up to eight interface speeds and see the OSPF (Open Shortest Path First) cost each one gets by that vendor's own documented rule (Cisco IOS XE, Juniper Junos, FRRouting, Extreme Switch Engine and Fabric Engine, Arista EOS, AOS-CX), which speeds collapse to the same cost, and the smallest reference bandwidth that tells them apart, with the command; a cost a vendor's pages do not document is not computed. Or put the two ends of a link side by side and see every mismatch in the order a router checks it, which packet each side drops under RFC 2328 or RFC 5340, and whether each side stalls with no neighbour, in Init, 2-Way, ExStart or Exchange; the Example is the course's OSPF lab with a different Hello on one side, and no key is ever asked for. The OSPF primer now links to it.",
+    tools: ["ospf-cost-and-adjacency-checker"],
+    articles: ["ospf-primer"],
+    links: [{ label: "Open the checker", href: "/tools/ospf-cost-and-adjacency-checker" }],
+  },
+  {
+    // PRIME 2026-11-08 17:12 ("Resolve now: ... 3. Switch-course tools for the chapters that have none"; the deferred list
+    // of 03/11: "2.3 VLAN (802.1Q tag decoder, trunk VLAN sets)"): a new tool for chapter 2.3 (VLAN) of the LAN Switch
+    // Operations and Maintenance course and its Learn article.
+    date: "2026-11-08",
+    time: "18:38",
+    kind: "tool",
+    title: "New tool: 802.1Q tag decoder and trunk VLAN calculator",
+    titlePt: "Nova ferramenta: decodificador de tag 802.1Q e calculadora de VLANs em trunk",
+    body:
+      "Paste the octets of an 802.1Q tag or of a frame's start and see each tag's TPID, PCP with its traffic type and its four decodings, DEI and VID with the 32 bits laid out, stacked 802.1ad tags, and the EtherType or length that follows, named from IANA's list. Or paste the trunk lines of both ends of a link, in Cisco IOS XE, Junos, AOS-CX, RouterOS, Switch Engine or Fabric Engine syntax, and see VLAN by VLAN which ones cross in both directions, which one end drops, where a native VLAN mismatch moves frames into another VLAN, and which depend on behaviour the vendor documentation does not state. The rules follow the IEEE 802.1Q draft, YANG and MIB modules, RFC 9542, IANA and each vendor's documentation as read on 8 November 2026, with the VLAN lab of the switch course as the Example and 130 golden vectors pinning them.",
+    tools: ["vlan-tag-and-trunk-calculator"],
+    articles: ["vlans-and-8021q-trunking"],
+    links: [{ label: "Open the calculator", href: "/tools/vlan-tag-and-trunk-calculator" }],
+  },
+  {
+    // PRIME 2026-11-08 17:12 ("Resolve now: ... 3. Switch-course tools for the chapters that have none"): a new tool for
+    // chapter 2.2 (LACP) of the LAN Switch Operations and Maintenance course and its Learn article.
+    date: "2026-11-08",
+    time: "18:33",
+    kind: "tool",
+    title: "New tool: LACP member link and state reader",
+    titlePt: "Nova ferramenta: leitor de link-membro e de estado do LACP",
+    body:
+      "See which member of a Linux bond carries a flow under layer2, layer2+3, layer3+4 or vlan+srcmac, on a little-endian or a big-endian processor, with every step of the hash, where the flow goes when each member fails and how a run of flows spreads; Cisco's documented split of 8 hash values shows why 2, 4 and 8 members share evenly, and the switch vendors that publish only the fields they hash are named, not computed. Read LACP actor and partner state flags, as hexadecimal, decimal, SNMP, Extreme or Arista output, bit by bit, with the 1 and 30 second rates, the 3 and 90 second timeouts and a verdict such as both ends passive, defaulted or out of sync. The rules follow the Linux bonding documentation and source, Cisco, the IEEE 802.1AX MIB module, RFC 3417 and Juniper as read on 8 November 2026, and 488 golden vectors pin them; the link aggregation article now links to it.",
+    tools: ["lacp-hash-and-state-reader"],
+    articles: ["link-aggregation-and-lacp"],
+    links: [{ label: "Open the reader", href: "/tools/lacp-hash-and-state-reader" }],
+  },
+  {
+    // PRIME 08/11/2026 17:12 ("Resolve now: ... 3. Switch-course tools for the chapters that have none"): a new tool for
+    // chapter 2.4 (Spanning Tree) of the LAN Switch Operations and Maintenance course and its Learn article.
+    date: "2026-11-08",
+    time: "18:19",
+    kind: "tool",
+    title: "New tool: spanning tree election calculator",
+    titlePt: "Nova ferramenta: calculadora de eleição do spanning tree",
+    body:
+      "Describe a small switched network in a few lines (bridges with a priority and a MAC address, links with a speed or a cost) and see the root bridge, every root port, every designated port and the ports left as alternate or backup, each with the comparison that decided it, in the order the course teaches; a VLAN line adds the system ID extension, and each bridge can keep long or short path costs, with a warning when they are mixed. A second mode gives the long and short path costs of a link speed with the documents that state them, and what Extreme, Cisco, HPE Aruba, Juniper, MikroTik and Arista document as their default method. The rules follow the IEEE 802.1Q RSTP YANG module, RFC 4188 and the vendors' documentation as read on 8 November 2026, and 173 golden vectors pin them; the Example is the course's six-bridge slide.",
+    tools: ["stp-election-calculator"],
+    articles: ["spanning-tree-in-one-article"],
+    links: [{ label: "Open the calculator", href: "/tools/stp-election-calculator" }],
+  },
+  {
+    // PRIME 08/11/2026 17:12: "Resolve now: ... the acronym retrofit". D-90 extended beyond Learn and the blog, with a
+    // new guard (check-acronym-first-mention-surfaces) holding it at zero.
+    date: "2026-11-08",
+    time: "18:00",
+    kind: "content",
+    title: "Every acronym explained at first mention, beyond the Learn articles",
+    titlePt: "Toda sigla explicada na primeira menção, também fora dos artigos do Learn",
+    body:
+      "Tool documentation, glossary entries, the tools' own screens and the Industry pages now spell out each acronym the first time it appears, as the Learn articles and the blog already did: VPN (virtual private network), RADIUS (Remote Authentication Dial-In User Service) and some 760 first mentions in all, in English and Portuguese. The SSE explainer's description, which showed a stray code in place of a dash, reads properly again.",
+    links: [
+      { label: "Tools", href: "/tools" },
+      { label: "Glossary", href: "/glossary" },
+      { label: "Industry", href: "/industry" },
+    ],
+  },
+  {
+    // PRIME 08/11/2026 16:05: "If not yet existent, add entries about: ... Accenture, IBM Consulting, Deloitte, EY (Ernst &
+    // Young), PwC, ... McKinsey & Company, Boston Consulting Group (BCG), Bain & Company" (and Avanade); 17:52: "Go with
+    // Deloitte's choice, and add KPMG."
+    date: "2026-11-08",
+    time: "17:59",
+    kind: "content",
+    title: "The large consultancies and audit networks, KPMG included",
+    titlePt: "As grandes consultorias e redes de auditoria, com a KPMG",
+    body:
+      "Industry now covers Deloitte, EY, PwC, KPMG, McKinsey, BCG, Bain and Avanade: how each began, what it did with its consultancy around the Sarbanes-Oxley Act (sold to Cap Gemini or IBM, kept, or floated as KPMG Consulting, later BearingPoint), its work in Brazil and its regulatory record as the regulators stated it. Accenture's entry now covers Avanade and its purchase of Udacity, and Capgemini's its purchase of the Ernst & Young consultancy in 2000. In English and Portuguese.",
+    links: [
+      { label: "Deloitte", href: "/industry/deloitte" },
+      { label: "EY", href: "/industry/ey" },
+      { label: "PwC", href: "/industry/pwc" },
+      { label: "KPMG", href: "/industry/kpmg" },
+      { label: "McKinsey & Company", href: "/industry/mckinsey" },
+      { label: "Boston Consulting Group", href: "/industry/bcg" },
+      { label: "Bain & Company", href: "/industry/bain" },
+      { label: "Avanade", href: "/industry/avanade" },
+    ],
+  },
+  {
+    // PRIME 08/11/2026: "a scoreboard for the games. How many have played? Top scores? Averages? # players from
+    // different countries? ... Initials (like classic arcade machines)? ... streamlined with the games, as well as an
+    // experience on itself ... Change the privacy wording accordingly". PRIME's decisions the same day: D1, sharing on
+    // by default with a switch, optional three-character initials.
+    date: "2026-11-08",
+    time: "17:36",
+    kind: "feature",
+    title: "The daily games get a public scoreboard, with arcade initials",
+    titlePt: "Os jogos diários ganham um placar público, com iniciais de fliperama",
+    body:
+      "A finished daily puzzle now shows Today's board under its result: how many played, the share who solved, the average and the median, how your round compares, and the top ten by three-character initials and country flag. A new scores page adds a histogram for each puzzle, the countries, the last 7 and 30 days and the whole shelf's totals. The server rebuilds each day's puzzle and checks every posted round against it, so a forged result is refused, and an implausibly fast time stays out of the top ten. Sharing is on by default and can be switched off in every daily game; a row keeps the game, the day, the result, the initials, the country and the date only, never an IP address or any identifier, for 400 days, as the privacy notice now sets out. In English and Portuguese.",
+    links: [
+      { label: "Scores and statistics", href: "/dev/fun/scores" },
+      { label: "The games", href: "/dev/fun" },
+      { label: "Privacy: Game scores", href: "/privacy" },
+    ],
+  },
+  {
+    // PRIME 08/11/2026 16:05: "Expand the definition and explanation of STP - Shielded Twisted Pair - and other
+    // cabling/connectors standards.", "Add a rich entry for IX (internet Exchange) to the glossary, and a rich entry about
+    // IXBR/PTT (Ponto de Troca de Tráfego).", "Add a very rich entry on Metasploit.", "Add a rich entry on 'net neutrality'."
+    date: "2026-11-08",
+    time: "17:11",
+    kind: "content",
+    title: "IX.br, Metasploit, net neutrality and the cabling standards",
+    titlePt: "IX.br, Metasploit, neutralidade de rede e as normas de cabeamento",
+    body:
+      "New glossary entries tell the story of IX.br, Brazil's internet exchange programme, from the PTTMetro of 2004 to its 40th exchange point and 55 Tbit/s in 2026; of Metasploit, from H. D. Moore's first release in 2003 to Rapid7, as history and architecture rather than commands; of net neutrality in the United States, the European Union and Brazil, with the case against it; and of TIA-568, ISO/IEC 11801 and fibre connectors. Internet exchange, shielded twisted pair, cable categories, RJ45, PoE (Power over Ethernet) and Aaron Swartz are rewritten in depth, and the note on shield grounding now follows Belden and Panduit. In English and Portuguese.",
+    links: [
+      { label: "IX.br", href: "/glossary/ix-br" },
+      { label: "Metasploit", href: "/glossary/metasploit" },
+      { label: "Net neutrality", href: "/glossary/net-neutrality" },
+      { label: "The TIA-568 cabling standard", href: "/glossary/tia-568" },
+      { label: "Shielded twisted pair", href: "/glossary/shielded-twisted-pair" },
+      { label: "Aaron Swartz", href: "/glossary/aaron-swartz" },
+    ],
+  },
+  {
+    // PRIME 08/11/2026 16:05: "If not yet existent, add entries about: Udacity, ThoughtWorks, ... CI&T, ... Radix, Encora,
+    // Sensedia, IT Forum, RTI (magazine) and its publisher, SoftDesign, ..." (the Brazil-rooted part of the list; SAP
+    // Labs Latin America / SAP Brasil and IBM Consulting inside their companies' entries). IT Forum and Aranda needed a
+    // category the closed tag list did not have, so Media was added (decision taken 08/11/2026, reversible in one line).
+    date: "2026-11-08",
+    time: "17:08",
+    kind: "content",
+    title: "Nine companies from Brazil's IT market, and a shelf for the trade press",
+    titlePt: "Nove empresas do mercado brasileiro de TI, e uma estante para a imprensa setorial",
+    body:
+      "Industry now covers CI&T, Sensedia, Radix, SoftDesign, IT Forum and Aranda, the publisher of RTI, all founded in Brazil, with Thoughtworks and its Porto Alegre office, Udacity and its Portuguese Nanodegrees, and Encora, whose Campinas engineers are now part of Coforge. SAP's entry adds SAP Brasil and SAP Labs Latin America in São Leopoldo, and IBM's adds IBM Consulting, from the purchase of PwC Consulting in 2002 to the 2021 rename. A new Media category gathers the trade press and events, in English and Portuguese.",
+    links: [
+      { label: "CI&T", href: "/industry/ci-and-t" },
+      { label: "Sensedia", href: "/industry/sensedia" },
+      { label: "Radix", href: "/industry/radix" },
+      { label: "SoftDesign", href: "/industry/softdesign" },
+      { label: "IT Forum", href: "/industry/it-forum" },
+      { label: "Aranda and RTI", href: "/industry/aranda" },
+      { label: "Thoughtworks", href: "/industry/thoughtworks" },
+      { label: "Udacity", href: "/industry/udacity" },
+      { label: "Encora", href: "/industry/encora" },
+      { label: "SAP", href: "/industry/sap" },
+      { label: "IBM", href: "/industry/ibm" },
+      { label: "Media", href: "/industry/media" },
+    ],
+  },
+  {
+    // PRIME 08/11/2026 16:05: "Add entries on additional notorious hacker culture or freedom of speech figures, for
+    // example but not limited to: Aaron Hillel Swartz, everyone and every conference and company mentioned in the entry
+    // about the YSTS conference." and "Make sure to wire new entries to series and indices where they make sense."
+    date: "2026-11-08",
+    time: "17:07",
+    kind: "content",
+    title: "Eighteen glossary entries on hacker culture and free expression",
+    titlePt: "Dezoito verbetes sobre cultura hacker e liberdade de expressão",
+    body:
+      "The glossary adds the ISTS podcast, Felix \"FX\" Lindner, Nick Farr and the hackerspace, John Perry Barlow and his Declaration of the Independence of Cyberspace, Mitch Kapor, John Gilmore, Craig Neidorf's E911 case, Bruce Sterling's The Hacker Crackdown, Chelsea Manning, Bassel Khartabil, Alexandra Elbakyan, Dmitry Sklyarov, bunnie Huang, Ed Felten, Diego Aranha and FISL, each linked both ways with the entries and Learn articles that name them. The hacking timeline gains their dated events, and the YSTS article now dates the podcast by its feed, whose latest episode, number 143, came out on 30 December 2024. In English and Portuguese.",
+    links: [
+      { label: "John Perry Barlow", href: "/glossary/john-perry-barlow" },
+      { label: "The E911 case", href: "/glossary/the-e911-case" },
+      { label: "Hackerspace", href: "/glossary/hackerspace" },
+      { label: "Diego Aranha", href: "/glossary/diego-aranha" },
+    ],
+    articles: ["ysts-you-shot-the-sheriff", "hacking-in-the-20th-century"],
+  },
+  {
+    // PRIME 08/11/2026 16:05: Access Points' auto-mark "unchecked by default, and how about adding a penalty when the
+    // player enables it?"; Five Clues had "NO comments on the wrong guesses"; "Add time counting to Phish or Legit?".
+    date: "2026-11-08",
+    time: "16:37",
+    kind: "feature",
+    title: "Fairer games: a priced auto-mark, nudges in Five Clues, a clock in Phish or Legit",
+    titlePt: "Jogos mais justos: marcação automática com custo, dicas no Five Clues e relógio no Phish or Legit",
+    body:
+      "Access Points now starts with the auto-mark switch off; switching it on adds 30 seconds to the time, once per floor, and the result and share card say so. In Five Clues every wrong guess or skipped clue leaves a visible line under the box, and each clue spent adds a nudge: how many words the answer has, where its members are listed, then its shape with the first letter of each word. Phish or Legit's daily round and practice are now timed, the clock counting only while a card waits for an answer, and the daily round starts with Start like the other timed games. In English and Portuguese.",
+    links: [
+      { label: "Access Points", href: "/dev/fun/access-points" },
+      { label: "Five Clues", href: "/dev/fun/five-clues" },
+      { label: "Phish or Legit", href: "/dev/fun/phish-or-legit" },
+    ],
+  },
+  {
+    // PRIME 08/11/2026 16:05: a graphic for each card on the games shelf and on the "Solve the other puzzles" pills; the
+    // /games address; "Read the screen"; the Importance Meter's urgency bar.
+    date: "2026-11-08",
+    time: "16:37",
+    kind: "feature",
+    title: "Every game gets its own drawing, and /games leads to the shelf",
+    titlePt: "Cada jogo ganha um desenho próprio, e /games leva à estante",
+    body:
+      "Each card on the games shelf and each pill under \"Solve the other puzzles\" now carries a small drawing of its game in the game's own colour: Wi-Fi arcs for Access Points, a tree with one blocked link for Spanning Tree, a hook under an envelope for Phish or Legit. ronutz.com/games now leads to the shelf. Exit the Editor's button that reads the terminal aloud is for screen readers, so it now stays out of sight until the keyboard reaches it, and says who it is for. The Importance Meter shows its urgency bar, now called the conservative urgency estimate, from the start and moves it with every entry, with Calculate and Reset right under it.",
+    links: [{ label: "Games", href: "/dev/fun" }],
+  },
+  {
+    // PRIME 08/11/2026 16:05: "Add both versions of the Spanning Tree poem. Add poems that have been written to RFC /
+    // IEEE specs by the spec authors." The poems are described and linked, not reproduced (they are in copyright).
+    date: "2026-11-08",
+    time: "16:37",
+    kind: "content",
+    title: "Poems in the RFCs",
+    titlePt: "Poemas nas RFCs",
+    body:
+      "A new glossary entry gathers the poems that standards authors wrote into their documents: Radia Perlman's Algorhyme in the 1985 spanning tree paper and Ray Perlner's Algorhyme V2 in RFC 6325, a Jabberwocky parody from 1973, Vint Cerf's verse about bringing up a new network, the poems read at the ARPANET's twentieth anniversary, and April Fools' verse on SONET and on naming hosts. Each is described and linked to its document, where it is best read. In English and Portuguese.",
+    links: [
+      { label: "Poems in the RFCs", href: "/glossary/rfc-poetry" },
+      { label: "Spanning Tree", href: "/dev/fun/spanning-tree" },
+    ],
+  },
+  {
+    // PRIME 06/11/2026 16:06 (the rebrand notice on wsr.pearsonvue.com) and 16:08 (PoC Index as a source, always
+    // fact-checked): the Pearson VUE record, and a dated update to the CVE-2026-98432 post.
+    date: "2026-11-08",
+    time: "16:37",
+    kind: "content",
+    title: "Pearson VUE's new name, and CVE-2026-98432 on 8 November",
+    titlePt: "O novo nome da Pearson VUE, e a CVE-2026-98432 em 8 de novembro",
+    body:
+      "The Pearson VUE entry in Industry now records that since 18 November 2025 the business trades as Pearson, under the name Pearson Professional Assessments, and that its candidate sites still showed both names in November 2026. The CVE-2026-98432 post has an update for 8 November: still not in CISA's catalogue of known exploited vulnerabilities, an EPSS (Exploit Prediction Scoring System) estimate of 0.76%, the growing count of public proof-of-concept repositories (counted, not opened and not linked), and why one proposed hardening does not help. In English and Portuguese.",
+    links: [
+      { label: "Pearson VUE", href: "/industry/pearson-vue" },
+      { label: "The handshake that freed too soon", href: "/blog/the-handshake-that-freed-too-soon" },
+    ],
+  },
+  {
     // PRIME 06/11/2026 13:01: "For the games and puzzles, cite inspirations, roots and origins, folklore if any, other
     // famous implementations, etc."
     date: "2026-11-06",
@@ -67,8 +524,8 @@ export const CHANGELOG: ChangelogEntry[] = [
       "Each of the thirteen games now ends with \"Where it comes from\": the puzzles, shows, papers and people it descends from, from the eight queens of 1848 and Radia Perlman's Algorhyme to Wordle, Only Connect and LinkedIn's Queens, Tango and Zip. Every claim lists its source with the day it was read, and related glossary entries are linked. A link beside \"How to play\" jumps there. In English and Portuguese.",
     links: [
       { label: "Spanning Tree", href: "/dev/fun/spanning-tree" },
-      { label: "Whack-a-Bug", href: "/dev/fun/whack-a-bug" },
-      { label: "Exit the Editor", href: "/dev/fun/exit-the-editor" },
+      { label: "Whack-a-Bug", href: "/arcade/whack-a-bug" },
+      { label: "Exit the Editor", href: "/arcade/exit-the-editor" },
     ],
   },
   {
@@ -92,7 +549,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     titlePt: "Exit the Editor esconde a dica do Ctrl-C no vim",
     body:
       "When you press Ctrl-C in vim, the hint vim prints now shows its command as three dots, and \"Read the screen\" says \"hidden keys\" there. In English and Portuguese.",
-    links: [{ label: "Exit the Editor", href: "/dev/fun/exit-the-editor" }],
+    links: [{ label: "Exit the Editor", href: "/arcade/exit-the-editor" }],
   },
   {
     // PRIME 06/11/2026 12:25: "In exit the editor, the text shown on the screen sometimes reveals the escape keys.
@@ -104,7 +561,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     titlePt: "Exit the Editor não mostra mais a saída na tela",
     body:
       "Four programs print their own way out on their first screen: nano's help bar, man's prompt, telnet's banner and Emacs's scratch note. Those keys are now shown as a dot, and \"Read the screen\" says \"hidden key\" in their place. What a program says after a wrong key is left as it is. In English and Portuguese.",
-    links: [{ label: "Exit the Editor", href: "/dev/fun/exit-the-editor" }],
+    links: [{ label: "Exit the Editor", href: "/arcade/exit-the-editor" }],
   },
   {
     // PRIME 06/11/2026 12:23: "Flash the board / playing area indicating when the game or puzzle has been solved -
@@ -132,7 +589,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     links: [
       { label: "Access Points", href: "/dev/fun/access-points" },
       { label: "Log Detective", href: "/dev/fun/log-detective" },
-      { label: "Exit the Editor", href: "/dev/fun/exit-the-editor" },
+      { label: "Exit the Editor", href: "/arcade/exit-the-editor" },
     ],
   },
   {
@@ -219,7 +676,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     titlePt: "Saia do Editor entende teclas mortas e AltGr",
     body:
       "On a US International or Brazilian ABNT2 keyboard, ~ is a dead key that waits for the next key, and the fake terminal lost it, so Enter ~ . never reached ssh. The terminal now lets the browser compose a dead key with the next key and reads the result, so ~ then . sends ~., and ~ then space sends ~. A character typed with AltGr, such as ~ on a German or Portuguese keyboard, is now that character rather than a Ctrl chord.",
-    links: [{ label: "Exit the Editor", href: "/dev/fun/exit-the-editor" }],
+    links: [{ label: "Exit the Editor", href: "/arcade/exit-the-editor" }],
   },
   {
     // PRIME 05/11/2026 11:49: the queued maintenance, items 7 and 9 (first-party sources; currency re-checks).
@@ -333,7 +790,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     links: [
       { label: "Access Points", href: "/dev/fun/access-points" },
       { label: "Spanning Tree", href: "/dev/fun/spanning-tree" },
-      { label: "Incident Commander", href: "/dev/fun/incident-commander" },
+      { label: "Incident Commander", href: "/arcade/incident-commander" },
       { label: "Boss-Key Screens", href: "/dev/fun/boss-screens" },
     ],
   },
@@ -394,7 +851,7 @@ export const CHANGELOG: ChangelogEntry[] = [
       "After the daily round, Prefix of the Day shows how many rounds you played, how many you solved, your current and best streak, and how many tries each one took, today's highlighted. Hard mode, switched on before the day's first try, locks every field once it is right and makes every arrow binding, and the copied result says Hard. The mask field takes a prefix length too: /25, or just 25, is spelled out as 255.255.255.128 under it. First Match offers a hint after three waves on a level: one entry of a shortest list, in its place, with the reason it sits there, for 20 points. Each service now always lives on the same server in every level and daily, the web on 10.0.0.10, SSH on the jump host 10.0.0.20, and so on. Five Clues' practice list marks the puzzles you have already played, solved or not.",
     links: [
       { label: "Prefix of the Day", href: "/dev/fun/prefix-of-the-day" },
-      { label: "First Match", href: "/dev/fun/first-match" },
+      { label: "First Match", href: "/arcade/first-match" },
       { label: "Five Clues", href: "/dev/fun/five-clues" },
     ],
   },
@@ -408,8 +865,8 @@ export const CHANGELOG: ChangelogEntry[] = [
     body:
       "Every level shows its par, the keystrokes of its shortest documented way out. Leave in exactly par for the Par medal, or find a shorter way that still leaves cleanly for Under par: git's commit editor has one. The daily escape is one trap a day, the same for everyone: a program from the levels in a new scene, an unsaved file, a session frozen mid-line, a backup running inside tmux. The attempt starts at the first key and counts once; a reload picks it up with the clock still running, and a wrong way out sets the trap again and is counted on the result. In Aggregate, free play picks up where it was left after a reload, the daily's copied result says how many tries the best score took and shows that round's board, and outlined sibling pairs are numbered and ringed in their own pattern.",
     links: [
-      { label: "Exit the Editor", href: "/dev/fun/exit-the-editor" },
-      { label: "Aggregate", href: "/dev/fun/aggregate" },
+      { label: "Exit the Editor", href: "/arcade/exit-the-editor" },
+      { label: "Aggregate", href: "/arcade/aggregate" },
     ],
   },
   {
@@ -491,7 +948,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     titlePt: "O Cinco Pistas tem 204 desafios diários, e a rodada do dia do Whack-a-Bug conta desde o primeiro segundo",
     body:
       "Five Clues gains 110 daily puzzles, 55 from networking (DNS, routing, email, voice, network management, standards bodies) and 55 from security, systems, cloud, programming, the web platform and the vendor platforms taught here, every clue found in its first-party source on the day it was added, so the daily order runs to 26 May 2027 before a puzzle comes round again. A Whack-a-Bug daily run now counts from the moment it starts: leave or reload the page mid-round and the run ends with the score it had, instead of offering a fresh daily run. Counts in Whack-a-Bug, Exit the Editor, Incident Commander and the Portuguese Phish or Legit agree with their numbers (1 feature broken, 1 keystroke).",
-    links: [{ label: "Five Clues", href: "/dev/fun/five-clues" }, { label: "Whack-a-Bug", href: "/dev/fun/whack-a-bug" }],
+    links: [{ label: "Five Clues", href: "/dev/fun/five-clues" }, { label: "Whack-a-Bug", href: "/arcade/whack-a-bug" }],
   },
   {
     // PRIME 03/11/2026 02:28: "I want all of them, including the two smaller ideas. If you can take ideas from the LinkedIn games, that would be great. And how about a "whack-a-bug" where one's job is to tap/click on elements briefly appearing on the screen?" The thirteen games, the shelf and the storage disclosure (privacy revision r20261103fun).
@@ -601,7 +1058,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     titlePt: "Whack-a-Bug: sessenta segundos de bugs para esmagar e features para deixar em paz",
     body:
       "A new arcade game on /dev/fun. Bugs pop up for a moment in nine panes of a code editor and must be hit before they vanish; features must be left alone, because hitting one costs points (it is not a bug, it is a feature); a rare golden bug is worth five times as much, and every five hits in a row raise the multiplier, up to four times. The pace and the number of items rise through the minute. Play with a mouse, a finger, the keys Q W E, A S D and Z X C, or the number pad. The daily run is the same 60 seconds for everyone on a UTC day; practice rounds are endless. Scores, the best and the daily result stay in this browser.",
-    links: [{ label: "Play Whack-a-Bug", href: "/dev/fun/whack-a-bug" }],
+    links: [{ label: "Play Whack-a-Bug", href: "/arcade/whack-a-bug" }],
   },
   {
     // PRIME 03/11/2026: the /dev/fun games. A sliding-tile game about route summarisation.
@@ -612,7 +1069,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     titlePt: "Agregue: deslize prefixos, só irmãos se juntam",
     body:
       "A 4x4 board of real IPv4 prefixes inside a private /16. Slide them with the arrow keys, a swipe or the on-screen arrows; two tiles merge into their parent only when they are true siblings, the same length, adjacent and aligned, so 10.0.0.64/26 and 10.0.0.128/26 block each other. Each merge scores the addresses it summarises, with goals at /24, /23 and /22. A daily challenge drops the same tiles for everyone, and free play is endless.",
-    links: [{ label: "Play Aggregate", href: "/dev/fun/aggregate" }],
+    links: [{ label: "Play Aggregate", href: "/arcade/aggregate" }],
   },
   {
     // PRIME 03/11/2026: the /dev/fun games. First Match: access-list ordering against a wave of packets.
@@ -623,7 +1080,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     titlePt: "First Match: ordene a access list e mande o tráfego",
     body:
       "A new game on /dev/fun. Each level states a policy in plain words and deals a hand of Cisco IOS extended access-list entries, some of them traps: too broad, the wrong port, the port on the wrong side of the address, a subnet mask where a wildcard belongs, a deny that hides a permit. Pick entries, order them, and send a wave of packets: each one is judged first-match by the same evaluator as the ACL first-match tool, with the implicit deny at the end and the empty-list rule. Twenty levels teach the implicit deny, order, shadowing, host and wildcard masks (contiguous or not), eq with several ports, neq, gt, lt, range, established and ICMP against IP, each with a one-line lesson; a daily level is generated for everyone at 00:00 UTC, with six waves and a share card. Every level and the next 400 daily levels are proven before each build: solvable, the par is the shortest passing list, and every trap is outside every shortest list and does harm.",
-    links: [{ label: "Play First Match", href: "/dev/fun/first-match" }],
+    links: [{ label: "Play First Match", href: "/arcade/first-match" }],
   },
   {
     // PRIME 2026-11-03: an escape room in a fake terminal, each program faithful to its own documentation.
@@ -634,7 +1091,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     titlePt: "Saia do Editor: treze programas para fechar do jeito certo",
     body:
       "A new level game on /dev/fun: an escape room in a fake terminal. Each level traps you in a program (vim in Insert mode, less, man, nano, Emacs, top, Python 3.12's interactive prompt, a frozen ssh session, tail -f, telnet, tmux and git commit's editor) and a final boss stacks four of them. Each program answers the way its own documentation says, including to the classic wrong guesses: quit typed into vim, Ctrl-C in less, exit at Python 3.12's prompt or at telnet's. Hints appear after a few wrong tries; keystrokes and time give each level its score, and levels unlock in order. On a phone, a key row adds Esc, a sticky Ctrl, Tab, the arrows, the tilde, the colon and Enter. The behaviour follows vim's help, the less, man, top, ssh, telnet and tmux manual pages, the GNU nano and GNU Emacs manuals, Python's tutorial and git-commit(1), read 3 November 2026.",
-    links: [{ label: "Play Exit the Editor", href: "/dev/fun/exit-the-editor" }],
+    links: [{ label: "Play Exit the Editor", href: "/arcade/exit-the-editor" }],
   },
   {
     // PRIME 2026-11-03: an idle game about running a service, with the "Approve without review" switch.
@@ -645,7 +1102,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     titlePt: "Incident Commander: um jogo idle sobre manter um serviço no ar",
     body:
       "A new idle game on /dev/fun. Every request the service serves earns credits; credits buy servers, a load balancer, caching, a content delivery network, autoscaling, monitoring and alerting, on-call engineers, runbooks, a staging environment and chaos drills. Incidents arrive at a rate that depends on the setup (an expired certificate, a full disk, a Domain Name System (DNS) record with a long time to live (TTL), a Border Gateway Protocol (BGP) route leak, a traffic flood, a bad deploy, a memory leak, a cache stampede, a database lock, a cloud region outage, and DNS again), each with three possible responses and one right one. The Approve without review switch ships releases two and a half times as often, with six times the chance of a bad deploy. Writing the post-mortem starts the run again with a permanent bonus. The service keeps earning while the tab is closed, at half pace, for up to eight hours, and the game is saved in this browser.",
-    links: [{ label: "Play Incident Commander", href: "/dev/fun/incident-commander" }],
+    links: [{ label: "Play Incident Commander", href: "/arcade/incident-commander" }],
   },
   {
     // PRIME 2026-11-02 21:39: the CVE-2026-98432 post "references an unknown 'summary'"; it should be a writeup about the vulnerability, affected systems, fallout, consequences, actors and reactions.

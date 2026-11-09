@@ -1,0 +1,206 @@
+/* ============================================================================
+   src/app/fun-rule-inspector.css
+   ----------------------------------------------------------------------------
+   RULE INSPECTOR (PRIME 08/11/2026, the arcade's first wave), prefix fg-ri-.
+   The firewall desk: the connection card and the two calls, the policy and
+   the state table beside them (a column on a phone, two columns from 820 px),
+   the change notice between rounds, and the audit at the end. Tokens only
+   (--accent-*, --surface-*, --text-*, --border-*, --color-*, --radius-*), so
+   every theme applies; permit wears the success colour, deny the danger one.
+   The card's arrival is cut under prefers-reduced-motion. Targets are at
+   least 44 px. Imported by globals.css after fun-ttl.css (and fun-games.css, whose shared fg-
+   classes, the buttons, readouts and Start cover, it builds on).
+   ============================================================================ */
+
+/* The game's accent on its shelf card and pills (the other games' --glyph-hue lines; 92 sits between Whack-a-Bug's 75 and Spanning Tree's 110, unused). */
+.fg-glyph--rule-inspector { --glyph-hue: 92; }
+
+/* ---- Modes, heads-up line, cover ------------------------------------------ */
+
+/* The two mode buttons, side by side, centred. */
+.fg-ri-modes { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+/* The mode on screen. */
+.fg-ri-mode[aria-pressed="true"] { border-color: var(--accent-primary); color: var(--accent-primary); }
+/* The heads-up line: round, connection, clock, kept on one or two lines. */
+.fg-ri-hud { gap: 0.35rem 1rem; }
+/* The Start or Resume cover, the width of the desk. */
+.fg-ri-cover { width: 100%; max-width: 640px; box-sizing: border-box; min-height: 9rem; }
+
+/* ---- The desk ------------------------------------------------------------- */
+
+/* The desk: one column on a phone. */
+.fg-ri-desk { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; width: 100%; box-sizing: border-box; align-items: start; }
+/* The connection, the calls, the hint and the strip, stacked. */
+.fg-ri-main { display: flex; flex-direction: column; gap: 0.75rem; min-width: 0; }
+/* The policy and the state table, stacked. */
+.fg-ri-side { display: flex; flex-direction: column; gap: 0.75rem; min-width: 0; }
+/* From 820 px, the connection on the left and the policy on the right. */
+@media (min-width: 820px) {
+  /* Two columns, the policy a little wider. */
+  .fg-ri-desk { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); }
+}
+
+/* The connection card: the headers as the firewall reads them. */
+.fg-ri-card { margin: 0; border: 2px solid var(--border-strong); border-left-width: 6px; border-radius: var(--radius-lg); background: var(--surface-elevated); padding: 0.85rem 1rem; box-sizing: border-box; }
+/* An inbound connection's edge. */
+.fg-ri-card-in { border-left-color: var(--color-info); }
+/* An outbound connection's edge. */
+.fg-ri-card-out { border-left-color: var(--accent-amber); }
+/* A new card slides up into place (cut under reduced motion, below). */
+.fg-ri-arrive { animation: fg-ri-in 180ms ease-out; }
+/* The slide: up a few pixels and in. */
+@keyframes fg-ri-in {
+  /* From just below, faint. */
+  from { opacity: 0; transform: translateY(6px); }
+  /* To its place. */
+  to { opacity: 1; transform: none; }
+}
+/* The card's head: the direction and the connection's number. */
+.fg-ri-card-head { display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; margin: 0 0 0.6rem; font-size: 0.8rem; color: var(--text-secondary); }
+/* The direction, as a label. */
+.fg-ri-dir { text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-primary); }
+/* The number. */
+.fg-ri-num { color: var(--text-secondary); }
+/* The fields: a label column and a value column. */
+.fg-ri-fields { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 0.3rem 0.85rem; margin: 0; align-items: baseline; }
+/* A field's label. */
+.fg-ri-fields dt { font-size: 0.8rem; color: var(--text-secondary); }
+/* A field's value, wrapping anywhere rather than pushing the page sideways. */
+.fg-ri-fields dd { margin: 0; color: var(--text-primary); font-size: clamp(0.92rem, 3.4vw, 1.08rem); overflow-wrap: anywhere; }
+/* The TCP flags, set off. */
+.fg-ri-flag { font-weight: 700; }
+
+/* The two calls, side by side. */
+.fg-ri-answers { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+/* A call: big, with its keys under the word. */
+.fg-ri-answer { min-height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.15rem; font-size: 1.1rem; }
+/* Permit's edge. */
+.fg-ri-answer-permit { border-color: var(--color-success); }
+/* Deny's edge. */
+.fg-ri-answer-deny { border-color: var(--color-danger); }
+/* Permit under the pointer. */
+.fg-ri-answer-permit:hover { border-color: var(--color-success); color: var(--color-success); }
+/* Deny under the pointer. */
+.fg-ri-answer-deny:hover { border-color: var(--color-danger); color: var(--color-danger); }
+/* The keys on a call. */
+.fg-ri-key { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; padding: 0 0.35rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: var(--text-secondary); background: var(--surface-base); }
+/* The keys hint under the calls. */
+.fg-ri-hint { margin: 0; text-align: center; }
+/* The progress strip: a square a connection. */
+.fg-ri-strip { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; list-style: none; margin: 0; padding: 0; }
+/* A square still waiting. */
+.fg-ri-dot { width: 12px; height: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); background: var(--surface-base); }
+/* A square called (no verdict until the audit). */
+.fg-ri-dot-done { background: var(--text-secondary); border-color: var(--text-secondary); }
+/* The square on the desk. */
+.fg-ri-dot-now { border-color: var(--accent-primary); border-width: 2px; }
+/* A round's first square, set apart from the round before. */
+.fg-ri-dot-gap { margin-left: 8px; }
+
+/* ---- The policy and the state table ---------------------------------------- */
+
+/* A panel beside the connection. */
+.fg-ri-panel { border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-elevated); padding: 0.7rem 0.85rem; }
+/* Its heading. */
+.fg-ri-panel-title { margin: 0 0 0.5rem; font-size: 0.9rem; font-weight: 700; color: var(--text-primary); }
+/* The rules, top first. */
+.fg-ri-rules { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.3rem; }
+/* A rule: its number, its action, the rest wrapping under them on a narrow screen. */
+.fg-ri-rule { display: grid; grid-template-columns: 2.2rem 3.6rem minmax(0, 1fr) auto; gap: 0.15rem 0.4rem; align-items: baseline; padding: 0.3rem 0.4rem; border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.4; background: var(--surface-base); }
+/* The sequence number. */
+.fg-ri-seq { color: var(--text-secondary); text-align: right; font-variant-numeric: tabular-nums; }
+/* The action. */
+.fg-ri-act { font-weight: 700; }
+/* A permit's action. */
+.fg-ri-rule-permit .fg-ri-act { color: var(--color-success); }
+/* A deny's action. */
+.fg-ri-rule-deny .fg-ri-act { color: var(--color-danger); }
+/* What the rule matches. */
+.fg-ri-what { color: var(--text-primary); overflow-wrap: anywhere; }
+/* A rule the last change inserted. */
+.fg-ri-rule-new { outline: 1px dashed var(--accent-primary); outline-offset: -1px; }
+/* Its "new" tag. */
+.fg-ri-new { font-family: var(--font-prose); font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--accent-primary); }
+/* The implicit deny at the end, written out but quieter. */
+.fg-ri-rule-implicit { background: none; border: 1px dashed var(--border-subtle); }
+/* Its action. */
+.fg-ri-rule-implicit .fg-ri-act { color: var(--color-danger); opacity: 0.8; }
+/* Its words. */
+.fg-ri-rule-implicit .fg-ri-what { color: var(--text-secondary); font-family: var(--font-prose); }
+/* The special-purpose blocks, folded under the policy. */
+.fg-ri-special { margin-top: 0.5rem; font-size: 0.82rem; color: var(--text-secondary); }
+/* Its summary: a 44 px target. */
+.fg-ri-special-title { cursor: pointer; min-height: 44px; display: flex; align-items: center; color: var(--accent-primary); font-weight: 600; }
+/* The blocks. */
+.fg-ri-special-list { list-style: none; margin: 0 0 0.4rem; padding: 0; display: grid; gap: 0.15rem; }
+/* The state table's rows. */
+.fg-ri-state { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.8rem; overflow-wrap: anywhere; color: var(--text-primary); }
+/* An empty state table. */
+.fg-ri-state-empty { margin: 0; }
+
+/* ---- The change notice ---------------------------------------------------- */
+
+/* The notice between rounds. */
+.fg-ri-notice { width: 100%; max-width: 640px; box-sizing: border-box; border: 2px solid var(--accent-primary); border-radius: var(--radius-lg); background: var(--surface-elevated); padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: 0.6rem; }
+/* Which change, before which round. */
+.fg-ri-notice-kicker { margin: 0; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--accent-primary); }
+/* The change's name. */
+.fg-ri-notice-title { margin: 0; font-size: 1.1rem; color: var(--text-primary); }
+/* Why it was made. */
+.fg-ri-notice-why { margin: 0; color: var(--text-secondary); line-height: 1.5; }
+/* The line under the button. */
+.fg-ri-notice-note { margin: 0; text-align: center; }
+
+/* ---- The audit ------------------------------------------------------------ */
+
+/* The audit under the result. */
+.fg-ri-audit { width: 100%; max-width: 720px; box-sizing: border-box; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-elevated); padding: 0.85rem 1rem; }
+/* Its heading. */
+.fg-ri-audit-title { margin: 0 0 0.35rem; font-size: 1rem; color: var(--text-primary); }
+/* How many calls were wrong. */
+.fg-ri-audit-lead { margin: 0 0 0.6rem; color: var(--text-secondary); }
+/* The list of calls, numbered by connection. */
+.fg-ri-audit-list { margin: 0 0 0.5rem; padding-left: 1.8rem; display: flex; flex-direction: column; gap: 0.6rem; }
+/* One call. */
+.fg-ri-audit-item { color: var(--text-secondary); }
+/* A wrong call's number. */
+.fg-ri-audit-wrong::marker { color: var(--color-danger); font-weight: 700; }
+/* A right call's number. */
+.fg-ri-audit-right::marker { color: var(--color-success); }
+/* The connection, in one line. */
+.fg-ri-audit-pkt { margin: 0 0 0.15rem; font-size: 0.82rem; color: var(--text-primary); overflow-wrap: anywhere; }
+/* What was said and what the policy says. */
+.fg-ri-audit-call { margin: 0 0 0.15rem; font-weight: 600; color: var(--color-danger); }
+/* What decided it. */
+.fg-ri-audit-why { margin: 0; line-height: 1.5; overflow-wrap: anywhere; }
+/* Every connection, folded. */
+.fg-ri-audit-all { margin-top: 0.25rem; }
+/* Its summary: a 44 px target. */
+.fg-ri-audit-all-title { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 700; color: var(--text-primary); }
+
+/* ---- Learn the real thing -------------------------------------------------- */
+
+/* The links under the game, centred. */
+.fg-ri-learn { margin: 0; text-align: center; max-width: 62ch; line-height: 1.7; }
+/* The lead, set off. */
+.fg-ri-learn-lead { font-weight: 700; color: var(--text-primary); }
+
+/* ---- A phone ---------------------------------------------------------------- */
+
+/* Tighter on a narrow screen. */
+@media (max-width: 640px) {
+  /* The card's padding. */
+  .fg-ri-card { padding: 0.7rem 0.8rem; }
+  /* A rule's number and action columns, narrower. */
+  .fg-ri-rule { grid-template-columns: 1.9rem 3.2rem minmax(0, 1fr); font-size: 0.76rem; }
+  /* The "new" tag drops under the rule's words. */
+  .fg-ri-new { grid-column: 3; }
+  /* The audit's padding. */
+  .fg-ri-audit { padding: 0.75rem 0.8rem; }
+}
+
+/* Reduced motion: the card appears without sliding. */
+@media (prefers-reduced-motion: reduce) {
+  /* No arrival. */
+  .fg-ri-arrive { animation: none; }
+}

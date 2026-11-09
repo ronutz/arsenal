@@ -919,7 +919,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     kind: "term",
     domains: ["hacking", "isp-telecom"],
     aliases: ["lod", "lod/h", "lex luthor"],
-    relatedTerms: ["masters-of-deception", "phrack", "phreaking"],
+    relatedTerms: ["masters-of-deception", "phrack", "phreaking", "the-e911-case"],
     sources: [{ label: "Legion of Doom - hacker group history", href: "https://en.wikipedia.org/wiki/Legion_of_Doom_(hacker_group)" }],
   },
   {
@@ -937,7 +937,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     kind: "lore",
     domains: ["hacking", "grc"],
     aliases: ["sun devil", "1990 hacker crackdown", "steve jackson games raid"],
-    relatedTerms: ["legion-of-doom", "eff", "phrack"],
+    relatedTerms: ["legion-of-doom", "eff", "phrack", "the-e911-case", "the-hacker-crackdown", "mitch-kapor", "john-perry-barlow"],
     sources: [{ label: "Operation Sundevil - the 1990 crackdown", href: "https://en.wikipedia.org/wiki/Operation_Sundevil" }],
   },
   {
@@ -1342,7 +1342,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     personField: "hacker-culture",
     domains: ["hacking", "cyber-security"],
     aliases: ["the homeless hacker", "new york times intrusion", "manning informant"],
-    relatedTerms: ["kevin-mitnick", "responsible-disclosure", "hacktivism"],
+    relatedTerms: ["kevin-mitnick", "responsible-disclosure", "hacktivism", "chelsea-manning"],
     sources: [{ label: "In December 2001 WorldCom praised Lamo for helping fortify its corporate security, and in February 2002 he broke into the internal network of The New York Times and added his own name to its database of expert sources", href: "https://en.wikipedia.org/wiki/Adrian_Lamo" }],
   },
   {
@@ -1378,7 +1378,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     personField: "hacker-culture",
     domains: ["crypto", "hacking"],
     aliases: ["jon lech johansen", "decss", "css decryption"],
-    relatedTerms: ["free-software", "eff", "copyleft"],
+    relatedTerms: ["free-software", "eff", "copyleft", "dmitry-sklyarov", "bunnie-huang"],
     sources: [{ label: "Jon Lech Johansen - biography", href: "https://en.wikipedia.org/wiki/Jon_Lech_Johansen" }],
   },
   {
@@ -1401,8 +1401,8 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     personYear: 2003,
     personField: "security",
     domains: ["cyber-security", "hacking"],
-    aliases: ["metasploit", "hdm", "month of browser bugs"],
-    relatedTerms: ["l0pht", "pentest", "zero-day"],
+    aliases: ["hdm", "month of browser bugs"],
+    relatedTerms: ["metasploit", "l0pht", "pentest", "zero-day"],
     sources: [{ label: "He founded the Metasploit Project in the summer of 2003, intending it as a public resource for exploit code research and development", href: "https://en.wikipedia.org/wiki/HD_Moore" }],
   },
   {
@@ -1515,7 +1515,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     personField: "security",
     domains: ["cyber-security", "enterprise-networking"],
     aliases: ["gordon lyon", "nmap", "insecure.org", "network mapper"],
-    relatedTerms: ["pentest", "hackers-film", "hd-moore"],
+    relatedTerms: ["pentest", "hackers-film", "hd-moore", "metasploit"],
     sources: [{ label: "Nmap, the Network Mapper; its own history records the release: on 1 September 1997 Nmap was first published in Phrack issue 51, article 11, about 2,000 lines long and with no version number because further releases were not planned", href: "https://nmap.org/" }, { label: "Nmap's own history and release chronology, which carries the 1 September 1997 first release", href: "https://nmap.org/book/history-future.html" },],
   },
   {
@@ -1524,7 +1524,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     kind: "term",
     domains: ["crypto", "privacy"],
     aliases: ["cypherpunk mailing list", "crypto wars", "cypherpunks write code"],
-    relatedTerms: ["eff", "blockchain"],
+    relatedTerms: ["eff", "blockchain", "john-gilmore", "declaration-of-the-independence-of-cyberspace"],
     sources: [{ label: "Cypherpunk - movement and mailing list", href: "https://en.wikipedia.org/wiki/Cypherpunk" }],
   },
   {
@@ -1572,7 +1572,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     personField: "hacker-culture",
     domains: ["hacking", "privacy"],
     aliases: ["mendax", "wikileaks", "international subversives"],
-    relatedTerms: ["underground-book", "wank-worm", "adrian-lamo"],
+    relatedTerms: ["underground-book", "wank-worm", "adrian-lamo", "chelsea-manning"],
     sources: [{ label: "He founded WikiLeaks in 2006 and came to international attention in 2010, when WikiLeaks published the leaks from Chelsea Manning; publication of those leaks began in February 2010", href: "https://en.wikipedia.org/wiki/Julian_Assange" }],
   },
   {
@@ -1593,7 +1593,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     kind: "lore",
     domains: ["cyber-security", "ops-culture"],
     aliases: ["security administrator tool for analyzing networks", "dan farmer", "wietse venema", "santa"],
-    relatedTerms: ["fyodor", "pentest"],
+    relatedTerms: ["fyodor", "pentest", "metasploit"],
     sources: [{ label: "SATAN - Security Administrator Tool for Analyzing Networks", href: "https://en.wikipedia.org/wiki/Security_Administrator_Tool_for_Analyzing_Networks" }],
   },
   {
@@ -1684,16 +1684,21 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     sources: [{ label: "Carding - fraud trade and terminology", href: "https://en.wikipedia.org/wiki/Carding_(fraud)" }],
   },
   {
-    slug: "aaron-swartz",
-    headword: "Aaron Swartz",
-    kind: "term",
-    person: true,
-    personYear: 2001,
-    personField: "hacker-culture",
-    domains: ["ops-culture", "privacy"],
-    aliases: ["rss author", "jstor case", "securedrop", "guerilla open access"],
-    relatedTerms: ["kevin-poulsen", "eff", "open-source"],
-    sources: [{ label: "In 2001 Swartz joined the RDF Core working group at the World Wide Web Consortium, where he authored RFC 3870 on the application/rdf+xml media type", href: "https://en.wikipedia.org/wiki/Aaron_Swartz" }],
+    // aaron-swartz (EXPANSION, brief: "check whether aaron-swartz is rich already"): it had def and context only, one
+    // Wikipedia source and a context sentence of site narration ("this entry touches on suicide"). This adds depth and
+    // primary sources. personYear 2001 and its labelled source are KEPT unchanged (check-person-year-sources reads
+    // the label for the year); ledger.md notes that the RSS 1.0 work the copy leads with is dated 2000.
+    slug: "aaron-swartz", // unchanged address
+    headword: "Aaron Swartz", // unchanged
+    kind: "term", // unchanged, as for the other person entries of this shape
+    person: true, // unchanged: an individual, shown on /people
+    personYear: 2001, // unchanged anchor; see ledger.md
+    personField: "hacker-culture", // unchanged
+    domains: ["hacking", "web-development", "privacy", "grc"], // was ops-culture and privacy; RSS, web.py, SecureDrop and the CFAA
+    aliases: ["aaron swartz", "rss author", "jstor case", "united states v. swartz", "securedrop", "deaddrop", "guerilla open access", "guerilla open access manifesto", "aaron's law", "web.py", "demand progress"], // search terms
+    relatedTerms: ["kevin-poulsen", "eff", "open-source", "reddit", "rfc", "the-hacker-manifesto", "tim-berners-lee", "alexandra-elbakyan", "bassel-khartabil", "bunnie-huang"], // all exist
+    relatedArticles: ["hacker-manifestos", "kevin-poulsen-dark-dante", "electronic-frontier-foundation", "open-source-and-the-meaning-of-free"], // the first two already discuss him
+    sources: [{ label: "In 2001 Swartz joined the RDF Core working group at the World Wide Web Consortium, where he authored RFC 3870 on the application/rdf+xml media type", href: "https://en.wikipedia.org/wiki/Aaron_Swartz" }, { label: "Internet Hall of Fame, Aaron Swartz, 2013 inductee (read 2026-11-08): RSS 1.0 co-authored in 2000 at 14; W3C working group; Creative Commons; Open Library; Infogami and Reddit; web.py; Watchdog.net; Demand Progress against SOPA/PIPA; JSTOR declined to pursue charges; 13 felony charges; James Madison Award", href: "https://www.internethalloffame.org/inductee/aaron-swartz/" }, { label: "RDF Site Summary (RSS) 1.0, RSS-DEV Working Group, version 1.3 of 9 December 2000 (read 2026-11-08): authors include Aaron Swartz, The Info Network", href: "https://web.resource.org/rss/1.0/spec" }, { label: "RFC 3870, application/rdf+xml Media Type Registration, A. Swartz, September 2004 (read 2026-11-08)", href: "https://www.rfc-editor.org/rfc/rfc3870.txt" }, { label: "Creative Commons, 'Remembering Aaron Swartz', 12 January 2013 (read 2026-11-08): one of the early architects; as a teenager helped design the code layer of the licences", href: "https://creativecommons.org/2013/01/12/remembering-aaron-swartz/" }, { label: "SecureDrop documentation, What is SecureDrop, Project History (read 2026-11-08): DeadDrop developed by Aaron Swartz in 2012; Kevin Poulsen managed the project; StrongBox in May 2013; Freedom of the Press Foundation from October 2013", href: "https://docs.securedrop.org/en/stable/what_is_securedrop.html" }, { label: "MIT, 'Report to the President: MIT and the Prosecution of Aaron Swartz' (Abelson review), 26 July 2013 (read 2026-11-08): PACER in 2008 and the FBI inquiry; the manifesto and its authorship; the January 2011 arrest; the September 2012 superseding indictment with 13 felony counts; state charges dismissed in March 2012; 11 January 2013", href: "https://swartz-report.mit.edu/docs/report-to-the-president.pdf" }, { label: "US Attorney's Office, District of Massachusetts, press release, 19 July 2011 (read 2026-11-08): the indictment and its allegations; up to 35 years", href: "https://www.justice.gov/archive/usao/ma/news/2011/July/SwartzAaronPR.html" }, { label: "JSTOR, 'JSTOR Statement: Misuse Incident and Criminal Case', July 2011 (read 2026-11-08): content secured; the decision to prosecute was the government's; no interest in an ongoing legal matter", href: "https://docs.jstor.org/jstor-statement-misuse-incident-and-criminal-case.html" }, { label: "WBUR, 'Aaron Swartz Charges Dismissed', 14 January 2013 (read 2026-11-08): a three-line notice of dismissal filed because of his death", href: "https://www.wbur.org/news/2013/01/14/aaron-swartz-charges-dismissed" }, { label: "Guerilla Open Access Manifesto, July 2008, Eremo, Italy, Internet Archive full text (read 2026-11-08)", href: "https://archive.org/stream/GuerillaOpenAccessManifesto/Goamjuly2008_djvu.txt" }, { label: "Rep. Zoe Lofgren, 'Rep Zoe Lofgren Introduces Bipartisan Aaron's Law', 20 June 2013 (read 2026-11-08): H.R. 2454; terms of service; a Senate companion from Ron Wyden", href: "https://lofgren.house.gov/media/press-releases/rep-zoe-lofgren-introduces-bipartisan-aarons-law" }, { label: "Rep. Zoe Lofgren, 'Lofgren, Wyden, Paul introduce bipartisan, bicameral Aaron's Law', 21 April 2015 (read 2026-11-08)", href: "https://lofgren.house.gov/media/press-releases/lofgren-wyden-paul-introduce-bipartisan-bicameral-aaron-s-law-reform-computer" }, { label: "Wikipedia, Stop Online Piracy Act (read 2026-11-08; used only for the bills' full names): the corresponding Senate bill, the PROTECT IP Act", href: "https://en.wikipedia.org/wiki/Stop_Online_Piracy_Act" }], // the year anchor kept first; primary sources added
   },
   {
     slug: "neuromancer",
@@ -1746,7 +1751,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     kind: "lore",
     domains: ["ops-culture", "hacking"],
     aliases: ["outlaws and hackers on the computer frontier", "katie hafner"],
-    relatedTerms: ["susan-headley", "the-kgb-hack", "kevin-mitnick"],
+    relatedTerms: ["susan-headley", "the-kgb-hack", "kevin-mitnick", "the-hacker-crackdown"],
     sources: [{ label: "Cyberpunk: Outlaws and Hackers on the Computer Frontier", href: "https://en.wikipedia.org/wiki/Cyberpunk:_Outlaws_and_Hackers_on_the_Computer_Frontier" }],
   },
   {
@@ -1782,7 +1787,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     kind: "term",
     domains: ["cyber-security", "events"],
     aliases: ["ccc congress", "36c3", "hamburg congress", "chaos communication camp"],
-    relatedTerms: ["chaos-computer-club", "wau-holland", "defcon"],
+    relatedTerms: ["chaos-computer-club", "wau-holland", "defcon", "felix-lindner"],
     sources: [{ label: "Chaos Communication Congress", href: "https://en.wikipedia.org/wiki/Chaos_Communication_Congress" }],
   },
   {
@@ -1791,7 +1796,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     kind: "term",
     domains: ["cyber-security", "events"],
     aliases: ["hackers on planet earth", "hotel pennsylvania", "2600 conference"],
-    relatedTerms: ["2600-magazine", "emmanuel-goldstein", "defcon"],
+    relatedTerms: ["2600-magazine", "emmanuel-goldstein", "defcon", "nick-farr"],
     sources: [{ label: "Hackers on Planet Earth", href: "https://en.wikipedia.org/wiki/Hackers_on_Planet_Earth" }],
   },
   {
@@ -1851,7 +1856,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     personField: "security",
     domains: ["privacy", "cyber-security"],
     aliases: ["nsa disclosures", "2013 leaks", "citizenfour"],
-    relatedTerms: ["citizenfour", "the-crypto-wars", "cypherpunks"],
+    relatedTerms: ["citizenfour", "the-crypto-wars", "cypherpunks", "chelsea-manning"],
     sources: [{ label: "Known for revealing classified US government surveillance programmes, and in exile in Russia since 23 June 2013; he was employed by Booz Allen Hamilton in 2013", href: "https://en.wikipedia.org/wiki/Edward_Snowden" }],
   },
   {
@@ -1941,7 +1946,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     kind: "term",
     domains: ["grc", "privacy"],
     aliases: ["lei 12.965", "internet bill of rights", "brazilian internet framework"],
-    relatedTerms: ["lgpd", "lei-carolina-dieckmann"],
+    relatedTerms: ["lgpd", "lei-carolina-dieckmann", "net-neutrality"],
     sources: [{ label: "Lei nº 12.965, de 23 de abril de 2014", href: "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2014/lei/l12965.htm" }],
   },
   {
@@ -1971,7 +1976,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     personField: "brazil",
     domains: ["isp-telecom", "ops-culture"],
     aliases: ["getschko", "primeira conexão internet brasil", "nic.br"],
-    relatedTerms: ["cert-br", "rnp", "tadao-takahashi"],
+    relatedTerms: ["cert-br", "rnp", "tadao-takahashi", "ix-br"],
     sources: [{ label: "Demi Getschko - Internet Hall of Fame", href: "https://www.internethalloffame.org/inductee/demi-getschko/" }, { label: "FAPESP's Revista Pesquisa, in Getschko's own words: he was leading FAPESP's data processing centre in 1991 when the first internet packets arrived at the foundation's building in Lapa, Sao Paulo, the country's first contact with the network", href: "https://revistapesquisa.fapesp.br/demi-getschko-um-construtor-da-internet/" },],
   },
   {
@@ -2162,7 +2167,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     personField: "brazil",
     domains: ["cyber-security", "events"],
     aliases: ["billy", "ysts organizer", "sts producoes"],
-    relatedTerms: ["ysts", "anchises-moraes", "h2hc"],
+    relatedTerms: ["ysts", "anchises-moraes", "h2hc", "ists-podcast"],
     sources: [{ label: "SegInfocast - YSTS 10th edition, with Willian Caprino", href: "https://seginfo.com.br/2016/02/22/seginfocast-29-ysts-you-sh0t-the-sheriff-10a-edicao/" }],
   },
   {
@@ -2538,7 +2543,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     kind: "term",
     domains: ["isp-telecom", "privacy"],
     aliases: ["bandwidth throttling", "estrangulamento", "degradation", "deniable blocking"],
-    relatedTerms: ["internet-shutdown", "dpi", "concentration-risk"],
+    relatedTerms: ["internet-shutdown", "dpi", "concentration-risk", "net-neutrality"],
     sources: [{ label: "OONI - Open Observatory of Network Interference", href: "https://ooni.org/" }],
   },
   {
@@ -2547,7 +2552,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     kind: "acronym",
     domains: ["isp-telecom", "cyber-security"],
     aliases: ["deep packet inspection", "protocol fingerprinting", "traffic classification"],
-    relatedTerms: ["throttling", "internet-shutdown", "tor"],
+    relatedTerms: ["throttling", "internet-shutdown", "tor", "net-neutrality"],
     sources: [{ label: "OONI - Open Observatory of Network Interference", href: "https://ooni.org/" }],
   },
   {
@@ -2865,7 +2870,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     personField: "internet",
     domains: ["enterprise-networking", "ops-culture"],
     aliases: ["perlman", "algorhyme"],
-    relatedTerms: ["spanning-tree", "stp", "is-is"],
+    relatedTerms: ["spanning-tree", "stp", "is-is", "rfc-poetry"],
     sources: [{ label: "Lemelson-MIT - Radia Perlman and the Spanning Tree Protocol", href: "https://lemelson.mit.edu/resources/radia-perlman" }, { label: "Perlman, An Algorithm for Distributed Computation of a Spanning Tree in an Extended LAN (1985)", href: "https://www.researchgate.net/publication/238778689_An_Algorithm_for_Distributed_computation_of_a_Spanning_Tree_in_an_Extended_LAN" }, { label: "Perlman inducted into the Internet Hall of Fame in 2014 and the National Inventors Hall of Fame in 2016", href: "https://www.ebsco.com/research-starters/biography/radia-perlman/" },],
   },
   {
@@ -3031,7 +3036,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     aliases: ["sox", "sarbanes oxley", "sarbanes-oxley act"],
     relatedTerms: [],
-    sources: [{ label: "The Sarbanes-Oxley Act of 2002, which among much else held companies liable for bad access control", href: "https://thecyberwire.com/stories/ed530d44d8514c568bb451723c363f8a/identity-management-a-first-principle-idea" }],
+    sources: [{ label: "The Sarbanes-Oxley Act of 2002, which among much else held companies liable for bad access control", href: "https://thecyberwire.com/stories/ed530d44d8514c568bb451723c363f8a/identity-management-a-first-principle-idea" }, { label: "Sarbanes-Oxley Act of 2002, Public Law 107-204: section 101 establishes the Public Company Accounting Oversight Board, section 201 bars listed non-audit services to audit clients, including financial information systems design and implementation, and section 404 requires management's internal control report with the auditor's attestation", href: "https://www.govinfo.gov/content/pkg/PLAW-107publ204/html/PLAW-107publ204.htm" }],
   },
   {
     slug: "x509",
@@ -3619,7 +3624,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     personField: "internet",
     domains: ["enterprise-networking"],
     aliases: ["cohen", "network voice protocol", "packet voice"],
-    relatedTerms: [],
+    relatedTerms: ["endianness"],
     sources: [{ label: "Internet Hall of Fame inductee page, in its own words: in 1967 Cohen developed the first real-time visual flight simulator on a general purpose computer, and then in 1973 he was the first to implement packet-video and packet voice, the Network Voice Protocol, when he adapted that simulator to run over the ARPANET - the first application of packet switching to real-time applications", href: "https://www.internethalloffame.org/inductee/danny-cohen/" }],
   },
   {
@@ -4255,7 +4260,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     personField: "brazil",
     domains: ["cyber-security", "hacking"],
     aliases: ["nelson murilo rufino", "chkrootkit author"],
-    relatedTerms: ["chkrootkit", "ysts"],
+    relatedTerms: ["chkrootkit", "ysts", "ists-podcast"],
     sources: [{ label: "ISTS - i sh0t the sheriff, the podcast recording since 2006, hosted by Luiz Eduardo, Nelson Murilo and Willian Caprino", href: "https://creators.spotify.com/pod/profile/ists" }, { label: "You Sh0t the Sheriff (official site)", href: "https://www.ysts.org" }],
   },
   {
@@ -4267,7 +4272,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     personField: "brazil",
     domains: ["cyber-security", "events"],
     aliases: ["luiz eduardo", "ysts founder"],
-    relatedTerms: ["ysts", "willian-caprino"],
+    relatedTerms: ["ysts", "willian-caprino", "nelson-murilo", "ists-podcast"],
     sources: [{ label: "ISTS - i sh0t the sheriff, the podcast recording since 2006, hosted by Luiz Eduardo, Nelson Murilo and Willian Caprino", href: "https://creators.spotify.com/pod/profile/ists" }, { label: "Willian Caprino's account of how the event was made, including the months spent pushing for a pilot recording", href: "https://medium.com/io-publishing/you-sh0t-the-sheriff-d1c124b7927b" }],
   },
   {
@@ -4583,8 +4588,8 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     personField: "crypto",
     domains: ["crypto", "cyber-security"],
     aliases: ["djb", "qmail", "curve25519"],
-    relatedTerms: ["smtp", "dns", "forward-secrecy"],
-    sources: [{ label: "Bernstein's own site, including the qmail security guarantee and his account of the disputes around it", href: "http://cr.yp.to/qmail/venema.html" }],
+    relatedTerms: ["smtp", "dns", "forward-secrecy", "the-crypto-wars", "eff", "john-gilmore"],
+    sources: [{ label: "Bernstein's own site, including the qmail security guarantee and his account of the disputes around it", href: "http://cr.yp.to/qmail/venema.html" }, { label: "EFF, Bernstein v. US Department of Justice, case page and court documents (read 2026-11-08): complaint filed 21 February 1995; on 15 April 1996 the court denied the government's motion to dismiss, establishing precedent for the First Amendment protection of software; Judge Patel's decisions of 6 December 1996 and 25 August 1997; the Ninth Circuit decision of 6 May 1999", href: "https://www.eff.org/cases/bernstein-v-us-dept-justice" }, { label: "EFF, 'John Gilmore Leaves the EFF Board, Becomes Board Member Emeritus', October 2021 (read 2026-11-08): the decision made it legal in 1999 for web browsers, websites, and software like PGP to use the encryption of their choice", href: "https://www.eff.org/deeplinks/2021/10/john-gilmore-leaves-eff-board-becomes-board-member-emeritus" }],
   },
   {
     slug: "rfc",
@@ -4593,7 +4598,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking", "ops-culture"],
     expansion: "Request for Comments",
     aliases: ["Request for Comments"],
-    relatedTerms: ["ietf", "steve-crocker", "jon-postel"],
+    relatedTerms: ["ietf", "steve-crocker", "jon-postel", "rfc-poetry"],
     sources: [{ label: "RFC 1 (read 2026-10-07)", href: "https://www.rfc-editor.org/rfc/rfc1.html" }, { label: "RFC 2026, BCP 9: the Internet standards process (read 2026-10-07)", href: "https://www.rfc-editor.org/rfc/rfc2026.html" }, { label: "RFC 6410 (read 2026-10-07)", href: "https://www.rfc-editor.org/rfc/rfc6410.html" }],
     relatedArticles: ["the-rfc-series"],
   },
@@ -5078,7 +5083,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["cyber-security"],
     expansion: "Intrusion Detection System",
     aliases: ["Intrusion Detection System", "ips"],
-    relatedTerms: ["siem", "firewall"],
+    relatedTerms: ["siem", "firewall", "metasploit"],
   },
   {
     slug: "hub",
@@ -5258,6 +5263,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking", "cyber-security"],
     expansion: "Terminal Access Controller Access-Control System Plus (RFC 8907)",
     aliases: ["tacacs plus", "tcp 49", "command authorization", "command accounting", "device administration"],
+    relatedTools: ["radius-packet-decoder"],
     relatedTerms: ["radius", "authentication", "accounting", "tacacs-xtacacs", "authorization", "syslog", "least-privilege"],
     relatedArticles: ["tacacs-plus-device-administration", "accounting-who-did-what-and-when", "radius-end-to-end"],
     sources: [{ label: "RFC 8907, The TACACS+ Protocol, Dahm, Ota (Google), Medway Gash (Cisco), Carrel, Grant, September 2020, Informational: TCP 49, the 12-byte header and the three packet types, the MD5 pseudo-pad described as obfuscation rather than encryption, the requirement of a protected network, the accounting flags, the 1998 Draft (read 2026-10-06)", href: "https://www.rfc-editor.org/rfc/rfc8907" }, { label: "Cisco, TACACS+ and RADIUS Comparison (document 13838): TCP, the whole body encrypted with a standard header, AAA separated, two methods of per-command authorization, Cisco's evaluation of RADIUS before developing TACACS+ (read 2026-10-06)", href: "https://www.cisco.com/c/en/us/support/docs/security-vpn/remote-authentication-dial-user-service-radius/13838-10.html" }],
@@ -5414,13 +5420,17 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     relatedTerms: ["wifi", "capacity"],
   },
   {
-    slug: "ix",
-    headword: "internet exchange",
-    kind: "term",
-    domains: ["isp-telecom"],
-    expansion: "IX",
-    aliases: ["IX", "IXP", "ptt"],
-    relatedTerms: ["peering", "transit", "latency"],
+    // ix (EXPANSION, PRIME 2026-11-08, "a rich entry for IX (internet Exchange)"). Replaces the current object, which has
+    // no sources and no depth. The near-duplicate "ixp" entry stays for now; wiring.md sets out PRIME's merge option.
+    slug: "ix", // unchanged address
+    headword: "internet exchange (IX)", // was "internet exchange"; adds the abbreviation PRIME uses
+    kind: "term", // unchanged
+    domains: ["isp-telecom", "enterprise-networking"], // isp-telecom kept; enterprise-networking added for BGP peering
+    expansion: "Internet exchange (IX), also internet exchange point (IXP)", // both names spelled out
+    aliases: ["IX", "IXP", "internet exchange point", "exchange point", "peering exchange", "route server", "multilateral peering", "bilateral peering", "MAE-East", "NAP"], // "ptt" moves to ix-br
+    relatedTerms: ["ixp", "ix-br", "peering", "transit", "bgp", "ebgp-and-ibgp", "route-reflector", "bgp-communities", "asn", "looking-glass", "cdn", "latency", "kees-neggers", "glenn-ricart"], // all exist or are created in this batch
+    relatedArticles: ["internet-chokepoints", "brazil-internet-governance", "bgp-primer", "bgp-and-the-routing-chokepoint", "internet-shutdowns-and-kill-switches"], // all exist in src/content/learn/en
+    sources: [{ label: "Internet Exchange Federation, Definition of an Internet Exchange Point (read 2026-11-08): more than two independent autonomous systems; at least three participants; not an access or transit network", href: "https://www.ix-f.net/ixp-definition/" }, { label: "Internet Exchange Federation, Successful Models for IXPs (read 2026-11-08): trust and community; light regulation; governments have helped develop IXPs but typically not operated them", href: "https://www.ix-f.net/ixp-models/" }, { label: "RFC 7947, Internet Exchange BGP Route Server, September 2016 (read 2026-11-08): shared Layer 2 media; bilateral EBGP scaling problems; multilateral interconnection; a route server does not forward traffic; AS_PATH transparency", href: "https://www.rfc-editor.org/rfc/rfc7947.txt" }, { label: "RFC 7948, Internet Exchange BGP Route Server Operations, September 2016 (read 2026-11-08): multiple route servers per Layer 2 domain; disabling the AS_PATH consistency check; communities and IRR-based export policies", href: "https://www.rfc-editor.org/rfc/rfc7948.txt" }, { label: "Internet Society, Internet Exchange Points (read 2026-11-08): a usually neutral location where networks exchange local traffic via a switch; five kinds of IXP developer; the 2010 80/20 goal for Africa", href: "https://www.internetsociety.org/issues/ixps/" }, { label: "Merit Network, 'Retiring the NSFNET Backbone Service: Chronicling the End of an Era', 1996 (read 2026-11-08): the 1993 solicitation; the 1994 NAP awards; MAE-East operated by MFS since 1992; route servers at the NAPs from November 1994; retirement on 30 April 1995", href: "https://www.merit.edu/wp-content/uploads/2025/01/Retiring-the-NSFNET-Backbone-Service_-Chronicling-the-End-of-an-Era-1.pdf" }, { label: "LINX, About (read 2026-11-08): founded in 1994 by five UK ISPs; member-owned, not for profit, one vote per member; 13 Tbps peak", href: "https://www.linx.net/about/" }, { label: "DE-CIX, About DE-CIX (read 2026-11-08): founded in 1995; Frankfurt more than 18 Tbit/s peak; DE-CIX Group AG, sole shareholder eco", href: "https://www.de-cix.net/en/about-de-cix" }, { label: "NIC.br release, 20 March 2026 (read 2026-11-08 via the release feed): IX.br São Paulo 32 Tbit/s and more than 2,500 networks connected", href: "https://ix.br/noticia/releases/ix-br-hits-record-50-tbit-s-of-aggregated-internet-traffic-driven-by-content-and-digital-services" }, { label: "CGI.br meeting slides on IX.br, 19 August 2022 (read 2026-11-08): the multilateral agreement through route servers; bilateral peering over a VLAN", href: "https://cgi.br/media/atas/pdf/20221027-ixbr-CGI.pdf" }], // definitions, the RFCs, history and the operators' own pages
   },
   {
     slug: "federation",
@@ -5755,7 +5765,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     kind: "term",
     domains: ["ops-culture"],
     aliases: ["software livre", "foss", "floss", "libre software", "four freedoms"],
-    relatedTerms: ["open-source", "copyleft"],
+    relatedTerms: ["open-source", "copyleft", "fisl"],
     sources: [{ label: "Free Software Foundation: the Free Software Definition" }],
   },
   {
@@ -6036,7 +6046,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["hacking", "cyber-security"],
     expansion: "penetration test",
     aliases: ["pentest", "pen test", "pen-testing", "ethical hacking"],
-    relatedTerms: ["red-team", "blue-team", "cve"],
+    relatedTerms: ["red-team", "blue-team", "cve", "metasploit"],
   },
   {
     slug: "red-team",
@@ -6076,7 +6086,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     kind: "term",
     domains: ["cyber-security", "hacking"],
     aliases: ["exploitation", "weaponized exploit"],
-    relatedTerms: ["zero-day", "payload", "cve", "proof-of-concept"],
+    relatedTerms: ["zero-day", "payload", "cve", "proof-of-concept", "metasploit"],
   },
   {
     slug: "payload",
@@ -6084,7 +6094,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     kind: "term",
     domains: ["cyber-security", "hacking", "enterprise-networking"],
     aliases: ["malicious payload"],
-    relatedTerms: ["exploit", "shellcode"],
+    relatedTerms: ["exploit", "shellcode", "metasploit"],
   },
   {
     slug: "shellcode",
@@ -6418,7 +6428,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     expansion: "Border Gateway Protocol",
     aliases: ["bgp", "autonomous system", "as-path"],
-    relatedTerms: ["anycast", "rpki", "igp", "egp", "peering", "ospf"],
+    relatedTerms: ["anycast", "rpki", "igp", "egp", "peering", "ospf", "ix"],
     relatedArticles: ["internet-chokepoints", "bgp-primer", "route-summarization"],
     sources: [{ label: "RFC 4271", href: "https://www.rfc-editor.org/rfc/rfc4271" }],
   },
@@ -6557,7 +6567,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     expansion: "cryptographically strong pseudo-random number generator",
     aliases: ["cryptographically secure pseudorandom number generator", "secrets module", "os.urandom"],
     relatedArticles: ["python-hashing-hmac-and-secrets"],
-    relatedTerms: ["rng", "entropy", "salt", "nonce"],
+    relatedTerms: ["rng", "entropy", "salt", "nonce", "diego-aranha"],
     sources: [{ label: "PEP 506, Adding A Secrets Module To The Standard Library (read 2026-10-27): CSPRNG, an algorithm whose output is resistant to prediction; the Mersenne Twister of the random module", href: "https://peps.python.org/pep-0506/" }, { label: "Python 3.13 documentation, secrets (read 2026-10-27): the most secure source of randomness the operating system provides; DEFAULT_ENTROPY may change", href: "https://docs.python.org/3.13/library/secrets.html" }, { label: "Python 3.13 documentation, random (read 2026-10-27): completely deterministic, completely unsuitable for cryptographic purposes", href: "https://docs.python.org/3.13/library/random.html" }],
   },
   {
@@ -6896,7 +6906,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["events", "isp-telecom"],
     expansion: "Latin American and Caribbean Internet Addresses Registry - and the region's operator meetings",
     aliases: ["lacnic", "lacnog", "rir meetings"],
-    relatedTerms: ["asn", "bgp", "nanog", "ietf", "gts-gter", "peering"],
+    relatedTerms: ["asn", "bgp", "nanog", "ietf", "gts-gter", "peering", "ix-br"],
     sources: [{ label: "LACNIC (official)", href: "https://www.lacnic.net" }],
   },
   {
@@ -6946,7 +6956,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["events", "programming"],
     expansion: "Latinoware - the Latin American free software congress at Itaipu",
     aliases: ["latinoware", "congresso latino-americano de software livre"],
-    relatedTerms: [],
+    relatedTerms: ["fisl", "free-software"],
     sources: [{ label: "Latinoware (official)", href: "https://latinoware.org" }],
   },
   {
@@ -6986,7 +6996,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["hacking", "ops-culture", "events"],
     expansion: "DEF CON hacker conference",
     aliases: ["defcon", "def con", "dc31", "defcon villages"],
-    relatedTerms: ["black-hat", "chaos-computer-club", "2600-magazine"],
+    relatedTerms: ["black-hat", "chaos-computer-club", "2600-magazine", "jeff-moss", "dmitry-sklyarov", "felix-lindner"],
     sources: [{ label: "DEF CON (official)", href: "https://defcon.org" }],
   },
   {
@@ -6996,8 +7006,8 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["cyber-security", "events"],
     expansion: "Black Hat Briefings and Trainings",
     aliases: ["black hat", "blackhat", "black hat usa", "black hat briefings"],
-    relatedTerms: ["defcon", "cve", "zero-day"],
-    sources: [{ label: "Black Hat (official)", href: "https://www.blackhat.com" }],
+    relatedTerms: ["defcon", "cve", "zero-day", "jeff-moss", "responsible-disclosure", "ed-felten"],
+    sources: [{ label: "Black Hat (official)", href: "https://www.blackhat.com" }, { label: "Wikipedia, Black Hat (conference) (read 2026-11-08; blackhat.com answered 403): first held July 7-10, 1997 in Las Vegas before DEF CON 5; acquired by CMP Media of UBM in 2005; UBM acquired by Informa Tech in June 2018; Arsenal added in 2010", href: "https://en.wikipedia.org/wiki/Black_Hat_(conference)" }, { label: "Ed Felten, Freedom to Tinker, 'ISS Caught in the Middle in Cisco Security Flap', 29 July 2005 (read 2026-11-08): Cisco staff ripped Lynn's paper out of the proceedings; Lynn quit ISS and gave the talk; Cisco sought an injunction", href: "https://blog.citp.princeton.edu/2005/07/29/iss-caught-middle-cisco-security-flap" }],
   },
   {
     slug: "chaos-computer-club",
@@ -7006,7 +7016,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["hacking", "ops-culture", "privacy", "events"],
     expansion: "Chaos Computer Club (CCC)",
     aliases: ["ccc", "chaos computer club", "c3", "chaos communication congress"],
-    relatedTerms: ["defcon", "2600-magazine", "eff"],
+    relatedTerms: ["defcon", "2600-magazine", "eff", "hackerspace", "felix-lindner"],
     sources: [{ label: "Chaos Computer Club (official)", href: "https://www.ccc.de" }],
   },
   {
@@ -7026,7 +7036,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["hacking", "cyber-security", "events"],
     expansion: "You Shot the Sheriff",
     aliases: ["ysts", "you shot the sheriff"],
-    relatedTerms: ["bsides-sao-paulo", "h2hc", "2600-magazine", "chkrootkit", "jeff-moss", "space-rogue"],
+    relatedTerms: ["bsides-sao-paulo", "h2hc", "2600-magazine", "chkrootkit", "jeff-moss", "space-rogue", "ists-podcast", "luiz-eduardo-dos-santos", "nelson-murilo", "willian-caprino", "shmoocon"],
     sources: [{ label: "YSTS (official)", href: "https://www.ysts.org" }, { label: "ISTS - i sh0t the sheriff, the podcast the event grew out of, recording since 2006", href: "https://creators.spotify.com/pod/profile/ists" }],
   },
   {
@@ -7056,7 +7066,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["hacking", "ops-culture"],
     expansion: "Garoa Hacker Clube",
     aliases: ["garoa", "garoa hacker clube", "hackerspace sp"],
-    relatedTerms: ["bsides-sao-paulo", "chaos-computer-club"],
+    relatedTerms: ["bsides-sao-paulo", "chaos-computer-club", "hackerspace"],
     sources: [{ label: "Garoa Hacker Clube (official)", href: "https://garoa.net.br" }],
   },
   {
@@ -7127,7 +7137,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["ops-culture", "it-support"],
     expansion: "Reddit (community platform; the vendor and networking subreddits)",
     aliases: ["reddit", "r/networking", "subreddit"],
-    relatedTerms: ["f5-devcentral", "fortinet-community"],
+    relatedTerms: ["f5-devcentral", "fortinet-community", "aaron-swartz"],
     sources: [{ label: "Reddit (official)", href: "https://www.reddit.com" }, { label: "r/networking", href: "https://www.reddit.com/r/networking/" }],
   },
   {
@@ -7199,9 +7209,9 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["privacy", "hacking"],
     expansion: "Electronic Frontier Foundation",
     aliases: ["eff", "electronic frontier foundation", "certbot"],
-    relatedTerms: [],
-    relatedArticles: ["lets-encrypt"],
-    sources: [{ label: "EFF (official)", href: "https://www.eff.org" }, { label: "Certbot (EFF)", href: "https://certbot.eff.org" }],
+    relatedTerms: ["john-perry-barlow", "mitch-kapor", "john-gilmore", "operation-sundevil", "the-e911-case", "daniel-j-bernstein", "cypherpunks", "dmitry-sklyarov", "net-neutrality", "aaron-swartz"],
+    relatedArticles: ["lets-encrypt", "electronic-frontier-foundation"],
+    sources: [{ label: "EFF (official)", href: "https://www.eff.org" }, { label: "Certbot (EFF)", href: "https://certbot.eff.org" }, { label: "EFF, About: History (read 2026-11-08): founded in July of 1990; the E911 document raids; Steve Jackson Games; Kapor, Barlow and Gilmore with assistance from Steve Wozniak; the first holding that electronic mail deserves at least as much protection as telephone calls", href: "https://www.eff.org/about/history" }, { label: "EFF, 'John Gilmore Leaves the EFF Board, Becomes Board Member Emeritus', October 2021 (read 2026-11-08): Gilmore led the DES Cracker, which showed DES could be broken in one week", href: "https://www.eff.org/deeplinks/2021/10/john-gilmore-leaves-eff-board-becomes-board-member-emeritus" }],
   },
   {
     slug: "802-1q",
@@ -7232,7 +7242,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     expansion: "IEEE 802.3 (Ethernet)",
     aliases: ["802.3", "ethernet standard", "802.3bt"],
-    relatedTerms: ["ethernet", "poe", "ieee"],
+    relatedTerms: ["ethernet", "poe", "ieee", "cable-categories"],
     relatedArticles: ["ieee-802-working-groups", "jumbo-frames"],
     sources: [{ label: "IEEE 802.3 Ethernet Working Group (official)", href: "https://www.ieee802.org/3/" }],
   },
@@ -7275,8 +7285,8 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     kind: "acronym",
     domains: ["enterprise-networking"],
     expansion: "Electronic Industries Alliance / Telecommunications Industry Association",
-    aliases: ["eia/tia", "tia", "tia-568", "eia", "structured cabling standards"],
-    relatedTerms: ["ethernet"],
+    aliases: ["eia/tia", "tia", "eia", "structured cabling standards"],
+    relatedTerms: ["ethernet", "tia-568", "iso-iec-11801", "cable-categories"],
     sources: [{ label: "Telecommunications Industry Association (official)", href: "https://tiaonline.org" }],
   },
   {
@@ -7611,7 +7621,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     expansion: "Quality of Service",
     aliases: ["qos", "quality of service", "traffic shaping", "diffserv"],
-    relatedTerms: ["mtu"],
+    relatedTerms: ["mtu", "net-neutrality"],
   },
 
   // ---- more crypto ----
@@ -7884,6 +7894,42 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     aliases: ["IP over Avian Carriers", "pigeon protocol", "avian carriers", "CPIP"],
     sources: [{ label: "RFC 1149", href: "https://www.rfc-editor.org/rfc/rfc1149" }, { label: "Bergen Linux User Group - CPIP implementation (2001)" }],
   },
+  // Poems in the RFCs (PRIME 08/11/2026): described and linked, never quoted. Read 08/11/2026 from the RFC Editor.
+  {
+    // The address.
+    slug: "rfc-poetry",
+    // The term as shown.
+    headword: "Poems in the RFCs",
+    // Folklore of the trade.
+    kind: "lore",
+    // Where it belongs.
+    domains: ["ops-culture", "enterprise-networking"],
+    // Other names a reader may search for.
+    aliases: ["RFC poems", "RFC poetry", "Algorhyme", "Algorhyme V2", "ARPAWOCKY", "Act One - The Poems", "The Naming of Hosts", "SONET to Sonnet"],
+    // The entries beside it.
+    relatedTerms: ["rfc", "radia-perlman", "spanning-tree", "vint-cerf", "leonard-kleinrock", "jon-postel", "rfc-1149", "rfc-2549", "ietf"],
+    // Each poem's document.
+    sources: [
+      // Algorhyme, in the 1985 paper.
+      { label: "Radia Perlman, \"An Algorithm for Distributed Computation of a Spanning Tree in an Extended LAN\", SIGCOMM '85, with the poem Algorhyme (scan at Northeastern University)", href: "https://prl.khoury.northeastern.edu/img/p-sigcomm-1985.pdf" },
+      // Algorhyme V2.
+      { label: "RFC 6325, Routing Bridges (RBridges): Base Protocol Specification, July 2011, section 1.1, \"Algorhyme V2, by Ray Perlner\"", href: "https://www.rfc-editor.org/rfc/rfc6325#section-1.1" },
+      // ARPAWOCKY.
+      { label: "RFC 527, ARPAWOCKY, R. Merryman, May 1973", href: "https://www.rfc-editor.org/rfc/rfc527" },
+      // The night before start-up.
+      { label: "RFC 968, 'Twas the night before start-up, V. Cerf, December 1985", href: "https://www.rfc-editor.org/rfc/rfc968" },
+      // Act One.
+      { label: "RFC 1121, Act One - The Poems, J. Postel, L. Kleinrock, V. Cerf and B. Boehm, September 1989", href: "https://www.rfc-editor.org/rfc/rfc1121" },
+      // Remembrances of Things Past.
+      { label: "RFC 1300, Remembrances of Things Past, S. Greenfield, February 1992", href: "https://www.rfc-editor.org/rfc/rfc1300" },
+      // SONET to Sonnet.
+      { label: "RFC 1605, SONET to Sonnet Translation, 1 April 1994", href: "https://www.rfc-editor.org/rfc/rfc1605" },
+      // The 12 days.
+      { label: "RFC 1882, The 12-Days of Technology Before Christmas, B. Hancock, December 1995", href: "https://www.rfc-editor.org/rfc/rfc1882" },
+      // The Naming of Hosts.
+      { label: "RFC 2100, The Naming of Hosts, J. Ashworth, 1 April 1997", href: "https://www.rfc-editor.org/rfc/rfc2100" },
+    ],
+  },
   {
     slug: "rfc-2549",
     headword: "RFC 2549 (IP over Avian Carriers with QoS)",
@@ -8056,6 +8102,8 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     kind: "lore",
     domains: ["programming", "enterprise-networking"],
     aliases: ["big-endian", "little-endian", "byte order", "On Holy Wars and a Plea for Peace"],
+    relatedTerms: ["endianness"], // the technical entry (2026-11-08)
+    relatedArticles: ["big-endian-and-little-endian"], // the byte-order article (2026-11-08)
     // The label named the IEEE Computer publication; what is freely readable is
     // the earlier internet memo behind it. Same shape as goto-considered-harmful,
     // where EWD215 is the manuscript and CACM gave the published letter its title.
@@ -8413,6 +8461,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     kind: "lore",
     domains: ["hacking", "ops-culture"],
     aliases: ["The Conscience of a Hacker", "The Mentor", "Phrack manifesto"],
+    relatedTerms: ["the-mentor", "phrack", "declaration-of-the-independence-of-cyberspace", "aaron-swartz"],
     sources: [{ label: "The Mentor, 'The Conscience of a Hacker', in Phrack issue 7. The text carries its own date - \"Written on January 8, 1986\" - and Phrack dates that issue 25 September 1986", href: "https://phrack.org/issues/7/hackers-manifesto.html" }],
   },
   {
@@ -9208,7 +9257,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     kind: "lore",
     domains: ["crypto", "privacy", "grc"],
     aliases: ["Clipper chip", "export controls", "munitions list", "bernstein v us"],
-    relatedTerms: ["kerckhoffs-principle", "clipper-chip", "pgp", "phil-zimmermann", "key-escrow", "cypherpunks"],
+    relatedTerms: ["kerckhoffs-principle", "clipper-chip", "pgp", "phil-zimmermann", "key-escrow", "cypherpunks", "daniel-j-bernstein", "john-gilmore"],
     sources: [{ label: "Crypto Wars - Wikipedia", href: "https://en.wikipedia.org/wiki/Crypto_Wars" }],
   },
   {
@@ -9303,7 +9352,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     headword: "Phrack",
     kind: "lore",
     domains: ["hacking", "ops-culture"],
-    relatedTerms: ["the-hacker-manifesto"],
+    relatedTerms: ["the-hacker-manifesto", "the-e911-case"],
     sources: [{ label: "Phrack - Wikipedia", href: "https://en.wikipedia.org/wiki/Phrack" }],
   },
   {
@@ -9486,7 +9535,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     headword: "the Silk Road",
     kind: "lore",
     domains: ["darkweb", "crypto"],
-    aliases: ["Dread Pirate Roberts"],
+    aliases: ["Dread Pirate Roberts", "Ross Ulbricht", "ulbricht"],
     sources: [{ label: "Silk Road (marketplace) - Wikipedia", href: "https://en.wikipedia.org/wiki/Silk_Road_(marketplace)" }],
   },
   {
@@ -9523,7 +9572,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     personField: "hacker-culture",
     domains: ["hacking"],
     aliases: ["Dark Dante"],
-    relatedTerms: ["blue-box"],
+    relatedTerms: ["blue-box", "aaron-swartz"],
     sources: [{ label: "On 1 June 1990 Poulsen took over every telephone line into the Los Angeles radio station KIIS-FM, guaranteeing that he would be the 102nd caller and win the prize", href: "https://en.wikipedia.org/wiki/Kevin_Poulsen" }],
   },
   {
@@ -9712,7 +9761,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     kind: "lore",
     domains: ["programming"],
     aliases: ["octet"],
-    relatedTerms: ["bit"],
+    relatedTerms: ["bit", "endianness"],
     sources: [{ label: "Werner Buchholz - Wikipedia", href: "https://en.wikipedia.org/wiki/Werner_Buchholz" }, { label: "byte - FOLDOC", href: "https://foldoc.org/byte" }],
   },
   {
@@ -9929,8 +9978,9 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     kind: "term",
     domains: ["enterprise-networking"],
     aliases: [],
-    relatedTerms: ["vlan", "broadcast-storm", "mac-flapping"],
+    relatedTerms: ["vlan", "broadcast-storm", "mac-flapping", "rfc-poetry", "stp"],
     relatedArticles: ["spanning-tree-in-one-article"],
+    relatedTools: ["stp-election-calculator"],
   },
   {
     slug: "arp",
@@ -10011,6 +10061,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     aliases: [],
     relatedTerms: ["trunk-port", "ecmp"],
     relatedArticles: ["link-aggregation-and-lacp"],
+    relatedTools: ["lacp-hash-and-state-reader"],
   },
   {
     slug: "vrrp",
@@ -10153,12 +10204,17 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     relatedArticles: ["ethernet-physical-layers"],
   },
   {
-    slug: "poe",
-    headword: "PoE",
-    kind: "acronym",
-    domains: ["enterprise-networking"],
-    aliases: [],
-    relatedTerms: ["lldp", "802-3", "poe-injector"],
+    // poe (EXPANSION, PRIME 2026-11-08, "PoE standards (IEEE 802.3af/at/bt)"): the entry exists but its context is one
+    // line and it has no sources; this adds the task-force records, the class table and the 2024 cabling annex.
+    slug: "poe", // unchanged address
+    headword: "PoE", // unchanged
+    kind: "acronym", // unchanged
+    domains: ["enterprise-networking"], // unchanged
+    expansion: "Power over Ethernet (IEEE 802.3af, 802.3at, 802.3bt)", // the three standards
+    aliases: ["power over ethernet", "802.3af", "802.3at", "802.3bt", "poe+", "poe++", "4ppoe", "pse", "powered device", "type 3 poe", "type 4 poe"], // search terms
+    relatedTerms: ["lldp", "802-3", "poe-injector", "cable-categories", "tia-568", "utp", "wifi"], // all exist or are created in this batch
+    relatedArticles: ["ieee-802-working-groups", "structured-cabling"], // the 802 article and the cabling article's PoE section
+    sources: [{ label: "IEEE 802.3af task force page (read 2026-11-08): IEEE Std 802.3af-2003 approved at the June 2003 IEEE Standards Board meeting", href: "https://www.ieee802.org/3/af/" }, { label: "IEEE 802.3at task force page (read 2026-11-08): IEEE Std 802.3at-2009 approved in September 2009", href: "https://www.ieee802.org/3/at/" }, { label: "IEEE 802.3bt task force page (read 2026-11-08): IEEE Std 802.3bt-2018 approved on 27 September 2018", href: "https://www.ieee802.org/3/bt/" }, { label: "Ethernet Alliance, Overview of 802.3bt, version 2.1 (read 2026-11-08): PSE and PD; Types 1 to 4; Classes 1 to 8 at the PSE and the PD; 2-pair and 4-pair; interoperability", href: "https://ethernetalliance.org/wp-content/uploads/2019/12/WP_EA_Overview8023bt_V2p1_FINAL.pdf" }, { label: "Siemon, 'ANSI/TIA-568.2-E Released' (read 2026-11-08): power delivery over balanced twisted pair as Annex H, including pathways and bundling", href: "https://www.siemon.com/en/ansi-tia-568-2-e-released/" }], // IEEE's own records, the industry alliance, the cabling standard
   },
   {
     slug: "sfp",
@@ -10166,7 +10222,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     kind: "acronym",
     domains: ["enterprise-networking"],
     aliases: [],
-    relatedTerms: ["dark-fiber", "transceiver", "multimode-fiber", "single-mode-fiber"],
+    relatedTerms: ["dark-fiber", "transceiver", "multimode-fiber", "single-mode-fiber", "fibre-connectors"],
     sources: [{ label: "SNIA SFF-8472 (read 2026-10-07)", href: "https://members.snia.org/document/dl/25916" }, { label: "Juniper, digital optical monitoring (read 2026-10-07)", href: "https://www.juniper.net/documentation/us/en/software/junos/chassis/topics/concept/digital-optical-monitoring.html" }],
     relatedArticles: ["fibre-basics", "transceiver-family-history"],
   },
@@ -10478,6 +10534,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     domains: ["isp-telecom", "cyber-security", "enterprise-networking"],
     expansion: "Remote Authentication Dial-In User Service (RFC 2865, RFC 2866)",
     aliases: ["remote authentication dial-in user service", "udp 1812", "udp 1813", "access-request", "access-accept", "nas"],
+    relatedTools: ["radius-packet-decoder"],
     relatedTerms: ["pppoe", "sso", "802-1x", "eap", "radius-coa", "radsec", "tacacs", "accounting", "mab", "webauth", "active-directory"],
     relatedArticles: ["radius-end-to-end", "802-1x-and-eap-methods", "accounting-who-did-what-and-when", "nac-family-history"],
     sources: [{ label: "RFC 2865, Remote Authentication Dial In User Service (RADIUS), Rigney, Willens, Rubens, Simpson, June 2000, Standards Track: UDP 1812, the codes, the packet fields, the attribute numbers, the User-Password hiding and the response authenticator, the shared secret rules, Class, Proxy-State and the 4096-octet maximum (read 2026-10-06)", href: "https://www.rfc-editor.org/rfc/rfc2865" }, { label: "RFC 2866, RADIUS Accounting, Rigney, June 2000, Informational: UDP 1813, Acct-Status-Type values and the accounting attributes, retry with backoff (read 2026-10-06)", href: "https://www.rfc-editor.org/rfc/rfc2866" }, { label: "RFC 3579, RADIUS Support For EAP, Aboba and Calhoun, September 2003: EAP-Message (79) and Message-Authenticator (80) (read 2026-10-06)", href: "https://www.rfc-editor.org/rfc/rfc3579" }, { label: "RFC 3580, IEEE 802.1X RADIUS Usage Guidelines, September 2003: VLAN assignment with the tunnel attributes, station identifiers, NAS-Port-Type, Session-Timeout (read 2026-10-06)", href: "https://www.rfc-editor.org/rfc/rfc3580" }, { label: "Cisco, TACACS+ and RADIUS Comparison (document 13838): UDP against TCP, only the password encrypted, authentication and authorization combined, no per-command control (read 2026-10-06)", href: "https://www.cisco.com/c/en/us/support/docs/security-vpn/remote-authentication-dial-user-service-radius/13838-10.html" }],
@@ -10498,7 +10555,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     kind: "term",
     domains: ["isp-telecom"],
     aliases: [],
-    relatedTerms: ["ixp", "transit", "bgp"],
+    relatedTerms: ["ixp", "transit", "bgp", "ix", "ix-br"],
     relatedArticles: ["bgp-primer"],
   },
   {
@@ -10507,7 +10564,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     kind: "acronym",
     domains: ["isp-telecom"],
     aliases: [],
-    relatedTerms: ["peering", "pop"],
+    relatedTerms: ["ix", "ix-br", "peering", "pop"],
     relatedArticles: ["internet-chokepoints", "brazil-internet-governance"],
   },
   {
@@ -10516,7 +10573,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     kind: "term",
     domains: ["isp-telecom"],
     aliases: [],
-    relatedTerms: ["peering", "backhaul"],
+    relatedTerms: ["peering", "backhaul", "ix"],
   },
   {
     slug: "backhaul",
@@ -10541,38 +10598,47 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     expansion: "Unshielded Twisted Pair",
     aliases: ["utp", "unshielded twisted pair", "twisted pair"],
-    relatedTerms: ["shielded-twisted-pair", "cable-categories", "rj45", "ethernet", "eia-tia"],
+    relatedTerms: ["shielded-twisted-pair", "cable-categories", "rj45", "ethernet", "eia-tia", "tia-568", "iso-iec-11801"],
     sources: [{ label: "TIA (ANSI/TIA-568 family)", href: "https://tiaonline.org" }],
     relatedArticles: ["ethernet-physical-layers", "structured-cabling"],
   },
   {
-    slug: "shielded-twisted-pair",
-    headword: "Shielded twisted pair",
-    kind: "term",
-    domains: ["enterprise-networking"],
-    expansion: "Shielded twisted pair (F/UTP, S/FTP and related constructions)",
-    aliases: ["shielded twisted pair", "f/utp", "s/ftp", "sftp cable", "screened cable"],
-    relatedTerms: ["utp", "cable-categories", "plenum"],
-    sources: [{ label: "TIA (ANSI/TIA-568 family)", href: "https://tiaonline.org" }],
+    // shielded-twisted-pair (EXPANSION, PRIME 2026-11-08, "Expand the definition and explanation of STP - Shielded
+    // Twisted Pair"). The current object cites only the TIA home page; these are the naming, bonding and category sources.
+    slug: "shielded-twisted-pair", // unchanged address
+    headword: "Shielded twisted pair", // unchanged
+    kind: "term", // unchanged
+    domains: ["enterprise-networking"], // unchanged
+    expansion: "Shielded twisted pair (STP): F/UTP, U/FTP, S/FTP, SF/UTP and related ISO/IEC 11801 constructions", // the family by its names
+    aliases: ["shielded twisted pair", "stp cable", "screened twisted pair", "f/utp", "u/ftp", "f/ftp", "s/ftp", "sf/utp", "sf/ftp", "ftp cable", "sftp cable", "screened cable", "par trançado blindado"], // search terms
+    relatedTerms: ["utp", "stp", "cable-categories", "iso-iec-11801", "tia-568", "rj45", "plenum", "eia-tia", "poe"], // all exist or are created in this batch
+    relatedArticles: ["structured-cabling", "ethernet-physical-layers"], // the article that already discusses shielded systems and grounding
+    sources: [{ label: "Fluke Networks, Acronyms for balanced cables, 28 January 2014 (read 2026-11-08): informative Annex E of ISO/IEC 11801:2010; F/UTP often called FTP, S/FTP often STP", href: "https://www.flukenetworks.com/knowledge-base/applicationstandards-articles-copper/acronyms-balanced-cables" }, { label: "KLOTZ AIS, cable guide, STP (read 2026-11-08): the XX/YZZ form; U, F, S and SF for the overall shield; U, F, S for the pairs; TP", href: "https://www.klotz-ais.com/cableguide/stp/" }, { label: "DIPOL, twisted-pair cables: nomenclature, standards, parameters (read 2026-11-08): U/UTP, F/UTP, U/FTP, F/FTP, SF/UTP, S/FTP, SF/FTP", href: "https://www.dipolnet.com/twisted-pair_cables_-_nomenclature_standards_parameters_bib526.htm" }, { label: "ISO/IEC 11801-1:2017, publisher's sample (read 2026-11-08): Annex D (informative), acronyms for balanced cables", href: "https://cdn.standards.iteh.ai/samples/66182/76a70b0a85974260b24dd6a7b64d1221/ISO-IEC-11801-1-2017.pdf" }, { label: "Panduit, 'Mastering shielded cabling systems' (read 2026-11-08): alien crosstalk at 10GBASE-T; foil, braid or both; EMI-sensitive markets; ANSI/TIA-607-E and related standards; 360-degree termination; both-end grounding done properly to avoid ground loops", href: "https://www.panduit.com/en/about/blog/mastering-shielded-cabling-systems-ensuring-reliable-performance-in-critical-markets.html" }, { label: "Belden, 'Effective shielding in your cabling system' (read 2026-11-08 via WebFetch; curl answered 403): ground at both ends; less than 1 ohm to ground; ground loops; ANSI/TIA-607-C", href: "https://www.belden.com/blog/effective-shielding-cabling-system" }, { label: "Panduit, Category 7 and 7A Cabling Concerns tech brief (read 2026-11-08): Category 7 and 7A must be S/FTP; Category 8 requires shielded cabling; a 7A cable on 6A shielded connectors is a shielded 6A system", href: "https://www.panduit.com/content/dam/panduit/en/website/solutions/documents/solution-pdf/Category%207%20and%207A%20Cabling%20Concerns%20Tech%20Brief-COTB01.pdf" }, { label: "Cabling Installation & Maintenance, 'Category 8 Questions Answered', October 2015 (read 2026-11-08): Category 8 requires shielded cabling, most likely 22-AWG S/FTP", href: "https://www.cablinginstall.com/standards/cabling-standards/article/16469292/category-8-questions-answered" }], // the standard's annex, a test-equipment maker, cable makers, a distributor
   },
   {
-    slug: "cable-categories",
-    headword: "Cable categories (Cat 5e-8)",
-    kind: "term",
-    domains: ["enterprise-networking"],
-    expansion: "Twisted-pair cable categories per ANSI/TIA-568",
-    aliases: ["cat 5e", "cat 6", "cat 6a", "cat 8", "cable category", "cat6a"],
-    relatedTerms: ["utp", "shielded-twisted-pair", "t568a-t568b", "eia-tia", "ethernet", "furukawa"],
-    sources: [{ label: "TIA (ANSI/TIA-568 family)", href: "https://tiaonline.org" }],
+    // cable-categories (EXPANSION, PRIME 2026-11-08): adds the ISO/IEC classes D to I/II, Category 7/7A and 8.1/8.2,
+    // and the 2024 changes; the headword is kept so links and the 3c token check are undisturbed.
+    slug: "cable-categories", // unchanged address
+    headword: "Cable categories (Cat 5e-8)", // unchanged
+    kind: "term", // unchanged
+    domains: ["enterprise-networking"], // unchanged
+    expansion: "Twisted-pair cable categories (TIA, ISO/IEC) and channel classes (ISO/IEC 11801)", // both vocabularies
+    aliases: ["cat 5e", "cat5e", "cat 6", "cat6", "cat 6a", "cat6a", "cat 7", "cat 7a", "cat 8", "cat 8.1", "cat 8.2", "cable category", "class d", "class e", "class ea", "class f", "class fa", "class i", "class ii"], // search terms
+    relatedTerms: ["utp", "shielded-twisted-pair", "t568a-t568b", "eia-tia", "tia-568", "iso-iec-11801", "rj45", "poe", "ethernet", "furukawa"], // all exist or are created in this batch
+    relatedArticles: ["structured-cabling", "ethernet-physical-layers"], // the object had none; both articles teach the categories
+    sources: [{ label: "Fluke Networks, DSX-8000 application note (read 2026-11-08): TIA categories against ISO classes and frequencies; 10GBASE-T on Cat 6 limited; Cat 8 at 30 m", href: "https://res.cloudinary.com/iwh/image/upload/q_auto,g_center/assets/1/26/Fluke_Networks_DSX2-8000_Application_Note.pdf" }, { label: "Panduit, Category 7 and 7A Cabling Concerns tech brief (read 2026-11-08): Class E to Class 8.I bandwidths, connector types and channel lengths; TSB-155-A; TIA does not recognise 7 and 7A; no path to 25/40GBASE-T", href: "https://www.panduit.com/content/dam/panduit/en/website/solutions/documents/solution-pdf/Category%207%20and%207A%20Cabling%20Concerns%20Tech%20Brief-COTB01.pdf" }, { label: "Cabling Installation & Maintenance, 'Category 8 Questions Answered', October 2015 (read 2026-11-08): 2000 MHz, 30 m two-connector channel, shielded; Class I and II; not supersets of Class FA", href: "https://www.cablinginstall.com/standards/cabling-standards/article/16469292/category-8-questions-answered" }, { label: "Cabling Installation & Maintenance, 'The industry's foundation is always shifting', October 2003 (read 2026-11-08): Categories 3, 4 and 5 in TSB36 and TSB40, absorbed into 568-A; Category 5e in Addendum 5", href: "https://www.cablinginstall.com/standards/cabling-standards/article/16465729/the-industrys-foundation-is-always-shifting" }, { label: "Siemon, 'ANSI/TIA-568.2-E Released' (read 2026-11-08): DC resistance unbalance for Categories 5e, 6 and 6A; power delivery annex", href: "https://www.siemon.com/en/ansi-tia-568-2-e-released/" }, { label: "ISO/IEC 11801-1:2017, publisher's sample (read 2026-11-08): Classes I and II and Categories 8.1 and 8.2 added; the jack faces of Categories 5, 6, 6A and 8.1 against 7, 7A and 8.2", href: "https://cdn.standards.iteh.ai/samples/66182/76a70b0a85974260b24dd6a7b64d1221/ISO-IEC-11801-1-2017.pdf" }], // replaces the bare TIA home-page link
   },
   {
-    slug: "rj45",
-    headword: "RJ45",
-    kind: "acronym",
-    domains: ["enterprise-networking", "it-support"],
-    expansion: "RJ45 (8P8C modular connector)",
-    aliases: ["rj45", "8p8c", "modular plug", "keystone"],
-    relatedTerms: ["t568a-t568b", "utp", "cable-categories"],
+    // rj45 (EXPANSION, PRIME 2026-11-08, "RJ45/8P8C (and why 'RJ45' is a misnomer)"). The current object has no sources.
+    slug: "rj45", // unchanged address
+    headword: "RJ45", // unchanged: it is the name people use
+    kind: "acronym", // unchanged
+    domains: ["enterprise-networking", "it-support"], // unchanged
+    expansion: "RJ45 (registered jack 45), properly the 8P8C modular connector of IEC 60603-7", // the name and the reality
+    aliases: ["rj45", "rj-45", "8p8c", "modular plug", "modular jack", "keystone", "iec 60603-7", "registered jack"], // search terms
+    relatedTerms: ["t568a-t568b", "utp", "cable-categories", "tia-568", "iso-iec-11801", "shielded-twisted-pair", "crossover-cable", "patch-panel"], // all exist or are created in this batch
+    relatedArticles: ["structured-cabling", "ethernet-physical-layers"], // where terminations are taught
+    sources: [{ label: "Arrow Electronics, 'RJ45 or 8P8C connectors? Finding the true ethernet standard', 29 April 2021 (read 2026-11-08 via WebFetch; curl failed): registered jack; RJ45 uses keying; 8P8C plugs fit RJ45 receptacles but not the reverse; eight positions about 1 mm apart", href: "https://www.arrow.com/en/research-and-events/articles/rj45-connectors" }, { label: "eCFR, 47 CFR 68.213(b) (read 2026-11-08 through the eCFR API): plugs and jacks used with inside wiring shall conform to the published technical criteria of the Administrative Council for Terminal Attachments", href: "https://www.ecfr.gov/current/title-47/section-68.213" }, { label: "ACTA, Documents (read 2026-11-08): TIA-1096-A, connector requirements for connection of terminal equipment to the telephone network", href: "https://part68.org/documents/" }, { label: "Panduit, Category 7 and 7A Cabling Concerns tech brief (read 2026-11-08): IEC 60603-7 (RJ45) for Categories 6, 6A and 8; IEC 61076-3 for 7 and 7A", href: "https://www.panduit.com/content/dam/panduit/en/website/solutions/documents/solution-pdf/Category%207%20and%207A%20Cabling%20Concerns%20Tech%20Brief-COTB01.pdf" }, { label: "ISO/IEC 11801-1:2017, publisher's sample (read 2026-11-08): one jack face for Categories 5, 6, 6A and 8.1", href: "https://cdn.standards.iteh.ai/samples/66182/76a70b0a85974260b24dd6a7b64d1221/ISO-IEC-11801-1-2017.pdf" }], // a distributor's explainer, US rules, ACTA, a manufacturer and the standard
   },
   {
     slug: "t568a-t568b",
@@ -10581,7 +10647,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     domains: ["enterprise-networking", "it-support"],
     expansion: "T568A and T568B termination pinouts (ANSI/TIA-568)",
     aliases: ["t568a", "t568b", "pinout", "wiring scheme"],
-    relatedTerms: ["rj45", "crossover-cable", "cable-categories", "eia-tia"],
+    relatedTerms: ["rj45", "crossover-cable", "cable-categories", "eia-tia", "tia-568"],
     sources: [{ label: "TIA (ANSI/TIA-568 family)", href: "https://tiaonline.org" }],
   },
   {
@@ -10591,7 +10657,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     domains: ["enterprise-networking", "it-support"],
     expansion: "Crossover cable (MDI/MDI-X)",
     aliases: ["crossover", "mdi-x", "auto-mdix", "straight-through"],
-    relatedTerms: ["t568a-t568b", "rj45", "ethernet"],
+    relatedTerms: ["t568a-t568b", "rj45", "ethernet", "tia-568"],
   },
   {
     slug: "plenum",
@@ -10600,7 +10666,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     expansion: "Plenum and riser cable ratings (CMP/CMR)",
     aliases: ["plenum", "cmp", "cmr", "riser cable", "lszh"],
-    relatedTerms: ["utp", "wiring-closet", "cable-categories"],
+    relatedTerms: ["utp", "wiring-closet", "cable-categories", "tia-568", "shielded-twisted-pair"],
   },
   {
     slug: "single-mode-fiber",
@@ -10609,7 +10675,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     domains: ["enterprise-networking", "isp-telecom"],
     expansion: "Single-mode optical fiber (OS1/OS2)",
     aliases: ["single-mode", "smf", "os2", "9 micron"],
-    relatedTerms: ["multimode-fiber", "transceiver", "dark-fiber"],
+    relatedTerms: ["multimode-fiber", "transceiver", "dark-fiber", "fibre-connectors", "iso-iec-11801"],
     sources: [{ label: "FOA, optical fiber (read 2026-10-07)", href: "https://www.thefoa.org/tech/ref/basic/fiber.html" }, { label: "ITU-T G.652 (read 2026-10-07)", href: "https://www.itu.int/dms_pubrec/itu-t/rec/g/T-REC-G.652-202408-I!!SUM-HTM-E.htm" }, { label: "Corning SMF-28 Ultra (read 2026-10-07)", href: "https://www.corning.com/media/worldwide/coc/documents/Fiber/product-information-sheets/PI-1424-AEN.pdf" }],
     relatedArticles: ["fibre-basics"],
   },
@@ -10620,7 +10686,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     expansion: "Multimode optical fiber (OM1-OM5)",
     aliases: ["multimode", "mmf", "om3", "om4", "om5"],
-    relatedTerms: ["single-mode-fiber", "transceiver", "media-converter"],
+    relatedTerms: ["single-mode-fiber", "transceiver", "media-converter", "fibre-connectors", "iso-iec-11801"],
     sources: [{ label: "FOA, optical fiber (read 2026-10-07)", href: "https://www.thefoa.org/tech/ref/basic/fiber.html" }, { label: "Cisco 10GBASE SFP+ data sheet (read 2026-10-07)", href: "https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/transceiver-modules/data_sheet_c78-455693.html" }, { label: "FOA, colour codes (read 2026-10-07)", href: "https://www.thefoa.org/tech/ColCodes.htm" }],
     relatedArticles: ["fibre-basics"],
   },
@@ -10631,7 +10697,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     expansion: "Pluggable transceiver form factors (GBIC to SFP, QSFP, OSFP)",
     aliases: ["transceiver", "gbic", "sfp+", "qsfp", "qsfp-dd", "osfp", "pluggable optics"],
-    relatedTerms: ["sfp", "single-mode-fiber", "multimode-fiber", "media-converter"],
+    relatedTerms: ["sfp", "single-mode-fiber", "multimode-fiber", "media-converter", "fibre-connectors"],
     sources: [{ label: "Cisco 10GBASE SFP+ data sheet (read 2026-10-07)", href: "https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/transceiver-modules/data_sheet_c78-455693.html" }, { label: "David Law, IEEE 802.3, PHY nomenclature (read 2026-10-07)", href: "https://ieee802.org/3/hssg/email/msg01702.html" }],
     relatedArticles: ["fibre-basics", "transceiver-family-history", "ethernet-physical-layers"],
   },
@@ -10651,7 +10717,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     domains: ["enterprise-networking", "it-support"],
     expansion: "Power over Ethernet injector (midspan)",
     aliases: ["poe injector", "midspan", "poe splitter"],
-    relatedTerms: ["poe", "802-3", "utp"],
+    relatedTerms: ["poe", "802-3", "utp", "tia-568"],
   },
   {
     slug: "wiring-closet",
@@ -13130,15 +13196,18 @@ const GLOSSARY_PART_3: GlossaryEntry[] = [
     sources: [{ label: "RPM Packaging Guide", href: "https://rpm-packaging-guide.github.io/" }],
   },
   {
-    slug: "stp",
-    headword: "STP",
-    kind: "acronym",
-    domains: ["enterprise-networking"],
-    expansion: "Spanning Tree Protocol",
-    aliases: ["stp"],
-    relatedTerms: [],
-    sources: [{ label: "IEEE 802.1D", href: "https://standards.ieee.org/ieee/802.1D/3387/" }],
-    relatedArticles: ["spanning-tree-in-one-article", "first-hop-redundancy-vrrp-and-hsrp"],
+    // stp (REVISION, PRIME 2026-11-08): the disambiguation keeps its def and context; its depth is replaced because it
+    // said "what this glossary means" (site narration) and asserted that both-end grounding makes a shield an antenna,
+    // which Belden's and Panduit's guidance contradicts. Adds the two relatedTerms the object lacked.
+    slug: "stp", // unchanged address
+    headword: "STP", // unchanged
+    kind: "acronym", // unchanged
+    domains: ["enterprise-networking"], // unchanged
+    expansion: "Spanning Tree Protocol; also Shielded Twisted Pair", // both readings
+    aliases: ["stp"], // unchanged
+    relatedTerms: ["spanning-tree", "rstp", "shielded-twisted-pair", "utp"], // was empty; all exist
+    sources: [{ label: "IEEE 802.1D", href: "https://standards.ieee.org/ieee/802.1D/3387/" }, { label: "Belden, 'Effective shielding in your cabling system' (read 2026-11-08 via WebFetch): grounding at both ends; ground loops", href: "https://www.belden.com/blog/effective-shielding-cabling-system" }, { label: "Fluke Networks, Acronyms for balanced cables (read 2026-11-08): S/FTP often referred to as STP", href: "https://www.flukenetworks.com/knowledge-base/applicationstandards-articles-copper/acronyms-balanced-cables" }], // the original source kept, two added
+    relatedArticles: ["spanning-tree-in-one-article", "first-hop-redundancy-vrrp-and-hsrp", "structured-cabling"], // structured-cabling added for the cable reading
   },
   {
     slug: "tps",
@@ -13767,7 +13836,7 @@ const GLOSSARY_PART_3: GlossaryEntry[] = [
     domains: ["isp-telecom"],
     expansion: "internet service provider",
     aliases: ["isp"],
-    relatedTerms: [],
+    relatedTerms: ["net-neutrality", "ix", "transit"],
     sources: [{ label: "Internet access terminology", href: "https://www.rfc-editor.org/rfc/rfc4084" }],
   },
   {
@@ -14001,7 +14070,7 @@ const GLOSSARY_PART_3: GlossaryEntry[] = [
     domains: ["programming"],
     expansion: "Portable Operating System Interface",
     aliases: ["posix"],
-    relatedTerms: [],
+    relatedTerms: ["endianness"],
     sources: [{ label: "IEEE Std 1003.1 (POSIX)", href: "https://pubs.opengroup.org/onlinepubs/9699919799/" }],
   },
   {
@@ -15534,6 +15603,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     kind: "expression",
     domains: ["enterprise-networking", "privacy"],
     aliases: ["interprets censorship as damage"],
+    relatedTerms: ["john-gilmore"],
   },
   {
     slug: "swiss-cheese-model",
@@ -15996,7 +16066,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     kind: "lore",
     domains: ["isp-telecom", "grc"],
     aliases: ["Agência Nacional de Telecomunicações"],
-    relatedTerms: ["telebras", "telesp"],
+    relatedTerms: ["telebras", "telesp", "net-neutrality"],
     sources: [
       { label: "Lei 9.472 of 16 July 1997, the Lei Geral de Telecomunicações, at the Presidency's own repository - the law that created the agency", href: "https://www.planalto.gov.br/ccivil_03/leis/l9472.htm" },
     ],
@@ -16007,7 +16077,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     kind: "lore",
     domains: ["isp-telecom", "grc"],
     aliases: ["Comitê Gestor da Internet no Brasil"],
-    relatedTerms: ["nic-br", "fapesp"],
+    relatedTerms: ["nic-br", "fapesp", "ix-br", "net-neutrality"],
     sources: [
       { label: "NIC.br's own institutional history: in 1995 an initiative of the Ministry of Science and Technology and the Ministry of Communications created the Comite Gestor da Internet no Brasil, to coordinate and integrate the country's network initiatives. The same page records that in June 1997 a CGI.br study produced the NBSO, which became CERT.br", href: "https://nic.br/historia/" },
     ],
@@ -16018,7 +16088,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     kind: "lore",
     domains: ["isp-telecom", "grc"],
     aliases: ["Núcleo de Informação e Coordenação do Ponto BR"],
-    relatedTerms: ["cgi-br", "fapesp"],
+    relatedTerms: ["cgi-br", "fapesp", "ix-br"],
     sources: [
       { label: "NIC.br's own institutional history: in 2003 NIC.br was formally established as a legal person and the shape of CGI.br was changed by Decreto 4.829; in 2005 NIC.br became the institution administering name registration under .br. The functions had until then been carried out at FAPESP, and CGI.br moved them to an independent institution", href: "https://nic.br/historia/" }, { label: "Decreto 4.829 of 3 September 2003, at the Presidency's own repository: it provides for the creation of the Comite Gestor da Internet no Brasil and for the internet governance model in Brazil. The institutional history gives the year; this gives the day", href: "https://www.planalto.gov.br/ccivil_03/decreto/2003/d4829.htm" },
     ],
@@ -16029,7 +16099,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     kind: "lore",
     domains: ["isp-telecom", "ops-culture"],
     aliases: ["Fundação de Amparo à Pesquisa do Estado de São Paulo"],
-    relatedTerms: ["usp", "unicamp", "nic-br", "cgi-br"],
+    relatedTerms: ["usp", "unicamp", "nic-br", "cgi-br", "ix-br"],
     sources: [
       { label: "NIC.br's own institutional history: in 1989 Jon Postel, responsible for top-level domain assignment, delegated the .br ccTLD to the team working on academic networks in the country, at FAPESP - at a time when the internet did not yet exist in Brazil and .br was used by other academic networks such as UUCP, with the few registrations made by hand. The same page dates the first permanent internet access to 1991", href: "https://nic.br/historia/" },
       { label: "First Brazilian TCP/IP connection, 1991, FAPESP to ESnet via Fermilab (Demi Getschko biography)" },
@@ -17012,7 +17082,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     aliases: ["bom", "byte-order mark", "u+feff"],
     relatedTools: ["charset-equivalency", "unicode-inspector"],
     relatedArticles: ["utf-8-and-utf-16-byte-by-byte", "hidden-and-lookalike-characters"],
-    relatedTerms: ["utf-8", "unicode"],
+    relatedTerms: ["utf-8", "unicode", "endianness"],
     sources: [{ label: "Unicode FAQ: UTF-8, UTF-16, UTF-32 & BOM", href: "https://www.unicode.org/faq/utf_bom.html" }, { label: "RFC 8259, section 8.1: implementations must not add a byte order mark to a networked-transmitted JSON text", href: "https://www.rfc-editor.org/rfc/rfc8259" }, { label: "WHATWG Encoding Standard: a byte order mark has priority over a label", href: "https://encoding.spec.whatwg.org/" }],
   },
   {
@@ -17612,7 +17682,8 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     aliases: ["lag", "link aggregation group", "port channel", "etherchannel", "bond", "bonding", "802.1ax", "802.3ad", "aggregated ethernet"],
     relatedArticles: ["link-aggregation-and-lacp"],
-    relatedTerms: ["lacp", "trunk", "trunk-port"],
+    relatedTerms: ["lacp", "trunk", "trunk-port", "endianness"],
+    relatedTools: ["lacp-hash-and-state-reader"],
     sources: [{ label: "IEEE 802.1AX-2020 (read 2026-10-07)", href: "https://1.ieee802.org/tsn/802-1ax-rev/" }, { label: "Cisco Catalyst 9300, Configuring EtherChannels (read 2026-10-07)", href: "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/software/release/17-12/configuration_guide/lyr2/b_1712_lyr2_9300_cg/configuring_etherchannels.html" }, { label: "Linux bonding driver HOWTO (read 2026-10-07)", href: "https://docs.kernel.org/networking/bonding.html" }],
   },
   // ------------------- 2026-10-19 NF-2f: the NetFun II terms the glossary lacked ----
@@ -18491,6 +18562,334 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     relatedTools: ["unicode-inspector", "charset-equivalency"],
     relatedArticles: ["python-bytes-text-and-encodings", "unicode-code-points-and-properties"],
     sources: [{ label: "Unicode Glossary (read 2026-10-27): code point, surrogate code point", href: "https://www.unicode.org/glossary/" }, { label: "Python documentation, Built-in Types (read 2026-10-27): strings are immutable sequences of Unicode code points", href: "https://docs.python.org/3/library/stdtypes.html" }],
+  },
+  // p34 people batch (PRIME 08/11/2026: hacker-culture and freedom-of-expression figures, everyone the YSTS entry names).
+  {
+    // ISTS (PRIME 08/11/2026, scope 1): the podcast named in the ysts entry; facts from its own feed, the YSTS site and Securelist.
+    slug: "ists-podcast", // stable id; "ists" alone is kept as an alias
+    headword: "ISTS (i sh0t the sheriff)", // the podcast's own name and spelling
+    kind: "lore", // a podcast, filed with the zines and events (phrack, 2600-magazine)
+    domains: ["hacking", "cyber-security", "events"], // the ysts entry's own domain set
+    expansion: "i sh0t the sheriff", // what the acronym stands for, as the feed writes it
+    aliases: ["ists", "i sh0t the sheriff", "i shot the sheriff podcast", "ists podcast"], // search and omnibox spellings
+    relatedTerms: ["ysts", "luiz-eduardo-dos-santos", "nelson-murilo", "willian-caprino"], // the conference and its three hosts
+    relatedArticles: ["ysts-you-shot-the-sheriff", "the-brazilian-hacker-scene"], // the Learn article that opens with the podcast
+    sources: [{ label: "ISTS, i sh0t the sheriff, episode feed on Spotify for Creators (read 2026-11-08): 'Desde 2006, o podcast de segurança da informação do Brasil'; scripts credited to Luiz Eduardo, Nelson Murilo and Willian Caprino, production by Halfmouth Podcasts; Edição 31 dated 27.08.07, Edição 143 dated 30.12.2024", href: "https://creators.spotify.com/pod/profile/ists" }, { label: "You Sh0t the Sheriff, official site (read 2026-11-08): YSTS 18 on 18 May 2026 in São Paulo", href: "https://www.ysts.org" }, { label: "Securelist, 30 June 2016 (read 2026-11-08): Luiz, Nelson and Willian opened the tenth edition and spoke of keeping the event the same size", href: "https://securelist.com/ysts-x-the-highlights-of-the-coolest-security-conference-in-brazil/75230/" }], // one line per source object
+  },
+  {
+    // Felix "FX" Lindner (scope 1, named in the YSTS Learn article): Phenoelit, Recurity Labs; died 1 March 2026 (Berliner Zeitung).
+    slug: "felix-lindner", // his legal name, as the obituaries use it
+    headword: "Felix Lindner (FX)", // handle in parentheses, as jeff-moss and space-rogue do
+    kind: "lore", // people are lore in this batch, per the brief
+    person: true, // an individual: powers /people
+    personYear: 2002, // DEF CON 10 (2002), Attacking Networked Embedded Systems: the theme of his career; named in the InfoconDB label
+    personField: "security", // vulnerability research strand, as mudge and marcus-hutchins
+    domains: ["hacking", "cyber-security", "enterprise-networking"], // router and embedded-device research
+    aliases: ["fx", "fx of phenoelit", "phenoelit", "recurity labs", "ph-neutral"], // handle, group, company, gathering
+    relatedTerms: ["chaos-computer-club", "ccc-congress", "defcon", "ysts"], // where his work was presented; ysts per the Learn article
+    relatedArticles: ["ysts-you-shot-the-sheriff"], // the article that names him on the first YSTS line-up
+    sources: [{ label: "InfoconDB, Felix Lindner / FX (read 2026-11-08): DEF CON 9 (2001) Attacking control, routing, and tunneling protocols; DEF CON 10 (2002) Attacking Networked Embedded Systems; DEF CON 18 (2010) Blitzableiter; 30C3 (2013)", href: "https://infocondb.org/presenter/felix-lindner-fx" }, { label: "24th Chaos Communication Congress, speaker page (read 2026-11-08): FX is the leader of the Phenoelit group; Cisco IOS and SAP remote exploits, tools for hacking HP printers; works at Recurity Labs GmbH in Berlin", href: "https://fahrplan.events.ccc.de/congress/2007/Fahrplan/speakers/134.en.html" }, { label: "20th Chaos Communication Congress, speaker page (read 2026-11-08): Phenoelit's interest in protocols, devices and products that normally don't receive the attention they deserve", href: "https://events.ccc.de/congress/2003/fahrplan/speaker/187.en.html" }, { label: "Phenoelit, tool index (read 2026-11-08): IRPAS routing attack suite, Cisco IOS exploits, printer exploration tools, cd00r.c", href: "https://www.phenoelit.de/" }, { label: "Phenoelit, 'TTL exceeded - In memory of FX' (read 2026-11-08): colleagues on PH-Neutral and on 'you cannot argue with a root shell'", href: "https://www.phenoelit.de/fx.html" }, { label: "Berliner Zeitung, 14 March 2026 (read 2026-11-08): Recurity Labs announced the death of its founder, who died on 1 March in Berlin aged 49; founded the Phenoelit Group; cd00r.c as groundwork for port knocking", href: "https://www.berliner-zeitung.de/article/pionier-der-hackerkultur-felix-lindner-mit-49-jahren-in-berlin-gestorben-10024507" }, { label: "Pwnie Awards, the 2017 Pwnie for Lifetime Achievement: Felix 'FX' Lindner (read 2026-11-08)", href: "https://pwnies.com/felix-fx-lindner/" }], // one line per source object
+  },
+  {
+    // Nick Farr (scope 1, named in the YSTS Learn article): Hacker Foundation, Hackers on a Plane (August 2007), HacDC.
+    slug: "nick-farr", // the name he speaks under
+    headword: "Nick Farr", // as the CCC and HOPE programmes print it
+    kind: "lore", // people are lore in this batch
+    person: true, // an individual: powers /people
+    personYear: 2007, // the Hackers on a Plane tour of August 2007, named in the Wired labels
+    personField: "hacker-culture", // community-building strand
+    domains: ["hacking", "ops-culture", "events"], // hackerspaces, organising, the 2007 tour
+    aliases: ["nicholas farr", "hackers on a plane", "hacdc", "hacker foundation"], // name, tour, space, foundation
+    relatedTerms: ["hackerspace", "chaos-computer-club", "garoa-hacker-clube", "ysts"], // the movement he carried home
+    relatedArticles: ["ysts-you-shot-the-sheriff", "the-brazilian-hacker-scene"], // the Learn article credits his hackerspaces talk
+    sources: [{ label: "Wired, John Borland, 'Hacker space movement sought for U.S.', August 2007 (read 2026-11-08): Hacker Foundation co-founder and treasurer Nicholas Farr; a tour of 40 North American hackers through DefCon, the Chaos Communication Camp, Berlin, Vienna, Cologne and Bonn", href: "https://www.wired.com/2007/08/us-hackers-moun/" }, { label: "Wired, 'DIY Freaks Flock to Hacker Spaces Worldwide', March 2009 (read 2026-11-08): the birth of U.S. hacker spaces dated to August 2007 and Hackers on a Plane; Farr instigated HacDC; NYC Resistor and HacDC open by late 2007; Noisebridge in fall 2008", href: "https://www.wired.com/2009/03/hackerspaces/" }, { label: "Chaos Communication Camp 2007, speaker page (read 2026-11-08): Treasurer of the Hacker Foundation; contract accountant; building the first public hacker space in Washington, DC", href: "https://fahrplan.events.ccc.de/camp/2007/Fahrplan/speakers/1476.en.html" }, { label: "InfoconDB, 'Building Hacker Spaces Everywhere: Your Excuses are Invalid', The Last HOPE, 19 July 2008 (read 2026-11-08): four people can start a sustainable hacker space; cofounder of HacDC, Make:DC and The Hacker Foundation", href: "https://infocondb.org/con/hope/the-last-hope/building-hacker-spaces-everywhere-your-excuses-are-invalid" }], // one line per source object
+  },
+  {
+    // hackerspace (scope 1: the YSTS Learn article and the-brazilian-hacker-scene both use the word unlinked).
+    slug: "hackerspace", // singular, as the index files terms
+    headword: "hackerspace", // lower case, as a common noun
+    kind: "term", // a concept, not a single event or person
+    domains: ["hacking", "ops-culture"], // where the word lives
+    aliases: ["hacker space", "hackspace", "hacklab", "hackerspaces"], // spellings hackerspaces.org itself lists
+    relatedTerms: ["garoa-hacker-clube", "chaos-computer-club", "nick-farr", "hope-conference"], // a Brazilian space, the European roots, the American carrier
+    relatedArticles: ["the-brazilian-hacker-scene", "ysts-you-shot-the-sheriff"], // both mention hackerspaces in passing
+    sources: [{ label: "hackerspaces.org (read 2026-11-08): community-operated physical places where people share their interest in tinkering with technology, meet and work on their projects; an informal volunteer network", href: "https://hackerspaces.org/" }, { label: "Wired, 'DIY Freaks Flock to Hacker Spaces Worldwide', March 2009 (read 2026-11-08): Noisebridge on a Monday evening; Metalab, c-base and the CCC; Hackers on a Plane in August 2007", href: "https://www.wired.com/2009/03/hackerspaces/" }, { label: "Wikipedia, Hackerspace (read 2026-11-08; used for the dates no primary page states): c-base (1995) among the first independent hackerspaces; Metalab founded in 2006; do-ocracy; 1,967 hackerspaces listed as of September 2015, 1,199 active", href: "https://en.wikipedia.org/wiki/Hackerspace" }, { label: "Garoa Hacker Clube, official site (read 2026-11-08): 'um hackerspace localizado na cidade de São Paulo'", href: "https://garoa.net.br/" }], // one line per source object
+  },
+  {
+    // John Perry Barlow (scope 2): EFF co-founder; A Declaration of the Independence of Cyberspace. Died 7 February 2018.
+    slug: "john-perry-barlow", // full name, as the EFF writes it
+    headword: "John Perry Barlow", // no handle needed
+    kind: "lore", // people are lore in this batch
+    person: true, // an individual: powers /people
+    personYear: 1996, // the Declaration, dated 8 February 1996; named in the first label
+    personField: "hacker-culture", // the manifesto strand, beside the-mentor and richard-stallman
+    domains: ["privacy", "hacking"], // digital civil liberties and the culture that read him
+    aliases: ["barlow", "jpb", "grateful dead lyricist", "eff co-founder"], // short forms and descriptors
+    relatedTerms: ["declaration-of-the-independence-of-cyberspace", "eff", "mitch-kapor", "john-gilmore", "operation-sundevil"], // his text, his foundation, his co-founders, the raids
+    relatedArticles: ["electronic-frontier-foundation", "hacker-manifestos", "lod-mod-and-operation-sundevil"], // the three articles that already tell his part
+    sources: [{ label: "John Perry Barlow, 'A Declaration of the Independence of Cyberspace', hosted by the EFF (read 2026-11-08): dated Davos, Switzerland, February 8, 1996", href: "https://www.eff.org/cyberspace-independence" }, { label: "EFF, About: History (read 2026-11-08): founded in July of 1990; John Perry Barlow, Wyoming cattle rancher and lyricist for the Grateful Dead, among the founders", href: "https://www.eff.org/about/history" }, { label: "John Perry Barlow, 'A Not Terribly Brief History of the Electronic Frontier Foundation', 8 November 1990 (read 2026-11-08): the FBI visit to Pinedale on Mayday 1990; the WELL; Kapor's visit", href: "https://www.eff.org/pages/not-terribly-brief-history-electronic-frontier-foundation" }, { label: "EFF, Cindy Cohn, 'John Perry Barlow, Internet Pioneer, 1947-2018', 7 February 2018 (read 2026-11-08): 'I predicted Utopia, hoping to give Liberty a running start'", href: "https://www.eff.org/deeplinks/2018/02/john-perry-barlow-internet-pioneer-1947-2018" }], // one line per source object
+  },
+  {
+    // A Declaration of the Independence of Cyberspace (scope 2): the text itself, read in full on the EFF's copy.
+    slug: "declaration-of-the-independence-of-cyberspace", // the title, slugged whole
+    headword: "A Declaration of the Independence of Cyberspace", // the title as published; 3b strips the leading article
+    kind: "lore", // a text with a story, filed with the-hacker-manifesto and the-gnu-manifesto
+    domains: ["privacy", "hacking", "ops-culture"], // speech, the culture, internet governance argument
+    aliases: ["declaration of the independence of cyberspace", "barlow declaration", "weary giants of flesh and steel", "cyberspace independence", "declaração de independência do ciberespaço"], // the phrases people search for, including the pt-BR title the manifestos article uses
+    relatedTerms: ["john-perry-barlow", "eff", "the-hacker-manifesto", "the-gnu-manifesto", "cypherpunks"], // its author and its sibling texts
+    relatedArticles: ["hacker-manifestos", "electronic-frontier-foundation"], // the manifestos article has a section on it
+    sources: [{ label: "John Perry Barlow, 'A Declaration of the Independence of Cyberspace', hosted by the EFF (read 2026-11-08): sixteen paragraphs, dated Davos, Switzerland, February 8, 1996; the Telecommunications Reform Act named in the text", href: "https://www.eff.org/cyberspace-independence" }, { label: "EFF, Cindy Cohn, 'John Perry Barlow, Internet Pioneer, 1947-2018', 7 February 2018 (read 2026-11-08): Barlow's own account of predicting Utopia; the 'world that all may enter' line quoted as his legacy", href: "https://www.eff.org/deeplinks/2018/02/john-perry-barlow-internet-pioneer-1947-2018" }], // one line per source object
+  },
+  {
+    // Mitch Kapor (scope 2): Lotus 1-2-3, EFF co-founder (July 1990), Neidorf's defence, Mozilla Foundation chair (2003).
+    slug: "mitch-kapor", // the name he uses
+    headword: "Mitch Kapor", // as the EFF and Mozilla write it
+    kind: "lore", // people are lore in this batch
+    person: true, // an individual: powers /people
+    personYear: 1990, // the EFF's founding, July 1990; named in the EFF History label
+    personField: "hacker-culture", // the civil-liberties strand of the culture
+    domains: ["privacy", "programming"], // the EFF and Lotus 1-2-3
+    aliases: ["mitchell kapor", "lotus 1-2-3", "lotus development", "kapor center"], // name, product, company, foundation
+    relatedTerms: ["eff", "john-perry-barlow", "john-gilmore", "the-e911-case", "operation-sundevil"], // co-founders and the 1990 cases
+    relatedArticles: ["electronic-frontier-foundation", "lod-mod-and-operation-sundevil"], // both articles name him
+    sources: [{ label: "EFF, About: History (read 2026-11-08): founded in July of 1990; Mitch Kapor, former president of Lotus Development Corporation, with Barlow and Gilmore, assisted by Steve Wozniak", href: "https://www.eff.org/about/history" }, { label: "John Perry Barlow, 'A Not Terribly Brief History of the Electronic Frontier Foundation', 8 November 1990 (read 2026-11-08): Mitch Kapor, the father of Lotus 1-2-3, also visited by the FBI over a source code disk; several hours hatching what became the EFF", href: "https://www.eff.org/pages/not-terribly-brief-history-electronic-frontier-foundation" }, { label: "Mozilla, press release, 15 July 2003 (read 2026-11-08): Mitch Kapor, the new Chairman of the Mozilla Foundation, making a personal contribution; Kapor was the designer of Lotus 1-2-3", href: "https://blog.mozilla.org/press/2003/07/mozilla-org-announces-launch-of-the-mozilla-foundation-to-lead-open-source-browser-efforts/" }, { label: "Bruce Sterling, The Hacker Crackdown, Project Gutenberg text (read 2026-11-08): Neidorf's defence costs despite a generous payment to the defense by Mitch Kapor", href: "https://www.gutenberg.org/cache/epub/101/pg101.txt" }, { label: "Wikipedia, Mitch Kapor (read 2026-11-08; used for his EFF chair term): co-founded the EFF in 1990 and was its chairman until 1994", href: "https://en.wikipedia.org/wiki/Mitch_Kapor" }], // one line per source object
+  },
+  {
+    // John Gilmore (scope 2): Sun employee #5, EFF co-founder (1990), cypherpunks, Bernstein case, DES Cracker.
+    slug: "john-gilmore", // no handle
+    headword: "John Gilmore", // as the EFF writes it
+    kind: "lore", // people are lore in this batch
+    person: true, // an individual: powers /people
+    personYear: 1990, // co-founded the EFF in 1990; named in the EFF board-post label
+    personField: "crypto", // the cypherpunk and DES Cracker strand, as phil-zimmermann
+    domains: ["crypto", "privacy", "hacking"], // export controls, civil liberties, the culture
+    aliases: ["gilmore", "cygnus solutions", "cygnus support", "des cracker"], // company (both names), machine; "alt hierarchy" stays on the usenet entry
+    relatedTerms: ["eff", "cypherpunks", "routes-around-damage", "daniel-j-bernstein", "the-crypto-wars"], // his line about censorship has its own entry
+    relatedArticles: ["electronic-frontier-foundation", "the-crypto-wars", "hacker-manifestos"], // all three name him
+    sources: [{ label: "EFF, 'John Gilmore Leaves the EFF Board, Becomes Board Member Emeritus', October 2021 (read 2026-11-08): co-founded EFF in 1990; found the government documents and helped initiate Bernstein v DOJ; led the DES Cracker; the board voted to remove him and elected him Board Member Emeritus", href: "https://www.eff.org/deeplinks/2021/10/john-gilmore-leaves-eff-board-becomes-board-member-emeritus" }, { label: "John Perry Barlow, 'A Not Terribly Brief History of the Electronic Frontier Foundation', 8 November 1990 (read 2026-11-08): John Gilmore (Sun Microsystems employee #5) e-mailed a six figure offer of support", href: "https://www.eff.org/pages/not-terribly-brief-history-electronic-frontier-foundation" }, { label: "Wikipedia, John Gilmore (activist) (read 2026-11-08; used for Cygnus, alt.* and the censorship line): a founder of the EFF, the Cypherpunks mailing list and Cygnus Solutions; created the alt.* hierarchy", href: "https://en.wikipedia.org/wiki/John_Gilmore_(activist)" }], // one line per source object
+  },
+  {
+    // the E911 case (scope 2, freedom of expression): United States v. Neidorf, July 1990, told from Sterling's book.
+    slug: "the-e911-case", // the case is the subject; Neidorf is an alias, not a person entry
+    headword: "the E911 case (United States v. Neidorf)", // the case name as Sterling sets it out
+    kind: "lore", // a historical episode
+    domains: ["hacking", "privacy", "isp-telecom"], // the underground press, speech, the phone network
+    aliases: ["e911 document", "knight lightning", "craig neidorf", "neidorf trial", "united states v. neidorf", "phrack 24"], // what readers search for
+    relatedTerms: ["phrack", "operation-sundevil", "eff", "legion-of-doom", "mitch-kapor", "the-hacker-crackdown"], // the magazine, the raids, the defenders, the book
+    relatedArticles: ["lod-mod-and-operation-sundevil", "phrack-2600-and-the-hacker-manifesto", "electronic-frontier-foundation"], // the articles that already mention Neidorf
+    sources: [{ label: "Bruce Sterling, The Hacker Crackdown (1992), Project Gutenberg text (read 2026-11-08): Phrack published the edited E911 Document on February 25, 1989; the trial of July 24-27, 1990 in the Northern District of Illinois; the Bellcore catalogue; mistrial; expungement on September 9, 1991", href: "https://www.gutenberg.org/cache/epub/101/pg101.txt" }, { label: "EFF, About: History (read 2026-11-08): founded in July 1990 after Secret Service raids tracking a document copied from a BellSouth computer, the E911 document", href: "https://www.eff.org/about/history" }], // one line per source object
+  },
+  {
+    // The Hacker Crackdown (scope 2): Sterling's 1992 book, made literary freeware on 1 January 1994.
+    slug: "the-hacker-crackdown", // distinct from operation-sundevil, whose alias "1990 hacker crackdown" names the event
+    headword: "The Hacker Crackdown (Sterling, 1992)", // the house form for books: title, author, year
+    kind: "lore", // a work with a story, as cyberpunk-book and takedown-book
+    domains: ["hacking", "privacy", "isp-telecom"], // the underground, civil liberties, the phone network
+    aliases: ["hacker crackdown", "bruce sterling", "law and disorder on the electronic frontier", "literary freeware"], // title, author, subtitle, the release
+    relatedTerms: ["operation-sundevil", "the-e911-case", "eff", "legion-of-doom", "cyberpunk-book"], // what it covers and its shelf neighbour
+    relatedArticles: ["lod-mod-and-operation-sundevil", "hacking-in-the-20th-century", "hacker-manifestos"], // all three cite it
+    sources: [{ label: "Project Gutenberg, eBook 101, The Hacker Crackdown: Law and Disorder on the Electronic Frontier (read 2026-11-08): release date 1 January 1994", href: "https://www.gutenberg.org/ebooks/101" }, { label: "Bruce Sterling, preface to the electronic release, 1 January 1994, Project Gutenberg text (read 2026-11-08): copyright 1992; Bantam does not own the electronic rights; 'This electronic book is now literary freeware'; the four parts", href: "https://www.gutenberg.org/cache/epub/101/pg101.txt" }], // one line per source object
+  },
+  {
+    // Chelsea Manning (scope 2): the 2010 disclosures, the 2013 court-martial, the 2017 commutation. Case facts only.
+    slug: "chelsea-manning", // her name
+    headword: "Chelsea Manning", // her name; no former name anywhere in the entry
+    kind: "lore", // people are lore in this batch
+    person: true, // an individual: powers /people
+    personYear: 2010, // the disclosures, made in 2010; named in the BBC label
+    personField: "hacker-culture", // the disclosure strand, beside julian-assange and adrian-lamo
+    domains: ["privacy", "cyber-security"], // the same pair as edward-snowden
+    aliases: ["manning", "wikileaks source", "iraq war logs", "collateral murder"], // search terms; deliberately no former name
+    relatedTerms: ["adrian-lamo", "julian-assange", "edward-snowden"], // the informant, the publisher, the next disclosure
+    sources: [{ label: "BBC News, 21 August 2013 (read 2026-11-08): sentenced to 35 years; convicted in July of 20 charges including espionage; prosecutors had asked for 60 years; while stationed in Iraq in 2010 the junior intelligence analyst passed hundreds of thousands of battlefield reports and diplomatic cables to WikiLeaks", href: "https://www.bbc.com/news/world-us-canada-23784288" }, { label: "NPR, published by WAMC, 17 January 2017 (read 2026-11-08): President Obama commuted the 35-year sentence; it was shortened to expire on May 17, 2017", href: "https://www.wamc.org/2017-01-17/president-obama-commutes-chelsea-mannings-prison-sentence" }, { label: "Wikipedia, Chelsea Manning (read 2026-11-08; used for the acquittal on aiding the enemy, the release from Fort Leavenworth, Lamo's role and the 2019-2020 contempt jailing)", href: "https://en.wikipedia.org/wiki/Chelsea_Manning" }], // one line per source object
+  },
+  {
+    // Bassel Khartabil (scope 2): Creative Commons Syria; detained March 2012; executed 2015, confirmed August 2017.
+    slug: "bassel-khartabil", // the name Creative Commons and Amnesty use
+    headword: "Bassel Khartabil", // also known as Bassel Safadi
+    kind: "lore", // people are lore in this batch
+    person: true, // an individual: powers /people
+    personYear: 2012, // detained in March 2012, the year his case became the cause it is remembered as; named in the CC label
+    personField: "hacker-culture", // the free-culture strand, beside aaron-swartz
+    domains: ["privacy", "programming"], // free expression and open-source work
+    aliases: ["bassel safadi", "freebassel", "newpalmyra", "creative commons syria"], // other name, campaign, project, role
+    relatedTerms: ["aaron-swartz", "free-software", "copyleft", "eff"], // the free-culture neighbours and a campaigner for him
+    relatedArticles: ["open-source-and-the-meaning-of-free"], // the article on what free means
+    sources: [{ label: "Creative Commons, 'Statement on the death of CC friend and colleague Bassel Khartabil', 1 August 2017 (read 2026-11-08): Syrian project lead, open source programmer, Wikipedia contributor; in March of 2012 taken from the street in Damascus; MIT Media Lab research position; #NEWPALMYRA", href: "https://creativecommons.org/2017/08/01/bassel/" }, { label: "Amnesty International, 2 August 2017 (read 2026-11-08): arrested on 15 March 2012; moved to Adra prison in December 2012; transferred on 3 October 2015; the family announced on 1 August 2017 that he was killed in 2015 after a secret military field court hearing; 2013 Index on Censorship Digital Freedom Award", href: "https://www.amnesty.org/en/latest/news/2017/08/syria-extrajudicial-execution-of-bassel-khartabil-a-grim-reminder-of-syrian-prison-horrors/" }, { label: "BBC News, 2 August 2017 (read 2026-11-08): founder of Creative Commons Syria; detained in March 2012; killed in October 2015; Foreign Policy Top Global Thinker in 2012", href: "https://www.bbc.com/news/world-middle-east-40795739" }, { label: "Wikipedia, Bassel Khartabil (read 2026-11-08; used for the Firefox contribution, the letters for his release and the April 2015 UN Working Group on Arbitrary Detention opinion)", href: "https://en.wikipedia.org/wiki/Bassel_Khartabil" }], // one line per source object
+  },
+  {
+    // Alexandra Elbakyan (scope 2): Sci-Hub, launched 5 September 2011; the US default judgments. No political views.
+    slug: "alexandra-elbakyan", // the person; Sci-Hub is an alias, not a second entry
+    headword: "Alexandra Elbakyan (Sci-Hub)", // the site in parentheses, as people search for it
+    kind: "lore", // people are lore in this batch
+    person: true, // an individual: powers /people
+    personYear: 2011, // Sci-Hub launched in 2011; named in the Wikipedia Sci-Hub label
+    personField: "hacker-culture", // the open-access strand, beside aaron-swartz
+    domains: ["hacking", "ops-culture"], // the same family as aaron-swartz's entry
+    aliases: ["sci-hub", "scihub", "elbakyan", "shadow library"], // the site and its genre
+    relatedTerms: ["aaron-swartz", "bassel-khartabil", "dvd-jon"], // open access, free culture, circumvention
+    relatedArticles: ["hacker-manifestos"], // the Guerilla Open Access Manifesto is in that article
+    sources: [{ label: "Wikipedia, Sci-Hub (read 2026-11-08; no primary page was reachable): founded in Kazakhstan by Alexandra Elbakyan in 2011; launched on September 5, 2011; sued in the United States in 2015 and 2017 and lost both cases by default", href: "https://en.wikipedia.org/wiki/Sci-Hub" }, { label: "Wikipedia, Alexandra Elbakyan (read 2026-11-08): her letter to the judge on not affording the papers she needed; the Elsevier injunction; Nature's ten people who mattered in 2016", href: "https://en.wikipedia.org/wiki/Alexandra_Elbakyan" }, { label: "Nature, 'US court grants Elsevier millions in damages from Sci-Hub', 22 June 2017 (read 2026-11-08; headline and standfirst: some doubt that the publisher will see any money)", href: "https://www.nature.com/articles/nature.2017.22196" }, { label: "Nature, 'Nature's 10: Ten people who mattered this year', 19 December 2016 (read 2026-11-08; the body is paywalled, so her inclusion is taken from the Wikipedia citation of it)", href: "https://www.nature.com/articles/540507a" }], // one line per source object
+  },
+  {
+    // Dmitry Sklyarov (scope 2): arrested after DEF CON 9, 16 July 2001; ElcomSoft acquitted December 2002.
+    slug: "dmitry-sklyarov", // the transliteration the EFF uses
+    headword: "Dmitry Sklyarov", // as the EFF writes it
+    kind: "lore", // people are lore in this batch
+    person: true, // an individual: powers /people
+    personYear: 2001, // the arrest of 16 July 2001; named in the EFF case label
+    personField: "security", // eBook protection research strand
+    domains: ["crypto", "hacking"], // weak cryptography in a copy-protection scheme
+    aliases: ["sklyarov", "elcomsoft", "free dmitry", "advanced ebook processor", "us v elcomsoft"], // company, campaign, product, case
+    relatedTerms: ["defcon", "eff", "dvd-jon", "ed-felten"], // the stage, the defenders, the other DMCA cases
+    relatedArticles: ["defcon-culture-and-the-goons", "electronic-frontier-foundation"], // DEF CON's history and the EFF's
+    sources: [{ label: "EFF, US v. ElcomSoft Sklyarov, case page (read 2026-11-08): arrested in Las Vegas on July 16 2001 under section 1201(b)(1)(A) of the DMCA; released on bail on August 6 2001; home to Russia on December 13 2001 under an agreement to testify; jury acquits Elcomsoft, December 2002", href: "https://www.eff.org/cases/us-v-elcomsoft-sklyarov" }, { label: "EFF, US v. ElcomSoft Sklyarov FAQ (read 2026-11-08): at DEF CON to discuss the weaknesses of Adobe's eBook software; Adobe withdrew its support for the complaint; the first software developers prosecuted under the criminal provisions of the DMCA", href: "https://www.eff.org/pages/us-v-elcomsoft-sklyarov-faq" }, { label: "Wikipedia, Dmitry Sklyarov (read 2026-11-08; used for the FBI arrest and the Free Dmitry protests)", href: "https://en.wikipedia.org/wiki/Dmitry_Sklyarov" }], // one line per source object
+  },
+  {
+    // bunnie Huang (scope 2): the 2002 Xbox memo, Hacking the Xbox (free since March 2013), Green v. DOJ (July 2016).
+    slug: "bunnie-huang", // the name he publishes under
+    headword: "bunnie Huang (Andrew Huang)", // handle first, lower case as he writes it; no quote marks (headword regex)
+    kind: "lore", // people are lore in this batch
+    person: true, // an individual: powers /people
+    personYear: 2002, // the Xbox memo, issued 26 May 2002; named in the MIT label
+    personField: "hacker-culture", // right-to-tinker strand, beside dvd-jon and george-hotz
+    domains: ["hacking", "cyber-security"], // hardware reverse engineering
+    aliases: ["bunnie", "andrew huang", "hacking the xbox", "novena", "precursor", "green v doj"], // handle, name, book, hardware, case
+    relatedTerms: ["aaron-swartz", "eff", "george-hotz", "dvd-jon"], // the dedication, the counsel, the console-hacking neighbours
+    sources: [{ label: "MIT DSpace, Andrew 'bunnie' Huang, 'Keeping Secrets in Hardware: the Microsoft Xbox Case Study', AI Memo AIM-2002-008, issued 26 May 2002 (read 2026-11-08): a secret boot block in a system ASIC; code transferred to the CPU in the clear over high-speed busses", href: "https://dspace.mit.edu/handle/1721.1/6694" }, { label: "No Starch Press, Hacking the Xbox, free ebook (read 2026-11-08): released free in honor of Aaron Swartz, Singapore, March 2013; the letter from MIT legal repudiating any association with the work", href: "https://nostarch.com/xboxfree" }, { label: "EFF, Green v. U.S. Department of Justice (read 2026-11-08): filed in July 2016; EFF represents bunnie Huang and Alphamax LLC; DC Circuit opinion of August 2, 2024 left the law intact", href: "https://www.eff.org/cases/green-v-us-department-justice" }, { label: "Wikipedia, Andrew Huang (hacker) (read 2026-11-08; used for his MIT doctorate and later hardware projects)", href: "https://en.wikipedia.org/wiki/Andrew_Huang_(hacker)" }], // one line per source object
+  },
+  {
+    // Ed Felten (scope 2): the SDMI paper, the April 2001 threats, Felten v. RIAA, USENIX Security in August 2001.
+    slug: "ed-felten", // the short form he is known by
+    headword: "Edward Felten", // full name, as Princeton lists it
+    kind: "lore", // people are lore in this batch
+    person: true, // an individual: powers /people
+    personYear: 2001, // the April 2001 threats and the August 2001 paper; named in the EFF label
+    personField: "security", // security research and policy strand
+    domains: ["cyber-security", "grc"], // research disclosure and technology policy
+    aliases: ["ed felten", "felten v riaa", "sdmi challenge", "freedom to tinker"], // short name, case, challenge, blog
+    relatedTerms: ["eff", "dmitry-sklyarov", "responsible-disclosure"], // the counsel, the sister DMCA case, the practice
+    sources: [{ label: "EFF, Felten, et al., v. RIAA, et al. (read 2026-11-08): scientists from Princeton and Rice tried to publish in April 2001; suit filed June 6, 2001; the team decided not to appeal the November dismissal, citing assurances the threats would not be repeated", href: "https://www.eff.org/cases/felten-et-al-v-riaa-et-al" }, { label: "USENIX, 'Reading Between the Lines: Lessons from the SDMI Challenge', 10th USENIX Security Symposium, Washington, D.C., August 2001 (read 2026-11-08)", href: "https://www.usenix.org/conference/10th-usenix-security-symposium/reading-between-lines-lessons-sdmi-challenge" }, { label: "EFF, US v. ElcomSoft Sklyarov FAQ (read 2026-11-08): the Felten team declined the prize and decided to publish, then received DMCA-grounded legal threat letters from SDMI member companies", href: "https://www.eff.org/pages/us-v-elcomsoft-sklyarov-faq" }, { label: "Princeton Computer Science, Edward Felten (read 2026-11-08): Robert E. Kahn Professor of Computer Science and Public Affairs, Emeritus", href: "https://www.cs.princeton.edu/people/profile/felten" }, { label: "Wikipedia, Edward Felten (read 2026-11-08; used for the public roles): first chief technologist of the Federal Trade Commission; deputy US chief technology officer, 2015 to 2017", href: "https://en.wikipedia.org/wiki/Edward_Felten" }], // one line per source object
+  },
+  {
+    // Diego F. Aranha (scope 2, Brazil): the TSE public security tests of 2012 and 2017. Design flaws described, no method.
+    slug: "diego-aranha", // the name without the initial
+    headword: "Diego F. Aranha", // as his talks print it
+    kind: "lore", // people are lore in this batch
+    person: true, // an individual: powers /people
+    personYear: 2012, // he coordinated the team in the 2012 tests; named in the DEF CON 26 label
+    personField: "brazil", // the Brazilian strand
+    domains: ["cyber-security", "crypto", "grc"], // election security, cryptographic implementation, public oversight
+    aliases: ["diego aranha", "urna eletrônica", "brazilian voting machine", "teste público de segurança"], // the terms Brazilians search for
+    relatedTerms: ["defcon", "csprng"], // the Voting Village, and the randomness the 2012 flaw lacked
+    sources: [{ label: "DEF CON 26 Voting Village, Diego Aranha, 'The Return of Software Vulnerabilities in the Brazilian Voting Machine', 2018, caption file (read 2026-11-08): 'I coordinated the team in 2012', a serious vulnerability in the vote shuffling mechanism compromised ballot secrecy; in 2017 install cards not properly encrypted, keys shared by all machines and in the source code", href: "https://media.defcon.org/DEF%20CON%2026/DEF%20CON%2026%20villages/DEF%20CON%2026%20villages%20captions/DEF%20CON%2026%20-%20VOTING%20VILLAGE%20-%20Diego%20Aranha%20-%20The%20Return%20of%20Software%20Vulnerabilities%20in%20the%20Brazilian%20Voting%20Machine.eng.txt" }, { label: "Diego F. Aranha, 'Software vulnerabilities in the Brazilian voting machine', Real World Crypto 2016 slides (read 2026-11-08): vulnerabilities from 2012, the II Public Security Tests; trivial to recover votes in order; the log associates a vote with a timestamp", href: "https://realworldcrypto.iacr.org/2016/Slides/RWC16-DiegoAranha.pdf" }, { label: "Technology Innovation Institute, CRC Seminar Series (read 2026-11-08): Associate Professor in the Department of Computer Science at Aarhus University; MIT TechReview's Innovators Under 35 Brazil Award for his work on the Brazilian electronic voting system", href: "https://tii.ae/node/2906" }, { label: "InfoconDB, 'Return of the Insecure Brazilian Voting Machines', Black Hat Asia 2019 (read 2026-11-08): hard-coded keys and insufficient integrity checks compromised ballot secrecy and software integrity; PhD from the University of Campinas", href: "https://infocondb.org/con/black-hat/black-hat-asia-2019/return-of-the-insecure-brazilian-voting-machines" }], // one line per source object
+  },
+  {
+    // FISL (scope 2, Brazil): Fórum Internacional Software Livre, Porto Alegre, from May 2000. Wikipedia only: no official site answered.
+    slug: "fisl", // the acronym, as everyone says it
+    headword: "FISL (Fórum Internacional Software Livre)", // acronym with expansion, as cdciber and abnt do
+    kind: "lore", // an event, as roadsec and h2hc
+    domains: ["events", "programming", "ops-culture"], // a conference about free software and its politics
+    expansion: "Fórum Internacional Software Livre", // the full name, kept in Portuguese in every locale
+    aliases: ["fisl", "forum internacional software livre", "fisl porto alegre", "associação softwarelivre.org"], // short and long forms
+    relatedTerms: ["latinoware", "free-software", "richard-stallman", "copyleft"], // its sister event, its cause, its best-known guest
+    relatedArticles: ["the-brazilian-hacker-scene", "open-source-and-the-meaning-of-free"], // Brazil's scene and the meaning of free
+    sources: [{ label: "Wikipedia (pt), Fórum Internacional Software Livre (read 2026-11-08; fisl.org.br and softwarelivre.org did not answer): first edition on 4 and 5 May 2000 at UFRGS; organised by the Associação SoftwareLivre.org; 7,217 participants at FISL 14 in 2013; FISL 18 in July 2018 at PUCRS", href: "https://pt.wikipedia.org/wiki/F%C3%B3rum_Internacional_Software_Livre" }], // one line per source object
+  },
+  // p34 net batch (PRIME 08/11/2026: IX.br/PTT, Metasploit, net neutrality, cabling and connector standards).
+  {
+    // ix-br (PRIME 2026-11-08, "a rich entry about IXBR/PTT (Ponto de Troca de Tráfego)"): the Brazilian programme,
+    // sourced from NIC.br's own releases (read through the JSON feed the ix.br pages load), ix.br/sobre and CGI.br slides.
+    slug: "ix-br", // the /glossary/ix-br address
+    headword: "IX.br (Brasil Internet Exchange)", // the programme's own name; normalises to a key no other headword has
+    kind: "term", // a named programme, not lore and not an acronym
+    domains: ["isp-telecom", "enterprise-networking"], // where exchanges live, plus the BGP side of peering
+    expansion: "Brasil Internet Exchange (formerly PTTMetro), the PTT programme of NIC.br and CGI.br", // spelled out, with the old name
+    aliases: ["ix.br", "ixbr", "ptt", "ptt.br", "pttmetro", "ptt metro", "ponto de troca de tráfego", "pontos de troca de tráfego", "brasil internet exchange", "brazil internet exchange", "opencdn", "acordo de troca de tráfego multilateral"], // search terms; "ptt" moves here from ix
+    relatedTerms: ["ix", "ixp", "nic-br", "cgi-br", "fapesp", "rnp", "peering", "bgp", "bgp-communities", "asn", "looking-glass", "cdn", "demi-getschko", "lacnic"], // all checked to exist
+    relatedArticles: ["brazil-internet-governance", "internet-chokepoints", "the-brazil-thread"], // Learn articles that already discuss IX.br or Brazilian governance
+    sources: [{ label: "IX.br, Sobre o IX.br (read 2026-11-08): a CGI.br project creating the infrastructure for direct interconnection of the ASes of the Brazilian internet; neutrality, quality, low cost, a single regional traffic matrix; PIXes under centralised management", href: "https://ix.br/sobre" }, { label: "NIC.br release, 19 July 2024, 'IX.br celebrates 20 years' (read 2026-11-08 via the release feed): began operating in July 2004 after CGI.br approved the PTT Metro project; reintegrated the first Brazilian IXP, operated by FAPESP since 1998; 2015 data centre; 10 to 100 Gbit/s ports in 2017, 100 to 400 now; 35 Tbit/s in February 2024; .br registration revenue reinvested", href: "https://ix.br/noticia/releases/ix-br-celebrates-20-years-with-a-prominent-role-in-improving-the-internet-in-brazil" }, { label: "NIC.br release, 20 March 2026 (read 2026-11-08 via the release feed): 50 Tbit/s aggregate, 32 Tbit/s at IX.br São Paulo; 39 metropolitan areas; about 3,800 ASes and 7,000 connections; more than 2,500 networks connected directly in São Paulo", href: "https://ix.br/noticia/releases/ix-br-hits-record-50-tbit-s-of-aggregated-internet-traffic-driven-by-content-and-digital-services" }, { label: "NIC.br release, 23 September 2026 (read 2026-11-08 via the release feed): the 40th PTT in Macapá, operating from 25 September, completing the 26 states; more than 3,700 ASes and about 7,250 connections; 55 Tbit/s in June 2026; São Paulo about 65 per cent of traffic; OpenCDN cities", href: "https://ix.br/noticia/releases/ix-br-inaugura-no-amapa-40-ponto-de-troca-de-trafego-e-alcanca-todos-os-estados-brasileiros" }, { label: "CGI.br meeting slides on IX.br, 19 August 2022 (read 2026-11-08): PTTmetro launched in 2004, metropolitan regions of 60 km radius, no interconnection between PTTs; renamed IX.br in 2015 because PTT has several meanings; ATM via route servers, bilateral via a VLAN, looking glass", href: "https://cgi.br/media/atas/pdf/20221027-ixbr-CGI.pdf" }, { label: "NIC.br, IX Fórum Regional Sudeste slides, 22 September 2023 (read 2026-11-08): operation began in July 2004; 96 unique participants after five years and 788 after ten; in 2015 São Paulo reached 1 Tbit/s and the aggregate 1.25 Tbit/s", href: "https://minhaagenda.cursoseventos.nic.br/files/apresentacao/arquivo/1699/Ativacao%20IX.br%20-%20Evolucao%20(Publica).pdf" }, { label: "NIC.br release list (read 2026-11-08): 'IX.br atinge novo recorde, com 40 Tbit/s de tráfego agregado', 29 April 2025, and 'OpenCDN atinge marca de 1 Tb/s de tráfego total', 28 April 2026 (headlines)", href: "https://ix.br/noticias/releases/" }], // NIC.br's own figures, each with its date
+  },
+  {
+    // metasploit (PRIME 2026-11-08, "a very rich entry on Metasploit"): history, architecture as concepts, editions,
+    // licensing, testing and the disclosure argument, defenders' use. No commands, no exploit code, no PoC links.
+    // The documentation pages cited are Rapid7's official docs; two of them (payloads, msfvenom) carry usage examples,
+    // flagged in wiring.md for PRIME in case he prefers the docs index.
+    slug: "metasploit", // the /glossary/metasploit address; the "metasploit" alias leaves hd-moore (wiring.md)
+    headword: "Metasploit", // the project's name
+    kind: "term", // a tool and a project; its story is told in depth, not as lore
+    domains: ["cyber-security", "hacking", "vendors"], // offensive security tooling, hacker culture, and a Rapid7 product
+    expansion: "Metasploit Framework (open source, BSD licence) and Metasploit Pro (Rapid7)", // the two current forms
+    aliases: ["metasploit framework", "msf", "msfconsole", "msfvenom", "meterpreter", "metasploit pro", "metasploit express", "metasploit community", "exploit framework"], // search terms
+    relatedTerms: ["hd-moore", "pentest", "exploit", "payload", "shellcode", "red-team", "c2", "zero-day", "cve", "kev", "proof-of-concept", "coordinated-disclosure", "responsible-disclosure", "ids", "satan-scanner", "fyodor"], // all checked to exist
+    relatedArticles: ["satan-and-the-tool-release-argument", "the-disclosure-record", "ids-ips-family-history", "bigip-cookie-disclosure"], // the tool-release argument, disclosure, detection, and an article that already mentions a Metasploit module
+    sources: [{ label: "H D Moore, 'MetaSploit Exploit Framework v1.0', pen-test mailing list, 6 October 2003 (read 2026-11-08): the first public version; the CLI on Unix-like platforms and on Windows under ActiveState Perl", href: "https://seclists.org/pen-test/2003/Oct/33" }, { label: "H D Moore, 'Metasploit Framework 2.0 Released!', Bugtraq, 7 April 2004 (read 2026-11-08): 18 exploits and 27 payloads; three UIs; multi-stage payloads; Perl", href: "https://lists.openwall.net/bugtraq/2004/04/07/24" }, { label: "H D Moore, 'Metasploit Framework 3.0 RELEASED!', Bugtraq, 27 March 2007 (read 2026-11-08): a from-scratch Ruby rewrite of nearly two years and over 100,000 lines; 177 exploits, 104 payloads, 17 encoders, 3 nop and 30 auxiliary modules; its users", href: "https://lists.openwall.net/bugtraq/2007/03/27/4" }, { label: "HD Moore, 'Metasploit Rising', Metasploit framework list, 21 October 2009 (read 2026-11-08): acquired by Rapid7; Moore becomes Rapid7's chief security officer and chief architect of Metasploit; no plans to change the licence", href: "https://seclists.org/metasploit/2009/q4/93" }, { label: "HD Moore, reply in the same thread, 22 October 2009 (read 2026-11-08): Metasploit LLC and copyright assignment; the 3.0 and 3.1 EULA; relicensing under the 3-clause BSD licence with 3.2; what Rapid7 acquired", href: "https://seclists.org/metasploit/2009/q4/115" }, { label: "Metasploit Documentation, page 'Running modules', reached from the documentation index (read 2026-11-08): the module types auxiliary, exploit, payload and post", href: "https://docs.metasploit.com/" }, { label: "Metasploit Documentation, page 'How payloads work', reached from the documentation index (read 2026-11-08): singles, stagers and stages", href: "https://docs.metasploit.com/" }, { label: "Metasploit Documentation, Meterpreter (read 2026-11-08): part of Metasploit since 2004, originally written in C by Matt Miller; Reflective DLL Injection by Stephen Fewer; server and client naming", href: "https://docs.metasploit.com/docs/using-metasploit/advanced/meterpreter/meterpreter.html" }, { label: "Metasploit Documentation, Exploit Ranking (read 2026-11-08): every exploit module ranked by its potential impact on the target", href: "https://docs.metasploit.com/docs/using-metasploit/intermediate/exploit-ranking.html" }, { label: "Metasploit Documentation, Database Support (read 2026-11-08): hosts, services and credentials stored in a database set up with msfdb", href: "https://docs.metasploit.com/docs/using-metasploit/intermediate/metasploit-database-support.html" }, { label: "Metasploit Documentation, page 'How to use msfvenom', reached from the documentation index (read 2026-11-08): replaced msfpayload and msfencode on 8 June 2015; encoding is not really meant as an antivirus evasion solution", href: "https://docs.metasploit.com/" }, { label: "Rapid7, 'End of Life for Metasploit Express Edition', 4 June 2018 (read 2026-11-08): end of life on 4 June 2019, to focus on Metasploit Pro", href: "https://www.rapid7.com/blog/post/2018/06/04/announcement-end-of-life-for-metasploit-express-edition/" }, { label: "Rapid7, 'End of Sale Announced for Metasploit Community', 18 July 2019 (read 2026-11-08): first released in 2011; the framework packaged by Kali Linux, Parrot OS and Rapid7's nightly installers", href: "https://www.rapid7.com/blog/post/2019/07/18/end-of-sale-announced-for-metasploit-community/" }, { label: "Rapid7, Metasploit Pro product page (read 2026-11-08): validation, phishing and social engineering, post-exploitation, over 4,000 exploit modules via the framework, InsightVM integration", href: "https://www.rapid7.com/products/metasploit/" }, { label: "Metasploit home page (read 2026-11-08): 'The world's most used penetration testing framework'; a collaboration between the open source community and Rapid7", href: "https://www.metasploit.com/" }, { label: "Kali Linux tools, metasploit-framework (read 2026-11-08): packaged by Kali; Metasploit Unleashed, a free online course by OffSec", href: "https://www.kali.org/tools/metasploit-framework/" }, { label: "Threatpost, 'Q&A: HD Moore on Metasploit, Disclosure and Ethics', 20 May 2010 (read 2026-11-08): the curses-based game origin; Metasploit Express on the same framework code; any vulnerability in the public domain is fair game; NeXpose prioritisation", href: "https://threatpost.com/qa-hd-moore-metasploit-disclosure-and-ethics-052010/73998/" }, { label: "InfoWorld, 'The mind of HD Moore', 31 July 2006 (read 2026-11-08): the 2003 doldrum; proving findings real; partial disclosure never works", href: "https://www.infoworld.com/article/2177751/the-mind-of-hd-moore.html" }, { label: "The Register, 'Daily flaws ratchet up debate', 17 July 2006 (read 2026-11-08): the Month of Browser Bugs and Microsoft's statement encouraging responsible disclosure", href: "https://www.theregister.com/security/2006/07/17/daily-flaws-ratchet-up-debate/697031" }, { label: "Proofpoint Emerging Threats open rules for Suricata 7.0.3, attack_response set (read 2026-11-08): signatures named 'ET ATTACK_RESPONSE Metasploit Meterpreter', 38 active alert lines across the six rule files checked", href: "https://rules.emergingthreats.net/open/suricata-7.0.3/rules/emerging-attack_response.rules" }], // release announcements, official docs, Rapid7's own notices, interviews, detection rules
+  },
+  {
+    // net-neutrality (PRIME 2026-11-08, "a rich entry on net neutrality"): the principle, Wu, the US orders and court
+    // rulings, the EU regulation and BEREC, Brazil's law and decree, zero-rating. Every date from the order or opinion.
+    slug: "net-neutrality", // the /glossary/net-neutrality address
+    headword: "net neutrality", // the common form; "network neutrality" is the expansion
+    kind: "term", // a principle and a body of law
+    domains: ["isp-telecom", "grc"], // what providers may do, and the law that says so
+    expansion: "network neutrality (neutralidade de rede)", // Wu's original form, and the Portuguese the Marco Civil uses
+    aliases: ["network neutrality", "neutralidade de rede", "neutralidade da rede", "open internet", "internet aberta", "zero-rating", "zero rating", "tarifa zero", "paid prioritisation", "paid prioritization", "open internet order", "title ii", "regulation (eu) 2015/2120", "decreto 8.771"], // search terms in both languages
+    relatedTerms: ["marco-civil-da-internet", "cgi-br", "anatel", "isp", "throttling", "dpi", "qos", "peering", "transit", "cdn", "eff", "ix"], // all checked to exist
+    relatedArticles: ["brazil-internet-governance", "internet-shutdowns-and-kill-switches", "electronic-frontier-foundation"], // governance, the provider as chokepoint, digital rights
+    sources: [{ label: "Tim Wu, 'Network Neutrality, Broadband Discrimination', 2 J. on Telecomm. & High Tech. L. 141 (2003), Columbia Law School repository (read 2026-11-08): the abstract, open access, a Darwinian competition among uses", href: "https://scholarship.law.columbia.edu/faculty_scholarship/1281/" }, { label: "Columbia Law School, faculty profile of Tim Wu (read 2026-11-08): first known for coining the term net neutrality in 2002", href: "https://www.law.columbia.edu/faculty/timothy-wu" }, { label: "FCC 10-201, Preserving the Open Internet, adopted 21 December 2010 (read 2026-11-08): transparency, no blocking, no unreasonable discrimination", href: "https://docs.fcc.gov/public/attachments/FCC-10-201A1.pdf" }, { label: "Verizon v. FCC, No. 11-1355, D.C. Circuit, decided 14 January 2014 (read 2026-11-08): the anti-discrimination and anti-blocking rules vacated", href: "https://media.cadc.uscourts.gov/opinions/docs/2014/01/11-1355-1474943.pdf" }, { label: "FCC 15-24, Protecting and Promoting the Open Internet, adopted 26 February 2015 (read 2026-11-08): no blocking, throttling or paid prioritisation; section 706 and Title II; forbearance from 27 provisions", href: "https://docs.fcc.gov/public/attachments/FCC-15-24A1.pdf" }, { label: "U.S. Telecom Ass'n v. FCC, No. 15-1063, D.C. Circuit, decided 14 June 2016 (read 2026-11-08): petitions for review denied", href: "https://media.cadc.uscourts.gov/opinions/docs/2016/06/15-1063-1619173.pdf" }, { label: "FCC 17-166, Restoring Internet Freedom, adopted 14 December 2017 (read 2026-11-08): Title I information service; conduct rules eliminated; transparency kept", href: "https://docs.fcc.gov/public/attachments/FCC-17-166A1.pdf" }, { label: "Mozilla Corp. v. FCC, No. 18-1051, D.C. Circuit, decided 1 October 2019 (read 2026-11-08): the order largely upheld; the Preemption Directive vacated", href: "https://media.cadc.uscourts.gov/opinions/docs/2019/10/18-1051-1808766.pdf" }, { label: "FCC 24-52, Safeguarding and Securing the Open Internet, adopted 25 April 2024 (read 2026-11-08): broadband reclassified as a telecommunications service under Title II", href: "https://docs.fcc.gov/public/attachments/FCC-24-52A1.pdf" }, { label: "Ohio Telecom Ass'n v. FCC (In re MCP No. 185), Sixth Circuit, decided 2 January 2025 (read 2026-11-08): after Loper Bright, broadband is only an information service; the Safeguarding Order set aside", href: "https://www.opn.ca6.uscourts.gov/opinions.pdf/25a0002p-06.pdf" }, { label: "Regulation (EU) 2015/2120 of 25 November 2015, EUR-Lex (read 2026-11-08): Article 3, safeguarding of open internet access; BEREC guidelines due by 30 August 2016", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32015R2120" }, { label: "BEREC, 'BEREC publishes Guidelines on Net Neutrality', 30 August 2016 (read 2026-11-08)", href: "https://www.berec.europa.eu/en/news/press-releases/berec-publishes-guidelines-on-net-neutrality" }, { label: "BEREC, BoR (22) 80, report on the consultation on the updated Open Internet Guidelines, 14 June 2022 (read 2026-11-08): the 2020 review; zero tariff and similar offers inadmissible; stakeholders' consumer-welfare objection", href: "https://www.berec.europa.eu/system/files/2022-11/BoR%20%2822%29%2080_Report_outcome_PC_OI-Guidelines.pdf" }, { label: "CJEU, Telenor Magyarország, C-807/18 and C-39/19, 15 September 2020, EUR-Lex (read 2026-11-08)", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:62018CJ0807" }, { label: "CJEU, Vodafone, C-854/19, 2 September 2021, EUR-Lex (read 2026-11-08): a zero tariff option draws a distinction on the basis of commercial considerations", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:62019CJ0854" }, { label: "Lei nº 12.965, de 23 de abril de 2014 (Marco Civil da Internet), Câmara dos Deputados, texto atualizado (read 2026-11-08): art. 9º", href: "https://www2.camara.leg.br/legin/fed/lei/2014/lei-12965-23-abril-2014-778630-normaatualizada-pl.html" }, { label: "Decreto nº 8.771, de 11 de maio de 2016, Câmara dos Deputados, texto atualizado (read 2026-11-08): arts. 3º a 10, da neutralidade de rede", href: "https://www2.camara.leg.br/legin/fed/decret/2016/decreto-8771-11-maio-2016-783094-normaatualizada-pe.html" }, { label: "TRAI, Press Release No. 13/2016, 8 February 2016 (read 2026-11-08): Prohibition of Discriminatory Tariffs for Data Services Regulations, 2016", href: "https://www.trai.gov.in/sites/default/files/2024-08/Press_Release_No_13_28_08-02-2016.pdf" }], // the orders, opinions, statutes and regulators' own documents
+  },
+  {
+    // tia-568 (PRIME 2026-11-08, cabling and connector standards): the TIA-568 standard family itself, separate from
+    // eia-tia, which is about the standards body; history from contemporaneous trade press, current status from Siemon and TIA.
+    slug: "tia-568", // the /glossary/tia-568 address; the "tia-568" alias leaves eia-tia (wiring.md)
+    headword: "ANSI/TIA-568", // the standard's designation
+    kind: "term", // a standard, named by its number
+    domains: ["enterprise-networking", "it-support"], // structured cabling and the people who install it
+    expansion: "ANSI/TIA-568 family of telecommunications cabling standards (568.0 to 568.5)", // the family as it stands
+    aliases: ["tia-568", "tia/eia-568", "eia/tia-568", "ansi/tia/eia-568", "568-a", "568-b", "568-c", "568-d", "568-e", "tia-568.0-e", "tia-568.2-e", "568.2-e"], // revision names people search for
+    relatedTerms: ["eia-tia", "iso-iec-11801", "cable-categories", "t568a-t568b", "utp", "shielded-twisted-pair", "rj45", "fibre-connectors", "plenum", "wiring-closet", "patch-panel", "poe"], // all exist or are created in this batch
+    relatedArticles: ["structured-cabling", "fibre-basics", "ethernet-physical-layers"], // the Learn article built on this standard, and its neighbours
+    sources: [{ label: "Cabling Installation & Maintenance, 'The industry's foundation is always shifting', October 2003 (read 2026-11-08): work began in 1985; 568-1991; TSB36 and TSB40; 568-A in 1995 with Categories 3, 4 and 5; TSB67; Addendum 5 for Category 5e; 568-B in three parts and its changes", href: "https://www.cablinginstall.com/standards/cabling-standards/article/16465729/the-industrys-foundation-is-always-shifting" }, { label: "No Jitter, 'ANSI/TIA 568-C, A New Family of Cabling Standards', 9 September 2009 (read 2026-11-08): 1991, 568-A in 1995, 568-B in 2001, 568-C in February 2009 and its C.0 to C.3 parts", href: "https://www.nojitter.com/network-technology/ansi-tia-568-c-a-new-family-of-cabling-standards" }, { label: "NSAI standards shop, TIA-568.0E:2020 (read 2026-11-08): current edition, Generic Telecommunications Cabling for Customer Premises, amended by Addendum 1:2022", href: "https://shop.standards.ie/en-ie/standards/tia-568-0e-2020-1065404_saig_tia_tia_2829946/" }, { label: "Siemon, 'ANSI/TIA-568.2-E Released' (read 2026-11-08): released 24 October 2024; power delivery guidance as Annex H; DC resistance unbalance extended to Categories 5e, 6 and 6A", href: "https://www.siemon.com/en/ansi-tia-568-2-e-released/" }, { label: "TIA, 'TIA Publishes New Standards: ANSI/TIA-568.2-E and ANSI/TIA-568.5-1', 5 November 2024 (read 2026-11-08 via WebFetch; curl answered 404)", href: "https://tiaonline.org/?p=36976" }, { label: "Cabling Installation & Maintenance, 'Category 8 Questions Answered', October 2015 (read 2026-11-08): Siemon's director of standards on TIA and ISO/IEC voting, Class I and II, TIA recognising Class I", href: "https://www.cablinginstall.com/standards/cabling-standards/article/16469292/category-8-questions-answered" }, { label: "Panduit, Category 7 and 7A Cabling Concerns tech brief (read 2026-11-08): TIA does not recognise Category 7 or 7A", href: "https://www.panduit.com/content/dam/panduit/en/website/solutions/documents/solution-pdf/Category%207%20and%207A%20Cabling%20Concerns%20Tech%20Brief-COTB01.pdf" }, { label: "Fiber Optic Association, connector identifier (read 2026-11-08): SC was the connector standardised in TIA-568-A; FOCIS, TIA-604", href: "https://www.thefoa.org/tech/connID.htm" }, { label: "DIPOL, twisted-pair cables: nomenclature, standards, parameters (read 2026-11-08): same termination at both ends gives a straight-through cable, otherwise a crossover", href: "https://www.dipolnet.com/twisted-pair_cables_-_nomenclature_standards_parameters_bib526.htm" }], // trade press of the day, the standards shop, a manufacturer's release note, TIA itself
+  },
+  {
+    // iso-iec-11801 (PRIME 2026-11-08, cabling standards): the international series; the foreword and contents read
+    // from the publisher's sample of Part 1, the classes from Fluke Networks and Panduit.
+    slug: "iso-iec-11801", // the /glossary/iso-iec-11801 address
+    headword: "ISO/IEC 11801", // the series designation; its token set differs from the ISO/IEC 2700x entries
+    kind: "term", // a standard, named by its number
+    domains: ["enterprise-networking"], // structured cabling
+    expansion: "ISO/IEC 11801, Information technology: Generic cabling for customer premises", // the series' general title
+    aliases: ["iso 11801", "iso/iec 11801", "iec 11801", "iso/iec 11801-1", "11801-1", "class ea", "class fa", "class i", "class ii", "cabling class", "category 8.1", "category 8.2"], // the classes people search for
+    relatedTerms: ["tia-568", "eia-tia", "cable-categories", "shielded-twisted-pair", "utp", "rj45", "multimode-fiber", "single-mode-fiber", "fibre-connectors"], // all exist or are created in this batch
+    relatedArticles: ["structured-cabling", "fibre-basics"], // the article that already names ISO/IEC 11801 as TIA-568's counterpart
+    sources: [{ label: "ISO, ISO/IEC 11801-1:2017 (read 2026-11-08 via WebFetch; curl answered 403): published 2017-11, edition 1; Amendment 1:2025 and Corrigendum 1:2018 published; ISO/IEC 11801:2002 withdrawn", href: "https://www.iso.org/standard/66182.html" }, { label: "ISO/IEC 11801-1:2017, publisher's sample (iTeh Standards) (read 2026-11-08): title; foreword (prepared by ISO/IEC JTC 1/SC 25; cancels and replaces 11801:2002 with its 2008 and 2010 amendments; Classes I and II; Categories 8.1 and 8.2; OS1a and OM5; OM1, OM2 and OS1 to an informative annex); introduction listing Parts 2 to 6; Annex D, acronyms for balanced cables", href: "https://cdn.standards.iteh.ai/samples/66182/76a70b0a85974260b24dd6a7b64d1221/ISO-IEC-11801-1-2017.pdf" }, { label: "Fluke Networks, DSX-8000 application note (read 2026-11-08): Cat 5e Class D 100 MHz, Cat 6 Class E 250 MHz, Cat 6A Class EA 500 MHz, Cat 8 Class I and II 2000 MHz, 30 m", href: "https://res.cloudinary.com/iwh/image/upload/q_auto,g_center/assets/1/26/Fluke_Networks_DSX2-8000_Application_Note.pdf" }, { label: "Panduit, Category 7 and 7A Cabling Concerns tech brief (read 2026-11-08): Class F 600 MHz and FA 1000 MHz; S/FTP only; IEC 61076-3-104 or -110 connectors; 100 m channels; recognised primarily in Europe", href: "https://www.panduit.com/content/dam/panduit/en/website/solutions/documents/solution-pdf/Category%207%20and%207A%20Cabling%20Concerns%20Tech%20Brief-COTB01.pdf" }, { label: "Cabling Installation & Maintenance, 'Category 8 Questions Answered', October 2015 (read 2026-11-08): one vote per member country at ISO/IEC; Class I on RJ45-style connectors, Class II on non-RJ45 interfaces; 2 GHz, 30 m, two connectors", href: "https://www.cablinginstall.com/standards/cabling-standards/article/16469292/category-8-questions-answered" }, { label: "Fluke Networks, Acronyms for balanced cables, 28 January 2014 (read 2026-11-08): the designations in the informative Annex E of ISO/IEC 11801:2010", href: "https://www.flukenetworks.com/knowledge-base/applicationstandards-articles-copper/acronyms-balanced-cables" }], // the standard's own pages and test-equipment and manufacturer notes
+  },
+  {
+    // fibre-connectors (PRIME 2026-11-08, "fibre connectors (LC, SC, ST, MPO/MTP)"): the Fiber Optic Association's
+    // connector reference is the backbone; the fibre types already have rich entries (single-mode-fiber, multimode-fiber).
+    slug: "fibre-connectors", // British spelling, matching the fibre-basics Learn article
+    headword: "Fibre connectors (LC, SC, ST, MPO)", // the four the brief names
+    kind: "term", // hardware
+    domains: ["enterprise-networking", "isp-telecom"], // premises cabling and carrier plant
+    expansion: "Optical fibre connectors: LC, SC, ST, FC and the MPO/MTP array connector", // the family
+    aliases: ["fiber connectors", "fibre connector", "fiber connector", "lc connector", "sc connector", "st connector", "fc connector", "mpo", "mtp", "apc", "upc", "ferrule", "focis", "conector de fibra"], // search terms
+    relatedTerms: ["single-mode-fiber", "multimode-fiber", "transceiver", "sfp", "tia-568", "iso-iec-11801", "patch-panel", "dark-fiber"], // all exist or are created in this batch
+    relatedArticles: ["fibre-basics", "structured-cabling", "transceiver-family-history"], // where connectors and polarity are already taught
+    sources: [{ label: "Fiber Optic Association, Guide to fiber optic connector identification (read 2026-11-08): ceramic ferrules from mid-1980s Japan; SFF and the LC; ST, SC, FC, LC, MU, LX-5 and MPO described; FOCIS numbers", href: "https://www.thefoa.org/tech/connID.htm" }, { label: "Fiber Optic Association, colour codes (read 2026-11-08): aqua OM3/OM4, lime OM5, yellow single-mode; blue PC and green APC connectors", href: "https://www.thefoa.org/tech/ColCodes.htm" }, { label: "US Conec home page (read 2026-11-08): MTP® as its registered mark", href: "https://www.usconec.com/" }], // the FOA reference and the trademark owner
+  },
+  {
+    // endianness (PRIME 2026-11-08 19:46, "explain ... richly in a dedicated article"): the technical term, beside the
+    // lore entry endianness-holy-wars, which keeps the story of the names. Every fact from a document read 2026-11-08.
+    slug: "endianness", // the /glossary/endianness address
+    headword: "endianness", // the term; the lore entry's headword is "endianness (On Holy Wars)", so no duplicate topic
+    kind: "term", // a property of processors, file formats and protocols
+    domains: ["programming", "enterprise-networking"], // where byte order is met: code, and network headers
+    expansion: "byte order: big-endian (most significant byte first) or little-endian (least significant byte first)", // the two values
+    aliases: ["byte order", "big-endian", "little-endian", "bi-endian", "network byte order", "host byte order", "byte swap", "byteswap", "ordem de bytes", "ordem dos bytes", "ordem de rede"], // search terms in both languages; the lore entry keeps its own
+    relatedTools: ["lacp-hash-and-state-reader", "f5-bigip-persistence-cookie", "charset-equivalency"], // the three tools whose results depend on byte order
+    relatedArticles: ["big-endian-and-little-endian", "utf-8-and-utf-16-byte-by-byte", "python-bytes-text-and-encodings", "bigip-cookie-formats"], // the article, then the three that meet byte order
+    relatedTerms: ["endianness-holy-wars", "danny-cohen", "byte-order-mark", "byte", "posix", "link-aggregation"], // all exist; each links back (shared edits)
+    sources: [{ label: "Danny Cohen, IEN 137, 'On Holy Wars and a Plea for Peace', 1 April 1980 (read 2026-11-08): the names Little-Endians and Big-Endians, consistent orders, the arguments for each, agreeing on an order matters more than which", href: "https://www.rfc-editor.org/ien/ien137.txt" }, { label: "The Open Group Base Specifications Issue 8 (POSIX.1-2024), be16toh (read 2026-11-08): the definitions of little-endian and big-endian representation; network byte order is big-endian", href: "https://pubs.opengroup.org/onlinepubs/9799919799/functions/be16toh.html" }, { label: "POSIX.1-2024, 4.13 Host and Network Byte Orders (read 2026-11-08): network byte order and host byte order; htonl, htons, ntohl and ntohs", href: "https://pubs.opengroup.org/onlinepubs/9799919799/basedefs/V1_chap04.html" }, { label: "RFC 791, Internet Protocol, Appendix B (read 2026-11-08): the most significant octet is transmitted first", href: "https://www.rfc-editor.org/rfc/rfc791" }, { label: "RFC 2469, A Caution On The Canonical Ordering Of Link-Layer Addresses (read 2026-11-08): Ethernet and Token Ring bit order", href: "https://www.rfc-editor.org/rfc/rfc2469" }, { label: "Intel 64 and IA-32 Architectures Software Developer's Manual, volume 1, 253665-084US (read 2026-11-08): little endian machines; BSWAP and MOVBE", href: "https://cdrdv2-public.intel.com/825744/253665-sdm-vol-1.pdf" }, { label: "IBM z/Architecture Principles of Operation, SA22-7832-13 (read 2026-11-08): a group of bytes addressed by its leftmost byte; LOAD REVERSED", href: "https://publibfi.dhe.ibm.com/epubs/pdf/a227832d.pdf" }, { label: "OpenPOWER Foundation, Power ISA Version 3.1C (read 2026-11-08): the Endian mode specified by the operating system; byte-reverse instructions", href: "https://files.openpowerfoundation.org/s/AKX2KtLkwCXxEaC" }, { label: "RISC-V Instruction Set Manual, unprivileged, intro.adoc (read 2026-11-08): little-endian, big-endian and bi-endian variants; little-endian instruction parcels; why little-endian was chosen", href: "https://raw.githubusercontent.com/riscv/riscv-isa-manual/main/src/unpriv/intro.adoc" }, { label: "SPARC International, The SPARC Architecture Manual, Version 9 (read 2026-11-08): big-endian by default, little-endian data accesses", href: "https://sparc.org/wp-content/uploads/2014/01/SPARCV9.pdf.gz" }, { label: "The Linux kernel, arch/mips/Kconfig (read 2026-11-08): MIPS machines configured for either byte order", href: "https://raw.githubusercontent.com/torvalds/linux/master/arch/mips/Kconfig" }, { label: "RFC 4506, XDR: External Data Representation Standard (read 2026-11-08): one big-endian byte order, and why", href: "https://www.rfc-editor.org/rfc/rfc4506" }, { label: "The Unicode Standard 18.0.0, chapter 3, D98 (read 2026-11-08): the UTF-16 encoding scheme is big-endian when there is no byte order mark", href: "https://www.unicode.org/versions/Unicode18.0.0/core-spec/chapter-3/" }, { label: "WHATWG Encoding Standard (read 2026-11-08): the label utf-16 names UTF-16LE", href: "https://encoding.spec.whatwg.org/" }, { label: "The Linux kernel, drivers/net/bonding/bond_main.c (read 2026-11-08): the transmit hash over raw address bytes", href: "https://raw.githubusercontent.com/torvalds/linux/master/drivers/net/bonding/bond_main.c" }, { label: "Python documentation, sys.byteorder (read 2026-11-08)", href: "https://docs.python.org/3/library/sys.html" }, { label: "Python documentation, struct (read 2026-11-08): Intel x86, AMD64 (x86-64) and Apple M1 are little-endian; IBM z is big-endian; the ! prefix is network order", href: "https://docs.python.org/3/library/struct.html" }, { label: "Debian wiki, ArchitectureSpecificsMemo: the endianness of each Debian port (read in a browser on 2026-11-08: the site refuses automated reads)", href: "https://wiki.debian.org/ArchitectureSpecificsMemo" }, { label: "util-linux, sys-utils/lscpu.c (read 2026-11-08): the Byte Order line", href: "https://raw.githubusercontent.com/util-linux/util-linux/master/sys-utils/lscpu.c" }, { label: "The Linux kernel, include/linux/byteorder/generic.h (read 2026-11-08): cpu_to_be32 and the other conversions", href: "https://raw.githubusercontent.com/torvalds/linux/master/include/linux/byteorder/generic.h" }, { label: "RISC-V Instruction Set Manual, zbb.adoc (read 2026-11-08): rev8 reverses the byte order of a register", href: "https://raw.githubusercontent.com/riscv/riscv-isa-manual/main/src/unpriv/zbb.adoc" }, { label: "W3C, PNG Specification, Third Edition, 7.1 (read 2026-11-08): integers in network byte order", href: "https://www.w3.org/TR/png-3/" }, { label: "Oracle, The Java Virtual Machine Specification, Java SE 25, chapter 4 (read 2026-11-08): multibyte data items in big-endian order", href: "https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html" }, { label: "RFC 8949, CBOR (read 2026-11-08): multi-byte values in network byte order", href: "https://www.rfc-editor.org/rfc/rfc8949" }, { label: "Microsoft Learn, BITMAPFILEHEADER (read 2026-11-08): bfType must be 0x4d42, the ASCII string BM", href: "https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapfileheader" }, { label: "WebAssembly 3.0 specification, instructions (read 2026-11-08): memory values read and written in little endian byte order", href: "https://webassembly.github.io/spec/core/syntax/instructions.html" }, { label: "Aldus, TIFF Revision 6.0, 1992, as hosted by the ITU (read 2026-11-08): II and MM; readers must handle both", href: "https://www.itu.int/itudoc/itu-t/com16/tiff-fx/docs/tiff6.pdf" }, { label: "System V ABI, generic ABI, ELF header (read 2026-11-08): EI_DATA, ELFDATA2LSB and ELFDATA2MSB", href: "https://www.sco.com/developers/gabi/latest/ch4.eheader.html" }, { label: "RFC 2781, UTF-16, an encoding of ISO 10646 (read 2026-11-08): text without a byte order mark should be read as big-endian", href: "https://www.rfc-editor.org/rfc/rfc2781" }], // the memo, POSIX, the RFCs, the architecture manuals, the specifications
   },
 ];
 

@@ -7,7 +7,7 @@ date: "2026-11-02"
 tags: ["vulnerability-management", "linux", "tcp"]
 category: security
 status: reviewed
-updated: "2026-11-05"
+updated: "2026-11-08"
 relatedArticles: ["tcp-connection-lifecycle", "tcp-proxy-layer-4", "cvss-severity-bands-and-limits", "memory-safety"]
 ---
 
@@ -19,7 +19,7 @@ Quem achou o bug foi Xinyang Ge, da Anthropic, creditado na correção, que Eric
 
 ## A ficha da vulnerabilidade
 
-| Item | Como lido em 2 de novembro de 2026; gravidade e exploração atualizadas em 5 de novembro |
+| Item | Como lido em 2 de novembro de 2026; gravidade e exploração atualizadas em 5 de novembro, exploração de novo em 8 de novembro |
 | --- | --- |
 | Identificação e título | CVE-2026-98432, "ipv4: free inet_opt and ireq_opt after an RCU grace period" |
 | Onde | O handshake TCP sobre IPv4 do kernel Linux: as IP options que o cliente manda com o pedido de conexão |
@@ -28,7 +28,7 @@ Quem achou o bug foi Xinyang Ge, da Anthropic, creditado na correção, que Eric
 | Gravidade | 9.8 Critical, a nota da própria CNA do kernel, acrescentada em 24 de outubro (o anúncio de 15 de outubro não trazia nenhuma). A Red Hat concorda com o 9.8; SUSE, Oracle e Amazon dão 8.1, com attack complexity High. A Ubuntu desde então elevou a prioridade para Critical e exibe 9.8. A National Vulnerability Database (NVD) mostra a nota da CNA e nenhuma própria |
 | Impacto | Nas notas de pontuação da CNA: memória do heap do kernel exposta ao peer, "potential control-flow corruption" e uma queda do kernel. No relato da Anthropic: comandos rodados como root, demonstrados no laboratório dela em servidores com um listener Multipath TCP, e não publicados. No boletim da Red Hat: a race condition pode ser explorada "to trigger remote code execution" |
 | Correção | Duas linhas em dois arquivos, aceitas em 5 de outubro, em kernels estáveis a partir de 11 de outubro |
-| Exploração | Nenhuma confirmada: a AWS diz, no boletim atualizado em 4 de novembro, "We have no evidence that this issue has been leveraged at this time", e o catálogo de vulnerabilidades exploradas mantido pela Cybersecurity and Infrastructure Security Agency (CISA) dos Estados Unidos não a lista (versão 2026.11.04) |
+| Exploração | Nenhuma confirmada: a AWS diz, no boletim atualizado em 4 de novembro, "We have no evidence that this issue has been leveraged at this time", e o catálogo de vulnerabilidades exploradas mantido pela Cybersecurity and Infrastructure Security Agency (CISA) dos Estados Unidos não a lista (versão 2026.11.06, lida em 8 de novembro). O Exploit Prediction Scoring System (EPSS), do FIRST, estimava em 0,76% a chance de exploração nos 30 dias seguintes em 8 de novembro |
 
 Duas distinções atravessam tudo o que vem a seguir. A primeira é entre código e exposição. O boletim da Red Hat diz que a falha afeta "any system running a vulnerable kernel version with IPv4 TCP networking enabled", e acrescenta, no mesmo boletim: "Systems accepting inbound TCP connections are most directly exposed." Todo kernel afetado contém o código vulnerável; a exposição depende de a máquina aceitar conexões TCP sobre IPv4 de quem não deveria ser confiável, e do que está na frente dela. A segunda é entre uma capacidade e uma ferramenta: em 2 de novembro, a execução remota de código é um resultado de laboratório sob uma condição declarada, não algo que alguém tenha publicado.
 
@@ -177,6 +177,8 @@ Sobre exploração, os documentos concordam: nenhuma relatada. A AWS não sabia 
 
 Atualização, 5 de novembro de 2026: o boletim da AWS, na versão atualizada em 4 de novembro, diz "We have no evidence that this issue has been leveraged at this time". A contagem da Atlas, atualizada em 4 de novembro, é de 70 repositórios, pelo menos dez descrevendo um gatilho para a race condition ou uma prova de conceito. A Atlas também relata que pesquisadores de segurança suspeitam de varredura em busca de servidores com listeners de multipath TCP desde 2 de novembro; não verifiquei esse relato, e nenhum fabricante, nem a CISA, relatou exploração.
 
+Atualização, 8 de novembro de 2026: o catálogo da CISA continua sem listar a CVE (versão 2026.11.06), e nenhum fabricante relatou exploração. O EPSS, do FIRST, atribui a ela 0,76% de probabilidade de exploração nos 30 dias seguintes (8 de novembro, percentil 55), uma estimativa de modelo, não uma observação. A contagem de repositórios públicos continua crescendo: a busca do GitHub retornou 84 com o número da CVE em 8 de novembro, e o PoC Index, um índice público de repositórios de prova de conceito, listava 16 deles como provas de conceito, publicados entre 30 de outubro e 6 de novembro, um deles com um nome que promete um shell de root. Não abri nem testei nenhum, e não coloco links para eles nem para o índice; o nome de um repositório não prova que o código funcione. Em 3 de novembro o registro da CVE ganhou quatro mensagens da oss-security entre as referências: o aviso do time do Go, uma resposta lembrando que o MPTCP pode ser desligado no sistema inteiro (com a ressalva de que programas que dependem dele vão quebrar) e uma discussão em que um endurecimento extra proposto, iniciar o kernel com init_on_free=1, foi respondido por um integrante do time de kernel da CIQ: na análise dele, a opção não faz nada de significativo contra este bug, porque os ponteiros do kernel que derrubam a randomização de endereços vazam de objetos vivos vizinhos, não do conteúdo antigo do objeto liberado. Instale o kernel corrigido; nenhuma dessas configurações o substitui.
+
 ## As mitigações, e onde os fabricantes discordam
 
 Todo fabricante diz primeiro a mesma coisa: instalar o kernel corrigido e dar reboot. A AWS chama isso de "the only complete remediation". As medidas provisórias variam, e as diferenças ensinam.
@@ -303,7 +305,12 @@ Todas lidas em 2 de novembro de 2026, entre 12:20 e 12:41, horário de São Paul
 - [Amazon Linux, CVE-2026-98432: Important, CVSS 3.1 8.1, todos os kernels listados corrigidos entre 24 e 30 de outubro](https://explore.alas.aws.amazon.com/CVE-2026-98432.html)
 - [Boletim de segurança da AWS 2026-160-AWS, publicado em 30 de outubro de 2026 (horário do Pacífico) e atualizado em 1º e 4 de novembro: na leitura de 2 de novembro, nenhuma exploração conhecida e quais load balancers passam IP options aos targets; na leitura de 5 de novembro, "no evidence that this issue has been leveraged", o Global Accelerator descartando pacotes com IP options e as novas datas dos serviços; o status serviço a serviço e as medidas provisórias](https://aws.amazon.com/security/security-bulletins/2026-160-aws/)
 - [F5, K000164068: Linux kernel CVE-2026-98432, publicado em 30 de outubro de 2026: todos os produtos listados em análise na leitura de 2 de novembro; atualizado em 4 de novembro, BIG-IP, BIG-IP Next, F5 Insight e NGINX não vulneráveis e o resto ainda em análise, na leitura de 5 de novembro](https://my.f5.com/manage/s/article/K000164068)
-- [CISA, catálogo Known Exploited Vulnerabilities, versão 2026.10.30 e, na leitura de 5 de novembro, versão 2026.11.04 (o feed JSON): CVE-2026-98432 não listada em nenhuma das duas; 32 entradas do kernel Linux, nove acrescentadas em 2026](https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json)
+- [CISA, catálogo Known Exploited Vulnerabilities, versão 2026.10.30, na leitura de 5 de novembro versão 2026.11.04, e na leitura de 8 de novembro versão 2026.11.06 (o feed JSON): CVE-2026-98432 não listada em nenhuma; 32 entradas do kernel Linux, nove acrescentadas em 2026](https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json)
+- [FIRST, API do Exploit Prediction Scoring System (EPSS), CVE-2026-98432, lida em 8 de novembro de 2026: probabilidade 0,0076 (0,76%), percentil 0,555, calculada naquele dia](https://api.first.org/data/v1/epss?cve=CVE-2026-98432)
+- [oss-security, 30 de outubro de 2026, resposta ao aviso do Go: o MPTCP pode ser desligado no sistema inteiro no Linux, o que atrapalha programas que dependem dele](https://www.openwall.com/lists/oss-security/2026/10/30/6)
+- [oss-security, 31 de outubro de 2026: init_on_free=1 proposto como endurecimento provisório extra para sistemas que ainda não podem receber um kernel corrigido](https://www.openwall.com/lists/oss-security/2026/10/31/5)
+- [oss-security, 2 de novembro de 2026 (horário do Pacífico, EUA), resposta de um integrante do time de kernel da CIQ: init_on_free=1 não faz nada de significativo contra esta CVE, porque os ponteiros que derrubam o KASLR vazam de objetos vivos do slab](https://www.openwall.com/lists/oss-security/2026/11/03/1)
+- Busca de repositórios do GitHub por "CVE-2026-98432" (84 resultados em 8 de novembro de 2026) e PoC Index, um índice público de repositórios de prova de conceito (16 listados para esta CVE em 8 de novembro de 2026): contados, não abertos e, de propósito, sem link
 - [Registro da CVE CVE-2019-11477 (SACK Panic), publicado pela Canonical como CNA: negação de serviço remota, CVSS 3.0 7.5](https://cveawg.mitre.org/api/cve/CVE-2019-11477)
 - [Netflix, NFLX-2019-001, 17 de junho de 2019: o SACK Panic e as falhas relacionadas, e as medidas de contorno](https://github.com/Netflix/security-bulletins/blob/master/advisories/third-party/2019-001.md)
 - [Registro da CVE CVE-2018-5390, publicado pelo CERT/CC: processamento caro a cada pacote recebido no Linux 4.9 em diante, levando a negação de serviço](https://cveawg.mitre.org/api/cve/CVE-2018-5390)

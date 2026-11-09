@@ -1,6 +1,6 @@
 ## What it does
 
-You are looking at a WAF event, or an application log line, and it contains something like `%{(#_memberAccess["allowStaticMethodAccess"]=true)...}`. This tool reads that string and tells you what it was trying to do: which constructs are in it, whether they amount to disabling the expression sandbox, running a command, both, or neither, and which published advisory family the shape is consistent with. It runs entirely in your browser and it never evaluates any part of what you paste.
+You are looking at a WAF (web application firewall) event, or an application log line, and it contains something like `%{(#_memberAccess["allowStaticMethodAccess"]=true)...}`. This tool reads that string and tells you what it was trying to do: which constructs are in it, whether they amount to disabling the expression sandbox, running a command, both, or neither, and which published advisory family the shape is consistent with. It runs entirely in your browser and it never evaluates any part of what you paste.
 
 ## What it is not
 

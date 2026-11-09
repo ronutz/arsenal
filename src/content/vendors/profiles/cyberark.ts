@@ -29,11 +29,11 @@ export const cyberarkProfile: VendorProfile = {
   ],
   timeline: [
     { year: 1999, title: "The digital vault", detail: "Founded in Israel around vault technology for secrets and privileged credentials - session isolation, credential rotation, and the audit trail for the accounts that can do anything." },
-    { year: 2014, title: "IPO: CYBR", detail: "CyberArk lists on Nasdaq as the privileged access management category's standard-bearer, riding the post-breach era in which stolen admin credentials headline every incident report." },
-    { year: 2017, title: "Secrets for machines", detail: "The Conjur acquisition extends the vault to DevOps: secrets management for applications, containers, and CI/CD pipelines - privilege was never only human." },
-    { year: 2020, title: "Identity beyond privilege", detail: "Idaptive (~$70 million) adds workforce access management and SSO, beginning the widening from PAM into a full identity security platform." },
+    { year: 2014, title: "IPO (initial public offering): CYBR", detail: "CyberArk lists on Nasdaq as the privileged access management category's standard-bearer, riding the post-breach era in which stolen admin credentials headline every incident report." },
+    { year: 2017, title: "Secrets for machines", detail: "The Conjur acquisition extends the vault to DevOps: secrets management for applications, containers, and CI/CD (continuous integration and continuous delivery) pipelines - privilege was never only human." },
+    { year: 2020, title: "Identity beyond privilege", detail: "Idaptive (~$70 million) adds workforce access management and SSO (single sign-on), beginning the widening from PAM into a full identity security platform." },
     { year: 2024, title: "Venafi: the machine identity bet", detail: "The ~$1.54 billion Venafi acquisition adds certificate and machine-identity management at scale - by now machines outnumber human identities many times over, and CyberArk moves to own both sides.", sourceNote: "Announced May 2024; completed October 2024." },
-    { year: 2026, title: "The $25 billion exit", detail: "February 11, 2026: Palo Alto Networks completes its acquisition of CyberArk - $45.00 in cash plus 2.2005 PANW shares per share, roughly $25 billion, the largest deal in security industry history - making identity the third pillar of the Palo Alto platform beside network security and the SOC.", sourceNote: "PAN 10-K FY2025 (terms); close per company announcements, Feb 11, 2026." },
+    { year: 2026, title: "The $25 billion exit", detail: "February 11, 2026: Palo Alto Networks completes its acquisition of CyberArk - $45.00 in cash plus 2.2005 PANW shares per share, roughly $25 billion, the largest deal in security industry history - making identity the third pillar of the Palo Alto platform beside network security and the SOC (security operations centre).", sourceNote: "PAN 10-K FY2025 (terms); close per company announcements, Feb 11, 2026." },
   ],
   products: [
     { name: "Privileged Access Manager", what: "The flagship: vaulting, session isolation and recording, and rotation for the accounts that hold the keys." },

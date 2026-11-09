@@ -3,7 +3,7 @@ slug: ospf-primer
 title: "OSPF: o mapa, a matemática e a área 0"
 summary: "O OSPF é o protocolo de gateway interior link-state padronizado como Internet Standard: cada roteador faz o flooding da descrição dos próprios enlaces, todos os roteadores de uma área guardam o mesmo banco de dados e cada um calcula a própria árvore de caminhos mais curtos a partir dele. Depois da leitura, você consegue calcular uma rota à mão a partir dos costs, dizer por que dois roteadores não viram neighbors, explicar a eleição do designated router e as regras das áreas, definir costs sem cair na armadilha da reference bandwidth e ler a saída de neighbors, banco de dados, rotas e interfaces do FRRouting."
 concepts: ["ospf", "igp", "is-is", "rip", "eigrp", "bgp", "link state", "lsa", "spf", "dijkstra", "designated router", "area 0", "stub area", "nssa", "reference bandwidth", "ospfv3"]
-relatedTools: ["python-playground", "mtu-mss", "packet-capture-plan-builder"]
+relatedTools: ["ospf-cost-and-adjacency-checker", "python-playground", "mtu-mss", "packet-capture-plan-builder"]
 relatedArticles: ["bgp-primer", "structured-cabling", "routing-tables-and-default-gateway", "dynamic-routing-compared", "dijkstra-and-the-twenty-minute-algorithm", "isis-primer", "static-routes-and-longest-match", "route-redistribution", "bfd-when-a-link-is-up-and-dead", "route-summarization", "bfd-timers-the-arithmetic-of-detection"]
 category: networking
 order: 235
@@ -220,7 +220,7 @@ Link ID         ADV Router      Age  Seq#       CkSum
 
 Um network-LSA, vindo do DR e nomeado pelo endereço de interface dele. O `show ip ospf route` faz "Show the OSPF routing table, as determined by the most recent SPF calculation", a tabela do último SPF ([documentação do FRRouting, OSPFv2](https://docs.frrouting.org/en/latest/ospfd.html)); o `show ip route` mostra o que foi instalado, lido como em [tabelas de roteamento e o default gateway](/learn/routing-tables-and-default-gateway). O `show ip ospf interface lan4` devolveu `MTU mismatch detection: enabled`, `Cost: 1`, `State DROther, Priority 1` e `Hello 10s, Dead 40s`.
 
-Nenhuma ferramenta do site calcula cost de OSPF ou árvore SPF. O [Python playground](/tools/python-playground) roda a conta do cost ou um Dijkstra pequeno, a [calculadora de MTU / MSS](/tools/mtu-mss) mostra quanto um túnel reduz a MTU, causa comum de um ExStart de um lado só, e o [Packet Capture Plan Builder](/tools/packet-capture-plan-builder) planeja onde capturar o protocolo 89.
+O [verificador de custo e adjacência OSPF](/tools/ospf-cost-and-adjacency-checker) calcula o cost das interfaces pela regra documentada de cada fabricante e confere duas interfaces vizinhas atrás das divergências acima; nenhuma ferramenta do site calcula árvore SPF. O [Python playground](/tools/python-playground) roda um Dijkstra pequeno, a [calculadora de MTU / MSS](/tools/mtu-mss) mostra quanto um túnel reduz a MTU, causa comum de um ExStart de um lado só, e o [Packet Capture Plan Builder](/tools/packet-capture-plan-builder) planeja onde capturar o protocolo 89.
 
 ## Para lembrar
 

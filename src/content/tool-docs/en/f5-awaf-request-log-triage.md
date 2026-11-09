@@ -1,6 +1,6 @@
 ## What it does
 
-Paste an F5 AWAF - Advanced WAF (formerly BIG-IP ASM - Application Security Manager) request-log entry, either the syslog key-value line or the CEF line you see in your SIEM, and this pulls out the fields that matter: the policy, the support ID for log correlation, the request status, the violation rating, the client IP, the method, and the URI. It classifies each violation into a triage category and gives F5's rating-based verdict for the whole request, then points you at the false-positive triage tool for the per-violation fix. It is a decode-only tool that runs entirely in your browser.
+Paste an F5 AWAF - Advanced WAF (formerly BIG-IP ASM - Application Security Manager) request-log entry, either the syslog key-value line or the CEF line you see in your SIEM (security information and event management), and this pulls out the fields that matter: the policy, the support ID for log correlation, the request status, the violation rating, the client IP, the method, and the URI. It classifies each violation into a triage category and gives F5's rating-based verdict for the whole request, then points you at the false-positive triage tool for the per-violation fix. It is a decode-only tool that runs entirely in your browser.
 
 ## Why a log parser, not a support-ID decoder
 

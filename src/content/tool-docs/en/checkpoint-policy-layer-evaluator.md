@@ -18,7 +18,7 @@ The silent-drop warning deserves its own mention. When nothing matches, the impl
 
 ## Honest limits
 
-Service **names** are not resolved: `443` is a port number, not `https`. Mapping names to ports would be a guess about someone's object database. Shadowing analysis is **pairwise**, so a rule covered jointly by several earlier rules but by none alone is not flagged. IPv4 only. The grammar is a deliberate teaching subset - real rules add VPN, content, time, install-on and negation - but the layer semantics taught here apply to all of them identically.
+Service **names** are not resolved: `443` is a port number, not `https`. Mapping names to ports would be a guess about someone's object database. Shadowing analysis is **pairwise**, so a rule covered jointly by several earlier rules but by none alone is not flagged. IPv4 only. The grammar is a deliberate teaching subset - real rules add VPN (virtual private network), content, time, install-on and negation - but the layer semantics taught here apply to all of them identically.
 
 ## Share results
 

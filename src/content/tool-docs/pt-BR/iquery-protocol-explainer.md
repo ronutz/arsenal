@@ -12,7 +12,7 @@ O processo `gtmd` registra a saúde da malha iQuery no `/var/log/gtm`. Cole essa
 
 ## Explicação da arquitetura
 
-Digite ou clique em um tópico e a ferramenta o explica nos termos da F5: a malha iQuery de conexões de longa duração, a porta TCP 4353, a confiança baseada em certificado SSL que o `bigip_add`, o `big3d_install` e o `gtm_add` estabelecem, o próprio comando `iqdump`, o que o iQuery transporta (a disponibilidade dos objetos mais as métricas de balanceamento que o GSLB dinâmico precisa), os agentes `gtmd` e `big3d`, e a regra de VLAN de que o iQuery é enviado apenas na VLAN pela qual o sistema o recebe.
+Digite ou clique em um tópico e a ferramenta o explica nos termos da F5: a malha iQuery de conexões de longa duração, a porta TCP 4353, a confiança baseada em certificado SSL que o `bigip_add`, o `big3d_install` e o `gtm_add` estabelecem, o próprio comando `iqdump`, o que o iQuery transporta (a disponibilidade dos objetos mais as métricas de balanceamento que o GSLB (global server load balancing) dinâmico precisa), os agentes `gtmd` e `big3d`, e a regra de VLAN de que o iQuery é enviado apenas na VLAN pela qual o sistema o recebe.
 
 ## Compartilhar resultado
 

@@ -42,7 +42,7 @@ A página recodifica os certificados do caminho a partir dos seus bytes, base64 
 
 A assinatura de cada elo é conferida no navegador, contra a chave pública do emissor mostrado na tabela: RSASSA-PKCS1-v1_5 e RSASSA-PSS com SHA-1, SHA-256, SHA-384 ou SHA-512, ECDSA em P-256, P-384 e P-521, e Ed25519 onde o navegador suporta. Uma raiz autoassinada é conferida contra a própria chave, o que prova que o certificado é consistente, não que alguém confia nele. O que o navegador não consegue fazer aparece como não conferido, nunca como falha.
 
-Não feito, e feito por um validador: consultar um repositório de confiança, comparar o nome do host com o subjectAltName, avaliar restrições de nome, restrições de política e uso estendido de chave ao longo do caminho, e conferir revogação. Os ponteiros de CRL e OCSP do caminho são listados; nenhum é contatado.
+Não feito, e feito por um validador: consultar um repositório de confiança, comparar o nome do host com o subjectAltName, avaliar restrições de nome, restrições de política e uso estendido de chave ao longo do caminho, e conferir revogação. Os ponteiros de CRL (lista de revogação de certificados) e OCSP (Online Certificate Status Protocol) do caminho são listados; nenhum é contatado.
 
 Para ver o que um validador concluiu sobre a cadeia que um servidor realmente envia, rode `openssl s_client -showcerts` contra o servidor e cole a saída no [explicador do openssl s_client](/tools/openssl-s-client-explainer): os blocos PEM são a cadeia como foi enviada, que esta página pode então ordenar, e o Verify return code é o veredito do OpenSSL sobre ela.
 

@@ -52,6 +52,27 @@
     { "binding": "REFERRERS", "dataset": "ronutz_referrers" }
   ],
 
+  // ==========================================================================
+  // D1: THE /dev/fun GAMES' PUBLIC SCOREBOARD (PRIME 08/11/2026)
+  // --------------------------------------------------------------------------
+  // One table, fun_scores (migrations/0001_fun_scores.sql), written and read by
+  // worker/scores.ts under /api/v1/fun/. A row keeps the game, the puzzle's day,
+  // the mode, solved or not, the server's own score and its parts, the initials,
+  // the country Cloudflare reports and the UTC date of receipt; never an IP
+  // address, a user agent, a cookie, an account, a device identifier or a time
+  // finer than the day. Rows are deleted 400 days after they arrive.
+  // Created 2026-11-08 20:43 UTC in ENAM (PRIME's "Yes, create it"); the
+  // migration's statements were applied the same minute.
+  // ==========================================================================
+  "d1_databases": [
+    {
+      "binding": "SCORES",
+      "database_name": "ronutz-scores",
+      "database_id": "4fe4ea80-e68c-4e88-b24d-011f6cbf9d02",
+      "migrations_dir": "migrations"
+    }
+  ],
+
   "assets": {
     // Folder produced by `npm run build` (next build -> ./out, then pagefind
     // writes its search index into ./out/pagefind).

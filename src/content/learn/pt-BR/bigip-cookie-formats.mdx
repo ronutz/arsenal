@@ -4,7 +4,7 @@ title: "As quatro codificações de cookie do BIG-IP, byte a byte"
 summary: "Um passo a passo preciso pelas quatro formas sem criptografia do cookie de persistência do BIG-IP: IPv4 padrão com seus bytes de endereço invertidos e porta com bytes trocados, IPv4 e IPv6 em route domains, e a forma IPv6, cada uma com uma decodificação resolvida."
 concepts: ["bigip", "persistence cookie", "encoding", "ipv4", "ipv6", "route domain", "byte order", "f5"]
 relatedTools: ["f5-bigip-persistence-cookie"]
-relatedArticles: ["f5-bigip-persistence-cookies", "bigip-cookie-disclosure", "bigip-cookie-encryption"]
+relatedArticles: ["f5-bigip-persistence-cookies", "bigip-cookie-disclosure", "bigip-cookie-encryption", "big-endian-and-little-endian"]
 category: security
 order: 2
 status: reviewed
@@ -19,7 +19,7 @@ Um cookie de persistência do BIG-IP sempre codifica a mesma coisa: o endereço 
 
 Este é o caso comum: um valor como `1677787402.20480.0000`, três campos decimais separados por ponto. O primeiro campo é o endereço, o segundo é a porta, e o terceiro é um `0000` fixo.
 
-Para decodificar o endereço, escreva o decimal como um número hexadecimal de 32 bits e leia seus bytes ao contrário. `1677787402` é `0x6401010A`. Seus bytes são `64 01 01 0A`, e invertidos ficam `0A 01 01 64`, que é `10.1.1.100`. A inversão é a parte que surpreende: o endereço é armazenado em little-endian.
+Para decodificar o endereço, escreva o decimal como um número hexadecimal de 32 bits e leia seus bytes ao contrário. `1677787402` é `0x6401010A`. Seus bytes são `64 01 01 0A`, e invertidos ficam `0A 01 01 64`, que é `10.1.1.100`. A inversão é a parte que surpreende: o endereço é armazenado em little-endian. O que isso quer dizer, e por que os mesmos bytes viram dois números diferentes em dois tipos de processador, está em [Big-endian e little-endian: a ordem dos bytes explicada](/learn/big-endian-and-little-endian).
 
 A porta tem os bytes trocados, e não invertidos, o que para um valor de dois bytes equivale a trocar o byte alto pelo baixo. `20480` é `0x5000`; troque os bytes para obter `0x0050`, que é `80`. Então `1677787402.20480.0000` decodifica para `10.1.1.100:80`. Como segunda verificação, um campo de porta `36895` é `0x901F`, trocado para `0x1F90`, que é `8080`.
 

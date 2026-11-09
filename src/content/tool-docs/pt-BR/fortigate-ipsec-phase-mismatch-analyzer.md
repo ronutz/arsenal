@@ -53,4 +53,4 @@ A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-
 
 ## Onde ela se encaixa
 
-Forma par com o artigo de VPN IPsec do FortiGate, organizado em torno da mesma pergunta e que cobre as escolhas de topologia que esta ferramenta não modela. Para candidatos ao NSE 4, apoia o objetivo 5.01.
+Forma par com o artigo de VPN (rede privada virtual) IPsec do FortiGate, organizado em torno da mesma pergunta e que cobre as escolhas de topologia que esta ferramenta não modela. Para candidatos ao NSE 4, apoia o objetivo 5.01.

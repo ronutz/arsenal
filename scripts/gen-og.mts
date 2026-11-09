@@ -43,6 +43,8 @@ import { Resvg } from "@resvg/resvg-js";
 import { MATERIALS } from "../src/content/materials/materials";
 // The /dev/fun games' own cards (PRIME 05/11/2026): a drawing per game, centred so a cropped preview keeps it.
 import { ART_VERSION, GAME_ART, gameCard } from "./og-games.mts";
+// Each game's section, for the eyebrow recorded with its job (08/11/2026).
+import { funSection } from "../src/config/funGames";
 // The languages a card is drawn for (05/11/2026), shared with src/lib/og.ts so the pages and the cards cannot disagree.
 import { OG_CARD_LOCALES } from "../src/lib/og";
 
@@ -393,7 +395,7 @@ const EYEBROW: Record<string, Record<string, string>> = {
   guide: { en: "Study guide", "pt-BR": "Guia de estudo" },
   vendor: { en: "Vendor hub", "pt-BR": "Hub do fabricante" },
   page: { en: "ronutz.com", "pt-BR": "ronutz.com" },
-  game: { en: "/dev/fun", "pt-BR": "/dev/fun" }, // the /dev/fun games and the shelf (05/11/2026); the eyebrow is drawn by og-games.mts
+  game: { en: "/dev/fun", "pt-BR": "/dev/fun" }, // the /dev/fun games and the shelf (05/11/2026); the eyebrow is drawn by og-games.mts, which names /arcade for the arcade games (08/11/2026)
 };
 
 // ---------------------------------------------------------------------------
@@ -538,7 +540,9 @@ function enumerateJobs(): Job[] {
     for (const id of [...funGameIds(), "shelf"]) {
       if (!GAME_ART[id]) throw new Error(`[gen-og] no share-card drawing for the game "${id}" in scripts/og-games.mts`);
       const title = id === "shelf" ? String(devFun.title) : String(devFun.games[id].cardName);
-      jobs.push({ kind: "game", slug: id, locale, ext: "png", input: { eyebrow: EYEBROW.game[locale] ?? EYEBROW.game.en, locale, title, tagline: "", color: GAME_ART[id].color, game: { id, version: ART_VERSION } } });
+      // The eyebrow recorded in the job is the one og-games.mts draws: the game's section (/arcade for the arcade games since 08/11/2026).
+      const eyebrow = id === "shelf" ? (EYEBROW.game[locale] ?? EYEBROW.game.en) : funSection(id);
+      jobs.push({ kind: "game", slug: id, locale, ext: "png", input: { eyebrow, locale, title, tagline: "", color: GAME_ART[id].color, game: { id, version: ART_VERSION } } });
     }
   }
   return jobs;

@@ -18,6 +18,10 @@
 @import "../components/LanguageSwitcher.css";
 /* The /dev/fun games (2026-11-03): shared fg- classes, then one block per game. */
 @import "./fun-games.css";
+/* TTL (2026-11-08): the arcade game's own block (prefix fg-ttl-), after the shared fg- classes it builds on. */
+@import "./fun-ttl.css";
+/* Rule Inspector (2026-11-08): the arcade game's own block (prefix fg-ri-), after the shared fg- classes it builds on. */
+@import "./fun-rule-inspector.css";
 
 
 :root {

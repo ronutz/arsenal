@@ -18,7 +18,7 @@ O aviso de descarte silencioso merece menção própria. Quando nada casa, a cle
 
 ## Limites honestos
 
-**Nomes** de serviço não são resolvidos: `443` é um número de porta, e não `https`. Mapear nomes para portas seria um palpite sobre o banco de objetos de alguém. A análise de encobrimento é **par a par**, então uma regra coberta conjuntamente por várias regras anteriores, mas por nenhuma sozinha, não é sinalizada. Apenas IPv4. A gramática é um subconjunto didático deliberado - regras reais acrescentam VPN, conteúdo, tempo, install-on e negação - mas a semântica de camadas ensinada aqui vale para todas elas de forma idêntica.
+**Nomes** de serviço não são resolvidos: `443` é um número de porta, e não `https`. Mapear nomes para portas seria um palpite sobre o banco de objetos de alguém. A análise de encobrimento é **par a par**, então uma regra coberta conjuntamente por várias regras anteriores, mas por nenhuma sozinha, não é sinalizada. Apenas IPv4. A gramática é um subconjunto didático deliberado - regras reais acrescentam VPN (rede privada virtual), conteúdo, tempo, install-on e negação - mas a semântica de camadas ensinada aqui vale para todas elas de forma idêntica.
 
 ## Compartilhar resultado
 

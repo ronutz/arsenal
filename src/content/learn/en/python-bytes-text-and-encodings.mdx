@@ -4,7 +4,7 @@ title: "Python's bytes and text: encode, decode and the bugs in between"
 summary: "A socket carries bytes and a person reads text, and Python 3 keeps the two apart: str is a sequence of Unicode code points, bytes a sequence of integers from 0 to 255, and encode and decode are the only doors between them. What UTF-8 allows and the three ways CPython reports bytes that are not UTF-8, what Latin-1, Windows-1252, ASCII and UTF-16 do, what each error handler does (surrogateescape included), why open() without an encoding changed in Python 3.15, how struct and int.from_bytes build and read a binary header (an IPv4 header with its checksum), and the bugs all of this causes in network code. With an interactive lab that follows a text through encode and decode in six codecs, checked against CPython."
 concepts: ["str", "bytes", "encode", "decode", "utf-8", "utf-16", "latin-1", "windows-1252", "ascii", "codec", "error handler", "surrogateescape", "mojibake", "utf-8 mode", "encodingwarning", "struct", "network byte order", "int.from_bytes", "content-length"]
 relatedTools: ["python-playground", "charset-equivalency", "unicode-inspector", "ascii-table"]
-relatedArticles: ["python-explained", "python-errors-and-tracebacks", "character-encoding", "utf-8-and-utf-16-byte-by-byte", "mojibake-and-code-pages", "python-as-a-network-engineers-calculator", "bigip-content-rewriting"]
+relatedArticles: ["python-explained", "python-errors-and-tracebacks", "character-encoding", "utf-8-and-utf-16-byte-by-byte", "mojibake-and-code-pages", "python-as-a-network-engineers-calculator", "bigip-content-rewriting", "big-endian-and-little-endian"]
 category: encoding
 order: 221
 status: reviewed
@@ -247,7 +247,7 @@ b'P\x00' b'\x00P'
 little
 ```
 
-`int.from_bytes()` and `int.to_bytes()` do the same for a single field of any width; since Python 3.11 their byte order defaults to `"big"`, but naming it costs nothing and reads better. The last three lines are the traps: without `!`, port 80 is written low byte first on this little-endian machine, and a byte followed by a 16-bit field takes four bytes instead of three because native mode aligns the second field. The [calculator article](/learn/python-as-a-network-engineers-calculator) uses the same module on a DNS header.
+`int.from_bytes()` and `int.to_bytes()` do the same for a single field of any width; since Python 3.11 their byte order defaults to `"big"`, but naming it costs nothing and reads better. The last three lines are the traps: without `!`, port 80 is written low byte first on this little-endian machine, and a byte followed by a 16-bit field takes four bytes instead of three because native mode aligns the second field. The [calculator article](/learn/python-as-a-network-engineers-calculator) uses the same module on a DNS header, and [Big-endian and little-endian: byte order explained](/learn/big-endian-and-little-endian) explains why there are two byte orders at all and which machines and formats use each.
 
 ## The bugs this causes in network code
 

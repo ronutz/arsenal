@@ -29,7 +29,7 @@ export const nvidiaProfile: VendorProfile = {
   ],
   timeline: [
     { year: 1997, title: "RIVA 128", detail: "After the NV1's near-fatal stumble, the RIVA 128 wins the 3D accelerator market on performance-per-dollar - the survival chapter every Nvidia history starts with." },
-    { year: 1999, title: "GeForce 256", detail: "October 1999: hardware transform-and-lighting, marketed as the world's first GPU - the acronym sticks, the category is named, and the IPO the same year funds the run." },
+    { year: 1999, title: "GeForce 256", detail: "October 1999: hardware transform-and-lighting, marketed as the world's first GPU - the acronym sticks, the category is named, and the IPO (initial public offering) the same year funds the run." },
     { year: 2006, title: "CUDA", detail: "The bet that defines the company: general-purpose programmability across every GeForce shipped, plus a decade of unprofitable ecosystem-building - so when researchers needed massive parallel math, the tool was already on their desks." },
     { year: 2012, title: "AlexNet", detail: "A neural network trained on two consumer GPUs crushes the ImageNet benchmark - the deep-learning ignition. The datacenter business that follows turns Nvidia from a components maker into the platform of the AI era." },
     { year: 2020, title: "Mellanox - Nvidia becomes a network vendor", detail: "The ~$7 billion acquisition closes: InfiniBand, Spectrum Ethernet switching, ConnectX NICs, BlueField DPUs. The insight - the datacenter is the computer, so the NETWORK is the backplane - makes fabric performance Nvidia's own product problem.", sourceNote: "Deal figure per the public record at closing, April 2020." },

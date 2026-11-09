@@ -104,10 +104,9 @@ const src = fs.readFileSync(
 // editorial judgement. Generated from the 2026-09-30 sweep; every entry here
 // was fetched and read. This list may only shrink.
 const DECLARED_ANCHOR = new Map([
-  // NEITHER (10) - NOTHING states it: no label, no cited page, no entry copy - awaiting PRIME
+  // NEITHER (9) - NOTHING states it: no label, no cited page, no entry copy - awaiting PRIME
   ["susan-headley", { year: 1980, why: "NEITHER" }],
   ["anchises-moraes", { year: 2011, why: "NEITHER" }],
-  ["daniel-j-bernstein", { year: 1996, why: "NEITHER" }],
   ["filipe-balestra", { year: 2008, why: "NEITHER" }],
   ["jaime-andres-restrepo", { year: 2009, why: "NEITHER" }],
   ["jude-milhon", { year: 1992, why: "NEITHER" }],

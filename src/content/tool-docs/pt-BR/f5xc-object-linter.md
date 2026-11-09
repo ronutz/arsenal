@@ -4,7 +4,7 @@ Esta ferramenta é um linter para objetos de configuração do F5 Distributed Cl
 
 ## O que ela verifica
 
-Para um origin pool, o linter sinaliza TLS para o origin com verificação do servidor pulada (a conexão é criptografada mas o certificado do origin não é validado), SNI desabilitado, texto puro para o origin, um health check ausente, e um único origin server sem redundância. Para um HTTP load balancer, ela sinaliza nenhum WAF anexado, um listener HTTP puro sem HTTPS, HTTPS configurado sem um redirect de HTTP para HTTPS, uma rota que desabilita o WAF, uma rota catch-all colocada antes de outras rotas (que nunca conseguem dar match sob avaliação por primeiro match), e um domínio wildcard misturado com seu apex. Para um WAF, ela sinaliza modo de monitoramento (detecta mas não bloqueia) e threat campaigns desabilitados.
+Para um origin pool, o linter sinaliza TLS para o origin com verificação do servidor pulada (a conexão é criptografada mas o certificado do origin não é validado), SNI desabilitado, texto puro para o origin, um health check ausente, e um único origin server sem redundância. Para um HTTP load balancer, ela sinaliza nenhum WAF (web application firewall) anexado, um listener HTTP puro sem HTTPS, HTTPS configurado sem um redirect de HTTP para HTTPS, uma rota que desabilita o WAF, uma rota catch-all colocada antes de outras rotas (que nunca conseguem dar match sob avaliação por primeiro match), e um domínio wildcard misturado com seu apex. Para um WAF, ela sinaliza modo de monitoramento (detecta mas não bloqueia) e threat campaigns desabilitados.
 
 ## Severidade e fundamentação
 

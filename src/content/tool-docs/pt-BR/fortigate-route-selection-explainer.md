@@ -33,7 +33,7 @@ Entre as rotas **instaladas**, o prefixo mais específico vence, independentemen
 Apenas a tabela de roteamento. Duas coisas são consultadas **antes** dela e a sobrepõem:
 
 - Uma **rota por política**, que casa por origem, protocolo e porta além do destino. Uma rota por política esquecida é a causa clássica de tráfego que ignora uma rota estática obviamente correta, então, se a tabela diz uma coisa e o tráfego faz outra, procure ali primeiro.
-- Uma **regra de SD-WAN**, que seleciona um membro por desempenho medido antes de a tabela ser alcançada.
+- Uma **regra de SD-WAN (software-defined wide area network)**, que seleciona um membro por desempenho medido antes de a tabela ser alcançada.
 
 É somente IPv4, e não avalia se um gateway é de fato alcançável: toma o conjunto de rotas como dado.
 

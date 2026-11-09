@@ -3,7 +3,7 @@ slug: spanning-tree-in-one-article
 title: "Spanning tree em um só artigo: por que a porta bloqueada não é defeito e como o RSTP e o MSTP deixaram o protocolo rápido"
 summary: "Links redundantes entre switches formam loops, e o header Ethernet não tem nada que impeça um frame de ficar circulando para sempre. O Spanning Tree Protocol resolve isso elegendo um root bridge e bloqueando todas as portas de que a árvore não precisa. O artigo explica a eleição, os custos e os timers, os 30 a 50 segundos que o STP clássico levava para se recuperar, o handshake que deixou o RSTP rápido, as regiões e instâncias do MSTP, as variantes por VLAN da Cisco e seus recursos de proteção, e conta a história da engenheira que escreveu em forma de poema o resumo do artigo em que apresentou o algoritmo."
 concepts: ["spanning tree", "stp", "rstp", "mstp", "bpdu", "root bridge", "bridge id", "root port", "designated port", "path cost", "broadcast storm", "edge port", "portfast", "bpdu guard", "root guard", "pvst+", "radia perlman"]
-relatedTools: []
+relatedTools: ["stp-election-calculator"]
 relatedArticles: ["bridge-switch-family-history", "vlans-and-8021q-trunking", "the-ethernet-frame-field-by-field", "network-devices-switch-router-firewall", "link-aggregation-and-lacp"]
 category: networking
 order: 338
@@ -44,6 +44,8 @@ Os valores short são os que aparecem no livro da Cisco Networking Academy e na 
 Dois desempates resolvem o resto. Quando as duas pontas de um segmento estão à mesma distância da raiz, "the bridge with the lowest bridge ID becomes the designated bridge", a bridge de menor bridge ID vira a designated bridge ([Juniper, visão geral do spanning tree](https://www.juniper.net/documentation/us/en/software/junos/stp-l2/topics/topic-map/spanning-tree-overview.html)); quando um switch chega à raiz com o mesmo custo por duas das suas portas, "spanning tree puts the interface with the lowest interface number in the forwarding state and blocks the other interfaces", a interface de menor número encaminha e as outras bloqueiam ([Cisco, STP configuration guide, IOS XE 17](https://www.cisco.com/c/en/us/td/docs/switches/lan/c9000/lyr2-fwd/stp/stp-configuration-guide/m-stp.html)). O laboratório abaixo roda as quatro decisões em quatro switches, com os custos curtos da tabela acima.
 
 <Lab id="stp-root-election" />
+
+A [calculadora de eleição do spanning tree](/tools/stp-election-calculator) roda as mesmas quatro decisões numa rede que você descreve, com até dezesseis switches e qualquer uma das duas escalas de custo, e diz qual comparação está por trás de cada escolha.
 
 ## Bridge protocol data units, timers e os 30 a 50 segundos do STP clássico
 
@@ -86,7 +88,7 @@ Não existe mais um padrão separado para o spanning tree: "IEEE Std 802.1D-2004
 
 ## A engenheira e o poema
 
-O algoritmo é obra de Radia Perlman, que trabalhava na Digital Equipment Corporation e o apresentou num artigo publicado em 1985 ([Perlman, 1985](https://prl.khoury.northeastern.edu/img/p-sigcomm-1985.pdf)). O resumo (abstract) desse artigo é um poema, "Algorhyme", que começa assim: "I think that I shall never see / A graph more lovely than a tree" ([Heidelberg Laureate Forum](https://www.newsroom.hlf-foundation.org/blog/article/the-internet-chronicles-part-7-of-12-the-tree-the-internet-grows-on/)). Nas palavras dela: "I spent the remainder of the week working on the poem, which is the abstract of the paper" ([LACNIC, 2019](https://blog.lacnic.net/en?p=11775)). O Internet Hall of Fame a incluiu em 2014 por ter projetado "the spanning tree algorithm that transformed Ethernet" ([Internet Hall of Fame](https://www.internethalloffame.org/inductee/radia-perlman/)). A história das bridges e dos switches em torno do trabalho dela está em [uma ideia, resolvida duas vezes](/learn/bridge-switch-family-history).
+O algoritmo é obra de Radia Perlman, que trabalhava na Digital Equipment Corporation e o apresentou num artigo publicado em 1985 ([Perlman, 1985](https://prl.khoury.northeastern.edu/img/p-sigcomm-1985.pdf)). O resumo (abstract) desse artigo é um poema, "Algorhyme", doze versos que resumem o algoritmo inteiro ([Heidelberg Laureate Forum](https://www.newsroom.hlf-foundation.org/blog/article/the-internet-chronicles-part-7-of-12-the-tree-the-internet-grows-on/)). Nas palavras dela: "I spent the remainder of the week working on the poem, which is the abstract of the paper" ([LACNIC, 2019](https://blog.lacnic.net/en?p=11775)). O Internet Hall of Fame a incluiu em 2014 por ter projetado "the spanning tree algorithm that transformed Ethernet" ([Internet Hall of Fame](https://www.internethalloffame.org/inductee/radia-perlman/)). A história das bridges e dos switches em torno do trabalho dela está em [uma ideia, resolvida duas vezes](/learn/bridge-switch-family-history).
 
 ## Para lembrar
 

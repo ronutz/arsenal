@@ -4,7 +4,7 @@ This tool decodes an F5 Distributed Cloud (XC) security event. Paste the event J
 
 ## The four event types
 
-XC produces four kinds of security event, and the tool identifies which one you pasted from the sec_event_type field. A WAF event comes from the application firewall and carries signatures, violations, and attack types. A Bot Defense event carries the bot verdict. A Service Policy event carries the policy and rule that matched. An API event carries OpenAPI validation results and policy hits. If the type tag is missing, the tool infers the type from the shape of the event.
+XC produces four kinds of security event, and the tool identifies which one you pasted from the sec_event_type field. A WAF (web application firewall) event comes from the application firewall and carries signatures, violations, and attack types. A Bot Defense event carries the bot verdict. A Service Policy event carries the policy and rule that matched. An API event carries OpenAPI validation results and policy hits. If the type tag is missing, the tool infers the type from the shape of the event.
 
 ## Action versus recommendation
 

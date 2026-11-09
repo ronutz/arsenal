@@ -43,7 +43,13 @@
 //     not) gives a short pattern: two light taps for a win, two longer buzzes
 //     otherwise. Reduced motion keeps the ring and drops the shake;
 //   - "Where it comes from" (PRIME 06/11/2026 13:01), beside "How to play":
-//     a link to the page's own section on the game's roots (GameOrigins).
+//     a link to the page's own section on the game's roots (GameOrigins);
+//   - the public scoreboard (PRIME 08/11/2026): "Today's board" right after
+//     the result of a finished daily puzzle of today (TodaysBoard.tsx), and the
+//     "Share my results on the public board" switch beside the line that says
+//     what is kept in this browser. Sending happens when the game records its
+//     result (storage.ts tells src/lib/fun/board.ts), so no game sends anything
+//     itself; Spanning Tree only names the level on screen (boardMode).
 // The game itself is the child: the board, its controls, its own timer.
 // Strings come from devFun.games.common; the game passes its own title and rules.
 // ============================================================================
@@ -70,6 +76,10 @@ import { FUN_GAMES } from "@/config/funGames";
 import { EarlierBanner, EarlierList, RefusedNote } from "./EarlierPuzzles";
 // The call-out to the other puzzles, handed over by the page.
 import { useMorePuzzles } from "../MorePuzzlesSlot";
+// The public scoreboard: which games post to it, today's board, and the sharing switch.
+import { boardGame } from "@/lib/fun/board-rules";
+import TodaysBoard from "./TodaysBoard";
+import ShareSwitch from "./ShareSwitch";
 
 /** How long the end-of-round flash lasts, in milliseconds (two pulses; the stylesheet's animation runs this long). */
 const FLASH_MS = 1400;
@@ -132,6 +142,8 @@ export interface GameShellProps {
   legacyMarks?: (r: GameRecord) => LegacyMarks | null;
   /** A flash the game asks for without a result (a new id each time; won picks green or red). */
   signal?: { id: number; won: boolean } | null;
+  /** The public board's mode of the round on screen: Spanning Tree's level; "daily" (the default) for every other game. */
+  boardMode?: string;
   /** The board. */
   children: ReactNode;
 }
@@ -183,6 +195,10 @@ export default function GameShell(props: GameShellProps) {
   const [filled, setFilled] = useState(0);
   // "Solve the other puzzles", when the page gave one.
   const more = useMorePuzzles();
+  // The game's rules on the public board, when it posts to it (every game with a daily; Incident Commander has none).
+  const onBoard = hasDaily ? boardGame(props.gameId) : undefined;
+  // Today's board is shown under a finished daily puzzle of today: not practice, not an earlier puzzle.
+  const showBoard = !!onBoard && props.kind === "daily" && !!props.result && !!dayReq && !dayReq.earlier && props.today === dayReq.today;
 
   // Watch for the UTC day turning while the page stays open: every 30 seconds and whenever the tab comes back.
   useEffect(() => {
@@ -452,6 +468,9 @@ export default function GameShell(props: GameShellProps) {
         </div>
       )}
 
+      {/* Today's board, right after the result of a finished daily puzzle of today. */}
+      {showBoard && onBoard && props.today && <TodaysBoard gameId={props.gameId} mode={props.boardMode ?? onBoard.modes[0]} day={props.today} />}
+
       {/* The other puzzles, right after the result (and after the board while there is none). */}
       {more}
 
@@ -460,7 +479,9 @@ export default function GameShell(props: GameShellProps) {
         <button type="button" className="fg-link-button fg-muted" onClick={onReset}>
           {armed ? t("resetConfirm") : t("resetStats")}
         </button>
-        <span className="fg-muted fg-small">{t("storedHere")}</span>
+        <span className="fg-muted fg-small">{onBoard ? t("storedHere") : t("storedHereOnly")}</span>
+        {/* The sharing switch, on a game that posts to the public board. */}
+        {onBoard && <ShareSwitch label={t("board.share")} />}
       </div>
     </div>
   );

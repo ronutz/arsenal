@@ -11,7 +11,9 @@
 // the aggregate count, and what Cloudflare does as the host: connection logs
 // (incl. IP), Workers Logs of each request through the Worker, its bot check
 // (an injected script and the __cf_bm / cf_clearance cookies), and the Network
-// Error Logging reports a browser may send it when a request fails. Covers the
+// Error Logging reports a browser may send it when a request fails, and (since
+// 08/11/2026) the games' public scoreboard: what a finished daily puzzle sends
+// unless sharing is off, what a row keeps and never keeps. Covers the
 // disclosure essentials common to the GDPR and Brazil's LGPD (controller +
 // contact, what is/ isn't processed, legal bases, international processing, data
 // subject rights, children, changes). Statically generated; reuses the colophon
@@ -36,6 +38,9 @@ import {
   COUNTING_CONFIG_SOURCE,
   COUNTING_RETENTION_SOURCE,
   COUNTING_RETENTION_READ,
+  SCORES_WRITE_SOURCE,
+  SCORES_VERIFY_SOURCE,
+  SCORES_SCHEMA_SOURCE,
 } from "@/config/countingSource";
 // What Cloudflare does as the host, each fact from its own documentation (privacy round 3, 2026-10-26).
 import {
@@ -154,6 +159,20 @@ export default async function PrivacyPage({
     date: formatRevisionDate(PROVIDER_SOURCES_READ, dateLocale),
   });
 
+  // THE GAMES' PUBLIC SCOREBOARD (PRIME's decisions of 08/11/2026). Its section says what a finished daily puzzle sends
+  // and when, then three more paragraphs: what a row keeps and never keeps (with the public files that do it), how long
+  // rows are kept and what anyone can read, and how to have a round removed (through the contact page; the notice
+  // prints no address here).
+  const gamesStored = t.rich("gamesStored", {
+    scores: out(SCORES_WRITE_SOURCE),
+    verify: out(SCORES_VERIFY_SOURCE),
+    schema: out(SCORES_SCHEMA_SOURCE),
+  });
+  // The removal paragraph, with the site's own contact page.
+  const gamesRemoval = t.rich("gamesRemoval", {
+    contact: (chunks: ReactNode) => <Link href="/contact">{chunks}</Link>,
+  });
+
   // The "short version" points, rendered as a set of lead paragraphs.
   const short = ["short1", "short2", "short3", "short4"];
 
@@ -163,6 +182,8 @@ export default async function PrivacyPage({
     ["noTrackTitle", "noTrackBody"],
     ["browserTitle", "browserBody"],
     ["prefsTitle", "prefsBody"],
+    // The games' public scoreboard (08/11/2026), after what the browser keeps, which it refers to.
+    ["gamesTitle", "gamesBody"],
     ["shortcutsTitle", "shortcutsBody"],
     ["hostingTitle", "hostingBody"],
     ["toolsTitle", "toolsBody"],
@@ -213,6 +234,10 @@ export default async function PrivacyPage({
                 {titleKey === "hostingTitle" && <p className="colophon-body">{hostingLogs}</p>}
                 {titleKey === "hostingTitle" && <p className="colophon-body">{hostingBots}</p>}
                 {titleKey === "hostingTitle" && <p className="colophon-body">{hostingNel}</p>}
+                {/* The scoreboard's section closes with what a row keeps, for how long, and how to have one removed. */}
+                {titleKey === "gamesTitle" && <p className="colophon-body">{gamesStored}</p>}
+                {titleKey === "gamesTitle" && <p className="colophon-body">{t("gamesKept")}</p>}
+                {titleKey === "gamesTitle" && <p className="colophon-body">{gamesRemoval}</p>}
               </div>
             </section>
           ))}

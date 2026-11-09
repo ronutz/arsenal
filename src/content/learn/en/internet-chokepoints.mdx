@@ -2,7 +2,7 @@
 slug: internet-chokepoints
 title: "How the internet gets shut down, and who can actually do it"
 summary: "There is no off switch, but there are chokepoints: cables, routing, exchanges, and the small number of companies most traffic passes through. A tour of the mechanisms, what each state can genuinely do with them, and the uncomfortable conclusion that watching everything is easier than switching anything off."
-concepts: ["bgp", "onion-routing", "tor"]
+concepts: ["bgp", "onion-routing", "tor", "ix", "ix-br"]
 relatedTools: []
 relatedArticles: ["tor-and-onion-routing", "peer-to-peer-evolution"]
 category: networking
@@ -41,7 +41,7 @@ The genuine control point is the root zone's *content*, published under IANA/ICA
 
 A country's real exposure is the number of internet exchange points and international transit providers it has. Few exchanges means a small number of buildings where the national internet can be inspected or interrupted.
 
-This is where **Brazil is genuinely unusual, in the resilient direction**. **IX.br**, operated by NIC.br's CEPTRO.br, is one of the largest exchange systems in the world by traffic and is distributed across dozens of cities rather than concentrated in one. That topology was a deliberate policy choice, and it makes the Brazilian internet markedly harder to interrupt at a single point than the architecture of countries that kept everything in one or two facilities.
+This is where **Brazil is genuinely unusual, in the resilient direction**. **[IX.br](/glossary/ix-br)**, operated by NIC.br's CEPTRO.br, is one of the largest exchange systems in the world by traffic and is distributed across dozens of cities rather than concentrated in one. That topology was a deliberate policy choice, and it makes the Brazilian internet markedly harder to interrupt at a single point than the architecture of countries that kept everything in one or two facilities.
 
 ## GPS: a timing dependency, not a connectivity one
 

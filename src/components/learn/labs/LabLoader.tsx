@@ -119,6 +119,9 @@ const LABS: Record<string, ComponentType> = {
   "python-bytes-and-text": dynamic(() => import("./PythonBytesAndTextLab")),
   // The ipaddress explorer lab: "Python's ipaddress module: strict parsing, networks, summarisation and IPv6".
   "python-ipaddress-explorer": dynamic(() => import("./PythonIpaddressExplorerLab")),
+  // ---- labs: bits (2026-11-08) ----
+  // The octet bit numbering lab: "Least and most significant bit: bit numbering and bit order".
+  "octet-bit-numbering": dynamic(() => import("./OctetBitNumberingLab")),
 };
 
 /** Render the lab with this id; an unknown id renders nothing (the build guard makes it impossible). */

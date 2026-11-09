@@ -12,7 +12,7 @@ The `gtmd` process logs iQuery mesh health to `/var/log/gtm`. Paste those lines 
 
 ## Explaining the architecture
 
-Type or click a topic and the tool explains it in F5's terms: the iQuery mesh of long-lived connections, TCP port 4353, the SSL certificate-based trust that `bigip_add`, `big3d_install`, and `gtm_add` bootstrap, the `iqdump` command itself, what iQuery carries (object availability plus the load-balancing metrics dynamic GSLB needs), the `gtmd` and `big3d` agents, and the VLAN rule that iQuery is sent only on the VLAN on which a system receives it.
+Type or click a topic and the tool explains it in F5's terms: the iQuery mesh of long-lived connections, TCP port 4353, the SSL certificate-based trust that `bigip_add`, `big3d_install`, and `gtm_add` bootstrap, the `iqdump` command itself, what iQuery carries (object availability plus the load-balancing metrics dynamic GSLB (global server load balancing) needs), the `gtmd` and `big3d` agents, and the VLAN rule that iQuery is sent only on the VLAN on which a system receives it.
 
 ## Share results
 

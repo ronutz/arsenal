@@ -3,7 +3,7 @@ slug: vlans-and-8021q-trunking
 title: "VLANs and 802.1Q trunking: tagged, untagged, native, and the voice VLAN"
 summary: "A VLAN turns one switched network into several that cannot hear each other's broadcasts, and 802.1Q is how a single cable carries many of them at once. Access and trunk ports in the standard's own terms, the native VLAN and the mismatch that loops a network, the VLAN-hopping attacks and the settings that stop them, the voice VLAN behind every desk phone, and why traffic between VLANs always needs a router."
 concepts: ["vlan", "802.1q", "trunk", "access port", "pvid", "native vlan", "vlan hopping", "dtp", "double tagging", "voice vlan", "lldp-med", "q-in-q", "svi", "inter-vlan routing"]
-relatedTools: []
+relatedTools: ["vlan-tag-and-trunk-calculator"]
 relatedArticles: ["the-ethernet-frame-field-by-field", "network-devices-switch-router-firewall", "bridge-switch-family-history", "arp-and-mac-addresses", "802-1x-and-eap-methods"]
 category: networking
 order: 337
@@ -45,6 +45,8 @@ The cleanest fix is to have no untagged traffic on trunks at all. Cisco's global
 One more setting decides which VLANs a trunk carries at all. In Cisco's words, "By default, a trunk port sends traffic to and receives traffic from all VLANs", and a VLAN removed from the trunk's allowed list is kept off it, "preventing traffic from those VLANs from passing over the trunk" ([Cisco, allowed VLANs on a trunk](https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/software/release/17-12/configuration_guide/vlan/b_1712_vlan_9300_cg/configuring_vlan_trunks.html)). The lab below puts the three rules together: the allowed list at each end, the tag the sending end leaves off for its native VLAN, and the native VLAN the receiving end gives every untagged arrival.
 
 <Lab id="vlan-trunk" />
+
+The [802.1Q tag decoder and trunk VLAN calculator](/tools/vlan-tag-and-trunk-calculator) applies the same three rules to real trunk lines, one vendor at each end, and decodes the tag itself bit by bit.
 
 ## VLAN hopping, and the settings that stop it
 

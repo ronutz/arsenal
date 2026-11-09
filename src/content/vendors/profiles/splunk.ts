@@ -81,11 +81,11 @@ export const splunkProfile: VendorProfile = {
     },
     {
       name: "Splunk Enterprise Security",
-      what: "The SIEM, now with user behaviour analytics and automation built in rather than sold alongside, and with risk-based alerting aimed at the volume problem that makes security operations centres unworkable.",
+      what: "The SIEM (security information and event management), now with user behaviour analytics and automation built in rather than sold alongside, and with risk-based alerting aimed at the volume problem that makes security operations centres unworkable.",
     },
     {
       name: "Splunk SOAR",
-      what: "Orchestration and automated response, built out from the Phantom acquisition, with several hundred prebuilt playbooks and integrations into other vendors' tools.",
+      what: "Security orchestration, automation and response (SOAR), built out from the Phantom acquisition, with several hundred prebuilt playbooks and integrations into other vendors' tools.",
     },
     {
       name: "Observability Cloud, ITSI and AppDynamics",

@@ -2,7 +2,7 @@
 slug: structured-cabling
 title: "Structured cabling: the system behind the wall jack"
 summary: "TIA-568 turns a building's wiring from improvisation into a system: horizontal runs, telecom rooms, the 100-meter channel, categories, pinouts, and the fire ratings inspectors actually check. The map from wall plate to backbone."
-concepts: ["eia-tia", "utp", "cable-categories", "t568a-t568b", "plenum", "wiring-closet"]
+concepts: ["eia-tia", "utp", "cable-categories", "t568a-t568b", "plenum", "wiring-closet", "tia-568", "iso-iec-11801", "shielded-twisted-pair", "rj45", "poe"]
 relatedTools: ["cable-run-planner", "oui-lookup"]
 relatedArticles: ["ieee-802-working-groups", "gpon-how-one-fiber-serves-a-neighborhood", "last-mile-evolution-pots-to-fiber"]
 category: networking
@@ -15,7 +15,7 @@ updated: "2026-07-22"
 
 Before structured cabling, a building's network was whatever each system vendor demanded. A terminal system ran its own coax; a telephone system ran twisted pair on its own plan; a token-passing network ran shielded cable of its own kind. Adding a system meant pulling new cable; changing vendor meant pulling it again; and nobody could tell from the closet what any given wire did.
 
-**TIA-568 (1991)** ended that by inverting the question. Rather than cabling for a protocol, it specified a **generic** system: a topology, distances, connector types and performance grades, defined so that any conforming application could run over it. The international counterpart is **ISO/IEC 11801**, and the European **EN 50173**; they differ in naming and detail rather than in intent.
+**[TIA-568](/glossary/tia-568) (1991)** ended that by inverting the question. Rather than cabling for a protocol, it specified a **generic** system: a topology, distances, connector types and performance grades, defined so that any conforming application could run over it. The international counterpart is **[ISO/IEC 11801](/glossary/iso-iec-11801)**, and the European **EN 50173**; they differ in naming and detail rather than in intent.
 
 The resulting vocabulary is worth knowing because every drawing and bid uses it:
 
@@ -53,7 +53,7 @@ The number every network engineer carries: a twisted-pair **channel** may total 
 
 The channel, not the cable spool, is what a **category** certifies. Cat 5e supports gigabit Ethernet across the full 100 meters. Cat 6 raises the tested bandwidth and carries 10 Gb/s, but only to roughly 55 meters; Cat 6A carries 10 Gb/s the full distance and is the sensible default for new horizontal cabling. Cat 8 doubles down for the data centre: 25/40 Gb/s, but only to 30 meters, effectively shielded, for switch-to-server rows rather than office floors. And the certification is end to end - a Cat 6A permanent link patched with Cat 5e cords is, as a system, Cat 5e.
 
-The copper itself is UTP by default - four pairs, interference fought with twist geometry alone. Where the environment is electrically hostile, the shielded constructions (F/UTP, S/FTP) add foil and braid, at the price of stiffer cable and the obligation to ground the shields properly. Termination follows one of two pinouts, T568A or T568B, functionally identical; the site rule is to pick one and never mix, because one of each end yields a crossover - a cable type that auto-MDIX made historical, but that miswiring still recreates by accident.
+The copper itself is UTP by default - four pairs, interference fought with twist geometry alone. Where the environment is electrically hostile, [the shielded constructions](/glossary/shielded-twisted-pair) (F/UTP, S/FTP) add foil and braid, at the price of stiffer cable and the obligation to ground the shields properly. Termination follows one of two pinouts, T568A or T568B, functionally identical; the site rule is to pick one and never mix, because one of each end yields a crossover - a cable type that auto-MDIX made historical, but that miswiring still recreates by accident.
 
 ## Fiber where copper stops
 

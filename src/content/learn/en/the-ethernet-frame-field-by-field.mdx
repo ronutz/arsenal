@@ -3,7 +3,7 @@ slug: the-ethernet-frame-field-by-field
 title: "The Ethernet frame, field by field: preamble to FCS, the 802.1Q tag, and the sizes that matter"
 summary: "Every Ethernet frame is the same short sequence of fields: a preamble to wake the receiver, two addresses, one field that is either a length or a type, the payload, and a checksum. What each field holds, why the minimum is 64 octets and the maximum 1518, where the 802.1Q tag goes and what it carries, and why jumbo frames are not in the standard."
 concepts: ["ethernet frame", "preamble", "start frame delimiter", "mac address", "ethertype", "802.1q tag", "frame check sequence", "crc-32", "minimum frame size", "runt", "giant", "envelope frame", "jumbo frames", "interpacket gap"]
-relatedTools: ["oui-lookup", "mtu-mss"]
+relatedTools: ["oui-lookup", "mtu-mss", "vlan-tag-and-trunk-calculator", "bit-numbering-and-order"]
 relatedArticles: ["arp-and-mac-addresses", "what-is-an-oui", "jumbo-frames", "osi-model-in-practice", "bridge-switch-family-history"]
 category: networking
 order: 336
@@ -41,7 +41,7 @@ Each address is a 48-bit MAC (media access control) address. The IEEE Registrati
 - the least significant bit of the first octet is the I/G (individual/group) bit: 0 for one station, 1 for a group (multicast or broadcast);
 - the next bit is the U/L (universal/local) bit: 0 for an address assigned under an IEEE block, 1 for one assigned locally.
 
-The address of all ones, FF-FF-FF-FF-FF-FF, means every station on the network: broadcast. Because Ethernet sends each octet least significant bit first ([RFC 9542](https://www.rfc-editor.org/rfc/rfc9542.html)) and the destination's first octet goes first, the I/G bit is the very first bit of the address on the wire: before anything else, it says whether the frame is for one station or for a group. The [OUI lookup](/tools/oui-lookup) on this site reads the first three octets back to the manufacturer they were assigned to.
+The address of all ones, FF-FF-FF-FF-FF-FF, means every station on the network: broadcast. Because Ethernet sends each octet least significant bit first ([RFC 9542](https://www.rfc-editor.org/rfc/rfc9542.html)) and the destination's first octet goes first, the I/G bit is the very first bit of the address on the wire: before anything else, it says whether the frame is for one station or for a group. Why the least significant bit goes first, and how Token Ring stored the same address bit-reversed, is in [Least and most significant bit](/learn/least-and-most-significant-bit). The [OUI lookup](/tools/oui-lookup) on this site reads the first three octets back to the manufacturer they were assigned to.
 
 ## Length or Type: one field, two meanings
 

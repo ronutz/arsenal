@@ -17,7 +17,7 @@ A ferramenta percorre essa cadeia por perfil e nomeia o elo que falhou. A maiori
 
 Essa distinção é o julgamento pelo qual a ferramenta existe, e errá-la em qualquer direção seria pior que não dizer nada.
 
-**Cego** significa anexado, configurado e sem fazer nada. Antivírus, IPS, DLP e filtro de arquivos precisam todos do corpo da mensagem. Atrás da inspeção de certificado não há corpo, então eles não estão parcialmente eficazes: estão inertes.
+**Cego** significa anexado, configurado e sem fazer nada. Antivírus, IPS (sistema de prevenção de intrusão), DLP (data loss prevention) e filtro de arquivos precisam todos do corpo da mensagem. Atrás da inspeção de certificado não há corpo, então eles não estão parcialmente eficazes: estão inertes.
 
 **Degradado** significa funcionar com menos que a visão completa. Controle de aplicações e filtro web ainda conseguem identificar parte do tráfego por metadados do handshake, como o SNI, então uma política por nome de host ainda se aplica enquanto uma por caminho de URL não.
 

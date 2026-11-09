@@ -64,7 +64,7 @@ export const crowdstrikeProfile: VendorProfile = {
       year: 2022,
       title: "Humio becomes LogScale",
       detail:
-        "The log platform acquired in 2021 became the foundation for a SIEM product, putting the company into direct competition with the incumbents - including Splunk, which appears elsewhere on this timeline and was itself acquired by Cisco two years later.",
+        "The log platform acquired in 2021 became the foundation for a SIEM (security information and event management) product, putting the company into direct competition with the incumbents - including Splunk, which appears elsewhere on this timeline and was itself acquired by Cisco two years later.",
     },
     {
       year: 2024,

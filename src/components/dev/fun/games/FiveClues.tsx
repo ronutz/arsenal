@@ -28,6 +28,16 @@
 // with a tick or a cross drawn beside the words, how the chosen warm-up went.
 // Marks the old archive left on earlier daily puzzles become Earlier puzzles
 // marks (backfillMarks below).
+//
+// Comments and nudges (PRIME 08/11/2026: "there were NO comments on the wrong
+// guesses"). A wrong guess or a pass now leaves a visible line under the form
+// ("Not routers. Clue 2 is up."), and each clue spent without the answer adds
+// a nudge, derived from the puzzle so no puzzle needed new writing: how many
+// words the answer has, the kind of document its members come from (an RFC,
+// a manual page, an IANA registry, a standard, the project's documentation),
+// then the answer's shape with the first letter of each word. They follow from
+// the progress, so a reload shows the same ones, and every player of the day
+// gets the same, so the scores stay comparable.
 // ============================================================================
 
 "use client";
@@ -189,6 +199,41 @@ function MarkIcon({ solved }: { solved: boolean }) {
   );
 }
 
+/** The kind of document a puzzle's members come from, for the second nudge. */
+type SourceKind = "rfc" | "man" | "iana" | "standard" | "docs";
+
+/**
+ * The kind of document behind a puzzle, read from its source's label: an RFC, a manual page ("systemd.unit(5)"),
+ * an IANA registry, a standards body's document, or otherwise the project's or vendor's own documentation.
+ *
+ * @param label the source's label
+ * @returns its kind
+ */
+export function sourceKind(label: string): SourceKind {
+  // An RFC.
+  if (/\bRFC\s?\d/i.test(label)) return "rfc";
+  // An IANA registry.
+  if (/\bIANA\b/.test(label)) return "iana";
+  // A manual page: a name with its section in parentheses.
+  if (/\(\d[a-z]?\)/i.test(label)) return "man";
+  // A standards body or a specification's publisher.
+  if (/\b(IEEE|ISO|IEC|ITU|ETSI|NIST|ANSI|TIA|W3C|WHATWG|ECMA|IETF|FIRST|OpenID|Bluetooth SIG|Wi-Fi Alliance)\b/.test(label)) return "standard";
+  // Anything else.
+  return "docs";
+}
+
+/**
+ * The answer with every letter after the first of each word hidden ("systemd unit types" becomes "s______ u___ t____"),
+ * digits too; spaces, punctuation and parentheses stay, so the shape of the answer shows and nothing else.
+ *
+ * @param answer the category's name in the player's language
+ * @returns the masked name
+ */
+export function maskAnswer(answer: string): string {
+  // Word by word: the first character of each run of letters and digits stays, the rest become underscores.
+  return answer.replace(/[\p{L}\p{N}]+/gu, (w) => w[0] + "_".repeat(w.length - 1));
+}
+
 /** What a round needs from its owner. */
 interface RoundProps {
   /** The puzzle. */
@@ -218,6 +263,8 @@ function Round({ puzzle, lang, progress, onSpend, idBase }: RoundProps) {
   const [text, setText] = useState("");
   // A hint that costs nothing ("close", "type something"), or null.
   const [note, setNote] = useState<string | null>(null);
+  // The comment on the last spent clue, shown under the form (a wrong guess or a pass), or null.
+  const [comment, setComment] = useState<string | null>(null);
   // The polite announcement.
   const [live, setLive] = useState("");
   // The input, for focus.
@@ -253,6 +300,8 @@ function Round({ puzzle, lang, progress, onSpend, idBase }: RoundProps) {
     }
     // A clue is spent: right ends the round, wrong reveals the next clue.
     setNote(null);
+    // The comment the player sees: the guess was not it, and the next clue is up (or the round is over).
+    setComment(v === "right" ? null : progress.guesses.length + 1 >= CLUES ? null : t("commentWrong", { guess: text.trim(), n: progress.guesses.length + 2 }));
     // Announced.
     setLive(v === "right" ? t("liveRight", { cat: puzzle.cat[lang] }) : progress.guesses.length + 1 >= CLUES ? t("liveOut", { cat: puzzle.cat[lang] }) : t("liveWrong", { guess: text.trim(), n: progress.guesses.length + 2, clue: clueText(puzzle.clues[progress.guesses.length + 1], lang) }));
     // Recorded by the owner.
@@ -269,6 +318,8 @@ function Round({ puzzle, lang, progress, onSpend, idBase }: RoundProps) {
     if (done) return;
     // No note.
     setNote(null);
+    // The comment: the next clue is up.
+    setComment(progress.guesses.length + 1 >= CLUES ? null : t("commentPass", { n: progress.guesses.length + 2 }));
     // Announced.
     setLive(progress.guesses.length + 1 >= CLUES ? t("liveOut", { cat: puzzle.cat[lang] }) : t("livePass", { n: progress.guesses.length + 2, clue: clueText(puzzle.clues[progress.guesses.length + 1], lang) }));
     // Spent.
@@ -276,6 +327,14 @@ function Round({ puzzle, lang, progress, onSpend, idBase }: RoundProps) {
     // Focus stays in the box.
     input.current?.focus();
   };
+
+  // The nudges, one more after each clue spent without the answer (derived from the progress, so a reload shows the
+  // same ones): how many words the answer has, the kind of document its members come from, then its shape with the
+  // first letter of each word. Everyone gets the same ones, so the daily scores stay comparable.
+  const spent = progress.solved ? progress.guesses.length - 1 : progress.guesses.length;
+  const answer = puzzle.cat[lang];
+  const words = (answer.match(/[\p{L}\p{N}]+/gu) ?? []).length;
+  const nudges = [t("nudgeWords", { n: words }), t("nudgeSource", { kind: sourceKind(puzzle.source.label) }), t("nudgeShape", { shape: maskAnswer(answer) })].slice(0, Math.min(spent, 3));
 
   // The round.
   return (
@@ -350,6 +409,19 @@ function Round({ puzzle, lang, progress, onSpend, idBase }: RoundProps) {
         </form>
       )}
       {note && <p className="fg-five-note">{note}</p>}
+      {/* The comment on the last wrong guess or pass, while the round is open. */}
+      {!done && comment && <p className="fg-five-comment">{comment}</p>}
+      {/* The nudges so far, while the round is open. */}
+      {!done && nudges.length > 0 && (
+        <div className="fg-five-nudges">
+          <p className="fg-five-nudges-title">{t("nudgesTitle")}</p>
+          <ol className="fg-five-nudges-list">
+            {nudges.map((n, i) => (
+              <li key={i}>{n}</li>
+            ))}
+          </ol>
+        </div>
+      )}
 
       {/* The answer and where the members come from, at the end. */}
       {done && (

@@ -3,7 +3,7 @@ slug: ospf-primer
 title: "OSPF: the map, the math, and area 0"
 summary: "OSPF is the Internet Standard link-state interior gateway protocol: each router floods a description of its own links, every router in an area holds the same database, and each one computes its own shortest-path tree from it. After reading, you can work out a route by hand from link costs, say why two routers will not become neighbours, explain the designated router election and the rules for areas, set costs without the reference-bandwidth trap, and read FRRouting's neighbour, database, route and interface output."
 concepts: ["ospf", "igp", "is-is", "rip", "eigrp", "bgp", "link state", "lsa", "spf", "dijkstra", "designated router", "area 0", "stub area", "nssa", "reference bandwidth", "ospfv3"]
-relatedTools: ["python-playground", "mtu-mss", "packet-capture-plan-builder"]
+relatedTools: ["ospf-cost-and-adjacency-checker", "python-playground", "mtu-mss", "packet-capture-plan-builder"]
 relatedArticles: ["bgp-primer", "structured-cabling", "routing-tables-and-default-gateway", "dynamic-routing-compared", "dijkstra-and-the-twenty-minute-algorithm", "isis-primer", "static-routes-and-longest-match", "route-redistribution", "bfd-when-a-link-is-up-and-dead", "route-summarization", "bfd-timers-the-arithmetic-of-detection"]
 category: networking
 order: 235
@@ -220,7 +220,7 @@ Link ID         ADV Router      Age  Seq#       CkSum
 
 One network-LSA, from the DR, named by its interface address. `show ip ospf route` will "Show the OSPF routing table, as determined by the most recent SPF calculation" ([FRRouting documentation, OSPFv2](https://docs.frrouting.org/en/latest/ospfd.html)); `show ip route` shows what was installed, read as in [Routing tables and the default gateway](/learn/routing-tables-and-default-gateway). `show ip ospf interface lan4` gave `MTU mismatch detection: enabled`, `Cost: 1`, `State DROther, Priority 1` and `Hello 10s, Dead 40s`.
 
-No tool here computes an OSPF cost or an SPF tree. The [Python playground](/tools/python-playground) runs the cost arithmetic or a small Dijkstra, the [MTU / MSS calculator](/tools/mtu-mss) shows how a tunnel lowers an MTU, a common cause of a one-sided ExStart, and the [Packet Capture Plan Builder](/tools/packet-capture-plan-builder) plans where to capture protocol 89.
+The [OSPF cost and adjacency checker](/tools/ospf-cost-and-adjacency-checker) computes interface costs by each vendor's documented rule and checks two neighbouring interfaces for the mismatches above; no tool here computes an SPF tree. The [Python playground](/tools/python-playground) runs a small Dijkstra, the [MTU / MSS calculator](/tools/mtu-mss) shows how a tunnel lowers an MTU, a common cause of a one-sided ExStart, and the [Packet Capture Plan Builder](/tools/packet-capture-plan-builder) plans where to capture protocol 89.
 
 ## What to remember
 

@@ -4,7 +4,7 @@ Esta ferramenta decodifica um evento de segurança do F5 Distributed Cloud (XC).
 
 ## Os quatro tipos de evento
 
-O XC produz quatro tipos de evento de segurança, e a ferramenta identifica qual você colou pelo campo sec_event_type. Um evento WAF vem do application firewall e carrega signatures, violations, e attack types. Um evento Bot Defense carrega o veredito de bot. Um evento Service Policy carrega a policy e a rule que deram match. Um evento API carrega resultados de validação OpenAPI e policy hits. Se a tag de tipo estiver ausente, a ferramenta infere o tipo pela forma do evento.
+O XC produz quatro tipos de evento de segurança, e a ferramenta identifica qual você colou pelo campo sec_event_type. Um evento WAF (web application firewall) vem do application firewall e carrega signatures, violations, e attack types. Um evento Bot Defense carrega o veredito de bot. Um evento Service Policy carrega a policy e a rule que deram match. Um evento API carrega resultados de validação OpenAPI e policy hits. Se a tag de tipo estiver ausente, a ferramenta infere o tipo pela forma do evento.
 
 ## Ação versus recomendação
 

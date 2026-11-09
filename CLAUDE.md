@@ -4,7 +4,7 @@ Onboarding context for Claude (Claude Code or chat sessions acting as ANVIL unde
 
 ## What this is
 
-Next.js 15 **static export** (`output: "export"`) PWA deployed as Cloudflare Workers static assets; the Worker handles `/api/*` only, everything else is served straight from assets. 16 locales via next-intl (per-locale ICU JSON in `src/i18n/messages/`); EN + pt-BR authored natively, the other 14 fall back to English per key. ~75 deterministic, local-compute tools ("tools that compute, never guess") + ~270 Learn articles (MDX in `src/content/learn/<locale>/`). No database, no server rendering at request time.
+Next.js 15 **static export** (`output: "export"`) PWA deployed as Cloudflare Workers static assets; the Worker handles `/api/*` only, everything else is served straight from assets. 16 locales via next-intl (per-locale ICU JSON in `src/i18n/messages/`); EN + pt-BR authored natively, the other 14 fall back to English per key. ~200 deterministic, local-compute tools (207 on 2026-11-08, per check-tool-package; "tools that compute, never guess") + ~790 Learn articles a locale (MDX in `src/content/learn/<locale>/`). One database only: the /dev/fun scoreboard's Cloudflare D1 `ronutz-scores`, bound to the Worker as `SCORES` (worker/scores.ts, migrations/; since 2026-11-08). No server rendering at request time.
 
 ## Commands
 

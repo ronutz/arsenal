@@ -3,7 +3,7 @@ slug: what-is-an-oui
 title: "What Is an OUI, and How MAC Addresses Are Assigned"
 summary: "How a MAC address is structured, what the OUI (the manufacturer prefix) is and who hands it out, the difference between universally and locally administered addresses, and why a randomized Wi-Fi MAC has no vendor at all."
 concepts: ["oui", "mac address", "ieee registration authority", "unicast vs multicast", "locally administered", "eui-48", "ma-l", "ma-m", "ma-s", "cid", "slap", "mac randomization"]
-relatedTools: ["oui-lookup", "multicast-mac-mapper"]
+relatedTools: ["oui-lookup", "multicast-mac-mapper", "bit-numbering-and-order"]
 relatedArticles: ["arp-and-mac-addresses", "the-ethernet-frame-field-by-field", "first-hop-redundancy-vrrp-and-hsrp", "multicast-what-it-costs-to-not-flood"]
 category: networking
 order: 30
@@ -31,7 +31,7 @@ The fourth product is not an address block at all: a CID (company ID) is "a uniq
 
 ## Two bits hiding in the first octet
 
-Before you read the OUI as a vendor, two bits in the very first octet tell you whether that reading makes sense. The I/G bit, the least significant bit of the first octet, "indicates either an individual address (I/G=0) or group address (I/G=1)"; the U/L bit, the next one up, "indicates universal (U/L=0) or local (U/L=1) administration of the address" (IEEE RA guidelines). Ethernet sends each octet lowest-order bit first, "the reverse of the IETF's ordering" ([RFC 9542](https://www.rfc-editor.org/rfc/rfc9542.html)), so the I/G bit is the first bit of a destination address that reaches the wire.
+Before you read the OUI as a vendor, two bits in the very first octet tell you whether that reading makes sense. The I/G bit, the least significant bit of the first octet, "indicates either an individual address (I/G=0) or group address (I/G=1)"; the U/L bit, the next one up, "indicates universal (U/L=0) or local (U/L=1) administration of the address" (IEEE RA guidelines). Ethernet sends each octet lowest-order bit first, "the reverse of the IETF's ordering" ([RFC 9542](https://www.rfc-editor.org/rfc/rfc9542.html)), so the I/G bit is the first bit of a destination address that reaches the wire. [Least and most significant bit](/learn/least-and-most-significant-bit) explains the bit numbering and bit order behind that sentence, and the [bit numbering tool](/tools/bit-numbering-and-order) shows any address in canonical and bit-reversed form.
 
 The hex gives both bits away in the second digit. A 2, 6, A or E there means a locally administered unicast address; 3, 7, B or F, a local group address; an odd digit, any group address.
 

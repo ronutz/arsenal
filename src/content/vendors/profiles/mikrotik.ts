@@ -28,13 +28,13 @@ export const mikrotikProfile: VendorProfile = {
   ],
   timeline: [
     { year: 1996, title: "Founded in Riga", detail: "John Tully and Arnis Riekstiņš start MikroTik to develop routers and wireless ISP systems, writing networking software for ordinary x86 PCs." },
-    { year: 1997, title: "RouterOS", detail: "The Linux-based routing software ships: packet forwarding, NAT, firewalling, and an unusual depth of control for all kinds of data interfaces - on hardware anyone could buy." },
+    { year: 1997, title: "RouterOS", detail: "The Linux-based routing software ships: packet forwarding, NAT (network address translation), firewalling, and an unusual depth of control for all kinds of data interfaces - on hardware anyone could buy." },
     { year: 2002, title: "RouterBOARD", detail: "MikroTik decides to make its own hardware; the RouterBOARD brand is born, pairing RouterOS with purpose-built boards and creating the price-performance formula the company is known for.", sourceNote: "Dates per MikroTik's own company history." },
     { year: 2022, title: "Latvia's first private billion", detail: "Valued at EUR 1.30 billion, MikroTik becomes the 4th largest company in Latvia and the first private Latvian company to surpass EUR 1 billion in value." },
     { year: 2023, title: "Small team, global footprint", detail: "Roughly 367 employees in Riga serve customers in nearly every country - one of the industry's most extreme revenue-per-employee stories, entirely private and founder-controlled." },
   ],
   products: [
-    { name: "RouterOS", what: "The Linux-based network operating system: routing, firewall, VPN, bandwidth management, hotspot, and wireless in a single image - the same OS from a USD 50 home router to ISP aggregation." },
+    { name: "RouterOS", what: "The Linux-based network operating system: routing, firewall, VPN (virtual private network), bandwidth management, hotspot, and wireless in a single image - the same OS from a USD 50 home router to ISP aggregation." },
     { name: "RouterBOARD", what: "MikroTik's own hardware line, from tiny SOHO devices to the CCR series of ISP-grade cloud core routers, plus switches and 60 GHz wireless links." },
     { name: "The certified ecosystem", what: "A worldwide network of certified trainers and consultants grew around RouterOS - MikroTik expertise became a marketable skill in its own right across ISP markets." },
   ],

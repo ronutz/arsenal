@@ -1,6 +1,6 @@
 ## O que esta ferramenta faz
 
-Ela responde por que uma regra de DLP disparou, ou não, separando três coisas que costumam ser reunidas numa só — e que falham separadamente:
+Ela responde por que uma regra de DLP (data loss prevention) disparou, ou não, separando três coisas que costumam ser reunidas numa só — e que falham separadamente:
 
 1. **Candidatos** — quantas cadeias têm o formato certo
 2. **Correspondências** — quantas delas passam no checksum

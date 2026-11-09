@@ -27,6 +27,6 @@ A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-
 
 ## Fontes
 
-Os números de GRE, a regra de source NAT e os exemplos de expansão vêm de Understanding Generic Routing Encapsulation (GRE). O limite de IPsec por IP de origem, seus dois formatos de expansão e a recomendação primário/secundário vêm de Configuring an IPSec VPN Tunnel. As precondições do GRE, a dica de IP dinâmico rumo ao IPsec e a orientação de campo sobre MTU vêm de Choosing Traffic Forwarding Methods.
+Os números de GRE, a regra de source NAT e os exemplos de expansão vêm de Understanding Generic Routing Encapsulation (GRE). O limite de IPsec por IP de origem, seus dois formatos de expansão e a recomendação primário/secundário vêm de Configuring an IPSec VPN [rede privada virtual] Tunnel. As precondições do GRE, a dica de IP dinâmico rumo ao IPsec e a orientação de campo sobre MTU vêm de Choosing Traffic Forwarding Methods.
 
 A regra do fragmento por trás do Compartilhar resultado é a [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), seção 3.5 (lida em 2026-11-01).

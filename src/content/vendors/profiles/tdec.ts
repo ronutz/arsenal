@@ -79,7 +79,7 @@ export const tdecProfile: VendorProfile = {
       year: 2026,
       title: "Three countries, and a repositioning onto AI",
       detail:
-        "The company now presents as TDEC Network Group across Brazil, the United States and Portugal, and has repositioned from IP network integration onto the protection of artificial-intelligence environments, data and models, with AI security, a real-time SOC and zero trust as its named solution lines. Structured cabling still appears in the same sentence as AI model protection, which is not incoherence: it is an accurate description of what a thirty-year integrator's customer base actually asks for at once.",
+        "The company now presents as TDEC Network Group across Brazil, the United States and Portugal, and has repositioned from IP network integration onto the protection of artificial-intelligence environments, data and models, with AI security, a real-time SOC (security operations centre) and zero trust as its named solution lines. Structured cabling still appears in the same sentence as AI model protection, which is not incoherence: it is an accurate description of what a thirty-year integrator's customer base actually asks for at once.",
       sourceNote:
         "From the company's own site as rendered on 2026-09-27, where a section is labelled ECOSSISTEMA TDEC - 2026. The year marks the state of the site read on that date, not an announced event.",
     },

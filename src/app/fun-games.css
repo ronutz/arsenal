@@ -52,11 +52,54 @@
 .devfun-section-title { font-size: 1.15rem; margin: 2rem 0 0.4rem; color: var(--text-primary); }
 /* The line under the games heading. */
 .devfun-section-intro { color: var(--text-secondary); font-size: 0.92rem; margin: 0 0 1rem; line-height: 1.55; }
+/* The arcade hub's closing line (08/11/2026): room above it, after the last row of game cards. */
+.arcade-shelf-link { margin-top: 1.5rem; }
 /* A group of game cards. */
 .devfun-group { margin: 0 0 1.25rem; }
 /* The group's small heading. */
 .devfun-group-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-secondary); margin: 0 0 0.6rem; font-family: var(--font-mono); }
 /* The game cards: one column on a phone, two from 640 px. */
+/* Each game's and toy's accent (GameGlyph, PRIME 08/11/2026): a hue per game, mixed with the theme's text colour so
+   the drawing stays readable on light and dark themes alike. The drawing takes its colour from it, the shelf card's
+   tile and corner glow are tinted with it, and the pills of "Solve the other puzzles" carry it. */
+.fg-glyph--prefix-of-the-day { --glyph-hue: 45; }
+.fg-glyph--five-clues { --glyph-hue: 265; }
+.fg-glyph--access-points { --glyph-hue: 210; }
+.fg-glyph--bit-balance { --glyph-hue: 240; }
+.fg-glyph--patch-path { --glyph-hue: 25; }
+.fg-glyph--spanning-tree { --glyph-hue: 110; }
+.fg-glyph--log-detective { --glyph-hue: 190; }
+.fg-glyph--phish-or-legit { --glyph-hue: 330; }
+.fg-glyph--whack-a-bug { --glyph-hue: 75; }
+.fg-glyph--aggregate { --glyph-hue: 170; }
+.fg-glyph--first-match { --glyph-hue: 295; }
+.fg-glyph--exit-the-editor { --glyph-hue: 145; }
+.fg-glyph--packet-stack { --glyph-hue: 315; }
+.fg-glyph--incident-commander { --glyph-hue: 0; }
+.fg-glyph--mega-brain { --glyph-hue: 285; }
+.fg-glyph--meeting-bingo { --glyph-hue: 55; }
+.fg-glyph--boss-screens { --glyph-hue: 220; }
+.fg-glyph--cat-distribution { --glyph-hue: 30; }
+.fg-glyph--importance-meter { --glyph-hue: 15; }
+/* The accent itself, wherever a glyph class is set. */
+[class*="fg-glyph--"] { --glyph-accent: color-mix(in oklab, hsl(var(--glyph-hue, 200) 85% 55%) 76%, var(--text-primary)); }
+/* The drawing: its game's accent, never squeezed. */
+.fg-glyph { color: var(--glyph-accent, var(--accent-primary)); flex: none; }
+/* On a shelf card. */
+.fg-glyph-card { width: 34px; height: 34px; }
+/* On a pill. */
+.fg-glyph-pill { width: 18px; height: 18px; }
+/* The card's tile: a tinted square that holds the drawing. */
+.fg-card-tile { display: inline-grid; place-items: center; width: 48px; height: 48px; flex: none; border-radius: 12px; background: color-mix(in oklab, var(--glyph-accent) 16%, var(--surface-base)); border: 1px solid color-mix(in oklab, var(--glyph-accent) 38%, transparent); transition: transform 0.2s ease; }
+/* The card: a soft glow of its accent from the corner behind the tile. */
+.devfun-card.fg-card-art { background: radial-gradient(130% 100% at 0% 0%, color-mix(in oklab, var(--glyph-accent) 13%, transparent), transparent 62%), var(--surface-base); }
+/* Hovered or focused: the border takes the accent and the tile leans in. */
+.devfun-card.fg-card-art:hover, .devfun-card.fg-card-art:focus-visible { border-color: var(--glyph-accent); }
+.devfun-card.fg-card-art:hover .fg-card-tile, .devfun-card.fg-card-art:focus-visible .fg-card-tile { transform: rotate(-5deg) scale(1.07); }
+/* No lean for readers who asked for less motion. */
+@media (prefers-reduced-motion: reduce) { .devfun-card.fg-card-art:hover .fg-card-tile, .devfun-card.fg-card-art:focus-visible .fg-card-tile { transform: none; } }
+/* A pill with a drawing: its border takes the accent on hover and focus. */
+.fg-more-link[class*="fg-glyph--"]:hover, .fg-more-link[class*="fg-glyph--"]:focus-visible { border-color: var(--glyph-accent); }
 .devfun-games-list { display: grid; grid-template-columns: 1fr; gap: 0.75rem; }
 /* Two columns where there is room. */
 @media (min-width: 640px) { .devfun-games-list { grid-template-columns: 1fr 1fr; } }
@@ -621,6 +664,8 @@ a.fg-link-button { display: inline-flex; align-items: center; }
 /* Its explanation line. */
 .fg-pol-start-text { margin: 0; color: var(--text-secondary); }
 /* The card: full width up to a readable measure, never wider than the screen; vertical scrolling still works on it. */
+/* The daily round's Start cover, in the card's place and at its size (PRIME 08/11/2026). */
+.fg-pol-cover { width: 100%; max-width: 640px; box-sizing: border-box; min-height: 9rem; }
 .fg-pol-card { width: 100%; max-width: 640px; box-sizing: border-box; border: 2px solid var(--border-strong); border-radius: var(--radius-lg); background: var(--surface-elevated); padding: 1rem 1.1rem; touch-action: pan-y; user-select: none; transition: transform 120ms ease-out, border-color 120ms ease-out; }
 /* Leaning left during a swipe: the phish colour. */
 .fg-pol-lean-phish { border-color: var(--color-danger); }
@@ -838,7 +883,18 @@ a.fg-link-button { display: inline-flex; align-items: center; }
 /* The box takes the room left. */
 .fg-five-input { flex: 1; min-width: 0; font-family: inherit; }
 /* A note that costs nothing (close, empty). */
+/* Exit the Editor's "Read the screen", for screen readers: out of sight until it has keyboard focus, as the skip
+   link is, so a mouse user is not left with a button that does nothing visible (PRIME 08/11/2026). */
+.fg-exit-sr-button:not(:focus-visible) { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
 .fg-five-note { margin: 0; text-align: center; color: var(--color-warning); font-size: 0.9rem; }
+/* The comment on the last wrong guess or pass (PRIME 08/11/2026: wrong guesses had no visible comment). */
+.fg-five-comment { margin: 0; text-align: center; color: var(--text-secondary); font-size: 0.95rem; }
+/* The nudges so far: a small box under the form, one line per nudge. */
+.fg-five-nudges { border: 1px dashed var(--border-strong); border-radius: var(--radius-md); padding: 0.6rem 0.85rem; background: var(--surface-elevated); }
+/* Its title. */
+.fg-five-nudges-title { margin: 0 0 0.3rem; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); }
+/* The nudges, numbered, the masked answer in the mono face so its letters line up. */
+.fg-five-nudges-list { margin: 0; padding-left: 1.2rem; font-size: 0.92rem; line-height: 1.5; }
 /* The reveal at the end. */
 .fg-five-reveal { text-align: center; border-top: 1px solid var(--border-subtle); padding-top: 0.75rem; }
 /* "The category was". */
@@ -1547,3 +1603,311 @@ a.fg-link-button { display: inline-flex; align-items: center; }
 .fg-wab-still .fg-wab-item, .fg-wab-still .fg-wab-pop { animation: none; }
 /* The same when the system asks for it. */
 @media (prefers-reduced-motion: reduce) { .fg-wab-item, .fg-wab-pop { animation: none; } }
+
+/* ---- Packet Stack (fg-ps-) ------------------------------------------------ */
+
+/* The column the game sits in: the readouts, the queue, the well and the controls, centred, never wider than the
+   page; --ps-row is a row of the well (a little taller where there is room). */
+.fg-ps-wrap { --ps-row: 2.6rem; --ps-gap: 3px; display: flex; flex-direction: column; align-items: center; gap: 0.6rem; width: 100%; }
+/* A taller row on a wider screen. */
+@media (min-width: 640px) { .fg-ps-wrap { --ps-row: 3rem; } }
+/* The polite lines, read by screen readers, not shown. */
+.fg-ps-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+/* The readouts: four fixed columns as wide as the well, a small label over each value, so nothing moves as numbers grow. */
+.fg-ps-hud { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.4rem; width: min(100%, 26rem); }
+/* One readout: its label over its value, centred. */
+.fg-ps-stat { display: flex; flex-direction: column; align-items: center; min-width: 0; }
+/* The label. */
+.fg-ps-stat-label { font-size: 0.72rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em; }
+/* The value stays on one line. */
+.fg-ps-stat .fg-readout { white-space: nowrap; }
+/* The queue: "Next" and four small tiles in a row. */
+.fg-ps-queue { display: grid; grid-template-columns: auto repeat(4, minmax(0, 1fr)); align-items: center; gap: 0.35rem; width: min(100%, 26rem); min-height: 2.2rem; }
+/* Its label. */
+.fg-ps-queue-label { font-size: 0.72rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em; }
+/* One tile of the queue: the block's name (an empty place keeps its size, with a dashed edge). */
+.fg-ps-qcell { display: flex; align-items: center; justify-content: center; min-width: 0; min-height: 2rem; padding: 0 0.2rem; border: 1px dashed var(--border-subtle); border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; color: var(--text-primary); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+/* A tile with a block: its layer's tint and a solid edge in its layer's colour. */
+.fg-ps-qcell.fg-ps-k0, .fg-ps-qcell.fg-ps-k1, .fg-ps-qcell.fg-ps-k2, .fg-ps-qcell.fg-ps-k3 { border-style: solid; border-color: var(--ps-layer); background: color-mix(in oklab, var(--ps-layer) 16%, var(--surface-elevated)); }
+/* The block in the air, spelt out in one line over the well (a blank line keeps the height before and after a run). */
+.fg-ps-now { margin: 0; width: min(100%, 26rem); min-height: 1.3em; text-align: center; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-primary); overflow-wrap: anywhere; }
+/* The well's place: the well and its layer labels, or the Start cover of the same size. */
+.fg-ps-stage { width: min(100%, 26rem); }
+/* The Start cover: the well's footprint, labels included, so nothing moves when the well appears. */
+.fg-ps-start { width: 100%; min-height: calc(8 * var(--ps-row) + 7 * var(--ps-gap) + 8px + 1.6rem); }
+/* The well and its labels, stacked. */
+.fg-ps-well-box { display: flex; flex-direction: column; gap: 0.3rem; width: 100%; }
+/* The well: four columns of eight rows; a tap picks a column, so the browser keeps double-tap zoom out of it. */
+.fg-ps-well { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: repeat(8, var(--ps-row)); gap: var(--ps-gap); padding: 4px; border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--surface-base); touch-action: manipulation; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; cursor: pointer; }
+/* A finished run's well: no pointer, nothing to steer. */
+.fg-ps-over { cursor: default; }
+/* Each column's layer colour, as a custom property its empty cells read: link, internet, transport, application. */
+.fg-ps-l0 { --ps-layer: var(--color-info); }
+/* The internet layer's column: a violet mixed from the theme's blue and red, so it never reads as the link layer's blue. */
+.fg-ps-l1 { --ps-layer: color-mix(in oklab, var(--color-info) 45%, var(--color-danger)); }
+/* The transport layer's column. */
+.fg-ps-l2 { --ps-layer: var(--accent-amber); }
+/* The application layer's column. */
+.fg-ps-l3 { --ps-layer: var(--color-success); }
+/* A block's own layer colour, declared after the columns' so a block in another layer's column keeps its own. */
+.fg-ps-k0 { --ps-layer: var(--color-info); }
+/* An internet-layer block. */
+.fg-ps-k1 { --ps-layer: color-mix(in oklab, var(--color-info) 45%, var(--color-danger)); }
+/* A transport-layer block. */
+.fg-ps-k2 { --ps-layer: var(--accent-amber); }
+/* An application-layer block. */
+.fg-ps-k3 { --ps-layer: var(--color-success); }
+/* One cell: empty, it carries a faint tint of its column's layer. */
+.fg-ps-cell { display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 0; padding: 0 0.15rem; border: 1px solid transparent; border-radius: var(--radius-sm); background: color-mix(in oklab, var(--ps-layer) 6%, var(--surface-base)); overflow: hidden; line-height: 1.15; text-align: center; }
+/* A block, at rest or falling: its layer's tint and edge. */
+.fg-ps-block { background: color-mix(in oklab, var(--ps-layer) 20%, var(--surface-elevated)); border-color: var(--ps-layer); color: var(--text-primary); }
+/* The block in the air: a heavier ring, so it stands out from the stack. */
+.fg-ps-falling { box-shadow: 0 0 0 2px var(--ps-layer); }
+/* Where the block in the air would land: a dashed outline. */
+.fg-ps-ghost { border: 1px dashed var(--border-strong); }
+/* A dropped frame kept at the bottom: hatched, muted, with a red dashed edge (shape, not colour alone). */
+.fg-ps-jam { background: repeating-linear-gradient(135deg, var(--surface-elevated) 0 6px, var(--surface-base) 6px 12px); border: 1px dashed var(--color-danger); color: var(--text-secondary); }
+/* The block's name. */
+.fg-ps-name { font-size: 0.78rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+/* Its field's value and what it names, or a payload's line. */
+.fg-ps-val { font-family: var(--font-mono); font-size: 0.64rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+/* A block's own line reads in the primary colour. */
+.fg-ps-block .fg-ps-val { color: var(--text-primary); }
+/* What the value names, a touch bolder. */
+.fg-ps-names { font-weight: 700; }
+/* Larger type where the cells are wider. */
+@media (min-width: 640px) { .fg-ps-name { font-size: 0.86rem; } .fg-ps-val { font-size: 0.72rem; } }
+/* The count or the pause: an opaque cover over the whole well, so it cannot be studied with the clock stopped. */
+.fg-ps-overlay { position: absolute; inset: 0; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem; border-radius: var(--radius-md); background: var(--surface-base); }
+/* The count's number. */
+.fg-ps-count { font-family: var(--font-mono); font-size: 3rem; font-weight: 700; color: var(--accent-primary); }
+/* "Paused". */
+.fg-ps-paused { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 700; color: var(--text-secondary); }
+/* The layers under their columns: a small label over a bar of the layer's colour. */
+.fg-ps-layers { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--ps-gap); padding: 0 4px; }
+/* One label. */
+.fg-ps-layer { padding-top: 0.2rem; border-top: 3px solid var(--ps-layer); font-size: 0.7rem; color: var(--text-secondary); text-align: center; text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* The controls: a wrapping row of 48 px buttons. */
+.fg-ps-pad { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.45rem; width: min(100%, 26rem); }
+/* One control: square enough for a thumb. */
+.fg-ps-key { min-width: 48px; min-height: 48px; padding: 0.4rem 0.6rem; display: inline-flex; align-items: center; justify-content: center; touch-action: manipulation; }
+/* The two word buttons, a little wider. */
+.fg-ps-key-wide { min-width: 6.25rem; }
+/* The arrows' drawing. */
+.fg-ps-icon { width: 22px; height: 22px; }
+/* What the last full row did: its four blocks and the reason, with room kept for two lines so the page does not jump. */
+.fg-ps-event { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; width: min(100%, 26rem); min-height: 4.2rem; text-align: center; }
+/* The row's four blocks, small. */
+.fg-ps-mini { display: inline-grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2px; padding: 2px; border-radius: var(--radius-sm); width: min(100%, 18rem); animation: fg-ps-in 220ms ease-out; }
+/* A delivered row: a solid green edge. */
+.fg-ps-mini-ok { border: 2px solid var(--color-success); }
+/* A dropped row: a dashed red edge. */
+.fg-ps-mini-bad { border: 2px dashed var(--color-danger); }
+/* One of its blocks. */
+.fg-ps-mini-cell { padding: 0.1rem 0.2rem; border-radius: 3px; background: color-mix(in oklab, var(--ps-layer) 20%, var(--surface-elevated)); font-family: var(--font-mono); font-size: 0.66rem; font-weight: 700; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* The sentence. */
+.fg-ps-event-text { font-size: 0.85rem; line-height: 1.35; animation: fg-ps-in 220ms ease-out; }
+/* Delivered, in the success colour. */
+.fg-ps-ok { color: var(--color-success); }
+/* Dropped, in the danger colour. */
+.fg-ps-bad { color: var(--color-danger); }
+/* The keys line and the Learn line, centred under the game. */
+.fg-ps-help, .fg-ps-learn { margin: 0; max-width: 26rem; text-align: center; }
+/* A new line fades in. */
+@keyframes fg-ps-in { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+/* Reduced motion (the system's or the game's own class): lines simply appear. */
+.fg-ps-still .fg-ps-mini, .fg-ps-still .fg-ps-event-text { animation: none; }
+/* The same when the system asks for it. */
+@media (prefers-reduced-motion: reduce) { .fg-ps-mini, .fg-ps-event-text { animation: none; } }
+/* Forced colours: blocks, rings and edges take the system's colours. */
+@media (forced-colors: active) { .fg-ps-block, .fg-ps-mini-cell { border: 1px solid CanvasText; } .fg-ps-falling { outline: 2px solid Highlight; } .fg-ps-jam { border-color: GrayText; } }
+
+/* ---- The public scoreboard (PRIME 08/11/2026) -----------------------------------------------------------------
+   "Today's board" under a finished daily puzzle (TodaysBoard.tsx, prefix fg-tb-), the sharing switch in every daily
+   game's frame and on the scores page (ShareSwitch.tsx, fg-share-), the scores page itself (ScoresBoard.tsx,
+   fg-sc-) and its link on the shelf (fg-scores-cta). Tokens only; every control at least 44 px tall; the charts are
+   inline SVG coloured by the same tokens, so every theme and the high-contrast one apply. */
+
+/* The shelf's link to the scores page, under the jump links. */
+.fg-scores-cta { margin: 0 0 0.75rem; }
+/* The link: a pill like the jump links, in the accent colour. */
+.fg-scores-cta-link { display: inline-flex; align-items: center; min-height: 44px; padding: 0 1rem; border: 1px solid var(--accent-primary); border-radius: 999px; color: var(--accent-primary); text-decoration: none; font-weight: 600; }
+/* Hover and keyboard focus. */
+.fg-scores-cta-link:hover, .fg-scores-cta-link:focus-visible { background: var(--surface-elevated); }
+/* The focus ring. */
+.fg-scores-cta-link:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+
+/* Today's board: a panel under the result, set apart by a quiet rule like "Solve the other puzzles". */
+.fg-tb { padding-top: 1rem; border-top: 1px solid var(--border-subtle); display: flex; flex-direction: column; gap: 0.6rem; text-align: center; }
+/* Its heading. */
+.fg-tb-title { margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-primary); }
+/* A sub-heading (the top ten). */
+.fg-tb-subtitle { margin: 0.25rem 0 0; font-size: 0.9rem; font-weight: 700; color: var(--text-primary); }
+/* A quiet line: loading, unavailable, empty, a note. */
+.fg-tb-line { margin: 0; }
+/* Where the round sits: the line the live region reads out (empty until the board answers). */
+.fg-tb-place { margin: 0; min-height: 1.2em; color: var(--text-primary); font-weight: 600; }
+/* The day's numbers: four tiles in a row on a wide screen, two by two on a phone. */
+.fg-tb-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; margin: 0; }
+/* Four across from tablet width. */
+@media (min-width: 560px) { .fg-tb-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+/* One tile. */
+.fg-tb-stat { border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-elevated); padding: 0.45rem 0.5rem; }
+/* Its label. */
+.fg-tb-stat dt { font-size: 0.75rem; color: var(--text-secondary); }
+/* Its value. */
+.fg-tb-stat dd { margin: 0; font-family: var(--font-mono); font-size: 1.05rem; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+/* The top ten: a numbered list drawn as rows. */
+.fg-tb-top { list-style: none; margin: 0 auto; padding: 0; width: 100%; max-width: 26rem; display: flex; flex-direction: column; gap: 0.15rem; }
+/* One row: the rank, the initials, the flag, the score. */
+.fg-tb-row { display: grid; grid-template-columns: 2.2ch 4.5ch 2em minmax(0, 1fr); align-items: center; gap: 0.5rem; padding: 0.2rem 0.5rem; border-radius: var(--radius-sm); text-align: left; font-variant-numeric: tabular-nums; }
+/* Every other row on the elevated surface, so a row reads across. */
+.fg-tb-row:nth-child(odd) { background: var(--surface-elevated); }
+/* The rank. */
+.fg-tb-rank { color: var(--text-secondary); font-family: var(--font-mono); text-align: right; }
+/* The initials, arcade-style. */
+.fg-tb-initials { font-weight: 700; letter-spacing: 0.12em; color: var(--text-primary); }
+/* The flag. */
+.fg-tb-flag { display: inline-flex; align-items: center; }
+/* The score, at the right. */
+.fg-tb-score { text-align: right; font-family: var(--font-mono); color: var(--text-primary); overflow-wrap: anywhere; }
+/* The initials form. */
+.fg-tb-form { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; margin-top: 0.25rem; }
+/* Its label. */
+.fg-tb-label { font-weight: 600; color: var(--text-primary); }
+/* The field and its button, side by side. */
+.fg-tb-entry { display: flex; gap: 0.5rem; align-items: center; justify-content: center; flex-wrap: wrap; }
+/* The field: three characters, large, centred, 44 px tall. */
+.fg-tb-input { width: 6.5ch; min-height: 44px; padding: 0.3rem 0.4rem; font-size: 1.25rem; text-align: center; letter-spacing: 0.2em; text-transform: uppercase; border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--surface-base); color: var(--text-primary); }
+/* Its placeholder (???). */
+.fg-tb-input::placeholder { color: var(--text-tertiary); }
+/* Keyboard focus. */
+.fg-tb-input:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+/* The help line under it. */
+.fg-tb-help { margin: 0; max-width: 34rem; }
+/* How the last request went. */
+.fg-tb-note { margin: 0; color: var(--text-primary); }
+/* The link to the scores page. */
+.fg-tb-more { margin: 0.25rem 0 0; font-size: 0.88rem; }
+/* The link itself: quiet, underlined, a 44 px target. */
+.fg-tb-link { display: inline-flex; align-items: center; min-height: 44px; color: var(--text-secondary); text-underline-offset: 0.2em; }
+/* Hover and focus. */
+.fg-tb-link:hover, .fg-tb-link:focus-visible { color: var(--accent-primary); }
+
+/* The sharing switch and its optional line. */
+.fg-share-wrap { display: inline-flex; flex-direction: column; align-items: center; gap: 0.1rem; }
+/* The label: the whole switch is the target, 44 px tall. */
+.fg-share { position: relative; display: inline-flex; align-items: center; gap: 0.6rem; min-height: 44px; padding: 0.2rem 0.4rem; cursor: pointer; color: var(--text-secondary); font-size: 0.85rem; }
+/* The checkbox: out of sight but in the tab order and the accessibility tree (the track stands in for it). */
+.fg-share-input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
+/* The track. */
+.fg-share-track { position: relative; width: 2.6rem; height: 1.4rem; border-radius: 999px; background: var(--border-strong); flex-shrink: 0; }
+/* On: the accent colour. */
+.fg-share-track-on { background: var(--accent-primary); }
+/* The thumb. */
+.fg-share-thumb { position: absolute; top: 0.2rem; left: 0.2rem; width: 1rem; height: 1rem; border-radius: 50%; background: var(--surface-base); transition: left 150ms ease-out; }
+/* On: the thumb at the right. */
+.fg-share-track-on .fg-share-thumb { left: 1.4rem; }
+/* Keyboard focus lands on the hidden checkbox and shows on the track. */
+.fg-share-input:focus-visible + .fg-share-track { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+/* The words. */
+.fg-share-label { text-align: left; }
+/* The line under it. */
+.fg-share-note { max-width: 34rem; text-align: center; }
+/* No slide under reduced motion. */
+@media (prefers-reduced-motion: reduce) { .fg-share-thumb { transition: none; } }
+/* Forced colours: the track keeps an edge and the thumb a fill the system chooses. */
+@media (forced-colors: active) { .fg-share-track { border: 1px solid CanvasText; } .fg-share-thumb { background: CanvasText; } }
+
+/* The scores page: a column of panels. */
+.fg-sc { display: flex; flex-direction: column; gap: 1.5rem; }
+/* The game tabs: pills that wrap, each 44 px tall. */
+.fg-sc-tabs, .fg-sc-toggle { display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; }
+/* On a phone the thirteen game tabs scroll sideways in their own strip, so the board stays near the top. */
+@media (max-width: 640px) { .fg-sc-tabs { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; padding: 0.1rem 0.1rem 0.4rem; scrollbar-width: thin; } .fg-sc-tabs .fg-sc-tab { flex: 0 0 auto; } }
+/* One tab (and one window button on the shelf panel). */
+.fg-sc-tab { min-height: 44px; padding: 0 0.85rem; border: 1px solid var(--border-subtle); border-radius: 999px; background: var(--surface-elevated); color: var(--text-secondary); font: inherit; font-size: 0.88rem; font-weight: 600; cursor: pointer; }
+/* Hover. */
+.fg-sc-tab:hover { border-color: var(--accent-primary); color: var(--text-primary); }
+/* Keyboard focus. */
+.fg-sc-tab:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+/* The open tab (and the chosen window): the accent edge and a heavier text, so it reads without colour too. */
+.fg-sc-tab-on { border-color: var(--accent-primary); color: var(--accent-primary); background: var(--surface-base); text-decoration: underline; text-underline-offset: 0.25em; }
+/* A panel. */
+.fg-sc-panel { border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-elevated); padding: 1rem; display: flex; flex-direction: column; gap: 0.6rem; min-width: 0; }
+/* On a phone the panel's padding is smaller, so the charts keep their width. */
+@media (max-width: 480px) { .fg-sc-panel { padding: 0.75rem; } }
+/* A panel's heading. */
+.fg-sc-h2 { margin: 0; font-size: 1.15rem; color: var(--text-primary); }
+/* A section heading inside a panel. */
+.fg-sc-h3 { margin: 0.5rem 0 0; font-size: 0.95rem; color: var(--text-primary); }
+/* A quiet line. */
+.fg-sc-line { margin: 0; }
+/* A paragraph of the notes panel. */
+.fg-sc-text { margin: 0; color: var(--text-secondary); line-height: 1.55; max-width: 68ch; }
+/* A link inside the page's text. */
+.fg-sc-play { color: var(--accent-primary); text-underline-offset: 0.2em; }
+/* Stat tiles: two across on a phone, four on a wide screen. */
+.fg-sc-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; margin: 0; }
+/* Four across from tablet width. */
+@media (min-width: 640px) { .fg-sc-tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+/* The windows' tiles stay three across where there is room. */
+@media (min-width: 640px) { .fg-sc-tiles-small { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+/* One tile. */
+.fg-sc-tile { border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-base); padding: 0.5rem 0.6rem; min-width: 0; }
+/* Its label. */
+.fg-sc-tile dt { font-size: 0.75rem; color: var(--text-secondary); }
+/* Its value. */
+.fg-sc-tile dd { margin: 0; font-family: var(--font-mono); font-size: 1.1rem; color: var(--text-primary); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+/* A record: the score, the initials, the flag and the day, wrapping. */
+.fg-sc-record { display: inline-flex; flex-wrap: wrap; gap: 0.2rem 0.5rem; align-items: baseline; }
+/* The last 7 and 30 days, side by side on a wide screen. */
+.fg-sc-windows { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.75rem; }
+/* Two columns from desktop width. */
+@media (min-width: 900px) { .fg-sc-windows { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* One window. */
+.fg-sc-window { min-width: 0; }
+/* A chart and its table view. */
+.fg-sc-figure { margin: 0; width: 100%; max-width: 560px; }
+/* The SVG fills the column, keeping its proportions. */
+.fg-sc-chart { display: block; width: 100%; height: auto; overflow: visible; }
+/* The baseline: recessive. */
+.fg-sc-axis { stroke: var(--border-strong); stroke-width: 1; }
+/* A bar: the accent colour, one series. */
+.fg-sc-bar { fill: var(--accent-primary); }
+/* The "not solved" bar: quieter. */
+.fg-sc-bar-muted { fill: var(--text-tertiary); }
+/* A bar's hit area: the whole slot, invisible. */
+.fg-sc-hit { fill: transparent; }
+/* Hovering a slot lifts its bar. */
+.fg-sc-bar-group:hover .fg-sc-bar { opacity: 0.75; }
+/* The labels under the bars. */
+.fg-sc-tick { fill: var(--text-secondary); font-family: var(--font-mono); font-size: 13px; }
+/* The tallest bar's count. */
+.fg-sc-count { fill: var(--text-primary); font-family: var(--font-mono); font-size: 13px; font-weight: 700; }
+/* Forced colours: the bars and the text take the system's colours. */
+@media (forced-colors: active) { .fg-sc-bar { fill: CanvasText; } .fg-sc-bar-muted { fill: GrayText; } .fg-sc-tick, .fg-sc-count { fill: CanvasText; } .fg-sc-axis { stroke: CanvasText; } }
+/* The table view's toggle: a 44 px target. */
+.fg-sc-table-toggle { display: inline-flex; align-items: center; min-height: 44px; cursor: pointer; color: var(--text-secondary); font-size: 0.85rem; }
+/* Keyboard focus. */
+.fg-sc-table-toggle:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+/* The table view. */
+.fg-sc-table-wrap { margin-top: 0.25rem; }
+/* The table. */
+.fg-sc-table { border-collapse: collapse; font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+/* Its cells. */
+.fg-sc-table th, .fg-sc-table td { padding: 0.2rem 0.75rem 0.2rem 0; text-align: left; border-bottom: 1px solid var(--border-subtle); color: var(--text-primary); }
+/* Its headings. */
+.fg-sc-table th { color: var(--text-secondary); font-weight: 600; }
+/* The countries: a wrapping row of chips. */
+.fg-sc-countries { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+/* One country. */
+.fg-sc-country { display: inline-flex; gap: 0.35rem; align-items: center; padding: 0.2rem 0.6rem; border: 1px solid var(--border-subtle); border-radius: 999px; background: var(--surface-base); font-size: 0.85rem; }
+/* The busiest games: a numbered list, a name and a count per row. */
+.fg-sc-busiest { margin: 0; padding-left: 1.5rem; display: flex; flex-direction: column; gap: 0.2rem; color: var(--text-primary); }
+/* One game. */
+.fg-sc-busy { padding-left: 0.25rem; }
+/* The count after the name. */
+.fg-sc-busy > span + span { margin-left: 0.5rem; }
+/* The notes panel: plain text, the switch under it. */
+.fg-sc-notes { align-items: flex-start; }

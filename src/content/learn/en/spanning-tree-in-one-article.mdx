@@ -3,7 +3,7 @@ slug: spanning-tree-in-one-article
 title: "Spanning tree in one article: why a blocked port is the feature, and how RSTP and MSTP made it fast"
 summary: "Redundant links between switches make loops, and Ethernet has nothing in its header to stop a frame circling forever. The Spanning Tree Protocol solves it by electing a root and blocking every port the tree does not need. The election, the costs and the timers, the 30 to 50 seconds classic STP took to recover, the handshake that made RSTP fast, the regions and instances of MSTP, Cisco's per-VLAN variants and guards, and the engineer who wrote the algorithm's abstract as a poem."
 concepts: ["spanning tree", "stp", "rstp", "mstp", "bpdu", "root bridge", "bridge id", "root port", "designated port", "path cost", "broadcast storm", "edge port", "portfast", "bpdu guard", "root guard", "pvst+", "radia perlman"]
-relatedTools: []
+relatedTools: ["stp-election-calculator"]
 relatedArticles: ["bridge-switch-family-history", "vlans-and-8021q-trunking", "the-ethernet-frame-field-by-field", "network-devices-switch-router-firewall", "link-aggregation-and-lacp"]
 category: networking
 order: 338
@@ -44,6 +44,8 @@ The short values are as Cisco's academy text and Juniper give them ("a 100-Mbps 
 Two tie-breaks settle the rest. When the two ends of a segment are equally close to the root, "the bridge with the lowest bridge ID becomes the designated bridge" ([Juniper, spanning tree overview](https://www.juniper.net/documentation/us/en/software/junos/stp-l2/topics/topic-map/spanning-tree-overview.html)); when one switch reaches the root at the same cost through two of its ports, "spanning tree puts the interface with the lowest interface number in the forwarding state and blocks the other interfaces" ([Cisco, STP configuration guide, IOS XE 17](https://www.cisco.com/c/en/us/td/docs/switches/lan/c9000/lyr2-fwd/stp/stp-configuration-guide/m-stp.html)). The lab below runs the four decisions on four switches with the short costs above.
 
 <Lab id="stp-root-election" />
+
+The [spanning tree election calculator](/tools/stp-election-calculator) runs the same four decisions on a network you describe, up to sixteen switches, with either cost scale, and names the comparison behind every choice.
 
 ## Bridge protocol data units, timers and the old 30 to 50 seconds
 
@@ -86,7 +88,7 @@ There is no separate spanning tree standard any more. "IEEE Std 802.1D-2004 was 
 
 ## The engineer and the poem
 
-The algorithm is the work of Radia Perlman, at Digital Equipment Corporation, whose paper on it was published in 1985 ([Perlman, 1985](https://prl.khoury.northeastern.edu/img/p-sigcomm-1985.pdf)). The abstract is a poem, "Algorhyme", which opens "I think that I shall never see / A graph more lovely than a tree" ([Heidelberg Laureate Forum](https://www.newsroom.hlf-foundation.org/blog/article/the-internet-chronicles-part-7-of-12-the-tree-the-internet-grows-on/)). In her own words: "I spent the remainder of the week working on the poem, which is the abstract of the paper" ([LACNIC, 2019](https://blog.lacnic.net/en?p=11775)). The Internet Hall of Fame inducted her in 2014 for designing "the spanning tree algorithm that transformed Ethernet" ([Internet Hall of Fame](https://www.internethalloffame.org/inductee/radia-perlman/)). The story of bridges and switches around her work is told in [one idea, solved twice](/learn/bridge-switch-family-history).
+The algorithm is the work of Radia Perlman, at Digital Equipment Corporation, whose paper on it was published in 1985 ([Perlman, 1985](https://prl.khoury.northeastern.edu/img/p-sigcomm-1985.pdf)). The abstract is a poem, "Algorhyme", twelve lines that sum up the whole algorithm ([Heidelberg Laureate Forum](https://www.newsroom.hlf-foundation.org/blog/article/the-internet-chronicles-part-7-of-12-the-tree-the-internet-grows-on/)). In her own words: "I spent the remainder of the week working on the poem, which is the abstract of the paper" ([LACNIC, 2019](https://blog.lacnic.net/en?p=11775)). The Internet Hall of Fame inducted her in 2014 for designing "the spanning tree algorithm that transformed Ethernet" ([Internet Hall of Fame](https://www.internethalloffame.org/inductee/radia-perlman/)). The story of bridges and switches around her work is told in [one idea, solved twice](/learn/bridge-switch-family-history).
 
 ## What to remember
 

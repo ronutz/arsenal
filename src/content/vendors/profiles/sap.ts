@@ -28,10 +28,14 @@ export const sapProfile: VendorProfile = {
   timeline: [
     { year: 1972, title: "Five founders, one nylon factory", detail: "The ex-IBM five write realtime financial software at ICI's Östringen plant - 'R' for realtime becomes the product line's name and the company's creed: data processed as business happens." },
     { year: 1992, title: "R/3: the client-server conquest", detail: "Three-tier architecture at exactly the right moment - R/3 rides the downsizing wave into nearly every large enterprise on earth, and the SAP consultant becomes a profession the size of a small nation." },
+    // Added 2026-11-08 (D-19): sourced to Baguete, 23 June 2009 (record sources).
+    { year: 2009, title: "SAP Labs Latin America opens in São Leopoldo", detail: "The Brazilian research and development centre is inaugurated on the Unisinos campus near Porto Alegre with two hundred people, then the smallest of nine SAP Labs, chosen for proximity to customers and talent rather than incentives.", sourceNote: "Baguete, 23 June 2009. SAP's own releases of 2022 count 15 and 16 years of activity, which places the lab's start at about 2006 or 2007, before the building opened." },
     { year: 2010, title: "HANA", detail: "Hasso Plattner's in-memory column-store bet ships as SAP HANA - the database underneath everything SAP builds next, and the rare case of an applications giant successfully reinventing its own foundations." },
     { year: 2015, title: "S/4HANA", detail: "The ERP core rewritten natively on HANA - the migration that defines two decades of enterprise IT roadmaps, and half the WAN designs this site's audience has ever costed." },
     { year: 2020, title: "Klein's tenure", detail: "Christian Klein becomes sole CEO in April 2020, steering the cloud transition and the AI-in-ERP era - Walldorf's course since then.", sourceNote: "Leadership as last recorded here; not re-verified against the company's current pages." },
     { year: 2021, title: "RISE: the cloud pivot", detail: "RISE with SAP packages the move to cloud ERP as a single commercial motion - subscription conversion at installed-base scale, with the Business Technology Platform as the extension story. Qualtrics, bought for ~$8 billion in 2019, is spun back out in 2023." },
+    // Added 2026-11-08 (D-19): sourced to SAP News Brasil and SAP News Latinoamérica, June 2022 (record sources).
+    { year: 2022, title: "A global hub in Rio Grande do Sul", detail: "After a third expansion the São Leopoldo laboratory houses almost two thousand people of twenty nationalities and becomes one of SAP's global innovation hubs: the only SAP Labs in Latin America, and one of fourteen worldwide." },
   ],
   products: [
     { name: "S/4HANA Cloud", what: "The ERP core - finance, supply chain, manufacturing - on the in-memory foundation." },

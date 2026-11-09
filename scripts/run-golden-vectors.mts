@@ -109,7 +109,13 @@ const DECLARED_FAILING = new Map<string, string>([]);
 // 2026-11-02: 236 (+2): the LAN switch course's ACL first-match evaluator and SNMP counter wrap calculator.
 // 2026-11-02, afternoon: 237 (+1): the VRRP timer calculator.
 // 2026-11-02, afternoon: 238 (+1): the multicast group to MAC mapper.
-const MIN_SETS = 238;
+// 2026-11-08, evening: 239 (+1): the spanning tree election calculator (chapter 2.4).
+// 2026-11-08, evening: 240 (+1): the LACP member link and state reader (chapter 2.2).
+// 2026-11-08, evening: 241 (+1): the 802.1Q tag and trunk VLAN calculator (chapter 2.3).
+// 2026-11-08, evening: 242 (+1): the OSPF cost and adjacency checker (chapter 4.1).
+// 2026-11-08, evening: 243 (+1): the RADIUS packet decoder (chapter 4.6).
+// 2026-11-08, night: 245 (+2): the bit numbering and bit order tool and its Learn lab, octet-bit-numbering (PRIME 20:37, LSB and MSB).
+const MIN_SETS = 245;
 
 /**
  * Reduce any of the tree's verifyVectors return shapes to a list of failures.

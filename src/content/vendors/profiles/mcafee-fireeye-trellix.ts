@@ -36,7 +36,7 @@ export const mcafeeFireeyeTrellixProfile: VendorProfile = {
       place: "Milpitas, California",
       founders: ["Ashar Aziz"],
       story:
-        "Founded by a former Sun Microsystems engineer on a simple, expensive idea: detonate suspicious traffic inside virtual machines before it reaches the network. The MVX engine shipped as FireEye's first commercial product in 2010, and after its September 2013 IPO the company became the name enterprises called when they suspected a nation-state was already inside.",
+        "Founded by a former Sun Microsystems engineer on a simple, expensive idea: detonate suspicious traffic inside virtual machines before it reaches the network. The MVX engine shipped as FireEye's first commercial product in 2010, and after its September 2013 IPO (initial public offering) the company became the name enterprises called when they suspected a nation-state was already inside.",
     },
     {
       company: "Mandiant",
@@ -58,7 +58,7 @@ export const mcafeeFireeyeTrellixProfile: VendorProfile = {
     { year: 2017, title: "McAfee spins back out", detail: "Intel's joint venture with TPG closes on April 3, 2017: TPG takes 51%, Intel keeps 49%, the McAfee name returns at a ~$4.2 billion valuation." },
     { year: 2020, title: "Second IPO; SolarWinds", detail: "McAfee returns to NASDAQ in October 2020 at $20 per share (~$8.6B valuation). In December, Mandiant leads the investigation of the SolarWinds supply-chain compromise." },
     { year: 2021, title: "The STG carve-outs", detail: "Symphony Technology Group buys McAfee Enterprise for $4.0 billion (announced March 8, closed July) and FireEye's products business - including the FireEye name - for $1.2 billion (announced June, closed October). The remaining company renames itself Mandiant.", sourceNote: "Trellix press release; CyberScoop; Dark Reading." },
-    { year: 2022, title: "The remix completes", detail: "January 19: STG launches Trellix - McAfee Enterprise plus FireEye, an XDR company with ~40,000 customers, ~5,000 employees and nearly $2B in revenue, led by Bryan Palma. March: the SSE portfolio spins out as Skyhigh Security, and an Advent/Permira-led group takes McAfee's consumer business private for over $14 billion (closed March 1). September 12: Google closes its acquisition of Mandiant.", sourceNote: "Announced at $5.4B; Alphabet's 10-K records a $6.1B total purchase price including cash and debt - Google's second-largest acquisition after Motorola Mobility." },
+    { year: 2022, title: "The remix completes", detail: "January 19: STG launches Trellix - McAfee Enterprise plus FireEye, an XDR (extended detection and response) company with ~40,000 customers, ~5,000 employees and nearly $2B in revenue, led by Bryan Palma. March: the SSE portfolio spins out as Skyhigh Security, and an Advent/Permira-led group takes McAfee's consumer business private for over $14 billion (closed March 1). September 12: Google closes its acquisition of Mandiant.", sourceNote: "Announced at $5.4B; Alphabet's 10-K records a $6.1B total purchase price including cash and debt - Google's second-largest acquisition after Motorola Mobility." },
     { year: 2024, title: "Mandia steps back", detail: "Kevin Mandia transitions to an advisory role at Google on May 31, 2024, two decades after founding the firm." },
     { year: 2025, title: "Trellix changes hands at the top", detail: "STG names Vishal Rao as Trellix CEO in January 2025." },
     { year: 2015, personal: true, title: "My chapter: the distribution side", detail: "2015 to 2018: FireEye ran through the portfolio I carried at Westcon-Comstor in Brazil. 2018 to 2019: McAfee ran through the portfolio at Network1/ScanSource, alongside Ixia and Pulse Secure. The two lines belong to two different employers and should not be read as one span - pre-sales architecture, demonstrations and channel enablement on both, in sequence rather than together. The distribution career page tells the story." },
@@ -68,7 +68,7 @@ export const mcafeeFireeyeTrellixProfile: VendorProfile = {
     { name: "FireEye MVX appliances", what: "Network and email detonation: suspicious objects executed in instrumented virtual machines before delivery - the sandbox that defined APT detection." },
     { name: "Mandiant incident response and threat intelligence", what: "Breach response, forensics, and adversary intelligence - now Mandiant Consulting and Google Threat Intelligence inside Google Cloud." },
     { name: "Trellix XDR platform", what: "The merged portfolio - FireEye Helix analytics plus McAfee ENS endpoint - built to ingest more than 600 native and open security technologies." },
-    { name: "Skyhigh Security SSE", what: "The McAfee Enterprise edge portfolio relaunched: secure web gateway, CASB, ZTNA, cloud DLP, remote browser isolation, cloud firewall, and CNAPP." },
+    { name: "Skyhigh Security SSE", what: "The McAfee Enterprise edge portfolio relaunched: secure web gateway, CASB (cloud access security broker), ZTNA (zero trust network access), cloud DLP (data loss prevention), remote browser isolation, cloud firewall, and CNAPP." },
   ],
   innovations: [
     { title: "Commercial antivirus at scale", detail: "McAfee proved security software could spread like the threats it fought - shareware distribution built the installed base, enterprises paid for management." },

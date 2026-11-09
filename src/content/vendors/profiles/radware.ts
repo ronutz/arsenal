@@ -30,7 +30,7 @@ export const radwareProfile: VendorProfile = {
   ],
   timeline: [
     { year: 1997, title: "Founded inside the RAD Group", detail: "Roy and Yehuda Zisapel start Radware in Tel Aviv around application-aware traffic management; Web Server Director is the first product.", sourceNote: "Radware's own SEC filings date inception to May 1996; company histories commonly cite April-May 1997." },
-    { year: 1999, title: "NASDAQ IPO", detail: "Radware lists on NASDAQ in September 1999, raising roughly $60 million in the dot-com window - the RAD Group model produces another public company." },
+    { year: 1999, title: "NASDAQ IPO", detail: "Radware lists on NASDAQ in September 1999 in an initial public offering (IPO), raising roughly $60 million in the dot-com window - the RAD Group model produces another public company." },
     { year: 2007, title: "Covelight", detail: "A $16 million acquisition brings web application auditing and monitoring into the portfolio, feeding what becomes the AppWall web application firewall." },
     { year: 2009, title: "Alteon rescued from Nortel", detail: "In April 2009 Radware pays about $18 million ($17.65M) for Nortel's Alteon application-switching assets as Nortel is dismantled in bankruptcy. Nortel had paid an estimated $7.8 billion in stock for Alteon WebSystems in 2000 (closed October 2000) - a 99.8 percent markdown in nine years, instantly making Radware a top-three ADC vendor.", sourceNote: "Nortel price per Alteon SEC Form 425 filings, Jul 2000; see the Nortel & Bay Networks lineage page." },
     { year: 2013, title: "Strangeloop", detail: "Web performance optimization joins the delivery portfolio." },

@@ -16,6 +16,10 @@
 //
 // BASELINE may only go down (R-19 governs any legitimate lowering); the
 // destination is 0.
+//
+// 2026-11-08 (the retrofit of the other surfaces, check-acronym-first-mention-surfaces.mjs): stems widened, never
+// narrowed, so British spellings ("operations centre") and the Portuguese expansions the site writes are recognised
+// anywhere on a page, as the American and English forms already were.
 // ============================================================================
 import fs from "node:fs";
 import path from "node:path";
@@ -32,13 +36,13 @@ const RULED = {
   "OSPF": ["Open Shortest Path First"],
   "SSO": ["single sign-on"],
   "WAF": ["web application firewall"],
-  "DLP": ["data loss prevention"],
+  "DLP": ["data loss prevention", "preven\u00e7\u00e3o de perda de dados"],
   "SIEM": ["security information and event management"],
   "LDAP": ["Lightweight Directory Access Protocol"],
   "GSLB": ["global server load balancing"],
   "CASB": ["cloud access security broker"],
   "DDoS": ["distributed denial", "nega\u00e7\u00e3o de servi\u00e7o distribu\u00edda"],
-  "SD-WAN": ["software-defined WAN"],
+  "SD-WAN": ["software-defined WAN", "software-defined wide area network"],
   "OCSP": ["Online Certificate Status Protocol"],
   "SLA": ["service level agreement", "acordo de n\u00edvel de servi\u00e7o"],
   "ZTNA": ["zero trust network access"],
@@ -53,16 +57,16 @@ const RULED = {
   "PoV": ["proof of value", "prova de valor"],
   "RCA": ["root cause analysis", "an\u00e1lise de causa raiz"],
   "MSP": ["managed service provider", "provedor de servi\u00e7os gerenciados"],
-  "MSSP": ["managed security service provider"],
-  "NOC": ["network operations center", "centro de opera\u00e7\u00f5es de rede"],
-  "TAC": ["technical assistance center", "centro de assist\u00eancia t\u00e9cnica"],
-  "RTO": ["recovery time objective"],
-  "RPO": ["recovery point objective"],
+  "MSSP": ["managed security service provider", "provedor de servi\u00e7os de seguran\u00e7a gerenciados"],
+  "NOC": ["network operations center", "centro de opera\u00e7\u00f5es de rede", "network operations centre"],
+  "TAC": ["technical assistance center", "centro de assist\u00eancia t\u00e9cnica", "technical assistance centre"],
+  "RTO": ["recovery time objective", "objetivo de tempo de recupera\u00e7\u00e3o"],
+  "RPO": ["recovery point objective", "objetivo de ponto de recupera\u00e7\u00e3o"],
   "SASE": ["secure access service edge"],
-  "SOC": ["security operations center", "centro de opera\u00e7\u00f5es de seguran\u00e7a"],
-  "SOAR": ["security orchestration"],
-  "EDR": ["endpoint detection and response"],
-  "XDR": ["extended detection and response"],
+  "SOC": ["security operations center", "centro de opera\u00e7\u00f5es de seguran\u00e7a", "security operations centre"],
+  "SOAR": ["security orchestration", "orquestra\u00e7\u00e3o, automa\u00e7\u00e3o e resposta de seguran\u00e7a"],
+  "EDR": ["endpoint detection and response", "detec\u00e7\u00e3o e resposta em endpoint"],
+  "XDR": ["extended detection and response", "detec\u00e7\u00e3o e resposta estendida"],
   "KPI": ["key performance indicator", "indicador-chave de desempenho"],
   "ROI": ["return on investment", "retorno sobre o investimento"],
   "TCO": ["total cost of ownership", "custo total de propriedade"],
@@ -71,7 +75,7 @@ const RULED = {
   "SDK": ["software development kit"],
   "CMDB": ["configuration management database"],
   "CAB": ["change advisory board", "comit\u00ea de mudan\u00e7as"],
-  "HSM": ["hardware security module"],
+  "HSM": ["hardware security module", "m\u00f3dulo de seguran\u00e7a em hardware"],
   "CRL": ["certificate revocation list", "lista de revoga\u00e7\u00e3o de certificados"],
   "VRF": ["virtual routing and forwarding"],
   "ACL": ["access control list", "lista de controle de acesso"],

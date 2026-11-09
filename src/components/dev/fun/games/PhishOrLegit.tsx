@@ -20,6 +20,16 @@
 // line and card, the progress strip moved under the buttons; R2-09); the
 // answer buttons are described by the card, and a new practice run or each
 // new card of a speed run is announced (R2-14).
+//
+// Time (PRIME 08/11/2026: "Add time counting to Phish or Legit?"). The daily
+// round and practice have a clock (the grid puzzles' useRoundClock, visible
+// time only) that counts while a card waits for an answer and pauses while
+// the explanation is read, so the time measures deciding, not reading. The
+// daily round now waits for Start, as every timed game does (PRIME
+// 06/11/2026): before it the card's place holds the cover and nothing of the
+// day's cards is on the page. Its time is saved with its answers (e, and t
+// once finished), so a reload resumes it running; it shows in the result and
+// on the share card. The speed run keeps its own 60-second countdown.
 // ============================================================================
 
 "use client";
@@ -30,12 +40,14 @@ import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent as
 import { useTranslations } from "next-intl";
 // The frame: stats, rules, result.
 import GameShell, { type ShellResult } from "./GameShell";
+// The Start cover and the clock that counts only visible time (shared with the grid puzzles).
+import { StartCover, useRoundClock } from "./LogicPuzzleKit";
 // Today's UTC day, and the reduced-motion preference.
 import { useReducedMotion, useToday } from "@/lib/fun/hooks";
 // The puzzle number of a day.
 import { puzzleNumber } from "@/lib/fun/daily";
 // The share card's text.
-import { shareText } from "@/lib/fun/share";
+import { formatDuration, shareText } from "@/lib/fun/share";
 // The record: results and the day's saved state.
 import { loadRecord, recordResult, saveDailyState } from "@/lib/fun/storage";
 // The rules.
@@ -70,6 +82,21 @@ type Mode = "daily" | "practice" | "speed";
 interface DailySave {
   /** One letter per answered card. */
   picks: string;
+  /** Milliseconds counted so far (missing in a round saved before the clock existed: none). */
+  e?: number;
+  /** The final time, once the fifteenth card is answered. */
+  t?: number;
+}
+
+/**
+ * A usable time from a saved round (a missing or damaged field counts as none).
+ *
+ * @param x the stored value
+ * @returns milliseconds, or null
+ */
+function savedMs(x: unknown): number | null {
+  // A finite, non-negative number only.
+  return typeof x === "number" && Number.isFinite(x) && x >= 0 ? x : null;
 }
 
 /** One answered card, for the feedback and the review. */
@@ -169,6 +196,20 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
   const [left, setLeft] = useState(SPEED_SECONDS);
   // The polite announcement.
   const [say, setSay] = useState("");
+  // The answers as saved letters, for the clock's own saves between renders.
+  const picksRef = useRef("");
+  // The clock of the daily round and of practice: it runs only while a card waits for an answer, and the daily round's
+  // is saved with its answers when the page is hidden or closed and every few seconds (PRIME 08/11/2026).
+  const clock = useRoundClock((ms) => {
+    // Only the daily round keeps its time.
+    if (mode === "daily" && today) saveDailyState(GAME_ID, today, { picks: picksRef.current, e: ms } satisfies DailySave);
+  });
+  // The time counted when the clock last paused for an explanation, to resume from.
+  const pausedRef = useRef(0);
+  // Whether the daily round has started (Start pressed, or a saved round came back).
+  const [dailyStarted, setDailyStarted] = useState(false);
+  // The finished run's time (the daily round's, or practice's), or null.
+  const [finalMs, setFinalMs] = useState<number | null>(null);
   // The swipe's horizontal travel.
   const [dx, setDx] = useState(0);
   // Where the swipe started, or null.
@@ -206,6 +247,24 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
     setOver(replay.length >= DAILY_SIZE);
     // Remember it was restored.
     setRestored(true);
+    // The letters, for the clock's saves.
+    picksRef.current = saved.picks;
+    // The round had started.
+    setDailyStarted(true);
+    // Its time: final when finished, otherwise running again from where it was saved (a reload wins no time).
+    const e = savedMs(saved.e) ?? 0;
+    if (replay.length >= DAILY_SIZE) {
+      // The final time (a round finished before the clock existed shows none).
+      const fin = savedMs(saved.t);
+      setFinalMs(fin);
+      clock.reset(fin ?? 0);
+    } else {
+      // Running again.
+      pausedRef.current = e;
+      clock.start(e);
+    }
+    // The clock's functions are stable.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [today, daily]);
 
   // The card in play: the daily round's next, or the practice card.
@@ -214,6 +273,15 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
   // Start a mode afresh.
   const startMode = useCallback(
     (m: Mode) => {
+      // Leaving a running daily round: its time so far is saved, so coming back resumes it.
+      if (mode === "daily" && m !== "daily" && dailyStarted && !over && today && clock.running) {
+        // Stopped and banked.
+        const ms = clock.stop();
+        // Saved with its answers.
+        saveDailyState(GAME_ID, today, { picks: picksRef.current, e: ms } satisfies DailySave);
+      }
+      // No final time on show until a run finishes.
+      setFinalMs(null);
       // The mode.
       setMode(m);
       // No explanation showing.
@@ -245,6 +313,26 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
         setRestored(true);
         // No practice card.
         setCard(null);
+        // The letters, for the clock's saves.
+        picksRef.current = picks;
+        // Started if anything was saved (Start saves at once).
+        const started = saved !== undefined;
+        setDailyStarted(started);
+        // Its time.
+        const e = savedMs(saved?.e) ?? 0;
+        if (replay.length >= DAILY_SIZE) {
+          // Finished: the final time, stopped.
+          const fin = savedMs(saved?.t);
+          setFinalMs(fin);
+          clock.reset(fin ?? 0);
+        } else if (started) {
+          // Running again from where it was left.
+          pausedRef.current = e;
+          clock.start(e);
+        } else {
+          // Not started: 0:00 until Start.
+          clock.reset(0);
+        }
         // Done.
         return;
       }
@@ -254,6 +342,12 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
       setAnswers([]);
       // Not over.
       setOver(false);
+      // Practice's clock starts with its first card; the speed run keeps its own countdown.
+      if (m === "practice") {
+        // From zero.
+        pausedRef.current = 0;
+        clock.start(0);
+      } else clock.reset(0);
       // The first card.
       const first = nextPracticeCard(rngRef.current, []);
       // On the table.
@@ -262,16 +356,38 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
       // which the card describes; review R2-14).
       if (m === "practice") setSay(describeCard(first, t, lang));
     },
-    [today, daily, t, lang],
+    // The clock's functions are stable.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [today, daily, t, lang, mode, dailyStarted, over],
   );
+
+  // Start the daily round: the first card and the clock together (PRIME 06/11/2026: timed games wait for Start).
+  const startDaily = () => {
+    // Only a daily round not started yet.
+    if (mode !== "daily" || dailyStarted || !today || over) return;
+    // Started.
+    setDailyStarted(true);
+    // The clock from zero.
+    pausedRef.current = 0;
+    clock.start(0);
+    // Saved at once, so a reload resumes the round running rather than covered again.
+    picksRef.current = "";
+    saveDailyState(GAME_ID, today, { picks: "", e: 0 } satisfies DailySave);
+    // The first card is spoken through the answer buttons, which it describes.
+    window.setTimeout(() => phishRef.current?.focus(), 0);
+  };
 
   // Answer the card in play.
   const answer = useCallback(
     (pick: Verdict) => {
       // Nothing to answer, or the explanation is up, or the run is over.
       if (!current || showing || over) return;
-      // A speed run must be running.
+      // A speed run must be running, and the daily round must have started.
       if (mode === "speed" && endsAt === null) return;
+      if (mode === "daily" && !dailyStarted) return;
+      // Daily and practice: the clock pauses while the explanation is read (reading is free).
+      const ms = mode === "speed" ? 0 : clock.stop();
+      pausedRef.current = ms;
       // Right or wrong.
       const ok = pick === current.verdict;
       // The run so far, with this answer.
@@ -287,7 +403,13 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
       // The daily round is saved after every answer.
       if (mode === "daily" && today) {
         // As letters.
-        saveDailyState(GAME_ID, today, { picks: next.map((a) => (a.pick === "phish" ? "p" : "l")).join("") } satisfies DailySave);
+        const picks = next.map((a) => (a.pick === "phish" ? "p" : "l")).join("");
+        picksRef.current = picks;
+        // The fifteenth answer fixes the round's time.
+        const finished = next.length >= DAILY_SIZE;
+        if (finished) setFinalMs(ms);
+        // Saved with the time so far, or the final time.
+        saveDailyState(GAME_ID, today, { picks, e: ms, ...(finished ? { t: ms } : {}) } satisfies DailySave);
         // The fifteenth answer finishes the round: recorded now, with the pass mark for the streak, so a reload before
         // "See the result" cannot lose it (the restore never records; review R2-01).
         if (next.length >= DAILY_SIZE) recordResult(GAME_ID, { dayKey: today, won: scoreRun(next.map((a) => a.ok)).correct >= PASS_MARK, daily: true });
@@ -308,7 +430,9 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
       // Daily and practice show the explanation.
       setShowing(true);
     },
-    [current, showing, over, mode, endsAt, answers, t, lang, today],
+    // The clock's functions are stable.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [current, showing, over, mode, endsAt, answers, t, lang, today, dailyStarted],
   );
 
   // Move on from the explanation.
@@ -317,6 +441,8 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
     if (!showing) return;
     // Hidden.
     setShowing(false);
+    // The clock runs again for the next card (not after the daily round's last one).
+    if (!(mode === "daily" && answers.length >= DAILY_SIZE)) clock.start(pausedRef.current);
     // The answer buttons take the focus back once they render again.
     window.setTimeout(() => phishRef.current?.focus(), 0);
     // The daily round may be finished.
@@ -335,6 +461,8 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
     }
     // Practice: the next card.
     setCard(nextPracticeCard(rngRef.current, answers.slice(-12).map((a) => a.card.id)));
+    // The clock's functions are stable.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showing, mode, answers]);
 
   // After an answer, focus Next; after Next, focus Phish, so the keyboard flow never gets lost.
@@ -472,6 +600,23 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
     else setDx(0);
   };
 
+  // End a practice session: the clock stops (or stays where the explanation paused it) and its time is kept.
+  const endPractice = () => {
+    // The explanation goes.
+    setShowing(false);
+    // The time.
+    setFinalMs(clock.running ? clock.stop() : pausedRef.current);
+    // Over.
+    setOver(true);
+  };
+
+  // The daily round before Start: the cover instead of the card, so nothing of it is on the page yet.
+  const covered = mode === "daily" && !!today && !dailyStarted && !over;
+  // The time on show: the finished run's, else the clock's (daily once started, and practice).
+  const shownTime = finalMs !== null && over ? finalMs : clock.ms;
+  // Whether the time readout shows: the daily round once started, and practice.
+  const timed = (mode === "daily" && (dailyStarted || over)) || mode === "practice";
+
   // The run's score.
   const score = scoreRun(answers.map((a) => a.ok));
   // The last answer, for the explanation.
@@ -489,10 +634,10 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
       won: score.correct >= PASS_MARK,
       // n of 15.
       headline: t("dailyHeadline", { correct: score.correct, total: DAILY_SIZE }),
-      // Points and the best streak.
-      detail: t("dailyDetail", { points: score.points, streak: score.bestStreak }),
-      // "Phish or Legit #N 13/15" and the squares.
-      share: shareText({ title: t("shareTitle", { n: puzzleNumber(today), correct: score.correct, total: DAILY_SIZE }), lines: [emojiLine(oks)], summary: t("pointsNow", { n: score.points }), locale, slug: SLUG }),
+      // Points and the best streak, and the time when the round had a clock.
+      detail: `${t("dailyDetail", { points: score.points, streak: score.bestStreak })}${finalMs !== null ? ` ${t("timeTaken", { time: formatDuration(finalMs) })}` : ""}`,
+      // "Phish or Legit #N 13/15", the squares, and the time when there is one.
+      share: shareText({ title: t("shareTitle", { n: puzzleNumber(today), correct: score.correct, total: DAILY_SIZE }), lines: [emojiLine(oks), ...(finalMs !== null ? [`⏱️ ${formatDuration(finalMs)}`] : [])], summary: t("pointsNow", { n: score.points }), locale, slug: SLUG }),
     };
   } else if (mode === "speed" && over) {
     // The speed run's result.
@@ -513,17 +658,17 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
       won: true,
       // n of m.
       headline: t("practiceHeadline", { correct: score.correct, total: answers.length }),
-      // Points.
-      detail: t("pointsNow", { n: score.points }),
+      // Points, and the time.
+      detail: `${t("pointsNow", { n: score.points })}${finalMs !== null ? `. ${t("timeTaken", { time: formatDuration(finalMs) })}` : ""}`,
       // The card.
-      share: shareText({ title: t("sharePractice", { correct: score.correct, total: answers.length }), lines: [emojiLine(answers.slice(-30).map((a) => a.ok))], locale, slug: SLUG }),
+      share: shareText({ title: t("sharePractice", { correct: score.correct, total: answers.length }), lines: [emojiLine(answers.slice(-30).map((a) => a.ok)), ...(finalMs !== null ? [`⏱️ ${formatDuration(finalMs)}`] : [])], locale, slug: SLUG }),
     };
   }
 
   // The rules.
   const rules = (
     <ul>
-      {["rule1", "rule2", "rule3", "rule4", "rule5"].map((k) => (
+      {["rule1", "rule2", "rule3", "rule6", "rule4", "rule5"].map((k) => (
         <li key={k}>{t(k)}</li>
       ))}
     </ul>
@@ -575,6 +720,11 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
         <div className="fg-hud fg-pol-hud">
           {mode === "daily" && <span className="fg-readout">{t("progress", { n: Math.min(answers.length + (showing || over ? 0 : 1), DAILY_SIZE), total: DAILY_SIZE })}</span>}
           {mode === "speed" && <span className="fg-readout">{t("speedLeft", { s: left })}</span>}
+          {timed && (
+            <span className="fg-readout" aria-label={`${tc("time")} ${formatDuration(shownTime)}`}>
+              <span className="fg-small fg-muted">{tc("time")}</span> {formatDuration(shownTime)}
+            </span>
+          )}
           <span className="fg-readout">{t("pointsNow", { n: score.points })}</span>
           <span className="fg-chip">{t("inRow", { n: currentStreak(answers) })}</span>
         </div>
@@ -590,8 +740,11 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
         </div>
       )}
 
+      {/* The daily round before Start: the cover in the card's place (nothing of the round is on the page yet). */}
+      {covered && <StartCover label={tc("start")} note={t("startNote")} onStart={startDaily} className="fg-pol-cover" />}
+
       {/* The card. */}
-      {today && current && brand && !over && (
+      {today && current && brand && !over && !covered && (
         <div
           id={CARD_ID}
           className={`fg-pol-card ${lean}`}
@@ -619,7 +772,7 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
       )}
 
       {/* The answer buttons. */}
-      {today && current && !over && !showing && !(mode === "speed" && endsAt === null) && (
+      {today && current && !over && !showing && !covered && !(mode === "speed" && endsAt === null) && (
         <div className="fg-pol-answers">
           <button type="button" ref={phishRef} className="fg-button fg-pol-answer fg-pol-answer-phish" aria-describedby={CARD_ID} onClick={() => answer("phish")}>
             <span aria-hidden="true">{"←"}</span> {t("phish")}
@@ -646,7 +799,7 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
       )}
 
       {/* The keyboard and swipe hint. */}
-      {today && current && !over && !showing && !(mode === "speed" && endsAt === null) && <p className="fg-muted fg-small fg-pol-hint">{t(mode === "speed" ? "keysHintSpeed" : "keysHint")}</p>}
+      {today && current && !over && !showing && !covered && !(mode === "speed" && endsAt === null) && <p className="fg-muted fg-small fg-pol-hint">{t(mode === "speed" ? "keysHintSpeed" : "keysHint")}</p>}
 
       {/* The last answer in a speed run: one line, no pause. */}
       {mode === "speed" && last && !over && (
@@ -677,7 +830,7 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
               {mode === "daily" && answers.length >= DAILY_SIZE ? t("seeResult") : t("next")}
             </button>
             {mode === "practice" && (
-              <button type="button" className="fg-button" onClick={() => { setShowing(false); setOver(true); }}>
+              <button type="button" className="fg-button" onClick={endPractice}>
                 {t("endPractice")}
               </button>
             )}
@@ -704,7 +857,7 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
 
       {/* Practice and speed runs can be started again from the board too. */}
       {mode === "practice" && !over && !showing && answers.length > 0 && (
-        <button type="button" className="fg-link-button" onClick={() => setOver(true)}>
+        <button type="button" className="fg-link-button" onClick={endPractice}>
           {t("endPractice")}
         </button>
       )}

@@ -15,6 +15,7 @@
 // radware, red-education, ruckus, sailpoint, scansource, seal, segertech,
 // serpro, sniffer-lineage, splunk, tamosoft, tivit, tp-link, unicamp, vision-
 // cybersecurity, websense-forcepoint, zabbix, zte, zyxel
+// Added 2026-11-08 (the Brazilian batch): thoughtworks, udacity
 // ============================================================================
 
 import type { PartnerVendorOverlay } from "@/content/vendors/localized";
@@ -64,7 +65,7 @@ export const SHARD_4: Record<string, PartnerVendorOverlay> = {
     tagline:
       "O transistor, a teoria da informação, o Unix, o laser, a telefonia celular: dez Prêmios Nobel de fundamentos, transformados na Lucent em 1996, fundidos com a Alcatel em 2006 e levados para a Nokia em 2016.",
     intro:
-      "Nenhuma instituição moldou mais esta indústria do que os Bell Telephone Laboratories: o transistor de 1947, a teoria da informação de Shannon em 1948, o Unix e o C, o CCD, o conceito celular. A vida corporativa posterior (o IPO recordista da Lucent, a queda mais dura da bolha, a fusão com a Alcatel, a aquisição pela Nokia) é a lição mais aguda da indústria de que inventar o futuro e capturar o seu valor são habilidades diferentes.",
+      "Nenhuma instituição moldou mais esta indústria do que os Bell Telephone Laboratories: o transistor de 1947, a teoria da informação de Shannon em 1948, o Unix e o C, o CCD, o conceito celular. A vida corporativa posterior (a oferta pública inicial (IPO) recordista da Lucent, a queda mais dura da bolha, a fusão com a Alcatel, a aquisição pela Nokia) é a lição mais aguda da indústria de que inventar o futuro e capturar o seu valor são habilidades diferentes.",
     body: [
       "O perfil cobre a fundação em 1925, a sequência de invenções de 1947 a 1969, a trivestiture de 1996 e a ascensão e queda da Lucent, a escalada da Alcatel da CGE até a ITT, a fusão de 2006 e a passagem para a Nokia em 2016, onde a Bell Labs continua.",
     ],
@@ -276,7 +277,7 @@ export const SHARD_4: Record<string, PartnerVendorOverlay> = {
         { year: 1997, title: "A liderança racha; o negócio com a DEC", detail: "Em 1º de setembro de 1997, Levine renuncia ao cargo de presidente e CEO e Benson recua para a presidência do conselho. A Cabletron concorda em adquirir o Network Products Business da Digital Equipment Corporation por cerca de US$ 430 milhões: um canal de distribuidores, a herança do GIGAswitch e um acordo de revenda com a Digital válido até meados de 2001, operado como Digital Network Products Group.", sourceNote: "S-4 da Cabletron na SEC, ano fiscal de 1998; US$ 430 milhões segundo a Forbes, outubro de 1998." },
         { year: 1998, title: "Yago Systems: a melhor compra que a Cabletron já fez", detail: "17 de março de 1998: já com cerca de 25% da startup, a Cabletron adquire a Yago Systems, fabricante de roteadores em wire speed, por aproximadamente US$ 165,7 milhões em ações: 6,0 milhões de ações de imediato, mais 5,2 milhões emitidas em setembro de 1999 pela garantia de US$ 35 por ação prevista no negócio, com US$ 150 milhões lançados como P&D em andamento. O SmartSwitch Router da Yago prometia 100 vezes o desempenho dos roteadores em software; um analista chamou depois a Yago de 'the best thing Cabletron ever bought into.' (a melhor coisa em que a Cabletron já investiu). O mesmo ano traz a NetVantage, fabricante de switches Fast Ethernet, e as fabricantes de DSL Ariel e FlowPoint.", sourceNote: "Documentos 10-Q/A da Cabletron e 424B4 da Riverstone na SEC; Forbes, outubro de 1998; Computerworld, fevereiro de 2001." },
         { year: 2000, title: "A divisão em quatro", detail: "Fevereiro de 2000: o CEO Piyush Patel, ele mesmo ex-CEO da Yago, divide a Cabletron em quatro: Riverstone Networks (Santa Clara, provedores de serviço, a linha Yago, liderada por Romulus Pereira), Enterasys Networks (Rochester, o mercado corporativo, liderada por Henry Fiallo), Aprisma Management Technologies (a suíte de gestão Spectrum, Michael Skubisz) e GNTS (serviços profissionais, Earle Humphreys). A Cabletron vira uma holding com 4.500 funcionários, com a fabricação já vendida para a Flextronics.", sourceNote: "EE Times e Computerworld, fevereiro de 2000." },
-        { year: 2001, title: "A Cabletron deixa de existir", detail: "A Riverstone faz o IPO em fevereiro de 2001 e é distribuída aos acionistas naquele verão: o único spin-off de verdade. A holding é incorporada à Enterasys em agosto de 2001, e o nome Cabletron entra para a história dezoito anos depois da garagem." },
+        { year: 2001, title: "A Cabletron deixa de existir", detail: "A Riverstone faz o IPO (oferta pública inicial) em fevereiro de 2001 e é distribuída aos acionistas naquele verão: o único spin-off de verdade. A holding é incorporada à Enterasys em agosto de 2001, e o nome Cabletron entra para a história dezoito anos depois da garagem." },
         { year: 2003, title: "A Enterasys paga pelos seus números", detail: "Uma reapresentação de balanço de 2002, por reconhecimento de receita, apaga os primeiros lucros pós-divisão; a investigação da SEC e as ações de acionistas terminam em acordo em outubro de 2003 por US$ 50,4 milhões, e em dezembro de 2006 quatro ex-executivos são condenados à prisão." },
         { year: 2006, title: "Capital fechado sob a Gores", detail: "O Gores Group e a Tennenbaum Capital fecham o capital da Enterasys por cerca de US$ 386 milhões (anúncio em novembro de 2005, conclusão em março de 2006); em 2008, a Gores a junta com uma participação de 51% na Siemens Enterprise Communications numa transação de US$ 550 milhões." },
         { year: 2013, title: "O DNA chega à Extreme", detail: "12 de setembro de 2013: a Extreme Networks anuncia a aquisição da Enterasys por cerca de US$ 180 milhões em dinheiro (US$ 105 milhões em caixa, US$ 75 milhões emprestados), praticamente dobrando a receita da Extreme. A linhagem da Cabletron, e a base de clientes que eu atendi a partir do Brasil, segue viva num dos fabricantes que eu ensino hoje.", sourceNote: "Network World e Network Computing, setembro de 2013." },
@@ -339,6 +340,8 @@ export const SHARD_4: Record<string, PartnerVendorOverlay> = {
       timeline: [
         { year: 1975, title: "Duas aquisições viram o nome", detail: "A Sogeti adquiriu o Centre d'Analyse et de Programmation e a Gemini Computer Systems e adotou o nome composto CAP Gemini Sogeti. Uma firma que se batiza com o nome do que comprou está dizendo como pretende crescer, e os cinquenta anos seguintes não a desmentiram." },
         { year: 1996, title: "Cap Gemini", detail: "O elemento Sogeti saiu da razão social, que ficou Cap Gemini. O nome original de 1967 sobreviveu como marca de uma subsidiária, em vez de desaparecer, que é o destino habitual de um nome fundador dentro de um grupo que cresceu além dele." },
+        // Added 2026-11-08: the 2000 event, same position as the English profile.
+        { year: 2000, title: "Cap Gemini Ernst & Young", detail: "A Cap Gemini comprou as operações de consultoria em tecnologia da informação da Ernst & Young, somando cerca de 18.000 pessoas às suas quase 40.000, e adotou o nome Cap Gemini Ernst & Young. A firma de auditoria foi a primeira das grandes a vender sua consultoria por inteiro, dois anos antes de a Lei Sarbanes-Oxley proibir os auditores de projetar e implantar os sistemas de informação financeira dos seus clientes de auditoria; o verbete da EY registra o lado de quem vendeu.", sourceNote: "A International Directory of Company Histories (Encyclopedia.com), em 'Cap Gemini Ernst & Young', dá o anúncio como junho de 2000; outros relatos o datam de março de 2000, por isso só o ano é informado. O preço da compra está na fonte e não é usado." },
         { year: 2010, title: "Cinquenta e cinco por cento da CPM Braxis, e uma opção sobre o resto", detail: "Em 2 de setembro de 2010, a Capgemini anunciou que ficaria com 55% da empresa brasileira de serviços de TI CPM Braxis por R$ 517 milhões, cerca de 233 milhões de euros, sobre um enterprise value estimado em R$ 970 milhões, cerca de 437 milhões de euros. O dinheiro foi para duas direções ao mesmo tempo: um aumento de capital de R$ 287 milhões na empresa e uma recompra de R$ 230 milhões em ações dos acionistas existentes. A CPM Braxis projetava cerca de R$ 1 bilhão de receita em 2010, com mais de 5.500 pessoas. A conclusão foi anunciada em outubro.", sourceNote: "Números do anúncio e dos comunicados de conclusão da própria Capgemini, conforme reproduzidos pela MarketScreener. O anúncio previa a conclusão no início de outubro; o comunicado de conclusão foi publicado em 13 de outubro de 2010 e indica uma data de conclusão em outubro, de modo que o mês é certo e o dia não é repetido aqui." },
         { year: 2010, title: "Os quarenta e cinco por cento que ficaram onde estavam", detail: "Maioria não é propriedade, e a estrutura dizia isso. A Capgemini tinha opções de compra sobre os 45% restantes e os acionistas vendedores tinham opções de venda equivalentes, e nenhum dos lados podia exercê-las antes do terceiro aniversário da conclusão, com limite máximo de cinco anos e preço fixado pelo valor justo de mercado no momento do exercício. A CPM Braxis foi consolidada nas contas da Capgemini de imediato, com o valor estimado desses 45% registrado no balanço como passivo. Durante pelo menos três anos, o negócio brasileiro foi integralmente consolidado sem ser integralmente possuído, e o preço do resto era desconhecido por desenho.", sourceNote: "Os termos das opções e o tratamento contábil vêm do anúncio de conclusão da Capgemini. Nenhuma fonte localizada registra o exercício das opções, por isso nenhum evento aqui diz que elas foram exercidas." },
         { year: 2012, title: "CPM Braxis Capgemini, e os bancos", detail: "Em junho de 2012, o negócio operava com o nome conjunto CPM Braxis Capgemini, com mais de 6.500 pessoas e mais de 200 clientes no Brasil, e anunciou a Caixa Econômica Federal como cliente na condição de fornecedor preferencial, ao lado de uma relação já existente com o Bradesco. Dois dos maiores bancos do país numa só frase respondem por que um grupo francês pagou por uma empresa brasileira de serviços em vez de construir uma: os contratos eram o ativo, e contratos desse tamanho não começam do zero nas mãos de um recém-chegado." },
@@ -356,7 +359,7 @@ export const SHARD_4: Record<string, PartnerVendorOverlay> = {
     intro:
       "A multiplexação densa por divisão de comprimento de onda de David Huber transformou um único fio de vidro em dezesseis canais sem cavar um metro de vala: a implantação na Sprint, em 1996, que mudou da noite para o dia a economia da longa distância. A Ciena sobreviveu à quebra que matou os rivais, herdou a coroa óptica da Nortel em 2010, e a sua óptica coerente WaveLogic fez da capacidade por comprimento de onda uma curva de semicondutores.",
     body: [
-      "O perfil cobre a fundação em 1992, o MultiWave 1600 e o IPO recordista de 1997, os anos da quebra, a aquisição da divisão óptica da Nortel e a era coerente, dos 40G até a classe de 800G de hoje.",
+      "O perfil cobre a fundação em 1992, o MultiWave 1600 e o IPO (oferta pública inicial) recordista de 1997, os anos da quebra, a aquisição da divisão óptica da Nortel e a era coerente, dos 40G até a classe de 800G de hoje.",
     ],
     // Complete profile copy: facts verbatim, prose translated.
     profile: {
@@ -501,7 +504,7 @@ export const SHARD_4: Record<string, PartnerVendorOverlay> = {
     name: "e-Safer - cibersegurança e fraude, juntas",
     tagline: "Empresa brasileira de segurança cuja prática une cibersegurança e prevenção a fraudes.",
     intro:
-      "A e-Safer trata cibersegurança e prevenção a fraudes como uma só prática, abrangendo serviços gerenciados de segurança, testes de intrusão, avaliação de segurança de aplicações, threat intelligence, detecção e resposta gerenciadas, gestão de vulnerabilidades, um SOC, zero trust e governança.",
+      "A e-Safer trata cibersegurança e prevenção a fraudes como uma só prática, abrangendo serviços gerenciados de segurança, testes de intrusão, avaliação de segurança de aplicações, threat intelligence, detecção e resposta gerenciadas, gestão de vulnerabilidades, um SOC (centro de operações de segurança), zero trust e governança.",
     // Body paragraphs, same count and order as the English.
     body: [
       "A combinação na própria descrição é a escolha interessante. Fraude e cibersegurança costumam ser departamentos separados, com orçamentos e linhas de reporte separados (um responde a risco, o outro a tecnologia), e investigam os mesmos eventos por lados diferentes, muitas vezes sem compartilhar o que encontraram.",
@@ -550,7 +553,7 @@ export const SHARD_4: Record<string, PartnerVendorOverlay> = {
     intro:
       "O Gopher era o sistema mais bem organizado e, por dois anos, estava ganhando. Então, com semanas de diferença em 1993, Minnesota anunciou taxas para o servidor e o CERN declarou a web livre de royalties para sempre: o experimento natural mais limpo já feito em economia de protocolos. O HTTP passou depois a trocar o próprio transporte duas vezes sem quebrar uma URL.",
     body: [
-      "O perfil cobre a proposta do CERN de 1989 e o HTTP/0.9, a ascensão do Gopher e o Veronica, a bifurcação de licenciamento da primavera de 1993, o Mosaic, o header Host, o REST e o arco do HTTP/2 ao HTTP/3 sobre QUIC que o material de WAF deste site continua.",
+      "O perfil cobre a proposta do CERN de 1989 e o HTTP/0.9, a ascensão do Gopher e o Veronica, a bifurcação de licenciamento da primavera de 1993, o Mosaic, o header Host, o REST e o arco do HTTP/2 ao HTTP/3 sobre QUIC que o material de WAF (web application firewall) deste site continua.",
     ],
     // Complete profile copy: facts verbatim, prose translated.
     profile: {
@@ -750,7 +753,7 @@ export const SHARD_4: Record<string, PartnerVendorOverlay> = {
       "O lado LANDESK começou como LANSystems em 1985, foi adquirido pela Intel em 1991 e operado como a sua divisão LANDESK, e virou empresa independente num spin-off em 2002. A Avocent o comprou em 2006 por US$ 416 milhões (a mesma Avocent que aparece em outro ponto desta linha do tempo, na linhagem da Cyclades), e a Thoma Bravo ficou com ele em 2010. No caminho, a LANDESK absorveu a Wavelink (2012), a Shavlik, comprada da VMware (2013), a Naurtech (2014), a Xtraction (2015) e a AppSense (2016).",
       "O lado HEAT também foi montado, formado em 2015 a partir da FrontRange Solutions e da Lumension Security. A Lumension tinha começado como High Tech Software em 1991 e passado a se chamar PatchLink em 1999.",
       "A Ivanti continuou comprando: a Concorde Solutions e a RES Software em 2017, depois a Cherwell e a RiskSense. Em setembro de 2020, anunciou a aquisição da MobileIron e da Pulse Secure, concluída em 1º de dezembro daquele ano. É por isso que duas empresas que aparecem em outros pontos deste site terminaram no mesmo dia, no mesmo lugar.",
-      "A MobileIron tinha sido fundada em 2007 por Ajay Mishra e Suresh Batchu e aberto capital na NASDAQ em 2014. A Pulse Secure carregava o negócio de SSL VPN da Juniper, vendido à Siris Capital em 2014.",
+      "A MobileIron tinha sido fundada em 2007 por Ajay Mishra e Suresh Batchu e aberto capital na NASDAQ em 2014. A Pulse Secure carregava o negócio de SSL VPN (rede privada virtual) da Juniper, vendido à Siris Capital em 2014.",
       "A empresa ficou mais conhecida depois de vulnerabilidades graves nos appliances de VPN que vende, e o motivo é estrutural: um portfólio montado com uma dúzia de aquisições herda uma dúzia de bases de código, e a postura de segurança do todo é a postura de segurança da peça mais fraca.",
     ],
     // Acquisitions prose, same length and order as the English list.
@@ -812,7 +815,7 @@ export const SHARD_4: Record<string, PartnerVendorOverlay> = {
         { name: "Connect Secure and Policy Secure", what: "Os appliances de SSL VPN e de controle de acesso à rede, vindos da Juniper via Pulse Secure, com raízes na NetScreen. Os produtos no centro da exploração de 2024." },
         { name: "Ivanti Neurons for MDM", what: "A linha MobileIron, que gerencia frotas móveis: a outra metade da aquisição dupla de dezembro de 2020." },
         { name: "Service Manager and the Cherwell line", what: "Gestão de serviços de TI vinda de duas aquisições separadas, o que já é um problema de consolidação por si só." },
-        { name: "Security Controls and Patch SDK", what: "Componentes de patching dos quais vários outros produtos dependem, e é por isso que uma única falha no SDK aparece nos alertas de metade do portfólio de uma vez." },
+        { name: "Security Controls and Patch SDK", what: "Componentes de patching dos quais vários outros produtos dependem, e é por isso que uma única falha no SDK (software development kit) aparece nos alertas de metade do portfólio de uma vez." },
       ],
       // Innovations.
       innovations: [
@@ -843,7 +846,7 @@ export const SHARD_4: Record<string, PartnerVendorOverlay> = {
     // Body paragraphs, same count and order as the English.
     body: [
       "Depois, comprou, e rápido. Em 1º de agosto de 2025, concluiu a aquisição dos grupos de consultoria em cibersegurança e em litígios de propriedade intelectual da Aon; em 19 de agosto de 2025, concluiu a aquisição da Trustwave, a empresa de segurança gerenciada e da SpiderLabs sediada em Chicago, e chamou o resultado de maior provedor pure-play de serviços gerenciados de segurança do mundo; em 14 de outubro de 2025, anunciou, e em 25 de novembro de 2025 concluiu, a aquisição da Cybereason, cujos investidores SoftBank Corp., SoftBank Vision Fund 2 e Liberty Strategic Capital passaram a ser investidores da LevelBlue; e em 27 de janeiro de 2026 anunciou uma parceria de serviços gerenciados com a Fortra que inclui a aquisição do negócio de managed detection and response Alert Logic, da Fortra.",
-      "O que essas compras montaram é uma empresa de serviços com os braços de pesquisa de outras empresas dentro dela: a SpiderLabs agora aparece nas páginas da LevelBlue como LevelBlue SpiderLabs, a plataforma da Cybereason como o seu XDR e a Open Threat Exchange como a sua base de inteligência. A empresa é comandada de Dallas.",
+      "O que essas compras montaram é uma empresa de serviços com os braços de pesquisa de outras empresas dentro dela: a SpiderLabs agora aparece nas páginas da LevelBlue como LevelBlue SpiderLabs, a plataforma da Cybereason como o seu XDR (detecção e resposta estendida) e a Open Threat Exchange como a sua base de inteligência. A empresa é comandada de Dallas.",
       "Por que ela pertence a um registro de redes: o provedor de segurança gerenciada é a forma como a maioria das organizações consome segurança de rede hoje, e este é o ponto atual de chegada de três linhagens que este registro acompanha: o negócio de segurança da AT&T, os vinte anos da Trustwave em Chicago e a década de venture capital da Cybereason.",
     ],
     // Acquisitions prose, same length and order as the English list.
@@ -1033,7 +1036,7 @@ export const SHARD_4: Record<string, PartnerVendorOverlay> = {
     name: "Radware - a linhagem Zisapel",
     tagline: "Nascida do RAD Group israelense em 1997; a especialista em ADC e DDoS que resgatou a Alteon dos destroços da Nortel por cerca de US$ 18 milhões.",
     intro:
-      "Uma fundação de pai e filho dentro da família mais célebre das redes em Israel: o patriarca do RAD Group, Yehuda Zisapel, e o filho Roy, CEO desde o início. A Radware abriu capital na NASDAQ em 1999, construiu a linha DefensePro de proteção contra DDoS e, em abril de 2009, comprou da massa falida da Nortel os lendários ativos de application switching da Alteon por cerca de US$ 18 milhões, virando de imediato uma das três maiores fabricantes de ADC. Continua independente e comandada pelo fundador.",
+      "Uma fundação de pai e filho dentro da família mais célebre das redes em Israel: o patriarca do RAD Group, Yehuda Zisapel, e o filho Roy, CEO desde o início. A Radware abriu capital na NASDAQ em 1999, construiu a linha DefensePro de proteção contra DDoS (negação de serviço distribuída) e, em abril de 2009, comprou da massa falida da Nortel os lendários ativos de application switching da Alteon por cerca de US$ 18 milhões, virando de imediato uma das três maiores fabricantes de ADC. Continua independente e comandada pelo fundador.",
     // The accuracy note: the teaching claim stays exactly as precise as in English.
     note:
       "Nem eu nem a Red Education ministramos treinamento de Radware. Esta página é história corporativa, conferida com documentos da SEC e fontes primárias. A Radware compete no mercado de application delivery, em que eu ensino F5 todos os dias: conhecer os rivais faz parte de conhecer o mercado.",
@@ -1054,7 +1057,7 @@ export const SHARD_4: Record<string, PartnerVendorOverlay> = {
       // Timeline: same years, same order.
       timeline: [
         { year: 1997, title: "Fundada dentro do RAD Group", detail: "Roy e Yehuda Zisapel criam a Radware em Tel Aviv em torno da gestão de tráfego ciente da aplicação; o Web Server Director é o primeiro produto.", sourceNote: "Os próprios documentos da Radware na SEC datam o início em maio de 1996; os históricos da empresa costumam citar abril-maio de 1997." },
-        { year: 1999, title: "IPO na NASDAQ", detail: "A Radware entra na NASDAQ em setembro de 1999, levantando cerca de US$ 60 milhões na janela ponto-com: o modelo do RAD Group produz mais uma empresa de capital aberto." },
+        { year: 1999, title: "IPO (oferta pública inicial) na NASDAQ", detail: "A Radware entra na NASDAQ em setembro de 1999, levantando cerca de US$ 60 milhões na janela ponto-com: o modelo do RAD Group produz mais uma empresa de capital aberto." },
         { year: 2007, title: "Covelight", detail: "Uma aquisição de US$ 16 milhões traz auditoria e monitoramento de aplicações web para o portfólio, alimentando o que vira o web application firewall AppWall." },
         { year: 2009, title: "A Alteon resgatada da Nortel", detail: "Em abril de 2009, a Radware paga cerca de US$ 18 milhões (US$ 17,65 milhões) pelos ativos de application switching da Alteon, da Nortel, enquanto a Nortel é desmontada na falência. A Nortel tinha pago cerca de US$ 7,8 bilhões em ações pela Alteon WebSystems em 2000 (negócio concluído em outubro de 2000): uma desvalorização de 99,8% em nove anos, que fez da Radware de imediato uma das três maiores fabricantes de ADC.", sourceNote: "Preço da Nortel segundo os documentos SEC Form 425 da Alteon, de julho de 2000; veja a página da linhagem Nortel & Bay Networks." },
         { year: 2013, title: "Strangeloop", detail: "A otimização de desempenho web entra no portfólio de entrega." },
@@ -1076,7 +1079,7 @@ export const SHARD_4: Record<string, PartnerVendorOverlay> = {
       ],
       // Markets and analyst standing, same entry counts.
       markets: [
-        "A Radware compete em application delivery e em segurança de aplicações: o mercado de ADC, em que a F5 é o fabricante de referência, e os mercados de DDoS e WAF, ao lado dos provedores de limpeza na nuvem. Continua independente e listada na NASDAQ (RDWR), ainda comandada pelo CEO fundador.",
+        "A Radware compete em application delivery e em segurança de aplicações: o mercado de ADC, em que a F5 é o fabricante de referência, e os mercados de DDoS e WAF (web application firewall), ao lado dos provedores de limpeza na nuvem. Continua independente e listada na NASDAQ (RDWR), ainda comandada pelo CEO fundador.",
         "O controle ficou em casa: Yehuda Zisapel continuou como maior acionista, com cerca de 15%, e Roy com cerca de 3,4%, uma estrutura controlada pelos fundadores rara entre fabricantes de segurança de capital aberto.",
       ],
       analyst: [
@@ -1265,7 +1268,7 @@ export const SHARD_4: Record<string, PartnerVendorOverlay> = {
     // Card title, tagline, intro and body.
     name: "A linhagem Sniffer - da Network General à NetScout",
     tagline:
-      "O Sniffer de 1986 fez da análise de protocolos uma profissão; passando pelos portáteis robustos da Dolch, pela Network Associates e pela telemetria de DDoS da Arbor, a linhagem inteira convergiu para a NetScout.",
+      "O Sniffer de 1986 fez da análise de protocolos uma profissão; passando pelos portáteis robustos da Dolch, pela Network Associates e pela telemetria de DDoS (negação de serviço distribuída) da Arbor, a linhagem inteira convergiu para a NetScout.",
     intro:
       "Um verbete para cinco empresas, porque elas são uma só história: o Sniffer da Network General deu nome à prática que todo engenheiro ainda usa, os portáteis robustos de Volker Dolch foram o seu chassi de campo, a fusão e a desfusão da Network Associates carregaram a marca pela era das consolidações, a Arbor Networks levou o raciocínio de pacotes à telemetria de DDoS em escala de internet, e a NetScout, fundada dois anos antes de o Sniffer existir, virou a casa onde toda a tradição dos analisadores foi parar.",
     body: [
@@ -1397,7 +1400,7 @@ export const SHARD_4: Record<string, PartnerVendorOverlay> = {
         { name: "Splunk Enterprise and Splunk Cloud", what: "A plataforma central: ingerir qualquer coisa, indexar, pesquisar. Vendida por volume de dados por dia, local ou hospedada." },
         { name: "SPL, the Search Processing Language", what: "A linguagem de consulta, e o motivo pelo qual os profissionais ficam. Ela correlaciona fontes numa única busca (crash loops de containers contra falhas de API de nuvem contra autenticações no diretório), que é a capacidade que os usuários citam primeiro e a coisa mais difícil de reproduzir em outro lugar." },
         { name: "Splunk Enterprise Security", what: "O SIEM, agora com análise de comportamento de usuários e automação embutidas, em vez de vendidas à parte, e com alertas baseados em risco voltados para o problema de volume que torna os centros de operações de segurança inviáveis." },
-        { name: "Splunk SOAR", what: "Orquestração e resposta automatizada, desenvolvidas a partir da aquisição da Phantom, com várias centenas de playbooks prontos e integrações com ferramentas de outros fabricantes." },
+        { name: "Splunk SOAR", what: "Orquestração, automação e resposta de segurança (SOAR), desenvolvidas a partir da aquisição da Phantom, com várias centenas de playbooks prontos e integrações com ferramentas de outros fabricantes." },
         { name: "Observability Cloud, ITSI and AppDynamics", what: "Métricas, traces e monitoramento de nível de serviço: a linha SignalFx, à qual se juntou, depois da aquisição, o próprio produto de desempenho de aplicações da Cisco." },
         { name: "Splunkbase", what: "Vários milhares de apps e add-ons da comunidade e de fabricantes. O ecossistema é uma parte substancial do motivo pelo qual a plataforma é onde os dados de uma organização acabam parando." },
       ],
@@ -1411,7 +1414,7 @@ export const SHARD_4: Record<string, PartnerVendorOverlay> = {
       // Markets and analyst standing, same entry counts.
       markets: [
         "Operações de segurança e observabilidade de TI, vendidas a grandes empresas: relatada em uso em mais de noventa empresas da Fortune 100, processando volumes medidos em exabytes por dia. O cliente é uma organização com dados suficientes para que encontrar qualquer coisa neles tenha virado um problema em si.",
-        "Duas críticas são consistentes o bastante no retorno dos clientes para pertencer a qualquer descrição honesta. É cara: o preço por volume em escala é a queixa mais frequente, e implantações de cem gigabytes por dia são cotadas na casa das centenas de milhares por ano. E sair dela é caro pelo motivo acima: as consultas não viajam. Concorrentes como a CrowdStrike, cujo próprio SIEM aparece em outro ponto desta linha do tempo, se posicionam explicitamente contra as duas coisas.",
+        "Duas críticas são consistentes o bastante no retorno dos clientes para pertencer a qualquer descrição honesta. É cara: o preço por volume em escala é a queixa mais frequente, e implantações de cem gigabytes por dia são cotadas na casa das centenas de milhares por ano. E sair dela é caro pelo motivo acima: as consultas não viajam. Concorrentes como a CrowdStrike, cujo próprio SIEM (security information and event management) aparece em outro ponto desta linha do tempo, se posicionam explicitamente contra as duas coisas.",
       ],
       analyst: [
         "Leader no Magic Quadrant de SIEM do Gartner por mais de dez avaliações consecutivas, com a posição mais alta em capacidade de execução em 2025, e Leader em plataformas de observabilidade três anos seguidos: segundo relatos, o único fabricante a ocupar as duas posições ao mesmo tempo três vezes.",
@@ -1579,7 +1582,7 @@ export const SHARD_4: Record<string, PartnerVendorOverlay> = {
     name: "Websense e Forcepoint",
     tagline: "Uma revenda que virou filtro, depois IPO da bolha, depois o braço cibernético de uma empresa de defesa, depois private equity de novo.",
     intro:
-      "Phil Trubey fundou a NetPartners em Sorrento Valley, San Diego, em 1994, revendendo produtos de segurança de rede de outras empresas. O que fez a empresa foi aquilo que ela construiu, e não o que revendia: software para controlar o que os funcionários podiam acessar na internet. Passou a se chamar Websense em junho de 1999 e, em março de 2000, no pico real da bolha ponto-com, levantou US$ 72 milhões num IPO cuja ação dobrou de preço no primeiro dia.",
+      "Phil Trubey fundou a NetPartners em Sorrento Valley, San Diego, em 1994, revendendo produtos de segurança de rede de outras empresas. O que fez a empresa foi aquilo que ela construiu, e não o que revendia: software para controlar o que os funcionários podiam acessar na internet. Passou a se chamar Websense em junho de 1999 e, em março de 2000, no pico real da bolha ponto-com, levantou US$ 72 milhões num IPO (oferta pública inicial) cuja ação dobrou de preço no primeiro dia.",
     // Body paragraphs, same count and order as the English.
     body: [
       "O fundador não estava lá para ver. Em 1998, com US$ 6 milhões de venture capital levantados e US$ 6 milhões de receita anual, os investidores tiraram Trubey do cargo de CEO e nomearam John Carrington. A troca de nome, o IPO e tudo o que veio depois aconteceram sem a pessoa que começou a empresa, o que é comum o bastante para não chamar atenção no agregado e merece ser dito no caso particular.",
@@ -1753,5 +1756,44 @@ export const SHARD_4: Record<string, PartnerVendorOverlay> = {
         "Situada entre as contemporâneas com credenciais genuínas de pioneira na era dos modems: uma desbravadora cuja reputação da era das BBS a geração de sysops de Rodolfo Nützmann lembra em primeira mão, e cujo episódio de EOL de 2025 mantém o registro honesto.",
       ],
     },
+  },
+  // ---- thoughtworks: pt-BR prose for the record (facts stay in the English record) ----
+  "thoughtworks": {
+    // Title: company verbatim, subtitle translated.
+    name: "Thoughtworks - a consultoria ágil que escolheu Porto Alegre",
+    // Card line.
+    tagline: "Consultoria de software de Chicago fundada em 1993, conhecida por Martin Fowler e pela prática ágil, que chegou ao Brasil em 2010 por um parque tecnológico de Porto Alegre por causa das universidades e das comunidades de software do país.",
+    // Intro paragraph.
+    intro: "A Thoughtworks é uma consultoria de tecnologia fundada em Chicago em 1993 por Roy Singham, conhecida pela prática de engenharia de software e por Martin Fowler, um dos dezessete signatários originais do Manifesto for Agile Software Development. Abriu no Brasil em janeiro de 2010 no Tecnopuc, o parque tecnológico da Pontifícia Universidade Católica do Rio Grande do Sul (PUCRS), em Porto Alegre, e depois em São Paulo, no Recife e em Belo Horizonte.",
+    // Body: 4 paragraph(s), same order as the English.
+    body: [
+      "O motivo dado para a vinda é a parte que vale guardar. Quando o escritório de Porto Alegre foi oficializado, em 21 de janeiro de 2010, Singham, fundador e presidente, disse que o Brasil tinha muitas universidades excelentes e várias comunidades de software ativas, e que o movimento do software livre e de código aberto era ideal para desenvolver software inovador num mundo cuja inovação já não estava centrada só nos países ocidentais. Uma consultoria escolheu uma cidade pelas comunidades de desenvolvedores, e não pelos clientes.",
+      "Em 2017, a operação brasileira tinha 515 pessoas entre Porto Alegre, São Paulo, Recife e Belo Horizonte e aparecia com frequência nos rankings do Great Place to Work. Em agosto daquele ano, um grupo de fundos liderado pela Apax Partners comprou a empresa; no Brasil, observou o Baguete, a Apax era conhecida por ter comprado o controle da TIVIT. Em 2022, a Thoughtworks comprou a Handmade Design, uma consultoria paulistana de design estratégico fundada em 2015, para reforçar a prática brasileira de design e produto.",
+      "A empresa abriu capital na Nasdaq, com negociação sob o ticker TWKS a partir de 15 de setembro de 2021. Os anos de empresa aberta foram curtos. Em fevereiro de 2023, cortou cerca de duzentas pessoas da operação brasileira, e em 13 de novembro de 2024 anunciou a conclusão da sua aquisição por fundos assessorados pela Apax Partners, depois da qual as ações deixaram de ser negociadas e ela voltou a operar como empresa de capital fechado.",
+      "Duas coisas nela pesam numa carreira de tecnologia no Brasil. A primeira é o motivo que ela deu para vir: uma consultoria cuja figura mais conhecida assinou o Manifesto Ágil escolheu um parque tecnológico universitário em Porto Alegre, e só depois São Paulo, e disse que tinha vindo pelas universidades e pelas comunidades de código aberto, uma declaração sobre onde uma consultoria estrangeira acreditava que estava a competência brasileira em software em 2010. A segunda é a trajetória de controle, que o registro da TIVIT já documentou com o mesmo fundo. Um negócio de serviços é difícil de explicar ao mercado de ações, e a Thoughtworks, como a TIVIT, passou só alguns anos listada antes de o mesmo dono de private equity tirá-la da bolsa.",
+    ],
+    // The parent company's note (official.parent.note); the name, kind and year stay the English record's.
+    parentNote: "Fundos liderados pela Apax Partners compraram a Thoughtworks pela primeira vez em 2017; a empresa abriu capital na Nasdaq em setembro de 2021, e os Apax Funds a fecharam de novo em novembro de 2024.",
+    // Acquisitions: index-aligned with the English list (Handmade Design).
+    acquisitions: [
+      // Handmade Design.
+      { what: "Uma consultoria paulistana de design estratégico fundada em 2015, com cerca de cinquenta profissionais trabalhando de forma remota.", became: "Parte da prática de experiência do cliente, produto e design da Thoughtworks Brasil.", sourceNote: "Baguete, 28 de junho de 2022; a conclusão estava prevista para o terceiro trimestre do ano fiscal de 2022 da Thoughtworks, e nenhum aviso de conclusão foi lido." },
+    ],
+  },
+  // ---- udacity: pt-BR prose for the record (facts stay in the English record) ----
+  "udacity": {
+    // Title: company verbatim, subtitle translated.
+    name: "Udacity - um curso gratuito de Stanford, um Nanodegree e um capítulo em português que durou dois anos",
+    // Card line.
+    tagline: "Nascida de um curso online gratuito de inteligência artificial de Stanford que atraiu mais de 160.000 alunos; fundada em 2011, ensinou brasileiros em português de 2016 a 2018 e desde 2024 pertence à Accenture.",
+    // Intro paragraph.
+    intro: "A Udacity é uma empresa americana de educação online em tecnologia fundada em 2011, depois que os professores de Stanford Sebastian Thrun e Peter Norvig puseram na internet, aberto a qualquer pessoa e de graça, o curso Introduction to Artificial Intelligence. Ela é conhecida pelo Nanodegree, credenciais profissionais curtas construídas com empresas de tecnologia. Abriu uma operação em português no Brasil em 2016, encerrou-a no fim de 2018 e faz parte da Accenture desde maio de 2024.",
+    // Body: 4 paragraph(s), same order as the English.
+    body: [
+      "O relato que a própria empresa faz da sua origem é uma estatística. Mais de 160.000 alunos em mais de 190 países se inscreveram no curso gratuito de Thrun e Norvig, e os quatrocentos melhores não eram de Stanford. Essa descoberta, na versão da empresa, virou a missão dela. Ela foi fundada em 2011 por Thrun, David Stavens e Mike Sokolsky e tem sede em Mountain View, na Califórnia.",
+      "Chegou ao Brasil em julho de 2016, liderada por Carlos Souza, um dos fundadores da plataforma brasileira de cursos online Veduca, com Nanodegrees inteiramente em português, construídos com parceiros como Google, Facebook, Amazon, GE e Twitter, e com um discurso explícito sobre a falta de profissionais atualizados no mercado de trabalho de tecnologia. Não durou. No fim de 2018, quando a empresa reduziu as operações fora dos Estados Unidos, anunciou que os cursos em português só seriam vendidos até 31 de dezembro de 2018 e que o escritório de São Paulo atenderia os quase dez mil alunos ativos até que eles terminassem.",
+      "Em 20 de maio de 2024, a Accenture concluiu a compra da empresa e a pôs dentro da Accenture LearnVantage, seu negócio de capacitação em tecnologia. A Accenture descreveu a Udacity como uma plataforma que evoluiu do consumidor final para a transformação de talentos, com mais de vinte e um milhões de alunos registrados em 195 países.",
+      "Lida ao lado dos registros da Coursera e da Udemy, a Udacity é a das três que apostou mais alto no empregador: a credencial dela foi desenhada com as empresas que iriam contratar, e a dona dela hoje é uma consultoria que treina a equipe dos clientes como serviço. Os registros da Stefanini e da HCL defendem que ensino e serviços de tecnologia são o mesmo ofício visto de pontas diferentes; a compra pela Accenture é esse argumento feito com um balanço. O episódio brasileiro é a metade de alerta. Um mercado grande o bastante para justificar a localização de um catálogo em 2016 foi, dois anos depois, a primeira coisa cortada, e os alunos que tinham se inscrito em português terminaram os cursos com um escritório fechando atrás deles.",
+    ],
   },
 };

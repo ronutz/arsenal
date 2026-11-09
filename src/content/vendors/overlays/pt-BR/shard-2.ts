@@ -15,6 +15,7 @@
 // oscium, pearson-vue, polycom, portswigger, proofpoint, q1-labs, quest-
 // software, rapid7, raspberry-pi, riverbed, rsa-security, silicon-graphics,
 // sophos, teltec, versa, wdc
+// Added 2026-11-08 (the Brazilian batch): encora, it-forum
 //
 // Translated 2026-10-25, completed 2026-10-26 (pt-BR machine-draft state:
 // written with AI, reviewed
@@ -68,7 +69,7 @@ export const SHARD_2: Record<string, PartnerVendorOverlay> = {
       "A ideia foi de Paul Flaherty. Louis Monier escreveu o crawler, o Scooter, e Michael Burrows escreveu o indexador, no Network Systems Laboratory e no Western Research Laboratory da DEC, em Palo Alto. O serviço estreou em 15 de dezembro de 1995 em altavista.digital.com, com um índice de dezesseis milhões de documentos, um número enorme para a época, oferecendo busca de texto completo com operadores booleanos e consultas em linguagem natural quando a alternativa era um diretório mantido à mão.",
       "Funcionou de imediato. Em 1996 já era o provedor exclusivo de busca do Yahoo, que tinha começado, ele próprio, como diretório. O AltaVista lançou também o Babel Fish, o primeiro serviço de tradução automática da web, batizado em homenagem ao peixe de Douglas Adams.",
       "Depois, o controle mudou de mãos quatro vezes em cinco anos. A Compaq comprou a DEC em 1998 por US$ 9,6 bilhões, a maior aquisição de tecnologia até então, e consta que alguns executivos da Compaq nem sabiam que o AltaVista existia. A Compaq pagou mais US$ 3,3 milhões pelo domínio altavista.com, que outra pessoa tinha registrado em 1994. Sob um novo CEO, o buscador foi refeito como portal (compras, e-mail grátis, notícias) para concorrer com o Yahoo, o que significava concorrer em tudo, menos naquilo em que ele era o melhor.",
-      "Em junho de 1999, a Compaq vendeu 83% à CMGI por cerca de US$ 2,3 bilhões em ações. O IPO planejado foi cancelado quando a bolha estourou em 2000. Em 2002, o AltaVista tinha abandonado os recursos de portal e voltado a se concentrar na qualidade da busca, um bom trabalho que chegou tarde: o Google já tinha tomado o mercado. Em fevereiro de 2003, a Overture o comprou por US$ 140 milhões, cerca de seis por cento da avaliação da CMGI três anos antes, e o Yahoo adquiriu a Overture cinco meses depois.",
+      "Em junho de 1999, a Compaq vendeu 83% à CMGI por cerca de US$ 2,3 bilhões em ações. O IPO (oferta pública inicial) planejado foi cancelado quando a bolha estourou em 2000. Em 2002, o AltaVista tinha abandonado os recursos de portal e voltado a se concentrar na qualidade da busca, um bom trabalho que chegou tarde: o Google já tinha tomado o mercado. Em fevereiro de 2003, a Overture o comprou por US$ 140 milhões, cerca de seis por cento da avaliação da CMGI três anos antes, e o Yahoo adquiriu a Overture cinco meses depois.",
       "Em 2004, o Scooter e o mecanismo de ranqueamento original foram desligados, e o AltaVista virou uma fachada para os resultados do Yahoo. Foi encerrado formalmente em 8 de julho de 2013. Não foi a tecnologia que falhou; foi a decisão de deixar de ser um buscador.",
     ],
     // Ending note (the year stays in the English record).
@@ -468,7 +469,7 @@ export const SHARD_2: Record<string, PartnerVendorOverlay> = {
       "O produto era um reverse proxy em que se entrava trocando o DNS, uma barreira realmente baixa: sem hardware, sem software, sem contrato, e com plano gratuito desde o início. Essa decisão de freemium foi estratégica, não generosa. Todo site gratuito manda tráfego pela rede, e todo ataque contra um site gratuito é um ataque que a rede aprende a reconhecer para todos os outros.",
       "É o mesmo argumento que esta linha do tempo mostra três vezes antes. A IronPort o aplicou à reputação de remetentes de e-mail em 2002. A Zscaler, ao tráfego web em 2007. A CrowdStrike, ao comportamento de endpoints em 2013. A Cloudflare o aplicou à própria web, e tirou seus primeiros dados de ameaças de um projeto de rastreamento de spam, que foi também onde a IronPort tinha começado.",
       "O lançamento público foi no TechCrunch Disrupt, em setembro de 2010, e o tráfego passou de cerca de 50 milhões de page views por mês para mais de 5 bilhões no primeiro ano.",
-      "Desde então, a empresa virou algo mais difícil de classificar: mitigação de DDoS, WAF, DNS, acesso zero trust e uma plataforma de computação serverless que roda código nos mesmos pontos de presença que servem o cache, o que transforma uma rede de conteúdo num lugar onde as aplicações de fato executam. Abriu capital em 2019, e sua rede hoje se estende por mais de 300 cidades.",
+      "Desde então, a empresa virou algo mais difícil de classificar: mitigação de DDoS (negação de serviço distribuída), WAF (web application firewall), DNS, acesso zero trust e uma plataforma de computação serverless que roda código nos mesmos pontos de presença que servem o cache, o que transforma uma rede de conteúdo num lugar onde as aplicações de fato executam. Abriu capital em 2019, e sua rede hoje se estende por mais de 300 cidades.",
       "Ela também ocupa uma posição incômoda que não escolheu por completo. Uma empresa que atende quase qualquer um, em escala e de graça, acaba decidindo quem pode continuar online, e já foi criticada tanto por agir quanto por se recusar a agir.",
     ],
     // Profile: complete copy of profiles/cloudflare.ts; years, companies, founders, personal markers and hrefs untouched.
@@ -1060,7 +1061,7 @@ export const SHARD_2: Record<string, PartnerVendorOverlay> = {
     intro: "Integradora de Barueri listada no nível Expert da Fortinet, e a única parceira deste catálogo cujo modelo de negócio registrado inclui um marketplace.",
     // Body: 2 paragraph(s), same order as the English.
     body: [
-      "O diretório a lista como integradora, marketplace e provedora de segurança gerenciada, com segurança em nuvem, SD-WAN e as duas especializações de secure networking. A linha do marketplace é a que a separa de todas as outras empresas de nível Expert daqui, e descreve outra transação: vender pelo catálogo do próprio provedor de nuvem, onde o gasto já comprometido do cliente paga o software e a parceira nunca chega a emitir uma fatura.",
+      "O diretório a lista como integradora, marketplace e provedora de segurança gerenciada, com segurança em nuvem, SD-WAN (software-defined wide area network) e as duas especializações de secure networking. A linha do marketplace é a que a separa de todas as outras empresas de nível Expert daqui, e descreve outra transação: vender pelo catálogo do próprio provedor de nuvem, onde o gasto já comprometido do cliente paga o software e a parceira nunca chega a emitir uma fatura.",
       "Barueri também merece uma palavra. É onde fica boa parte da TI corporativa de São Paulo, perto o bastante da capital para atendê-la e longe o bastante para que o espaço de escritório caiba no orçamento, e várias empresas deste catálogo estão registradas lá exatamente por esse motivo.",
     ],
   },
@@ -1414,7 +1415,7 @@ export const SHARD_2: Record<string, PartnerVendorOverlay> = {
       "Duas empresas foram registradas em 2000, a LWS Comercio e Servicos em Informatica em maio e a ABPR Participacoes em agosto, e operavam sob um terceiro nome que nenhuma das duas trazia no papel. Juntas eram o Grupo LWS; para o mercado eram a LAN Professional, e o slogan era sempre ao seu lado.",
       "Começaram como distribuidora da Cabletron Systems no Brasil, e o timing foi acidental, mas decisivo: em poucos meses, a Cabletron se reorganizou em quatro empresas, e o problema da LAN Professional passou a ser manter a relação de pé com um fabricante que já não existia com aquele nome. Deu certo. Sob a Enterasys, chegaram a responder por cerca de noventa por cento da distribuição desse fabricante no país, e o pedido de recuperação é franco sobre o motivo: a Enterasys tinha estado distante de seu canal brasileiro, e a solução foi alguém atender o telefone. Onde os concorrentes ofereciam e-mail e chat, esta oferecia uma pessoa.",
       "Em seis meses de operação, passou de dez milhões de reais. A receita cresceu 269 por cento entre 2000 e 2001, num ano de atentados de 11 de setembro, crise argentina e racionamento de energia no Brasil, que segurou o crescimento nacional em 1,31 por cento. A lista de clientes parece um mapa da época: Volkswagen e Chevrolet, Unicamp e Mackenzie, Banco do Brasil, Anatel e Infraero, TAM e Embraer, Albert Einstein e Samaritano.",
-      "A partir de 2003, manteve seu próprio centro de treinamento e, em 2005, tornou-se o centro de treinamento autorizado de F5 Networks e IronPort para o Brasil e o Mercosul, ensinando switching, roteamento, wireless, defesa contra intrusão, firewall de aplicação, armazenamento e SSL VPN para o mesmo canal que abastecia.",
+      "A partir de 2003, manteve seu próprio centro de treinamento e, em 2005, tornou-se o centro de treinamento autorizado de F5 Networks e IronPort para o Brasil e o Mercosul, ensinando switching, roteamento, wireless, defesa contra intrusão, firewall de aplicação, armazenamento e SSL VPN (rede privada virtual) para o mesmo canal que abastecia.",
       "O CONTRATO QUE DECIDIU TUDO. Em 2004, ganharam a Cobra Tecnologia, um contrato de 43,4 milhões de reais. Foi entregue por inteiro e no prazo, a receita dobrou, e foi o maior ano da história da empresa. Então o pagamento atrasou. O plano dá ao mecanismo um nome preciso, um reverse overtrading, e essa é a história inteira: uma distribuidora de margens apertadas tinha financiado um contrato maior que seu capital de giro, executado tudo perfeitamente, e não podia esperar. A partir de 2005, a empresa se financiou com dinheiro emprestado, e os encargos financeiros consumiram 13,2 milhões de reais em quatro anos, uma média de cinco por cento ao mês de toda a receita obtida.",
       "Tudo o que veio depois é consequência. As licitações públicas a partir de 2007 levantaram a receita de novo, enquanto os juros comiam a margem. Um sistema de armazenamento de 3,65 milhões de reais foi destruído em trânsito em novembro de 2008, e a transportadora não pagou. O mercado de crédito fechou. Em 20 de fevereiro de 2009, a empresa pediu recuperação judicial, com dívidas de 49,5 milhões de reais e trinta pessoas ainda empregadas.",
       "A lição não é que tenham administrado mal. Executaram corretamente o maior contrato da vida deles. Para um negócio de margem apertada e capital emprestado, um único cliente grande o bastante para dobrar o ano é um risco existencial mesmo quando tudo dá certo, e o risco não cai na entrega, mas na data em que o dinheiro chega.",
@@ -1477,7 +1478,7 @@ export const SHARD_2: Record<string, PartnerVendorOverlay> = {
     intro: "Nenhuma empresa desta página importa mais para o assunto diário deste site: o SSL, ancestral de toda sessão TLS que as ferramentas daqui decodificam, foi projetado na Netscape, assim como o JavaScript e o cookie HTTP. O navegador Navigator levou a web da academia para todo mundo, deflagrou a guerra dos navegadores e deixou de herança a Mozilla e a própria web aberta.",
     // Body: 1 paragraph(s), same order as the English.
     body: [
-      "Do segundo ato de Jim Clark depois da SGI e do IPO de 1995 que deu início à era pontocom até a aquisição pela AOL e a sobrevida no Firefox: o perfil acompanha os cinquenta e um meses que religaram o mundo.",
+      "Do segundo ato de Jim Clark depois da SGI e do IPO (oferta pública inicial) de 1995 que deu início à era pontocom até a aquisição pela AOL e a sobrevida no Firefox: o perfil acompanha os cinquenta e um meses que religaram o mundo.",
     ],
     // Ending note (the year stays in the English record).
     endedNote: "A America Online concluiu a aquisição em 17 de março de 1999; a Netscape sobreviveu à fusão como subsidiária integral da AOL, com cada ação convertida em 0,9 ação da AOL.",
@@ -1579,7 +1580,7 @@ export const SHARD_2: Record<string, PartnerVendorOverlay> = {
     intro: "Tem DOIS registros separados de nível Expert no diretório brasileiro de parceiros da Fortinet, um em Fortaleza e outro em Cuiabá, que é a cara de uma parceira que construiu uma segunda operação regional, e não um segundo escritório.",
     // Body: 2 paragraph(s), same order as the English.
     body: [
-      "Os dois registros não são um artefato contábil. A entidade de Fortaleza está listada como integradora e provedora de segurança gerenciada, com SD-WAN como especialização; a de Cuiabá está listada apenas como integradora, sem especialização. É uma parceira do Nordeste que se estendeu ao Centro-Oeste e ainda está construindo o lado gerenciado de lá, e o diretório registra a diferença em vez de diluí-la numa média.",
+      "Os dois registros não são um artefato contábil. A entidade de Fortaleza está listada como integradora e provedora de segurança gerenciada, com SD-WAN (software-defined wide area network) como especialização; a de Cuiabá está listada apenas como integradora, sem especialização. É uma parceira do Nordeste que se estendeu ao Centro-Oeste e ainda está construindo o lado gerenciado de lá, e o diretório registra a diferença em vez de diluí-la numa média.",
       "É também a ilustração mais clara de por que vale a pena citar o diretório da Fortinet. A maioria dos fabricantes publica um localizador de parceiros que responde onde comprar e nada mais. Este publica nível, cidade, modelo de negócio e especializações nomeadas, o que significa que uma afirmação sobre a posição de uma parceira pode ser conferida pelo leitor, em vez de aceita na confiança. Todo verbete de nível Expert deste catálogo se apoia nisso, e os fabricantes cujos diretórios não podem ser enumerados são justamente aqueles cujas afirmações sobre parceiros continuam ralas aqui.",
     ],
   },
@@ -1732,12 +1733,12 @@ export const SHARD_2: Record<string, PartnerVendorOverlay> = {
   // ---- pearson-vue: pt-BR prose for the record and its profile (facts stay in the English record) ----
   "pearson-vue": {
     // Parent note (official.parent.note), added 26/10/2026 with the parents apply; name, slug and year stay English facts.
-    parentNote: "Um negócio da Pearson que mantém o próprio nome: a Pearson VUE é o braço de aplicação de exames da Pearson plc.",
+    parentNote: "O braço de aplicação de exames da Pearson plc, que usou nome próprio, Pearson VUE, até 18 de novembro de 2025 e agora se chama Pearson Professional Assessments.",
     // Title: no subtitle, so the company name verbatim (listed so the report counts the record complete).
     name: "Pearson VUE",
     // Card line (also the meta description) and intro paragraph.
     tagline: "Uma certificação vale exatamente o que vale sua verificação, e é aqui que a verificação acontece.",
-    intro: "A Virtual University Enterprises foi fundada em 1994 (o relato da própria empresa cita Clarke Porter, Steve Nordberg e Kirk Lundeen; algumas fontes creditam apenas E. Clarke Porter). Expandiu-se para a Holanda e a Austrália no ano seguinte, foi adquirida pela NCS e depois pela Pearson em 2000, e virou Pearson VUE. Hoje aplica algo como 21 milhões de provas por ano em mais de 180 países.",
+    intro: "A Virtual University Enterprises foi fundada em 1994 (o relato da própria empresa cita Clarke Porter, Steve Nordberg e Kirk Lundeen; algumas fontes creditam apenas E. Clarke Porter). Expandiu-se para a Holanda e a Austrália no ano seguinte, foi adquirida pela NCS e depois pela Pearson em 2000, e virou Pearson VUE. Hoje aplica algo como 21 milhões de provas por ano em mais de 180 países. Em 18 de novembro de 2025 passou a usar o próprio nome Pearson, com o negócio identificado como Professional Assessments; a troca estava prevista para se estender por 2026, e em novembro de 2026 os sites dos candidatos ainda mostravam o nome antigo ao lado do novo.",
     // Body: 6 paragraph(s), same order as the English.
     body: [
       "O motivo pelo qual ela pertence a um site sobre ensino é uma cadeia de confiança que quase ninguém examina. Um fabricante define o que significa competência e emite uma credencial. Uma empresa de treinamento ensina com esse alvo. E em algum ponto no meio, um estranho precisa comprovar que a pessoa sentada ao teclado é a pessoa cujo nome está no certificado, que ela não teve ajuda e que não viu as questões antes. Uma credencial vale exatamente o que vale essa verificação, e nada mais. Toda discussão sobre se as certificações significam alguma coisa é, na verdade, uma discussão sobre esta camada.",
@@ -1788,6 +1789,11 @@ export const SHARD_2: Record<string, PartnerVendorOverlay> = {
           "year": 2025,
           "title": "E de volta ao treinamento, trinta anos depois",
           "detail": "O programa atual está convertendo a rede de centros de provas em locais que vendem treinamento junto com a prova: cursos de nuvem, segurança e inteligência artificial ministrados nos mesmos locais que aplicam o certificado no fim. A empresa fundada para fazer treinamento e desviada para as provas agora usa a rede de provas para fazer treinamento."
+        },
+        {
+          "year": 2025,
+          "title": "E abrindo mão do nome",
+          "detail": "Em 18 de novembro de 2025 a Pearson VUE passou a se chamar apenas Pearson, com o negócio identificado como Professional Assessments. A troca deveria se estender por 2026, então por um tempo os candidatos veem os dois nomes no mesmo portal."
         }
       ],
       // Products: names as the vendor writes them; descriptions translated.
@@ -2055,7 +2061,7 @@ export const SHARD_2: Record<string, PartnerVendorOverlay> = {
     // Body: 2 paragraph(s), same order as the English.
     body: [
       "A Red Education fornece capacitação em Riverbed ao mercado desde 2008 e é Riverbed Authorised Consulting Partner, com cursos que seguem em seus catálogos da Australásia, da SAARC e da ASEAN.",
-      "Fundada em 2002 por Jerry Kennelly e Steve McCanne (este, coautor do tcpdump e do Berkeley Packet Filter, ferramentas que metade dos tutoriais deste site pressupõe), a Riverbed surfou a era SteelHead até um IPO, teve o capital fechado em 2015 e passou por uma reestruturação sob supervisão judicial no fim de 2021. Hoje concorre em observabilidade unificada, bem longe da WAN de filial que foi criada para encolher.",
+      "Fundada em 2002 por Jerry Kennelly e Steve McCanne (este, coautor do tcpdump e do Berkeley Packet Filter, ferramentas que metade dos tutoriais deste site pressupõe), a Riverbed surfou a era SteelHead até um IPO (oferta pública inicial), teve o capital fechado em 2015 e passou por uma reestruturação sob supervisão judicial no fim de 2021. Hoje concorre em observabilidade unificada, bem longe da WAN de filial que foi criada para encolher.",
     ],
     // Profile: complete copy of profiles/riverbed.ts; years, companies, founders, personal markers and hrefs untouched.
     profile: {
@@ -2136,7 +2142,7 @@ export const SHARD_2: Record<string, PartnerVendorOverlay> = {
       ],
       // Markets paragraphs.
       markets: [
-        "A Riverbed hoje vende aceleração e observabilidade unificada a grandes empresas, um segundo ato focado depois que a era do SD-WAN absorveu a otimização de WAN clássica, concorrendo no mercado de monitoramento de desempenho em vez de definir uma categoria própria."
+        "A Riverbed hoje vende aceleração e observabilidade unificada a grandes empresas, um segundo ato focado depois que a era do SD-WAN (software-defined wide area network) absorveu a otimização de WAN clássica, concorrendo no mercado de monitoramento de desempenho em vez de definir uma categoria própria."
       ],
       // Analyst standing statements.
       analyst: [
@@ -2405,7 +2411,7 @@ export const SHARD_2: Record<string, PartnerVendorOverlay> = {
     name: "Versa Networks - a independente do SASE",
     // Card line (also the meta description) and intro paragraph.
     tagline: "Dois irmãos vindos da Riverstone e da Juniper construindo SASE unificado: uma das últimas grandes independentes num mercado consolidado.",
-    intro: "Fundada em 2012 pelos irmãos Kumar e Apurva Mehta depois de oito anos à frente da série MX da Juniper e, antes disso, de cargos seniores na Riverstone Networks, onde eu trabalhei de 2000 a 2002. A Versa construiu rede e segurança como uma única pilha de software multi-tenant anos antes de o Gartner chamar a categoria de SASE, levantou cerca de US$ 316 milhões enquanto as rivais eram vendidas a Cisco, VMware, Aruba e Palo Alto, e continua independente.",
+    intro: "Fundada em 2012 pelos irmãos Kumar e Apurva Mehta depois de oito anos à frente da série MX da Juniper e, antes disso, de cargos seniores na Riverstone Networks, onde eu trabalhei de 2000 a 2002. A Versa construiu rede e segurança como uma única pilha de software multi-tenant anos antes de o Gartner chamar a categoria de SASE (secure access service edge), levantou cerca de US$ 316 milhões enquanto as rivais eram vendidas a Cisco, VMware, Aruba e Palo Alto, e continua independente.",
     // Accuracy note, claims kept at the same strength.
     note: "Nem eu nem a Red Education ministramos treinamentos de Versa. Esta página é história corporativa, verificada nas biografias de liderança da própria Versa e em fontes primárias. A ligação de linhagem é real: os dois fundadores construíram na Riverstone Networks (minha empregadora em Santa Clara, 2000-2002) antes dos anos na Juniper.",
     // Profile: complete copy of profiles/versa.ts; years, companies, founders, personal markers and hrefs untouched.
@@ -2496,13 +2502,13 @@ export const SHARD_2: Record<string, PartnerVendorOverlay> = {
       ],
       // Markets paragraphs.
       markets: [
-        "A Versa concorre em SASE unificado contra os maiores nomes de redes e segurança: o mercado convergente de SD-WAN e SSE que a categoria do Gartner hoje define. Seus clientes incluem milhares de empresas e os provedores de serviço que a revendem como oferta gerenciada.",
+        "A Versa concorre em SASE unificado contra os maiores nomes de redes e segurança: o mercado convergente de SD-WAN (software-defined wide area network) e SSE que a categoria do Gartner hoje define. Seus clientes incluem milhares de empresas e os provedores de serviço que a revendem como oferta gerenciada.",
         "Para este site, a Versa é também um marco de linhagem: o caminho de seus fundadores passa pela Riverstone Networks, a mesma empresa de Santa Clara onde eu trabalhei de 2000 a 2002, e volta até a Centillion, ligando a era do SASE à guerra dos switches dos anos 1990."
       ],
       // Analyst standing statements.
       analyst: [
         "O VOS da Versa recebeu a maior nota no caso de uso Large Global WAN do Critical Capabilities for SD-WAN de 2022 do Gartner.",
-        "Captação total de cerca de US$ 316 milhões em seis rodadas (até outubro de 2022), com investidores como Sequoia Capital, Mayfield, BlackRock e Verizon Ventures, e com a liderança declarando publicamente preferir o caminho do IPO ao da aquisição."
+        "Captação total de cerca de US$ 316 milhões em seis rodadas (até outubro de 2022), com investidores como Sequoia Capital, Mayfield, BlackRock e Verizon Ventures, e com a liderança declarando publicamente preferir o caminho do IPO (oferta pública inicial) ao da aquisição."
       ],
       // Career cross-link: label translated, href untouched.
       careerLink: {
@@ -2523,6 +2529,49 @@ export const SHARD_2: Record<string, PartnerVendorOverlay> = {
       "Duas coisas a separam dos verbetes de distribuição que já estão nesta linha do tempo. Ela afirma industrializar no Brasil mais da metade de seus itens de maior volume, o que faz dela uma fabricante dentro de uma distribuidora, e não apenas um negócio de logística e crédito. E construiu sua oferta em torno da tecnologia como serviço, vendendo hardware e software por assinatura, e não como compra.",
       "As duas são respostas à mesma pressão. A função clássica de uma distribuidora (estoque, crédito, logística e alcance de canal) é a parte da cadeia mais fácil de comprimir, e as duas saídas são fabricar alguma coisa ou mudar o que está sendo comprado. A WDC fez as duas coisas.",
       "O simples fato de fabricar já é incomum o bastante para situá-la diante dos marcos: a foundry e a fábrica terceirizada existem para que as empresas não precisem ser donas da produção, e uma distribuidora que industrializa metade do próprio volume está remando contra uma corrente de quarenta anos.",
+    ],
+  },
+  // ---- encora: pt-BR prose for the record (facts stay in the English record) ----
+  "encora": {
+    // Title: company verbatim, subtitle translated.
+    name: "Encora - os engenheiros de Campinas que vieram pelo caminho da Lucent",
+    // Card line.
+    tagline: "Uma empresa de engenharia de software montada por fundos de private equity, que adotou o nome em 2020, comprou uma empresa de Campinas cujo fundador tinha saído da Lucent e foi ela mesma comprada pela indiana Coforge em 2026.",
+    // Intro paragraph.
+    intro: "A Encora era uma empresa de engenharia de produtos de software terceirizada, com sede em Scottsdale, no Arizona, montada sob controle de fundos de private equity e batizada em agosto de 2020. Seu capítulo brasileiro é a Daitan, uma empresa de engenharia de Campinas comprada em 2021. Em abril de 2026, a indiana Coforge concluiu a compra da Encora, apresentando-a como uma base de entrega nearshore em escala na América Latina para clientes nos Estados Unidos.",
+    // Body: 4 paragraph(s), same order as the English.
+    body: [
+      "A Encora é mais fácil de descrever como uma sequência de donos e de nomes do que como uma fundação. Em agosto de 2020, a Indecomm Digital Services e suas subsidiárias Nearsoft e Söoryen Technologies se unificaram sob o nome Encora, com a Warburg Pincus como investidora e mais de 4.000 pessoas. A Avantica, uma empresa de engenharia nearshore criada em 1996 e comprada em 2019, adotou o nome Encora em junho de 2021. Numa transação noticiada em 1º de janeiro de 2022, a Advent International ficou com o controle, e a Warburg Pincus manteve uma participação minoritária; a empresa era então descrita com mais de 6.300 pessoas em quarenta escritórios.",
+      "A parte brasileira chegou em julho de 2021 com a Daitan, que tinha cerca de 600 pessoas, umas 500 delas em Campinas, e centros de pesquisa e desenvolvimento ali e em Victoria, na Colúmbia Britânica. A história dela é a parte que vale guardar. Augusto Cavalcanti fundou a Daitan em 2004, depois de sair da Lucent, onde tinha liderado equipes de pesquisa e desenvolvimento para o Brasil e os Estados Unidos; ele tinha entrado na Lucent quando ela comprou, em 1999, a Zetax, a fabricante de equipamentos de telecomunicações que ele fundara no fim dos anos 1980. A Daitan passou para a marca Encora em abril de 2022.",
+      "Em dezembro de 2025, a Coforge assinou os contratos para comprar o negócio da Advent, da Warburg Pincus e de outros acionistas minoritários, e anunciou a conclusão em 23 de abril de 2026. A própria descrição do objetivo era geográfica: a aquisição reposicionaria a Coforge como uma empresa com entrega nearshore em escala na América Latina, com uma base de talentos de engenharia atendendo clientes nos Estados Unidos. A versão anterior da mesma ideia, nas palavras da Encora, falava do dia de trabalho: equipes na América Latina conseguem atender clientes nos Estados Unidos e no Canadá dentro do próprio horário comercial.",
+      "Lida ao lado do registro de Bell Labs, Lucent e Alcatel, a cadeia é de uma clareza incomum. Em 1999, a Lucent comprou uma fabricante brasileira de equipamentos de telecomunicações e, com ela, o fundador; em 2004, o fundador saiu e montou uma empresa de engenharia de software; em 2021, uma empresa de engenharia apoiada por private equity comprou essa empresa, dizendo que queria o talento no Brasil; e em 2026 um grupo indiano de serviços comprou essa empresa, dizendo que queria uma base de talentos nearshore na América Latina. Três compras em vinte e sete anos, e o ativo citado nas duas últimas foi o mesmo: engenheiros, a maioria em Campinas, que constroem software para clientes de outros lugares. O registro da Unicamp explica por que eles estavam ali.",
+    ],
+    // The ending's note (the year stays in the English record).
+    endedNote: "Adquirida pela Coforge, que anunciou a conclusão da transação em 23 de abril de 2026; em 8 de novembro de 2026, encora.com respondia com um redirecionamento permanente para coforge.com.",
+    // The successor link's label (the URL stays in the English record).
+    successorLabel: "Coforge, a empresa indiana de serviços de engenharia que concluiu a compra da Encora em 23 de abril de 2026",
+    // Acquisitions: index-aligned with the English list (Avantica, Daitan).
+    acquisitions: [
+      // Avantica.
+      { what: "Uma empresa de engenharia de software nearshore criada em 1996, que atendia empresas consolidadas e em estágio inicial nos Estados Unidos e na América Latina.", became: "Encora, quando adotou o nome do grupo em junho de 2021.", sourceNote: "Press release da Encora, Scottsdale, 22 de junho de 2021." },
+      // Daitan.
+      { what: "Uma empresa de engenharia de software com cerca de 600 pessoas, escritório em San Ramon, na Califórnia, e centros de pesquisa e desenvolvimento em Victoria, na Colúmbia Britânica, e em Campinas, São Paulo.", became: "A operação brasileira da Encora, sob a marca Encora a partir de abril de 2022.", sourceNote: "Press releases da Encora, Scottsdale, 6 de julho de 2021 e 6 de abril de 2022; Baguete, 6 de julho de 2021, para o número de pessoas em Campinas e a trajetória do fundador na Lucent e na Zetax." },
+    ],
+  },
+  // ---- it-forum: pt-BR prose for the record (facts stay in the English record) ----
+  "it-forum": {
+    // Title: company verbatim, subtitle translated.
+    name: "IT Forum - uma Byte licenciada, depois a sala onde os diretores de tecnologia do Brasil se encontram",
+    // Card line.
+    tagline: "Começou no início dos anos 1990 trazendo a revista Byte para o Brasil, virou a editora IT Mídia, parou de imprimir em 2014 e hoje é uma marca de notícias, dados e eventos construída em torno dos encontros anuais dos diretores de tecnologia da informação do país.",
+    // Intro paragraph.
+    intro: "O IT Forum é a marca brasileira de mídia, dados e eventos de tecnologia da informação (TI) que nasceu da IT Mídia, a editora fundada por Adelson de Sousa. A história começa no início dos anos 1990, quando Sousa e Miguel Petrilli trouxeram a revista Byte para o Brasil. Hoje ele publica notícias para quem compra tecnologia, faz pesquisas e premiações e realiza eventos de imersão para diretores de tecnologia da informação (CIOs), e faz parte do Grupo Itaqui, com base em Itapevi, São Paulo.",
+    // Body: 4 paragraph(s), same order as the English.
+    body: [
+      "Começou como uma licença. O relato de aniversário do próprio IT Forum diz que Adelson de Sousa e Miguel Petrilli trouxeram a revista Byte para o Brasil e que os fundadores criaram depois a IT Mídia, com títulos como LAN Times, CRN e InformationWeek; uma matéria sobre a edição de 35 anos, em abril de 2026, data a criação em 1991. Em 2000, lançou o portal IT Web, uma ida precoce para a internet para uma editora de revistas impressas.",
+      "O negócio seguiu então o caminho da maioria das editoras setoriais, mais depressa do que a maioria. A IT Mídia foi fundada como editora de revistas de tecnologia business-to-business e, em 2014, descontinuou os títulos impressos. Em 2018, ficou com as licenças brasileiras de CIO, Computerworld, IDG Now!, PC World e Macworld. Em maio de 2019, o fundador dizia que os eventos tinham se tornado a maior fatia da receita, e a empresa se reorganizou numa plataforma de eventos chamada IT Forum e numa plataforma de conteúdo; em 31 de outubro de 2023, anunciou a incorporação total da IT Mídia ao IT Forum, concluindo uma consolidação de marcas iniciada em 2013.",
+      "O que ele vende hoje é acesso. Os eventos principais, o IT Forum Trancoso e o IT Forum Praia do Forte, reúnem os diretores de tecnologia da informação (CIOs) das maiores empresas do Brasil e os presidentes-executivos da indústria de tecnologia; ele publica um estudo de mercado, o Antes da TI, a Estratégia, mantém premiações para usos inovadores de tecnologia da informação (TI) e um prêmio de executivo de TI do ano, e produz podcasts e séries. O grupo a que pertence, o Grupo Itaqui, se descreve como um ecossistema de mídia, dados, eventos, educação e investimentos, com base física no Distrito Itaqui, em Itapevi.",
+      "Para um profissional de tecnologia no Brasil, ele importa por dois motivos, um prático e um estrutural. O prático é que é uma fonte de trabalho: vários verbetes desta seção citam suas reportagens sobre aquisições brasileiras. O estrutural é a trajetória. Uma marca que começou licenciando uma revista americana de computação para leitores brasileiros terminou como um ponto de encontro onde compradores brasileiros e os presidentes-executivos da indústria de tecnologia passam dias juntos, o que resume bem como o próprio mercado mudou: a informação ficou abundante, e o relacionamento virou a coisa escassa. O fundador disse isso numa frase na edição de 2026: números de audiência não sustentam um ecossistema; relacionamento sustenta.",
     ],
   },
 };

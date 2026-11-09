@@ -138,6 +138,9 @@ export const LEARN_LABS: LearnLab[] = [
   { id: "python-bytes-and-text", articles: ["python-bytes-text-and-encodings"] },
   // A string through ip_address, ip_network or ip_interface: each class's error or the object, its attributes, is_* and subnets().
   { id: "python-ipaddress-explorer", articles: ["python-ipaddress-module"] },
+  // ---- labs: bits (2026-11-08) ----
+  // One octet's eight bits: the value, each bit under LSB 0, MSB 0 and 1-based numbering, the RFC drawing, Ethernet's wire order and the misread value.
+  { id: "octet-bit-numbering", articles: ["least-and-most-significant-bit"] },
 ];
 
 /** The MDX tag that embeds a lab: exactly <Lab id="<id>" />, one per line, nothing else on the tag. */

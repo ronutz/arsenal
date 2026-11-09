@@ -39,6 +39,19 @@ export const COUNTING_READ_SOURCE = `${SOURCE_REPOSITORY}/blob/main/worker/stats
 /** The configuration that binds the two Analytics Engine datasets to the Worker. */
 export const COUNTING_CONFIG_SOURCE = `${SOURCE_REPOSITORY}/blob/main/wrangler.jsonc`;
 
+// THE GAMES' PUBLIC SCOREBOARD (PRIME 08/11/2026). The Privacy page's "Game scores" section links the three files that
+// store, check and define the board's rounds, so what it says (the fields kept, the fields never kept, the 400 days)
+// can be checked against the code the same way. They join the repository with the board; until that change is
+// pushed the links name files that exist in this tree only (scripts/check-counting-source.mjs checks the tree).
+/** The board's endpoints and its storage: what a row keeps, what it never keeps, the cleanup after 400 days. */
+export const SCORES_WRITE_SOURCE = `${SOURCE_REPOSITORY}/blob/main/worker/scores.ts`;
+
+/** The check every posted round goes through: the day's puzzle rebuilt and the round graded again. */
+export const SCORES_VERIFY_SOURCE = `${SOURCE_REPOSITORY}/blob/main/src/lib/fun/verify.ts`;
+
+/** The table itself: its columns, and the ones it does not have. */
+export const SCORES_SCHEMA_SOURCE = `${SOURCE_REPOSITORY}/blob/main/migrations/0001_fun_scores.sql`;
+
 /** Cloudflare's own statement of how long Analytics Engine keeps what is written to it (read 2026-10-26). */
 export const COUNTING_RETENTION_SOURCE = "https://developers.cloudflare.com/analytics/analytics-engine/limits/";
 

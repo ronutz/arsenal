@@ -311,6 +311,16 @@ import SnmpCounterWrapCalculatorTool from "@/components/SnmpCounterWrapCalculato
 import { manifest as snmpCounterWrapManifest } from "@/lib/tools/snmp-counter-wrap-calculator"; // its sources, for the References panel
 import VrrpTimerCalculatorTool from "@/components/VrrpTimerCalculatorTool"; // VRRP timer, virtual MAC and election calculator (2026-11-02)
 import { manifest as vrrpTimerManifest } from "@/lib/tools/vrrp-timer-calculator"; // its sources, for the References panel
+import OspfCostAndAdjacencyCheckerTool from "@/components/OspfCostAndAdjacencyCheckerTool"; // OSPF cost and adjacency checker (2026-11-08)
+import { manifest as ospfCostAdjacencyManifest } from "@/lib/tools/ospf-cost-and-adjacency-checker"; // its sources, for the References panel
+import VlanTagAndTrunkCalculatorTool from "@/components/VlanTagAndTrunkCalculatorTool"; // 802.1Q tag decoder and trunk VLAN calculator (2026-11-08)
+import { manifest as vlanTagTrunkManifest } from "@/lib/tools/vlan-tag-and-trunk-calculator"; // its sources, for the References panel
+import LacpHashAndStateReaderTool from "@/components/LacpHashAndStateReaderTool"; // LACP member link and state reader (2026-11-08)
+import { manifest as lacpHashAndStateManifest } from "@/lib/tools/lacp-hash-and-state-reader"; // its sources, for the References panel
+import StpElectionCalculatorTool from "@/components/StpElectionCalculatorTool"; // spanning tree election calculator (2026-11-08)
+import { manifest as stpElectionManifest } from "@/lib/tools/stp-election-calculator"; // its sources, for the References panel
+import BitNumberingAndOrderTool from "@/components/BitNumberingAndOrderTool"; // bit numbering and bit order (2026-11-08)
+import { manifest as bitNumberingManifest } from "@/lib/tools/bit-numbering-and-order"; // its sources, for the References panel
 import HttpMethodsComparisonTool from "@/components/HttpMethodsComparisonTool";
 import CronExpressionExplainerTool from "@/components/CronExpressionExplainerTool";
 import { manifest as cronExpressionExplainerManifest } from "@/lib/tools/cron-expression-explainer";
@@ -416,6 +426,8 @@ import OuiLookupTool from "@/components/OuiLookupTool";
 import VossFabricIdTool from "@/components/VossFabricIdTool";
 import VossExosTranslatorTool from "@/components/VossExosTranslatorTool";
 import { manifest as syslogPriManifest } from "@/lib/tools/syslog-pri-decoder";
+import RadiusPacketDecoderTool from "@/components/RadiusPacketDecoderTool"; // RADIUS packet decoder (2026-11-08)
+import { manifest as radiusPacketDecoderManifest } from "@/lib/tools/radius-packet-decoder"; // its sources, for the References list
 import { manifest as ja4Manifest } from "@/lib/tools/ja4-fingerprint-decoder";
 import { manifest as ouiManifest } from "@/lib/tools/oui-lookup";
 import { manifest as vossManifest } from "@/lib/tools/voss-fabric-id";
@@ -502,6 +514,31 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "vrrp-timer-calculator": {
     Component: VrrpTimerCalculatorTool, // timers, election and virtual MAC
     sources: vrrpTimerManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })), // five sources, read 2026-11-02
+  },
+  // OSPF cost and adjacency checker (2026-11-08): RFC 2328 and its errata, RFC 5340, 3101, 5709, 6549, 7166, 4552, 5838, the RFC index, and the vendors' cost pages.
+  "ospf-cost-and-adjacency-checker": {
+    Component: OspfCostAndAdjacencyCheckerTool, // cost from bandwidth per vendor, and the adjacency checks
+    sources: ospfCostAdjacencyManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })), // twenty sources, read 2026-11-08
+  },
+  // 802.1Q tag decoder and trunk VLAN calculator (2026-11-08): P802.1ad/D2.4, the IEEE YANG and MIB modules, RFC 9542, IANA, and the Cisco, Juniper, HPE Aruba, MikroTik and Extreme pages.
+  "vlan-tag-and-trunk-calculator": {
+    Component: VlanTagAndTrunkCalculatorTool, // the tag decoder and the trunk calculator
+    sources: vlanTagTrunkManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })), // 22 sources, read 2026-11-08
+  },
+  // LACP member link and state reader (2026-11-08): the Linux bonding HOWTO and source, Cisco 12023, the IEEE 802.1AX MIB, RFC 3417, Juniper, Extreme, Arista, HPE Aruba, MikroTik.
+  "lacp-hash-and-state-reader": {
+    Component: LacpHashAndStateReaderTool, // which member carries a flow, and the LACP state flags
+    sources: lacpHashAndStateManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })), // 21 sources, read 2026-11-08
+  },
+  // Spanning tree election calculator (2026-11-08): the IEEE 802.1Q RSTP YANG module and spanning tree MIB, RFC 4188, RFC 9542, Juniper, MikroTik, Extreme, Cisco, HPE Aruba, Arista, Cisco Press, RFC 3986.
+  "stp-election-calculator": {
+    Component: StpElectionCalculatorTool, // root bridge, root ports, designated ports, path costs
+    sources: stpElectionManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })), // 23 sources, read 2026-11-08
+  },
+  // Bit numbering and bit order (2026-11-08): Intel, IBM, RFC 791, 1035, 3417, 9542, 2469, 1662, the IEEE RA, the LACP MIB, Huawei, Cisco, TI, the Linux kernel headers, IANA.
+  "bit-numbering-and-order": {
+    Component: BitNumberingAndOrderTool, // every bit under three numberings, bit order on a wire, canonical and bit-reversed MACs
+    sources: bitNumberingManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })), // 28 sources, read 2026-11-08
   },
   // Route origin validation calculator (2026-10-19): RFC 6811, RFC 9582, RFC 6483, RFC 7607, RFC 9319, RFC 8416, RFC 5396.
   "rpki-origin-validation": {
@@ -1301,6 +1338,10 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "syslog-pri-decoder": {
     Component: SyslogPriDecoderTool,
     sources: syslogPriManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "radius-packet-decoder": {
+    Component: RadiusPacketDecoderTool, // the hex of a RADIUS packet to its header and attributes (2026-11-08)
+    sources: radiusPacketDecoderManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })), // RFC 2865, 2866, 2868, 2869, 3162, 3579, 3580, 5176, 5997, 6929, 8044, 2548, 3748, 8907, 9887, the IANA registries and the vendors' documents; read 2026-11-08
   },
   "jwks-explainer": {
     Component: JwksExplainerTool,

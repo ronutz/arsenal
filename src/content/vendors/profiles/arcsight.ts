@@ -60,7 +60,7 @@ export const arcsightProfile: VendorProfile = {
     { name: "ESM", what: "The Enterprise Security Manager: normalise every event into one schema, then run correlation rules across the combined stream. The normalisation is the unglamorous half and the reason the correlation is possible at all." },
     { name: "Connectors", what: "The parsers for each source device, and the actual moat. Supporting hundreds of products' log formats is years of tedious work that a competitor must repeat in full, and it is why incumbency in this category is durable." },
     { name: "Logger", what: "Long-term storage of the raw events for compliance and investigation, sold alongside the correlation engine because auditors and analysts want different things from the same data." },
-    { name: "Threat detection and SOAR", what: "Later additions including automated response, some of it acquired - the same consolidation every vendor in this market has made." },
+    { name: "Threat detection and SOAR", what: "Later additions including security orchestration, automation and response (SOAR), some of it acquired - the same consolidation every vendor in this market has made." },
   ],
   innovations: [
     {

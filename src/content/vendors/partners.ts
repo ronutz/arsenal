@@ -57,7 +57,9 @@ export type VendorTag =
   /** Certification, education and training. */
   | "training"
   /** Standards bodies and industry associations. */
-  | "standards";
+  | "standards"
+  /** Trade press, news, events: the industry describing itself (added 2026-11-08 for IT Forum and Aranda/RTI). */
+  | "media";
 
 /** The closed vocabulary, for the guard and for filter UIs. */
 export const VENDOR_TAGS: readonly VendorTag[] = [
@@ -69,6 +71,7 @@ export const VENDOR_TAGS: readonly VendorTag[] = [
   "datacentre",
   "training",
   "standards",
+  "media",
 ] as const;
 
 /**
@@ -195,9 +198,11 @@ export interface PartnerVendor {
    *
    *  Set ONLY where it differs from `founded`, so its presence means something.
    *  On a combined-lineage card `founded` is already the earliest company in the
-   *  story and `foundedCompany` names which, so this stays unset there: three
-   *  cards carry it, the three whose `founded` was corrected on 2026-10-02 to
-   *  their own subject's year.
+   *  story and `foundedCompany` names which, so this stays unset there. It was
+   *  first set on the three cards whose `founded` was corrected on 2026-10-02 to
+   *  their own subject's year; twelve cards carry it as of 2026-11-08 (EY, PwC
+   *  and KPMG, whose names date from their 1989, 1998 and 1987 mergers, among
+   *  them).
    *
    *  The year is ASSERTED to be earlier than `founded` by
    *  scripts/check-vendor-founded-sources.mjs - a story cannot begin after its
@@ -603,7 +608,7 @@ export const partnerVendors: PartnerVendor[] = [
     body: [
       "Search engines at the time largely ranked results by how often a search term appeared on a page, which is trivially easy to game and was being gamed heavily. PageRank measured something a page's own author does not control: who else thought it was worth linking to.",
       "In 1998 Page and Brin tried to sell PageRank to AltaVista for $1M, intending to go back to their studies. AltaVista did not buy it. They registered google.com on 15 September 1997 - the name a misspelling of googol, the digit one followed by a hundred zeros - and incorporated Google Inc. on 4 September 1998 in a friend's garage in Menlo Park.",
-      "The first cheque came from Andy Bechtolsheim, a co-founder of Sun Microsystems, followed by $25M from Kleiner Perkins and Sequoia in 1999. The IPO in 2004 raised $1.67B.",
+      "The first cheque came from Andy Bechtolsheim, a co-founder of Sun Microsystems, followed by $25M from Kleiner Perkins and Sequoia in 1999. The IPO (initial public offering) in 2004 raised $1.67B.",
       "The homepage was deliberately bare while every competitor was becoming a portal. That was partly conviction and partly circumstance - neither founder was much of an HTML author - but it landed at exactly the moment AltaVista and its peers were adding shopping, email and news to the front page of a search engine.",
       "A footnote worth keeping: RankDex, built by Robin Li in 1996, was exploring link-based ranking on a similar timeline. Li patented that work and later founded Baidu. PageRank was not the only idea of its kind; it was the one that got built into a company that wanted to be a search engine.",
     ],
@@ -779,6 +784,13 @@ export const partnerVendors: PartnerVendor[] = [
       "Which makes this the luckiest defeat in the history of consulting. They had fought for years to escape a parent while keeping the brand. They lost that argument, paid a billion dollars, and were ordered to abandon the name at enormous expense. Eighteen months later the thing they had been forced to give up would have destroyed them. Forbes put it best at the time: after Enron, any name was better than Andersen.",
       "It is worth being precise about what the arbitration actually did, because that is the part with a lesson in it. The ruling did not merely rename them - it established them as a legally separate entity, which is why Arthur Andersen's criminal conviction did not reach across and take the consultancy with it. The firewall was a condition they resented and it turned out to be the thing that saved them.",
       "What followed is the ordinary arc at extraordinary scale: offshore delivery hubs in India and the Philippines, expansion into outsourcing and business process work, and growth from around $9B of revenue in 1998 to roughly $64B by 2024, with a headcount now approaching 800,000 across more than 120 countries.",
+      // Paragraph 9 (added 2026-11-08): Avanade, the joint venture from the Andersen years.
+      "One arrangement from those years outlived the name. In March 2000, while the arbitration was still running, Andersen Consulting and Microsoft announced Avanade, a co-owned company built to deliver systems on Windows 2000; Accenture now holds the majority of it and lists Avanade among its subsidiaries, and the Avanade entry follows it from there.",
+    ],
+    // Acquisitions with a record of their own; no price fields.
+    acquisitions: [
+      // Udacity, 2024 (its record carries the parent field).
+      { year: 2024, name: "Udacity", what: "The online technology education company behind the Nanodegree, adding more than 230 people.", became: "Part of Accenture LearnVantage, its technology learning business.", sourceNote: "Accenture newsroom, New York and Mountain View, 20 May 2024; the acquisition was announced on 5 March 2024." },
     ],
     externalUrl: "https://www.britannica.com/money/Accenture",
     externalLabel: "Accenture (Britannica)",
@@ -789,6 +801,11 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Forbes (March 2002): $175M spent promoting the new name, and the observation that after Enron any tag was better than Andersen", url: "https://www.forbes.com/global/2002/0304/060.html" },
       { label: "Company history: the 1953 General Electric feasibility study leading to a UNIVAC I installation, and the naming attributed to Kim Petersen", url: "https://swottemplate.com/blogs/brief-history/accenture-brief-history", sourceNote: "This source describes Petersen as Danish; others place him in Oslo. The submission itself is consistently attributed." },
       { label: "Arbitration detail: the ICC ruling granting independence for a payment reported at $1.2B and requiring the name change by 1 January 2001, and the point that separate-entity status meant no spin-off liability when Arthur Andersen collapsed", url: "https://www.useluminix.com/reports/company-overviews/accenture-company-overview-business-segments-financials-and-global-market-position-2026/source/0", sourceNote: "Reports the settlement at $1.2B where others say ~$1B; both figures are given in the text above." },
+      // Avanade (added 2026-11-08): the founding announcement and the ownership.
+      { label: "InternetNews, 13 March 2000: Andersen Consulting and Microsoft form Avanade, co-owned by the two, on Windows 2000", url: "https://www.internetnews.com/it-management/andersen-consulting-microsoft-form-new-firm/" },
+      { label: "Accenture plc Form 10-K for fiscal 2026, Exhibit 21.1: Avanade Inc and Avanade do Brasil Ltda among the subsidiaries as of 31 August 2026 (SEC EDGAR)", url: "https://www.sec.gov/Archives/edgar/data/1467373/000146737326000049/a831202610-kexhibit211.htm", sourceNote: "Read via WebFetch on 2026-11-08." },
+      // Udacity (added 2026-11-08): the acquisition the acquisitions field lists.
+      { label: "Accenture newsroom, 20 May 2024: Accenture has completed the acquisition of Udacity, adding more than 230 people to Accenture LearnVantage", url: "https://newsroom.accenture.com/news/2024/accenture-completes-acquisition-of-udacity" },
     ],
   },
   {
@@ -1815,7 +1832,7 @@ export const partnerVendors: PartnerVendor[] = [
       url: "https://home.pearsonvue.com",
       // Owner re-read 2026-10-26 (PRIME ruling of 26/10/2026): Pearson plc's 20-F, Exhibit 8.1, lists the Pearson VUE companies at 100%; the year 2000 stays sourced by Pearson VUE's own vision page below.
       // A company: rendered "part of"; the source below names the owner and the year.
-      parent: { name: "Pearson", since: 2000, note: "A Pearson business that keeps its own name: Pearson VUE is the testing arm of Pearson plc." },
+      parent: { name: "Pearson", since: 2000, note: "The testing arm of Pearson plc, which traded under its own name, Pearson VUE, until 18 November 2025 and is now known as Pearson Professional Assessments." },
     },
     group: "other",
     name: "Pearson VUE",
@@ -1823,7 +1840,7 @@ export const partnerVendors: PartnerVendor[] = [
     tags: ["training", "services"],
     tagline: "A certification is worth exactly what its verification is worth, and this is where the verification happens.",
     intro:
-      "Virtual University Enterprises was founded in 1994 - the company's own account names Clarke Porter, Steve Nordberg and Kirk Lundeen; some sources credit E. Clarke Porter alone. It expanded to the Netherlands and Australia the following year, was acquired by NCS and then by Pearson in 2000, and became Pearson VUE. It now delivers something like 21 million exams a year across more than 180 countries.",
+      "Virtual University Enterprises was founded in 1994 - the company's own account names Clarke Porter, Steve Nordberg and Kirk Lundeen; some sources credit E. Clarke Porter alone. It expanded to the Netherlands and Australia the following year, was acquired by NCS and then by Pearson in 2000, and became Pearson VUE. It now delivers something like 21 million exams a year across more than 180 countries. On 18 November 2025 it took the Pearson name itself, with the business identified as Professional Assessments; the change was planned to run into 2026, and in November 2026 its candidate sites still showed the old name beside the new one.",
     body: [
       "The reason this belongs on a site about teaching is a chain of trust that almost nobody examines. A vendor defines what competence means and issues a credential. A training company teaches toward it. And somewhere in the middle a stranger has to establish that the person sitting at the keyboard is the person named on the certificate, that they had no help, and that they did not see the questions in advance. A credential is worth exactly what that verification is worth, and no more. Every argument about whether certifications mean anything is really an argument about this layer.",
       "So the security apparatus is the product: identity documents checked against the booking, signature capture, palm-vein scanning in some centres, surveillance, a proctor who watches, and a room stripped of everything a candidate might otherwise consult. The Pearson Professional Centers, introduced in 2002, exist to standardise exactly that - because a certification delivered inconsistently across five thousand sites is a certification whose value varies by postcode.",
@@ -1846,6 +1863,9 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Learn & Work Ecosystem Library: Pearson founded 1844; Pearson VUE delivering nearly 21 million exams annually through test centres and OnVUE", url: "https://learnworkecosystemlibrary.com/organizations/pearson-and-pearson-vue/" },
       { label: "Pearson VUE regional release: nearly 20,000 test centres and around 500 client programmes; testing across more than 180 countries", url: "https://www.pearsonvue.com/gb/en/about/news/highlights/pearson-vues-innovative-solutions-revolutionize-t.html", sourceNote: "Company communications. Centre counts vary widely across sources - 4,600, 5,500 and nearly 20,000 all appear - almost certainly counting different things (wholly operated centres, authorised centres, and total seats). No single figure is asserted in this entry." },
       { label: "Test-centre procedure descriptions: identity verification including physical identification checks, signature and in some centres palm-vein scanning, surveillance and trained proctors", url: "https://bitts.ca/pearson-vue-testing-centres/", sourceNote: "A test-centre operator's page rather than a primary source. Used only for the description of standard centre procedure, which is consistent with Pearson VUE's own published candidate rules." },
+      // Added 2026-11-06 (PRIME, 06/11/2026 16:06, the rebrand notice on wsr.pearsonvue.com): the company's own announcement and the notice on its sites, read today with curl.
+      { label: "Pearson VUE news, \"Pearson VUE to rebrand as Pearson Professional Assessments\": effective 18 November 2025 the business takes the name Pearson, its segment identified as Professional Assessments, with the work expected to extend into 2026", url: "https://www.pearsonvue.com/us/en/about/news/2025/pearson-vue-to-rebrand-as-pearson-professional-assessments.html" },
+      { label: "The notice on pearsonvue.com and the candidate portal wsr.pearsonvue.com: Pearson VUE will now be known as Pearson Professional Assessments, and old and new names may be seen together for a while", url: "https://www.pearsonvue.com/" },
       // Added 2026-10-26 (D-19, PRIME ruling of 26/10/2026): the owner's or the company's own document naming the owner; read today with the brief's curl recipe.
       { label: "Pearson plc Form 20-F for 2025, filed 13 March 2026, Exhibit 8.1 (subsidiaries): NCS Pearson, Inc. (United States, 100%), Pearson VUE Europe B.V., Pearson VUE Philippines, Inc. and the Vue Testing Services companies, all 100% (SEC EDGAR)", url: "https://www.sec.gov/Archives/edgar/data/938323/000119312526104945/d33885dex81.htm", sourceNote: "Read 2026-10-26. HTTP 200. home.pearsonvue.com did not answer (curl status 000, twice), so no own-site read; no 'since' is given because no first-party document dating Pearson's purchase (the record says 2000) was read today." },
     ],
@@ -1925,7 +1945,7 @@ export const partnerVendors: PartnerVendor[] = [
       "Avi Freedman started Philadelphia's first internet service provider, netaxs, in 1992. He went on to run network operations at Akamai for over a decade, as vice-president of network infrastructure and then chief network scientist, and also ran the network at AboveNet and served as chief technology officer of ServerCentral. Ian Pye is described as Cloudflare's first employee; Ian Applegate came from Cloudflare too. Dan Ellis came from Netflix. Biegel came from Internap.",
       "So the founding team is a convergence of companies already on this timeline - Akamai and Cloudflare both have their own entries here, and both were built on the same insight about where traffic actually goes. The people who had operated those networks left to build something for the people still operating them.",
       "The reason they gave is the entry. In Freedman's account, large web companies, enterprises and service providers kept telling them that the analytics available inside cloud-scale companies were simply not available in the commercial market - particularly for internet visibility and for architectures that had stopped looking like a data centre. So they built what they had wanted and could not buy. That is a specific and recurring shape: a category exists because the people who needed it were senior enough to build it instead of waiting.",
-      "The product ingests what a network actually emits rather than what a monitoring tool wishes it emitted: NetFlow, IPFIX and sFlow records, SNMP, streaming telemetry, cloud flow logs, host agents, synthetic tests and BGP routing. Flow records are the interesting part for anyone who has tried this at scale, because they arrive in enormous volume, they are lossy by design, and the analytical question is almost never about one record - which is why the problem is a data problem wearing a networking costume.",
+      "The product ingests what a network actually emits rather than what a monitoring tool wishes it emitted: NetFlow, IPFIX and sFlow records, SNMP, streaming telemetry, cloud flow logs, host agents, synthetic tests and BGP (Border Gateway Protocol) routing. Flow records are the interesting part for anyone who has tried this at scale, because they arrive in enormous volume, they are lossy by design, and the analytical question is almost never about one record - which is why the problem is a data problem wearing a networking costume.",
       "Traction was unusually quick: seed funding of $3.1M in September 2014, a $12.1M Series A in June 2015, deployments within months and more than twenty large paying customers inside a year, including Yelp and Box. Later rounds brought total funding to somewhere between $102M and $118M depending on which tally is used.",
       "One public contribution deserves recording, because it is the kind of thing this class of tooling makes possible: Kentik was among those that identified a substantial IP address hijacking in the period before the 2021 United States presidential inauguration. Routing hijacks are visible only to somebody watching the global routing table closely enough to notice that an address block has started being announced from the wrong place. The company also employs Doug Madory, whose internet-routing analysis is widely cited.",
       "It was acquired by Infoblox in 2026. The arc is a familiar one on this timeline - an independent tool built by practitioners is eventually bought by a platform vendor who wants the capability inside their own product - and whether that improves the tool or merely absorbs it is not yet answerable.",
@@ -2007,7 +2027,7 @@ export const partnerVendors: PartnerVendor[] = [
     tags: ["vendor"],
     tagline: "A reseller that became a filter, then a bubble IPO, then a defence contractor's cyber arm, then private equity again.",
     intro:
-      "Phil Trubey founded NetPartners in Sorrento Valley, San Diego in 1994, reselling other people's network security products. What made the company was the thing it built rather than resold: software for controlling what employees could reach on the internet. It was renamed Websense in June 1999, and in March 2000 - the actual peak of the dot-com bubble - it raised $72M in an IPO whose share price doubled on the first day.",
+      "Phil Trubey founded NetPartners in Sorrento Valley, San Diego in 1994, reselling other people's network security products. What made the company was the thing it built rather than resold: software for controlling what employees could reach on the internet. It was renamed Websense in June 1999, and in March 2000 - the actual peak of the dot-com bubble - it raised $72M in an IPO (initial public offering) whose share price doubled on the first day.",
     body: [
       "The founder was not there for it. In 1998, with $6M of venture funding raised and $6M of annual revenue, the investors removed Trubey from the chief executive's job and appointed John Carrington. The renaming, the IPO and everything after happened without the person who started it - which is common enough to be unremarkable in aggregate and worth naming in the particular.",
       "What the product actually did is worth stating precisely, because the mechanism explains the criticism. A category database classifies sites; a policy decides which categories a given user may reach; the enforcement point sits between the user and the web. That is the same architecture as the proxies elsewhere on this timeline, and it has the same unavoidable weakness: a classification is a judgement, made at scale, by people the affected user will never meet.",
@@ -2164,7 +2184,7 @@ export const partnerVendors: PartnerVendor[] = [
     body: [
       "The category is worth explaining, because most engineers never buy from it and everything they do buy passed through it. Before a switch, firewall or load balancer ships, somebody establishes what it actually does at line rate, under attack, with malformed input, and at the exact point it falls over. Datasheets quote numbers; test equipment is where those numbers come from, and where a competitor checks them.",
       "Ixia grew by acquisition, and the direction is the interesting part: Anue Systems in June 2012, BreakingPoint Systems that August, Net Optics in October 2013. Anue and Net Optics were visibility and tap aggregation; BreakingPoint was security testing. It moved from testing networks in a lab to seeing inside them in production - the same instrument that proves a device works becoming the instrument that watches it working.",
-      "Then the acquirer, which is where the lineage repays attention. Keysight was spun out of Agilent in 2014. Agilent had been spun out of Hewlett-Packard in 1999, in an IPO that raised $2.1B and was the largest in Silicon Valley history at the time. Keysight is HP's original test and measurement business - the line of work that began with the 200A audio oscillator Bill Hewlett and Dave Packard built in a garage in 1939, which was the company's first product.",
+      "Then the acquirer, which is where the lineage repays attention. Keysight was spun out of Agilent in 2014. Agilent had been spun out of Hewlett-Packard in 1999, in an IPO (initial public offering) that raised $2.1B and was the largest in Silicon Valley history at the time. Keysight is HP's original test and measurement business - the line of work that began with the 200A audio oscillator Bill Hewlett and Dave Packard built in a garage in 1939, which was the company's first product.",
       "So the oldest thing HP ever did was spun off twice and now trades under its own name, while the businesses that kept the letters make printers, PCs and enterprise infrastructure. The part everyone remembers from the garage story is the part that left.",
       "The deal closed on 18 April 2017 at $19.65 a share in cash, Keysight's largest since becoming independent - bigger than Anite at $606M in 2015. Ixia became the Ixia Solutions Group. Its chief executive at the time, Bethany Mayer, had come from HP, which makes it a smaller reunion than it appears.",
       ],
@@ -2664,7 +2684,7 @@ export const partnerVendors: PartnerVendor[] = [
       "The reason usually given is decline, and it is true but incomplete. Inside IBM the business had struggled through the cloud era, because customers were moving workloads to hyperscalers and few had any appetite left for the long, large outsourcing contracts the unit was built around. Shedding a shrinking business to concentrate on hybrid cloud is a legible strategy and it is what the coverage led with.",
       "The more interesting reason is structural, and it is the one worth taking away. A managed services business owned by a cloud vendor cannot credibly recommend a competitor's cloud. Whatever the engineers actually think, the advice arrives from a company whose parent sells the alternative, and the customer discounts it accordingly. Independence was not the consolation prize for being unwanted - it was the thing that made the business sellable again.",
       "The evidence is in the calendar. Kyndryl announced a partnership with Microsoft in November 2021, the same month it separated, and with Google Cloud in December. Neither was available on those terms to a division of IBM.",
-      "That is the same argument this timeline records elsewhere, in a different setting. CompTIA's certifications are valuable precisely because they belong to no vendor, and the open question there is whether that survives private-equity ownership. Kyndryl is the mirror image: a business whose advice was worth less while it was owned, and worth more once it was not. In both cases the asset is neutrality, and neutrality is a property of who owns you rather than of what you know.",
+      "That is the same argument this timeline records elsewhere, in a different setting. CompTIA's certifications are valuable precisely because they belong to no vendor, and the open question there is whether that survives private-equity ownership. Kyndryl is the mirror image: a business whose advice was worth less while it was owned, and worth more once it was not. In both cases the asset is neutrality, and neutrality is a property of who owns you rather than of what you know. The Avanade entry records the opposite bet: a services firm built from the start around one vendor's platform.",
       "Martin Schroeter, who had been IBM's chief financial officer and later a senior vice president, left the company in June 2020 and returned in January 2021 to lead the new one. The market's first verdict was cool: the shares closed their opening day at $26.38, down about seven per cent, and slipped further after hours.",
       "And it is the third time IBM appears on this timeline handing something over. It bought Lotus in 1995 for the Notes technology, sold Notes and Domino to HCL in a deal announced in 2018, and separated this business in 2021. A company that spent decades acquiring is now most visible here for what it has let go.",
     ],
@@ -3346,7 +3366,7 @@ export const partnerVendors: PartnerVendor[] = [
       "The product was a reverse proxy you joined by changing your DNS, which is a genuinely low barrier: no hardware, no software, no contract, and a free tier from the beginning. That freemium decision was strategic rather than generous. Every free site sends traffic through the network, and every attack against a free site is an attack the network learns to recognise for everyone else.",
       "That is the same argument this timeline shows three times before. IronPort made it about email sender reputation in 2002. Zscaler made it about web traffic in 2007. CrowdStrike made it about endpoint behaviour in 2013. Cloudflare made it about the web itself, and got its initial threat data from a spam-tracking project - which is where IronPort had started too.",
       "Public launch was at TechCrunch Disrupt in September 2010, and traffic went from roughly 50 million page views a month to over 5 billion within the first year.",
-      "The company has since become something harder to categorise: DDoS mitigation, WAF, DNS, zero-trust access, and a serverless compute platform that runs code in the same points of presence that serve the cache - which turns a content network into somewhere applications actually execute. It went public in 2019, and its network now spans more than 300 cities.",
+      "The company has since become something harder to categorise: DDoS (distributed denial of service) mitigation, WAF (web application firewall), DNS, zero-trust access, and a serverless compute platform that runs code in the same points of presence that serve the cache - which turns a content network into somewhere applications actually execute. It went public in 2019, and its network now spans more than 300 cities.",
       "It also occupies an awkward position it did not entirely choose. A company that will serve almost anyone, at scale, for free, ends up making decisions about who may remain online - and has been criticised both for acting and for declining to.",
     ],
     externalUrl: "https://www.cloudflare.com/our-story/",
@@ -3421,7 +3441,7 @@ export const partnerVendors: PartnerVendor[] = [
       "The NetScreen argument had been that firewalling belongs in purpose-built silicon rather than on a general-purpose processor. Fortinet took that further: if you are building custom silicon anyway, build it to do everything the traffic needs in one pass - firewalling, antivirus, intrusion prevention, web filtering - rather than chaining separate boxes that each re-inspect the same packets.",
       "That became unified threat management, and the FortiASIC is the reason the claim was credible rather than marketing. Inspecting content at line rate is genuinely hard on commodity hardware, which is why competitors selling software on servers had to choose between features and throughput.",
       "The commercial consequence mattered more than the technical one. UTM made real security affordable for organisations that could not staff a security team, and Fortinet's growth came substantially from the mid-market and from the channel rather than from displacing incumbents in large enterprises.",
-      "The portfolio has since expanded well beyond the firewall into switching, wireless, endpoint, SIEM and SD-WAN, held together by a management fabric - the same one-vendor-for-the-whole-stack proposition that Cisco made for networking, applied to security.",
+      "The portfolio has since expanded well beyond the firewall into switching, wireless, endpoint, SIEM (security information and event management) and SD-WAN (software-defined wide area network), held together by a management fabric - the same one-vendor-for-the-whole-stack proposition that Cisco made for networking, applied to security.",
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Fortinet",
     externalLabel: "Fortinet",
@@ -3515,7 +3535,7 @@ export const partnerVendors: PartnerVendor[] = [
     intro:
       "Jay Chaudhry founded Zscaler in 2007, having already founded and sold several security companies before it. The argument was that backhauling remote users through a corporate data centre to reach the internet was about to stop making sense.",
     body: [
-      "The traditional design put inspection where the users were, which was the office, and sent everything else back there over a VPN. That worked while applications lived in the data centre too. Once the applications moved to the cloud and the users moved out of the office, the traffic was travelling to a building neither the user nor the application had any reason to visit.",
+      "The traditional design put inspection where the users were, which was the office, and sent everything else back there over a VPN (virtual private network). That worked while applications lived in the data centre too. Once the applications moved to the cloud and the users moved out of the office, the traffic was travelling to a building neither the user nor the application had any reason to visit.",
       "Zscaler moved the inspection into a distributed set of points of presence, so a user connects to a nearby one, is inspected there, and goes on to wherever the application actually is. That removes the hairpin, and it means capacity is a property of the provider rather than of each office's appliance.",
       "It also changes the economics of scale in a way worth understanding. A shared inspection platform sees traffic from every customer, so a threat identified for one becomes blocked for all - the same structural argument IronPort made about email reputation in 2002 and CrowdStrike made about endpoints in 2013. This timeline shows that argument being rediscovered for each layer of the stack in turn.",
       "The company went public in 2018 and the category it defined became security service edge, in which it competes directly with Netskope, which is also on this site and reached the same place from the visibility problem rather than the routing one.",
@@ -3639,7 +3659,7 @@ export const partnerVendors: PartnerVendor[] = [
     intro:
       "Pulse Secure was formed in 2014 when Juniper sold its Junos Pulse business to Siris Capital. That is an unusual founding: the company existed on day one with a mature product, an installed base and a support obligation, and no history of its own at all.",
     body: [
-      "The product was SSL VPN, which Juniper had acquired with NetScreen in 2004 and NetScreen had built on technology from Neoteris. So the code predates the company selling it by more than a decade, and the lineage runs through two acquisitions before the carve-out.",
+      "The product was SSL VPN (virtual private network), which Juniper had acquired with NetScreen in 2004 and NetScreen had built on technology from Neoteris. So the code predates the company selling it by more than a decade, and the lineage runs through two acquisitions before the carve-out.",
       "The market it served was the ordinary one: remote users needing access to internal applications without a full network-layer tunnel, authenticated at the edge and given only what policy allowed. Pulse Connect Secure appliances sat at that boundary in a very large number of enterprises and government networks, which is the detail that matters for what happened later.",
       "Being a carve-out shapes a company. Private-equity ownership meant a focus on the installed base and maintenance revenue rather than on reinvention, and the codebase carried a decade of accumulated decisions made inside two previous owners.",
       "Ivanti acquired Pulse Secure in the same announcement as MobileIron, completing on 1 December 2020. Serious vulnerabilities in those VPN appliances were subsequently exploited widely enough to draw emergency directives from national cyber agencies - which is the part of this history that most affected people who never bought anything from the company, since the appliances were sitting in front of networks that mattered.",
@@ -3773,7 +3793,7 @@ export const partnerVendors: PartnerVendor[] = [
       "NetScreen bought OneSecure in 2002, which had been founded by Nir Zuk - one of Check Point's first employees. Zuk stayed through the Juniper acquisition, left in 2005, and founded Palo Alto Networks, which overtook Check Point in firewall revenue by 2014.",
       "Changming Liu, also from NetScreen, co-founded Aerohive, which Extreme Networks acquired in 2019.",
       "So a single 1996 startup seeded Fortinet, Palo Alto Networks and part of Extreme, and absorbed a company founded by an early Check Point employee on the way. Four of the eight vendors this site teaches trace some part of themselves to that one building.",
-      "Juniper itself was the other half of this chapter. Founded to build carrier routers that could survive internet-scale traffic, it made JUNOS - one operating system across the line, with a configuration model that committed atomically or not at all - and spent two decades as the credible alternative to Cisco in service provider networks. Its SSL VPN business was later carved out and sold, becoming Pulse Secure, which is a separate chapter here and ended inside Ivanti.",
+      "Juniper itself was the other half of this chapter. Founded to build carrier routers that could survive internet-scale traffic, it made JUNOS - one operating system across the line, with a configuration model that committed atomically or not at all - and spent two decades as the credible alternative to Cisco in service provider networks. Its SSL VPN (virtual private network) business was later carved out and sold, becoming Pulse Secure, which is a separate chapter here and ended inside Ivanti.",
     ],
     acquisitions: [
       { year: 2002, name: "OneSecure", price: "$40-45M in stock", what: "Intrusion prevention.", founder: "Nir Zuk and Rakesh Loonkar. Zuk was one of Check Point's first employees.", became: "Zuk left in 2005 and founded Palo Alto Networks." },
@@ -3852,7 +3872,7 @@ export const partnerVendors: PartnerVendor[] = [
     intro:
       "Riverstone began as Yago Systems, a startup building wire-speed Layer 3 switching, which Cabletron acquired in 1998 and used as the basis of its SmartSwitch Router line. When Cabletron broke itself into four companies at the turn of the millennium, the routing business became Riverstone Networks and was spun out as an independent public company in 2001.",
     body: [
-      "Its market was metropolitan Ethernet: carriers replacing SONET and ATM gear with Ethernet in city-scale networks, delivering services to business customers over fibre rings. That was a genuinely new category around 2000, and Riverstone was among the companies that defined what the equipment for it should look like - Gigabit Ethernet, MPLS, and per-subscriber service delivery in boxes designed for a carrier's central office rather than an enterprise wiring closet.",
+      "Its market was metropolitan Ethernet: carriers replacing SONET and ATM gear with Ethernet in city-scale networks, delivering services to business customers over fibre rings. That was a genuinely new category around 2000, and Riverstone was among the companies that defined what the equipment for it should look like - Gigabit Ethernet, MPLS (Multiprotocol Label Switching), and per-subscriber service delivery in boxes designed for a carrier's central office rather than an enterprise wiring closet.",
       "The timing was the problem. The company was spun out precisely as telecom capital spending collapsed. Carriers that had been building metro networks stopped, and a vendor whose entire market was carrier expenditure had nowhere to go.",
       "An accounting investigation into how revenue had been recognised made it worse, delaying filings and forcing restatements. Riverstone filed for Chapter 11 in February 2006 and its assets were bought by Lucent Technologies, which merged with Alcatel later the same year - so the technology ended up inside Alcatel-Lucent, and eventually inside Nokia.",
       "The engineering was not what failed. Yago's wire-speed forwarding was good enough that Cabletron built its next generation on it, and the metro Ethernet thesis turned out to be correct - it simply arrived several years before the market was ready to pay for it, and Riverstone did not have the balance sheet to wait.",
@@ -4109,7 +4129,7 @@ export const partnerVendors: PartnerVendor[] = [
       "The LANDESK side began as LANSystems in 1985, was acquired by Intel in 1991 and run as its LANDESK division, and was spun out as an independent company in 2002. Avocent bought it in 2006 for $416M - the same Avocent that appears elsewhere on this timeline in the Cyclades lineage - and Thoma Bravo took it in 2010. Along the way LANDESK absorbed Wavelink (2012), Shavlik from VMware (2013), Naurtech (2014), Xtraction (2015) and AppSense (2016).",
       "The HEAT side was itself assembled, formed in 2015 from FrontRange Solutions and Lumension Security. Lumension had started as High Tech Software in 1991 and been renamed PatchLink in 1999.",
       "Ivanti kept buying: Concorde Solutions and RES Software in 2017, then Cherwell and RiskSense. In September 2020 it announced the acquisition of both MobileIron and Pulse Secure, completing on 1 December that year - which is how two companies that appear elsewhere on this site came to end on the same day, in the same place.",
-      "MobileIron had been founded in 2007 by Ajay Mishra and Suresh Batchu and taken public on NASDAQ in 2014. Pulse Secure carried Juniper's SSL VPN business, sold to Siris Capital in 2014.",
+      "MobileIron had been founded in 2007 by Ajay Mishra and Suresh Batchu and taken public on NASDAQ in 2014. Pulse Secure carried Juniper's SSL VPN (virtual private network) business, sold to Siris Capital in 2014.",
       "The company became more widely known after serious vulnerabilities in the VPN appliances it sells, and the reason is structural: a portfolio assembled from a dozen acquisitions inherits a dozen codebases, and the security posture of the whole is the security posture of the weakest piece.",
     ],
     acquisitions: [
@@ -4262,7 +4282,7 @@ export const partnerVendors: PartnerVendor[] = [
       "Paul Flaherty had the idea. Louis Monier wrote the crawler - Scooter - and Michael Burrows wrote the indexer, at DEC's Network Systems Laboratory and Western Research Laboratory in Palo Alto. It launched on 15 December 1995 at altavista.digital.com with an index of sixteen million documents, an enormous number at the time, offering full-text search with Boolean operators and natural-language queries when the alternative was a hand-maintained directory.",
       "It worked immediately. By 1996 it was the exclusive search provider to Yahoo, which had itself begun as a directory. AltaVista also shipped Babel Fish, the web's first machine-translation service, named for the fish in Douglas Adams.",
       "Then ownership changed hands four times in five years. Compaq acquired DEC in 1998 for $9.6B, the largest technology takeover to that point, and reportedly some Compaq executives did not know AltaVista existed. Compaq paid a further $3.3M for the altavista.com domain, which someone else had registered in 1994. Under a new chief executive the search engine was rebuilt as a portal - shopping, free email, news - to compete with Yahoo, which meant competing on everything except the thing it was best at.",
-      "In June 1999 Compaq sold 83% to CMGI for around $2.3B in stock. The planned IPO was cancelled when the bubble burst in 2000. AltaVista shed the portal features and refocused on search quality by 2002, which was good work arriving late: Google had taken the market. In February 2003 Overture bought it for $140M - roughly six percent of the CMGI valuation three years earlier - and Yahoo acquired Overture five months later.",
+      "In June 1999 Compaq sold 83% to CMGI for around $2.3B in stock. The planned IPO (initial public offering) was cancelled when the bubble burst in 2000. AltaVista shed the portal features and refocused on search quality by 2002, which was good work arriving late: Google had taken the market. In February 2003 Overture bought it for $140M - roughly six percent of the CMGI valuation three years earlier - and Yahoo acquired Overture five months later.",
       "By 2004 Scooter and the original ranking engine were switched off and AltaVista became a front end for Yahoo's results. It was formally shut down on 8 July 2013. The technology was not what failed; the decision to stop being a search engine was.",
     ],
     externalUrl: "https://en.wikipedia.org/wiki/AltaVista",
@@ -4398,7 +4418,7 @@ export const partnerVendors: PartnerVendor[] = [
       "Amazon Web Services is the largest public cloud, the platform whose 2006 launch of S3 and EC2 turned computing into a utility and defined what the industry now means by cloud.",
     body: [
       "Red Education names AWS among the leading brands it works with in its award submissions and delivers AWS coursework alongside its security-vendor portfolio, extending the same instructor-led, lab-driven format to cloud fundamentals and architecture.",
-      "AWS began inside Amazon as infrastructure plumbing and was opened to the world in 2006; within a decade it was the profit engine of its parent and the default substrate for startups and enterprises alike. Every SASE, SSE, and cloud-security curriculum in the rest of this catalogue ultimately assumes a world AWS created.",
+      "AWS began inside Amazon as infrastructure plumbing and was opened to the world in 2006; within a decade it was the profit engine of its parent and the default substrate for startups and enterprises alike. Every SASE (secure access service edge), SSE, and cloud-security curriculum in the rest of this catalogue ultimately assumes a world AWS created.",
       "Two incidents describe what it means for one supplier to hold this much of the world's computing, and the company's own account of the first is the better source for it. On the morning of 28 February 2017 an engineer in the Northern Virginia region, following an established playbook, ran a command meant to remove a few servers from a billing subsystem. One input was mistyped. The servers removed included the ones holding the index of every object in the region's storage, and the restart that followed took S3 down - and with it instance launches, block storage and Lambda for everything that depended on that region, which at the time was much of the consumer internet. A typo reached further than most attacks ever have, and the reason was not the typo but the concentration.",
       "The second is the 2019 Capital One breach, and it is the case where the vendor's design was part of the answer. A former AWS employee found a request-forgery flaw in a misconfigured web firewall running on EC2, and used it to ask the instance's metadata service for credentials. The service, in its original form, answered any request from the machine without authentication - by design. The credentials belonged to a role that could read hundreds of storage buckets, and more than a hundred million customer records left. It ran for four months and was found because the attacker posted about it and a stranger noticed.",
       "The shared-responsibility model says, correctly, that the customer misconfigured the firewall and over-permissioned the role. It is also true that four months later AWS shipped a second version of the metadata service requiring a session token first - a change that only exists because the first design made the flaw lethal. A senator asked the company's chief executive whether its own services had contributed, which is the question the model is written to pre-empt, being asked anyway.",
@@ -4651,7 +4671,7 @@ export const partnerVendors: PartnerVendor[] = [
       "Riverbed defined WAN optimization: its SteelHead appliances made far-away applications feel local in the era when every branch office lived at the end of a thin, expensive circuit, and the company has since rebuilt itself around observability and acceleration.",
     body: [
       "Red Education has provided Riverbed skills to the market since 2008 and is a Riverbed Authorised Consulting Partner, with courses continuing in its Australasia, SAARC, and ASEAN catalogues.",
-      "Founded in 2002 by Jerry Kennelly and Steve McCanne - the latter a co-author of tcpdump and the Berkeley Packet Filter, tools half this site's tutorials assume - Riverbed rode the SteelHead era to an IPO, was taken private in 2015, and went through a court-supervised restructuring in late 2021. Today it competes in unified observability, a long way from the branch-office WAN it was built to shrink.",
+      "Founded in 2002 by Jerry Kennelly and Steve McCanne - the latter a co-author of tcpdump and the Berkeley Packet Filter, tools half this site's tutorials assume - Riverbed rode the SteelHead era to an IPO (initial public offering), was taken private in 2015, and went through a court-supervised restructuring in late 2021. Today it competes in unified observability, a long way from the branch-office WAN it was built to shrink.",
     ],
     awards: [...REDU_AWARDS_GENERAL],
     sources: [{ label: "Wikipedia: Riverbed Technology - infobox records the company founded 23 May 2002", url: "https://en.wikipedia.org/wiki/Riverbed_Technology" }, 
@@ -4830,7 +4850,7 @@ export const partnerVendors: PartnerVendor[] = [
     founded: 1997,
     tagline: "Born of Israel's RAD Group in 1997; the ADC and DDoS specialist that rescued Alteon from Nortel's wreckage for ~$18M.",
     intro:
-      "A father-and-son founding inside Israel's most storied networking family: RAD Group patriarch Yehuda Zisapel and his son Roy, CEO since inception. Radware IPO'd on NASDAQ in 1999, built the DefensePro DDoS line, and in April 2009 bought Nortel's legendary Alteon application-switching assets out of bankruptcy for about $18 million - instantly a top-three ADC vendor. Still independent, still founder-led.",
+      "A father-and-son founding inside Israel's most storied networking family: RAD Group patriarch Yehuda Zisapel and his son Roy, CEO since inception. Radware IPO'd on NASDAQ in 1999, built the DefensePro DDoS (distributed denial of service) line, and in April 2009 bought Nortel's legendary Alteon application-switching assets out of bankruptcy for about $18 million - instantly a top-three ADC vendor. Still independent, still founder-led.",
     body: [],
     note:
       "Neither I nor Red Education delivers Radware training. This page is corporate history, verified against SEC filings and primary sources. Radware competes in the application delivery market where I teach F5 daily - knowing the rivals is part of knowing the market.",
@@ -4857,7 +4877,7 @@ export const partnerVendors: PartnerVendor[] = [
     founded: 2002,
     tagline: "The WAF pioneer founded by a Check Point co-founder, now the application-security arm of a French defense giant.",
     intro:
-      "Founded in Israel in 2002 as WebCohort by Shlomo Kramer (co-founder of Check Point, later founder of Cato Networks), Amichai Shulman, and Mickey Boodaei, the company shipped SecureSphere in 2003 and helped define the web application firewall category. NYSE IPO in 2011, a $2.1 billion Thoma Bravo take-private in January 2019, and a $3.6 billion acquisition by Thales completed on December 4, 2023.",
+      "Founded in Israel in 2002 as WebCohort by Shlomo Kramer (co-founder of Check Point, later founder of Cato Networks), Amichai Shulman, and Mickey Boodaei, the company shipped SecureSphere in 2003 and helped define the web application firewall category. NYSE IPO (initial public offering) in 2011, a $2.1 billion Thoma Bravo take-private in January 2019, and a $3.6 billion acquisition by Thales completed on December 4, 2023.",
     body: [],
     note:
       "Neither I nor Red Education delivers Imperva or Thales training. This page is corporate history, verified against primary sources. Imperva pioneered the WAF market I teach through F5 Advanced WAF - the rivals' history is the market's history.",
@@ -4878,7 +4898,7 @@ export const partnerVendors: PartnerVendor[] = [
     founded: 2012,
     tagline: "Two ex-Riverstone, ex-Juniper brothers building unified SASE - one of the last large independents in a consolidated market.",
     intro:
-      "Founded in 2012 by brothers Kumar and Apurva Mehta after eight years leading Juniper's MX series - and, before that, senior roles at Riverstone Networks, where I worked from 2000 to 2002. Versa built networking and security as one multi-tenant software stack years before Gartner named the category SASE, raised roughly $316 million while rivals sold to Cisco, VMware, Aruba, and Palo Alto, and remains independent.",
+      "Founded in 2012 by brothers Kumar and Apurva Mehta after eight years leading Juniper's MX series - and, before that, senior roles at Riverstone Networks, where I worked from 2000 to 2002. Versa built networking and security as one multi-tenant software stack years before Gartner named the category SASE (secure access service edge), raised roughly $316 million while rivals sold to Cisco, VMware, Aruba, and Palo Alto, and remains independent.",
     body: [],
     note:
       "Neither I nor Red Education delivers Versa training. This page is corporate history, verified against Versa's own leadership biographies and primary sources. The lineage connection is real: both founders built at Riverstone Networks - my Santa Clara employer, 2000-2002 - before their Juniper years.",
@@ -5300,6 +5320,10 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "IBM timeline: the System/360 announced 7 April 1964 as the first family of computers sharing the same software and peripherals; the IBM Personal Computer, Model 5150, introduced on 12 August 1981 at a base price of 1,565 dollars, its use of off-the-shelf components and open architecture enabling what followed", url: "https://www.thestreet.com/technology/history-of-ibm-company-timeline-milestones-facts" },
       { label: "Wikipedia: IBM AS/400 - announced 21 June 1988 and released August 1988 from Rochester, Minnesota, as the successor to the System/36 and System/38; the Technology Independent Machine Interface; IMPI to PowerPC AS in 1995 and POWER4 in 2001; an estimated 111,000 installations by the end of 1990 and $14 billion of revenue that year, about 500,000 shipped by 1997; the renamings to iSeries, i5, System i and Power Systems (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/IBM_AS/400" },
       { label: "Wikipedia: IBM i - OS/400 released 26 August 1988, renamed i5/OS in 2004 and IBM i in 2008; version 7.6 of 18 April 2025 (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/IBM_i" },
+      // Added 2026-11-08 (D-19): the PwC Consulting completion, IBM and PwC's joint release.
+      { label: "IBM and PricewaterhouseCoopers joint release via Business Wire, Armonk and New York, 2 October 2002: IBM's acquisition of PwC Consulting completed; a new unit, IBM Business Consulting Services, of more than 30,000 IBM and 30,000 transferring PwC Consulting professionals, the world's largest consulting services organisation, in more than 160 countries, part of IBM Global Services; PwC's chief executive: the sale frees the consulting unit from the regulatory restraints of the profession", url: "https://www.investegate.co.uk/announcement/bzw/international-business-machines-corporation-com-stk-usd0-20-cdi---ibm/ibm-pricewaterhousecoopers-complete-sale-of-pwc-c/436095", sourceNote: "Read 2026-11-08, HTTP 200: the Business Wire text as carried by Investegate. The release states the amount paid; it is not used." },
+      // Added 2026-11-08 (D-19): the 2021 rename.
+      { label: "IBM newsroom (India), 13 October 2021: IBM Consulting is the new brand name of the global professional services business previously known as IBM Global Business Services, with 140,000+ professionals in 150+ countries", url: "https://in.newsroom.ibm.com/2021-10-13-IBM-Consulting-brand-name" },
     ],
     tags: ["vendor", "services"],
     group: "other",
@@ -5315,7 +5339,14 @@ export const partnerVendors: PartnerVendor[] = [
       "Seventeen years later the Personal Computer applied the same openness to a different problem, and the outcome inverted. Built quickly from off-the-shelf components with a published architecture, the 5150 of August 1981 created an enormous market and handed its economics to the supplier of the processor and the supplier of the operating system. The 360 made IBM the platform; the PC made IBM a manufacturer on somebody else's platform. The difference was who owned the parts that could not be substituted.",
       "The networking record follows the same shape. SNA defined how large estates communicated for a generation, and Token Ring was the better-engineered local network by most contemporary measures - deterministic under load, no collisions, predictable latency. It lost to Ethernet, which was cheaper and good enough, and which a company founded by its co-inventor made purchasable as a card. That is the catalogue's most repeated finding, and here it happened to the largest company in the industry.",
       "Between the mainframe and the PC sits the machine that proved the compatibility principle a third time. The Application System/400, announced on 21 June 1988 and released that August from the Rochester, Minnesota laboratory as the successor to the System/36 and System/38, carried an architecture rather than a processor: the Technology Independent Machine Interface let applications be compiled once and translated below the interface, so that when the line moved from its 48-bit IMPI processors to 64-bit PowerPC-derived chips in 1995, and to POWER4 in 2001, the programs did not notice. An estimated 111,000 systems were installed by the end of 1990, when the line earned $14 billion, and about 500,000 had shipped by 1997; its operating system, OS/400 of 26 August 1988, became i5/OS in 2004 and IBM i in 2008, and in 2008 the hardware merged with the System p into Power Systems. IBM i 7.6 shipped on 18 April 2025. The AS/400 entry in the glossary carries the lineage in detail.",
+      // Paragraph 7 of 8 (added 2026-11-08): IBM Consulting, from PwC Consulting to the 2021 rename.
+      "The consulting half of the services business has a date and a seller. On 2 October 2002 IBM completed its purchase of PwC Consulting, the management consulting and technology services unit of PricewaterhouseCoopers, and merged about thirty thousand of its own consultants with about thirty thousand transferring PwC professionals into IBM Business Consulting Services, described at the time as the world's largest consulting organisation, in more than 160 countries. PwC's chief executive said the sale freed the consulting unit from the regulatory restraints of the accounting profession. Read beside the Accenture entry, it is the second way a consultancy left an accounting firm in those years: Andersen Consulting fought its way out by arbitration, and PwC Consulting was sold. In October 2021 the business, by then called IBM Global Business Services, was renamed IBM Consulting, with more than 140,000 professionals, weeks before the infrastructure half of IBM's services left as Kyndryl. IBM kept the consultancy it had bought from an accounting firm and let go of the infrastructure outsourcing business.",
       "What IBM did with the century is the part usually skipped: it survived. The services turnaround of the 1990s, the sale of the PC business, and the 2019 acquisition of Red Hat are one continuous decision to stop defending the thing being commoditised and go where the margin moved. Most companies in this section did not manage that once.",
+    ],
+    // Acquisitions (added 2026-11-08): the consulting business; no price fields.
+    acquisitions: [
+      // PwC Consulting, completed 2 October 2002.
+      { year: 2002, name: "PwC Consulting", what: "The global management consulting and technology services unit of PricewaterhouseCoopers, about thirty thousand professionals.", became: "IBM Business Consulting Services, part of IBM Global Services; later IBM Global Business Services, renamed IBM Consulting in October 2021.", sourceNote: "IBM and PricewaterhouseCoopers joint release, 2 October 2002; IBM newsroom, 13 October 2021." },
     ],
   },
   {
@@ -5328,6 +5359,16 @@ export const partnerVendors: PartnerVendor[] = [
     },
     sources: [
       { label: "Wikipedia: SAP - the infobox records the company founded 1972 in Weinheim, West Germany", url: "https://en.wikipedia.org/wiki/SAP" },
+      // Added 2026-11-08 (D-19): SAP Labs Latin America's opening, read today.
+      { label: "Baguete, 23 June 2009: SAP Labs officially inaugurated on the Unisinos campus in São Leopoldo, with 200 people and room for 375; one of SAP's nine service and research and development centres, the decision taken three years earlier; proximity to customers and the search for talent the deciding factors", url: "https://www.baguete.com.br/noticias/brasil-ja-tem-um-sap-labs-e-agora" },
+      // Added 2026-11-08 (D-19): the third expansion and the global hub designation.
+      { label: "SAP News Brasil, 27 June 2022: the third expansion of SAP Labs Latin America, inaugurated in São Leopoldo after 15 years of activity, on the Unisinos campus, for almost 2,000 people of 20 nationalities; named a global innovation, research and development hub; about 80% of interns hired", url: "https://news.sap.com/brazil/2022/06/sap-brasil-expande-centro-de-inovacao-pesquisa-e-desenvolvimento-em-sao-leopoldo-rs/" },
+      // Added 2026-11-08 (D-19): the only SAP Labs in Latin America, one of fourteen.
+      { label: "SAP News Latinoamérica, 20 June 2022: SAP Labs, with 16 years of history in São Leopoldo, is the first and only SAP centre of its kind in Latin America and one of 14 the company has worldwide", url: "https://news.sap.com/latinamerica/2022/06/sap-redobla-su-apuesta-de-innovacion-en-america-latina/", sourceNote: "Read 2026-11-08, HTTP 200. SAP's Brazilian release says 15 years of activity and the Latin American one 16; with the 2009 report that the decision was taken three years before, the lab's start is about 2006 or 2007, and the copy gives the 2009 inauguration only." },
+      // Added 2026-11-08 (D-19): thirty years in Brazil, and the training programmes.
+      { label: "Convergência Digital, August 2025: SAP celebrates 30 years of operation in Brazil; the SAP NOW AI Tour in São Paulo reaches its 30th edition; Rui Botelho, president of SAP Brasil, announces the Delivery Capacity and Future Talent programmes to train 7,500 professionals", url: "https://convergenciadigital.com.br/especial/sap/sap-faz-forca-tarefa-para-formar-talentos-no-brasil/" },
+      // Added 2026-11-08 (D-19): the thirty-year statement in SAP Brasil's marketing chief's words.
+      { label: "Convergência Digital, August 2025: 'SAP comemora 30 anos de Brasil'; Gustavo Segre, vice-president of marketing of SAP Brasil: the 30 years of the event coincide with the 30 years SAP celebrates in Brazil", url: "https://convergenciadigital.com.br/especial/sap/sap-comemora-30-anos-de-brasil-atenta-a-humanizacao-da-tecnologia/" },
     ],
     tags: ["vendor"],
     group: "other",
@@ -5335,7 +5376,16 @@ export const partnerVendors: PartnerVendor[] = [
     founded: 1972,
     tagline: "Ex-IBM founders built the ERP category in 1972; R/3 conquered the client-server world and HANA reinvented the core.",
     intro: "SAP is Europe's greatest software story: five IBM engineers in Mannheim who bet in 1972 that business software could be a standard product, not a custom project. R/3 rode the client-server wave into nearly every large enterprise on earth, and the company reinvented its own foundations twice - in-memory HANA in 2010 and the cloud pivot after it.",
-    body: ["The profile follows Walldorf from R/1 to RISE, the ecosystem that employs a small nation of consultants, and the networking-adjacent reality that SAP traffic shaped a generation of QoS designs."],
+    body: [
+      // Paragraph 1: what the profile covers.
+      "The profile follows Walldorf from R/1 to RISE, the ecosystem that employs a small nation of consultants, and the networking-adjacent reality that SAP traffic shaped a generation of QoS designs.",
+      // Paragraph 2 (added 2026-11-08): SAP in Brazil.
+      "In Brazil the company counts thirty years of operation in 2025, which dates the subsidiary to 1995, and its annual São Paulo event reached its thirtieth edition the same year. What makes the Brazilian chapter more than a sales office is the laboratory. SAP Labs Latin America was officially inaugurated on 23 June 2009 on the campus of Unisinos, the university in São Leopoldo, near Porto Alegre, with two hundred people; it was then one of nine such centres and, as the press described it at the opening, still the smallest of the family. Executives said at the opening that proximity to customers and the search for talent had decided it, not tax incentives.",
+      // Paragraph 3 (added 2026-11-08): the 2022 expansion.
+      "By June 2022, after a third expansion, the laboratory housed almost two thousand people of twenty nationalities and had been named one of SAP's global innovation, research and development hubs: the first and only SAP Labs in Latin America and one of fourteen in the world. It develops products for the whole company, including sustainability and agricultural software, and SAP says about eighty per cent of the students who intern there are hired.",
+      // Paragraph 4 (added 2026-11-08): why it matters to an IT professional in Brazil.
+      "For a technology professional in Brazil, SAP is less a vendor than a labour market. In 2025 the subsidiary's president announced two programmes to train 7,500 people, one for experienced information technology (IT) professionals moving into SAP work and one for recent graduates, and gave the reason plainly: after thirty years in the country, the company still found it hard to find the talent to support its projects. The consultant profession the profile describes is, in Brazil, partly trained by the vendor itself, and partly employed by it in São Leopoldo.",
+    ],
   },
   // ---- Pioneer wave 2 (PRIME 2026-07-16): six more founders of the industry. ----
   {
@@ -5653,7 +5703,7 @@ export const partnerVendors: PartnerVendor[] = [
     founded: 1898,
     foundedCompany: "Compagnie Générale d'Électricité (Alcatel's root)",
     tagline: "The transistor, information theory, Unix, the laser, cellular - ten Nobel Prizes of foundations, spun into Lucent in 1996, merged with Alcatel in 2006, carried into Nokia in 2016.",
-    intro: "No institution shaped this industry more than Bell Telephone Laboratories: the 1947 transistor, Shannon's 1948 information theory, Unix and C, the CCD, the cellular concept. Its corporate afterlife - the record-setting Lucent IPO, the bubble's hardest fall, the Alcatel merger, the Nokia acquisition - is the industry's sharpest lesson that inventing the future and capturing its value are different skills.",
+    intro: "No institution shaped this industry more than Bell Telephone Laboratories: the 1947 transistor, Shannon's 1948 information theory, Unix and C, the CCD, the cellular concept. Its corporate afterlife - the record-setting Lucent IPO (initial public offering), the bubble's hardest fall, the Alcatel merger, the Nokia acquisition - is the industry's sharpest lesson that inventing the future and capturing its value are different skills.",
     body: ["The profile covers the 1925 founding, the 1947-1969 invention run, the 1996 trivestiture and Lucent's rise and fall, Alcatel's CGE-to-ITT ascent, the 2006 merger, and the 2016 passage into Nokia - where Bell Labs continues."],
   },
   {
@@ -5839,7 +5889,7 @@ export const partnerVendors: PartnerVendor[] = [
     founded: 1984,
     foundedCompany: "NetScout Systems",
     tagline: "The 1986 Sniffer made protocol analysis a profession; through Dolch luggables, Network Associates, and Arbor's DDoS telemetry, the whole bloodline converged on NetScout.",
-    intro: "One entry for five companies, because they are one story: Network General's Sniffer named the practice every engineer still uses, Volker Dolch's rugged luggables were its field chassis, the Network Associates merger and un-merger carried the brand through the roll-up era, Arbor Networks scaled packet thinking to internet-wide DDoS telemetry - and NetScout, founded two years before the Sniffer existed, became the house where the whole analyzer tradition came home.",
+    intro: "One entry for five companies, because they are one story: Network General's Sniffer named the practice every engineer still uses, Volker Dolch's rugged luggables were its field chassis, the Network Associates merger and un-merger carried the brand through the roll-up era, Arbor Networks scaled packet thinking to internet-wide DDoS (distributed denial of service) telemetry - and NetScout, founded two years before the Sniffer existed, became the house where the whole analyzer tradition came home.",
     body: ["The profile covers the 1986 Sniffer, Sniffer University, the Dolch chassis, the 1997 NAI merger and 2004 rebirth, Arbor's Peakflow and ATLAS, and NetScout's 2007 and 2015 consolidating acquisitions."],
   },
   {
@@ -6115,7 +6165,7 @@ export const partnerVendors: PartnerVendor[] = [
     name: "WatchGuard - the red box that made the firewall an appliance",
     founded: 1996,
     tagline: "The 1996 Firebox turned security from a project into an object - and the mid-market has run on it since.",
-    intro: "WatchGuard's founding bet was packaging: firewall software sealed into a red steel appliance, priced and consoled for the company with one IT person. The category the giants now dominate was proven here first - and the company never abandoned the mid-market and MSP channel it created.",
+    intro: "WatchGuard's founding bet was packaging: firewall software sealed into a red steel appliance, priced and consoled for the company with one IT person. The category the giants now dominate was proven here first - and the company never abandoned the mid-market and MSP (managed service provider) channel it created.",
     body: ["The profile covers the Firebox, the 1999 IPO and 2006 take-private, the UTM years on Fireware, AuthPoint, the Panda Security acquisition, and the MSP-first present."],
   },
   {
@@ -6138,7 +6188,7 @@ export const partnerVendors: PartnerVendor[] = [
     tags: ["vendor"],
     tagline: "Attacked application delivery from the throughput flank, where the traffic is heaviest.",
     intro:
-      "Lee Chen founded A10 in San Jose in 2004, having already co-founded Centillion Networks and Foundry Networks. Rather than contest the enterprise data centre feature for feature, it went where volume decides: carrier-grade NAT, DDoS absorption and the service-provider tier measured in millions of concurrent sessions.",
+      "Lee Chen founded A10 in San Jose in 2004, having already co-founded Centillion Networks and Foundry Networks. Rather than contest the enterprise data centre feature for feature, it went where volume decides: carrier-grade NAT (network address translation), DDoS (distributed denial of service) absorption and the service-provider tier measured in millions of concurrent sessions.",
     body: [
       "The profile below covers the founding, the Brocade litigation, the 2014 listing, the CGNAT decade and the move into DDoS and 5G infrastructure.",
       "It is worth reading beside Kemp, which appears separately here and attacked the same category from the opposite direction - down on price rather than up on throughput. Between them they are the reason application delivery never became a single vendor's market.",
@@ -6516,7 +6566,7 @@ export const partnerVendors: PartnerVendor[] = [
       "LevelBlue launched on 6 May 2024 at the RSA Conference as a standalone managed security services company, a joint venture between AT&T, which kept a minority stake and a board seat, and WillJam Ventures, whose managing partner Bob McCullen became chairman and chief executive. It began with what AT&T Cybersecurity had been: more than a thousand employees, four security operations centres and three network operations centres, the USM Anywhere platform and the Open Threat Exchange, which the launch release counted at 235,000 security professionals submitting more than 20 million threat indicators a day.",
     body: [
       "Then it bought, fast. On 1 August 2025 it completed the acquisition of Aon's cybersecurity and intellectual property litigation consulting groups; on 19 August 2025 it completed the acquisition of Trustwave, the Chicago managed security and SpiderLabs company, and called the result the world's largest pure-play managed security services provider; on 14 October 2025 it announced, and on 25 November 2025 completed, the acquisition of Cybereason, whose backers SoftBank Corp., SoftBank Vision Fund 2 and Liberty Strategic Capital became investors in LevelBlue; and on 27 January 2026 it announced a managed services partnership with Fortra that includes the acquisition of Fortra's Alert Logic managed detection and response business.",
-      "What those purchases assembled is a services company with other companies' research arms inside it: SpiderLabs now appears on LevelBlue's pages as LevelBlue SpiderLabs, Cybereason's platform as its XDR, and the Open Threat Exchange as its intelligence base. The company is run from Dallas.",
+      "What those purchases assembled is a services company with other companies' research arms inside it: SpiderLabs now appears on LevelBlue's pages as LevelBlue SpiderLabs, Cybereason's platform as its XDR (extended detection and response), and the Open Threat Exchange as its intelligence base. The company is run from Dallas.",
       "Why it belongs in a networking record: the managed security provider is the form in which most organisations now consume network security, and this one is the current end of three lineages this record follows, AT&T's security business, Trustwave's twenty-year run from Chicago, and Cybereason's decade of venture funding.",
     ],
     // 2026-10-18: was en.wikipedia.org/wiki/LevelBlue, deleted on 28 February 2026; the company's own site instead.
@@ -7531,7 +7581,7 @@ export const partnerVendors: PartnerVendor[] = [
     intro: "Proteon, of Westborough, Massachusetts, built token-ring networking equipment and routers through the period when the local-area contest was still genuinely open. Token passing gives a network a property Ethernet does not: a bounded worst-case wait, because a station transmits only when it holds the token.",
     body: [
       "Proteon was founded in Westborough, Massachusetts in 1972 by Howard Salwen, as a communications consulting firm rather than a manufacturer. It became one because of a contract: in early 1979 MIT's Laboratory for Computer Science paid it a hundred thousand dollars to build the second version of their token ring Local Network Interface, on the reasoning that buying would be faster than building. It took until June 1981 to deliver working boards, which is a useful correction to how these stories are usually told.",
-      "What came out of that was ProNET-10, a ten megabit token-passing network shipped in June 1981 - the first commercial Token Ring products, years before IBM announced its own in the mid-1980s. The company then did something more consequential and less remembered: in 1986 it shipped the p4200, the first commercially available multiprotocol router, built on the MIT multiprotocol router using code written by Noel Chiappa. And it produced OSPF, the link-state protocol that is still the interior routing protocol running inside a large share of enterprise networks today.",
+      "What came out of that was ProNET-10, a ten megabit token-passing network shipped in June 1981 - the first commercial Token Ring products, years before IBM announced its own in the mid-1980s. The company then did something more consequential and less remembered: in 1986 it shipped the p4200, the first commercially available multiprotocol router, built on the MIT multiprotocol router using code written by Noel Chiappa. And it produced OSPF (Open Shortest Path First), the link-state protocol that is still the interior routing protocol running inside a large share of enterprise networks today.",
       "None of that saved it, and the numbers say why. In 1990 IBM held 57.7 per cent of the four megabit Token Ring adapter market and 92.6 per cent of the sixteen megabit market, leaving Proteon and Madge - the two leading independents - about ten per cent each. Being second to IBM in a market IBM defined is not a position, it is a waiting room. The 1987 results show the pressure directly: 22.3 million dollars of sales, up fifteen per cent, against a loss of 5.7 million - a third of everything the venture investors had put in.",
       // Corrected 2026-10-26 (endings apply, DECISIONS item 12): a rename by shareholder vote (8-K, 16 June 1998), not a defunct company relaunched.
       "In June 1998 the company renamed itself OpenROUTE Networks, by a vote of its shareholders, and from there passed through Netrix, NX Networks and NSGDatacom. The reading worth keeping is about which inventions survive their inventors. Proteon's hardware is gone completely and its protocol is in production on hundreds of thousands of devices, because a specification can be implemented by anyone while a product has to be bought from you.",
@@ -9054,6 +9104,8 @@ export const partnerVendors: PartnerVendor[] = [
     },
     sources: [
       { label: "Wikipedia: Capgemini - founded 1 October 1967 by Serge Kampf; headquartered in Paris", url: "https://en.wikipedia.org/wiki/Capgemini" },
+      // Added 2026-11-08: the 2000 purchase of the Ernst & Young consultancy (the profile's 2000 event).
+      { label: "International Directory of Company Histories, Cap Gemini Ernst & Young (Encyclopedia.com): in 2000 Cap Gemini agreed to purchase Ernst & Young Technology, combining its 18,000 employees with nearly 40,000 at Cap Gemini, and changed its name to Cap Gemini Ernst & Young", url: "https://www.encyclopedia.com/books/politics-and-business-magazines/cap-gemini-ernst-young" },
     ],
     tags: ["services"],
     group: "contemporary",
@@ -9264,7 +9316,7 @@ export const partnerVendors: PartnerVendor[] = [
     intro: "A Brazilian partner on the Netskope side. The cloud security channel in Brazil is younger than the networking one, and it shows in the names: houses built around software delivery and subscription rather than around hardware distribution, which is a different business with different economics.",
     body: [
       "The most interesting company on this list, because it is not what its current name suggests. Soow Sigma is the rebranded Sigma Telecom, which completed forty years in 2025 - so a house that started in telecommunications in the mid-1980s is now a strategic cybersecurity integrator. The company was careful to publish that the change of brand, trading name and corporate name left the CNPJ untouched, and with it every contract already signed, which is the practical half of a rebrand that nobody outside the finance department usually sees.",
-      "Its standing with vendors is unusually strong for a Brazilian house. Netskope lists it under the Service Delivery Specialization for Latin America and describes it as a strategic partner, which places it above an ordinary reseller relationship in that programme. Fortinet classifies it Expert Partner and named it 2025 Brazil Unified SASE Partner of the Year, on top of a Best Strategic Project award, 2025 recognition for sales in the South region and for specialisation, and nominations in the managed security services and operational technology categories.",
+      "Its standing with vendors is unusually strong for a Brazilian house. Netskope lists it under the Service Delivery Specialization for Latin America and describes it as a strategic partner, which places it above an ordinary reseller relationship in that programme. Fortinet classifies it Expert Partner and named it 2025 Brazil Unified SASE [secure access service edge] Partner of the Year, on top of a Best Strategic Project award, 2025 recognition for sales in the South region and for specialisation, and nominations in the managed security services and operational technology categories.",
       "The portfolio it describes spans cybersecurity, connectivity, customer experience and smart cities, which reads like a list until you notice it is the telecom inheritance being reused. Forty years of carrier and connectivity work is exactly the background that makes operational technology and municipal projects tractable, because those are network problems before they are security ones.",
       "That trajectory is the reading worth keeping. The Brazilian security channel is often described as young, and parts of it are - but some of its strongest houses are old telecom companies that changed what they sell rather than start-ups that arrived with the category. The engineering culture came with them.",
     
@@ -9936,7 +9988,7 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "Brazilian partner named in the Fortinet channel.",
     intro: "A Brazilian partner in the Fortinet channel. The vendor's partner programme grades houses by level and specialisation, which makes its Brazilian directory unusually enumerable compared with vendors whose locators are rendered by script and therefore invisible to anyone trying to map the market.",
     body: [
-      "Expert-level Fortinet integrator and managed security service provider, specialised across operational technology, SASE, firewall, LAN and security operations. The operational-technology specialisation is worth noting: industrial environments are where a security control that fails closed stops a physical process rather than an application.",
+      "Expert-level Fortinet integrator and managed security service provider, specialised across operational technology, SASE (secure access service edge), firewall, LAN and security operations. The operational-technology specialisation is worth noting: industrial environments are where a security control that fails closed stops a physical process rather than an application.",
     ],
   },
   {
@@ -9962,7 +10014,7 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "Brazilian partner named in the Fortinet channel.",
     intro: "A Brazilian house in the Fortinet channel. Names like this are the part of the industry that no vendor timeline records: the companies that carry a product into an actual building, and whose own history is usually shorter than the product's.",
     body: [
-      "Expert-level Fortinet integrator and managed security service provider, specialised across cloud, operational technology, SASE, SD-WAN, firewall and LAN, and a Preferred Services partner. Houses like this are the part of the industry no vendor timeline records: the companies that carry a product into an actual building.",
+      "Expert-level Fortinet integrator and managed security service provider, specialised across cloud, operational technology, SASE (secure access service edge), SD-WAN (software-defined wide area network), firewall and LAN, and a Preferred Services partner. Houses like this are the part of the industry no vendor timeline records: the companies that carry a product into an actual building.",
       "The current name is recent and the company is not. TLD Hub de Ciberseguranca e Conectividade is a 2024 rebrand of TLD TeleData, presented in Salvador on 19 March that year with Fortinet - described as its largest strategic partner - in the room. The older name is the one to search on for anything before 2024, and the rebrand copy leans on tradition and established position rather than novelty, which is not how a young company introduces itself.",
       "It is based in Bahia, which matters more than it looks: the state has long offered tax incentives to technology companies, and it appears repeatedly in this catalogue as a destination for imported equipment. A cybersecurity and connectivity integrator headquartered there is operating inside that arrangement rather than around it.",
     ],
@@ -10012,7 +10064,7 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "Brazilian partner named in the Fortinet channel.",
     intro: "A Brazilian partner in the Fortinet channel. Recording it completes a roster rather than making a claim: the point of listing the channel at all is that the industry is not only the vendors whose logos appear on the equipment.",
     body: [
-      "Expert-level Fortinet integrator and managed security service provider, specialised in cloud security, operational technology, SASE and security operations. Recording it completes a roster rather than making a claim: the point of listing the channel at all is that the industry is not only the vendors whose logos appear on the equipment.",
+      "Expert-level Fortinet integrator and managed security service provider, specialised in cloud security, operational technology, SASE (secure access service edge) and security operations. Recording it completes a roster rather than making a claim: the point of listing the channel at all is that the industry is not only the vendors whose logos appear on the equipment.",
     ],
   },
   {
@@ -10032,7 +10084,7 @@ export const partnerVendors: PartnerVendor[] = [
     founded: 1990,
     name: "Betta",
     tagline: "Expert-level Fortinet partner in Brazil.",
-    intro: "Sao Paulo integrator at Expert level with Fortinet in SASE and SD-WAN, and an entry whose own identity is not yet settled.",
+    intro: "Sao Paulo integrator at Expert level with Fortinet in SASE (secure access service edge) and SD-WAN (software-defined wide area network), and an entry whose own identity is not yet settled.",
     body: [
       "The directory lists Betta Telecomunicacoes e Eletronica at Expert level in Sao Paulo, as an integrator, with SASE and SD-WAN. The name in the directory and the company this entry was written about do not clearly match, which is recorded in the source notes rather than resolved: a telecommunications and electronics company and an IT channel partner can share a name in Brazil without being the same business, and the founding year this entry carries is affected by which one it is.",
       "The rule this follows is the same one applied to every CNPJ in this catalogue: a registration is matched on activity code and address, never on name. Until that match is made the two readings both stand.",
@@ -10085,7 +10137,7 @@ export const partnerVendors: PartnerVendor[] = [
     founded: 1993,
     name: "Connection",
     tagline: "Expert-level Fortinet partner in Brazil.",
-    intro: "Porto Alegre integrator and managed security provider, listed at Expert level with Fortinet across SASE, SD-WAN and campus networking.",
+    intro: "Porto Alegre integrator and managed security provider, listed at Expert level with Fortinet across SASE (secure access service edge), SD-WAN (software-defined wide area network) and campus networking.",
     body: [
       "Registered as Connection Conectividade e Integracao de Sistemas, it holds three named specialisations rather than one, and the combination is coherent: SASE for the remote user, SD-WAN for the branch, and secure networking on the LAN. That is one partner covering the whole path a packet takes from a person to an application, which is a harder set of exams to staff than any single line of it.",
       "Rio Grande do Sul carries more of this catalogue than its size suggests, and it is not an accident: Porto Alegre has an old and deep technical university base, and a channel house that can recruit locally does not have to compete with Sao Paulo salaries to hold on to certified engineers.",
@@ -10114,7 +10166,7 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "Expert-level Fortinet partner in Brazil.",
     intro: "Barueri integrator listed at Expert level with Fortinet, and the only partner in this catalogue whose registered business model includes a marketplace.",
     body: [
-      "The directory lists it as integrator, marketplace and managed security provider, with cloud security, SD-WAN and both secure-networking specialisations. The marketplace line is the one that separates it from every other Expert-tier house here, and it describes a different transaction: selling through a cloud provider's own catalogue, where the customer's existing committed spend pays for the software and the partner never issues an invoice at all.",
+      "The directory lists it as integrator, marketplace and managed security provider, with cloud security, SD-WAN (software-defined wide area network) and both secure-networking specialisations. The marketplace line is the one that separates it from every other Expert-tier house here, and it describes a different transaction: selling through a cloud provider's own catalogue, where the customer's existing committed spend pays for the software and the partner never issues an invoice at all.",
       "Barueri is also worth a word. It is where a large share of Sao Paulo's enterprise IT sits, close enough to the city to serve it and far enough out to afford the floor space, and several companies in this catalogue are registered there for exactly that reason.",
     ],
   },
@@ -10171,7 +10223,7 @@ export const partnerVendors: PartnerVendor[] = [
     intro: "Expert-level Fortinet partner in Cabedelo, Paraiba, and one of the few entries here whose name belongs to two companies at once.",
     body: [
       "The registry carries Inorpel Comercio e Servicos, opened on 25 June 2009 in Cabedelo under technical support and maintenance, and separately Inorpel Industria Nordestina de Produtos Eletricos, founded on 26 October 1994 at the same location. An IT services company sharing a name and a town with a fifteen-years-older electrical manufacturer is the ordinary shape of a Brazilian family group extending into a new line, and both registrations are recorded here rather than one being chosen.",
-      "In the vendor directory it is listed as integrator and managed security provider, with SASE, SD-WAN and security operations. A partner running a security operations practice from Paraiba is worth noticing on its own: the Northeast is under-represented in every Brazilian channel list, including this one.",
+      "In the vendor directory it is listed as integrator and managed security provider, with SASE (secure access service edge), SD-WAN (software-defined wide area network) and security operations. A partner running a security operations practice from Paraiba is worth noticing on its own: the Northeast is under-represented in every Brazilian channel list, including this one.",
       "The name is an acronym and it explains the company: INdustria NORdestina de Produtos ELetricos, a north-eastern electrical products manufacturer. There are two registrations in Cabedelo, Paraiba - the industrial one opened in 1994, and Inorpel Comercio e Servicos, opened 25 June 2009, whose registered activity is technical support and IT services. The 2009 date is used here because that is the entity doing this work.",
       "The company describes itself as more than forty years in technology, which reaches back further than either registration - a reminder that a Brazilian CNPJ dates a legal entity, not a business. It positions itself as the first company in Paraiba specialising in information-security services and consultancy, with cybersecurity as a newer segment alongside the older technology work, and carries Fortinet, Bitdefender, Acronis, Qualys and PRTG among others.",
     ],
@@ -10199,7 +10251,7 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "Expert-level Fortinet partner in Brazil.",
     intro: "Carries TWO separate Expert-level registrations in Fortinet's Brazilian partner directory, one in Fortaleza and one in Cuiaba, which is what a partner looks like when it has built a second regional operation rather than a second office.",
     body: [
-      "The two registrations are not a bookkeeping artefact. The Fortaleza entity is listed as both integrator and managed security provider with SD-WAN as its specialisation; the Cuiaba entity is listed as integrator only, with none. That is a partner in the Northeast that has extended into the Centre-West and is still building the managed side of it, and the directory records the difference rather than averaging it away.",
+      "The two registrations are not a bookkeeping artefact. The Fortaleza entity is listed as both integrator and managed security provider with SD-WAN (software-defined wide area network) as its specialisation; the Cuiaba entity is listed as integrator only, with none. That is a partner in the Northeast that has extended into the Centre-West and is still building the managed side of it, and the directory records the difference rather than averaging it away.",
       "It is also the clearest illustration of why Fortinet's directory is worth citing at all. Most vendors publish a partner locator that answers where to buy and nothing else. This one publishes tier, city, business model and named specialisations, which means a claim about a partner's standing can be checked by a reader instead of taken on trust. Every Expert-level entry in this catalogue rests on that, and the vendors whose directories are not enumerable are precisely the ones whose partner claims here remain thin.",
     ],
   },
@@ -10224,7 +10276,7 @@ export const partnerVendors: PartnerVendor[] = [
     founded: 2014,
     name: "RCX",
     tagline: "Expert-level Fortinet partner in Brazil.",
-    intro: "Small Porto Alegre integrator holding Expert level with Fortinet in SASE and SD-WAN.",
+    intro: "Small Porto Alegre integrator holding Expert level with Fortinet in SASE (secure access service edge) and SD-WAN (software-defined wide area network).",
     body: [
       "RCX Network Servicos de Informatica is registered as a micro-enterprise, and the combination of that legal size with an Expert-level grade is the thing worth recording. The tier is earned with certified engineers and held with revenue, so a very small company reaching it has concentrated its certifications rather than spread them: two named specialisations, deep, instead of a wide shallow line card.",
       "That is a viable strategy in this market and it is the opposite of the distributor strategy described elsewhere in this catalogue. A house of this size does not win on breadth or on credit; it wins because the two things it does are the two things a particular customer needs done properly.",
@@ -10249,7 +10301,7 @@ export const partnerVendors: PartnerVendor[] = [
     founded: 2010,
     name: "Secureway",
     tagline: "Expert-level Fortinet partner in Brazil.",
-    intro: "Sao Paulo integrator at Expert level with Fortinet in SD-WAN and secure networking.",
+    intro: "Sao Paulo integrator at Expert level with Fortinet in SD-WAN (software-defined wide area network) and secure networking.",
     body: [
       "Registered as Secureway Tecnologia da Informacao, MSP, Servicos, the legal name itself carries the managed-service claim, which is unusual and mildly useful: it dates the company to a period when calling yourself an MSP was worth writing into the registry rather than only into the marketing.",
       "Its two specialisations are the wide-area and the campus, which is the pairing a partner builds when its customers are companies with several sites and no network team of their own.",
@@ -10276,7 +10328,7 @@ export const partnerVendors: PartnerVendor[] = [
     founded: 1986,
     name: "TRTEC",
     tagline: "Expert-level Fortinet partner in Brazil.",
-    intro: "Sao Paulo integrator, Expert level with Fortinet, specialised in SASE alone.",
+    intro: "Sao Paulo integrator, Expert level with Fortinet, specialised in SASE (secure access service edge) alone.",
     body: [
       "A single named specialisation is worth as much attention as a long list. TRTEC Informatica holds Expert level with SASE and nothing else recorded, which describes a house that went deep on one architecture rather than accumulating badges. SASE is also the hardest of Fortinet's specialisations to staff, because it sits across networking and security and most engineers are trained in one of the two.",
     ],
@@ -10405,9 +10457,9 @@ export const partnerVendors: PartnerVendor[] = [
     founded: 2016,
     name: "Conversys - infrastructure and the network operations behind it",
     tagline: "Brazilian integrator covering hybrid cloud, enterprise networking, SD-WAN and security, with its own network operations centre.",
-    intro: "Conversys is a Brazilian integrator whose catalogue runs from hybrid cloud and edge infrastructure through enterprise networking and SD-WAN to security, and which operates its own network operations centre alongside the consultancy.",
+    intro: "Conversys is a Brazilian integrator whose catalogue runs from hybrid cloud and edge infrastructure through enterprise networking and SD-WAN (software-defined wide area network) to security, and which operates its own network operations centre alongside the consultancy.",
     body: [
-      "The NOC is the part of that list worth noticing. Selling and installing infrastructure is a project business with an end date; running it is a relationship with a rota, an escalation path and a service level, and the two require different companies inside the same one.",
+      "The NOC (network operations centre) is the part of that list worth noticing. Selling and installing infrastructure is a project business with an end date; running it is a relationship with a rota, an escalation path and a service level, and the two require different companies inside the same one.",
       "That is the transition most Brazilian integrators of this size have had to make, because customers stopped wanting a system delivered and started wanting one that keeps working - and the second is bought from whoever will answer the telephone at three in the morning.",
     ],
     externalUrl: "https://www.conversys.com.br/",
@@ -10452,9 +10504,9 @@ export const partnerVendors: PartnerVendor[] = [
     founded: 1988,
     name: "Contacta - security across the layers, and a SOC",
     tagline: "Brazilian security integrator running its own XDR-based security operations centre.",
-    intro: "Contacta is a Brazilian information-security integrator covering cloud, endpoint, network and web security with governance and DevSecOps practices, and it runs its own security operations centre built on XDR.",
+    intro: "Contacta is a Brazilian information-security integrator covering cloud, endpoint, network and web security with governance and DevSecOps practices, and it runs its own security operations centre built on XDR (extended detection and response).",
     body: [
-      "An integrator that operates a SOC has crossed the same line as one that operates a NOC, and the crossing is harder in security: a network operations centre knows what normal looks like from the topology it built, while a security operations centre has to decide what is worth waking somebody for, which is a judgement rather than a threshold.",
+      "An integrator that operates a SOC (security operations centre) has crossed the same line as one that operates a NOC (network operations centre), and the crossing is harder in security: a network operations centre knows what normal looks like from the topology it built, while a security operations centre has to decide what is worth waking somebody for, which is a judgement rather than a threshold.",
       "It is also why the SOC market consolidates around firms that already integrate. The detections are only as good as the knowledge of what was deployed and why, and that knowledge belongs to whoever put it there.",
     ],
     externalUrl: "https://www.contacta.com.br/",
@@ -10754,7 +10806,7 @@ export const partnerVendors: PartnerVendor[] = [
     founded: 2012,
     name: "e-Safer - cybersecurity and fraud, together",
     tagline: "Brazilian security firm whose practice pairs cybersecurity with fraud prevention.",
-    intro: "e-Safer works cybersecurity and fraud prevention as one practice, across managed security services, penetration testing, application security assessment, threat intelligence, managed detection and response, vulnerability management, a SOC, zero trust and governance.",
+    intro: "e-Safer works cybersecurity and fraud prevention as one practice, across managed security services, penetration testing, application security assessment, threat intelligence, managed detection and response, vulnerability management, a SOC (security operations centre), zero trust and governance.",
     body: [
       "The pairing in its own description is the interesting choice. Fraud and cybersecurity are usually separate departments with separate budgets and separate reporting lines - one answers to risk and the other to technology - and they investigate the same events from different sides, frequently without sharing what they found.",
       "In Brazilian financial services in particular, that separation is expensive: a credential compromise is a security incident until money moves, at which point it becomes a fraud case, and the evidence needed to understand it sits on both sides of a line drawn by an organisation chart.",
@@ -11432,7 +11484,7 @@ export const partnerVendors: PartnerVendor[] = [
       "Two companies were registered in 2000 - LWS Comercio e Servicos em Informatica in May and ABPR Participacoes in August - and traded under a third name that neither of them carried on paper. Together they were Grupo LWS; to the market they were LAN Professional, and the slogan was sempre ao seu lado, always by your side.",
       "They began as Cabletron Systems' distributor for Brazil, and the timing was accidental but decisive: within months Cabletron reorganised into four companies, and LAN Professional's problem became holding the relationship together across a vendor that no longer existed under that name. It worked. Under Enterasys they came to carry roughly ninety per cent of that vendor's distribution in the country, and the recovery filing is candid about why: Enterasys had been distant from its Brazilian channel, and the fix was somebody answering the telephone. Where competitors offered email and chat, this one offered a person.",
       "In six months of trading it passed ten million reais. Revenue grew 269 per cent between 2000 and 2001, in a year of the September 11 attacks, the Argentine crisis and Brazilian electricity rationing that held national growth to 1.31 per cent. The customer list reads as a map of the era: Volkswagen and Chevrolet, Unicamp and Mackenzie, Banco do Brasil, Anatel and Infraero, TAM and Embraer, Albert Einstein and Samaritano.",
-      "From 2003 it ran its own training centre, and in 2005 became the authorised training centre for Brazil and Mercosur for F5 Networks and IronPort - teaching switching, routing, wireless, intrusion defence, application firewall, storage and SSL VPN to the channel it also supplied.",
+      "From 2003 it ran its own training centre, and in 2005 became the authorised training centre for Brazil and Mercosur for F5 Networks and IronPort - teaching switching, routing, wireless, intrusion defence, application firewall, storage and SSL VPN (virtual private network) to the channel it also supplied.",
       "THE CONTRACT THAT DID IT. In 2004 they won Cobra Tecnologia, worth 43.4 million reais. It was delivered in full and on time, revenue doubled, and it was the largest year in the company's history. Then the payment ran late. The plan names the mechanism precisely - a reverse overtrading - and it is the whole story: a distributor on thin margins had financed a contract larger than its working capital, performed perfectly, and could not wait. From 2005 the company funded itself with borrowed money, and the finance charges consumed 13.2 million reais over four years, averaging five per cent a month of all revenue earned.",
       "Everything after that is aftermath. Public tenders from 2007 lifted revenue again while the interest ate the margin. A 3.65 million real storage system was destroyed in transit in November 2008 and the carrier did not pay. The credit markets closed. On 20 February 2009 the company filed for judicial recovery, with 49.5 million reais owed and thirty people still employed.",
       "The lesson is not that they mismanaged it. They executed the biggest contract of their lives correctly. For a business whose margin is thin and whose capital is borrowed, a single customer large enough to double the year is an existential risk even when everything goes right - and the risk lands not on delivery, but on the date the money arrives.",
@@ -12239,6 +12291,1223 @@ export const partnerVendors: PartnerVendor[] = [
     externalUrl: "https://www.tecnocomp.com.br/",
     externalLabel: "Tecnocomp",
   },
+  // ---- Brazil-rooted services, software and media batch (PRIME 08/11/2026). ----
+  {
+    // CI&T - added 2026-11-08 (PRIME's list of 08/11/2026). Campinas, 1995.
+    // The founding facts are the company's own (investor FAQ); the early
+    // history is FAPESP's magazine of February 2003, written when the company
+    // was eight years old. Spelling: the FAQ writes Guicardi, FAPESP writes
+    // Guiçardi; the copy follows FAPESP, which uses the cedilla.
+    slug: "ci-and-t",
+    // Own site read live 2026-11-08: HTTP 200 at https://ciandt.com, landing on /us/.
+    official: {
+      // The company's own site.
+      url: "https://ciandt.com",
+      // Investor relations, where the filings and the FAQ live.
+      resources: [
+        // The investor relations portal (SEC filings, quarterly results, FAQ).
+        { label: "CI&T investor relations", url: "https://investors.ciandt.com/" },
+      ],
+    },
+    // A services company: software engineering, design and consulting for large clients.
+    tags: ["services"],
+    // Trading today.
+    group: "contemporary",
+    // Title: company name, then the subtitle after the structural separator.
+    name: "CI&T - three Unicamp graduates, a network-management contract, and a listing in New York",
+    // Founding year, named by the investor FAQ label below.
+    founded: 1995,
+    // Card line and meta description.
+    tagline: "Founded in Campinas in 1995 by three computer engineers from Unicamp, launched by a contract with IBM for telecommunications network management, and listed on the New York Stock Exchange in 2021.",
+    // Intro paragraph.
+    intro:
+      "CI&T was founded in 1995 in Campinas by Cesar Gon, Bruno Guiçardi and Fernando Matt, three computer engineers who had graduated from the State University of Campinas (Unicamp) at the start of the decade. It builds software, digital products and data and artificial intelligence (AI) systems for large companies, has its head office in the Campinas technology park, and has traded on the New York Stock Exchange since November 2021.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the first contract was a networking job.
+      "The first contract is the detail worth keeping. According to the account published in February 2003 by the research magazine of the São Paulo Research Foundation (FAPESP), the contract that consolidated the company's formation in 1995 was signed with IBM, and it was for the management of telecommunications networks. A company now known for digital products and software engineering began by managing somebody else's network, and, in the magazine's account, its early expansion was driven by the telecommunications sector before it moved on to industry, banks, insurers and media.",
+      // Paragraph 2: the method, and the first export.
+      "The method it sold in those years was componentisation: building bespoke software for each client out of reusable, previously developed parts, which Gon compared to the move from craft production to an assembly line in the motor industry. In 2002 it won a project for Hewlett-Packard, an automatic stock-replenishment system for large Brazilian retailers, against more than eight hundred competitors; the system was then adopted by Hewlett-Packard's units in Chile, Mexico and the United States, and that first export was a tenth of the company's revenue that year. The same article records that part of the expansion was financed through the software-sector support programme of the Banco Nacional de Desenvolvimento Econômico e Social (BNDES).",
+      // Paragraph 3: the Unicamp pipeline, as a payroll.
+      "The Unicamp entry argues that a state placed a research university in an interior city in order to industrialise it. In 2003 this company was the argument in the form of a payroll: seventy per cent of its staff had come from Unicamp, and they called themselves Geração U, the U generation. Sensedia, the application programming interface company, was spun out of it in 2007, from inside the same university.",
+      // Paragraph 4: ownership and the listing.
+      "The ownership record is short and dated. In July 2019 the private equity firm Advent bought the thirty per cent stake that BNDESPar, the development bank's investment arm, had held in the company, together with an undisclosed part of the founders' holdings; Gon stayed as chief executive and said almost half the revenue already came from abroad, most of it from the United States. On 10 November 2021 its shares began trading on the New York Stock Exchange under the ticker CINT. The listed company is incorporated in the Cayman Islands, while its head office remains in the Pólis de Tecnologia in Campinas.",
+      // Paragraph 5: the acquisitions around the listing.
+      "Acquisitions came either side of the listing: Dextra, a Campinas software developer with more than 1,200 professionals, in July 2021; Somo, a United Kingdom digital product agency, in January 2022; Box 1824, a São Paulo strategy and trends consultancy, in May 2022; and Transpire, a Melbourne technology consultancy, in August 2022. By its own count the company now employs more than 8,000 people.",
+      // Paragraph 6: why it matters, analytically.
+      "Read beside the TIVIT entry, the two are different answers to where a Brazilian services company should raise capital. TIVIT listed on the Brazilian exchange in 2009 and left it within a year, bought by a fund. CI&T went to New York through an offshore holding company, selling engineering delivered from Brazil to a client base of which, by 2019, almost half was abroad. For a technology professional in Brazil the second model is the more consequential one: it means a large employer whose clients, and therefore whose working language, are often foreign, while the work, and the people doing it, stay in Campinas.",
+    ],
+    // Acquisitions, newest last; no price fields (brief of 08/11/2026).
+    acquisitions: [
+      // Dextra, July 2021.
+      { year: 2021, name: "Dextra", what: "A Brazilian software development company building end-to-end digital products, with more than 1,200 professionals and clients in Brazil and the United States.", became: "Part of CI&T's local and global delivery, announced on 1 July 2021, four months before the listing.", sourceNote: "CI&T press release, New York, 1 July 2021." },
+      // Somo, January 2022.
+      { year: 2022, name: "Somo Global", what: "A United Kingdom digital product agency with offices in the United Kingdom, the United States and Colombia, adding almost 300 digital specialists.", became: "Part of CI&T's operation in Europe, the Middle East and Africa.", sourceNote: "CI&T press release, Campinas, 14 January 2022: a sale and purchase agreement executed that day." },
+      // Box 1824, May 2022.
+      { year: 2022, name: "Box 1824", what: "A São Paulo future-focused strategy consultancy of about forty senior strategists, known for its trend-research methodology.", became: "An independent operation inside the group, with its chief executive, Paula Englert, kept in post.", sourceNote: "CI&T press release, Campinas, 31 May 2022: 100% of BOX 1824 PLANEJAMENTO E MARKETING LTDA." },
+      // Transpire, August 2022.
+      { year: 2022, name: "Transpire", what: "A Melbourne technology consultancy working since 2009 for Australian clients, adding around 100 digital specialists.", became: "Part of CI&T's operation in Australia and the Asia-Pacific region.", sourceNote: "CI&T press release, New York, 16 August 2022: a sale and purchase agreement, with completion expected in the third quarter of 2022." },
+    ],
+    // The company's own investor pages, where a reader goes next.
+    externalUrl: "https://investors.ciandt.com/",
+    // Link label.
+    externalLabel: "CI&T investor relations",
+    // Sources, each read live on 2026-11-08.
+    sources: [
+      // Founding year, founders, head office and incorporation.
+      { label: "CI&T investor FAQ: founded in 1995 in Campinas, Brazil, by Cesar Gon, Bruno Guicardi and Fernando Matt; corporate headquarters at the Pólis de Tecnologia in Campinas; incorporated in the Cayman Islands; over 8,000 professionals", url: "https://investors.ciandt.com/resources/investor-faqs/", sourceNote: "Read 2026-11-08, HTTP 200. The FAQ says twenty-five countries; the investor relations overview read the same day says eleven, so no country count is given in the copy." },
+      // The early history: Unicamp, the IBM contract, Hewlett-Packard, BNDES, the U generation.
+      { label: "Pesquisa FAPESP, edition 84, February 2003, 'Empresa de talentos': three Unicamp computer engineering graduates; the first contract, with IBM, for telecommunications network management, consolidating the company's formation in 1995; the 2002 Hewlett-Packard project; Prosoft financing from BNDES; 70% of staff from Unicamp", url: "https://revistapesquisa.fapesp.br/empresa-de-talentos/" },
+      // The Advent stake.
+      { label: "Baguete, 29 July 2019: Advent buys the 30% stake BNDESPar held in CI&T and an undisclosed part of the founders' shares, with no capital injection; César Gon stays as chief executive; almost half the revenue from abroad", url: "https://www.baguete.com.br/noticias/advent-compra-participacao-na-cit" },
+      // The listing.
+      { label: "CI&T press release, November 2021: pricing of the initial public offering of Class A common shares; trading on the New York Stock Exchange expected from 10 November 2021 under the ticker CINT", url: "https://ciandt.com/us/en-us/press-release/ciandt-announces-pricing-initial-public-offering-ipo" },
+      // Dextra.
+      { label: "CI&T press release, 1 July 2021: CI&T acquires Dextra, a Brazilian software development company with over 1,200 digital professionals", url: "https://ciandt.com/us/en-us/press-release/ciandt-acquires-dextra" },
+      // Somo.
+      { label: "CI&T press release, 14 January 2022: agreement to acquire Somo Global Ltd, a United Kingdom digital product agency, to accelerate growth in EMEA", url: "https://ciandt.com/us/en-us/press-release/ciandt-acquires-somo-accelerate-its-growth-emea" },
+      // Box 1824.
+      { label: "CI&T press release, 31 May 2022: acquisition of 100% of Box 1824, a São Paulo strategic consulting firm, which remains an independent operation", url: "https://ciandt.com/us/en-us/press-release/ciandt-acquires-box-1824-joining-forces-envision-and-materialize-future" },
+      // Transpire.
+      { label: "CI&T press release, 16 August 2022: agreement to acquire Transpire Technology Pty Ltd, a Melbourne technology consultancy working since 2009", url: "https://ciandt.com/au/en-au/press-release/ciandt-acquires-transpire-enhance-its-growth-australia-and-apac" },
+      // Sensedia as a CI&T spin-off.
+      { label: "NeoFeed, 11 May 2021: Sensedia was born in 2007 as a spin-off of CI&T, which once held a stake and sold it long ago", url: "https://neofeed.com.br/startups/riverwood-investe-r-120-milhoes-em-empresa-que-faz-cola-digital-de-softwares/" },
+    ],
+  },
+  {
+    // SENSEDIA - added 2026-11-08 (PRIME's list of 08/11/2026). Campinas, 2007.
+    // A CI&T spin-off, which is why it sits beside that record. The Kombi is
+    // the company's own story, told on its own site and by NeoFeed.
+    slug: "sensedia",
+    // Own site read live 2026-11-08: HTTP 200 at https://www.sensedia.com.
+    official: {
+      // The company's own site.
+      url: "https://www.sensedia.com",
+    },
+    // A product company: it sells an API management platform.
+    tags: ["vendor"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "Sensedia - a spin-off that moved in a Kombi and sells the glue between systems",
+    // Founding year, named by the company's history label below.
+    founded: 2007,
+    // Card line.
+    tagline: "Founded in Campinas in 2007 as a service-oriented architecture specialist spun out of CI&T; since 2012 it has sold an application programming interface management platform, and it is one of the few Brazilian vendors placed in the global analyst rankings for that market.",
+    // Intro paragraph.
+    intro:
+      "Sensedia was founded in Campinas in 2007 as a company specialising in service-oriented architecture (SOA), and launched its application programming interface (API) management platform in 2012. It began as a spin-off of CI&T, created inside the State University of Campinas, and its founders Kleber Bacili and Marcilio Oliveira moved to their first office with everything they owned in a Volkswagen Kombi.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the founding and the van.
+      "The company tells its own founding story with a vehicle. Its site says that when it began, everything it owned fitted inside a Kombi, which carried the equipment to the first office and now stands at the entrance of its head office. NeoFeed's account names the two founders who did the loading, Kleber Bacili and Marcilio Oliveira, and dates the spin-off from CI&T to 2007. In 2012 its chief operating officer described it as a CI&T spin-off created inside Unicamp, and Bacili, who had been technology director, became chief executive that year.",
+      // Paragraph 2: from SOA governance to API management.
+      "The product history follows the industry's vocabulary. In 2012 the business was described as governance of service-oriented architecture, the discipline of making a large company's internal systems expose and consume services in a controlled way. The same year it launched a platform for managing application programming interfaces (APIs), and in 2015 it started APIX, an event about integration strategy and APIs. The problem did not change between the two names; what changed was that the interfaces stopped being internal, and the clients connecting to them stopped being the company's own departments.",
+      // Paragraph 3: the funding and the recognition.
+      "In 2021 an investment led by Riverwood Capital, which NeoFeed reported as the first institutional cheque in the company's history, paid for expansion into the United States and the rest of Latin America; CI&T, which had held a stake, had sold it long before. Bacili's description of the product in that interview is the plainest available: an application programming interface (API) is digital glue that joins two pieces of software. By the company's account it was named a leader in the Forrester Wave for API management in the third quarter of 2022, and in October 2025 it was placed as a Challenger in Gartner's Magic Quadrant for API management.",
+      // Paragraph 4: why it matters to a network or security professional.
+      "For a network or security engineer the reason to know it is where the product sits in the path. An application programming interface (API) gateway is a proxy at the application layer, in the same place a load balancer or a web application firewall sits, and it enforces the same kinds of policy: who may call, how often, with what credential, and what is logged when they do. As open finance and similar regimes turned bank systems into published interfaces, that layer became part of the attack surface that security teams answer for, and the companies selling it became part of the security conversation whether or not they described themselves that way.",
+    ],
+    // The company's own site.
+    externalUrl: "https://www.sensedia.com/about-us",
+    // Link label.
+    externalLabel: "Sensedia",
+    // Sources, each read live on 2026-11-08.
+    sources: [
+      // Founding year and milestones.
+      { label: "Sensedia, About us, historic milestones: 2007, the journey starts in Campinas as a company specialising in SOA solutions; 2012, API management platform launched; 2015, the first APIX; 2021, investment led by Riverwood Capital and expansion to the United States and Latin America; 2022, a leader in the Forrester Wave for API management, Q3 2022", url: "https://www.sensedia.com/about-us" },
+      // The founders and the spin-off.
+      { label: "NeoFeed, 11 May 2021: in 2007, when Sensedia was born as a spin-off of CI&T, Kleber Bacili and Marcilio Oliveira put everything they had in a Kombi to move to the new office; Riverwood Capital's investment the first institutional cheque in the company's history; APIs described by Bacili as a digital glue joining two pieces of software", url: "https://neofeed.com.br/startups/riverwood-investe-r-120-milhoes-em-empresa-que-faz-cola-digital-de-softwares/" },
+      // The 2012 leadership change and the spin-off described from inside.
+      { label: "Baguete, 24 April 2012: Sensedia, a company of SOA governance solutions, starts 2012 with Kleber Bacili as chief executive, coming from technology director; the new chief operating officer describes it as a CI&T spin-off created inside Unicamp", url: "https://www.baguete.com.br/noticias/sensedia-novos-ceo-e-coo-mirando-inovacao" },
+      // The 2025 analyst placement, and the Kombi at the entrance.
+      { label: "Sensedia, 16 October 2025: Sensedia recognised as a Challenger in the 2025 Gartner Magic Quadrant for API Management; the same page tells how everything the company owned fitted inside a Kombi, which now stands at the entrance of its headquarters", url: "https://www.sensedia.com/post/sensedia-recognized-as-a-challenger-in-the-2025-gartner-r-magic-quadrant-tm-for-api-management", sourceNote: "Read 2026-11-08, HTTP 200. The site's navigation bar still carries an older line calling the company a leader in the Gartner Magic Quadrant; the dated 2025 post says Challenger, and the copy follows the dated post." },
+    ],
+  },
+  {
+    // RADIX - added 2026-11-08 (PRIME's list of 08/11/2026).
+    // DISAMBIGUATION: this is RADIX ENGENHARIA E DESENVOLVIMENTO DE SOFTWARE
+    // S/A of Rio de Janeiro, CNPJ 11.677.441/0001-49 (registry read today),
+    // the engineering and software company PRIME named. It is NOT Radix the
+    // domain-name registry, nor any of the other companies of that name; the
+    // registry entry, the company's own Portuguese page and the CEO interview
+    // all name the same Rio business.
+    // DATE DISCREPANCY RECORDED: the company and the registry say March 2010
+    // (registry opening 02/03/2010); Upstream (2013) says April 2010.
+    slug: "radix",
+    // Own site read live 2026-11-08: HTTP 200 at https://radixeng.com.br (the Brazilian company); radixeng.com is Radix U.S., LLC.
+    official: {
+      // The Brazilian company's own site.
+      url: "https://radixeng.com.br",
+      // The American subsidiary's site, named so the reader knows whose it is.
+      resources: [
+        // Radix U.S., LLC, headquartered in Houston.
+        { label: "Radix Engineering (Radix U.S., LLC, Houston)", url: "https://www.radixeng.com/" },
+      ],
+    },
+    // An engineering and technology services company.
+    tags: ["services"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "Radix - engineering and software under one roof, from Rio",
+    // Founding year, named by the company's own and the registry labels below.
+    founded: 2010,
+    // Card line.
+    tagline: "A Rio de Janeiro company founded in 2010 by Luiz Eduardo Rubião and seven partners to do engineering, automation and software together; its first large job was topsides engineering for Petrobras's pre-salt production vessels.",
+    // Intro paragraph.
+    intro:
+      "Radix was founded in Rio de Janeiro in March 2010 by Luiz Eduardo Rubião and seven partners, on the conviction that a Brazilian company could combine engineering, industrial automation and software development in one firm. Its name is Latin for root. It now works for industrial and energy clients in more than thirty countries, with offices in Rio de Janeiro, São Paulo, Belo Horizonte, Houston and Amsterdam.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the founding.
+      "The company's founding proposition was a market observation rather than a technology. In a 2017 interview Rubião said that combining engineering with software is not common in the American market, where companies tend to specialise in one or the other, and Upstream's 2013 profile describes the founding as an attempt to create a genuinely Brazilian engineering and software player for the oil and gas industry, in a market dominated by companies from the United States and Europe. The federal registry records the company, Radix Engenharia e Desenvolvimento de Software S/A, as opened in Rio de Janeiro on 2 March 2010.",
+      // Paragraph 2: the first large job.
+      "The first large contract shows the scale it started at. Within three years it was working, as a subcontractor to and partner of the French firm Doris Engineering, on the topsides engineering for eight replicant floating production, storage and offloading vessels built to operate for Petrobras in the pre-salt province of the Santos basin. In 2013 it opened an office in Houston, and early in 2015 it took on Sotreq, one of the world's largest dealers in Caterpillar products, as a partner to capitalise the business.",
+      // Paragraph 3: the IT, OT and engineering argument.
+      "What it sells today it describes as the combination of three kinds of technology that most organisations keep in separate departments: engineering technology, operational technology (OT) and information technology (IT). Its American subsidiary, Radix U.S., headquartered in Houston, puts it as connecting digital strategy to execution on the plant, mill and facility floor. The company reports more than 1,800 people and work in more than thirty countries.",
+      // Paragraph 4: why it matters to a network or security professional.
+      "For a network or security professional the interesting word is the second one. Operational technology is the world of controllers, field networks and plant historians, and the Nozomi Networks entry records why such a network cannot simply be scanned the way an office network is, without risking the plant. A company whose stated business is joining engineering data to information systems is building exactly the connections that make that problem a corporate one, and its first large client, as the Petrobras entry records, also runs one of the largest private networks in the country.",
+    ],
+    // The company's own page.
+    externalUrl: "https://radixeng.com.br/a-radix/sobre-nos",
+    // Link label.
+    externalLabel: "Radix",
+    // Sources, each read live on 2026-11-08.
+    sources: [
+      // The company's own account: March 2010, the name, the scope, Sotreq.
+      { label: "Radix, Sobre nós: Radix reached the market in March 2010, its name from the Latin for root; projects in more than 30 countries on five continents; engineering, operational and information technology combined; early in 2015 Sotreq, one of the world's largest Caterpillar dealers, became a partner; offices in Rio de Janeiro, São Paulo, Belo Horizonte, Houston and Amsterdam", url: "https://radixeng.com.br/a-radix/sobre-nos" },
+      // The registry entry, which fixes the legal entity.
+      { label: "Federal tax registry via MonitorCNPJ: RADIX ENGENHARIA E DESENVOLVIMENTO DE SOFTWARE S/A, CNPJ 11.677.441/0001-49, Rio de Janeiro, opened 02/03/2010, active, head office with ten branches", url: "https://monitorcnpj.com.br/cnpj/11677441000149/" },
+      // The CEO interview: seven partners, Houston 2013, engineering plus software.
+      { label: "CFI.co, August 2017: in 2010, along with seven partners, Luiz Eduardo Rubião founded Radix; in 2013 he opened an office in Houston, Texas; combining engineering with software is not common in the American market", url: "https://cfi.co/corporate-leaders/2017/08/cfi-co-meets-the-ceo-of-radix-luiz-eduardo-rubiao/" },
+      // The Petrobras pre-salt work.
+      { label: "Upstream, 20 December 2013: Luiz Eduardo Rubiao founded Radix in April 2010 to create a Brazilian engineering and software player for the oil and gas industry; the topsides engineering of eight replicant FPSOs for Petrobras in the Santos basin pre-salt, as subcontractor to Doris Engineering", url: "https://www.upstreamonline.com/weekly/radix-runs-rule-over-expansion/1-1-990826", sourceNote: "Read 2026-11-08, HTTP 200 (the opening of the article; the rest is behind a paywall). It dates the founding to April 2010, against the company's and the registry's March 2010; the copy follows the company and the registry." },
+      // The American subsidiary.
+      { label: "Radix Engineering (radixeng.com): Radix U.S., LLC, headquartered in Houston, Texas; 1,800+ dedicated team members and 35+ countries", url: "https://www.radixeng.com/", sourceNote: "Read 2026-11-08, HTTP 200. The Brazilian page says more than 30 countries and the American page 35 or more; the copy says more than thirty." },
+    ],
+  },
+  {
+    // ENCORA - added 2026-11-08 (PRIME's list of 08/11/2026).
+    // ENDED: Coforge completed the acquisition on 23 April 2026 and, read today,
+    // https://www.encora.com answers 301 to https://www.coforge.com. Hence the
+    // ending and the successor rather than a parent (a brand folded into its
+    // acquirer is an ending, per the status model).
+    // FOUNDED 2020 IS THE NAME: Indecomm Digital Services and its subsidiaries
+    // began operating as Encora in August 2020. The older company's own
+    // founding year was not found in any source read, so it is not given;
+    // wiring.md decision D3 offers storyBegins for PRIME's ruling.
+    // BRAZIL: Daitan of Campinas, bought in July 2021, whose founder came out
+    // of Lucent, which had bought his first company, Zetax, in 1999.
+    slug: "encora",
+    // Defunct under this name: encora.com redirects permanently to coforge.com (read 2026-11-08).
+    official: {
+      // No longer trades under this name.
+      defunct: true,
+      // The company to read instead, named.
+      successor: { label: "Coforge, the Indian engineering services company that completed its acquisition of Encora on 23 April 2026", url: "https://www.coforge.com" },
+    },
+    // A services company: outsourced software product engineering.
+    tags: ["services"],
+    // Ended companies sit in the other group.
+    group: "other",
+    // Title.
+    name: "Encora - the Campinas engineers who came by way of Lucent",
+    // The year the company took the name Encora, named by the AZ Big Media label below.
+    founded: 2020,
+    // ENDED (2026-11-08): the year is named by the Coforge closure label below.
+    ended: {
+      year: 2026,
+      note: "Acquired by Coforge, which announced the closure of the transaction on 23 April 2026; on 8 November 2026 encora.com answered with a permanent redirect to coforge.com.",
+    },
+    // Card line.
+    tagline: "A private-equity-built software engineering firm that took its name in 2020, bought a Campinas company whose founder had come out of Lucent, and was itself bought by India's Coforge in 2026.",
+    // Intro paragraph.
+    intro:
+      "Encora was an outsourced software product engineering company headquartered in Scottsdale, Arizona, assembled under private equity ownership and given its name in August 2020. Its Brazilian chapter is Daitan, a Campinas engineering firm it bought in 2021. In April 2026 the Indian company Coforge completed its purchase of Encora, presenting it as a scaled nearshore delivery base in Latin America for clients in the United States.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the assembly.
+      "Encora is easier to describe as a sequence of owners and names than as a founding. In August 2020 Indecomm Digital Services and its subsidiaries Nearsoft and Söoryen Technologies unified under the name Encora, with Warburg Pincus as backer and more than 4,000 people. Avantica, a nearshore engineering firm established in 1996 and bought in 2019, took the Encora name in June 2021. In a transaction reported on 1 January 2022 Advent International took a majority stake, with Warburg Pincus keeping a minority one, and the company was then described as having more than 6,300 people in forty offices.",
+      // Paragraph 2: Daitan and the Lucent line.
+      "The Brazilian part arrived in July 2021 with Daitan, which had about 600 people, roughly 500 of them in Campinas, and research and development centres there and in Victoria, British Columbia. Its history is the part worth keeping. Augusto Cavalcanti founded Daitan in 2004 after leaving Lucent, where he had led research and development teams for Brazil and the United States; he had joined Lucent when it bought Zetax, the telecommunications equipment company he had founded in the late 1980s, in 1999. Daitan moved to the Encora brand in April 2022.",
+      // Paragraph 3: the sale to Coforge.
+      "In December 2025 Coforge signed agreements to buy the business from Advent, Warburg Pincus and other minority shareholders, and announced the closure on 23 April 2026. Its own description of the purpose was geographic: the acquisition would reposition Coforge as a company with scaled nearshore delivery in Latin America, with an engineering talent base serving clients in the United States. Encora's earlier statement of the same idea was about the working day: teams in Latin America can support clients in the United States and Canada through their own office hours.",
+      // Paragraph 4: why it matters.
+      "Read beside the Bell Labs, Lucent and Alcatel entry, the chain is unusually clear. In 1999 Lucent bought a Brazilian telecommunications equipment company and, with it, its founder; in 2004 the founder left and built a software engineering company; in 2021 a private-equity-backed engineering firm bought that company, saying it wanted the talent in Brazil; and in 2026 an Indian services group bought the firm, saying it wanted a nearshore talent base in Latin America. Three purchases over twenty-seven years, and the asset named in the last two was the same: engineers, most of them in Campinas, who build software for clients elsewhere. The Unicamp entry explains why they were there.",
+    ],
+    // Acquisitions with a Brazilian or founding bearing; no price fields.
+    acquisitions: [
+      // Avantica, 2019.
+      { year: 2019, name: "Avantica", what: "A nearshore software engineering company established in 1996, serving established and early-stage companies across the United States and Latin America.", became: "Encora, when it took the group's name in June 2021.", sourceNote: "Encora press release, Scottsdale, 22 June 2021." },
+      // Daitan, 2021.
+      { year: 2021, name: "Daitan", founder: "Augusto Cavalcanti", what: "A software engineering company of about 600 people, with offices in San Ramon, California, and research and development centres in Victoria, British Columbia, and Campinas, São Paulo.", became: "Encora's Brazilian operation, under the Encora brand from April 2022.", sourceNote: "Encora press releases, Scottsdale, 6 July 2021 and 6 April 2022; Baguete, 6 July 2021, for the Campinas headcount and the founder's Lucent and Zetax history." },
+    ],
+    // The acquirer's own closing release.
+    externalUrl: "https://news.coforge.com/newsroom/press-release/coforge-announces-the-successful-closure-of-the-encora-acquisition",
+    // Link label.
+    externalLabel: "Coforge: closure of the Encora acquisition",
+    // Sources, each read live on 2026-11-08.
+    sources: [
+      // The name, 2020.
+      { label: "AZ Big Media, 4 August 2020: Indecomm Digital Services and its subsidiaries Nearsoft and Söoryen Technologies unified and now operate under the name Encora, Scottsdale-based and backed by Warburg Pincus, with over 4,000 associates", url: "https://azbigmedia.com/business/indecomm-digital-services-launches-new-identity-as-encora/" },
+      // Avantica.
+      { label: "Encora press release via PR Newswire, Scottsdale, 22 June 2021: subsidiary Avantica, established in 1996 and joining Encora through a 2019 acquisition, will operate under the Encora brand", url: "https://www.prnewswire.com/news-releases/global-product-engineering-provider-encora-rebrands-its-subsidiary-avantica-to-encora-301317456.html" },
+      // Daitan acquisition.
+      { label: "Encora press release via PR Newswire, Scottsdale, 6 July 2021: acquisition of Daitan, adding 600 engineers; offices in San Ramon, California, and R&D centres in Victoria, British Columbia, and Campinas, São Paulo", url: "https://www.prnewswire.com/news-releases/encora-acquires-daitan-expanding-its-software-engineering-capabilities-301325968.html" },
+      // Daitan's founder and the Lucent and Zetax line.
+      { label: "Baguete, 6 July 2021: Daitan has about 600 employees, around 500 in Campinas; Augusto Cavalcanti founded it in 2004 after leaving Lucent, which he joined when it acquired Zetax, the telecom equipment company he founded in the late 1980s, in 1999", url: "https://www.baguete.com.br/noticias/encora-compra-daitan" },
+      // Daitan brand migration.
+      { label: "Encora press release via PR Newswire, Scottsdale, 6 April 2022: Daitan, its subsidiary in Brazil, operates under the Encora brand; acquired in July 2021; Latin American teams support clients in the United States and Canada throughout their workday", url: "https://www.prnewswire.com/news-releases/next-gen-tech-services-provider-strengthens-its-presence-in-the-us-canada-and-brazil-301519001.html" },
+      // Advent majority stake.
+      { label: "Channel Drive, 1 January 2022: Advent International has acquired a majority stake in Encora, Warburg Pincus retaining a minority; rebranded as Encora in 2020; over 6,300 associates across 40 offices", url: "https://channeldrive.in/developer-corner/advent-international-acquires-majority-stake-in-encora/" },
+      // Coforge's announcement.
+      { label: "Coforge press release, December 2025: definitive agreements to acquire Encora from Advent, Warburg Pincus and other minority shareholders; scaled nearshore delivery capability in Latin America for clients in the United States", url: "https://news.coforge.com/newsroom/press-release/coforge-to-acquire-encora.-reaffirms-intent-to-be-the-leading-ai-driven-engineering-firm-for-the-new-era" },
+      // Coforge's closure: the ending's year.
+      { label: "Coforge press release, Greater Noida and Princeton, 23 April 2026: successful closure of the Encora acquisition announced in December 2025; consolidation from 1 May 2026", url: "https://news.coforge.com/newsroom/press-release/coforge-announces-the-successful-closure-of-the-encora-acquisition", sourceNote: "Read 2026-11-08, HTTP 200. The same day https://www.encora.com answered HTTP 301 with Location https://www.coforge.com/." },
+    ],
+  },
+  {
+    // IT FORUM - added 2026-11-08 (PRIME's list of 08/11/2026).
+    // CURRENT NAME AND OWNER, confirmed today: the brand is IT Forum (the
+    // older company name, IT Mídia, was folded into it on 31 October 2023),
+    // and it is part of Grupo Itaqui, whose own page lists IT Forum first in
+    // its ecosystem. The founder of both is Adelson de Sousa; IT Forum's own
+    // August 2025 page names Miguel Petrilli as co-founder.
+    // DATE DISCREPANCY RECORDED: a press account of April 2026 says created in
+    // 1991; IT Forum's own page of 20 August 2025 says the story began
+    // 35 years earlier, which would be 1990. The copy says the early 1990s
+    // and the field carries 1991, the only year a source states.
+    slug: "it-forum",
+    // Own site read live 2026-11-08: HTTP 200 at https://itforum.com.br; footer '2026 IT FORUM'.
+    official: {
+      // The brand's own site.
+      url: "https://itforum.com.br",
+      // A company: rendered "part of"; the Grupo Itaqui label names the owner. No year: no source dates the grouping.
+      parent: { name: "Grupo Itaqui" },
+    },
+    // Trade press and events (the media tag, added 2026-11-08 for this record and its pair).
+    tags: ["media"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "IT Forum - a licensed Byte, then the room where Brazil's technology chiefs meet",
+    // The only year a source states, named by the Tribuna do Sertão label below.
+    founded: 1991,
+    // Card line.
+    tagline: "Began in the early 1990s by bringing Byte magazine to Brazil, became the publisher IT Mídia, stopped printing in 2014, and is now a news, data and events brand built around the annual gatherings of Brazil's chief information officers.",
+    // Intro paragraph.
+    intro:
+      "IT Forum is the Brazilian information technology (IT) media, data and events brand that grew out of IT Mídia, the publisher founded by Adelson de Sousa. Its story begins in the early 1990s, when Sousa and Miguel Petrilli brought Byte magazine to Brazil. Today it publishes news for technology buyers, runs research and awards, and holds immersion events for chief information officers, and it is part of Grupo Itaqui, based in Itapevi, São Paulo.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the licence.
+      "It started as a licence. IT Forum's own anniversary account says that Adelson de Sousa and Miguel Petrilli brought the magazine Byte to Brazil, and that the founders then created IT Mídia, with titles including LAN Times, CRN and InformationWeek; a press account of its thirty-fifth edition, in April 2026, dates the creation to 1991. In 2000 it launched the portal IT Web, an early move to the internet for a print publisher.",
+      // Paragraph 2: from magazines to events.
+      "The business then followed the path of most trade publishers, faster than most. IT Mídia was founded as a publisher of business-to-business technology magazines, and in 2014 it discontinued its printed titles. In 2018 it took the Brazilian licences for CIO, Computerworld, IDG Now!, PC World and Macworld. By May 2019 its founder said events had become the largest share of revenue, and the company reorganised into an events platform called IT Forum and a content platform; on 31 October 2023 it announced the full incorporation of IT Mídia into IT Forum, concluding a consolidation of brands begun in 2013.",
+      // Paragraph 3: what it is today.
+      "What it sells now is access. Its flagship events, IT Forum Trancoso and IT Forum Praia do Forte, gather the chief information officers of Brazil's largest companies and the chief executives of the technology industry; it publishes a market study, Antes da TI, a Estratégia, runs awards for innovative uses of information technology (IT) and an IT executive of the year, and produces podcasts and series. The group that owns it, Grupo Itaqui, describes itself as an ecosystem of media, data, events, education and investment, with a physical base at the Distrito Itaqui in Itapevi.",
+      // Paragraph 4: why it matters.
+      "For a technology professional in Brazil it matters for two reasons, one practical and one structural. The practical one is that it is a working source: several entries in this section cite its reporting on Brazilian acquisitions. The structural one is the arc. A brand that began by licensing an American computer magazine for Brazilian readers ended as a meeting place where Brazilian buyers and the technology industry's chief executives spend days together, which is a fair summary of how the market itself changed: the information became abundant, and the relationship became the scarce thing. Its founder put it in one line at the 2026 edition: audience numbers do not sustain an ecosystem; relationships do.",
+    ],
+    // The brand's own site.
+    externalUrl: "https://itforum.com.br/",
+    // Link label.
+    externalLabel: "IT Forum",
+    // Sources, each read live on 2026-11-08.
+    sources: [
+      // The 1991 creation and the 35th edition.
+      { label: "Tribuna do Sertão, 17 April 2026: the IT Forum Trancoso opens its 35th anniversary edition; created in 1991 as a media vehicle specialising in IT, IT Forum evolved into a data and events platform and part of the Distrito Itaqui; Adelson de Sousa, founder of Itaqui", url: "https://www.tribunadosertao.com.br/conhecimento/2026/04/17/889128-it-forum-abre-edicao-de-35-anos-com-aposta-em-ecossistemas-como-nova-forca-da-inovacao", sourceNote: "Read 2026-11-08, HTTP 200. A regional site carrying press material; used for the year because it is the only source read that states one. IT Forum's own page of 20 August 2025 (next citation) says the company's story began 35 years earlier, which points to 1990; the discrepancy is recorded and not resolved." },
+      // The founders and the Byte licence, from the brand's own page.
+      { label: "IT Forum, 20 August 2025, 'IT Forum celebra 35 anos': the company's story began 35 years ago; Adelson de Sousa and Miguel Petrilli brought the magazine Byte to Brazil; the founders created IT Mídia, with publications such as Lan Times, CRN and InformationWeek", url: "https://itforum.com.br/35-anos-it-forum/", sourceNote: "Read via WebFetch on 2026-11-08: the plain read returned HTTP 403." },
+      // The 2023 consolidation.
+      { label: "IT Forum, 31 October 2023: IT Forum announces the incorporation of IT Mídia, concluding a consolidation of brands begun in 2013; Adelson de Sousa, founder of IT Mídia; licensed and incorporated CRN, InformationWeek, IT Web, IDG Now!, CIO and Computerworld; the IT Forum Trancoso and IT Forum Itaqui events", url: "https://itforum.com.br/noticias/it-forum-conclui-estrategia-consolidacao/" },
+      // The 2018 IDG licences.
+      { label: "Meio & Mensagem, 30 January 2018: the IDG brands CIO, ComputerWorld, IDGNow, PCWorld and Mac World licensed in Brazil by IT Mídia; Adelson Sousa, president and founder", url: "https://www.meioemensagem.com.br/midia/marcas-da-idg-sao-licenciadas-pela-it-midia" },
+      // The 2019 reorganisation and the end of print.
+      { label: "Meio & Mensagem, 30 May 2019: IT Mídia announces the IT Forum and IT Trends units; created 21 years earlier as a publisher of B2B technology magazines, it discontinued its printed publications in 2014; events had become the largest share of revenue", url: "https://www.meioemensagem.com.br/midia/it-midia-se-reestrutura-em-digital-e-eventos" },
+      // IT Web in 2000.
+      { label: "Descomplica, 29 September 2026: IT Forum's 35 years, from a licence of Byte magazine in the early 1990s to a hub; the IT Web portal launched in 2000", url: "https://descomplica.com.br/blog/it-forum-completa-35-anos-revista-byte-hub-2/" },
+      // The owner, from the group's own page: the parent's name.
+      { label: "Grupo Itaqui, home page: an integrated ecosystem whose initiatives are IT Forum, described as the leading media, data and events platform for the IT community, Instituto Itaqui, Distrito Itaqui and IT Invest; physical presence at the Distrito Itaqui in Itapevi, São Paulo", url: "https://grupoitaqui.com.br/", sourceNote: "Read 2026-11-08, HTTP 200. IT Forum's own header and footer link Grupo Itaqui and carry the Itapevi address. No document read states a legal holding structure or a date, so the parent carries no year." },
+    ],
+  },
+  {
+    // ARANDA (and RTI) - added 2026-11-08 (PRIME's list of 08/11/2026: "RTI
+    // (magazine) and its publisher"). PUBLISHER CONFIRMED from its own pages:
+    // RTI - Redes, Telecom e Instalações is published by Aranda Editora
+    // Técnica e Cultural, São Paulo, CNPJ 55.922.157/0001-66. One record for
+    // the two, because RTI's own launch year was not found (the October 2026
+    // issue is number 317, which points to about 2000 if monthly without a
+    // gap, but no source states it) and a card needs a founding year a label
+    // can name. The publisher's 1976 is stated on its own home page.
+    slug: "aranda",
+    // Own site read live 2026-11-08: HTTP 200 at https://www.arandanet.com.br.
+    official: {
+      // The publisher's own site.
+      url: "https://www.arandanet.com.br",
+      // The magazine itself.
+      resources: [
+        // RTI's own section of the site, with buyer's guides and issues.
+        { label: "RTI - Redes, Telecom e Instalações", url: "https://www.arandanet.com.br/revista/rti" },
+      ],
+    },
+    // Trade press and events (the media tag, added 2026-11-08 for this record and its pair).
+    tags: ["media"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "Aranda Editora - and RTI, the magazine for the people who run the network",
+    // Founding year, named by the home page label below.
+    founded: 1976,
+    // Card line.
+    tagline: "A São Paulo technical publisher founded in 1976 whose RTI is the monthly trade magazine of Brazilian network infrastructure: cabling, data centres, optical and wireless links, and the regional internet providers who buy them.",
+    // Intro paragraph.
+    intro:
+      "Aranda is a São Paulo company, founded in 1976, that publishes technical magazines and organises trade fairs and congresses for industry and infrastructure. Its title for networking is RTI, Redes, Telecom e Instalações (networks, telecommunications and installations), a monthly in print and digital editions for information technology, network and telecommunications professionals. Its events arm organises Netcom and fairs for data centres and internet providers.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the publisher.
+      "The publisher works in two halves under two companies: Aranda Editora Técnica e Cultural, which publishes, and Aranda Eventos e Congressos, which organises the fairs. Its nine titles run from Eletricidade Moderna, Fotovolt and LUX to Máquinas e Metais, Fundição & Serviços and Plástico Industrial, with RTI as the one for networks, and it states that cooperation agreements with international publishers keep them current, with ninety-one thousand copies a month reaching more than two hundred and fifty thousand professional readers. Its events include Netcom, Intersolar South America with Messe Freiburg and Solar Promotion International, and fairs for data centres and for internet providers.",
+      // Paragraph 2: RTI.
+      "RTI is described by its publisher as covering both the infrastructure and the communications technologies, from data centres to optical and wireless communications, for the implementation and operation of networks belonging to large corporations, carriers or internet providers. It prints twelve thousand copies a month, and its October 2026 issue was number 317. Alongside the issues it publishes buyer's guides, forty-two of them, on subjects such as optical transceivers, products for wireless networks and mini data centres, and specials on network product distributors, data centres and the regional providers' association, Abrint.",
+      // Paragraph 3: why it matters, analytically.
+      "The magazine's 2026 editorial calendar is a map of who buys network equipment in Brazil. Its issues are pinned to Futurecom, the large telecommunications fair, but just as firmly to the congresses of the regional internet providers, Abrint's global congress and Apronet. A trade press that writes buyer's guides on financial services and streaming for internet providers is evidence of a market in which many independent regional operators, and not only the large carriers, buy transceivers, fibre and routers, and in which an engineer who knows the physical layer is often talking to the owner of the business rather than to a procurement department.",
+      // Paragraph 4: a pointer to another entry.
+      "It is also a working source. The Q13 entry cites RTI's report of the Rio de Janeiro integrator's change of name, which is the kind of item a general business paper does not carry and a network professional needs: who is integrating what, for whom, under which name this year.",
+    ],
+    // The magazine's own page.
+    externalUrl: "https://www.arandanet.com.br/revista/rti/apresentacao",
+    // Link label.
+    externalLabel: "RTI - Redes, Telecom e Instalações",
+    // Sources, each read live on 2026-11-08.
+    sources: [
+      // The publisher, its founding year and its titles.
+      { label: "Aranda, home page: a company dedicated to publishing technical magazines and organising fairs and congresses for industry and infrastructure, founded in 1976; titles including RTI - Redes, Telecom e Instalações; 91,000 copies a month for over 250,000 professional readers; Aranda Eventos organises Netcom, Intersolar South America, Data Centers and Provedores de Internet; Aranda Editora Técnica e Cultural, CNPJ 55.922.157/0001-66, and Aranda Eventos e Congressos, CNPJ 03.598.920/0001-41, São Paulo", url: "https://www.arandanet.com.br/" },
+      // RTI's own presentation.
+      { label: "RTI, Apresentação: a technical monthly in print and digital formats for IT, network and telecommunications professionals, covering infrastructure and communications technologies from data centres to optical and wireless; print run 12,000 copies", url: "https://www.arandanet.com.br/revista/rti/apresentacao" },
+      // The issue number and the guides.
+      { label: "RTI, October 2026 issue page: issue number 317 of October is online; the magazine's home page lists 42 buyer's guides and the RTI Insights specials on Abrint, data centres and network product distributors", url: "https://www.arandanet.com.br/revista/rti/edicao/2026/outubro", sourceNote: "Read 2026-11-08, HTTP 200. The issue number is not used to infer a launch year: monthly numbering with no gaps would point to about 2000, but no source read states RTI's first issue." },
+      // The 2026 editorial calendar.
+      { label: "RTI media kit 2026 (PDF): monthly, 12,000 copies; editorial calendar for 2026 tied to Abrint Global Congress 2026, Futurecom 2026 and Apronet 2026", url: "https://www.arandanet.com.br/assets/pdfs/mediakit/2026/pt_BR/rti.pdf", sourceNote: "Read 2026-11-08, HTTP 200. The same kit carries advertising rates; none is used." },
+    ],
+  },
+  {
+    // SOFTDESIGN - added 2026-11-08 (PRIME's list of 08/11/2026).
+    // DISAMBIGUATION: SOFTDESIGN - CONSULTORIA E SISTEMAS LTDA of Porto
+    // Alegre, CNPJ 02.250.586/0001-78, opened 25/11/1997 (registry read
+    // today), the software house PRIME named; not any other company of that
+    // name. The company's own home page says 28 years of software
+    // engineering, consistent with a late-1997 opening.
+    // FOUNDERS NOT CONFIRMED: Baguete names Osmar Pedrozo as executive
+    // director "with the other partners" in 2014; no source read names the
+    // founders, so none are named.
+    slug: "softdesign",
+    // Own site read live 2026-11-08: HTTP 200 at https://www.softdesign.com.br.
+    official: {
+      // The company's own site.
+      url: "https://www.softdesign.com.br",
+    },
+    // A services company: software development and outsourcing.
+    tags: ["services"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "SoftDesign - a Porto Alegre software house that grew up on public contracts",
+    // Founding year, named by the registry label below.
+    founded: 1997,
+    // Card line.
+    tagline: "A Porto Alegre software engineering company registered in 1997, which built its first decade on state and public-sector clients in Rio Grande do Sul and now sells software development assisted by artificial intelligence to middle-market companies.",
+    // Intro paragraph.
+    intro:
+      "SoftDesign is a software engineering company in Porto Alegre, registered in November 1997 as SoftDesign Consultoria e Sistemas. It began as a software factory and outsourcing house, for many years with a client list dominated by the public sector in Rio Grande do Sul, and now presents itself as a digital transformation and artificial intelligence (AI) partner for middle-market companies, working remote-first from its Porto Alegre head office.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the early company.
+      "In 2008 Baguete described it as a Porto Alegre company specialising in software factory work, outsourcing and components for building solutions, with forty-five staff after ten years in business and clients in the south-east such as Portugal Telecom and the Fundação Carlos Chagas. Its director Osmar Pedrozo explained its retention policy in that interview: the company paid for professional certifications and let staff use working hours to prepare for them.",
+      // Paragraph 2: from public to private clients.
+      "Four years later the same paper recorded a change of course. The client list had traditionally been filled with the public sector, with names such as Procergs and Corsan, and from 2011 the company had been turning towards private clients: one 2012 contract was a portal for the footwear manufacturers' association, ABICalçados, to integrate negotiations along the industry's logistics chain. In 2014 it moved into a head office of more than six hundred square metres in the historic centre of Porto Alegre.",
+      // Paragraph 3: what it is now, and why it matters.
+      "Today it describes twenty-eight years of software engineering and squads working with artificial intelligence (AI) agents across the development life cycle, and it was named a Rising Star for digital transformation in the middle market in Brazil by the analyst firm Information Services Group (ISG) for 2026. Its interest is the shape of the record rather than its size: a software house in a state capital, raised on public contracts, which turned towards private clients, kept its people by paying for their certifications, and then rebuilt its offer around a new technology, three times over in under thirty years.",
+    ],
+    // The company's own site.
+    externalUrl: "https://www.softdesign.com.br/",
+    // Link label.
+    externalLabel: "SoftDesign",
+    // Sources, each read live on 2026-11-08.
+    sources: [
+      // The registry entry: the founding year.
+      { label: "Federal tax registry via MonitorCNPJ: SOFTDESIGN - CONSULTORIA E SISTEMAS LTDA, CNPJ 02.250.586/0001-78, Porto Alegre, RS, opened 25/11/1997, active", url: "https://monitorcnpj.com.br/cnpj/02250586000178/" },
+      // The company's own account.
+      { label: "SoftDesign, home page: 28 years of software engineering; the only ISG Rising Star 2026 in digital transformation for the middle market in Brazil; remote-first with a head office in Porto Alegre", url: "https://www.softdesign.com.br/" },
+      // 2008.
+      { label: "Baguete, 2 April 2008: the Porto Alegre SoftDesign, specialising in software factory, outsourcing and components, with 45 staff and clients such as Portugal Telecom and Fundação Carlos Chagas; certifications sponsored; ten years in business; Osmar Pedrozo", url: "https://www.baguete.com.br/noticias/softdesign-negocios-em-expansao" },
+      // 2012.
+      { label: "Baguete, 28 March 2012: SoftDesign contracted to build a portal for companies linked to ABICalçados; a portfolio traditionally filled with public-sector clients such as Procergs, Corsan and HCPA, widening towards private clients since 2011", url: "https://www.baguete.com.br/noticias/softdesign-ti-para-calcadistas-gauchos" },
+      // 2014.
+      { label: "Baguete, 11 September 2014: SoftDesign Consultoria e Sistemas opens a head office of more than 600 square metres in the historic centre of Porto Alegre; executive director Osmar Pedrozo with the other partners", url: "https://www.baguete.com.br/noticias/softdesign-inaugura-nova-sede" },
+    ],
+  },
+  {
+    // UDACITY - added 2026-11-08 (PRIME's list of 08/11/2026, "if budget
+    // remains"). The Brazilian chapter is a short one and is told as such:
+    // a Portuguese operation opened in July 2016 and wound down at the end of
+    // 2018. Owner: Accenture since May 2024; the brand still trades
+    // (udacity.com, read today: "Udacity is now part of Accenture").
+    // FOUNDERS: Thrun, Stavens and Sokolsky from Wikipedia (marked); the
+    // company's own page tells the origin through Thrun and Norvig's course.
+    slug: "udacity",
+    // Own site read live 2026-11-08: HTTP 200 at https://www.udacity.com; footer '2011-2026 Udacity, Inc.'.
+    official: {
+      // The company's own site.
+      url: "https://www.udacity.com",
+      // A company: rendered "part of"; the Accenture label names the owner and the year.
+      parent: { name: "Accenture", slug: "accenture", since: 2024 },
+    },
+    // A learning platform.
+    tags: ["training"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "Udacity - a free Stanford course, a Nanodegree, and a Portuguese chapter that lasted two years",
+    // Founding year, named by the Accenture label below.
+    founded: 2011,
+    // Card line.
+    tagline: "Born of a free online artificial intelligence course from Stanford that drew more than 160,000 students; founded in 2011, it taught Brazilians in Portuguese from 2016 to 2018, and since 2024 belongs to Accenture.",
+    // Intro paragraph.
+    intro:
+      "Udacity is an American online technology education company founded in 2011, after the Stanford instructors Sebastian Thrun and Peter Norvig put their Introduction to Artificial Intelligence course online for anyone, free. It is known for the Nanodegree, short vocational credentials built with technology companies. It opened a Portuguese-language operation in Brazil in 2016, closed it at the end of 2018, and has been part of Accenture since May 2024.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the origin.
+      "The company's own account of its origin is a statistic. More than 160,000 students in over 190 countries enrolled in Thrun and Norvig's free course, and the top four hundred students were not from Stanford. That discovery, in the company's telling, became its mission. It was founded in 2011 by Thrun, David Stavens and Mike Sokolsky, and is based in Mountain View, California.",
+      // Paragraph 2: Brazil.
+      "It arrived in Brazil in July 2016, led by Carlos Souza, a co-founder of the Brazilian online course platform Veduca, with Nanodegrees entirely in Portuguese, built with partners such as Google, Facebook, Amazon, GE and Twitter, and an explicit pitch to the technology labour market's shortage of up-to-date professionals. It did not last. At the end of 2018, as the company cut back its operations outside the United States, it announced that its Portuguese courses would be sold only until 31 December 2018 and that the São Paulo office would serve the nearly ten thousand active students until they finished.",
+      // Paragraph 3: the sale to Accenture.
+      "On 20 May 2024 Accenture completed its acquisition of the company and placed it within Accenture LearnVantage, its technology learning business. Accenture described Udacity as having evolved from a consumer platform into a talent transformation platform, with more than twenty-one million registered learners in 195 countries.",
+      // Paragraph 4: why it matters, analytically.
+      "Read beside the Coursera and Udemy entries, Udacity is the one of the three that bet hardest on the employer: its credential was designed with the companies that would hire, and its owner is now a consultancy that trains its clients' staff as a service. The Stefanini and HCL entries make the argument that teaching and technology services are the same trade approached from different ends; the Accenture purchase is that argument made with a balance sheet. The Brazilian episode is the cautionary half. A market large enough to justify localising a catalogue in 2016 was, two years later, the first thing cut, and the students who had enrolled in Portuguese finished their courses with an office that was closing behind them.",
+    ],
+    // The company's own site.
+    externalUrl: "https://www.udacity.com/about-us",
+    // Link label.
+    externalLabel: "Udacity",
+    // Sources, each read live on 2026-11-08.
+    sources: [
+      // Founding year, ownership and year: the parent's name and since.
+      { label: "Accenture newsroom, New York and Mountain View, 20 May 2024: Accenture has completed the acquisition of Udacity, part of Accenture LearnVantage; founded in 2011, Udacity has served more than 21 million registered learners in 195 countries", url: "https://newsroom.accenture.com/news/2024/accenture-completes-acquisition-of-udacity" },
+      // The origin story.
+      { label: "Udacity, About us: began when Stanford instructors Sebastian Thrun and Peter Norvig offered their Introduction to Artificial Intelligence course online for free; over 160,000 students in more than 190 countries enrolled, and the top 400 were not from Stanford; Udacity is now part of Accenture", url: "https://www.udacity.com/about-us" },
+      // The founders, from the encyclopaedia.
+      { label: "Wikipedia: Udacity - founders Sebastian Thrun, David Stavens and Mike Sokolsky; founded June 2011; headquarters Mountain View, California; owner Accenture", url: "https://en.wikipedia.org/wiki/Udacity", sourceNote: "Read 2026-11-08, HTTP 200. Used only for the three founders and the city, which the company's and Accenture's pages read today do not list." },
+      // Brazil, 2016.
+      { label: "Baguete, 6 July 2016: Udacity arrives in Brazil, led by Carlos Souza, a founder of Veduca, with Nanodegrees developed with companies such as Google, Facebook, Amazon, GE and Twitter, and courses entirely in Portuguese", url: "https://www.baguete.com.br/noticias/udacity-chega-ao-brasil", sourceNote: "Read 2026-11-08, HTTP 200. The article also gives the monthly fee and a refund policy; neither is used." },
+      // Brazil, 2018.
+      { label: "Tecnoblog, November 2018: Udacity reduces its operations outside the United States, including Brazil; courses in Portuguese sold until 31 December 2018; the São Paulo office to serve the almost 10,000 active students", url: "https://tecnoblog.net/noticias/udacity-encerra-cursos-portugues-brasil/" },
+    ],
+  },
+  {
+    // THOUGHTWORKS - added 2026-11-08 (PRIME's list of 08/11/2026, "if budget
+    // remains"). Spelled Thoughtworks as the company writes itself today; the
+    // older ThoughtWorks appears in the 2010 and 2017 sources.
+    // OWNER: the Apax Funds, a fund owner, since the take-private completed on
+    // 13 November 2024. Funds led by Apax first bought the company in 2017,
+    // which the parent note states.
+    slug: "thoughtworks",
+    // Own site read live 2026-11-08: HTTP 200 at https://www.thoughtworks.com.
+    official: {
+      // The company's own site.
+      url: "https://www.thoughtworks.com",
+      // A fund: rendered "owned by"; the Thoughtworks label names the Apax Funds and 2024.
+      parent: { name: "Apax Funds", kind: "fund", since: 2024, note: "Funds led by Apax Partners first bought Thoughtworks in 2017; the company listed on Nasdaq in September 2021, and the Apax Funds took it private again in November 2024." },
+    },
+    // A services company: software consultancy.
+    tags: ["services"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "Thoughtworks - the agile consultancy that chose Porto Alegre",
+    // Founding year, named by the about-page label below.
+    founded: 1993,
+    // Card line.
+    tagline: "A Chicago software consultancy founded in 1993, known for Martin Fowler and agile practice, which came to Brazil in 2010 through a technology park in Porto Alegre because of the country's universities and software communities.",
+    // Intro paragraph.
+    intro:
+      "Thoughtworks is a technology consultancy founded in Chicago in 1993 by Roy Singham, known for software engineering practice and for Martin Fowler, one of the seventeen original signatories of the Manifesto for Agile Software Development. It opened in Brazil in January 2010 at Tecnopuc, the technology park of the Pontifical Catholic University of Rio Grande do Sul (PUCRS) in Porto Alegre, and later in São Paulo, Recife and Belo Horizonte.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: why Brazil.
+      "The reason given for coming is the part worth keeping. When the Porto Alegre office was made official on 21 January 2010, Singham, the founder and president, said Brazil had many excellent universities and several active software communities, and that the free and open source software movement was ideal for building innovative software in a world whose innovation was no longer centred only on Western countries. A consultancy chose a city for its developers' communities rather than for its clients.",
+      // Paragraph 2: growth and ownership.
+      "By 2017 the Brazilian operation had 515 people across Porto Alegre, São Paulo, Recife and Belo Horizonte and appeared regularly in the Great Place to Work rankings. In August of that year a group of funds led by Apax Partners bought the company; in Brazil, Baguete noted, Apax was known for having bought control of TIVIT. In 2022 Thoughtworks bought Handmade Design, a São Paulo strategic design consultancy founded in 2015, to reinforce its Brazilian design and product practice.",
+      // Paragraph 3: the listing and the return to private ownership.
+      "The company listed on Nasdaq, with trading under the ticker TWKS from 15 September 2021. The public years were short. In February 2023 it cut about two hundred people from its Brazilian operation, and on 13 November 2024 it announced the completion of its acquisition by funds advised by Apax Partners, after which its shares were no longer traded and it operated as a private company again.",
+      // Paragraph 4: why it matters, analytically.
+      "Two things about it bear on a technology career in Brazil. The first is the reason it gave for coming: a consultancy whose best-known figure signed the Agile Manifesto chose a university technology park in Porto Alegre, and only afterwards São Paulo, and said it had come for the universities and the open source communities: a statement about where a foreign consultancy believed Brazilian software skill was to be found in 2010. The second is the ownership arc, which the TIVIT entry has already recorded with the same fund. A services business is difficult to explain to public markets, and Thoughtworks, like TIVIT, spent only a few years listed before the same private equity owner took it back.",
+    ],
+    // Acquisitions with a Brazilian bearing; no price fields.
+    acquisitions: [
+      // Handmade Design, 2022.
+      { year: 2022, name: "Handmade Design", what: "A São Paulo strategic design consultancy founded in 2015, with about fifty professionals working remotely.", became: "Part of Thoughtworks Brasil's customer experience, product and design practice.", sourceNote: "Baguete, 28 June 2022; completion was expected in the third quarter of Thoughtworks's 2022 fiscal year, and no completion notice was read." },
+    ],
+    // The company's own page.
+    externalUrl: "https://www.thoughtworks.com/about-us",
+    // Link label.
+    externalLabel: "Thoughtworks",
+    // Sources, each read live on 2026-11-08.
+    sources: [
+      // Founding year and city.
+      { label: "Thoughtworks, About us: Thoughtworks was founded in Chicago in 1993; offices in 18 countries", url: "https://www.thoughtworks.com/about-us" },
+      // Porto Alegre, 2010.
+      { label: "Baguete, 21 January 2010: ThoughtWorks makes official its office at Tecnopuc in Porto Alegre; Roy Singham, founder and president, cites Brazil's excellent universities and active software communities and the free and open source software movement", url: "https://www.baguete.com.br/noticias/thoughtworks-oficialmente-em-poa" },
+      // The 2017 purchase and the Brazilian headcount.
+      { label: "Baguete, 25 August 2017: funds led by Apax Partners buy ThoughtWorks, created in 1993; Martin Fowler, one of the 17 original signatories of the Agile Manifesto; in Brazil since 2010 at Tecnopuc, then São Paulo, Recife and Belo Horizonte, with 515 employees; Apax known in Brazil for buying control of Tivit", url: "https://www.baguete.com.br/noticias/fundos-compram-thoughtworks" },
+      // The listing.
+      { label: "Thoughtworks press release, 14 September 2021: pricing of the initial public offering; shares expected to begin trading on Nasdaq on 15 September 2021 under the ticker TWKS", url: "https://www.thoughtworks.com/about-us/news/2021/thoughtworks-announces-pricing-of-initial-public-offering" },
+      // Handmade Design.
+      { label: "Baguete, 28 June 2022: Thoughtworks buys Handmade Design, a São Paulo strategic design consultancy founded in 2015 with about 50 professionals, to reinforce Thoughtworks Brasil", url: "https://www.baguete.com.br/noticias/thoughtworks-compra-handmade-design" },
+      // The 2023 cut.
+      { label: "Baguete, 28 February 2023: Thoughtworks cuts about 200 people from its Brazilian operation, confirmed by the company", url: "https://www.baguete.com.br/noticias/thoughtworks-corta-200-no-brasil" },
+      // The take-private: the parent's name and year.
+      { label: "Thoughtworks press release, 13 November 2024: completion of its acquisition by affiliates of investment funds advised by Apax Partners LLP (the Apax Funds); shares no longer publicly traded on Nasdaq", url: "https://www.thoughtworks.com/about-us/news/2024/thoughtworks-completes-transaction-to-go-private", sourceNote: "Read 2026-11-08, HTTP 200. The release states the transaction value and the price per share; neither is used." },
+    ],
+  },
+  // ---- Consultancy and audit networks (PRIME 08/11/2026: Deloitte, EY, PwC, McKinsey, BCG, Bain, Avanade). ----
+// ---------------------------------------------------------------------------
+// 1. DELOITTE
+// ---------------------------------------------------------------------------
+  {
+    // DELOITTE - added 2026-11-08 (PRIME's list of 08/11/2026). The analytical
+    // angle: after Enron and Sarbanes-Oxley every large rival separated its
+    // consultancy; Deloitte announced the same (Braxton), called it off in
+    // March 2003, and kept the business. Read beside the Accenture entry, the
+    // member-firm structure is the same firewall Accenture got from an
+    // arbitrator, built in on purpose.
+    //
+    // FOUNDED 1845, NOT 1989: the card's subject is Deloitte, and Deloitte's
+    // own history chooses 23 April 1845 and says the name is the one in
+    // longest continuous use in accounting. EY and PwC, whose names did not
+    // exist before their mergers, carry their merger years with storyBegins.
+    // PRIME may prefer 1989 with storyBegins 1845 for symmetry: wiring.md.
+    //
+    // DISCREPANCY RECORDED: Deloitte dates Haskins & Sells to 4 March 1895;
+    // Wikipedia says 1896. The copy uses Deloitte's date.
+    slug: "deloitte",
+    // Own site read live 2026-11-08: HTTP 200 at https://www.deloitte.com (redirects to /us/en.html).
+    official: {
+      // The network's own site.
+      url: "https://www.deloitte.com",
+    },
+    // Audit, consulting, tax, advisory and managed cyber services.
+    tags: ["services"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "Deloitte - the network that kept its consultants",
+    // Founding year, named by the Deloitte 1845 label below.
+    founded: 1845,
+    // Card line.
+    tagline: "Between 2000 and 2002 every large rival sold or separated its consultancy; Deloitte announced the same, called it off in 2003, and kept the business it had meant to let go.",
+    // Intro paragraph.
+    intro:
+      "William Welch Deloitte opened an accountancy practice on Basinghall Street in London on 23 April 1845, and in 1849 he was named accountant to the Great Western Railway, by the firm's own account the first independent accountant to a public company. Deloitte today is not one company but a network: Deloitte Touche Tohmatsu Limited (DTTL), a private company limited by guarantee registered in London, coordinates member firms that are legally separate and independent, and DTTL itself provides no services to clients.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the lineage, in Deloitte's own words.
+      "The name is old and the organisation is assembled. Deloitte counts more than a hundred mergers behind it and accepts that several founding dates could be argued: Charles Waldo Haskins and Elijah Watt Sells began their joint practice in the United States on 4 March 1895; Deloitte, Plender, Griffiths & Co. and Haskins & Sells came together in 1952; and in 1989 Deloitte Haskins & Sells merged with Touche Ross and with Tohmatsu, Awoki & Co., the Japanese firm formed in 1968, in what Deloitte calls an equal merger. It chose 1845 because that is the day the brand began, and Deloitte is, by its own account, the name in longest continuous use in accounting.",
+      // Paragraph 2: the British exception to the 1989 merger.
+      "The 1989 merger did not run the same way in every country. In most of the world Deloitte Haskins & Sells joined Touche Ross; in the United Kingdom it merged with Coopers & Lybrand instead, trading as Coopers & Lybrand Deloitte from 1990 until the Deloitte was dropped in 1992, so that part of the British Deloitte of the 1980s now sits inside PwC. The British Touche Ross took the name Deloitte & Touche in February 1996, and the international organisation, first called DRT International after Deloitte, Ross and Tohmatsu, became Deloitte Touche Tohmatsu in 1993.",
+      // Paragraph 3: where Arthur Andersen's people went.
+      "In 2002 the network absorbed much of Arthur Andersen outside the United States as that firm collapsed after its conviction for obstruction over the Enron audits. Andersen's United Kingdom practice joined Deloitte & Touche on 1 August 2002, bringing some 3,500 partners and staff, and Andersen's practices in Spain, the Netherlands, Portugal, Belgium, Mexico, Brazil and Canada also agreed to merge with Deloitte. The conviction itself was reversed by the United States Supreme Court on 31 May 2005, which held that the jury instructions had failed to convey properly the elements of the offence. The Accenture entry records how Andersen's consultants had already left.",
+      // Paragraph 4: Sarbanes-Oxley and the separation that did not happen.
+      "The year that shaped the firm most is 2003. The Sarbanes-Oxley Act of 30 July 2002 made it unlawful for a registered public accounting firm to provide an audit client with a list of non-audit services, financial information systems design and implementation among them, and created the Public Company Accounting Oversight Board (PCAOB) to oversee the audits of public companies. Arthur Andersen, Ernst & Young, PricewaterhouseCoopers and KPMG had all shed or were shedding their consultancies. Deloitte announced in February 2002 that its consulting business would follow, as an independent firm owned by its partners and renamed Braxton, and in March 2003 called the plan off, citing harsh conditions in the capital markets. The unit had some 15,000 people worldwide, and it went on selling to the public companies Deloitte did not audit.",
+      // Paragraph 5: what was kept, at today's scale, and the cyber practice.
+      "Kept, the consultancy became the centre of the business. For the year to 31 May 2026 Deloitte reported aggregate revenue of US$74.5 billion, with nearly 500,000 people in more than 150 countries and territories. Its cyber practice is organised as cyber defence and resilience, operated cyber services, cyber strategy and transformation, digital trust and privacy, and enterprise security. The brand that signs an audit opinion in one country can run security operations for a company it does not audit in another: Sarbanes-Oxley governs which services may go to an audit client, not what the brand may sell elsewhere.",
+      // Paragraph 6: Brazil, and the regulatory record stated as the regulators stated it.
+      "Brazil is one of Deloitte's oldest markets, where the member firm marked a hundred years in 2011, and the combination with Andersen's Brazilian partners in 2002 was expected at the time to make it the country's largest audit firm, with some 3,000 staff in ten cities. Brazil is also where the Public Company Accounting Oversight Board (PCAOB) imposed what it then called the largest penalty in its history: on 5 December 2016 Deloitte Touche Tohmatsu Auditores Independentes agreed to pay US$8 million after the Board found that it had knowingly issued materially false audit reports on 2010 financial statements and had tried to cover up audit violations by altering documents and giving false testimony. In China, Deloitte's Beijing branch was fined 211.9 million yuan in 2023 and suspended for three months over its audit of China Huarong Asset Management.",
+      // Paragraph 7: the analytical angle.
+      "The structure is the lesson, and it is the one the Accenture entry reaches from the other side. A network of legally separate member firms, coordinated by a company that serves no clients, means a sanction lands on the member firm that earned it: the 2016 order named the Brazilian firm, not the network. Accenture's separation from Andersen was imposed by an arbitrator and kept the consultants clear of their accountants' collapse; Deloitte's member-firm model is the same firewall built in by choice, and the separation it failed to complete in 2003 is why audit, consulting and cyber operations still share one name.",
+    ],
+    // The firm's own account of its founding date.
+    externalUrl: "https://www.deloitte.com/tr/en/about/story/purpose-values/deloittes-many-birthdays-story.html",
+    // Link label.
+    externalLabel: "Deloitte: the significance of 1845",
+    // Sources, each read live on 2026-11-08.
+    sources: [
+      // The founding year, the lineage and the Brazilian centenary.
+      { label: "Deloitte, 'Happy Birthday(s), Deloitte: The Significance of 1845': the organisation's origin is the opening of William Welch Deloitte's office in London on 23 April 1845; 100 years in Brazil in 2011; Haskins & Sells' joint practice from 4 March 1895; the 1952 combination; the 1989 Deloitte Haskins & Sells and Touche Ross merger; more than 100 mergers; Deloitte as the name in longest continuous usage in accounting", url: "https://www.deloitte.com/tr/en/about/story/purpose-values/deloittes-many-birthdays-story.html" },
+      // The founder, the railway appointment, Tohmatsu.
+      { label: "Deloitte, 'The Ties That Bind: William Welch Deloitte, Railroads and the Birth of Professional Accounting': set up on Basinghall Street on 23 April 1845; accountant to the Great Western Railway in 1849, the first independent accountant to a public company; Tohmatsu, Awoki & Co. formed in 1968 and the equal merger of 1989", url: "https://www.deloitte.com/ng/en/about/story/purpose-values/ties-that-bind.html", sourceNote: "Read 2026-11-08, HTTP 200. The cyber service names in paragraph 5 (Cyber Defence & Resilience, Cyber Operate, Cyber Strategy & Transformation, Digital Trust & Privacy, Enterprise Security) are read from the What we do navigation on the same page." },
+      // The legal structure, from the network's own footer.
+      { label: "Deloitte US, About: Deloitte Touche Tohmatsu Limited is a UK private company limited by guarantee; DTTL and each member firm are legally separate and independent entities; DTTL does not provide services to clients", url: "https://www2.deloitte.com/us/en/pages/about-deloitte/articles/deloitte175.html", sourceNote: "Read 2026-11-08; the Deloitte175 address now redirects to the Deloitte US About page, which carries the structure statement." },
+      // The coordinating company's registration.
+      { label: "Companies House: Deloitte Touche Tohmatsu Limited, company 07271800, private company limited by guarantee without share capital, registered office 1 New Street Square, London, incorporated 2 June 2010", url: "https://find-and-update.company-information.service.gov.uk/company/07271800" },
+      // Scale today.
+      { label: "Deloitte press release, New York, 24 September 2026: aggregate global revenue of US$74.5 billion for the fiscal year ending 31 May 2026; workforce of nearly 500,000; more than 150 countries and territories", url: "https://www.deloitte.com/global/en/about/press-room/global-revenue-announcement.html" },
+      // The British branch of the lineage, and Andersen UK.
+      { label: "ICAEW Library, What's in a name, Touche Ross: Touche Ross & Co became Deloitte & Touche from 1 February 1996; in the UK Deloitte Haskins & Sells had merged with Coopers & Lybrand in 1990 while elsewhere it merged with Touche Ross; the UK offices of Arthur Andersen amalgamated with Deloitte & Touche on 1 August 2002", url: "https://www.icaew.com/library/historical-resources/guide-to-historical-resources/firm-histories/whats-in-a-name/touche-ross" },
+      // The British Deloitte inside Coopers & Lybrand.
+      { label: "ICAEW Library, What's in a name, Deloitte Haskins & Sells: the UK firm and Coopers & Lybrand traded as Coopers & Lybrand Deloitte from 15 January 1990, merged on 29 April 1990, and became Coopers & Lybrand from 1 June 1992", url: "https://www.icaew.com/library/historical-resources/guide-to-historical-resources/firm-histories/whats-in-a-name/deloitte-haskins-and-sells" },
+      // The headcount Andersen UK brought.
+      { label: "Personnel Today, 1 August 2002: Deloitte & Touche takes over Andersen UK, with 3,500 Andersen UK partners and staff joining Deloitte", url: "https://www.personneltoday.com/hr/deloitte-touche-and-andersen-uk-merge" },
+      // The international roll-up of Andersen practices, and the 1993 name.
+      { label: "Wikipedia: Deloitte - Andersen's practices in Spain, the Netherlands, Portugal, Belgium, Mexico, Brazil and Canada agreed to merge with Deloitte in 2002; the 1989 international firm named DRT International, for Deloitte, Ross and Tohmatsu, and renamed Deloitte Touche Tohmatsu in 1993", url: "https://en.wikipedia.org/wiki/Deloitte", sourceNote: "Encyclopedia, used only where no primary source was read. It dates Haskins & Sells to 1896 where Deloitte's own history says 4 March 1895; the copy uses Deloitte's date." },
+      // Brazil, 2002, in the Brazilian press.
+      { label: "ISTOÉ Dinheiro, 17 April 2002: interview with Alcides Hellmeister Filho on the Deloitte and Andersen merger in Brazil, which would create the country's largest audit firm with 3,000 staff and offices in ten Brazilian cities", url: "https://istoedinheiro.com.br/eu-prefiro-a-andersen-como-concorrente" },
+      // Brazil, 2002, in the legal press.
+      { label: "Latin Lawyer, 2 August 2002: Deloitte Touche Tohmatsu's Brazilian partners combine their practices with former Arthur Andersen Brazilian partners, a deal expected to give Deloitte the top spot in the Brazilian audit industry", url: "https://latinlawyer.com/article/deloitte-becomes-brazils-leading-audit-firm" },
+      // The reversal of Andersen's conviction.
+      { label: "Arthur Andersen LLP v. United States, No. 04-368, argued 27 April 2005, decided 31 May 2005: the jury instructions failed to convey properly the elements of a corrupt persuasion conviction; reversed and remanded (Cornell Legal Information Institute)", url: "https://www.law.cornell.edu/supct/html/04-368.ZS.html" },
+      // The statute.
+      { label: "Sarbanes-Oxley Act of 2002, Public Law 107-204, 30 July 2002: section 101 establishes the Public Company Accounting Oversight Board; section 201 makes it unlawful for a registered public accounting firm to provide an audit client with listed non-audit services, including financial information systems design and implementation (GovInfo)", url: "https://www.govinfo.gov/content/pkg/PLAW-107publ204/html/PLAW-107publ204.htm" },
+      // The cancelled spin-off.
+      { label: "Accounting Today, 2003, 'Deloitte cancels consulting spinoff': fifteen months of work on a partner buy-out, the planned Braxton name and a retained stake of about 20 percent, 'harsh' capital markets, some 15,000 people, the 75 percent of public companies that are not audit clients, and the nine services barred to audit clients by section 201", url: "https://www.accountingtoday.com/news/deloitte-cancels-consulting-spinoff" },
+      // The dates of the announcement and of the cancellation.
+      { label: "The Daily Record (Maryland), 31 March 2003: Deloitte Touche Tohmatsu calls off the spin-off announced in February 2002; Deloitte the only Big Four firm not to have shed its consulting business", url: "https://thedailyrecord.com/2003/03/31/accountinggiant-deloitte-nixes-consulting-spinoff/" },
+      // The PCAOB order.
+      { label: "PCAOB news release, Washington, 5 December 2016: Deloitte Touche Tohmatsu Auditores Independentes (Deloitte Brazil) will pay an $8 million civil penalty, the largest ever imposed by the PCAOB, for knowingly issuing materially false audit reports for 2010 financial statements and attempting to cover up audit violations", url: "https://pcaobus.org/News/Releases/Pages/enforcement-Deloitte-Brazil-12-5-16.aspx", sourceNote: "Read via WebFetch on 2026-11-08: curl was refused with HTTP 403." },
+      // The Beijing sanction, as reported in 2024.
+      { label: "Reuters, 14 September 2024 (as carried by The Jakarta Post): Deloitte's Beijing branch was fined 211.9 million yuan and suspended for three months the previous year over its audit of China Huarong Asset Management", url: "https://www.thejakartapost.com/business/2024/09/14/china-hits-pwc-with-six-month-ban-and-large-fine-in-record-penalty-over-evergrande-audit" },
+    ],
+  },
+
+// ---------------------------------------------------------------------------
+// 2. EY (ERNST & YOUNG)
+// ---------------------------------------------------------------------------
+  {
+    // EY - added 2026-11-08 (PRIME's list of 08/11/2026). The analytical
+    // angle: the first large firm to sell its consultancy (to Cap Gemini, 2000)
+    // and, in 2023, the firm whose plan to split audit and consulting again
+    // stopped at its own United States member firm; plus the place an IT
+    // reader meets it unexpectedly, the audits behind a certificate
+    // authority's trust (Symantec's 2017 statement on E&Y Brazil).
+    //
+    // FOUNDED 1989 (Ernst & Young, the card's own subject; EY is its brand
+    // since 2013). storyBegins 1849 (Harding & Pullein) places the card on
+    // the timeline where its oldest component starts.
+    //
+    // DISCREPANCY RECORDED: Harding & Pullein is 1849 in Wikipedia (citing
+    // EY's own 2011 facts page) and 1848 in the ICAEW family tree. Both are in
+    // the copy. Arthur Young & Co. is 1906 in Wikipedia; no year is given in
+    // the copy because no primary source for it was read.
+    slug: "ey",
+    // Own site read live 2026-11-08: HTTP 200 at https://www.ey.com (redirects to /en_us).
+    official: {
+      // The network's own site.
+      url: "https://www.ey.com",
+    },
+    // Assurance, tax, consulting, strategy and transactions, managed security.
+    tags: ["services"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "EY (Ernst & Young) - the first to sell its consultancy, and the split it called off",
+    // Founding year of Ernst & Young, named by the ICAEW Arthur Young label below.
+    founded: 1989,
+    // The oldest component, earlier than the card's own founding.
+    storyBegins: { year: 1849, company: "Harding & Pullein" },
+    // Card line.
+    tagline: "The first of the large accounting firms to sell its consultancy, in 2000, and in 2023 the one whose plan to split audit from consulting again stopped at its own American member firm.",
+    // Intro paragraph.
+    intro:
+      "EY is the global organisation of the member firms of Ernst & Young Global Limited, a private company limited by guarantee registered in London that provides no services to clients; each member firm is a separate legal entity. The name dates from September 1989, when Ernst & Whinney merged with Arthur Young to form Ernst & Young, and the firm adopted EY as its global brand on 1 July 2013.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the lineage.
+      "Its oldest component is Harding & Pullein, founded in London in 1849, which an accountant named Frederick Whinney joined that same year and where he became a partner a decade later; the family tree kept by the Institute of Chartered Accountants in England and Wales (ICAEW) dates the firm to 1848. In 1903 Alwin C. Ernst and his brother Theodore founded Ernst & Ernst in Cleveland, Ohio, and the Scottish accountant Arthur Young set up Arthur Young & Co. in Chicago. From 1924 the two American firms allied with British ones, Ernst with Whinney, Smith & Whinney and Young with Broads Paterson & Co., and by the 1980s the two lines traded as Ernst & Whinney and Arthur Young.",
+      // Paragraph 2: the consultancy sold before the law required anything.
+      "In 2000 Ernst & Young became the first of the large firms to sell its consultancy outright. Cap Gemini bought Ernst & Young's information technology consulting operations, combining their 18,000 people with its own nearly 40,000 and renaming itself Cap Gemini Ernst & Young; the Capgemini entry records the French group. Two years later the Sarbanes-Oxley Act made the reasoning behind the sale law for audit clients, forbidding a registered public accounting firm to design and implement the financial information systems of a company whose accounts it audits.",
+      // Paragraph 3: Andersen, and Brazil.
+      "When Arthur Andersen collapsed in 2002, Ernst & Young took on a large number of its former clients, and Andersen's Polish practice signed a memorandum of understanding to merge with it. In Brazil it combined its operations from 1 October 2010 with Terco, the fifth largest Brazilian audit firm, founded in São Paulo twenty-eight years earlier and since 2004 the local member of Grant Thornton, whose international president said he regretted the decision to sell; the merged firm was reported to have 3,500 staff in eleven Brazilian cities. EY's own office list for Brazil now names twelve cities, among them São Paulo, Rio de Janeiro, Brasília, Belo Horizonte, Porto Alegre, Recife and Fortaleza.",
+      // Paragraph 4: the consultancy rebuilt, and Project Everest.
+      "Having sold one consultancy, EY built another. In the year to June 2026 consulting brought in US$17.4 billion of combined global revenue of US$57 billion, against US$18.9 billion from assurance. In 2022 the firm prepared to separate the two again, under the internal name Project Everest, and in April 2023 it called the plan off; the sticking point, as reported, was its United States member firm, which declined to take part. A network of independent member firms can announce a global strategy, but each member firm decides whether to follow it.",
+      // Paragraph 5: the regulatory record stated as the regulators stated it.
+      "The regulatory record belongs in the account. On 28 June 2022 the United States Securities and Exchange Commission (SEC) announced that EY would pay a US$100 million penalty after a significant number of its audit professionals cheated on the ethics component of the Certified Public Accountant (CPA) examinations and the firm told the SEC's enforcement staff that it had no current issues with cheating; EY admitted the facts underlying the charges. In April 2023 Germany's audit watchdog fined Wirecard's auditor for 2016 to 2018, named in Wirecard's annual reports as EY, €500,000 and barred it from taking on new audits of public interest companies for two years. Wirecard had filed for insolvency in June 2020 after disclosing a €1.9 billion hole in its accounts, which EY said was the result of a sophisticated global fraud.",
+      // Paragraph 6: the place a security professional meets the firm.
+      "A security professional meets the firm in a less obvious place: the audits behind a certificate authority's standing with the browsers. EY sells cybersecurity consulting and managed security services, and its member firms have also audited certificate authorities and their partners. In February 2017, when Symantec closed its programme of partner registration authorities, the companies that handled certificate requests on its behalf, it told the Mozilla community that EY's Brazilian member firm had produced two deficient letters about the 2014 and 2015 audits of one of those partners, Certisign, and that it would no longer accept audits from E&Y Brazil; it said the same of EY's Korean member firm over CrossCert. An audit opinion is a security control like any other, and it is only as strong as the member firm that signs it.",
+    ],
+    // The Brazilian combination; no price field (none was disclosed).
+    acquisitions: [
+      // Terco, 2010.
+      { year: 2010, name: "Terco", what: "The fifth largest Brazilian audit firm, founded in São Paulo and since 2004 the Brazilian member of Grant Thornton.", became: "Ernst & Young Terco, the combined Brazilian practice, from 1 October 2010.", sourceNote: "Baguete, 3 August 2010, citing a memo to staff seen by Exame; the companies did not disclose the value of the transaction." },
+    ],
+    // The firm's own page.
+    externalUrl: "https://www.ey.com/en_gl/about-us",
+    // Link label.
+    externalLabel: "EY: About us",
+    // Sources, each read live on 2026-11-08.
+    sources: [
+      // Structure and scale, from the firm's own page.
+      { label: "EY, About us: EY is the global organization made up of the member firms of Ernst & Young Global Limited (EYG); Ernst & Young Global Limited, a UK company limited by guarantee, does not provide services to clients; each member firm is a separate legal entity; 400,000 people; cybersecurity consulting and managed services among the services listed", url: "https://www.ey.com/en_gl/about-us" },
+      // The coordinating company's registration.
+      { label: "Companies House: Ernst & Young Global Limited, company 04328808, private company limited by guarantee without share capital, registered office 1 More London Place, London, incorporated 26 November 2001", url: "https://find-and-update.company-information.service.gov.uk/company/04328808" },
+      // The founding year and the brand.
+      { label: "ICAEW Library, What's in a name, Arthur Young: Arthur Young merged with Ernst & Whinney in September 1989 to form Ernst & Young; Ernst & Young announced that it had adopted EY as its global brand name on 1 July 2013", url: "https://www.icaew.com/library/historical-resources/guide-to-historical-resources/firm-histories/whats-in-a-name/arthur-young" },
+      // The oldest component, with the other date.
+      { label: "ICAEW Library, What's in a name, Ernst & Whinney: the family tree dates Harding & Pullein to 1848, and records the September 1989 merger with Arthur Young", url: "https://www.icaew.com/library/historical-resources/guide-to-historical-resources/firm-histories/whats-in-a-name/ernst-and-whinney" },
+      // The lineage, the Andersen clients and Project Everest's start.
+      { label: "Wikipedia: Ernst & Young - Harding & Pullein founded in 1849, joined that year by Frederick Whinney; Ernst & Ernst founded in Cleveland in 1903 by Alwin C. Ernst and Theodore Ernst; Arthur Young & Co. set up in Chicago; the 1924 alliances; Andersen's former clients taken on in 2002; Project Everest reported from May 2022", url: "https://en.wikipedia.org/wiki/Ernst_%26_Young", sourceNote: "Encyclopedia, used only where no primary source was read. It gives Harding & Pullein as 1849 (citing EY's 2011 facts page) where the ICAEW tree gives 1848, and Arthur Young & Co. as 1906; the copy states no year for Arthur Young." },
+      // The sale of the consultancy.
+      { label: "International Directory of Company Histories, Cap Gemini Ernst & Young (Encyclopedia.com): in 2000 Cap Gemini agreed to purchase Ernst & Young Technology, the IT consultancy operations of Ernst & Young, combining its 18,000 employees with nearly 40,000 at Cap Gemini and taking the name Cap Gemini Ernst & Young", url: "https://www.encyclopedia.com/books/politics-and-business-magazines/cap-gemini-ernst-young", sourceNote: "The reference gives the announcement as June 2000; other accounts date it to March 2000. Only the year is used. The purchase price is in the source and not used." },
+      // The statute.
+      { label: "Sarbanes-Oxley Act of 2002, Public Law 107-204, 30 July 2002, section 201: unlawful for a registered public accounting firm to provide an audit client with financial information systems design and implementation, among other non-audit services (GovInfo)", url: "https://www.govinfo.gov/content/pkg/PLAW-107publ204/html/PLAW-107publ204.htm" },
+      // The Polish practice.
+      { label: "CNN Money, 10 April 2002: Arthur Andersen's UK practice agrees to combine with Deloitte Touche Tohmatsu, and the Polish practice of Andersen signs a memorandum of understanding to merge with Ernst & Young", url: "https://money.cnn.com/2002/04/10/news/companies/andersen_wrap/index.htm", sourceNote: "Read via WebFetch on 2026-11-08: curl received HTTP 503." },
+      // Terco.
+      { label: "Baguete, 3 August 2010: Ernst & Young combines its Brazilian operations with Terco, the fifth largest national audit firm and Grant Thornton's Brazilian member since 2004, from 1 October; 3,500 staff in 11 Brazilian cities; Grant Thornton International's president regrets the sale", url: "https://www.baguete.com.br/noticias/fusao-ernst-young-terco" },
+      // Brazil today.
+      { label: "EY, Brazil office locations: offices in São Paulo, Rio de Janeiro, Belo Horizonte, Brasília, Campinas, Curitiba, Fortaleza, Goiânia, Porto Alegre, Recife, Ribeirão Preto and Salvador", url: "https://www.ey.com/en_es/locations/brazil" },
+      // Scale today and the service-line split.
+      { label: "EY press release, October 2026: combined global revenues of US$57b for the fiscal year ending June 2026; Consulting US$17.4b, Assurance US$18.9b, Tax US$13.8b, EY-Parthenon US$6.8b; services in more than 150 countries and territories", url: "https://www.ey.com/en_gl/newsroom/2026/10/ey-global-revenue-increases-4-point-7-percent-to-us-dollars-57b-for-fiscal-year-2026" },
+      // Project Everest called off.
+      { label: "Inside Public Accounting, 12 April 2023, citing the Financial Times: EY calls off the split of its audit and consulting units known as Project Everest; the sticking point was the US affiliate, which declined to participate", url: "https://insidepublicaccounting.com/2023/04/12/ey-calls-off-split-of-audit-and-consulting-units/" },
+      // The SEC order.
+      { label: "SEC press release 2022-114, 28 June 2022: 'Ernst & Young to Pay $100 Million Penalty for Employees Cheating on CPA Ethics Exams and Misleading Investigation'; EY admits the facts underlying the SEC's charges", url: "https://www.sec.gov/news/press-release/2022-114", sourceNote: "Read via WebFetch on 2026-11-08: curl was refused with HTTP 403." },
+      // Wirecard.
+      { label: "RTÉ, 4 April 2023 (Reuters): Germany's accounting watchdog APAS fines the 2016-2018 auditor of Wirecard, named in its annual reports as EY, EUR 500,000 and bars it from new audits of public interest companies for two years; the EUR 1.9 billion hole and the June 2020 insolvency", url: "https://www.rte.ie/news/business/2023/0404/1374078-ey-banned-from-some-audits-in-germany-over-wirecard" },
+      // The certificate authority audits.
+      { label: "mozilla.dev.security.policy, 13 February 2017, 'Re: Misissued/Suspicious Symantec Certificates', quoting Symantec's response: E&Y BR produced two deficient letters regarding the 2014 and 2015 Certisign audits, and Symantec will no longer accept audits from E&Y BR or from E&Y KR; Symantec terminates its partner RA program", url: "https://mail-archive.com/dev-security-policy@lists.mozilla.org/msg05690.html", sourceNote: "A public mailing list archive quoting Symantec's own published response; the statements are Symantec's, a party to the matter, and are attributed to it in the copy." },
+    ],
+  },
+
+// ---------------------------------------------------------------------------
+// 3. PwC (PRICEWATERHOUSECOOPERS)
+// ---------------------------------------------------------------------------
+  {
+    // PwC - added 2026-11-08 (PRIME's list of 08/11/2026). The analytical
+    // angle: three of the large firms answered Sarbanes-Oxley three ways
+    // (EY sold early, Deloitte failed to separate and kept, PwC prepared a
+    // listing and sold to IBM), and PwC Consulting's rename to "Monday" pairs
+    // with Accenture's rename and Deloitte's unused "Braxton". The 2002 IBM
+    // purchase is told from IBM's side INSIDE the ibm record by the sibling
+    // draft (p34/companies, B2: a body paragraph and a PwC Consulting
+    // acquisition); this record tells the seller's side and points there.
+    //
+    // FOUNDED 1998 (PricewaterhouseCoopers, the card's own subject). storyBegins
+    // 1849 (Samuel Lowell Price's practice).
+    slug: "pwc",
+    // Own site: curl refused with HTTP 403 on 2026-11-08; the pages below were read via WebFetch.
+    official: {
+      // The network's own site.
+      url: "https://www.pwc.com",
+    },
+    // Assurance, tax, consulting, cyber and technology risk.
+    tags: ["services"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "PwC (PricewaterhouseCoopers) - the consultancy called Monday that IBM bought",
+    // Founding year of PricewaterhouseCoopers, named by the ICAEW and Companies House labels below.
+    founded: 1998,
+    // The oldest component, earlier than the card's own founding.
+    storyBegins: { year: 1849, company: "Samuel Lowell Price's practice" },
+    // Card line.
+    tagline: "Formed by the 1998 merger of Price Waterhouse and Coopers & Lybrand; in 2002 its consultancy chose the name Monday for a stock market listing and was sold to IBM seven weeks later.",
+    // Intro paragraph.
+    intro:
+      "PwC is the network of firms that are members of, or connected to, PricewaterhouseCoopers International Limited (PwCIL), an English private company limited by guarantee incorporated on 24 June 1998, which neither practises accountancy nor serves clients and owns none of the member firms. The network was formed on 1 July 1998, when Price Waterhouse merged with Coopers & Lybrand, and it formally shortened its brand to PwC in 2010 while remaining PricewaterhouseCoopers in law.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the lineage.
+      "Both halves began in Victorian London. Samuel Lowell Price set up in business in 1849, and in 1865 Price, Holyland and Waterhouse joined in partnership; William Cooper established his own practice in 1854, which seven years later became Cooper Brothers. The American side of Coopers & Lybrand was formed in 1898 by Robert H. Montgomery, William M. Lybrand, Adam A. Ross Jr. and his brother T. Edward Ross, and in 1957 Cooper Brothers, the Canadian McDonald, Currie and Co. and Lybrand, Ross Bros & Montgomery merged to form Coopers & Lybrand. In the United Kingdom, Coopers & Lybrand also absorbed the British Deloitte Haskins & Sells in 1990, so part of the British Deloitte became PwC, as the Deloitte entry records.",
+      // Paragraph 2: Monday, and the sale to IBM.
+      "The consultancy is the part of the story that reaches information technology (IT) directly. In 2002 PwC Consulting was preparing to separate from its parent through a public share offering, and on 9 June it announced the name it would trade under: Monday. The name, devised by the agency Wolff Olins, was met with a good deal of head scratching; in a CNN online poll the next day, 74 per cent of respondents chose 'What were they thinking?'. Seven weeks later, on 30 July 2002, IBM and PricewaterhouseCoopers announced instead that IBM would buy the unit, with some 30,000 employees, for cash and stock, and that the share offering would not go ahead. The sale closed on 2 October 2002 and created IBM Business Consulting Services, which IBM described as the largest consulting services organisation in the world; the IBM entry follows the unit from there.",
+      // Paragraph 3: why, in the parties' words and the statute's.
+      "PricewaterhouseCoopers' chief executive, Samuel A. DiPiazza Jr., said the sale fulfilled the firm's commitment to separate the consultancy fully and would unleash it from the regulatory restraints of the accounting industry. The restraints became law the same day: the Sarbanes-Oxley Act, enacted on 30 July 2002, made it unlawful for a registered public accounting firm to provide an audit client with financial information systems design and implementation, among other non-audit services, and created the Public Company Accounting Oversight Board to oversee the audits of public companies.",
+      // Paragraph 4: scale today, the cyber practice, Brazil.
+      "For the year to 30 June 2026 the network reported gross revenue of US$60.2 billion, with more than 360,000 people in over 130 countries and territories. Its cyber, data and technology risk practice covers identity and access management, security monitoring, threat intelligence, incident response and regulatory work on the European Union's revised Network and Information Security directive (NIS2) and its Cyber Resilience Act. In Brazil, PwC says it has been present for 110 years and has about 4,300 professionals in 19 offices, from São Paulo and Rio de Janeiro to Maringá and Piracicaba.",
+      // Paragraph 5: the regulatory record stated as the regulators stated it.
+      "The heaviest regulatory action against the network fell on its mainland China firm. On 13 September 2024 Chinese regulators suspended PwC Zhong Tian for six months and fined it 441 million yuan, the toughest penalties a Big Four firm had received in China, over its audits of Hengda Real Estate, the onshore flagship of China Evergrande Group, for 2019 and 2020; the China Securities Regulatory Commission (CSRC) said the firm had turned a blind eye to and even condoned the fraud. PwC Zhong Tian said its work on Hengda fell below its own standards.",
+      // Paragraph 6: the analytical angle.
+      "Read beside the Deloitte and EY entries, PwC took the middle course of the same decision. EY sold its consultancy before the law required anything; Deloitte tried to separate its own and failed into keeping it; PwC prepared a listing under a new name and sold to a technology company instead. One statute stood behind all three: Sarbanes-Oxley did not ban consulting, it banned certain consulting for the companies a firm audits, and each firm decided what that was worth. The Accenture entry records a consultancy that had to find a new name after leaving an accounting firm; PwC Consulting's Monday and Deloitte's Braxton are the two names of 2002 that never traded.",
+    ],
+    // The firm's own history page.
+    externalUrl: "https://www.pwc.com/us/en/about-us/pwc-corporate-history.html",
+    // Link label.
+    externalLabel: "PwC: corporate history",
+    // Sources, each read live on 2026-11-08.
+    sources: [
+      // The lineage, in the firm's own chronology.
+      { label: "PwC US, corporate history: 1849, Samuel Lowell Price sets up in business in London; 1854, William Cooper establishes his own practice, which seven years later becomes Cooper Brothers; 1865, Price, Holyland and Waterhouse join in partnership; 1898, Lybrand, Ross Brothers and Montgomery formed; 1957, Coopers & Lybrand formed; 1998, Price Waterhouse and Coopers & Lybrand merge; 2002, the partners approve the sale of PricewaterhouseCoopers Consulting to IBM; 2010, the brand shortened to PwC", url: "https://www.pwc.com/us/en/about-us/pwc-corporate-history.html", sourceNote: "Read via WebFetch on 2026-11-08: curl was refused with HTTP 403." },
+      // The network structure.
+      { label: "PwC, network structure: PricewaterhouseCoopers International Limited (PwCIL), an English private company limited by guarantee; PwCIL does not practise accountancy or provide services to clients; there is no ownership by PwCIL of the member firms", url: "https://www.pwc.com/gx/en/about/corporate-governance/network-structure.html", sourceNote: "Read via WebFetch on 2026-11-08." },
+      // The coordinating company's registration and its date.
+      { label: "Companies House: PricewaterhouseCoopers International Limited, company 03590073, private company limited by guarantee without share capital, registered office 1 Embankment Place, London, incorporated 24 June 1998", url: "https://find-and-update.company-information.service.gov.uk/company/03590073" },
+      // The merger date.
+      { label: "ICAEW Library, What's in a name, Price Waterhouse: Price Waterhouse merged with Coopers & Lybrand to form PricewaterhouseCoopers from 1 July 1998", url: "https://www.icaew.com/library/historical-resources/guide-to-historical-resources/firm-histories/whats-in-a-name/price-waterhouse" },
+      // The British Deloitte inside Coopers & Lybrand.
+      { label: "ICAEW Library, What's in a name, Coopers & Lybrand: Coopers & Lybrand and the UK firm of Deloitte Haskins & Sells traded as Coopers & Lybrand Deloitte from 15 January 1990 and merged on 29 April 1990; Coopers & Lybrand from 1 June 1992; merged with Price Waterhouse from 1 July 1998", url: "https://www.icaew.com/library/historical-resources/guide-to-historical-resources/firm-histories/whats-in-a-name/coopers-and-lybrand" },
+      // Monday.
+      { label: "Washington Technology, 10 June 2002: PwC Consulting announces on 9 June that it will be known as Monday when it splits from PricewaterhouseCoopers in an initial public offering; the name devised by Wolff Olins; 74 percent of respondents to a CNN online survey reacted 'What were they thinking?'", url: "https://washingtontechnology.com/2002/06/pwc-consulting-makes-monday-announcement/320740" },
+      // The IBM announcement.
+      { label: "IBM and PricewaterhouseCoopers joint release, Armonk and New York, 30 July 2002, 'IBM to acquire PwC Consulting', filed by IBM as Exhibit 99.1 to a Form 8-K: some 30,000 employees; PwC Consulting will no longer pursue its planned initial public offering; Samuel A. DiPiazza Jr. on unleashing the consulting unit from the regulatory restraints of the industry (SEC EDGAR)", url: "https://www.sec.gov/Archives/edgar/data/0000051143/000091205702029172/a2085602zex-99_1.txt", sourceNote: "Read 2026-11-08, HTTP 200. The release states the estimated purchase price and the unit's revenue; neither is used." },
+      // The completion.
+      { label: "IBM and PricewaterhouseCoopers joint release via Business Wire, Armonk and New York, 2 October 2002, as carried by Investegate: IBM's acquisition of PwC Consulting announced as completed; IBM Business Consulting Services becomes the world's largest consulting services organization, with operations in more than 160 countries", url: "https://www.investegate.co.uk/announcement/bzw/international-business-machines-corporation-com-stk-usd0-20-cdi---ibm/ibm-pricewaterhousecoopers-complete-sale-of-pwc-c/436095", sourceNote: "Read 2026-11-08, HTTP 200. IBM South Africa reissued the same text from Johannesburg on 24 October 2002 (ITWeb), with more than 30,000 IBM and 30,000 transferring PwC Consulting professionals. The release states the amount paid; it is not used." },
+      // The statute.
+      { label: "Sarbanes-Oxley Act of 2002, Public Law 107-204, enacted 30 July 2002: section 101 establishes the Public Company Accounting Oversight Board; section 201 bars listed non-audit services to audit clients, including financial information systems design and implementation (GovInfo)", url: "https://www.govinfo.gov/content/pkg/PLAW-107publ204/html/PLAW-107publ204.htm" },
+      // Scale today.
+      { label: "PwC press release, London, 19 October 2026, 'PwC announces FY26 global financial performance': US$60.2 billion for the 12 months ending 30 June 2026; more than 360,000 people; 130+ countries and territories", url: "https://www.pwc.com/gx/en/news-room/press-releases/2026/pwc-announces-fy26-global-financial-performance.html", sourceNote: "Read via WebFetch on 2026-11-08." },
+      // The cyber practice.
+      { label: "PwC, Global cyber, data and tech risk: identity and access management, security events and monitoring, real-time threat intelligence, incident response, and regulatory support for NIS2 and the Cyber Resilience Act", url: "https://www.pwc.com/gx/en/issues/cybersecurity.html", sourceNote: "Read via WebFetch on 2026-11-08." },
+      // Brazil.
+      { label: "PwC Brasil, Quem somos and Escritórios: 'Há 110 anos no país', about 4,300 professionals and 19 offices, including São Paulo, Rio de Janeiro, Maringá and Piracicaba", url: "https://www.pwc.com.br/pt/quem-somos.html", sourceNote: "Read via WebFetch on 2026-11-08; the office list is https://pwc.com.br/pt/quem-somos/escritorios.html." },
+      // Evergrande.
+      { label: "Reuters, 14 September 2024 (as carried by The Jakarta Post): China suspends PwC Zhong Tian for six months and fines it 441 million yuan over its audit of Evergrande's Hengda Real Estate for 2019 and 2020; the CSRC says the firm turned a blind eye to and even condoned the fraud; PwC Zhong Tian's statement", url: "https://www.thejakartapost.com/business/2024/09/14/china-hits-pwc-with-six-month-ban-and-large-fine-in-record-penalty-over-evergrande-audit" },
+    ],
+  },
+
+// ---------------------------------------------------------------------------
+// 4. McKINSEY & COMPANY
+// ---------------------------------------------------------------------------
+  {
+    // McKINSEY - added 2026-11-08 (PRIME's list of 08/11/2026). The analytical
+    // angle: an accounting professor's firm made into the model partnership by
+    // a lawyer; the two 2024 United States criminal resolutions concern what
+    // its advice was used for, which is how a strategy firm should be read.
+    //
+    // mckinsey.com refuses automated reads (connection reset); the firm's own
+    // overview and Brazil pages were read via WebFetch, and the founding and
+    // structure history comes from Wikipedia and trade press, labelled as such.
+    // Living people: the two former partners in the 2024 matters are not named.
+    slug: "mckinsey",
+    // Own site: curl reset on 2026-11-08; the overview page was read via WebFetch.
+    official: {
+      // The firm's own site.
+      url: "https://www.mckinsey.com",
+    },
+    // Strategy and management consulting.
+    tags: ["services"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "McKinsey & Company - the accounting professor's firm, built into a partnership",
+    // Founding year, named by the Consultancy.com.au and Wikipedia labels below.
+    founded: 1926,
+    // Card line.
+    tagline: "Founded in Chicago in 1926 by a professor of accounting, shaped by a lawyer into the model partnership of management consulting, and in 2024 party to two criminal resolutions in the United States over what its advice was used for.",
+    // Intro paragraph.
+    intro:
+      "James O. McKinsey, a professor of accounting at the University of Chicago, founded James O. McKinsey & Company in Chicago in 1926. Marvin Bower, a lawyer, was hired in 1933 and is credited with the values and principles that came to define the firm, which also adopted an up-or-out rule under which consultants who are not promoted are asked to leave. McKinsey describes itself as a single global partnership; legally it was restructured in 1956 as a private corporation whose shares are owned by its partners, and it has no traditional headquarters.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the early split.
+      "The founder died in 1937, and in 1939 the firm divided: the accounting practice returned to Scovell, Wellington & Company, and the management engineering practice split into McKinsey & Company and McKinsey, Kearney & Company. Bower had wanted a national firm that hired young business school graduates, while Kearney wanted to stay in Chicago and hire experienced accountants, and Bower's model is the one that survived. Guy Crockett, who had invested in the new McKinsey & Company, became its managing partner with Bower as his deputy, and Bower was elected managing director when Crockett stepped down in 1959.",
+      // Paragraph 2: technology, and Brazil.
+      "Its technology work mostly follows its strategy work. In December 2015 McKinsey bought QuantumBlack, a London analytics firm that worked on the data behind Formula One racing, keeping its management in place and running it as a wholly owned subsidiary; about 45 people transferred. In Brazil the firm lists offices in São Paulo, Rio de Janeiro, Belo Horizonte and Salvador, and São Paulo was among the offices it opened while Ron Daniel was managing director, from 1976 to 1988.",
+      // Paragraph 3: the opioid resolution, stated as the record states it.
+      "On 13 December 2024 McKinsey agreed to pay US$650 million to resolve United States federal criminal and civil investigations into its work for Purdue Pharma, whose OxyContin sales internal McKinsey memos had promised to help turbocharge. The firm entered a deferred prosecution agreement, agreed to the facts underlying a misdemeanour charge of conspiring to aid and abet the misbranding of prescription drugs, and undertook to do no future work involving controlled substances; under the civil settlement it did not admit liability. A former senior partner agreed to plead guilty to obstruction of justice for deleting Purdue-related records. McKinsey said it was deeply sorry for its past client service to Purdue Pharma. The payment came on top of nearly US$900 million already agreed with state and local governments.",
+      // Paragraph 4: the South African resolution.
+      "Eight days earlier, on 5 December 2024, McKinsey Africa, a wholly owned subsidiary, entered a deferred prosecution agreement with the United States authorities and agreed to a criminal penalty of US$122.8 million. Between 2012 and 2016, the Justice Department said, it obtained confidential information from Transnet and Eskom, South Africa's state-owned freight and electricity companies, and made contract proposals knowing that South African consulting firms it had partnered with would pay part of their fees as bribes to officials there; a former senior partner of its South Africa office pleaded guilty to conspiracy to violate the Foreign Corrupt Practices Act (FCPA).",
+      // Paragraph 5: the analytical angle.
+      "Both resolutions concern what McKinsey's advice was used for, not a technical failure, and that is the honest way to read a strategy firm in a record of the information technology (IT) industry. Its work reaches an infrastructure team second-hand, as the programme a strategy recommended and an integrator then builds, and the firm's reputation is the product it sells. None of the three large strategy houses is listed on a stock exchange: McKinsey's shares are owned by its partners, BCG was bought from its bank by its employees, and Bain & Company is privately held, as their entries record, so the accountability that shareholders would exercise runs through the partnership instead.",
+    ],
+    // The one acquisition with a technology bearing; no price field (none was disclosed).
+    acquisitions: [
+      // QuantumBlack, 2015.
+      { year: 2015, name: "QuantumBlack", what: "A London data analytics firm that worked on the data behind Formula One racing, kept under its own management as a wholly owned subsidiary.", sourceNote: "Fortune, 14 December 2015; Consultancy.uk: about 45 employees transferred and the value of the deal was not disclosed." },
+    ],
+    // The firm's own overview page.
+    externalUrl: "https://www.mckinsey.com/about-us/overview",
+    // Link label.
+    externalLabel: "McKinsey & Company: about us",
+    // Sources, each read live on 2026-11-08.
+    sources: [
+      // The firm's own description of its structure.
+      { label: "McKinsey & Company, About us: the firm as a single global partnership united by a strong set of values; nearly a century of impact; over 50,000 former colleagues in nearly 140 countries", url: "https://www.mckinsey.com/about-us/overview", sourceNote: "Read via WebFetch on 2026-11-08: curl was reset by the site. The history page (https://www.mckinsey.com/about-us/overview/history-of-our-firm) renders only in a browser and was not read." },
+      // The founding, in trade press.
+      { label: "Consultancy.com.au, 'Global management consulting firm McKinsey & Company marks 100 years': established by James O. McKinsey in Chicago in 1926; Boston Consulting Group and Bain & Company celebrated their 60th and 50th anniversaries in 2023", url: "https://www.consultancy.com.au/news/12649/global-management-consulting-firm-mckinsey-company-marks-100-years" },
+      // The early history and the legal form.
+      { label: "Wikipedia: McKinsey & Company - founded in Chicago in 1926 as James O. McKinsey & Company by a professor of accounting at the University of Chicago; Marvin Bower hired in 1933, his experience as a lawyer, up or out; the founder's death in 1937 and the 1939 division into McKinsey & Company and McKinsey, Kearney & Company; Bower elected managing director when Guy Crockett stepped down in 1959; restructured in 1956 as a private corporation with shares owned by its partners; no traditional headquarters; São Paulo among the offices opened under Ron Daniel, 1976 to 1988", url: "https://en.wikipedia.org/wiki/McKinsey_%26_Company", sourceNote: "Encyclopedia, used where the firm's own history page could not be read. Its infobox gives New York City as headquarters while its text says the firm has no traditional headquarters; the copy uses the latter." },
+      // Brazil today.
+      { label: "McKinsey & Company Brazil: Nossos escritórios lists São Paulo, Belo Horizonte, Rio de Janeiro and Salvador", url: "https://www.mckinsey.com/br", sourceNote: "Read via WebFetch on 2026-11-08." },
+      // QuantumBlack.
+      { label: "Fortune, 14 December 2015, 'McKinsey Buys Formula One Data Analytics Firm QuantumBlack': based in London, keeping its management team, operating as a wholly owned subsidiary", url: "https://fortune.com/2015/12/14/mckinsey-buys-quantumblack" },
+      // QuantumBlack headcount.
+      { label: "Consultancy.uk, 'McKinsey acquires data analytics firm QuantumBlack': the management team stays in place; 45 employees transfer; the value of the deal not disclosed", url: "https://www.consultancy.uk/news/3068/mckinsey-acquires-data-analytics-firm-quantumblack" },
+      // The opioid resolution.
+      { label: "NPR (as carried by WAMC), 13 December 2024: McKinsey agrees to pay $650 million to settle the federal probe into its work for Purdue Pharma; a deferred prosecution agreement; no admission of liability under the civil settlement; agreement to the facts of a misdemeanour misbranding conspiracy charge; no future work on controlled substances; a former senior partner to plead guilty to obstruction; McKinsey's apology; nearly $900 million in earlier state and local settlements", url: "https://www.wamc.org/2024-12-13/mckinsey-company-to-pay-650-million-for-role-in-opioid-crisis" },
+      // The South African resolution.
+      { label: "eNCA, 5 December 2024: McKinsey Africa, a wholly owned subsidiary of McKinsey and Co., enters a deferred prosecution agreement and agrees to a criminal penalty of $122.8 million over bribes to officials at Transnet and Eskom between 2012 and 2016, the Justice Department said; a former senior partner pleads guilty to conspiracy to violate the Foreign Corrupt Practices Act", url: "https://www.enca.com/business-news/mckinsey-africa-pay-1228m-bribing-south-african-officials" },
+    ],
+  },
+
+// ---------------------------------------------------------------------------
+// 5. BOSTON CONSULTING GROUP (BCG)
+// ---------------------------------------------------------------------------
+  {
+    // BCG - added 2026-11-08 (PRIME's list of 08/11/2026). The analytical
+    // angle: a bank's consulting department that gave management its
+    // vocabulary (experience curve, growth-share matrix), worked out for a
+    // chipmaker, then bought itself from the bank through an employee share
+    // plan; Bain & Company left it in 1973.
+    //
+    // DISCREPANCIES RECORDED: BCG dates the growth-share matrix to 1968; the
+    // reference used dates its ESOP independence to 1975 in its text and 1974
+    // in its chronology. The copy says "in the mid-1970s" for the start and
+    // 1979 for the completion, which both agree on.
+    slug: "bcg",
+    // Own site: curl refused with HTTP 403 on 2026-11-08; the pages below were read via WebFetch.
+    official: {
+      // The firm's own site.
+      url: "https://www.bcg.com",
+    },
+    // Strategy consulting and technology build.
+    tags: ["services"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "Boston Consulting Group (BCG) - a bank's consulting department that named the cash cow",
+    // Founding year, named by the encyclopedia label below.
+    founded: 1963,
+    // Card line.
+    tagline: "Started in 1963 as the consulting department of a Boston bank, it gave management the experience curve and the growth-share matrix, then was bought from the bank by its own employees.",
+    // Intro paragraph.
+    intro:
+      "Bruce Henderson founded the firm in 1963 as a consulting unit of the Boston Safe Deposit and Trust Company, starting as its only employee, and led it as founder and chief executive until 1980. The unit was spun off as a subsidiary named the Boston Consulting Group in 1968, and in the mid-1970s an employee stock ownership plan (ESOP) began buying it from The Boston Company, the bank's parent, completing the purchase in 1979, five years ahead of schedule.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the two tools.
+      "Its reputation rests on two tools that left the consulting room. The experience curve, introduced in 1966 from work for a semiconductor manufacturer, held that unit costs fall as a company accumulates production experience, and it let Texas Instruments underbid rivals on the expectation of falling costs. The growth-share matrix, which BCG dates to 1968, sorted a conglomerate's businesses into cash cows, dogs, stars and question marks, and the first two terms quickly became fixtures of business English.",
+      // Paragraph 2: why an IT reader already knows the first one.
+      "Anyone who has watched the price of switches and routers fall has watched the experience curve at work: a manufacturer that expects its costs to drop with volume prices for the volume it intends to reach, which turns being first and largest into a strategy rather than an outcome. The idea was worked out for a chipmaker, which is why it reads so naturally in an industry built on chips.",
+      // Paragraph 3: expansion, Bain, Brazil.
+      "The first office outside the United States opened in Japan in 1966, London followed in 1970 and Paris in 1972. In 1973 one of Henderson's most valuable lieutenants, Bill Bain, left with colleagues and clients to found Bain & Company, which has its own entry. The Boston Consulting Group opened in São Paulo in 1997, the same year as its offices in Warsaw, Budapest, Stuttgart and Vienna.",
+      // Paragraph 4: technology today.
+      "In September 2022 the firm grouped three technology units, BCG Digital Ventures, BCG Gamma and BCG Platinion, into BCG X, about 2,500 technologists, designers and digital consultants at the time. For 2025 it reported revenue of US$14.4 billion and 33,500 employees, and said that artificial intelligence (AI) and technology services were over 40 per cent of the total. It describes itself as having offices in more than 100 cities in over 50 countries.",
+      // Paragraph 5: the analytical angle.
+      "Ownership is the useful fact. A firm that bought itself from a bank through an employee share plan answers to the people who do the work and has no public shareholders; the McKinsey and Bain entries record the same arrangement in other forms. Read beside the Bain entry, it is also a firm whose best-known departure became its most direct competitor within ten years of its founding.",
+    ],
+    // The firm's own history page.
+    externalUrl: "https://www.bcg.com/about/overview/our-history",
+    // Link label.
+    externalLabel: "BCG: our history",
+    // Sources, each read live on 2026-11-08.
+    sources: [
+      // The firm's own history.
+      { label: "Boston Consulting Group, Our history: Bruce Henderson, founder and CEO, 1963-1980; the growth share matrix, created in 1968; time-based competition from the 1980s; offices in more than 100 cities in over 50 countries", url: "https://www.bcg.com/about/overview/our-history", sourceNote: "Read via WebFetch on 2026-11-08: curl was refused with HTTP 403. The page does not state the founding parent, the employee buyout or the São Paulo office; those come from the reference below." },
+      // The company history reference.
+      { label: "International Directory of Company Histories, The Boston Consulting Group (Encyclopedia.com): 1963, Bruce Henderson establishes a consulting unit with Boston Safe Deposit and Trust Company; the experience curve of 1966 and Texas Instruments; the portfolio matrix of cash cows, dogs, stars and question marks; spun off as Boston Consulting Group in 1968; Tokyo 1966, London 1970, Paris 1972; Bill Bain leaves in 1973; ESOP buyout from The Boston Company completed in 1979; São Paulo in 1997; headquarters at Exchange Place, Boston; private company", url: "https://www.encyclopedia.com/books/politics-and-business-magazines/boston-consulting-group", sourceNote: "The reference dates the start of the ESOP buyout to 1975 in its text and 1974 in its chronology; the copy says the mid-1970s." },
+      // The anniversary, in trade press.
+      { label: "Consultancy.com.au, 'Global management consulting firm McKinsey & Company marks 100 years': Boston Consulting Group celebrated its 60th anniversary in 2023", url: "https://www.consultancy.com.au/news/12649/global-management-consulting-firm-mckinsey-company-marks-100-years" },
+      // BCG X.
+      { label: "Consultancy.uk, 8 September 2022, 'BCG groups Gamma, Platinion and Ventures under one roof: BCG X': around 2,500 technologists, designers and digital consultants", url: "https://www.consultancy.uk/news/32263/bcg-groups-gamma-platinion-and-ventures-under-one-roof-bcg-x" },
+      // Scale today.
+      { label: "BCG press release, 23 April 2026: revenue rising to $14.4 billion in 2025; 33,500 employees; AI- and tech-focused services over 40% of total revenue; BCG X builds bespoke AI solutions", url: "https://www.bcg.com/press/23april2026-bcg-revenue-22nd-consecutive-year-growth", sourceNote: "Read via WebFetch on 2026-11-08." },
+    ],
+  },
+
+// ---------------------------------------------------------------------------
+// 6. BAIN & COMPANY
+// ---------------------------------------------------------------------------
+  {
+    // BAIN - added 2026-11-08 (PRIME's list of 08/11/2026). Two jobs: say what
+    // Bain & Company is, and separate it from Bain Capital, which other
+    // records name as an investor (Nutanix profile, Dynatrace, the 3Com
+    // overlay's 2008 bid). The SARS episode is stated with the British and
+    // South African actions and Bain's own response, side by side.
+    //
+    // DISCREPANCY RECORDED: Bain's own statement says the British exclusion
+    // ran for three years "from Jan 2022"; the press dates the decision to
+    // August 2022. Both are consistent (decision in August, period from
+    // January); the copy gives the August decision.
+    slug: "bain",
+    // Own site read live 2026-11-08: HTTP 200 at https://www.bain.com.
+    official: {
+      // The firm's own site.
+      url: "https://www.bain.com",
+    },
+    // Strategy consulting.
+    tags: ["services"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "Bain & Company - the consultancy, not the fund",
+    // Founding year, named by the EBSCO label below.
+    founded: 1973,
+    // Card line.
+    tagline: "Founded in Boston in 1973 by Bill Bain and colleagues who left the Boston Consulting Group; the private equity firm Bain Capital began inside it in 1984 and is a separate company.",
+    // Intro paragraph.
+    intro:
+      "Bill Bain had risen quickly at the Boston Consulting Group (BCG) when, in 1973, he and a colleague, Patrick Graham, told Bruce Henderson they were leaving to start a firm of their own. Bain & Company, privately held and headquartered in Boston, became known for working directly with chief executives and for keeping its clients and its work out of public view, and it is counted with McKinsey and BCG among the three large strategy houses.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: Bain Capital, separated from the consultancy.
+      "In 1977 Bain hired Mitt Romney from BCG, and in 1984 Romney led Bain Capital, which began as a spin-off from Bain & Company and became a private equity firm in its own right. The two are separate companies: the Bain Capital that appears as an investor in other entries of the Industry section is the fund, and Bain & Company is the consultancy.",
+      // Paragraph 2: the growth and the crisis.
+      "Revenue grew at an average of 50 per cent a year between 1973 and 1986, and by the early 1990s the firm had taken on enough debt that it had to reorganise to stay in business: Romney became chief executive, Bill Bain remained chair, and the firm liquidated Bain Holdings, the investment vehicle it had created in 1987, and restructured its employees' stock benefits. Its best-known tool for a wider audience came later, when it launched the Net Promoter System and the Net Promoter Score in 2003 to measure how products and services affect the people who buy them.",
+      // Paragraph 3: Brazil and the footprint.
+      "Bain came to Brazil in 1997. In 2013 it was reported to have grown there at an average of 20 per cent a year, with the São Paulo and Rio de Janeiro offices together forming its sixth largest office worldwide. It now describes itself as working across 67 cities in 40 countries.",
+      // Paragraph 4: SARS, stated as each party stated it.
+      "The firm's most serious regulatory episode came from its South African office's work for the South African Revenue Service (SARS) between 2015 and 2017. South Africa's state capture inquiry, chaired by Raymond Zondo, found that Bain South Africa, the former SARS commissioner and the former president Jacob Zuma were central to attempts to destroy the tax collection agency. In August 2022 the British Cabinet Office excluded Bain from bidding for British government contracts for three years for grave professional misconduct, and South Africa's National Treasury followed with a ten-year ban on public sector tenders, which Bain called fundamentally flawed. In March 2023 the British government lifted the exclusion for Bain outside South Africa, after the firm agreed to a period of monitoring, while keeping Bain South Africa excluded until January 2025. Bain says it apologised for its South African office's mistakes, repaid all fees from the work with interest in 2018, and did not knowingly participate in state capture.",
+      // Paragraph 5: the analytical angle.
+      "Read beside the BCG entry, Bain is what happens when a firm's best people take its method with them: ten years after its founding, BCG had produced its most direct competitor. Read beside Bain Capital's appearances elsewhere, it is a reminder to check which Bain a source means before drawing a conclusion from the name.",
+    ],
+    // The firm's own page.
+    externalUrl: "https://www.bain.com/about/",
+    // Link label.
+    externalLabel: "Bain & Company: about",
+    // Sources, each read live on 2026-11-08.
+    sources: [
+      // The company history reference.
+      { label: "EBSCO Research Starters, 'Bain & Company': founded in 1973 and headquartered in Boston; privately held; Bill Bain and Patrick Graham leave BCG; consulting directly with CEOs and secrecy about clients; Mitt Romney hired in 1977; Bain Capital a spin-off led by Romney in 1984; 50 percent average annual growth 1973-1986; the early-1990s reorganisation, Romney as CEO, Bain Holdings liquidated; the Net Promoter System and Score launched in 2003", url: "https://www.ebsco.com/research-starters/business-and-management/bain-company" },
+      // The firm's own description.
+      { label: "Bain & Company, About: since 1973; across 67 cities in 40 countries", url: "https://www.bain.com/about/" },
+      // Brazil.
+      { label: "Bain & Company (pt-br media mention, 2013), 'Despite the economy, Bain predicts double-digit growth': in Brazil since 1997, average growth of 20% a year, the São Paulo and Rio de Janeiro offices together the firm's sixth largest worldwide", url: "https://www.bain.com/pt-br/migration/media-mentions/2013/despite-the-economy-bain-predicts-double-digit-growth/" },
+      // The British and South African actions.
+      { label: "Business Day, 21 March 2023: the UK lifts its ban on Bain outside South Africa; the three-year ban imposed in August 2022 for 'grave professional misconduct'; South Africa's National Treasury ten-year ban, rejected by Bain as 'fundamentally flawed'; Bain SA excluded until 4 January 2025; the Zondo commission's finding on Sars", url: "https://www.businessday.co.za/bd/world/europe/2023-03-21-uk-lifts-ban-on-bain-outside-sa-bidding-for-official-contracts" },
+      // Bain's own response.
+      { label: "Bain & Company, 'Bain's path forward: Public sector work in the UK': the Cabinet Office exclusion over work at SARS in 2015-2017; Bain's apology; all fees repaid with interest in 2018; did not knowingly participate in state capture", url: "https://www.bain.com/careers/path-forward" },
+      // The founding departure, from BCG's side.
+      { label: "International Directory of Company Histories, The Boston Consulting Group (Encyclopedia.com): in 1973 Bill Bain, one of Henderson's most valuable lieutenants, leaves to form Bain & Co.", url: "https://www.encyclopedia.com/books/politics-and-business-magazines/boston-consulting-group" },
+    ],
+  },
+
+// ---------------------------------------------------------------------------
+// 7. AVANADE
+// ---------------------------------------------------------------------------
+  {
+    // AVANADE - added 2026-11-08 (PRIME's list of 08/11/2026). The analytical
+    // angle: the mirror image of Kyndryl's neutrality argument, a services firm
+    // whose value is its alignment with one vendor.
+    //
+    // OWNERSHIP, confirmed from primary sources: Avanade's own boilerplate
+    // ("Majority owned by Accenture, Avanade was founded in 2000 by Accenture
+    // LLP and Microsoft Corporation"); Avanade's About page ("the joint venture
+    // between Microsoft and Accenture"); Accenture's Form 10-K for fiscal 2026,
+    // Exhibit 21.1, listing Avanade Inc. and Avanade do Brasil Ltda as
+    // subsidiaries; Microsoft's own 20 April 2000 release on the formation.
+    // NOT CONFIRMED: the percentage Accenture holds, and the year it first
+    // held a majority. `since` is therefore omitted and the note gives no
+    // percentage: wiring.md.
+    slug: "avanade",
+    // Own site read live 2026-11-08: HTTP 200 at https://www.avanade.com (redirects to /en).
+    official: {
+      // The company's own site.
+      url: "https://www.avanade.com",
+      // A company: rendered "part of Accenture"; the Business Wire and Accenture 10-K labels name it.
+      parent: { name: "Accenture", slug: "accenture", note: "Avanade describes itself as the joint venture between Microsoft and Accenture; Accenture holds the majority and lists Avanade among its subsidiaries." },
+    },
+    // Microsoft-platform consulting and managed services.
+    tags: ["services"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "Avanade - a consultancy built on one vendor's platform",
+    // Founding year, named by the Business Wire and InternetNews labels below.
+    founded: 2000,
+    // Card line.
+    tagline: "Founded in 2000 by Andersen Consulting and Microsoft to build systems on Windows 2000, it is the bet opposite to neutrality: a services firm whose value is its alignment with a single vendor.",
+    // Intro paragraph.
+    intro:
+      "Andersen Consulting and Microsoft announced Avanade on 13 March 2000 as a co-owned company, headquartered in the Seattle area, to build enterprise and e-commerce systems on Windows 2000. Microsoft contributed cash and intellectual capital; Andersen Consulting, later Accenture, contributed intellectual capital, training and resources, and the first chief executive, Mitchell C. Hill, was an Andersen Consulting partner. Majority owned by Accenture, Avanade describes itself today as the joint venture between Microsoft and Accenture.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the founding plan against what happened.
+      "The founding plan is worth reading against what happened. Avanade was to hire more than 3,000 technologists with Microsoft expertise within two years and open offices in San Francisco, Dallas, New York, Paris, London, Sydney, São Paulo and Singapore, and its owners said they intended to take it public one day. It did not list. It became part of Accenture's group instead: Accenture's annual report for the year to 31 August 2026 lists Avanade Inc. and more than thirty Avanade companies in other countries, Avanade do Brasil Ltda among them, as subsidiaries.",
+      // Paragraph 2: Microsoft's side.
+      "Microsoft's own announcement in April 2000 described Avanade as a joint venture service organisation focused on internet enterprise solutions based on Windows 2000, alongside an agreement for Andersen Consulting to train 25,000 professionals on Microsoft's enterprise platform. The arrangement was an alliance and a company at once: the consultancy supplied the people and the client relationships, the vendor supplied the platform and the money, and the joint venture was defined by the one platform it served.",
+      // Paragraph 3: today, and its security practice.
+      "In 2021 Avanade described itself as having 49,000 professionals in 26 countries, and it now presents its work as cloud, data, artificial intelligence (AI), security and business applications on Microsoft technology, including a practice it calls AI-powered security and cyber resilience. It calls itself Microsoft's Client Zero, deploying and testing solutions in its own business before clients do. Its global headquarters are in Seattle, with regional headquarters in London and Singapore.",
+      // Paragraph 4: the analytical angle, against Kyndryl.
+      "Avanade is the mirror image of the argument the Kyndryl entry makes. Kyndryl's case for independence was that a services business owned by a cloud vendor cannot credibly recommend a competitor's cloud. Avanade was built on the opposite premise: that for a customer already committed to Microsoft, a firm aligned with that one vendor is worth more than a neutral adviser, because its knowledge of the platform is deeper and its route into the vendor is shorter. Both can be true for different customers, and the useful question for an engineer reading a proposal is the one the ownership answers: whose platform is this firm in business to sell?",
+      // Paragraph 5: the Accenture connection.
+      "It is also an artefact of the Andersen years. Avanade was announced while Andersen Consulting was still in arbitration with Arthur Andersen, as the Accenture entry records, and it has outlived the name of the firm that created it.",
+    ],
+    // The company's own page.
+    externalUrl: "https://www.avanade.com/en/about",
+    // Link label.
+    externalLabel: "Avanade: about",
+    // Sources, each read live on 2026-11-08.
+    sources: [
+      // The founding announcement.
+      { label: "InternetNews, 13 March 2000, 'Andersen Consulting, Microsoft Form New Firm' (Clint Boulton): Avanade co-owned by Andersen Consulting and Microsoft, headquarters planned for the Seattle area, Windows 2000, more than 3,000 technologists within 24 months, Mitchell C. Hill as chief executive, offices planned including São Paulo, plans to take Avanade public", url: "https://www.internetnews.com/it-management/andersen-consulting-microsoft-form-new-firm/", sourceNote: "The article states Microsoft's cash contribution; the amount is not used." },
+      // Microsoft's own account.
+      { label: "Microsoft, 20 April 2000, 'Microsoft Announces Quarterly Revenue and Income': the formation of a joint venture service organization named Avanade, focused on Internet-specific enterprise solutions based on Windows 2000; Andersen Consulting to train 25,000 professionals", url: "https://news.microsoft.com/source/2000/04/20/microsoft-announces-quarterly-revenue-and-income/" },
+      // The ownership, in Avanade's own words.
+      { label: "Avanade release on Business Wire, 7 September 2021, About Avanade: 'Majority owned by Accenture, Avanade was founded in 2000 by Accenture LLP and Microsoft Corporation'; 49,000 professionals in 26 countries", url: "https://www.businesswire.com/news/home/20210907005412/en/Avanade-an-Accenture-and-Microsoft-Joint-Venture-Launches-in-the-United-Arab-Emirates", sourceNote: "Read via WebFetch on 2026-11-08: curl failed (HTTP/2 stream error). The percentage Accenture holds is not stated." },
+      // The ownership, in Accenture's filing.
+      { label: "Accenture plc Form 10-K for the fiscal year ended 31 August 2026, Exhibit 21.1, subsidiaries as of 31 August 2026: Avanade Inc (United States), Avanade do Brasil Ltda (Brazil) and more than thirty other Avanade companies (SEC EDGAR)", url: "https://www.sec.gov/Archives/edgar/data/1467373/000146737326000049/a831202610-kexhibit211.htm", sourceNote: "Read via WebFetch on 2026-11-08: curl was refused by SEC.gov's automated-tool policy (HTTP 403). Filing date 16 October 2026 from EDGAR full-text search." },
+      // Avanade today.
+      { label: "Avanade, About: the joint venture between Microsoft and Accenture, 25+ years across cloud, data, AI, security and business applications, Microsoft's Client Zero; global headquarters 1191 Second Avenue, Seattle, with headquarters in London and Singapore; AI-Powered Security & Cyber Resilience among its services", url: "https://www.avanade.com/en/about" },
+    ],
+  },
+// ---------------------------------------------------------------------------
+// 8. KPMG
+// ---------------------------------------------------------------------------
+  {
+    // KPMG - added 2026-11-08 (PRIME 17:52: "Go with Deloitte's choice, and add KPMG"). The analytical angle: the one
+    // large network that floated its consultancy on the stock market (KPMG Consulting, 2001, later BearingPoint),
+    // beside EY's sale to Cap Gemini, PwC's sale to IBM and Deloitte's called-off split; the regulatory record as the
+    // authorities stated it; and a Brazilian history that begins in 1915, before the name existed.
+    //
+    // FOUNDED 1987 (the KPMG network, the card's own subject, as KPMG's own history states it), with storyBegins 1891
+    // (William Barclay Peat & Co.), the year KPMG's history gives as its start, as EY and PwC carry their oldest firms.
+    // Every source was read live on 2026-11-08 (curl), except the SEC release (WebFetch, curl refused).
+    slug: "kpmg",
+    // Own site read live 2026-11-08: HTTP 200 at https://kpmg.com.
+    official: {
+      // The network's own site.
+      url: "https://kpmg.com",
+    },
+    // Audit, tax and advisory.
+    tags: ["services"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "KPMG - four founders in one name, and the consultancy it floated",
+    // Founding year of the KPMG network, named by the KPMG history label below.
+    founded: 1987,
+    // The oldest firm KPMG's own history starts from, earlier than the card's own founding.
+    storyBegins: { year: 1891, company: "William Barclay Peat & Co." },
+    // Card line.
+    tagline: "Klynveld, Peat, Marwick and Goerdeler in four letters since 1987, and the large network that floated its consultancy on the stock market, as KPMG Consulting in 2001, before building another.",
+    // Intro paragraph.
+    intro:
+      "KPMG is the organisation of independent member firms affiliated with KPMG International, an English private company limited by guarantee that coordinates the network and provides no professional services to clients. The name, an initialism of Klynveld Peat Marwick Goerdeler, dates from 1987, when the merger of Peat Marwick International and Klynveld Main Goerdeler was announced, then the largest in the history of the accounting business. For the year to 30 September 2025 its firms reported US$39.8 billion of revenue, with more than 276,000 partners and employees in 138 countries and territories.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: four names, four people.
+      "Each letter is a person. Piet Klynveld founded a small accounting firm in Amsterdam in 1917, and by his death in 1946 it was the largest in the Netherlands. William Barclay Peat started in accountancy at seventeen at Robert Fletcher & Co. in London and in 1891 took charge of it as William Barclay Peat & Co., the date KPMG gives as its own beginning. James Marwick and Roger Mitchell set up Marwick, Mitchell & Co. in New York in 1897, and the two firms merged in 1925 as Peat Marwick Mitchell & Co. Reinhard Goerdeler, of Deutsche Treuhand-Gesellschaft, was the first president of the International Federation of Accountants and is credited with laying the foundations of the Klynveld Main Goerdeler combination that met Peat Marwick in 1987.",
+      // Paragraph 2: the consultancy floated, and what became of it.
+      "Its consultancy took a road of its own. KPMG made consulting a distinct business unit in November 1997, spun it off as KPMG Consulting on 31 January 2000 and floated it on the NASDAQ market on 8 February 2001; in October 2002 the company renamed itself BearingPoint and moved to the New York Stock Exchange, one of the former Big Five consultancies to split from their accounting roots in the years of the corporate scandals. BearingPoint's United States business filed for Chapter 11 bankruptcy in February 2009, parts of it went to Deloitte, PwC, Computer Sciences Corporation (CSC) and Perot Systems, and its continuing operations became a partnership based in the Netherlands after a management buyout that August. KPMG kept and grew an advisory business of its own, which in the year to September 2025 rose 2.9 per cent while audit rose 6.0 and tax and legal 7.5.",
+      // Paragraph 3: Brazil, from 1915.
+      "In Brazil the story is older than the name. William Barclay Peat & Co. set up there in 1915 to advise clients across South America, above all in Argentina and Brazil. A local firm founded in 1943 by Roberto Dreyfuss, Helmuth Probst and Paulo Vasconcellos, later Roberto Dreyfuss & Cia., opened in Rio de Janeiro in 1960, the period in which Klynveld, Kraayenhof & Co. also opened a Brazilian branch, and signed a professional cooperation agreement with Germany's Deutsche Treuhand-Gesellschaft in 1965. In 1987 KPMG and Roberto Dreyfuss & Cia. merged to form KPMG in Brazil. In 1999 the Comissão de Valores Mobiliários (CVM), the Brazilian securities regulator, made the rotation of audit firms compulsory; in 2023 the firm opened a new head office in São Paulo, and in 2025 it counted 110 years in the country and more than 5,000 professionals.",
+      // Paragraph 4: the regulatory record stated as the authorities stated it.
+      "The regulatory record belongs in the account, as the authorities stated it. On 29 August 2005 the United States Department of Justice announced that KPMG had admitted to a fraud built on tax shelters, in what it called the largest criminal tax case ever filed, and would pay US$456 million under an agreement that deferred its prosecution. On 17 June 2019 the Securities and Exchange Commission (SEC) announced a US$50 million penalty: senior KPMG personnel had obtained confidential lists of the audits the Public Company Accounting Oversight Board (PCAOB) planned to inspect, and auditors had passed answers to internal training exams to colleagues, some of them manipulating the server that hosted the exams to lower the passing score; KPMG admitted the facts. On 12 October 2023 the United Kingdom's Financial Reporting Council (FRC) announced sanctions on KPMG LLP and KPMG Audit Plc over their audits of Carillion plc, totalling £21 million after reductions for co-operation and admissions.",
+      // Paragraph 5: read beside the other three.
+      "Read beside the Deloitte, EY and PwC entries, the four networks made four different choices about consulting in the same few years: Ernst & Young sold its consultancy to Cap Gemini, PwC sold its own to IBM, Deloitte planned a split and called it off, and KPMG floated KPMG Consulting on the stock market. Each then built consulting again inside the firm, under the line the Sarbanes-Oxley Act of 2002 drew between auditing a company and designing its financial information systems, and EY's plan to separate the two once more, called off in 2023, shows the question is still open.",
+    ],
+    // The network's own page.
+    externalUrl: "https://kpmg.com/xx/en/misc/governance.html",
+    // Link label.
+    externalLabel: "KPMG: Governance",
+    // Sources, each read live on 2026-11-08.
+    sources: [
+      // The founding year, the four founders and the start KPMG gives itself.
+      { label: "KPMG (Indonesia), Our History: the KPMG network was formed in 1987 when the merger of Peat Marwick International (PMI) and Klynveld Main Goerdeler (KMG) was announced, then the largest merger in the history of the accounting business; Piet Klynveld's Amsterdam firm of 1917; William Barclay Peat took charge of the firm in 1891 and renamed it William Barclay Peat & Co.; Marwick, Mitchell & Company, New York, 1897; Reinhard Goerdeler, first president of the International Federation of Accountants", url: "https://kpmg.com/id/en/about/our-history.html" },
+      // Structure, from the network's own page.
+      { label: "KPMG, Governance: member firms are members in, or have other legal connections to, KPMG International, an English private company limited by guarantee that acts as the coordinating entity and does not provide professional services to clients; company number 12474966, registered office 15 Canada Square, London", url: "https://kpmg.com/xx/en/misc/governance.html" },
+      // Scale today and the split by function.
+      { label: "KPMG International, 16 December 2025 (as published by KPMG in Kuwait): globally aggregated revenues of US$39.8 billion for the year ended 30 September 2025; Tax & Legal Services up 7.5%, Audit up 6.0% and Advisory up 2.9%; 138 countries and territories and more than 276,000 partners and employees", url: "https://kpmg.com/kw/en/media/2025/12/kpmg-delivers-rise-in-global-revenue.html" },
+      // The lineage in detail.
+      { label: "Wikipedia: KPMG - William Barclay Peat joined Robert Fletcher & Co. in 1870 at 17 and became head of the firm in 1891; Marwick Mitchell & Co. founded in 1897 by James Marwick and Roger Mitchell in New York; Peat Marwick Mitchell & Co. formed by merger in 1925; the 1987 merger of KMG and Peat Marwick", url: "https://en.wikipedia.org/wiki/KPMG" },
+      // The consultancy's road.
+      { label: "Wikipedia: BearingPoint - consulting made a distinct business unit of KPMG in November 1997; spun off as KPMG Consulting LLC on 31 January 2000; public on NASDAQ on 8 February 2001; renamed BearingPoint in October 2002; the US unit's Chapter 11 filing in February 2009; parts sold to Deloitte, PwC, CSC and Perot Systems; a management buyout in August 2009 and a Netherlands-based partnership", url: "https://en.wikipedia.org/wiki/BearingPoint" },
+      // The rename, at the time.
+      { label: "Accounting Today, 2 October 2002: KPMG Consulting, publicly traded since February 2001, changes its name to BearingPoint Inc. and begins trading on the New York Stock Exchange; the latest of the former Big Five consultancies to split from their accounting roots", url: "https://www.accountingtoday.com/news/kpmg-consulting-rebrands-itself-as-bearingpoint" },
+      // Brazil.
+      { label: "KPMG no Brasil, Nossa História: William Barclay Peat & Co. in Brazil from 1915; Roberto Dreyfuss & Cia. (1943), its Rio de Janeiro office (1960) and the 1965 cooperation agreement with DTG; the 1987 merger that formed KPMG in Brazil; the CVM's compulsory audit-firm rotation of 1999; the new São Paulo head office of 2023; 110 years in 2025; more than 5,000 professionals (2025 figures)", url: "https://kpmg.com/br/pt/about/our-history.html" },
+      // The statute.
+      { label: "Sarbanes-Oxley Act of 2002, Public Law 107-204, 30 July 2002, section 201: unlawful for a registered public accounting firm to provide an audit client with financial information systems design and implementation, among other non-audit services (GovInfo)", url: "https://www.govinfo.gov/content/pkg/PLAW-107publ204/html/PLAW-107publ204.htm" },
+      // The 2005 deferred prosecution.
+      { label: "United States Department of Justice, press release 05-433, 29 August 2005: 'KPMG to Pay $456 Million for Criminal Violations in Relation to Largest-Ever Tax Shelter Fraud Case'; prosecution deferred until 31 December 2006 if the specified conditions are met", url: "https://www.justice.gov/archive/opa/pr/2005/August/05_ag_433.html" },
+      // The 2019 SEC order.
+      { label: "SEC press release 2019-95, 17 June 2019: 'KPMG Paying $50 Million Penalty for Illicit Use of PCAOB Data and Cheating on Training Exams'; senior personnel obtained confidential PCAOB lists of inspection targets; auditors manipulated an internal server hosting training exams to lower the score required for passing; KPMG admitted the facts", url: "https://www.sec.gov/news/press-release/2019-95", sourceNote: "Read via WebFetch on 2026-11-08: curl was refused by sec.gov." },
+      // The Carillion sanctions.
+      { label: "Financial Reporting Council, 12 October 2023: sanctions against KPMG LLP, KPMG Audit Plc and two former partners over the audits of Carillion plc; KPMG LLP GBP 26.5 million reduced by 30% to GBP 18.55 million and KPMG Audit Plc GBP 3.5 million reduced to GBP 2.45 million, each with a severe reprimand", url: "https://www.frc.org.uk/news-and-events/news/2023/10/sanctions-against-kpmg-llp-kpmg-audit-plc-and-two-former-partners/" },
+    ],
+  },
 ];
 
 /** Look up a partner vendor by slug. */
@@ -12272,6 +13541,7 @@ export const TAG_ROUTES: Record<string, VendorTag> = {
   datacentres: "datacentre",
   training: "training",
   standards: "standards",
+  media: "media",
 };
 
 /** Reverse lookup: tag -> the URL segment that lists it. */

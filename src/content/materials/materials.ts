@@ -164,37 +164,43 @@ export const MATERIALS: Material[] = [
     //      embedded; Carlito for Calibri, metric-compatible, DejaVu Sans Mono for Consolas), 564 pages at 960 x 540 pt.
     //      The Portuguese PDF's catalog said /Lang (en-US) and was set to (pt-BR) in place (same length). A PowerPoint
     //      export by PRIME would replace them through the acceptance step the TCP/IP PDFs went through.
+    //   5. Corrected 2026-11-08 (PRIME 19:20, "Whenever there is something wrong or missing in the course decks, do correct
+    //      or complement it"), after the vendors' pages were read in his browser: chapter 2.3's native VLAN 999 is created
+    //      and allowed on the trunks of slides 236 (Cisco), 238 (HPE Aruba), 244 (Arista) and 246 (Huawei), with a notes
+    //      paragraph each; slide 272's note on Cisco's default path cost method corrected (the 26.x guide says short; its
+    //      table and the command reference's show example give long). PPTX parts edited in place, every other part
+    //      byte-identical; both PDFs exported again by LibreOffice 24.2 (tagged), the pt-BR /Lang set as before; the
+    //      eight changed presenter images rendered from them (pdftoppm 1920 x 1080, WebP q80 m6, the original recipe,
+    //      proved byte-identical on an unchanged slide).
+    //   6. Corrected and complemented again 2026-11-08 (same request), from the vendors' pages read in his browser and the
+    //      RFCs by curl: slide 238's Remove row (the allowed list, not the native line, leaves VLAN 1); slide 418 names
+    //      RFC 9454's Leader and tells a Hello mismatch from an MTU one; slides 419, 427, 429, 434 and 436 give each
+    //      platform's default OSPF cost and Huawei's MTU check; slide 437 Huawei's dead-interval rules; slide 509 says
+    //      Watchdog for TACACS+ updates and lists RFC 7360 (DTLS), slide 511 adds Message-Authenticator since
+    //      CVE-2024-3596, slide 520 Huawei's HW-Exec-Privilege; slides 210, 211, 215 and 220 explain LACP fast, Cisco's
+    //      and Huawei's partner state and Huawei's hash factors and timeout advice; the profiles of MikroTik (20), Arista
+    //      (21) and Juniper (19) note the releases that moved after the decks were written. Same method as note 5; the
+    //      changed presenter images are slides 20, 236, 238, 244, 246, 418 and 509.
+    //      Slide 304's notes: the binary is 172.16.128.195's (it was 134.141.128.195's), and 172.16.0.0/16 is no longer
+    //      called Extreme Networks' block (134.141.0.0/16 is; the PDFs are unchanged, the fix being in the notes).
+    // PDFs withdrawn 2026-11-08 22:46 (PRIME 22:42: "Remove the course pdfs and let's serve only the ppts"): the course is
+    // offered as the PowerPoint decks only; the presenter on the course page keeps showing every slide (its images were
+    // rendered from the decks' PDF exports, which stay off the site).
     files: [
-      {
-        lang: "en",
-        format: "pdf",
-        path: "/materials/lan-switch-operations-and-maintenance/LAN_Switch_OandM_2026_Full_Course_enUS.pdf",
-        bytes: 8401938,
-        sha256: "658c29552ebd16dced5336a4d6e39e92b8b3c15a2235ecf27f088e780b45a198",
-        pages: 564,
-      },
       {
         lang: "en",
         format: "pptx",
         path: "/materials/lan-switch-operations-and-maintenance/LAN_Switch_OandM_2026_Full_Course_enUS.pptx",
-        bytes: 3351711,
-        sha256: "71ca071cea567aedbb7ba4a68c2f19613522fbc12f3eb6da4b5c334dfe8140e1",
-        pages: 564,
-      },
-      {
-        lang: "pt-BR",
-        format: "pdf",
-        path: "/materials/lan-switch-operations-and-maintenance/OeM_Switches_LAN_2026_Curso_Completo_ptBR.pdf",
-        bytes: 8408459,
-        sha256: "8f5c0c95acaf9bf679b4593062a0ac859be6af51e8a18301a53e2d65447eb8e5",
+        bytes: 3355916,
+        sha256: "22af7ddb00b69f4dd9710e3cc4614d927390f3ba7f049166f5a6e94f345d7f80",
         pages: 564,
       },
       {
         lang: "pt-BR",
         format: "pptx",
         path: "/materials/lan-switch-operations-and-maintenance/OeM_Switches_LAN_2026_Curso_Completo_ptBR.pptx",
-        bytes: 3395787,
-        sha256: "87685326d6cac5ebc163103d62db00d3b16b0ecf4145d579867e3e7502e5c797",
+        bytes: 3400412,
+        sha256: "bd3cd20d7b55e9766882c9e92f73b8aa0f12890cb0df1842d9efae0bd7730853",
         pages: 564,
       },
     ],
@@ -343,30 +349,16 @@ export const MATERIALS: Material[] = [
     // changed list pixel-identical to the previous PDF (en 10 pages changed, pt-BR 80), the new wording present and the
     // old gone, fonts embedded, tagged; installed by accept-pdfs.py, which also remade the presenter and gallery images
     // of the changed pages from the PowerPoint PDF, replacing the interim LibreOffice renders.
+    // PDFs withdrawn 2026-11-08 22:46 (PRIME 22:42: "Remove the course pdfs and let's serve only the ppts"): the course is
+    // offered as the PowerPoint decks only; the presenter on the course page keeps showing every slide (its images were
+    // rendered from the decks' PDF exports, which stay off the site).
     files: [
-      {
-        lang: "en",
-        format: "pdf",
-        path: "/materials/tcpip-concepts-and-ip-routing/TCPIP_Concepts_and_IP_Routing_2026_enUS.pdf",
-        bytes: 1779299,
-    // 2026-10-19: the English PDF's catalog said /Lang (pt); set to (en) in place (same length, xref unchanged), new sha256.
-        sha256: "8f586d5ce486362512140f548a190d0ef9b0d52033e83fb9edb07dd69875b9a7",
-        pages: 178,
-      },
       {
         lang: "en",
         format: "pptx",
         path: "/materials/tcpip-concepts-and-ip-routing/TCPIP_Concepts_and_IP_Routing_2026_enUS.pptx",
         bytes: 796064,
         sha256: "cb9e0e84e7dd4b694b9a0aade827ab997e2c6d4e8d21b557d0e4396d1742a6a6",
-        pages: 178,
-      },
-      {
-        lang: "pt-BR",
-        format: "pdf",
-        path: "/materials/tcpip-concepts-and-ip-routing/Curso_TCPIP_Conceitos_e_Roteamento_2026_ptBR.pdf",
-        bytes: 1798676,
-        sha256: "b5347ce117e3f3fbd8781d953ba1787f02ff6e8f77549c3aec4e1d52d9a32e5b",
         pages: 178,
       },
       {

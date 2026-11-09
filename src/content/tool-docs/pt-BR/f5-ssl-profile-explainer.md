@@ -1,6 +1,6 @@
 ## O que faz
 
-Cole um perfil `client-ssl` ou `server-ssl` do tmsh e a ferramenta o explica: o papel do perfil, a matriz de versões de protocolo TLS que ele habilita e desabilita, e uma análise de segurança cobrindo a cadeia de certificados, a renegociação, o SNI, o OCSP stapling e o TLS mútuo. Ela analisa o perfil inteiramente no seu navegador e nunca contata um equipamento.
+Cole um perfil `client-ssl` ou `server-ssl` do tmsh e a ferramenta o explica: o papel do perfil, a matriz de versões de protocolo TLS que ele habilita e desabilita, e uma análise de segurança cobrindo a cadeia de certificados, a renegociação, o SNI, o OCSP (Online Certificate Status Protocol) stapling e o TLS mútuo. Ela analisa o perfil inteiramente no seu navegador e nunca contata um equipamento.
 
 ## Perfis do lado do cliente e do lado do servidor
 

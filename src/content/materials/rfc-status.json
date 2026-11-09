@@ -1,9 +1,9 @@
 {
   "about": "RFC Editor index records for every RFC the open course cites and every RFC that obsoletes one of them. Read by scripts/check-materials.mts (standards-currency review); regenerated only by scripts/refresh-rfc-status.mts from a freshly downloaded index. Do not edit by hand.",
   "source": "https://www.rfc-editor.org/rfc-index.xml",
-  "readAt": "2026-11-02T01:58:36-03:00",
-  "indexBytes": 13742743,
-  "indexSha256": "4c886c27685e35ff35c826a24010a58bbdaf048ec0b6af7d9c93d60687a113b9",
+  "readAt": "2026-11-08T21:23:22-03:00",
+  "indexBytes": 13750139,
+  "indexSha256": "e2c04ba89a5c1bab9e40ad664eeaa0bc41522aed73441278265f2ed87467db98",
   "rfcs": {
     "768": {
       "rfc": 768,
@@ -1958,6 +1958,16 @@
         8983,
         9370,
         9827
+      ]
+    },
+    "7360": {
+      "rfc": 7360,
+      "title": "Datagram Transport Layer Security (DTLS) as a Transport Layer for RADIUS",
+      "date": "September 2014",
+      "status": "EXPERIMENTAL",
+      "obsoletedBy": [],
+      "updatedBy": [
+        9765
       ]
     },
     "7432": {

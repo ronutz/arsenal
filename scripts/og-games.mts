@@ -32,8 +32,12 @@
 // a change to a drawing regenerates its cards in CI.
 // ============================================================================
 
-/** Bumped when any drawing changes, so the content-hash manifest rewrites the game cards. */
-export const ART_VERSION = "1";
+// Each game's section and page, from the shelf's list (the arcade games under /arcade since 08/11/2026).
+import { funPagePath, funSection } from "../src/config/funGames";
+
+/** Bumped when any drawing changes, so the content-hash manifest rewrites the game cards. "2" (08/11/2026): the arcade
+ *  games' cards name /arcade above the title and /arcade/<id> at the foot, where their pages moved (PRIME 23:14). */
+export const ART_VERSION = "2";
 
 /** The Obsidian colours the cards use (mirrors gen-og.mts and globals.css). */
 const K = {
@@ -525,6 +529,119 @@ function incidentArt(): El {
   ]);
 }
 
+/** Packet Stack: a delivered frame at the bottom of the well, the next one missing its UDP header, which falls in. */
+function packetStackArt(c: ArtContext): El {
+  // The game's strings: the payload's line under DNS.
+  const g = (c.games["packet-stack"] ?? {}) as { appLine?: Record<string, string> };
+  // The four layers' colours, left to right: link, internet, transport, application.
+  const layer = [K.blue, K.cyan, K.amber, K.green];
+  // A block: its name over its field's value, on a raised cell edged in its layer's colour.
+  const block = (name: string, val: string, col: number) =>
+    div({ width: 104, height: 70, flexDirection: "column", alignItems: "center", justifyContent: "center", borderRadius: 10, backgroundColor: K.cell, border: `3px solid ${layer[col]}` }, [
+      // The name.
+      text(name, { fontFamily: SANS, fontSize: 21, fontWeight: 800, color: K.text }),
+      // The value.
+      text(val, { fontFamily: MONO, fontSize: 18, color: K.sub }),
+    ]);
+  // The empty place the falling block goes to.
+  const hole = div({ width: 104, height: 70, borderRadius: 10, border: `3px dashed ${K.faint}` });
+  // Each column's left edge.
+  const x = (col: number) => 80 + col * 112;
+  // The drawing: the well's walls, the delivered frame's ring, the falling block's path, then the blocks.
+  return div({ width: AW, height: AH, position: "relative" }, [
+    // The walls, the ring round the bottom row, and the dashed path with its arrowhead.
+    at(0, 0, svg(AW, AH, `<path d="M70 18 V350 H530 V18" fill="none" stroke="${K.sub}" stroke-width="5" stroke-linejoin="round"/><rect x="74" y="264" width="452" height="82" rx="12" fill="none" stroke="${K.green}" stroke-width="4"/><path d="M356 112 V176 M346 166 L356 178 L366 166" fill="none" stroke="${K.amber}" stroke-width="4" stroke-dasharray="8 6" stroke-linecap="round" stroke-linejoin="round"/>`)),
+    // The delivered frame: Ethernet 0x0800, IPv4 6, TCP 443, HTTPS.
+    at(x(0), 270, block("Ethernet", "0x0800", 0)),
+    at(x(1), 270, block("IPv4", "6", 1)),
+    at(x(2), 270, block("TCP", "443", 2)),
+    at(x(3), 270, block("HTTPS", "TLS", 3)),
+    // The next frame, its transport missing: Ethernet 0x86DD, IPv6 17, a gap, DNS.
+    at(x(0), 186, block("Ethernet", "0x86DD", 0)),
+    at(x(1), 186, block("IPv6", "17", 1)),
+    at(x(2), 186, hole),
+    at(x(3), 186, block("DNS", g.appLine?.dns ?? "query", 3)),
+    // The UDP header falling into the gap, set to port 53.
+    at(x(2), 36, block("UDP", "53", 2)),
+  ]);
+}
+
+/** TTL: a packet's trail across a small network, a router ahead that would be its last, the host, and the trace. */
+function ttlArt(): El {
+  // The board: 7 by 7 cells of 40 px, its top left corner in the art box.
+  const s = 40;
+  const ox = 26;
+  const oy = 46;
+  // A cell's top left corner.
+  const xy = (c: number, r: number): [number, number] => [ox + c * s, oy + r * s];
+  // The board's panel.
+  let body = `<rect x="${ox - 8}" y="${oy - 8}" width="${7 * s + 16}" height="${7 * s + 16}" rx="14" fill="${K.panel}" stroke="${K.line}" stroke-width="2"/>`;
+  // The faint dot of each cell.
+  for (let r = 0; r < 7; r++) for (let c = 0; c < 7; c++) body += `<circle cx="${ox + c * s + s / 2}" cy="${oy + r * s + s / 2}" r="2.2" fill="${K.line}"/>`;
+  // The trail, tail first, brighter toward the packet.
+  [[1, 6], [1, 5], [1, 4], [2, 4], [3, 4], [3, 3]].forEach(([c, r], i) => {
+    // The segment's corner.
+    const [x, y] = xy(c, r);
+    // One segment.
+    body += `<rect x="${x + 6}" y="${y + 6}" width="${s - 12}" height="${s - 12}" rx="7" fill="${K.cyan}" opacity="${(0.35 + 0.1 * i).toFixed(2)}"/>`;
+  });
+  // The packet, red at TTL 1.
+  const [hx, hy] = xy(3, 2);
+  body += `<rect x="${hx + 3}" y="${hy + 3}" width="${s - 6}" height="${s - 6}" rx="8" fill="${K.red}"/>`;
+  // The router straight ahead, red: it would take the TTL to zero.
+  const [rx, ry] = xy(3, 0);
+  const [cx, cy] = [rx + s / 2, ry + s / 2];
+  body += `<circle cx="${cx}" cy="${cy}" r="14" fill="${K.cell}" stroke="${K.red}" stroke-width="3"/><path d="M${cx - 8} ${cy - 8} L${cx - 3} ${cy - 3} M${cx + 8} ${cy + 8} L${cx + 3} ${cy + 3} M${cx + 8} ${cy - 8} L${cx + 3} ${cy - 3} M${cx - 8} ${cy + 8} L${cx - 3} ${cy + 3}" stroke="${K.red}" stroke-width="3" stroke-linecap="round"/>`;
+  // The host, a screen on a stand, in green.
+  const [dx, dy] = xy(5, 5);
+  body += `<rect x="${dx + 6}" y="${dy + 8}" width="${s - 12}" height="${s - 20}" rx="3" fill="none" stroke="${K.green}" stroke-width="3"/><path d="M${dx + 14} ${dy + 34} L${dx + 26} ${dy + 34} M${dx + 20} ${dy + 28} L${dx + 20} ${dy + 34}" stroke="${K.green}" stroke-width="3" stroke-linecap="round"/>`;
+  // One line of the trace, in the mono face.
+  const line = (s2: string, color: string) => text(s2, { fontFamily: MONO, fontSize: 20, fontWeight: 700, color, whiteSpace: "pre" });
+  // The layers: the board, the TTL on the packet, the trace beside the board.
+  return div({ position: "relative", width: AW, height: AH }, [
+    svg(AW, AH, body, { position: "absolute", left: 0, top: 0 }),
+    // The TTL the packet carries.
+    at(hx + 13, hy + 5, text("1", { fontFamily: MONO, fontSize: 24, fontWeight: 700, color: K.canvas })),
+    // The trace.
+    at(352, 92, div({ flexDirection: "column", gap: 12 }, [
+      text("traceroute", { fontFamily: MONO, fontSize: 18, color: K.sub }),
+      line(" 1  198.51.100.53", K.text),
+      line(" 2  198.51.100.40", K.text),
+      line(" 3  Time Exceeded", K.red),
+      text("TTL 3, 2, 1, 0", { fontFamily: MONO, fontSize: 18, color: K.sub }),
+    ])),
+  ]);
+}
+
+/** Rule Inspector: an inbound connection's card at the firewall desk, and the two calls under it (no day's answer). */
+function ruleInspectorArt(c: ArtContext): El {
+  // The game's strings in the card's language (the labels the page itself shows).
+  const g = (c.games["rule-inspector"] ?? {}) as Record<string, unknown>;
+  // A string from them, or the English fallback.
+  const s = (k: string, en: string) => (typeof g[k] === "string" ? (g[k] as string) : en);
+  // The direction's first word ("Inbound", "Entrada"), the field labels and the two calls.
+  const dir = s("dirIn", "Inbound").split(",")[0].toUpperCase();
+  // One field of the card: its label and its value.
+  const field = (k: string, v: string) => div({ alignItems: "center", gap: 16 }, [text(k, { fontFamily: SANS, fontSize: 18, color: K.sub, width: 84 }), text(v, { fontFamily: MONO, fontSize: 26, fontWeight: 700, color: K.text })]);
+  // One call: its word in its colour, a tick or a cross drawn beside it.
+  const call = (word: string, c: string, mark: string) =>
+    div({ width: 258, height: 62, alignItems: "center", justifyContent: "center", gap: 12, borderRadius: 12, backgroundColor: K.cell, border: `3px solid ${c}` }, [svg(26, 26, mark), text(word, { fontFamily: SANS, fontSize: 26, fontWeight: 800, color: c, letterSpacing: 1 })]);
+  // The card above, the two calls below.
+  return div({ width: AW, height: AH, flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 18 }, [
+    // The connection.
+    div({ width: 540, flexDirection: "column", gap: 8, paddingTop: 16, paddingBottom: 16, paddingLeft: 22, paddingRight: 22, borderRadius: 16, backgroundColor: K.panel, border: `2px solid ${K.line}`, borderLeft: `10px solid ${K.sky}` }, [
+      // The direction and the protocol.
+      text(`${dir}   TCP (6)   SYN`, { fontFamily: SANS, fontSize: 18, fontWeight: 800, color: K.sky, letterSpacing: 2 }),
+      // The source.
+      field(s("fromLabel", "From"), "198.51.100.23 : 51514"),
+      // The destination.
+      field(s("toLabel", "To"), "203.0.113.10 : 443"),
+    ]),
+    // The two calls.
+    div({ gap: 24 }, [call(s("permit", "Permit").toUpperCase(), K.green, tickPath(2, 2, 22, K.green, 4)), call(s("deny", "Deny").toUpperCase(), K.red, crossPath(13, 13, 9, K.red, 4))]),
+  ]);
+}
+
 /** The shelf: one small motif per daily puzzle, a mosaic of the games. */
 function shelfArt(): El {
   // A motif: a coloured tile with a few characters from the game.
@@ -550,13 +667,17 @@ export const GAME_ART: Record<string, { color: string; draw: (c: ArtContext) => 
   aggregate: { color: K.orange, draw: aggregateArt },
   "first-match": { color: K.cyan, draw: firstMatchArt },
   "exit-the-editor": { color: K.green, draw: exitArt },
+  "packet-stack": { color: K.cyan, draw: packetStackArt },
+  ttl: { color: K.blue, draw: ttlArt },
+  "rule-inspector": { color: K.sky, draw: ruleInspectorArt },
   "incident-commander": { color: K.amber, draw: incidentArt },
   shelf: { color: K.amber, draw: shelfArt },
 };
 
 /**
- * A game's whole card: "/dev/fun" over the game's name, the drawing under it, the address at the foot, all on the
- * centre line, on a canvas lit faintly in the game's colour.
+ * A game's whole card: its section ("/dev/fun", or "/arcade" for the arcade games since 08/11/2026) over the game's
+ * name, the drawing under it, the address at the foot, all on the centre line, on a canvas lit faintly in the game's
+ * colour.
  *
  * @param id the game's id, or "shelf"
  * @param title the game's name (or "/dev/fun" for the shelf)
@@ -566,12 +687,14 @@ export const GAME_ART: Record<string, { color: string; draw: (c: ArtContext) => 
 export function gameCard(id: string, title: string, c: ArtContext): El {
   // The drawing and its colour.
   const art = GAME_ART[id];
+  // The game's section, from the shelf's list (the arcade group under /arcade, the rest under /dev/fun).
+  const section = funSection(id);
   // The address the card stands for.
-  const address = id === "shelf" ? "ronutz.com/dev/fun" : `ronutz.com/dev/fun/${id}`;
+  const address = id === "shelf" ? "ronutz.com/dev/fun" : `ronutz.com${funPagePath(id)}`;
   // The card.
   return div({ width: 1200, height: 630, flexDirection: "column", alignItems: "center", backgroundColor: K.canvas, backgroundImage: `radial-gradient(circle at 50% 62%, ${art.color}26 0%, rgba(2,6,23,0) 58%)`, borderTop: `8px solid ${art.color}` }, [
     // The shelf's name, small, above (not repeated on the shelf's own card).
-    text(id === "shelf" ? "ronutz.com" : "/dev/fun", { fontFamily: MONO, fontSize: 24, fontWeight: 700, color: art.color, marginTop: 26, letterSpacing: 2 }),
+    text(id === "shelf" ? "ronutz.com" : section, { fontFamily: MONO, fontSize: 24, fontWeight: 700, color: art.color, marginTop: 26, letterSpacing: 2 }),
     // The game's name.
     text(title, { fontFamily: SANS, fontSize: 58, fontWeight: 800, color: K.text, letterSpacing: -1, marginTop: 4 }),
     // The drawing.

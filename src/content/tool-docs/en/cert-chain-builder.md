@@ -42,7 +42,7 @@ The page re-encodes the certificates on the path from their bytes, 64-column bas
 
 Each link's signature is checked in the browser, against the issuer's public key shown in the table: RSASSA-PKCS1-v1_5 and RSASSA-PSS with SHA-1, SHA-256, SHA-384 or SHA-512, ECDSA on P-256, P-384 and P-521, and Ed25519 where the browser supports it. A self-signed root is checked against its own key, which proves the certificate is consistent, not that anyone trusts it. Anything the browser cannot do reads as not checked, never as failed.
 
-Not done, and done by a validator: consulting a trust store, matching the host name against subjectAltName, evaluating name constraints, policy constraints and extended key usage along the path, and checking revocation. The CRL and OCSP pointers on the path are listed; none is contacted.
+Not done, and done by a validator: consulting a trust store, matching the host name against subjectAltName, evaluating name constraints, policy constraints and extended key usage along the path, and checking revocation. The CRL (certificate revocation list) and OCSP (Online Certificate Status Protocol) pointers on the path are listed; none is contacted.
 
 To see what a validator made of the chain a server actually sends, run `openssl s_client -showcerts` against the server and paste its output into the [openssl s_client explainer](/tools/openssl-s-client-explainer): the PEM blocks are the chain as sent, which this page can then sort, and the Verify return code is OpenSSL's verdict on it.
 

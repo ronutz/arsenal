@@ -4,7 +4,7 @@ title: "UTF-8, UTF-16 e UTF-32, byte por byte"
 summary: "Como cada codificação do Unicode distribui um ponto de código em bytes, como reconhecer cada uma num dump hexadecimal, quais sequências de bytes são malformadas e exatamente o que um decodificador substitui por U+FFFD, e o que faz uma marca de ordem de bytes, incluindo o ponto em que um navegador e o padrão Unicode discordam."
 concepts: ["utf-8", "utf-16", "utf-32", "marca de ordem de bytes", "par surrogate", "subparte máxima", "caractere de substituição", "codificação longa demais", "dump hexadecimal"]
 relatedTools: ["charset-equivalency", "unicode-inspector", "base64", "url-inspector"]
-relatedArticles: ["unicode-code-points-and-properties", "mojibake-and-code-pages", "hidden-and-lookalike-characters", "character-encoding", "hex-encoding", "python-bytes-text-and-encodings"]
+relatedArticles: ["unicode-code-points-and-properties", "mojibake-and-code-pages", "hidden-and-lookalike-characters", "character-encoding", "hex-encoding", "python-bytes-text-and-encodings", "big-endian-and-little-endian"]
 category: encoding
 order: 218
 status: reviewed
@@ -77,7 +77,7 @@ Um surrogate sem o seu par é malformado, e o decodificador o substitui por U+FF
 
 ## Ordem dos bytes: BE, LE e a marca de ordem de bytes
 
-Uma unidade de 16 bits são dois bytes, e as máquinas discordam sobre qual vem primeiro. O UTF-16BE escreve o byte alto primeiro, e o UTF-16LE o byte baixo primeiro. Para texto ASCII essa é a diferença entre `00 48 00 69` e `48 00 69 00` para "Hi", e é assim que o UTF-16 se denuncia num dump: um byte sim, um não, é zero.
+Uma unidade de 16 bits são dois bytes, e as máquinas discordam sobre qual vem primeiro. O UTF-16BE escreve o byte alto primeiro, e o UTF-16LE o byte baixo primeiro. Para texto ASCII essa é a diferença entre `00 48 00 69` e `48 00 69 00` para "Hi", e é assim que o UTF-16 se denuncia num dump: um byte sim, um não, é zero. De onde vêm as duas ordens, e quais processadores e formatos usam cada uma, está em [Big-endian e little-endian: a ordem dos bytes explicada](/learn/big-endian-and-little-endian).
 
 O "UTF-16" sem sufixo pode dizer que ordem usa com uma marca de ordem de bytes, U+FEFF logo no início: FE FF em big-endian, FF FE em little-endian. O padrão Unicode (D98) acrescenta que "when there is no BOM, and in the absence of a higher-level protocol, the byte order of the UTF-16 encoding scheme is big-endian" (sem BOM e sem um protocolo de nível mais alto, a ordem é big-endian). Os navegadores fazem o contrário: no WHATWG Encoding Standard o rótulo "utf-16" significa UTF-16LE, "to deal with deployed content" (para lidar com o conteúdo já publicado). E quando um navegador encontra uma marca de ordem de bytes no início de um documento, a marca vence qualquer rótulo, porque "has been found to be more accurate in deployed content" (se mostrou mais precisa no conteúdo publicado).
 

@@ -1,0 +1,146 @@
+/* ============================================================================
+   src/app/fun-ttl.css
+   ----------------------------------------------------------------------------
+   TTL (PRIME 08/11/2026, the arcade's first wave): the packet, its trail, the
+   routers and the host on a 13 x 13 board drawn in SVG, the head-up display,
+   the trace and the on-screen arrows. Prefix fg-ttl-, as fun-games.css gives
+   each game its own. Tokens only (--accent-*, --surface-*, --text-*,
+   --border-*, --color-*, --radius-*), so every theme and the high-contrast
+   one apply. Targets are 44 px or more; the board is never wider than the
+   page, so nothing scrolls sideways at 390 px. Imported by globals.css right
+   after fun-games.css, whose shared fg- classes (buttons, readouts, the Start
+   cover, the flash) it builds on.
+   ============================================================================ */
+
+/* The game's accent on the shelf's card and the pills (fun-games.css turns the hue into --glyph-accent). */
+.fg-glyph--ttl { --glyph-hue: 350; }
+
+/* The game's column: the readouts, the packets, the board and the trace, the controls, stacked and centred. */
+.fg-ttl-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; width: 100%; }
+
+/* The readouts: four fixed columns, so nothing jumps as the numbers grow. */
+.fg-ttl-hud { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.5rem; width: min(100%, 34rem); }
+/* One readout: its label over its value. */
+.fg-ttl-stat { display: flex; flex-direction: column; align-items: center; min-width: 0; }
+/* The label: small capitals that never wrap. */
+.fg-ttl-stat-label { font-size: 0.72rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap; }
+/* The value stays on one line. */
+.fg-ttl-stat .fg-readout { white-space: nowrap; }
+/* The TTL, the number that matters, larger and in the accent. */
+.fg-ttl-ttl { font-size: 1.5rem; line-height: 1.2; color: var(--accent-primary); }
+/* At TTL 1 it turns red: the next router would discard the packet. */
+.fg-ttl-ttl-low { color: var(--color-danger); }
+
+/* The twelve packets, as a row of small numbered chips (one row at 390 px; it wraps only on a narrower screen). */
+.fg-ttl-packets { display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; list-style: none; margin: 0; padding: 0; max-width: 100%; }
+/* One packet: its number in a square, waiting. */
+.fg-ttl-pk { display: inline-grid; place-items: center; box-sizing: border-box; min-width: 1.55rem; height: 1.55rem; padding: 0; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); background: var(--surface-elevated); color: var(--text-secondary); font-family: var(--font-mono); font-size: 0.72rem; font-variant-numeric: tabular-nums; }
+/* The packet in flight: outlined in the accent, in bold. */
+.fg-ttl-pk-now { border: 2px solid var(--accent-primary); color: var(--text-primary); font-weight: 700; }
+/* Delivered having taken every hop its TTL allowed: a solid green chip. */
+.fg-ttl-pk-full { border-color: var(--color-success); background: color-mix(in srgb, var(--color-success) 24%, var(--surface-base)); color: var(--text-primary); }
+/* Delivered with TTL to spare: a dashed green edge (shape, not colour alone). */
+.fg-ttl-pk-spare { border: 2px dashed var(--color-success); color: var(--text-primary); }
+/* Lost: a red chip with a heavier edge. */
+.fg-ttl-pk-lost { border: 2px solid var(--color-danger); background: color-mix(in srgb, var(--color-danger) 20%, var(--surface-base)); color: var(--text-primary); }
+
+/* The board, its controls and the trace: one column on a phone (board, controls, trace), so the arrows sit right under
+   the board; from 760 px the trace takes a second column beside both. */
+.fg-ttl-play { display: grid; grid-template-columns: minmax(0, 26rem); grid-template-areas: "board" "controls" "trace"; gap: 0.75rem 1rem; justify-content: center; align-items: start; width: 100%; }
+/* A wide screen: the trace beside the board and its controls. */
+@media (min-width: 760px) {
+  /* Two columns. */
+  .fg-ttl-play { grid-template-columns: minmax(0, 26rem) minmax(0, 20rem); grid-template-areas: "board trace" "controls trace"; }
+}
+/* The Start cover in the board's place: the board's own square. */
+.fg-ttl-start { grid-area: board; width: 100%; aspect-ratio: 1 / 1; }
+/* The board: a square as wide as its column; taps and presses do not select text. */
+.fg-ttl-board { grid-area: board; position: relative; width: 100%; aspect-ratio: 1 / 1; border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--surface-base); overflow: hidden; touch-action: manipulation; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
+/* While the packet moves, a swipe on the board steers it rather than scrolling the page. */
+.fg-ttl-board-live { touch-action: none; }
+/* The drawing fills the board. */
+.fg-ttl-svg { display: block; width: 100%; height: 100%; }
+/* A cell's dot, faint. */
+.fg-ttl-dot { fill: var(--border-subtle); }
+/* The host the packet is sent to: a screen on a stand, in the success colour. */
+.fg-ttl-host { fill: none; stroke: var(--color-success); stroke-width: 0.09; stroke-linecap: round; stroke-linejoin: round; }
+/* The router's disc. */
+.fg-ttl-router-body { fill: var(--surface-elevated); stroke: var(--accent-amber); stroke-width: 0.08; }
+/* Its four arrows. */
+.fg-ttl-router-mark { fill: none; stroke: var(--accent-amber); stroke-width: 0.08; stroke-linecap: round; }
+/* At TTL 1 the router is red and its edge heavier: entering it would be the end. */
+.fg-ttl-router-hot .fg-ttl-router-body { stroke: var(--color-danger); stroke-width: 0.13; }
+/* Its arrows too. */
+.fg-ttl-router-hot .fg-ttl-router-mark { stroke: var(--color-danger); }
+/* A segment of the trail: the accent, mixed into the board. */
+.fg-ttl-seg { fill: color-mix(in srgb, var(--accent-primary) 72%, var(--surface-base)); }
+/* The packet itself. */
+.fg-ttl-head { fill: var(--accent-primary); }
+/* At TTL 1, or discarded, the packet is red. */
+.fg-ttl-head-low { fill: var(--color-danger); }
+/* The TTL it carries, written on it: 52 units in a group scaled to a hundredth, so about half a cell. */
+.fg-ttl-head-text { fill: var(--canvas-primary); font-family: var(--font-mono); font-size: 52px; font-weight: 800; }
+/* The ring where the run ended: red. */
+.fg-ttl-end { fill: none; stroke: var(--color-danger); stroke-width: 0.1; }
+/* Green for a completed run. */
+.fg-ttl-end-won { stroke: var(--color-success); }
+/* Over the board: the countdown, the next packet, or the pause. */
+.fg-ttl-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.35rem; padding: 1rem; text-align: center; background: color-mix(in srgb, var(--canvas-primary) 55%, transparent); pointer-events: none; }
+/* The countdown's number. */
+.fg-ttl-count { font-family: var(--font-mono); font-size: 3rem; font-weight: 800; color: var(--text-primary); }
+/* The next packet's line, or "Paused". */
+.fg-ttl-overlay-title { font-family: var(--font-mono); font-size: 1.2rem; font-weight: 700; color: var(--text-primary); }
+/* The line under "Paused". */
+.fg-ttl-overlay-note { max-width: 18rem; font-size: 0.85rem; color: var(--text-secondary); }
+
+/* The trace: the packet in flight as traceroute lists it, in a small terminal-like box beside or under the board. */
+.fg-ttl-trace { grid-area: trace; min-width: 0; box-sizing: border-box; padding: 0.6rem 0.75rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-elevated); color: var(--text-secondary); font-family: var(--font-mono); font-size: 0.78rem; line-height: 1.5; }
+/* Its first line: from where, to which host, with which TTL. */
+.fg-ttl-trace-head { margin: 0 0 0.35rem; color: var(--text-primary); overflow-wrap: anywhere; }
+/* The hops. */
+.fg-ttl-trace-list { display: flex; flex-direction: column; gap: 0.15rem; margin: 0; padding: 0; list-style: none; }
+/* One hop: its number, the router, what it left of the TTL. */
+.fg-ttl-trace-line { display: grid; grid-template-columns: 1.6rem minmax(0, 1fr) auto; gap: 0.4rem; }
+/* The hop's number, right-aligned as traceroute prints it. */
+.fg-ttl-trace-n { text-align: right; }
+/* The router's address; a long IPv6 one breaks rather than widening the box. */
+.fg-ttl-trace-addr { color: var(--text-primary); overflow-wrap: anywhere; }
+/* A discard, a loop or no route. */
+.fg-ttl-trace-bad { color: var(--color-danger); }
+/* Delivered. */
+.fg-ttl-trace-ok { color: var(--color-success); }
+/* No hop yet. */
+.fg-ttl-trace-empty { font-style: italic; }
+
+/* The arrows and the buttons beside them. */
+.fg-ttl-controls { grid-area: controls; display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; justify-content: center; }
+/* The arrows in a cross: up on top, left, down and right under it; each 56 px, larger than the 44 px floor. */
+.fg-ttl-pad { display: grid; grid-template-columns: repeat(3, 56px); grid-template-rows: repeat(2, 56px); gap: 6px; grid-template-areas: ". up ." "left down right"; }
+/* One arrow: the whole square is the target. */
+.fg-ttl-pad .fg-button { display: grid; place-items: center; min-height: 56px; padding: 0; touch-action: manipulation; }
+/* Up. */
+.fg-ttl-pad-u { grid-area: up; }
+/* Left. */
+.fg-ttl-pad-l { grid-area: left; }
+/* Down. */
+.fg-ttl-pad-d { grid-area: down; }
+/* Right. */
+.fg-ttl-pad-r { grid-area: right; }
+/* The arrow drawn in a button. */
+.fg-ttl-arrow { width: 24px; height: 24px; }
+
+/* The view switch: IPv4 or IPv6, two buttons joined into one control. */
+.fg-ttl-view { display: inline-flex; }
+/* The first button's right corners, square. */
+.fg-ttl-view .fg-button:first-child { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+/* The second's left corners, square, and no double edge. */
+.fg-ttl-view .fg-button:last-child { border-top-left-radius: 0; border-bottom-left-radius: 0; border-left-width: 0; }
+/* The view chosen, filled. */
+.fg-ttl-view .fg-button[aria-pressed="true"] { background: var(--accent-primary); border-color: var(--accent-primary); color: var(--canvas-primary); }
+
+/* The keys line, centred under the controls. */
+.fg-ttl-keys { margin: 0; text-align: center; }
+/* "Learn the real thing", centred, its link in the accent. */
+.fg-ttl-learn { margin: 0; text-align: center; color: var(--text-secondary); }
+/* Its link. */
+.fg-ttl-learn a { color: var(--accent-primary); text-decoration: underline; text-underline-offset: 3px; }

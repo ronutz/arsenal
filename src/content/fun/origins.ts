@@ -137,7 +137,7 @@ export const GAME_ORIGINS: Record<string, GameOriginsEntry> = {
       src("RFC 6325: Routing Bridges (RBridges): Base Protocol Specification", "RFC Editor", "https://www.rfc-editor.org/rfc/rfc6325"),
     ],
     // The protocol, its author and what it prevents.
-    glossary: ["radia-perlman", "spanning-tree", "stp", "rstp", "bpdu", "broadcast-storm"],
+    glossary: ["radia-perlman", "spanning-tree", "stp", "rstp", "bpdu", "broadcast-storm", "rfc-poetry"],
   },
   // First Match: screend 1989, Cisco ACLs, programming puzzles.
   "first-match": {
@@ -288,6 +288,114 @@ export const GAME_ORIGINS: Record<string, GameOriginsEntry> = {
     ],
     // The programs on the levels.
     glossary: ["vi", "emacs", "nano", "ssh", "telnet"],
+  },
+  // Packet Stack (08/11/2026): the mechanic and the law, then the frame's own rule, from the RFCs and IANA's registries,
+  // every one read on the day the game was built (so not with src(), whose day is the 6th).
+  "packet-stack": {
+    sources: [
+      // Ideas, procedures, systems and methods of operation are not protected.
+      { title: "Circular 33: Works Not Protected by Copyright", publisher: "United States Copyright Office", url: "https://www.copyright.gov/circs/circ33.pdf", accessed: "2026-11-08" },
+      // April 1984: the type field must hold hexadecimal 0800.
+      { title: "RFC 894: A Standard for the Transmission of IP Datagrams over Ethernet Networks", publisher: "RFC Editor", url: "https://www.rfc-editor.org/rfc/rfc894", accessed: "2026-11-08" },
+      // December 1998: 86DD for IPv6.
+      { title: "RFC 2464: Transmission of IPv6 Packets over Ethernet Networks", publisher: "RFC Editor", url: "https://www.rfc-editor.org/rfc/rfc2464", accessed: "2026-11-08" },
+      // April 2024: what the EtherType indicates, a device past one it does not understand, the IEEE RA assigns them.
+      { title: "RFC 9542: IANA Considerations and IETF Protocol and Documentation Usage for IEEE 802 Parameters", publisher: "RFC Editor", url: "https://www.rfc-editor.org/rfc/rfc9542", accessed: "2026-11-08" },
+      // The Registration Authority's own public list of EtherTypes.
+      { title: "EtherType public listing", publisher: "IEEE Registration Authority", url: "https://standards-oui.ieee.org/ethertype/eth.txt", accessed: "2026-11-08" },
+      // 0800 IPv4, 0806 ARP, 86DD IPv6.
+      { title: "IEEE 802 Numbers: Ethertypes", publisher: "IANA", url: "https://www.iana.org/assignments/ieee-802-numbers/ieee-802-numbers.xhtml", accessed: "2026-11-08" },
+      // September 1981: the Protocol field.
+      { title: "RFC 791: Internet Protocol", publisher: "RFC Editor", url: "https://www.rfc-editor.org/rfc/rfc791", accessed: "2026-11-08" },
+      // July 2017: Next Header uses the same values.
+      { title: "RFC 8200: Internet Protocol, Version 6 (IPv6) Specification", publisher: "RFC Editor", url: "https://www.rfc-editor.org/rfc/rfc8200", accessed: "2026-11-08" },
+      // 1 ICMP, 6 TCP, 17 UDP, 58 IPv6-ICMP.
+      { title: "Protocol Numbers", publisher: "IANA", url: "https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml", accessed: "2026-11-08" },
+      // The services and their ports.
+      { title: "Service Name and Transport Protocol Port Number Registry", publisher: "IANA", url: "https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.csv", accessed: "2026-11-08" },
+      // DNS over UDP and TCP, port 53.
+      { title: "RFC 1035: Domain Names - Implementation and Specification", publisher: "RFC Editor", url: "https://www.rfc-editor.org/rfc/rfc1035", accessed: "2026-11-08" },
+      // NTP's UDP port 123.
+      { title: "RFC 5905: Network Time Protocol Version 4: Protocol and Algorithms Specification", publisher: "RFC Editor", url: "https://www.rfc-editor.org/rfc/rfc5905", accessed: "2026-11-08" },
+      // SSH on port 22 over TCP.
+      { title: "RFC 4253: The Secure Shell (SSH) Transport Layer Protocol", publisher: "RFC Editor", url: "https://www.rfc-editor.org/rfc/rfc4253", accessed: "2026-11-08" },
+      // HTTP on TCP 80, HTTP over TLS on TCP 443.
+      { title: "RFC 9110: HTTP Semantics", publisher: "RFC Editor", url: "https://www.rfc-editor.org/rfc/rfc9110", accessed: "2026-11-08" },
+      // Syslog on UDP 514.
+      { title: "RFC 5426: Transmission of Syslog Messages over UDP", publisher: "RFC Editor", url: "https://www.rfc-editor.org/rfc/rfc5426", accessed: "2026-11-08" },
+      // October 1989: the four layers, and RFC 894 encapsulation required on Ethernet.
+      { title: "RFC 1122: Requirements for Internet Hosts -- Communication Layers", publisher: "RFC Editor", url: "https://www.rfc-editor.org/rfc/rfc1122", accessed: "2026-11-08" },
+    ],
+    // The frame, its type field and the layers it carries.
+    glossary: ["ethernet", "ethertype", "packet", "ip", "tcp", "udp", "port", "payload", "osi-model"],
+  },
+  // TTL: RFC 791's Time to Live, RFC 1812's router rule, IPv6's Hop Limit, traceroute and the documentation addresses
+  // (read on 2026-11-08, so each source carries its own day rather than READ).
+  ttl: {
+    sources: [
+      // Sections 3.1 and 3.2: set in seconds, only an upper bound, so that undeliverable datagrams are discarded.
+      { title: "RFC 791: Internet Protocol", publisher: "RFC Editor", url: "https://www.rfc-editor.org/rfc/rfc791.txt", accessed: "2026-11-08" },
+      // The IP Time to Live Parameter: 64, the recommended default.
+      { title: "Internet Protocol Version 4 (IPv4) Parameters", publisher: "IANA", url: "https://www.iana.org/assignments/ip-parameters/ip-parameters.xhtml", accessed: "2026-11-08" },
+      // Section 5.3.1: the router's rule and the loops it stops; section 5.2.7.3: Time Exceeded, code 0.
+      { title: "RFC 1812: Requirements for IP Version 4 Routers", publisher: "RFC Editor", url: "https://www.rfc-editor.org/rfc/rfc1812.txt", accessed: "2026-11-08" },
+      // Time Exceeded is type 11; Destination Unreachable, code 0, net unreachable.
+      { title: "RFC 792: Internet Control Message Protocol", publisher: "RFC Editor", url: "https://www.rfc-editor.org/rfc/rfc792.txt", accessed: "2026-11-08" },
+      // Section 3.2.1.7: a host keeps a datagram received with TTL below 2.
+      { title: "RFC 1122: Requirements for Internet Hosts - Communication Layers", publisher: "RFC Editor", url: "https://www.rfc-editor.org/rfc/rfc1122.txt", accessed: "2026-11-08" },
+      // Sections 3 and 8.2: Hop Limit, renamed from Time-to-Live.
+      { title: "RFC 8200: Internet Protocol, Version 6 (IPv6) Specification", publisher: "RFC Editor", url: "https://www.rfc-editor.org/rfc/rfc8200.txt", accessed: "2026-11-08" },
+      // Section 3.3: Time Exceeded, type 3, a routing loop or too small a Hop Limit; section 3.1: no route, type 1 code 0.
+      { title: "RFC 4443: Internet Control Message Protocol (ICMPv6) for the Internet Protocol Version 6 (IPv6) Specification", publisher: "RFC Editor", url: "https://www.rfc-editor.org/rfc/rfc4443.txt", accessed: "2026-11-08" },
+      // Section 1, "Traceroute Today": TTL 1, then 2, until the destination.
+      { title: "RFC 1393: Traceroute Using an IP Option", publisher: "RFC Editor", url: "https://www.rfc-editor.org/rfc/rfc1393.txt", accessed: "2026-11-08" },
+      // AUTHORS: Van Jacobson, from a suggestion by Steve Deering.
+      { title: "traceroute(8)", publisher: "FreeBSD Manual Pages", url: "https://man.freebsd.org/cgi/man.cgi?query=traceroute&sektion=8", accessed: "2026-11-08" },
+      // DESCRIPTION: probes from TTL 1, up by one, 30 hops at most by default.
+      { title: "traceroute(8), Linux manual page", publisher: "man7.org", url: "https://man7.org/linux/man-pages/man8/traceroute.8.html", accessed: "2026-11-08" },
+      // The three IPv4 documentation blocks, never on the public Internet.
+      { title: "RFC 5737: IPv4 Address Blocks Reserved for Documentation", publisher: "RFC Editor", url: "https://www.rfc-editor.org/rfc/rfc5737.txt", accessed: "2026-11-08" },
+      // 2001:db8::/32.
+      { title: "RFC 3849: IPv6 Address Prefix Reserved for Documentation", publisher: "RFC Editor", url: "https://www.rfc-editor.org/rfc/rfc3849.txt", accessed: "2026-11-08" },
+    ],
+    // The field, the program and the messages.
+    glossary: ["ttl", "traceroute", "time-exceeded", "icmp", "icmpv6"],
+  },
+  // Rule Inspector: screend 1989, RFC 8519, Juniper's implicit deny, RFC 6092 and RFC 9293, IANA's registries,
+  // RFC 6890, RFC 1918, RFC 6598 and RFC 5737 (read on 2026-11-08, so each source carries its own date).
+  "rule-inspector": {
+    sources: [
+      // Mogul's screend: rules in order, exceptions first, a default action, a rule for each direction.
+      { title: "Simple and Flexible Datagram Access Controls for Unix-based Gateways (WRL Research Report 89/4)", publisher: "Digital Equipment Corporation Western Research Laboratory (Bitsavers mirror)", url: "https://ftp.mirrorservice.org/sites/www.bitsavers.org/pdf/dec/tech_reports/WRL-89-4.pdf", accessed: "2026-11-08" },
+      // The first matching entry decides.
+      { title: "RFC 8519: YANG Data Model for Network Access Control Lists (ACLs)", publisher: "RFC Editor", url: "https://www.rfc-editor.org/rfc/rfc8519", accessed: "2026-11-08" },
+      // Sequential terms and the implicit deny.
+      { title: "Understanding How Firewall Filters Are Evaluated", publisher: "Juniper Networks", url: "https://www.juniper.net/documentation/us/en/software/junos/routing-policy/topics/concept/firewall-filter-ex-series-evaluation-understanding.html", accessed: "2026-11-08" },
+      // The same two rules in Cisco IOS: "after the first match, no subsequent entries are considered", and the "unwritten, implicit deny".
+      { title: "IP Access List Overview, Security Configuration Guide: Access Control Lists, Cisco IOS Release 15S (read in a browser on 2026-11-08: the site refuses automated reads)", publisher: "Cisco", url: "https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/sec_data_acl/configuration/15-s/sec-data-acl-15-s-book/sec-access-list-ov.html", accessed: "2026-11-08" },
+      // State records for TCP and UDP flows; packets that match no flow are refused.
+      { title: "RFC 6092: Recommended Simple Security Capabilities in Customer Premises Equipment (CPE) for Providing Residential IPv6 Internet Service", publisher: "RFC Editor", url: "https://www.rfc-editor.org/rfc/rfc6092", accessed: "2026-11-08" },
+      // The three-way handshake.
+      { title: "RFC 9293: Transmission Control Protocol (TCP)", publisher: "RFC Editor", url: "https://www.rfc-editor.org/rfc/rfc9293", accessed: "2026-11-08" },
+      // Protocol numbers.
+      { title: "Assigned Internet Protocol Numbers", publisher: "IANA", url: "https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml", accessed: "2026-11-08" },
+      // Service names, port numbers and the Dynamic Ports.
+      { title: "Service Name and Transport Protocol Port Number Registry", publisher: "IANA", url: "https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml", accessed: "2026-11-08" },
+      // ICMP type 8, Echo.
+      { title: "Internet Control Message Protocol (ICMP) Parameters", publisher: "IANA", url: "https://www.iana.org/assignments/icmp-parameters/icmp-parameters.xhtml", accessed: "2026-11-08" },
+      // The special-purpose blocks and their "Globally Reachable" column.
+      { title: "IANA IPv4 Special-Purpose Address Registry", publisher: "IANA", url: "https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry.xhtml", accessed: "2026-11-08" },
+      // The registries' columns.
+      { title: "RFC 6890: Special-Purpose IP Address Registries", publisher: "RFC Editor", url: "https://www.rfc-editor.org/rfc/rfc6890", accessed: "2026-11-08" },
+      // The private-use blocks.
+      { title: "RFC 1918: Address Allocation for Private Internets", publisher: "RFC Editor", url: "https://www.rfc-editor.org/rfc/rfc1918", accessed: "2026-11-08" },
+      // The shared address space.
+      { title: "RFC 6598: IANA-Reserved IPv4 Prefix for Shared Address Space", publisher: "RFC Editor", url: "https://www.rfc-editor.org/rfc/rfc6598", accessed: "2026-11-08" },
+      // The documentation blocks, and filtering them.
+      { title: "RFC 5737: IPv4 Address Blocks Reserved for Documentation", publisher: "RFC Editor", url: "https://www.rfc-editor.org/rfc/rfc5737", accessed: "2026-11-08" },
+    ],
+    // The filters, their lists and the addresses they check.
+    glossary: ["firewall", "stateful-firewall", "stateful-inspection", "acl", "packet-filter", "five-tuple", "rfc1918", "bogon", "iana", "port"],
   },
   // Five Clues: Only Connect, Pyramid, Connections.
   "five-clues": {

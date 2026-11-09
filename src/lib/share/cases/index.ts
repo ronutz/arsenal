@@ -16,6 +16,7 @@ import { BFD_TIMERS_SHARE_CASES } from "./bfd-timers"; // bfd-timers (2026-10-27
 import { GSLB_SIM_SHARE_CASES } from "./bigip-dns-gslb-simulator"; // bigip-dns-gslb-simulator (2026-10-27, wave 2C)
 import { LTM_LB_SHARE_CASES } from "./bigip-ltm-lb-simulator"; // bigip-ltm-lb-simulator (2026-10-27, wave 2C)
 import { BIGIP_SCRIPTED_MONITOR_SHARE_CASES } from "./bigip-scripted-monitor-explainer"; // bigip-scripted-monitor-explainer (2026-10-27, wave 2B)
+import { BIT_NUMBERING_AND_ORDER_SHARE_CASES } from "./bit-numbering-and-order"; // bit-numbering-and-order (2026-11-08, new tool)
 import { BITS_BYTES_SHARE_CASES } from "./bits-bytes"; // bits-bytes (2026-10-27, wave 1B)
 import { CABLE_SHARE_CASES } from "./cable-run-planner"; // cable-run-planner (2026-11-01, wave 4C)
 import { CERT_CHAIN_BUILDER_SHARE_CASES } from "./cert-chain-builder"; // cert-chain-builder (2026-10-27, wave 1B)
@@ -146,6 +147,7 @@ import { JSON_FORMATTER_SHARE_CASES } from "./json-formatter"; // json-formatter
 import { JSON_YAML_CONVERT_SHARE_CASES } from "./json-yaml-convert"; // json-yaml-convert (2026-11-01, wave 4D)
 import { JWKS_EXPLAINER_SHARE_CASES } from "./jwks-explainer"; // jwks-explainer (2026-11-01, wave 3C)
 import { JWT_SHARE_CASES } from "./jwt"; // jwt (2026-11-01, wave 3C)
+import { LACP_HASH_AND_STATE_READER_SHARE_CASES } from "./lacp-hash-and-state-reader"; // lacp-hash-and-state-reader (2026-11-08, new tool)
 import { LDAP_FILTER_EXPLAINER_SHARE_CASES } from "./ldap-filter-explainer"; // ldap-filter-explainer (2026-11-01, wave 3C)
 import { LETSENCRYPT_RATE_LIMITS_SHARE_CASES } from "./letsencrypt-rate-limits"; // letsencrypt-rate-limits (2026-10-27, wave 1B)
 import { LOG_LEVEL_SHARE_CASES } from "./log-level-mapper"; // log-level-mapper (2026-11-01, wave 4C)
@@ -163,6 +165,7 @@ import { NSLOOKUP_OUTPUT_SHARE_CASES } from "./nslookup-output-explainer"; // ns
 import { OAUTH_FLOW_CHOOSER_SHARE_CASES } from "./oauth-flow-chooser"; // oauth-flow-chooser (2026-11-01, wave 3C)
 import { OIDC_SHARE_CASES } from "./oidc"; // oidc (2026-11-01, wave 3C)
 import { OPENSSL_S_CLIENT_SHARE_CASES } from "./openssl-s-client-explainer"; // openssl-s-client-explainer (2026-10-27, wave 1B)
+import { OSPF_COST_AND_ADJACENCY_CHECKER_SHARE_CASES } from "./ospf-cost-and-adjacency-checker"; // ospf-cost-and-adjacency-checker (2026-11-08, new tool)
 import { OUI_LOOKUP_SHARE_CASES } from "./oui-lookup"; // oui-lookup (2026-10-27, wave 1A)
 import { P0F_SHARE_CASES } from "./p0f-signature-explainer"; // p0f-signature-explainer (2026-11-01, wave 4C)
 import { PAC_FILE_SHARE_CASES } from "./pac-file-explainer"; // pac-file-explainer (2026-11-01, wave 4B)
@@ -174,6 +177,7 @@ import { PUBLIC_SUFFIX_SHARE_CASES } from "./public-suffix"; // public-suffix (2
 import { PYPROJECT_TOML_SHARE_CASES } from "./pyproject-toml-explainer"; // pyproject-toml-explainer (2026-11-01, wave 4D)
 import { PYTHON_PLAYGROUND_SHARE_CASES } from "./python-playground"; // python-playground (2026-11-01, wave 4D)
 import { PYTHON_TRACEBACK_SHARE_CASES } from "./python-traceback-explainer"; // python-traceback-explainer (2026-10-27)
+import { RADIUS_PACKET_DECODER_SHARE_CASES } from "./radius-packet-decoder"; // radius-packet-decoder (2026-11-08, new tool)
 import { REGEX_SHARE_CASES } from "./regex"; // regex (2026-11-01, wave 4D)
 import { ROMAN_SHARE_CASES } from "./roman-numerals"; // roman-numerals (2026-11-01, wave 4D)
 import { ROUTING_TABLE_SHARE_CASES } from "./routing-table-explainer"; // routing-table-explainer (2026-10-27, wave 1A)
@@ -185,6 +189,7 @@ import { SNMP_COUNTER_WRAP_CALCULATOR_SHARE_CASES } from "./snmp-counter-wrap-ca
 import { SORTING_ALGORITHM_SHARE_CASES } from "./sorting-algorithm-stepper"; // sorting-algorithm-stepper (2026-11-01, wave 4D)
 import { SSE_ARCHITECTURE_SHARE_CASES } from "./sse-architecture-explainer"; // sse-architecture-explainer (2026-11-01, wave 4B)
 import { SSRF_URL_SHARE_CASES } from "./ssrf-url-classifier"; // ssrf-url-classifier (2026-11-01, wave 3A)
+import { STP_ELECTION_CALCULATOR_SHARE_CASES } from "./stp-election-calculator"; // stp-election-calculator (2026-11-08, new tool)
 import { SYSLOG_MESSAGE_SHARE_CASES } from "./syslog-message-parser"; // syslog-message-parser (2026-10-27, wave 1A)
 import { SYSLOG_PRI_SHARE_CASES } from "./syslog-pri-decoder"; // syslog-pri-decoder (2026-10-27, wave 1A)
 import { TAC_PACKET_SHARE_CASES } from "./tac-escalation-packet-builder"; // tac-escalation-packet-builder (2026-11-01, wave 4C)
@@ -199,6 +204,7 @@ import { UNICODE_INSPECTOR_SHARE_CASES } from "./unicode-inspector"; // unicode-
 import { URL_INSPECTOR_SHARE_CASES } from "./url-inspector"; // url-inspector (2026-11-01, wave 3B)
 import { UA_SHARE_CASES } from "./user-agent-entropy-analyzer"; // user-agent-entropy-analyzer (2026-11-01, wave 4C)
 import { UUID_SHARE_CASES } from "./uuid"; // uuid (2026-11-01, wave 4D)
+import { VLAN_TAG_AND_TRUNK_CALCULATOR_SHARE_CASES } from "./vlan-tag-and-trunk-calculator"; // vlan-tag-and-trunk-calculator (2026-11-08, new tool)
 import { VOSS_EXOS_TRANSLATOR_SHARE_CASES } from "./voss-exos-translator"; // voss-exos-translator (2026-10-27, wave 1A)
 import { VOSS_FABRIC_ID_SHARE_CASES } from "./voss-fabric-id"; // voss-fabric-id (2026-10-27, wave 1A)
 import { VRRP_TIMER_CALCULATOR_SHARE_CASES } from "./vrrp-timer-calculator"; // vrrp-timer-calculator (2026-11-02, new tool)
@@ -224,6 +230,7 @@ export const SHARE_CASE_SETS: readonly ShareCaseRunner[] = [
   GSLB_SIM_SHARE_CASES, // bigip-dns-gslb-simulator
   LTM_LB_SHARE_CASES, // bigip-ltm-lb-simulator
   BIGIP_SCRIPTED_MONITOR_SHARE_CASES, // bigip-scripted-monitor-explainer
+  BIT_NUMBERING_AND_ORDER_SHARE_CASES, // bit-numbering-and-order
   BITS_BYTES_SHARE_CASES, // bits-bytes
   CABLE_SHARE_CASES, // cable-run-planner
   CERT_CHAIN_BUILDER_SHARE_CASES, // cert-chain-builder
@@ -354,6 +361,7 @@ export const SHARE_CASE_SETS: readonly ShareCaseRunner[] = [
   JSON_YAML_CONVERT_SHARE_CASES, // json-yaml-convert
   JWKS_EXPLAINER_SHARE_CASES, // jwks-explainer
   JWT_SHARE_CASES, // jwt
+  LACP_HASH_AND_STATE_READER_SHARE_CASES, // lacp-hash-and-state-reader
   LDAP_FILTER_EXPLAINER_SHARE_CASES, // ldap-filter-explainer
   LETSENCRYPT_RATE_LIMITS_SHARE_CASES, // letsencrypt-rate-limits
   LOG_LEVEL_SHARE_CASES, // log-level-mapper
@@ -371,6 +379,7 @@ export const SHARE_CASE_SETS: readonly ShareCaseRunner[] = [
   OAUTH_FLOW_CHOOSER_SHARE_CASES, // oauth-flow-chooser
   OIDC_SHARE_CASES, // oidc
   OPENSSL_S_CLIENT_SHARE_CASES, // openssl-s-client-explainer
+  OSPF_COST_AND_ADJACENCY_CHECKER_SHARE_CASES, // ospf-cost-and-adjacency-checker
   OUI_LOOKUP_SHARE_CASES, // oui-lookup
   P0F_SHARE_CASES, // p0f-signature-explainer
   PAC_FILE_SHARE_CASES, // pac-file-explainer
@@ -382,6 +391,7 @@ export const SHARE_CASE_SETS: readonly ShareCaseRunner[] = [
   PYPROJECT_TOML_SHARE_CASES, // pyproject-toml-explainer
   PYTHON_PLAYGROUND_SHARE_CASES, // python-playground
   PYTHON_TRACEBACK_SHARE_CASES, // python-traceback-explainer
+  RADIUS_PACKET_DECODER_SHARE_CASES, // radius-packet-decoder
   REGEX_SHARE_CASES, // regex
   ROMAN_SHARE_CASES, // roman-numerals
   ROUTING_TABLE_SHARE_CASES, // routing-table-explainer
@@ -393,6 +403,7 @@ export const SHARE_CASE_SETS: readonly ShareCaseRunner[] = [
   SORTING_ALGORITHM_SHARE_CASES, // sorting-algorithm-stepper
   SSE_ARCHITECTURE_SHARE_CASES, // sse-architecture-explainer
   SSRF_URL_SHARE_CASES, // ssrf-url-classifier
+  STP_ELECTION_CALCULATOR_SHARE_CASES, // stp-election-calculator
   SYSLOG_MESSAGE_SHARE_CASES, // syslog-message-parser
   SYSLOG_PRI_SHARE_CASES, // syslog-pri-decoder
   TAC_PACKET_SHARE_CASES, // tac-escalation-packet-builder
@@ -407,6 +418,7 @@ export const SHARE_CASE_SETS: readonly ShareCaseRunner[] = [
   URL_INSPECTOR_SHARE_CASES, // url-inspector
   UA_SHARE_CASES, // user-agent-entropy-analyzer
   UUID_SHARE_CASES, // uuid
+  VLAN_TAG_AND_TRUNK_CALCULATOR_SHARE_CASES, // vlan-tag-and-trunk-calculator
   VOSS_EXOS_TRANSLATOR_SHARE_CASES, // voss-exos-translator
   VOSS_FABRIC_ID_SHARE_CASES, // voss-fabric-id
   VRRP_TIMER_CALCULATOR_SHARE_CASES, // vrrp-timer-calculator

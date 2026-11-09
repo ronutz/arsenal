@@ -3,7 +3,7 @@ slug: the-ethernet-frame-field-by-field
 title: "O frame Ethernet campo a campo: do preâmbulo ao FCS, a tag 802.1Q e os tamanhos que importam"
 summary: "Todo frame Ethernet segue a mesma sequência curta de campos: um preâmbulo que prepara o receptor, dois endereços, um campo que indica um tamanho ou um tipo, o payload e um checksum. O que cada campo leva, por que o mínimo é de 64 octetos e o máximo de 1518, onde fica a tag 802.1Q e o que ela carrega, e por que os jumbo frames não fazem parte do padrão."
 concepts: ["ethernet frame", "preamble", "start frame delimiter", "mac address", "ethertype", "802.1q tag", "frame check sequence", "crc-32", "minimum frame size", "runt", "giant", "envelope frame", "jumbo frames", "interpacket gap"]
-relatedTools: ["oui-lookup", "mtu-mss"]
+relatedTools: ["oui-lookup", "mtu-mss", "vlan-tag-and-trunk-calculator", "bit-numbering-and-order"]
 relatedArticles: ["arp-and-mac-addresses", "what-is-an-oui", "jumbo-frames", "osi-model-in-practice", "bridge-switch-family-history"]
 category: networking
 order: 336
@@ -41,7 +41,7 @@ Cada endereço é um endereço MAC (media access control) de 48 bits. As diretri
 - o bit menos significativo do primeiro octeto é o bit I/G (individual/group): 0 para uma única estação, 1 para um grupo (multicast ou broadcast);
 - o bit seguinte é o bit U/L (universal/local): 0 para um endereço atribuído dentro de um bloco do IEEE, 1 para um endereço atribuído localmente.
 
-O endereço com todos os bits ligados, FF-FF-FF-FF-FF-FF, quer dizer todas as estações da rede: é o broadcast. Como a Ethernet transmite cada octeto começando pelo bit menos significativo ([RFC 9542](https://www.rfc-editor.org/rfc/rfc9542.html)) e o primeiro octeto do destino sai primeiro, o bit I/G é o primeiro bit do endereço a passar pelo fio: antes de qualquer outra coisa, ele diz se o frame é para uma estação ou para um grupo. A [consulta de OUI](/tools/oui-lookup) deste site pega os três primeiros octetos e devolve o fabricante a quem eles foram atribuídos.
+O endereço com todos os bits ligados, FF-FF-FF-FF-FF-FF, quer dizer todas as estações da rede: é o broadcast. Como a Ethernet transmite cada octeto começando pelo bit menos significativo ([RFC 9542](https://www.rfc-editor.org/rfc/rfc9542.html)) e o primeiro octeto do destino sai primeiro, o bit I/G é o primeiro bit do endereço a passar pelo fio: antes de qualquer outra coisa, ele diz se o frame é para uma estação ou para um grupo. Por que o bit menos significativo vai primeiro, e como o Token Ring guardava o mesmo endereço com os bits invertidos, está em [Bit menos e mais significativo](/learn/least-and-most-significant-bit). A [consulta de OUI](/tools/oui-lookup) deste site pega os três primeiros octetos e devolve o fabricante a quem eles foram atribuídos.
 
 ## Length ou Type: um campo, dois significados
 

@@ -123,7 +123,7 @@ export const SHARD_7: Record<string, PartnerVendorOverlay> = {
     intro: "Duas empresas de 1996 que responderam à mesma pergunta (o que acontece no ponto de passagem obrigatório, aquele por onde todo o tráfego precisa passar) para o conteúdo e para a banda. A Blue Coat (nascida CacheFlow) fez do proxy inline o ponto de aplicação de políticas da web corporativa, inspeção SSL incluída; o PacketShaper da Packeteer ensinou à WAN que o tráfego tem identidade. Unidas em 2008 e levadas pela Symantec até a Broadcom, sua arquitetura é a que todo secure web gateway em nuvem roda hoje.",
     // Body: 1 paragraph(s), same order as the English.
     body: [
-      "O perfil cobre o lendário IPO da CacheFlow, a guinada para Blue Coat em 2002, a criação de categoria do PacketShaper, a aquisição de 2008, os anos de private equity e a passagem da Symantec para a Broadcom.",
+      "O perfil cobre o lendário IPO (oferta pública inicial) da CacheFlow, a guinada para Blue Coat em 2002, a criação de categoria do PacketShaper, a aquisição de 2008, os anos de private equity e a passagem da Symantec para a Broadcom.",
     ],
     // Profile: complete copy of profiles/blue-coat-packeteer.ts; years, companies, founders, personal markers and hrefs come from the English.
     profile: {
@@ -164,7 +164,7 @@ export const SHARD_7: Record<string, PartnerVendorOverlay> = {
       // Innovations: title and detail translated.
       innovations: [
         { title: "O proxy como plataforma de segurança", detail: "A Blue Coat provou que o forward proxy inline era o ponto natural de aplicação de políticas da era da web: o ancestral arquitetônico de onde descende toda nuvem SSE e SWG destas páginas." },
-        { title: "Controle de banda com consciência de aplicação", detail: "O modelo de classificar e depois moldar do PacketShaper ensinou à indústria que o tráfego tem identidade, o raciocínio que QoS, o direcionamento de SD-WAN e os firewalls com consciência de aplicação herdam." },
+        { title: "Controle de banda com consciência de aplicação", detail: "O modelo de classificar e depois moldar do PacketShaper ensinou à indústria que o tráfego tem identidade, o raciocínio que QoS, o direcionamento de SD-WAN (software-defined wide area network) e os firewalls com consciência de aplicação herdam." },
       ],
       // Markets paragraphs, same count.
       markets: [
@@ -350,7 +350,7 @@ export const SHARD_7: Record<string, PartnerVendorOverlay> = {
     name: "Connection",
     // Card line (also the meta description) and intro paragraph.
     tagline: "Parceira Fortinet de nível Expert no Brasil.",
-    intro: "Integradora e provedora de segurança gerenciada de Porto Alegre, listada no nível Expert da Fortinet em SASE, SD-WAN e redes de campus.",
+    intro: "Integradora e provedora de segurança gerenciada de Porto Alegre, listada no nível Expert da Fortinet em SASE (secure access service edge), SD-WAN (software-defined wide area network) e redes de campus.",
     // Body: 2 paragraph(s), same order as the English.
     body: [
       "Registrada como Connection Conectividade e Integracao de Sistemas, ela tem três especializações nomeadas, e não uma só, e a combinação é coerente: SASE para o usuário remoto, SD-WAN para a filial e redes seguras na LAN. É um único parceiro cobrindo todo o caminho que um pacote percorre de uma pessoa até uma aplicação, um conjunto de exames mais difícil de manter coberto por uma equipe do que qualquer uma dessas linhas isoladamente.",
@@ -537,7 +537,7 @@ export const SHARD_7: Record<string, PartnerVendorOverlay> = {
       timeline: [
         { year: 1996, title: "A F5 Labs abre em Seattle", detail: "A empresa é fundada para resolver um problema novíssimo: sites caindo sob o peso da própria popularidade. O nome vem da categoria mais forte de tornado: o tráfego como clima.", sourceNote: "Prospecto Form 424B4 da F5 Networks de 4 de junho de 1999, notas às demonstrações financeiras: a empresa, antes F5 Labs, Inc., foi constituída em 26 de fevereiro de 1996 no estado de Washington, e suas contas correm a partir dessa data como início; o endereço da capa é 200 First Avenue West, Seattle. O EDGAR registra a mudança de nome de F5 Labs em março de 1999. O prospecto não traz a história da categoria de tornado por trás do nome." },
         { year: 1997, title: "O BIG/ip é lançado", detail: "O primeiro produto, o load balancer BIG/ip, distribui o tráfego entre servidores e monitora a saúde deles. A grafia muda ao longo dos anos; a franquia, nunca: o BIG-IP continua sendo o coração da F5 três décadas depois." },
-        { year: 1999, title: "IPO na janela pontocom", detail: "Junho de 1999: a F5 estreia na NASDAQ como FFIV, na mesma onda que levou à bolsa os nomes de redes da época. John McAdam assume como CEO em 2000 e fica no cargo durante a maior parte de duas décadas." },
+        { year: 1999, title: "IPO (oferta pública inicial) na janela pontocom", detail: "Junho de 1999: a F5 estreia na NASDAQ como FFIV, na mesma onda que levou à bolsa os nomes de redes da época. John McAdam assume como CEO em 2000 e fica no cargo durante a maior parte de duas décadas." },
         { year: 2004, title: "TMOS v9: a reescrita full-proxy", detail: "A versão 9 do BIG-IP reconstrói o produto sobre o TMOS, um sistema operacional de tráfego feito sob medida que termina por completo os dois lados de cada conexão. A arquitetura full-proxy com os scripts iRules, e a comunidade DevCentral em torno deles, transformam um load balancer numa plataforma programável e definem até hoje como o produto é ensinado." },
         { year: 2017, title: "François Locoh-Donou assume", detail: "Abril de 2017: o veterano da Ciena se torna presidente e CEO, herdando uma líder de ADC ancorada em hardware e conduzindo-a rumo a software, SaaS e segurança." },
         { year: 2019, title: "NGINX", detail: "A F5 adquire a NGINX, a empresa por trás do servidor web e reverse proxy que fica na frente de boa parte da internet, por cerca de US$ 670 milhões, fincando bandeira no open source e nas stacks modernas de aplicação.", sourceNote: "Anunciada em março de 2019, concluída em maio de 2019." },
@@ -622,7 +622,7 @@ export const SHARD_7: Record<string, PartnerVendorOverlay> = {
       ],
       // Markets paragraphs, same count.
       markets: [
-        "Provedores de internet, universidades, empresas e operadoras: qualquer lugar onde uma rede precisa decidir se deixa algo entrar. Ele fica por baixo da autenticação wireless, do acesso VPN, da gestão de assinantes de banda larga e das federações de roaming que permitem a um visitante se autenticar contra a instituição de origem a partir de outro continente.",
+        "Provedores de internet, universidades, empresas e operadoras: qualquer lugar onde uma rede precisa decidir se deixa algo entrar. Ele fica por baixo da autenticação wireless, do acesso VPN (rede privada virtual), da gestão de assinantes de banda larga e das federações de roaming que permitem a um visitante se autenticar contra a instituição de origem a partir de outro continente.",
         "Seus concorrentes são os servidores de políticas comerciais vendidos pelos fabricantes de equipamentos de rede, que costumam se integrar mais de perto ao hardware de um fabricante. A troca é a de sempre, e esta linha do tempo a registra sob vários outros nomes: profundidade de integração contra independência de qualquer fornecedor único.",
       ],
       // Analyst statements, same count.
@@ -884,7 +884,7 @@ export const SHARD_7: Record<string, PartnerVendorOverlay> = {
       timeline: [
         { year: 1996, title: "Nascida dentro da Bay", detail: "A NETGEAR nasce como subsidiária da Bay Networks com uma tese de varejo: redes como produto de consumo, vendidas em caixas, com suporte de eletrodoméstico." },
         { year: 1998, title: "O interlúdio Nortel", detail: "A aquisição da Bay Networks pela Nortel leva a NETGEAR junto; a marca de varejo continua construindo seu canal enquanto a controladora faz a integração." },
-        { year: 2003, title: "Independência e IPO", detail: "A NETGEAR estreia na NASDAQ como NTGR, uma empresa independente bem quando explode a demanda por banda larga doméstica e Wi-Fi." },
+        { year: 2003, title: "Independência e IPO (oferta pública inicial)", detail: "A NETGEAR estreia na NASDAQ como NTGR, uma empresa independente bem quando explode a demanda por banda larga doméstica e Wi-Fi." },
         { year: 2009, title: "A escada das PMEs", detail: "Os switches ProSafe, o armazenamento ReadyNAS e o wireless para pequenas empresas fazem da NETGEAR a marca do degrau intermediário entre o equipamento de consumo e os preços corporativos." },
         { year: 2013, title: "Nighthawk", detail: "A linha de routers Nighthawk transforma o Wi-Fi de alto desempenho numa categoria de consumo com identidade própria: o router como objeto que as pessoas escolhem, e não apenas aceitam." },
         { year: 2016, title: "Orbi e a era mesh", detail: "O Orbi surfa a onda do mesh para a casa inteira, mantendo a NETGEAR na dianteira da transição do Wi-Fi de consumo que ela ajudou a criar." },
@@ -1072,7 +1072,7 @@ export const SHARD_7: Record<string, PartnerVendorOverlay> = {
     intro: "A Riverstone começou como Yago Systems, uma startup que construía switching de Camada 3 em velocidade de linha, adquirida pela Cabletron em 1998 e usada como base da sua linha SmartSwitch Router. Quando a Cabletron se dividiu em quatro empresas na virada do milênio, o negócio de roteamento virou a Riverstone Networks e foi desmembrado como empresa independente de capital aberto em 2001.",
     // Body: 4 paragraph(s), same order as the English.
     body: [
-      "Seu mercado era a Ethernet metropolitana: operadoras trocando equipamentos SONET e ATM por Ethernet em redes do tamanho de uma cidade, entregando serviços a clientes empresariais sobre anéis de fibra. Era uma categoria genuinamente nova por volta de 2000, e a Riverstone esteve entre as empresas que definiram como deveria ser o equipamento para ela: Gigabit Ethernet, MPLS e entrega de serviços por assinante em caixas projetadas para a central de uma operadora, e não para o armário de cabeamento de uma empresa.",
+      "Seu mercado era a Ethernet metropolitana: operadoras trocando equipamentos SONET e ATM por Ethernet em redes do tamanho de uma cidade, entregando serviços a clientes empresariais sobre anéis de fibra. Era uma categoria genuinamente nova por volta de 2000, e a Riverstone esteve entre as empresas que definiram como deveria ser o equipamento para ela: Gigabit Ethernet, MPLS (Multiprotocol Label Switching) e entrega de serviços por assinante em caixas projetadas para a central de uma operadora, e não para o armário de cabeamento de uma empresa.",
       "O problema foi o momento. A empresa foi desmembrada exatamente quando os investimentos em telecom desabaram. As operadoras que vinham construindo redes metropolitanas pararam, e um fabricante cujo mercado inteiro era o gasto das operadoras não tinha para onde ir.",
       "Uma investigação contábil sobre a forma como a receita tinha sido reconhecida piorou as coisas, atrasando relatórios e forçando republicações de resultados. A Riverstone entrou com pedido de Chapter 11 em fevereiro de 2006, e seus ativos foram comprados pela Lucent Technologies, que se fundiu com a Alcatel no fim do mesmo ano; assim, a tecnologia acabou dentro da Alcatel-Lucent e, mais tarde, dentro da Nokia.",
       "Não foi a engenharia que falhou. O encaminhamento em velocidade de linha da Yago era bom o bastante para que a Cabletron construísse sobre ele sua geração seguinte, e a tese da Ethernet metropolitana se revelou correta: ela apenas chegou vários anos antes de o mercado estar disposto a pagar por ela, e a Riverstone não tinha balanço para esperar.",
@@ -1115,7 +1115,7 @@ export const SHARD_7: Record<string, PartnerVendorOverlay> = {
       ],
       // Products: names as the vendor writes them (generic descriptors localised); descriptions translated.
       products: [
-        { name: "Switch routers RS", what: "Os switch routers multicamada RS 3000/8000/8600/32000/38000: a linhagem SmartSwitch da Yago reconstruída para operadoras, feita sob medida para IP sobre Ethernet e serviços de VPN MPLS em redes metropolitanas." },
+        { name: "Switch routers RS", what: "Os switch routers multicamada RS 3000/8000/8600/32000/38000: a linhagem SmartSwitch da Yago reconstruída para operadoras, feita sob medida para IP sobre Ethernet e serviços de VPN (rede privada virtual) MPLS em redes metropolitanas." },
         { name: "RapidOS", what: "O sistema operacional de classe operadora da Riverstone: MPLS, contabilização por fluxo via LFAP, RMON e o Hitless Protection System, com failover do módulo de controle e até atualizações de software sem derrubar sessões de tráfego." },
         { name: "Riverstone 15000", what: "A linha de edge routers Ethernet que, com a família RS, fez da Riverstone o primeiro fabricante de routers Ethernet MPLS listado pelo Rural Utilities Service do USDA, abrindo o financiamento de banda larga rural ao seu equipamento." },
       ],
@@ -1134,7 +1134,7 @@ export const SHARD_7: Record<string, PartnerVendorOverlay> = {
       // Analyst statements, same count.
       analyst: [
         "O veredito do leilão sobre a tecnologia: a Lucent elevou o próprio lance de stalking horse em US$ 37 milhões para vencer com US$ 207 milhões, contra os US$ 178 milhões da Ericsson; os dois gigantes queriam o portfólio de Ethernet metropolitana para preencher lacunas em dados.",
-        "O balanço do acionista, conforme o registro público: um IPO a US$ 12 em fevereiro de 2001, US$ 7,70 depois da revelação da SEC e US$ 1,06 por ação devolvidos inicialmente na liquidação.",
+        "O balanço do acionista, conforme o registro público: um IPO (oferta pública inicial) a US$ 12 em fevereiro de 2001, US$ 7,70 depois da revelação da SEC e US$ 1,06 por ação devolvidos inicialmente na liquidação.",
       ],
       // Career link: href from the English profile, label translated.
       careerLink: { href: "/industry/versa", label: "Os ex-funcionários da Riverstone Kumar e Apurva Mehta fundaram a Versa Networks: a página da linhagem Versa" },

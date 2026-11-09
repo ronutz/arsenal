@@ -53,7 +53,7 @@ Campos são `chave=valor`, com vírgulas dentro do valor para listas. O que for 
 
 ## O que ela não faz
 
-Não lê sua configuração, não conecta ao Panorama, não coleta nada. Não modela mudança de App-ID no meio da sessão, perfis de segurança, NAT nem política de decriptação. Ela raciocina sobre a **ordem** das regras que você fornece, que é a parte decidida no commit e a parte difícil de enxergar.
+Não lê sua configuração, não conecta ao Panorama, não coleta nada. Não modela mudança de App-ID no meio da sessão, perfis de segurança, NAT (tradução de endereços de rede) nem política de decriptação. Ela raciocina sobre a **ordem** das regras que você fornece, que é a parte decidida no commit e a parte difícil de enxergar.
 
 ## Nota sobre autorização
 

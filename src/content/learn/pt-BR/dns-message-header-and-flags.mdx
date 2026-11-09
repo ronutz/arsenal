@@ -3,7 +3,7 @@ slug: dns-message-header-and-flags
 title: "O header DNS: opcode, status e flags"
 summary: "Toda mensagem DNS começa com o mesmo header de 12 bytes: um ID de 16 bits, uma palavra de flags que guarda o opcode, sete flags nomeadas, um bit reservado e o código de resposta, e quatro contadores de seção, que o dig imprime como as linhas de header e de flags. Depois da leitura, você consegue decodificar um header a partir dos bytes em hexadecimal, dizer o que cada flag, opcode e status conta para um diagnóstico, reconhecer uma resposta truncada e testar a repetição por TCP que ela exige, e explicar por que o ID e a porta de origem precisam ser imprevisíveis."
 concepts: ["dns header", "rcode", "status", "flags", "nxdomain", "servfail", "aa", "rd", "ra", "opcode", "tc", "ad", "cd", "transaction id", "nodata", "extended rcode", "truncation", "source port randomisation", "dns cache poisoning"]
-relatedTools: ["dig-output-explainer", "dig-command-builder", "python-playground", "nslookup-output-explainer"]
+relatedTools: ["dig-output-explainer", "dig-command-builder", "python-playground", "nslookup-output-explainer", "bit-numbering-and-order"]
 relatedArticles: ["reading-dig-output", "dns-record-types-in-answers", "dnssec-records-in-dig", "reading-a-dns-answer", "authoritative-vs-non-authoritative-answers", "anatomy-of-a-dig-command-line", "dns-zone-transfers-and-notify", "dnssec-end-to-end"]
 category: networking
 order: 41
@@ -35,7 +35,7 @@ Seis palavras de 16 bits, desenhadas em 1987 ([RFC 1035, seção 4.1.1](https://
     +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
 ```
 
-O bit 0 é o mais significativo, e o byte alto viaja primeiro ([RFC 1035, seção 2.3.2](https://www.rfc-editor.org/rfc/rfc1035.txt)). O ID é "A 16 bit identifier assigned by the program that generates any kind of query", um identificador de 16 bits escolhido por quem pergunta, que a resposta copia (seção 4.1.1). As flags são QR (query ou resposta), AA (Authoritative Answer), TC (Truncated Response), RD (Recursion Desired) e RA (Recursion Available), ao lado de um opcode de 4 bits e de um RCODE (código de resposta) de 4 bits; o dig rotula os quatro contadores de seção como QUERY, ANSWER, AUTHORITY e ADDITIONAL ([dig.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/dig.c)).
+O bit 0 é o mais significativo, e o byte alto viaja primeiro ([RFC 1035, seção 2.3.2](https://www.rfc-editor.org/rfc/rfc1035.txt)). Por que o bit 7 da IANA, o RD, é `1 << 8` no código está em [Bit menos e mais significativo](/learn/least-and-most-significant-bit). O ID é "A 16 bit identifier assigned by the program that generates any kind of query", um identificador de 16 bits escolhido por quem pergunta, que a resposta copia (seção 4.1.1). As flags são QR (query ou resposta), AA (Authoritative Answer), TC (Truncated Response), RD (Recursion Desired) e RA (Recursion Available), ao lado de um opcode de 4 bits e de um RCODE (código de resposta) de 4 bits; o dig rotula os quatro contadores de seção como QUERY, ANSWER, AUTHORITY e ADDITIONAL ([dig.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/dig.c)).
 
 Z, os bits 9 a 11, era "Reserved for future use. Must be zero in all queries and responses" ([RFC 1035, seção 4.1.1](https://www.rfc-editor.org/rfc/rfc1035.txt)), até a RFC 2535 tomar dois desses bits para o DNSSEC em 1999, AD (Authentic Data) e CD (Checking Disabled) ([RFC 2535, seção 6.1](https://www.rfc-editor.org/rfc/rfc2535.txt)). A palavra hoje é lida assim ([RFC 6895, seção 2](https://www.rfc-editor.org/rfc/rfc6895.txt)):
 

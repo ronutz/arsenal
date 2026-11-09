@@ -4,7 +4,7 @@ Describe a request (where it is going, how it is steered, whether the device is 
 
 ## The point it exists to make
 
-**DLP and threat protection are not pillars.** They are cross-cutting: they run inside the same pass and receive whatever the pillars decrypted. That is why one data profile covers web, software-as-a-service and private applications alike, and why the same rule in a chained architecture has to be written four times in four dialects.
+**DLP (data loss prevention) and threat protection are not pillars.** They are cross-cutting: they run inside the same pass and receive whatever the pillars decrypted. That is why one data profile covers web, software-as-a-service and private applications alike, and why the same rule in a chained architecture has to be written four times in four dialects.
 
 The pillars are about **where traffic is going**: secure web gateway for the general web, cloud access security broker for SaaS activity, zero trust network access for a private application, cloud firewall for the ports the others do not cover. Change the destination in the tool and watch which pillars engage while the cross-cutting engines stay constant.
 

@@ -1,6 +1,6 @@
 ## O que faz
 
-Cole uma entrada de request-log do F5 AWAF - Advanced WAF (antigo BIG-IP ASM - Application Security Manager), seja a linha syslog key-value ou a linha CEF que você vê no seu SIEM, e ela extrai os campos que importam: a política, o support ID para correlação de log, o status da requisição, o violation rating, o IP do cliente, o método e a URI. Ela classifica cada violação em uma categoria de triagem e dá o veredito baseado em rating do F5 para a requisição inteira, depois aponta para a ferramenta de triagem de falso-positivo para a correção por violação. É uma ferramenta decode-only que roda inteiramente no seu navegador.
+Cole uma entrada de request-log do F5 AWAF - Advanced WAF (antigo BIG-IP ASM - Application Security Manager), seja a linha syslog key-value ou a linha CEF que você vê no seu SIEM (security information and event management), e ela extrai os campos que importam: a política, o support ID para correlação de log, o status da requisição, o violation rating, o IP do cliente, o método e a URI. Ela classifica cada violação em uma categoria de triagem e dá o veredito baseado em rating do F5 para a requisição inteira, depois aponta para a ferramenta de triagem de falso-positivo para a correção por violação. É uma ferramenta decode-only que roda inteiramente no seu navegador.
 
 ## Por que um parser de log, e não um decodificador de support-ID
 

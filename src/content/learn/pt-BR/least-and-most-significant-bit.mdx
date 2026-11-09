@@ -1,0 +1,198 @@
+---
+slug: least-and-most-significant-bit
+title: "Bit menos e mais significativo: numeração e ordem dos bits"
+summary: "Cada bit de um número binário tem um peso: o bit menos significativo vale 1, e o mais significativo vale mais que todos e, em complemento de dois, carrega o sinal. O que é significância, por que LSB e MSB às vezes querem dizer bytes, as três maneiras como os documentos numeram os bits (LSB 0, MSB 0 e a partir de 1) e o mesmo campo lido das três maneiras, a ordem em que os bits viajam na Ethernet, numa UART, no PPP, no I2C e no SPI, endereços MAC canônicos e com os bits invertidos, máscaras, shifts, paridade e CRCs refletidos, os bugs que uma ordem errada causa, e três casos deste site: o PortState da Huawei impresso com o bit 1 primeiro, os bits I/G e U/L de um endereço MAC, e as flags do header DNS."
+concepts: ["least significant bit", "most significant bit", "lsb", "msb", "bit numbering", "lsb 0", "msb 0", "bit order", "bit reversal", "canonical mac address", "non-canonical mac address", "msb format", "i/g bit", "u/l bit", "bit mask", "genmask", "two's complement", "sign bit", "parity", "reflected crc", "snmp bits"]
+relatedTools: ["bit-numbering-and-order", "lacp-hash-and-state-reader", "oui-lookup", "multicast-mac-mapper", "vlan-tag-and-trunk-calculator", "bits-bytes"]
+relatedArticles: ["big-endian-and-little-endian", "what-is-an-oui", "the-ethernet-frame-field-by-field", "dns-message-header-and-flags", "link-aggregation-and-lacp", "bits-bytes-and-the-two-kinds-of-kilo", "hex-encoding"]
+category: encoding
+order: 223
+status: reviewed
+updated: "2026-11-08"
+---
+
+Escreva um número binário e cada dígito tem uma posição, e cada posição um peso: o da direita vale 1, o seguinte 2, depois 4, 8 e assim por diante, cada um o dobro do anterior. O bit que vale 1 é o bit menos significativo (LSB, least significant bit), e o que vale mais é o bit mais significativo (MSB, most significant bit). Até aí ninguém discorda. O que os documentos não concordam é em como chamar cada bit: uns contam a partir da ponta menos significativa, outros da mais significativa, outros começam em 1 em vez de 0. E no fio, onde os bits passam um de cada vez, os links não concordam sobre qual ponta vai primeiro.
+
+**Em resumo:** o LSB decide se um número é par ou ímpar, e o MSB carrega o maior peso e, em complemento de dois, o sinal. A Intel numera os bits a partir do LSB, então o bit k vale 2 elevado a k (LSB 0); os diagramas das RFCs (Request for Comments) numeram a partir do MSB (MSB 0); o SNMP (Simple Network Management Protocol) e alguns fabricantes contam a partir de 1. A Ethernet envia cada octeto com o bit menos significativo primeiro. Leia um número de bit ou uma string de bits impressa na convenção errada e você tem um valor válido e errado, sem erro nenhum.
+
+## O que é significância
+
+O SDM (Software Developer's Manual) da Intel diz a regra numa frase: "Bit positions are numbered from right to left. The numerical value of a set bit is equal to two raised to the power of the bit position" ([Intel SDM, volume 1](https://cdrdv2-public.intel.com/825744/253665-sdm-vol-1.pdf), 1.3.1). A documentação do Python diz o mesmo sobre os shifts: "A left shift by n bits is equivalent to multiplication by pow(2, n)" ([Python, built-in types](https://docs.python.org/3/library/stdtypes.html)). Pegue o octeto 0x3D, 61 em decimal:
+
+| Bit (a partir da direita) | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
+|---|---|---|---|---|---|---|---|---|
+| Peso | 128 | 64 | 32 | 16 | 8 | 4 | 2 | 1 |
+| 0x3D | 0 | 0 | 1 | 1 | 1 | 1 | 0 | 1 |
+
+32 + 16 + 8 + 4 + 1 = 61. Duas coisas decorrem só dos pesos. Todo peso menos o último é par, então só o bit menos significativo decide se o número é ímpar: 61 é ímpar porque o bit 0 está em 1. E o bit mais significativo pesa mais que todos os outros juntos (128 é um a mais que 64 + 32 + 16 + 8 + 4 + 2 + 1), e é por isso que é ele que carrega o sinal de um número com sinal: em complemento de dois, "The sign bit is located in bit 7 in a byte integer, bit 15 in a word integer, bit 31 in a doubleword integer, and bit 63 in a quadword integer" (Intel SDM, 4.2.1.2). O octeto 0xBD, com esse bit em 1, é 189 sem sinal e -67 com sinal.
+
+Os processadores têm instruções que acham as duas pontas. O BSF (bit scan forward) e o BSR (bit scan reverse) da Intel "scan a bit string in a source operand for a set bit and store the bit index of the first set bit found", e o índice é "the offset from the least significant bit (bit 0)", o BSF varrendo "low-to-high" e o BSR "high-to-low" (Intel SDM, 7.3.7.2).
+
+## LSB e MSB: bits ou bytes?
+
+As mesmas duas siglas também dão nome a bytes. A RFC 6891, que estende o DNS (Domain Name System), chama os dois bytes de um campo de 16 bits de "+0 (MSB)" e "+1 (LSB)", e no mesmo campo o bit que a RFC 3225 chama de "DNSSEC OK" (DO) é "the most significant bit of the Z field" ([RFC 6891](https://www.rfc-editor.org/rfc/rfc6891.txt), seção 6.1.3; [RFC 3225](https://www.rfc-editor.org/rfc/rfc3225.txt), seção 3): um diagrama, os dois sentidos. O datasheet de uma UART (universal asynchronous receiver-transmitter) usa os dois num parágrafo só: "The divisor latch access bit (DLAB) is the most significant bit (MSB) of the line control register", um bit, ao lado dos registradores "Divisor latch (LSB)" e "Divisor latch (MSB)", os dois bytes do divisor ([Texas Instruments, TL16C550D](https://www.ti.com/lit/ds/symlink/tl16c550d.pdf)). Os arquivos objeto do System V Application Binary Interface marcam o byte order como `ELFDATA2LSB`, "the least significant byte occupying the lowest address", ou `ELFDATA2MSB` ([System V ABI, capítulo 4](https://www.sco.com/developers/gabi/latest/ch4.eheader.html)).
+
+O contexto separa os dois: um par de registradores, um offset em bytes ou a codificação de um arquivo falam de bytes, e o byte order é o assunto de [Big-endian e little-endian](/learn/big-endian-and-little-endian); uma flag, uma posição dentro de um octeto ou uma máscara falam de bits, o assunto aqui.
+
+## Três maneiras de numerar os bits
+
+**LSB 0** numera a partir do bit menos significativo, então o número de um bit é a potência de dois que ele vale. A frase da Intel acima é a definição, e o kernel Linux constrói as máscaras dele em cima dela: `BIT(nr)` é `1 << nr` ([include/vdso/bits.h](https://raw.githubusercontent.com/torvalds/linux/master/include/vdso/bits.h)). O formato gzip deixa isso por escrito para os leitores: "we number the bits of a byte so that bit 0 is the least-significant bit" ([RFC 1952](https://www.rfc-editor.org/rfc/rfc1952.txt), seção 2.1), e o byte de flags dele vai de "bit 0 FTEXT" a "bit 4 FCOMMENT".
+
+**MSB 0** numera a partir do bit mais significativo, o mais à esquerda num diagrama. A especificação do Internet Protocol diz isso, e RFCs posteriores repetem: "Whenever an octet represents a numeric quantity the left most bit in the diagram is the high order or most significant bit. That is, the bit labeled 0 is the most significant bit", então o octeto desenhado `1 0 1 0 1 0 1 0` "represents the value 170" ([RFC 791](https://www.rfc-editor.org/rfc/rfc791.txt), Appendix B; as mesmas palavras na [RFC 1035](https://www.rfc-editor.org/rfc/rfc1035.txt), seção 2.3.2). A RFC 2474 repete para o DSCP (differentiated services codepoint): "the left-most bit signifies bit 0 of the DS field" ([RFC 2474](https://www.rfc-editor.org/rfc/rfc2474.txt), seção 3). Processadores também usam: a z/Architecture da IBM numera os bits "in a left-to-right sequence", os "bits are numbered 0-63" de um endereço, e no modo de 24 bits "bits 0-39 of the intermediate value are ignored", os 40 bits de ordem mais alta, o que põe o bit 0 no topo ([IBM, z/Architecture Principles of Operation](https://publibfi.dhe.ibm.com/epubs/pdf/a227832d.pdf)).
+
+**A partir de 1**, a numeração começa em 1, e os documentos que a usam contam a partir da ponta de ordem baixa. O SNMP coloca um valor BITS nos "bits 8 (high order bit) to 1 (low order bit)" de cada octeto ([RFC 3417](https://www.rfc-editor.org/rfc/rfc3417.txt), seção 8); o IEEE (Institute of Electrical and Electronics Engineers) desenha os dois octetos da tag 802.1Q com "Bits: 8 ... 1" embaixo de cada um, o PCP (priority code point) nos bits 8 a 6 do primeiro octeto ([IEEE P802.1ad/D2.4](https://www.ieee802.org/1/files/public/docs2004/802-1-ad-D2-4.pdf), um rascunho não aprovado de 2004, Figure 9-1); e a Huawei documenta um estado do LACP (Link Aggregation Control Protocol) como "Bit 1" a "Bit 8" ([Huawei, Link Aggregation Commands](https://support.huawei.com/enterprise/en/doc/EDOC1100514211/54c5f31b/link-aggregation-commands)).
+
+Num campo de w bits, as três se relacionam por aritmética: o bit k em LSB 0 é o bit w - 1 - k em MSB 0 e o bit k + 1 a partir de 1. Os mesmos seis bits do octeto ToS (Type of Service) do IPv4, o DSCP, lidos das três maneiras:
+
+| Numeração | O DSCP é | Máscara | Shift | Quem escreve assim |
+|---|---|---|---|---|
+| MSB 0 | bits 0 a 5 | 0xFC | 2 | a RFC 2474 |
+| LSB 0 | bits 7 a 2 | 0xFC | 2 | `GENMASK(7, 2)` nos termos do kernel Linux |
+| A partir de 1 | bits 8 a 3 | 0xFC | 2 | os desenhos de octeto do IEEE e do SNMP |
+
+Os bits, a máscara e o shift são os mesmos; só os rótulos mudam. E mudam por uma quantidade que depende da largura: o bit 0 em MSB 0 é o bit 7 de um octeto, mas o bit 15 de uma palavra de 16 bits, enquanto o bit 0 em LSB 0 vale 1 num campo de qualquer largura. Essa é a única propriedade real que as separa: um número LSB 0 é um peso, um número MSB 0 é uma posição num desenho.
+
+| | LSB 0 | MSB 0 | A partir de 1 |
+|---|---|---|---|
+| O bit 0 (ou 1) é | o menos significativo | o mais significativo | o menos significativo (bit 1) |
+| Peso do bit k | 2 elevado a k, em qualquer largura | 2 elevado a (w - 1 - k): depende da largura | 2 elevado a (k - 1) |
+| Lê-se como | os expoentes | o desenho, da esquerda para a direita | o desenho, contado a partir da direita |
+| Quem usa | a Intel, o `BIT` e o `GENMASK` do kernel Linux, o gzip, os números de bit do LACP no 802.1AX | os diagramas das RFCs, os registros de flags da IANA (Internet Assigned Numbers Authority), a z/Architecture da IBM | o BITS do SNMP, as figuras do IEEE, o PortState da Huawei |
+| Armadilha | nenhuma própria; ela encontra as outras em documentos misturados | o número de um bit muda quando o campo fica mais largo | um erro de um contra qualquer das duas numerações a partir de 0 |
+
+## A ordem dos bits no fio
+
+Dentro do computador, os bits não têm uma ordem que importe. A RFC 1952 diz isso com todas as letras: "Bytes stored within a computer do not have a 'bit order', since they are always treated as a unit" (seção 2.1), e a IBM: "Bit numbers are not storage addresses, however. Only bytes can be addressed." A ordem passa a existir quando um link envia os bits de um octeto um depois do outro, e os links não concordam.
+
+- **A Ethernet envia o bit menos significativo primeiro.** A RFC 9542 escreve os diagramas dela em "IETF ('network') bit ordering although the physical order of bit transmission within an octet on an IEEE [802.3] link is from the lowest order bit to the highest order bit (i.e., the reverse of the IETF's ordering)" ([RFC 9542](https://www.rfc-editor.org/rfc/rfc9542.txt), seção 1.1; o IETF é o Internet Engineering Task Force). O primeiro bit de um endereço MAC (Media Access Control) de destino no fio é, portanto, o bit menos significativo do primeiro octeto, o bit I/G.
+- **Uma UART envia o bit menos significativo primeiro**: "Bit 0 is the least significant bit. It is the first bit serially transmitted or received" (TI TL16C550D). O PPP (Point-to-Point Protocol) faz o mesmo nos links assíncronos, "All octets are transmitted least significant bit first, with one start bit, eight bits of data, and one stop bit", e também com o enquadramento bit-stuffed ([RFC 1662](https://www.rfc-editor.org/rfc/rfc1662.txt), seções 4.5.2 e 5.5).
+- **Um barramento I2C (Inter-IC) envia o bit mais significativo primeiro.** A especificação da NXP é direta: "Each byte must be followed by an Acknowledge bit" e "Data is transferred with the Most Significant Bit (MSB) first" ([NXP, UM10204 I2C-bus specification and user manual](https://www.nxp.com/docs/en/user-guide/UM10204.pdf), Rev. 7.0, 3.1.5). O desenho do primeiro byte depois de um START põe o endereço do alvo nos bits de ordem alta e o bit de leitura/escrita por último, como o bit menos significativo (Figure 10).
+- **Um barramento SPI envia o bit mais significativo primeiro por default.** A camada SPI (Serial Peripheral Interface) do kernel Linux descreve "the 'MSB first' default for each word in a transfer", que um dispositivo muda com `SPI_LSB_FIRST`, uma flag documentada como "per-word bits-on-wire" ([include/linux/spi/spi.h](https://raw.githubusercontent.com/torvalds/linux/master/include/linux/spi/spi.h), [include/uapi/linux/spi/spi.h](https://raw.githubusercontent.com/torvalds/linux/master/include/uapi/linux/spi/spi.h)): a ordem é uma propriedade do dispositivo, não do barramento.
+- **Um formato pode misturar as duas.** O deflate empacota "Data elements ... into bytes in order of increasing bit number within the byte, i.e., starting with the least-significant bit of the byte", com a exceção de que "Huffman codes are packed starting with the most-significant bit of the code" ([RFC 1951](https://www.rfc-editor.org/rfc/rfc1951.txt), seção 3.1.1).
+
+| Link ou formato | Primeiro bit de um octeto | Fonte |
+|---|---|---|
+| Ethernet (IEEE 802.3) | o menos significativo | RFC 9542 |
+| UART (TL16C550D) | o menos significativo | TI |
+| PPP | o menos significativo | RFC 1662 |
+| I2C | o mais significativo | NXP UM10204 |
+| SPI | o mais significativo, a menos que o dispositivo seja configurado LSB primeiro | spi.h do Linux |
+| Deflate | o menos significativo, e os códigos de Huffman o mais significativo primeiro | RFC 1951 |
+
+Os documentos mantêm a notação separada do fio. A RFC 1662 avisa que os números binários dela são escritos "in Most Significant Bit to Least Significant Bit order, reading from left to right", o que é "contrary to" a prática dos documentos que "order bits as transmitted" (seção 3).
+
+### Endereços MAC canônicos e com os bits invertidos
+
+A divergência deixou marca nos endereços MAC. A RFC 2469 define a forma canônica, "also known as 'LSB format' and 'Ethernet format'", pelo mapeamento do fio para a memória: "The first bit of each byte that appears on the LAN maps to the least significant (i.e., right-most) bit of each byte in memory", o que "puts the group address indicator ... in the least significant bit of the first byte. Ethernet and 802.3 hardware behave consistently with this definition." O Token Ring, "and some FDDI hardware", levava o primeiro bit ao bit mais significativo, "'MSB format', 'IBM format', 'Token-Ring format', and 'non-canonical form'", então o mesmo endereço ficava na memória com os bits de cada octeto invertidos ([RFC 2469](https://www.rfc-editor.org/rfc/rfc2469.txt), seção 2; FDDI é o Fiber Distributed Data Interface):
+
+| Forma | Endereço |
+|---|---|
+| Canônica (Ethernet) | 12-34-56-78-9A-BC |
+| MSB format (Token Ring) | 48-2C-6A-1E-59-3D |
+
+Os octetos ficam na ordem; dentro de cada um, o bit 0 e o bit 7 trocam de lugar, o bit 1 e o bit 6, e assim por diante (0x12, 00010010, vira 01001000, 0x48). As bridges pagaram por isso: "bridges that forward packets between dissimilar network types perform bit swaps of the addresses in the address fields of ARP packets" (seção 3.2), os do ARP (Address Resolution Protocol). A tag 802.1Q chegou a levar um bit sobre isso. No rascunho de provider bridging de 2004, o bit depois da prioridade da tag de cliente (o bit 5 do primeiro octeto, na numeração do rascunho) era um "Canonical Format Indicator (CFI)", e "If an 802.5 MAC is used, all MAC Address information ... is in Non-canonical format" (o 802.5 é o Token Ring); na tag de serviço, o mesmo bit era o bit drop-eligible "and does not convey a CFI" (IEEE P802.1ad/D2.4, 9.6 e 9.7). O kernel Linux ainda chama a máscara dele de `VLAN_CFI_MASK 0x1000`, "Canonical Format Indicator / Drop Eligible Indicator" ([include/linux/if_vlan.h](https://raw.githubusercontent.com/torvalds/linux/master/include/linux/if_vlan.h)).
+
+O lab abaixo liga e desliga os oito bits de um octeto e mostra o valor dele, os números nas três numerações, o octeto como uma RFC o desenha, a ordem em que a Ethernet o envia e o que leria um receptor que supusesse a outra ordem.
+
+<Lab id="octet-bit-numbering" />
+
+## Máscaras e shifts
+
+Uma máscara é um número com uns onde estão os bits de interesse. Com números LSB 0, cada operação é uma linha, e a quantidade do shift é o número do bit:
+
+| Para | Escreva | Exemplo com 0x3D |
+|---|---|---|
+| testar o bit k | `(v >> k) & 1`, ou `v & (1 << k)` | bit 1: 0, bit 2: 1 |
+| ligar o bit k | `v \| (1 << k)` | bit 1: 0x3F |
+| desligar o bit k | `v & ~(1 << k)` | bit 0: 0x3C |
+| inverter o bit k | `v ^ (1 << k)` | bit 7: 0xBD |
+| pegar os bits hi a lo | `(v >> lo) & ((1 << (hi - lo + 1)) - 1)` | bits 5 a 2: 15 |
+
+O kernel Linux dá nome à máscara de campo: `GENMASK(h, l)` cria "a contiguous bitmask starting at bit position @l and ending at position @h", e o próprio exemplo dele é que "GENMASK_ULL(39, 21) gives us the 64bit vector 0x000000ffffe00000" ([include/linux/bits.h](https://raw.githubusercontent.com/torvalds/linux/master/include/linux/bits.h)). As máscaras dele para o 802.1Q são os campos da tag no lugar: `VLAN_PRIO_MASK 0xe000` com `VLAN_PRIO_SHIFT 13` para a prioridade, `0x1000` para o bit drop-eligible e `VLAN_VID_MASK 0x0fff` para o VLAN ID (VLAN, virtual local area network), então um TCI (tag control information) de 0xA014 tem prioridade 5 e VLAN 20.
+
+Vários campos de header moram nos bits de cima do octeto, e é por isso que o shift é necessário. O DSCP são os seis bits de cima do octeto ToS, e o ECN (Explicit Congestion Notification) ocupa "Bits 6 and 7 in the IPv4 TOS octet" ([RFC 3168](https://www.rfc-editor.org/rfc/rfc3168.txt), seção 5), números MSB 0 para os dois bits mais baixos: um ToS de 0xB8 é DSCP 46 (`0xB8 >> 2`) e ECN 0. Uma máscara de prefixo é a mesma ideia a partir da outra ponta: na notação CIDR (Classless Inter-Domain Routing), o /n é "a decimal value between 0 and 32 that describes the number of significant bits", e "the mask must be left contiguous" ([RFC 4632](https://www.rfc-editor.org/rfc/rfc4632.txt), seções 3.1 e 5.1), n uns contados a partir do bit mais significativo.
+
+### Paridade e CRCs
+
+A paridade conta os uns. Uma UART com paridade par acrescenta o bit que dá "an even number of logic 1s in the data and parity bits", com paridade ímpar o bit que deixa a contagem ímpar (TI TL16C550D): 0x3D tem cinco uns, então o bit de paridade par dele é 1.
+
+Um CRC (cyclic redundancy check) é calculado bit a bit, e a ordem em que os bits entram faz parte da definição. O kernel Linux oferece o mesmo polinômio CRC-32 dos dois jeitos: `crc32_le`, "Bit order: Least-significant-bit-first", com o polinômio escrito 0xedb88320, a variante "widely used in Ethernet", e `crc32_be`, "the *most-significant-bit-first* variant", escrito 0x04c11db7 ([include/linux/crc32.h](https://raw.githubusercontent.com/torvalds/linux/master/include/linux/crc32.h)). As duas constantes são uma a outra com os 32 bits invertidos. O código de exemplo do gzip usa a forma refletida, `c = 0xedb88320L ^ (c >> 1)` (RFC 1952, apêndice 8), e o gerador de tabela do FCS (frame check sequence) do PPP define "The FCS-16 generator polynomial: x**0 + x**5 + x**12 + x**16" como `0x8408` (RFC 1662, apêndice C.1), com x elevado a 0 no bit mais significativo: invertido, é 0x1021. A variante com o bit menos significativo primeiro pega os bits de cada octeto na ordem em que a Ethernet e o PPP os enviam.
+
+## Como isso difere do byte order
+
+A numeração de bits é sobre dar nome aos bits dentro de um octeto ou de um campo; o byte order é sobre qual octeto de um número de vários octetos vem primeiro na memória ou num pacote. Uma coisa não depende da outra: a Internet envia "the most significant octet ... first" (RFC 791), e a Ethernet envia cada um desses octetos com o bit menos significativo primeiro. Inverter os 32 bits de uma palavra é o mesmo que inverter os bits de cada octeto e trocar os octetos, e a segunda metade disso é byte order. [Big-endian e little-endian](/learn/big-endian-and-little-endian) trata disso, inclusive de como o byte order de um processador encontra um teste de bit: o `is_multicast_ether_addr` do kernel lê o bit mais baixo do primeiro octeto com `0x01 & a` num processador little-endian e desloca a palavra para baixo antes num big-endian ([include/linux/etherdevice.h](https://raw.githubusercontent.com/torvalds/linux/master/include/linux/etherdevice.h)).
+
+## Os bugs que uma ordem errada causa
+
+Nenhum deles dá erro; cada um dá um número válido e errado.
+
+- **Uma string de bits impressa lida na ordem errada.** A Huawei imprime um estado do LACP com o bit menos significativo primeiro, então `10111100` é 0x3D; lidos do jeito de costume, com o mais significativo primeiro, os mesmos oito caracteres são 0xBC.
+- **Um zero à esquerda que caiu.** A Cisco escreve as flags de LACP esperadas como "0x3D (hex) or 0111101 (binary)" ([Cisco, documento 220367](https://www.cisco.com/c/en/us/support/docs/switches/catalyst-9300-series-switches/220367-troubleshoot-etherchannels-on-catalyst-9.html)): sete dígitos, porque o 0 à esquerda de 00111101 sumiu. Contado a partir da esquerda, cada bit dessa string fica uma posição fora do lugar.
+- **Um erro de um entre numerações a partir de 0 e de 1.** O Bit 2 da Huawei é o bit 1 do 802.1AX, LACP_Timeout, o bit de peso 2, não 4.
+- **Um número MSB 0 usado como shift LSB 0.** A IANA lista o RD, Recursion Desired, como "bit 7" da palavra de flags do DNS ([IANA, DNS Header Flags](https://www.iana.org/assignments/dns-parameters/dns-parameters.xml)). `1 << 7` é 0x0080 nessa palavra de 16 bits, que é o RA, Recursion Available, o bit 8 da IANA; o RD é `1 << 8`, 0x0100. No TCP (Transmission Control Protocol), o bit 15 da IANA é o FIN ([IANA, TCP Header Flags](https://www.iana.org/assignments/tcp-parameters/tcp-parameters.xml)), e o `TCPHDR_FIN` do kernel Linux é `BIT(0)` ([include/net/tcp.h](https://raw.githubusercontent.com/torvalds/linux/master/include/net/tcp.h)).
+- **Um endereço MAC com os bits invertidos.** Leia 48-2C-6A-1E-59-3D como se fosse canônico e o primeiro octeto, 0x48, diz universal e individual, enquanto o endereço real, 12-34-56-78-9A-BC, é local; as bridges da RFC 2469 existiam para evitar exatamente isso.
+- **O mesmo estado pelo SNMP.** A MIB (management information base) do LACP dá os valores de estado como BITS, e "The first bit corresponds to bit 0 of the Actor_State (LACP_Activity)" ([IEEE8023-LAG-MIB](https://www.ieee802.org/1/files/public/MIBs/IEEE8021-AX-MIB-202005290000Z.mib)), enquanto a RFC 3417 põe o primeiro bit no bit de ordem mais alta: pelo SNMP, o octeto 0x3D aparece como 0xBC.
+
+## Três casos deste site
+
+### O PortState da Huawei, o 0x3D da Cisco e os bits de estado do LACP
+
+Uma unidade de dados do LACP leva o estado do actor e o do partner num octeto cada. O IEEE 802.1AX numera os bits deles de 0 (LACP_Activity) a 7 (Expired), a MIB do LACP os lista como `lacpActivity(0)` a `expired(7)` (IEEE8023-LAG-MIB), e o driver Linux dá a eles as máscaras `LACP_STATE_LACP_ACTIVITY 0x1` a `LACP_STATE_EXPIRED 0x80` ([include/uapi/linux/if_bonding.h](https://raw.githubusercontent.com/torvalds/linux/master/include/uapi/linux/if_bonding.h)): o bit k vale 2 elevado a k, LSB 0. A tabela da Cisco concorda, com Expired marcado "(most significant bit)" e LACP Activity "(less significant bit)", e a captura dela imprime os bits com o mais significativo primeiro, `.... ...1 = LACP Activity` (Cisco, documento 220367).
+
+O `display eth-trunk` da Huawei imprime o mesmo octeto como string: "The status variable is eight bits, such as 10111100", com o Bit 1 descrito como o bit do actor, o Bit 2 o timeout ("1: ... short timeout interval. 0: ... long timeout interval"), o Bit 3 a agregação, o Bit 4 "added to the link aggregation group (LAG)", o Bit 5 "can receive LACPDUs", o Bit 6 "can send LACPDUs", o Bit 7 "default parameter values" e o Bit 8 "Expired" (Huawei, Table 5-17). É a ordem do 802.1AX, bit 0 primeiro, então o primeiro caractere da string é o bit menos significativo. Posto na ordem de costume, `10111100` é 00111101, 0x3D: LACP_Activity, Aggregation, Synchronization, Collecting e Distributing, o estado que a Cisco chama de esperado. Duas outras linhas do mesmo exemplo, o `10100000` de um membro não selecionado e o `10110000` de um partner, são 0x05 e 0x0D. A [ferramenta de numeração de bits](/tools/bit-numbering-and-order) lê strings assim nas duas ordens, e o [leitor de link-membro e de estado do LACP](/tools/lacp-hash-and-state-reader) decodifica os estados em si; [Link aggregation e LACP](/learn/link-aggregation-and-lacp) explica o protocolo.
+
+### Os bits I/G e U/L de um endereço MAC
+
+"The least significant bit of Octet 0 (the I/G bit) indicates either an individual address (I/G=0) or group address (I/G=1), and the second least significant bit of Octet 0 (the U/L bit) indicates universal (U/L=0) or local (U/L=1) administration of the address" ([diretrizes da IEEE Registration Authority](https://standards-support.ieee.org/hc/en-us/articles/4888705676564-Guidelines-for-Use-of-Extended-Unique-Identifier-EUI-Organizationally-Unique-Identifier-OUI-and-Company-ID-CID)). A RFC 9542 desenha o mesmo octeto em MSB 0, como um documento do IETF precisa fazer, então os dois bits aparecem na ponta direita, como M e X nas posições 7 e 6, com o Y e o Z do SLAP (Structured Local Address Plan) nas posições 5 e 4 (seção 2.1). O kernel testa esses bits como `0x01 & addr[0]` e `0x02 & addr[0]` (include/linux/etherdevice.h). Como a Ethernet envia o bit menos significativo primeiro, o bit I/G é o primeiríssimo bit do endereço de destino de um frame: a estação sabe se o frame é para uma estação ou para um grupo antes de qualquer outra coisa chegar. [O que é um OUI](/learn/what-is-an-oui) e [O frame Ethernet, campo a campo](/learn/the-ethernet-frame-field-by-field) leem esses bits; a [consulta de OUI](/tools/oui-lookup) e o [mapeador de grupo multicast para MAC](/tools/multicast-mac-mapper) trabalham com eles.
+
+### As flags do header DNS
+
+A RFC 1035 desenha a segunda palavra do header DNS em MSB 0: QR, quatro bits de Opcode, AA, TC, RD, RA, Z e quatro bits de RCODE (seção 4.1.1), com "the bit labeled 0 is the most significant bit" (seção 2.3.2); a RFC 6895 dá dois dos bits Z ao AD e ao CD (seção 2), e o registro DNS Header Flags da IANA os numera como o desenho, "from bit 5 through bit 11", de AA a CD. Em LSB 0, o mesmo AA é o bit 10 e a máscara dele é 0x0400. As flags de resposta 0x81a0 de [O header DNS: opcode, status e flags](/learn/dns-message-header-and-flags) são QR (bit 0 em MSB 0, valendo 32.768), RD (bit 7, valendo 256), RA (bit 8, valendo 128) e AD (bit 10, valendo 32): cada número MSB 0 p vale 2 elevado a (15 - p).
+
+## O que guardar
+
+- O LSB vale 1 e decide par ou ímpar; o MSB vale mais e é o bit de sinal de um número em complemento de dois.
+- LSB e MSB podem nomear bytes além de bits; um par de registradores ou um offset em bytes quer dizer bytes.
+- Números LSB 0 são pesos (o bit k é 2 elevado a k); números MSB 0 são posições num desenho e mudam com a largura; a numeração a partir de 1 acrescenta um erro de um.
+- Os diagramas das RFCs são MSB 0, pela regra da RFC 791. O Linux, a Intel e o gzip são LSB 0. O SNMP, as figuras do IEEE e a Huawei contam a partir de 1.
+- A Ethernet, uma UART e o PPP enviam cada octeto com o bit menos significativo primeiro; o I2C envia o mais significativo primeiro, e o SPI também, a menos que seja configurado de outro jeito. Os endereços MAC com os bits invertidos do Token Ring são resultado dessa diferença.
+- Antes de usar um número de bit, pergunte em que numeração ele está e qual a largura do campo; antes de ler uma string de bits impressa, pergunte qual ponta foi impressa primeiro.
+
+## Fontes
+
+Todos os documentos abaixo foram lidos em 2026-11-08: por curl, menos os documentos da Huawei, da Cisco e da NXP, lidos num navegador porque os sites recusam leituras automáticas. A aritmética dos exemplos (os pesos, os valores invertidos e deslocados, 0x3D contra 0xBC) foi calculada com a [ferramenta de numeração de bits](/tools/bit-numbering-and-order) e os golden vectors dela.
+
+- [Intel 64 and IA-32 Architectures Software Developer's Manual, volume 1, 253665-084US, junho de 2024: 1.3.1 Bit and Byte Order, 4.2.1.2 Signed Integers, 7.3.7 instruções de busca de bits (lido em 2026-11-08)](https://cdrdv2-public.intel.com/825744/253665-sdm-vol-1.pdf)
+- [IBM z/Architecture Principles of Operation, SA22-7832-13, décima quarta edição, maio de 2022: numeração de bits e endereços de operandos (lido em 2026-11-08)](https://publibfi.dhe.ibm.com/epubs/pdf/a227832d.pdf)
+- [Documentação do Python 3.15, built-in types: shifts como multiplicação por pow(2, n) (lido em 2026-11-08)](https://docs.python.org/3/library/stdtypes.html)
+- [RFC 791, Internet Protocol, Appendix B: ordem de transmissão e significância dos bits (lida em 2026-11-08)](https://www.rfc-editor.org/rfc/rfc791.txt)
+- [RFC 1035, Domain Names: Implementation and Specification, seções 2.3.2 e 4.1.1 (lida em 2026-11-08)](https://www.rfc-editor.org/rfc/rfc1035.txt)
+- [RFC 6895, Domain Name System (DNS) IANA Considerations, seção 2: AD e CD (lida em 2026-11-08)](https://www.rfc-editor.org/rfc/rfc6895.txt)
+- [IANA, DNS Parameters, DNS Header Flags, atualizado em 2026-10-16 (lido em 2026-11-08)](https://www.iana.org/assignments/dns-parameters/dns-parameters.xml)
+- [RFC 6891, Extension Mechanisms for DNS (EDNS(0)): os rótulos de byte +0 (MSB) e +1 (LSB) (lida em 2026-11-08)](https://www.rfc-editor.org/rfc/rfc6891.txt)
+- [RFC 3225, Indicating Resolver Support of DNSSEC: o bit DO, "the most significant bit of the Z field" (lida em 2026-11-08)](https://www.rfc-editor.org/rfc/rfc3225.txt)
+- [RFC 3417, Transport Mappings for SNMP, seção 8: BITS nos bits 8 a 1 (lida em 2026-11-08)](https://www.rfc-editor.org/rfc/rfc3417.txt)
+- [RFC 1952, GZIP file format specification: o bit 0 é o menos significativo, os bits de FLG, o código de exemplo do CRC (lida em 2026-11-08)](https://www.rfc-editor.org/rfc/rfc1952.txt)
+- [RFC 1951, DEFLATE Compressed Data Format Specification, seção 3.1.1: empacotamento em bytes (lida em 2026-11-08)](https://www.rfc-editor.org/rfc/rfc1951.txt)
+- [RFC 2474, Definition of the Differentiated Services Field, seção 3 (lida em 2026-11-08)](https://www.rfc-editor.org/rfc/rfc2474.txt)
+- [RFC 3168, The Addition of Explicit Congestion Notification (ECN) to IP, seção 5 (lida em 2026-11-08)](https://www.rfc-editor.org/rfc/rfc3168.txt)
+- [RFC 4632, Classless Inter-domain Routing (CIDR), seções 3.1 e 5.1 (lida em 2026-11-08)](https://www.rfc-editor.org/rfc/rfc4632.txt)
+- [RFC 9542, IANA Considerations and IETF Protocol and Documentation Usage for IEEE 802 Parameters: a ordem dos bits num link IEEE 802.3, os bits M, X, Y e Z (lida em 2026-11-08)](https://www.rfc-editor.org/rfc/rfc9542.txt)
+- [RFC 2469, A Caution On The Canonical Ordering Of Link-Layer Addresses: forma canônica e MSB format, bridges (lida em 2026-11-08)](https://www.rfc-editor.org/rfc/rfc2469.txt)
+- [RFC 1662, PPP in HDLC-like Framing: ordem dos bits, notação, o polinômio do FCS-16 (lida em 2026-11-08)](https://www.rfc-editor.org/rfc/rfc1662.txt)
+- [IEEE Registration Authority, Guidelines for Use of EUI, OUI and CID, atualizado em 1º de abril de 2022: os bits I/G e U/L (lido em 2026-11-08)](https://standards-support.ieee.org/hc/en-us/articles/4888705676564-Guidelines-for-Use-of-Extended-Unique-Identifier-EUI-Organizationally-Unique-Identifier-OUI-and-Company-ID-CID)
+- [IEEE P802.1ad/D2.4, Provider Bridges, rascunho não aprovado de 27 de setembro de 2004: 9.6 e 9.7, os desenhos do TCI e o Canonical Format Indicator (lido em 2026-11-08)](https://www.ieee802.org/1/files/public/docs2004/802-1-ad-D2-4.pdf)
+- [IEEE8023-LAG-MIB, a MIB de Link Aggregation do IEEE 802.1AX-2020: LacpState e a descrição do estado administrativo (lido em 2026-11-08)](https://www.ieee802.org/1/files/public/MIBs/IEEE8021-AX-MIB-202005290000Z.mib)
+- [Huawei, S5700 and S6700 V200R025C00 Command Reference, Link Aggregation Commands: display eth-trunk e Table 5-17 PortState (lido num navegador em 2026-11-08: o site recusa leituras automáticas)](https://support.huawei.com/enterprise/en/doc/EDOC1100514211/54c5f31b/link-aggregation-commands)
+- [Cisco, Troubleshoot EtherChannels on Catalyst 9000 Switches, documento 220367, atualizado em 8 de agosto de 2024: a tabela de estados do LACP e as flags esperadas (lido num navegador em 2026-11-08: o site recusa leituras automáticas)](https://www.cisco.com/c/en/us/support/docs/switches/catalyst-9300-series-switches/220367-troubleshoot-etherchannels-on-catalyst-9.html)
+- [Texas Instruments, TL16C550D Asynchronous Communications Element, SLLS597E: o bit 0 primeiro, os bytes do divisor, a paridade (lido em 2026-11-08)](https://www.ti.com/lit/ds/symlink/tl16c550d.pdf)
+- [NXP Semiconductors, UM10204 I2C-bus specification and user manual, Rev. 7.0, 1º de outubro de 2021: 3.1.5 Byte format e Figure 10 (lido num navegador em 2026-11-08: o site recusa leituras automáticas)](https://www.nxp.com/docs/en/user-guide/UM10204.pdf)
+- [System V Application Binary Interface, capítulo 4, ELF header: ELFDATA2LSB e ELFDATA2MSB (lido em 2026-11-08)](https://www.sco.com/developers/gabi/latest/ch4.eheader.html)
+- [IANA, TCP Parameters, TCP Header Flags, atualizado em 2026-10-22 (lido em 2026-11-08)](https://www.iana.org/assignments/tcp-parameters/tcp-parameters.xml)
+- [O kernel Linux, include/vdso/bits.h e include/linux/bits.h, master: BIT e GENMASK (lido em 2026-11-08)](https://raw.githubusercontent.com/torvalds/linux/master/include/linux/bits.h)
+- [O kernel Linux, include/linux/spi/spi.h e include/uapi/linux/spi/spi.h, master: o default MSB primeiro e o SPI_LSB_FIRST (lido em 2026-11-08)](https://raw.githubusercontent.com/torvalds/linux/master/include/linux/spi/spi.h)
+- [O kernel Linux, include/linux/crc32.h, master: crc32_le e crc32_be (lido em 2026-11-08)](https://raw.githubusercontent.com/torvalds/linux/master/include/linux/crc32.h)
+- [O kernel Linux, include/linux/if_vlan.h, master: as máscaras do TCI (lido em 2026-11-08)](https://raw.githubusercontent.com/torvalds/linux/master/include/linux/if_vlan.h)
+- [O kernel Linux, include/linux/etherdevice.h, master: is_multicast_ether_addr e is_local_ether_addr (lido em 2026-11-08)](https://raw.githubusercontent.com/torvalds/linux/master/include/linux/etherdevice.h)
+- [O kernel Linux, include/net/tcp.h, master: de TCPHDR_FIN a TCPHDR_CWR (lido em 2026-11-08)](https://raw.githubusercontent.com/torvalds/linux/master/include/net/tcp.h)
+- [O kernel Linux, include/uapi/linux/if_bonding.h, master: as máscaras LACP_STATE (lido em 2026-11-08)](https://raw.githubusercontent.com/torvalds/linux/master/include/uapi/linux/if_bonding.h)

@@ -49,7 +49,7 @@ export const kasperskyProfile: VendorProfile = {
   ],
   products: [
     { name: "Endpoint and consumer antivirus", what: "The original business, still the largest, sold to consumers and enterprises across the markets where it remains available." },
-    { name: "Kaspersky EDR and XDR", what: "Detection and response built on the same engine, following the same category shift every endpoint vendor has made." },
+    { name: "Kaspersky EDR and XDR", what: "Endpoint detection and response (EDR) and extended detection and response (XDR), built on the same engine, following the same category shift every endpoint vendor has made." },
     { name: "Threat intelligence and research reporting", what: "Published analysis of targeted campaigns, and the output most often cited by people who disagree with the company on everything else." },
     { name: "Industrial control system security", what: "A distinct product line for operational technology, and an area where its research has been substantive." },
     { name: "KasperskyOS", what: "A microkernel operating system built for embedded and industrial use on the argument that securing a general-purpose OS after the fact is the wrong starting point." },

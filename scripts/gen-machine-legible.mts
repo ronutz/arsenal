@@ -34,7 +34,7 @@ import { tools } from "../src/config/tools";
 import { getSiteCounts } from "../src/lib/siteCounts";
 import { LIVE_LOCALES, AUTHORED_CONTENT_LOCALES } from "../src/i18n/locales";
 // The /dev/fun games, counted for llms.txt (2026-11-03).
-import { FUN_GAMES } from "../src/config/funGames";
+import { FUN_GAME_GROUPS } from "../src/config/funGames"; // the games, and their groups (the arcade line, 2026-11-08)
 // The page's own robots meta, read back from the built HTML (ARC-04, 2026-10-25): a noindex page is never submitted.
 import { pageIsNoindex } from "./page-indexability.mjs";
 
@@ -462,7 +462,11 @@ L.push(
   // registries, and this is in neither, so it is listed here explicitly.
   `- [Importance Meter](${ORIGIN}/${SOURCE_LOCALE}/dev/fun/importance-meter): measures how many fucks a matter warrants; the arithmetic is real and the answer is always zero`,
   // The /dev/fun games (PRIME 03/11/2026): counted from src/config/funGames.ts, so the line follows the shelf.
-  `- [Games](${ORIGIN}/${SOURCE_LOCALE}/dev/fun): ${n(FUN_GAMES.length)} IT-themed games, ${n(FUN_GAMES.filter((g) => g.daily).length)} of them with a daily puzzle or run that is the same for everyone and changes at 00:00 UTC; scores and streaks stay in the player's browser`,
+  `- [Daily puzzles](${ORIGIN}/${SOURCE_LOCALE}/dev/fun): ${n(FUN_GAME_GROUPS.find((g) => g.key === "daily")?.games.length ?? 0)} IT-themed daily puzzles, the same for everyone and changing at 00:00 UTC, beside the toys (the arcade games are listed on /arcade); scores and streaks stay in the player's browser, and a finished daily puzzle goes to a public scoreboard (checked on the server, shown by arcade initials and country, with no identifier) unless the player switches sharing off`,
+  // The arcade (PRIME 08/11/2026): the shelf's arcade group on a page of its own, counted from src/config/funGames.ts.
+  `- [Arcade](${ORIGIN}/${SOURCE_LOCALE}/arcade): ${n(FUN_GAME_GROUPS.find((g) => g.key === "arcade")?.games.length ?? 0)} IT-themed arcade games built on classic game formulas, played in the browser for as long as one likes; the pages stay under /dev/fun/<game>`,
+  // The games' scores and statistics (PRIME 08/11/2026): today's boards, the top tens, the countries, the shelf's totals.
+  `- [Game scores](${ORIGIN}/${SOURCE_LOCALE}/dev/fun/scores): today's boards for the daily games (players, the share who solved, average, median, a histogram, the top ten by arcade initials and country) and the shelf's totals for the last 7 and 30 days`,
   "",
 );
 fs.writeFileSync(path.join(OUT, "llms.txt"), L.join("\n"), "utf8");

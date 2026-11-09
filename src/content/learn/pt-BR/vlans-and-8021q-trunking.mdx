@@ -3,7 +3,7 @@ slug: vlans-and-8021q-trunking
 title: "VLANs e trunking 802.1Q: tagged, untagged, VLAN nativa e VLAN de voz"
 summary: "Uma VLAN divide uma rede de switches em várias redes que não escutam os broadcasts umas das outras, e o 802.1Q é o que permite a um único cabo levar muitas delas ao mesmo tempo. Portas de acesso e portas trunk nos termos do próprio padrão, a VLAN nativa e o mismatch que coloca a rede em loop, os ataques de VLAN hopping e as configurações que os impedem, a VLAN de voz por trás de todo telefone IP de mesa e por que o tráfego entre VLANs sempre precisa de um roteador."
 concepts: ["vlan", "802.1q", "trunk", "access port", "pvid", "native vlan", "vlan hopping", "dtp", "double tagging", "voice vlan", "lldp-med", "q-in-q", "svi", "inter-vlan routing"]
-relatedTools: []
+relatedTools: ["vlan-tag-and-trunk-calculator"]
 relatedArticles: ["the-ethernet-frame-field-by-field", "network-devices-switch-router-firewall", "bridge-switch-family-history", "arp-and-mac-addresses", "802-1x-and-eap-methods"]
 category: networking
 order: 337
@@ -45,6 +45,8 @@ A solução mais limpa é não ter nenhum tráfego sem tag nos trunks. Na Cisco,
 Mais uma configuração decide quais VLANs um trunk carrega. Nas palavras da Cisco, "By default, a trunk port sends traffic to and receives traffic from all VLANs", e a VLAN retirada da lista de VLANs permitidas do trunk (a allowed list) fica de fora dele, "preventing traffic from those VLANs from passing over the trunk" ([Cisco, VLANs permitidas num trunk](https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/software/release/17-12/configuration_guide/vlan/b_1712_vlan_9300_cg/configuring_vlan_trunks.html)). O laboratório abaixo junta as três regras: a lista de VLANs permitidas em cada ponta, a tag que a ponta que envia deixa de colocar na sua VLAN nativa e a VLAN nativa em que a ponta que recebe coloca todo frame que chega sem tag.
 
 <Lab id="vlan-trunk" />
+
+O [decodificador de tag 802.1Q e calculadora de VLANs em trunk](/tools/vlan-tag-and-trunk-calculator) aplica as mesmas três regras a linhas de trunk reais, um fabricante em cada ponta, e decodifica a própria tag bit a bit.
 
 ## VLAN hopping e as configurações que o impedem
 

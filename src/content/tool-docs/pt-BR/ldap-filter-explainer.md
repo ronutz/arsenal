@@ -1,6 +1,6 @@
 # Explicador de filtros LDAP
 
-Cole qualquer filtro de busca LDAP e esta ferramenta o analisa exatamente como um servidor de diretório faria - conforme a RFC 4515, a representação em string na qual todo cliente LDAP, busca do PingDirectory, consulta de datastore do PingFederate e query do Active Directory se compila no fim das contas.
+Cole qualquer filtro de busca LDAP (Lightweight Directory Access Protocol) e esta ferramenta o analisa exatamente como um servidor de diretório faria - conforme a RFC 4515, a representação em string na qual todo cliente LDAP, busca do PingDirectory, consulta de datastore do PingFederate e query do Active Directory se compila no fim das contas.
 
 ## O que você recebe
 

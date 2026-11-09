@@ -74,8 +74,13 @@ const CEILINGS = new Map([
   // card; folding or paginating it is the same rendering decision the changelog took on 2026-10-26 (audit F07), PRIME's
   // to take. New ceiling: that weight plus about five per cent.
   ["/learn", 2_730_000],
-  // The industry index: every organisation record's card (2026-10-19: en 1,516,848; pt-BR 1,525,955).
-  ["/industry", 1_610_000],
+  // The industry index: every organisation record's card (2026-10-19: en 1,516,848; pt-BR 1,525,955). RAISED 2026-11-09
+  // (pt-BR 1,634,488 at the 00:37 build; en 1,608,222, da 1,609,443): the growth is new organisation records, each a
+  // card on the index, not a template change; the ceiling was crossed by those added on 08/11/2026 at PRIME's requests
+  // (the Brazilian Industry records, SAP and IBM, the consultancies and KPMG; 382 records in all). The page still renders every card; folding or paginating it is the same
+  // rendering decision the changelog took on 2026-10-26 (audit F07), PRIME's to take. New ceiling: the heavier locale,
+  // pt-BR, plus about five per cent.
+  ["/industry", 1_720_000],
 ]);
 // Ceilings for a FAMILY of routes, matched by pattern after the exact routes above, each with its reason.
 const PATTERN_CEILINGS = [

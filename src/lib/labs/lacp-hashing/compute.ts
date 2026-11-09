@@ -41,14 +41,22 @@
 // (bond_xmit_3ad_xor_slave_get). So after a failure the surviving members are
 // numbered again from 0 in their original order.
 //
-// Byte order: the lab reads the addresses and the two ports as they are written
-// in the formulas and in the header, most significant byte first, as 32-bit
-// unsigned numbers. The driver XORs the same header bytes as the processor
-// loads them (bond_ip_hash casts the big-endian address to u32; the ports are
-// copied with memcpy), so on a little-endian processor the hash values, and
-// which member a given flow lands on, differ from the lab's. Which fields count,
-// the folding, the modulo and the reshuffle after a failure are the same; the
-// lab's scope note says so.
+// Byte order (2026-11-08, the second set): the driver XORs the header bytes as
+// the processor loads them. bond_ip_hash XORs flow_get_u32_dst and
+// flow_get_u32_src, which return the address as the raw __be32 of the header,
+// cast to u32; for layer3+4 the ports are copied with memcpy from
+// flow_keys.ports, a __be32 holding the source port then the destination port
+// (drivers/net/bonding/bond_main.c, net/core/flow_dissector.c,
+// include/net/flow_dissector.h, torvalds/linux master, read on 2026-11-08). So
+// the lab has a byte-order switch. It opens on "big": the addresses and the
+// ports read most significant byte first, as the HOWTO writes its formulas,
+// which is what a big-endian processor computes; every result of the first set
+// is unchanged there. "little" reads the same four bytes least significant
+// first, as a little-endian processor loads them, and gives the hashes, and
+// the members, a Linux server on such a processor would use. The MAC bytes and
+// the EtherType (be16_to_cpu) are read the same on both, so layer2 does not
+// change. Which fields count, the folding, the modulo and the reshuffle after a
+// failure are the same on both.
 //
 // What the model leaves out: IPv6 (ipv6_addr_hash), fragments and non-IP
 // traffic, the encap and vlan+srcmac policies, the switch's own hash for the
@@ -63,6 +71,10 @@
 export type HashPolicy = "layer2" | "layer2+3" | "layer3+4";
 /** Every value the policy control can take. */
 export const POLICIES: readonly HashPolicy[] = Object.freeze(["layer2", "layer2+3", "layer3+4"]);
+/** How the processor loads the four bytes of an address, or of the two ports: big-endian (the HOWTO as written) or little-endian. */
+export type ByteOrder = "big" | "little";
+/** Every value the byte-order switch can take, the opening one first. */
+export const BYTE_ORDERS: readonly ByteOrder[] = Object.freeze(["big", "little"]);
 /** The fewest members the lab offers. */
 export const MIN_MEMBERS = 2;
 /** The most members the lab offers (the Catalyst 9300's active LACP limit, as the article quotes). */
@@ -122,12 +134,16 @@ export interface LacpInput {
   flows: readonly string[];
   /** The failed member (0-based), or null for none. */
   failed: number | null;
+  /** How the processor loads the header bytes; "big" (the HOWTO as written) when absent. */
+  byteOrder?: ByteOrder;
 }
 
 /** How one flow's hash was worked out, step by step (each value a 32-bit unsigned number). */
 export interface HashWork {
   /** The policy it was worked for. */
   policy: HashPolicy;
+  /** The byte order it was worked for. */
+  byteOrder: ByteOrder;
   /** The starting value: MAC bytes XOR EtherType (layer2, layer2+3), or the ports word (layer3+4). */
   start: number;
   /** After XOR with both IP addresses (null for layer2). */
@@ -171,7 +187,7 @@ export interface LacpResult {
 }
 
 /** The stable codes an invalid input is refused with. */
-export type LacpErrorCode = "bad-members" | "bad-policy" | "bad-flow" | "bad-failed";
+export type LacpErrorCode = "bad-members" | "bad-policy" | "bad-flow" | "bad-failed" | "bad-order";
 
 /** An invalid input, refused with a stable code the interface can word. */
 export class LacpError extends Error {
@@ -194,22 +210,44 @@ export function ipToNumber(ip: string): number {
   return ((o[0] << 24) | (o[1] << 16) | (o[2] << 8) | o[3]) >>> 0;
 }
 
+/**
+ * Four bytes as the processor loads them into a 32-bit unsigned number.
+ * @param b the four bytes, in the order they sit in the header
+ * @param order big-endian (the first byte most significant) or little-endian (the first byte least significant)
+ */
+export function word32(b: readonly number[], order: ByteOrder): number {
+  // Big-endian: the bytes as written; little-endian: the same bytes the other way round. >>> 0 keeps it unsigned.
+  return order === "big" ? ((b[0] << 24) | (b[1] << 16) | (b[2] << 8) | b[3]) >>> 0 : ((b[3] << 24) | (b[2] << 16) | (b[1] << 8) | b[0]) >>> 0;
+}
+
+/** A dotted IPv4 address as the processor loads it (flow_get_u32_src/dst: the header's four bytes, cast to u32). */
+export function ipWord(ip: string, order: ByteOrder): number {
+  // The four octets, in header order, loaded in the processor's byte order.
+  return word32(ip.split(".").map(Number), order);
+}
+
+/** The two ports as the processor loads them (memcpy of flow_keys.ports: the source port's two bytes, then the destination port's). */
+export function portsWord(srcPort: number, dstPort: number, order: ByteOrder): number {
+  // The four header bytes, each port most significant byte first, loaded in the processor's byte order.
+  return word32([srcPort >> 8, srcPort & 0xff, dstPort >> 8, dstPort & 0xff], order);
+}
+
 /** The last byte of a MAC address, MAC[5] in the HOWTO's notation. */
 export function macByte5(mac: string): number {
   // The sixth of six hexadecimal pairs.
   return parseInt(mac.split(":")[5], 16);
 }
 
-/** Work out one flow's hash under one policy, every intermediate value kept. */
-export function hashFlow(f: FlowDef, policy: HashPolicy): HashWork {
-  // layer2 and layer2+3 start from the MAC bytes and the packet type ID.
+/** Work out one flow's hash under one policy and byte order ("big", the HOWTO as written, by default), every intermediate value kept. */
+export function hashFlow(f: FlowDef, policy: HashPolicy, byteOrder: ByteOrder = "big"): HashWork {
+  // layer2 and layer2+3 start from the MAC bytes and the packet type ID (single bytes and be16_to_cpu: the same on both byte orders).
   const l2 = (macByte5(SERVER.mac) ^ macByte5(f.dstMac) ^ ETHERTYPE_IPV4) >>> 0;
   // layer2 stops there.
-  if (policy === "layer2") return { policy, start: l2, afterIps: null, afterFold: null, hash: l2 };
-  // layer3+4 starts from the two ports as in the header: source port then destination port.
-  const start = policy === "layer3+4" ? ((f.srcPort << 16) | f.dstPort) >>> 0 : l2;
-  // XOR with both IP addresses.
-  const afterIps = (start ^ ipToNumber(SERVER.ip) ^ ipToNumber(f.dstIp)) >>> 0;
+  if (policy === "layer2") return { policy, byteOrder, start: l2, afterIps: null, afterFold: null, hash: l2 };
+  // layer3+4 starts from the two ports as in the header, source port then destination port, loaded in the processor's byte order.
+  const start = policy === "layer3+4" ? portsWord(f.srcPort, f.dstPort, byteOrder) : l2;
+  // XOR with both IP addresses, each loaded in the processor's byte order.
+  const afterIps = (start ^ ipWord(SERVER.ip, byteOrder) ^ ipWord(f.dstIp, byteOrder)) >>> 0;
   // Fold: XOR with itself shifted right 16.
   let h = (afterIps ^ (afterIps >>> 16)) >>> 0;
   // Fold again: XOR with itself shifted right 8.
@@ -219,7 +257,7 @@ export function hashFlow(f: FlowDef, policy: HashPolicy): HashWork {
   // layer3+4 drops the lowest bit (the driver's comment: "to deal with the common even ports pattern").
   const hash = policy === "layer3+4" ? afterFold >>> 1 : afterFold;
   // Every step.
-  return { policy, start, afterIps, afterFold, hash };
+  return { policy, byteOrder, start, afterIps, afterFold, hash };
 }
 
 /** Hash every running flow, place it, and say what a failure moves. */
@@ -232,6 +270,10 @@ export function compute(input: LacpInput): LacpResult {
   for (const id of input.flows) if (!FLOWS.some((f) => f.id === id)) throw new LacpError("bad-flow", `not a lab flow: ${String(id)}`);
   // The failed member must be none or one of the members.
   if (input.failed !== null && (!Number.isInteger(input.failed) || input.failed < 0 || input.failed >= input.members)) throw new LacpError("bad-failed", `not a member: ${String(input.failed)}`);
+  // The byte order, "big" when absent, must be one of the two.
+  const order: ByteOrder = input.byteOrder ?? "big";
+  // Anything else is refused.
+  if (!BYTE_ORDERS.includes(order)) throw new LacpError("bad-order", `not a byte order: ${String(input.byteOrder)}`);
 
   // How many members.
   const n = input.members;
@@ -242,13 +284,13 @@ export function compute(input: LacpInput): LacpResult {
   // Each flow placed.
   const flows: FlowResult[] = running.map((f) => {
     // Its hash under the chosen policy.
-    const hash = hashFlow(f, input.policy).hash;
+    const hash = hashFlow(f, input.policy, order).hash;
     // Every member up: arr[hash % count].
     const member = hash % n;
     // After the failure: the survivors renumbered from 0, arr[hash % (count - 1)].
     const memberAfter = survivors === null ? null : survivors[hash % survivors.length];
     // Its member under each policy, for the comparison.
-    const byPolicy = { layer2: hashFlow(f, "layer2").hash % n, "layer2+3": hashFlow(f, "layer2+3").hash % n, "layer3+4": hashFlow(f, "layer3+4").hash % n };
+    const byPolicy = { layer2: hashFlow(f, "layer2", order).hash % n, "layer2+3": hashFlow(f, "layer2+3", order).hash % n, "layer3+4": hashFlow(f, "layer3+4", order).hash % n };
     // The flow's line.
     return { flow: f, hash, member, memberAfter, moved: memberAfter !== null && memberAfter !== member, byPolicy };
   });
@@ -261,11 +303,11 @@ export function compute(input: LacpInput): LacpResult {
   // The busiest member (lowest number on a tie), when anything runs.
   const busiest = flows.length ? load.indexOf(Math.max(...load)) : null;
   // The full answer, with the first running flow's hash worked out.
-  return { flows, load, loadAfter, total, busiest, work: running.length ? hashFlow(running[0], input.policy) : null };
+  return { flows, load, loadAfter, total, busiest, work: running.length ? hashFlow(running[0], input.policy, order) : null };
 }
 
-/** The opening state: four members, layer3+4, four flows of different kinds, nothing failed. */
-export const DEFAULT_INPUT: LacpInput = { members: 4, policy: "layer3+4", flows: ["F1", "F3", "F5", "F6"], failed: null };
+/** The opening state: four members, layer3+4, four flows of different kinds, nothing failed, the HOWTO's byte order. */
+export const DEFAULT_INPUT: LacpInput = { members: 4, policy: "layer3+4", flows: ["F1", "F3", "F5", "F6"], failed: null, byteOrder: "big" };
 
 /** The Example: layer2+3 puts the two backup streams, same hosts, on one member (1,800 Mb/s on a 1 Gb/s link); layer3+4 would separate them. */
-export const EXAMPLE_INPUT: LacpInput = { members: 4, policy: "layer2+3", flows: ["F1", "F2", "F3", "F4"], failed: null };
+export const EXAMPLE_INPUT: LacpInput = { members: 4, policy: "layer2+3", flows: ["F1", "F2", "F3", "F4"], failed: null, byteOrder: "big" };

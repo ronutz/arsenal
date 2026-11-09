@@ -71,6 +71,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_bigip_scripted_monitor_explainer",
     "tag": "F5 LTM, iRules & platform"
   },
+  "bit-numbering-and-order": {
+    "url": "https://ronutz.com/api/v1/bit-numbering-and-order",
+    "method": "GET",
+    "op": "run_bit_numbering_and_order",
+    "tag": "Networking & addressing"
+  },
   "bits-bytes": {
     "url": "https://ronutz.com/api/v1/bits-bytes",
     "method": "GET",
@@ -791,6 +797,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_jwt",
     "tag": "Identity & tokens"
   },
+  "lacp-hash-and-state-reader": {
+    "url": "https://ronutz.com/api/v1/lacp-hash-and-state-reader",
+    "method": "GET",
+    "op": "run_lacp_hash_and_state_reader",
+    "tag": "Networking"
+  },
   "ldap-filter-explainer": {
     "url": "https://ronutz.com/api/v1/ldap-filter-explainer",
     "method": "GET",
@@ -869,6 +881,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_openssl_s_client_explainer",
     "tag": "TLS & transport"
   },
+  "ospf-cost-and-adjacency-checker": {
+    "url": "https://ronutz.com/api/v1/ospf-cost-and-adjacency-checker",
+    "method": "GET",
+    "op": "run_ospf_cost_and_adjacency_checker",
+    "tag": "Networking"
+  },
   "oui-lookup": {
     "url": "https://ronutz.com/api/v1/oui-lookup",
     "method": "GET",
@@ -916,6 +934,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_pyproject_toml_explainer",
     "tag": "Python"
+  },
+  "radius-packet-decoder": {
+    "url": "https://ronutz.com/api/v1/radius-packet-decoder",
+    "method": "GET",
+    "op": "run_radius_packet_decoder",
+    "tag": "Protocol & packet decoders"
   },
   "regex": {
     "url": "https://ronutz.com/api/v1/regex",
@@ -976,6 +1000,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_ssrf_url_classifier",
     "tag": "Security & WAF"
+  },
+  "stp-election-calculator": {
+    "url": "https://ronutz.com/api/v1/stp-election-calculator",
+    "method": "GET",
+    "op": "run_stp_election_calculator",
+    "tag": "Networking"
   },
   "syslog-message-parser": {
     "url": "https://ronutz.com/api/v1/syslog-message-parser",
@@ -1054,6 +1084,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_uuid",
     "tag": "Identifiers & time"
+  },
+  "vlan-tag-and-trunk-calculator": {
+    "url": "https://ronutz.com/api/v1/vlan-tag-and-trunk-calculator",
+    "method": "GET",
+    "op": "run_vlan_tag_and_trunk_calculator",
+    "tag": "Networking"
   },
   "voss-exos-translator": {
     "url": "https://ronutz.com/api/v1/voss-exos-translator",

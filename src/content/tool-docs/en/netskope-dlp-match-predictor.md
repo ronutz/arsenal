@@ -1,6 +1,6 @@
 ## What this tool does
 
-It answers why a DLP rule fired, or did not, by separating three things that are usually collapsed into one, and that fail separately:
+It answers why a DLP (data loss prevention) rule fired, or did not, by separating three things that are usually collapsed into one, and that fail separately:
 
 1. **Candidates**: how many strings have the right shape
 2. **Matches**: how many of those pass the checksum

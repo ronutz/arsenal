@@ -16,6 +16,7 @@
 // page gets both and nothing else.
 //
 // VERIFICATION MANIFEST - every fact below was read on 2026-09-27:
+// 2026-11-08: the 2000 event (Cap Gemini Ernst & Young), read on Encyclopedia.com's International Directory of Company Histories.
 //   - Founding: Grenoble, 1967, as Sogeti. Kampf's own record states he and
 //     THREE COLLEAGUES founded it, which is a different claim from the usual
 //     "founded by Serge Kampf". Recorded with the nuance, in sourceNote.
@@ -76,6 +77,15 @@ export const capgeminiProfile: VendorProfile = {
       title: "Cap Gemini",
       detail:
         "The Sogeti element came off the corporate name, leaving Cap Gemini. The original 1967 name survived as a subsidiary brand rather than disappearing, which is the usual fate of a founding name inside a group that has outgrown it.",
+    },
+    // Added 2026-11-08: the Ernst & Young consultancy purchase (International Directory of Company Histories).
+    {
+      year: 2000,
+      title: "Cap Gemini Ernst & Young",
+      detail:
+        "Cap Gemini bought Ernst & Young's information technology consulting operations, adding some 18,000 people to its nearly 40,000, and took the name Cap Gemini Ernst & Young. The accounting firm was the first of the large ones to sell its consultancy outright, two years before the Sarbanes-Oxley Act barred auditors from designing and implementing their audit clients' financial information systems; the EY entry records the seller's side.",
+      sourceNote:
+        "International Directory of Company Histories (Encyclopedia.com), 'Cap Gemini Ernst & Young', gives the announcement as June 2000; other accounts date it to March 2000, so only the year is stated. The purchase price is in the source and is not used.",
     },
     {
       year: 2010,

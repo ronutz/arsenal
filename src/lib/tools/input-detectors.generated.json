@@ -72,6 +72,13 @@
       "example": "{\"script\":\"expect 220\\nsend \\\"HELO bigip1.somecompany.net\\\\r\\\\n\\\"\\nexpect \\\"250\\\"\\nsend \\\"quit\\\\r\\\\n\\\"\\n\",\"transcript\":\"S: 220 foo.com Simple Mail Transfer Service Ready\\nC: HELO bigip1.somecompany.net\\nS: 250 foo.com\\nC: quit\\nS: 221 foo.com Service closing transmission channel\\n\"}"
     },
     {
+      "slug": "bit-numbering-and-order",
+      "family": "Networking & addressing",
+      "priority": 2,
+      "pattern": "^0[xX][0-9A-Fa-f]+(?:[ _][0-9A-Fa-f]+)*$|^0[bB][01]+(?:[ _][01]+)*$",
+      "example": "0x81A0"
+    },
+    {
       "slug": "bits-bytes",
       "family": "TLS & transport",
       "priority": 1,
@@ -1269,6 +1276,13 @@
       "example": "Traceback (most recent call last):\n  File \"/home/ana/netops/inventory.py\", line 18, in <module>\n    print(load(LINES))\n          ~~~~^^^^^^^\n"
     },
     {
+      "slug": "radius-packet-decoder",
+      "family": "Protocol & packet decoders",
+      "priority": 6,
+      "pattern": "^\\s*(0[1-5bcBC]|2[89a-dA-D])[\\s:]?[0-9a-fA-F]{2}[\\s:]?0[0-9a-fA-F][\\s:]?[0-9a-fA-F]{2}([\\s:]?[0-9a-fA-F]{2}){16,4092}\\s*$",
+      "example": "010000380f403f9473978057bd83d5cb98f4227a01066e656d6f02120dbe708d93d413ce3196e43f782a0aee0406c0a80110050600000003"
+    },
+    {
       "slug": "regex",
       "family": "Text & utilities",
       "priority": 3,
@@ -1456,6 +1470,13 @@
       "priority": 5,
       "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
       "example": "550e8400-e29b-41d4-a716-446655440000"
+    },
+    {
+      "slug": "vlan-tag-and-trunk-calculator",
+      "family": "Networking",
+      "priority": 2,
+      "pattern": "^(?:0[xX])?(?:81|88|91)[\\s:.-]?(?:00|[aA]8)[\\s:.-]?[0-9a-fA-F]{2}",
+      "example": "81 00 a0 14 08 00"
     },
     {
       "slug": "voss-fabric-id",

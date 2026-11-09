@@ -5,8 +5,18 @@
 // src/lib/fun/storage.ts
 // ----------------------------------------------------------------------------
 // WHAT THE /dev/fun GAMES REMEMBER, and where: one localStorage key,
-// "ronutz:fun:v1", in this browser only. Nothing is ever sent anywhere; the
-// Privacy page names the key (its revision of 3 November 2026).
+// "ronutz:fun:v1", in this browser only; the Privacy page names the key (its
+// revision of 3 November 2026).
+//
+// The public scoreboard (PRIME 08/11/2026): the same key also keeps the board's
+// choices for this browser (whether finished daily puzzles are shared, which is
+// on until switched off; the initials to post with), and, for the rounds of the
+// last two days, the random number each submission was sent with (it lets this
+// browser change that round's initials the same day, and nothing else). When a
+// daily puzzle is finished on its own day, recordResult tells the board module
+// (src/lib/fun/board.ts), which sends the round unless sharing is off; that is
+// the only thing that ever leaves the browser, and what it carries is set out
+// on the Privacy page ("Game scores").
 //
 // Per game it keeps: how many rounds were played and won (and, apart, how many
 // daily puzzles), the current and best daily streak, the best score, the last
@@ -86,12 +96,47 @@ export interface GameRecord {
   earlierResults: Record<string, number>;
 }
 
+/** What this browser sent to the public board for one round, by "game|mode|day". */
+export interface PostedRound {
+  /** The submission's random nonce (32 hex digits): it authorises this round's initials change, and nothing else. */
+  nonce: string;
+  /** "pending" until the board answers, "posted" once stored, "refused" when the server could not verify it. */
+  status: "pending" | "posted" | "refused";
+  /** The initials the round is shown with. */
+  initials?: string;
+  /** The round's place when it was posted (1 for the best), the rounds it was counted among, and how many it beat. */
+  place?: number;
+  of?: number;
+  beat?: number;
+  /** The server's own score for the round, or null when it has none. */
+  score?: number | null;
+  /** Solved, by the server's check. */
+  won?: boolean;
+  /** False when its time was too fast to count for the top ten. */
+  plausible?: boolean;
+}
+
+/** The scoreboard's choices in this browser. */
+export interface BoardLocal {
+  /** Whether finished daily rounds go to the public board: on unless the player switched it off. */
+  share?: boolean;
+  /** The initials remembered for the next round (three of A-Z 0-9), or none. */
+  initials?: string;
+  /** The rounds sent in the last two days, by "game|mode|day". */
+  posted?: Record<string, PostedRound>;
+}
+
+/** How many days a sent round's nonce is kept: today and yesterday, the only days its initials can change. */
+const KEEP_POSTED_DAYS = 2;
+
 /** The whole stored object. */
 interface FunStore {
   /** The format version. */
   v: 1;
   /** One record per game id. */
   games: Record<string, GameRecord>;
+  /** The scoreboard's choices (absent until the player or the board first wrote one). */
+  board?: BoardLocal;
 }
 
 /**
@@ -295,7 +340,7 @@ export function recordResult(
     }));
   }
   // Everything happens inside one read-change-write.
-  return updateRecord(gameId, (r) => {
+  const written = updateRecord(gameId, (r) => {
     // One more round played (and one more daily puzzle when it was one), and one more win if it was won.
     const out: GameRecord = { ...r, played: r.played + 1, dailyPlayed: r.dailyPlayed + (opts.daily ? 1 : 0), wins: r.wins + (opts.won ? 1 : 0), lastDay: opts.dayKey };
     // A daily puzzle marks its day as played, for the shelf, and leaves its result for the list of earlier puzzles
@@ -329,6 +374,51 @@ export function recordResult(
     // The updated record.
     return out;
   });
+  // A daily puzzle finished on its own day: the public board is told (src/lib/fun/board.ts decides whether to send it:
+  // today's puzzle only, sharing on, once per game, mode and day). The module is loaded on demand, so this runs after
+  // the game's whole finish (some games save their final state just after recording) and can neither delay nor break
+  // it; any failure is swallowed, and the game goes on exactly as without a board.
+  if (opts.daily && typeof window !== "undefined") {
+    // Loaded, then told; never awaited.
+    void import("./board").then((m) => m.afterDailyRecord(gameId, opts.dayKey)).catch(() => undefined);
+  }
+  // The record as saved.
+  return written;
+}
+
+/**
+ * The scoreboard's choices kept in this browser.
+ *
+ * @returns them (empty when nothing was ever written)
+ */
+export function loadBoardLocal(): BoardLocal {
+  // The store's board part, if any.
+  const b = readStore().board;
+  // A plain object, or nothing.
+  return b && typeof b === "object" ? b : {};
+}
+
+/**
+ * Change the scoreboard's choices and write them back; sent rounds older than yesterday are dropped on every write.
+ *
+ * @param change a function from the current choices to the new ones
+ * @returns the choices as written
+ */
+export function updateBoardLocal(change: (b: BoardLocal) => BoardLocal): BoardLocal {
+  // The whole store.
+  const store = readStore();
+  // The change.
+  const next = change(store.board && typeof store.board === "object" ? store.board : {});
+  // The oldest day whose nonce is kept.
+  const oldest = addDays(utcDayKey(new Date()), -(KEEP_POSTED_DAYS - 1));
+  // Only the rounds of today and yesterday (the key ends with the day).
+  next.posted = Object.fromEntries(Object.entries(next.posted ?? {}).filter(([key]) => key.slice(-10) >= oldest));
+  // Put back.
+  store.board = next;
+  // Saved.
+  writeStore(store);
+  // As written.
+  return next;
 }
 
 /** A game's grading of a saved daily state: 1 solved, 0 finished but not solved, null unfinished or not understood. */

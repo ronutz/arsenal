@@ -159,6 +159,7 @@ export const READING_PATHS: ReadingPath[] = [
       "dhcp-lease-lifecycle",
       "ipv6-addressing",
       "arp-and-mac-addresses",
+      "big-endian-and-little-endian", // byte order: how the addresses and ports just met travel as bytes (2026-11-08)
       "routing-tables-and-default-gateway",
       "icmp-ping-and-traceroute",
       "tcp-connection-lifecycle",

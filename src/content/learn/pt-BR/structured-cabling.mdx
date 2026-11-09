@@ -2,7 +2,7 @@
 slug: structured-cabling
 title: "Cabeamento estruturado: o sistema por trás do ponto de rede"
 summary: "A TIA-568 transforma a fiação de um prédio, antes improvisada, num sistema: cabeamento horizontal, salas de telecom, o canal de 100 metros, categorias, pinagens e as classificações de resistência ao fogo que a fiscalização realmente confere. O mapa completo, do espelho na parede até o backbone."
-concepts: ["eia-tia", "utp", "cable-categories", "t568a-t568b", "plenum", "wiring-closet"]
+concepts: ["eia-tia", "utp", "cable-categories", "t568a-t568b", "plenum", "wiring-closet", "tia-568", "iso-iec-11801", "shielded-twisted-pair", "rj45", "poe"]
 relatedTools: ["cable-run-planner", "oui-lookup"]
 relatedArticles: ["ieee-802-working-groups", "gpon-how-one-fiber-serves-a-neighborhood", "last-mile-evolution-pots-to-fiber"]
 category: networking
@@ -15,7 +15,7 @@ updated: "2026-07-22"
 
 Antes do cabeamento estruturado, a rede de um prédio era o que cada fornecedor de sistema exigisse. O sistema de terminais tinha o próprio cabo coaxial; a telefonia tinha o seu par trançado, num plano próprio; uma rede token passing (de passagem de token) usava um cabo blindado específico. Instalar um sistema novo significava puxar cabo novo; trocar de fornecedor significava puxar cabo de novo; e ninguém conseguia saber, olhando o armário, para que servia cada fio.
 
-A **TIA-568 (1991)** acabou com isso ao inverter a pergunta. Em vez de cabear para um protocolo, ela especificou um sistema **genérico**: topologia, distâncias, tipos de conector e níveis de desempenho, definidos de modo que qualquer aplicação dentro da norma pudesse rodar sobre ele. O equivalente internacional é a **ISO/IEC 11801**, e o europeu, a **EN 50173**; elas diferem nos nomes e nos detalhes, não no objetivo.
+A **[TIA-568](/glossary/tia-568) (1991)** acabou com isso ao inverter a pergunta. Em vez de cabear para um protocolo, ela especificou um sistema **genérico**: topologia, distâncias, tipos de conector e níveis de desempenho, definidos de modo que qualquer aplicação dentro da norma pudesse rodar sobre ele. O equivalente internacional é a **[ISO/IEC 11801](/glossary/iso-iec-11801)**, e o europeu, a **EN 50173**; elas diferem nos nomes e nos detalhes, não no objetivo.
 
 Vale a pena conhecer o vocabulário que nasceu daí, porque todo projeto e toda concorrência usam esses termos:
 
@@ -53,7 +53,7 @@ A topologia é uma estrela de estrelas. De cada ponto da área de trabalho sai u
 
 O que uma **categoria** certifica é o canal, não a bobina de cabo. O Cat 5e suporta gigabit Ethernet nos 100 metros completos. O Cat 6 aumenta a largura de banda testada e leva 10 Gb/s, mas só até uns 55 metros; o Cat 6A leva 10 Gb/s na distância inteira e é a escolha sensata para cabeamento horizontal novo. O Cat 8 vai além, mas só no data center: 25/40 Gb/s, até 30 metros apenas, na prática sempre blindado, para ligar switch a servidor nas fileiras de rack, não para o andar do escritório. E a certificação vale de ponta a ponta: um link permanente Cat 6A ligado com patch cords Cat 5e é, como sistema, Cat 5e.
 
-O cobre, por padrão, é UTP: quatro pares, com a interferência combatida só pela geometria do trançado. Onde o ambiente é eletricamente hostil, as construções blindadas (F/UTP, S/FTP) acrescentam fita metálica e malha, ao custo de um cabo mais rígido e da obrigação de aterrar as blindagens direito. A terminação segue uma de duas pinagens, T568A ou T568B, que funcionam do mesmo jeito. A regra em cada instalação é escolher uma e nunca misturar, porque um padrão em cada ponta resulta num cabo crossover, um tipo de cabo que o auto-MDIX tornou coisa do passado, mas que um erro de conectorização ainda recria sem querer.
+O cobre, por padrão, é UTP: quatro pares, com a interferência combatida só pela geometria do trançado. Onde o ambiente é eletricamente hostil, as [construções blindadas](/glossary/shielded-twisted-pair) (F/UTP, S/FTP) acrescentam fita metálica e malha, ao custo de um cabo mais rígido e da obrigação de aterrar as blindagens direito. A terminação segue uma de duas pinagens, T568A ou T568B, que funcionam do mesmo jeito. A regra em cada instalação é escolher uma e nunca misturar, porque um padrão em cada ponta resulta num cabo crossover, um tipo de cabo que o auto-MDIX tornou coisa do passado, mas que um erro de conectorização ainda recria sem querer.
 
 ## Fibra onde o cobre não chega
 

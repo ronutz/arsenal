@@ -179,6 +179,11 @@ export const tools: ToolEntry[] = [
   { id: "bfd-timers", href: "/tools/bfd-timers", category: "networking", available: true }, // BFD timer calculator and packet decoder (2026-10-19)
   { id: "snmp-counter-wrap-calculator", href: "/tools/snmp-counter-wrap-calculator", category: "networking", available: true }, // SNMP interface counter wrap and rate calculator (2026-11-02)
   { id: "vrrp-timer-calculator", href: "/tools/vrrp-timer-calculator", category: "networking", available: true }, // VRRP timer, virtual MAC and election calculator (2026-11-02)
+  { id: "ospf-cost-and-adjacency-checker", href: "/tools/ospf-cost-and-adjacency-checker", category: "networking", available: true }, // OSPF cost from reference bandwidth per vendor, and adjacency-mismatch checker (2026-11-08)
+  { id: "vlan-tag-and-trunk-calculator", href: "/tools/vlan-tag-and-trunk-calculator", category: "networking", available: true }, // 802.1Q tag decoder and trunk VLAN calculator (2026-11-08)
+  { id: "lacp-hash-and-state-reader", href: "/tools/lacp-hash-and-state-reader", category: "networking", available: true }, // LACP member link (Linux transmit hash) and state flags reader (2026-11-08)
+  { id: "stp-election-calculator", href: "/tools/stp-election-calculator", category: "networking", available: true }, // spanning tree root bridge, root port and port role election, and path costs by speed (2026-11-08)
+  { id: "bit-numbering-and-order", href: "/tools/bit-numbering-and-order", category: "networking", available: true }, // LSB 0, MSB 0 and 1-based bit numbers, bit order on a wire, canonical and bit-reversed MAC addresses (2026-11-08)
   // Route origin validation calculator (2026-10-19): RFC 6811 section 2 against VRPs the reader pastes; nothing fetched.
   { id: "rpki-origin-validation", href: "/tools/rpki-origin-validation", category: "networking", available: true },
   { id: "bits-bytes", href: "/tools/bits-bytes", category: "networking", available: true },
@@ -192,6 +197,7 @@ export const tools: ToolEntry[] = [
   { id: "timezone-meeting-planner", href: "/tools/timezone-meeting-planner", category: "encoding", available: true },
   { id: "f5-irules-event-order", sub: "irules", href: "/tools/f5-irules-event-order", category: "networking", vendors: ["f5"], available: true },
   { id: "syslog-pri-decoder", href: "/tools/syslog-pri-decoder", category: "networking", available: true },
+  { id: "radius-packet-decoder", href: "/tools/radius-packet-decoder", category: "networking", available: true }, // RADIUS packet and attribute decoder, with a RADIUS and TACACS+ comparison (2026-11-08)
   // The observability programme (PRIME 2026-10-05 02:47), first batch: the parser the catalogue queued at rank 35 and the level mapper.
   { id: "syslog-message-parser", href: "/tools/syslog-message-parser", category: "operations", available: true },
   { id: "log-level-mapper", href: "/tools/log-level-mapper", category: "operations", available: true },

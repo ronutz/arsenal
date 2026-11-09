@@ -30,8 +30,8 @@ export const watchguardProfile: VendorProfile = {
     { year: 1996, title: "The Firebox ships", detail: "Security-in-a-box for the mid-market: the Firebox packages firewalling into a red appliance with approachable management - the form factor the entire industry, up to and including the giants, would eventually adopt." },
     { year: 1999, title: "Public in the boom", detail: "WatchGuard IPOs into the dot-com security wave, the red boxes multiplying through the SMB and branch-office world the enterprise vendors priced past." },
     { year: 2006, title: "Private again", detail: "Francisco Partners and Vector Capital take WatchGuard private, and the company settles into its long game: the unglamorous, durable mid-market it has never stopped serving.", sourceNote: "Take-private at approximately $151M per contemporaneous reporting, 2006." },
-    { year: 2008, title: "The UTM years", detail: "Fireware-based XTM platforms bundle firewall, VPN, gateway antivirus, and content filtering - unified threat management as the mid-market's whole security stack in one red chassis." },
-    { year: 2018, title: "AuthPoint", detail: "Cloud MFA joins the portfolio - identity arriving as the new perimeter for exactly the customers least equipped to build it themselves." },
+    { year: 2008, title: "The UTM years", detail: "Fireware-based XTM platforms bundle firewall, VPN (virtual private network), gateway antivirus, and content filtering - unified threat management as the mid-market's whole security stack in one red chassis." },
+    { year: 2018, title: "AuthPoint", detail: "Cloud MFA (multi-factor authentication) joins the portfolio - identity arriving as the new perimeter for exactly the customers least equipped to build it themselves." },
     { year: 2020, title: "Panda Security", detail: "WatchGuard acquires the Spanish endpoint vendor, completing the pivot from firewall maker to unified security platform: network, identity, and endpoint under one MSP-friendly console." },
     { year: 2024, title: "The MSP channel era", detail: "The company's centre of gravity is now the managed service provider - thousands of small businesses secured by proxy, the red box increasingly a cloud-managed node in someone else's operations centre." },
   ],
@@ -42,7 +42,7 @@ export const watchguardProfile: VendorProfile = {
   ],
   innovations: [
     { title: "Security as an appliance", detail: "WatchGuard bet that packaging - a sealed box, a sane console, a predictable price - was itself the product the mid-market needed. Every firewall vendor's appliance line descends from that bet." },
-    { title: "The MSP-first model", detail: "Long before 'MSSP' was a market segment, WatchGuard built for the channel operator managing fifty small networks at once - multi-tenant management as a first-class design goal rather than an enterprise afterthought." },
+    { title: "The MSP-first model", detail: "Long before 'MSSP' (managed security service provider) was a market segment, WatchGuard built for the channel operator managing fifty small networks at once - multi-tenant management as a first-class design goal rather than an enterprise afterthought." },
   ],
   markets: [
     "The mid-market and MSP channel: retail chains, clinics, schools, branch offices - the enormous stratum of networks below the enterprise vendors' attention and above doing nothing, defended disproportionately by red boxes.",

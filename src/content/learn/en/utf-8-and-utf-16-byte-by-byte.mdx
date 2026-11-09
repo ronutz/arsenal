@@ -4,7 +4,7 @@ title: "UTF-8, UTF-16 and UTF-32, byte by byte"
 summary: "How each Unicode encoding lays a code point out in bytes, how to recognise each one in a hex dump, which byte sequences are ill-formed and exactly what a decoder replaces with U+FFFD, and what a byte order mark does, including the one point where a browser and the Unicode Standard disagree."
 concepts: ["utf-8", "utf-16", "utf-32", "byte order mark", "surrogate pair", "maximal subpart", "replacement character", "overlong encoding", "hex dump"]
 relatedTools: ["charset-equivalency", "unicode-inspector", "base64", "url-inspector"]
-relatedArticles: ["unicode-code-points-and-properties", "mojibake-and-code-pages", "hidden-and-lookalike-characters", "character-encoding", "hex-encoding", "python-bytes-text-and-encodings"]
+relatedArticles: ["unicode-code-points-and-properties", "mojibake-and-code-pages", "hidden-and-lookalike-characters", "character-encoding", "hex-encoding", "python-bytes-text-and-encodings", "big-endian-and-little-endian"]
 category: encoding
 order: 218
 status: reviewed
@@ -77,7 +77,7 @@ A surrogate without its partner is ill-formed, and the decoder replaces it with 
 
 ## Byte order: BE, LE and the byte order mark
 
-A 16-bit unit is two bytes, and machines disagree about which comes first. UTF-16BE writes the high byte first and UTF-16LE the low byte first. For ASCII text that is the difference between `00 48 00 69` and `48 00 69 00` for "Hi", and it is how UTF-16 gives itself away in a dump: every other byte is zero.
+A 16-bit unit is two bytes, and machines disagree about which comes first. UTF-16BE writes the high byte first and UTF-16LE the low byte first. For ASCII text that is the difference between `00 48 00 69` and `48 00 69 00` for "Hi", and it is how UTF-16 gives itself away in a dump: every other byte is zero. Where the two orders come from, and which processors and formats use each, is in [Big-endian and little-endian: byte order explained](/learn/big-endian-and-little-endian).
 
 Plain "UTF-16" can say which order it uses with a byte order mark, U+FEFF at the very start: FE FF in big-endian, FF FE in little-endian. The Unicode Standard (D98) adds that "when there is no BOM, and in the absence of a higher-level protocol, the byte order of the UTF-16 encoding scheme is big-endian". Browsers do the opposite: in the WHATWG Encoding Standard the label "utf-16" means UTF-16LE, "to deal with deployed content". And when a browser finds a byte order mark at the start of a document, the mark wins over any label, because it "has been found to be more accurate in deployed content".
 

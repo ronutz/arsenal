@@ -4,7 +4,7 @@ title: "Bytes e texto em Python: encode, decode e os bugs no meio do caminho"
 summary: "Um socket carrega bytes e uma pessoa lê texto, e o Python 3 mantém os dois separados: str é uma sequência de code points Unicode, bytes uma sequência de inteiros de 0 a 255, e encode e decode são as únicas portas entre eles. O que o UTF-8 permite e os três jeitos como o CPython avisa que uns bytes não são UTF-8, o que fazem o Latin-1, o Windows-1252, o ASCII e o UTF-16, o que cada error handler faz (surrogateescape incluído), por que o open() sem encoding mudou no Python 3.15, como struct e int.from_bytes montam e leem um header binário (um header IPv4 com checksum), e os bugs que tudo isso causa em código de rede. Com um laboratório interativo que leva um texto por encode e decode em seis codecs, conferido com o CPython."
 concepts: ["str", "bytes", "encode", "decode", "utf-8", "utf-16", "latin-1", "windows-1252", "ascii", "codec", "error handler", "surrogateescape", "mojibake", "utf-8 mode", "encodingwarning", "struct", "ordem de bytes de rede", "int.from_bytes", "content-length"]
 relatedTools: ["python-playground", "charset-equivalency", "unicode-inspector", "ascii-table"]
-relatedArticles: ["python-explained", "python-errors-and-tracebacks", "character-encoding", "utf-8-and-utf-16-byte-by-byte", "mojibake-and-code-pages", "python-as-a-network-engineers-calculator", "bigip-content-rewriting"]
+relatedArticles: ["python-explained", "python-errors-and-tracebacks", "character-encoding", "utf-8-and-utf-16-byte-by-byte", "mojibake-and-code-pages", "python-as-a-network-engineers-calculator", "bigip-content-rewriting", "big-endian-and-little-endian"]
 category: encoding
 order: 221
 status: reviewed
@@ -247,7 +247,7 @@ b'P\x00' b'\x00P'
 little
 ```
 
-`int.from_bytes()` e `int.to_bytes()` fazem o mesmo para um campo isolado de qualquer largura; desde o Python 3.11 a ordem padrão deles é `"big"`, mas escrevê-la não custa nada e deixa o código mais claro. As três últimas linhas são as armadilhas: sem o `!`, a porta 80 sai com o byte baixo primeiro nesta máquina little-endian, e um byte seguido de um campo de 16 bits ocupa quatro bytes em vez de três, porque o modo nativo alinha o segundo campo. O [artigo da calculadora](/learn/python-as-a-network-engineers-calculator) usa o mesmo módulo num header DNS.
+`int.from_bytes()` e `int.to_bytes()` fazem o mesmo para um campo isolado de qualquer largura; desde o Python 3.11 a ordem padrão deles é `"big"`, mas escrevê-la não custa nada e deixa o código mais claro. As três últimas linhas são as armadilhas: sem o `!`, a porta 80 sai com o byte baixo primeiro nesta máquina little-endian, e um byte seguido de um campo de 16 bits ocupa quatro bytes em vez de três, porque o modo nativo alinha o segundo campo. O [artigo da calculadora](/learn/python-as-a-network-engineers-calculator) usa o mesmo módulo num header DNS, e [Big-endian e little-endian: a ordem dos bytes explicada](/learn/big-endian-and-little-endian) explica por que existem duas ordens de bytes e quais máquinas e formatos usam cada uma.
 
 ## Os bugs que isso causa em código de rede
 

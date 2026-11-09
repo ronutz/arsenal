@@ -46,7 +46,7 @@ export const sophosProfile: VendorProfile = {
     { name: "Sophos Endpoint and Intercept X", what: "The core protection product, with the anti-ransomware and exploit prevention work that became its distinguishing capability." },
     { name: "Sophos MDR", what: "Managed detection and response, now the largest part of the proposition and the reason the Secureworks purchase made sense." },
     { name: "Taegis", what: "The Secureworks platform, retained rather than absorbed - and since September 2025 shipping with Sophos Endpoint included at no extra cost, which is an unusually direct way to demonstrate that an acquisition benefits existing customers." },
-    { name: "Sophos Firewall, Switch, Email and ZTNA", what: "Network and access products managed from the same console. The breadth is aimed squarely at organisations with one person doing all of security." },
+    { name: "Sophos Firewall, Switch, Email and ZTNA", what: "Network and access products, zero trust network access (ZTNA) among them, managed from the same console. The breadth is aimed squarely at organisations with one person doing all of security." },
     { name: "Sophos X-Ops", what: "The combined research organisation - threat intelligence, malware analysis and offensive research published openly, now joined by the Counter Threat Unit." },
   ],
   innovations: [

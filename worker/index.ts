@@ -52,6 +52,9 @@ import { isAuthoredOnlyRoute } from "../src/i18n/corpus-routing";
 
 import { record, type AnalyticsEnv } from "./analytics";
 import { handleStats, type StatsEnv } from "./stats";
+// The /dev/fun games' public scoreboard (PRIME 08/11/2026): its four routes under /api/v1/fun/, on an optional D1
+// binding; see worker/scores.ts for what a row keeps and what it never keeps.
+import { handleScores, type ScoresEnv } from "./scores";
 
 // The random quote header (PRIME 2026-10-05 22:48): the pool of character lines,
 // one of which rides on every HTML response in the tradition of slashdot.org's
@@ -60,7 +63,7 @@ import { handleStats, type StatsEnv } from "./stats";
 // TypeScript toolchain; wrangler bundles the import.
 import quoteHeaders from "./quote-headers.json";
 
-interface Env extends AnalyticsEnv, StatsEnv {
+interface Env extends AnalyticsEnv, StatsEnv, ScoresEnv {
   ASSETS: { fetch(request: Request): Promise<Response> };
 }
 
@@ -210,7 +213,7 @@ const VANITY_REDIRECTS = new Map<string, string>([
 ]);
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: Env, ctx?: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
 
     // CORS preflight.
@@ -225,6 +228,16 @@ export default {
     {
       const statsResponse = await handleStats(url, env);
       if (statsResponse) return statsResponse;
+    }
+
+    // ---- /api/v1/fun/* : the games' public scoreboard ------------------------
+    // Answered BEFORE the tools' dispatch below, because the tools API's master switch (API_PROCESSING, off by
+    // default) must not take the board down with it: the board is served whether or not the tools API is. "fun" is
+    // not a tool slug, so no tool route is shadowed. Without the SCORES binding every route answers 503
+    // {"board":"unavailable"} and the games keep their record in the browser only, as before.
+    {
+      const scoresResponse = await handleScores(request, url, env, ctx);
+      if (scoresResponse) return scoresResponse;
     }
 
     // ---- /api/v1/<slug> : generic tool dispatch ----------------------------

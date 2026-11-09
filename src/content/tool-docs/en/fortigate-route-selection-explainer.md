@@ -33,7 +33,7 @@ That is also why prefix hijacking works, and why the ordering is worth having in
 The routing table only. Two things are consulted **before** it and override it:
 
 - A **policy route**, which matches on source, protocol and port as well as destination. A forgotten policy route is the classic cause of traffic that ignores an obviously correct static route, so if the table says one thing and the traffic does another, look there first.
-- An **SD-WAN rule**, which selects a member by measured performance before the table is reached.
+- An **SD-WAN (software-defined wide area network) rule**, which selects a member by measured performance before the table is reached.
 
 It is IPv4 only, and it does not evaluate whether a gateway is actually reachable; it takes the route set as given.
 

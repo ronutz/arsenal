@@ -10,6 +10,10 @@
 //     and certification hubs", offering training courses through the Pearson
 //     Skilling Suite and Training Marketplace ALONGSIDE the certification exam
 //   - Multiple sources: nearly 21 million exams delivered annually
+//   - Added 2026-11-06 (PRIME): Pearson VUE's news page "Pearson VUE to rebrand
+//     as Pearson Professional Assessments" (effective 18 November 2025, the
+//     name Pearson, the segment Professional Assessments, work into 2026) and
+//     the notice on pearsonvue.com and wsr.pearsonvue.com, both read with curl
 //
 // *** BODY READ AFTER DRAFTING, AND IT IS OUTSTANDING. It has the chain of
 // trust ("a credential is worth exactly what that verification is worth"), the
@@ -38,6 +42,12 @@ export const pearsonVueProfile: VendorProfile = {
       title: "And returning to training, thirty years later",
       detail:
         "The current programme is converting the test-centre network into venues that sell training alongside the examination - courses in cloud, security and artificial intelligence delivered in the same locations that administer the certificate at the end. The company founded to do training and diverted into testing is now using the testing network to do training.",
+    },
+    {
+      year: 2025,
+      title: "And giving up the name",
+      detail:
+        "On 18 November 2025 Pearson VUE began trading simply as Pearson, with the business identified as Professional Assessments. The work was expected to run into 2026, so for a while candidates see both names on the same portal.",
     },
   ],
   products: [

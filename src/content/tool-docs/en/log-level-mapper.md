@@ -20,7 +20,7 @@ Three ladders are placed by their correspondence with syslog's severities, which
 - Cisco IOS logging: emergencies 0 to debugging 7, each paired with its LOG_* constant in the command reference, whose table also says the default buffered level "varies by platform but is generally 7" (read 2026-10-05).
 - Junos system syslog: emergency, alert, critical, error, warning, notice and info, in that order, with "any" selecting every level and "none" disabling logging; Juniper's page gives the names, not numbers, and has no debug rung (read 2026-10-05).
 
-Python's logging module is placed by the OpenTelemetry SDK for Python itself, whose `_STD_TO_OTEL` table maps 10 DEBUG to 5, 20 INFO to 9, 30 WARNING to 13, 40 ERROR to 17 and 50 CRITICAL to 21, and the integers between to the further steps of the range (read 2026-10-05). NOTSET (0) means "consult the ancestors" and is not a message level.
+Python's logging module is placed by the OpenTelemetry SDK (software development kit) for Python itself, whose `_STD_TO_OTEL` table maps 10 DEBUG to 5, 20 INFO to 9, 30 WARNING to 13, 40 ERROR to 17 and 50 CRITICAL to 21, and the integers between to the further steps of the range (read 2026-10-05). NOTSET (0) means "consult the ancestors" and is not a message level.
 
 The equivalents table names an exact match when another ladder has a rung on the same SeverityNumber, and otherwise the nearest rung with its distance on the scale. When two rungs are equally near, both are shown and the row is marked as a tie. Sentinels (OFF, ALL, NOTSET, None, LogAlways, any, none) are shown in their ladder but are never offered as equivalents: they are filter values, not the severity of any message.
 

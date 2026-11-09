@@ -1,0 +1,262 @@
+---
+slug: big-endian-and-little-endian
+title: "Big-endian and little-endian: byte order explained"
+summary: "A number wider than one byte has to be laid out over several addresses, and machines disagree about which end goes first. What big-endian and little-endian mean, one 32-bit value byte by byte in both orders, where Danny Cohen found the names in 1980, why byte order is not bit order, network byte order in the RFCs and in POSIX, which processors are little-endian, big-endian or both, the instructions that swap bytes, the file formats and protocols that fix an order, what each order really costs, the bugs it causes, how to tell what a machine is, and three cases on this site: the LACP hash, the BIG-IP cookie and UTF-16."
+concepts: ["byte order", "endianness", "big-endian", "little-endian", "bi-endian", "network byte order", "host byte order", "htonl", "ntohl", "byte swap", "bswap", "movbe", "byte order mark", "pdp-endian", "ei_data", "sys.byteorder"]
+relatedTools: ["lacp-hash-and-state-reader", "f5-bigip-persistence-cookie", "charset-equivalency", "python-playground", "bit-numbering-and-order"]
+relatedArticles: ["utf-8-and-utf-16-byte-by-byte", "python-bytes-text-and-encodings", "bigip-cookie-formats", "link-aggregation-and-lacp", "bits-bytes-and-the-two-kinds-of-kilo", "character-encoding"]
+category: encoding
+order: 222
+status: reviewed
+updated: "2026-11-08"
+---
+
+Memory is a row of numbered bytes, and most numbers a program handles are wider than one byte: a port is two bytes, an IPv4 address four, a 64-bit counter eight. Such a number has to be spread over consecutive addresses, and there are two ways to do it. Put the most significant byte at the lowest address and the machine is big-endian; put the least significant byte there and it is little-endian. Nothing else changes, and that is the trouble: the same four bytes are two different numbers, depending on which convention reads them.
+
+**In short:** big-endian stores the high byte first and is the order of Internet protocol headers; little-endian stores the low byte first and is the order of x86-64 and of most Arm systems. A program that moves numbers between the two converts at the boundary (`htonl`, `ntohs`, Python's `struct` with `!`), and a program that forgets gets a different number and no error.
+
+## Two ways to lay out one number
+
+POSIX states both definitions in one place. "A little-endian representation of an integer has the least significant byte stored as the first byte, with the significance of the bytes increasing as the byte address increases. A big-endian representation has the most significant byte as the first byte" ([The Open Group, be16toh](https://pubs.opengroup.org/onlinepubs/9799919799/functions/be16toh.html)).
+
+Take the 32-bit value 0x0A0B0C0D (168 496 141 in decimal) and store it at address 0x1000:
+
+| Address | Big-endian | Little-endian |
+|---|---|---|
+| 0x1000 | 0A | 0D |
+| 0x1001 | 0B | 0C |
+| 0x1002 | 0C | 0B |
+| 0x1003 | 0D | 0A |
+
+Big-endian reads like the number written on paper; little-endian puts the "units" byte first, so the significance of each byte grows with its address. Both are complete and self-consistent, and a machine of either kind reads its own data back correctly. The difficulty only starts when the bytes leave: in a file, in a packet, or in memory shared with a device that uses the other convention. Python shows the two layouts directly:
+
+```python
+# The same 32-bit value packed little-endian, big-endian, and in the host's own order.
+import struct, sys
+v = 0x0A0B0C0D
+print(struct.pack("<I", v).hex(" "))   # little-endian
+print(struct.pack(">I", v).hex(" "))   # big-endian
+print(struct.pack("=I", v).hex(" "), sys.byteorder)  # native order, and its name
+```
+
+```text
+0d 0c 0b 0a
+0a 0b 0c 0d
+0d 0c 0b 0a little
+```
+
+That run was on CPython 3.13.16 on an x86-64 machine, so the native line matches the little-endian one. RFC 2781 gives the same picture for two bytes: 258 is 0x0102, "the octet 0x01 followed by the octet 0x02" in big-endian and the reverse in little-endian ([RFC 2781](https://www.rfc-editor.org/rfc/rfc2781)).
+
+Only the order of bytes within one number changes. A string of single-byte characters is stored in the same order on both, and so is UTF-8, where the Unicode Standard notes "there is no issue of big- versus little-endian byte order" ([Unicode 18.0.0, chapter 2](https://www.unicode.org/versions/Unicode18.0.0/core-spec/chapter-2/)). RISC-V puts the same guarantee in its own words: "endianness is byte-address invariant", so a byte stored at an address is the byte read back from it in any order ([RISC-V unprivileged ISA](https://raw.githubusercontent.com/riscv/riscv-isa-manual/main/src/unpriv/rv32.adoc)).
+
+## Where the names come from
+
+The words are older than computers. In Part I, chapter IV of Jonathan Swift's Gulliver's Travels (1726), Lilliput has been at war with Blefuscu for "six-and-thirty moons" because an emperor commanded "all his subjects, upon great penalties, to break the smaller end of their eggs", and "the books of the Big-endians have been long forbidden" ([Project Gutenberg, eBook 829](https://www.gutenberg.org/cache/epub/829/pg829.txt)). Swift names only the Big-endians; in that edition the word "Little-endian" does not occur.
+
+Danny Cohen supplied the other half. His memo IEN 137 (Internet Experiment Note 137), "On Holy Wars and a Plea for Peace", dated 1 April 1980, opens: "This is an attempt to stop a war." The question, he wrote, is "which bit should travel first, the bit from the little end of the word, or the bit from the big end of the word? The followers of the former approach are called the Little-Endians, and the followers of the latter are called the Big-Endians" ([Cohen, IEN 137](https://www.rfc-editor.org/ien/ien137.txt)). RFC 1700 cites the version published in IEEE Computer in October 1981 when it pictures data "in 'big-endian' order [COHEN]" ([RFC 1700](https://www.rfc-editor.org/rfc/rfc1700)), and the Power ISA (Instruction Set Architecture) that IBM's POWER processors implement, now published by the OpenPOWER Foundation, still prints Swift's whole passage, from the 1734 Dublin edition, in its introduction ([Power ISA 3.1C](https://files.openpowerfoundation.org/s/AKX2KtLkwCXxEaC)). The story of the memo and its title is told in the glossary entry [endianness (On Holy Wars)](/glossary/endianness-holy-wars).
+
+Cohen's conclusion is the part worth keeping: "It is more important to agree upon an order than which order is agreed upon." He even noted that Swift's point was the opposite of his own: Swift thought the end of the egg did not matter, so everyone could choose; Cohen agreed it did not matter, "but we insist that everyone must do it in the same way, to avoid anarchy".
+
+## Byte order is not bit order
+
+Cohen's memo is mostly about bits. On a serial line the units actually sent are bits, so the real question is which bit of a word goes first. If bits, bytes and words all follow one consistent order, the receiver can group the stream into chunks of any size; if they do not, "the chunk size must be understood and agreed upon by all parties". He also pointed out that inside memory "there is absolutely no specific significance whatsoever to the notion of 'left' and 'right' in bit order": software addresses bytes, never bits. His examples of inconsistency came from the communication world: the HDLC (High-Level Data Link Control) protocol sends every field narrow end first, "except the FCS (checksum) field".
+
+The Internet's documents settle bit numbering for the diagrams only: "the bit labeled 0 is the most significant bit", so the octet drawn `1 0 1 0 1 0 1 0` is 170 ([RFC 791, Appendix B](https://www.rfc-editor.org/rfc/rfc791)). The order in which bits travel on a wire is the link layer's business, and there two families of local area networks (LANs) disagreed. RFC 2469 explains Ethernet's convention: "The first bit of each byte that appears on the LAN maps to the least significant (i.e., right-most) bit of each byte in memory", which puts the group (multicast) bit "in the least significant bit of the first byte", and "Ethernet and 802.3 hardware behave consistently with this definition". Token Ring, and some FDDI (Fiber Distributed Data Interface) hardware, mapped the first bit to the most significant one instead, so the canonical address 12-34-56-78-9A-BC sat in such an adapter's memory as 48-2C-6A-1E-59-3D, and bridges between the two kinds of network had to "perform bit swaps of the addresses" inside ARP (Address Resolution Protocol) packets ([RFC 2469](https://www.rfc-editor.org/rfc/rfc2469)). That is a bit-order problem; the byte order of the address was the same on both. [Least and most significant bit](/learn/least-and-most-significant-bit) goes further into bit numbering and bit order.
+
+## Network byte order
+
+The Internet chose big-endian for its headers, and RFC 791 says so in its Appendix B, "Data Transmission Order": "When a multi-octet quantity is transmitted the most significant octet is transmitted first." RFC 1700, the 1994 Assigned Numbers, generalised it under "Data Notations" for the documentation of all Internet protocols, which "picture data in 'big-endian' order [COHEN]", most significant octet on the left; RFC 1700 itself was made Historic by RFC 3232 in 2002, the assignments having moved to the online registries of IANA, the Internet Assigned Numbers Authority ([RFC 3232](https://www.rfc-editor.org/rfc/rfc3232)). The phrase "network byte order" is older than any definition of it: in 2000 RFC 2781 remarked that it "has been used in many RFCs to indicate big-endian serialization, although that term has yet to be formally defined in a standards-track document".
+
+POSIX (the Portable Operating System Interface) defines it. "The convention is that all such values are stored with 8 bits in each octet, and with the first (lowest-addressed) octet holding the most-significant bits. This is called 'network byte order'"; the processor's own layout is "host byte order", and "16 and 32-bit values can be converted using the htonl(), htons(), ntohl(), and ntohs() functions" ([POSIX, 4.13 Host and Network Byte Orders](https://pubs.opengroup.org/onlinepubs/9799919799/basedefs/V1_chap04.html)). The four functions "convert 16-bit and 32-bit quantities between network byte order and host byte order" ([htonl](https://pubs.opengroup.org/onlinepubs/9799919799/functions/htonl.html)); on a big-endian host they change nothing, on a little-endian host they reverse the bytes. The socket address structure is where they matter: "The sin_port and sin_addr members shall be in network byte order" ([netinet/in.h](https://pubs.opengroup.org/onlinepubs/9799919799/basedefs/netinet_in.h.html)). The 2024 edition of POSIX added `<endian.h>`, with `htobe32()`, `le32toh()` and the rest for 16, 32 and 64 bits in either order, and states the rule in one line: "Network byte order is big-endian" ([endian.h](https://pubs.opengroup.org/onlinepubs/9799919799/basedefs/endian.h.html), [be16toh](https://pubs.opengroup.org/onlinepubs/9799919799/functions/be16toh.html)).
+
+The address 192.0.2.10 travels as the four bytes C0 00 02 0A. Read as one big-endian integer they are 3 221 225 994; loaded into a register by a little-endian processor without conversion, the same bytes are 0x0A0200C0, which is 167 903 424. Both numbers are "the address as an integer", and code that stores one and reads it back as the other has moved the host somewhere else.
+
+## Processors: little, big and both
+
+Most processors pick one order; some can run either, which is called bi-endian:
+
+| Family | Byte order | Debian ports |
+|---|---|---|
+| x86, x86-64 | little-endian | amd64, i386: little |
+| Arm | little-endian in practice; big-endian data accesses selectable | arm64, armel, armhf: little |
+| IBM z/Architecture | big-endian | s390x: big |
+| IBM Power | bi-endian, chosen by the operating system | ppc64el: little; ppc64, powerpc: big |
+| RISC-V | little-endian, big-endian or bi-endian variants | riscv64: little |
+| MIPS | either, chosen when the system is built | mipsel, mips64el: little; mips, mips64: big |
+| SPARC V9 | big-endian, with little-endian data accesses | sparc64: big |
+
+In the documentation's own words, the family's own manual wherever that could be read:
+
+- **x86 and x86-64**: Intel 64 and IA-32 processors "are 'little endian' machines; this means the bytes of a word are numbered starting from the least significant byte" ([Intel SDM volume 1](https://cdrdv2-public.intel.com/825744/253665-sdm-vol-1.pdf), section 1.3.1). AMD's manual says the same of both: "The x86 and AMD64 architectures address memory using little-endian byte-ordering. Multibyte values are stored with their least-significant byte at the lowest byte address" ([AMD64 APM volume 1](https://docs.amd.com/api/khub/documents/OdDzCKsU4uf~KbI1htdPvA/content), revision 3.25).
+- **Arm**: the order of data accesses is a bit per exception level in the System Control Register, SCTLR_EL1: EE for "data accesses at EL1" and E0E for "data accesses at EL0", 0 meaning little-endian and 1 big-endian. The bits can be changed only on a processor that implements mixed-endian support (FEAT_MixedEnd); on the others they are fixed, big-endian on a big-endian-only processor and little-endian on the rest ([Arm, SCTLR_EL1](https://support.arm.com/documentation/ddi0601/2026-09/AArch64-Registers/SCTLR-EL1--System-Control-Register--EL1-)). Linux's arm64 build asked whoever configured it to "select the endianness of data accesses performed by the CPU", with little-endian as the default, up to version 6.17 ([Linux 6.17, arch/arm64/Kconfig](https://raw.githubusercontent.com/torvalds/linux/v6.17/arch/arm64/Kconfig)).
+- **IBM z/Architecture**: "a group of bytes in storage is addressed by the leftmost byte of the group", and the leftmost bits are "the 'high-order' bits" ([IBM SA22-7832-13](https://publibfi.dhe.ibm.com/epubs/pdf/a227832d.pdf), the fourteenth edition of the Principles of Operation, chapter 3).
+- **IBM Power**: "The byte ordering (Big-Endian or Little-Endian) for a storage access is specified by the operating system" (Power ISA 3.1C, section 1.10).
+- **RISC-V**: "RISC-V base ISAs have either little-endian or big-endian memory systems, with the privileged architecture further defining bi-endian operation" ([RISC-V, intro.adoc](https://raw.githubusercontent.com/riscv/riscv-isa-manual/main/src/unpriv/intro.adoc)).
+- **MIPS**: "Some MIPS machines can be configured for either little or big endian byte order", in the Linux kernel's configuration ([Linux, arch/mips/Kconfig](https://raw.githubusercontent.com/torvalds/linux/master/arch/mips/Kconfig)).
+- **SPARC V9**: "SPARC-V9 uses big-endian byte order by default", and "All instruction accesses are performed using big-endian byte order" ([The SPARC Architecture Manual, Version 9](https://sparc.org/wp-content/uploads/2014/01/SPARCV9.pdf.gz)).
+
+The last column of the table is Debian's summary of its ports, which also lists loong64 as little-endian and hppa and m68k as big-endian ([Debian wiki, ArchitectureSpecificsMemo](https://wiki.debian.org/ArchitectureSpecificsMemo)). Python's struct documentation sums up the practical position: "Intel x86, AMD64 (x86-64), and Apple M1 are little-endian; IBM z and many legacy architectures are big-endian" ([Python, struct](https://docs.python.org/3/library/struct.html)).
+
+The bi-endian designs differ in what they let change:
+
+- **Power** has one switch, the LE mode bit, which "applies to both data accesses and instruction fetches". Debian ships both orders as separate ports, ppc64 and ppc64el.
+- **RISC-V** never changes its instructions: they "are stored in memory as a sequence of 16-bit little-endian parcels, regardless of memory system endianness". Data order is set per privilege level by the MBE, SBE and UBE bits of `mstatus`, so that, for instance, "an OS of one endianness" can "execute user-mode programs of the opposite endianness", although the application binary interfaces are not meant to mix: "Standard RISC-V ABIs are expected to be purely little-endian-only or big-endian-only" ([RISC-V privileged ISA](https://raw.githubusercontent.com/riscv/riscv-isa-manual/main/src/priv/machine.adoc)).
+- **SPARC V9** keeps instructions big-endian and lets data be read little-endian "by using selected ASIs", the address space identifiers that tag each access, or by changing the default for user mode, supervisor mode or both, to "support mixed byte order systems".
+- **MIPS**, in Linux's description, picks one order for the whole system: "These modes require different kernels and a different Linux distribution."
+- **Arm**'s second order is fading in practice. Linux's arm64 big-endian kernel option was marked as depending on BROKEN in 6.18 ([Linux 6.18](https://raw.githubusercontent.com/torvalds/linux/v6.18/arch/arm64/Kconfig)) and is gone from the 7.4 release candidate ([Linux 7.4-rc1](https://raw.githubusercontent.com/torvalds/linux/v7.4-rc1/arch/arm64/Kconfig)), while the 32-bit SETEND instruction, which "alters the data-endianness of the AArch32 EL0", is described there as "deprecated in ARMv8".
+
+## Swapping bytes: the instructions and the macros
+
+Because the two orders meet at every network interface, processors have instructions for the conversion:
+
+- **x86**: BSWAP "reverses the byte order in a 32-bit register operand" and "is useful for converting between 'big-endian' and 'little-endian' data formats"; MOVBE, "Move data after swapping data bytes", does the load or store and the swap in one instruction, and its support is enumerated by a CPUID bit (CPUID.01:ECX.MOVBE, bit 22) (Intel SDM volume 1, as above). AMD documents the same pair: BSWAP "is used to convert data between little-endian and big-endian byte order" and on a 16-bit register its result "is undefined", so a 16-bit swap uses XCHG, and "MOVBE performs a reordering of the bytes within the source operand as it is copied" (AMD64 APM volume 1, as above).
+- **Arm**: REV, which "reverses the byte order in a register", with REV16 and REV32 doing the same within each 16-bit halfword and each 32-bit word ([Arm, A64 instruction set, REV](https://support.arm.com/documentation/ddi0602/2026-09/Base-Instructions/REV--Reverse-bytes-)).
+- **IBM z**: LOAD REVERSED and its relatives "can be used to convert two, four, or eight bytes from a 'little-endian' format to a 'big-endian' format, or vice versa"; IBM's example is that "the bytes ABCD in the big-endian format are DCBA in the little-endian format" (IBM SA22-7832-13, as above).
+- **Power**: the byte-reverse loads and stores (Load Word Byte-Reverse Indexed and its siblings) and the register forms Byte-Reverse Halfword, Word and Doubleword (Power ISA 3.1C, section 3.3.16).
+- **RISC-V**: the Zbb extension's rev8, which "reverses the byte-ordering" of a register ([RISC-V, zbb.adoc](https://raw.githubusercontent.com/riscv/riscv-isa-manual/main/src/unpriv/zbb.adoc)).
+
+Software rarely writes those by hand. The Linux kernel names every conversion by its direction: `cpu_to_be32()`, `be32_to_cpu()`, `cpu_to_le16()` and so on, defined once per byte order; on a little-endian build `cpu_to_le32` is only a type cast and `cpu_to_be32` is `__swab32`, which swab.h maps to the compiler's `__builtin_bswap32` where the compiler has one, and otherwise to the architecture's own swap or a portable shift-and-mask version ([Linux, include/linux/byteorder/generic.h](https://raw.githubusercontent.com/torvalds/linux/master/include/linux/byteorder/generic.h), [little_endian.h](https://raw.githubusercontent.com/torvalds/linux/master/include/uapi/linux/byteorder/little_endian.h), [swab.h](https://raw.githubusercontent.com/torvalds/linux/master/include/uapi/linux/swab.h)). Naming the direction rather than "swap" is the useful habit: the same source is right on both kinds of processor, because the macro that does nothing on one does the swap on the other.
+
+## Formats and protocols that fix an order
+
+A file or a protocol that is read on more than one kind of machine has to say which order its numbers use, and each has made its choice in its own words:
+
+| Format or protocol | Order | What the specification says |
+|---|---|---|
+| IPv4 and the Internet headers | big-endian | "the most significant octet is transmitted first" (RFC 791) |
+| PNG (Portable Network Graphics) | big-endian | "All integers that require more than one byte shall be in network byte order" ([W3C, PNG Third Edition](https://www.w3.org/TR/png-3/), 7.1) |
+| Java class files | big-endian | "Multibyte data items are always stored in big-endian order, where the high bytes come first" ([Java Virtual Machine Specification, Java SE 25, chapter 4](https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html)) |
+| XDR (External Data Representation) | big-endian | an integer's "most and least significant bytes are 0 and 3, respectively" ([RFC 4506](https://www.rfc-editor.org/rfc/rfc4506)) |
+| CBOR (Concise Binary Object Representation) | big-endian | "All multi-byte values are encoded in network byte order (that is, most significant byte first, also known as 'big-endian')" ([RFC 8949](https://www.rfc-editor.org/rfc/rfc8949)) |
+| Windows bitmap (BMP) | little-endian | the file type field "must be 0x4d42 (the ASCII string 'BM')" ([Microsoft, BITMAPFILEHEADER](https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapfileheader)): the bytes B (0x42), M (0x4D) make 0x4D42 only when the low byte comes first |
+| WebAssembly | little-endian | memory "values are read and written in little endian byte order", and floating-point constants are their IEEE 754 bit pattern "in little endian byte order" ([WebAssembly 3.0](https://webassembly.github.io/spec/core/syntax/instructions.html), [binary format](https://webassembly.github.io/spec/core/binary/values.html)) |
+| TIFF | either, marked | bytes 0 and 1 are "II" for "little-endian byte order" or "MM" for "big-endian byte order"; "TIFF readers must be able to handle both byte orders" ([TIFF 6.0](https://www.itu.int/itudoc/itu-t/com16/tiff-fx/docs/tiff6.pdf)) |
+| ELF object files | either, marked | `e_ident[EI_DATA]` is ELFDATA2LSB (1), "the least significant byte occupying the lowest address", or ELFDATA2MSB (2) ([System V ABI, ELF header](https://www.sco.com/developers/gabi/latest/ch4.eheader.html)) |
+| UTF-16 and UTF-32 text | either, marked or labelled | UTF-16BE and UTF-16LE fix the order; plain UTF-16 may start with a byte order mark and is big-endian without one (below) |
+
+PNG carries the TIFF convention inside itself: its eXIf chunk holds Exif data whose first bytes are "either 'II' for little-endian (Intel) or 'MM' for big-endian (Motorola) byte order", so a decoder checks for 49 49 2A 00 or 4D 4D 00 2A, the number 42 in each order (PNG Third Edition, 11.3.4.5). WebAssembly writes its other integers in a variable-length code whose first byte carries the lowest seven bits, so its binary format is low-end-first throughout.
+
+RFC 4506 answers the obvious complaint about XDR directly. "Why is the XDR byte-order big-endian instead of little-endian? Isn't this unfair to little-endian machines such as the VAX(r), which has to convert from one form to the other? Yes, it is unfair, but having only one byte-order means you have to be unfair to somebody." And the benefit of one order is that "data in XDR format can be written to a magnetic tape, for example, and any machine will be able to interpret it, since no higher-level protocol is necessary for determining the byte-order".
+
+## Little-endian and big-endian compared
+
+| | Little-endian | Big-endian |
+|---|---|---|
+| Lowest address holds | the least significant byte | the most significant byte |
+| 0x0A0B0C0D in memory | 0D 0C 0B 0A | 0A 0B 0C 0D |
+| Where it is native | x86 and x86-64; Arm, RISC-V and ppc64el as Debian ships them | IBM z (s390x), SPARC V9, and the big-endian Power and MIPS ports |
+| Formats that use it | BMP, WebAssembly, UTF-16LE, ELF on little-endian targets | Internet headers, PNG, Java class files, XDR, CBOR, UTF-16 without a mark |
+| What its proponents give for it | significance grows with address, "consistent ... with mathematics" (Cohen); "more natural for hardware designers" and commercially dominant (RISC-V) | the order numbers are written in, "consistent with itself and with the English language" (Cohen); the order of IP networking's data structures (RISC-V) |
+| What it costs | a hex dump shows multi-byte numbers back to front; every field of a network header has to be converted | the little-endian processors most systems run convert every value they read from the wire or from a big-endian file |
+
+The arguments for either order are real and small; Cohen wrote that "the difference between sending eggs with the little- or the big-end first is trivial". His own list: "Serial comparators and dividers prefer the former", the big-endian order, while "Serial adders and multipliers prefer the latter". He found the little-endian order's one disadvantage aesthetic, that "English character streams appear to be written backwards" in a dump, and he observed that "only the Big-Endians of Blefuscu have built systems with a consistent order which works across chunk-boundaries", having "failed to find a Little-Endians' system which is totally consistent". RISC-V's designers chose little-endian "because little-endian systems are currently dominant commercially (all x86 systems; iOS, Android, and Windows for ARM)", added that "A minor point is that we have also found little-endian memory systems to be more natural for hardware designers", and defined big-endian variants anyway because "certain application areas, such as IP networking, operate on big-endian data structures". Their fixed little-endian instructions have a price they state too: big-endian just-in-time (JIT) compilers "must swap the byte order when storing to instruction memory".
+
+The cost that matters most in practice belongs to neither order. It is the conversion at every boundary between them, and the bugs when one is missed. POSIX says as much about network byte order: it "may not be convenient for processing actual values", which is why values are converted to host order on the way in and back on the way out.
+
+## Middle-endian: the PDP-11
+
+Not every machine picked one of the two. Cohen's memo describes the PDP-11 as "the first computer to claim to be a Little-Endian", storing 16-bit words low byte first, but treating its registers "in the Big-Endians' way", with the high half of a 32-bit operand in the lower-numbered register, and storing its floating-point numbers with "the wide end to the LOWer addresses in memory, and the narrow to the HIGHer addresses" while each 16-bit word stayed little-endian. The VAX did the same with its floating-point numbers, Cohen says because "it tries to be compatible with the PDP11", and its packed-decimal numbers were another case where "The Big-Endians struck again". POSIX records the result in the rationale of `<endian.h>`: "Many implementations also include PDP_ENDIAN to indicate a byte ordering where each pair of bytes is swapped. If BIG_ENDIAN is defined as 4321, PDP_ENDIAN would be 3412", a scheme that "derives its name from an obsolete processor". The Linux kernel's byte-order header still mentions "pdp endian machines" in a comment, and its two byte-order headers define `__LITTLE_ENDIAN` as 1234 and `__BIG_ENDIAN` as 4321 in the same notation.
+
+## The bugs it causes
+
+None of these raises an error; each produces a valid number that is the wrong one.
+
+- **A port in host order.** `struct.pack("H", 80)` on a little-endian host gives `b'P\x00'`, and the network reads the two bytes 50 00 as port 20 480. The C version is a `sin_port` filled without `htons()`. The fix is the `!` prefix in Python, "network (= big-endian)" in the struct documentation, or the conversion function in C.
+- **An address as an integer.** 192.0.2.10 is 3 221 225 994 in network order and 167 903 424 when its bytes are loaded raw on a little-endian host. A database column, a log field or a hash table that stores one and is read as the other points at a different machine.
+- **Bytes reinterpreted through the wrong type.** POSIX warns that data to be converted "should either be received directly into a uint16_t or uint32_t object or should be copied from an array of bytes using memcpy() or similar. Passing the data through other types could cause the byte order to be changed."
+- **Text in the wrong order.** The UTF-16BE bytes 00 48 00 69 are "Hi"; decoded as UTF-16LE they become 䠀椀 (U+4800 and U+6900), with no error, measured in CPython 3.13.16.
+- **A hash that depends on the processor.** Any code that hashes the raw bytes of a multi-byte field without converting it computes a value that depends on the processor. Linux's bonding driver does exactly that, and the section on LACP (Link Aggregation Control Protocol) below shows when it moves a flow.
+- **Native formats written to disk.** Python's `struct` defaults to "the machine's native format and byte order", and its documentation adds that "There is no way to indicate non-native byte order (force byte-swapping); use the appropriate choice of `'<'` or `'>'`." A file written with the default on one machine is misread on the other.
+
+## How to tell what a machine is
+
+- **Python**: `sys.byteorder` "will have the value 'big' on big-endian (most-significant byte first) platforms, and 'little' on little-endian (least-significant byte first) platforms" ([Python, sys](https://docs.python.org/3/library/sys.html)). For a single field, `int.from_bytes()` and `int.to_bytes()` take the order as an argument that "defaults to 'big'" ([Python, built-in types](https://docs.python.org/3/library/stdtypes.html)), and `array.byteswap()` is "useful when reading data from a file written on a machine with a different byte order" ([Python, array](https://docs.python.org/3/library/array.html)).
+- **The site's Python playground**: it runs CPython compiled to WebAssembly, and WebAssembly memory is little-endian whatever the processor underneath, so the [playground](/tools/python-playground) answers `little` on any machine. Its engine, Pyodide 314.0.7 with CPython 3.14.2, reports `wasm32` as the machine and packs 0x0A0B0C0D natively as 0d 0c 0b 0a.
+- **Linux, from the shell**: `lscpu` prints a "Byte Order" line, "Little Endian" or "Big Endian" ([util-linux, lscpu.c](https://raw.githubusercontent.com/util-linux/util-linux/master/sys-utils/lscpu.c)). It reads `/sys/kernel/cpu_byteorder`, which the kernel has offered since 6.2 as "The endianness of the running kernel", "little" or "big" ([Linux ABI documentation](https://raw.githubusercontent.com/torvalds/linux/master/Documentation/ABI/testing/sysfs-kernel-cpu_byteorder)), and falls back to the compiler's own byte-order macro ([util-linux, lib/sysfs.c](https://raw.githubusercontent.com/util-linux/util-linux/master/lib/sysfs.c)). On the x86-64 machine these examples ran on, util-linux 2.39.3 printed `Byte Order: Little Endian`.
+- **C**: POSIX's `<endian.h>` defines `BYTE_ORDER`, equal to `LITTLE_ENDIAN` or `BIG_ENDIAN`, and "suitable for use in #if preprocessing directives".
+- **A binary**: the sixth byte of an ELF file (`e_ident[5]`) is 1 for little-endian and 2 for big-endian. On the same machine `od -t x1 -N 8 /bin/ls` showed `7f 45 4c 46 02 01 01 00`, and GNU readelf 2.42 spelt the 01 out as `Data: 2's complement, little endian`.
+- **A file of text**: look for a byte order mark at the start, FE FF or FF FE in UTF-16.
+
+## Three cases on this site
+
+### The LACP hash
+
+Linux's bonding driver picks the member link for a frame by hashing its addresses, and it does so on the bytes as the processor loads them. In `bond_ip_hash` the two IPv4 addresses are XORed as raw 32-bit values, `(__force u32)flow_get_u32_dst(flow) ^ (__force u32)flow_get_u32_src(flow)`; for layer3+4 the starting value is the two ports copied straight from the header, `memcpy(&hash, &flow.ports.ports, sizeof(hash))`; the result is folded twice (`hash ^= (hash >> 16); hash ^= (hash >> 8);`) and shifted right by one; and the member is `slaves->arr[hash % count]` ([Linux, drivers/net/bonding/bond_main.c](https://raw.githubusercontent.com/torvalds/linux/master/drivers/net/bonding/bond_main.c)). Only the EtherType that layer2 and layer2+3 mix in goes through `be16_to_cpu()` and comes out the same on every processor. So an x86-64 server and an IBM Z guest (s390x) running the same kernel compute different hash values for the same flow.
+
+Whether the flow then lands on a different member depends on how many members there are. The two folds leave in the lowest byte of the hash the XOR of all four bytes of the word, which is the same in either order, and a modulo by two, four or eight, even after layer3+4's final shift, reads only bits that came from that byte. Counted over 100 000 flows with random addresses, ports and MAC addresses on 2026-11-08, under layer2+3 and layer3+4 alike, the two byte orders chose the same member every time with two, four or eight members, and a different member for about two flows in three with three or six members, four in five with five and six in seven with seven. A flow from 192.0.2.10 port 50002 to 198.51.100.20 port 873 over TCP, layer3+4, hashes to 0x3B8939DB on a little-endian processor and 0x62D260DB on a big-endian one: with four members both use member 3, with three members the little-endian machine uses member 1 and the big-endian machine member 2. The [LACP member link and state reader](/tools/lacp-hash-and-state-reader) computes both, step by step, and [Link aggregation and LACP](/learn/link-aggregation-and-lacp) explains the hash itself.
+
+### The BIG-IP persistence cookie
+
+A BIG-IP cookie of the default IPv4 form looks like `1677787402.20480.0000`. F5's own explanation of the port field is a byte-order recipe: "the port number is converted the same way as the IP address. You convert to hexadecimal, then reverse order the hex numbers, then convert to decimal" ([F5 DevCentral, Lightboard Lessons: BIG-IP Cookie Persistence Values](https://community.f5.com/kb/technicalarticles/lightboard-lessons-big-ip-cookie-persistence-values/280812)). F5's support article states it as an algorithm: "Reverse the order of the hexadecimal bytes and concatenate to make one 4-byte hexadecimal value", which for the address a.b.c.d is `a + b*256 + c*(256^2) + d*(256^3)`, and the two port bytes are reversed the same way ([F5 K6917](https://my.f5.com/manage/s/article/K6917)). Worked through, 10.1.1.100 is the bytes 0A 01 01 64, and those four bytes read little-endian are 0x6401010A, 1 677 787 402; port 80 is 00 50, and read the same way it is 0x5000, 20 480. In other words, each field is the integer a little-endian processor gets by loading the address and port bytes, in network order, without converting them. [The four BIG-IP cookie encodings](/learn/bigip-cookie-formats) decodes every form, including the route-domain and IPv6 ones, and the [cookie decoder](/tools/f5-bigip-persistence-cookie) does it for any value.
+
+### UTF-16
+
+A UTF-16 code unit is two bytes, so UTF-16 text has a byte order. Unicode defines three encoding schemes for it: UTF-16BE, UTF-16LE, and UTF-16, which may begin with a byte order mark: "An initial byte sequence `<FE FF>` indicates big-endian order, and an initial byte sequence `<FF FE>` indicates little-endian order", and "when there is no BOM, and in the absence of a higher-level protocol, the byte order of the UTF-16 encoding scheme is big-endian" ([Unicode 18.0.0, chapter 3, D98](https://www.unicode.org/versions/Unicode18.0.0/core-spec/chapter-3/)). RFC 2781 says the same, that text without a mark "SHOULD be interpreted as being big-endian". Browsers do the opposite: in the WHATWG (Web Hypertext Application Technology Working Group) Encoding Standard the label "utf-16" names UTF-16LE, and "the byte order mark is more authoritative than anything else" ([WHATWG Encoding Standard](https://encoding.spec.whatwg.org/)). Python's `"A".encode("utf-16")` writes a mark and then the host's order, `b'\xff\xfeA\x00'` on the little-endian machine of these examples, as [Python's bytes and text](/learn/python-bytes-text-and-encodings) shows; [UTF-8, UTF-16 and UTF-32, byte by byte](/learn/utf-8-and-utf-16-byte-by-byte) reads the marks in a hex dump, and the [charset converter](/tools/charset-equivalency) decodes the same bytes in each order.
+
+## What to remember
+
+- Byte order is only about numbers wider than a byte: single bytes, ASCII text and UTF-8 look the same either way.
+- Big-endian puts the high byte first and is the Internet's order; little-endian puts the low byte first and is what x86-64 and most Arm systems run.
+- Convert at the boundary and name the direction: `htonl`, `be32toh`, `cpu_to_be32`, struct's `!`. Code written that way is right on both kinds of machine.
+- Formats either fix an order (PNG, Java class files, XDR, CBOR big; BMP, WebAssembly little) or mark it (TIFF's II and MM, ELF's EI_DATA, the UTF-16 byte order mark).
+- A byte-order bug never raises an error; it yields a valid wrong number, a port of 20 480 or a text in the wrong script.
+- As Cohen put it in 1980, agreeing on an order matters more than which order is agreed on.
+
+## Sources
+
+The definitions and network byte order are POSIX's (Issue 8, 2024) and the RFCs'; the processors' orders are each architecture's own manual, except MIPS, which is described from the Linux kernel's configuration because no manual hosted by its vendor could be found, and Arm, whose registers and instructions are Arm's own pages and whose practice is described from the Linux kernel's configuration files; F5's support article and Arm's pages were read in a browser, those sites refusing automated reads; the file and protocol orders are their specifications'. The Python, Pyodide, lscpu, od and readelf results and the hash counts were measured on 2026-11-08 on an x86-64 machine, the hashes with a short Python model of `bond_main.c` checked against the site's LACP engine. Every document below was read on 2026-11-08.
+
+- [Danny Cohen, IEN 137, On Holy Wars and a Plea for Peace, 1 April 1980: the names, consistent and inconsistent orders, the PDP-11 and the VAX, the arguments for each order (read 2026-11-08)](https://www.rfc-editor.org/ien/ien137.txt)
+- [Jonathan Swift, Gulliver's Travels, Project Gutenberg eBook 829, Part I chapter IV: the Big-endians (read 2026-11-08)](https://www.gutenberg.org/cache/epub/829/pg829.txt)
+- [RFC 791, Internet Protocol, Appendix B: data transmission order (read 2026-11-08)](https://www.rfc-editor.org/rfc/rfc791)
+- [RFC 1700, Assigned Numbers, 1994: data notations in big-endian order, citing Cohen (read 2026-11-08)](https://www.rfc-editor.org/rfc/rfc1700)
+- [RFC 3232: RFC 1700 made Historic (read 2026-11-08)](https://www.rfc-editor.org/rfc/rfc3232)
+- [RFC 2469, A Caution On The Canonical Ordering Of Link-Layer Addresses: Ethernet and Token Ring bit order (read 2026-11-08)](https://www.rfc-editor.org/rfc/rfc2469)
+- [RFC 2781, UTF-16, an encoding of ISO 10646: big-endian and little-endian, the byte order mark, "network byte order" (read 2026-11-08)](https://www.rfc-editor.org/rfc/rfc2781)
+- [RFC 4506, XDR: External Data Representation Standard: big-endian integers and the rationale (read 2026-11-08)](https://www.rfc-editor.org/rfc/rfc4506)
+- [RFC 8949, Concise Binary Object Representation (CBOR): network byte order (read 2026-11-08)](https://www.rfc-editor.org/rfc/rfc8949)
+- [The Open Group Base Specifications Issue 8 (POSIX.1-2024), 4.13 Host and Network Byte Orders (read 2026-11-08)](https://pubs.opengroup.org/onlinepubs/9799919799/basedefs/V1_chap04.html)
+- [POSIX.1-2024, htonl, htons, ntohl, ntohs (read 2026-11-08)](https://pubs.opengroup.org/onlinepubs/9799919799/functions/htonl.html)
+- [POSIX.1-2024, be16toh and the other endian.h conversions: the definitions of the two orders (read 2026-11-08)](https://pubs.opengroup.org/onlinepubs/9799919799/functions/be16toh.html)
+- [POSIX.1-2024, endian.h: BYTE_ORDER and the PDP_ENDIAN rationale (read 2026-11-08)](https://pubs.opengroup.org/onlinepubs/9799919799/basedefs/endian.h.html)
+- [POSIX.1-2024, netinet/in.h: sin_port and sin_addr in network byte order (read 2026-11-08)](https://pubs.opengroup.org/onlinepubs/9799919799/basedefs/netinet_in.h.html)
+- [Intel 64 and IA-32 Architectures Software Developer's Manual, volume 1, 253665-084US, June 2024: section 1.3.1, BSWAP, MOVBE (read 2026-11-08)](https://cdrdv2-public.intel.com/825744/253665-sdm-vol-1.pdf)
+- [AMD64 Architecture Programmer's Manual, volume 1, Application Programming, 24592 revision 3.25, May 2026: byte ordering, BSWAP, MOVBE (read 2026-11-08)](https://docs.amd.com/api/khub/documents/OdDzCKsU4uf~KbI1htdPvA/content)
+- [IBM z/Architecture Principles of Operation, SA22-7832-13, fourteenth edition, May 2022: information formats, LOAD REVERSED (read 2026-11-08)](https://publibfi.dhe.ibm.com/epubs/pdf/a227832d.pdf)
+- [OpenPOWER Foundation, Power ISA Version 3.1C, 26 May 2024: storage addressing and Endian mode, byte-reverse instructions, Swift's passage (read 2026-11-08)](https://files.openpowerfoundation.org/s/AKX2KtLkwCXxEaC)
+- [RISC-V Instruction Set Manual, unprivileged, intro.adoc: memory systems, little-endian instruction parcels, the design note (read 2026-11-08)](https://raw.githubusercontent.com/riscv/riscv-isa-manual/main/src/unpriv/intro.adoc)
+- [RISC-V Instruction Set Manual, unprivileged, rv32.adoc: endianness is byte-address invariant (read 2026-11-08)](https://raw.githubusercontent.com/riscv/riscv-isa-manual/main/src/unpriv/rv32.adoc)
+- [RISC-V Instruction Set Manual, privileged, machine.adoc: endianness control in mstatus (read 2026-11-08)](https://raw.githubusercontent.com/riscv/riscv-isa-manual/main/src/priv/machine.adoc)
+- [RISC-V Instruction Set Manual, unprivileged, zbb.adoc: rev8 (read 2026-11-08)](https://raw.githubusercontent.com/riscv/riscv-isa-manual/main/src/unpriv/zbb.adoc)
+- [SPARC International, The SPARC Architecture Manual, Version 9: addressing conventions, little-endian support (read 2026-11-08)](https://sparc.org/wp-content/uploads/2014/01/SPARCV9.pdf.gz)
+- [Arm A-profile Architecture Registers, 2026-09, SCTLR_EL1: the EE and E0E bits (read in a browser on 2026-11-08: the site refuses automated reads)](https://support.arm.com/documentation/ddi0601/2026-09/AArch64-Registers/SCTLR-EL1--System-Control-Register--EL1-)
+- [Arm A-profile A64 Instruction Set Architecture, 2026-09: REV, REV16, REV32 (read in a browser on 2026-11-08: the site refuses automated reads)](https://support.arm.com/documentation/ddi0602/2026-09/Base-Instructions/REV--Reverse-bytes-)
+- [The Linux kernel, v6.17, arch/arm64/Kconfig: the endianness choice (read 2026-11-08)](https://raw.githubusercontent.com/torvalds/linux/v6.17/arch/arm64/Kconfig)
+- [The Linux kernel, v6.18, arch/arm64/Kconfig: the big-endian kernel depends on BROKEN (read 2026-11-08)](https://raw.githubusercontent.com/torvalds/linux/v6.18/arch/arm64/Kconfig)
+- [The Linux kernel, v7.4-rc1, arch/arm64/Kconfig: no big-endian option; SETEND emulation (read 2026-11-08)](https://raw.githubusercontent.com/torvalds/linux/v7.4-rc1/arch/arm64/Kconfig)
+- [The Linux kernel, arch/mips/Kconfig, master: the endianness selection (read 2026-11-08)](https://raw.githubusercontent.com/torvalds/linux/master/arch/mips/Kconfig)
+- [Debian wiki, ArchitectureSpecificsMemo: the endianness of each port (read in a browser on 2026-11-08: the site refuses automated reads)](https://wiki.debian.org/ArchitectureSpecificsMemo)
+- [The Linux kernel, include/linux/byteorder/generic.h, master: cpu_to_be32 and the other conversions (read 2026-11-08)](https://raw.githubusercontent.com/torvalds/linux/master/include/linux/byteorder/generic.h)
+- [The Linux kernel, include/uapi/linux/byteorder/little_endian.h, master: __LITTLE_ENDIAN 1234, cpu_to_be32 as a swap (read 2026-11-08)](https://raw.githubusercontent.com/torvalds/linux/master/include/uapi/linux/byteorder/little_endian.h)
+- [The Linux kernel, include/uapi/linux/byteorder/big_endian.h, master: __BIG_ENDIAN 4321 (read 2026-11-08)](https://raw.githubusercontent.com/torvalds/linux/master/include/uapi/linux/byteorder/big_endian.h)
+- [The Linux kernel, include/uapi/linux/swab.h, master: __swab32 and __builtin_bswap32 (read 2026-11-08)](https://raw.githubusercontent.com/torvalds/linux/master/include/uapi/linux/swab.h)
+- [The Linux kernel, drivers/net/bonding/bond_main.c, master: bond_eth_hash, bond_ip_hash, __bond_xmit_hash, bond_xmit_3ad_xor_slave_get (read 2026-11-08)](https://raw.githubusercontent.com/torvalds/linux/master/drivers/net/bonding/bond_main.c)
+- [The Linux kernel, Documentation/ABI/testing/sysfs-kernel-cpu_byteorder: /sys/kernel/cpu_byteorder since 6.2 (read 2026-11-08)](https://raw.githubusercontent.com/torvalds/linux/master/Documentation/ABI/testing/sysfs-kernel-cpu_byteorder)
+- [util-linux, sys-utils/lscpu.c, master: the Byte Order line (read 2026-11-08)](https://raw.githubusercontent.com/util-linux/util-linux/master/sys-utils/lscpu.c)
+- [util-linux, lib/sysfs.c, master: sysfs_get_byteorder (read 2026-11-08)](https://raw.githubusercontent.com/util-linux/util-linux/master/lib/sysfs.c)
+- [W3C, Portable Network Graphics (PNG) Specification, Third Edition, Recommendation of 24 June 2025: 7.1 and the eXIf chunk (read 2026-11-08)](https://www.w3.org/TR/png-3/)
+- [Oracle, The Java Virtual Machine Specification, Java SE 25 Edition, chapter 4: the class file format (read 2026-11-08)](https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html)
+- [WebAssembly 3.0 specification, syntax of instructions: memory instructions (read 2026-11-08)](https://webassembly.github.io/spec/core/syntax/instructions.html)
+- [WebAssembly 3.0 specification, binary format of values: integers and floating-point (read 2026-11-08)](https://webassembly.github.io/spec/core/binary/values.html)
+- [Aldus, TIFF Revision 6.0, 3 June 1992, as hosted by the ITU: the image file header (read 2026-11-08)](https://www.itu.int/itudoc/itu-t/com16/tiff-fx/docs/tiff6.pdf)
+- [System V Application Binary Interface, generic ABI, chapter 4, ELF header: EI_DATA (read 2026-11-08)](https://www.sco.com/developers/gabi/latest/ch4.eheader.html)
+- [Microsoft Learn, BITMAPFILEHEADER structure: bfType (read 2026-11-08)](https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapfileheader)
+- [The Unicode Standard 18.0.0, chapter 2: encoding schemes and byte order (read 2026-11-08)](https://www.unicode.org/versions/Unicode18.0.0/core-spec/chapter-2/)
+- [The Unicode Standard 18.0.0, chapter 3: D96 to D98, the UTF-16 encoding schemes (read 2026-11-08)](https://www.unicode.org/versions/Unicode18.0.0/core-spec/chapter-3/)
+- [WHATWG Encoding Standard, last updated 19 October 2026: the utf-16 label and byte order mark sniffing (read 2026-11-08)](https://encoding.spec.whatwg.org/)
+- [Python 3.15 documentation, struct: byte order, size and alignment (read 2026-11-08)](https://docs.python.org/3/library/struct.html)
+- [Python 3.15 documentation, sys: sys.byteorder (read 2026-11-08)](https://docs.python.org/3/library/sys.html)
+- [Python 3.15 documentation, built-in types: int.to_bytes and int.from_bytes (read 2026-11-08)](https://docs.python.org/3/library/stdtypes.html)
+- [Python 3.15 documentation, array: byteswap (read 2026-11-08)](https://docs.python.org/3/library/array.html)
+- [F5 DevCentral, Lightboard Lessons: BIG-IP Cookie Persistence Values, F5 Technical Articles, 2 August 2017, and the author's reply of 7 August 2017 (read 2026-11-08)](https://community.f5.com/kb/technicalarticles/lightboard-lessons-big-ip-cookie-persistence-values/280812)
+- [F5, K6917: Overview of BIG-IP persistence cookie encoding, updated 30 September 2026 (read in a browser on 2026-11-08: the site refuses automated reads)](https://my.f5.com/manage/s/article/K6917)

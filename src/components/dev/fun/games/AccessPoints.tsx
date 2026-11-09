@@ -30,7 +30,7 @@
 "use client";
 
 // React's state, refs, memo and callbacks.
-import { useCallback, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 // Strings.
 import { useTranslations } from "next-intl";
 // The frame every game sits in.
@@ -48,6 +48,9 @@ import { useToday } from "@/lib/fun/hooks";
 
 /** Seconds added per Check. */
 const PENALTY_S = 10;
+/** Seconds added once per floor when the player switches the auto-mark on (PRIME 08/11/2026: off by default, with a
+ *  penalty when enabled): three checks' worth, since it marks every ruled-out cell for the rest of the round. */
+const AUTO_MARK_S = 30;
 
 /** A quick second tap, in milliseconds. */
 const DOUBLE_TAP_MS = 320;
@@ -146,13 +149,31 @@ export default function AccessPoints(props: { locale: string }) {
     isSolved,
     // The penalty.
     penaltyMs: PENALTY_S * 1000,
+    // The auto-mark's price, once per floor.
+    assistPenaltyMs: AUTO_MARK_S * 1000,
   });
   // The puzzle and board.
   const p = s.puzzle, board = s.board;
-  // Auto-mark ruled-out cells: on from the start (PRIME 03/11/2026: placing an access point marks every cell it
-  // rules out, and removing it unmarks them). The marks are derived from the board, never stored, so removing an
-  // access point (or undoing it) clears exactly its marks, and the player's own × stay. The switch turns it off.
-  const [autoMark, setAutoMark] = useState(true);
+  // Auto-mark ruled-out cells (PRIME 03/11/2026: placing an access point marks every cell it rules out, and removing
+  // it unmarks them). The marks are derived from the board, never stored, so removing an access point (or undoing it)
+  // clears exactly its marks, and the player's own × stay. Off by default since 08/11/2026, and priced: the first
+  // time it is switched on in a round adds AUTO_MARK_S to the time (the kit's assist); a round restored with the
+  // assist taken comes back with it on.
+  const [autoMark, setAutoMark] = useState(false);
+  // A round restored with the auto-mark paid for shows it on again.
+  useEffect(() => {
+    // Only when the restored round had taken it.
+    if (s.assisted) setAutoMark(true);
+  }, [s.assisted]);
+  // The switch: on takes the assist (priced once), off just hides the marks.
+  const onAutoMark = (on: boolean) => {
+    // Priced the first time in a round (the kit ignores a second call).
+    if (on) s.assist();
+    // Shown or hidden.
+    setAutoMark(on);
+    // Said, with the cost the first time.
+    setSay(on ? (s.assisted ? t("autoMarkOn") : t("autoMarkOnCost", { s: AUTO_MARK_S })) : t("autoMarkOff"));
+  };
   // Cells the last Check marked as wrong (cleared on the next move).
   const [checked, setChecked] = useState<Set<number>>(new Set());
   // The hint on show, put away as soon as the board changes.
@@ -488,6 +509,8 @@ export default function AccessPoints(props: { locale: string }) {
     undo: tc("undo"),
     clear: tc("clear"),
     checksUsed: t("checksUsed", { n: s.checks, s: s.checks * PENALTY_S }),
+    // The auto-mark, when it was taken.
+    ...(s.assisted ? { assistUsed: t("autoMarkUsed", { s: AUTO_MARK_S }) } : {}),
     // Hints.
     hint: tc("hint"),
     hintsUsed: tc("hintsUsed", { n: s.hints, s: s.hints * PENALTY_S }),
@@ -503,9 +526,9 @@ export default function AccessPoints(props: { locale: string }) {
     const title = t("shareTitle", { n: puzzleNumber(s.day) });
     // The emoji line: one signal per access point, then the time and the checks and hints used, in words (a bolt and
     // magnifying glasses meant nothing in a chat; review R1-13, as Bit Balance and Patch Path).
-    const lines = ["📶".repeat(p.n), `⏱️ ${time} · ${t("shareChecks", { n: s.checks, s: s.checks * PENALTY_S })} · ${tc("shareHints", { n: s.hints, s: s.hints * PENALTY_S })}`];
+    const lines = ["📶".repeat(p.n), `⏱️ ${time} · ${t("shareChecks", { n: s.checks, s: s.checks * PENALTY_S })} · ${tc("shareHints", { n: s.hints, s: s.hints * PENALTY_S })}${s.assisted ? ` · ${t("autoMarkUsed", { s: AUTO_MARK_S })}` : ""}`];
     // The time line: the time, then the checks and hints used, when there were any.
-    const detail = [tc("solvedIn", { time }), ...(s.checks > 0 ? [t("checksUsed", { n: s.checks, s: s.checks * PENALTY_S })] : []), ...(s.hints > 0 ? [tc("hintsUsed", { n: s.hints, s: s.hints * PENALTY_S })] : [])].join(" · ");
+    const detail = [tc("solvedIn", { time }), ...(s.checks > 0 ? [t("checksUsed", { n: s.checks, s: s.checks * PENALTY_S })] : []), ...(s.hints > 0 ? [tc("hintsUsed", { n: s.hints, s: s.hints * PENALTY_S })] : []), ...(s.assisted ? [t("autoMarkUsed", { s: AUTO_MARK_S })] : [])].join(" · ");
     // The card.
     return {
       // Always a win: the round ends only when solved.
@@ -517,7 +540,7 @@ export default function AccessPoints(props: { locale: string }) {
       // The share card.
       share: shareText({ title, lines, locale: props.locale, slug: AP_ID }),
     };
-  }, [s.done, s.finalMs, s.day, s.checks, s.hints, p, t, tc, props.locale]);
+  }, [s.done, s.finalMs, s.day, s.checks, s.hints, s.assisted, p, t, tc, props.locale]);
 
   // The rules.
   const rules = (
@@ -527,7 +550,7 @@ export default function AccessPoints(props: { locale: string }) {
         <li>{t("rules.one")}</li>
         <li>{t("rules.touch")}</li>
         <li>{t("rules.tap")}</li>
-        <li>{t("rules.auto")}</li>
+        <li>{t("rules.auto", { s: AUTO_MARK_S })}</li>
         <li>{t("rules.keys")}</li>
         <li>{t("rules.check", { s: PENALTY_S })}</li>
         <li>{tc("hintRule", { s: PENALTY_S })}</li>
@@ -636,8 +659,8 @@ export default function AccessPoints(props: { locale: string }) {
             hintNote={hint?.text ?? null}
             extra={
               <label className="fg-ap-option">
-                <input type="checkbox" className="fg-ap-check" checked={autoMark} onChange={(e) => setAutoMark(e.target.checked)} />
-                <span>{t("autoMark")}</span>
+                <input type="checkbox" className="fg-ap-check" checked={autoMark} disabled={s.done || !s.started} onChange={(e) => onAutoMark(e.target.checked)} />
+                <span>{s.assisted ? t("autoMarkPaid", { s: AUTO_MARK_S }) : t("autoMarkCost", { s: AUTO_MARK_S })}</span>
               </label>
             }
           />

@@ -664,7 +664,7 @@ export default function SpanningTree({ locale }: { locale: string }) {
 
   // The game.
   return (
-    <GameShell gameId={STP_ID} kind={mode === "daily" ? "daily" : "score"} today={today} rules={rules} result={result} onPlayAgain={newRound} formatBest={(b) => t("bestScore", { n: b })} version={version} gradeSaved={gradeSaved}>
+    <GameShell gameId={STP_ID} kind={mode === "daily" ? "daily" : "score"} today={today} rules={rules} result={result} onPlayAgain={newRound} formatBest={(b) => t("bestScore", { n: b })} version={version} gradeSaved={gradeSaved} boardMode={level}>
       <div className="fg-stp" ref={frameRef}>
         {/* Daily or practice, easy or hard: two compact groups, on one line on a phone. */}
         <div className="fg-stp-toolbar">

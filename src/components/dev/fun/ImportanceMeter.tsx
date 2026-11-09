@@ -8,7 +8,8 @@
 //
 // THE DESIGN IDEA. Two gauges, and the contrast between them IS the joke:
 //
-//   1. APPARENT URGENCY - a bar that fills, dramatically, and keeps filling.
+//   1. THE CONSERVATIVE URGENCY ESTIMATE (called apparent urgency until
+//      08/11/2026) - a bar that fills, dramatically, and keeps filling.
 //      Log-scaled so it responds at every order of magnitude. Everything the
 //      reader touches makes this move.
 //
@@ -16,9 +17,12 @@
 //      zero. It is drawn FROM THE SAME COMPUTED VALUE as everything else, so it
 //      is not faked: the number it renders really is zero, every time.
 //
-// The gauges are drawn when the reader presses Calculate, and any change to the
-// inputs puts them away again, so the answer is always one that was asked for
-// (the arithmetic itself is recomputed on every change, ready for the press).
+// The urgency bar, renamed the CONSERVATIVE URGENCY ESTIMATE (PRIME 08/11/2026),
+// is always on show and moves with every entry; Calculate and Reset sit right
+// under it. The result's gauge and the workings are drawn when the reader
+// presses Calculate, and any change to the inputs puts them away again, so the
+// answer is always one that was asked for (the arithmetic itself is recomputed
+// on every change, ready for the press).
 //
 // The hours field keeps exactly what the reader types (review R4-04,
 // 03/11/2026): it used to be rebuilt from the parsed number, so typing "0."
@@ -342,7 +346,7 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
     // "Importance Meter".
     title: labels.meterName,
     lines: [
-      // "Apparent urgency: 4,250. Considerable. There is now a recurring meeting about it."
+      // "Conservative urgency estimate: 4,250. Considerable. There is now a recurring meeting about it."
       fillTemplate(labels.shareUrgency, { urgency: result.apparentUrgency.toLocaleString("en-US"), remark: labels.remarks[result.remark] }),
       // "Result: Z3R0 fucks given.", or the override's figure and its name.
       override
@@ -495,62 +499,9 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
           />
         </div>
 
-        <div className="dig-input-head">
-          <button
-            type="button"
-            className={"im-calculate" + (shown ? "" : " im-calculate-waiting")}
-            onClick={() => {
-              setShown(true);
-              // Let the newly revealed blocks mount before scrolling to them.
-              requestAnimationFrame(() =>
-                resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }),
-              );
-            }}
-          >
-            {labels.measureButton}
-            <span aria-hidden="true" className="im-calculate-arrow">
-              &#8595;
-            </span>
-          </button>
-          <button
-            type="button"
-            className="im-reset"
-            onClick={() => {
-              setForm(DEFAULTS);
-              // The hours field back to its default text too.
-              setDeadlineText(String(DEFAULTS.hoursToDeadline));
-              setShown(false);
-            }}
-          >
-            {labels.resetButton}
-          </button>
-        </div>
       </div>
 
-      {/* Sequence progress. Only visible once the reader is on to something,
-          so it does not advertise itself to someone who is not looking.
-          Progress from taps shows under the gauge instead (see below). */}
-      {typed.length > 0 && !override && !typedByTaps && <div className="ztc-result">{seqCue("")}</div>}
-
-      {override && (
-        // Kept as a handle, so an override engaged by taps can be brought into view.
-        <div ref={overrideRef} className="ztc-result im-override im-result-centred">
-          <p className="im-override-banner mono">{override.label}</p>
-          <p className="ztc-notes">
-            <strong>{labels.overrideConsequenceLabel}</strong> {override.consequence}
-          </p>
-          <div className="dig-input-head">
-            <button type="button" className="btn btn-secondary" onClick={() => setOverride(null)}>
-              {labels.overrideRevert}
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Anchor for the post-Calculate scroll. */}
-      <div ref={resultsRef} />
-
-      {shown && (
+      {/* The estimate, always on show and live with every entry (PRIME 08/11/2026); the buttons sit under it. */}
       <div className="ztc-result im-urgency">
         <div className="im-urgency-row">
           <span className="im-urgency-label">{labels.subtotalLabel}</span>
@@ -580,7 +531,62 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
           <span className="im-urgency-remark">{labels.remarks[result.remark]}</span>
         </div>
       </div>
+
+      {/* Calculate and Reset, under the estimate. */}
+      <div className="dig-input-head">
+        <button
+          type="button"
+          className={"im-calculate" + (shown ? "" : " im-calculate-waiting")}
+          onClick={() => {
+            setShown(true);
+            // Let the newly revealed blocks mount before scrolling to them.
+            requestAnimationFrame(() =>
+              resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }),
+            );
+          }}
+        >
+          {labels.measureButton}
+          <span aria-hidden="true" className="im-calculate-arrow">
+            &#8595;
+          </span>
+        </button>
+        <button
+          type="button"
+          className="im-reset"
+          onClick={() => {
+            setForm(DEFAULTS);
+            // The hours field back to its default text too.
+            setDeadlineText(String(DEFAULTS.hoursToDeadline));
+            setShown(false);
+          }}
+        >
+          {labels.resetButton}
+        </button>
+      </div>
+
+      {/* Sequence progress. Only visible once the reader is on to something,
+          so it does not advertise itself to someone who is not looking.
+          Progress from taps shows under the gauge instead (see below). */}
+      {typed.length > 0 && !override && !typedByTaps && <div className="ztc-result">{seqCue("")}</div>}
+
+      {override && (
+        // Kept as a handle, so an override engaged by taps can be brought into view.
+        <div ref={overrideRef} className="ztc-result im-override im-result-centred">
+          <p className="im-override-banner mono">{override.label}</p>
+          <p className="ztc-notes">
+            <strong>{labels.overrideConsequenceLabel}</strong> {override.consequence}
+          </p>
+          <div className="dig-input-head">
+            <button type="button" className="btn btn-secondary" onClick={() => setOverride(null)}>
+              {labels.overrideRevert}
+            </button>
+          </div>
+        </div>
       )}
+
+      {/* Anchor for the post-Calculate scroll. */}
+      <div ref={resultsRef} />
+
 
       {shown && (
       <div className="ztc-result im-result-centred">

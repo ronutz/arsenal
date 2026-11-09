@@ -1,6 +1,6 @@
 ## What it does
 
-Paste a tmsh `client-ssl` or `server-ssl` profile and the tool explains it: the profile's role, the matrix of TLS protocol versions it enables and disables, and a security read covering the certificate chain, renegotiation, SNI, OCSP stapling, and mutual TLS. It parses the profile entirely in your browser and never contacts a device.
+Paste a tmsh `client-ssl` or `server-ssl` profile and the tool explains it: the profile's role, the matrix of TLS protocol versions it enables and disables, and a security read covering the certificate chain, renegotiation, SNI, OCSP (Online Certificate Status Protocol) stapling, and mutual TLS. It parses the profile entirely in your browser and never contacts a device.
 
 ## Client-side and server-side profiles
 

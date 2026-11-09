@@ -6,7 +6,7 @@ Essa distinção importa porque a falha usual está uma camada abaixo da base de
 
 ## A regra
 
-O **NAT automático** acrescenta a entrada de proxy ARP sozinho na instalação de política, desde que *Automatic ARP configuration* esteja habilitado em Global Properties.
+O **NAT (tradução de endereços de rede) automático** acrescenta a entrada de proxy ARP sozinho na instalação de política, desde que *Automatic ARP configuration* esteja habilitado em Global Properties.
 
 O **NAT manual não.** Nunca fez. O administrador cria a entrada.
 

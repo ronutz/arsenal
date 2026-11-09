@@ -1205,8 +1205,10 @@ export default function ExitTheEditor({ locale }: { locale: string }) {
                 {tc("hint")}
               </button>
             )}
-            {/* The terminal's text, read out. */}
-            <button type="button" className="fg-button" onClick={readScreen} disabled={covered}>
+            {/* The terminal's text, read out by a screen reader (the drawn terminal is hidden from it). Out of sight until
+                the keyboard reaches it, like the skip link (PRIME 08/11/2026: a sighted mouse user saw a button that
+                did nothing visible); screen readers and Tab find it as before. */}
+            <button type="button" className="fg-button fg-exit-sr-button" onClick={readScreen} disabled={covered}>
               {t("readScreen")}
             </button>
             {/* A level starts again; the daily trap only after a wrong way out (the attempt itself never restarts). */}

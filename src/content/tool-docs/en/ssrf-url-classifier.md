@@ -195,7 +195,7 @@ All read 2026-10-19.
 - [RFC 7343, An IPv6 Prefix for Overlay Routable Cryptographic Hash Identifiers Version 2 (ORCHIDv2), September 2014](https://www.rfc-editor.org/rfc/rfc7343.txt) (read 2026-10-19): abstract
 - [RFC 9374, DRIP Entity Tag (DET) for Unmanned Aircraft System Remote ID (UAS RID), March 2023](https://www.rfc-editor.org/rfc/rfc9374.txt) (read 2026-10-19): section 1
 - [RFC 9602, Segment Routing over IPv6 (SRv6) Segment Identifiers in the IPv6 Addressing Architecture, October 2024](https://www.rfc-editor.org/rfc/rfc9602.txt) (read 2026-10-19): sections 5 and 6
-- [RFC 9780, Bidirectional Forwarding Detection (BFD) for Multipoint Networks over Point-to-Multipoint MPLS Label Switched Paths (LSPs), May 2025](https://www.rfc-editor.org/rfc/rfc9780.txt) (read 2026-10-19): abstract
+- [RFC 9780, Bidirectional Forwarding Detection (BFD) for Multipoint Networks over Point-to-Multipoint MPLS [Multiprotocol Label Switching] Label Switched Paths (LSPs), May 2025](https://www.rfc-editor.org/rfc/rfc9780.txt) (read 2026-10-19): abstract
 - [RFC 3849, IPv6 Address Prefix Reserved for Documentation, July 2004](https://www.rfc-editor.org/rfc/rfc3849.txt) (read 2026-10-19): sections 2 and 3
 - [RFC 9637, Expanding the IPv6 Documentation Space, August 2024](https://www.rfc-editor.org/rfc/rfc9637.txt) (read 2026-10-19): abstract and IANA considerations
 - [RFC 6666, A Discard Prefix for IPv6, August 2012](https://www.rfc-editor.org/rfc/rfc6666.txt) (read 2026-10-19): sections 2 and 4

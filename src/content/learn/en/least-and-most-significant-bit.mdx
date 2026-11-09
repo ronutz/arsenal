@@ -1,0 +1,198 @@
+---
+slug: least-and-most-significant-bit
+title: "Least and most significant bit: bit numbering and bit order"
+summary: "Every bit of a binary number has a weight, and the least significant bit is worth 1 while the most significant bit is worth the most and, in two's complement, carries the sign. What significance means, why LSB and MSB sometimes mean bytes, the three ways documents number bits (LSB 0, MSB 0 and 1-based) and the same field read all three ways, the order bits travel on Ethernet, a UART, PPP, I2C and SPI, canonical and bit-reversed MAC addresses, masks, shifts, parity and reflected CRCs, the bugs a wrong order causes, and three cases on this site: Huawei's PortState printed bit 1 first, the I/G and U/L bits of a MAC address, and the DNS header flags."
+concepts: ["least significant bit", "most significant bit", "lsb", "msb", "bit numbering", "lsb 0", "msb 0", "bit order", "bit reversal", "canonical mac address", "non-canonical mac address", "msb format", "i/g bit", "u/l bit", "bit mask", "genmask", "two's complement", "sign bit", "parity", "reflected crc", "snmp bits"]
+relatedTools: ["bit-numbering-and-order", "lacp-hash-and-state-reader", "oui-lookup", "multicast-mac-mapper", "vlan-tag-and-trunk-calculator", "bits-bytes"]
+relatedArticles: ["big-endian-and-little-endian", "what-is-an-oui", "the-ethernet-frame-field-by-field", "dns-message-header-and-flags", "link-aggregation-and-lacp", "bits-bytes-and-the-two-kinds-of-kilo", "hex-encoding"]
+category: encoding
+order: 223
+status: reviewed
+updated: "2026-11-08"
+---
+
+Write a binary number and every digit has a place, and every place a weight: the rightmost is worth 1, the next 2, then 4, 8 and so on, each twice the one before. The bit worth 1 is the least significant bit (LSB), and the bit worth the most is the most significant bit (MSB). That much nobody disputes. What documents disagree about is what to call each bit: some count from the least significant end, some from the most significant, some start at 1 instead of 0. And on a wire, where bits travel one at a time, links disagree about which end goes first.
+
+**In short:** the LSB decides whether a number is odd or even, and the MSB carries the largest weight and, in two's complement, the sign. Intel numbers bits from the LSB, so bit k is worth 2 to the power k (LSB 0); the Request for Comments (RFC) diagrams number them from the MSB (MSB 0); the Simple Network Management Protocol (SNMP) and some vendors count from 1. Ethernet sends each octet least significant bit first. Read a bit number or a printed bit string under the wrong convention and you get a valid, wrong value, with no error.
+
+## What significance means
+
+Intel's Software Developer's Manual (SDM) states the rule in one sentence: "Bit positions are numbered from right to left. The numerical value of a set bit is equal to two raised to the power of the bit position" ([Intel SDM, volume 1](https://cdrdv2-public.intel.com/825744/253665-sdm-vol-1.pdf), 1.3.1). Python's documentation says the same about shifts: "A left shift by n bits is equivalent to multiplication by pow(2, n)" ([Python, built-in types](https://docs.python.org/3/library/stdtypes.html)). Take the octet 0x3D, 61 in decimal:
+
+| Bit (from the right) | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
+|---|---|---|---|---|---|---|---|---|
+| Weight | 128 | 64 | 32 | 16 | 8 | 4 | 2 | 1 |
+| 0x3D | 0 | 0 | 1 | 1 | 1 | 1 | 0 | 1 |
+
+32 + 16 + 8 + 4 + 1 = 61. Two things follow from the weights alone. Every weight but the last is even, so the least significant bit alone decides whether the number is odd: 61 is odd because bit 0 is set. And the most significant bit outweighs all the others together (128 is one more than 64 + 32 + 16 + 8 + 4 + 2 + 1), which is why it is the one that carries the sign of a signed number: in two's complement "The sign bit is located in bit 7 in a byte integer, bit 15 in a word integer, bit 31 in a doubleword integer, and bit 63 in a quadword integer" (Intel SDM, 4.2.1.2). The octet 0xBD, with that bit set, is 189 unsigned and -67 signed.
+
+Processors have instructions that find the two ends. Intel's BSF (bit scan forward) and BSR (bit scan reverse) instructions "scan a bit string in a source operand for a set bit and store the bit index of the first set bit found", the index being "the offset from the least significant bit (bit 0)", BSF scanning "low-to-high" and BSR "high-to-low" (Intel SDM, 7.3.7.2).
+
+## LSB and MSB: bits or bytes?
+
+The same two abbreviations name bytes. RFC 6891, which extends the Domain Name System (DNS), heads the two bytes of a 16-bit field "+0 (MSB)" and "+1 (LSB)", and in the same field the bit RFC 3225 calls "DNSSEC OK" (DO) is "the most significant bit of the Z field" ([RFC 6891](https://www.rfc-editor.org/rfc/rfc6891.txt), section 6.1.3; [RFC 3225](https://www.rfc-editor.org/rfc/rfc3225.txt), section 3): one diagram, both meanings. One UART (universal asynchronous receiver-transmitter) datasheet uses both in a single paragraph: "The divisor latch access bit (DLAB) is the most significant bit (MSB) of the line control register", a bit, beside the registers "Divisor latch (LSB)" and "Divisor latch (MSB)", the two bytes of the divisor ([Texas Instruments, TL16C550D](https://www.ti.com/lit/ds/symlink/tl16c550d.pdf)). The object files of the System V Application Binary Interface mark their byte order as `ELFDATA2LSB`, "the least significant byte occupying the lowest address", or `ELFDATA2MSB` ([System V ABI, chapter 4](https://www.sco.com/developers/gabi/latest/ch4.eheader.html)).
+
+The context tells them apart: a register pair, a byte offset or a file's encoding is about bytes, and byte order is the subject of [Big-endian and little-endian](/learn/big-endian-and-little-endian); a flag, a position inside an octet or a mask is about bits, the subject here.
+
+## Three ways to number the bits
+
+**LSB 0** numbers from the least significant bit, so the number of a bit is the power of two it is worth. Intel's sentence above is the definition, and the Linux kernel builds its masks on it: `BIT(nr)` is `1 << nr` ([include/vdso/bits.h](https://raw.githubusercontent.com/torvalds/linux/master/include/vdso/bits.h)). The gzip format writes it out for its readers: "we number the bits of a byte so that bit 0 is the least-significant bit" ([RFC 1952](https://www.rfc-editor.org/rfc/rfc1952.txt), section 2.1), and its flag byte runs from "bit 0 FTEXT" to "bit 4 FCOMMENT".
+
+**MSB 0** numbers from the most significant bit, the leftmost in a diagram. The Internet Protocol's specification states it, and later RFCs repeat it: "Whenever an octet represents a numeric quantity the left most bit in the diagram is the high order or most significant bit. That is, the bit labeled 0 is the most significant bit", so the octet drawn `1 0 1 0 1 0 1 0` "represents the value 170" ([RFC 791](https://www.rfc-editor.org/rfc/rfc791.txt), Appendix B; the same words in [RFC 1035](https://www.rfc-editor.org/rfc/rfc1035.txt), section 2.3.2). RFC 2474 repeats it for the differentiated services codepoint (DSCP): "the left-most bit signifies bit 0 of the DS field" ([RFC 2474](https://www.rfc-editor.org/rfc/rfc2474.txt), section 3). Processors use it too: IBM's z/Architecture numbers bits "in a left-to-right sequence", an address's "bits are numbered 0-63", and in 24-bit mode "bits 0-39 of the intermediate value are ignored", the 40 high-order bits, which puts bit 0 at the top ([IBM, z/Architecture Principles of Operation](https://publibfi.dhe.ibm.com/epubs/pdf/a227832d.pdf)).
+
+**1-based** numbering starts at 1, and the documents that use it count from the low-order end. SNMP places a BITS value in "bits 8 (high order bit) to 1 (low order bit)" of each octet ([RFC 3417](https://www.rfc-editor.org/rfc/rfc3417.txt), section 8); the IEEE (Institute of Electrical and Electronics Engineers) draws the 802.1Q tag's two octets with "Bits: 8 ... 1" under each, the priority code point (PCP) in bits 8 to 6 of the first octet ([IEEE P802.1ad/D2.4](https://www.ieee802.org/1/files/public/docs2004/802-1-ad-D2-4.pdf), an unapproved 2004 draft, Figure 9-1); and Huawei documents a Link Aggregation Control Protocol (LACP) state as "Bit 1" to "Bit 8" ([Huawei, Link Aggregation Commands](https://support.huawei.com/enterprise/en/doc/EDOC1100514211/54c5f31b/link-aggregation-commands)).
+
+In a field w bits wide the three are related by arithmetic: LSB 0 bit k is MSB 0 bit w - 1 - k and 1-based bit k + 1. The same six bits of the IPv4 Type of Service (ToS) octet, the DSCP, read all three ways:
+
+| Numbering | The DSCP is | Mask | Shift | Who writes it so |
+|---|---|---|---|---|
+| MSB 0 | bits 0 to 5 | 0xFC | 2 | RFC 2474 |
+| LSB 0 | bits 7 to 2 | 0xFC | 2 | `GENMASK(7, 2)` in the Linux kernel's terms |
+| 1-based | bits 8 to 3 | 0xFC | 2 | the IEEE's and SNMP's octet drawings |
+
+The bits, the mask and the shift are the same; only the labels move. And they move by an amount that depends on the width: bit 0 under MSB 0 is bit 7 of an octet but bit 15 of a 16-bit word, while LSB 0's bit 0 is worth 1 in a field of any width. That is the one real property that separates them: an LSB 0 number is a weight, an MSB 0 number is a position in a drawing.
+
+| | LSB 0 | MSB 0 | 1-based |
+|---|---|---|---|
+| Bit 0 (or 1) is | the least significant | the most significant | the least significant (bit 1) |
+| Weight of bit k | 2 to the power k, in any width | 2 to the power (w - 1 - k): depends on the width | 2 to the power (k - 1) |
+| Reads like | the exponents | the drawing, left to right | the drawing, counted from the right |
+| Used by | Intel, the Linux kernel's `BIT` and `GENMASK`, gzip, 802.1AX's LACP bit numbers | RFC diagrams, the flag registries of the Internet Assigned Numbers Authority (IANA), IBM z/Architecture | SNMP BITS, the IEEE's figures, Huawei's PortState |
+| Trap | none of its own; it meets the others in mixed documents | the number of a bit changes when the field is widened | an off-by-one against either 0-based scheme |
+
+## Bit order on the wire
+
+Inside a computer, bits have no order to speak of. RFC 1952 says it plainly: "Bytes stored within a computer do not have a 'bit order', since they are always treated as a unit" (section 2.1), and IBM: "Bit numbers are not storage addresses, however. Only bytes can be addressed." Order becomes real when a link sends the bits of an octet one after another, and the links disagree.
+
+- **Ethernet sends least significant bit first.** RFC 9542 writes its diagrams in "IETF ('network') bit ordering although the physical order of bit transmission within an octet on an IEEE [802.3] link is from the lowest order bit to the highest order bit (i.e., the reverse of the IETF's ordering)" ([RFC 9542](https://www.rfc-editor.org/rfc/rfc9542.txt), section 1.1; the IETF is the Internet Engineering Task Force). The first bit of a destination MAC (Media Access Control) address on the wire is therefore the least significant bit of its first octet, the I/G bit.
+- **A UART sends least significant bit first**: "Bit 0 is the least significant bit. It is the first bit serially transmitted or received" (TI TL16C550D). So does the Point-to-Point Protocol (PPP) on asynchronous links: "All octets are transmitted least significant bit first, with one start bit, eight bits of data, and one stop bit", and with bit-stuffed framing as well ([RFC 1662](https://www.rfc-editor.org/rfc/rfc1662.txt), sections 4.5.2 and 5.5).
+- **An I2C (Inter-IC) bus sends most significant bit first.** NXP's specification is plain: "Each byte must be followed by an Acknowledge bit", and "Data is transferred with the Most Significant Bit (MSB) first" ([NXP, UM10204 I2C-bus specification and user manual](https://www.nxp.com/docs/en/user-guide/UM10204.pdf), Rev. 7.0, 3.1.5). Its drawing of the first byte after a START puts the target address in the high-order bits and the read/write bit last, as the least significant bit (Figure 10).
+- **An SPI bus sends most significant bit first by default.** The Linux kernel's Serial Peripheral Interface (SPI) layer describes "the 'MSB first' default for each word in a transfer", which a device changes with `SPI_LSB_FIRST`, a flag documented as "per-word bits-on-wire" ([include/linux/spi/spi.h](https://raw.githubusercontent.com/torvalds/linux/master/include/linux/spi/spi.h), [include/uapi/linux/spi/spi.h](https://raw.githubusercontent.com/torvalds/linux/master/include/uapi/linux/spi/spi.h)): the order is a property of the device, not of the bus.
+- **A format can mix both.** Deflate packs "Data elements ... into bytes in order of increasing bit number within the byte, i.e., starting with the least-significant bit of the byte", except that "Huffman codes are packed starting with the most-significant bit of the code" ([RFC 1951](https://www.rfc-editor.org/rfc/rfc1951.txt), section 3.1.1).
+
+| Link or format | First bit of an octet | Source |
+|---|---|---|
+| Ethernet (IEEE 802.3) | least significant | RFC 9542 |
+| UART (TL16C550D) | least significant | TI |
+| PPP | least significant | RFC 1662 |
+| I2C | most significant | NXP UM10204 |
+| SPI | most significant, unless the device is set LSB first | Linux spi.h |
+| Deflate | least significant, Huffman codes most significant first | RFC 1951 |
+
+The documents keep their notation apart from the wire. RFC 1662 warns that its binary numbers are written "in Most Significant Bit to Least Significant Bit order, reading from left to right", which is "contrary to" the practice of documents that "order bits as transmitted" (section 3).
+
+### Canonical and bit-reversed MAC addresses
+
+The disagreement left a mark on MAC addresses. RFC 2469 defines canonical form, "also known as 'LSB format' and 'Ethernet format'", by the mapping from the wire to memory: "The first bit of each byte that appears on the LAN maps to the least significant (i.e., right-most) bit of each byte in memory", which "puts the group address indicator ... in the least significant bit of the first byte. Ethernet and 802.3 hardware behave consistently with this definition." Token Ring, "and some FDDI hardware", mapped the first bit to the most significant bit instead, "'MSB format', 'IBM format', 'Token-Ring format', and 'non-canonical form'", so the same address sat in memory with each octet's bits reversed ([RFC 2469](https://www.rfc-editor.org/rfc/rfc2469.txt), section 2; FDDI is the Fiber Distributed Data Interface):
+
+| Form | Address |
+|---|---|
+| Canonical (Ethernet) | 12-34-56-78-9A-BC |
+| MSB format (Token Ring) | 48-2C-6A-1E-59-3D |
+
+The octets stay in order; inside each, bit 0 and bit 7 trade places, bit 1 and bit 6, and so on (0x12, 00010010, becomes 01001000, 0x48). Bridges paid for it: "bridges that forward packets between dissimilar network types perform bit swaps of the addresses in the address fields of ARP packets" (section 3.2), the Address Resolution Protocol's. The 802.1Q tag even carried a bit about it. In the 2004 provider-bridging draft, the bit after the customer tag's priority (bit 5 of its first octet, in the draft's numbering) was a "Canonical Format Indicator (CFI)", and "If an 802.5 MAC is used, all MAC Address information ... is in Non-canonical format" (802.5 being Token Ring); in the service tag the same bit was the drop-eligible bit "and does not convey a CFI" (IEEE P802.1ad/D2.4, 9.6 and 9.7). The Linux kernel still names its mask `VLAN_CFI_MASK 0x1000`, "Canonical Format Indicator / Drop Eligible Indicator" ([include/linux/if_vlan.h](https://raw.githubusercontent.com/torvalds/linux/master/include/linux/if_vlan.h)).
+
+The lab below sets the eight bits of one octet and shows its value, its numbers under the three numberings, the octet as an RFC draws it, the order Ethernet sends it in, and what a receiver that assumed the other order would read.
+
+<Lab id="octet-bit-numbering" />
+
+## Masks and shifts
+
+A mask is a number with ones where the bits of interest are. With LSB 0 numbers every operation is one line, and the shift amount is the bit number:
+
+| To | Write | Example on 0x3D |
+|---|---|---|
+| test bit k | `(v >> k) & 1`, or `v & (1 << k)` | bit 1: 0, bit 2: 1 |
+| set bit k | `v \| (1 << k)` | bit 1: 0x3F |
+| clear bit k | `v & ~(1 << k)` | bit 0: 0x3C |
+| flip bit k | `v ^ (1 << k)` | bit 7: 0xBD |
+| take bits hi to lo | `(v >> lo) & ((1 << (hi - lo + 1)) - 1)` | bits 5 to 2: 15 |
+
+The Linux kernel names the field mask: `GENMASK(h, l)` creates "a contiguous bitmask starting at bit position @l and ending at position @h", and its own example is that "GENMASK_ULL(39, 21) gives us the 64bit vector 0x000000ffffe00000" ([include/linux/bits.h](https://raw.githubusercontent.com/torvalds/linux/master/include/linux/bits.h)). Its 802.1Q masks are the tag's fields in place: `VLAN_PRIO_MASK 0xe000` with `VLAN_PRIO_SHIFT 13` for the priority, `0x1000` for the drop-eligible bit and `VLAN_VID_MASK 0x0fff` for the virtual local area network (VLAN) ID, so a tag control information (TCI) value of 0xA014 has priority 5 and VLAN 20.
+
+Several header fields live in the top bits of their octet, which is why the shift is needed at all. The DSCP is the top six bits of the ToS octet, and Explicit Congestion Notification (ECN) takes "Bits 6 and 7 in the IPv4 TOS octet" ([RFC 3168](https://www.rfc-editor.org/rfc/rfc3168.txt), section 5), MSB 0 numbers for the two lowest bits: a ToS of 0xB8 is DSCP 46 (`0xB8 >> 2`) and ECN 0. A prefix mask is the same idea from the other end: in CIDR (Classless Inter-Domain Routing) notation the /n is "a decimal value between 0 and 32 that describes the number of significant bits", and "the mask must be left contiguous" ([RFC 4632](https://www.rfc-editor.org/rfc/rfc4632.txt), sections 3.1 and 5.1), n ones counted from the most significant bit.
+
+### Parity and CRCs
+
+Parity counts the ones. A UART with even parity adds the bit that makes "an even number of logic 1s in the data and parity bits", with odd parity the bit that makes the count odd (TI TL16C550D): 0x3D has five ones, so its even-parity bit is 1.
+
+A cyclic redundancy check (CRC) is computed bit by bit, and the order the bits are fed in is part of its definition. The Linux kernel offers the same CRC-32 polynomial both ways: `crc32_le`, "Bit order: Least-significant-bit-first", with the polynomial written 0xedb88320, the variant "widely used in Ethernet", and `crc32_be`, "the *most-significant-bit-first* variant", written 0x04c11db7 ([include/linux/crc32.h](https://raw.githubusercontent.com/torvalds/linux/master/include/linux/crc32.h)). The two constants are each other with their 32 bits reversed. gzip's sample code uses the reflected form, `c = 0xedb88320L ^ (c >> 1)` (RFC 1952, appendix 8), and PPP's frame check sequence (FCS) table generator defines "The FCS-16 generator polynomial: x**0 + x**5 + x**12 + x**16" as `0x8408` (RFC 1662, appendix C.1), with x to the power 0 in the most significant bit: reversed, it is 0x1021. The least-significant-bit-first variant takes each octet's bits in the order Ethernet and PPP send them.
+
+## How it differs from byte order
+
+Bit numbering is about naming the bits inside one octet or one field; byte order is about which octet of a multi-octet number comes first in memory or in a packet. They are independent: the Internet sends "the most significant octet ... first" (RFC 791), and Ethernet sends each of those octets least significant bit first. Reversing all 32 bits of a word is the same as reversing the bits of each octet and swapping the octets, and the second half of that is byte order. [Big-endian and little-endian](/learn/big-endian-and-little-endian) covers it, including how a processor's byte order meets a bit test: the kernel's `is_multicast_ether_addr` reads the first octet's lowest bit with `0x01 & a` on a little-endian processor and shifts the word down first on a big-endian one ([include/linux/etherdevice.h](https://raw.githubusercontent.com/torvalds/linux/master/include/linux/etherdevice.h)).
+
+## The bugs a wrong order causes
+
+None of these raises an error; each gives a valid, wrong number.
+
+- **A printed bit string read in the wrong order.** Huawei prints an LACP state least significant bit first, so `10111100` is 0x3D; read the usual way, most significant bit first, the same eight characters are 0xBC.
+- **A leading zero dropped.** Cisco writes the expected LACP flags as "0x3D (hex) or 0111101 (binary)" ([Cisco, document 220367](https://www.cisco.com/c/en/us/support/docs/switches/catalyst-9300-series-switches/220367-troubleshoot-etherchannels-on-catalyst-9.html)): seven digits, because the leading 0 of 00111101 is gone. Counted from the left, every bit of that string is one position off.
+- **An off-by-one between 0- and 1-based numbers.** Huawei's Bit 2 is 802.1AX's bit 1, LACP_Timeout, the bit of weight 2, not 4.
+- **An MSB 0 number used as an LSB 0 shift.** IANA lists RD, Recursion Desired, as "bit 7" of the DNS flags word ([IANA, DNS Header Flags](https://www.iana.org/assignments/dns-parameters/dns-parameters.xml)). `1 << 7` is 0x0080 in that 16-bit word, which is RA, Recursion Available, IANA's bit 8; RD is `1 << 8`, 0x0100. In TCP (the Transmission Control Protocol), IANA's bit 15 is FIN ([IANA, TCP Header Flags](https://www.iana.org/assignments/tcp-parameters/tcp-parameters.xml)) and the Linux kernel's `TCPHDR_FIN` is `BIT(0)` ([include/net/tcp.h](https://raw.githubusercontent.com/torvalds/linux/master/include/net/tcp.h)).
+- **A bit-reversed MAC address.** Read 48-2C-6A-1E-59-3D as if it were canonical and the first octet 0x48 says universal and individual, where the real address, 12-34-56-78-9A-BC, is local; RFC 2469's bridges existed to stop exactly that.
+- **The same state through SNMP.** The LACP management information base (MIB) gives its state values as BITS, and "The first bit corresponds to bit 0 of the Actor_State (LACP_Activity)" ([IEEE8023-LAG-MIB](https://www.ieee802.org/1/files/public/MIBs/IEEE8021-AX-MIB-202005290000Z.mib)) while RFC 3417 puts the first bit in the high-order bit: through SNMP the octet 0x3D reads as 0xBC.
+
+## Three cases on this site
+
+### Huawei's PortState, Cisco's 0x3D and the LACP state bits
+
+An LACP data unit carries the actor's and the partner's state in one octet each. IEEE 802.1AX numbers their bits 0 (LACP_Activity) to 7 (Expired), the LACP MIB lists them as `lacpActivity(0)` to `expired(7)` (IEEE8023-LAG-MIB), and the Linux driver gives them the masks `LACP_STATE_LACP_ACTIVITY 0x1` to `LACP_STATE_EXPIRED 0x80` ([include/uapi/linux/if_bonding.h](https://raw.githubusercontent.com/torvalds/linux/master/include/uapi/linux/if_bonding.h)): bit k is worth 2 to the power k, LSB 0. Cisco's table agrees, labelling Expired "(most significant bit)" and LACP Activity "(less significant bit)", and its capture prints the bits most significant first, `.... ...1 = LACP Activity` (Cisco, document 220367).
+
+Huawei's `display eth-trunk` prints the same octet as a string: "The status variable is eight bits, such as 10111100", with Bit 1 described as the actor bit, Bit 2 the timeout ("1: ... short timeout interval. 0: ... long timeout interval"), Bit 3 aggregation, Bit 4 "added to the link aggregation group (LAG)", Bit 5 "can receive LACPDUs", Bit 6 "can send LACPDUs", Bit 7 "default parameter values" and Bit 8 "Expired" (Huawei, Table 5-17). That is 802.1AX's order, bit 0 first, so the first character of the string is the least significant bit. Reversed into the usual order, `10111100` is 00111101, 0x3D: LACP_Activity, Aggregation, Synchronization, Collecting and Distributing, the state Cisco calls the expected one. Two other rows of the same example, an unselected member's `10100000` and a partner's `10110000`, are 0x05 and 0x0D. The [bit numbering tool](/tools/bit-numbering-and-order) reads such strings in either order, and the [LACP member link and state reader](/tools/lacp-hash-and-state-reader) decodes the states themselves; [Link aggregation and LACP](/learn/link-aggregation-and-lacp) explains the protocol.
+
+### The I/G and U/L bits of a MAC address
+
+"The least significant bit of Octet 0 (the I/G bit) indicates either an individual address (I/G=0) or group address (I/G=1), and the second least significant bit of Octet 0 (the U/L bit) indicates universal (U/L=0) or local (U/L=1) administration of the address" ([IEEE Registration Authority guidelines](https://standards-support.ieee.org/hc/en-us/articles/4888705676564-Guidelines-for-Use-of-Extended-Unique-Identifier-EUI-Organizationally-Unique-Identifier-OUI-and-Company-ID-CID)). RFC 9542 draws the same octet MSB 0, as an IETF document must, so the two bits appear at its right end, as M and X in positions 7 and 6, with the Structured Local Address Plan's (SLAP's) Y and Z in positions 5 and 4 (section 2.1). The kernel tests them as `0x01 & addr[0]` and `0x02 & addr[0]` (include/linux/etherdevice.h). Because Ethernet sends the least significant bit first, the I/G bit is the very first bit of a frame's destination address: a station knows whether the frame is for one station or a group before anything else arrives. [What Is an OUI](/learn/what-is-an-oui) and [The Ethernet frame, field by field](/learn/the-ethernet-frame-field-by-field) read those bits; the [OUI lookup](/tools/oui-lookup) and the [multicast group to MAC mapper](/tools/multicast-mac-mapper) work with them.
+
+### The DNS header flags
+
+RFC 1035 draws the second word of the DNS header MSB 0: QR, four bits of Opcode, AA, TC, RD, RA, Z and four bits of RCODE (section 4.1.1), with "the bit labeled 0 is the most significant bit" (section 2.3.2); RFC 6895 gives two of the Z bits to AD and CD (section 2), and IANA's DNS Header Flags registry numbers them as the drawing does, "from bit 5 through bit 11", AA to CD. Under LSB 0 the same AA is bit 10 and its mask 0x0400. The answer flags 0x81a0 of [The DNS Header: Opcode, Status, and Flags](/learn/dns-message-header-and-flags) are QR (MSB 0 bit 0, worth 32,768), RD (bit 7, worth 256), RA (bit 8, worth 128) and AD (bit 10, worth 32): each MSB 0 number p is worth 2 to the power (15 - p).
+
+## What to remember
+
+- The LSB is worth 1 and decides odd or even; the MSB is worth the most and is the sign bit of a two's complement number.
+- LSB and MSB can name bytes as well as bits; a register pair or a byte offset means bytes.
+- LSB 0 numbers are weights (bit k is 2 to the power k); MSB 0 numbers are positions in a drawing and change with the width; 1-based numbering adds an off-by-one.
+- RFC diagrams are MSB 0, by RFC 791's rule. Linux, Intel and gzip are LSB 0. SNMP, the IEEE's figures and Huawei count from 1.
+- Ethernet, a UART and PPP send each octet least significant bit first; I2C sends most significant first, and so does SPI unless told otherwise. Token Ring's bit-reversed MAC addresses are the result of that difference.
+- Before using a bit number, ask which numbering it is in and how wide the field is; before reading a printed bit string, ask which end was printed first.
+
+## Sources
+
+Every document below was read on 2026-11-08: by curl, except the Huawei, Cisco and NXP documents, read in a browser because the sites refuse automated reads. The examples' arithmetic (the weights, the reversed and shifted values, 0x3D against 0xBC) was computed with the [bit numbering tool](/tools/bit-numbering-and-order) and its golden vectors.
+
+- [Intel 64 and IA-32 Architectures Software Developer's Manual, volume 1, 253665-084US, June 2024: 1.3.1 Bit and Byte Order, 4.2.1.2 Signed Integers, 7.3.7 bit scan instructions (read 2026-11-08)](https://cdrdv2-public.intel.com/825744/253665-sdm-vol-1.pdf)
+- [IBM z/Architecture Principles of Operation, SA22-7832-13, fourteenth edition, May 2022: bit numbering and operand addresses (read 2026-11-08)](https://publibfi.dhe.ibm.com/epubs/pdf/a227832d.pdf)
+- [Python 3.15 documentation, built-in types: shifts as multiplication by pow(2, n) (read 2026-11-08)](https://docs.python.org/3/library/stdtypes.html)
+- [RFC 791, Internet Protocol, Appendix B: data transmission order and the significance of bits (read 2026-11-08)](https://www.rfc-editor.org/rfc/rfc791.txt)
+- [RFC 1035, Domain Names: Implementation and Specification, sections 2.3.2 and 4.1.1 (read 2026-11-08)](https://www.rfc-editor.org/rfc/rfc1035.txt)
+- [RFC 6895, Domain Name System (DNS) IANA Considerations, section 2: AD and CD (read 2026-11-08)](https://www.rfc-editor.org/rfc/rfc6895.txt)
+- [IANA, DNS Parameters, DNS Header Flags, updated 2026-10-16 (read 2026-11-08)](https://www.iana.org/assignments/dns-parameters/dns-parameters.xml)
+- [RFC 6891, Extension Mechanisms for DNS (EDNS(0)): the +0 (MSB) and +1 (LSB) byte labels (read 2026-11-08)](https://www.rfc-editor.org/rfc/rfc6891.txt)
+- [RFC 3225, Indicating Resolver Support of DNSSEC: the DO bit, "the most significant bit of the Z field" (read 2026-11-08)](https://www.rfc-editor.org/rfc/rfc3225.txt)
+- [RFC 3417, Transport Mappings for SNMP, section 8: BITS in bits 8 to 1 (read 2026-11-08)](https://www.rfc-editor.org/rfc/rfc3417.txt)
+- [RFC 1952, GZIP file format specification: bit 0 is the least significant bit, the FLG bits, the CRC sample code (read 2026-11-08)](https://www.rfc-editor.org/rfc/rfc1952.txt)
+- [RFC 1951, DEFLATE Compressed Data Format Specification, section 3.1.1: packing into bytes (read 2026-11-08)](https://www.rfc-editor.org/rfc/rfc1951.txt)
+- [RFC 2474, Definition of the Differentiated Services Field, section 3 (read 2026-11-08)](https://www.rfc-editor.org/rfc/rfc2474.txt)
+- [RFC 3168, The Addition of Explicit Congestion Notification (ECN) to IP, section 5 (read 2026-11-08)](https://www.rfc-editor.org/rfc/rfc3168.txt)
+- [RFC 4632, Classless Inter-domain Routing (CIDR), sections 3.1 and 5.1 (read 2026-11-08)](https://www.rfc-editor.org/rfc/rfc4632.txt)
+- [RFC 9542, IANA Considerations and IETF Protocol and Documentation Usage for IEEE 802 Parameters: bit order on an IEEE 802.3 link, the M, X, Y and Z bits (read 2026-11-08)](https://www.rfc-editor.org/rfc/rfc9542.txt)
+- [RFC 2469, A Caution On The Canonical Ordering Of Link-Layer Addresses: canonical and MSB format, bridges (read 2026-11-08)](https://www.rfc-editor.org/rfc/rfc2469.txt)
+- [RFC 1662, PPP in HDLC-like Framing: bit order, notation, the FCS-16 polynomial (read 2026-11-08)](https://www.rfc-editor.org/rfc/rfc1662.txt)
+- [IEEE Registration Authority, Guidelines for Use of EUI, OUI and CID, updated 1 April 2022: the I/G and U/L bits (read 2026-11-08)](https://standards-support.ieee.org/hc/en-us/articles/4888705676564-Guidelines-for-Use-of-Extended-Unique-Identifier-EUI-Organizationally-Unique-Identifier-OUI-and-Company-ID-CID)
+- [IEEE P802.1ad/D2.4, Provider Bridges, unapproved draft of 27 September 2004: 9.6 and 9.7, the TCI drawings and the Canonical Format Indicator (read 2026-11-08)](https://www.ieee802.org/1/files/public/docs2004/802-1-ad-D2-4.pdf)
+- [IEEE8023-LAG-MIB, the Link Aggregation MIB for IEEE 802.1AX-2020: LacpState and the admin state description (read 2026-11-08)](https://www.ieee802.org/1/files/public/MIBs/IEEE8021-AX-MIB-202005290000Z.mib)
+- [Huawei, S5700 and S6700 V200R025C00 Command Reference, Link Aggregation Commands: display eth-trunk and Table 5-17 PortState (read in a browser on 2026-11-08: the site refuses automated reads)](https://support.huawei.com/enterprise/en/doc/EDOC1100514211/54c5f31b/link-aggregation-commands)
+- [Cisco, Troubleshoot EtherChannels on Catalyst 9000 Switches, document 220367, updated 8 August 2024: the LACP state table and the expected flags (read in a browser on 2026-11-08: the site refuses automated reads)](https://www.cisco.com/c/en/us/support/docs/switches/catalyst-9300-series-switches/220367-troubleshoot-etherchannels-on-catalyst-9.html)
+- [Texas Instruments, TL16C550D Asynchronous Communications Element, SLLS597E: bit 0 first, the divisor latch bytes, parity (read 2026-11-08)](https://www.ti.com/lit/ds/symlink/tl16c550d.pdf)
+- [NXP Semiconductors, UM10204 I2C-bus specification and user manual, Rev. 7.0, 1 October 2021: 3.1.5 Byte format and Figure 10 (read in a browser on 2026-11-08: the site refuses automated reads)](https://www.nxp.com/docs/en/user-guide/UM10204.pdf)
+- [System V Application Binary Interface, chapter 4, ELF header: ELFDATA2LSB and ELFDATA2MSB (read 2026-11-08)](https://www.sco.com/developers/gabi/latest/ch4.eheader.html)
+- [IANA, TCP Parameters, TCP Header Flags, updated 2026-10-22 (read 2026-11-08)](https://www.iana.org/assignments/tcp-parameters/tcp-parameters.xml)
+- [The Linux kernel, include/vdso/bits.h and include/linux/bits.h, master: BIT and GENMASK (read 2026-11-08)](https://raw.githubusercontent.com/torvalds/linux/master/include/linux/bits.h)
+- [The Linux kernel, include/linux/spi/spi.h and include/uapi/linux/spi/spi.h, master: the MSB-first default and SPI_LSB_FIRST (read 2026-11-08)](https://raw.githubusercontent.com/torvalds/linux/master/include/linux/spi/spi.h)
+- [The Linux kernel, include/linux/crc32.h, master: crc32_le and crc32_be (read 2026-11-08)](https://raw.githubusercontent.com/torvalds/linux/master/include/linux/crc32.h)
+- [The Linux kernel, include/linux/if_vlan.h, master: the TCI masks (read 2026-11-08)](https://raw.githubusercontent.com/torvalds/linux/master/include/linux/if_vlan.h)
+- [The Linux kernel, include/linux/etherdevice.h, master: is_multicast_ether_addr and is_local_ether_addr (read 2026-11-08)](https://raw.githubusercontent.com/torvalds/linux/master/include/linux/etherdevice.h)
+- [The Linux kernel, include/net/tcp.h, master: TCPHDR_FIN to TCPHDR_CWR (read 2026-11-08)](https://raw.githubusercontent.com/torvalds/linux/master/include/net/tcp.h)
+- [The Linux kernel, include/uapi/linux/if_bonding.h, master: the LACP_STATE masks (read 2026-11-08)](https://raw.githubusercontent.com/torvalds/linux/master/include/uapi/linux/if_bonding.h)

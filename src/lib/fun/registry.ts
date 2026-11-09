@@ -39,6 +39,12 @@ import { selfTest as aggregateSelfTest } from "./games/aggregate/engine";
 import { selfTest as firstMatchSelfTest } from "./games/first-match/engine";
 // Exit the Editor's programs and self-test.
 import { selfTest as exitTheEditorSelfTest } from "./games/exit-the-editor/engine";
+// Packet Stack: the falling-blocks frame game (the arcade's first wave, 08/11/2026).
+import { selfTest as packetStackSelfTest } from "./games/packet-stack/engine";
+// TTL: the packet's run through the routers.
+import { selfTest as ttlSelfTest } from "./games/ttl/engine";
+// Rule Inspector: connections judged against a firewall policy, first match, state table, implicit deny.
+import { selfTest as ruleInspectorSelfTest } from "./games/rule-inspector/engine";
 // Incident Commander's simulation and self-test.
 import { selfTest as incidentCommanderSelfTest } from "./games/incident-commander/engine";
 
@@ -84,6 +90,12 @@ export const FUN_ENGINES: FunEngine[] = [
   { id: "first-match", selfTest: firstMatchSelfTest },
   // Exit the Editor: every documented exit, every listed wrong attempt, and random keys on each level.
   { id: "exit-the-editor", selfTest: exitTheEditorSelfTest },
+  // Packet Stack: the rule's hand cases, the replay's refusals, 400 daily and 100 practice deals played from the screen.
+  { id: "packet-stack", selfTest: packetStackSelfTest },
+  // TTL: 400 daily runs and 100 practice seeds, played by a safe bot and a greedy one, replayed and re-checked.
+  { id: "ttl", selfTest: ttlSelfTest },
+  // Rule Inspector: the model by hand, the registries' numbers, 400 daily shifts and 100 practice seeds read twice.
+  { id: "rule-inspector", selfTest: ruleInspectorSelfTest },
   // Incident Commander: the scripted player, time away, and random actions that never break the numbers.
   { id: "incident-commander", selfTest: incidentCommanderSelfTest },
 ];

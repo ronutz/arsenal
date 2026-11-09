@@ -6,7 +6,7 @@ That distinction matters because the usual failure is a layer below the rule bas
 
 ## The rule
 
-**Automatic NAT** adds the proxy ARP entry itself at policy install, provided *Automatic ARP configuration* is enabled in Global Properties.
+**Automatic NAT (network address translation)** adds the proxy ARP entry itself at policy install, provided *Automatic ARP configuration* is enabled in Global Properties.
 
 **Manual NAT does not.** It never has. The administrator creates the entry.
 

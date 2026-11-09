@@ -4,7 +4,7 @@ Paste a raw HTTP request header block - a request line and one "Name: value" per
 
 ## The passive-HTTP analog of JA3
 
-JA3 fingerprints a TLS client by the order of the ciphers and extensions in its ClientHello. Header order is the same idea one layer up: browsers, libraries, and bots each emit request headers in a characteristic sequence, and that sequence survives even when the values are spoofed. A request whose header order contradicts the User-Agent it claims - Chrome's UA with curl's header set - is a classic bot tell, which is why bot-detection and WAF systems key on it.
+JA3 fingerprints a TLS client by the order of the ciphers and extensions in its ClientHello. Header order is the same idea one layer up: browsers, libraries, and bots each emit request headers in a characteristic sequence, and that sequence survives even when the values are spoofed. A request whose header order contradicts the User-Agent it claims - Chrome's UA with curl's header set - is a classic bot tell, which is why bot-detection and WAF (web application firewall) systems key on it.
 
 ## Reading the result
 

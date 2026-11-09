@@ -69,7 +69,7 @@ export const ivantiProfile: VendorProfile = {
     { name: "Connect Secure and Policy Secure", what: "The SSL VPN and network access control appliances, arriving via Pulse Secure from Juniper by way of NetScreen. The products at the centre of the 2024 exploitation." },
     { name: "Ivanti Neurons for MDM", what: "The MobileIron line, managing mobile fleets - the other half of the December 2020 double acquisition." },
     { name: "Service Manager and the Cherwell line", what: "IT service management from two separate acquisitions, which is its own consolidation problem." },
-    { name: "Security Controls and Patch SDK", what: "Patching components that several other products depend on - which is why a single flaw in the SDK appears in advisories for half the portfolio at once." },
+    { name: "Security Controls and Patch SDK", what: "Patching components that several other products depend on - which is why a single flaw in the SDK (software development kit) appears in advisories for half the portfolio at once." },
   ],
   innovations: [
     {

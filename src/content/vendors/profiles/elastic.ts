@@ -55,7 +55,7 @@ export const elasticProfile: VendorProfile = {
     { name: "Elasticsearch", what: "The distributed search and analytics engine, still built on Lucene, still the thing everything else attaches to." },
     { name: "Kibana", what: "The visualisation and exploration layer, and the part of the stack with the clearest lead over the fork after five years of separate development." },
     { name: "Elastic Cloud", what: "Managed service across the major cloud providers in more than forty regions - including on AWS, which is worth noting given the history." },
-    { name: "Observability and Security", what: "Application performance monitoring, logs and metrics on one side; SIEM and endpoint on the other. Both are the same engine pointed at different questions, which is the argument for the platform." },
+    { name: "Observability and Security", what: "Application performance monitoring, logs and metrics on one side; SIEM (security information and event management) and endpoint on the other. Both are the same engine pointed at different questions, which is the argument for the platform." },
     { name: "ES|QL", what: "A piped query language added in 2025, aimed at analytical work that the original query interface handled awkwardly. The fork answered with its own piped language, which is a fair picture of how the two now develop." },
     { name: "ESRE, ELSER and BBQ", what: "The retrieval and vector work: a sparse retrieval model that runs in the cluster without external inference hardware, and quantisation compressing vectors roughly sixteenfold with little reported recall loss. This is where the company placed its bet for the retrieval-augmented generation era." },
   ],
