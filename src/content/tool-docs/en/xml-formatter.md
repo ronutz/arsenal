@@ -53,7 +53,7 @@ Two changes always happen, and the result says so when they do: a byte order mar
 
 ## Security: nothing is expanded, nothing is fetched
 
-The tool never expands an entity, never reads an external DTD, and never fetches a `SYSTEM` or `PUBLIC` identifier: the DOCTYPE is kept as text, and the only thing it learns from an internal subset is which general entities are declared and how. A document built for an XML external entity attack or an entity-expansion attack is therefore just text here. The input is bounded at 2,000,000 characters and 1,000 levels of nesting, and the parser reads the text once, so a hostile document cannot make the page hang. To see what such a document would do to a parser that does expand entities, use the XML decoder.
+The tool never expands an entity, never reads an external DTD, and never fetches a `SYSTEM` or `PUBLIC` identifier: the DOCTYPE is kept as text, and the only thing it learns from an internal subset is which general entities are declared and how. A document built for an XML external entity attack or an entity-expansion attack is therefore just text here. The input is bounded at 2,000,000 characters and 1,000 levels of nesting, and the parser reads the text once, so a hostile document cannot make the page hang. The XML decoder expands nothing either, but it names what such a document would do to a parser that does expand entities: it flags external entities, parameter entities and entities that reference other entities.
 
 ## Signed documents
 

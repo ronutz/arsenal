@@ -29,6 +29,9 @@ import GameOrigins from "@/components/dev/fun/GameOrigins";
 import { Link } from "@/i18n/navigation";
 // The game.
 import PhishOrLegit from "@/components/dev/fun/games/PhishOrLegit";
+// The strings the game keeps in code, in the page's language beyond en and pt-BR (09/11/2026; src/i18n/contentStrings.ts).
+import ContentStrings from "@/components/ContentStrings";
+import { contentStringsFor } from "@/i18n/contentStrings";
 // "Solve the other puzzles" (PRIME 05/11/2026): the call-out, rendered here, and the slot that hands it to the frame.
 import MorePuzzles from "@/components/dev/fun/MorePuzzles";
 import { MorePuzzlesProvider } from "@/components/dev/fun/MorePuzzlesSlot";
@@ -83,7 +86,10 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
             <MessageSlice namespaces={["devFun.games.common", "devFun.games.phish-or-legit"]}>
               {/* "Solve the other puzzles", placed by the game's frame right after its result (PRIME 05/11/2026). */}
               <MorePuzzlesProvider more={<MorePuzzles current="phish-or-legit" />}>
-                <PhishOrLegit locale={locale} />
+                {/* The game's own texts in this locale (module "phish-or-legit"); empty for en and pt-BR, which keep theirs inline. */}
+                <ContentStrings strings={contentStringsFor(locale, ["phish-or-legit"])}>
+                  <PhishOrLegit locale={locale} />
+                </ContentStrings>
               </MorePuzzlesProvider>
             </MessageSlice>
             {/* Where the game comes from: its roots, the sources, more on this site (PRIME 06/11/2026). */}

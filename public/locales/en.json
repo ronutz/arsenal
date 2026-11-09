@@ -476,7 +476,7 @@
       "renewByText": "Renew by {date} (about {lead} days before expiry)",
       "renewByDue": "{days} days from now",
       "reuseHeading": "Validation reuse (issuance era)",
-      "dcvText": "Domain validation (DCV) data can be reused for {days} days.",
+      "dcvText": "Domain control validation (DCV) data can be reused for {days} days.",
       "siiText": "Organization identity (OV/EV SII) can be reused for {days} days.",
       "scheduleHeading": "The SC-081v3 schedule",
       "scheduleIntro": "Public TLS maximums key off the certificate's issuance date:",
@@ -734,7 +734,7 @@
         "rc2": "RC2: an obsolete 40/64-bit cipher that is not safe for modern use.",
         "tripleDes": "3DES has a 64-bit block, which exposes it to the Sweet32 birthday attack (CVE-2016-2183). RFC 8429 deprecates it.",
         "md5Mac": "MD5 MAC: MD5 is cryptographically broken.",
-        "cbcMac": "CBC with an HMAC-SHA1 or MD5 MAC uses MAC-then-encrypt, which is exposed to padding-oracle attacks such as BEAST and Lucky13.",
+        "cbcMac": "CBC with an HMAC-SHA1 or MD5 MAC uses MAC-then-encrypt, which is exposed to padding-oracle attacks such as Lucky13; on TLS 1.0, CBC's predictable initialisation vectors also allow BEAST.",
         "ccm8": "CCM_8 truncates the authentication tag to 8 bytes, weakening integrity. IANA does not mark it Recommended.",
         "noFs": "No forward secrecy: with a static key exchange, one compromised long-term key can decrypt past sessions. Modern guidance requires ECDHE or DHE.",
         "legacyCipher": "{value} is a legacy cipher that is deprecated for TLS.",
@@ -819,7 +819,7 @@
     },
     "curl-command-builder": {
       "name": "curl command builder",
-      "blurb": "Pick any of the 27 protocols curl speaks, fill in protocol-aware fields, and get the exact command with every flag explained and safety warnings surfaced. The inverse of the HTTP request translator: that one reads a command, this one writes it.",
+      "blurb": "Pick any of the 27 protocols curl speaks, fill in protocol-aware fields, and get the exact command with every flag explained and safety warnings surfaced. The inverse of the curl command explainer: that one reads a command, this one writes it.",
       "ui": {
         "group_web": "Web",
         "group_transfer": "File transfer",
@@ -4151,7 +4151,7 @@
           "HTML_COMMENT_MATCHED": "Raised when an HTML comment is encountered.",
           "HTML_TAG_MATCHED": "Raised when an HTML tag is encountered.",
           "HTTP_DISABLED": "Triggered when HTTP is disabled.",
-          "HTTP_PROXY_CONNECT": "Triggered when proxy chaining via use of the HTTP proxy connect profile.",
+          "HTTP_PROXY_CONNECT": "Triggered when proxy chaining is in use through the HTTP proxy connect profile.",
           "HTTP_PROXY_REQUEST": "Triggered when a virtual server has proxy-mode explicit.",
           "HTTP_PROXY_RESPONSE": "Triggered when the response from the remote HTTP proxy is received.",
           "HTTP_REJECT": "Triggered when HTTP aborts the connection.",
@@ -4378,7 +4378,7 @@
             "name": "f5-tcp-lan",
             "quirk0": "Benchmark claim from the announcement: throughput at least as high, and often better, than the default tcp profile for its link type.",
             "story": "The living, updated version of tcp-lan-optimized: all settings adapted to LAN-grade links, without enabling the very newest features. The profiles reference pairs it with LAN-based or highly interactive traffic behind a standard virtual server.",
-            "tradeoff0": "Link-type-tuned: the wrong side of a WAN gets WAN behaviour from a LAN profile, so split-profile virtual servers (LAN inside, WAN outside) exist for exactly this.",
+            "tradeoff0": "Link-type-tuned: on the side of a virtual server that faces a WAN, a LAN profile gives WAN traffic LAN behaviour, so split-profile virtual servers (LAN inside, WAN outside) exist for exactly this.",
             "when0": "Server-side profiles on fast, low-loss data-center links.",
             "when1": "Interactive LAN traffic where latency dominates."
           },
@@ -6132,7 +6132,7 @@
       "share": {
         "carries": "The link carries the JSON as pasted and the three choices; JSON holding a credential gets none.",
         "caution": "JSON often holds passwords, keys and internal names: read it before you send the link.",
-        "maybeSecret": "{more, plural, =0 {Line {line} may hold a secret ({label}): check it, and the rest of the text, before you send the link.} one {Line {line} ({label}) and one more line may hold secrets: check it, and the rest of the text, before you send the link.} other {Line {line} ({label}) and # more lines may hold secrets: check it, and the rest of the text, before you send the link.}}",
+        "maybeSecret": "{more, plural, =0 {Line {line} may hold a secret ({label}): check it, and the rest of the text, before you send the link.} one {Line {line} ({label}) and one more line may hold secrets: check them, and the rest of the text, before you send the link.} other {Line {line} ({label}) and # more lines may hold secrets: check them, and the rest of the text, before you send the link.}}",
         "blockedSecret": "{more, plural, =0 {No link: line {line} holds a credential ({label}). Replace it with a placeholder, then share again.} one {No link: line {line} ({label}) and one more line hold credentials. Replace them with placeholders, then share again.} other {No link: line {line} ({label}) and # more lines hold credentials. Replace them with placeholders, then share again.}}"
       }
     },
@@ -6173,7 +6173,7 @@
       "share": {
         "carries": "The link carries the source as pasted, the direction and the indent; a source holding a credential gets none.",
         "caution": "Configuration often holds passwords, keys and internal names: read it before you send the link.",
-        "maybeSecret": "{more, plural, =0 {Line {line} may hold a secret ({label}): check it, and the rest of the text, before you send the link.} one {Line {line} ({label}) and one more line may hold secrets: check it, and the rest of the text, before you send the link.} other {Line {line} ({label}) and # more lines may hold secrets: check it, and the rest of the text, before you send the link.}}",
+        "maybeSecret": "{more, plural, =0 {Line {line} may hold a secret ({label}): check it, and the rest of the text, before you send the link.} one {Line {line} ({label}) and one more line may hold secrets: check them, and the rest of the text, before you send the link.} other {Line {line} ({label}) and # more lines may hold secrets: check them, and the rest of the text, before you send the link.}}",
         "blockedSecret": "{more, plural, =0 {No link: line {line} holds a credential ({label}). Replace it with a placeholder, then share again.} one {No link: line {line} ({label}) and one more line hold credentials. Replace them with placeholders, then share again.} other {No link: line {line} ({label}) and # more lines hold credentials. Replace them with placeholders, then share again.}}"
       }
     },
@@ -6846,16 +6846,16 @@
         "CSP_RO_WITH_ENFORCED": "A report-only CSP is present alongside the enforced policy, useful for testing changes.",
         "XCTO_MISSING": "No X-Content-Type-Options. Browsers may MIME-sniff responses, risking content being run as script.",
         "XCTO_NOSNIFF": "Set to nosniff, which stops MIME-type sniffing.",
-        "XCTO_INVALID": "Unexpected value '{value}'. The only valid value is nosniff.",
+        "XCTO_INVALID": "Unexpected value “{value}”. The only valid value is nosniff.",
         "XFO_MISSING": "No X-Frame-Options. Without it, or CSP frame-ancestors, the page can be framed for clickjacking.",
         "XFO_DENY": "Set to DENY, preventing the page from being framed by any site.",
         "XFO_SAMEORIGIN": "Set to SAMEORIGIN, allowing framing only by same-origin pages.",
         "XFO_ALLOWFROM_DEPRECATED": "Uses ALLOW-FROM, which is obsolete and ignored by modern browsers. Use CSP frame-ancestors instead.",
-        "XFO_INVALID": "Unexpected value '{value}'. Use DENY or SAMEORIGIN.",
+        "XFO_INVALID": "Unexpected value “{value}”. Use DENY or SAMEORIGIN.",
         "REFERRER_MISSING": "No Referrer-Policy. The browser default applies, which may leak full URLs to other origins.",
-        "REFERRER_STRONG": "Set to '{value}', a privacy-preserving policy.",
-        "REFERRER_WEAK": "Set to '{value}', which still sends the origin or more to other sites.",
-        "REFERRER_OTHER": "Set to '{value}'.",
+        "REFERRER_STRONG": "Set to “{value}”, a privacy-preserving policy.",
+        "REFERRER_WEAK": "Set to “{value}”, which still sends the origin or more to other sites.",
+        "REFERRER_OTHER": "Set to “{value}”.",
         "REFERRER_UNSAFE_URL": "Set to unsafe-url, which sends the full URL, including path and query, to every destination.",
         "PERMISSIONS_MISSING": "No Permissions-Policy. Powerful features such as camera, microphone, and geolocation are not restricted.",
         "PERMISSIONS_PRESENT": "Present, restricting access to powerful browser features.",
@@ -6864,7 +6864,7 @@
         "COOP_ALLOW_POPUPS": "Set to same-origin-allow-popups, isolating the page while keeping popups it opens.",
         "COOP_UNSAFE_NONE": "Set to unsafe-none, which provides no opener isolation.",
         "COEP_ABSENT": "No Cross-Origin-Embedder-Policy. This is optional and required only for cross-origin isolation.",
-        "COEP_PRESENT": "Set to '{value}', requiring embedded resources to opt in.",
+        "COEP_PRESENT": "Set to “{value}”, requiring embedded resources to opt in.",
         "CORP_ABSENT": "No Cross-Origin-Resource-Policy. This is optional and limits who may embed this resource.",
         "CORP_SAME_ORIGIN": "Set to same-origin, the tightest setting.",
         "CORP_SAME_SITE": "Set to same-site, allowing same-site embedding.",
@@ -6875,24 +6875,24 @@
         "CORS_WILDCARD": "Access-Control-Allow-Origin is '*', letting any site read the response. This is safe only for public, credential-free data.",
         "CORS_WILDCARD_CREDENTIALS": "Access-Control-Allow-Origin is '*' together with credentials. This exposes credentialed data to any origin, a serious misconfiguration.",
         "CORS_NULL_ORIGIN": "Access-Control-Allow-Origin is 'null', which several contexts can forge. Avoid the null origin.",
-        "CORS_SPECIFIC_ORIGIN": "Access-Control-Allow-Origin allows '{value}'. Confirm that origin is trusted.",
+        "CORS_SPECIFIC_ORIGIN": "Access-Control-Allow-Origin allows “{value}”. Confirm that origin is trusted.",
         "CORS_CREDENTIALS_TRUE": "Access-Control-Allow-Credentials is true, so the response may carry cookies cross-origin. Pair this only with a specific, trusted origin.",
-        "CORS_CREDENTIALS_OTHER": "Access-Control-Allow-Credentials is '{value}'.",
+        "CORS_CREDENTIALS_OTHER": "Access-Control-Allow-Credentials is “{value}”.",
         "XPCDP_ABSENT": "No X-Permitted-Cross-Domain-Policies. OWASP recommends setting it to none.",
         "XPCDP_NONE": "Set to none, the hardened value.",
         "XPCDP_ALL": "Set to all, the most permissive value. Prefer none.",
-        "XPCDP_OTHER": "Set to '{value}'.",
-        "CLEAR_SITE_DATA_PRESENT": "Clear-Site-Data is set ('{value}'), telling the browser to clear site data. Use it on logout endpoints.",
+        "XPCDP_OTHER": "Set to “{value}”.",
+        "CLEAR_SITE_DATA_PRESENT": "Clear-Site-Data is set (“{value}”), telling the browser to clear site data. Use it on logout endpoints.",
         "FEATURE_POLICY_DEPRECATED": "Feature-Policy is deprecated. Migrate to Permissions-Policy.",
         "HPKP_DEPRECATED": "HTTP Public Key Pinning is deprecated and removed from browsers. Remove this header.",
-        "EXPECT_CT_OBSOLETE": "Expect-CT is obsolete ('{value}'). Certificate Transparency is enforced by default, so remove it.",
-        "XSS_PROTECTION_LEGACY": "X-XSS-Protection is '{value}'. The legacy auditor is gone from modern browsers. Remove it, or set it to 0, and rely on CSP.",
+        "EXPECT_CT_OBSOLETE": "Expect-CT is obsolete (“{value}”). Certificate Transparency is enforced by default, so remove it.",
+        "XSS_PROTECTION_LEGACY": "X-XSS-Protection is “{value}”. The legacy auditor is gone from modern browsers. Remove it, or set it to 0, and rely on CSP.",
         "XSS_PROTECTION_DISABLED_OK": "X-XSS-Protection is 0, which correctly disables the obsolete auditor.",
-        "SERVER_VERSION_DISCLOSED": "Server reveals version detail ('{value}'), helping attackers target known flaws. Minimise it.",
-        "SERVER_PRODUCT_DISCLOSED": "Server names the product ('{value}'). Consider removing or minimising it.",
-        "XPOWEREDBY_PRESENT": "X-Powered-By reveals the stack ('{value}'). Remove it.",
-        "XASPNETVERSION_PRESENT": "X-AspNet-Version reveals the runtime version ('{value}'). Remove it.",
-        "XASPNETMVCVERSION_PRESENT": "X-AspNetMvc-Version reveals the framework version ('{value}'). Remove it.",
+        "SERVER_VERSION_DISCLOSED": "Server reveals version detail (“{value}”), helping attackers target known flaws. Minimise it.",
+        "SERVER_PRODUCT_DISCLOSED": "Server names the product (“{value}”). Consider removing or minimising it.",
+        "XPOWEREDBY_PRESENT": "X-Powered-By reveals the stack (“{value}”). Remove it.",
+        "XASPNETVERSION_PRESENT": "X-AspNet-Version reveals the runtime version (“{value}”). Remove it.",
+        "XASPNETMVCVERSION_PRESENT": "X-AspNetMvc-Version reveals the framework version (“{value}”). Remove it.",
         "HEADER_PRESENT": "Present.",
         "COOKIE_COUNT": "{value} cookie(s) set.",
         "COOKIE_WEAK_COUNT": "{value} cookie(s) have weak attributes.",
@@ -7699,7 +7699,7 @@
           "aaa": "{proto} authentication (AAA) configuration.",
           "access": "Management access configuration ({obj}).",
           "create": "Creates a local account \"{name}\" with role {role} (EXOS roles are typically admin or user).",
-          "createNoRole": "Creates a local account \"{name}\" with role (role) (EXOS roles are typically admin or user).",
+          "createNoRole": "Creates a local account \"{name}\" with no role given (EXOS roles are typically admin or user).",
           "other": "Local account / password configuration."
         },
         "cat": {
@@ -8926,7 +8926,7 @@
           "S-VF-FUNCTIONAL": {
             "cmd": {
               "dns": "resolve the names in scope from a client and from the authoritative server; compare",
-              "firewall": "test that the intended traffic passes and the intended traffic is still blocked",
+              "firewall": "test that the intended traffic passes and the unintended traffic is still blocked",
               "load-balancer": "test through the virtual server end to end; watch pool member and connection stats",
               "tls-pki": "openssl s_client to the endpoint; confirm the new chain, SAN, and expiry"
             },
@@ -12604,7 +12604,7 @@
         "topology": "Topology",
         "qos": "Quality of Service (dynamic)",
         "completion-rate": "Completion Rate (dynamic)",
-        "lowest-round-trip-time": "Lowest Round-Trip Time (dynamic)",
+        "lowest-round-trip-time": "Round Trip Time (dynamic)",
         "fewest-hops": "Fewest Hops (dynamic)",
         "kilobytes-per-second": "Kilobytes/Second (dynamic)",
         "packet-rate": "Packet Rate (dynamic)",
@@ -12615,7 +12615,7 @@
       "reason": {
         "qos": "Quality of Service scores each virtual server from live RTT, hops, and hit-ratio metrics.",
         "completion-rate": "Completion Rate compares the percentage of packets successfully exchanged, a live metric.",
-        "lowest-round-trip-time": "Lowest Round-Trip Time picks the resource with the least measured RTT from the local DNS.",
+        "lowest-round-trip-time": "Round Trip Time picks the resource with the least measured RTT from the local DNS.",
         "fewest-hops": "Fewest Hops picks the resource with the least router hops from the local DNS, measured by big3d.",
         "kilobytes-per-second": "Kilobytes/Second routes by live throughput.",
         "packet-rate": "Packet Rate routes by live packets-per-second.",
@@ -13630,7 +13630,7 @@
         },
         "check": {
           "cloudApps": "Generic web flow vs Cloud Apps Only",
-          "dynamic": "Dynamic steering: device is {location}",
+          "dynamic": "Dynamic steering: device location, {location}",
           "exception": "Exception match: {kind} \"{value}\"",
           "exceptions": "Steering exceptions",
           "failClose": "Tunnel down + Fail Close ON",
@@ -13850,8 +13850,8 @@
           "cat6": "ANSI/TIA-568 100 m channel; 250 MHz certified bandwidth.",
           "cat6a": "ANSI/TIA-568 100 m channel; 500 MHz certified bandwidth - 10GBASE-T at the full 100 m.",
           "cat8": "ANSI/TIA-568.2-D Category 8: 2000 MHz, 25G/40GBASE-T to a 30 m channel; shielded construction in practice. Intended for short data-center runs, not horizontal cabling.",
-          "om3": "Laser-optimized 50 um multimode; aqua jacket by convention.",
-          "om4": "Higher-bandwidth 50 um multimode; extends SR-class reach over OM3.",
+          "om3": "Laser-optimized 50 μm multimode; aqua jacket by convention.",
+          "om4": "Higher-bandwidth 50 μm multimode; extends SR-class reach over OM3.",
           "smf": "OS2 single-mode with LR-class optics; 10 km is the standard reach class - longer ER/ZR classes exist beyond this planner's scope."
         },
         "optic": {
@@ -14702,7 +14702,7 @@
         },
         "note": {
           "blindMany": "{count} profiles are attached and blind for the same reason: the payload is never decrypted. Switching this policy to deep inspection is the single change that fixes all of them - and it is a real decision, because deep inspection means terminating TLS, which has certificate-trust, privacy and performance consequences.",
-          "blindOne": "{count} profile is attached and blind for the same reason: the payload is never decrypted. Switching this policy to deep inspection is the single change that fixes all of them - and it is a real decision, because deep inspection means terminating TLS, which has certificate-trust, privacy and performance consequences.",
+          "blindOne": "{count} profile is attached and blind because the payload is never decrypted. Switching this policy to deep inspection is the single change that fixes it - and it is a real decision, because deep inspection means terminating TLS, which has certificate-trust, privacy and performance consequences.",
           "certNotWeaker": "Certificate inspection is not a weaker form of deep inspection; it is a different thing. It validates the certificate and reads the handshake, and never decrypts the body.",
           "coverage": "This models COVERAGE, not detection: it answers whether a profile can see the traffic, never whether it would catch a particular threat."
         },
@@ -14964,7 +14964,7 @@
         },
         "find": {
           "doubled": "The location \"{location}\" does not end in a slash while proxy_pass carries a URI part. The replacement is literal, so the leftover slash from the request is kept and the backend receives a DOUBLED slash. Matching trailing slashes on both sides is the usual fix.",
-          "joined": "The location ends in a slash but the proxy_pass URI part does not, so the two are joined with one inserted. Matching the slashes on both sides removes the ambiguity.",
+          "joined": "The location ends in a slash but the proxy_pass URI part does not, so the rest of the request path is appended to the URI part with no slash between them. Matching the slashes on both sides removes the ambiguity.",
           "resolver": "Because the value contains a variable, NGINX also resolves the upstream name at request time rather than at startup, which means a resolver directive is usually required and a name that fails to resolve becomes a runtime error rather than a config error."
         },
         "note": {
@@ -15181,7 +15181,7 @@
           "belowMany": "{matches} valid matches against a threshold of {limit}. The identifier worked; the rule is set to require more before it acts.",
           "belowOne": "{matches} valid match against a threshold of {limit}. The identifier worked; the rule is set to require more before it acts.",
           "checksumMany": "{count} strings had the right shape and none passed the checksum. The engine does not count these, which is exactly the behaviour that makes people think DLP \"missed\" something.",
-          "checksumOne": "{count} string had the right shape and none passed the checksum. The engine does not count these, which is exactly the behaviour that makes people think DLP \"missed\" something.",
+          "checksumOne": "{count} string had the right shape and did not pass the checksum. The engine does not count it, which is exactly the behaviour that makes people think DLP \"missed\" something.",
           "firesMany": "{matches} valid matches meets the threshold of {limit}, so the rule fires.",
           "firesOne": "{matches} valid match meets the threshold of {limit}, so the rule fires.",
           "noCandidates": "Nothing in the text has the shape of a {label}, so the checksum never runs and the rule cannot fire. If you expected a hit, check for formatting the pattern does not accept."
@@ -16203,7 +16203,7 @@
           "universal": "Universal hardware"
         },
         "note": {
-          "bootMenu": "The boot-menu question is worth memorising because it is asked in the negative: when the switch asks whether you would like to change the OS to VOSS, answering N keeps Switch Engine and Y moves to Fabric Engine.",
+          "bootMenu": "The boot-menu question is worth memorising because Switch Engine is chosen by answering no: when the switch asks \"Would you like to change the switch OS to VOSS? [y/N/q]\", answering N keeps Switch Engine and y moves to Fabric Engine.",
           "exos": "ExtremeXOS and Switch Engine are the same operating system. If a document, an image filename or a boot menu says EXOS, it is not out of date in any way that matters - the file names and the boot menus still use the old names.",
           "notUniversal": "The {named} is not in this tool's Universal list. Non-Universal models keep the ORIGINAL names - EXOS and VOSS - and the rename does not apply to them. That is the commonest reason a search for \"Switch Engine\" plus a model number returns nothing useful.",
           "preprovision": "Persona can also be pre-provisioned centrally, so a switch collects its intended OS on first boot rather than being chosen at the console. That is the difference between a site visit and a delivery.",
@@ -16274,7 +16274,7 @@
           "deployedChange": "To change vCPU or memory on a deployed tenant, move it back to provisioned first, make the change, then return it to deployed. It is not a live operation, and treating it as one is how a maintenance window becomes an outage.",
           "imageF5os": "The image name contains ALL-F5OS, the appliance-platform build.",
           "imageVelos": "The image name contains ALL-VELOS, so it is built for the chassis platform and will not deploy on rSeries.",
-          "minMemory": "F5 publishes the minimum memory as (3.5 x 1024 x vCPU) + 512, so {vcpu} vCPU requires at least {min} MB. More than the minimum can be configured deliberately.",
+          "minMemory": "F5 publishes the minimum memory as (3.5 × 1024 × vCPU) + 512, so {vcpu} vCPU requires at least {min} MB. More than the minimum can be configured deliberately.",
           "rseries": "This looks like rSeries: an appliance rather than a chassis. There are no chassis partitions and no blades, vcpu-cores-per-node moves in multiples of four with a default of four, and the default memory is 12288 MB.",
           "vcpuNotMultiple": "A vCPU count of {vcpu} is valid on VELOS. On rSeries the value must be a multiple of four, so this configuration is chassis-shaped - which matters if it is being copied between platforms.",
           "velos": "This looks like VELOS: a chassis, with chassis partitions and blades. Each blade offers up to 22 vCPUs, around 95 GB of memory and roughly 600 GB of disk to tenants, so partition capacity is what limits how many tenants fit."
@@ -17694,7 +17694,7 @@
         "2": "F5's field-style numbers count from 1: <c>getfield</c> fields, <c>URI::path</c> depths, LTM policy path-segment indexes, the legacy <c>matchclass</c>.",
         "3": "Counters return 1 for the first item: <c>HTTP::request_num</c>, <c>table incr</c>.",
         "4": "Many zeros are values, not positions: route domain 0, port 0, connection-limit 0, <c>SSL::verify_result</c> 0, and tcpdump's 0.0.",
-        "5": "Lower goes first almost everywhere (event priority, policy ordinals, GTM order, syslog severity), except pool priority groups, where higher wins.",
+        "5": "Lower goes first almost everywhere (event priority, policy ordinals, BIG-IP DNS order, syslog severity), except pool priority groups, where higher wins.",
         "6": "In an <c>if</c>, 0 is false and every other number is true, -1 included: compare an index with <c>>= 0</c> instead of testing it, and store your own flags as 0 or 1, as the DevCentral iRules Style Guide asks."
       },
       "searchLabel": "Search",
@@ -19743,7 +19743,7 @@
       "explain": {
         "dig": "The BIND 9 DNS lookup utility.",
         "server": "@server: ask this name server instead of the ones in /etc/resolv.conf. A host name is resolved first; an IPv4 or IPv6 address is used as is.",
-        "norc": "-r: do not read ${HOME}/.digrc, so the command behaves the same on every machine.",
+        "norc": "-r: do not read $'{HOME}'/.digrc, so the command behaves the same on every machine.",
         "ipv4": "-4: use only IPv4.",
         "ipv6": "-6: use only IPv6.",
         "source": "-b address[#port]: send the query from this local address (and port).",
@@ -19880,8 +19880,8 @@
         "import-unknown": "{module} is neither in the standard library nor in the Pyodide distribution, so it cannot be imported here; the import will raise ModuleNotFoundError.",
         "import-relative": "{module} is a relative import, which needs a package to be relative to; a program run here is a single module and the import will fail.",
         "import-pyodide": "{module} is the bridge between Python and the JavaScript side of the Worker. It works, but it reaches a Worker scope with no document, and the page policy allows this origin only.",
-        "network": "{modules} reaches for the network. The engine runs in a Worker with no sockets, and the page's connect-src policy allows this origin only: connections raise an error.",
-        "processes": "{modules} starts processes. Emscripten does not support processes; subprocess, os.system and multiprocessing raise OSError 138.",
+        "network": "The program uses the network ({modules}). The engine runs in a Worker with no sockets, and the page's connect-src policy allows this origin only: connections raise an error.",
+        "processes": "The program starts processes ({modules}). Emscripten does not support processes; subprocess, os.system and multiprocessing raise OSError 138.",
         "threads": "Threads are available but run cooperatively inside one WebAssembly instance; CPU-bound threads do not run in parallel here.",
         "zoneinfo": "zoneinfo finds no time zone database in this build (no system tzdata and no tzdata package loaded): ZoneInfo(...) raises ZoneInfoNotFoundError. Use datetime.timezone with a fixed offset instead.",
         "pip": "pip and micropip are not available in this version: packages are off, so nothing can be installed. The standard library is what is available.",
@@ -19891,7 +19891,7 @@
         "sleep-over-limit": "time.sleep({seconds}) is longer than the {limit} s wall-clock limit; the run will be stopped before it wakes.",
         "sleep": "time.sleep({seconds}) counts against the {limit} s wall-clock limit.",
         "loop-forever": "A while True loop ends only by break, an exception, the Stop button or the {limit} s limit.",
-        "nondeterministic": "{modules} make the output differ between runs; that is expected, not a fault.",
+        "nondeterministic": "The output differs between runs because of {modules}; that is expected, not a fault.",
         "files": "Files are written to the engine's in-memory filesystem and vanish when the run ends; nothing is written to your disk.",
         "top-level-await": "await at the top level is allowed: the program runs as an asynchronous body.",
         "exit": "exit() or sys.exit() ends the run with SystemExit; the engine is restarted afterwards.",
@@ -20104,7 +20104,7 @@
       "share": {
         "carries": "The link carries a copy of the script, each password rule E1 finds replaced by the bullets shown here.",
         "caution": "A script names hosts, users and commands: read it before you send the link.",
-        "maybeSecret": "{more, plural, =0 {Line {line} may hold a secret ({label}): check it, and any internal names, before you send the link.} one {Line {line} ({label}) and one more line may hold secrets: check it, and any internal names, before you send the link.} other {Line {line} ({label}) and # more lines may hold secrets: check it, and any internal names, before you send the link.}}",
+        "maybeSecret": "{more, plural, =0 {Line {line} may hold a secret ({label}): check it, and any internal names, before you send the link.} one {Line {line} ({label}) and one more line may hold secrets: check them, and any internal names, before you send the link.} other {Line {line} ({label}) and # more lines may hold secrets: check them, and any internal names, before you send the link.}}",
         "blockedSecret": "{more, plural, =0 {No link: line {line} holds a credential ({label}). Replace it with a placeholder, then share again.} one {No link: line {line} ({label}) and one more line hold credentials. Replace them with placeholders, then share again.} other {No link: line {line} ({label}) and # more lines hold credentials. Replace them with placeholders, then share again.}}",
         "redacted": "{n, plural, =0 {Nothing in it needed replacing.} one {# password is replaced by bullets.} other {# passwords are replaced by bullets.}}",
         "blockedEscaped": "No link: the password on line {line} is written with escape sequences, so it cannot be replaced safely.",
@@ -20440,7 +20440,7 @@
       }
     },
     "color-contrast-format": {
-      "name": "Color contrast & format",
+      "name": "Colour contrast & format",
       "blurb": "Two colours in any CSS notation (named, hex, rgb, hsl, hwb, lab, lch, oklab, oklch, color()) and out come the WCAG contrast ratio with pass or fail at every level (AA and AAA, normal and large text, user interface components), a live preview, each colour converted to every notation with its relative luminance, and the nearest foreground that would pass each failing level. Pure arithmetic from the WCAG formulas and the CSS Color Level 4 sample code; nothing leaves the browser.",
       "pairLabel": "Two colours, in any CSS notation",
       "foreground": "Foreground (text or object)",
@@ -22660,7 +22660,7 @@
       "share": {
         "carries": "The link carries the document as pasted and the three choices; a document holding a credential gets none.",
         "caution": "XML can carry tokens, internal hosts and people's names: read it before you send the link.",
-        "maybeSecret": "{more, plural, =0 {Line {line} may hold a secret ({label}): check it, and any internal names, before you send the link.} one {Line {line} ({label}) and one more line may hold secrets: check it, and any internal names, before you send the link.} other {Line {line} ({label}) and # more lines may hold secrets: check it, and any internal names, before you send the link.}}",
+        "maybeSecret": "{more, plural, =0 {Line {line} may hold a secret ({label}): check it, and any internal names, before you send the link.} one {Line {line} ({label}) and one more line may hold secrets: check them, and any internal names, before you send the link.} other {Line {line} ({label}) and # more lines may hold secrets: check them, and any internal names, before you send the link.}}",
         "blockedSecret": "{more, plural, =0 {No link: line {line} holds a credential ({label}). Replace it with a placeholder, then share again.} one {No link: line {line} ({label}) and one more line hold credentials. Replace them with placeholders, then share again.} other {No link: line {line} ({label}) and # more lines hold credentials. Replace them with placeholders, then share again.}}"
       }
     },
@@ -23013,7 +23013,7 @@
     },
     "expect-script-builder": {
       "name": "Expect script builder",
-      "blurb": "Choose ssh, telnet or another program, how to log in, a device profile (Cisco IOS, F5 BIG-IP tmsh, FortiOS, Extreme Switch Engine and Fabric Engine, or your own prompt) and the commands, and get a complete Expect script that logs in, deals with paging, runs them and logs out, changing nothing on the device unless you ask (on FortiOS it answers --More-- rather than change a global setting). No password is ever written into it, nothing secret reaches a log, ssh checks host keys with accept-new, and every script it writes passes the Expect script explainer with no error and no warning.",
+      "blurb": "Choose ssh, telnet or another program, how to log in, a device profile (Cisco IOS XE, F5 BIG-IP tmsh, FortiOS, Extreme Switch Engine and Fabric Engine, or your own prompt) and the commands, and get a complete Expect script that logs in, deals with paging, runs them and logs out, changing nothing on the device unless you ask (on FortiOS it answers --More-- rather than change a global setting). No password is ever written into it, nothing secret reaches a log, ssh checks host keys with accept-new, and every script it writes passes the Expect script explainer with no error and no warning.",
       "example": "Example",
       "clear": "Clear",
       "sec": {
@@ -23307,7 +23307,7 @@
         "evidence": {
           "path-version": "Line {line}: a path names the standard library of Python {detail}.",
           "markers": "Line {line}: ^ and ~ markers under a frame's source line: 3.11 or later (PEP 657).",
-          "call-markers": "Line {line}: ~ under a called function with ^ under its brackets: 3.13 or later.",
+          "call-markers": "Line {line}: ~ under a called function with ^ under its parentheses: 3.13 or later.",
           "multi-line": "Line {line}: a frame shows an expression over several lines: 3.13 or later.",
           "comprehension-frame": "Line {line}: a frame for a comprehension ({detail}): 3.11 or earlier; 3.12 inlined comprehensions (PEP 709).",
           "group": "Line {line}: an exception group: 3.11 or later (PEP 654).",
@@ -23320,7 +23320,7 @@
       },
       "sensitive": {
         "title": "What may be sensitive",
-        "copy": "Copy redacted copy",
+        "copy": "Copy redacted version",
         "none": "Nothing that the checks look for was found. They are not complete: read the paste before you post it.",
         "warning": "Before you post a traceback in an issue, a ticket or a chat, check it. Paths name users and hosts; source lines and messages can hold tokens and passwords; printed locals hold values. The redacted copy replaces user names with {user} and each finding with {redacted}; it does not find everything.",
         "rules": {
@@ -23378,7 +23378,7 @@
       },
       "mark": {
         "expression": "The markers point at the expression this frame was running: {text}",
-        "call": "^ marks the call's brackets {focus} and ~ the object called, {rest}: the exception came out of this call.",
+        "call": "^ marks the call's parentheses {focus} and ~ the object called, {rest}: the exception came out of this call.",
         "subscript": "^ marks the subscript {focus} and ~ the object indexed, {rest}: the exception came out of this subscript.",
         "operator": "^ marks the operator {focus} and ~ its operands, {rest}: the exception came out of this operation."
       },
@@ -24168,7 +24168,7 @@
       "share": {
         "carries": "The link carries a copy of the file, credentials in its URLs replaced by bullets; any other credential stops it.",
         "caution": "A project file can name private indexes, internal URLs and people: read it before you send the link.",
-        "maybeSecret": "{more, plural, =0 {Line {line} may hold a secret ({label}): check it, and the rest of the file, before you send the link.} one {Line {line} ({label}) and one more line may hold secrets: check it, and the rest of the file, before you send the link.} other {Line {line} ({label}) and # more lines may hold secrets: check it, and the rest of the file, before you send the link.}}",
+        "maybeSecret": "{more, plural, =0 {Line {line} may hold a secret ({label}): check it, and the rest of the file, before you send the link.} one {Line {line} ({label}) and one more line may hold secrets: check them, and the rest of the file, before you send the link.} other {Line {line} ({label}) and # more lines may hold secrets: check them, and the rest of the file, before you send the link.}}",
         "blockedSecret": "{more, plural, =0 {No link: line {line} holds a credential ({label}). Replace it with a placeholder, then share again.} one {No link: line {line} ({label}) and one more line hold credentials. Replace them with placeholders, then share again.} other {No link: line {line} ({label}) and # more lines hold credentials. Replace them with placeholders, then share again.}}",
         "redacted": "{n, plural, =0 {No URL in it held credentials.} one {# URL credential is replaced by bullets.} other {# URL credentials are replaced by bullets.}}",
         "blockedEscaped": "No link: line {line} writes a URL with a \\u escape, which could hide credentials. Write the URL plainly, then share again.",
@@ -25043,7 +25043,7 @@
         "kept": "Reaches the MAC",
         "lost": "Not in the MAC",
         "v4group": "{group}, bit by bit",
-        "v4caption": "1110 marks every group; the next five bits ({lost}) are lost; the last 23 ({kept} in hex) follow 01-00-5E, whose fourth octet always begins with a 0 bit.",
+        "v4caption": "1110 marks every group; the next five bits ({lost}) are lost; the last 23 ({kept} in hex) follow 01-00-5E, and the MAC's fourth octet always begins with a 0 bit.",
         "v4candidates": "Every candidate, bit by bit",
         "v4reverseCaption": "Every candidate is 1110, then five bits the MAC does not carry (shown as ?), then the 23 bits it does carry ({kept} in hex).",
         "v6group": "The address, hex digit by hex digit",
@@ -25639,7 +25639,7 @@
       },
       "cisco": {
         "heading": "Cisco's documented split for {n} ports (Catalyst 6500/6000)",
-        "port": "A port",
+        "port": "Port {k}",
         "values": "{v} of the 8 hash values ({pct})",
         "even": "Even: every port takes the same share of the 8 values.",
         "uneven": "Uneven: 8 values do not divide by this many ports, so some ports take twice the share of others even with random addresses."
@@ -26045,7 +26045,7 @@
             "frameShort": "A frame's start needs at least 14 octets (destination MAC, source MAC, then 2 octets of type); these are {n}.",
             "many": "More than {max} tags in one stack: the decoder stops there.",
             "cut": "The tag that starts at octet {at} is cut short: a TPID is followed by two octets of TCI.",
-            "notTag": "The octets start with {value}, which is not 0x8100, 0x88A8 or 0x9100: choose \"destination MAC\" if they are a frame's start."
+            "notTag": "The octets start with {value}, which is not 0x8100, 0x88A8 or 0x9100: choose \"Destination MAC\" if they are a frame's start."
           },
           "at": "End {end}, line {line}: {reason}",
           "vid": {
@@ -26097,7 +26097,7 @@
           }
         },
         "note": {
-          "autoTpid": "Read as a tag because the octets start with {tpid}; choose \"destination MAC\" if they are the start of a frame.",
+          "autoTpid": "Read as a tag because the octets start with {tpid}; choose \"Destination MAC\" if they are the start of a frame.",
           "docMac": "These are documentation MAC addresses (RFC 9542, section 2.1.4: 00-00-5E-00-53-00 to -FF and 01-00-5E-90-10-00 to -FF).",
           "endAfterTags": "The octets end after the last tag, so the EtherType that follows is not in them.",
           "after": "{n} octets after the EtherType or length are not decoded.",
@@ -27324,7 +27324,9 @@
           }
         }
       }
-    }
+    },
+    "coffeeLabel": "Buy me a coffee",
+    "docsMarkdown": "Documentation (Markdown)"
   },
   "privacy_page": {
     "eyebrow": "Privacy",
@@ -27381,7 +27383,7 @@
     "prefsTitle": "Theme, language, and what this site remembers",
     "prefsBody": "Your preferences, your reading trail, the two dev-room values and the games' scores, settings and progress are stored only in this browser's localStorage, on your device; the theme is applied before first paint on your next visit. There is no cookie and no account, and no server sees any of it, with one exception you control: unless you switch sharing off, the result of a daily puzzle you finish goes to the public scoreboard described under Game scores. None of it can follow you: a private window, cleared site data, or a different browser or device starts you back at the defaults by design. Your language works in two layers: it lives in the address itself (/en/ and /pt-BR/ are different pages, so bookmarking or sharing a URL in your language keeps it), and the last language you used is also remembered in this browser, so that a visit to the bare domain lands on it rather than on the default. The certification hub's find field and its retired switch also live in the address, after the # (#q=...), a part your browser never sends in a request, so the words you search for do not reach the server; they do stay in your history, and a shared address shares them. An older link with ?q= sent its words with that one request; the hub then moves them after the #. That is the whole trade: with no accounts and no tracking, preferences can only live where you can see and delete them.",
     "shortcutsTitle": "Keyboard shortcuts",
-    "shortcutsBody": "The site has a handful of single-key shortcuts for quick navigation, active on every page. Press b for the boss key, which hides whatever you are reading behind a convincing 1980s work application until you press any key or click; t jumps to the Tools index; l to the Learn index; m opens the Mega Brain console; and z opens Buzzword Bingo. These are deliberately inert whenever you are typing: if the focus is in a text field, a paste box, a search input, or any editable area, the keystroke belongs to that field and the shortcut does nothing, so nothing you type is ever swallowed. They are also ignored when a modifier key is held, so your browser's own combinations such as Ctrl+T for a new tab are never shadowed. The shortcuts run entirely in your browser, add no tracking, and are purely a convenience you can ignore.",
+    "shortcutsBody": "The site has a handful of single-key shortcuts for quick navigation, active on every page. Press b for the boss key, which hides whatever you are reading behind a convincing 1980s work application until you press any key or click; t jumps to the Tools index; l to the Learn index; m opens the Mega Brain console; and z opens Meeting Bingo. These are deliberately inert whenever you are typing: if the focus is in a text field, a paste box, a search input, or any editable area, the keystroke belongs to that field and the shortcut does nothing, so nothing you type is ever swallowed. They are also ignored when a modifier key is held, so your browser's own combinations such as Ctrl+T for a new tab are never shadowed. The shortcuts run entirely in your browser, add no tracking, and are purely a convenience you can ignore.",
     "noTrackSource": "This section describes what the code does, and the code is public: the counting is done by <analytics>worker/analytics.ts</analytics>, the Stats page is served by <stats>worker/stats.ts</stats>, and the two separate datasets are bound in <config>wrangler.jsonc</config>. The counts are kept in Cloudflare's Workers Analytics Engine, which stores what is written to it for three months (<retention>Cloudflare's documentation</retention>, read {date}). What Cloudflare itself processes as the host is outside this code, and is described under Hosting and server logs below.",
     "metaDescription": "What happens to your information here: what is counted, what your browser stores, what the tools do with what you paste, who is responsible, and your rights under the GDPR and Brazil's LGPD.",
     "hostingLogs": "Every page request passes through the site's Worker, the small program that runs at Cloudflare in front of the pages, and so do the requests a page makes for the visitor counts it displays; the scripts, styles and search index, among other files, are served without it. Cloudflare's Workers Logs may keep a record of each of these requests in the site's Cloudflare account. Cloudflare describes each record as holding the request, the response and related metadata, and names among its fields the method and the full address, query string included, the response status, the processing time the Worker used and the visiting country (<logs>Workers Logs</logs> and <fields>its query fields</fields>, read {date}). Cloudflare publishes no complete list, so this notice does not claim that your IP address is left out. Cloudflare turns this logging on by default for new Workers, and the site's configuration does not turn it off. A record is kept for up to seven days: three days on Cloudflare's free Workers plan and seven on its paid plan, and seven on both from 1 December 2026 (<pricing>Cloudflare's pricing</pricing>). The site's own code adds nothing to these records, because the Worker writes no log lines of its own, which a build check verifies. The part of an address after a #, where a tool receives a value handed to it, is never sent in a request, so it never reaches them.",
@@ -28048,7 +28050,7 @@
       "name": "Zscaler",
       "years": "2026 – present",
       "tagline": "Zero trust at cloud scale - the company that bet the perimeter would dissolve, and built the exchange that replaced it.",
-      "intro": "Zscaler enters this record carrying the thesis every earlier chapter kept testing: that the perimeter those firewalls and load balancers defended would dissolve, and that inspection would move into a cloud sitting between every user and every application. The Zero Trust Exchange is that bet built at planetary scale - one of the largest security clouds running - and its platform is now part of the curriculum this record teaches.",
+      "intro": "Zscaler enters this record carrying the thesis every earlier chapter kept testing: that the perimeter those firewalls and load balancers defended would dissolve, and that inspection would move into a cloud sitting between every user and every application. The Zero Trust Exchange is that bet built at planetary scale - one of the largest security clouds running - and its platform is now part of the curriculum taught on this site.",
       "s1Title": "Why Zscaler, why now",
       "s1Body": "Two decades of this record run through firewalls, load balancers, and the perimeters they defended; Zscaler is the company that bet earliest that the perimeter would dissolve into a global inspection cloud. Studying the Zero Trust Exchange, ZIA, and ZPA architectures is the natural continuation of the SSE work already underway in the Netskope chapter, from the other side of the same market.",
       "s2Title": "Reading the TLS surface",
@@ -28059,7 +28061,7 @@
       "name": "Pulse Secure",
       "years": "2018 – 2019",
       "tagline": "The distribution chapter's secure-access thread: Neoteris DNA, carried through five flags.",
-      "intro": "Pulse Secure entered this record from the distribution side: in the ScanSource year its secure-access line sat in the portfolio I architected and demonstrated across Brazil - the SSL VPN he had first known from inside Juniper, in the very years Junos Pulse took shape.",
+      "intro": "Pulse Secure entered this record from the distribution side: in the ScanSource year its secure-access line sat in the portfolio I architected and demonstrated across Brazil - the SSL VPN I had first known from inside Juniper, in the very years Junos Pulse took shape.",
       "s1Title": "Distributing secure access",
       "s1Body": "The work was value-added distribution at its most technical: architecting remote-access designs around Pulse Connect Secure, running demonstrations and proof-of-concepts, and enabling channel partners on a product that sold into every vertical with a workforce outside the office. Policy Secure added the NAC conversation to the same platform, and the distributor's job was making both make sense in Brazilian enterprise networks - sizing, integration points, and the honest limits.",
       "s2Title": "One product, five flags",
@@ -28223,7 +28225,7 @@
       "s1Body": "A Cabletron field engineer of the late 1990s spent as much time in wiring closets as at consoles. The MMAC hubs and SmartSwitch chassis were installed where a building's horizontal cabling terminated, and the faults that reached the vendor's engineer were as often a cross-connect, a run past its length or a bad termination as a configuration error. SYSTIMAX was one of the structured-cabling systems the enterprise buildings of the time were built on: a hierarchy of equipment rooms, backbone and horizontal cabling and work-area outlets, with rules for each, a design method and a warranty attached. Certifying on it meant being able to read a building's cabling design, specify what a new floor or a new chassis needed, and tell a customer which half of a problem was theirs.",
       "s2Title": "Teaching the physical layer",
       "s2Body": "The same years were the first teaching years, and structured cabling was the layer the Cabletron Internetworking Technologies classes started from: media, connectors, distances and the categories of twisted pair, before a single frame was switched. The 1998 credential gave that first module an authority it would not otherwise have had, and the habit of beginning at the cable plant stayed with the teaching. The credential expired in 2000, the year the chapter itself ended with the move to Riverstone Networks in California.",
-      "certs": "AT&T / Lucent SYSTIMAX Structured Cabling System Engineer, 1998 to 2000, issued under a brand CommScope has owned since 2004 and sold to Amphenol in January 2026. Listed on the credentials page."
+      "certs": "AT&T / Lucent SYSTIMAX Structured Cabling System Engineer, 1998 to 2000, issued under a brand that CommScope owned from 2004 until its sale to Amphenol in January 2026. Listed on the credentials page."
     }
   },
   "training": {
@@ -28715,7 +28717,7 @@
   "contribute": {
     "eyebrow": "Translations",
     "title": "Help improve the translations",
-    "lede": "Brazilian Portuguese here is written with AI and reviewed gradually; every other language but English is a machine-made first draft. If you speak one of them and notice something wrong or clumsy, your corrections are genuinely welcome. Here is how to send them.",
+    "lede": "Brazilian Portuguese here is written with AI and reviewed gradually, and so are the interface and the tools in Spanish and German; everything else in a language other than English is a machine-made first draft. If you speak one of them and notice something wrong or clumsy, your corrections are genuinely welcome. Here is how to send them.",
     "howTitle": "How to contribute",
     "howBody": "English is the source of truth, and every other language is translated from it, so mistakes are possible. Each language pack is a single text file of labelled phrases. Download the one you want to improve, change only the text after each label, and leave the labels and anything inside curly braces exactly as they are. Then email the edited file and mention the language. Every submission is reviewed by hand.",
     "downloadHeading": "Language packs",
@@ -28743,7 +28745,7 @@
       },
       "translation": {
         "title": "Improve a translation",
-        "desc": "Brazilian Portuguese is written with AI and reviewed gradually; every other language but English is a machine-made first draft. Download a pack, correct it, send it back.",
+        "desc": "Brazilian Portuguese, and the interface and tools in Spanish and German, are written with AI and reviewed gradually; everything else in a language other than English is a machine-made first draft. Download a pack, correct it, send it back.",
         "cta": "See how"
       },
       "code": {
@@ -28882,7 +28884,7 @@
     "complete": "Machine, complete",
     "partial": "Machine, in progress",
     "explainTitle": "How translations are marked",
-    "explainBody": "English is the source: written with AI, and published only when a person decides it should be. Brazilian Portuguese is written with AI too and reviewed gradually; the other languages are machine-translated. Each language is marked by how far along it is: blue once it covers the whole site, yellow while newer content is still in English and catching up, red when it has no translation yet and is shown in English for now. Every language but English carries a short notice, and you are welcome to help improve any of them.",
+    "explainBody": "English is the source: written with AI, and published only when a person decides it should be. Brazilian Portuguese is written with AI too and reviewed gradually, and so are the interface and the tools in Spanish and German; the rest of the Spanish and German sites and the other languages are machine-translated. Each language is marked by how far along it is: blue once it covers the whole site, yellow while newer content is still in English and catching up, red when it has no translation yet and is shown in English for now. Every language but English carries a short notice, and you are welcome to help improve any of them.",
     "stub": "Not translated yet"
   },
   "changelog": {
@@ -31568,7 +31570,7 @@
     "godOff": "Turn it off"
   },
   "shortcuts": {
-    "actionBingo": "Buzzword Bingo",
+    "actionBingo": "Meeting Bingo",
     "actionBoss": "Boss key",
     "actionCheatSheet": "Keyboard shortcuts help",
     "actionDevFun": "Dev-fun index",
@@ -31580,7 +31582,7 @@
     "actionToolBase64": "Base64 encode / decode",
     "actionToolCidr": "CIDR / subnet calculator",
     "actionToolHash": "Hash generator",
-    "actionToolJsonYaml": "JSON ⇄ YAML converter",
+    "actionToolJsonYaml": "JSON ↔ YAML converter",
     "actionToolJwt": "JWT decoder",
     "actionToolUrlInspector": "URL inspector",
     "actionToolUuid": "UUID tools",
@@ -32123,7 +32125,7 @@
       },
       "languages": {
         "h": "Languages",
-        "b": "The interface is available in several languages; switch using the language control in the header. English is the source, written with AI and published only when a person decides it should be; Brazilian Portuguese is written with AI too and reviewed gradually; the other languages are machine-translated. Where a phrase has not yet been translated for a given language, the English text is shown for that phrase so nothing is ever missing."
+        "b": "The interface is available in several languages; switch using the language control in the header. English is the source, written with AI and published only when a person decides it should be; Brazilian Portuguese is written with AI too and reviewed gradually, and so are the interface and the tools in Spanish and German; the rest of the Spanish and German sites and the other languages are machine-translated. Where a phrase has not yet been translated for a given language, the English text is shown for that phrase so nothing is ever missing."
       },
       "offline": {
         "h": "Offline use",
@@ -36517,9 +36519,9 @@
         "depth": "An application delivery controller is the marketing successor to the load balancer, and the expansion is real rather than only nominal: TLS termination, health checking, content-based routing, compression, caching and a web application firewall in one device.\n\nThe consideration it creates is concentration. Putting all of that in one place is operationally convenient and makes it a single point of failure with a very large blast radius, since a device that terminates TLS holds the private keys for everything behind it and sees every request in clear text. That is a reasonable trade made deliberately and a serious exposure made by accident, and it is why the configuration of these devices deserves the same review as the applications behind them."
       },
       "sii": {
-        "def": "Reusable subscriber-identity data in the certificate issuance process.",
-        "context": "Subscriber Identity Information refers to previously validated details about a certificate subscriber that a CA may reuse for a limited time. Like DCV, the window for reusing SII has been tightened by industry baseline rules.",
-        "depth": "Subscriber identity information in certificate issuance is validated data about an organisation that can be reused across multiple requests rather than re-verified each time. It exists because organisation validation is slow and largely repeats the same checks.\n\nThe security question it raises is freshness. Reusing a validation means a certificate can be issued against an organisation's status as it was some time ago, and the industry's rules therefore cap how long such data may be relied upon. That cap has tightened repeatedly as the tension between issuance speed and validation currency has been argued out, and it is one of the reasons automated domain validation with short lifetimes has displaced organisation validation for most purposes."
+        "def": "Validated information that identifies a certificate's subject, which a CA (certificate authority) may reuse for a limited time when it issues further certificates.",
+        "context": "The CA/Browser Forum's Baseline Requirements define Subject Identity Information as the information that identifies the certificate subject, excluding the domain names and IP addresses in the certificate. Like DCV (domain control validation) results, previously validated SII may be reused only within a window that the industry's baseline rules have tightened.",
+        "depth": "Subject identity information in certificate issuance is validated data about the organisation named in a certificate that can be reused across multiple requests rather than re-verified each time. It exists because organisation validation is slow and largely repeats the same checks.\n\nThe security question it raises is freshness. Reusing a validation means a certificate can be issued against an organisation's status as it was some time ago, and the industry's rules therefore cap how long such data may be relied upon. That cap has tightened repeatedly as the tension between issuance speed and validation currency has been argued out, and it is one of the reasons automated domain validation with short lifetimes has displaced organisation validation for most purposes."
       },
       "xxe": {
         "def": "An attack that abuses XML external entities to read files or reach internal systems.",
@@ -37715,7 +37717,7 @@
       },
       "2600-magazine": {
         "def": "The Hacker Quarterly: the printed voice of hacker culture since 1984, and the origin of the HOPE conference and the Friday 2600 meetings.",
-        "context": "Edited by Emmanuel Goldstein (Eric Corley) and named for the 2600 Hz phreaking tone, 2600 has published reader-submitted explorations of systems for four decades, fought landmark legal battles (notably the DeCSS case), and seeded a worldwide network of first-Friday meetups. Its HOPE conference (Hackers On Planet Earth) carries the same lineage - and the magazine's editor opened the very first YSTS in Sao Paulo, tying this entry to the Brazilian scene.",
+        "context": "Edited by Emmanuel Goldstein (Eric Corley) and named for the 2600 Hz phreaking tone, 2600 has published reader-submitted explorations of systems for four decades, fought landmark legal battles (notably the DeCSS case), and seeded a worldwide network of first-Friday meetups. Its HOPE conference (Hackers On Planet Earth) carries the same lineage - and the magazine's editor opened the very first YSTS in São Paulo, tying this entry to the Brazilian scene.",
         "depth": "2600, named for the phreaking tone and edited by Emmanuel Goldstein, has published reader-submitted technical material continuously since 1984, in print, on paper, quarterly. It also organises the physical meetings that happen in cities worldwide on the first Friday of the month.\n\nIts significance is distribution before the internet made distribution trivial. A teenager in a small town with no local community could buy a magazine at a bookshop and find out that other people existed, what they were doing, and how. For a great many people who later became security professionals, that was the entry point, and the physical object mattered precisely because nothing else reached them.\n\nIt has been controversial throughout and has usually been on the receiving end of the legal action rather than the sending end, most prominently in the DeCSS case. What the magazine consistently argued is that publishing technical information is speech, and that a society which criminalizes explanation ends up with a population that cannot evaluate the systems governing it. That argument has aged well, and the magazine still arrives quarterly."
       },
       "ysts": {
@@ -37724,12 +37726,12 @@
         "depth": "YSTS packs hand-picked national and international speakers into a single day in São Paulo, and its distinguishing choice is deliberate smallness with an unusual format: it has historically run in venues that feel nothing like conference halls, with an invitation-influenced audience.\n\nThe reasoning behind that is the same one behind ShmooCon's attendance cap, arrived at independently. A room where everyone can plausibly meet everyone produces different conversations than a hall of two thousand, and the value of a security event is often less the talks than who you end up standing next to. Curating the audience is unfashionable and does produce the thing it aims at.\n\nThe trade is the obvious one and worth naming. A curated event is by definition exclusionary, and who gets invited reflects who the organizers already know, which is how professional networks reproduce themselves and how newcomers stay outside. The healthy ecosystem needs both models: the open free event that lets anyone in, and the small dense one that produces depth, and a country with only one of them is missing something."
       },
       "bsides-sao-paulo": {
-        "def": "The community-run, free security conference of Sao Paulo - born inside Garoa Hacker Clube in 2011, now among the largest BSides anywhere.",
+        "def": "The community-run, free security conference of São Paulo - born inside Garoa Hacker Clube in 2011, now among the largest BSides anywhere.",
         "context": "Co0L BSidesSP is part of the global Security BSides movement: volunteer-organized, free to attend, and deliberately community-first - dozens of villages, a CTF, lightning talks, a Brazilian open-source arsenal track, and BSides 4 Kids. It traditionally runs the weekend before YSTS; the 2026 edition marked fifteen years since the first one was held inside Garoa. The hot dogs are free too, by the hundreds.",
         "depth": "BSidesSP is part of the global Security BSides movement, which began when a major conference's rejected talks turned out to be worth hearing anyway. The model is volunteer-organized, free or near-free to attend, and deliberately open to first-time speakers.\n\nThe open call for papers is the entire mechanism. A researcher with no reputation cannot get accepted at an established conference, and cannot build a reputation without presenting somewhere, which is a loop that keeps new voices out permanently unless something breaks it. BSides breaks it by design, accepting people who have never presented and treating the first talk as the point rather than a risk.\n\nWhat it produces is a pipeline rather than a single event. Speakers who start at BSides go on to the larger conferences, and the community gets researchers it would otherwise never have heard from, particularly people without employers who fund conference travel. Running it on volunteer effort and minimal budget is genuinely hard, and the movement's persistence across dozens of cities is a quiet argument that the barrier was never talent."
       },
       "garoa-hacker-clube": {
-        "def": "Sao Paulo's hackerspace - one of Brazil's first, and the room where BSidesSP was born.",
+        "def": "São Paulo's hackerspace - one of Brazil's first, and the room where BSidesSP was born.",
         "context": "Garoa (the name is the city's famous drizzle) is a member-run space in the classic hackerspace tradition: open weekly activities, electronics benches, retrocomputing, lockpicking, cryptography study groups, and a wiki-documented culture of projects. Beyond its own walls it has been an incubator for the local scene, hosting the first BSidesSP edition and feeding volunteers into most of the city's community security events.",
         "depth": "Garoa Hacker Clube, named for the drizzle São Paulo is known for, is a member-run space in the classic hackerspace tradition: open nights, shared tools, workshops, and projects that exist because somebody wanted them to and nobody had to approve it.\n\nThe model matters more than any individual project. A hackerspace is infrastructure for the kind of learning that institutions cannot schedule, where the electronics bench, the soldering iron and the person who already knows how are in the same room and free to use. For people without university access or an employer paying for equipment, that combination is the difference between curiosity and capability.\n\nIts role in Brazil is easy to underestimate from outside. Equipment is expensive relative to income, imported components carry real cost and delay, and formal technical education is unevenly distributed. A shared physical space with tools and expertise addresses all three at once, which is why hackerspaces have outsized importance where those constraints bind hardest, and why the volunteers who keep the lights on are doing more consequential work than the label suggests."
       },
@@ -37738,14 +37740,14 @@
         "context": "Founded by researcher Fernando Merces, Mente Binaria is formally a nonprofit teaching and research institution: its free CERO (reverse engineering) and AMO (malware analysis) courses run on the Papo Binario YouTube channel, its forum community spans beginners to veterans, it maintains open-source tools like readpe (born as pev), and programs like CodeHERS bring women into reverse engineering. Portuguese-language, foundations-first - a rare and load-bearing institution in the Brazilian scene."
       },
       "h2hc": {
-        "def": "Hackers to Hackers Conference: Latin America's oldest security research conference - Sao Paulo, every year since 2004.",
+        "def": "Hackers to Hackers Conference: Latin America's oldest security research conference - São Paulo, every year since 2004.",
         "context": "H2HC is the deep-technical anchor of the Brazilian calendar: vulnerability research, exploitation, reverse engineering, hardware - the research end of the spectrum, with international headliners alongside Brazilian researchers and the H2HC University training days. Its reputation for a playfully 'hostile' hallway culture is worn as a badge: it is the room where the technical bar is highest.",
         "depth": "H2HC is the deep-technical anchor of the Brazilian security calendar: vulnerability research, exploitation, reverse engineering and low-level work, presented to an audience expected to follow it. It has run since 2004, which makes it one of the longest-standing technical conferences in Latin America.\n\nIts defining choice is to refuse to broaden. Many conferences drift toward management tracks and vendor keynotes as they grow, because that is where the sponsorship is, and H2HC's refusal to do that keeps a specific kind of work possible: research that takes months, cannot be summarised in a slide, and has an audience of a few hundred people worldwide who genuinely understand it.\n\nThat matters more in a country whose researchers are largely invisible to the international scene. Deep technical work needs a venue where it will be judged by peers rather than by novelty, and without one the researchers either present abroad or stop. Sustaining that venue for two decades, in the same city, with the same standard, is the kind of unglamorous institutional work that fields depend on and rarely credit."
       },
       "mind-the-sec": {
-        "def": "The corporate-scale information-security conference of Sao Paulo - where the Brazilian market's decision-makers meet the vendor ecosystem.",
-        "context": "Mind the Sec occupies the enterprise end of the Brazilian conference spectrum: multi-day, expo-heavy, executive-focused - the counterpart to the community events (BSidesSP, H2HC) on the same calendar. The 2026 edition runs September 15-17 in Sao Paulo. For practitioners it is the market-watching stop: who is selling what to whom in Brazilian security.",
-        "depth": "Both this event and Roadsec are run by the same company, Flipside, and were founded by the same person, Anderson Ramos - a fact neither entry recorded until now, and which explains a great deal about the Brazilian calendar. The two were deliberate opposites: one corporate, expo-heavy and in Sao Paulo; the other a travelling festival taking hacker culture to the state capitals. One organisation ran both ends of the spectrum. Then, in 2024, Roadsec did not happen. The assessment from people close to the scene was not that it failed but that the corporate event had grown so large it consumed the organisation's capacity to run the other one, and Flipside had also wound down the regional editions of both. That is a specific and instructive thing to watch happen: the profitable event did not out-compete the community event in any market, it out-competed it for the attention of the people who ran both. The consequence was not nothing. Local community conferences multiplied into the space the regional editions vacated, which is why the Brazilian calendar now has more small events outside Sao Paulo than it did when a large organiser was serving those cities directly. Whether that is a better outcome depends on what you value, and the honest answer is that it is a different one."
+        "def": "The corporate-scale information-security conference of São Paulo - where the Brazilian market's decision-makers meet the vendor ecosystem.",
+        "context": "Mind the Sec occupies the enterprise end of the Brazilian conference spectrum: multi-day, expo-heavy, executive-focused - the counterpart to the community events (BSidesSP, H2HC) on the same calendar. The 2026 edition runs September 15-17 in São Paulo. For practitioners it is the market-watching stop: who is selling what to whom in Brazilian security.",
+        "depth": "Both this event and Roadsec are run by the same company, Flipside, and were founded by the same person, Anderson Ramos - a fact neither entry recorded until now, and which explains a great deal about the Brazilian calendar. The two were deliberate opposites: one corporate, expo-heavy and in São Paulo; the other a travelling festival taking hacker culture to the state capitals. One organisation ran both ends of the spectrum. Then, in 2024, Roadsec did not happen. The assessment from people close to the scene was not that it failed but that the corporate event had grown so large it consumed the organisation's capacity to run the other one, and Flipside had also wound down the regional editions of both. That is a specific and instructive thing to watch happen: the profitable event did not out-compete the community event in any market, it out-competed it for the attention of the people who ran both. The consequence was not nothing. Local community conferences multiplied into the space the regional editions vacated, which is why the Brazilian calendar now has more small events outside São Paulo than it did when a large organiser was serving those cities directly. Whether that is a better outcome depends on what you value, and the honest answer is that it is a different one."
       },
       "f5-devcentral": {
         "def": "F5's official technical community - articles, Q&A, and two decades of iRules knowledge, with a recognised MVP program.",
@@ -38018,8 +38020,8 @@
         "context": "E1 divides 2.048 Mb/s into 32 timeslots: 30 usable channels, slot 0 for framing and slot 16 classically for signaling (30B+D in ISDN PRI terms), on G.703 physical interfaces. The hierarchy steps to E3 at 34.368 Mb/s before SONET/SDH absorbs the ladder. Everywhere outside North America and Japan, 'dois megas' - two megs - was the business circuit, the Frame Relay access line, and the voice trunk of the dial-up-to-broadband decades. The T1/E1 split is the classic reminder that even the plumbing of telecom forked by region - same 64 kb/s DNA, different arithmetic."
       },
       "sampasec": {
-        "def": "Sao Paulo's CitySec - the informal monthly bar meetup of the city's security professionals and enthusiasts, third Wednesday of the month.",
-        "context": "SampaSec follows the CitySec model - the informal, no-agenda security meetup format that spread worldwide from the idea of Richard Bejtlich, Chris Walsh, and Adam Shostack - and has anchored Sao Paulo's scene since around 2010, alongside Brazilian siblings like CamSec (Campinas), PoASec (Porto Alegre), and SSASec (Salvador). No talks required, no badge, no dress code: the point is the room - students, veterans, researchers, and the occasional recruiter, around a table. It is the connective tissue between the city's bigger fixtures: many a BSidesSP village, YSTS hallway conversation, and Garoa project traces back to a SampaSec table.",
+        "def": "São Paulo's CitySec - the informal monthly bar meetup of the city's security professionals and enthusiasts, third Wednesday of the month.",
+        "context": "SampaSec follows the CitySec model - the informal, no-agenda security meetup format that spread worldwide from the idea of Richard Bejtlich, Chris Walsh, and Adam Shostack - and has anchored São Paulo's scene since around 2010, alongside Brazilian siblings like CamSec (Campinas), PoASec (Porto Alegre), and SSASec (Salvador). No talks required, no badge, no dress code: the point is the room - students, veterans, researchers, and the occasional recruiter, around a table. It is the connective tissue between the city's bigger fixtures: many a BSidesSP village, YSTS hallway conversation, and Garoa project traces back to a SampaSec table.",
         "depth": "Sampasec is a São Paulo security conference whose name folds Sampa, the city's own nickname for itself, into the word security. That naming is a small thing and it signals something real: an event that belongs to a city rather than one that could be held anywhere.\n\nIts place in the Brazilian calendar is alongside H2HC, Roadsec, BSidesSP and YSTS, and the useful observation is the density rather than any single event. One city sustaining several distinct security conferences, each with a different format and audience, is a sign of a community large enough to support specialization: deep technical research in one venue, career entry in another, curated networking in a third.\n\nThat density took two decades to build and is easy to underestimate from outside. A country with one conference has a scene that depends on whoever organises it; a country with five has an ecosystem that survives any one of them ending. The unglamorous work of running these events, mostly by volunteers and mostly unpaid, is what the difference is made of."
       },
       "dpd": {
@@ -38074,7 +38076,7 @@
       "roadsec": {
         "def": "Latin America's largest hacker festival - a full-day carnival of talks, CTF, drones, and lockpicks that has toured Brazil's state capitals since 2014.",
         "context": "Roadsec inverted the conference formula: instead of making Brazil's hackers travel to one city, the festival travels to them - a caravan through the state capitals, culminating each year in a mega-edition in São Paulo. The format is deliberately festival, not conference: career talks beside hardware villages, robot-building beside serious research, and at the centre the Hackaflag, the CTF championship whose regional rounds along the tour crown a national champion. For a generation of Brazilian students far from the São Paulo-Rio axis, a Roadsec stop was the first time the security community came to their town - which is precisely the point.\n\nThe organisation behind it is Flipside, which now has an entry on this site's industry timeline.",
-        "depth": "Roadsec inverted the usual conference economics. Rather than requiring the country's hackers to travel to one city, it travelled to them, running a caravan of editions through state capitals before culminating in a large São Paulo event. In a country of continental scale where a domestic flight can cost more than a monthly wage, that inversion is the whole argument.\n\nThe format is deliberately a festival rather than a conference. Career talks sit beside hardware hacking, capture-the-flag competitions, lockpicking and music, which lowers the entry barrier for people who would never have described themselves as belonging at a security event. That mix is a recruitment strategy for the field as much as a programme.\n\nWhat it demonstrates is that geography is a security problem. Expertise concentrates where events are, events are where money is, and money is in a few cities, so talent outside them stays invisible to an industry that complains about a shortage. Taking the event to the people rather than the reverse is one of the few interventions that addresses the mechanism rather than the symptom.\n\nBoth this event and Mind The Sec are run by the same company, Flipside, and were founded by the same person, Anderson Ramos - a fact neither entry recorded until now, and which explains a great deal about the Brazilian calendar. The two were deliberate opposites: one corporate, expo-heavy and in Sao Paulo; the other a travelling festival taking hacker culture to the state capitals. One organisation ran both ends of the spectrum. Then, in 2024, Roadsec did not happen. The assessment from people close to the scene was not that it failed but that the corporate event had grown so large it consumed the organisation's capacity to run the other one, and Flipside had also wound down the regional editions of both. That is a specific and instructive thing to watch happen: the profitable event did not out-compete the community event in any market, it out-competed it for the attention of the people who ran both. The consequence was not nothing. Local community conferences multiplied into the space the regional editions vacated, which is why the Brazilian calendar now has more small events outside Sao Paulo than it did when a large organiser was serving those cities directly. Whether that is a better outcome depends on what you value, and the honest answer is that it is a different one."
+        "depth": "Roadsec inverted the usual conference economics. Rather than requiring the country's hackers to travel to one city, it travelled to them, running a caravan of editions through state capitals before culminating in a large São Paulo event. In a country of continental scale where a domestic flight can cost more than a monthly wage, that inversion is the whole argument.\n\nThe format is deliberately a festival rather than a conference. Career talks sit beside hardware hacking, capture-the-flag competitions, lockpicking and music, which lowers the entry barrier for people who would never have described themselves as belonging at a security event. That mix is a recruitment strategy for the field as much as a programme.\n\nWhat it demonstrates is that geography is a security problem. Expertise concentrates where events are, events are where money is, and money is in a few cities, so talent outside them stays invisible to an industry that complains about a shortage. Taking the event to the people rather than the reverse is one of the few interventions that addresses the mechanism rather than the symptom.\n\nBoth this event and Mind The Sec are run by the same company, Flipside, and were founded by the same person, Anderson Ramos - a fact neither entry recorded until now, and which explains a great deal about the Brazilian calendar. The two were deliberate opposites: one corporate, expo-heavy and in São Paulo; the other a travelling festival taking hacker culture to the state capitals. One organisation ran both ends of the spectrum. Then, in 2024, Roadsec did not happen. The assessment from people close to the scene was not that it failed but that the corporate event had grown so large it consumed the organisation's capacity to run the other one, and Flipside had also wound down the regional editions of both. That is a specific and instructive thing to watch happen: the profitable event did not out-compete the community event in any market, it out-competed it for the attention of the people who ran both. The consequence was not nothing. Local community conferences multiplied into the space the regional editions vacated, which is why the Brazilian calendar now has more small events outside São Paulo than it did when a large organiser was serving those cities directly. Whether that is a better outcome depends on what you value, and the honest answer is that it is a different one."
       },
       "cryptorave": {
         "def": "São Paulo's crowdfunded cryptoactivism marathon: 24 uninterrupted hours of privacy, security, and digital-rights activities - free, volunteer-run, and pointedly without corporate sponsorship.",
@@ -38358,7 +38360,7 @@
       },
       "callsign": {
         "def": "A unique identifier issued to a licensed radio station, structured as prefix, digit, and suffix.",
-        "context": "The prefix range is allocated to a country by the International Telecommunication Union, so a callsign is legible worldwide without explanation. Brazil holds the entire PPA to PYZ block plus ZV to ZZ for special stations, and Anatel issues within it using a two-letter-plus-digit scheme where the digit is regional: PY2 is Sao Paulo, PY1 Rio de Janeiro, PY4 Minas Gerais. The letter series also signals licence class in Brazil, so a PU station is distinguishable from a PY one on the air."
+        "context": "The prefix range is allocated to a country by the International Telecommunication Union, so a callsign is legible worldwide without explanation. Brazil holds the entire PPA to PYZ block plus ZV to ZZ for special stations, and Anatel issues within it using a two-letter-plus-digit scheme where the digit is regional: PY2 is São Paulo, PY1 Rio de Janeiro, PY4 Minas Gerais. The letter series also signals licence class in Brazil, so a PU station is distinguishable from a PY one on the air."
       },
       "morse-code": {
         "def": "Encoding of characters as short and long tones, sent as an on-off keyed carrier and known on the air as CW.",
@@ -38569,14 +38571,14 @@
         "depth": "Three names for closely related things, and separating them is the first step to not being confused by them. DEFLATE is the algorithm. gzip is a file format wrapping DEFLATE with a header, a checksum and a length. zlib is both a slightly different wrapper and, more importantly, the library almost everything actually uses to do any of it. DEFLATE itself is two old ideas stacked. First LZ77: as you read the input, replace anything you have seen before with a short reference back to where you saw it, so the second occurrence of a repeated phrase costs a few bytes instead of its full length. Then Huffman coding: having produced that stream of literals and back-references, count how often each symbol occurs and give the common ones short codes and the rare ones long codes. Neither half was new when DEFLATE was specified in 1951 - the RFC number is a coincidence worth enjoying - and the combination is not clever so much as extremely well balanced: fast enough to run on everything, good enough that improving on it rarely justifies the change. The result is probably the most-executed compression algorithm in history, and almost nobody can name it. It is inside every ZIP file, every PNG image, every Git object, and every HTTP response served with content-encoding gzip, which is to say most of the web. The reason gzip exists at all is a patent, and this is the part worth knowing. Unix had a compression tool called compress, which used LZW - an algorithm covered by Unisys patents, the same patents that made GIF legally uncomfortable for years and eventually pushed the web toward PNG. Jean-loup Gailly and Mark Adler wrote gzip specifically to be a free replacement that infringed nothing, and zlib followed as the reusable library. Both outlived the patents, the tool they replaced, and the format the patents damaged. A patent intended to capture a market instead motivated the free thing that replaced it - which is the same shape as the lawsuit that produced ZIP, in the same decade, in the same corner of computing. One security consequence deserves stating because it surprises people who understand both halves separately. Compression leaks information about what it compressed. If an attacker can inject text into something that is compressed and then encrypted, they can learn whether their guess appears elsewhere in the plaintext by watching the compressed length change - guessing a secret one character at a time without breaking any cryptography. That is the mechanism behind the CRIME and BREACH attacks, both of which have their own entries here. Encryption hides content; it does not hide size, and compressing before encrypting turns size into a channel. The practical rule is unglamorous and absolute: do not compress attacker-influenced data together with secrets in the same encrypted stream."
       },
       "bhack": {
-        "def": "The technical security conference of Belo Horizonte, and one of the events that made the Brazilian scene something other than a Sao Paulo scene.",
-        "context": "Technical rather than corporate, and outside Sao Paulo - one of the regional conferences that exist in inverse proportion to how well the commercial circuit serves the regions.",
-        "depth": "Technical rather than corporate, in Belo Horizonte rather than Sao Paulo, and both of those facts matter. Brazilian security has a heavy Sao Paulo gravity: the large commercial conferences are there, the vendor ecosystem is there, and for years an engineer in Minas Gerais or Bahia or Rio Grande do Sul either travelled or missed out. BHack is one of the events that pushed against that, alongside NullByte in Salvador, Jampasec in Joao Pessoa and BXSec in Santos - a generation of regional conferences run by local communities on local budgets. Its reputation is specifically for talk quality rather than scale, and the community assessment worth recording is that after some quieter years it recovered the standing of its early editions and went back to being where the region's better practitioners actually turn up. The structural point is not about Brazil. Regional technical conferences exist in inverse proportion to how well the commercial circuit serves the regions, and the clearest illustration is what happened when the largest Brazilian organiser withdrew its regional editions: local community events multiplied into the space. That is worth understanding by anybody who has ever wondered why a scene is thriving in a city with no industry presence. The absence is often the cause."
+        "def": "The technical security conference of Belo Horizonte, and one of the events that made the Brazilian scene something other than a São Paulo scene.",
+        "context": "Technical rather than corporate, and outside São Paulo - one of the regional conferences that exist in inverse proportion to how well the commercial circuit serves the regions.",
+        "depth": "Technical rather than corporate, in Belo Horizonte rather than São Paulo, and both of those facts matter. Brazilian security has a heavy São Paulo gravity: the large commercial conferences are there, the vendor ecosystem is there, and for years an engineer in Minas Gerais or Bahia or Rio Grande do Sul either travelled or missed out. BHack is one of the events that pushed against that, alongside NullByte in Salvador, Jampasec in Joao Pessoa and BXSec in Santos - a generation of regional conferences run by local communities on local budgets. Its reputation is specifically for talk quality rather than scale, and the community assessment worth recording is that after some quieter years it recovered the standing of its early editions and went back to being where the region's better practitioners actually turn up. The structural point is not about Brazil. Regional technical conferences exist in inverse proportion to how well the commercial circuit serves the regions, and the clearest illustration is what happened when the largest Brazilian organiser withdrew its regional editions: local community events multiplied into the space. That is worth understanding by anybody who has ever wondered why a scene is thriving in a city with no industry presence. The absence is often the cause."
       },
       "security-leaders": {
         "def": "The executive end of the Brazilian security calendar - where the people who sign things meet, rather than the people who configure them.",
         "context": "Risk, governance and budget rather than technique. Technical conferences transmit skill; executive ones transmit priorities, and neither substitutes for the other.",
-        "depth": "The executive end of the Brazilian security calendar: risk, governance, budget and the conversations that happen between people who sign things rather than configure them. It runs a Sao Paulo flagship alongside regional editions - seven of them in 2024 - which makes it one of the few commercial circuits that actually reaches beyond the capital consistently. Its usefulness depends entirely on what you go for. As a place to learn a technique it is the wrong room; the technical events on the same calendar exist for that. As a place to understand what the market believes, what buyers are being told, and which concerns have reached the level where somebody with a budget is worried about them, it is unusually informative - and those are genuinely different kinds of knowledge that engineers routinely conflate. A practitioner who has never sat in an executive security conference tends to be surprised by how much of the decision-making they complain about is visible in advance, discussed openly, months before it lands on them as a policy. The general observation the Brazilian calendar supports better than most is that a security scene needs both kinds of event and they do not substitute for one another. The technical conferences transmit skill; the executive ones transmit priorities. An engineer who attends only the first is repeatedly surprised by decisions, and an executive who attends only the second is repeatedly surprised by reality."
+        "depth": "The executive end of the Brazilian security calendar: risk, governance, budget and the conversations that happen between people who sign things rather than configure them. It runs a São Paulo flagship alongside regional editions - seven of them in 2024 - which makes it one of the few commercial circuits that actually reaches beyond the capital consistently. Its usefulness depends entirely on what you go for. As a place to learn a technique it is the wrong room; the technical events on the same calendar exist for that. As a place to understand what the market believes, what buyers are being told, and which concerns have reached the level where somebody with a budget is worried about them, it is unusually informative - and those are genuinely different kinds of knowledge that engineers routinely conflate. A practitioner who has never sat in an executive security conference tends to be surprised by how much of the decision-making they complain about is visible in advance, discussed openly, months before it lands on them as a policy. The general observation the Brazilian calendar supports better than most is that a security scene needs both kinds of event and they do not substitute for one another. The technical conferences transmit skill; the executive ones transmit priorities. An engineer who attends only the first is repeatedly surprised by decisions, and an executive who attends only the second is repeatedly surprised by reality."
       },
       "tac": {
         "def": "The vendor's technical assistance centre: the engineers you reach when a product itself, rather than your configuration of it, may be at fault.",
@@ -38903,8 +38905,9 @@
         "context": "The consequences arrived within weeks: EternalBlue powered WannaCry in May 2017 and NotPetya a month later, together the costliest cyber incidents in history, striking hospitals, ports and factories that had nothing to do with intelligence work. The leak is the definitive argument in the vulnerabilities-equities debate - a government stockpiling secret flaws is one custody failure away from arming the entire world, and this is the case where that actually happened."
       },
       "hacktivism": {
-        "def": "Hacking as political protest - defacement, leaks, denial of service or circumvention tooling deployed to make a point rather than money. The word was coined by a member of the Cult of the Dead Cow in the mid-1990s.",
-        "context": "The lineage runs from the 1989 WANK worm through Anonymous and LulzSec to leak platforms and censorship-circumvention projects. It is the most contested category in the field: identical techniques are protest or crime depending entirely on who is judging, and the collateral damage of a symbolic action often lands on people with no part in the argument."
+        "def": "Hacking done to make a political or social point rather than money, from website defacements and denial-of-service floods to leaks and tools that get around censorship; the word is usually credited to Omega, a member of the Cult of the Dead Cow, who used it in an e-mail to the group in 1996.",
+        "context": "Its own practitioners have argued about its methods from the start. The Electronic Disturbance Theater's FloodNet virtual sit-ins of 1998 and the Electrohippies' action against the World Trade Organization in 1999 presented mass page-reloading as the online counterpart of a street sit-in; Oxblood Ruffin of the Cult of the Dead Cow answered that blocking a website silences its owner, and defined hacktivism as using technology to improve human rights across electronic media. American and British courts treated the floods of Anonymous and the intrusions of LulzSec as computer crime, and states have since hidden behind hacktivist personas: a 2018 US indictment says Russian military intelligence invented Guccifer 2.0, which claimed to be a lone Romanian hacker.",
+        "depth": "The word. The coinage is usually credited to Omega, a member of the Cult of the Dead Cow (cDc), who used it in an e-mail to the group in 1996, partly in jest, for hacking with a political purpose; Wikipedia records an earlier printed use, in a 1995 Minneapolis magazine article about Shu Lea Cheang's film Fresh Kill. Oxblood Ruffin, the cDc's 'chief evangelist for hacktivism', set out to narrow it. Taking Article 19 of the Universal Declaration of Human Rights as the hook, he defined hacktivism as 'using technology to improve human rights across electronic media', and in a paper given at Yale Law School in 2004 he excluded web defacement and denial of service (DoS) by name, since both abridge the expression of whoever runs the target.\n\nPrecursors and sit-ins. The motive is older than the name: in October 1989, as the Computer Emergency Response Team (CERT) at Carnegie Mellon University reported, a worm crossing a National Aeronautics and Space Administration (NASA) network over DECnet set system announcements to a banner reading Worms Against Nuclear Killers. The Electronic Disturbance Theater, co-founded by Ricardo Dominguez, wrote FloodNet, a Java applet that reloaded a target page over and over, and from April 1998 staged virtual sit-ins with it in solidarity with the Zapatistas, against the website of Mexico's President Zedillo and, on 9 September 1998, against the Pentagon and the Frankfurt Stock Exchange as well. In December 1999 five British activists, the Electrohippies, ran a virtual sit-in against the World Trade Organization during the Seattle protests and estimated that more than 452,000 people joined it.\n\nHacktivismo. Ruffin drafted the framework of Hacktivismo, a cDc offshoot, at DEF CON in 1999, and it grew into an international group of technologists, lawyers, human-rights workers and artists building tools for people behind national firewalls, among them Peekabooty, for reaching the open web, and Camera/Shy, which hid censored material in innocuous web pages by steganography. Its declaration, which Ruffin drafted in June 2000 and Fred von Lohmann of the Electronic Frontier Foundation (EFF) helped to tighten, was published on 4 July 2001; it holds that 'state sponsored censorship of the Internet erodes peaceful and civilized coexistence, affects the exercise of democracy, and endangers the socioeconomic development of nations.'\n\nThe constructive strand. Tor was funded by the EFF from 2004, became a non-profit in 2006, began building bridges around government firewalls in 2007 and, by its own account, was instrumental during the Arab Spring. The Citizen Lab of the University of Toronto released Psiphon as open-source software in December 2006 so that people could give friends and family behind censorship a way out. SecureDrop, the open-source system through which whistleblowers send documents to newsrooms, began as DeadDrop, written by Aaron Swartz in 2012; the Freedom of the Press Foundation took it over in October 2013.\n\nAnonymous and LulzSec. Anonymous's Project Chanology took on the Church of Scientology in 2008 with flooding software, prank calls and black faxes, then with masked street pickets in several countries. Its Operation Payback, aimed at organisations fighting file-sharing, hit PayPal from 6 to 10 December 2010 as Operation Avenge Assange, after the company stopped handling donations to WikiLeaks. On 19 July 2011 the Federal Bureau of Investigation (FBI) arrested 14 people over the PayPal attacks, and 13 pleaded guilty in December 2013. In March 2012 prosecutors revealed that Hector Xavier Monsegur, known as Sabu, who had founded LulzSec with three others in May 2011, had pleaded guilty the previous August and was cooperating; in May 2014 he was sentenced to time served, the judge citing help that disrupted hundreds of attacks. Jeremy Hammond, of AntiSec, another Anonymous offshoot, received 10 years in November 2013 for the hack of the intelligence firm Stratfor, and in London in May 2013 three British LulzSec members and an associate received sentences from 20 months suspended to 32 months.\n\nBorrowed masks. In July 2018 a US grand jury indicted 12 officers of Russia's military intelligence service, the GRU (Main Intelligence Directorate), and the Department of Justice said they had invented Guccifer 2.0, a persona that falsely claimed to be a lone Romanian hacker. In April 2024 Mandiant reported that the same service's sabotage unit Sandworm, which it now designates Advanced Persistent Threat 44 (APT44), cultivates hacktivist identities for its information operations, from Anonymous Poland and Guccifer 2.0 to the Telegram channels XakNet Team, CyberArmyofRussia_Reborn and Solntsepek. In January 2024 CyberArmyofRussia_Reborn, which Google's Threat Analysis Group assesses APT44 created and controls, posted videos claiming to manipulate controls at Polish and American water utilities, claims Mandiant could not independently verify.\n\nProtest or crime. The PayPal defendants were charged with conspiracy and with intentional damage to a protected computer, which the Computer Fraud and Abuse Act (CFAA), 18 U.S.C. 1030, defines as knowingly transmitting a program, information, code or command and thereby intentionally causing damage without authorisation; that count carries up to 10 years. Defenders argue from civil disobedience: Dominguez set the virtual sit-in beside Gandhi, Martin Luther King Jr and Thoreau as blockage that disrupts the everyday flow of power; the Electrohippies called such actions directly analogous to street demonstrations, with a democratic guarantee in the mass participation they require; and a 2013 petition on the White House website likened distributed denial of service (DDoS) to an Occupy protest, gathering 6,048 of the 25,000 signatures it needed. Critics answer that blocking a site silences its owner: Ruffin compared DoS to shouting someone down at a town-hall meeting; in 1998 the cDc, the L0pht, the Chaos Computer Club, 2600 and Phrack rebuked a group that had declared cyberwar on Iraq and China, since 'one cannot legitimately hope to improve a nation's free access to information by working to disable its data networks'; and Ron Deibert of the Citizen Lab added that a physical sit-in demands physical risk and a flood does not. Prosecutors point to cost, 8.9 million dollars in one Operation Payback case by the Department of Justice's estimate; critics of the law ask for leniency where nobody sought personal gain, and in 2014 a federal judge in Virginia asked why felonies were pursued there when the California PayPal case had ended in misdemeanours with almost no prison time."
       },
       "war-dialing": {
         "def": "Dialing whole ranges of telephone numbers automatically to find the ones answered by a modem - the reconnaissance technique of the dial-up era, and the direct ancestor of the port scan.",
@@ -39292,7 +39295,7 @@
         "context": "Evilgrade landed at the point where the industry was telling everyone to keep software updated, and showed that an update channel without signature verification is a distribution system for whoever controls the network path. The work is a good example of research from the region setting an international agenda: update integrity is now assumed, and part of the reason is that someone built the tool that made the failure undeniable."
       },
       "filipe-balestra": {
-        "def": "Co-organiser of the Hackers to Hackers Conference in Sao Paulo alongside Rodrigo Rubira Branco, founder of PRIDE Security, and a researcher whose published work includes automated teller machine jackpotting. He took sole leadership of H2HC from 2025.",
+        "def": "Co-organiser of the Hackers to Hackers Conference in São Paulo alongside Rodrigo Rubira Branco, founder of PRIDE Security, and a researcher whose published work includes automated teller machine jackpotting. He took sole leadership of H2HC from 2025.",
         "context": "The handover is worth recording because succession is where volunteer conferences usually die. After twenty-one years Branco announced publicly that he was stepping away from the organisation and that Balestra would carry it, and the conference continued - a deliberate, announced transition rather than an event quietly ending. Latin America's oldest security research conference surviving its founder's exit is a governance achievement as much as a technical community's."
       },
       "jaime-andres-restrepo": {
@@ -39304,11 +39307,11 @@
         "context": "The YSTS founders describe the origin as a reaction: Brazilian security events were becoming either vendor showcases or purely technical gatherings, and they wanted the room where the two audiences argue with each other. Deliberately capping attendance was the mechanism. Caprino is the clearest example of the organiser-as-infrastructure that this scene runs on - people who keep an event alive for two decades while holding a full-time job elsewhere."
       },
       "anchises-moraes": {
-        "def": "One of the founders of Garoa Hacker Clube, Brazil's first hackerspace, where he holds the ceremonial title of Supreme Chancellor; founder and organiser of Security BSides Sao Paulo; director of the Brazilian chapter of the Cloud Security Alliance; and author of the long-running blog AnchisesLandia.",
+        "def": "One of the founders of Garoa Hacker Clube, Brazil's first hackerspace, where he holds the ceremonial title of Supreme Chancellor; founder and organiser of Security BSides São Paulo; director of the Brazilian chapter of the Cloud Security Alliance; and author of the long-running blog AnchisesLandia.",
         "context": "He is the connective tissue of the Brazilian scene rather than a researcher known for one finding: the hackerspace, the free community conference, the professional association chapter, the threat-intelligence work and two decades of writing that documents the local calendar year by year. Communities need someone who keeps the record and introduces people to each other, and in Brazil that role has largely been his - which is why his blog is a primary source for the history of these events."
       },
       "bsides-sp": {
-        "def": "The Sao Paulo edition of the global Security BSides circuit - a free, community-organised conference on information security and hacker culture, run by working professionals, with talk tracks, villages, a capture-the-flag contest and a pre-event day of mini-trainings.",
+        "def": "The São Paulo edition of the global Security BSides circuit - a free, community-organised conference on information security and hacker culture, run by working professionals, with talk tracks, villages, a capture-the-flag contest and a pre-event day of mini-trainings.",
         "context": "It began as Conferencia O Outro Lado, hosted at Garoa Hacker Clube for the community around the invite-only YSTS, and grew into the largest free security event in the country. The pairing is the point: BSidesSP happens on the weekend before YSTS, so the people excluded from the closed room have a bigger open one - a deliberate answer to the access problem that invite-only events create, and the reason Brazil's scene has stayed open despite having an exclusive event at its centre."
       },
       "hacker-scene": {
@@ -39732,7 +39735,7 @@
       },
       "nelson-brito": {
         "def": "The creator of T50, the packet injection and stress-testing tool, and the only Brazilian to have presented at PH-Neutral in Berlin, in 2011.",
-        "context": "T50 is the kind of tool that gets used far beyond the people who know who wrote it, which is the usual fate of a good one. His research has been published under names like Permutation Oriented Programming and SQL Fingerprint, and his speaking record runs through the Brazilian circuit - IME, CNASI, CONIP, SERPRO, ITA, H2HC, BSides Sao Paulo and YSTS - as well as that one Berlin appearance, which is worth noting because PH-Neutral was small and did not hand out invitations widely."
+        "context": "T50 is the kind of tool that gets used far beyond the people who know who wrote it, which is the usual fate of a good one. His research has been published under names like Permutation Oriented Programming and SQL Fingerprint, and his speaking record runs through the Brazilian circuit - IME, CNASI, CONIP, SERPRO, ITA, H2HC, BSides São Paulo and YSTS - as well as that one Berlin appearance, which is worth noting because PH-Neutral was small and did not hand out invitations widely."
       },
       "deviant-ollam": {
         "def": "The physical security researcher and TOOOL member whose lockpicking talks put the discipline in front of network audiences that had never considered the door.",
@@ -41653,6 +41656,16 @@
         "def": "The order in which a processor, a file format or a protocol lays out the bytes of a number wider than one byte: big-endian puts the most significant byte at the lowest address, little-endian the least significant.",
         "context": "Danny Cohen named the two orders in 1980, after the egg war in Gulliver's Travels. Internet headers are big-endian, which RFC 791 states and POSIX calls network byte order; x86-64 and most Arm systems are little-endian; IBM z is big-endian; Power, RISC-V, MIPS and SPARC can run either way, which is called bi-endian. Code converts at every boundary with htonl, ntohs and their relatives, and a missed conversion produces a valid wrong number rather than an error: port 80 written in host order on a little-endian machine is read from the wire as port 20480.",
         "depth": "What it is. The 32-bit value 0x0A0B0C0D is stored as the bytes 0A 0B 0C 0D on a big-endian machine and 0D 0C 0B 0A on a little-endian one. POSIX defines the two: a little-endian representation has the least significant byte first, with significance increasing as the address increases, and a big-endian one the most significant byte first. Only numbers wider than a byte are affected: single bytes, ASCII text and UTF-8 look the same either way, and the order of bits inside a byte is the link layer's business, not software's (RFC 2469 records that Ethernet maps the first bit of each byte on the wire to its least significant bit, while Token Ring did the opposite).\n\nWhere it is fixed. Intel's manual calls Intel 64 and IA-32 processors little endian machines, and IBM's z/Architecture addresses a field by its leftmost, high-order byte. The Power ISA lets the operating system choose the order with one mode bit; RISC-V defines little-endian, big-endian and bi-endian variants but always stores instructions as little-endian parcels; SPARC V9 is big-endian by default with little-endian data accesses; Linux describes MIPS systems as built for one order or the other. Among formats, the Internet headers, PNG, Java class files, XDR (External Data Representation) and CBOR are big-endian; BMP and WebAssembly memory are little-endian; TIFF marks its order with II or MM, ELF with the EI_DATA byte, and UTF-16 text with a byte order mark, without which the Unicode Standard and RFC 2781 read it as big-endian while browsers, following the WHATWG Encoding Standard, take the label utf-16 to mean UTF-16LE.\n\nConverting. The conversions are cheap and named by direction: htonl and ntohl in POSIX, htobe32 and le32toh in its newer endian.h, cpu_to_be32 in the Linux kernel, the ! and the less-than and greater-than prefixes of Python's struct. Processors carry instructions for it: BSWAP and MOVBE on x86, LOAD REVERSED on IBM z, the byte-reverse loads and stores on Power, rev8 in RISC-V's Zbb extension. To find out what a machine is, Python's sys.byteorder answers little or big, and lscpu prints a Byte Order line.\n\nWhy it matters. Neither order wins on merit: Cohen's memo lists what serial comparators prefer and what serial adders prefer, and concludes that it is more important to agree upon an order than which order is agreed upon. RISC-V's designers chose little-endian because it dominates commercially, and kept big-endian variants because IP networking works on big-endian data; RFC 4506 admits that XDR's single big-endian order is unfair to little-endian machines, and argues that one order means no protocol is needed to read the data. The real cost is the conversion at each boundary and the bugs when one is missed: a port or an address loaded raw, UTF-16 decoded in the wrong order, a hash taken over raw bytes. The Linux bonding driver hashes raw address bytes, so an x86-64 server and an s390x guest compute different hashes for the same flow, and with three, five, six or seven members they often send it over different links."
+      },
+      "dmca": {
+        "def": "The Digital Millennium Copyright Act, the 1998 US law that made it unlawful to circumvent the technical locks guarding copyrighted works or to traffic in tools that do, and that shields online service providers from liability for their users' infringement when they take material down on notice.",
+        "context": "Signed on 28 October 1998 to implement two 1996 WIPO (World Intellectual Property Organization) treaties, the DMCA (Digital Millennium Copyright Act) has two halves an engineer meets. Section 1201 bans circumventing access controls and trafficking in circumvention tools, with narrow statutory exceptions and temporary exemptions set every three years, which now cover good-faith security research and repair. Section 512 gives hosting and search providers safe harbours if they register an agent, remove material on a valid notice, restore it on a counter-notice and terminate repeat infringers. The Sklyarov, Felten, DeCSS and Green v. Department of Justice cases were all fought over section 1201.",
+        "depth": "The DMCA (Digital Millennium Copyright Act) was signed by President Clinton on 28 October 1998 as Public Law 105-304. It implements two treaties concluded at the WIPO (World Intellectual Property Organization) in 1996, the WIPO Copyright Treaty and the WIPO Performances and Phonograms Treaty, which require legal remedies against circumventing technological measures such as encryption and against tampering with rights management information. Title I adds section 1201, the anti-circumvention law, to the US Copyright Act; Title II adds the section 512 safe harbours; Title III lets a computer's owner authorise the copy of a program made when the machine is switched on for maintenance or repair.\n\nSection 1201 separates measures that control access to a work from measures that protect a right such as copying. Circumventing an access control, by descrambling, decrypting or otherwise bypassing it without the copyright owner's authority, is prohibited; circumventing a copy control is not, a distinction the Copyright Office explained in 1998 by noting that fair use can justify copying but is no defence to unauthorised access. Two trafficking bans reach anyone who makes, imports or offers a technology, product, service or component that is primarily designed to circumvent either kind of measure, has only limited commercially significant use otherwise, or is marketed for circumvention. Wilful violation for commercial advantage or private financial gain is a crime: up to $500,000 or five years for a first offence.\n\nThree statutory exceptions matter to engineers. Section 1201(f) lets a person lawfully entitled to use a program circumvent to identify and analyse what an independently created program needs to interoperate with it, build tools for that, and share the results solely for that purpose. Section 1201(g) covers good-faith encryption research on a lawfully obtained copy, after a good-faith effort to obtain authorisation. Section 1201(j) covers security testing: accessing a computer, system or network solely to test, investigate or correct a flaw in good faith, with the authorisation of its owner or operator. None shelters conduct that breaks other laws, and the text names the Computer Fraud and Abuse Act.\n\nOn the recommendation of the Register of Copyrights, the Librarian of Congress exempts classes of works from the ban on the act of circumvention, three years at a time; the trafficking bans are beyond the rulemaking's reach. Good-faith security research entered the rule in 2015 for consumer devices, motorised land vehicles and implanted medical devices, over manufacturers' objections that they already authorise research; the 2018 rule dropped the device list, and in 2021 a condition that the research break no other law became a warning that the exemption is no safe harbour from such laws. Vehicle repair was exempted in 2015 at the request of the EFF (Electronic Frontier Foundation); in 2021 device repair was widened to any software-enabled consumer device, and medical devices gained an exemption. The ninth cycle, in force from 28 October 2024, renewed every exemption petitioned for and added retail-level commercial food preparation equipment and owners' access to vehicle operational data. In the tenth, a notice of 28 October 2026 reported 43 renewal petitions and the Register's intention to recommend readopting every exemption but one: medical-device repair met meaningful opposition and is being argued afresh; renewals will run from October 2027 to October 2030.\n\nSection 512, in Title II, offers safe harbours, each barring money damages, for transitory communications, system caching, storage at a user's direction and information location tools. Every provider must adopt, reasonably implement and tell users about a policy of terminating repeat infringers in appropriate circumstances; hosts and location tools must also name an agent on their site and in the Copyright Office's online directory, where a designation lapses after three years unless renewed. A takedown notice to that agent identifies the work and the material, states a good-faith belief that the use is unauthorised and swears, under penalty of perjury, to the sender's authority; the provider must act expeditiously. A counter-notice swears to a good-faith belief that the removal was a mistake or misidentification, and the material returns within 10 to 14 business days unless the claimant reports having sued. In May 2020 the Copyright Office concluded that the balance Congress intended had been tilted askew.\n\nThe cases the glossary tells are all section 1201 cases: civil suits over DeCSS and Felten, the EFF noted, and a criminal prosecution of Sklyarov. DeCSS, written in 1999 by the Norwegian teenager Jon Johansen and two others, decrypted the CSS (Content Scramble System) on DVDs (digital versatile discs); eight studios sued Eric Corley of 2600 for posting and linking to it, and in 2001 the Second Circuit upheld the injunction as aimed at the code's function, not its speech. Edward Felten's team, threatened in April 2001 over a paper on breaking the SDMI (Secure Digital Music Initiative) watermarks, sued with the EFF as counsel and presented it that August. Dmitry Sklyarov was arrested in Las Vegas in July 2001, after speaking at DEF CON, and charged with trafficking over ElcomSoft's eBook software; a jury acquitted ElcomSoft in December 2002. Green v. Department of Justice, filed in 2016 for Matthew Green and bunnie Huang, attacked the statute itself; in August 2024 the District of Columbia Circuit rejected its facial First Amendment claims.\n\nThe EFF's March 2013 report Unintended Consequences: Fifteen Years under the DMCA argued that section 1201 had been invoked less against pirates than against scientists, consumers and competitors, for instance to block aftermarket printer cartridges and garage door openers, and that its exceptions were too narrow; user groups told the Copyright Office that a right to circumvent can mean little without help from technicians, whom no rulemaking can exempt from the trafficking bans. Copyright owners told the same study that the law had worked as Congress intended, underpinning streaming services built on technical protection, and credited the trafficking bans with keeping circumvention tools out of the mainstream; the court in Green called piracy the law's heartland. The Office's June 2017 report kept the framework and called the trafficking bans critical, but asked Congress to consider easing the authorisation requirements for security testing and encryption research and making repair, assistive technology and phone unlocking permanent exemptions."
+      },
+      "right-to-repair": {
+        "def": "The principle, and the movement behind it, that whoever owns a machine should be able to fix it, or have anyone they choose fix it, with the parts, tools, documentation, diagnostic software and firmware the manufacturer gives its own authorised repairers, on fair terms and without software locks that reject replacement parts.",
+        "context": "It began with cars: Massachusetts voters required carmakers to share dealer-level repair information in 2012 and telematics data in 2020. In May 2021 the Federal Trade Commission (FTC) told Congress it had found scant evidence for manufacturers' reasons for restricting repair, and from 2022 New York, Minnesota, California, Colorado and Oregon passed laws for electronics, Oregon and Colorado also curbing parts pairing. The European Union (EU) set repair rules for smartphones from June 2025 and a repair directive that applies from July 2026. Manufacturers cite safety, security and intellectual property; advocates such as iFixit answer that repair monopolies raise prices and waste working devices.",
+        "depth": "What is asked for. Owners, and any repairer they choose, should get the parts, tools, manuals, diagnostic software and firmware the manufacturer gives its own authorised network, on comparable terms; iFixit, a repair-guide and parts company among the loudest advocates, adds the software to reset security locks and pair parts. Parts pairing, which Oregon's law defines as using software to identify component parts through a unique identifier, can leave a working replacement limited, flagged with warnings or refused. The Electronic Frontier Foundation (EFF) adds copyright: people own the device but only license its software, under terms that can forbid reverse engineering, transfer and unauthorised repair.\n\nCars first. In 2012 Massachusetts voters approved Question 1, requiring carmakers, from model year 2015, to give owners and independent shops the diagnostic and repair information their dealers get; it took almost 86 per cent of the yes and no votes. A second Question 1 took 75 per cent in 2020 and required a standardised open-access platform for telematics data from model year 2022. The carmakers' Alliance for Automotive Innovation sued, lost in February 2025 and, on appeal, argued that the law forces makers to disable the cybersecurity guarding steering and braking; in February 2026 the parties paused the case to discuss a settlement.\n\nWashington. In May 2021 the Federal Trade Commission (FTC) told Congress, in 'Nixing the Fix', that it had found scant evidence for manufacturers' justifications for repair restrictions, and on 21 July 2021 it voted 5 to 0 to make unlawful restrictions an enforcement priority. Executive Order 14036 of 9 July 2021 had encouraged rules against such restrictions, citing farmers; it was revoked in August 2025. Enforcement reached the farm: in January 2025 the FTC, Illinois and Minnesota sued Deere & Company, alleging that only its dealers had the fully functional Service ADVISOR tool, while Deere had argued that independent repairs risked breaching emissions law. A ten-year settlement filed in July 2026, subject to court approval, obliges Deere to offer owners and independent shops, on fair and reasonable terms, the repair resources its dealers get, including fault codes, reprogramming and the pairing of new parts.\n\nCopyright. Section 1201 of the Digital Millennium Copyright Act (DMCA) makes it unlawful to circumvent technological measures that control access to software, even to repair. Every three years the Librarian of Congress, advised by the Register of Copyrights, grants exemptions for the next three. Repair entered in 2015 for land vehicles and widened to smartphones and home appliances in 2018, to any software-enabled device primarily designed for consumers and to medical devices in 2021, and to retail-level commercial food preparation equipment in 2024, when a broader class for commercial and industrial equipment was declined. No exemption may serve as a defence under any other provision, so the bans on trafficking in circumvention tools still apply.\n\nThe states. New York's Digital Fair Repair Act, signed on 28 December 2022, was the first state law of its kind for electronics; it covers equipment first made and sold there from 1 July 2023 but excludes cars, medical devices, off-road equipment, home appliances and business-contract sales. Minnesota's act, in force from 1 July 2024, reaches equipment sold since 1 July 2021, file servers included according to iFixit. California's Senate Bill 244, in force from 1 July 2024, requires parts, tools and documentation for three years after a model's last manufacture at a wholesale price of 50 to 99.99 dollars and seven years above that. Colorado covered powered wheelchairs in 2022, farm equipment in 2023 and digital electronics from 1 January 2026. Oregon's Senate Bill 1596, in force from 1 January 2025, forbids, on devices first made and sold from 2025, parts pairing that blocks a working replacement, degrades performance or shows misleading warnings; Colorado's law has a similar clause.\n\nEurope. In the European Union (EU), ecodesign regulations of 2019 set repairability requirements for appliances, displays and servers, and Regulation (EU) 2024/1781 makes repairability an aspect future rules must improve. From 20 June 2025, Regulation (EU) 2023/1670 requires smartphone and tablet makers to supply professional repairers with spare parts for at least seven years after a model leaves the market and to give them the software that serialised parts need, and an energy label grades repairability from A to E. Directive (EU) 2024/1799, applicable from 31 July 2026, obliges manufacturers to repair covered goods free or at a reasonable price, bars techniques that impede repair unless justified by legitimate and objective factors, and adds 12 months to the seller's liability when a consumer opts for repair. France has shown a repairability score out of ten since 2021, replaced in 2025 by a durability index for televisions and washing machines.\n\nThe two cases. The FTC grouped manufacturers' objections as intellectual property, safety, cybersecurity, liability and reputation. Apple, which backed California's bill, opposed Oregon's pairing clause, its engineer John Perry testifying that it would undermine the security, safety and privacy of Oregonians by forcing makers to accept parts of unknown origin; the Business Council of New York warned that sensitive technical data would reach almost any repairer who asked. Advocates cite the FTC's finding, iFixit's teardowns, which found more paired parts in the iPhone 15 than in any earlier iPhone, and cost and waste: Consumer Reports says repair rights save money and cut waste, and the EFF that restrictions drive independent shops out of business.\n\nFor network and information technology (IT) engineers. Most laws stop short of the equipment room: New York excludes business-contract sales, Oregon covers household equipment only, Colorado excludes routers or all-in-one devices delivering internet, video and voice, and Minnesota exempts IT equipment intended for critical infrastructure, an exemption the group SecuRepairs warned could reach business routers and switches. A 2026 Colorado bill adding that exemption, backed above all by Cisco according to iFixit, failed 7 to 4 in a House committee after a sponsor said repair instructions could help reverse-engineer critical systems and a retired IT repairer answered that a water utility's router is the one retailers use. Licences and firmware add a layer: Cisco's transfer policy lets software rights pass to a new owner only where law requires it, a listed scenario applies or Cisco consents for a fee, while the EU servers regulation keeps firmware available for eight years after a model's last unit, network servers excepted."
       }
     },
     "totalCount": "{count} terms",
@@ -42170,7 +42183,8 @@
     "crumb": "Documentation",
     "lede": "How the {tool} tool works, what it computes, and the sources behind it.",
     "backToTool": "Back to the {tool} tool",
-    "openTool": "Open the {tool} tool"
+    "openTool": "Open the {tool} tool",
+    "viewMarkdown": "View as Markdown"
   },
   "share": {
     "label": "Share",
@@ -43264,7 +43278,7 @@
       "searchPlaceholder": "A problem, a word, a situation...",
       "searchExamples": "Try",
       "lifecycleTitle": "Follow the lifecycle",
-      "lifecycleLede": "{count} articles in the order the work happens: before the sale, when it breaks, what it yields, what comes after, the life and the craft.",
+      "lifecycleLede": "{count} articles in the order the work happens: before it breaks, when it breaks, when it will not yield, after it is over, the life and the craft.",
       "problemTitle": "I have a problem now",
       "problemLede": "Type what is in front of you; the search looks only inside this corpus and lists the pieces that speak to it.",
       "humanTitle": "The human side",
@@ -43274,7 +43288,7 @@
   },
   "contributeTools": {
     "translationsTitle": "Improve the translations",
-    "translationsBody": "English is this site's source. The Brazilian Portuguese is written with AI and reviewed gradually, and fourteen more languages are machine-translated: serviceable, and not native. If you read any of them and something is wrong, such as a term of art rendered literally or a sentence that parses and means nothing, telling me is a real contribution, and a short note naming the page and the phrase is enough.",
+    "translationsBody": "English is this site's source. The Brazilian Portuguese is written with AI and reviewed gradually, as are the interface and the tools in Spanish and German; the rest of the Spanish and German sites and twelve more languages are machine-translated: serviceable, and not native. If you read any of them and something is wrong, such as a term of art rendered literally or a sentence that parses and means nothing, telling me is a real contribution, and a short note naming the page and the phrase is enough.",
     "translationsCta": "Send a correction"
   },
   "roles": {
@@ -43691,7 +43705,7 @@
           "1": "Designing the proposed solution and writing it down in a form the customer's engineers will accept and the customer's finance will approve.",
           "2": "Running a proof of concept in the customer's environment, against the customer's traffic, with the customer's people watching.",
           "3": "Answering a request for proposal, which is a written examination with a commercial consequence.",
-          "4": "Briefing the account manager on what the technology will and will genuinely do, so that the commercial promise matches the engineering one."
+          "4": "Briefing the account manager on what the technology will genuinely do and what it will not, so that the commercial promise matches the engineering one."
         },
         "accountableFor": {
           "0": "The technical accuracy of everything proposed under the account manager's name.",
@@ -46043,7 +46057,7 @@
     "lede": "The people the corpus records - the ones who wrote the tools everyone still runs, founded the conferences, went to prison, testified before senates, or connected a country. Each name links to its entry.",
     "yearNote": "The year beside each name anchors the work that entry describes. It is not a birth year and not the span of a career: Faraday did not stop in 1831.",
     "yearLabel": "year of the work described: {year}",
-    "count": "{count} people",
+    "count": "{count, plural, one {# person} other {# people}}",
     "filterAll": "All",
     "filterLabel": "Filter the timeline by strand",
     "decade": "{decade}s",
@@ -46563,7 +46577,7 @@
       "title": "Open materials",
       "lede": "Course material Rodolfo Nützmann shares for anyone to use: complete trainings with their slides and speaker notes, free to download, adapt and teach with. Each has a datasheet with its outline, objectives, files and licence.",
       "cardCta": "Open the datasheet",
-      "slidesBadge": "{count} slides",
+      "slidesBadge": "{count, plural, one {# slide} other {# slides}}",
       "metaTitle": "Open materials - ronutz.com",
       "metaDescription": "Complete trainings Rodolfo Nützmann shares for anyone to use: slides, speaker notes, outline and licence, free to download, adapt and teach with.",
       "liveTitle": "Want a course taught live?",
@@ -50546,7 +50560,7 @@
         },
         "rfc9846": {
           "label": "RFC 9846 (TLS 1.3, current revision)",
-          "note": "The December 2025 revision of TLS 1.3, obsoleting RFC 8446; the cipher-suite form and the five suites carry over unchanged"
+          "note": "The July 2026 revision of TLS 1.3, obsoleting RFC 8446; the cipher-suite form and the five suites carry over unchanged"
         },
         "rfc8447": {
           "note": "Meaning of the \"Recommended\" column (Y / N / D)"

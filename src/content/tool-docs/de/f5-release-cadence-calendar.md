@@ -1,0 +1,15 @@
+## Was das Tool tut
+
+Am 6. Juli 2026 hat F5 angekündigt, vom vierteljährlichen auf einen monatlichen Rhythmus für Sicherheitsreleases umzustellen. Das Tool macht aus diesem Zeitplan konkrete Daten, mit denen Sie planen können. Wählen Sie ein Startdatum (standardmäßig heute), und es listet die kommenden gehärteten Software-Releases von F5 und die darauf folgenden Sicherheitsbenachrichtigungen auf und nennt Ihnen jeweils den nächsten Termin.
+
+Der ganze Rhythmus lässt sich auf eine Regel zurückführen. Gehärtete Software-Releases erscheinen am **dritten Mittwoch jedes Monats**, beginnend am 15. Juli 2026. Eine **Sicherheitsbenachrichtigung** zu jedem Release wird einen Monat später veröffentlicht, und weil die Ankerdaten von F5 selbst auf dritte Mittwoche fallen (Release am 15. Juli, Benachrichtigung am 19. August), liegen an jedem dritten Mittwoch beide Ereignisse zugleich: Das gehärtete Release des Monats erscheint, und die Sicherheitsbenachrichtigung des Vormonats wird veröffentlicht. Der Abstand von einem Monat ist gewollt und gibt Ihnen ein Zeitfenster, um zu aktualisieren, bevor die Details der Schwachstelle öffentlich werden.
+
+Die Daten werden lokal mit einfacher Arithmetik berechnet; nichts verlässt Ihren Browser. Es sind die geplanten Termine: F5 veröffentlicht für dringende Probleme weiterhin jederzeit außerplanmäßige Sicherheitswarnungen und Engineering Hotfixes und behält sich ausdrücklich vor, Zeitpunkt oder Inhalt einer Benachrichtigung anzupassen, wenn rechtliche Gründe, Offenlegung, Ausnutzung oder der Schutz der Kundschaft es erfordern.
+
+## Ergebnisse teilen
+
+Unter den beiden hervorgehobenen Terminen erzeugt **Ergebnisse teilen** einen Link auf diese Seite, und zwar nur, wenn Sie die Schaltfläche wählen. Der Link enthält nach dem `#` das gewählte Startdatum (`from`, außer es ist heute) und die Anzahl der Monate (`months`, außer sie ist 6). Solange das Formular unverändert ist, ist die Schaltfläche deaktiviert. Das Popover nennt zuerst, was der Link enthält, und bietet dann „Link kopieren“ und, sofern der Browser eines bietet, das Teilen-Menü an; die Adresse der Seite bleibt unverändert.
+
+Ein Link ohne Datum öffnet mit dem heutigen Datum dessen, der ihn öffnet, und „in N Tagen“ zählt immer ab dessen heutigem Datum. Laut [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (Abschnitt 3.5, abgerufen am 27.10.2026) ist das Fragment „separated from the rest of the URI prior to a dereference“, also vor der Dereferenzierung vom Rest der URI getrennt; daher werden die Werte beim Öffnen des Links nicht an den Server gesendet. Jeder bleibt in der Adressleiste und im Verlauf dessen, der den Link öffnet, und wer den Link hat, kann sie lesen.
+
+- **Öffnen eines Links.** Datum und Anzahl werden gesetzt, und die Seite listet die Termine auf. Ein Datum, das kein echter Kalendertag ist, oder eine Anzahl außerhalb von 1 bis 24 führt dazu, dass der ganze Link ignoriert wird. Danach verschwinden die Werte sofort aus der Adresse der Seite, ohne dass eine Anfrage gesendet wird; ein Neuladen oder die Schaltfläche „Teilen“ der Seite überträgt daher nichts.

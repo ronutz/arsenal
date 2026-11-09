@@ -18,7 +18,7 @@ It has no list of breached passwords either. To check whether a particular passw
 
 ## Using it
 
-Enter a target digest, or hash a sample input to produce one, choose the alphabet and maximum length to search, and watch the search run. Try a short numeric input to see it succeed quickly, then add length or widen the alphabet to watch the keyspace outrun the search.
+Paste a target digest, or make one by hashing a sample input in the [hash generator](/tools/hash) (SHA-1 or SHA-256), choose the alphabet and maximum length to search, and watch the search run. Try a short numeric input to see it succeed quickly, then add length or widen the alphabet to watch the keyspace outrun the search.
 
 ## Share results
 

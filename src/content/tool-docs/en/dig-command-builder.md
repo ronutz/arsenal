@@ -1,6 +1,6 @@
 ## What it does
 
-You describe the query; the page writes the `dig` command line. Four groups of controls map onto the four things a dig invocation says:
+You describe the query; the page writes the `dig` command line. Five groups of controls map onto the five things a dig invocation says:
 
 - **What to look up:** a name and a record type (A by default, any mnemonic in the IANA registry, `TYPEnn`, or the query types ANY, AXFR and IXFR with the serial you hold), a class (IN by default; CH and HS), or an address for a reverse lookup with `-x`, in which case dig derives the PTR name itself and the name, type and class are not written.
 - **Where to ask:** the server (`@server`, a host name or a bare IPv4 or IPv6 address), a non-standard port (`-p`), the transport (UDP, `+tcp`, `+tls`, `+https` with its endpoint), one address family (`-4`, `-6`) and a source address (`-b`).

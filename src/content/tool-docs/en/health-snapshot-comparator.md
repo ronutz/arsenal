@@ -8,7 +8,7 @@ This tool never ingests state data and never diffs anything. YOU DECLARE THE STA
 
 ## Never on green components alone
 
-The canon risk rule is structural: the state-versus-service rule also fires unconditionally, and even the best verdict remains conditional on a service-tier dimension (an end-to-end probe, a real auth transaction) agreeing with the component tier. Unchanged configuration is not health; green components are not a working service; the report says so on every run.
+The risk rule is structural: the state-versus-service rule also fires unconditionally, and even the best verdict remains conditional on a service-tier dimension (an end-to-end probe, a real auth transaction) agreeing with the component tier. Unchanged configuration is not health; green components are not a working service; the report says so on every run.
 
 ## Determinism and verification
 

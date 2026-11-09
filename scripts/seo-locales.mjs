@@ -76,6 +76,34 @@ if (!LIVE_CODES.includes("en") || !AUTHORED_CODES.includes("en")) {
 
 /** The set form of AUTHORED_CODES, for membership tests. */
 const AUTHORED_SET = new Set(AUTHORED_CODES);
+/**
+ * The locales whose interface is written natively (INTERFACE_LOCALES in the registry, 09/11/2026): their pages speak
+ * for themselves outside the corpus route families. The authored-content locales are always among them.
+ */
+export const INTERFACE_CODES = [
+  // The array literal's body.
+  ...(registrySource.match(/INTERFACE_LOCALES\s*=\s*\[([^\]]*)\]/)?.[1] ?? "")
+    // Every quoted code inside it.
+    .matchAll(/"([A-Za-z-]+)"/g),
+].map((m) => m[1]);
+/** The first route segments whose content is a corpus (CORPUS_ROUTE_FAMILIES in the registry). */
+export const CORPUS_FAMILIES = [
+  // The array literal's body.
+  ...(registrySource.match(/CORPUS_ROUTE_FAMILIES\s*=\s*\[([^\]]*)\]/)?.[1] ?? "")
+    // Every quoted segment inside it.
+    .matchAll(/"([a-z-]+)"/g),
+].map((m) => m[1]);
+// Both lists must read back: an empty interface list would drop pt-BR from hreflang; an empty corpus list would offer
+// English pages under another language's address to search engines.
+if (!INTERFACE_CODES.includes("en") || !CORPUS_FAMILIES.includes("learn")) {
+  // Say what was not found.
+  console.error(`[seo-locales] FAIL: could not read INTERFACE_LOCALES or CORPUS_ROUTE_FAMILIES from ${REGISTRY}.`);
+  // Hard stop.
+  process.exit(1);
+}
+/** The set forms, for membership tests. */
+const INTERFACE_SET = new Set([...INTERFACE_CODES, ...AUTHORED_CODES]);
+const CORPUS_SET = new Set(CORPUS_FAMILIES);
 
 /**
  * The live locales that were actually built into an output folder: those with a
@@ -90,12 +118,31 @@ export function builtLocales(out) {
 }
 
 /**
- * True when pages in this locale are self-canonical and take part in hreflang.
+ * True when a page of this locale on this route is self-canonical and takes part in hreflang: every route of an
+ * authored-content locale; every route outside the corpus families of an interface-native locale (09/11/2026); no
+ * route of any other locale.
+ *
+ * @param {string} code a locale code
+ * @param {string} [rel] the route below the locale, e.g. "tools/cidr" ("" for the locale's home page)
+ * @returns {boolean}
+ */
+export function speaksForItself(code, rel = "") {
+  // An authored-content locale speaks for every route it builds.
+  if (AUTHORED_SET.has(code)) return true;
+  // A locale that is neither authored nor interface-native borrows the English canonical everywhere.
+  if (!INTERFACE_SET.has(code)) return false;
+  // An interface-native locale speaks for itself except on a corpus route, whose words are still English there.
+  return !CORPUS_SET.has(rel.split("/")[0]);
+}
+
+/**
+ * True when a locale speaks for itself on at least one route (its home page): the locales whose pages are walked
+ * for hreflang at all.
  *
  * @param {string} code a locale code
  * @returns {boolean}
  */
-export function speaksForItself(code) {
-  // Exactly the authored-content locales.
-  return AUTHORED_SET.has(code);
+export function speaksAnywhere(code) {
+  // The home page is never a corpus route.
+  return speaksForItself(code, "");
 }

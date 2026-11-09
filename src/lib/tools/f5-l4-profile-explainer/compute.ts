@@ -142,7 +142,7 @@ export const PROFILES: readonly L4Profile[] = Object.freeze([
     story:
       "The living, updated version of tcp-lan-optimized: all settings adapted to LAN-grade links, without enabling the very newest features. The profiles reference pairs it with LAN-based or highly interactive traffic behind a standard virtual server.",
     whenToUse: ["Server-side profiles on fast, low-loss data-center links.", "Interactive LAN traffic where latency dominates."],
-    tradeoffs: ["Link-type-tuned: the wrong side of a WAN gets WAN behaviour from a LAN profile, so split-profile virtual servers (LAN inside, WAN outside) exist for exactly this."],
+    tradeoffs: ["Link-type-tuned: on the side of a virtual server that faces a WAN, a LAN profile gives WAN traffic LAN behaviour, so split-profile virtual servers (LAN inside, WAN outside) exist for exactly this."], // 09/11/2026: the sentence said the reverse ("gets WAN behaviour from a LAN profile")
     quirks: ["Benchmark claim from the announcement: throughput at least as high, and often better, than the default tcp profile for its link type."],
   },
   {

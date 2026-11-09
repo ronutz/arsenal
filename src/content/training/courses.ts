@@ -31,8 +31,16 @@
 //
 // LANGUAGE (CC06): every site-authored sentence is Localized {en, pt-BR};
 // official course names, exam names and codes stay as the vendor writes them.
-// Locales other than en and pt-BR render the English with lang="en".
+// Locales other than en and pt-BR render the English with lang="en", unless
+// (09/11/2026) the locale has written its own text for that English in the
+// "training" module of the strings kept in code (src/i18n/content/<locale>/
+// training.json, src/i18n/contentStrings.ts): the pages pass that map to
+// localizedText(), which then returns the locale's text, with the locale as
+// its lang, and keeps lang="en" only for what still falls back to English.
 // ============================================================================
+
+// The content-string matcher (pure, no node imports: this catalogue is also read by client components).
+import { matchContent, type ContentStrings } from "../../i18n/contentMatch";
 
 /** Site-authored text in the two authored locales. */
 export interface Localized {
@@ -2077,12 +2085,25 @@ export function resolveCourseRef(ref: CourseRef): { platform: Platform; course: 
   return platform && course ? { platform, course } : undefined;
 }
 
-/** The text of a Localized value for a locale: pt-BR gets Portuguese, every other locale the English source. */
-export function localizedText(text: Localized, locale: string): { text: string; lang: "en" | "pt-BR" } {
-  // Brazilian Portuguese is the only other authored locale.
+/**
+ * The text of a Localized value for a locale: pt-BR gets Portuguese; every other locale gets its own text for the
+ * English when the page passes the "training" content strings and they hold it (09/11/2026), else the English source.
+ *
+ * @param text the value
+ * @param locale the page's locale
+ * @param strings the "training" module's strings in that locale (contentStringsFor(locale, ["training"])); absent or
+ *                empty, the English stands, as before
+ * @returns the text and its language (the page's locale when translated, "en" when the English stands)
+ */
+export function localizedText(text: Localized, locale: string, strings?: ContentStrings): { text: string; lang: string } {
+  // Brazilian Portuguese is authored inline.
   if (locale === "pt-BR") return { text: text["pt-BR"], lang: "pt-BR" };
-  // Everything else reads the English source (marked lang="en" by the caller when the page is not English).
-  return { text: text.en, lang: "en" };
+  // English is the source.
+  if (locale === "en" || !strings) return { text: text.en, lang: "en" };
+  // Another locale: its own text for the English, when written.
+  const own = matchContent(strings, text.en);
+  // Written: in the page's language; not written: the English (marked lang="en" by the caller when the page is not English).
+  return own !== text.en ? { text: own, lang: locale } : { text: text.en, lang: "en" };
 }
 
 /** All [platformSlug, courseSlug] pairs, for static path generation. */

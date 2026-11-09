@@ -1,0 +1,15 @@
+## Qué hace
+
+El 6 de julio de 2026, F5 anunció el paso de una cadencia trimestral a una cadencia mensual de publicaciones de seguridad. Esta herramienta convierte ese calendario en fechas concretas con las que puedes planificar. Elige una fecha de inicio (de forma predeterminada, hoy) y la herramienta enumera las próximas versiones reforzadas (hardened releases) del software de F5 y las notificaciones de seguridad que las siguen, y te indica la próxima de cada una.
+
+Toda la cadencia se reduce a una regla. Las versiones reforzadas del software salen el **tercer miércoles de cada mes**, a partir del 15 de julio de 2026. La **notificación de seguridad** de cada versión se publica un mes después, y como las propias fechas de referencia de F5 coinciden con terceros miércoles (versión el 15 de julio, notificación el 19 de agosto), cada tercer miércoles reúne los dos eventos a la vez: sale la versión reforzada de ese mes y se publica la notificación de seguridad del mes anterior. El desfase de un mes es intencionado: te da margen para actualizar antes de que se hagan públicos los detalles de la vulnerabilidad.
+
+Las fechas se calculan en local con aritmética sencilla; nada sale de tu navegador. Son las fechas programadas: F5 sigue publicando en cualquier momento alertas de seguridad fuera de ciclo y hotfixes de ingeniería para problemas urgentes, y se reserva expresamente la flexibilidad de ajustar el calendario o el contenido de una notificación cuando lo exijan consideraciones legales, de divulgación, de explotación o de protección de los clientes.
+
+## Compartir resultados
+
+Debajo de las dos fechas destacadas, **Compartir resultados** genera un enlace a esta página, solo cuando lo presionas, que lleva después del `#` la fecha de inicio que elegiste (`from`, salvo que sea hoy) y el número de meses (`months`, salvo que sea 6). El botón está desactivado mientras no se haya tocado el formulario. Su ventana emergente dice primero qué lleva el enlace, y después ofrece Copiar enlace y, si el navegador lo tiene, el menú Compartir del sistema; la dirección de la página no cambia.
+
+Un enlace sin fecha se abre con la fecha de hoy de quien lo abra, y “dentro de N días” siempre cuenta desde el hoy de quien lo lee. Según el [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (sección 3.5, consultado el 2026-10-27), el fragmento queda “separated from the rest of the URI prior to a dereference” (separado del resto del URI antes de resolverlo), así que los valores no se envían al servidor cuando se abre el enlace; cada uno se queda en la barra de direcciones y en el historial de quien lo abra, y cualquiera que tenga el enlace puede leerlos.
+
+- **Al abrir un enlace.** Se establecen la fecha y el número de meses, y la página enumera las fechas. Una fecha que no sea un día real del calendario, o un número fuera del rango de 1 a 24, hace que se ignore todo el enlace. Después, los valores salen de la dirección de la página al instante, sin ninguna solicitud, así que al recargar, o con el propio botón Compartir de la página, no se lleva nada.

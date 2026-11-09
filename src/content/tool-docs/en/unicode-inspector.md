@@ -5,7 +5,7 @@ Text can hold far more than it shows. A zero-width space sits between two letter
 It has four modes:
 
 - **Inspect a text** counts the text, says whether anything needs a look, lists what it found by kind, flags bidirectional controls left open at the end of a line and words that mix scripts, draws the text in the order it is stored with every hidden character as a tag, lists every code point, offers a cleaned copy, and writes the text as escapes in eight languages.
-- **One code point** takes a code point in any notation (`U+00E9`, `é`, `0xE9`, `&eacute;`, `é`, `zero width space`, `BOM`) and shows its name and aliases, properties, encodings, escapes and what to know about it.
+- **One code point** takes a code point in any notation (`U+00E9`, `é`, `0xE9`, `&eacute;`, `\u00e9`, `zero width space`, `BOM`) and shows its name and aliases, properties, encodings, escapes and what to know about it.
 - **Find by name** lists the code points whose name or alias has words starting with the words you type.
 - **Normalise** shows a text in NFC, NFD, NFKC and NFKD with the code points and UTF-8 bytes of each form, and compares it with a second text under every form.
 

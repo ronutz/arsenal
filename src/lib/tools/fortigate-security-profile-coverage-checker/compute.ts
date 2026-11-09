@@ -270,7 +270,7 @@ export function runLocalisable(input: string): ToolRunResult<EngineText> {
   if (blind.length > 0 && blind.every((f) => f.failedAt === 2)) {
     const count = String(blind.length); // how many
     notes.push(blind.length === 1 // one profile, or several
-      ? say("note.blindOne", `${count} profile is attached and blind for the same reason: the payload is never decrypted. Switching this policy to deep inspection is the single change that fixes all of them - and it is a real decision, because deep inspection means terminating TLS, which has certificate-trust, privacy and performance consequences.`, { count }) // one
+      ? say("note.blindOne", `${count} profile is attached and blind because the payload is never decrypted. Switching this policy to deep inspection is the single change that fixes it - and it is a real decision, because deep inspection means terminating TLS, which has certificate-trust, privacy and performance consequences.`, { count }) // one; 09/11/2026: singular throughout ("the same reason" and "all of them" were the plural's)
       : say("note.blindMany", `${count} profiles are attached and blind for the same reason: the payload is never decrypted. Switching this policy to deep inspection is the single change that fixes all of them - and it is a real decision, because deep inspection means terminating TLS, which has certificate-trust, privacy and performance consequences.`, { count })); // several
   }
   if (traffic === "https" && ssl === "certificate") {

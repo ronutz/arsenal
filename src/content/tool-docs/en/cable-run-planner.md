@@ -6,6 +6,6 @@ The exclusion list is half the tool: anything that fails says exactly why - not 
 
 Under the headline, **Share results** builds a link to this page, only when you press it, that carries the four fields after the `#`: `speed` (the tier in Mb/s), `distance` (as typed), `environment` and `poe`, always. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
 
-[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so the plan's fields is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
+[RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so the plan's fields are not sent to the server when the link is opened; they stay in the address bar and the history of whoever opens it, and anyone who has the link can read them.
 
 - **Opening a link.** The four fields are set and the page plans, as a change does. The values then leave the page's address at once, without a request, so a reload or the page's own Share button carries nothing.

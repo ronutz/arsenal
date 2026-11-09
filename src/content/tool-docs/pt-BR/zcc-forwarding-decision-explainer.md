@@ -6,7 +6,7 @@ Cole uma postura do Zscaler Client Connector - o estado de rede detectado, a aç
 
 Esta ferramenta existe na forma que sua cláusula de ratificação especificou, e a razão vem declarada aqui antes de qualquer outra coisa. O passe de verificação (2026-07-21, contra a arquitetura de referência Secure Mobile Access with Zscaler Client Connector e o help.zscaler.com) encontrou a **espinha** de decisão publicamente documentada de ponta a ponta: como o estado de rede confiável é determinado, o que cada uma das quatro ações por estado do ZIA faz, o que cada versão de Z-Tunnel captura, o failover automático de Z-Tunnel 2.0 para 1.0, o web-split híbrido, e as duas ações do ZPA. Essa espinha é determinística, e esta ferramenta a computa.
 
-O que **não** é publicado é uma ordem única de precedência para a camada de bypass. Os mecanismos são documentados um a um - Application Bypass, Destination e Domain Exclusions e Inclusions, VPN [rede privada virtual] Gateway Bypass, o PAC do app profile, o PAC do forwarding profile com sua macro de bypass do Z-Tunnel 2.0 - mas quando vários deles tratam do mesmo fluxo, a Zscaler publica receitas, não uma matriz de resolução de conflitos. Um simulador teria que inventar essa matriz. Esta ferramenta se recusa: ela apresenta cada mecanismo documentado como um livro-razão explicado e não adjudica nada. A mesma regra de não-invenção das demais ferramentas deste site.
+O que **não** é publicado é uma ordem única de precedência para a camada de bypass. Os mecanismos são documentados um a um - Application Bypass, Destination e Domain Exclusions e Inclusions, VPN Gateway Bypass (VPN: rede privada virtual), o PAC do app profile, o PAC do forwarding profile com sua macro de bypass do Z-Tunnel 2.0 - mas quando vários deles tratam do mesmo fluxo, a Zscaler publica receitas, não uma matriz de resolução de conflitos. Um simulador teria que inventar essa matriz. Esta ferramenta se recusa: ela apresenta cada mecanismo documentado como um livro-razão explicado e não adjudica nada. A mesma regra de não-invenção das demais ferramentas deste site.
 
 ## Gramática de entrada
 
@@ -37,9 +37,9 @@ A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-
 
 ## Fontes
 
-- Zscaler Reference Architecture: Secure Mobile Access with Zscaler Client Connector - os estados, ações, critérios, semântica de túnel, failover e tabela de recomendações
-- Zscaler Help: About Z-Tunnel 1.0 & Z-Tunnel 2.0
-- Zscaler Help: Best Practices for Adding Bypasses for Z-Tunnel 2.0 - a divisão de trabalho entre os dois PACs
-- Zscaler Help: Configuring Forwarding Profiles for Zscaler Client Connector
+- [Zscaler Reference Architecture: Secure Mobile Access with Zscaler Client Connector](https://www.zscaler.com/resources/reference-architectures/secure-mobile-access-with-zcc.pdf) - os estados, ações, critérios, semântica de túnel, failover e tabela de recomendações (lida em 2026-11-09)
+- [Zscaler Help: About Z-Tunnel 1.0 & Z-Tunnel 2.0](https://help.zscaler.com/zscaler-client-connector/about-z-tunnel-1.0-z-tunnel-2.0) (lida em 2026-11-09)
+- [Zscaler Help: Best Practices for Adding Bypasses for Z-Tunnel 2.0](https://help.zscaler.com/zscaler-client-connector/best-practices-adding-bypasses-z-tunnel-2.0) - a divisão de trabalho entre os dois PACs (lida em 2026-11-09)
+- [Zscaler Help: Configuring Forwarding Profiles for Zscaler Client Connector](https://help.zscaler.com/zscaler-client-connector/configuring-forwarding-profiles-zscaler-client-connector) (lida em 2026-11-09)
 
 A regra do fragmento por trás do Compartilhar resultado é a [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), seção 3.5 (lida em 2026-11-01), e as credenciais que a verificação procura são definidas na RFC 7468, na RFC 9110, na RFC 6265 e na RFC 7519 (lidas no mesmo dia).

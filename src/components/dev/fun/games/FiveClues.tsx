@@ -38,6 +38,14 @@
 // then the answer's shape with the first letter of each word. They follow from
 // the progress, so a reload shows the same ones, and every player of the day
 // gets the same, so the scores stay comparable.
+//
+// Languages (09/11/2026): category names and the clues that differ by
+// language are written in English and Brazilian Portuguese; a pt-BR page reads
+// the Portuguese, every other page its locale's own text for the English
+// through useContentString() (src/i18n/content/<locale>/five-clues.json,
+// loaded by the page), the English where none is written. The answers a
+// locale accepts are in src/lib/fun/games/five-clues/answers-i18n.ts, so the
+// scoreboard's server check accepts them too.
 // ============================================================================
 
 "use client";
@@ -46,6 +54,8 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 // The strings.
 import { useTranslations } from "next-intl";
+// The strings the game keeps in code, in the page's language beyond en and pt-BR (09/11/2026).
+import { useContentString } from "@/components/ContentStrings";
 // The frame: stats, rules, result.
 import GameShell, { type ShellResult } from "./GameShell";
 // The puzzle number of a day, and the day arithmetic for the old archive's marks.
@@ -59,7 +69,7 @@ import { loadRecord, recordResult, saveDailyState, updateRecord, type GameRecord
 // The rules.
 import { CLUES, GAME_ID, WARMUPS, clueText, dailyFor, judge, langOf, puzzleFor, type Lang } from "@/lib/fun/games/five-clues/engine";
 // The puzzle type.
-import type { FivePuzzle } from "@/lib/fun/games/five-clues/puzzles";
+import type { Clue, FivePuzzle } from "@/lib/fun/games/five-clues/puzzles";
 
 /** The page slug, for the share card's address. */
 const SLUG = "five-clues";
@@ -257,6 +267,12 @@ interface RoundProps {
 function Round({ puzzle, lang, progress, onSpend, idBase }: RoundProps) {
   // The game's strings.
   const t = useTranslations("devFun.games.five-clues");
+  // The page's content strings: English in, the page's language out (the English where the locale has none written).
+  const cs = useContentString();
+  // The category's name in the page's language: the Portuguese inline on pt-BR, otherwise the English through them.
+  const catName = lang === "pt" ? puzzle.cat.pt : cs(puzzle.cat.en);
+  // A clue in the page's language: a plain string is the same everywhere; a two-language clue as the category is.
+  const clueOf = (c: string | Clue) => (typeof c === "string" || lang === "pt" ? clueText(c, lang) : cs(c.en));
   // Whether to skip the reveal pulse.
   const reduce = useReducedMotion();
   // The text being typed.
@@ -303,7 +319,7 @@ function Round({ puzzle, lang, progress, onSpend, idBase }: RoundProps) {
     // The comment the player sees: the guess was not it, and the next clue is up (or the round is over).
     setComment(v === "right" ? null : progress.guesses.length + 1 >= CLUES ? null : t("commentWrong", { guess: text.trim(), n: progress.guesses.length + 2 }));
     // Announced.
-    setLive(v === "right" ? t("liveRight", { cat: puzzle.cat[lang] }) : progress.guesses.length + 1 >= CLUES ? t("liveOut", { cat: puzzle.cat[lang] }) : t("liveWrong", { guess: text.trim(), n: progress.guesses.length + 2, clue: clueText(puzzle.clues[progress.guesses.length + 1], lang) }));
+    setLive(v === "right" ? t("liveRight", { cat: catName }) : progress.guesses.length + 1 >= CLUES ? t("liveOut", { cat: catName }) : t("liveWrong", { guess: text.trim(), n: progress.guesses.length + 2, clue: clueOf(puzzle.clues[progress.guesses.length + 1]) }));
     // Recorded by the owner.
     onSpend(text.trim(), v === "right");
     // The box empties for the next guess.
@@ -321,7 +337,7 @@ function Round({ puzzle, lang, progress, onSpend, idBase }: RoundProps) {
     // The comment: the next clue is up.
     setComment(progress.guesses.length + 1 >= CLUES ? null : t("commentPass", { n: progress.guesses.length + 2 }));
     // Announced.
-    setLive(progress.guesses.length + 1 >= CLUES ? t("liveOut", { cat: puzzle.cat[lang] }) : t("livePass", { n: progress.guesses.length + 2, clue: clueText(puzzle.clues[progress.guesses.length + 1], lang) }));
+    setLive(progress.guesses.length + 1 >= CLUES ? t("liveOut", { cat: catName }) : t("livePass", { n: progress.guesses.length + 2, clue: clueOf(puzzle.clues[progress.guesses.length + 1]) }));
     // Spent.
     onSpend("", false);
     // Focus stays in the box.
@@ -332,7 +348,7 @@ function Round({ puzzle, lang, progress, onSpend, idBase }: RoundProps) {
   // same ones): how many words the answer has, the kind of document its members come from, then its shape with the
   // first letter of each word. Everyone gets the same ones, so the daily scores stay comparable.
   const spent = progress.solved ? progress.guesses.length - 1 : progress.guesses.length;
-  const answer = puzzle.cat[lang];
+  const answer = catName;
   const words = (answer.match(/[\p{L}\p{N}]+/gu) ?? []).length;
   const nudges = [t("nudgeWords", { n: words }), t("nudgeSource", { kind: sourceKind(puzzle.source.label) }), t("nudgeShape", { shape: maskAnswer(answer) })].slice(0, Math.min(spent, 3));
 
@@ -364,7 +380,7 @@ function Round({ puzzle, lang, progress, onSpend, idBase }: RoundProps) {
               </span>
               <span className="fg-five-text">
                 <span className="sr-only">{t("clueN", { n: i + 1 })} </span>
-                {clueText(c, lang)}
+                {clueOf(c)}
               </span>
               {g !== undefined && (
                 <span className={`fg-five-guess ${right ? "fg-five-guess-right" : "fg-five-guess-wrong"}`}>
@@ -427,7 +443,7 @@ function Round({ puzzle, lang, progress, onSpend, idBase }: RoundProps) {
       {done && (
         <div className="fg-five-reveal">
           <p className="fg-five-reveal-lead">{t("categoryWas")}</p>
-          <p className="fg-five-reveal-cat">{puzzle.cat[lang]}</p>
+          <p className="fg-five-reveal-cat">{catName}</p>
           <p className="fg-small fg-muted">
             {t("sourceLead")}{" "}
             <a href={puzzle.source.url} target="_blank" rel="noopener noreferrer">

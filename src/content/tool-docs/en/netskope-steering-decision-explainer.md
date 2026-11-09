@@ -39,7 +39,7 @@ Under the verdict, **Share results** builds a link to this page, only when you p
 
 ## Sources
 
-- Netskope docs: Configure a Steering Profile - modes, default bypasses
-- Netskope docs: Creating a Steering Configuration - Fail Close, non-standard ports
-- Netskope docs: Enabling Dynamic Steering - per-location modes, None semantics
-- Netskope docs: Certificate Pinned Applications - steer-and-decrypt
+- [Netskope docs: Configure a Steering Profile](https://docs.netskope.com/en/configure-a-steering-profile) - modes, default bypasses (read 2026-11-09)
+- [Netskope docs: Creating a Steering Configuration](https://docs.netskope.com/en/creating-a-steering-configuration) - Fail Close, non-standard ports (read 2026-11-09)
+- [Netskope docs: Enabling Dynamic Steering](https://docs.netskope.com/en/enabling-dynamic-steering) - per-location modes, None semantics (read 2026-11-09)
+- [Netskope docs: Certificate Pinned Applications](https://docs.netskope.com/en/certificate-pinned-applications) - steer-and-decrypt (read 2026-11-09)

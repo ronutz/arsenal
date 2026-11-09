@@ -1,10 +1,10 @@
 ## What it does
 
-Give the tool a BIG-IP version and it returns the minimum service check date that version's license must carry; give it a service check date and it returns the newest version you can upgrade to, along with the newer branches you cannot reach yet and the date each one needs. It is a two-way lookup over a vendored copy of F5's published License Check Date table, and it runs entirely in your browser.
+Give the tool a BIG-IP version and it returns the minimum service check date that version's licence must carry; give it a service check date and it returns the newest version you can upgrade to, along with the newer branches you cannot reach yet and the date each one needs. It is a two-way lookup over a vendored copy of F5's published License Check Date table, and it runs entirely in your browser.
 
 ## The two dates it works from
 
-Every BIG-IP version carries a static **License Check Date**: the minimum service check date a licence must have to be allowed to boot that version. Every license carries a **Service Check Date**: the earlier of the date it was last activated and the date its service contract expires. When you upgrade to a new major or minor version, the system compares the two, and if the licence's Service Check Date is earlier than the version's License Check Date, the upgraded system boots but does not load its configuration until the licence is reactivated. The tool encodes F5's License Check Date table (from K7727) and does that comparison for you, in either direction.
+Every BIG-IP version carries a static **License Check Date**: the minimum service check date a licence must have to be allowed to boot that version. Every licence carries a **Service Check Date**: the earlier of the date it was last activated and the date its service contract expires. When you upgrade to a new major or minor version, the system compares the two, and if the licence's Service Check Date is earlier than the version's License Check Date, the upgraded system boots but does not load its configuration until the licence is reactivated. The tool encodes F5's License Check Date table (from K7727) and does that comparison for you, in either direction.
 
 Dates are handled in the exact form BIG-IP writes into `bigip.license`, the eight-digit `yyyymmdd` (so `20230208` is 8 February 2023), and shown in ISO form too. The comparison is pure date arithmetic with no clock involved: both the version's date and the service check date are inputs, so the same inputs always give the same answer.
 
@@ -24,7 +24,7 @@ Type a BIG-IP version (`17.1.3`, `21.1`, `16.1.x`) or a service check date (`202
 
 ## Pasting a licence or tmsh output
 
-You can paste the entire contents of `/config/bigip.license`, any fragment of it, or the output of `tmsh show sys license`; the tool finds the service-check-date line and answers the same upgrade-eligibility question. Both published line forms are recognised: the file form `Service check date : 20151008` (flexible spacing around the colon) and the tmsh form `Service Check Date 2016/08/18`. A license carries exactly one such line, so the first match wins, and the matched line is echoed back so you can confirm the right value was picked up. Everything else in the paste is ignored and, as always, nothing leaves your browser.
+You can paste the entire contents of `/config/bigip.license`, any fragment of it, or the output of `tmsh show sys license`; the tool finds the service-check-date line and answers the same upgrade-eligibility question. Both published line forms are recognised: the file form `Service check date : 20151008` (flexible spacing around the colon) and the tmsh form `Service Check Date 2016/08/18`. A licence carries exactly one such line, so the first match wins, and the matched line is echoed back so you can confirm the right value was picked up. Everything else in the paste is ignored and, as always, nothing leaves your browser.
 
 ## Share results
 

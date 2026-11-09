@@ -1,0 +1,28 @@
+## Qué hace
+
+Pega dos políticas de seguridad declarativas de F5 AWAF (Advanced WAF; antes BIG-IP ASM, Application Security Manager), una de antes y otra de después, y la herramienta las compara y clasifica cada cambio relevante para la seguridad como relajación o como endurecimiento. Existe para responder a la única pregunta que importa después de una sesión de ajuste: ¿esto abrió un agujero? Se ejecuta por completo en tu navegador y nunca contacta con un BIG-IP.
+
+## La distinción que hace
+
+No toda relajación es peligrosa. Añadir una URL o un parámetro permitidos es una ampliación acotada a una sola entidad: la forma normal y correcta de eliminar un falso positivo. Lo que merece un examen atento es una relajación que amplía la protección en toda la política: pasar el modo de aplicación a Transparent (con lo que toda la política deja de bloquear), desactivar una infracción o una evasión, desactivar Data Guard, confiar en un encabezado X-Forwarded-For que aporta el cliente, pasar las firmas a staging o añadir una entidad comodín que coincide con muchas URL a la vez. La herramienta separa estas relajaciones que afectan a toda la política de las acotadas, para que una diferencia de ajuste no se convierta sin que nadie lo note en una regresión de seguridad.
+
+## El veredicto
+
+Si hay alguna relajación que afecta a toda la política, el veredicto es “Esto abrió un agujero”, y esos cambios aparecen primero, cada uno con un nivel de preocupación. Si todas las ampliaciones se limitan a entidades concretas, el veredicto es “Solo cambios acotados”, la zona segura para ajustar falsos positivos. Si todos los cambios aumentan la protección, es “Endurecida”. También lista los endurecimientos para que veas el panorama completo de lo que cambió entre las dos políticas.
+
+## Qué compara
+
+Lee las secciones relevantes para la seguridad que define el esquema de políticas declarativas de F5: enforcementMode, el staging de signature-settings, general.trustXff, data-guard, csrf-protection, los flags de bloqueo de cada infracción en blocking-settings, la activación de cada evasión y las listas de entidades de URL, de parámetros y de tipos de archivo (donde un nombre que contiene un asterisco se trata como comodín). Son las mismas rutas de campos que se validan en el explicador de políticas declarativas y en el explicador de evasiones.
+
+## Fundamento
+
+La semántica de la relajación sigue el esquema de políticas declarativas de WAF de F5 y la documentación de ASM sobre cómo una política Transparent y un flag de bloqueo desactivado detienen la aplicación, junto con la regla del K70544352 de relajar solo donde se produjo un falso positivo y de acotarlo. Ninguna de las dos políticas que pegas se sube ni sale de la página.
+
+## Compartir resultados
+
+Debajo del veredicto, **Compartir resultados** genera un enlace a esta página, solo cuando lo presionas, que lleva después del `#` las dos políticas tal como se pegaron, con los nombres `before` y `after`, como los dos cuadros, una vez que la página las ha comparado. Su ventana emergente dice primero qué lleva el enlace y después ofrece Copiar enlace y, si el navegador lo tiene, el menú Compartir del sistema; la dirección de la página no cambia. Las políticas pueden nombrar hosts internos, URL y direcciones, así que la ventana emergente te pide que leas las dos antes de enviar el enlace. Los dos cuadros pasan por la misma comprobación que en el Explicador de políticas declarativas de AWAF. Antes de ofrecer un enlace, se busca en el texto una credencial definida por un estándar: una clave privada PEM, una línea `Authorization` o `Proxy-Authorization` con cualquier esquema ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110), secciones 11.6.2 y 11.7.2: el valor “consists of credentials”, consiste en credenciales), una línea `Cookie` o `Set-Cookie` con valor ([RFC 6265](https://www.rfc-editor.org/rfc/rfc6265), secciones 4.1.1, 4.2.1 y 8.4, donde una cookie suele contener un identificador de sesión), un JWT ([RFC 7519](https://www.rfc-editor.org/rfc/rfc7519), sección 1), una contraseña en una URL ([RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), sección 3.2.1), un ID de clave de acceso de AWS o un valor `ENC` de FortiOS; todos consultados el 2026-11-01. Si aparece uno, no hay enlace: la ventana emergente indica su línea, y tú lo sustituyes por un marcador de posición y vuelves a presionar. Un valor cuyo nombre solo parece el de un secreto (un miembro JSON `token`, un `password=` en la cadena de consulta de una URL) no bloquea el enlace; la ventana emergente indica el primero para que puedas revisarlo. La ventana emergente indica en qué cuadro está la línea.
+
+Según el [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (sección 3.5, consultado el 2026-11-01), el fragmento queda “separated from the rest of the URI prior to a dereference” (separado del resto del URI antes de resolverlo), así que lo que va después del `#` no se envía al servidor cuando se abre el enlace; se queda en la barra de direcciones y en el historial de quien lo abra, y cualquiera que tenga el enlace puede leerlo.
+
+- **Longitud.** Como máximo 16.384 caracteres en total, el límite que el sitio aplica a todo valor después del `#`; si lo compartido es más largo, no hay enlace, y la ventana emergente indica su longitud.
+- **Al abrir un enlace.** Los dos cuadros se rellenan como lo haría un pegado y la página los compara como siempre. Un enlace al que le falta una de las dos se ignora. Después, los valores salen de la dirección de la página al instante, sin ninguna solicitud, así que al recargar, o con el propio botón Compartir de la página, no se lleva nada.

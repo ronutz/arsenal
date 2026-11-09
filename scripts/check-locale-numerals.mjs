@@ -98,6 +98,24 @@ function flatten(obj, prefix = "", out = {}) {
 }
 
 /**
+ * A digit 3-9 standing alone: not inside a longer number, not joined to one by
+ * a group or decimal separator, and not the head of a scale word (thousand,
+ * million and billion in the site's languages, plus their usual abbreviations).
+ */
+const LONE_DIGIT = new RegExp(
+  // Not preceded by a digit, nor by a digit and a separator.
+  "(?<!\\d|\\d[.,\\u00a0\\u202f])" +
+    // The digit itself, captured.
+    "([3-9])" +
+    // Not followed by a digit, nor by a separator and a digit,
+    "(?!\\d|[.,\\u00a0\\u202f]\\d|" +
+    // nor by an optional space and a scale word that ends there.
+    "[\\s\\u00a0]?(?:thousand|million|billion|mil|mi|bi|milh\\p{L}*|bilh\\p{L}*|mill[oó]n\\p{L}*|millones|tausend|tsd|mio|mrd|milliard\\p{L}*|mille|mila|milion\\p{L}*|miliard\\p{L}*)(?!\\p{L}))",
+  // Global for matchAll, Unicode for \p{L}, case-insensitive for "Mio"/"mio".
+  "giu",
+);
+
+/**
  * Which values 2-10 does this text assert?
  * CJK has no word boundaries, so those forms are matched directly; everything
  * else requires boundaries, because a numeral hiding inside a longer word is
@@ -121,8 +139,14 @@ function assertedValues(text, locale) {
       }
     }
   }
-  // Digits in any language assert their own value.
-  for (const m of text.matchAll(/(^|[^\d])([3-9])([^\d]|$)/g)) found.add(Number(m[2]));
+  // Digits in any language assert their own value. Lookarounds, not consumed
+  // neighbours, so both ends of a range ("4-6") are read (2026-11-09: the old
+  // pattern ate the hyphen and saw only the 4, then flagged German "4 bis 6").
+  // A digit joined to others by a group or decimal separator belongs to a
+  // longer number ("4.000", "4,000", "4 000"), so it is not a lone value; so
+  // does a digit followed by a scale word ("7 mil", "3 Mio.", "5 million"),
+  // which is how several languages write what English writes as "7,000".
+  for (const m of text.matchAll(LONE_DIGIT)) found.add(Number(m[1]));
   return found;
 }
 

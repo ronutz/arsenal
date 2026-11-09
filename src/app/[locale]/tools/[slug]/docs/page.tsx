@@ -18,6 +18,8 @@
 
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+// The interface-native locales, whose Markdown twins gen-machine-legible emits (09/11/2026).
+import { INTERFACE_LOCALES } from "@/i18n/locales";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
@@ -96,10 +98,10 @@ export default async function ToolDocsPage({
 
               {/* View-as-Markdown affordance (mirrors the Learn pattern). The
                   .md twin is emitted by gen-machine-legible at this path. */}
-              {(locale === "en" || locale === "pt-BR") && (
+              {(INTERFACE_LOCALES as readonly string[]).includes(locale) && (
                 <p className="doc-md-link">
                   <a href={`/${locale}/tools/${slug}.md`}>
-                    {locale === "pt-BR" ? "Ver em Markdown" : "View as Markdown"}
+                    {tDocs("viewMarkdown")}
                   </a>
                 </p>
               )}

@@ -254,7 +254,7 @@ export function rewriteProxyPassLocalisable(input: string): ProxyResult<EngineTe
   }
   if (c.uriPart !== null && c.uriPart !== "/" && !c.uriPart.endsWith("/") && c.location.endsWith("/")) {
     findings.push(say("find.joined", // mismatched slashes
-      `The location ends in a slash but the proxy_pass URI part does not, so the two are joined with one inserted. Matching the slashes on both sides removes the ambiguity.`,
+      `The location ends in a slash but the proxy_pass URI part does not, so the rest of the request path is appended to the URI part with no slash between them. Matching the slashes on both sides removes the ambiguity.`, // 09/11/2026: nothing is inserted (applyRule concatenates; nginx.org proxy_pass "is replaced by a URI specified in the directive", read 2026-11-09), so /app/page under /x becomes /xpage
     ));
   }
   if (c.hasVariable) {

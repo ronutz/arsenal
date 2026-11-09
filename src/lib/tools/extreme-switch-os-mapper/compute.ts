@@ -182,7 +182,7 @@ export function mapOsNameLocalisable(input: string): MapperResult<EngineText> {
     "Changing persona is destructive. Extreme's own release notes state that changing the network operating system DELETES all configuration files, debug information, logs, events and statistics belonging to the previous one. Treat it as a rebuild with a fresh configuration, not as a migration.",
   ));
   notes.push(say("note.bootMenu", // the boot-menu question
-    "The boot-menu question is worth memorising because it is asked in the negative: when the switch asks whether you would like to change the OS to VOSS, answering N keeps Switch Engine and Y moves to Fabric Engine.",
+    "The boot-menu question is worth memorising because Switch Engine is chosen by answering no: when the switch asks \"Would you like to change the switch OS to VOSS? [y/N/q]\", answering N keeps Switch Engine and y moves to Fabric Engine.", // 09/11/2026: the prompt is not a negative question; quoted from the Switch Engine 33.1.100 release notes (read 2026-11-09)
   ));
   notes.push(say("note.preprovision", // pre-provisioning
     "Persona can also be pre-provisioned centrally, so a switch collects its intended OS on first boot rather than being chosen at the console. That is the difference between a site visit and a delivery.",

@@ -1,0 +1,20 @@
+# OneConnect-Quellmaske erklärt
+
+OneConnect hält serverseitige Verbindungen offen und übergibt sie an die nächste geeignete Anfrage, und das Wort, das in diesem Satz die ganze Arbeit leistet, ist „geeignet“. Die Quellmaske entscheidet über die Eignung, und die Manpage nennt ihre beiden Pole klar: 0.0.0.0, der Standard, teilt wiederverwendete Verbindungen unter allen Clients; eine Host-Maske teilt sie nur unter Verbindungen von derselben Client-IP. Alles dazwischen verhält sich wie eine Subnetzmaske und gruppiert Clients nach den Bits, die sie behält.
+
+Fügen Sie einen Konfigurationsblock `ltm profile one-connect` ein, und jede Option erscheint mit der Semantik aus der Referenz für v17, mit ausdrücklich eingetragenen statt angenommenen Standardwerten: max-age 86400, max-reuse 1000, max-size 10000, limit-type none. Das Limit strict ist mit der eigenen Warnung des Handbuchs versehen, dass ungenutzte Verbindungen neue blockieren, bis sie ablaufen, selbst wenn sie hätten wiederverwendet werden können; diese Handbuchseite selbst empfiehlt die Konfiguration außer in Sonderfällen nicht. share-pools erhält seine Semantik über virtuelle Server hinweg; die Option idle-timeout-override erhält einen ehrlichen Hinweis auf eine Eigenheit der Manpage, die sie als disabled oder enabled deklariert, aber als Anzahl von Sekunden beschreibt.
+
+Die Simulation ist das Herzstück. Geben Sie eine Maske, eine Liste von Client-IPs und optional eine SNAT-Adresse an, und die Wiederverwendungsgruppen erscheinen. Mit SNAT sehen Sie die Reihenfolge, die sowohl K7208 als auch K5911 nennen, bei der Arbeit: Zuerst wird übersetzt, dann gilt die Maske für die übersetzte Adresse, sodass eine einzige SNAT-Adresse alle Clients in eine einzige Wiederverwendungsgruppe zusammenfallen lässt, egal wie eng die Maske ist. Dieses Zusammenfallen ist die Überraschung in der Produktion, die das Tool sichtbar machen soll, bevor sie Ihnen passiert.
+
+Zwei Punkte zur Ehrlichkeit bei den Statistiken aus dem Lab-Artikel von F5 schließen das Audit ab: max-size wird auf die TMM-Instanzen aufgeteilt, statt einen globalen Pool zu bilden, und der Zähler Current Idle enthält jede ungenutzte serverseitige Verbindung, ob die Maske sie geeignet macht oder nicht. Lesen Sie die Ausgabe von `tmsh show` mit beidem im Hinterkopf.
+
+Alles läuft lokal; nichts, was Sie einfügen, verlässt die Seite.
+
+## Ergebnisse teilen
+
+Unter dem Namen des Profils, unter den Wiederverwendungsgruppen der Maskensimulation oder am Anfang des Katalogs der Einstellungen erzeugt **Ergebnisse teilen** einen Link auf diese Seite, und zwar nur, wenn Sie die Schaltfläche wählen. Der Link enthält nach dem `#` das Feld so, wie eingegeben: ein Profil, eine Zeile für die Maskensimulation oder `settings`. Ein one-connect-Profil enthält keine geheime Einstellung ([tmsh-Referenz von F5, ltm profile one-connect](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_profile_one-connect.html), abgerufen am 27.10.2026). Das Popover nennt zuerst, was der Link enthält, und bietet dann „Link kopieren“ und, sofern der Browser eines bietet, das Teilen-Menü an; die Adresse der Seite bleibt unverändert.
+
+Laut [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (Abschnitt 3.5, abgerufen am 27.10.2026) ist das Fragment „separated from the rest of the URI prior to a dereference“, also vor der Dereferenzierung vom Rest der URI getrennt; daher wird der Text beim Öffnen des Links nicht an den Server gesendet. Er bleibt in der Adressleiste und im Verlauf dessen, der den Link öffnet, und wer den Link hat, kann ihn lesen.
+
+- **Länge.** Insgesamt höchstens 16.384 Zeichen, die Grenze, die die Website für jeden Wert nach dem `#` setzt; ist der geteilte Inhalt länger, gibt es keinen Link, und das Popover nennt seine Länge.
+- **Öffnen eines Links.** Der Text füllt das Feld wie beim Einfügen, und die Seite erklärt ihn. Danach verschwinden die Werte sofort aus der Adresse der Seite, ohne dass eine Anfrage gesendet wird; ein Neuladen oder die Schaltfläche „Teilen“ der Seite überträgt daher nichts.

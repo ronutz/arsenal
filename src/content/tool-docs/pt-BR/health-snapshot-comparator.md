@@ -8,7 +8,7 @@ Esta ferramenta nunca ingere dados de estado e nunca faz diff de nada. VOCÊ DEC
 
 ## Nunca só por componentes verdes
 
-A regra de risco do cânone é estrutural: a regra estado-versus-serviço também dispara incondicionalmente, e mesmo o melhor veredito permanece condicionado a uma dimensão de camada de serviço (uma sonda fim a fim, uma transação real de autenticação) concordando com a camada de componentes. Configuração inalterada não é saúde; componentes verdes não são um serviço funcionando; o relatório diz isso em toda execução.
+A regra de risco é estrutural: a regra estado-versus-serviço também dispara incondicionalmente, e mesmo o melhor veredito permanece condicionado a uma dimensão de camada de serviço (uma sonda fim a fim, uma transação real de autenticação) concordando com a camada de componentes. Configuração inalterada não é saúde; componentes verdes não são um serviço funcionando; o relatório diz isso em toda execução.
 
 ## Determinismo e verificação
 

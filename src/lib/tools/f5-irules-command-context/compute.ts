@@ -125,7 +125,7 @@ export const EVENTS: readonly EventInfo[] = Object.freeze([
   E("HTTP_DISABLED", "HTTP", "Triggered when HTTP is disabled."),
   E("HTTP_PROXY_REQUEST", "HTTP", "Triggered when a virtual server has proxy-mode explicit."),
   E("HTTP_PROXY_RESPONSE", "HTTP", "Triggered when the response from the remote HTTP proxy is received."),
-  E("HTTP_PROXY_CONNECT", "HTTP", "Triggered when proxy chaining via use of the HTTP proxy connect profile."),
+  E("HTTP_PROXY_CONNECT", "HTTP", "Triggered when proxy chaining is in use through the HTTP proxy connect profile."), // 09/11/2026: the sentence gains its verb ("is in use"); F5's page reads "This iRules event triggered when proxy chaining via use of the HTTP_PROXY_CONNECT profile" (clouddocs, read 2026-11-09), so nothing beyond it is claimed
   // ---- SSL ---------------------------------------------------------------------
   E("CLIENTSSL_CLIENTHELLO", "SSL", "Triggered when the system has received the client's SSL ClientHello message."),
   E("CLIENTSSL_HANDSHAKE", "SSL", "Triggered when a client-side SSL handshake is completed."),

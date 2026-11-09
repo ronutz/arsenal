@@ -907,8 +907,8 @@ class Analyser {
         const idx = num(toks[1]); // index
         const op = toks[2].text; // operator
         const val = num(toks[3])!; // value
-        const what: Record<string, Bi> = { "=": bi("equals", "é igual a"), "<": bi("is less than", "é menor que"), ">": bi("is greater than", "é maior que"), "&": bi("ANDed with it is not zero", "com AND nele não dá zero"), "|": bi("ORed with it is not zero", "com OR nele não dá zero") }; // byte operators
-        x.meaning = bi(`True if link-layer byte ${idx} ${what[op].en} ${val}.`, `Verdadeiro se o byte ${idx} do enlace ${what[op].pt} ${val}.`); // pcap-filter(7)
+        const what: Record<string, Bi> = { "=": bi(`equals ${val}`, `é igual a ${val}`), "<": bi(`is less than ${val}`, `é menor que ${val}`), ">": bi(`is greater than ${val}`, `é maior que ${val}`), "&": bi(`ANDed with ${val} is not zero`, `em AND com ${val} não dá zero`), "|": bi(`ORed with ${val} is not zero`, `em OR com ${val} não dá zero`) }; // byte operators, each phrase with the value where it reads (09/11/2026: & and | read "ANDed with it is not zero 1"; pcap-filter(7): "the result of bitwise AND is not zero")
+        x.meaning = bi(`True if link-layer byte ${idx} ${what[op].en}.`, `Verdadeiro se o byte ${idx} do enlace ${what[op].pt}.`); // pcap-filter(7); =, < and > read exactly as before
         N("byteDeprecated", bi("pcap-filter(7) says byte will be removed in a future release; use an arithmetic relation such as link[N] = V.", "O pcap-filter(7) diz que byte será removido numa versão futura; use uma relação aritmética como link[N] = V.")); // pcap-filter(7)
         if (val > 255) E("byteTooBig", capText(bi("The byte value", "O valor do byte"), 255, val, "byte argument", false)); // gencode.c, 1.11.0 only
         break;

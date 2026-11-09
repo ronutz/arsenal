@@ -321,9 +321,9 @@ function classify(line: string, vlans: Map<string, VlanAcc>): { category: ExosCa
       // ---- Fallback ----------------------------------------------------------
       return {
         category: "account",
-        summary: role // a role given, or the placeholder
+        summary: role // a role given, or none
           ? say("account.create", `Creates a local account "${name}" with role ${role} (EXOS roles are typically admin or user).`, { name, role }) // with a role
-          : say("account.createNoRole", `Creates a local account "${name}" with role (role) (EXOS roles are typically admin or user).`, { name }), // the role missing
+          : say("account.createNoRole", `Creates a local account "${name}" with no role given (EXOS roles are typically admin or user).`, { name }), // the role missing; 09/11/2026: says so instead of printing a literal "(role)" (Switch Engine 33.1.1 "create account [admin | user | lawful-intercept] account-name", read 2026-11-09)
       };
     }
     return { category: "account", summary: say("account.other", "Local account / password configuration.") }; // other account commands

@@ -31,7 +31,7 @@
 "use client";
 
 // React's state, effects, refs and memoisation.
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 // The game's strings and the shell's.
 import { useTranslations } from "next-intl";
 // The frame around every game.
@@ -143,8 +143,9 @@ export default function IncidentCommander({ locale }: { locale: string }) {
   const baseTitle = useRef<string | null>(null);
   // The title this component last set.
   const titleSet = useRef<string | null>(null);
-  // The decimal separator of the page's language.
-  const sep = locale === "pt-BR" ? "," : ".";
+  // The decimal separator of the page's language, from Intl (09/11/2026: every interface locale, not only pt-BR): "." in
+  // English, "," in pt-BR, es, da, de, nl and fr.
+  const sep = useMemo(() => new Intl.NumberFormat(locale).formatToParts(1.5).find((p) => p.type === "decimal")?.value ?? ".", [locale]);
   // A compact number.
   const n = useCallback((x: number) => compact(x, sep), [sep]);
   // A number with one decimal, in the page's language (3,0 on a pt-BR page; review R3-08 found "3.0 noves").

@@ -36,7 +36,11 @@
 // The names of record types, response codes and options are protocol tokens
 // and stay in English in every locale; their meanings come from the dig output
 // explainer's own tables (English and Brazilian Portuguese), so this page and
-// the dig tools explain a record the same way.
+// the dig tools explain a record the same way. Every other locale reads them
+// through useContentString() with the dig output explainer's own content
+// strings (the page wraps this component in the "dig-output-explainer" module
+// map, src/i18n/content/<locale>/dig-output-explainer.json, 09/11/2026), the
+// English where none is written.
 // Styling reuses the established tool vocabulary (cidr-*, jwt-*, dig-*,
 // curlb-*, seg-*, dcb-*, rdap-*, tcl-details, cipher-note); inside .env-out the
 // tokens render red.
@@ -49,6 +53,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 // Locale-aware internal links.
 import { Link } from "@/i18n/navigation";
+// The meanings in the page's language beyond en and pt-BR (09/11/2026): the dig output explainer's content strings.
+import { useContentString } from "@/components/ContentStrings";
 // The rel every external link carries (the site's rule: new tab, noopener).
 import { externalRel } from "@/lib/links";
 // The local layers and the one request.
@@ -216,10 +222,12 @@ export default function DevOutDohLookupTool() {
   const locale = useLocale();
   // Brazilian Portuguese meanings where translated, English per key otherwise (the dig explainer's own rule).
   const pt = locale === "pt-BR";
+  // Every other locale: each English meaning through the page's content strings (the English where none is written).
+  const cs = useContentString();
   // Response code meanings.
-  const rcodeMeanings: Record<string, string> = pt ? { ...RCODE_MEANINGS, ...RCODE_MEANINGS_PT } : RCODE_MEANINGS;
+  const rcodeMeanings: Record<string, string> = useMemo(() => (pt ? { ...RCODE_MEANINGS, ...RCODE_MEANINGS_PT } : Object.fromEntries(Object.entries(RCODE_MEANINGS).map(([k, v]) => [k, cs(v)]))), [pt, cs]);
   // Record type meanings.
-  const typeMeanings: Record<string, string> = pt ? { ...RRTYPE_MEANINGS, ...RRTYPE_MEANINGS_PT } : RRTYPE_MEANINGS;
+  const typeMeanings: Record<string, string> = useMemo(() => (pt ? { ...RRTYPE_MEANINGS, ...RRTYPE_MEANINGS_PT } : Object.fromEntries(Object.entries(RRTYPE_MEANINGS).map(([k, v]) => [k, cs(v)]))), [pt, cs]);
 
   // The name (or address).
   const [name, setName] = useState("");

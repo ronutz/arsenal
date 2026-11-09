@@ -171,7 +171,7 @@ export function decodeTenantLocalisable(input: string): TenantDecode<EngineText>
   if (vcpu !== undefined && Number.isFinite(vcpu) && vcpu > 0) {
     minMemory = minMemoryFor(vcpu);
     notes.push(say("note.minMemory", // the published formula, applied
-      `F5 publishes the minimum memory as (3.5 x 1024 x vCPU) + 512, so ${vcpu} vCPU requires at least ${minMemory} MB. More than the minimum can be configured deliberately.`,
+      `F5 publishes the minimum memory as (3.5 × 1024 × vCPU) + 512, so ${vcpu} vCPU requires at least ${minMemory} MB. More than the minimum can be configured deliberately.`, // 09/11/2026: × as in the tool's blurb (it read "x")
       { vcpu: String(vcpu), min: String(minMemory) }, // as the engine writes the numbers
     ));
     if (memory !== undefined && Number.isFinite(memory)) {

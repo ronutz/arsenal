@@ -50,7 +50,7 @@ import { StepperField, stepperKeyDown } from "@/components/NumberStepper"; // th
 import { Link } from "@/i18n/navigation"; // the locale-aware link to the Learn article
 import { runLocalisable, MIN_MEMBERS, MAX_MEMBERS, MAX_SPREAD, type LacpResult, type LinkResult, type StateResult, type StateSide, type LinkPolicy, type ByteOrder, type SpreadField, type StateFormat, type HuaweiReading } from "@/lib/tools/lacp-hash-and-state-reader/compute"; // the engine, sentences with ids
 import { EXAMPLE_LINK_REQUEST, EXAMPLE_STATE_REQUEST, LINK_SAMPLES, STATE_SAMPLES } from "@/lib/tools/lacp-hash-and-state-reader/examples"; // the Examples and samples, the same objects the golden vectors pin
-import { engineTexts } from "@/lib/tools/engine-text"; // engine sentences in the page's language
+import { engineTexts, EngineText, type EngineTextCarrier } from "@/lib/tools/engine-text"; // engine sentences in the page's language; EngineText and its carrier to relabel a refusal's field (09/11/2026)
 import { inPageLanguage } from "@/lib/tools/engine-text-page"; // a whole reading in the page's language
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
@@ -80,6 +80,24 @@ const SPREADABLE: Readonly<Record<LinkPolicy, readonly SpreadField[]>> = Object.
   "layer3+4": ["srcPort", "dstPort", "srcIp", "dstIp"], // ports and addresses
   "vlan+srcmac": ["srcMac", "vlan"], // the source MAC and the tag
 }); // by policy
+
+/** Every field a spread may vary, as the engine names them (the keys of field.* in the pack). */
+const SPREAD_FIELDS: readonly SpreadField[] = ["srcPort", "dstPort", "srcIp", "dstIp", "srcMac", "dstMac", "vlan"]; // the engine's SpreadField values
+
+/**
+ * A refusal that names a spread field (err.spreadField, err.spreadOverflow) carries the engine's field id (srcPort),
+ * which is what the API reads; on the page the field is named by its label (Source port), as the form and the spread
+ * heading show it (09/11/2026: the sentence showed the raw id).
+ * @param e the thrown error
+ * @param label a field's label in the page's language
+ * @returns the error as thrown, or a carrier of the same sentence with the label in place of the id
+ */
+function withFieldLabel(e: unknown, label: (f: SpreadField) => string): unknown {
+  const m = (e as EngineTextCarrier | null)?.engineText; // the refusal's sentence, if it carries one
+  const f = m?.args?.field; // the field it names, if any
+  if (!m || typeof f !== "string" || !(SPREAD_FIELDS as readonly string[]).includes(f)) return e; // nothing to relabel
+  return { engineText: new EngineText(m.id, m.text, { ...m.args, field: label(f as SpreadField) }) }; // the same sentence and id, the label in place of the id
+} // withFieldLabel
 
 /** The state formats. */
 const FORMATS: readonly StateFormat[] = ["octet", "snmp", "extreme", "arista", "huawei"]; // as carried, SNMP, two vendors' letters, Huawei's PortState
@@ -125,9 +143,9 @@ export default function LacpHashAndStateReaderTool() {
     try {
       return { ok: true, data: inPageLanguage(runLocalisable(requestOf(state)), tx) as LacpResult }; // the reading, in the page's language
     } catch (e) {
-      return { ok: false, message: tx.error(e) }; // the refusal's sentence in the page's language
+      return { ok: false, message: tx.error(withFieldLabel(e, (f) => t(`field.${f}`))) }; // the refusal's sentence in the page's language, a spread field named by its label
     } // computed
-  }, [mode, linkStarted, st, state, tx]); // recomputed on any field
+  }, [mode, linkStarted, st, state, tx, t]); // recomputed on any field (and with the labels' language)
 
   // An arriving share link: the mode and the mode's fields are set as typing would set them; the rest keep their values.
   useShareArrival(LACP_SHARE, (s) => {

@@ -210,12 +210,12 @@ function symbolFor(letter: string, binary: boolean, bytes: boolean): string {
 /** The longest input the engine reads for one quantity. */
 export const MAX_FIELD = 64;
 
-/** The time units the engine reads: ms, s, min, h, d and their English and Portuguese words. */
-const TIME_UNIT = "ms|s|sec|secs|seconds?|segundos?|min|mins|minutes?|minutos?|h|hr|hrs|hours?|horas?|d|days?|dias?";
+/** The time units the engine reads: ms, s, min, h, d and their English, Portuguese, Spanish and German words (segundos, minutos and horas are shared; días is Spanish; Sekunde(n), Minute(n), Stunde(n), Tag(e/en) German, 09/11/2026). */
+const TIME_UNIT = "ms|s|sec|secs|seconds?|segundos?|sekunden?|min|mins|minutes?|minutos?|minuten?|h|hr|hrs|hours?|horas?|stunden?|d|days?|dias?|días?|tagen|tage|tag";
 /** A whole duration: one or more number+unit groups and nothing else. */
 const TIME_SHAPE = new RegExp(`^(\\d+(?:[.,]\\d+)?\\s*(${TIME_UNIT})\\s*)+$`, "i");
 /** One number+unit group, for matchAll. */
-const TIME_GROUP = new RegExp(`(\\d+(?:[.,]\\d+)?)\\s*(${TIME_UNIT})`, "gi");
+const TIME_GROUP = new RegExp(`(\\d+(?:[.,]\\d+)?)\\s*(${TIME_UNIT})(?![a-zà-ÿß])`, "gi"); // a whole unit word: "stunden" is not "s" plus letters (09/11/2026)
 
 /**
  * Parses one quantity: a size ("1.5 GB", "700 MiB", "8 bits", "2 kilobytes"),
@@ -238,7 +238,7 @@ export function parseQuantity(raw: string, expect?: Kind): Quantity | null {
     for (const g of groups) {
       const v = parseDec(g[1]); if (!v) return null;
       const u = g[2].toLowerCase();
-      const factorMs = u === "ms" ? 1n : /^(s|sec|secs|second|seconds|segundos?)$/.test(u) ? 1000n : /^(min|mins|minute|minutes|minutos?)$/.test(u) ? 60_000n : /^(h|hr|hrs|hour|hours|horas?)$/.test(u) ? 3_600_000n : 86_400_000n;
+      const factorMs = u === "ms" ? 1n : /^(s|sec|secs|second|seconds|segundos?|sekunden?)$/.test(u) ? 1000n : /^(min|mins|minute|minutes|minutos?|minuten)$/.test(u) ? 60_000n : /^(h|hr|hrs|hour|hours|horas?|stunden?)$/.test(u) ? 3_600_000n : 86_400_000n; // German words since 09/11/2026 ("minute" is shared)
       // v (scale k) * factorMs ms -> as a Dec in ms, then to seconds by adding 3 to the scale.
       const ms: Dec = { num: v.num * factorMs, scale: v.scale };
       const asSeconds: Dec = { num: ms.num, scale: ms.scale + 3 };

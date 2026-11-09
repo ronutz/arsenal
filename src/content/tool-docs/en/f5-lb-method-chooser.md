@@ -33,4 +33,5 @@ The page has two ways in, so **Share results** has two buttons, each building a 
 ## Sources
 
 The 19 tokens, their descriptions, and the pool options come from the tmsh ltm pool reference. The when-to-use guidance and the least-sessions prerequisite come from K42275060. The dynamic-mode mechanics, the OneConnect exclusion, and the ratios-need-a-ratio-method rule come from K6406.
+
 - [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-10-27): section 3.5, the fragment, which carries a Share results link's values

@@ -4,7 +4,7 @@ Dê à ferramenta as datas de início e de fim de um certificado, seu `notBefore
 
 ## Por que a validade dos certificados está encolhendo
 
-Os certificados TLS publicamente confiáveis vêm ficando mais curtos há anos, e o ballot SC-081v3 do CA/Browser Forum estabelece um cronograma que reduz a validade máxima de 398 dias, passando por 200 e 100 dias, até 47 dias em 2029. Certificados mais curtos limitam por quanto tempo um certificado comprometido ou emitido por engano continua útil, mas também tornam a renovação manual impraticável, o que é justamente o ponto: o cronograma efetivamente força a automação. Duas janelas relacionadas encolhem junto com a validade: o período pelo qual uma validação de controle de domínio (DCV) pode ser reutilizada, e o período pelo qual informações de identidade validadas (SII) podem ser reutilizadas, de modo que mais do processo precisa ser repetido com mais frequência.
+Os certificados TLS publicamente confiáveis vêm ficando mais curtos há anos, e o ballot SC-081v3 do CA/Browser Forum estabelece um cronograma que reduz a validade máxima de 398 dias, passando por 200 e 100 dias, até 47 dias em 2029. Certificados mais curtos limitam por quanto tempo um certificado comprometido ou emitido por engano continua útil, mas também tornam a renovação manual impraticável, o que é justamente o ponto: o cronograma efetivamente força a automação. Duas janelas relacionadas encolhem junto com a validade: o período pelo qual uma validação de controle de domínio (DCV) pode ser reutilizada, e o período pelo qual as informações de identidade do titular (SII, Subject Identity Information), já validadas, podem ser reutilizadas, de modo que mais do processo precisa ser repetido com mais frequência.
 
 ## O que o plano informa
 

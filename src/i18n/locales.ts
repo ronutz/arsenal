@@ -53,10 +53,10 @@ export const LOCALES: readonly LocaleMeta[] = [
   // --- Languages with real, human-reviewed content shipping day-one ---
   { code: "en",         nativeName: "English",            englishName: "English",                 dir: "ltr", status: "reviewed" },
   { code: "pt-BR",      nativeName: "Português (Brasil)", englishName: "Portuguese (Brazil)",     dir: "ltr", status: "machine-draft", draftKind: "written-with-ai" }, // NOTICE REWORDED (PRIME, 2026-10-07 23:5x, row 70): "O português deste site é escrito com IA e revisado aos poucos. Esta página pode conter erros." (machineTranslation.noticeWrittenWithAi), replacing "Esta página foi traduzida automaticamente", which described a translation the Portuguese is not. RULING (PRIME, 2026-08-27): pt-BR KEEPS the notice. The corpus is generated under the native-authoring directive, but the output still sometimes over-translates technical jargon and uses constructions that do not sound natural in Portuguese — so the status stays machine-draft, and the banner stays, until human review attests otherwise. The status is a CREDENTIAL about the outcome, not a restatement of the directive. (Reverts the same-day change that read the 2026-08-16 authoring rule as the attestation.)
-  { code: "es",         nativeName: "Español",            englishName: "Spanish",                 dir: "ltr", status: "machine-draft" },
+  { code: "es",         nativeName: "Español",            englishName: "Spanish",                 dir: "ltr", status: "machine-draft", draftKind: "written-with-ai" }, // INTERFACE-NATIVE (PRIME 09/11/2026 01:02, "in the language's NATURAL tone"): the interface, tools, tool docs, games and legal pages written in Spanish with AI and reviewed gradually; Learn, the glossary and the other corpus sections stay machine-translated for now, and the notice says so (machineTranslation.noticeWrittenWithAi).
 
   // --- Registered + selectable day-one; stubs falling back to English until translated ---
-  { code: "de",         nativeName: "Deutsch",            englishName: "German",                  dir: "ltr", status: "machine-draft" },
+  { code: "de",         nativeName: "Deutsch",            englishName: "German",                  dir: "ltr", status: "machine-draft", draftKind: "written-with-ai" }, // INTERFACE-NATIVE (PRIME 09/11/2026 01:02, "in the language's NATURAL tone"): the interface, tools, tool docs, games and legal pages written in German with AI and reviewed gradually; Learn and the other corpus sections stay machine-translated, and the notice says so.
   { code: "fr",         nativeName: "Français",           englishName: "French",                  dir: "ltr", status: "machine-draft" },
   { code: "nl",         nativeName: "Nederlands",         englishName: "Dutch",                   dir: "ltr", status: "machine-draft" },
   { code: "it",         nativeName: "Italiano",           englishName: "Italian",                 dir: "ltr", status: "machine-draft" },
@@ -148,6 +148,27 @@ export const LIVE_LOCALE_CODES = LIVE_LOCALES.map((l) => l.code);
  * the code, and the pages generate.
  */
 export const AUTHORED_CONTENT_LOCALES = ["en", "pt-BR"] as const;
+
+/**
+ * Locales whose INTERFACE is written natively: every message-pack string outside the corpora (the glossary entries
+ * and the Learn labs), the tool documentation and the strings that tools and games carry in code (PRIME 09/11/2026:
+ * "get the site up in additional languages", Spanish, Danish, German, Dutch and French in that order, each written
+ * "in the language's NATURAL tone (instead of simply translated)"; the first phase is the interface and the tool docs,
+ * the corpora follow). A locale joins this list when its interface is complete (guard: scripts/check-interface-locales.mts).
+ *
+ * In such a locale a page speaks for itself (self-canonical, in the hreflang sets and the sitemap) unless its route
+ * belongs to one of CORPUS_ROUTE_FAMILIES below, whose words stay English there until the corpus is written: those
+ * pages keep naming the English page as canonical (scripts/seo-locales.mjs). AUTHORED_CONTENT_LOCALES are always here.
+ */
+export const INTERFACE_LOCALES = ["en", "pt-BR", "es", "de"] as const;
+
+/**
+ * The first route segments whose page content comes from a corpus rather than the interface: Learn and the glossary
+ * (authored-only, see above), the Industry records, the certification study guides and their indexes, the blog, the
+ * practice essays, the people index, the stories and the changelog (English by design). In an interface-only locale
+ * these pages show English text under the locale's chrome, so they are not offered to search engines as translations.
+ */
+export const CORPUS_ROUTE_FAMILIES = ["learn", "glossary", "industry", "certifications", "study-guides", "blog", "practice", "people", "stories", "changelog"] as const;
 
 export const TRANSLATED_LOCALE_COUNT = LIVE_LOCALES.length;
 

@@ -25,8 +25,8 @@ At the top of the reading, above the cards, **Share results** builds a link to t
 
 ## Sources
 
-- RFC 9110: HTTP Semantics - the core catalogue, family rules, and the x00 fallback
-- RFC 6585: Additional HTTP Status Codes - 428, 429, 431, 511
-- RFC 7725: 451 Unavailable For Legal Reasons
-- RFC 8297: 103 Early Hints
-- RFC 3986: URI Generic Syntax - section 3.5, the fragment, which a Share results link uses (read 2026-11-01)
+- [RFC 9110, HTTP Semantics](https://www.rfc-editor.org/rfc/rfc9110) (read 2026-11-09): the core catalogue, the family rules and the x00 fallback
+- [RFC 6585, Additional HTTP Status Codes](https://www.rfc-editor.org/rfc/rfc6585) (read 2026-11-09): 428, 429, 431 and 511
+- [RFC 7725, An HTTP Status Code to Report Legal Obstacles](https://www.rfc-editor.org/rfc/rfc7725) (read 2026-11-09): 451 Unavailable For Legal Reasons
+- [RFC 8297, An HTTP Status Code for Indicating Hints](https://www.rfc-editor.org/rfc/rfc8297) (read 2026-11-09): 103 Early Hints
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-11-01): section 3.5, the fragment, which a Share results link uses

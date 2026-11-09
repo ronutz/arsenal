@@ -97,7 +97,9 @@ const FIELD_ROWS: { key: keyof Omit<SystemForm, "demand">; msg: string; required
 export default function BfdTimersTool() {
   const t = useTranslations("tools.bfd-timers"); // this tool's messages
   const locale = useLocale(); // decides the decimal separator
-  const sep = locale.startsWith("pt") ? "," : "."; // Portuguese writes 262,5 ms
+  // The locale's own decimal separator, from Intl (09/11/2026: every interface locale, not only Portuguese): "." in
+  // English, "," in pt-BR (262,5 ms) and in es, da, de, nl and fr.
+  const sep = useMemo(() => new Intl.NumberFormat(locale).formatToParts(1.5).find((p) => p.type === "decimal")?.value ?? ".", [locale]);
 
   const [mode, setMode] = useState<"timers" | "decode">("timers"); // which mode is shown
   const [a, setA] = useState<SystemForm>(EMPTY); // system A's fields

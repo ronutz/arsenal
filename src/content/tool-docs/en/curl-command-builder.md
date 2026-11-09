@@ -14,9 +14,9 @@ The explainer panels and the command assembler read the same protocol capability
 
 Identical inputs always produce a byte-identical command: flags are emitted in one canonical order, and values are quoted with POSIX single-quote escaping only when needed. Eleven golden vectors lock this behaviour, including the rule that `-d` implies POST (so no redundant `-X POST` is ever emitted) and the `'\''` escaping sequence. The quoting targets POSIX shells; a note in the tool says so, because cmd.exe and PowerShell play by different rules.
 
-## The inverse of the translator
+## The inverse of the explainer
 
-This tool writes `curl` commands; the [HTTP request translator](/tools/curl-command-explainer) reads them. Build a command here, or paste one there to have it explained flag by flag and translated to fetch, raw HTTP, HTTPie, and Python requests.
+This tool writes `curl` commands; the [curl command explainer](/tools/curl-command-explainer) reads them. Build a command here, or paste one there to have it explained flag by flag and translated to fetch, raw HTTP, HTTPie, and Python requests.
 
 ## Share results
 

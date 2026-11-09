@@ -39,7 +39,7 @@ A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-
 
 ## Fontes
 
-- Docs Netskope: Configure a Steering Profile - modos, bypasses padrão
-- Docs Netskope: Creating a Steering Configuration - Fail Close, portas não padrão
-- Docs Netskope: Enabling Dynamic Steering - modos por localização, semântica do None
-- Docs Netskope: Certificate Pinned Applications - steer-and-decrypt
+- [Docs Netskope: Configure a Steering Profile](https://docs.netskope.com/en/configure-a-steering-profile) - modos, bypasses padrão (lida em 2026-11-09)
+- [Docs Netskope: Creating a Steering Configuration](https://docs.netskope.com/en/creating-a-steering-configuration) - Fail Close, portas não padrão (lida em 2026-11-09)
+- [Docs Netskope: Enabling Dynamic Steering](https://docs.netskope.com/en/enabling-dynamic-steering) - modos por localização, semântica do None (lida em 2026-11-09)
+- [Docs Netskope: Certificate Pinned Applications](https://docs.netskope.com/en/certificate-pinned-applications) - steer-and-decrypt (lida em 2026-11-09)

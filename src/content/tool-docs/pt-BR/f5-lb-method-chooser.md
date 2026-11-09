@@ -33,4 +33,5 @@ A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-
 ## Fontes
 
 Os 19 tokens, suas descrições e as opções de pool vêm da referência tmsh de ltm pool. A orientação de quando usar e o pré-requisito do least-sessions vêm do K42275060. A mecânica dos modos dinâmicos, a exclusão do OneConnect e a regra de que ratios exigem um método de ratio vêm do K6406.
+
 - [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lida em 2026-10-27): seção 3.5, o fragmento, que leva os valores de um link de Compartilhar resultado

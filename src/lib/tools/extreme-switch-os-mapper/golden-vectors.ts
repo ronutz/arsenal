@@ -80,7 +80,7 @@ export const MAPPER_VECTORS: readonly MapperVector[] = Object.freeze([
     expect: { warnContains: "DELETES all configuration files" },
   },
   {
-    name: "the boot question is asked in the negative, and it says so",
+    name: "the boot question picks Switch Engine with a no, and it says so", // 09/11/2026: renamed with the note (the prompt is not phrased negatively)
     input: "5320",
     expect: { noteContains: "answering N keeps Switch Engine" },
   },

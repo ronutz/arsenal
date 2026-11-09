@@ -608,7 +608,7 @@ export function tagLocalisable(r: TagRequest): TagResult<EngineText> {
   let start: "tpid" | "mac"; // decided below
   if (startRaw === "auto") { // the engine decides
     const first = o.length >= 2 ? u16(o, 0) : -1; // the first two octets
-    if (first in TPIDS) { start = "tpid"; notes.push(sayT("note.autoTpid", "Read as a tag because the octets start with {tpid}; choose \"destination MAC\" if they are the start of a frame.", { tpid: hex4(first) })); } // a TPID first
+    if (first in TPIDS) { start = "tpid"; notes.push(sayT("note.autoTpid", "Read as a tag because the octets start with {tpid}; choose \"Destination MAC\" if they are the start of a frame.", { tpid: hex4(first) })); } // a TPID first; 09/11/2026: the quoted option is written as its label, start.mac "Destination MAC"
     else if (o.length >= 14) start = "mac"; // long enough for two MACs and a type
     else throw inputError(sayT("err.tag.short", "{n} octets that do not start with 0x8100, 0x88A8 or 0x9100: too short for a frame's start (6 + 6 octets of MAC, then 2 of type) and not a tag.", { n: String(o.length) })); // neither
   } else start = startRaw; // as chosen
@@ -666,7 +666,7 @@ export function tagLocalisable(r: TagRequest): TagResult<EngineText> {
     }); // the tag
     at += 4; // past TPID and TCI
   } // the stack
-  if (start === "tpid" && tags.length === 0) throw inputError(sayT("err.tag.notTag", "The octets start with {value}, which is not 0x8100, 0x88A8 or 0x9100: choose \"destination MAC\" if they are a frame's start.", { value: o.length >= 2 ? hex4(u16(o, 0)) : "?" })); // no tag where one was asked for
+  if (start === "tpid" && tags.length === 0) throw inputError(sayT("err.tag.notTag", "The octets start with {value}, which is not 0x8100, 0x88A8 or 0x9100: choose \"Destination MAC\" if they are a frame's start.", { value: o.length >= 2 ? hex4(u16(o, 0)) : "?" })); // no tag where one was asked for; 09/11/2026: the quoted option is written as its label, start.mac "Destination MAC"
   if (next === null) notes.push(say("note.endAfterTags", "The octets end after the last tag, so the EtherType that follows is not in them.")); // tag only
   const after = o.length - at; // octets not decoded
   if (next !== null && after > 0) notes.push(sayT("note.after", "{n} octets after the EtherType or length are not decoded.", { n: String(after) })); // the rest

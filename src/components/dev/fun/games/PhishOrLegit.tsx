@@ -30,6 +30,12 @@
 // day's cards is on the page. Its time is saved with its answers (e, and t
 // once finished), so a reload resumes it running; it shows in the result and
 // on the share card. The speed run keeps its own 60-second countdown.
+//
+// Languages (09/11/2026): the engine writes every text in English and
+// Brazilian Portuguese; a pt-BR page reads the Portuguese, every other page
+// reads its locale's own text for the English through useContentString()
+// (src/i18n/content/<locale>/phish-or-legit.json, loaded by the page), and the
+// English where none is written.
 // ============================================================================
 
 "use client";
@@ -38,6 +44,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 // The game's strings and the shell's.
 import { useTranslations } from "next-intl";
+// The strings this game keeps in code, in the page's language beyond en and pt-BR (09/11/2026).
+import { useContentString } from "@/components/ContentStrings";
 // The frame: stats, rules, result.
 import GameShell, { type ShellResult } from "./GameShell";
 // The Start cover and the clock that counts only visible time (shared with the grid puzzles).
@@ -64,6 +72,7 @@ import {
   nextPracticeCard,
   practiceRng,
   scoreRun,
+  type Bi,
   type Card,
   type Lang,
   type Verdict,
@@ -147,16 +156,16 @@ const CARD_ID = "fg-pol-card";
  *
  * @param card the card
  * @param t the game's strings
- * @param lang the language of the brand's name and the display name
+ * @param pick a text in the page's language (the brand's name, the display name, the context line)
  * @returns one sentence for the announcer
  */
-function describeCard(card: Card, t: (key: string, values?: Record<string, string | number>) => string, lang: Lang): string {
+function describeCard(card: Card, t: (key: string, values?: Record<string, string | number>) => string, pick: (b: Bi) => string): string {
   // The brand it claims.
   const brand = brandById(card.brand);
   // The link, or the From line with its display name in this language.
-  const body = card.kind === "url" ? card.text : `${t("fromLabel")} ${card.display?.[lang] ?? ""} <${card.text}>`;
+  const body = card.kind === "url" ? card.text : `${t("fromLabel")} ${card.display ? pick(card.display) : ""} <${card.text}>`;
   // Kind, claim, body, and the context line when there is one.
-  return [`${t(card.kind === "url" ? "kindUrl" : "kindEmail")}.`, `${t("claims", { brand: brand.name[lang] })} ${t("realAt", { domain: brand.domain })}.`, body, card.context ? card.context[lang] : ""].filter((x) => x !== "").join(" ");
+  return [`${t(card.kind === "url" ? "kindUrl" : "kindEmail")}.`, `${t("claims", { brand: pick(brand.name) })} ${t("realAt", { domain: brand.domain })}.`, body, card.context ? pick(card.context) : ""].filter((x) => x !== "").join(" ");
 }
 
 /**
@@ -170,8 +179,12 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
   const t = useTranslations("devFun.games.phish-or-legit");
   // The shell's strings.
   const tc = useTranslations("devFun.games.common");
-  // The explanations' language: Portuguese for pt-BR, English elsewhere.
+  // The explanations' language: Portuguese for pt-BR, English elsewhere (the source every other locale's text is keyed by).
   const lang: Lang = locale === "pt-BR" ? "pt" : "en";
+  // The page's content strings: English in, the page's language out (the English where the locale has none written).
+  const cs = useContentString();
+  // A text in the page's language: the Portuguese inline on pt-BR, otherwise the English through the content strings.
+  const inLang = useCallback((b: Bi) => (lang === "pt" ? b.pt : cs(b.en)), [lang, cs]);
   // Today, after mount.
   const today = useToday();
   // Whether to keep motion down.
@@ -354,11 +367,11 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
       setCard(first);
       // Practice keeps the focus on its mode button, so its first card is spoken (a speed run focuses the answer buttons,
       // which the card describes; review R2-14).
-      if (m === "practice") setSay(describeCard(first, t, lang));
+      if (m === "practice") setSay(describeCard(first, t, inLang));
     },
     // The clock's functions are stable.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [today, daily, t, lang, mode, dailyStarted, over],
+    [today, daily, t, inLang, mode, dailyStarted, over],
   );
 
   // Start the daily round: the first card and the clock together (PRIME 06/11/2026: timed games wait for Start).
@@ -399,7 +412,7 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
       // The announcement.
       const verdictWord = t(current.verdict === "phish" ? "phish" : "legit");
       // Spoken politely.
-      setSay(t(ok ? "announceRight" : "announceWrong", { verdict: verdictWord, tell: TELLS[current.tell].name[lang] }));
+      setSay(t(ok ? "announceRight" : "announceWrong", { verdict: verdictWord, tell: inLang(TELLS[current.tell].name) }));
       // The daily round is saved after every answer.
       if (mode === "daily" && today) {
         // As letters.
@@ -423,7 +436,7 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
         // On the table.
         setCard(following);
         // The focus stays on the buttons, so the new card is spoken after the verdict (review R2-14).
-        setSay(`${t(ok ? "announceRight" : "announceWrong", { verdict: verdictWord, tell: TELLS[current.tell].name[lang] })} ${describeCard(following, t, lang)}`);
+        setSay(`${t(ok ? "announceRight" : "announceWrong", { verdict: verdictWord, tell: inLang(TELLS[current.tell].name) })} ${describeCard(following, t, inLang)}`);
         // Done here.
         return;
       }
@@ -432,7 +445,7 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
     },
     // The clock's functions are stable.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [current, showing, over, mode, endsAt, answers, t, lang, today, dailyStarted],
+    [current, showing, over, mode, endsAt, answers, t, inLang, today, dailyStarted],
   );
 
   // Move on from the explanation.
@@ -757,17 +770,17 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
           <div className="fg-pol-card-head">
             <span className="fg-pol-kind">{t(current.kind === "url" ? "kindUrl" : "kindEmail")}</span>
             <span className="fg-pol-claim">
-              {t("claims", { brand: brand.name[lang] })} <span className="fg-mono">{t("realAt", { domain: brand.domain })}</span>
+              {t("claims", { brand: inLang(brand.name) })} <span className="fg-mono">{t("realAt", { domain: brand.domain })}</span>
             </span>
           </div>
           {current.kind === "url" ? (
             <p className="fg-pol-text">{current.text}</p>
           ) : (
             <p className="fg-pol-text">
-              <span className="fg-pol-from">{t("fromLabel")}</span> {current.display?.[lang]} &lt;{current.text}&gt;
+              <span className="fg-pol-from">{t("fromLabel")}</span> {current.display && inLang(current.display)} &lt;{current.text}&gt;
             </p>
           )}
-          {current.context && <p className="fg-pol-context">{current.context[lang]}</p>}
+          {current.context && <p className="fg-pol-context">{inLang(current.context)}</p>}
         </div>
       )}
 
@@ -804,7 +817,7 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
       {/* The last answer in a speed run: one line, no pause. */}
       {mode === "speed" && last && !over && (
         <p className={`fg-pol-flash ${last.ok ? "fg-pol-ok" : "fg-pol-bad"}`}>
-          {t(last.ok ? "right" : "wrong")} {t(last.card.verdict === "phish" ? "isPhish" : "isLegit")}: {TELLS[last.card.tell].name[lang]}
+          {t(last.ok ? "right" : "wrong")} {t(last.card.verdict === "phish" ? "isPhish" : "isLegit")}: {inLang(TELLS[last.card.tell].name)}
         </p>
       )}
 
@@ -813,9 +826,9 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
         <div className={`fg-pol-feedback ${last.ok ? "fg-pol-ok" : "fg-pol-bad"}`}>
           <p className="fg-pol-verdict">
             {t(last.ok ? "right" : "wrong")} {t(last.card.verdict === "phish" ? "isPhish" : "isLegit")}
-            <span className="fg-pol-tell">{TELLS[last.card.tell].name[lang]}</span>
+            <span className="fg-pol-tell">{inLang(TELLS[last.card.tell].name)}</span>
           </p>
-          <p className="fg-pol-explain">{last.card.explain[lang]}</p>
+          <p className="fg-pol-explain">{inLang(last.card.explain)}</p>
           {last.card.points.length > 0 && (
             <ul className="fg-pol-points" aria-label={t("pointsTitle")}>
               {last.card.points.map((p) => (
@@ -845,9 +858,9 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
           <ol className="fg-pol-review-list">
             {answers.map((a, i) => (
               <li key={`${a.card.id}-${i}`} className={a.ok ? "fg-pol-review-ok" : "fg-pol-review-bad"}>
-                <p className="fg-pol-review-text fg-mono">{a.card.kind === "email" ? `${a.card.display?.[lang] ?? ""} <${a.card.text}>` : a.card.text}</p>
+                <p className="fg-pol-review-text fg-mono">{a.card.kind === "email" ? `${a.card.display ? inLang(a.card.display) : ""} <${a.card.text}>` : a.card.text}</p>
                 <p className="fg-small">
-                  <strong>{t(a.ok ? "right" : "wrong")}</strong> {t(a.card.verdict === "phish" ? "isPhish" : "isLegit")}: {TELLS[a.card.tell].name[lang]}. {a.ok ? "" : a.card.explain[lang]}
+                  <strong>{t(a.ok ? "right" : "wrong")}</strong> {t(a.card.verdict === "phish" ? "isPhish" : "isLegit")}: {inLang(TELLS[a.card.tell].name)}. {a.ok ? "" : inLang(a.card.explain)}
                 </p>
               </li>
             ))}

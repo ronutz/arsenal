@@ -21,7 +21,7 @@ The HTML is parsed inertly with parse5, the same parser the HTML structure expla
 
 - `:empty`: Chromium (checked 2026-10-05) still applies the Level 3 rule (any text, even whitespace, makes an element non-empty); Selectors 4 changed it. The tester follows the browser and says so.
 - The `s` flag on attribute values and the quoted `:lang("pt-BR")` form are Level 4 features Chromium (checked 2026-10-05) does not yet accept; the tester accepts them.
-- `:optional` excludes input types to which `required` does not apply (hidden, range, colour, submit, image, reset, button), as the HTML Standard says; Chromium matches hidden inputs.
+- `:optional` excludes input types to which `required` does not apply (hidden, range, color, submit, image, reset, button), as the HTML Standard says; Chromium matches hidden inputs.
 - `:scope` is the document root here (`querySelectorAll` on a document has the document itself as scoping root, which cannot be a subject).
 - `:valid`, `:invalid` and the other constraint-validation states are not evaluated here; a browser evaluates them.
 - A selector that names a pseudo-element lists the elements that would originate it; `querySelectorAll` returns nothing for such a selector, by design.

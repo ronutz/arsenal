@@ -4,9 +4,10 @@
 // The translators' guide, rendered for the contribute page (PRIME 2026-10-19
 // 17:11: "The guide should be in https://ronutz.com/contribute/"). The guide is
 // authored as Markdown beside the packs it describes, in English
-// (src/i18n/messages/CONTRIBUTING-TRANSLATIONS.md) and Brazilian Portuguese
-// (CONTRIBUTING-TRANSLATIONS.pt-BR.md); every other locale reads the English one,
-// as it reads English for any phrase its pack lacks.
+// (src/i18n/messages/CONTRIBUTING-TRANSLATIONS.md), with native editions beside
+// it as CONTRIBUTING-TRANSLATIONS.<locale>.md (pt-BR; es and de since 2026-11-09,
+// written with the interface); every other locale reads the English one, as it
+// reads English for any phrase its pack lacks.
 //
 // Rendering follows src/lib/toolDocs.ts: remark-parse (not MDX, so "{count}" in
 // the guide is text, not an expression), GFM for the tables, remark-rehype
@@ -27,10 +28,12 @@ import rehypeExternalLinks from "@/lib/rehypeExternalLinks";
 /** The folder that holds the packs and the guide. */
 const DIR = path.join(process.cwd(), "src", "i18n", "messages");
 
-/** The guide's file for a locale: pt-BR has its own; every other locale reads the English guide. */
+/** The guide's file for a locale: its own edition when one exists; otherwise the English guide. */
 function guideFile(locale: string): string {
-  // The authored Portuguese edition, when the page is Portuguese.
-  if (locale === "pt-BR") return path.join(DIR, "CONTRIBUTING-TRANSLATIONS.pt-BR.md");
+  // The locale's native edition (pt-BR, es, de), when it has one.
+  const own = path.join(DIR, `CONTRIBUTING-TRANSLATIONS.${locale}.md`);
+  // English has no suffix; any other locale with a file reads its own.
+  if (locale !== "en" && fs.existsSync(own)) return own;
   // The English reference for everyone else.
   return path.join(DIR, "CONTRIBUTING-TRANSLATIONS.md");
 }

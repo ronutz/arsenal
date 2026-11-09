@@ -23,7 +23,7 @@ Ele tem quatro partes:
 | `U+0041` | notação Unicode |
 | `&#65;`, `&#x41;`, `&excl;` | referências HTML numéricas e nomeadas |
 | `%41` | codificação por porcentagem |
-| `\x41`, `\101`, `\n`, `A`, `\u{1F600}` | escapes com barra invertida |
+| `\x41`, `\101`, `\n`, `\u0041`, `\u{1F600}` | escapes com barra invertida |
 | `^A`, `^[`, `^?` | notação de circunflexo |
 | `NUL`, `LF`, `line feed`, `Reverse Slant` | abreviações e nomes, da RFC 20, do Unicode 1.0 e do Unicode atual |
 | `en dash`, `minus sign` | qualquer nome ou apelido Unicode (comparado de forma flexível: maiúsculas, espaços, sublinhados e hífens internos são ignorados, como manda a regra UAX44-LM2 da UAX #44) |

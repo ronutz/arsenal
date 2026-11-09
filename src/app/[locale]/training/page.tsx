@@ -56,6 +56,8 @@ import Header from "@/components/Header";
 import VendorMark from "@/components/VendorMark";
 import SiteFooter from "@/components/SiteFooter";
 import { PLATFORMS, localizedText } from "@/content/training/courses";
+// The catalogue's text in the interface locales beyond en and pt-BR (09/11/2026): the "training" module's strings.
+import { contentStringsFor } from "@/i18n/contentStrings";
 // The five verbatim student quotations rendered on this page (ids in kinds.ts).
 import { TESTIMONIALS } from "@/content/testimonials/data";
 // The live clocks across the teaching regions; a client island with its own slice.
@@ -182,8 +184,9 @@ export default async function TrainingLandingPage({
                     >
                       {MARK_KEY[p.slug] && <VendorMark vendor={MARK_KEY[p.slug]} year={thisYear} eraLabel={era} since={since} compact />}
                       <span className="platform-card-name">{p.name}</span>
-                      {/* The tagline is Localized since Round 1 (CC06): pt-BR native, other locales the English with lang="en". */}
-                      <span className="platform-card-tagline" lang={localizedText(p.tagline, locale).lang === locale ? undefined : "en"}>{localizedText(p.tagline, locale).text}</span>
+                      {/* The tagline is Localized since Round 1 (CC06): pt-BR native; another locale its own text when the
+                          "training" module holds it (09/11/2026), else the English with lang="en". */}
+                      <span className="platform-card-tagline" lang={localizedText(p.tagline, locale, contentStringsFor(locale, ["training"])).lang === locale ? undefined : "en"}>{localizedText(p.tagline, locale, contentStringsFor(locale, ["training"])).text}</span>
                       <span className="platform-card-meta mono">
                         {tT("courseCount", { count: p.courses.length })} ·{" "}
                         {tT("since")} {p.since}

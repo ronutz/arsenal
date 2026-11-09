@@ -35,6 +35,6 @@ Asset names can identify your internal applications (the reason the popover adds
 
 ## Sources
 
-Grounded in Zscaler's SSL inspection documentation (Configuring the SSL/TLS Inspection Policy; About SSL Inspection) and the Data Protection reference architecture, access date 2026-07-21. The two forms of Do Not Inspect, and the settings each offers, were re-read on [Configuring SSL/TLS Inspection Policy](https://help.zscaler.com/zia/configuring-ssltls-inspection-policy) (read 2026-10-26). The paired Learn article is *ZIA SSL Inspection: Policy and Bypasses*.
+Grounded in Zscaler's SSL inspection documentation (Configuring the SSL/TLS Inspection Policy; About SSL Inspection) and the Data Protection reference architecture, access date 2026-07-21. The two forms of Do Not Inspect, and the settings each offers, were re-read on [Configuring SSL/TLS Inspection Policy](https://help.zscaler.com/zia/configuring-ssltls-inspection-policy) (read 2026-10-26). The paired Learn article is [*TLS Inspection in ZIA: The Policy, the Bypasses, and the Bill*](/learn/zia-ssl-inspection-policy-and-bypasses).
 
 The fragment rule behind Share results is [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), section 3.5 (read 2026-11-01), and the credentials its check looks for are defined in RFC 7468, RFC 9110, RFC 6265 and RFC 7519 (read the same day).

@@ -1,4 +1,4 @@
-# AFM DoS-vector / profile explainer
+# AFM DoS-vector & profile explainer
 
 A BIG-IP AFM - Advanced Firewall Manager device-DoS configuration is a hundred small dials with three failure modes: thresholds that never fire, thresholds that fire silently, and thresholds someone set without knowing what the vector actually counts. This tool reads the configuration back to you the way the reference manual would.
 

@@ -20,6 +20,10 @@ import { ogImages } from "@/lib/og";
 import { withDescription } from "@/lib/metaDescription";
 import { hasToolDoc } from "@/lib/toolDocs";
 import MessageSlice from "@/components/MessageSlice";
+// The strings tools keep in code, per language (09/11/2026), and the interface-native locales.
+import ContentStrings from "@/components/ContentStrings";
+import { contentStringsFor } from "@/i18n/contentStrings";
+import { INTERFACE_LOCALES } from "@/i18n/locales";
 import ShareControl from "@/components/ShareControl";
 import { routing } from "@/i18n/routing";
 import { Link } from "@/i18n/navigation";
@@ -1441,6 +1445,8 @@ export default async function ToolDetailPage({
   // renders nothing for tools without an endpoint). Links to the Swagger view.
   const tEndpoint = await getTranslations("toolApiEndpoint");
   const tShortcuts = await getTranslations("shortcuts");
+  // Whether this locale's interface is written natively (its tool docs and Markdown twins exist), 09/11/2026.
+  const interfaceNative = (INTERFACE_LOCALES as readonly string[]).includes(locale);
   // The Learn index's words: the "Interactive" marker the Learn panel puts on an article with a lab (2026-10-26).
   const tLearn = await getTranslations("learn");
   const endpointLabels = {
@@ -1462,8 +1468,8 @@ export default async function ToolDetailPage({
                 target="_blank"
                 rel="noopener noreferrer"
                 className="tool-coffee-corner"
-                aria-label={locale === "pt-BR" ? "Me pague um café" : "Buy me a coffee"}
-                title={locale === "pt-BR" ? "Me pague um café" : "Buy me a coffee"}
+                aria-label={tTools("coffeeLabel")}
+                title={tTools("coffeeLabel")}
               >
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <path d="M4 8h13v5a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V8z" />
@@ -1497,10 +1503,11 @@ export default async function ToolDetailPage({
             )}
             {entry && <h1 className="article-title">{tTools(`${slug}.name`)}</h1>}
             {entry && <p className="article-summary">{tTools(`${slug}.blurb`)}</p>}
-            {entry && (locale === "en" || locale === "pt-BR") && (
+            {/* The Markdown twin exists in every interface-native locale (gen-machine-legible, 09/11/2026). */}
+            {entry && interfaceNative && (
               <p className="doc-md-link">
                 <a href={`/${locale}/tools/${slug}.md`}>
-                  {locale === "pt-BR" ? "Documentação (Markdown)" : "Documentation (Markdown)"}
+                  {tTools("docsMarkdown")}
                 </a>
               </p>
             )}
@@ -1508,7 +1515,7 @@ export default async function ToolDetailPage({
                 D-77 man page inline. Only en/pt-BR carry a D-77 doc (the same
                 gate as the Markdown link above), so the capability is only
                 offered where the fetch target exists. */}
-            {entry && (locale === "en" || locale === "pt-BR") && (
+            {entry && interfaceNative && (
               <PageCapabilities
                 set={{
                   title: tTools(`${slug}.name`),
@@ -1561,7 +1568,10 @@ export default async function ToolDetailPage({
             {/* "share" and "shareResults" (2026-10-27): the Share results button inside the tool reads both. */}
             {/* Plus any namespace a tool's own sub-components read (TOOL_EXTRA_NAMESPACES, 01/11/2026). */}
             <MessageSlice namespaces={[`tools.${slug}`, "apiAffordance", "share", "shareResults", ...extraNs]}>
-              <Component />
+              {/* The strings this tool keeps in code, in the page's language (src/i18n/contentStrings.ts, 09/11/2026). */}
+              <ContentStrings strings={contentStringsFor(locale, [slug])}>
+                <Component />
+              </ContentStrings>
 
               <ToolApiEndpoint slug={slug} processingOn={processingOn} labels={endpointLabels} />
 

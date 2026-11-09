@@ -14,9 +14,9 @@ Os painéis explicadores e o montador do comando leem a mesma tabela de capacida
 
 Entradas idênticas sempre produzem um comando idêntico byte a byte: as flags saem em uma única ordem canônica, e os valores recebem escape POSIX de aspas simples apenas quando necessário. Onze vetores dourados travam esse comportamento, incluindo a regra de que `-d` implica POST (então nunca sai um `-X POST` redundante) e a sequência de escape `'\''`. As aspas seguem shells POSIX; uma nota na ferramenta avisa, porque cmd.exe e PowerShell jogam com outras regras.
 
-## O inverso do tradutor
+## O inverso do explicador
 
-Esta ferramenta escreve comandos `curl`; o [tradutor de requisições HTTP](/tools/curl-command-explainer) os lê. Monte um comando aqui, ou cole um lá para vê-lo explicado flag por flag e traduzido para fetch, HTTP cru, HTTPie e Python requests.
+Esta ferramenta escreve comandos `curl`; o [explicador de comando curl](/tools/curl-command-explainer) os lê. Monte um comando aqui, ou cole um lá para vê-lo explicado flag por flag e traduzido para fetch, HTTP cru, HTTPie e Python requests.
 
 ## Compartilhar resultado
 

@@ -4,7 +4,7 @@ Give the tool a certificate's start and end dates, its `notBefore` and `notAfter
 
 ## Why certificate lifetimes are shrinking
 
-Publicly trusted TLS certificates have been getting shorter for years, and the CA/Browser Forum's ballot SC-081v3 sets out a schedule that steps the maximum validity down from 398 days, through 200 and 100 days, to 47 days by 2029. Shorter certificates limit how long a compromised or mis-issued certificate stays useful, but they also make manual renewal impractical, which is the point: the schedule effectively forces automation. Two related windows shrink alongside the validity: the period for which a domain-control validation (DCV) can be reused, and the period for which validated identity information (SII) can be reused, so more of the process must be repeated more often.
+Publicly trusted TLS certificates have been getting shorter for years, and the CA/Browser Forum's ballot SC-081v3 sets out a schedule that steps the maximum validity down from 398 days, through 200 and 100 days, to 47 days by 2029. Shorter certificates limit how long a compromised or mis-issued certificate stays useful, but they also make manual renewal impractical, which is the point: the schedule effectively forces automation. Two related windows shrink alongside the validity: the period for which a domain-control validation (DCV) can be reused, and the period for which Subject Identity Information (SII), the validated identity of the certificate's subject, can be reused, so more of the process must be repeated more often.
 
 ## What the plan tells you
 

@@ -1,0 +1,24 @@
+## Qué hace
+
+Pega un bloque de encabezados de una solicitud HTTP sin procesar (una línea de solicitud y un “Nombre: valor” por línea) y la herramienta explica cómo el orden de los encabezados y el uso de mayúsculas y minúsculas sirven de huella del cliente. Clasifica al emisor como navegador de la familia Chromium, Firefox o biblioteca HTTP comparando la secuencia de encabezados y buscando encabezados propios de los navegadores como Sec-Fetch y Sec-CH-UA, señala el indicio de las minúsculas de HTTP/2 y enumera los encabezados habituales de un navegador que faltan.
+
+## El equivalente de JA3 en HTTP pasivo
+
+JA3 identifica a un cliente TLS por el orden de los conjuntos de cifrado y de las extensiones de su ClientHello. El orden de los encabezados es la misma idea una capa más arriba: los navegadores, las bibliotecas y los bots emiten cada uno los encabezados de solicitud en una secuencia característica, y esa secuencia se mantiene aunque los valores se falsifiquen. Una solicitud cuyo orden de encabezados contradice el User-Agent que declara (el UA de Chrome con el juego de encabezados de curl) es una señal clásica de bot, y por eso los sistemas de detección de bots y los WAF (firewall de aplicaciones web, web application firewall) se fijan en él.
+
+## Cómo se lee el resultado
+
+El hash del orden es un identificador corto y estable de la secuencia exacta de encabezados, que se muestra solo a título informativo. Las notas de cada encabezado explican por qué importa cada posición; la nota sobre mayúsculas y minúsculas indica si el bloque parece una captura HTTP/1.1 (Title-Case) o HTTP/2 (minúsculas en el cable). Solo decodifica y explica; los encabezados que pegas nunca salen de tu navegador.
+
+## Compartir resultados
+
+Debajo del indicio del cliente, **Compartir resultados** genera un enlace a esta página, solo cuando lo presionas, que lleva después del `#` una copia del bloque en la que cada credencial se sustituye por la palabra `REDACTED`, nunca el bloque tal como se pegó. Su ventana emergente dice primero qué lleva el enlace y cuántos valores se sustituyeron, y después ofrece Copiar enlace y, si el navegador lo tiene, el menú Compartir del sistema; la dirección de la página no cambia.
+
+Un bloque de encabezados copiado de las herramientas para desarrolladores, de una captura o de `curl -v` casi siempre lleva una cookie de sesión, y a menudo un token, y la lectura no necesita ninguno: lee los nombres de los encabezados (su orden, sus mayúsculas y minúsculas, cuáles de los habituales faltan) y el valor del User-Agent. Así que la copia conserva todos los nombres, su orden y el User-Agent, y sustituye, según las reglas que comparten las herramientas HTTP del sitio: las credenciales de `Authorization` y `Proxy-Authorization`, conservando el esquema ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110), secciones 11.6.2 y 11.7.2: el valor “consists of credentials”, consiste en credenciales; Basic conserva su user-id, [RFC 7617](https://www.rfc-editor.org/rfc/rfc7617), sección 2); cada valor de cookie de una línea `Cookie`, conservando los nombres ([RFC 6265](https://www.rfc-editor.org/rfc/rfc6265), sección 4.2.1); el valor entero de un encabezado cuyo nombre contiene un secreto (`X-API-Key`, `X-Auth-Token`); y la contraseña de una URL o un parámetro secreto dentro de cualquier valor o del destino de la solicitud (`access_token`, `code`, [RFC 6749](https://www.rfc-editor.org/rfc/rfc6749), sección 4.1.2). Todos se consultaron el 2026-11-01. La copia tiene que dar la misma lectura que lo pegado; siempre la da, porque no cambia nada de lo que lee la página.
+
+Un token sin ningún nombre que lo indique (un JWT en la ruta) no se puede sustituir con seguridad: se vuelve a comprobar la copia, y si queda en cualquier parte una clave privada PEM, un JWS o un JWE, o la contraseña de una URL, no hay enlace; la ventana emergente indica la línea. No hay ninguna opción para enviar los valores sustituidos: son credenciales y la lectura no los necesita.
+
+Según el [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (sección 3.5, consultado el 2026-11-01), el fragmento queda “separated from the rest of the URI prior to a dereference” (separado del resto del URI antes de resolverlo), así que la copia no se envía al servidor cuando se abre el enlace; se queda en la barra de direcciones y en el historial de quien lo abra, y cualquiera que tenga el enlace puede leerla.
+
+- **Longitud.** Como máximo 16.384 caracteres en total, el límite que el sitio aplica a todo valor después del `#`; si lo compartido es más largo, no hay enlace, y la ventana emergente indica su longitud.
+- **Al abrir un enlace.** La copia rellena el cuadro como lo haría un pegado y la página la lee; no se envía nada. Después, los valores salen de la dirección de la página al instante, sin ninguna solicitud, así que al recargar, o con el propio botón Compartir de la página, no se lleva nada.

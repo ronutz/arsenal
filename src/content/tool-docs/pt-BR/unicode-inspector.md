@@ -5,7 +5,7 @@ Um texto pode conter muito mais do que mostra. Um espaço de largura zero fica e
 Ele tem quatro modos:
 
 - **Inspecionar um texto** conta o texto, diz se algo merece atenção, lista o que encontrou por tipo, aponta controles bidirecionais deixados abertos no fim de uma linha e palavras que misturam escritas, desenha o texto na ordem em que está armazenado com cada caractere escondido como uma etiqueta, lista todos os pontos de código, oferece uma cópia limpa e escreve o texto como escapes em oito linguagens.
-- **Um ponto de código** recebe um ponto de código em qualquer notação (`U+00E9`, `é`, `0xE9`, `&eacute;`, `é`, `zero width space`, `BOM`) e mostra o nome e os apelidos, as propriedades, as codificações, os escapes e o que é preciso saber sobre ele.
+- **Um ponto de código** recebe um ponto de código em qualquer notação (`U+00E9`, `é`, `0xE9`, `&eacute;`, `\u00e9`, `zero width space`, `BOM`) e mostra o nome e os apelidos, as propriedades, as codificações, os escapes e o que é preciso saber sobre ele.
 - **Encontrar pelo nome** lista os pontos de código cujo nome ou apelido tem palavras que começam com as palavras digitadas.
 - **Normalizar** mostra um texto em NFC, NFD, NFKC e NFKD com os pontos de código e os bytes UTF-8 de cada forma, e o compara com um segundo texto em todas as formas.
 

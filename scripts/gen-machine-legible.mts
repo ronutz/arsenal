@@ -32,7 +32,7 @@ import matter from "gray-matter";
 import { tools } from "../src/config/tools";
 // The shared, registry-derived counts (2026-10-06), the same figures the home page and the user guide state.
 import { getSiteCounts } from "../src/lib/siteCounts";
-import { LIVE_LOCALES, AUTHORED_CONTENT_LOCALES } from "../src/i18n/locales";
+import { LIVE_LOCALES, AUTHORED_CONTENT_LOCALES, INTERFACE_LOCALES, CORPUS_ROUTE_FAMILIES } from "../src/i18n/locales";
 // The /dev/fun games, counted for llms.txt (2026-11-03).
 import { FUN_GAME_GROUPS } from "../src/config/funGames"; // the games, and their groups (the arcade line, 2026-11-08)
 // The page's own robots meta, read back from the built HTML (ARC-04, 2026-10-25): a noindex page is never submitted.
@@ -44,9 +44,26 @@ import { pageIsNoindex } from "./page-indexability.mjs";
  *  (scripts/inject-hreflang.mjs, scripts/seo-locales.mjs) and is no longer offered to a crawler as a translation.
  *  Search Console had overruled their self-canonicals 1,849 times, choosing the /en/ page each time. */
 const SITEMAP_LOCALES = LIVE_LOCALES.map((l) => l.code).filter((code) =>
-  // Membership in the authored-content list decides; promoting a locale there brings it back here.
-  (AUTHORED_CONTENT_LOCALES as readonly string[]).includes(code),
+  // Membership in the authored-content or the interface-native list (09/11/2026) decides; promoting a locale there
+  // brings it back here, route by route (sitemapSpeaks below).
+  (AUTHORED_CONTENT_LOCALES as readonly string[]).includes(code) || (INTERFACE_LOCALES as readonly string[]).includes(code),
 );
+
+/**
+ * True when a locale's page for a route is offered to crawlers: every route of an authored-content locale, and every
+ * route outside the corpus families of an interface-native one (the same rule as scripts/seo-locales.mjs, which writes
+ * and checks the canonical and hreflang tags these alternates must agree with).
+ *
+ * @param code the locale
+ * @param route the route below the locale ("" for the home page)
+ * @returns whether the page is self-canonical
+ */
+function sitemapSpeaks(code: string, route: string): boolean {
+  // An authored-content locale speaks for every route.
+  if ((AUTHORED_CONTENT_LOCALES as readonly string[]).includes(code)) return true;
+  // An interface-native locale speaks for itself outside the corpus families.
+  return !(CORPUS_ROUTE_FAMILIES as readonly string[]).includes(route.split("/")[0]);
+}
 
 const ORIGIN = "https://ronutz.com";
 const OUT = path.join(process.cwd(), "out");
@@ -54,10 +71,13 @@ const CONTENT = path.join(process.cwd(), "src", "content", "learn");
 const SOURCE_LOCALE = "en";
 // Locales with complete tool i18n (name + blurb + category labels).
 const DOC_LOCALES = ["en", "pt-BR"];
+// Locales whose tool docs are written (09/11/2026): the interface-native ones. Their /<locale>/tools/<slug>.md twins
+// are emitted; Learn and practice twins stay with DOC_LOCALES, the locales that carry those corpora.
+const TOOL_DOC_LOCALES: string[] = [...INTERFACE_LOCALES];
 
 // ---- i18n (tool names/blurbs, category labels) ---------------------------
 const I18N: Record<string, any> = {};
-for (const l of DOC_LOCALES) {
+for (const l of TOOL_DOC_LOCALES) {
   I18N[l] = JSON.parse(fs.readFileSync(`src/i18n/messages/${l}.json`, "utf8"));
 }
 const SITE_NAME: string = I18N.en.site?.name ?? "ronutz";
@@ -262,7 +282,10 @@ function toolMarkdown(
   authoredBody: string | null,
 ): string {
   const url = `${ORIGIN}/${locale}${href}`;
-  const related = (articlesByLocale[locale] ?? [])
+  // The Learn articles in the doc's language; a locale without the Learn corpus (an interface-native one, 09/11/2026)
+  // lists the English articles, linked in English.
+  const learnLocale = articlesByLocale[locale] ? locale : SOURCE_LOCALE;
+  const related = (articlesByLocale[learnLocale] ?? [])
     .filter((a) => a.relatedTools?.includes(id))
     .sort((a, b) => a.title.localeCompare(b.title));
   const out: string[] = [`# ${toolName(locale, id)}`, ""];
@@ -294,7 +317,7 @@ function toolMarkdown(
     out.push("## Related reading", "");
     for (const a of related) {
       out.push(
-        `- [${a.title}](${ORIGIN}/${locale}/learn/${a.slug}.md)${a.summary ? `: ${a.summary}` : ""}`,
+        `- [${a.title}](${ORIGIN}/${learnLocale}/learn/${a.slug}.md)${a.summary ? `: ${a.summary}` : ""}`,
       );
     }
     out.push("");
@@ -327,7 +350,7 @@ for (const t of liveTools) {
 
 let toolDocCount = 0;
 const authoredCoverage: Record<string, number> = {};
-for (const locale of DOC_LOCALES) {
+for (const locale of TOOL_DOC_LOCALES) {
   authoredCoverage[locale] = 0;
   for (const t of liveTools) {
     const authored = readToolDoc(locale, t.id);
@@ -343,7 +366,7 @@ for (const locale of DOC_LOCALES) {
   }
 }
 // D-77 coverage report: how many tool siblings carry rich authored docs.
-for (const locale of DOC_LOCALES) {
+for (const locale of TOOL_DOC_LOCALES) {
   const n = authoredCoverage[locale];
   const total = liveTools.length;
   const note = n < total ? " — authoring required (D-77 gap)" : " — complete";
@@ -568,7 +591,7 @@ fs.writeFileSync(path.join(OUT, "llms.txt"), L.join("\n"), "utf8");
     // and glossary detail pages became authored-locales-only, and a sitemap
     // advertising a redirecting URL as a translation is a lie to a crawler.
     // inject-hreflang.mjs has always filtered this way; the two now agree.
-    const alternates = SITEMAP_LOCALES.filter((loc) => {
+    const alternates = SITEMAP_LOCALES.filter((loc) => sitemapSpeaks(loc, route)).filter((loc) => {
       // Not built in this locale: not an alternate (unchanged rule).
       if (!fs.existsSync(pageFile(loc, route))) return false;
       // Built but noindex in this locale: an alternate would advertise it (ARC-04).

@@ -27,6 +27,6 @@ A bandwidth figure and five yes or no answers identify nothing, so the popover a
 
 ## Sources
 
-The GRE figures, the source-NAT rule, and the scale-out examples come from Understanding Generic Routing Encapsulation (GRE). The IPsec per-source-IP limit, its two scale-out shapes, and the primary/secondary recommendation come from Configuring an IPSec VPN [virtual private network] Tunnel. The GRE preconditions, the dynamic-IP cue toward IPsec, and the MTU field guidance come from Choosing Traffic Forwarding Methods.
+The GRE figures, the source-NAT rule, and the scale-out examples come from [Understanding Generic Routing Encapsulation (GRE)](https://help.zscaler.com/zia/understanding-generic-routing-encapsulation-gre). The IPsec per-source-IP limit, its two scale-out shapes, and the primary/secondary recommendation come from [Configuring an IPSec VPN Tunnel](https://help.zscaler.com/zia/configuring-ipsec-vpn-tunnel) (VPN: virtual private network). The GRE preconditions and the dynamic-IP cue towards IPsec come from [Choosing Traffic Forwarding Methods](https://help.zscaler.com/zia/choosing-traffic-forwarding-methods), and the rule that a tunnel's MTU (maximum transmission unit) stays at or below both the appliance MTU and the path MTU comes from [Determining Optimal MTU for GRE or IPSec Tunnels](https://help.zscaler.com/zia/determining-the-optimal-mtu-for-gre-or-ipsec-tunnels). All four read 2026-11-09.
 
 The fragment rule behind Share results is [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), section 3.5 (read 2026-11-01).

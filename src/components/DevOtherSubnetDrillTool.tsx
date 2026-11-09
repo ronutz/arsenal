@@ -310,7 +310,8 @@ export default function DevOtherSubnetDrillTool() {
           {feedback && (
             <div className={feedback.correct ? "drill-feedback drill-feedback--ok" : "drill-feedback drill-feedback--no"}>
               <p className="drill-feedback-verdict">
-                {feedback.correct ? t("correct") : t("incorrect", { answer: feedback.expected })}
+                {/* A yes/no answer is shown in the page's language, with the same words as its buttons (the grader keeps "yes"/"no"). */}
+                {feedback.correct ? t("correct") : t("incorrect", { answer: current.answerType === "boolean" ? t(feedback.expected === "yes" ? "yes" : "no") : feedback.expected })}
               </p>
               <button type="button" className="b64-copy" onClick={next} autoFocus>
                 {idx + 1 >= questions.length ? t("finish") : t("nextQ")}

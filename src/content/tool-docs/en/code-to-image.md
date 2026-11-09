@@ -126,7 +126,7 @@ config vpn ipsec phase1-interface
 end
 ```
 
-The secrets check reports one finding, "FortiOS encrypted value (ENC), line 7, column 27", and the picture shows `set psksecret ENC ••••••••` on line 7, which the Example also highlights, under the title "VPN [virtual private network] to branch 01". The SVG is 451.2 by 348 CSS pixels in the dark palette, and the alt text begins "Code image: 9 lines of FortiOS CLI, 1 value masked".
+The secrets check reports one finding, "FortiOS encrypted value (ENC), line 7, column 27", and the picture shows `set psksecret ENC ••••••••` on line 7, which the Example also highlights, under the title "VPN to branch 01" (VPN: virtual private network). The SVG is 451.2 by 348 CSS pixels in the dark palette, and the alt text begins "Code image: 9 lines of FortiOS CLI, 1 value masked".
 
 ## Share results
 

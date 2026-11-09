@@ -9,8 +9,10 @@
 // purely; this component only renders it. The interface chrome comes from the
 // message packs (tools.openssl-s-client-explainer.*); the explanations of
 // options, output lines, verification codes and findings come from the
-// engine's own tables in English and Brazilian Portuguese, and every other
-// locale reads the English ones, as the packs fall back to English.
+// engine's own tables in English and Brazilian Portuguese; every other locale
+// reads its own text for the English one through useContentString()
+// (src/i18n/content/<locale>/openssl-s-client-explainer.json, 09/11/2026),
+// and the English where none is written.
 //
 // SHARE RESULTS (2026-10-27): a button under the findings builds, only when
 // pressed, a link carrying both boxes with every Master-Key, Resumption PSK
@@ -28,6 +30,7 @@ import ShareResultsButton from "@/components/ShareResultsButton"; // the site's 
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import { OPENSSL_S_CLIENT_SHARE, encodeSClientShare } from "@/lib/tools/openssl-s-client-explainer/share"; // this tool's share spec: both boxes, secrets replaced
 import { Link } from "@/i18n/navigation"; // locale-aware links to sibling tools
+import { useContentString } from "@/components/ContentStrings"; // the strings this tool keeps in code, in the page's language (09/11/2026)
 // The engine is imported from its own modules, not from the tool's index, so the page does not carry the captures
 // and golden vectors that the index (the manifest) pulls in.
 import {
@@ -81,7 +84,8 @@ function RawText({ text, showLabel }: { text: string; showLabel: string }) {
 export default function OpensslSClientExplainerTool() {
   const t = useTranslations("tools.openssl-s-client-explainer"); // interface strings
   const locale = useLocale(); // the page locale
-  const L = (b: Bilingual | null | undefined) => (b ? (locale === "pt-BR" ? b.pt : b.en) : ""); // pick the language; others read English
+  const cs = useContentString(); // English in, the page's language out (the English when the locale has none written)
+  const L = (b: Bilingual | null | undefined) => (b ? (locale === "pt-BR" ? b.pt : cs(b.en)) : ""); // pick the language: Portuguese inline, every other locale through its content strings
   const [command, setCommand] = useState(""); // the command box
   const [output, setOutput] = useState(""); // the output box
   // A value handed over in the address (#input=, src/lib/handoff.ts) fills the output box: the serial console's

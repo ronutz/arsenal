@@ -1,0 +1,32 @@
+## Qué hace
+
+Declara la comparación que estás haciendo: por qué (validación posterior a un cambio, recuperación tras un incidente, corte de una migración, comprobación de deriva o decisión de reversión), contra qué tipo de objetivo, con qué alcance, cuánto vale realmente la línea base, lo completa que está la captura posterior, cuánto tiempo llevas observando y cuánto varía el objetivo por sí solo. Con eso, un catálogo fijo de 27 reglas propias produce el INFORME DE COMPARACIÓN POR NIVELES: una valoración de la calidad de la línea base; el catálogo de dimensiones que merece la pena capturar para ese objetivo (14 dimensiones, cada una con su clase de variación y exactamente lo que hay que registrar); PAUTAS PARA INTERPRETAR LAS DIFERENCIAS en cada dimensión (debería coincidir, leer con cuidado o deriva esperada según la variación declarada), cada una con lo que REFORZARÍA un hallazgo y lo que DEBILITARÍA una conclusión; las lagunas que impiden dar la validación por completa; y el VEREDICTO: continuar, observar, investigar o mantener la reversión lista, con las condiciones explícitas que subirían o bajarían el nivel.
+
+## El compromiso de honestidad del nombre
+
+Esta herramienta nunca ingiere datos de estado ni compara nada. TÚ DECLARAS LOS ESTADOS Y LA HERRAMIENTA CONDICIONA LA CONCLUSIÓN: esa frase no es marketing, es la arquitectura. La regla de línea base del motor se activa en cada ejecución para decir que el informe depende de las clases declaradas, y la primera línea de la lista de comprobación consiste en verificar las declaraciones contra las capturas reales. Lo que te da el veredicto es disciplina, no omnisciencia: una línea base de memoria limita el veredicto a investigar por muy limpia que parezca la captura posterior; una ventana de observación inmediata lo limita a observar, porque la convergencia todavía no se ha pronunciado; y, en el contexto de una decisión de reversión, CUALQUIER laguna en las pruebas convierte el veredicto en mantener la reversión lista. Cuando la pregunta es “¿revertimos?”, todo lo que no sean pruebas limpias significa tener la reversión preparada.
+
+## Nunca solo con componentes en verde
+
+La regla de riesgo es estructural: la regla de estado frente a servicio también se activa siempre, e incluso el mejor veredicto queda condicionado a que una dimensión del nivel de servicio (una sonda de extremo a extremo, una transacción de autenticación real) coincida con el nivel de componentes. Que la configuración no haya cambiado no significa que esté sana; unos componentes en verde no son un servicio que funciona; el informe lo dice en cada ejecución.
+
+## Determinismo y verificación
+
+Las reglas son predicados puros sobre los siete enumerados; la escala de gravedad (0 continuar, 1 observar, 2 investigar) toma el máximo, y la conversión por reversión está explícita en el código. La verificación sigue el modelo de instantáneas de disparo de reglas de la familia, con dos fijaciones propias de esta herramienta: el VEREDICTO exacto y el CONJUNTO DE DIMENSIONES seleccionado exacto quedan congelados en los vectores junto con las reglas activadas y las advertencias. Trece vectores (nueve escenarios y cuatro rechazos), fijados a partir de la ejecución del motor; cualquier deriva rompe la compilación.
+
+## Compartir resultados
+
+Debajo del veredicto, **Compartir resultados** genera un enlace a esta página, solo cuando lo presionas, que lleva después del `#` todos los campos del formulario: las ocho elecciones por sus ID (`context`, `target`, `scope`, `before`, `after`, `window`, `churn`, `preset`, siempre) y las tres notas tal como las escribiste (`title`, `changeref`, `notes`). Su ventana emergente dice primero qué lleva el enlace, después muestra una advertencia propia (las notas pueden nombrar los dispositivos comparados y el ticket de cambio) y luego ofrece Copiar enlace y, si el navegador lo tiene, el menú Compartir del sistema; la dirección de la página no cambia.
+
+Tus marcas no van en él: son tu propio avance en esta página (la exportación en Markdown las lleva) y pertenecen al resultado, no a lo que escribiste.
+
+En las notas van nombres de host, clientes, personas y números de ticket, así que antes de ofrecer un enlace pasan por la comprobación de secretos del sitio. Si un valor es una credencial por su formato, no hay enlace, y la ventana emergente indica qué nota es: una clave privada PEM ([RFC 7468](https://www.rfc-editor.org/rfc/rfc7468), secciones 10 y 11), credenciales de Authorization ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110), sección 11.6.2), una línea Cookie ([RFC 6265](https://www.rfc-editor.org/rfc/rfc6265), sección 4.2.1), un JWS o un JWE (la serialización que usan los JWT, [RFC 7519](https://www.rfc-editor.org/rfc/rfc7519), sección 1), una contraseña en una URL ([RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), sección 3.2.1), un ID de clave de acceso de AWS o un valor `ENC` de FortiOS. Sustitúyelo por un marcador de posición y vuelve a presionar. Un valor cuyo nombre solo parece el de un secreto (`db_password=...`) sigue teniendo enlace, y la línea de advertencia indica la nota para que la revises antes.
+
+Según el [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (sección 3.5, consultado el 2026-11-01), el fragmento queda “separated from the rest of the URI prior to a dereference” (separado del resto del URI antes de resolverlo), así que el formulario no se envía al servidor cuando se abre el enlace; se queda en la barra de direcciones y en el historial de quien lo abra, y cualquiera que tenga el enlace puede leerlo.
+
+- **Longitud.** Como máximo 16.384 caracteres en total, el límite que el sitio aplica a todo valor después del `#`; si lo compartido es más largo, no hay enlace, y la ventana emergente indica su longitud.
+- **Al abrir un enlace.** Se establecen las elecciones y las notas, las marcas de la lista de comprobación empiezan vacías y el veredicto se calcula como cuando cambias algo; no se descarga nada. Después, los valores salen de la dirección de la página al instante, sin ninguna solicitud, así que al recargar, o con el propio botón Compartir de la página, no se lleva nada.
+
+## Entrada de la API
+
+La entrada de paridad con la API acepta un objeto JSON: `{"context", "target", "scope", "beforeConfidence", "afterState", "window", "churn", "preset", "notes": {"changeRef", "title", "notes"}}`. Todos los campos salvo `notes` usan los vocabularios cerrados que muestra el formulario; un valor fuera del vocabulario es un error de formato, nunca una suposición.

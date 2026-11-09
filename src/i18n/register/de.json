@@ -1,0 +1,210 @@
+{
+  "language": "de",
+  "source": "German research of 09/11/2026: renderings that read as machine translation or calques to a professional reader, chosen from the writers' FORBIDDEN list where a whole-word match cannot hit a legitimate use (Flagge stays with the writers' judgement: a country's flag is a Flagge).",
+  "forbidden": [
+    {
+      "avoid": "Lastenausgleich",
+      "use": "Lastverteilung"
+    },
+    {
+      "avoid": "Load Balancer-Konfiguration",
+      "use": "Load-Balancer-Konfiguration"
+    },
+    {
+      "avoid": "Loadbalancer",
+      "use": "Load-Balancer"
+    },
+    {
+      "avoid": "Verschlüsselungssammlung; Chiffrensammlung",
+      "use": "Cipher-Suite (Pl. Cipher-Suiten)"
+    },
+    {
+      "avoid": "Händedruck; Handschlag",
+      "use": "Handshake (TLS-Handshake, Drei-Wege-Handshake)"
+    },
+    {
+      "avoid": "Rahmen; Ethernet-Rahmen",
+      "use": "Frame"
+    },
+    {
+      "avoid": "Sprung; Sprungzahl",
+      "use": "Hop"
+    },
+    {
+      "avoid": "Hopfen",
+      "use": "Hop"
+    },
+    {
+      "avoid": "nächster Sprung",
+      "use": "Next Hop"
+    },
+    {
+      "avoid": "Lebenszeit; Zeit zu leben",
+      "use": "Time to Live (TTL)"
+    },
+    {
+      "avoid": "Zurückverfolgungsroute",
+      "use": "traceroute (command), Traceroute (method)"
+    },
+    {
+      "avoid": "Übereinstimmung mit längstem Präfix; längste Präfix-Übereinstimmung",
+      "use": "Longest Prefix Match"
+    },
+    {
+      "avoid": "Standard-Tor; Vorgabe-Gateway",
+      "use": "Standardgateway"
+    },
+    {
+      "avoid": "Leitwegrechner; Wegewahlrechner",
+      "use": "Router"
+    },
+    {
+      "avoid": "Brandmauer; Brandschutzwand",
+      "use": "Firewall"
+    },
+    {
+      "avoid": "Wurzelbrücke; Stammbrücke",
+      "use": "Root-Bridge"
+    },
+    {
+      "avoid": "Spannbaum; Spannbaumprotokoll",
+      "use": "Spanning Tree (STP)"
+    },
+    {
+      "avoid": "Stamm; Stammleitung; Bündelleitung",
+      "use": "Trunk"
+    },
+    {
+      "avoid": "einheimisches VLAN; ursprüngliches VLAN",
+      "use": "natives VLAN"
+    },
+    {
+      "avoid": "Etikett; Etikettenschlüssel",
+      "use": "Label"
+    },
+    {
+      "avoid": "Mieter; Mandantenfähigkeit for a tenant object",
+      "use": "Tenant (Mandant only for Microsoft products)"
+    },
+    {
+      "avoid": "Ursprungspool",
+      "use": "Origin-Pool"
+    },
+    {
+      "avoid": "Keks",
+      "use": "Cookie"
+    },
+    {
+      "avoid": "Streuwert",
+      "use": "Hash"
+    },
+    {
+      "avoid": "Sockel",
+      "use": "Socket"
+    },
+    {
+      "avoid": "Schnüffler; Paketschnüffler",
+      "use": "Sniffer"
+    },
+    {
+      "avoid": "Schnappschuss",
+      "use": "Snapshot"
+    },
+    {
+      "avoid": "Gesundheitsprüfung; Gesundheitsmonitor",
+      "use": "Zustandsprüfung (Health Check)"
+    },
+    {
+      "avoid": "Beharrlichkeit; Hartnäckigkeit",
+      "use": "Persistenz"
+    },
+    {
+      "avoid": "Rückfall; Rückfallmodus",
+      "use": "Fallback"
+    },
+    {
+      "avoid": "Abfragezeichenfolge",
+      "use": "Query-String"
+    },
+    {
+      "avoid": "Benutzeragent",
+      "use": "User-Agent"
+    },
+    {
+      "avoid": "Inhaltssicherheitsrichtlinie",
+      "use": "Content Security Policy (CSP)"
+    },
+    {
+      "avoid": "Wildkarte; Wildkartenmaske",
+      "use": "Wildcard"
+    },
+    {
+      "avoid": "Groß-Endian; Klein-Endian",
+      "use": "Big-Endian"
+    },
+    {
+      "avoid": "Anzeigetafel; Punktetafel",
+      "use": "Bestenliste"
+    },
+    {
+      "avoid": "Problemumgehung",
+      "use": "Workaround"
+    },
+    {
+      "avoid": "Verbindungsaggregation",
+      "use": "Link-Aggregation"
+    },
+    {
+      "avoid": "Erklärer",
+      "use": "„… erklärt“"
+    },
+    {
+      "avoid": "Auszeit",
+      "use": "Timeout"
+    },
+    {
+      "avoid": "Weltzeit UTC without 'koordinierte' at first mention; Universalzeit",
+      "use": "koordinierte Weltzeit (UTC)"
+    },
+    {
+      "avoid": "Kennwort",
+      "use": "Passwort"
+    },
+    {
+      "avoid": "Sinn machen",
+      "use": "sinnvoll sein"
+    },
+    {
+      "avoid": "in 2026",
+      "use": "2026"
+    },
+    {
+      "avoid": "einmal mehr",
+      "use": "erneut"
+    },
+    {
+      "avoid": "für mehrere Minuten",
+      "use": "mehrere Minuten lang"
+    },
+    {
+      "avoid": "am Ende des Tages",
+      "use": "letztlich"
+    },
+    {
+      "avoid": "TLS 1,3; Version 17,1",
+      "use": "TLS 1.3"
+    },
+    {
+      "avoid": "2:30 PM",
+      "use": "14:30 Uhr"
+    },
+    {
+      "avoid": "von 10–20",
+      "use": "von 10 bis 20"
+    },
+    {
+      "avoid": "IP Adresse; DNS Server; TCP Header",
+      "use": "IP-Adresse"
+    }
+  ]
+}

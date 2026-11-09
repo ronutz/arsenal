@@ -39,7 +39,7 @@ import fs from "node:fs";
 // Path joins and relative paths.
 import path from "node:path";
 // The same locale sets the injector uses.
-import { builtLocales, speaksForItself } from "./seo-locales.mjs";
+import { builtLocales, speaksAnywhere, speaksForItself } from "./seo-locales.mjs";
 
 /** The export folder. */
 const OUT = "out";
@@ -56,10 +56,11 @@ if (!fs.existsSync(OUT)) {
 
 /** The built live locales. */
 const locales = builtLocales(OUT);
-/** The self-canonical ones among them. */
-const speaking = locales.filter(speaksForItself);
-/** The fallback ones among them. */
-const borrowing = locales.filter((l) => !speaksForItself(l));
+/** The ones self-canonical on at least their home page (an interface-native locale speaks for itself on its interface
+ *  routes only, 09/11/2026; speaksForItself(locale, route) decides per page, as in the injector). */
+const speaking = locales.filter(speaksAnywhere);
+/** The ones self-canonical nowhere. */
+const borrowing = locales.filter((l) => !speaksAnywhere(l));
 /** Rule 2 runs when the injector's own run condition holds. */
 const alternatesActive = speaking.length >= 2;
 
@@ -88,8 +89,8 @@ const built = (l, rel) => fs.existsSync(path.join(OUT, l, rel, "index.html"));
 // inject-hreflang.mjs applies when it WRITES the tags: the self-canonical
 // locales in which THIS route was actually built.
 const expectedFor = (rel) => {
-  // The speaking locales holding this route.
-  const present = speaking.filter((l) => built(l, rel));
+  // The locales that speak for this route and hold it.
+  const present = speaking.filter((l) => speaksForItself(l, rel) && built(l, rel));
   // The injector writes nothing below two.
   if (present.length < 2) return "";
   // The sorted set, x-default included.
@@ -132,7 +133,7 @@ const walk = (dir, locale) => {
         problems.push(`${p} -> duplicate hreflang: ${[...new Set(dupAlts)].join(", ")}`);
 
       // Rule 2: the exact set on a self-canonical locale's route page.
-      if (isRoute && speaksForItself(locale) && alternatesActive) {
+      if (isRoute && speaksForItself(locale, rel) && alternatesActive) {
         // What the injector should have written, and what is there.
         const expected = expectedFor(rel);
         const got = [...new Set(alts)].sort().join(",");
@@ -151,7 +152,7 @@ const walk = (dir, locale) => {
 
       // Rule 5, on route pages only.
       if (!isRoute) continue;
-      if (speaksForItself(locale)) {
+      if (speaksForItself(locale, rel)) {
         // A self-canonical page names itself, when it names anything.
         if (canonicalTags.length === 1) {
           selfChecked += 1;

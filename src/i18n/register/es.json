@@ -1,0 +1,362 @@
+{
+  "language": "es",
+  "source": "Spanish (International) research of 09/11/2026: renderings that read as machine translation, regional marking or calques to a professional reader, chosen from the writers' FORBIDDEN list where a whole-word match cannot hit a legitimate use (marco, llave, plantilla, protocolo de enlace and similar stay with the writers' judgement).",
+  "forbidden": [
+    {
+      "avoid": "apretón de manos",
+      "use": "handshake"
+    },
+    {
+      "avoid": "saludo de tres vías",
+      "use": "handshake de tres vías"
+    },
+    {
+      "avoid": "acuerdo de tres vías",
+      "use": "handshake de tres vías"
+    },
+    {
+      "avoid": "zócalo",
+      "use": "socket"
+    },
+    {
+      "avoid": "galleta",
+      "use": "cookie"
+    },
+    {
+      "avoid": "picadillo",
+      "use": "hash"
+    },
+    {
+      "avoid": "troceo",
+      "use": "hash"
+    },
+    {
+      "avoid": "carga de pago",
+      "use": "carga útil (payload)"
+    },
+    {
+      "avoid": "tiempo fuera",
+      "use": "tiempo de espera"
+    },
+    {
+      "avoid": "estampa de tiempo",
+      "use": "marca de tiempo"
+    },
+    {
+      "avoid": "estampilla de tiempo",
+      "use": "marca de tiempo"
+    },
+    {
+      "avoid": "pasarela por defecto",
+      "use": "puerta de enlace predeterminada"
+    },
+    {
+      "avoid": "puerta de entrada predeterminada",
+      "use": "puerta de enlace predeterminada"
+    },
+    {
+      "avoid": "conmutador",
+      "use": "switch"
+    },
+    {
+      "avoid": "enrutador",
+      "use": "router"
+    },
+    {
+      "avoid": "enrutadores",
+      "use": "routers"
+    },
+    {
+      "avoid": "rúter",
+      "use": "router"
+    },
+    {
+      "avoid": "encaminador",
+      "use": "router"
+    },
+    {
+      "avoid": "cortafuegos",
+      "use": "firewall"
+    },
+    {
+      "avoid": "equilibrador de carga",
+      "use": "balanceador de carga"
+    },
+    {
+      "avoid": "conmutación por error",
+      "use": "failover"
+    },
+    {
+      "avoid": "inquilino",
+      "use": "tenant"
+    },
+    {
+      "avoid": "arrendatario",
+      "use": "tenant"
+    },
+    {
+      "avoid": "hombre en el medio",
+      "use": "man-in-the-middle (MitM)"
+    },
+    {
+      "avoid": "hombre en medio",
+      "use": "man-in-the-middle (MitM)"
+    },
+    {
+      "avoid": "librería",
+      "use": "biblioteca"
+    },
+    {
+      "avoid": "librerías",
+      "use": "bibliotecas"
+    },
+    {
+      "avoid": "deprecado",
+      "use": "obsoleto"
+    },
+    {
+      "avoid": "deprecada",
+      "use": "obsoleta"
+    },
+    {
+      "avoid": "setear",
+      "use": "configurar, establecer"
+    },
+    {
+      "avoid": "resetear",
+      "use": "restablecer, reiniciar"
+    },
+    {
+      "avoid": "chequear",
+      "use": "comprobar"
+    },
+    {
+      "avoid": "checar",
+      "use": "comprobar"
+    },
+    {
+      "avoid": "loguearse",
+      "use": "iniciar sesión"
+    },
+    {
+      "avoid": "clickear",
+      "use": "hacer clic"
+    },
+    {
+      "avoid": "cliquear",
+      "use": "hacer clic"
+    },
+    {
+      "avoid": "dar clic",
+      "use": "hacer clic"
+    },
+    {
+      "avoid": "deployar",
+      "use": "desplegar"
+    },
+    {
+      "avoid": "parsear",
+      "use": "analizar"
+    },
+    {
+      "avoid": "testear",
+      "use": "probar"
+    },
+    {
+      "avoid": "customizar",
+      "use": "personalizar"
+    },
+    {
+      "avoid": "accesar",
+      "use": "acceder"
+    },
+    {
+      "avoid": "rutear",
+      "use": "enrutar"
+    },
+    {
+      "avoid": "ruteo",
+      "use": "enrutamiento"
+    },
+    {
+      "avoid": "hardcodeado",
+      "use": "fijado en el código"
+    },
+    {
+      "avoid": "randómico",
+      "use": "aleatorio"
+    },
+    {
+      "avoid": "remover",
+      "use": "quitar, eliminar"
+    },
+    {
+      "avoid": "autentificar",
+      "use": "autenticar"
+    },
+    {
+      "avoid": "autentificación",
+      "use": "autenticación"
+    },
+    {
+      "avoid": "encriptar",
+      "use": "cifrar"
+    },
+    {
+      "avoid": "desencriptar",
+      "use": "descifrar"
+    },
+    {
+      "avoid": "encriptado",
+      "use": "cifrado"
+    },
+    {
+      "avoid": "encriptación",
+      "use": "cifrado"
+    },
+    {
+      "avoid": "ordenador",
+      "use": "equipo"
+    },
+    {
+      "avoid": "ordenadores",
+      "use": "equipos"
+    },
+    {
+      "avoid": "computadora",
+      "use": "equipo"
+    },
+    {
+      "avoid": "computador",
+      "use": "equipo"
+    },
+    {
+      "avoid": "fichero",
+      "use": "archivo"
+    },
+    {
+      "avoid": "ficheros",
+      "use": "archivos"
+    },
+    {
+      "avoid": "reporte",
+      "use": "informe"
+    },
+    {
+      "avoid": "reportes",
+      "use": "informes"
+    },
+    {
+      "avoid": "coger",
+      "use": "tomar"
+    },
+    {
+      "avoid": "ratón",
+      "use": "el cursor, el puntero"
+    },
+    {
+      "avoid": "puzle",
+      "use": "reto, rompecabezas"
+    },
+    {
+      "avoid": "hacer sentido",
+      "use": "tener sentido"
+    },
+    {
+      "avoid": "hace sentido",
+      "use": "tiene sentido"
+    },
+    {
+      "avoid": "tomar lugar",
+      "use": "tener lugar"
+    },
+    {
+      "avoid": "jugar un rol",
+      "use": "desempeñar un papel"
+    },
+    {
+      "avoid": "al final del día",
+      "use": "en definitiva"
+    },
+    {
+      "avoid": "fuera de la caja",
+      "use": "de serie"
+    },
+    {
+      "avoid": "en base a",
+      "use": "según, a partir de"
+    },
+    {
+      "avoid": "radio de explosión",
+      "use": "alcance del impacto"
+    },
+    {
+      "avoid": "Ha ocurrido un error",
+      "use": "No se puede... / Error en..."
+    },
+    {
+      "avoid": "Ocurrió un error",
+      "use": "No se pudo... / Error en..."
+    },
+    {
+      "avoid": "Haga clic",
+      "use": "Haz clic"
+    },
+    {
+      "avoid": "tenéis",
+      "use": "tienes / ustedes tienen"
+    },
+    {
+      "avoid": "podéis",
+      "use": "puedes / ustedes pueden"
+    },
+    {
+      "avoid": "tenés",
+      "use": "tienes"
+    },
+    {
+      "avoid": "podés",
+      "use": "puedes"
+    },
+    {
+      "avoid": "carácteres",
+      "use": "caracteres"
+    },
+    {
+      "avoid": "clústers",
+      "use": "clústeres"
+    },
+    {
+      "avoid": "búffers",
+      "use": "búferes"
+    },
+    {
+      "avoid": "auto-firmado",
+      "use": "autofirmado"
+    },
+    {
+      "avoid": "sub-red",
+      "use": "subred"
+    },
+    {
+      "avoid": "re-enviar",
+      "use": "reenviar"
+    },
+    {
+      "avoid": "VLANs",
+      "use": "las VLAN"
+    },
+    {
+      "avoid": "APIs",
+      "use": "las API"
+    },
+    {
+      "avoid": "URLs",
+      "use": "las URL"
+    },
+    {
+      "avoid": "ACLs",
+      "use": "las ACL"
+    }
+  ]
+}

@@ -44,6 +44,8 @@ import {
 import { getStudyGuide } from "@/content/certifications/study-guides";
 import { externalRel } from "@/config/redEducation";
 import { routing } from "@/i18n/routing";
+// The catalogue's text in the interface locales beyond en and pt-BR (09/11/2026): the "training" module's strings.
+import { contentStringsFor } from "@/i18n/contentStrings";
 
 // Pre-generate a page for every (locale, platform, course) triple.
 export function generateStaticParams() {
@@ -129,10 +131,13 @@ export default async function CoursePage({
   // The training namespace holds every label of this page.
   const t = await getTranslations("training");
 
+  // The "training" module's strings in this locale (empty for en and pt-BR, and for a locale not written yet).
+  const strings = contentStringsFor(locale, ["training"]);
+
   /** A Localized value for this page: its text, and the lang attribute to set when it differs from the page's language. */
   const tx = (value: Localized): { text: string; lang: string | undefined } => {
-    // The authored text for this locale.
-    const v = localizedText(value, locale);
+    // The authored text for this locale: pt-BR inline, another locale's own text when written, else the English.
+    const v = localizedText(value, locale, strings);
     // Only English shown on a non-English page needs its own lang attribute.
     return { text: v.text, lang: v.lang === locale ? undefined : v.lang };
   };

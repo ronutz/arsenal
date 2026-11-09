@@ -34,9 +34,9 @@ A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-
 
 ## Fontes
 
-- Zscaler Reference Architecture: Zscaler Digital Experience (ZDX) - métricas de probe, cadência, semântica de menor-da-hora e média de grupo
-- Zscaler Help: Evaluating User Details - a faixa Poor documentada (0-33) e sua análise automática de causa raiz
-- Zscaler Help: Understanding the ZDX API - as calibragens de atraso de telemetria e variação de agregados
+- [Zscaler Reference Architecture: Zscaler Digital Experience (ZDX)](https://help.zscaler.com/downloads/zdx/reference-architecture/zscaler-digital-experience-zdx/zscaler-digital-experience-zdx-reference-architecture.pdf) - métricas de probe, cadência, semântica de menor-da-hora e média de grupo (lida em 2026-11-09)
+- [Zscaler Help: Evaluating User Details](https://help.zscaler.com/zdx/evaluating-user-details) - a faixa Poor documentada (0-33) e sua análise automática de causa raiz (lida em 2026-11-09)
+- [Zscaler Help: Understanding the ZDX API](https://help.zscaler.com/legacy-apis/understanding-zdx-api) - as calibragens de atraso de telemetria e variação de agregados (lida em 2026-11-09)
 - [Zscaler Help: Understanding the ZDX Score](https://help.zscaler.com/zdx/understanding-zdx-score) - a escala de 0 a 100, as três faixas, as regras de consolidação, o arredondamento para inteiros e os tipos de score (lida em 2026-10-26)
 
 A regra do fragmento por trás do Compartilhar resultado é a [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), seção 3.5 (lida em 2026-11-01), e as credenciais que a verificação procura são definidas na RFC 7468, na RFC 9110, na RFC 6265 e na RFC 7519 (lidas no mesmo dia).

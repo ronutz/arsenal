@@ -1,0 +1,20 @@
+# Explicador de la source mask de OneConnect
+
+OneConnect mantiene vivas las conexiones del lado del servidor y se las entrega a la siguiente solicitud apta, y la palabra que hace todo el trabajo en esa frase es apta. La source mask decide qué es apto, y la página man enuncia sus dos extremos con claridad: 0.0.0.0, el valor predeterminado, comparte las conexiones reutilizadas entre todos los clientes; una máscara de host solo las comparte entre conexiones de la misma dirección IP de cliente. Todo lo que queda entre medias se comporta como una máscara de subred, que agrupa a los clientes por los bits que conserva.
+
+Pega un bloque (stanza) `ltm profile one-connect` y cada opción se muestra con la semántica de la propia referencia de la v17, con los valores predeterminados escritos de forma explícita en lugar de suponerlos: max-age 86400, max-reuse 1000, max-size 10000, limit-type none. El límite strict lleva la advertencia del propio manual: las conexiones inactivas bloquean las nuevas hasta que caducan, aunque se hubieran podido reutilizar, una configuración que la propia página califica de no recomendada fuera de casos especiales. share-pools recibe su semántica entre virtual servers; la opción idle-timeout-override recibe un aviso honesto sobre una rareza de la propia página man: se declara como disabled o enabled, pero se describe como un número de segundos.
+
+La simulación es la estrella. Dale una máscara, una lista de direcciones IP de clientes y, si quieres, una dirección SNAT, y se muestran los grupos de reutilización. Si hay SNAT, ves en acción el orden que indican tanto el K7208 como el K5911: primero se hace la traducción y la máscara se aplica a la dirección traducida, así que una única dirección SNAT junta a todos los clientes en un solo grupo de reutilización, por estrecha que sea la máscara. Ese colapso es la sorpresa en producción que esta herramienta existe para mostrarte antes de que te ocurra.
+
+Dos detalles de honestidad estadística del propio artículo de laboratorio de F5 cierran la auditoría: max-size se reparte entre las instancias de TMM en lugar de formar un único pool global, y el contador Current Idle incluye todas las conexiones inactivas del lado del servidor, tanto si la máscara las hace aptas como si no. Lee la salida de `tmsh show` con las dos cosas en mente.
+
+Todo se ejecuta en local; nada de lo que pegas sale de la página.
+
+## Compartir resultados
+
+Debajo del nombre del perfil, debajo de los grupos de reutilización de la simulación de máscara o al principio del catálogo de ajustes, **Compartir resultados** genera un enlace a esta página, solo cuando lo presionas, que lleva después del `#` el cuadro tal como se escribió: un perfil, una línea de simulación de máscara o `settings`. Un perfil one-connect no contiene ningún ajuste secreto ([referencia de tmsh de F5, ltm profile one-connect](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_profile_one-connect.html), consultada el 2026-10-27). Su ventana emergente dice primero qué lleva el enlace, y después ofrece Copiar enlace y, si el navegador lo tiene, el menú Compartir del sistema; la dirección de la página no cambia.
+
+Según el [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (sección 3.5, consultado el 2026-10-27), el fragmento queda “separated from the rest of the URI prior to a dereference” (separado del resto del URI antes de resolverlo), así que el texto no se envía al servidor cuando se abre el enlace; se queda en la barra de direcciones y en el historial de quien lo abra, y cualquiera que tenga el enlace puede leerlo.
+
+- **Longitud.** Como máximo 16.384 caracteres en total, el límite que el sitio aplica a todo valor después del `#`; si lo compartido es más largo, no hay enlace, y la ventana emergente indica su longitud.
+- **Al abrir un enlace.** El texto rellena el cuadro como lo haría un pegado y la página lo explica. Después, los valores salen de la dirección de la página al instante, sin ninguna solicitud, así que al recargar, o con el propio botón Compartir de la página, no se lleva nada.

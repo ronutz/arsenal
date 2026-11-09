@@ -224,7 +224,7 @@ export function predictMatchesLocalisable(
   } else if (matchCount === 0) {
     failedStage = "checksum";
     explanation = candidates.length === 1 // one string, or several
-      ? say("explain.checksumOne", `${count} string had the right shape and none passed the checksum. The engine does not count these, which is exactly the behaviour that makes people think DLP "missed" something.`, { count }) // one
+      ? say("explain.checksumOne", `${count} string had the right shape and did not pass the checksum. The engine does not count it, which is exactly the behaviour that makes people think DLP "missed" something.`, { count }) // one; 09/11/2026: singular throughout ("none" and "these" were the plural's)
       : say("explain.checksumMany", `${count} strings had the right shape and none passed the checksum. The engine does not count these, which is exactly the behaviour that makes people think DLP "missed" something.`, { count }); // several
   } else if (!fires) {
     failedStage = "threshold";

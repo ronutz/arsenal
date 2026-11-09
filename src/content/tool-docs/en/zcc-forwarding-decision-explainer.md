@@ -6,7 +6,7 @@ Paste a Zscaler Client Connector posture - the detected network state, the ZIA f
 
 This tool exists in the form its ratification clause specified, and the reason is stated here before anything else. The verification pass (2026-07-21, against the Secure Mobile Access with Zscaler Client Connector reference architecture and help.zscaler.com) found the decision **spine** publicly documented end to end: how the trusted-network state is determined, what each of ZIA's four per-state actions does, what each Z-Tunnel version captures, the automatic Z-Tunnel 2.0-to-1.0 failover, the hybrid web-split, and ZPA's two actions. That spine is deterministic, and this tool computes it.
 
-What is **not** published is a single precedence order for the bypass layer. The mechanisms are each documented - Application Bypass, Destination and Domain Exclusions and Inclusions, VPN [virtual private network] Gateway Bypass, the app-profile PAC, the forwarding-profile PAC with its Z-Tunnel 2.0 bypass macro - but when several of them address the same flow, Zscaler publishes recipes, not a conflict-resolution matrix. A simulator would have to invent that matrix. This tool declines: it renders every documented mechanism as an explained ledger and adjudicates nothing. Same no-invention rule as the rest of this site's tools.
+What is **not** published is a single precedence order for the bypass layer. The mechanisms are each documented - Application Bypass, Destination and Domain Exclusions and Inclusions, VPN Gateway Bypass (VPN: virtual private network), the app-profile PAC, the forwarding-profile PAC with its Z-Tunnel 2.0 bypass macro - but when several of them address the same flow, Zscaler publishes recipes, not a conflict-resolution matrix. A simulator would have to invent that matrix. This tool declines: it renders every documented mechanism as an explained ledger and adjudicates nothing. Same no-invention rule as the rest of this site's tools.
 
 ## Input grammar
 
@@ -37,9 +37,9 @@ Each setting is one of a few documented choices, with no address, host, user or 
 
 ## Sources
 
-- Zscaler Reference Architecture: Secure Mobile Access with Zscaler Client Connector - the states, actions, criteria, tunnel semantics, failover, and recommendation table
-- Zscaler Help: About Z-Tunnel 1.0 & Z-Tunnel 2.0
-- Zscaler Help: Best Practices for Adding Bypasses for Z-Tunnel 2.0 - the two-PAC division of labor
-- Zscaler Help: Configuring Forwarding Profiles for Zscaler Client Connector
+- [Zscaler Reference Architecture: Secure Mobile Access with Zscaler Client Connector](https://www.zscaler.com/resources/reference-architectures/secure-mobile-access-with-zcc.pdf) - the states, actions, criteria, tunnel semantics, failover, and recommendation table (read 2026-11-09)
+- [Zscaler Help: About Z-Tunnel 1.0 & Z-Tunnel 2.0](https://help.zscaler.com/zscaler-client-connector/about-z-tunnel-1.0-z-tunnel-2.0) (read 2026-11-09)
+- [Zscaler Help: Best Practices for Adding Bypasses for Z-Tunnel 2.0](https://help.zscaler.com/zscaler-client-connector/best-practices-adding-bypasses-z-tunnel-2.0) - the two-PAC division of labour (read 2026-11-09)
+- [Zscaler Help: Configuring Forwarding Profiles for Zscaler Client Connector](https://help.zscaler.com/zscaler-client-connector/configuring-forwarding-profiles-zscaler-client-connector) (read 2026-11-09)
 
 The fragment rule behind Share results is [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), section 3.5 (read 2026-11-01), and the credentials its check looks for are defined in RFC 7468, RFC 9110, RFC 6265 and RFC 7519 (read the same day).

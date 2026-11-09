@@ -18,7 +18,7 @@ Multiple decoding é a única subviolação com um valor de ajuste. No schema de
 
 ## A ponte para as ferramentas de codificação
 
-Várias dessas subviolações são exatamente as mesmas operações de decodificação que a caixa de ferramentas já realiza. Os escapes `%u`, os bare bytes, e o percent-encoding `%XX` que o Bad unescape fiscaliza são território do codec Base64/Percent, e Multiple decoding é simplesmente percent-decoding rodado mais de uma vez. Cada card de referência nomeia a ferramenta relacionada, para que você possa pegar uma string codificada e ver a decodificação acontecer à mão, o que é o jeito mais rápido de construir intuição sobre o que o WAF está normalizando.
+Várias dessas subviolações são exatamente as mesmas operações de decodificação que a caixa de ferramentas já realiza. Os escapes `%u`, os bare bytes, e o percent-encoding `%XX` que o Bad unescape fiscaliza são território do [Códec Base64, Base32, Hex e Porcentual](/tools/base64), e Multiple decoding é simplesmente percent-decoding rodado mais de uma vez. Cada card de referência nomeia a ferramenta relacionada, para que você possa pegar uma string codificada e ver a decodificação acontecer à mão, o que é o jeito mais rápido de construir intuição sobre o que o WAF está normalizando.
 
 ## Uma regra do schema
 

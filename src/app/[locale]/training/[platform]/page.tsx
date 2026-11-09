@@ -26,6 +26,8 @@ import SiteFooter from "@/components/SiteFooter";
 import RequestTraining from "@/components/RequestTraining";
 import { PLATFORMS, getPlatform, localizedText, type Localized } from "@/content/training/courses";
 import { routing } from "@/i18n/routing";
+// The catalogue's text in the interface locales beyond en and pt-BR (09/11/2026): the "training" module's strings.
+import { contentStringsFor } from "@/i18n/contentStrings";
 
 // Pre-generate a page for every (locale, platform) pair.
 export function generateStaticParams() {
@@ -55,7 +57,7 @@ export async function generateMetadata({
   // its own, so Next.js writes og:description and twitter:description from it, as it does for /changelog.
   return {
     // The title, as before.
-    title: t("platformMetaTitle", { platform: p.name, tagline: localizedText(p.tagline, locale).text }),
+    title: t("platformMetaTitle", { platform: p.name, tagline: localizedText(p.tagline, locale, contentStringsFor(locale, ["training"])).text }),
     // The description, with the platform's display name.
     description: t("platformMetaDescription", { platform: p.name }),
   };
@@ -74,10 +76,13 @@ export default async function PlatformPage({
 
   const t = await getTranslations("training");
 
+  // The "training" module's strings in this locale (empty for en and pt-BR, and for a locale not written yet).
+  const strings = contentStringsFor(locale, ["training"]);
+
   /** A Localized value for this page: its text, and the lang attribute to set when it differs from the page's language. */
   const tx = (value: Localized): { text: string; lang: string | undefined } => {
-    // The authored text for this locale.
-    const v = localizedText(value, locale);
+    // The authored text for this locale: pt-BR inline, another locale's own text when written, else the English.
+    const v = localizedText(value, locale, strings);
     // Only English shown on a non-English page needs its own lang attribute.
     return { text: v.text, lang: v.lang === locale ? undefined : v.lang };
   };

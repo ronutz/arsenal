@@ -35,6 +35,6 @@ A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-
 
 ## Fontes
 
-Fundamentado na documentação de inspeção SSL da Zscaler (Configuring the SSL/TLS Inspection Policy; About SSL Inspection) e na arquitetura de referência de Data Protection, data de acesso 2026-07-21. As duas formas de Do Not Inspect, e os ajustes que cada uma oferece, foram relidas em [Configuring SSL/TLS Inspection Policy](https://help.zscaler.com/zia/configuring-ssltls-inspection-policy) (lida em 2026-10-26). O artigo Learn pareado é *Inspeção SSL no ZIA: Política e Bypasses*.
+Fundamentado na documentação de inspeção SSL da Zscaler (Configuring the SSL/TLS Inspection Policy; About SSL Inspection) e na arquitetura de referência de Data Protection, data de acesso 2026-07-21. As duas formas de Do Not Inspect, e os ajustes que cada uma oferece, foram relidas em [Configuring SSL/TLS Inspection Policy](https://help.zscaler.com/zia/configuring-ssltls-inspection-policy) (lida em 2026-10-26). O artigo Learn pareado é [*Inspeção TLS no ZIA: a política, os bypasses e a conta*](/learn/zia-ssl-inspection-policy-and-bypasses).
 
 A regra do fragmento por trás do Compartilhar resultado é a [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), seção 3.5 (lida em 2026-11-01), e as credenciais que a verificação procura são definidas na RFC 7468, na RFC 9110, na RFC 6265 e na RFC 7519 (lidas no mesmo dia).

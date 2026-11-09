@@ -42,7 +42,7 @@ Status de saída: 0 concluído; 1 o login falhou; 2 entrada faltando ou errada; 
 
 - Só nomes de host e endereços (sem hífen no começo, então um valor nunca chega ao ssh como opção); com o host tomado da linha de comando, o script confere o argumento do mesmo jeito quando roda.
 - Porta só para o ssh (`-p`); para telnet em outra porta, use Outro programa.
-- Linhas de comando de programa, arquivos de chave e arquivos de log sem espaços, sem `~` e sem caracteres que o Tcl substituiria.
+- Arquivos de chave e arquivos de log como caminhos simples, sem espaços, sem `~` e sem caracteres que o Tcl substituiria; a linha de comando de um programa como palavras separadas por espaços, nenhuma delas com `~` ou um desses caracteres, e o nome do programa sem começar com hífen.
 - Comandos como texto simples, até 40, de até 300 caracteres cada; todo `\`, `"`, `$`, `[`, `]`, `{` e `}` é protegido com uma barra invertida para que o equipamento receba o comando como digitado.
 - Timeouts de 1 a 3600 segundos, nunca `-1`.
 - Uma regexp de prompt genérica com as chaves fechando, e nunca uma que case na hora (`.*`, `^`, `$`).

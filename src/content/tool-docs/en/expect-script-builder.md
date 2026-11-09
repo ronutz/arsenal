@@ -42,7 +42,7 @@ Exit statuses: 0 done; 1 the login failed; 2 missing or wrong input; 3 a command
 
 - Host names and addresses only (no leading hyphen, so a value can never reach ssh as an option); with the host taken from the command line, the script checks the argument the same way when it runs.
 - A port only for ssh (`-p`); for telnet on another port, use Another program.
-- Program command lines, key files and log files without spaces, `~` or characters Tcl would substitute.
+- Key files and log files as plain paths, without spaces, `~` or characters Tcl would substitute; a program's command line as words separated by spaces, none holding `~` or such a character, and the program's name not starting with a hyphen.
 - Commands as plain text, up to 40 of 300 characters each; every `\`, `"`, `$`, `[`, `]`, `{` and `}` is protected with a backslash so the device receives the command as typed.
 - Timeouts from 1 to 3600 seconds, never `-1`.
 - A generic prompt regexp with balanced braces, and never one that matches at once (`.*`, `^`, `$`).

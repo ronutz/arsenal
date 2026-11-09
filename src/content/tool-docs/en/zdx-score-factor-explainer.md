@@ -34,9 +34,9 @@ Metrics can describe how an internal application performs (the reason the popove
 
 ## Sources
 
-- Zscaler Reference Architecture: Zscaler Digital Experience (ZDX) - probe metrics, cadence, lowest-of-hour and group-averaging semantics
-- Zscaler Help: Evaluating User Details - the documented Poor band (0-33) and its automatic root-cause analysis
-- Zscaler Help: Understanding the ZDX API - the telemetry delay and aggregate-variance calibrations
+- [Zscaler Reference Architecture: Zscaler Digital Experience (ZDX)](https://help.zscaler.com/downloads/zdx/reference-architecture/zscaler-digital-experience-zdx/zscaler-digital-experience-zdx-reference-architecture.pdf) - probe metrics, cadence, lowest-of-hour and group-averaging semantics (read 2026-11-09)
+- [Zscaler Help: Evaluating User Details](https://help.zscaler.com/zdx/evaluating-user-details) - the documented Poor band (0-33) and its automatic root-cause analysis (read 2026-11-09)
+- [Zscaler Help: Understanding the ZDX API](https://help.zscaler.com/legacy-apis/understanding-zdx-api) - the telemetry delay and aggregate-variance calibrations (read 2026-11-09)
 - [Zscaler Help: Understanding the ZDX Score](https://help.zscaler.com/zdx/understanding-zdx-score) - the 0-100 scale, the three bands, the roll-up rules, whole-number rounding and the score types (read 2026-10-26)
 
 The fragment rule behind Share results is [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), section 3.5 (read 2026-11-01), and the credentials its check looks for are defined in RFC 7468, RFC 9110, RFC 6265 and RFC 7519 (read the same day).

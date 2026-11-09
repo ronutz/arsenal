@@ -40,7 +40,7 @@ import fs from "node:fs";
 // Path joins and relative paths.
 import path from "node:path";
 // Which locales are built, and which of them speak for themselves.
-import { builtLocales, speaksForItself } from "./seo-locales.mjs";
+import { builtLocales, speaksAnywhere, speaksForItself } from "./seo-locales.mjs";
 
 /** The export folder. */
 const OUT = "out";
@@ -59,10 +59,12 @@ if (!fs.existsSync(OUT)) {
 
 /** The live locales that were built into this export, registry order. */
 const locales = builtLocales(OUT);
-/** The built locales that are self-canonical and take part in hreflang. */
-const speaking = locales.filter(speaksForItself);
-/** The built locales whose pages borrow the English page's canonical. */
-const borrowing = locales.filter((l) => !speaksForItself(l));
+/** The built locales that are self-canonical on at least their home page (since 09/11/2026 an interface-native locale
+ *  speaks for itself on its interface routes only; speaksForItself(locale, route) decides per page). */
+const speaking = locales.filter(speaksAnywhere);
+/** The built locales with at least one page that borrows the English page's canonical: every locale except English
+ *  and the authored-content ones, page by page (an interface-native locale borrows on its corpus routes only). */
+const borrowing = locales.filter((l) => l !== XDEFAULT);
 
 /**
  * Every index.html below a folder, depth first.
@@ -146,8 +148,10 @@ if (speaking.length >= 2) {
       // 2026-11-02 18:42 UTC: check-hreflang-integrity failed on that tool's en and pt-BR pages).
       if (headEnd !== -1 && /<link[^>]*rel="alternate"[^>]*hreflang=/.test(html.slice(0, headEnd))) continue;
 
-      // Only the speaking locales where THIS route was actually generated.
-      const present = speaking.filter((l) => built(l, rel));
+      // A route this locale does not speak for (a corpus route of an interface-native locale) gets no alternates.
+      if (!speaksForItself(locale, rel)) continue;
+      // Only the locales that speak for THIS route and where it was actually generated.
+      const present = speaking.filter((l) => speaksForItself(l, rel) && built(l, rel));
       // One language alone has no alternates.
       if (present.length < 2) continue;
 
@@ -179,6 +183,9 @@ for (const locale of borrowing) {
   for (const file of walk(path.join(OUT, locale))) {
     // The route below the locale.
     const rel = path.relative(path.join(OUT, locale), path.dirname(file)).split(path.sep).join("/");
+    // A page that speaks for itself keeps its own canonical (every page of an authored locale, the interface routes
+    // of an interface-native one).
+    if (speaksForItself(locale, rel)) continue;
     // No English counterpart: the page is its own best address and keeps its self-canonical.
     if (!built(XDEFAULT, rel)) {
       // Count it for the log.
@@ -250,6 +257,6 @@ if (missingCanonical.length > 0) {
 console.log(
   `[inject-hreflang] OK: ${touched} page(s) given language alternates across ${speaking.length} self-canonical locale(s) (${speaking.join(", ") || "none"}); ${tags} tag(s) written.` +
     (borrowing.length > 0
-      ? ` ${borrowed} page(s) in ${borrowing.length} fallback locale(s) now name their English page as canonical (${payloadFiles} index.txt payload(s) matched); ${alreadyBorrowed} already did; ${noEnglish} have no English counterpart and keep their own.`
+      ? ` ${borrowed} page(s) now name their English page as canonical, page by page across the non-English locales (${payloadFiles} index.txt payload(s) matched); ${alreadyBorrowed} already did; ${noEnglish} have no English counterpart and keep their own.`
       : " No fallback locale in this build; canonical borrowing N/A."),
 );

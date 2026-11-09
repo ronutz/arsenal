@@ -53,7 +53,7 @@ Duas mudanças sempre acontecem, e o resultado avisa quando acontecem: uma marca
 
 ## Segurança: nada é expandido, nada é baixado
 
-A ferramenta nunca expande uma entidade, nunca lê uma DTD externa e nunca baixa um identificador `SYSTEM` ou `PUBLIC`: o DOCTYPE é mantido como texto, e a única coisa que ela aprende de um subconjunto interno é quais entidades gerais estão declaradas e de que tipo. Um documento montado para um ataque de entidade externa (XXE) ou de expansão de entidades é, então, só texto aqui. A entrada tem limite de 2.000.000 de caracteres e 1.000 níveis de aninhamento, e o parser lê o texto uma única vez, então um documento hostil não consegue travar a página. Para ver o que um documento desses faria com um parser que expande entidades, use o decodificador de XML.
+A ferramenta nunca expande uma entidade, nunca lê uma DTD externa e nunca baixa um identificador `SYSTEM` ou `PUBLIC`: o DOCTYPE é mantido como texto, e a única coisa que ela aprende de um subconjunto interno é quais entidades gerais estão declaradas e de que tipo. Um documento montado para um ataque de entidade externa (XXE) ou de expansão de entidades é, então, só texto aqui. A entrada tem limite de 2.000.000 de caracteres e 1.000 níveis de aninhamento, e o parser lê o texto uma única vez, então um documento hostil não consegue travar a página. O decodificador de XML também não expande nada, mas diz o que um documento desses faria com um parser que expande entidades: ele aponta entidades externas, entidades de parâmetro e entidades que referenciam outras entidades.
 
 ## Documentos assinados
 

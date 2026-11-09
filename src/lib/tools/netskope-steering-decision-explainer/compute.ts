@@ -187,7 +187,7 @@ export function runLocalisable(text: string): SteeringDecision<EngineText> {
     mode = (spec.location === "on-prem" ? spec.modeOnPrem : spec.modeOffPrem) ?? spec.mode;
     const location = spec.location; // on-prem or off-prem
     ledger.push({
-      check: say("check.dynamic", `Dynamic steering: device is ${location}`, { location }), // dynamic steering
+      check: say("check.dynamic", `Dynamic steering: device location, ${location}`, { location }), // dynamic steering; 09/11/2026: {location} is the spec's raw token (on-prem / off-prem), so the sentence labels it rather than reading it as an adjective, and every locale can do the same
       outcome: say("out.dynamic", `Per-location traffic mode applies: ${mode}. (On-Premises Detection Profiles decide the location; the docs also warn that repeatedly toggling dynamic steering can lose steering exceptions.)`, { mode }), // the per-location mode
     });
   } else {

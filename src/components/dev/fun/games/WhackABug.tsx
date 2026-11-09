@@ -489,8 +489,12 @@ export default function WhackABug({ locale }: { locale: string }) {
     const onKey = (e: KeyboardEvent) => {
       // Shortcuts with modifiers and held-down repeats are not taps.
       if (e.ctrlKey || e.metaKey || e.altKey || e.repeat) return;
-      // The slot of this physical key.
-      const slot = CODE_TO_SLOT[e.code];
+      // The slot of the letter typed, so the key labelled Z on a German keyboard (QWERTZ) or A on a French one
+      // (AZERTY) hits the pane marked Z or A (09/11/2026); a key that types no slot letter falls back to its
+      // position (the number pad, and QWERTY as before).
+      const byLetter = SLOT_KEYS.indexOf(e.key.length === 1 ? e.key.toUpperCase() : "");
+      // The slot: by letter when the letter is one of ours, else by physical position.
+      const slot = byLetter >= 0 ? byLetter : CODE_TO_SLOT[e.code];
       // Not one of ours.
       if (slot === undefined) return;
       // Ours: no typing or scrolling.

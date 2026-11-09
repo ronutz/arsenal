@@ -18,7 +18,9 @@
 // for answers of eight characters or more one slip is forgiven, but never a
 // different digit, so "IPv4 header" is not "IPv6 header". A guess made only of words from an accepted answer ("DNS" for "DNS
 // record types") is "close": the player is told to be more specific, and no
-// clue is spent.
+// clue is spent. Since 09/11/2026 the answers of the other interface
+// languages (answers-i18n.ts, empty until written) are accepted the same way,
+// on every page and in the scoreboard's server check.
 //
 // Pure: no DOM, no clock, no Math.random.
 // ============================================================================
@@ -29,6 +31,8 @@ import { addDays, LAUNCH_DAY, puzzleNumber } from "../../daily";
 import type { SelfTestReport } from "../../registry";
 // The pool.
 import { DAILY_ORDER, PUZZLES, type Clue, type FivePuzzle } from "./puzzles";
+// The answers accepted in the interface languages beyond English and Portuguese (09/11/2026; empty until written).
+import { LOCALE_ANSWERS } from "./answers-i18n";
 
 /** The game's stable id. */
 export const GAME_ID = "five-clues";
@@ -167,7 +171,9 @@ const STOP = new Set(
 
 /**
  * Every accepted answer of a puzzle: both languages' lists, both category names, and the category names without
- * their bracketed part ("Private IPv4 addresses" for "Private IPv4 addresses (RFC 1918)").
+ * their bracketed part ("Private IPv4 addresses" for "Private IPv4 addresses (RFC 1918)"); then, since 09/11/2026,
+ * every other interface locale's list for the puzzle (answers-i18n.ts), after the existing ones so the order of the
+ * English and Portuguese answers (the first is the main answer) is unchanged.
  *
  * @param p the puzzle
  * @returns the accepted answers, as written
@@ -175,8 +181,10 @@ const STOP = new Set(
 export function acceptedAnswers(p: FivePuzzle): string[] {
   // The category names without brackets.
   const bare = [p.cat.en, p.cat.pt].map((c) => c.replace(/\s*\([^)]*\)\s*/g, " ").trim());
+  // The other interface locales' answers for this puzzle, in the locales' order in the table (none yet).
+  const others = Object.values(LOCALE_ANSWERS).flatMap((byPuzzle) => byPuzzle[p.id] ?? []);
   // All of them.
-  return [...p.answers.en, ...p.answers.pt, p.cat.en, p.cat.pt, ...bare];
+  return [...p.answers.en, ...p.answers.pt, p.cat.en, p.cat.pt, ...bare, ...others];
 }
 
 /** An accepted answer ready for comparison. */

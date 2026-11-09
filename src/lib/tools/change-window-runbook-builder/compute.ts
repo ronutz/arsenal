@@ -410,7 +410,7 @@ const STEPS: StepDef[] = [
         "load-balancer": "test through the virtual server end to end; watch pool member and connection stats",
         dns: "resolve the names in scope from a client and from the authoritative server; compare",
         "tls-pki": "openssl s_client to the endpoint; confirm the new chain, SAN, and expiry",
-        firewall: "test that the intended traffic passes and the intended traffic is still blocked",
+        firewall: "test that the intended traffic passes and the unintended traffic is still blocked", // 09/11/2026: the second half says "unintended", as rule R-FIREWALL-DIFF does (it read "intended" twice)
       }),
   },
   {

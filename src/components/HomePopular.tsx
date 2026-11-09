@@ -25,7 +25,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 
 /** One index entry, as gen-home-index writes it. */
-interface Entry { k: string; p: string; t: { en: string; "pt-BR"?: string } }
+interface Entry { k: string; p: string; t: { en: string; "pt-BR"?: string } & Record<string, string | undefined> }
 /** One row the stats API returns. */
 interface StatRow { path: string; views: number | string }
 /** One list item after the join. */
@@ -67,7 +67,7 @@ export default function HomePopular({ kinds, title, className }: {
         if (!e) continue;
         // A scoped list (the Learn hub asks for articles) drops the other kinds before ranking.
         if (kinds && !kinds.includes(e.k)) continue;
-        joined.push({ kind: e.k, path: e.p, title: (locale === "pt-BR" && e.t["pt-BR"]) || e.t.en, views: Number(r.views) || 0 });
+        joined.push({ kind: e.k, path: e.p, title: e.t[locale] || e.t.en, views: Number(r.views) || 0 });
       }
       // Variety first: the top item of each kind in view order, then the rest by views, five in all.
       joined.sort((a, b) => b.views - a.views);

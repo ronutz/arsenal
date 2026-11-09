@@ -154,8 +154,12 @@ export default async function DevFunIndexPage({
             <div className="devfun-group">
               <h3 className="devfun-group-title">{t("gameGroups.arcade")}</h3>
               <div className="devfun-list devfun-games-list">
-                <Link href="/arcade" className="devfun-card">
+                <Link href="/arcade" className="devfun-card fg-card-art fg-glyph--arcade">
                   <span className="devfun-card-top">
+                    {/* An arcade cabinet on its tinted tile, like the other cards (PRIME 09/11/2026 02:24). */}
+                    <span className="fg-card-tile" aria-hidden="true">
+                      <GameGlyph id="arcade" className="fg-glyph-card" />
+                    </span>
                     <span className="devfun-card-name">{t("arcadeCardName")}</span>
                     <span className="devfun-card-arrow" aria-hidden="true">
                       &#8594;

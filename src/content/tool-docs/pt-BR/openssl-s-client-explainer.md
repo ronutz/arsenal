@@ -104,7 +104,6 @@ O mesmo engine responde à operação `/api/v1/openssl-s-client-explainer` da AP
 - [OpenSSL 3.5, EVP_PKEY_is_a(3)](https://docs.openssl.org/3.5/man3/EVP_PKEY_is_a/) (lida em 2026-10-27): EVP_PKEY_get0_type_name, o nome do tipo de chave na linha a:PKEY
 - [OpenSSL 3.5, SSL_CTX_set_security_level(3)](https://docs.openssl.org/3.5/man3/SSL_CTX_set_security_level/) (lida em 2026-10-27): níveis de segurança
 - [OpenSSL 3.5, ERR_print_errors(3)](https://docs.openssl.org/3.5/man3/ERR_print_errors/) (lida em 2026-10-27): o formato da linha de erro
-- [OpenSSL 3.5, openssl-passphrase-options(1)](https://docs.openssl.org/3.5/man1/openssl-passphrase-options/) (lida em 2026-10-27): pass:password
 - [OpenSSL 3.5, BIO_parse_hostserv(3)](https://docs.openssl.org/3.5/man3/BIO_parse_hostserv/) (lida em 2026-10-27): um host sem serviço
 - [OpenSSL 3.5, openssl-ciphers(1)](https://docs.openssl.org/3.5/man1/openssl-ciphers/) (lida em 2026-10-27): nomes de cipher suites
 - [Código-fonte do OpenSSL, tag openssl-3.5.9, apps/s_client.c](https://github.com/openssl/openssl/blob/openssl-3.5.9/apps/s_client.c) (lido em 2026-10-27), com apps/lib/s_cb.c, apps/lib/s_socket.c, apps/lib/apps.c, apps/lib/opt.c, ssl/ssl_txt.c, ssl/t1_lib.c, ssl/statem/statem_clnt.c, include/openssl/x509_vfy.h.in e crypto/x509/x509_txt.c na mesma tag: o formato da saída, a tabela de opções e os códigos

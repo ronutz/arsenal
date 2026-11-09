@@ -29,7 +29,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 
 /** One index entry, as gen-home-index writes it. */
-interface Entry { k: string; p: string; t: { en: string; "pt-BR"?: string } }
+interface Entry { k: string; p: string; t: { en: string; "pt-BR"?: string } & Record<string, string | undefined> }
 
 /** The kinds the pool holds (gen-home-index), each with its narrow button. */
 type Kind = "tool" | "term" | "company" | "person" | "article" | "guide" | "role" | "practice";
@@ -107,7 +107,7 @@ export default function HomeRabbitHole() {
   }, [draw]);
 
   /** The title in the reader's locale, falling back to English. */
-  const title = (e: Entry) => (locale === "pt-BR" && e.t["pt-BR"]) || e.t.en;
+  const title = (e: Entry) => e.t[locale] || e.t.en; // the reader's language where the index has it (en, pt-BR and the interface-native locales, 09/11/2026)
 
   return (
     <div className="rabbit" ref={root}>

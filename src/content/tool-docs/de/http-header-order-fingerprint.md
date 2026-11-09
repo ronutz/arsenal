@@ -1,0 +1,24 @@
+## Was das Tool tut
+
+Fügen Sie einen rohen Block von HTTP-Anfrage-Headern ein (eine Anfragezeile und pro Zeile ein „Name: Wert“), und das Tool erklärt, wie Reihenfolge und Schreibweise der Header einen Fingerprint des Clients ergeben. Es ordnet den Absender als Browser der Chromium-Familie, als Firefox oder als HTTP-Bibliothek ein, indem es die Header-Sequenz abgleicht und nach Headern sucht, die nur Browser senden, etwa Sec-Fetch und Sec-CH-UA; es weist auf das Signal der Kleinschreibung bei HTTP/2 hin und listet gängige Browser-Header auf, die fehlen.
+
+## Das passive HTTP-Gegenstück zu JA3
+
+JA3 bildet den Fingerprint eines TLS-Clients aus der Reihenfolge der Cipher-Suiten und Erweiterungen in seinem ClientHello. Die Header-Reihenfolge ist dieselbe Idee eine Schicht höher: Browser, Bibliotheken und Bots senden Anfrage-Header jeweils in einer charakteristischen Sequenz, und diese Sequenz bleibt erhalten, selbst wenn die Werte gefälscht sind. Eine Anfrage, deren Header-Reihenfolge dem angegebenen User-Agent widerspricht (der UA von Chrome mit dem Header-Satz von curl), ist ein klassisches Erkennungszeichen eines Bots; deshalb stützen sich Systeme zur Bot-Erkennung und WAF-Systeme (Web Application Firewall) darauf.
+
+## Das Ergebnis lesen
+
+Der Reihenfolge-Hash ist eine kurze, stabile ID für die genaue Header-Sequenz und dient nur der Anzeige. Die Hinweise pro Header erklären, warum jede Position zählt; der Hinweis zur Schreibweise zeigt an, ob der Block wie ein Mitschnitt von HTTP/1.1 (Title-Case) oder von HTTP/2 (auf der Leitung kleingeschrieben) aussieht. Das Tool dekodiert und erklärt nur; die eingefügten Header verlassen Ihren Browser nie.
+
+## Ergebnisse teilen
+
+Unter der Auswertung des Clients erzeugt **Ergebnisse teilen** einen Link auf diese Seite, und zwar nur, wenn Sie die Schaltfläche wählen. Der Link enthält nach dem `#` eine Kopie des Blocks, in der alle Zugangsdaten durch das Wort `REDACTED` ersetzt sind, nie den Block so, wie eingefügt. Das Popover nennt zuerst, was der Link enthält und wie viele Werte ersetzt wurden, und bietet dann „Link kopieren“ und, sofern der Browser eines bietet, das Teilen-Menü an; die Adresse der Seite bleibt unverändert.
+
+Ein Header-Block, der aus den Entwicklertools, einem Mitschnitt oder `curl -v` kopiert wurde, enthält fast immer ein Sitzungs-Cookie und oft ein Token, und die Auswertung braucht keines davon: Sie liest die Namen der Header (ihre Reihenfolge, ihre Schreibweise, welche gängigen fehlen) und den Wert des User-Agent. Die Kopie behält daher jeden Namen, die Reihenfolge und den User-Agent und ersetzt nach den Regeln, die die HTTP-Tools der Website gemeinsam nutzen: die Zugangsdaten von `Authorization` und `Proxy-Authorization`, wobei das Schema bleibt ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110), Abschnitte 11.6.2 und 11.7.2: Der Wert „consists of credentials“; Basic behält seine User-ID, [RFC 7617](https://www.rfc-editor.org/rfc/rfc7617), Abschnitt 2); jeden Cookie-Wert einer `Cookie`-Zeile, wobei die Namen bleiben ([RFC 6265](https://www.rfc-editor.org/rfc/rfc6265), Abschnitt 4.2.1); den ganzen Wert eines Headers, dessen Name ein Secret bezeichnet (`X-API-Key`, `X-Auth-Token`); und das Passwort einer URL oder einen geheimen Parameter in einem beliebigen Wert oder im Anfrageziel (`access_token`, `code`, [RFC 6749](https://www.rfc-editor.org/rfc/rfc6749), Abschnitt 4.1.2). Alle diese Quellen wurden am 01.11.2026 abgerufen. Die Kopie muss dieselbe Auswertung ergeben wie der eingefügte Block; das tut sie immer, weil sich nichts ändert, was die Seite liest.
+
+Ein Token an einer Stelle, die kein Name als solches kennzeichnet (ein JWT im Pfad), lässt sich nicht sicher ersetzen: Die Kopie wird erneut geprüft, und bleibt irgendwo ein privater Schlüssel im PEM-Format, ein JWS oder JWE oder ein Passwort in einer URL stehen, gibt es keinen Link; das Popover nennt die Zeile. Einen Schalter, um die ersetzten Werte mitzusenden, gibt es nicht: Sie sind Zugangsdaten, und die Auswertung braucht sie nicht.
+
+Laut [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (Abschnitt 3.5, abgerufen am 01.11.2026) ist das Fragment „separated from the rest of the URI prior to a dereference“, also vor der Dereferenzierung vom Rest der URI getrennt; daher wird die Kopie beim Öffnen des Links nicht an den Server gesendet. Sie bleibt in der Adressleiste und im Verlauf dessen, der den Link öffnet, und wer den Link hat, kann sie lesen.
+
+- **Länge.** Insgesamt höchstens 16.384 Zeichen, die Grenze, die die Website für jeden Wert nach dem `#` setzt; ist der geteilte Inhalt länger, gibt es keinen Link, und das Popover nennt seine Länge.
+- **Öffnen eines Links.** Die Kopie füllt das Feld wie beim Einfügen, und die Seite liest sie; es wird nichts gesendet. Danach verschwinden die Werte sofort aus der Adresse der Seite, ohne dass eine Anfrage gesendet wird; ein Neuladen oder die Schaltfläche „Teilen“ der Seite überträgt daher nichts.

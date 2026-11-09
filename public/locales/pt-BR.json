@@ -476,7 +476,7 @@
       "renewByText": "Renovar até {date} (cerca de {lead} dias antes de expirar)",
       "renewByDue": "daqui a {days} dias",
       "reuseHeading": "Reutilização da validação (era de emissão)",
-      "dcvText": "Os dados de validação de domínio (DCV) podem ser reutilizados por {days} dias.",
+      "dcvText": "Os dados de validação de controle do domínio (DCV) podem ser reutilizados por {days} dias.",
       "siiText": "A identidade da organização (SII de OV/EV) pode ser reutilizada por {days} dias.",
       "scheduleHeading": "O cronograma SC-081v3",
       "scheduleIntro": "Os máximos de TLS público dependem da data de emissão do certificado:",
@@ -734,7 +734,7 @@
         "rc2": "RC2: uma cifra obsoleta de 40/64 bits que não é segura para uso moderno.",
         "tripleDes": "O 3DES tem bloco de 64 bits, o que o expõe ao ataque de aniversário Sweet32 (CVE-2016-2183). O RFC 8429 o torna obsoleto.",
         "md5Mac": "MAC com MD5: o MD5 está criptograficamente quebrado.",
-        "cbcMac": "CBC com MAC HMAC-SHA1 ou MD5 usa MAC-then-encrypt, exposto a ataques de oráculo de preenchimento como BEAST e Lucky13.",
+        "cbcMac": "CBC com MAC HMAC-SHA1 ou MD5 usa MAC-then-encrypt, exposto a ataques de oráculo de preenchimento como Lucky13; no TLS 1.0, os vetores de inicialização previsíveis do CBC também permitem o BEAST.",
         "ccm8": "O CCM_8 trunca a etiqueta de autenticação para 8 bytes, enfraquecendo a integridade. A IANA não o marca como recomendado.",
         "noFs": "Sem sigilo de encaminhamento: com troca de chaves estática, uma chave de longo prazo comprometida pode decifrar sessões passadas. A orientação moderna exige ECDHE ou DHE.",
         "legacyCipher": "{value} é uma cifra legada, obsoleta para o TLS.",
@@ -819,7 +819,7 @@
     },
     "curl-command-builder": {
       "name": "Construtor de comandos curl",
-      "blurb": "Escolha qualquer um dos 27 protocolos que o curl fala, preencha campos que se adaptam ao protocolo e receba o comando exato, com cada flag explicada e avisos de segurança. O inverso do tradutor de requisições HTTP: aquele lê um comando, este escreve um.",
+      "blurb": "Escolha qualquer um dos 27 protocolos que o curl fala, preencha campos que se adaptam ao protocolo e receba o comando exato, com cada flag explicada e avisos de segurança. O inverso do explicador de comando curl: aquele lê um comando, este escreve um.",
       "ui": {
         "group_web": "Web",
         "group_transfer": "Transferência de arquivos",
@@ -4378,7 +4378,7 @@
             "name": "f5-tcp-lan",
             "quirk0": "A promessa de benchmark do anúncio: throughput pelo menos igual, e muitas vezes melhor, que o do perfil tcp padrão para o seu tipo de link.",
             "story": "A versão viva e atualizada do tcp-lan-optimized: todas as configurações adaptadas a links de LAN, sem ligar os recursos mais novos. A referência de perfis o associa a tráfego de LAN ou muito interativo atrás de um virtual server Standard.",
-            "tradeoff0": "Ajustado ao tipo de link: o lado errado de uma WAN recebe comportamento de LAN de um perfil de LAN, e virtual servers com perfis separados (LAN dentro, WAN fora) existem exatamente para isso.",
+            "tradeoff0": "Ajustado ao tipo de link: no lado de um virtual server voltado para uma WAN, um perfil de LAN dá comportamento de LAN ao tráfego de WAN, e virtual servers com perfis separados (LAN dentro, WAN fora) existem exatamente para isso.",
             "when0": "Perfis do lado do servidor em links de data center rápidos e com pouca perda.",
             "when1": "Tráfego interativo de LAN em que a latência manda."
           },
@@ -6846,16 +6846,16 @@
         "CSP_RO_WITH_ENFORCED": "Há uma CSP report-only junto à política aplicada, útil para testar mudanças.",
         "XCTO_MISSING": "Sem X-Content-Type-Options. O navegador pode inferir o tipo (MIME sniffing) e executar conteúdo como script.",
         "XCTO_NOSNIFF": "Definido como nosniff, o que impede a inferência de tipo MIME.",
-        "XCTO_INVALID": "Valor inesperado '{value}'. O único valor válido é nosniff.",
+        "XCTO_INVALID": "Valor inesperado “{value}”. O único valor válido é nosniff.",
         "XFO_MISSING": "Sem X-Frame-Options. Sem ele, ou sem CSP frame-ancestors, a página pode ser enquadrada para clickjacking.",
         "XFO_DENY": "Definido como DENY, impedindo que a página seja enquadrada por qualquer site.",
         "XFO_SAMEORIGIN": "Definido como SAMEORIGIN, permitindo enquadramento apenas por páginas de mesma origem.",
         "XFO_ALLOWFROM_DEPRECATED": "Usa ALLOW-FROM, que é obsoleto e ignorado pelos navegadores modernos. Use CSP frame-ancestors.",
-        "XFO_INVALID": "Valor inesperado '{value}'. Use DENY ou SAMEORIGIN.",
+        "XFO_INVALID": "Valor inesperado “{value}”. Use DENY ou SAMEORIGIN.",
         "REFERRER_MISSING": "Sem Referrer-Policy. Vale o padrão do navegador, que pode vazar URLs completas para outras origens.",
-        "REFERRER_STRONG": "Definido como '{value}', uma política que preserva a privacidade.",
-        "REFERRER_WEAK": "Definido como '{value}', que ainda envia a origem ou mais para outros sites.",
-        "REFERRER_OTHER": "Definido como '{value}'.",
+        "REFERRER_STRONG": "Definido como “{value}”, uma política que preserva a privacidade.",
+        "REFERRER_WEAK": "Definido como “{value}”, que ainda envia a origem ou mais para outros sites.",
+        "REFERRER_OTHER": "Definido como “{value}”.",
         "REFERRER_UNSAFE_URL": "Definido como unsafe-url, que envia a URL completa, incluindo caminho e query, para todo destino.",
         "PERMISSIONS_MISSING": "Sem Permissions-Policy. Recursos sensíveis como câmera, microfone e geolocalização não estão restritos.",
         "PERMISSIONS_PRESENT": "Presente, restringindo o acesso a recursos sensíveis do navegador.",
@@ -6864,7 +6864,7 @@
         "COOP_ALLOW_POPUPS": "Definido como same-origin-allow-popups, isolando a página, mas mantendo os popups que ela abre.",
         "COOP_UNSAFE_NONE": "Definido como unsafe-none, que não oferece isolamento de abertura.",
         "COEP_ABSENT": "Sem Cross-Origin-Embedder-Policy. É opcional e exigido apenas para isolamento de origem cruzada.",
-        "COEP_PRESENT": "Definido como '{value}', exigindo que recursos incorporados façam opt-in.",
+        "COEP_PRESENT": "Definido como “{value}”, exigindo que recursos incorporados façam opt-in.",
         "CORP_ABSENT": "Sem Cross-Origin-Resource-Policy. É opcional e limita quem pode incorporar este recurso.",
         "CORP_SAME_ORIGIN": "Definido como same-origin, a configuração mais restrita.",
         "CORP_SAME_SITE": "Definido como same-site, permitindo incorporação de mesmo site.",
@@ -6875,24 +6875,24 @@
         "CORS_WILDCARD": "Access-Control-Allow-Origin é '*', permitindo que qualquer site leia a resposta. Só é seguro para dados públicos e sem credenciais.",
         "CORS_WILDCARD_CREDENTIALS": "Access-Control-Allow-Origin é '*' junto com credenciais. Isso expõe dados com credenciais a qualquer origem, uma configuração gravemente incorreta.",
         "CORS_NULL_ORIGIN": "Access-Control-Allow-Origin é 'null', que vários contextos conseguem forjar. Evite a origem nula.",
-        "CORS_SPECIFIC_ORIGIN": "Access-Control-Allow-Origin permite '{value}'. Confirme que essa origem é confiável.",
+        "CORS_SPECIFIC_ORIGIN": "Access-Control-Allow-Origin permite “{value}”. Confirme que essa origem é confiável.",
         "CORS_CREDENTIALS_TRUE": "Access-Control-Allow-Credentials é true, então a resposta pode carregar cookies entre origens. Combine apenas com uma origem específica e confiável.",
-        "CORS_CREDENTIALS_OTHER": "Access-Control-Allow-Credentials é '{value}'.",
+        "CORS_CREDENTIALS_OTHER": "Access-Control-Allow-Credentials é “{value}”.",
         "XPCDP_ABSENT": "Sem X-Permitted-Cross-Domain-Policies. A OWASP recomenda defini-lo como none.",
         "XPCDP_NONE": "Definido como none, o valor reforçado.",
         "XPCDP_ALL": "Definido como all, o valor mais permissivo. Prefira none.",
-        "XPCDP_OTHER": "Definido como '{value}'.",
-        "CLEAR_SITE_DATA_PRESENT": "Clear-Site-Data está definido ('{value}'), instruindo o navegador a limpar os dados do site. Use em endpoints de logout.",
+        "XPCDP_OTHER": "Definido como “{value}”.",
+        "CLEAR_SITE_DATA_PRESENT": "Clear-Site-Data está definido (“{value}”), instruindo o navegador a limpar os dados do site. Use em endpoints de logout.",
         "FEATURE_POLICY_DEPRECATED": "Feature-Policy é obsoleto. Migre para Permissions-Policy.",
         "HPKP_DEPRECATED": "O HTTP Public Key Pinning é obsoleto e foi removido dos navegadores. Remova este header.",
-        "EXPECT_CT_OBSOLETE": "Expect-CT é obsoleto ('{value}'). A Certificate Transparency já é exigida por padrão, então remova-o.",
-        "XSS_PROTECTION_LEGACY": "X-XSS-Protection é '{value}'. O auditor legado não existe mais nos navegadores modernos. Remova-o, ou defina como 0, e confie na CSP.",
+        "EXPECT_CT_OBSOLETE": "Expect-CT é obsoleto (“{value}”). A Certificate Transparency já é exigida por padrão, então remova-o.",
+        "XSS_PROTECTION_LEGACY": "X-XSS-Protection é “{value}”. O auditor legado não existe mais nos navegadores modernos. Remova-o, ou defina como 0, e confie na CSP.",
         "XSS_PROTECTION_DISABLED_OK": "X-XSS-Protection é 0, o que corretamente desativa o auditor obsoleto.",
-        "SERVER_VERSION_DISCLOSED": "Server revela detalhes de versão ('{value}'), ajudando atacantes a mirar falhas conhecidas. Minimize isso.",
-        "SERVER_PRODUCT_DISCLOSED": "Server informa o produto ('{value}'). Considere remover ou minimizar.",
-        "XPOWEREDBY_PRESENT": "X-Powered-By revela a stack ('{value}'). Remova-o.",
-        "XASPNETVERSION_PRESENT": "X-AspNet-Version revela a versão do runtime ('{value}'). Remova-o.",
-        "XASPNETMVCVERSION_PRESENT": "X-AspNetMvc-Version revela a versão do framework ('{value}'). Remova-o.",
+        "SERVER_VERSION_DISCLOSED": "Server revela detalhes de versão (“{value}”), ajudando atacantes a mirar falhas conhecidas. Minimize isso.",
+        "SERVER_PRODUCT_DISCLOSED": "Server informa o produto (“{value}”). Considere remover ou minimizar.",
+        "XPOWEREDBY_PRESENT": "X-Powered-By revela a stack (“{value}”). Remova-o.",
+        "XASPNETVERSION_PRESENT": "X-AspNet-Version revela a versão do runtime (“{value}”). Remova-o.",
+        "XASPNETMVCVERSION_PRESENT": "X-AspNetMvc-Version revela a versão do framework (“{value}”). Remova-o.",
         "HEADER_PRESENT": "Presente.",
         "COOKIE_COUNT": "{value} cookie(s) definido(s).",
         "COOKIE_WEAK_COUNT": "{value} cookie(s) com atributos fracos.",
@@ -7699,7 +7699,7 @@
           "aaa": "Configuração de autenticação {proto} (AAA).",
           "access": "Configuração de acesso de gerência ({obj}).",
           "create": "Cria a conta local \"{name}\" com o papel {role} (os papéis do EXOS costumam ser admin ou user).",
-          "createNoRole": "Cria a conta local \"{name}\" com o papel (papel) (os papéis do EXOS costumam ser admin ou user).",
+          "createNoRole": "Cria a conta local \"{name}\" sem papel informado (os papéis do EXOS costumam ser admin ou user).",
           "other": "Configuração de conta local / senha."
         },
         "cat": {
@@ -12604,7 +12604,7 @@
         "topology": "Topology",
         "qos": "Quality of Service (dinâmico)",
         "completion-rate": "Completion Rate (dinâmico)",
-        "lowest-round-trip-time": "Lowest Round-Trip Time (dinâmico)",
+        "lowest-round-trip-time": "Round Trip Time (dinâmico)",
         "fewest-hops": "Fewest Hops (dinâmico)",
         "kilobytes-per-second": "Kilobytes/Segundo (dinâmico)",
         "packet-rate": "Packet Rate (dinâmico)",
@@ -12615,7 +12615,7 @@
       "reason": {
         "qos": "O Quality of Service pontua cada servidor virtual a partir de métricas ao vivo de RTT, hops e hit-ratio.",
         "completion-rate": "O Completion Rate compara a porcentagem de pacotes trocados com sucesso, uma métrica ao vivo.",
-        "lowest-round-trip-time": "O Lowest Round-Trip Time escolhe o recurso com o menor RTT medido a partir do DNS local.",
+        "lowest-round-trip-time": "O Round Trip Time escolhe o recurso com o menor RTT medido a partir do DNS local.",
         "fewest-hops": "O Fewest Hops escolhe o recurso com o menor número de hops de roteador a partir do DNS local, medido pelo big3d.",
         "kilobytes-per-second": "O Kilobytes/Segundo roteia pela vazão ao vivo.",
         "packet-rate": "O Packet Rate roteia por pacotes por segundo ao vivo.",
@@ -13630,7 +13630,7 @@
         },
         "check": {
           "cloudApps": "Fluxo web genérico contra Cloud Apps Only",
-          "dynamic": "Steering dinâmico: o dispositivo está {location}",
+          "dynamic": "Steering dinâmico: localização do dispositivo, {location}",
           "exception": "Exceção casou: {kind} \"{value}\"",
           "exceptions": "Exceções de steering",
           "failClose": "Túnel down + Fail Close LIGADO",
@@ -13850,8 +13850,8 @@
           "cat6": "Canal ANSI/TIA-568 de 100 m; largura de banda certificada de 250 MHz.",
           "cat6a": "Canal ANSI/TIA-568 de 100 m; largura de banda certificada de 500 MHz - 10GBASE-T nos 100 m completos.",
           "cat8": "ANSI/TIA-568.2-D Categoria 8: 2000 MHz, 25G/40GBASE-T num canal de 30 m; construção blindada na prática. Pensada para lances curtos de data center, não para cabeamento horizontal.",
-          "om3": "Multimodo de 50 um otimizado para laser; capa aqua por convenção.",
-          "om4": "Multimodo de 50 um com maior largura de banda; estende o alcance da classe SR em relação à OM3.",
+          "om3": "Multimodo de 50 μm otimizado para laser; capa aqua por convenção.",
+          "om4": "Multimodo de 50 μm com maior largura de banda; estende o alcance da classe SR em relação à OM3.",
           "smf": "Monomodo OS2 com ópticas da classe LR; 10 km é a classe de alcance padrão - existem classes ER/ZR mais longas, fora do escopo deste planejador."
         },
         "optic": {
@@ -14702,7 +14702,7 @@
         },
         "note": {
           "blindMany": "{count} perfis estão anexados e cegos pelo mesmo motivo: o payload nunca é descriptografado. Passar esta política para deep inspection é a única mudança que resolve todos — e é uma decisão de verdade, porque deep inspection significa terminar o TLS, com consequências de confiança em certificado, privacidade e desempenho.",
-          "blindOne": "{count} perfil está anexado e cego pelo mesmo motivo: o payload nunca é descriptografado. Passar esta política para deep inspection é a única mudança que resolve — e é uma decisão de verdade, porque deep inspection significa terminar o TLS, com consequências de confiança em certificado, privacidade e desempenho.",
+          "blindOne": "{count} perfil está anexado e cego porque o payload nunca é descriptografado. Passar esta política para deep inspection é a única mudança que o resolve — e é uma decisão de verdade, porque deep inspection significa terminar o TLS, com consequências de confiança em certificado, privacidade e desempenho.",
           "certNotWeaker": "Certificate inspection não é uma forma mais fraca de deep inspection; é outra coisa. Ela valida o certificado e lê o handshake, e nunca descriptografa o corpo.",
           "coverage": "Isto modela COBERTURA, não detecção: responde se um perfil consegue ver o tráfego, nunca se ele pegaria uma ameaça específica."
         },
@@ -14964,7 +14964,7 @@
         },
         "find": {
           "doubled": "O location \"{location}\" não termina em barra, enquanto o proxy_pass leva parte de URI. A substituição é literal, então a barra que sobra da requisição fica, e o backend recebe uma barra DUPLICADA. A correção de costume é casar as barras finais dos dois lados.",
-          "joined": "O location termina em barra mas a parte de URI do proxy_pass não, então as duas são unidas com uma barra inserida. Casar as barras dos dois lados acaba com a ambiguidade.",
+          "joined": "O location termina em barra mas a parte de URI do proxy_pass não, então o resto do caminho da requisição é anexado à parte de URI sem barra entre os dois. Casar as barras dos dois lados acaba com a ambiguidade.",
           "resolver": "Como o valor contém uma variável, o NGINX também resolve o nome do upstream na hora da requisição, e não na inicialização. Isso quer dizer que normalmente é preciso uma diretiva resolver, e um nome que não resolve vira um erro em tempo de execução, e não um erro de configuração."
         },
         "note": {
@@ -15181,7 +15181,7 @@
           "belowMany": "{matches} ocorrências válidas contra um limiar de {limit}. O identificador funcionou; a regra está configurada para exigir mais antes de agir.",
           "belowOne": "{matches} ocorrência válida contra um limiar de {limit}. O identificador funcionou; a regra está configurada para exigir mais antes de agir.",
           "checksumMany": "{count} strings tinham o formato certo e nenhuma passou no checksum. O motor não conta essas, que é exatamente o comportamento que faz as pessoas acharem que o DLP \"deixou passar\" algo.",
-          "checksumOne": "{count} string tinha o formato certo e não passou no checksum. O motor não conta essas, que é exatamente o comportamento que faz as pessoas acharem que o DLP \"deixou passar\" algo.",
+          "checksumOne": "{count} string tinha o formato certo e não passou no checksum. O motor não a conta, que é exatamente o comportamento que faz as pessoas acharem que o DLP \"deixou passar\" algo.",
           "firesMany": "{matches} ocorrências válidas atingem o limiar de {limit}, então a regra dispara.",
           "firesOne": "{matches} ocorrência válida atinge o limiar de {limit}, então a regra dispara.",
           "noCandidates": "Nada no texto tem o formato de um {label}, então o checksum nunca roda e a regra não pode disparar. Se você esperava um acerto, procure formatações que o padrão não aceita."
@@ -16203,7 +16203,7 @@
           "universal": "Hardware Universal"
         },
         "note": {
-          "bootMenu": "Vale decorar a pergunta do menu de boot, porque ela é feita na negativa: quando o switch pergunta se você quer mudar o sistema para VOSS, responder N mantém o Switch Engine e Y passa para o Fabric Engine.",
+          "bootMenu": "Vale decorar a pergunta do menu de boot, porque o Switch Engine se escolhe respondendo não: quando o switch pergunta \"Would you like to change the switch OS to VOSS? [y/N/q]\", responder N mantém o Switch Engine e y passa para o Fabric Engine.",
           "exos": "ExtremeXOS e Switch Engine são o mesmo sistema operacional. Se um documento, o nome de um arquivo de imagem ou um menu de boot diz EXOS, isso não está desatualizado em nada que importe — os nomes de arquivo e os menus de boot ainda usam os nomes antigos.",
           "notUniversal": "O {named} não está na lista Universal desta ferramenta. Modelos que não são Universal mantêm os nomes ORIGINAIS — EXOS e VOSS — e a troca de nome não se aplica a eles. Esse é o motivo mais comum de uma busca por \"Switch Engine\" mais um número de modelo não trazer nada útil.",
           "preprovision": "A persona também pode ser pré-provisionada de forma central, para que o switch receba o sistema pretendido no primeiro boot em vez de alguém escolher no console. É a diferença entre uma visita ao site e uma entrega.",
@@ -16274,7 +16274,7 @@
           "deployedChange": "Para mudar vCPU ou memória de um tenant em deployed, volte-o primeiro para provisioned, faça a mudança e depois retorne-o a deployed. Não é uma operação a quente, e tratá-la como se fosse é como uma janela de manutenção vira uma indisponibilidade.",
           "imageF5os": "O nome da imagem contém ALL-F5OS, o build para a plataforma de appliance.",
           "imageVelos": "O nome da imagem contém ALL-VELOS: ela foi feita para a plataforma de chassi e não sobe num rSeries.",
-          "minMemory": "A F5 publica a memória mínima como (3,5 x 1024 x vCPU) + 512; com {vcpu} vCPU, o mínimo é {min} MB. É possível configurar mais do que o mínimo de propósito.",
+          "minMemory": "A F5 publica a memória mínima como (3,5 × 1024 × vCPU) + 512; com {vcpu} vCPU, o mínimo é {min} MB. É possível configurar mais do que o mínimo de propósito.",
           "rseries": "Isto parece rSeries: um appliance, não um chassi. Não há partições de chassi nem blades, vcpu-cores-per-node anda em múltiplos de quatro com padrão quatro, e a memória padrão é 12288 MB.",
           "vcpuNotMultiple": "Uma contagem de {vcpu} vCPU vale no VELOS. No rSeries o valor precisa ser múltiplo de quatro, então esta configuração tem formato de chassi, o que importa se ela for copiada entre plataformas.",
           "velos": "Isto parece VELOS: um chassi, com partições de chassi e blades. Cada blade oferece aos tenants até 22 vCPUs, cerca de 95 GB de memória e uns 600 GB de disco, então é a capacidade da partição que limita quantos tenants cabem."
@@ -17694,7 +17694,7 @@
         "2": "Os números no estilo de campo da F5 contam a partir de 1: campos de <c>getfield</c>, profundidades de <c>URI::path</c>, índices de path-segment das políticas LTM, o antigo <c>matchclass</c>.",
         "3": "Contadores devolvem 1 para o primeiro item: <c>HTTP::request_num</c>, <c>table incr</c>.",
         "4": "Muitos zeros são valores, não posições: domínio de roteamento 0, porta 0, connection-limit 0, <c>SSL::verify_result</c> 0, e o 0.0 do tcpdump.",
-        "5": "O menor vai primeiro quase sempre (prioridade de evento, ordinais de política, ordem do GTM, severidade do syslog), exceto nos grupos de prioridade de pool, onde o maior ganha.",
+        "5": "O menor vai primeiro quase sempre (prioridade de evento, ordinais de política, ordem do BIG-IP DNS, severidade do syslog), exceto nos grupos de prioridade de pool, onde o maior ganha.",
         "6": "Num <c>if</c>, 0 é falso e qualquer outro número é verdadeiro, inclusive -1: compare um índice com <c>>= 0</c> em vez de testá-lo, e guarde suas próprias flags como 0 ou 1, como pede o iRules Style Guide do DevCentral."
       },
       "searchLabel": "Pesquisar",
@@ -19743,7 +19743,7 @@
       "explain": {
         "dig": "O utilitário de consulta DNS do BIND 9.",
         "server": "@servidor: perguntar a este servidor de nomes em vez dos do /etc/resolv.conf. Um nome de host é resolvido antes; um endereço IPv4 ou IPv6 é usado como está.",
-        "norc": "-r: não ler o ${HOME}/.digrc, para o comando se comportar igual em qualquer máquina.",
+        "norc": "-r: não ler o $'{HOME}'/.digrc, para o comando se comportar igual em qualquer máquina.",
         "ipv4": "-4: usar só IPv4.",
         "ipv6": "-6: usar só IPv6.",
         "source": "-b endereço[#porta]: enviar a consulta a partir deste endereço (e porta) local.",
@@ -19880,8 +19880,8 @@
         "import-unknown": "{module} não está na biblioteca padrão nem na distribuição do Pyodide, então não pode ser importado aqui; o import vai lançar ModuleNotFoundError.",
         "import-relative": "{module} é um import relativo, que precisa de um pacote ao qual ser relativo; um programa executado aqui é um módulo único e o import vai falhar.",
         "import-pyodide": "{module} é a ponte entre o Python e o lado JavaScript do Worker. Funciona, mas alcança um escopo de Worker sem documento, e a política da página permite só esta origem.",
-        "network": "{modules} tenta usar a rede. O motor roda em um Worker sem sockets, e a política connect-src da página permite só esta origem: conexões lançam erro.",
-        "processes": "{modules} inicia processos. O Emscripten não suporta processos; subprocess, os.system e multiprocessing lançam OSError 138.",
+        "network": "O programa usa a rede ({modules}). O motor roda em um Worker sem sockets, e a política connect-src da página permite só esta origem: conexões lançam erro.",
+        "processes": "O programa inicia processos ({modules}). O Emscripten não suporta processos; subprocess, os.system e multiprocessing lançam OSError 138.",
         "threads": "Threads existem, mas rodam cooperativamente dentro de uma única instância WebAssembly; threads de CPU não rodam em paralelo aqui.",
         "zoneinfo": "zoneinfo não encontra banco de fusos horários nesta compilação (sem tzdata do sistema e sem o pacote tzdata carregado): ZoneInfo(...) lança ZoneInfoNotFoundError. Use datetime.timezone com deslocamento fixo.",
         "pip": "pip e micropip não estão disponíveis nesta versão: pacotes estão desligados, então nada pode ser instalado. A biblioteca padrão é o que está disponível.",
@@ -19891,7 +19891,7 @@
         "sleep-over-limit": "time.sleep({seconds}) é maior que o limite de {limit} s; a execução será interrompida antes de acordar.",
         "sleep": "time.sleep({seconds}) conta contra o limite de {limit} s.",
         "loop-forever": "Um loop while True só termina por break, por exceção, pelo botão Parar ou pelo limite de {limit} s.",
-        "nondeterministic": "{modules} fazem a saída variar entre execuções; isso é esperado, não um defeito.",
+        "nondeterministic": "A saída varia entre execuções por causa de {modules}; isso é esperado, não um defeito.",
         "files": "Arquivos são gravados no sistema de arquivos em memória do motor e somem quando a execução termina; nada é gravado no seu disco.",
         "top-level-await": "await no nível superior é permitido: o programa roda como um corpo assíncrono.",
         "exit": "exit() ou sys.exit() encerra a execução com SystemExit; o motor é reiniciado depois.",
@@ -23013,7 +23013,7 @@
     },
     "expect-script-builder": {
       "name": "Gerador de scripts Expect",
-      "blurb": "Escolha ssh, telnet ou outro programa, como fazer login, um perfil de equipamento (Cisco IOS, F5 BIG-IP tmsh, FortiOS, Extreme Switch Engine e Fabric Engine, ou o seu próprio prompt) e os comandos, e receba um script Expect completo que faz login, cuida da paginação, roda os comandos e sai, sem mudar nada no equipamento a menos que você peça (no FortiOS ele responde ao --More-- em vez de mudar uma configuração global). Nenhuma senha é escrita nele, nada secreto chega a um log, o ssh confere as chaves de host com accept-new, e todo script que ele escreve passa pelo explicador de scripts Expect sem nenhum erro e sem nenhum aviso.",
+      "blurb": "Escolha ssh, telnet ou outro programa, como fazer login, um perfil de equipamento (Cisco IOS XE, F5 BIG-IP tmsh, FortiOS, Extreme Switch Engine e Fabric Engine, ou o seu próprio prompt) e os comandos, e receba um script Expect completo que faz login, cuida da paginação, roda os comandos e sai, sem mudar nada no equipamento a menos que você peça (no FortiOS ele responde ao --More-- em vez de mudar uma configuração global). Nenhuma senha é escrita nele, nada secreto chega a um log, o ssh confere as chaves de host com accept-new, e todo script que ele escreve passa pelo explicador de scripts Expect sem nenhum erro e sem nenhum aviso.",
       "example": "Exemplo",
       "clear": "Limpar",
       "sec": {
@@ -23320,7 +23320,7 @@
       },
       "sensitive": {
         "title": "O que pode ser sensível",
-        "copy": "Copiar cópia redigida",
+        "copy": "Copiar versão redigida",
         "none": "Nada do que as verificações procuram foi encontrado. Elas não são completas: leia o texto antes de publicá-lo.",
         "warning": "Antes de publicar um traceback numa issue, num chamado ou num chat, confira. Caminhos nomeiam usuários e hosts; linhas de código e mensagens podem trazer tokens e senhas; variáveis locais impressas trazem valores. A cópia redigida troca nomes de usuário por {user} e cada achado por {redacted}; ela não encontra tudo.",
         "rules": {
@@ -25043,7 +25043,7 @@
         "kept": "Chega ao MAC",
         "lost": "Fica fora do MAC",
         "v4group": "{group}, bit a bit",
-        "v4caption": "1110 marca todo grupo; os cinco bits seguintes ({lost}) se perdem; os 23 últimos ({kept} em hex) vêm depois de 01-00-5E, cujo quarto octeto sempre começa com um bit 0.",
+        "v4caption": "1110 marca todo grupo; os cinco bits seguintes ({lost}) se perdem; os 23 últimos ({kept} em hex) vêm depois de 01-00-5E, e o quarto octeto do MAC sempre começa com um bit 0.",
         "v4candidates": "Cada candidato, bit a bit",
         "v4reverseCaption": "Todo candidato é 1110, depois cinco bits que o MAC não carrega (mostrados como ?), depois os 23 bits que ele carrega ({kept} em hex).",
         "v6group": "O endereço, dígito hex por dígito hex",
@@ -25639,7 +25639,7 @@
       },
       "cisco": {
         "heading": "A divisão documentada pela Cisco para {n} portas (Catalyst 6500/6000)",
-        "port": "Uma porta",
+        "port": "Porta {k}",
         "values": "{v} dos 8 valores de hash ({pct})",
         "even": "Por igual: toda porta fica com a mesma parte dos 8 valores.",
         "uneven": "Desigual: 8 valores não se dividem por esse número de portas, então algumas portas ficam com o dobro da parte de outras, mesmo com endereços aleatórios."
@@ -25729,11 +25729,11 @@
           "vlanBad": "\"{value}\" não é um VLAN ID: informe um número inteiro de 1 a 4094, ou deixe em branco para um frame sem tag (os MIBs do IEEE 802.1 não permitem 0 e 4095 como identificadores de VLAN).",
           "priorityBad": "\"{value}\" não é uma prioridade: informe um número inteiro de 0 a 7.",
           "priorityNoTag": "A prioridade viaja numa tag de VLAN: informe também o VLAN ID, ou deixe a prioridade em branco.",
-          "spreadField": "{policy} não lê {field}, então variar esse campo não muda nada: escolha um campo que a policy lê.",
+          "spreadField": "{policy} não lê o campo {field}, então variá-lo não muda nada: escolha um campo que a policy lê.",
           "spreadFieldBad": "Escolha o campo que varia: srcPort, dstPort, srcIp, dstIp, srcMac, dstMac ou vlan.",
           "spreadCount": "\"{value}\" não é uma quantidade de flows: informe um número inteiro de 1 a 4096.",
           "spreadVlan": "Para variar a VLAN, comece de um VLAN ID: um frame sem tag não tem nenhum.",
-          "spreadOverflow": "Essa sequência de valores passa do último {field} que existe: comece mais baixo ou conte menos.",
+          "spreadOverflow": "Essa sequência de valores passa do último valor possível do campo {field}: comece mais baixo ou conte menos.",
           "format": "Escolha como os valores estão escritos: octet, snmp, extreme, arista ou huawei.",
           "actorEmpty": "Informe o estado do actor: o valor da ponta cuja saída você está lendo.",
           "octetBad": "\"{value}\" não é um octeto de estado: escreva em hexadecimal com 0x (0x3D, como a Cisco mostra), em decimal (61, como o Linux mostra em /proc/net/bonding) ou em binário com 0b (0b00111101).",
@@ -27324,7 +27324,9 @@
           }
         }
       }
-    }
+    },
+    "coffeeLabel": "Me pague um café",
+    "docsMarkdown": "Documentação (Markdown)"
   },
   "privacy_page": {
     "eyebrow": "Privacidade",
@@ -27381,7 +27383,7 @@
     "prefsTitle": "Tema, idioma e o que este site lembra",
     "prefsBody": "Suas preferências, seu histórico de leitura, os dois valores da sala dev e os placares, as configurações e o progresso dos jogos ficam guardados só no localStorage deste navegador, no seu dispositivo; o tema é aplicado antes da primeira renderização da página na sua próxima visita. Não há cookie nem conta, e nenhum servidor vê nada disso, com uma exceção que você controla: a menos que você desligue o compartilhamento, o resultado de um desafio diário que você conclui vai para o placar público descrito em Placar dos jogos. Nada disso pode seguir você: uma janela anônima, os dados do site apagados ou outro navegador ou dispositivo levam você de volta aos padrões, e isso é proposital. O idioma funciona em duas camadas: ele fica no próprio endereço (/en/ e /pt-BR/ são páginas diferentes, então salvar nos favoritos ou compartilhar uma URL no seu idioma o preserva), e o último idioma que você usou também fica guardado neste navegador, para que uma visita ao domínio sem caminho caia nele, e não no padrão. O campo de busca e a chave de provas aposentadas do hub de certificações também ficam no endereço, depois do # (#q=...), parte que o navegador nunca envia numa requisição, então as palavras que você busca não chegam ao servidor; elas ficam, sim, no histórico, e um endereço compartilhado as leva junto. Um link antigo com ?q= enviava as palavras naquela única requisição; o hub então as passa para depois do #. É essa a troca: sem contas e sem rastreamento, as preferências só podem ficar onde você pode vê-las e apagá-las.",
     "shortcutsTitle": "Atalhos de teclado",
-    "shortcutsBody": "O site tem alguns atalhos de uma tecla só para navegar rápido, ativos em todas as páginas. Pressione b para a tecla do chefe, que esconde o que você está lendo atrás de um convincente aplicativo de trabalho dos anos 1980 até você pressionar qualquer tecla ou clicar; t vai para o índice de Ferramentas; l, para o índice de Aprender; m abre o console do Mega Brain; e z abre o Buzzword Bingo. Eles ficam inativos de propósito sempre que você está digitando: se o foco está num campo de texto, numa caixa de colar, num campo de busca ou em qualquer área editável, a tecla pertence àquele campo e o atalho não faz nada, então nada do que você digita jamais se perde. Eles também são ignorados quando uma tecla modificadora está pressionada, e assim as combinações do próprio navegador, como Ctrl+T para uma nova aba, nunca são sobrepostas. Os atalhos rodam inteiramente no seu navegador, não acrescentam rastreamento nenhum e são só uma conveniência, que você pode ignorar.",
+    "shortcutsBody": "O site tem alguns atalhos de uma tecla só para navegar rápido, ativos em todas as páginas. Pressione b para a tecla do chefe, que esconde o que você está lendo atrás de um convincente aplicativo de trabalho dos anos 1980 até você pressionar qualquer tecla ou clicar; t vai para o índice de Ferramentas; l, para o índice de Aprender; m abre o console do Mega Brain; e z abre o Bingo de reunião. Eles ficam inativos de propósito sempre que você está digitando: se o foco está num campo de texto, numa caixa de colar, num campo de busca ou em qualquer área editável, a tecla pertence àquele campo e o atalho não faz nada, então nada do que você digita jamais se perde. Eles também são ignorados quando uma tecla modificadora está pressionada, e assim as combinações do próprio navegador, como Ctrl+T para uma nova aba, nunca são sobrepostas. Os atalhos rodam inteiramente no seu navegador, não acrescentam rastreamento nenhum e são só uma conveniência, que você pode ignorar.",
     "noTrackSource": "Esta seção descreve o que o código faz, e o código é público: a contagem é feita por <analytics>worker/analytics.ts</analytics>, a página de estatísticas é servida por <stats>worker/stats.ts</stats>, e os dois conjuntos de dados separados são ligados em <config>wrangler.jsonc</config>. As contagens ficam no Workers Analytics Engine da Cloudflare, que guarda o que recebe por três meses (<retention>documentação da Cloudflare</retention>, lida em {date}). O que a própria Cloudflare trata como hospedagem fica fora desse código, e está descrito em Hospedagem e logs do servidor, mais abaixo.",
     "metaDescription": "O que acontece com as suas informações aqui: o que é contado, o que o seu navegador guarda, o que as ferramentas fazem com o que você cola, quem é o responsável e os seus direitos pelo GDPR e pela LGPD.",
     "hostingLogs": "Toda requisição de página passa pelo Worker do site, o pequeno programa que roda na Cloudflare na frente das páginas, e o mesmo vale para as requisições que uma página faz para buscar as contagens de visitas que mostra; os scripts, os estilos e o índice de busca, entre outros arquivos, são servidos sem passar por ele. Os Workers Logs da Cloudflare podem guardar um registro de cada uma dessas requisições na conta do site na Cloudflare. A Cloudflare descreve cada registro como contendo a requisição, a resposta e os metadados relacionados, e cita entre os campos o método e o endereço completo, query string incluída, o status da resposta, o tempo de processamento que o Worker usou e o país da visita (<logs>Workers Logs</logs> e <fields>os campos de consulta</fields>, lidos em {date}). A Cloudflare não publica uma lista completa, então este aviso não afirma que o seu endereço IP fica de fora. A Cloudflare liga esses logs por padrão nos Workers novos, e a configuração do site não os desliga. Cada registro fica guardado por até sete dias: três dias no plano gratuito de Workers da Cloudflare e sete no plano pago, e sete nos dois a partir de 1º de dezembro de 2026 (<pricing>preços da Cloudflare</pricing>). O código do próprio site não acrescenta nada a esses registros, porque o Worker não escreve nenhuma linha de log própria, o que uma verificação do build confere. A parte do endereço depois do #, onde uma ferramenta recebe um valor passado para ela, nunca é enviada numa requisição, então nunca chega a esses registros.",
@@ -28048,7 +28050,7 @@
       "name": "Zscaler",
       "years": "2026 – presente",
       "tagline": "Zero trust em escala de nuvem - a empresa que apostou que o perímetro se dissolveria, e construiu a exchange que o substituiu.",
-      "intro": "A Zscaler entra neste registro carregando a tese que todos os capítulos anteriores testaram: a de que o perímetro que aqueles firewalls e load balancers defendiam se dissolveria, e a de que a inspeção migraria para uma nuvem entre cada usuário e cada aplicação. O Zero Trust Exchange é essa aposta construída em escala planetária - uma das maiores nuvens de segurança em operação - e sua plataforma agora faz parte do currículo que este registro ensina.",
+      "intro": "A Zscaler entra neste registro carregando a tese que todos os capítulos anteriores testaram: a de que o perímetro que aqueles firewalls e load balancers defendiam se dissolveria, e a de que a inspeção migraria para uma nuvem entre cada usuário e cada aplicação. O Zero Trust Exchange é essa aposta construída em escala planetária - uma das maiores nuvens de segurança em operação - e sua plataforma agora faz parte do currículo ensinado neste site.",
       "s1Title": "Por que Zscaler, por que agora",
       "s1Body": "Duas décadas deste registro atravessam firewalls, load balancers e os perímetros que eles defendiam; a Zscaler é a empresa que apostou mais cedo que o perímetro se dissolveria numa nuvem global de inspeção. Estudar as arquiteturas do Zero Trust Exchange, do ZIA e do ZPA é a continuação natural do trabalho de SSE já em andamento no capítulo Netskope, do outro lado do mesmo mercado.",
       "s2Title": "Lendo a superfície TLS",
@@ -28059,7 +28061,7 @@
       "name": "Pulse Secure",
       "years": "2018 – 2019",
       "tagline": "O fio de acesso seguro do capítulo de distribuição: DNA da Neoteris, carregado por cinco bandeiras.",
-      "intro": "A Pulse Secure entrou neste registro pelo lado da distribuição: no ano de ScanSource, sua linha de acesso seguro fazia parte do portfólio que eu arquitetava e demonstrava pelo Brasil - o SSL VPN que ele conhecera primeiro de dentro da Juniper, justamente nos anos em que o Junos Pulse tomava forma.",
+      "intro": "A Pulse Secure entrou neste registro pelo lado da distribuição: no ano de ScanSource, sua linha de acesso seguro fazia parte do portfólio que eu arquitetava e demonstrava pelo Brasil - o SSL VPN que eu conhecera primeiro de dentro da Juniper, justamente nos anos em que o Junos Pulse tomava forma.",
       "s1Title": "Distribuindo acesso seguro",
       "s1Body": "O trabalho era distribuição de valor agregado no seu ponto mais técnico: arquitetar projetos de acesso remoto em torno do Pulse Connect Secure, conduzir demonstrações e provas de conceito e capacitar parceiros de canal em um produto que vendia para qualquer vertical com força de trabalho fora do escritório. O Policy Secure trazia a conversa de NAC para a mesma plataforma, e o papel do distribuidor era fazer os dois fazerem sentido nas redes corporativas brasileiras - dimensionamento, pontos de integração e os limites honestos.",
       "s2Title": "Um produto, cinco bandeiras",
@@ -28223,7 +28225,7 @@
       "s1Body": "Um engenheiro de campo da Cabletron no fim dos anos 1990 passava tanto tempo em salas de fiação quanto em consoles. Os hubs MMAC e os chassis SmartSwitch eram instalados onde terminava o cabeamento horizontal do prédio, e as falhas que chegavam ao engenheiro do fabricante eram tantas vezes um cross-connect, um lance além do comprimento ou uma terminação ruim quanto um erro de configuração. O SYSTIMAX era um dos sistemas de cabeamento estruturado sobre os quais os prédios corporativos da época tinham sido construídos: uma hierarquia de salas de equipamentos, cabeamento vertical e horizontal e tomadas de área de trabalho, com regras para cada parte, um método de projeto e uma garantia. Certificar-se nele significava saber ler o projeto de cabeamento de um prédio, especificar o que um andar novo ou um chassi novo exigia e dizer ao cliente qual metade de um problema era dele.",
       "s2Title": "Ensinando a camada física",
       "s2Body": "Os mesmos anos foram os primeiros anos de ensino, e o cabeamento estruturado era a camada por onde as turmas de Internetworking Technologies da Cabletron começavam: meios, conectores, distâncias e as categorias de par trançado, antes de um único frame ser comutado. A credencial de 1998 deu a esse primeiro módulo uma autoridade que ele não teria de outro modo, e o hábito de começar pela planta de cabos ficou com o ensino. A credencial expirou em 2000, o ano em que o próprio capítulo terminou com a mudança para a Riverstone Networks, na Califórnia.",
-      "certs": "AT&T / Lucent SYSTIMAX Structured Cabling System Engineer, de 1998 a 2000, emitida sob uma marca que a CommScope tem desde 2004 e vendeu à Amphenol em janeiro de 2026. Listada na página de credenciais."
+      "certs": "AT&T / Lucent SYSTIMAX Structured Cabling System Engineer, de 1998 a 2000, emitida sob uma marca que pertenceu à CommScope de 2004 até a venda à Amphenol em janeiro de 2026. Listada na página de credenciais."
     }
   },
   "training": {
@@ -28748,7 +28750,7 @@
   "contribute": {
     "eyebrow": "Traduções",
     "title": "Ajude a melhorar as traduções",
-    "lede": "O português do Brasil daqui é escrito com IA e revisado aos poucos; os outros idiomas, fora o inglês, são um primeiro rascunho feito por máquina. Se você fala algum deles e nota algo errado ou esquisito, as suas correções são muito bem-vindas. Veja como enviá-las.",
+    "lede": "O português do Brasil daqui é escrito com IA e revisado aos poucos, assim como a interface e as ferramentas em espanhol e em alemão; todo o resto, nos idiomas fora o inglês, é um primeiro rascunho feito por máquina. Se você fala algum deles e nota algo errado ou esquisito, as suas correções são muito bem-vindas. Veja como enviá-las.",
     "howTitle": "Como contribuir",
     "howBody": "O inglês é a fonte da verdade, e todos os outros idiomas são traduzidos a partir dele, então erros são possíveis. Cada pacote de idioma é um único arquivo de texto com frases rotuladas. Baixe o que você quer melhorar, mude só o texto depois de cada rótulo e deixe os rótulos, e tudo o que estiver entre chaves, exatamente como estão. Depois mande o arquivo editado por e-mail, dizendo qual é o idioma. Cada envio é revisado à mão.",
     "downloadHeading": "Pacotes de idioma",
@@ -28776,7 +28778,7 @@
       },
       "translation": {
         "title": "Melhore uma tradução",
-        "desc": "O português do Brasil é escrito com IA e revisado aos poucos; os outros idiomas, fora o inglês, são um primeiro rascunho feito por máquina. Baixe um pacote, corrija e mande de volta.",
+        "desc": "O português do Brasil, e a interface e as ferramentas em espanhol e em alemão, são escritos com IA e revisados aos poucos; todo o resto, nos idiomas fora o inglês, é um primeiro rascunho feito por máquina. Baixe um pacote, corrija e mande de volta.",
         "cta": "Veja como"
       },
       "code": {
@@ -28882,7 +28884,7 @@
     "complete": "Automática, completa",
     "partial": "Automática, em andamento",
     "explainTitle": "Como as traduções são marcadas",
-    "explainBody": "O inglês é a fonte: escrito com IA e publicado só quando uma pessoa decide que deve ser. O português do Brasil também é escrito com IA e revisado aos poucos; os demais idiomas são traduzidos por máquina. Cada idioma é marcado pelo quanto já avançou: azul quando cobre o site inteiro, amarelo enquanto conteúdo novo ainda está em inglês e se atualizando, vermelho quando ainda não tem tradução e aparece em inglês por ora. Todo idioma além do inglês traz um aviso curto, e você é bem-vindo a ajudar a melhorar qualquer um deles.",
+    "explainBody": "O inglês é a fonte: escrito com IA e publicado só quando uma pessoa decide que deve ser. O português do Brasil também é escrito com IA e revisado aos poucos, assim como a interface e as ferramentas em espanhol e em alemão; o resto dos sites em espanhol e em alemão e os demais idiomas são traduzidos por máquina. Cada idioma é marcado pelo quanto já avançou: azul quando cobre o site inteiro, amarelo enquanto conteúdo novo ainda está em inglês e se atualizando, vermelho quando ainda não tem tradução e aparece em inglês por ora. Todo idioma além do inglês traz um aviso curto, e você é bem-vindo a ajudar a melhorar qualquer um deles.",
     "stub": "Ainda não traduzido"
   },
   "changelog": {
@@ -31568,7 +31570,7 @@
     "godOff": "Desligar"
   },
   "shortcuts": {
-    "actionBingo": "Buzzword Bingo",
+    "actionBingo": "Bingo de reunião",
     "actionBoss": "Tecla do chefe",
     "actionCheatSheet": "Ajuda dos atalhos de teclado",
     "actionDevFun": "Índice do Laboratório de diversão",
@@ -31580,7 +31582,7 @@
     "actionToolBase64": "Codificar / decodificar Base64",
     "actionToolCidr": "Calculadora CIDR / sub-rede",
     "actionToolHash": "Gerador de hash",
-    "actionToolJsonYaml": "Conversor JSON ⇄ YAML",
+    "actionToolJsonYaml": "Conversor JSON ↔ YAML",
     "actionToolJwt": "Decodificador de JWT",
     "actionToolUrlInspector": "Inspetor de URL",
     "actionToolUuid": "Ferramentas de UUID",
@@ -32123,7 +32125,7 @@
       },
       "languages": {
         "h": "Idiomas",
-        "b": "A interface está disponível em vários idiomas; para trocar, use o seletor de idioma no topo da página. O inglês é a fonte, escrito com IA e publicado só quando uma pessoa decide que deve ser; o português do Brasil também é escrito com IA e revisado aos poucos; os demais idiomas são traduzidos por máquina. Quando uma frase ainda não foi traduzida para um idioma, aparece o texto em inglês no lugar dela, para que nunca falte nada."
+        "b": "A interface está disponível em vários idiomas; para trocar, use o seletor de idioma no topo da página. O inglês é a fonte, escrito com IA e publicado só quando uma pessoa decide que deve ser; o português do Brasil também é escrito com IA e revisado aos poucos, assim como a interface e as ferramentas em espanhol e em alemão; o resto dos sites em espanhol e em alemão e os demais idiomas são traduzidos por máquina. Quando uma frase ainda não foi traduzida para um idioma, aparece o texto em inglês no lugar dela, para que nunca falte nada."
       },
       "offline": {
         "h": "Uso offline",
@@ -36517,9 +36519,9 @@
         "depth": "Um controlador de entrega de aplicações é o sucessor de marketing do load balancer, e a expansão é real, e não apenas nominal: terminação TLS, verificação de saúde, roteamento por conteúdo, compressão, cache e um firewall de aplicação web num equipamento.\n\nA consideração que ele cria é concentração. Colocar tudo isso num lugar é operacionalmente conveniente e o torna ponto único de falha com raio de impacto muito grande, já que um equipamento que termina TLS detém as chaves privadas de tudo que está atrás dele e vê cada requisição em texto claro. Essa é troca razoável quando feita deliberadamente e exposição séria quando feita por acidente, e é por isso que a configuração desses equipamentos merece a mesma revisão que as aplicações atrás deles."
       },
       "sii": {
-        "def": "Dados reutilizáveis de identidade do assinante no processo de emissão de certificados.",
-        "context": "Informação de Identidade do Assinante (do inglês Subscriber Identity Information) refere-se a detalhes previamente validados sobre um assinante de certificado que uma CA pode reutilizar por tempo limitado. Como o DCV, a janela para reutilizar SII foi apertada pelas regras baseline do setor.",
-        "depth": "A informação de identidade de assinante na emissão de certificados são dados validados sobre uma organização que podem ser reutilizados em várias requisições em vez de reverificados a cada vez. Existe porque a validação organizacional é lenta e em boa medida repete as mesmas verificações.\n\nA questão de segurança que isso levanta é frescor. Reutilizar uma validação significa que um certificado pode ser emitido contra a situação de uma organização como ela era algum tempo atrás, e as regras do setor, portanto, limitam por quanto tempo tais dados podem ser usados. Esse limite se apertou repetidamente conforme a tensão entre velocidade de emissão e atualidade da validação foi debatida, e é uma das razões de a validação automatizada de domínio com validades curtas ter deslocado a validação organizacional na maior parte dos usos."
+        "def": "Informações validadas que identificam o titular (subject) de um certificado e que uma CA (autoridade certificadora) pode reutilizar por tempo limitado ao emitir novos certificados.",
+        "context": "Os Baseline Requirements do CA/Browser Forum definem Subject Identity Information como as informações que identificam o subject do certificado, sem contar os nomes de domínio e os endereços IP que constam nele. Como os resultados do DCV (domain control validation), o SII já validado só pode ser reutilizado dentro de uma janela que as regras baseline do setor foram apertando.",
+        "depth": "A informação de identidade do subject na emissão de certificados são dados validados sobre a organização nomeada no certificado que podem ser reutilizados em várias requisições em vez de reverificados a cada vez. Existe porque a validação organizacional é lenta e em boa medida repete as mesmas verificações.\n\nA questão de segurança que isso levanta é frescor. Reutilizar uma validação significa que um certificado pode ser emitido contra a situação de uma organização como ela era algum tempo atrás, e as regras do setor, portanto, limitam por quanto tempo tais dados podem ser usados. Esse limite se apertou repetidamente conforme a tensão entre velocidade de emissão e atualidade da validação foi debatida, e é uma das razões de a validação automatizada de domínio com validades curtas ter deslocado a validação organizacional na maior parte dos usos."
       },
       "xxe": {
         "def": "Um ataque que abusa de entidades externas XML para ler arquivos ou alcançar sistemas internos.",
@@ -38903,8 +38905,9 @@
         "context": "As consequências chegaram em semanas: o EternalBlue moveu o WannaCry em maio de 2017 e o NotPetya um mês depois, juntos os incidentes cibernéticos mais caros da história, atingindo hospitais, portos e fábricas que nada tinham a ver com trabalho de inteligência. O vazamento é o argumento definitivo no debate sobre estoque de vulnerabilidades - um governo que acumula falhas secretas está a uma falha de custódia de armar o mundo inteiro, e este é o caso em que isso de fato aconteceu."
       },
       "hacktivism": {
-        "def": "Hacking como protesto político - desfiguração, vazamentos, negação de serviço ou ferramentas de contorno usadas para fazer um ponto, não dinheiro. A palavra foi cunhada por um membro do Cult of the Dead Cow em meados dos anos noventa.",
-        "context": "A linhagem vai do worm WANK de 1989 ao Anonymous e ao LulzSec, e daí a plataformas de vazamento e projetos de contorno de censura. É a categoria mais disputada do campo: técnicas idênticas são protesto ou crime dependendo inteiramente de quem julga, e o dano colateral de uma ação simbólica costuma cair sobre quem não tem parte na discussão."
+        "def": "Hacking feito para marcar uma posição política ou social, e não para ganhar dinheiro, da desfiguração de sites e dos ataques de negação de serviço a vazamentos e ferramentas que contornam a censura; a palavra costuma ser atribuída a Omega, membro do Cult of the Dead Cow, que a usou num e-mail ao grupo em 1996.",
+        "context": "Os próprios praticantes discutem os métodos desde o começo. Os sit-ins virtuais do Electronic Disturbance Theater com o FloodNet, em 1998, e a ação dos Electrohippies contra a Organização Mundial do Comércio, em 1999, apresentavam o recarregamento de páginas em massa como a versão online de um protesto de ocupação; Oxblood Ruffin, do Cult of the Dead Cow, respondeu que bloquear um site cala quem o mantém e definiu hacktivismo como o uso da tecnologia para melhorar os direitos humanos nos meios eletrônicos. Tribunais americanos e britânicos trataram as inundações de tráfego do Anonymous e as invasões do LulzSec como crime cibernético, e Estados passaram a se esconder atrás de personas hacktivistas: uma denúncia americana de 2018 afirma que a inteligência militar russa inventou o Guccifer 2.0, que se apresentava como um hacker romeno solitário.",
+        "depth": "A palavra. A criação costuma ser atribuída a Omega, membro do Cult of the Dead Cow (cDc), que a usou num e-mail ao grupo em 1996, meio de brincadeira, para falar de hacking com propósito político; a Wikipedia registra um uso impresso anterior, num artigo de 1995 de uma revista de Minneapolis sobre o filme Fresh Kill, de Shu Lea Cheang. Oxblood Ruffin, que se descrevia como o evangelista-chefe do hacktivismo no cDc, tratou de estreitar o sentido. Tomando como gancho o artigo 19 da Declaração Universal dos Direitos Humanos, definiu hacktivismo como o uso da tecnologia para melhorar os direitos humanos nos meios eletrônicos e, num texto apresentado na Yale Law School em 2004, excluiu pelo nome a desfiguração de sites e a negação de serviço (DoS, denial of service), porque as duas cerceiam a expressão de quem mantém o alvo.\n\nAntecedentes e sit-ins. O motivo é mais velho que o nome: em outubro de 1989, segundo o CERT (Computer Emergency Response Team) da Carnegie Mellon University, um worm que se espalhava via DECnet por uma rede da NASA (National Aeronautics and Space Administration) trocava os avisos do sistema por um banner com os dizeres Worms Against Nuclear Killers. O Electronic Disturbance Theater, que teve Ricardo Dominguez entre os fundadores, escreveu o FloodNet, um applet Java que recarregava sem parar a página-alvo, e a partir de abril de 1998 fez com ele sit-ins virtuais em solidariedade aos zapatistas, contra o site do presidente mexicano Zedillo e, em 9 de setembro de 1998, também contra o Pentágono e a Bolsa de Valores de Frankfurt. Em dezembro de 1999, cinco ativistas britânicos, os Electrohippies, organizaram um sit-in virtual contra a Organização Mundial do Comércio durante os protestos de Seattle e calcularam em mais de 452 mil o número de participantes.\n\nO grupo Hacktivismo. Ruffin esboçou a estrutura do Hacktivismo, um braço do cDc, na DEF CON de 1999, e o projeto virou um grupo internacional de tecnólogos, advogados, defensores de direitos humanos e artistas que criava ferramentas para quem vivia atrás de firewalls nacionais, entre elas o Peekabooty, para alcançar a web aberta, e o Camera/Shy, que escondia material censurado em páginas inofensivas por meio de esteganografia. A declaração do grupo, redigida por Ruffin em junho de 2000 e enxugada com a ajuda de Fred von Lohmann, da EFF (Electronic Frontier Foundation), saiu em 4 de julho de 2001 e afirma que a censura da internet patrocinada por Estados corrói a convivência pacífica e civilizada, afeta o exercício da democracia e ameaça o desenvolvimento socioeconômico das nações.\n\nA vertente construtiva. O Tor recebeu dinheiro da EFF a partir de 2004, virou organização sem fins lucrativos em 2006, começou em 2007 a montar bridges para contornar firewalls de governos e, segundo o próprio projeto, foi decisivo durante a Primavera Árabe. O Citizen Lab da Universidade de Toronto lançou o Psiphon como software de código aberto em dezembro de 2006, para que qualquer pessoa pudesse oferecer uma saída a amigos e parentes que viviam sob censura. O SecureDrop, o sistema de código aberto pelo qual whistleblowers enviam documentos a redações, nasceu como DeadDrop, escrito por Aaron Swartz em 2012; a Freedom of the Press Foundation assumiu o projeto em outubro de 2013.\n\nAnonymous e LulzSec. O Project Chanology, do Anonymous, enfrentou a Igreja da Cientologia em 2008 com software de inundação, trotes telefônicos e faxes inteiramente pretos, e depois com piquetes mascarados nas ruas de vários países. A Operation Payback, voltada contra organizações que combatiam o compartilhamento de arquivos, atingiu o PayPal de 6 a 10 de dezembro de 2010 como Operation Avenge Assange, depois que a empresa deixou de processar doações ao WikiLeaks. Em 19 de julho de 2011 o FBI (Federal Bureau of Investigation) prendeu 14 pessoas pelos ataques ao PayPal, e 13 se declararam culpadas em dezembro de 2013. Em março de 2012 a promotoria revelou que Hector Xavier Monsegur, o Sabu, que tinha fundado o LulzSec com outros três em maio de 2011, se declarara culpado em agosto do ano anterior e colaborava com a investigação; em maio de 2014 recebeu pena equivalente ao tempo já cumprido, e a juíza citou uma ajuda que desarticulou centenas de ataques. Jeremy Hammond, do AntiSec, outra dissidência do Anonymous, pegou 10 anos em novembro de 2013 pela invasão da empresa de inteligência Stratfor, e em Londres, em maio de 2013, três membros britânicos do LulzSec e um colaborador receberam penas que iam de 20 meses com suspensão a 32 meses.\n\nMáscaras emprestadas. Em julho de 2018 um grand jury americano denunciou 12 oficiais do serviço de inteligência militar da Rússia, o GRU (Main Intelligence Directorate), e o Departamento de Justiça afirmou que eles inventaram o Guccifer 2.0, persona que alegava falsamente ser um hacker romeno solitário. Em abril de 2024 a Mandiant relatou que a unidade de sabotagem do mesmo serviço, o Sandworm, que ela agora designa APT44 (Advanced Persistent Threat 44), cultiva identidades hacktivistas para suas operações de informação, do Anonymous Poland e do Guccifer 2.0 aos canais de Telegram XakNet Team, CyberArmyofRussia_Reborn e Solntsepek. Em janeiro de 2024 o CyberArmyofRussia_Reborn, que o Threat Analysis Group do Google avalia ter sido criado e ser controlado pelo APT44, publicou vídeos em que dizia manipular controles de empresas de água na Polônia e nos Estados Unidos, alegações que a Mandiant afirmou não poder verificar de forma independente.\n\nProtesto ou crime. Os réus do caso PayPal foram acusados de conspiração e de dano intencional a um computador protegido, que o CFAA (Computer Fraud and Abuse Act), 18 U.S.C. 1030, define como transmitir conscientemente um programa, informação, código ou comando e, com isso, causar dano intencional sem autorização; essa acusação prevê até 10 anos de prisão. Quem defende a tática argumenta com a desobediência civil: Dominguez pôs o sit-in virtual na linhagem de Gandhi, Martin Luther King Jr. e Thoreau, como um bloqueio que interrompe o fluxo cotidiano do poder; os Electrohippies diziam que essas ações eram diretamente análogas às manifestações de rua, com uma garantia democrática na participação em massa de que dependem; e uma petição de 2013 no site da Casa Branca comparou a negação de serviço distribuída (DDoS, distributed denial of service) a um protesto do Occupy, reunindo 6.048 das 25 mil assinaturas necessárias. Os críticos respondem que bloquear um site cala quem o mantém: Ruffin comparou o DoS a calar alguém aos gritos numa assembleia pública; em 1998 o cDc, o L0pht, o Chaos Computer Club, a 2600 e a Phrack repreenderam um grupo que tinha declarado ciberguerra ao Iraque e à China, porque ninguém pode esperar, legitimamente, ampliar o livre acesso de um país à informação trabalhando para desativar as redes de dados dele; e Ron Deibert, do Citizen Lab, acrescentou que um sit-in físico exige risco físico e uma inundação de tráfego não. A acusação aponta o custo, 8,9 milhões de dólares num processo da Operation Payback, pela estimativa do Departamento de Justiça; críticos da lei pedem leniência quando ninguém buscou ganho pessoal, e em 2014 um juiz federal da Virgínia perguntou por que ali se buscavam condenações por crimes graves (felonies) quando o caso PayPal da Califórnia tinha terminado em contravenções (misdemeanors), quase sem prisão."
       },
       "war-dialing": {
         "def": "Discar faixas inteiras de números de telefone automaticamente para achar os que são atendidos por um modem - a técnica de reconhecimento da era discada, e antepassada direta do port scan.",
@@ -41653,6 +41656,16 @@
         "def": "A ordem em que um processador, um formato de arquivo ou um protocolo distribui os bytes de um número com mais de um byte: big-endian põe o byte mais significativo no endereço mais baixo, little-endian põe ali o menos significativo.",
         "context": "Danny Cohen deu nome às duas ordens em 1980, a partir da guerra dos ovos das Viagens de Gulliver. Os headers da internet são big-endian, como diz a RFC 791, e o POSIX chama isso de network byte order, a ordem de rede; o x86-64 e a maioria dos sistemas Arm são little-endian; o IBM z é big-endian; Power, RISC-V, MIPS e SPARC rodam nas duas ordens, o que se chama bi-endian. O código converte em cada fronteira com htonl, ntohs e as parentes delas, e uma conversão esquecida produz um número válido e errado, não um erro: a porta 80 gravada na ordem do host numa máquina little-endian é lida da rede como a porta 20480.",
         "depth": "O que é. O valor de 32 bits 0x0A0B0C0D fica guardado como os bytes 0A 0B 0C 0D numa máquina big-endian e como 0D 0C 0B 0A numa little-endian. O POSIX define as duas: na representação little-endian o primeiro byte é o menos significativo, e a significância cresce com o endereço; na big-endian o primeiro byte é o mais significativo. Só números com mais de um byte são afetados: bytes isolados, texto ASCII e UTF-8 ficam iguais nas duas ordens, e a ordem dos bits dentro de um byte é assunto da camada de enlace, não do software (a RFC 2469 registra que o Ethernet leva o primeiro bit de cada byte no fio para o bit menos significativo dele, e que o Token Ring fazia o contrário).\n\nOnde a ordem é fixa. O manual da Intel chama os processadores Intel 64 e IA-32 de little endian machines, e a z/Architecture da IBM endereça um campo pelo byte mais à esquerda, o de mais alta ordem. A Power ISA deixa o sistema operacional escolher a ordem com um único bit de modo; o RISC-V define variantes little-endian, big-endian e bi-endian, mas guarda as instruções sempre em parcelas little-endian; o SPARC V9 é big-endian por padrão, com acessos a dados little-endian; o Linux descreve os sistemas MIPS como montados para uma ordem ou para a outra. Entre os formatos, os headers da internet, o PNG, os arquivos class do Java, o XDR (External Data Representation) e o CBOR são big-endian; o BMP e a memória do WebAssembly são little-endian; o TIFF marca a ordem com II ou MM, o ELF com o byte EI_DATA, e o texto UTF-16 com um byte order mark, sem o qual o padrão Unicode e a RFC 2781 o leem como big-endian, enquanto os navegadores, seguindo o Encoding Standard do WHATWG, entendem o rótulo utf-16 como UTF-16LE.\n\nA conversão. As conversões são baratas e têm o nome da direção: htonl e ntohl no POSIX, htobe32 e le32toh no endian.h mais recente dele, cpu_to_be32 no kernel do Linux, o ! e os prefixos de menor e maior no struct do Python. Os processadores trazem instruções para isso: BSWAP e MOVBE no x86, LOAD REVERSED no IBM z, os loads e stores byte-reverse no Power, rev8 na extensão Zbb do RISC-V. Para descobrir o que uma máquina é, o sys.byteorder do Python responde little ou big, e o lscpu imprime uma linha Byte Order.\n\nPor que importa. Nenhuma ordem vence pelo mérito: o memorando de Cohen lista o que os comparadores seriais preferem e o que os somadores seriais preferem, e conclui que concordar com uma ordem importa mais do que qual ordem se escolhe. Os projetistas do RISC-V escolheram little-endian porque domina o mercado, e mantiveram variantes big-endian porque as redes IP trabalham com dados big-endian; a RFC 4506 admite que a ordem única do XDR, big-endian, é injusta com as máquinas little-endian, e argumenta que uma ordem só dispensa qualquer protocolo para ler os dados. O custo de verdade é a conversão em cada fronteira e os bugs quando uma falta: uma porta ou um endereço carregados crus, UTF-16 decodificado na ordem errada, um hash calculado sobre bytes crus. O driver de bonding do Linux faz o hash dos bytes crus dos endereços, então um servidor x86-64 e um guest s390x calculam hashes diferentes para o mesmo fluxo, e com três, cinco, seis ou sete membros muitas vezes mandam esse fluxo por links diferentes."
+      },
+      "dmca": {
+        "def": "O Digital Millennium Copyright Act, a lei americana de 1998 que tornou ilegal contornar as travas técnicas que protegem obras com direito autoral, ou traficar ferramentas que façam isso, e que livra os provedores de serviços online da responsabilidade pela violação cometida por seus usuários quando eles retiram o material ao serem notificados.",
+        "context": "Sancionado em 28 de outubro de 1998 para implementar dois tratados de 1996 da WIPO (World Intellectual Property Organization), o DMCA (Digital Millennium Copyright Act) tem duas metades com que um engenheiro esbarra. A seção 1201 proíbe contornar controles de acesso e traficar ferramentas de contorno, com exceções legais estreitas e isenções temporárias revistas a cada três anos, que já cobrem pesquisa de segurança de boa-fé e reparo. A seção 512 dá safe harbor ao provedor de hospedagem ou de busca que registra um agente, retira o material diante de uma notificação válida, o devolve diante de uma contranotificação e encerra contas de infratores reincidentes. Os casos Sklyarov, Felten, DeCSS e Green v. Department of Justice giraram todos em torno da seção 1201.",
+        "depth": "O DMCA (Digital Millennium Copyright Act) foi sancionado pelo presidente Clinton em 28 de outubro de 1998 como Public Law 105-304. Ele implementa dois tratados concluídos na WIPO (World Intellectual Property Organization) em 1996, o WIPO Copyright Treaty e o WIPO Performances and Phonograms Treaty, que exigem remédios jurídicos contra o contorno de medidas tecnológicas como a criptografia e contra a adulteração de informações de gestão de direitos. O Título I acrescenta a seção 1201, a lei anticontorno, à lei de direito autoral americana; o Título II cria os safe harbors da seção 512; o Título III permite ao dono de um computador autorizar a cópia de um programa feita ao ligar a máquina para manutenção ou reparo.\n\nA seção 1201 separa as medidas que controlam o acesso a uma obra das que protegem um direito como o de cópia. Contornar um controle de acesso, desembaralhando, decifrando ou burlando a medida sem autorização do titular, é proibido; contornar um controle de cópia não é, distinção que o Copyright Office explicou em 1998 lembrando que o fair use pode justificar a cópia, mas não serve de defesa para o acesso não autorizado. Duas proibições de tráfico alcançam quem fabrica, importa ou oferece tecnologia, produto, serviço ou componente feito principalmente para contornar qualquer dos dois tipos de medida, com uso comercial relevante limitado além disso, ou anunciado para esse fim. A violação dolosa com fins de vantagem comercial ou ganho financeiro privado é crime: até US$ 500 mil de multa ou cinco anos de prisão na primeira vez.\n\nTrês exceções da própria lei interessam a engenheiros. A seção 1201(f) permite a quem tem o direito legítimo de usar um programa contorná-lo para identificar e analisar o que um programa criado de forma independente precisa para interoperar com ele, construir ferramentas para isso e compartilhar os resultados apenas com esse fim. A seção 1201(g) cobre a pesquisa de criptografia de boa-fé sobre uma cópia obtida legalmente, depois de um esforço de boa-fé para obter autorização. A seção 1201(j) cobre o teste de segurança: acessar um computador, sistema ou rede apenas para testar, investigar ou corrigir uma falha de boa-fé, com autorização do dono ou operador. Nenhuma protege conduta que viole outras leis, e o texto cita o Computer Fraud and Abuse Act.\n\nA cada três anos o Librarian of Congress, que dirige a Biblioteca do Congresso, isenta, por recomendação do Register of Copyrights, classes de obras da proibição do ato de contornar pelos três anos seguintes; as proibições de tráfico ficam fora do alcance dessa regulamentação. A pesquisa de segurança de boa-fé entrou na regra em 2015, para aparelhos de consumo, veículos terrestres motorizados e dispositivos médicos implantados, apesar da objeção de fabricantes que diziam já autorizar pesquisas; a regra de 2018 eliminou a lista de aparelhos, e em 2021 a condição de que a pesquisa não violasse nenhuma outra lei virou um aviso de que a isenção não é safe harbor diante dessas leis. O reparo de veículos foi isento em 2015 a pedido da EFF (Electronic Frontier Foundation); em 2021 o reparo de aparelhos foi ampliado para qualquer aparelho de consumo com software, e os dispositivos médicos ganharam isenção própria. O nono ciclo, em vigor desde 28 de outubro de 2024, renovou todas as isenções cuja renovação foi pedida e acrescentou os equipamentos comerciais de preparo de alimentos do varejo e o acesso dos donos aos dados operacionais dos veículos. No décimo, um aviso de 28 de outubro de 2026 relatou 43 pedidos de renovação e a intenção do Register de recomendar a readoção de todas as isenções menos uma: o reparo de dispositivos médicos enfrentou oposição relevante e volta a ser discutido; as renovações valerão de outubro de 2027 a outubro de 2030.\n\nA seção 512, no Título II, oferece safe harbors, cada um impedindo indenizações em dinheiro, para comunicações transitórias, caching do sistema, armazenamento a pedido do usuário e ferramentas de localização de informação. Todo provedor precisa adotar, aplicar de forma razoável e divulgar aos usuários uma política de encerrar, quando apropriado, as contas de infratores reincidentes; serviços de hospedagem e ferramentas de localização também precisam indicar um agente no próprio site e no diretório online do Copyright Office, onde a designação caduca após três anos se não for renovada. No procedimento de notice and takedown, a notificação enviada a esse agente identifica a obra e o material, declara a crença de boa-fé de que o uso não é autorizado e afirma, sob pena de perjúrio, que quem a envia pode agir pelo titular; o provedor deve agir sem demora. A contranotificação (counter-notice) afirma, sob pena de perjúrio, a crença de boa-fé de que a retirada foi engano ou identificação errada, e o material volta entre 10 e 14 dias úteis, a menos que o reclamante informe ter entrado com uma ação. Em maio de 2020 o Copyright Office concluiu que a balança que o Congresso quis equilibrar tinha pendido para um lado.\n\nOs casos que este glossário conta são todos da seção 1201: ações cíveis no DeCSS e no caso Felten, como observou a EFF, e um processo criminal contra Sklyarov. O DeCSS, escrito em 1999 pelo adolescente norueguês Jon Johansen e mais dois, decifrava o CSS (Content Scramble System) dos DVDs (digital versatile discs); oito estúdios processaram Eric Corley, da 2600, por publicá-lo e apontar links para ele, e em 2001 o Segundo Circuito confirmou a ordem que proibia as duas coisas, por visar a função do código, e não o que ele expressa. A equipe de Edward Felten, ameaçada em abril de 2001 por um artigo sobre a quebra das marcas d'água do SDMI (Secure Digital Music Initiative), entrou na Justiça representada pela EFF e apresentou o artigo em agosto. Dmitry Sklyarov foi preso em Las Vegas em julho de 2001, depois de falar na DEF CON, e acusado de tráfico por causa do software de eBooks da ElcomSoft; um júri absolveu a ElcomSoft em dezembro de 2002. Green v. Department of Justice, aberto em 2016 em nome de Matthew Green e bunnie Huang, atacou a própria lei; em agosto de 2024 o Circuito do Distrito de Columbia rejeitou a contestação em tese com base na Primeira Emenda.\n\nO relatório da EFF de março de 2013, Unintended Consequences: Fifteen Years under the DMCA, sustentou que a seção 1201 fora invocada menos contra piratas do que contra cientistas, consumidores e concorrentes, por exemplo para barrar cartuchos de impressora e controles de portão de garagem de terceiros, e que suas exceções eram estreitas demais; grupos de usuários disseram ao Copyright Office que o direito de contornar pode valer pouco sem a ajuda de técnicos, que nenhuma regulamentação consegue isentar das proibições de tráfico. Os titulares de direitos disseram ao mesmo estudo que a lei funcionou como o Congresso queria, sustentando serviços de streaming construídos sobre proteção técnica, e atribuíram às proibições de tráfico o mérito de manter as ferramentas de contorno longe do grande público; o tribunal no caso Green chamou a pirataria de núcleo da lei. O relatório do Copyright Office de junho de 2017 manteve a estrutura e chamou as proibições de tráfico de essenciais, mas pediu ao Congresso que considerasse afrouxar as exigências de autorização para teste de segurança e pesquisa de criptografia e tornar permanentes as isenções para reparo, tecnologia assistiva e desbloqueio de celulares."
+      },
+      "right-to-repair": {
+        "def": "O princípio, e o movimento que o defende, de que quem é dono de uma máquina deve poder consertá-la, ou levá-la a quem quiser, com acesso às peças, ferramentas, documentação, software de diagnóstico e firmware que o fabricante entrega à própria rede autorizada, em condições justas e sem travas de software que rejeitem peças de reposição.",
+        "context": "Começou pelos carros: os eleitores de Massachusetts obrigaram as montadoras a abrir as informações de reparo das concessionárias em 2012 e os dados de telemática em 2020. Em maio de 2021, a Federal Trade Commission (FTC) disse ao Congresso americano ter encontrado poucas evidências a favor das justificativas dos fabricantes, e desde 2022 Nova York, Minnesota, Califórnia, Colorado e Oregon aprovaram leis para eletrônicos, os dois últimos limitando também o parts pairing. A União Europeia (UE) impôs regras de reparo aos smartphones em junho de 2025 e adotou uma diretiva sobre reparo aplicável a partir de julho de 2026. Os fabricantes invocam segurança e propriedade intelectual; defensores como a iFixit respondem que o monopólio do conserto encarece o serviço e descarta aparelhos que ainda funcionam.",
+        "depth": "O que se pede. O dono de um equipamento, ou o técnico que ele escolher, deveria ter acesso às peças, ferramentas, manuais, software de diagnóstico e firmware que o fabricante fornece à própria rede autorizada, em condições equivalentes; a iFixit, empresa de guias de conserto e de peças entre as vozes mais ativas da campanha, acrescenta o software para redefinir travas de segurança e parear peças. O parts pairing, que a lei do Oregon define como o uso de software para identificar componentes por meio de um identificador único, pode deixar uma peça nova e funcional limitada, cercada de avisos ou recusada. A Electronic Frontier Foundation (EFF) soma o direito autoral: a pessoa é dona do aparelho, mas só tem licença do software, sob termos que podem proibir engenharia reversa, transferência e conserto não autorizado.\n\nPrimeiro, os carros. Em 2012, os eleitores de Massachusetts aprovaram a Question 1, que obrigava as montadoras, a partir do ano-modelo 2015, a dar a donos e oficinas independentes as informações de diagnóstico e reparo das concessionárias; foram quase 86% dos votos sim e não. Outra Question 1, com 75% em 2020, exigiu uma plataforma aberta e padronizada para os dados de telemática a partir do ano-modelo 2022. A Alliance for Automotive Innovation, das montadoras, foi à Justiça, perdeu em fevereiro de 2025 e, na apelação, alegou que a lei obriga a desligar a cibersegurança que protege direção e freios; em fevereiro de 2026, as partes suspenderam o caso para negociar um acordo.\n\nWashington. Em maio de 2021, a Federal Trade Commission (FTC) entregou ao Congresso o relatório 'Nixing the Fix', que encontrou poucas evidências a favor das justificativas dos fabricantes, e em 21 de julho de 2021 aprovou por 5 a 0 fazer das restrições ilegais ao conserto uma prioridade de fiscalização. A Ordem Executiva 14036, de 9 de julho de 2021, já havia estimulado regras contra essas restrições, citando os agricultores; foi revogada em agosto de 2025. A fiscalização chegou ao campo: em janeiro de 2025, a FTC, Illinois e Minnesota processaram a Deere & Company, alegando que só as concessionárias tinham a ferramenta Service ADVISOR completa; a Deere argumentava que consertos independentes arriscavam violar as normas de emissões. Um acordo de dez anos apresentado em julho de 2026, sujeito à homologação judicial, obriga a empresa a oferecer a donos e oficinas independentes, em condições justas e razoáveis, os recursos de reparo das concessionárias, inclusive códigos de falha, reprogramação e pareamento de peças novas.\n\nDireito autoral. A seção 1201 do Digital Millennium Copyright Act (DMCA) torna ilegal contornar as medidas tecnológicas que controlam o acesso ao software, mesmo para consertar. A cada três anos, o Librarian of Congress, por recomendação do Register of Copyrights, concede isenções pelos três anos seguintes. O conserto entrou em 2015, para veículos terrestres, e se estendeu a smartphones e eletrodomésticos em 2018, a qualquer dispositivo com software feito principalmente para consumidores e a equipamentos médicos em 2021, e a equipamentos comerciais de preparo de alimentos no varejo em 2024, quando uma categoria mais ampla, comercial e industrial, foi recusada. Nenhuma isenção vale como defesa sob outro dispositivo da lei, de modo que as proibições de distribuir ferramentas de contorno seguem de pé.\n\nOs estados. O Digital Fair Repair Act de Nova York, sancionado em 28 de dezembro de 2022, foi a primeira lei estadual do gênero para eletrônicos; vale para equipamentos fabricados e vendidos no estado a partir de 1º de julho de 2023, mas exclui carros, equipamentos médicos, máquinas fora de estrada, eletrodomésticos e vendas por contrato entre empresas ou com o governo. A lei de Minnesota, em vigor desde 1º de julho de 2024, alcança equipamentos vendidos desde 1º de julho de 2021, servidores de arquivos inclusive, segundo a iFixit. O Senate Bill 244 da Califórnia, em vigor desde 1º de julho de 2024, exige peças, ferramentas e documentação por três anos após a última fabricação de um modelo com preço de atacado entre 50 e 99,99 dólares, e por sete anos acima disso. O Colorado cobriu cadeiras de rodas motorizadas em 2022, máquinas agrícolas em 2023 e eletrônicos a partir de 1º de janeiro de 2026. O Senate Bill 1596 do Oregon, em vigor desde 1º de janeiro de 2025, proíbe, nos aparelhos fabricados e vendidos a partir de 2025, o parts pairing que bloqueie peça funcional, reduza o desempenho ou exiba avisos enganosos; a lei do Colorado tem cláusula parecida.\n\nEuropa. Na União Europeia (UE), regulamentos de ecodesign de 2019 fixaram requisitos de reparabilidade para eletrodomésticos, telas e servidores, e o Regulamento (UE) 2024/1781 põe a reparabilidade entre os aspectos que as próximas regras devem melhorar. Desde 20 de junho de 2025, o Regulamento (UE) 2023/1670 obriga fabricantes de smartphones e tablets a fornecer peças a reparadores profissionais por ao menos sete anos depois que o modelo sai do mercado e a dar-lhes o software exigido pelas peças serializadas, e uma etiqueta energética classifica a reparabilidade de A a E. A Diretiva (UE) 2024/1799, aplicável a partir de 31 de julho de 2026, obriga o fabricante a consertar os bens cobertos de graça ou por preço razoável, proíbe técnicas que impeçam o conserto, salvo justificativa legítima e objetiva, e soma 12 meses à responsabilidade do vendedor quando o consumidor opta pelo reparo. A França exibe desde 2021 uma nota de reparabilidade de até 10 pontos, trocada em 2025 por um índice de durabilidade em televisores e máquinas de lavar.\n\nOs dois lados. A FTC agrupou as objeções dos fabricantes em propriedade intelectual, segurança, cibersegurança, responsabilidade civil e reputação. A Apple, que apoiou o projeto da Califórnia, combateu a cláusula de pairing do Oregon: o engenheiro John Perry declarou que ela comprometeria a segurança e a privacidade dos moradores do estado ao obrigar os fabricantes a aceitar peças de origem desconhecida, e o Business Council of New York alertou que dados técnicos sensíveis chegariam a quase qualquer reparador que os pedisse. Os defensores citam a conclusão da própria FTC, as desmontagens da iFixit, que acharam mais peças pareadas no iPhone 15 do que em qualquer iPhone anterior, e o custo e o desperdício: para a Consumer Reports, o direito ao reparo economiza dinheiro e reduz o lixo; para a EFF, as restrições tiram as oficinas independentes do mercado.\n\nPara engenheiros de redes e de tecnologia da informação (TI). A maioria dessas leis para na porta da sala de equipamentos: Nova York exclui vendas por contrato empresarial, o Oregon cobre só equipamento doméstico, o Colorado exclui roteadores ou aparelhos tudo-em-um que entregam internet, vídeo e voz, e Minnesota isenta equipamento de TI destinado a infraestrutura crítica, isenção que o grupo SecuRepairs advertiu poder alcançar roteadores e switches corporativos. Em 2026, um projeto no Colorado que acrescentava essa isenção, apoiado sobretudo pela Cisco, segundo a iFixit, caiu por 7 a 4 numa comissão da Câmara estadual, depois de um dos autores dizer que instruções de reparo ajudariam a fazer engenharia reversa de sistemas críticos e de um técnico de TI aposentado responder que o roteador da companhia de água é o mesmo do varejo. Licenças e firmware são outra camada: a política de transferência da Cisco só deixa os direitos de software passarem a um novo dono se a lei exigir, se valer um cenário listado ou se a Cisco consentir mediante taxa, e o regulamento europeu de servidores mantém o firmware disponível por oito anos após a última unidade de um modelo, exceto nos network servers."
       }
     },
     "totalCount": "{count} termos",
@@ -42170,7 +42183,8 @@
     "crumb": "Documentação",
     "lede": "Como a ferramenta {tool} funciona, o que ela calcula e as fontes por trás dela.",
     "backToTool": "Voltar para a ferramenta {tool}",
-    "openTool": "Abrir a ferramenta {tool}"
+    "openTool": "Abrir a ferramenta {tool}",
+    "viewMarkdown": "Ver em Markdown"
   },
   "share": {
     "label": "Compartilhar",
@@ -43209,7 +43223,7 @@
       "searchPlaceholder": "Um problema, uma palavra, uma situação...",
       "searchExamples": "Experimente",
       "lifecycleTitle": "Siga o ciclo de vida",
-      "lifecycleLede": "{count} artigos na ordem em que o trabalho acontece: antes da venda, quando quebra, o que rende, o que vem depois, a vida e o ofício.",
+      "lifecycleLede": "{count} artigos na ordem em que o trabalho acontece: antes de quebrar, quando quebra, quando não cede, depois que passa, a vida e o ofício.",
       "problemTitle": "Tenho um problema agora",
       "problemLede": "Digite o que está na sua frente; a busca olha só dentro deste acervo e lista os textos que tratam disso.",
       "humanTitle": "O lado humano",
@@ -43219,7 +43233,7 @@
   },
   "contributeTools": {
     "translationsTitle": "Melhorar as traduções",
-    "translationsBody": "O inglês é a fonte deste site. O português do Brasil é escrito com IA e revisado aos poucos, e outros catorze idiomas são traduzidos por máquina: utilizáveis, mas não nativos. Se você lê qualquer um deles e algo está errado, como um termo técnico traduzido ao pé da letra ou uma frase que analisa gramaticalmente e não quer dizer nada, me contar é uma contribuição real, e um bilhete curto com a página e o trecho basta.",
+    "translationsBody": "O inglês é a fonte deste site. O português do Brasil é escrito com IA e revisado aos poucos, assim como a interface e as ferramentas em espanhol e em alemão; o resto dos sites em espanhol e em alemão e outros doze idiomas são traduzidos por máquina: utilizáveis, mas não nativos. Se você lê qualquer um deles e algo está errado, como um termo técnico traduzido ao pé da letra ou uma frase que analisa gramaticalmente e não quer dizer nada, me contar é uma contribuição real, e um bilhete curto com a página e o trecho basta.",
     "translationsCta": "Enviar uma correção"
   },
   "roles": {
@@ -43636,7 +43650,7 @@
           "1": "Desenhar a solução proposta e escrevê-la numa forma que os engenheiros do cliente aceitem e o financeiro do cliente aprove.",
           "2": "Conduzir uma PoC (prova de conceito) no ambiente do cliente, contra o tráfego do cliente, com o pessoal do cliente assistindo.",
           "3": "Responder a um edital, que é uma prova escrita com consequência comercial.",
-          "4": "Informar o gerente de contas do que a tecnologia vai e do que ela de fato vai fazer, para que a promessa comercial corresponda à de engenharia."
+          "4": "Informar o gerente de contas do que a tecnologia de fato vai fazer e do que ela não vai fazer, para que a promessa comercial corresponda à de engenharia."
         },
         "accountableFor": {
           "0": "A precisão técnica de tudo que é proposto sob o nome do gerente de contas.",
@@ -45988,7 +46002,7 @@
     "lede": "As pessoas que o acervo do site registra: quem escreveu as ferramentas que todo mundo ainda roda, fundou as conferências, foi preso, depôs perante senados ou conectou um país. Cada nome leva ao seu verbete.",
     "yearNote": "O ano ao lado de cada nome marca o trabalho descrito no verbete. Não é o ano de nascimento nem a duração de uma carreira: Faraday não parou em 1831.",
     "yearLabel": "ano do trabalho descrito: {year}",
-    "count": "{count} pessoas",
+    "count": "{count, plural, one {# pessoa} other {# pessoas}}",
     "filterAll": "Todos",
     "filterLabel": "Filtrar a linha do tempo por eixo",
     "decade": "Anos {decade}",
@@ -46508,7 +46522,7 @@
       "title": "Materiais abertos",
       "lede": "Material de curso que Rodolfo Nützmann compartilha para quem quiser usar: treinamentos completos, com slides e notas do apresentador, livres para baixar, adaptar e usar em aula. Cada um tem uma ficha técnica com o programa, os objetivos, os arquivos e a licença.",
       "cardCta": "Abrir a ficha técnica",
-      "slidesBadge": "{count} slides",
+      "slidesBadge": "{count, plural, one {# slide} other {# slides}}",
       "metaTitle": "Materiais abertos - ronutz.com",
       "metaDescription": "Treinamentos completos que Rodolfo Nützmann compartilha para quem quiser usar: slides, notas do apresentador, programa e licença, livres para baixar, adaptar e usar em aula.",
       "liveTitle": "Quer um curso ministrado ao vivo?",
@@ -50491,7 +50505,7 @@
         },
         "rfc9846": {
           "label": "RFC 9846 (TLS 1.3, revisão atual)",
-          "note": "A revisão de dezembro de 2025 do TLS 1.3, que torna obsoleta a RFC 8446; a forma de suíte de cifra e as cinco suítes continuam sem alteração"
+          "note": "A revisão de julho de 2026 do TLS 1.3, que torna obsoleta a RFC 8446; a forma de suíte de cifra e as cinco suítes continuam sem alteração"
         },
         "rfc8447": {
           "note": "O significado da coluna \"Recommended\" (Y / N / D)"

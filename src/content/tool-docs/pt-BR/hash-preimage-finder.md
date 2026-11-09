@@ -18,7 +18,7 @@ Ela também não tem uma lista de senhas vazadas. Para conferir se uma senha já
 
 ## Como usar
 
-Informe um resumo alvo, ou calcule o hash de uma entrada de exemplo para produzir um, escolha o alfabeto e o comprimento máximo a pesquisar, e observe a busca rodar. Experimente uma entrada numérica curta para vê-la ter sucesso rapidamente, depois aumente o comprimento ou amplie o alfabeto para ver o espaço de chaves ultrapassar a busca.
+Cole um resumo alvo, ou produza um calculando o hash de uma entrada de exemplo no [gerador de hash](/tools/hash) (SHA-1 ou SHA-256), escolha o alfabeto e o comprimento máximo a pesquisar, e observe a busca rodar. Experimente uma entrada numérica curta para vê-la ter sucesso rapidamente, depois aumente o comprimento ou amplie o alfabeto para ver o espaço de chaves ultrapassar a busca.
 
 ## Compartilhar resultado
 

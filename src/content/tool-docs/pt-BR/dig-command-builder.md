@@ -1,6 +1,6 @@
 ## O que faz
 
-Você descreve a consulta; a página escreve a linha de comando do `dig`. Quatro grupos de controles correspondem às quatro coisas que uma invocação do dig diz:
+Você descreve a consulta; a página escreve a linha de comando do `dig`. Cinco grupos de controles correspondem às cinco coisas que uma invocação do dig diz:
 
 - **O que consultar:** um nome e um tipo de registro (A por padrão, qualquer mnemônico do registro da IANA, `TYPEnn`, ou os tipos de consulta ANY, AXFR e IXFR com o serial que você tem), uma classe (IN por padrão; CH e HS), ou um endereço para uma consulta reversa com `-x`, caso em que o dig deriva o nome PTR sozinho e o nome, o tipo e a classe não são escritos.
 - **A quem perguntar:** o servidor (`@servidor`, um nome de host ou um endereço IPv4 ou IPv6 sem colchetes), uma porta fora do padrão (`-p`), o transporte (UDP, `+tcp`, `+tls`, `+https` com o seu endpoint), uma família de endereços (`-4`, `-6`) e um endereço de origem (`-b`).

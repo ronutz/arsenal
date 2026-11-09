@@ -4,7 +4,7 @@ Cole um iRule; o linter sinaliza um pequeno conjunto de anti-padrões de desempe
 
 ## O que sinaliza
 
-**Variáveis do namespace global** (`$::x`, `set ::x`, a palavra-chave `global`) são sinalizadas como ALTA. O validador da F5 captura a palavra-chave `global` a partir da v10 e demove o servidor virtual para uma única instância de TMM (demoção de CMP), então um processador lida com todas as conexões daquele virtual; variáveis globais estão descontinuadas desde a v10. A forma obsoleta `$::datagroup` é ainda pior: na versão 11 e posteriores, acessar um data group dessa forma levanta um erro de execução TCL e envia um reset para o cliente. A correção é o namespace `static::` seguro para CMP para constantes compartilhadas, variáveis locais comuns para dados por conexão, ou o comando `class` para data groups.
+**Variáveis do namespace global** (`$::x`, `set ::x`, a palavra-chave `global`) são sinalizadas como ALTA. O validador da F5 captura a palavra-chave `global` a partir da v10 e demove o servidor virtual para uma única instância de TMM (demoção de CMP), então um processador lida com todas as conexões daquele virtual; variáveis globais estão descontinuadas desde a v10. A forma obsoleta `$::datagroup` é ainda pior: na versão 11 e posteriores, acessar um data group dessa forma levanta um erro de execução Tcl e envia um reset para o cliente. A correção é o namespace `static::` seguro para CMP para constantes compartilhadas, variáveis locais comuns para dados por conexão, ou o comando `class` para data groups.
 
 **`expr` sem chaves** é um AVISO. O Tcl substitui e re-analisa a forma sem chaves, e pode fazer dupla substituição; colocar a expressão entre chaves permite que o compilador de bytecode a otimize. A correção é `expr { ... }`.
 

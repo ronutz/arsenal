@@ -13,7 +13,7 @@ As duas se aplicam **apenas ao hardware Universal**: 4120, 4220, 5320, 5420, 552
 
 **Trocar a persona apaga a configuração.** Na redação da própria Extreme: trocar o sistema operacional de rede apaga todos os arquivos de configuração, informações de debug, logs, eventos e estatísticas do anterior. **É uma reconstrução, não uma migração**, e a ferramenta diz isso em toda consulta, e não só quando um modelo é reconhecido.
 
-Ela também sinaliza que a pergunta do boot é feita na negativa — **N mantém o Switch Engine, Y vai para o Fabric Engine**.
+Ela também sinaliza que a pergunta do boot escolhe o Switch Engine com um não: diante de "Would you like to change the switch OS to VOSS? [y/N/q]" ([notas de versão do Switch Engine 33.1.100](https://documentation.extremenetworks.com/release_notes/SwitchEngine/33.1.100/GUID-EEE4A4A1-99DC-4691-B6B5-F88A6FA8042F.shtml), lidas em 2026-11-09), **N mantém o Switch Engine, y vai para o Fabric Engine**.
 
 ## Ressalvas por série que ela mostra
 

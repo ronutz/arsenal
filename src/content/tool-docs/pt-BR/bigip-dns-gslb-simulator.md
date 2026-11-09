@@ -6,7 +6,7 @@ Modela o balanceamento global de carga (GSLB) do BIG-IP DNS (antigo GTM), que te
 
 Determinístico nos dois níveis: Round Robin (circular e uniforme), Ratio (ponderado, por maior resto), Global Availability (todas as requisições para o primeiro recurso disponível na ordem da lista, os demais como reserva) e Topology (vence o recurso cuja região casa com a do cliente, com a maior pontuação; empates dentro da pontuação vencedora vão para round-robin). Um pool ou membro inativo não recebe nada, e o tráfego se redistribui entre os que estão ativos.
 
-Os métodos dinâmicos - Quality of Service, Completion Rate, Round-Trip Time, Fewest Hops, Kilobytes/Segundo, Packet Rate, Virtual Server Score, Least Connections, CPU - dependem de métricas de desempenho ao vivo que os agentes big3d coletam de cada data center. Essas não podem ser reproduzidas offline, então a ferramenta declara isso com franqueza em vez de inventar uma distribuição. É a mesma regra de honestidade que o simulador de LTM segue para seus métodos dinâmicos.
+Os métodos dinâmicos - Quality of Service, Completion Rate, Round Trip Time, Fewest Hops, Kilobytes/Segundo, Packet Rate, Virtual Server Score, Least Connections, CPU - dependem de métricas de desempenho ao vivo que os agentes big3d coletam de cada data center. Essas não podem ser reproduzidas offline, então a ferramenta declara isso com franqueza em vez de inventar uma distribuição. É a mesma regra de honestidade que o simulador de LTM segue para seus métodos dinâmicos.
 
 ## Por que os dois níveis importam
 

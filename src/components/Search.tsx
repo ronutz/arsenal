@@ -50,6 +50,8 @@
 // degrades gracefully to a "search unavailable in dev" state.
 // ============================================================================
 
+// The interface-native locales, which the search index covers (09/11/2026).
+import { INTERFACE_LOCALES } from "@/i18n/locales";
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { tools } from "@/config/tools";
@@ -189,9 +191,11 @@ const FILTER_LABEL_KEY: Record<
  *     pagefind --site out --glob "{en,pt-BR}/**\/*.html"
  *
  * Every locale remains fully translated and browsable; search is what narrows.
- * Keep this list in step with the --glob in package.json.
+ * The glob is now built from the registry by scripts/run-pagefind.mjs (09/11/2026).
  */
-const SEARCH_LOCALES = ["en", "pt-BR"];
+// Since 09/11/2026 the index covers every locale whose interface is written natively (INTERFACE_LOCALES), and the
+// build's glob is made from the same list (scripts/run-pagefind.mjs), so this list and the index cannot drift apart.
+const SEARCH_LOCALES: readonly string[] = INTERFACE_LOCALES;
 
 /** The local-storage key of the remember-or-start-fresh choice (listed on the privacy page). */
 const FRESH_KEY = "ronutz-search-fresh";

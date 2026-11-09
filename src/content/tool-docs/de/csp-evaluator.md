@@ -1,0 +1,47 @@
+## Was das Tool tut
+
+Es liest eine Content-Security-Policy so, wie Content Security Policy Level 3 sie liest, und bewertet, was es findet. Die Eingabe kann ein Header-Wert sein, eine ganze Header-Zeile `Content-Security-Policy:` oder `Content-Security-Policy-Report-Only:`, ein Element `<meta http-equiv="Content-Security-Policy">` oder mehrere davon; die durch Kommas getrennten Glieder eines Headers sind eigene Richtlinien, die jede für sich ausgewertet werden.
+
+Für jede Richtlinie: jede Direktive, benannt und eingeordnet (CSP3, veraltet, Erweiterung, überholt, unbekannt), mit einer einzeiligen Erklärung, was sie regelt; jeder Quellausdruck, gegen die Grammatik gelesen (Schlüsselwort, Nonce, Hash, Schema, Host mit Schema, Port, Pfad und Wildcards) und erklärt; die wirksame Richtlinie je Ziel über die Fallback-Liste; das Bild für Skripte (Inline erlaubt, nur Nonce oder Hash, oder blockiert; eval; WebAssembly; 'strict-dynamic'); und die Befunde, eingestuft als hoch, mittel, niedrig, Hinweis und gut, jeder mit dem zitierten Satz der Spezifikation. Die Note ist eine von: Strict CSP (die Richtlinie erfüllt die eigene Strict CSP der Spezifikation aus Abschnitt 8.5), gut, mäßig, schwach oder „keine Beschränkung für Skripte“ (nichts beschränkt Skripte).
+
+Nur dekodieren und bewerten, offline: Es wird nichts abgerufen und keine Seite geladen. Die gehostete API führt denselben Code aus.
+
+## Wie die Richtlinie gelesen wird
+
+- 2.2.1: an Semikolons trennen, Whitespace entfernen, den Namen in Kleinbuchstaben umwandeln, den Wert an Whitespace trennen; „If policy's directive set contains a directive whose name is directive name, continue“: Eine doppelte Direktive wird ignoriert (C1).
+- 2.3.1: Jedes Token ist eine `scheme-source`, `host-source`, `keyword-source`, `nonce-source` oder `hash-source` oder `'none'` allein. Ein Schlüsselwort ohne Anführungszeichen passt auf die Host-Grammatik und wird als Host gelesen (C7); ein Direktivenname in einem Wert bedeutet ein fehlendes Semikolon (C6); ein Token außerhalb aller Formen trifft auf nichts zu (C8).
+- 6.8.3: die Fallback-Liste. script-src-elem → script-src → default-src; script-src-attr → script-src → default-src; style-src-elem und style-src-attr → style-src → default-src; worker-src → child-src → script-src → default-src; frame-src → child-src → default-src; connect-src, manifest-src, object-src, media-src, font-src, img-src → default-src; base-uri, form-action und frame-ancestors fallen nie zurück. „There is no inheritance“ (6.1.3).
+- 6.7.3.2: 'unsafe-inline' wird durch jede Nonce und jeden Hash in derselben Liste außer Kraft gesetzt, bei Skripten außerdem durch 'strict-dynamic' (C14 sagt, welcher Fall vorliegt).
+- 3.3 und 6.3.2: In einem meta-Element werden frame-ancestors, report-uri und sandbox ignoriert; bei Report-Only wird sandbox ignoriert (C5, C26).
+
+## Die Befunde
+
+C1 doppelte Direktive; C2 unbekannte Direktive; C3 überholte Direktive (block-all-mixed-content nach Mixed Content 6.1; plugin-types, referrer, reflected-xss, disown-opener, navigate-to, prefetch-src, require-sri-for fehlen in CSP3); C4 report-uri veraltet (6.5.1); C5 Direktive bei dieser Auslieferung ignoriert; C6 fehlendes Semikolon; C7 Schlüsselwort ohne Anführungszeichen; C8 kein Quellausdruck; C9 'none' neben anderen Ausdrücken; C10 leere Quellliste; C11 ein Wert, den die Direktive nicht annimmt (webrtc, upgrade-insecure-requests, require-trusted-types-for, sandbox-Token); C12 außerhalb der Grammatik von frame-ancestors; C13 nichts beschränkt Skripte; C14 'unsafe-inline' (außer Kraft gesetzt oder nicht; 'unsafe-hashes'; Styles); C15 'unsafe-eval', 'wasm-unsafe-eval', 'trusted-types-eval'; C16 'strict-dynamic' ohne Nonce oder Hash (8.2); C17 Wildcard oder bloßes Schema für Skripte (6.7.2.8); C18 eine Zulassungsliste von Hosts für Skripte (8.2, 8.5); C19 'self' für Skripte; C20 object-src fehlt, offen, Zulassungsliste oder 'none' (6.1.9); C21 base-uri fehlt, offen oder festgelegt (8.5); C22 frame-ancestors fehlt oder vorhanden (6.4.2); C23 eine Nonce unter 128 Bit (7.1); C24 unsichere Schemata (6.7.2.9) und IP-Adressen (6.7.2.10); C25 Reporting; C26 Report-Only.
+
+Strict CSP (8.5), die Note „Strict CSP“: „script-src: Only use nonce source-expression and/or hash source-expression with the 'strict-dynamic' keyword-source. ... base-uri: Specify a value of either 'self' or 'none'.“ Die Auswertung verlangt außerdem, dass kein 'unsafe-eval' vorkommt und object-src 'none' ist, wie in den Beispielen der Spezifikation.
+
+## Ergebnisse teilen
+
+Ganz oben in der Auswertung erzeugt **Ergebnisse teilen** einen Link auf diese Seite, und zwar nur, wenn Sie die Schaltfläche wählen und sobald die Seite mindestens eine Richtlinie gelesen hat. Der Link enthält nach dem `#` das Feld so, wie eingefügt. Das Popover nennt zuerst, was der Link enthält, und bietet dann „Link kopieren“ und, sofern der Browser eines bietet, das Teilen-Menü an; die Adresse der Seite bleibt unverändert. Eine Richtlinie kann interne Hosts und Endpunkte für Berichte nennen, und laut CSP Level 3 ([Abschnitt 7.1](https://www.w3.org/TR/CSP3/#security-nonces), abgerufen am 01.11.2026) soll der Server „generate a unique value each time it transmits a policy“, also bei jeder Übermittlung einen neuen Wert erzeugen; eine Nonce in einer geteilten Richtlinie sollte daher bereits verbraucht sein, und das Popover bittet Sie, das zu prüfen. Die Seite liest jede Zeile des Felds als Richtlinie, daher würde eine hier eingefügte vollständige Antwort mit ihren übrigen Headern mitgehen. Bevor ein Link angeboten wird, wird der Text nach Zugangsdaten durchsucht, die ein Standard definiert: ein privater Schlüssel im PEM-Format, eine `Authorization`- oder `Proxy-Authorization`-Zeile mit beliebigem Schema ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110), Abschnitte 11.6.2 und 11.7.2: Der Wert „consists of credentials“), eine `Cookie`- oder `Set-Cookie`-Zeile mit einem Wert ([RFC 6265](https://www.rfc-editor.org/rfc/rfc6265), Abschnitte 4.1.1, 4.2.1 und 8.4, wonach ein Cookie häufig eine Sitzungskennung enthält), ein JWT ([RFC 7519](https://www.rfc-editor.org/rfc/rfc7519), Abschnitt 1), ein Passwort in einer URL ([RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), Abschnitt 3.2.1), eine AWS-Zugriffsschlüssel-ID oder ein `ENC`-Wert von FortiOS; alle abgerufen am 01.11.2026. Enthält der Text einen davon, gibt es keinen Link: Das Popover nennt die Zeile, und Sie ersetzen den Wert durch einen Platzhalter und wählen die Schaltfläche erneut. Ein Wert, dessen Name nur wie ein Secret aussieht (ein JSON-Eintrag `token`, ein `password=` im Query-String einer URL), blockiert den Link nicht; das Popover nennt den ersten, damit Sie ihn prüfen können.
+
+Laut [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (Abschnitt 3.5, abgerufen am 01.11.2026) ist das Fragment „separated from the rest of the URI prior to a dereference“, also vor der Dereferenzierung vom Rest der URI getrennt; daher wird, was nach dem `#` folgt, beim Öffnen des Links nicht an den Server gesendet. Es bleibt in der Adressleiste und im Verlauf dessen, der den Link öffnet, und wer den Link hat, kann es lesen.
+
+- **Länge.** Insgesamt höchstens 16.384 Zeichen, die Grenze, die die Website für jeden Wert nach dem `#` setzt; ist der geteilte Inhalt länger, gibt es keinen Link, und das Popover nennt seine Länge.
+- **Öffnen eines Links.** Das Feld füllt sich wie beim Einfügen (keine Vorlage wird markiert), und die Seite liest es. Danach verschwinden die Werte sofort aus der Adresse der Seite, ohne dass eine Anfrage gesendet wird; ein Neuladen oder die Schaltfläche „Teilen“ der Seite überträgt daher nichts.
+
+## Grenzen
+
+- Die Seite liest den Text der Richtlinie, nicht die Seite, die sie schützt: Sie kann nicht wissen, welche Inline-Skripte es gibt, ob sich eine Nonce mit jeder Antwort ändert oder ob ein erlaubter Host JSONP oder Inhalte von Benutzern ausliefert. Die Befunde zu Zulassungslisten von Hosts beschreiben die Klasse.
+- Mehrere Richtlinien werden einzeln ausgewertet; werden mehrere gemeinsam durchgesetzt, muss ein Ladevorgang alle bestehen (8.1).
+- Die Auswahl der Prüfungen folgt dem csp-evaluator von Google; Wortlaut und Schwellenwerte stammen aus der Spezifikation. Eingaben mit mehr als 20.000 Zeichen werden abgelehnt.
+
+## Quellen
+
+- [Content Security Policy Level 3, W3C Working Draft 16 September 2026](https://www.w3.org/TR/CSP3/) (abgerufen am 05.10.2026)
+- [Mixed Content, W3C Candidate Recommendation Draft 23 February 2023](https://www.w3.org/TR/mixed-content/#strict-checking) (abgerufen am 05.10.2026)
+- [Upgrade Insecure Requests, W3C Candidate Recommendation 8 October 2015](https://www.w3.org/TR/upgrade-insecure-requests/) (abgerufen am 05.10.2026)
+- [Trusted Types, W3C Working Draft 23 June 2026](https://www.w3.org/TR/trusted-types/) (abgerufen am 05.10.2026)
+- [Google csp-evaluator](https://github.com/google/csp-evaluator) (abgerufen am 05.10.2026)
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax, January 2005](https://www.rfc-editor.org/rfc/rfc3986) (abgerufen am 01.11.2026): Abschnitt 3.5, das Fragment, und 3.2.1, die Userinfo
+- [RFC 6265, HTTP State Management Mechanism, April 2011](https://www.rfc-editor.org/rfc/rfc6265) (abgerufen am 01.11.2026): Abschnitte 4.1.1, 4.2.1 und 8.4
+- [RFC 9110, HTTP Semantics, June 2022](https://www.rfc-editor.org/rfc/rfc9110) (abgerufen am 01.11.2026): Abschnitte 11.6.2 und 11.7.2

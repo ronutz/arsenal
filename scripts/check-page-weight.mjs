@@ -46,8 +46,12 @@ if (!fs.existsSync(OUT)) {
 // heavier of the two authored locales as built that day, plus about five per cent, so growth shows and shrinkage
 // ratchets. Raised only with a reason written here.
 const CEILINGS = new Map([
-  // The glossary: every entry on one page (2026-10-19: en 3,331,001; pt-BR 3,397,844).
-  ["/glossary", 3_570_000],
+  // The glossary: every entry on one page (2026-10-19: en 3,331,001; pt-BR 3,397,844). RAISED 2026-11-09 (pt-BR
+  // 3,571,213 at the 11:55 build, 1,213 bytes over 3,570,000): the growth is new entries, DMCA and right to repair
+  // plus the enriched hacktivism entry, written at PRIME's requests that day (11:14, 11:16), not a template change.
+  // The page still renders every entry; splitting it is the rendering decision the audit of 2026-10-15 (F07) left
+  // open. New ceiling: that weight plus about five per cent.
+  ["/glossary", 3_750_000],
   // The changelog: every entry since the site began (2026-10-19: en 2,811,787; pt-BR 2,832,054). RAISED 2026-10-26
   // (pt-BR 3,004,130 at the 02:45 build): the growth is the week's new entries, each with its Portuguese title, not a
   // template change; the page still renders every entry, and splitting it (by year or with a "show older" fold) is the

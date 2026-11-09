@@ -145,7 +145,7 @@ const FIBER: FiberRule[] = [
       40000: "40GBASE-SR4 (IEEE 802.3ba): 100 m on OM3",
       100000: "100GBASE-SR4 (IEEE 802.3bm): 70 m on OM3",
     },
-    baseNote: "Laser-optimized 50 um multimode; aqua jacket by convention.",
+    baseNote: "Laser-optimized 50 μm multimode; aqua jacket by convention.", // 09/11/2026: the micrometre symbol μm, not ASCII "um" (pack key engine.note.om3 says the same)
   },
   {
     id: "om4",
@@ -159,7 +159,7 @@ const FIBER: FiberRule[] = [
       40000: "40GBASE-SR4: 150 m on OM4",
       100000: "100GBASE-SR4: 100 m on OM4",
     },
-    baseNote: "Higher-bandwidth 50 um multimode; extends SR-class reach over OM3.",
+    baseNote: "Higher-bandwidth 50 μm multimode; extends SR-class reach over OM3.", // 09/11/2026: the micrometre symbol μm, not ASCII "um" (pack key engine.note.om4 says the same)
   },
   {
     id: "smf",

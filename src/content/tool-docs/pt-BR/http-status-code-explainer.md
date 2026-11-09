@@ -25,8 +25,8 @@ A [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (seção 3.5, lida em 2026-
 
 ## Fontes
 
-- RFC 9110: HTTP Semantics - o catálogo central, as regras de família e o fallback x00
-- RFC 6585: Additional HTTP Status Codes - 428, 429, 431, 511
-- RFC 7725: 451 Unavailable For Legal Reasons
-- RFC 8297: 103 Early Hints
-- RFC 3986: URI Generic Syntax - seção 3.5, o fragmento, que o link de Compartilhar resultado usa (lida em 2026-11-01)
+- [RFC 9110, HTTP Semantics](https://www.rfc-editor.org/rfc/rfc9110) (lida em 2026-11-09): o catálogo central, as regras de família e o fallback x00
+- [RFC 6585, Additional HTTP Status Codes](https://www.rfc-editor.org/rfc/rfc6585) (lida em 2026-11-09): 428, 429, 431 e 511
+- [RFC 7725, An HTTP Status Code to Report Legal Obstacles](https://www.rfc-editor.org/rfc/rfc7725) (lida em 2026-11-09): 451 Unavailable For Legal Reasons
+- [RFC 8297, An HTTP Status Code for Indicating Hints](https://www.rfc-editor.org/rfc/rfc8297) (lida em 2026-11-09): 103 Early Hints
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lida em 2026-11-01): seção 3.5, o fragmento, que o link de Compartilhar resultado usa

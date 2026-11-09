@@ -23,7 +23,7 @@ It has four parts:
 | `U+0041` | Unicode notation |
 | `&#65;`, `&#x41;`, `&excl;` | HTML numeric and named references |
 | `%41` | percent-encoding |
-| `\x41`, `\101`, `\n`, `A`, `\u{1F600}` | backslash escapes |
+| `\x41`, `\101`, `\n`, `\u0041`, `\u{1F600}` | backslash escapes |
 | `^A`, `^[`, `^?` | caret notation |
 | `NUL`, `LF`, `line feed`, `Reverse Slant` | abbreviations and names, from RFC 20, Unicode 1.0 and current Unicode |
 | `en dash`, `minus sign` | any Unicode name or alias (matched loosely: case, spaces, underscores and medial hyphens are ignored, as UAX #44 rule UAX44-LM2 says) |

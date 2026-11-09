@@ -25,7 +25,7 @@
 // React's element type, for the drawings' table.
 import type { ReactElement } from "react";
 
-/** The ids that have a drawing: the shelf's games, then its toys (by their page slug). */
+/** The ids that have a drawing: the shelf's games, then its toys (by their page slug), then the arcade's card. */
 export const GLYPH_IDS = [
   "prefix-of-the-day",
   "five-clues",
@@ -48,6 +48,8 @@ export const GLYPH_IDS = [
   "boss-screens",
   "cat-distribution",
   "importance-meter",
+  // The shelf's card that leads to /arcade.
+  "arcade",
 ] as const;
 
 /** One drawing's id. */
@@ -257,6 +259,31 @@ const DRAWINGS: Record<GlyphId, ReactElement> = {
       <path d="M24 34L8 34" {...S} strokeWidth={3} />
       <circle cx="24" cy="34" r="3.4" fill="currentColor" />
       <path d="M11.3 21.3l2.1 2.1M24 16v3M36.7 21.3l-2.1 2.1" {...F} />
+    </>
+  ),
+  // An arcade cabinet: marquee, screen, joystick and two buttons on the control panel, coin door below.
+  arcade: (
+    <>
+      {/* The cabinet's outline: the marquee box, the body, the control panel's ledge, the base. */}
+      <path d="M12 4h24v7l-2 2v13l4 4v14H10V30l4-4V13l-2-2z" {...S} />
+      {/* The marquee's lower edge. */}
+      <path d="M12 11h24" {...S} />
+      {/* The screen. */}
+      <rect x="17.5" y="14.5" width="13" height="8.5" rx="1.2" {...S} />
+      {/* The joystick's shaft. */}
+      <path d="M19 30v-3" {...S} />
+      {/* Faint detail: the marquee's sign, a paddle on the screen, the panel's front edge. */}
+      <path d="M17 7.5h14M21 20.5h4M14 30h20" {...F} />
+      {/* The coin door and its slot. */}
+      <rect x="20.5" y="35" width="7" height="6" rx="0.8" {...F} />
+      <path d="M24 36.5v3" {...F} />
+      {/* The joystick's ball top. */}
+      <circle cx="19" cy="26.7" r="1.8" fill="currentColor" />
+      {/* The ball in play on the screen. */}
+      <circle cx="27" cy="18" r="1.1" fill="currentColor" />
+      {/* The two fire buttons. */}
+      <circle cx="27" cy="28.4" r="1.5" fill="currentColor" />
+      <circle cx="31" cy="28.4" r="1.5" fill="currentColor" />
     </>
   ),
 };

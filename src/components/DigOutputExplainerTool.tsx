@@ -6,10 +6,13 @@
 // Paste `dig` output, get a decoded, explained breakdown. The parse is pure
 // and local (compute.ts); this component only renders it. UI chrome is
 // localized via next-intl; the DNS reference meanings come from the engine's
-// reference tables.
+// reference tables: Brazilian Portuguese from meanings-pt.ts, every other
+// locale through useContentString() (src/i18n/content/<locale>/
+// dig-output-explainer.json, 09/11/2026), the English where none is written.
 // ============================================================================
 
 import { useMemo, useState } from "react";
+import { useContentString } from "@/components/ContentStrings"; // the strings this tool keeps in code, in the page's language (09/11/2026)
 import { useTranslations, useLocale } from "next-intl";
 import {
   parseDig,
@@ -39,6 +42,19 @@ const NOTHING: ShareEncoding = { ok: false, reason: "empty" }; // the disabled s
 // The Example button loads a golden vector verbatim (D-83): real dig 9.20.29 output captured on
 // 2026-10-19 (a DNSSEC-validated answer with its RRSIG), so the example can never drift from the tests.
 const EXAMPLE = DIG_VECTORS.find((v) => v.id === "dnssec-rrsig")?.input ?? ""; // the vector's input, byte for byte
+
+/**
+ * A meaning table with every value in the page's language (09/11/2026): the same keys, each English value passed
+ * through the content-string lookup (which returns the English where the locale has none written).
+ *
+ * @param table the English table
+ * @param cs the page's content-string lookup
+ * @returns the table in the page's language
+ */
+function inLocale<K extends string>(table: Record<K, string>, cs: (en: string) => string): Record<K, string> {
+  // Key by key, the value through the lookup.
+  return Object.fromEntries(Object.entries(table).map(([k, v]) => [k, cs(v as string)])) as Record<K, string>;
+}
 
 /** A small label/value row used throughout the panels. */
 function Row({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
@@ -84,11 +100,14 @@ export default function DigOutputExplainerTool() {
   // In pt-BR, prefer the Portuguese meaning maps and fall back to English per
   // key for anything not translated. The protocol tokens themselves (NOERROR,
   // A, qr, ...) always stay in English, per the audience's convention.
-  const rcodeMeanings = pt ? { ...RCODE_MEANINGS, ...RCODE_MEANINGS_PT } : RCODE_MEANINGS;
-  const opcodeMeanings = pt ? { ...OPCODE_MEANINGS, ...OPCODE_MEANINGS_PT } : OPCODE_MEANINGS;
-  const flagMeanings = pt ? { ...FLAG_MEANINGS, ...FLAG_MEANINGS_PT } : FLAG_MEANINGS;
-  const rrtypeMeanings = pt ? { ...RRTYPE_MEANINGS, ...RRTYPE_MEANINGS_PT } : RRTYPE_MEANINGS;
-  const fieldLabel = (label: string) => (pt ? FIELD_LABELS_PT[label] ?? label : label);
+  // Every other locale (09/11/2026): each English meaning through the page's content strings, the English where the
+  // locale has none written (so the English page reads exactly as before).
+  const cs = useContentString(); // English in, the page's language out
+  const rcodeMeanings = useMemo(() => (pt ? { ...RCODE_MEANINGS, ...RCODE_MEANINGS_PT } : inLocale(RCODE_MEANINGS, cs)), [pt, cs]); // status meanings
+  const opcodeMeanings = useMemo(() => (pt ? { ...OPCODE_MEANINGS, ...OPCODE_MEANINGS_PT } : inLocale(OPCODE_MEANINGS, cs)), [pt, cs]); // opcode meanings
+  const flagMeanings = useMemo(() => (pt ? { ...FLAG_MEANINGS, ...FLAG_MEANINGS_PT } : inLocale(FLAG_MEANINGS, cs)), [pt, cs]); // flag meanings
+  const rrtypeMeanings = useMemo(() => (pt ? { ...RRTYPE_MEANINGS, ...RRTYPE_MEANINGS_PT } : inLocale(RRTYPE_MEANINGS, cs)), [pt, cs]); // record type meanings
+  const fieldLabel = (label: string) => (pt ? FIELD_LABELS_PT[label] ?? label : cs(label)); // an rdata field's label: Portuguese inline, every other locale through its content strings
   const [input, setInput] = useState("");
   const parsed = useMemo(() => parseDig(input), [input]);
   const showResults = input.trim().length > 0 && parsed.hadHeader;

@@ -81,6 +81,7 @@
 .fg-glyph--boss-screens { --glyph-hue: 220; }
 .fg-glyph--cat-distribution { --glyph-hue: 30; }
 .fg-glyph--importance-meter { --glyph-hue: 15; }
+.fg-glyph--arcade { --glyph-hue: 92; }
 /* The accent itself, wherever a glyph class is set. */
 [class*="fg-glyph--"] { --glyph-accent: color-mix(in oklab, hsl(var(--glyph-hue, 200) 85% 55%) 76%, var(--text-primary)); }
 /* The drawing: its game's accent, never squeezed. */

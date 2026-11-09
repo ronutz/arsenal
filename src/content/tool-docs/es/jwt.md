@@ -1,0 +1,30 @@
+## Qué hace
+
+Pega un JSON Web Token para leer lo que contiene y, si es un token firmado con HMAC, comprobar que su firma es válida. La herramienta divide el token en sus tres partes, decodifica el encabezado y los claims, convierte los claims de tiempo en fechas legibles y, si das el secreto, verifica una firma HS256, HS384 o HS512. Todo se ejecuta en tu navegador; un secreto pegado nunca sale de él.
+
+## La forma de un JWT
+
+Un JWT en su forma compacta habitual son tres segmentos Base64url unidos por puntos: `header.payload.signature`. El **encabezado** nombra el algoritmo de firma (`alg`) y a menudo un identificador de clave (`kid`); la **carga útil** lleva los claims, un objeto JSON de afirmaciones sobre el sujeto; y la **firma** se calcula sobre los dos primeros segmentos para que se pueda detectar cualquier manipulación de ellos. Los claims registrados incluyen el emisor (`iss`), el sujeto (`sub`), la audiencia (`aud`) y los campos de tiempo `iat`, `nbf` y `exp`, que son segundos numéricos desde la época Unix y que la herramienta muestra como fechas legibles.
+
+## Decodificar no es verificar
+
+Es lo más importante que hay que entender de un JWT: el encabezado y la carga útil solo están codificados en Base64url, no cifrados. Cualquiera que tenga el token puede leerlos, así que un JWT no es sitio para guardar secretos. Decodificar te dice lo que afirma un token; no te dice si esas afirmaciones son ciertas. Solo verificar la firma con la clave correcta demuestra que el token lo emitió quien dice haberlo emitido y que no se ha alterado.
+
+## La verificación de la firma y el algoritmo
+
+HS256, HS384 y HS512 firman con un HMAC sobre un secreto compartido, la misma construcción que usa el Generador de HMAC, así que este verificador y esa herramienta coinciden. Como el secreto firma y también verifica, quien puede verificar un token firmado con HS también puede fabricar uno; es la contrapartida de lo simétrico, y por eso los servicios que tienen que dejar verificar a otros sin que puedan falsificar usan en su lugar un algoritmo asimétrico como RS256 o ES256. Una familia conocida de ataques abusa del campo `alg`, ya sea poniéndolo a `none` o engañando a un servidor que tiene una clave pública RSA para que la trate como un secreto HMAC; las recomendaciones de buenas prácticas actuales del RFC 8725 existen para cerrar esas vías, y en resumen consisten en comprobar siempre que el algoritmo es el que esperas.
+
+## Uso
+
+Pega un token para decodificar su encabezado y sus claims y leer sus tiempos en lenguaje llano. Para verificar un token firmado con HMAC, pega el secreto compartido y la herramienta confirma si la firma coincide. Si un token ha caducado ahora mismo se muestra según tu reloj actual, como una capa añadida a los claims de tiempo que lee el decodificador.
+
+## Compartir resultados
+
+Debajo de las insignias de estado del token, **Compartir resultados** genera un enlace a esta página, solo cuando lo presionas, que lleva después del `#` el encabezado y los claims del token: los dos primeros segmentos exactamente como los pegaste, seguidos de un segmento de firma vacío (`header.payload.`), y una marca que indica que el token pegado tenía firma. Nunca lleva la firma, ni el token tal como lo pegaste, ni el secreto del cuadro de verificación. Su ventana emergente dice primero qué lleva el enlace y después da una precaución propia: los claims pueden nombrar a una persona y los servicios que confían en el token, así que léelos antes de enviar el enlace. Después ofrece Copiar enlace y, si el navegador lo tiene, el menú Compartir del sistema; la dirección de la página no cambia.
+
+Por qué no el propio token: un JWT es una credencial al portador (bearer) mientras es válido. El [RFC 6750](https://www.rfc-editor.org/rfc/rfc6750) (sección 1.2, consultado el 2026-11-01) define un token al portador como uno que “any party in possession of the token (a ‘bearer’) can use” (puede usar cualquiera que lo tenga en su poder, el portador), y el [RFC 7519](https://www.rfc-editor.org/rfc/rfc7519) (sección 1, consultado el 2026-11-01) lleva los claims de un JWT como carga útil de un JWS. Sin su firma, la copia no es un token que acepte ningún verificador: el [RFC 7515](https://www.rfc-editor.org/rfc/rfc7515) (sección 5.2, consultado el 2026-11-01) dice que, cuando ninguna firma se valida, “the JWS MUST be considered invalid” (el JWS debe considerarse no válido). Dejar fuera la firma también significa que el enlace no da a nadie lo que necesitaría para probar sin conexión intentos de adivinar un secreto HMAC débil. Si el miembro `jwk` de un encabezado contiene material de clave privada (`d`, `p`, `q`, `dp`, `dq`, `qi`, `oth` o `k`; según la sección 4.1.3 del RFC 7515, `jwk` lleva la clave pública), no hay enlace, y la ventana emergente nombra los miembros.
+
+Según el [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (sección 3.5, consultado el 2026-11-01), el fragmento queda “separated from the rest of the URI prior to a dereference” (separado del resto del URI antes de resolverlo), así que los valores no se envían al servidor cuando se abre el enlace; se quedan en la barra de direcciones y en el historial de quien lo abra, y cualquiera que tenga el enlace puede leerlos.
+
+- **Longitud.** Como máximo 16.384 caracteres en total, el límite que el sitio aplica a todo valor después del `#`; si lo compartido es más largo, no hay enlace, y la ventana emergente indica su longitud.
+- **Al abrir un enlace.** La copia rellena el cuadro y la página la decodifica como un pegado: el mismo encabezado, los mismos claims y los mismos tiempos, con la caducidad leída según el reloj de quien abre el enlace. Si el token de quien lo envió estaba firmado, el panel de la firma indica que la firma se dejó fuera del enlace, en lugar de mostrar la firma y el cuadro de verificación. Solo se acepta un valor con la forma de la copia que la página decodifique; un token entero, o cualquier otra cosa, se ignora. En cualquier caso, los valores salen de la dirección de la página al instante, sin ninguna solicitud, así que al recargar, o con el propio botón Compartir de la página, no se lleva nada.

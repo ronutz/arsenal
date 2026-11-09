@@ -9,7 +9,10 @@
 // explicit, shows how the operators grouped, decodes byte-offset tests, and
 // places every error at its position. This component only renders. The
 // explanations come from the engine in English and Portuguese; the page picks
-// the reader's language. Chrome strings are in the message pack.
+// the reader's language, and every other locale reads its own text for the
+// engine's English through useContentString() (src/i18n/content/<locale>/
+// tcpdump-filter-explainer.json, 09/11/2026; the English where none is
+// written). Chrome strings are in the message pack.
 // Styling reuses the established vocabulary (cidr-* input, dig-* input head and
 // rows, jwt-* panels, tcl-* tree, notes, tables and pills, json-error-* box):
 // no new CSS classes.
@@ -18,6 +21,7 @@
 import { useMemo, useState, type ReactNode } from "react"; // state and memo
 import { useLocale, useTranslations } from "next-intl"; // locale and messages
 import { Link } from "@/i18n/navigation"; // locale-aware links
+import { useContentString } from "@/components/ContentStrings"; // the strings this tool keeps in code, in the page's language (09/11/2026)
 import {
   explain, // the engine
   TcpdumpExplainerError, // its typed refusal
@@ -55,7 +59,8 @@ function Row({ label, value, mono }: { label: string; value: string; mono?: bool
 export default function TcpdumpFilterExplainerTool() {
   const t = useTranslations("tools.tcpdump-filter-explainer"); // this tool's messages
   const pt = useLocale() === "pt-BR"; // Portuguese explanations when the page is pt-BR
-  const L = (b: Bi | Note) => (pt ? b.pt : b.en); // pick the reader's language
+  const cs = useContentString(); // English in, the page's language out (the English when the locale has none written)
+  const L = (b: Bi | Note) => (pt ? b.pt : cs(b.en)); // pick the reader's language: Portuguese inline, every other locale through its content strings
   const [input, setInput] = useState(""); // the pasted text
 
   // The explanation: pure, so the same text always gives the same result.
@@ -219,7 +224,7 @@ export default function TcpdumpFilterExplainerTool() {
                 <div className="json-error-box" role="alert">
                   <p className="json-error-headline">{t("filter.errorTitle", { pos: f.error.start + 1 })}</p>
                   <pre className="mono">{f.text}{"\n"}{" ".repeat(Math.min(f.error.start, f.text.length))}{"^".repeat(Math.max(1, Math.min(f.error.end - f.error.start, 40)))}</pre>
-                  <p>{pt ? f.error.pt : f.error.en}</p>
+                  <p>{pt ? f.error.pt : cs(f.error.en)}</p>
                   {notes(f.error.hints)}
                 </div>
               )}
@@ -237,7 +242,7 @@ export default function TcpdumpFilterExplainerTool() {
                       <h4 className="jwt-panel-title">{t("filter.errors")}</h4>
                       <ul className="tcl-notes">
                         {/* Each refusal with its position in the expression. */}
-                        {f.semanticErrors.map((e, i) => <li key={`${e.code}-${i}`} className="tcl-note tcl-note-flag"><code>{f.text.slice(e.start, e.end)}</code> {t("filter.at", { pos: e.start + 1 })}: {pt ? e.pt : e.en}</li>)}
+                        {f.semanticErrors.map((e, i) => <li key={`${e.code}-${i}`} className="tcl-note tcl-note-flag"><code>{f.text.slice(e.start, e.end)}</code> {t("filter.at", { pos: e.start + 1 })}: {pt ? e.pt : cs(e.en)}</li>)}
                       </ul>
                     </>
                   )}

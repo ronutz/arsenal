@@ -40,6 +40,8 @@ import { studyGuides } from "../src/content/certifications/study-guides";
 import { guideStatus, STATUS_LABEL_KEY } from "../src/lib/certStatus";
 // The Roles and The Practice (2026-10-06): the registry and the MDX corpus their pages render from.
 import { ROLES } from "../src/lib/roles";
+// The interface-native locales, whose packs also name tools and roles (09/11/2026).
+import { INTERFACE_LOCALES } from "../src/i18n/locales";
 import { getPracticeArticles } from "../src/lib/practice";
 
 /** Repository root. */
@@ -50,12 +52,20 @@ const TAG = "[gen-home-index]";
 interface Entry {
   k: "tool" | "article" | "company" | "person" | "term" | "guide" | "role" | "practice";
   p: string;
-  t: { en: string; "pt-BR"?: string };
+  t: { en: string; "pt-BR"?: string } & Record<string, string | undefined>;
 }
 
 /** The tool names come from the message packs (the registry holds structure only). */
 const en = JSON.parse(fs.readFileSync(path.join(ROOT, "src/i18n/messages/en.json"), "utf8")) as { tools: Record<string, { name?: string }>; glossary: { entries: Record<string, { def?: string }> } };
 const pt = JSON.parse(fs.readFileSync(path.join(ROOT, "src/i18n/messages/pt-BR.json"), "utf8")) as { tools: Record<string, { name?: string }>; roles: { entries: Record<string, { title?: string }> } };
+// The interface-native locales beyond en and pt-BR (09/11/2026): their packs name the tools and the roles too.
+const INTERFACE_ONLY = INTERFACE_LOCALES.filter((l) => l !== "en" && l !== "pt-BR");
+/** Each such locale's pack, read once. */
+const packs = Object.fromEntries(INTERFACE_ONLY.map((l) => [l, JSON.parse(fs.readFileSync(path.join(ROOT, `src/i18n/messages/${l}.json`), "utf8"))])) as Record<string, { tools?: Record<string, { name?: string }>; roles?: { entries?: Record<string, { title?: string }> } }>;
+/** A tool's name in each interface-only locale, where its pack has one. */
+const toolNames = (id: string) => Object.fromEntries(INTERFACE_ONLY.map((l) => [l, packs[l].tools?.[id]?.name]).filter(([, v]) => v));
+/** A role's title in each interface-only locale, where its pack has one. */
+const roleTitles = (slug: string) => Object.fromEntries(INTERFACE_ONLY.map((l) => [l, packs[l].roles?.entries?.[slug]?.title]).filter(([, v]) => v));
 // The English role titles as The Roles prints them (the pack's own, which the registry's title mirrors).
 const enRoles = (en as unknown as { roles: { entries: Record<string, { title?: string }> } }).roles.entries;
 
@@ -66,7 +76,7 @@ for (const tool of tools) {
   if (!tool.available) continue;
   const name = en.tools[tool.id]?.name;
   if (!name) continue;
-  entries.push({ k: "tool", p: tool.href.replace(/\/$/, "") + "/", t: { en: name, "pt-BR": pt.tools[tool.id]?.name } });
+  entries.push({ k: "tool", p: tool.href.replace(/\/$/, "") + "/", t: { en: name, "pt-BR": pt.tools[tool.id]?.name, ...toolNames(tool.id) } });
 }
 
 // Articles: the Learn corpus, English titles with the Portuguese title where the pair exists.
@@ -114,7 +124,7 @@ for (const s of studyGuides) {
 
 // Roles (2026-10-06): every position in The Roles, with its Portuguese title where the pack has one.
 for (const r of ROLES) {
-  entries.push({ k: "role", p: `/roles/${r.slug}/`, t: { en: enRoles[r.slug]?.title ?? r.title, "pt-BR": pt.roles.entries[r.slug]?.title } });
+  entries.push({ k: "role", p: `/roles/${r.slug}/`, t: { en: enRoles[r.slug]?.title ?? r.title, "pt-BR": pt.roles.entries[r.slug]?.title, ...roleTitles(r.slug) } });
 }
 
 // The Practice (2026-10-06): every English article, with its Portuguese twin's title when the pair exists.

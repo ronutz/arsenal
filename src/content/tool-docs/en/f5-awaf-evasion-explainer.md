@@ -18,7 +18,7 @@ Multiple decoding is the one sub-violation with a tuning value. In the declarati
 
 ## The bridge to the encoding tools
 
-Several of these sub-violations are the very same decode operations the toolbox already performs. The `%u` escapes, bare bytes, and the `%XX` percent-encoding that Bad unescape polices are the territory of the Base64/Percent codec, and Multiple decoding is simply percent-decoding run more than once. Each reference card names the related tool, so you can take an encoded string and watch the decode happen by hand, which is the fastest way to build intuition for what the WAF is normalising away.
+Several of these sub-violations are the very same decode operations the toolbox already performs. The `%u` escapes, bare bytes, and the `%XX` percent-encoding that Bad unescape polices are the territory of the [Base64, Base32, Hex & Percent Codec](/tools/base64), and Multiple decoding is simply percent-decoding run more than once. Each reference card names the related tool, so you can take an encoded string and watch the decode happen by hand, which is the fastest way to build intuition for what the WAF is normalising away.
 
 ## One rule from the schema
 

@@ -1,0 +1,30 @@
+## Qué hace
+
+Esta herramienta decodifica una especificación origin_pool de F5 Distributed Cloud (XC). Pega el objeto origin_pool desde la vista JSON de la consola, el cuerpo de su spec o un envoltorio create/get, y la herramienta expone lo que hace realmente el pool: el tipo y la dirección de cada servidor de origen, el puerto del pool, el algoritmo de balanceo de carga y la selección de endpoints, las comprobaciones de estado a las que hace referencia y la configuración de TLS hacia el origen. Se ejecuta por completo en tu navegador.
+
+## Servidores de origen: tipo y ubicación
+
+Un origin pool puede apuntar a sus orígenes de varias formas, y la herramienta nombra cada una. Una dirección IP pública o un nombre DNS público llegan a los orígenes por internet. Una dirección IP o un nombre DNS “on given sites” (en los sitios indicados) llegan a los orígenes a través de un Customer Edge o de un Regional Edge y llevan un localizador de sitio o de sitio virtual; la herramienta muestra esa ubicación. Los nombres de servicio de K8s y de Consul usan el descubrimiento de servicios en un sitio. También hay variantes de red virtual y de endpoint personalizado. Cada origen puede llevar además etiquetas, que la herramienta enumera.
+
+## Dónde están de verdad los pesos y las prioridades
+
+Una idea equivocada muy extendida es que los servidores de origen de un pool tienen pesos y prioridades. No los tienen. Dentro de un pool, los servidores de origen son una lista plana que se atiende según el algoritmo del pool. Los pesos y las prioridades se definen un nivel más arriba, en la referencia al pool dentro de una ruta o en los pools predeterminados del balanceador de carga: cada referencia es un pool más un peso más una prioridad. La herramienta lo indica para que busques en el lugar correcto.
+
+## El puerto del pool y la selección de endpoints
+
+El puerto puede ser explícito, tomarse del endpoint o ser automático, y automático significa 443 cuando TLS hacia el origen está habilitado y 80 cuando no lo está. La selección de endpoints controla qué Regional Edge sale hacia el origen: Local Preferred (el valor predeterminado) sale desde el RE local cuando este tiene una entrada de origen en buen estado y, si no, reenvía por la red global de F5 a un RE que sí la tenga. Por eso el mismo origen puede aparecer muchas veces en la consola, una por cada RE.
+
+## TLS hacia el origen
+
+Si TLS hacia el origen está habilitado, la herramienta decodifica el nivel de seguridad (con los mismos datos de niveles que el mapa de cifrados por nivel de seguridad TLS, así que High exige como mínimo TLS 1.2), junto con el modo SNI (usar el encabezado Host, un valor explícito o sin SNI), la opción de verificación del servidor y si mTLS está activado. Señala el caso que más importa: omitir la verificación del servidor de origen. La conexión sigue cifrada, pero el certificado del origen no se valida, así que la herramienta lo destaca.
+
+## Compartir resultados
+
+Debajo de los servidores de origen, **Compartir resultados** genera un enlace a esta página, solo cuando lo presionas, que lleva después del `#` una copia del pool, nunca el pool tal como se pegó. Un pool con mTLS hacia sus orígenes contiene la clave privada de cada certificado de cliente: “TLS Private Key data in unencrypted PEM format ... may be optionally secured using BlindFold” (los datos de la clave privada TLS, en formato PEM sin cifrar, que se pueden proteger de forma opcional con BlindFold) ([referencia de la API de XC para el origin pool](https://docs.cloud.f5.com/docs-v2/api/views-origin-pool), consultada el 2026-11-01). El esquema de F5 Distributed Cloud los marca: SecretType, “used in an object to indicate a sensitive/confidential field” (se usa en un objeto para indicar un campo sensible o confidencial), guarda el secreto en claro (`clear_secret_info.url`: “For string:/// scheme, Secret needs to be encoded Base64 format”, es decir, con el esquema string:/// el secreto va codificado en Base64) o cifrado con Blindfold (`blindfold_secret_info.location`). La página lee si mTLS está activado, nunca la clave. Por eso la copia sustituye por `[redacted]` cada secreto SecretType y conserva todos los demás bytes tal como se pegaron. Antes de ofrecer el enlace, la página vuelve a leer la copia y tiene que obtener la misma lectura; si no, no hay enlace. Después se busca en la copia una credencial que siga ahí (una clave privada fuera de SecretType, el valor de un comparador del encabezado `Authorization`, un JWT, una contraseña en una URL, leídos como en las demás herramientas del sitio): si aparece una, no hay enlace, y la ventana emergente indica su línea; un valor cuyo nombre solo parece el de un secreto se indica en la ventana emergente, sin bloquear el enlace.
+
+Su ventana emergente dice primero qué lleva el enlace y después ofrece Copiar enlace y, si el navegador lo tiene, el menú Compartir del sistema; la dirección de la página no cambia. También indica cuántos valores se sustituyeron y que un pool nombra sus servidores de origen, sus direcciones y sus sitios. No hay ninguna opción para incluir los valores sustituidos: un pool no contiene valores de encabezados ni de cookies, y los secretos que define el esquema nunca se envían.
+
+Según el [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (sección 3.5, consultado el 2026-11-01), el fragmento queda “separated from the rest of the URI prior to a dereference” (separado del resto del URI antes de resolverlo), así que lo que va después del `#` no se envía al servidor cuando se abre el enlace; se queda en la barra de direcciones y en el historial de quien lo abra, y cualquiera que tenga el enlace puede leerlo.
+
+- **Longitud.** Como máximo 16.384 caracteres en total, el límite que el sitio aplica a todo valor después del `#`; si lo compartido es más largo, no hay enlace, y la ventana emergente indica su longitud.
+- **Al abrir un enlace.** La copia rellena el cuadro como lo haría un pegado, y la página la lee. Después, los valores salen de la dirección de la página al instante, sin ninguna solicitud, así que al recargar, o con el propio botón Compartir de la página, no se lleva nada.

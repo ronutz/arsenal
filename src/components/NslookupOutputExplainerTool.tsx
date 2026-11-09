@@ -5,12 +5,15 @@
 // ----------------------------------------------------------------------------
 // Paste nslookup output, get a decoded, explained breakdown. The parse is pure
 // and local (compute.ts); this component only renders it. Reuses the dig tool's
-// CSS classes. Reference meanings are shown in pt-BR for pt-BR users, English
-// otherwise, following the audience's convention.
+// CSS classes. Reference meanings are shown in pt-BR for pt-BR users (from
+// meanings-pt.ts), in every other locale through useContentString()
+// (src/i18n/content/<locale>/nslookup-output-explainer.json, 09/11/2026), and
+// in English where none is written; protocol tokens stay English throughout.
 // ============================================================================
 
 import { useMemo, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
+import { useContentString } from "@/components/ContentStrings"; // the strings this tool keeps in code, in the page's language (09/11/2026)
 import {
   parseNslookup,
   NS_TYPE_MEANINGS,
@@ -66,8 +69,11 @@ export default function NslookupOutputExplainerTool() {
   const locale = useLocale();
   const pt = locale === "pt-BR";
   // pt-BR meanings with per-key English fallback; protocol tokens stay English.
-  const typeMeanings = pt ? { ...NS_TYPE_MEANINGS, ...NS_TYPE_MEANINGS_PT } : NS_TYPE_MEANINGS;
-  const fieldLabel = (label: string) => (pt ? FIELD_LABELS_PT[label] ?? label : label);
+  // Every other locale (09/11/2026): each English meaning and label through the page's content strings, the English
+  // where the locale has none written (so the English page reads exactly as before).
+  const cs = useContentString(); // English in, the page's language out
+  const typeMeanings = useMemo(() => (pt ? { ...NS_TYPE_MEANINGS, ...NS_TYPE_MEANINGS_PT } : Object.fromEntries(Object.entries(NS_TYPE_MEANINGS).map(([k, v]) => [k, cs(v)]))), [pt, cs]); // record type meanings, key by key
+  const fieldLabel = (label: string) => (pt ? FIELD_LABELS_PT[label] ?? label : cs(label)); // a field's label: Portuguese inline, every other locale through its content strings
 
   const [input, setInput] = useState("");
   const parsed = useMemo(() => parseNslookup(input), [input]);

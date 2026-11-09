@@ -24,6 +24,9 @@ import SiteFooter from "@/components/SiteFooter";
 import EnvOutNotice from "@/components/EnvOutNotice";
 // The tool itself.
 import DevOutDohLookupTool from "@/components/DevOutDohLookupTool";
+// The strings tools keep in code, per language (09/11/2026): this tool shows the dig output explainer's meanings.
+import ContentStrings from "@/components/ContentStrings";
+import { contentStringsFor } from "@/i18n/contentStrings";
 // Locale-aware internal links.
 import { Link } from "@/i18n/navigation";
 // The resolvers, for the list with their documentation and privacy links.
@@ -93,7 +96,12 @@ export default async function DohLookupPage({
 
             {/* The tool, with only its own messages sliced in. */}
             <MessageSlice namespaces={["devOut.doh"]}>
-              <DevOutDohLookupTool />
+              {/* The meanings it shows in the page's language: the dig output explainer's own module (the same tables,
+                  so they are written once per locale; src/i18n/contentStrings.ts). This page is under /dev/out, not
+                  tools/[slug], so it loads the map itself. */}
+              <ContentStrings strings={contentStringsFor(locale, ["dig-output-explainer"])}>
+                <DevOutDohLookupTool />
+              </ContentStrings>
             </MessageSlice>
 
             {/* About, resolvers and provenance, inline (off-catalogue room): one left-aligned reading column with small

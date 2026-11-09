@@ -29,7 +29,7 @@
 // ============================================================================
 
 import { Fragment, useMemo, useState, type CSSProperties } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl"; // the page locale formats the ratio (09/11/2026)
 import { run, VECTORS, ColorParseError, type ColorContrastResult, type ParsedColor } from "@/lib/tools/color-contrast-format";
 import { TclPresets } from "@/components/TclTeachParts";
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
@@ -66,6 +66,10 @@ const PRESET_IDS = ["gray-on-white", "light-gray-fails", "translucent-black", "o
 export default function ColorContrastFormatTool() {
   // This tool's words.
   const t = useTranslations("tools.color-contrast-format");
+  // The page's language, for the ratio's decimal sign.
+  const locale = useLocale();
+  // A ratio with two decimals in that language, "4,54:1" or "4.54:1" (the engine's ratioText stays the API's form).
+  const ratioLabel = (x: number) => `${new Intl.NumberFormat(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(x)}:1`;
   // The example pair.
   const ex = VECTORS.find((v) => v.id === EXAMPLE_ID)!.input;
   // The foreground.
@@ -189,7 +193,7 @@ export default function ColorContrastFormatTool() {
         <div className="jwt-results" aria-live="polite">
           {/* The ratio and the levels. */}
           <div className={r.levels.aaaNormal ? "tcl-verdict tcl-verdict-ok" : r.levels.aaNormal ? "tcl-verdict tcl-verdict-warn" : "tcl-verdict tcl-verdict-bad"}>
-            <p><span className="tcl-verdict-label tcl-big">{r.ratioText}</span> {t("ratioSentence", { lighter: r.luminances.lighter.toFixed(4), darker: r.luminances.darker.toFixed(4) })}</p>
+            <p><span className="tcl-verdict-label tcl-big">{ratioLabel(r.ratio)}</span> {t("ratioSentence", { lighter: r.luminances.lighter.toFixed(4), darker: r.luminances.darker.toFixed(4) })}</p>
             <p className="tcl-step-out">
               {pill(r.levels.aaNormal, t("level.aaNormal"))}{" "}
               {pill(r.levels.aaLarge, t("level.aaLarge"))}{" "}
@@ -243,7 +247,7 @@ export default function ColorContrastFormatTool() {
                         <th scope="row">{f.target}:1</th>
                         <td>{t(`direction.${f.direction}`)}</td>
                         <td><span className="ccf-swatch" style={{ "--ccf-color": f.hex } as CSSProperties} aria-hidden="true" /> <code>{f.hex}</code> <span className="tcl-muted tcl-small"><code>{f.oklch}</code></span></td>
-                        <td>{f.ratio.toFixed(2)}:1</td>
+                        <td>{ratioLabel(f.ratio)}</td>
                       </tr>
                     ))}
                   </tbody>

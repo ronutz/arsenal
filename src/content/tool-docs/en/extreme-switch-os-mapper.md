@@ -13,7 +13,7 @@ Both apply **only to Universal hardware**: 4120, 4220, 5320, 5420, 5520, 5720, 7
 
 **Changing persona deletes the configuration.** Extreme's own wording: changing the network operating system deletes all configuration files, debug information, logs, events and statistics belonging to the previous one. **It is a rebuild, not a migration**, and the tool says so on every lookup rather than only when a model is recognised.
 
-It also flags the boot question being asked in the negative: **N keeps Switch Engine, Y moves to Fabric Engine**.
+It also flags that the boot question picks Switch Engine with a no: asked "Would you like to change the switch OS to VOSS? [y/N/q]" ([Switch Engine 33.1.100 release notes](https://documentation.extremenetworks.com/release_notes/SwitchEngine/33.1.100/GUID-EEE4A4A1-99DC-4691-B6B5-F88A6FA8042F.shtml), read 2026-11-09), **N keeps Switch Engine, y moves to Fabric Engine**.
 
 ## Series caveats it surfaces
 

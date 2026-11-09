@@ -373,7 +373,7 @@ export function lookup(raw: string, names?: NameData): LookupResult {
   m = /^%([0-9a-f]{2})$/i.exec(s);
   // Percent.
   if (m) return found(parseInt(m[1], 16), "percent", names);
-  // Backslash escapes: \n \x41 A \u{1F600} \101 \U0001F600
+  // Backslash escapes: \n \x41 A \u{1F600} \101 \U0001F600 (09/11/2026: the A example had been unescaped to a bare A)
   m = /^\\(?:x([0-9a-f]{1,2})|u\{([0-9a-f]{1,6})\}|u([0-9a-f]{4})|U([0-9a-f]{8})|([0-7]{1,3})|([abtnvfre0]))$/i.exec(s);
   // An escape.
   if (m) {

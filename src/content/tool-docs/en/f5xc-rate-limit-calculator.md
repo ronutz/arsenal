@@ -20,7 +20,7 @@ Counting is distributed per Regional Edge and per proxy, so you may briefly see 
 
 ## Share results
 
-Under the effective rate, **Share results** builds a link to this page, only when you press it, that carries every field after the `#`: Number, Per Period, Periods, Burst Multiplier, Mitigation, and the lockout with its unit, each as the calculation reads it (an empty Burst Multiplier as 1). Every field goes even when it matches the default, so a link keeps its meaning if a default changes, and the numbers name no system or person. The page shows a result as it opens, so the button is available at once. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
+Under the effective rate, **Share results** builds a link to this page, only when you press it, that carries every field after the `#`: Number, Per Period, Periods, Burst Multiplier, Mitigation Action, and the lockout with its unit, each as the calculation reads it (an empty Burst Multiplier as 1). Every field goes even when it matches the default, so a link keeps its meaning if a default changes, and the numbers name no system or person. The page shows a result as it opens, so the button is available at once. Its popover says first what the link carries, then offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
 
 [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-11-01) has the fragment "separated from the rest of the URI prior to a dereference", so what follows the `#` is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
 

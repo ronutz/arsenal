@@ -56,6 +56,100 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // PRIME 2026-11-09 11:14 ("We need rich entries on DMCA and on right to repair") and 11:16 (Hacktivism "very short").
+    date: "2026-11-09",
+    time: "11:46",
+    kind: "content",
+    title: "Glossary: DMCA and right to repair, and a full entry for hacktivism",
+    titlePt: "Glossário: DMCA e direito ao reparo, e um verbete completo sobre hacktivismo",
+    body:
+      "Two new long entries: the DMCA (Digital Millennium Copyright Act), from the 1998 law and its WIPO treaties through section 1201's anti-circumvention rules, the three-yearly exemptions for security research and repair, the section 512 safe harbours and the cases fought over them; and right to repair, from Massachusetts and the FTC (Federal Trade Commission) to the state laws, the farm-equipment dispute, the copyright exemptions and the European Union's rules. Hacktivism grows from two sentences to a full history, from the word's coinage in the Cult of the Dead Cow through the WANK worm, virtual sit-ins, Anonymous and LulzSec to the prosecutions and the debate. Every fact was read in its source on the day.",
+    links: [{ label: "DMCA", href: "/glossary/dmca" }, { label: "Right to repair", href: "/glossary/right-to-repair" }, { label: "Hacktivism", href: "/glossary/hacktivism" }],
+  },
+  {
+    // PRIME 2026-11-09 10:53: "Finish all pending English verifications and fixes." The slips the Spanish and German writers found.
+    date: "2026-11-09",
+    time: "11:46",
+    kind: "content",
+    title: "Corrections found while writing Spanish and German",
+    titlePt: "Correções encontradas ao escrever o espanhol e o alemão",
+    body:
+      "Writing the site in two more languages meant reading every sentence closely, and about sixty slips came to light. Each was checked against its source before it changed: BEAST is a predictable-IV attack, not a padding oracle; NGINX inserts no slash when it joins a proxy_pass path; F5 calls its GSLB method Round Trip Time; RFC 9846 dates from July 2026; SII is Subject Identity Information; the LACP reader shows the Cisco port number again; and smaller fixes in dig, tcpdump, STP, OSPF, the Expect builder, the Zscaler and Netskope sources, plurals, and São Paulo's tilde.",
+    links: [{ label: "Tools", href: "/tools" }, { label: "Changelog", href: "/changelog" }],
+  },
+  {
+    // PRIME 2026-11-09 01:02 (languages in their natural tone, a build each) and 10:53 ("Finish Spanish and German.
+    // Then build."); 11:02: the list is Spanish, German, French, Italian.
+    date: "2026-11-09",
+    time: "11:03",
+    kind: "i18n",
+    title: "German: the interface and the tools, written in German",
+    titlePt: "Alemão: a interface e as ferramentas, escritas em alemão",
+    body:
+      "The German site's interface is now written in German rather than translated: every page's own text, every tool and its documentation, the games and puzzles, and the legal pages, in the terms German engineers use. Five Clues accepts German answers, the bits-and-bytes calculator reads Sekunden, Minuten, Stunden and Tage, and Whack-a-Bug answers to the letter on the key, so the Z of a German keyboard hits the pane marked Z. Contrast ratios now use the page's decimal sign, Spanish numbers group thousands with a point as the tools print them, and the translators' guide on the Contribute page reads in Spanish and German. Learn and the other reading sections are still machine-translated for now, and the German notice says so.",
+    links: [{ label: "Tools", href: "/tools" }, { label: "Contribute", href: "/contribute" }],
+  },
+  {
+    // Found 09/11/2026 by the German writer of pack chunk 02, confirmed with intl-messageformat: '{value}' in 17
+    // reasons was ICU quoting, so the message printed the placeholder instead of the header's value.
+    date: "2026-11-09",
+    time: "05:03",
+    kind: "content",
+    title: "Security headers: the reasons name the value they found",
+    titlePt: "Cabeçalhos de segurança: os motivos citam o valor encontrado",
+    body:
+      "Seventeen of the checker's reasons, such as an unexpected X-Content-Type-Options value or the Referrer-Policy in force, showed the text {value} where the header's own value belonged. They now quote the value the page read, in English and Portuguese.",
+    links: [{ label: "Security headers", href: "/tools/secure-headers" }],
+  },
+  {
+    // PRIME 2026-11-09 01:02: "I think it is time to get the site up in additional languages. Let's build these languages,
+    // one at a time, in the language's NATURAL tone (instead of simply translated) ... Spanish (International) ...";
+    // scope "Interface + tool docs" with the puzzles, games and /dev/fun (02:10). Learn waits for PRIME's permission (02:13).
+    date: "2026-11-09",
+    time: "04:44",
+    kind: "i18n",
+    title: "Spanish: the interface and the tools, written in Spanish",
+    titlePt: "Espanhol: a interface e as ferramentas, escritas em espanhol",
+    body:
+      "The Spanish site's interface is now written in Spanish rather than translated: every page's own text, every tool and its documentation, the games and puzzles, and the legal pages, in the terms Spanish-speaking engineers use, with the English term kept where that is what they say. The text the tools build from their results is in Spanish too, Five Clues accepts Spanish answers, and the bits-and-bytes calculator reads \"días\". Learn, the glossary and the other reading sections are still machine-translated for now, and the Spanish notice says so.",
+    links: [{ label: "Tools", href: "/tools" }, { label: "Games and toys", href: "/dev/fun" }],
+  },
+  {
+    // Found 09/11/2026 by the Spanish writer of pack chunk 12: the drill's "the answer is ..." showed the grader's
+    // English "yes"/"no" in every language.
+    date: "2026-11-09",
+    time: "04:03",
+    kind: "content",
+    title: "Subnet drill: a yes or no answer is named in your language",
+    titlePt: "Treino de sub-redes: a resposta sim ou não aparece no seu idioma",
+    body:
+      "When a yes-or-no question was answered wrongly, the drill gave the right answer as the English \"yes\" or \"no\" even on the Portuguese page. It now uses the same words as the two answer buttons.",
+    links: [{ label: "Subnet drill", href: "/dev/other/subnet-drill" }],
+  },
+  {
+    // Found 09/11/2026 by the Spanish writer of pack chunk 06, confirmed with intl-messageformat: "${HOME}" in the
+    // message made ICU ask for a HOME value, so the -r line failed to format in every language.
+    date: "2026-11-09",
+    time: "03:29",
+    kind: "content",
+    title: "dig command builder: the -r explanation shows again",
+    titlePt: "Montador de comandos dig: a explicação do -r volta a aparecer",
+    body:
+      "With -r ticked, the line explaining it (dig does not read ${HOME}/.digrc, so the command behaves the same on every machine) failed to render, because the text's ${HOME} was read as a value to fill in. It is now shown as written, in English and Portuguese.",
+    links: [{ label: "dig command builder", href: "/tools/dig-command-builder" }],
+  },
+  {
+    // PRIME 2026-11-09 02:24: "In ... “the arcade” card we need an arcade cabinet graphic. It's the only card without a graphic."
+    date: "2026-11-09",
+    time: "02:30",
+    kind: "content",
+    title: "The arcade's card on the games shelf gets its drawing",
+    titlePt: "O cartão do arcade na estante de jogos ganha o seu desenho",
+    body:
+      "The card that leads from the games shelf to the arcade now shows an arcade cabinet on its tinted tile, with a marquee, a screen, a joystick and two buttons, so every card on the shelf has a drawing.",
+    links: [{ label: "Games and toys", href: "/dev/fun" }, { label: "The arcade", href: "/arcade" }],
+  },
+  {
     // PRIME 2026-11-08 23:14: "Yes move them" (the arcade games' pages from /dev/fun/<game> to /arcade/<game>, with
     // permanent redirects from the old addresses).
     date: "2026-11-08",

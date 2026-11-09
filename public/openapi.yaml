@@ -3509,7 +3509,7 @@ paths:
       tags:
         - Web front-end & CSS
       operationId: run_color_contrast_format
-      summary: Color contrast & format
+      summary: Colour contrast & format
       description: >-
         Two colours in any CSS notation (named, hex, rgb, hsl, hwb, lab, lch, oklab, oklch, color())
         and out come the WCAG contrast ratio with pass or fail at every level (AA and AAA, normal
@@ -3547,7 +3547,7 @@ paths:
       tags:
         - Web front-end & CSS
       operationId: run_color_contrast_format_post
-      summary: Color contrast & format (POST)
+      summary: Colour contrast & format (POST)
       description: >-
         Two colours in any CSS notation (named, hex, rgb, hsl, hwb, lab, lch, oklab, oklch, color())
         and out come the WCAG contrast ratio with pass or fail at every level (AA and AAA, normal
@@ -3969,11 +3969,11 @@ paths:
       summary: curl command builder
       description: >-
         Pick any of the 27 protocols curl speaks, fill in protocol-aware fields, and get the exact
-        command with every flag explained and safety warnings surfaced. The inverse of the HTTP
-        request translator: that one reads a command, this one writes it. The input is a JSON
-        object: send it as the request body (POST) or as a JSON string (?input=). Standards: curl
-        manual, everything curl. Stateless and side-effect-free: the same input always yields the
-        same result, and nothing is stored or logged.
+        command with every flag explained and safety warnings surfaced. The inverse of the curl
+        command explainer: that one reads a command, this one writes it. The input is a JSON object:
+        send it as the request body (POST) or as a JSON string (?input=). Standards: curl manual,
+        everything curl. Stateless and side-effect-free: the same input always yields the same
+        result, and nothing is stored or logged.
       parameters:
         - name: input
           in: query
@@ -4002,11 +4002,11 @@ paths:
       summary: curl command builder (POST)
       description: >-
         Pick any of the 27 protocols curl speaks, fill in protocol-aware fields, and get the exact
-        command with every flag explained and safety warnings surfaced. The inverse of the HTTP
-        request translator: that one reads a command, this one writes it. The input is a JSON
-        object: send it as the request body (POST) or as a JSON string (?input=). Standards: curl
-        manual, everything curl. Stateless and side-effect-free: the same input always yields the
-        same result, and nothing is stored or logged.
+        command with every flag explained and safety warnings surfaced. The inverse of the curl
+        command explainer: that one reads a command, this one writes it. The input is a JSON object:
+        send it as the request body (POST) or as a JSON string (?input=). Standards: curl manual,
+        everything curl. Stateless and side-effect-free: the same input always yields the same
+        result, and nothing is stored or logged.
       requestBody:
         required: true
         description: The tool input as a JSON object.
@@ -5607,8 +5607,8 @@ paths:
       operationId: run_expect_script_builder
       summary: Expect script builder
       description: >-
-        Choose ssh, telnet or another program, how to log in, a device profile (Cisco IOS, F5 BIG-IP
-        tmsh, FortiOS, Extreme Switch Engine and Fabric Engine, or your own prompt) and the
+        Choose ssh, telnet or another program, how to log in, a device profile (Cisco IOS XE, F5
+        BIG-IP tmsh, FortiOS, Extreme Switch Engine and Fabric Engine, or your own prompt) and the
         commands, and get a complete Expect script that logs in, deals with paging, runs them and
         logs out, changing nothing on the device unless you ask (on FortiOS it answers --More--
         rather than change a global setting). No password is ever written into it, nothing secret
@@ -5646,8 +5646,8 @@ paths:
       operationId: run_expect_script_builder_post
       summary: Expect script builder (POST)
       description: >-
-        Choose ssh, telnet or another program, how to log in, a device profile (Cisco IOS, F5 BIG-IP
-        tmsh, FortiOS, Extreme Switch Engine and Fabric Engine, or your own prompt) and the
+        Choose ssh, telnet or another program, how to log in, a device profile (Cisco IOS XE, F5
+        BIG-IP tmsh, FortiOS, Extreme Switch Engine and Fabric Engine, or your own prompt) and the
         commands, and get a complete Expect script that logs in, deals with paging, runs them and
         logs out, changing nothing on the device unless you ask (on FortiOS it answers --More--
         rather than change a global setting). No password is ever written into it, nothing secret
