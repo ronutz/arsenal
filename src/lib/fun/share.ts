@@ -25,7 +25,7 @@ export const SHARE_ORIGIN = "https://ronutz.com";
 
 /** The words after an earlier puzzle's title, by language: the games' words are authored in English and Portuguese, and
  *  every other language reads the English ones, as it does the rest of the games' text. */
-const PLAYED_LATER: Record<string, string> = { en: "played later", "pt-BR": "jogado depois", es: "jugado más tarde", de: "später gespielt" };
+const PLAYED_LATER: Record<string, string> = { en: "played later", "pt-BR": "jogado depois", es: "jugado más tarde", de: "später gespielt", fr: "joué plus tard" };
 
 /**
  * The text of a share card.

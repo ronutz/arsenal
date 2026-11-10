@@ -29,6 +29,11 @@ import DiversionScene from "@/components/learn/DiversionScene";
 // The Lab component, written into an article's MDX as a Lab tag with an id: the article's interactive companion
 // (2026-10-26). Passed to MDXRemote below, never rendered from this file directly.
 import Lab from "@/components/learn/Lab";
+// The psychological-operations series' blocks (PRIME 2026-11-09): a labelled opinion, a claim with its evidence status,
+// and the standing method note.
+import RodVoice from "@/components/learn/RodVoice";
+import Claim from "@/components/learn/Claim";
+import MethodNote from "@/components/learn/MethodNote";
 // Which labs the article embeds, for the "Interactive" marker under its summary.
 import { labIdsIn } from "@/content/learn/labs";
 import GlossaryTerm from "@/components/GlossaryTerm";
@@ -199,7 +204,7 @@ export default async function ArticlePage({
                     rehypePlugins: [[rehypeGlossaryHints, getHintSurfaces()], [rehypeLocaliseLinks, locale], rehypeExternalLinks],
                   },
                 }}
-                components={{ BigipTimeline, GlossaryTerm, DiversionScene, Lab }}
+                components={{ BigipTimeline, GlossaryTerm, DiversionScene, Lab, RodVoice, Claim, MethodNote }}
               />
             </div>
 

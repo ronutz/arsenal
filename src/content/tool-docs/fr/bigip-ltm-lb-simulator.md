@@ -1,0 +1,24 @@
+## Ce que fait l’outil
+
+Cet outil simule la façon dont un pool BIG-IP LTM répartit le trafic. Vous configurez les membres du pool (chacun avec un ratio de membre, un nœud et un ratio de nœud, un groupe de priorité et un nombre d’enregistrements de persistance existants), puis vous choisissez une méthode d’équilibrage de charge et un nombre de requêtes N, et l’outil montre où aboutissent les N prochaines connexions, sous forme de répartition par membre. Il s’exécute entièrement dans votre navigateur et il est déterministe : les mêmes entrées produisent toujours la même réponse.
+
+## Les méthodes simulées
+
+L’outil simule les méthodes statiques et celles fondées sur les connexions ou les sessions, car leur résultat découle de la configuration et de la charge que vous fournissez. Round Robin envoie chaque requête au membre suivant, à tour de rôle. Ratio (member) répartit proportionnellement au ratio de chaque membre ; Ratio (node) fait de même par nœud, en partageant la part d’un nœud entre ses membres. Least Connections (member et node) envoie chaque nouvelle connexion au membre le moins chargé ; Weighted Least Connections pondère ce choix par le ratio. Least Sessions envoie vers le membre qui a le moins d’enregistrements de persistance, c’est-à-dire exactement le nombre d’enregistrements de persistance que vous saisissez pour chaque membre.
+
+## Groupes de priorité
+
+L’activation des groupes de priorité (Priority Group Activation) détermine les membres éligibles. Chaque membre a une priorité ; le trafic va d’abord au groupe de priorité la plus haute, et un groupe inférieur n’est activé que lorsque le nombre de membres disponibles dans l’ensemble actif passe sous le seuil que vous fixez (0 désactive la fonctionnalité). L’outil applique cette règle et marque chaque membre comme actif ou en veille : vous voyez ainsi un groupe inférieur rester inactif jusqu’à ce que le groupe supérieur se dégarnisse.
+
+## Ce que l’outil ne simule pas, et pourquoi
+
+Fastest, Observed, Predictive et Dynamic Ratio sont des méthodes dynamiques qui décident à partir de métriques d’exécution en temps réel : temps de réponse, nombre de connexions par seconde, tendances de performance, données SNMP. Ces valeurs ne font pas partie de la configuration d’un pool et changent en permanence : il n’existe donc aucun moyen honnête de calculer pour elles une répartition fixe à partir d’entrées statiques. L’outil les propose dans la liste mais, quand l’une d’elles est choisie, il explique pourquoi il ne peut pas la simuler plutôt que d’inventer des chiffres. Deux autres précisions, par souci d’honnêteté : Least Connections est modélisé à partir d’une table des connexions vierge, car l’outil ne prend aucun nombre de connexions en cours, et la répartition part donc égale ; et Least Sessions suppose une persistance par adresse source ou par session, car une persistance par cookie fait revenir BIG-IP à Round Robin.
+
+## Partage des résultats
+
+À la fin de la réponse, le bouton **Partager les résultats** crée, seulement quand vous appuyez dessus, un lien vers cette page qui contient, après le `#`, tout le formulaire sous forme de valeurs nommées : `members` (une ligne par membre : son nom, son nœud, son ratio, son ratio de nœud, son groupe de priorité et ses enregistrements de persistance, séparés par des tabulations), `method`, `threshold` (l’activation des groupes de priorité) et `requests`. Sa fenêtre contextuelle indique d’abord ce que contient le lien, puis propose le bouton Copier le lien et, si le navigateur en dispose, sa feuille de partage ; l’adresse de la page ne change pas. Les noms et les nœuds partent tels que saisis, sauf qu’une tabulation collée dans l’un d’eux est transmise comme un espace.
+
+La [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, consultée le 27/10/2026) précise que le fragment est séparé du reste de l’URI avant tout déréférencement (« separated from the rest of the URI prior to a dereference ») : les valeurs ne sont donc pas envoyées au serveur à l’ouverture du lien ; elles restent dans la barre d’adresse et l’historique de la personne qui l’ouvre, et quiconque possède le lien peut les lire.
+
+- **Longueur.** Au plus 16 384 caractères au total, la limite que le site applique à toute valeur placée après le `#` ; au-delà, aucun lien n’est créé et la fenêtre contextuelle indique la longueur.
+- **Ouverture d’un lien.** Tout le formulaire est remplacé par les valeurs du lien, y compris un champ que le lien ne contient pas, et la page les simule ; rien n’est envoyé nulle part. Une valeur que le formulaire n’accepterait pas (une méthode inconnue, un ratio inférieur à 1, une ligne à laquelle il manque un champ) rend le lien mal formé, et il est ignoré en entier. Les valeurs quittent ensuite aussitôt l’adresse de la page, sans aucune requête : un rechargement, ou le bouton Partager de la page, n’emporte donc rien.

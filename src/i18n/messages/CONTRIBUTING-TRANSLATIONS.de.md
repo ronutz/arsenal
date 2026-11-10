@@ -18,7 +18,7 @@ Jede Sprache hat einen `status`:
 | `machine-draft` | Ein erster Entwurf, mit KI oder maschineller Übersetzung erstellt und noch nicht muttersprachlich geprüft. |
 | `stub` | Noch kein Paket; die Sprache wird auf Englisch angezeigt. |
 
-Maschinell entworfener Text wird nie als ausgefeilter muttersprachlicher Text ausgegeben. Ein `machine-draft` ist ein Ausgangspunkt, den jemand mit dieser Muttersprache auf `reviewed` hochstuft. Englisch ist die Ausgangssprache. Brasilianisches Portugiesisch wird mit KI geschrieben und nach und nach geprüft, ebenso die Oberfläche und die Tools auf Spanisch und auf Deutsch; der Bereich „Lernen“ und die übrigen Inhaltsbereiche auf Spanisch und auf Deutsch sind maschinell übersetzt, ebenso die zwölf weiteren Sprachen. Deshalb behalten brasilianisches Portugiesisch, Spanisch und Deutsch den Status `machine-draft` und ihren Hinweis, bis eine menschliche Prüfung etwas anderes bestätigt.
+Maschinell entworfener Text wird nie als ausgefeilter muttersprachlicher Text ausgegeben. Ein `machine-draft` ist ein Ausgangspunkt, den jemand mit dieser Muttersprache auf `reviewed` hochstuft. Englisch ist die Ausgangssprache. Brasilianisches Portugiesisch wird mit KI geschrieben und nach und nach geprüft, ebenso die Oberfläche und die Tools auf Spanisch, auf Deutsch und auf Französisch; der Bereich „Lernen“ und die übrigen Inhaltsbereiche auf Spanisch, auf Deutsch und auf Französisch sind maschinell übersetzt, ebenso die elf weiteren Sprachen. Deshalb behalten brasilianisches Portugiesisch, Spanisch, Deutsch und Französisch den Status `machine-draft` und ihren Hinweis, bis eine menschliche Prüfung etwas anderes bestätigt.
 
 ## Eine Sprache in vier Schritten verbessern
 

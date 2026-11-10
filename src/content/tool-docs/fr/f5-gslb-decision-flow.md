@@ -1,0 +1,24 @@
+# Analyseur du processus de décision GSLB
+
+Collez des blocs `gtm wideip` et `gtm pool` (tels que les affichent `tmsh list gtm wideip a <name>` et `tmsh list gtm pool a <name>`) : la décision à deux niveaux de l’équilibrage de charge global des serveurs (GSLB, global server load balancing) de BIG-IP DNS (anciennement GTM, Global Traffic Manager) s’affiche telle qu’elle s’exécute réellement.
+
+Le niveau wide IP montre la méthode de sélection du pool (`pool-lb-mode`, round-robin par défaut) avec les pools rattachés, leur ordre et leurs valeurs de ratio, ainsi que les paramètres de la wide IP qui façonnent les réponses : la persistance, last-resort-pool, le comportement failure-rcode et le réglage de verbosité du journal de décision (decision log), qui vous permet de suivre ce même processus dans les journaux.
+
+Le niveau pool affiche la chaîne en trois étapes : preferred (`load-balancing-mode`), alternate (`alternate-mode`), fallback (`fallback-mode`), chaque étape portant la sémantique que le constructeur donne au niveau et à la méthode. Les valeurs par défaut sont appliquées et signalées quand un attribut est absent : round-robin, round-robin, return-to-dns.
+
+En dessous, des observations déterministes confrontent la configuration à la grammaire documentée et aux règles du manuel Load Balancing : les méthodes absentes de la liste des jetons admis par un niveau ; la propriété du niveau fallback, qui ignore la disponibilité, rappelée sur chaque chaîne résolue ; le raccordement de Fallback IP (la méthode sans adresse, ou une adresse qu’aucun niveau n’utilise) ; l’ensemble des cas où dynamic-ratio s’applique ; les coefficients QoS à zéro ; les ratios de membres qu’aucun niveau n’utilise ; la règle d’association de Global Availability ; et l’avertissement sur topology aux deux niveaux, qui demande que le fallback de chaque pool soit réglé sur None.
+
+Un nom de méthode seul explique cette méthode, y compris les niveaux qui l’admettent et l’origine de son signal de décision (sondage du chemin vers le LDNS, statistiques côté serveur, ou aucun). Le mot `methods` liste les deux catalogues.
+
+Tout s’exécute localement ; rien de ce que vous collez ne quitte la page.
+
+## Partage des résultats
+
+En haut de la lecture, le bouton **Partager les résultats** crée, seulement quand vous appuyez dessus, un lien vers cette page qui contient, après le `#`, la zone telle que saisie, et rien d’autre. Sa fenêtre contextuelle indique d’abord ce que contient le lien, puis ajoute une mise en garde qui lui est propre : les noms de wide IP et de pools identifient votre infrastructure, relisez donc le collage avant d’envoyer le lien. Elle propose ensuite le bouton Copier le lien et, si le navigateur en dispose, sa feuille de partage ; l’adresse de la page ne change pas.
+
+Cette page ignore tous les blocs qu’elle n’explique pas : un fichier de configuration complet reçoit donc tout de même une lecture, et un lien vers celle-ci contiendrait tout ce que le fichier renferme. Aussi, tant que le collage contient un paramètre secret, aucun lien n’est créé, et la fenêtre contextuelle nomme le paramètre : un attribut tmsh nommé `password`, `passphrase` ou `secret`, ou dont le nom se termine ainsi (`encrypted-password`, `proxy-ca-passphrase`, `shared-secret`), `bind-pw` ou `community-name`, suivi d’une valeur autre que `none` ; ou un en-tête `Authorization` où que ce soit, comme dans la chaîne `send` d’un moniteur. La [référence tmsh de F5 pour gtm monitor http](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/gtm/gtm_monitor_http.html) (consultée le 27/10/2026) liste `password` à côté de `send`, et la [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110) (section 11.6.2, consultée le 27/10/2026) définit la valeur Authorization comme des identifiants (credentials). Supprimez cette ligne et appuyez de nouveau sur le bouton : la page n’affiche jamais ces valeurs, le reste se lit donc de la même façon.
+
+La [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, consultée le 27/10/2026) précise que le fragment est séparé du reste de l’URI avant tout déréférencement (« separated from the rest of the URI prior to a dereference ») : le texte n’est donc pas envoyé au serveur à l’ouverture du lien ; il reste dans la barre d’adresse et l’historique de la personne qui l’ouvre, et quiconque possède le lien peut le lire.
+
+- **Longueur.** Au plus 16 384 caractères au total, la limite que le site applique à toute valeur placée après le `#` ; au-delà, aucun lien n’est créé et la fenêtre contextuelle indique la longueur.
+- **Ouverture d’un lien.** Le texte remplit la zone comme le ferait un collage et la page le lit ; rien n’est envoyé nulle part. La valeur quitte ensuite aussitôt l’adresse de la page, sans aucune requête : un rechargement, ou le bouton Partager de la page, n’emporte donc rien.

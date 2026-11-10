@@ -330,7 +330,8 @@
       "quickSpecialPartial": "Teilweise für besondere Zwecke: {special} von {total} Adressen",
       "quickSpecialNone": "Kein Bereich für besondere Zwecke",
       "quickSpecialMore": "Die Bereiche im vollständigen Rechner ansehen",
-      "quickHandoffNote": "Die Links unten enthalten Ihren Block nach dem # in der Adresse, einem Teil, den Ihr Browser nie in einer Anfrage sendet; er bleibt aber in der Adressleiste und im Verlauf, und wer die Adresse teilt, teilt ihn mit."
+      "quickHandoffNote": "Die Links unten enthalten Ihren Block nach dem # in der Adresse, einem Teil, den Ihr Browser nie in einer Anfrage sendet; er bleibt aber in der Adressleiste und im Verlauf, und wer die Adresse teilt, teilt ihn mit.",
+      "quickP2p31": "Punkt-zu-Punkt-Link (RFC 3021): Beide Adressen sind Host-Adressen, es gibt keine Netzwerk- und keine Broadcast-Adresse."
     }
   },
   "tools": {
@@ -24631,7 +24632,7 @@
         "options": "Optionen",
         "prefix": "Präfix {prefix}",
         "noPrefix": "kein Präfix: nicht zusammenhängend",
-        "count": "{count} Adressen"
+        "count": "{count, plural, one {# Adresse} other {# Adressen}}"
       },
       "remarks": {
         "title": "Kommentare"
@@ -25630,7 +25631,7 @@
         "heading": "{count} Flows, variiertes Feld: {field}",
         "range": "{from} bis {to}",
         "member": "Member {m}",
-        "count": "{c} Flows ({pct})",
+        "count": "{c, plural, one {# Flow} other {# Flows}} ({pct})",
         "even": "Gleichmäßig: Kein Member überträgt mehr als einen Flow mehr als ein anderes.",
         "uneven": "Ungleichmäßig: Das meistgenutzte Member überträgt {max} Flows, das am wenigsten genutzte {min}.",
         "first": "Die ersten Flows landen auf den Membern: {list}"
@@ -28714,7 +28715,7 @@
   "contribute": {
     "eyebrow": "Übersetzungen",
     "title": "Helfen Sie, die Übersetzungen zu verbessern",
-    "lede": "Das brasilianische Portugiesisch wird hier mit KI geschrieben und nach und nach geprüft, ebenso die Oberfläche und die Tools auf Spanisch und auf Deutsch; alles andere in einer anderen Sprache als Englisch ist ein maschinell erstellter erster Entwurf. Wenn Sie eine dieser Sprachen sprechen und etwas Falsches oder Holpriges bemerken, sind Ihre Korrekturen ausdrücklich willkommen. So senden Sie sie.",
+    "lede": "Das brasilianische Portugiesisch wird hier mit KI geschrieben und nach und nach geprüft, ebenso die Oberfläche und die Tools auf Spanisch, auf Deutsch und auf Französisch; alles andere in einer anderen Sprache als Englisch ist ein maschinell erstellter erster Entwurf. Wenn Sie eine dieser Sprachen sprechen und etwas Falsches oder Holpriges bemerken, sind Ihre Korrekturen ausdrücklich willkommen. So senden Sie sie.",
     "howTitle": "So wirken Sie mit",
     "howBody": "Englisch ist die maßgebliche Quelle, und jede andere Sprache wird daraus übersetzt, daher sind Fehler möglich. Jedes Sprachpaket ist eine einzelne Textdatei mit beschrifteten Sätzen. Laden Sie das Paket herunter, das Sie verbessern möchten, ändern Sie nur den Text nach jeder Beschriftung, und lassen Sie die Beschriftungen und alles in geschweiften Klammern genau so, wie es ist. Senden Sie dann die bearbeitete Datei per E-Mail und nennen Sie die Sprache. Jede Einsendung wird von Hand geprüft.",
     "downloadHeading": "Sprachpakete",
@@ -28742,7 +28743,7 @@
       },
       "translation": {
         "title": "Eine Übersetzung verbessern",
-        "desc": "Brasilianisches Portugiesisch sowie die Oberfläche und die Tools auf Spanisch und auf Deutsch werden mit KI geschrieben und nach und nach geprüft; alles andere in einer anderen Sprache als Englisch ist ein maschinell erstellter erster Entwurf. Laden Sie ein Paket herunter, korrigieren Sie es und senden Sie es zurück.",
+        "desc": "Brasilianisches Portugiesisch sowie die Oberfläche und die Tools auf Spanisch, auf Deutsch und auf Französisch werden mit KI geschrieben und nach und nach geprüft; alles andere in einer anderen Sprache als Englisch ist ein maschinell erstellter erster Entwurf. Laden Sie ein Paket herunter, korrigieren Sie es und senden Sie es zurück.",
         "cta": "Anleitung ansehen"
       },
       "code": {
@@ -28881,7 +28882,7 @@
     "complete": "Maschinell, vollständig",
     "partial": "Maschinell, in Arbeit",
     "explainTitle": "Wie Übersetzungen gekennzeichnet sind",
-    "explainBody": "Englisch ist die Quelle: mit KI geschrieben und erst veröffentlicht, wenn ein Mensch entscheidet, dass es veröffentlicht werden soll. Brasilianisches Portugiesisch wird ebenfalls mit KI geschrieben und nach und nach geprüft, ebenso die Oberfläche und die Tools auf Spanisch und auf Deutsch; der Rest der spanischen und der deutschen Website und die übrigen Sprachen sind maschinell übersetzt. Jede Sprache ist danach gekennzeichnet, wie weit sie ist: blau, sobald sie die ganze Website abdeckt, gelb, solange neuere Inhalte noch auf Englisch sind und nachgezogen werden, rot, wenn es noch keine Übersetzung gibt und sie vorerst auf Englisch angezeigt wird. Jede Sprache außer Englisch zeigt einen kurzen Hinweis, und Sie können gern helfen, jede davon zu verbessern.",
+    "explainBody": "Englisch ist die Quelle: mit KI geschrieben und erst veröffentlicht, wenn ein Mensch entscheidet, dass es veröffentlicht werden soll. Brasilianisches Portugiesisch wird ebenfalls mit KI geschrieben und nach und nach geprüft, ebenso die Oberfläche und die Tools auf Spanisch, auf Deutsch und auf Französisch; der Rest der spanischen, der deutschen und der französischen Website und die übrigen Sprachen sind maschinell übersetzt. Jede Sprache ist danach gekennzeichnet, wie weit sie ist: blau, sobald sie die ganze Website abdeckt, gelb, solange neuere Inhalte noch auf Englisch sind und nachgezogen werden, rot, wenn es noch keine Übersetzung gibt und sie vorerst auf Englisch angezeigt wird. Jede Sprache außer Englisch zeigt einen kurzen Hinweis, und Sie können gern helfen, jede davon zu verbessern.",
     "stub": "Noch nicht übersetzt"
   },
   "changelog": {
@@ -32122,7 +32123,7 @@
       },
       "languages": {
         "h": "Sprachen",
-        "b": "Die Oberfläche gibt es in mehreren Sprachen; wechseln Sie über die Sprachauswahl im Kopfbereich. Englisch ist die Ausgangssprache, mit KI geschrieben und erst veröffentlicht, wenn ein Mensch das entscheidet; brasilianisches Portugiesisch wird ebenfalls mit KI geschrieben und nach und nach geprüft, ebenso die Oberfläche und die Tools auf Spanisch und auf Deutsch; der Rest der spanischen und der deutschen Website und die übrigen Sprachen sind maschinell übersetzt. Wo eine Formulierung für eine Sprache noch nicht übersetzt ist, wird für diese Formulierung der englische Text angezeigt, sodass nie etwas fehlt."
+        "b": "Die Oberfläche gibt es in mehreren Sprachen; wechseln Sie über die Sprachauswahl im Kopfbereich. Englisch ist die Ausgangssprache, mit KI geschrieben und erst veröffentlicht, wenn ein Mensch das entscheidet; brasilianisches Portugiesisch wird ebenfalls mit KI geschrieben und nach und nach geprüft, ebenso die Oberfläche und die Tools auf Spanisch, auf Deutsch und auf Französisch; der Rest der spanischen, der deutschen und der französischen Website und die übrigen Sprachen sind maschinell übersetzt. Wo eine Formulierung für eine Sprache noch nicht übersetzt ist, wird für diese Formulierung der englische Text angezeigt, sodass nie etwas fehlt."
       },
       "offline": {
         "h": "Offline-Nutzung",
@@ -34804,7 +34805,7 @@
   },
   "contributeTools": {
     "translationsTitle": "Übersetzungen verbessern",
-    "translationsBody": "Englisch ist die Ausgangssprache dieser Website. Das brasilianische Portugiesisch wird mit KI geschrieben und nach und nach geprüft, ebenso die Oberfläche und die Tools auf Spanisch und auf Deutsch; der Rest der spanischen und der deutschen Website und zwölf weitere Sprachen sind maschinell übersetzt: brauchbar, aber nicht muttersprachlich. Wenn Sie eine davon lesen und etwas falsch ist, etwa ein Fachbegriff, der wörtlich übersetzt wurde, oder ein Satz, der grammatisch aufgeht und nichts bedeutet, ist ein Hinweis an mich ein echter Beitrag, und eine kurze Notiz mit der Seite und der Formulierung genügt.",
+    "translationsBody": "Englisch ist die Ausgangssprache dieser Website. Das brasilianische Portugiesisch wird mit KI geschrieben und nach und nach geprüft, ebenso die Oberfläche und die Tools auf Spanisch, auf Deutsch und auf Französisch; der Rest der spanischen, der deutschen und der französischen Website und elf weitere Sprachen sind maschinell übersetzt: brauchbar, aber nicht muttersprachlich. Wenn Sie eine davon lesen und etwas falsch ist, etwa ein Fachbegriff, der wörtlich übersetzt wurde, oder ein Satz, der grammatisch aufgeht und nichts bedeutet, ist ein Hinweis an mich ein echter Beitrag, und eine kurze Notiz mit der Seite und der Formulierung genügt.",
     "translationsCta": "Korrektur senden"
   },
   "roles": {
@@ -37065,7 +37066,7 @@
       "customer-success-manager": {
         "title": "Customer Success Manager",
         "whatItIs": "Die Person, die die Beziehung verantwortet, nachdem der Verkauf abgeschlossen ist. Customer Success ist aus dem Abonnementgeschäft entstanden, in dem der Umsatz in Raten kommt und jede davon eine Entscheidung ist, die die Kundschaft erneut trifft. Die Rolle begleitet Onboarding, Nutzung und Ausbau und ist bewusst vom Support getrennt, der reaktiv ist, und vom Account Executive, der das Neugeschäft verantwortet.",
-        "turnsOn": "Zufriedenheit und Kundenbindung sind verschiedene Messgrößen, und der Abstand zwischen ihnen ist der Job. Eine Kundschaft kann vollkommen zufrieden sein und trotzdem gehen, weil sich ihre Prioritäten verschoben haben und niemand auf Herstellerseite es bemerkt hat; die nützliche Frage ist deshalb, ob die Kundschaft Ergebnisse erzielt, die weitere Investitionen rechtfertigen, nicht, ob sie zufrieden ist. Wer die zweite Frage stellt, findet das Risiko rechtzeitig; wer die erste stellt, findet es bei der Verlängerung.",
+        "turnsOn": "Zufriedenheit und Kundenbindung sind verschiedene Messgrößen, und der Abstand zwischen ihnen ist der Job. Eine Kundschaft kann vollkommen zufrieden sein und trotzdem gehen, weil sich ihre Prioritäten verschoben haben und niemand auf Herstellerseite es bemerkt hat; die nützliche Frage ist deshalb, ob die Kundschaft Ergebnisse erzielt, die weitere Investitionen rechtfertigen, nicht, ob sie zufrieden ist. Wer die erste Frage stellt, findet das Risiko rechtzeitig; wer die zweite stellt, findet es bei der Verlängerung.",
         "theDay": {
           "0": "Onboarding: eine Kundschaft zu ihrem ersten echten Ergebnis bringen, denn die Zeit, die das dauert, sagt alles Weitere voraus.",
           "1": "Die Nutzung über ein Portfolio hinweg beobachten, das von einer Handvoll strategischer Accounts bis zu mehreren Hundert am leichteren Ende reicht.",
@@ -39163,6 +39164,28 @@
       "python": {
         "title": "Python für Fachleute aus Netzwerk und Sicherheit",
         "lede": "Was Python ist und wie lange jedes Release lebt, Umgebungen und Packaging, Bytes und Text, Fehler und Logs; dann Sockets, Adressen, SSH, Geräte-APIs und geparste CLI-Ausgabe; dann Hashing, TLS, sichere Programmierung, die Lieferkette und die Analyse von Logs und Paketen, jeweils anhand der Dokumentation des Moduls oder der Bibliothek selbst."
+      },
+      "psyops": {
+        "title": "Psychologische Operationen",
+        "lede": "Von der kleinen Lüge, die so oft wiederholt wird, bis sie wahr wirkt, bis zu Kampagnen von Staaten, Unternehmen und kriminellen Netzwerken: die Mechanismen, die Akteure und ihre erklärten Ziele, der digitale Verstärker, wer entscheidet, was schädlich ist, und die Abwehr, jede Aussage mit ihren Belegen und der Antwort jeder beschuldigten Partei.",
+        "planned": {
+          "bec": "Business E-Mail Compromise und Identitätsbetrug",
+          "voiceClones": "Stimmklone und Deepfakes beim Betrug",
+          "stateCampaigns": "Belegte staatliche Kampagnen",
+          "influenceForHire": "Einflussnahme im Auftrag",
+          "botsSockpuppets": "Bots, Sockenpuppen und Astroturfing",
+          "brazilMassMessaging": "Brasilien: Massenversand, die Gerichte und die CPMI",
+          "lodgeToNetwork": "Von der Loge zum Netzwerk: wie sich die Reichweite verändert hat",
+          "echoChambers": "Echokammern und Filterblasen: die Belege und der Streit",
+          "profiling": "Empfehlung und Profilbildung: was Plattformen offenlegen",
+          "moderation": "Inhaltsmoderation im großen Maßstab",
+          "theLaw": "Das Recht: Section 230, der DSA, der Marco Civil und die übrigen",
+          "surveillance": "Überwachung: Fähigkeit und Zurückhaltung",
+          "verification": "Verifikation und Faktenprüfung",
+          "prebunking": "Prebunking und Inokulation",
+          "misbeliefs": "Warum sich Fehlannahmen halten",
+          "genAi": "Generative KI und Einflussoperationen"
+        }
       }
     },
     "parts": "Die Teile",
@@ -39183,7 +39206,8 @@
       "zscaler": "Zscaler",
       "netskope": "Netskope",
       "ping": "Ping Identity",
-      "extreme": "Extreme Networks"
+      "extreme": "Extreme Networks",
+      "influence": "Einflussnahme und Täuschung"
     },
     "bySubject": "Nach Thema",
     "bySubjectLede": "Der Boden, auf dem jede Plattform steht: Protokolle, Kryptografie, das Web, Identität, Formate und die Tools für den Betrieb.",
@@ -40567,5 +40591,24 @@
     "intro": "Spielprinzipien, die alle kennen, jedes mit einem eigenen Thema aus Netzwerk, Sicherheit oder Betrieb. Spielen Sie, so lange Sie möchten. Spiele mit Tagesdurchgang sind an jedem Tag, gerechnet in koordinierter Weltzeit (UTC), für alle gleich, und ein abgeschlossener Durchgang kommt auf die öffentliche Bestenliste, sofern Sie das Teilen nicht ausschalten. Ihre Bestwerte bleiben in diesem Browser.",
     "gamesTitle": "Die Spiele",
     "shelfLink": "Die Tagesrätsel und das Spielzeug stehen im Regal unter /dev/fun."
+  },
+  "learnVoice": {
+    "kicker": "Die Sicht von Rodolfo Nützmann",
+    "label": "Persönliche Meinung, keine gesicherte Tatsache. Geäußert am {date}."
+  },
+  "learnClaims": {
+    "status": {
+      "established": "Gesichert",
+      "attributed": "Offiziell zugeschrieben",
+      "reported": "Berichtet",
+      "alleged": "Behauptet",
+      "disputed": "Umstritten",
+      "denied": "Bestritten"
+    },
+    "statusBy": "{status} {who}"
+  },
+  "learnMethod": {
+    "title": "Wie diese Reihe berichtet",
+    "body": "Jeder Teil berichtet, was anderswo veröffentlicht wurde (Gerichtsakten, amtliche und parlamentarische Berichte, begutachtete Forschung, die Dokumente der Plattformen selbst und die Erklärungen der Beteiligten), jeweils mit dem Datum, an dem die Quelle gelesen wurde. Er erklärt nicht, wer recht hat. Jede Aussage ist danach gekennzeichnet, was sie stützt, von gesichert bis behauptet oder bestritten, und wird eine Partei beschuldigt, steht ihre veröffentlichte Antwort neben dem Vorwurf. Was nicht bekannt ist, wird als unbekannt benannt, und Schlussfolgerungen ändern sich, wenn sich die Belege ändern. Persönliche Meinung erscheint nur in Blöcken, die als Sicht von Rodolfo Nützmann gekennzeichnet sind."
   }
 }

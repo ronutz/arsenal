@@ -126,7 +126,11 @@ for (const loc of built) {
     if (!existsSync(file)) continue;
     const got = notice(readFileSync(file, "utf8"));
     if (expected === null && got !== null) errors.push(`${loc}/${page}: a notice on a locale that carries none: "${got}"`);
-    if (expected !== null && !(got ?? "").includes(expected)) errors.push(`${loc}/${page}: notice "${got}", expected "${expected}"`);
+    // The page text is read with every whitespace run collapsed to one space (text() above), which turns French
+    // typography's no-break and narrow no-break spaces into plain ones; the expected notice is collapsed the same way,
+    // so « ; » and « Apprendre » compare as written (2026-11-09, the French notice).
+    const want = expected === null ? null : expected.replace(/\s+/g, " ");
+    if (want !== null && !(got ?? "").includes(want)) errors.push(`${loc}/${page}: notice "${got}", expected "${want}"`);
   }
 }
 

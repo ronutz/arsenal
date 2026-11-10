@@ -21859,6 +21859,8 @@ main[data-hub-view="directory"] .hub-directory-head { margin-top: 1.5rem; }
    word and steps down from the facts' size. The link to the full calculator follows the sentence on one line when there
    is room and drops beneath it when there is not. */
 .quick-cidr-special { margin: 0.9rem 0 0; padding-top: 0.9rem; border-top: 1px solid var(--border-subtle); }
+/* The /31 line under the four facts (RFC 3021, 2026-11-09): secondary text, like the privacy line. */
+.quick-cidr-p2p { margin: 0.75rem 0 0; font-size: 0.9rem; color: var(--text-secondary); }
 .quick-cidr-special .quick-cidr-fact dd { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 1rem; font-size: 0.95rem; overflow-wrap: break-word; }
 /* Below 26rem the button keeps only its cross, so a whole block such as 172.16.100.200/24 stays visible in the field. */
 @media (max-width: 26rem) { .quick-cidr-clear { padding: 0.35rem 0.6rem; } .quick-cidr-clear-word { display: none; } }
@@ -24468,3 +24470,31 @@ html.presenter-covering body {
   button[class*="-pill"],
   button[class*="preset"] { min-height: 2.75rem; min-width: 2.75rem; }
 }
+
+/* ---------------------------------------------------------------------------------------------------------------------
+   The psychological-operations series' blocks (PRIME 2026-11-09): RodVoice (a labelled opinion), Claim (a claim with its
+   evidence status) and MethodNote (the standing note on method). Tokens only; colour always repeats words, never
+   replaces them.
+   ------------------------------------------------------------------------------------------------------------------- */
+/* Rodolfo Nützmann's view: set apart from the article's findings by a warning-coloured rule and its own ground. */
+.rod-voice { margin: 1.75rem 0; padding: 1rem 1.25rem; border: 1px solid var(--border-strong); border-left: 3px solid var(--color-warning); border-radius: var(--radius-md); background: var(--surface-elevated); }
+/* Whose view: the first thing read. */
+.rod-voice-kicker { margin: 0 0 0.2rem; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-warning); }
+/* What it is not, and when it was said. */
+.article-body .rod-voice-label, .rod-voice-label { margin: 0 0 0.75rem; font-size: 0.85rem; color: var(--text-secondary); }
+/* The view itself; its paragraphs keep the article's rhythm, without the last one's bottom margin. */
+.rod-voice-body > :last-child { margin-bottom: 0; }
+/* A claim's status label, after the claim, small and boxed so it never reads as part of the sentence. */
+.claim-status { display: inline-block; margin-left: 0.15rem; padding: 0 0.35rem; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); font-size: 0.72rem; line-height: 1.5; vertical-align: 0.1em; white-space: nowrap; color: var(--text-secondary); }
+/* The status colours, repeating the word: green for established, blue for attributed and reported, amber for alleged
+   and disputed, red for denied. */
+.claim--established .claim-status { border-color: var(--color-success); color: var(--color-success); }
+.claim--attributed .claim-status, .claim--reported .claim-status { border-color: var(--color-info); color: var(--color-info); }
+.claim--alleged .claim-status, .claim--disputed .claim-status { border-color: var(--color-warning); color: var(--color-warning); }
+.claim--denied .claim-status { border-color: var(--color-danger); color: var(--color-danger); }
+/* The method note: quiet, at the top of every part. */
+.method-note { margin: 0 0 1.75rem; padding: 0.85rem 1.1rem; border: 1px dashed var(--border-strong); border-radius: var(--radius-md); font-size: 0.9rem; color: var(--text-secondary); }
+/* Its heading. */
+.article-body .method-note-title, .method-note-title { margin: 0 0 0.3rem; font-weight: 600; color: var(--text-primary); }
+/* Its paragraph. */
+.article-body .method-note-body, .method-note-body { margin: 0; }

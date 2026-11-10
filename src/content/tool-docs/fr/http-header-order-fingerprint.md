@@ -1,0 +1,24 @@
+## Ce que fait l’outil
+
+Collez un bloc brut d’en-têtes de requête HTTP (une ligne de requête, puis une ligne « Name: value » par en-tête), et l’outil explique comment l’ordre et la casse des en-têtes identifient le client. Il classe l’émetteur comme navigateur de la famille Chromium, Firefox ou bibliothèque HTTP en comparant la séquence des en-têtes et en recherchant des en-têtes propres aux navigateurs comme Sec-Fetch et Sec-CH-UA, relève l’indice que donne la mise en minuscules de HTTP/2, et liste les en-têtes courants des navigateurs qui manquent.
+
+## L’équivalent HTTP passif de JA3
+
+JA3 établit l’empreinte d’un client TLS d’après l’ordre des suites de chiffrement et des extensions de son ClientHello. L’ordre des en-têtes applique la même idée une couche plus haut : navigateurs, bibliothèques et bots émettent chacun leurs en-têtes de requête dans une séquence caractéristique, et cette séquence subsiste même quand les valeurs sont falsifiées. Une requête dont l’ordre des en-têtes contredit le User-Agent qu’elle annonce (l’UA de Chrome avec le jeu d’en-têtes de curl) est un signe classique de bot : c’est pourquoi les systèmes de détection de bots et les WAF (web application firewall, pare-feu applicatif web) s’appuient dessus.
+
+## Lecture du résultat
+
+Le hachage de l’ordre est un identifiant court et stable de la séquence exacte des en-têtes, affiché à titre indicatif uniquement. Les remarques par en-tête expliquent pourquoi chaque position compte ; le signal de casse indique si le bloc ressemble à une capture HTTP/1.1 (Title-Case) ou HTTP/2 (minuscules sur le fil). L’outil ne fait que décoder et expliquer ; les en-têtes que vous collez ne quittent jamais votre navigateur.
+
+## Partage des résultats
+
+Sous la lecture du client, le bouton **Partager les résultats** crée, seulement quand vous appuyez dessus, un lien vers cette page qui contient, après le `#`, une copie du bloc dans laquelle chaque identifiant est remplacé par le mot `REDACTED`, jamais le bloc tel que collé. Sa fenêtre contextuelle indique d’abord ce que contient le lien et combien de valeurs ont été remplacées, puis propose le bouton Copier le lien et, si le navigateur en dispose, sa feuille de partage ; l’adresse de la page ne change pas.
+
+Un bloc d’en-têtes copié depuis les outils de développement, une capture ou `curl -v` contient presque toujours un cookie de session, souvent un jeton, et la lecture n’a besoin d’aucun d’eux : elle lit les noms des en-têtes (leur ordre, leur casse, les en-têtes courants qui manquent) et la valeur du User-Agent. La copie conserve donc chaque nom, leur ordre et le User-Agent, et remplace, selon les règles communes aux outils HTTP du site : les identifiants de `Authorization` et `Proxy-Authorization`, schéma conservé ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110), sections 11.6.2 et 11.7.2 : la valeur se compose d’identifiants, « consists of credentials » ; Basic conserve son user-id, [RFC 7617](https://www.rfc-editor.org/rfc/rfc7617), section 2) ; chaque valeur de cookie d’une ligne `Cookie`, noms conservés ([RFC 6265](https://www.rfc-editor.org/rfc/rfc6265), section 4.2.1) ; la valeur entière d’un en-tête dont le nom évoque un secret (`X-API-Key`, `X-Auth-Token`) ; et le mot de passe d’une URL ou un paramètre secret à l’intérieur de toute valeur ou de la cible de la requête (`access_token`, `code`, [RFC 6749](https://www.rfc-editor.org/rfc/rfc6749), section 4.1.2). Toutes ces références ont été consultées le 01/11/2026. La copie doit donner la même lecture que le collage ; c’est toujours le cas, puisque rien de ce que lit la page ne change.
+
+Un jeton qu’aucun nom ne signale (un JWT dans le chemin) ne peut pas être remplacé en toute sécurité : la copie est donc vérifiée de nouveau, et une clé privée PEM, un JWS ou un JWE, ou un mot de passe d’URL resté où que ce soit empêche la création du lien ; la fenêtre contextuelle nomme la ligne. Aucune option ne permet d’envoyer les valeurs remplacées : ce sont des identifiants, et la lecture n’en a pas besoin.
+
+La [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, consultée le 01/11/2026) précise que le fragment est séparé du reste de l’URI avant tout déréférencement (« separated from the rest of the URI prior to a dereference ») : la copie n’est donc pas envoyée au serveur à l’ouverture du lien ; elle reste dans la barre d’adresse et l’historique de la personne qui l’ouvre, et quiconque possède le lien peut la lire.
+
+- **Longueur.** Au plus 16 384 caractères au total, la limite que le site applique à toute valeur placée après le `#` ; au-delà, aucun lien n’est créé et la fenêtre contextuelle indique la longueur.
+- **Ouverture d’un lien.** La copie remplit la zone comme un collage, et la page la lit ; rien n’est envoyé. Les valeurs quittent ensuite aussitôt l’adresse de la page, sans aucune requête : un rechargement, ou le bouton Partager de la page, n’emporte donc rien.

@@ -247,7 +247,8 @@ export default function LacpHashAndStateReaderTool() {
             <div className="jwt-claims">
               {r.spread.counts.map((c, m) => row(t("spread.member", { m: String(m) }), (
                 <>
-                  {t("spread.count", { c: int(c), pct: pct(c, r.spread!.count) })}
+                  {/* The count as a number: the ICU plural picks "flow" or "flows" and formats the digits (2026-11-09). */}
+                  {t("spread.count", { c, pct: pct(c, r.spread!.count) })}
                   <span className="hpf-progress-bar" aria-hidden="true" style={{ display: "block" }}><span className="hpf-progress-fill" style={{ display: "block", width: `${r.spread!.max === 0 ? 0 : (100 * c) / r.spread!.max}%` }} /></span>
                 </>
               ), `c${m}`, false))}

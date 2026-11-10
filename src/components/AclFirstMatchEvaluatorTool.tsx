@@ -28,7 +28,7 @@
 // ============================================================================
 
 import { useMemo, useState } from "react"; // state and memoised readings
-import { useLocale, useTranslations } from "next-intl"; // this tool's messages and the page's locale
+import { useTranslations } from "next-intl"; // this tool's messages (counts are formatted by their ICU plurals)
 import { Link } from "@/i18n/navigation"; // a locale-aware link (the ACL article)
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
@@ -64,8 +64,6 @@ type Result = { ok: true; data: AclReading<EngineText> } | { ok: false; error: u
 export default function AclFirstMatchEvaluatorTool() {
   const t = useTranslations("tools.acl-first-match-evaluator"); // this tool's messages
   const tx = engineTexts(t); // the engine's sentences in the page's language
-  const locale = useLocale(); // for counts of addresses
-  const nf = useMemo(() => new Intl.NumberFormat(locale), [locale]); // the page's number format
   const [input, setInput] = useState(""); // the pasted list
   const [list, setList] = useState(""); // the list chosen ("" for the first)
   const [protocol, setProtocol] = useState(""); // the packet's protocol
@@ -117,7 +115,8 @@ export default function AclFirstMatchEvaluatorTool() {
       {(a.form !== "wildcard" || a.ignoredBitsSet) && <><code className="dig-mono">{a.written}</code>{" = "}</>}
       <code className="dig-mono">{a.base} {a.wildcard}</code>
       {" · "}{a.prefix ? t("entries.prefix", { prefix: a.prefix }) : t("entries.noPrefix")}
-      {" · "}{t("entries.count", { count: nf.format(a.addresses) })}
+      {/* The count as a number: the message's ICU plural picks "address" or "addresses" and formats the digits (2026-11-09). */}
+      {" · "}{t("entries.count", { count: a.addresses })}
     </>
   ); // addressView
 

@@ -74,7 +74,9 @@ const NUMERALS = {
   de: { 2: ["zwei"], 3: ["drei"], 4: ["vier"], 5: ["fünf"], 6: ["sechs"], 7: ["sieben"], 8: ["acht"], 9: ["neun"], 10: ["zehn"] },
   es: { 2: ["dos"], 3: ["tres"], 4: ["cuatro"], 5: ["cinco"], 6: ["seis"], 7: ["siete"], 8: ["ocho"], 9: ["nueve"], 10: ["diez"] },
   fil: { 2: ["dalawa", "dalawang"], 3: ["tatlo", "tatlong"], 4: ["apat"], 5: ["lima", "limang"], 6: ["anim"], 7: ["pito", "pitong"], 8: ["walo", "walong"], 9: ["siyam"], 10: ["sampu"] },
-  fr: { 2: ["deux"], 3: ["trois"], 4: ["quatre"], 5: ["cinq"], 6: ["six"], 7: ["sept"], 8: ["huit"], 9: ["neuf"], 10: ["dix"] },
+  // French nine is left out (2026-11-09): « neuf » is also the adjective "new", and the French interface says « trois neuf »
+  // for "three nines" of uptime; a check that cannot tell them apart would flag every « tout neuf ».
+  fr: { 2: ["deux"], 3: ["trois"], 4: ["quatre"], 5: ["cinq"], 6: ["six"], 7: ["sept"], 8: ["huit"], 10: ["dix"] },
   it: { 2: ["due"], 3: ["tre"], 4: ["quattro"], 5: ["cinque"], 6: ["sei"], 7: ["sette"], 8: ["otto"], 9: ["nove"], 10: ["dieci"] },
   ms: { 2: ["dua"], 3: ["tiga"], 4: ["empat"], 5: ["lima"], 6: ["enam"], 7: ["tujuh"], 8: ["lapan"], 9: ["sembilan"], 10: ["sepuluh"] },
   nb: { 2: ["to"], 3: ["tre"], 4: ["fire"], 5: ["fem"], 6: ["seks"], 7: ["sju"], 8: ["åtte"], 9: ["ni"], 10: ["ti"] },
@@ -116,12 +118,26 @@ const LONE_DIGIT = new RegExp(
 );
 
 /**
+ * A day of the month written out with its month name (« le 5 octobre 2026 », "5. Oktober", "3 de maio", "October 5"):
+ * removed from a TRANSLATION before its digits are read, because the writers spell out dates the English writes as
+ * 2026-10-05 (2026-11-09). The English side keeps every digit it states, so no English quantity is hidden.
+ */
+const MONTHS = "(?:janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre|enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre|januar|februar|märz|juni|juli|oktober|dezember|janeiro|fevereiro|março|maio|junho|julho|setembro|outubro|novembro|dezembro|january|february|march|april|may|june|july|august|september|october|november|december)";
+const WRITTEN_DATE = new RegExp(
+  // A day (one or two digits, an optional German period, an optional "de") before a month name, or a month name
+  // before a day: both forms, so either order of the written-out date is skipped.
+  `(?<!\\d)\\d{1,2}\\.?[\\s\\u00a0](?:de[\\s\\u00a0])?${MONTHS}(?!\\p{L})|${MONTHS}[\\s\\u00a0]\\d{1,2}(?!\\d)`,
+  // Global, Unicode, any case.
+  "giu",
+);
+
+/**
  * Which values 2-10 does this text assert?
  * CJK has no word boundaries, so those forms are matched directly; everything
  * else requires boundaries, because a numeral hiding inside a longer word is
  * the classic false positive.
  */
-function assertedValues(text, locale) {
+function assertedValues(text, locale, compound = false) { // compound: read hyphenated number words as one word (translations)
   const table = NUMERALS[locale];
   if (!table) return new Set();
   const found = new Set();
@@ -132,7 +148,8 @@ function assertedValues(text, locale) {
     for (const w of words) {
       const hit = cjk
         ? text.includes(w)
-        : new RegExp(`(^|[^\\p{L}])${w}([^\\p{L}]|$)`, "iu").test(text);
+        : new RegExp(compound ? `(^|[^\\p{L}-])${w}([^\\p{L}-]|$)` : `(^|[^\\p{L}])${w}([^\\p{L}]|$)`, "iu").test(text); // in a
+        // translation a hyphen joins a compound (« dix-huit » is 18, not 8); in the English it does not ("three-octet" is 3) (2026-11-09)
       if (hit) {
         found.add(Number(value));
         break;
@@ -170,7 +187,8 @@ for (const file of files) {
     // mismatch to mean anything. See the note above on why the broader rule
     // was abandoned.
     if (ours.size === 0) continue;
-    const theirs = assertedValues(value, locale);
+    // The translation's written-out dates are not quantities (see WRITTEN_DATE).
+    const theirs = assertedValues(value.replace(WRITTEN_DATE, " "), locale, true);
     if (theirs.size === 0) continue;
     const invented = [...theirs].filter((n) => !ours.has(n));
     if (invented.length) {

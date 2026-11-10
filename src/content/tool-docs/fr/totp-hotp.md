@@ -1,0 +1,32 @@
+## Ce que fait l’outil
+
+Générez et vérifiez les codes à usage unique de l’authentification à deux facteurs : les mots de passe fondés sur le temps (TOTP, RFC 6238), c’est-à-dire les codes à six chiffres qu’affiche une application d’authentification, et les mots de passe fondés sur un compteur (HOTP, RFC 4226), les codes que produit un jeton matériel. Vous pouvez choisir la fonction de hachage (SHA-1, SHA-256 ou SHA-512), le nombre de chiffres et le pas de temps. Le calcul utilise la Web Crypto native du navigateur, et votre secret partagé ne quitte jamais votre navigateur.
+
+## Une construction, deux facteurs mobiles
+
+HOTP et TOTP reposent sur le même algorithme. Tous deux prennent un secret partagé et un facteur mobile (moving factor), calculent un HMAC du facteur mobile sous le secret, puis appliquent la « troncature dynamique » (dynamic truncation) définie dans la RFC 4226 pour réduire ce MAC à un court code décimal. La seule différence tient à l’origine du facteur mobile :
+
+- **HOTP** utilise un compteur d’évènements explicite qui s’incrémente de un à chaque utilisation d’un code. Le jeton et le serveur doivent rester synchronisés sur ce compteur.
+- **TOTP** utilise l’horloge : le facteur mobile est le nombre de pas de temps écoulés depuis une origine (epoch), `floor((current time - T0) / step)`, avec `T0` à 0 et un pas de 30 secondes par défaut. Autrement dit, TOTP n’est qu’un HOTP dont le compteur est la tranche de temps courante, ce qui explique qu’un code TOTP change toutes les 30 secondes.
+
+## Le secret partagé
+
+Le secret est la graine que détiennent les deux parties. Il est généralement échangé sous forme de chaîne Base32, ce qu’encode une URI `otpauth://` ou un QR code de configuration : l’outil décode donc le Base32 pour retrouver les octets de la clé. La fonction de hachage par défaut est SHA-1, celle qu’utilisent encore la plupart des applications d’authentification et des jetons pour les mots de passe à usage unique ; SHA-256 et SHA-512 sont disponibles quand les deux parties les prennent en charge.
+
+## Vérification et dérive d’horloge
+
+Comme l’horloge d’un appareil et celle d’un serveur ne sont jamais parfaitement alignées, une vérification TOTP accepte normalement les codes d’une petite fenêtre de pas de temps adjacents, et pas seulement ceux du pas courant : elle échange un peu de rigueur contre de la fiabilité. HOTP connaît le problème analogue sur le compteur, qu’un jeton peut faire avancer quand un code généré n’est pas utilisé : les serveurs acceptent donc une fenêtre d’anticipation (look-ahead) et se resynchronisent.
+
+## Utilisation
+
+Saisissez le secret partagé et générez le code TOTP courant, ou définissez un compteur pour générer un code HOTP, puis ajustez la fonction de hachage, le nombre de chiffres et le pas pour qu’ils correspondent à votre système. Vous pouvez aussi valider un code que l’on vous a donné. L’algorithme est déterministe pour un secret et un facteur mobile donnés : les mêmes entrées produisent toujours le même code.
+
+## Partage des résultats
+
+Sous le code généré, le bouton **Partager les résultats** crée, seulement quand vous appuyez dessus, un lien vers cette page qui contient, après le `#`, les paramètres : le mode, l’algorithme, le nombre de chiffres, l’encodage du secret, et le pas de temps ou le compteur ; et le temps Unix seulement si vous en avez saisi un au lieu d’utiliser l’horloge. Il ne contient jamais le secret partagé. La personne qui ouvre le lien saisit le secret que vous lui transmettez, par un autre moyen, et obtient les mêmes codes. Sa fenêtre contextuelle indique d’abord ce que contient le lien, puis propose le bouton Copier le lien et, si le navigateur en dispose, sa feuille de partage ; l’adresse de la page ne change pas.
+
+Le secret est le second facteur lui-même : quiconque le détient peut produire tous les codes. La [RFC 4226](https://www.rfc-editor.org/rfc/rfc4226) (section 7.5, consultée le 01/11/2026) demande que les opérations sur les secrets partagés soient effectuées de façon sûre, pour limiter tout risque de fuite d’informations sensibles (« be performed securely, in order to mitigate risks of any leakage of sensitive information »), et la [RFC 6238](https://www.rfc-editor.org/rfc/rfc6238) (section 3, exigence R7, consultée le 01/11/2026), que les clés soient protégées contre tout accès et tout usage non autorisés (« SHOULD be protected against unauthorized access and usage »). Une exception : les clés de test publiées partent aussi, car tout le monde peut déjà les lire. Il s’agit du secret de l’annexe D de la RFC 4226 (la chaîne ASCII `12345678901234567890`) et des graines de 32 et 64 octets de la RFC 6238 pour HMAC-SHA-256 et HMAC-SHA-512 (son annexe A), imprimés dans les normes, dont le champ de temps manuel existe pour reproduire les tableaux ; ainsi que de la clé avec laquelle cette page s’ouvre, `JBSWY3DPEHPK3PXP`, que le site imprime lui-même (dans la page, dans la description de son API et dans l’[article sur les URI de provisionnement](/learn/totp-provisioning-uris-and-qr)), si bien que la page partagée telle qu’elle s’ouvre se rouvre à l’identique. Ces clés sont reconnues à leurs octets, dans chacun des trois encodages.
+
+La [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, consultée le 01/11/2026) précise que le fragment est séparé du reste de l’URI avant tout déréférencement (« separated from the rest of the URI prior to a dereference ») : les valeurs ne sont donc pas envoyées au serveur à l’ouverture du lien ; elles restent dans la barre d’adresse et l’historique de la personne qui l’ouvre, et quiconque possède le lien peut les lire.
+
+- **Ouverture d’un lien.** Les paramètres remplacent ceux du formulaire ; l’horloge n’est désactivée que si un temps est transmis. Le champ du secret reçoit une clé de test publiée quand le lien en contient une (y compris celle de la page), et il est vidé sinon, avec une remarque qui demande le secret : la page n’affiche donc jamais de code pour une clé que l’expéditeur du lien n’a pas utilisée. Les codes sont calculés avec Web Crypto dans le navigateur. Un choix que le formulaire ne propose pas, un nombre hors plage, un champ de l’autre mode, ou un secret qui n’est pas une clé de test publiée font ignorer tout le lien. Dans tous les cas, les valeurs quittent aussitôt l’adresse de la page, sans aucune requête : un rechargement, ou le bouton Partager de la page, n’emporte donc rien.

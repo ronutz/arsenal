@@ -57,7 +57,7 @@ export const LOCALES: readonly LocaleMeta[] = [
 
   // --- Registered + selectable day-one; stubs falling back to English until translated ---
   { code: "de",         nativeName: "Deutsch",            englishName: "German",                  dir: "ltr", status: "machine-draft", draftKind: "written-with-ai" }, // INTERFACE-NATIVE (PRIME 09/11/2026 01:02, "in the language's NATURAL tone"): the interface, tools, tool docs, games and legal pages written in German with AI and reviewed gradually; Learn and the other corpus sections stay machine-translated, and the notice says so.
-  { code: "fr",         nativeName: "Français",           englishName: "French",                  dir: "ltr", status: "machine-draft" },
+  { code: "fr",         nativeName: "Français",           englishName: "French",                  dir: "ltr", status: "machine-draft", draftKind: "written-with-ai" }, // INTERFACE-NATIVE (PRIME 09/11/2026 01:02, "in the language's NATURAL tone"; 11:02, the order Spanish, German, French): the interface, tools, tool docs, games and legal pages written in French with AI and reviewed gradually; Learn and the other corpus sections stay machine-translated, and the notice says so.
   { code: "nl",         nativeName: "Nederlands",         englishName: "Dutch",                   dir: "ltr", status: "machine-draft" },
   { code: "it",         nativeName: "Italiano",           englishName: "Italian",                 dir: "ltr", status: "machine-draft" },
   { code: "sv",         nativeName: "Svenska",            englishName: "Swedish",                 dir: "ltr", status: "machine-draft" },
@@ -152,15 +152,16 @@ export const AUTHORED_CONTENT_LOCALES = ["en", "pt-BR"] as const;
 /**
  * Locales whose INTERFACE is written natively: every message-pack string outside the corpora (the glossary entries
  * and the Learn labs), the tool documentation and the strings that tools and games carry in code (PRIME 09/11/2026:
- * "get the site up in additional languages", Spanish, Danish, German, Dutch and French in that order, each written
- * "in the language's NATURAL tone (instead of simply translated)"; the first phase is the interface and the tool docs,
+ * "get the site up in additional languages", each written "in the language's NATURAL tone (instead of simply
+ * translated)"; 11:02 set the order Spanish, German, French, Italian, and 14:05 holds Italian until PRIME says so; the
+ * first phase is the interface and the tool docs,
  * the corpora follow). A locale joins this list when its interface is complete (guard: scripts/check-interface-locales.mts).
  *
  * In such a locale a page speaks for itself (self-canonical, in the hreflang sets and the sitemap) unless its route
  * belongs to one of CORPUS_ROUTE_FAMILIES below, whose words stay English there until the corpus is written: those
  * pages keep naming the English page as canonical (scripts/seo-locales.mjs). AUTHORED_CONTENT_LOCALES are always here.
  */
-export const INTERFACE_LOCALES = ["en", "pt-BR", "es", "de"] as const;
+export const INTERFACE_LOCALES = ["en", "pt-BR", "es", "de", "fr"] as const;
 
 /**
  * The first route segments whose page content comes from a corpus rather than the interface: Learn and the glossary

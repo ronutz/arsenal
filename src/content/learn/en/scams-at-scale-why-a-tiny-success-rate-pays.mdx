@@ -1,0 +1,139 @@
+---
+slug: scams-at-scale-why-a-tiny-success-rate-pays
+title: "Scams at scale: why a tiny success rate pays"
+summary: "Mass fraud runs on arithmetic: messages cost almost nothing to send, replies cost time, and only a few replies ever pay. This part sets out Cormac Herley's 2012 model of that arithmetic and its critics, the losses victims report in the United States and Brazil, and how volume turned into an industry. After reading, you can work out the yield of a mass scam under stated assumptions, explain why an implausible opening can help the sender, read official fraud counts with the limits their publishers state, and name the defences banks and Brazil's incident response team document."
+concepts: ["scams", "fraud economics", "social engineering", "false positives", "advance-fee fraud", "pig butchering", "estelionato", "under-reporting"]
+relatedTools: []
+relatedArticles: ["brazilian-cybercrime-from-boleto-to-pix", "passkeys-and-phishing-resistant-authentication", "deceptive-urls", "kevin-mitnick-the-myth-and-the-man"]
+category: security
+order: 267
+status: reviewed
+updated: "2026-11-09"
+---
+
+<MethodNote />
+
+A message almost nobody believes can still make money if it reaches enough people and costs almost nothing to send. That is the economic core of mass fraud, from the "Nigerian" advance-fee email to the WhatsApp impersonation a Brazilian survey ranks among the most common scams. After [the map from the small lie to the campaign](/learn/psychological-operations-from-the-small-lie-to-the-campaign) and [why repetition works on people](/learn/the-human-attack-surface-why-repetition-works), this part turns to money. After reading, you can compute a mass scam's yield under stated assumptions, explain why an outlandish opening can help the sender, read American and Brazilian fraud figures within their stated limits, and name the documented defences.
+
+## The question Herley asked
+
+In June 2012 Cormac Herley, of Microsoft Research, presented at the Workshop on the Economics of Information Security (WEIS) a paper titled with a question: why do Nigerian scammers say they are from Nigeria? On a website cataloguing scam emails, he reported, "51% mention Nigeria as the source of funds", and a further 34% named another West African country ([Herley, 2012, section 4.1](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/WhyFromNigeria.pdf)). The paper offers a model and a suggested explanation, not a measurement of scammers' behaviour, in hedged words: "Our analysis suggests that is an advantage to the attacker, not a disadvantage" (abstract).
+
+## The model, step by step
+
+Herley treats choosing whom to attack as a classification problem: "In deciding who to attack true positives are targets successfully attacked, while false positives are those that are attacked but yield nothing" ([Herley, 2012, abstract](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/WhyFromNigeria.pdf)).
+
+1. **Reaching people is almost free.** "The scam involves an initial email campaign which has almost zero cost per recipient" (section 4.1). Cost begins when someone replies.
+2. **Few people can be made to pay.** Of N users, M are viable targets, and d = M/N is their density (section 2.2). For the Nigerian letter Herley guessed "perhaps 1-in-10,000 or 1-in-100,00 or fewer will fall for this scam" (section 4.1; "100,00" is as printed).
+3. **Every wrong target costs.** A viable target yields a net gain G; a non-viable one costs C. Attacking everyone pays only if d exceeds C/(G+C): with 1% viable, the gain must be 99 times the cost (section 2.5).
+4. **Rarity punishes mistakes out of proportion.** "For example, a 10× reduction in density can produce a 1000× reduction in the number of victims found" (abstract).
+5. **The opening message is the filter.** If the scammer answers nearly everyone who replies, the first email's wording is his main screen against the non-viable majority (section 4.1). "By sending an email that repels all but the most gullible the scammer gets the most promising marks to self-select, and tilts the true to false positive ratio in his favor" (abstract). Hence: "A less outlandish wording that did not mention Nigeria would almost certainly gather more total responses and more viable responses, but would yield lower overall profit" (section 4.1).
+
+The basic model assumes a single attacker (section 2.3) and treats the risk of arrest as negligible, costs being the main limit on attacks (section 5).
+
+## A worked example
+
+The figures below are illustrative, from neither Herley's paper nor any measurement, but follow its accounting. Take G = $2,000 per payer, C = $100 per replier who backs out, and one million messages sent at no cost to a population in which 100 people (1 in 10,000) would pay.
+
+| Illustrative campaign, 1,000,000 messages | Lure A: plausible | Lure B: outlandish |
+|---|---|---|
+| Replies | 10,000 (1%) | 100 (0.01%) |
+| Repliers who pay (true positives) | 90 | 50 |
+| Repliers who back out (false positives) | 9,910 | 50 |
+| Share of repliers who pay | 0.9% | 50% |
+| Success per message sent | 0.009% | 0.005% |
+| Gain from payers, at $2,000 each | $180,000 | $100,000 |
+| Cost of false positives, at $100 each | $991,000 | $5,000 |
+| Result | $811,000 loss | $95,000 profit |
+
+- Lure A finds more victims and succeeds more often per message, yet loses money on 9,910 replies that never pay, as Herley predicted for less outlandish wording.
+- Profit turns on the share of payers among those engaged. Break-even is C/(G+C) = 100/2,100, about 4.76%, one payer in 21 repliers; lure A sits at 0.9%, lure B at 50%.
+- Volume multiplies whatever the filter makes profitable: sent to ten million people at the same rates, lure B yields 500 payers and a net $950,000. A 0.005% success rate pays because sending is nearly free and the filter keeps costly replies few.
+
+Herley's defensive corollary follows: "If we inject false positives (i.e., non-viable but plausible targets) we reduce the viable target density" ([Herley, 2012, section 4.2](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/WhyFromNigeria.pdf)), one goal of the scam-baiters who draw scammers into time-wasting exchanges. Add 1,000 plausible non-payers to lure B's 100 replies and the payers' share falls to 4.55%, under break-even: the $95,000 profit becomes a $5,000 loss.
+
+## What the model does not show
+
+The model shows when a filter would pay, not whether scammers choose their wording for that reason. Radu Umbres, an anthropologist, wrote on the International Cognition and Culture Institute blog on 26 February 2013 that "Perhaps the weakest point in Herley’s proposal is the absence of data on success rates" ([Umbres, 2013](https://cognitionandculture.net/blogs/radu-umbres/why-do-scammers-persist-in-saying-they-are-from-nigeria/index.html)): the paper counts the origins claimed in emails sent, not which emails persuade. He proposed other mechanisms, among them offline costs and the imitation of relatives and friends who had succeeded, and wrote that "Herley’s explanation is thought-provoking and may still be accurate even given other mechanisms at work".
+
+The idea that <Claim status="disputed" by="by Radu Umbres">an implausible opening is a deliberate filter for the most credulous</Claim> therefore remains a hypothesis: no empirical test confirming or refuting it was located, and the density at its centre is a guess.
+
+<RodVoice said="2026-11-09">
+
+Rodolfo Nützmann's point is that simple scams, repeated ad nauseam, guarantee a percentage of success, and that this percentage is enough for huge crime networks to organise around, while individual scammers still share in the rewards.
+
+He made it while listing the range this series has to cover, from small lies repeated over and over and simple social engineering to complex operations by many actors with different objectives.
+
+</RodVoice>
+
+Herley's model predicts no guaranteed share of success; it shows when one covers its costs, and its author concluded "that at low enough victim densities many attacks pose no economic threat" ([Herley, 2012, section 1](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/WhyFromNigeria.pdf)). Where real operations sit relative to that line is not measured; the counts below show what victims report losing, not what scammers spend.
+
+## The measured scale
+
+### United States: two reporting channels
+
+The Federal Bureau of Investigation (FBI) runs the Internet Crime Complaint Center (IC3), which received 1,008,597 complaints in 2025 reporting $20.877 billion in losses, 26% more than in 2024 ([IC3, 2025 Annual Report](https://www.ic3.gov/AnnualReport/Reports/2025_IC3Report.pdf)); the 2024 report had 859,532 complaints and $16.6 billion ([IC3, 2024 Annual Report](https://www.ic3.gov/AnnualReport/Reports/2024_IC3Report.pdf)). Investment fraud led the 2025 losses with $8,648,617,756, ahead of business email compromise (BEC) at $3,046,598,558. These are complaints filed, not a census, and Appendix C notes that "Some complainants may have filed more than once, creating a possible duplicate complaint".
+
+The Federal Trade Commission (FTC) counts reports to its Consumer Sentinel Network (CSN). Its yearly Data Book stops at 2024 as of 9 November 2026; on 25 March 2026 it told Congress's Joint Economic Committee that "In 2025, consumers submitted 3 million fraud reports to CSN and reported $15.9 billion in losses", investment scams leading with over $7.9 billion ([FTC, statement of 25 March 2026](https://www.ftc.gov/system/files/ftc_gov/pdf/ftc-testimony-jec-hearing-on-the-rising-scam-economy.pdf)). It adds that "These reported fraud losses are just a fraction of American consumers' actual losses", and estimates fraud's overall cost to consumers in 2024 at up to $195.9 billion. IC3 and FTC totals cannot be added: one victim may report to both, and IC3 is among CSN's data contributors.
+
+### Brazil: police records and a victim survey
+
+Brazil's reference count is police records of estelionato (fraud under article 171 of the Penal Code), compiled by the Fórum Brasileiro de Segurança Pública (FBSP), a non-governmental organisation. Its Anuário 2026 records 2,261,055 occurrences in 2025, a category covering traditional and online fraud, popularly called golpes ([FBSP, Anuário 2026](https://publicacoes.forumseguranca.org.br/server/api/core/bitstreams/1991f577-3418-428e-a71d-5e8aab22316c/content)): 429.8% more than the 426,799 of 2018, when the series begins, and 1,059.4 per 100,000 inhabitants, up 2.7% on 2024 (Tabela 17). The electronic-fraud sub-category (346,753) lacks data for São Paulo, Rio de Janeiro and Ceará.
+
+The FBSP states its caveats: "a taxa mede registros, não necessariamente ocorrências reais", the rate measures records, not necessarily real occurrences, and the records point to probable vast under-reporting. Its survey of March 2026 found that 15.8% of people aged 16 or over had been scammed or lost money online or by phone in the previous year, about 26.3 million people.
+
+Herley's model sets the risk of arrest aside; the FBSP measured how many records reach a court. Of the 2025 records, 2.8% led to criminal proceedings (2.4% in 2024), so more than 97% never reach the judiciary (Quadro 04). The authors' own assessment: "Dar golpes no Brasil oferece riscos excepcionalmente baixos de punição", running scams in Brazil carries an exceptionally low risk of punishment.
+
+Banco Central data obtained by Estadão's Broadcast service under the Lei de Acesso à Informação (LAI), the access-to-information law, show Pix fraud notifications averaging more than 390,000 a month in 2024, while <Claim status="reported" by="by Estadão/Broadcast">notifications averaged 0.007% of monthly Pix operations from April 2023</Claim> ([Bem Paraná, 12 April 2025](https://www.bemparana.com.br/noticias/economia/fraudes-no-pix-disparam-acima-de-390-mil-por-mes-em-2024-mostram-dados-do-bc/)): a tiny rate on a very large base. The Banco Central did not comment, and its Relatório de Gestão do Pix 2023-2025 (August 2026) publishes no fraud-notification or refund counts ([Banco Central, Relatório de Gestão do Pix 2023-2025](https://www.bcb.gov.br/content/estabilidadefinanceira/pix/relatorio_de_gestao_pix/relatorio_gestao_pix_2026.pdf)).
+
+<Claim status="reported" by="by Poder360">The Federação Brasileira de Bancos (FEBRABAN) announced on 12 March 2025 that losses to scams rose 17%, from R$ 8.6 billion in 2023 to R$ 10.1 billion in 2024</Claim> ([Poder360, 12 March 2025](https://www.poder360.com.br/poder-economia/golpes-causaram-prejuizo-de-r-101-bi-em-2024-diz-febraban/)); it is known from press reports, not a FEBRABAN publication.
+
+## From volume to industry
+
+Citing two years of press reporting, the FBSP authors describe an industrial pattern: "Não se trata mais de estelionatários isolados agindo por conta própria, mas de operações estruturadas", no longer lone fraudsters but structured operations with division of labour, written scripts and collection targets ([FBSP, Anuário 2026](https://publicacoes.forumseguranca.org.br/server/api/core/bitstreams/1991f577-3418-428e-a71d-5e8aab22316c/content)). Their examples include a scam call centre on Avenida Faria Lima, São Paulo, closed by the Polícia Civil in January 2026, <Claim status="reported" by="by g1">with about 100 employees and more than 400 computers</Claim>, and, from a 2023 Folha de S.Paulo report on police investigations, <Claim status="reported" by="by Folha (2023)">"escritórios do crime" for digital fraud kept by the Primeiro Comando da Capital (PCC) and the Comando Vermelho (CV)</Claim>. No response from either group appears in the sources.
+
+The forms behind the counts vary:
+
+- **Investment fraud.** IC3 calls cryptocurrency investment scams "sophisticated long-term scams", with $7.2 billion reported lost in 2025, and says <Claim status="attributed" by="by the FBI">they are "largely perpetrated by organized criminal enterprises based in Southeast Asia using victims of human trafficking as forced labor"</Claim>.
+- **"Pig butchering".** The Office of the United Nations High Commissioner for Human Rights (OHCHR) described in August 2023 scams "where fake romantic relationships or friendships are used to defraud online users of significant amounts of money" ([OHCHR, 2023](https://data.opendevelopmentcambodia.net/km/dataset/2fa4481b-09ab-407a-bfe0-7bff943781c6/resource/58af8cca-675e-4f22-9177-059364bf932b/download/online-scam-operations-2582023.pdf)). In February 2026, according to the United Nations' news service, it cited credible estimates of at least 300,000 people working in scam operations across Southeast Asia ([UN News, 20 February 2026](https://news.un.org/en/story/2026/02/1167012)).
+- **The golpe do WhatsApp**, second among the scams Brazilians report suffering (34%, after card cloning or swapping at 45%) in a survey for the Observatório Febraban cited by the FBSP. The criminal poses as someone the victim knows, writes from a different number and asks urgently for money; success, the FBSP notes, depends on trust that already exists.
+- **Business email compromise and impersonation with artificial intelligence (AI)**: IC3 recorded 24,768 BEC complaints in 2025, and over 22,000 complaints referring to AI, with adjusted losses above $893 million. On 16 January 2025 the Polícia Civil do Distrito Federal (PCDF) said that <Claim status="alleged" by="by the PCDF">a group "criava vídeos fraudulentos manipulando a imagem e voz do apresentador Marcos Mion para promover falsas promoções de uma rede de restaurantes"</Claim>, faking the TV presenter's image and voice to promote fake restaurant offers, with vouchers sold on fake sites and never delivered ([PCDF, 16 January 2025](https://www.pcdf.df.gov.br/noticias/13474/pcdf-deflagra-operacao-de-combate-a-fraudes-digitais-e-deepfake/)). The PCDF served two temporary arrest warrants, arrested three suspects in the act and said one had confessed; none was named, and no court ruling appears in the sources.
+
+## Defences the sources document
+
+The Centro de Estudos, Resposta e Tratamento de Incidentes de Segurança no Brasil (CERT.br), Brazil's national incident response team, run by the Núcleo de Informação e Coordenação do Ponto BR (NIC.br), wrote in its March 2026 booklet that scammers send messages "para muitas pessoas, por vários meios, esperando que alguém 'morda a isca'", to many people by several means, hoping someone takes the bait ([CERT.br, Golpes: Não se Deixe Enganar](https://cartilha.cert.br/fasciculos/golpes/fasciculo-golpes.pdf)). Its advice: "Assuma que é golpe até que se prove o contrário", assume a scam until proven otherwise, when money, personal data or an advantage is involved; watch for threats, haste, emotional appeal, embarrassment and requests for secrecy; and check through official channels. For a known face on a new number, the companion booklet says to talk to the person through the usual contact before saving or paying anything ([CERT.br, Golpes: Evite Fraudes](https://cartilha.cert.br/fasciculos/golpes-evite-fraudes/fasciculo-golpes-evite-fraudes.pdf)).
+
+FEBRABAN states that "os bancos não solicitam confirmação de dados pessoais relacionados a contas bancárias, senhas e cartões por telefone, SMS, e-mail ou por outros meios", banks never ask for such data by phone, text message (SMS), email or other means, and advises hanging up on a suspicious call, waiting five minutes and calling the bank's official channels, so the call cannot be intercepted ([FEBRABAN, Engenharia Social, 2020](https://cmsarquivos.febraban.org.br/Arquivos/documentos/PDF/cartilha_eng_social_atualizada_20.pdf)).
+
+Since 1 October 2025, Pix users can contest a transaction for fraud, scam or coercion in their bank's app, through a self-service form of the Mecanismo Especial de Devolução (MED), the special refund mechanism ([Agência Gov, 30 September 2025](https://agenciagov.ebc.com.br/noticias/202509/pix-tera-botao-de-contestacao)). Requests are allowed up to 80 days after the transaction; a refund needs funds in the receiving account and that institution's acceptance ([Banco Central, 3 September 2026](https://www.bcb.gov.br/detalhenoticia/21251/nota)). From January to August 2025 the monthly average refunded was R$ 56 million, 9.2% of the amount contested, and the Banco Central attributed about 80% of non-returns to insufficient balance in the receiving account ([Paraíba Business, 12 December 2025](https://paraibabusiness.com.br/notificacoes-de-fraudes-no-pix-crescem-com-botao-de-contestacao-mas-devolucoes-seguem-abaixo-de-10/)). Since November 2025 institutions may also trace funds beyond the first receiving account, mandatory from February 2026, which the Banco Central says could improve recovery ([Banco Central, Relatório Integrado 2025](https://www.bcb.gov.br/content/publicacoes/rig/RIG-2025.pdf)); no results are given yet.
+
+## What to remember
+
+- Herley's 2012 model treats a scam as classification: replies that never pay are false positives, each costing the scammer time.
+- Profit depends on the share of payers among those engaged, not on success per message; in the illustrative example, the lure with more victims loses $811,000.
+- That an outlandish opening filters for the most credulous is a hypothesis, questioned by Umbres for lack of data on success rates.
+- For 2025, IC3 recorded $20.877 billion in reported losses and the FTC $15.9 billion: overlapping counts that cannot be added, and neither is a census.
+- Brazil recorded 2,261,055 estelionato occurrences in 2025; an FBSP survey points to 26.3 million victims in a year, and over 97% of records never reach a court.
+- The documented defences act at the payment step: assume a scam until proven otherwise, confirm through official channels or the usual contact, and contest Pix fraud through MED, which refunded 9.2% of contested amounts in January to August 2025.
+
+## Sources
+
+- [Cormac Herley, Why do Nigerian Scammers Say They are from Nigeria?, Microsoft Research, presented at WEIS 2012, June 2012: abstract, sections 1, 2.2, 2.3, 2.5, 4.1, 4.2 and 5 (read 2026-11-09)](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/WhyFromNigeria.pdf)
+- [Radu Umbres, Why do scammers persist in saying they are from Nigeria?, International Cognition and Culture Institute blog, 26 February 2013 (read 2026-11-09)](https://cognitionandculture.net/blogs/radu-umbres/why-do-scammers-persist-in-saying-they-are-from-nigeria/index.html)
+- [FBI Internet Crime Complaint Center, 2025 IC3 Annual Report, April 2026: complaint highlights, crime-type tables, cryptocurrency investment fraud, AI and Appendix C (read 2026-11-09)](https://www.ic3.gov/AnnualReport/Reports/2025_IC3Report.pdf)
+- [FBI Internet Crime Complaint Center, 2024 IC3 Annual Report, April 2025: complaint highlights (read 2026-11-09)](https://www.ic3.gov/AnnualReport/Reports/2024_IC3Report.pdf)
+- [Federal Trade Commission, Prepared Statement before the Joint Economic Committee, hearing on the rising scam economy, 25 March 2026: pages 2 and 3 and footnote 3 (read 2026-11-09 in a browser)](https://www.ftc.gov/system/files/ftc_gov/pdf/ftc-testimony-jec-hearing-on-the-rising-scam-economy.pdf)
+- [Fórum Brasileiro de Segurança Pública, Anuário Brasileiro de Segurança Pública 2026 (20ª edição), July 2026: the estelionato chapter, Tabela 17, Gráfico 33 and Quadro 04, pages 119 to 128 (read 2026-11-09)](https://publicacoes.forumseguranca.org.br/server/api/core/bitstreams/1991f577-3418-428e-a71d-5e8aab22316c/content)
+- [Bem Paraná (Estadão Conteúdo), Fraudes no Pix disparam acima de 390 mil por mês em 2024, mostram dados do BC, 12 April 2025 (read 2026-11-09)](https://www.bemparana.com.br/noticias/economia/fraudes-no-pix-disparam-acima-de-390-mil-por-mes-em-2024-mostram-dados-do-bc/)
+- [Banco Central do Brasil, Relatório de Gestão do Pix 2023-2025, August 2026 (read 2026-11-09)](https://www.bcb.gov.br/content/estabilidadefinanceira/pix/relatorio_de_gestao_pix/relatorio_gestao_pix_2026.pdf)
+- [Poder360, Golpes causaram prejuízo de R$ 10,1 bi em 2024, diz Febraban, 12 March 2025 (read 2026-11-09 in a browser)](https://www.poder360.com.br/poder-economia/golpes-causaram-prejuizo-de-r-101-bi-em-2024-diz-febraban/)
+- [OHCHR, Online Scam Operations and Trafficking into Forced Criminality in Southeast Asia: Recommendations for a Human Rights Response, August 2023, Open Development Cambodia copy (read 2026-11-09)](https://data.opendevelopmentcambodia.net/km/dataset/2fa4481b-09ab-407a-bfe0-7bff943781c6/resource/58af8cca-675e-4f22-9177-059364bf932b/download/online-scam-operations-2582023.pdf)
+- [UN News, UN report exposes torture, rape in Southeast Asia's multi-billion-dollar scam centres, 20 February 2026 (read 2026-11-09)](https://news.un.org/en/story/2026/02/1167012)
+- [Polícia Civil do Distrito Federal, PCDF deflagra operação de combate a fraudes digitais e deepfake, 16 January 2025 (read 2026-11-09 in a browser)](https://www.pcdf.df.gov.br/noticias/13474/pcdf-deflagra-operacao-de-combate-a-fraudes-digitais-e-deepfake/)
+- [CERT.br, Golpes: Não se Deixe Enganar, Cartilha de Segurança para Internet, March 2026 (read 2026-11-09)](https://cartilha.cert.br/fasciculos/golpes/fasciculo-golpes.pdf)
+- [CERT.br, Golpes: Evite Fraudes, Cartilha de Segurança para Internet, March 2026 (read 2026-11-09)](https://cartilha.cert.br/fasciculos/golpes-evite-fraudes/fasciculo-golpes-evite-fraudes.pdf)
+- [FEBRABAN, Engenharia Social: saiba como evitar possíveis armadilhas e se proteger de golpes, 2020: section 4, Como se proteger (read 2026-11-09)](https://cmsarquivos.febraban.org.br/Arquivos/documentos/PDF/cartilha_eng_social_atualizada_20.pdf)
+- [Agência Gov, Pix tem botão de contestação a partir desta quarta (1°), 30 September 2025 (read 2026-11-09)](https://agenciagov.ebc.com.br/noticias/202509/pix-tera-botao-de-contestacao)
+- [Banco Central do Brasil, BC aprimora experiência do usuário no Pix e amplia proteção contra fraudes, note of 3 September 2026 (read 2026-11-09 in a browser)](https://www.bcb.gov.br/detalhenoticia/21251/nota)
+- [Paraíba Business, Notificações de fraudes no Pix crescem com botão de contestação, mas devoluções seguem abaixo de 10%, 12 December 2025 (read 2026-11-09)](https://paraibabusiness.com.br/notificacoes-de-fraudes-no-pix-crescem-com-botao-de-contestacao-mas-devolucoes-seguem-abaixo-de-10/)
+- [Banco Central do Brasil, Relatório Integrado do Banco Central 2025, June 2026: MED 2.0 (read 2026-11-09)](https://www.bcb.gov.br/content/publicacoes/rig/RIG-2025.pdf)

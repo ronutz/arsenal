@@ -1,0 +1,142 @@
+---
+slug: social-engineering-pretexting-vishing-and-baiting
+title: "Social engineering: pretexting, vishing and baiting"
+summary: "Social engineering is deception aimed at a person rather than a machine: a story, a call, a message or an offer that leads someone to reveal information or take an action that harms a system or themselves. After reading, you can name each technique as the security bodies define it, say which psychological lever it pulls, read the published prevalence figures within their limits, and explain why the recommended defences rest on process and a second channel rather than on trust."
+concepts: ["social engineering", "pretexting", "phishing", "spear phishing", "vishing", "smishing", "baiting", "quid pro quo", "tailgating", "out-of-band verification"]
+relatedTools: []
+relatedArticles: ["psychological-operations-from-the-small-lie-to-the-campaign", "the-human-attack-surface-why-repetition-works", "scams-at-scale-why-a-tiny-success-rate-pays", "kevin-mitnick-the-myth-and-the-man", "passkeys-and-phishing-resistant-authentication", "deceptive-urls", "brazilian-cybercrime-from-boleto-to-pix"]
+category: security
+order: 269
+status: reviewed
+updated: "2026-11-09"
+---
+
+<MethodNote />
+
+Social engineering attacks the person who runs a system instead of the system itself. The National Institute of Standards and Technology (NIST) of the United States (US) calls it "an attempt to trick an individual into revealing information or taking an action that can be used to breach, compromise, or otherwise adversely impact a system" ([NIST Special Publication 800-53 Rev. 5, AT-2(3)](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r5.pdf)). On [the series map](/learn/psychological-operations-from-the-small-lie-to-the-campaign) it sits between the repeated lie and the mass scam. After reading, you can name each technique as the security bodies define it, say which psychological lever it pulls, read the published figures within their limits, and explain why the recommended defences rest on process rather than on trust.
+
+## What the security bodies mean by it
+
+NIST's control catalogue, Special Publication (SP) 800-53 Revision 5 (September 2020), counts phishing, pretexting, impersonation, baiting, quid pro quo, thread-jacking, social media exploitation and tailgating as social engineering (control AT-2(3)).
+
+The Cybersecurity and Infrastructure Security Agency (CISA), in 2021 guidance it now marks as archived, stresses "human interaction (social skills)" ([CISA, 2021](https://www.cisa.gov/news-events/news/avoiding-social-engineering-and-phishing-attacks)); the European Union Agency for Cybersecurity (ENISA), in a glossary entry now found only in an archived copy of December 2022, "techniques aimed at talking a target into revealing specific information or performing a specific action for illegitimate reasons" ([ENISA glossary, archived 2022](https://web.archive.org/web/20221203231026/https://www.enisa.europa.eu/topics/incident-response/glossary/what-is-social-engineering)). Canada's Cyber Centre states that <Claim status="attributed">"Social engineering is now considered one of the most effective ways to compromise systems, often even more successful than advanced technical exploits"</Claim> ([Canadian Centre for Cyber Security, ITSAP.00.166, July 2026](https://www.cyber.gc.ca/en/guidance/social-engineering-itsap00166)).
+
+## The techniques, one by one
+
+### Pretexting: a story that makes the request reasonable
+
+For the Cyber Centre, "Pretexting is a technique where a threat actor uses a fabricated scenario or narrative as a pretext for contacting the target", designed to "build trust over time" ([ITSAP.00.166](https://www.cyber.gc.ca/en/guidance/social-engineering-itsap00166)); ENISA's entry called the pretext "a false justification for a specific course of action" and named identification and authentication processes as the counter. The United Kingdom's National Protective Security Authority (NPSA) calls this slow assembly a mosaic attack, "gathering small bits of information from various staff members over a period of time" ([NPSA](https://www.npsa.gov.uk/system/files/campaign_assets/what-is-social-engineering_final.pdf)).
+
+US federal law has prohibited one form since 1999. Title 15 of the United States Code (U.S.C.), section 6821, from the Gramm-Leach-Bliley Act, bars obtaining a financial institution's customer information about another person "by making a false, fictitious, or fraudulent statement or representation to an officer, employee, or agent of a financial institution", or to a customer, or with forged documents ([15 U.S.C. § 6821](https://www.law.cornell.edu/uscode/text/15/6821)).
+
+### Phishing, spear phishing and whaling
+
+NIST's glossary, citing Request for Comments (RFC) 4949, defines phishing as an attempt to acquire sensitive data "through a fraudulent solicitation in email or on a web site, in which the perpetrator masquerades as a legitimate business or reputable person" ([NIST glossary](https://csrc.nist.gov/glossary/term/phishing)). Spear phishing, for the Cyber Centre, targets a specific individual or small group; whaling aims at senior leaders. CISA's example is a message from a bank or card company "often suggesting that there is a problem". How a link's uniform resource locator (URL) is disguised is the subject of [Deceptive URLs](/learn/deceptive-urls).
+
+### Vishing and smishing: the same trick by voice and text
+
+For the Cyber Centre, "Vishing involves phishing conducted through voicemail or voice calls on a landline, mobile phone or voice over Internet protocol (VoIP)", and smishing is the same attack by short message service (SMS) or text message; ENISA's 2025 glossary defines vishing as "A phishing attack conducted over voice calls to trick victims into revealing sensitive information" ([ENISA Threat Landscape 2025](https://www.enisa.europa.eu/sites/default/files/2025-10/ENISA%20Threat%20Landscape%202025_0.pdf)). CISA adds that VoIP makes the caller identity (ID) easy to spoof, and the Cyber Centre's vishing guide says the call is designed to move fast and leave little room for verification ([ITSAP.00.102](https://www.cyber.gc.ca/en/what-voice-phishing-vishing-itsap00102)).
+
+In Brazil a common form has its own name, the golpe da falsa central, the fake bank call centre. The Fórum Brasileiro de Segurança Pública (FBSP), a non-governmental organisation, describes a caller posing as bank staff who leads the victim to give codes, install remote-access software or move money to a supposed safe account: "A operação apresentada como medida de proteção é, na realidade, o mecanismo utilizado para consumar a fraude", the protective step is the fraud itself ([FBSP, Anuário 2026](https://publicacoes.forumseguranca.org.br/server/api/core/bitstreams/1991f577-3418-428e-a71d-5e8aab22316c/content)). On 21 October 2026 São Paulo's government news agency reported a Polícia Civil operation against a group <Claim status="alleged" by="by the police">accused of causing R$ 1.27 million in losses with this scam</Claim>, linked to 2,700 virtual phone lines and 114 police reports; the suspects are not named and no response from them appears ([Agência SP, 21 October 2026](https://www.agenciasp.sp.gov.br/seguranca-publica/golpe-falso-bancario/)).
+
+### Baiting and quid pro quo
+
+For the Cyber Centre, baiting convinces users to act "by offering something enticing like a reward or prize", and quid pro quo obtains information or a task "in exchange for a promised service or benefit". ENISA's archived entry defined baiting as "luring the victim into performing a specific task by providing easy access to something the victim wants", with an infected Universal Serial Bus (USB) flash drive left at the victim's door as its example, and air gaps and the blocking of unauthorised hardware as the counter ([ENISA glossary, archived 2022](https://web.archive.org/web/20221203231026/https://www.enisa.europa.eu/topics/incident-response/glossary/what-is-social-engineering)).
+
+### Tailgating and piggybacking
+
+NIST covers the physical form under access control vestibules, built to stop "unauthorized individuals from following authorized individuals into facilities with controlled access", an activity also known as piggybacking or tailgating (control PE-3(8)). The NPSA's example is a supposed delivery driver who knows the facilities manager's name and is let in against procedure.
+
+## The levers each technique pulls
+
+At the stage the Cyber Centre calls the hook, attackers draw targets in "using familiarity, sympathy, urgency, threats, authority cues or a casual tone". Brazil's national incident response team, the Centro de Estudos, Resposta e Tratamento de Incidentes de Segurança no Brasil (CERT.br), names in a March 2026 booklet fear, obedience, trust, need, greed, curiosity and the wish to help, with "obediência à autoridade", obedience to authority, among its warning signs ([CERT.br, Golpes, 2026](https://cartilha.cert.br/fasciculos/golpes/fasciculo-golpes.pdf)).
+
+| Technique | Lever the guidance names | Nearest of Cialdini's principles |
+|---|---|---|
+| Pretexting | a plausible reason; trust built over time (Cyber Centre) | liking |
+| Phishing | a problem that needs action (CISA) | authority |
+| Vishing | an urgent, authoritative caller; a spoofed number (Cyber Centre, CISA) | authority |
+| Baiting | a reward or prize (Cyber Centre) | no direct match (CERT.br names greed and curiosity) |
+| Quid pro quo | a service or benefit in exchange (Cyber Centre) | reciprocity |
+| Tailgating | a plausible story and a known name (NPSA) | liking; authority of a role |
+
+The last column sets the bodies' wording beside Robert Cialdini's principles, examined with their evidence in [The human attack surface](/learn/the-human-attack-surface-why-repetition-works). The fit is closest where the definitions coincide: quid pro quo with reciprocity, in which "people are obliged to give back to others", and authority cues with "people follow the lead of credible, knowledgeable experts" ([Influence At Work](https://www.influenceatwork.com/7-principles-of-persuasion/)). No source read here tests these principles on victims of social engineering: the table maps definitions, not measured effects.
+
+## The help desk: where identity is checked
+
+The help desk appears on both sides. Its staff are targets, since some of them can reset access: the NPSA counts receptionists, customer service staff and security officers among the more exposed, as they are told to assist outsiders. Its name is also a disguise: in a passage on 2025 intrusions that does not name the actors, ENISA reported that <Claim status="attributed" by="by ENISA">"They commonly gained access through vishing campaigns impersonating IT personnel to steal Single-Sign-On (SSO) credentials and MFA codes"</Claim>, IT being information technology, SSO single sign-on and MFA multi-factor authentication ([ENISA Threat Landscape 2026, page 46](https://www.enisa.europa.eu/sites/default/files/2026-09/ENISA%20Threat%20Landscape%202026_Final.pdf)).
+
+Knowledge-based checks fail when the knowledge can be gathered. CERT.br warned in 2012 that published details can be used ([Cartilha, section 11.1](https://cartilha.cert.br/livro/cartilha-seguranca-internet.pdf)) "para responder questões de segurança usadas para recuperação de senhas", to answer password-recovery questions. NIST's control IA-5 requires verifying the identity of whoever receives an authenticator at first issue, and procedures for lost or compromised ones, the moment a help desk resets them.
+
+## Documented cases
+
+### Kevin Mitnick, on the record and in his own account
+
+A release of the US Department of Justice (DOJ) dated 9 August 1999 reports a sentence of 46 months after Mitnick pleaded guilty to four counts of wire fraud, two of computer fraud and one of illegally intercepting a wire communication, and that <Claim status="established" by="by his plea">"Mitnick admitted using a number of tools to commit his crimes"</Claim>, social engineering among them ([DOJ, 1999](https://webarchive.library.unt.edu/eot2008/20080916032623/http:/www.cybercrime.gov/mitnick.htm)). His own account is *The Art of Deception* (2002, with William L. Simon), whose publisher's description promises "many fascinating true stories of successful attacks on business and government" ([Mitnick Security](https://mitnicksecurity.com/the-art-of-deception)). The same text dates his release from prison to 1998, which does not fit the 1999 sentencing record.
+
+Simson Garfinkel, in a magazine column of October 2002, gave the release date as 21 January 2000 and wrote that the anecdotes <Claim status="reported" by="by Garfinkel">"are all told through the veil of fiction"</Claim> ([Garfinkel, 2002](https://simson.net/clips/machine/2002-10.htm)). He accepted the thesis that "Humans are the weakest link in any security system" but wrote that "Mitnick's systematic downplay of technology and its value in defending sensitive information is yet another act of deception". In one anecdote he recounts, a caller "proves" his identity with an office number, a department and a supervisor's name gathered in earlier calls; keeping such details secret, Garfinkel argued, is a losing proposition, and years of effort had shown how hard it is to train people to resist such attacks. He proposed systems that cannot leak what staff cannot see, and testing employees with real attempts. No published reply by Mitnick to the column was found; the man and the case are the subject of [Kevin Mitnick: the myth, the man](/learn/kevin-mitnick-the-myth-and-the-man).
+
+### Officials impersonated by text and voice
+
+The Federal Bureau of Investigation (FBI) reported in May and December 2025 that <Claim status="attributed" by="by the FBI">since at least 2023 actors had impersonated senior US officials in text messages and in voice messages generated with artificial intelligence</Claim> "to establish rapport with targeted individuals", then asked, among other things, for authentication codes ([FBI, December 2025](https://www.ic3.gov/PSA/2025/PSA251219)). It names no actor.
+
+## How common it is
+
+ENISA's dataset of 2025 incidents affecting the European Union (EU) gives a share: "Among social engineering techniques, phishing remains a prevalent intrusion vector (77.8%), followed by malicious spam (malspam), accounting for 13%", with smishing and vishing also reported ([ENISA Threat Landscape 2026, pages 11 and 40](https://www.enisa.europa.eu/sites/default/files/2026-09/ENISA%20Threat%20Landscape%202026_Final.pdf)).
+
+Phishing/Spoofing was again the crime type most reported to the FBI's Internet Crime Complaint Center (IC3) in 2025: 191,561 complaints, with $215,843,126 in reported losses ([IC3, 2025](https://www.ic3.gov/AnnualReport/Reports/2025_IC3Report.pdf)). The Federal Trade Commission (FTC) told Congress that imposter scams have been the most reported fraud since 2020, with over 1 million reports and over $3.5 billion in losses in 2025, and that a text message was the contact method reported most often in 2025, when consumers named one ([FTC, 25 March 2026](https://www.ftc.gov/system/files/ftc_gov/pdf/ftc-testimony-jec-hearing-on-the-rising-scam-economy.pdf)).
+
+In Brazil, <Claim status="reported" by="by the FBSP">a 2025 survey for the Observatório Febraban put the fake bank call centre third among scams people said they had suffered, at 31%</Claim>, after card cloning or swapping (45%) and the WhatsApp scam (34%) ([FBSP, Anuário 2026](https://publicacoes.forumseguranca.org.br/server/api/core/bitstreams/1991f577-3418-428e-a71d-5e8aab22316c/content)). The Federação Brasileira de Bancos (FEBRABAN), the banks' federation, also ranked it third among the approaches customers reported to its member banks in 2024, giving no counts ([FEBRABAN, 14 April 2025](https://portal.febraban.org.br/noticia/4279/pt-br/)); no official count was found from the Banco Central, the Ministry of Justice or a state police. These figures count what victims reported or recalled, not incidence; [Scams at scale](/learn/scams-at-scale-why-a-tiny-success-rate-pays) explains why the US totals cannot be added.
+
+## Brazilian guidance
+
+CERT.br tells readers to doubt a request even when the caller knows real details, since "Golpistas usam informações vazadas e públicas para fazer o golpe parecer verdadeiro", leaked and public data make a scam look genuine, and to confirm through "um contato oficial ou já conhecido", an official or known contact ([CERT.br, Golpes, 2026](https://cartilha.cert.br/fasciculos/golpes/fasciculo-golpes.pdf)). For companies, FEBRABAN advises: "Desconfie de ligações que solicitam informações sobre procedimentos internos, rotinas e agendas de funcionários", distrust calls asking about internal procedures and staff routines ([FEBRABAN, 2020](https://cmsarquivos.febraban.org.br/Arquivos/documentos/PDF/cartilha_eng_social_atualizada_20.pdf)).
+
+## Defences: process over trust
+
+The bodies read here converge on one rule: verify through a channel the requester did not supply. "Any requests involving sensitive actions should be confirmed by using a second, independent form of communication", says the Cyber Centre; for calls, "Hang up and call back using a known, trusted number" ([ITSAP.00.102](https://www.cyber.gc.ca/en/what-voice-phishing-vishing-itsap00102)). The FBI says to find the person's number independently and call to verify, and never to give a two-factor code by email, text or messaging app ([FBI, May 2025](https://www.ic3.gov/PSA/2025/PSA250515)). In NIST's out-of-band authentication, a second path independently verifies the authentication or the requested action (control IA-2(13)).
+
+Process replaces judgement in three more ways. Institutions publish what they will never do: banks and agencies "will never request sensitive information or provide links for account access", says the Cyber Centre, and "The FTC will never demand money, make threats, tell you to transfer money, or promise you a prize". People agree a check in advance: the Cyber Centre's "safe words or call-back codes", the FBI's secret word, CERT.br's "senha" shared with acquaintances. And identity stops resting on appearance: "Audio or video alone should not be considered proof of identity".
+
+Technology takes some decisions away from people: phishing-resistant MFA, which [passkeys](/learn/passkeys-and-phishing-resistant-authentication) provide by binding a credential to a site; caller authentication, which Canada's telecommunications regulator required of providers from 30 November 2021; interlocking-door vestibules against tailgating. NIST's training controls include practical exercises such as "no-notice social engineering attempts" (control AT-2(1)), while Garfinkel doubted that training alone suffices.
+
+Two randomised field studies measured training in organisations. At the Swiss Federal Institute of Technology in Zurich (ETH Zurich), Daniele Lain, Kari Kostiainen and Srdjan Čapkun followed more than 14,000 employees of one company for 15 months and found that simulated phishing with voluntary embedded training <Claim status="reported" by="by its authors">"not only failed to improve employee's phishing resilience"</Claim> but made employees more susceptible ([Lain et al., 2022](https://arxiv.org/pdf/2112.07498)). Grant Ho and colleagues, at the University of California San Diego and the University of Chicago, sent ten simulated campaigns over eight months to 19,789 employees of a healthcare organisation: recent annual awareness training showed no significant relationship with failing, embedded training lowered failure rates by 1.7% on average, and over half of training sessions ended within 10 seconds. They judge such programmes, as commonly deployed, "unlikely to offer significant practical value in reducing phishing risks" ([Ho et al., 2025](https://sysnet.ucsd.edu/~voelker/pubs/phishtrain-oakland25.pdf)). Both papers set their results against earlier studies that reported benefits, several of which, Ho's team notes, lacked a true control group.
+
+## What to remember
+
+- NIST SP 800-53 counts eight techniques as social engineering, from phishing and pretexting to baiting, quid pro quo and tailgating.
+- The guidance names authority, urgency, familiarity and trust as the levers the techniques pull.
+- The help desk is both target and disguise: ENISA reported vishing that impersonated IT staff to obtain credentials and MFA codes.
+- Mitnick pleaded guilty in 1999 and admitted using social engineering; Garfinkel faulted his book for downplaying technology.
+- Phishing was 77.8% of social engineering in ENISA's 2025 dataset; Phishing/Spoofing led IC3 complaints in 2025.
+- Randomised field studies (2022, 2025) found embedded phishing training of little or no benefit.
+- The shared defence is procedural: confirm through a second, independent channel, never share codes, and treat voice or video as no proof of identity.
+
+## Sources
+
+- [NIST, Special Publication 800-53 Revision 5, Security and Privacy Controls for Information Systems and Organizations, September 2020: controls AT-2(1), AT-2(3), IA-2(13), IA-5 and PE-3(8) (read 2026-11-09)](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r5.pdf)
+- [NIST Computer Security Resource Center, Glossary: phishing (read 2026-11-09)](https://csrc.nist.gov/glossary/term/phishing)
+- [CISA, Avoiding Social Engineering and Phishing Attacks, 1 February 2021, archived content (read 2026-11-09 in a browser)](https://www.cisa.gov/news-events/news/avoiding-social-engineering-and-phishing-attacks)
+- [ENISA, ENISA Threat Landscape 2026, September 2026: pages 11, 40 and 46 (read 2026-11-09 in a browser)](https://www.enisa.europa.eu/sites/default/files/2026-09/ENISA%20Threat%20Landscape%202026_Final.pdf)
+- [ENISA, What is "Social Engineering"?, glossary entry, archived copy of 3 December 2022 (read 2026-11-09 in a browser)](https://web.archive.org/web/20221203231026/https://www.enisa.europa.eu/topics/incident-response/glossary/what-is-social-engineering)
+- [ENISA, ENISA Threat Landscape 2025, October 2025: glossary (read 2026-11-09)](https://www.enisa.europa.eu/sites/default/files/2025-10/ENISA%20Threat%20Landscape%202025_0.pdf)
+- [Canadian Centre for Cyber Security, Social engineering, ITSAP.00.166, July 2026 (read 2026-11-09)](https://www.cyber.gc.ca/en/guidance/social-engineering-itsap00166)
+- [Canadian Centre for Cyber Security, What is voice phishing (vishing)?, ITSAP.00.102, July 2026 edition (read 2026-11-09)](https://www.cyber.gc.ca/en/what-voice-phishing-vishing-itsap00102)
+- [National Protective Security Authority, Be savvy about the social engineer, 2015, reissued April 2024 (read 2026-11-09)](https://www.npsa.gov.uk/system/files/campaign_assets/what-is-social-engineering_final.pdf)
+- [15 U.S. Code § 6821, Privacy protection for customer information of financial institutions, Legal Information Institute, Cornell Law School (read 2026-11-09)](https://www.law.cornell.edu/uscode/text/15/6821)
+- [FBI Internet Crime Complaint Center, Senior US Officials Impersonated in Malicious Messaging Campaign, public service announcement, 15 May 2025 (read 2026-11-09)](https://www.ic3.gov/PSA/2025/PSA250515)
+- [FBI Internet Crime Complaint Center, Senior U.S. Officials Continue to be Impersonated in Malicious Messaging Campaign, public service announcement, 19 December 2025 (read 2026-11-09)](https://www.ic3.gov/PSA/2025/PSA251219)
+- [FBI Internet Crime Complaint Center, 2025 IC3 Annual Report, April 2026: three-year comparison tables (read 2026-11-09)](https://www.ic3.gov/AnnualReport/Reports/2025_IC3Report.pdf)
+- [Federal Trade Commission, Prepared Statement before the Joint Economic Committee, hearing on the rising scam economy, 25 March 2026: page 3 (read 2026-11-09 in a browser)](https://www.ftc.gov/system/files/ftc_gov/pdf/ftc-testimony-jec-hearing-on-the-rising-scam-economy.pdf)
+- [US Department of Justice, Kevin Mitnick Sentenced to Nearly Four Years in Prison, 9 August 1999, UNT End of Term Web Archive copy (read 2026-11-09 through a web reader)](https://webarchive.library.unt.edu/eot2008/20080916032623/http:/www.cybercrime.gov/mitnick.htm)
+- [Mitnick Security, The Art of Deception: Controlling the Human Element of Security, book page with the publisher's description (read 2026-11-09)](https://mitnicksecurity.com/the-art-of-deception)
+- [Simson Garfinkel, Anti-Social Engineering: Lessons from reading Mitnick, CSO Magazine, October 2002, author's archive copy (read 2026-11-09)](https://simson.net/clips/machine/2002-10.htm)
+- [Influence At Work, The 7 Principles of Persuasion, undated (read 2026-11-09)](https://www.influenceatwork.com/7-principles-of-persuasion/)
+- [CERT.br, Cartilha de Segurança para Internet, versão 4.0, 2012: section 11.1 (read 2026-11-09)](https://cartilha.cert.br/livro/cartilha-seguranca-internet.pdf)
+- [CERT.br, Golpes: Não se Deixe Enganar, Cartilha de Segurança para Internet, March 2026 (read 2026-11-09)](https://cartilha.cert.br/fasciculos/golpes/fasciculo-golpes.pdf)
+- [FEBRABAN, Engenharia Social: saiba como evitar possíveis armadilhas e se proteger de golpes, 2020: section 4 (read 2026-11-09)](https://cmsarquivos.febraban.org.br/Arquivos/documentos/PDF/cartilha_eng_social_atualizada_20.pdf)
+- [Fórum Brasileiro de Segurança Pública, Anuário Brasileiro de Segurança Pública 2026 (20ª edição), July 2026: the estelionato chapter, pages 125 to 127 (read 2026-11-09)](https://publicacoes.forumseguranca.org.br/server/api/core/bitstreams/1991f577-3418-428e-a71d-5e8aab22316c/content)
+- [FEBRABAN, Saiba quais foram os 10 golpes mais aplicados contra clientes bancários em 2024, 14 April 2025 (read 2026-11-09)](https://portal.febraban.org.br/noticia/4279/pt-br/)
+- [Agência SP, Golpe do falso atendente bancário: veja como se proteger e o que fazer em caso de fraude, 21 October 2026 (read 2026-11-09)](https://www.agenciasp.sp.gov.br/seguranca-publica/golpe-falso-bancario/)
+- [Daniele Lain, Kari Kostiainen and Srdjan Čapkun, Phishing in Organizations: Findings from a Large-Scale and Long-Term Study, IEEE Symposium on Security and Privacy 2022, arXiv preprint of 14 December 2021 (read 2026-11-09)](https://arxiv.org/pdf/2112.07498)
+- [Grant Ho and others, Understanding the Efficacy of Phishing Training in Practice, IEEE Symposium on Security and Privacy 2025, authors' copy (read 2026-11-09)](https://sysnet.ucsd.edu/~voelker/pubs/phishtrain-oakland25.pdf)

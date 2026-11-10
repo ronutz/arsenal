@@ -1,0 +1,32 @@
+## Ce que fait l’outil
+
+Répondez à six questions sur un site (la bande passante requise, si la haute disponibilité est exigée, si l’IP de sortie est statique, si le transit doit être chiffré, si l’équipement de bordure prend en charge GRE et si les extrémités internes des tunnels sont soumises au NAT source) : l’outil renvoie la recommandation de transfert déterministe, GRE ou IPsec, le débit par tunnel qui s’applique et la règle documentée dont il découle, ainsi que le nombre minimal de tunnels principaux et de secours qui couvre le besoin. Chaque étape d’élimination est montrée dans l’ordre : la réponse enseigne le raisonnement au lieu de le remplacer. Mêmes réponses, même recommandation, toujours ; tout s’exécute dans votre navigateur, sans rien contacter.
+
+## Les chiffres publiés sur lesquels repose le calcul
+
+Toutes les capacités sont celles de Zscaler, vérifiées en direct sur le portail d’aide le 21 juillet 2026. Un tunnel GRE transporte jusqu’à 1 Gbps, sauf si les adresses des extrémités internes du tunnel sont soumises au NAT source : le chiffre tombe alors à 250 Mbps, car le service équilibre la charge du trafic GRE sur les adresses internes, et le NAT les réduit à une seule. Un tunnel IPsec transporte jusqu’à 400 Mbps par adresse IP source publique. Les schémas de montée en charge reprennent les exemples commentés de la documentation elle-même : 2 Gbps en GRE, ce sont deux tunnels principaux et deux de secours sur des IP sources publiques distinctes ; 800 Mbps en IPsec, c’est deux plus deux, obtenus soit par des IP sources publiques différentes, soit par plusieurs tunnels sur la même IP grâce à NAT Traversal avec randomisation du port source sous IKEv2.
+
+## Fonctionnement de l’élimination
+
+GRE est préféré quand ses trois conditions préalables sont réunies (une adresse de sortie publique statique, un équipement compatible GRE et aucune obligation de chiffrement), car c’est l’encapsulation la plus simple, transférée au débit du matériel, avec le plafond par tunnel le plus élevé. Toute condition non remplie oriente la réponse vers IPsec, qui tolère les adresses dynamiques (pairs identifiés par nom de domaine complet), assure le chiffrement par construction et demande seulement de configurer IKEv2 et Dead Peer Detection. Le nombre de tunnels est ensuite la division, arrondie à l’entier supérieur, de la bande passante requise par le débit par tunnel applicable, et le nombre de tunnels de secours reprend celui des tunnels principaux quand la haute disponibilité est exigée, chaque tunnel de secours pointant vers un Public Service Edge situé dans un autre centre de données, selon le schéma principal/secondaire documenté. Quand aucune haute disponibilité n’est demandée, l’outil renvoie le vrai minimum et dit clairement que l’éditeur recommande malgré tout un tunnel secondaire.
+
+## Ce que l’outil ne prétend pas faire
+
+Les chiffres sont des repères pour le plan de transfert des tunnels de site, pas des promesses sur un circuit donné, et l’outil indique quelle règle documentée a produit chaque nombre au lieu d’inventer une précision. Les utilisateurs nomades sont hors périmètre par conception : un ordinateur portable hors du réseau fait passer son trafic par le Z-Tunnel de Zscaler Client Connector, pas par un tunnel de site ; l’outil énonce cette frontière au lieu de la brouiller.
+
+## Partage des résultats
+
+Sous la carte de recommandation, le bouton **Partager les résultats** crée, seulement quand vous appuyez dessus, un lien vers cette page qui contient, après le `#`, le formulaire sous forme de valeurs nommées, tous les champs, toujours : `mbps` tel que saisi, et `ha`, `staticip`, `encryption`, `gre` et `nated` à 1 ou 0. Sa fenêtre contextuelle indique d’abord ce que contient le lien, puis propose le bouton Copier le lien et, si le navigateur en dispose, sa feuille de partage ; l’adresse de la page ne change pas.
+
+Un chiffre de bande passante et cinq réponses par oui ou par non n’identifient rien : la fenêtre contextuelle n’ajoute donc rien à l’avertissement standard du site. Chaque champ part, et pas seulement ceux qui diffèrent des réponses initiales : un ancien lien garde ainsi son sens si celles-ci changent.
+
+La [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, consultée le 01/11/2026) précise que le fragment est séparé du reste de l’URI avant tout déréférencement (« separated from the rest of the URI prior to a dereference ») : ce qui suit le `#` n’est donc pas envoyé au serveur à l’ouverture du lien ; il reste dans la barre d’adresse et l’historique de la personne qui l’ouvre, et quiconque possède le lien peut le lire.
+
+- **Longueur.** Au plus 16 384 caractères au total, la limite que le site applique à toute valeur placée après le `#` ; au-delà, aucun lien n’est créé et la fenêtre contextuelle indique la longueur.
+- **Ouverture d’un lien.** Les valeurs du lien remplacent tout le formulaire, et la page refait son choix (une arithmétique sur des chiffres publiés ; rien n’est contacté). Une bande passante que la page refuse, ou une réponse autre que 1 ou 0, fait ignorer tout le lien. Les valeurs quittent ensuite aussitôt l’adresse de la page, sans aucune requête : un rechargement, ou le bouton Partager de la page, n’emporte donc rien.
+
+## Sources
+
+Les chiffres GRE, la règle du NAT source et les exemples de montée en charge viennent de [Understanding Generic Routing Encapsulation (GRE)](https://help.zscaler.com/zia/understanding-generic-routing-encapsulation-gre). La limite IPsec par IP source, ses deux schémas de montée en charge et la recommandation principal/secondaire viennent de [Configuring an IPSec VPN Tunnel](https://help.zscaler.com/zia/configuring-ipsec-vpn-tunnel) (VPN : virtual private network, réseau privé virtuel). Les conditions préalables de GRE et l’indice d’IP dynamique qui oriente vers IPsec viennent de [Choosing Traffic Forwarding Methods](https://help.zscaler.com/zia/choosing-traffic-forwarding-methods), et la règle selon laquelle la MTU (maximum transmission unit, unité de transmission maximale) d’un tunnel reste inférieure ou égale à la fois à la MTU de l’appliance et à la MTU du chemin vient de [Determining Optimal MTU for GRE or IPSec Tunnels](https://help.zscaler.com/zia/determining-the-optimal-mtu-for-gre-or-ipsec-tunnels). Les quatre pages ont été consultées le 09/11/2026.
+
+La règle du fragment sur laquelle repose le partage des résultats est celle de la [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), section 3.5 (consultée le 01/11/2026).

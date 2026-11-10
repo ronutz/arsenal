@@ -255,6 +255,9 @@ export default function HomeQuickCidr() {
               <div className="quick-cidr-fact"><dt>{t("quickRange")}</dt><dd className="mono">{shown.firstHost} – {shown.lastHost}</dd></div>
               <div className="quick-cidr-fact"><dt>{t("quickHosts")}</dt><dd className="mono">{numbers.format(shown.usableHosts)}</dd></div>
             </dl>
+            {/* A /31 (two addresses, both usable) gets one line saying why there is no network or broadcast address:
+                RFC 3021, section 2.1 (PRIME 2026-11-09 12:00, after asking exactly that about 1.2.3.4/31). */}
+            {shown.totalAddresses === 2 && <p className="quick-cidr-p2p">{t("quickP2p31")}</p>}
             {/* The special-purpose verdict, a line of its own under the grid so the four cells keep their columns (2026-10-19). */}
             {special && (
               <dl className="quick-cidr-special">

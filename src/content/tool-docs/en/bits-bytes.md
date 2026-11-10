@@ -4,7 +4,7 @@ Three fields: a size, a rate and a time. Any one of them is explained on its own
 
 - **A size** ("1.5 GB", "700 MiB", "10K", "8 bits", "2 kilobytes") comes back as an exact number of bits and bytes, as a value in every unit of both conventions (bits with SI and binary prefixes, bytes with SI prefixes, bytes with IEC prefixes), and, when the label was an SI prefix on bytes, as the same label read both ways with the gap between them.
 - **A rate** ("100 Mbit/s", "12.5 MB/s", "1 Gbps", "56k") comes back in bits and bytes per second, in every rate unit, and as the amount it moves in a minute, an hour and a day.
-- **A time** ("90 s", "2h 30min", "1 day") is read exactly, to the millisecond. The units are ms, s, min, h and d, spelled out in English or Portuguese (seconds, minutes, hours, days; segundos, minutos, horas, dias).
+- **A time** ("90 s", "2h 30min", "1 day") is read exactly, to the millisecond. The units are ms, s, min, h and d, spelled out in English, Portuguese, Spanish, German or French (seconds, minutes, hours, days; segundos, minutos, horas, dias or días; Sekunden, Minuten, Stunden, Tage; secondes, heures, jours, or j for a day).
 - **Two of the three** give the third: size over rate is the transfer time (with its parts), size over time is the rate achieved, rate times time is the amount moved. With all three, the time is recomputed from size and rate.
 - **Efficiency** scales the rate: a preset for TCP over IPv4 over Ethernet, TCP over IPv6, UDP over IPv4, or any percentage.
 - **The connection table** answers the transfer-time question for a set of standard links at once, at the efficiency chosen.

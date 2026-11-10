@@ -18,7 +18,7 @@ Cada idioma tiene un `status`:
 | `machine-draft` | Un primer borrador hecho con IA o con traducción automática, que todavía no ha revisado un hablante nativo. |
 | `stub` | Todavía no hay paquete; el idioma se muestra en inglés. |
 
-Un texto redactado por máquina nunca se presenta como texto nativo pulido. Un `machine-draft` es un punto de partida que un hablante nativo pasa a `reviewed`. El inglés es el idioma de origen. El portugués de Brasil está escrito con IA y se revisa poco a poco, igual que la interfaz y las herramientas en español y en alemán; la sección Aprender y las demás secciones de lectura en español y en alemán, así como los otros doce idiomas, son traducciones automáticas. Por eso el portugués de Brasil, el español y el alemán conservan el estado `machine-draft` y su aviso hasta que una revisión humana acredite lo contrario.
+Un texto redactado por máquina nunca se presenta como texto nativo pulido. Un `machine-draft` es un punto de partida que un hablante nativo pasa a `reviewed`. El inglés es el idioma de origen. El portugués de Brasil está escrito con IA y se revisa poco a poco, igual que la interfaz y las herramientas en español, en alemán y en francés; la sección Aprender y las demás secciones de lectura en español, en alemán y en francés, así como los otros once idiomas, son traducciones automáticas. Por eso el portugués de Brasil, el español, el alemán y el francés conservan el estado `machine-draft` y su aviso hasta que una revisión humana acredite lo contrario.
 
 ## Mejorar un idioma en cuatro pasos
 

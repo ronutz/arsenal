@@ -1,0 +1,20 @@
+# Analyseur du source-mask OneConnect
+
+OneConnect maintient ouvertes les connexions côté serveur et les confie à la prochaine requête éligible, et dans cette phrase, tout repose sur le mot « éligible ». C’est le source mask qui décide de l’éligibilité, et la page de manuel en énonce clairement les deux extrêmes : 0.0.0.0, la valeur par défaut, partage les connexions réutilisées entre tous les clients ; un masque d’hôte ne les partage qu’entre connexions venant de la même IP cliente. Tout ce qui se trouve entre les deux se comporte comme un masque de sous-réseau, qui regroupe les clients selon les bits qu’il conserve.
+
+Collez un bloc `ltm profile one-connect` : chaque option s’affiche avec la sémantique que lui donne la référence v17, les valeurs par défaut étant renseignées explicitement plutôt que supposées : max-age 86400, max-reuse 1000, max-size 10000, limit-type none. La limite strict porte l’avertissement du manuel lui-même : des connexions inactives bloquent les nouvelles jusqu’à leur expiration, même quand elles auraient pu être réutilisées, une configuration que la page elle-même déconseille en dehors de cas particuliers. share-pools reçoit sa sémantique entre serveurs virtuels ; l’option idle-timeout-override est signalée franchement pour une bizarrerie de la page de manuel elle-même, qui la déclare comme disabled ou enabled mais la décrit comme un nombre de secondes.
+
+La simulation est la pièce maîtresse. Donnez-lui un masque, une liste d’IP clientes et, si vous le souhaitez, une adresse SNAT, et les groupes de réutilisation s’affichent. Quand une adresse SNAT est indiquée, vous voyez à l’œuvre l’ordre qu’énoncent à la fois le K7208 et le K5911 : la traduction a lieu d’abord, le masque s’applique à l’adresse traduite, si bien qu’une seule adresse SNAT réunit tous les clients dans un unique groupe de réutilisation, aussi étroit que soit le masque. Cet effondrement est la surprise de production que cet outil existe pour rendre visible avant qu’elle ne vous arrive.
+
+Deux points d’honnêteté sur les statistiques, tirés de l’article de lab de F5 lui-même, closent l’audit : max-size se répartit entre les instances TMM au lieu de former un pool global unique, et le compteur Current Idle inclut toutes les connexions inactives côté serveur, que le masque les rende éligibles ou non. Lisez la sortie de `tmsh show` en gardant ces deux points en tête.
+
+Tout s’exécute localement ; rien de ce que vous collez ne quitte la page.
+
+## Partage des résultats
+
+Sous le nom du profil, sous les groupes de réutilisation de la simulation de masque, ou en tête du catalogue des paramètres, le bouton **Partager les résultats** crée, seulement quand vous appuyez dessus, un lien vers cette page qui contient, après le `#`, la zone telle que saisie : un profil, une ligne de simulation de masque ou `settings`. Un profil one-connect ne contient aucun paramètre secret ([référence tmsh de F5, ltm profile one-connect](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_profile_one-connect.html), consultée le 27/10/2026). Sa fenêtre contextuelle indique d’abord ce que contient le lien, puis propose le bouton Copier le lien et, si le navigateur en dispose, sa feuille de partage ; l’adresse de la page ne change pas.
+
+La [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, consultée le 27/10/2026) précise que le fragment est séparé du reste de l’URI avant tout déréférencement (« separated from the rest of the URI prior to a dereference ») : le texte n’est donc pas envoyé au serveur à l’ouverture du lien ; il reste dans la barre d’adresse et l’historique de la personne qui l’ouvre, et quiconque possède le lien peut le lire.
+
+- **Longueur.** Au plus 16 384 caractères au total, la limite que le site applique à toute valeur placée après le `#` ; au-delà, aucun lien n’est créé et la fenêtre contextuelle indique la longueur.
+- **Ouverture d’un lien.** Le texte remplit la zone comme le ferait un collage, et la page l’explique. Les valeurs quittent ensuite aussitôt l’adresse de la page, sans aucune requête : un rechargement, ou le bouton Partager de la page, n’emporte donc rien.

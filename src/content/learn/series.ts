@@ -49,7 +49,7 @@ export type SeriesPart = { slug: string } | { planned: string };
  * with the family histories. Labels at
  * learnSeries.groups.<group> in both packs; the guard checks every series names one of these.
  */
-export const SERIES_GROUPS = ["network", "crypto", "web", "identity", "security", "formats", "operations", "history", "f5", "fortinet", "checkpoint", "zscaler", "netskope", "ping", "extreme"] as const;
+export const SERIES_GROUPS = ["network", "crypto", "web", "identity", "security", "formats", "operations", "history", "influence", "f5", "fortinet", "checkpoint", "zscaler", "netskope", "ping", "extreme"] as const;
 /** One subject group of the index. */
 export type SeriesGroup = (typeof SERIES_GROUPS)[number];
 /** The groups that are vendors rather than subjects (LS-1b): the index lists them in a second half, after the subjects. */
@@ -88,6 +88,39 @@ export const LEARN_SERIES: LearnSeries[] = [
       { slug: "ntlm-explained" },
       { slug: "bgp-and-the-routing-chokepoint" },
       { slug: "the-interception-tools" },
+    ],
+  },
+  {
+    // The psychological-operations series (PRIME 2026-11-09 14:57: "we need a whole series on it"; PLAN-psyops-series-
+    // 20261109): from the small lie to the campaign, the amplifier, arbitration and the defences, in the order the
+    // opener's own list gives. Every part carries <MethodNote />, PRIME's views only in <RodVoice> (check-rod-voice.mjs).
+    id: "psyops",
+    group: "influence",
+    opener: "psychological-operations-from-the-small-lie-to-the-campaign",
+    parts: [
+      { slug: "psyop-propaganda-and-disinformation-the-words" },
+      { slug: "the-human-attack-surface-why-repetition-works" },
+      { slug: "a-short-history-of-propaganda-and-psychological-warfare" },
+      { slug: "social-engineering-pretexting-vishing-and-baiting" },
+      { slug: "scams-at-scale-why-a-tiny-success-rate-pays" },
+      { slug: "scam-compounds-and-pig-butchering" },
+      { planned: "bec" },
+      { planned: "voiceClones" },
+      { slug: "anatomy-of-an-influence-operation-abc-disarm-and-kill-chains" },
+      { planned: "stateCampaigns" },
+      { planned: "influenceForHire" },
+      { planned: "botsSockpuppets" },
+      { planned: "brazilMassMessaging" },
+      { planned: "lodgeToNetwork" },
+      { planned: "echoChambers" },
+      { planned: "profiling" },
+      { planned: "moderation" },
+      { planned: "theLaw" },
+      { planned: "surveillance" },
+      { planned: "verification" },
+      { planned: "prebunking" },
+      { planned: "misbeliefs" },
+      { planned: "genAi" },
     ],
   },
   // ------------------------------------------------------------------------------------------------------------------

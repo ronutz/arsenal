@@ -56,6 +56,85 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // PRIME 2026-11-09 19:36: "Finish simple and quick pending and outstanding requests and build" (a count of 1 read plural).
+    date: "2026-11-09",
+    time: "19:45",
+    kind: "tool",
+    title: "Counts of one read right in three tools",
+    titlePt: "Contagens de um item corrigidas em três ferramentas",
+    body:
+      "Three tools printed a plural after a count of one: the ACL (access control list) first-match evaluator showed a host entry as \"1 addresses\", the LACP (Link Aggregation Control Protocol) member link and state reader a member with one flow as \"1 flows\", and the F5 BIG-IP licence explainer \"1 tokens found\". Each now picks the singular or plural in every interface language and groups the digits the language's way.",
+    links: [{ label: "ACL first-match evaluator", href: "/tools/acl-first-match-evaluator" }],
+  },
+  {
+    // PRIME 2026-11-09 18:11: "an extensive blog post on the current trend of apocalyptic end of times end of
+    // civilization predictions"; his own views only in labelled blocks (check-rod-voice.mjs reads tagged posts).
+    date: "2026-11-09",
+    time: "19:30",
+    kind: "content",
+    title: "Blog: the end is always near",
+    titlePt: "Blog: o fim está sempre próximo",
+    body:
+      "A new post looks at the apocalyptic forecasts that AI-powered vulnerability discovery revived in 2026: what the companies and the cyber agencies of the United States, the United Kingdom and Brazil published, the extinction statements and their critics, the surveys on how many people are afraid, Brazil included, what research found about fear appeals, Y2K and Harold Camping's dated prediction, where the line about history and its victors comes from, who owns the platforms that carry the warnings, and a long section on what an algorithm is, from al-Khwarizmi and Knuth to the recommender systems of the Digital Services Act and the ranking code platforms publish. Rodolfo Nützmann's own views sit in labelled blocks beside the material they answer.",
+    links: [{ label: "The post", href: "/blog/the-end-is-always-near-apocalypse-fear-and-who-owns-the-feed" }],
+  },
+  {
+    // PRIME 2026-11-09 18:12: the second batch of the psychological-operations series (history, social engineering, scam
+    // compounds, the anatomy of an influence operation) before the next build.
+    date: "2026-11-09",
+    time: "19:10",
+    kind: "content",
+    title: "Psychological operations: four more parts",
+    titlePt: "Operações psicológicas: mais quatro partes",
+    body:
+      "Four more parts of the psychological-operations series are here. A short history follows propaganda and psychological warfare from the First World War through the Second World War's ministries and leaflet campaigns to Cold War broadcasting and jamming. Social engineering covers pretexting, vishing and baiting, the techniques that work on one person at a time. Scam compounds sets out what the UN, Amnesty International, courts and governments, Brazil's included, have reported about the Southeast Asian centres and the people trafficked into them, with the replies of the parties named where any was found. The anatomy of an influence operation explains the frameworks analysts use to describe campaigns, from ABC (actors, behaviour, content) to DISARM, kill chains and the Breakout Scale, with the replies of the states accused in its cases.",
+    links: [{ label: "The series opener", href: "/learn/psychological-operations-from-the-small-lie-to-the-campaign" }, { label: "A short history", href: "/learn/a-short-history-of-propaganda-and-psychological-warfare" }],
+  },
+  {
+    // PRIME 2026-11-09 14:57: "we need a whole series on it" (psychological operations); PLAN-psyops-series-20261109.
+    date: "2026-11-09",
+    time: "16:50",
+    kind: "content",
+    title: "Psychological operations: a new series",
+    titlePt: "Operações psicológicas: uma nova série",
+    body:
+      "A new Learn series follows influence and deception from the small lie repeated until it feels true to campaigns run by states, companies and criminal networks. The opener maps the field and names all 23 parts; the first three are here: the words as their owners define them, why repetition works on people, and why mass scams pay at a tiny success rate. Every claim carries its status, from established to alleged or denied, each accused party's published response sits beside the accusation, and personal views appear only in blocks marked as Rodolfo Nützmann's view. Fifteen glossary entries come with it, from PSYOP, MISO and FIMI (Foreign Information Manipulation and Interference) to the illusory truth effect, advance-fee fraud and pig butchering.",
+    links: [{ label: "The series opener", href: "/learn/psychological-operations-from-the-small-lie-to-the-campaign" }, { label: "Glossary: PSYOP", href: "/glossary/psyop" }],
+  },
+  {
+    // PRIME 2026-11-09 01:02 (languages in their natural tone, a build each) and 11:02 (the order Spanish, German, French).
+    date: "2026-11-09",
+    time: "14:45",
+    kind: "i18n",
+    title: "French: the interface and the tools, written in French",
+    titlePt: "Francês: a interface e as ferramentas, escritas em francês",
+    body:
+      "The French site's interface is now written in French rather than translated: every page's own text, every tool and its documentation, the games and puzzles, and the legal pages, in the terms French engineers use, with French typography (the space before a colon, guillemets, a decimal comma). Five Clues accepts French answers and the bits-and-bytes calculator reads secondes, heures, jours and j. Learn and the other reading sections are still machine-translated for now, and the French notice says so. The language notes elsewhere now name French beside Spanish and German.",
+    links: [{ label: "Tools", href: "/tools" }, { label: "Contribute", href: "/contribute" }],
+  },
+  {
+    // PRIME 2026-11-09 14:13: role pages read by the French writer; the customer-success sentence said the opposite of its argument.
+    date: "2026-11-09",
+    time: "14:20",
+    kind: "content",
+    title: "Two role pages say what they mean",
+    titlePt: "Duas páginas de funções dizem o que querem dizer",
+    body:
+      "The customer success manager page ended by crediting the wrong question: the managers who ask whether the customer is reaching outcomes find the risk in time, and those who ask whether the customer is pleased find it at the renewal. The channel account manager page now says that role and the channel systems engineer succeed together or not at all. Both fixed in every language that carries them.",
+    links: [{ label: "Roles", href: "/roles" }],
+  },
+  {
+    // PRIME 2026-11-09 11:58 asked whether a /31's two addresses are network and broadcast; 12:00 "yes please add the note".
+    date: "2026-11-09",
+    time: "12:55",
+    kind: "tool",
+    title: "The home page's CIDR box explains a /31",
+    titlePt: "A caixa de CIDR da página inicial explica um /31",
+    body:
+      "A /31 shows two usable hosts and no network or broadcast address, which surprises anyone who learned that the first and last addresses are always reserved. The box now says why under its four results: on a point-to-point link with a 31-bit mask, RFC 3021 (Request for Comments 3021), section 2.1, says both addresses \"MUST be interpreted as host addresses\". The full CIDR calculator and its documentation already cite the same sections.",
+    links: [{ label: "CIDR calculator", href: "/tools/cidr" }],
+  },
+  {
     // PRIME 2026-11-09 11:14 ("We need rich entries on DMCA and on right to repair") and 11:16 (Hacktivism "very short").
     date: "2026-11-09",
     time: "11:46",

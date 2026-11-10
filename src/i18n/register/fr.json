@@ -1,0 +1,146 @@
+{
+  "language": "fr",
+  "source": "French research of 09/11/2026: renderings that read as machine translation, calques or Quebec usage to a professional reader in France, chosen from the writers' FORBIDDEN list where a whole-word match cannot hit a legitimate use (chiffrage, maître/esclave, tu/ta and the other judgement calls stay with the writers).",
+  "forbidden": [
+    {
+      "avoid": "poignée de main",
+      "use": "handshake (le handshake TLS), négociation"
+    },
+    {
+      "avoid": "établissement de liaison",
+      "use": "handshake, négociation TLS"
+    },
+    {
+      "avoid": "renifleur",
+      "use": "analyseur de paquets"
+    },
+    {
+      "avoid": "cryptage",
+      "use": "chiffrement"
+    },
+    {
+      "avoid": "crypter",
+      "use": "chiffrer"
+    },
+    {
+      "avoid": "encrypter",
+      "use": "chiffrer"
+    },
+    {
+      "avoid": "encryptage",
+      "use": "chiffrement"
+    },
+    {
+      "avoid": "crypté",
+      "use": "chiffré"
+    },
+    {
+      "avoid": "cryptée",
+      "use": "chiffrée"
+    },
+    {
+      "avoid": "cryptés",
+      "use": "chiffrés"
+    },
+    {
+      "avoid": "balanceur de charge",
+      "use": "répartiteur de charge"
+    },
+    {
+      "avoid": "loadbalancer",
+      "use": "répartiteur de charge (load balancer)"
+    },
+    {
+      "avoid": "switché",
+      "use": "commuté"
+    },
+    {
+      "avoid": "taggé",
+      "use": "étiqueté (tagué)"
+    },
+    {
+      "avoid": "taggée",
+      "use": "étiquetée"
+    },
+    {
+      "avoid": "tagué",
+      "use": "étiqueté"
+    },
+    {
+      "avoid": "matché",
+      "use": "correspondant"
+    },
+    {
+      "avoid": "droppé",
+      "use": "rejeté, abandonné"
+    },
+    {
+      "avoid": "checké",
+      "use": "vérifié"
+    },
+    {
+      "avoid": "updater",
+      "use": "mettre à jour"
+    },
+    {
+      "avoid": "upgrader",
+      "use": "mettre à niveau"
+    },
+    {
+      "avoid": "débugger",
+      "use": "déboguer"
+    },
+    {
+      "avoid": "tampon horaire",
+      "use": "horodatage"
+    },
+    {
+      "avoid": "estampille temporelle",
+      "use": "horodatage"
+    },
+    {
+      "avoid": "librairie",
+      "use": "bibliothèque"
+    },
+    {
+      "avoid": "faire du sens",
+      "use": "avoir du sens"
+    },
+    {
+      "avoid": "téléverser",
+      "use": "envoyer, charger"
+    },
+    {
+      "avoid": "infonuagique",
+      "use": "cloud"
+    },
+    {
+      "avoid": "micrologiciel",
+      "use": "firmware"
+    },
+    {
+      "avoid": "informations d’identification",
+      "use": "identifiants"
+    },
+    {
+      "avoid": "liste blanche",
+      "use": "liste d’autorisation"
+    },
+    {
+      "avoid": "liste noire",
+      "use": "liste de blocage"
+    },
+    {
+      "avoid": "sécuritaire",
+      "use": "sûr"
+    },
+    {
+      "avoid": "coupe-feu",
+      "use": "pare-feu"
+    },
+    {
+      "avoid": "garde-barrière",
+      "use": "pare-feu"
+    }
+  ]
+}

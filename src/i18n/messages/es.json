@@ -330,7 +330,8 @@
       "quickSpecialPartial": "En parte de uso especial: {special} de {total} direcciones",
       "quickSpecialNone": "Ningún rango de uso especial",
       "quickSpecialMore": "Ver los rangos en la calculadora completa",
-      "quickHandoffNote": "Los enlaces de abajo llevan tu bloque después del # de la dirección, una parte que tu navegador nunca envía en una solicitud; sí queda en la barra de direcciones y en tu historial, y quien comparte la dirección lo comparte con ella."
+      "quickHandoffNote": "Los enlaces de abajo llevan tu bloque después del # de la dirección, una parte que tu navegador nunca envía en una solicitud; sí queda en la barra de direcciones y en tu historial, y quien comparte la dirección lo comparte con ella.",
+      "quickP2p31": "Enlace punto a punto (RFC 3021): las dos direcciones son de host, sin dirección de red ni de broadcast."
     }
   },
   "tools": {
@@ -24631,7 +24632,7 @@
         "options": "Opciones",
         "prefix": "prefijo {prefix}",
         "noPrefix": "sin prefijo: no contigua",
-        "count": "{count} direcciones"
+        "count": "{count, plural, one {# dirección} other {# direcciones}}"
       },
       "remarks": {
         "title": "Remarks"
@@ -25630,7 +25631,7 @@
         "heading": "{count} flujos, variando el campo {field}",
         "range": "de {from} a {to}",
         "member": "Miembro {m}",
-        "count": "{c} flujos ({pct})",
+        "count": "{c, plural, one {# flujo} other {# flujos}} ({pct})",
         "even": "Uniforme: ningún miembro lleva más de un flujo más que otro.",
         "uneven": "Desigual: el miembro más cargado lleva {max} flujos, y el menos cargado, {min}.",
         "first": "Los primeros flujos caen en los miembros: {list}"
@@ -28714,7 +28715,7 @@
   "contribute": {
     "eyebrow": "Traducciones",
     "title": "Ayuda a mejorar las traducciones",
-    "lede": "Aquí, el portugués de Brasil está escrito con IA y se revisa poco a poco, igual que la interfaz y las herramientas en español y en alemán; todo lo demás en un idioma distinto del inglés es un primer borrador hecho por máquina. Si hablas alguno de ellos y notas algo incorrecto o torpe, tus correcciones son muy bienvenidas. Así puedes enviarlas.",
+    "lede": "Aquí, el portugués de Brasil está escrito con IA y se revisa poco a poco, igual que la interfaz y las herramientas en español, en alemán y en francés; todo lo demás en un idioma distinto del inglés es un primer borrador hecho por máquina. Si hablas alguno de ellos y notas algo incorrecto o torpe, tus correcciones son muy bienvenidas. Así puedes enviarlas.",
     "howTitle": "Cómo contribuir",
     "howBody": "El inglés es la fuente de referencia, y todos los demás idiomas se traducen a partir de él, así que puede haber errores. Cada paquete de idioma es un único archivo de texto con frases etiquetadas. Descarga el que quieras mejorar, cambia solo el texto que va después de cada etiqueta y deja las etiquetas y todo lo que esté entre llaves exactamente como está. Después envía por correo el archivo editado e indica el idioma. Cada envío se revisa a mano.",
     "downloadHeading": "Paquetes de idioma",
@@ -28742,7 +28743,7 @@
       },
       "translation": {
         "title": "Mejorar una traducción",
-        "desc": "El portugués de Brasil, y la interfaz y las herramientas en español y en alemán, están escritos con IA y se revisan poco a poco; todo lo demás en un idioma distinto del inglés es un primer borrador hecho por máquina. Descarga un paquete, corrígelo y envíalo de vuelta.",
+        "desc": "El portugués de Brasil, y la interfaz y las herramientas en español, en alemán y en francés, están escritos con IA y se revisan poco a poco; todo lo demás en un idioma distinto del inglés es un primer borrador hecho por máquina. Descarga un paquete, corrígelo y envíalo de vuelta.",
         "cta": "Ver cómo"
       },
       "code": {
@@ -28881,7 +28882,7 @@
     "complete": "Automática, completa",
     "partial": "Automática, en curso",
     "explainTitle": "Cómo se marcan las traducciones",
-    "explainBody": "El inglés es la fuente: está escrito con IA y solo se publica cuando una persona decide que debe publicarse. El portugués de Brasil también está escrito con IA y se revisa poco a poco, igual que la interfaz y las herramientas en español y en alemán; el resto de los sitios en español y en alemán y los demás idiomas tienen traducción automática. Cada idioma se marca según lo avanzado que está: azul cuando cubre todo el sitio, amarillo mientras el contenido más reciente sigue en inglés y se está poniendo al día, rojo cuando todavía no tiene traducción y, por ahora, se muestra en inglés. Todos los idiomas salvo el inglés llevan un aviso breve, y puedes ayudar a mejorar cualquiera de ellos.",
+    "explainBody": "El inglés es la fuente: está escrito con IA y solo se publica cuando una persona decide que debe publicarse. El portugués de Brasil también está escrito con IA y se revisa poco a poco, igual que la interfaz y las herramientas en español, en alemán y en francés; el resto de los sitios en español, en alemán y en francés y los demás idiomas tienen traducción automática. Cada idioma se marca según lo avanzado que está: azul cuando cubre todo el sitio, amarillo mientras el contenido más reciente sigue en inglés y se está poniendo al día, rojo cuando todavía no tiene traducción y, por ahora, se muestra en inglés. Todos los idiomas salvo el inglés llevan un aviso breve, y puedes ayudar a mejorar cualquiera de ellos.",
     "stub": "Aún sin traducir"
   },
   "changelog": {
@@ -32122,7 +32123,7 @@
       },
       "languages": {
         "h": "Idiomas",
-        "b": "La interfaz está disponible en varios idiomas; cámbialo con el control de idioma del encabezado. El inglés es el original, escrito con IA y publicado solo cuando una persona decide que debe publicarse; el portugués de Brasil también se escribe con IA y se revisa poco a poco, igual que la interfaz y las herramientas en español y en alemán; el resto de los sitios en español y en alemán y los demás idiomas son traducción automática. Cuando una frase aún no está traducida a un idioma, se muestra el texto en inglés para esa frase, de modo que nunca falta nada."
+        "b": "La interfaz está disponible en varios idiomas; cámbialo con el control de idioma del encabezado. El inglés es el original, escrito con IA y publicado solo cuando una persona decide que debe publicarse; el portugués de Brasil también se escribe con IA y se revisa poco a poco, igual que la interfaz y las herramientas en español, en alemán y en francés; el resto de los sitios en español, en alemán y en francés y los demás idiomas son traducción automática. Cuando una frase aún no está traducida a un idioma, se muestra el texto en inglés para esa frase, de modo que nunca falta nada."
       },
       "offline": {
         "h": "Uso sin conexión",
@@ -34804,7 +34805,7 @@
   },
   "contributeTools": {
     "translationsTitle": "Mejorar las traducciones",
-    "translationsBody": "El inglés es el idioma de origen de este sitio. El portugués de Brasil está escrito con IA y se revisa poco a poco, igual que la interfaz y las herramientas en español y en alemán; el resto de los sitios en español y en alemán y otros doce idiomas están traducidos automáticamente: útiles, pero no nativos. Si lees alguno de ellos y algo está mal, como un término técnico traducido al pie de la letra o una frase gramaticalmente correcta que no significa nada, decírmelo es una contribución real, y basta con una nota breve que indique la página y la frase.",
+    "translationsBody": "El inglés es el idioma de origen de este sitio. El portugués de Brasil está escrito con IA y se revisa poco a poco, igual que la interfaz y las herramientas en español, en alemán y en francés; el resto de los sitios en español, en alemán y en francés y otros once idiomas están traducidos automáticamente: útiles, pero no nativos. Si lees alguno de ellos y algo está mal, como un término técnico traducido al pie de la letra o una frase gramaticalmente correcta que no significa nada, decírmelo es una contribución real, y basta con una nota breve que indique la página y la frase.",
     "translationsCta": "Enviar una corrección"
   },
   "roles": {
@@ -37065,7 +37066,7 @@
       "customer-success-manager": {
         "title": "Customer success manager",
         "whatItIs": "La persona que es dueña de la relación después de cerrar la venta. El éxito del cliente (customer success) nació en el negocio de suscripciones, en el que los ingresos llegan a plazos y cada uno de ellos es una decisión que el cliente vuelve a tomar. El rol guía la incorporación, la adopción y la expansión, y está separado a propósito del soporte, que es reactivo, y del ejecutivo de cuentas, que es dueño del negocio nuevo.",
-        "turnsOn": "La satisfacción y la retención son medidas distintas, y la distancia entre ellas es el trabajo. Un cliente puede estar completamente contento y aun así irse, porque sus prioridades cambiaron y nadie del lado del fabricante se dio cuenta, lo que hace que la pregunta útil sea si el cliente está logrando resultados que justifiquen seguir invirtiendo, y no si está satisfecho. Los responsables que hacen la segunda pregunta encuentran el riesgo a tiempo; los que hacen la primera lo encuentran en la renovación.",
+        "turnsOn": "La satisfacción y la retención son medidas distintas, y la distancia entre ellas es el trabajo. Un cliente puede estar completamente contento y aun así irse, porque sus prioridades cambiaron y nadie del lado del fabricante se dio cuenta, lo que hace que la pregunta útil sea si el cliente está logrando resultados que justifiquen seguir invirtiendo, y no si está satisfecho. Los responsables que hacen la primera pregunta encuentran el riesgo a tiempo; los que hacen la segunda lo encuentran en la renovación.",
         "theDay": {
           "0": "La incorporación: llevar a un cliente a su primer resultado real, porque el tiempo que tarda predice todo lo demás.",
           "1": "Vigilar la adopción en toda una cartera, que va desde un puñado de cuentas estratégicas hasta varios cientos en el extremo más ligero.",
@@ -39163,6 +39164,28 @@
       "python": {
         "title": "Python para ingenieros de redes y seguridad",
         "lede": "Qué es Python y cuánto dura cada versión, los entornos y el empaquetado, bytes y texto, errores y logs; después, sockets, direcciones, SSH, API de dispositivos y salida de CLI analizada; después, hashing, TLS, programación segura, la cadena de suministro y el análisis de logs y de paquetes, cada tema a partir de la documentación del propio módulo o biblioteca."
+      },
+      "psyops": {
+        "title": "Operaciones psicológicas",
+        "lede": "De la pequeña mentira repetida hasta que parece verdad a las campañas de Estados, empresas y redes criminales: los mecanismos, los actores y sus fines declarados, el amplificador digital, quién decide qué es dañino y las defensas, cada afirmación con sus pruebas y la respuesta de cada parte acusada.",
+        "planned": {
+          "bec": "Compromiso del correo electrónico empresarial y suplantación de identidad",
+          "voiceClones": "Clonación de voz y deepfakes en el fraude",
+          "stateCampaigns": "Campañas estatales documentadas",
+          "influenceForHire": "Influencia por encargo",
+          "botsSockpuppets": "Bots, cuentas títere y astroturfing",
+          "brazilMassMessaging": "Brasil: envíos masivos, los tribunales y la CPMI",
+          "lodgeToNetwork": "De la logia a la red: cómo cambió el alcance",
+          "echoChambers": "Cámaras de eco y burbujas de filtro: las pruebas y la controversia",
+          "profiling": "Recomendación y perfilado: lo que revelan las plataformas",
+          "moderation": "Moderación de contenidos a escala",
+          "theLaw": "La ley: la Section 230, la DSA, el Marco Civil y las demás",
+          "surveillance": "Vigilancia: capacidad y contención",
+          "verification": "Verificación y comprobación de hechos",
+          "prebunking": "Prebunking e inoculación",
+          "misbeliefs": "Por qué persisten las creencias erróneas",
+          "genAi": "IA generativa y operaciones de influencia"
+        }
       }
     },
     "parts": "Las partes",
@@ -39183,7 +39206,8 @@
       "zscaler": "Zscaler",
       "netskope": "Netskope",
       "ping": "Ping Identity",
-      "extreme": "Extreme Networks"
+      "extreme": "Extreme Networks",
+      "influence": "Influencia y engaño"
     },
     "bySubject": "Por tema",
     "bySubjectLede": "El terreno sobre el que se apoya cada plataforma: protocolos, criptografía, la web, la identidad, los formatos y las herramientas del operador.",
@@ -40567,5 +40591,24 @@
     "intro": "Fórmulas de juego que todo el mundo conoce, cada una con un tema propio de redes, seguridad u operaciones. Juega todo lo que quieras; los juegos con partida diaria son iguales para todos durante un mismo día del tiempo universal coordinado (UTC), y una partida terminada va a la tabla pública de puntuaciones salvo que desactives la opción de compartir. Tus mejores puntuaciones se quedan en este navegador.",
     "gamesTitle": "Los juegos",
     "shelfLink": "Los retos diarios y los juguetes están en la estantería de /dev/fun."
+  },
+  "learnVoice": {
+    "kicker": "La opinión de Rodolfo Nützmann",
+    "label": "Opinión personal, no un hecho establecido. Expresada el {date}."
+  },
+  "learnClaims": {
+    "status": {
+      "established": "Establecido",
+      "attributed": "Atribuido oficialmente",
+      "reported": "Informado",
+      "alleged": "Alegado",
+      "disputed": "Cuestionado",
+      "denied": "Negado"
+    },
+    "statusBy": "{status} {who}"
+  },
+  "learnMethod": {
+    "title": "Cómo informa esta serie",
+    "body": "Cada parte informa de lo que se ha publicado en otros lugares (expedientes judiciales, informes oficiales y parlamentarios, investigación revisada por pares, documentos de las propias plataformas y declaraciones de las partes), con la fecha en que se leyó cada fuente. No declara quién tiene razón. Cada afirmación indica qué la respalda, de establecida a alegada o negada, y cuando se acusa a una parte, la respuesta que ha publicado aparece junto a la acusación. Lo que no se sabe se presenta como desconocido, y las conclusiones cambian cuando cambian las pruebas. La opinión personal aparece solo en los bloques marcados como la opinión de Rodolfo Nützmann."
   }
 }

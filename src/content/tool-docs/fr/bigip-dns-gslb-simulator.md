@@ -1,0 +1,22 @@
+## Ce que fait l’outil
+
+Modélise l’équilibrage de charge global (GSLB, global server load balancing) de BIG-IP DNS (anciennement GTM), qui fonctionne à deux niveaux : une wide IP choisit d’abord un pool, puis le pool choisit un serveur virtuel. Configurez vos pools (chacun avec un ratio, une étiquette de région, un état up/down et une méthode de sélection des membres) et leurs membres, puis réglez la méthode de pool de la wide IP, une région cliente et un nombre de requêtes N. L’outil calcule comment se résolvent les N prochaines requêtes de résolution de nom DNS : d’abord la répartition par pool, puis la répartition par membre au sein de chaque pool.
+
+## Ce que l’outil simule, et ce qu’il ne simule pas
+
+Méthodes déterministes aux deux niveaux : Round Robin (circulaire et égal), Ratio (pondéré, au plus fort reste), Global Availability (toutes les requêtes vers la première ressource disponible dans l’ordre de la liste, les autres servant de secours) et Topology (la ressource dont la région correspond à celle du client l’emporte avec le score le plus élevé ; les égalités au sein du score gagnant sont départagées en round robin). Un pool ou un membre down ne reçoit rien, et le trafic se répartit entre ceux qui sont up.
+
+Les méthodes dynamiques (Quality of Service, Completion Rate, Round Trip Time, Fewest Hops, Kilobytes/Second, Packet Rate, Virtual Server Score, Least Connections, CPU) dépendent de métriques de performance en temps réel que les agents big3d collectent dans chaque centre de données. Elles ne peuvent pas être reproduites hors ligne : l’outil le dit clairement plutôt que d’inventer une répartition. C’est la même règle d’honnêteté que suit le simulateur LTM pour ses méthodes dynamiques.
+
+## L’importance des deux niveaux
+
+La confusion la plus courante en GSLB consiste à traiter la sélection du pool et celle du membre comme une seule décision. Ce sont deux décisions distinctes, et chacune peut utiliser une méthode différente : une wide IP peut choisir ses pools par Topology (envoyer les clients européens vers le pool EU) tandis que chaque pool choisit un serveur virtuel par Ratio (donner plus de poids au plus grand site). L’outil rend cette séparation visible (vous voyez quel pool a répondu, puis quel serveur virtuel de ce pool a résolu la requête) : l’interaction entre les deux niveaux devient concrète plutôt qu’abstraite.
+
+## Partage des résultats
+
+Sous le niveau des pools (ou sous l’explication, pour une méthode dynamique de wide IP), le bouton **Partager les résultats** crée, seulement quand vous appuyez dessus, un lien vers cette page qui contient, après le `#`, tout le formulaire sous forme de valeurs nommées : `method`, `region` (omis s’il est vide), `requests`, `pools` (une ligne par pool : nom, ratio, région, up et méthode des membres, séparés par des tabulations) et `members` (une ligne par membre : numéro de son pool, nom, ratio, région et up). Sa fenêtre contextuelle indique d’abord ce que contient le lien, puis propose le bouton Copier le lien et, si le navigateur en dispose, sa feuille de partage ; l’adresse de la page ne change pas. Les noms et les régions partent tels que saisis, sauf qu’une tabulation collée dans l’un d’eux est transmise comme un espace.
+
+La [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, consultée le 27/10/2026) précise que le fragment est séparé du reste de l’URI avant tout déréférencement (« separated from the rest of the URI prior to a dereference ») : les valeurs ne sont donc pas envoyées au serveur à l’ouverture du lien ; elles restent dans la barre d’adresse et l’historique de la personne qui l’ouvre, et quiconque possède le lien peut les lire.
+
+- **Longueur.** Au plus 16 384 caractères au total, la limite que le site applique à toute valeur placée après le `#` ; au-delà, aucun lien n’est créé et la fenêtre contextuelle indique la longueur.
+- **Ouverture d’un lien.** Tout le formulaire est remplacé par les valeurs du lien, y compris un champ que le lien ne contient pas, et la page les simule ; rien n’est envoyé nulle part. Une valeur que le formulaire n’accepterait pas (une méthode inconnue, un ratio inférieur à 1, une ligne à laquelle il manque un champ) rend le lien mal formé, et il est ignoré en entier. Les valeurs quittent ensuite aussitôt l’adresse de la page, sans aucune requête : un rechargement, ou le bouton Partager de la page, n’emporte donc rien.

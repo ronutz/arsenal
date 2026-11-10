@@ -19,6 +19,11 @@ import rehypeLocaliseLinks from "@/lib/rehypeLocaliseLinks";
 // Links to other sites open in a new tab (PRIME 2026-10-27; src/lib/rehypeExternalLinks.ts).
 import rehypeExternalLinks from "@/lib/rehypeExternalLinks";
 import GlossaryTerm from "@/components/GlossaryTerm";
+// The psychological-operations blocks (PRIME 2026-11-09): a labelled opinion of Rodolfo Nützmann, a claim with its
+// evidence status, and the method note; a post tagged "psychological-operations" is held to them (check-rod-voice.mjs).
+import RodVoice from "@/components/learn/RodVoice";
+import Claim from "@/components/learn/Claim";
+import MethodNote from "@/components/learn/MethodNote";
 import { rehypeGlossaryHints } from "@/lib/rehypeGlossaryHints";
 import { getHintSurfaces } from "@/lib/glossaryHints";
 import remarkGfm from "remark-gfm";
@@ -149,7 +154,7 @@ export default async function BlogPostPage({
                     rehypePlugins: [[rehypeGlossaryHints, getHintSurfaces()], [rehypeLocaliseLinks, locale], rehypeExternalLinks],
                   },
                 }}
-                components={{ GlossaryTerm }}
+                components={{ GlossaryTerm, RodVoice, Claim, MethodNote }}
               />
             </div>
 
