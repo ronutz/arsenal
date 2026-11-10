@@ -7,10 +7,14 @@
 // /dev/fun/scores: THE GAMES' SCORES AND STATISTICS (PRIME 08/11/2026: "a
 // scoreboard for the games ... streamlined with the games, as well as an
 // experience on itself for those wanting to see more about scores and game
-// stats"). A static shell: the head is rendered here in every language, and
-// the board itself (src/components/dev/fun/ScoresBoard.tsx) reads the public
-// endpoints in the browser after the page loads, so the static export needs
-// nothing from the database. Linked near the top of the /dev/fun shelf and
+// stats"), A DASHBOARD SINCE 09/11/2026 (PRIME 21:41: "an enticing, engaging,
+// sleek, clever, modern DASHBOARD ... from where the complete individual stats
+// scoreboard for each item can be accessed"). A static shell: the head is
+// rendered here in every language, and the dashboard
+// (src/components/dev/fun/ScoresDashboard.tsx) reads the public endpoints and
+// this browser's own record after the page loads, so the static export needs
+// nothing from the database. Each game's full board is its own page,
+// /dev/fun/scores/<game> ([game]/page.tsx). Linked near the top of the /dev/fun shelf and
 // under every daily game's "Today's board". It mounts no game, so it is not a
 // shelf entry (scripts/check-fun-games.mts).
 //
@@ -34,8 +38,8 @@ import SiteFooter from "@/components/SiteFooter";
 import MessageSlice from "@/components/MessageSlice";
 // The crumb back to the shelf.
 import { Link } from "@/i18n/navigation";
-// The board.
-import ScoresBoard from "@/components/dev/fun/ScoresBoard";
+// The dashboard.
+import ScoresDashboard from "@/components/dev/fun/ScoresDashboard";
 // The games on the board, for their names.
 import { BOARD_GAMES } from "@/lib/fun/board-rules";
 
@@ -91,7 +95,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
               <p className="fg-intro">{t("intro")}</p>
             </div>
             <MessageSlice namespaces={["devFun.scores"]}>
-              <ScoresBoard names={names} levels={levels} />
+              <ScoresDashboard names={names} levels={levels} />
             </MessageSlice>
           </div>
         </section>

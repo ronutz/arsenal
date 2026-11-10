@@ -14,11 +14,11 @@
 //   - COMMAND-PALETTE pattern: a trigger showing the current language + its
 //     BCP-47 code (mono), opening a panel with type-to-filter. This reads as a
 //     practitioner tool, not a consumer widget — matching the site's authority.
-//   - ALL LANGUAGES, HONESTLY STATUSED: the panel lists every registered locale
-//     and marks each with a colored status dot. Languages with no pack yet are
-//     shown with a RED dot (they fall back to English) rather than hidden — the
-//     full roadmap is visible, and the dot makes the "shown in English for now"
-//     promise explicit instead of silently dropping the language.
+//   - OFFERED LANGUAGES, HONESTLY STATUSED: the panel lists the live locales
+//     and marks each with a colored status dot. Languages not translated yet
+//     are not listed at all (PRIME 2026-09-10 for the stubs; 2026-11-09 21:41
+//     for the machine-translated ones demoted until their interface, tools and
+//     games are written), so the legend has no red "not translated yet" row.
 //   - ORDER (modern-picker best practice, PRIME spec): English first, pt-BR
 //     second (the source + reviewed languages, pinned), then the remaining
 //     locales banded by translation status (reviewed -> machine -> stub) and,
@@ -347,10 +347,7 @@ export default function LanguageSwitcher() {
               <span className="ls-status ls-status--partial" />
               {tStatus("partial")}
             </span>
-            <span className="ls-legend-row">
-              <span className="ls-status ls-status--stub" />
-              {tStatus("stub")}
-            </span>
+            {/* No red "not translated yet" row (PRIME 09/11/2026 21:41): untranslated languages are not listed at all. */}
           </div>
         </div>
       )}

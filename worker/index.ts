@@ -45,6 +45,7 @@ import {
   LIVE_LOCALE_CODES,
   AUTHORED_CONTENT_LOCALES,
   DEFAULT_LOCALE,
+  RETIRED_LOCALE_CODES,
 } from "../src/i18n/locales";
 // Which routes exist only in the authored locales: the same predicate the site's links use (2026-11-02), so a link
 // and this redirect can never disagree about where an article or a glossary entry lives.
@@ -517,7 +518,7 @@ export default {
     // travels with it, and a path that is exactly "/<locale>/archive" gets the
     // directory form. Added 2026-10-06 after the fix above went live.
     const archiveMatch = /^\/([^/]+)\/archive(\/.*)?$/.exec(url.pathname);
-    if (archiveMatch && LOCALE_CODES.includes(archiveMatch[1])) {
+    if (archiveMatch && (LOCALE_CODES.includes(archiveMatch[1]) || RETIRED_LOCALE_CODES.includes(archiveMatch[1]))) {
       const bare = `/archive${archiveMatch[2] ?? "/"}${url.search}`;
       return Response.redirect(new URL(bare, url.origin).toString(), 301);
     }
@@ -528,11 +529,24 @@ export default {
     const isStubLocale = !isLiveLocale && LOCALE_CODES.includes(seg);
     const looksLikeFile = /\.[a-z0-9]+$/i.test(url.pathname);
 
-    if (isStubLocale) {
+    // A retired locale (taken out of the registry, PRIME 09/11/2026 22:14): its pages are gone for good, so the same page
+    // in English with a PERMANENT redirect, the rest of the path and the query kept.
+    if (RETIRED_LOCALE_CODES.includes(seg)) {
       const rest = url.pathname.slice(seg.length + 1) || "/";
       let dest = `/${DEFAULT_LOCALE}${rest}`;
       if (!looksLikeFile && !dest.endsWith("/")) dest += "/";
       return Response.redirect(new URL(`${dest}${url.search}`, url.origin).toString(), 301);
+    }
+
+    if (isStubLocale) {
+      const rest = url.pathname.slice(seg.length + 1) || "/";
+      let dest = `/${DEFAULT_LOCALE}${rest}`;
+      if (!looksLikeFile && !dest.endsWith("/")) dest += "/";
+      // 302, not 301 (2026-11-09): PRIME demoted eleven machine-translated locales to stubs until their interface, tools
+      // and games are written in them (21:41). Their pages were live and indexed, and each will come back; a permanent
+      // redirect would keep every browser that saw it on English after the promotion ("not translated YET", as for the
+      // corpus redirect above).
+      return Response.redirect(new URL(`${dest}${url.search}`, url.origin).toString(), 302);
     }
 
     if (!isLiveLocale && !looksLikeFile) {

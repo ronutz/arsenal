@@ -32,6 +32,8 @@ import { Link } from "@/i18n/navigation";
 import WhackABug from "@/components/dev/fun/games/WhackABug";
 // "Solve the other puzzles" (PRIME 05/11/2026): the call-out, rendered here, and the slot that hands it to the frame.
 import MorePuzzles from "@/components/dev/fun/MorePuzzles";
+// "Play next", first among the result's actions (PRIME 09/11/2026 23:04).
+import NextPuzzle from "@/components/dev/fun/NextPuzzle";
 import { MorePuzzlesProvider } from "@/components/dev/fun/MorePuzzlesSlot";
 
 /**
@@ -84,7 +86,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
             </div>
             <MessageSlice namespaces={["devFun.games.common", "devFun.games.whack-a-bug"]}>
               {/* "Solve the other puzzles", placed by the game's frame right after its result (PRIME 05/11/2026). */}
-              <MorePuzzlesProvider more={<MorePuzzles current="whack-a-bug" />}>
+              <MorePuzzlesProvider more={<MorePuzzles current="whack-a-bug" />} next={<NextPuzzle current="whack-a-bug" />}>
                 <WhackABug locale={locale} />
               </MorePuzzlesProvider>
             </MessageSlice>

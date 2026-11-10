@@ -1912,3 +1912,196 @@ a.fg-link-button { display: inline-flex; align-items: center; }
 .fg-sc-busy > span + span { margin-left: 0.5rem; }
 /* The notes panel: plain text, the switch under it. */
 .fg-sc-notes { align-items: flex-start; }
+
+/* ---- The scores dashboard (/dev/fun/scores, PRIME 09/11/2026 21:41) ---------------------------------------------- */
+/* Five blocks: today on the board beside the clock and highlights, "You", the game cards, the month, the notes. Every
+   colour is a theme token or a game's own accent (--glyph-accent from its fg-glyph--<id> class), so each theme holds. */
+
+/* The whole dashboard: its blocks one under the other. */
+.fg-dash { display: grid; gap: 1rem; min-width: 0; }
+/* The first row: one column on a phone, the pulse wider than the side panel from 900 px. */
+.fg-dash-top { display: grid; gap: 1rem; min-width: 0; }
+@media (min-width: 900px) { .fg-dash-top { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); } }
+/* A panel: the board's raised surface. */
+.fg-dash-panel { border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-elevated); padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: 0.8rem; min-width: 0; }
+@media (max-width: 480px) { .fg-dash-panel { padding: 0.8rem; } }
+/* Today on the board: a faint glow of the site's accent from its corner. */
+.fg-dash-pulse { background: radial-gradient(120% 90% at 0% 0%, color-mix(in oklab, var(--accent-primary) 10%, transparent), transparent 60%), var(--surface-elevated); }
+/* A block's head: the title, and the date or the controls beside it, wrapping on a phone. */
+.fg-dash-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.4rem 0.75rem; }
+/* The block titles. */
+.fg-dash-h2 { margin: 0; font-size: 1.05rem; color: var(--text-primary); }
+.fg-dash-h3 { margin: 0.25rem 0 0; font-size: 0.9rem; color: var(--text-primary); }
+/* A small caption over a chart, a clock or a calendar. */
+.fg-dash-cap { margin: 0 0 0.35rem; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-secondary); }
+/* Today's date with a live dot. */
+.fg-dash-live { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; color: var(--text-secondary); }
+.fg-dash-live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-success); box-shadow: 0 0 0 0 color-mix(in oklab, var(--color-success) 60%, transparent); animation: fg-dash-beat 2.4s ease-out infinite; }
+@keyframes fg-dash-beat { 0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--color-success) 55%, transparent); } 70% { box-shadow: 0 0 0 7px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+@media (prefers-reduced-motion: reduce) { .fg-dash-live-dot { animation: none; } }
+
+/* The figures: two a row on a phone, four from 640 px. */
+.fg-dash-kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; margin: 0; }
+@media (min-width: 640px) { .fg-dash-kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+/* One figure on its tile. */
+.fg-dash-kpi { border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-base); padding: 0.65rem 0.75rem; min-width: 0; }
+.fg-dash-kpi dt { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-secondary); }
+.fg-dash-kpi dd { margin: 0.3rem 0 0; display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
+/* The number itself. */
+.fg-dash-kpi-value { font-family: var(--font-mono); font-size: clamp(1.25rem, 3.6vw, 1.7rem); line-height: 1.1; color: var(--text-primary); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+/* The line under it. */
+.fg-dash-kpi-sub { font-size: 0.75rem; color: var(--text-tertiary); overflow-wrap: anywhere; }
+/* A thin meter of a share solved: the site's accent on the pulse, the game's own accent on a card. */
+.fg-dash-meter { display: block; height: 6px; border-radius: 999px; background: color-mix(in oklab, var(--border-subtle) 80%, transparent); overflow: hidden; }
+.fg-dash-meter-fill { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--accent-primary), var(--color-success)); transition: width 0.5s ease; }
+.fg-dash-card .fg-dash-meter-fill { background: var(--glyph-accent, var(--accent-primary)); }
+@media (prefers-reduced-motion: reduce) { .fg-dash-meter-fill { transition: none; } }
+/* The boards in play: a dot per board, lit in its game's accent when it has a round today. */
+.fg-dash-dots { display: flex; flex-wrap: wrap; gap: 3px; }
+.fg-dash-dot { width: 9px; height: 9px; border-radius: 2px; background: var(--border-subtle); }
+.fg-dash-dot-on { background: var(--glyph-accent, var(--accent-primary)); }
+/* The flags of today's countries. */
+.fg-dash-flags { display: flex; flex-wrap: wrap; gap: 0.3rem; font-size: 1.05rem; }
+
+/* The 30 days, a bar a day. */
+.fg-dash-spark { margin: 0; min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; min-height: 118px; }
+/* The drawing takes the room left in the panel (it stretches: preserveAspectRatio none), never under 72 px. */
+.fg-dash-spark-svg { display: block; width: 100%; flex: 1 1 auto; height: 0; min-height: 72px; }
+/* The whole slot answers the pointer, so a thin bar is easy to hover. */
+.fg-dash-spark-hit { fill: transparent; }
+/* The rounds of the day, quiet, and the solved part, bright. */
+.fg-dash-spark-all { fill: color-mix(in oklab, var(--text-tertiary) 35%, transparent); }
+.fg-dash-spark-won { fill: var(--accent-primary); }
+.fg-dash-spark-svg g:hover .fg-dash-spark-all { fill: var(--text-secondary); }
+/* The first and last dates under it. */
+.fg-dash-spark-axis { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-tertiary); margin-top: 0.25rem; }
+
+/* The side panel: the clock, then the highlights. */
+.fg-dash-side { gap: 0.6rem; }
+/* The countdown to 00:00 UTC. */
+.fg-dash-clock { padding-bottom: 0.6rem; border-bottom: 1px solid var(--border-subtle); }
+.fg-dash-clock p { margin: 0; }
+.fg-dash-clock-time { font-size: clamp(2rem, 7vw, 2.6rem); line-height: 1.05; color: var(--accent-primary); font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+/* The highlights: one a row, marked with the game's accent. */
+.fg-dash-highlights { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.45rem; }
+.fg-dash-hl { display: grid; gap: 0.1rem; padding: 0.4rem 0.6rem; border-left: 3px solid var(--glyph-accent, var(--accent-amber)); border-radius: var(--radius-sm); background: var(--surface-base); min-width: 0; }
+.fg-dash-hl-label { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-tertiary); }
+.fg-dash-hl-name { color: var(--text-primary); font-weight: 600; text-decoration: none; overflow-wrap: anywhere; }
+a.fg-dash-hl-name:hover, a.fg-dash-hl-name:focus-visible { text-decoration: underline; text-underline-offset: 0.2em; }
+.fg-dash-hl-sub { font-size: 0.78rem; color: var(--text-secondary); }
+
+/* "You": the ring, the figures and the calendar; one column on a phone. */
+.fg-dash-empty { margin: 0; color: var(--text-secondary); line-height: 1.55; }
+.fg-dash-you-grid { display: grid; gap: 1rem; align-items: center; min-width: 0; }
+@media (min-width: 640px) { .fg-dash-you-grid { grid-template-columns: 140px minmax(0, 1fr); } .fg-dash-heat-wrap { grid-column: 1 / -1; } }
+@media (min-width: 1100px) { .fg-dash-you-grid { grid-template-columns: 140px minmax(0, 1fr) auto; } .fg-dash-heat-wrap { grid-column: auto; } }
+/* Today's ring, centred under its caption. */
+.fg-dash-ring-wrap { display: grid; justify-items: center; gap: 0.2rem; }
+.fg-dash-ring { width: 120px; height: 120px; }
+.fg-dash-ring-track { fill: none; stroke: var(--border-subtle); stroke-width: 10; }
+.fg-dash-ring-fill { fill: none; stroke: var(--accent-primary); stroke-width: 10; stroke-linecap: round; transition: stroke-dasharray 0.6s ease; }
+@media (prefers-reduced-motion: reduce) { .fg-dash-ring-fill { transition: none; } }
+.fg-dash-ring-n { fill: var(--text-primary); font-family: var(--font-mono); font-size: 24px; text-anchor: middle; dominant-baseline: middle; }
+.fg-dash-ring-sub { fill: var(--text-secondary); font-size: 10px; text-anchor: middle; }
+/* The four figures stay two a row inside "You". */
+.fg-dash-kpis-you { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 640px) { .fg-dash-kpis-you { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* The calendar: a column a week, Monday on top, scrolling on its own when it cannot fit. */
+.fg-dash-heat-wrap { margin: 0; min-width: 0; }
+.fg-dash-heat { --cell: 13px; display: grid; grid-template-rows: repeat(7, var(--cell)); grid-auto-flow: column; grid-auto-columns: var(--cell); gap: 3px; overflow-x: auto; padding-bottom: 2px; }
+/* A day: its intensity from the puzzles solved, in the site's accent. */
+.fg-dash-heat-cell { display: inline-block; width: var(--cell, 13px); height: var(--cell, 13px); border-radius: 3px; background: var(--surface-base); border: 1px solid var(--border-subtle); }
+.fg-dash-heat-cell[data-level="1"] { background: color-mix(in oklab, var(--accent-primary) 30%, var(--surface-base)); border-color: transparent; }
+.fg-dash-heat-cell[data-level="2"] { background: color-mix(in oklab, var(--accent-primary) 52%, var(--surface-base)); border-color: transparent; }
+.fg-dash-heat-cell[data-level="3"] { background: color-mix(in oklab, var(--accent-primary) 75%, var(--surface-base)); border-color: transparent; }
+.fg-dash-heat-cell[data-level="4"] { background: var(--accent-primary); border-color: transparent; }
+/* Before the games existed: barely there. */
+.fg-dash-heat-pre { opacity: 0.35; border-style: dashed; }
+/* Today: ringed. */
+.fg-dash-heat-today { outline: 1px solid var(--text-primary); outline-offset: 1px; }
+/* The legend under it. */
+.fg-dash-heat-legend { display: flex; align-items: center; gap: 3px; margin-top: 0.4rem; }
+.fg-dash-heat-legend > span:first-child { margin-right: 0.3rem; }
+.fg-dash-heat-legend > span:last-child { margin-left: 0.3rem; }
+/* Today's places of this browser's rounds. */
+.fg-dash-places { display: grid; gap: 0.4rem; }
+.fg-dash-places p { margin: 0; }
+.fg-dash-place-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.35rem; }
+@media (min-width: 640px) { .fg-dash-place-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.fg-dash-place { display: flex; justify-content: space-between; gap: 0.5rem; padding: 0.35rem 0.6rem; border-left: 3px solid var(--glyph-accent, var(--accent-primary)); border-radius: var(--radius-sm); background: var(--surface-base); min-width: 0; }
+.fg-dash-place-name { color: var(--text-primary); text-decoration: none; overflow-wrap: anywhere; }
+.fg-dash-place-name:hover, .fg-dash-place-name:focus-visible { text-decoration: underline; text-underline-offset: 0.2em; }
+.fg-dash-place-n { color: var(--text-primary); white-space: nowrap; }
+
+/* The game cards: one column on a phone, two from 640 px, three from 1024 px. */
+.fg-dash-games { display: flex; flex-direction: column; gap: 0.8rem; min-width: 0; }
+.fg-dash-grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem; }
+@media (min-width: 640px) { .fg-dash-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .fg-dash-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+/* A card: the game's accent glowing from its corner, the border taking the accent on hover. */
+.fg-dash-card { display: flex; flex-direction: column; gap: 0.55rem; padding: 0.85rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: radial-gradient(130% 100% at 0% 0%, color-mix(in oklab, var(--glyph-accent) 12%, transparent), transparent 60%), var(--surface-base); min-width: 0; transition: border-color 0.2s ease, transform 0.2s ease; }
+.fg-dash-card:hover, .fg-dash-card:focus-within { border-color: var(--glyph-accent); transform: translateY(-1px); }
+@media (prefers-reduced-motion: reduce) { .fg-dash-card { transition: none; } .fg-dash-card:hover, .fg-dash-card:focus-within { transform: none; } }
+/* The card's head: the tile, the name, the chips. */
+.fg-dash-card-top { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.6rem; }
+.fg-dash-card-name { margin: 0; flex: 1 1 8rem; font-size: 1rem; color: var(--text-primary); }
+/* This browser's state today and its streak. */
+.fg-dash-chip { font-size: 0.7rem; padding: 0.15rem 0.45rem; border-radius: 999px; border: 1px solid var(--border-strong); color: var(--text-secondary); white-space: nowrap; }
+.fg-dash-chip-won { border-color: var(--color-success); color: var(--color-success); }
+.fg-dash-chip-streak { border-color: var(--accent-amber); color: var(--accent-amber); }
+/* One board of the game. */
+.fg-dash-card-board { display: grid; gap: 0.3rem; }
+.fg-dash-card-mode { margin: 0; font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-tertiary); }
+.fg-dash-card-line { margin: 0; display: flex; justify-content: space-between; gap: 0.5rem; font-size: 0.85rem; color: var(--text-secondary); }
+/* A labelled line: today's leader, the month's record, this browser's best. */
+.fg-dash-card-row { margin: 0; display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; font-size: 0.8rem; min-width: 0; }
+.fg-dash-card-key { color: var(--text-tertiary); flex: none; }
+.fg-dash-card-val { color: var(--text-primary); text-align: right; overflow-wrap: anywhere; }
+/* The ways on, at the foot of the card. */
+.fg-dash-card-links { margin: auto 0 0; padding-top: 0.5rem; border-top: 1px solid var(--border-subtle); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.5rem 0.75rem; }
+.fg-dash-card-cta { color: var(--glyph-accent, var(--accent-primary)); font-weight: 600; text-decoration: none; }
+.fg-dash-card-cta:hover, .fg-dash-card-cta:focus-visible { text-decoration: underline; text-underline-offset: 0.2em; }
+
+/* The month: the busiest games beside the countries from 760 px. */
+.fg-dash-month { display: grid; gap: 1rem; }
+@media (min-width: 760px) { .fg-dash-month { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.fg-dash-month p { margin: 0; }
+/* A ranked row: the name, a bar to scale, the count. */
+.fg-dash-rank { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.45rem; }
+.fg-dash-rank-row { display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr) auto; align-items: center; gap: 0.6rem; }
+.fg-dash-rank-name { color: var(--text-primary); text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.85rem; }
+a.fg-dash-rank-name:hover, a.fg-dash-rank-name:focus-visible { text-decoration: underline; text-underline-offset: 0.2em; }
+.fg-dash-rank-bar { display: block; height: 8px; border-radius: 999px; background: color-mix(in oklab, var(--border-subtle) 80%, transparent); overflow: hidden; }
+.fg-dash-rank-fill { display: block; height: 100%; border-radius: inherit; background: var(--glyph-accent, var(--accent-primary)); }
+.fg-dash-rank-n { font-size: 0.8rem; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+@media (max-width: 420px) { .fg-dash-rank-row { grid-template-columns: minmax(0, 8rem) minmax(0, 1fr) auto; } }
+
+/* ---- The board's view and "Play next" (PRIME 09/11/2026 23:04) ------------------------------------------------- */
+/* The view bar over the playing area: smaller, the size, larger, expand, full screen; right-aligned, wrapping. */
+.fg-view { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 0.35rem; margin-bottom: -0.4rem; }
+/* Its buttons: small, quiet, still 36 px tall to tap. */
+.fg-view-btn { min-height: 36px; min-width: 36px; padding: 0.2rem 0.6rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); background: var(--surface-base); color: var(--text-secondary); font: inherit; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
+.fg-view-btn:hover:not(:disabled) { border-color: var(--accent-primary); color: var(--text-primary); }
+.fg-view-btn:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+.fg-view-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.fg-view-btn[aria-pressed="true"] { border-color: var(--accent-primary); color: var(--accent-primary); }
+/* Expand, a little apart from the size controls. */
+.fg-view-wide { margin-left: 0.35rem; }
+/* The size in per cent between the two. */
+.fg-view-pct { min-width: 3.2rem; text-align: center; font-size: 0.78rem; color: var(--text-tertiary); font-variant-numeric: tabular-nums; }
+/* The zoom layer: the game at its chosen size (the zoom itself is set inline). */
+/* The frame: the playing area's width; it scrolls sideways only while the game is drawn larger than 100%. */
+.fg-board-frame { width: 100%; max-width: 100%; }
+.fg-board-frame.fg-board-zoomed { overflow-x: auto; padding-bottom: 0.25rem; position: relative; }
+/* The zoom layer: the game's own column, as the playing area always laid it out. */
+.fg-board-zoom { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; width: 100%; }
+/* Expanded: the playing area leaves the page's column for the window's width (up to 1,400 px), centred on the column. */
+.fg-shell-wide .fg-board-wrap { width: min(calc(100vw - 3rem), 1400px); max-width: none; align-self: center; }
+/* Expanded or on the whole screen, Spanning Tree's network takes all the room it is given (its drawing scales, labels
+   with it). */
+.fg-shell-wide .fg-stp-board, .fg-shell-wide .fg-stp-start, .fg-board-full .fg-stp-board, .fg-board-full .fg-stp-start { max-width: 100%; }
+/* The whole screen: the page's ground behind the game, room around it, scrolling when the game is taller. */
+.fg-board-full { width: 100%; max-width: none; height: 100%; overflow: auto; padding: 1.5rem; background: var(--canvas-primary); justify-content: center; }
+/* "Play next": the result's first button, in the next game's accent, with its arrow. */
+.fg-button-next { display: inline-flex; align-items: center; gap: 0.45rem; text-decoration: none; background: var(--glyph-accent, var(--accent-primary)); border-color: var(--glyph-accent, var(--accent-primary)); color: var(--canvas-primary); box-shadow: 0 0 0 3px color-mix(in oklab, var(--glyph-accent, var(--accent-primary)) 25%, transparent); }
+.fg-button-next:hover, .fg-button-next:focus-visible { filter: brightness(1.08); }

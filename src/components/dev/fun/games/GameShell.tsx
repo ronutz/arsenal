@@ -50,6 +50,17 @@
 //     what is kept in this browser. Sending happens when the game records its
 //     result (storage.ts tells src/lib/fun/board.ts), so no game sends anything
 //     itself; Spanning Tree only names the level on screen (boardMode).
+//   - the board's view (PRIME 09/11/2026 23:04: "Allow expanding the board and
+//     enlarging the fonts and graphics of puzzle boards"): a bar over the
+//     playing area makes it smaller or larger (CSS zoom, 100% to 200%: fonts,
+//     drawings and hit areas scale together), widens it past the page's column
+//     (Expand) or gives it the whole screen where the browser allows; the
+//     choice is kept per game in this browser (the record's extra.boardView);
+//   - "Play next" (PRIME 09/11/2026 23:04: "quickly visible button 'play next
+//     game/puzzle of the day' on each game ... right after finishing"): the
+//     page hands over a NextPuzzle (MorePuzzlesSlot) that GameShell puts first
+//     among the result's actions; when a round ends, full screen is left and the
+//     result is scrolled into view, so the button is seen at once.
 // The game itself is the child: the board, its controls, its own timer.
 // Strings come from devFun.games.common; the game passes its own title and rules.
 // ============================================================================
@@ -75,11 +86,22 @@ import { FUN_GAMES } from "@/config/funGames";
 // The list, the banner and the refused-day line.
 import { EarlierBanner, EarlierList, RefusedNote } from "./EarlierPuzzles";
 // The call-out to the other puzzles, handed over by the page.
-import { useMorePuzzles } from "../MorePuzzlesSlot";
+import { useMorePuzzles, useNextPuzzle } from "../MorePuzzlesSlot";
 // The public scoreboard: which games post to it, today's board, and the sharing switch.
 import { boardGame } from "@/lib/fun/board-rules";
 import TodaysBoard from "./TodaysBoard";
 import ShareSwitch from "./ShareSwitch";
+
+/** The board's sizes, as CSS zoom factors: 100% to 200% in quarter steps. */
+const ZOOM_STEPS = [1, 1.25, 1.5, 1.75, 2] as const;
+
+/** The board's view as kept in the game's record (extra.boardView). */
+interface BoardView {
+  /** The zoom factor, one of ZOOM_STEPS. */
+  zoom: number;
+  /** Widened past the page's column. */
+  wide: boolean;
+}
 
 /** How long the end-of-round flash lasts, in milliseconds (two pulses; the stylesheet's animation runs this long). */
 const FLASH_MS = 1400;
@@ -195,6 +217,19 @@ export default function GameShell(props: GameShellProps) {
   const [filled, setFilled] = useState(0);
   // "Solve the other puzzles", when the page gave one.
   const more = useMorePuzzles();
+  // "Play next", when the page gave one.
+  const next = useNextPuzzle();
+  // The board's view: its zoom and whether it is widened, read from the record after mount.
+  const [view, setView] = useState<BoardView>({ zoom: 1, wide: false });
+  // Whether the playing area has the whole screen, and whether the browser offers it at all (after mount).
+  const [full, setFull] = useState(false);
+  const [canFull, setCanFull] = useState(false);
+  // The playing area and the result panel, for full screen and for scrolling the result into view.
+  const boardRef = useRef<HTMLDivElement>(null);
+  // The frame around the zoom layer, and its width in pixels (the width the game is laid out at when zoomed).
+  const frameRef = useRef<HTMLDivElement>(null);
+  const [frameW, setFrameW] = useState<number | null>(null);
+  const resultRef = useRef<HTMLDivElement>(null);
   // The game's rules on the public board, when it posts to it (every game with a daily; Incident Commander has none).
   const onBoard = hasDaily ? boardGame(props.gameId) : undefined;
   // Today's board is shown under a finished daily puzzle of today: not practice, not an earlier puzzle.
@@ -342,6 +377,8 @@ export default function GameShell(props: GameShellProps) {
     recordedAt.current = null;
     // Flashed.
     if (fresh) flashFor(props.result.won);
+    // A round that has just ended: out of full screen, and the result (with "Play next") brought into view.
+    if (fresh) showResult();
     // flashFor only sets state and a timer; the effect follows the version and the result.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.version, props.result]);
@@ -359,6 +396,79 @@ export default function GameShell(props: GameShellProps) {
     // flashFor only sets state and a timer; the effect follows the signal alone.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.signal]);
+
+  // The board's view kept for this game, read once after mount; and whether this browser offers full screen.
+  useEffect(() => {
+    // The kept view, when there is one and it is well formed.
+    const v = loadRecord(props.gameId).extra.boardView as Partial<BoardView> | undefined;
+    // Applied.
+    if (v && typeof v === "object") setView({ zoom: ZOOM_STEPS.includes(v.zoom as (typeof ZOOM_STEPS)[number]) ? (v.zoom as number) : 1, wide: v.wide === true });
+    // Full screen for an element (not offered by iPhone Safari, for one).
+    setCanFull(typeof document !== "undefined" && document.fullscreenEnabled === true);
+  }, [props.gameId]);
+
+  // Full screen followed as the browser reports it (Escape leaves it without our button).
+  useEffect(() => {
+    // The playing area has the screen, or not.
+    const onChange = () => setFull(document.fullscreenElement !== null && document.fullscreenElement === boardRef.current);
+    // Listened to while the shell is here.
+    document.addEventListener("fullscreenchange", onChange);
+    return () => document.removeEventListener("fullscreenchange", onChange);
+  }, []);
+
+  // The frame's width, followed as the window or the view changes.
+  useEffect(() => {
+    // The frame.
+    const el = frameRef.current;
+    // None yet, or no observer in this browser.
+    if (!el || typeof ResizeObserver === "undefined") return;
+    // Measured now and on every change.
+    const ro = new ResizeObserver(() => setFrameW(el.clientWidth));
+    ro.observe(el);
+    // Stopped when the shell goes.
+    return () => ro.disconnect();
+  }, []);
+
+  // A new view: shown and kept in the game's record.
+  const saveView = (v: BoardView) => {
+    // Shown.
+    setView(v);
+    // Kept with the game's own settings (a reset of the stats keeps it).
+    updateRecord(props.gameId, (r) => ({ ...r, extra: { ...r.extra, boardView: v } }));
+  };
+
+  // One step smaller or larger.
+  const zoomBy = (dir: -1 | 1) => {
+    // The current step, and the next one within the range.
+    const i = ZOOM_STEPS.indexOf(view.zoom as (typeof ZOOM_STEPS)[number]);
+    const j = Math.min(ZOOM_STEPS.length - 1, Math.max(0, (i < 0 ? 0 : i) + dir));
+    // Kept.
+    saveView({ ...view, zoom: ZOOM_STEPS[j] });
+  };
+
+  // The playing area into or out of full screen.
+  const toggleFull = () => {
+    // Leaving.
+    if (document.fullscreenElement) {
+      void document.exitFullscreen().catch(() => undefined);
+      return;
+    }
+    // Entering, when the browser allows it now.
+    void boardRef.current?.requestFullscreen().catch(() => undefined);
+  };
+
+  // A round has ended: out of full screen, and the result brought into view (smoothly unless reduced motion is asked).
+  const showResult = () => {
+    // Full screen would hide the result.
+    if (typeof document !== "undefined" && document.fullscreenElement) void document.exitFullscreen().catch(() => undefined);
+    // After the panel has rendered.
+    window.setTimeout(() => {
+      // Smooth only for readers who did not ask for less motion.
+      const smooth = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      // Just enough scrolling to show it.
+      resultRef.current?.scrollIntoView({ block: "nearest", behavior: smooth ? "smooth" : "auto" });
+    }, 120);
+  };
 
   // Copy the share card.
   const onCopy = async () => {
@@ -389,7 +499,7 @@ export default function GameShell(props: GameShellProps) {
 
   // The frame.
   return (
-    <div className="fg-shell">
+    <div className={`fg-shell${view.wide ? " fg-shell-wide" : ""}`}>
       {/* An earlier puzzle: which one, and what it does not count toward. */}
       {dayReq && earlier && <EarlierBanner day={earlier} today={dayReq.today} basePath={basePath} />}
       {/* A day that cannot be played: why, and today's puzzle below. */}
@@ -447,14 +557,42 @@ export default function GameShell(props: GameShellProps) {
       )}
 
       {/* The game: the playing area, which flashes at the end of a round. */}
-      <div className={`fg-board-wrap${flash ? ` fg-flash-${flash}` : ""}`}>{props.children}</div>
+      {/* The board's view: smaller, larger, wider, full screen. */}
+      <div className="fg-view" role="group" aria-label={t("view.label")}>
+        <button type="button" className="fg-view-btn" onClick={() => zoomBy(-1)} disabled={view.zoom <= ZOOM_STEPS[0]} aria-label={t("view.smaller")} title={t("view.smaller")}>
+          <span aria-hidden="true">A&#8722;</span>
+        </button>
+        <span className="fg-view-pct mono" aria-live="polite">{t("view.zoom", { pct: Math.round(view.zoom * 100) })}</span>
+        <button type="button" className="fg-view-btn" onClick={() => zoomBy(1)} disabled={view.zoom >= ZOOM_STEPS[ZOOM_STEPS.length - 1]} aria-label={t("view.larger")} title={t("view.larger")}>
+          <span aria-hidden="true">A+</span>
+        </button>
+        <button type="button" className="fg-view-btn fg-view-wide" aria-pressed={view.wide} onClick={() => saveView({ ...view, wide: !view.wide })}>
+          {view.wide ? t("view.narrow") : t("view.expand")}
+        </button>
+        {canFull && (
+          <button type="button" className="fg-view-btn" aria-pressed={full} onClick={toggleFull}>
+            {full ? t("view.exitFull") : t("view.full")}
+          </button>
+        )}
+      </div>
+      <div ref={boardRef} className={`fg-board-wrap${flash ? ` fg-flash-${flash}` : ""}${full ? " fg-board-full" : ""}`}>
+        {/* The frame, scrolling sideways when the game is drawn larger than it. */}
+        <div ref={frameRef} className={`fg-board-frame${view.zoom > 1 ? " fg-board-zoomed" : ""}`}>
+          {/* The zoom layer: laid out at the frame's width, then drawn larger as a whole (text, drawings, hit areas). */}
+          <div className="fg-board-zoom" style={view.zoom > 1 ? { zoom: view.zoom, width: frameW ? `${frameW}px` : undefined } : undefined}>
+            {props.children}
+          </div>
+        </div>
+      </div>
 
       {/* The result, once the round is over. */}
       {props.result && (
-        <div className={`fg-result ${props.result.won ? "fg-result-won" : "fg-result-lost"}`} role="status">
+        <div ref={resultRef} className={`fg-result ${props.result.won ? "fg-result-won" : "fg-result-lost"}`} role="status">
           <p className="fg-result-headline">{props.result.headline}</p>
           {props.result.detail && <p className="fg-result-detail">{props.result.detail}</p>}
           <div className="fg-result-actions">
+            {/* The next daily game not played today, first and most visible. */}
+            {next}
             <button type="button" className="fg-button fg-button-primary" onClick={onCopy}>
               {copied === "ok" ? t("copied") : copied === "fail" ? t("copyFailed") : t("copyResult")}
             </button>

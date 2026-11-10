@@ -319,7 +319,8 @@ export default function TodaysBoard(props: { gameId: string; mode: string; day: 
 
       {/* Everything else about the scores. */}
       <p className="fg-tb-more">
-        <Link href={`/dev/fun/scores#${props.mode === "daily" ? props.gameId : `${props.gameId}:${props.mode}`}`} className="fg-tb-link">
+        {/* The game's own full scoreboard (09/11/2026: /dev/fun/scores is now the dashboard); a level opens its tab. */}
+        <Link href={`/dev/fun/scores/${props.gameId}${props.mode === "daily" ? "" : `#${props.gameId}:${props.mode}`}`} className="fg-tb-link">
           {t("board.allScores")}
         </Link>
       </p>

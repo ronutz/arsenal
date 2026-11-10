@@ -56,6 +56,39 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // PRIME 2026-11-09 23:04: a larger, wider board on every game, and "Play next" right after finishing.
+    date: "2026-11-09",
+    time: "23:40",
+    kind: "feature",
+    title: "Games: a larger board, and the next puzzle one tap away",
+    titlePt: "Jogos: tabuleiro maior, e o próximo desafio a um toque",
+    body:
+      "Every game and daily puzzle has a small bar over its playing area: A− and A+ draw the board from 100% to 200%, text, drawings and the places to tap all together; Expand widens it past the page's column, so a network like Spanning Tree's fills the window; and Full screen gives it the whole screen where the browser allows. The choice is kept per game in this browser. When a round ends, the result comes into view with a new first button, Play next, which opens the next puzzle of the day not yet played here, going round the shelf; once every one is done, it leads to the scores.",
+    links: [{ label: "Spanning Tree", href: "/dev/fun/spanning-tree" }, { label: "/dev/fun", href: "/dev/fun" }],
+  },
+  {
+    // PRIME 2026-11-09 21:41: the scores page becomes a dashboard; each game's full board moves to its own page.
+    date: "2026-11-09",
+    time: "22:30",
+    kind: "feature",
+    title: "Scores: a dashboard, and a full scoreboard for every game",
+    titlePt: "Placar: um painel, e um placar completo para cada jogo",
+    body:
+      "The scores page is now a dashboard. Today on the board: the rounds posted and the share solved, the boards in play, the countries and the last 30 days a bar a day, beside a clock to the next puzzles at 00:00 UTC and the day's highlights (the hardest game, the most solved, the most played). You: the daily games done today, the puzzles played and solved, your longest current and longest ever streak, a calendar of your last 15 weeks and today's places, all read from your browser and never sent. Then a card per game with today's players, share solved, leader and 30-day record and your own state and best, sortable by shelf order, rounds today or difficulty, each opening that game's full scoreboard on a page of its own, where the games' \"All scores and statistics\" links now lead.",
+    links: [{ label: "Scores", href: "/dev/fun/scores" }, { label: "Prefix of the Day's scoreboard", href: "/dev/fun/scores/prefix-of-the-day" }],
+  },
+  {
+    // PRIME 2026-11-09 21:41: languages short of phase 1 demoted and no longer listed; the red "not translated yet" row goes.
+    date: "2026-11-09",
+    time: "22:00",
+    kind: "i18n",
+    title: "Five languages offered: the ones written in their own tone",
+    titlePt: "Cinco idiomas oferecidos: os escritos no próprio tom",
+    body:
+      "The language menu now offers English, Brazilian Portuguese, Spanish, German and French, the languages whose interface, tools and games are written in the language itself. Eleven machine-translated languages left the menu. Italian, Russian, Turkish and Simplified Chinese are set back to \"not translated yet\": their pages lead to English for now with a temporary redirect, and each returns when its interface, tools and games are written. Dutch, Swedish, Danish, Norwegian, Polish, Malay and Filipino, where the readers of a site like this one work in English, are retired, and their old addresses lead to the English pages for good. The menu's red \"not translated yet\" mark is gone, since such languages are no longer listed.",
+    links: [{ label: "Colophon", href: "/colophon" }],
+  },
+  {
     // PRIME 2026-11-09 19:36: "Finish simple and quick pending and outstanding requests and build" (a count of 1 read plural).
     date: "2026-11-09",
     time: "19:45",

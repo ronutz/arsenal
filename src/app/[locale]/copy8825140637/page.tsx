@@ -23,8 +23,10 @@
 // and EXPORTS the result (full <locale>.json or a changed-keys diff) to commit
 // into src/i18n/messages/ and redeploy. It is a workbench, not a live CMS.
 //
-// Only the 16 LIVE locales are offered (each has a real message file). Stub
+// Only the LIVE locales are offered (each has a real message file). Stub
 // locales have no file and fall back to English, so there is nothing to edit.
+// The packs of the stubs that still have one (it, ru, tr, zh-Hans) stay imported for when they come back; the
+// retired locales' packs were deleted (PRIME 09/11/2026 22:14).
 // ============================================================================
 
 import type { Metadata } from "next";
@@ -36,39 +38,25 @@ import CopyEditor, { type CopyEditorLabels } from "@/components/CopyEditor";
 import { LIVE_LOCALES } from "@/i18n/locales";
 
 // Static imports of every LIVE locale's messages (build-time; no runtime fetch).
-import daMsgs from "@/i18n/messages/da.json";
 import deMsgs from "@/i18n/messages/de.json";
 import enMsgs from "@/i18n/messages/en.json";
 import esMsgs from "@/i18n/messages/es.json";
-import filMsgs from "@/i18n/messages/fil.json";
 import frMsgs from "@/i18n/messages/fr.json";
 import itMsgs from "@/i18n/messages/it.json";
-import msMsgs from "@/i18n/messages/ms.json";
-import nbMsgs from "@/i18n/messages/nb.json";
-import nlMsgs from "@/i18n/messages/nl.json";
-import plMsgs from "@/i18n/messages/pl.json";
 import ptBRMsgs from "@/i18n/messages/pt-BR.json";
 import ruMsgs from "@/i18n/messages/ru.json";
-import svMsgs from "@/i18n/messages/sv.json";
 import trMsgs from "@/i18n/messages/tr.json";
 import zhHansMsgs from "@/i18n/messages/zh-Hans.json";
 
 // Map code -> messages, so we can assemble the prop from LIVE_LOCALES in order.
 const MESSAGES_BY_CODE: Record<string, unknown> = {
-  da: daMsgs,
   de: deMsgs,
   en: enMsgs,
   es: esMsgs,
-  fil: filMsgs,
   fr: frMsgs,
   it: itMsgs,
-  ms: msMsgs,
-  nb: nbMsgs,
-  nl: nlMsgs,
-  pl: plMsgs,
   "pt-BR": ptBRMsgs,
   ru: ruMsgs,
-  sv: svMsgs,
   tr: trMsgs,
   "zh-Hans": zhHansMsgs,
 };

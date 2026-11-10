@@ -31,7 +31,7 @@
 // ============================================================================
 
 // The shared rules: the games on the board, the day window, the initials, the sent state, the addresses.
-import { BOARD_API, NO_INITIALS, acceptedDays, boardGame, boardPath, initialsProblem, isBoardMode, looksFinished, sentState, totalsPath, type BoardUnit } from "./board-rules";
+import { BOARD_API, NO_INITIALS, acceptedDays, boardGame, boardPath, initialsProblem, isBoardMode, looksFinished, sentState, totalsPath, type BoardUnit, type TotalsWindow } from "./board-rules";
 // The one storage key: the game's saved day, and the board's choices.
 import { loadBoardLocal, loadRecord, updateBoardLocal, type PostedRound } from "./storage";
 // The games' time format (m:ss).
@@ -471,7 +471,7 @@ export interface BoardAnswer {
 
 /** The shelf over a window, as the board answers. */
 export interface TotalsAnswer {
-  /** "7", "30" or "all". */
+  /** "1" (today), "7", "30" or "all". */
   days: string;
   /** The first day counted. */
   since: string;
@@ -510,10 +510,10 @@ export async function fetchBoard(game: string, mode: string, day: string): Promi
 /**
  * Read the shelf's totals over a window.
  *
- * @param days the last 7 or 30 days, or every day kept
+ * @param days today, the last 7 or 30 days, or every day kept
  * @returns the totals, or null when they are unavailable
  */
-export async function fetchTotals(days: "7" | "30" | "all"): Promise<TotalsAnswer | null> {
+export async function fetchTotals(days: TotalsWindow): Promise<TotalsAnswer | null> {
   // Read; any failure is "unavailable".
   try {
     // The address.

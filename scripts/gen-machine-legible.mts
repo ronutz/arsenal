@@ -488,8 +488,8 @@ L.push(
   `- [Daily puzzles](${ORIGIN}/${SOURCE_LOCALE}/dev/fun): ${n(FUN_GAME_GROUPS.find((g) => g.key === "daily")?.games.length ?? 0)} IT-themed daily puzzles, the same for everyone and changing at 00:00 UTC, beside the toys (the arcade games are listed on /arcade); scores and streaks stay in the player's browser, and a finished daily puzzle goes to a public scoreboard (checked on the server, shown by arcade initials and country, with no identifier) unless the player switches sharing off`,
   // The arcade (PRIME 08/11/2026): the shelf's arcade group on a page of its own, counted from src/config/funGames.ts.
   `- [Arcade](${ORIGIN}/${SOURCE_LOCALE}/arcade): ${n(FUN_GAME_GROUPS.find((g) => g.key === "arcade")?.games.length ?? 0)} IT-themed arcade games built on classic game formulas, played in the browser for as long as one likes; the pages stay under /dev/fun/<game>`,
-  // The games' scores and statistics (PRIME 08/11/2026): today's boards, the top tens, the countries, the shelf's totals.
-  `- [Game scores](${ORIGIN}/${SOURCE_LOCALE}/dev/fun/scores): today's boards for the daily games (players, the share who solved, average, median, a histogram, the top ten by arcade initials and country) and the shelf's totals for the last 7 and 30 days`,
+  // The games' scores and statistics (PRIME 08/11/2026), a dashboard since 09/11/2026 21:41 with a full board per game.
+  `- [Game scores](${ORIGIN}/${SOURCE_LOCALE}/dev/fun/scores): a dashboard of the daily games (today's rounds and share solved, the day's highlights, each game's leader and 30-day record, the countries, and the visitor's own record read from the browser), with each game's full scoreboard at /dev/fun/scores/<game> (players, the share who solved, average, median, a histogram, the top ten by arcade initials and country, the last 7 and 30 days)`,
   "",
 );
 fs.writeFileSync(path.join(OUT, "llms.txt"), L.join("\n"), "utf8");

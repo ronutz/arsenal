@@ -11,7 +11,7 @@
  *   POST /api/v1/fun/score            a finished daily round: { game, mode?, day, state, initials?, nonce }
  *   POST /api/v1/fun/score/initials   change that round's initials the same day: { nonce, initials }
  *   GET  /api/v1/fun/board            one game's board for one day: ?game=&mode=&day= (and ?score=&time=)
- *   GET  /api/v1/fun/totals           the shelf over the last days: ?days=7|30|all
+ *   GET  /api/v1/fun/totals           the shelf over the last days: ?days=1|7|30|all (1 = today, for the dashboard)
  *
  * WHY THIS SHAPE
  * --------------
@@ -672,8 +672,8 @@ async function getBoard(url: URL, db: D1Database): Promise<Response> {
 async function getTotals(url: URL, db: D1Database): Promise<Response> {
   // The window asked for.
   const days = url.searchParams.get("days") ?? "7";
-  // Only the three windows the page offers.
-  if (days !== "7" && days !== "30" && days !== "all") return json({ error: "bad_days", allowed: ["7", "30", "all"] }, 400);
+  // Only the windows the pages offer: today (the dashboard, 09/11/2026), the last 7 or 30 days, or every day kept.
+  if (days !== "1" && days !== "7" && days !== "30" && days !== "all") return json({ error: "bad_days", allowed: ["1", "7", "30", "all"] }, 400);
   // Today, in UTC.
   const today = utcDayKey(new Date());
   // The first day in the window.

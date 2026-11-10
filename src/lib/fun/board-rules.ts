@@ -44,13 +44,16 @@ export function boardPath(game: string, mode: string, day: string): string {
   return `${BOARD_API}/board?game=${encodeURIComponent(game)}&mode=${encodeURIComponent(mode)}&day=${encodeURIComponent(day)}`;
 }
 
+/** A totals window: today (UTC), the last 7 or 30 days, or every day kept. */
+export type TotalsWindow = "1" | "7" | "30" | "all";
+
 /**
  * The address of the shelf's totals over a window.
  *
- * @param days the last 7 or 30 days, or every day kept
+ * @param days today, the last 7 or 30 days, or every day kept
  * @returns the path and query
  */
-export function totalsPath(days: "7" | "30" | "all"): string {
+export function totalsPath(days: TotalsWindow): string {
   // One parameter.
   return `${BOARD_API}/totals?days=${days}`;
 }

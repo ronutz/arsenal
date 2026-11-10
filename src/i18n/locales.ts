@@ -44,6 +44,19 @@ export interface LocaleMeta {
 
 /**
  * THE REGISTRY. Order here is the order shown in the language switcher.
+ * DEMOTION (PRIME 09/11/2026 21:41): "demote the languages for which the current languages work has not yet gone over
+ * phase 1 (interface, tools, puzzles) to 'not translated yet' and don't show them in the dropdown". The eleven
+ * machine-translated locales are 'stub' again: not built, not listed, their URLs sent to English by the worker with a
+ * temporary redirect. A locale returns to 'machine-draft' (draftKind "written-with-ai") when its phase 1 is done.
+ * RETIRED (PRIME 09/11/2026 22:14, "remove the ones you determined are of low value, and add the ones you deemed of high
+ * value"): Dutch, Swedish, Danish, Norwegian, Polish, Malay and Filipino left the registry (readers there use English at
+ * work: EF EPI 2025 bands "very high" and "high"); RETIRED_LOCALE_CODES below keeps their old URLs working. The planned
+ * languages carry a PLANNED marker: Chinese (Simplified), Turkish, Russian, Japanese, Arabic, Indonesian, Vietnamese,
+ * Italian and Korean (PLAN-interface-locales-20261109).
+ * 23:04 ("Remove Hindi and Tamil as well. assess the nineteen others and apply the same filtering logic"): Hindi,
+ * Tamil and seventeen of the other stubs retired (EF EPI 2025 "very high" or "high" in their main market, or a market
+ * whose IT work runs in English: India's, Pakistan's, Bangladesh's, Hong Kong's, Israel's, Ukraine's, East Africa's;
+ * Persian's market is out of reach of the vendors this site covers); Thai and Traditional Chinese (Taiwan) planned.
  * Human-reviewed: en only. pt-BR is machine-translated but complete; es and all others are
  * registered + selectable but 'stub' → they fall back to English until a real
  * pack lands. This is the "capability is day-one, content arrives as packs"
@@ -58,54 +71,26 @@ export const LOCALES: readonly LocaleMeta[] = [
   // --- Registered + selectable day-one; stubs falling back to English until translated ---
   { code: "de",         nativeName: "Deutsch",            englishName: "German",                  dir: "ltr", status: "machine-draft", draftKind: "written-with-ai" }, // INTERFACE-NATIVE (PRIME 09/11/2026 01:02, "in the language's NATURAL tone"): the interface, tools, tool docs, games and legal pages written in German with AI and reviewed gradually; Learn and the other corpus sections stay machine-translated, and the notice says so.
   { code: "fr",         nativeName: "Français",           englishName: "French",                  dir: "ltr", status: "machine-draft", draftKind: "written-with-ai" }, // INTERFACE-NATIVE (PRIME 09/11/2026 01:02, "in the language's NATURAL tone"; 11:02, the order Spanish, German, French): the interface, tools, tool docs, games and legal pages written in French with AI and reviewed gradually; Learn and the other corpus sections stay machine-translated, and the notice says so.
-  { code: "nl",         nativeName: "Nederlands",         englishName: "Dutch",                   dir: "ltr", status: "machine-draft" },
-  { code: "it",         nativeName: "Italiano",           englishName: "Italian",                 dir: "ltr", status: "machine-draft" },
-  { code: "sv",         nativeName: "Svenska",            englishName: "Swedish",                 dir: "ltr", status: "machine-draft" },
-  { code: "da",         nativeName: "Dansk",              englishName: "Danish",                  dir: "ltr", status: "machine-draft" },
-  { code: "nb",         nativeName: "Norsk bokmål",       englishName: "Norwegian Bokmål",        dir: "ltr", status: "machine-draft" },
-  { code: "ru",         nativeName: "Русский",            englishName: "Russian",                 dir: "ltr", status: "machine-draft" },
-  { code: "pl",         nativeName: "Polski",             englishName: "Polish",                  dir: "ltr", status: "machine-draft" },
-  { code: "tr",         nativeName: "Türkçe",             englishName: "Turkish",                 dir: "ltr", status: "machine-draft" },
-  { code: "hi",         nativeName: "हिन्दी",               englishName: "Hindi",                   dir: "ltr", status: "stub" },
-  { code: "ta",         nativeName: "தமிழ்",              englishName: "Tamil",                   dir: "ltr", status: "stub" },
-  { code: "ms",         nativeName: "Bahasa Melayu",      englishName: "Malay",                   dir: "ltr", status: "machine-draft" },
-  { code: "fil",        nativeName: "Filipino",           englishName: "Filipino",                dir: "ltr", status: "machine-draft" },
-  { code: "ko",         nativeName: "한국어",              englishName: "Korean",                  dir: "ltr", status: "stub" },
-  { code: "ja",         nativeName: "日本語",              englishName: "Japanese",                dir: "ltr", status: "stub" },
-  // Three Chinese variants — split by script + region so no major demographic is excluded.
-  { code: "zh-Hans",    nativeName: "简体中文",            englishName: "Chinese (Simplified)",    dir: "ltr", status: "machine-draft" },
-  { code: "zh-Hant-TW", nativeName: "繁體中文（台灣）",     englishName: "Chinese (Traditional, Taiwan)", dir: "ltr", status: "stub" },
-  { code: "zh-Hant-HK", nativeName: "繁體中文（香港）",     englishName: "Chinese (Traditional, Hong Kong)", dir: "ltr", status: "stub" },
+  { code: "it",         nativeName: "Italiano",           englishName: "Italian",                 dir: "ltr", status: "stub" }, // PLANNED (PRIME 09/11/2026 22:14, high value): phase 1 written in the language, on PRIME's "go"
+  { code: "ru",         nativeName: "Русский",            englishName: "Russian",                 dir: "ltr", status: "stub" }, // PLANNED (PRIME 09/11/2026 22:14, high value): phase 1 written in the language, on PRIME's "go"
+  { code: "tr",         nativeName: "Türkçe",             englishName: "Turkish",                 dir: "ltr", status: "stub" }, // PLANNED (PRIME 09/11/2026 22:14, high value): phase 1 written in the language, on PRIME's "go"
+  { code: "ko",         nativeName: "한국어",              englishName: "Korean",                  dir: "ltr", status: "stub" }, // PLANNED (PRIME 09/11/2026 22:14, high value): phase 1 written in the language, on PRIME's "go"
+  { code: "ja",         nativeName: "日本語",              englishName: "Japanese",                dir: "ltr", status: "stub" }, // PLANNED (PRIME 09/11/2026 22:14, high value): phase 1 written in the language, on PRIME's "go"
+  // Two Chinese variants, by script: Simplified, and Traditional for Taiwan (Hong Kong's retired 09/11/2026: its IT
+  // work runs in English).
+  { code: "zh-Hans",    nativeName: "简体中文",            englishName: "Chinese (Simplified)",    dir: "ltr", status: "stub" }, // PLANNED (PRIME 09/11/2026 22:14, high value): phase 1 written in the language, on PRIME's "go"
+  { code: "zh-Hant-TW", nativeName: "繁體中文（台灣）",     englishName: "Chinese (Traditional, Taiwan)", dir: "ltr", status: "stub" }, // PLANNED (PRIME 09/11/2026 23:04, high value): phase 1 written in the language, on PRIME's "go"
   // Arabic — right-to-left. RTL layout support is built into the foundation now;
   // the Arabic CONTENT is a stub until a real pack lands, at which point RTL "just works".
-  { code: "ar",         nativeName: "العربية",            englishName: "Arabic",                  dir: "rtl", status: "stub" },
-  { code: "sw",         nativeName: "Kiswahili",          englishName: "Swahili",                 dir: "ltr", status: "stub" },
+  { code: "ar",         nativeName: "العربية",            englishName: "Arabic",                  dir: "rtl", status: "stub" }, // PLANNED (PRIME 09/11/2026 22:14, high value): phase 1 written in the language, on PRIME's "go"
 
   // --- Expansion stubs (PRIME-approved 2026-06-28): registered + routable now,
   //     English-fallback until the post-queue translation campaign fills them.
   //     Grouped by region; full translation-priority ranking lives in the plan. ---
   // East / Southeast Asia (large engineer bases, lower English-at-work share -> high marginal value)
-  { code: "vi",         nativeName: "Tiếng Việt",         englishName: "Vietnamese",              dir: "ltr", status: "stub" },
-  { code: "id",         nativeName: "Bahasa Indonesia",   englishName: "Indonesian",              dir: "ltr", status: "stub" },
-  { code: "th",         nativeName: "ไทย",                englishName: "Thai",                    dir: "ltr", status: "stub" },
-  // MENA (Arabic already registered above; Persian + Hebrew are RTL like Arabic)
-  { code: "fa",         nativeName: "فارسی",              englishName: "Persian",                 dir: "rtl", status: "stub" },
-  { code: "he",         nativeName: "עברית",              englishName: "Hebrew",                  dir: "rtl", status: "stub" },
-  // Central & Eastern Europe (strong IT-outsourcing markets)
-  { code: "uk",         nativeName: "Українська",         englishName: "Ukrainian",               dir: "ltr", status: "stub" },
-  { code: "ro",         nativeName: "Română",             englishName: "Romanian",                dir: "ltr", status: "stub" },
-  { code: "cs",         nativeName: "Čeština",            englishName: "Czech",                   dir: "ltr", status: "stub" },
-  { code: "hu",         nativeName: "Magyar",             englishName: "Hungarian",               dir: "ltr", status: "stub" },
-  { code: "el",         nativeName: "Ελληνικά",           englishName: "Greek",                   dir: "ltr", status: "stub" },
-  { code: "bg",         nativeName: "Български",           englishName: "Bulgarian",               dir: "ltr", status: "stub" },
-  { code: "sr-Latn",    nativeName: "Srpskohrvatski",     englishName: "Serbo-Croatian (Latin)",  dir: "ltr", status: "stub" },
-  { code: "sk",         nativeName: "Slovenčina",         englishName: "Slovak",                  dir: "ltr", status: "stub" },
-  { code: "sl",         nativeName: "Slovenščina",        englishName: "Slovenian",               dir: "ltr", status: "stub" },
-  { code: "fi",         nativeName: "Suomi",              englishName: "Finnish",                 dir: "ltr", status: "stub" },
-  // South Asia (Hindi + Tamil already registered above; Urdu is RTL)
-  { code: "te",         nativeName: "తెలుగు",             englishName: "Telugu",                  dir: "ltr", status: "stub" },
-  { code: "bn",         nativeName: "বাংলা",              englishName: "Bengali",                 dir: "ltr", status: "stub" },
-  { code: "ur",         nativeName: "اردو",               englishName: "Urdu",                    dir: "rtl", status: "stub" },
+  { code: "vi",         nativeName: "Tiếng Việt",         englishName: "Vietnamese",              dir: "ltr", status: "stub" }, // PLANNED (PRIME 09/11/2026 22:14, high value): phase 1 written in the language, on PRIME's "go"
+  { code: "id",         nativeName: "Bahasa Indonesia",   englishName: "Indonesian",              dir: "ltr", status: "stub" }, // PLANNED (PRIME 09/11/2026 22:14, high value): phase 1 written in the language, on PRIME's "go"
+  { code: "th",         nativeName: "ไทย",                englishName: "Thai",                    dir: "ltr", status: "stub" }, // PLANNED (PRIME 09/11/2026 23:04, high value): phase 1 written in the language, on PRIME's "go"
 ] as const;
 
 /** The default + source language. All stubs fall back to this. */
@@ -113,6 +98,19 @@ export const DEFAULT_LOCALE = "en";
 
 /** Convenience: just the codes, derived (never hand-maintain a second list). */
 export const LOCALE_CODES = LOCALES.map((l) => l.code);
+
+/**
+ * Locales taken out of the registry (PRIME 09/11/2026 22:14: of low value for this site, their readers use English at
+ * work). Their pages were built until 09/11/2026 21:41, so the addresses exist in search indexes and bookmarks: the
+ * worker answers any /<code>/... here with a PERMANENT redirect to the English page (they are not coming back, unlike a
+ * stub, which gets a temporary one). Never routed, never built, never listed.
+ */
+export const RETIRED_LOCALE_CODES: readonly string[] = [
+  // 09/11/2026 22:14: machine-translated until 21:41, so their pages were built and may be indexed.
+  "nl", "sv", "da", "nb", "pl", "ms", "fil",
+  // 09/11/2026 23:04: stubs that were never built (their addresses were already redirected to English).
+  "hi", "ta", "zh-Hant-HK", "sw", "fa", "he", "uk", "ro", "cs", "hu", "el", "bg", "sr-Latn", "sk", "sl", "fi", "te", "bn", "ur",
+];
 
 /** The locales with a real translation (reviewed or machine-draft): the set we
  *  BUILD. Stub locales are excluded here, so they generate no pages, but they

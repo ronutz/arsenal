@@ -214,10 +214,12 @@ function Tile(props: { label: string; value: ReactNode }) {
 /**
  * The scores page's board.
  *
- * @param props the games' and levels' names, in the page's language
+ * @param props the games' and levels' names, in the page's language, and the one game to show (its own page)
  * @returns the board
  */
-export default function ScoresBoard(props: { names: Record<string, string>; levels: Record<string, string> }) {
+export default function ScoresBoard(props: { names: Record<string, string>; levels: Record<string, string>; only?: string }) {
+  // The tabs shown: one game's (its own scoreboard page) or every game's.
+  const tabs = useMemo(() => (props.only ? TABS.filter((x) => x.game === props.only) : TABS), [props.only]);
   // The page's strings.
   const t = useTranslations("devFun.scores");
   // The page's language.
@@ -225,7 +227,7 @@ export default function ScoresBoard(props: { names: Record<string, string>; leve
   // Today, in UTC, after mount.
   const today = useRealToday();
   // The open tab.
-  const [tab, setTab] = useState<string>(TABS[0].key);
+  const [tab, setTab] = useState<string>(tabs[0].key);
   // Today's boards read so far, by tab.
   const [boards, setBoards] = useState<Record<string, Load<BoardAnswer>>>({});
   // The shelf's totals by window.
@@ -244,19 +246,19 @@ export default function ScoresBoard(props: { names: Record<string, string>; leve
     // The fragment, without its #.
     const h = decodeURIComponent(window.location.hash.slice(1));
     // A tab by its key, or the first tab of a game named alone.
-    const hit = TABS.find((x) => x.key === h) ?? TABS.find((x) => x.game === h);
+    const hit = tabs.find((x) => x.key === h) ?? tabs.find((x) => x.game === h);
     // Opened.
     if (hit) setTab(hit.key);
   }, []);
 
   // The open tab's game and mode.
-  const current = TABS.find((x) => x.key === tab) ?? TABS[0];
+  const current = tabs.find((x) => x.key === tab) ?? tabs[0];
 
   // The open tab is kept in sight in its strip (on a phone the tabs scroll sideways); only the strip moves, never the page.
   useEffect(() => {
     // The strip and the open tab's button.
     const strip = stripRef.current;
-    const el = tabRefs.current[TABS.findIndex((x) => x.key === tab)];
+    const el = tabRefs.current[tabs.findIndex((x) => x.key === tab)];
     // Nothing to move when the strip does not scroll.
     if (!strip || !el || strip.scrollWidth <= strip.clientWidth) return;
     // The button's edges inside the strip.
@@ -306,13 +308,13 @@ export default function ScoresBoard(props: { names: Record<string, string>; leve
     // The step.
     const step = e.key === "ArrowRight" || e.key === "ArrowDown" ? 1 : e.key === "ArrowLeft" || e.key === "ArrowUp" ? -1 : 0;
     // Home and End.
-    const to = e.key === "Home" ? 0 : e.key === "End" ? TABS.length - 1 : step !== 0 ? (i + step + TABS.length) % TABS.length : -1;
+    const to = e.key === "Home" ? 0 : e.key === "End" ? tabs.length - 1 : step !== 0 ? (i + step + tabs.length) % tabs.length : -1;
     // Not a navigation key.
     if (to < 0) return;
     // Not a scroll.
     e.preventDefault();
     // Selected and focused.
-    setTab(TABS[to].key);
+    setTab(tabs[to].key);
     tabRefs.current[to]?.focus();
   };
 
@@ -376,9 +378,9 @@ export default function ScoresBoard(props: { names: Record<string, string>; leve
   // The page body.
   return (
     <div className="fg-sc">
-      {/* One tab per game (and level). */}
-      <div ref={stripRef} className="fg-sc-tabs" role="tablist" aria-label={t("tabsLabel")}>
-        {TABS.map((x, i) => (
+      {/* One tab per game (and level); hidden when one game with one board is shown. */}
+      <div ref={stripRef} className="fg-sc-tabs" role="tablist" aria-label={t("tabsLabel")} hidden={tabs.length < 2}>
+        {tabs.map((x, i) => (
           <button
             key={x.key}
             ref={(el) => {
@@ -401,7 +403,7 @@ export default function ScoresBoard(props: { names: Record<string, string>; leve
       </div>
 
       {/* The open game. */}
-      <section id={panelId} role="tabpanel" aria-labelledby={`${panelId}-tab-${TABS.findIndex((x) => x.key === tab)}`} className="fg-sc-panel">
+      <section id={panelId} role="tabpanel" aria-labelledby={`${panelId}-tab-${tabs.findIndex((x) => x.key === tab)}`} className="fg-sc-panel">
         <h2 className="fg-sc-h2">{tabName(current)}</h2>
         <p className="fg-small fg-muted fg-sc-line">
           {today ? t("todayLine", { date: dateText(today) }) : t("loading")}{" "}
@@ -512,7 +514,8 @@ export default function ScoresBoard(props: { names: Record<string, string>; leve
         </div>
       </section>
 
-      {/* The whole shelf. */}
+      {/* The whole shelf, on the all-games board only (a game's own page leaves it to the dashboard). */}
+      {!props.only && (
       <section className="fg-sc-panel" aria-labelledby={shelfId}>
         <h2 id={shelfId} className="fg-sc-h2">
           {t("shelfTitle")}
@@ -572,6 +575,7 @@ export default function ScoresBoard(props: { names: Record<string, string>; leve
           </>
         )}
       </section>
+      )}
 
       {/* Why there is no streak table, and what is kept. */}
       <section className="fg-sc-panel fg-sc-notes">

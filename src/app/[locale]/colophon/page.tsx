@@ -244,10 +244,7 @@ export default async function ColophonPage({
                     <span className="ls-status ls-status--partial" />
                     {tStatus("partial")}
                   </li>
-                  <li>
-                    <span className="ls-status ls-status--stub" />
-                    {tStatus("stub")}
-                  </li>
+                  {/* No red "not translated yet" row (PRIME 09/11/2026 21:41): untranslated languages are not offered. */}
                 </ul>
               </div>
             </div>
