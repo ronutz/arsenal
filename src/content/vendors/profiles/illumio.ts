@@ -82,6 +82,6 @@ export const illumioProfile: VendorProfile = {
   ],
   analyst: [
     "A Leader in Forrester's microsegmentation assessment and a Customers' Choice in Gartner's 2026 peer review for network security microsegmentation, which is a different signal: it reflects the people who deployed it rather than the analysts who evaluated it.",
-    "The category's own difficulty is worth stating. Microsegmentation has been three years from mainstream for about a decade, because the technology has rarely been the obstacle - mapping an undocumented estate and getting permission to enforce anything in it are organisational problems, and no product solves those. The agentless direction of 2026 reads as an answer to the first half of that.",
+    "The category's own difficulty is worth stating. Microsegmentation has been three years from mainstream for about a decade, because the technology has rarely been the obstacle - mapping an undocumented estate and getting permission to enforce anything in it are organizational problems, and no product solves those. The agentless direction of 2026 reads as an answer to the first half of that.",
   ],
 };

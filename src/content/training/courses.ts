@@ -260,7 +260,7 @@ const f5: Platform = { // the F5 platform
         "pt-BR": "Load balancing e gerência de tráfego com o Local Traffic Manager.", // Brazilian Portuguese
       },
       description: { // description, original wording
-        en: "Local Traffic Manager is the load-balancing and traffic-management heart of BIG-IP, and this course builds a working command of it, from commonly used features through more advanced functionality. Students learn to configure virtual servers, pools and load-balancing methods, tune application health monitoring and apply the right kind of persistence. The advanced portion covers options such as VLAN tagging and trunking, SNMP, packet filters and route domains, customising delivery with iRules and local traffic policies, and mitigating common network-layer and application-layer attacks with LTM features.", // British English
+        en: "Local Traffic Manager is the load-balancing and traffic-management heart of BIG-IP, and this course builds a working command of it, from commonly used features through more advanced functionality. Students learn to configure virtual servers, pools and load-balancing methods, tune application health monitoring and apply the right kind of persistence. The advanced portion covers options such as VLAN tagging and trunking, SNMP, packet filters and route domains, customizing delivery with iRules and local traffic policies, and mitigating common network-layer and application-layer attacks with LTM features.", // British English
         "pt-BR": "O Local Traffic Manager é o coração de load balancing e gerência de tráfego do BIG-IP, e este curso constrói domínio prático sobre ele, dos recursos mais usados às funções mais avançadas. Os alunos aprendem a configurar virtual servers, pools e métodos de load balancing, ajustar a monitoração de saúde das aplicações e aplicar o tipo certo de persistence. A parte avançada cobre opções como VLAN tagging e trunking, SNMP, packet filters e route domains, personalização da entrega com iRules e local traffic policies, e mitigação de ataques comuns de camada de rede e de aplicação com recursos do LTM.", // Brazilian Portuguese
       },
       toc: [ // outline summary, one item per line
@@ -273,7 +273,7 @@ const f5: Platform = { // the F5 platform
         { en: "Processing traffic with SNATs", "pt-BR": "Processamento de tráfego com SNAT" }, // outline item 7
         { en: "Modifying traffic behaviour with profiles", "pt-BR": "Ajuste do comportamento do tráfego com profiles" }, // outline item 8
         { en: "Selected topics: NATs, route domains, packet filters", "pt-BR": "Tópicos selecionados: NAT, route domains, packet filters" }, // outline item 9
-        { en: "Customising application delivery with iRules and policies", "pt-BR": "Personalização da entrega de aplicações com iRules e policies" }, // outline item 10
+        { en: "Customizing application delivery with iRules and policies", "pt-BR": "Personalização da entrega de aplicações com iRules e policies" }, // outline item 10
         { en: "Mitigating common attacks with LTM", "pt-BR": "Mitigação de ataques comuns com o LTM" }, // outline item 11
       ],
       prerequisites: [ // prerequisites, in display order
@@ -388,8 +388,8 @@ const f5: Platform = { // the F5 platform
         "pt-BR": "DNS inteligente e global server load balancing.", // Brazilian Portuguese
       },
       description: { // description, original wording
-        en: "BIG-IP DNS, formerly Global Traffic Manager, brings intelligence and resilience to DNS, distributing users across data centres and clouds by health, proximity and load. This course covers standing up BIG-IP DNS, configuring wide IPs and pools, and the load-balancing methods that send users to the best available resource. It addresses DNS resolution and delegation, synchronisation across a DNS sync group, monitoring of distributed resources and DNS security features, building the skills to run global, fault-tolerant application access.", // British English
-        "pt-BR": "O BIG-IP DNS, antigo Global Traffic Manager, traz inteligência e resiliência ao DNS, distribuindo os usuários entre data centers e nuvens conforme saúde, proximidade e carga. Este curso cobre a colocação do BIG-IP DNS no ar, a configuração de wide IPs e pools e os métodos de load balancing que mandam o usuário para o melhor recurso disponível. Ele trata de resolução e delegação de DNS, sincronização em um DNS sync group, monitoração de recursos distribuídos e recursos de segurança de DNS, construindo a habilidade de operar acesso global e tolerante a falhas às aplicações.", // Brazilian Portuguese
+        en: "BIG-IP DNS, formerly Global Traffic Manager, brings intelligence and resilience to DNS, distributing users across data centres and clouds by health, proximity and load. This course covers standing up BIG-IP DNS, configuring wide IPs and pools, and the load-balancing methods that send users to the best available resource. It addresses DNS resolution and delegation, synchronization across a DNS sync group, monitoring of distributed resources and DNS security features, building the skills to run global, fault-tolerant application access.", // British English
+        "pt-BR": "O BIG-IP DNS, antigo Global Traffic Manager, traz inteligência e resiliência ao DNS, distribuindo os usuários entre data centres e nuvens conforme saúde, proximidade e carga. Este curso cobre a colocação do BIG-IP DNS no ar, a configuração de wide IPs e pools e os métodos de load balancing que mandam o usuário para o melhor recurso disponível. Ele trata de resolução e delegação de DNS, sincronização em um DNS sync group, monitoração de recursos distribuídos e recursos de segurança de DNS, construindo a habilidade de operar acesso global e tolerante a falhas às aplicações.", // Brazilian Portuguese
       },
       toc: [ // outline summary, one item per line
         { en: "Setting up the BIG-IP system", "pt-BR": "Setup do sistema BIG-IP" }, // outline item 1
@@ -584,7 +584,7 @@ const f5: Platform = { // the F5 platform
         { en: "Setting up the BIG-IP system", "pt-BR": "Setup do sistema BIG-IP" }, // outline item 1
         { en: "Introducing Access Policy Manager", "pt-BR": "Apresentação do Access Policy Manager" }, // outline item 2
         { en: "Building access policies with the visual policy editor", "pt-BR": "Construção de access policies no visual policy editor" }, // outline item 3
-        { en: "Authentication, authorisation and accounting", "pt-BR": "Autenticação, autorização e accounting" }, // outline item 4
+        { en: "Authentication, authorization and accounting", "pt-BR": "Autenticação, autorização e accounting" }, // outline item 4
         { en: "SSL VPN and network access", "pt-BR": "SSL VPN e network access" }, // outline item 5
         { en: "Application access, remote desktop and the webtop", "pt-BR": "Acesso a aplicações, remote desktop e o webtop" }, // outline item 6
         { en: "Single sign-on", "pt-BR": "Single sign-on" }, // outline item 7
@@ -639,11 +639,11 @@ const f5: Platform = { // the F5 platform
       days: 2, // instructor-led duration in days
       summary: { // one-line summary for cards
         en: "Data-centre network firewalling and DDoS defence.", // British English
-        "pt-BR": "Firewall de rede para data center e defesa contra DDoS.", // Brazilian Portuguese
+        "pt-BR": "Firewall de rede para data centre e defesa contra DDoS.", // Brazilian Portuguese
       },
       description: { // description, original wording
         en: "Advanced Firewall Manager adds a high-performance, data-centre-grade network firewall to BIG-IP, built to protect the network layer in front of applications. This course covers configuring AFM firewall rules and policies, the order in which they are evaluated, and how AFM works with the traffic-processing objects of LTM. It addresses network-layer DoS and DDoS protection, IP Intelligence, and logging and reporting, building the skill to defend the network perimeter of an application delivery environment.", // British English
-        "pt-BR": "O Advanced Firewall Manager acrescenta ao BIG-IP um firewall de rede de alto desempenho, de nível de data center, feito para proteger a camada de rede na frente das aplicações. Este curso cobre a configuração de regras e políticas de firewall no AFM, a ordem em que são avaliadas e como o AFM trabalha com os objetos de processamento de tráfego do LTM. Ele trata de proteção contra DoS e DDoS de camada de rede, IP Intelligence e logging e relatórios, construindo a habilidade de defender o perímetro de rede de um ambiente de application delivery.", // Brazilian Portuguese
+        "pt-BR": "O Advanced Firewall Manager acrescenta ao BIG-IP um firewall de rede de alto desempenho, de nível de data centre, feito para proteger a camada de rede na frente das aplicações. Este curso cobre a configuração de regras e políticas de firewall no AFM, a ordem em que são avaliadas e como o AFM trabalha com os objetos de processamento de tráfego do LTM. Ele trata de proteção contra DoS e DDoS de camada de rede, IP Intelligence e logging e relatórios, construindo a habilidade de defender o perímetro de rede de um ambiente de application delivery.", // Brazilian Portuguese
       },
       toc: [ // outline summary, one item per line
         { en: "Setting up the BIG-IP system", "pt-BR": "Setup do sistema BIG-IP" }, // outline item 1
@@ -819,11 +819,11 @@ const f5: Platform = { // the F5 platform
       name: "Configuring and Managing BIG-IQ", // catalogue name (official names stay in English)
       days: 2, // instructor-led duration in days
       summary: { // one-line summary for cards
-        en: "Centralised management of many BIG-IP devices with BIG-IQ.", // British English
+        en: "Centralized management of many BIG-IP devices with BIG-IQ.", // British English
         "pt-BR": "Gerência centralizada de muitos equipamentos BIG-IP com o BIG-IQ.", // Brazilian Portuguese
       },
       description: { // description, original wording
-        en: "When an organisation runs many BIG-IP devices, managing them one at a time stops scaling, and BIG-IQ is the answer: a central platform for managing devices, configurations, licences and security policies across a BIG-IP estate. This course covers building, configuring and resetting BIG-IQ, discovering and importing managed devices, a BIG-IQ high-availability pair, and centrally administering BIG-IP LTM devices, including clustered ones. It also addresses managing security objects at scale, licence management for Virtual Editions, and the monitoring, reporting and role-based administration that make a large deployment governable.", // British English
+        en: "When an organization runs many BIG-IP devices, managing them one at a time stops scaling, and BIG-IQ is the answer: a central platform for managing devices, configurations, licences and security policies across a BIG-IP estate. This course covers building, configuring and resetting BIG-IQ, discovering and importing managed devices, a BIG-IQ high-availability pair, and centrally administering BIG-IP LTM devices, including clustered ones. It also addresses managing security objects at scale, licence management for Virtual Editions, and the monitoring, reporting and role-based administration that make a large deployment governable.", // British English
         "pt-BR": "Quando uma organização opera muitos equipamentos BIG-IP, gerenciá-los um a um deixa de escalar, e o BIG-IQ é a resposta: uma plataforma central para gerenciar equipamentos, configurações, licenças e políticas de segurança em todo o parque de BIG-IP. Este curso cobre a construção, configuração e reset do BIG-IQ, a descoberta e importação dos equipamentos gerenciados, um par de alta disponibilidade de BIG-IQ e a administração centralizada de equipamentos BIG-IP LTM, inclusive em cluster. Também trata da gerência de objetos de segurança em escala, da gerência de licenças de Virtual Editions e da monitoração, dos relatórios e da administração por papéis que tornam governável uma implantação grande.", // Brazilian Portuguese
       },
       toc: [ // outline summary, one item per line
@@ -1098,11 +1098,11 @@ const extreme: Platform = { // the Extreme Networks platform
       name: "ExtremeSwitching: Advanced Configuration", // catalogue name (official names stay in English)
       days: 2, // instructor-led duration in days
       summary: { // one-line summary for cards
-        en: "Layer 3, security, optimisation and automation on ExtremeXOS / Switch Engine.", // British English
+        en: "Layer 3, security, optimization and automation on ExtremeXOS / Switch Engine.", // British English
         "pt-BR": "Camada 3, segurança, otimização e automação em ExtremeXOS / Switch Engine.", // Brazilian Portuguese
       },
       description: { // description, original wording
-        en: "Building on installation and configuration, this course covers the more advanced capabilities of ExtremeXOS / Switch Engine. It addresses layer 3 operations (virtual routers and VRFs, IP multicast with PIM, IPv6), security mechanisms such as authentication, authorisation and accounting, access control lists and ONEPolicy, traffic optimisation including Quality of Service, and extending the switch through automation with Fabric Attach, CLI scripting and Python. As with the rest of the track, the concepts are reinforced with real-world hands-on tasks in the lab.", // British English
+        en: "Building on installation and configuration, this course covers the more advanced capabilities of ExtremeXOS / Switch Engine. It addresses layer 3 operations (virtual routers and VRFs, IP multicast with PIM, IPv6), security mechanisms such as authentication, authorization and accounting, access control lists and ONEPolicy, traffic optimization including Quality of Service, and extending the switch through automation with Fabric Attach, CLI scripting and Python. As with the rest of the track, the concepts are reinforced with real-world hands-on tasks in the lab.", // British English
         "pt-BR": "Partindo da instalação e configuração, este curso cobre os recursos mais avançados do ExtremeXOS / Switch Engine. Ele trata da operação de camada 3 (virtual routers e VRFs, IP multicast com PIM, IPv6), de mecanismos de segurança como autenticação, autorização e accounting, access control lists e ONEPolicy, da otimização de tráfego, incluindo Quality of Service, e da extensão do switch por automação com Fabric Attach, scripts de CLI e Python. Como no resto da trilha, os conceitos são reforçados com tarefas práticas do mundo real no laboratório.", // Brazilian Portuguese
       },
       toc: [ // outline summary, one item per line
@@ -1110,10 +1110,10 @@ const extreme: Platform = { // the Extreme Networks platform
         { en: "IP multicast and PIM", "pt-BR": "IP multicast e PIM" }, // outline item 2
         { en: "IPv6", "pt-BR": "IPv6" }, // outline item 3
         { en: "ExtremeXOS security overview", "pt-BR": "Visão geral de segurança no ExtremeXOS" }, // outline item 4
-        { en: "Authentication, authorisation and accounting", "pt-BR": "Autenticação, autorização e accounting" }, // outline item 5
+        { en: "Authentication, authorization and accounting", "pt-BR": "Autenticação, autorização e accounting" }, // outline item 5
         { en: "Access control lists", "pt-BR": "Access control lists" }, // outline item 6
         { en: "Policy (ONEPolicy)", "pt-BR": "Policy (ONEPolicy)" }, // outline item 7
-        { en: "Traffic optimisation", "pt-BR": "Otimização de tráfego" }, // outline item 8
+        { en: "Traffic optimization", "pt-BR": "Otimização de tráfego" }, // outline item 8
         { en: "Automation: CLI and Python scripting", "pt-BR": "Automação: scripts de CLI e Python" }, // outline item 9
         { en: "Fabric Attach", "pt-BR": "Fabric Attach" }, // outline item 10
       ],
@@ -1165,7 +1165,7 @@ const extreme: Platform = { // the Extreme Networks platform
         "pt-BR": "Método e ferramentas de troubleshooting para o Switch Engine.", // Brazilian Portuguese
       },
       description: { // description, original wording
-        en: "This course builds structured troubleshooting skill for ExtremeXOS / Switch Engine environments. Students learn a troubleshooting mindset and the toolkit available to network engineers and administrators: deciding whether an issue is network-related, diagnosing the switch and the surrounding network with built-in tools layer by layer, and resolving the problems met most often. It also covers preparing a case for Extreme's GTAC support organisation, so escalation is handled cleanly when needed. The skills are practised hands-on in the lab.", // British English
+        en: "This course builds structured troubleshooting skill for ExtremeXOS / Switch Engine environments. Students learn a troubleshooting mindset and the toolkit available to network engineers and administrators: deciding whether an issue is network-related, diagnosing the switch and the surrounding network with built-in tools layer by layer, and resolving the problems met most often. It also covers preparing a case for Extreme's GTAC support organization, so escalation is handled cleanly when needed. The skills are practised hands-on in the lab.", // British English
         "pt-BR": "Este curso constrói habilidade estruturada de troubleshooting para ambientes ExtremeXOS / Switch Engine. Os alunos aprendem uma mentalidade de troubleshooting e o conjunto de ferramentas à disposição de engenheiros e administradores de rede: decidir se o problema é de rede, diagnosticar o switch e a rede ao redor com ferramentas nativas, camada por camada, e resolver os problemas mais frequentes. Também cobre a preparação de um chamado para o GTAC, o suporte da Extreme, para que a escalada aconteça de forma limpa quando necessário. As habilidades são praticadas no laboratório.", // Brazilian Portuguese
       },
       toc: [ // outline summary, one item per line
@@ -1286,7 +1286,7 @@ const extreme: Platform = { // the Extreme Networks platform
         "pt-BR": "Visibilidade, controle e relatórios de aplicações no ExtremeCloud SD-WAN.", // Brazilian Portuguese
       },
       description: { // description, original wording
-        en: "Building on the installation and configuration course and its labs, this lab-intensive course analyses WAN application traffic and how it is distributed across the bridge, router, hybrid and RVC site types. Students learn to read the application metrics (throughput and goodput, jitter, delay, loss, retransmissions and the Experience Quality Score), work the application dashboards, define applications and application groups with QoS profiles, implement application visibility, application control, WAN optimisation and dynamic WAN selection, and build reports for day-to-day operations.", // British English
+        en: "Building on the installation and configuration course and its labs, this lab-intensive course analyses WAN application traffic and how it is distributed across the bridge, router, hybrid and RVC site types. Students learn to read the application metrics (throughput and goodput, jitter, delay, loss, retransmissions and the Experience Quality Score), work the application dashboards, define applications and application groups with QoS profiles, implement application visibility, application control, WAN optimization and dynamic WAN selection, and build reports for day-to-day operations.", // British English
         "pt-BR": "Partindo do curso de instalação e configuração e dos seus laboratórios, este curso, intensivo em laboratório, analisa o tráfego de aplicações na WAN e como ele se distribui entre os tipos de site bridge, router, híbrido e RVC. Os alunos aprendem a ler as métricas de aplicação (throughput e goodput, jitter, atraso, perda, retransmissões e o Experience Quality Score), usar os dashboards de aplicações, definir aplicações e grupos de aplicações com QoS profiles, implementar application visibility, application control, WAN optimization e dynamic WAN selection e montar relatórios para a operação do dia a dia.", // Brazilian Portuguese
       },
       toc: [ // outline summary, one item per line
@@ -1297,7 +1297,7 @@ const extreme: Platform = { // the Extreme Networks platform
         { en: "SaaS applications, application flows and real-time graphs", "pt-BR": "Aplicações SaaS, fluxos de aplicação e gráficos em tempo real" }, // outline item 5
         { en: "Advanced reporting and analysis", "pt-BR": "Relatórios avançados e análise" }, // outline item 6
         { en: "Dynamic WAN selection: visibility and policy", "pt-BR": "Dynamic WAN selection: visibilidade e política" }, // outline item 7
-        { en: "Labs: application visibility, application control, WAN optimisation, dynamic WAN selection", "pt-BR": "Laboratórios: application visibility, application control, WAN optimization, dynamic WAN selection" }, // outline item 8
+        { en: "Labs: application visibility, application control, WAN optimization, dynamic WAN selection", "pt-BR": "Laboratórios: application visibility, application control, WAN optimization, dynamic WAN selection" }, // outline item 8
       ],
       prerequisites: [ // prerequisites, in display order
         { course: { platform: "extreme", course: "sdwan-installation-configuration" } }, // a course of this catalogue
@@ -1348,7 +1348,7 @@ const extreme: Platform = { // the Extreme Networks platform
       },
       description: { // description, original wording
         en: "This course covers the advanced parameters and features of an ExtremeCloud SD-WAN solution: what happens inside the ipes, OSPF, high availability, EdgeSentry, DHCP, colouring and the other advanced parameters, and how Fabric over SD-WAN works for engineers who already know Extreme Fabric. It is aimed at the people who configure the solution, and the material is reinforced in the lab.", // British English
-        "pt-BR": "Este curso cobre os parâmetros e recursos avançados de uma solução ExtremeCloud SD-WAN: o que acontece dentro dos ipes, OSPF, alta disponibilidade, EdgeSentry, DHCP, coloring e os demais parâmetros avançados, e como funciona o Fabric over SD-WAN para engenheiros que já conhecem o Extreme Fabric. É voltado a quem configura a solução, e o conteúdo é reforçado no laboratório.", // Brazilian Portuguese
+        "pt-BR": "Este curso cobre os parâmetros e recursos avançados de uma solução ExtremeCloud SD-WAN: o que acontece dentro dos ipes, OSPF, alta disponibilidade, EdgeSentry, DHCP, colouring e os demais parâmetros avançados, e como funciona o Fabric over SD-WAN para engenheiros que já conhecem o Extreme Fabric. É voltado a quem configura a solução, e o conteúdo é reforçado no laboratório.", // Brazilian Portuguese
       },
       toc: [ // outline summary, one item per line
         { en: "Inside the ipes", "pt-BR": "Por dentro dos ipes" }, // outline item 1
@@ -1408,7 +1408,7 @@ const extreme: Platform = { // the Extreme Networks platform
         "pt-BR": "Diagnóstico de falhas do ExtremeCloud SD-WAN e de problemas de aplicação.", // Brazilian Portuguese
       },
       description: { // description, original wording
-        en: "This course builds troubleshooting skill for ExtremeCloud SD-WAN with the tools of the Orchestrator and of the ipes themselves: getting under the hood of the appliances, scripts and debug commands, traffic captures, connectivity issues, crashes and processes, visibility synchronisation and correlation, the advanced principles of dynamic WAN selection, and bandwidth tracking and queuing for application control. It aims at isolating both SD-WAN misconfigurations and faults and end-user application issues, with helpdesk flowcharts and hands-on lab work in the instructor-led edition.", // British English
+        en: "This course builds troubleshooting skill for ExtremeCloud SD-WAN with the tools of the Orchestrator and of the ipes themselves: getting under the hood of the appliances, scripts and debug commands, traffic captures, connectivity issues, crashes and processes, visibility synchronization and correlation, the advanced principles of dynamic WAN selection, and bandwidth tracking and queuing for application control. It aims at isolating both SD-WAN misconfigurations and faults and end-user application issues, with helpdesk flowcharts and hands-on lab work in the instructor-led edition.", // British English
         "pt-BR": "Este curso constrói habilidade de troubleshooting para o ExtremeCloud SD-WAN com as ferramentas do Orchestrator e dos próprios ipes: o funcionamento interno dos appliances, scripts e comandos de debug, captura de tráfego, problemas de conectividade, travamentos e processos, sincronização e correlação de visibilidade, os princípios avançados do dynamic WAN selection e o bandwidth tracking e as filas do application control. O objetivo é isolar tanto erros de configuração e falhas do SD-WAN quanto problemas de aplicação do usuário final, com fluxogramas de helpdesk e laboratório prático na edição com instrutor.", // Brazilian Portuguese
       },
       toc: [ // outline summary, one item per line
@@ -1417,7 +1417,7 @@ const extreme: Platform = { // the Extreme Networks platform
         { en: "Traffic captures", "pt-BR": "Captura de tráfego" }, // outline item 3
         { en: "Connectivity issues", "pt-BR": "Problemas de conectividade" }, // outline item 4
         { en: "Crashes and ipe processes", "pt-BR": "Travamentos e processos dos ipes" }, // outline item 5
-        { en: "Visibility: synchronisation and correlation", "pt-BR": "Visibilidade: sincronização e correlação" }, // outline item 6
+        { en: "Visibility: synchronization and correlation", "pt-BR": "Visibilidade: sincronização e correlação" }, // outline item 6
         { en: "Dynamic WAN selection: advanced principles and troubleshooting", "pt-BR": "Dynamic WAN selection: princípios avançados e troubleshooting" }, // outline item 7
         { en: "Control: bandwidth tracking, queuing and troubleshooting", "pt-BR": "Controle: bandwidth tracking, filas e troubleshooting" }, // outline item 8
         { en: "Helpdesk flowcharts", "pt-BR": "Fluxogramas de helpdesk" }, // outline item 9
@@ -1533,7 +1533,7 @@ const fortinet: Platform = { // the Fortinet platform
     "pt-BR": "Segurança de rede no FortiGate e no Fortinet Security Fabric.", // Brazilian Portuguese
   },
   intro: { // platform introduction
-    en: "Fortinet's FortiGate is one of the most widely deployed network security platforms, and its training centres on operating FortiGate effectively: firewall policy, secure connectivity, and the security profiles that inspect and control traffic. These courses sit on Fortinet's NSE ladder as reorganised in July 2026: FortiGate Operator at NSE 3, FortiOS Administrator at NSE 4, SD-WAN at NSE 5 in the Secure Networking track, and FortiManager and FortiAnalyzer at NSE 6, from foundational operation through administration and into the management plane.", // British English
+    en: "Fortinet's FortiGate is one of the most widely deployed network security platforms, and its training centres on operating FortiGate effectively: firewall policy, secure connectivity, and the security profiles that inspect and control traffic. These courses sit on Fortinet's NSE ladder as reorganized in July 2026: FortiGate Operator at NSE 3, FortiOS Administrator at NSE 4, SD-WAN at NSE 5 in the Secure Networking track, and FortiManager and FortiAnalyzer at NSE 6, from foundational operation through administration and into the management plane.", // British English
     "pt-BR": "O FortiGate é uma das plataformas de segurança de rede mais implantadas do mercado, e o treinamento da Fortinet gira em torno de operá-lo bem: política de firewall, conectividade segura e os security profiles que inspecionam e controlam o tráfego. Estes cursos ficam na escada NSE da Fortinet, reorganizada em julho de 2026: FortiGate Operator no NSE 3, FortiOS Administrator no NSE 4, SD-WAN no NSE 5 da trilha Secure Networking, e FortiManager e FortiAnalyzer no NSE 6, da operação básica à administração e ao plano de gerência.", // Brazilian Portuguese
   },
   since: "2024", // authorized instructor since
@@ -1704,11 +1704,11 @@ const fortinet: Platform = { // the Fortinet platform
       },
       days: 2, // instructor-led duration in days
       summary: { // one-line summary for cards
-        en: "Centralised management of many FortiGate devices.", // British English
+        en: "Centralized management of many FortiGate devices.", // British English
         "pt-BR": "Gerência centralizada de muitos equipamentos FortiGate.", // Brazilian Portuguese
       },
       description: { // description, original wording
-        en: "FortiManager provides centralised configuration and policy management across a fleet of FortiGate devices, and this course builds the skill to run it. In interactive labs it covers deployment strategies with single or multiple ADOMs, workspace modes, device registration, provisioning templates for device-level changes, policy packages with shared and dynamic objects, the global ADOM, installing configuration changes, high availability, backup and firmware management, FortiManager as a local FortiGuard distribution server, and troubleshooting import and installation issues.", // British English
+        en: "FortiManager provides centralized configuration and policy management across a fleet of FortiGate devices, and this course builds the skill to run it. In interactive labs it covers deployment strategies with single or multiple ADOMs, workspace modes, device registration, provisioning templates for device-level changes, policy packages with shared and dynamic objects, the global ADOM, installing configuration changes, high availability, backup and firmware management, FortiManager as a local FortiGuard distribution server, and troubleshooting import and installation issues.", // British English
         "pt-BR": "O FortiManager oferece gerência centralizada de configuração e de políticas para uma frota de equipamentos FortiGate, e este curso constrói a habilidade de operá-lo. Em laboratórios interativos, cobre estratégias de implantação com um ou vários ADOMs, workspace modes, registro de equipamentos, provisioning templates para mudanças por equipamento, policy packages com objetos compartilhados e dinâmicos, o ADOM global, instalação de mudanças de configuração, alta disponibilidade, backup e gerência de firmware, o FortiManager como servidor local de distribuição do FortiGuard e troubleshooting de problemas de importação e instalação.", // Brazilian Portuguese
       },
       toc: [ // outline summary, one item per line
@@ -1769,11 +1769,11 @@ const fortinet: Platform = { // the Fortinet platform
       },
       days: 1, // instructor-led duration in days
       summary: { // one-line summary for cards
-        en: "Deploying and running FortiAnalyzer for centralised logging and reporting.", // British English
+        en: "Deploying and running FortiAnalyzer for centralized logging and reporting.", // British English
         "pt-BR": "Implantação e operação do FortiAnalyzer para logging e relatórios centralizados.", // Brazilian Portuguese
       },
       description: { // description, original wording
-        en: "FortiAnalyzer is the centralised logging and analytics platform of the Fortinet Security Fabric, and this course covers deploying, configuring and securing it. Students learn its operating modes and the log workflow, configure network settings and secure administrative access with two-factor authentication, register and manage devices, enable and manage ADOMs, configure and manage high-availability clusters and disk quotas, set log redundancy, encryption, rollover and retention, and manage reports and routine maintenance, including backups and firmware upgrades.", // British English
+        en: "FortiAnalyzer is the centralized logging and analytics platform of the Fortinet Security Fabric, and this course covers deploying, configuring and securing it. Students learn its operating modes and the log workflow, configure network settings and secure administrative access with two-factor authentication, register and manage devices, enable and manage ADOMs, configure and manage high-availability clusters and disk quotas, set log redundancy, encryption, rollover and retention, and manage reports and routine maintenance, including backups and firmware upgrades.", // British English
         "pt-BR": "O FortiAnalyzer é a plataforma centralizada de logging e analytics do Fortinet Security Fabric, e este curso cobre a implantação, a configuração e a proteção dele. Os alunos aprendem os modos de operação e o fluxo dos logs, configuram rede e acesso administrativo seguro com autenticação de dois fatores, registram e gerenciam equipamentos, habilitam e gerenciam ADOMs, configuram e gerenciam clusters de alta disponibilidade e cotas de disco, definem redundância, criptografia, rollover e retenção de logs e gerenciam relatórios e a manutenção de rotina, incluindo backups e atualizações de firmware.", // Brazilian Portuguese
       },
       toc: [ // outline summary, one item per line
@@ -1848,7 +1848,7 @@ const fortinet: Platform = { // the Fortinet platform
         { en: "Defining and configuring rules", "pt-BR": "Definição e configuração de regras" }, // outline item 3
         { en: "Rule strategies in action", "pt-BR": "Estratégias de regras na prática" }, // outline item 4
         { en: "Routing and sessions", "pt-BR": "Roteamento e sessões" }, // outline item 5
-        { en: "Centralised management", "pt-BR": "Gerência centralizada" }, // outline item 6
+        { en: "Centralized management", "pt-BR": "Gerência centralizada" }, // outline item 6
       ],
       prerequisites: [ // prerequisites, in display order
         { course: { platform: "fortinet", course: "fortigate-administrator" } }, // a course of this catalogue
@@ -1903,7 +1903,7 @@ const netskope: Platform = { // the Netskope platform
     "pt-BR": "Segurança em nuvem e SASE na plataforma Netskope One.", // Brazilian Portuguese
   },
   intro: { // platform introduction
-    en: "Netskope secures how organisations use the cloud, the web, and private applications, bringing visibility and control to traffic that traditional perimeters never saw. Its instructor-led training centres on the Netskope One platform. The two courses here cover administering the platform's core security controls and implementing and operating it in an enterprise environment. Rodolfo added Netskope to his delivery in 2025.", // British English
+    en: "Netskope secures how organizations use the cloud, the web, and private applications, bringing visibility and control to traffic that traditional perimeters never saw. Its instructor-led training centres on the Netskope One platform. The two courses here cover administering the platform's core security controls and implementing and operating it in an enterprise environment. Rodolfo added Netskope to his delivery in 2025.", // British English
     "pt-BR": "A Netskope protege o uso que as organizações fazem da nuvem, da web e das aplicações privadas, trazendo visibilidade e controle para um tráfego que os perímetros tradicionais nunca enxergaram. O treinamento com instrutor da Netskope gira em torno da plataforma Netskope One. Os dois cursos aqui cobrem a administração dos controles de segurança centrais da plataforma e a implementação e operação dela em um ambiente corporativo. Rodolfo passou a ministrar Netskope em 2025.", // Brazilian Portuguese
   },
   since: "2025", // authorized instructor since
@@ -1923,7 +1923,7 @@ const netskope: Platform = { // the Netskope platform
         "pt-BR": "Administração dos controles de segurança centrais da plataforma Netskope One.", // Brazilian Portuguese
       },
       description: { // description, original wording
-        en: "This course builds the skill to navigate, monitor and manage the Netskope One platform day to day. It begins with the platform architecture, how the main components serve requests in the data and control planes, and the tenant interface, then moves through user management, traffic steering and the Netskope Client. Students design real-time and API data protection policies to stop unauthorised exfiltration, apply web security controls and the cloud firewall, and work with Data Loss Prevention and threat protection, including scanning and User and Entity Behaviour Analytics, using Advanced Analytics and enhanced reporting to validate outcomes and troubleshoot.", // British English
+        en: "This course builds the skill to navigate, monitor and manage the Netskope One platform day to day. It begins with the platform architecture, how the main components serve requests in the data and control planes, and the tenant interface, then moves through user management, traffic steering and the Netskope Client. Students design real-time and API data protection policies to stop unauthorized exfiltration, apply web security controls and the cloud firewall, and work with Data Loss Prevention and threat protection, including scanning and User and Entity Behaviour Analytics, using Advanced Analytics and enhanced reporting to validate outcomes and troubleshoot.", // British English
         "pt-BR": "Este curso constrói a habilidade de navegar, monitorar e gerenciar a plataforma Netskope One no dia a dia. Começa pela arquitetura da plataforma, por como os componentes principais atendem as requisições nos planos de dados e de controle e pela interface do tenant, e passa por gerência de usuários, traffic steering e o Netskope Client. Os alunos projetam políticas de proteção de dados em tempo real e por API para impedir exfiltração não autorizada, aplicam controles de web security e o cloud firewall e trabalham com Data Loss Prevention e threat protection, incluindo scanning e User and Entity Behavior Analytics, usando o Advanced Analytics e os relatórios avançados para validar resultados e fazer troubleshooting.", // Brazilian Portuguese
       },
       toc: [ // outline summary, one item per line

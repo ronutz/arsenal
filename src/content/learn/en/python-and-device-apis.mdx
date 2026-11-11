@@ -236,7 +236,7 @@ The test server advertises `:candidate` but not `:writable-running`, so writing 
 
 ## What changed compared with the command line
 
-- **Errors are data.** A 409, an `ietf-restconf:errors` body or an `<rpc-error>` arrives as a status or an element, not as a line to recognise among other lines.
+- **Errors are data.** A 409, an `ietf-restconf:errors` body or an `<rpc-error>` arrives as a status or an element, not as a line to recognize among other lines.
 - **Nothing pages, nothing prompts.** There is no pager to disable and no question to answer.
 - **Changes can be transactions.** NETCONF's candidate, lock and commit make a change all or nothing; RESTCONF's plain PATCH refuses to create what is missing.
 - **Credentials have a shape.** A FortiOS token tied to trusted hosts and a profile, an iControl REST token that expires after 1200 seconds, a TLS client certificate: each limits what a leaked secret can do. Store them as the [Expect secrets article](/learn/expect-secrets-and-safe-scripts) and the previous article describe.

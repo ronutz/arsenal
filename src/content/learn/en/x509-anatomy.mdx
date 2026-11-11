@@ -15,7 +15,7 @@ updated: "2026-06-26"
 
 X.509 was not designed for the web. It arrived in 1988 as part of **X.500**, an ITU-T directory system intended to give every entity in the world a distinguished name in a global hierarchy. That project never happened, and its certificate format survived it.
 
-The inheritance explains most of what looks strange today. Distinguished names with country, organisation and common name components are directory entries, not web identities. **ASN.1** with DER encoding is a 1980s telecom serialisation, which is why a certificate is not readable text. And the assumption that one global hierarchy would name everyone is why nothing in the original design says which authority is allowed to speak for which name, the problem later patched by [CAA records and public logging](/learn/the-certificate-authority-chokepoint).
+The inheritance explains most of what looks strange today. Distinguished names with country, organization and common name components are directory entries, not web identities. **ASN.1** with DER encoding is a 1980s telecom serialization, which is why a certificate is not readable text. And the assumption that one global hierarchy would name everyone is why nothing in the original design says which authority is allowed to speak for which name, the problem later patched by [CAA records and public logging](/learn/the-certificate-authority-chokepoint).
 
 The versions record the repairs:
 
@@ -134,6 +134,6 @@ This article opens the series **Certificates: the object and its trust**. Having
 6. **[Authority Information Access: The OCSP and CA Issuers URLs](/learn/authority-information-access)**. The two pointers in the AIA extension: where to ask about revocation (OCSP) and where to fetch the issuer (CA Issuers).
 7. **[Certificate revocation: CRL, OCSP, and short-lived certificates](/learn/certificate-revocation)**. CRL, OCSP and short-lived certificates: why cancelling a certificate before expiry works poorly, and what replaces it.
 8. **[OCSP Must-Staple: Closing the Soft-Fail Gap](/learn/ocsp-must-staple)**. The soft-fail gap in live OCSP checks, and how stapling and the Must-Staple flag close it, at an operational price.
-9. **[Certificate authorities: the padlock is a list of people you have never met](/learn/the-certificate-authority-chokepoint)**. A few hundred organisations, any of which can issue a certificate for any name: the design, and how it has failed.
+9. **[Certificate authorities: the padlock is a list of people you have never met](/learn/the-certificate-authority-chokepoint)**. A few hundred organizations, any of which can issue a certificate for any name: the design, and how it has failed.
 10. **[2011: the year the trust anchors broke](/learn/rsa-and-diginotar-2011)**. The year the trust anchors broke: the RSA SecurID breach and the certificate authority that issued 531 fraudulent certificates.
 11. **[PKI: An Undergraduate Thesis, and a Trust Model Nobody Would Design Today](/learn/pki-family-history)**. From the 1978 undergraduate thesis that named the certificate to a trust model nobody would design today.

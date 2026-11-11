@@ -17,7 +17,7 @@ MFA (multi-factor authentication) is sold as a single idea, and it is at least t
 
 Here is the mechanism. A user lands on a convincing fake login page. They type their password, and the attacker's server forwards it to the real site immediately. The real site asks for a code. The fake page asks for a code. The user reads it off their phone and types it in. The attacker relays it within its validity window, receives a **session cookie**, and is now logged in as the user, with the password changed or a new device enrolled before anyone notices.
 
-That is an adversary-in-the-middle attack, it is a commodity toolkit rather than an exotic capability, and **it defeats one-time codes, push approvals and authenticator apps alike**. The reason is structural: *if a human can read a secret out and type it somewhere, they can be persuaded to type it into the wrong place.* NIST's digital identity guidelines put the same thing in normative terms: authenticators whose output is entered by hand, one-time codes and out-of-band codes alike, are not to be considered phishing-resistant, because manual entry does not bind the output to the session being authenticated, and the two bindings they do recognise are channel binding and verifier name binding, the second being what an origin-bound passkey provides ([NIST SP 800-63B-4, Phishing Resistance](https://pages.nist.gov/800-63-4/sp800-63b.html#verifimpers)).
+That is an adversary-in-the-middle attack, it is a commodity toolkit rather than an exotic capability, and **it defeats one-time codes, push approvals and authenticator apps alike**. The reason is structural: *if a human can read a secret out and type it somewhere, they can be persuaded to type it into the wrong place.* NIST's digital identity guidelines put the same thing in normative terms: authenticators whose output is entered by hand, one-time codes and out-of-band codes alike, are not to be considered phishing-resistant, because manual entry does not bind the output to the session being authenticated, and the two bindings they do recognize are channel binding and verifier name binding, the second being what an origin-bound passkey provides ([NIST SP 800-63B-4, Phishing Resistance](https://pages.nist.gov/800-63-4/sp800-63b.html#verifimpers)).
 
 Push notifications add their own failure: approval fatigue. Send enough prompts at 3am and someone eventually taps yes.
 
@@ -63,9 +63,9 @@ The standards body's own answer is worth stating fairly: a hardware security key
 
 **Shared and delegated access.** Passkeys are personal by design, which is awkward for shared operational accounts, and the honest answer there is that shared accounts were always the problem, not the authentication method.
 
-**Regulatory recognition lags the technology.** Some regimes have not yet listed passkeys among the officially recognised forms of multi-factor authentication, and synced passkeys in particular are argued not to satisfy a strict possession requirement, since the credential exists on several devices at once. The FIDO Alliance describes this as an area of active engagement, and device-bound keys are the answer where a compliance regime demands a single copy. Check what your auditor accepts before you plan the rollout, not after.
+**Regulatory recognition lags the technology.** Some regimes have not yet listed passkeys among the officially recognized forms of multi-factor authentication, and synced passkeys in particular are argued not to satisfy a strict possession requirement, since the credential exists on several devices at once. The FIDO Alliance describes this as an area of active engagement, and device-bound keys are the answer where a compliance regime demands a single copy. Check what your auditor accepts before you plan the rollout, not after.
 
-**Legacy paths.** A passkey rollout that leaves password-plus-code enabled as a fallback has not removed the phishing risk; it has added a stronger option beside the old one. The security benefit arrives only when the weak path is closed, which is the step organisations defer.
+**Legacy paths.** A passkey rollout that leaves password-plus-code enabled as a fallback has not removed the phishing risk; it has added a stronger option beside the old one. The security benefit arrives only when the weak path is closed, which is the step organizations defer.
 
 ## Practical guidance
 
@@ -75,7 +75,7 @@ The standards body's own answer is worth stating fairly: a hardware security key
 - **Use device-bound keys for administrative access** where the platform-account inheritance is unacceptable.
 - **Do not promise users that biometrics are being sent anywhere.** They are not, and explaining this correctly resolves most of the resistance you will meet.
 
-## The pattern worth generalising
+## The pattern worth generalizing
 
 The industry spent two decades trying to make users better at detecting fraudulent sites, through training, warnings, indicators and green padlocks. It did not work, because the task is hard for humans and trivially spoofable by attackers.
 

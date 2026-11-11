@@ -57,7 +57,7 @@ import type {
   ExportArtifact,
 } from "@/lib/fieldcraft/schema";
 import { artifactToMarkdown } from "@/lib/fieldcraft/markdown";
-import { say, plainText, listOf, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
+import { say, enPlural, plainText, listOf, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
 import { joined, raw, bullet, todo } from "@/lib/fieldcraft/text"; // the export's sentences with ids
 
 // ----------------------------------------------------------------------------
@@ -289,7 +289,7 @@ const FACTORS: FactorDef[] = [
     title: "Capacity or saturation",
     rationale: "If the incident tracked load or growth, a saturated resource (link, CPU, memory, connection table, queue) is a domain to investigate.",
     confirmEvidence: [
-      "Utilisation at the incident window sat at or near a ceiling",
+      "Utilization at the incident window sat at or near a ceiling",
       "Symptom intensity tracked traffic volume",
       "A growth or event (campaign, batch, new site) coincided with onset",
     ],
@@ -681,7 +681,7 @@ export function runLocalisable(rawInput: RcaInput | unknown): RcaResult<EngineTe
   // 8. The RCA scaffold artifact (usable, not decorative). The language holds
   //    the line: candidates and evidence, never "root cause found".
   const timelineLines = timeline.map((t) => (t.note ? say("md.eventNote", `- ${t.label.text}: ${t.note}`, { label: t.label, note: t.note }) : say("md.event", `- ${t.label.text}`, { label: t.label })));
-  const bandLines = bands.map((b) => say("md.band", `- ${b.label.text}: ${b.eventsSpanned} event(s) in between`, { label: b.label, n: String(b.eventsSpanned) }));
+  const bandLines = bands.map((b) => say("md.band", `- ${b.label.text}: ${b.eventsSpanned} ${enPlural(b.eventsSpanned, "event", "events")} in between`, { label: b.label, n: String(b.eventsSpanned) }));
   const sections: [EngineText, EngineText][] = [];
   if (input.notes?.summary) {
     sections.push([say("md.h.summary", "Incident summary"), raw(input.notes.summary)]);

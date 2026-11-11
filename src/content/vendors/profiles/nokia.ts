@@ -31,7 +31,7 @@ export const nokiaProfile: VendorProfile = {
     { year: 1998, title: "The crown", detail: "Nokia passes Motorola as the world's largest phone maker and holds the title for thirteen years - the 3310 and its kin become the most-manufactured electronics of their era." },
     { year: 2011, title: "The burning platform", detail: "Stephen Elop's memo concedes the smartphone war; the Windows Phone alliance follows, and in 2014 the devices business itself goes to Microsoft for roughly EUR 5.44 billion. What remains is the networks company." },
     { year: 2016, title: "Alcatel-Lucent, and Bell Labs", detail: "Nokia completes the acquisition of Alcatel-Lucent - absorbing the French-American lineage and, with it, Bell Labs itself - having already taken full ownership of the Siemens network venture in 2013. The infrastructure giant is assembled." },
-    { year: 2025, title: "Optics, and a new captain", detail: "February 28, 2025: the Infinera acquisition closes, deepening optical networks for the AI-datacenter era. April 1: Justin Hotard, from Intel's Data Center and AI group, becomes President and CEO - a data-center executive for a data-center decade.", sourceNote: "Nokia 6-K filings, 2025." },
+    { year: 2025, title: "Optics, and a new captain", detail: "28 February 2025: the Infinera acquisition closes, deepening optical networks for the AI-datacenter era. April 1: Justin Hotard, from Intel's Data Center and AI group, becomes President and CEO - a data-center executive for a data-center decade.", sourceNote: "Nokia 6-K filings, 2025." },
   ],
   products: [
     { name: "Mobile Networks", what: "RAN from 2G through 5G Advanced: one of the three vendors that build the world's mobile networks." },
@@ -43,7 +43,7 @@ export const nokiaProfile: VendorProfile = {
     { title: "Corporate reinvention as a discipline", detail: "Paper, rubber, cables, televisions, phones, networks: no company in this section has successfully changed what it fundamentally is more times." },
   ],
   markets: [
-    "Nokia competes globally in mobile and fixed network infrastructure against Ericsson and Huawei, with growing data-center and defense lines - the Finnish giant's third act, captained since 2025 by a data-center specialist.",
+    "Nokia competes globally in mobile and fixed network infrastructure against Ericsson and Huawei, with growing data-center and defence lines - the Finnish giant's third act, captained since 2025 by a data-center specialist.",
   ],
   analyst: [
     "A permanent fixture of the telecom-infrastructure evaluations, and before that the defining vendor of the handset era the smartphone unmade.",

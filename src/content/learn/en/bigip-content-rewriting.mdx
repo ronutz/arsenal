@@ -24,7 +24,7 @@ Which rule applies is decided by specificity, not by the order you typed:
 - requests whose URIs contain a host name are matched before those that do not;
 - entries are processed from most specific to least specific, regardless of their order in the profile.
 
-The profile rewrites HTML and CSS content only. HTML is recognised by the MIME types text/html and text/xhtml unless an HTML profile says otherwise, and CSS by text/css alone. In tmsh the same profile type also serves the Access portal, so check that `rewrite-mode` is `uri-translation` ([tmsh reference: ltm profile rewrite](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_profile_rewrite.html)).
+The profile rewrites HTML and CSS content only. HTML is recognized by the MIME types text/html and text/xhtml unless an HTML profile says otherwise, and CSS by text/css alone. In tmsh the same profile type also serves the Access portal, so check that `rewrite-mode` is `uri-translation` ([tmsh reference: ltm profile rewrite](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_profile_rewrite.html)).
 
 ## The HTML profile: rules on tags
 

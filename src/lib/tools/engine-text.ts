@@ -68,6 +68,37 @@ export function say(id: string, text: string, args?: Record<string, EngineArg>):
 } // say
 
 /**
+ * The English noun (or noun phrase) that agrees with a count: the singular for exactly 1, the plural otherwise.
+ * Added 11/11/2026 so an engine's English reads "1 octet", not "1 octets", and matches the pack's
+ * ICU plural ({n, plural, one {{n} octet} other {{n} octets}}) that the page formats.
+ * @param n the count, as a number or as the string the engine passes to the page
+ * @param one the text for exactly one
+ * @param other the text for every other count (0, 2, 1.5, a value that is not a plain number)
+ * @returns one or other
+ */
+export function enPlural(n: number | string, one: string, other: string): string {
+  return Number(n) === 1 ? one : other; // English: only 1 takes the singular
+} // enPlural
+
+/**
+ * Resolves the ICU plural blocks of an English engine template, so a template can be the en pack's message
+ * itself. Only the flat form the packs use is read: {name, plural, one {...} other {...}}, whose branches
+ * hold text and {placeholders} but no further blocks; the plain {placeholders} are left for the caller to fill.
+ * Added 11/11/2026 with enPlural.
+ * @param tpl the English template
+ * @param args the values (a count may be a string; a value that is not a plain number takes "other")
+ * @returns the template with each plural block replaced by its English branch
+ */
+export function resolvePlurals(tpl: string, args: Record<string, unknown>): string {
+  const block = /\{(\w+), plural, one \{((?:[^{}]|\{\w+\})*)\} other \{((?:[^{}]|\{\w+\})*)\}\}/g; // a flat plural block
+  return tpl.replace(block, (_m: string, k: string, one: string, other: string) => { // each block
+    const v = args[k]; // its count
+    const n = v instanceof EngineText ? v.text : String(v); // as text
+    return enPlural(n, one, other); // the agreeing branch
+  }); // all blocks
+} // resolvePlurals
+
+/**
  * A list of sentences as one argument.
  * @param items the sentences, in order
  * @param sep the separator: punctuation as is, or a sentence the page translates

@@ -1,14 +1,14 @@
 ---
 slug: brazilian-cybercrime-from-boleto-to-pix
 title: "Cibercrime brasileiro: do boleto ao Pix"
-summary: "O Brasil bancarizou online cedo, inventou instrumentos de pagamento que o resto do mundo não tinha, e criou uma indústria criminosa moldada exatamente a eles — manipulação de código de barras, sobreposição de tela, jackpotting de caixa eletrônico, e agora engenharia social mirando transferências instantâneas. As técnicas, as quadrilhas que as exportaram, os ataques ao Estado, e as leis escritas depois de cada choque."
+summary: "O Brasil bancarizou online cedo, inventou instrumentos de pagamento que o resto do mundo não tinha, e criou uma indústria criminosa moldada exatamente a eles — manipulação de código de barras, sobreposição de tela, jackpotting de caixa eletrônico, engenharia social mirando transferências instantâneas, e agora ataques às empresas que conectam os bancos ao banco central. As técnicas, as quadrilhas que as exportaram, os ataques ao Estado, as leis escritas depois de cada choque, e as defesas que os bancos e o Estado construíram."
 concepts: ["cybercrime", "brazil", "banking malware", "fraud", "ransomware"]
 relatedTools: []
-relatedArticles: ["the-brazilian-hacker-scene", "hacking-in-the-20th-century", "latin-american-security-conferences"]
+relatedArticles: ["the-brazilian-hacker-scene", "hacking-in-the-20th-century", "latin-american-security-conferences", "the-stj-ransomware-attack", "backups-and-ransomware-recovery"]
 category: security
 order: 114
 status: reviewed
-updated: "2026-08-29"
+updated: "2026-11-11"
 ---
 
 ## Por que aqui
@@ -51,9 +51,24 @@ A **LGPD (13.709/2018)** trouxe obrigações de proteção de dados e, com elas,
 
 A **Lei 14.155/2021** agravou penas para fraude eletrônica e invasão de dispositivo - resposta direta a volumes de fraude que as leis anteriores não anteciparam.
 
+## Os anos do encanamento, 2025 e 2026
+
+Por duas décadas a fraude mirou os clientes: os dispositivos, os boletos, a confiança deles. Em 2025 os ataques mais caros subiram na cadeia, para as contas que bancos e instituições de pagamento mantêm no Banco Central do Brasil (BC) para liquidar o [Pix](/glossary/pix), e para os [provedores de tecnologia](/glossary/psti) que conectam instituições menores à rede do sistema financeiro.
+
+- **C&M Software, meados de 2025.** As credenciais de um funcionário foram usadas para tirar dinheiro das contas de liquidação de instituições clientes. A polícia prendeu um operador de TI que disse ter vendido login e senha por R$ 5 mil e recebido mais R$ 10 mil para executar comandos. Só a BMP perdeu R$ 541 milhões, segundo a Polícia Civil de São Paulo; as estimativas para o ataque inteiro foram de R$ 400 milhões a mais de R$ 800 milhões.
+- **Sinqia, agosto de 2025.** Credenciais de fornecedores de TI do próprio provedor foram usadas em R$ 710 milhões de transferências Pix não autorizadas, R$ 670 milhões delas do HSBC e R$ 40 milhões da fintech Artta.
+- **Banco do Nordeste, janeiro de 2026, e BTG Pactual, março de 2026.** Os dois suspenderam o Pix enquanto continham incidentes em que dinheiro saiu de contas que mantinham no Banco Central; no caso do BTG, o Banco Central disse que os próprios sistemas não foram afetados.
+- **Operação Pane Seca, agosto de 2026.** A Polícia Federal foi atrás de um grupo suspeito de invadir sistemas de instituições financeiras, com prejuízo estimado de R$ 227 milhões.
+
+O regulador respondeu em semanas, não em anos. Resoluções de 5 de setembro de 2025 limitaram Pix e TED (Transferência Eletrônica Disponível) a R$ 15 mil por transação para instituições que se conectam por meio de um provedor até que ele seja credenciado, e fixaram requisitos de credenciamento que incluem R$ 15 milhões de capital, certificação de segurança em norma reconhecida internacionalmente, auditoria independente anual de segurança, seguro e planos de continuidade testados. Em julho de 2026, três dos nove provedores em operação em setembro de 2025 continuavam no mercado. Depois do ataque ao BTG, a Resolução BCB nº 554 permitiu às instituições programar um bloqueio automático da conta de liquidação do Pix.
+
+O Estado também voltou a ser atingido. Em novembro de 2026 os sistemas da Autoridade Portuária de Santos, que administra o maior porto do país, caíram num ataque cibernético; a carga continuou andando porque os terminais usavam sistemas próprios. As contagens de incidentes contam a mesma história vista de cima. A Autoridade Nacional de Proteção de Dados (ANPD) recebeu 423 comunicações de incidente nos nove primeiros meses de 2026, contra 395 em todo o ano de 2025, e o centro de resposta do governo federal, o [CTIR Gov](/glossary/ctir-gov), contou 6.774 incidentes em sistemas federais até o início de junho de 2026. O texto [O porto que não parou](/blog/the-port-that-kept-moving-santos-and-brazils-cyber-year) conta a história de Santos e desses casos por inteiro.
+
 ## O que o país construiu em resposta
 
 O lado defensivo cresceu do mesmo solo. O [CERT.br](/glossary/cert-br), sob o comitê multissetorial, publica abertamente dados de incidentes e de honeypots há duas décadas. O [chkrootkit](/glossary/chkrootkit) saiu daqui. [Fábio Assolini](/glossary/fabio-assolini) e colegas documentaram em inglês as famílias de malware bancário, que é o que transformou um fenômeno local numa classe de ameaça compreendida internacionalmente. E o [circuito de conferências](/learn/latin-american-security-conferences) deu à expertise um lugar para circular.
+
+Os bancos construíram instituições próprias. A [Febraban](/glossary/febraban), a federação dos bancos, inaugurou em setembro de 2020, em São Paulo, um Laboratório de Segurança Cibernética para treinamento, simulação de ataques, inteligência de ameaças e padrões para os fornecedores que atendem o sistema financeiro; até o início de 2022 havia realizado 40 treinamentos gratuitos para 72 instituições associadas, e o Cyber Academy, aberto a qualquer interessado, ofereceu 10 mil vagas em 2026. O governo federal acrescentou uma Política Nacional de Cibersegurança ([PNCiber](/glossary/pnciber)) em dezembro de 2023 e uma Estratégia Nacional de Cibersegurança ([E-Ciber](/glossary/e-ciber)) em agosto de 2025. O plano que deve transformar a estratégia em projetos ainda não tinha a anuência de quatro órgãos de governo em meados de 2026, e em outubro de 2026 o Tribunal de Contas da União alertou para o risco de que, sem uma lei, a política não tenha alcance nacional.
 
 Esse é o resumo honesto desta história: **as mesmas condições produziram a fraude e a expertise**. Por duas décadas, "brasileiro" num relatório de malware costumava significar crime bancário; hoje pesquisadores brasileiros estão entre as pessoas que o resto do mundo lê sobre o assunto, exatamente pela mesma razão.
 
@@ -62,4 +77,28 @@ Esse é o resumo honesto desta história: **as mesmas condições produziram a f
 - **Instrumentos de pagamento locais criam fraude local.** Todo país que lança um esquema de pagamento instantâneo herda a lição do Pix: a irreversibilidade move o ataque do software para a pessoa.
 - **Engenharia social escala melhor que malware** quando as transferências são instantâneas e finais. Planeje para a transação autorizada sob coação, e não só para o dispositivo comprometido.
 - **Atrito é controle.** Confirmação de destinatário, limites e períodos de espera param o que a detecção não para.
+- **As credenciais do seu fornecedor são as suas credenciais.** Os ataques de 2025 entraram pelas empresas que conectam instituições ao banco central, e pelos fornecedores dessas empresas. A correção foi regular quem conecta, limitar o que pode passar por ele e exigir que comprove os controles.
 - **Publique na língua que o campo lê.** Pesquisa que existia só em português ficou invisível por anos, e a classe de ameaça foi subestimada internacionalmente por causa disso.
+
+## Fontes da seção sobre 2025 e 2026
+
+Lidas em 11 de novembro de 2026.
+
+- [SBT News, Ataque hacker a bancos: funcionário recebeu R$ 15 mil para entregar senha e executar comandos (a C&M e os R$ 541 milhões da BMP)](https://sbtnews.sbt.com.br/noticia/policia/ataque-hacker-a-bancos-funcionario-recebeu-r-15-mil-para-entregar-senha-e-executar-comandos)
+- [InfoMoney, Hackers invadem empresa ligada ao Pix e desviam ao menos R$ 400 milhões, julho de 2025](https://www.infomoney.com.br/brasil/hackers-invadem-empresa-ligada-ao-pix-e-desviam-ao-menos-r-400-milhoes/)
+- [InfoMoney, PF deflagra operação contra hackers do Pix que desviaram R$ 800 milhões, 30 de outubro de 2025](https://www.infomoney.com.br/brasil/pf-deflagra-operacao-internacional-contra-hackers-do-pix/)
+- [Tecnoblog, Ataque hacker a empresa que opera o Pix desviou R$ 710 milhões (Sinqia)](https://tecnoblog.net/noticias/ataque-hacker-a-empresa-que-opera-o-pix-desviou-r-710-milhoes/)
+- [ConvergenciaDigital, Banco do Nordeste suspende operações do Pix depois de ataque hacker, janeiro de 2026](https://convergenciadigital.com.br/mercado/banco-do-nordeste-suspende-operacoes-do-pix-depois-de-ataque-hacker/)
+- [Estadão / TecMundo, Pix do BTG Pactual volta a funcionar após pausa por ataque cibernético, 23 de março de 2026](https://www.tecmundo.com.br/seguranca/411840-pix-do-btg-pactual-volta-a-funcionar-apos-pausa-por-ataque-cibernetico.htm)
+- [ES Hoje, PF prende suspeitos de desviar R$ 227 milhões de instituições financeiras (Operação Pane Seca), 19 de agosto de 2026](https://eshoje.com.br/seguranca/policia/2026/08/pf-prende-suspeitos-de-desviar-r-227-milhoes-de-instituicoes-financeiras/)
+- [Demarest, Nova resolução do Banco Central altera atuação de instituições e provedores de serviços de tecnologia da informação, 8 de setembro de 2025](https://www.demarest.com.br/bc-altera-atuacao-de-instituicoes-e-provedores-de-servicos-de-tecnologia-da-informacao-no-ambito-do-sfn-e-spb/)
+- [Agência Brasil, BC aperta regras de provedores de TI para instituições financeiras, 30 de janeiro de 2026](https://agenciabrasil.ebc.com.br/economia/noticia/2026-01/bc-aperta-regras-de-provedores-de-ti-para-instituicoes-financeiras)
+- [Finsiders Brasil, Mercado de provedores de tecnologia encolhe após BC apertar regras, 22 de julho de 2026](https://finsidersbrasil.com.br/reportagem-exclusiva-fintechs/mercado-de-provedores-de-tecnologia-encolhe-apos-aperto-nas-regras-do-bc/)
+- [Finsiders Brasil, Pix: BC lança mais medidas para combater fraudes (Resolução BCB nº 554), 24 de março de 2026](https://finsidersbrasil.com.br/pagamentos/apos-ataque-hacker-bc-aprimora-seguranca-em-sistema-do-pix/)
+- [Agência Brasil, Porto de Santos: sistemas seguem afetados após ataque cibernético, 10 de novembro de 2026](https://agenciabrasil.ebc.com.br/economia/noticia/2026-11/porto-de-santos-sistemas-seguem-afetados-apos-ataque-cibernetico)
+- [ANPD, Balanço ANPD 6 anos, 2020–2026, 5 de novembro de 2026](https://www.gov.br/anpd/pt-br/centrais-de-conteudo/outros-documentos-e-publicacoes-institucionais/balanco-anpd-6-anos.pdf/@@display-file/file)
+- [Acessa.com, Sistemas do governo registram cerca de 6.700 incidentes em 2026, aponta GSI, junho de 2026](https://www.acessa.com/noticias/2026/06/331600-sistemas-do-governo-registram-cerca-de-6-700-incidentes-em-2026-aponta-gsi.html)
+- [Febraban, Treinamentos do Laboratório de Segurança Cibernética já tiveram 3.900 inscrições de 72 bancos, 9 de fevereiro de 2022](https://portal.febraban.org.br/noticia/3752/pt-br/)
+- [Febraban, Laboratório da Febraban abre hoje inscrição para curso gratuito de cibersegurança, 8 de junho de 2026](https://portal.febraban.org.br/noticia/4461/pt-br/)
+- [GSI, CNCiber, Ata e anexos da 10ª Reunião Ordinária, 17 de junho de 2026](https://www.gov.br/gsi/pt-br/colegiados-do-gsi/comite-nacional-de-ciberseguranca-cnciber/atas/ata-e-anexos-da-10a-reuniao-ordinaria-do-cnciber-17-de-junho-de-2026)
+- [Tribunal de Contas da União, Tribunal monitora recomendação ao GSI sobre Política Nacional de Cibersegurança (Acórdão 2909/2026)](https://portal.tcu.gov.br/imprensa/noticias/tribunal-monitora-recomendacao-ao-gsi-sobre-politica-nacional-de-ciberseguranca)

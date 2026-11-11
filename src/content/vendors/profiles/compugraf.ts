@@ -42,14 +42,14 @@ export const compugrafProfile: VendorProfile = {
   products: [
     { name: "Perimeter and network security", what: "Firewall, segmentation and access control, built on Check Point and Forescout - the traditional core of an integrator's practice, and the part with the longest customer relationships." },
     { name: "Application delivery and security", what: "F5, for load balancing and application-layer protection. This is the practice that requires the most specialist knowledge to sell and the most to support, which is why relatively few integrators carry it well." },
-    { name: "Policy and change management", what: "AlgoSec, for managing firewall rule sets across an estate. A product that exists because large organisations accumulate thousands of rules nobody remembers the reason for - which is the actual condition of most networks." },
+    { name: "Policy and change management", what: "AlgoSec, for managing firewall rule sets across an estate. A product that exists because large organizations accumulate thousands of rules nobody remembers the reason for - which is the actual condition of most networks." },
     { name: "Privacy and governance", what: "OneTrust, for data protection compliance. The addition that dates the portfolio: Brazil's general data protection law made privacy a purchasing decision rather than a legal opinion, and integrators added practices accordingly." },
   ],
   innovations: [
     {
       title: "The partner list is the strategy",
       detail:
-        "An integrator has no products of its own, so its vendor roster is the most honest description of what it does. This one reads as perimeter, application delivery and compliance rather than endpoint, detection or cloud-native - a practice built around protecting the boundary and the application, for organisations with substantial estates and regulators to answer to. Reading a partner list this way tells you more than any positioning statement.",
+        "An integrator has no products of its own, so its vendor roster is the most honest description of what it does. This one reads as perimeter, application delivery and compliance rather than endpoint, detection or cloud-native - a practice built around protecting the boundary and the application, for organizations with substantial estates and regulators to answer to. Reading a partner list this way tells you more than any positioning statement.",
     },
     {
       title: "Staying local when the multinationals arrived",
@@ -58,11 +58,11 @@ export const compugrafProfile: VendorProfile = {
     },
   ],
   markets: [
-    "Large Brazilian organisations in industry, financial services and energy, reported at more than three hundred active clients and over five hundred served across two decades, with around 150 staff.",
+    "Large Brazilian organizations in industry, financial services and energy, reported at more than three hundred active clients and over five hundred served across two decades, with around 150 staff.",
     "It competes with the global integrators operating in Brazil, with the distributors' own service arms, and with the vendors selling direct - the last being the standing risk in this business, since every partner is also a potential competitor.",
   ],
   analyst: [
     "No analyst coverage exists for a private firm of this size, and no financial statements are public. What can be verified is longevity, an ISO 9001 certification, and a vendor roster that requires the certifications those vendors demand.",
-    "The observation worth recording is about the category rather than the company. A forty-year-old independent integrator is an increasingly unusual object: the economics push toward consolidation into the distributors and the global services firms, and this timeline records several that took that route. Remaining independent at this scale means either a defensible specialism or an owner who does not want to sell, and from outside the two look identical.",
+    "The observation worth recording is about the category rather than the company. A forty-year-old independent integrator is an increasingly unusual object: the economics push towards consolidation into the distributors and the global services firms, and this timeline records several that took that route. Remaining independent at this scale means either a defensible specialism or an owner who does not want to sell, and from outside the two look identical.",
   ],
 };

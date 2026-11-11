@@ -29,7 +29,7 @@ The authorization code flow hands the client a one-time code in the redirect, wh
 
 ## PKCE fills the gap, for everyone
 
-PKCE closes that hole without a pre-shared secret. The client invents a fresh random **code verifier** per request, sends only its hash (the **code challenge**) when asking for the code, and reveals the verifier only when redeeming it. An attacker who intercepts the code never saw the verifier, so the stolen code is useless. This was introduced for public clients, but the guidance has since broadened: OAuth 2.1 recommends PKCE for the authorization code flow regardless of client type, because it adds defense in depth even where a client secret is present. The practical rule is to use authorization code plus PKCE everywhere and stop reasoning about whether you strictly need it.
+PKCE closes that hole without a pre-shared secret. The client invents a fresh random **code verifier** per request, sends only its hash (the **code challenge**) when asking for the code, and reveals the verifier only when redeeming it. An attacker who intercepts the code never saw the verifier, so the stolen code is useless. This was introduced for public clients, but the guidance has since broadened: OAuth 2.1 recommends PKCE for the authorization code flow regardless of client type, because it adds defence in depth even where a client secret is present. The practical rule is to use authorization code plus PKCE everywhere and stop reasoning about whether you strictly need it.
 
 ## The implicit flow is retired
 

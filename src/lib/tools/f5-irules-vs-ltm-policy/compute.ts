@@ -61,7 +61,7 @@
 // ============================================================================
 
 import { parseWhenBlocksShared as parseWhenBlocks, stripCommentsShared as stripComments } from "../f5-irules-command-context/compute";
-import { say, plainText, engineError, type EngineText } from "../engine-text"; // sentences with ids (2026-11-02)
+import { say, enPlural, plainText, engineError, type EngineText } from "../engine-text"; // sentences with ids (2026-11-02)
 
 // ---------------------------------------------------------------------------
 // Types
@@ -255,7 +255,7 @@ export function runLocalisable(input: string): PolicyCompareResult<EngineText> {
         "21 request http-uri path",
       ],
       notes: [
-        say("note.strategies", "Strategy semantics verbatim from the ltm policy-strategy reference; the precedence head reproduces the built-in table's ordering, and user-defined strategies exist precisely for organisations whose idea of specificity differs."), // pack key engine.note.strategies
+        say("note.strategies", "Strategy semantics verbatim from the ltm policy-strategy reference; the precedence head reproduces the built-in table's ordering, and user-defined strategies exist precisely for organizations whose idea of specificity differs."), // pack key engine.note.strategies
       ],
     };
   }
@@ -273,16 +273,16 @@ export function runLocalisable(input: string): PolicyCompareResult<EngineText> {
   const summary: EngineText[] = []; // in order
   if (counts["policy-expressible"] > 0) {
     summary.push(
-      say("summary.expressible", `${counts["policy-expressible"]} block(s) map cleanly onto the verified policy grammar. The payoff the sources describe: LTM Policy is the highly performant layer that, unlike iRules, does not require programming, and none of the iRule CMP-demotion hazards exist inside a policy.`, { count: String(counts["policy-expressible"]) }), // pack key engine.summary.expressible
+      say("summary.expressible", `${counts["policy-expressible"]} ${enPlural(counts["policy-expressible"], "block maps", "blocks map")} cleanly onto the verified policy grammar. The payoff the sources describe: LTM Policy is the highly performant layer that, unlike iRules, does not require programming, and none of the iRule CMP-demotion hazards exist inside a policy.`, { count: String(counts["policy-expressible"]) }), // pack key engine.summary.expressible
     );
   }
   if (counts["verify-on-version"] > 0) {
     summary.push(
-      say("summary.verify", `${counts["verify-on-version"]} block(s) look expressible but lean on conditions or actions the verified sources did not demonstrate; confirm them against your version's policy condition and action lists before migrating.`, { count: String(counts["verify-on-version"]) }), // pack key engine.summary.verify
+      say("summary.verify", `${counts["verify-on-version"]} ${enPlural(counts["verify-on-version"], "block looks", "blocks look")} expressible but lean on conditions or actions the verified sources did not demonstrate; confirm them against your version's policy condition and action lists before migrating.`, { count: String(counts["verify-on-version"]) }), // pack key engine.summary.verify
     );
   }
   if (counts["irule-required"] > 0) {
-    summary.push(say("summary.irule", `${counts["irule-required"]} block(s) belong in iRules, for the named blockers on each card. That is what iRules are for.`, { count: String(counts["irule-required"]) })); // pack key engine.summary.irule
+    summary.push(say("summary.irule", `${counts["irule-required"]} ${enPlural(counts["irule-required"], "block belongs", "blocks belong")} in iRules, for the named blockers on each card. That is what iRules are for.`, { count: String(counts["irule-required"]) })); // pack key engine.summary.irule
   }
   summary.push(
     say("summary.mechanics", "Migration mechanics per the Getting Started manual: build the policy as a draft, publish it, then attach the published policy to the virtual server; the vendor ships its examples in both policy and iRule form for exactly this comparison."), // pack key engine.summary.mechanics

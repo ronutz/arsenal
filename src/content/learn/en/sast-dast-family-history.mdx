@@ -31,7 +31,7 @@ That happened for a reason that has never fully gone away. A tool that reads cod
 
 **Coverity** came out of Stanford and **Klocwork** out of the telephone equipment maker Nortel, both initially focused on C and C++, where the language's flexibility makes low-level defects both common and severe. **Fortify** started from a different place - security for web applications in Java and PHP - and **Checkmarx** and **Ounce Labs**, later branded AppScan Source, followed.
 
-What turned this from a specialist tool into an enterprise category was regulation, exactly as it was for web application firewalls. Sarbanes-Oxley in 2002 pushed public companies toward stronger internal controls and put software risk in front of boards; PCI DSS version 1.0 in 2004 required anyone handling card data to show secure development practice; and the OWASP Top 10 in 2003 gave everyone a shared list to be measured against.
+What turned this from a specialist tool into an enterprise category was regulation, exactly as it was for web application firewalls. Sarbanes-Oxley in 2002 pushed public companies towards stronger internal controls and put software risk in front of boards; PCI DSS version 1.0 in 2004 required anyone handling card data to show secure development practice; and the OWASP Top 10 in 2003 gave everyone a shared list to be measured against.
 
 That first enterprise generation proved large-scale static analysis was possible and produced reports auditors could use. Its two failures are still the reference points: **scans too slow for release cycles**, and **triage cost too high because the results were noisy**.
 
@@ -57,14 +57,14 @@ Neither is a weaker version of the other. A finding one produces and the other m
 - **Compiler and environment integration**, ongoing. Analysis moved into Xcode, Visual Studio and every modern toolchain, where it catches shallow defects while the developer is still typing.
 - **Enterprise static analysis**, early 2000s. Coverity, Fortify, Klocwork, Checkmarx - accurate enough to matter, slow enough to run overnight, noisy enough to need a triage team.
 - **Dynamic scanning**, from 1999. AppScan, WebInspect, and the practice of testing a running application from outside.
-- **Developer-first tooling**, from the 2010s. Snyk, Semgrep and their peers, optimising for speed and signal in a pull request rather than completeness in a report.
-- **Software composition analysis**, alongside. The realisation that most of the code in an application was written by strangers, and that the important question about a dependency is not whether it has a known flaw but whether the flawed function is ever called.
+- **Developer-first tooling**, from the 2010s. Snyk, Semgrep and their peers, optimizing for speed and signal in a pull request rather than completeness in a report.
+- **Software composition analysis**, alongside. The realization that most of the code in an application was written by strangers, and that the important question about a dependency is not whether it has a known flaw but whether the flawed function is ever called.
 
 ## Jobs and practices
 
 This family created the **application security engineer**, a role defined by sitting between security and development and having authority in neither. The technical skill is real but the job is largely translation: converting findings into changes people who did not ask for them will actually make.
 
-Its practices are recognisable everywhere. **Triage** as permanent load rather than a project. **Baselining**, so a new tool on an old codebase reports only what changed rather than thirty thousand pre-existing findings. **Breaking the build**, and the long argument about when a finding should be allowed to. And **the exception with an owner and a date**, which is the same instrument the firewall teams invented for the same reason.
+Its practices are recognizable everywhere. **Triage** as permanent load rather than a project. **Baselining**, so a new tool on an old codebase reports only what changed rather than thirty thousand pre-existing findings. **Breaking the build**, and the long argument about when a finding should be allowed to. And **the exception with an owner and a date**, which is the same instrument the firewall teams invented for the same reason.
 
 The measure that matters is not how many findings a tool produced. It is what fraction of them were fixed, and how long that took.
 

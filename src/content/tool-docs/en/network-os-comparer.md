@@ -16,7 +16,7 @@ The second axis is **immediate versus candidate-and-commit**. Immediate means a 
 
 ## Every entry lists weaknesses
 
-**A golden vector asserts that no entry has fewer than two.** An entry with no cost listed is an advertisement, and a reader would be right to distrust the rest of the table. That includes the platforms this site's author teaches and is authorised on.
+**A golden vector asserts that no entry has fewer than two.** An entry with no cost listed is an advertisement, and a reader would be right to distrust the rest of the table. That includes the platforms this site's author teaches and is authorized on.
 
 The same audit checks that every entry has lineage, at least two strengths, and a differentiator substantial enough to say something; it caught a thin field on the first run.
 

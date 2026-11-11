@@ -1,0 +1,208 @@
+---
+slug: the-port-that-kept-moving-santos-and-brazils-cyber-year
+title: "O porto que não parou: Santos e o ano cibernético do Brasil"
+summary: "Em 6 de novembro de 2026 os sistemas da Autoridade Portuária de Santos saíram do ar, e em 10 de novembro ela confirmou um ataque cibernético. Navios, caminhões e cargas continuaram andando; o portal, a intranet e as plataformas internas da própria autoridade, não. Santos é o caso mais recente e mais visível de um ano em que criminosos esvaziaram as contas de bancos brasileiros no Banco Central passando pelos fornecedores de tecnologia deles, em que o governo federal registrou cerca de 45 incidentes cibernéticos por dia e em que a autoridade de proteção de dados recebeu mais comunicações de incidente do que nunca. O que se sabe sobre Santos, os números por trás da onda, os casos mais marcantes de 2025 e 2026 e as defesas que o país, os bancos e o laboratório de segurança cibernética da Febraban construíram, tudo a partir dos próprios documentos."
+author: "Rodolfo Nützmann"
+date: "2026-11-11"
+tags: ["incident-response", "brazil", "ransomware"]
+category: security
+status: reviewed
+updated: "2026-11-11"
+relatedArticles: ["brazilian-cybercrime-from-boleto-to-pix", "the-stj-ransomware-attack", "backups-and-ransomware-recovery", "lgpd-for-engineers-the-vocabulary-that-matters", "brazil-internet-governance", "the-brazilian-hacker-scene"]
+---
+
+## O que aconteceu em Santos
+
+Na madrugada de sexta-feira, 6 de novembro de 2026, uma queda de energia atingiu os servidores da Autoridade Portuária de Santos (APS), a empresa pública federal, vinculada ao Ministério de Portos e Aeroportos, que administra a infraestrutura pública do maior porto do Brasil. Os serviços digitais voltaram à noite e caíram de novo na madrugada de sábado, quando os técnicos encontraram um programa malicioso na rede. Na terça-feira, 10 de novembro, a autoridade confirmou o que se suspeitava havia quatro dias: os sistemas dela tinham sido alvo de um ataque cibernético. Disse que ainda não sabia até onde o ataque tinha chegado, se algum dado tinha sido acessado nem o que os criminosos queriam.
+
+Santos não é um porto qualquer. Movimentou 186,4 milhões de toneladas de carga em 2025, cerca de 511 mil toneladas por dia, em média, e 5,91 milhões de TEU (twenty-foot equivalent unit, a medida padrão de contêiner), o que o colocou em primeiro lugar na América Latina e em 36º no mundo em movimentação de contêineres no ranking de 2026 da Lloyd's List. De janeiro a setembro de 2026 foram 141,4 milhões de toneladas, 2% a mais do que no mesmo período do ano anterior. O Relatório Integrado de 2025 da autoridade conta 64 operadores portuários, 36 arrendatários, seis terminais de uso privado, 51 agências marítimas e 320 fornecedores ao redor dela.
+
+E, ainda assim, o porto não parou. Esse é o fato mais importante do ataque, e o que mais facilmente se perde numa manchete dizendo que o porto de Santos parou. A nota da autoridade, repetida por todos os veículos que noticiaram o caso, dizia: "As operações portuárias seguem e não há risco de paralisação". Navios entraram e saíram, cargas foram movimentadas e caminhões chegaram aos terminais. O que parou foi a camada digital da própria autoridade: o site, a intranet e o portal dos funcionários, as plataformas internas e os serviços on-line de que dependem clientes e usuários do porto. Os procedimentos que dependiam desses sistemas passaram para conferências manuais e canais alternativos, e a imprensa relatou lentidão nos trâmites administrativos, mas não uma interrupção no fluxo de mercadorias.
+
+### Dia a dia, conforme noticiado
+
+| Data | O que aconteceu | Fonte |
+| --- | --- | --- |
+| Sexta-feira, 6 de novembro, madrugada | Uma queda de energia atinge os servidores da APS; os serviços digitais voltam à noite | APS, por meio da Agência Brasil, da CNN Brasil e de outros veículos |
+| Sábado, 7 de novembro, madrugada | Os serviços caem de novo; os técnicos encontram um programa malicioso na rede, que a autoridade acredita já estar presente antes da queda de energia | Revista Sociedade Militar, aRede |
+| Domingo, 8 de novembro | A comissão estadual de segurança portuária (Cesportos-SP) vota por elevar a proteção dos acessos públicos do porto ao nível 2 | TMC, CLM Brasil |
+| Segunda-feira, 9 de novembro | Internet e telefonia da autoridade são restabelecidas depois de três dias; o site e os sistemas internos continuam fora do ar | Nota da APS |
+| Terça-feira, 10 de novembro | A APS confirma o ataque cibernético; a Polícia Federal (PF) abre inquérito; a PF e a Autoridade Nacional de Proteção de Dados são comunicadas | Agência Brasil, Jornal do Comércio, ConvergenciaDigital, Cryptoid |
+| Quarta-feira, 11 de novembro | Nenhuma nova nota oficial encontrada até o fechamento deste texto; em 10 de novembro a autoridade disse que a recuperação era gradual, com apoio de cópias de segurança | CNN Brasil |
+
+Alguns detalhes merecem leitura cuidadosa.
+
+**Quem foi atingido.** O ataque atingiu a autoridade portuária, não os terminais. O InvestNews explicou por que a carga continuou fluindo: os terminais privados usam sistemas próprios, independentes da infraestrutura administrativa da autoridade, embora haja troca de informações entre as plataformas. O Porto Sem Papel, sistema do governo federal pelo qual órgãos públicos e empresas trocam documentos portuários, não foi afetado, e a autoridade passou parte dos serviços burocráticos para ele.
+
+**O que significa o nível 2.** A elevação do nível de proteção do porto não é, em si, uma medida cibernética. O Brasil aplica o [Código Internacional para a Proteção de Navios e Instalações Portuárias](/glossary/isps-code) (ISPS Code, International Ship and Port Facility Security Code) da Organização Marítima Internacional (IMO, International Maritime Organization), no qual o nível de proteção 2 é, na definição da IMO, o nível elevado, que vale enquanto houver risco elevado de um incidente de proteção. Em Santos, a mudança significou mais pessoas e veículos conferidos nos gates da zona alfandegada e mais cargas vistoriadas. A portaria foi assinada pelo delegado da PF que coordena a Cesportos em São Paulo, depois que a maioria dos integrantes da comissão votou a favor, em 8 de novembro. A Guarda Portuária foi reforçada.
+
+**O que ainda não se sabe.** Em 10 de novembro a autoridade disse que ainda não conseguia determinar o alcance do ataque, se houve acesso a dados nem quais eram os objetivos iniciais dos criminosos. Um veículo regional, o aRede, noticiou que um grupo internacional chamado N0n teria reivindicado a invasão e exigido pagamento em criptomoedas; nenhuma fonte oficial confirmou essa reivindicação, e nenhum outro veículo lido para este texto a noticiou. Um detalhe complica ainda mais: a empresa de inteligência de ameaças SOCRadar registrou que, em 12 de outubro de 2026, quase quatro semanas antes da queda, o N0n tinha listado no seu site de vazamentos a Santos Brasil, operadora privada de terminais no porto e empresa diferente da autoridade portuária. Não se sabe se a notícia do aRede se refere a essa listagem, a uma nova reivindicação contra a autoridade ou a outra coisa. Trate como reivindicação, não como fato.
+
+**Uma coincidência, não uma ligação.** Na mesma semana, a Marinha do Brasil realizava a Operação Tridente III, exercício com cerca de 700 militares para proteger infraestruturas estratégicas em Santos e na Praia Grande, programado para 9 a 12 de novembro e com cenários de ameaça cibernética. A Revista Sociedade Militar, que noticiou os dois fatos, teve o cuidado de dizer que eram acontecimentos distintos, sem ligação demonstrada: os sistemas caíram no dia 6, antes de o exercício começar.
+
+### Portos são um alvo conhecido
+
+Uma autoridade portuária é uma vítima atraente porque fica no cruzamento de muitas partes: alfândega, fiscais de saúde e de agricultura, agentes marítimos, transportadoras, operadores de terminal, práticos. O precedente mais conhecido é Nagoya, o maior porto do Japão, que responde por cerca de 10% do comércio do país. Em julho de 2023 um ataque de ransomware atribuído ao LockBit 3.0 parou as operações de contêineres por cerca de dois dias. A associação do porto disse que não teve contato com o grupo e não pagou nada. A lição de Nagoya é o espelho da de Santos: lá o ataque parou a operação dos terminais de contêineres, e a carga parou junto. Em Santos, até onde se disse, isso não aconteceu, porque os sistemas dos terminais não eram os da autoridade.
+
+## Os números por trás da onda
+
+Santos chega num ano de números em alta, e os números merecem tanto cuidado quanto os casos, porque cada série conta uma coisa um pouco diferente.
+
+### O que a autoridade de proteção de dados recebe
+
+A Lei Geral de Proteção de Dados (LGPD) obriga o controlador a comunicar um incidente de segurança à Autoridade Nacional de Proteção de Dados (ANPD) e aos titulares afetados quando o incidente puder acarretar risco ou dano relevante a eles. Desde abril de 2024 o procedimento segue o Regulamento de Comunicação de Incidente de Segurança da autoridade, a Resolução CD/ANPD nº 15. O balanço de seis anos da ANPD, publicado em 5 de novembro de 2026, traz a série:
+
+| Ano | Comunicações de incidente recebidas pela ANPD |
+| --- | --- |
+| 2021 | 186 |
+| 2022 | 275 |
+| 2023 | 352 |
+| 2024 | 333 |
+| 2025 | 395 |
+| 2026, de janeiro a setembro | 423 |
+
+São 1.964 comunicações desde 2021. As 423 dos primeiros nove meses de 2026 se comparam a 321 nos mesmos meses de 2025, um aumento de cerca de 31,8%, e já superam o ano de 2025 inteiro. Um gráfico de telejornal da TV Globo exibido em novembro de 2026 trouxe a mesma série com 677 em 2026, citando a ANPD; esse número não aparece no balanço da própria autoridade, que conta até setembro, e nenhuma publicação da ANPD lida para este texto o traz. Pode ser uma contagem mais recente; até a autoridade publicá-la, o número verificável é 423.
+
+A mesma reportagem listou as ocorrências mais frequentes: exploração de vulnerabilidade em sistemas de informação, sequestro de dados (ransomware), roubo de credenciais e acesso não autorizado a sistemas de informação. No relatório de 2024, citado pelo ConvergenciaDigital, a ANPD disse que o ransomware liderava as comunicações, com 45% delas, e fez um alerta que vale para todos os números desta seção: "é provável que número real de incidentes no Brasil seja maior", porque em outros países se observa um número de incidentes comunicados bastante superior.
+
+### O que o governo federal registra
+
+A segunda série vem do centro de resposta a incidentes do próprio governo federal, o [CTIR Gov](/glossary/ctir-gov) (Centro de Prevenção, Tratamento e Resposta a Incidentes Cibernéticos de Governo), ligado ao Gabinete de Segurança Institucional da Presidência da República (GSI). Ela conta os incidentes que afetaram órgãos e entidades da administração pública federal:
+
+| Ano | Incidentes em sistemas do governo federal (GSI / CTIR Gov) |
+| --- | --- |
+| 2021 | 4.903 |
+| 2022 | 3.402 |
+| 2023 | 4.908 |
+| 2024 | 9.806 |
+| 2025 | 10.387 |
+| 2026, até o início de junho | 6.774 |
+
+O número de 2026 dá cerca de 45 incidentes por dia. Quase todos foram de engenharia social (3.307 casos, 48,8%) ou de conteúdo abusivo (3.166, 46,74%), isto é, informação não solicitada, nociva ou pessoal, como spam e deepfakes. No mesmo período o GSI contou cerca de 14 mil vulnerabilidades em sistemas do governo. A série vem com duas ressalvas, as duas do próprio GSI: em 2025 ele atualizou a classificação usada e firmou acordos que deram acesso a "um volume significativamente maior de informações sobre vulnerabilidades e incidentes cibernéticos". Parte da alta de 2023 para 2024 e 2025 é, portanto, visibilidade maior, e não só mais ataques.
+
+### As duas séries lidas juntas
+
+Nenhuma das séries conta ataques. A ANPD conta incidentes que alguém decidiu comunicar porque dados pessoais estavam em risco; o GSI conta o que chega aos seus sensores e parceiros. Uma queda pode significar menos incidentes ou menos comunicações; uma alta pode significar mais ataques, detecção melhor, regras mais rígidas ou mais confiança para comunicar. Em que as duas concordam é na direção: mais incidentes registrados, nas mãos públicas e privadas, ano após ano, com ransomware, credenciais roubadas e engenharia social no topo.
+
+## O dinheiro: ataques ao encanamento do Pix
+
+Os casos que mudaram a segurança brasileira em 2025 e 2026 não miravam os clientes dos bancos. Miravam o encanamento: as contas que bancos e instituições de pagamento mantêm no Banco Central do Brasil (BC) para liquidar o [Pix](/glossary/pix), o sistema de pagamentos instantâneos, e os fornecedores de tecnologia que conectam instituições menores a ele. Nas regras do BC, esse fornecedor é um [PSTI](/glossary/psti) (Provedor de Serviços de Tecnologia da Informação), uma empresa que faz a ponte entre a instituição financeira e as redes do Sistema Financeiro Nacional.
+
+| Quando | Quem | O que se sabe | Valores |
+| --- | --- | --- | --- |
+| Fim de junho de 2025, divulgado em 1º e 2 de julho | C&M Software, um PSTI | Credenciais de um funcionário da C&M foram usadas para tirar dinheiro das contas reserva de instituições clientes no BC; o BC determinou à C&M o desligamento do acesso das instituições às infraestruturas que ela operava | Só a BMP, R$ 541 milhões, segundo a Polícia Civil de São Paulo; as estimativas para o ataque inteiro foram de R$ 400 milhões a mais de R$ 800 milhões |
+| 29 de agosto de 2025 | Sinqia, um PSTI controlado pela Evertec | Credenciais de fornecedores de TI da Sinqia foram usadas para fazer transferências Pix não autorizadas a partir das contas de liquidação das instituições | R$ 710 milhões: R$ 670 milhões do HSBC e R$ 40 milhões da fintech Artta, pelo relatório da Evertec; parte já recuperada, segundo a Sinqia |
+| 26 a 29 de janeiro de 2026 | Banco do Nordeste (BNB) | Um incidente de segurança na infraestrutura de transações Pix; Pix suspenso de 26 de janeiro até ser restabelecido em 29 de janeiro; o banco informou à CVM que não houve vazamento de dados nem prejuízo às contas dos clientes | Impacto negativo de R$ 146,6 milhões para o banco, noticiado pelo Finsiders Brasil em maio |
+| 22 de março de 2026 | BTG Pactual | Pix suspenso depois de um ataque desviar recursos mantidos pelo banco no BC; não eram contas de clientes; o BC disse que os próprios sistemas, Pix incluído, não foram afetados; serviço restabelecido no dia seguinte | Pelo menos R$ 100 milhões inicialmente, com R$ 20 milhões a R$ 40 milhões ainda por recuperar naquela tarde, segundo fontes ouvidas por O Globo e pelo Estadão |
+| Fim de março de 2026 | Uma instituição financeira brasileira não identificada | Um grupo que a CrowdStrike chama de SLIM SPIDER invadiu o ambiente de nuvem dela, obteve credenciais temporárias e pelo menos seis segredos ligados a ativos digitais, e operava painéis web que listavam bancos e fintechs brasileiros comprometidos e preparavam transferências Pix em massa | Nenhuma perda confirmada |
+| 18 de agosto de 2026 | Polícia Federal, Operação Pane Seca | Uma organização criminosa suspeita de invadir sistemas de instituições financeiras; quatro mandados de prisão preventiva e sete de busca e apreensão | Prejuízo estimado de R$ 227 milhões; bloqueio de até R$ 226,2 milhões em bens e valores |
+
+**C&M, e o preço de uma senha.** O caso C&M mostrou como a porta de entrada pode ser barata. Em 4 de julho de 2025 a Polícia Civil de São Paulo prendeu João Nazareno Roque, operador de TI de 48 anos que trabalhava na C&M havia cerca de três anos. Segundo o depoimento dele ao Departamento Estadual de Investigações Criminais (Deic), ele foi abordado em março, ao sair de um bar, entregou login e senha por R$ 5 mil e recebeu mais R$ 10 mil, em dinheiro, entregues por motoboys, para executar comandos nos sistemas da C&M a partir de maio. Um executivo da BMP foi alertado por uma transação atípica de R$ 18 milhões de uma vez, de madrugada. Uma conta usada para receber R$ 270 milhões foi bloqueada. Em 30 de outubro de 2025 a Polícia Federal deflagrou a segunda fase da Operação Magna Fraus contra o grupo que, segundo ela, desviou mais de R$ 800 milhões: 26 mandados de prisão, 42 de busca e apreensão em 11 cidades e uma ordem judicial de bloqueio de até R$ 640 milhões.
+
+**Sinqia, e o fornecedor do fornecedor.** Na Sinqia, as credenciais não eram de funcionários do próprio PSTI, e sim de fornecedores de TI dele. A Sinqia isolou o ambiente Pix dos demais sistemas e o desconectou do BC enquanto investigava. O HSBC disse que as transações partiram de uma conta de um provedor do banco; a Artta disse que nem o ambiente dela nem as contas dos clientes foram atacados. As contas esvaziadas, nos dois casos, ficam no BC e servem só para a liquidação entre instituições.
+
+**A resposta do regulador.** Em 5 de setembro de 2025, uma semana depois da Sinqia, o BC anunciou medidas que mudaram a conta do ataque: transferências por Pix e por TED (Transferência Eletrônica Disponível) ficam limitadas a R$ 15 mil para instituições não autorizadas pelo BC ou que se conectam ao sistema por meio de um PSTI, até que a instituição e o PSTI dela cumpram todos os requisitos de controle de segurança do BC; instituições de pagamento passam a precisar de autorização prévia para operar; e as exigências sobre os PSTIs ficaram mais rígidas. Depois do ataque ao BTG, a Resolução BCB nº 554, de 24 de março de 2026, deu às instituições mais controle sobre a conta de liquidação do Pix (a Conta PI), inclusive limites que podem bloqueá-la automaticamente para qualquer liquidação no Sistema de Pagamentos Instantâneos.
+
+O padrão entre esses casos é consistente. O alvo é o dinheiro da instituição no banco central, alcançado pelo acesso de outra pessoa: um fornecedor, o fornecedor do fornecedor, um funcionário à venda, uma credencial de nuvem. Onde o BC se manifestou, disse que os próprios sistemas não foram afetados. A fraude estava na confiança entre as partes.
+
+## Além dos bancos
+
+Os casos financeiros dominam os totais, mas os incidentes comunicados à ANPD alcançam todos os setores.
+
+**Dados de saúde.** Em julho de 2026 a ANPD instaurou processo administrativo sancionador contra o Instituto Saúde e Cidadania (Isac), uma organização social de saúde, depois de um incidente envolvendo dados pessoais sensíveis de cerca de 500 mil pacientes de unidades públicas de saúde.
+
+**Indústria de defesa.** Em 22 de agosto de 2026 o grupo de ransomware LockBit 5.0 listou a Itaguaí Construções Navais (ICN) no seu site de vazamentos, ameaçando publicar dados caso nenhum representante da empresa entrasse em contato, segundo o serviço de inteligência de ameaças DeXpose. Uma reivindicação num site de vazamentos não prova intrusão, criptografia nem vazamento; é uma reivindicação, e é registrada aqui como tal.
+
+**Os sistemas do próprio Estado.** Os números do GSI acima são o lado federal. A história é mais longa: o ataque de ransomware ao Superior Tribunal de Justiça em novembro de 2020 e o ataque aos sistemas do Ministério da Saúde em dezembro de 2021, por um grupo que se apresentava como Lapsus$, estão contados no [artigo sobre o STJ](/learn/the-stj-ransomware-attack) e em [Cibercrime brasileiro: do boleto ao Pix](/learn/brazilian-cybercrime-from-boleto-to-pix).
+
+## As defesas que o Brasil construiu
+
+### O Estado: uma política, uma estratégia, um comitê e um centro de resposta
+
+O arcabouço federal brasileiro tem três camadas. A Política Nacional de Cibersegurança ([PNCiber](/glossary/pnciber)), instituída pelo Decreto nº 11.856, de 26 de dezembro de 2023, criou o Comitê Nacional de Cibersegurança (CNCiber), órgão multissetorial formado em 2024. A Estratégia Nacional de Cibersegurança (E-Ciber), atualizada pelo Decreto nº 12.573, de 4 de agosto de 2025, em substituição à versão de 2020, é o caminho pelo qual os objetivos da política devem ser alcançados. Ela se organiza em eixos temáticos, a começar pela proteção e conscientização do cidadão e da sociedade e incluindo a segurança e a resiliência dos serviços essenciais e das infraestruturas críticas; prevê um selo nacional de certificação de alto nível na segurança de ciberativos e uma lista de alto risco de cibersegurança, e reconhece a necessidade de reduzir o débito tecnológico do país. As ações específicas da estratégia devem ser detalhadas num Plano Nacional de Cibersegurança, proposto pelo CNCiber e aprovado pelo ministro-chefe do GSI. O verbete [E-Ciber](/glossary/e-ciber) do glossário segue a cadeia do decreto ao plano.
+
+Os próximos passos do arcabouço estão parados em dois pontos. O plano não pode ser publicado sem a anuência formal dos quinze órgãos de governo representados no comitê, e a ata de 17 de junho de 2026 do comitê, a mais recente publicada até 11 de novembro, registra que ainda faltava a anuência da Anatel, do Ministério da Fazenda, da Casa Civil e do Banco Central. E, como a política e a estratégia são decretos, elas vinculam apenas o Poder Executivo federal. Em 21 de outubro de 2026 o Tribunal de Contas da União (TCU) informou à Casa Civil o risco de que, sem uma lei, a política não tenha alcance nacional nem estrutura com autoridade suficiente para coordenar a sua execução, e registrou que o anteprojeto preparado pelo comitê ainda não fora enviado ao Congresso. O projeto do próprio Senado, o PL 4.752/2025, que institui o Marco Legal da Cibersegurança e uma autoridade nacional de cibersegurança, estava com o relator na Comissão de Ciência e Tecnologia quando os registros do Senado foram lidos, em 11 de novembro de 2026.
+
+No lado operacional, o CTIR Gov coordena a resposta a incidentes da administração federal; a ANPD recebe as comunicações de incidente e pode apurar incidentes que ninguém comunicou, a partir de denúncias, petições, notícias na imprensa ou do próprio monitoramento; a Polícia Federal investiga os crimes; e, nos portos, as Cesportos aplicam os níveis de proteção do ISPS Code.
+
+### Os bancos, e o laboratório da Febraban
+
+A Federação Brasileira de Bancos ([Febraban](/glossary/febraban)) inaugurou o seu Laboratório de Segurança Cibernética em São Paulo em setembro de 2020, o primeiro do tipo feito para o Sistema Financeiro Nacional. O investimento inicial foi de R$ 6 milhões, para o espaço físico, equipamentos, infraestrutura de tecnologia, programas de simulação de ataques e, no lançamento, uma consultoria. As atividades começaram com os 14 bancos da Comissão Executiva de Segurança Cibernética da Febraban, abertas a mais instituições com o tempo. O presidente da Febraban, Isaac Sidney, disse na inauguração que os bancos investem R$ 2 bilhões por ano em segurança da informação.
+
+O laboratório atua em quatro frentes: treinamento, simulação de ataques, compartilhamento de informações técnicas sobre ameaças e padronização para os fornecedores que atendem o sistema financeiro. Até o fim de janeiro de 2022 tinha realizado 40 treinamentos gratuitos, com 3.900 inscrições de 72 bancos, 14 deles com exercícios práticos de ataque entre os participantes, e competições capture the flag (CTF) em ambientes controlados e realistas. Envia aos bancos um informe mensal e relatórios técnicos que reconstroem ataques reais passo a passo, e automatizou o envio de eventos de ameaça de centros de segurança do mundo todo para os centros de monitoramento dos bancos. Desde então, abriu mais as portas: o Cyber Academy, curso on-line e gratuito de 40 horas para qualquer interessado na área, ofereceu 10 mil vagas para a turma de julho de 2026.
+
+A frente dos fornecedores pesa mais depois de 2025 do que pesava em 2020. C&M e Sinqia eram exatamente o tipo de empresa de que trata o trabalho de padronização: prestadores que conectam instituições ao sistema e cujas credenciais, equipes e subcontratados viraram a porta de entrada. A Pesquisa Febraban de Tecnologia Bancária 2026, feita com a Deloitte e divulgada no Febraban Tech, em agosto, estima o orçamento total de tecnologia dos bancos para 2026 em R$ 50,4 bilhões, 8% a mais do que no ano anterior, e mostra a cibersegurança como prioridade média ou alta para todos os bancos pesquisados, alta para 83% deles.
+
+## O que o ano ensina
+
+**A separação foi o que manteve Santos andando.** Os terminais usavam sistemas próprios, o Porto Sem Papel federal estava fora do raio de alcance, e a autoridade tinha cópias de segurança para restaurar. Nada disso impediu o ataque; tudo isso limitou o que o ataque conseguiu parar. A mesma lógica está por trás dos limites do BC: se um fornecedor for comprometido, o estrago tem teto.
+
+**A porta de entrada costuma ser o acesso de alguém.** Uma senha vendida na C&M, credenciais de fornecedores na Sinqia, credenciais temporárias de nuvem no caso SLIM SPIDER e engenharia social em metade dos incidentes do governo federal. Identidade, e não explorações exóticas, é o fio comum, e é por isso que a ANPD e o GSI listam roubo de credenciais e engenharia social entre as ocorrências mais frequentes.
+
+**A velocidade de detecção e de suspensão importa.** BNB e BTG suspenderam o Pix enquanto continham os incidentes, o BTG teria recuperado a maior parte do que foi levado no mesmo dia, e a Sinqia se desconectou por conta própria. Recuperação de valores, ordens de bloqueio e operações policiais mostram um sistema que agora reage, mesmo quando ainda não consegue impedir.
+
+**Os números vão continuar subindo por um tempo, e isso não é só má notícia.** Mais comunicações à ANPD e mais incidentes vistos pelo GSI refletem ataques reais, mas também sensores melhores e regras de comunicação mais rígidas. O número a observar não é a contagem, e sim a parcela de incidentes encontrados e contidos antes que dinheiro ou dados saiam.
+
+**Santos não acabou.** Na noite de 10 de novembro a autoridade ainda não sabia o que os criminosos tinham alcançado nem o que queriam. Se dados foram levados, se houve pedido de resgate e como o programa malicioso entrou são perguntas em aberto, e este texto não vai respondê-las antes da autoridade, da Polícia Federal ou da ANPD.
+
+## Fontes
+
+Tudo o que está acima foi lido em 11 de novembro de 2026, em português, salvo quando a fonte é em inglês.
+
+**Santos**
+
+- [Agência Brasil, Porto de Santos: sistemas seguem afetados após ataque cibernético, 10 de novembro de 2026](https://agenciabrasil.ebc.com.br/economia/noticia/2026-11/porto-de-santos-sistemas-seguem-afetados-apos-ataque-cibernetico)
+- [Jornal do Comércio, Porto de Santos confirma ataque hacker e diz não saber se dados foram acessados indevidamente, 10 de novembro de 2026](https://www.jornaldocomercio.com/economia/2026/11/1270039-porto-de-santos-confirma-ataque-hacker-e-diz-nao-saber-se-dados-foram-acessados-indevidamente.html)
+- [TMC, Porto de Santos é alvo de ataque hacker; sistemas estão fora do ar (a nota da APS na íntegra; Cesportos e nível II)](https://tmc.com.br/brasil/aps-ataque-cibernetico-porto-santos-pf-nivel-ii/)
+- [CLM Brasil, Porto de Santos confirma invasão hacker e Polícia Federal eleva o nível de segurança, 10 de novembro de 2026](https://www.clmbrasil.com.br/porto-de-santos-confirma-invasao-hacker-e-policia-federal-eleva-o-nivel-de-seguranca)
+- [Revista Sociedade Militar, Maior porto do Brasil confirma ataque hacker (programa malicioso encontrado em 7 de novembro; Operação Tridente III), 10 de novembro de 2026](https://www.sociedademilitar.com.br/2026/11/porto-de-santos-confirma-ataque-hacker-pf-abre-inquerito-e-marinha-mobiliza-700-militares-na-regiao-mjd.html)
+- [Cryptoid, Ataque cibernético põe à prova a contingência do Porto de Santos (os números do porto), 10 de novembro de 2026](https://cryptoid.com.br/ciberseguranca-seguranca-da-informacao/ataque-cibernetico-poe-a-prova-a-contingencia-do-porto-de-santos/)
+- [CNN Brasil, Porto de Santos adota plano de contingência após ataque hacker (recuperação com cópias de segurança)](https://www.cnnbrasil.com.br/infra/porto-de-santos-investiga-instabilidades-em-sistema-e-descarta-paralisacao/)
+- [ConvergenciaDigital, Santos, o maior porto do Brasil, sofre ataque hacker e fica sem sistemas de TI (PF e ANPD comunicadas)](https://convergenciadigital.com.br/governo/santos-o-maior-porto-do-brasil-sofre-ataque-hacker-e-fica-sem-sistemas-de-ti/)
+- [InvestNews, Porto de Santos sofre ataque hacker; veja o que foi impactado na operação (os sistemas próprios dos terminais)](https://investnews.com.br/economia/porto-de-santos-ataque-hacker/)
+- [SOCRadar, Santos Brasil Data Breach (uma suposta reivindicação do N0n contra a operadora de terminais, observada em 12 de outubro de 2026)](https://socradar.io/data-breach/santos-brasil-targeted-by-n0n-ransomware/)
+- [aRede, Porto de Santos sofre colapso digital e hackers pedem dinheiro para sistema ser restabelecido (a reivindicação não confirmada do N0n), 10 de novembro de 2026](https://arede.info/cotidiano/692046/porto-de-santos-sofre-colapso-digital-e-hackers-pedem-dinheiro-para-sistema-ser-restabelecido)
+- [International Maritime Organization, Frequently Asked Questions on Maritime Security (os níveis de proteção do ISPS Code)](https://www.imo.org/en/ourwork/security/pages/faq.aspx)
+- [The Maritime Executive, Ransomware Attack Stops Container Operations at Japan's Nagoya Port, 5 de julho de 2023](https://maritime-executive.com/article/ransomware-attack-stops-container-operations-japan-s-nagoya-port)
+- [Industrial Cyber, Operations at Japan's Port of Nagoya resume, after probable LockBit ransomware attack, 6 de julho de 2023](https://industrialcyber.co/news/operations-at-japans-port-of-nagoya-resume-after-probable-lockbit-ransomware-attack/)
+
+**Os números**
+
+- [ANPD, Balanço ANPD 6 anos, 2020–2026 (comunicações de incidente por ano, de 2021 a setembro de 2026), publicado em 5 de novembro de 2026](https://www.gov.br/anpd/pt-br/centrais-de-conteudo/outros-documentos-e-publicacoes-institucionais/balanco-anpd-6-anos.pdf/@@display-file/file)
+- [Telesíntese, ANPD divulga balanço de seis anos e detalha 19 frentes de regulação de dados](https://telesintese.com.br/anpd-divulga-balanco-de-seis-anos-e-detalha-19-frentes-de-regulacao-de-dados/)
+- [ConvergenciaDigital, Ransomware: ANPD aponta alta de 45% no sequestro de dados (o relatório de 2024)](https://convergenciadigital.com.br/governo/ransomware-anpd-aponta-alta-de-45-no-sequestro-de-dados/)
+- [Acessa.com, Sistemas do governo registram cerca de 6.700 incidentes em 2026, aponta GSI (a série do CTIR Gov), junho de 2026](https://www.acessa.com/noticias/2026/06/331600-sistemas-do-governo-registram-cerca-de-6-700-incidentes-em-2026-aponta-gsi.html)
+- [Information Management, ANPD recebeu quase uma comunicação de incidente por dia em 2025 (o processo sancionador contra o Isac)](https://docmanagement.com.br/08/28/2026/anpd-recebeu-quase-uma-comunicacao-de-incidente-por-dia-em-2025-e-amplia-pressao-por-protecao-de-dados/)
+
+**Os casos financeiros**
+
+- [InfoMoney, Hackers invadem empresa ligada ao Pix e desviam ao menos R$ 400 milhões, julho de 2025](https://www.infomoney.com.br/brasil/hackers-invadem-empresa-ligada-ao-pix-e-desviam-ao-menos-r-400-milhoes/)
+- [Baguete, Ataque à C&M pode ter desviado mais de R$ 1 bilhão (a determinação do BC à C&M), 2 de julho de 2025](https://www.baguete.com.br/noticias/ataque-a-cm-pode-ter-desviado-mais-de-r-1-bilhao)
+- [Estadão / TecMundo, Hacker do Pix: polícia prende homem suspeito de golpe milionário no sistema financeiro, 4 de julho de 2025](https://www.tecmundo.com.br/seguranca/405534-policia-prende-homem-que-vendeu-senhas-para-ataque-hacker-na-cm.htm)
+- [SBT News, Ataque hacker a bancos: funcionário recebeu R$ 15 mil para entregar senha e executar comandos](https://sbtnews.sbt.com.br/noticia/policia/ataque-hacker-a-bancos-funcionario-recebeu-r-15-mil-para-entregar-senha-e-executar-comandos)
+- [InfoMoney, PF deflagra operação contra hackers do Pix que desviaram R$ 800 milhões (Operação Magna Fraus, segunda fase), 30 de outubro de 2025](https://www.infomoney.com.br/brasil/pf-deflagra-operacao-internacional-contra-hackers-do-pix/)
+- [Tecnoblog, Ataque hacker a empresa que opera o Pix desviou R$ 710 milhões](https://tecnoblog.net/noticias/ataque-hacker-a-empresa-que-opera-o-pix-desviou-r-710-milhoes/)
+- [ESET WeLiveSecurity, Instituições financeiras sofrem ataque cibernético e criminosos desviam cerca de R$ 710 milhões](https://www.welivesecurity.com/pt/cibercrime/instituicoes-financeiras-sofrem-ataque-cibernetico-e-criminosos-desviam-cerca-de-r-710-milhoes/)
+- [Tecnoblog, Após ataque ao Pix, Banco Central reforça segurança do sistema financeiro, 5 de setembro de 2025](https://tecnoblog.net/noticias/apos-ataque-ao-pix-banco-central-reforca-seguranca-do-sistema-financeiro/)
+- [ConvergenciaDigital, Banco do Nordeste suspende operações do Pix depois de ataque hacker, janeiro de 2026](https://convergenciadigital.com.br/mercado/banco-do-nordeste-suspende-operacoes-do-pix-depois-de-ataque-hacker/)
+- [Finsiders Brasil, Banco do Nordeste revela perda milionária após ataque ao Pix, 13 de maio de 2026](https://finsidersbrasil.com.br/pagamentos/pix/ataque-hacker-pix-bnb-perda-146-milhoes/)
+- [InfoMoney / O Globo, BTG Pactual é alvo de ataque hacker e suspende operações via Pix, 22 de março de 2026](https://www.infomoney.com.br/?p=3261981)
+- [Estadão / TecMundo, Pix do BTG Pactual volta a funcionar após pausa por ataque cibernético, 23 de março de 2026](https://www.tecmundo.com.br/seguranca/411840-pix-do-btg-pactual-volta-a-funcionar-apos-pausa-por-ataque-cibernetico.htm)
+- [Finsiders Brasil, Pix: BC lança mais medidas para combater fraudes (Resolução BCB nº 554), 24 de março de 2026](https://finsidersbrasil.com.br/pagamentos/apos-ataque-hacker-bc-aprimora-seguranca-em-sistema-do-pix/)
+- [Olhar Digital, Grupo brasileiro invade sistema bancário em ataque ligado ao Pix (SLIM SPIDER, segundo a CrowdStrike), 15 de outubro de 2026](https://olhardigital.com.br/2026/10/15/seguranca/grupo-brasileiro-invade-sistema-bancario-em-ataque-ligado-ao-pix/)
+- [ES Hoje, PF prende suspeitos de desviar R$ 227 milhões de instituições financeiras (Operação Pane Seca), 19 de agosto de 2026](https://eshoje.com.br/seguranca/policia/2026/08/pf-prende-suspeitos-de-desviar-r-227-milhoes-de-instituicoes-financeiras/)
+- [DeXpose, LockBit 5.0 Compromises Brazilian Defense Contractor ICN (uma reivindicação em site de vazamentos), 22 de agosto de 2026](https://www.dexpose.io/lockbit-5-0-compromises-brazilian-defense-contractor-icn/)
+
+**As defesas**
+
+- [Decreto nº 12.573, de 4 de agosto de 2025, Estratégia Nacional de Cibersegurança (E-Ciber), Legislação Informatizada da Câmara dos Deputados](https://www2.camara.leg.br/legin/fed/decret/2025/decreto-12573-4-agosto-2025-797813-publicacaooriginal-176048-pe.html)
+- [GSI, CNCiber, Ata e anexos da 10ª Reunião Ordinária, 17 de junho de 2026 (as anuências que faltavam para o Plano Nacional de Cibersegurança)](https://www.gov.br/gsi/pt-br/colegiados-do-gsi/comite-nacional-de-ciberseguranca-cnciber/atas/ata-e-anexos-da-10a-reuniao-ordinaria-do-cnciber-17-de-junho-de-2026)
+- [Tribunal de Contas da União, Tribunal monitora recomendação ao GSI sobre Política Nacional de Cibersegurança (Acórdão 2909/2026, sessão de 21 de outubro de 2026)](https://portal.tcu.gov.br/imprensa/noticias/tribunal-monitora-recomendacao-ao-gsi-sobre-politica-nacional-de-ciberseguranca)
+- [Senado Federal, Dados Abertos, PL 4752/2025 (situação lida em 11 de novembro de 2026)](https://legis.senado.leg.br/dadosabertos/processo?sigla=PL&numero=4752&ano=2025)
+- [Teletime, Governo atualiza Estratégia Nacional de Cibersegurança, 5 de agosto de 2025](https://teletime.com.br/05/08/2025/governo-atualiza-estrategia-nacional-de-ciberseguranca/)
+- [Febraban, Laboratório de Segurança Cibernética](https://portal.febraban.org.br/pagina/3322/1108/pt-br/lab-seguranca-cibernetica)
+- [Febraban, FEBRABAN inaugura Laboratório de Segurança Cibernética, setembro de 2020](https://portal.febraban.org.br/noticia/3524/pt-br)
+- [Febraban, Treinamentos do Laboratório de Segurança Cibernética já tiveram 3.900 inscrições de 72 bancos, 9 de fevereiro de 2022](https://portal.febraban.org.br/noticia/3752/pt-br/)
+- [Febraban, Laboratório da Febraban abre hoje inscrição para curso gratuito de cibersegurança (Cyber Academy, 10 mil vagas), 8 de junho de 2026](https://portal.febraban.org.br/noticia/4461/pt-br/)
+- [Febraban e Deloitte, Pesquisa Febraban de Tecnologia Bancária 2026, volume 1](https://cmsarquivos.febraban.org.br/Arquivos/documentos/PDF/Pesquisa%20Febraban%20de%20Tecnologia%20Banca%CC%81ria%202026%20-%20Vol1.pdf)
+- [Finsiders Brasil, Bancos querem investir R$ 50,4 bi em tecnologia neste ano, alta de 8%, 25 de agosto de 2026](https://finsidersbrasil.com.br/noticias-sobre-fintechs/bancos-querem-investir-r-504-bi-em-tecnologia-neste-ano-alta-de-8/)

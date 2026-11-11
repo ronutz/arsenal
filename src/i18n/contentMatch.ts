@@ -16,7 +16,7 @@
 export type ContentStrings = Readonly<Record<string, string>>;
 
 /** Compiled templates per map object, so each map is compiled once. */
-const compiled = new WeakMap<object, { re: RegExp; parts: string[]; to: string; lists: boolean }[]>();
+const compiled = new WeakMap<object, { re: RegExp; parts: string[]; to: string; lists: boolean; orLists: boolean }[]>();
 
 /** The list words a module may list ("and", "or"): reserved for listWord, never translated as a phrase on their own. */
 const LIST_WORDS = new Set(["and", "or"]);
@@ -28,7 +28,14 @@ const LIST_WORDS = new Set(["and", "or"]);
  * ("tcp and port 80" in the precedence note) and must stay as written. A template matches when it contains one of
  * these English fragments.
  */
-const LIST_TEMPLATES = ["Unquoted {", "encapsulation seen earlier", "TCP flags byte", "among {", "This output contains {", "Only one version option"];
+const LIST_TEMPLATES = ["Unquoted {", "encapsulation seen earlier", "TCP flags byte", "among {", "This output contains {", "Only one version option", "none of {", "at least one of {", "all of {"]; // 11/11/2026: the masked TCP-flag sentences ("True when none of {0} is set.") list flag names too
+
+/**
+ * The English templates whose value is a list of the module's own phrases joined with ", or " (11/11/2026): the
+ * tcpdump explainer's "...; it expected {n}." names what libpcap's grammar could take next. The value is cut back
+ * into those phrases, each is translated, and they are joined the language's way: commas, then its word for "or".
+ */
+const OR_LIST_TEMPLATES = ["it expected {"];
 
 /**
  * The matcher shared by the server helper and the client hook: an exact key first, then the templates (keys with
@@ -60,6 +67,8 @@ export function matchContent(map: ContentStrings, en: string): string {
         parts: k.split(/(\{\d+\})/).filter((x) => x !== ""),
         // Whether its values may be code-joined lists, which take the language's list word.
         lists: LIST_TEMPLATES.some((f) => k.includes(f)),
+        // Whether its values may be ", or " lists of the module's phrases (orList below).
+        orLists: OR_LIST_TEMPLATES.some((f) => k.includes(f)),
         // The translation, with the same placeholders.
         to,
       }));
@@ -67,7 +76,7 @@ export function matchContent(map: ContentStrings, en: string): string {
     compiled.set(map, list);
   }
   // The first template that matches the whole string.
-  for (const { re, parts, to, lists } of list) {
+  for (const { re, parts, to, lists, orLists } of list) {
     // Try it.
     const m = en.match(re);
     // A match: put the captured values into the translation, by their position in the English.
@@ -77,7 +86,7 @@ export function matchContent(map: ContentStrings, en: string): string {
       // Values by placeholder number (the key's {n} order equals the capture order: keys are written {0}, {1}, ...).
       // A captured value can itself be a module phrase ("source or destination", a verify-code meaning), so it goes
       // through the same lookup; each value is strictly shorter than the sentence, so the recursion ends.
-      const values = caps.map((c) => (c !== en ? (lists ? listWord(map, c, matchContent(map, c)) : matchContent(map, c)) : c));
+      const values = caps.map((c) => (c !== en ? (orLists ? orList(map, c) : lists ? listWord(map, c, matchContent(map, c)) : matchContent(map, c)) : c));
       // The translation filled in.
       return to.replace(/\{(\d+)\}/g, (_, n: string) => values[Number(n)] ?? "");
     }
@@ -160,6 +169,45 @@ function bestSplit(map: ContentStrings, parts: readonly string[], en: string): s
   walk(0, 0, []);
   // The best cut found (the regex matched, so there is at least one).
   return best;
+}
+
+/**
+ * A value the code joined with ", or " (OR_LIST_TEMPLATES): its phrases translated one by one and joined the
+ * language's way. Phrases are the module's own strings; a value that does not cut cleanly into them stays English.
+ *
+ * @param map the module map
+ * @param en the value as the code wrote it
+ * @returns the translated list, or the English when it is not a list of known phrases
+ */
+function orList(map: ContentStrings, en: string): string {
+  // A single phrase (or anything the module already knows whole): the ordinary lookup.
+  const whole = matchContent(map, en);
+  // Known as it stands.
+  if (whole !== en) return whole;
+  // The language's "or"; without it the English stands.
+  const or = map["or"];
+  // Not listed.
+  if (or === undefined) return en;
+  // The pieces between ", or " joins.
+  const pieces = en.split(", or ");
+  // One piece: nothing to join.
+  if (pieces.length < 2) return en;
+  // The phrases, re-assembled: a phrase may itself contain ", or " ("and, or, or the end of the expression"), so
+  // pieces are merged until they make a phrase the module holds.
+  const items: string[] = [];
+  // The phrase being assembled.
+  let cur: string | null = null;
+  // Each piece.
+  for (const piece of pieces) {
+    // Extend the current phrase, or start one.
+    cur = cur === null ? piece : `${cur}, or ${piece}`;
+    // A phrase of the module: keep it.
+    if (map[cur] !== undefined) { items.push(map[cur]); cur = null; }
+  }
+  // Something left that is no phrase of the module: the English stands.
+  if (cur !== null || items.length < 2) return en;
+  // Commas between the phrases, the language's "or" before the last.
+  return `${items.slice(0, -1).join(", ")} ${or} ${items[items.length - 1]}`;
 }
 
 /**

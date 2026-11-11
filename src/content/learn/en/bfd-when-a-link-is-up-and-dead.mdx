@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-10-26"
 ---
 
-An interface that is up reports on its own port, not on whether packets still reach the far router. Bidirectional Forwarding Detection (BFD), defined in Request for Comments (RFC) 5880, fills that gap: two systems exchange small packets at a negotiated rate, and when enough stop arriving the path is declared down and the protocols that asked are told. You meet it wherever OSPF, BGP or a static route must drop a dead neighbour faster than their own timers allow. After reading, you can name the failures BFD exists for, compute a detection time, read a session in FRRouting, choose its client, and recognise where BFD itself is fooled.
+An interface that is up reports on its own port, not on whether packets still reach the far router. Bidirectional Forwarding Detection (BFD), defined in Request for Comments (RFC) 5880, fills that gap: two systems exchange small packets at a negotiated rate, and when enough stop arriving the path is declared down and the protocols that asked are told. You meet it wherever OSPF, BGP or a static route must drop a dead neighbour faster than their own timers allow. After reading, you can name the failures BFD exists for, compute a detection time, read a session in FRRouting, choose its client, and recognize where BFD itself is fooled.
 
 ## Up and dead: what the port does not report
 

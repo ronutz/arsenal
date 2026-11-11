@@ -39,7 +39,7 @@ The preset that lit up is not carried: it only marks which chip was pressed.
 - The placements are the sources' examples, not a standard: Appendix B is titled "example mappings", and a collector or an agent may choose differently. The tool shows the table it used so the reader can disagree with a specific row.
 - A system's own words still matter. Windows "Critical" lands at 18 (ERROR2) while .NET "Critical" lands at 21 (FATAL): the names match, the places do not, and the table says so rather than smoothing it over.
 - Ladders not listed (Zap, Ruby, Go slog, Serilog and the rest) are out of scope until a source for their placement is read.
-- Custom levels (Python's arbitrary integers, Windows 16 to 255, Log4j custom levels) are not mapped; they carry no standardised severity.
+- Custom levels (Python's arbitrary integers, Windows 16 to 255, Log4j custom levels) are not mapped; they carry no standardized severity.
 
 ## Sources
 

@@ -20,7 +20,7 @@ FortiSOAR is often described as an automation platform, which undersells the par
 
 **High availability** clusters nodes so the loss of one does not stop incident handling, which matters more than usual here, because the platform is what people use *during* an incident.
 
-**Distributed or multi-tenant** deployments place tenant nodes with a central master. A managed service provider runs this shape, and so does an organisation with regions that must keep their data local while reporting centrally. The distinguishing question is whether data may leave the tenant, because that decides how much a node handles on its own.
+**Distributed or multi-tenant** deployments place tenant nodes with a central master. A managed service provider runs this shape, and so does an organization with regions that must keep their data local while reporting centrally. The distinguishing question is whether data may leave the tenant, because that decides how much a node handles on its own.
 
 ## The data model
 
@@ -30,7 +30,7 @@ A **module** is a type of thing: alerts, incidents, indicators, assets, tasks. M
 
 A **record** is one instance: one alert, one incident.
 
-**Fields** hold the values on a record. They have types, and the type matters more than it looks: a picklist field constrains input to known values, which is what makes it usable in playbook conditions and dashboard grouping. A text field holding what should have been a picklist is the most common reason a dashboard cannot summarise something.
+**Fields** hold the values on a record. They have types, and the type matters more than it looks: a picklist field constrains input to known values, which is what makes it usable in playbook conditions and dashboard grouping. A text field holding what should have been a picklist is the most common reason a dashboard cannot summarize something.
 
 **Relationships** connect records across modules. An incident relates to the alerts that raised it, the assets involved, the indicators observed, the tasks assigned. This is the part that distinguishes a SOAR (security orchestration, automation and response) platform from a ticket queue: the relationship is queryable, so "show me every incident touching this asset in the last quarter" is a question the system can answer.
 
@@ -54,7 +54,7 @@ The design mistake to avoid is granting broad permissions during a rollout and i
 
 ## Templates, dashboards and widgets
 
-**Templates** standardise how a record looks and what is required on it, so incidents of a given type carry the same fields and nobody has to remember what to fill in.
+**Templates** standardize how a record looks and what is required on it, so incidents of a given type carry the same fields and nobody has to remember what to fill in.
 
 **Dashboards** are built from **widgets**, each showing a slice of the data. The useful discipline is to build dashboards for a question rather than for a role: "what is unassigned and older than an hour" is actionable, while "everything about incidents" is a screen people stop looking at.
 

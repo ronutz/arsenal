@@ -35,7 +35,7 @@ The secret is base32 rather than raw bytes or base64 because base32 uses only up
 
 ## The provisioning gotcha
 
-Because `algorithm`, `digits`, and `period` are all part of the URI, a mismatch is a classic setup failure: a server using SHA-256 or an 8-digit code or a non-default period will only interoperate with an app that received those exact parameters. Most apps assume the common defaults (SHA-1, 6 digits, 30 seconds) when a field is omitted, so if a server quietly uses something else without putting it in the URI, the app generates codes that never validate. When enrollment "succeeds" but every code is rejected, a parameter that did not make it into the provisioning URI is the usual cause.
+Because `algorithm`, `digits`, and `period` are all part of the URI, a mismatch is a classic setup failure: a server using SHA-256 or an 8-digit code or a non-default period will only interoperate with an app that received those exact parameters. Most apps assume the common defaults (SHA-1, 6 digits, 30 seconds) when a field is omitted, so if a server quietly uses something else without putting it in the URI, the app generates codes that never validate. When enrolment "succeeds" but every code is rejected, a parameter that did not make it into the provisioning URI is the usual cause.
 
 
 ## The QR code is the secret, in a form people forget is a secret

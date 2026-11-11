@@ -45,7 +45,7 @@ page's HTML. Strengthening the policy would require either:
 user-generated content, no reflected inputs, and no server-side templating of
 untrusted data, so there is no injection vector for an attacker to place a script
 that `'unsafe-inline'` would then permit. `'unsafe-inline'` weakens CSP's role as
-a second line of defense against XSS, but the first line (no injection surface)
+a second line of defence against XSS, but the first line (no injection surface)
 holds.
 
 **Revisit if** the site gains a server rendering layer (which could mint nonces),

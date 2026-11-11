@@ -38,7 +38,7 @@ export const promonLogicalisProfile: VendorProfile = {
       year: 1960,
       title: "The name is the two founders",
       detail:
-        "PROMON is formed from PROcon and MONtreal - the American and Brazilian partners whose joint venture it was. Both eventually left, and the name kept them. Sixty-five years on, a firm owned by its own staff still trades under a word assembled from two organisations that no longer have any part in it.",
+        "PROMON is formed from PROcon and MONtreal - the American and Brazilian partners whose joint venture it was. Both eventually left, and the name kept them. Sixty-five years on, a firm owned by its own staff still trades under a word assembled from two organizations that no longer have any part in it.",
     },
     {
       year: 2008,
@@ -73,7 +73,7 @@ export const promonLogicalisProfile: VendorProfile = {
     {
       title: "Employee ownership meeting shareholder ownership",
       detail:
-        "The observation the entry above closes on is worth holding onto in operational terms. A firm whose owners are its staff optimises for continuity, technical standing and the long term, because the shareholders cannot sell to anyone but each other. A listed multinational's subsidiary optimises for the quarter. Running one business on both bases is a genuine test, and it has now lasted well over a decade.",
+        "The observation the entry above closes on is worth holding onto in operational terms. A firm whose owners are its staff optimizes for continuity, technical standing and the long term, because the shareholders cannot sell to anyone but each other. A listed multinational's subsidiary optimizes for the quarter. Running one business on both bases is a genuine test, and it has now lasted well over a decade.",
     },
   ],
   markets: [

@@ -15,7 +15,7 @@ The capture side of the same discipline - BPF, libpcap, tcpdump and the program 
 
 ## One operation, three positions
 
-Every tool in this article does the same thing. It places itself between two parties who believe they are talking to each other, terminates the connection from each side, and reads what passes. That is the whole of it. A developer inspecting why an application sends the wrong header, a penetration tester probing an authorisation flaw, an employer enforcing a data policy, and an attacker stealing a session cookie are performing an identical technical operation, and no property of the traffic distinguishes them.
+Every tool in this article does the same thing. It places itself between two parties who believe they are talking to each other, terminates the connection from each side, and reads what passes. That is the whole of it. A developer inspecting why an application sends the wrong header, a penetration tester probing an authorization flaw, an employer enforcing a data policy, and an attacker stealing a session cookie are performing an identical technical operation, and no property of the traffic distinguishes them.
 
 What distinguishes them is who agreed, and who was told. That sentence is the reason this article exists, and it is worth carrying into any conversation where someone insists a technique is inherently offensive or inherently defensive. The tools differ mainly in **where** they sit.
 
@@ -43,7 +43,7 @@ None of these is an attack tool in any technical sense. They intercept because t
 
 ## In the network, by policy
 
-The third position is the same operation performed by an organisation on its own traffic. An inspection appliance or cloud service holds a certificate authority that is pushed to every managed device, and from then on it can terminate, inspect and re-encrypt outbound sessions - to enforce data-loss rules, to scan for malware, to log where people go.
+The third position is the same operation performed by an organization on its own traffic. An inspection appliance or cloud service holds a certificate authority that is pushed to every managed device, and from then on it can terminate, inspect and re-encrypt outbound sessions - to enforce data-loss rules, to scan for malware, to log where people go.
 
 Technically this is indistinguishable from the second position, and legally and ethically it is not, because the consent is institutional rather than individual and the disclosure varies from a clear policy to nothing at all. It also concentrates risk in a specific way worth stating: the appliance now holds the plaintext of every session it inspects and a private key trusted by every managed device, which makes it the single most valuable object on the network. The tools this site provides for examining certificates will show a corporate inspection certificate for what it is, which is often how an employee first discovers the arrangement exists.
 
@@ -55,13 +55,13 @@ Technically this is indistinguishable from the second position, and legally and 
 
 **Mutual TLS** defeats it from the other side: the server demands a client certificate the proxy does not have.
 
-**And TLS 1.3 narrowed what an observer sees without breaking anything**, by encrypting more of the handshake. Encrypted Client Hello, where deployed, removes the last plaintext hint of which site is being visited - which is a privacy improvement and, simultaneously, the end of the name-based filtering many organisations depend on. That tension has no clean resolution and is worth understanding before it arrives as an incident.
+**And TLS 1.3 narrowed what an observer sees without breaking anything**, by encrypting more of the handshake. Encrypted Client Hello, where deployed, removes the last plaintext hint of which site is being visited - which is a privacy improvement and, simultaneously, the end of the name-based filtering many organizations depend on. That tension has no clean resolution and is worth understanding before it arrives as an incident.
 
 ## The line that actually matters
 
-There is no technical property that separates the debugger from the auditor from the attacker. The proxy does not know why it was started. What separates them is that the developer interception was requested by the person whose traffic it is, the corporate interception was disclosed in a policy the employee accepted, the penetration test was authorised in writing with a defined scope, and the attack was none of those.
+There is no technical property that separates the debugger from the auditor from the attacker. The proxy does not know why it was started. What separates them is that the developer interception was requested by the person whose traffic it is, the corporate interception was disclosed in a policy the employee accepted, the penetration test was authorized in writing with a defined scope, and the attack was none of those.
 
-That is a weaker foundation than most people would like, and it is the actual one. It is why authorisation letters exist, why a scope document names addresses and dates, and why the professional discipline around these tools is procedural rather than technical. A practitioner who is clear about that will explain it better than one who pretends there is a category of tool that cannot be misused - and, being clear about it, will also recognise the corporate inspection appliance and the attacker's ARP reply as the same operation, differing in the answer to one question: who agreed to this, and were they told?
+That is a weaker foundation than most people would like, and it is the actual one. It is why authorization letters exist, why a scope document names addresses and dates, and why the professional discipline around these tools is procedural rather than technical. A practitioner who is clear about that will explain it better than one who pretends there is a category of tool that cannot be misused - and, being clear about it, will also recognize the corporate inspection appliance and the attacker's ARP reply as the same operation, differing in the answer to one question: who agreed to this, and were they told?
 
 ## Sources
 

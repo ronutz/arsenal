@@ -18,9 +18,9 @@ Cloud infrastructure is built from code and rebuilt constantly. That changes whe
 
 Shifting left means checking earlier: scanning infrastructure-as-code templates and container images before they are deployed rather than auditing what they produced.
 
-The argument is cost. A misconfiguration caught in a pull request is a comment and a five-minute fix. The same misconfiguration in production is a change request, a maintenance window, and a conversation about who authorised it. The defect is identical; only the cost of correcting it changed.
+The argument is cost. A misconfiguration caught in a pull request is a comment and a five-minute fix. The same misconfiguration in production is a change request, a maintenance window, and a conversation about who authorized it. The defect is identical; only the cost of correcting it changed.
 
-The second argument is durability. Fixing production without fixing the template means the next deployment reintroduces it, which is how organisations remediate the same finding repeatedly and conclude that security work is Sisyphean.
+The second argument is durability. Fixing production without fixing the template means the next deployment reintroduces it, which is how organizations remediate the same finding repeatedly and conclude that security work is Sisyphean.
 
 **Where the checks go:**
 
@@ -32,7 +32,7 @@ The second argument is durability. Fixing production without fixing the template
 
 ## Runtime detection
 
-Shifting left prevents known-bad configurations. It does not prevent compromise, stolen credentials, or an authorised identity doing something it should not, which is what runtime detection is for.
+Shifting left prevents known-bad configurations. It does not prevent compromise, stolen credentials, or an authorized identity doing something it should not, which is what runtime detection is for.
 
 Cloud threat detection is harder than endpoint detection for a specific reason: much of what an attacker does is legitimate API activity performed with valid credentials. There is no malware to find. Creating a user, attaching a policy, reading a bucket, launching an instance: all ordinary, all part of real attacks.
 
@@ -46,7 +46,7 @@ The detections that matter follow from that:
 - A workload connecting somewhere it never has.
 - Enumeration patterns, where an identity systematically lists what it can reach.
 
-None of these is conclusive alone. All of them are unusual, and unusual is the correct signal when everything is authorised.
+None of these is conclusive alone. All of them are unusual, and unusual is the correct signal when everything is authorized.
 
 ## Investigating
 

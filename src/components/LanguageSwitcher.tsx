@@ -35,13 +35,13 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
-import { LOCALES, LIVE_LOCALES, DEFAULT_LOCALE, getLocale, type LocaleMeta } from "@/i18n/locales";
+import { LOCALES, LIVE_LOCALES, DEFAULT_LOCALE, getLocale, ANY_REVIEWED, type LocaleMeta } from "@/i18n/locales";
 import { LOCALE_COVERAGE } from "@/i18n/locale-coverage";
 // A tool handoff in the fragment (#input=) survives a language change (RT01, 2026-10-20).
 import { handoffFragment } from "@/lib/handoff";
 
 // A locale's display status for the switcher cue:
-//   "reviewed" — written and reviewed by a person (English) -> green
+//   "reviewed" — written and reviewed by a person -> green (no live language since 2026-11-10, when English was demoted)
 //   "complete" — machine-translated and covering the whole site   -> amber
 //   "partial"  — machine-translated, newer content still catching up -> yellow
 //   "stub"     — no pack yet, so the page falls back to English     -> red
@@ -335,10 +335,13 @@ export default function LanguageSwitcher() {
               explanation on the colophon (where the i18n stack is described). */}
           <div className="ls-legend">
             <span className="ls-legend-title">{tStatus("title")}</span>
-            <span className="ls-legend-row">
-              <span className="ls-status ls-status--reviewed" />
-              {tStatus("reviewed")}
-            </span>
+            {/* The green row only while a live language is human-reviewed (none since 2026-11-10, PRIME 23:50). */}
+            {ANY_REVIEWED && (
+              <span className="ls-legend-row">
+                <span className="ls-status ls-status--reviewed" />
+                {tStatus("reviewed")}
+              </span>
+            )}
             <span className="ls-legend-row">
               <span className="ls-status ls-status--complete" />
               {tStatus("complete")}

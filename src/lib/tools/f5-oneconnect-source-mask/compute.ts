@@ -44,7 +44,7 @@
 // vectors are unchanged byte for byte.
 // ============================================================================
 
-import { say, plainText, engineError, type EngineText } from "../engine-text"; // sentences with ids (2026-11-02)
+import { say, enPlural, plainText, engineError, type EngineText } from "../engine-text"; // sentences with ids (2026-11-02)
 
 // ---------------------------------------------------------------------------
 // Types
@@ -114,16 +114,16 @@ const EXPLAIN: Record<string, (v: string) => EngineText> = {
   "max-age": (v) =>
     v === "86400"
       ? say("explain.maxAgeDefault", `Maximum age, in seconds, of a connection in the reuse pool; older connections are removed from the pool. ${v} seconds (the default: one day).`, { value: v }) // the default
-      : say("explain.maxAge", `Maximum age, in seconds, of a connection in the reuse pool; older connections are removed from the pool. ${v} seconds.`, { value: v }), // any other value
+      : say("explain.maxAge", `Maximum age, in seconds, of a connection in the reuse pool; older connections are removed from the pool. ${v} ${enPlural(v, "second", "seconds")}.`, { value: v }), // any other value
   "max-reuse": (v) => say("explain.maxReuse", `Maximum number of times a server connection can be reused before it is retired. ${v} reuses.`, { value: v }), // reuse count
   "max-size": (v) =>
-    say("explain.maxSize", `Maximum number of connections held in the reuse pool; when full, a finishing server connection simply closes instead of parking. ${v} connections. Note the pool lives per TMM: F5's own lab article shows the configured value dividing across TMM instances, so on a multi-core box each TMM keeps its share.`, { value: v }), // pool size, per TMM
+    say("explain.maxSize", `Maximum number of connections held in the reuse pool; when full, a finishing server connection simply closes instead of parking. ${v} ${enPlural(v, "connection", "connections")}. Note the pool lives per TMM: F5's own lab article shows the configured value dividing across TMM instances, so on a multi-core box each TMM keeps its share.`, { value: v }), // pool size, per TMM
   "limit-type": (v) => {
     if (v === "strict")
       return say("explain.limit.strict", "The manual's warning, condensed: the TCP connection limit is honoured with no exceptions, so idle connections prevent NEW connections until they expire, even when they could have been reused. The page itself says this is not a recommended configuration except in very special cases with short expiration timeouts."); // strict
     if (v === "idle")
       return say("explain.limit.idle", "Idle connections are dropped as the TCP connection limit is reached; during the drop-and-establish overlap the limit may be briefly exceeded, per the manual."); // idle
-    return say("explain.limit.none", "The historical handling: simultaneous in-flight requests and responses count toward the connection limit, and there may be more TCP connections open than in-flight requests, particularly (the manual notes) with SNAT pools and narrow source masks."); // none (and anything else)
+    return say("explain.limit.none", "The historical handling: simultaneous in-flight requests and responses count towards the connection limit, and there may be more TCP connections open than in-flight requests, particularly (the manual notes) with SNAT pools and narrow source masks."); // none (and anything else)
   },
   "idle-timeout-override": (v) =>
     v === "disabled"
@@ -238,7 +238,7 @@ function profileObservations(kv: Record<string, string>): EngineText[] {
   }
   if (limit === "none") {
     obs.push(
-      say("obs.limitNone", "limit-type none (the historical handling) counts in-flight requests toward pool-member connection limits, and the manual notes more TCP connections may be open than in-flight requests, particularly with SNAT pools and narrow source masks."), // pack key engine.obs.limitNone
+      say("obs.limitNone", "limit-type none (the historical handling) counts in-flight requests towards pool-member connection limits, and the manual notes more TCP connections may be open than in-flight requests, particularly with SNAT pools and narrow source masks."), // pack key engine.obs.limitNone
     );
   }
   if ((kv["share-pools"] ?? DEFAULTS["share-pools"]) === "enabled") {

@@ -36,7 +36,7 @@ export const westconProfile: VendorProfile = {
       place: "upstate New York",
       founders: ["Thomas Dolan", "Philip Raffiani", "Roman Michalowski"],
       story:
-        "Three people in a garage, which is the standard origin for a software company and an unusual one for a distributor - a business that normally requires a warehouse and a credit line before it requires anything else. What they were selling was not stock but access: knowing which resellers needed which products, in a market where nobody had yet organised that.",
+        "Three people in a garage, which is the standard origin for a software company and an unusual one for a distributor - a business that normally requires a warehouse and a credit line before it requires anything else. What they were selling was not stock but access: knowing which resellers needed which products, in a market where nobody had yet organized that.",
     },
   ],
   timeline: [
@@ -64,7 +64,7 @@ export const westconProfile: VendorProfile = {
     {
       title: "Specialising by vendor rather than by category",
       detail:
-        "This timeline now has three distributor models side by side. The broadline house carries everything and competes on scale. ScanSource specialised by category, catching products on the way to commodity. This one specialised by vendor, building a deep practice around a small number of manufacturers - which is the model that suits complex products with long sales cycles, and the one most exposed if a chosen vendor falters.",
+        "This timeline now has three distributor models side by side. The broadline house carries everything and competes on scale. ScanSource specialized by category, catching products on the way to commodity. This one specialized by vendor, building a deep practice around a small number of manufacturers - which is the model that suits complex products with long sales cycles, and the one most exposed if a chosen vendor falters.",
     },
     {
       title: "Keeping the acquired brand",
@@ -82,7 +82,7 @@ export const westconProfile: VendorProfile = {
     "It competes with the broadline distributors on availability and with other specialists on depth, and its structural risk is concentration: a portfolio built on a small number of vendors is exposed to any of them changing its channel strategy.",
   ],
   analyst: [
-    "Distribution is assessed on vendor authorisations, geographic coverage and partner programme depth rather than on the metrics that apply to product companies, and by those measures this is among the established specialists in networking and security.",
-    "The structural fact worth ending on is what this business actually owns. A specialist distributor's principal assets are authorisations - contracts granting the right to sell a manufacturer's products in defined territories - and those are held at the manufacturer's discretion and revocable on notice. No other business on this timeline has its core asset held by somebody else. That is why the relationship with a small number of vendors is managed as carefully as it is, and why the deep-specialist model is simultaneously the strongest position in distribution and the least owned."
+    "Distribution is assessed on vendor authorizations, geographic coverage and partner programme depth rather than on the metrics that apply to product companies, and by those measures this is among the established specialists in networking and security.",
+    "The structural fact worth ending on is what this business actually owns. A specialist distributor's principal assets are authorizations - contracts granting the right to sell a manufacturer's products in defined territories - and those are held at the manufacturer's discretion and revocable on notice. No other business on this timeline has its core asset held by somebody else. That is why the relationship with a small number of vendors is managed as carefully as it is, and why the deep-specialist model is simultaneously the strongest position in distribution and the least owned."
   ],
 };

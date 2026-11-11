@@ -1,7 +1,7 @@
 ---
 slug: pingfederate-ognl-expressions
 title: "PingFederate OGNL Expressions: Mappings, Criteria, and Why Authoring Is Its Own Role"
-summary: "PingFederate lets you write OGNL in attribute mappings and issuance criteria. A mapping returns a value; a criterion must return true or false, and confusing the two fails quietly in a way that looks like an authorisation problem elsewhere. Expression authoring is gated behind a separate administrative role for one reason: an expression runs code on the server, which is a different permission from configuring a connection."
+summary: "PingFederate lets you write OGNL in attribute mappings and issuance criteria. A mapping returns a value; a criterion must return true or false, and confusing the two fails quietly in a way that looks like an authorization problem elsewhere. Expression authoring is gated behind a separate administrative role for one reason: an expression runs code on the server, which is a different permission from configuring a connection."
 concepts: ["ping", "pingfederate", "ognl", "attribute mapping", "issuance criteria", "expressions", "identity", "rbac", "least privilege", "saml", "oidc"]
 relatedTools: ["pingfederate-ognl-explainer", "saml-decoder", "jwt-decoder"]
 relatedArticles: ["pingfederate-admin-access-and-rbac"]
@@ -19,7 +19,7 @@ Most attribute mappings in PingFederate do not need an expression. You pick a so
 
 **An issuance criterion** produces a decision. It must evaluate to `true` or `false`, and issuance proceeds only when it is true.
 
-Confusing them is a common configuration error and it does not announce itself. A criterion that returns a string rather than a boolean will behave in ways that look like an authorisation problem in some other part of the system entirely, and you can lose an afternoon to it before the cause becomes obvious.
+Confusing them is a common configuration error and it does not announce itself. A criterion that returns a string rather than a boolean will behave in ways that look like an authorization problem in some other part of the system entirely, and you can lose an afternoon to it before the cause becomes obvious.
 
 ## The constructs you will actually meet
 

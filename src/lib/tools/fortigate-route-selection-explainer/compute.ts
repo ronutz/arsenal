@@ -171,7 +171,7 @@ function parseInputLocalisable(text: string): {
     });
   }
   if (routes.length === 0) {
-    warnings.push(say("warn.noRoutes", "No routes were recognised. Each goes on its own line: route: prefix=10.2.0.0/16, gw=10.1.1.1, dev=port3, distance=10, priority=0")); // no routes
+    warnings.push(say("warn.noRoutes", "No routes were recognized. Each goes on its own line: route: prefix=10.2.0.0/16, gw=10.1.1.1, dev=port3, distance=10, priority=0")); // no routes
   }
   if (!destination) {
     warnings.push(say("warn.noDestination", "No destination was supplied. Add a line like: destination: 10.2.5.10")); // no destination
@@ -243,7 +243,7 @@ function selectLocalisable(destination: string, routes: readonly RouteEntry[]): 
       const group = byPrefix.get(r.prefix)!;
       const min = Math.min(...group.map((x) => x.distance));
       evaluations.push({ route: r, verdict: "floating",
-        detail: say("detail.floating", `NOT INSTALLED. Distance ${r.distance} lost to distance ${min} for the same prefix, so this route is absent from the forwarding table rather than merely deprioritised. It is a floating backup: it appears only when the lower-distance route is withdrawn.`, { distance: String(r.distance), min: String(min) }) }); // lost on distance
+        detail: say("detail.floating", `NOT INSTALLED. Distance ${r.distance} lost to distance ${min} for the same prefix, so this route is absent from the forwarding table rather than merely deprioritized. It is a floating backup: it appears only when the lower-distance route is withdrawn.`, { distance: String(r.distance), min: String(min) }) }); // lost on distance
       continue;
     }
     if (winnerSet.has(r)) {
@@ -270,7 +270,7 @@ function referenceResult(): RouteResult<EngineText> {
     mode: "reference", destination: null, routes: [], evaluations: [], selected: [],
     notes: [
       say("ref.policyRoute", "A policy route is consulted BEFORE the routing table and overrides it. If the table says one thing and traffic does another, look for a policy route first - this tool models the table, not policy routes."), // policy routes first
-      say("ref.distance", "DISTANCE decides which route is INSTALLED. Routes to the same destination compete, the lowest distance wins, and the loser is absent from the table rather than merely deprioritised."), // distance
+      say("ref.distance", "DISTANCE decides which route is INSTALLED. Routes to the same destination compete, the lowest distance wins, and the loser is absent from the table rather than merely deprioritized."), // distance
       say("ref.priority", "PRIORITY decides which of several ALREADY-INSTALLED routes is preferred. It never resurrects a route that lost on distance."), // priority
       say("ref.samePrefix", "Same prefix and same distance means both install and priority chooses. Different distances means one installs and the other is a floating backup."), // the consequences
       say("ref.longest", "Forwarding takes the LONGEST matching prefix among installed routes. True ties on prefix, distance and priority are load shared by ECMP."), // forwarding

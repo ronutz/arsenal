@@ -1,7 +1,7 @@
 ---
 slug: dns-zone-transfers-and-notify
 title: "Zone transfers and NOTIFY: how secondary name servers stay in step"
-summary: "Every DNS zone has to be served by at least two authoritative servers, and their copies have to agree. After reading you will be able to read the timers in a zone's SOA record and predict when a secondary polls, recognise an AXFR, IXFR or NOTIFY exchange in a packet capture, explain why transfers are restricted and encrypted, and check with dig whether a zone's servers carry the same serial."
+summary: "Every DNS zone has to be served by at least two authoritative servers, and their copies have to agree. After reading you will be able to read the timers in a zone's SOA record and predict when a secondary polls, recognize an AXFR, IXFR or NOTIFY exchange in a packet capture, explain why transfers are restricted and encrypted, and check with dig whether a zone's servers carry the same serial."
 concepts: ["zone transfer", "axfr", "ixfr", "notify", "soa record", "serial number arithmetic", "primary server", "secondary server", "refresh retry expire", "xfr over tls", "tsig", "allow-transfer"]
 relatedTools: ["dig-command-builder", "dig-output-explainer"]
 relatedArticles: ["dns-family-history", "reading-a-dns-answer", "dns-record-types-in-answers", "dns-message-header-and-flags", "dig-trace-and-delegation", "edns-and-the-opt-pseudosection"]
@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-10-26"
 ---
 
-The Domain Name System (DNS) requires every zone to live on more than one authoritative server, and the copies have to agree. A **zone transfer** is "The act of a client requesting a copy of a zone and an authoritative server sending the needed information" ([RFC 9499, section 6](https://www.rfc-editor.org/rfc/rfc9499.html#section-6)), whole (AXFR, "Authoritative Transfer") or incremental (IXFR, "Incremental Transfer"); NOTIFY announces that a change has happened. Their goal is "to enable a set of DNS name servers to remain coherently authoritative for a given zone" ([RFC 5936, section 1](https://www.rfc-editor.org/rfc/rfc5936.html#section-1)). After reading, you will be able to read the timers of an SOA (start of zone authority) record, recognise a transfer or a NOTIFY in a capture, explain why transfers are restricted and encrypted, and compare serials with dig.
+The Domain Name System (DNS) requires every zone to live on more than one authoritative server, and the copies have to agree. A **zone transfer** is "The act of a client requesting a copy of a zone and an authoritative server sending the needed information" ([RFC 9499, section 6](https://www.rfc-editor.org/rfc/rfc9499.html#section-6)), whole (AXFR, "Authoritative Transfer") or incremental (IXFR, "Incremental Transfer"); NOTIFY announces that a change has happened. Their goal is "to enable a set of DNS name servers to remain coherently authoritative for a given zone" ([RFC 5936, section 1](https://www.rfc-editor.org/rfc/rfc5936.html#section-1)). After reading, you will be able to read the timers of an SOA (start of zone authority) record, recognize a transfer or a NOTIFY in a capture, explain why transfers are restricted and encrypted, and compare serials with dig.
 
 ## Why a zone is copied, and what the copies are called
 

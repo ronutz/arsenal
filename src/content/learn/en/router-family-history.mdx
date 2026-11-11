@@ -23,7 +23,7 @@ The IMP forwarded within one network. What did not yet exist was a device that c
 
 Under the DARPA internetworking effort, **Virginia Strazisar** at BBN wrote the first true IP router - then called a gateway - implementing the new TCP/IP protocols. By the end of 1976 three PDP-11 based routers were running in the experimental prototype internet.
 
-That is the origin of the device this entire industry sells, and the name is almost unknown. Put it beside the previous article in this series: the loop problem that makes bridged networks survivable was solved by Radia Perlman, and the first internetworking router was written by Virginia Strazisar. **The two foundational mechanisms of layers two and three were built by women whose names most practitioners cannot produce**, while the companies that commercialised their work are known to everyone. That is a fact about attribution rather than about engineering, and it is worth stating once, plainly, in a catalogue that names people.
+That is the origin of the device this entire industry sells, and the name is almost unknown. Put it beside the previous article in this series: the loop problem that makes bridged networks survivable was solved by Radia Perlman, and the first internetworking router was written by Virginia Strazisar. **The two foundational mechanisms of layers two and three were built by women whose names most practitioners cannot produce**, while the companies that commercialized their work are known to everyone. That is a fact about attribution rather than about engineering, and it is worth stating once, plainly, in a catalogue that names people.
 
 The 1977 four-network demonstration - ARPANET, SATNET, Ethernet and packet radio interconnected - is what that work made possible, and it is the moment internetworking stopped being a proposal.
 
@@ -39,9 +39,9 @@ Multiprotocol mattered because the world was not IP yet. A campus ran AppleTalk,
 
 At Stanford, Leonard Bosack ran computer facilities in the computer science department and Sandy Lerner ran them at the graduate school of business. They were married, and the university's computers could not talk to each other. The **blue box** built to connect the campus networks, running software originally written by Yeager, worked - and worked at other universities too.
 
-Bosack and Lerner licensed and enhanced Yeager's software and founded **Cisco** in 1984, taking the name from San Francisco. The company that would define networking for forty years began as two university staff commercialising software written by a colleague to solve a problem on their own campus.
+Bosack and Lerner licensed and enhanced Yeager's software and founded **Cisco** in 1984, taking the name from San Francisco. The company that would define networking for forty years began as two university staff commercializing software written by a colleague to solve a problem on their own campus.
 
-BBN, which had built the IMPs and employed Strazisar, also produced early routers and had every possible head start. Nimbler rivals overtook it. That is the same lesson its own entry in this catalogue carries: the organisation that invents something is frequently not the one that sells it, and a research contractor and a product company are different animals with different metabolisms.
+BBN, which had built the IMPs and employed Strazisar, also produced early routers and had every possible head start. Nimbler rivals overtook it. That is the same lesson its own entry in this catalogue carries: the organization that invents something is frequently not the one that sells it, and a research contractor and a product company are different animals with different metabolisms.
 
 ## Evolution
 
@@ -54,7 +54,7 @@ BBN, which had built the IMPs and employed Strazisar, also produced early router
 
 ## The jobs and the practices
 
-The router created the network engineer as a distinct profession, and for two decades the certification ladders that defined that profession were built around it. An entire vocabulary of practice came with it: **routing protocol design**, **convergence** as a thing measured in seconds that matter, **route summarisation**, **traceroute as a diagnostic reflex**, and the permanent operational fact that a router's decision is **local** - it knows the next hop, not the path - which is why routing faults are so often asymmetric and so hard to see from one end.
+The router created the network engineer as a distinct profession, and for two decades the certification ladders that defined that profession were built around it. An entire vocabulary of practice came with it: **routing protocol design**, **convergence** as a thing measured in seconds that matter, **route summarization**, **traceroute as a diagnostic reflex**, and the permanent operational fact that a router's decision is **local** - it knows the next hop, not the path - which is why routing faults are so often asymmetric and so hard to see from one end.
 
 It also produced the industry's most consequential unstated dependency. **Border Gateway Protocol** holds the internet together on a foundation of announced intent and manual filtering, and every large routing incident since has been the same story: somebody announced something they should not have, and enough of the internet believed them.
 
@@ -68,9 +68,9 @@ Today it is Cisco, Juniper now inside HPE, Arista, Nokia, Huawei, MikroTik at th
 
 **Forwarding is becoming software again.** Kernel bypass, programmable data planes and eBPF have moved packet handling back to general-purpose processors at speeds that make dedicated hardware optional for many roles. The wheel has turned once completely.
 
-**The control plane is separating from the box.** Centralised computation of paths, whether branded software-defined networking or segment routing, moves the decision away from the device that executes it - which is a change in where the operational risk lives more than in what the network does.
+**The control plane is separating from the box.** Centralized computation of paths, whether branded software-defined networking or segment routing, moves the decision away from the device that executes it - which is a change in where the operational risk lives more than in what the network does.
 
-**Routing is becoming a service.** For most organisations the interesting routing now happens inside a cloud provider or a software-defined wide area network overlay, configured through an interface, with the physical device reduced to transport.
+**Routing is becoming a service.** For most organizations the interesting routing now happens inside a cloud provider or a software-defined wide area network overlay, configured through an interface, with the physical device reduced to transport.
 
 **And the core stays ossified.** Interdomain routing still runs on a protocol designed when the operators all knew each other, and every proposal to secure it properly has run into the fact that no single party can require the rest of the internet to adopt anything. The device has been rebuilt four times; the agreement between devices has barely been touched.
 

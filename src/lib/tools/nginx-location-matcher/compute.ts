@@ -117,7 +117,7 @@ export class NginxParseError extends Error {
   }
 }
 
-import { say, plainText, withEngineText, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
+import { say, enPlural, plainText, withEngineText, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
 
 /**
  * A parse error that carries its sentence, so the page can show it in its own language.
@@ -395,7 +395,7 @@ export function matchLocationLocalisable(input: string): NginxMatchReport<Engine
       stage: "regex-scan",
       location: null,
       decisive: false,
-      reason: say("step.noRegex", `None of the ${regexes.length} regular expression location(s) match ${uri}.`, { count: String(regexes.length), uri }), // no regex
+      reason: say("step.noRegex", `None of the ${regexes.length} ${enPlural(regexes.length, "regular expression location matches", "regular expression locations match")} ${uri}.`, { count: String(regexes.length), uri }), // no regex
     });
   }
 
@@ -427,7 +427,7 @@ export function matchLocationLocalisable(input: string): NginxMatchReport<Engine
       stage: "predicate-scan",
       location: null,
       decisive: false,
-      reason: say("step.noPredicate", `None of the ${predicates.length} predicate location(s) has a variable that is neither empty nor "0" for this request.`, { count: String(predicates.length) }), // no predicate
+      reason: say("step.noPredicate", `None of the ${predicates.length} ${enPlural(predicates.length, "predicate location", "predicate locations")} has a variable that is neither empty nor "0" for this request.`, { count: String(predicates.length) }), // no predicate
     });
   }
 

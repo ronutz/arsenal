@@ -34,19 +34,19 @@ Session filtering acts during the SMTP conversation, before the message body has
 
 **Greylisting** temporarily rejects a first-time sender-recipient-host triplet with a temporary failure. Legitimate mail servers queue and retry, and the message arrives shortly after; much bulk-sending software does not retry. It is effective and it costs delivery latency on genuinely new correspondents, which is the trade to be explicit about rather than surprised by.
 
-**SPF, DKIM and DMARC** verify that the sender is authorised to use the domain it claims. Their limitation is worth stating: they authenticate the *domain*, not the intent. A perfectly authenticated message from a lookalike domain passes all three, which is why domain-similarity checks exist alongside them.
+**SPF, DKIM and DMARC** verify that the sender is authorized to use the domain it claims. Their limitation is worth stating: they authenticate the *domain*, not the intent. A perfectly authenticated message from a lookalike domain passes all three, which is why domain-similarity checks exist alongside them.
 
 **Recipient verification and rate limiting** reject mail for non-existent addresses and blunt harvesting attempts.
 
 ## Antispam, layered by cost
 
-The organising principle is that cheap checks should run first so the expensive ones see less.
+The organizing principle is that cheap checks should run first so the expensive ones see less.
 
 - **Connection-level**: reputation, DNSBL, rate limits. No message transferred.
 - **Session-level**: greylisting, sender authentication. Envelope only.
 - **Content-level**: FortiGuard antispam classification, heuristics, banned words, URL analysis, image analysis. Requires the full message.
 
-FortiGuard's classification does most of the work in practice, and the local controls exist for what is specific to your organisation.
+FortiGuard's classification does most of the work in practice, and the local controls exist for what is specific to your organization.
 
 **Actions** matter as much as detection. The options (reject, discard, quarantine, tag) differ in who finds out:
 

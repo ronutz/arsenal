@@ -15,7 +15,7 @@ A tunnel is a passenger inside an envelope, and envelopes have weight. The path,
 
 ## Origins: why a maximum exists at all
 
-Ethernet's 1,500-byte payload limit is not a law of physics. It came from a 1980 engineering compromise: buffer memory was expensive, and a station transmitting a very long frame monopolises a shared medium, so a ceiling bounded both cost and the delay other stations would wait. That number outlived its reasons and became the constant the rest of the internet is fitted around.
+Ethernet's 1,500-byte payload limit is not a law of physics. It came from a 1980 engineering compromise: buffer memory was expensive, and a station transmitting a very long frame monopolizes a shared medium, so a ceiling bounded both cost and the delay other stations would wait. That number outlived its reasons and became the constant the rest of the internet is fitted around.
 
 IP was designed to cross links with different limits, so it needed an answer for a packet that does not fit. **IPv4 chose fragmentation**: any router could split a packet, and the destination reassembles. It works, and three decades of operational experience found the costs:
 

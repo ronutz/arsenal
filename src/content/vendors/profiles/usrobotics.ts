@@ -76,6 +76,6 @@ export const usroboticsProfile: VendorProfile = {
   ],
   analyst: [
     "The company's commercial record is best read as a case of correctly-timed proprietary advantage: three attempts, one clear success, and a willingness to abandon each position the moment a standard made it indefensible.",
-    "The organisation outlived the company that acquired it. 3Com was itself absorbed, while the USRobotics name was spun back out, passed through a management buyout, and still trades - which is an unusual afterlife for a brand whose defining product category was eliminated by the technology that replaced it.",
+    "The organization outlived the company that acquired it. 3Com was itself absorbed, while the USRobotics name was spun back out, passed through a management buyout, and still trades - which is an unusual afterlife for a brand whose defining product category was eliminated by the technology that replaced it.",
   ],
 };

@@ -1,4 +1,6 @@
 "use client";
+// Numbers grouped the page's way (International English formats as en-001), 11/11/2026.
+import { intlLocale } from "@/i18n/locales";
 
 /**
  * src/components/StatsPanels.tsx
@@ -194,8 +196,8 @@ export default function StatsPanels({
           buckets.get(k)!.sort((a, b) => Number(b.views) - Number(a.views)).slice(0, 15),
         ]);
         totals[key(p)] = strings.pagesTotal
-          .replace("{requests}", rows.reduce((a, r) => a + Number(r.views ?? 0), 0).toLocaleString())
-          .replace("{pages}", rows.length.toLocaleString());
+          .replace("{requests}", rows.reduce((a, r) => a + Number(r.views ?? 0), 0).toLocaleString(intlLocale(locale)))
+          .replace("{pages}", rows.length.toLocaleString(intlLocale(locale)));
       } else if (p.kind === "referrers") {
         const order: Array<["search" | "ai" | "social" | "other", string]> = [
           ["search", strings.groupSearch], ["ai", strings.groupAi],
@@ -347,7 +349,7 @@ export default function StatsPanels({
                 <h3 className="stats-panel-title">{strings[p.titleKey]}</h3>
                 <p className="stats-panel-note">{strings[p.noteKey]}</p>
                 {/* A list the Worker cut at its row limit: the panel says it covers the most-read part only. */}
-                {cuts[p.route] ? <p className="stats-panel-cut">{strings.listCut.replace("{limit}", cuts[p.route].toLocaleString())}</p> : null}
+                {cuts[p.route] ? <p className="stats-panel-cut">{strings.listCut.replace("{limit}", cuts[p.route].toLocaleString(intlLocale(locale)))}</p> : null}
                 {totals[key(p)] ? <p className="stats-panel-total">{totals[key(p)]}</p> : null}
                 {all.length === 0 ? (
                   <p className="stats-empty">{strings.noData}</p>
@@ -379,12 +381,12 @@ export default function StatsPanels({
                                 </td>
                                 <td className="stats-num">
                                   {p.kind === "devices" && grand > 0
-                                    ? `${Math.round((n / grand) * 100)}% · ${n.toLocaleString()}`
+                                    ? `${Math.round((n / grand) * 100)}% · ${n.toLocaleString(intlLocale(locale))}`
                                     : p.kind === "aishare"
-                                    ? `${n}% · ${Number(row.raw ?? 0).toLocaleString()} / ${Number(row.all ?? 0).toLocaleString()}`
+                                    ? `${n}% · ${Number(row.raw ?? 0).toLocaleString(intlLocale(locale))} / ${Number(row.all ?? 0).toLocaleString(intlLocale(locale))}`
                                     : p.kind === "sections"
-                                    ? `${n}% · ${Number(row.raw ?? 0).toLocaleString()}`
-                                    : n.toLocaleString()}
+                                    ? `${n}% · ${Number(row.raw ?? 0).toLocaleString(intlLocale(locale))}`
+                                    : n.toLocaleString(intlLocale(locale))}
                                 </td>
                               </tr>
                             );
@@ -400,7 +402,7 @@ export default function StatsPanels({
                     onClick={() => toggle(key(p), panelId)}>
                     {open
                       ? strings.collapse.replace("{count}", String(STATS_ROWS_SHOWN))
-                      : strings.expandAll.replace("{count}", all.length.toLocaleString())}
+                      : strings.expandAll.replace("{count}", all.length.toLocaleString(intlLocale(locale)))}
                   </button>
                 )}
               </section>

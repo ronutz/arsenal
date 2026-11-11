@@ -1,0 +1,20 @@
+# Analizzatore della source mask di OneConnect
+
+OneConnect mantiene aperte le connessioni lato server e le passa alla successiva richiesta idonea, e in questa frase tutto il lavoro lo fa la parola «idonea». È la source mask a decidere l’idoneità, e la pagina man ne indica chiaramente i due estremi: 0.0.0.0, il valore predefinito, condivide le connessioni riutilizzate tra tutti i client; una maschera host le condivide solo tra le connessioni provenienti dallo stesso IP client. Tutto ciò che sta in mezzo si comporta come una subnet mask e raggruppa i client in base ai bit che conserva.
+
+Incolla un blocco `ltm profile one-connect` e ogni opzione viene mostrata con la semantica del riferimento della v17, con i valori predefiniti indicati in modo esplicito invece che sottintesi: max-age 86400, max-reuse 1000, max-size 10000, limit-type none. Il limite strict riporta l’avvertenza del manuale stesso: le connessioni inattive bloccano quelle nuove finché non scadono, anche quando avrebbero potuto essere riutilizzate, una configurazione che la pagina stessa sconsiglia al di fuori di casi particolari. share-pools riceve la sua semantica tra virtual server diversi; l’opzione idle-timeout-override riceve una segnalazione onesta per una particolarità della pagina man stessa, che la dichiara come disabled o enabled ma la descrive come un numero di secondi.
+
+La simulazione è il pezzo forte. Indica una maschera, un elenco di IP client e, facoltativamente, un indirizzo SNAT, e vengono mostrati i gruppi di riuso. Con lo SNAT presente vedi all’opera l’ordine indicato sia da K7208 sia da K5911: prima avviene la traduzione, poi la maschera si applica all’indirizzo tradotto, quindi un unico indirizzo SNAT fa confluire tutti i client in un solo gruppo di riuso, per quanto stretta sia la maschera. Quel collasso è la sorpresa in produzione che lo strumento esiste per rendere visibile prima che capiti a te.
+
+Chiudono la verifica due precisazioni oneste sulle statistiche, tratte dall’articolo di laboratorio di F5 stesso: max-size si ripartisce tra le istanze TMM invece di formare un unico pool globale, e il contatore Current Idle include ogni connessione inattiva lato server, che la maschera la renda idonea o no. Leggi l’output di `tmsh show` tenendo presenti entrambe.
+
+Tutto viene eseguito in locale; nulla di ciò che incolli lascia la pagina.
+
+## Condivisione dei risultati
+
+Sotto il nome del profilo, sotto i gruppi di riuso della simulazione della maschera o in cima al catalogo delle impostazioni, **Condividi i risultati** crea un link a questa pagina, solo quando lo premi, che contiene dopo il `#` il testo della casella così come l’hai inserito: un profilo, una riga di simulazione della maschera o `settings`. Un profilo one-connect non contiene impostazioni segrete ([riferimento tmsh di F5, ltm profile one-connect](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_profile_one-connect.html), consultato il 27/10/2026). Il suo riquadro a comparsa indica prima cosa contiene il link, poi offre Copia link e, se il browser lo prevede, il suo menu di condivisione; l’indirizzo della pagina non cambia.
+
+Secondo la [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (sezione 3.5, consultata il 27/10/2026) il frammento è separato dal resto dell’URI prima della dereferenziazione («separated from the rest of the URI prior to a dereference»), quindi il testo non viene inviato al server quando il link viene aperto; resta nella barra degli indirizzi e nella cronologia di chi lo apre, e chiunque abbia il link può leggerlo.
+
+- **Lunghezza.** Al massimo 16.384 caratteri in tutto, il limite che il sito applica a ogni valore dopo il `#`; una condivisione più lunga non riceve alcun link, e il riquadro a comparsa indica quanto è lunga.
+- **Apertura di un link.** Il testo riempie la casella come farebbe un incolla e la pagina lo spiega. I valori lasciano poi subito l’indirizzo della pagina, senza alcuna richiesta, quindi un ricaricamento o il pulsante Condividi della pagina non contengono nulla.

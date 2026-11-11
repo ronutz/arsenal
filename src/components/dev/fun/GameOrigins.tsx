@@ -19,6 +19,8 @@
 // ============================================================================
 
 // Server-side strings.
+// English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
+import { intlLocale } from "@/i18n/locales";
 import { getTranslations } from "next-intl/server";
 // The sources and the glossary entries of each game.
 import { GAME_ORIGINS } from "@/content/fun/origins";
@@ -38,7 +40,7 @@ function readOn(iso: string, locale: string): string {
   // Noon UTC, so no time zone moves the day.
   const d = new Date(`${iso}T12:00:00Z`);
   // In words, in the page's language (British English for "en", as the rest of the site writes it).
-  return new Intl.DateTimeFormat(locale === "en" ? "en-GB" : locale, { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(d);
+  return new Intl.DateTimeFormat(intlLocale(locale), { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(d);
 }
 
 /**

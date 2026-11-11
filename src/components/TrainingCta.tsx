@@ -26,6 +26,8 @@
 // pages to that rule.
 // ============================================================================
 
+// English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
+import { intlLocale } from "@/i18n/locales";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 // MARK (PRIME 2026-10-04): the Red Education wordmark on the card that names it.
@@ -55,7 +57,7 @@ export default async function TrainingCta({
   // The names as a list in the page's language ("F5, Fortinet, Extreme Networks and Netskope"; British English
   // for "en", so no serial comma, as the house writes it).
   const locale = await getLocale();
-  const listLocale = locale === "en" ? "en-GB" : locale;
+  const listLocale = intlLocale(locale);
   const names = new Intl.ListFormat(listLocale, { style: "long", type: "conjunction" }).format(taught.map((p) => p.name));
   return (
     <aside className="training-cta">

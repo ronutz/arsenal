@@ -82,7 +82,7 @@ export const TYPES: Record<string, TypeDef> = {
       rules: "The iRules attached to the virtual, run in order on connection events.",
       persist: "The persistence profile that keeps a client pinned to the same pool member.",
       "fallback-persistence": "The persistence method used when the primary method has no match.",
-      "source-address-translation": "How the source IP is translated toward the backend (automap, a SNAT pool, or none).",
+      "source-address-translation": "How the source IP is translated towards the backend (automap, a SNAT pool, or none).",
       "translate-address": "Whether the destination address is translated to a pool member (enabled) or passed through.",
       "translate-port": "Whether the destination port is translated to the pool member's port.",
       source: "The client source address range the virtual will accept (0.0.0.0/0 means any).",
@@ -172,7 +172,7 @@ export const TYPES: Record<string, TypeDef> = {
     fields: {},
   },
   "ltm snatpool": {
-    summary: "A SNAT pool: a set of translation addresses BIG-IP uses as the source when translating client connections toward the backend.",
+    summary: "A SNAT pool: a set of translation addresses BIG-IP uses as the source when translating client connections towards the backend.",
     fields: {
       members: "The translation IP addresses in the SNAT pool.",
     },

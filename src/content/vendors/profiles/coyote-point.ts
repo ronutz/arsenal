@@ -64,7 +64,7 @@ export const coyotePointProfile: VendorProfile = {
   ],
   // Who bought it, in the words of the record.
   markets: [
-    "Organisations that needed their web and application servers kept available without the cost of the largest application delivery vendors. At the acquisition Bill Kish spoke of a \"top class ADC product portfolio and loyal customer base\" and of the chance, inside Fortinet, to make \"strategic technology investments in our ADC platform\".",
+    "Organizations that needed their web and application servers kept available without the cost of the largest application delivery vendors. At the acquisition Bill Kish spoke of a \"top class ADC product portfolio and loyal customer base\" and of the chance, inside Fortinet, to make \"strategic technology investments in our ADC platform\".",
   ],
   // The acquisition as filed.
   analyst: [

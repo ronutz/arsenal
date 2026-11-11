@@ -31,7 +31,7 @@ Every element of that is worth pulling apart, because each one is a separate les
 
 **The redundancy made it worse rather than better.** Two identical units ran in parallel, hot standby, executing the same software. The backup met the same input microseconds later and failed the same way. Redundancy protects against a component breaking; it protects against nothing at all when both components share a design fault. The [Therac-25 article](/learn/therac-25-and-defence-in-depth) makes the inverse point - a *different* kind of protection, in hardware, saved the earlier machine.
 
-**And the shutdown was interpreted as data.** When the units stopped, they emitted a diagnostic bit pattern. The flight computer received it, could not distinguish it from flight data, and steered accordingly. A failure mode designed to be safe became the mechanism of destruction, because nothing downstream was built to recognise "this is not a measurement".
+**And the shutdown was interpreted as data.** When the units stopped, they emitted a diagnostic bit pattern. The flight computer received it, could not distinguish it from flight data, and steered accordingly. A failure mode designed to be safe became the mechanism of destruction, because nothing downstream was built to recognize "this is not a measurement".
 
 ## The sentence in the report
 

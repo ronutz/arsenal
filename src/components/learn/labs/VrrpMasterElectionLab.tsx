@@ -23,6 +23,8 @@
 // the second owner the model refuses (its attribute says the same).
 // ============================================================================
 
+// English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
+import { intlLocale } from "@/i18n/locales";
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import LabFrame, { LabField, LabSelect } from "./LabFrame";
@@ -89,7 +91,7 @@ export default function VrrpMasterElectionLab() {
   // Seconds, to four decimals as the article prints them.
   const nfS = new Intl.NumberFormat(locale, { maximumFractionDigits: 4 });
   // Lists in the page's language; English as British English writes them, without the serial comma ("a, b and c").
-  const lf = new Intl.ListFormat(locale === "en" ? "en-GB" : locale, { style: "long", type: "conjunction" });
+  const lf = new Intl.ListFormat(intlLocale(locale), { style: "long", type: "conjunction" });
 
   // The router count the form names.
   const n = Number(form.routers);

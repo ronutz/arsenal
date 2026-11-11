@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-10-18"
 ---
 
-[Server-side request forgery](/learn/what-is-ssrf) (SSRF) is "an attack vector that abuses an application to interact with the internal/external network or the machine itself" ([SSRF Prevention Cheat Sheet, Context](https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html)). Every defence against it, like every egress allow-list, must decide whether the address behind a Uniform Resource Locator (URL) is a public destination. The Internet Assigned Numbers Authority (IANA) keeps the map: special-purpose registries whose rows cite Request for Comments (RFC) documents, plus address-space registries for multicast and the space the Internet Engineering Task Force (IETF) reserves. By the end you can read the registries, classify a normalised address, show how public destinations lead inside, list the metadata addresses and test a classifier.
+[Server-side request forgery](/learn/what-is-ssrf) (SSRF) is "an attack vector that abuses an application to interact with the internal/external network or the machine itself" ([SSRF Prevention Cheat Sheet, Context](https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html)). Every defence against it, like every egress allow-list, must decide whether the address behind a Uniform Resource Locator (URL) is a public destination. The Internet Assigned Numbers Authority (IANA) keeps the map: special-purpose registries whose rows cite Request for Comments (RFC) documents, plus address-space registries for multicast and the space the Internet Engineering Task Force (IETF) reserves. By the end you can read the registries, classify a normalized address, show how public destinations lead inside, list the metadata addresses and test a classifier.
 
 ## Two registries, five columns
 
@@ -69,7 +69,7 @@ Membership is not the verdict: five IPv4 and nine IPv6 special-purpose blocks ar
 
 So a public destination can still lead inside: its address is in a network you protect, its name resolves inside at connection time, or its server redirects inside. An [allow-list of intended destinations](/learn/ssrf-defenses-allowlists) answers the first ([SSRF Prevention Cheat Sheet, Case 1](https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html)); the next sections answer the others.
 
-## Normalise, then classify
+## Normalize, then classify
 
 The Uniform Resource Identifier (URI) grammar allows only dotted decimal for IPv4, yet routines such as `inet_aton()` accept [far more](/learn/ip-address-obfuscation-tricks) ([RFC 3986, sections 3.2.2 and 7.4](https://www.rfc-editor.org/rfc/rfc3986.txt)): shorter forms such as a.b.c or one 32-bit number, with octal (leading 0) or hexadecimal (leading 0x) parts, so that the manual's own example turns `0x7f.1` into 127.0.0.1 ([inet(3)](https://man7.org/linux/man-pages/man3/inet_aton.3.html)). `getaddrinfo()` reads numeric hosts the same way ([getaddrinfo(3)](https://man7.org/linux/man-pages/man3/getaddrinfo.3.html)), the URL Standard's IPv4 parser reads hexadecimal and octal ([URL Standard, section 3.5](https://url.spec.whatwg.org/)), and IPv6 receivers must accept every legitimate spelling ([RFC 5952, section 4](https://www.rfc-editor.org/rfc/rfc5952.txt)). Python's `ipaddress` parses as strictly as `inet_pton()`, refusing leading zeros since 3.9.5 ([Python ipaddress documentation](https://docs.python.org/3/library/ipaddress.html)); `socket.inet_aton()` does not. Illustrative session, Python 3.13.16 on Linux:
 
@@ -164,7 +164,7 @@ The [Python playground](/tools/python-playground) runs CPython 3.14.2 through Py
 4. Serve a redirect to a denied address.
 5. Re-run after every library or registry change.
 
-The [SSRF URL classifier](/tools/ssrf-url-classifier) is one quick check on a single URL: it decodes decimal, octal, hexadecimal and short IPv4 hosts and the dotted IPv4-mapped form, and recognises 169.254.169.254, 100.100.100.200, fd00:ec2::254, metadata.google.internal and metadata, but it never resolves names or sends requests, so steps 3 and 4 are beyond it.
+The [SSRF URL classifier](/tools/ssrf-url-classifier) is one quick check on a single URL: it decodes decimal, octal, hexadecimal and short IPv4 hosts and the dotted IPv4-mapped form, and recognizes 169.254.169.254, 100.100.100.200, fd00:ec2::254, metadata.google.internal and metadata, but it never resolves names or sends requests, so steps 3 and 4 are beyond it.
 
 ## What to remember
 

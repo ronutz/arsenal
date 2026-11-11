@@ -37,7 +37,7 @@ F5 did not leave this wide open, and the limits are worth teaching:
 
 The single most important knob is which traffic the policy trusts. For clients with **trusted** IP addresses, the rules require far less traffic, by default only **one user session**, to update the policy. **Untrusted** traffic must clear much higher thresholds, from many different sources over a longer period. That asymmetry is precisely the anti-poisoning design: build fast from clients you trust, and make the anonymous internet work much harder.
 
-Two traps hide here. First, if you leave the Trusted IP list empty, the system treats **all** traffic as untrusted, so an empty list does not protect you; it simply makes the untrusted thresholds your only defense. Second, the "Only from Trusted Traffic" option lives under Track Site Changes, and the default is to loosen from all traffic, so relying on trusted-only loosening takes deliberate configuration.
+Two traps hide here. First, if you leave the Trusted IP list empty, the system treats **all** traffic as untrusted, so an empty list does not protect you; it simply makes the untrusted thresholds your only defence. Second, the "Only from Trusted Traffic" option lives under Track Site Changes, and the default is to loosen from all traffic, so relying on trusted-only loosening takes deliberate configuration.
 
 ## The safe posture
 

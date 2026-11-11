@@ -404,7 +404,7 @@ export default function Ttl({ locale }: { locale: string }) {
       // The shell re-reads and flashes.
       setVersion((v) => v + 1);
       // Announced.
-      setSay(t("sayEnd", { score: end.score.toLocaleString(locale), delivered: end.delivered, total: PACKETS }));
+      setSay(t("sayEnd", { score: end.score, delivered: end.delivered, total: PACKETS }));
     },
     [goPhase, today, t, locale],
   );
@@ -697,7 +697,7 @@ export default function Ttl({ locale }: { locale: string }) {
     const share = shareText({
       title: final.daily ? t("shareTitleDaily", { n: puzzleNumber(today) }) : t("shareTitlePractice"),
       lines: [Array.from({ length: PACKETS }, (_, i) => squareFor(r.log[i])).join(""), t("shareLine", { delivered: r.delivered, total: PACKETS, hops: r.totalHops })],
-      summary: t("shareSummary", { score: r.score.toLocaleString(locale), time: formatDuration(r.ms) }),
+      summary: t("shareSummary", { score: r.score, time: formatDuration(r.ms) }),
       locale,
       slug: GAME_ID,
     });

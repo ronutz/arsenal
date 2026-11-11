@@ -460,7 +460,7 @@ export function runLocalisable(input: string): AfmResult<EngineText> {
     const observations: EngineText[] = []; // in order
     for (const r of rules) {
       if ((r.protocol === "icmp" || r.protocol === "icmpv6")) observations.push(say("obs.icmpRule", `Rule ${r.name} matches ${r.protocol}: remember the manual's restriction, on a virtual server or self IP context such a rule is ignored; ICMP rules belong at global or route-domain.`, { rule: r.name, protocol: r.protocol })); // pack key engine.obs.icmpRule
-      if (r.unsupported.length) observations.push(say("obs.unsupported", `Rule ${r.name} uses ${r.unsupported.join(", ")}: recognised, reported, not evaluated by this tool.`, { rule: r.name, criteria: r.unsupported.join(", ") })); // pack key engine.obs.unsupported
+      if (r.unsupported.length) observations.push(say("obs.unsupported", `Rule ${r.name} uses ${r.unsupported.join(", ")}: recognized, reported, not evaluated by this tool.`, { rule: r.name, criteria: r.unsupported.join(", ") })); // pack key engine.obs.unsupported
     }
     return { ok: true, mode: "policy", policyName: name, rules, findings, observations, notes };
   }

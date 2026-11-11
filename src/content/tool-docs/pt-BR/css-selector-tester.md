@@ -2,7 +2,7 @@
 
 Recebe HTML (um documento ou um fragmento) e um ou mais seletores, um por linha, e mostra que elementos cada seletor casa: os elementos destacados na árvore analisada com o seu caminho e linha no código, a contagem por seletor, a tripla de especificidade contada pela seção 15, uma nota quando o seletor nomeia um pseudoelemento (então a contagem é dos elementos originadores, já que um pseudoelemento é uma caixa, não um elemento) e, quando um seletor é inválido, a razão e a posição.
 
-O HTML é analisado de modo inerte com o parse5, o mesmo parser do explicador de estrutura HTML; os seletores são analisados e casados por um motor próprio escrito a partir do Selectors Level 4 (W3C Working Draft, 22 de janeiro de 2026) e das regras de seletores do HTML Standard, e verificado contra o `querySelectorAll` do Chromium nos vetores que acompanham a ferramenta (139 de 146 seletores concordam; os sete que diferem estão listados abaixo e cada um é deliberado). Nada é executado, buscado ou renderizado; a API hospedada roda o mesmo código.
+O HTML é analisado de modo inerte com o parse5, o mesmo parser do explicador de estrutura HTML; os seletores são analisados e casados por um motor próprio escrito a partir do Selectors Level 4 (W3C Working Draft, 22 de janeiro de 2026) e das regras de seletores do HTML Standard, e verificado contra o `querySelectorAll` do Chromium nos vetores que acompanham a ferramenta (139 de 146 seletores concordam; os sete que diferem se enquadram nos casos listados abaixo, e cada um é deliberado). Nada é executado, buscado ou renderizado; a API hospedada roda o mesmo código.
 
 ## O que é casado, e como
 

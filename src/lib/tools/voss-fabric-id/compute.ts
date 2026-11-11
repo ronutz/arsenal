@@ -138,7 +138,7 @@ export function analyzeFabricIdLocalisable(input: string): FabricIdResult<Engine
     ok: false,
     input: s,
     error: {
-      message: say("err.unrecognised", "Unrecognised. Enter a decimal I-SID, a nickname like C.30.00, or a system-id / B-MAC like 00bb.0021.0001."), // none of the shapes
+      message: say("err.unrecognised", "Unrecognized. Enter a decimal I-SID, a nickname like C.30.00, or a system-id / B-MAC like 00bb.0021.0001."), // none of the shapes
     },
   };
 }

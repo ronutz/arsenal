@@ -26,7 +26,7 @@ HOTP derives a code from the secret and a **counter** C, an 8-byte value both si
 3. Reduce those 20 bytes to a short number with **dynamic truncation** (below).
 4. Take that number modulo `10^digits` and zero-pad. Six digits is the default.
 
-Every time a code is used, the counter advances by one on both sides, so the next code is different. The catch is that the two counters must stay aligned; if they drift apart, validation fails until they are resynchronised.
+Every time a code is used, the counter advances by one on both sides, so the next code is different. The catch is that the two counters must stay aligned; if they drift apart, validation fails until they are resynchronized.
 
 ## Dynamic truncation: 20 bytes to 6 digits
 

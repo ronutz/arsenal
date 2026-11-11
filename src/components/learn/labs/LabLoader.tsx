@@ -70,7 +70,7 @@ const LABS: Record<string, ComponentType> = {
   // The OSPF neighbour and DR lab: "OSPF: the map, the math, and area 0".
   "ospf-neighbour-and-dr": dynamic(() => import("./OspfNeighbourAndDrLab")),
   // ---- labs 2b, web: HTTP freshness, cookie send decision (2026-10-26) ----
-  // The HTTP freshness lab: "HTTP caching and personalised content".
+  // The HTTP freshness lab: "HTTP caching and personalized content".
   "http-freshness": dynamic(() => import("./HttpFreshnessLab")),
   // The cookie send-decision lab: "HTTP Cookies: State Over a Stateless Protocol" and "Cookie Security Flags".
   "cookie-send-decision": dynamic(() => import("./CookieSendDecisionLab")),
@@ -117,7 +117,7 @@ const LABS: Record<string, ComponentType> = {
   // ---- labs: Python run (2026-10-27) ----
   // The bytes-and-text lab: "Python's bytes and text: encode, decode and the bugs in between".
   "python-bytes-and-text": dynamic(() => import("./PythonBytesAndTextLab")),
-  // The ipaddress explorer lab: "Python's ipaddress module: strict parsing, networks, summarisation and IPv6".
+  // The ipaddress explorer lab: "Python's ipaddress module: strict parsing, networks, summarization and IPv6".
   "python-ipaddress-explorer": dynamic(() => import("./PythonIpaddressExplorerLab")),
   // ---- labs: bits (2026-11-08) ----
   // The octet bit numbering lab: "Least and most significant bit: bit numbering and bit order".

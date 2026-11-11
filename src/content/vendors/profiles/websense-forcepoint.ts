@@ -2,7 +2,7 @@
 // VERIFICATION MANIFEST — verified 2026-08-05 against:
 //   - yourtechstory.com (twice, consistent): the company "has a stance against
 //     doing business with government agencies and ISPs that restrict the
-//     Internet", and has nonetheless been criticised for a "perceived
+//     Internet", and has nonetheless been criticized for a "perceived
 //     relationship to repression of freedom of speech and the transmission of
 //     knowledge"; in 2009 the Yemeni government was found to be using its
 //     products to track public internet usage and block applications
@@ -54,9 +54,9 @@ export const forcepointProfile: VendorProfile = {
     },
   ],
   products: [
-    { name: "Web security", what: "The original filter, still the recognisable product: classify the destination, apply the policy, enforce in the path." },
-    { name: "Data loss prevention", what: "Inspecting what leaves rather than what is reached, which arrived by acquisition and became the more defensible business as web filtering commoditised." },
-    { name: "SureView and insider risk", what: "The Raytheon contribution: watching what authorised users do, on the reasoning that the person with legitimate access is the harder problem. It is also the capability closest to surveillance, and the company's own positioning as human-centric security is a way of describing it." },
+    { name: "Web security", what: "The original filter, still the recognizable product: classify the destination, apply the policy, enforce in the path." },
+    { name: "Data loss prevention", what: "Inspecting what leaves rather than what is reached, which arrived by acquisition and became the more defensible business as web filtering commoditized." },
+    { name: "SureView and insider risk", what: "The Raytheon contribution: watching what authorized users do, on the reasoning that the person with legitimate access is the harder problem. It is also the capability closest to surveillance, and the company's own positioning as human-centric security is a way of describing it." },
     { name: "Next-generation firewall", what: "The Stonesoft line, bought from Intel, having previously been McAfee's - a product that has now belonged to four companies without changing much." },
     { name: "Cross-domain and government solutions", what: "Guarded transfer between classified networks of different levels, sold to defence and intelligence customers. This is the part that required the ownership the entry above describes." },
   ],
@@ -69,7 +69,7 @@ export const forcepointProfile: VendorProfile = {
     {
       title: "Moving from what you reach to what you send",
       detail:
-        "Web filtering asks where a user is going. Data loss prevention asks what is leaving. The second question survived the commoditisation of the first, because a classification of destinations can be bought from anybody while an understanding of a specific organisation's data cannot.",
+        "Web filtering asks where a user is going. Data loss prevention asks what is leaving. The second question survived the commoditization of the first, because a classification of destinations can be bought from anybody while an understanding of a specific organization's data cannot.",
     },
     {
       title: "Buying clearance",

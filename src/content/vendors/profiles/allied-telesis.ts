@@ -23,7 +23,7 @@ export const alliedTelesisProfile: VendorProfile = {
       place: "Tokyo, Japan",
       founders: ["Takayoshi Oshima"],
       story:
-        "Takayoshi Oshima had already worked the American semiconductor and networking trenches - ITT, Fairchild, AMD, Ungermann-Bass - before going home to build Japan's answer to the Ethernet boom. The company began life in March 1987 as System Plus, took the Allied Telesis name within months, and started with the humblest product in the catalogue: the media converter, the little box that marries copper to fiber. From that unglamorous foothold it grew into a global switching and infrastructure vendor - Allied Telesyn to a generation of international buyers - listed in Tokyo in 2000, and still dual-hearted between Japan and Silicon Valley. Oshima led it for 35 years until his death in 2022.",
+        "Takayoshi Oshima had already worked the American semiconductor and networking trenches - ITT, Fairchild, AMD, Ungermann-Bass - before going home to build Japan's answer to the Ethernet boom. The company began life in March 1987 as System Plus, took the Allied Telesis name within months, and started with the humblest product in the catalogue: the media converter, the little box that marries copper to fibre. From that unglamorous foothold it grew into a global switching and infrastructure vendor - Allied Telesyn to a generation of international buyers - listed in Tokyo in 2000, and still dual-hearted between Japan and Silicon Valley. Oshima led it for 35 years until his death in 2022.",
       sourceNote:
         "Founding name and 1987 dates per the Wikipedia company chronology (System Plus, March 1987; renamed September 1987); Oshima's career background and the media-converter origin per Allied Telesis's own memorial and history materials. Some secondary sources render the original name as 'System & Control Japan'; the company chronology's 'System Plus' is used here.",
     },
@@ -33,8 +33,8 @@ export const alliedTelesisProfile: VendorProfile = {
     { year: 1990, title: "Allied Telesyn goes abroad", detail: "The international arm launches under the Allied Telesyn name, planting the brand across Asia-Pacific, the Americas, and Europe through the 1990s." },
     { year: 2000, title: "Tokyo listing", detail: "Allied Telesis lists on the Tokyo Stock Exchange (6835) - one of the first Japanese networking firms at genuinely global scale." },
     { year: 2006, title: "One name worldwide", detail: "The Telesyn-era branding converges back to Allied Telesis globally as the product line moves up into managed switching, resilient rings, and converged infrastructure." },
-    { year: 2015, title: "Self-defending networks", detail: "The company's security-automation push - isolate-on-threat behavior in the network fabric itself - becomes its signature enterprise story, developed with Japanese university partnerships." },
-    { year: 2022, title: "The founder's chapter closes", detail: "Takayoshi Oshima dies on October 7, 2022, after 35 years leading the company he founded.", sourceNote: "Per the company's memorial announcement." },
+    { year: 2015, title: "Self-defending networks", detail: "The company's security-automation push - isolate-on-threat behaviour in the network fabric itself - becomes its signature enterprise story, developed with Japanese university partnerships." },
+    { year: 2022, title: "The founder's chapter closes", detail: "Takayoshi Oshima dies on 7 October 2022, after 35 years leading the company he founded.", sourceNote: "Per the company's memorial announcement." },
   ],
   products: [
     { name: "Media converters", what: "The founding product line - copper-to-fiber conversion, still a catalogue staple and a fitting origin for an Ethernet-infrastructure company." },

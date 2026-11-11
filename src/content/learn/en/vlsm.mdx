@@ -72,7 +72,7 @@ RFC 4632 shows the effect at provider scale: six sites connect to a 10.24.0.0/13
 
 **A mask mismatch on a shared segment stops OSPF before routing starts.** The Network Mask in a received Hello is checked against the interface's own, and "Any mismatch causes processing to stop and the packet to be dropped" ([RFC 2328, section 10.5](https://www.rfc-editor.org/rfc/rfc2328.txt)): two routers on one segment with a /25 and a /24 never become neighbours, and the symptom is an adjacency that never appears, not a wrong route.
 
-**Scattering a site across the plan throws away its summary.** A site's routes collapse into one prefix only "by allocating a contiguous power-of-two block address space to the site" ([RFC 4632, section 4.1](https://www.rfc-editor.org/rfc/rfc4632.txt)); see [Route summarisation](/learn/route-summarization) and [Supernetting and route aggregation](/learn/supernetting-and-aggregation).
+**Scattering a site across the plan throws away its summary.** A site's routes collapse into one prefix only "by allocating a contiguous power-of-two block address space to the site" ([RFC 4632, section 4.1](https://www.rfc-editor.org/rfc/rfc4632.txt)); see [Route summarization](/learn/route-summarization) and [Supernetting and route aggregation](/learn/supernetting-and-aggregation).
 
 ## Leaving room to grow
 
@@ -101,7 +101,7 @@ False
 
 `collapse_addresses` returning the parent proves that the five subnets and two free blocks cover every address exactly once; `address_exclude` lists what is left of a block as aligned pieces; `supernet_of` is False because the /26 and the /27 are siblings, not nested ([Python 3.14 documentation, ipaddress](https://docs.python.org/3.14/library/ipaddress.html)).
 
-The [CIDR / Subnet Calculator](/tools/cidr) has a VLSM mode beside its Subnet, Supernet and Overlap / gap modes. It takes a parent block and a list of requirements, each a name and a host count, and on Allocate prints the addresses used and free, the utilisation, and each subnet's network, prefix, netmask, usable range, broadcast and usable hosts; requirements that cannot be placed appear under "Did not fit". It sorts the requirements largest first itself, so the five above give the table above in any order, and the smallest-first failure can only be reproduced by hand or in Python. It sizes every requirement as hosts plus two, so a 2-host link always gets a /30, never a /31; RFC 3021 links are checked one at a time in Subnet mode, which counts a /31 the RFC 3021 way. And it masks a parent's host bits silently, so 192.0.2.77/24 is allocated as 192.0.2.0/24: read the network address it prints back. On 192.0.2.0/25 with requirements of 200, 50 and 10 hosts, it places the 50 at 192.0.2.0/26 and the 10 at 192.0.2.64/28 and lists the 200 under Did not fit, at 62.5 per cent.
+The [CIDR / Subnet Calculator](/tools/cidr) has a VLSM mode beside its Subnet, Supernet and Overlap / gap modes. It takes a parent block and a list of requirements, each a name and a host count, and on Allocate prints the addresses used and free, the utilization, and each subnet's network, prefix, netmask, usable range, broadcast and usable hosts; requirements that cannot be placed appear under "Did not fit". It sorts the requirements largest first itself, so the five above give the table above in any order, and the smallest-first failure can only be reproduced by hand or in Python. It sizes every requirement as hosts plus two, so a 2-host link always gets a /30, never a /31; RFC 3021 links are checked one at a time in Subnet mode, which counts a /31 the RFC 3021 way. And it masks a parent's host bits silently, so 192.0.2.77/24 is allocated as 192.0.2.0/24: read the network address it prints back. On 192.0.2.0/25 with requirements of 200, 50 and 10 hosts, it places the 50 at 192.0.2.0/26 and the 10 at 192.0.2.64/28 and lists the 200 under Did not fit, at 62.5 per cent.
 
 ## What to remember
 
@@ -111,7 +111,7 @@ The [CIDR / Subnet Calculator](/tools/cidr) has a VLSM mode beside its Subnet, S
 - The wrong order leaves holes, not overlaps, and in an exactly full parent it can leave a block with nowhere to go although the sizes add up.
 - The plan runs only where every router learns a mask with each route (RIP version 2, OSPF, IS-IS, EIGRP, BGP, static routes); RIP version 1 carries none.
 - Forwarding is longest match, so every destination needs one most specific route; a mask mismatch in OSPF Hellos stops the adjacency.
-- Count free space in aligned blocks, reserve growth while an aligned block is free, and keep each site in one power-of-two block so it summarises to one route.
+- Count free space in aligned blocks, reserve growth while an aligned block is free, and keep each site in one power-of-two block so it summarizes to one route.
 
 ## Sources
 

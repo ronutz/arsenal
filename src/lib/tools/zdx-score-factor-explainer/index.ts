@@ -98,7 +98,7 @@ export const manifest = Object.freeze({
       // The day the page was read.
       access_date: "2026-10-26",
       // What this source grounds in the tool.
-      scope: "the 0-100 scale; the three bands (Good 66-100, Okay 34-65, Poor 0-33); five-minute measurements with the lowest value of the hour as the hourly value; application scores averaging each user's lowest value and per-interval lowest values averaged for departments, locations, cities and the organisation; whole-number rounding; the Synthetic Probe, RUM and Combined score types",
+      scope: "the 0-100 scale; the three bands (Good 66-100, Okay 34-65, Poor 0-33); five-minute measurements with the lowest value of the hour as the hourly value; application scores averaging each user's lowest value and per-interval lowest values averaged for departments, locations, cities and the organization; whole-number rounding; the Synthetic Probe, RUM and Combined score types",
       // The page is live.
       status: "active",
     },

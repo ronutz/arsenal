@@ -77,7 +77,10 @@ const NUMERALS = {
   // French nine is left out (2026-11-09): « neuf » is also the adjective "new", and the French interface says « trois neuf »
   // for "three nines" of uptime; a check that cannot tell them apart would flag every « tout neuf ».
   fr: { 2: ["deux"], 3: ["trois"], 4: ["quatre"], 5: ["cinq"], 6: ["six"], 7: ["sept"], 8: ["huit"], 10: ["dix"] },
-  it: { 2: ["due"], 3: ["tre"], 4: ["quattro"], 5: ["cinque"], 6: ["sei"], 7: ["sette"], 8: ["otto"], 9: ["nove"], 10: ["dieci"] },
+  // Italian six and nine are left out (2026-11-11, when Italian joined the interface locales): « sei » is also "you are"
+  // and the interface says « tu » throughout (« mentre sei via »), and the uptime idiom is « tre nove » for "three
+  // nines", as French « trois neuf » below; a check that cannot tell them apart would flag every sentence that uses them.
+  it: { 2: ["due"], 3: ["tre"], 4: ["quattro"], 5: ["cinque"], 7: ["sette"], 8: ["otto"], 10: ["dieci"] },
   ms: { 2: ["dua"], 3: ["tiga"], 4: ["empat"], 5: ["lima"], 6: ["enam"], 7: ["tujuh"], 8: ["lapan"], 9: ["sembilan"], 10: ["sepuluh"] },
   nb: { 2: ["to"], 3: ["tre"], 4: ["fire"], 5: ["fem"], 6: ["seks"], 7: ["sju"], 8: ["åtte"], 9: ["ni"], 10: ["ti"] },
   nl: { 2: ["twee"], 3: ["drie"], 4: ["vier"], 5: ["vijf"], 6: ["zes"], 7: ["zeven"], 8: ["acht"], 9: ["negen"], 10: ["tien"] },
@@ -120,9 +123,11 @@ const LONE_DIGIT = new RegExp(
 /**
  * A day of the month written out with its month name (« le 5 octobre 2026 », "5. Oktober", "3 de maio", "October 5"):
  * removed from a TRANSLATION before its digits are read, because the writers spell out dates the English writes as
- * 2026-10-05 (2026-11-09). The English side keeps every digit it states, so no English quantity is hidden.
+ * 2026-10-05 (2026-11-09; the Italian month names since 2026-11-11, « il 5 ottobre 2026 »: marzo, agosto and novembre
+ * were already in the list through Spanish and Portuguese). The English side keeps every digit it states, so no
+ * English quantity is hidden.
  */
-const MONTHS = "(?:janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre|enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre|januar|februar|märz|juni|juli|oktober|dezember|janeiro|fevereiro|março|maio|junho|julho|setembro|outubro|novembro|dezembro|january|february|march|april|may|june|july|august|september|october|november|december)";
+const MONTHS = "(?:gennaio|febbraio|aprile|maggio|giugno|luglio|settembre|ottobre|dicembre|janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre|enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre|januar|februar|märz|juni|juli|oktober|dezember|janeiro|fevereiro|março|maio|junho|julho|setembro|outubro|novembro|dezembro|january|february|march|april|may|june|july|august|september|october|november|december)";
 const WRITTEN_DATE = new RegExp(
   // A day (one or two digits, an optional German period, an optional "de") before a month name, or a month name
   // before a day: both forms, so either order of the written-out date is skipped.

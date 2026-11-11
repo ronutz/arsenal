@@ -31,15 +31,15 @@ export const flukeProfile: VendorProfile = {
   ],
   timeline: [
     { year: 1988, title: "The Fluke 87", detail: "The rugged true-RMS multimeter becomes THE meter - the industrial world's default instrument, still in production decades later, the physical embodiment of 'measurement you can bet on'." },
-    { year: 1993, title: "Into the cable plant", detail: "Fluke's DSP-series cable analyzers bring laboratory-grade measurement to structured cabling certification - pass/fail against the TIA/ISO standards, printed proof included; the category Fluke Networks comes to own." },
+    { year: 1993, title: "Into the cable plant", detail: "Fluke's DSP-series cable analysers bring laboratory-grade measurement to structured cabling certification - pass/fail against the TIA/ISO standards, printed proof included; the category Fluke Networks comes to own." },
     { year: 1998, title: "Danaher", detail: "Danaher acquires Fluke (~$625 million) - the instruments house joining the conglomerate whose portfolio moves will later split the Fluke Networks story down the middle.", sourceNote: "Deal figure per the public record." },
-    { year: 2009, title: "AirMagnet", detail: "Fluke Networks acquires AirMagnet, the Wi-Fi analysis leader - spectrum and WLAN troubleshooting joining copper and fiber certification in the field bag." },
+    { year: 2009, title: "AirMagnet", detail: "Fluke Networks acquires AirMagnet, the Wi-Fi analysis leader - spectrum and WLAN troubleshooting joining copper and fibre certification in the field bag." },
     { year: 2015, title: "The split - read carefully", detail: "Danaher sells its communications businesses to NetScout (~$2.3 billion): Fluke Networks' ENTERPRISE visibility lines - OptiView, Visual TruView, AirMagnet - go with it. The cable-certification business does NOT: DSX CableAnalyzer, OptiFiber, and the certification franchise remain Fluke Networks. The handheld network-test line (LinkRunner, AirCheck) later leaves NetScout too - divested in 2018 and reborn as NetAlly in 2019.", sourceNote: "Transaction structure per the public record; the NetAlly spin-out completed 2019." },
     { year: 2016, title: "Fortive", detail: "Danaher splits; Fluke and Fluke Networks move to the new Fortive - where the yellow meters and the DSX certifiers continue, the standard instruments of the trades this site serves." },
   ],
   products: [
     { name: "Fluke 87 (and the meter line)", what: "The reference multimeter - the instrument 'Fluke' became the generic word for." },
-    { name: "DSX CableAnalyzer / OptiFiber", what: "The structured-cabling and fiber certification standard - the tester whose report closes out installations worldwide." },
+    { name: "DSX CableAnalyzer / OptiFiber", what: "The structured-cabling and fibre certification standard - the tester whose report closes out installations worldwide." },
     { name: "LinkRunner / AirCheck heritage", what: "The handheld network and Wi-Fi test line born at Fluke Networks - continued today by NetAlly." },
   ],
   innovations: [

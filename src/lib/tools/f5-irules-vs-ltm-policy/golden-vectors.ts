@@ -9,7 +9,7 @@
 
 import { run } from "./compute";
 
-export const GOLDEN_VECTOR_SET_ID = "f5-irules-vs-ltm-policy-golden-v1";
+export const GOLDEN_VECTOR_SET_ID = "f5-irules-vs-ltm-policy-golden-2026-11-11";
 
 export interface PolVector {
   id: string;
@@ -39,7 +39,7 @@ export const POL_VECTORS: PolVector[] = [
   { id: "blocker-variables", description: "Local variables block with the no-variables reason", input: "when HTTP_REQUEST {\n    set p \"web\"\n    pool $p\n}", expectOk: true, expectVerdict: { index: 0, verdict: "irule-required" }, expectBlockerIncludes: { index: 0, text: "no variables" } },
   { id: "blocker-sideband", description: "Sideband commands block", input: "when HTTP_REQUEST {\n    set c [connect -timeout 100 10.0.0.1:80]\n}", expectOk: true, expectVerdict: { index: 0, verdict: "irule-required" } },
   { id: "blocker-collect", description: "Payload collection blocks", input: "when HTTP_REQUEST {\n    HTTP::collect 512\n}", expectOk: true, expectVerdict: { index: 0, verdict: "irule-required" }, expectBlockerIncludes: { index: 0, text: "collected bodies" } },
-  { id: "mixed-summary", description: "Mixed rules summarize all three buckets", input: "when HTTP_REQUEST {\n    pool web\n}\nwhen HTTP_REQUEST {\n    HTTP::redirect \"https://x\"\n}\nwhen CLIENT_ACCEPTED {\n}", expectOk: true, expectSummaryIncludes: "map cleanly" },
+  { id: "mixed-summary", description: "Mixed rules summarize all three buckets", input: "when HTTP_REQUEST {\n    pool web\n}\nwhen HTTP_REQUEST {\n    HTTP::redirect \"https://x\"\n}\nwhen CLIENT_ACCEPTED {\n}", expectOk: true, expectSummaryIncludes: "1 block maps cleanly" },
   { id: "summary-lifecycle", description: "The draft-publish-attach mechanics line is always present", input: "when HTTP_REQUEST {\n    pool web\n}", expectOk: true, expectSummaryIncludes: "publish" },
   { id: "strategies-mode", description: "strategies keyword renders the three verbatim semantics", input: "strategies", expectOk: true, expectMode: "strategies", expectStrategyCount: 3, expectPrecedenceIncludes: "1 request tcp port" },
   { id: "error-empty", description: "Empty input names the shapes", input: " ", expectOk: false, expectErrorIncludes: "strategies" },

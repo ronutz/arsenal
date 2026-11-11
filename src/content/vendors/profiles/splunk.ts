@@ -93,7 +93,7 @@ export const splunkProfile: VendorProfile = {
     },
     {
       name: "Splunkbase",
-      what: "Several thousand community and vendor apps and add-ons. The ecosystem is a substantial part of why the platform is where an organisation's data ends up.",
+      what: "Several thousand community and vendor apps and add-ons. The ecosystem is a substantial part of why the platform is where an organization's data ends up.",
     },
   ],
 
@@ -111,7 +111,7 @@ export const splunkProfile: VendorProfile = {
     {
       title: "The language as the moat",
       detail:
-        "SPL is powerful and proprietary, and those are the same fact. Every saved search, dashboard and detection rule an organisation writes is an asset that only runs here, so leaving means rewriting years of accumulated work rather than exporting data.",
+        "SPL is powerful and proprietary, and those are the same fact. Every saved search, dashboard and detection rule an organization writes is an asset that only runs here, so leaving means rewriting years of accumulated work rather than exporting data.",
     },
     {
       title: "Bottom-up adoption",
@@ -121,7 +121,7 @@ export const splunkProfile: VendorProfile = {
   ],
 
   markets: [
-    "Security operations and IT observability, sold to large enterprises - reported in use at more than ninety of the Fortune 100, processing volumes measured in exabytes per day. The customer is an organisation with enough data that finding anything in it has become its own problem.",
+    "Security operations and IT observability, sold to large enterprises - reported in use at more than ninety of the Fortune 100, processing volumes measured in exabytes per day. The customer is an organization with enough data that finding anything in it has become its own problem.",
     "Two criticisms are consistent enough in customer feedback to belong in any honest description. It is expensive - volume-based pricing at scale is the most frequent complaint, and deployments of a hundred gigabytes a day are quoted in the hundreds of thousands per year. And migrating away is costly for the reason above: the queries do not travel. Competitors including CrowdStrike, whose own SIEM appears elsewhere on this timeline, position explicitly against both.",
   ],
 

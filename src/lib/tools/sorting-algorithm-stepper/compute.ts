@@ -25,7 +25,7 @@
 // errors keep their class and message and carry their sentence.
 // ============================================================================
 
-import { say, plainText, engineError, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
+import { say, enPlural, plainText, engineError, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
 
 export type Strategy = "bubble" | "selection" | "insertion" | "merge" | "quick";
 
@@ -113,7 +113,7 @@ function bubble(t: Tracer, n: number) {
   for (let pass = 0; pass < n - 1; pass++) {
     let swapped = false;
     for (let i = 0; i < n - 1 - pass; i++) {
-      const c = t.compare(i, i + 1, say("bubble.compare", `Pass ${pass + 1}: compare neighbors at ${i} and ${i + 1}.`, { pass: String(pass + 1), i: String(i), j: String(i + 1) }));
+      const c = t.compare(i, i + 1, say("bubble.compare", `Pass ${pass + 1}: compare neighbours at ${i} and ${i + 1}.`, { pass: String(pass + 1), i: String(i), j: String(i + 1) }));
       if (c > 0) { t.swap(i, i + 1, say("bubble.swap", `Out of order - swap so the larger bubbles right.`)); swapped = true; }
     }
     t.note(say("bubble.passEnd", `End of pass ${pass + 1}: the largest unsorted value has bubbled to position ${n - 1 - pass}.`, { pass: String(pass + 1), pos: String(n - 1 - pass) }), [n - 1 - pass]);
@@ -127,7 +127,7 @@ function selection(t: Tracer, n: number) {
     for (let j = i + 1; j < n; j++) {
       if (t.compare(j, min, say("selection.scan", `Scan for the minimum of the unsorted tail: is index ${j} smaller than the current minimum at ${min}?`, { j: String(j), min: String(min) })) < 0) min = j;
     }
-    if (min !== i) t.swap(i, min, say("selection.place", `Place that minimum at position ${i} - one swap per pass, no matter how far it traveled.`, { i: String(i) }));
+    if (min !== i) t.swap(i, min, say("selection.place", `Place that minimum at position ${i} - one swap per pass, no matter how far it travelled.`, { i: String(i) }));
     else t.note(say("selection.inPlace", `Position ${i} already holds the minimum - no swap needed.`, { i: String(i) }), [i]);
   }
 }
@@ -212,9 +212,9 @@ export function runLocalisable(input: { text: string; strategy: Strategy }): Sor
     if (sorted[i - 1] > sorted[i]) throw engineError(say("err.invariant", "Internal invariant failure: output not sorted.")); // never - vector-guarded
 
   const notes: EngineText[] = [
-    say("note.counters", `${t.comparisons} comparisons and ${t.writes} writes for ${n} items - re-run with a longer list and watch how each strategy's counters grow: that growth curve IS Big-O.`, { comparisons: String(t.comparisons), writes: String(t.writes), n: String(n) }),
+    say("note.counters", `${t.comparisons} ${enPlural(t.comparisons, "comparison", "comparisons")} and ${t.writes} ${enPlural(t.writes, "write", "writes")} for ${n} ${enPlural(n, "item", "items")} - re-run with a longer list and watch how each strategy's counters grow: that growth curve IS Big-O.`, { comparisons: String(t.comparisons), writes: String(t.writes), n: String(n) }),
   ];
-  if (input.strategy === "quick") notes.push(say("note.quickSorted", "Try pasting an already-sorted list: Lomuto quicksort with a last-element pivot degrades toward its O(n\u00b2) worst case - the exact hazard the primer article describes."));
+  if (input.strategy === "quick") notes.push(say("note.quickSorted", "Try pasting an already-sorted list: Lomuto quicksort with a last-element pivot degrades towards its O(n\u00b2) worst case - the exact hazard the primer article describes."));
   if (input.strategy === "bubble") notes.push(say("note.bubbleSorted", "Try a sorted list here too: bubble sort's early-exit detects the clean pass and stops after one O(n) sweep."));
   return { strategy: input.strategy, input: nums, steps: t.steps, comparisons: t.comparisons, writes: t.writes, sorted, notes };
 }

@@ -31,7 +31,7 @@ export const arcsightProfile: VendorProfile = {
       place: "Cupertino, California",
       founders: [],
       story:
-        "Alex Daly, the founding chief executive, arrived having run Cygnus Solutions - the company that commercialised GNU tooling and was bought by Red Hat. That is a relevant background for the problem: Cygnus sold support and integration around software everybody already had, and the security event problem is also one of making other people's output useful.",
+        "Alex Daly, the founding chief executive, arrived having run Cygnus Solutions - the company that commercialized GNU tooling and was bought by Red Hat. That is a relevant background for the problem: Cygnus sold support and integration around software everybody already had, and the security event problem is also one of making other people's output useful.",
       sourceNote:
         "Founder attributions vary widely across sources and are not reconciled here; Daly's prior role is the one detail consistently reported.",
     },
@@ -57,7 +57,7 @@ export const arcsightProfile: VendorProfile = {
     },
   ],
   products: [
-    { name: "ESM", what: "The Enterprise Security Manager: normalise every event into one schema, then run correlation rules across the combined stream. The normalisation is the unglamorous half and the reason the correlation is possible at all." },
+    { name: "ESM", what: "The Enterprise Security Manager: normalize every event into one schema, then run correlation rules across the combined stream. The normalization is the unglamorous half and the reason the correlation is possible at all." },
     { name: "Connectors", what: "The parsers for each source device, and the actual moat. Supporting hundreds of products' log formats is years of tedious work that a competitor must repeat in full, and it is why incumbency in this category is durable." },
     { name: "Logger", what: "Long-term storage of the raw events for compliance and investigation, sold alongside the correlation engine because auditors and analysts want different things from the same data." },
     { name: "Threat detection and SOAR", what: "Later additions including security orchestration, automation and response (SOAR), some of it acquired - the same consolidation every vendor in this market has made." },
@@ -85,11 +85,11 @@ export const arcsightProfile: VendorProfile = {
     },
   ],
   markets: [
-    "Large enterprises and government, with a bias toward regulated sectors from the beginning. It reported over a thousand customers before the HP acquisition, and its installed base is the reason the product has survived three subsequent changes of owner.",
+    "Large enterprises and government, with a bias towards regulated sectors from the beginning. It reported over a thousand customers before the HP acquisition, and its installed base is the reason the product has survived three subsequent changes of owner.",
     "Its competitors were the other early SIEM vendors and, structurally, the opposite architecture - which this timeline records at Splunk. Later entrants including the cloud-native platforms compete on cost of ingestion, which is the axis a normalise-everything design is least comfortable on.",
   ],
   analyst: [
-    "Ten consecutive years in the leaders' section of the SIEM Magic Quadrant is among the longest runs in any security category, and it covers exactly the period between the category's invention and its commoditisation.",
+    "Ten consecutive years in the leaders' section of the SIEM Magic Quadrant is among the longest runs in any security category, and it covers exactly the period between the category's invention and its commoditization.",
     "The current position is harder to state, because what is assessed now is a product line inside a large software portfolio rather than a company. That is the honest end of this entry: the technology is still sold, still deployed and still maintained, and there has been nobody whose primary business it is since 2010.",
   ],
 };

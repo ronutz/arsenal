@@ -71,8 +71,8 @@ export const SOURCES = [
   { id: "whatwg-entities", label: "WHATWG HTML Living Standard: named character references (entities.json)", type: "standard", url: "https://html.spec.whatwg.org/entities.json", access_date: "2026-10-03", scope: "named references for each code point" },
   { id: "rfc3986", label: "RFC 3986: URI Generic Syntax (percent-encoding)", type: "standard", url: "https://www.rfc-editor.org/rfc/rfc3986", access_date: "2026-10-03", scope: "unreserved characters and percent-encoded UTF-8" },
   // The normalisation mode (2026-10-26).
-  { id: "uax15", label: "Unicode Standard Annex #15: Unicode Normalization Forms (revision 58, Unicode 18.0.0)", type: "standard", url: "https://www.unicode.org/reports/tr15/", access_date: "2026-10-26", scope: "the four normalisation forms, canonical and compatibility equivalence, singletons, canonical ordering" },
-  { id: "unicode-stability", label: "Unicode Character Encoding Stability Policies: Normalization Stability", type: "standard", url: "https://www.unicode.org/policies/stability_policy.html", access_date: "2026-10-26", scope: "a string normalised under one version stays normalised under every later version" },
+  { id: "uax15", label: "Unicode Standard Annex #15: Unicode Normalization Forms (revision 58, Unicode 18.0.0)", type: "standard", url: "https://www.unicode.org/reports/tr15/", access_date: "2026-10-26", scope: "the four normalization forms, canonical and compatibility equivalence, singletons, canonical ordering" },
+  { id: "unicode-stability", label: "Unicode Character Encoding Stability Policies: Normalization Stability", type: "standard", url: "https://www.unicode.org/policies/stability_policy.html", access_date: "2026-10-26", scope: "a string normalized under one version stays normalized under every later version" },
   { id: "ecma262-normalize", label: "ECMA-262: ECMAScript Language Specification, String.prototype.normalize (section 22.1.3.15)", type: "standard", url: "https://tc39.es/ecma262/multipage/text-processing.html#sec-string.prototype.normalize", access_date: "2026-10-26", scope: "the four form names, NFC by default; the engine's own Unicode tables" },
 ];
 

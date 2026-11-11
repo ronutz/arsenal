@@ -29,7 +29,7 @@ export const necProfile: VendorProfile = {
     },
   ],
   timeline: [
-    { year: 1899, title: "The first joint venture", detail: "July 17, 1899: Iwadare and Western Electric found Nippon Electric - foreign capital, Japanese enterprise, telephone equipment - a founding structure as historic as the products." },
+    { year: 1899, title: "The first joint venture", detail: "17 July 1899: Iwadare and Western Electric found Nippon Electric - foreign capital, Japanese enterprise, telephone equipment - a founding structure as historic as the products." },
     { year: 1977, title: "C&C", detail: "Chairman Koji Kobayashi articulates Computers and Communications as one converging destiny at INTELCOM 77 - the clearest early statement of the convergence that defines this site's whole subject." },
     { year: 1982, title: "PC-98: a parallel universe", detail: "The PC-9801 begins the line that owns Japan's personal-computer market - majority share for over a decade, its own software ecosystem, a PC world that ran parallel to the IBM-compatible one until Windows unified them." },
     { year: 1988, title: "Semiconductor summit", detail: "NEC reigns as the world's largest chipmaker in the late 1980s - the peak of Japan's semiconductor era; the lineage later merges into Renesas (2010) as the industry reorders." },

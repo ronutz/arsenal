@@ -1,0 +1,208 @@
+---
+slug: the-port-that-kept-moving-santos-and-brazils-cyber-year
+title: "The port that kept moving: Santos and Brazil's cyber year"
+summary: "On 6 November 2026 the systems of the Santos Port Authority went dark, and on 10 November it confirmed a cyber attack. Ships, trucks and cargo kept moving; the authority's own portal, intranet and internal platforms did not. Santos is the latest and most visible case in a year in which attackers drained the central-bank accounts of Brazilian banks through their technology suppliers, the federal government logged about 45 cyber incidents a day, and the data protection authority received more incident reports than ever. What is known about Santos, the numbers behind the wave, the outstanding cases of 2025 and 2026, and the defences the country, its banks and Febraban's cybersecurity laboratory have built, all from the documents themselves."
+author: "Rodolfo Nützmann"
+date: "2026-11-11"
+tags: ["incident-response", "brazil", "ransomware"]
+category: security
+status: reviewed
+updated: "2026-11-11"
+relatedArticles: ["brazilian-cybercrime-from-boleto-to-pix", "the-stj-ransomware-attack", "backups-and-ransomware-recovery", "lgpd-for-engineers-the-vocabulary-that-matters", "brazil-internet-governance", "the-brazilian-hacker-scene"]
+---
+
+## What happened at Santos
+
+Early on the morning of Friday 6 November 2026, a power failure hit the servers of the Santos Port Authority (Autoridade Portuária de Santos, APS), the federal public company, under the Ministry of Ports and Airports, that runs the public infrastructure of Brazil's largest port. Its digital services came back that evening and failed again in the early hours of Saturday, when technicians found malicious software on the network. On Tuesday 10 November the authority confirmed what had been suspected for four days: its systems had been the target of a cyber attack. It said it did not yet know how far the attack had reached, whether any data had been accessed, or what the attackers had wanted.
+
+Santos is not just any port. It moved 186.4 million tonnes of cargo in 2025, about 511,000 tonnes a day on average, and 5.91 million TEU (twenty-foot equivalent units, the standard container measure), which made it the first container port in Latin America and the 36th in the world in Lloyd's List's 2026 ranking. From January to September 2026 it handled 141.4 million tonnes, 2 per cent more than a year earlier. The authority's 2025 integrated report counts 64 port operators, 36 leaseholders, six private-use terminals, 51 shipping agencies and 320 suppliers working around it.
+
+And yet the port kept moving. That is the most important fact about the attack, and the one most easily lost in a headline saying that the port of Santos stopped. The authority's statement, repeated by every outlet that reported it, said that port operations were continuing and that there was no risk of a stoppage: ships entered and left, cargo was handled and trucks reached the terminals. What stopped was the authority's own digital layer: its website, its intranet and employee portal, its internal platforms and the online services that clients and users of the port depend on. Procedures that depended on those systems moved to manual checks and alternative channels, and the press reported slowness in administrative procedures, but not a halt in the flow of goods.
+
+### Day by day, as reported
+
+| Date | What happened | Reported by |
+| --- | --- | --- |
+| Friday 6 November, early morning | A power failure hits the APS servers; digital services come back in the evening | APS, through Agência Brasil, CNN Brasil and others |
+| Saturday 7 November, early hours | Services fail again; technicians find malicious software on the network, which the authority believes was already present before the power failure | Revista Sociedade Militar, aRede |
+| Sunday 8 November | The state committee for port security (Cesportos-SP) votes to raise the protection of the port's public accesses to security level 2 | TMC, CLM Brasil |
+| Monday 9 November | Internet and telephone service at the authority are restored after three days; the website and internal systems stay down | APS statement |
+| Tuesday 10 November | APS confirms a cyber attack; the Federal Police (Polícia Federal, PF) opens an investigation; the PF and the national data protection authority are informed | Agência Brasil, Jornal do Comércio, ConvergenciaDigital, Cryptoid |
+| Wednesday 11 November | No new official statement found when this was written; on 10 November the authority said recovery was gradual, with the help of backups | CNN Brasil |
+
+Several details deserve to be read carefully.
+
+**Who was hit.** The attack hit the port authority, not the terminals. InvestNews explained why the cargo kept flowing: the private terminals run their own systems, independent of the authority's administrative infrastructure, although the platforms exchange information. The federal government's Porto Sem Papel ("paperless port") system, through which public agencies and companies exchange port documents, was not affected, and the authority moved part of its bureaucratic services onto it.
+
+**What security level 2 means.** The port's raised security level is not a cyber measure as such. Brazil applies the [International Ship and Port Facility Security (ISPS) Code](/glossary/isps-code) of the International Maritime Organization (IMO), under which "security level 2" is the "heightened" level, applying "for as long as there is a heightened risk of a security incident". In Santos the change meant more people and vehicles checked at the gates of the customs zone and more cargo inspected. The order was signed by the PF officer who coordinates Cesportos in São Paulo, after a majority of the committee's members voted for it on 8 November. The Port Guard was reinforced.
+
+**What is still unknown.** On 10 November the authority said it could not yet determine the reach of the attack, whether data had been accessed, or the attackers' initial objectives. One regional outlet, aRede, reported that an international group called N0n had claimed the intrusion and demanded payment in cryptocurrency; no official source has confirmed that claim, and no other outlet read for this post reported it. One detail complicates it further: the threat intelligence firm SOCRadar recorded that on 12 October 2026, almost four weeks before the outage, N0n had listed Santos Brasil, a private terminal operator at the port and a different company from the port authority, on its leak site. Whether aRede's report refers to that listing, to a new claim against the authority or to something else is not known. Treat it as a claim, not a fact.
+
+**A coincidence, not a connection.** In the same week the Brazilian Navy was running Operação Tridente III, an exercise with about 700 service members protecting strategic infrastructure in Santos and Praia Grande, scheduled for 9 to 12 November and including cyber threat scenarios. Revista Sociedade Militar, which reported both, was careful to say they were separate events with no demonstrated link: the systems failed on the 6th, before the exercise began.
+
+### Ports are a known target
+
+A port authority is an attractive victim because it sits at the junction of many parties: customs, health and agriculture inspectors, shipping agents, hauliers, terminal operators, pilots. The best-known precedent is Nagoya, Japan's largest port, which handles about 10 per cent of the country's trade. In July 2023 a ransomware attack attributed to LockBit 3.0 stopped container operations there for about two days. The port's association said it had not been in contact with the group and had not paid. Nagoya's lesson is the mirror image of Santos's: there the attack stopped the container terminals' operations, and the cargo stopped with them. In Santos, so far as anyone has said, it did not, because the terminals' systems were not the authority's.
+
+## The numbers behind the wave
+
+Santos arrives in a year of rising numbers, and the numbers deserve as much care as the cases, because every series counts something slightly different.
+
+### What the data protection authority receives
+
+Brazil's General Data Protection Law (Lei Geral de Proteção de Dados, LGPD) obliges a data controller to report a security incident to the National Data Protection Authority (Autoridade Nacional de Proteção de Dados, ANPD) and to the people affected when the incident may cause them relevant risk or damage. Since April 2024 the procedure has been set by the authority's Security Incident Reporting Regulation, Resolution CD/ANPD No. 15. The ANPD's six-year balance, published on 5 November 2026, gives the series:
+
+| Year | Incident reports received by the ANPD |
+| --- | --- |
+| 2021 | 186 |
+| 2022 | 275 |
+| 2023 | 352 |
+| 2024 | 333 |
+| 2025 | 395 |
+| 2026, January to September | 423 |
+
+That is 1,964 reports since 2021. The 423 reports of the first nine months of 2026 compare with 321 in the same months of 2025, an increase of about 31.8 per cent, and already exceed the whole of 2025. A TV Globo news graphic shown in November 2026 gave the same series with 677 for 2026, citing the ANPD; that figure does not appear in the authority's own balance, which counts to September, and no ANPD publication read for this post contains it. It may be a more recent count; until the authority publishes it, the 423 is the figure that can be checked.
+
+The same report listed the most frequent occurrences: exploitation of vulnerabilities in information systems, data hijacking (ransomware), credential theft and unauthorized access to information systems. In its 2024 report, cited by ConvergenciaDigital, the ANPD said ransomware led the notifications, with 45 per cent of them, and added a warning that applies to every number in this section: the real number of incidents in Brazil is probably higher, because other countries see far more incidents reported.
+
+### What the federal government logs
+
+The second series comes from the federal government's own incident response centre, [CTIR Gov](/glossary/ctir-gov) (Centro de Prevenção, Tratamento e Resposta a Incidentes Cibernéticos de Governo), part of the Institutional Security Cabinet of the Presidency (Gabinete de Segurança Institucional, GSI). It counts incidents affecting the bodies and entities of the federal public administration:
+
+| Year | Incidents in federal government systems (GSI / CTIR Gov) |
+| --- | --- |
+| 2021 | 4,903 |
+| 2022 | 3,402 |
+| 2023 | 4,908 |
+| 2024 | 9,806 |
+| 2025 | 10,387 |
+| 2026, to early June | 6,774 |
+
+The 2026 figure is about 45 incidents a day. Almost all of them were social engineering (3,307 cases, 48.8 per cent) or abusive content (3,166, 46.74 per cent), meaning unsolicited, harmful or personal information such as spam and deepfakes. In the same period the GSI counted about 14,000 vulnerabilities in government systems. Two cautions come with the series, both from the GSI itself: in 2025 it updated its classification and signed agreements that gave it access to a "significantly larger volume" of information on vulnerabilities and incidents. Part of the jump from 2023 to 2024 and 2025 is therefore better visibility, not only more attacks.
+
+### Reading the two series together
+
+Neither series counts attacks. The ANPD counts incidents that someone decided to report because personal data were at risk; the GSI counts what reaches its sensors and partners. A fall can mean fewer incidents or fewer reports; a rise can mean more attacks, better detection, stricter rules or more confidence in reporting. What the two agree on is direction: more reported incidents, in public and private hands, year after year, with ransomware, stolen credentials and social engineering at the top.
+
+## The money: attacks on the plumbing of Pix
+
+The cases that changed Brazilian security in 2025 and 2026 were not aimed at bank customers. They were aimed at the plumbing: the accounts that banks and payment institutions keep at the Central Bank of Brazil (Banco Central do Brasil, BC) to settle [Pix](/glossary/pix), the instant payment system, and the technology suppliers that connect smaller institutions to it. In the BC's rules, such a supplier is a [PSTI](/glossary/psti) (Provedor de Serviços de Tecnologia da Informação, an information technology service provider), a company that acts as the bridge between a financial institution and the national financial system's networks.
+
+| When | Who | What is known | Money involved |
+| --- | --- | --- | --- |
+| Late June 2025, disclosed on 1 and 2 July | C&M Software, a PSTI | Credentials of a C&M employee were used to move money out of the reserve accounts of client institutions at the BC; the BC ordered C&M to cut the institutions' access to the infrastructure it operated | BMP alone R$ 541 million, according to the São Paulo civil police; estimates for the whole attack ranged from R$ 400 million to more than R$ 800 million |
+| 29 August 2025 | Sinqia, a PSTI owned by Evertec | Credentials of Sinqia's IT suppliers were used to send unauthorized Pix transfers from the institutions' settlement accounts | R$ 710 million: R$ 670 million from HSBC and R$ 40 million from the fintech Artta, by Evertec's report; part already recovered, according to Sinqia |
+| 26 to 29 January 2026 | Banco do Nordeste (BNB) | A security incident in its Pix transaction infrastructure; Pix suspended from 26 January until it was restored on 29 January; the bank told the securities regulator no customer data leaked and no customer account was harmed | A negative impact of R$ 146.6 million on the bank, reported by Finsiders Brasil in May |
+| 22 March 2026 | BTG Pactual | Pix suspended after an attack diverted money held by the bank at the BC; not customer accounts; the BC said its own systems, Pix included, were not affected; service restored the next day | At least R$ 100 million initially, with R$ 20 million to R$ 40 million still to recover by that afternoon, according to sources quoted by O Globo and Estadão |
+| Late March 2026 | An unnamed Brazilian financial institution | A group CrowdStrike calls SLIM SPIDER broke into its cloud environment, took temporary credentials and at least six secrets linked to digital assets, and ran web panels listing compromised Brazilian banks and fintechs and preparing mass Pix transfers | No confirmed losses reported |
+| 18 August 2026 | Federal Police, Operação Pane Seca | A criminal organization suspected of breaking into financial institutions' systems; four preventive arrest warrants and seven search warrants | Estimated loss R$ 227 million; up to R$ 226.2 million in assets frozen |
+
+**C&M, and the price of a password.** The C&M case is the one that showed how cheap the way in can be. On 4 July 2025 the São Paulo civil police arrested João Nazareno Roque, a 48-year-old IT operator who had worked at C&M for about three years. According to his statement to the state's criminal investigations department (DEIC), he was approached in March after leaving a bar, handed over his login and password for R$ 5,000, and was paid another R$ 10,000, in cash, delivered by motorcycle couriers, to run commands on C&M's systems from May on. A BMP executive was alerted by an atypical transfer of R$ 18 million in the early hours. One account used to receive R$ 270 million was frozen. On 30 October 2025 the Federal Police ran the second phase of Operação Magna Fraus against the group it says diverted more than R$ 800 million: 26 arrest warrants, 42 search warrants in 11 cities and a court order freezing up to R$ 640 million.
+
+**Sinqia, and the supplier's supplier.** At Sinqia the credentials belonged not to the PSTI's own staff but to its IT suppliers. Sinqia isolated its Pix environment from its other systems and disconnected it from the BC while it investigated. HSBC said the transactions came from an account of one of its providers; Artta said its own environment and its clients' accounts were not attacked. The accounts drained in both cases are kept at the BC and used only for interbank settlement.
+
+**The regulator's answer.** On 5 September 2025, a week after Sinqia, the BC announced measures that changed the economics of the attack: Pix and TED (Transferência Eletrônica Disponível, the older interbank transfer) payments are capped at R$ 15,000 for institutions that are not authorized by the BC or that connect to the system through a PSTI, until the institution and its PSTI meet all of the BC's security control requirements; payment institutions need prior authorization to operate; and the requirements on PSTIs were tightened. After the BTG attack, Resolution BCB No. 554 of 24 March 2026 gave institutions more control over their Pix settlement account (the Conta PI), including limits that can block it automatically for any settlement in the instant payment system.
+
+The pattern across these cases is consistent. The target is the institution's money at the central bank, reached through someone else's access: a supplier, a supplier's supplier, an employee for sale, a cloud credential. Where the BC spoke, it said its own systems were not affected. The fraud was in the trust between the parts.
+
+## Beyond the banks
+
+The financial cases dominate the totals, but the incidents reported to the ANPD reach every sector.
+
+**Health data.** In July 2026 the ANPD opened a sanction procedure against Instituto Saúde e Cidadania (Isac), a social health organization, after an incident involving the sensitive personal data of about 500,000 patients of public health units.
+
+**Defence industry.** On 22 August 2026 the ransomware group LockBit 5.0 listed Itaguaí Construções Navais (ICN) on its leak site, threatening to publish data "unless a company representative contacts us", according to the threat intelligence service DeXpose. A claim on a leak site is not proof of an intrusion, encryption or leak; it is a claim, and it is reported here as one.
+
+**The state's own systems.** The GSI's figures above are the federal side. The history is longer: the November 2020 ransomware attack on the Superior Court of Justice and the December 2021 attack on the Ministry of Health's systems by a group calling itself Lapsus$, are told in the [STJ article](/learn/the-stj-ransomware-attack) and in [Brazilian cybercrime: from the boleto to the Pix](/learn/brazilian-cybercrime-from-boleto-to-pix).
+
+## The defences Brazil has built
+
+### The state: a policy, a strategy, a committee and a response centre
+
+Brazil's federal framework has three layers. The National Cybersecurity Policy (Política Nacional de Cibersegurança, [PNCiber](/glossary/pnciber)), set by Decree No. 11,856 of 26 December 2023, created the National Cybersecurity Committee (Comitê Nacional de Cibersegurança, CNCiber), a multi-sector body formed in 2024. The National Cybersecurity Strategy (Estratégia Nacional de Cibersegurança, E-Ciber), updated by Decree No. 12,573 of 4 August 2025 to replace the 2020 version, is how the policy's objectives are to be reached. It is organized in thematic axes, starting with the protection and awareness of citizens and society and including the security and resilience of essential services and critical infrastructure; it plans a national certification seal for high-level security of cyber assets and a high-risk cybersecurity list, and it recognizes the need to reduce the country's technological debt. The strategy's specific actions are to be detailed in a National Cybersecurity Plan, proposed by the CNCiber and approved by the minister heading the GSI. The [E-Ciber](/glossary/e-ciber) glossary entry follows the chain from decree to plan.
+
+The framework's next steps are held up at two points. The plan cannot be published without the formal consent of the fifteen government bodies on the committee, and the committee's minutes of 17 June 2026, the latest published by 11 November, record that consent was still missing from the telecoms regulator Anatel, the Ministry of Finance, the Casa Civil (the President's Chief of Staff's office) and the Central Bank. And because the policy and the strategy are decrees, they bind only the federal executive. On 21 October 2026 the Federal Court of Accounts (Tribunal de Contas da União, TCU) informed the Casa Civil of the risk that, without a law, the policy has neither national reach nor a structure with enough authority to coordinate it, and noted that the committee's draft bill had not yet been sent to Congress. The Senate's own bill, PL 4,752/2025, which would create a Legal Framework for Cybersecurity and a national cybersecurity authority, was with its rapporteur in the Science and Technology Committee when the Senate's records were read on 11 November 2026.
+
+On the operational side, CTIR Gov coordinates incident response for the federal administration; the ANPD receives incident reports and can investigate incidents nobody reported, from complaints, petitions, press reports or its own monitoring; the Federal Police investigates the crimes; and, for ports, the Cesportos committees apply the ISPS Code's security levels.
+
+### The banks, and Febraban's laboratory
+
+The Brazilian Federation of Banks (Federação Brasileira de Bancos, [Febraban](/glossary/febraban)) opened its Cybersecurity Laboratory (Laboratório de Segurança Cibernética) in São Paulo in September 2020, the first of its kind built for the national financial system. The initial investment was R$ 6 million, for the space, equipment, technology infrastructure, attack simulation programs and, at launch, a consultancy. Its activities began with the 14 banks of Febraban's executive cybersecurity commission, open to more institutions over time. Febraban's president, Isaac Sidney, said at the opening that banks invest R$ 2 billion a year in information security.
+
+The laboratory works on four fronts: training, attack simulations, sharing of technical threat information and standardization for the suppliers that serve the financial system. By the end of January 2022 it had run 40 free training courses with 3,900 enrolments from 72 banks, 14 of them with practical attack exercises between participants and capture-the-flag (CTF) competitions in controlled, realistic environments. It sends banks a monthly briefing and technical reports that reconstruct real attacks step by step, and it automated the sending of threat events from security centres around the world to the banks' monitoring centres. Since then it has opened its doors further: the Cyber Academy, a free 40-hour online course for anyone interested in the field, offered 10,000 places for its July 2026 class.
+
+The supplier pillar matters more after 2025 than it did in 2020. C&M and Sinqia were exactly the kind of company the standardization work addresses: providers that connect institutions to the system, and whose own credentials, staff and subcontractors became the way in. Febraban's 2026 technology survey, carried out with Deloitte and published at Febraban Tech in August, puts the banks' total technology budget for 2026 at R$ 50.4 billion, 8 per cent more than the year before, and found cybersecurity to be a medium or high priority for every bank surveyed, high for 83 per cent of them.
+
+## What the year teaches
+
+**Separation is what kept Santos moving.** The terminals ran their own systems, the federal Porto Sem Papel was outside the blast radius, and the authority had backups to restore from. None of that stopped the attack; all of it limited what the attack could stop. The same logic is behind the BC's caps: if a supplier is compromised, the damage is bounded.
+
+**The way in is usually someone's access.** A sold password at C&M, suppliers' credentials at Sinqia, temporary cloud credentials in the SLIM SPIDER case, and social engineering in half of the federal government's incidents. Identity, not exotic exploits, is the common thread, and it is why the ANPD and the GSI both list credential theft and social engineering among the most frequent occurrences.
+
+**Speed of detection and suspension matters.** BNB and BTG suspended Pix while they contained their incidents, BTG reportedly recovered most of what was taken on the same day, and Sinqia disconnected itself. Recovery of funds, freezing orders and police operations show a system that now reacts, even when it cannot yet prevent.
+
+**The numbers will keep rising for a while, and that is not all bad news.** More reports to the ANPD and more incidents seen by the GSI reflect real attacks, but also better sensors and stricter reporting rules. The figure to watch is not the count but the share of incidents that are found and contained before money or data leave.
+
+**Santos is not over.** On the evening of 10 November the authority still did not know what the attackers had reached or wanted. Whether data were taken, whether a ransom was demanded and how the malware got in are open questions, and this post will not answer them before the authority, the Federal Police or the ANPD do.
+
+## Sources
+
+Everything above was read on 11 November 2026, in Portuguese unless the source is in English.
+
+**Santos**
+
+- [Agência Brasil, Porto de Santos: sistemas seguem afetados após ataque cibernético, 10 November 2026](https://agenciabrasil.ebc.com.br/economia/noticia/2026-11/porto-de-santos-sistemas-seguem-afetados-apos-ataque-cibernetico)
+- [Jornal do Comércio, Porto de Santos confirma ataque hacker e diz não saber se dados foram acessados indevidamente, 10 November 2026](https://www.jornaldocomercio.com/economia/2026/11/1270039-porto-de-santos-confirma-ataque-hacker-e-diz-nao-saber-se-dados-foram-acessados-indevidamente.html)
+- [TMC, Porto de Santos é alvo de ataque hacker; sistemas estão fora do ar (the APS statement in full; Cesportos and level II)](https://tmc.com.br/brasil/aps-ataque-cibernetico-porto-santos-pf-nivel-ii/)
+- [CLM Brasil, Porto de Santos confirma invasão hacker e Polícia Federal eleva o nível de segurança, 10 November 2026](https://www.clmbrasil.com.br/porto-de-santos-confirma-invasao-hacker-e-policia-federal-eleva-o-nivel-de-seguranca)
+- [Revista Sociedade Militar, Maior porto do Brasil confirma ataque hacker (malware found on 7 November; Operação Tridente III), 10 November 2026](https://www.sociedademilitar.com.br/2026/11/porto-de-santos-confirma-ataque-hacker-pf-abre-inquerito-e-marinha-mobiliza-700-militares-na-regiao-mjd.html)
+- [Cryptoid, Ataque cibernético põe à prova a contingência do Porto de Santos (the port's figures), 10 November 2026](https://cryptoid.com.br/ciberseguranca-seguranca-da-informacao/ataque-cibernetico-poe-a-prova-a-contingencia-do-porto-de-santos/)
+- [CNN Brasil, Porto de Santos adota plano de contingência após ataque hacker (recovery from backups)](https://www.cnnbrasil.com.br/infra/porto-de-santos-investiga-instabilidades-em-sistema-e-descarta-paralisacao/)
+- [ConvergenciaDigital, Santos, o maior porto do Brasil, sofre ataque hacker e fica sem sistemas de TI (PF and ANPD informed)](https://convergenciadigital.com.br/governo/santos-o-maior-porto-do-brasil-sofre-ataque-hacker-e-fica-sem-sistemas-de-ti/)
+- [InvestNews, Porto de Santos sofre ataque hacker; veja o que foi impactado na operação (the terminals' own systems)](https://investnews.com.br/economia/porto-de-santos-ataque-hacker/)
+- [SOCRadar, Santos Brasil Data Breach (an alleged N0n claim against the terminal operator, observed 12 October 2026)](https://socradar.io/data-breach/santos-brasil-targeted-by-n0n-ransomware/)
+- [aRede, Porto de Santos sofre colapso digital e hackers pedem dinheiro para sistema ser restabelecido (the unconfirmed N0n claim), 10 November 2026](https://arede.info/cotidiano/692046/porto-de-santos-sofre-colapso-digital-e-hackers-pedem-dinheiro-para-sistema-ser-restabelecido)
+- [International Maritime Organization, Frequently Asked Questions on Maritime Security (the ISPS security levels)](https://www.imo.org/en/ourwork/security/pages/faq.aspx)
+- [The Maritime Executive, Ransomware Attack Stops Container Operations at Japan's Nagoya Port, 5 July 2023](https://maritime-executive.com/article/ransomware-attack-stops-container-operations-japan-s-nagoya-port)
+- [Industrial Cyber, Operations at Japan's Port of Nagoya resume, after probable LockBit ransomware attack, 6 July 2023](https://industrialcyber.co/news/operations-at-japans-port-of-nagoya-resume-after-probable-lockbit-ransomware-attack/)
+
+**The numbers**
+
+- [ANPD, Balanço ANPD 6 anos, 2020–2026 (incident reports by year, 2021 to September 2026), published 5 November 2026](https://www.gov.br/anpd/pt-br/centrais-de-conteudo/outros-documentos-e-publicacoes-institucionais/balanco-anpd-6-anos.pdf/@@display-file/file)
+- [Telesíntese, ANPD divulga balanço de seis anos e detalha 19 frentes de regulação de dados](https://telesintese.com.br/anpd-divulga-balanco-de-seis-anos-e-detalha-19-frentes-de-regulacao-de-dados/)
+- [ConvergenciaDigital, Ransomware: ANPD aponta alta de 45% no sequestro de dados (the 2024 report)](https://convergenciadigital.com.br/governo/ransomware-anpd-aponta-alta-de-45-no-sequestro-de-dados/)
+- [Acessa.com, Sistemas do governo registram cerca de 6.700 incidentes em 2026, aponta GSI (the CTIR Gov series), June 2026](https://www.acessa.com/noticias/2026/06/331600-sistemas-do-governo-registram-cerca-de-6-700-incidentes-em-2026-aponta-gsi.html)
+- [Information Management, ANPD recebeu quase uma comunicação de incidente por dia em 2025 (the Isac sanction procedure)](https://docmanagement.com.br/08/28/2026/anpd-recebeu-quase-uma-comunicacao-de-incidente-por-dia-em-2025-e-amplia-pressao-por-protecao-de-dados/)
+
+**The financial cases**
+
+- [InfoMoney, Hackers invadem empresa ligada ao Pix e desviam ao menos R$ 400 milhões, July 2025](https://www.infomoney.com.br/brasil/hackers-invadem-empresa-ligada-ao-pix-e-desviam-ao-menos-r-400-milhoes/)
+- [Baguete, Ataque à C&M pode ter desviado mais de R$ 1 bilhão (the BC's order to C&M), 2 July 2025](https://www.baguete.com.br/noticias/ataque-a-cm-pode-ter-desviado-mais-de-r-1-bilhao)
+- [Estadão / TecMundo, Hacker do Pix: polícia prende homem suspeito de golpe milionário no sistema financeiro, 4 July 2025](https://www.tecmundo.com.br/seguranca/405534-policia-prende-homem-que-vendeu-senhas-para-ataque-hacker-na-cm.htm)
+- [SBT News, Ataque hacker a bancos: funcionário recebeu R$ 15 mil para entregar senha e executar comandos](https://sbtnews.sbt.com.br/noticia/policia/ataque-hacker-a-bancos-funcionario-recebeu-r-15-mil-para-entregar-senha-e-executar-comandos)
+- [InfoMoney, PF deflagra operação contra hackers do Pix que desviaram R$ 800 milhões (Operação Magna Fraus, second phase), 30 October 2025](https://www.infomoney.com.br/brasil/pf-deflagra-operacao-internacional-contra-hackers-do-pix/)
+- [Tecnoblog, Ataque hacker a empresa que opera o Pix desviou R$ 710 milhões](https://tecnoblog.net/noticias/ataque-hacker-a-empresa-que-opera-o-pix-desviou-r-710-milhoes/)
+- [ESET WeLiveSecurity, Instituições financeiras sofrem ataque cibernético e criminosos desviam cerca de R$ 710 milhões](https://www.welivesecurity.com/pt/cibercrime/instituicoes-financeiras-sofrem-ataque-cibernetico-e-criminosos-desviam-cerca-de-r-710-milhoes/)
+- [Tecnoblog, Após ataque ao Pix, Banco Central reforça segurança do sistema financeiro, 5 September 2025](https://tecnoblog.net/noticias/apos-ataque-ao-pix-banco-central-reforca-seguranca-do-sistema-financeiro/)
+- [ConvergenciaDigital, Banco do Nordeste suspende operações do Pix depois de ataque hacker, January 2026](https://convergenciadigital.com.br/mercado/banco-do-nordeste-suspende-operacoes-do-pix-depois-de-ataque-hacker/)
+- [Finsiders Brasil, Banco do Nordeste revela perda milionária após ataque ao Pix, 13 May 2026](https://finsidersbrasil.com.br/pagamentos/pix/ataque-hacker-pix-bnb-perda-146-milhoes/)
+- [InfoMoney / O Globo, BTG Pactual é alvo de ataque hacker e suspende operações via Pix, 22 March 2026](https://www.infomoney.com.br/?p=3261981)
+- [Estadão / TecMundo, Pix do BTG Pactual volta a funcionar após pausa por ataque cibernético, 23 March 2026](https://www.tecmundo.com.br/seguranca/411840-pix-do-btg-pactual-volta-a-funcionar-apos-pausa-por-ataque-cibernetico.htm)
+- [Finsiders Brasil, Pix: BC lança mais medidas para combater fraudes (Resolution BCB No. 554), 24 March 2026](https://finsidersbrasil.com.br/pagamentos/apos-ataque-hacker-bc-aprimora-seguranca-em-sistema-do-pix/)
+- [Olhar Digital, Grupo brasileiro invade sistema bancário em ataque ligado ao Pix (SLIM SPIDER, from CrowdStrike), 15 October 2026](https://olhardigital.com.br/2026/10/15/seguranca/grupo-brasileiro-invade-sistema-bancario-em-ataque-ligado-ao-pix/)
+- [ES Hoje, PF prende suspeitos de desviar R$ 227 milhões de instituições financeiras (Operação Pane Seca), 19 August 2026](https://eshoje.com.br/seguranca/policia/2026/08/pf-prende-suspeitos-de-desviar-r-227-milhoes-de-instituicoes-financeiras/)
+- [DeXpose, LockBit 5.0 Compromises Brazilian Defense Contractor ICN (a leak-site claim), 22 August 2026](https://www.dexpose.io/lockbit-5-0-compromises-brazilian-defense-contractor-icn/)
+
+**The defences**
+
+- [Decree No. 12,573 of 4 August 2025, Estratégia Nacional de Cibersegurança (E-Ciber), Câmara dos Deputados legislation database](https://www2.camara.leg.br/legin/fed/decret/2025/decreto-12573-4-agosto-2025-797813-publicacaooriginal-176048-pe.html)
+- [GSI, CNCiber, Ata e anexos da 10ª Reunião Ordinária, 17 June 2026 (the consents still missing for the National Cybersecurity Plan)](https://www.gov.br/gsi/pt-br/colegiados-do-gsi/comite-nacional-de-ciberseguranca-cnciber/atas/ata-e-anexos-da-10a-reuniao-ordinaria-do-cnciber-17-de-junho-de-2026)
+- [Tribunal de Contas da União, Tribunal monitora recomendação ao GSI sobre Política Nacional de Cibersegurança (Acórdão 2909/2026, session of 21 October 2026)](https://portal.tcu.gov.br/imprensa/noticias/tribunal-monitora-recomendacao-ao-gsi-sobre-politica-nacional-de-ciberseguranca)
+- [Senado Federal, Dados Abertos, PL 4752/2025 (status read 11 November 2026)](https://legis.senado.leg.br/dadosabertos/processo?sigla=PL&numero=4752&ano=2025)
+- [Teletime, Governo atualiza Estratégia Nacional de Cibersegurança, 5 August 2025](https://teletime.com.br/05/08/2025/governo-atualiza-estrategia-nacional-de-ciberseguranca/)
+- [Febraban, Laboratório de Segurança Cibernética](https://portal.febraban.org.br/pagina/3322/1108/pt-br/lab-seguranca-cibernetica)
+- [Febraban, FEBRABAN inaugura Laboratório de Segurança Cibernética, September 2020](https://portal.febraban.org.br/noticia/3524/pt-br)
+- [Febraban, Treinamentos do Laboratório de Segurança Cibernética já tiveram 3.900 inscrições de 72 bancos, 9 February 2022](https://portal.febraban.org.br/noticia/3752/pt-br/)
+- [Febraban, Laboratório da Febraban abre hoje inscrição para curso gratuito de cibersegurança (Cyber Academy, 10,000 places), 8 June 2026](https://portal.febraban.org.br/noticia/4461/pt-br/)
+- [Febraban and Deloitte, Pesquisa Febraban de Tecnologia Bancária 2026, volume 1](https://cmsarquivos.febraban.org.br/Arquivos/documentos/PDF/Pesquisa%20Febraban%20de%20Tecnologia%20Banca%CC%81ria%202026%20-%20Vol1.pdf)
+- [Finsiders Brasil, Bancos querem investir R$ 50,4 bi em tecnologia neste ano, alta de 8%, 25 August 2026](https://finsidersbrasil.com.br/noticias-sobre-fintechs/bancos-querem-investir-r-504-bi-em-tecnologia-neste-ano-alta-de-8/)

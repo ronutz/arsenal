@@ -52,7 +52,7 @@
 // the browser's message in code type as a detail.
 // ============================================================================
 
-import { say, listOf, plainText, type EngineText } from "../engine-text"; // sentences with ids (01/11/2026)
+import { say, enPlural, listOf, plainText, type EngineText } from "../engine-text"; // sentences with ids (01/11/2026)
 import { parseJson, JsonParseError } from "../json-formatter/compute"; // the site's position-tracking JSON parser, for errors the browser does not place (2026-11-02)
 
 // ---------------------------------------------------------------------------
@@ -271,7 +271,7 @@ export const REGISTRY: Record<string, RegistryEntry> = { // exported for scripts
       const bits: string[] = [];
       let severity: Severity | undefined;
       const days = asNumber(v["enforcementReadinessPeriod"]);
-      if (days !== undefined) bits.push(`new entities stay in staging for ${days} day(s) before they can be enforced`);
+      if (days !== undefined) bits.push(`new entities stay in staging for ${days} ${enPlural(days, "day", "days")} before they can be enforced`);
       const xff = asBool(v["trustXff"]);
       if (xff === true) {
         bits.push("X-Forwarded-For is trusted for the client IP, so only genuinely trusted upstream proxies should be allowed to set it");
@@ -361,14 +361,14 @@ export const REGISTRY: Record<string, RegistryEntry> = { // exported for scripts
     label: "Parameters",
     group: "Traffic surface",
     summary: "The parameters the policy permits in requests, with their data types and staging state.",
-    interpret: (v) => ({ detail: countEntities(v) ? say("detail.parameters", `${countEntities(v)} parameter(s) defined.`, { count: String(countEntities(v)) }) : undefined }), // pack key engine.detail.parameters
+    interpret: (v) => ({ detail: countEntities(v) ? say("detail.parameters", `${countEntities(v)} ${enPlural(countEntities(v), "parameter", "parameters")} defined.`, { count: String(countEntities(v)) }) : undefined }), // pack key engine.detail.parameters
   },
   filetypes: {
     label: "File types",
     group: "Traffic surface",
     summary:
       "File types categorize request URLs by extension. They form an allow or deny list, imply per-type length limits, and decide whether response signatures are checked for that type.",
-    interpret: (v) => ({ detail: countEntities(v) ? say("detail.filetypes", `${countEntities(v)} file type(s) defined.`, { count: String(countEntities(v)) }) : undefined }), // pack key engine.detail.filetypes
+    interpret: (v) => ({ detail: countEntities(v) ? say("detail.filetypes", `${countEntities(v)} ${enPlural(countEntities(v), "file type", "file types")} defined.`, { count: String(countEntities(v)) }) : undefined }), // pack key engine.detail.filetypes
   },
   methods: {
     label: "HTTP methods",
@@ -395,9 +395,9 @@ export const REGISTRY: Record<string, RegistryEntry> = { // exported for scripts
         const httpOnly = asBool(c["accessibleOnlyThroughTheHttpProtocol"]);
         return enforced && (secure === false || httpOnly === false);
       }).length;
-      const detail = `${list.length} cookie(s) defined.`;
+      const detail = `${list.length} ${enPlural(list.length, "cookie", "cookies")} defined.`;
       return weak // with weak enforced cookies, or without: one sentence each
-        ? { detail: say("detail.cookiesWeak", `${detail} ${weak} enforced cookie(s) set without the Secure and/or HttpOnly attribute.`, { count: String(list.length), weak: String(weak) }), severity: "note" }
+        ? { detail: say("detail.cookiesWeak", `${detail} ${weak} ${enPlural(weak, "enforced cookie", "enforced cookies")} set without the Secure and/or HttpOnly attribute.`, { count: String(list.length), weak: String(weak) }), severity: "note" }
         : { detail: say("detail.cookies", detail, { count: String(list.length) }) }; // pack key engine.detail.cookies
     },
   },
@@ -419,7 +419,7 @@ export const REGISTRY: Record<string, RegistryEntry> = { // exported for scripts
       const violations = asArray(v["violations"]).filter(isObject);
       if (!violations.length) return {};
       const blocked = violations.filter((x) => asBool(x["block"]) === true).length;
-      return { detail: say("detail.blockingSettings", `${violations.length} violation setting(s) present; ${blocked} marked to block (block enforced only in blocking mode).`, { count: String(violations.length), blocked: String(blocked) }) }; // pack key engine.detail.blockingSettings
+      return { detail: say("detail.blockingSettings", `${violations.length} ${enPlural(violations.length, "violation setting", "violation settings")} present; ${blocked} marked to block (block enforced only in blocking mode).`, { count: String(violations.length), blocked: String(blocked) }) }; // pack key engine.detail.blockingSettings
     },
   },
   "data-guard": {
@@ -460,7 +460,7 @@ export const REGISTRY: Record<string, RegistryEntry> = { // exported for scripts
     group: "Protections",
     summary:
       "Brute Force Protection configuration. A default entry applies to all login URLs unless a specific entry exists for a given login page.",
-    interpret: (v) => ({ detail: countEntities(v) ? say("detail.bruteForce", `${countEntities(v)} brute-force configuration(s) present.`, { count: String(countEntities(v)) }) : undefined }), // pack key engine.detail.bruteForce
+    interpret: (v) => ({ detail: countEntities(v) ? say("detail.bruteForce", `${countEntities(v)} ${enPlural(countEntities(v), "brute-force configuration", "brute-force configurations")} present.`, { count: String(countEntities(v)) }) : undefined }), // pack key engine.detail.bruteForce
   },
   "disallowed-geolocations": {
     label: "Disallowed geolocations",
@@ -623,7 +623,7 @@ export function parseAwafPolicyLocalisable(input: string): AwafPolicyParse<Engin
     return {
       ...empty,
       unrecognizedReason:
-        say("reason.noSections", "This JSON has no recognisable WAF policy sections. Expected a declarative policy like { \"policy\": { \"enforcementMode\": ..., \"template\": ... } }."), // pack key engine.reason.noSections
+        say("reason.noSections", "This JSON has no recognizable WAF policy sections. Expected a declarative policy like { \"policy\": { \"enforcementMode\": ..., \"template\": ... } }."), // pack key engine.reason.noSections
     };
   }
 

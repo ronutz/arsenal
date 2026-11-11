@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-08-28"
 ---
 
-## The original sin: in-band signaling
+## The original sin: in-band signalling
 
 The mid-century long-distance network had one architectural decision baked into every trunk: it signaled to itself **in the audio band**. When a long-distance line sat idle, the switch at each end played a steady supervisory tone down the wire - 2600 Hz - and when trunks needed to route a call, they exchanged their instructions as multi-frequency tone pairs, on the very same channel the callers would talk on. The design was economical and elegant, and it contained a flaw so total it reads today like a parable: **the network's control language was audible, and anything that could make the right sounds could speak it**. There was no authentication, because the engineers never imagined the far end of the line as an adversary. The far end of the line was a customer.
 
@@ -31,7 +31,7 @@ AT&T, for its part, learned what every platform owner has learned since: publici
 
 ## The fix, and the lesson that outlived the phones
 
-The phone system's cure was **out-of-band signaling**: Common Channel Signaling, culminating in SS7, moved the network's control conversation onto a separate data network the customer's audio path could never touch. No tone a caller can produce means anything anymore, because the control plane and the data plane no longer share a wire. That sentence - **separate the control plane from the data plane** - went on to become one of networking's commandments, and every violation of it since has re-run the phreaking movie with new costumes: SQL injection is user data interpreted as control language; header smuggling, in-band prompt injection, every escape-sequence exploit ever - the same sin, the same fix.
+The phone system's cure was **out-of-band signalling**: Common Channel Signaling, culminating in SS7, moved the network's control conversation onto a separate data network the customer's audio path could never touch. No tone a caller can produce means anything anymore, because the control plane and the data plane no longer share a wire. That sentence - **separate the control plane from the data plane** - went on to become one of networking's commandments, and every violation of it since has re-run the phreaking movie with new costumes: SQL injection is user data interpreted as control language; header smuggling, in-band prompt injection, every escape-sequence exploit ever - the same sin, the same fix.
 
 ## What flowed downstream
 

@@ -237,7 +237,7 @@ export default function WhackABug({ locale }: { locale: string }) {
         title,
         lines: [`🐛 ${s.hits}  ✨ ${s.goldens}  🚫 ${s.features}`, `🎯 ${s.acc}%  🔗 ${s.bestCombo}`],
         // The score in the page's language, as the panel shows it (3.990 on a pt-BR page; review R3-10).
-        summary: t("shareSummary", { score: s.score.toLocaleString(locale) }),
+        summary: t("shareSummary", { score: s.score }),
         locale,
         slug: GAME_ID,
       });
@@ -337,7 +337,7 @@ export default function WhackABug({ locale }: { locale: string }) {
       // The shell's panel.
       setResult(makeResult(summary, daily));
       // Announced, the score in the page's language.
-      setSay(t("sayEnd", { score: final.score.toLocaleString(locale), acc: summary.acc }));
+      setSay(t("sayEnd", { score: final.score, acc: summary.acc }));
     },
     [mode, today, dailyDone, makeResult, t, locale],
   );

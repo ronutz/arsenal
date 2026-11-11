@@ -25,6 +25,8 @@
  * ("1 request", "2 requests").
  */
 
+// English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
+import { intlLocale } from "@/i18n/locales";
 import { useEffect, useState } from "react";
 // The panels' row limit, so this panel's address lists stop at the same 13 rows (PRIME, 01/11/2026).
 import { STATS_ROWS_SHOWN, bringBackIntoView } from "@/components/statsRows";
@@ -54,7 +56,7 @@ function familyOf(id: string): FamilyId {
  *  English), "7 de outubro de 2026" in Portuguese. Fixed to UTC so the day never shifts with the reader's zone. */
 function readDate(iso: string, locale: string): string {
   // British English for "en"; every other locale formats in its own convention.
-  const fmtLocale = locale === "en" ? "en-GB" : locale;
+  const fmtLocale = intlLocale(locale);
   // Midnight UTC of the day read, formatted in UTC.
   return new Date(`${iso}T00:00:00Z`).toLocaleDateString(fmtLocale, {
     day: "numeric",

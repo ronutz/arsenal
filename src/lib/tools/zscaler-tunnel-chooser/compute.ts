@@ -200,7 +200,7 @@ export function chooseLocalisable(input: ChooserInput): ChooserResult<EngineText
     steps.push({
       label: say("label.ha", "High availability"), // the label
       text: backups === 1 // one backup, or several
-        ? say("step.haOne", `HA required: mirror the primaries with ${b} backup tunnel, each to a Public Service Edge in a DIFFERENT data centre - the documented primary/secondary shape.`, { b }) // one
+        ? say("step.haOne", `HA required: mirror the primary with ${b} backup tunnel to a Public Service Edge in a DIFFERENT data centre - the documented primary/secondary shape.`, { b }) // one backup mirrors one primary: no "primaries", no "each" (11/11/2026)
         : say("step.haMany", `HA required: mirror the primaries with ${b} backup tunnels, each to a Public Service Edge in a DIFFERENT data centre - the documented primary/secondary shape.`, { b }), // several
     });
   } else {

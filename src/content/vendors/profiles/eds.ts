@@ -40,7 +40,7 @@ export const edsProfile: VendorProfile = {
       year: 1962,
       title: "Founded, and immediately capital-light",
       detail:
-        "Rather than buy computers, EDS rented time on machines other organisations had already bought and were not fully using. That kept the capital requirement near zero and meant the company was national from very early, because the borrowed machines were spread across the country.",
+        "Rather than buy computers, EDS rented time on machines other organizations had already bought and were not fully using. That kept the capital requirement near zero and meant the company was national from very early, because the borrowed machines were spread across the country.",
     },
     { year: 1963, title: "The first long-term contracts", detail: "Frito-Lay through Herman Lay, and insurance data processing for Mercantile Security Life - the start of a line that by 1990 made EDS the largest insurance data processor in the United States." },
     {
@@ -92,7 +92,7 @@ export const edsProfile: VendorProfile = {
     {
       title: "Renting capacity instead of owning it",
       detail:
-        "Buying time on other organisations' underused machines is the same economic logic that later sold virtualisation and then cloud: capacity is expensive to own and cheap to share, and somebody has to be the one aggregating it.",
+        "Buying time on other organizations' underused machines is the same economic logic that later sold virtualization and then cloud: capacity is expensive to own and cheap to share, and somebody has to be the one aggregating it.",
     },
     {
       title: "Government as an anchor customer",
@@ -106,6 +106,6 @@ export const edsProfile: VendorProfile = {
   ],
   analyst: [
     "Assessed in its time as the definitive outsourcing firm, and the reference against which every later services company was measured - which is a position no successor entity has occupied since.",
-    "The longer verdict is that the model outlived the company. EDS invented the arrangement, was bought by a customer, spun back out, absorbed by a hardware manufacturer and merged into a successor that no longer carries the name - while the practice it created became the default way large organisations buy computing.",
+    "The longer verdict is that the model outlived the company. EDS invented the arrangement, was bought by a customer, spun back out, absorbed by a hardware manufacturer and merged into a successor that no longer carries the name - while the practice it created became the default way large organizations buy computing.",
   ],
 };

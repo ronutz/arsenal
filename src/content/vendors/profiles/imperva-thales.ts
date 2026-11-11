@@ -30,12 +30,12 @@ export const impervaThalesProfile: VendorProfile = {
   ],
   timeline: [
     { year: 2002, title: "WebCohort founded", detail: "Kramer, Shulman, and Boodaei start the company in Israel to protect what firewalls did not: the applications and the data behind them." },
-    { year: 2003, title: "SecureSphere ships", detail: "SecureSphere Web Application Database Protection arrives - a pioneering web application firewall that learned application behavior, paired with database activity monitoring." },
+    { year: 2003, title: "SecureSphere ships", detail: "SecureSphere Web Application Database Protection arrives - a pioneering web application firewall that learned application behaviour, paired with database activity monitoring." },
     { year: 2004, title: "Renamed Imperva", detail: "The company takes the name it keeps: business-critical data made impervious to attack." },
     { year: 2011, title: "NYSE IPO", detail: "Imperva goes public on the New York Stock Exchange (IMPV); headquarters move to the US the following year, with development anchored in Tel Aviv." },
     { year: 2014, title: "Incapsula absorbed", detail: "Imperva acquires the remaining shares of Incapsula, its cloud application-security and CDN (content delivery network) arm - the on-prem WAF pioneer becomes a cloud WAF provider too." },
     { year: 2019, title: "Thoma Bravo takes it private", detail: "The private-equity firm completes a $2.1 billion take-private in January 2019 and delists the company; Distil Networks (bot management) is acquired the same year, CloudVector (API security) follows in 2021." },
-    { year: 2023, title: "Thales", detail: "Announced July 25, 2023 and completed December 4, 2023: France's Thales acquires Imperva from Thoma Bravo for approximately $3.6 billion, folding it into its cyber defense business. Thales cited expected 2023 revenue above $500 million with $110 million EBITDA; about 1,400 employees, 500 of them in the Tel Aviv development centre.", sourceNote: "Globes; Reuters; CRN (completion Dec 4, 2023)." },
+    { year: 2023, title: "Thales", detail: "Announced 25 July 2023 and completed 4 December 2023: France's Thales acquires Imperva from Thoma Bravo for approximately $3.6 billion, folding it into its cyber defence business. Thales cited expected 2023 revenue above $500 million with $110 million EBITDA; about 1,400 employees, 500 of them in the Tel Aviv development centre.", sourceNote: "Globes; Reuters; CRN (completion Dec 4, 2023)." },
   ],
   products: [
     { name: "SecureSphere / Imperva WAF", what: "The web application firewall lineage from 2003 to the present - on-premises appliances and the cloud WAF descended from Incapsula." },
@@ -43,13 +43,13 @@ export const impervaThalesProfile: VendorProfile = {
     { name: "Bot and API protection", what: "Advanced Bot Protection (from Distil Networks) and API Security (from CloudVector) - the modern application-attack surface." },
   ],
   innovations: [
-    { title: "The WAF category itself", detail: "SecureSphere is one of the products that made 'web application firewall' a market - behavioral learning of application traffic instead of static rules alone." },
+    { title: "The WAF category itself", detail: "SecureSphere is one of the products that made 'web application firewall' a market - behavioural learning of application traffic instead of static rules alone." },
     { title: "Data-centric security", detail: "Imperva paired the WAF with database monitoring from the start: protect the data, not just the perimeter in front of it." },
     { title: "The founders' diaspora", detail: "All three founders moved on to build again - Kramer founded Cato Networks, Boodaei founded Trusteer and Transmit Security, Shulman co-founded Nokod Security - a measure of the talent that started here." },
   ],
   markets: [
-    "Imperva competes in web application and API protection (WAAP) - the market where I teach F5's Advanced WAF daily - and in data security, now as the application-security arm of Thales, the French aerospace and defense group.",
-    "The company's arc is the full lifecycle of a security vendor: Israeli startup, category pioneer, NYSE listing, private-equity ownership, and finally strategic acquisition by a defense conglomerate.",
+    "Imperva competes in web application and API protection (WAAP) - the market where I teach F5's Advanced WAF daily - and in data security, now as the application-security arm of Thales, the French aerospace and defence group.",
+    "The company's arc is the full lifecycle of a security vendor: Israeli startup, category pioneer, NYSE listing, private-equity ownership, and finally strategic acquisition by a defence conglomerate.",
   ],
   analyst: [
     "At the Thales acquisition, Imperva was expected to deliver over $500 million in 2023 revenue with $110 million EBITDA - a $3.6 billion valuation for a company that had gone private at $2.1 billion less than five years earlier.",

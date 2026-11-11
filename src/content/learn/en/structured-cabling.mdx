@@ -49,15 +49,15 @@ The topology is a star of stars. Every work-area outlet runs a **horizontal** ca
 
 ## The 100-meter channel
 
-The number every network engineer carries: a twisted-pair **channel** may total 100 meters. The standard splits it as up to 90 meters of **permanent link** - the cable in the wall, punched down at both ends - plus a combined 10 meters of patch cords at the two ends. That split is why the horizontal run is tested and certified once, at installation, and the patch cords stay disposable.
+The number every network engineer carries: a twisted-pair **channel** may total 100 metres. The standard splits it as up to 90 metres of **permanent link** - the cable in the wall, punched down at both ends - plus a combined 10 metres of patch cords at the two ends. That split is why the horizontal run is tested and certified once, at installation, and the patch cords stay disposable.
 
-The channel, not the cable spool, is what a **category** certifies. Cat 5e supports gigabit Ethernet across the full 100 meters. Cat 6 raises the tested bandwidth and carries 10 Gb/s, but only to roughly 55 meters; Cat 6A carries 10 Gb/s the full distance and is the sensible default for new horizontal cabling. Cat 8 doubles down for the data centre: 25/40 Gb/s, but only to 30 meters, effectively shielded, for switch-to-server rows rather than office floors. And the certification is end to end - a Cat 6A permanent link patched with Cat 5e cords is, as a system, Cat 5e.
+The channel, not the cable spool, is what a **category** certifies. Cat 5e supports gigabit Ethernet across the full 100 metres. Cat 6 raises the tested bandwidth and carries 10 Gb/s, but only to roughly 55 metres; Cat 6A carries 10 Gb/s the full distance and is the sensible default for new horizontal cabling. Cat 8 doubles down for the data centre: 25/40 Gb/s, but only to 30 metres, effectively shielded, for switch-to-server rows rather than office floors. And the certification is end to end - a Cat 6A permanent link patched with Cat 5e cords is, as a system, Cat 5e.
 
 The copper itself is UTP by default - four pairs, interference fought with twist geometry alone. Where the environment is electrically hostile, [the shielded constructions](/glossary/shielded-twisted-pair) (F/UTP, S/FTP) add foil and braid, at the price of stiffer cable and the obligation to ground the shields properly. Termination follows one of two pinouts, T568A or T568B, functionally identical; the site rule is to pick one and never mix, because one of each end yields a crossover - a cable type that auto-MDIX made historical, but that miswiring still recreates by accident.
 
 ## Fiber where copper stops
 
-Beyond 100 meters, or between buildings, or wherever electrical isolation matters, the backbone goes optical. The split is single-mode versus multimode: single-mode's narrow core carries one light path for kilometers and is the default for campus and carrier distances; multimode's wider core keeps transceiver costs down over the hundreds of meters inside a facility, in grades OM3 through OM5. The pluggable transceiver in the switch - SFP lineage for copper and fiber alike - is what marries the port to whichever medium the plant offers, with media converters as the standalone fallback where no SFP port exists.
+Beyond 100 metres, or between buildings, or wherever electrical isolation matters, the backbone goes optical. The split is single-mode versus multimode: single-mode's narrow core carries one light path for kilometres and is the default for campus and carrier distances; multimode's wider core keeps transceiver costs down over the hundreds of meters inside a facility, in grades OM3 through OM5. The pluggable transceiver in the switch - SFP lineage for copper and fibre alike - is what marries the port to whichever medium the plant offers, with media converters as the standalone fallback where no SFP port exists.
 
 ## The ratings inspectors check
 
@@ -101,4 +101,4 @@ The buying question is rarely which cable performs better on a datasheet. It is 
 
 ## Why the system holds
 
-Structured cabling's quiet achievement is that the physical layer stopped being interesting. An outlet is an outlet; a channel either certifies to its category or it does not; a telecom room follows the same grammar in São Paulo and Stockholm. The cost of that boringness is discipline - labeling, testing, one pinout per site, blanking the empty rack slots - and the payoff is that everything above layer 1 gets to assume the wire simply works.
+Structured cabling's quiet achievement is that the physical layer stopped being interesting. An outlet is an outlet; a channel either certifies to its category or it does not; a telecom room follows the same grammar in São Paulo and Stockholm. The cost of that boringness is discipline - labelling, testing, one pinout per site, blanking the empty rack slots - and the payoff is that everything above layer 1 gets to assume the wire simply works.

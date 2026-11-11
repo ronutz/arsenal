@@ -32,7 +32,7 @@ The reason nobody touches it is not sentiment. A name in a modern estate is not 
 - documentation, tickets, and six years of incident history that becomes unsearchable
 - **the heads of the people who operate it**, which is the copy you cannot migrate
 
-A rename is a coordinated change across all of those, executed for no functional benefit, with a real chance of an outage. That is why the correct-but-wrong scheme survives every reorganisation that was supposed to fix it.
+A rename is a coordinated change across all of those, executed for no functional benefit, with a real chance of an outage. That is why the correct-but-wrong scheme survives every reorganization that was supposed to fix it.
 
 ## Encode what does not change
 
@@ -40,7 +40,7 @@ The single most useful rule, and the one most often broken:
 
 > **A name should encode the things that outlive the name.** Role, site, and position are durable. **Owner, project, vendor and department are not** - and they are precisely what gets encoded, because they are what is salient on the day.
 
-The department gets reorganised. The project gets renamed before it ships. The vendor gets acquired, so every device carrying that vendor's name is now lying, and the replacement hardware inherits a name that describes the previous supplier.
+The department gets reorganized. The project gets renamed before it ships. The vendor gets acquired, so every device carrying that vendor's name is now lying, and the replacement hardware inherits a name that describes the previous supplier.
 
 The test to apply before committing: **name three things in this scheme that will still be true in five years.** If the honest answer is "the site and the role", then the site and the role are what belongs in the name, and everything else belongs in a database that is allowed to change.
 
@@ -50,7 +50,7 @@ Names fail socially; addresses fail arithmetically, and the arithmetic is unforg
 
 **The range that was plenty.** A /24 per site is generous until the site adds a guest network, a voice network, a management network, cameras and a building system. What runs out is rarely host addresses - it is **subnets**, and the scheme that allocated by "how many devices" rather than "how many networks" hits the wall first.
 
-**Summarisation that was never going to work.** Address blocks allocated as sites were commissioned, in the order they were commissioned, cannot be summarised at any aggregation point, because contiguity was never a design input. The cost appears years later as routing tables that cannot be reduced and access lists that cannot be shortened - and the fix is a readdressing project nobody will fund.
+**Summarization that was never going to work.** Address blocks allocated as sites were commissioned, in the order they were commissioned, cannot be summarized at any aggregation point, because contiguity was never a design input. The cost appears years later as routing tables that cannot be reduced and access lists that cannot be shortened - and the fix is a readdressing project nobody will fund.
 
 The [CIDR](/tools/cidr) and [IPv6](/tools/ipv6) tools on this site do the arithmetic; **the arithmetic is not the hard part.** The hard part is deciding what the blocks are *for* before the first one is handed out.
 
@@ -77,4 +77,4 @@ Ask both before committing, and write the answers next to the scheme:
 1. **What happens when this doubles?** Not whether it fits - what the *next* allocation looks like when the obvious space is gone. If the answer is "we would start a second scheme", the design is already finished, it just has not been noticed yet.
 2. **What in this name or number will not be true in five years?** Everything that fails is a future lie stored at scale.
 
-And the one thing to never encode: **anything a reorganisation can change.** Departments, cost centres, project codenames and supplier names are the four most common, and all four are guaranteed to move.
+And the one thing to never encode: **anything a reorganization can change.** Departments, cost centres, project codenames and supplier names are the four most common, and all four are guaranteed to move.

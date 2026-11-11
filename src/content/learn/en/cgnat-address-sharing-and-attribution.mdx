@@ -47,7 +47,7 @@ RFC 6888 builds on the generic NAT documents: its REQ-1 makes a CGN meet the beh
 | REQ-9 | MUST | a protocol giving subscribers control over their mappings, preferably the Port Control Protocol (PCP) | 3 |
 | REQ-11 | MUST and SHOULD | at quota: drop the packet, send an Internet Control Message Protocol (ICMP) Host Unreachable, never delete existing mappings | 3 |
 | REQ-12 | SHOULD NOT | log destination addresses or ports, because "Destination logging at the CGN creates privacy issues" | 4 |
-| REQ-13 to REQ-15 | SHOULD | maximise port use, minimise log volume, make ports hard to guess | 5 |
+| REQ-13 to REQ-15 | SHOULD | maximize port use, minimize log volume, make ports hard to guess | 5 |
 
 The last three conflict: "A CGN implementation's choice of port allocation scheme optimizes to satisfy one requirement at the expense of another" ([RFC 6888, section 5](https://www.rfc-editor.org/rfc/rfc6888.txt)). Above the 1,024 system ports an address has 64,512, so a static split gives 1,008 ports each to 64 subscribers and 64 each to 1,000. A worm on one device could exhaust the shared address for everyone, which the REQ-4 limit prevents ([RFC 6269, section 5.1](https://www.rfc-editor.org/rfc/rfc6269.txt)).
 
@@ -65,7 +65,7 @@ The server's half is RFC 6302: log the source port and, in Coordinated Universal
 
 On 17 October 2017 Europol wrote that "it has become technically impossible for internet service providers to comply with legal orders to identify individual subscribers", which "may lead to innocent individuals being wrongly investigated by law enforcement" ([Europol, 17 October 2017](https://www.europol.europa.eu/media-press/newsroom/news/are-you-sharing-same-ip-address-criminal-law-enforcement-call-for-end-of-carrier-grade-nat-cgn-to-increase-accountability-online)); the release counts CGN at 90% of mobile and 50% of fixed line, while its Internet Organised Crime Threat Assessment (IOCTA) 2017 gives 90% of mobile operators and 38% of fixed-line providers in 2016. The IOCTA recommends examining "source port number logging or limiting either the use of CGN or the number of subscribers behind each IPv4 address" ([Europol, IOCTA 2017, pages 62 to 64](https://www.europol.europa.eu/cms/sites/default/files/documents/iocta2017.pdf)).
 
-In Brazil, article 13 of Lei 12.965/2014, the Marco Civil da Internet, says that "cabe ao administrador de sistema autônomo respectivo o dever de manter os registros de conexão, sob sigilo, em ambiente controlado e de segurança, pelo prazo de 1 (um) ano": the autonomous system's administrator keeps connection records, confidential and secured, for one year ([Lei nº 12.965/2014, art. 13](https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2014/lei/l12965.htm)). Article 5, item VI, defines the record by "data e hora de início e término de uma conexão à internet, sua duração e o endereço IP utilizado pelo terminal": times, duration and IP address, with no source port. Release "deverá ser precedida de autorização judicial", needs a court's authorisation (article 13, paragraph 5).
+In Brazil, article 13 of Lei 12.965/2014, the Marco Civil da Internet, says that "cabe ao administrador de sistema autônomo respectivo o dever de manter os registros de conexão, sob sigilo, em ambiente controlado e de segurança, pelo prazo de 1 (um) ano": the autonomous system's administrator keeps connection records, confidential and secured, for one year ([Lei nº 12.965/2014, art. 13](https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2014/lei/l12965.htm)). Article 5, item VI, defines the record by "data e hora de início e término de uma conexão à internet, sua duração e o endereço IP utilizado pelo terminal": times, duration and IP address, with no source port. Release "deverá ser precedida de autorização judicial", needs a court's authorization (article 13, paragraph 5).
 
 ## The logging arithmetic
 
@@ -184,7 +184,7 @@ The [SSRF URL classifier](/tools/ssrf-url-classifier), a server-side request for
 - A CGN is a provider's NAT that shares one public IPv4 address among subscribers who do not control it; with the home NAT it makes NAT444, and 100.64.0.0/10 numbers the link between them.
 - RFC 6888 requires paired pooling, per-subscriber port limits and a mapping-control protocol, recommends endpoint-independent filtering, and inherits endpoint-independent mapping from RFC 4787.
 - RFC 7021 found browsing, mail and remote desktop working, and two-home gaming, BitTorrent seeding, SIP without a proxy, a home FTP server, 6to4 and Teredo failing.
-- An answerable request carries source address, source port and a timestamp from synchronised clocks; without the port, the answer is everyone on the address.
+- An answerable request carries source address, source port and a timestamp from synchronized clocks; without the port, the answer is everyone on the address.
 - Per-connection logging costs about 4.95 MB per subscriber per day; port blocks divide that by the block size, and deterministic mapping replaces most lookups with arithmetic.
 - CGN-based designs keep per-session state in the provider; A+P designs pre-provision port sets and keep only rules or bindings with timestamps.
 

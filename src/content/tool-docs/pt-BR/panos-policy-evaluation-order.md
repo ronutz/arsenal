@@ -68,8 +68,8 @@ Abaixo da ordem de avaliação, **Compartilhar resultado** cria um link para est
 
 ## Fontes
 
-- Palo Alto Networks, *Device Groups*: o firewall avalia regras por camada e por tipo, de cima para baixo; regras locais aparecem entre as pre-rules e as post-rules
-- Palo Alto Networks, *Security Policy Rulebase Best Practices*: o primeiro casamento vence e a comparação para; Commit and Push não fornece informação de shadowing
-- Palo Alto Networks, *Security Policy Rule Best Practices*: shadowing definido; intrazone-default permite e interzone-default nega
-- Palo Alto Networks, *Defining Policies on Panorama*: pre-rules são avaliadas primeiro, post-rules por último
+- [Palo Alto Networks, Device Groups](https://docs.paloaltonetworks.com/panorama/getting-started/panorama-overview/centrally-manage-firewall-configuration-and-updates-with-panorama/device-groups) (lida em 2026-11-11): o firewall avalia regras por camada e por tipo, de cima para baixo; regras locais aparecem entre as pre-rules e as post-rules
+- [Palo Alto Networks, Security Policy Rulebase Best Practices](https://docs.paloaltonetworks.com/best-practices/security-policy-best-practices/security-policy-best-practices/deploy-security-policy-best-practices/security-policy-rulebase-best-practices) (lida em 2026-11-11): o primeiro casamento vence e a comparação para; Commit and Push não fornece informação de shadowing
+- [Palo Alto Networks, Security Policy Rule Best Practices](https://docs.paloaltonetworks.com/best-practices/security-policy-best-practices/security-policy-best-practices/deploy-security-policy-best-practices/security-policy-rule-best-practices) (lida em 2026-11-11): shadowing definido; intrazone-default permite e interzone-default nega
+- [Palo Alto Networks, Defining Policies on Panorama](https://docs.paloaltonetworks.com/ngfw/help/11-1/panorama-web-interface/defining-policies-on-panorama) (lida em 2026-11-11): pre-rules entram no topo da ordem das regras e são avaliadas primeiro; post-rules entram no fim e são avaliadas depois das pre-rules e das regras locais do firewall
 - [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (lida em 2026-10-27): seção 3.5, o fragmento, que leva os valores de um link de Compartilhar resultado

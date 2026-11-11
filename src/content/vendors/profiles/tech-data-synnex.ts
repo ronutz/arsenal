@@ -44,7 +44,7 @@ export const techDataSynnexProfile: VendorProfile = {
       year: 1974,
       title: "It did not begin as a distributor",
       detail:
-        "The original business marketed data processing supplies directly to the organisations that used them. Selling to end users is precisely what a distributor does not do - ScanSource elsewhere on this timeline was founded on refusing it - so the company that became one of the two largest wholesalers in the world spent its first decade as the thing wholesalers exist to avoid being.",
+        "The original business marketed data processing supplies directly to the organizations that used them. Selling to end users is precisely what a distributor does not do - ScanSource elsewhere on this timeline was founded on refusing it - so the company that became one of the two largest wholesalers in the world spent its first decade as the thing wholesalers exist to avoid being.",
     },
     {
       year: 2019,
@@ -83,11 +83,11 @@ export const techDataSynnexProfile: VendorProfile = {
     },
   ],
   markets: [
-    "Resellers, integrators, managed service providers and retailers in more than a hundred countries, at roughly $58B of annual revenue. The end customer is every organisation that buys technology through anybody, which is most of them.",
+    "Resellers, integrators, managed service providers and retailers in more than a hundred countries, at roughly $58B of annual revenue. The end customer is every organization that buys technology through anybody, which is most of them.",
     "Its principal competitor is Ingram Micro, and the two now sit close enough in size that the ranking depends on the year. Below them the specialists compete on depth in categories the broadline houses reach later.",
   ],
   analyst: [
-    "Distribution is judged on working capital efficiency, vendor authorisations and geographic coverage. At this scale the assessments are effectively a duopoly comparison, with everything else in the category an order of magnitude smaller.",
+    "Distribution is judged on working capital efficiency, vendor authorizations and geographic coverage. At this scale the assessments are effectively a duopoly comparison, with everything else in the category an order of magnitude smaller.",
     "The founding detail deserves the last word for a reason beyond its charm. A business sold within a family for ten thousand dollars became, fifty years later, the largest of its kind in the world - and it did so by abandoning its original customers, changing what it sold twice, merging with a company that had begun in contract assembly, and being owned in the interim by a private equity firm that held it for nine months. Almost nothing about the company that Edward Raymund sold survives in the one that exists, except the name and the fact that it moves other people's products.",
   ],
 };

@@ -23,6 +23,8 @@
 "use client";
 
 // React's state, effects, refs, memo and ids.
+// English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
+import { intlLocale } from "@/i18n/locales";
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 // The page's strings and language.
 import { useLocale, useTranslations } from "next-intl";
@@ -319,7 +321,7 @@ export default function ScoresBoard(props: { names: Record<string, string>; leve
   };
 
   // A day in the page's language (British order in English).
-  const dateText = useCallback((day: string) => new Intl.DateTimeFormat(locale === "en" ? "en-GB" : locale, { dateStyle: "long", timeZone: "UTC" }).format(new Date(`${day}T12:00:00Z`)), [locale]);
+  const dateText = useCallback((day: string) => new Intl.DateTimeFormat(intlLocale(locale), { dateStyle: "long", timeZone: "UTC" }).format(new Date(`${day}T12:00:00Z`)), [locale]);
 
   // The open tab's board.
   const load = boards[current.key];
@@ -367,7 +369,7 @@ export default function ScoresBoard(props: { names: Record<string, string>; leve
     // Walked a day at a time (YYYY-MM-DD sorts as a date).
     for (let d = start; d <= today; d = new Date(Date.parse(`${d}T00:00:00Z`) + 86_400_000).toISOString().slice(0, 10)) days.push(d);
     // The short day under a bar, in the page's language ("8 Nov", "8 de nov.").
-    const short = new Intl.DateTimeFormat(locale === "en" ? "en-GB" : locale, { day: "numeric", month: "short", timeZone: "UTC" });
+    const short = new Intl.DateTimeFormat(intlLocale(locale), { day: "numeric", month: "short", timeZone: "UTC" });
     // A bar per day.
     return days.map((d) => ({ label: short.format(new Date(`${d}T12:00:00Z`)), n: byDay.get(d) ?? 0, title: `${dateText(d)}: ${t("rounds", { n: byDay.get(d) ?? 0 })}` }));
   }, [shelfData, today, win, t, dateText, locale]);

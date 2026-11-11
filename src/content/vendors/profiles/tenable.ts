@@ -43,7 +43,7 @@ export const tenableProfile: VendorProfile = {
   products: [
     { name: "Nessus", what: "The scanner, still sold directly - Professional for practitioners, Expert adding web application and external attack surface coverage. It remains the reference implementation most engineers have used." },
     { name: "Tenable Vulnerability Management", what: "The cloud platform built around the scanner, priced per asset, aimed at continuous assessment rather than periodic scans." },
-    { name: "Tenable Security Center", what: "The on-premises deployment, for organisations that cannot or will not send scan data to a vendor's cloud - which remains a real requirement in defence and regulated sectors." },
+    { name: "Tenable Security Center", what: "The on-premises deployment, for organizations that cannot or will not send scan data to a vendor's cloud - which remains a real requirement in defence and regulated sectors." },
     { name: "Tenable One", what: "The exposure management platform: asset inventory, identity exposure and cloud posture folded into one view alongside vulnerability findings." },
     { name: "Tenable OT Security", what: "Industrial and operational technology, where passive discovery matters because active scanning can disrupt equipment that was never designed to be probed." },
   ],

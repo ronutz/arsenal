@@ -16,7 +16,7 @@ Application Control and URL Filtering answer what the traffic is and where it is
 
 ## Why inspection is needed at all
 
-Without decryption, a gateway examining an HTTPS connection sees the destination address, the server name in the TLS handshake, and the certificate. That is enough to categorise many sites and enough for coarse application identification.
+Without decryption, a gateway examining an HTTPS connection sees the destination address, the server name in the TLS handshake, and the certificate. That is enough to categorize many sites and enough for coarse application identification.
 
 It is not enough to see the URL path, the content, or anything the connection carries. So a policy that blocks a category can act on the name presented at connection time, and a policy that inspects files or applies data controls cannot act at all.
 
@@ -46,11 +46,11 @@ The application database carries **categories** and **risk levels**, and rules c
 
 ## URL Filtering
 
-URL Filtering categorises sites, and rules act on categories, on custom lists, or on specific sites.
+URL Filtering categorizes sites, and rules act on categories, on custom lists, or on specific sites.
 
 The two operational realities worth planning for:
 
-**Miscategorisation happens.** A site is in the wrong category, or a legitimate business tool sits in a blocked one. The process for handling that (an override, and a submission to the vendor) should exist before it is needed, because it will be needed during someone's urgent task.
+**Miscategorization happens.** A site is in the wrong category, or a legitimate business tool sits in a blocked one. The process for handling that (an override, and a submission to the vendor) should exist before it is needed, because it will be needed during someone's urgent task.
 
 **Blocking produces support calls.** A block page that explains what happened and how to request an exception converts a support call into a form submission. A silent failure produces a ticket that starts with "the internet is broken".
 
@@ -64,4 +64,4 @@ Enabling a full application and URL policy in blocking mode on day one is how th
 
 ## What a CCSA candidate should be able to state cold
 
-Without decryption a gateway sees the destination, the handshake server name and the certificate, which supports categorisation but not content inspection. Outbound HTTPS Inspection re-signs with the gateway's CA, so every client must trust it; inbound inspection uses the real server certificate and needs no client trust. Certificate pinning and privacy obligations are why bypass by category or site is standard, and the HTTPS Inspection policy is its own top-down rule base. Application Control identifies by behaviour rather than port; prefer categories and risk levels over naming individual applications. Deploy in detect-and-log mode before blocking.
+Without decryption a gateway sees the destination, the handshake server name and the certificate, which supports categorization but not content inspection. Outbound HTTPS Inspection re-signs with the gateway's CA, so every client must trust it; inbound inspection uses the real server certificate and needs no client trust. Certificate pinning and privacy obligations are why bypass by category or site is standard, and the HTTPS Inspection policy is its own top-down rule base. Application Control identifies by behaviour rather than port; prefer categories and risk levels over naming individual applications. Deploy in detect-and-log mode before blocking.

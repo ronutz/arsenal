@@ -293,7 +293,7 @@ tampered token: InvalidToken
 wrong key: InvalidToken
 ```
 
-The documentation lists what Fernet is made of, AES in CBC mode with a 128-bit key and PKCS7 padding, HMAC with SHA-256 for authentication, and initialisation vectors from `os.urandom()`, and what it does not hide: the token "contains the current time when it was generated in plaintext". It is meant for data that "easily fits in memory"; release 50.0.0 added a streaming recipe, Cobblestone, for large messages. `MultiFernet` handles key rotation.
+The documentation lists what Fernet is made of, AES in CBC mode with a 128-bit key and PKCS7 padding, HMAC with SHA-256 for authentication, and initialization vectors from `os.urandom()`, and what it does not hide: the token "contains the current time when it was generated in plaintext". It is meant for data that "easily fits in memory"; release 50.0.0 added a streaming recipe, Cobblestone, for large messages. `MultiFernet` handles key rotation.
 
 The hazmat layer is where protocols are built, and every choice is the caller's. Two primitives a network engineer can use well, AES-GCM to encrypt with authenticated context, and Ed25519 to sign a configuration backup:
 

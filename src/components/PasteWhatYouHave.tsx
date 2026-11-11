@@ -70,7 +70,7 @@ export default function PasteWhatYouHave({
   placeholder: string;
   /** The privacy line under the box. */
   hint: string;
-  /** The heading over the matches ("Tools that recognise this"). */
+  /** The heading over the matches ("Tools that recognize this"). */
   resultsLabel: string;
   /** The line shown when nothing matched. */
   noMatch: string;

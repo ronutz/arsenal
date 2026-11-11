@@ -14,7 +14,7 @@
 
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { TRANSLATED_LOCALE_COUNT } from "@/i18n/locales";
+import { TRANSLATED_LOCALE_COUNT, ANY_REVIEWED } from "@/i18n/locales";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 // The full directory, moved here from the home page on 2026-10-06.
@@ -232,10 +232,13 @@ export default async function ColophonPage({
                   {tStatus("explainBody")}
                 </p>
                 <ul className="colophon-langstatus-legend">
-                  <li>
-                    <span className="ls-status ls-status--reviewed" />
-                    {tStatus("reviewed")}
-                  </li>
+                  {/* The green row only while a live language is human-reviewed (none since 2026-11-10, PRIME 23:50). */}
+                  {ANY_REVIEWED && (
+                    <li>
+                      <span className="ls-status ls-status--reviewed" />
+                      {tStatus("reviewed")}
+                    </li>
+                  )}
                   <li>
                     <span className="ls-status ls-status--complete" />
                     {tStatus("complete")}

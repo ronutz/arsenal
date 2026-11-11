@@ -39,13 +39,13 @@ export const radwareProfile: VendorProfile = {
   ],
   products: [
     { name: "Alteon ADC", what: "The application delivery controller line carrying the Alteon name from the dot-com era into the present - load balancing, SSL offload, and application acceleration." },
-    { name: "DefensePro", what: "Radware's DDoS mitigation appliances - behavioral, real-time attack detection for networks and data centres, complemented by cloud DDoS scrubbing services." },
+    { name: "DefensePro", what: "Radware's DDoS mitigation appliances - behavioural, real-time attack detection for networks and data centres, complemented by cloud DDoS scrubbing services." },
     { name: "AppWall and Cloud WAF", what: "Web application firewalling on-premises and as a service, descended in part from the Covelight technology." },
     { name: "Bot Manager", what: "The ShieldSquare lineage: distinguishing human, good-bot, and hostile automated traffic at application scale." },
   ],
   innovations: [
     { title: "The RAD Group incubator model", detail: "Radware is a flagship of a uniquely Israeli institution: the Zisapel family's RAD Group seeded dozens of networking companies, funding them from group resources rather than venture rounds." },
-    { title: "Behavioral DDoS mitigation", detail: "DefensePro built its reputation on real-time behavioral analysis rather than static signatures - protecting carriers and banks under active attack." },
+    { title: "Behavioral DDoS mitigation", detail: "DefensePro built its reputation on real-time behavioural analysis rather than static signatures - protecting carriers and banks under active attack." },
     { title: "The Alteon coup", detail: "Buying a marquee product line out of a bankruptcy for ~$18 million and running it for decades is one of the industry's great value acquisitions." },
   ],
   markets: [

@@ -116,7 +116,7 @@ export const OPTION_HELP: Record<string, string> = {
 };
 
 /** What an option the table does not hold gets (2026-11-02: named, for the catalogue guard; pack key engine.option.unknown). */
-export const UNKNOWN_OPTION_EXPLAIN = `Not a query option this tool recognises. It is passed through as typed and nothing is claimed about its effect.`; // as the engine always wrote it
+export const UNKNOWN_OPTION_EXPLAIN = `Not a query option this tool recognizes. It is passed through as typed and nothing is claimed about its effect.`; // as the engine always wrote it
 
 export class IControlPathError extends Error {
   code: "empty";

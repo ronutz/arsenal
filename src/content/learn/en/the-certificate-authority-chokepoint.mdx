@@ -1,7 +1,7 @@
 ---
 slug: the-certificate-authority-chokepoint
 title: "Certificate authorities: the padlock is a list of people you have never met"
-summary: "Your browser trusts a few hundred organisations to vouch for who owns which name, and any one of them can issue a valid certificate for any site on the internet. That design has failed in public at least once badly enough to end a company and expose a country's dissidents. What breaks when a CA is compromised, why revocation barely works, and how the industry replaced trust with surveillance of itself."
+summary: "Your browser trusts a few hundred organizations to vouch for who owns which name, and any one of them can issue a valid certificate for any site on the internet. That design has failed in public at least once badly enough to end a company and expose a country's dissidents. What breaks when a CA is compromised, why revocation barely works, and how the industry replaced trust with surveillance of itself."
 concepts: ["tls", "certificate authority", "trust", "certificate transparency", "resilience"]
 relatedTools: []
 relatedArticles: ["the-chokepoints-of-the-internet", "submarine-cables-and-the-physical-internet", "bgp-and-the-routing-chokepoint", "the-crypto-wars-and-the-cypherpunks"]
@@ -13,11 +13,11 @@ updated: "2026-08-29"
 
 ## The design, stated honestly
 
-When your browser shows a padlock, it means a certificate authority signed a statement that this public key belongs to this name, and that your browser's **root store** contains that authority. The store holds on the order of a hundred-plus organisations, in many jurisdictions, some of them commercial, some governmental, some subsidiaries of each other.
+When your browser shows a padlock, it means a certificate authority signed a statement that this public key belongs to this name, and that your browser's **root store** contains that authority. The store holds on the order of a hundred-plus organizations, in many jurisdictions, some of them commercial, some governmental, some subsidiaries of each other.
 
 Here is the part people find uncomfortable when it is said plainly: **any authority in the store can issue a certificate for any name.** There is no partitioning by default. A CA in one country can sign for a bank in another, and your browser will accept it, because the trust model is a flat list rather than a hierarchy of relevance.
 
-That is the chokepoint. Not one organisation, but the weakest of several hundred.
+That is the chokepoint. Not one organization, but the weakest of several hundred.
 
 ## What breaks when one fails
 
@@ -25,7 +25,7 @@ That is the chokepoint. Not one organisation, but the weakest of several hundred
 
 **The canonical case is DigiNotar, in 2011.** A Dutch authority was compromised, and fraudulent certificates were issued for major services and used to intercept traffic in Iran, against ordinary users. When it came out, browsers removed the authority from their root stores, and because that authority also underpinned parts of Dutch government infrastructure, the removal broke public services in the Netherlands. **The company went bankrupt within weeks.** It is the clearest demonstration available that trust in this system is revocable, and that revoking it has collateral damage.
 
-The other recurring failure is quieter: misissuance without malice, an authority issuing certificates it should not have, through a broken validation process. That has ended the trust status of much larger organisations than DigiNotar, through gradual distrust rather than sudden removal.
+The other recurring failure is quieter: misissuance without malice, an authority issuing certificates it should not have, through a broken validation process. That has ended the trust status of much larger organizations than DigiNotar, through gradual distrust rather than sudden removal.
 
 ## Why revocation barely works
 
@@ -67,4 +67,4 @@ Two supporting mechanisms matter. **CAA records** let a domain owner declare in 
 
 The [DNS root](/learn/what-happens-if-the-dns-root-goes-dark) is data you can replicate, and its weakness is that a signed lie validates. [Routing](/learn/bgp-and-the-routing-chokepoint) is assertions you can partly sign. [Cables](/learn/submarine-cables-and-the-physical-internet) are objects you can only duplicate at expense.
 
-Certificates are the odd one: the chokepoint is a **list of organisations**, and the fix was not to shorten the list or to trust it more, but to make everything it does public. That answer, replacing unverifiable trust with verifiable exposure, is the most transferable idea in this whole series, and it is what the rest of the industry keeps rediscovering under other names.
+Certificates are the odd one: the chokepoint is a **list of organizations**, and the fix was not to shorten the list or to trust it more, but to make everything it does public. That answer, replacing unverifiable trust with verifiable exposure, is the most transferable idea in this whole series, and it is what the rest of the industry keeps rediscovering under other names.

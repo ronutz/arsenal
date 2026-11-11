@@ -17,6 +17,8 @@
 // (the footer carries that separately).
 // ============================================================================
 
+// English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
+import { intlLocale } from "@/i18n/locales";
 /** One revision of the notice: the day (ISO date) and the key of its note under privacy_page.revisions. */
 export interface PrivacyRevision {
   /** The day the revised notice was published, as YYYY-MM-DD. */
@@ -120,6 +122,6 @@ export function formatRevisionDate(iso: string, locale: string): string {
   // Noon UTC: a day boundary in no inhabited zone.
   const d = new Date(`${iso}T12:00:00Z`);
   // The reader's language, long form ("6 de outubro de 2026", "6 October 2026", "6. Oktober 2026"); English is
-  // formatted as en-GB because the house writes British English (2026-10-26: Stats printed "October 26, 2026").
-  return new Intl.DateTimeFormat(locale === "en" ? "en-GB" : locale, { dateStyle: "long", timeZone: "UTC" }).format(d);
+  // formatted as International English, en-001, through intlLocale (2026-10-26: Stats printed "October 26, 2026").
+  return new Intl.DateTimeFormat(intlLocale(locale), { dateStyle: "long", timeZone: "UTC" }).format(d);
 }

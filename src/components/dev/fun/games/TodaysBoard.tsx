@@ -38,7 +38,6 @@ import {
   beatPercent,
   changeInitials,
   fetchBoard,
-  flagOf,
   formatScore,
   postRound,
   postedRound,
@@ -51,6 +50,8 @@ import {
 } from "@/lib/fun/board";
 // What this browser sent for a round.
 import type { PostedRound } from "@/lib/fun/storage";
+// The same-origin SVG flag for a country code (never an emoji flag, which Windows draws as two letters).
+import { flagFileFor } from "@/lib/flags";
 // The games' time format (m:ss), for the time that breaks ties.
 import { formatDuration } from "@/lib/fun/share";
 
@@ -58,7 +59,11 @@ import { formatDuration } from "@/lib/fun/share";
 type Shown = { kind: "loading" } | { kind: "unavailable" } | { kind: "board"; board: BoardAnswer };
 
 /**
- * A country, as a flag with its code for screen readers (nothing when the country is unknown).
+ * A country, as a flag with its code for screen readers (nothing drawn when the country is unknown).
+ *
+ * The flag is the vendored SVG file, never an emoji: Windows desktops have no glyphs for regional indicator flags
+ * and showed the two letters instead (PRIME 10/11/2026 23:50, "use an alternative that ALWAYS renders on ANY
+ * regular browser (desktop, mobile)").
  *
  * @param props the two-letter code, or null
  * @returns the flag
@@ -66,10 +71,12 @@ type Shown = { kind: "loading" } | { kind: "unavailable" } | { kind: "board"; bo
 export function CountryFlag({ code }: { code: string | null }) {
   // No country: nothing drawn.
   if (!code) return null;
-  // The flag for the eye, the code for the ear.
+  // The same-origin SVG for the code, or null for an unknown one.
+  const src = flagFileFor(code);
+  // The flag for the eye (decorative, so an empty alt), the code for the ear.
   return (
     <span className="fg-tb-flag">
-      <span aria-hidden="true">{flagOf(code)}</span>
+      {src ? <img className="fg-tb-flag-img" src={src} alt="" width={20} height={15} loading="lazy" decoding="async" /> : null}
       <span className="fg-lpk-sr">{code}</span>
     </span>
   );

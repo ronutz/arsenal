@@ -25,7 +25,7 @@ If the article stopped there it would be a story about a bad race condition, and
 
 The important finding is in the predecessor. The **Therac-20** ran software of the same lineage, and Leveson's investigation established that **related defects were present in it too**. It never injured anyone. The reason is that the Therac-20 had independent protective circuits and mechanical interlocks: physical mechanisms that would not permit the beam to fire with the turntable in the wrong position, whatever the computer believed. When the software went wrong on a Therac-20, a fuse blew or a switch refused, and a technician was inconvenienced.
 
-Those interlocks were removed from the Therac-25. The design relied on the controlling computer alone for safety, on the reasoning that the software would prevent unsafe states - and the Therac-20's own defects were not even recognised until investigators went looking after the Therac-25 accidents.
+Those interlocks were removed from the Therac-25. The design relied on the controlling computer alone for safety, on the reasoning that the software would prevent unsafe states - and the Therac-20's own defects were not even recognized until investigators went looking after the Therac-25 accidents.
 
 So the two machines ran comparable faulty code. One of them killed people. The difference was not the quality of the software. **The difference was whether anything existed that could contradict it.**
 
@@ -35,13 +35,13 @@ Leveson's own summary names it precisely: overconfidence in the ability of softw
 
 Because the entire argument of this site keeps arriving at the same conclusion from different directions, and Therac-25 is where it was established at the cost of lives.
 
-[Dijkstra's line](/learn/dijkstra-and-the-twenty-minute-algorithm) that testing shows the presence of bugs but never their absence is the theoretical version. Therac-25 is the empirical one: the software was tested, it worked in the overwhelming majority of treatments, and the failure needed an operator typing fast enough to hit an eight-second window. No realistic test programme finds that. The [no-perfect-code argument](/learn/there-is-no-perfect-code) is the same claim generalised: defects ship, and the question is what happens next.
+[Dijkstra's line](/learn/dijkstra-and-the-twenty-minute-algorithm) that testing shows the presence of bugs but never their absence is the theoretical version. Therac-25 is the empirical one: the software was tested, it worked in the overwhelming majority of treatments, and the failure needed an operator typing fast enough to hit an eight-second window. No realistic test programme finds that. The [no-perfect-code argument](/learn/there-is-no-perfect-code) is the same claim generalized: defects ship, and the question is what happens next.
 
 The [Juniper backdoor](/learn/there-is-no-perfect-code) makes the point from cryptography - output that was mathematically indistinguishable from correct output, so no measurement could find it. [KRACK](/learn/krack-and-the-wifi-handshake) makes it from formal methods - a handshake with security proofs, broken by a state machine question the proofs did not model. Therac-25 makes it from physics, twenty years before either: **when correctness cannot be established, the design must not depend on it.**
 
 ## The other failures, which are institutional
 
-The technical story is the smaller half. The investigation records a sequence that any incident responder will recognise, and none of it is about code.
+The technical story is the smaller half. The investigation records a sequence that any incident responder will recognize, and none of it is about code.
 
 The first accident, in Georgia in 1985, was never carefully investigated. The patient said she had been injured during treatment. She had obvious and severe radiation burns. The physicist involved was suspicious. There was no admission that the machine had caused it until long afterwards.
 

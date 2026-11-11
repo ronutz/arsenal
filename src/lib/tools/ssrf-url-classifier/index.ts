@@ -157,7 +157,7 @@ export const manifest = Object.freeze({
       label: "WHATWG, URL Standard (Living Standard, last updated 19 October 2026): IPv6 serializer", // the serializer that writes pure hex
       url: "https://url.spec.whatwg.org/", // fetched 2026-10-19, HTTP 200
       access_date: "2026-10-19", // read the day the engine was corrected
-      scope: "the IPv6 serializer writes every piece in hexadecimal, so [::ffff:127.0.0.1] is serialised as [::ffff:7f00:1]; both spellings must rate the same", // what this source pins
+      scope: "the IPv6 serializer writes every piece in hexadecimal, so [::ffff:127.0.0.1] is serialized as [::ffff:7f00:1]; both spellings must rate the same", // what this source pins
     }, // end whatwg-url
     // -- Added 2026-10-19b (PRIME: "adopt the fullest, most complete, most accurate options"); all fetched 2026-10-19, HTTP 200 --
     { // Teredo layout

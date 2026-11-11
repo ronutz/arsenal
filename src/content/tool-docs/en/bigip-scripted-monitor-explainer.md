@@ -11,7 +11,7 @@ The facts are F5's: the BIG-IP 21.1.0 LTM Monitors Reference, "Scripted monitor 
 - **S1, a CR in a line (error).** F5: scripts "must use hard-return line endings (LF), not soft-return line endings (CR-LF)". A file saved on Windows has a CR before every LF. The finding says whether the CR ends the line or sits inside it.
 - **S2, not exactly one space after the keyword (error).** F5: "Exactly one character space must be used to separate the send or expect instruction keywords from the text". Two or more spaces, or a tab, are flagged.
 - **S3, characters after a closing quotation mark (error).** F5: "The text to send or match extends to the end of the line, even when using quotation marks. Any characters that follow a closing quotation mark will break the match." On an expect line the simulator therefore fails the check there; on a send line F5 does not say what is sent, so the simulator stops as undetermined.
-- **S4, a first word that is not send or expect (error).** F5 documents those two keywords only. The finding says when the word is a capitalised keyword (`Expect`), a comment (`#`), or a sign that an Expect (Tcl) script was pasted (`spawn`, `set`, `#!/usr/bin/expect` and the like).
+- **S4, a first word that is not send or expect (error).** F5 documents those two keywords only. The finding says when the word is a capitalized keyword (`Expect`), a comment (`#`), or a sign that an Expect (Tcl) script was pasted (`spawn`, `set`, `#!/usr/bin/expect` and the like).
 - **S5, an escape sequence F5 does not list (warning).** F5's table: `\a` bell, `\b` backspace, `\f` form feed, `\n` new line, `\r` return, `\t` tab, `\v` vertical tab, `\\` backslash, `\'` single quotation mark. Anything else after a backslash, such as `\x0d` or `\"`, is not documented.
 - **The prefix rule (the simulator's match).** F5: "Matching text can match the prefix of a response, but cannot match a substring that is not a prefix, that is, a substring that starts other than at the beginning of the response." When the text occurs later in the reply, the step says at which character.
 - **The order.** F5: "the lines of the file are always read in the sequence specified". The simulator walks the file top to bottom and stops at the first line that fails or cannot be decided.
@@ -33,7 +33,7 @@ F5's text does not settle these, so the explainer flags them as warnings and the
 ## Advice from the RFCs
 
 - **S6, a send with no line ending (warning).** SMTP, POP3, IMAP and FTP end every command with CR LF (RFC 5321 2.3.8, RFC 1939 section 3, RFC 9051 2.2, RFC 959 section 4), so a server of those protocols waits for one. F5's own example writes `\r\n` at the end of each send; nothing in F5's text says the monitor adds a line ending.
-- **S7, a send ending in LF alone or CR alone (note).** RFC 5321 2.3.8: a conforming implementation must not recognise any other line terminator than CR LF.
+- **S7, a send ending in LF alone or CR alone (note).** RFC 5321 2.3.8: a conforming implementation must not recognize any other line terminator than CR LF.
 - **S8, an expect written like a pattern (note):** a leading `^`, a trailing `$`, `.*` or `.+`, or Expect's `-re`, `-gl`, `-ex` or `-nocase`. The text is matched literally; F5 says the only monitors that support regular expression matching are HTTP, HTTPS, HTTP/2, TCP and UDP.
 - **S15, a credential in a send (warning):** `PASS` (POP3, FTP) or `LOGIN` (IMAP). The password is masked everywhere in the output, the transcript comparison included. The file keeps it in clear, the tmsh reference lists no TLS option for the monitor type, and RFC 9051 6.2.3 says LOGIN must not be used on unsecure networks. POP3 allows QUIT and IMAP allows LOGOUT before authentication, so a check that never logs in is usually possible.
 - **S16, an expect on a reply code and a space (note),** such as `"250 "`. In SMTP and FTP multi-line replies every line but the last starts with the code and a hyphen (RFC 5321 4.2.1, RFC 959 4.2), so `"250 "` is never the start of an EHLO reply; expect the code alone.
@@ -82,7 +82,7 @@ Those are the passwords rule S15 masks: `PASS` ([RFC 1939](https://www.rfc-edito
 
 - The explainer applies F5's published rules. What a given BIG-IP build does beyond them, it cannot know; where the documentation is silent it says undetermined instead.
 - The transcript is yours: the simulator does not know how your server really answers, how fast, or whether it answers only part of a reply.
-- The credential check is a pattern: `PASS x` and `tag LOGIN user password`. A password sent another way (AUTH, for example) is not recognised.
+- The credential check is a pattern: `PASS x` and `tag LOGIN user password`. A password sent another way (AUTH, for example) is not recognized.
 - Test the real monitor on the system: `tmsh run ltm monitor scripted NAME destination ADDRESS:PORT`, then `tmsh show ltm monitor scripted NAME test-result`, or the Test button in the Configuration utility.
 
 ## API

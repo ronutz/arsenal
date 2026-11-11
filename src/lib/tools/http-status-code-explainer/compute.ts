@@ -70,7 +70,7 @@ const FAMILY: Record<number, { name: string; meaning: string }> = {
   5: {
     name: "5xx Server Error",
     meaning:
-      "The server failed to fulfill an apparently valid request. The fault is on the serving side - which in incident triage points you at the stack, not the client.",
+      "The server failed to fulfil an apparently valid request. The fault is on the serving side - which in incident triage points you at the stack, not the client.",
   },
 };
 
@@ -116,7 +116,7 @@ const CODES: Record<number, { name: string; meaning: string; notes?: string[] }>
   431: { name: "Request Header Fields Too Large", meaning: "Headers exceed the server's limits - one header or the total (RFC 6585)." },
   451: { name: "Unavailable For Legal Reasons", meaning: "Access denied for legal reasons - takedowns, court orders, geo-blocks (RFC 7725).", notes: ["The number is a deliberate Ray Bradbury citation."] },
   500: { name: "Internal Server Error", meaning: "The server's generic confession: something failed while handling an apparently valid request." },
-  501: { name: "Not Implemented", meaning: "The server does not support the functionality required - typically an unrecognised method." },
+  501: { name: "Not Implemented", meaning: "The server does not support the functionality required - typically an unrecognized method." },
   502: { name: "Bad Gateway", meaning: "An intermediary reached the upstream and received an invalid response or a refusal.", notes: ["Triage: the proxy is fine, the conversation with the backend is not - look at backend health and protocol mismatches."] },
   503: { name: "Service Unavailable", meaning: "The service is temporarily unable to handle the request - overload or maintenance.", notes: ["The honest maintenance code; ideally carries Retry-After.", "Triage: capacity and health of the service itself."] },
   504: { name: "Gateway Timeout", meaning: "An intermediary reached out and nobody answered in time.", notes: ["Triage: the backend or the path to it is slow or gone - timeouts, routing, resolution."] },
@@ -178,7 +178,7 @@ export function runLocalisable(text: string): StatusExplainResult<EngineText> {
       code,
       family,
       familyName: famName(family), // the family's name
-      name: say("name.unrecognised", "Unrecognised in this registry"), // the fallback name
+      name: say("name.unrecognised", "Unrecognized in this registry"), // the fallback name
       meaning: famMeaning(family), // the family's meaning (the same English as `${fam.meaning}`)
       notes: [
         say("note.fallback", `The protocol's own rule covers this: a client that does not understand ${code} must treat it as ${family}00 - the family defines the required behaviour. That forward-compatibility design is why unknown codes never break old clients.`, { code: String(code), base: `${family}00` }), // the fallback rule

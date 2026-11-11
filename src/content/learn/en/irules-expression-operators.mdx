@@ -54,7 +54,7 @@ Tcl 8.4 has no power operator. `2 ** 3` is a syntax error; `pow(2, 3)` returns t
 
 ## Arithmetic rules worth remembering
 
-- Integer division rounds toward negative infinity: `7 / -2` is `-4`, and `-7 / 2` is `-4` too.
+- Integer division rounds towards negative infinity: `7 / -2` is `-4`, and `-7 / 2` is `-4` too.
 - The remainder takes the sign of the divisor: `-7 % 2` is `1`, `7 % -2` is `-1`.
 - Any double operand makes the operation floating point: `10 / 3` is `3`, `10 / 3.` is `3.33333333333`.
 - `&&` and `||` stop as soon as the answer is known, so in `$n > 5 || [incr n] > 0` with `n` at 7 the `incr` never runs. The conditional `?:` evaluates only the branch it takes.

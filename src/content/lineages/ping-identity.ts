@@ -41,7 +41,7 @@ export const pingLineage: VendorLineage = {
   ],
 
   origin:
-    "PingFederate, and the bet that the hard problem in enterprise identity was not storing credentials but federating trust between organisations. SAML, then OAuth and OIDC, then everything built on top of them.",
+    "PingFederate, and the bet that the hard problem in enterprise identity was not storing credentials but federating trust between organizations. SAML, then OAuth and OIDC, then everything built on top of them.",
 
   acquisitions: [
     {
@@ -62,7 +62,7 @@ export const pingLineage: VendorLineage = {
       year: 2020,
       name: "Symphonic Software",
       price: "undisclosed",
-      what: "Dynamic, fine-grained authorization - externalising the decision about who may do what.",
+      what: "Dynamic, fine-grained authorization - externalizing the decision about who may do what.",
       became:
         "PingAuthorize. The shift from 'are you who you say' to 'may you do this, right now, with this data'.",
     },

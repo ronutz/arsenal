@@ -63,7 +63,7 @@ export const lotusProfile: VendorProfile = {
     {
       title: "Every document knows what it is everywhere",
       detail:
-        "A note carries a local identifier and, separately, an originator identifier that names the same document across every replica and stamps its last modification. That pair is what makes bidirectional replication tractable: two copies edited independently can be recognised as the same document and compared, rather than silently overwriting each other.",
+        "A note carries a local identifier and, separately, an originator identifier that names the same document across every replica and stamps its last modification. That pair is what makes bidirectional replication tractable: two copies edited independently can be recognized as the same document and compared, rather than silently overwriting each other.",
     },
     {
       title: "Replication built for networks that did not work",
@@ -77,7 +77,7 @@ export const lotusProfile: VendorProfile = {
     },
   ],
   markets: [
-    "Large organisations that built internal applications - approvals, case handling, registers, the workflows that never justified a bespoke system but ran the business anyway. Those applications are why the software outlived three owners: they were written by people who left, in a language nobody replaced, doing work nobody fully documented.",
+    "Large organizations that built internal applications - approvals, case handling, registers, the workflows that never justified a bespoke system but ran the business anyway. Those applications are why the software outlived three owners: they were written by people who left, in a language nobody replaced, doing work nobody fully documented.",
     "It lost the office suite market to Microsoft and the mail market to Exchange, and kept the one thing neither competitor directly replaced: a place where a department could build a working application without asking anybody's permission.",
   ],
   analyst: [

@@ -33,7 +33,8 @@
 // ============================================================================
 
 import { useMemo, useState, type ReactNode } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { intlLocale } from "@/i18n/locales"; // the Intl tag for the page's locale (en formats as en-001)
 import { AREAS, BASES, QUESTIONS, VECTORS, lookup, translate, sourceOf, type Area, type Base, type Entry, type Question, type TranslateResult } from "@/lib/tools/f5-bigip-index-base-finder";
 import { TclPresets, TclSeg } from "@/components/TclTeachParts";
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
@@ -71,7 +72,11 @@ function strParams(p?: Record<string, string | number | boolean>): Record<string
 /** The page component. */
 export default function F5BigipIndexBaseFinderTool() {
   // This tool's words.
+  const locale = useLocale(); // the page's locale
   const t = useTranslations("tools.f5-bigip-index-base-finder");
+  // A source's access date, written the reader's way ("27 October 2026", «27 ottobre 2026») instead of ISO (11/11/2026,
+  // reported by the Italian writer: the sources line printed 2026-10-27 in every language).
+  const dateFmt = useMemo(() => new Intl.DateTimeFormat(intlLocale(locale), { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }), [locale]); // one formatter per locale
   // Code inside a sentence.
   const rich = { c: (chunks: ReactNode) => <code>{chunks}</code> };
   // Which mode.
@@ -362,7 +367,7 @@ export default function F5BigipIndexBaseFinderTool() {
               // The source record.
               const s = sourceOf(id);
               // Every id is checked by the vectors; skip defensively if one is missing.
-              return s ? <li key={id}><a href={s.url} rel="noopener noreferrer" target="_blank">{s.label}</a> <span className="tcl-muted">({t("readOn", { date: s.access_date })})</span></li> : null;
+              return s ? <li key={id}><a href={s.url} rel="noopener noreferrer" target="_blank">{s.label}</a> <span className="tcl-muted">({t("readOn", { date: /^\d{4}-\d{2}-\d{2}$/.test(s.access_date) ? dateFmt.format(new Date(`${s.access_date}T00:00:00Z`)) : s.access_date })})</span></li> : null;
             })}
           </ul>
         </footer>

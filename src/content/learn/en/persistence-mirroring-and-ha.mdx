@@ -47,7 +47,7 @@ The [connection mirroring](https://techdocs.f5.com/en-us/bigip-14-1-0/big-ip-dev
 
 ## How the mirroring channel behaves
 
-The same overview describes the mechanism the table rows depend on. The Traffic Management Microkernel runs it, synchronising connection and persistence data to the standby with every packet or flow state update, over a separate mirroring channel for each traffic group, from the active device to that traffic group's next-active device; the channels' ports start at TCP 1029 and go up by one for each traffic group. Each device names a primary local mirror address and, as F5 recommends, a secondary one. Only one link carries mirroring at a time, the primary by preference, and its failure mode is worth knowing in advance: if the active mirroring link fails, the standby closes every connection it was mirroring and starts mirroring new connections over the other link.
+The same overview describes the mechanism the table rows depend on. The Traffic Management Microkernel runs it, synchronizing connection and persistence data to the standby with every packet or flow state update, over a separate mirroring channel for each traffic group, from the active device to that traffic group's next-active device; the channels' ports start at TCP 1029 and go up by one for each traffic group. Each device names a primary local mirror address and, as F5 recommends, a secondary one. Only one link carries mirroring at a time, the primary by preference, and its failure mode is worth knowing in advance: if the active mirroring link fails, the standby closes every connection it was mirroring and starts mirroring new connections over the other link.
 
 Three further points from the article shape a design. After a failover, the system re-mirrors only Performance (Layer 4) and SNAT connections to the newly standby device. F5 does not recommend mirroring short-lived connections such as HTTP and UDP, since that costs performance and those protocols tolerate the failure of a single request; long-lived ones such as FTP and Telnet are the candidates. And because mirroring traffic follows every flow update, F5 recommends a dedicated VLAN and interfaces for it, ideally direct cables between the pair, since sharing links with production traffic can delay mirrored connections or interrupt the mirror link. When you test a failover, `tmsh show /sys connection type mirror` and `tmsh show /ltm persistence persist-records` on the standby show what was actually mirrored. One reading caveat: a connection cleared on the active unit stays in the standby's table until its idle timeout; the statemirror.verify database variable, disabled by default, keeps the two in step at a performance cost F5 describes as potentially significant.
 
@@ -58,7 +58,7 @@ Without mirrored persistence records, a failover is clean for the device and mes
 
 This is why the symptom arrives as a support ticket rather than an alert: *"it logged me out"*, from a minority, after an event that was declared successful.
 
-**Mirroring costs synchronisation between units and buys continuity across the one event it exists for.** Test it by failing over deliberately with sessions established, not by confirming that mirroring is enabled, which is a configuration fact rather than a working one.
+**Mirroring costs synchronization between units and buys continuity across the one event it exists for.** Test it by failing over deliberately with sessions established, not by confirming that mirroring is enabled, which is a configuration fact rather than a working one.
 
 ## Sources
 

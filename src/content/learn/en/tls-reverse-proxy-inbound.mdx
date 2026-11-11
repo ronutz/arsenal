@@ -53,7 +53,7 @@ Passthrough is really a Layer 4 behaviour wearing a TLS label, and it inherits t
 
 **The client address disappears.** The server sees the proxy. Recovering it means an inserted header, which the application must be configured to trust from exactly this proxy and nothing else - a header any client can also send is not evidence.
 
-**Certificates expire on a date somebody could have read a year in advance.** Centralising them makes renewal easy and a lapse universal.
+**Certificates expire on a date somebody could have read a year in advance.** Centralizing them makes renewal easy and a lapse universal.
 
 **Policy diverges from reality.** The proxy negotiates a modern cipher suite with the client and something much older with the backend, and the posture report only measures the front.
 

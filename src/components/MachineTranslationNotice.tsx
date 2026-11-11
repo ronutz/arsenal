@@ -4,8 +4,8 @@
 // MACHINE-TRANSLATION NOTICE BAR.
 //
 // An honesty banner shown at the top of every page on a machine-draft locale
-// (status "machine-draft" in the registry). English and any future human-
-// reviewed locale do NOT show it. It states plainly that the page was machine-
+// (status "machine-draft" in the registry). A human-reviewed locale does NOT
+// show it; since 2026-11-10 none is, so English shows it too (PRIME demoted it). It states plainly that the page was machine-
 // translated and links to the contribute page where a reader can help fix it.
 //
 // Presentational only: it receives already-resolved, already-localized strings

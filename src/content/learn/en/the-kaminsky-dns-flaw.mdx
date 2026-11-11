@@ -1,7 +1,7 @@
 ---
 slug: the-kaminsky-dns-flaw
 title: "The Kaminsky flaw: the summer eighty vendors patched the same bug on the same day"
-summary: "In 2008 a researcher realised that a known weakness in DNS was far worse than anyone had calculated - not a way to poison one record, but a way to take a whole domain in seconds, repeatably. What followed was the largest coordinated patch the internet had ever attempted, a fix that bought entropy rather than certainty, and a reminder that publishing a patch also publishes the vulnerability."
+summary: "In 2008 a researcher realized that a known weakness in DNS was far worse than anyone had calculated - not a way to poison one record, but a way to take a whole domain in seconds, repeatably. What followed was the largest coordinated patch the internet had ever attempted, a fix that bought entropy rather than certainty, and a reminder that publishing a patch also publishes the vulnerability."
 concepts: ["dns cache poisoning", "kaminsky", "transaction id", "source port randomisation", "dnssec", "coordinated disclosure", "bailiwick"]
 relatedTools: []
 relatedArticles: ["dns-family-history", "dnssec-records-in-dig", "there-is-no-perfect-code", "the-worm-era"]
@@ -37,7 +37,7 @@ On 8 July 2008 more than eighty vendors released patches simultaneously. The adv
 
 ## What the fix actually bought
 
-The patch was source port randomisation. Instead of asking from a predictable port, a resolver picks a random one for each query, and the attacker must now guess both the transaction identifier and the port - roughly thirty-two bits instead of sixteen. That does not make forgery impossible. It makes it about sixty-five thousand times harder, which converts an attack that takes seconds into one that takes long enough to notice.
+The patch was source port randomization. Instead of asking from a predictable port, a resolver picks a random one for each query, and the attacker must now guess both the transaction identifier and the port - roughly thirty-two bits instead of sixteen. That does not make forgery impossible. It makes it about sixty-five thousand times harder, which converts an attack that takes seconds into one that takes long enough to notice.
 
 This is worth being precise about, because it is a pattern practitioners meet constantly and often misread. The fix did not repair the protocol. DNS still authenticates a response by whether its fields match a question, which is not authentication in any cryptographic sense. What the fix did was raise the cost. The actual repair is DNSSEC, which signs the records so that a forged answer fails validation regardless of how well it guesses - and DNSSEC's adoption remains partial nearly two decades later, which is why the [DNSSEC article](/learn/dnssec-records-in-dig) on this site describes checking rather than assuming.
 
@@ -49,11 +49,11 @@ But the month did not stay quiet, and the reason is structural rather than anyon
 
 ## What a practitioner should take from it
 
-**Randomisation is a cost, not a boundary.** Any control described in bits of entropy is buying time. That is often the right trade and it should be understood as one, especially when the number of bits was chosen decades ago for a network of a different size.
+**Randomization is a cost, not a boundary.** Any control described in bits of entropy is buying time. That is often the right trade and it should be understood as one, especially when the number of bits was chosen decades ago for a network of a different size.
 
 **The resolver you run is the one that matters.** The flaw was in resolvers, not authoritative servers, and the exposure belonged to whoever operated the recursive service - which is why the [choosing a public resolver](/learn/choosing-a-public-dns-resolver) question is a security question and not just a latency one.
 
-**Coordination at that scale is possible and is rare.** Eighty vendors patching one protocol flaw on one day happened because someone spent months organising it in private, and because the alternative was visibly catastrophic. It is the model the industry cites, and it has not often been repeated at that scale.
+**Coordination at that scale is possible and is rare.** Eighty vendors patching one protocol flaw on one day happened because someone spent months organizing it in private, and because the alternative was visibly catastrophic. It is the model the industry cites, and it has not often been repeated at that scale.
 
 **And the person mattered.** Kaminsky found it, chose to coordinate rather than publish, and spent the years afterwards on the fix rather than the finding - ICANN named him one of the trusted community representatives for the DNSSEC root in 2010. He died in April 2021, aged forty-two. The New York Times had called him a digital Paul Revere, which is florid and, on the record of that summer, not wrong.
 

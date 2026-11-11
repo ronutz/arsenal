@@ -111,7 +111,7 @@
       "industry": "Branche",
       "industryLede": "Unternehmensgeschichten vom Beginn der Netzwerktechnik bis heute, auch die der gescheiterten und der vergessenen Unternehmen.",
       "industryBadge": "{count} Unternehmen",
-      "anniversary": "Dieses Jahr {age} Jahre alt: {count} davon",
+      "anniversary": "Dieses Jahr {age, plural, one {{age} Jahr} other {{age} Jahre}} alt: {count} davon",
       "practice": "Die Praxis",
       "practiceLede": "Wie die Arbeit tatsächlich erledigt wird, nicht wie die Technik funktioniert. Triage, Eskalation, Belege, Übergabe.",
       "practiceBadge": "{count} veröffentlicht",
@@ -135,10 +135,10 @@
       "careerLede": "Fünfzehn Kapitel ab 1996, jedes aus dem Inneren des Unternehmens erzählt, in dem es sich abgespielt hat.",
       "redu": "Red Education",
       "reduLede": "Das globale autorisierte Schulungszentrum, über das meine Kurse laufen, und die Geschichte, wie es dorthin gekommen ist.",
-      "hubsBadge": "{count} Herstellerseiten",
-      "glossaryBadge": "{count} Einträge",
+      "hubsBadge": "{count, plural, one {{count} Herstellerseite} other {{count} Herstellerseiten}}",
+      "glossaryBadge": "{count, plural, one {{count} Eintrag} other {{count} Einträge}}",
       "guidesBadge": "{count, plural, one {# Lesepfad} other {# Lesepfade}}",
-      "trainingBadge": "{count} Kurse von {vendors} Herstellern",
+      "trainingBadge": "{count, plural, one {{count} Kurs} other {{count} Kurse}} von {vendors, plural, one {{vendors} Hersteller} other {{vendors} Herstellern}}",
       "careerBadge": "{count} Kapitel",
       "rolesBadge": "{count} Positionen",
       "roles": "Die Rollen",
@@ -157,7 +157,7 @@
       "contributeLede": "Wie Sie ein Tool, einen Artikel oder einen Eintrag verbessern.",
       "stories": "Geschichten",
       "storiesLede": "Die Artikel, die andere Artikel verbinden: was die Fehlerfälle gemeinsam haben, was eine Anfrage tatsächlich durchläuft, warum derselbe Bug immer wiederkehrt.",
-      "storiesBadge": "{count} Erzählstränge",
+      "storiesBadge": "{count, plural, one {{count} Erzählstrang} other {{count} Erzählstränge}}",
       "materials": "Offene Kursmaterialien",
       "materialsLede": "Vollständige Schulungen, die alle nutzen dürfen: Folien, Sprechernotizen, Gliederung und Lizenz.",
       "materialsBadge": "{count, plural, one {# Kurs} other {# Kurse}}"
@@ -283,7 +283,7 @@
       },
       "builtBy": "Gebaut und gepflegt von Rodolfo Nützmann, seit 1996 Engineer und Trainer für Netzwerk und Sicherheit.",
       "proofCredentials": "Qualifikationen",
-      "proofEndorsements": "{count} Empfehlungen im Wortlaut",
+      "proofEndorsements": "{count, plural, one {{count} Empfehlung} other {{count} Empfehlungen}} im Wortlaut",
       "proofColophon": "Kolophon: wie das hier entsteht",
       "publicSource": "Quellcode",
       "publicChangelog": "Änderungsprotokoll",
@@ -469,13 +469,13 @@
       "compliantBadge": "Innerhalb der Obergrenze",
       "overCapBadge": "Über der Obergrenze",
       "maxForPhase": "Maximum für sein Ausstellungsdatum: {max} Tage.",
-      "overByText": "{days} Tage über dem Maximum von {max} Tagen für sein Ausstellungsdatum: Eine öffentliche CA würde es nicht ausstellen.",
+      "overByText": "{days, plural, one {{days} Tag} other {{days} Tage}} über dem Maximum von {max} Tagen für sein Ausstellungsdatum: Eine öffentliche CA würde es nicht ausstellen.",
       "renewalsValue": "Etwa {n} Erneuerungen pro Jahr bei dieser Gültigkeit.",
       "remainingHeading": "Nach der Uhr Ihres Geräts",
-      "daysRemaining": "{days} Tage bis zum Ablauf.",
-      "expiredText": "Vor {days} Tagen abgelaufen.",
-      "renewByText": "Spätestens am {date} erneuern (etwa {lead} Tage vor Ablauf)",
-      "renewByDue": "in {days} Tagen",
+      "daysRemaining": "{days, plural, one {{days} Tag} other {{days} Tage}} bis zum Ablauf.",
+      "expiredText": "Vor {days, plural, one {{days} Tag} other {{days} Tagen}} abgelaufen.",
+      "renewByText": "Spätestens am {date} erneuern (etwa {lead, plural, one {{lead} Tag} other {{lead} Tage}} vor Ablauf)",
+      "renewByDue": "in {days, plural, one {{days} Tag} other {{days} Tagen}}",
       "reuseHeading": "Wiederverwendung der Validierung (Ausstellungszeitraum)",
       "dcvText": "Daten der Domain Control Validation (DCV) können {days} Tage lang wiederverwendet werden.",
       "siiText": "Angaben zur Identität der Organisation (OV/EV SII) können {days} Tage lang wiederverwendet werden.",
@@ -593,7 +593,7 @@
         "run": "Zusammenfassen",
         "minimal": "Minimale abdeckende Menge",
         "single": "Einzelnes Supernetz",
-        "singleExtra": "Umfasst {extra} zusätzliche Adressen über die Eingaben hinaus.",
+        "singleExtra": "Umfasst {extra, plural, one {{extra} zusätzliche Adresse} other {{extra} zusätzliche Adressen}} über die Eingaben hinaus.",
         "stat": {
           "inputs": "Eingegebene Präfixe",
           "addresses": "Adressen",
@@ -1535,7 +1535,7 @@
           "fractional": "Als Sekundenbruchteile gelesen.",
           "parsedUtc": "Als Datum geparst; ein Wert ohne Zeitzone wurde als UTC gelesen.",
           "parsedZone": "Als Datum mit expliziter Zeitzone geparst.",
-          "readAs": "Gelesen als {unit} ({digits} Ziffern).",
+          "readAs": "Gelesen als {unit} ({digits, plural, one {{digits} Ziffer} other {{digits} Ziffern}}).",
           "y2038": "Das liegt nahe bei 2038-01-19T03:14:07Z, wo ein vorzeichenbehafteter 32-Bit-Sekundenzähler überläuft (das Jahr-2038-Problem). 64-Bit-Systeme sind nicht betroffen.",
           "yearRange": "Das Jahr liegt außerhalb des üblichen 4-stelligen Bereichs; prüfen Sie, ob die Einheit richtig erkannt wurde."
         },
@@ -2132,8 +2132,8 @@
           "filetypes": "Definierte Dateitypen: {count}.",
           "fullPath": "{path}",
           "general": {
-            "both": "neue Entitäten bleiben {days} Tag(e) im Staging, bevor sie durchgesetzt werden können; X-Forwarded-For gilt für die Client-IP als vertrauenswürdig, daher sollten nur wirklich vertrauenswürdige vorgelagerte Proxys diesen Header setzen dürfen.",
-            "days": "neue Entitäten bleiben {days} Tag(e) im Staging, bevor sie durchgesetzt werden können.",
+            "both": "neue Entitäten bleiben {days, plural, one {{days} Tag} other {{days} Tage}} im Staging, bevor sie durchgesetzt werden können; X-Forwarded-For gilt für die Client-IP als vertrauenswürdig, daher sollten nur wirklich vertrauenswürdige vorgelagerte Proxys diesen Header setzen dürfen.",
+            "days": "neue Entitäten bleiben {days, plural, one {{days} Tag} other {{days} Tage}} im Staging, bevor sie durchgesetzt werden können.",
             "xff": "X-Forwarded-For gilt für die Client-IP als vertrauenswürdig, daher sollten nur wirklich vertrauenswürdige vorgelagerte Proxys diesen Header setzen dürfen."
           },
           "geolocations": "Blockierte Länder: {count}.",
@@ -4744,10 +4744,10 @@
             "host": "Eine Host-Maske (binär alle Bits auf 1): Das System teilt nur die wiederverwendeten Verbindungen, die von derselben Client-IP-Adresse stammen. Wiederverwendungspools pro Client.",
             "other": "Das System wendet diese Maske auf die Quelladresse an, um zu bestimmen, ob wiederverwendet werden darf: Clients, deren Adressen denselben maskierten Wert ({mask}) haben, bilden eine Wiederverwendungsgruppe, genau wie eine Subnetzmaske Hosts gruppiert."
           },
-          "maxAge": "Maximales Alter einer Verbindung im Wiederverwendungspool in Sekunden; ältere Verbindungen werden aus dem Pool entfernt. {value} Sekunden.",
+          "maxAge": "Maximales Alter einer Verbindung im Wiederverwendungspool in Sekunden; ältere Verbindungen werden aus dem Pool entfernt. {value, plural, one {{value} Sekunde} other {{value} Sekunden}}.",
           "maxAgeDefault": "Maximales Alter einer Verbindung im Wiederverwendungspool in Sekunden; ältere Verbindungen werden aus dem Pool entfernt. {value} Sekunden (der Standardwert: ein Tag).",
           "maxReuse": "Wie oft eine Serververbindung höchstens wiederverwendet werden kann, bevor sie ausgemustert wird. {value} Wiederverwendungen.",
-          "maxSize": "Maximale Anzahl von Verbindungen im Wiederverwendungspool; ist er voll, wird eine fertige Serververbindung einfach geschlossen, statt geparkt zu werden. {value} Verbindungen. Beachten Sie, dass der Pool pro TMM existiert: Der Lab-Artikel von F5 zeigt, wie sich der konfigurierte Wert auf die TMM-Instanzen aufteilt, auf einem Mehrkerngerät hält also jede TMM ihren Anteil.",
+          "maxSize": "Maximale Anzahl von Verbindungen im Wiederverwendungspool; ist er voll, wird eine fertige Serververbindung einfach geschlossen, statt geparkt zu werden. {value, plural, one {{value} Verbindung} other {{value} Verbindungen}}. Beachten Sie, dass der Pool pro TMM existiert: Der Lab-Artikel von F5 zeigt, wie sich der konfigurierte Wert auf die TMM-Instanzen aufteilt, auf einem Mehrkerngerät hält also jede TMM ihren Anteil.",
           "limit": {
             "strict": "Die Warnung des Handbuchs, verdichtet: Das TCP-Verbindungslimit wird ohne Ausnahme eingehalten, daher verhindern ungenutzte Verbindungen NEUE Verbindungen, bis sie ablaufen, selbst wenn sie hätten wiederverwendet werden können. Die Seite selbst hält fest, dass dies keine empfohlene Konfiguration ist, außer in ganz speziellen Fällen mit kurzen Ablauf-Timeouts.",
             "idle": "Ungenutzte Verbindungen werden verworfen, sobald das TCP-Verbindungslimit erreicht ist; laut Handbuch kann das Limit in der Überlappung von Verwerfen und Neuaufbau kurz überschritten werden.",
@@ -5749,7 +5749,7 @@
       "found": "Urbild gefunden",
       "copy": "Kopieren",
       "copied": "Kopiert",
-      "foundIn": "Gefunden nach {attempts} Versuchen in {ms} ms. Ein so schwaches Secret bietet keinen Schutz mehr, sobald der Hash bekannt wird.",
+      "foundIn": "Gefunden nach {attempts, plural, one {{attempts} Versuch} other {{attempts} Versuchen}} in {ms} ms. Ein so schwaches Secret bietet keinen Schutz mehr, sobald der Hash bekannt wird.",
       "notFoundExhausted": "Kein Urbild in diesem Suchraum",
       "notFoundBudget": "Bei {cap} Kandidaten angehalten",
       "exhaustedSub": "Der gesamte Suchraum wurde ohne Treffer durchsucht. Erweitern Sie Alphabet oder Länge, oder, wahrscheinlicher, die Eingabe hat mehr Entropie, als eine kurze Brute-Force-Suche erreichen kann.",
@@ -6123,7 +6123,7 @@
       "statsValid": "Gültiges JSON",
       "statBytes": "{n} Zeichen",
       "statKeys": "{n} Schlüssel",
-      "statObjects": "{n} Objekte",
+      "statObjects": "{n, plural, one {{n} Objekt} other {{n} Objekte}}",
       "statArrays": "{n} Arrays",
       "statDepth": "Tiefe {n}",
       "example": "Beispiel",
@@ -6825,7 +6825,7 @@
       "reasons": {
         "HSTS_MISSING": "Kein Header Strict-Transport-Security. Browser verwenden womöglich einfaches HTTP, sodass die erste Anfrage für Downgrade-Angriffe offen bleibt.",
         "HSTS_MAXAGE_ZERO": "max-age ist {value}, was HSTS deaktiviert. Setzen Sie ein positives max-age wie 31536000 (ein Jahr).",
-        "HSTS_MAXAGE_LOW": "max-age ist nur {value} Sekunden, unter dem empfohlenen Minimum von sechs Monaten.",
+        "HSTS_MAXAGE_LOW": "max-age ist nur {value, plural, one {{value} Sekunde} other {{value} Sekunden}}, unter dem empfohlenen Minimum von sechs Monaten.",
         "HSTS_MAXAGE_OK": "max-age ist {value} Sekunden, akzeptabel, aber unter der Baseline von einem Jahr.",
         "HSTS_MAXAGE_STRONG": "max-age ist {value} Sekunden (ein Jahr oder mehr), die empfohlene Baseline.",
         "HSTS_SUBDOMAINS": "includeSubDomains ist gesetzt und weitet die Durchsetzung von HTTPS auf jede Subdomain aus.",
@@ -7532,7 +7532,7 @@
       },
       "engine": {
         "arg": {
-          "count": "Stoppt automatisch nach {count} Paket(en). Strg+C stoppt früher.",
+          "count": "Stoppt automatisch nach {count, plural, one {{count} Paket} other {{count} Paketen}}. Strg+C stoppt früher.",
           "count0": "Paketanzahl 0 bedeutet: mitschneiden, bis Sie mit Strg+C stoppen. Geben Sie eine Zahl an, um nach so vielen Paketen automatisch zu stoppen.",
           "filter": "Filter im BPF-Stil, gegen jedes Paket geprüft. ''{filter}' wählt nur passenden Datenverkehr aus. Da bei einem bloßen host/port weder src noch dst festgelegt ist, werden beide Richtungen mitgeschnitten.",
           "filterNone": "Kein Filter: Jedes Paket auf der Schnittstelle wird mitgeschnitten. Ungefiltert entsteht viel Ausgabe; grenzen Sie sie mit host/port/proto ein.",
@@ -7745,8 +7745,8 @@
           "noForwarding": "Mindestens ein VLAN hat IP-Adressen, aber es wurde kein Befehl 'enable ipforwarding' gefunden. Ohne ihn routet der Switch nicht zwischen diesen VLAN-Schnittstellen.",
           "noVerbs": "Keine dieser Zeilen beginnt mit einem EXOS-Verb (create, configure, enable, disable, delete, unconfigure). Möglicherweise ist dies eine Konfiguration für eine andere Plattform, etwa Cisco IOS oder VOSS.",
           "none": "Es wurden keine EXOS-Befehle erkannt. Stellen Sie sicher, dass dies eine ExtremeXOS-Konfiguration ist (Zeilen, die mit create, configure, enable, disable, delete oder unconfigure beginnen).",
-          "read": "{count} Befehlszeile(n) gelesen.",
-          "readVlans": "{count} Befehlszeile(n) und {vcount} VLAN(s) gelesen.",
+          "read": "{count, plural, one {{count} Befehlszeile} other {{count} Befehlszeilen}} gelesen.",
+          "readVlans": "{count, plural, one {{count} Befehlszeile} other {{count} Befehlszeilen}} und {vcount, plural, one {{vcount} VLAN} other {{vcount} VLANs}} gelesen.",
           "untagged": "Denken Sie daran: Ein ungetaggter Port kann nur zu einem VLAN gehören. Um einen ungetaggten Port einem neuen VLAN hinzuzufügen, müssen Sie ihn zuerst aus dem Default-VLAN entfernen."
         },
         "other": {
@@ -7979,8 +7979,8 @@
       "nextReleaseLabel": "Nächstes gehärtetes Release",
       "nextNotifLabel": "Nächste Sicherheitsbenachrichtigung",
       "today": "heute",
-      "inDays": "in {n} Tagen",
-      "daysAgo": "vor {n} Tagen",
+      "inDays": "in {n, plural, one {# Tag} other {# Tagen}}",
+      "daysAgo": "vor {n, plural, one {# Tag} other {# Tagen}}",
       "colDate": "Datum (dritter Mittwoch)",
       "colRelease": "Gehärtetes Release",
       "colNotification": "Sicherheitsbenachrichtigung",
@@ -8006,8 +8006,8 @@
       "example": "Beispiel",
       "clear": "Leeren",
       "runsLocally": "Läuft vollständig in Ihrem Browser: zwei dokumentierte Formeln, kein Netzwerk, keine Uhr.",
-      "threadsExact": "{n} Threads",
-      "threadsFloor": "{floor} Threads ({exact} exakt)",
+      "threadsExact": "{n, plural, one {{n} Thread} other {{n} Threads}}",
+      "threadsFloor": "{floor, plural, one {{floor} Thread} other {{floor} Threads}} ({exact} exakt)",
       "fractionNote": "F5 dokumentiert die Formel, aber keine Rundungsregel für gebrochene Ergebnisse; angezeigt werden der exakte Wert und die abgerundete Zahl ganzer Threads. Maßgeblich ist die Anzahl, die das laufende System selbst meldet.",
       "zeroNote": "Bei 2 vCPUs ergibt die dokumentierte Formel 0; bigd läuft trotzdem als einzelne Multithread-Instanz. Verstehen Sie diesen Grenzfall also als „minimales Threading“, nicht als „kein bigd“.",
       "ht": {
@@ -9015,7 +9015,7 @@
         "heading": "Ihr RCA-Gerüst",
         "framing": "Nach deterministischen Regeln aus Ihrer Beschreibung strukturiert: Kandidaten zur Untersuchung mit den jeweils nötigen Belegen, keine Schlussfolgerung. Eine Ursache bestätigen Menschen anhand von Belegen, in einer echten Nachbesprechung.",
         "timelineHeading": "Geordnete Zeitleiste",
-        "bandCount": "{count} Ereignis(se) dazwischen",
+        "bandCount": "{count, plural, one {{count} Ereignis} other {{count} Ereignisse}} dazwischen",
         "completenessHeading": "Vollständigkeit der Zeitleiste",
         "candidatesHeading": "Mögliche beitragende Faktoren (zu untersuchen)",
         "candidatesIntro": "Jeder ist ein zu prüfender Bereich, keine Schlussfolgerung. Bestätigen oder verwerfen Sie jeden anhand Ihrer eigenen Belege; das Tool bestätigt nie einen für Sie.",
@@ -9150,7 +9150,7 @@
           }
         },
         "md": {
-          "band": "- {label}: {n} Ereignis(se) dazwischen",
+          "band": "- {label}: {n, plural, one {{n} Ereignis} other {{n} Ereignisse}} dazwischen",
           "bullet": "- {text}",
           "candidate": "### {title}",
           "candidateConfirmed": "### {title} [von Ihnen als bestätigt markiert]",
@@ -10025,7 +10025,7 @@
       "behavior": "Verhalten",
       "behaviorLeakyBucket": "Die Durchsetzung ist ein Leaky Bucket: Läuft der Bucket über, gibt der Load-Balancer HTTP 429 zurück.",
       "behaviorDisabled": "Mitigation Action Disabled gibt bei Überlauf trotzdem 429 zurück. Es bedeutet nur, dass kein zusätzlicher Lockout-Timer greift: Disabled ist kein Bypass.",
-      "behaviorBlock": "Mitigation Action Block fügt einen Lockout von {secs} Sekunden hinzu: Nach dem Überlauf des Buckets ist der Benutzer für den gesamten Lockout gesperrt, auch wenn sich der Bucket leert, und kann erst nach Ablauf des Timers wieder senden.",
+      "behaviorBlock": "Mitigation Action Block fügt einen Lockout von {secs, plural, one {{secs} Sekunde} other {{secs} Sekunden}} hinzu: Nach dem Überlauf des Buckets ist der Benutzer für den gesamten Lockout gesperrt, auch wenn sich der Bucket leert, und kann erst nach Ablauf des Timers wieder senden.",
       "behaviorOverMax": "Dieser Lockout überschreitet die maximale Sperrzeit von F5 von 48 Stunden (172.800 Sekunden).",
       "overshootCaveat": "Die Zählung ist pro Regional Edge bzw. Proxy verteilt; Sie sehen daher womöglich kurzzeitig mehr Anfragen als das Limit, bevor sich die Durchsetzung einpendelt (K000157944). Geschichtete Regeln für Server-URL und API-Endpunkt werden in der konfigurierten Reihenfolge ausgewertet; es gilt der erste Treffer.",
       "errors": {
@@ -10089,7 +10089,7 @@
       },
       "runsLocally": "Wird in Ihrem Browser geparst. Es wird nichts hochgeladen.",
       "emptyError": "Fügen Sie die herunterladbare Referenzdatei von F5 mit CE-IP-Adressen und -Domains ein, um zu beginnen.",
-      "provenance": "{lines} nicht leere Zeilen aus der eingefügten Datei geparst: {domains} Domains und {ips} IP-Einträge. Das ist Ihre Datei, keine gespeicherte Liste.",
+      "provenance": "{lines, plural, one {{lines} nicht leere Zeile} other {{lines} nicht leere Zeilen}} aus der eingefügten Datei geparst: {domains, plural, one {{domains} Domain} other {{domains} Domains}} und {ips, plural, one {{ips} IP-Eintrag} other {{ips} IP-Einträge}}. Das ist Ihre Datei, keine gespeicherte Liste.",
       "domains": "Domains",
       "ips": "IPs",
       "portMatrix": "Port-/Protokollmatrix",
@@ -10116,7 +10116,7 @@
       "clear": "Leeren",
       "runsLocally": "In Ihrem Browser dekodiert. Es wird nichts hochgeladen.",
       "noRoutes": "Kein routes-Array gefunden. Fügen Sie die http_loadbalancer-Spezifikation oder ihr routes-Array ein.",
-      "firstMatchNote": "{n} Routen, von oben nach unten ausgewertet: Die erste passende Route gewinnt.",
+      "firstMatchNote": "{n, plural, one {{n} Route} other {{n} Routen}}, von oben nach unten ausgewertet: Die erste passende Route gewinnt.",
       "routeN": "Route {n}",
       "types": {
         "simple": "Simple",
@@ -10143,7 +10143,7 @@
         "other": "(Matcher)"
       },
       "query": "Query",
-      "queryCount": "{n} Bedingung(en) für Query-Parameter",
+      "queryCount": "{n, plural, one {{n} Bedingung} other {{n} Bedingungen}} für Query-Parameter",
       "action": "Aktion",
       "noPool": "kein Origin-Pool (fällt auf den Standard zurück)",
       "redirect": "Weiterleitung zu",
@@ -10551,7 +10551,7 @@
         "dynamic-ratio": "Dynamic Ratio setzt die Ratios anhand von Leistungsmetriken in Echtzeit, die oft per SNMP erfasst werden. Die Methode hängt von laufenden Metriken ab und lässt sich daher nicht deterministisch simulieren."
       },
       "resultTitle": "Wo die nächsten N Verbindungen landen",
-      "summaryLine": "{requests} Anfragen auf {active} aktive Member verteilt ({standby} im Standby).",
+      "summaryLine": "{requests, plural, one {{requests} Anfrage} other {{requests} Anfragen}} auf {active, plural, one {{active} aktives Member} other {{active} aktive Member}} verteilt ({standby} im Standby).",
       "standbyBadge": "Standby",
       "note": {
         "standby": "Member in einer niedrigeren Prioritätsgruppe sind im Standby und erhalten keinen Datenverkehr, solange die aktive Gruppe den Schwellenwert für die Aktivierung der Prioritätsgruppe erfüllt.",
@@ -13006,7 +13006,7 @@
         "step": "von {from} bis {to}, alle {by}"
       },
       "valuesEvery": "Trifft auf jeden Wert in diesem Feld zu.",
-      "valuesLine": "Trifft auf {count} Wert(e) zu: {list}.",
+      "valuesLine": "Trifft auf {count, plural, one {{count} Wert} other {{count} Werte}} zu: {list}.",
       "macroLine": "{macro} wird zur Form mit fünf Feldern {expansion} erweitert.",
       "macroReboot": "@reboot läuft einmal, wenn der Cron-Daemon startet. Es gibt keinen Zeitplan zum Lesen oder Vorausberechnen.",
       "warningsTitle": "Gut zu wissen",
@@ -13042,8 +13042,6 @@
       "yes": "Ja",
       "no": "Nein",
       "errorTitle": "Noch keine Dimensionierung möglich",
-      "primariesLabel": "primär",
-      "backupsLabel": "Backup",
       "perTunnelLabel": "Wert pro Tunnel",
       "stepsTitle": "So hat die Auswahlhilfe entschieden",
       "prereqsTitle": "Bereitzuhalten",
@@ -13090,14 +13088,15 @@
           "encryption": "GRE überträgt den Datenverkehr im Klartext; die Anforderung einer verschlüsselten Übertragung in die Cloud schließt es aus. IPsec (ESP unter IKEv2) ist die Antwort für die Weiterleitung.",
           "greOk": "Statische öffentliche Egress-IP, GRE-fähiges Gerät und keine Verschlüsselungspflicht: GRE wird bevorzugt, mit einfacherer Kapselung, Weiterleitung in Hardware-Geschwindigkeit und höherer Obergrenze pro Tunnel.",
           "haMany": "HA erforderlich: Spiegeln Sie die primären Tunnel mit {b} Backup-Tunneln, jeder zu einer Public Service Edge in einem ANDEREN Rechenzentrum, die dokumentierte Form aus primär und sekundär.",
-          "haOne": "HA erforderlich: Spiegeln Sie die primären Tunnel mit {b} Backup-Tunnel zu einer Public Service Edge in einem ANDEREN Rechenzentrum, die dokumentierte Form aus primär und sekundär.",
+          "haOne": "HA erforderlich: Spiegeln Sie den primären Tunnel mit {b} Backup-Tunnel zu einer Public Service Edge in einem ANDEREN Rechenzentrum, die dokumentierte Form aus primär und sekundär.",
           "minimal": "Es ist keine HA-Anforderung angegeben, daher besteht das Minimum, das die Anforderungen abdeckt, nur aus primären Tunneln.",
           "nat": "Die Adressen der internen Tunnelendpunkte werden per Source-NAT umgesetzt, daher sinkt der veröffentlichte Wert pro Tunnel von 1 Gbps auf 250 Mbps. Ohne dieses NAT gilt wieder der volle Wert.",
           "noStaticIp": "Die GRE-Registrierung verlangt eine statische öffentliche Quelladresse; bei dynamischer Egress-IP ist die dokumentierte Alternative IPsec, das Peers mit FQDN-Identifikation unterstützt.",
           "sizingMany": "ceil({required} Mbps / {per} Mbps pro Tunnel) = {count} primäre Tunnel.",
           "sizingOne": "ceil({required} Mbps / {per} Mbps pro Tunnel) = {count} primärer Tunnel."
         }
-      }
+      },
+      "tunnelsLine": "{primaries} primär + {backups} Backup"
     },
     "zscaler-firewall-rule-order-simulator": {
       "name": "Simulator der Regelreihenfolge für die ZIA-Firewall",
@@ -13719,7 +13718,7 @@
       "placeholder": "5 3 8 1 9 2",
       "errorTitle": "Diese Eingabe muss korrigiert werden",
       "countersTitle": "Ergebnis",
-      "counters": "{comparisons} Vergleiche, {writes} Schreibvorgänge für {n} Elemente",
+      "counters": "{comparisons, plural, one {{comparisons} Vergleich} other {{comparisons} Vergleiche}}, {writes, plural, one {{writes} Schreibvorgang} other {{writes} Schreibvorgänge}} für {n, plural, one {{n} Element} other {{n} Elemente}}",
       "strategy_bubble": "Bubblesort (Tausch benachbarter Elemente, früher Abbruch)",
       "strategy_selection": "Selectionsort (Minimum suchen, ein Tausch pro Durchlauf)",
       "strategy_insertion": "Insertionsort (ein sortiertes Präfix wachsen lassen)",
@@ -13765,7 +13764,7 @@
         },
         "note": {
           "bubbleSorted": "Versuchen Sie hier auch eine sortierte Liste: Der frühe Abbruch von Bubblesort erkennt den sauberen Durchlauf und stoppt nach einem Durchgang in O(n).",
-          "counters": "{comparisons} Vergleiche und {writes} Schreibvorgänge für {n} Elemente. Wiederholen Sie es mit einer längeren Liste und beobachten Sie, wie die Zähler jeder Strategie wachsen: Diese Wachstumskurve IST die O-Notation.",
+          "counters": "{comparisons, plural, one {{comparisons} Vergleich} other {{comparisons} Vergleiche}} und {writes, plural, one {{writes} Schreibvorgang} other {{writes} Schreibvorgänge}} für {n, plural, one {{n} Element} other {{n} Elemente}}. Wiederholen Sie es mit einer längeren Liste und beobachten Sie, wie die Zähler jeder Strategie wachsen: Diese Wachstumskurve IST die O-Notation.",
           "quickSorted": "Fügen Sie einmal eine bereits sortierte Liste ein: Quicksort nach Lomuto mit dem letzten Element als Pivot nähert sich dann seinem schlechtesten Fall O(n²), genau der Gefahr, die der Einführungsartikel beschreibt."
         },
         "quick": {
@@ -14366,7 +14365,7 @@
           "allowErr": "Ein allow_err-Zähler ungleich null bedeutet, dass Pakete trotz eines Fehlerzustands zugelassen wurden; das sollten Sie untersuchen, statt es zu ignorieren.",
           "bothWays": "Datenverkehr ist in beide Richtungen geflossen: Der Pfad funktioniert in beide Richtungen, und die Richtlinie hat ihn zugelassen.",
           "dnat": "Destination-NAT ist vorhanden, also hat eine VIP gegriffen. Beachten Sie die Reihenfolge: Die Zielübersetzung erfolgt VOR dem Routing-Lookup und vor der Richtlinienprüfung; deshalb muss das Ziel der Richtlinie das VIP-Objekt sein.",
-          "expiring": "Diese Sitzung läuft in {seconds} Sekunden ab und wird gleich aus der Tabelle entfernt; deshalb findet ein zweiter Blick sie möglicherweise nicht mehr.",
+          "expiring": "Diese Sitzung läuft in {seconds, plural, one {{seconds} Sekunde} other {{seconds} Sekunden}} ab und wird gleich aus der Tabelle entfernt; deshalb findet ein zweiter Blick sie möglicherweise nicht mehr.",
           "noNat": "In keinem Abschnitt eine Übersetzung: Diese Sitzung wurde ohne NAT geroutet.",
           "noReply": "ES KAM NICHTS ZURÜCK. Die FortiGate hat Datenverkehr in Originalrichtung weitergeleitet und keine Antwortpakete gesehen. Die Sitzung existiert und die Richtlinie hat sie zugelassen, also blockiert hier nicht die Firewall den Datenverkehr: Prüfen Sie das Routing hinter diesem Gerät, den Zielhost oder einen Filter weiter entlang des Pfads.",
           "offloaded": "Die Sitzung ist an die Hardware ausgelagert (Offload). Ausgelagerter Datenverkehr durchläuft nicht den CPU-Pfad, daher zeigt ein Paket-Sniffer auf dem Gerät ihn nicht an, solange das Offload für den Test nicht deaktiviert ist.",
@@ -14911,9 +14910,9 @@
           "longest": "Von den passenden Präfix-Locations ist „{raw}“ die LÄNGSTE. In dieser Runde entscheidet die Länge, nicht die Reihenfolge, in der die Blöcke geschrieben sind.",
           "longestBeats": "Von den passenden Präfix-Locations ist „{raw}“ die LÄNGSTE: Sie schlägt {others} durch ihre Länge, nicht durch ihre Position in der Datei.",
           "noExact": "Keine exakte Location („=“) passt auf {uri}, daher geht die Suche weiter.",
-          "noPredicate": "Keine der {count} Prädikat-Location(s) hat für diese Anfrage eine Variable, die weder leer noch „0“ ist.",
+          "noPredicate": "Keine der {count, plural, one {{count} Prädikat-Location} other {{count} Prädikat-Locations}} hat für diese Anfrage eine Variable, die weder leer noch „0“ ist.",
           "noPrefix": "Keine Präfix-Location passt auf {uri}.",
-          "noRegex": "Keine der {count} Location(s) mit regulärem Ausdruck passt auf {uri}.",
+          "noRegex": "Keine der {count, plural, one {{count} Location} other {{count} Locations}} mit regulärem Ausdruck passt auf {uri}.",
           "nothing": "Nichts passt auf {uri}. Auf einem echten Server fällt die Anfrage an die Konfiguration auf server-Ebene durch und liefert typischerweise 404.",
           "predicate": "Kein regulärer Ausdruck hat gepasst, daher werden die Prädikat-Locations in Dateireihenfolge geprüft. „{raw}“ ist die erste, deren Variable weder leer noch „0“ ist ({pattern} = „{value}“, aus {from}), also gewinnt sie. Prädikat-Locations gibt es ab nginx 1.31.5.",
           "predicateBeats": "Kein regulärer Ausdruck hat gepasst, daher werden die Prädikat-Locations in Dateireihenfolge geprüft. „{raw}“ ist die erste, deren Variable weder leer noch „0“ ist ({pattern} = „{value}“, aus {from}), also gewinnt sie und schlägt das längste Präfix „{prefix}“. Prädikat-Locations gibt es ab nginx 1.31.5.",
@@ -16294,7 +16293,7 @@
       "name": "FortiOS-CLI-Konfiguration erklärt",
       "blurb": "Fügen Sie einen FortiOS-config-Block ein und erhalten Sie die Struktur als Baum, mit jedem Verb erklärt. Das Tool markiert die teuerste Falle: `set` auf einem mehrwertigen Feld ERSETZT die ganze Liste, sodass das Setzen einer einzigen Quelladresse in einer Richtlinie, die vier hatte, stillschweigend drei entfernt. Außerdem erkennt es nicht geschlossene Blöcke und erinnert daran, dass erst `end` festschreibt. Lokal und offline.",
       "inputLabel": "Ein FortiOS-Konfigurationsblock",
-      "placeholder": "config firewall policy\\n    edit 10\\n        set action accept\\n    next\\nend",
+      "placeholder": "config firewall policy\n    edit 10\n        set action accept\n    next\nend",
       "example": "Beispiel",
       "clear": "Leeren",
       "tree": {
@@ -16358,7 +16357,7 @@
         "warn": {
           "purge": "Zeile {line}: purge entfernt jeden Eintrag der Tabelle, nicht nur einen.",
           "setList": "Zeile {line}: „set {field}“ ersetzt jeden Wert in {field}, statt etwas hinzuzufügen. Sollte etwas hinzugefügt werden, lautet der Befehl append.",
-          "unclosed": "Geöffnet und nie geschlossen: {count} Block/Blöcke ({path}). Ein nicht geschlossener Block ist nicht festgeschrieben, und wenn Sie ihn in ein Live-Gerät einfügen, bleibt die Sitzung an einer unerwarteten Stelle stehen."
+          "unclosed": "Geöffnet und nie geschlossen: {count, plural, one {{count} Block} other {{count} Blöcke}} ({path}). Ein nicht geschlossener Block ist nicht festgeschrieben, und wenn Sie ihn in ein Live-Gerät einfügen, bleibt die Sitzung an einer unerwarteten Stelle stehen."
         }
       }
     },
@@ -17308,7 +17307,7 @@
         "append-creates": "Die Variable existierte nicht, daher hat <c>append</c> sie angelegt.",
         "lappend-creates": "Die Variable existierte nicht, daher hat <c>lappend</c> sie als Liste angelegt.",
         "catch": "Das Skript darin endete mit Code {code} (0 ok, 1 error, 2 return, 3 break, 4 continue); <c>catch</c> gibt diesen Code zurück, statt einen Fehler alles stoppen zu lassen.",
-        "class-longest": "{count} Einträge passten; mit starts_with oder ends_with gibt class match den längsten zurück, <c>{name}</c>.",
+        "class-longest": "{count, plural, one {{count} Eintrag passte} other {{count} Einträge passten}}; mit starts_with oder ends_with gibt class match den längsten zurück, <c>{name}</c>.",
         "class-match": "{hit, select, true {Der Eintrag <c>{name}</c> der Data Group passte (Operator {op}).} other {Kein Eintrag der Data Group passte (Operator {op}).}}",
         "concat": "<c>concat</c> hat den Whitespace an beiden Enden jedes Arguments entfernt, leere Argumente verworfen und den Rest mit einzelnen Leerzeichen verbunden.",
         "cut-count": "Eine Zahl als Terminator ist eine Länge: bis zu {count} Zeichen, weniger, wenn der String vorher endet.",
@@ -17317,8 +17316,8 @@
         "expr-unbraced": "<c>expr</c> hat mehrere Wörter erhalten: Tcl verbindet sie mit Leerzeichen und ersetzt im Ergebnis erneut, daher wird ein Wert mit <c>[</c> oder <c>$</c> als Code ausgeführt. Setzen Sie den Ausdruck in geschweifte Klammern (F5 K57410758).",
         "findstr-found": "Der Suchstring beginnt an Index {at}; das Ergebnis beginnt {skip} Zeichen danach.",
         "foreach": "Hat den Rumpf einmal pro Element ausgeführt, insgesamt {iterations}-mal.",
-        "getfield": "In {count} Felder aufgeteilt; Feld {field} wird zurückgegeben (Felder zählen ab 1).",
-        "domain": "Der Name hat {labels} Labels; die letzten {count} werden zurückgegeben (<c>domain</c> zählt von rechts, und 1 ist das letzte Label).",
+        "getfield": "In {count, plural, one {{count} Feld} other {{count} Felder}} aufgeteilt; Feld {field} wird zurückgegeben (Felder zählen ab 1).",
+        "domain": "Der Name hat {labels, plural, one {{labels} Label} other {{labels} Labels}}; {count, plural, one {nur das letzte ({count}) wird} other {die letzten {count} werden}} zurückgegeben (<c>domain</c> zählt von rechts, und 1 ist das letzte Label).",
         "if-branch": "Eine Bedingung war wahr, daher läuft der Rumpf danach, und der Rest wird übersprungen.",
         "if-else": "Keine Bedingung war wahr, daher läuft der <c>else</c>-Rumpf.",
         "if-none": "Keine Bedingung war wahr, und es gibt kein <c>else</c>: Nichts läuft, und <c>if</c> gibt einen leeren String zurück.",
@@ -17340,7 +17339,7 @@
         "substr-no-terminator": "Der Terminator ist in der Syntax von F5 optional, aber die Seite nennt nicht, was ohne ihn passiert. Das Tool gibt den Rest des Strings zurück; prüfen Sie das auf einem BIG-IP, bevor Sie sich darauf verlassen.",
         "getfield-empty-split": "Die Seiten von F5 behandeln kein leeres Trennzeichen. Das Tool behandelt den ganzen String als Feld 1.",
         "getfield-empty-field": "Zwei Trennzeichen hintereinander ergeben hier ein leeres Feld. Die Seiten von F5 zeigen diesen Fall nicht.",
-        "getfield-out-of-range": "Es gibt {count} Felder, und Feld {field} wurde angefordert. Die Seiten von F5 nennen nicht, was getfield dann zurückgibt; das Tool nimmt einen leeren String an.",
+        "getfield-out-of-range": "Es gibt {count, plural, one {{count} Feld} other {{count} Felder}}, und Feld {field} wurde angefordert. Die Seiten von F5 nennen nicht, was getfield dann zurückgibt; das Tool nimmt einen leeren String an.",
         "domain-count": "Die Seite von F5 zeigt <c>domain</c> nur mit Anzahlen von 1 oder mehr. Für {count} nimmt das Tool einen leeren String an; prüfen Sie das auf einem BIG-IP, bevor Sie sich darauf verlassen.",
         "domain-empty-label": "Der Name hat ein leeres Label (ein führender, abschließender oder doppelter Punkt). Die Seite von F5 enthält dafür kein Beispiel für <c>domain</c>.",
         "class-contains-multiple": "{count} Einträge enthalten den Wert. F5 dokumentiert, dass starts_with und ends_with den längsten Treffer zurückgeben, aber nicht, welchen Eintrag contains zurückgibt; das Tool nimmt den ersten in der Reihenfolge, in der die Data Group sie auflistet."
@@ -17412,7 +17411,7 @@
         "cut-count": "Eine Zahl als Terminator ist eine Länge: bis zu {count} Zeichen, weniger, wenn der String vorher endet.",
         "cut-terminator": "Direkt vor <c>{terminator}</c> gestoppt, gefunden an Index {at}.",
         "cut-terminator-absent": "<c>{terminator}</c> kommt nach dem Startpunkt nicht vor, daher wird der Rest des Strings zurückgegeben.",
-        "getfield": "In {count} Felder aufgeteilt; Feld {field} wird zurückgegeben (Felder zählen ab 1).",
+        "getfield": "In {count, plural, one {{count} Feld} other {{count} Felder}} aufgeteilt; Feld {field} wird zurückgegeben (Felder zählen ab 1).",
         "split-chars": "<c>split</c> aus einfachem Tcl behandelt jedes Zeichen von <c>{sep}</c> als eigenes Trennzeichen und ist hier daher keine Entsprechung: getfield teilt am ganzen String."
       },
       "undocumented": {
@@ -17427,7 +17426,7 @@
         "substr-no-terminator": "Der Terminator ist in der Syntax von F5 optional, aber die Seite nennt nicht, was ohne ihn passiert. Das Tool gibt den Rest des Strings zurück; prüfen Sie das auf einem BIG-IP, bevor Sie sich darauf verlassen.",
         "getfield-empty-split": "Die Seiten von F5 behandeln kein leeres Trennzeichen. Das Tool behandelt den ganzen String als Feld 1.",
         "getfield-empty-field": "Zwei Trennzeichen hintereinander ergeben hier ein leeres Feld. Die Seiten von F5 zeigen diesen Fall nicht.",
-        "getfield-out-of-range": "Es gibt {count} Felder, und Feld {field} wurde angefordert. Die Seiten von F5 nennen nicht, was getfield dann zurückgibt; das Tool nimmt einen leeren String an.",
+        "getfield-out-of-range": "Es gibt {count, plural, one {{count} Feld} other {{count} Felder}}, und Feld {field} wurde angefordert. Die Seiten von F5 nennen nicht, was getfield dann zurückgibt; das Tool nimmt einen leeren String an.",
         "domain-count": "Die Seite von F5 zeigt <c>domain</c> nur mit Anzahlen von 1 oder mehr. Für {count} nimmt das Tool einen leeren String an; prüfen Sie das auf einem BIG-IP, bevor Sie sich darauf verlassen.",
         "domain-empty-label": "Der Name hat ein leeres Label (ein führender, abschließender oder doppelter Punkt). Die Seite von F5 enthält dafür kein Beispiel für <c>domain</c>.",
         "class-contains-multiple": "{count} Einträge enthalten den Wert. F5 dokumentiert, dass starts_with und ends_with den längsten Treffer zurückgeben, aber nicht, welchen Eintrag contains zurückgibt; das Tool nimmt den ersten in der Reihenfolge, in der die Data Group sie auflistet."
@@ -17538,7 +17537,7 @@
       "parsesNo": "Tcl 8.4 kann sie nicht laden.",
       "clean": "Keine Befunde: Sie folgt dem Leitfaden in jedem Punkt, den die Prüfung liest.",
       "counts": "{error, plural, one {# Fehler} other {# Fehler}}, {warning, plural, one {# Warnung} other {# Warnungen}}, {info, plural, one {# Hinweis} other {# Hinweise}}.",
-      "stats": "{lines} Zeilen; die längste hat {longest} Zeichen.",
+      "stats": "{lines, plural, one {{lines} Zeile} other {{lines} Zeilen}}; die längste hat {longest} Zeichen.",
       "eventsTitle": "Ereignisse und Prioritäten",
       "lineShort": "Zeile {n}",
       "priority": "Priorität {p}",
@@ -17835,7 +17834,7 @@
         "substr-no-terminator": "Der Terminator ist in der Syntax von F5 optional, aber die Seite nennt nicht, was ohne ihn passiert. Das Tool gibt den Rest des Strings zurück; prüfen Sie das auf einem BIG-IP, bevor Sie sich darauf verlassen.",
         "getfield-empty-split": "Die Seiten von F5 behandeln kein leeres Trennzeichen. Das Tool behandelt den ganzen String als Feld 1.",
         "getfield-empty-field": "Zwei Trennzeichen hintereinander ergeben hier ein leeres Feld. Die Seiten von F5 zeigen diesen Fall nicht.",
-        "getfield-out-of-range": "Es gibt {count} Felder, und Feld {field} wurde angefordert. Die Seiten von F5 nennen nicht, was getfield dann zurückgibt; das Tool nimmt einen leeren String an.",
+        "getfield-out-of-range": "Es gibt {count, plural, one {{count} Feld} other {{count} Felder}}, und Feld {field} wurde angefordert. Die Seiten von F5 nennen nicht, was getfield dann zurückgibt; das Tool nimmt einen leeren String an.",
         "domain-count": "Die Seite von F5 zeigt <c>domain</c> nur mit Anzahlen von 1 oder mehr. Für {count} nimmt das Tool einen leeren String an; prüfen Sie das auf einem BIG-IP, bevor Sie sich darauf verlassen.",
         "domain-empty-label": "Der Name hat ein leeres Label (ein führender, abschließender oder doppelter Punkt). Die Seite von F5 enthält dafür kein Beispiel für <c>domain</c>.",
         "class-contains-multiple": "{count} Einträge enthalten den Wert. F5 dokumentiert, dass starts_with und ends_with den längsten Treffer zurückgeben, aber nicht, welchen Eintrag contains zurückgibt; das Tool nimmt den ersten in der Reihenfolge, in der die Data Group sie auflistet."
@@ -18646,7 +18645,7 @@
         "asciiPunctuation": "ASCII-Anführungszeichen und -Bindestriche verwenden",
         "foldLookalikes": "Homoglyphen durch ASCII ersetzen"
       },
-      "cleanChanges": "{removed} entfernt, {spaces} Leerzeichen oder Zeilenumbrüche, {punctuation} Anführungszeichen oder Striche, {folded} Homoglyphen ersetzt.",
+      "cleanChanges": "{removed} entfernt, {spaces, plural, one {{spaces} Leerzeichen oder Zeilenumbruch} other {{spaces} Leerzeichen oder Zeilenumbrüche}}, {punctuation, plural, one {{punctuation} Anführungszeichen oder Strich} other {{punctuation} Anführungszeichen oder Striche}}, {folded, plural, one {{folded} Homoglyphe} other {{folded} Homoglyphen}} ersetzt.",
       "copy": "Kopieren",
       "copied": "Kopiert",
       "escapeTitle": "Text als Escape-Sequenzen schreiben",
@@ -19283,9 +19282,9 @@
         "unreadable": "Nichts zu erstellen"
       },
       "verdictBody": {
-        "complete": "{n} Zertifikate vom End-Entity-Zertifikat bis zu einem selbstsignierten Root-Zertifikat; jede Verknüpfung ist hergestellt, und jede hier geprüfte Regel von RFC 5280 ist erfüllt.",
-        "complete-with-warnings": "{n} Zertifikate vom End-Entity-Zertifikat bis zu einem selbstsignierten Root-Zertifikat, jede Verknüpfung ist hergestellt; die Warnungen unten sollten Sie lesen, bevor Sie die Kette bereitstellen.",
-        "anchor-omitted": "{n} Zertifikate, soweit vorhanden in Ordnung; das letzte wurde von {missing} ausgestellt, das nicht in der Eingabe enthalten ist. Ist {missing} ein Root-Zertifikat in den Truststores Ihrer Clients, ist das die normale Kette zum Senden (ein Vertrauensanker darf weggelassen werden). Ist es ein Zwischenzertifikat, scheitern Clients, die es nicht bereits haben.",
+        "complete": "{n, plural, one {{n} Zertifikat} other {{n} Zertifikate}} vom End-Entity-Zertifikat bis zu einem selbstsignierten Root-Zertifikat; jede Verknüpfung ist hergestellt, und jede hier geprüfte Regel von RFC 5280 ist erfüllt.",
+        "complete-with-warnings": "{n, plural, one {{n} Zertifikat} other {{n} Zertifikate}} vom End-Entity-Zertifikat bis zu einem selbstsignierten Root-Zertifikat, jede Verknüpfung ist hergestellt; die Warnungen unten sollten Sie lesen, bevor Sie die Kette bereitstellen.",
+        "anchor-omitted": "{n, plural, one {{n} Zertifikat} other {{n} Zertifikate}}, soweit vorhanden in Ordnung; das letzte wurde von {missing} ausgestellt, das nicht in der Eingabe enthalten ist. Ist {missing} ein Root-Zertifikat in den Truststores Ihrer Clients, ist das die normale Kette zum Senden (ein Vertrauensanker darf weggelassen werden). Ist es ein Zwischenzertifikat, scheitern Clients, die es nicht bereits haben.",
         "incomplete": "Der Pfad endet beim End-Entity-Zertifikat: Sein Aussteller, {missing}, ist nicht in der Eingabe enthalten, und kein Client kann aus dem Vorhandenen die Kette bilden. Fügen Sie die Zwischenzertifikate hinzu.",
         "invalid": "Entlang des Pfads ist eine Regel der Pfadvalidierung nach RFC 5280 verletzt; ein konformer Client lehnt diese Kette ab. Die Fehler unten zeigen, wo.",
         "unreadable": "Aus der Eingabe ließ sich kein Zertifikat lesen. Fügen Sie PEM-Blöcke ein, jeweils zwischen den Zeilen BEGIN CERTIFICATE und END CERTIFICATE."
@@ -19403,7 +19402,7 @@
         "weak-key": "#{at} ({cn}) enthält einen Schlüssel vom Typ {detail}; die Baseline Requirements verlangen RSA-Moduli von mindestens 2048 Bit.",
         "end-entity-is-ca": "Der Pfad wurde ab #{at} ({cn}) gebildet, einem CA-Zertifikat; eine Serverkette beginnt bei einem End-Entity-Zertifikat.",
         "end-entity-no-san": "#{at} ({cn}) hat keinen subjectAltName; Browser gleichen den Hostnamen nur mit subjectAltName ab, daher wird ein Serverzertifikat ohne diesen Eintrag nicht akzeptiert.",
-        "revocation-pointers": "{detail} Zertifikat(e) auf dem Pfad nennen eine CRL (Certificate Revocation List) oder einen OCSP-Responder (Online Certificate Status Protocol). Ein Validator prüft dort die Sperrung; diese Seite listet die Verweise auf und kontaktiert sie nicht."
+        "revocation-pointers": "{detail, plural, one {{detail} Zertifikat auf dem Pfad nennt} other {{detail} Zertifikate auf dem Pfad nennen}} eine CRL (Certificate Revocation List) oder einen OCSP-Responder (Online Certificate Status Protocol). Ein Validator prüft dort die Sperrung; diese Seite listet die Verweise auf und kontaktiert sie nicht."
       },
       "pemTitle": "Die zu konfigurierende Kette",
       "pemRootLabel": "Root-Zertifikat einschließen",
@@ -19412,7 +19411,7 @@
       "copy": "Kopieren",
       "copied": "Kopiert",
       "pemNote": "Neu kodiert aus den Bytes der Zertifikate, 64 Spalten, in Kettenreihenfolge. Fügen Sie das dort ein, wo Ihr Server die Zertifikatskette erwartet (bei den meisten Servern eine kombinierte Datei; auf Plattformen, die das Leaf-Zertifikat getrennt halten, ein eigenes Kettenobjekt).",
-      "certsTitle": "Die {n} Zertifikate im Detail",
+      "certsTitle": "{n, plural, one {Das {n} Zertifikat} other {Die {n} Zertifikate}} im Detail",
       "duplicateOf": "Duplikat von #{n}",
       "field": {
         "subject": "Subject",
@@ -19873,7 +19872,7 @@
         "empty": "Der Editor enthält keinen Code, nur Leerzeilen oder Kommentare.",
         "too-long": "Das Programm hat {chars} Zeichen; die Grenze liegt bei {max}. Kürzen Sie es oder teilen Sie die Arbeit auf.",
         "stdin-too-long": "Das stdin-Feld enthält {chars} Zeichen; die Grenze liegt bei {max}.",
-        "line-cut": "{lines} Zeile(n) mit mehr als {max} Zeichen. Die Engine führt sie trotzdem aus; nur diese Vorabprüfung liest sie gekürzt.",
+        "line-cut": "{lines, plural, one {{lines} Zeile} other {{lines} Zeilen}} mit mehr als {max} Zeichen. Die Engine führt sie trotzdem aus; nur diese Vorabprüfung liest sie gekürzt.",
         "import-unavailable": "{module} gehört zur Standardbibliothek von Python, aber nicht zu diesem WebAssembly-Build: Die Engine meldet „{error}“. Nichts auf der Seite kann das Modul nachliefern.",
         "import-distribution": "{module} gibt es für Pyodide als Paket {package}, aber in dieser Version ({version}) werden keine Pakete geladen: Der Import löst ModuleNotFoundError aus. Verfügbar ist die Standardbibliothek.",
         "import-unknown": "{module} ist weder in der Standardbibliothek noch in der Pyodide-Distribution enthalten und kann daher hier nicht importiert werden; der Import löst ModuleNotFoundError aus.",
@@ -19885,8 +19884,8 @@
         "zoneinfo": "zoneinfo findet in diesem Build keine Zeitzonendatenbank (keine tzdata des Systems und kein geladenes tzdata-Paket): ZoneInfo(...) löst ZoneInfoNotFoundError aus. Verwenden Sie stattdessen datetime.timezone mit einem festen Offset.",
         "pip": "pip und micropip sind in dieser Version nicht verfügbar: Pakete sind abgeschaltet, also lässt sich nichts installieren. Verfügbar ist die Standardbibliothek.",
         "input-no-stdin": "Das Programm liest die Standardeingabe, aber das stdin-Feld ist leer, daher löst das erste input() EOFError aus. Geben Sie die Zeilen, die es lesen soll, in das Feld ein.",
-        "input-stdin": "Das Programm liest die Standardeingabe; das Feld liefert {lines} Zeile(n), eine pro Lesevorgang, danach das Dateiende.",
-        "stdin-unused": "Das stdin-Feld enthält {lines} Zeile(n), aber das Programm liest weder input() noch sys.stdin.",
+        "input-stdin": "Das Programm liest die Standardeingabe; das Feld liefert {lines, plural, one {{lines} Zeile} other {{lines} Zeilen}}, eine pro Lesevorgang, danach das Dateiende.",
+        "stdin-unused": "Das stdin-Feld enthält {lines, plural, one {{lines} Zeile} other {{lines} Zeilen}}, aber das Programm liest weder input() noch sys.stdin.",
         "sleep-over-limit": "time.sleep({seconds}) ist länger als das Zeitlimit von {limit} s; die Ausführung wird angehalten, bevor das Programm wieder aufwacht.",
         "sleep": "time.sleep({seconds}) zählt zum Zeitlimit von {limit} s.",
         "loop-forever": "Eine while-True-Schleife endet nur durch break, eine Ausnahme, die Schaltfläche „Stoppen“ oder das Zeitlimit von {limit} s.",
@@ -20063,7 +20062,7 @@
         "spawn": "Startet <code>{program}</code>{hasArgs, select, yes { mit <code>{args}</code>} other {}} als aktuellen Prozess{noecho, select, yes {, ohne die Kommandozeile als Echo auszugeben} other {}}. Ab hier liest expect seine Ausgabe, und send tippt Eingaben hinein.",
         "expect": "{variant, select, expect_before {Registriert Muster, die vor den Mustern jedes späteren expect geprüft werden} expect_after {Registriert Muster, die nach den Mustern jedes späteren expect geprüft werden} expect_user {Wartet auf Tastatureingaben des Benutzers} other {Wartet auf passende Ausgabe des Programms}}: {n, plural, one {ein Muster} other {# Muster}}{timeout, select, none {} other {, mit eigenem Timeout von {timeout} Sekunden}}.",
         "send": "Sendet <code>{text}</code> {target, select, process {an das Programm} user {an den Benutzer, auf stdout} error {an den Benutzer, auf stderr} other {an das Terminal}}{ending, select, cr {, mit einem Wagenrücklauf am Ende} lf {, mit einem Zeilenvorschub am Ende} other {, ohne Wagenrücklauf am Ende}}{pace, select, slow {, langsam} human {, mit menschenähnlichen Pausen} other {}}.",
-        "setTimeout": "Setzt den Timeout für jedes folgende expect auf {how, select, infinite {unendlich (-1): Ein expect kann ewig warten} seconds {{value} Sekunden} other {den Wert von <code>{value}</code>}}.",
+        "setTimeout": "Setzt den Timeout für jedes folgende expect auf {how, select, infinite {unendlich (-1): Ein expect kann ewig warten} seconds {{value, plural, one {{value} Sekunde} other {{value} Sekunden}}} other {den Wert von <code>{value}</code>}}.",
         "set": "Setzt <code>{name}</code> auf <code>{value}</code>{argv, select, yes { (Argument {index} der Kommandozeile)} other {}}.",
         "global": "Deklariert <code>{names}</code> in dieser Prozedur als global, sodass ein Schreibzugriff die Variable des Skripts ändert.",
         "interact": "Übergibt die Tastatur an den Benutzer: Tastatureingaben gehen an das Programm, und seine Ausgabe kommt zurück, bis der Benutzer oder das Programm die Übergabe beendet.",
@@ -20073,7 +20072,7 @@
         "close": "Schließt die Verbindung zum Programm; die meisten Programme erkennen das Dateiende und beenden sich.",
         "wait": "Wartet, bis sich der gestartete Prozess beendet, damit das System ihn freigeben kann.",
         "exit": "Beendet das Skript{code, select, none {} other { mit dem Status {code}}}; jede Verbindung zu einem gestarteten Prozess wird geschlossen.",
-        "sleep": "Pausiert {seconds} Sekunden lang, unabhängig davon, was das Programm tut.",
+        "sleep": "Pausiert {seconds, plural, one {{seconds} Sekunde} other {{seconds} Sekunden}} lang, unabhängig davon, was das Programm tut.",
         "stty": "{mode, select, off {Schaltet das Echo des Terminals aus: Was der Benutzer tippt, wird nicht angezeigt.} on {Schaltet das Echo des Terminals wieder ein.} other {Ändert die Terminalmodi: <code>{args}</code>.}}",
         "proc": "Definiert die Prozedur <code>{name}</code>{hasParams, select, yes { mit den Parametern <code>{params}</code>} other {}}; ihr Rumpf läuft, wenn sie aufgerufen wird.",
         "control": "{name, select, if {Verzweigung: Die Befehle darin laufen, wenn die Bedingung erfüllt ist.} foreach {Schleife über eine Liste: Die Befehle darin laufen für jedes Element.} while {Schleife, solange die Bedingung erfüllt ist.} for {Zählschleife über die Befehle darin.} switch {Wählt den ersten Zweig, dessen Muster zum Wert passt.} other {Tcl-Befehl {name}.}}",
@@ -20329,8 +20328,8 @@
           "repeated": "Content-Length kommt {count}-mal mit demselben Wert vor, {value}. RFC 9110, Abschnitt 8.6: Ein Empfänger MAY (darf) die Nachricht entweder ablehnen oder die Liste durch eine einzige Instanz des Werts ersetzen, da dies wahrscheinlich auf ein weiter vorn erzeugtes Duplikat hindeutet."
         },
         "H8": {
-          "shorter": "Content-Length gibt {declared} Oktette an, eingefügt wurden aber {actual}. RFC 9112, Abschnitt 6.3, Regel 6: Ein Empfänger, der die angegebene Anzahl Oktette nicht erhält, MUST (muss) die Nachricht als unvollständig betrachten und die Verbindung schließen (vielleicht hat das Einfügen auch nur den Body verloren).",
-          "longer": "Content-Length gibt {declared} Oktette an, eingefügt wurden aber {actual}: {extra} mehr. Ein Empfänger liest genau {declared} und behandelt den Rest als Beginn der nächsten Nachricht. So beginnt eine desynchronisierte Verbindung."
+          "shorter": "Content-Length gibt {declared, plural, one {{declared} Oktett} other {{declared} Oktette}} an, {actual, plural, one {eingefügt wurde aber {actual}} other {eingefügt wurden aber {actual}}}. RFC 9112, Abschnitt 6.3, Regel 6: Ein Empfänger, der die angegebene Anzahl Oktette nicht erhält, MUST (muss) die Nachricht als unvollständig betrachten und die Verbindung schließen (vielleicht hat das Einfügen auch nur den Body verloren).",
+          "longer": "Content-Length gibt {declared, plural, one {{declared} Oktett} other {{declared} Oktette}} an, {actual, plural, one {eingefügt wurde aber {actual}} other {eingefügt wurden aber {actual}}}: {extra} mehr. Ein Empfänger liest genau {declared} und behandelt den Rest als Beginn der nächsten Nachricht. So beginnt eine desynchronisierte Verbindung."
         },
         "H9": {
           "request-not-chunked": "Transfer-Encoding ({codings}) in einer Anfrage, ohne chunked als letzte Kodierung. RFC 9112, Abschnitt 6.3, Regel 4: Die Länge des Body lässt sich nicht zuverlässig bestimmen; der Server MUST (muss) mit 400 (Bad Request) antworten und die Verbindung schließen.",
@@ -20348,10 +20347,10 @@
           "main": "Transfer-Encoding in einer HTTP/1.0-Nachricht. RFC 9112, Abschnitt 6.1: Ein Empfänger MUST (muss) die Nachricht so behandeln, als sei das Framing fehlerhaft, auch wenn ein Content-Length vorhanden ist, und die Verbindung nach der Verarbeitung der Nachricht schließen."
         },
         "H12": {
-          "main": "Auf die Felder folgt ein Body von {octets} Oktetten, aber die Anfrage hat weder Content-Length noch Transfer-Encoding. RFC 9112, Abschnitt 6.3, Regel 7: Die Länge des Body ist null, daher liest ein Server den eingefügten Body als Beginn der nächsten Anfrage."
+          "main": "Auf die Felder folgt ein Body von {octets, plural, one {{octets} Oktett} other {{octets} Oktetten}}, aber die Anfrage hat weder Content-Length noch Transfer-Encoding. RFC 9112, Abschnitt 6.3, Regel 7: Die Länge des Body ist null, daher liest ein Server den eingefügten Body als Beginn der nächsten Anfrage."
         },
         "H13": {
-          "main": "Ein Body von {octets} Oktetten nach einer Antwort mit {code}. RFC 9112, Abschnitt 6.3, Regel 1: Diese Antwort endet an der ersten Leerzeile nach den Feldern und kann keinen Nachrichten-Body enthalten; ein Empfänger liest den Body als Beginn der nächsten Antwort.",
+          "main": "Ein Body von {octets, plural, one {{octets} Oktett} other {{octets} Oktetten}} nach einer Antwort mit {code}. RFC 9112, Abschnitt 6.3, Regel 1: Diese Antwort endet an der ersten Leerzeile nach den Feldern und kann keinen Nachrichten-Body enthalten; ein Empfänger liest den Body als Beginn der nächsten Antwort.",
           "content-length-forbidden": "Content-Length in einer Antwort mit {code}. RFC 9110, Abschnitt 8.6: Ein Server MUST NOT (darf nicht) Content-Length in einer Antwort mit dem Statuscode 1xx oder 204 senden."
         },
         "H14": {
@@ -20521,8 +20520,8 @@
         "darker": "dunkler"
       },
       "formulaTitle": "Die Rechnung (WCAG 2.2)",
-      "formulaLuminance": "Jeder sRGB-Kanal (0 bis 1) wird linearisiert: c / 12.92, wenn c höchstens 0.04045 ist, sonst ((c + 0.055) / 1.055) ^ 2.4. Die relative Leuchtdichte ist L = 0.2126 R + 0.7152 G + 0.0722 B, 0 für Schwarz und 1 für Weiß.",
-      "formulaRatio": "Das Kontrastverhältnis ist (L1 + 0.05) / (L2 + 0.05), wobei L1 die hellere und L2 die dunklere Leuchtdichte ist: ({lighter} + 0.05) / ({darker} + 0.05) = {ratio}. Es reicht von 1:1 bis 21:1.",
+      "formulaLuminance": "Jeder sRGB-Kanal (0 bis 1) wird linearisiert: c / 12,92, wenn c höchstens 0,04045 ist, sonst ((c + 0,055) / 1,055) ^ 2,4. Die relative Leuchtdichte ist L = 0,2126 R + 0,7152 G + 0,0722 B, 0 für Schwarz und 1 für Weiß.",
+      "formulaRatio": "Das Kontrastverhältnis ist (L1 + 0,05) / (L2 + 0,05), wobei L1 die hellere und L2 die dunklere Leuchtdichte ist: ({lighter} + 0,05) / ({darker} + 0,05) = {ratio}. Es reicht von 1:1 bis 21:1.",
       "thresholds": "Erfolgskriterien der WCAG 2.2: 1.4.3 Kontrast (Minimum), Stufe AA, verlangt 4,5:1 für Text und 3:1 für großen Text; 1.4.6 Kontrast (erweitert), Stufe AAA, verlangt 7:1 und 4,5:1; 1.4.11 Nicht-Text-Kontrast, Stufe AA, verlangt 3:1 für Komponenten der Benutzeroberfläche und grafische Objekte. Großer Text hat mindestens 18 Punkt oder 14 Punkt fett. Beiläufiger Text und Logos sind ausgenommen.",
       "limits": "Das Verhältnis ist die Formel der WCAG über sRGB, also das, was die Kriterien verlangen; es ist kein Wahrnehmungsmodell, und zwei Farben, die bestehen, können für manche Lesende trotzdem schwer lesbar sein. Farben außerhalb des sRGB-Farbumfangs werden vor dem Messen abgeschnitten, da die Kriterien für darstellbare Farben definiert sind. Alpha beim Hintergrund wird ignoriert (er gilt als deckend). Benannte Farben, Notationen und Umrechnungen folgen CSS Color Level 4; die Quellen sind unter „Quellen“ aufgeführt.",
       "error": {
@@ -21596,7 +21595,7 @@
         "unknown": "Keine Syslog-Meldung: kein PRI am Anfang."
       },
       "framing": {
-        "octet-counting": "TCP mit Octet Counting (RFC 6587): Der Frame gibt {declared} Oktette an und enthält {actual}.",
+        "octet-counting": "TCP mit Octet Counting (RFC 6587): Der Frame gibt {declared, plural, one {{declared} Oktett} other {{declared} Oktette}} an und enthält {actual}.",
         "non-transparent": "TCP mit Non-Transparent-Framing (RFC 6587): Die Meldung endet mit dem Trailer LF."
       },
       "lengthLine": "{octets, plural, one {# Oktett} other {# Oktette}} ({chars, plural, one {# Zeichen} other {# Zeichen}}).",
@@ -21690,7 +21689,7 @@
       },
       "notesTitle": "Befunde, Grenzen und Transportwege",
       "limits": {
-        "rfc5424": "Länge: {octets} Oktette. Jeder Empfänger muss 480 akzeptieren; jeder Empfänger sollte 2.048 akzeptieren (RFC 5424 §6.1).",
+        "rfc5424": "Länge: {octets, plural, one {{octets} Oktett} other {{octets} Oktette}}. Jeder Empfänger muss 480 akzeptieren; jeder Empfänger sollte 2.048 akzeptieren (RFC 5424 §6.1).",
         "bsd": "Länge: {octets} Byte. Ein BSD-Syslog-Paket darf höchstens 1.024 Byte groß sein (RFC 3164 §4.1)."
       },
       "transports": "Transportwege: UDP-Port 514 (RFC 5426); TCP mit Octet Counting oder Trailer (RFC 6587); TLS auf TCP-Port 6514 (RFC 5425).",
@@ -21875,7 +21874,7 @@
       "recentTitle": "Neu hinzugefügt",
       "recentLede": "Die neuesten Tools aus dem Änderungsprotokoll, die neuesten zuerst.",
       "directoryTitle": "Das allgemeine Verzeichnis",
-      "directoryLede": "{count} allgemeine Tools in {categories} Kategorien, jedes davon unten aufgeführt; {platform, plural, one {# Tool für die Plattform eines einzelnen Herstellers steht} other {# Tools für die Plattform eines einzelnen Herstellers stehen}} auf den <hubs>Herstellerseiten</hubs>. Springen Sie zu einer Kategorie, zeigen Sie nur einige an oder wechseln Sie zwischen Karten und Liste.",
+      "directoryLede": "{count, plural, one {{count} allgemeines Tool} other {{count} allgemeine Tools}} in {categories} Kategorien, jedes davon unten aufgeführt; {platform, plural, one {# Tool für die Plattform eines einzelnen Herstellers steht} other {# Tools für die Plattform eines einzelnen Herstellers stehen}} auf den <hubs>Herstellerseiten</hubs>. Springen Sie zu einer Kategorie, zeigen Sie nur einige an oder wechseln Sie zwischen Karten und Liste.",
       "pasteTitle": "Einfügen, was Sie haben",
       "pasteLede": "Ein Token, ein Header-Block, eine Logzeile, ein Zertifikat, ein CIDR: Fügen Sie es ein, und die Tools, die seine Form erkennen, reihen sich auf, die sichersten Treffer zuerst.",
       "pasteLabel": "Einfügen, was Sie haben",
@@ -22072,7 +22071,7 @@
       },
       "maxLength": {
         "heading": "maxLength weiter als das Präfix (RFC 9319)",
-        "item": "VRP {index}: {prefix} mit maxLength {maxLength} für AS{asn} autorisiert {count} Präfixe, jedes Präfix darin von seiner eigenen Länge bis /{maxLength}.",
+        "item": "VRP {index}: {prefix} mit maxLength {maxLength} für AS{asn} autorisiert {count, plural, one {{count} Präfix} other {{count} Präfixe}}, jedes Präfix darin von seiner eigenen Länge bis /{maxLength}.",
         "rfc9319": "RFC 9319 (BCP 185) empfiehlt minimale ROAs, die „only those IP prefixes that are actually originated by an AS in BGP“ enthalten, und für Betreiber gilt laut Abschnitt 5: „SHOULD avoid using the maxLength attribute in their ROAs, since its inclusion will usually make the ROA non-minimal“. Der RFC erklärt, dass Präfixe, die eine ROA autorisiert, ihr AS aber nicht ankündigt, für das anfällig sind, was er einen Forged-Origin-Sub-Prefix-Hijack nennt (Abschnitte 1, 3 und 4). Ob das für diese Präfixe gilt, hängt davon ab, was das AS tatsächlich ankündigt, und das kann dieses Tool nicht sehen."
       },
       "share": {
@@ -22195,15 +22194,15 @@
         "poolSubscribers": "Teilnehmer im Pool",
         "portsPerSubscriber": "Portlimit pro Teilnehmer",
         "pairedNote": "Die Blöcke eines Teilnehmers werden auf einer Adresse gezählt: Nach RFC 6888 REQ-2 verwendet ein CGN für alle Sitzungen eines Teilnehmers dieselbe externe Adresse, und REQ-4 verlangt ein konfigurierbares Portlimit pro Teilnehmer, hier die Blockgröße mal die Blöcke pro Teilnehmer.",
-        "leftoverNote": "Auf jeder Adresse bleiben übrig: {ports} Ports, die kein ganzer Block abdeckt, und {blocks} Blöcke, zu wenige für den vollen Anteil eines weiteren Teilnehmers.",
+        "leftoverNote": "Auf jeder Adresse bleiben übrig: {ports, plural, one {{ports} Port, den} other {{ports} Ports, die}} kein ganzer Block abdeckt, und {blocks, plural, one {{blocks} Block, zu wenig} other {{blocks} Blöcke, zu wenige}} für den vollen Anteil eines weiteren Teilnehmers.",
         "systemExcluded": "Der nutzbare Bereich {first}-{last} lässt die System Ports 0-1023 aus (RFC 6335, Abschnitt 6), die ein CGN laut RFC 7422 mindestens entfernen sollte.",
         "systemIncluded": "Der nutzbare Bereich {first}-{last} enthält System Ports (0-1023, RFC 6335, Abschnitt 6). Laut RFC 7422 sollte ein CGN sie mindestens entfernen, und RFC 6269 nennt 1024-65535 sicher für ausgehende Quellports.",
         "demandHeading": "Gemessen an den Teilnehmern",
         "subscribers": "Teilnehmer",
         "addressesNeeded": "Benötigte Adressen",
         "spare": "Freie Teilnehmerplätze",
-        "fits": "Der Pool reicht: {needed} seiner {have} Adressen werden benötigt.",
-        "doesNotFit": "Der Pool ist zu klein: {needed} Adressen werden benötigt, er hat {have}. Verwenden Sie kleinere Blöcke, weniger Blöcke pro Teilnehmer oder mehr Adressen.",
+        "fits": "Der Pool reicht: {needed, plural, one {{needed} {have, plural, one {seiner {have} Adresse} other {seiner {have} Adressen}} wird} other {{needed} {have, plural, one {seiner {have} Adresse} other {seiner {have} Adressen}} werden}} benötigt.",
+        "doesNotFit": "Der Pool ist zu klein: {needed, plural, one {{needed} Adresse wird} other {{needed} Adressen werden}} benötigt, er hat {have}. Verwenden Sie kleinere Blöcke, weniger Blöcke pro Teilnehmer oder mehr Adressen.",
         "logHeading": "Log-Volumen pro Teilnehmer und Tag",
         "logScheme": "Logging",
         "logLines": "Zeilen",
@@ -22220,13 +22219,13 @@
         "candidatePorts": "Kandidatenports pro Adresse",
         "portsPerSubscriber": "Ports pro interner Adresse",
         "dynamicPool": "Dynamischer Pool pro Adresse",
-        "reservedNote": "Reservierte Ports R: {list} ({ports} Ports), zuerst entfernt (RFC 7422, Abschnitt 2, Schritt 1).",
+        "reservedNote": "Reservierte Ports R: {list} ({ports, plural, one {{ports} Port} other {{ports} Ports}}), zuerst entfernt (RFC 7422, Abschnitt 2, Schritt 1).",
         "systemPortsWarning": "Einige System Ports (0-1023) bleiben Kandidaten; laut RFC 7422 sollte ein CGN sie mindestens entfernen.",
         "dynamicRanges": "Dynamischer Pool auf jeder externen Adresse: {ranges}. Daraus vergebene Blöcke müssen protokolliert werden (Schritt 4).",
-        "leftoverNote": "Mit D = 0 ist der dynamische Pool deaktiviert, doch die Division lässt {ports} Ports übrig: den Rest der Kandidatenports geteilt durch C.",
-        "overflowNote": "M = {m}: Ein Teilnehmer darf {extra} weitere Ports aus dem dynamischen Pool nehmen, genug für {users} Teilnehmer gleichzeitig bei vollem Überlauf.",
+        "leftoverNote": "Mit D = 0 ist der dynamische Pool deaktiviert, doch die Division lässt {ports, plural, one {{ports} Port} other {{ports} Ports}} übrig: den Rest der Kandidatenports geteilt durch C.",
+        "overflowNote": "M = {m}: Ein Teilnehmer darf {extra, plural, one {{extra} weiteren Port} other {{extra} weitere Ports}} aus dem dynamischen Pool nehmen, genug für {users} Teilnehmer gleichzeitig bei vollem Überlauf.",
         "maxBelowBlock": "M ist kleiner als der vorab zugeteilte Block, daher überschreitet schon der Block allein das Maximum pro Benutzer.",
-        "unusedSlots": "{slots} Blöcke auf der letzten externen Adresse gehören keiner internen Adresse.",
+        "unusedSlots": "{slots, plural, one {{slots} Block auf der letzten externen Adresse gehört} other {{slots} Blöcke auf der letzten externen Adresse gehören}} keiner internen Adresse.",
         "loggingNone": "D = 0: keine Protokollierung der Übersetzungen, was laut RFC 7422 die Verbindungen begrenzt, die Power-User öffnen können. Nur der Konfigurationseintrag wird aufbewahrt (Abschnitt 3).",
         "loggingDynamic": "D > 0: Vorab zugeteilte Ports werden nicht protokolliert, dynamisch zugewiesene Blöcke müssen es werden (Schritt 4), und der Konfigurationseintrag wird aufbewahrt (Abschnitt 3).",
         "forwardHeading": "Vorwärts: von intern nach extern",
@@ -22358,7 +22357,7 @@
         "destination": "Ziel",
         "destDefault": "Die Standardroute: Präfixlänge null, daher enthält sie jede {family}-Adresse und unterliegt jedem längeren Präfix, das das Ziel ebenfalls enthält (RFC 1812, Abschnitt 5.2.4.3).",
         "destHost": "Eine Host-Route: {prefix} ist eine einzelne Adresse.",
-        "destNetwork": "Ein Netzwerkpräfix: Eine Adresse passt, wenn ihre ersten {len} Bits denen von {prefix} gleichen.",
+        "destNetwork": "Ein Netzwerkpräfix: Eine Adresse passt, wenn {len, plural, one {ihr erstes {len} Bit dem von {prefix} gleicht} other {ihre ersten {len} Bits denen von {prefix} gleichen}}.",
         "destUnparsed": "Keine Adresse mit Länge (ein Name, eine Abkürzung oder ein geschwärzter Wert): wird so angezeigt, wie ausgegeben, und bleibt bei der Routensuche unberücksichtigt.",
         "nextHop": "Next Hop",
         "hopVia": "Wird an den Router {gw} übergeben, der selbst über einen direkt angeschlossenen Link erreichbar sein muss.",
@@ -22688,7 +22687,7 @@
         "connection": "Verbindung {n}",
         "line": "Zeile {n}",
         "lines": "Zeilen {start} bis {end}",
-        "show": "Die {n} Zeilen anzeigen"
+        "show": "{n, plural, one {Die {n} Zeile} other {Die {n} Zeilen}} anzeigen"
       },
       "findings": {
         "title": "Befunde",
@@ -23163,7 +23162,7 @@
           "invalid": "Der Abmeldebefehl muss eine Zeile mit bis zu 64 Zeichen sein."
         }
       },
-      "scriptTitle": "Das Skript ({lines} Zeilen)",
+      "scriptTitle": "Das Skript ({lines, plural, one {{lines} Zeile} other {{lines} Zeilen}})",
       "copy": "Kopieren",
       "copied": "Kopiert",
       "download": ".exp herunterladen",
@@ -24419,7 +24418,7 @@
         "days": "{d, plural, one {# Tag} other {# Tage}}",
         "hMin": "{h} h {m} min",
         "daysH": "{d, plural, one {# Tag} other {# Tage}} {h} h",
-        "years": "{n} Jahre",
+        "years": "{n, plural, one {{n} Jahr} other {{n} Jahre}}",
         "exact": "{n} s"
       },
       "wrap": {
@@ -26037,10 +26036,10 @@
             "empty": "Geben Sie die Oktette in Hexadezimal ein: ein Tag (81 00 00 0a) oder den Anfang eines Frames, Ziel- und Quell-MAC zuerst.",
             "long": "Der Text ist {n} Zeichen lang; der Decoder liest höchstens {max}.",
             "char": "„{c}“ ist keine Hexziffer: Schreiben Sie die Oktette mit 0 bis 9 und a bis f, getrennt durch Leerzeichen, Doppelpunkte, Bindestriche oder Punkte.",
-            "odd": "Der Text enthält {n} Hexziffern, eine ungerade Zahl: Jedes Oktett besteht aus zwei Ziffern.",
+            "odd": "Der Text enthält {n, plural, one {{n} Hexziffer} other {{n} Hexziffern}}, eine ungerade Zahl: Jedes Oktett besteht aus zwei Ziffern.",
             "octets": "Das sind {n} Oktette; der Decoder liest höchstens {max}, weit mehr, als MACs, Tags und EtherType eines Frames belegen.",
             "start": "Wählen Sie, wo die Oktette beginnen: auto, tpid oder mac.",
-            "short": "{n} Oktette, die nicht mit 0x8100, 0x88A8 oder 0x9100 beginnen: zu kurz für den Anfang eines Frames (6 + 6 Oktette MAC, dann 2 für den Typ) und kein Tag.",
+            "short": "{n, plural, one {{n} Oktett, das nicht mit 0x8100, 0x88A8 oder 0x9100 beginnt} other {{n} Oktette, die nicht mit 0x8100, 0x88A8 oder 0x9100 beginnen}}: zu kurz für den Anfang eines Frames (6 + 6 Oktette MAC, dann 2 für den Typ) und kein Tag.",
             "frameShort": "Der Anfang eines Frames braucht mindestens 14 Oktette (Ziel-MAC, Quell-MAC, dann 2 Oktette Typ); dies sind {n}.",
             "many": "Mehr als {max} Tags in einem Stapel: Der Decoder hört dort auf.",
             "cut": "Das Tag ab Oktett {at} ist abgeschnitten: Auf einen TPID folgen zwei Oktette TCI.",
@@ -26076,7 +26075,7 @@
           "json": "Der Body der Anfrage ist kein gültiges JSON: Senden Sie ein JSON-Objekt, das seinen Modus nennt: tag oder trunk."
         },
         "next": {
-          "length": "{value} ist eine Länge, {n} Oktette, kein EtherType: ein IEEE-802.3-Frame, dessen Daten mit LLC beginnen (DSAP, SSAP, Control) (RFC 9542, Abschnitt 3).",
+          "length": "{value} ist eine Länge, {n, plural, one {{n} Oktett} other {{n} Oktette}}, kein EtherType: ein IEEE-802.3-Frame, dessen Daten mit LLC beginnen (DSAP, SSAP, Control) (RFC 9542, Abschnitt 3).",
           "neither": "{value} ist weder eine Länge (unter 0x05DD) noch ein EtherType (ab 0x0600) (RFC 9542, Abschnitt 3).",
           "llc": "{value} ist der EtherType für LLC-Kapselung, der anstelle einer Länge als „length indication“ unbestimmter Länge verwendet wird (RFC 9542, Abschnitt 3).",
           "unlisted": "{value} ist ein EtherType, den die Liste der IANA nicht benennt; die IEEE Registration Authority führt die vollständige öffentliche Liste (IANA, IEEE 802 Numbers).",
@@ -26099,7 +26098,7 @@
           "autoTpid": "Als Tag gelesen, weil die Oktette mit {tpid} beginnen; wählen Sie „Ziel-MAC“, wenn sie der Anfang eines Frames sind.",
           "docMac": "Dies sind MAC-Adressen für die Dokumentation (RFC 9542, Abschnitt 2.1.4: 00-00-5E-00-53-00 bis -FF und 01-00-5E-90-10-00 bis -FF).",
           "endAfterTags": "Die Oktette enden nach dem letzten Tag, daher ist der folgende EtherType nicht enthalten.",
-          "after": "{n} Oktette nach dem EtherType oder der Länge werden nicht dekodiert.",
+          "after": "{n, plural, one {{n} Oktett nach dem EtherType oder der Länge wird} other {{n} Oktette nach dem EtherType oder der Länge werden}} nicht dekodiert.",
           "pcp": "Die Verkehrsart ist die, die P802.1ad/D2.4 in Tabelle G-2 für die Priorität angibt, zu der der PCP bei der Standardauswahl 8P0D dekodiert wird; der QoS-Leitfaden von HPE Aruba zu AOS-CX nennt heute dieselben acht. Ein Port mit 7P1D, 6P2D oder 5P3D dekodiert manche Werte anders (Tabelle 6-5).",
           "vlan1": "VLAN 1 passiert diesen Trunk. Es ist die Standard-PVID jedes 802.1Q-Ports (P802.1ad/D2.4, Tabelle 9-2), daher landen Geräte darin, die niemand konfiguriert hat; der VLAN-Artikel erklärt, warum Trunks oft ohne es aufgebaut werden.",
           "assume": "Das Tool vergleicht nur die Konfigurationszeilen: Es nimmt an, dass jedes darin genannte VLAN auf beiden Switches existiert, dass der Link aktiv und an beiden Enden ein Trunk ist und dass nichts anderes (Pruning, Spanning Tree, VLAN-Registrierung) ein VLAN entfernt."
@@ -26737,7 +26736,7 @@
       "empty": "Fügen Sie ein Paket ein, wählen Sie „Beispiel“ oder eines der Pakete aus den RFCs oben.",
       "headline": {
         "packet": "<b>{name}</b> (Code {code}), Identifier {id}, Length {length}: {n, plural, one {# Attribut} other {# Attribute}}.",
-        "attributes": "{octets} Oktette als Attribute gelesen: {n, plural, one {# Attribut} other {# Attribute}}."
+        "attributes": "{octets, plural, one {{octets} Oktett} other {{octets} Oktette}} als Attribute gelesen: {n, plural, one {# Attribut} other {# Attribute}}."
       },
       "header": {
         "heading": "Header",
@@ -26847,7 +26846,7 @@
           "empty": "Fügen Sie ein RADIUS-Paket hexadezimal ein, wie ein Mitschnitt es zeigt: reines Hex, Bytes getrennt durch Leerzeichen oder Doppelpunkte, oder ein Hexdump mit Offsets.",
           "tooMany": "Das sind mehr als {max} Oktette (bisher {octets}): Ein RADIUS-Paket hat höchstens 4096 Oktette (RFC 2865, Abschnitt 3), und mehr liest dieses Tool nicht.",
           "dumpLine": "Zeile {line} beginnt nicht mit einem Offset, die erste Zeile aber schon: In einem Hexdump beginnt jede Zeile mit dem Offset ihres ersten Bytes (das Format, das text2pcap liest).",
-          "dumpOffset": "Zeile {line} beginnt mit dem Offset {found}, aber davor kamen {expected} Bytes: Die Offsets eines Hexdumps zählen die Bytes (das Format, das text2pcap liest).",
+          "dumpOffset": "Zeile {line} beginnt mit dem Offset {found}, aber davor {expected, plural, one {kam {expected} Byte} other {kamen {expected} Bytes}}: Die Offsets eines Hexdumps zählen die Bytes (das Format, das text2pcap liest).",
           "dumpBytes": "Zeile {line} hat einen Offset, aber danach keine Bytes.",
           "ether4": "Diese Oktette beginnen mit einem Ethernet-Header (EtherType 0x0800, RFC 894), gefolgt von einem IPv4-Header mit UDP (Protokoll 17: RFC 791, Registry Protocol Numbers der IANA) von Port {src} an Port {dst} (RFC 768). Das RADIUS-Paket beginnt bei Oktett {offset}: Kopieren Sie nur die RADIUS-Schicht, oder löschen Sie die ersten {offset} Oktette.",
           "ether6": "Diese Oktette beginnen mit einem Ethernet-Header (EtherType 0x86DD, RFC 2464), gefolgt von einem IPv6-Header mit Next Header 17, UDP (RFC 8200, Registry Protocol Numbers der IANA), von Port {src} an Port {dst} (RFC 768). Das RADIUS-Paket beginnt bei Oktett {offset}: Kopieren Sie nur die RADIUS-Schicht, oder löschen Sie die ersten {offset} Oktette.",
@@ -26857,9 +26856,9 @@
           "tacacsPartial": "Diese Oktette sind kein RADIUS-Paket: Das erste Oktett, {first}, ist kein Code, den die IANA vergibt, und die ersten 12 lassen sich als TACACS+-Header lesen (RFC 8907, Abschnitt 4.1): Version {version}, type {type} ({typeName}), seq_no {seq}, flags {flags}, session_id {session}, Body-Länge {length}, obwohl {given} Oktette folgen. Ein TACACS+-Body ist mit dem Shared Secret verschleiert (Abschnitt 4.5), daher dekodiert dieses Tool ihn nicht; der Vergleich unten stellt die beiden Protokolle nebeneinander.",
           "attrHeader": "Attribut {index} würde bei Oktett {offset} beginnen, aber es ist nur ein Oktett übrig: Ein Attribut braucht mindestens ein Oktett Type und ein Oktett Length (RFC 2865, Abschnitt 5). Das Paket ist fehlerhaft.",
           "attrLength": "Attribut {index} bei Oktett {offset}, {label}, hat Length {length}. Die Length eines Attributs zählt seine Oktette Type und Length mit, daher ist sie mindestens 2 (RFC 2865, Abschnitt 5): Das Paket ist fehlerhaft, und laut RFC 2865 wird ein Access-Request mit ungültiger Attribut-Length mit einem Access-Reject beantwortet, eine Antwort mit einer solchen Length dagegen wie ein Access-Reject behandelt oder stillschweigend verworfen.",
-          "rfc2865erratum6486": "Attribut {index} bei Oktett {offset}, {label}, hat Length {length} und reicht damit {over} Oktette über das Paketende bei Oktett {end} hinaus. Das sind die Oktette des Beispiels aus Abschnitt 7.3 von RFC 2865 in der veröffentlichten Fassung: Sein letztes Attribut, State, gibt 0x10 an, wo 10 Oktette (0x0a) folgen, und das verifizierte Erratum 6486 korrigiert das auf 0x0a.",
-          "attrOverrun": "Attribut {index} bei Oktett {offset}, {label}, hat Length {length} und reicht damit {over} Oktette über das Paketende bei Oktett {end} hinaus (RFC 2865, Abschnitt 5): Das Paket ist fehlerhaft. Der Mitschnitt ist möglicherweise abgeschnitten, oder das Feld Length des Pakets oder des Attributs ist falsch.",
-          "short": "Das sind {octets} Oktette; ein RADIUS-Paket hat mindestens 20: Code (1), Identifier (1), Length (2) und den Authenticator (16) (RFC 2865, Abschnitt 3). Wenn es Attribute ohne den Header sind, wählen Sie „Nur Attribute“.",
+          "rfc2865erratum6486": "Attribut {index} bei Oktett {offset}, {label}, hat Length {length} und reicht damit {over, plural, one {{over} Oktett} other {{over} Oktette}} über das Paketende bei Oktett {end} hinaus. Das sind die Oktette des Beispiels aus Abschnitt 7.3 von RFC 2865 in der veröffentlichten Fassung: Sein letztes Attribut, State, gibt 0x10 an, wo 10 Oktette (0x0a) folgen, und das verifizierte Erratum 6486 korrigiert das auf 0x0a.",
+          "attrOverrun": "Attribut {index} bei Oktett {offset}, {label}, hat Length {length} und reicht damit {over, plural, one {{over} Oktett} other {{over} Oktette}} über das Paketende bei Oktett {end} hinaus (RFC 2865, Abschnitt 5): Das Paket ist fehlerhaft. Der Mitschnitt ist möglicherweise abgeschnitten, oder das Feld Length des Pakets oder des Attributs ist falsch.",
+          "short": "{octets, plural, one {Das ist {octets} Oktett} other {Das sind {octets} Oktette}}; ein RADIUS-Paket hat mindestens 20: Code (1), Identifier (1), Length (2) und den Authenticator (16) (RFC 2865, Abschnitt 3). Wenn es Attribute ohne den Header sind, wählen Sie „Nur Attribute“.",
           "lengthSmall": "Das Feld Length gibt {length} an, weniger als das Minimum von 20 (RFC 2865, Abschnitt 3): Allein der Header belegt 20 Oktette.",
           "lengthLarge": "Das Feld Length gibt {length} an, mehr als das Maximum von 4096 (RFC 2865, Abschnitt 3).",
           "truncated": "Das Feld Length gibt {length} Oktette an, aber nur {octets} wurden angegeben: Das Paket ist kürzer als seine Length, und ein Empfänger MUST (muss) es stillschweigend verwerfen (RFC 2865, Abschnitt 3). Der Mitschnitt ist möglicherweise abgeschnitten.",
@@ -26883,7 +26882,7 @@
           "tlv": "Der Wert lässt sich nicht in TLVs mit einer TLV-Length von 3 bis 255 aufteilen (RFC 8044, Abschnitt 3.13), also ist es ein ungültiges Attribut (RFC 6929, Abschnitt 2.8), und es wird als Oktette angezeigt.",
           "prefixSize": "Ein Wert vom Typ ipv6prefix hat 2 bis 18 Oktette (RFC 8044, Abschnitt 3.10); dieser hat {got}, also ist es ein ungültiges Attribut (RFC 6929, Abschnitt 2.8).",
           "prefixLen": "Die Prefix-Length {plen} liegt über {max}, daher MUST (muss) der Wert als ungültiges Attribut behandelt werden (RFC 8044, Abschnitt {section}).",
-          "prefixShort": "Die Prefix-Length {plen} braucht {need} Oktette Präfix, und es folgen nur {got}; das Präfix lässt sich also nicht lesen, und das Attribut ist ungültig (RFC 8044, Abschnitt {section}; RFC 6929, Abschnitt 2.8).",
+          "prefixShort": "Die Prefix-Length {plen} braucht {need, plural, one {{need} Oktett} other {{need} Oktette}} Präfix, und {got, plural, one {es folgt nur {got}} other {es folgen nur {got}}}; das Präfix lässt sich also nicht lesen, und das Attribut ist ungültig (RFC 8044, Abschnitt {section}; RFC 6929, Abschnitt 2.8).",
           "reserved": "Das Oktett Reserved ist {value}; laut RFC 8044 ist es immer null (Abschnitt {section}).",
           "prefixBits": "Bits jenseits der Präfixlänge sind gesetzt; laut RFC 8044 MUST (müssen) sie null sein (Abschnitt {section}).",
           "prefixZero": "Die Adresse ist 0.0.0.0, und dafür MUST (muss) die Prefix-Length laut RFC 8044 32 sein (Abschnitt 3.11).",
@@ -26909,7 +26908,7 @@
           "vendorOffline": "Die Konfigurationsleitfäden von {vendor} werden nicht mehr online veröffentlicht, daher werden die Subattribute nach Nummer angezeigt.",
           "vendorNotRead": "Dieses Tool hat keine Liste der Subattribute aus der Dokumentation von {vendor}, daher werden die Subattribute nach Nummer angezeigt.",
           "vsaOctets": "Der String lässt sich nicht in die Felder Vendor-Type, Vendor-Length und Wert aufteilen, das Format, das er laut RFC 2865 verwenden SHOULD (sollte) (Abschnitt 5.26), daher wird er als ungegliederte Oktette angezeigt.",
-          "redacted": "In diesem Link geschwärzt: {octets} Oktette dieses Werts wurden beim Erstellen des Links durch Nullen ersetzt und sind daher nicht die Originale."
+          "redacted": "In diesem Link geschwärzt: {octets, plural, one {{octets} Oktett dieses Werts wurde beim Erstellen des Links durch Nullen ersetzt und ist daher nicht das Original} other {{octets} Oktette dieses Werts wurden beim Erstellen des Links durch Nullen ersetzt und sind daher nicht die Originale}}."
         },
         "sub": {
           "mppe": "Verschlüsselter Sitzungsschlüssel: Salt 0x{salt}, dann die Länge des Schlüssels, der Schlüssel und Padding, per XOR verknüpft mit dem MD5 aus Shared Secret, Request Authenticator und Salt (RFC 2548, Abschnitte 2.4.2 und 2.4.3). Zum Lesen braucht es das Shared Secret, das dieses Tool nie abfragt.",
@@ -26927,10 +26926,10 @@
           "unlistedHuawei": "Vendor-Type {type} steht nicht in der Tabelle der proprietären RADIUS-Attribute von Huawei (Tabelle 1-11 des Konfigurationsleitfadens für S5700 und S6700 V200R025C00), daher wird es als Oktette angezeigt.",
           "hwFramedIpv6": "Die Tabelle von Huawei beschreibt HW-Framed-IPv6-Address als „IPv6 address to be configured for the user“: eine Adresse, kein Präfix.",
           "dhcpRead": "Als DHCP-Optionen gelesen, wie die Tabelle von Huawei diesen Wert beschreibt: „DHCP Option, encapsulated in Type-Length-Value (TLV) format“.",
-          "dhcpBad": "Die Tabelle von Huawei beschreibt diesen Wert als DHCP-Optionen im Type-Length-Value-Format, aber die Option ab Oktett {at} des Werts braucht {need} Oktette, und nur {left} bleiben übrig, daher wird der Wert als Oktette angezeigt.",
+          "dhcpBad": "Die Tabelle von Huawei beschreibt diesen Wert als DHCP-Optionen im Type-Length-Value-Format, aber die Option ab Oktett {at} des Werts braucht {need, plural, one {{need} Oktett} other {{need} Oktette}}, und nur {left, plural, one {{left} bleibt} other {{left} bleiben}} übrig, daher wird der Wert als Oktette angezeigt.",
           "dhcpOnly82": "Option {code} ist nicht Option 82, und laut der Tabelle von Huawei gilt: „Only Option 82 can be delivered.“",
           "dhcp82Short": "Option 82 hat die Länge {length}, aber RFC 3046 (Abschnitt 2.0) gibt der Option Relay Agent Information eine Mindestlänge von zwei, da mindestens eine Suboption vorhanden sein muss; daher wird ihr Wert als Oktette angezeigt.",
-          "dhcp82Bad": "Der Wert von Option 82 lässt sich nicht in die Suboptionen von RFC 3046 (Abschnitt 2.0) aufteilen: Die Suboption ab Oktett {at} des Optionswerts braucht {need} Oktette, und nur {left} bleiben übrig, daher wird der Wert als Oktette angezeigt.",
+          "dhcp82Bad": "Der Wert von Option 82 lässt sich nicht in die Suboptionen von RFC 3046 (Abschnitt 2.0) aufteilen: Die Suboption ab Oktett {at} des Optionswerts braucht {need, plural, one {{need} Oktett} other {{need} Oktette}}, und nur {left, plural, one {{left} bleibt} other {{left} bleiben}} übrig, daher wird der Wert als Oktette angezeigt.",
           "dhcp82Unknown": "Suboption {code} von Option 82 ist keine, die RFC 3046 definiert (Abschnitt 2.0 vergibt 1, Agent Circuit ID, und 2, Agent Remote ID), daher wird ihr Wert als Oktette angezeigt."
         },
         "ext": {
@@ -26948,10 +26947,10 @@
         },
         "warn": {
           "eapSplit": "Die EAP-Message-Attribute folgen nicht direkt aufeinander: Wenn es mehrere gibt, MUST (müssen) sie in der richtigen Reihenfolge direkt aufeinanderfolgen (RFC 3579, Abschnitt 3.1). Das EAP-Paket unten setzt sie in der Reihenfolge zusammen, in der sie erscheinen.",
-          "eapShort": "Die Daten der EAP-Message umfassen {octets} Oktette, weniger als ein EAP-Header: Code, Identifier und eine zwei Oktette lange Length (RFC 3748, Abschnitt 4).",
+          "eapShort": "Die Daten der EAP-Message umfassen {octets, plural, one {{octets} Oktett} other {{octets} Oktette}}, weniger als ein EAP-Header: Code, Identifier und eine zwei Oktette lange Length (RFC 3748, Abschnitt 4).",
           "eapCode": "EAP-Code {code} wird in der EAP-Registry der IANA nicht vergeben; laut RFC 3748 (Abschnitt 4) werden EAP-Pakete mit Codes, die er nicht definiert, stillschweigend verworfen.",
-          "eapLength": "Die EAP-Length gibt {length} an, aber die EAP-Message-Attribute enthalten {octets} Oktette: Eine EAP-Nachricht, deren Length größer ist als die empfangenen Oktette, MUST (muss) stillschweigend verworfen werden (RFC 3748, Abschnitt 4).",
-          "eapPadding": "Die EAP-Length gibt {length} an, und die EAP-Message-Attribute enthalten {octets} Oktette: Oktette jenseits der Length sind Padding und werden ignoriert (RFC 3748, Abschnitt 4).",
+          "eapLength": "Die EAP-Length gibt {length} an, aber die EAP-Message-Attribute enthalten {octets, plural, one {{octets} Oktett} other {{octets} Oktette}}: Eine EAP-Nachricht, deren Length größer ist als die empfangenen Oktette, MUST (muss) stillschweigend verworfen werden (RFC 3748, Abschnitt 4).",
+          "eapPadding": "Die EAP-Length gibt {length} an, und die EAP-Message-Attribute enthalten {octets, plural, one {{octets} Oktett} other {{octets} Oktette}}: Oktette jenseits der Length sind Padding und werden ignoriert (RFC 3748, Abschnitt 4).",
           "mustNot": "{label} ist vorhanden, aber laut der Attributtabelle von {rfc} (Abschnitt {section}) gilt für diesen Pakettyp: MUST NOT (darf nicht) enthalten sein.",
           "atMostOne": "{label} kommt {n}-mal vor, aber die Attributtabelle von {rfc} (Abschnitt {section}) erlaubt in diesem Pakettyp höchstens eines.",
           "exactlyOne": "Dieser Pakettyp braucht genau ein {label} ({rfc}, Attributtabelle in Abschnitt {section}); dieses Paket hat {n}.",
@@ -26967,7 +26966,7 @@
           "codeUnassigned": "Code {code} ist in der Registry RADIUS Packet Type Codes der IANA nicht vergeben; ein Empfänger verwirft ein Paket mit ungültigem Code stillschweigend (RFC 2865, Abschnitt 3).",
           "codeReserved": "Code {code} ist in der Registry RADIUS Packet Type Codes der IANA reserviert; ein Empfänger verwirft ein Paket mit ungültigem Code stillschweigend (RFC 2865, Abschnitt 3).",
           "acctMax": "Ein Accounting-Paket hat höchstens 4095 Oktette (RFC 2866, Abschnitt 3); die Length dieses Pakets ist 4096.",
-          "padding": "Nach dem Ende, das das Feld Length angibt ({length}), folgen {n} Oktette: Laut RFC 2865 (Abschnitt 3) werden sie als Padding behandelt und ignoriert, daher werden sie nicht dekodiert.",
+          "padding": "Nach dem Ende, das das Feld Length angibt ({length}), {n, plural, one {folgt {n} Oktett: Laut RFC 2865 (Abschnitt 3) wird es als Padding behandelt und ignoriert, daher wird es nicht dekodiert} other {folgen {n} Oktette: Laut RFC 2865 (Abschnitt 3) werden sie als Padding behandelt und ignoriert, daher werden sie nicht dekodiert}}.",
           "invalidAttr": "Attribut {index}, {label}, ist ein ungültiges Attribut; laut RFC 6929 (Abschnitt 2.8) SHOULD (sollte) ein Empfänger es stillschweigend verwerfen, und er MUST NOT (darf nicht) deswegen das ganze Paket verwerfen."
         },
         "note": {
@@ -26992,7 +26991,7 @@
           "codeExperimental": "Code {code} liegt im Bereich, den die IANA für experimentelle Nutzung vorhält (250 bis 253).",
           "attributesMode": "Nur Attribute: Es gibt keinen Header, daher entfallen die Prüfungen, die vom Pakettyp und vom Authenticator abhängen.",
           "redactedAuthenticator": "In diesem Link geschwärzt: Der Authenticator besteht aus 16 Null-Oktetten, da das Original ein MD5 mit dem Shared Secret ist, gegen das jemand offline Vermutungen über das Secret testen könnte.",
-          "redactedPadding": "In diesem Link geschwärzt: Die {n} Oktette nach der Length sind Nullen, da dieses Tool sie nicht liest und nicht erkennen kann, was sie enthielten."
+          "redactedPadding": "In diesem Link geschwärzt: {n, plural, one {Das {n} Oktett nach der Length ist null, da dieses Tool es nicht liest und nicht erkennen kann, was es enthielt} other {Die {n} Oktette nach der Length sind Nullen, da dieses Tool sie nicht liest und nicht erkennen kann, was sie enthielten}}."
         },
         "label": {
           "named": "{name} ({id})",
@@ -27196,7 +27195,7 @@
           "tooWide": "Der Wert hat mehr als 64 Bit; dieses Tool liest 1 bis 64.",
           "width": "„{value}“ ist keine Breite: Schreiben Sie eine ganze Zahl von Bits zwischen 1 und 64.",
           "fit": "Der Wert braucht {need} Bit, mehr als die Breite von {width}: Vergrößern Sie die Breite oder prüfen Sie den Wert.",
-          "negativeFit": "{value} passt nicht als Zahl im Zweierkomplement in {width} Bit, die {min} bis {max} fassen.",
+          "negativeFit": "{value} passt nicht als Zahl im Zweierkomplement in {width, plural, one {{width} Bit, das {min} bis {max} fasst} other {{width} Bit, die {min} bis {max} fassen}}.",
           "layout": "Wählen Sie ein Layout: none, lacp, mac-octet, tcp-flags, dns-flags, tos oder vlan-tci.",
           "layoutWidth": "Das Layout {layout} ist {need} Bit breit, und der Wert hat {width}: Setzen Sie die Breite auf {need}.",
           "numbering": "Wählen Sie eine Nummerierung: lsb0 (Bit 0 ist das niedrigstwertige), msb0 (Bit 0 ist das höchstwertige) oder one (Bit 1 ist das niedrigstwertige).",
@@ -27557,9 +27556,9 @@
       "inspectTitle": "Den Werdegang prüfen",
       "inspectBody": "Jede Aussage auf dieser Seite hat einen Ort, an dem sie sich prüfen lässt: die Kapitel des Werdegangs, die Qualifikationen mit ausstellender Stelle und Datum, die im Wortlaut zitierten Empfehlungen, der Kurskatalog, die Texte, die früheren Websites und die Art, wie diese Website selbst gebaut ist.",
       "recordCount": "{count} Herstellerkapitel",
-      "certsCount": "{count} Qualifikationen, jede mit Aussteller und Datum",
-      "endorsementsCount": "{count} Empfehlungen, im Wortlaut",
-      "coursesCount": "{count} Kurse von {vendors} Herstellern",
+      "certsCount": "{count, plural, one {{count} Qualifikation} other {{count} Qualifikationen}}, jede mit Aussteller und Datum",
+      "endorsementsCount": "{count, plural, one {{count} Empfehlung} other {{count} Empfehlungen}}, im Wortlaut",
+      "coursesCount": "{count, plural, one {{count} Kurs} other {{count} Kurse}} von {vendors, plural, one {{vendors} Hersteller} other {{vendors} Herstellern}}",
       "blogCount": "{count, plural, one {# Beitrag} other {# Beiträge}}, datiert",
       "sitesCount": "{count, plural, one {# Website aus den Originaldateien rekonstruiert} other {# Websites aus den Originaldateien rekonstruiert}}",
       "colophonTitle": "Wie diese Website gebaut ist",
@@ -27575,7 +27574,7 @@
     },
     "identity": "Ich erkläre komplexe Systeme, schule die Menschen, die sie betreiben, und helfe Organisationen, folgenreiche Technologieentscheidungen durchzudenken.",
     "availability": "São Paulo · Portugiesisch und Englisch · Arbeit weltweit",
-    "quoteCount": "Eine von {count} Empfehlungen, im Wortlaut",
+    "quoteCount": "Eine von {count, plural, one {{count} Empfehlung} other {{count} Empfehlungen}}, im Wortlaut",
     "doing": {
       "title": "Was ich heute tue",
       "build": {
@@ -27613,7 +27612,7 @@
     "intro": "{count} Empfehlungen und Bewertungen aus zwei Jahrzehnten Unterricht und Beratung. Die Originale bleiben im Wortlaut erhalten: Nichts darin ist umformuliert oder bearbeitet. Die optionalen maschinellen Übersetzungen sind als solche gekennzeichnet.",
     "provenance": "Die Quellen sind Empfehlungen auf LinkedIn, Google-Rezensionen und verifizierte Bewertungen von Teilnehmenden bei Red Education. Originalwortlaut und Schreibweise bleiben genau so erhalten, wie sie geschrieben wurden; eine übersetzte Karte ist als maschinelle Übersetzung gekennzeichnet, und das Original ist nur einen Schalter entfernt.",
     "byKindTitle": "Nach Art der beschriebenen Arbeit",
-    "byKindHint": "{count} Empfehlungen, jede im Wortlaut. Ein Eintrag kann mehr als eine Art von Arbeit beschreiben, daher ergeben die Zählungen zusammen mehr als die Gesamtzahl. Die Filter unten grenzen außerdem nach Quelle und Sprache ein."
+    "byKindHint": "{count, plural, one {{count} Empfehlung} other {{count} Empfehlungen}}, jede im Wortlaut. Ein Eintrag kann mehr als eine Art von Arbeit beschreiben, daher ergeben die Zählungen zusammen mehr als die Gesamtzahl. Die Filter unten grenzen außerdem nach Quelle und Sprache ein."
   },
   "testimonials": {
     "filterLabel": "Empfehlungen filtern",
@@ -28042,7 +28041,7 @@
       "s2Body": "Die Identitätstools dieser Website dekodieren dieselben Artefakte, die PingFederate und PingOne in Produktion bewegen: Der SAML-Decoder, die Inspektoren für JWT und OIDC und die Tools für PKCE und TOTP lesen alle die Assertions, Token und Flows, auf denen Föderation läuft, lokal im Browser. Die Kursarbeit des Kapitels läuft über die PingFederate-Practitioner-Schulung 2025, und die Föderationsmuster, die sie lehrt, sind genau das, was diese Tools sichtbar machen.",
       "certs": "PingFederate Practitioner (2025), erworben über Ping Identity Training. Alle Details auf der Seite der Qualifikationen.",
       "lineageTitle": "Wie drei Identitätslinien eins wurden",
-      "lineageDesc": "Ping wurde 2002 in Denver auf der Grundlage von Föderation gegründet. Sun gab seinen Access-Stack als OpenSSO und sein neues Java-Verzeichnis als OpenDS als Open Source frei; als Oracle 2010 Sun übernahm, forkten fünf Entwickler den Code in Oslo als ForgeRock: OpenAM und OpenDJ. Eine dritte Linie, das UnboundID-Verzeichnis, gebaut von ehemaligen Mitarbeitenden aus der Directory-Sparte von Sun in Austin, kam 2016 als PingDirectory zu Ping. Thoma Bravo nahm Ping und ForgeRock 2022 von der Börse und führte sie am 23. August 2023 zusammen: eine Plattform, alle drei Erbschaften, mit DaVinci als verbindendem Gewebe der Orchestrierung."
+      "lineageDesc": "Ping wurde 2002 in Denver auf der Grundlage von Föderation gegründet. Sun gab seinen Access-Stack als OpenSSO und sein neues Java-Verzeichnis als OpenDS als Open Source frei; als Oracle 2010 Sun übernahm, forkten fünf Entwickler den Code in Oslo als ForgeRock: OpenAM und OpenDJ. Eine dritte Linie, das UnboundID-Verzeichnis, gebaut von ehemaligen Mitarbeitenden aus der Directory-Sparte von Sun in Austin, kam 2016 als PingDirectory zu Ping. Thoma Bravo nahm Ping im Oktober 2022 von der Börse, vereinbarte im selben Monat den Kauf von ForgeRock und führte beide am 23. August 2023 zusammen, dem Tag, an dem dieser Kauf abgeschlossen wurde: eine Plattform, alle drei Erbschaften, mit DaVinci als verbindendem Gewebe der Orchestrierung."
     },
     "zscaler": {
       "name": "Zscaler",
@@ -28100,7 +28099,7 @@
     "backToChapters": "Kapitel",
     "clients": {
       "title": "Branchen und Kunden",
-      "lede": "Die Organisationen, die in den eigenen Lebensläufen von Rodolfo Nützmann aus den Jahren 2008 bis 2014 als Kunden oder Auftraggeber genannt werden, gruppiert nach Sektor: {count} Namen von 1996 bis 2012, jeweils mit dem Kapitel, zu dem sie gehören, den Jahren und der Funktion, die der Lebenslauf angibt. Nur Namen, keine Logos und nichts über einen Auftrag über die Zeile des Lebenslaufs hinaus; die Aufträge nach 2020, mit Red Education, sind hier nicht aufgeführt.",
+      "lede": "Die Organisationen, die in den eigenen Lebensläufen von Rodolfo Nützmann aus den Jahren 2008 bis 2014 als Kunden oder Auftraggeber genannt werden, gruppiert nach Sektor: {count, plural, one {{count} Name} other {{count} Namen}} von 1996 bis 2012, jeweils mit dem Kapitel, zu dem sie gehören, den Jahren und der Funktion, die der Lebenslauf angibt. Nur Namen, keine Logos und nichts über einen Auftrag über die Zeile des Lebenslaufs hinaus; die Aufträge nach 2020, mit Red Education, sind hier nicht aufgeführt.",
       "independent": "Selbstständige Tätigkeit (NTZ Tecnologia)",
       "via": "über {via}",
       "sourcesLine": "Quellen: {list}; gelesen am 5. Oktober 2026. Wo sich zwei Lebensläufe widersprechen, gilt der, der dem Auftrag zeitlich am nächsten geschrieben wurde, und der Unterschied ist beim Namen vermerkt.",
@@ -28229,7 +28228,7 @@
   "training": {
     "eyebrow": "Meine Schulungen",
     "title": "Plattformen, unterrichtet von jemandem, der sie selbst betrieben hat.",
-    "intro": "Offizielle, zertifizierte trainergeführte Schulungen in {courses} Kursen zu den Plattformen im Zentrum moderner Netzwerk- und Sicherheitstechnik. Jeder Kurs wird von einem autorisierten Trainer durchgeführt, hinter dessen Unterricht Jahrzehnte praktischer Implementierung stehen.",
+    "intro": "Offizielle, zertifizierte trainergeführte Schulungen in {courses, plural, one {{courses} Kurs} other {{courses} Kursen}} zu den Plattformen im Zentrum moderner Netzwerk- und Sicherheitstechnik. Jeder Kurs wird von einem autorisierten Trainer durchgeführt, hinter dessen Unterricht Jahrzehnte praktischer Implementierung stehen.",
     "courseCount": "{count, plural, one {# Kurs} other {# Kurse}}",
     "since": "seit",
     "representativeNote": "Dieser Katalog ist repräsentativ, nicht vollständig. Kursnamen, Dauer und Inhalte geben den aktuellen öffentlichen Stand wieder und werden anhand der offiziellen Datenblätter präzisiert.",
@@ -28715,7 +28714,7 @@
   "contribute": {
     "eyebrow": "Übersetzungen",
     "title": "Helfen Sie, die Übersetzungen zu verbessern",
-    "lede": "Das brasilianische Portugiesisch wird hier mit KI geschrieben und nach und nach geprüft, ebenso die Oberfläche und die Tools auf Spanisch, auf Deutsch und auf Französisch; alles andere in einer anderen Sprache als Englisch ist ein maschinell erstellter erster Entwurf. Wenn Sie eine dieser Sprachen sprechen und etwas Falsches oder Holpriges bemerken, sind Ihre Korrekturen ausdrücklich willkommen. So senden Sie sie.",
+    "lede": "Das brasilianische Portugiesisch wird hier mit KI geschrieben und nach und nach geprüft, ebenso die Oberfläche und die Tools auf Spanisch, auf Deutsch, auf Französisch und auf Italienisch; alles andere in einer anderen Sprache als Englisch ist ein maschinell erstellter erster Entwurf. Wenn Sie eine dieser Sprachen sprechen und etwas Falsches oder Holpriges bemerken, sind Ihre Korrekturen ausdrücklich willkommen. So senden Sie sie.",
     "howTitle": "So wirken Sie mit",
     "howBody": "Englisch ist die maßgebliche Quelle, und jede andere Sprache wird daraus übersetzt, daher sind Fehler möglich. Jedes Sprachpaket ist eine einzelne Textdatei mit beschrifteten Sätzen. Laden Sie das Paket herunter, das Sie verbessern möchten, ändern Sie nur den Text nach jeder Beschriftung, und lassen Sie die Beschriftungen und alles in geschweiften Klammern genau so, wie es ist. Senden Sie dann die bearbeitete Datei per E-Mail und nennen Sie die Sprache. Jede Einsendung wird von Hand geprüft.",
     "downloadHeading": "Sprachpakete",
@@ -28743,7 +28742,7 @@
       },
       "translation": {
         "title": "Eine Übersetzung verbessern",
-        "desc": "Brasilianisches Portugiesisch sowie die Oberfläche und die Tools auf Spanisch, auf Deutsch und auf Französisch werden mit KI geschrieben und nach und nach geprüft; alles andere in einer anderen Sprache als Englisch ist ein maschinell erstellter erster Entwurf. Laden Sie ein Paket herunter, korrigieren Sie es und senden Sie es zurück.",
+        "desc": "Brasilianisches Portugiesisch sowie die Oberfläche und die Tools auf Spanisch, auf Deutsch, auf Französisch und auf Italienisch werden mit KI geschrieben und nach und nach geprüft; alles andere in einer anderen Sprache als Englisch ist ein maschinell erstellter erster Entwurf. Laden Sie ein Paket herunter, korrigieren Sie es und senden Sie es zurück.",
         "cta": "Anleitung ansehen"
       },
       "code": {
@@ -28882,13 +28881,13 @@
     "complete": "Maschinell, vollständig",
     "partial": "Maschinell, in Arbeit",
     "explainTitle": "Wie Übersetzungen gekennzeichnet sind",
-    "explainBody": "Englisch ist die Quelle: mit KI geschrieben und erst veröffentlicht, wenn ein Mensch entscheidet, dass es veröffentlicht werden soll. Brasilianisches Portugiesisch wird ebenfalls mit KI geschrieben und nach und nach geprüft, ebenso die Oberfläche und die Tools auf Spanisch, auf Deutsch und auf Französisch; der Rest der spanischen, der deutschen und der französischen Website ist maschinell übersetzt. Weitere Sprachen kommen hinzu, sobald ihre Oberfläche, ihre Tools und ihre Spiele in ihnen geschrieben sind. Jede Sprache ist danach gekennzeichnet, wie weit sie ist: blau, sobald sie die ganze Website abdeckt, gelb, solange neuere Inhalte noch auf Englisch sind und nachgezogen werden. Jede Sprache außer Englisch zeigt einen kurzen Hinweis, und Sie können gern helfen, jede davon zu verbessern.",
+    "explainBody": "Englisch ist die Quelle: mit KI in internationalem Englisch (en-001) geschrieben, in Oxford-Schreibweise (britisch mit -ize, wie ISO und die Vereinten Nationen schreiben) und mit Datums- und Zahlenformaten, die Leserinnen und Leser überall kennen, und erst veröffentlicht, wenn ein Mensch entscheidet, dass es veröffentlicht werden soll. Brasilianisches Portugiesisch wird ebenfalls mit KI geschrieben und nach und nach geprüft, ebenso die Oberfläche und die Tools auf Spanisch, auf Deutsch, auf Französisch und auf Italienisch; der Rest der spanischen, der deutschen, der französischen und der italienischen Website ist maschinell übersetzt. Weitere Sprachen kommen hinzu, sobald ihre Oberfläche, ihre Tools und ihre Spiele in ihnen geschrieben sind. Jede Sprache ist danach gekennzeichnet, wie weit sie ist: blau, sobald sie die ganze Website abdeckt, gelb, solange neuere Inhalte noch auf Englisch sind und nachgezogen werden. Noch keine Sprache ist von einem Menschen geprüft, deshalb zeigt jede einen kurzen Hinweis, auch Englisch, und Sie können gern helfen, jede davon zu verbessern.",
     "stub": "Noch nicht übersetzt"
   },
   "changelog": {
     "eyebrow": "Änderungsprotokoll",
     "title": "Was neu ist",
-    "lede": "Ein fortlaufendes Protokoll neuer Tools, neuer Artikel unter „Lernen“ und wichtiger Änderungen an dieser Website. Heute sind {count} Tools verfügbar.",
+    "lede": "Ein fortlaufendes Protokoll neuer Tools, neuer Artikel unter „Lernen“ und wichtiger Änderungen an dieser Website. Heute {count, plural, one {ist {count} Tool} other {sind {count} Tools}} verfügbar.",
     "kindLaunch": "Start",
     "kindTool": "Neues Tool",
     "kindFeature": "Funktion",
@@ -28978,7 +28977,7 @@
       "topic": "Thema",
       "summary": "Zusammenfassung"
     },
-    "portalTerms": "{count} Begriffe",
+    "portalTerms": "{count, plural, one {{count} Begriff} other {{count} Begriffe}}",
     "portalPaths": "{count} Lesepfade",
     "portalGuides": "{count} Prüfungsleitfäden",
     "portalObjectives": "{count} Prüfungsziele zugeordnet",
@@ -29002,7 +29001,7 @@
     "portalCompanies": "{count} Unternehmen",
     "portalPeople": "Menschen",
     "portalPeopleLede": "Die Menschen hinter den Tools, den Konferenzen und den Netzwerken, darunter die, die Brasiliens Netze aufgebaut haben.",
-    "portalPeopleCount": "{count} Personen",
+    "portalPeopleCount": "{count, plural, one {{count} Person} other {{count} Personen}}",
     "portalLearningCount": "{count} Einrichtungen",
     "hubSearch": {
       "label": "Lernen, Glossar und Leitfäden durchsuchen",
@@ -29922,7 +29921,7 @@
         "modesLabel": "Modus",
         "speed": "Speedrun",
         "progress": "Karte {n} von {total}",
-        "pointsNow": "{n} Punkte",
+        "pointsNow": "{n, plural, one {{n} Punkt} other {{n} Punkte}}",
         "inRow": "{n, plural, one {# in Folge} other {# in Folge}}",
         "stripLabel": "Ihre bisherigen Antworten",
         "dotRight": "Karte {n}: richtig",
@@ -29949,7 +29948,7 @@
         "endPractice": "Übung beenden",
         "reviewTitle": "Ihre Karten und ihre Indizien",
         "dailyHeadline": "{correct} von {total} richtig",
-        "dailyDetail": "{points} Punkte; bis zu {streak} richtige in Folge.",
+        "dailyDetail": "{points, plural, one {{points} Punkt} other {{points} Punkte}}; bis zu {streak} richtige in Folge.",
         "shareTitle": "Phish or Legit #{n} {correct}/{total}",
         "practiceHeadline": "Übung: {correct} von {total} richtig",
         "sharePractice": "Phish or Legit, Übung {correct}/{total}",
@@ -29957,7 +29956,7 @@
         "speedStart": "Die 60 Sekunden starten",
         "speedLeft": "noch {s} s",
         "speedHeadline": "{correct} richtig in 60 Sekunden",
-        "speedDetail": "{wrong} falsch, {points} Punkte.",
+        "speedDetail": "{wrong} falsch, {points, plural, one {{points} Punkt} other {{points} Punkte}}.",
         "shareSpeed": "Phish or Legit, Speedrun: {correct} richtig in 60 s",
         "bestFormat": "{n} richtig in 60 s",
         "origins": {
@@ -30109,7 +30108,7 @@
         "triesLeft": "{n, plural, one {Noch # Versuch} other {Noch # Versuche}}",
         "won": "{n, plural, one {Gelöst mit # Versuch} other {Gelöst mit # Versuchen}}",
         "lost": "Keine Versuche mehr",
-        "answerLine": "Netzwerk {network}, Broadcast {broadcast}, Maske {mask}, {hosts} nutzbare Hosts.",
+        "answerLine": "Netzwerk {network}, Broadcast {broadcast}, Maske {mask}, {hosts, plural, one {{hosts} nutzbarer Host} other {{hosts} nutzbare Hosts}}.",
         "whyTitle": "Warum: Oktett {octet}",
         "whyBits": "Oktett {octet} ist {value}, binär {binary}. {bits, plural, one {Sein erstes Bit gehört} other {Seine ersten # Bits gehören}} zum Netzwerk, also behält das Netzwerk dort {netValue}, und Blöcke beginnen alle {block}.",
         "whyNone": "Das Präfix endet direkt vor Oktett {octet} ({value}, binär {binary}): Alle seine Bits sind Host-Bits, also hat die Netzwerkadresse ab dort 0 und die Broadcast-Adresse 255.",
@@ -30349,7 +30348,7 @@
         "lessonTitle": "Lektion",
         "allDone": "Das war das letzte Level. Das Tageslevel wartet.",
         "answerTitle": "Eine kürzeste Liste, die besteht",
-        "bestPoints": "{n} Punkte",
+        "bestPoints": "{n, plural, one {{n} Punkt} other {{n} Punkte}}",
         "result": {
           "levelPassed": "Level {n} bestanden",
           "dailyPassed": "Richtlinie durchgesetzt",
@@ -30610,7 +30609,7 @@
         "keysHint": "Tasten: Q W E / A S D / Z X C oder der Ziffernblock.",
         "featureHit": "Das ist kein Bug, das ist ein Feature. −{penalty}",
         "sayStart": "Runde gestartet: 60 Sekunden.",
-        "sayEnd": "Zeit ist um. {score} Punkte, {acc} % Trefferquote.",
+        "sayEnd": "Zeit ist um. {score, plural, one {{score} Punkt} other {{score} Punkte}}, {acc} % Trefferquote.",
         "resultHeadline": "Punktzahl {score}",
         "resultDetail": "{hits, plural, one {# Bug zerquetscht} other {# Bugs zerquetscht}}, {features, plural, one {# Feature kaputt} other {# Features kaputt}}, {acc} % Trefferquote, beste Combo {combo}.",
         "shareTitleDaily": "Whack-a-Bug #{n}",
@@ -30656,8 +30655,8 @@
         "nextLevel": "Nächstes Level",
         "allDone": "Jedes Programm sauber verlassen. Die Handbücher hatten von Anfang an recht.",
         "clearedHeadline": "Raus aus {name}",
-        "clearedDetail": "{keys, plural, one {# Tastendruck} other {# Tastendrücke}} in {time}: {score} Punkte. Gesamt {total}.{medal, select, under { Unter Par: Dafür gibt es eine Medaille.} par { Genau Par: Dafür gibt es eine Medaille.} other {}}",
-        "sayCleared": "Level geschafft: {name}, {score} Punkte{medal, select, under {, unter Par} par {, genau Par} other {}}.",
+        "clearedDetail": "{keys, plural, one {# Tastendruck} other {# Tastendrücke}} in {time}: {score, plural, one {{score} Punkt} other {{score} Punkte}}. Gesamt {total}.{medal, select, under { Unter Par: Dafür gibt es eine Medaille.} par { Genau Par: Dafür gibt es eine Medaille.} other {}}",
+        "sayCleared": "Level geschafft: {name}, {score, plural, one {{score} Punkt} other {{score} Punkte}}{medal, select, under {, unter Par} par {, genau Par} other {}}.",
         "shareTitle": "Raus aus dem Editor",
         "shareSummary": "Level {cleared}/{total} · {keys, plural, one {# Tastendruck} other {# Tastendrücke}} · {time}",
         "fail": {
@@ -30815,7 +30814,7 @@
         "uptime": "Uptime",
         "nines": "{n} Neunen",
         "reputation": "Ruf",
-        "overloaded": "Über der Kapazität: {n} Anfragen pro Sekunde werden abgewiesen.",
+        "overloaded": "Über der Kapazität: {n, plural, one {{n} Anfrage pro Sekunde wird} other {{n} Anfragen pro Sekunde werden}} abgewiesen.",
         "incidentsTitle": "Vorfälle",
         "allQuiet": "Alles ruhig. Vorerst.",
         "undetected": "Etwas schlägt fehl, und noch hat nichts bemerkt, was. Monitoring würde es bemerken.",
@@ -30833,7 +30832,7 @@
         "maxed": "Max.",
         "setupLine": "Vorfälle werden nach etwa {detect} s bemerkt; die Rufbereitschaft übernimmt {onCall} % davon.",
         "pmTitle": "Post-Mortem",
-        "pmExplain": "Sobald dieser Durchgang {target} Credits verdient hat, schreiben Sie das Post-Mortem: Der Ausbau beginnt wieder bei null, und die gelernten Lektionen bleiben.",
+        "pmExplain": "Sobald dieser Durchgang {target, plural, one {{target} Credit} other {{target} Credits}} verdient hat, schreiben Sie das Post-Mortem: Der Ausbau beginnt wieder bei null, und die gelernten Lektionen bleiben.",
         "pmProgress": "Fortschritt bis zum Post-Mortem",
         "pmStatus": "In diesem Durchgang verdient: {earned} von {target}. Gelernte Lektionen: {lessons} (+{bonus} % Einnahmen). Geschriebene Post-Mortems: {n}.",
         "pmButton": "Post-Mortem schreiben",
@@ -30854,10 +30853,10 @@
         "tally": "Vorfälle {incidents}: {you} von Ihnen behoben, {onCall} von der Rufbereitschaft, {wrong, plural, one {# falsche Entscheidung} other {# falsche Entscheidungen}}.",
         "copyStatus": "Status kopieren",
         "shareTitle": "Incident Commander",
-        "shareLine1": "🟢 {nines} Neunen · {cps} Credits/s",
+        "shareLine1": "🟢 {nines, plural, one {{nines} Neun} other {{nines} Neunen}} · {cps, plural, one {{cps} Credit} other {{cps} Credits}}/s",
         "shareLine2": "📝 Geschriebene Post-Mortems: {n}",
         "awayTitle": "Während Sie weg waren",
-        "awayBody": "In {time} hat der Dienst mit halbem Tempo {credits} Credits verdient. {incidents, plural, =0 {Es gab keine Vorfälle.} one {Es gab etwa # Vorfall; {handled, plural, =0 {niemand in Rufbereitschaft hat ihn übernommen, also ist er von selbst abgeklungen} other {die Rufbereitschaft hat ihn übernommen}}.} other {Es gab etwa # Vorfälle; {handled, plural, =0 {niemand in Rufbereitschaft hat sie übernommen, also sind sie von selbst abgeklungen} one {die Rufbereitschaft hat einen davon übernommen} other {die Rufbereitschaft hat etwa # davon übernommen}}.}}",
+        "awayBody": "In {time} hat der Dienst mit halbem Tempo {credits, plural, one {{credits} Credit} other {{credits} Credits}} verdient. {incidents, plural, =0 {Es gab keine Vorfälle.} one {Es gab etwa # Vorfall; {handled, plural, =0 {niemand in Rufbereitschaft hat ihn übernommen, also ist er von selbst abgeklungen} other {die Rufbereitschaft hat ihn übernommen}}.} other {Es gab etwa # Vorfälle; {handled, plural, =0 {niemand in Rufbereitschaft hat sie übernommen, also sind sie von selbst abgeklungen} one {die Rufbereitschaft hat einen davon übernommen} other {die Rufbereitschaft hat etwa # davon übernommen}}.}}",
         "awayCapped": "Nur die ersten {hours} Stunden zählen.",
         "awayDismiss": "Zurück an die Arbeit",
         "sayRight": "Richtige Entscheidung: Behebung läuft.",
@@ -31093,7 +31092,7 @@
         "sayMove": "Spalte {col}.",
         "sayBlocked": "In dieser Höhe ist dort kein Platz.",
         "sayPaused": "Pausiert. Der Schacht bleibt verborgen, bis Sie fortsetzen.",
-        "sayOver": "Durchgang vorbei: {delivered, plural, one {# Frame} other {# Frames}} zugestellt, {score} Punkte.",
+        "sayOver": "Durchgang vorbei: {delivered, plural, one {# Frame} other {# Frames}} zugestellt, {score, plural, one {{score} Punkt} other {{score} Punkte}}.",
         "eventDelivered": "Frame zugestellt: +{points}.",
         "eventDrained": "Der älteste verworfene Frame ist abgeräumt.",
         "problemSlot": "Frame verworfen: {what} ist in der Spalte {slot} gelandet, und ein Frame liest sich von links nach rechts als Ethernet, IP, TCP oder UDP, Nutzdaten.",
@@ -31103,15 +31102,15 @@
         "describeRow": "Reihe {n}{dropped, select, yes { (verworfen)} other {}}: {cells}.",
         "describeEmptyCell": "leer",
         "describeEmpty": "Der Schacht ist leer.",
-        "resultHeadline": "{delivered} von {total} Frames zugestellt",
-        "resultDetail": "{score} Punkte, beste Serie {streak}, {dropped, plural, =0 {kein Frame verworfen} one {# Frame verworfen} other {# Frames verworfen}}, in {time}.",
-        "resultToppedOut": "Ein Block hatte keinen Platz zum Erscheinen, daher endete der Durchgang nach {placed} von {blocks} Blöcken.",
+        "resultHeadline": "{delivered} von {total, plural, one {{total} Frame} other {{total} Frames}} zugestellt",
+        "resultDetail": "{score, plural, one {{score} Punkt} other {{score} Punkte}}, beste Serie {streak}, {dropped, plural, =0 {kein Frame verworfen} one {# Frame verworfen} other {# Frames verworfen}}, in {time}.",
+        "resultToppedOut": "Ein Block hatte keinen Platz zum Erscheinen, daher endete der Durchgang nach {placed} von {blocks, plural, one {{blocks} Block} other {{blocks} Blöcken}}.",
         "practiceHeadline": "Punktzahl {score}",
         "practiceDetail": "{delivered, plural, one {# Frame zugestellt} other {# Frames zugestellt}}, Level {level}, beste Serie {streak}.",
         "shareTitleDaily": "Packet Stack #{n}",
         "shareTitlePractice": "Packet Stack (Übung)",
-        "shareSummary": "{delivered}/{total} Frames · {score} Punkte · beste Serie {streak}",
-        "sharePractice": "{delivered} Frames · Level {level}",
+        "shareSummary": "{delivered}/{total, plural, one {{total} Frame} other {{total} Frames}} · {score, plural, one {{score} Punkt} other {{score} Punkte}} · beste Serie {streak}",
+        "sharePractice": "{delivered, plural, one {{delivered} Frame} other {{delivered} Frames}} · Level {level}",
         "learnLead": "Die echte Technik dahinter:",
         "learnFrame": "Der Ethernet-Frame, Feld für Feld",
         "learnLayers": "Echter Datenverkehr, Schicht für Schicht",
@@ -31212,15 +31211,15 @@
         "sayHopLast": "Hop {n}: {addr}, {field} {ttl}. Der nächste Router würde das Paket verwerfen: Steuern Sie den Host an.",
         "sayDeliver": "Zugestellt (bisher {done}). Paket {n} startet mit {field} {ttl}.",
         "sayPaused": "Pausiert.",
-        "sayEnd": "Durchgang vorbei: {score} Punkte, {delivered} von {total} Paketen zugestellt.",
+        "sayEnd": "Durchgang vorbei: {score, plural, one {{score} Punkt} other {{score} Punkte}}, {delivered} von {total, plural, one {{total} Paket} other {{total} Paketen}} zugestellt.",
         "head": {
-          "complete": "Trace vollständig: {score} Punkte",
-          "expired": "Time Exceeded: {score} Punkte",
-          "loop": "Routing-Schleife: {score} Punkte",
-          "noroute": "Keine Route: {score} Punkte",
-          "cap": "Zeitlimit: {score} Punkte"
+          "complete": "Trace vollständig: {score, plural, one {{score} Punkt} other {{score} Punkte}}",
+          "expired": "Time Exceeded: {score, plural, one {{score} Punkt} other {{score} Punkte}}",
+          "loop": "Routing-Schleife: {score, plural, one {{score} Punkt} other {{score} Punkte}}",
+          "noroute": "Keine Route: {score, plural, one {{score} Punkt} other {{score} Punkte}}",
+          "cap": "Zeitlimit: {score, plural, one {{score} Punkt} other {{score} Punkte}}"
         },
-        "resultDetail": "{delivered} von {total} Paketen zugestellt, {hops, plural, =0 {keine Hops} one {# Hop} other {# Hops}}, {time}.",
+        "resultDetail": "{delivered} von {total, plural, one {{total} Paket} other {{total} Paketen}} zugestellt, {hops, plural, =0 {keine Hops} one {# Hop} other {# Hops}}, {time}.",
         "why": {
           "complete": "Jeder Host hat sein Paket mit der TTL angenommen, die es noch hatte: Nur ein Router verwirft ein Paket, wenn seine TTL abläuft.",
           "expired": "Router {addr} hat die TTL von Paket {n} auf null gebracht, es verworfen und ICMP Time Exceeded (Typ 11, Code 0) an {src} zurückgeschickt: die Antwort, auf die traceroute wartet.",
@@ -31236,7 +31235,7 @@
         "shareTitleDaily": "TTL #{n}",
         "shareTitlePractice": "TTL (Übung)",
         "shareLine": "📦 {delivered}/{total}  🔀 {hops}",
-        "shareSummary": "{score} Punkte in {time}",
+        "shareSummary": "{score, plural, one {{score} Punkt} other {{score} Punkte}} in {time}",
         "origins": {
           "p1": "Das Feld Time to Live (TTL) stammt aus RFC 791 (Request for Comments 791), der Spezifikation des Internet Protocol vom September 1981. Es wurde in Sekunden angegeben, aber da jedes Modul, das ein Datagramm verarbeitet, mindestens eins davon abziehen muss, hält der RFC fest, dass die TTL „must be thought of only as an upper bound on the time a datagram may exist“ (nur eine Obergrenze ist); ihr Zweck ist laut RFC, „to cause undeliverable datagrams to be discarded“. Die Registry der IANA (Internet Assigned Numbers Authority) nennt 64 als derzeit empfohlenen Standardwert.",
           "p2": "RFC 1812, die Anforderungen an IPv4-Router (Internet Protocol Version 4) vom Juni 1995, macht daraus eine Hop-Anzahl: „When a router forwards a packet, it MUST reduce the TTL by at least one“, und der Router, der sie auf null bringt, muss das Paket verwerfen und eine ICMP-Meldung (Internet Control Message Protocol) Time Exceeded, Code 0, an die Quelle senden; RFC 792 gibt diesem Meldungstyp die Nummer 11. Die Hop-Anzahl, ergänzt RFC 1812, verhindert, dass Routing-Probleme Pakete endlos kreisen lassen („causing packets to loop infinitely in the network“). Ein Host dagegen darf ein Datagramm nicht verwerfen, „just because it was received with TTL less than 2“ (RFC 1122).",
@@ -31270,7 +31269,7 @@
         "dailyModeEarlier": "Schicht #{n}",
         "dailyModeName": "Heutige Schicht",
         "practiceMode": "Übungsschicht",
-        "startNote": "Mit „Starten“ erscheinen die erste Verbindung und die Richtlinie. {total} Verbindungen in {rounds} Runden; im selben Moment startet die Uhr.",
+        "startNote": "Mit „Starten“ erscheinen die erste Verbindung und die Richtlinie. {total, plural, one {{total} Verbindung} other {{total} Verbindungen}} in {rounds, plural, one {{rounds} Runde} other {{rounds} Runden}}; im selben Moment startet die Uhr.",
         "resume": "Schicht fortsetzen",
         "resumeNote": "Die Schicht wartet dort, wo Sie aufgehört haben. Die Uhr läuft wieder, sobald die nächste Verbindung an der Kontrolle liegt.",
         "roundOf": "Runde {r} von {rounds}",
@@ -31362,7 +31361,7 @@
         "auditAllRight": "Keine falschen Entscheidungen: Jede Verbindung ging dorthin, wohin die Richtlinie sie schickt.",
         "auditWrongCount": "{n, plural, one {# falsche Entscheidung, mit dem, was sie entscheidet:} other {# falsche Entscheidungen, jeweils mit dem, was sie entscheidet:}}",
         "auditYou": "Ihre Entscheidung: {said}; laut Richtlinie: {right}.",
-        "auditAll": "Alle {total} Verbindungen",
+        "auditAll": "{total, plural, one {Die {total} Verbindung} other {Alle {total} Verbindungen}}",
         "auditRight": "Richtig.",
         "auditWrong": "Falsch.",
         "auditPermit": "Zugelassen.",
@@ -31402,7 +31401,7 @@
     "enOnlyBadge": "EN",
     "enOnlyBadgeLabel": "Auf Englisch",
     "jumpLabel": "Auf dieser Seite",
-    "shelfToday": "Heute: {done} von {total} Tagesspielen gespielt",
+    "shelfToday": "Heute: {done} von {total, plural, one {{total} Tagesspiel} other {{total} Tagesspielen}} gespielt",
     "shelfSolved": "Heute gelöst",
     "shelfPlayed": "Heute gespielt",
     "shelfStreak": "Serie {n}",
@@ -31536,7 +31535,7 @@
       }
     },
     "arcadeCardName": "Die Arcade",
-    "arcadeCardBlurb": "{count} Spiele nach klassischen Spielprinzipien, so lange spielbar, wie Sie möchten; {daily} davon haben einen Tagesdurchgang, der auf die öffentliche Bestenliste kommt."
+    "arcadeCardBlurb": "{count, plural, one {{count} Spiel} other {{count} Spiele}} nach klassischen Spielprinzipien, so lange spielbar, wie Sie möchten; {daily, plural, one {{daily} davon hat} other {{daily} davon haben}} einen Tagesdurchgang, der auf die öffentliche Bestenliste kommt."
   },
   "megaBrain": {
     "bossAria": "Boss-Key: Konsole minimieren",
@@ -32201,7 +32200,7 @@
       },
       "languages": {
         "h": "Sprachen",
-        "b": "Die Oberfläche gibt es in mehreren Sprachen; wechseln Sie über die Sprachauswahl im Kopfbereich. Englisch ist die Ausgangssprache, mit KI geschrieben und erst veröffentlicht, wenn ein Mensch das entscheidet; brasilianisches Portugiesisch wird ebenfalls mit KI geschrieben und nach und nach geprüft, ebenso die Oberfläche und die Tools auf Spanisch, auf Deutsch und auf Französisch; der Rest der spanischen, der deutschen und der französischen Website und die übrigen Sprachen sind maschinell übersetzt. Wo eine Formulierung für eine Sprache noch nicht übersetzt ist, wird für diese Formulierung der englische Text angezeigt, sodass nie etwas fehlt."
+        "b": "Die Oberfläche gibt es in mehreren Sprachen; wechseln Sie über die Sprachauswahl im Kopfbereich. Englisch ist die Ausgangssprache, mit KI geschrieben und erst veröffentlicht, wenn ein Mensch das entscheidet; brasilianisches Portugiesisch wird ebenfalls mit KI geschrieben und nach und nach geprüft, ebenso die Oberfläche und die Tools auf Spanisch, auf Deutsch, auf Französisch und auf Italienisch; der Rest der spanischen, der deutschen, der französischen und der italienischen Website ist maschinell übersetzt. Wo eine Formulierung für eine Sprache noch nicht übersetzt ist, wird für diese Formulierung der englische Text angezeigt, sodass nie etwas fehlt."
       },
       "offline": {
         "h": "Offline-Nutzung",
@@ -32400,7 +32399,7 @@
         "broadcast": "Broadcast-Adresse von {cidr}?",
         "hosts": "Wie viele nutzbare Hosts hat {cidr}?",
         "netmask": "Subnetzmaske von {cidr} in Punktschreibweise?",
-        "hostToPrefix": "Kleinstes Präfix für mindestens {n} nutzbare Hosts?",
+        "hostToPrefix": "Kleinstes Präfix für mindestens {n, plural, one {{n} nutzbaren Host} other {{n} nutzbare Hosts}}?",
         "contains": "Liegt {host} in {cidr}?"
       },
       "hint": {
@@ -33081,8 +33080,8 @@
       "digBuilder": "Generator für dig-Befehle, der auch die Form dig +https schreibt",
       "negativeTitle": "Negative Antwort",
       "negative": {
-        "nxdomain": "Ein Resolver darf diese negative Antwort {ttl} Sekunden lang zwischenspeichern: das Kleinere aus der TTL ({soaTtl}) und dem Feld MINIMUM ({minimum}) des SOA-Eintrags {isRoot, select, yes {der Root-Zone} other {der Zone {zone}}} (RFC 2308, Abschnitt 5).",
-        "nodata": "Der Antwortcode ist NOERROR, aber der Abschnitt Answer enthält keinen {type}-Eintrag. Ein Resolver darf diese negative Antwort {ttl} Sekunden lang zwischenspeichern: das Kleinere aus der TTL ({soaTtl}) und dem Feld MINIMUM ({minimum}) des SOA-Eintrags {isRoot, select, yes {der Root-Zone} other {der Zone {zone}}} (RFC 2308, Abschnitt 5)."
+        "nxdomain": "Ein Resolver darf diese negative Antwort {ttl, plural, one {{ttl} Sekunde} other {{ttl} Sekunden}} lang zwischenspeichern: das Kleinere aus der TTL ({soaTtl}) und dem Feld MINIMUM ({minimum}) des SOA-Eintrags {isRoot, select, yes {der Root-Zone} other {der Zone {zone}}} (RFC 2308, Abschnitt 5).",
+        "nodata": "Der Antwortcode ist NOERROR, aber der Abschnitt Answer enthält keinen {type}-Eintrag. Ein Resolver darf diese negative Antwort {ttl, plural, one {{ttl} Sekunde} other {{ttl} Sekunden}} lang zwischenspeichern: das Kleinere aus der TTL ({soaTtl}) und dem Feld MINIMUM ({minimum}) des SOA-Eintrags {isRoot, select, yes {der Root-Zone} other {der Zone {zone}}} (RFC 2308, Abschnitt 5)."
       },
       "compactDenial": "Compact Denial of Existence: Ein NSEC-Eintrag im Abschnitt Authority führt den Typ NXNAME auf, der besagt, dass dieser Name überhaupt nicht existiert, obwohl der Antwortcode NOERROR ist. Zonen, die im laufenden Betrieb signiert werden, können für einen nicht existierenden Namen so antworten, als existiere er ohne Daten (RFC 9824).",
       "truncated": "TC ist gesetzt: Diese Nachricht ist unvollständig, ein fehlender Eintrag beweist also nichts.",
@@ -33091,7 +33090,7 @@
       "ednsPayload": "UDP-Payload-Größe",
       "ednsOption": "Option",
       "ednsNote": "Die Payload-Größe zählt nur bei DNS über UDP: Ein DoH-Server muss sie in einer Anfrage ignorieren (RFC 8484, Abschnitt 6), und eine Nachricht über HTTPS kommt ohnehin vollständig an.",
-      "paddingNote": "Der Resolver hat {padding} Oktette Padding hinzugefügt (RFC 7830), damit die Größe der verschlüsselten Antwort weniger über die Frage verrät; RFC 8467 empfiehlt, Antworten auf ein Vielfaches von 468 Oktetten aufzufüllen, und diese hat {size, number} Oktette.",
+      "paddingNote": "Der Resolver hat {padding, plural, one {{padding} Oktett} other {{padding} Oktette}} Padding hinzugefügt (RFC 7830), damit die Größe der verschlüsselten Antwort weniger über die Frage verrät; RFC 8467 empfiehlt, Antworten auf ein Vielfaches von 468 Oktetten aufzufüllen, und diese hat {size, number} Oktette.",
       "ednsDropped": "Kein OPT-Eintrag: Diese Seite hat einen gesendet, und der Resolver hat ohne EDNS(0) geantwortet, daher meldet er kein DO-Bit, kein Padding und keinen Extended DNS Error. Laut RFC 6891 (Abschnitt 6.1.1) nimmt ein konformer Responder einen OPT-Eintrag auf, wenn die Anfrage einen enthielt.",
       "ednsNotAsked": "Kein OPT-Eintrag: Diese Seite hat keinen gesendet (EDNS(0) ist aus), und laut RFC 6891 (Abschnitt 7) darf ein Responder dann keinen aufnehmen.",
       "sectionAnswer": "Answer",
@@ -33184,7 +33183,7 @@
       "getOnlyChip": "Nur GET",
       "willAskPost": "Gefragt würde {host}, mit zwei Anfragen in dieser Reihenfolge (direkt aus dem Browser, nie über ronutz.com):",
       "preflightName": "CORS-Preflight, zuerst von Ihrem Browser gesendet",
-      "preflightNote": "Er enthält keinen Teil der Anfrage. Der POST folgt nur, wenn die Antwort einen 2xx-Status hat und access-control-allow-origin sowie content-type unter ihren erlaubten Headern führt (WHATWG Fetch); für spätere POSTs darf der Browser diese Antwort so lange wiederverwenden, wie access-control-max-age erlaubt, 5 Sekunden, wenn der Resolver keinen Wert sendet.",
+      "preflightNote": "Er enthält keinen Teil der Anfrage. Der POST folgt nur, wenn die Antwort einen 2xx-Status hat, ein access-control-allow-origin, das die Seite zulässt, und content-type unter den Headern, die ihr access-control-allow-headers nennt (WHATWG Fetch); für spätere POSTs darf der Browser diese Antwort so lange wiederverwenden, wie access-control-max-age erlaubt, 5 Sekunden, wenn der Resolver keinen Wert sendet.",
       "postBody": "Body: die DNS-Nachricht selbst, {count, plural, one {# Oktett} other {# Oktette}}, unkodiert (RFC 8484, Abschnitt 6):",
       "httpMethod": "Methode",
       "httpMethodPost": "POST, nach dem OPTIONS-Preflight"
@@ -33207,7 +33206,7 @@
     "comingSoon": "Die Seite öffnet mit ihrem ersten Tool",
     "note": "Jede Herstellerseite ist der eine Ort, der bündelt, was die Website zu einem Hersteller bereithält: die Tools, nach Produktfamilie gruppiert; die gesamte Artikelbibliothek zu diesem Hersteller; und, soweit vorhanden, die Zertifizierungsleitfäden, einen Lesepfad, das Karrierekapitel und die Branchenchronik des Herstellers, auf einer Seite. Dieselben Herstellerseiten erreichen Sie über die Leiste in den Übersichten der Tools und unter Lernen.",
     "metaTitle": "Herstellerseiten · ronutz.com",
-    "metaDescription": "Die {count} Herstellerseiten auf ronutz.com, eine pro Plattform ({names}): Tools, Artikel und Zertifizierungsmaterial für jede, hinter einer einzigen Tür.",
+    "metaDescription": "{count, plural, one {Die {count} Herstellerseite} other {Die {count} Herstellerseiten}} auf ronutz.com, eine pro Plattform ({names}): Tools, Artikel und Zertifizierungsmaterial für jede, hinter einer einzigen Tür.",
     "blurbs": {
       "f5": "BIG-IP und die weitere F5-Landschaft: Traffic-Management, DNS, Anwendungssicherheit, Zugriff und F5 Distributed Cloud. Die umfangreichste Herstellerseite der Website.",
       "fortinet": "Die Fortinet Security Fabric: FortiGate und FortiOS, SASE, sicherer Betrieb, Anwendungssicherheit und die FortiGuard-Dienste.",
@@ -33263,30 +33262,30 @@
       "it-support": "IT-Support",
       "events": "Ereignisse"
     },
-    "totalCount": "{count} Begriffe",
+    "totalCount": "{count, plural, one {{count} Begriff} other {{count} Begriffe}}",
     "azNavLabel": "Zu Buchstabe springen",
     "hintExpand": "Aufklappen",
     "domainPageTitle": "Begriffe: {domain}",
-    "domainPageDescription": "{count} Glossareinträge mit dem Schlagwort {domain}, alphabetisch sortiert.",
+    "domainPageDescription": "{count, plural, one {{count} Glossareintrag} other {{count} Glossareinträge}} mit dem Schlagwort {domain}, alphabetisch sortiert.",
     "otherDomains": "Andere Fachgebiete",
     "browseByDomain": "Nach Fachgebiet stöbern",
     "kindPageTitle": "Glossar: {kind}",
-    "kindPageDescription": "{count} Einträge der Art {kind}, alphabetisch sortiert.",
+    "kindPageDescription": "{count, plural, one {{count} Eintrag} other {{count} Einträge}} der Art {kind}, alphabetisch sortiert.",
     "otherKinds": "Andere Arten",
     "browseByKind": "Nach Art stöbern",
     "entrances": {
       "defineTitle": "Ich brauche eine Definition",
-      "defineLede": "Tippen Sie das Wort; der Filter grenzt {count} Einträge beim Tippen ein, nach Stichwort, Ausschreibung und Alias.",
+      "defineLede": "Tippen Sie das Wort; der Filter grenzt {count, plural, one {{count} Eintrag} other {{count} Einträge}} beim Tippen ein, nach Stichwort, Ausschreibung und Alias.",
       "jargonTitle": "Den Jargon entschlüsseln",
       "jargonLede": "{count} Akronyme, Redewendungen und Jargonbegriffe: was die Leute im Raum meinen, wenn sie es sagen.",
       "loreTitle": "Legenden der Branche",
       "loreLede": "{count} Geschichten, die die Branche über sich selbst erzählt, jede an einer Primärquelle überprüft.",
       "mistoldTitle": "Oft falsch erzählt",
-      "mistoldLede": "{count} Einträge, deren übliche Erzählung falsch ist, als umstritten gekennzeichnet und im eigenen Zusammenhang richtiggestellt.",
+      "mistoldLede": "{count, plural, one {{count} Eintrag, dessen} other {{count} Einträge, deren}} übliche Erzählung falsch ist, als umstritten gekennzeichnet und im eigenen Zusammenhang richtiggestellt.",
       "domainTitle": "Ein Fachgebiet durchstöbern",
-      "domainLede": "{count} Fachgebiete, jedes mit eigener Seite: Netzwerk, Sicherheit, die Cloud, das Handwerk selbst.",
+      "domainLede": "{count, plural, one {{count} Fachgebiet} other {{count} Fachgebiete}}, jedes mit eigener Seite: Netzwerk, Sicherheit, die Cloud, das Handwerk selbst.",
       "mistoldSection": "Oft falsch erzählt",
-      "mistoldSectionLede": "{count} Einträge tragen die Markierung umstritten: Die Geschichte, die alle wiederholen, ist nicht das, was in den Quellen steht. Jeder Eintrag nennt die übliche Fassung und die Korrektur."
+      "mistoldSectionLede": "{count, plural, one {{count} Eintrag trägt} other {{count} Einträge tragen}} die Markierung umstritten: Die Geschichte, die alle wiederholen, ist nicht das, was in den Quellen steht. Jeder Eintrag nennt die übliche Fassung und die Korrektur."
     }
   },
   "certGuides": {
@@ -33952,7 +33951,7 @@
       },
       "lineage": {
         "title": "Einer Linie folgen",
-        "lede": "{count} Einträge enthalten eine typisierte Kette: Übernahmen, ein Ende in einem anderen Unternehmen oder eine Geschichte, die vor dem Unternehmen selbst beginnt."
+        "lede": "{count, plural, one {{count} Eintrag enthält} other {{count} Einträge enthalten}} eine typisierte Kette: Übernahmen, ein Ende in einem anderen Unternehmen oder eine Geschichte, die vor dem Unternehmen selbst beginnt."
       },
       "era": {
         "title": "Eine Epoche erkunden",
@@ -33964,11 +33963,11 @@
       },
       "mine": {
         "title": "Wo sich mein eigener Weg damit kreuzte",
-        "lede": "{count} Unternehmen, in denen ich gearbeitet habe, mit denen ich gearbeitet habe oder heute arbeite; die Kapitel erzählen die Geschichte von innen."
+        "lede": "{count, plural, one {{count} Unternehmen, in dem ich gearbeitet habe, mit dem ich gearbeitet habe oder heute arbeite} other {{count} Unternehmen, in denen ich gearbeitet habe, mit denen ich gearbeitet habe oder heute arbeite}}; die Kapitel erzählen die Geschichte von innen."
       },
       "people": {
         "title": "Die Menschen",
-        "lede": "Unternehmen haben die Branche aufgebaut; getan haben es {count} Menschen. Pioniere, Erbauer, Hacker und die Brasilianer unter ihnen."
+        "lede": "Unternehmen haben die Branche aufgebaut; {count, plural, one {getan hat es {count} Mensch} other {getan haben es {count} Menschen}}. Pioniere, Erbauer, Hacker und die Brasilianer unter ihnen."
       },
       "browseAll": "Alle {count} Organisationen durchsehen",
       "method": "Wie recherchiert wird"
@@ -33992,7 +33991,7 @@
     "gVendors": "Hersteller und Branche",
     "gAbout": "Über mich und Werdegang",
     "gSite": "Website und Meta",
-    "toolsCount": "{count} deterministische Tools, alle lokal gerechnet",
+    "toolsCount": "{count, plural, one {{count} deterministisches Tool} other {{count} deterministische Tools}}, alle lokal gerechnet",
     "xmlNote": "Maschinenlesbar: sitemap.xml",
     "subjectsTitle": "Nach Thema",
     "subjectsLede": "Die Seite jedes Themas versammelt seine Tools, Artikel und Glossarbegriffe.",
@@ -34745,7 +34744,7 @@
     "talk2Sub": "Geschichten aus dem Außendienst",
     "talk2Body": "Geschichten, die man als Field Engineer unterwegs erlebt, beobachtet oder aufgeschnappt haben könnte. Ähnlichkeiten mit realen Ereignissen oder Personen sind rein zufällig. Für ein Publikum, das die Arbeit gemacht hat und sich wiedererkennen wird, und für alle, die sie nicht gemacht haben und wissen sollten, wie sie ist.",
     "customTitle": "Weitere Themen",
-    "customBody": "Die Branchengeschichte auf dieser Website umfasst {count} Unternehmenseinträge, und vieles davon wurde nie laut ausgesprochen. Wenn eine Veranstaltung einen Vortrag über eine bestimmte Epoche, eine technologische Abstammungslinie oder die Art braucht, wie sich ein bestimmter Markt tatsächlich gebildet hat, ist das ein Gespräch wert.",
+    "customBody": "Die Branchengeschichte auf dieser Website umfasst {count, plural, one {{count} Unternehmenseintrag} other {{count} Unternehmenseinträge}}, und vieles davon wurde nie laut ausgesprochen. Wenn eine Veranstaltung einen Vortrag über eine bestimmte Epoche, eine technologische Abstammungslinie oder die Art braucht, wie sich ein bestimmter Markt tatsächlich gebildet hat, ist das ein Gespräch wert.",
     "customLink": "Die Branchenchronik",
     "notTitle": "Was das nicht ist",
     "notBody": "Das ist keine Schulung. Kurse, Workshops und Zertifizierungsvorbereitung laufen über Red Education und werden dort gebucht, nicht hier. Ein Konferenzvortrag und ein Schulungstag sind verschiedene Dinge mit verschiedenem Publikum, und wer sie vermischt, wird keinem gerecht.",
@@ -34883,7 +34882,7 @@
   },
   "contributeTools": {
     "translationsTitle": "Übersetzungen verbessern",
-    "translationsBody": "Englisch ist die Ausgangssprache dieser Website. Das brasilianische Portugiesisch wird mit KI geschrieben und nach und nach geprüft, ebenso die Oberfläche und die Tools auf Spanisch, auf Deutsch und auf Französisch; der Rest der spanischen, der deutschen und der französischen Website und elf weitere Sprachen sind maschinell übersetzt: brauchbar, aber nicht muttersprachlich. Wenn Sie eine davon lesen und etwas falsch ist, etwa ein Fachbegriff, der wörtlich übersetzt wurde, oder ein Satz, der grammatisch aufgeht und nichts bedeutet, ist ein Hinweis an mich ein echter Beitrag, und eine kurze Notiz mit der Seite und der Formulierung genügt.",
+    "translationsBody": "Englisch ist die Ausgangssprache dieser Website. Das brasilianische Portugiesisch wird mit KI geschrieben und nach und nach geprüft, ebenso die Oberfläche und die Tools auf Spanisch, auf Deutsch, auf Französisch und auf Italienisch; der Rest der spanischen, der deutschen, der französischen und der italienischen Website ist maschinell übersetzt: brauchbar, aber nicht muttersprachlich. Wenn Sie eine davon lesen und etwas falsch ist, etwa ein Fachbegriff, der wörtlich übersetzt wurde, oder ein Satz, der grammatisch aufgeht und nichts bedeutet, ist ein Hinweis an mich ein echter Beitrag, und eine kurze Notiz mit der Seite und der Formulierung genügt.",
     "translationsCta": "Korrektur senden"
   },
   "roles": {
@@ -37674,23 +37673,23 @@
     "entrances": {
       "pioneers": {
         "title": "Die Pioniere der Elektrizität",
-        "lede": "{count} Menschen von der Voltaschen Säule bis zum Transistor: die Physik, auf der jeder spätere Eintrag aufbaut."
+        "lede": "{count, plural, one {{count} Mensch} other {{count} Menschen}} von der Voltaschen Säule bis zum Transistor: die Physik, auf der jeder spätere Eintrag aufbaut."
       },
       "computing": {
         "title": "Die Köpfe hinter dem Computer",
-        "lede": "{count} Menschen, die die Maschine geschaffen haben: die Logik, die Sprachen, die Architekturen."
+        "lede": "{count, plural, one {{count} Mensch, der die Maschine geschaffen hat} other {{count} Menschen, die die Maschine geschaffen haben}}: die Logik, die Sprachen, die Architekturen."
       },
       "internet": {
         "title": "Die Menschen, die das Internet gebaut haben",
-        "lede": "{count} Menschen, von der ersten ARPANET-Verbindung bis zu den Protokollen, auf denen heute die ganze Welt läuft."
+        "lede": "{count, plural, one {{count} Mensch} other {{count} Menschen}}, von der ersten ARPANET-Verbindung bis zu den Protokollen, auf denen heute die ganze Welt läuft."
       },
       "security": {
         "title": "Sicherheit, Kryptografie und Hackerkultur",
-        "lede": "{count} Menschen, die Dinge knackten, Dinge schützten und dazwischen die Verschlüsselungsverfahren schrieben."
+        "lede": "{count, plural, one {{count} Mensch, der Dinge knackte, Dinge schützte und dazwischen die Verschlüsselungsverfahren schrieb} other {{count} Menschen, die Dinge knackten, Dinge schützten und dazwischen die Verschlüsselungsverfahren schrieben}}."
       },
       "brazil": {
         "title": "Brasilien",
-        "lede": "{count} Menschen aus Brasilien, von den nationalen Mikrocomputern der Marktreserve bis zu denen, die hier und heute das Internet aufbauen."
+        "lede": "{count, plural, one {{count} Mensch aus Brasilien} other {{count} Menschen aus Brasilien}}, von den nationalen Mikrocomputern der Marktreserve bis zu denen, die hier und heute das Internet aufbauen."
       }
     }
   },
@@ -37801,11 +37800,11 @@
         },
         "wp-core": {
           "title": "WordPress selbst",
-          "what": "Die eigenen Ordner von WordPress (wp-admin, wp-includes mit den mitgelieferten Bibliotheken, wp-content mit Uploads, Plugins und Themes), die üblichen Installationsordner und die Feed-Adresse. Zu den Installationsordnern gehören site, news, cms und press: In den eigenen Zählungen dieser Website wird jeder davon ohne Zusatz im Gleichschritt mit demselben Ordner samt angehängtem /wp-json/ angefragt; so suchen die Scanner oben nach WordPress in einem Unterordner. Die Anfrage bestätigt WordPress und sucht nach einem Ordner, der seine Dateien auflistet: Ein offener Upload-Ordner gibt alles preis, was je hochgeladen wurde. Die Versionen 4.7 bis 7.1.3 legen außerdem ein vollständiges Core-Upgrade in vorhersagbaren, über das Web erreichbaren Pfaden ab, sodass während des Upgrades jeder Code auf dem Server ausführen kann (CVE-2026-119977, behoben in 7.1.4 am 28. Oktober 2026, Backports für ältere Zweige in Arbeit; seit dem 3. November im Katalog ausgenutzter Schwachstellen der CISA)."
+          "what": "Die eigenen Ordner von WordPress (wp-admin, wp-includes mit den mitgelieferten Bibliotheken, wp-content mit Uploads, Plugins und Themes), die üblichen Installationsordner und die Feed-Adresse. Zu den Installationsordnern gehören site, news, cms und press: In den eigenen Zählungen dieser Website wird jeder davon ohne Zusatz im Gleichschritt mit demselben Ordner samt angehängtem /wp-json/ angefragt; so suchen die Scanner oben nach WordPress in einem Unterordner. Die Anfrage bestätigt WordPress und sucht nach einem Ordner, der seine Dateien auflistet: Ein offener Upload-Ordner gibt alles preis, was je hochgeladen wurde. Die Versionen 4.7 bis 7.1.3 legen außerdem ein vollständiges Core-Upgrade in vorhersagbaren, über das Web erreichbaren Pfaden ab, sodass während des Upgrades jeder Code auf dem Server ausführen kann (CVE-2026-119977, am 28. Oktober 2026 behoben in 7.1.4 und in einer neuen Version jedes älteren Zweigs bis zurück zu 4.7, etwa 7.0.8, 6.9.11 und 4.7.39; seit dem 3. November im Katalog ausgenutzter Schwachstellen der CISA)."
         },
         "secrets": {
           "title": "Secrets und Quellcode in einem veröffentlichten Ordner",
-          "what": "Dateien, die in einen Entwicklungsordner gehören und nur dann ins Web gelangen, wenn ein Server den falschen veröffentlicht: ein .git-Ordner (Quellcode und Verlauf der Website, mit jedem Passwort, das je committet wurde) und der .svn-Ordner von Subversion (sein Verzeichnis jeder Datei einer Arbeitskopie); .git-credentials (Passwörter, die Git unverschlüsselt ablegt); .env und die Sicherungskopie, die ein Editor davon hinterlässt, .env~ (die Secrets einer Anwendung); .aws/credentials und .aws/config (AWS-Zugriffsschlüssel und -Einstellungen); .ssh/id_rsa (ein privater SSH-Schlüssel); eine kubeconfig, .kube/config (die Cluster, Benutzer und Authentifizierung, mit denen kubectl den API-Server eines Kubernetes-Clusters erreicht); der Ordner der Azure CLI, .azure, in dem ihre Konfigurationsdatei liegt; der Ordner der Antigravity CLI, .gemini/antigravity-cli, in dem sie ihre Einstellungen ablegt; /proc/self/environ hinter Folgen von Punkten (unter Linux die Umgebung, mit der das laufende Programm gestartet wurde); Verläufe von Shells und Interpretern (jeder eingegebene Befehl, Passwörter auf der Kommandozeile eingeschlossen); und .DS_Store von macOS, das verrät, was ein Ordner enthält. Einige davon werden über /@fs/ angefragt, das Präfix, mit dem der Entwicklungsserver von Vite Dateien von der Festplatte ausliefert: CVE-2025-30208 und CVE-2025-31125 erlauben es jedem, auf einem im Netzwerk erreichbaren Entwicklungsserver Dateien außerhalb seiner Zulassungsliste zu lesen, beide behoben durch Vite 6.2.4, 6.1.3, 6.0.13, 5.4.16 und 4.5.11; die zweite steht seit dem 22. Januar 2026 im Katalog ausgenutzter Schwachstellen der CISA."
+          "what": "Dateien, die in einen Entwicklungsordner gehören und nur dann ins Web gelangen, wenn ein Server den falschen veröffentlicht: ein .git-Ordner (Quellcode und Verlauf der Website, mit jedem Passwort, das je committet wurde) und der .svn-Ordner von Subversion (sein Verzeichnis jeder Datei einer Arbeitskopie); der .hg-Ordner von Mercurial (seine requires-Datei und der dirstate der Arbeitskopie bestätigen ein Repository, sein store enthält die Historie); .git-credentials (Passwörter, die Git unverschlüsselt ablegt); .env und die Sicherungskopie, die ein Editor davon hinterlässt, .env~ (die Secrets einer Anwendung); .aws/credentials und .aws/config (AWS-Zugriffsschlüssel und -Einstellungen); .ssh/id_rsa und die verwandten id_ed25519 und id_ecdsa (private SSH-Schlüssel), dazu .ssh/authorized_keys (die öffentlichen Schlüssel, mit denen man sich bei diesem Konto anmelden darf); .vault-token (das Token, das die CLI von HashiCorp Vault nach einer Anmeldung aufbewahrt); eine kubeconfig, .kube/config (die Cluster, Benutzer und Authentifizierung, mit denen kubectl den API-Server eines Kubernetes-Clusters erreicht); der Ordner der Azure CLI, .azure, in dem ihre Konfigurationsdatei liegt; der Ordner der Antigravity CLI, .gemini/antigravity-cli, in dem sie ihre Einstellungen ablegt; /proc/self/environ hinter Folgen von Punkten (unter Linux die Umgebung, mit der das laufende Programm gestartet wurde); Verläufe von Shells und Interpretern (jeder eingegebene Befehl, Passwörter auf der Kommandozeile eingeschlossen); ein site-packages-Ordner von Python (dort installiert Python Bibliotheken von Drittanbietern, etwa lib/python3.12/site-packages; hier zusammen mit der Mail-Bibliothek von SendGrid angefragt, sendgrid/helpers/mail, deren Dokumentation den API-Schlüssel in SENDGRID_API_KEY oder einer .env-Datei ablegt), was bedeuten würde, dass eine ganze Python-Umgebung mit der Website veröffentlicht wurde; und .DS_Store von macOS, das verrät, was ein Ordner enthält. Einige davon werden über /@fs/ angefragt, das Präfix, mit dem der Entwicklungsserver von Vite Dateien von der Festplatte ausliefert: CVE-2025-30208 und CVE-2025-31125 erlauben es jedem, auf einem im Netzwerk erreichbaren Entwicklungsserver Dateien außerhalb seiner Zulassungsliste zu lesen, beide behoben durch Vite 6.2.4, 6.1.3, 6.0.13, 5.4.16 und 4.5.11; die zweite steht seit dem 22. Januar 2026 im Katalog ausgenutzter Schwachstellen der CISA. Dieselbe Art der Umgehung kehrte in Vite 6.4.4 zurück (CVE-2026-118662, behoben in 6.4.5)."
         },
         "frameworks": {
           "title": "Framework-Endpunkte, die die Konfiguration preisgeben",
@@ -37845,7 +37844,7 @@
         },
         "laravel": {
           "title": "Laravel und seine Pakete",
-          "what": "Standardadressen von Laravel-Anwendungen. Der Update-Endpunkt von Livewire, /livewire/update, den jede Livewire-3-Komponente aufruft, wird auch unter Präfixen wie /login/ und /admin/login/ ausprobiert: In Livewire 3 bis 3.6.3 erlaubt er einem nicht authentifizierten Angreifer in bestimmten Konfigurationen, Befehle auf dem Server auszuführen, über die Art, wie Aktualisierungen von Komponenteneigenschaften hydratisiert werden (CVE-2025-54068, behoben in 3.6.4; seit dem 20. März 2026 im Katalog ausgenutzter Schwachstellen der CISA). Livewire 4 ersetzte diese Adresse durch eine, die einen Hash des Anwendungsschlüssels enthält; die Anfrage nach der alten sucht also nach Version 3. Die Dashboards von Telescope (die Anfragen, Ausnahmen, Abfragen, Jobs und E-Mails, die eine Anwendung verarbeitet hat), Horizon (Warteschlangen), Pulse (Performance) und Nova (Administration) liegen unter /telescope, /horizon, /pulse und /nova; Telescope, Horizon und Pulse öffnen standardmäßig nur in der lokalen Umgebung. /two-factor-challenge, /email/verify und /password/reset sind Routen, die die Anmeldepakete von Laravel definieren, Fortify und laravel/ui."
+          "what": "Standardadressen von Laravel-Anwendungen. Der Update-Endpunkt von Livewire, /livewire/update, den jede Livewire-3-Komponente aufruft, wird auch unter Präfixen wie /login/ und /admin/login/ ausprobiert: In Livewire 3 bis 3.6.3 erlaubt er einem nicht authentifizierten Angreifer in bestimmten Konfigurationen, Befehle auf dem Server auszuführen, über die Art, wie Aktualisierungen von Komponenteneigenschaften hydratisiert werden (CVE-2025-54068, behoben in 3.6.4; seit dem 20. März 2026 im Katalog ausgenutzter Schwachstellen der CISA). Livewire 4 ersetzte diese Adresse durch eine, die einen Hash des Anwendungsschlüssels enthält; die Anfrage nach der alten sucht also nach Version 3. Die Dashboards von Telescope (die Anfragen, Ausnahmen, Abfragen, Jobs und E-Mails, die eine Anwendung verarbeitet hat), Horizon (Warteschlangen), Pulse (Performance) und Nova (Administration) liegen unter /telescope, /horizon, /pulse und /nova; Telescope, Horizon und Pulse öffnen standardmäßig nur in der lokalen Umgebung. /two-factor-challenge, /email/verify und /password/reset sind Routen, die die Anmeldepakete von Laravel definieren, Fortify und laravel/ui; /user/profile und /user/api-tokens sind die Profil- und API-Token-Seiten von Jetstream, dem Starter-Kit für Laravel-Anwendungen."
         }
       },
       "expandAll": "Alle aufklappen ({count})",
@@ -37934,10 +37933,10 @@
   "earlierSites": {
     "eyebrow": "Über mich · Die früheren Websites",
     "title": "Woran sich das Web erinnert",
-    "lede": "Vor ronutz.com gab es zwei Domains, nutzmann.net und ntz.com.br, und das Internet Archive hat sie bewahrt. {pages} archivierte Seiten, gelesen am {date}, wurden vollständig gesichert, gedruckt und katalogisiert. Hier, Epoche für Epoche: was jede Website war, wann, was sie anbot und was sie enthielt, mit einem Link zu jedem Snapshot, damit sich die Angaben prüfen lassen.",
+    "lede": "Vor ronutz.com gab es zwei Domains, nutzmann.net und ntz.com.br, und das Internet Archive hat sie bewahrt. {pages, plural, one {{pages} archivierte Seite, gelesen am {date}, wurde} other {{pages} archivierte Seiten, gelesen am {date}, wurden}} vollständig gesichert, gedruckt und katalogisiert. Hier, Epoche für Epoche: was jede Website war, wann, was sie anbot und was sie enthielt, mit einem Link zu jedem Snapshot, damit sich die Angaben prüfen lassen.",
     "metaTitle": "Die früheren Websites: nutzmann.net und ntz.com.br, 2004 bis 2021 · Rodolfo Nützmann",
     "metaDescription": "Was das Internet Archive von den früheren Websites von Rodolfo Nützmann bewahrt hat, nutzmann.net ab 2004 und ntz.com.br ab 2013: Daten, Merkmale, Angebote, Inhalte und ein Link zu jedem Snapshot.",
-    "ageLine": "Der erste Snapshot stammt vom 25. August 2004, {years} Jahre bevor diese Seite gebaut wurde. Die Startseite jenes Tages verlinkte bereits drei kleine Tools, einen Bits-und-Bytes-Rechner, einen Rechner für IP-Adressierung und eine Pinbelegung für die Netzwerkverkabelung: die ältesten Vorfahren der Tools auf dieser Website.",
+    "ageLine": "Der erste Snapshot stammt vom 25. August 2004, {years, plural, one {{years} Jahr} other {{years} Jahre}} bevor diese Seite gebaut wurde. Die Startseite jenes Tages verlinkte bereits drei kleine Tools, einen Bits-und-Bytes-Rechner, einen Rechner für IP-Adressierung und eine Pinbelegung für die Netzwerkverkabelung: die ältesten Vorfahren der Tools auf dieser Website.",
     "provenanceTitle": "Woher das stammt",
     "provenanceBody": "Jede Aussage auf dieser Seite wurde am {date} aus den Snapshots der beiden Domains in der Wayback Machine gelesen; nichts wird aus dem Gedächtnis zitiert. Jeder Snapshot wurde als rohe Bytes des Archivs gesichert, mit eingebundenen Bildern, Stylesheets und Skripten, offline gerendert und gedruckt, und das Inventar unter jedem Abschnitt verlinkt die Kopie im Archiv, sodass sich jede Seite so öffnen lässt, wie sie war. Wo das Archiv ein Bild nie gespeichert hat, zeigt der Ausdruck eine Lücke, und der Katalog vermerkt das. Kundennamen, die auf den alten Seiten erscheinen, bleiben dem Archiv überlassen; diese Seite beschreibt die Arbeit nach ihrer Form.",
     "labels": {
@@ -38004,7 +38003,7 @@
     "linkTraining": "Schulungen",
     "linkEra": "Der Praktiker, 1996 bis 2020",
     "inventoryTitle": "Inventar",
-    "inventorySummary": "{count} archivierte Seiten, {from} bis {to}",
+    "inventorySummary": "{count, plural, one {{count} archivierte Seite} other {{count} archivierte Seiten}}, {from} bis {to}",
     "colFile": "Datei",
     "colTitle": "Titel wie veröffentlicht",
     "colCaptured": "Erfasst",
@@ -38021,7 +38020,7 @@
     "recordRendering": "Darstellung",
     "recordRenderingOf": "Darstellung des Snapshots vom {date}",
     "recordArchive": "Internet Archive, {date}",
-    "recordCaptures": "{count} Snapshots, {from} bis {to}",
+    "recordCaptures": "{count, plural, one {{count} Snapshot} other {{count} Snapshots}}, {from} bis {to}",
     "recordAttempts": "vom Archiv am {dates} angefragt; jedes Mal 404",
     "recordNoCopy": "Nirgendwo existiert eine Kopie.",
     "recordOutside": "2013 verwies der Link unter diesem Namen nach außen, auf {host}.",
@@ -38042,7 +38041,7 @@
     },
     "linkBits": "Bits, Bytes und Durchsatz",
     "flashAria": "Die Flash-Kopfleiste {file}, als Video wiedergegeben",
-    "flashCaption": "Die Flash-Kopfleiste dieser Epoche, {file}, eingebunden von {page}: {frames} Einzelbilder mit {fps} Bildern pro Sekunde ({seconds} s), {width} × {height} Pixel, Format Flash 5. Am 5. Oktober 2026 aus der Originaldatei wiedergegeben: jedes Einzelbild mit dem JPEXS Free Flash Decompiler gerendert und mit der Originalrate kodiert; die Schaltfläche, die das Original enthielt, ist das Einzige, was nicht wiedergegeben wird.",
+    "flashCaption": "Die Flash-Kopfleiste dieser Epoche, {file}, eingebunden von {page}: {frames, plural, one {{frames} Einzelbild} other {{frames} Einzelbilder}} mit {fps} Bildern pro Sekunde ({seconds} s), {width} × {height} Pixel, Format Flash 5. Am 5. Oktober 2026 aus der Originaldatei wiedergegeben: jedes Einzelbild mit dem JPEXS Free Flash Decompiler gerendert und mit der Originalrate kodiert; die Schaltfläche, die das Original enthielt, ist das Einzige, was nicht wiedergegeben wird.",
     "clone": {
       "eyebrow": "Über mich · Die früheren Websites · Rekonstruktion",
       "title": {
@@ -40391,7 +40390,7 @@
       "device-groups": "Palo Alto Networks, Device Groups: Eine Firewall wertet Richtlinienregeln nach Ebene und Typ von oben nach unten aus; lokale Firewall-Regeln erscheinen zwischen den Pre-Regeln und den Post-Regeln",
       "rulebase-best-practices": "Palo Alto Networks, Security Policy Rulebase Best Practices: Der erste Treffer gewinnt, und der Vergleich endet; „Commit and Push doesn't provide shadowing information“",
       "rule-best-practices": "Palo Alto Networks, Security Policy Rule Best Practices: Definition der Verdeckung (Shadowing); intrazone-default lässt zu, und interzone-default blockiert",
-      "panorama-policies": "Palo Alto Networks, Defining Policies on Panorama: Pre-Regeln werden oben in die Regelreihenfolge eingefügt und zuerst ausgewertet; Post-Regeln werden zuletzt ausgewertet"
+      "panorama-policies": "Palo Alto Networks, Defining Policies on Panorama: Pre-Regeln werden oben in die Regelreihenfolge eingefügt und zuerst ausgewertet; Post-Regeln werden unten eingefügt und nach den Pre-Regeln und den lokalen Regeln der Firewall ausgewertet"
     },
     "icontrol-rest-path-explainer": {
       "icontrol-rest": "API-Referenz von F5 iControl REST",

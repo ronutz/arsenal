@@ -664,7 +664,7 @@ function v4BlockNotes(n: number, g: Ipv4Group): EngineText[] {
     } // glop
     case "ubm": { // unicast-prefix-based
       const prefix = `${quad((n * 256) >>> 0)}/24`; // shifted left by 8 bits (RFC 6034 s3)
-      out.push(say("note.block.ubm", `Unicast-prefix-based (RFC 6034, section 3): shifting the group left by 8 bits gives ${prefix}, inside the unicast space of the organisation that may use this group.`, { prefix })); // the prefix
+      out.push(say("note.block.ubm", `Unicast-prefix-based (RFC 6034, section 3): shifting the group left by 8 bits gives ${prefix}, inside the unicast space of the organization that may use this group.`, { prefix })); // the prefix
       break; // done
     } // ubm
     case "admin-scoped": { // 239.0.0.0/8

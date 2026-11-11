@@ -149,7 +149,7 @@ Cache poisoning plants forged DNS data in a resolver's cache ([VU#800113, Descri
 - In a response, the OPT line's `udp:` is the responding server's payload size; dig 9.20.29 offers 1232 octets, shown by `+qr`.
 - NODATA is NOERROR without answers; NXDOMAIN means no such name, SERVFAIL a server unable to process the query, REFUSED policy, a timeout no reply.
 - Negative answers are cached for the lesser of the SOA's MINIMUM and its TTL, and cached TTLs count down: slow changes are mostly caches.
-- The 2008 patches randomised source ports; only DNSSEC validation, never a line of output, tells a forged cached answer from a genuine one.
+- The 2008 patches randomized source ports; only DNSSEC validation, never a line of output, tells a forged cached answer from a genuine one.
 
 ## This series, in order
 

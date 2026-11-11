@@ -278,8 +278,8 @@ export function decodeF5osPathLocalisable(input: string): F5osPathDecode<EngineT
   if (unknownModules.length > 0) {
     const tail = `: ${unknownModules.join(", ")}. The structure is still decoded; only the description of what the module governs is withheld.`; // the shared rest
     notes.push(unknownModules.length === 1 // one prefix, or several: one sentence each
-      ? say("note.unknownModule", `Unrecognised module prefix${tail}`, { modules: unknownModules.join(", ") }) // pack key engine.note.unknownModule
-      : say("note.unknownModules", `Unrecognised module prefixes${tail}`, { modules: unknownModules.join(", ") })); // pack key engine.note.unknownModules
+      ? say("note.unknownModule", `Unrecognized module prefix${tail}`, { modules: unknownModules.join(", ") }) // pack key engine.note.unknownModule
+      : say("note.unknownModules", `Unrecognized module prefixes${tail}`, { modules: unknownModules.join(", ") })); // pack key engine.note.unknownModules
   }
 
   return {

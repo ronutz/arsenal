@@ -4,7 +4,7 @@ You are looking at a WAF (web application firewall) event, or an application log
 
 ## What it is not
 
-It is a decoder. It reads payloads that have already arrived somewhere and explains them. It does not construct payloads, it does not suggest variations on the one you pasted, and it holds no template library to draw from - everything it recognises is public syntax documented in Apache's own security bulletins and visible in the logs of anyone running a web server on the public internet. Explaining a captured artefact is the defensive half of the job. Producing new ones is not what this site is for, and the tool is built so that reading its source gives you nothing you could not get from the advisory.
+It is a decoder. It reads payloads that have already arrived somewhere and explains them. It does not construct payloads, it does not suggest variations on the one you pasted, and it holds no template library to draw from - everything it recognizes is public syntax documented in Apache's own security bulletins and visible in the logs of anyone running a web server on the public internet. Explaining a captured artefact is the defensive half of the job. Producing new ones is not what this site is for, and the tool is built so that reading its source gives you nothing you could not get from the advisory.
 
 ## OGNL, in one paragraph
 
@@ -24,4 +24,4 @@ Where the shape is characteristic, the tool names the advisory family: the 2017 
 
 Three things, and they are shown every time rather than hidden behind a toggle, because the most dangerous way to read this page is to see no findings and conclude that everything is fine.
 
-It cannot tell you whether the request was blocked. That is in the WAF event, not in the payload. It cannot tell you whether the application evaluated the expression, which depends on the framework version and configuration rather than on the string. And absence of a recognised construct is not absence of risk: payloads are routinely URL-encoded, double-encoded, or split across several parameters, so decode first and read afterwards. A clean result on an encoded payload means the tool read the encoding, not the attack.
+It cannot tell you whether the request was blocked. That is in the WAF event, not in the payload. It cannot tell you whether the application evaluated the expression, which depends on the framework version and configuration rather than on the string. And absence of a recognized construct is not absence of risk: payloads are routinely URL-encoded, double-encoded, or split across several parameters, so decode first and read afterwards. A clean result on an encoded payload means the tool read the encoding, not the attack.

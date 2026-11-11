@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-10-26"
 ---
 
-Most broadband technologies put electronics between you and the provider: a cabinet with power, cooling, and things that fail. GPON, which stands for Gigabit Passive Optical Network, takes the opposite bet. Between the provider's equipment and your home there is nothing but glass - fibers and small optical splitters that need no electricity at all. That single design decision explains almost everything else about how it works.
+Most broadband technologies put electronics between you and the provider: a cabinet with power, cooling, and things that fail. GPON, which stands for Gigabit Passive Optical Network, takes the opposite bet. Between the provider's equipment and your home there is nothing but glass - fibres and small optical splitters that need no electricity at all. That single design decision explains almost everything else about how it works.
 
 ## Origins: the copper ran out of headroom, not the fibre
 
@@ -19,7 +19,7 @@ Fibre to the home was technically possible for decades before it was affordable.
 
 **Passive optical networking** is the answer to that economics problem, and its defining choice is in the first word. The splitter between the exchange and the homes has **no power, no electronics and nothing to fail**: it divides incoming light among its outputs and combines what comes back. One expensive port at the exchange is shared by many homes, and the shared plant needs no cabinet, no rectifier and no maintenance visit.
 
-The lineage is standardised and worth knowing, because installed networks span all of it:
+The lineage is standardized and worth knowing, because installed networks span all of it:
 
 - **APON/BPON (ITU-T G.983, late 1990s)**: the first generation, ATM-based, modest speeds, and the proof that passive splitting worked in the field.
 - **GPON (ITU-T G.984, 2003 onward)**: the one most deployed: 2.488 Gbps downstream, 1.244 Gbps upstream, shared across the tree.
@@ -31,7 +31,7 @@ That wavelength-coexistence property is why the passive plant is such a good inv
 
 ## The tree of glass
 
-A GPON deployment is a tree. At the root, in the provider's central office or a street cabinet, sits the OLT - the Optical Line Terminal. From one OLT port, a single fiber runs out into the neighborhood. Along the way it passes through one or more optical splitters: passive components that divide the light among branches the way a prism divides a beam. A 1:2 splitter sends half the light each way; cascade the splits and you reach the common ratios of 1:32, 1:64, or 1:128 subscribers sharing one OLT port.
+A GPON deployment is a tree. At the root, in the provider's central office or a street cabinet, sits the OLT - the Optical Line Terminal. From one OLT port, a single fibre runs out into the neighborhood. Along the way it passes through one or more optical splitters: passive components that divide the light among branches the way a prism divides a beam. A 1:2 splitter sends half the light each way; cascade the splits and you reach the common ratios of 1:32, 1:64, or 1:128 subscribers sharing one OLT port.
 
 At each leaf of the tree sits an ONT - the Optical Network Terminal, the box on your wall that turns light back into Ethernet. The standards also call it an ONU, an Optical Network Unit; field technicians use the two names interchangeably.
 
@@ -41,7 +41,7 @@ The shape of the tree is also the shape of an outage. Everything above a splitte
 
 ## Downstream: everyone hears everything
 
-Because a splitter divides light without judgment, every ONT on the tree receives everything the OLT transmits. Downstream GPON is a broadcast at 2.488 gigabits per second: your neighbor's frames physically arrive at your ONT, and yours at theirs.
+Because a splitter divides light without judgment, every ONT on the tree receives everything the OLT transmits. Downstream GPON is a broadcast at 2.488 gigabits per second: your neighbour's frames physically arrive at your ONT, and yours at theirs.
 
 The system deals with this the only way it can - cryptographically. Each subscriber's downstream traffic is encrypted with AES, the Advanced Encryption Standard, under keys negotiated per ONT, so the frames your ONT cannot decrypt are noise to it. The ONT filters by identifier and decrypts only its own. Privacy on a shared medium is not a courtesy here; it is a protocol requirement.
 
@@ -57,7 +57,7 @@ The asymmetry - 2.488 down, 1.244 up - was a deliberate bet on traffic patterns 
 
 Every optical link lives on a power budget: the transmitter launches so many dB of light, the receiver needs so many to hear, and everything in between spends the difference. GPON class B+ optics, the common case, budget about 28 dB end to end.
 
-Splitters are the big spenders. Every 1:2 division costs about 3.5 dB - half the light, by definition, plus a little loss - so a 1:64 tree spends roughly 21 dB on splitting alone. The fiber itself takes about 0.35 dB per kilometer at GPON's wavelengths, each connector 0.3 dB or so, each fusion splice a few hundredths. Add it up and a 1:64 split at 20 km arrives near the edge of the budget - which is exactly the design point of the standard.
+Splitters are the big spenders. Every 1:2 division costs about 3.5 dB - half the light, by definition, plus a little loss - so a 1:64 tree spends roughly 21 dB on splitting alone. The fibre itself takes about 0.35 dB per kilometre at GPON's wavelengths, each connector 0.3 dB or so, each fusion splice a few hundredths. Add it up and a 1:64 split at 20 km arrives near the edge of the budget - which is exactly the design point of the standard.
 
 This arithmetic is the ISP technician's daily reality. A dirty connector that eats 2 dB, a drop cable bent past its radius, one bad mechanical splice: any of these can push a marginal leaf over the line, and the failure looks like mystery packet loss rather than darkness. The OTDR - the Optical Time-Domain Reflectometer - exists to turn that mystery into a distance: fire a pulse, read the reflections, and the trace shows how many meters out the budget is leaking.
 
@@ -71,15 +71,15 @@ This arithmetic is the ISP technician's daily reality. A dirty connector that ea
 
 **The terminology, since every document assumes it.** The **OLT** (optical line terminal) is the exchange-side equipment; the **ONT** or **ONU** (optical network terminal or unit) is the device in the home; the **ODN** (optical distribution network) is the passive plant between them.
 
-**Ranging and equalisation.** Because homes sit at different distances, their upstream bursts would collide even with perfect scheduling. The OLT measures each ONT's round-trip delay and hands it an equalisation offset, so every burst arrives in its slot regardless of distance. This is also why a rogue ONT transmitting outside its slot degrades an entire tree, and why finding it is a physical-layer hunt rather than a configuration review.
+**Ranging and equalization.** Because homes sit at different distances, their upstream bursts would collide even with perfect scheduling. The OLT measures each ONT's round-trip delay and hands it an equalization offset, so every burst arrives in its slot regardless of distance. This is also why a rogue ONT transmitting outside its slot degrades an entire tree, and why finding it is a physical-layer hunt rather than a configuration review.
 
-**Security follows from the topology.** Downstream frames reach every home on the tree, so encryption is not optional decoration: GPON encrypts downstream traffic per subscriber, with the key established during activation. Anyone reasoning about a shared medium should recognise the argument from [wireless](/learn/wireless-networking-from-802-11-to-wifi-7): the medium is shared, so confidentiality has to be added rather than assumed.
+**Security follows from the topology.** Downstream frames reach every home on the tree, so encryption is not optional decoration: GPON encrypts downstream traffic per subscriber, with the key established during activation. Anyone reasoning about a shared medium should recognize the argument from [wireless](/learn/wireless-networking-from-802-11-to-wifi-7): the medium is shared, so confidentiality has to be added rather than assumed.
 
 ## Interoperability and dependencies
 
 **Interoperability is the sore point.** The standards specify the optics and the framing, but the management interface for the home device historically was not, so an OLT and an ONT from different manufacturers frequently do not fully interoperate. **OMCI**, the management channel defined in the standards, is what makes multi-vendor deployment possible, and how completely a vendor implements it is a purchasing question with a long tail, since an operator locked to one ONT supplier discovers it at the worst moment, during a supply shortage.
 
-Beyond the optics, the dependencies that actually cause outages are the ones around it: power at the home (a fibre network survives a mains cut only for as long as the ONT's battery, which is why voice-over-fibre changed emergency-calling assumptions), the subscriber-management platform that authorises an ONT onto the tree, address assignment and [carrier-grade translation](/learn/cgnat-address-sharing-and-attribution) behind it, and the physical records: a passive network has no way to tell you which port on which splitter serves which house, so the documentation *is* the topology.
+Beyond the optics, the dependencies that actually cause outages are the ones around it: power at the home (a fibre network survives a mains cut only for as long as the ONT's battery, which is why voice-over-fibre changed emergency-calling assumptions), the subscriber-management platform that authorizes an ONT onto the tree, address assignment and [carrier-grade translation](/learn/cgnat-address-sharing-and-attribution) behind it, and the physical records: a passive network has no way to tell you which port on which splitter serves which house, so the documentation *is* the topology.
 
 ## The vendor landscape, by category
 
@@ -92,7 +92,7 @@ The buying question that matters is not line rate, since the standards fix that.
 
 ## What to remember
 
-One fiber, split passively, shared by schedule. Downstream is an encrypted broadcast; upstream is a timed choir where the OLT conducts. The whole design trades electronics in the field for arithmetic in decibels - and when GPON misbehaves, the answer is almost always in that arithmetic.
+One fibre, split passively, shared by schedule. Downstream is an encrypted broadcast; upstream is a timed choir where the OLT conducts. The whole design trades electronics in the field for arithmetic in decibels - and when GPON misbehaves, the answer is almost always in that arithmetic.
 
 ## Sources
 

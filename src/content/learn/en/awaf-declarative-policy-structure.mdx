@@ -35,7 +35,7 @@ Every adjustment is optional, and this is the single most important thing to und
 
 ## The logical sections
 
-The policy is organised into logical sections, each with a defined purpose: enforcement (`enforcementMode`, `signature-settings`, `policy-builder`), application context (`applicationLanguage`, `caseInsensitive`, `server-technologies`), the traffic surface (`urls`, `parameters`, `filetypes`, `methods`, `headers`, `cookies`), and protections (`blocking-settings`, `data-guard`, `brute-force-attack-preventions`, `csrf-protection`, and more).
+The policy is organized into logical sections, each with a defined purpose: enforcement (`enforcementMode`, `signature-settings`, `policy-builder`), application context (`applicationLanguage`, `caseInsensitive`, `server-technologies`), the traffic surface (`urls`, `parameters`, `filetypes`, `methods`, `headers`, `cookies`), and protections (`blocking-settings`, `data-guard`, `brute-force-attack-preventions`, `csrf-protection`, and more).
 
 F5 publishes the full schema, versioned from v16.0 through v17.5, on clouddocs. Reading a policy well means walking those sections in turn, always remembering that what is not written is inherited.
 
@@ -49,7 +49,7 @@ This article opens the series **BIG-IP Advanced WAF**. Its template-and-adjustme
 4. **[Nested Policies in Advanced WAF: Parent/Child Inheritance and Policy Microservices](/learn/awaf-nested-policies)**. Parent and child policies with mandatory inheritance, and policy microservices: two ways to layer instead of one flat policy.
 5. **[Advanced WAF Session Tracking: Finding and Stopping the Client Behind the Requests](/learn/awaf-session-tracking)**. Identifying the user, session, device or address behind a stream of requests, and acting on that identity.
 6. **[Data Guard: Masking Sensitive Data in Responses](/learn/awaf-data-guard-response-masking)**. The response-side protection that masks card numbers and other sensitive patterns before they leave.
-7. **[Evasion Techniques: How Advanced WAF Normalizes Around Attacker Encoding](/learn/awaf-evasion-techniques)**. Unusual encodings that hide a payload from a signature, and the evasion sub-violations that normalise around them.
+7. **[Evasion Techniques: How Advanced WAF Normalizes Around Attacker Encoding](/learn/awaf-evasion-techniques)**. Unusual encodings that hide a payload from a signature, and the evasion sub-violations that normalize around them.
 8. **[Client-Side Signals and Challenges: How Advanced WAF Tells a Browser from a Bot](/learn/awaf-client-side-signals-and-challenges)**. The injected JavaScript, the integrity check and the capability probes that tell a real browser from automation.
 9. **[L7 Behavioral DoS (BaDoS): How Advanced WAF Learns Normal and Mitigates the Rest](/learn/awaf-l7-behavioral-dos)**. The machine-learning defence against application-layer floods: a learned baseline, server stress, and signatures generated on the fly.
 10. **[Handling False Positives in Advanced WAF: Triage by Rating, Then Tune with Scope](/learn/awaf-false-positives)**. Legitimate traffic that trips the policy: triage by violation rating first, then tune with the narrowest scope.

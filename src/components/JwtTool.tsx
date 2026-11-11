@@ -27,6 +27,8 @@
 // out of the link in place of the signature and the verification box.
 // ============================================================================
 
+// English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
+import { intlLocale } from "@/i18n/locales";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { run, JwtDecodeError, type DecodedJwt } from "@/lib/tools/jwt";
@@ -67,7 +69,7 @@ function base64UrlFromBuffer(buf: ArrayBuffer): string {
 
 /** Largest-unit relative time ("in 2 hours", "3 days ago") in the active locale. */
 function relativeTime(deltaSeconds: number, locale: string): string {
-  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
+  const rtf = new Intl.RelativeTimeFormat(intlLocale(locale), { numeric: "auto" });
   const abs = Math.abs(deltaSeconds);
   const units: Array<[Intl.RelativeTimeFormatUnit, number]> = [
     ["year", 31536000],

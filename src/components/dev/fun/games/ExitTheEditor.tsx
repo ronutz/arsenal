@@ -656,9 +656,9 @@ export default function ExitTheEditor({ locale }: { locale: string }) {
       setLast(mine);
       setVersion((v) => v + 1);
       // The shell's panel, its numbers in the page's language (12.610 on a pt-BR page; review R3-10).
-      setResult({ won: true, headline: t("clearedHeadline", { name: level.prog }), detail: t("clearedDetail", { keys: n, time: formatDuration(ms), score: score.toLocaleString(locale), total: total.toLocaleString(locale), medal: medal || "none" }), share: card(p) });
+      setResult({ won: true, headline: t("clearedHeadline", { name: level.prog }), detail: t("clearedDetail", { keys: n, time: formatDuration(ms), score, total: total.toLocaleString(locale), medal: medal || "none" }), share: card(p) });
       // Announced.
-      setSay(t("sayCleared", { name: level.prog, score: score.toLocaleString(locale), medal: medal || "none" }));
+      setSay(t("sayCleared", { name: level.prog, score, medal: medal || "none" }));
     },
     [level, bought, today, t, card, locale],
   );

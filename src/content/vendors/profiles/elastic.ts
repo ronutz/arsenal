@@ -53,20 +53,20 @@ export const elasticProfile: VendorProfile = {
   ],
   products: [
     { name: "Elasticsearch", what: "The distributed search and analytics engine, still built on Lucene, still the thing everything else attaches to." },
-    { name: "Kibana", what: "The visualisation and exploration layer, and the part of the stack with the clearest lead over the fork after five years of separate development." },
+    { name: "Kibana", what: "The visualization and exploration layer, and the part of the stack with the clearest lead over the fork after five years of separate development." },
     { name: "Elastic Cloud", what: "Managed service across the major cloud providers in more than forty regions - including on AWS, which is worth noting given the history." },
     { name: "Observability and Security", what: "Application performance monitoring, logs and metrics on one side; SIEM (security information and event management) and endpoint on the other. Both are the same engine pointed at different questions, which is the argument for the platform." },
     { name: "ES|QL", what: "A piped query language added in 2025, aimed at analytical work that the original query interface handled awkwardly. The fork answered with its own piped language, which is a fair picture of how the two now develop." },
-    { name: "ESRE, ELSER and BBQ", what: "The retrieval and vector work: a sparse retrieval model that runs in the cluster without external inference hardware, and quantisation compressing vectors roughly sixteenfold with little reported recall loss. This is where the company placed its bet for the retrieval-augmented generation era." },
+    { name: "ESRE, ELSER and BBQ", what: "The retrieval and vector work: a sparse retrieval model that runs in the cluster without external inference hardware, and quantization compressing vectors roughly sixteenfold with little reported recall loss. This is where the company placed its bet for the retrieval-augmented generation era." },
   ],
   innovations: [
     { title: "Search as infrastructure rather than a feature", detail: "An HTTP interface over a hard distributed-systems problem meant developers could adopt it in an afternoon without a database team. That accessibility built the install base - and made the install base impossible to charge for." },
-    { title: "Running the model inside the cluster", detail: "A retrieval model that needs no external inference service removes the operational and cost barrier that keeps most organisations from using semantic search at all. The design decision is about deployment, not accuracy." },
-    { title: "Compressing vectors rather than buying memory", detail: "Quantising vectors to a fraction of their size makes vector search affordable at volumes where the memory bill otherwise decides the architecture. It is the unglamorous engineering that determines whether a capability is usable in production." },
+    { title: "Running the model inside the cluster", detail: "A retrieval model that needs no external inference service removes the operational and cost barrier that keeps most organizations from using semantic search at all. The design decision is about deployment, not accuracy." },
+    { title: "Compressing vectors rather than buying memory", detail: "Quantizing vectors to a fraction of their size makes vector search affordable at volumes where the memory bill otherwise decides the architecture. It is the unglamorous engineering that determines whether a capability is usable in production." },
     { title: "Triple licensing as a settlement", detail: "Holding a proprietary licence, a source-available one and an approved open-source one simultaneously is an odd position, and it is what a company looks like when it has to satisfy the cloud provider problem and the community at the same time." },
   ],
   markets: [
-    "Log analytics remains the largest use, alongside enterprise search, observability and security. The customer is any organisation with more data than it can grep, which is now most of them.",
+    "Log analytics remains the largest use, alongside enterprise search, observability and security. The customer is any organization with more data than it can grep, which is now most of them.",
     "Its principal competitor is a fork of its own code, now under independent governance and with hundreds of millions of downloads. Benchmarks between the two are contested and should be read with that in mind: the vendor's own figures claim large advantages, an independent 2025 benchmark found the fork faster on mixed workloads, and the honest answer is that the result depends on the workload.",
   ],
   analyst: [

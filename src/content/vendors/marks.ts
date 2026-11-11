@@ -429,7 +429,7 @@ export const VENDOR_MARKS: VendorMark[] = [
     note:
       "VENDOR-PUBLISHED FILE, PULLED BY ANVIL (same instruction). Tenable's own " +
       "press logo, https://static.tenable.com/press/logos/TenableLogo_FullColor_RGB" +
-      ".svg, the file tenable.com names as its organisation logo in its structured " +
+      ".svg, the file tenable.com names as its organization logo in its structured " +
       "data (fetched 2026-10-06, 2,927 bytes, image/svg+xml): the current wordmark " +
       "and device in #192124, true vector; only edit: width and height attributes " +
       "from the viewBox. Dated from the year this site's record of the current mark " +
@@ -495,7 +495,7 @@ export const VENDOR_MARKS: VendorMark[] = [
       "from the 2009 identity until the Broadcom-era lockup replaced it; both " +
       "years are from general knowledge, good to a year. The file is Wikimedia " +
       "Commons' Vmware.svg (downloaded 2026-10-04), which its file page records as " +
-      "vectorised from VMware's own investor-relations slide deck, colour #6A6667, " +
+      "vectorized from VMware's own investor-relations slide deck, colour #6A6667, " +
       "held there as a text logo below the threshold of originality and marked as " +
       "a trademark; used here nominatively on the timeline entry whose text names " +
       "the company.",

@@ -14,6 +14,8 @@
 // under the intro, with the live post count and the changelog link.
 // ============================================================================
 
+// English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
+import { intlLocale } from "@/i18n/locales";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { getAllPosts } from "@/lib/blog";
@@ -55,7 +57,7 @@ export default async function BlogIndexPage({
   const posts = getAllPosts(locale);
 
   // Dates are rendered in the reader's locale, from the ISO frontmatter value.
-  const fmt = new Intl.DateTimeFormat(locale, {
+  const fmt = new Intl.DateTimeFormat(intlLocale(locale), {
     year: "numeric",
     month: "long",
     day: "numeric",

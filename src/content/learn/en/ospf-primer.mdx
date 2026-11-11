@@ -127,9 +127,9 @@ TTL 1 and type of service 0xc0, the Internetwork Control precedence ([RFC 2328, 
 | Init | a Hello seen, not yet listing this router |
 | 2-Way | each lists the other |
 | ExStart | choosing who leads the exchange, and the first sequence number |
-| Exchange | Database Description (DD) packets summarise each database |
+| Exchange | Database Description (DD) packets summarize each database |
 | Loading | missing LSAs requested |
-| Full | databases synchronised; the adjacency appears in LSAs |
+| Full | databases synchronized; the adjacency appears in LSAs |
 
 RFC 9454 renamed master and slave to Leader and Follower: "the 'master (MS) bit' is renamed the 'Leader (L) bit'" ([RFC 9454, section 2](https://www.rfc-editor.org/rfc/rfc9454.txt)). ExStart is where a maximum transmission unit (MTU) mismatch bites, because "If the Interface MTU field in the Database Description packet indicates an IP datagram size that is larger than the router can accept on the receiving interface without fragmentation, the Database Description packet is rejected" ([RFC 2328, section 10.6](https://www.rfc-editor.org/rfc/rfc2328.txt)). With 1400 bytes on R2's side of the R2 to R4 link and 1500 on R4's, both ends were still in `ExStart/-` 45 seconds later, and R2 logged `Neighbor 192.0.2.4 MTU 1500 is larger than [e24:198.51.100.13]'s MTU 1400` every five seconds.
 

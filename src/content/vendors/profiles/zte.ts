@@ -28,7 +28,7 @@ export const zteProfile: VendorProfile = {
       place: "Shenzhen, China",
       founders: ["Hou Weigui (founding chairman) and aerospace-ministry investors"],
       story:
-        "Founded in the Shenzhen special economic zone in 1985 - two years before its neighbor Huawei - ZTE grew from semiconductor assembly into China's other telecom equipment giant: the state-linked, publicly listed counterpart to its privately held rival. Its ZXJ10 switch helped wire China's telephone boom, its CDMA gear and handsets scaled globally through the 2000s, and by the 2010s it stood among the world's top-five equipment makers. Then, in 2018, a US denial order switched off its component supply - and for a few weeks the world watched a hundred-thousand-person company demonstrate exactly what dependency means.",
+        "Founded in the Shenzhen special economic zone in 1985 - two years before its neighbour Huawei - ZTE grew from semiconductor assembly into China's other telecom equipment giant: the state-linked, publicly listed counterpart to its privately held rival. Its ZXJ10 switch helped wire China's telephone boom, its CDMA gear and handsets scaled globally through the 2000s, and by the 2010s it stood among the world's top-five equipment makers. Then, in 2018, a US denial order switched off its component supply - and for a few weeks the world watched a hundred-thousand-person company demonstrate exactly what dependency means.",
     },
   ],
   timeline: [

@@ -43,7 +43,7 @@ export const siemensProfile: VendorProfile = {
     { title: "The disciplined exit", detail: "Few giants have left a flagship industry as deliberately as Siemens left telecom - a decade-long unwinding that funded the automation identity it wears today." },
   ],
   markets: [
-    "Siemens today leads industrial automation and infrastructure worldwide - and its OT-networking lines make it a neighbor of this site's world wherever a factory network meets an enterprise one.",
+    "Siemens today leads industrial automation and infrastructure worldwide - and its OT-networking lines make it a neighbour of this site's world wherever a factory network meets an enterprise one.",
   ],
   analyst: [
     "A century-long fixture of the electrical and automation evaluations; in telecom history, the quiet co-author of the fixed-line era whose exits shaped Nokia's rise.",

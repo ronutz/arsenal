@@ -25,7 +25,7 @@
 // they returned. Input errors already carry a code the page translates.
 // ============================================================================
 
-import { say, plainText, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
+import { say, enPlural, plainText, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
 
 const MAX_INPUT = 200; // a timestamp or date string is short
 
@@ -214,7 +214,7 @@ export function analyzeEpochLocalisable(input: string): EpochAnalysis<EngineText
     const analysis = buildAnalysis(ms, unit);
     analysis.notes.unshift({
       level: "info",
-      text: say("note.readAs", `Read as ${unit} (${text.replace("-", "").length} digits).`, { unit: say(`unit.${unit}`, unit), digits: String(text.replace("-", "").length) }), // the unit's word has its own id
+      text: say("note.readAs", `Read as ${unit} (${text.replace("-", "").length} ${enPlural(text.replace("-", "").length, "digit", "digits")}).`, { unit: say(`unit.${unit}`, unit), digits: String(text.replace("-", "").length) }), // the unit's word has its own id
     });
     return analysis;
   }

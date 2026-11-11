@@ -95,7 +95,7 @@ export const manifest = Object.freeze({
       type: "reference", // an errata listing
       url: "https://www.w3.org/XML/xml-V10-5e-errata", // fetched 2026-10-26, HTTP 200
       access_date: "2026-10-26", // read with the Recommendation
-      scope: "S01 (proposed, not normative until approved) rewords the reserved names and says the PI target \"xml\" is forbidden, which production [17] already excludes; E01 adds a note on Unicode normalisation. Neither changes a rule the engine applies", // why the engine follows the published text
+      scope: "S01 (proposed, not normative until approved) rewords the reserved names and says the PI target \"xml\" is forbidden, which production [17] already excludes; E01 adds a note on Unicode normalization. Neither changes a rule the engine applies", // why the engine follows the published text
       status: "active", // current
     },
     {
@@ -122,7 +122,7 @@ export const manifest = Object.freeze({
       type: "standard", // W3C Recommendation
       url: "https://www.w3.org/TR/xmldsig-core1/", // fetched 2026-10-26, HTTP 200
       access_date: "2026-10-26", // read the day the tool was built
-      scope: "reference validation digests the transformed (canonicalised) data and fails on any mismatch with DigestValue", // what the docs rely on
+      scope: "reference validation digests the transformed (canonicalized) data and fails on any mismatch with DigestValue", // what the docs rely on
       status: "active", // current
     },
     {

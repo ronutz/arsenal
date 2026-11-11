@@ -31,7 +31,7 @@ Informs cost something: they "consume more network, router, and switch resources
 |---|---|---|---|
 | Specification | RFC 1157 | RFC 1901 | RFCs 3411 to 3418, together STD 62 |
 | Status in the RFC index | Historic | Historic | Internet Standard |
-| How a request is authorised | a community string, in clear text | a community string, in clear text | a user, with authentication and optional encryption |
+| How a request is authorized | a community string, in clear text | a community string, in clear text | a user, with authentication and optional encryption |
 | GetBulk and Inform | no | yes | yes |
 
 The status row is the RFC Editor's index as read on 2 November 2026 ([RFC 1157](https://www.rfc-editor.org/info/rfc1157), [RFC 1901](https://www.rfc-editor.org/info/rfc1901), [RFC index](https://www.rfc-editor.org/rfc-index.xml)). GetBulk and Inform arrived with the version 2 operations, and the coexistence rules reflect it: a manager "MUST 'downgrade' GetBulk requests to GetNext requests" when it talks SNMPv1 to a device, and a proxy forwards an inform only "using the SNMPv2c or SNMPv3 message version" ([RFC 3584](https://www.rfc-editor.org/rfc/rfc3584.txt)).
@@ -40,11 +40,11 @@ The standards body's verdict on the first two is unambiguous. Versions 1 and 2c 
 
 ## SNMPv3 and the User-based Security Model
 
-SNMPv3 replaces the community with a user. The architecture recognises three security levels: "without authentication and without privacy (noAuthNoPriv)", "with authentication but without privacy (authNoPriv)" and "with authentication and with privacy (authPriv)" (RFC 3411). There is no fourth combination: the User-based Security Model (USM) makes "no provision for data confidentiality without both data integrity and data origin authentication" (RFC 3414).
+SNMPv3 replaces the community with a user. The architecture recognizes three security levels: "without authentication and without privacy (noAuthNoPriv)", "with authentication but without privacy (authNoPriv)" and "with authentication and with privacy (authPriv)" (RFC 3411). There is no fourth combination: the User-based Security Model (USM) makes "no provision for data confidentiality without both data integrity and data origin authentication" (RFC 3414).
 
 Authentication protects against modification and masquerade; privacy adds protection against disclosure. Each message also carries the authoritative engine's boot count and time, and a message outside a Time Window of "150 seconds" is not accepted, which limits replay. Two threats are out of scope by design: denial of service and traffic analysis (RFC 3414). Privacy encrypts the scoped PDU, the part that carries the request and its data; the header and the security parameters, user name included, are not encrypted (RFC 3414; Extreme, as above).
 
-Keys are bound to the device. A password is turned into a key, and then into a localised key by hashing it with the snmpEngineID of the authoritative engine, so that "the actual secrets shared between the user and each authoritative SNMP engine will be different" (RFC 3414). Two consequences follow. The engine ID must be fixed before users are created: Juniper tells you to "configure the local SNMP engine ID before creating SNMPv3 USM users", because the system uses it "to generate SNMPv3 user authentication and privacy keys" ([Juniper, configure SNMPv3](https://www.juniper.net/documentation/us/en/software/junos/network-mgmt/topics/topic-map/configure-snmpv3.html)). And passwords must be "at least 8 characters in length"; repetition does not help, since "a password 'bertbert' will result in exactly the same key as password 'bertbertbert'" (RFC 3414).
+Keys are bound to the device. A password is turned into a key, and then into a localized key by hashing it with the snmpEngineID of the authoritative engine, so that "the actual secrets shared between the user and each authoritative SNMP engine will be different" (RFC 3414). Two consequences follow. The engine ID must be fixed before users are created: Juniper tells you to "configure the local SNMP engine ID before creating SNMPv3 USM users", because the system uses it "to generate SNMPv3 user authentication and privacy keys" ([Juniper, configure SNMPv3](https://www.juniper.net/documentation/us/en/software/junos/network-mgmt/topics/topic-map/configure-snmpv3.html)). And passwords must be "at least 8 characters in length"; repetition does not help, since "a password 'bertbert' will result in exactly the same key as password 'bertbertbert'" (RFC 3414).
 
 ## The algorithms the standards define
 
@@ -94,7 +94,7 @@ How SNMP came to be, and why version 2's security failed, is told in [the observ
 - A trap is never acknowledged; an inform is acknowledged and retried, but is still not guaranteed, and costs memory on the sender.
 - SNMPv1 and v2c are Historic: their community string is a clear-text password. SNMPv3 (STD 62) is the standard.
 - USM has three levels; use authPriv, with HMAC-SHA-2 (RFC 7860) and AES-128 (RFC 3826) where both ends support them.
-- USM keys are localised with the engine ID: set it first, and keep it stable.
+- USM keys are localized with the engine ID: set it first, and keep it stable.
 - Poll 64-bit counters and compute deltas; take link and restart events as notifications.
 
 ## Sources

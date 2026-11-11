@@ -1,14 +1,14 @@
 ---
 slug: brazilian-cybercrime-from-boleto-to-pix
 title: "Brazilian cybercrime: from the boleto to the Pix"
-summary: "Brazil banked online early, invented payment instruments the rest of the world did not have, and grew a criminal industry precisely shaped to them: barcode manipulation, screen overlays, ATM jackpotting, and now social engineering aimed at instant transfers. The techniques, the crews that exported them, the attacks on the state, and the laws written after each shock."
+summary: "Brazil banked online early, invented payment instruments the rest of the world did not have, and grew a criminal industry precisely shaped to them: barcode manipulation, screen overlays, ATM jackpotting, social engineering aimed at instant transfers, and now attacks on the companies that connect banks to the central bank. The techniques, the crews that exported them, the attacks on the state, the laws written after each shock, and the defences the banks and the state have built."
 concepts: ["cybercrime", "brazil", "banking malware", "fraud", "ransomware"]
 relatedTools: []
-relatedArticles: ["the-brazilian-hacker-scene", "hacking-in-the-20th-century", "latin-american-security-conferences"]
+relatedArticles: ["the-brazilian-hacker-scene", "hacking-in-the-20th-century", "latin-american-security-conferences", "the-stj-ransomware-attack", "backups-and-ransomware-recovery"]
 category: security
 order: 114
 status: reviewed
-updated: "2026-08-29"
+updated: "2026-11-11"
 ---
 
 ## Why here
@@ -29,7 +29,7 @@ And Brazil **built payment instruments nobody else had**. The boleto, a printed 
 
 **[Prilex](/glossary/prilex)** is the most technically impressive and the most sobering. It began as ATM malware, and in a single 2016 incident infected more than a thousand machines at one bank and [cloned some twenty-eight thousand cards](https://securelist.com/prilex-atm-pos-malware-evolution/107551/). Then it pivoted to point-of-sale, moving down to the PIN pad protocol itself, patching software in real time, and generating cryptograms so that transactions on chip-and-PIN cards could be replayed as fraudulent ones. It also became a service sold to others. That progression, deep payment-industry knowledge applied by people who clearly understood the systems from the inside, is what distinguishes the Brazilian scene from commodity fraud.
 
-**And the Pix era changed the target rather than removing it.** Instant, irreversible transfers made malware less necessary: the efficient attack became convincing the victim to authorise the transfer themselves, which moved fraud from code to conversation. The countermeasure that works is not detection but friction: out-of-band confirmation of the destination, limits, and delays for unfamiliar recipients.
+**And the Pix era changed the target rather than removing it.** Instant, irreversible transfers made malware less necessary: the efficient attack became convincing the victim to authorize the transfer themselves, which moved fraud from code to conversation. The countermeasure that works is not detection but friction: out-of-band confirmation of the destination, limits, and delays for unfamiliar recipients.
 
 ## The attacks on the state
 
@@ -43,7 +43,7 @@ Both were failures of ordinary hygiene at scale rather than of anything exotic, 
 
 ## The laws, written after each shock
 
-**[Lei Carolina Dieckmann](/glossary/lei-carolina-dieckmann) (12.737/2012)** made unauthorised access to a device a crime in its own right, after a public case made the legislative gap impossible to ignore. The pattern is exactly the one that produced the American [Computer Fraud and Abuse Act](/learn/the-414s-and-the-summer-of-1983): a shock, a fast statute, and decades of living with the text.
+**[Lei Carolina Dieckmann](/glossary/lei-carolina-dieckmann) (12.737/2012)** made unauthorized access to a device a crime in its own right, after a public case made the legislative gap impossible to ignore. The pattern is exactly the one that produced the American [Computer Fraud and Abuse Act](/learn/the-414s-and-the-summer-of-1983): a shock, a fast statute, and decades of living with the text.
 
 **[Marco Civil da Internet](/glossary/marco-civil-da-internet) (12.965/2014)** set rights, retention duties and the conditions for content removal.
 
@@ -51,9 +51,24 @@ Both were failures of ordinary hygiene at scale rather than of anything exotic, 
 
 **Law 14.155/2021** raised penalties for electronic fraud and device intrusion, a direct response to fraud volumes that the earlier statutes had not anticipated.
 
+## The plumbing years, 2025 and 2026
+
+For two decades the fraud aimed at customers: their devices, their boletos, their trust. In 2025 the most expensive attacks moved upstream, to the accounts that banks and payment institutions keep at the Central Bank of Brazil (Banco Central do Brasil, BC) to settle [Pix](/glossary/pix), and to the [technology providers](/glossary/psti) that connect smaller institutions to the financial system's network.
+
+- **C&M Software, mid-2025.** An employee's credentials were used to move money out of client institutions' settlement accounts. The police arrested an IT operator who said he had sold his login and password for R$ 5,000 and taken another R$ 10,000 to run commands. BMP alone lost R$ 541 million, according to São Paulo's civil police; estimates for the whole attack ran from R$ 400 million to more than R$ 800 million.
+- **Sinqia, August 2025.** Credentials of the provider's own IT suppliers were used for R$ 710 million of unauthorized Pix transfers, R$ 670 million of it from HSBC and R$ 40 million from the fintech Artta.
+- **Banco do Nordeste, January 2026, and BTG Pactual, March 2026.** Both suspended Pix while they contained incidents in which money left accounts they held at the Central Bank; in the BTG case the Central Bank said its own systems were not affected.
+- **Operação Pane Seca, August 2026.** The Federal Police went after a group suspected of breaking into financial institutions' systems, with an estimated R$ 227 million in losses.
+
+The regulator answered in weeks rather than years. Resolutions of 5 September 2025 capped Pix and TED (Transferência Eletrônica Disponível, a same-day transfer) payments at R$ 15,000 per transaction for institutions connecting through a provider until that provider is accredited, and set accreditation requirements that include R$ 15 million of capital, an internationally recognized security certification, an annual independent security audit, insurance and tested continuity plans. By July 2026 three of the nine providers operating in September 2025 were still in business. After the BTG attack, Resolution BCB No. 554 let institutions put an automatic block on their Pix settlement account.
+
+The state was hit again too. In November 2026 the systems of the Santos Port Authority, which runs the country's largest port, went down in a cyber attack; cargo kept moving because the terminals ran their own systems. The incident counts tell the same story from above. The data protection authority (Autoridade Nacional de Proteção de Dados, ANPD) received 423 incident reports in the first nine months of 2026, against 395 in all of 2025, and the federal government's response centre, [CTIR Gov](/glossary/ctir-gov), counted 6,774 incidents in federal systems by early June 2026. The post [The port that kept moving](/blog/the-port-that-kept-moving-santos-and-brazils-cyber-year) tells the Santos story and these cases in full.
+
 ## What the country built in response
 
 The defensive side grew from the same soil. [CERT.br](/glossary/cert-br) under the multi-stakeholder committee has published incident and honeypot data openly for two decades. [chkrootkit](/glossary/chkrootkit) came from here. [Fábio Assolini](/glossary/fabio-assolini) and colleagues documented the banking-malware families in English, which is what turned a local phenomenon into an internationally understood threat class. And the [conference circuit](/learn/latin-american-security-conferences) gave the expertise somewhere to circulate.
+
+The banks built institutions of their own. [Febraban](/glossary/febraban), the banks' federation, opened a Cybersecurity Laboratory in São Paulo in September 2020 for training, attack simulations, threat intelligence and standards for the suppliers that serve the financial system; by early 2022 it had run 40 free courses for 72 member institutions, and its open Cyber Academy offered 10,000 places in 2026. The federal government added a National Cybersecurity Policy ([PNCiber](/glossary/pnciber)) in December 2023 and a National Cybersecurity Strategy ([E-Ciber](/glossary/e-ciber)) in August 2025. The plan that is to turn the strategy into projects still lacked the consent of four government bodies in mid-2026, and in October 2026 the Federal Court of Accounts warned of the risk that, without a law, the policy has no national reach.
 
 That is the honest summary of this history: **the same conditions produced the fraud and the expertise**. For two decades "Brazilian" in a malware report usually meant banking crime; today Brazilian researchers are among the people the rest of the world reads on the subject, for exactly the same reason.
 
@@ -62,4 +77,28 @@ That is the honest summary of this history: **the same conditions produced the f
 - **Local payment instruments create local fraud.** Any country introducing an instant-payment scheme inherits the Pix lesson: irreversibility moves the attack from the software to the person.
 - **Social engineering scales better than malware** once transfers are instant and final. Plan for the authorised-but-coerced transaction, not only the compromised device.
 - **Friction is a control.** Destination confirmation, limits and cooling-off periods stop what detection does not.
+- **Your supplier's credentials are your credentials.** The 2025 attacks entered through the companies that connect institutions to the central bank, and through those companies' own suppliers. The fix was to regulate the connector, cap what it can move and make it prove its controls.
 - **Publish in the language the field reads.** Research that exists only in Portuguese was invisible for years, and the threat class was underestimated internationally because of it.
+
+## Sources for the 2025 and 2026 section
+
+Read on 11 November 2026.
+
+- [SBT News, Ataque hacker a bancos: funcionário recebeu R$ 15 mil para entregar senha e executar comandos (C&M and BMP's R$ 541 million)](https://sbtnews.sbt.com.br/noticia/policia/ataque-hacker-a-bancos-funcionario-recebeu-r-15-mil-para-entregar-senha-e-executar-comandos)
+- [InfoMoney, Hackers invadem empresa ligada ao Pix e desviam ao menos R$ 400 milhões, July 2025](https://www.infomoney.com.br/brasil/hackers-invadem-empresa-ligada-ao-pix-e-desviam-ao-menos-r-400-milhoes/)
+- [InfoMoney, PF deflagra operação contra hackers do Pix que desviaram R$ 800 milhões, 30 October 2025](https://www.infomoney.com.br/brasil/pf-deflagra-operacao-internacional-contra-hackers-do-pix/)
+- [Tecnoblog, Ataque hacker a empresa que opera o Pix desviou R$ 710 milhões (Sinqia)](https://tecnoblog.net/noticias/ataque-hacker-a-empresa-que-opera-o-pix-desviou-r-710-milhoes/)
+- [ConvergenciaDigital, Banco do Nordeste suspende operações do Pix depois de ataque hacker, January 2026](https://convergenciadigital.com.br/mercado/banco-do-nordeste-suspende-operacoes-do-pix-depois-de-ataque-hacker/)
+- [Estadão / TecMundo, Pix do BTG Pactual volta a funcionar após pausa por ataque cibernético, 23 March 2026](https://www.tecmundo.com.br/seguranca/411840-pix-do-btg-pactual-volta-a-funcionar-apos-pausa-por-ataque-cibernetico.htm)
+- [ES Hoje, PF prende suspeitos de desviar R$ 227 milhões de instituições financeiras (Operação Pane Seca), 19 August 2026](https://eshoje.com.br/seguranca/policia/2026/08/pf-prende-suspeitos-de-desviar-r-227-milhoes-de-instituicoes-financeiras/)
+- [Demarest, Nova resolução do Banco Central altera atuação de instituições e provedores de serviços de tecnologia da informação, 8 September 2025](https://www.demarest.com.br/bc-altera-atuacao-de-instituicoes-e-provedores-de-servicos-de-tecnologia-da-informacao-no-ambito-do-sfn-e-spb/)
+- [Agência Brasil, BC aperta regras de provedores de TI para instituições financeiras, 30 January 2026](https://agenciabrasil.ebc.com.br/economia/noticia/2026-01/bc-aperta-regras-de-provedores-de-ti-para-instituicoes-financeiras)
+- [Finsiders Brasil, Mercado de provedores de tecnologia encolhe após BC apertar regras, 22 July 2026](https://finsidersbrasil.com.br/reportagem-exclusiva-fintechs/mercado-de-provedores-de-tecnologia-encolhe-apos-aperto-nas-regras-do-bc/)
+- [Finsiders Brasil, Pix: BC lança mais medidas para combater fraudes (Resolution BCB No. 554), 24 March 2026](https://finsidersbrasil.com.br/pagamentos/apos-ataque-hacker-bc-aprimora-seguranca-em-sistema-do-pix/)
+- [Agência Brasil, Porto de Santos: sistemas seguem afetados após ataque cibernético, 10 November 2026](https://agenciabrasil.ebc.com.br/economia/noticia/2026-11/porto-de-santos-sistemas-seguem-afetados-apos-ataque-cibernetico)
+- [ANPD, Balanço ANPD 6 anos, 2020–2026, 5 November 2026](https://www.gov.br/anpd/pt-br/centrais-de-conteudo/outros-documentos-e-publicacoes-institucionais/balanco-anpd-6-anos.pdf/@@display-file/file)
+- [Acessa.com, Sistemas do governo registram cerca de 6.700 incidentes em 2026, aponta GSI, June 2026](https://www.acessa.com/noticias/2026/06/331600-sistemas-do-governo-registram-cerca-de-6-700-incidentes-em-2026-aponta-gsi.html)
+- [Febraban, Treinamentos do Laboratório de Segurança Cibernética já tiveram 3.900 inscrições de 72 bancos, 9 February 2022](https://portal.febraban.org.br/noticia/3752/pt-br/)
+- [Febraban, Laboratório da Febraban abre hoje inscrição para curso gratuito de cibersegurança, 8 June 2026](https://portal.febraban.org.br/noticia/4461/pt-br/)
+- [GSI, CNCiber, Ata e anexos da 10ª Reunião Ordinária, 17 June 2026](https://www.gov.br/gsi/pt-br/colegiados-do-gsi/comite-nacional-de-ciberseguranca-cnciber/atas/ata-e-anexos-da-10a-reuniao-ordinaria-do-cnciber-17-de-junho-de-2026)
+- [Tribunal de Contas da União, Tribunal monitora recomendação ao GSI sobre Política Nacional de Cibersegurança (Acórdão 2909/2026)](https://portal.tcu.gov.br/imprensa/noticias/tribunal-monitora-recomendacao-ao-gsi-sobre-politica-nacional-de-ciberseguranca)

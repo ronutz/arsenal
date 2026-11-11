@@ -37,8 +37,8 @@ export const versaProfile: VendorProfile = {
     { year: 2016, title: "Kelly Ahuja takes the helm", detail: "The Cisco veteran becomes CEO, with the founders staying on as CDO and CTO." },
     { year: 2019, title: "Gartner coins SASE", detail: "When Gartner defines secure access service edge - networking and security converged as a cloud service - Versa's single-stack architecture positions it as one of the category's natural fits." },
     { year: 2021, title: "$84M round", detail: "June 2021: a round co-led by Princeville Capital and RPS Ventures brings total funding to $196 million as SASE demand accelerates." },
-    { year: 2022, title: "$120M and a Gartner top score", detail: "October 27, 2022: a $120 million round (investors include Sequoia, Mayfield, and BlackRock) lifts total funding to roughly $316 million over six rounds. The same year, Versa's VOS receives the highest score in the Large Global WAN use case of Gartner's Critical Capabilities for SD-WAN.", sourceNote: "TechCrunch; Tracxn; Gartner 2022 Critical Capabilities as cited by Versa." },
-    { year: 2024, title: "VersaONE", detail: "The portfolio converges as the VersaONE Universal SASE Platform - SSE, SD-WAN, and SD-LAN on one AI-assisted stack - while Versa remains privately held and, per its CEO, pointed toward an IPO (initial public offering) rather than a sale." },
+    { year: 2022, title: "$120M and a Gartner top score", detail: "27 October 2022: a $120 million round (investors include Sequoia, Mayfield, and BlackRock) lifts total funding to roughly $316 million over six rounds. The same year, Versa's VOS receives the highest score in the Large Global WAN use case of Gartner's Critical Capabilities for SD-WAN.", sourceNote: "TechCrunch; Tracxn; Gartner 2022 Critical Capabilities as cited by Versa." },
+    { year: 2024, title: "VersaONE", detail: "The portfolio converges as the VersaONE Universal SASE Platform - SSE, SD-WAN, and SD-LAN on one AI-assisted stack - while Versa remains privately held and, per its CEO, pointed towards an IPO (initial public offering) rather than a sale." },
   ],
   products: [
     { name: "VOS (Versa Operating System)", what: "The single software stack underneath everything: routing, SD-WAN, next-generation firewall, and security services, multi-tenant by design for service providers and enterprises." },
@@ -47,7 +47,7 @@ export const versaProfile: VendorProfile = {
   ],
   innovations: [
     { title: "The single-stack bet", detail: "Where competitors bolted security onto SD-WAN or SD-WAN onto security, Versa built one operating system carrying both from the start - the architecture SASE later demanded." },
-    { title: "Carrier-grade multi-tenancy", detail: "Built for service providers first: one platform hosting many customers, which made Versa a favorite of managed SD-WAN offerings worldwide." },
+    { title: "Carrier-grade multi-tenancy", detail: "Built for service providers first: one platform hosting many customers, which made Versa a favourite of managed SD-WAN offerings worldwide." },
     { title: "Independence as strategy", detail: "Viptela went to Cisco, VeloCloud to VMware, Silver Peak to Aruba, CloudGenix to Palo Alto - Versa stayed independent through the consolidation wave, one of the last large pure-plays in its market." },
   ],
   markets: [

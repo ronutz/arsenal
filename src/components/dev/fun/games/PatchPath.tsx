@@ -39,6 +39,8 @@
 "use client";
 
 // React's state, effects, refs, memo, callbacks and stable ids.
+// English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
+import { intlLocale } from "@/i18n/locales";
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 // Strings.
 import { useTranslations } from "next-intl";
@@ -261,7 +263,7 @@ export default function PatchPath(props: { locale: string }) {
         // The locale's list format.
         try {
           // "up, left and right".
-          list = new Intl.ListFormat(props.locale, { style: "long", type: "conjunction" }).format(free);
+          list = new Intl.ListFormat(intlLocale(props.locale), { style: "long", type: "conjunction" }).format(free);
         } catch {
           // The plain list stays.
         }
@@ -545,7 +547,7 @@ export default function PatchPath(props: { locale: string }) {
         // The locale's list format.
         try {
           // Formatted.
-          return new Intl.ListFormat(props.locale, { style: "long", type }).format(items);
+          return new Intl.ListFormat(intlLocale(props.locale), { style: "long", type }).format(items);
         } catch {
           // Plain.
           return items.join(", ");

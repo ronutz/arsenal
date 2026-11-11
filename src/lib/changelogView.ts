@@ -28,6 +28,8 @@
 // Pure functions only; the two pages render with them.
 // ============================================================================
 
+// English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
+import { intlLocale } from "@/i18n/locales";
 import type { ChangelogEntry } from "@/content/changelog/changelog";
 import { todayIso } from "@/lib/retirement";
 
@@ -198,8 +200,8 @@ export function dayAnchor(day: string): string {
 /** The formatting locale for a page locale: English pages write dates the British way ("4 July 2026", PRIME
  *  2026-10-26; plain "en" formats US style, "July 4, 2026"); every other locale formats as itself. */
 export function dateLocale(locale: string): string {
-  // en becomes en-GB; the rest unchanged.
-  return locale === "en" ? "en-GB" : locale;
+  // en becomes en-001 (International English); the rest unchanged.
+  return intlLocale(locale);
 }
 
 /** A month written for a reader ("July 2026", "julho de 2026"), pinned to UTC so the month never slips. */
@@ -218,6 +220,6 @@ export function formatMonthStart(month: string, locale: string): string {
 
 /** A day written for a reader, pinned to UTC ("26 October 2026", "26 de outubro de 2026"). */
 export function formatDay(day: string, locale: string): string {
-  // Midnight UTC of that day, formatted with the UTC zone, so the calendar day is exactly `day` (en as en-GB).
+  // Midnight UTC of that day, formatted with the UTC zone, so the calendar day is exactly `day` (en as en-001).
   return new Date(`${day}T00:00:00Z`).toLocaleDateString(dateLocale(locale), { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 }

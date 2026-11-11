@@ -8,7 +8,7 @@ The first thing it tells you is which of two shapes you pasted. A full AS3 reque
 
 ## The tree it walks
 
-Below the metadata, the tool walks the fixed AS3 hierarchy: each Tenant (which becomes a BIG-IP partition), each Application (with its template, noting when generic is defaulted in AS3 3.20 and later), and each resource object inside. For every object it shows the class and a plain-language explanation, from Service_HTTP and Service_HTTPS through Pool, Monitor, TLS_Server, TLS_Client, Certificate, Persist, WAF_Policy, Endpoint_Policy, and iRule. A class it does not recognise is still listed and marked, never hidden.
+Below the metadata, the tool walks the fixed AS3 hierarchy: each Tenant (which becomes a BIG-IP partition), each Application (with its template, noting when generic is defaulted in AS3 3.20 and later), and each resource object inside. For every object it shows the class and a plain-language explanation, from Service_HTTP and Service_HTTPS through Pool, Monitor, TLS_Server, TLS_Client, Certificate, Persist, WAF_Policy, Endpoint_Policy, and iRule. A class it does not recognize is still listed and marked, never hidden.
 
 ## The structural checks
 

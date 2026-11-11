@@ -111,7 +111,7 @@ export const NETWORK_OSES: readonly NetworkOs[] = Object.freeze([
       "IOSd remains a monolith internally, but system functions were lifted out of it into separate Linux processes. A failure in one of those does not take the kernel with it; a failure inside IOSd still takes IOSd.",
     planes: "Control plane in IOSd and platform processes; forwarding in hardware, with the platform layer between them.",
     configModel: "Immediate, preserving the classic IOS operational model deliberately.",
-    upgrade: "Sub-packages can be upgraded individually, and later releases add containerised services alongside.",
+    upgrade: "Sub-packages can be upgraded individually, and later releases add containerized services alongside.",
     differentiator:
       "The familiar CLI kept, the architecture underneath replaced. It is the compatibility answer: existing knowledge and existing scripts continue to work while the failure domain shrinks.",
     strengths: [
@@ -159,7 +159,7 @@ export const NETWORK_OSES: readonly NetworkOs[] = Object.freeze([
     stateModel:
       "Routing Engine centric: the RE holds the control plane and the Packet Forwarding Engine does the forwarding, with a defined boundary between them. Daemons are separate processes.",
     planes:
-      "The RE/PFE split is the design's organising idea, and it is why the control plane can be rebuilt or fail over while forwarding continues.",
+      "The RE/PFE split is the design's organizing idea, and it is why the control plane can be rebuilt or fail over while forwarding continues.",
     configModel:
       "Candidate and commit, with rollback and configuration comparison built in. This was Junos's signature from the beginning and much of the industry has since followed.",
     upgrade: "Unified releases across the portfolio; in-service upgrade on supported platforms.",
@@ -289,7 +289,7 @@ export const NETWORK_OSES: readonly NetworkOs[] = Object.freeze([
     ],
     weaknesses: [
       "Another layer to learn, with its own CLI, its own API and its own failure modes.",
-      "Changing a tenant's resource allocation is not a live operation, which surprises people expecting virtualisation to behave like a hypervisor.",
+      "Changing a tenant's resource allocation is not a live operation, which surprises people expecting virtualization to behave like a hypervisor.",
     ],
   },
   {
@@ -392,7 +392,7 @@ export const NETWORK_OSES: readonly NetworkOs[] = Object.freeze([
     vendor: "Check Point",
     lineage: ["IPSO, from the Nokia appliance line", "SecurePlatform", "Gaia, unifying both"],
     base: "Linux, unifying two earlier operating systems that Check Point maintained in parallel.",
-    stateModel: "Software blades on a shared platform, with state synchronised between cluster members.",
+    stateModel: "Software blades on a shared platform, with state synchronized between cluster members.",
     planes:
       "Acceleration paths sit beside the full inspection path, so an established connection can be handled faster than the first packet was.",
     configModel: "Immediate on the gateway, with policy installed from a separate management server.",

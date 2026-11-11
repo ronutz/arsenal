@@ -68,8 +68,8 @@ Sous l’ordre d’évaluation, le bouton **Partager les résultats** crée, seu
 
 ## Sources
 
-- Palo Alto Networks, *Device Groups* : un pare-feu évalue les règles de politique par couche et par type, de haut en bas ; les règles locales du pare-feu s’affichent entre les pré-règles et les post-règles
-- Palo Alto Networks, *Security Policy Rulebase Best Practices* : la première correspondance l’emporte et la comparaison s’arrête ; Commit and Push ne fournit pas d’informations sur le masquage
-- Palo Alto Networks, *Security Policy Rule Best Practices* : définition du masquage ; intrazone-default autorise et interzone-default refuse
-- Palo Alto Networks, *Defining Policies on Panorama* : les pré-règles sont évaluées en premier, les post-règles en dernier
+- [Palo Alto Networks, Device Groups](https://docs.paloaltonetworks.com/panorama/getting-started/panorama-overview/centrally-manage-firewall-configuration-and-updates-with-panorama/device-groups) (consultée le 11/11/2026) : un pare-feu évalue les règles de politique par couche et par type, de haut en bas ; les règles locales du pare-feu s’affichent entre les pré-règles et les post-règles
+- [Palo Alto Networks, Security Policy Rulebase Best Practices](https://docs.paloaltonetworks.com/best-practices/security-policy-best-practices/security-policy-best-practices/deploy-security-policy-best-practices/security-policy-rulebase-best-practices) (consultée le 11/11/2026) : la première correspondance l’emporte et la comparaison s’arrête ; Commit and Push ne fournit pas d’informations sur le masquage
+- [Palo Alto Networks, Security Policy Rule Best Practices](https://docs.paloaltonetworks.com/best-practices/security-policy-best-practices/security-policy-best-practices/deploy-security-policy-best-practices/security-policy-rule-best-practices) (consultée le 11/11/2026) : définition du masquage ; intrazone-default autorise et interzone-default refuse
+- [Palo Alto Networks, Defining Policies on Panorama](https://docs.paloaltonetworks.com/ngfw/help/11-1/panorama-web-interface/defining-policies-on-panorama) (consultée le 11/11/2026) : les pré-règles sont ajoutées en haut de l’ordre des règles et évaluées en premier ; les post-règles sont ajoutées en bas et évaluées après les pré-règles et les règles locales du pare-feu
 - [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (consultée le 27/10/2026) : section 3.5, le fragment, qui contient les valeurs d’un lien créé par Partager les résultats

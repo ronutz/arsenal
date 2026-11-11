@@ -24,7 +24,7 @@ export const dolchProfile: VendorProfile = {
       place: "California, United States",
       founders: ["Volker Dolch"],
       story:
-        "Volker Dolch built the machine the field actually needed: a suitcase you could check as luggage, open on a data-center floor, and trust with full-length expansion cards no laptop would ever take. The PAC-series luggables paired industrial build with commercial buses (EISA, VESA Local Bus, later PCI), which made them the natural home for the era's heaviest field software - and one tenant above all made the brand: Network General's Sniffer shipped on Dolch portables so routinely that the Computer History Museum catalogues PAC models simply as 'Sniffer platform'. For a generation of network engineers, the gray Dolch case WAS what a protocol analyzer looked like.",
+        "Volker Dolch built the machine the field actually needed: a suitcase you could check as luggage, open on a data-center floor, and trust with full-length expansion cards no laptop would ever take. The PAC-series luggables paired industrial build with commercial buses (EISA, VESA Local Bus, later PCI), which made them the natural home for the era's heaviest field software - and one tenant above all made the brand: Network General's Sniffer shipped on Dolch portables so routinely that the Computer History Museum catalogues PAC models simply as 'Sniffer platform'. For a generation of network engineers, the grey Dolch case WAS what a protocol analyser looked like.",
       sourceNote:
         "Founding year, founder, and fate per Wikipedia and the Centre for Computing History; the Sniffer-platform pairing per the Computer History Museum collection catalogue (PAC 62/63/64).",
     },
@@ -34,8 +34,8 @@ export const dolchProfile: VendorProfile = {
     { year: 1992, title: "PAC-60 and the analyzer era", detail: "The 486-class PAC-60 (and the Pentium PACs that follow) become the definitive field chassis for network analysis: multi-slot, multi-interface, and strong enough to live in a crash cart." },
     { year: 1996, title: "Founder steps back from ownership", detail: "Volker Dolch sells his interest in the company but continues to run it until retiring in 2001.", sourceNote: "Per Wikipedia's company record." },
     { year: 1999, title: "Ranked number one", detail: "Venture Development Corporation ranks Dolch first in the rugged portable market - a ranking it repeats in 2002.", sourceNote: "Per the Centre for Computing History and Kontron's 2005 acquisition release." },
-    { year: 2005, title: "Kontron acquires Dolch", detail: "Kontron AG buys Dolch Computer Systems from Siegel-Robert in February 2005; Dolch operates as a business unit of Kontron America.", sourceNote: "Per Kontron's acquisition announcement, February 25, 2005." },
-    { year: 2007, title: "The line moves on", detail: "Kontron sells the rugged mobile platform to Azonix - the end of the Dolch name, though the gray luggables soldier on in fields and eBay listings for years." },
+    { year: 2005, title: "Kontron acquires Dolch", detail: "Kontron AG buys Dolch Computer Systems from Siegel-Robert in February 2005; Dolch operates as a business unit of Kontron America.", sourceNote: "Per Kontron's acquisition announcement, 25 February 2005." },
+    { year: 2007, title: "The line moves on", detail: "Kontron sells the rugged mobile platform to Azonix - the end of the Dolch name, though the grey luggables soldier on in fields and eBay listings for years." },
   ],
   products: [
     { name: "PAC series (PAC 60-65)", what: "Suitcase-format rugged portables with full-size expansion slots - 486 through Pentium MMX - the canonical Sniffer field platform." },

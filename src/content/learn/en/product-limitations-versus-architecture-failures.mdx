@@ -13,7 +13,7 @@ updated: "2026-10-03"
 
 ## Why the distinction is worth money
 
-An organisation that misreads an architecture failure as a product limitation replaces the product, inherits the same failure on the new one, and has spent a year and a budget to arrive back where it started. One that misreads a product limitation as an architecture failure redesigns around a defect the vendor would have fixed, and carries the complexity for the life of the design. Both mistakes are common, both are expensive, and both are made for the same reason: the first explanation that arrives is the one with a name attached, and the product always has a name.
+An organization that misreads an architecture failure as a product limitation replaces the product, inherits the same failure on the new one, and has spent a year and a budget to arrive back where it started. One that misreads a product limitation as an architecture failure redesigns around a defect the vendor would have fixed, and carries the complexity for the life of the design. Both mistakes are common, both are expensive, and both are made for the same reason: the first explanation that arrives is the one with a name attached, and the product always has a name.
 
 ## Three categories, not two
 
@@ -35,7 +35,7 @@ The vendor will say it is the architecture. The architect will say it is the pro
 2. **Find the documented envelope.** What does the vendor's documentation say the product does under exactly these conditions? Read the current version, with the date. If the documentation says the behaviour is expected, you are in the second or third category; if it says the opposite, you are in the first; if it says nothing, you have a question for the vendor, not an answer.
 3. **Reproduce it in isolation.** The same product, configured as documented, without the rest of your design around it. If it fails, product. If it does not, the design or the configuration added something, and the next step is to add your design back one element at a time until it fails again. The [fault hypothesis builder](/tools/fault-hypothesis-builder) is a structured way to run that bisection.
 4. **Check the design's own assumptions.** What did the design assume about this component: capacity, state, independence, ordering, the behaviour of the thing next to it? The [assumptions guide](/learn/hidden-assumptions-in-an-architecture-diagram) lists where they hide. A failed assumption is an architecture finding even when the product is also at fault.
-5. **Write down which category, and why, with the evidence that would change your mind.** A categorisation that cannot say what would falsify it is an opinion.
+5. **Write down which category, and why, with the evidence that would change your mind.** A categorization that cannot say what would falsify it is an opinion.
 
 ## Patterns that point each way
 
@@ -53,4 +53,4 @@ The hardest cases, and the common ones in serious incidents, are those in which 
 
 A product limitation goes to the vendor as a case with evidence attached, and to the risk register as a dependency on their roadmap; if the limitation is a maximum you have reached, it goes to the [capacity and refresh](/learn/capex-versus-subscription-networking) conversation. An architecture failure goes to a design change, with the assumption that failed written into the register so that the next [architecture review](/learn/review-a-network-architecture-before-approving-it) starts from it. A configuration gap goes to the runbook, and to the question of why the runbook let it happen. Buying a new product is the right answer only in the first case, and only after the second has been ruled out with evidence.
 
-If an argument of this kind is running in your organisation, between a team and a vendor or between two teams, settling it with evidence rather than opinion is work I do professionally: [independent technical advisory](/advisory).
+If an argument of this kind is running in your organization, between a team and a vendor or between two teams, settling it with evidence rather than opinion is work I do professionally: [independent technical advisory](/advisory).

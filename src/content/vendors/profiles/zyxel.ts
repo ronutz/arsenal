@@ -23,7 +23,7 @@ export const zyxelProfile: VendorProfile = {
       place: "Hsinchu Science Park, Taiwan (begun 1988 in a Taoyuan apartment)",
       founders: ["Dr. Shun-I Chu"],
       story:
-        "While Taiwan's startups crowded the front of the alphabet for directory placement, Shun-I Chu went the other way on purpose - Zyx, from the end, with 'el' for excellence - and built modems good enough to make the contrarian name famous. Development started in a rented Taoyuan apartment in 1988; the company proper landed in Hsinchu Science Park in 1989. To the BBS generation, the ZyXEL U-1496 was the modem you saved for: firmware-upgradeable, feature-dense, and faster than the spec sheet era around it. The firsts followed - the integrated data/fax/voice modem in 1992, the analog/digital ISDN modem in 1995 - before the company rode every access transition since: DSL, fiber CPE, firewalls, Wi-Fi, and 5G fixed wireless.",
+        "While Taiwan's startups crowded the front of the alphabet for directory placement, Shun-I Chu went the other way on purpose - Zyx, from the end, with 'el' for excellence - and built modems good enough to make the contrarian name famous. Development started in a rented Taoyuan apartment in 1988; the company proper landed in Hsinchu Science Park in 1989. To the BBS generation, the ZyXEL U-1496 was the modem you saved for: firmware-upgradeable, feature-dense, and faster than the spec sheet era around it. The firsts followed - the integrated data/fax/voice modem in 1992, the analog/digital ISDN modem in 1995 - before the company rode every access transition since: DSL, fibre CPE, firewalls, Wi-Fi, and 5G fixed wireless.",
       sourceNote:
         "Apartment origin (1988, Taoyuan) and 1989 Hsinchu founding per Zyxel's own 30th-anniversary and history materials; the 1992 and 1995 world-firsts per the company record; U-1496 standing in the BBS era per the general record of the period.",
     },
@@ -39,7 +39,7 @@ export const zyxelProfile: VendorProfile = {
   ],
   products: [
     { name: "U-1496 and the modem line", what: "The firmware-upgradeable high-speed modems that built the brand in the BBS era." },
-    { name: "Carrier CPE", what: "DSL, fiber, and 5G fixed-wireless endpoints for service providers - the volume backbone of the business." },
+    { name: "Carrier CPE", what: "DSL, fibre, and 5G fixed-wireless endpoints for service providers - the volume backbone of the business." },
     { name: "Business networking and security", what: "Firewalls, switches, access points, and Nebula cloud management for the SMB tier." },
   ],
   innovations: [

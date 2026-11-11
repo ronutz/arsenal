@@ -4,7 +4,7 @@ Paste a tmsh `client-ssl` or `server-ssl` profile and the tool explains it: the 
 
 ## Client-side and server-side profiles
 
-On a BIG-IP, SSL is handled by two kinds of profile, and the first thing the tool tells you is which one this is. A **client-ssl** profile terminates TLS coming from the client: the BIG-IP presents a certificate and decrypts the traffic. A **server-ssl** profile does the opposite: it initiates TLS toward the pool member, re-encrypting on the way out. A full-proxy TLS deployment uses both, decrypting from the client so it can inspect or steer the traffic, then re-encrypting to the server. Knowing the role frames everything else in the profile.
+On a BIG-IP, SSL is handled by two kinds of profile, and the first thing the tool tells you is which one this is. A **client-ssl** profile terminates TLS coming from the client: the BIG-IP presents a certificate and decrypts the traffic. A **server-ssl** profile does the opposite: it initiates TLS towards the pool member, re-encrypting on the way out. A full-proxy TLS deployment uses both, decrypting from the client so it can inspect or steer the traffic, then re-encrypting to the server. Knowing the role frames everything else in the profile.
 
 ## The protocol matrix
 

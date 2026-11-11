@@ -19,11 +19,11 @@ export const kempProfile: VendorProfile = {
   ],
   timeline: [
     { year: 2000, title: "Founded in New York", detail: "Into a market where an application delivery controller meant a six-figure chassis and a procurement process." },
-    { year: 2008, title: "LoadMaster goes virtual early", detail: "Virtual editions shipped while much of the industry still equated an ADC with sheet metal - a bet on the hypervisor that paid compounding dividends as data centres virtualised." },
+    { year: 2008, title: "LoadMaster goes virtual early", detail: "Virtual editions shipped while much of the industry still equated an ADC with sheet metal - a bet on the hypervisor that paid compounding dividends as data centres virtualized." },
     { year: 2021, title: "Progress Software acquires Kemp", detail: "Approximately $258M - the affordable-ADC pioneer becoming the application-experience arm of a software house, with LoadMaster continuing under new ownership.", sourceNote: "Approximately $258M, announced September 2021 and closed November 2021, per Progress Software's public statements." },
   ],
   products: [
-    { name: "LoadMaster", what: "The affordable ADC in hardware, virtual and cloud forms - load balancing sized and priced for the workloads most organisations actually run rather than the largest ones." },
+    { name: "LoadMaster", what: "The affordable ADC in hardware, virtual and cloud forms - load balancing sized and priced for the workloads most organizations actually run rather than the largest ones." },
     { name: "Microsoft workload templates", what: "Deployment guides and preconfigured templates for Exchange, SharePoint and the rest, specific enough that they became the documentation practitioners reached for - including practitioners who had bought somebody else's load balancer." },
   ],
   innovations: [
@@ -32,11 +32,11 @@ export const kempProfile: VendorProfile = {
     { title: "Documentation as the sales channel", detail: "Publishing deployment guides specific enough to be authoritative brought in customers who arrived already knowing how the product worked. It is a slow method and difficult to copy, because it requires being genuinely useful before anybody has paid." },
   ],
   markets: [
-    "Mid-market organisations and Microsoft workload environments, and since 2021 inside Progress Software's portfolio. The customer is the one the enterprise vendors priced out rather than the one they competed for.",
+    "Mid-market organizations and Microsoft workload environments, and since 2021 inside Progress Software's portfolio. The customer is the one the enterprise vendors priced out rather than the one they competed for.",
     "Its counterpart from the other direction is A10, which attacked the same category from above on throughput and appears separately on this timeline. Between them they are the reason application delivery is a market rather than a monopoly.",
   ],
   analyst: [
-    "Assessed historically as the value leader in application delivery, with the virtual-first move recognised in retrospect as having anticipated where the whole category went.",
+    "Assessed historically as the value leader in application delivery, with the virtual-first move recognized in retrospect as having anticipated where the whole category went.",
     "Its position now is that of a component within a larger software portfolio rather than an independent challenger, which is the common ending for a company whose distinguishing asset was price discipline.",
   ],
 };

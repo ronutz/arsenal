@@ -31,7 +31,7 @@ The rollout ran through Chrome 108 and 109 and was scheduled for 110. Fastly wat
 
 A fingerprint that is unique per connection is not a fingerprint. It is a random number.
 
-Attackers had already been doing a deliberate version of the same thing, called cipher stunting: randomising cipher order specifically to slip past JA3-based detection. Chrome did it for principled reasons and broke the technique far more thoroughly.
+Attackers had already been doing a deliberate version of the same thing, called cipher stunting: randomizing cipher order specifically to slip past JA3-based detection. Chrome did it for principled reasons and broke the technique far more thoroughly.
 
 ## The fix, from the same author
 
@@ -43,7 +43,7 @@ Sorting discards information, and the decision to accept that loss was deliberat
 
 Three further choices are worth knowing:
 
-**GREASE values are stripped.** These are reserved dummy code points defined in RFC 8701 that browsers send precisely to keep middleboxes from ossifying against unrecognised fields. They rotate. Removing them before hashing means a Chrome release that refreshes its GREASE selection does not invalidate every stored fingerprint.
+**GREASE values are stripped.** These are reserved dummy code points defined in RFC 8701 that browsers send precisely to keep middleboxes from ossifying against unrecognized fields. They rotate. Removing them before hashing means a Chrome release that refreshes its GREASE selection does not invalidate every stored fingerprint.
 
 **Signature algorithms keep their original order.** Having sorted everything else, JA4 appends the signature algorithm list unsorted. That is where some of the uniqueness lost to sorting is recovered, and it is a considered trade rather than an oversight.
 

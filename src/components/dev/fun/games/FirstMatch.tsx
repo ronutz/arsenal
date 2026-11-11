@@ -33,6 +33,8 @@
 "use client";
 
 // React's state, memo, effects, refs and callbacks.
+// English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
+import { intlLocale } from "@/i18n/locales";
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
 // Strings.
 import { useTranslations } from "next-intl";
@@ -543,7 +545,7 @@ export default function FirstMatch({ locale }: { locale: string }) {
     // The language's own conjunction where the browser has it.
     try {
       // Intl's list format.
-      return new Intl.ListFormat(locale, { style: "long", type: "conjunction" }).format(nums);
+      return new Intl.ListFormat(intlLocale(locale), { style: "long", type: "conjunction" }).format(nums);
     } catch {
       // An old browser: commas.
       return nums.join(", ");

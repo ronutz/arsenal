@@ -13,7 +13,7 @@
 
 import { run, type ChooserInput, type ChooserResult } from "./compute";
 
-export const GOLDEN_VECTOR_SET_ID = "zscaler-tunnel-chooser-golden-v1";
+export const GOLDEN_VECTOR_SET_ID = "zscaler-tunnel-chooser-golden-2026-11-11b"; // 11b: "randomization", Oxford spelling (PRIME 11/11/2026 10:33)
 
 export interface TunnelVector {
   id: string;

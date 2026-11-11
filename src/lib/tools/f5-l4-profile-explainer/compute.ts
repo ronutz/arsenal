@@ -212,9 +212,9 @@ export const PROFILES: readonly L4Profile[] = Object.freeze([
     aliases: ["fasthttp", "fast-http", "performance-http"],
     family: "light-proxy",
     story:
-      "The profiles reference's definition: a configuration tool designed to speed up certain types of HTTP connections, combining selected features from the TCP Express, HTTP, and OneConnect profiles into a single profile optimised for the best possible network performance. It pairs with the Performance (HTTP) virtual server type, and its signature benefit is connection reuse: the system can transform or add the HTTP Connection header to keep server-side connections open.",
+      "The profiles reference's definition: a configuration tool designed to speed up certain types of HTTP connections, combining selected features from the TCP Express, HTTP, and OneConnect profiles into a single profile optimized for the best possible network performance. It pairs with the Performance (HTTP) virtual server type, and its signature benefit is connection reuse: the system can transform or add the HTTP Connection header to keep server-side connections open.",
     whenToUse: [
-      "The reference's own criteria, all of them: you do not need remote server authentication, SSL traffic management, or TCP optimisations; nor compression, pipelining, or RAM Cache.",
+      "The reference's own criteria, all of them: you do not need remote server authentication, SSL traffic management, or TCP optimizations; nor compression, pipelining, or RAM Cache.",
       "You do not need to maintain source IP addresses (translation to a BIG-IP-owned address is part of the design).",
       "You want fewer connections opened to servers, and the servers support keep-alive (HTTP/1.1, or HTTP/1.0 with Keep-Alive; IIS by default).",
       "Basic iRule support suffices: CLIENT_ACCEPTED, SERVER_CONNECTED, and HTTP_REQUEST are the reference's own event examples.",

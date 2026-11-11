@@ -107,11 +107,11 @@
       "series": "Séries d’articles",
       "seriesBadge": "{count, plural, one {# série} other {# séries}}",
       "learnLede": "Des articles techniques sur les protocoles et les produits qui sont derrière les outils, écrits pour être lus plutôt que survolés.",
-      "learnBadge": "{count} articles",
+      "learnBadge": "{count, plural, one {{count} article} other {{count} articles}}",
       "industry": "Industrie",
       "industryLede": "L’histoire des entreprises, des débuts des réseaux à aujourd’hui, y compris celles qui ont échoué et celles dont plus personne ne se souvient.",
-      "industryBadge": "{count} entreprises",
-      "anniversary": "{count} d’entre elles fêtent leurs {age} ans cette année",
+      "industryBadge": "{count, plural, one {{count} entreprise} other {{count} entreprises}}",
+      "anniversary": "{count, plural, one {{count} d’entre elles fête ses {age} ans} other {{count} d’entre elles fêtent leurs {age} ans}} cette année",
       "practice": "La pratique",
       "practiceLede": "Comment le travail se fait réellement, plutôt que comment la technologie fonctionne. Tri, escalade, preuves, passation.",
       "practiceBadge": "{count} publiés",
@@ -135,11 +135,11 @@
       "careerLede": "Quinze chapitres depuis 1996, chacun raconté de l’intérieur de l’entreprise où il s’est déroulé.",
       "redu": "Red Education",
       "reduLede": "Le centre de formation agréé international par lequel mes formations sont dispensées, et l’histoire de son parcours.",
-      "hubsBadge": "{count} espaces constructeurs",
-      "glossaryBadge": "{count} entrées",
+      "hubsBadge": "{count, plural, one {{count} espace constructeur} other {{count} espaces constructeurs}}",
+      "glossaryBadge": "{count, plural, one {{count} entrée} other {{count} entrées}}",
       "guidesBadge": "{count, plural, one {# parcours de lecture} other {# parcours de lecture}}",
-      "trainingBadge": "{count} formations chez {vendors} constructeurs",
-      "careerBadge": "{count} chapitres",
+      "trainingBadge": "{count, plural, one {{count} formation} other {{count} formations}} chez {vendors, plural, one {{vendors} constructeur} other {{vendors} constructeurs}}",
+      "careerBadge": "{count, plural, one {{count} chapitre} other {{count} chapitres}}",
       "rolesBadge": "{count} postes",
       "roles": "Les métiers",
       "rolesLede": "Les postes qui composent ce secteur, regroupés selon le chemin que suit un produit, de l’entreprise qui le conçoit à la personne qui en dépend.",
@@ -157,7 +157,7 @@
       "contributeLede": "Comment améliorer un outil, un article ou une entrée.",
       "stories": "Récits",
       "storiesLede": "Les articles qui relient les autres articles : ce que les cas de panne ont en commun, ce que traverse réellement une requête, pourquoi le même bug revient sans cesse.",
-      "storiesBadge": "{count} fils conducteurs",
+      "storiesBadge": "{count, plural, one {{count} fil conducteur} other {{count} fils conducteurs}}",
       "materials": "Supports ouverts",
       "materialsLede": "Des formations complètes, partagées pour que chacun puisse les utiliser : diapositives, notes de l’orateur, plan et licence.",
       "materialsBadge": "{count, plural, one {# formation} other {# formations}}"
@@ -283,7 +283,7 @@
       },
       "builtBy": "Conçu et maintenu par Rodolfo Nützmann, ingénieur réseau et sécurité et formateur depuis 1996.",
       "proofCredentials": "Qualifications",
-      "proofEndorsements": "{count} témoignages, mot pour mot",
+      "proofEndorsements": "{count, plural, one {{count} témoignage} other {{count} témoignages}}, mot pour mot",
       "proofColophon": "Colophon : comment tout cela est fait",
       "publicSource": "Code source",
       "publicChangelog": "Journal des modifications",
@@ -469,13 +469,13 @@
       "compliantBadge": "Dans la limite",
       "overCapBadge": "Au-delà de la limite",
       "maxForPhase": "Maximum pour sa date d’émission : {max} jours.",
-      "overByText": "{days} jours de plus que le maximum de {max} jours pour sa date d’émission : une AC publique ne le délivrerait pas.",
+      "overByText": "{days, plural, one {{days} jour de plus} other {{days} jours de plus}} que le maximum de {max} jours pour sa date d’émission : une AC publique ne le délivrerait pas.",
       "renewalsValue": "Environ {n} renouvellements par an avec cette validité.",
       "remainingHeading": "D’après l’horloge de votre appareil",
-      "daysRemaining": "{days} jours avant son expiration.",
-      "expiredText": "Expiré depuis {days} jours.",
-      "renewByText": "À renouveler avant le {date} (environ {lead} jours avant l’expiration)",
-      "renewByDue": "dans {days} jours",
+      "daysRemaining": "{days, plural, one {{days} jour} other {{days} jours}} avant son expiration.",
+      "expiredText": "Expiré depuis {days, plural, one {{days} jour} other {{days} jours}}.",
+      "renewByText": "À renouveler avant le {date} (environ {lead, plural, one {{lead} jour} other {{lead} jours}} avant l’expiration)",
+      "renewByDue": "dans {days, plural, one {{days} jour} other {{days} jours}}",
       "reuseHeading": "Réutilisation des validations (selon la période d’émission)",
       "dcvText": "Les données de validation du contrôle de domaine (DCV, Domain Control Validation) sont réutilisables pendant {days} jours.",
       "siiText": "L’identité de l’organisation (SII OV/EV) est réutilisable pendant {days} jours.",
@@ -593,7 +593,7 @@
         "run": "Agréger",
         "minimal": "Ensemble couvrant minimal",
         "single": "Super-réseau unique",
-        "singleExtra": "Ajoute {extra} adresses supplémentaires au-delà des entrées.",
+        "singleExtra": "Ajoute {extra, plural, one {{extra} adresse supplémentaire} other {{extra} adresses supplémentaires}} au-delà des entrées.",
         "stat": {
           "inputs": "Préfixes en entrée",
           "addresses": "Adresses",
@@ -1535,7 +1535,7 @@
           "fractional": "Lu comme des fractions de seconde.",
           "parsedUtc": "Analysé comme une date ; une valeur sans fuseau horaire a été lue en UTC.",
           "parsedZone": "Analysé comme une date avec un fuseau horaire explicite.",
-          "readAs": "Lu en {unit} ({digits} chiffres).",
+          "readAs": "Lu en {unit} ({digits, plural, one {{digits} chiffre} other {{digits} chiffres}}).",
           "y2038": "Cette valeur est proche de 2038-01-19T03:14:07Z, où un compteur de secondes signé sur 32 bits déborde (le bug de l’an 2038). Les systèmes 64 bits ne sont pas concernés.",
           "yearRange": "L’année sort de la plage habituelle à 4 chiffres ; vérifiez que l’unité a été correctement détectée."
         },
@@ -2107,14 +2107,14 @@
             "on": "Activé : les fichiers envoyés par HTTP sont transmis pour une inspection antivirus."
           },
           "applicationLanguage": "Encodage : {encoding}.",
-          "blockingSettings": "{count} paramètre(s) de violation présent(s) ; {blocked} configuré(s) pour bloquer (le blocage ne s’applique qu’en mode blocking).",
-          "bruteForce": "{count} configuration(s) de protection contre la force brute présente(s).",
+          "blockingSettings": "{count, plural, one {{count} paramètre de violation présent} other {{count} paramètres de violation présents}} ; {blocked, plural, one {{blocked} configuré} other {{blocked} configurés}} pour bloquer (le blocage ne s’applique qu’en mode blocking).",
+          "bruteForce": "{count, plural, one {{count} configuration de protection contre la force brute présente} other {{count} configurations de protection contre la force brute présentes}}.",
           "caseInsensitive": {
             "off": "Sensible à la casse : la correspondance des éléments respecte la casse des lettres.",
             "on": "Insensible à la casse : les URL, les types de fichiers et les paramètres sont comparés sans tenir compte de la casse."
           },
-          "cookies": "{count} cookie(s) défini(s).",
-          "cookiesWeak": "{count} cookie(s) défini(s). {weak} cookie(s) appliqué(s) sans l’attribut Secure ou HttpOnly, voire sans les deux.",
+          "cookies": "{count, plural, one {{count} cookie défini} other {{count} cookies définis}}.",
+          "cookiesWeak": "{count, plural, one {{count} cookie défini} other {{count} cookies définis}}. {weak, plural, one {{weak} cookie appliqué} other {{weak} cookies appliqués}} sans l’attribut Secure ou HttpOnly, voire sans les deux.",
           "csrf": {
             "off": "Explicitement désactivée dans cette politique.",
             "on": "Activée."
@@ -2129,17 +2129,17 @@
             "other": "Défini sur « {mode} ».",
             "transparent": "Transparent : cette politique ne fait que surveiller. Les violations sont détectées et journalisées, mais aucune requête n’est bloquée, quels que soient les indicateurs de blocage de chaque violation."
           },
-          "filetypes": "{count} type(s) de fichiers défini(s).",
+          "filetypes": "{count, plural, one {{count} type de fichiers défini} other {{count} types de fichiers définis}}.",
           "fullPath": "{path}",
           "general": {
-            "both": "les nouvelles entités restent en staging pendant {days} jour(s) avant de pouvoir être appliquées ; l’en-tête X-Forwarded-For fait foi pour l’IP du client, seuls des proxys en amont réellement de confiance doivent donc pouvoir le définir.",
-            "days": "les nouvelles entités restent en staging pendant {days} jour(s) avant de pouvoir être appliquées.",
+            "both": "les nouvelles entités restent en staging pendant {days, plural, one {{days} jour} other {{days} jours}} avant de pouvoir être appliquées ; l’en-tête X-Forwarded-For fait foi pour l’IP du client, seuls des proxys en amont réellement de confiance doivent donc pouvoir le définir.",
+            "days": "les nouvelles entités restent en staging pendant {days, plural, one {{days} jour} other {{days} jours}} avant de pouvoir être appliquées.",
             "xff": "L’en-tête X-Forwarded-For fait foi pour l’IP du client : seuls des proxys en amont réellement de confiance doivent donc pouvoir le définir."
           },
           "geolocations": "{count} pays bloqué(s).",
           "methods": "Méthodes : {names}.",
           "name": "Nom : « {name} ».",
-          "parameters": "{count} paramètre(s) défini(s).",
+          "parameters": "{count, plural, one {{count} paramètre défini} other {{count} paramètres définis}}.",
           "passive": {
             "on": "Activé : rattachée via FastL4, la politique inspecte le trafic mais ne peut ni le modifier ni le bloquer en ligne."
           },
@@ -2814,7 +2814,7 @@
         "no-change": "Aucun changement pertinent pour la sécurité entre les deux politiques",
         "mixed-scoped": "Modifiée, dans les limites du périmètre"
       },
-      "summary": "{wide} assouplissement(s) à l’échelle de la politique, {scoped} élargissement(s) circonscrit(s), {tight} durcissement(s).",
+      "summary": "{wide, plural, one {{wide} assouplissement} other {{wide} assouplissements}} à l’échelle de la politique, {scoped, plural, one {{scoped} élargissement circonscrit} other {{scoped} élargissements circonscrits}}, {tight, plural, one {{tight} durcissement} other {{tight} durcissements}}.",
       "policyWideHeading": "Assouplissements à l’échelle de la politique (ils dépassent une seule entité)",
       "scopedHeading": "Élargissements circonscrits (une seule entité : la correction normale d’un faux positif)",
       "tighteningHeading": "Durcissements",
@@ -3064,7 +3064,7 @@
       "validation": {
         "heading": "Éléments de validation",
         "privacy": "Présence et longueur uniquement ; les valeurs elles-mêmes ne sont jamais affichées.",
-        "present": "présent, {n} caractères",
+        "present": "présent, {n, plural, one {{n} caractère} other {{n} caractères}}",
         "absentValue": "absent",
         "dossier": "Dossier",
         "authorization": "Authorization",
@@ -3073,7 +3073,7 @@
         "certAuth": "certificate_auth"
       },
       "stats": {
-        "line": "{kv} lignes de données, {comments} lignes de commentaire, {unrec} non reconnues."
+        "line": "{kv, plural, one {{kv} ligne de données} other {{kv} lignes de données}}, {comments, plural, one {{comments} ligne de commentaire} other {{comments} lignes de commentaire}}, {unrec, plural, one {{unrec} non reconnue} other {{unrec} non reconnues}}."
       },
       "share": {
         "carries": "Le lien contient la licence, chaque clé, Dossier et Authorization étant masqué ; les dates, les modules et le numéro de série restent tels que collés.",
@@ -4744,10 +4744,10 @@
             "host": "Un masque d’hôte (que des 1 en binaire) : le système ne partage que les connexions réutilisées provenant de la même adresse IP cliente. Des pools de réutilisation par client.",
             "other": "Le système applique ce masque à l’adresse source pour déterminer l’éligibilité à la réutilisation : les clients dont les adresses partagent la même valeur masquée ({mask}) forment un groupe de réutilisation, exactement comme un masque de sous-réseau regroupe des hôtes."
           },
-          "maxAge": "Âge maximal, en secondes, d’une connexion dans le pool de réutilisation ; les connexions plus anciennes sont retirées du pool. {value} secondes.",
+          "maxAge": "Âge maximal, en secondes, d’une connexion dans le pool de réutilisation ; les connexions plus anciennes sont retirées du pool. {value, plural, one {{value} seconde} other {{value} secondes}}.",
           "maxAgeDefault": "Âge maximal, en secondes, d’une connexion dans le pool de réutilisation ; les connexions plus anciennes sont retirées du pool. {value} secondes (la valeur par défaut : un jour).",
           "maxReuse": "Nombre maximal de réutilisations d’une connexion serveur avant son retrait. {value} réutilisations.",
-          "maxSize": "Nombre maximal de connexions conservées dans le pool de réutilisation ; quand il est plein, une connexion serveur qui se termine est simplement fermée au lieu d’être mise en attente. {value} connexions. Notez que le pool existe par TMM : l’article de lab de F5 montre la valeur configurée répartie entre les instances TMM, si bien que sur une machine multicœur chaque TMM conserve sa part.",
+          "maxSize": "Nombre maximal de connexions conservées dans le pool de réutilisation ; quand il est plein, une connexion serveur qui se termine est simplement fermée au lieu d’être mise en attente. {value, plural, one {{value} connexion} other {{value} connexions}}. Notez que le pool existe par TMM : l’article de lab de F5 montre la valeur configurée répartie entre les instances TMM, si bien que sur une machine multicœur chaque TMM conserve sa part.",
           "limit": {
             "strict": "L’avertissement du manuel, en résumé : la limite de connexions TCP est respectée sans exception, si bien que des connexions inactives empêchent de NOUVELLES connexions jusqu’à leur expiration, même quand elles auraient pu être réutilisées. La page indique elle-même que ce n’est pas une configuration recommandée, sauf dans des cas très particuliers avec des délais d’expiration courts.",
             "idle": "Les connexions inactives sont supprimées quand la limite de connexions TCP est atteinte ; pendant le chevauchement entre suppression et établissement, la limite peut être brièvement dépassée, selon le manuel.",
@@ -5749,7 +5749,7 @@
       "found": "Préimage trouvée",
       "copy": "Copier",
       "copied": "Copié",
-      "foundIn": "Retrouvée en {attempts} tentatives, {ms} ms. Un secret aussi faible n’offre aucune protection une fois l’empreinte divulguée.",
+      "foundIn": "Retrouvée en {attempts, plural, one {{attempts} tentative} other {{attempts} tentatives}}, {ms} ms. Un secret aussi faible n’offre aucune protection une fois l’empreinte divulguée.",
       "notFoundExhausted": "Aucune préimage dans cet espace de clés",
       "notFoundBudget": "Arrêt à {cap} candidats",
       "exhaustedSub": "Tout l’espace des clés a été parcouru sans correspondance. Élargissez l’alphabet ou la longueur ; ou, plus probablement, l’entrée a plus d’entropie qu’une courte force brute ne peut en atteindre.",
@@ -6121,9 +6121,9 @@
       "duplicatesTitle": "Clés en double trouvées ({count})",
       "duplicateItem": "{key} à {pointer}",
       "statsValid": "JSON valide",
-      "statBytes": "{n} caractères",
-      "statKeys": "{n} clés",
-      "statObjects": "{n} objets",
+      "statBytes": "{n, plural, one {{n} caractère} other {{n} caractères}}",
+      "statKeys": "{n, plural, one {{n} clé} other {{n} clés}}",
+      "statObjects": "{n, plural, one {{n} objet} other {{n} objets}}",
       "statArrays": "{n} tableaux",
       "statDepth": "profondeur {n}",
       "example": "Exemple",
@@ -6825,7 +6825,7 @@
       "reasons": {
         "HSTS_MISSING": "Pas d’en-tête Strict-Transport-Security. Les navigateurs peuvent utiliser HTTP en clair, ce qui expose la première requête aux attaques par rétrogradation (downgrade).",
         "HSTS_MAXAGE_ZERO": "max-age vaut {value}, ce qui désactive HSTS. Définissez un max-age positif, par exemple 31536000 (un an).",
-        "HSTS_MAXAGE_LOW": "max-age ne vaut que {value} secondes, en dessous du minimum recommandé de six mois.",
+        "HSTS_MAXAGE_LOW": "max-age ne vaut que {value, plural, one {{value} seconde} other {{value} secondes}}, en dessous du minimum recommandé de six mois.",
         "HSTS_MAXAGE_OK": "max-age vaut {value} secondes : acceptable, mais en dessous de la référence d’un an.",
         "HSTS_MAXAGE_STRONG": "max-age vaut {value} secondes (un an ou plus), la référence recommandée.",
         "HSTS_SUBDOMAINS": "includeSubDomains est défini, ce qui étend l’obligation de HTTPS à tous les sous-domaines.",
@@ -7532,7 +7532,7 @@
       },
       "engine": {
         "arg": {
-          "count": "Arrêt automatique après {count} paquet(s). Ctrl+C arrête la capture plus tôt.",
+          "count": "Arrêt automatique après {count, plural, one {{count} paquet} other {{count} paquets}}. Ctrl+C arrête la capture plus tôt.",
           "count0": "Un nombre de paquets de 0 signifie une capture jusqu’à ce que vous l’arrêtiez avec Ctrl+C. Indiquez un nombre pour un arrêt automatique après ce nombre de paquets.",
           "filter": "Filtre de style BPF, comparé à chaque paquet. ''{filter}' ne sélectionne que le trafic correspondant. Comme ni src ni dst n’est fixé sur un simple host/port, les deux sens sont capturés.",
           "filterNone": "Aucun filtre : chaque paquet de l’interface est capturé. Sans filtre, attendez-vous à une sortie abondante ; ajoutez host/port/proto pour la restreindre.",
@@ -7745,8 +7745,8 @@
           "noForwarding": "Un ou plusieurs VLAN ont des adresses IP, mais aucune commande 'enable ipforwarding' n’a été vue. Sans elle, le commutateur ne route pas entre ces interfaces VLAN.",
           "noVerbs": "Aucune de ces lignes ne commence par un verbe EXOS (create, configure, enable, disable, delete, unconfigure). Il s’agit peut-être d’une configuration pour une autre plateforme, comme Cisco IOS ou VOSS.",
           "none": "Aucune commande EXOS reconnue. Vérifiez qu’il s’agit bien d’une configuration ExtremeXOS (lignes commençant par create, configure, enable, disable, delete ou unconfigure).",
-          "read": "{count} ligne(s) de commande lue(s).",
-          "readVlans": "{count} ligne(s) de commande et {vcount} VLAN lu(s).",
+          "read": "{count, plural, one {{count} ligne de commande lue} other {{count} lignes de commande lues}}.",
+          "readVlans": "{count, plural, one {{count} ligne} other {{count} lignes}} de commande et {vcount} VLAN lus.",
           "untagged": "N’oubliez pas qu’un port non étiqueté ne peut appartenir qu’à un seul VLAN. Pour ajouter un port non étiqueté à un nouveau VLAN, il faut d’abord le retirer du VLAN Default."
         },
         "other": {
@@ -7979,8 +7979,8 @@
       "nextReleaseLabel": "Prochaine version renforcée",
       "nextNotifLabel": "Prochaine notification de sécurité",
       "today": "aujourd’hui",
-      "inDays": "dans {n} jours",
-      "daysAgo": "il y a {n} jours",
+      "inDays": "dans {n, plural, one {# jour} other {# jours}}",
+      "daysAgo": "il y a {n, plural, one {# jour} other {# jours}}",
       "colDate": "Date (troisième mercredi)",
       "colRelease": "Version renforcée",
       "colNotification": "Notification de sécurité",
@@ -8006,8 +8006,8 @@
       "example": "Exemple",
       "clear": "Effacer",
       "runsLocally": "S’exécute entièrement dans votre navigateur : deux formules documentées, sans réseau, sans horloge.",
-      "threadsExact": "{n} threads",
-      "threadsFloor": "{floor} threads ({exact} en valeur exacte)",
+      "threadsExact": "{n, plural, one {{n} thread} other {{n} threads}}",
+      "threadsFloor": "{floor, plural, one {{floor} thread} other {{floor} threads}} ({exact} en valeur exacte)",
       "fractionNote": "F5 documente la formule, mais pas de règle d’arrondi pour les résultats fractionnaires : la valeur exacte et sa partie entière sont donc toutes deux affichées. Le nombre indiqué par le système en fonctionnement fait foi.",
       "zeroNote": "Avec 2 vCPU, la formule documentée donne 0 ; bigd tourne tout de même comme une instance multithread unique : considérez ce cas limite comme « threading minimal » plutôt que comme « pas de bigd ».",
       "ht": {
@@ -9015,7 +9015,7 @@
         "heading": "Votre trame de RCA",
         "framing": "Structurée par des règles déterministes appliquées à votre description : des pistes à investiguer, avec les éléments probants que chacune exigerait, pas une conclusion. Une cause racine se confirme par des personnes, à partir d’éléments probants, lors d’une véritable revue.",
         "timelineHeading": "Chronologie ordonnée",
-        "bandCount": "{count} évènement(s) entre les deux",
+        "bandCount": "{count, plural, one {{count} évènement} other {{count} évènements}} entre les deux",
         "completenessHeading": "Complétude de la chronologie",
         "candidatesHeading": "Facteurs contributifs candidats (à investiguer)",
         "candidatesIntro": "Chacun est un domaine à tester, pas une conclusion. Confirmez ou écartez chacun à partir de vos propres éléments probants ; l’outil n’en confirme jamais un à votre place.",
@@ -9150,7 +9150,7 @@
           }
         },
         "md": {
-          "band": "- {label} : {n} évènement(s) entre les deux",
+          "band": "- {label} : {n, plural, one {{n} évènement} other {{n} évènements}} entre les deux",
           "bullet": "- {text}",
           "candidate": "### {title}",
           "candidateConfirmed": "### {title} [marqué comme confirmé par vous]",
@@ -10025,7 +10025,7 @@
       "behavior": "Comportement",
       "behaviorLeakyBucket": "L’application se fait par seau percé (leaky bucket) : quand le seau déborde, l’équilibreur de charge renvoie HTTP 429.",
       "behaviorDisabled": "Avec Mitigation Action à Disabled, un débordement renvoie tout de même 429. Cela signifie seulement qu’aucun délai de verrouillage supplémentaire n’est appliqué : Disabled n’est pas un contournement.",
-      "behaviorBlock": "Mitigation Action à Block ajoute un verrouillage de {secs} secondes : après le débordement du seau, l’utilisateur est bloqué pendant toute la durée du verrouillage, même si le seau se vide, et ne peut de nouveau envoyer des requêtes qu’à l’expiration du délai.",
+      "behaviorBlock": "Mitigation Action à Block ajoute un verrouillage de {secs, plural, one {{secs} seconde} other {{secs} secondes}} : après le débordement du seau, l’utilisateur est bloqué pendant toute la durée du verrouillage, même si le seau se vide, et ne peut de nouveau envoyer des requêtes qu’à l’expiration du délai.",
       "behaviorOverMax": "Ce verrouillage dépasse la durée de blocage maximale de F5, soit 48 heures (172800 secondes).",
       "overshootCaveat": "Le comptage est réparti par Regional Edge / proxy : vous pouvez donc voir brièvement plus de requêtes que la limite avant que l’application converge (K000157944). Les règles Server URL et API endpoint superposées sont évaluées selon la première correspondance, dans l’ordre configuré.",
       "errors": {
@@ -10089,7 +10089,7 @@
       },
       "runsLocally": "Analysé dans votre navigateur. Rien n’est envoyé.",
       "emptyError": "Collez le fichier de référence IP/domaines CE téléchargeable chez F5 pour commencer.",
-      "provenance": "{lines} lignes non vides analysées dans le fichier collé : {domains} domaines et {ips} entrées IP. C’est votre fichier, pas une liste stockée.",
+      "provenance": "{lines, plural, one {{lines} ligne non vide analysée} other {{lines} lignes non vides analysées}} dans le fichier collé : {domains, plural, one {{domains} domaine} other {{domains} domaines}} et {ips, plural, one {{ips} entrée IP} other {{ips} entrées IP}}. C’est votre fichier, pas une liste stockée.",
       "domains": "Domaines",
       "ips": "IP",
       "portMatrix": "Matrice des ports et protocoles",
@@ -10116,7 +10116,7 @@
       "clear": "Effacer",
       "runsLocally": "Décodé dans votre navigateur. Rien n’est envoyé.",
       "noRoutes": "Aucun tableau routes trouvé. Collez la spec http_loadbalancer ou son tableau routes.",
-      "firstMatchNote": "{n} routes, évaluées de haut en bas : la première route qui correspond l’emporte.",
+      "firstMatchNote": "{n, plural, one {{n} route, évaluée} other {{n} routes, évaluées}} de haut en bas : la première route qui correspond l’emporte.",
       "routeN": "Route {n}",
       "types": {
         "simple": "Simple",
@@ -10143,7 +10143,7 @@
         "other": "(comparateur)"
       },
       "query": "Chaîne de requête",
-      "queryCount": "{n} condition(s) sur les paramètres de requête",
+      "queryCount": "{n, plural, one {{n} condition} other {{n} conditions}} sur les paramètres de requête",
       "action": "Action",
       "noPool": "aucun origin pool (bascule sur la valeur par défaut)",
       "redirect": "Redirection vers",
@@ -10551,7 +10551,7 @@
         "dynamic-ratio": "Dynamic Ratio fixe les ratios à partir de métriques de performance en temps réel, souvent collectées par SNMP. La méthode dépend de métriques en temps réel : elle ne peut donc pas être simulée de façon déterministe."
       },
       "resultTitle": "Où aboutissent les N prochaines connexions",
-      "summaryLine": "{requests} requêtes réparties sur {active} membres actifs ({standby} en veille).",
+      "summaryLine": "{requests, plural, one {{requests} requête répartie} other {{requests} requêtes réparties}} sur {active, plural, one {{active} membre actif} other {{active} membres actifs}} ({standby} en veille).",
       "standbyBadge": "en veille",
       "note": {
         "standby": "Les membres d’un groupe de priorité inférieur sont en veille et ne reçoivent aucun trafic tant que le groupe actif atteint le seuil d’activation des groupes de priorité.",
@@ -12354,7 +12354,7 @@
           "mss": "segment maximal de {n} octets",
           "mssAny": "varie selon la liaison de l’émetteur ; sert à deviner le type de réseau",
           "olayout": "l’ordre des options TCP, l’un des signaux les plus forts",
-          "olen": "{n} octets d’options IP / d’en-têtes d’extension IPv6",
+          "olen": "{n, plural, one {{n} octet} other {{n} octets}} d’options IP / d’en-têtes d’extension IPv6",
           "olenNone": "aucune option IP (le cas normal)",
           "pclass": "transporte une charge utile",
           "pclassNone": "aucune charge utile TCP (un SYN nu)",
@@ -12423,7 +12423,7 @@
           "unparsed": "Le TTL initial n’a pas pu être analysé."
         },
         "win": {
-          "fixed": "Une fenêtre fixe de {n} octets.",
+          "fixed": "Une fenêtre fixe de {n, plural, one {{n} octet} other {{n} octets}}.",
           "fixed65535": "Une fenêtre fixe de 65535 octets. 65535 est le maximum classique sur 16 bits annoncé par Windows avant mise à l’échelle.",
           "mss": "La fenêtre est exprimée comme {mult} fois la MSS : une pile qui dimensionne sa fenêtre de réception d’après la taille de segment (typique de Linux, dont la fenêtre initiale vaut souvent 10 ou 20 fois la MSS).",
           "mtu": "La fenêtre est exprimée par rapport à la MTU de l’interface.",
@@ -13006,7 +13006,7 @@
         "step": "de {from} à {to}, tous les {by}"
       },
       "valuesEvery": "Correspond à toutes les valeurs de ce champ.",
-      "valuesLine": "Correspond à {count} valeur(s) : {list}.",
+      "valuesLine": "Correspond à {count, plural, one {{count} valeur} other {{count} valeurs}} : {list}.",
       "macroLine": "{macro} se développe en la forme à cinq champs {expansion}.",
       "macroReboot": "@reboot s’exécute une fois, au démarrage du démon cron. Il n’y a aucune planification horaire à lire ni à projeter.",
       "warningsTitle": "Bon à savoir",
@@ -13042,8 +13042,6 @@
       "yes": "Oui",
       "no": "Non",
       "errorTitle": "Dimensionnement impossible pour l’instant",
-      "primariesLabel": "principal(aux)",
-      "backupsLabel": "de secours",
       "perTunnelLabel": "Débit par tunnel",
       "stepsTitle": "Raisonnement du sélecteur",
       "prereqsTitle": "Prérequis à réunir",
@@ -13090,14 +13088,15 @@
           "encryption": "GRE transporte le trafic en clair ; une exigence de transit chiffré vers le cloud l’élimine. IPsec (ESP sous IKEv2) est la réponse pour le transfert du trafic.",
           "greOk": "IP publique de sortie statique, équipement compatible GRE et aucune obligation de chiffrement : GRE est préférable, avec une encapsulation plus simple, un transfert au débit du matériel et un plafond par tunnel plus élevé.",
           "haMany": "HA requise : doublez les tunnels principaux avec {b} tunnels de secours, chacun vers un Public Service Edge dans un centre de données DIFFÉRENT, selon le schéma principal/secondaire documenté.",
-          "haOne": "HA requise : doublez les tunnels principaux avec {b} tunnel de secours, chacun vers un Public Service Edge dans un centre de données DIFFÉRENT, selon le schéma principal/secondaire documenté.",
+          "haOne": "HA requise : doublez le tunnel principal avec {b} tunnel de secours vers un Public Service Edge dans un centre de données DIFFÉRENT, selon le schéma principal/secondaire documenté.",
           "minimal": "Aucune exigence de HA n’est indiquée : le minimum qui couvre les prérequis se limite donc aux tunnels principaux.",
           "nat": "Les adresses des extrémités internes des tunnels sont soumises au NAT source : le débit publié par tunnel tombe donc de 1 Gbps à 250 Mbps. Supprimer ce NAT rétablit le débit complet.",
           "noStaticIp": "L’enregistrement GRE exige une adresse source publique statique ; avec une IP de sortie dynamique, l’alternative documentée est IPsec, qui prend en charge les pairs identifiés par FQDN.",
           "sizingMany": "ceil({required} Mbps / {per} Mbps par tunnel) = {count} tunnels principaux.",
           "sizingOne": "ceil({required} Mbps / {per} Mbps par tunnel) = {count} tunnel principal."
         }
-      }
+      },
+      "tunnelsLine": "{primaries, plural, one {{primaries} principal} other {{primaries} principaux}} + {backups} de secours"
     },
     "zscaler-firewall-rule-order-simulator": {
       "name": "Simulateur d’ordre des règles du pare-feu ZIA",
@@ -13719,7 +13718,7 @@
       "placeholder": "5 3 8 1 9 2",
       "errorTitle": "Cette saisie doit être corrigée",
       "countersTitle": "Résultat",
-      "counters": "{comparisons} comparaisons, {writes} écritures pour {n} éléments",
+      "counters": "{comparisons, plural, one {{comparisons} comparaison} other {{comparisons} comparaisons}}, {writes, plural, one {{writes} écriture} other {{writes} écritures}} pour {n, plural, one {{n} élément} other {{n} éléments}}",
       "strategy_bubble": "Tri à bulles (échanges entre voisins, sortie anticipée)",
       "strategy_selection": "Tri par sélection (recherche du minimum, un échange par passe)",
       "strategy_insertion": "Tri par insertion (agrandissement d’un préfixe trié)",
@@ -13765,7 +13764,7 @@
         },
         "note": {
           "bubbleSorted": "Essayez aussi une liste triée ici : la sortie anticipée du tri à bulles détecte la passe sans échange et s’arrête après un seul balayage en O(n).",
-          "counters": "{comparisons} comparaisons et {writes} écritures pour {n} éléments : relancez avec une liste plus longue et regardez grandir les compteurs de chaque stratégie ; cette courbe de croissance, C’EST le grand O.",
+          "counters": "{comparisons, plural, one {{comparisons} comparaison} other {{comparisons} comparaisons}} et {writes, plural, one {{writes} écriture} other {{writes} écritures}} pour {n, plural, one {{n} élément} other {{n} éléments}} : relancez avec une liste plus longue et regardez grandir les compteurs de chaque stratégie ; cette courbe de croissance, C’EST le grand O.",
           "quickSorted": "Essayez de coller une liste déjà triée : le tri rapide de Lomuto, avec le dernier élément pour pivot, se dégrade vers son pire cas en O(n²), exactement le danger que décrit l’article d’introduction."
         },
         "quick": {
@@ -14366,7 +14365,7 @@
           "allowErr": "Un compteur allow_err non nul signifie que des paquets ont été autorisés malgré une condition d’erreur : cela mérite une investigation plutôt que d’être ignoré.",
           "bothWays": "Le trafic circule dans les deux sens : le chemin fonctionne donc dans les deux sens et la politique l’a autorisé.",
           "dnat": "Une traduction de destination (DNAT) est présente : une VIP a donc correspondu. Retenez l’ordre : la traduction de destination a lieu AVANT la recherche de route et avant l’évaluation des politiques, c’est pourquoi la destination de la politique doit être l’objet VIP.",
-          "expiring": "Cette session expire dans {seconds} secondes et va bientôt être retirée de la table : c’est pourquoi un second examen peut ne pas la retrouver.",
+          "expiring": "Cette session expire dans {seconds, plural, one {{seconds} seconde} other {{seconds} secondes}} et va bientôt être retirée de la table : c’est pourquoi un second examen peut ne pas la retrouver.",
           "noNat": "Aucune traduction, dans aucun sens : cette session a été routée sans NAT.",
           "noReply": "RIEN N’EST REVENU. Le FortiGate a transmis du trafic dans le sens d’origine et n’a vu aucun paquet de réponse. La session existe et la politique l’a autorisée : ce n’est donc pas le pare-feu qui bloque le trafic. Examinez le routage au-delà de cet équipement, l’hôte de destination ou un filtrage plus loin sur le chemin.",
           "offloaded": "La session est prise en charge par l’accélération matérielle (offload). Le trafic accéléré ne passe pas par le CPU : un analyseur de trafic (sniffer) lancé sur l’équipement ne le montre donc pas, sauf si l’accélération est désactivée pour le test.",
@@ -16294,7 +16293,7 @@
       "name": "Analyseur de configuration CLI FortiOS",
       "blurb": "Collez un bloc de configuration FortiOS et obtenez sa structure sous forme d’arbre, avec chaque verbe expliqué. L’outil signale le piège le plus coûteux : `set` sur un champ à valeurs multiples REMPLACE toute la liste, si bien que définir une seule adresse source sur une politique qui en avait quatre en supprime trois sans rien dire. Il repère aussi les blocs non fermés et vous rappelle que c’est `end` qui valide. Local et hors ligne.",
       "inputLabel": "Un bloc de configuration FortiOS",
-      "placeholder": "config firewall policy\\n    edit 10\\n        set action accept\\n    next\\nend",
+      "placeholder": "config firewall policy\n    edit 10\n        set action accept\n    next\nend",
       "example": "Exemple",
       "clear": "Effacer",
       "tree": {
@@ -16980,8 +16979,8 @@
         "streq": "<c>{op}</c> compare les deux valeurs comme du texte, caractère par caractère. Les nombres ne sont jamais convertis.",
         "f5-op": "<c>{op}</c> fait partie des opérateurs que F5 ajoute aux iRules. Il compare les valeurs comme du texte.",
         "mod": "Le reste de la division de {a} par {b}. Il prend le signe du diviseur.",
-        "shl": "Décalage à gauche de {count} bits.",
-        "shr": "Décalage à droite de {count} bits ; le bit de signe est recopié par la gauche.",
+        "shl": "Décalage à gauche de {count, plural, one {{count} bit} other {{count} bits}}.",
+        "shr": "Décalage à droite de {count, plural, one {{count} bit} other {{count} bits}} ; le bit de signe est recopié par la gauche.",
         "bitwise": "<c>{op}</c> bit à bit sur des entiers.",
         "arith": "<c>{op}</c> sur des {mode, select, int {entiers} other {nombres à virgule flottante, car au moins un opérande est un double}} : {a} {op} {b}.",
         "intdiv": "{floored, select, true {La division entière arrondit vers le bas, vers moins l’infini : {a} / {b} donne l’arrondi inférieur du quotient exact, et non la valeur tronquée vers zéro.} other {La division entière garde la partie entière de {a} / {b}.}}",
@@ -17085,7 +17084,7 @@
       "resultLabel": "Résultat",
       "errorLabel": "Erreur Tcl",
       "rulerTitle": "La chaîne, caractère par caractère",
-      "rulerCaption": "{count} caractères ; les petits nombres sont les index, comptés à partir de 0.",
+      "rulerCaption": "{count, plural, one {{count} caractère} other {{count} caractères}} ; les petits nombres sont les index, comptés à partir de 0.",
       "rulerTruncated": "Seuls les 400 premiers caractères sont représentés.",
       "role": {
         "result": "renvoyé ou converti",
@@ -17187,7 +17186,7 @@
         "space": "espace : en ignore n’importe quelle quantité, y compris aucune",
         "literal": "texte littéral : doit correspondre exactement"
       },
-      "width": "(au plus {n} caractères)",
+      "width": "(au plus {n, plural, one {{n} caractère} other {{n} caractères}})",
       "suppressed": "(converti, non stocké)",
       "nothing": "rien",
       "outcome": {
@@ -17286,8 +17285,8 @@
         "streq": "<c>{op}</c> compare les deux valeurs comme du texte, caractère par caractère. Les nombres ne sont jamais convertis.",
         "f5-op": "<c>{op}</c> fait partie des opérateurs que F5 ajoute aux iRules. Il compare les valeurs comme du texte.",
         "mod": "Le reste de la division de {a} par {b}. Il prend le signe du diviseur.",
-        "shl": "Décalage à gauche de {count} bits.",
-        "shr": "Décalage à droite de {count} bits ; le bit de signe est recopié par la gauche.",
+        "shl": "Décalage à gauche de {count, plural, one {{count} bit} other {{count} bits}}.",
+        "shr": "Décalage à droite de {count, plural, one {{count} bit} other {{count} bits}} ; le bit de signe est recopié par la gauche.",
         "bitwise": "<c>{op}</c> bit à bit sur des entiers.",
         "arith": "<c>{op}</c> sur des {mode, select, int {entiers} other {nombres à virgule flottante, car au moins un opérande est un double}} : {a} {op} {b}.",
         "intdiv": "{floored, select, true {La division entière arrondit vers le bas, vers moins l’infini : {a} / {b} donne l’arrondi inférieur du quotient exact, et non la valeur tronquée vers zéro.} other {La division entière garde la partie entière de {a} / {b}.}}",
@@ -17308,17 +17307,17 @@
         "append-creates": "La variable n’existait pas : <c>append</c> l’a donc créée.",
         "lappend-creates": "La variable n’existait pas : <c>lappend</c> l’a donc créée sous forme de liste.",
         "catch": "Le script interne s’est terminé avec le code {code} (0 ok, 1 error, 2 return, 3 break, 4 continue) ; <c>catch</c> renvoie ce code au lieu de laisser une erreur tout arrêter.",
-        "class-longest": "{count} entrées correspondent ; avec starts_with ou ends_with, class match renvoie la plus longue, <c>{name}</c>.",
+        "class-longest": "{count, plural, one {{count} entrée correspond} other {{count} entrées correspondent}} ; avec starts_with ou ends_with, class match renvoie la plus longue, <c>{name}</c>.",
         "class-match": "{hit, select, true {L’entrée <c>{name}</c> du data group correspond (opérateur {op}).} other {Aucune entrée du data group ne correspond (opérateur {op}).}}",
         "concat": "<c>concat</c> a retiré les espaces aux deux extrémités de chaque argument, écarté les arguments vides et joint le reste avec des espaces simples.",
-        "cut-count": "Un nombre comme terminateur est une longueur : jusqu’à {count} caractères, moins si la chaîne se termine avant.",
+        "cut-count": "Un nombre comme terminateur est une longueur : jusqu’à {count, plural, one {{count} caractère} other {{count} caractères}}, moins si la chaîne se termine avant.",
         "cut-terminator": "Arrêt juste avant <c>{terminator}</c>, trouvé à l’index {at}.",
         "cut-terminator-absent": "<c>{terminator}</c> n’apparaît pas après le point de départ : le reste de la chaîne est donc renvoyé.",
         "expr-unbraced": "<c>expr</c> a reçu plusieurs mots : Tcl les joint avec des espaces et substitue de nouveau le résultat, si bien qu’une valeur contenant <c>[</c> ou <c>$</c> s’exécute comme du code. Mettez l’expression entre accolades (F5 K57410758).",
-        "findstr-found": "La chaîne recherchée commence à l’index {at} ; le résultat commence {skip} caractères plus loin.",
+        "findstr-found": "La chaîne recherchée commence à l’index {at} ; le résultat commence {skip, plural, one {{skip} caractère} other {{skip} caractères}} plus loin.",
         "foreach": "Le corps s’est exécuté une fois par élément : {iterations} fois en tout.",
-        "getfield": "Découpage en {count} champs ; le champ {field} est renvoyé (les champs sont numérotés à partir de 1).",
-        "domain": "Le nom compte {labels} labels ; les {count} derniers sont renvoyés (<c>domain</c> compte à partir de la droite, et 1 est le dernier label).",
+        "getfield": "Découpage en {count, plural, one {{count} champ} other {{count} champs}} ; le champ {field} est renvoyé (les champs sont numérotés à partir de 1).",
+        "domain": "Le nom compte {labels, plural, one {{labels} label} other {{labels} labels}} ; {count, plural, one {{count} seul est renvoyé, le dernier} other {les {count} derniers sont renvoyés}} (<c>domain</c> compte à partir de la droite, et 1 est le dernier label).",
         "if-branch": "Une condition était vraie : le corps qui la suit s’exécute et les autres sont ignorés.",
         "if-else": "Aucune condition n’était vraie : le corps <c>else</c> s’exécute.",
         "if-none": "Aucune condition n’était vraie et il n’y a pas de <c>else</c> : rien ne s’exécute et <c>if</c> renvoie une chaîne vide.",
@@ -17340,7 +17339,7 @@
         "substr-no-terminator": "Le terminateur est facultatif dans la syntaxe de F5, mais la page ne dit pas ce qui se passe sans lui. L’outil renvoie le reste de la chaîne ; vérifiez sur un BIG-IP avant de vous y fier.",
         "getfield-empty-split": "Les pages de F5 ne traitent pas d’un séparateur vide. L’outil traite toute la chaîne comme le champ 1.",
         "getfield-empty-field": "Deux séparateurs consécutifs produisent ici un champ vide. Les pages de F5 ne montrent pas ce cas.",
-        "getfield-out-of-range": "Il y a {count} champs et le champ {field} a été demandé. Les pages de F5 ne disent pas ce que renvoie alors getfield ; l’outil suppose une chaîne vide.",
+        "getfield-out-of-range": "Il y a {count, plural, one {{count} champ} other {{count} champs}} et le champ {field} a été demandé. Les pages de F5 ne disent pas ce que renvoie alors getfield ; l’outil suppose une chaîne vide.",
         "domain-count": "La page de F5 ne montre <c>domain</c> qu’avec des nombres égaux ou supérieurs à 1. Pour {count}, l’outil suppose une chaîne vide ; vérifiez sur un BIG-IP avant de vous y fier.",
         "domain-empty-label": "Le nom contient un label vide (un point au début, à la fin ou doublé). La page de F5 n’a pas d’exemple de ce cas pour <c>domain</c>.",
         "class-contains-multiple": "{count} entrées contiennent la valeur. F5 documente que starts_with et ends_with renvoient la correspondance la plus longue, mais pas quelle entrée renvoie contains ; l’outil prend la première dans l’ordre où le data group les liste."
@@ -17408,11 +17407,11 @@
       },
       "undocumentedLabel": "Non documenté par F5 :",
       "note": {
-        "findstr-found": "La chaîne recherchée commence à l’index {at} ; le résultat commence {skip} caractères plus loin.",
-        "cut-count": "Un nombre comme terminateur est une longueur : jusqu’à {count} caractères, moins si la chaîne se termine avant.",
+        "findstr-found": "La chaîne recherchée commence à l’index {at} ; le résultat commence {skip, plural, one {{skip} caractère} other {{skip} caractères}} plus loin.",
+        "cut-count": "Un nombre comme terminateur est une longueur : jusqu’à {count, plural, one {{count} caractère} other {{count} caractères}}, moins si la chaîne se termine avant.",
         "cut-terminator": "Arrêt juste avant <c>{terminator}</c>, trouvé à l’index {at}.",
         "cut-terminator-absent": "<c>{terminator}</c> n’apparaît pas après le point de départ : le reste de la chaîne est donc renvoyé.",
-        "getfield": "Découpage en {count} champs ; le champ {field} est renvoyé (les champs sont numérotés à partir de 1).",
+        "getfield": "Découpage en {count, plural, one {{count} champ} other {{count} champs}} ; le champ {field} est renvoyé (les champs sont numérotés à partir de 1).",
         "split-chars": "La commande <c>split</c> du Tcl standard traite chaque caractère de <c>{sep}</c> comme un séparateur à part entière : ce n’est donc pas un équivalent ici, car getfield découpe sur la chaîne entière."
       },
       "undocumented": {
@@ -17427,7 +17426,7 @@
         "substr-no-terminator": "Le terminateur est facultatif dans la syntaxe de F5, mais la page ne dit pas ce qui se passe sans lui. L’outil renvoie le reste de la chaîne ; vérifiez sur un BIG-IP avant de vous y fier.",
         "getfield-empty-split": "Les pages de F5 ne traitent pas d’un séparateur vide. L’outil traite toute la chaîne comme le champ 1.",
         "getfield-empty-field": "Deux séparateurs consécutifs produisent ici un champ vide. Les pages de F5 ne montrent pas ce cas.",
-        "getfield-out-of-range": "Il y a {count} champs et le champ {field} a été demandé. Les pages de F5 ne disent pas ce que renvoie alors getfield ; l’outil suppose une chaîne vide.",
+        "getfield-out-of-range": "Il y a {count, plural, one {{count} champ} other {{count} champs}} et le champ {field} a été demandé. Les pages de F5 ne disent pas ce que renvoie alors getfield ; l’outil suppose une chaîne vide.",
         "domain-count": "La page de F5 ne montre <c>domain</c> qu’avec des nombres égaux ou supérieurs à 1. Pour {count}, l’outil suppose une chaîne vide ; vérifiez sur un BIG-IP avant de vous y fier.",
         "domain-empty-label": "Le nom contient un label vide (un point au début, à la fin ou doublé). La page de F5 n’a pas d’exemple de ce cas pour <c>domain</c>.",
         "class-contains-multiple": "{count} entrées contiennent la valeur. F5 documente que starts_with et ends_with renvoient la correspondance la plus longue, mais pas quelle entrée renvoie contains ; l’outil prend la première dans l’ordre où le data group les liste."
@@ -17538,7 +17537,7 @@
       "parsesNo": "Tcl 8.4 ne peut pas la charger.",
       "clean": "Aucun constat : elle suit le guide sur tous les points que lit le vérificateur.",
       "counts": "{error, plural, one {# erreur} other {# erreurs}}, {warning, plural, one {# avertissement} other {# avertissements}}, {info, plural, one {# remarque} other {# remarques}}.",
-      "stats": "{lines} lignes ; la plus longue compte {longest} caractères.",
+      "stats": "{lines, plural, one {{lines} ligne} other {{lines} lignes}} ; la plus longue compte {longest, plural, one {{longest} caractère} other {{longest} caractères}}.",
       "eventsTitle": "Évènements et priorités",
       "lineShort": "ligne {n}",
       "priority": "priorité {p}",
@@ -17582,7 +17581,7 @@
       "finding": {
         "E1": {
           "tab": "Une tabulation. Le guide demande une indentation de 4 espaces et aucune tabulation.",
-          "indent": "Indentation de {spaces} espaces, qui n’est pas un multiple de 4."
+          "indent": "Indentation de {spaces, plural, one {{spaces} espace} other {{spaces} espaces}}, qui n’est pas un multiple de 4."
         },
         "E2": {
           "main": "Longueur de {length} caractères. Le guide vise 100 colonnes, 120 au maximum."
@@ -17835,7 +17834,7 @@
         "substr-no-terminator": "Le terminateur est facultatif dans la syntaxe de F5, mais la page ne dit pas ce qui se passe sans lui. L’outil renvoie le reste de la chaîne ; vérifiez sur un BIG-IP avant de vous y fier.",
         "getfield-empty-split": "Les pages de F5 ne traitent pas d’un séparateur vide. L’outil traite toute la chaîne comme le champ 1.",
         "getfield-empty-field": "Deux séparateurs consécutifs produisent ici un champ vide. Les pages de F5 ne montrent pas ce cas.",
-        "getfield-out-of-range": "Il y a {count} champs et le champ {field} a été demandé. Les pages de F5 ne disent pas ce que renvoie alors getfield ; l’outil suppose une chaîne vide.",
+        "getfield-out-of-range": "Il y a {count, plural, one {{count} champ} other {{count} champs}} et le champ {field} a été demandé. Les pages de F5 ne disent pas ce que renvoie alors getfield ; l’outil suppose une chaîne vide.",
         "domain-count": "La page de F5 ne montre <c>domain</c> qu’avec des nombres égaux ou supérieurs à 1. Pour {count}, l’outil suppose une chaîne vide ; vérifiez sur un BIG-IP avant de vous y fier.",
         "domain-empty-label": "Le nom contient un label vide (un point au début, à la fin ou doublé). La page de F5 n’a pas d’exemple de ce cas pour <c>domain</c>.",
         "class-contains-multiple": "{count} entrées contiennent la valeur. F5 documente que starts_with et ends_with renvoient la correspondance la plus longue, mais pas quelle entrée renvoie contains ; l’outil prend la première dans l’ordre où le data group les liste."
@@ -18646,7 +18645,7 @@
         "asciiPunctuation": "Utiliser les guillemets et traits d’union ASCII",
         "foldLookalikes": "Remplacer les homoglyphes par de l’ASCII"
       },
-      "cleanChanges": "{removed} supprimés, {spaces} espaces ou sauts de ligne, {punctuation} guillemets ou tirets, {folded} homoglyphes remplacés.",
+      "cleanChanges": "{removed, plural, one {{removed} supprimé} other {{removed} supprimés}}, {spaces, plural, one {{spaces} espace ou saut de ligne} other {{spaces} espaces ou sauts de ligne}}, {punctuation, plural, one {{punctuation} guillemet ou tiret} other {{punctuation} guillemets ou tirets}}, {folded, plural, one {{folded} homoglyphe remplacé} other {{folded} homoglyphes remplacés}}.",
       "copy": "Copier",
       "copied": "Copié",
       "escapeTitle": "Écrire le texte sous forme d’échappements",
@@ -19283,9 +19282,9 @@
         "unreadable": "Rien à construire"
       },
       "verdictBody": {
-        "complete": "{n} certificats, de l’entité finale à une racine autosignée, tous les maillons établis et toutes les règles de la RFC 5280 vérifiées ici satisfaites.",
-        "complete-with-warnings": "{n} certificats, de l’entité finale à une racine autosignée, tous les maillons établis ; lisez les avertissements ci-dessous avant le déploiement.",
-        "anchor-omitted": "{n} certificats, sains jusqu’où ils vont ; le dernier a été émis par {missing}, qui n’est pas dans l’entrée. Si {missing} est une racine présente dans les magasins de confiance de vos clients, c’est la chaîne normale à envoyer (une ancre de confiance peut être omise). S’il s’agit d’un intermédiaire, les clients qui ne le possèdent pas déjà échoueront.",
+        "complete": "{n, plural, one {{n} certificat} other {{n} certificats}}, de l’entité finale à une racine autosignée, tous les maillons établis et toutes les règles de la RFC 5280 vérifiées ici satisfaites.",
+        "complete-with-warnings": "{n, plural, one {{n} certificat} other {{n} certificats}}, de l’entité finale à une racine autosignée, tous les maillons établis ; lisez les avertissements ci-dessous avant le déploiement.",
+        "anchor-omitted": "{n, plural, one {{n} certificat, sain jusqu’où il va} other {{n} certificats, sains jusqu’où ils vont}} ; le dernier a été émis par {missing}, qui n’est pas dans l’entrée. Si {missing} est une racine présente dans les magasins de confiance de vos clients, c’est la chaîne normale à envoyer (une ancre de confiance peut être omise). S’il s’agit d’un intermédiaire, les clients qui ne le possèdent pas déjà échoueront.",
         "incomplete": "Le chemin s’arrête à l’entité finale : son émetteur, {missing}, n’est pas dans l’entrée, et aucun client ne peut construire la chaîne à partir de ce qui est fourni. Ajoutez les certificats intermédiaires.",
         "invalid": "Une règle de validation de chemin de la RFC 5280 est enfreinte le long du chemin ; un client conforme rejettera cette chaîne. Les erreurs ci-dessous indiquent où.",
         "unreadable": "Aucun certificat n’a pu être lu dans l’entrée. Collez des blocs PEM, chacun entre les lignes BEGIN CERTIFICATE et END CERTIFICATE."
@@ -19403,7 +19402,7 @@
         "weak-key": "#{at} ({cn}) porte une clé {detail} ; les Baseline Requirements exigent des modules RSA d’au moins 2048 bits.",
         "end-entity-is-ca": "Le chemin a été construit à partir de #{at} ({cn}), un certificat d’AC ; une chaîne de serveur commence à une entité finale.",
         "end-entity-no-san": "#{at} ({cn}) n’a pas de subjectAltName ; les navigateurs ne comparent le nom d’hôte qu’au subjectAltName : un certificat serveur sans cette extension n’est donc pas accepté.",
-        "revocation-pointers": "{detail} certificat(s) du chemin désignent une CRL (certificate revocation list, liste de révocation de certificats) ou un répondeur OCSP (Online Certificate Status Protocol). Un validateur y vérifie la révocation ; cette page liste les pointeurs et ne les contacte pas."
+        "revocation-pointers": "{detail, plural, one {{detail} certificat du chemin désigne} other {{detail} certificats du chemin désignent}} une CRL (certificate revocation list, liste de révocation de certificats) ou un répondeur OCSP (Online Certificate Status Protocol). Un validateur y vérifie la révocation ; cette page liste les pointeurs et ne les contacte pas."
       },
       "pemTitle": "La chaîne à configurer",
       "pemRootLabel": "Inclure la racine",
@@ -19412,7 +19411,7 @@
       "copy": "Copier",
       "copied": "Copié",
       "pemNote": "Réencodée à partir des octets des certificats, sur 64 colonnes, dans l’ordre de la chaîne. Collez-la là où votre serveur attend la chaîne de certificats (un fichier combiné pour la plupart des serveurs ; un objet chaîne distinct sur les plateformes qui gardent le certificat feuille à part).",
-      "certsTitle": "Les {n} certificats en détail",
+      "certsTitle": "{n, plural, one {{n} certificat en détail} other {Les {n} certificats en détail}}",
       "duplicateOf": "doublon de #{n}",
       "field": {
         "subject": "Sujet",
@@ -19472,7 +19471,7 @@
         "sizeTitle": "Quantité transférée",
         "timeNote": "{seconds} s, avec une efficacité de {eff} %.",
         "rateNote": "{bps} bit/s de charge utile, avec une efficacité de {eff} %.",
-        "sizeNote": "{bits} bits de charge utile, avec une efficacité de {eff} %."
+        "sizeNote": "{bits, plural, one {{bits} bit} other {{bits} bits}} de charge utile, avec une efficacité de {eff} %."
       },
       "presetNote": {
         "line-rate": "Chaque bit sur le fil compté comme charge utile.",
@@ -19885,8 +19884,8 @@
         "zoneinfo": "zoneinfo ne trouve aucune base de fuseaux horaires dans ce build (ni tzdata système, ni paquet tzdata chargé) : ZoneInfo(...) lève ZoneInfoNotFoundError. Utilisez plutôt datetime.timezone avec un décalage fixe.",
         "pip": "pip et micropip ne sont pas disponibles dans cette version : les paquets sont désactivés, rien ne peut donc être installé. Seule la bibliothèque standard est disponible.",
         "input-no-stdin": "Le programme lit l’entrée standard, mais la zone stdin est vide : le premier input() lève donc EOFError. Saisissez dans la zone les lignes qu’il doit lire.",
-        "input-stdin": "Le programme lit l’entrée standard ; la zone fournit ses lignes ({lines}), une par lecture, puis la fin de fichier.",
-        "stdin-unused": "La zone stdin contient des lignes ({lines}), mais le programme ne lit jamais input() ni sys.stdin.",
+        "input-stdin": "Le programme lit l’entrée standard ; la zone fournit {lines, plural, one {{lines} ligne} other {{lines} lignes}}, une par lecture, puis la fin de fichier.",
+        "stdin-unused": "La zone stdin contient {lines, plural, one {{lines} ligne} other {{lines} lignes}}, mais le programme ne lit jamais input() ni sys.stdin.",
         "sleep-over-limit": "time.sleep({seconds}) dépasse la limite de {limit} s de durée d’exécution ; l’exécution sera arrêtée avant la fin de la pause.",
         "sleep": "time.sleep({seconds}) est décompté de la limite de {limit} s de durée d’exécution.",
         "loop-forever": "Une boucle while True ne se termine que par un break, une exception, le bouton Arrêter ou la limite de {limit} s.",
@@ -20063,7 +20062,7 @@
         "spawn": "Démarre <code>{program}</code>{hasArgs, select, yes { avec <code>{args}</code>} other {}} comme processus courant{noecho, select, yes {, sans afficher la ligne de commande en écho} other {}}. À partir d’ici, expect lit sa sortie et send écrit sur son entrée.",
         "expect": "{variant, select, expect_before {Enregistre des motifs essayés avant ceux de chaque expect ultérieur} expect_after {Enregistre des motifs essayés après ceux de chaque expect ultérieur} expect_user {Attend des frappes de l’utilisateur} other {Attend que la sortie du programme corresponde}} : {n, plural, one {un motif} other {# motifs}}{timeout, select, none {} other {, avec son propre délai d’expiration de {timeout} secondes}}.",
         "send": "Tape <code>{text}</code> à destination {target, select, process {du programme} user {de l’utilisateur, sur stdout} error {de l’utilisateur, sur stderr} other {du terminal}}{ending, select, cr {, en terminant par un retour chariot} lf {, en terminant par un saut de ligne} other {, sans retour chariot final}}{pace, select, slow {, lentement} human {, avec des pauses imitant une frappe humaine} other {}}.",
-        "setTimeout": "Fixe le délai d’expiration de chaque expect suivant à {how, select, infinite {l’infini (-1) : un expect peut attendre indéfiniment} seconds {{value} secondes} other {la valeur de <code>{value}</code>}}.",
+        "setTimeout": "Fixe le délai d’expiration de chaque expect suivant à {how, select, infinite {l’infini (-1) : un expect peut attendre indéfiniment} seconds {{value, plural, one {{value} seconde} other {{value} secondes}}} other {la valeur de <code>{value}</code>}}.",
         "set": "Affecte à <code>{name}</code> la valeur <code>{value}</code>{argv, select, yes { (argument {index} de la ligne de commande)} other {}}.",
         "global": "Déclare <code>{names}</code> comme global dans cette procédure : y écrire modifie donc la variable du script.",
         "interact": "Rend le clavier à l’utilisateur : les frappes vont au programme et sa sortie revient, jusqu’à ce que l’utilisateur ou le programme y mette fin.",
@@ -20073,7 +20072,7 @@
         "close": "Ferme la connexion au programme ; la plupart des programmes voient une fin de fichier et se terminent.",
         "wait": "Attend la fin du processus lancé, pour que le système puisse le libérer.",
         "exit": "Termine le script{code, select, none {} other { avec le code de sortie {code}}} ; toutes les connexions aux processus lancés sont fermées.",
-        "sleep": "Fait une pause de {seconds} secondes, quoi que fasse le programme.",
+        "sleep": "Fait une pause de {seconds, plural, one {{seconds} seconde} other {{seconds} secondes}}, quoi que fasse le programme.",
         "stty": "{mode, select, off {Désactive l’écho du terminal : ce que tape l’utilisateur ne s’affiche pas.} on {Réactive l’écho du terminal.} other {Modifie les modes du terminal : <code>{args}</code>.}}",
         "proc": "Définit la procédure <code>{name}</code>{hasParams, select, yes { avec les paramètres <code>{params}</code>} other {}} ; son corps s’exécute quand elle est appelée.",
         "control": "{name, select, if {Branchement : les commandes internes s’exécutent quand la condition est vraie.} foreach {Boucle sur une liste et exécute les commandes internes pour chaque élément.} while {Boucle tant que la condition est vraie.} for {Boucle à compteur sur les commandes internes.} switch {Choisit la première branche dont le motif correspond à la valeur.} other {Un {name} Tcl.}}",
@@ -20329,8 +20328,8 @@
           "repeated": "Content-Length répété {count} fois avec la même valeur, {value}. RFC 9110, section 8.6 : un destinataire PEUT soit rejeter le message, soit remplacer la liste par une seule occurrence de la valeur, car cela indique probablement un doublon généré en amont."
         },
         "H8": {
-          "shorter": "Content-Length déclare {declared} octets, mais {actual} ont été collés. RFC 9112, section 6.3, règle 6 : un destinataire qui ne reçoit pas le nombre d’octets déclaré DOIT considérer le message comme incomplet et fermer la connexion (un collage a peut-être simplement perdu son corps).",
-          "longer": "Content-Length déclare {declared} octets, mais {actual} ont été collés : {extra} de trop. Un destinataire lit exactement {declared} octets et traite le reste comme le début du message suivant ; c’est ainsi que commence une désynchronisation de connexion."
+          "shorter": "Content-Length déclare {declared, plural, one {{declared} octet} other {{declared} octets}}, mais {actual, plural, one {{actual} a été collé} other {{actual} ont été collés}}. RFC 9112, section 6.3, règle 6 : un destinataire qui ne reçoit pas le nombre d’octets déclaré DOIT considérer le message comme incomplet et fermer la connexion (un collage a peut-être simplement perdu son corps).",
+          "longer": "Content-Length déclare {declared, plural, one {{declared} octet} other {{declared} octets}}, mais {actual, plural, one {{actual} a été collé} other {{actual} ont été collés}} : {extra} de trop. Un destinataire lit exactement {declared, plural, one {{declared} octet} other {{declared} octets}} et traite le reste comme le début du message suivant ; c’est ainsi que commence une désynchronisation de connexion."
         },
         "H9": {
           "request-not-chunked": "Transfer-Encoding ({codings}) dans une requête sans chunked comme codage final. RFC 9112, section 6.3, règle 4 : la longueur du corps ne peut pas être déterminée de façon fiable ; le serveur DOIT répondre 400 (Bad Request) et fermer la connexion.",
@@ -20348,10 +20347,10 @@
           "main": "Transfer-Encoding dans un message HTTP/1.0. RFC 9112, section 6.1 : un destinataire DOIT traiter le message comme si sa délimitation était défectueuse, même en présence d’un Content-Length, et fermer la connexion après le traitement du message."
         },
         "H12": {
-          "main": "Un corps de {octets} octets suit les champs, mais la requête n’a ni Content-Length ni Transfer-Encoding. RFC 9112, section 6.3, règle 7 : la longueur du corps est nulle ; un serveur lit donc le corps collé comme le début de la requête suivante."
+          "main": "Un corps de {octets, plural, one {{octets} octet} other {{octets} octets}} suit les champs, mais la requête n’a ni Content-Length ni Transfer-Encoding. RFC 9112, section 6.3, règle 7 : la longueur du corps est nulle ; un serveur lit donc le corps collé comme le début de la requête suivante."
         },
         "H13": {
-          "main": "Un corps de {octets} octets après une réponse {code}. RFC 9112, section 6.3, règle 1 : cette réponse se termine à la première ligne vide après les champs et ne peut pas contenir de corps de message ; un destinataire lit le corps comme le début de la réponse suivante.",
+          "main": "Un corps de {octets, plural, one {{octets} octet} other {{octets} octets}} après une réponse {code}. RFC 9112, section 6.3, règle 1 : cette réponse se termine à la première ligne vide après les champs et ne peut pas contenir de corps de message ; un destinataire lit le corps comme le début de la réponse suivante.",
           "content-length-forbidden": "Content-Length dans une réponse {code}. RFC 9110, section 8.6 : un serveur NE DOIT PAS envoyer Content-Length dans une réponse dont le code de statut est 1xx ou 204."
         },
         "H14": {
@@ -21071,7 +21070,7 @@
       "anyPort": "celui par défaut du schéma",
       "anyPath": "n’importe lequel",
       "schemeNote": "une scheme-source : toute URL dont le schéma est {scheme}, sur n’importe quel hôte (6.7.2.8).",
-      "nonceNote": "une nonce-source dont la valeur base64 compte {length} caractères ; elle doit changer à chaque réponse et devrait coder au moins 128 bits (7.1).",
+      "nonceNote": "une nonce-source dont la valeur base64 compte {length, plural, one {{length} caractère} other {{length} caractères}} ; elle doit changer à chaque réponse et devrait coder au moins 128 bits (7.1).",
       "hashNote": "une hash-source ({algorithm}) : correspond à un bloc inline dont l’empreinte est cette valeur ; avec 'unsafe-hashes', aussi aux gestionnaires d’évènements inline.",
       "effectiveTitle": "La politique effective",
       "effectiveIntro": "Ce qui régit réellement chaque destination, après la liste de repli de 6.8.3 (script-src-elem se replie sur script-src, puis default-src ; worker-src sur child-src, script-src, default-src ; frame-src sur child-src, default-src ; les autres sur default-src ; base-uri, form-action et frame-ancestors ne se replient jamais).",
@@ -21205,7 +21204,7 @@
           "missing": "Pas de frame-ancestors : n’importe quel site peut intégrer cette page dans un cadre, ce qui est précisément la catégorie de clickjacking pour laquelle existe frame-ancestors (6.4.2). Elle ne se replie pas sur default-src ; même une politique default-src 'none' laisse n’importe qui intégrer la ressource (« a policy that declares default-src 'none' will still allow the resource to be embedded by anyone. »). Ajoutez frame-ancestors 'none' ou 'self' à l’en-tête (elle est ignorée dans meta).",
           "present": "frame-ancestors {value} : l’intégration est restreinte (6.4.2)."
         },
-        "C23": "Le nonce de {directive} a une valeur base64 de {length} caractères, en dessous des 22 qui codent 128 bits. La spécification exige au moins cette taille avant encodage et un générateur aléatoire cryptographiquement sûr (« The generated value SHOULD be at least 128 bits long (before encoding), and SHOULD be generated via a cryptographically secure random number generator », 7.1). Un nonce devinable ou réutilisé met en échec toute la liste, car les nonces l’emportent sur les autres restrictions de leur directive (« Nonces override the other restrictions present in the directive in which they're delivered. »).",
+        "C23": "Le nonce de {directive} a une valeur base64 de {length, plural, one {{length} caractère} other {{length} caractères}}, en dessous des 22 qui codent 128 bits. La spécification exige au moins cette taille avant encodage et un générateur aléatoire cryptographiquement sûr (« The generated value SHOULD be at least 128 bits long (before encoding), and SHOULD be generated via a cryptographically secure random number generator », 7.1). Un nonce devinable ou réutilisé met en échec toute la liste, car les nonces l’emportent sur les autres restrictions de leur directive (« Nonces override the other restrictions present in the directive in which they’re delivered. »).",
         "C24": {
           "http": "{value} dans {directive} désigne un schéma non sécurisé. L’algorithme de correspondance le met à niveau (« script-src http: is treated as equivalent to script-src http: https: », 6.7.2.9), si bien que https fonctionne, mais la forme en clair est aussi autorisée et peut être altérée en transit.",
           "ip": "{value} dans {directive} est une adresse IP. L’algorithme de correspondance de la partie hôte ne retient que les domaines (« If host is not a domain, return Does Not Match », 6.7.2.10) ; la spécification note que seule l’adresse de bouclage correspond réellement à une URL (« only 127.0.0.1 will actually match a URL », 2.3.1). Cette expression ne correspond jamais à rien.",
@@ -21596,7 +21595,7 @@
         "unknown": "Pas un message syslog : aucune PRI au début."
       },
       "framing": {
-        "octet-counting": "Comptage d’octets TCP (RFC 6587) : la trame déclare {declared} octets et en contient {actual}.",
+        "octet-counting": "Comptage d’octets TCP (RFC 6587) : la trame déclare {declared, plural, one {{declared} octet} other {{declared} octets}} et en contient {actual}.",
         "non-transparent": "Délimitation TCP non transparente (RFC 6587) : le message se termine par le caractère de fin LF."
       },
       "lengthLine": "{octets, plural, one {# octet} other {# octets}} ({chars, plural, one {# caractère} other {# caractères}}).",
@@ -21690,8 +21689,8 @@
       },
       "notesTitle": "Constats, limites et transports",
       "limits": {
-        "rfc5424": "Longueur : {octets} octets. Tout récepteur doit accepter 480 octets ; tout récepteur devrait en accepter 2048 (RFC 5424 §6.1).",
-        "bsd": "Longueur : {octets} octets. Un paquet syslog BSD doit faire au plus 1024 octets (RFC 3164 §4.1)."
+        "rfc5424": "Longueur : {octets, plural, one {{octets} octet} other {{octets} octets}}. Tout récepteur doit accepter 480 octets ; tout récepteur devrait en accepter 2048 (RFC 5424 §6.1).",
+        "bsd": "Longueur : {octets, plural, one {{octets} octet} other {{octets} octets}}. Un paquet syslog BSD doit faire au plus 1024 octets (RFC 3164 §4.1)."
       },
       "transports": "Transports : UDP, port 514 (RFC 5426) ; TCP avec comptage d’octets ou caractère de fin (RFC 6587) ; TLS sur le port TCP 6514 (RFC 5425).",
       "share": {
@@ -21875,7 +21874,7 @@
       "recentTitle": "Ajouts récents",
       "recentLede": "Les outils les plus récents, tirés du journal des modifications, du plus récent au plus ancien.",
       "directoryTitle": "L’index général",
-      "directoryLede": "{count} outils généralistes répartis en {categories} catégories, tous listés ci-dessous ; {platform, plural, one {# outil conçu pour la plateforme d’un seul constructeur figure} other {# outils conçus pour la plateforme d’un seul constructeur figurent}} dans les <hubs>espaces constructeurs</hubs>. Allez directement à une catégorie, n’en affichez que certaines, ou passez des cartes à la liste.",
+      "directoryLede": "{count, plural, one {{count} outil généraliste réparti en {categories, plural, one {{categories} catégorie} other {{categories} catégories}}, listé ci-dessous} other {{count} outils généralistes répartis en {categories, plural, one {{categories} catégorie} other {{categories} catégories}}, tous listés ci-dessous}} ; {platform, plural, one {# outil conçu pour la plateforme d’un seul constructeur figure} other {# outils conçus pour la plateforme d’un seul constructeur figurent}} dans les <hubs>espaces constructeurs</hubs>. Allez directement à une catégorie, n’en affichez que certaines, ou passez des cartes à la liste.",
       "pasteTitle": "Collez ce que vous avez",
       "pasteLede": "Un jeton, un bloc d’en-têtes, une ligne de journal, un certificat, un CIDR : collez-le, et les outils qui en reconnaissent la forme s’alignent, les plus sûrs en premier.",
       "pasteLabel": "Collez ce que vous avez",
@@ -22072,7 +22071,7 @@
       },
       "maxLength": {
         "heading": "maxLength plus large que le préfixe (RFC 9319)",
-        "item": "VRP {index} : {prefix} avec maxLength {maxLength} pour AS{asn} autorise {count} préfixes, soit chaque préfixe qu’il contient, de sa propre longueur jusqu’à /{maxLength}.",
+        "item": "VRP {index} : {prefix} avec maxLength {maxLength} pour AS{asn} autorise {count, plural, one {{count} préfixe} other {{count} préfixes}}, soit chaque préfixe qu’il contient, de sa propre longueur jusqu’à /{maxLength}.",
         "rfc9319": "La RFC 9319 (BCP 185) recommande des ROA minimaux, ne contenant que les préfixes IP réellement émis par un AS dans BGP (« only those IP prefixes that are actually originated by an AS in BGP »), et indique que les opérateurs devraient éviter l’attribut maxLength dans leurs ROA, car il rend généralement le ROA non minimal (« SHOULD avoid using the maxLength attribute in their ROAs, since its inclusion will usually make the ROA non-minimal », section 5). Elle explique que les préfixes qu’un ROA autorise sans que son AS les annonce sont exposés à ce qu’elle appelle un détournement de sous-préfixe avec origine falsifiée (forged-origin sub-prefix hijack, sections 1, 3 et 4). Que cela s’applique ou non à ces préfixes dépend de ce que l’AS annonce réellement, ce que l’outil ne peut pas voir."
       },
       "share": {
@@ -22195,15 +22194,15 @@
         "poolSubscribers": "Abonnés dans le pool",
         "portsPerSubscriber": "Limite de ports par abonné",
         "pairedNote": "Les blocs d’un abonné sont comptés sur une même adresse : la RFC 6888, REQ-2, impose à un CGN d’utiliser la même adresse externe pour toutes les sessions d’un abonné, et REQ-4 demande une limite de ports par abonné configurable, ici la taille de bloc multipliée par le nombre de blocs par abonné.",
-        "leftoverNote": "Reste sur chaque adresse : {ports} ports qu’aucun bloc entier ne couvre, et {blocks} blocs, trop peu pour la part complète d’un abonné de plus.",
+        "leftoverNote": "Reste sur chaque adresse : {ports, plural, one {{ports} port} other {{ports} ports}} qu’aucun bloc entier ne couvre, et {blocks, plural, one {{blocks} bloc} other {{blocks} blocs}}, trop peu pour la part complète d’un abonné de plus.",
         "systemExcluded": "La plage utilisable {first}-{last} exclut les System Ports 0-1023 (RFC 6335, section 6), que, selon la RFC 7422, un CGN devrait au minimum retirer.",
         "systemIncluded": "La plage utilisable {first}-{last} inclut des System Ports (0-1023, RFC 6335, section 6). Selon la RFC 7422, un CGN devrait au minimum les retirer, et la RFC 6269 considère la plage 1024-65535 comme sûre pour les ports source sortants.",
         "demandHeading": "Face au nombre d’abonnés",
         "subscribers": "Abonnés",
         "addressesNeeded": "Adresses nécessaires",
         "spare": "Places d’abonnés disponibles",
-        "fits": "Le pool suffit : {needed} de ses {have} adresses sont nécessaires.",
-        "doesNotFit": "Le pool est trop petit : {needed} adresses sont nécessaires et il en a {have}. Utilisez des blocs plus petits, moins de blocs par abonné, ou davantage d’adresses.",
+        "fits": "Le pool suffit : {needed, plural, one {{needed} adresse est nécessaire} other {{needed} adresses sont nécessaires}} sur {have, plural, one {{have} disponible} other {{have} disponibles}}.",
+        "doesNotFit": "Le pool est trop petit : {needed, plural, one {{needed} adresse est nécessaire} other {{needed} adresses sont nécessaires}} et il en a {have}. Utilisez des blocs plus petits, moins de blocs par abonné, ou davantage d’adresses.",
         "logHeading": "Volume de journaux par abonné et par jour",
         "logScheme": "Journalisation",
         "logLines": "Lignes",
@@ -22220,13 +22219,13 @@
         "candidatePorts": "Ports candidats par adresse",
         "portsPerSubscriber": "Ports par adresse interne",
         "dynamicPool": "Pool dynamique par adresse",
-        "reservedNote": "Ports réservés R : {list} ({ports} ports), retirés en premier (RFC 7422, section 2, étape 1).",
+        "reservedNote": "Ports réservés R : {list} ({ports, plural, one {{ports} port} other {{ports} ports}}), retirés en premier (RFC 7422, section 2, étape 1).",
         "systemPortsWarning": "Certains System Ports (0-1023) restent candidats ; selon la RFC 7422, un CGN devrait au minimum les retirer.",
         "dynamicRanges": "Pool dynamique sur chaque adresse externe : {ranges}. Les blocs qui en sont attribués doivent être journalisés (étape 4).",
-        "leftoverNote": "Avec D = 0, le pool dynamique est désactivé, et pourtant la division laisse {ports} ports en trop : le reste de la division des ports candidats par C.",
-        "overflowNote": "M = {m} : un abonné peut prendre {extra} ports de plus dans le pool dynamique, de quoi servir {users} abonnés à la fois au maximum de leur débordement.",
+        "leftoverNote": "Avec D = 0, le pool dynamique est désactivé, et pourtant la division laisse {ports, plural, one {{ports} port} other {{ports} ports}} en trop : le reste de la division des ports candidats par C.",
+        "overflowNote": "M = {m} : un abonné peut prendre {extra, plural, one {{extra} port de plus} other {{extra} ports de plus}} dans le pool dynamique, de quoi servir {users, plural, one {{users} abonné à la fois au maximum de son débordement} other {{users} abonnés à la fois au maximum de leur débordement}}.",
         "maxBelowBlock": "M est inférieur au bloc préalloué : le bloc seul dépasse donc le maximum par utilisateur.",
-        "unusedSlots": "{slots} blocs de la dernière adresse externe ne sont attribués à aucune adresse interne.",
+        "unusedSlots": "{slots, plural, one {{slots} bloc de la dernière adresse externe n’est attribué} other {{slots} blocs de la dernière adresse externe ne sont attribués}} à aucune adresse interne.",
         "loggingNone": "D = 0 : aucune journalisation des traductions, ce qui, comme le note la RFC 7422, limite les connexions que peuvent ouvrir les gros utilisateurs. Seul l’enregistrement de configuration est conservé (section 3).",
         "loggingDynamic": "D > 0 : les ports préalloués ne sont pas journalisés, les blocs attribués dynamiquement doivent l’être (étape 4), et l’enregistrement de configuration est conservé (section 3).",
         "forwardHeading": "Directe : de l’interne vers l’externe",
@@ -22264,7 +22263,7 @@
         "portsPerSet": "Ports par ensemble de ports",
         "contiguous": "Ports contigus 2^m",
         "interval": "Intervalle entre plages 2^(16-a)",
-        "layout": "Le port de 16 bits se compose de A ({a} bits), puis du PSID ({k} bits), puis de j ({m} bits). Chaque CE qui partage l’adresse doit utiliser les mêmes a et k (RFC 7597, section 5.1).",
+        "layout": "Le port de 16 bits se compose de A ({a, plural, one {{a} bit} other {{a} bits}}), puis du PSID ({k, plural, one {{k} bit} other {{k} bits}}), puis de j ({m, plural, one {{m} bit} other {{m} bits}}). Chaque CE qui partage l’adresse doit utiliser les mêmes a et k (RFC 7597, section 5.1).",
         "excluded": "Avec a > 0, A doit être supérieur à 0 : les ports 0-{last} n’appartiennent donc à aucun CE, ce qui écarte les System Ports 0-1023.",
         "excludedPartial": "Avec a > 0, A doit être supérieur à 0 : les ports 0-{last} n’appartiennent donc à aucun CE ; avec ce décalage, certains System Ports (jusqu’à 1023) restent dans les ensembles de ports. La RFC 7597 fixe a = 6 par défaut pour exclure 0-1023.",
         "offsetZero": "Avec a = 0, chaque ensemble de ports forme une seule plage contiguë et rien n’est exclu ; l’annexe B.1 de la RFC 7597 écarte les ports bas en n’autorisant que les PSID à partir de {psid}, ce qui laisse 0-1023 non attribués.",
@@ -22358,7 +22357,7 @@
         "destination": "Destination",
         "destDefault": "La route par défaut : sa longueur de préfixe est nulle, elle contient donc toutes les adresses {family} et perd face à tout préfixe plus long qui contient aussi la destination (RFC 1812, section 5.2.4.3).",
         "destHost": "Une route d’hôte : {prefix} est une adresse unique.",
-        "destNetwork": "Un préfixe réseau : une adresse correspond quand ses {len} premiers bits sont égaux à ceux de {prefix}.",
+        "destNetwork": "Un préfixe réseau : une adresse correspond quand {len, plural, one {elle a {len} bit de tête égal à celui} other {ses {len} premiers bits sont égaux à ceux}} de {prefix}.",
         "destUnparsed": "Pas une adresse avec une longueur (un nom, une abréviation ou une valeur masquée) : affichée telle quelle et écartée des recherches.",
         "nextHop": "Prochain saut",
         "hopVia": "Transmis au routeur {gw}, qui doit lui-même être joignable sur une liaison directement connectée.",
@@ -22688,7 +22687,7 @@
         "connection": "Connexion {n}",
         "line": "ligne {n}",
         "lines": "lignes {start} à {end}",
-        "show": "Afficher les {n} lignes"
+        "show": "{n, plural, one {Afficher {n} ligne} other {Afficher les {n} lignes}}"
       },
       "findings": {
         "title": "Constats",
@@ -23163,7 +23162,7 @@
           "invalid": "La commande de déconnexion doit tenir sur une ligne de 64 caractères au plus."
         }
       },
-      "scriptTitle": "Le script ({lines} lignes)",
+      "scriptTitle": "Le script ({lines, plural, one {{lines} ligne} other {{lines} lignes}})",
       "copy": "Copier",
       "copied": "Copié",
       "download": "Télécharger le .exp",
@@ -24419,7 +24418,7 @@
         "days": "{d, plural, one {# jour} other {# jours}}",
         "hMin": "{h} h {m} min",
         "daysH": "{d, plural, one {# jour} other {# jours}} {h} h",
-        "years": "{n} ans",
+        "years": "{n, plural, one {{n} an} other {{n} ans}}",
         "exact": "{n} s"
       },
       "wrap": {
@@ -26037,10 +26036,10 @@
             "empty": "Saisissez les octets en hexadécimal : une étiquette (81 00 00 0a) ou un début de trame, MAC de destination et MAC source en premier.",
             "long": "Le texte compte {n} caractères ; le décodeur en lit au plus {max}.",
             "char": "« {c} » n’est pas un chiffre hexadécimal : écrivez les octets avec 0 à 9 et a à f, séparés par des espaces, des deux-points, des traits d’union ou des points.",
-            "odd": "Le texte contient {n} chiffres hexadécimaux, un nombre impair : chaque octet compte deux chiffres.",
+            "odd": "Le texte contient {n, plural, one {{n} chiffre hexadécimal} other {{n} chiffres hexadécimaux}}, un nombre impair : chaque octet compte deux chiffres.",
             "octets": "Cela fait {n} octets ; le décodeur en lit au plus {max}, ce qui dépasse largement ce qu’occupent les MAC, les étiquettes et l’EtherType d’une trame.",
             "start": "Choisissez où commencent les octets : auto, tpid ou mac.",
-            "short": "{n} octets qui ne commencent pas par 0x8100, 0x88A8 ou 0x9100 : trop court pour un début de trame (6 + 6 octets de MAC, puis 2 de type) et pas une étiquette.",
+            "short": "{n, plural, one {{n} octet qui ne commence pas} other {{n} octets qui ne commencent pas}} par 0x8100, 0x88A8 ou 0x9100 : trop court pour un début de trame (6 + 6 octets de MAC, puis 2 de type) et pas une étiquette.",
             "frameShort": "Un début de trame exige au moins 14 octets (MAC de destination, MAC source, puis 2 octets de type) ; il y en a {n}.",
             "many": "Plus de {max} étiquettes dans une même pile : le décodeur s’arrête là.",
             "cut": "L’étiquette qui commence à l’octet {at} est tronquée : un TPID est suivi de deux octets de TCI.",
@@ -26076,7 +26075,7 @@
           "json": "Le corps de la requête n’est pas du JSON valide : envoyez un seul objet JSON qui indique son mode : tag ou trunk."
         },
         "next": {
-          "length": "{value} est une longueur, {n} octets, et non un EtherType : une trame IEEE 802.3 dont les données commencent par LLC (DSAP, SSAP, contrôle) (RFC 9542, section 3).",
+          "length": "{value} est une longueur, {n, plural, one {{n} octet} other {{n} octets}}, et non un EtherType : une trame IEEE 802.3 dont les données commencent par LLC (DSAP, SSAP, contrôle) (RFC 9542, section 3).",
           "neither": "{value} n’est ni une longueur (en dessous de 0x05DD) ni un EtherType (0x0600 et au-delà) (RFC 9542, section 3).",
           "llc": "{value} est l’EtherType de l’encapsulation LLC, utilisé à la place d’une longueur comme « length indication » de longueur non spécifiée (RFC 9542, section 3).",
           "unlisted": "{value} est un EtherType que la liste de l’IANA ne nomme pas ; l’IEEE Registration Authority tient la liste publique complète (IANA, IEEE 802 Numbers).",
@@ -26099,7 +26098,7 @@
           "autoTpid": "Lu comme une étiquette, car les octets commencent par {tpid} ; choisissez « MAC de destination » s’il s’agit d’un début de trame.",
           "docMac": "Ce sont des adresses MAC de documentation (RFC 9542, section 2.1.4 : de 00-00-5E-00-53-00 à -FF et de 01-00-5E-90-10-00 à -FF).",
           "endAfterTags": "Les octets s’arrêtent après la dernière étiquette : l’EtherType qui suit n’en fait donc pas partie.",
-          "after": "{n} octets après l’EtherType ou la longueur ne sont pas décodés.",
+          "after": "{n, plural, one {{n} octet après l’EtherType ou la longueur n’est pas décodé} other {{n} octets après l’EtherType ou la longueur ne sont pas décodés}}.",
           "pcp": "Le type de trafic est celui que le tableau G-2 de P802.1ad/D2.4 donne pour la priorité à laquelle correspond le PCP avec la sélection par défaut 8P0D ; le guide QoS d’AOS-CX de HPE Aruba liste aujourd’hui les mêmes huit. Un port réglé en 7P1D, 6P2D ou 5P3D décode certaines valeurs autrement (tableau 6-5).",
           "vlan1": "Le VLAN 1 traverse ce trunk. C’est le PVID par défaut de tout port 802.1Q (P802.1ad/D2.4, tableau 9-2) : les équipements que personne n’a configurés y atterrissent ; l’article sur les VLAN explique pourquoi les trunks sont souvent construits sans lui.",
           "assume": "L’outil ne compare que les lignes de configuration : il suppose que chaque VLAN cité existe sur les deux commutateurs, que le lien est actif et en trunk aux deux extrémités, et que rien d’autre (pruning, spanning tree, enregistrement de VLAN) ne retire un VLAN."
@@ -26737,7 +26736,7 @@
       "empty": "Collez un paquet, appuyez sur Exemple ou choisissez l’un des paquets des RFC ci-dessus.",
       "headline": {
         "packet": "<b>{name}</b> (Code {code}), Identifier {id}, Length {length} : {n, plural, one {# attribut} other {# attributs}}.",
-        "attributes": "{octets} octets lus comme des attributs : {n, plural, one {# attribut} other {# attributs}}."
+        "attributes": "{octets, plural, one {{octets} octet lu} other {{octets} octets lus}} comme des attributs : {n, plural, one {# attribut} other {# attributs}}."
       },
       "header": {
         "heading": "En-tête",
@@ -26847,7 +26846,7 @@
           "empty": "Collez un paquet RADIUS en hexadécimal, tel qu’une capture l’affiche : hexadécimal brut, octets séparés par des espaces ou des deux-points, ou dump hexadécimal avec décalages.",
           "tooMany": "Il y a plus de {max} octets ({octets} jusqu’ici) : un paquet RADIUS fait au plus 4096 octets (RFC 2865, section 3), et cet outil n’en lit pas davantage.",
           "dumpLine": "La ligne {line} ne commence pas par un décalage, alors que la première ligne en avait un : dans un dump hexadécimal, chaque ligne commence par le décalage de son premier octet (le format que lit text2pcap).",
-          "dumpOffset": "La ligne {line} commence au décalage {found}, mais {expected} octets la précèdent : les décalages d’un dump hexadécimal comptent les octets (le format que lit text2pcap).",
+          "dumpOffset": "La ligne {line} commence au décalage {found}, mais {expected, plural, one {{expected} octet la précède} other {{expected} octets la précèdent}} : les décalages d’un dump hexadécimal comptent les octets (le format que lit text2pcap).",
           "dumpBytes": "La ligne {line} a un décalage, mais aucun octet après.",
           "ether4": "Ces octets commencent par un en-tête Ethernet (EtherType 0x0800, RFC 894), puis un en-tête IPv4 qui transporte de l’UDP (protocole 17 : RFC 791, registre Protocol Numbers de l’IANA) du port {src} vers le port {dst} (RFC 768). Le paquet RADIUS commence à l’octet {offset} : copiez seulement la couche RADIUS, ou supprimez les {offset} premiers octets.",
           "ether6": "Ces octets commencent par un en-tête Ethernet (EtherType 0x86DD, RFC 2464), puis un en-tête IPv6 avec Next Header 17, UDP (RFC 8200, registre Protocol Numbers de l’IANA), du port {src} vers le port {dst} (RFC 768). Le paquet RADIUS commence à l’octet {offset} : copiez seulement la couche RADIUS, ou supprimez les {offset} premiers octets.",
@@ -26857,9 +26856,9 @@
           "tacacsPartial": "Ces octets ne sont pas un paquet RADIUS : le premier octet, {first}, n’est pas un Code attribué par l’IANA, et les 12 premiers se lisent comme un en-tête TACACS+ (RFC 8907, section 4.1) : version {version}, type {type} ({typeName}), seq_no {seq}, flags {flags}, session_id {session}, longueur du corps {length}, alors que {given} octets suivent. Un corps TACACS+ est obfusqué avec le secret partagé (section 4.5) : cet outil ne le décode donc pas ; la comparaison ci-dessous met les deux protocoles côte à côte.",
           "attrHeader": "L’attribut {index} commencerait à l’octet {offset}, mais il ne reste qu’un octet : un attribut a besoin au minimum d’un octet Type et d’un octet Length (RFC 2865, section 5). Le paquet est mal formé.",
           "attrLength": "L’attribut {index} à l’octet {offset}, {label}, a un Length de {length}. Le Length d’un attribut compte ses octets Type et Length, il vaut donc au moins 2 (RFC 2865, section 5) : le paquet est mal formé, et la RFC 2865 prévoit qu’un Access-Request dont un attribut a un Length non valide reçoive un Access-Reject, et qu’une réponse qui en contient un soit traitée comme un Access-Reject ou supprimée silencieusement.",
-          "rfc2865erratum6486": "L’attribut {index} à l’octet {offset}, {label}, a un Length de {length}, qui dépasse de {over} octets la fin du paquet, à l’octet {end}. Ce sont les octets de l’exemple de la section 7.3 de la RFC 2865 tels que publiés : son dernier attribut, State, indique 0x10 alors que 10 octets (0x0a) suivent, et l’erratum vérifié 6486 le corrige en 0x0a.",
-          "attrOverrun": "L’attribut {index} à l’octet {offset}, {label}, a un Length de {length}, qui dépasse de {over} octets la fin du paquet, à l’octet {end} (RFC 2865, section 5) : le paquet est mal formé. La capture est peut-être tronquée, ou le champ Length du paquet ou de l’attribut est faux.",
-          "short": "Il y a {octets} octets ; un paquet RADIUS en compte au moins 20 : Code (1), Identifier (1), Length (2) et l’Authenticator (16) (RFC 2865, section 3). S’il s’agit d’attributs sans l’en-tête, choisissez Attributs seuls.",
+          "rfc2865erratum6486": "L’attribut {index} à l’octet {offset}, {label}, a un Length de {length}, qui dépasse de {over, plural, one {{over} octet} other {{over} octets}} la fin du paquet, à l’octet {end}. Ce sont les octets de l’exemple de la section 7.3 de la RFC 2865 tels que publiés : son dernier attribut, State, indique 0x10 alors que 10 octets (0x0a) suivent, et l’erratum vérifié 6486 le corrige en 0x0a.",
+          "attrOverrun": "L’attribut {index} à l’octet {offset}, {label}, a un Length de {length}, qui dépasse de {over, plural, one {{over} octet} other {{over} octets}} la fin du paquet, à l’octet {end} (RFC 2865, section 5) : le paquet est mal formé. La capture est peut-être tronquée, ou le champ Length du paquet ou de l’attribut est faux.",
+          "short": "Il y a {octets, plural, one {{octets} octet} other {{octets} octets}} ; un paquet RADIUS en compte au moins 20 : Code (1), Identifier (1), Length (2) et l’Authenticator (16) (RFC 2865, section 3). S’il s’agit d’attributs sans l’en-tête, choisissez Attributs seuls.",
           "lengthSmall": "Le champ Length indique {length}, sous le minimum de 20 (RFC 2865, section 3) : l’en-tête à lui seul occupe 20 octets.",
           "lengthLarge": "Le champ Length indique {length}, au-dessus du maximum de 4096 (RFC 2865, section 3).",
           "truncated": "Le champ Length indique {length} octets, mais seulement {octets} ont été fournis : le paquet est plus court que son Length, et un récepteur DOIT le supprimer silencieusement (RFC 2865, section 3). La capture est peut-être tronquée.",
@@ -26883,7 +26882,7 @@
           "tlv": "La valeur ne se découpe pas en TLV dont le TLV-Length va de 3 à 255 (RFC 8044, section 3.13) : c’est donc un attribut non valide (RFC 6929, section 2.8), affiché en octets.",
           "prefixSize": "Une valeur ipv6prefix fait de 2 à 18 octets (RFC 8044, section 3.10) ; celle-ci en a {got} : c’est donc un attribut non valide (RFC 6929, section 2.8).",
           "prefixLen": "Le Prefix-Length {plen} dépasse {max} : la valeur DOIT donc être traitée comme un attribut non valide (RFC 8044, section {section}).",
-          "prefixShort": "Le Prefix-Length {plen} demande {need} octets de préfixe et seuls {got} suivent : le préfixe ne peut pas être lu et l’attribut n’est pas valide (RFC 8044, section {section} ; RFC 6929, section 2.8).",
+          "prefixShort": "Le Prefix-Length {plen} demande {need, plural, one {{need} octet} other {{need} octets}} de préfixe et {got, plural, one {seul {got} suit} other {seuls {got} suivent}} : le préfixe ne peut pas être lu et l’attribut n’est pas valide (RFC 8044, section {section} ; RFC 6929, section 2.8).",
           "reserved": "L’octet Reserved vaut {value} ; la RFC 8044 indique qu’il vaut toujours zéro (section {section}).",
           "prefixBits": "Des bits au-delà de la longueur du préfixe sont positionnés ; la RFC 8044 indique qu’ils DOIVENT être à zéro (section {section}).",
           "prefixZero": "L’adresse est 0.0.0.0, pour laquelle la RFC 8044 indique que le Prefix-Length DOIT valoir 32 (section 3.11).",
@@ -26909,7 +26908,7 @@
           "vendorOffline": "Les guides de configuration de {vendor} ne sont plus publiés en ligne : ses sous-attributs sont donc affichés par numéro.",
           "vendorNotRead": "Cet outil n’a pas de liste de sous-attributs tirée de la documentation de {vendor} : ses sous-attributs sont donc affichés par numéro.",
           "vsaOctets": "Le champ String ne se découpe pas en champs vendor type, vendor length et value, le format que la RFC 2865 indique qu’il DEVRAIT utiliser (section 5.26) : il est donc affiché comme une suite d’octets indifférenciés.",
-          "redacted": "Caviardé dans ce lien : {octets} octets de cette valeur ont été remplacés par des zéros à la création du lien ; ce ne sont donc pas les originaux."
+          "redacted": "Caviardé dans ce lien : {octets, plural, one {{octets} octet de cette valeur a été remplacé par des zéros à la création du lien ; ce n’est donc pas l’original} other {{octets} octets de cette valeur ont été remplacés par des zéros à la création du lien ; ce ne sont donc pas les originaux}}."
         },
         "sub": {
           "mppe": "Clé de session chiffrée : Salt 0x{salt}, puis la longueur de la clé, la clé et le bourrage, combinés par XOR avec le MD5 du secret partagé, du Request Authenticator et du Salt (RFC 2548, sections 2.4.2 et 2.4.3). La lire exige le secret partagé, que cet outil ne demande jamais.",
@@ -26927,10 +26926,10 @@
           "unlistedHuawei": "Le vendor type {type} ne figure pas dans le tableau des attributs RADIUS propriétaires de Huawei (Table 1-11 du guide de configuration S5700 et S6700 V200R025C00) : il est donc affiché en octets.",
           "hwFramedIpv6": "Le tableau de Huawei décrit HW-Framed-IPv6-Address comme « IPv6 address to be configured for the user » : une adresse, pas un préfixe.",
           "dhcpRead": "Lu comme des options DHCP, ainsi que le tableau de Huawei décrit cette valeur : « DHCP Option, encapsulated in Type-Length-Value (TLV) format ».",
-          "dhcpBad": "Le tableau de Huawei décrit cette valeur comme des options DHCP au format Type-Length-Value, mais l’option qui commence à l’octet {at} de la valeur demande {need} octets et il n’en reste que {left} : la valeur est donc affichée en octets.",
+          "dhcpBad": "Le tableau de Huawei décrit cette valeur comme des options DHCP au format Type-Length-Value, mais l’option qui commence à l’octet {at} de la valeur demande {need, plural, one {{need} octet} other {{need} octets}} et il n’en reste que {left} : la valeur est donc affichée en octets.",
           "dhcpOnly82": "L’option {code} n’est pas l’option 82, et le tableau de Huawei indique : « Only Option 82 can be delivered. »",
           "dhcp82Short": "L’option 82 a une longueur de {length}, mais la RFC 3046 (section 2.0) donne à l’option Relay Agent Information une longueur minimale de deux, car au moins une sous-option doit être présente : sa valeur est donc affichée en octets.",
-          "dhcp82Bad": "La valeur de l’option 82 ne se découpe pas en sous-options de la RFC 3046 (section 2.0) ; la sous-option qui commence à l’octet {at} de la valeur de l’option demande {need} octets et il n’en reste que {left}, la valeur est donc affichée en octets.",
+          "dhcp82Bad": "La valeur de l’option 82 ne se découpe pas en sous-options de la RFC 3046 (section 2.0) ; la sous-option qui commence à l’octet {at} de la valeur de l’option demande {need, plural, one {{need} octet} other {{need} octets}} et il n’en reste que {left}, la valeur est donc affichée en octets.",
           "dhcp82Unknown": "La sous-option {code} de l’option 82 n’est pas l’une de celles que définit la RFC 3046 (la section 2.0 attribue 1, Agent Circuit ID, et 2, Agent Remote ID) : sa valeur est donc affichée en octets."
         },
         "ext": {
@@ -26948,10 +26947,10 @@
         },
         "warn": {
           "eapSplit": "Les attributs EAP-Message ne sont pas consécutifs : quand il y en a plusieurs, ils DOIVENT être dans l’ordre et consécutifs (RFC 3579, section 3.1). Le paquet EAP ci-dessous les joint dans l’ordre où ils apparaissent.",
-          "eapShort": "Les données EAP-Message font {octets} octets, moins qu’un en-tête EAP : Code, Identifier et un Length de deux octets (RFC 3748, section 4).",
+          "eapShort": "Les données EAP-Message font {octets, plural, one {{octets} octet} other {{octets} octets}}, moins qu’un en-tête EAP : Code, Identifier et un Length de deux octets (RFC 3748, section 4).",
           "eapCode": "Le Code EAP {code} n’est pas attribué par le registre EAP de l’IANA ; la RFC 3748 (section 4) prévoit que les paquets EAP dont elle ne définit pas le code soient supprimés silencieusement.",
-          "eapLength": "Le Length EAP indique {length}, mais les attributs EAP-Message contiennent {octets} octets : un message EAP dont le Length dépasse les octets reçus DOIT être supprimé silencieusement (RFC 3748, section 4).",
-          "eapPadding": "Le Length EAP indique {length}, et les attributs EAP-Message contiennent {octets} octets : les octets au-delà du Length sont du bourrage et sont ignorés (RFC 3748, section 4).",
+          "eapLength": "Le Length EAP indique {length}, mais les attributs EAP-Message contiennent {octets, plural, one {{octets} octet} other {{octets} octets}} : un message EAP dont le Length dépasse les octets reçus DOIT être supprimé silencieusement (RFC 3748, section 4).",
+          "eapPadding": "Le Length EAP indique {length}, et les attributs EAP-Message contiennent {octets, plural, one {{octets} octet} other {{octets} octets}} : les octets au-delà du Length sont du bourrage et sont ignorés (RFC 3748, section 4).",
           "mustNot": "{label} est présent, mais le tableau des attributs de la {rfc} (section {section}) indique qu’il NE DOIT PAS figurer dans ce type de paquet.",
           "atMostOne": "{label} apparaît {n} fois, mais le tableau des attributs de la {rfc} (section {section}) n’en autorise qu’un au plus dans ce type de paquet.",
           "exactlyOne": "Ce type de paquet exige exactement un {label} ({rfc}, tableau des attributs, section {section}) ; il en a {n}.",
@@ -26967,7 +26966,7 @@
           "codeUnassigned": "Le Code {code} n’est pas attribué dans le registre RADIUS Packet Type Codes de l’IANA ; un récepteur supprime silencieusement un paquet dont le Code n’est pas valide (RFC 2865, section 3).",
           "codeReserved": "Le Code {code} est réservé dans le registre RADIUS Packet Type Codes de l’IANA ; un récepteur supprime silencieusement un paquet dont le Code n’est pas valide (RFC 2865, section 3).",
           "acctMax": "Un paquet d’accounting fait au plus 4095 octets (RFC 2866, section 3) ; le Length de celui-ci vaut 4096.",
-          "padding": "{n} octets suivent la fin indiquée par le champ Length ({length}) : la RFC 2865 (section 3) prévoit qu’ils soient traités comme du bourrage et ignorés ; ils ne sont donc pas décodés.",
+          "padding": "{n, plural, one {{n} octet suit la fin indiquée par le champ Length ({length}) : la RFC 2865 (section 3) prévoit qu’il soit traité comme du bourrage et ignoré ; il n’est donc pas décodé} other {{n} octets suivent la fin indiquée par le champ Length ({length}) : la RFC 2865 (section 3) prévoit qu’ils soient traités comme du bourrage et ignorés ; ils ne sont donc pas décodés}}.",
           "invalidAttr": "L’attribut {index}, {label}, est un attribut non valide ; la RFC 6929 (section 2.8) indique qu’un récepteur DEVRAIT le supprimer silencieusement, et NE DOIT PAS supprimer le paquet entier pour autant."
         },
         "note": {
@@ -26992,7 +26991,7 @@
           "codeExperimental": "Le Code {code} se trouve dans la plage que l’IANA réserve à l’usage expérimental (250 à 253).",
           "attributesMode": "Attributs seuls : il n’y a pas d’en-tête, donc les contrôles qui dépendent du type de paquet et de l’Authenticator ne sont pas effectués.",
           "redactedAuthenticator": "Caviardé dans ce lien : l’Authenticator vaut 16 octets à zéro, car l’original est un MD5 calculé avec le secret partagé, à partir duquel un lecteur pourrait tester hors ligne des hypothèses sur le secret.",
-          "redactedPadding": "Caviardé dans ce lien : les {n} octets après le Length sont des zéros, car cet outil ne les lit pas et ne peut pas savoir ce qu’ils contenaient."
+          "redactedPadding": "Caviardé dans ce lien : {n, plural, one {{n} octet après le Length est à zéro, car cet outil ne le lit pas et ne peut pas savoir ce qu’il contenait} other {les {n} octets après le Length sont des zéros, car cet outil ne les lit pas et ne peut pas savoir ce qu’ils contenaient}}."
         },
         "label": {
           "named": "{name} ({id})",
@@ -27038,7 +27037,7 @@
       "widthLabel": "Largeur en bits",
       "widthPlaceholder": "d’après la valeur",
       "widthAuto": "d’après la valeur",
-      "widthBits": "{w} bits",
+      "widthBits": "{w, plural, one {{w} bit} other {{w} bits}}",
       "layoutLabel": "Lire la valeur comme",
       "layoutName": {
         "none": "un simple nombre",
@@ -27101,7 +27100,7 @@
         "mac": "Saisissez une adresse MAC, ou appuyez sur Exemple pour l’adresse 12-34-56-78-9A-BC de la RFC 2469."
       },
       "value": {
-        "headline": "<m>{hex}</m> vaut <m>{dec}</m> sur {w} bits."
+        "headline": "<m>{hex}</m> vaut <m>{dec}</m> sur {w, plural, one {{w} bit} other {{w} bits}}."
       },
       "printed": {
         "lsb": "Lue bit de poids faible en premier, <m>{typed}</m> vaut <m>{hex}</m> ; lue bit de poids fort en premier, la même suite vaudrait {other} ({otherDec}).",
@@ -27126,13 +27125,13 @@
         "threeValue": "LSB 0 : {lsb} ; MSB 0 : {msb} ; base 1 : {one}"
       },
       "bits": {
-        "heading": "Tous les bits, poids fort en premier ({w} bits)",
+        "heading": "Tous les bits, poids fort en premier ({w, plural, one {{w} bit} other {{w} bits}})",
         "colBit": "Bit",
         "colLsb0": "LSB 0",
         "colMsb0": "MSB 0",
         "colOne": "Base 1",
         "colWeight": "Poids",
-        "all": "Afficher les {w} bits",
+        "all": "{w, plural, one {Afficher {w} bit} other {Afficher les {w} bits}}",
         "fewer": "Afficher seulement les bits à 1",
         "foldedNote": "Seuls les bits à 1 sont listés ; chaque numéro du tableau reste celui de son propre bit."
       },
@@ -27195,13 +27194,13 @@
           "macInValue": "« {value} » ressemble à une adresse MAC : choisissez le mode Adresse MAC pour la lire.",
           "tooWide": "La valeur dépasse 64 bits ; cet outil lit de 1 à 64 bits.",
           "width": "« {value} » n’est pas une largeur : indiquez un nombre entier de bits de 1 à 64.",
-          "fit": "La valeur a besoin de {need} bits, plus que la largeur de {width} : augmentez la largeur ou vérifiez la valeur.",
-          "negativeFit": "{value} ne tient pas sur {width} bits en complément à deux, qui va de {min} à {max}.",
+          "fit": "La valeur a besoin de {need, plural, one {{need} bit} other {{need} bits}}, plus que la largeur de {width} : augmentez la largeur ou vérifiez la valeur.",
+          "negativeFit": "{value} ne tient pas sur {width, plural, one {{width} bit} other {{width} bits}} en complément à deux, qui va de {min} à {max}.",
           "layout": "Choisissez une structure : none, lacp, mac-octet, tcp-flags, dns-flags, tos ou vlan-tci.",
           "layoutWidth": "La structure {layout} fait {need} bits de large, et la valeur {width} : réglez la largeur sur {need}.",
           "numbering": "Choisissez une numérotation : lsb0 (le bit 0 est le bit de poids faible), msb0 (le bit 0 est le bit de poids fort) ou one (le bit 1 est le bit de poids faible).",
           "fieldNumber": "« {value} » n’est pas un numéro de bit : indiquez un nombre entier.",
-          "fieldRange": "Le bit {value} n’existe pas sur {width} bits en numérotation {numbering} : les bits vont de {low} à {high}.",
+          "fieldRange": "Le bit {value} n’existe pas sur {width, plural, one {{width} bit} other {{width} bits}} en numérotation {numbering} : les bits vont de {low} à {high}.",
           "toWithoutFrom": "Indiquez le premier bit du champ en plus du dernier.",
           "printed": "« {value} » n’est pas une suite de bits affichée : écrivez seulement des 0 et des 1, avec si vous le souhaitez des espaces simples, des traits de soulignement ou des points entre les groupes (10111100).",
           "order": "Choisissez l’ordre dans lequel les bits ont été affichés : msb-first ou lsb-first.",
@@ -27213,7 +27212,7 @@
           "msb0": "MSB 0 les numérote à partir du bit de poids fort, comme les diagrammes des RFC : « the bit labeled 0 is the most significant bit », si bien que l’octet dessiné 1 0 1 0 1 0 1 0 vaut 170 (RFC 791, annexe B).",
           "one": "La numérotation en base 1 compte à partir de 1 au bit de poids faible : SNMP place une valeur BITS dans les « bits 8 (high order bit) to 1 (low order bit) » de chaque octet (RFC 3417, section 8), et la commande display eth-trunk de Huawei numérote son PortState de Bit 1 à Bit 8.",
           "inferredHex": "Aucune largeur indiquée : {width} bits, quatre par chiffre hexadécimal saisi, zéros de tête compris.",
-          "inferredBin": "Aucune largeur indiquée : {width} bits, un par chiffre binaire saisi, zéros de tête compris.",
+          "inferredBin": "Aucune largeur indiquée : {width, plural, one {{width} bit} other {{width} bits}}, un par chiffre binaire saisi, zéros de tête compris.",
           "inferredDec": "Aucune largeur indiquée : {width} bits, la plus petite largeur parmi 8, 16, 32 et 64 qui contient la valeur décimale.",
           "sign": "Le bit de poids fort est à 1 : lue comme un nombre signé en complément à deux, la valeur est donc négative. Intel : « The sign bit is located in bit 7 in a byte integer, bit 15 in a word integer, bit 31 in a doubleword integer, and bit 63 in a quadword integer ».",
           "parity": "La parité compte les uns : en parité paire, une liaison ajoute le bit qui donne « an even number of logic 1s in the data and parity bits », en parité impaire le bit qui rend le compte impair (UART TI TL16C550D).",
@@ -27556,10 +27555,10 @@
       "sitesDesc": "Ce qu’Internet Archive a conservé de nutzmann.net (2004) et de ntz.com.br (2013) : dates, offres, contenus, et chaque capture en lien.",
       "inspectTitle": "Vérifier le parcours",
       "inspectBody": "Chaque affirmation de cette page peut être vérifiée quelque part : les chapitres du parcours, les qualifications avec leurs organismes émetteurs et leurs dates, les témoignages cités mot pour mot, le catalogue des formations, les écrits, les anciens sites, et la façon dont ce site lui-même est construit.",
-      "recordCount": "{count} chapitres de constructeurs",
-      "certsCount": "{count} qualifications, chacune avec son émetteur et sa date",
-      "endorsementsCount": "{count} témoignages, mot pour mot",
-      "coursesCount": "{count} formations chez {vendors} constructeurs",
+      "recordCount": "{count, plural, one {{count} chapitre de constructeur} other {{count} chapitres de constructeurs}}",
+      "certsCount": "{count, plural, one {{count} qualification} other {{count} qualifications}}, chacune avec son émetteur et sa date",
+      "endorsementsCount": "{count, plural, one {{count} témoignage} other {{count} témoignages}}, mot pour mot",
+      "coursesCount": "{count, plural, one {{count} formation} other {{count} formations}} chez {vendors, plural, one {{vendors} constructeur} other {{vendors} constructeurs}}",
       "blogCount": "{count, plural, one {# article daté} other {# articles datés}}",
       "sitesCount": "{count, plural, one {# site reconstitué} other {# sites reconstitués}} à partir des fichiers d’origine",
       "colophonTitle": "La construction de ce site",
@@ -27575,7 +27574,7 @@
     },
     "identity": "J’explique des systèmes complexes, je forme les personnes qui les exploitent et j’aide les organisations à raisonner sur des décisions technologiques lourdes de conséquences.",
     "availability": "São Paulo · portugais et anglais · interventions dans le monde entier",
-    "quoteCount": "Un des {count} témoignages, cité mot pour mot",
+    "quoteCount": "{count, plural, one {Un témoignage sur {count}} other {Un des {count} témoignages}}, cité mot pour mot",
     "doing": {
       "title": "Ce que je fais aujourd’hui",
       "build": {
@@ -27613,7 +27612,7 @@
     "intro": "{count} recommandations et avis, couvrant deux décennies de formation et de conseil. Les originaux sont conservés mot pour mot : rien n’y est paraphrasé ni modifié. Les traductions automatiques facultatives sont signalées comme telles.",
     "provenance": "Issus des recommandations LinkedIn, des avis Google et des avis vérifiés de stagiaires de Red Education. La formulation et l’orthographe d’origine sont conservées exactement telles qu’écrites ; une carte traduite est signalée comme traduction automatique, et l’original n’est qu’à un basculement près.",
     "byKindTitle": "Par type de travail décrit",
-    "byKindHint": "{count} témoignages, chacun conservé mot pour mot. Une même entrée peut décrire plusieurs types de travail : la somme des décomptes dépasse donc le total. Les filtres ci-dessous permettent aussi d’affiner par source et par langue."
+    "byKindHint": "{count, plural, one {{count} témoignage} other {{count} témoignages}}, chacun conservé mot pour mot. Une même entrée peut décrire plusieurs types de travail : la somme des décomptes dépasse donc le total. Les filtres ci-dessous permettent aussi d’affiner par source et par langue."
   },
   "testimonials": {
     "filterLabel": "Filtrer les témoignages",
@@ -28042,7 +28041,7 @@
       "s2Body": "Les outils d’identité de ce site décodent les mêmes artefacts que PingFederate et PingOne manipulent en production : le décodeur SAML, les inspecteurs JWT et OIDC, et les outils PKCE et TOTP lisent tous les assertions, les jetons et les flux sur lesquels repose la fédération, localement, dans le navigateur. Le travail de formation du chapitre passe par la formation PingFederate Practitioner de 2025, et les schémas de fédération qu’elle enseigne sont exactement ce que ces outils rendent visible.",
       "certs": "PingFederate Practitioner (2025), obtenu via Ping Identity Training. Tous les détails sur la page des qualifications.",
       "lineageTitle": "Trois lignées de l’identité réunies en une seule",
-      "lineageDesc": "Ping a été fondé sur la fédération à Denver en 2002. Sun a publié en open source sa pile d’accès sous le nom OpenSSO et son nouvel annuaire Java sous le nom OpenDS ; quand Oracle a absorbé Sun en 2010, cinq ingénieurs ont repris le code dans un fork à Oslo, sous le nom ForgeRock : OpenAM et OpenDJ. Une troisième lignée, l’annuaire UnboundID construit à Austin par d’anciens de l’équipe annuaire de Sun, a rejoint Ping en 2016 sous le nom PingDirectory. Thoma Bravo a retiré Ping et ForgeRock de la bourse en 2022 et les a réunis le 23 août 2023 : une seule plateforme, les trois héritages, avec DaVinci comme tissu d’orchestration."
+      "lineageDesc": "Ping a été fondé sur la fédération à Denver en 2002. Sun a publié en open source sa pile d’accès sous le nom OpenSSO et son nouvel annuaire Java sous le nom OpenDS ; quand Oracle a absorbé Sun en 2010, cinq ingénieurs ont repris le code dans un fork à Oslo, sous le nom ForgeRock : OpenAM et OpenDJ. Une troisième lignée, l’annuaire UnboundID construit à Austin par d’anciens de l’équipe annuaire de Sun, a rejoint Ping en 2016 sous le nom PingDirectory. Thoma Bravo a retiré Ping de la bourse en octobre 2022, a conclu le rachat de ForgeRock le même mois et a réuni les deux le 23 août 2023, jour où ce rachat a été finalisé : une seule plateforme, les trois héritages, avec DaVinci comme tissu d’orchestration."
     },
     "zscaler": {
       "name": "Zscaler",
@@ -28100,7 +28099,7 @@
     "backToChapters": "Chapitres",
     "clients": {
       "title": "Secteurs et clients",
-      "lede": "Les organisations citées comme clientes dans les propres CV de Rodolfo Nützmann de 2008 à 2014, regroupées par secteur : {count} noms de 1996 à 2012, chacun avec le chapitre auquel il appartient, les années et le rôle qu’indique le CV. Des noms seulement, sans logos, et rien sur aucune mission au-delà de la ligne que donne le CV ; les missions postérieures à 2020, avec Red Education, ne sont pas listées ici.",
+      "lede": "Les organisations citées comme clientes dans les propres CV de Rodolfo Nützmann de 2008 à 2014, regroupées par secteur : {count, plural, one {{count} nom} other {{count} noms}} de 1996 à 2012, chacun avec le chapitre auquel il appartient, les années et le rôle qu’indique le CV. Des noms seulement, sans logos, et rien sur aucune mission au-delà de la ligne que donne le CV ; les missions postérieures à 2020, avec Red Education, ne sont pas listées ici.",
       "independent": "Activité indépendante (NTZ Tecnologia)",
       "via": "via {via}",
       "sourcesLine": "Sources : {list} ; consultés le 5 octobre 2026. Quand deux CV divergent, c’est celui rédigé au plus près de la mission qui est suivi, et la différence est signalée sur le nom.",
@@ -28229,7 +28228,7 @@
   "training": {
     "eyebrow": "Les formations que j’anime",
     "title": "Des plateformes enseignées par quelqu’un qui les a exploitées.",
-    "intro": "Des formations officielles et certifiées, animées par un formateur, sur {courses} cours consacrés aux plateformes au cœur des réseaux et de la sécurité d’aujourd’hui. Chaque formation est animée par un formateur agréé qui s’appuie sur des décennies de mise en œuvre sur le terrain.",
+    "intro": "Des formations officielles et certifiées, animées par un formateur, sur {courses, plural, one {{courses} cours consacré} other {{courses} cours consacrés}} aux plateformes au cœur des réseaux et de la sécurité d’aujourd’hui. Chaque formation est animée par un formateur agréé qui s’appuie sur des décennies de mise en œuvre sur le terrain.",
     "courseCount": "{count, plural, one {# formation} other {# formations}}",
     "since": "depuis",
     "representativeNote": "Ce catalogue est représentatif, pas exhaustif. Les intitulés, les durées et les contenus des formations reflètent les informations publiques actuelles et sont précisés à partir des fiches techniques officielles.",
@@ -28715,7 +28714,7 @@
   "contribute": {
     "eyebrow": "Traductions",
     "title": "Aider à améliorer les traductions",
-    "lede": "Le portugais du Brésil est rédigé ici avec l’IA et relu progressivement, tout comme l’interface et les outils en espagnol, en allemand et en français ; tout le reste, dans une langue autre que l’anglais, est un premier jet produit automatiquement. Si vous parlez l’une de ces langues et remarquez quelque chose d’erroné ou de maladroit, vos corrections sont vraiment les bienvenues. Voici comment les envoyer.",
+    "lede": "Le portugais du Brésil est rédigé ici avec l’IA et relu progressivement, tout comme l’interface et les outils en espagnol, en allemand, en français et en italien ; tout le reste, dans une langue autre que l’anglais, est un premier jet produit automatiquement. Si vous parlez l’une de ces langues et remarquez quelque chose d’erroné ou de maladroit, vos corrections sont vraiment les bienvenues. Voici comment les envoyer.",
     "howTitle": "Marche à suivre pour contribuer",
     "howBody": "L’anglais est la source de référence, et chaque autre langue est traduite à partir de lui : des erreurs sont donc possibles. Chaque pack de langue est un simple fichier texte de phrases étiquetées. Téléchargez celui que vous voulez améliorer, modifiez uniquement le texte qui suit chaque étiquette, et laissez les étiquettes et tout ce qui se trouve entre accolades exactement tels quels. Envoyez ensuite le fichier modifié par e-mail en précisant la langue. Chaque contribution est relue à la main.",
     "downloadHeading": "Packs de langue",
@@ -28743,7 +28742,7 @@
       },
       "translation": {
         "title": "Améliorer une traduction",
-        "desc": "Le portugais du Brésil, ainsi que l’interface et les outils en espagnol, en allemand et en français, sont rédigés avec l’IA et relus progressivement ; tout le reste, dans une langue autre que l’anglais, est un premier jet produit automatiquement. Téléchargez un pack, corrigez-le, renvoyez-le.",
+        "desc": "Le portugais du Brésil, ainsi que l’interface et les outils en espagnol, en allemand, en français et en italien, sont rédigés avec l’IA et relus progressivement ; tout le reste, dans une langue autre que l’anglais, est un premier jet produit automatiquement. Téléchargez un pack, corrigez-le, renvoyez-le.",
         "cta": "Voir la marche à suivre"
       },
       "code": {
@@ -28882,13 +28881,13 @@
     "complete": "Automatique, complète",
     "partial": "Automatique, en cours",
     "explainTitle": "Signalement des traductions",
-    "explainBody": "L’anglais est la source : rédigé avec l’IA, et publié uniquement quand une personne décide qu’il doit l’être. Le portugais du Brésil est lui aussi rédigé avec l’IA et relu progressivement, tout comme l’interface et les outils en espagnol, en allemand et en français ; le reste des sites espagnol, allemand et français est traduit automatiquement. D’autres langues s’ajoutent à la liste une fois leur interface, leurs outils et leurs jeux rédigés dans ces langues. Chaque langue est signalée selon son état d’avancement : en bleu quand elle couvre tout le site, en jaune tant que des contenus plus récents sont encore en anglais et en cours de rattrapage. Chaque langue autre que l’anglais porte un court avertissement, et toute aide pour améliorer l’une d’elles est la bienvenue.",
+    "explainBody": "L’anglais est la source : rédigé avec l’IA en anglais international (en-001), avec l’orthographe d’Oxford (l’orthographe britannique avec -ize, celle de l’ISO et des Nations unies) et des dates et des nombres dans un format compris partout, et publié uniquement quand une personne décide qu’il doit l’être. Le portugais du Brésil est lui aussi rédigé avec l’IA et relu progressivement, tout comme l’interface et les outils en espagnol, en allemand, en français et en italien ; le reste des sites espagnol, allemand, français et italien est traduit automatiquement. D’autres langues s’ajoutent à la liste une fois leur interface, leurs outils et leurs jeux rédigés dans ces langues. Chaque langue est signalée selon son état d’avancement : en bleu quand elle couvre tout le site, en jaune tant que des contenus plus récents sont encore en anglais et en cours de rattrapage. Aucune langue n’est encore relue par une personne : chacune porte donc un court avertissement, l’anglais compris, et toute aide pour améliorer l’une d’elles est la bienvenue.",
     "stub": "Pas encore traduite"
   },
   "changelog": {
     "eyebrow": "Journal des modifications",
     "title": "Les nouveautés",
-    "lede": "Un registre continu des nouveaux outils, des nouveaux articles Apprendre et des changements importants du site. {count} outils sont en ligne aujourd’hui.",
+    "lede": "Un registre continu des nouveaux outils, des nouveaux articles Apprendre et des changements importants du site. {count, plural, one {{count} outil est en ligne} other {{count} outils sont en ligne}} aujourd’hui.",
     "kindLaunch": "Lancement",
     "kindTool": "Nouvel outil",
     "kindFeature": "Fonctionnalité",
@@ -28978,17 +28977,17 @@
       "topic": "Sujet",
       "summary": "Synthèse"
     },
-    "portalTerms": "{count} termes",
+    "portalTerms": "{count, plural, one {{count} terme} other {{count} termes}}",
     "portalPaths": "{count} parcours de lecture",
     "portalGuides": "{count} guides d’examen",
     "portalObjectives": "{count} objectifs mis en correspondance",
     "portalStudyLede": "Des parcours de lecture choisis et des guides de certification alignés sur les programmes d’examen : chaque objectif est relié aux articles qui l’enseignent et aux outils qui le mettent en pratique.",
     "portalArticles": "L’index des articles",
     "portalArticlesLede": "La bibliothèque indépendante des constructeurs, regroupée par sujet. Les articles propres à un constructeur se trouvent dans les espaces constructeurs.",
-    "portalArticleCount": "{count} articles",
+    "portalArticleCount": "{count, plural, one {{count} article} other {{count} articles}}",
     "portalHubs": "Espaces constructeurs",
     "portalHubsLede": "Une porte par constructeur : les outils, les articles et les certifications propres à chaque plateforme.",
-    "portalHubCount": "{count} constructeurs",
+    "portalHubCount": "{count, plural, one {{count} constructeur} other {{count} constructeurs}}",
     "portalCerts": "Guides de révision des certifications",
     "portalCertsLede": "Les programmes d’examen, mis en correspondance objectif par objectif avec les articles qui les enseignent.",
     "portalPractice": "La pratique",
@@ -28999,10 +28998,10 @@
     "portalRolesCount": "{count} postes",
     "portalIndustry": "Le secteur, en portraits",
     "portalIndustryLede": "Qui a bâti le secteur des réseaux et de la sécurité, ce qu’il est advenu de ces acteurs, et quelle entreprise était autrefois celle que vous utilisez aujourd’hui. Des portraits écrits, une chronologie des filiations et les acquisitions qui ont tout renommé.",
-    "portalCompanies": "{count} entreprises",
+    "portalCompanies": "{count, plural, one {{count} entreprise} other {{count} entreprises}}",
     "portalPeople": "Personnalités",
     "portalPeopleLede": "Les personnes derrière les outils, les conférences et les réseaux, y compris celles qui ont bâti ceux du Brésil.",
-    "portalPeopleCount": "{count} personnalités",
+    "portalPeopleCount": "{count, plural, one {{count} personnalité} other {{count} personnalités}}",
     "portalLearningCount": "{count} établissements",
     "hubSearch": {
       "label": "Rechercher dans Apprendre, le glossaire et les guides",
@@ -29922,7 +29921,7 @@
         "modesLabel": "Mode",
         "speed": "Contre-la-montre",
         "progress": "Carte {n} sur {total}",
-        "pointsNow": "{n} points",
+        "pointsNow": "{n, plural, one {{n} point} other {{n} points}}",
         "inRow": "{n, plural, one {# d’affilée} other {# d’affilée}}",
         "stripLabel": "Vos réponses jusqu’ici",
         "dotRight": "Carte {n} : bonne réponse",
@@ -29949,7 +29948,7 @@
         "endPractice": "Terminer l’entraînement",
         "reviewTitle": "Vos cartes et leurs indices",
         "dailyHeadline": "{correct} bonnes réponses sur {total}",
-        "dailyDetail": "{points} points ; meilleure série : {streak} d’affilée.",
+        "dailyDetail": "{points, plural, one {{points} point} other {{points} points}} ; meilleure série : {streak} d’affilée.",
         "shareTitle": "Hameçonnage ou légitime #{n} {correct}/{total}",
         "practiceHeadline": "Entraînement : {correct} bonnes réponses sur {total}",
         "sharePractice": "Hameçonnage ou légitime, entraînement {correct}/{total}",
@@ -30109,7 +30108,7 @@
         "triesLeft": "{n, plural, one {# essai restant} other {# essais restants}}",
         "won": "{n, plural, one {Résolue en # essai} other {Résolue en # essais}}",
         "lost": "Plus d’essais",
-        "answerLine": "Réseau {network}, diffusion {broadcast}, masque {mask}, {hosts} hôtes utilisables.",
+        "answerLine": "Réseau {network}, diffusion {broadcast}, masque {mask}, {hosts, plural, one {{hosts} hôte utilisable} other {{hosts} hôtes utilisables}}.",
         "whyTitle": "Pourquoi : octet {octet}",
         "whyBits": "L’octet {octet} vaut {value}, soit {binary} en binaire. {bits, plural, one {Son premier bit appartient} other {Ses # premiers bits appartiennent}} au réseau : le réseau y conserve donc {netValue}, et les blocs commencent tous les {block}.",
         "whyNone": "Le préfixe se termine juste avant l’octet {octet} ({value}, soit {binary} en binaire) : tous ses bits sont des bits d’hôte, donc l’adresse réseau vaut 0 à partir de là, et l’adresse de diffusion 255.",
@@ -30229,7 +30228,7 @@
         "cardBlurb": "Nommez la catégorie informatique derrière jusqu’à cinq indices. Moins il vous en faut, mieux c’est.",
         "shareName": "Cinq indices",
         "rule1": "Le premier indice est le plus difficile. Saisissez ce qui, selon vous, relie les indices et appuyez sur Proposer ; une mauvaise réponse révèle l’indice suivant.",
-        "rule2": "Les réponses sont tolérantes : la casse, les accents et la ponctuation ne comptent pas, une faute de frappe dans une réponse longue passe, et l’anglais comme le portugais sont acceptés. Une proposition qui n’est qu’une partie de la réponse, comme DNS (Domain Name System) pour DNS record types, est signalée comme proche et ne coûte rien.",
+        "rule2": "Les réponses sont tolérantes : la casse, les accents et la ponctuation ne comptent pas, une faute de frappe dans une réponse longue passe, et l’anglais comme le portugais sont aussi acceptés. Une proposition qui n’est qu’une partie de la réponse, comme DNS (Domain Name System) pour DNS record types, est signalée comme proche et ne coûte rien.",
         "rule3": "Vous hésitez ? Indice suivant en révèle un sans proposition, mais il compte comme un indice utilisé. Votre score est le nombre d’indices dont vous avez eu besoin, de 1 à 5. Chaque indice dépensé sans trouver la réponse ajoute un coup de pouce sous la zone de saisie : le nombre de mots de la réponse, l’endroit où ses membres sont listés, puis sa forme avec la première lettre de chaque mot.",
         "rule4": "Chaque indice est vérifié par rapport au document qui le liste (une RFC, ou Request for Comments ; un registre de l’IANA, ou Internet Assigned Numbers Authority ; une page de manuel ou la documentation d’un éditeur), en lien à la fin. L’entraînement ci-dessous rejoue les 30 derniers jours et quelques échauffements.",
         "cluesLabel": "Indices",
@@ -30349,7 +30348,7 @@
         "lessonTitle": "Leçon",
         "allDone": "C’était le dernier niveau. Le niveau du jour vous attend.",
         "answerTitle": "Une liste la plus courte qui réussit",
-        "bestPoints": "{n} points",
+        "bestPoints": "{n, plural, one {{n} point} other {{n} points}}",
         "result": {
           "levelPassed": "Niveau {n} réussi",
           "dailyPassed": "Politique appliquée",
@@ -30610,7 +30609,7 @@
         "keysHint": "Touches : Q W E / A S D / Z X C, ou le pavé numérique.",
         "featureHit": "Ce n’est pas un bug, c’est une fonctionnalité. −{penalty}",
         "sayStart": "Partie lancée : 60 secondes.",
-        "sayEnd": "Temps écoulé. {score} points, {acc} % de précision.",
+        "sayEnd": "Temps écoulé. {score, plural, one {{score} point} other {{score} points}}, {acc} % de précision.",
         "resultHeadline": "Score : {score}",
         "resultDetail": "{hits, plural, one {# bug écrasé} other {# bugs écrasés}}, {features, plural, one {# fonctionnalité cassée} other {# fonctionnalités cassées}}, {acc} % de précision, meilleur combo : {combo}.",
         "shareTitleDaily": "Whack-a-Bug #{n}",
@@ -30656,8 +30655,8 @@
         "nextLevel": "Niveau suivant",
         "allDone": "Tous les programmes ont été quittés proprement. Les manuels avaient raison depuis le début.",
         "clearedHeadline": "Hors de {name}",
-        "clearedDetail": "{keys, plural, one {# frappe} other {# frappes}} en {time} : {score} points. Total : {total}.{medal, select, under { Sous le par : une médaille pour ça.} par { Pile dans le par : une médaille pour ça.} other {}}",
-        "sayCleared": "Niveau réussi : {name}, {score} points{medal, select, under {, sous le par} par {, dans le par} other {}}.",
+        "clearedDetail": "{keys, plural, one {# frappe} other {# frappes}} en {time} : {score, plural, one {{score} point} other {{score} points}}. Total : {total}.{medal, select, under { Sous le par : une médaille pour ça.} par { Pile dans le par : une médaille pour ça.} other {}}",
+        "sayCleared": "Niveau réussi : {name}, {score, plural, one {{score} point} other {{score} points}}{medal, select, under {, sous le par} par {, dans le par} other {}}.",
         "shareTitle": "Quitter l’éditeur",
         "shareSummary": "Niveaux {cleared}/{total} · {keys, plural, one {# frappe} other {# frappes}} · {time}",
         "fail": {
@@ -30815,7 +30814,7 @@
         "uptime": "Disponibilité",
         "nines": "{n} neuf",
         "reputation": "Réputation",
-        "overloaded": "Capacité dépassée : {n} requêtes par seconde sont refusées.",
+        "overloaded": "Capacité dépassée : {n, plural, one {{n} requête par seconde est refusée} other {{n} requêtes par seconde sont refusées}}.",
         "incidentsTitle": "Incidents",
         "allQuiet": "Tout est calme. Pour l’instant.",
         "undetected": "Quelque chose est en panne, et rien n’a encore détecté quoi. La supervision le ferait.",
@@ -30833,7 +30832,7 @@
         "maxed": "Max",
         "setupLine": "Les incidents sont détectés au bout d’environ {detect} s ; l’astreinte en prend en charge {onCall} %.",
         "pmTitle": "Post-mortem",
-        "pmExplain": "Quand cette partie aura rapporté {target} crédits, rédigez le post-mortem : l’installation repart de zéro, et les leçons tirées restent.",
+        "pmExplain": "Quand cette partie aura rapporté {target, plural, one {{target} crédit} other {{target} crédits}}, rédigez le post-mortem : l’installation repart de zéro, et les leçons tirées restent.",
         "pmProgress": "Progression vers le post-mortem",
         "pmStatus": "Gagné dans cette partie : {earned} sur {target}. Leçons tirées : {lessons} (+{bonus} % de revenus). Post-mortems rédigés : {n}.",
         "pmButton": "Rédiger le post-mortem",
@@ -30854,10 +30853,10 @@
         "tally": "Incidents : {incidents} ; {you} corrigés par vous, {onCall} par l’astreinte, {wrong, plural, one {# mauvaise décision} other {# mauvaises décisions}}.",
         "copyStatus": "Copier l’état",
         "shareTitle": "Incident Commander",
-        "shareLine1": "🟢 {nines} neuf · {cps} crédits/s",
+        "shareLine1": "🟢 {nines} neuf · {cps, plural, one {{cps} crédit} other {{cps} crédits}}/s",
         "shareLine2": "📝 Post-mortems rédigés : {n}",
         "awayTitle": "Pendant votre absence",
-        "awayBody": "En {time}, le service a gagné {credits} crédits à mi-régime. {incidents, plural, =0 {Aucun incident ne s’est produit.} one {Environ # incident s’est produit ; {handled, plural, =0 {personne d’astreinte ne l’a pris en charge, il s’est donc résorbé tout seul} other {l’astreinte l’a traité}}.} other {Environ # incidents se sont produits ; {handled, plural, =0 {personne d’astreinte ne les a pris en charge, ils se sont donc résorbés tout seuls} one {l’astreinte a traité l’un d’entre eux} other {l’astreinte en a traité environ #}}.}}",
+        "awayBody": "En {time}, le service a gagné {credits, plural, one {{credits} crédit} other {{credits} crédits}} à mi-régime. {incidents, plural, =0 {Aucun incident ne s’est produit.} one {Environ # incident s’est produit ; {handled, plural, =0 {personne d’astreinte ne l’a pris en charge, il s’est donc résorbé tout seul} other {l’astreinte l’a traité}}.} other {Environ # incidents se sont produits ; {handled, plural, =0 {personne d’astreinte ne les a pris en charge, ils se sont donc résorbés tout seuls} one {l’astreinte a traité l’un d’entre eux} other {l’astreinte en a traité environ #}}.}}",
         "awayCapped": "Seules les {hours} premières heures comptent.",
         "awayDismiss": "Retour au travail",
         "sayRight": "Bonne décision : correction en cours.",
@@ -31093,7 +31092,7 @@
         "sayMove": "Colonne {col}.",
         "sayBlocked": "Pas de place de ce côté à cette hauteur.",
         "sayPaused": "En pause. Le puits reste masqué jusqu’à la reprise.",
-        "sayOver": "Partie terminée : {delivered, plural, one {# trame remise} other {# trames remises}}, {score} points.",
+        "sayOver": "Partie terminée : {delivered, plural, one {# trame remise} other {# trames remises}}, {score, plural, one {{score} point} other {{score} points}}.",
         "eventDelivered": "Trame remise : +{points}.",
         "eventDrained": "La plus ancienne trame écartée est effacée.",
         "problemSlot": "Trame écartée : {what} a atterri dans la colonne {slot}, alors qu’une trame se lit Ethernet, IP, TCP ou UDP, charge utile, de gauche à droite.",
@@ -31103,15 +31102,15 @@
         "describeRow": "Ligne {n}{dropped, select, yes { (écartée)} other {}} : {cells}.",
         "describeEmptyCell": "vide",
         "describeEmpty": "Le puits est vide.",
-        "resultHeadline": "{delivered} trames remises sur {total}",
-        "resultDetail": "{score} points, meilleure série : {streak}, {dropped, plural, =0 {aucune trame écartée} one {# trame écartée} other {# trames écartées}}, en {time}.",
-        "resultToppedOut": "Un bloc n’avait pas la place d’apparaître : la partie s’est donc terminée après {placed} blocs sur {blocks}.",
+        "resultHeadline": "{delivered, plural, one {{delivered} trame remise} other {{delivered} trames remises}} sur {total}",
+        "resultDetail": "{score, plural, one {{score} point} other {{score} points}}, meilleure série : {streak}, {dropped, plural, =0 {aucune trame écartée} one {# trame écartée} other {# trames écartées}}, en {time}.",
+        "resultToppedOut": "Un bloc n’avait pas la place d’apparaître : la partie s’est donc terminée après {placed, plural, one {{placed} bloc} other {{placed} blocs}} sur {blocks}.",
         "practiceHeadline": "Score : {score}",
         "practiceDetail": "{delivered, plural, one {# trame remise} other {# trames remises}}, niveau {level}, meilleure série : {streak}.",
         "shareTitleDaily": "Packet Stack #{n}",
         "shareTitlePractice": "Packet Stack (entraînement)",
-        "shareSummary": "{delivered}/{total} trames · {score} points · meilleure série : {streak}",
-        "sharePractice": "{delivered} trames · niveau {level}",
+        "shareSummary": "{delivered}/{total, plural, one {{total} trame} other {{total} trames}} · {score, plural, one {{score} point} other {{score} points}} · meilleure série : {streak}",
+        "sharePractice": "{delivered, plural, one {{delivered} trame} other {{delivered} trames}} · niveau {level}",
         "learnLead": "Pour voir la réalité :",
         "learnFrame": "La trame Ethernet, champ par champ",
         "learnLayers": "Le trafic réel, couche par couche",
@@ -31212,15 +31211,15 @@
         "sayHopLast": "Saut {n} : {addr}, {field} {ttl}. Le prochain routeur supprimerait le paquet : foncez vers l’hôte.",
         "sayDeliver": "Remis ({done} jusqu’ici). Le paquet {n} part avec {field} {ttl}.",
         "sayPaused": "En pause.",
-        "sayEnd": "Partie terminée : {score} points, {delivered} paquets remis sur {total}.",
+        "sayEnd": "Partie terminée : {score, plural, one {{score} point} other {{score} points}}, {delivered, plural, one {{delivered} paquet remis} other {{delivered} paquets remis}} sur {total}.",
         "head": {
-          "complete": "Trace complète : {score} points",
-          "expired": "Time Exceeded : {score} points",
-          "loop": "Boucle de routage : {score} points",
-          "noroute": "Pas de route : {score} points",
-          "cap": "Limite de temps : {score} points"
+          "complete": "Trace complète : {score, plural, one {{score} point} other {{score} points}}",
+          "expired": "Time Exceeded : {score, plural, one {{score} point} other {{score} points}}",
+          "loop": "Boucle de routage : {score, plural, one {{score} point} other {{score} points}}",
+          "noroute": "Pas de route : {score, plural, one {{score} point} other {{score} points}}",
+          "cap": "Limite de temps : {score, plural, one {{score} point} other {{score} points}}"
         },
-        "resultDetail": "{delivered} paquets remis sur {total}, {hops, plural, =0 {aucun saut} one {# saut} other {# sauts}}, {time}.",
+        "resultDetail": "{delivered, plural, one {{delivered} paquet remis} other {{delivered} paquets remis}} sur {total}, {hops, plural, =0 {aucun saut} one {# saut} other {# sauts}}, {time}.",
         "why": {
           "complete": "Chaque hôte a accepté son paquet avec le TTL qu’il lui restait : seul un routeur supprime un paquet quand son TTL est épuisé.",
           "expired": "Le routeur {addr} a fait tomber à zéro le TTL du paquet {n}, l’a supprimé et a renvoyé à {src} un message ICMP Time Exceeded (type 11, code 0) : la réponse qu’écoute traceroute.",
@@ -31236,7 +31235,7 @@
         "shareTitleDaily": "TTL #{n}",
         "shareTitlePractice": "TTL (entraînement)",
         "shareLine": "📦 {delivered}/{total}  🔀 {hops}",
-        "shareSummary": "{score} points en {time}",
+        "shareSummary": "{score, plural, one {{score} point} other {{score} points}} en {time}",
         "origins": {
           "p1": "Le champ TTL (Time to Live) vient de la RFC 791 (Request for Comments 791), la spécification du protocole IP de septembre 1981. Il était exprimé en secondes, mais comme chaque module qui traite un datagramme doit lui retirer au moins un, la RFC précise qu’il ne faut y voir qu’une borne supérieure de la durée de vie d’un datagramme (« must be thought of only as an upper bound on the time a datagram may exist ») ; son but est de faire supprimer les datagrammes impossibles à remettre (« to cause undeliverable datagrams to be discarded »). Le registre de l’IANA (Internet Assigned Numbers Authority) donne 64 comme valeur par défaut recommandée actuelle.",
           "p2": "La RFC 1812, qui fixe en juin 1995 les exigences applicables aux routeurs IPv4 (Internet Protocol version 4), en fait un compteur de sauts (« When a router forwards a packet, it MUST reduce the TTL by at least one »), et le routeur qui le fait tomber à zéro doit supprimer le paquet et envoyer à la source un message ICMP (Internet Control Message Protocol) Time Exceeded, code 0 ; la RFC 792 attribue à ce message le type 11. Ce compteur de sauts, ajoute la RFC 1812, est ce qui empêche les problèmes de routage de faire boucler les paquets indéfiniment dans le réseau (« causing packets to loop infinitely in the network »). Un hôte, en revanche, ne doit pas supprimer un datagramme pour ce seul motif (« just because it was received with TTL less than 2 », RFC 1122).",
@@ -31270,7 +31269,7 @@
         "dailyModeEarlier": "Permanence #{n}",
         "dailyModeName": "Permanence du jour",
         "practiceMode": "Permanence d’entraînement",
-        "startNote": "Appuyez sur Démarrer pour voir la première connexion et la politique. {total} connexions en {rounds} manches ; le chronomètre démarre au même moment.",
+        "startNote": "Appuyez sur Démarrer pour voir la première connexion et la politique. {total, plural, one {{total} connexion} other {{total} connexions}} en {rounds, plural, one {{rounds} manche} other {{rounds} manches}} ; le chronomètre démarre au même moment.",
         "resume": "Reprendre la permanence",
         "resumeNote": "La permanence vous attend là où vous l’avez laissée. Le chronomètre repart quand la connexion suivante arrive au guichet.",
         "roundOf": "Manche {r} sur {rounds}",
@@ -31362,7 +31361,7 @@
         "auditAllRight": "Aucune mauvaise décision : chaque connexion est allée là où la politique l’envoie.",
         "auditWrongCount": "{n, plural, one {# mauvaise décision, avec ce qui la tranche :} other {# mauvaises décisions, avec ce qui tranche chacune :}}",
         "auditYou": "Votre décision : {said} ; la politique dit : {right}.",
-        "auditAll": "Les {total} connexions",
+        "auditAll": "{total, plural, one {{total} connexion} other {Les {total} connexions}}",
         "auditRight": "Juste.",
         "auditWrong": "Erreur.",
         "auditPermit": "Autorisée.",
@@ -31402,7 +31401,7 @@
     "enOnlyBadge": "EN",
     "enOnlyBadgeLabel": "En anglais",
     "jumpLabel": "Sur cette page",
-    "shelfToday": "Aujourd’hui : {done} jeux du jour joués sur {total}",
+    "shelfToday": "Aujourd’hui : {done, plural, one {{done} jeu du jour joué} other {{done} jeux du jour joués}} sur {total}",
     "shelfSolved": "Résolu aujourd’hui",
     "shelfPlayed": "Joué aujourd’hui",
     "shelfStreak": "Série : {n}",
@@ -31536,7 +31535,7 @@
       }
     },
     "arcadeCardName": "L’arcade",
-    "arcadeCardBlurb": "{count} jeux construits sur des formules de jeu classiques, auxquels jouer aussi longtemps que vous le souhaitez ; {daily} d’entre eux proposent une partie du jour qui rejoint le tableau des scores public."
+    "arcadeCardBlurb": "{count, plural, one {{count} jeu construit sur des formules de jeu classiques, auquel} other {{count} jeux construits sur des formules de jeu classiques, auxquels}} jouer aussi longtemps que vous le souhaitez ; {daily, plural, one {{daily} d’entre eux propose} other {{daily} d’entre eux proposent}} une partie du jour qui rejoint le tableau des scores public."
   },
   "megaBrain": {
     "bossAria": "Touche patron : réduire la console",
@@ -32201,7 +32200,7 @@
       },
       "languages": {
         "h": "Langues",
-        "b": "L’interface est disponible en plusieurs langues ; changez de langue avec le sélecteur de l’en-tête. L’anglais est la langue source, rédigée avec l’IA et publiée seulement quand une personne en décide ainsi ; le portugais du Brésil est lui aussi rédigé avec l’IA et relu progressivement, tout comme l’interface et les outils en espagnol, en allemand et en français ; le reste des sites espagnol, allemand et français et les autres langues sont traduits automatiquement. Quand une phrase n’a pas encore été traduite dans une langue donnée, le texte anglais s’affiche à sa place, si bien que rien ne manque jamais."
+        "b": "L’interface est disponible en plusieurs langues ; changez de langue avec le sélecteur de l’en-tête. L’anglais est la langue source, rédigée avec l’IA et publiée seulement quand une personne en décide ainsi ; le portugais du Brésil est lui aussi rédigé avec l’IA et relu progressivement, tout comme l’interface et les outils en espagnol, en allemand, en français et en italien ; le reste des sites espagnol, allemand, français et italien est traduit automatiquement. Quand une phrase n’a pas encore été traduite dans une langue donnée, le texte anglais s’affiche à sa place, si bien que rien ne manque jamais."
       },
       "offline": {
         "h": "Utilisation hors ligne",
@@ -32400,7 +32399,7 @@
         "broadcast": "Adresse de diffusion de {cidr} ?",
         "hosts": "Combien d’hôtes utilisables dans {cidr} ?",
         "netmask": "Masque en notation décimale pointée pour {cidr} ?",
-        "hostToPrefix": "Plus petit préfixe accueillant au moins {n} hôtes utilisables ?",
+        "hostToPrefix": "Plus petit préfixe accueillant au moins {n, plural, one {{n} hôte utilisable} other {{n} hôtes utilisables}} ?",
         "contains": "{host} est-il dans {cidr} ?"
       },
       "hint": {
@@ -33081,8 +33080,8 @@
       "digBuilder": "Générateur de commandes dig, qui écrit aussi la forme dig +https",
       "negativeTitle": "Réponse négative",
       "negative": {
-        "nxdomain": "Un résolveur peut mettre cette réponse négative en cache pendant {ttl} secondes : la plus petite valeur entre le TTL ({soaTtl}) et le champ MINIMUM ({minimum}) de l’enregistrement SOA de {isRoot, select, yes {la zone racine} other {la zone {zone}}} (RFC 2308, section 5).",
-        "nodata": "Le code de réponse est NOERROR, mais la section réponse ne contient aucun enregistrement {type}. Un résolveur peut mettre cette réponse négative en cache pendant {ttl} secondes : la plus petite valeur entre le TTL ({soaTtl}) et le champ MINIMUM ({minimum}) de l’enregistrement SOA de {isRoot, select, yes {la zone racine} other {la zone {zone}}} (RFC 2308, section 5)."
+        "nxdomain": "Un résolveur peut mettre cette réponse négative en cache pendant {ttl, plural, one {{ttl} seconde} other {{ttl} secondes}} : la plus petite valeur entre le TTL ({soaTtl}) et le champ MINIMUM ({minimum}) de l’enregistrement SOA de {isRoot, select, yes {la zone racine} other {la zone {zone}}} (RFC 2308, section 5).",
+        "nodata": "Le code de réponse est NOERROR, mais la section réponse ne contient aucun enregistrement {type}. Un résolveur peut mettre cette réponse négative en cache pendant {ttl, plural, one {{ttl} seconde} other {{ttl} secondes}} : la plus petite valeur entre le TTL ({soaTtl}) et le champ MINIMUM ({minimum}) de l’enregistrement SOA de {isRoot, select, yes {la zone racine} other {la zone {zone}}} (RFC 2308, section 5)."
       },
       "compactDenial": "Déni d’existence compact : un enregistrement NSEC de la section autorité liste le type NXNAME, qui indique que ce nom n’existe pas du tout, bien que le code de réponse soit NOERROR. Les zones signées à la volée peuvent répondre ainsi pour un nom inexistant, comme s’il existait sans données (RFC 9824).",
       "truncated": "TC est positionné : ce message est incomplet, donc un enregistrement manquant ne prouve rien.",
@@ -33091,7 +33090,7 @@
       "ednsPayload": "Taille de charge utile UDP",
       "ednsOption": "Option",
       "ednsNote": "La taille de charge utile ne compte que pour le DNS sur UDP : un serveur DoH doit l’ignorer dans une requête (RFC 8484, section 6), et un message en HTTPS arrive entier dans tous les cas.",
-      "paddingNote": "Le résolveur a ajouté {padding} octets de bourrage (RFC 7830), pour que la taille de la réponse chiffrée en dise moins sur la question ; la RFC 8467 recommande de compléter les réponses jusqu’à un multiple de 468 octets, et celle-ci fait {size, number} octets.",
+      "paddingNote": "Le résolveur a ajouté {padding, plural, one {{padding} octet} other {{padding} octets}} de bourrage (RFC 7830), pour que la taille de la réponse chiffrée en dise moins sur la question ; la RFC 8467 recommande de compléter les réponses jusqu’à un multiple de 468 octets, et celle-ci fait {size, number} octets.",
       "ednsDropped": "Pas d’enregistrement OPT : cette page en a envoyé un, et le résolveur a répondu sans EDNS(0) ; il n’a donc signalé ni bit DO, ni bourrage, ni Extended DNS Error. La RFC 6891 (section 6.1.1) indique qu’un répondeur conforme inclut un enregistrement OPT quand la requête en contenait un.",
       "ednsNotAsked": "Pas d’enregistrement OPT : cette page n’en a pas envoyé (EDNS(0) est désactivé), et la RFC 6891 (section 7) indique qu’un répondeur ne doit alors pas en inclure.",
       "sectionAnswer": "Réponse",
@@ -33184,7 +33183,7 @@
       "getOnlyChip": "GET uniquement",
       "willAskPost": "Cette requête interrogerait {host} en deux requêtes, dans cet ordre (directement depuis le navigateur, jamais via ronutz.com) :",
       "preflightName": "Preflight CORS, envoyé d’abord par votre navigateur",
-      "preflightNote": "Il ne contient aucune partie de la requête. Le POST ne suit que si la réponse a un statut 2xx, ainsi que access-control-allow-origin et content-type parmi ses en-têtes autorisés (WHATWG Fetch) ; pour les POST suivants, le navigateur peut réutiliser cette réponse aussi longtemps que access-control-max-age le permet, 5 secondes quand le résolveur n’en envoie pas.",
+      "preflightNote": "Il ne contient aucune partie de la requête. Le POST ne suit que si la réponse a un statut 2xx, un access-control-allow-origin qui admet la page et content-type parmi les en-têtes que liste son access-control-allow-headers (WHATWG Fetch) ; pour les POST suivants, le navigateur peut réutiliser cette réponse aussi longtemps que access-control-max-age le permet, 5 secondes quand le résolveur n’en envoie pas.",
       "postBody": "Corps : le message DNS lui-même, {count, plural, one {# octet} other {# octets}}, non encodé (RFC 8484, section 6) :",
       "httpMethod": "Méthode",
       "httpMethodPost": "POST, après le preflight OPTIONS"
@@ -33207,7 +33206,7 @@
     "comingSoon": "L’espace ouvrira avec son premier outil",
     "note": "Chaque espace est l’endroit unique qui rassemble ce que le site contient sur un constructeur : les outils, regroupés par famille de produits ; toute la bibliothèque d’articles de ce constructeur ; et, quand ils existent, les guides de certification, un parcours de lecture, le chapitre de carrière et l’histoire du constructeur dans le secteur, sur une seule page. Ces mêmes espaces sont accessibles depuis le bandeau des listes Outils et Apprendre.",
     "metaTitle": "Espaces constructeurs · ronutz.com",
-    "metaDescription": "Les {count} espaces constructeurs de ronutz.com, un par plateforme ({names}) : les outils, les articles et les supports de certification de chacune, derrière une seule porte.",
+    "metaDescription": "{count, plural, one {{count} espace constructeur} other {Les {count} espaces constructeurs}} de ronutz.com, un par plateforme ({names}) : les outils, les articles et les supports de certification de chacune, derrière une seule porte.",
     "blurbs": {
       "f5": "BIG-IP et l’ensemble de l’offre F5 : gestion du trafic, DNS, sécurité applicative, accès et F5 Distributed Cloud. L’espace le plus fourni du site.",
       "fortinet": "La Fortinet Security Fabric : FortiGate et FortiOS, SASE, opérations de sécurité, sécurité applicative et les services FortiGuard.",
@@ -33263,30 +33262,30 @@
       "it-support": "support informatique",
       "events": "évènements"
     },
-    "totalCount": "{count} termes",
+    "totalCount": "{count, plural, one {{count} terme} other {{count} termes}}",
     "azNavLabel": "Aller à la lettre",
     "hintExpand": "Développer",
     "domainPageTitle": "Termes du domaine {domain}",
-    "domainPageDescription": "{count} entrées du glossaire classées dans le domaine {domain}, par ordre alphabétique.",
+    "domainPageDescription": "{count, plural, one {{count} entrée du glossaire classée} other {{count} entrées du glossaire classées}} dans le domaine {domain}, par ordre alphabétique.",
     "otherDomains": "Autres domaines",
     "browseByDomain": "Parcourir par domaine",
     "kindPageTitle": "Glossaire : {kind}",
-    "kindPageDescription": "{count} entrées de type {kind}, par ordre alphabétique.",
+    "kindPageDescription": "{count, plural, one {{count} entrée} other {{count} entrées}} de type {kind}, par ordre alphabétique.",
     "otherKinds": "Autres types",
     "browseByKind": "Parcourir par type",
     "entrances": {
       "defineTitle": "J’ai besoin d’une définition",
-      "defineLede": "Saisissez le mot : le filtre réduit les {count} entrées au fil de la frappe, par mot-vedette, forme développée et alias.",
+      "defineLede": "Saisissez le mot : le filtre réduit {count, plural, one {{count} entrée} other {les {count} entrées}} au fil de la frappe, par mot-vedette, forme développée et alias.",
       "jargonTitle": "Décoder le jargon",
       "jargonLede": "{count} sigles, expressions et termes de jargon : ce que veulent dire les gens quand ils les emploient.",
       "loreTitle": "Le folklore du métier",
       "loreLede": "{count} histoires que le secteur raconte sur lui-même, chacune vérifiée auprès d’une source primaire.",
       "mistoldTitle": "Souvent mal racontées",
-      "mistoldLede": "{count} entrées dont la version habituelle est fausse, signalées comme contestées et corrigées dans leur propre contexte.",
+      "mistoldLede": "{count, plural, one {{count} entrée dont la version habituelle est fausse, signalée comme contestée et corrigée dans son propre contexte} other {{count} entrées dont la version habituelle est fausse, signalées comme contestées et corrigées dans leur propre contexte}}.",
       "domainTitle": "Parcourir un domaine",
-      "domainLede": "{count} domaines, chacun avec sa propre page : réseau, sécurité, cloud, le métier lui-même.",
+      "domainLede": "{count, plural, one {{count} domaine} other {{count} domaines}}, chacun avec sa propre page : réseau, sécurité, cloud, le métier lui-même.",
       "mistoldSection": "Souvent mal racontées",
-      "mistoldSectionLede": "{count} entrées portent la marque « contesté » : l’histoire que tout le monde répète ne correspond pas à ce que disent les sources. Chaque entrée donne la version habituelle et la correction."
+      "mistoldSectionLede": "{count, plural, one {{count} entrée porte} other {{count} entrées portent}} la marque « contesté » : l’histoire que tout le monde répète ne correspond pas à ce que disent les sources. Chaque entrée donne la version habituelle et la correction."
     }
   },
   "certGuides": {
@@ -33952,7 +33951,7 @@
       },
       "lineage": {
         "title": "Suivre une filiation",
-        "lede": "{count} fiches comportent une chaîne typée : des acquisitions, une fin au sein d’une autre entreprise, ou une histoire qui commence avant l’entreprise elle-même."
+        "lede": "{count, plural, one {{count} fiche comporte} other {{count} fiches comportent}} une chaîne typée : des acquisitions, une fin au sein d’une autre entreprise, ou une histoire qui commence avant l’entreprise elle-même."
       },
       "era": {
         "title": "Explorer une époque",
@@ -33964,11 +33963,11 @@
       },
       "mine": {
         "title": "Là où mon propre parcours l’a croisé",
-        "lede": "{count} entreprises dans lesquelles j’ai travaillé, avec lesquelles j’ai travaillé ou je travaille aujourd’hui ; les chapitres racontent l’histoire de l’intérieur."
+        "lede": "{count, plural, one {{count} entreprise dans laquelle j’ai travaillé, avec laquelle j’ai travaillé ou je travaille aujourd’hui} other {{count} entreprises dans lesquelles j’ai travaillé, avec lesquelles j’ai travaillé ou je travaille aujourd’hui}} ; les chapitres racontent l’histoire de l’intérieur."
       },
       "people": {
         "title": "Les personnalités",
-        "lede": "Les entreprises ont bâti le secteur ; ce sont {count} personnes qui l’ont fait. Pionniers, bâtisseurs, attaquants, et les Brésiliens parmi eux."
+        "lede": "Les entreprises ont bâti le secteur ; {count, plural, one {c’est {count} personne qui l’a fait} other {ce sont {count} personnes qui l’ont fait}}. Pionniers, bâtisseurs, attaquants, et les Brésiliens parmi eux."
       },
       "browseAll": "Parcourir les {count} organisations",
       "method": "Méthode de recherche"
@@ -33992,7 +33991,7 @@
     "gVendors": "Constructeurs et industrie",
     "gAbout": "À propos et carrière",
     "gSite": "Le site et son fonctionnement",
-    "toolsCount": "{count} outils déterministes, tous à calcul local",
+    "toolsCount": "{count, plural, one {{count} outil déterministe, à calcul local} other {{count} outils déterministes, tous à calcul local}}",
     "xmlNote": "Version pour les machines : sitemap.xml",
     "subjectsTitle": "Par sujet",
     "subjectsLede": "La page de chaque sujet rassemble ses outils, ses articles et ses termes du glossaire.",
@@ -34011,7 +34010,7 @@
     "certAllCta": "Toutes les certifications et tous les guides",
     "stepsLabel": "Ordre de lecture",
     "practiceLabel": "S’exercer avec",
-    "articlesCount": "{count} articles",
+    "articlesCount": "{count, plural, one {{count} article} other {{count} articles}}",
     "paths": {
       "bigip-fundamentals": {
         "title": "F5 BIG-IP de bout en bout",
@@ -34094,7 +34093,7 @@
     "seeContents": "Voir le contenu",
     "hideContents": "Masquer le contenu",
     "groupGeneral": "Indépendant des constructeurs",
-    "articlesCountDepth": "{depth} · {count} articles",
+    "articlesCountDepth": "{depth} · {count, plural, one {{count} article} other {{count} articles}}",
     "depth": {
       "short": "Court",
       "medium": "Moyen",
@@ -34745,7 +34744,7 @@
     "talk2Sub": "Histoires de terrain",
     "talk2Body": "Des récits qui auraient pu être vécus, observés ou entendus sur la route en tant qu’ingénieur terrain. Toute ressemblance avec des évènements ou des personnes réels serait purement fortuite. Pour les publics qui ont fait ce travail et s’y reconnaîtront, et pour ceux qui ne l’ont pas fait et devraient savoir ce que c’est.",
     "customTitle": "Autres sujets",
-    "customBody": "L’histoire du secteur sur ce site compte {count} fiches d’entreprises, et une grande partie n’a jamais été dite à voix haute. Si un évènement a besoin d’une conférence sur une époque précise, une filiation technologique ou la façon dont un marché particulier s’est réellement formé, c’est une conversation qui vaut la peine.",
+    "customBody": "L’histoire du secteur sur ce site compte {count, plural, one {{count} fiche d’entreprise} other {{count} fiches d’entreprises}}, et une grande partie n’a jamais été dite à voix haute. Si un évènement a besoin d’une conférence sur une époque précise, une filiation technologique ou la façon dont un marché particulier s’est réellement formé, c’est une conversation qui vaut la peine.",
     "customLink": "L’histoire du secteur",
     "notTitle": "Ce que ce n’est pas",
     "notBody": "Ce n’est pas de la formation. Les formations, ateliers et préparations aux certifications sont assurés par Red Education et se réservent là-bas, pas ici. Une conférence et une journée de formation sont des choses différentes, pour des publics différents, et les mélanger ne sert ni l’une ni l’autre.",
@@ -34873,7 +34872,7 @@
       "searchPlaceholder": "Un problème, un mot, une situation…",
       "searchExamples": "À essayer",
       "lifecycleTitle": "Suivre le cycle de vie",
-      "lifecycleLede": "{count} articles dans l’ordre où le travail se fait : avant la panne, quand la panne survient, quand elle résiste, après coup, la vie du métier et le savoir-faire.",
+      "lifecycleLede": "{count, plural, one {{count} article} other {{count} articles}} dans l’ordre où le travail se fait : avant la panne, quand la panne survient, quand elle résiste, après coup, la vie du métier et le savoir-faire.",
       "problemTitle": "J’ai un problème maintenant",
       "problemLede": "Saisissez ce que vous avez devant vous ; la recherche ne porte que sur ce corpus et liste les textes qui en parlent.",
       "humanTitle": "Le côté humain",
@@ -34883,7 +34882,7 @@
   },
   "contributeTools": {
     "translationsTitle": "Améliorer les traductions",
-    "translationsBody": "L’anglais est la langue source de ce site. Le portugais du Brésil est rédigé avec l’IA et relu progressivement, tout comme l’interface et les outils en espagnol, en allemand et en français ; le reste des sites espagnol, allemand et français et onze autres langues sont traduits automatiquement : utilisables, mais pas natifs. Si vous lisez l’une de ces versions et que quelque chose ne va pas, comme un terme technique rendu littéralement ou une phrase grammaticalement correcte qui ne veut rien dire, me le signaler est une vraie contribution, et une courte note indiquant la page et la phrase suffit.",
+    "translationsBody": "L’anglais est la langue source de ce site. Le portugais du Brésil est rédigé avec l’IA et relu progressivement, tout comme l’interface et les outils en espagnol, en allemand, en français et en italien ; le reste des sites espagnol, allemand, français et italien est traduit automatiquement : utilisable, mais pas natif. Si vous lisez l’une de ces versions et que quelque chose ne va pas, comme un terme technique rendu littéralement ou une phrase grammaticalement correcte qui ne veut rien dire, me le signaler est une vraie contribution, et une courte note indiquant la page et la phrase suffit.",
     "translationsCta": "Envoyer une correction"
   },
   "roles": {
@@ -37674,23 +37673,23 @@
     "entrances": {
       "pioneers": {
         "title": "Les pionniers de l’électricité",
-        "lede": "{count} personnes, de la pile voltaïque au transistor : la physique sur laquelle repose chaque entrée ultérieure."
+        "lede": "{count, plural, one {{count} personne} other {{count} personnes}}, de la pile voltaïque au transistor : la physique sur laquelle repose chaque entrée ultérieure."
       },
       "computing": {
         "title": "Les bâtisseurs de l’informatique",
-        "lede": "{count} personnes qui ont fait la machine : la logique, les langages, les architectures."
+        "lede": "{count, plural, one {{count} personne qui a fait} other {{count} personnes qui ont fait}} la machine : la logique, les langages, les architectures."
       },
       "internet": {
         "title": "Les personnes qui ont construit Internet",
-        "lede": "{count} personnes, de la première liaison ARPANET aux protocoles sur lesquels le monde entier fonctionne aujourd’hui."
+        "lede": "{count, plural, one {{count} personne} other {{count} personnes}}, de la première liaison ARPANET aux protocoles sur lesquels le monde entier fonctionne aujourd’hui."
       },
       "security": {
         "title": "Sécurité, cryptographie et culture hacker",
-        "lede": "{count} personnes qui ont cassé des choses, en ont protégé d’autres, et conçu entre les deux les algorithmes de chiffrement."
+        "lede": "{count, plural, one {{count} personne qui a cassé des choses, en a protégé d’autres} other {{count} personnes qui ont cassé des choses, en ont protégé d’autres}}, et conçu entre les deux les algorithmes de chiffrement."
       },
       "brazil": {
         "title": "Brésil",
-        "lede": "{count} personnalités brésiliennes, des micro-ordinateurs nationaux de l’époque de la réserve de marché aux personnes qui construisent aujourd’hui Internet dans le pays."
+        "lede": "{count, plural, one {{count} personnalité brésilienne} other {{count} personnalités brésiliennes}}, des micro-ordinateurs nationaux de l’époque de la réserve de marché aux personnes qui construisent aujourd’hui Internet dans le pays."
       }
     }
   },
@@ -37801,11 +37800,11 @@
         },
         "wp-core": {
           "title": "WordPress lui-même",
-          "what": "Les dossiers propres à WordPress (wp-admin, wp-includes avec les bibliothèques qu’il embarque, wp-content avec les fichiers envoyés, les extensions et les thèmes), ses dossiers d’installation habituels et l’adresse de son flux. Les dossiers d’installation incluent site, news, cms et press : dans les décomptes de ce site, chacun est demandé seul, au même rythme que ce même dossier suivi de /wp-json/, et c’est ainsi que les scanners ci-dessus cherchent un WordPress installé dans un sous-dossier. La requête confirme WordPress et cherche un dossier qui liste ses fichiers : un dossier uploads ouvert livre tout ce qui y a jamais été envoyé. Les versions 4.7 à 7.1.3 préparent aussi une mise à niveau complète du cœur dans des chemins prévisibles et accessibles depuis le Web, ce qui permet à n’importe qui d’exécuter du code sur le serveur pendant la mise à niveau (CVE-2026-119977, corrigée en 7.1.4 le 28 octobre 2026, rétroportages vers les branches plus anciennes en cours ; dans le catalogue des vulnérabilités exploitées de la CISA depuis le 3 novembre)."
+          "what": "Les dossiers propres à WordPress (wp-admin, wp-includes avec les bibliothèques qu’il embarque, wp-content avec les fichiers envoyés, les extensions et les thèmes), ses dossiers d’installation habituels et l’adresse de son flux. Les dossiers d’installation incluent site, news, cms et press : dans les décomptes de ce site, chacun est demandé seul, au même rythme que ce même dossier suivi de /wp-json/, et c’est ainsi que les scanners ci-dessus cherchent un WordPress installé dans un sous-dossier. La requête confirme WordPress et cherche un dossier qui liste ses fichiers : un dossier uploads ouvert livre tout ce qui y a jamais été envoyé. Les versions 4.7 à 7.1.3 préparent aussi une mise à niveau complète du cœur dans des chemins prévisibles et accessibles depuis le Web, ce qui permet à n’importe qui d’exécuter du code sur le serveur pendant la mise à niveau (CVE-2026-119977, corrigée le 28 octobre 2026 en 7.1.4 et dans une nouvelle version de chaque branche plus ancienne jusqu’à la 4.7, comme la 7.0.8, la 6.9.11 et la 4.7.39 ; dans le catalogue des vulnérabilités exploitées de la CISA depuis le 3 novembre)."
         },
         "secrets": {
           "title": "Secrets et code source dans un dossier publié",
-          "what": "Des fichiers qui ont leur place dans le dossier d’un développeur et n’arrivent sur le Web que lorsqu’un serveur publie le mauvais dossier : un dossier .git (le code source du site et son historique, avec tout mot de passe jamais enregistré dans un commit) et le dossier .svn de Subversion (son registre de chaque fichier d’une copie de travail) ; .git-credentials (les mots de passe que Git conserve en clair) ; .env et la copie de sauvegarde qu’un éditeur en laisse, .env~ (les secrets d’une application) ; .aws/credentials et .aws/config (clés d’accès et paramètres AWS) ; .ssh/id_rsa (une clé privée SSH) ; un kubeconfig, .kube/config (les clusters, les utilisateurs et l’authentification qu’utilise kubectl pour joindre le serveur d’API d’un cluster Kubernetes) ; le dossier de l’Azure CLI, .azure, où se trouve son fichier de configuration ; le dossier de l’Antigravity CLI, .gemini/antigravity-cli, où elle conserve ses paramètres ; /proc/self/environ derrière des suites de points (sous Linux, l’environnement avec lequel le programme en cours d’exécution a démarré) ; les historiques du shell et des interpréteurs (chaque commande saisie, y compris les mots de passe passés en ligne de commande) ; et le .DS_Store de macOS, qui révèle le contenu d’un dossier. Certains sont demandés via /@fs/, le préfixe qu’utilise le serveur de développement de Vite pour servir des fichiers depuis le disque : CVE-2025-30208 et CVE-2025-31125 permettent à n’importe qui de lire des fichiers hors de sa liste d’autorisation sur un serveur de développement exposé au réseau, toutes deux corrigées par Vite 6.2.4, 6.1.3, 6.0.13, 5.4.16 et 4.5.11 ; la seconde figure depuis le 22 janvier 2026 dans le catalogue des vulnérabilités exploitées de la CISA."
+          "what": "Des fichiers qui ont leur place dans le dossier d’un développeur et n’arrivent sur le Web que lorsqu’un serveur publie le mauvais dossier : un dossier .git (le code source du site et son historique, avec tout mot de passe jamais enregistré dans un commit) et le dossier .svn de Subversion (son registre de chaque fichier d’une copie de travail) ; le dossier .hg de Mercurial (son fichier requires et le dirstate de la copie de travail confirment un dépôt, et son store contient l’historique) ; .git-credentials (les mots de passe que Git conserve en clair) ; .env et la copie de sauvegarde qu’un éditeur en laisse, .env~ (les secrets d’une application) ; .aws/credentials et .aws/config (clés d’accès et paramètres AWS) ; .ssh/id_rsa et ses sœurs id_ed25519 et id_ecdsa (des clés privées SSH), avec .ssh/authorized_keys (les clés publiques autorisées à se connecter à ce compte) ; .vault-token (le jeton que la CLI de HashiCorp Vault conserve après une connexion) ; un kubeconfig, .kube/config (les clusters, les utilisateurs et l’authentification qu’utilise kubectl pour joindre le serveur d’API d’un cluster Kubernetes) ; le dossier de l’Azure CLI, .azure, où se trouve son fichier de configuration ; le dossier de l’Antigravity CLI, .gemini/antigravity-cli, où elle conserve ses paramètres ; /proc/self/environ derrière des suites de points (sous Linux, l’environnement avec lequel le programme en cours d’exécution a démarré) ; les historiques du shell et des interpréteurs (chaque commande saisie, y compris les mots de passe passés en ligne de commande) ; un dossier site-packages de Python (où Python installe les bibliothèques tierces, comme lib/python3.12/site-packages ; demandé ici avec la bibliothèque d’e-mail de SendGrid, sendgrid/helpers/mail, dont la documentation range la clé d’API dans SENDGRID_API_KEY ou dans un fichier .env), ce qui voudrait dire qu’un environnement Python entier a été publié avec le site ; et le .DS_Store de macOS, qui révèle le contenu d’un dossier. Certains sont demandés via /@fs/, le préfixe qu’utilise le serveur de développement de Vite pour servir des fichiers depuis le disque : CVE-2025-30208 et CVE-2025-31125 permettent à n’importe qui de lire des fichiers hors de sa liste d’autorisation sur un serveur de développement exposé au réseau, toutes deux corrigées par Vite 6.2.4, 6.1.3, 6.0.13, 5.4.16 et 4.5.11 ; la seconde figure depuis le 22 janvier 2026 dans le catalogue des vulnérabilités exploitées de la CISA. Le même type de contournement est revenu dans Vite 6.4.4 (CVE-2026-118662, corrigée en 6.4.5)."
         },
         "frameworks": {
           "title": "Points de terminaison de frameworks qui révèlent la configuration",
@@ -37845,7 +37844,7 @@
         },
         "laravel": {
           "title": "Laravel et ses paquets",
-          "what": "Les adresses par défaut des applications Laravel. Le point de terminaison de mise à jour de Livewire, /livewire/update, qu’appelle chaque composant Livewire 3, est aussi essayé sous des préfixes comme /login/ et /admin/login/ : dans Livewire 3 jusqu’à la version 3.6.3, il permet à un attaquant non authentifié d’exécuter des commandes sur le serveur dans certaines configurations, par la manière dont les mises à jour des propriétés des composants sont hydratées (CVE-2025-54068, corrigée en 3.6.4 ; dans le catalogue des vulnérabilités exploitées de la CISA depuis le 20 mars 2026). Livewire 4 a remplacé cette adresse par une adresse qui contient une empreinte de la clé de l’application ; demander l’ancienne revient donc à chercher la version 3. Les tableaux de bord de Telescope (les requêtes, exceptions, requêtes de base de données, tâches et e-mails qu’une application a traités), Horizon (files d’attente), Pulse (performances) et Nova (administration) se trouvent à /telescope, /horizon, /pulse et /nova ; Telescope, Horizon et Pulse ne s’ouvrent par défaut que dans l’environnement local. /two-factor-challenge, /email/verify et /password/reset sont des routes définies par les paquets de connexion de Laravel, Fortify et laravel/ui."
+          "what": "Les adresses par défaut des applications Laravel. Le point de terminaison de mise à jour de Livewire, /livewire/update, qu’appelle chaque composant Livewire 3, est aussi essayé sous des préfixes comme /login/ et /admin/login/ : dans Livewire 3 jusqu’à la version 3.6.3, il permet à un attaquant non authentifié d’exécuter des commandes sur le serveur dans certaines configurations, par la manière dont les mises à jour des propriétés des composants sont hydratées (CVE-2025-54068, corrigée en 3.6.4 ; dans le catalogue des vulnérabilités exploitées de la CISA depuis le 20 mars 2026). Livewire 4 a remplacé cette adresse par une adresse qui contient une empreinte de la clé de l’application ; demander l’ancienne revient donc à chercher la version 3. Les tableaux de bord de Telescope (les requêtes, exceptions, requêtes de base de données, tâches et e-mails qu’une application a traités), Horizon (files d’attente), Pulse (performances) et Nova (administration) se trouvent à /telescope, /horizon, /pulse et /nova ; Telescope, Horizon et Pulse ne s’ouvrent par défaut que dans l’environnement local. /two-factor-challenge, /email/verify et /password/reset sont des routes définies par les paquets de connexion de Laravel, Fortify et laravel/ui ; /user/profile et /user/api-tokens sont les pages de profil et de jetons d’API de Jetstream, le kit de démarrage d’applications de Laravel."
         }
       },
       "expandAll": "Tout développer ({count})",
@@ -37934,10 +37933,10 @@
   "earlierSites": {
     "eyebrow": "À propos · Les anciens sites",
     "title": "Ce dont le Web se souvient",
-    "lede": "Avant ronutz.com, il y a eu deux domaines, nutzmann.net et ntz.com.br, et l’Internet Archive les a conservés. {pages} pages archivées, consultées le {date}, ont été sauvegardées intégralement, imprimées et cataloguées. Voici, époque par époque, ce qu’était chaque site, quand, ce qu’il proposait et ce qu’il contenait, avec un lien vers chaque capture pour que les faits puissent être vérifiés.",
+    "lede": "Avant ronutz.com, il y a eu deux domaines, nutzmann.net et ntz.com.br, et l’Internet Archive les a conservés. {pages, plural, one {{pages} page archivée, consultée le {date}, a été sauvegardée intégralement, imprimée et cataloguée} other {{pages} pages archivées, consultées le {date}, ont été sauvegardées intégralement, imprimées et cataloguées}}. Voici, époque par époque, ce qu’était chaque site, quand, ce qu’il proposait et ce qu’il contenait, avec un lien vers chaque capture pour que les faits puissent être vérifiés.",
     "metaTitle": "Les anciens sites : nutzmann.net et ntz.com.br, de 2004 à 2021 · Rodolfo Nützmann",
     "metaDescription": "Ce que l’Internet Archive a conservé des anciens sites web de Rodolfo Nützmann, nutzmann.net à partir de 2004 et ntz.com.br à partir de 2013 : dates, caractéristiques, offres, contenus, et un lien vers chaque capture.",
-    "ageLine": "La première capture date du 25 août 2004, {years} ans avant la création de cette page. La page d’accueil de ce jour-là renvoyait déjà vers trois petits outils, un calculateur de bits et d’octets, un calculateur d’adressage IP et un brochage de câblage réseau : les plus anciens ancêtres des outils de ce site.",
+    "ageLine": "La première capture date du 25 août 2004, {years, plural, one {{years} an} other {{years} ans}} avant la création de cette page. La page d’accueil de ce jour-là renvoyait déjà vers trois petits outils, un calculateur de bits et d’octets, un calculateur d’adressage IP et un brochage de câblage réseau : les plus anciens ancêtres des outils de ce site.",
     "provenanceTitle": "Provenance des informations",
     "provenanceBody": "Chaque affirmation de cette page a été lue dans les captures de la Wayback Machine des deux domaines le {date} ; rien n’est cité de mémoire. Chaque capture a été sauvegardée sous la forme des octets bruts de l’archive, avec ses images, ses feuilles de style et ses scripts intégrés, rendue hors ligne puis imprimée, et l’inventaire de chaque section renvoie à la copie de l’archive, pour que chacun puisse ouvrir n’importe quelle page telle qu’elle était. Là où l’archive n’a jamais stocké une image, l’impression montre un vide et le catalogue le signale. Les noms de clients qui apparaissent sur les anciennes pages sont laissés à l’archive ; cette page décrit le travail par sa forme.",
     "labels": {
@@ -38004,7 +38003,7 @@
     "linkTraining": "Formation",
     "linkEra": "Le praticien, de 1996 à 2020",
     "inventoryTitle": "Inventaire",
-    "inventorySummary": "{count} pages archivées, de {from} à {to}",
+    "inventorySummary": "{count, plural, one {{count} page archivée} other {{count} pages archivées}}, de {from} à {to}",
     "colFile": "Fichier",
     "colTitle": "Titre tel que publié",
     "colCaptured": "Date de capture",
@@ -38021,7 +38020,7 @@
     "recordRendering": "Rendu",
     "recordRenderingOf": "Rendu de la capture du {date}",
     "recordArchive": "Internet Archive, {date}",
-    "recordCaptures": "{count} captures, de {from} à {to}",
+    "recordCaptures": "{count, plural, one {{count} capture} other {{count} captures}}, de {from} à {to}",
     "recordAttempts": "demandé par l’archive ({dates}) ; 404 à chaque fois",
     "recordNoCopy": "Aucune copie n’existe nulle part.",
     "recordOutside": "En 2013, le lien portant ce nom pointait hors du site, vers {host}.",
@@ -38042,7 +38041,7 @@
     },
     "linkBits": "Bits, octets et débit",
     "flashAria": "La barre supérieure Flash {file}, reproduite en vidéo",
-    "flashCaption": "La barre supérieure Flash de cette époque, {file}, intégrée par {page} : {frames} images à {fps} images par seconde ({seconds} s), {width} × {height} pixels, format Flash 5. Reproduite le 5 octobre 2026 à partir du fichier original : chaque image rendue par JPEXS Free Flash Decompiler et encodée à la cadence d’origine ; le bouton que portait l’original est le seul élément non reproduit.",
+    "flashCaption": "La barre supérieure Flash de cette époque, {file}, intégrée par {page} : {frames, plural, one {{frames} image} other {{frames} images}} à {fps} images par seconde ({seconds} s), {width} × {height} pixels, format Flash 5. Reproduite le 5 octobre 2026 à partir du fichier original : chaque image rendue par JPEXS Free Flash Decompiler et encodée à la cadence d’origine ; le bouton que portait l’original est le seul élément non reproduit.",
     "clone": {
       "eyebrow": "À propos · Les anciens sites · Reconstitution",
       "title": {
@@ -40391,7 +40390,7 @@
       "device-groups": "Palo Alto Networks, Device Groups : un pare-feu évalue les règles de politique par couche et par type, de haut en bas ; les règles locales du pare-feu s’affichent entre les pre-rules et les post-rules",
       "rulebase-best-practices": "Palo Alto Networks, Security Policy Rulebase Best Practices : la première correspondance l’emporte et la comparaison s’arrête ; « Commit and Push doesn’t provide shadowing information »",
       "rule-best-practices": "Palo Alto Networks, Security Policy Rule Best Practices : définition du masquage (shadowing) ; intrazone-default autorise et interzone-default refuse",
-      "panorama-policies": "Palo Alto Networks, Defining Policies on Panorama : les pre-rules sont ajoutées en haut de l’ordre des règles et évaluées en premier ; les post-rules sont évaluées en dernier"
+      "panorama-policies": "Palo Alto Networks, Defining Policies on Panorama : les pre-rules sont ajoutées en haut de l’ordre des règles et évaluées en premier ; les post-rules sont ajoutées en bas et évaluées après les pre-rules et les règles locales du pare-feu"
     },
     "icontrol-rest-path-explainer": {
       "icontrol-rest": "Référence de l’API F5 iControl REST",

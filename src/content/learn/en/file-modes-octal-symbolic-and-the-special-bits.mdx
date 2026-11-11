@@ -64,7 +64,7 @@ So `chmod 755 shared/` on a `2775` directory leaves it at `2755`, with the group
 
 A program that creates a file asks for `666` and one that creates a directory asks for `777`; the kernel removes the bits set in the process's umask. That is why new files are `644` and new directories `755` under the common umask of `022`, and why no umask ever produces an executable file: creation starts from `666`, and a bit that was never asked for cannot survive masking. The calculator runs this backwards and says which umask would produce the mode you typed, or why none can (an execute bit on a file, or any special bit).
 
-## Four modes to recognise on sight
+## Four modes to recognize on sight
 
 - **`4755` on a file, `-rwsr-xr-x`**: a set-user-ID program. The thing to check is the write bits: if anyone but the owner can write it, anyone can replace its contents and run them with the owner's privileges. `4777` is the hole in one number.
 - **`2775` on a directory, `drwxrwsr-x`**: a shared project directory. New files take the directory's group, so collaborators in that group can read what each other creates without a `chgrp` after every save.

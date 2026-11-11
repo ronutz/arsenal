@@ -193,7 +193,7 @@ export const MILESTONES: Milestone[] = [
     countries: ["US"],
     who: "Norman Abramson, Franklin Kuo and colleagues",
     what: "A radio network across four Hawaiian islands in which stations transmitted whenever they had data and dealt with the collisions.",
-    why: "Every prior design assumed access to a shared channel had to be arranged in advance. Refusing that assumption is what made cheap shared media possible, and Metcalfe credited it directly when building Ethernet. The university had no office to commercialise it, so it went into the public domain - which is why Wi-Fi, mobile, cable and Ethernet could all build on it without asking.",
+    why: "Every prior design assumed access to a shared channel had to be arranged in advance. Refusing that assumption is what made cheap shared media possible, and Metcalfe credited it directly when building Ethernet. The university had no office to commercialize it, so it went into the public domain - which is why Wi-Fi, mobile, cable and Ethernet could all build on it without asking.",
     sources: [{ label: "IEEE milestone for the 1971 ALOHA demonstration, and Metcalfe crediting ALOHA for Ethernet and CSMA/CD", url: "https://ethw.org/Milestones:Demonstration_of_the_ALOHA_Packet_Radio_Data_Network,_1971" }],
   },
   {
@@ -281,7 +281,7 @@ export const MILESTONES: Milestone[] = [
     countries: ["CA","US"],
     who: "Michael Calce, and the people whose tools he used",
     what: "Over three days, Yahoo, Amazon, eBay, CNN, Dell and others were made unreachable by traffic from machines with weak passwords, using attack tools the attacker had not written.",
-    why: "Steven Bellovin was five minutes into a conference keynote on denial-of-service attacks when the room emptied to deal with it. The community understood the threat well enough to schedule a talk about it and that did not help. It also established the asymmetry that has never closed: attacking is cheap and needs no original work, and defending requires capacity only a handful of organisations can afford.",
+    why: "Steven Bellovin was five minutes into a conference keynote on denial-of-service attacks when the room emptied to deal with it. The community understood the threat well enough to schedule a talk about it and that did not help. It also established the asymmetry that has never closed: attacking is cheap and needs no original work, and defending requires capacity only a handful of organizations can afford.",
     sources: [{ label: "The February 2000 attacks, and Bellovin delivering the NANOG 18 keynote on denial of service as they began", url: "https://www.senki.org/ddos-attack-preparation-workbook/history-of-denial-of-services-dos-attacks/" }],
   },
   {
@@ -572,7 +572,7 @@ export const MILESTONES: Milestone[] = [
     strand: "storage",
     countries: ["DE", "US"],
     who: "Fritz Pfleumer",
-    what: "Iron oxide bonded to a paper, later plastic, strip - a flexible medium that could be magnetised in a pattern and read back.",
+    what: "Iron oxide bonded to a paper, later plastic, strip - a flexible medium that could be magnetized in a pattern and read back.",
     why: "The first storage medium that was cheap per unit of capacity and physically compact. It is also the ancestor of a distinction that still governs backup design: tape is sequential, and sequential media are excellent at throughput and terrible at random access.",
     sources: [{ label: "Pfleumer's 1928 patent for magnetic recording on paper tape", url: "https://en.wikipedia.org/wiki/Fritz_Pfleumer" }],
   },
@@ -627,7 +627,7 @@ export const MILESTONES: Milestone[] = [
     strand: "storage",
     countries: ["NL", "JP"],
     who: "Philips and Sony",
-    what: "Digital audio on an optical disc, standardised jointly and released in 1982, with the data-carrying CD-ROM specification following.",
+    what: "Digital audio on an optical disc, standardized jointly and released in 1982, with the data-carrying CD-ROM specification following.",
     why: "The first mass-market medium that was digital end to end, and the first time consumers encountered error correction as a product feature - a scratched disc still played, which was startling to anyone used to vinyl. It also proved that two competing manufacturers agreeing on one standard beats either of them winning.",
     sources: [{ label: "The Red Book standard, Philips and Sony, with commercial release in 1982", url: "https://en.wikipedia.org/wiki/Compact_Disc_Digital_Audio" }],
   },
@@ -640,8 +640,8 @@ export const MILESTONES: Milestone[] = [
     who: "Fujio Masuoka, Toshiba",
     what: "Non-volatile solid-state memory that can be erased and rewritten in blocks, without moving parts.",
     dateNote:
-      "Invention is usually dated to around 1980 with the first public presentation in 1984 and commercialisation later in the decade. The gap between invention and market is the interesting part rather than a discrepancy.",
-    why: "It removes the last mechanical component from the storage path. That changes latency by orders of magnitude and changes what a filesystem should optimise for - and it introduces wear as a design constraint, which rotating media never had in the same way.",
+      "Invention is usually dated to around 1980 with the first public presentation in 1984 and commercialization later in the decade. The gap between invention and market is the interesting part rather than a discrepancy.",
+    why: "It removes the last mechanical component from the storage path. That changes latency by orders of magnitude and changes what a filesystem should optimize for - and it introduces wear as a design constraint, which rotating media never had in the same way.",
     sources: [{ label: "Masuoka's flash memory work at Toshiba, presented 1984", url: "https://en.wikipedia.org/wiki/Flash_memory" }],
   },
 
@@ -653,7 +653,7 @@ export const MILESTONES: Milestone[] = [
     countries: ["US"],
     who: "Thomas Edison's Pearl Street Station, New York",
     what: "A central generating station selling electricity to paying customers over a distribution network, rather than each building generating its own.",
-    why: "The first utility, and therefore the first argument about centralised versus local provision - the same argument that later produced timesharing, then the data centre, then cloud. The economics that favour a shared plant over a private one have not changed since 1882; only the plant has.",
+    why: "The first utility, and therefore the first argument about centralized versus local provision - the same argument that later produced timesharing, then the data centre, then cloud. The economics that favour a shared plant over a private one have not changed since 1882; only the plant has.",
     sources: [{ label: "Pearl Street Station, in service September 1882", url: "https://en.wikipedia.org/wiki/Pearl_Street_Station" }],
   },
   {
@@ -675,7 +675,7 @@ export const MILESTONES: Milestone[] = [
     countries: ["US"],
     who: "Gordon Moore",
     what: "An observation, in a trade magazine article, that the number of components on an integrated circuit had been doubling roughly annually and would likely continue.",
-    why: "It is an observation that became a plan. The industry organised its roadmaps around it, which made it partly self-fulfilling for half a century. Worth understanding as economics rather than physics: the doubling continued because enormous capital was deployed on the assumption that it would.",
+    why: "It is an observation that became a plan. The industry organized its roadmaps around it, which made it partly self-fulfilling for half a century. Worth understanding as economics rather than physics: the doubling continued because enormous capital was deployed on the assumption that it would.",
     sources: [{ label: "Moore, Cramming more components onto integrated circuits, Electronics, April 1965", url: "https://en.wikipedia.org/wiki/Moore%27s_law" }],
   },
   {
@@ -721,7 +721,7 @@ export const MILESTONES: Milestone[] = [
     what: "A draft report describing a machine that holds its instructions in the same memory as its data, so a program can be loaded, changed and even modified while running.",
     dateNote:
       "Circulated as the First Draft of a Report on the EDVAC under von Neumann's name alone, which has been contested ever since: the design work involved Eckert, Mauchly and others, and the sole attribution was a consequence of how the draft was distributed rather than a claim about who did what.",
-    why: "Before this, changing what a computer did meant rewiring it. Afterwards it meant loading different data. Every idea downstream - operating systems, compilers, malware, virtualisation - depends on instructions and data being the same kind of thing in the same place.",
+    why: "Before this, changing what a computer did meant rewiring it. Afterwards it meant loading different data. Every idea downstream - operating systems, compilers, malware, virtualization - depends on instructions and data being the same kind of thing in the same place.",
     sources: [{ label: "First Draft of a Report on the EDVAC, 1945", url: "https://en.wikipedia.org/wiki/First_Draft_of_a_Report_on_the_EDVAC" }],
   },
   {
@@ -741,7 +741,7 @@ export const MILESTONES: Milestone[] = [
     strand: "digital",
     countries: ["US"],
     what: "A single character set intended to cover every writing system, replacing the patchwork of incompatible national encodings.",
-    why: "ASCII solved agreement for one language and created a problem for everyone else. Unicode is the admission that text is harder than it looks: normalisation, collation, bidirectional text and the fact that a user-visible character is not a code point. This site's own translation rules exist because of what is in this entry - proper diacritics are cheap now and were not always.",
+    why: "ASCII solved agreement for one language and created a problem for everyone else. Unicode is the admission that text is harder than it looks: normalization, collation, bidirectional text and the fact that a user-visible character is not a code point. This site's own translation rules exist because of what is in this entry - proper diacritics are cheap now and were not always.",
     sources: [{ label: "The Unicode Standard, version 1.0, 1991", url: "https://en.wikipedia.org/wiki/Unicode" }],
   },
   // -- TRANSFER -------------------------------------------------------------
@@ -820,7 +820,7 @@ export const MILESTONES: Milestone[] = [
     who: "Alexander Graham Bell, with contested priority",
     what: "Speech transmitted electrically, rather than a code standing in for words.",
     dateNote:
-      "Priority is genuinely disputed - Elisha Gray filed a caveat the same day, and Antonio Meucci's earlier work is recognised by some accounts. The dispute is recorded rather than adjudicated here.",
+      "Priority is genuinely disputed - Elisha Gray filed a caveat the same day, and Antonio Meucci's earlier work is recognized by some accounts. The dispute is recorded rather than adjudicated here.",
     why: "It introduced the requirement that would dominate networks for a century: a continuous, low-latency, always-available path between two points. Circuit switching exists to provide that, and packet switching exists because it turned out to be a wasteful way to carry anything but speech.",
     sources: [{ label: "Bell's 1876 patent; Gray's same-day caveat; Meucci's earlier demonstrations", url: "https://en.wikipedia.org/wiki/Invention_of_the_telephone" }],
   },
@@ -959,7 +959,7 @@ export const MILESTONES: Milestone[] = [
     strand: "making",
     countries: ["US"],
     what: "The complementary half of the foundry: companies that design and sell semiconductors while owning no manufacturing at all.",
-    why: "It separated two things that had been one business and had very different economics. A fabrication plant is a capital problem measured in billions and depreciating from the day it opens; a design team is a payroll. Splitting them let small teams produce competitive silicon, and it is why specialised networking chips exist rather than only general-purpose processors.",
+    why: "It separated two things that had been one business and had very different economics. A fabrication plant is a capital problem measured in billions and depreciating from the day it opens; a design team is a payroll. Splitting them let small teams produce competitive silicon, and it is why specialized networking chips exist rather than only general-purpose processors.",
     sources: [{ label: "Fabless manufacturing", url: "https://en.wikipedia.org/wiki/Fabless_manufacturing" }],
   },
   {
@@ -997,7 +997,7 @@ export const MILESTONES: Milestone[] = [
     who: "Production staff at Apple\u2019s Cork facility",
     what: "Assembling supplementary packs for the Apple IIe containing ROM components that configured a machine for a particular country - its character set, its keyboard layout, its video display format.",
     why: "The word this industry uses for adapting a product to a language and a place began as a name for a procedure on a factory floor in Cork. It described fitting different chips into a box, not translating a menu. When packaged software took the term over, it kept the shape of the original: a set of country-specific parts, assembled late, so that one product can ship everywhere.",
-    dateNote: "The Cork plant opened in 1980; the configuration work and the in-house term date from January 1983. In February 1985 Softrans International in Dublin became the first company to define its business as localisation, its founder having encountered the word at Apple.",
+    dateNote: "The Cork plant opened in 1980; the configuration work and the in-house term date from January 1983. In February 1985 Softrans International in Dublin became the first company to define its business as localization, its founder having encountered the word at Apple.",
     sources: [{ label: "Software localisation in Ireland 1982-2002, a timeline: Apple\u2019s Cork facility, the Apple IIe configuration packs, and the in-house term that became an industry", url: "https://techarchives.irish/software-localisation-in-ireland-1982-2002/" }],
   },
   {

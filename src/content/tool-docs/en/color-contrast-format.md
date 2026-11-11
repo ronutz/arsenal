@@ -16,7 +16,7 @@ Beside each field, the browser's colour picker opens on the colour the field hol
 
 ## What it computes
 
-- **Relative luminance** (WCAG 2.2): each sRGB channel is linearised (c / 12.92 up to 0.04045, else ((c + 0.055) / 1.055) ^ 2.4) and weighted, L = 0.2126 R + 0.7152 G + 0.0722 B. WCAG 2.0 and 2.1 wrote the threshold as 0.03928; for 8-bit channel values the two thresholds classify every value identically.
+- **Relative luminance** (WCAG 2.2): each sRGB channel is linearized (c / 12.92 up to 0.04045, else ((c + 0.055) / 1.055) ^ 2.4) and weighted, L = 0.2126 R + 0.7152 G + 0.0722 B. WCAG 2.0 and 2.1 wrote the threshold as 0.03928; for 8-bit channel values the two thresholds classify every value identically.
 - **Contrast ratio**: (L1 + 0.05) / (L2 + 0.05), lighter over darker, from 1:1 to 21:1.
 - **Levels**: Success Criterion 1.4.3 Contrast (Minimum), Level AA, 4.5:1 for text and 3:1 for large-scale text; 1.4.6 Contrast (Enhanced), Level AAA, 7:1 and 4.5:1; 1.4.11 Non-text Contrast, Level AA, 3:1 for user interface components and graphical objects. Large-scale text is at least 18 point, or 14 point bold.
 - **Alpha**: a translucent foreground is composited over the background before measuring (simple alpha blending in sRGB, as a display paints it), because WCAG defines contrast between the colours as shown. Alpha on the background is ignored.

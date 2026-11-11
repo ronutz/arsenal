@@ -213,8 +213,8 @@ export const METHODS: Record<string, MethodDef> = { // exported for scripts/chec
     label: "SIP persistence",
     keysOn: "a SIP header, by default the Call-ID",
     howItWorks: "BIG-IP persists SIP traffic by a SIP header value so all messages in a call reach the same server.",
-    goodFor: "Load balancing SIP servers that process call signaling.",
-    caveats: ["It applies to SIP signaling only and depends on a SIP profile being present."],
+    goodFor: "Load balancing SIP servers that process call signalling.",
+    caveats: ["It applies to SIP signalling only and depends on a SIP profile being present."],
     fields: {
       "sip-info": "The SIP header used as the persistence key (Call-ID by default).",
       timeout: "Seconds a record is kept after its last use.",
@@ -235,12 +235,12 @@ const DEFAULT_PROFILE_METHOD: Record<string, string> = {
 };
 
 /**
- * A method's label as a catalogue text (pack key engine.method.<type>.label), or "unrecognised method".
+ * A method's label as a catalogue text (pack key engine.method.<type>.label), or "unrecognized method".
  * @param type the method type
  * @returns the label
  */
 function labelOf(type: string): EngineText {
-  return METHODS[type] ? say(`method.${type}.label`, METHODS[type].label) : say("label.unrecognisedMethod", "unrecognised method"); // known, or not
+  return METHODS[type] ? say(`method.${type}.label`, METHODS[type].label) : say("label.unrecognisedMethod", "unrecognized method"); // known, or not
 } // labelOf
 
 /**
@@ -250,7 +250,7 @@ function labelOf(type: string): EngineText {
  * @returns the label, lower-cased in English
  */
 function lowerLabelOf(type: string): EngineText {
-  return METHODS[type] ? say(`method.${type}.labelLower`, METHODS[type].label.toLowerCase()) : say("label.unrecognisedMethodLower", "unrecognised method"); // known, or not
+  return METHODS[type] ? say(`method.${type}.labelLower`, METHODS[type].label.toLowerCase()) : say("label.unrecognisedMethodLower", "unrecognized method"); // known, or not
 } // lowerLabelOf
 
 /** Resolve a persistence profile node's method from its tmsh type path. */
@@ -287,7 +287,7 @@ function explainProfile(node: ConfigNode): MethodExplain<EngineText> {
     profileName: name,
     methodType,
     known: def !== undefined,
-    label: def ? say(`${k}.label`, def.label) : methodType ? say("label.unknownType", `Persistence profile (${methodType})`, { type: methodType }) : say("label.unrecognisedType", "Persistence profile (unrecognised type)"), // pack keys engine.method.<type>.label / label.*
+    label: def ? say(`${k}.label`, def.label) : methodType ? say("label.unknownType", `Persistence profile (${methodType})`, { type: methodType }) : say("label.unrecognisedType", "Persistence profile (unrecognized type)"), // pack keys engine.method.<type>.label / label.*
     keysOn: def ? say(`${k}.keysOn`, def.keysOn) : "", // what it keys on (empty when unknown)
     howItWorks: def ? say(`${k}.howItWorks`, def.howItWorks) : say("howItWorks.unknown", "This persistence type is not in the explainer's knowledge base yet, but its fields are shown below."), // how it works
     goodFor: def ? say(`${k}.goodFor`, def.goodFor) : "", // what it is good for (empty when unknown)
@@ -303,7 +303,7 @@ function resolveStep(name: string, definedMethods: Map<string, string>): ChainSt
   return {
     name,
     methodType,
-    label: labelOf(methodType), // the method's label, or "unrecognised method"
+    label: labelOf(methodType), // the method's label, or "unrecognized method"
     known: methodType !== "",
   };
 }

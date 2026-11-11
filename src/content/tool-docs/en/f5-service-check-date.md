@@ -24,7 +24,7 @@ Type a BIG-IP version (`17.1.3`, `21.1`, `16.1.x`) or a service check date (`202
 
 ## Pasting a licence or tmsh output
 
-You can paste the entire contents of `/config/bigip.license`, any fragment of it, or the output of `tmsh show sys license`; the tool finds the service-check-date line and answers the same upgrade-eligibility question. Both published line forms are recognised: the file form `Service check date : 20151008` (flexible spacing around the colon) and the tmsh form `Service Check Date 2016/08/18`. A licence carries exactly one such line, so the first match wins, and the matched line is echoed back so you can confirm the right value was picked up. Everything else in the paste is ignored and, as always, nothing leaves your browser.
+You can paste the entire contents of `/config/bigip.license`, any fragment of it, or the output of `tmsh show sys license`; the tool finds the service-check-date line and answers the same upgrade-eligibility question. Both published line forms are recognized: the file form `Service check date : 20151008` (flexible spacing around the colon) and the tmsh form `Service Check Date 2016/08/18`. A licence carries exactly one such line, so the first match wins, and the matched line is echoed back so you can confirm the right value was picked up. Everything else in the paste is ignored and, as always, nothing leaves your browser.
 
 ## Share results
 

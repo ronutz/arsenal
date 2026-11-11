@@ -276,7 +276,7 @@
   "A name constraint uses minimum or maximum, which OpenSSL does not support.": "Una restricción de nombres usa minimum o maximum, que OpenSSL no admite.",
   "An application's own verification callback failed the chain.": "El propio callback de verificación de una aplicación rechazó la cadena.",
   "A name constraint of a type OpenSSL does not support (it supports directory name, DNS name, e-mail and URI).": "Una restricción de nombres de un tipo que OpenSSL no admite (admite nombre de directorio, nombre DNS, correo electrónico y URI).",
-  "A name constraint in a form OpenSSL does not recognise.": "Una restricción de nombres en una forma que OpenSSL no reconoce.",
+  "A name constraint in a form OpenSSL does not recognize.": "Una restricción de nombres en una forma que OpenSSL no reconoce.",
   "A name in a syntax OpenSSL does not support.": "Un nombre con una sintaxis que OpenSSL no admite.",
   "The CRL's own path failed to verify (extended CRL checking only).": "No se pudo verificar la propia ruta de la CRL (solo con la comprobación extendida de CRL).",
   "Chain building went round in a loop.": "La construcción de la cadena entró en un bucle.",
@@ -444,7 +444,7 @@
   "A raw public key (RFC 7250) was negotiated or offered in place of an X.509 certificate (OpenSSL 3.2 and later; options -enable_server_rpk and -enable_client_rpk).": "Se negoció u ofreció una clave pública sin certificado (raw public key, RFC 7250) en lugar de un certificado X.509 (OpenSSL 3.2 y posteriores; opciones -enable_server_rpk y -enable_client_rpk).",
   "The local port of the connection (printed with TLS tracing).": "El puerto local de la conexión (se muestra con el trazado de TLS).",
   "An empty line.": "Una línea vacía.",
-  "Not part of s_client's report: most likely data the server sent after the handshake (an HTTP response, an SMTP banner) or text this explainer does not recognise. It is kept as is.": "No forma parte del informe de s_client: lo más probable es que sean datos que envió el servidor después del handshake (una respuesta HTTP, un banner SMTP) o un texto que este explicador no reconoce. Se conserva tal cual.",
+  "Not part of s_client's report: most likely data the server sent after the handshake (an HTTP response, an SMTP banner) or text this explainer does not recognize. It is kept as is.": "No forma parte del informe de s_client: lo más probable es que sean datos que envió el servidor después del handshake (una respuesta HTTP, un banner SMTP) o un texto que este explicador no reconoce. Se conserva tal cual.",
   "The client is about to start the handshake.": "El cliente está a punto de iniciar el handshake.",
   "The ClientHello went out (versions, cipher suites, SNI, ALPN, key shares).": "Salió el ClientHello (versiones, conjuntos de cifrado, SNI, ALPN, key shares).",
   "The ServerHello arrived: version and cipher suite are chosen.": "Llegó el ServerHello: quedan elegidos la versión y el conjunto de cifrado.",
@@ -535,5 +535,9 @@
   "Verify return code {0} ({1}).": "Verify return code {0} ({1}).",
   "Verification error: {0}.": "Verification error: {0}.",
   "Protocol {0}, cipher {1}.": "Protocolo {0}, cifrado {1}.",
-  "Cert Status: {0}.": "Cert Status: {0}."
+  "Cert Status: {0}.": "Cert Status: {0}.",
+  "a pipe or a file": "una tubería o un archivo",
+  "with a capture of the traffic, a Master-Key decrypts its TLS 1.2 session": "con una captura del tráfico, una Master-Key descifra su sesión TLS 1.2",
+  "a Resumption PSK together with its ticket lets anyone resume the TLS 1.3 session as this client": "una Resumption PSK junto con su ticket permite a cualquiera reanudar la sesión TLS 1.3 como este cliente",
+  "with a capture of the traffic, a Master-Key decrypts its TLS 1.2 session; a Resumption PSK together with its ticket lets anyone resume the TLS 1.3 session as this client": "con una captura del tráfico, una Master-Key descifra su sesión TLS 1.2; una Resumption PSK junto con su ticket permite a cualquiera reanudar la sesión TLS 1.3 como este cliente"
 }

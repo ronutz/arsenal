@@ -118,7 +118,7 @@ export const MILESTONES: Milestone[] = [
     domain: "infrastructure",
     certainty: "shipped",
     title: "Language models become everyday tools",
-    changed: "Drafting, summarising, translating, and explaining became things you could ask for in ordinary words.",
+    changed: "Drafting, summarizing, translating, and explaining became things you could ask for in ordinary words.",
     enabled: "Software that responds to intent rather than to syntax, for people who never learned the syntax.",
   },
 
@@ -322,9 +322,9 @@ export const MILESTONES: Milestone[] = [
     certainty: "forecast",
     title: "Agentic operations in IT infrastructure",
     changed: "Projected: infrastructure changes proposed and executed by software under human policy rather than human hands.",
-    enabled: "If it holds, operations work moves toward defining guardrails and reviewing decisions instead of making changes.",
+    enabled: "If it holds, operations work moves towards defining guardrails and reviewing decisions instead of making changes.",
     source:
-      "Gartner (Predicts 2026: AI Agents Will Transform IT Infrastructure and Operations, published 4 December 2025) projects adoption rising from under 5% in 2025 toward a majority by 2029, and human-in-the-loop involvement in IT operations workflows falling from 95% in 2025 to 40% by 2028.",
+      "Gartner (Predicts 2026: AI Agents Will Transform IT Infrastructure and Operations, published 4 December 2025) projects adoption rising from under 5% in 2025 towards a majority by 2029, and human-in-the-loop involvement in IT operations workflows falling from 95% in 2025 to 40% by 2028.",
   },
   {
     id: "agent-mediated-buying",

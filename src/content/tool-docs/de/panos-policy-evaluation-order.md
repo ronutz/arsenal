@@ -68,8 +68,8 @@ Unter der Auswertungsreihenfolge erzeugt **Ergebnisse teilen** einen Link auf di
 
 ## Quellen
 
-- Palo Alto Networks, *Device Groups*: Eine Firewall wertet Richtlinienregeln nach Ebene und Typ von oben nach unten aus; lokale Firewall-Regeln erscheinen zwischen den Pre- und den Post-Regeln
-- Palo Alto Networks, *Security Policy Rulebase Best Practices*: Der erste Treffer gewinnt, und der Vergleich endet; Commit und Push liefern keine Informationen zur Verdeckung
-- Palo Alto Networks, *Security Policy Rule Best Practices*: Definition der Verdeckung; intrazone-default lässt zu, interzone-default blockiert
-- Palo Alto Networks, *Defining Policies on Panorama*: Pre-Regeln werden zuerst ausgewertet, Post-Regeln zuletzt
+- [Palo Alto Networks, Device Groups](https://docs.paloaltonetworks.com/panorama/getting-started/panorama-overview/centrally-manage-firewall-configuration-and-updates-with-panorama/device-groups) (abgerufen am 11.11.2026): Eine Firewall wertet Richtlinienregeln nach Ebene und Typ von oben nach unten aus; lokale Firewall-Regeln erscheinen zwischen den Pre- und den Post-Regeln
+- [Palo Alto Networks, Security Policy Rulebase Best Practices](https://docs.paloaltonetworks.com/best-practices/security-policy-best-practices/security-policy-best-practices/deploy-security-policy-best-practices/security-policy-rulebase-best-practices) (abgerufen am 11.11.2026): Der erste Treffer gewinnt, und der Vergleich endet; Commit and Push liefert keine Informationen zur Verdeckung
+- [Palo Alto Networks, Security Policy Rule Best Practices](https://docs.paloaltonetworks.com/best-practices/security-policy-best-practices/security-policy-best-practices/deploy-security-policy-best-practices/security-policy-rule-best-practices) (abgerufen am 11.11.2026): Definition der Verdeckung; intrazone-default lässt zu, interzone-default blockiert
+- [Palo Alto Networks, Defining Policies on Panorama](https://docs.paloaltonetworks.com/ngfw/help/11-1/panorama-web-interface/defining-policies-on-panorama) (abgerufen am 11.11.2026): Pre-Regeln stehen am Anfang der Regelreihenfolge und werden zuerst ausgewertet; Post-Regeln stehen am Ende und werden nach den Pre-Regeln und den lokalen Regeln der Firewall ausgewertet
 - [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (abgerufen am 27.10.2026): Abschnitt 3.5, das Fragment, das die Werte eines Links von „Ergebnisse teilen“ enthält

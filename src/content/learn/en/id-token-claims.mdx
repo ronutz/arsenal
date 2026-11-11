@@ -25,7 +25,7 @@ The aud (audience) claim names who the token is for, and it must contain the rel
 
 ## The nonce
 
-The nonce claim is the relying party's defense against replay. At the start of the flow the relying party generates a random nonce, sends it in the authentication request, and the provider copies it into the ID token. When the token comes back, the relying party checks that the nonce matches the one it sent. This binds the token to this specific login attempt, so a token captured from one exchange cannot be injected into another. A missing nonce is worth noticing, and the decoder flags it, because it removes that binding when the request asked for one.
+The nonce claim is the relying party's defence against replay. At the start of the flow the relying party generates a random nonce, sends it in the authentication request, and the provider copies it into the ID token. When the token comes back, the relying party checks that the nonce matches the one it sent. This binds the token to this specific login attempt, so a token captured from one exchange cannot be injected into another. A missing nonce is worth noticing, and the decoder flags it, because it removes that binding when the request asked for one.
 
 ## azp and multiple audiences
 

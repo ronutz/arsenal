@@ -51,21 +51,21 @@ Microsoft shipped **Active Directory** in 1999 and 2000 using both - LDAP for lo
 
 The directory model assumes the service and the user are inside the same administrative boundary. Software-as-a-service broke that assumption completely: the application belongs to somebody else, and it still needs to know who you are.
 
-**SAML** answered it with signed assertions passed through the browser, and became the language of enterprise single sign-on. **OAuth** answered a related but distinct question - delegated authorisation, letting an application act on your behalf without holding your password - and **OpenID Connect** layered identity on top of it, which is what most modern applications actually use.
+**SAML** answered it with signed assertions passed through the browser, and became the language of enterprise single sign-on. **OAuth** answered a related but distinct question - delegated authorization, letting an application act on your behalf without holding your password - and **OpenID Connect** layered identity on top of it, which is what most modern applications actually use.
 
-The distinction between those two is the most commonly muddled thing in this field and it is worth stating plainly: **OAuth is about permission, OpenID Connect is about identity**, and a system that uses an authorisation token as proof of who somebody is has made a category error that will eventually be exploited.
+The distinction between those two is the most commonly muddled thing in this field and it is worth stating plainly: **OAuth is about permission, OpenID Connect is about identity**, and a system that uses an authorization token as proof of who somebody is has made a category error that will eventually be exploited.
 
 ## The jobs and the practices
 
-This family created the identity engineer, and it is a role with an unusual property: it is the only infrastructure discipline where a mistake locks out the entire organisation at once. That produces a distinctive caution - staged rollout, break-glass accounts, and a tested path back - which other disciplines learn later and this one learns immediately.
+This family created the identity engineer, and it is a role with an unusual property: it is the only infrastructure discipline where a mistake locks out the entire organization at once. That produces a distinctive caution - staged rollout, break-glass accounts, and a tested path back - which other disciplines learn later and this one learns immediately.
 
-Its practices are recognisable everywhere. **Joiner, mover, leaver** as a lifecycle rather than three tickets. **Deprovisioning** as the control that actually matters, because the account nobody closed is the most common way in. **Least privilege** and the entitlement review that follows it, which exist because directories accumulate exactly like firewall rule bases and for the same reason - nobody can prove what removing something would break.
+Its practices are recognizable everywhere. **Joiner, mover, leaver** as a lifecycle rather than three tickets. **Deprovisioning** as the control that actually matters, because the account nobody closed is the most common way in. **Least privilege** and the entitlement review that follows it, which exist because directories accumulate exactly like firewall rule bases and for the same reason - nobody can prove what removing something would break.
 
 Sarbanes-Oxley in 2002 made access control a matter of legal liability, and identity governance became a category the same way the [web application firewall](/learn/waf-family-history) did: **regulation created the market, and the buying centre moved from engineering to audit.**
 
 ## The companies
 
-The research came from Michigan and MIT, and neither commercialised it. Novell owned the directory market and lost it; Microsoft has held it for twenty-five years; Sun, Oracle, IBM and Ping Identity built the federation layer; Okta, Ping, Microsoft Entra and ForgeRock hold the modern market, with Keycloak and OpenLDAP carrying the open lineage.
+The research came from Michigan and MIT, and neither commercialized it. Novell owned the directory market and lost it; Microsoft has held it for twenty-five years; Sun, Oracle, IBM and Ping Identity built the federation layer; Okta, Ping, Microsoft Entra and ForgeRock hold the modern market, with Keycloak and OpenLDAP carrying the open lineage.
 
 ## Where it goes
 

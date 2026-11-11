@@ -717,9 +717,10 @@ const MODULES: Readonly<Record<string, ModuleSpec>> = {
   },
   // The tcpdump filter explainer.
   "tcpdump-filter-explainer": {
-    // No separate tables: every text is written in the sources, except the word the code joins lists with
-    // (joinWords, the shell specials), which contentMatch.ts swaps inside values.
-    data: () => ["and"],
+    // No separate tables: every text is written in the sources, except the words the code joins lists with:
+    // "and" (joinWords, the shell specials) and "or" (the ", or " list of what libpcap expected, 11/11/2026),
+    // which contentMatch.ts puts into values.
+    data: () => ["and", "or"],
     // The four files that write its sentences.
     sources: ["compute.ts", "options.ts", "semantics.ts", "texts.ts"].map((f) => ({ file: `${TCPDUMP}/${f}`, ...TCPDUMP_READ })),
     // Every accepted and refused vector through the engine (a refusal of the whole input has no sentence).

@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-08-10"
 ---
 
-The quantum threat to TLS is a harvest problem before it is a decryption problem: traffic recorded today can be decrypted the day a large enough quantum computer breaks the elliptic-curve key exchange that protected it. The defense NIST standardized in FIPS (Federal Information Processing Standards) 203 is ML-KEM (module-lattice key encapsulation mechanism), a lattice-based key encapsulation mechanism, and the deployment pattern the industry converged on is the hybrid: run a classical elliptic-curve exchange and an ML-KEM encapsulation in the same handshake and mix both secrets, so the session is safe unless both are broken. BIG-IP has been walking this road for a while; 21.1.0 is where the road gets wide.
+The quantum threat to TLS is a harvest problem before it is a decryption problem: traffic recorded today can be decrypted the day a large enough quantum computer breaks the elliptic-curve key exchange that protected it. The defence NIST standardized in FIPS (Federal Information Processing Standards) 203 is ML-KEM (module-lattice key encapsulation mechanism), a lattice-based key encapsulation mechanism, and the deployment pattern the industry converged on is the hybrid: run a classical elliptic-curve exchange and an ML-KEM encapsulation in the same handshake and mix both secrets, so the session is safe unless both are broken. BIG-IP has been walking this road for a while; 21.1.0 is where the road gets wide.
 
 ## The lineage: one hybrid becomes a family
 

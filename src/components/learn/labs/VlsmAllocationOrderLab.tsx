@@ -20,6 +20,8 @@
 // one host a press, 1 to the model's MAX_HOSTS.
 // ============================================================================
 
+// English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
+import { intlLocale } from "@/i18n/locales";
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import LabFrame, { LabField, LabSelect } from "./LabFrame";
@@ -83,7 +85,7 @@ export default function VlsmAllocationOrderLab() {
   // One decimal, for the utilisation.
   const nf1 = new Intl.NumberFormat(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
   // Lists in the page's language; English as British English writes them, without the serial comma ("a, b and c").
-  const lf = new Intl.ListFormat(locale === "en" ? "en-GB" : locale, { style: "long", type: "conjunction" });
+  const lf = new Intl.ListFormat(intlLocale(locale), { style: "long", type: "conjunction" });
 
   // The model's answer, or the code it refused the input with.
   let r: VlsmResult | null = null;

@@ -41,7 +41,7 @@ export const avayaProfile: VendorProfile = {
     { name: "Communication Manager heritage", what: "The Definity/Communication Manager line - Western Electric to Lucent to Avaya, one unbroken telephony bloodline." },
   ],
   innovations: [
-    { title: "Enterprise voice at Bell scale", detail: "Avaya inherited and operated the largest installed base in corporate telephony - the reference implementation of how big organisations talk." },
+    { title: "Enterprise voice at Bell scale", detail: "Avaya inherited and operated the largest installed base in corporate telephony - the reference implementation of how big organizations talk." },
     { title: "The consolidation crossroads", detail: "The 2009 Nortel purchase made Avaya the meeting point of the two great enterprise-voice lineages - and its networking divestiture to Extreme in 2017 seeded another vendor taught on this site." },
   ],
   markets: [

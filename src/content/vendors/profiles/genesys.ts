@@ -38,7 +38,7 @@ export const genesysProfile: VendorProfile = {
   ],
   products: [
     { name: "T-Server and the CTI layer", what: "The original middleware, and the architectural decision the whole company rests on: it integrates with the switch you already have rather than replacing it." },
-    { name: "Skills-based routing", what: "Matching a caller to a competence rather than to an available body. It is the reason contact centres are organised the way they are, and it long outlived the telephone as the only channel." },
+    { name: "Skills-based routing", what: "Matching a caller to a competence rather than to an available body. It is the reason contact centres are organized the way they are, and it long outlived the telephone as the only channel." },
     { name: "Genesys Cloud CX", what: "The current platform: voice, digital channels, self-service, workforce management and analytics as one service rather than a stack of integrations." },
     { name: "Workforce engagement", what: "Forecasting, scheduling and quality management - the operational half of running a contact centre, which is where much of the actual budget goes." },
   ],
@@ -56,7 +56,7 @@ export const genesysProfile: VendorProfile = {
     {
       title: "Routing on competence",
       detail:
-        "The shift from is anyone free to is the right person free sounds small and reorganises everything behind it: how agents are trained, how teams are structured, how performance is measured. Most contact centre software since has been an elaboration of that idea.",
+        "The shift from is anyone free to is the right person free sounds small and reorganizes everything behind it: how agents are trained, how teams are structured, how performance is measured. Most contact centre software since has been an elaboration of that idea.",
     },
     {
       title: "Raising nothing, then raising everything",
@@ -65,7 +65,7 @@ export const genesysProfile: VendorProfile = {
     },
   ],
   markets: [
-    "Mid-sized and large organisations running contact operations - banks, airlines, insurers, telecommunications companies, public services - at around $2.0B of revenue and more than six thousand staff.",
+    "Mid-sized and large organizations running contact operations - banks, airlines, insurers, telecommunications companies, public services - at around $2.0B of revenue and more than six thousand staff.",
     "It competes with the cloud-native contact centre providers that never carried an on-premises business, with the CRM vendors extending into service, and with the telephony platforms adding contact centre features. Its distinguishing asset remains the one it started with: it works with what the customer already has.",
   ],
   analyst: [

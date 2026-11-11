@@ -34,7 +34,7 @@ The important design decision is how each SSID forwards traffic:
 
 | Mode | Data path | Suits |
 |---|---|---|
-| **Tunnel** | Client traffic is tunnelled to the FortiGate | Centralised policy and inspection; remote sites |
+| **Tunnel** | Client traffic is tunnelled to the FortiGate | Centralized policy and inspection; remote sites |
 | **Bridge** | Client traffic is switched locally onto a VLAN | Local traffic that should not cross the WAN |
 
 Tunnel mode gives the firewall sight of everything at the cost of hairpinning local traffic through it. Bridge mode keeps local traffic local, and means the FortiGate does not see it unless it routes it. Choosing bridge mode and then wondering why security profiles are not applying is a recurring confusion.

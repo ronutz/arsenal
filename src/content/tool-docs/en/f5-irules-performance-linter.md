@@ -6,9 +6,9 @@ Paste an iRule; the linter flags a small set of high-confidence, F5-documented p
 
 **Global-namespace variables** (`$::x`, `set ::x`, the `global` keyword) are flagged HIGH. F5's validator catches the `global` keyword as of v10 and demotes the virtual server to a single TMM instance (CMP demotion), so one processor handles all of that virtual's connections; global variables have been deprecated since v10. The obsolete `$::datagroup` form is worse still: on version 11 and later, accessing a data group that way raises a Tcl runtime error and sends a reset to the client. The fix is the CMP-safe `static::` namespace for shared constants, ordinary local variables for per-connection data, or the `class` command for data groups.
 
-**`expr` without braces** is a WARNING. Tcl substitutes and re-parses the unbraced form, and can double-substitute; bracing the expression lets the bytecode compiler optimise it. The fix is `expr { ... }`.
+**`expr` without braces** is a WARNING. Tcl substitutes and re-parses the unbraced form, and can double-substitute; bracing the expression lets the bytecode compiler optimize it. The fix is `expr { ... }`.
 
-**`matchclass` / `findclass`** are INFO. Both were deprecated in v10 in favor of the `class` command, which F5 describes as offering better functionality and performance. The fix is `class match` / `class search`.
+**`matchclass` / `findclass`** are INFO. Both were deprecated in v10 in favour of the `class` command, which F5 describes as offering better functionality and performance. The fix is `class match` / `class search`.
 
 **`regexp` / `regsub`** are INFO. Regular expressions cost materially more than fixed string work; when the match is a prefix, suffix, exact value, or simple glob, `string`, `scan`, `switch -glob`, or `class` are cheaper. When a regular expression stays, the [Regex Toolkit](/tools/regex)'s portability view lists the constructs that read differently in Tcl's Advanced Regular Expressions, the flavour it labels BIG-IP iRules, than in JavaScript or PCRE2.
 

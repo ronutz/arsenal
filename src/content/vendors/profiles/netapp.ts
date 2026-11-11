@@ -46,7 +46,7 @@ export const netappProfile: VendorProfile = {
       year: 2025,
       title: "The pivot showing in the numbers",
       detail:
-        "Quarterly revenue of $1.64B, all-flash on an annualised run rate of $3.8B, and cloud storage services growing more than 40% year over year - the software business outgrowing the hardware one, on a company whose founding thesis was the hardware.",
+        "Quarterly revenue of $1.64B, all-flash on an annualized run rate of $3.8B, and cloud storage services growing more than 40% year over year - the software business outgrowing the hardware one, on a company whose founding thesis was the hardware.",
     },
   ],
   products: [

@@ -196,7 +196,7 @@ const ITEMS: ItemDef[] = [
 
   // ---- human tier ----
   { id: "I-HU-USERS", tier: "human", text: "The end users behind the affected services - the people who feel the impact and open the tickets." },
-  { id: "I-HU-CUSTOMER", tier: "human", text: "Customers and any external SLA - customer-facing impact is visible outside the organisation and may carry contractual weight." },
+  { id: "I-HU-CUSTOMER", tier: "human", text: "Customers and any external SLA - customer-facing impact is visible outside the organization and may carry contractual weight." },
   { id: "I-HU-ONCALL", tier: "human", text: "The on-call and support surface - a wide change during load means more pages, more tickets, and more people pulled in." },
   { id: "I-HU-EVERYONE", tier: "human", text: "Effectively the whole user base - when everything depends on the target, the human surface is everyone at once." },
 ];
@@ -213,7 +213,7 @@ const RISKS: { id: string; label: string; severity: RiskFactor["severity"]; note
   { id: "RK-HEAVILY-SHARED", label: "Heavily shared hardware or platform", severity: "high", note: "A device-wide fault crosses into many co-located services; the radius is much wider than the target alone." },
   { id: "RK-NO-REDUNDANCY", label: "No redundancy (standalone)", severity: "high", note: "There is no peer to carry load; any interruption is a full interruption of the target." },
   { id: "RK-HA-DEGRADED", label: "HA peer already degraded", severity: "high", note: "The safety net is compromised before you start; a change now risks losing the last healthy unit." },
-  { id: "RK-CUSTOMER-FACING", label: "Customer-facing reach", severity: "medium", note: "Impact is visible outside the organisation and may carry SLA weight; comms matter more here." },
+  { id: "RK-CUSTOMER-FACING", label: "Customer-facing reach", severity: "medium", note: "Impact is visible outside the organization and may carry SLA weight; comms matter more here." },
   { id: "RK-EVERYONE", label: "Reaches the entire user base", severity: "high", note: "The human surface is everyone at once; the cost of a slip is maximal." },
   { id: "RK-MANY-DEPENDENTS", label: "Many downstream dependents", severity: "medium", note: "Failure propagates to many callers and possibly their callers; the reach is wider than the direct target." },
   { id: "RK-TLS-ALL-CLIENTS", label: "Certificate change affects every TLS client", severity: "medium", note: "A wrong key or chain breaks the handshake for all clients simultaneously; verify the pair and chain before install." },
@@ -473,7 +473,7 @@ export function runLocalisable(rawInput: BlastInput | unknown): BlastResult<Engi
     warnings.push({ id: "W-DEGRADED-PEER", message: say("warn.W-DEGRADED-PEER", "You marked the HA peer degraded. Changing now risks losing the last healthy unit; restoring the peer first is usually the safer sequence.") });
   }
   if (input.trafficPath === "in-path" && input.dependents === "everything") {
-    warnings.push({ id: "W-MAX-BLAST", message: say("warn.W-MAX-BLAST", "In the traffic path and everything depends on it: this is close to a maximum-blast change. Weight the plan heavily toward containment and a maintenance window.") });
+    warnings.push({ id: "W-MAX-BLAST", message: say("warn.W-MAX-BLAST", "In the traffic path and everything depends on it: this is close to a maximum-blast change. Weight the plan heavily towards containment and a maintenance window.") });
   }
   if (input.colocation === "heavily-shared" && input.userReach === "everyone") {
     warnings.push({ id: "W-SHARED-EVERYONE", message: say("warn.W-SHARED-EVERYONE", "Heavily shared and reaching everyone: a device-wide fault here has an unusually wide human surface. Confirm exactly what else rides this device before proceeding.") });

@@ -21,7 +21,7 @@ A double-precision float has 52 bits of fraction, which gives it about fifteen t
 
 ## Where this actually bites
 
-This is not a theoretical concern. Database identifiers and Twitter-style snowflake IDs routinely exceed 2 to the 53rd, so a 19-digit ID round-tripped through a careless JSON library can come back altered by one or two at the end, pointing at the wrong record. Monetary values stored as decimals can drift by a fraction of a cent, which is unacceptable in financial data. The standard defenses are to carry such values as strings, or to use a parser that preserves them, precisely because the default float conversion is lossy.
+This is not a theoretical concern. Database identifiers and Twitter-style snowflake IDs routinely exceed 2 to the 53rd, so a 19-digit ID round-tripped through a careless JSON library can come back altered by one or two at the end, pointing at the wrong record. Monetary values stored as decimals can drift by a fraction of a cent, which is unacceptable in financial data. The standard defences are to carry such values as strings, or to use a parser that preserves them, precisely because the default float conversion is lossy.
 
 ## Preserving the literal
 

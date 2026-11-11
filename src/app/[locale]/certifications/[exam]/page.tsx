@@ -42,6 +42,8 @@
 // on a non-English page keeps both. The English page renders exactly as before.
 // ============================================================================
 
+// English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
+import { intlLocale } from "@/i18n/locales";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 // Retirement dates as behaviour (2026-10-06): whether a notice's last sitting day has passed on the build day.
@@ -156,7 +158,7 @@ export default async function StudyGuidePage({
   // ---- Round 1 (2026-10-25): lifecycle, duration, versions and source checks ----
   // A day in the reader's language, date-only and pinned to UTC so no browser timezone can move it (CC05-C).
   const dayText = (iso: string) =>
-    new Date(`${iso}T00:00:00Z`).toLocaleDateString(locale, { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+    new Date(`${iso}T00:00:00Z`).toLocaleDateString(intlLocale(locale), { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
   // The authored-locale half of a two-language text: pt-BR on pt-BR pages, English everywhere else.
   const pick = (text: { en: string; "pt-BR": string }) => (locale === "pt-BR" ? text["pt-BR"] : text.en);
   // The lifecycle record, when the guide carries one (S1).
@@ -224,7 +226,7 @@ export default async function StudyGuidePage({
   // The record's last check against the vendor's sources, its date in the reader's language, and whether it is stale.
   const verification = getGuideVerification(guide.slug);
   const checkedDate = verification
-    ? new Date(`${verification.on}T00:00:00Z`).toLocaleDateString(locale, { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })
+    ? new Date(`${verification.on}T00:00:00Z`).toLocaleDateString(intlLocale(locale), { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })
     : null;
   const checkedStale = verification ? freshness(verification.on) === "stale" : false;
   // B3 (2026-10-26): the resolvers that decide whether a link is real, and the guide's objectives counted by class.

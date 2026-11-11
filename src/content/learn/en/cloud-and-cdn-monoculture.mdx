@@ -1,7 +1,7 @@
 ---
 slug: cloud-and-cdn-monoculture
 title: "Cloud and CDN monoculture: the chokepoint nobody chose"
-summary: "Nobody decided that a configuration error at one company should take a quarter of the web offline for an hour, and yet that is roughly the arrangement. Concentration in cloud regions, content delivery networks, DNS providers and identity services means unrelated organisations now fail at the same moment for the same reason. Why it happened, what actually fails, and why the obvious answer (multi-cloud) is mostly wrong."
+summary: "Nobody decided that a configuration error at one company should take a quarter of the web offline for an hour, and yet that is roughly the arrangement. Concentration in cloud regions, content delivery networks, DNS providers and identity services means unrelated organizations now fail at the same moment for the same reason. Why it happened, what actually fails, and why the obvious answer (multi-cloud) is mostly wrong."
 concepts: ["cloud", "cdn", "concentration risk", "resilience", "correlated failure"]
 relatedTools: []
 relatedArticles: ["the-chokepoints-of-the-internet", "the-certificate-authority-chokepoint", "bgp-and-the-routing-chokepoint", "cloudflare"]
@@ -13,7 +13,7 @@ updated: "2026-08-29"
 
 ## The chokepoint nobody bought
 
-Every previous chokepoint in this series was built on purpose: someone designed the root zone, the routing protocol, the cable route, the trust store. This one is different. **Concentration is emergent.** Millions of independent organisations each chose the cheapest, fastest, most reliable option available to them, and the aggregate of all those rational decisions is a small number of providers holding an enormous share of the internet's critical path.
+Every previous chokepoint in this series was built on purpose: someone designed the root zone, the routing protocol, the cable route, the trust store. This one is different. **Concentration is emergent.** Millions of independent organizations each chose the cheapest, fastest, most reliable option available to them, and the aggregate of all those rational decisions is a small number of providers holding an enormous share of the internet's critical path.
 
 That is worth stating carefully, because the moral framing is usually wrong. The providers involved are, individually, far more reliable than the infrastructure they replaced. A well-run cloud region has better uptime than the server room it displaced, and a large content delivery network absorbs attacks that would flatten the origin behind it. The problem is not reliability. **The problem is correlation.**
 
@@ -37,7 +37,7 @@ This is the same lesson as [landing stations](/learn/submarine-cables-and-the-ph
 
 ## Why multi-cloud is mostly the wrong answer
 
-The instinctive fix is to run everywhere. For most organisations this is a bad trade, and it is worth being direct about why.
+The instinctive fix is to run everywhere. For most organizations this is a bad trade, and it is worth being direct about why.
 
 Running genuinely across providers means using the least-common-denominator feature set, duplicating operational expertise, testing failover paths that are exercised rarely, and adding a coordination layer that becomes its own single point of failure. **Complexity is itself an availability risk**, and teams routinely spend the reliability they gained on the complexity they added. A great deal of "multi-cloud" in practice is one cloud plus an unused, untested, quietly broken copy in another.
 
@@ -46,7 +46,7 @@ The proportionate answers are less impressive and work better:
 - **Know your dependency graph**, including the boring ones: DNS, certificates, identity, package registries, observability, and your status page. Write it down; most teams cannot produce it from memory.
 - **Remove single-provider dependencies where the cost is low.** Secondary DNS and a second certificate issuance path are cheap and buy real independence. Rearchitecting your database layer is not.
 - **Design for degradation.** Read-only mode, cached responses, queued writes, and a static fallback page beat a perfect architecture that is entirely down.
-- **Fail over on purpose, on a schedule.** An untested failover is a hypothesis. The organisations that ride out large outages are the ones that practised.
+- **Fail over on purpose, on a schedule.** An untested failover is a hypothesis. The organizations that ride out large outages are the ones that practised.
 - **Keep your incident tooling off the platform it monitors.** Status pages, runbooks and communications channels that die with the outage are a recurring, entirely avoidable failure.
 
 ## Who could do what

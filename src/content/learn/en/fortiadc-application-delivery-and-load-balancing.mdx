@@ -30,7 +30,7 @@ The shape is deliberately close to a firewall's virtual IP, and the difference m
 
 ## Choosing a server
 
-The distribution methods differ in what they optimise:
+The distribution methods differ in what they optimize:
 
 **Round robin** takes each server in turn. Fair when servers are equal and requests cost the same, which is rarer than it sounds.
 
@@ -72,7 +72,7 @@ The mechanisms trade reliability against intrusiveness:
 
 **SSL session ID** works without reading the payload and is unreliable as clients renegotiate.
 
-The better answer, where you can influence the application, is to remove the need: externalise session state so any server can serve any request. Persistence is a workaround for applications that cannot do that.
+The better answer, where you can influence the application, is to remove the need: externalize session state so any server can serve any request. Persistence is a workaround for applications that cannot do that.
 
 ## TLS
 
@@ -80,7 +80,7 @@ Terminating TLS at the ADC allows content-based routing, cookie persistence and 
 
 **Offload** talks plaintext to the backend, which requires trusting the internal network. **Re-encryption** opens a fresh TLS connection to the server, protecting both legs at some cost.
 
-Terminating also centralises certificate management, which is usually an improvement on certificates scattered across servers with independent expiry dates that nobody is tracking.
+Terminating also centralizes certificate management, which is usually an improvement on certificates scattered across servers with independent expiry dates that nobody is tracking.
 
 ## What an exam candidate should be able to state cold
 

@@ -1,7 +1,7 @@
 ---
 slug: reading-dig-output
 title: "Reading dig Output From Top to Bottom"
-summary: "dig prints every DNS answer in the same fixed shape: the version and options lines, the header line, the flags and counts line, the OPT pseudosection, the sections that have records, and four statistics lines. After reading, you can walk any dig answer block by block, name what each line reports, recognise NODATA, NXDOMAIN, SERVFAIL and a truncated answer from the shape alone, and choose the shorter forms a script needs."
+summary: "dig prints every DNS answer in the same fixed shape: the version and options lines, the header line, the flags and counts line, the OPT pseudosection, the sections that have records, and four statistics lines. After reading, you can walk any dig answer block by block, name what each line reports, recognize NODATA, NXDOMAIN, SERVFAIL and a truncated answer from the shape alone, and choose the shorter forms a script needs."
 concepts: ["dig", "dns", "resolver", "troubleshooting", "query", "sections", "edns", "nodata", "nxdomain", "servfail", "truncation", "query statistics"]
 relatedTools: ["dig-output-explainer", "dig-command-builder"]
 relatedArticles: ["dns-message-header-and-flags", "dns-record-types-in-answers", "edns-and-the-opt-pseudosection", "dnssec-records-in-dig", "reading-a-dns-answer", "anatomy-of-a-dig-command-line", "authoritative-vs-non-authoritative-answers", "choosing-a-public-dns-resolver", "dnssec-end-to-end"]

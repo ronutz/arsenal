@@ -34,7 +34,7 @@ Inflated severity is the most common own goal in vendor support.
 
 It works exactly once. The case is picked up quickly, the engineer discovers the business is not actually stopped, and **the correction is not applied to the case - it is applied to you.** Subsequent cases from the same account carry an invisible discount, and the one that genuinely is severity 1 arrives already discounted.
 
-State the impact in facts rather than adjectives: **what is not working, for how many, since when, and what it prevents the business from doing.** *"Card payments failing for approximately 8% of transactions since 02:10, all sites"* routes and prioritises itself. *"URGENT - production down"* on a partial degradation does not, and it is remembered.
+State the impact in facts rather than adjectives: **what is not working, for how many, since when, and what it prevents the business from doing.** *"Card payments failing for approximately 8% of transactions since 02:10, all sites"* routes and prioritizes itself. *"URGENT - production down"* on a partial degradation does not, and it is remembered.
 
 ## What to include, in the order it gets read
 
@@ -66,7 +66,7 @@ Two failure modes on the evidence, in opposite directions.
 
 **Too little** - a screenshot of an error and nothing else - guarantees a round-trip.
 
-**Too much** - a full configuration dump and a gigabyte of logs - is worse than it looks. It buries the relevant window, it takes real time to sanitise or does not get sanitised at all, and **a configuration exported wholesale usually carries secrets**: keys, community strings, credentials, internal addressing. Extract the section, sanitise deliberately, and say what you have removed so nobody reads the redaction as the fault.
+**Too much** - a full configuration dump and a gigabyte of logs - is worse than it looks. It buries the relevant window, it takes real time to sanitize or does not get sanitized at all, and **a configuration exported wholesale usually carries secrets**: keys, community strings, credentials, internal addressing. Extract the section, sanitize deliberately, and say what you have removed so nobody reads the redaction as the fault.
 
 ## After it is open
 
@@ -86,6 +86,6 @@ Two failure modes on the evidence, in opposite directions.
 | **Changed** | recently, including *nothing known* |
 | **Ruled out** | with the evidence that ruled it |
 | **Reproduces?** | yes and how, or no and say so |
-| **Evidence** | the relevant extract, sanitised, with the redactions named |
+| **Evidence** | the relevant extract, sanitized, with the redactions named |
 
 Fifteen minutes to assemble, and it routinely removes two days of elapsed time - which is why the [escalation packet builder](/tools/tac-escalation-packet-builder) on this site exists to structure exactly this.

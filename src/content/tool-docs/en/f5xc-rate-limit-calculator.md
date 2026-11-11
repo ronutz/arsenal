@@ -4,7 +4,7 @@ This calculator turns an F5 Distributed Cloud (XC) rate-limiter configuration in
 
 ## The rate math
 
-XC expresses a rate as *Number requests per (Periods x Per Period)*. That is why `[1, Seconds, 60]` and `[1, Minutes, 1]` are the same limit - one request per minute - which regularly surprises people. The calculator normalises any configuration to a single window in seconds and shows the equivalent per-second, per-minute, and per-hour rates, so two configurations can be compared directly.
+XC expresses a rate as *Number requests per (Periods x Per Period)*. That is why `[1, Seconds, 60]` and `[1, Minutes, 1]` are the same limit - one request per minute - which regularly surprises people. The calculator normalizes any configuration to a single window in seconds and shows the equivalent per-second, per-minute, and per-hour rates, so two configurations can be compared directly.
 
 ## Burst and enforcement
 

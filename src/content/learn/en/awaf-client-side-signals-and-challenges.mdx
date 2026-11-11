@@ -19,7 +19,7 @@ A User-Agent string is the naive way to identify a client, and F5 supports match
 
 ## The escalation ladder
 
-Advanced WAF's client-side defenses escalate from silent and cheap to visible and disruptive:
+Advanced WAF's client-side defences escalate from silent and cheap to visible and disruptive:
 
 - **Bot signatures** match the User-Agent against F5's database. Fast, but bypassed by spoofing the header.
 - **Client-Side Integrity Defense (CSID)** is the browser challenge ASM has injected since 2008. When a request reaches the DoS profile, the request is *held* and a JavaScript script is sent to the source, testing whether it can do browser things like run JavaScript and accept cookies. The answer is scored; a client that qualifies as a browser has its held request reconstructed and forwarded, and one that fails is dropped. CSID is silent, no user sees it, so it is the tool when you want to allow only browsers with no user friction.

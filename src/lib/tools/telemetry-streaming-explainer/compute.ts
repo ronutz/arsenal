@@ -70,7 +70,7 @@ export const CLASS_CATALOG: Record<string, ClassInfo> = { // exported for script
   // Control.
   Controls: { role: "control", explain: "optional top-level controls for logging and debugging (logLevel, debug, and the beta memoryMonitor); the class value must always be Controls" },
   // Data sources: they produce telemetry.
-  Telemetry_System: { role: "source", explain: "a target system to poll; define a systemPoller inside it to collect and normalise device, virtual-server, pool, and pool-member statistics on an interval, and optionally an iHealthPoller" },
+  Telemetry_System: { role: "source", explain: "a target system to poll; define a systemPoller inside it to collect and normalize device, virtual-server, pool, and pool-member statistics on an interval, and optionally an iHealthPoller" },
   Telemetry_System_Poller: { role: "source", explain: "a standalone (referenced) system poller, e.g. to pull statistics from an additional BIG-IP by host/username/passphrase" },
   Telemetry_Listener: { role: "source", explain: "an event listener on TCP and UDP (default port 6514) that ingests logs and events the BIG-IP publishes (LTM request logs, AFM/ASM security logs)" },
   // Consumers: they forward telemetry out.

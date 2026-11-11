@@ -577,7 +577,7 @@ export function explainSslProfileLocalisable(input: string): SslProfileAnalysis<
     findings.push({
       level: "ok",
       title: say("finding.noIssues.title", "No issues flagged"), // pack key engine.finding.noIssues.title
-      detail: say("finding.noIssues.detail", "Nothing in the recognised settings raised a security flag. Always confirm against your own policy."), // pack key engine.finding.noIssues.detail
+      detail: say("finding.noIssues.detail", "Nothing in the recognized settings raised a security flag. Always confirm against your own policy."), // pack key engine.finding.noIssues.detail
     });
   }
 

@@ -15,7 +15,7 @@
 import { run, type PlanResult } from "./compute";
 
 // The dated set id: it changes whenever the vectors change.
-export const GOLDEN_VECTOR_SET_ID = "zscaler-ssl-bypass-planner-golden-2026-10-26";
+export const GOLDEN_VECTOR_SET_ID = "zscaler-ssl-bypass-planner-golden-2026-11-11";
 
 export interface SslPlanVector {
   id: string;
@@ -70,7 +70,7 @@ export const SSL_PLAN_VECTORS: SslPlanVector[] = [
     input: "patient-portal | clean | regulated | agent",
     expectOk: true,
     expectVerdictFor: { name: "patient-portal", verdict: "dni-policy" },
-    expectRationaleIncludes: { name: "patient-portal", text: "wrapper is now the whole defense" },
+    expectRationaleIncludes: { name: "patient-portal", text: "wrapper is now the whole defence" },
   },
   {
     id: "default-inspect",

@@ -7,7 +7,7 @@ It has four modes:
 - **Inspect a text** counts the text, says whether anything needs a look, lists what it found by kind, flags bidirectional controls left open at the end of a line and words that mix scripts, draws the text in the order it is stored with every hidden character as a tag, lists every code point, offers a cleaned copy, and writes the text as escapes in eight languages.
 - **One code point** takes a code point in any notation (`U+00E9`, `é`, `0xE9`, `&eacute;`, `\u00e9`, `zero width space`, `BOM`) and shows its name and aliases, properties, encodings, escapes and what to know about it.
 - **Find by name** lists the code points whose name or alias has words starting with the words you type.
-- **Normalise** shows a text in NFC, NFD, NFKC and NFKD with the code points and UTF-8 bytes of each form, and compares it with a second text under every form.
+- **Normalize** shows a text in NFC, NFD, NFKC and NFKD with the code points and UTF-8 bytes of each form, and compares it with a second text under every form.
 
 ## What it reports in a text
 
@@ -56,15 +56,15 @@ Some forms cannot hold every character, and the tool says so instead of writing 
 - **Encodings.** UTF-8 bytes, UTF-16 code units (a surrogate pair beyond U+FFFF) and UTF-32.
 - **Escapes and references.** The eight forms above for this one code point, plus the HTML decimal, hexadecimal and named references, with a note when a reference does not give this code point back.
 
-## Normalisation
+## Normalization
 
-The same visible text can be stored as different sequences of code points: é as U+00E9, or as e followed by U+0301 COMBINING ACUTE ACCENT. The **Normalise** mode shows a text in the four normalisation forms of UAX #15, each with its code points, its UTF-8 bytes and whether it differs from the text as typed: NFD (canonical decomposition), NFC (canonical decomposition, then canonical composition), NFKD (compatibility decomposition) and NFKC (compatibility decomposition, then canonical composition).
+The same visible text can be stored as different sequences of code points: é as U+00E9, or as e followed by U+0301 COMBINING ACUTE ACCENT. The **Normalise** mode shows a text in the four normalization forms of UAX #15, each with its code points, its UTF-8 bytes and whether it differs from the text as typed: NFD (canonical decomposition), NFC (canonical decomposition, then canonical composition), NFKD (compatibility decomposition) and NFKC (compatibility decomposition, then canonical composition).
 
 NFC and NFD keep compatibility characters such as the ligature ﬁ (U+FB01) and fullwidth letters; NFKC and NFKD replace them with their plain equivalents, which UAX #15 warns can erase distinctions that matter, so the K forms belong where erasing them is the intent. Singletons such as U+212B ANGSTROM SIGN and U+2126 OHM SIGN do not survive any form, and combining marks are put into canonical order, so A, U+030A, U+0323 becomes U+1EA0 U+030A in NFC.
 
-Type a second text under **Compare with** and the tool says whether the two are equal as typed and under each form: identical, canonically equivalent (equal under NFC and NFD), equal only under NFKC and NFKD, or different under every form. Normalising both sides into one form before comparing them is the point; the [Unicode normalisation article](/learn/unicode-normalisation) explains why.
+Type a second text under **Compare with** and the tool says whether the two are equal as typed and under each form: identical, canonically equivalent (equal under NFC and NFD), equal only under NFKC and NFKD, or different under every form. Normalizing both sides into one form before comparing them is the point; the [Unicode normalisation article](/learn/unicode-normalisation) explains why.
 
-The forms are computed by `String.prototype.normalize` (ECMA-262, section 22.1.3.15) with the Unicode tables of the JavaScript engine that runs the tool: on this page, your browser. Those tables can be older than the 18.0.0 data the other modes use. The Unicode stability policy guarantees that a text made of characters an engine knows normalises to the same result under every later version, so the only difference an older engine can make is to pass a character newer than its tables through unchanged. Each text is read up to its first 1,000 code points.
+The forms are computed by `String.prototype.normalize` (ECMA-262, section 22.1.3.15) with the Unicode tables of the JavaScript engine that runs the tool: on this page, your browser. Those tables can be older than the 18.0.0 data the other modes use. The Unicode stability policy guarantees that a text made of characters an engine knows normalizes to the same result under every later version, so the only difference an older engine can make is to pass a character newer than its tables through unchanged. Each text is read up to its first 1,000 code points.
 
 ## Share results
 
@@ -82,7 +82,7 @@ Under the first answer of the mode in use, **Share results** builds a link to th
 - Mixed-script detection works word by word; it does not check whole identifiers across punctuation, and it does not decide whether a mix is legitimate.
 - The confusable data covers characters that look like ASCII text. Confusables between two non-ASCII scripts are out of scope.
 - The tool shows the Unicode 18.0.0 view. A system with older data may not know characters added since (13,007 arrived in 18.0).
-- Normalisation uses the Unicode version of the JavaScript engine that runs it, not 18.0.0: see Normalisation above.
+- Normalization uses the Unicode version of the JavaScript engine that runs it, not 18.0.0: see Normalisation above.
 
 ## Sources
 

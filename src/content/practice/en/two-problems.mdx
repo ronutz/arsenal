@@ -24,7 +24,7 @@ It is progress, and it is also the single most reliable moment for an investigat
 
 The instinct is to treat inconsistent results as measurement noise, an unreliable reproduction, or somebody misreporting. Sometimes that is what they are.
 
-But two concurrent faults do not produce random behaviour. **They produce behaviour that is partially responsive to everything you try**, and that is a specific and recognisable shape:
+But two concurrent faults do not produce random behaviour. **They produce behaviour that is partially responsive to everything you try**, and that is a specific and recognizable shape:
 
 - A fix that improves the numbers without eliminating the symptom
 - A reproduction that succeeds perhaps half the time, with no variable you can find that predicts which
@@ -75,7 +75,7 @@ If your best theory explains six of eight observations and the two leftovers hav
 
 ## The part that is not technical
 
-The room wants the incident closed after the first fix, and *"improved"* reads as *"resolved"* in a status update at a level of the organisation where nobody sees the residual.
+The room wants the incident closed after the first fix, and *"improved"* reads as *"resolved"* in a status update at a level of the organization where nobody sees the residual.
 
 Be specific in writing instead. **"Error rate fell from 9% to 3% after the connection-pool change. The remaining 3% has a different profile - it is concentrated on two branch sites and does not correlate with load, so I believe it is a second, unrelated fault and I am treating it as one."** That sentence buys the second cycle, and it survives being forwarded to somebody who will read only the first line.
 

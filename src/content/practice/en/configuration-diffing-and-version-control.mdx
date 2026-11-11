@@ -33,7 +33,7 @@ Diff two configurations twenty-four hours apart and the output is four hundred l
 - **Encrypted secrets that re-encrypt differently every time**, so identical passwords produce different ciphertext
 - **Unordered blocks** - rule sets, member lists, object groups - emitted in a different order by the same device on two days
 
-Nobody reads a four-hundred-line diff twice. **So the tool is not the deliverable; the normalisation is.** Strip the volatile lines, sort the unordered blocks, mask the re-encoding secrets, and the same comparison produces four lines - at which point people use it every day.
+Nobody reads a four-hundred-line diff twice. **So the tool is not the deliverable; the normalization is.** Strip the volatile lines, sort the unordered blocks, mask the re-encoding secrets, and the same comparison produces four lines - at which point people use it every day.
 
 That is also exactly what the platform-specific explainers on this site do: a [FortiOS config diff](/tools/fortios-config-diff-explainer) is worth having as a tool precisely because knowing which lines are noise is per-platform knowledge that takes years to accumulate.
 
@@ -43,7 +43,7 @@ That is also exactly what the platform-specific explainers on this site do: a [F
 
 **Across devices** - this device against its pair, or against the other eleven built from the same template. **This finds the outlier instantly**, and it is the fastest way to answer *"why does this site behave differently?"* It also surfaces the drift that [feeding the fix back](/practice/feeding-the-fix-back) is about: a template corrected while four hundred existing devices were not, or the reverse.
 
-Both need the same normalisation, which is the argument for doing that work once.
+Both need the same normalization, which is the argument for doing that work once.
 
 ## Intended against actual
 
@@ -55,7 +55,7 @@ An estate with no such comparison is running on an assumption nobody has tested 
 
 ## What a diff does not tell you
 
-It shows **what** changed. It does not show **who**, **why**, or **whether it was authorised** - and reading intent out of a diff is the most common way this evidence gets misused.
+It shows **what** changed. It does not show **who**, **why**, or **whether it was authorized** - and reading intent out of a diff is the most common way this evidence gets misused.
 
 Pair it with the change record, and treat the mismatch as a finding in its own right:
 
@@ -63,7 +63,7 @@ Pair it with the change record, and treat the mismatch as a finding in its own r
 
 ## The repository is now sensitive
 
-Configurations contain community strings, keys, credentials, internal addressing and sometimes customer identifiers. A directory of nightly configurations going back two years is one of the most concentrated collections of secrets an organisation holds, and it usually has weaker access control than the devices themselves.
+Configurations contain community strings, keys, credentials, internal addressing and sometimes customer identifiers. A directory of nightly configurations going back two years is one of the most concentrated collections of secrets an organization holds, and it usually has weaker access control than the devices themselves.
 
 Mask what can be masked, restrict access deliberately, and be honest that this is a real cost of the practice rather than a footnote to it.
 
@@ -71,7 +71,7 @@ Mask what can be masked, restrict access deliberately, and be honest that this i
 
 The common failure is aspirational: the estate will get full infrastructure-as-code, so an interim measure is not worth building - and three years later there is still no history.
 
-**A nightly copy into a dated directory, with a normalisation script, answers "what changed?" tomorrow.** It is not elegant and it is not the destination, and it delivers most of the value on the day it starts working.
+**A nightly copy into a dated directory, with a normalization script, answers "what changed?" tomorrow.** It is not elegant and it is not the destination, and it delivers most of the value on the day it starts working.
 
 ## The minimum viable history
 
@@ -79,9 +79,9 @@ The common failure is aspirational: the estate will get full infrastructure-as-c
 |---|---|
 | **Capture** | nightly, every device, whatever the platform's export is |
 | **Store** | dated, kept long enough to cross a quarterly problem |
-| **Normalise** | strip timestamps, counters and runtime state; sort unordered blocks; mask re-encoding secrets |
+| **Normalize** | strip timestamps, counters and runtime state; sort unordered blocks; mask re-encoding secrets |
 | **Compare** | over time, and **across peers** |
 | **Reconcile** | against the change record, and treat unexplained changes as findings |
 | **Protect** | the archive holds secrets; restrict it like it does |
 
-Six lines, and the second-cheapest of them - **normalisation** - is the one that decides whether anybody ever looks at the other five.
+Six lines, and the second-cheapest of them - **normalization** - is the one that decides whether anybody ever looks at the other five.

@@ -119,7 +119,7 @@ export const akamaiProfile: VendorProfile = {
     {
       title: "Putting servers inside other people's networks",
       detail:
-        "Rather than build a few large data centres, Akamai placed machines deep inside carrier and ISP networks. That is harder commercially than technically - it requires thousands of separate relationships - and it is why the network is close to users in places a centralised design cannot reach.",
+        "Rather than build a few large data centres, Akamai placed machines deep inside carrier and ISP networks. That is harder commercially than technically - it requires thousands of separate relationships - and it is why the network is close to users in places a centralized design cannot reach.",
     },
     {
       title: "Mapping as a live system",

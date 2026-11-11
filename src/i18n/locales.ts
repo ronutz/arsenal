@@ -57,21 +57,21 @@ export interface LocaleMeta {
  * Tamil and seventeen of the other stubs retired (EF EPI 2025 "very high" or "high" in their main market, or a market
  * whose IT work runs in English: India's, Pakistan's, Bangladesh's, Hong Kong's, Israel's, Ukraine's, East Africa's;
  * Persian's market is out of reach of the vendors this site covers); Thai and Traditional Chinese (Taiwan) planned.
- * Human-reviewed: en only. pt-BR is machine-translated but complete; es and all others are
+ * Human-reviewed: none since 2026-11-10 (PRIME demoted English to machine-draft, written with AI); until then en only. pt-BR is machine-translated but complete; es and all others are
  * registered + selectable but 'stub' → they fall back to English until a real
  * pack lands. This is the "capability is day-one, content arrives as packs"
  * decision (D-20 amendment, PRIME-ratified 2026-06-23).
  */
 export const LOCALES: readonly LocaleMeta[] = [
-  // --- Languages with real, human-reviewed content shipping day-one ---
-  { code: "en",         nativeName: "English",            englishName: "English",                 dir: "ltr", status: "reviewed" },
+  // --- The two languages shipping day-one (none is human-reviewed since 2026-11-10: English was demoted to machine) ---
+  { code: "en",         nativeName: "English",            englishName: "English",                 dir: "ltr", status: "machine-draft", draftKind: "written-with-ai" }, // DEMOTED (PRIME 10/11/2026 23:50, "Demote English to Machine, and remove the green circle from the reference since there are no Human reviewed languages"): English is written with AI like every other language, so it carries the short notice (machineTranslation.noticeWrittenWithAi in the English pack) and the switcher marks it by coverage; no live language is human-reviewed, so the green row leaves both legends until one is.
   { code: "pt-BR",      nativeName: "Português (Brasil)", englishName: "Portuguese (Brazil)",     dir: "ltr", status: "machine-draft", draftKind: "written-with-ai" }, // NOTICE REWORDED (PRIME, 2026-10-07 23:5x, row 70): "O português deste site é escrito com IA e revisado aos poucos. Esta página pode conter erros." (machineTranslation.noticeWrittenWithAi), replacing "Esta página foi traduzida automaticamente", which described a translation the Portuguese is not. RULING (PRIME, 2026-08-27): pt-BR KEEPS the notice. The corpus is generated under the native-authoring directive, but the output still sometimes over-translates technical jargon and uses constructions that do not sound natural in Portuguese — so the status stays machine-draft, and the banner stays, until human review attests otherwise. The status is a CREDENTIAL about the outcome, not a restatement of the directive. (Reverts the same-day change that read the 2026-08-16 authoring rule as the attestation.)
   { code: "es",         nativeName: "Español",            englishName: "Spanish",                 dir: "ltr", status: "machine-draft", draftKind: "written-with-ai" }, // INTERFACE-NATIVE (PRIME 09/11/2026 01:02, "in the language's NATURAL tone"): the interface, tools, tool docs, games and legal pages written in Spanish with AI and reviewed gradually; Learn, the glossary and the other corpus sections stay machine-translated for now, and the notice says so (machineTranslation.noticeWrittenWithAi).
 
   // --- Registered + selectable day-one; stubs falling back to English until translated ---
   { code: "de",         nativeName: "Deutsch",            englishName: "German",                  dir: "ltr", status: "machine-draft", draftKind: "written-with-ai" }, // INTERFACE-NATIVE (PRIME 09/11/2026 01:02, "in the language's NATURAL tone"): the interface, tools, tool docs, games and legal pages written in German with AI and reviewed gradually; Learn and the other corpus sections stay machine-translated, and the notice says so.
   { code: "fr",         nativeName: "Français",           englishName: "French",                  dir: "ltr", status: "machine-draft", draftKind: "written-with-ai" }, // INTERFACE-NATIVE (PRIME 09/11/2026 01:02, "in the language's NATURAL tone"; 11:02, the order Spanish, German, French): the interface, tools, tool docs, games and legal pages written in French with AI and reviewed gradually; Learn and the other corpus sections stay machine-translated, and the notice says so.
-  { code: "it",         nativeName: "Italiano",           englishName: "Italian",                 dir: "ltr", status: "stub" }, // PLANNED (PRIME 09/11/2026 22:14, high value): phase 1 written in the language, on PRIME's "go"
+  { code: "it",         nativeName: "Italiano",           englishName: "Italian",                 dir: "ltr", status: "machine-draft", draftKind: "written-with-ai" }, // INTERFACE-NATIVE (PRIME 11/11/2026 01:30, "get Italian up to speed with German, Spanish, French, Brazilian Portuguese, and international English"): the interface, tools, tool docs, games and legal pages written in Italian with AI and reviewed gradually; Learn and the other corpus sections stay machine-translated, and the notice says so.
   { code: "ru",         nativeName: "Русский",            englishName: "Russian",                 dir: "ltr", status: "stub" }, // PLANNED (PRIME 09/11/2026 22:14, high value): phase 1 written in the language, on PRIME's "go"
   { code: "tr",         nativeName: "Türkçe",             englishName: "Turkish",                 dir: "ltr", status: "stub" }, // PLANNED (PRIME 09/11/2026 22:14, high value): phase 1 written in the language, on PRIME's "go"
   { code: "ko",         nativeName: "한국어",              englishName: "Korean",                  dir: "ltr", status: "stub" }, // PLANNED (PRIME 09/11/2026 22:14, high value): phase 1 written in the language, on PRIME's "go"
@@ -118,6 +118,36 @@ export const RETIRED_LOCALE_CODES: readonly string[] = [
  *  the English fallback, so the full roadmap stays visible. */
 export const LIVE_LOCALES = LOCALES.filter((l) => l.status !== "stub");
 
+/** Whether any live language is human-reviewed: the switcher and colophon legends show their green row only then
+ *  (PRIME 10/11/2026 23:50, "remove the green circle from the reference since there are no Human reviewed languages").
+ *  False since English was demoted to machine-draft the same day. */
+export const ANY_REVIEWED: boolean = LIVE_LOCALES.some((l) => l.status === "reviewed");
+
+/** The tag the site formats English with: dates, lists, relative times and numbers. Since 11/11/2026 it is CLDR's
+ *  International English, en-001 (PRIME 11/11/2026 00:09: "convert the English on the site to International English
+ *  according to standard code en-001"; 01:30: "Treat the international English conversion as a new language
+ *  addition"). CLDR made en_001 "as country neutral as possible" (its English Inheritance proposal) and is the parent
+ *  of en_GB, en_AU, en_IN and most other English locales (supplementalData parentLocales). Node 24 (ICU 78.3, CLDR 48)
+ *  and Chromium 141 give en-001 the day-month-year dates and the "a, b and c" lists en-GB gave; the one difference is
+ *  the 12-hour clock, which no formatter here uses (GlobalClocks asks for en-GB with hourCycle h23 on purpose). Spelling
+ *  is not CLDR's to decide: the site writes Oxford spelling, British spelling with -ize (PRIME 11/11/2026 10:33,
+ *  "Oxford"; ISO's house style and the United Nations' editorial manual), held by
+ *  scripts/check-international-english.mjs: organize and authorization, but colour, centre, analyse and licence. The URL prefix (/en) and the hreflang value
+ *  ("en") stay: Google supports only ISO 3166-1 alpha-2 regions in hreflang ("es-419 aren't supported"), and reads a
+ *  language-only code as that language in every region. */
+export const ENGLISH_FORMAT_TAG = "en-001";
+
+/**
+ * The BCP 47 tag to format with for a site locale: English becomes ENGLISH_FORMAT_TAG, the others are unchanged.
+ *
+ * @param locale the site locale ("en", "pt-BR", ...)
+ * @returns the tag for Intl and for the page's lang attribute
+ */
+export function intlLocale(locale: string): string {
+  // English formats as International English (en-001); every other locale already names its region or needs none.
+  return locale === "en" ? ENGLISH_FORMAT_TAG : locale;
+}
+
 /** Just the codes for the live locales. This is the set we actually BUILD and
  *  route: routing.locales and the worker locale gate both derive from it, so a
  *  stub locale is neither statically generated nor advertised. Promote a locale
@@ -151,15 +181,16 @@ export const AUTHORED_CONTENT_LOCALES = ["en", "pt-BR"] as const;
  * Locales whose INTERFACE is written natively: every message-pack string outside the corpora (the glossary entries
  * and the Learn labs), the tool documentation and the strings that tools and games carry in code (PRIME 09/11/2026:
  * "get the site up in additional languages", each written "in the language's NATURAL tone (instead of simply
- * translated)"; 11:02 set the order Spanish, German, French, Italian, and 14:05 holds Italian until PRIME says so; the
- * first phase is the interface and the tool docs,
+ * translated)"; 11:02 set the order Spanish, German, French, Italian, and 14:05 held Italian until PRIME said so, which
+ * he did on 11/11/2026 01:30: "get Italian up to speed with German, Spanish, French, Brazilian Portuguese, and
+ * international English"; the first phase is the interface and the tool docs,
  * the corpora follow). A locale joins this list when its interface is complete (guard: scripts/check-interface-locales.mts).
  *
  * In such a locale a page speaks for itself (self-canonical, in the hreflang sets and the sitemap) unless its route
  * belongs to one of CORPUS_ROUTE_FAMILIES below, whose words stay English there until the corpus is written: those
  * pages keep naming the English page as canonical (scripts/seo-locales.mjs). AUTHORED_CONTENT_LOCALES are always here.
  */
-export const INTERFACE_LOCALES = ["en", "pt-BR", "es", "de", "fr"] as const;
+export const INTERFACE_LOCALES = ["en", "pt-BR", "es", "de", "fr", "it"] as const;
 
 /**
  * The first route segments whose page content comes from a corpus rather than the interface: Learn and the glossary

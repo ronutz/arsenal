@@ -27,6 +27,8 @@
 // anywhere; the clocks tick from the device's own clock once a minute.
 // ============================================================================
 
+// English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
+import { intlLocale } from "@/i18n/locales";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import CountryFlag from "./CountryFlag";
@@ -66,7 +68,7 @@ function wallTime(at: Date, zone: string): string {
 /** The short zone name in force at an instant (PDT, BRT, GMT+4...). */
 function zoneAbbrev(at: Date, zone: string, locale: string): string {
   // The timeZoneName part of a formatted date; falls back to the zone id if the engine gives none.
-  const parts = new Intl.DateTimeFormat(locale, { timeZone: zone, timeZoneName: "short" }).formatToParts(at);
+  const parts = new Intl.DateTimeFormat(intlLocale(locale), { timeZone: zone, timeZoneName: "short" }).formatToParts(at);
   return parts.find((p) => p.type === "timeZoneName")?.value ?? zone;
 }
 

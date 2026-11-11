@@ -2,7 +2,7 @@
 
 Es nimmt HTML (ein Dokument oder ein Fragment) und einen oder mehrere Selektoren, einen pro Zeile, und zeigt, welche Elemente jeder Selektor trifft: die Elemente, hervorgehoben im geparsten Baum mit ihrem Pfad und ihrer Quellzeile, die Anzahl je Selektor, das Spezifitätstripel, gezählt nach Abschnitt 15, einen Hinweis, wenn der Selektor ein Pseudo-Element benennt (dann zählen die Ursprungselemente, denn ein Pseudo-Element ist eine Box, kein Element), und bei einem ungültigen Selektor den Grund und die Position.
 
-Das HTML wird mit parse5 inert geparst, demselben Parser, den „HTML-Struktur und DOM erklärt“ verwendet; die Selektoren parst und gleicht eine eigene Engine ab, geschrieben nach Selectors Level 4 (W3C Working Draft vom 22. Januar 2026) und den Selektorregeln des HTML Standard, und geprüft gegen `querySelectorAll` von Chromium anhand der mit dem Tool ausgelieferten Vektoren (139 von 146 Selektoren stimmen überein; die sieben abweichenden sind unten aufgeführt, und jede Abweichung ist gewollt). Es wird nichts ausgeführt, abgerufen oder gerendert; die gehostete API führt denselben Code aus.
+Das HTML wird mit parse5 inert geparst, demselben Parser, den „HTML-Struktur und DOM erklärt“ verwendet; die Selektoren parst und gleicht eine eigene Engine ab, geschrieben nach Selectors Level 4 (W3C Working Draft vom 22. Januar 2026) und den Selektorregeln des HTML Standard, und geprüft gegen `querySelectorAll` von Chromium anhand der mit dem Tool ausgelieferten Vektoren (139 von 146 Selektoren stimmen überein; die sieben abweichenden fallen unter die unten aufgeführten Fälle, und jede Abweichung ist gewollt). Es wird nichts ausgeführt, abgerufen oder gerendert; die gehostete API führt denselben Code aus.
 
 ## Was abgeglichen wird und wie
 

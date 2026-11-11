@@ -369,7 +369,7 @@ function decodeIqdump(text: string): IqueryResult<EngineText> {
   if (fields.length === 0) {
     notes.push({
       kind: "warn",
-      text: say("note.iqdumpEmpty", "This looks like iqdump output but no header comments or XML fields were recognised. Paste the full output including the <!-- ... --> header lines and the <xml_connection> stanza."), // pack key engine.note.iqdumpEmpty
+      text: say("note.iqdumpEmpty", "This looks like iqdump output but no header comments or XML fields were recognized. Paste the full output including the <!-- ... --> header lines and the <xml_connection> stanza."), // pack key engine.note.iqdumpEmpty
     });
   }
   notes.push({
@@ -436,7 +436,7 @@ function decodeGtmLog(text: string): IqueryResult<EngineText> {
   if (fields.length === 0) {
     notes.push({
       kind: "warn",
-      text: say("note.logEmpty", "This looks like a gtm log but no iQuery state-change or big3d-connection lines were recognised. Paste lines such as the SNMP_TRAP box state-change messages from /var/log/gtm."), // pack key engine.note.logEmpty
+      text: say("note.logEmpty", "This looks like a gtm log but no iQuery state-change or big3d-connection lines were recognized. Paste lines such as the SNMP_TRAP box state-change messages from /var/log/gtm."), // pack key engine.note.logEmpty
     });
   } else {
     notes.push({
@@ -530,7 +530,7 @@ export function runLocalisable(input: string): IqueryResult<EngineText> {
   idx.notes = [
     {
       kind: "warn",
-      text: say("note.unrecognised", `"${text.slice(0, 60)}" was not recognised as iqdump output, a gtm log line, or a known topic. Pick a topic below, or paste iqdump / /var/log/gtm text.`, { text: text.slice(0, 60) }), // pack key engine.note.unrecognised
+      text: say("note.unrecognised", `"${text.slice(0, 60)}" was not recognized as iqdump output, a gtm log line, or a known topic. Pick a topic below, or paste iqdump / /var/log/gtm text.`, { text: text.slice(0, 60) }), // pack key engine.note.unrecognised
     },
     ...idx.notes,
   ];

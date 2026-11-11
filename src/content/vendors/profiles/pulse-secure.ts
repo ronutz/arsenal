@@ -39,7 +39,7 @@ export const pulseSecureProfile: VendorProfile = {
     { year: 2014, title: "Siris carves out Pulse Secure", detail: "Siris Capital acquires the Junos Pulse business from Juniper (~$250 million per press coverage), forming Pulse Secure LLC - the SSL VPN franchise as a standalone company, with mobile-security startup MobileSpaces bought the same year." },
     { year: 2015, title: "Pulse One", detail: "Central policy management arrives, unifying secure access across endpoints and mobile devices to applications on-premises and in cloud - the portfolio widening beyond the gateway." },
     { year: 2017, title: "The Zeus thread arrives", detail: "Pulse acquires Brocade's virtual ADC business - the load-balancing lineage that began at Zeus Technology and passed through Riverbed as SteelApp - briefly uniting two storied product bloodlines under one small vendor." },
-    { year: 2020, title: "Into Ivanti", detail: "September 28, 2020: Ivanti announces the acquisition of Pulse Secure from Siris (terms undisclosed) alongside MobileIron; both close December 1, 2020. Pulse Connect Secure becomes Ivanti Connect Secure - the remote-access line under its fifth flag.", sourceNote: "SEC 8-K and Ivanti/Siris announcements." },
+    { year: 2020, title: "Into Ivanti", detail: "28 September 2020: Ivanti announces the acquisition of Pulse Secure from Siris (terms undisclosed) alongside MobileIron; both close 1 December 2020. Pulse Connect Secure becomes Ivanti Connect Secure - the remote-access line under its fifth flag.", sourceNote: "SEC 8-K and Ivanti/Siris announcements." },
     { year: 2018, personal: true, title: "My chapter", detail: "2018 to 2019: Pulse Connect Secure ran through my ScanSource portfolio - pre-sales and partner enablement on a product I had first known from inside Juniper." },
   ],
   products: [
@@ -52,7 +52,7 @@ export const pulseSecureProfile: VendorProfile = {
     { title: "One product, five flags", detail: "Neoteris, NetScreen, Juniper, Pulse Secure, Ivanti: the same secure-access lineage carried through four acquisitions - networking's supply chain of ideas in a single product family." },
   ],
   markets: [
-    "The Pulse portfolio now ships as Ivanti's secure-access line, defending a vast VPN installed base while the market's centre of gravity shifts toward zero-trust network access - the incumbent estate every ZTNA vendor bids to replace.",
+    "The Pulse portfolio now ships as Ivanti's secure-access line, defending a vast VPN installed base while the market's centre of gravity shifts towards zero-trust network access - the incumbent estate every ZTNA vendor bids to replace.",
   ],
   analyst: [
     "For years the SSL VPN reference alongside Cisco and F5 in the secure-access evaluations - the standing that made the franchise worth carving out, and worth acquiring twice.",

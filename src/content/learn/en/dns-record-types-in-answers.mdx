@@ -77,7 +77,7 @@ On 2026-10-18 a missing name under example.com came back NOERROR with the SOA ab
 
 ## MX and SRV: preference, priority, weight, and the dot that means none
 
-An MX (mail exchange) record's data is a 16-bit PREFERENCE and an EXCHANGE host ([RFC 1035, section 3.3.9](https://www.rfc-editor.org/rfc/rfc1035.txt)). A sending mail server sorts by preference, lower first, and randomises among equals ([RFC 5321, section 5.1](https://www.rfc-editor.org/rfc/rfc5321.txt)). A single record `0 .` is the null MX, no mail accepted, and "A domain that advertises a null MX MUST NOT advertise any other MX RR" ([RFC 7505, section 3](https://www.rfc-editor.org/rfc/rfc7505.txt)).
+An MX (mail exchange) record's data is a 16-bit PREFERENCE and an EXCHANGE host ([RFC 1035, section 3.3.9](https://www.rfc-editor.org/rfc/rfc1035.txt)). A sending mail server sorts by preference, lower first, and randomizes among equals ([RFC 5321, section 5.1](https://www.rfc-editor.org/rfc/rfc5321.txt)). A single record `0 .` is the null MX, no mail accepted, and "A domain that advertises a null MX MUST NOT advertise any other MX RR" ([RFC 7505, section 3](https://www.rfc-editor.org/rfc/rfc7505.txt)).
 
 An SRV (Server Selection) record, type 33, is owned by a name of the form `_Service._Proto.Name` and holds Priority, Weight, Port and Target ([RFC 2782, The format of the SRV RR](https://www.rfc-editor.org/rfc/rfc2782.txt)). "A client MUST attempt to contact the target host with the lowest-numbered priority it can reach" (Usage rules), and among equal priorities "Larger weights SHOULD be given a proportionately higher probability of being selected" (Usage rules). A Target of `.` means the service is decidedly not available (The format of the SRV RR). The RFC's own example:
 

@@ -1,0 +1,24 @@
+## Cosa fa
+
+Incolla un blocco grezzo di intestazioni di una richiesta HTTP (una riga di richiesta e una riga «Name: value» per ogni intestazione) e lo strumento spiega come l’ordine e le maiuscole delle intestazioni costituiscono un’impronta (fingerprint) del client. Classifica il mittente come browser della famiglia Chromium, Firefox o libreria HTTP confrontando la sequenza delle intestazioni e controllando la presenza di intestazioni tipiche dei soli browser, come Sec-Fetch e Sec-CH-UA, segnala l’indizio del minuscolo di HTTP/2 ed elenca le intestazioni comuni dei browser che mancano.
+
+## L’equivalente HTTP passivo di JA3
+
+JA3 ricava l’impronta di un client TLS dall’ordine dei cifrari e delle estensioni nel suo ClientHello. L’ordine delle intestazioni applica la stessa idea un livello più su: browser, librerie e bot emettono ciascuno le intestazioni della richiesta in una sequenza caratteristica, e quella sequenza sopravvive anche quando i valori sono falsificati. Una richiesta il cui ordine delle intestazioni contraddice lo User-Agent che dichiara (lo UA di Chrome con l’insieme di intestazioni di curl) è un classico segnale di un bot, ed è per questo che i sistemi di rilevamento dei bot e i WAF (web application firewall) si basano su di esso.
+
+## Lettura del risultato
+
+L’hash dell’ordine è un ID breve e stabile della sequenza esatta delle intestazioni, mostrato solo a scopo di visualizzazione. Le note sulle singole intestazioni spiegano perché ogni posizione conta; la nota sulle maiuscole indica se il blocco sembra una cattura HTTP/1.1 (Title-Case) o HTTP/2 (minuscolo sulla rete). Lo strumento decodifica e spiega soltanto; le intestazioni che incolli non lasciano mai il tuo browser.
+
+## Condivisione dei risultati
+
+Sotto l’indizio sul client, **Condividi i risultati** crea un link a questa pagina, solo quando lo premi, che contiene dopo il `#` una copia del blocco in cui ogni credenziale è sostituita dalla parola `REDACTED`, mai il blocco così come l’hai incollato. Il suo riquadro a comparsa indica prima cosa contiene il link e quanti valori sono stati sostituiti, poi offre Copia link e, se il browser ne ha uno, il menu di condivisione; l’indirizzo della pagina non cambia.
+
+Un blocco di intestazioni copiato dagli strumenti per sviluppatori, da una cattura o da `curl -v` contiene quasi sempre un cookie di sessione, e spesso un token, e la lettura non ne ha bisogno: legge i nomi delle intestazioni (il loro ordine, le loro maiuscole, quali intestazioni comuni mancano) e il valore dello User-Agent. Quindi la copia mantiene ogni nome, il loro ordine e lo User-Agent, e sostituisce, secondo le regole comuni agli strumenti HTTP del sito: le credenziali di `Authorization` e `Proxy-Authorization`, mantenendo lo schema ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110), sezioni 11.6.2 e 11.7.2: il valore è costituito da credenziali, «consists of credentials»; Basic mantiene lo user-id, [RFC 7617](https://www.rfc-editor.org/rfc/rfc7617), sezione 2); ogni valore di cookie di una riga `Cookie`, mantenendo i nomi ([RFC 6265](https://www.rfc-editor.org/rfc/rfc6265), sezione 4.2.1); l’intero valore di un’intestazione il cui nome indica un segreto (`X-API-Key`, `X-Auth-Token`); e la password di un URL o un parametro segreto dentro qualsiasi valore o nel target della richiesta (`access_token`, `code`, [RFC 6749](https://www.rfc-editor.org/rfc/rfc6749), sezione 4.1.2). Tutte consultate il 01/11/2026. La copia deve dare la stessa lettura del testo incollato, e la dà sempre, dato che nulla di ciò che la pagina legge cambia.
+
+Un token che nessun nome segnala (un JWT nel percorso) non può essere sostituito in modo sicuro: la copia viene controllata di nuovo, e una chiave privata PEM, un JWS o un JWE, o una password in un URL rimasti in qualsiasi punto significano niente link; il riquadro a comparsa indica la riga. Non esiste un interruttore per inviare i valori sostituiti: sono credenziali, e la lettura non ne ha bisogno.
+
+La [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (sezione 3.5, consultata il 01/11/2026) stabilisce che il frammento viene separato dal resto dell’URI prima della dereferenziazione («separated from the rest of the URI prior to a dereference»), quindi la copia non viene inviata al server quando si apre il link; resta nella barra degli indirizzi e nella cronologia di chi lo apre, e chiunque abbia il link può leggerla.
+
+- **Lunghezza massima.** Al massimo 16.384 caratteri in tutto, il limite che il sito applica a ogni valore dopo il `#`; una condivisione più lunga non ottiene il link e il riquadro a comparsa ne indica la lunghezza.
+- **Apertura di un link.** La copia compila la casella come farebbe un incolla e la pagina la legge; nulla viene inviato. I valori lasciano poi subito l’indirizzo della pagina, senza alcuna richiesta, quindi un ricaricamento o il pulsante Condividi della pagina stessa non contengono nulla.

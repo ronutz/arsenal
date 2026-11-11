@@ -15,7 +15,7 @@ Engineers and instructors put code in pictures all the time: a `show` command's 
 
 ## Text first, when the medium can show text
 
-The Web Content Accessibility Guidelines treat a picture of words as a picture. WCAG 2.2 defines an image of text as "text that has been rendered in a non-text form (e.g., an image) in order to achieve a particular visual effect", and Success Criterion 1.4.5, Images of Text (Level AA), says that if the technology in use can achieve the visual presentation, text is used rather than images of text, unless the image can be customised by the user or the particular presentation is essential. The W3C's Understanding document explains why: people who need a different font size, colour, font or spacing can change real text and cannot change pixels.
+The Web Content Accessibility Guidelines treat a picture of words as a picture. WCAG 2.2 defines an image of text as "text that has been rendered in a non-text form (e.g., an image) in order to achieve a particular visual effect", and Success Criterion 1.4.5, Images of Text (Level AA), says that if the technology in use can achieve the visual presentation, text is used rather than images of text, unless the image can be customized by the user or the particular presentation is essential. The W3C's Understanding document explains why: people who need a different font size, colour, font or spacing can change real text and cannot change pixels.
 
 For code, that settles most cases. A documentation page, a wiki, a knowledge base article or a ticket system that renders fenced code blocks can show the code as text, monospaced and highlighted, and the reader can copy it, which a picture never allows. Keep the picture for the places that cannot: a slide whose tool does not keep code formatting, a chat that flattens indentation, a printed handout. On a slide, the speaker notes are text, so the code can travel there as well.
 
@@ -41,7 +41,7 @@ The third loss is the one that hurts. A picture keeps every character that was o
 
 **AWS access keys.** AWS's IAM documentation lists the prefixes of its unique identifiers: `AKIA` for an access key and `ASIA` for a temporary access key issued by AWS STS. An access key ID is half of a credential; the other half is the secret access key, which the AWS CLI's credentials file stores next to it as `aws_secret_access_key`.
 
-**JWTs.** RFC 7519 defines a JWT as a set of claims carried in a JWS or JWE compact serialisation: base64url segments joined by dots, three of them for a signed token and five for an encrypted one. RFC 7515 defines base64url as an encoding of the bytes, so the header and the claims of a signed token are readable by anyone who has it, and while it is valid it is the credential.
+**JWTs.** RFC 7519 defines a JWT as a set of claims carried in a JWS or JWE compact serialization: base64url segments joined by dots, three of them for a signed token and five for an encrypted one. RFC 7515 defines base64url as an encoding of the bytes, so the header and the claims of a signed token are readable by anyone who has it, and while it is valid it is the credential.
 
 **Passwords in URLs.** RFC 3986 says the `user:password` form in a URL's userinfo is deprecated, and that applications should not render as clear text any data after the first colon. Configuration still holds such URLs: F5's own tmsh reference shows a key file imported from `ftp://username:password@server/...`.
 

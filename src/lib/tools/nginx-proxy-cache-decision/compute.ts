@@ -273,7 +273,7 @@ export function decideCacheLocalisable(input: string): CacheDecision<EngineText>
     setCookie
       ? ignored("set-cookie")
         ? say("store.cookieIgnored", `The response sets a cookie, but Set-Cookie is in proxy_ignore_headers, so NGINX stores it anyway. This is the setting that turns a per-user response into a shared one.`) // ignored
-        : say("store.cookie", `The response carries Set-Cookie, so NGINX will NOT store it. This default assumes the response is user-specific, and it is the reason a login page or a personalised page is never cached by accident.`) // not stored
+        : say("store.cookie", `The response carries Set-Cookie, so NGINX will NOT store it. This default assumes the response is user-specific, and it is the reason a login page or a personalized page is never cached by accident.`) // not stored
       : say("store.noCookie", `No Set-Cookie in the response.`), // no cookie
   );
 

@@ -20,7 +20,7 @@ Which means the timeline's real output is not a record. It is an **ordering clai
 
 ## Every source lies about time differently
 
-**Clocks disagree.** Devices whose time synchronisation quietly stopped working months ago are the single most common source of false ordering, and the drift is invisible because each device is internally consistent. This is why [designing for three in the morning](/practice/designing-for-three-in-the-morning) puts a shared clock among the two things worth designing in deliberately: without it, cross-device ordering is arithmetic on incomparable numbers.
+**Clocks disagree.** Devices whose time synchronization quietly stopped working months ago are the single most common source of false ordering, and the drift is invisible because each device is internally consistent. This is why [designing for three in the morning](/practice/designing-for-three-in-the-morning) puts a shared clock among the two things worth designing in deliberately: without it, cross-device ordering is arithmetic on incomparable numbers.
 
 **Logs record the write, not the event.** Buffered logging, batched shipping and queued forwarding all mean the timestamp may be when the line was flushed. Under load - which is when incidents happen - those buffers are fullest and the skew is largest, so the distortion is worst exactly when you need it least.
 

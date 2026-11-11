@@ -96,7 +96,7 @@ The algorithm is the work of Radia Perlman, at Digital Equipment Corporation, wh
 - Lowest bridge ID is root; every other switch has one root port; every segment one designated port; the rest block. Set the root's priority on purpose.
 - Classic STP took 30 to 50 seconds to recover; RSTP's proposal and agreement can converge in a few hundred milliseconds on point-to-point links and edge ports.
 - MSTP maps groups of VLANs to a few trees; a region is name plus revision plus mapping, identical on every switch.
-- Protect the edge: edge ports (PortFast) with BPDU Guard toward hosts, Root Guard where the root must never be.
+- Protect the edge: edge ports (PortFast) with BPDU Guard towards hosts, Root Guard where the root must never be.
 
 ## Sources
 

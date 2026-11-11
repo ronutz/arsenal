@@ -231,7 +231,7 @@ export function decodeTrailerLocalisable(input: string): TrailerDecode<EngineTex
 
   if (fields.length === 0 && !magic && !tlsProviderPresent && !looksHex) {
     const m = say("err.nothing", // nothing it recognises
-      "Nothing recognisable found. Paste either the raw trailer bytes as hex, or the F5 Ethernet Trailer section as Wireshark displays it.",
+      "Nothing recognizable found. Paste either the raw trailer bytes as hex, or the F5 Ethernet Trailer section as Wireshark displays it.",
     );
     throw withEngineText(new TrailerError(m.text), m); // the same class and message, carrying the sentence
   }

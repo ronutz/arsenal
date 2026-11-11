@@ -30,6 +30,8 @@
 "use client";
 
 // React's state, refs, memo and callbacks.
+// English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
+import { intlLocale } from "@/i18n/locales";
 import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 // Strings.
 import { useTranslations } from "next-intl";
@@ -444,7 +446,7 @@ export default function AccessPoints(props: { locale: string }) {
     // The locale's list format, or a plain comma list where the browser has none.
     try {
       // "B and D".
-      return new Intl.ListFormat(props.locale, { style: "long", type: "conjunction" }).format(items);
+      return new Intl.ListFormat(intlLocale(props.locale), { style: "long", type: "conjunction" }).format(items);
     } catch {
       // "B, D".
       return items.join(", ");

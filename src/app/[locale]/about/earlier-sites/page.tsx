@@ -45,10 +45,12 @@ import {
   waybackUrl,
   type ToolArchiveRecord,
 } from "@/content/about/earlier-sites";
+import { formatDay } from "@/lib/changelogView"; // a date in the reader's own words
 import { CLONE_EXPORT_DATE, OLD_SITE_CLONES, cloneWrapperPath } from "@/content/about/old-sites";
 
 /** YYYYMMDDhhmmss to YYYY-MM-DD, for a record's own timestamps (the inventory helper takes a page). */
 const stamp = (ts: string) => `${ts.slice(0, 4)}-${ts.slice(4, 6)}-${ts.slice(6, 8)}`;
+// Every date the page prints inside a sentence goes through formatDay (the reader's own form, 2026-11-11).
 
 /** The four labelled paragraphs every era carries, in display order. */
 const ERA_FIELDS = ["nature", "characteristics", "offerings", "contents"] as const;
@@ -75,6 +77,8 @@ export default async function EarlierSitesPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("earlierSites");
+  // A date for this page's reader: "3 October 2026", «3 ottobre 2026» (an ISO date in, the locale's words out).
+  const day = (iso: string) => formatDay(iso, locale);
 
   // The sites' age is derived at build time from the first capture year, so the
   // sentence stays true without anyone editing a number (the site rebuilds often).
@@ -94,7 +98,7 @@ export default async function EarlierSitesPage({
               <p className="era-years mono">{t("eyebrow")}</p>
               <h1 className="era-title">{t("title")}</h1>
               <p className="era-subtitle">
-                {t("lede", { pages: ARCHIVED_PAGE_COUNT, date: ARCHIVE_READ_DATE })}
+                {t("lede", { pages: ARCHIVED_PAGE_COUNT, date: day(ARCHIVE_READ_DATE) })}
               </p>
             </div>
           </section>
@@ -105,7 +109,7 @@ export default async function EarlierSitesPage({
               <p className="era-intro">{t("ageLine", { years: yearsSince })}</p>
               <div className="es-provenance vendor-note">
                 <h2 className="es-h2">{t("provenanceTitle")}</h2>
-                <p>{t("provenanceBody", { date: ARCHIVE_READ_DATE })}</p>
+                <p>{t("provenanceBody", { date: day(ARCHIVE_READ_DATE) })}</p>
               </div>
             </div>
           </section>
@@ -122,11 +126,11 @@ export default async function EarlierSitesPage({
                     <li className="es-feature-card" key={c.slug}>
                       <Link href={cloneWrapperPath(c)} className="es-feature-thumb">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={c.thumbnail} alt={t("featureThumbAlt", { date: c.thumbnailDate, domain: c.domain })} loading="lazy" decoding="async" />
+                        <img src={c.thumbnail} alt={t("featureThumbAlt", { date: day(c.thumbnailDate), domain: c.domain })} loading="lazy" decoding="async" />
                       </Link>
                       <div className="es-feature-body">
                         <p className="es-feature-name"><Link href={cloneWrapperPath(c)}>{t(`clone.title.${c.slug}`)}</Link></p>
-                        <p className="es-feature-facts mono">{t("featureFacts", { pages: c.manifest.pageCount, assets: c.manifest.assets, exportDate: CLONE_EXPORT_DATE })}</p>
+                        <p className="es-feature-facts mono">{t("featureFacts", { pages: c.manifest.pageCount, assets: c.manifest.assets, exportDate: day(CLONE_EXPORT_DATE) })}</p>
                         <p className="es-feature-open"><Link href={cloneWrapperPath(c)}>{t("featureOpen")} <span aria-hidden="true">&#8594;</span></Link></p>
                       </div>
                     </li>
@@ -172,7 +176,7 @@ export default async function EarlierSitesPage({
                         <summary className="es-inventory-summary">
                           <span className="es-inventory-title">{t("inventoryTitle")}</span>
                           <span className="es-inventory-count">
-                            {t("inventorySummary", { count: era.pages.length, from: era.from, to: era.to })}
+                            {t("inventorySummary", { count: era.pages.length, from: day(era.from), to: day(era.to) })}
                           </span>
                         </summary>
                         <div className="es-table-wrap">
@@ -225,7 +229,7 @@ export default async function EarlierSitesPage({
                   page that carries the idea today. The two home pages come first, because they are where the links
                   were. A 404 is a record too: four dated requests, four refusals, no copy anywhere. */}
               <h3 className="es-h3">{t("recordsTitle")}</h3>
-              <p className="es-records-lede">{t("recordsLede", { date: TOOL_RECORDS_READ_DATE })}</p>
+              <p className="es-records-lede">{t("recordsLede", { date: day(TOOL_RECORDS_READ_DATE) })}</p>
               <ul className="es-records">
                 {/* The two home pages that carried the links. */}
                 {([
@@ -235,14 +239,14 @@ export default async function EarlierSitesPage({
                   <li className="es-record" key={key}>
                     <a className="es-record-thumb" href={rec.rendering} target="_blank" rel="noopener noreferrer">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={rec.rendering} alt={t("recordRenderingOf", { date: stamp(rec.captured) })} loading="lazy" decoding="async" />
+                      <img src={rec.rendering} alt={t("recordRenderingOf", { date: day(stamp(rec.captured)) })} loading="lazy" decoding="async" />
                     </a>
                     <div className="es-record-body">
                       <p className="es-record-name">{label}</p>
                       <p className="es-record-note mono">{rec.original}</p>
                       <p className="es-record-links">
-                        <a href={rec.rendering} target="_blank" rel="noopener noreferrer">{t("recordRenderingOf", { date: stamp(rec.captured) })}</a>
-                        <a href={recordWaybackUrl(rec.original, rec.captured)} target="_blank" rel="noopener noreferrer">{t("recordArchive", { date: stamp(rec.captured) })}</a>
+                        <a href={rec.rendering} target="_blank" rel="noopener noreferrer">{t("recordRenderingOf", { date: day(stamp(rec.captured)) })}</a>
+                        <a href={recordWaybackUrl(rec.original, rec.captured)} target="_blank" rel="noopener noreferrer">{t("recordArchive", { date: day(stamp(rec.captured)) })}</a>
                       </p>
                     </div>
                   </li>
@@ -255,7 +259,7 @@ export default async function EarlierSitesPage({
                       {first ? (
                         <a className="es-record-thumb" href={first.rendering} target="_blank" rel="noopener noreferrer">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={first.rendering} alt={t("recordRenderingOf", { date: stamp(first.captured) })} loading="lazy" decoding="async" />
+                          <img src={first.rendering} alt={t("recordRenderingOf", { date: day(stamp(first.captured)) })} loading="lazy" decoding="async" />
                         </a>
                       ) : (
                         <span className="es-record-thumb es-record-thumb--none" aria-hidden="true">404</span>
@@ -268,15 +272,15 @@ export default async function EarlierSitesPage({
                             <span className="mono es-record-url">{rec.original}</span>
                             {rec.status === 200 ? (
                               <span className="es-record-links">
-                                <span className="es-record-fact">{t("recordCaptures", { count: rec.captures ?? 1, from: stamp(rec.captured), to: stamp(rec.lastCaptured ?? rec.captured) })}</span>
-                                {rec.rendering && <a href={rec.rendering} target="_blank" rel="noopener noreferrer">{t("recordRenderingOf", { date: stamp(rec.captured) })}</a>}
-                                <a href={recordWaybackUrl(rec.original, rec.captured)} target="_blank" rel="noopener noreferrer">{t("recordArchive", { date: stamp(rec.captured) })}</a>
+                                <span className="es-record-fact">{t("recordCaptures", { count: rec.captures ?? 1, from: day(stamp(rec.captured)), to: day(stamp(rec.lastCaptured ?? rec.captured)) })}</span>
+                                {rec.rendering && <a href={rec.rendering} target="_blank" rel="noopener noreferrer">{t("recordRenderingOf", { date: day(stamp(rec.captured)) })}</a>}
+                                <a href={recordWaybackUrl(rec.original, rec.captured)} target="_blank" rel="noopener noreferrer">{t("recordArchive", { date: day(stamp(rec.captured)) })}</a>
                               </span>
                             ) : (
                               <span className="es-record-links">
-                                <span className="es-record-fact">{t("recordAttempts", { dates: (rec.attempts ?? []).map(stamp).join(", ") })} {t("recordNoCopy")}</span>
+                                <span className="es-record-fact">{t("recordAttempts", { dates: (rec.attempts ?? []).map((a) => day(stamp(a))).join(", ") })} {t("recordNoCopy")}</span>
                                 {(rec.attempts ?? []).map((a) => (
-                                  <a key={a} href={recordWaybackUrl(rec.original, a)} target="_blank" rel="noopener noreferrer">{t("recordArchive", { date: stamp(a) })}</a>
+                                  <a key={a} href={recordWaybackUrl(rec.original, a)} target="_blank" rel="noopener noreferrer">{t("recordArchive", { date: day(stamp(a)) })}</a>
                                 ))}
                               </span>
                             )}
@@ -312,7 +316,7 @@ export default async function EarlierSitesPage({
           <section className="section era-closer-section">
             <div className="container era-container">
               <h2 className="es-h2">{t("sourcesTitle")}</h2>
-              <p className="es-sources">{t("sourcesBody", { date: ARCHIVE_READ_DATE })}</p>
+              <p className="es-sources">{t("sourcesBody", { date: day(ARCHIVE_READ_DATE) })}</p>
             </div>
           </section>
         </article>

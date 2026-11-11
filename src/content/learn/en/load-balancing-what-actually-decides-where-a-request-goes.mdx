@@ -33,7 +33,7 @@ The parts worth knowing because they explain the failure modes:
 
 **Layer 4 versus layer 7.** At layer 4 the device rewrites addresses and ports and forwards; it never sees the request. At layer 7 it terminates the client connection, reads the request, and opens its own connection to the server. That difference decides everything else: content-based routing, cookie persistence and TLS inspection all require termination, and termination makes the balancer a party to the conversation rather than a forwarder.
 
-**Source NAT and the client address.** When the balancer opens the backend connection, the server sees the *balancer's* address unless something carries the original. Hence `X-Forwarded-For`, and the `Forwarded` header standardised in RFC 7239, and hence the recurring incident where every log line and every rate limit sees one client, because the header was never configured or never trusted.
+**Source NAT and the client address.** When the balancer opens the backend connection, the server sees the *balancer's* address unless something carries the original. Hence `X-Forwarded-For`, and the `Forwarded` header standardized in RFC 7239, and hence the recurring incident where every log line and every rate limit sees one client, because the header was never configured or never trusted.
 
 **Direct server return.** The server answers the client directly, bypassing the balancer on the way back. Excellent for asymmetric traffic like video, and it excludes anything requiring layer 7, because the return path is never seen.
 
@@ -129,7 +129,7 @@ The single most useful habit: **watch per-member metrics, not the pool average.*
 
 ## This series, in order
 
-This article opens the series **Load balancing and persistence**. Its four questions (who is alive, who gets this request, must this client return to the same place, what happens on failure) organise the parts: the virtual server and the TCP proxy that do the work, then persistence chosen, broken behind NAT, layered with a fallback and kept across a failover, then the same decision made globally in two tiers, and finally how the industry was built against a forecast of ten customers.
+This article opens the series **Load balancing and persistence**. Its four questions (who is alive, who gets this request, must this client return to the same place, what happens on failure) organize the parts: the virtual server and the TCP proxy that do the work, then persistence chosen, broken behind NAT, layered with a fallback and kept across a failover, then the same decision made globally in two tiers, and finally how the industry was built against a forecast of ten customers.
 
 1. **[How a BIG-IP Virtual Server Works](/learn/how-a-virtual-server-works)**. The front door of a BIG-IP: the listener, the profile stack, persistence, the pool member and the source translation.
 2. **[The TCP Proxy: What a Layer 4 Middlebox Does and Does Not See](/learn/tcp-proxy-layer-4)**. Two independent TCP flows spliced at layer 4: what a proxy rewrites, pools and cannot see.

@@ -15,11 +15,11 @@ updated: "2026-10-27"
 
 Netscape needed people to type card numbers into a browser in 1994, and the web had no confidentiality at all. **SSL 1.0** was never released; **SSL 2.0** shipped in 1995 with flaws serious enough that **SSL 3.0** replaced it a year later as a redesign rather than a patch.
 
-Standardisation moved the protocol from one company to the IETF, and the version number was reset to avoid the appearance of a vendor product: **TLS 1.0 (RFC 2246, 1999)** is, on the wire, SSL 3.1. The lineage matters because the wire version numbers still carry it: a TLS 1.2 record announces `0x0303`, which is SSL 3.3 counting from the original.
+Standardization moved the protocol from one company to the IETF, and the version number was reset to avoid the appearance of a vendor product: **TLS 1.0 (RFC 2246, 1999)** is, on the wire, SSL 3.1. The lineage matters because the wire version numbers still carry it: a TLS 1.2 record announces `0x0303`, which is SSL 3.3 counting from the original.
 
 The generations that followed each removed something rather than added:
 
-- **TLS 1.0 (1999)** and **TLS 1.1 (RFC 4346, 2006)**: the latter added explicit initialisation vectors after attacks on the implicit ones. Both are now prohibited in practice.
+- **TLS 1.0 (1999)** and **TLS 1.1 (RFC 4346, 2006)**: the latter added explicit initialization vectors after attacks on the implicit ones. Both are now prohibited in practice.
 - **TLS 1.2 (RFC 5246, 2008)**: brought authenticated encryption and SHA-256, and removed the hard-wired MD5/SHA-1 construction. This is the version that carried the web for a decade.
 - **TLS 1.3 (RFC 8446, 2018)**: took five years and roughly thirty drafts, because the design goal was subtraction: remove renegotiation, compression, static RSA key exchange, and every cipher suite without authenticated encryption. Most historical TLS attacks target options that TLS 1.3 simply does not offer.
 - **DTLS 1.2 (RFC 6347)** and **DTLS 1.3 (RFC 9147)**: the same handshake adapted for datagram transport.
@@ -126,7 +126,7 @@ This article opens the series **TLS and the cipher suites**. It maps the four sh
 11. **[The named TLS attacks, 2011-2023: what each one broke, and what the protocol removed because of it](/learn/the-named-tls-attacks)**. BEAST to Terrapin: what each named attack broke between 2011 and 2023, and what the protocol removed because of it.
 12. **[Inbound TLS: Offload, Bridging, and Passthrough at the Reverse Proxy](/learn/tls-reverse-proxy-inbound)**. Offload, bridging and passthrough: the three ways a reverse proxy handles an inbound session, and what each trades.
 13. **[SSL Forward Proxy: How Outbound TLS Interception Works and What Breaks It](/learn/ssl-forward-proxy-interception)**. The controlled man in the middle of outbound inspection: the forged certificate, the private CA, and what breaks it.
-14. **[Mutual TLS: two identities, two trust decisions, and the authorisation that comes after](/learn/mutual-tls)**. The client presents a certificate too: how the server asks, what it may do when the answer is missing, and why a valid certificate is not a permission.
+14. **[Mutual TLS: two identities, two trust decisions, and the authorization that comes after](/learn/mutual-tls)**. The client presents a certificate too: how the server asks, what it may do when the answer is missing, and why a valid certificate is not a permission.
 15. **[Reading openssl s_client: what the command checks and what the output proves](/learn/reading-openssl-s-client-output)**. The client most engineers run first: the defaults it does not show, every block of its report, the verify errors that matter, and a command that checks what you think it checks.
 
 ## Sources

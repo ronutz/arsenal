@@ -1,0 +1,47 @@
+## Cosa fa
+
+Legge una Content-Security-Policy come la legge Content Security Policy Level 3 e dà un giudizio su ciò che ha trovato. Il testo incollato può essere un valore di intestazione, un’intera riga di intestazione `Content-Security-Policy:` o `Content-Security-Policy-Report-Only:`, un elemento `<meta http-equiv="Content-Security-Policy">` o più di questi; i membri di un’intestazione separati da virgole sono policy distinte, ciascuna valutata per conto suo.
+
+Per ogni policy: ogni direttiva, con il suo nome e la sua classificazione (CSP3, deprecata, estensione, obsoleta, sconosciuta) e una spiegazione di una riga di ciò che regola; ogni espressione di sorgente letta in base alla grammatica (parola chiave, nonce, hash, schema, host con schema, porta, percorso e caratteri jolly) e spiegata; la policy effettiva per ogni destinazione attraverso l’elenco di fallback; il quadro degli script (inline consentiti, solo con nonce o hash, oppure bloccati; eval; WebAssembly; 'strict-dynamic'); e i rilievi, classificati come alta, media, bassa, nota e positivo, ciascuno con la citazione della frase della specifica. Il giudizio è uno tra strict (la policy soddisfa lo Strict CSP definito dalla specifica stessa nella sezione 8.5), buona, discreta, debole o nessuno (nulla limita gli script).
+
+Solo decodifica e giudizio, offline: non viene scaricato nulla e non viene caricata alcuna pagina. L’API ospitata esegue lo stesso codice.
+
+## Come viene letta la policy
+
+- 2.2.1: divisione sui punti e virgola, rimozione degli spazi, nome in minuscolo, divisione del valore sugli spazi bianchi; una direttiva duplicata viene ignorata («If policy's directive set contains a directive whose name is directive name, continue», C1).
+- 2.3.1: ogni token è una `scheme-source`, una `host-source`, una `keyword-source`, una `nonce-source` o una `hash-source`, oppure `'none'` da solo. Una parola chiave senza virgolette corrisponde alla grammatica degli host e viene letta come host (C7); un nome di direttiva dentro un valore indica un punto e virgola mancante (C6); un token che non rientra in nessuna forma non corrisponde a nulla (C8).
+- 6.8.3: l’elenco di fallback. script-src-elem → script-src → default-src; script-src-attr → script-src → default-src; style-src-elem e style-src-attr → style-src → default-src; worker-src → child-src → script-src → default-src; frame-src → child-src → default-src; connect-src, manifest-src, object-src, media-src, font-src, img-src → default-src; base-uri, form-action e frame-ancestors non hanno mai un fallback. Non c’è ereditarietà («There is no inheritance», 6.1.3).
+- 6.7.3.2: 'unsafe-inline' viene scavalcato da qualsiasi nonce o hash nello stesso elenco e, per gli script, da 'strict-dynamic' (C14 indica quale caso si applica).
+- 3.3 e 6.3.2: in un elemento meta, frame-ancestors, report-uri e sandbox vengono ignorati; in Report-Only, sandbox viene ignorato (C5, C26).
+
+## I rilievi
+
+C1 direttiva duplicata; C2 direttiva sconosciuta; C3 direttiva obsoleta (block-all-mixed-content secondo Mixed Content 6.1; plugin-types, referrer, reflected-xss, disown-opener, navigate-to, prefetch-src, require-sri-for assenti da CSP3); C4 report-uri deprecata (6.5.1); C5 direttiva ignorata per questa modalità di consegna; C6 punto e virgola mancante; C7 parola chiave senza virgolette; C8 non è un’espressione di sorgente; C9 'none' accanto ad altre espressioni; C10 elenco di sorgenti vuoto; C11 un valore che la direttiva non accetta (token di webrtc, upgrade-insecure-requests, require-trusted-types-for, sandbox); C12 fuori dalla grammatica di frame-ancestors; C13 nulla limita gli script; C14 'unsafe-inline' (scavalcato o no; 'unsafe-hashes'; stili); C15 'unsafe-eval', 'wasm-unsafe-eval', 'trusted-types-eval'; C16 'strict-dynamic' senza un nonce o un hash (8.2); C17 carattere jolly o schema nudo per gli script (6.7.2.8); C18 una lista di host consentiti per gli script (8.2, 8.5); C19 'self' per gli script; C20 object-src mancante, aperta, con lista di host consentiti o 'none' (6.1.9); C21 base-uri mancante, aperta o fissata (8.5); C22 frame-ancestors mancante o presente (6.4.2); C23 un nonce inferiore a 128 bit (7.1); C24 schemi non sicuri (6.7.2.9) e indirizzi IP (6.7.2.10); C25 segnalazione; C26 Report-Only.
+
+Lo Strict CSP (8.5), il giudizio «strict»: «script-src: Only use nonce source-expression and/or hash source-expression with the 'strict-dynamic' keyword-source. ... base-uri: Specify a value of either 'self' or 'none'.» Il valutatore richiede inoltre l’assenza di 'unsafe-eval' e object-src 'none', come negli esempi della specifica.
+
+## Condivisione dei risultati
+
+All’inizio della lettura, **Condividi i risultati** crea un link a questa pagina, solo quando lo premi, che contiene dopo il `#` la casella così come l’hai incollata, una volta che la pagina ha letto almeno una policy. Il suo riquadro a comparsa indica prima cosa contiene il link, poi offre Copia link e, se il browser ne ha uno, il menu di condivisione; l’indirizzo della pagina non cambia. Una policy può nominare host interni ed endpoint di segnalazione, e CSP Level 3 ([sezione 7.1](https://www.w3.org/TR/CSP3/#security-nonces), consultata il 01/11/2026) chiede al server di generare un valore univoco a ogni trasmissione di una policy («generate a unique value each time it transmits a policy»), quindi un nonce in una policy condivisa dovrebbe essere uno già usato: il riquadro a comparsa ti chiede di verificarlo. La pagina legge ogni riga della casella come una policy, quindi un’intera risposta incollata qui viaggerebbe con le sue altre intestazioni. Prima che venga proposto un link, il testo viene esaminato alla ricerca di una credenziale definita da uno standard: una chiave privata PEM, una riga `Authorization` o `Proxy-Authorization` con qualsiasi schema ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110), sezioni 11.6.2 e 11.7.2: il valore è costituito da credenziali, «consists of credentials»), una riga `Cookie` o `Set-Cookie` con un valore ([RFC 6265](https://www.rfc-editor.org/rfc/rfc6265), sezioni 4.1.1, 4.2.1 e 8.4, dove un cookie contiene comunemente un identificatore di sessione), un JWT ([RFC 7519](https://www.rfc-editor.org/rfc/rfc7519), sezione 1), una password in un URL ([RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), sezione 3.2.1), un ID della chiave di accesso AWS o un valore FortiOS `ENC`; tutte consultate il 01/11/2026. Se ne compare una, il link non viene creato: il riquadro a comparsa indica la sua riga, e tu la sostituisci con un segnaposto e premi di nuovo. Un valore il cui nome sembra soltanto un segreto (un membro JSON `token`, un `password=` nella query di un URL) non blocca il link; il riquadro a comparsa indica il primo, così puoi controllarlo.
+
+La [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (sezione 3.5, consultata il 01/11/2026) stabilisce che il frammento viene separato dal resto dell’URI prima della dereferenziazione («separated from the rest of the URI prior to a dereference»), quindi ciò che segue il `#` non viene inviato al server quando si apre il link; resta nella barra degli indirizzi e nella cronologia di chi lo apre, e chiunque abbia il link può leggerlo.
+
+- **Lunghezza massima.** Al massimo 16.384 caratteri in tutto, il limite che il sito applica a ogni valore dopo il `#`; una condivisione più lunga non ottiene il link e il riquadro a comparsa ne indica la lunghezza.
+- **Apertura di un link.** La casella si riempie come farebbe un incolla (nessun esempio pronto viene contrassegnato) e la pagina la legge. I valori lasciano poi subito l’indirizzo della pagina, senza alcuna richiesta, quindi un ricaricamento o il pulsante Condividi della pagina stessa non contengono nulla.
+
+## Limiti
+
+- La pagina legge il testo della policy, non la pagina che protegge: non può sapere quali script inline esistono, se un nonce cambia a ogni risposta o se un host consentito serve JSONP o contenuti degli utenti. I rilievi sulle liste di host consentiti descrivono la categoria.
+- Più policy vengono valutate una alla volta; quando più policy vengono applicate insieme, un caricamento deve superarle tutte (8.1).
+- L’insieme dei controlli segue il csp-evaluator di Google; la formulazione e le soglie vengono dalla specifica. Gli input oltre 20.000 caratteri vengono rifiutati.
+
+## Fonti
+
+- [Content Security Policy Level 3, W3C Working Draft 16 September 2026](https://www.w3.org/TR/CSP3/) (consultata il 05/10/2026)
+- [Mixed Content, W3C Candidate Recommendation Draft 23 February 2023](https://www.w3.org/TR/mixed-content/#strict-checking) (consultata il 05/10/2026)
+- [Upgrade Insecure Requests, W3C Candidate Recommendation 8 October 2015](https://www.w3.org/TR/upgrade-insecure-requests/) (consultata il 05/10/2026)
+- [Trusted Types, W3C Working Draft 23 June 2026](https://www.w3.org/TR/trusted-types/) (consultata il 05/10/2026)
+- [Google csp-evaluator](https://github.com/google/csp-evaluator) (consultato il 05/10/2026)
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax, January 2005](https://www.rfc-editor.org/rfc/rfc3986) (consultata il 01/11/2026): sezione 3.5, il frammento, e 3.2.1, lo userinfo
+- [RFC 6265, HTTP State Management Mechanism, April 2011](https://www.rfc-editor.org/rfc/rfc6265) (consultata il 01/11/2026): sezioni 4.1.1, 4.2.1 e 8.4
+- [RFC 9110, HTTP Semantics, June 2022](https://www.rfc-editor.org/rfc/rfc9110) (consultata il 01/11/2026): sezioni 11.6.2 e 11.7.2

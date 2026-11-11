@@ -4,7 +4,7 @@ The CIDR / Subnet Calculator works on IPv4 blocks written in CIDR notation, an a
 
 - **Subnet** analyses one block: network address, last address, netmask, wildcard mask, first and last usable host, total addresses and usable hosts, the address bits, and the special-purpose ranges the block falls in or overlaps.
 - **VLSM** carves variable-length subnets out of a parent block to fit a list of host counts.
-- **Supernet** summarises a list of prefixes into the smallest set of blocks that covers exactly the same addresses, and into the single smallest prefix that covers them all.
+- **Supernet** summarizes a list of prefixes into the smallest set of blocks that covers exactly the same addresses, and into the single smallest prefix that covers them all.
 - **Overlap / gap** finds which prefixes in a list overlap or contain each other and, given a scope, lists the space inside it that no prefix covers.
 
 Every calculation runs in your browser; nothing you type is sent anywhere. A block handed over from another page arrives after the `#` in the address, a part no request carries; see **Links into the calculator** below.
@@ -82,7 +82,7 @@ The option **Give 2-host requests a /31 (point-to-point links, RFC 3021)** is of
 
 A parent typed with host bits set, such as `192.0.2.77/24`, is masked to `192.0.2.0/24`, and the result says so above the table instead of carving the plan silently from a different block than the one typed.
 
-The result shows the parent, the addresses used and free, the utilisation, a table of every subnet (name, hosts requested, network, prefix, netmask, usable range, broadcast, usable hosts), the free space left in the parent as CIDR blocks, and the requests that did not fit.
+The result shows the parent, the addresses used and free, the utilization, a table of every subnet (name, hosts requested, network, prefix, netmask, usable range, broadcast, usable hosts), the free space left in the parent as CIDR blocks, and the requests that did not fit.
 
 Worked example: parent `203.0.113.0/24` with an office of 100 hosts, a guest LAN of 25, a management LAN of 10 and two router links of 2 hosts each.
 
@@ -108,7 +108,7 @@ Example: `10.0.0.0/26` and `10.0.0.128/26` in scope `10.0.0.0/24` do not overlap
 
 Another page can open the calculator with a block already filled in. The home page's CIDR box does this from its **Open the full CIDR calculator** link and from the special-purpose line, and the address looks like `/en/tools/cidr/#input=192.0.2.7%2F31`. The block rides in the fragment, the part after `#`: a browser never puts the fragment in an HTTP request or in a Referer header, so the host serving the page does not receive the block. The calculator reads it in the browser, runs it through the same validator as **Calculate** and shows the Subnet result (for `192.0.2.7/31`: `192.0.2.6` and `192.0.2.7`, two usable addresses). An invalid block shows the same error message as typing it would; a value longer than 16,384 characters is ignored.
 
-What the fragment does not hide: it stays in the address bar and in the browser's history, a bookmark keeps it, and anyone you send the address to can read it; the page's **Share** button says so when the address carries a block. **Clear**, **Example** or any edit removes the block from the address without reloading the page, so a later share or reload no longer carries it. Changing the language keeps the block.
+What the fragment does not hide: it stays in the address bar and in the browser's history, a bookmark keeps it, and anyone you send the address to can read it; the page's **Share results** button says so when the address carries a block. **Clear**, **Example** or any edit removes the block from the address without reloading the page, so a later share or reload no longer carries it. Changing the language keeps the block.
 
 Older links put the block in the query string instead (`?input=192.0.2.7%2F31`). They still work, but a query string is part of the request, so that first request did carry the block to the host before the page ran. The calculator then moves the block into the fragment and says so in a note under the input.
 

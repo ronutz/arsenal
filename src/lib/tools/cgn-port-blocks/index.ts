@@ -69,7 +69,7 @@ export const manifest = Object.freeze({
       type: "rfc", // Informational
       url: "https://www.rfc-editor.org/rfc/rfc7768.txt", // fetched 2026-10-19, HTTP 200
       access_date: "2026-10-19", // read today
-      scope: "ports allocated in blocks, one log per block, log generation reduced 'by a factor equal to the block size'; the 42.5 TB against 40.6 GB measurement; traceability needs the source port and synchronised clocks", // what it pins
+      scope: "ports allocated in blocks, one log per block, log generation reduced 'by a factor equal to the block size'; the 42.5 TB against 40.6 GB measurement; traceability needs the source port and synchronized clocks", // what it pins
       status: "active", // no errata
     },
     {

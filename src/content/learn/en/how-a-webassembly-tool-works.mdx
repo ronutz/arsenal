@@ -15,7 +15,7 @@ Every tool on this site before the [Python playground](/tools/python-playground)
 
 ## The thing you want is an interpreter
 
-You cannot fake Python. A regex that recognises `ipaddress.ip_network("10.0.0.0/24")` and prints what it thinks the answer is would be a toy, and a wrong one the first time you wrote a list comprehension. The only honest playground is one that runs CPython, and the only way to run CPython on a page served from static files is to run it inside the browser.
+You cannot fake Python. A regex that recognizes `ipaddress.ip_network("10.0.0.0/24")` and prints what it thinks the answer is would be a toy, and a wrong one the first time you wrote a list comprehension. The only honest playground is one that runs CPython, and the only way to run CPython on a page served from static files is to run it inside the browser.
 
 That is what WebAssembly is for. WebAssembly is a binary instruction format that browsers execute in a sandbox, at near-native speed, with no access to anything the page does not hand it. The Pyodide project compiles CPython (the reference Python interpreter) to WebAssembly with the Emscripten toolchain, together with the standard library and a bridge between Python objects and JavaScript objects. The result is a set of files a browser can download and start: at the time of writing, Pyodide 314.0.7 carrying Python 3.14.2, under the MPL-2.0 licence, as its own lock file and package metadata state.
 

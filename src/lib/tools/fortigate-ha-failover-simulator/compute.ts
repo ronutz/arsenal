@@ -207,7 +207,7 @@ function parseMembersLocalisable(text: string): { members: HaMember[]; override:
     });
   }
   if (members.length === 0) {
-    warnings.push(say("warn.noMembers", "No members were recognised. Each member goes on its own line: member: name=FGT-A, serial=FG1, priority=200, age=8600, failed=0")); // none
+    warnings.push(say("warn.noMembers", "No members were recognized. Each member goes on its own line: member: name=FGT-A, serial=FG1, priority=200, age=8600, failed=0")); // none
   }
   if (members.length === 1) {
     warnings.push(say("warn.oneMember", "Only one member was supplied, so there is no election to run. Add at least a second member.")); // one

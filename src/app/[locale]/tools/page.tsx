@@ -7,6 +7,8 @@
 // as they are added to the registry. Statically generated per locale.
 // ============================================================================
 
+// English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
+import { intlLocale } from "@/i18n/locales";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ogImages } from "@/lib/og";
 // One bounded description for the meta, og and twitter fields (src/lib/metaDescription.ts).
@@ -146,7 +148,7 @@ export default async function ToolsPage({
   // "At most six" held only between entries: one entry announcing two tools could carry the list to seven, which left
   // a lone card on the last row of the card grid (found 2026-10-27). The cut is exact now.
   recent.splice(6);
-  const dateFmt = new Intl.DateTimeFormat(locale, { day: "numeric", month: "short" });
+  const dateFmt = new Intl.DateTimeFormat(intlLocale(locale), { day: "numeric", month: "short" });
 
   // THE THREE FLOORS as three items (PRIME's UX rule of 2026-10-27, finding T1): the hero's second paragraph named the
   // floors inside one dense sentence with coloured inline links. Each floor is now a compact card, its name and one

@@ -33,7 +33,7 @@ The specification was revised as RFCs 1034 and 1035 in November 1987 ([RFC 1034]
 
 ## What the design actually did
 
-The move was from **one authority** to **delegated authority**. Rather than a central file, each organisation runs its own piece of the namespace on its own servers, and anyone in the world can query it.
+The move was from **one authority** to **delegated authority**. Rather than a central file, each organization runs its own piece of the namespace on its own servers, and anyone in the world can query it.
 
 Three properties follow, and all three are still the reason this works:
 
@@ -67,15 +67,15 @@ A resolver sees every name a device asks for, before any connection is made. Tha
 
 DNS produces few dedicated roles and appears in every serious outage postmortem. The professional reflex it created is diagnostic: check resolution first, because a name that resolves to the wrong place produces symptoms indistinguishable from a dozen other faults.
 
-Its practices are recognisable. **TTL discipline** before a migration, lowering values in advance so a change can propagate when it matters. **Zone changes under review**, because a bad record is an outage with no error message. **Split-horizon and its confusion**, where internal and external answers differ and somebody eventually debugs the wrong one. And **registrar and registry hygiene**: domain expiry and registrar account compromise are outages that no amount of infrastructure quality prevents.
+Its practices are recognizable. **TTL discipline** before a migration, lowering values in advance so a change can propagate when it matters. **Zone changes under review**, because a bad record is an outage with no error message. **Split-horizon and its confusion**, where internal and external answers differ and somebody eventually debugs the wrong one. And **registrar and registry hygiene**: domain expiry and registrar account compromise are outages that no amount of infrastructure quality prevents.
 
 ## The companies
 
-The work came from SRI, ISI and Berkeley, none of which commercialised it. The Internet Systems Consortium carries BIND; the operators of the root and the top-level domains are a mix of institutions, companies and governments; and the commercial market is registrars, managed authoritative providers, the DDI vendors and the public resolvers.
+The work came from SRI, ISI and Berkeley, none of which commercialized it. The Internet Systems Consortium carries BIND; the operators of the root and the top-level domains are a mix of institutions, companies and governments; and the commercial market is registrars, managed authoritative providers, the DDI vendors and the public resolvers.
 
 ## Where it goes
 
-**Resolution is centralising.** A small number of public resolvers now answer an enormous share of the world's queries, which improves performance and privacy against the local provider while creating exactly the concentration that the distributed design was built to avoid.
+**Resolution is centralizing.** A small number of public resolvers now answer an enormous share of the world's queries, which improves performance and privacy against the local provider while creating exactly the concentration that the distributed design was built to avoid.
 
 **Encryption moved the question, not the answer.** Encrypted transport hides the query from the network and delivers it to a resolver operator, so the trust does not disappear; it relocates, and choosing a resolver became a meaningful decision rather than a default.
 

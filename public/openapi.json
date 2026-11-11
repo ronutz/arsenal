@@ -1782,7 +1782,7 @@
         ],
         "operationId": "run_cable_run_planner",
         "summary": "Cable run planner",
-        "description": "Speed, distance, environment, PoE in - every compliant cable and fiber option out, each citing the TIA-568 or 802.3 rule that governs it, with honest exclusions for the rest. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: ANSI/TIA-568 channel limits + IEEE 802.3 optic reaches; rules table pinned by golden vectors incl. exact-at-limit cases. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Speed, distance, environment, PoE in - every compliant cable and fibre option out, each citing the TIA-568 or 802.3 rule that governs it, with honest exclusions for the rest. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: ANSI/TIA-568 channel limits + IEEE 802.3 optic reaches; rules table pinned by golden vectors incl. exact-at-limit cases. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "parameters": [
           {
             "name": "input",
@@ -1827,7 +1827,7 @@
         ],
         "operationId": "run_cable_run_planner_post",
         "summary": "Cable run planner (POST)",
-        "description": "Speed, distance, environment, PoE in - every compliant cable and fiber option out, each citing the TIA-568 or 802.3 rule that governs it, with honest exclusions for the rest. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: ANSI/TIA-568 channel limits + IEEE 802.3 optic reaches; rules table pinned by golden vectors incl. exact-at-limit cases. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Speed, distance, environment, PoE in - every compliant cable and fibre option out, each citing the TIA-568 or 802.3 rule that governs it, with honest exclusions for the rest. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: ANSI/TIA-568 channel limits + IEEE 802.3 optic reaches; rules table pinned by golden vectors incl. exact-at-limit cases. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "requestBody": {
           "required": true,
           "description": "The tool input as a JSON object.",
@@ -6430,7 +6430,7 @@
         ],
         "operationId": "run_exos_config_explainer",
         "summary": "ExtremeXOS config explainer",
-        "description": "Paste an ExtremeXOS (EXOS / Switch Engine) configuration and it explains each command in plain English, summarises the VLANs (tag, tagged and untagged ports, IP addresses), and groups the commands by category. Never touches a switch. Standards: ExtremeXOS / Switch Engine CLI. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Paste an ExtremeXOS (EXOS / Switch Engine) configuration and it explains each command in plain English, summarizes the VLANs (tag, tagged and untagged ports, IP addresses), and groups the commands by category. Never touches a switch. Standards: ExtremeXOS / Switch Engine CLI. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "parameters": [
           {
             "name": "input",
@@ -6475,7 +6475,7 @@
         ],
         "operationId": "run_exos_config_explainer_post",
         "summary": "ExtremeXOS config explainer (POST)",
-        "description": "Paste an ExtremeXOS (EXOS / Switch Engine) configuration and it explains each command in plain English, summarises the VLANs (tag, tagged and untagged ports, IP addresses), and groups the commands by category. Never touches a switch. Standards: ExtremeXOS / Switch Engine CLI. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Paste an ExtremeXOS (EXOS / Switch Engine) configuration and it explains each command in plain English, summarizes the VLANs (tag, tagged and untagged ports, IP addresses), and groups the commands by category. Never touches a switch. Standards: ExtremeXOS / Switch Engine CLI. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "requestBody": {
           "required": true,
           "description": "The tool input as text.",
@@ -7419,7 +7419,7 @@
         ],
         "operationId": "run_f5_awaf_learning_suggestion_interpreter",
         "summary": "AWAF learning-suggestion interpreter",
-        "description": "Ties the poisoning estimator and the false-positive triage together. Characterise a Traffic Learning suggestion and it tells you whether accepting it loosens or tightens the policy, whether a loosening is a false-positive fix or a security relaxation, and whether Automatic learning is about to enforce it for you. Runs entirely in your browser. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: F5 K03513854, F5 BIG-IP ASM learning, F5 K70544352. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Ties the poisoning estimator and the false-positive triage together. Characterize a Traffic Learning suggestion and it tells you whether accepting it loosens or tightens the policy, whether a loosening is a false-positive fix or a security relaxation, and whether Automatic learning is about to enforce it for you. Runs entirely in your browser. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: F5 K03513854, F5 BIG-IP ASM learning, F5 K70544352. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "parameters": [
           {
             "name": "input",
@@ -7461,7 +7461,7 @@
         ],
         "operationId": "run_f5_awaf_learning_suggestion_interpreter_post",
         "summary": "AWAF learning-suggestion interpreter (POST)",
-        "description": "Ties the poisoning estimator and the false-positive triage together. Characterise a Traffic Learning suggestion and it tells you whether accepting it loosens or tightens the policy, whether a loosening is a false-positive fix or a security relaxation, and whether Automatic learning is about to enforce it for you. Runs entirely in your browser. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: F5 K03513854, F5 BIG-IP ASM learning, F5 K70544352. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Ties the poisoning estimator and the false-positive triage together. Characterize a Traffic Learning suggestion and it tells you whether accepting it loosens or tightens the policy, whether a loosening is a false-positive fix or a security relaxation, and whether Automatic learning is about to enforce it for you. Runs entirely in your browser. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: F5 K03513854, F5 BIG-IP ASM learning, F5 K70544352. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "requestBody": {
           "required": true,
           "description": "The tool input as a JSON object.",
@@ -9525,7 +9525,7 @@
             }
           }
         },
-        "x-golden-vector-set": "f5-irules-vs-ltm-policy-golden-v1"
+        "x-golden-vector-set": "f5-irules-vs-ltm-policy-golden-2026-11-11"
       },
       "post": {
         "tags": [
@@ -9570,7 +9570,7 @@
             }
           }
         },
-        "x-golden-vector-set": "f5-irules-vs-ltm-policy-golden-v1"
+        "x-golden-vector-set": "f5-irules-vs-ltm-policy-golden-2026-11-11"
       }
     },
     "/f5-l4-profile-explainer": {
@@ -11965,7 +11965,7 @@
           "Fortinet FortiGate & FortiOS"
         ],
         "operationId": "run_fortigate_ipsec_phase_mismatch_analyzer",
-        "summary": "FortiGate IPsec phase mismatch analyzer",
+        "summary": "FortiGate IPsec phase mismatch analyser",
         "description": "Describe both IPsec peers and get the disagreement named, and which phase would fail. Phase 1 and phase 2 fail for different reasons and lead to different diagnostics. Standards: IKE phase 1 and phase 2 negotiation. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "parameters": [
           {
@@ -12010,7 +12010,7 @@
           "Fortinet FortiGate & FortiOS"
         ],
         "operationId": "run_fortigate_ipsec_phase_mismatch_analyzer_post",
-        "summary": "FortiGate IPsec phase mismatch analyzer (POST)",
+        "summary": "FortiGate IPsec phase mismatch analyser (POST)",
         "description": "Describe both IPsec peers and get the disagreement named, and which phase would fail. Phase 1 and phase 2 fail for different reasons and lead to different diagnostics. Standards: IKE phase 1 and phase 2 negotiation. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "requestBody": {
           "required": true,
@@ -15132,7 +15132,7 @@
         ],
         "operationId": "run_ldap_filter_explainer",
         "summary": "LDAP filter explainer",
-        "description": "Paste an LDAP (Lightweight Directory Access Protocol) search filter - get the annotated tree: operators, match types, decoded RFC 4515 escapes, recognised AD matching-rule OIDs, and errors anchored to the exact character. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: RFC 4515 grammar; anchored errors; AD matching-rule OIDs recognized. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Paste an LDAP (Lightweight Directory Access Protocol) search filter - get the annotated tree: operators, match types, decoded RFC 4515 escapes, recognized AD matching-rule OIDs, and errors anchored to the exact character. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: RFC 4515 grammar; anchored errors; AD matching-rule OIDs recognized. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "parameters": [
           {
             "name": "input",
@@ -15177,7 +15177,7 @@
         ],
         "operationId": "run_ldap_filter_explainer_post",
         "summary": "LDAP filter explainer (POST)",
-        "description": "Paste an LDAP (Lightweight Directory Access Protocol) search filter - get the annotated tree: operators, match types, decoded RFC 4515 escapes, recognised AD matching-rule OIDs, and errors anchored to the exact character. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: RFC 4515 grammar; anchored errors; AD matching-rule OIDs recognized. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Paste an LDAP (Lightweight Directory Access Protocol) search filter - get the annotated tree: operators, match types, decoded RFC 4515 escapes, recognized AD matching-rule OIDs, and errors anchored to the exact character. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: RFC 4515 grammar; anchored errors; AD matching-rule OIDs recognized. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "requestBody": {
           "required": true,
           "description": "The tool input as a JSON object.",
@@ -21497,7 +21497,7 @@
           "Fingerprinting"
         ],
         "operationId": "run_user_agent_entropy_analyzer",
-        "summary": "User-Agent entropy analyzer",
+        "summary": "User-Agent entropy analyser",
         "description": "Paste a User-Agent string and see the identifying tokens it exposes, the distinguishing bits each contributes, and the Client Hints migration. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "parameters": [
           {
@@ -21539,7 +21539,7 @@
           "Fingerprinting"
         ],
         "operationId": "run_user_agent_entropy_analyzer_post",
-        "summary": "User-Agent entropy analyzer (POST)",
+        "summary": "User-Agent entropy analyser (POST)",
         "description": "Paste a User-Agent string and see the identifying tokens it exposes, the distinguishing bits each contributes, and the Client Hints migration. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "requestBody": {
           "required": true,
@@ -21889,7 +21889,7 @@
             }
           }
         },
-        "x-golden-vector-set": "voss-fabric-id/2026-10-27"
+        "x-golden-vector-set": "voss-fabric-id/2026-11-11"
       },
       "post": {
         "tags": [
@@ -21934,7 +21934,7 @@
             }
           }
         },
-        "x-golden-vector-set": "voss-fabric-id/2026-10-27"
+        "x-golden-vector-set": "voss-fabric-id/2026-11-11"
       }
     },
     "/vrrp-timer-calculator": {
@@ -22034,7 +22034,7 @@
         ],
         "operationId": "run_wheel_filename_explainer",
         "summary": "Wheel filename & PEP 440 version explainer",
-        "description": "Take a wheel or sdist file name apart: name, version, build tag and every compatibility tag, which Pythons and systems it installs on, and whether it fits a given interpreter. Also normalises, sorts and matches PEP 440 versions. Standards: Binary distribution format (PEP 427), Source distribution format, Platform compatibility tags (PEP 600, PEP 656, PEP 803), Version specifiers (PEP 440), Names and normalization. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Take a wheel or sdist file name apart: name, version, build tag and every compatibility tag, which Pythons and systems it installs on, and whether it fits a given interpreter. Also normalizes, sorts and matches PEP 440 versions. Standards: Binary distribution format (PEP 427), Source distribution format, Platform compatibility tags (PEP 600, PEP 656, PEP 803), Version specifiers (PEP 440), Names and normalization. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "parameters": [
           {
             "name": "input",
@@ -22079,7 +22079,7 @@
         ],
         "operationId": "run_wheel_filename_explainer_post",
         "summary": "Wheel filename & PEP 440 version explainer (POST)",
-        "description": "Take a wheel or sdist file name apart: name, version, build tag and every compatibility tag, which Pythons and systems it installs on, and whether it fits a given interpreter. Also normalises, sorts and matches PEP 440 versions. Standards: Binary distribution format (PEP 427), Source distribution format, Platform compatibility tags (PEP 600, PEP 656, PEP 803), Version specifiers (PEP 440), Names and normalization. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Take a wheel or sdist file name apart: name, version, build tag and every compatibility tag, which Pythons and systems it installs on, and whether it fits a given interpreter. Also normalizes, sorts and matches PEP 440 versions. Standards: Binary distribution format (PEP 427), Source distribution format, Platform compatibility tags (PEP 600, PEP 656, PEP 803), Version specifiers (PEP 440), Names and normalization. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "requestBody": {
           "required": true,
           "description": "The tool input as text.",

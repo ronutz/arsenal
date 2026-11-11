@@ -49,11 +49,11 @@ The size row is the one that changes a design conversation: a requirement for a 
 
 Some properties come from clustering itself, not from any implementation, and these are what troubleshooting rests on.
 
-**State must be shared.** Members synchronise connection state so a failover does not drop established sessions. The sync network carries this, and it is the component whose failure produces the most confusing symptoms: the cluster looks healthy and connections break on failover.
+**State must be shared.** Members synchronize connection state so a failover does not drop established sessions. The sync network carries this, and it is the component whose failure produces the most confusing symptoms: the cluster looks healthy and connections break on failover.
 
 **Interfaces must agree.** Members need matching interface configuration. A mismatch produces a member that cannot participate correctly, and the error usually names the interface, which is more helpful than most cluster errors.
 
-**Failover is not free.** However fast, there is a moment where traffic is redirected. Long-lived connections may survive on synchronised state; anything mid-handshake may not.
+**Failover is not free.** However fast, there is a moment where traffic is redirected. Long-lived connections may survive on synchronized state; anything mid-handshake may not.
 
 **A cluster is not a backup.** It protects against a member failing. It does not protect against a bad policy, which installs to every member simultaneously.
 
@@ -69,7 +69,7 @@ The checks worth running before believing a cluster works:
 
 ## What a CCSE candidate should be able to state cold
 
-Clustering serves availability and capacity, and availability requires the survivors to have enough headroom to carry the load. Stateful inspection means a connection's packets must reach the member holding its state, which is where clustering complexity comes from. ElasticXL treats the cluster as a single entity, so adding capacity is closer to joining than to building, and policy is installed to the cluster rather than to members. Regardless of implementation: state is synchronised over a sync network whose failure breaks failover while the cluster looks healthy, interfaces must match, failover is not free for connections in flight, and a cluster is no protection against a bad policy that installs everywhere at once.
+Clustering serves availability and capacity, and availability requires the survivors to have enough headroom to carry the load. Stateful inspection means a connection's packets must reach the member holding its state, which is where clustering complexity comes from. ElasticXL treats the cluster as a single entity, so adding capacity is closer to joining than to building, and policy is installed to the cluster rather than to members. Regardless of implementation: state is synchronized over a sync network whose failure breaks failover while the cluster looks healthy, interfaces must match, failover is not free for connections in flight, and a cluster is no protection against a bad policy that installs everywhere at once.
 
 ## Sources
 

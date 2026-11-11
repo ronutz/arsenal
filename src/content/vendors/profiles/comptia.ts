@@ -68,7 +68,7 @@ export const comptiaProfile: VendorProfile = {
   ],
   markets: [
     "Individuals entering and progressing through technology support, networking and security roles, in more than a hundred and twenty countries, with several million certifications awarded. The buyer is usually the candidate or their employer's training budget rather than a procurement department, which is a different commercial relationship from almost everything else on this timeline.",
-    "The trade-association side of the organisation now continues separately as GTIA, serving the channel businesses the original ABCD was formed for. The certification business and the membership body that created it are, since 2025, no longer the same organisation.",
+    "The trade-association side of the organization now continues separately as GTIA, serving the channel businesses the original ABCD was formed for. The certification business and the membership body that created it are, since 2025, no longer the same organization.",
   ],
   analyst: [
     "Its certifications are accredited to international standards and referenced in United States federal workforce requirements, which is a stronger form of external validation than analyst coverage and harder to lose.",

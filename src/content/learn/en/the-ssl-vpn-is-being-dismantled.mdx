@@ -21,11 +21,11 @@ Anyone running remote access on a FortiGate needs that paragraph, and needs it b
 
 ## What Fortinet says, and what the record says
 
-The stated reasons are reasonable and mostly technical: memory constraints on small appliances, IPsec's hardware acceleration on Fortinet's own silicon, standardisation on one remote-access stack, and better integration with multi-factor and SAML authentication. The replacement is IPsec, which can be configured to listen on TCP port 443 so that it traverses the same restrictive networks SSL-VPN was chosen for in the first place.
+The stated reasons are reasonable and mostly technical: memory constraints on small appliances, IPsec's hardware acceleration on Fortinet's own silicon, standardization on one remote-access stack, and better integration with multi-factor and SAML authentication. The replacement is IPsec, which can be configured to listen on TCP port 443 so that it traverses the same restrictive networks SSL-VPN was chosen for in the first place.
 
 The reason the vendor does not put in a release note is the CVE record. Fortinet's SSL-VPN carried a chain of flaws that were exploited in the wild: CVE-2018-13379, a path traversal that exposed plaintext credentials on tens of thousands of devices and which remains in the United States government's catalogue of known exploited vulnerabilities years later; CVE-2022-42475, a heap overflow in the SSL-VPN daemon used against unpatched devices; CVE-2023-27997, a pre-authentication heap overflow reachable on every SSL-VPN appliance, where multi-factor authentication was no defence because the flaw was reached before authentication; and CVE-2024-21762, an out-of-bounds write that entered the same catalogue within days.
 
-And then the detail that matters more than any of them. In April 2025 Fortinet disclosed that attackers who had exploited the earlier flaws had left a **symbolic link between the SSL-VPN user filesystem and the device's root filesystem**, retaining read-only access to configuration files - including credentials - *after the vulnerability was patched*. The company stated plainly that organisations which patched promptly could still be affected if the device had been compromised beforehand. Removing the feature removes the class of problem in a way that patching it demonstrably did not, which is the same reasoning the [worm era](/learn/the-worm-era) records behind turning the Windows firewall on by default.
+And then the detail that matters more than any of them. In April 2025 Fortinet disclosed that attackers who had exploited the earlier flaws had left a **symbolic link between the SSL-VPN user filesystem and the device's root filesystem**, retaining read-only access to configuration files - including credentials - *after the vulnerability was patched*. The company stated plainly that organizations which patched promptly could still be affected if the device had been compromised beforehand. Removing the feature removes the class of problem in a way that patching it demonstrably did not, which is the same reasoning the [worm era](/learn/the-worm-era) records behind turning the Windows firewall on by default.
 
 ## Why this class of product concentrates risk
 
@@ -35,7 +35,7 @@ Three consequences follow.
 
 **Pre-authentication reachability makes authentication controls irrelevant.** A flaw in the code that parses a request before credentials are checked is not helped by multi-factor authentication, certificate authentication or an identity provider. Those controls protect the session; the flaw is in the doorway.
 
-**The web layer is a large, complicated attack surface** that a purely cryptographic tunnel does not have. HTTP parsing, session cookies, file handling for language packs and portal customisation, and a browser-facing portal are all code that must be correct.
+**The web layer is a large, complicated attack surface** that a purely cryptographic tunnel does not have. HTTP parsing, session cookies, file handling for language packs and portal customization, and a browser-facing portal are all code that must be correct.
 
 **And the concentrator is the wrong place to fail.** It holds the credentials, the configuration and the route into the network, which is exactly what the Fortinet symlink case shows an attacker taking.
 
@@ -43,7 +43,7 @@ Three consequences follow.
 
 Not automatically, and any article that says so is selling something. IKE implementations have their own history of parser flaws and their own exploited vulnerabilities, and a badly configured IPsec deployment with pre-shared keys and aggressive mode is worse than a well-managed SSL-VPN.
 
-What genuinely changes is the shape of the exposure. There is no HTTP parser and no web application in the pre-authentication path. The code that processes an unauthenticated packet is smaller, older, more scrutinised and does less. The [IPsec and IKE article](/learn/ipsec-and-ike-fundamentals) covers the mechanics; the security argument here is narrow and worth stating precisely: **a smaller pre-authentication surface is a better bet than a larger one, and that is the whole of it.** It is not a promise.
+What genuinely changes is the shape of the exposure. There is no HTTP parser and no web application in the pre-authentication path. The code that processes an unauthenticated packet is smaller, older, more scrutinized and does less. The [IPsec and IKE article](/learn/ipsec-and-ike-fundamentals) covers the mechanics; the security argument here is narrow and worth stating precisely: **a smaller pre-authentication surface is a better bet than a larger one, and that is the whole of it.** It is not a promise.
 
 ## Are other vendors abandoning it? The careful answer
 

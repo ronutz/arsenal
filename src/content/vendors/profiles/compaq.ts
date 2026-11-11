@@ -31,7 +31,7 @@ export const compaqProfile: VendorProfile = {
     { year: 1988, title: "EISA vs Micro Channel", detail: "Compaq marshals the 'Gang of Nine' behind the open EISA bus against IBM's proprietary MCA - and wins; the compatible industry, not IBM, now governs the platform." },
     { year: 1993, title: "ProLiant, and the price war", detail: "Eckhard Pfeiffer's 1992 price offensive and the ProLiant server line take Compaq to world's-largest-PC-maker by mid-decade - x86 servers begin eating the room the minicomputers lived in." },
     { year: 1998, title: "Swallowing Tandem and DEC", detail: "Tandem's NonStop line (1997, ~$3B) and then Digital Equipment (~$9.6 billion, 1998 - the largest computer deal to date) make Compaq an everything-company overnight; digesting DEC proves harder than buying it. The absorbed bloodline is told on this section's DEC page." },
-    { year: 2002, title: "The HP merger", detail: "May 3, 2002: the ~$25 billion merger with HP completes after the bitter Fiorina-versus-Walter-Hewlett proxy fight - the placemat company ends inside the garage company, and the Compaq brand fades through the decade.", sourceNote: "Announced September 3, 2001; close per the deal record." },
+    { year: 2002, title: "The HP merger", detail: "3 May 2002: the ~$25 billion merger with HP completes after the bitter Fiorina-versus-Walter-Hewlett proxy fight - the placemat company ends inside the garage company, and the Compaq brand fades through the decade.", sourceNote: "Announced 3 September 2001; close per the deal record." },
   ],
   products: [
     { name: "Compaq Portable", what: "The luggable that founded the compatible industry - and the company - in one product." },

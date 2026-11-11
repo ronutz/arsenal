@@ -1,6 +1,6 @@
 ## What it does
 
-Paste an `openssl s_client` command line, the text it printed, or both, and the tool explains them. Every option is read against the manual pages of OpenSSL 3.5, the long-term-support release (supported until 8 April 2030), the defaults that apply because an option is missing are spelled out, every block of the output is recognised and explained, and the findings worth acting on are listed first, most serious at the top. The command can go in its own box, or on the first line of the output box exactly as a terminal shows it; the tool separates the two. It reads text only: nothing is connected to, resolved, sent or run.
+Paste an `openssl s_client` command line, the text it printed, or both, and the tool explains them. Every option is read against the manual pages of OpenSSL 3.5, the long-term-support release (supported until 8 April 2030), the defaults that apply because an option is missing are spelled out, every block of the output is recognized and explained, and the findings worth acting on are listed first, most serious at the top. The command can go in its own box, or on the first line of the output box exactly as a terminal shows it; the tool separates the two. It reads text only: nothing is connected to, resolved, sent or run.
 
 ## The command line
 

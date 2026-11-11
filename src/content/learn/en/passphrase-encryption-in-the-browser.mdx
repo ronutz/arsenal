@@ -35,7 +35,7 @@ That matters more for a passphrase tool than for most uses. A wrong passphrase d
 
 ## A new key for every message
 
-GCM's one sharp requirement is in section 8 of SP 800-38D: the probability that the same IV (initialisation vector) and the same key are ever used on two different inputs "shall be no greater than 2^-32". When IVs are drawn at random (the construction of section 8.2.2, with a random field of at least 96 bits), section 8.3 caps a key at 2^32 encryptions.
+GCM's one sharp requirement is in section 8 of SP 800-38D: the probability that the same IV (initialization vector) and the same key are ever used on two different inputs "shall be no greater than 2^-32". When IVs are drawn at random (the construction of section 8.2.2, with a random field of at least 96 bits), section 8.3 caps a key at 2^32 encryptions.
 
 A passphrase tool can step around the count entirely. Every encryption draws a new random salt, so the derived key is new every time, and it also draws a new random 96-bit IV, the length section 5.2.1.1 recommends. The same text under the same passphrase then gives a different result every time, and each one decrypts. Both values come from `crypto.getRandomValues`, which the Web Cryptography API defines as filling an array with "cryptographically secure random bytes" (section 10.1.1).
 

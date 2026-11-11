@@ -52,7 +52,10 @@ export type ProbeFamily =
  *  where the scanners ask: /en/vendors/ is a probe, /en/industry/vendors/ is a page (check-probe-patterns caught it). */
 export const PROBE_FAMILIES: ReadonlyArray<{ id: ProbeFamily; re: RegExp }> = [
   // WordPress's REST batch endpoint, the entry of the wp2shell chain (CVE-2026-63030 with CVE-2026-60137).
-  { id: "wp-batch", re: /\/wp-json\/batch\/v1\/?$/ },
+  // Since 2026-11-11 also the same endpoint written with the "..;" path-normalisation trick
+  // (/wp-json/batch/v1/..;/batch/v1/, ";" sent raw or as %3b), which the currency check of 10 November found counted
+  // under secrets (its "/." dot-file rule matched first); being first in this list, wp-batch now claims it.
+  { id: "wp-batch", re: /\/wp-json\/batch\/v1(\/\.\.(;|%3b)\/batch\/v1)?\/?$/ },
   // A WordPress plugin's REST endpoint with a published flaw (Gravity SMTP, CVE-2026-4020).
   { id: "wp-plugin", re: /\/wp-json\/gravitysmtp\// },
   // The WordPress REST API's index and its content listings.
@@ -63,7 +66,10 @@ export const PROBE_FAMILIES: ReadonlyArray<{ id: ProbeFamily; re: RegExp }> = [
   // /wp-json/batch/v1/, which is how the WordPress scanners look for an install in a subfolder. /blog/ is a real page here.
   { id: "wp-core", re: /\/(wp-admin|wp-includes|wp-content)(\/|$)|^\/[^/]+\/(wp|wordpress|site|news|cms|press)\/?$|^\/[^/]+\/feed\/?$/ },
   // Source code, keys and histories left in a folder the web server publishes (any dot-file but .well-known).
-  { id: "secrets", re: /\/\.(?!well-known)[^/]+|\/ds_store\/?$/ },
+  // Since 2026-11-11 also a Python site-packages folder, where Python installs third-party libraries (Python docs, site:
+  // "lib/pythonX.Y[t]/site-packages (on Unix and macOS)"): asked here with SendGrid's mail library, whose README keeps the
+  // API key in SENDGRID_API_KEY or a .env file (10 requests for /en/site-packages/sendgrid/helpers/mail/ on 11 November).
+  { id: "secrets", re: /\/\.(?!well-known)[^/]+|\/ds_store\/?$|\/site-packages(\/|$)/ },
   // Framework endpoints that reveal configuration or a version.
   // Since 2026-11-05 also the Actuator's own discovery page, /actuator bare (Spring Boot: "available on /actuator by
   // default"), and Symfony's profiler page /_profiler/phpinfo (WebProfilerBundle's /phpinfo route under the /_profiler
@@ -73,7 +79,9 @@ export const PROBE_FAMILIES: ReadonlyArray<{ id: ProbeFamily; re: RegExp }> = [
   // November): Livewire 3's update endpoint, bare or under any guessed prefixes (/login/, /register/, /admin/login/),
   // the Telescope, Horizon, Pulse and Nova dashboards, and the sign-in routes of Fortify and laravel/ui. Placed before
   // logins, so an address such as /admin/login/livewire/update is read as Livewire, not as a sign-in page.
-  { id: "laravel", re: /^\/[^/]+\/(([a-z0-9_-]+\/)*livewire\/update|telescope|horizon|pulse|nova|two-factor-challenge|email\/verify|password\/reset)\/?$/ },
+  // Since 2026-11-11 also Jetstream's profile and API token pages, /user/profile and /user/api-tokens (laravel/jetstream
+  // 5.x routes/livewire.php, read 2026-11-11), asked in step with this family's addresses (64 times in 7 days to 10 November).
+  { id: "laravel", re: /^\/[^/]+\/(([a-z0-9_-]+\/)*livewire\/update|telescope|horizon|pulse|nova|two-factor-challenge|email\/verify|password\/reset|user\/(profile|api-tokens))\/?$/ },
   // Folder names that identify another platform (Drupal, Joomla, OpenCart, Magento, cPanel, OJS).
   // Since 2026-11-05 also Next.js's build folder, _next/static, asked for under a guessed subfolder (/v1/, /client/,
   // /frontend/...): at least one folder is required between the language and _next, so this site's own /_next/static/

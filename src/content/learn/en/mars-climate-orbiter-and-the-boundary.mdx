@@ -1,7 +1,7 @@
 ---
 slug: mars-climate-orbiter-and-the-boundary
 title: "Mars Climate Orbiter: both sides were correct, and the spacecraft was lost"
-summary: "One program produced impulse figures in pound-force-seconds. The program that consumed them expected newton-seconds. Neither was wrong internally, the specification said which was required, and nothing checked. The famous version of this story is a unit conversion; the useful version is what happens at a boundary between two organisations, and what the team did with four months of warning."
+summary: "One program produced impulse figures in pound-force-seconds. The program that consumed them expected newton-seconds. Neither was wrong internally, the specification said which was required, and nothing checked. The famous version of this story is a unit conversion; the useful version is what happens at a boundary between two organizations, and what the team did with four months of warning."
 concepts: ["mars climate orbiter", "interface specification", "units", "verification", "handoff", "end-to-end testing", "escalation", "nasa"]
 relatedTools: []
 relatedArticles: ["ariane-5-and-the-assumption-that-expired", "knight-capital-and-the-rollback-that-made-it-worse", "the-target-breach", "there-is-no-perfect-code"]
@@ -31,9 +31,9 @@ Estimates made afterwards, using corrected figures, put the spacecraft's closest
 
 "NASA forgot to convert to metric" is accurate and explains almost nothing, because it makes the failure sound like carelessness that better people would have avoided.
 
-Neither unit was wrong. A pound-force-second and a newton-second both measure impulse; both are legitimate; each program was internally consistent and correct in its own terms. **The danger was that the same bare number meant two different physical quantities on opposite sides of a boundary** - a boundary that was both a software interface and an organisational one, between the contractor who built the spacecraft and the laboratory that navigated it.
+Neither unit was wrong. A pound-force-second and a newton-second both measure impulse; both are legitimate; each program was internally consistent and correct in its own terms. **The danger was that the same bare number meant two different physical quantities on opposite sides of a boundary** - a boundary that was both a software interface and an organizational one, between the contractor who built the spacecraft and the laboratory that navigated it.
 
-And there was a specification. It said newton-seconds. The specification was right and the spacecraft was lost anyway, which is the part worth sitting with: **a document stating the correct convention does not enforce it.** Something has to check. The board's own recommendation was to conduct a software audit for specification compliance on all data transferred between the two organisations - which is a way of saying that nobody had been comparing what the interface promised with what crossed it.
+And there was a specification. It said newton-seconds. The specification was right and the spacecraft was lost anyway, which is the part worth sitting with: **a document stating the correct convention does not enforce it.** Something has to check. The board's own recommendation was to conduct a software audit for specification compliance on all data transferred between the two organizations - which is a way of saying that nobody had been comparing what the interface promised with what crossed it.
 
 The board's chairman put the wider finding plainly: the review had identified other significant factors that allowed the error to be born, and then let it linger and propagate to the point where it produced a major error in the understanding of the spacecraft's path. The contributing causes it listed were inadequate consideration of the mission as a total system, inconsistent communications and training within the project, and the absence of complete end-to-end verification of the navigation software and its models.
 
@@ -43,7 +43,7 @@ This is the element that moves the case out of the units bundle and into the com
 
 The error was not invisible. Through the spring and summer of 1999, working-level staff raised concerns about discrepancies between where the navigation solution said the spacecraft was and where other methods suggested it was. A trajectory correction was proposed and discussed as the encounter approached. It was not executed - and the investigation recorded the reason: the team was **unprepared for this off-nominal scenario**.
 
-That is not incompetence. It is the ordinary shape of an organisation meeting a situation it has no rehearsed response for. Somebody noticed. The concern travelled, in the informal register that concerns travel in. There was no procedure that turned "several people are uneasy about the navigation solution" into a decision with a deadline, and so the default - continue as planned - won by not being chosen.
+That is not incompetence. It is the ordinary shape of an organization meeting a situation it has no rehearsed response for. Somebody noticed. The concern travelled, in the informal register that concerns travel in. There was no procedure that turned "several people are uneasy about the navigation solution" into a decision with a deadline, and so the default - continue as planned - won by not being chosen.
 
 Read against the [clock](/learn/there-is-no-perfect-code), every stage after detection failed, over a period of months rather than the forty-five minutes Knight Capital had.
 
@@ -51,13 +51,13 @@ Read against the [clock](/learn/there-is-no-perfect-code), every stage after det
 
 **Every boundary carries assumptions that are not in the data.** A number crossing an interface is accompanied by a meaning that lives somewhere else - in a document, in a convention, in somebody's head. Units are the vivid example; the mundane ones are everywhere in networking. Is that rate in bits or bytes? Is that timestamp local or UTC? Is that a prefix length or a mask? Is the MTU the payload or the frame? Is that counter cumulative or per-interval? Each of these has caused a real outage somewhere, for exactly the reason the orbiter was lost: both sides were internally correct.
 
-The formats that carry those assumptions across a boundary - JSON, YAML, XML, timestamps, text encodings, base64 - are collected in **[the formats in between](/learn/the-formats-in-between)**, which is this failure generalised.
+The formats that carry those assumptions across a boundary - JSON, YAML, XML, timestamps, text encodings, base64 - are collected in **[the formats in between](/learn/the-formats-in-between)**, which is this failure generalized.
 
 **Specify, then verify separately.** The interface document was correct. What was missing was anything that compared the document with the traffic - an audit, a sanity check on magnitude, an assertion that the values fall in a plausible range. A value 4.45 times too small is not detectable by a program that has no opinion about what the value should be, and giving it an opinion is cheap.
 
-**Test the path, not the components.** The board's finding was the absence of complete end-to-end verification. Each program worked. Integration testing across the organisational boundary was where the failure lived, and that is the test most often skipped, because it requires two teams and belongs to neither.
+**Test the path, not the components.** The board's finding was the absence of complete end-to-end verification. Each program worked. Integration testing across the organizational boundary was where the failure lived, and that is the test most often skipped, because it requires two teams and belongs to neither.
 
-**And build the route for an uneasy engineer.** The most transferable lesson here is not about units at all. Somebody was worried, for months, and there was no mechanism that converted worry into a decision. If your organisation has no defined way for a working-level concern to force an explicit answer - even the answer "we have considered it and we are proceeding" - then the default will always be to continue, and the default will be chosen by nobody.
+**And build the route for an uneasy engineer.** The most transferable lesson here is not about units at all. Somebody was worried, for months, and there was no mechanism that converted worry into a decision. If your organization has no defined way for a working-level concern to force an explicit answer - even the answer "we have considered it and we are proceeding" - then the default will always be to continue, and the default will be chosen by nobody.
 
 ## Sources
 

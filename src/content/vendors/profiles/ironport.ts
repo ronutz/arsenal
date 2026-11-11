@@ -33,17 +33,17 @@ export const ironportProfile: VendorProfile = {
       place: "San Bruno, California",
       founders: ["Scott Banister", "Scott Weiss"],
       story:
-        "Founded in December 2000 by two of Internet messaging's original insiders: Banister, the Idealab 'VP of Ideas' who invented the bid-for-placement keyword auction behind Overture and sat on PayPal's founding board; and Weiss, an early Hotmail team member, as CEO. They staffed the company from Hotmail, eGroups, ListBot, and Yahoo, and bet on a then-contrarian idea - that spam would be beaten not by inspecting message content but by scoring the behavior and reputation of the machines sending it, delivered on purpose-built appliances. Roughly $90 million in venture funding had backed the thesis by 2004.",
+        "Founded in December 2000 by two of Internet messaging's original insiders: Banister, the Idealab 'VP of Ideas' who invented the bid-for-placement keyword auction behind Overture and sat on PayPal's founding board; and Weiss, an early Hotmail team member, as CEO. They staffed the company from Hotmail, eGroups, ListBot, and Yahoo, and bet on a then-contrarian idea - that spam would be beaten not by inspecting message content but by scoring the behaviour and reputation of the machines sending it, delivered on purpose-built appliances. Roughly $90 million in venture funding had backed the thesis by 2004.",
     },
   ],
   timeline: [
     { year: 2000, title: "Founded in San Bruno", detail: "December 2000: Banister and Weiss start IronPort around sender reputation and the appliance model - white boxes for the email edge, at the moment spam is becoming an economic problem." },
-    { year: 2003, title: "SenderBase scales; SpamCop joins", detail: "SenderBase grows into the world's first and largest email traffic monitoring network: data from more than 100,000 ISPs, universities, and corporations, over 110 measured parameters per mail server, more than 5 billion queries a day. On November 24, 2003, IronPort acquires the SpamCop filtering and reporting service and runs it as a stand-alone entity." },
+    { year: 2003, title: "SenderBase scales; SpamCop joins", detail: "SenderBase grows into the world's first and largest email traffic monitoring network: data from more than 100,000 ISPs, universities, and corporations, over 110 measured parameters per mail server, more than 5 billion queries a day. On 24 November 2003, IronPort acquires the SpamCop filtering and reporting service and runs it as a stand-alone entity." },
     { year: 2004, personal: true, title: "My chapter", detail: "Late 2004 into 2005: the brief, independent engagement recorded in the narrative above - while IronPort's C-Series gateways are spreading through the mail edges of large enterprises and the biggest ISPs." },
     { year: 2006, title: "The numbers before the deal", detail: "By August 2006: $25 million in quarterly sales, some 3,000 customers including eight of the ten largest ISPs, 408 employees, and marquee names like CNN, Microsoft, Nasdaq, and PayPal on the customer list. By the mid-2000s the platform is processing over 10 billion emails a day." },
-    { year: 2007, title: "Cisco pays $830 million", detail: "Announced January 4, 2007 and completed June 25, 2007: Cisco - itself a longtime IronPort customer - acquires the company for $830 million and folds it into the Security Technology Group. SenderBase is renamed SensorBase as other Cisco devices begin feeding the database.", sourceNote: "Deal dates per the IronPort corporate record; $830M per Cisco's announcement." },
-    { year: 2012, title: "The brand retires; the name survives in DNS", detail: "November 26, 2012: IronPort formally moves onto the Cisco price list and the brand is retired. The tell survives to this day - Cisco's cloud email service still answers at iphmx.com: IronPort Hosted MX." },
-    { year: 2021, title: "The lineage today", detail: "The appliances became Cisco Secure Email Gateway and the cloud service Cisco Secure Email Cloud Gateway, both still running AsyncOS - and the SenderBase telemetry idea matured into Talos, Cisco's threat-intelligence group, which analyzes some 600 billion emails a day." },
+    { year: 2007, title: "Cisco pays $830 million", detail: "Announced 4 January 2007 and completed 25 June 2007: Cisco - itself a longtime IronPort customer - acquires the company for $830 million and folds it into the Security Technology Group. SenderBase is renamed SensorBase as other Cisco devices begin feeding the database.", sourceNote: "Deal dates per the IronPort corporate record; $830M per Cisco's announcement." },
+    { year: 2012, title: "The brand retires; the name survives in DNS", detail: "26 November 2012: IronPort formally moves onto the Cisco price list and the brand is retired. The tell survives to this day - Cisco's cloud email service still answers at iphmx.com: IronPort Hosted MX." },
+    { year: 2021, title: "The lineage today", detail: "The appliances became Cisco Secure Email Gateway and the cloud service Cisco Secure Email Cloud Gateway, both still running AsyncOS - and the SenderBase telemetry idea matured into Talos, Cisco's threat-intelligence group, which analyses some 600 billion emails a day." },
   ],
   products: [
     { name: "C-Series email security gateways", what: "The flagship appliances: multi-layered anti-spam, antivirus, and policy enforcement at the SMTP edge, built to sit in front of the world's largest mail systems." },
@@ -53,7 +53,7 @@ export const ironportProfile: VendorProfile = {
     { name: "Web security appliances", what: "The S-Series extension of the model to web traffic - the same reputation-first philosophy applied to HTTP, rounding out the gateway portfolio Cisco bought." },
   ],
   innovations: [
-    { title: "Reputation before content", detail: "IronPort's core insight: who is sending predicts spam better than what is said. Sender reputation scoring became the industry's first line of email defense and remains so today." },
+    { title: "Reputation before content", detail: "IronPort's core insight: who is sending predicts spam better than what is said. Sender reputation scoring became the industry's first line of email defence and remains so today." },
     { title: "Telemetry as the product", detail: "SenderBase turned the customer base into a sensor network - every appliance made every other appliance smarter, a network-effect model that Talos still runs at Cisco scale." },
     { title: "The email appliance category", detail: "Purpose-built boxes with a purpose-built OS for one protocol's pathologies - AsyncOS's stack-less design handled connection volumes general-purpose mail servers could not." },
   ],
@@ -62,8 +62,8 @@ export const ironportProfile: VendorProfile = {
     "My engagement, in late 2004 and 2005, belongs to the independent era - recorded here as its own chapter precisely because the acquisition came two years later.",
   ],
   analyst: [
-    "SenderBase at the time of the acquisition: telemetry from more than 100,000 organisations, 110+ parameters per mail server, over 5 billion queries a day - the largest email monitoring network in the world, per contemporary coverage.",
-    "The $830 million Cisco paid in 2007 bought a company running $25 million quarters with 408 employees - and a reputation network whose descendant, Talos, now analyzes roughly 600 billion emails a day.",
+    "SenderBase at the time of the acquisition: telemetry from more than 100,000 organizations, 110+ parameters per mail server, over 5 billion queries a day - the largest email monitoring network in the world, per contemporary coverage.",
+    "The $830 million Cisco paid in 2007 bought a company running $25 million quarters with 408 employees - and a reputation network whose descendant, Talos, now analyses roughly 600 billion emails a day.",
   ],
   careerLink: {
     href: "/industry/chapters/cisco",

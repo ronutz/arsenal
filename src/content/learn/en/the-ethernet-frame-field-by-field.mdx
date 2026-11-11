@@ -32,11 +32,11 @@ Juniper's documentation gives the same sizes field by field: a preamble of "7 oc
 
 ## Preamble and start frame delimiter
 
-The preamble exists for the receiver's benefit, not the sender's: a run of alternating bits gives the receiving circuitry a regular signal to synchronise to before any information arrives. The start frame delimiter is one more octet whose pattern breaks the rhythm; Cisco's troubleshooting guide notes that it "ends with 2 consecutive 1 bits" ([Cisco, Troubleshooting Ethernet](https://www.cisco.com/en/US/docs/internetworking/troubleshooting/guide/tr1904.html)). Everything after those two ones is the frame.
+The preamble exists for the receiver's benefit, not the sender's: a run of alternating bits gives the receiving circuitry a regular signal to synchronize to before any information arrives. The start frame delimiter is one more octet whose pattern breaks the rhythm; Cisco's troubleshooting guide notes that it "ends with 2 consecutive 1 bits" ([Cisco, Troubleshooting Ethernet](https://www.cisco.com/en/US/docs/internetworking/troubleshooting/guide/tr1904.html)). Everything after those two ones is the frame.
 
 ## Two addresses, and the two bits that matter most
 
-Each address is a 48-bit MAC (media access control) address. The IEEE Registration Authority's guidelines describe the structure: the first three octets of a universally administered address are the OUI (organizationally unique identifier), a 24-bit block assigned to an organisation, usually the manufacturer, and two bits in the first octet change what the whole address means ([IEEE RA guidelines](https://standards-support.ieee.org/hc/en-us/articles/4888705676564-Guidelines-for-Use-of-Extended-Unique-Identifier-EUI-Organizationally-Unique-Identifier-OUI-and-Company-ID-CID)):
+Each address is a 48-bit MAC (media access control) address. The IEEE Registration Authority's guidelines describe the structure: the first three octets of a universally administered address are the OUI (organizationally unique identifier), a 24-bit block assigned to an organization, usually the manufacturer, and two bits in the first octet change what the whole address means ([IEEE RA guidelines](https://standards-support.ieee.org/hc/en-us/articles/4888705676564-Guidelines-for-Use-of-Extended-Unique-Identifier-EUI-Organizationally-Unique-Identifier-OUI-and-Company-ID-CID)):
 
 - the least significant bit of the first octet is the I/G (individual/group) bit: 0 for one station, 1 for a group (multicast or broadcast);
 - the next bit is the U/L (universal/local) bit: 0 for an address assigned under an IEEE block, 1 for one assigned locally.

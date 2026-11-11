@@ -1,0 +1,1546 @@
+{
+  "dns-rr": [
+    "Tipi di record DNS",
+    "record DNS",
+    "tipi di RR",
+    "record di risorsa DNS",
+    "tipi di record"
+  ],
+  "http-methods": [
+    "Metodi HTTP",
+    "metodi di richiesta HTTP",
+    "verbi HTTP",
+    "metodi di richiesta"
+  ],
+  "linux-signals": [
+    "Segnali Linux",
+    "segnali",
+    "segnali Unix",
+    "segnali POSIX",
+    "segnali dei processi"
+  ],
+  "rfc1918": [
+    "Indirizzi IPv4 privati (RFC 1918)",
+    "Indirizzi IPv4 privati",
+    "indirizzi privati",
+    "indirizzi IP privati",
+    "reti private",
+    "spazio di indirizzamento privato",
+    "IP privati"
+  ],
+  "ipv4-header": [
+    "Campi dell’intestazione IPv4",
+    "campi dell’intestazione IP",
+    "intestazione IPv4",
+    "intestazione IP",
+    "campi IPv4"
+  ],
+  "tcp-flags": [
+    "Flag TCP (bit di controllo)",
+    "Flag TCP",
+    "bit di controllo TCP",
+    "flag dell’intestazione TCP",
+    "bit di controllo"
+  ],
+  "icmp-types": [
+    "Tipi di messaggio ICMP",
+    "tipi ICMP",
+    "messaggi ICMP",
+    "tipi di messaggi ICMP"
+  ],
+  "tls13-handshake": [
+    "Messaggi dell’handshake TLS 1.3",
+    "messaggi dell’handshake TLS",
+    "messaggi di handshake TLS 1.3",
+    "handshake TLS 1.3"
+  ],
+  "dhcp-messages": [
+    "Tipi di messaggio DHCP",
+    "messaggi DHCP",
+    "tipi di pacchetto DHCP",
+    "pacchetti DHCP"
+  ],
+  "ospf-packets": [
+    "Tipi di pacchetto OSPF",
+    "pacchetti OSPF",
+    "messaggi OSPF",
+    "tipi di messaggio OSPF"
+  ],
+  "bgp-messages": [
+    "Tipi di messaggio BGP",
+    "messaggi BGP",
+    "tipi di pacchetto BGP",
+    "pacchetti BGP"
+  ],
+  "bgp-attributes": [
+    "Attributi di percorso BGP",
+    "attributi BGP",
+    "attributi di percorso",
+    "attributi delle route BGP"
+  ],
+  "snmp-pdus": [
+    "Tipi di PDU SNMP",
+    "PDU SNMP",
+    "operazioni SNMP",
+    "messaggi SNMP"
+  ],
+  "syslog-severity": [
+    "Livelli di gravità syslog",
+    "livelli di gravità",
+    "livelli syslog",
+    "gravità syslog",
+    "livelli di log",
+    "livelli di severità syslog"
+  ],
+  "syslog-facilities": [
+    "Facility syslog",
+    "facility di syslog",
+    "facility dei log",
+    "facility"
+  ],
+  "tcp-states": [
+    "Stati della connessione TCP",
+    "stati TCP",
+    "stati di connessione TCP",
+    "macchina a stati TCP",
+    "stati del socket TCP"
+  ],
+  "dns-rcodes": [
+    "Codici di risposta DNS (RCODE)",
+    "Codici di risposta DNS",
+    "codici di errore DNS",
+    "codici di stato DNS",
+    "RCODE DNS"
+  ],
+  "ip-protocols": [
+    "Numeri di protocollo IP",
+    "protocolli IP",
+    "numeri di protocollo",
+    "valori del campo protocollo"
+  ],
+  "ethertypes": [
+    "Valori EtherType",
+    "tipi Ethernet",
+    "valori del campo EtherType",
+    "EtherType Ethernet"
+  ],
+  "ipv6-ext": [
+    "Intestazioni di estensione IPv6",
+    "intestazioni di estensione",
+    "extension header IPv6",
+    "header di estensione IPv6",
+    "estensioni IPv6"
+  ],
+  "ndp": [
+    "Messaggi Neighbor Discovery IPv6",
+    "messaggi Neighbor Discovery",
+    "messaggi ND",
+    "Neighbor Discovery IPv6"
+  ],
+  "v6-mcast-scopes": [
+    "Ambiti multicast IPv6",
+    "ambiti multicast",
+    "ambiti IPv6",
+    "scope multicast IPv6",
+    "ambiti degli indirizzi IPv6"
+  ],
+  "system-ports": [
+    "Porte note (0–1023)",
+    "Porte note",
+    "porte ben note",
+    "porte di sistema",
+    "porte privilegiate",
+    "porte riservate",
+    "porte sotto la 1024",
+    "porte well-known"
+  ],
+  "http2-frames": [
+    "Tipi di frame HTTP/2",
+    "frame HTTP/2",
+    "frame H2",
+    "tipi di frame H2"
+  ],
+  "smtp-commands": [
+    "Comandi SMTP",
+    "comandi ESMTP",
+    "verbi SMTP"
+  ],
+  "ftp-commands": [
+    "Comandi FTP",
+    "verbi FTP",
+    "comandi del protocollo FTP"
+  ],
+  "imap-commands": [
+    "Comandi IMAP",
+    "comandi IMAP4",
+    "comandi del protocollo IMAP"
+  ],
+  "pop3-commands": [
+    "Comandi POP3",
+    "comandi POP",
+    "comandi del protocollo POP3"
+  ],
+  "ldap-operations": [
+    "Operazioni LDAP",
+    "tipi di operazione LDAP",
+    "richieste LDAP",
+    "comandi LDAP"
+  ],
+  "radius-codes": [
+    "Tipi di pacchetto RADIUS",
+    "codici RADIUS",
+    "messaggi RADIUS",
+    "pacchetti RADIUS",
+    "tipi di messaggio RADIUS"
+  ],
+  "git-reset": [
+    "Modalità di git reset",
+    "modalità del git reset",
+    "opzioni di git reset",
+    "modalità di reset"
+  ],
+  "git-commands": [
+    "Comandi Git",
+    "sottocomandi Git",
+    "comandi di Git"
+  ],
+  "fhs-dirs": [
+    "Directory di primo livello di Linux (FHS)",
+    "Directory di primo livello di Linux",
+    "directory FHS",
+    "directory di Linux",
+    "directory sotto la radice",
+    "directory della radice"
+  ],
+  "systemd-units": [
+    "Tipi di unità systemd",
+    "unità systemd",
+    "tipi di unit systemd",
+    "file di unità",
+    "unit systemd"
+  ],
+  "dockerfile": [
+    "Istruzioni del Dockerfile",
+    "istruzioni Dockerfile",
+    "comandi del Dockerfile",
+    "direttive del Dockerfile",
+    "parole chiave del Dockerfile"
+  ],
+  "k8s-workloads": [
+    "Risorse di workload Kubernetes",
+    "workload Kubernetes",
+    "risorse di workload",
+    "controller Kubernetes",
+    "carichi di lavoro Kubernetes"
+  ],
+  "vim-modes": [
+    "Modalità di Vim",
+    "modalità Vim",
+    "modalità di vi",
+    "modalità di editing di Vim"
+  ],
+  "bash-builtins": [
+    "Comandi integrati di Bash",
+    "builtin di Bash",
+    "comandi integrati",
+    "comandi integrati della shell",
+    "comandi interni di Bash",
+    "comandi interni della shell"
+  ],
+  "osi-layers": [
+    "Livelli del modello OSI",
+    "livelli OSI",
+    "modello OSI",
+    "modello di riferimento OSI",
+    "pila OSI",
+    "strati OSI"
+  ],
+  "cipher-modes": [
+    "Modalità operative dei cifrari a blocchi",
+    "modalità dei cifrari a blocchi",
+    "modalità operative",
+    "modalità di cifratura",
+    "modalità AES",
+    "modalità di funzionamento dei cifrari a blocchi"
+  ],
+  "tls13-suites": [
+    "Suite di cifratura TLS 1.3",
+    "suite di cifratura TLS",
+    "suite di cifratura",
+    "suite TLS 1.3",
+    "cipher suite TLS 1.3"
+  ],
+  "x509-extensions": [
+    "Estensioni dei certificati X.509",
+    "estensioni X.509",
+    "estensioni dei certificati",
+    "estensioni X.509 v3",
+    "estensioni v3"
+  ],
+  "jwt-claims": [
+    "Claim registrati dei JWT",
+    "claim JWT",
+    "claim registrati",
+    "claim dei JSON Web Token",
+    "nomi dei claim JWT"
+  ],
+  "oauth-grants": [
+    "Tipi di grant OAuth 2.0",
+    "tipi di grant OAuth",
+    "grant type OAuth",
+    "flussi OAuth",
+    "flussi OAuth 2.0",
+    "tipi di concessione OAuth 2.0",
+    "concessioni di autorizzazione"
+  ],
+  "cookie-attributes": [
+    "Attributi di Set-Cookie",
+    "attributi dei cookie",
+    "attributi Set-Cookie",
+    "flag dei cookie",
+    "opzioni dei cookie"
+  ],
+  "csp-directives": [
+    "Direttive della Content Security Policy",
+    "direttive CSP",
+    "direttive della CSP",
+    "direttive di Content Security Policy"
+  ],
+  "owasp-2021": [
+    "Categorie della OWASP Top 10 (2021)",
+    "Categorie della OWASP Top 10",
+    "categorie OWASP Top 10",
+    "OWASP Top 10 del 2021",
+    "rischi OWASP Top 10"
+  ],
+  "attack-tactics": [
+    "Tattiche di MITRE ATT&CK (Enterprise)",
+    "Tattiche di MITRE ATT&CK",
+    "tattiche ATT&CK",
+    "tattiche MITRE",
+    "tattiche degli avversari",
+    "tattiche MITRE ATT&CK"
+  ],
+  "nist-csf": [
+    "Funzioni del NIST Cybersecurity Framework 2.0",
+    "funzioni del NIST CSF",
+    "funzioni CSF",
+    "funzioni del Cybersecurity Framework",
+    "funzioni del CSF 2.0"
+  ],
+  "stride": [
+    "Categorie di minaccia STRIDE",
+    "minacce STRIDE",
+    "categorie STRIDE",
+    "modello STRIDE",
+    "modello di minaccia STRIDE"
+  ],
+  "cvss-base": [
+    "Metriche di base CVSS v3.1",
+    "metriche di base CVSS",
+    "metriche CVSS",
+    "metriche di base",
+    "metriche base CVSS 3.1"
+  ],
+  "iec-prefixes": [
+    "Prefissi binari IEC",
+    "prefissi binari",
+    "prefissi IEC",
+    "multipli binari",
+    "prefissi per multipli binari"
+  ],
+  "python-keywords": [
+    "Parole chiave di Python",
+    "parole chiave Python",
+    "parole riservate di Python",
+    "parole chiave",
+    "parole riservate"
+  ],
+  "js-primitives": [
+    "Tipi primitivi di JavaScript",
+    "primitivi JavaScript",
+    "tipi primitivi",
+    "primitivi JS",
+    "tipi di dati JavaScript",
+    "primitivi"
+  ],
+  "json-values": [
+    "Valori JSON",
+    "tipi di valore JSON",
+    "tipi JSON",
+    "tipi di dati JSON"
+  ],
+  "rfc2119": [
+    "Parole chiave dei requisiti (RFC 2119)",
+    "Parole chiave dei requisiti",
+    "parole chiave RFC 2119",
+    "livelli di requisito",
+    "parole chiave normative",
+    "parole chiave BCP 14"
+  ],
+  "rfc-streams": [
+    "Stream delle RFC",
+    "stream RFC",
+    "flussi di pubblicazione delle RFC",
+    "stream dell’RFC Editor"
+  ],
+  "rirs": [
+    "Registri Internet regionali (RIR)",
+    "Registri Internet regionali",
+    "registri regionali",
+    "registri Internet",
+    "registro Internet regionale"
+  ],
+  "root-servers": [
+    "Indirizzi dei root server DNS",
+    "root server DNS",
+    "server radice DNS",
+    "server radice",
+    "indirizzi dei root server"
+  ],
+  "ipv4-special": [
+    "Blocchi IPv4 per usi speciali",
+    "indirizzi IPv4 per usi speciali",
+    "blocchi per usi speciali",
+    "indirizzi per usi speciali",
+    "indirizzi IPv4 riservati",
+    "intervalli IPv4 riservati",
+    "indirizzi riservati"
+  ],
+  "ipv6-special": [
+    "Prefissi IPv6 per usi speciali",
+    "indirizzi IPv6 per usi speciali",
+    "prefissi IPv6 riservati",
+    "indirizzi IPv6 riservati",
+    "indirizzi IPv6 speciali"
+  ],
+  "doc-addresses": [
+    "Indirizzi riservati alla documentazione",
+    "indirizzi di documentazione",
+    "intervalli di documentazione",
+    "prefissi di documentazione",
+    "indirizzi per la documentazione",
+    "indirizzi di esempio"
+  ],
+  "reserved-names": [
+    "Nomi riservati per test e documentazione",
+    "nomi di dominio riservati",
+    "TLD riservati",
+    "domini di esempio",
+    "domini di test",
+    "domini riservati",
+    "nomi riservati"
+  ],
+  "mcast-local": [
+    "Indirizzi multicast di controllo della rete locale",
+    "indirizzi multicast",
+    "multicast di controllo della rete locale",
+    "indirizzi multicast riservati",
+    "indirizzi multicast IPv4",
+    "blocco di controllo della rete locale"
+  ],
+  "stp-states": [
+    "Stati delle porte STP (802.1D)",
+    "Stati delle porte STP",
+    "stati STP",
+    "stati delle porte spanning tree",
+    "stati spanning tree",
+    "stati delle porte 802.1D",
+    "stati delle porte"
+  ],
+  "linux-capabilities": [
+    "Capability di Linux",
+    "capability",
+    "capability POSIX",
+    "capability del kernel",
+    "capacità di Linux"
+  ],
+  "iptables-chains": [
+    "Catene predefinite di iptables",
+    "catene di iptables",
+    "catene iptables",
+    "catene netfilter",
+    "hook netfilter",
+    "catene predefinite",
+    "catene built-in"
+  ],
+  "iptables-tables": [
+    "Tabelle di iptables",
+    "tabelle iptables",
+    "tabelle netfilter",
+    "tabelle",
+    "nomi delle tabelle iptables"
+  ],
+  "nft-families": [
+    "Famiglie di indirizzi di nftables",
+    "famiglie nftables",
+    "famiglie di nftables",
+    "famiglie di indirizzi",
+    "famiglie di tabelle nftables"
+  ],
+  "tcp-options": [
+    "Opzioni TCP",
+    "opzioni dell’intestazione TCP",
+    "tipi di opzione TCP"
+  ],
+  "dhcp-options": [
+    "Opzioni DHCP",
+    "opzioni BOOTP",
+    "codici delle opzioni DHCP",
+    "opzioni DHCPv4"
+  ],
+  "http-auth": [
+    "Schemi di autenticazione HTTP",
+    "schemi di autenticazione",
+    "schemi di auth HTTP",
+    "autenticazione HTTP",
+    "schemi Authorization"
+  ],
+  "uri-schemes": [
+    "Schemi URI",
+    "schemi URL",
+    "schemi di URI",
+    "schemi degli URL"
+  ],
+  "media-types": [
+    "Tipi di media di primo livello",
+    "tipi MIME",
+    "media type di primo livello",
+    "tipi di contenuto",
+    "tipi MIME di primo livello",
+    "tipi di media"
+  ],
+  "sip-methods": [
+    "Metodi SIP",
+    "richieste SIP",
+    "metodi di richiesta SIP",
+    "tipi di richiesta SIP"
+  ],
+  "bgp-fsm": [
+    "Stati della macchina a stati finiti di BGP",
+    "stati BGP",
+    "stati della FSM BGP",
+    "stati dei neighbor BGP",
+    "stati della sessione BGP",
+    "macchina a stati BGP",
+    "stati dei peer BGP"
+  ],
+  "ospf-states": [
+    "Stati dei neighbor OSPF",
+    "stati OSPF",
+    "stati di adiacenza OSPF",
+    "stati dei vicini OSPF",
+    "FSM dei neighbor OSPF"
+  ],
+  "websocket-opcodes": [
+    "Opcode dei frame WebSocket",
+    "opcode WebSocket",
+    "tipi di frame WebSocket",
+    "frame WebSocket",
+    "opcode dei frame"
+  ],
+  "dn-attributes": [
+    "Tipi di attributo dei distinguished name",
+    "attributi DN",
+    "attributi dei distinguished name",
+    "attributi DN LDAP",
+    "componenti del DN",
+    "attributi X.500"
+  ],
+  "pem-labels": [
+    "Etichette PEM",
+    "tipi PEM",
+    "intestazioni PEM",
+    "tipi di blocco PEM",
+    "delimitatori PEM"
+  ],
+  "posix-classes": [
+    "Classi di caratteri POSIX",
+    "classi di caratteri",
+    "classi POSIX",
+    "espressioni tra parentesi quadre",
+    "classi di caratteri regex",
+    "classi di caratteri con nome"
+  ],
+  "cache-control": [
+    "Direttive di Cache-Control",
+    "direttive di cache",
+    "direttive di caching HTTP",
+    "direttive della cache HTTP",
+    "direttive Cache-Control"
+  ],
+  "ipv6-header": [
+    "Campi dell’intestazione IPv6",
+    "intestazione IPv6",
+    "campi IPv6",
+    "campi dell’header IPv6"
+  ],
+  "tcp-header": [
+    "Campi dell’intestazione TCP",
+    "intestazione TCP",
+    "campi TCP",
+    "campi del segmento TCP",
+    "campi dell’header TCP"
+  ],
+  "dns-flags": [
+    "Flag dell’intestazione DNS",
+    "flag DNS",
+    "bit dell’intestazione DNS",
+    "flag dei messaggi DNS",
+    "flag dell’header DNS"
+  ],
+  "http-3xx": [
+    "Codici di stato HTTP di reindirizzamento (3xx)",
+    "Codici di stato HTTP di reindirizzamento",
+    "codici 3xx",
+    "codici di reindirizzamento",
+    "reindirizzamenti HTTP",
+    "reindirizzamenti",
+    "codici di stato 3xx"
+  ],
+  "http-4xx": [
+    "Codici di stato HTTP di errore del client (4xx)",
+    "Codici di stato HTTP di errore del client",
+    "codici 4xx",
+    "errori del client",
+    "codici di errore del client",
+    "errori del client HTTP",
+    "codici di stato 4xx"
+  ],
+  "http-5xx": [
+    "Codici di stato HTTP di errore del server (5xx)",
+    "Codici di stato HTTP di errore del server",
+    "codici 5xx",
+    "errori del server",
+    "codici di errore del server",
+    "errori del server HTTP",
+    "codici di stato 5xx"
+  ],
+  "eap-methods": [
+    "Metodi EAP",
+    "tipi EAP",
+    "tipi di metodo EAP",
+    "metodi di autenticazione EAP",
+    "metodi EAP 802.1X"
+  ],
+  "crontab": [
+    "Campi di una riga di crontab",
+    "campi di crontab",
+    "campi cron",
+    "campi della pianificazione cron",
+    "campi dell’espressione cron",
+    "campi temporali di crontab"
+  ],
+  "file-types": [
+    "Tipi di file Unix",
+    "tipi di file",
+    "tipi di file Linux",
+    "tipi di inode",
+    "indicatori del tipo di file"
+  ],
+  "linux-namespaces": [
+    "Namespace di Linux",
+    "namespace",
+    "tipi di namespace",
+    "namespace del kernel",
+    "namespace dei container"
+  ],
+  "docker-networks": [
+    "Driver di rete di Docker",
+    "reti Docker",
+    "tipi di rete Docker",
+    "driver di rete",
+    "modalità di rete Docker"
+  ],
+  "ssh-keytypes": [
+    "Tipi di chiave di ssh-keygen",
+    "tipi di chiave SSH",
+    "algoritmi delle chiavi SSH",
+    "tipi di chiave OpenSSH",
+    "tipi di chiave",
+    "chiavi SSH"
+  ],
+  "base-encodings": [
+    "Codifiche della RFC 4648",
+    "codifiche RFC 4648",
+    "codifiche base",
+    "codifiche Base-N",
+    "codifiche da binario a testo",
+    "famiglia base64"
+  ],
+  "mpls-labels": [
+    "Etichette MPLS per usi speciali",
+    "etichette MPLS riservate",
+    "label MPLS riservate",
+    "etichette MPLS speciali",
+    "label MPLS per usi speciali",
+    "etichette riservate"
+  ],
+  "dscp": [
+    "Code point Differentiated Services (DSCP)",
+    "Code point Differentiated Services",
+    "valori DSCP",
+    "code point DiffServ",
+    "marcature DSCP",
+    "comportamenti per hop",
+    "marcature QoS"
+  ],
+  "irule-events": [
+    "Eventi delle iRule (BIG-IP)",
+    "Eventi delle iRule",
+    "eventi iRule",
+    "eventi delle iRule F5"
+  ],
+  "kill-chain": [
+    "Fasi della Cyber Kill Chain",
+    "fasi della kill chain",
+    "kill chain di Lockheed Martin",
+    "fasi della catena di attacco",
+    "catena di intrusione"
+  ],
+  "dns-classes": [
+    "Classi DNS",
+    "valori CLASS DNS",
+    "classi dei record DNS",
+    "classi di record",
+    "classi dei resource record"
+  ],
+  "dns-opcodes": [
+    "Opcode DNS",
+    "codici operativi DNS",
+    "valori OPCODE",
+    "opcode dell’intestazione DNS",
+    "codici di operazione DNS"
+  ],
+  "dns-ede": [
+    "Codici Extended DNS Error",
+    "errori DNS estesi",
+    "codici EDE",
+    "codici di errore DNS estesi",
+    "codici EDE DNS"
+  ],
+  "edns-options": [
+    "Codici delle opzioni EDNS(0)",
+    "opzioni EDNS",
+    "opzioni EDNS(0)",
+    "opzioni del record OPT",
+    "codici delle opzioni EDNS"
+  ],
+  "dnssec-algs": [
+    "Numeri degli algoritmi DNSSEC",
+    "algoritmi DNSSEC",
+    "algoritmi di firma DNSSEC",
+    "algoritmi DNSKEY",
+    "numeri di algoritmo DNSSEC",
+    "algoritmi delle chiavi DNSSEC"
+  ],
+  "svcb-keys": [
+    "Chiavi dei parametri di servizio SVCB/HTTPS",
+    "parametri SVCB",
+    "chiavi SVCB",
+    "parametri del record HTTPS",
+    "parametri di servizio SVCB",
+    "chiavi dei parametri di servizio"
+  ],
+  "soa-fields": [
+    "Campi del record SOA",
+    "campi SOA",
+    "campi RDATA del SOA",
+    "timer SOA",
+    "parametri SOA",
+    "valori SOA"
+  ],
+  "dig-options": [
+    "Opzioni di query di dig",
+    "opzioni di dig",
+    "opzioni dig",
+    "flag di dig"
+  ],
+  "dns-sections": [
+    "Sezioni del messaggio DNS",
+    "sezioni DNS",
+    "formato del messaggio DNS",
+    "sezioni di un messaggio DNS",
+    "sezioni del pacchetto DNS",
+    "sezioni della risposta DNS",
+    "struttura del messaggio DNS"
+  ],
+  "smtp-extensions": [
+    "Estensioni del servizio SMTP (parole chiave EHLO)",
+    "Estensioni del servizio SMTP",
+    "estensioni SMTP",
+    "estensioni ESMTP",
+    "parole chiave EHLO",
+    "parole chiave ESMTP",
+    "estensioni EHLO"
+  ],
+  "dmarc-tags": [
+    "Tag DMARC",
+    "tag del record DMARC",
+    "parametri DMARC",
+    "tag della policy DMARC"
+  ],
+  "spf-mechanisms": [
+    "Meccanismi SPF",
+    "meccanismi del record SPF",
+    "termini SPF",
+    "tipi di meccanismo SPF"
+  ],
+  "cte-values": [
+    "Valori di Content-Transfer-Encoding (MIME)",
+    "Valori di Content-Transfer-Encoding",
+    "codifiche di trasferimento MIME",
+    "codifiche MIME",
+    "valori CTE",
+    "tipi di codifica MIME"
+  ],
+  "mail-headers": [
+    "Campi dell’intestazione delle e-mail (RFC 5322)",
+    "Campi dell’intestazione delle e-mail",
+    "intestazioni delle e-mail",
+    "intestazioni e-mail",
+    "campi di intestazione RFC 5322",
+    "intestazioni della posta",
+    "header delle e-mail"
+  ],
+  "imap-special-use": [
+    "Attributi special-use delle caselle IMAP",
+    "caselle special-use",
+    "attributi special-use",
+    "cartelle speciali IMAP",
+    "caselle speciali",
+    "attributi delle caselle IMAP",
+    "cartelle special-use"
+  ],
+  "sip-1xx": [
+    "Risposte provvisorie SIP (1xx)",
+    "Risposte provvisorie SIP",
+    "risposte SIP 1xx",
+    "codici SIP 1xx",
+    "risposte informative SIP",
+    "codici di stato SIP 1xx"
+  ],
+  "rtp-payload-types": [
+    "Tipi di payload RTP (statici)",
+    "Tipi di payload RTP",
+    "payload type RTP",
+    "codifiche RTP",
+    "codec RTP",
+    "formati di payload RTP"
+  ],
+  "sdp-attributes": [
+    "Nomi degli attributi SDP",
+    "attributi SDP",
+    "attributi a= di SDP",
+    "righe a= di SDP",
+    "attributi del Session Description Protocol"
+  ],
+  "stun-methods": [
+    "Metodi STUN",
+    "metodi STUN/TURN",
+    "metodi TURN",
+    "messaggi STUN",
+    "nomi dei metodi STUN"
+  ],
+  "bgp-communities": [
+    "Community well-known di BGP",
+    "community well-known",
+    "community BGP",
+    "community BGP riservate",
+    "community BGP note",
+    "valori di community BGP"
+  ],
+  "bgp-errors": [
+    "Codici di errore BGP (NOTIFICATION)",
+    "Codici di errore BGP",
+    "codici NOTIFICATION BGP",
+    "errori BGP",
+    "codici di errore NOTIFICATION"
+  ],
+  "isis-tlvs": [
+    "TLV di primo livello IS-IS",
+    "TLV IS-IS",
+    "tipi di TLV IS-IS",
+    "codici TLV IS-IS"
+  ],
+  "pim-messages": [
+    "Tipi di messaggio PIM",
+    "messaggi PIM",
+    "tipi di pacchetto PIM",
+    "pacchetti PIM",
+    "messaggi PIM-SM"
+  ],
+  "ldp-messages": [
+    "Tipi di messaggio LDP (MPLS)",
+    "Tipi di messaggio LDP",
+    "messaggi LDP",
+    "messaggi LDP MPLS",
+    "messaggi del Label Distribution Protocol",
+    "pacchetti LDP"
+  ],
+  "evpn-routes": [
+    "Tipi di route EVPN",
+    "route EVPN",
+    "tipi di route BGP EVPN",
+    "tipi di NLRI EVPN",
+    "route type EVPN"
+  ],
+  "rpki-extensions": [
+    "Estensioni dei file del repository RPKI",
+    "estensioni dei file RPKI",
+    "oggetti RPKI",
+    "tipi di oggetti RPKI",
+    "oggetti del repository RPKI",
+    "oggetti firmati RPKI",
+    "tipi di file RPKI"
+  ],
+  "rpsl-classes": [
+    "Classi di oggetti RPSL",
+    "classi RPSL",
+    "oggetti RPSL",
+    "classi di oggetti IRR",
+    "oggetti IRR",
+    "oggetti del database RIPE",
+    "oggetti whois"
+  ],
+  "as-special": [
+    "Numeri di AS per usi speciali",
+    "numeri di AS riservati",
+    "ASN riservati",
+    "numeri AS speciali",
+    "ASN per usi speciali",
+    "numeri di sistema autonomo riservati",
+    "ASN privati e riservati"
+  ],
+  "hsrp-states": [
+    "Stati HSRP",
+    "stati dei router HSRP",
+    "stati dell’Hot Standby Router Protocol",
+    "macchina a stati HSRP"
+  ],
+  "sctp-chunks": [
+    "Tipi di chunk SCTP",
+    "chunk SCTP",
+    "tipi di chunk",
+    "ID dei chunk SCTP"
+  ],
+  "quic-frames": [
+    "Tipi di frame QUIC",
+    "frame QUIC",
+    "valori dei tipi di frame QUIC"
+  ],
+  "alpn-ids": [
+    "ID di protocollo ALPN (TLS)",
+    "ID di protocollo ALPN",
+    "ID ALPN",
+    "identificatori ALPN",
+    "valori ALPN",
+    "token ALPN",
+    "identificatori di protocollo ALPN"
+  ],
+  "ipv4-options": [
+    "Opzioni IPv4",
+    "opzioni IP",
+    "opzioni dell’intestazione IPv4",
+    "opzioni dell’intestazione IP",
+    "tipi di opzione IP"
+  ],
+  "icmpv6-types": [
+    "Tipi di messaggio ICMPv6",
+    "tipi ICMPv6",
+    "messaggi ICMPv6",
+    "tipi di messaggi ICMPv6"
+  ],
+  "nd-options": [
+    "Opzioni Neighbor Discovery IPv6",
+    "opzioni Neighbor Discovery",
+    "opzioni ND",
+    "opzioni NDP",
+    "opzioni ND IPv6",
+    "opzioni dei Router Advertisement",
+    "opzioni RA"
+  ],
+  "dhcpv6-messages": [
+    "Tipi di messaggio DHCPv6",
+    "messaggi DHCPv6",
+    "tipi di pacchetto DHCPv6",
+    "pacchetti DHCPv6"
+  ],
+  "arp-hw-types": [
+    "Tipi di hardware ARP",
+    "tipi di hardware",
+    "valori hrd ARP",
+    "codici del tipo di hardware ARP",
+    "valori del tipo di hardware"
+  ],
+  "pppoe-discovery": [
+    "Pacchetti di discovery PPPoE",
+    "discovery PPPoE",
+    "pacchetti PPPoE",
+    "fase di discovery PPPoE",
+    "messaggi PPPoE",
+    "messaggi di discovery PPPoE"
+  ],
+  "netconf-ops": [
+    "Operazioni del protocollo NETCONF",
+    "operazioni NETCONF",
+    "RPC NETCONF",
+    "operazioni di base NETCONF",
+    "comandi NETCONF"
+  ],
+  "nmda-datastores": [
+    "Datastore NMDA",
+    "datastore NETCONF",
+    "datastore YANG",
+    "datastore",
+    "datastore di configurazione",
+    "datastore RESTCONF"
+  ],
+  "yang-types": [
+    "Tipi integrati di YANG",
+    "tipi YANG",
+    "tipi di dati YANG",
+    "tipi base YANG",
+    "tipi built-in YANG"
+  ],
+  "mib2-groups": [
+    "Gruppi della MIB-II",
+    "gruppi MIB-II",
+    "gruppi MIB-2",
+    "gruppi di oggetti MIB-II",
+    "gruppi della RFC 1213"
+  ],
+  "iftype": [
+    "Tipi di interfaccia IANA (ifType)",
+    "Tipi di interfaccia IANA",
+    "valori ifType",
+    "tipi di interfaccia SNMP",
+    "tipi di interfaccia"
+  ],
+  "ipfix-ies": [
+    "Elementi informativi IPFIX",
+    "information element IPFIX",
+    "campi IPFIX",
+    "campi NetFlow",
+    "elementi IPFIX",
+    "campi dei flow record"
+  ],
+  "rfc-status": [
+    "Categorie di stato delle RFC",
+    "stato delle RFC",
+    "livelli di maturità delle RFC",
+    "categorie delle RFC",
+    "livelli di maturità",
+    "tipi di RFC"
+  ],
+  "original-tlds": [
+    "Domini di primo livello iniziali (RFC 920)",
+    "Domini di primo livello iniziali",
+    "TLD originali",
+    "TLD iniziali",
+    "domini di primo livello originali",
+    "primi TLD",
+    "TLD della RFC 920"
+  ],
+  "icann-soac": [
+    "Organizzazioni di supporto e comitati consultivi dell’ICANN",
+    "SO e AC dell’ICANN",
+    "comitati dell’ICANN",
+    "organismi dell’ICANN",
+    "comunità ICANN",
+    "gruppi dell’ICANN"
+  ],
+  "ieee802-wgs": [
+    "Gruppi di lavoro dell’IEEE 802 LMSC",
+    "gruppi di lavoro IEEE 802",
+    "comitati IEEE 802",
+    "gruppi IEEE 802",
+    "standard IEEE 802",
+    "famiglia IEEE 802"
+  ],
+  "wifi-certs": [
+    "Programmi di certificazione della Wi-Fi Alliance",
+    "certificazioni Wi-Fi Alliance",
+    "certificazioni Wi-Fi",
+    "programmi Wi-Fi CERTIFIED",
+    "programmi della Wi-Fi Alliance",
+    "certificazioni della Wi-Fi Alliance"
+  ],
+  "bluetooth-profiles": [
+    "Profili Bluetooth",
+    "specifiche dei profili Bluetooth",
+    "profili del Bluetooth SIG",
+    "specifiche Bluetooth"
+  ],
+  "ip-objects": [
+    "Oggetti del comando ip (iproute2)",
+    "Oggetti del comando ip",
+    "oggetti di ip",
+    "oggetti iproute2",
+    "sottocomandi di ip",
+    "sottocomandi iproute2"
+  ],
+  "radius-attributes": [
+    "Attributi RADIUS",
+    "tipi di attributo RADIUS",
+    "AVP RADIUS",
+    "nomi degli attributi RADIUS",
+    "coppie attributo-valore RADIUS"
+  ],
+  "telnet-options": [
+    "Opzioni Telnet",
+    "codici delle opzioni Telnet",
+    "opzioni di negoziazione Telnet",
+    "numeri delle opzioni Telnet"
+  ],
+  "tftp-opcodes": [
+    "Opcode TFTP",
+    "tipi di pacchetto TFTP",
+    "operazioni TFTP",
+    "messaggi TFTP",
+    "pacchetti TFTP"
+  ],
+  "ntp-refids": [
+    "Identificatori di riferimento NTP (stratum 1)",
+    "Identificatori di riferimento NTP",
+    "refid NTP",
+    "ID di riferimento NTP",
+    "orologi di riferimento NTP",
+    "sorgenti di stratum 1",
+    "sorgenti di tempo NTP"
+  ],
+  "cwe-top25": [
+    "CWE Top 25 delle debolezze software più pericolose (2025)",
+    "CWE Top 25 delle debolezze software più pericolose",
+    "debolezze software più pericolose",
+    "le 25 debolezze software più pericolose",
+    "Top 25 della CWE",
+    "debolezze CWE Top 25"
+  ],
+  "owasp-api": [
+    "OWASP API Security Top 10 (2023)",
+    "Top 10 della sicurezza delle API OWASP",
+    "Top 10 API OWASP",
+    "rischi di sicurezza delle API OWASP",
+    "Top 10 della sicurezza delle API"
+  ],
+  "capec-mechanisms": [
+    "Meccanismi di attacco CAPEC",
+    "meccanismi di attacco",
+    "categorie CAPEC",
+    "categorie di attack pattern",
+    "attack pattern CAPEC",
+    "meccanismi CAPEC"
+  ],
+  "cvss4-supplemental": [
+    "Metriche supplementari CVSS v4.0",
+    "metriche supplementari CVSS",
+    "metriche supplementari",
+    "metriche supplementari CVSS 4",
+    "gruppo di metriche supplementari"
+  ],
+  "nist-pqc": [
+    "Algoritmi di crittografia post-quantistica del NIST",
+    "algoritmi post-quantistici",
+    "algoritmi post-quantistici del NIST",
+    "crittografia post-quantistica",
+    "algoritmi PQC",
+    "algoritmi resistenti ai computer quantistici",
+    "standard di crittografia post-quantistica"
+  ],
+  "nist-rmf": [
+    "Fasi del NIST Risk Management Framework",
+    "fasi del RMF",
+    "fasi del NIST RMF",
+    "passi del RMF",
+    "framework di gestione del rischio del NIST",
+    "fasi del Risk Management Framework"
+  ],
+  "oidc-claims": [
+    "Claim standard di OpenID Connect",
+    "claim standard OIDC",
+    "claim OIDC",
+    "claim OpenID Connect",
+    "claim standard",
+    "claim UserInfo"
+  ],
+  "spdx-ids": [
+    "Identificatori di licenza SPDX",
+    "identificatori SPDX",
+    "licenze SPDX",
+    "elenco delle licenze SPDX",
+    "ID di licenza SPDX",
+    "identificatori di licenze open source",
+    "licenze open source"
+  ],
+  "webauthn-transports": [
+    "Trasporti degli autenticatori WebAuthn",
+    "trasporti WebAuthn",
+    "trasporti degli autenticatori",
+    "trasporti FIDO2",
+    "trasporti delle passkey",
+    "valori di AuthenticatorTransport"
+  ],
+  "cloud-characteristics": [
+    "Caratteristiche essenziali del cloud computing (NIST)",
+    "Caratteristiche essenziali del cloud computing",
+    "caratteristiche essenziali del cloud",
+    "caratteristiche del cloud",
+    "caratteristiche essenziali",
+    "caratteristiche del cloud computing",
+    "definizione NIST di cloud computing"
+  ],
+  "k8s-volumes": [
+    "Tipi di volume Kubernetes",
+    "volumi Kubernetes",
+    "tipi di volume",
+    "volumi dei Pod",
+    "tipi di volume dei Pod",
+    "volumi k8s"
+  ],
+  "k8s-components": [
+    "Componenti di un cluster Kubernetes",
+    "componenti Kubernetes",
+    "componenti del cluster Kubernetes",
+    "componenti del control plane Kubernetes",
+    "architettura di Kubernetes",
+    "componenti del cluster"
+  ],
+  "kubectl-commands": [
+    "Comandi kubectl",
+    "sottocomandi kubectl",
+    "comandi di kubectl",
+    "comandi della CLI di Kubernetes"
+  ],
+  "docker-storage": [
+    "Driver di storage di Docker (Linux)",
+    "Driver di storage di Docker",
+    "driver di storage",
+    "driver di archiviazione Docker",
+    "graph driver",
+    "backend di storage Docker"
+  ],
+  "aws-pillars": [
+    "Pilastri dell’AWS Well-Architected Framework",
+    "pilastri Well-Architected",
+    "pilastri di AWS Well-Architected",
+    "pilastri del Well-Architected Framework",
+    "pilastri AWS"
+  ],
+  "aws-7rs": [
+    "Strategie di migrazione di AWS (le 7 R)",
+    "Strategie di migrazione di AWS",
+    "le 7 R",
+    "7 R della migrazione",
+    "strategie di migrazione",
+    "strategie di migrazione al cloud",
+    "sette R"
+  ],
+  "azure-redundancy": [
+    "Opzioni di ridondanza di Azure Storage",
+    "ridondanza di Azure Storage",
+    "opzioni di ridondanza Azure",
+    "replica di Azure Storage",
+    "opzioni di replica di Azure",
+    "ridondanza dell’account di archiviazione"
+  ],
+  "twelve-factor": [
+    "The Twelve-Factor App (i dodici fattori)",
+    "i dodici fattori",
+    "dodici fattori",
+    "12 fattori",
+    "app a dodici fattori",
+    "metodologia dei dodici fattori",
+    "applicazione a 12 fattori"
+  ],
+  "otel-signals": [
+    "Segnali di OpenTelemetry",
+    "segnali OTel",
+    "segnali di telemetria",
+    "segnali di osservabilità",
+    "tipi di segnale OpenTelemetry",
+    "tipi di dati di telemetria"
+  ],
+  "errno": [
+    "Nomi degli errori errno",
+    "valori errno",
+    "codici errno",
+    "codici di errore",
+    "codici di errore Linux",
+    "codici di errore POSIX",
+    "numeri di errore",
+    "costanti errno"
+  ],
+  "sched-policies": [
+    "Politiche di scheduling di Linux",
+    "politiche di scheduling",
+    "policy di scheduling",
+    "politiche dello scheduler",
+    "classi di scheduling",
+    "politiche di schedulazione"
+  ],
+  "cgroup-controllers": [
+    "Controller di cgroup v2",
+    "controller cgroup",
+    "controller dei cgroup",
+    "sottosistemi cgroup",
+    "controller cgroup v2",
+    "controller dei control group"
+  ],
+  "lsm": [
+    "Linux Security Modules (moduli di sicurezza del kernel)",
+    "moduli di sicurezza di Linux",
+    "moduli di sicurezza del kernel",
+    "moduli LSM",
+    "moduli di controllo degli accessi obbligatorio"
+  ],
+  "inotify-events": [
+    "Eventi inotify",
+    "maschere di eventi inotify",
+    "flag inotify",
+    "eventi del file system",
+    "tipi di eventi inotify"
+  ],
+  "systemd-service-types": [
+    "Tipi di servizio systemd (Type=)",
+    "Tipi di servizio systemd",
+    "tipi di service systemd",
+    "valori di Type= di systemd",
+    "tipi di avvio systemd"
+  ],
+  "git-hooks": [
+    "Hook di Git",
+    "hook Git",
+    "script di hook Git",
+    "hook lato client e lato server",
+    "nomi degli hook Git"
+  ],
+  "registry-keys": [
+    "Chiavi predefinite del Registro di sistema di Windows",
+    "chiavi radice del Registro di sistema",
+    "hive del Registro di sistema",
+    "chiavi predefinite del Registro",
+    "chiavi radice",
+    "chiavi del Registro di sistema",
+    "chiavi di primo livello del Registro"
+  ],
+  "win-event-ids": [
+    "ID degli eventi di controllo della sicurezza di Windows",
+    "ID evento di sicurezza di Windows",
+    "ID degli eventi di Windows",
+    "eventi di sicurezza di Windows",
+    "ID evento",
+    "eventi di audit di Windows",
+    "eventi da monitorare"
+  ],
+  "logon-types": [
+    "Tipi di accesso di Windows",
+    "tipi di logon di Windows",
+    "tipi di accesso",
+    "tipi di logon",
+    "valori del tipo di accesso",
+    "tipi di logon dell’evento 4624"
+  ],
+  "well-known-sids": [
+    "SID noti di Windows (well-known SID)",
+    "SID noti di Windows",
+    "SID noti",
+    "identificatori di sicurezza noti",
+    "SID di Windows",
+    "SID predefiniti",
+    "identificatori di sicurezza"
+  ],
+  "fsmo-roles": [
+    "Ruoli FSMO di Active Directory",
+    "ruoli FSMO",
+    "ruoli di master delle operazioni",
+    "master delle operazioni",
+    "ruoli FSMO AD",
+    "ruoli operations master"
+  ],
+  "ps-execution-policies": [
+    "Criteri di esecuzione di PowerShell",
+    "criteri di esecuzione",
+    "execution policy di PowerShell",
+    "policy di esecuzione",
+    "valori di Set-ExecutionPolicy"
+  ],
+  "python-dunders": [
+    "Metodi speciali di Python (metodi dunder)",
+    "Metodi speciali di Python",
+    "metodi dunder",
+    "metodi speciali",
+    "metodi magici",
+    "metodi magici di Python"
+  ],
+  "js-errors": [
+    "Tipi di errore integrati di JavaScript",
+    "tipi di errore JavaScript",
+    "errori JavaScript",
+    "errori nativi di JavaScript",
+    "tipi di errore JS",
+    "eccezioni JavaScript",
+    "sottoclassi di Error"
+  ],
+  "ts-utility-types": [
+    "Utility type di TypeScript",
+    "utility type",
+    "tipi di utilità TypeScript",
+    "tipi helper di TypeScript",
+    "utility type integrati"
+  ],
+  "go-builtins": [
+    "Funzioni integrate di Go",
+    "builtin di Go",
+    "funzioni built-in di Go",
+    "funzioni predichiarate di Go",
+    "funzioni integrate di Golang"
+  ],
+  "rust-derive": [
+    "Trait derivabili di Rust",
+    "trait derivabili",
+    "trait derive di Rust",
+    "macro derive di Rust",
+    "trait di Rust"
+  ],
+  "csharp-access": [
+    "Modificatori di accesso C#",
+    "modificatori di accesso",
+    "livelli di accessibilità C#",
+    "livelli di accessibilità",
+    "modificatori di visibilità",
+    "livelli di accesso"
+  ],
+  "pg-index-types": [
+    "Tipi di indice PostgreSQL",
+    "tipi di indice Postgres",
+    "indici PostgreSQL",
+    "tipi di indice",
+    "metodi di accesso degli indici"
+  ],
+  "html-void": [
+    "Elementi void HTML",
+    "elementi void",
+    "elementi vuoti",
+    "tag autochiudenti",
+    "elementi autochiudenti",
+    "elementi senza tag di chiusura"
+  ],
+  "iframe-sandbox": [
+    "Parole chiave di sandbox degli iframe",
+    "parole chiave sandbox",
+    "token sandbox",
+    "valori dell’attributo sandbox",
+    "flag sandbox degli iframe",
+    "attributo sandbox"
+  ],
+  "html-input-types": [
+    "Tipi di input HTML",
+    "tipi di input",
+    "valori di input type",
+    "tipi di input dei moduli",
+    "tipi di campo input"
+  ],
+  "fetch-modes": [
+    "Modalità di richiesta di Fetch",
+    "modalità di richiesta",
+    "modalità fetch",
+    "valori di RequestMode",
+    "modalità di richiesta Fetch API"
+  ],
+  "cors-safelisted": [
+    "Intestazioni di richiesta CORS-safelisted",
+    "intestazioni CORS-safelisted",
+    "intestazioni safelisted",
+    "intestazioni semplici CORS",
+    "intestazioni senza preflight",
+    "header CORS-safelisted"
+  ],
+  "web-encodings": [
+    "Codifiche dei caratteri (Encoding Standard del WHATWG)",
+    "Codifiche dei caratteri",
+    "codifiche di testo",
+    "set di caratteri",
+    "codifiche WHATWG",
+    "codifiche web",
+    "nomi dei charset"
+  ],
+  "xhr-readystate": [
+    "Valori di readyState di XMLHttpRequest",
+    "valori di readyState",
+    "stati di XMLHttpRequest",
+    "stati XHR",
+    "readyState XHR"
+  ],
+  "referrer-policy": [
+    "Valori di Referrer-Policy",
+    "policy del referrer",
+    "valori della Referrer-Policy",
+    "direttive Referrer-Policy",
+    "opzioni della Referrer-Policy"
+  ],
+  "css-position": [
+    "Valori di position CSS",
+    "valori della proprietà position",
+    "position CSS",
+    "schemi di posizionamento CSS",
+    "posizionamento CSS"
+  ],
+  "bigip-lb-modes": [
+    "Metodi di bilanciamento del carico dei pool BIG-IP",
+    "metodi di bilanciamento del carico BIG-IP",
+    "metodi di bilanciamento F5",
+    "metodi di bilanciamento del carico",
+    "algoritmi di bilanciamento del carico",
+    "modalità di bilanciamento del carico",
+    "metodi di load balancing BIG-IP"
+  ],
+  "bigip-persistence": [
+    "Tipi di profili di persistenza BIG-IP",
+    "profili di persistenza",
+    "tipi di persistenza",
+    "metodi di persistenza",
+    "profili di persistenza F5",
+    "persistenza di sessione"
+  ],
+  "bigip-monitors": [
+    "Tipi di monitor di integrità BIG-IP",
+    "monitor di integrità BIG-IP",
+    "tipi di monitor BIG-IP",
+    "monitor F5",
+    "monitor di integrità",
+    "health monitor BIG-IP"
+  ],
+  "bigip-modules": [
+    "Moduli BIG-IP attivabili con il provisioning",
+    "moduli BIG-IP",
+    "moduli F5",
+    "moduli di BIG-IP",
+    "moduli TMOS",
+    "moduli software BIG-IP"
+  ],
+  "forti-sdwan-lb": [
+    "Modalità di bilanciamento del carico SD-WAN di FortiGate",
+    "modalità di bilanciamento SD-WAN",
+    "bilanciamento del carico SD-WAN",
+    "metodi di bilanciamento SD-WAN",
+    "algoritmi di bilanciamento SD-WAN",
+    "bilanciamento SD-WAN FortiGate"
+  ],
+  "forti-security-profiles": [
+    "Profili di sicurezza di FortiGate",
+    "profili di sicurezza FortiOS",
+    "profili di sicurezza",
+    "profili UTM",
+    "funzionalità UTM",
+    "profili di sicurezza Fortinet"
+  ],
+  "netskope-steering": [
+    "Metodi di traffic steering di Netskope",
+    "metodi di steering Netskope",
+    "steering del traffico Netskope",
+    "metodi di steering",
+    "opzioni di steering Netskope",
+    "steering Netskope"
+  ]
+}

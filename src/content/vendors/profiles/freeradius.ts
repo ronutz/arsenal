@@ -71,6 +71,6 @@ export const freeradiusProfile: VendorProfile = {
   ],
   analyst: [
     "There is no vendor position to assess. The measure that matters is deployment, and by the project's own survey the figure is around a hundred million daily users - a number worth attributing rather than asserting, since it comes from the project and dates from 2006.",
-    "The durable observation is about maintenance rather than innovation. Most software on this timeline changed hands, changed direction or stopped. This one has been maintained continuously by the same person since 1999, and the internet's authentication layer rests on that arrangement more than most people using it realise.",
+    "The durable observation is about maintenance rather than innovation. Most software on this timeline changed hands, changed direction or stopped. This one has been maintained continuously by the same person since 1999, and the internet's authentication layer rests on that arrangement more than most people using it realize.",
   ],
 };

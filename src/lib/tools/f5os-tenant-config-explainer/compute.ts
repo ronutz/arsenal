@@ -147,7 +147,7 @@ export function decodeTenantLocalisable(input: string): TenantDecode<EngineText>
 
   if (fields.length === 0 && vcpu === undefined && runningState === "unknown") {
     const m = say("err.nothing", // nothing it recognises
-      "Nothing recognisable found. This expects an f5-tenants block containing fields such as running-state, vcpu-cores-per-node and memory.",
+      "Nothing recognizable found. This expects an f5-tenants block containing fields such as running-state, vcpu-cores-per-node and memory.",
     );
     throw withEngineText(new TenantConfigError(m.text), m); // the same class and message, carrying the sentence
   }

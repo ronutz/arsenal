@@ -420,14 +420,14 @@ conversations: 1; the busiest:
 
 The checksum Scapy computed agrees with RFC 1071's algorithm written out by hand, and the analyser reports exactly the reset and the syslog message the test was built to contain (PRI 34 is facility 4 at severity 2, critical, the value RFC 5424 uses in its first example). The test also earned its keep. The first version of `pcap_summary.py` printed `min(rtts)` unconditionally and crashed with `ValueError: min() iterable argument is empty`, because this file has no answered handshake; the line that now prints `none` is the fix. A real capture of a quiet network would have found the same bug, later.
 
-Nothing in this article sends a crafted packet. Sending is a separate decision with separate rules: Scapy's send functions need root, put packets on a real interface, and belong only on networks you own or are authorised to test; Scapy's troubleshooting page also explains why the loopback interface needs special handling.
+Nothing in this article sends a crafted packet. Sending is a separate decision with separate rules: Scapy's send functions need root, put packets on a real interface, and belong only on networks you own or are authorized to test; Scapy's troubleshooting page also explains why the loopback interface needs special handling.
 
 ## Handling logs and captures with care
 
 - **They hold secrets.** Captures can contain credentials, session cookies and tokens; logs contain user names, addresses and sometimes passwords typed into the wrong field. Capture only the hosts and ports you need, with a BPF filter at capture time as the lab did, and keep the files where you would keep the secrets.
 - **They are hostile input.** A user name, a URL path or a packet payload was written by someone else. Anchor patterns on the fields the system adds, never `eval` anything from a log, and keep parsing libraries current, since a dissector reads whatever the network sent.
 - **Read without privileges.** Capturing may need root; reading a file does not. Copy the capture and analyse it as an ordinary user, in a virtual environment.
-- **Write the year and the zone down.** Normalise timestamps to UTC with an explicit year before correlating sources.
+- **Write the year and the zone down.** Normalize timestamps to UTC with an explicit year before correlating sources.
 
 ## Sources
 

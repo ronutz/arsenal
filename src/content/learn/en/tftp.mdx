@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-10-13"
 ---
 
-A machine that has just powered on, or a router with nothing running but its boot loader, has to fetch one file before it can do anything else, with a protocol small enough to fit in a boot ROM (read-only memory). The Trivial File Transfer Protocol (TFTP) is that protocol: one file, over the User Datagram Protocol (UDP), in 512-byte blocks, one block in flight at a time. Its standard, Request for Comments (RFC) 1350, says so itself: "It is designed to be small and easy to implement.  Therefore, it lacks most of the features of a regular FTP", the File Transfer Protocol ([RFC 1350, section 1](https://www.rfc-editor.org/rfc/rfc1350.txt)). What follows is enough to read a transfer packet by packet, to say why it stalls, and to recognise where TFTP still runs.
+A machine that has just powered on, or a router with nothing running but its boot loader, has to fetch one file before it can do anything else, with a protocol small enough to fit in a boot ROM (read-only memory). The Trivial File Transfer Protocol (TFTP) is that protocol: one file, over the User Datagram Protocol (UDP), in 512-byte blocks, one block in flight at a time. Its standard, Request for Comments (RFC) 1350, says so itself: "It is designed to be small and easy to implement.  Therefore, it lacks most of the features of a regular FTP", the File Transfer Protocol ([RFC 1350, section 1](https://www.rfc-editor.org/rfc/rfc1350.txt)). What follows is enough to read a transfer packet by packet, to say why it stalls, and to recognize where TFTP still runs.
 
 ## Why "trivial": the RFC's own reasons
 
@@ -21,7 +21,7 @@ This **lock step** is the whole design, and the RFC gives its reasons: "the fixe
 
 ## The five packet types, and the three modes
 
-Every packet begins with "a 2 byte opcode field which indicates the packet's type" ([RFC 1350, section 3](https://www.rfc-editor.org/rfc/rfc1350.txt)). The five types, read request (RRQ), write request (WRQ), data (DATA), acknowledgment (ACK) and error (ERROR), and the fields that follow the opcode in each ([RFC 1350, section 5](https://www.rfc-editor.org/rfc/rfc1350.txt)):
+Every packet begins with "a 2 byte opcode field which indicates the packet's type" ([RFC 1350, section 3](https://www.rfc-editor.org/rfc/rfc1350.txt)). The five types, read request (RRQ), write request (WRQ), data (DATA), acknowledgement (ACK) and error (ERROR), and the fields that follow the opcode in each ([RFC 1350, section 5](https://www.rfc-editor.org/rfc/rfc1350.txt)):
 
 | Packet (opcode) | Field | Size | Meaning |
 |---|---|---|---|
@@ -65,7 +65,7 @@ RFC 1350 wrote it into section 5 as two insertions. RFC 783 had "Sending  a  DAT
 
 ## The options, and the 32 MB question
 
-RFC 1350 negotiates nothing but a name and a mode. RFC 2347, of May 1998, appends options to the request, each a zero-terminated name "in case-insensitive ASCII (e.g., blksize)" and a zero-terminated value, and adds a sixth packet: "A new type of TFTP packet, the Option Acknowledgment (OACK), is used to acknowledge a client's option negotiation request", with "A new error code, 8" for a refused negotiation ([RFC 2347, Packet Formats](https://www.rfc-editor.org/rfc/rfc2347.txt)). The OACK carries opcode 6, "for Option Acknowledgment", followed only by the acknowledged option and value pairs. "only the client may initiate option negotiation", unsupported options "should be omitted from the OACK", and one left out "must be ignored by the client and server as if it were never requested" ([RFC 2347, Negotiation Protocol](https://www.rfc-editor.org/rfc/rfc2347.txt)); the client confirms an OACK to a read with an ACK of block 0. Four options are standardised:
+RFC 1350 negotiates nothing but a name and a mode. RFC 2347, of May 1998, appends options to the request, each a zero-terminated name "in case-insensitive ASCII (e.g., blksize)" and a zero-terminated value, and adds a sixth packet: "A new type of TFTP packet, the Option Acknowledgment (OACK), is used to acknowledge a client's option negotiation request", with "A new error code, 8" for a refused negotiation ([RFC 2347, Packet Formats](https://www.rfc-editor.org/rfc/rfc2347.txt)). The OACK carries opcode 6, "for Option Acknowledgment", followed only by the acknowledged option and value pairs. "only the client may initiate option negotiation", unsupported options "should be omitted from the OACK", and one left out "must be ignored by the client and server as if it were never requested" ([RFC 2347, Negotiation Protocol](https://www.rfc-editor.org/rfc/rfc2347.txt)); the client confirms an OACK to a read with an ACK of block 0. Four options are standardized:
 
 | Option | RFC | Value | Server may | Purpose |
 |---|---|---|---|---|

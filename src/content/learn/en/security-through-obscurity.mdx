@@ -49,7 +49,7 @@ The principle is narrower than its reputation, and the following are not violati
 - **Keys, credentials, tokens and certificates.** The whole design assumes these are private. Confusing a key with an obscurity is the most common misreading of the maxim.
 - **Configuration detail an attacker would find useful**: internal addressing, topology, software inventory. Publishing it helps nobody defend, and treating it as sensitive is not a security dependency.
 - **Version banners and error verbosity.** Suppressing them prevents trivial fingerprinting and rules nothing out; keep the version *patched* rather than merely hidden.
-- **Non-standard ports, port knocking, single-packet authorisation.** Legitimate as cost-raisers and noise-reducers, illegitimate as the reason a service is safe.
+- **Non-standard ports, port knocking, single-packet authorization.** Legitimate as cost-raisers and noise-reducers, illegitimate as the reason a service is safe.
 - **Not publishing an unpatched vulnerability while a fix is prepared.** This is coordination, not obscurity: the design is still open, and the delay is bounded and agreed.
 
 ## The disclosure argument is the same argument

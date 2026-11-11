@@ -32,7 +32,7 @@ export const telebrasProfile: VendorProfile = {
       place: "Brasília",
       founders: ["the Brazilian federal government"],
       story:
-        "The legal groundwork was older: the Código Brasileiro de Telecomunicações of 1962 established that telecommunications would be organised by the state. The company that followed a decade later was capitalised 94.5% by the Union, with the remainder subscribed by the national development bank and three other state enterprises - Vale do Rio Doce, Petrobrás and Eletrobrás. The sector's own fund, the Fundo Nacional de Telecomunicações, was moved across to pay for the build.",
+        "The legal groundwork was older: the Código Brasileiro de Telecomunicações of 1962 established that telecommunications would be organized by the state. The company that followed a decade later was capitalized 94.5% by the Union, with the remainder subscribed by the national development bank and three other state enterprises - Vale do Rio Doce, Petrobrás and Eletrobrás. The sector's own fund, the Fundo Nacional de Telecomunicações, was moved across to pay for the build.",
     },
   ],
   timeline: [
@@ -40,18 +40,18 @@ export const telebrasProfile: VendorProfile = {
       year: 1982,
       title: "The decade of not spending",
       detail:
-        "A severe public-sector financial crisis led the state enterprise control secretariat to impose deep investment cuts across every state company, including this one. The expansion slowed and service quality degraded - not through mismanagement of the network but through a fiscal decision taken above it. This is the decade that made the later argument for privatisation persuasive, and it is usually left out of both versions of the story.",
+        "A severe public-sector financial crisis led the state enterprise control secretariat to impose deep investment cuts across every state company, including this one. The expansion slowed and service quality degraded - not through mismanagement of the network but through a fiscal decision taken above it. This is the decade that made the later argument for privatization persuasive, and it is usually left out of both versions of the story.",
     },
     {
       year: 1995,
       title: "Constitutional Amendment 8",
-      detail: "The monopoly reservation removed in February, allowing private capital into telecommunications under authorisation, concession or permission.",
+      detail: "The monopoly reservation removed in February, allowing private capital into telecommunications under authorization, concession or permission.",
     },
     {
       year: 1998,
       title: "The architect does not see it",
       detail:
-        "Sérgio Motta, the communications minister who designed the privatisation model, died months before the auction he had spent years constructing. His successor executed it. Ninety thousand employees and pensioners were offered preferred shares at a discount, which is a detail worth keeping: the people who built the system were given a small piece of what it sold for.",
+        "Sérgio Motta, the communications minister who designed the privatization model, died months before the auction he had spent years constructing. His successor executed it. Ninety thousand employees and pensioners were offered preferred shares at a discount, which is a detail worth keeping: the people who built the system were given a small piece of what it sold for.",
     },
   ],
   products: [
@@ -73,7 +73,7 @@ export const telebrasProfile: VendorProfile = {
     {
       title: "Underinvestment as the mechanism of change",
       detail:
-        "Systems are rarely privatised while they are working well. A decade of enforced capital starvation produced the waiting lists and the poor service that made the case for selling, which means the political argument of the 1990s was in part about conditions created by decisions taken in the 1980s. That sequence recurs wherever public infrastructure changes hands, and it is worth naming rather than assuming.",
+        "Systems are rarely privatized while they are working well. A decade of enforced capital starvation produced the waiting lists and the poor service that made the case for selling, which means the political argument of the 1990s was in part about conditions created by decisions taken in the 1980s. That sequence recurs wherever public infrastructure changes hands, and it is worth naming rather than assuming.",
     },
     {
       title: "Keeping the shell",

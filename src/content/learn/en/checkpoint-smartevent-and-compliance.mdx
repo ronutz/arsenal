@@ -16,7 +16,7 @@ Logs record what happened. At any real volume that is more than anyone reads, so
 
 ## Correlation
 
-The **correlation unit** reads logs and applies rules that recognise patterns across many entries. The output is an **event**: one object representing something that took multiple log lines to describe.
+The **correlation unit** reads logs and applies rules that recognize patterns across many entries. The output is an **event**: one object representing something that took multiple log lines to describe.
 
 The value is the compression. A port scan is hundreds of dropped connections in the log and one event in SmartEvent. A brute-force attempt is dozens of authentication failures and one event. Reading the second is possible; reading the first is not.
 

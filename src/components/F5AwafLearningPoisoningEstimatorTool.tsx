@@ -26,7 +26,9 @@
 // ============================================================================
 
 import { useMemo, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+// Numbers grouped the page's way (International English formats as en-001), 11/11/2026.
+import { intlLocale } from "@/i18n/locales";
 import {
   estimatePoisoning,
   DEFAULTS,
@@ -132,6 +134,7 @@ const MAX_RATE = 1_000_000;
 
 export default function F5AwafLearningPoisoningEstimatorTool() {
   const t = useTranslations("tools.f5-awaf-learning-poisoning-estimator");
+  const numLocale = intlLocale(useLocale()); // the page locale's grouping for every count below
   const [inp, setInp] = useState<PoisoningInput>(DEFAULTS);
   const r = useMemo(() => estimatePoisoning(inp), [inp]);
 
@@ -231,11 +234,11 @@ export default function F5AwafLearningPoisoningEstimatorTool() {
           {r.drillable && (
             <div className="poison-numbers">
               <div className="poison-stat">
-                <span className="poison-stat-num">{r.minDistinctSources.toLocaleString()}</span>
+                <span className="poison-stat-num">{r.minDistinctSources.toLocaleString(numLocale)}</span>
                 <span className="poison-stat-lbl">{t("stat.sources")}</span>
               </div>
               <div className="poison-stat">
-                <span className="poison-stat-num">{r.minRequestsLowerBound.toLocaleString()}+</span>
+                <span className="poison-stat-num">{r.minRequestsLowerBound.toLocaleString(numLocale)}+</span>
                 <span className="poison-stat-lbl">{t("stat.requests")}</span>
               </div>
               <div className="poison-stat">
@@ -247,7 +250,7 @@ export default function F5AwafLearningPoisoningEstimatorTool() {
 
           {r.gate === "insufficient-sources" && (
             <p className="poison-verdict-detail">
-              {t("insufficientDetail", { need: r.minDistinctSources.toLocaleString(), have: inp.attackerDistinctSources.toLocaleString() })}
+              {t("insufficientDetail", { need: r.minDistinctSources.toLocaleString(numLocale), have: inp.attackerDistinctSources.toLocaleString(numLocale) })}
             </p>
           )}
         </section>

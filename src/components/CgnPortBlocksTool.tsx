@@ -372,7 +372,7 @@ export default function CgnPortBlocksTool() {
           </div>
           {shareRow}{/* Share results (2026-10-27), under the capacity figures */}
           <p className="cidr-note">{t("blocks.pairedNote")}</p>
-          {(r.leftoverPortsPerAddress > 0 || r.leftoverBlocksPerAddress > 0) && <p className="cidr-note">{t("blocks.leftoverNote", { ports: n(r.leftoverPortsPerAddress), blocks: n(r.leftoverBlocksPerAddress) })}</p>}
+          {(r.leftoverPortsPerAddress > 0 || r.leftoverBlocksPerAddress > 0) && <p className="cidr-note">{t("blocks.leftoverNote", { ports: r.leftoverPortsPerAddress, blocks: r.leftoverBlocksPerAddress })}</p>}
           <p className="cidr-note">{r.portRange.systemPortsExcluded ? t("blocks.systemExcluded", { first: String(r.portRange.first), last: String(r.portRange.last) }) : t("blocks.systemIncluded", { first: String(r.portRange.first), last: String(r.portRange.last) })}</p>
           {r.demand && (
             <>
@@ -382,7 +382,7 @@ export default function CgnPortBlocksTool() {
                 <Stat label={t("blocks.addressesNeeded")} value={n(r.demand.addressesNeeded)} />
                 <Stat label={t("blocks.spare")} value={n(r.demand.spare)} />
               </div>
-              <p className="cidr-note">{r.demand.fits ? t("blocks.fits", { needed: n(r.demand.addressesNeeded), have: n(r.pool.addresses) }) : t("blocks.doesNotFit", { needed: n(r.demand.addressesNeeded), have: n(r.pool.addresses) })}</p>
+              <p className="cidr-note">{r.demand.fits ? t("blocks.fits", { needed: r.demand.addressesNeeded, have: r.pool.addresses }) : t("blocks.doesNotFit", { needed: r.demand.addressesNeeded, have: r.pool.addresses })}</p>
             </>
           )}
           <p className="cidr-section-title">{t("blocks.logHeading")}</p>
@@ -424,13 +424,13 @@ export default function CgnPortBlocksTool() {
             <Stat label={t("det.dynamicPool")} value={n(r.dynamicPoolPorts)} />
           </div>
           {shareRow}{/* Share results (2026-10-27), under the plan's figures */}
-          <p className="cidr-note">{t("det.reservedNote", { list: r.reserved.list || "-", ports: n(r.reserved.ports) })}</p>
+          <p className="cidr-note">{t("det.reservedNote", { list: r.reserved.list || "-", ports: r.reserved.ports })}</p>
           {!r.reserved.systemPortsReserved && <p className="cidr-note">{t("det.systemPortsWarning")}</p>}
           {r.dynamicRanges.length > 0 && <p className="cidr-note">{t("det.dynamicRanges", { ranges: rangesText(r.dynamicRanges) })}</p>}
-          {r.dynamicDisabledButLeftover && <p className="cidr-note">{t("det.leftoverNote", { ports: n(r.dynamicPoolPorts) })}</p>}
-          {r.overflowPortsPerUser !== null && <p className="cidr-note">{t("det.overflowNote", { m: n(r.maxPorts ?? 0), extra: n(r.overflowPortsPerUser), users: n(r.overflowUsersAtOnce ?? 0) })}</p>}
+          {r.dynamicDisabledButLeftover && <p className="cidr-note">{t("det.leftoverNote", { ports: r.dynamicPoolPorts })}</p>}
+          {r.overflowPortsPerUser !== null && <p className="cidr-note">{t("det.overflowNote", { m: n(r.maxPorts ?? 0), extra: r.overflowPortsPerUser, users: r.overflowUsersAtOnce ?? 0 })}</p>}
           {r.maxBelowBlock && <p className="cidr-note">{t("det.maxBelowBlock")}</p>}
-          {r.unusedSlots > 0 && <p className="cidr-note">{t("det.unusedSlots", { slots: n(r.unusedSlots) })}</p>}
+          {r.unusedSlots > 0 && <p className="cidr-note">{t("det.unusedSlots", { slots: r.unusedSlots })}</p>}
           <p className="cidr-note">{r.translationLogging === "none" ? t("det.loggingNone") : t("det.loggingDynamic")}</p>
 
           {/* Function 1: inside address to outside address and ports. */}

@@ -12,7 +12,7 @@ XML is powerful in a way that makes it dangerous when it comes from an untrusted
 
 - **A DOCTYPE at all**, because the document type definition is what enables the rest;
 - **External entities**, which can pull in a local file or a URL and are the mechanism of XML External Entity (XXE) attacks;
-- **Parameter entities**, a form used to smuggle XXE past naive defenses; and
+- **Parameter entities**, a form used to smuggle XXE past naive defences; and
 - **Entity expansion**, the nesting behind the billion-laughs denial-of-service attack.
 
 Seeing these called out is the point: it tells you whether a given document is trying to do something a plain data document never would.

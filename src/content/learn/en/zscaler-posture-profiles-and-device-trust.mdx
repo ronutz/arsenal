@@ -15,7 +15,7 @@ Zero trust's first question - *who is asking?* - gets answered by identity. Its 
 
 ## The sensor: Client Connector, again
 
-The component doing the noticing is the one already on the device: [Zscaler Client Connector](/learn/zscaler-client-connector-profiles), whose day job of forwarding traffic comes with the side job of *knowing the device* - its platform, its enrollment, conditions of its configuration and environment. This is the same pattern as the trusted-network detection that article covered, generalized: admin-defined conditions, continuously evaluated on the endpoint, the results attached to the device's sessions. The design consequence is worth stating: posture in this architecture is largely an *agent* capability - a device without the Client Connector cannot answer the questions, which itself becomes signal, and client type (agent versus browser access) becomes a criterion in its own right.
+The component doing the noticing is the one already on the device: [Zscaler Client Connector](/learn/zscaler-client-connector-profiles), whose day job of forwarding traffic comes with the side job of *knowing the device* - its platform, its enrolment, conditions of its configuration and environment. This is the same pattern as the trusted-network detection that article covered, generalized: admin-defined conditions, continuously evaluated on the endpoint, the results attached to the device's sessions. The design consequence is worth stating: posture in this architecture is largely an *agent* capability - a device without the Client Connector cannot answer the questions, which itself becomes signal, and client type (agent versus browser access) becomes a criterion in its own right.
 
 ## The consumer with the sharpest teeth: ZPA
 

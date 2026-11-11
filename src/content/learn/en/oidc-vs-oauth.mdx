@@ -11,11 +11,11 @@ status: reviewed
 updated: "2026-10-26"
 ---
 
-## Origins: authorisation was never meant to log anyone in
+## Origins: authorization was never meant to log anyone in
 
 OAuth was written for a specific problem, and identity was not it. Around 2007 the pattern for connecting one service to another was **password sharing**: a user handed a site their email credentials so it could read their contacts. OAuth 1.0 existed to end that, to let an application obtain **delegated access to a resource** without receiving the user's password.
 
-**OAuth 2.0 (RFC 6749, 2012)** simplified and generalised it, and it says so plainly: it is an *authorisation* framework. It has no defined way to say who the user is, no standard shape for a user identifier, and no required proof of when or how the user authenticated.
+**OAuth 2.0 (RFC 6749, 2012)** simplified and generalized it, and it says so plainly: it is an *authorisation* framework. It has no defined way to say who the user is, no standard shape for a user identifier, and no required proof of when or how the user authenticated.
 
 That did not stop anyone. Providers built login on top of it anyway, each in a different way, and the era of proprietary "sign in with" flows produced the predictable class of vulnerabilities, most memorably the **confused deputy**: an access token proves an application may call an API, not who is sitting at the keyboard, so an application that accepts a token as proof of identity can be handed a token obtained elsewhere, for a different user, and be fooled.
 
@@ -60,7 +60,7 @@ And the signature, verified against the issuer's published keys, with the key ro
 - **Implicit flow**: returned tokens straight through the browser. Deprecated: tokens in URLs land in histories, logs and referrers.
 - **Resource owner password credentials**: the user hands their password to the application. Removed from current guidance, since it recreates exactly the problem OAuth was invented to solve.
 - **Client credentials**: no user at all, service to service. Correct, and outside the identity question.
-- **Device authorisation**: for input-constrained devices, where the user authenticates on a second screen.
+- **Device authorization**: for input-constrained devices, where the user authenticates on a second screen.
 
 **Front-channel and back-channel logout** are the parts most deployments skip, and the reason a user who signs out of one application remains signed in to five others.
 
@@ -75,7 +75,7 @@ And the signature, verified against the issuer's published keys, with the key ro
 
 ## Telling them apart in practice
 
-When you have a token in hand and are not sure which it is, a few signals help. If it decodes as a JWT with iss, sub, aud, exp, and iat, and the audience is your client identifier, it is an ID token; the [OIDC decoder](/tools/oidc) will recognise it and interpret the claims. An access token may be opaque (not a JWT at all), or it may be a JWT whose audience is a resource server and whose claims describe scopes and permissions rather than user identity. The presence of the openid scope in the original request is what caused an ID token to be issued in the first place. When in doubt, decode the token and look at the audience and the claims: they tell you what the token is for, and therefore how it should be used.
+When you have a token in hand and are not sure which it is, a few signals help. If it decodes as a JWT with iss, sub, aud, exp, and iat, and the audience is your client identifier, it is an ID token; the [OIDC decoder](/tools/oidc) will recognize it and interpret the claims. An access token may be opaque (not a JWT at all), or it may be a JWT whose audience is a resource server and whose claims describe scopes and permissions rather than user identity. The presence of the openid scope in the original request is what caused an ID token to be issued in the first place. When in doubt, decode the token and look at the audience and the claims: they tell you what the token is for, and therefore how it should be used.
 
 ## This series, in order
 

@@ -51,7 +51,7 @@
 // ============================================================================
 
 // The interface-native locales, which the search index covers (09/11/2026).
-import { INTERFACE_LOCALES } from "@/i18n/locales";
+import { INTERFACE_LOCALES, intlLocale } from "@/i18n/locales";
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { tools } from "@/config/tools";
@@ -377,7 +377,8 @@ export default function Search() {
     // load and then answer nothing, which reads as a broken search box. Saying
     // so immediately is both faster and honest.
     const lang = document.documentElement.lang;
-    if (lang && !SEARCH_LOCALES.includes(lang)) {
+    // <html lang> carries the formatting tag since 11/11/2026 (English pages say en-001), so compare against the tags.
+    if (lang && !SEARCH_LOCALES.some((l) => intlLocale(l) === lang)) {
       setUnavailable(true);
       return null;
     }

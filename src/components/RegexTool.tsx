@@ -44,7 +44,9 @@
 // ============================================================================
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+// Numbers grouped the page's way (International English formats as en-001), 11/11/2026.
+import { intlLocale } from "@/i18n/locales";
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
 import { useShareArrival } from "@/lib/share/use-share-arrival"; // an arriving share link, applied once
 import { firstSharePlace } from "@/lib/share/text-secrets"; // the first finding and how many more places, for the popover
@@ -114,6 +116,7 @@ interface RegexToolProps {
 
 export default function RegexTool({ initialPattern = "", initialFlags = "g", initialText = "" }: RegexToolProps = {}) {
   const t = useTranslations("tools.regex");
+  const numLocale = intlLocale(useLocale()); // the page locale's grouping for every count below
   // Opening values come from the props, which default to the old fixed values.
   const [pattern, setPattern] = useState(initialPattern);
   // Flags default to g, as before.
@@ -339,7 +342,7 @@ export default function RegexTool({ initialPattern = "", initialFlags = "g", ini
           <p className="cidr-note">{t("portIntro")}</p>
           {portability.tooLong ? (
             // Over the cap: say so rather than read it.
-            <p className="regex-nomatch">{t("portTooLong", { limit: MAX_PORTABILITY_LENGTH.toLocaleString() })}</p>
+            <p className="regex-nomatch">{t("portTooLong", { limit: MAX_PORTABILITY_LENGTH.toLocaleString(numLocale) })}</p>
           ) : portability.findings.length === 0 ? (
             // Nothing from the list: not a promise of portability.
             <p className="regex-nomatch">{t("portNone")}</p>
@@ -401,7 +404,7 @@ export default function RegexTool({ initialPattern = "", initialFlags = "g", ini
               <div className="regex-matches">{result.matches.map(matchRow)}</div>
               {result.truncated && (
                 <p className="regex-trunc">
-                  {t("showingFirst")} {MAX_MATCHES.toLocaleString()} {t("matchesWord")}
+                  {t("showingFirst")} {MAX_MATCHES.toLocaleString(numLocale)} {t("matchesWord")}
                 </p>
               )}
             </>

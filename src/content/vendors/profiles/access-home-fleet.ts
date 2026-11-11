@@ -26,7 +26,7 @@ export const accessHomeFleetProfile: VendorProfile = {
       place: "Tokyo, Japan",
       founders: ["Takayoshi Oshima"],
       story:
-        "The quietest company in this entry has been shipping access networks the longest. Takayoshi Oshima's Allied Telesyn (renamed Allied Telesis in 2006) built the unglamorous layer: media converters bridging fiber and copper, reliable access switches, and the kind of gear governments, hospitals, and industrial plants standardize on and then forget about for a decade - which is, in access networking, the highest compliment available.",
+        "The quietest company in this entry has been shipping access networks the longest. Takayoshi Oshima's Allied Telesyn (renamed Allied Telesis in 2006) built the unglamorous layer: media converters bridging fibre and copper, reliable access switches, and the kind of gear governments, hospitals, and industrial plants standardize on and then forget about for a decade - which is, in access networking, the highest compliment available.",
     },
     {
       company: "Zyxel Communications",

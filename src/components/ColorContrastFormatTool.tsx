@@ -30,6 +30,7 @@
 
 import { Fragment, useMemo, useState, type CSSProperties } from "react";
 import { useLocale, useTranslations } from "next-intl"; // the page locale formats the ratio (09/11/2026)
+import { intlLocale } from "@/i18n/locales"; // the Intl tag for the page's locale (en formats as en-001)
 import { run, VECTORS, ColorParseError, type ColorContrastResult, type ParsedColor } from "@/lib/tools/color-contrast-format";
 import { TclPresets } from "@/components/TclTeachParts";
 import ShareResultsButton from "@/components/ShareResultsButton"; // the site's Share results button
@@ -69,7 +70,10 @@ export default function ColorContrastFormatTool() {
   // The page's language, for the ratio's decimal sign.
   const locale = useLocale();
   // A ratio with two decimals in that language, "4,54:1" or "4.54:1" (the engine's ratioText stays the API's form).
-  const ratioLabel = (x: number) => `${new Intl.NumberFormat(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(x)}:1`;
+  const ratioLabel = (x: number) => `${new Intl.NumberFormat(intlLocale(locale), { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(x)}:1`;
+  // A relative luminance with four decimals in the same language, "0,1234" or "0.1234": the sentences and the formula
+  // carried "0.1234" beside the ratio's "4,54:1" (11/11/2026, reported by the Italian writer). The CSS formats stay CSS.
+  const lumLabel = (x: number) => new Intl.NumberFormat(intlLocale(locale), { minimumFractionDigits: 4, maximumFractionDigits: 4, useGrouping: false }).format(x);
   // The example pair.
   const ex = VECTORS.find((v) => v.id === EXAMPLE_ID)!.input;
   // The foreground.
@@ -132,7 +136,7 @@ export default function ColorContrastFormatTool() {
           </Fragment>
         ))}
         <dt className="tcl-pairs-name">{t("luminance")}</dt>
-        <dd className="tcl-pairs-value"><code>{c.luminance.toFixed(4)}</code></dd>
+        <dd className="tcl-pairs-value"><code>{lumLabel(c.luminance)}</code></dd>
         {c.alpha < 1 && (
           <>
             <dt className="tcl-pairs-name">{t("alpha")}</dt>
@@ -193,7 +197,7 @@ export default function ColorContrastFormatTool() {
         <div className="jwt-results" aria-live="polite">
           {/* The ratio and the levels. */}
           <div className={r.levels.aaaNormal ? "tcl-verdict tcl-verdict-ok" : r.levels.aaNormal ? "tcl-verdict tcl-verdict-warn" : "tcl-verdict tcl-verdict-bad"}>
-            <p><span className="tcl-verdict-label tcl-big">{ratioLabel(r.ratio)}</span> {t("ratioSentence", { lighter: r.luminances.lighter.toFixed(4), darker: r.luminances.darker.toFixed(4) })}</p>
+            <p><span className="tcl-verdict-label tcl-big">{ratioLabel(r.ratio)}</span> {t("ratioSentence", { lighter: lumLabel(r.luminances.lighter), darker: lumLabel(r.luminances.darker) })}</p>
             <p className="tcl-step-out">
               {pill(r.levels.aaNormal, t("level.aaNormal"))}{" "}
               {pill(r.levels.aaLarge, t("level.aaLarge"))}{" "}
@@ -260,7 +264,7 @@ export default function ColorContrastFormatTool() {
           <section className="jwt-panel">
             <h4 className="jwt-panel-title">{t("formulaTitle")}</h4>
             <p className="tcl-finding-msg">{t("formulaLuminance")}</p>
-            <p className="tcl-finding-msg">{t("formulaRatio", { lighter: r.luminances.lighter.toFixed(4), darker: r.luminances.darker.toFixed(4), ratio: r.ratioText })}</p>
+            <p className="tcl-finding-msg">{t("formulaRatio", { lighter: lumLabel(r.luminances.lighter), darker: lumLabel(r.luminances.darker), ratio: ratioLabel(r.ratio) })}</p>
             <p className="tcl-finding-msg">{t("thresholds")}</p>
           </section>
 

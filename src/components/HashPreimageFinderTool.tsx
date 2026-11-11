@@ -294,7 +294,7 @@ export default function HashPreimageFinderTool() {
                 <CopyButton text={result.preimage ?? ""} label={t("copy")} done={t("copied")} />
               </div>
               <div className="hpf-result-sub">
-                {t("foundIn", { attempts: fmt(progress.attempts, locale), ms: fmt(progress.elapsedMs, locale) })}
+                {t("foundIn", { attempts: progress.attempts, ms: fmt(progress.elapsedMs, locale) })}
               </div>
             </>
           ) : (

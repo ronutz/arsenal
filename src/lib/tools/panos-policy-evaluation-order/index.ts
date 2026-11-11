@@ -85,24 +85,28 @@ export const manifest = Object.freeze({
       label:
         "Palo Alto Networks, Device Groups: a firewall evaluates policy rules by layer and by type, top to bottom; local firewall rules display between the pre-rules and post-rules",
       url: "https://docs.paloaltonetworks.com/panorama/getting-started/panorama-overview/centrally-manage-firewall-configuration-and-updates-with-panorama/device-groups",
+      access_date: "2026-11-11", // read live 11/11/2026 (curl, HTTP 200)
     },
     {
       id: "rulebase-best-practices",
       label:
         "Palo Alto Networks, Security Policy Rulebase Best Practices: first match wins and comparison stops; 'Commit and Push doesn't provide shadowing information'",
       url: "https://docs.paloaltonetworks.com/best-practices/security-policy-best-practices/security-policy-best-practices/deploy-security-policy-best-practices/security-policy-rulebase-best-practices",
+      access_date: "2026-11-11", // read live 11/11/2026 (curl, HTTP 200)
     },
     {
       id: "rule-best-practices",
       label:
         "Palo Alto Networks, Security Policy Rule Best Practices: shadowing defined; intrazone-default allows and interzone-default denies",
       url: "https://docs.paloaltonetworks.com/best-practices/security-policy-best-practices/security-policy-best-practices/deploy-security-policy-best-practices/security-policy-rule-best-practices",
+      access_date: "2026-11-11", // read live 11/11/2026 (curl, HTTP 200)
     },
     {
       id: "panorama-policies",
       label:
-        "Palo Alto Networks, Defining Policies on Panorama: pre-rules are added to the top of the rule order and evaluated first; post-rules are evaluated last",
-      url: "https://docs.paloaltonetworks.com/pan-os/11-1/pan-os-web-interface-help/panorama-web-interface/defining-policies-on-panorama",
+        "Palo Alto Networks, Defining Policies on Panorama: pre-rules are added to the top of the rule order and evaluated first; post-rules are added at the bottom and evaluated after the pre-rules and the firewall's local rules",
+      url: "https://docs.paloaltonetworks.com/ngfw/help/11-1/panorama-web-interface/defining-policies-on-panorama",
+      access_date: "2026-11-11", // read live 11/11/2026 (curl, HTTP 200)
     },
   ],
 });

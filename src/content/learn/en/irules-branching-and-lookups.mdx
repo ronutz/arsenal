@@ -86,7 +86,7 @@ when HTTP_REQUEST priority 500 {
 }
 ```
 
-**What kind of match is it?** The four tools are not interchangeable. A `static::` array does exact-key lookups only. `switch` does exact matches, and `switch -glob` does simple wildcard patterns. A data group with `class match` does exact, and also the address- and string-aware forms (`starts_with`, `ends_with`, `contains`, longest-match on IP subnets) that the others cannot express cleanly. Pick the construct whose match type fits, then optimise within it.
+**What kind of match is it?** The four tools are not interchangeable. A `static::` array does exact-key lookups only. `switch` does exact matches, and `switch -glob` does simple wildcard patterns. A data group with `class match` does exact, and also the address- and string-aware forms (`starts_with`, `ends_with`, `contains`, longest-match on IP subnets) that the others cannot express cleanly. Pick the construct whose match type fits, then optimize within it.
 
 ## First match or longest match
 
@@ -98,7 +98,7 @@ The [if / switch / class builder](/tools/f5-irules-conditional-builder) writes o
 
 ## A caveat about the numbers, honestly
 
-That "hundred entries or fewer" crossover is measured against `matchclass`, which was **deprecated in version 10** in favor of the `class` command. The `class` command was introduced precisely because it offers better functionality and performance than its predecessor, so the crossover point where a data group overtakes `switch` is a guideline inherited from the old command, not a hard number for modern code. When it matters, do not guess: read the real per-event cost with timing statistics using the [iRules runtime calculator](/tools/f5-irules-runtime-calculator), and let the numbers from your own box decide.
+That "hundred entries or fewer" crossover is measured against `matchclass`, which was **deprecated in version 10** in favour of the `class` command. The `class` command was introduced precisely because it offers better functionality and performance than its predecessor, so the crossover point where a data group overtakes `switch` is a guideline inherited from the old command, not a hard number for modern code. When it matters, do not guess: read the real per-event cost with timing statistics using the [iRules runtime calculator](/tools/f5-irules-runtime-calculator), and let the numbers from your own box decide.
 
 And when none of these fit, and only then, reach for a regular expression. The [iRules performance linter](/tools/f5-irules-performance-linter) flags `regexp` and `regsub` for exactly this reason: they are the most expensive way to match, and one of `switch`, `class`, or a `static::` array is almost always cheaper. The [companion article on CMP and the static:: namespace](/learn/irules-cmp-and-static-namespace) covers why `static::` is the right home for that array in the first place.
 

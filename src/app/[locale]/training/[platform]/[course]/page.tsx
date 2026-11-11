@@ -23,6 +23,8 @@
 // read the English, marked lang="en"); official names and codes stay verbatim.
 // ============================================================================
 
+// English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
+import { intlLocale } from "@/i18n/locales";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -108,7 +110,7 @@ const OUTCOME_KEY: Record<CourseSourceOutcome, string> = {
 /** A calendar day (YYYY-MM-DD) as a long date in the page's language, read in UTC so it never shifts by a day. */
 function formatDay(iso: string, locale: string): string {
   // British English for "en", as the house writes dates; every other locale its own format.
-  const tag = locale === "en" ? "en-GB" : locale;
+  const tag = intlLocale(locale);
   // Day, month name and year.
   return new Intl.DateTimeFormat(tag, { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${iso}T00:00:00Z`));
 }

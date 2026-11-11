@@ -85,6 +85,8 @@ for (const page of pages) {
 const FIXTURE: Array<[string, ProbeFamily]> = [
   ["/en/wp-json/batch/v1/", "wp-batch"],
   ["/en/wordpress/wp-json/Batch/v1/", "wp-batch"],
+  ["/en/wp-json/batch/v1/..%3b/batch/v1/", "wp-batch"], // the "..;" trick, counted under secrets until 2026-11-11
+  ["/en/wp-json/batch/v1/..;/batch/v1/", "wp-batch"], // the same, with ";" sent raw
   ["/en/wp-json/gravitysmtp/v1/tests/mock-data/", "wp-plugin"],
   ["/en/wp-json/wp/v2/pages/", "wp-rest"],
   ["/en/wp-includes/PHPMailer/", "wp-core"],
@@ -114,6 +116,7 @@ const FIXTURE: Array<[string, ProbeFamily]> = [
   ["/en/main/wp-json/batch/v1/", "wp-batch"],
   ["/en/.git-credentials/", "secrets"],
   ["/en/.svn/entries/", "secrets"],
+  ["/en/site-packages/sendgrid/helpers/mail/", "secrets"], // a published Python install (2026-11-11)
   ["/en/.env~/", "secrets"],
   ["/en/.aws/config/", "secrets"],
   ["/en/.ssh/id_rsa/", "secrets"],
@@ -134,6 +137,8 @@ const FIXTURE: Array<[string, ProbeFamily]> = [
   ["/en/nova/", "laravel"],
   ["/en/two-factor-challenge/", "laravel"],
   ["/en/password/reset/", "laravel"],
+  ["/en/user/profile/", "laravel"], // Jetstream's profile page (2026-11-11)
+  ["/en/user/api-tokens", "laravel"], // Jetstream's API token page (2026-11-11)
   ["/en/actuator/", "frameworks"],
   ["/en/_profiler/phpinfo/", "frameworks"],
   ["/en/v1/_next/static/", "platforms"],

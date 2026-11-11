@@ -1,7 +1,7 @@
 ---
 slug: ipv4-addressing
 title: "How IPv4 addresses work"
-summary: "Every IPv4 header carries two addresses, source and destination, each one 32-bit number written as four decimal octets, with a prefix length that splits it into network and host. After reading, you can convert an address to binary and to an integer by hand, apply a mask the way a host does to decide whether a destination is on its link, recognise the special-purpose blocks and their rules, and say who hands addresses out and when the free pool ran out."
+summary: "Every IPv4 header carries two addresses, source and destination, each one 32-bit number written as four decimal octets, with a prefix length that splits it into network and host. After reading, you can convert an address to binary and to an integer by hand, apply a mask the way a host does to decide whether a destination is on its link, recognize the special-purpose blocks and their rules, and say who hands addresses out and when the free pool ran out."
 concepts: ["ipv4", "addressing", "private-addresses", "rfc1918", "dotted decimal", "prefix length", "subnet mask", "network address", "broadcast address", "classful addressing", "cidr", "special-purpose addresses", "loopback", "link-local", "/31", "iana", "regional internet registries", "ipv4 exhaustion"]
 relatedTools: ["cidr", "ssrf-url-classifier", "python-playground"]
 relatedArticles: ["cidr-notation", "subnetting-basics", "ipv6-transition", "private-address-space", "route-summarization", "private-vs-public-ip-ranges", "nat-explained", "cgnat-address-sharing-and-attribution", "routing-tables-and-default-gateway", "ipv6-addressing", "dhcp-lease-lifecycle", "multicast-what-it-costs-to-not-flood"]
@@ -56,7 +56,7 @@ leading bits  first octet  class  size
 1111          240 to 255   E      reserved
 ```
 
-In January 1992 an Internet Engineering Task Force (IETF) group named three problems: class B space running out, since no class suited a mid-sized organisation; routing tables outgrowing routers; and the 32-bit space heading for exhaustion ([RFC 4632, section 2](https://www.rfc-editor.org/rfc/rfc4632.txt)). CIDR, specified in RFC 1519 in September 1993 ([RFC 1519, section 1](https://www.rfc-editor.org/rfc/rfc1519.txt)), replaced the classes with prefixes of any power-of-two size (RFC 4632, sections 3 and 3.1), and now "they are used as generalized unicast network prefixes with only historical interest in their class" ([RFC 1812, section 4.2.2.11](https://www.rfc-editor.org/rfc/rfc1812.txt)).
+In January 1992 an Internet Engineering Task Force (IETF) group named three problems: class B space running out, since no class suited a mid-sized organization; routing tables outgrowing routers; and the 32-bit space heading for exhaustion ([RFC 4632, section 2](https://www.rfc-editor.org/rfc/rfc4632.txt)). CIDR, specified in RFC 1519 in September 1993 ([RFC 1519, section 1](https://www.rfc-editor.org/rfc/rfc1519.txt)), replaced the classes with prefixes of any power-of-two size (RFC 4632, sections 3 and 3.1), and now "they are used as generalized unicast network prefixes with only historical interest in their class" ([RFC 1812, section 4.2.2.11](https://www.rfc-editor.org/rfc/rfc1812.txt)).
 
 ## Addresses with fixed meanings
 
@@ -188,7 +188,7 @@ This article opens the series **IPv4 addressing and subnetting**. With the 32 bi
 3. **[VLSM: splitting a block into unequal subnets](/learn/vlsm)**. Carving one block into subnets of different sizes without waste, and the largest-first rule.
 4. **[A VLSM allocation, worked end to end](/learn/vlsm-worked-example)**. A full allocation for a realistic network: sizing, sorting, assigning, and accounting for what is left.
 5. **[Subnet overlaps and gaps](/learn/subnet-overlap-and-gaps)**. When prefixes overlap or contain one another, why longest-prefix match makes some overlaps deliberate, and finding the gaps.
-6. **[Route summarisation](/learn/route-summarization)**. One route in place of many, the aligned allocation it depends on, and the black hole of summarising space you do not own.
+6. **[Route summarization](/learn/route-summarization)**. One route in place of many, the aligned allocation it depends on, and the black hole of summarizing space you do not own.
 7. **[Supernetting and route aggregation](/learn/supernetting-and-aggregation)**. The alignment rule that decides whether two blocks merge, and exact aggregation against a covering supernet.
 8. **[Private IPv4 address space and RFC 1918](/learn/private-address-space)**. The three RFC 1918 ranges, why they are not routed on the internet, and the other special blocks.
 9. **[Private, Reserved, and Public IP Ranges](/learn/private-vs-public-ip-ranges)**. The full map an SSRF filter needs: private, loopback, link-local, carrier-grade NAT, documentation, and public.

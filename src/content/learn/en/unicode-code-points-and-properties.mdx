@@ -1,7 +1,7 @@
 ---
 slug: unicode-code-points-and-properties
 title: "Unicode: code points, planes, names and properties"
-summary: "What a code point is, how the 1,114,112 of them are organised into planes, why a character on screen can be several code points, how Unicode names and classifies every character, and why the same emoji is 1, 2, 4 or 4 depending on which language counts it."
+summary: "What a code point is, how the 1,114,112 of them are organized into planes, why a character on screen can be several code points, how Unicode names and classifies every character, and why the same emoji is 1, 2, 4 or 4 depending on which language counts it."
 concepts: ["unicode", "code point", "plane", "utf-8", "utf-16", "surrogate pair", "general category", "script", "grapheme cluster"]
 relatedTools: ["unicode-inspector", "ascii-table", "base64"]
 relatedArticles: ["ascii-the-128-codes", "hidden-and-lookalike-characters", "character-encoding", "percent-encoding"]
@@ -32,13 +32,13 @@ Not every code point is a character. 2,048 of them, U+D800 to U+DFFF, are surrog
 
 ## A character on screen can be several code points
 
-What a reader sees as one character is often a sequence. An e with an acute accent can be stored as one code point, U+00E9, or as two: U+0065 followed by U+0301 COMBINING ACUTE ACCENT. Both draw the same, but they are different strings: different lengths, different bytes, and an exact comparison says they are not equal. Unicode calls what a user perceives as a single character a grapheme cluster, and normalisation (UAX #15) is the process that makes the two spellings of é compare equal; [Unicode normalisation](/learn/unicode-normalisation) takes it form by form.
+What a reader sees as one character is often a sequence. An e with an acute accent can be stored as one code point, U+00E9, or as two: U+0065 followed by U+0301 COMBINING ACUTE ACCENT. Both draw the same, but they are different strings: different lengths, different bytes, and an exact comparison says they are not equal. Unicode calls what a user perceives as a single character a grapheme cluster, and normalization (UAX #15) is the process that makes the two spellings of é compare equal; [Unicode normalisation](/learn/unicode-normalisation) takes it form by form.
 
 The inspector lists code points, not grapheme clusters, because code points are what programs store, compare and hash.
 
 ## Names, aliases and labels
 
-Every assigned character has a name in capital letters, and names are a permanent identifier: since Unicode 2.0 the stability policy forbids changing them, even when a name turns out to be wrong. A mistake is fixed with a formal alias instead, of type correction. Other aliases name the controls, which have no name of their own (U+000A is LINE FEED, NEW LINE or END OF LINE), give alternates (BYTE ORDER MARK for U+FEFF), list figments that were documented but never standardised, and add abbreviations such as NBSP, ZWSP and BOM.
+Every assigned character has a name in capital letters, and names are a permanent identifier: since Unicode 2.0 the stability policy forbids changing them, even when a name turns out to be wrong. A mistake is fixed with a formal alias instead, of type correction. Other aliases name the controls, which have no name of their own (U+000A is LINE FEED, NEW LINE or END OF LINE), give alternates (BYTE ORDER MARK for U+FEFF), list figments that were documented but never standardized, and add abbreviations such as NBSP, ZWSP and BOM.
 
 Some names are built by rule rather than listed: a CJK unified ideograph is `CJK UNIFIED IDEOGRAPH-` followed by its code point, and the 11,172 Hangul syllables are named from the short names of their parts. A code point with no name at all, such as a control, a surrogate or an unassigned one, is identified by a code point label, written in angle brackets: `<control-0085>`, `<surrogate-D800>`, `<reserved-0378>`.
 

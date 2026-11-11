@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-10-27"
 ---
 
-The Python FAQ describes the language in one sentence: "an interpreted, interactive, object-oriented programming language" that "incorporates modules, exceptions, dynamic typing, very high level dynamic data types, and classes". For a network or security engineer the more useful description is a list: the SSH library Paramiko, the multi-vendor CLI library Netmiko, the NETCONF client ncclient, the packet tool Scapy and the cryptography package are all Python, and so is the standard library module that already knows how to summarise a list of prefixes. This article says what Python is, which Python you are actually running, how long each release is supported, and what comes with it before anything is installed. It opens a series that goes from there to sockets, device APIs and parsed CLI output, and then to hashing, TLS, secure coding and the supply chain.
+The Python FAQ describes the language in one sentence: "an interpreted, interactive, object-oriented programming language" that "incorporates modules, exceptions, dynamic typing, very high level dynamic data types, and classes". For a network or security engineer the more useful description is a list: the SSH library Paramiko, the multi-vendor CLI library Netmiko, the NETCONF client ncclient, the packet tool Scapy and the cryptography package are all Python, and so is the standard library module that already knows how to summarize a list of prefixes. This article says what Python is, which Python you are actually running, how long each release is supported, and what comes with it before anything is installed. It opens a series that goes from there to sockets, device APIs and parsed CLI output, and then to hashing, TLS, secure coding and the supply chain.
 
 ## The language and the interpreter
 
@@ -25,7 +25,7 @@ One more CPython detail matters to anyone who polls a hundred devices at once. T
 
 The FAQ carries Guido van Rossum's own account. He had worked on the ABC language at CWI (Stichting Mathematisch Centrum, in the Netherlands) and was in the Amoeba distributed operating system group there, which "needed a better way to do system administration than by writing either C programs or Bourne shell scripts". He started the new language during the 1989 Christmas holidays and posted it to USENET in February 1991. Indentation for grouping statements came from ABC; the syntax and semantics of exceptions came from Modula-3. The name came from "Monty Python's Flying Circus", which he was reading at the time.
 
-The licence page gives the rest of the history: CWI until 1995, then the Corporation for National Research Initiatives (CNRI) in Reston, Virginia; in May 2000 the core team moved to BeOpen.com as BeOpen PythonLabs, and in October 2000 to Digital Creations, later Zope Corporation; in 2001 the **Python Software Foundation** (PSF) was formed "to own Python-related Intellectual Property". The PSF holds the copyright on Python 2.1 and newer, and the FAQ summarises the licence: you can do anything you want with the source, commercial use included, as long as you leave the copyrights in and display them in any documentation about Python that you produce.
+The licence page gives the rest of the history: CWI until 1995, then the Corporation for National Research Initiatives (CNRI) in Reston, Virginia; in May 2000 the core team moved to BeOpen.com as BeOpen PythonLabs, and in October 2000 to Digital Creations, later Zope Corporation; in 2001 the **Python Software Foundation** (PSF) was formed "to own Python-related Intellectual Property". The PSF holds the copyright on Python 2.1 and newer, and the FAQ summarizes the licence: you can do anything you want with the source, commercial use included, as long as you leave the copyrights in and display them in any documentation about Python that you produce.
 
 Python 2 is over. PEP 373, the 2.7 release schedule, records that "support officially stopped January 1 2020" and that the final release, 2.7.18, came out on 20 April 2020. Python 3.0 replaced the `print` statement with a `print()` function, so a device script with lines such as `print "done"` is Python 2 and will not run on any supported interpreter.
 
@@ -64,7 +64,7 @@ The library reference opens by saying that "the Python standard library consists
 | Module | What an engineer does with it | Where in this series |
 | --- | --- | --- |
 | `socket`, `selectors` | TCP and UDP clients and servers, timeouts | Part 4 |
-| `ipaddress` | prefixes, hosts, subnets, summarisation | Part 5 |
+| `ipaddress` | prefixes, hosts, subnets, summarization | Part 5 |
 | `struct`, `codecs` | binary headers, bytes and text | Part 2 |
 | `ssl` | TLS contexts, certificate verification | Part 10 |
 | `hashlib`, `hmac`, `secrets` | digests, signatures, tokens | Part 9 |
@@ -147,7 +147,7 @@ This article opens the series **Python for network and security engineers**. It 
 **Python for networking**
 
 4. **[Python sockets for network engineers: TCP, UDP, timeouts and selectors](/learn/python-sockets-for-network-engineers)**. The `socket` module: TCP and UDP clients and servers, framing a byte stream, timeouts, `select` and `selectors`.
-5. **[Python's ipaddress module: strict parsing, networks, summarisation and IPv6](/learn/python-ipaddress-module)**. Strict parsing and its error messages, networks and interfaces, subnets, supernets and summarisation, IPv6, and is_private against IANA's registry, with an interactive lab.
+5. **[Python's ipaddress module: strict parsing, networks, summarization and IPv6](/learn/python-ipaddress-module)**. Strict parsing and its error messages, networks and interfaces, subnets, supernets and summarization, IPv6, and is_private against IANA's registry, with an interactive lab.
 6. **[Python over SSH: Paramiko, Netmiko and Scrapli against a device's command line](/learn/python-ssh-and-cli-automation)**. Paramiko, Netmiko and Scrapli, prompts and paging, and when an API is the better path.
 7. **[Python and device APIs: iControl REST, FortiOS REST, RESTCONF and NETCONF](/learn/python-and-device-apis)**. REST with the standard library, Requests and HTTPX; F5 iControl REST and FortiOS REST; NETCONF with ncclient and RESTCONF.
 8. **[Parsing CLI output in Python: TextFSM, TTP, Genie, and the cost of scraping](/learn/python-parsing-cli-output)**. TextFSM, TTP and Genie, and their trade-offs against structured APIs.

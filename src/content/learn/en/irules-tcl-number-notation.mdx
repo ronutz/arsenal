@@ -67,7 +67,7 @@ A number with a decimal point or an exponent is a double, a binary floating-poin
 
 Tcl 8.4 prints doubles with 12 significant digits, because its `tcl_precision` variable defaults to 12. That keeps output tidy and hides the rest of the value: `expr {0.1 + 0.2}` prints `0.3`, yet `expr {0.1 + 0.2 == 0.3}` is `0`, because the stored sum is `0.30000000000000004`. Compare doubles with a tolerance, or work in integer units (milliseconds, cents) where you can.
 
-Division follows the operand types. `10 / 3` is integer division and gives `3`; `10 / 3.` is double division and prints `3.33333333333`. Integer division rounds toward negative infinity, so `-7 / 2` is `-4`, not `-3`.
+Division follows the operand types. `10 / 3` is integer division and gives `3`; `10 / 3.` is double division and prints `3.33333333333`. Integer division rounds towards negative infinity, so `-7 / 2` is `-4`, not `-3`.
 
 ## Large values
 

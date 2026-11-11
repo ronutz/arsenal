@@ -179,7 +179,8 @@ export default function ZscalerTunnelChooserTool() {
             <header className="tmsh-object-head">
               <span className="tmsh-type-badge mono">{result.value.choice.toUpperCase()}</span>
               <span className="tmsh-object-name">
-                {result.value.primaries} {t("primariesLabel")} + {result.value.backups} {t("backupsLabel")}
+                {/* one message with both counts, so each language makes them agree (11/11/2026) */}
+                {t("tunnelsLine", { primaries: result.value.primaries, backups: result.value.backups })}
               </span>
             </header>
             <dl className="lbm-facts">

@@ -1,4 +1,6 @@
 "use client";
+// Numbers grouped the page's way (International English formats as en-001), 11/11/2026.
+import { intlLocale } from "@/i18n/locales";
 
 // ============================================================================
 // src/components/dev/fun/ImportanceMeter.tsx
@@ -347,7 +349,7 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
     title: labels.meterName,
     lines: [
       // "Conservative urgency estimate: 4,250. Considerable. There is now a recurring meeting about it."
-      fillTemplate(labels.shareUrgency, { urgency: result.apparentUrgency.toLocaleString("en-US"), remark: labels.remarks[result.remark] }),
+      fillTemplate(labels.shareUrgency, { urgency: result.apparentUrgency.toLocaleString(intlLocale("en")), remark: labels.remarks[result.remark] }),
       // "Result: Z3R0 fucks given.", or the override's figure and its name.
       override
         ? fillTemplate(labels.shareOverride, { result: result.display, override: override.label })
@@ -506,7 +508,7 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
         <div className="im-urgency-row">
           <span className="im-urgency-label">{labels.subtotalLabel}</span>
           <span className="im-urgency-value mono">
-            {result.apparentUrgency.toLocaleString()}
+            {result.apparentUrgency.toLocaleString(intlLocale("en"))}
           </span>
           <svg
             className="im-bar"
@@ -636,7 +638,7 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
       <div className="ztc-result im-result-centred">
         <h2 className="ztc-section-title">{labels.coefficientLabel}</h2>
         <p className="tmsh-object-head mono">
-          {result.apparentUrgency.toLocaleString()} &times; {result.coefficient} = {result.display}
+          {result.apparentUrgency.toLocaleString(intlLocale("en"))} &times; {result.coefficient} = {result.display}
         </p>
         <p className="ztc-notes">{labels.coefficientNote}</p>
       </div>
@@ -650,7 +652,7 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
               <li key={i} className="ztc-notes">
                 <span className="mono">
                   {w.value > 0 ? "+" : ""}
-                  {w.value.toLocaleString()}
+                  {w.value.toLocaleString(intlLocale("en"))}
                 </span>
                 : {w.label}. {w.detail}
               </li>

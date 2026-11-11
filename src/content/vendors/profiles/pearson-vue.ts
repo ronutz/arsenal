@@ -53,7 +53,7 @@ export const pearsonVueProfile: VendorProfile = {
   products: [
     { name: "Test centre delivery", what: "Around five and a half thousand locations, and the physical layer of the industry: a room, a proctor, a locker for your belongings and a machine that is not yours." },
     { name: "OnVUE", what: "Remote proctored delivery, and now a substantial share of volume. Whatever one concludes about the trade the entry above describes, it made certification available to candidates hundreds of miles from the nearest centre, which was always a real barrier and rarely discussed." },
-    { name: "Exam development", what: "The tooling behind the questions - item banking, psychometrics, performance-based and simulated tasks. This is where a certification is made harder to memorise, and it is bought as a service by the vendors whose names appear on the certificates." },
+    { name: "Exam development", what: "The tooling behind the questions - item banking, psychometrics, performance-based and simulated tasks. This is where a certification is made harder to memorize, and it is bought as a service by the vendors whose names appear on the certificates." },
     { name: "Registration and credential administration", what: "Scheduling, payment, identity records and results delivery. Unglamorous, and the part a candidate actually experiences most of." },
   ],
   innovations: [
@@ -65,7 +65,7 @@ export const pearsonVueProfile: VendorProfile = {
     {
       title: "And the question the current strategy raises",
       detail:
-        "If the organisation delivering the examination also sells the course that prepares for it, the separation narrows. It does not disappear - the vendor still writes the objectives and owns the credential, and a training arm and a delivery arm can be run apart - but it is worth stating plainly that the arrangement is changing, and that nobody sitting an exam is told which parts of the chain are under one roof.",
+        "If the organization delivering the examination also sells the course that prepares for it, the separation narrows. It does not disappear - the vendor still writes the objectives and owns the credential, and a training arm and a delivery arm can be run apart - but it is worth stating plainly that the arrangement is changing, and that nobody sitting an exam is told which parts of the chain are under one roof.",
     },
     {
       title: "Standardising an experience across five thousand rooms",

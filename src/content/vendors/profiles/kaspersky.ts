@@ -56,7 +56,7 @@ export const kasperskyProfile: VendorProfile = {
   ],
   innovations: [
     { title: "Publishing on state malware regardless of origin", detail: "Its teams documented campaigns attributed to several governments, and the technical work is rarely disputed even by its critics. Research that embarrasses somebody powerful is the kind whose independence is hardest to sustain." },
-    { title: "Building an operating system rather than defending one", detail: "A microkernel designed so that unauthorised operations are structurally impossible rather than detected is an unusual bet for an antivirus company, and the reasoning - that retrofitting security onto a general-purpose system has limits - is sound whatever one concludes about the vendor." },
+    { title: "Building an operating system rather than defending one", detail: "A microkernel designed so that unauthorized operations are structurally impossible rather than detected is an unusual bet for an antivirus company, and the reasoning - that retrofitting security onto a general-purpose system has limits - is sound whatever one concludes about the vendor." },
     { title: "Transparency centres and code review", detail: "Relocating data processing to Switzerland and offering source code inspection are the responses available to a vendor whose problem is trust rather than capability. Whether they can resolve a jurisdictional concern is precisely the open question." },
   ],
   markets: [

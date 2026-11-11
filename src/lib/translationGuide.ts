@@ -5,7 +5,7 @@
 // 17:11: "The guide should be in https://ronutz.com/contribute/"). The guide is
 // authored as Markdown beside the packs it describes, in English
 // (src/i18n/messages/CONTRIBUTING-TRANSLATIONS.md), with native editions beside
-// it as CONTRIBUTING-TRANSLATIONS.<locale>.md (pt-BR; es and de since 2026-11-09, fr the same day,
+// it as CONTRIBUTING-TRANSLATIONS.<locale>.md (pt-BR; es and de since 2026-11-09, fr the same day, it on 2026-11-11,
 // written with the interface); every other locale reads the English one, as it
 // reads English for any phrase its pack lacks.
 //

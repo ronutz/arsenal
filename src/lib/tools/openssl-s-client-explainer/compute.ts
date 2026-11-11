@@ -181,6 +181,16 @@ function bi(en: string, pt: string): Bilingual {
   return { en, pt }; // plain pair
 }
 
+/** Where standard input comes from when the command names no producer (11/11/2026: a phrase of its own, so the content modules translate it). */
+const PIPE_OR_FILE = bi("a pipe or a file", "um pipe ou um arquivo"); // the inputClosedEarly fallback
+
+/** What printed session secrets allow, one written phrase per combination (11/11/2026: no fragments joined with "; "). */
+const SECRETS_ALLOW = { // by which secrets appear
+  masterKey: bi("with a capture of the traffic, a Master-Key decrypts its TLS 1.2 session", "com uma captura do tráfego, um Master-Key decifra a sessão TLS 1.2 dele"), // TLS 1.2 only
+  psk: bi("a Resumption PSK together with its ticket lets anyone resume the TLS 1.3 session as this client", "um Resumption PSK junto com o ticket deixa qualquer um retomar a sessão TLS 1.3 como este cliente"), // TLS 1.3 only
+  both: bi("with a capture of the traffic, a Master-Key decrypts its TLS 1.2 session; a Resumption PSK together with its ticket lets anyone resume the TLS 1.3 session as this client", "com uma captura do tráfego, um Master-Key decifra a sessão TLS 1.2 dele; um Resumption PSK junto com o ticket deixa qualquer um retomar a sessão TLS 1.3 como este cliente"), // both
+} as const; // the three phrases
+
 /** Build a finding. */
 function finding(id: FindingId, severity: Severity, source: SourceId, en: string, pt: string): Finding {
   return { id, severity, source, text: bi(en, pt) }; // one row
@@ -501,7 +511,7 @@ export function explainCommand(input: string): CommandExplanation {
   if (has("-proxy_user")) findings.push(finding("proxyBasicAuth", "warn", "s_client-3.5", "-proxy_user authenticates to the proxy with Basic authentication, sent as reversible base64 before any TLS exists: anyone on the path to the proxy can read it.", "-proxy_user autentica no proxy com Basic, enviado em base64 reversível antes de existir qualquer TLS: qualquer um no caminho até o proxy consegue ler.")); // Basic auth
 
   // ---- standard input ----
-  if (stdinClosed && !has("-ign_eof") && !has("-quiet")) findings.push(finding("inputClosedEarly", "info", "s_client-3.5", `Standard input comes from ${inputFrom ?? "a pipe or a file"} and ends at once, and there is no -ign_eof: the page warns that a non-interactive run may close the connection prematurely, especially with TLS 1.3, so session tickets or the server's reply can be missing from the output.`, `A entrada padrão vem de ${inputFrom ?? "um pipe ou um arquivo"} e acaba na hora, e não há -ign_eof: a página avisa que uma execução sem terminal pode fechar a conexão cedo demais, sobretudo com TLS 1.3, então tickets de sessão ou a resposta do servidor podem faltar na saída.`)); // early close
+  if (stdinClosed && !has("-ign_eof") && !has("-quiet")) findings.push(finding("inputClosedEarly", "info", "s_client-3.5", `Standard input comes from ${inputFrom ?? PIPE_OR_FILE.en} and ends at once, and there is no -ign_eof: the page warns that a non-interactive run may close the connection prematurely, especially with TLS 1.3, so session tickets or the server's reply can be missing from the output.`, `A entrada padrão vem de ${inputFrom ?? PIPE_OR_FILE.pt} e acaba na hora, e não há -ign_eof: a página avisa que uma execução sem terminal pode fechar a conexão cedo demais, sobretudo com TLS 1.3, então tickets de sessão ou a resposta do servidor podem faltar na saída.`)); // early close
 
   // ---- defaults that apply because something is absent ----
   const absent: { name: string; text: Bilingual }[] = []; // the list
@@ -808,7 +818,7 @@ const EXPLAIN: Readonly<Record<ItemKind, Bilingual>> = Object.freeze({
   rpk: bi("A raw public key (RFC 7250) was negotiated or offered in place of an X.509 certificate (OpenSSL 3.2 and later; options -enable_server_rpk and -enable_client_rpk).", "Uma raw public key (RFC 7250) foi negociada ou oferecida no lugar de um certificado X.509 (OpenSSL 3.2 em diante; opções -enable_server_rpk e -enable_client_rpk)."), // raw public keys
   "local-port": bi("The local port of the connection (printed with TLS tracing).", "A porta local da conexão (impressa com trace de TLS)."), // local port
   blank: bi("An empty line.", "Uma linha vazia."), // blank
-  data: bi("Not part of s_client's report: most likely data the server sent after the handshake (an HTTP response, an SMTP banner) or text this explainer does not recognise. It is kept as is.", "Não faz parte do relatório do s_client: muito provavelmente dados que o servidor enviou depois do handshake (uma resposta HTTP, um banner SMTP) ou texto que este explicador não reconhece. Fica como está."), // data
+  data: bi("Not part of s_client's report: most likely data the server sent after the handshake (an HTTP response, an SMTP banner) or text this explainer does not recognize. It is kept as is.", "Não faz parte do relatório do s_client: muito provavelmente dados que o servidor enviou depois do handshake (uma resposta HTTP, um banner SMTP) ou texto que este explicador não reconhece. Fica como está."), // data
 });
 
 /** Explanations of the SSL-Session fields (by the label before the colon). */
@@ -1205,8 +1215,9 @@ function outputFindings(out: OutputExplanation, ocspAsked: boolean): Finding[] {
   if (secrets.length) { // session secrets were printed
     const mk = secrets.includes("Master-Key"); // TLS 1.2 master secret present
     const psk = secrets.includes("Resumption PSK"); // TLS 1.3 resumption PSK present
-    const en = [mk ? "with a capture of the traffic, a Master-Key decrypts its TLS 1.2 session" : "", psk ? "a Resumption PSK together with its ticket lets anyone resume the TLS 1.3 session as this client" : ""].filter(Boolean).join("; "); // what each one allows
-    const pt = [mk ? "com uma captura do tráfego, um Master-Key decifra a sessão TLS 1.2 dele" : "", psk ? "um Resumption PSK junto com o ticket deixa qualquer um retomar a sessão TLS 1.3 como este cliente" : ""].filter(Boolean).join("; "); // the same in Portuguese
+    const allows = mk && psk ? SECRETS_ALLOW.both : mk ? SECRETS_ALLOW.masterKey : SECRETS_ALLOW.psk; // what they allow, as one written phrase (11/11/2026)
+    const en = allows.en; // English
+    const pt = allows.pt; // Portuguese
     f.push(finding("secretsPrinted", "warn", mk ? "rfc5246" : "rfc9846", `This output contains ${secrets.join(" and ")} values, secrets of these sessions: ${en}. Blank them out before sharing the output.`, `Esta saída contém valores de ${secrets.join(" e ")}, segredos destas sessões: ${pt}. Apague-os antes de compartilhar a saída.`)); // secrets
   }
   const tickets = all.reduce((s, c) => s + c.tickets, 0); // tickets seen

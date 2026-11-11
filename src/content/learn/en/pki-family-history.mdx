@@ -57,7 +57,7 @@ It also changed operational practice. Certificates that renew automatically can 
 
 This family produces no dedicated job title and an enormous amount of recurring pain, which is unusual: almost everyone in infrastructure deals with certificates, and almost nobody owns them.
 
-The practices exist because of that gap. **Inventory**, because the certificate that expires is always the one nobody knew about. **Expiry monitoring**, which every organisation implements after its first outage rather than before. **Chain validation**, because a certificate that works in a browser and fails in a client library is usually a missing intermediate rather than a bad certificate. And **private key handling**, which is where this family meets the [hardware security module](/learn/hsm-family-history) - the key that signs is the asset, and the certificate is only its public face.
+The practices exist because of that gap. **Inventory**, because the certificate that expires is always the one nobody knew about. **Expiry monitoring**, which every organization implements after its first outage rather than before. **Chain validation**, because a certificate that works in a browser and fails in a client library is usually a missing intermediate rather than a bad certificate. And **private key handling**, which is where this family meets the [hardware security module](/learn/hsm-family-history) - the key that signs is the asset, and the certificate is only its public face.
 
 The most common serious outage in this family remains an expired certificate on something nobody had inventoried, which is a documentation failure wearing a cryptographic costume.
 
@@ -71,7 +71,7 @@ Today it is DigiCert, Sectigo, GlobalSign and the cloud providers' own services,
 
 **Lifetimes keep shrinking.** Certificate validity has fallen from years to months and continues downward, which forces automation and eliminates the manual renewal that caused most outages.
 
-**Automation is becoming mandatory rather than optional.** At the lifetimes now being adopted, no organisation can renew by hand, which quietly ends a whole category of operational practice.
+**Automation is becoming mandatory rather than optional.** At the lifetimes now being adopted, no organization can renew by hand, which quietly ends a whole category of operational practice.
 
 **Post-quantum migration lands here early.** Certificates chain, so the algorithms in them must change before the traffic does, and the transition described in the [quantum threat article](/learn/quantum-threat-to-cryptography) reaches this family first.
 

@@ -1,4 +1,6 @@
 "use client";
+// Numbers grouped the page's way (International English formats as en-001), 11/11/2026.
+import { intlLocale } from "@/i18n/locales";
 
 /**
  * src/components/ItemViews.tsx
@@ -78,7 +80,7 @@ export default function ItemViews({
 
   return (
     <p className="item-views" title={label.replace("{n}", String(views))}>
-      {label.replace("{n}", views.toLocaleString())}
+      {label.replace("{n}", views.toLocaleString(locale ? intlLocale(locale) : undefined))}
       {/* SPARKLINE (2026-09-06). Daily reads for the window, as a small inline
           SVG beside the count. It fills the gap between "read 41 times" and
           "read 41 times last Tuesday when it was shared". Decorative and

@@ -15,7 +15,7 @@ Everything [the forward-proxy interception article](/learn/ssl-forward-proxy-int
 
 ## The trust prerequisite
 
-None of it works until clients trust the signer. The regenerated certificates are issued under the **Zscaler root CA** - or, for organisations that prefer their own chain, a **customer intermediate CA** - and that certificate must sit in every client's trust store before inspection is enabled. Deployment reality follows: managed devices get the root pushed (Client Connector can install it; management tooling otherwise), and anything without the root sees browser certificate warnings that are not errors but the absence of this prerequisite. The vendor's rollout guidance is staged for the same reason: certificate first, then a test location or sublocation, then a defined user set, then the estate.
+None of it works until clients trust the signer. The regenerated certificates are issued under the **Zscaler root CA** - or, for organizations that prefer their own chain, a **customer intermediate CA** - and that certificate must sit in every client's trust store before inspection is enabled. Deployment reality follows: managed devices get the root pushed (Client Connector can install it; management tooling otherwise), and anything without the root sees browser certificate warnings that are not errors but the absence of this prerequisite. The vendor's rollout guidance is staged for the same reason: certificate first, then a test location or sublocation, then a defined user set, then the estate.
 
 ## The policy: rules in ascending order, three actions
 
@@ -27,7 +27,7 @@ The subtle half of the policy is what happens *without* decryption. A Do Not Ins
 
 ## Bypasses: every one a priced blind spot
 
-Some exemptions are not optional. Applications that **pin certificates** - the vendor keeps a dedicated page on the collision - will never accept a regenerated leaf: they fail closed under inspection and must be excluded, whether by policy rule here or by [the Client Connector's application bypasses](/learn/zscaler-client-connector-profiles) before traffic ever reaches the Edge. Others are governance: categories such as health or finance that policy or law says stay sealed. The operator's ledger must stay honest about the cost either way: an uninspected flow is invisible to the content engines - no malware analysis of its payloads, no data-protection matching inside it - and is judged only by its wrapper: destination, certificate, protocol hygiene. "Do Not Inspect" never means "trusted"; it means *judged from the outside only*, with the backstops above as the whole remaining defense.
+Some exemptions are not optional. Applications that **pin certificates** - the vendor keeps a dedicated page on the collision - will never accept a regenerated leaf: they fail closed under inspection and must be excluded, whether by policy rule here or by [the Client Connector's application bypasses](/learn/zscaler-client-connector-profiles) before traffic ever reaches the Edge. Others are governance: categories such as health or finance that policy or law says stay sealed. The operator's ledger must stay honest about the cost either way: an uninspected flow is invisible to the content engines - no malware analysis of its payloads, no data-protection matching inside it - and is judged only by its wrapper: destination, certificate, protocol hygiene. "Do Not Inspect" never means "trusted"; it means *judged from the outside only*, with the backstops above as the whole remaining defence.
 
 ## The operator's checklist
 

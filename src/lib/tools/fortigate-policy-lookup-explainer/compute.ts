@@ -282,7 +282,7 @@ function parseCliLocalisable(text: string): { policies: PolicyRule[]; warnings: 
   }
   flush();
 
-  if (policies.length === 0) warnings.push(say("warn.noPolicies", "No policies were recognised in the input.")); // none
+  if (policies.length === 0) warnings.push(say("warn.noPolicies", "No policies were recognized in the input.")); // none
   if (policies.length >= MAX_POLICIES) {
     warnings.push(say("warn.capped", `Only the first ${MAX_POLICIES} policies were parsed.`, { max: String(MAX_POLICIES) })); // capped
   }
@@ -328,7 +328,7 @@ function parseTableLocalisable(text: string): { policies: PolicyRule[]; warnings
       order,
     });
   }
-  if (policies.length === 0) warnings.push(say("warn.noRows", "No policy rows were recognised in the table.")); // none
+  if (policies.length === 0) warnings.push(say("warn.noRows", "No policy rows were recognized in the table.")); // none
   return { policies, warnings };
 }
 

@@ -31,24 +31,24 @@ export const qualysProfile: VendorProfile = {
     { year: 2025, title: "Scale", detail: "Revenue of $669M with around 2,625 staff, and recognition as a leader in both Gartner's exposure assessment quadrant and IDC's exposure management assessment." },
   ],
   products: [
-    { name: "VMDR", what: "Vulnerability Management, Detection and Response: scanning, prioritisation and patch deployment in one platform behind a single agent - the consolidation argument made concrete." },
+    { name: "VMDR", what: "Vulnerability Management, Detection and Response: scanning, prioritization and patch deployment in one platform behind a single agent - the consolidation argument made concrete." },
     { name: "Qualys Cloud Agent", what: "A lightweight agent reporting continuously, which changes assessment from something scheduled into something ambient." },
-    { name: "TruRisk", what: "The prioritisation layer, scoring findings by exploitability and asset importance rather than by severity alone." },
+    { name: "TruRisk", what: "The prioritization layer, scoring findings by exploitability and asset importance rather than by severity alone." },
     { name: "TotalCloud", what: "Cloud posture and workload coverage, and the fastest-growing part of the portfolio by practitioner mindshare." },
-    { name: "Policy Compliance", what: "The deepest compliance reporting in the category by most accounts - PCI, HIPAA and the rest - which is why the platform is often bought by organisations whose driver is audit rather than risk." },
+    { name: "Policy Compliance", what: "The deepest compliance reporting in the category by most accounts - PCI, HIPAA and the rest - which is why the platform is often bought by organizations whose driver is audit rather than risk." },
   ],
   innovations: [
-    { title: "Security as a subscription, in 2000", detail: "Persuading organisations to let scan data leave their premises took years of argument, and the argument is now so settled that the difficulty is hard to remember. Everything in the category is delivered this way today." },
+    { title: "Security as a subscription, in 2000", detail: "Persuading organizations to let scan data leave their premises took years of argument, and the argument is now so settled that the difficulty is hard to remember. Everything in the category is delivered this way today." },
     { title: "Patching inside the scanner", detail: "Finding a vulnerability and fixing it had historically been separate products bought by separate teams. Putting deployment in the same platform addresses the actual failure, which is not discovery but the gap between discovery and remediation." },
     { title: "Aggregate visibility as a defensive asset", detail: "One vendor scanning many estates sees which vulnerabilities are being exploited in the field before any single customer would. The install base improves the product for everyone in it." },
-    { title: "Research published rather than held", detail: "The Threat Research Unit's work has been recognised by the field's own awards, including for remote code execution research - the kind of output that has no direct revenue attached and builds the credibility that does." },
+    { title: "Research published rather than held", detail: "The Threat Research Unit's work has been recognized by the field's own awards, including for remote code execution research - the kind of output that has no direct revenue attached and builds the credibility that does." },
   ],
   markets: [
     "Enterprise and heavily regulated sectors, with compliance depth as a distinguishing reason to buy. Priced per asset, quoted around two hundred dollars per asset per year before negotiation.",
     "It competes with Tenable and Rapid7, both here, and with cloud-native posture vendors on the TotalCloud front.",
   ],
   analyst: [
-    "A 2025 Gartner Magic Quadrant Leader for exposure assessment platforms and a leader in IDC's exposure management assessment, with its cloud and vulnerability products separately recognised in industry awards.",
-    "As with its two competitors, the reposition toward exposure management is incomplete across the whole category, and buyers still decide on scan coverage and risk scoring rather than on the platform layer above them.",
+    "A 2025 Gartner Magic Quadrant Leader for exposure assessment platforms and a leader in IDC's exposure management assessment, with its cloud and vulnerability products separately recognized in industry awards.",
+    "As with its two competitors, the reposition towards exposure management is incomplete across the whole category, and buyers still decide on scan coverage and risk scoring rather than on the platform layer above them.",
   ],
 };

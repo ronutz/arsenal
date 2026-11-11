@@ -175,7 +175,7 @@ function parseConfigLocalisable(text: string): { tree: ConfigTree; warnings: Eng
     }
   }
 
-  if (tree.size === 0) warnings.push(say("warn.noSections", "No configuration sections were recognised. Expected `config <section>` blocks.")); // none
+  if (tree.size === 0) warnings.push(say("warn.noSections", "No configuration sections were recognized. Expected `config <section>` blocks.")); // none
   return { tree, warnings };
 }
 

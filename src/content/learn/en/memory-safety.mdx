@@ -1,6 +1,6 @@
 ---
 slug: memory-safety
-title: "Memory safety: the bug classes and the defenses that answer them"
+title: "Memory safety: the bug classes and the defences that answer them"
 summary: "Buffer overflow, use-after-free, null dereference, integer overflow - four names for two failures, staying inside an object and only touching it while it is alive. How each one works, why roughly seventy percent of serious vulnerabilities in large C and C++ codebases belong to this family, and what each defensive layer actually buys."
 concepts: ["buffer-overflow", "use-after-free", "memory-safety", "aslr", "cwe"]
 relatedTools: ["cvss-vector-decoder"]
@@ -13,7 +13,7 @@ updated: "2026-07-23"
 
 ## Two questions, not a dozen bug names
 
-Every bug in this family answers one of two questions wrongly. **Spatial safety**: is this access inside the bounds of the object it belongs to? **Temporal safety**: is this object still alive at the moment I touch it? A buffer overflow is a spatial failure, a use-after-free is a temporal one, and once you hold that axis the rest of the vocabulary stops being a list to memorise. The reason the industry cares is a number that keeps being reproduced independently: analyses from Microsoft, Google, and advisories from CISA and the NSA converge on roughly **seventy percent** of serious vulnerabilities in large C and C++ codebases being memory-safety issues. That is not a rounding error in a threat model. That is the threat model.
+Every bug in this family answers one of two questions wrongly. **Spatial safety**: is this access inside the bounds of the object it belongs to? **Temporal safety**: is this object still alive at the moment I touch it? A buffer overflow is a spatial failure, a use-after-free is a temporal one, and once you hold that axis the rest of the vocabulary stops being a list to memorize. The reason the industry cares is a number that keeps being reproduced independently: analyses from Microsoft, Google, and advisories from CISA and the NSA converge on roughly **seventy percent** of serious vulnerabilities in large C and C++ codebases being memory-safety issues. That is not a rounding error in a threat model. That is the threat model.
 
 ## The spatial failures
 
@@ -27,7 +27,7 @@ An **off-by-one** is the same story at the smallest possible scale - `<` where `
 
 A **use-after-free** is a pointer to memory that has been released. The allocator may have already handed that block to something else, so the program is now reading or writing another object's data through a stale lens. This is more dangerous than a crash because the contents are influenceable: an attacker who can control what gets allocated into the freed space controls what the confused code sees. That is why use-after-free (CWE-416) and its sibling double-free are mainstays of modern browser and kernel exploitation, long after the simple stack overflow stopped working reliably.
 
-In October 2026 the class turned up in a language runtime rather than an application. The PHP project's records for the two flaws called PHP2Shell, CVE-2026-109618 and CVE-2026-109619, list use after free (CWE-416) first among their weaknesses: in both, PHP's own request handling goes on trusting memory that a failed request left freed or only partly initialised ([the CVE record](https://cveawg.mitre.org/api/cve/CVE-2026-109619); [the October 2026 PHP vulnerabilities](/learn/php-october-2026-vulnerabilities)).
+In October 2026 the class turned up in a language runtime rather than an application. The PHP project's records for the two flaws called PHP2Shell, CVE-2026-109618 and CVE-2026-109619, list use after free (CWE-416) first among their weaknesses: in both, PHP's own request handling goes on trusting memory that a failed request left freed or only partly initialized ([the CVE record](https://cveawg.mitre.org/api/cve/CVE-2026-109619); [the October 2026 PHP vulnerabilities](/learn/php-october-2026-vulnerabilities)).
 
 A **null pointer dereference** - the "zero pointer", as Rodolfo Nützmann calls it - is the gentle cousin. A function returned null on failure, nobody checked, and the program touches address zero. On any modern system the zero page is deliberately left unmapped, so this is a reliable crash rather than a takeover; that unmapping *is* the mitigation, and it is why the same bug was far more dangerous on older systems where low memory could be mapped. Its real cost is availability: force the null path repeatedly and you have a denial of service. CWE-476.
 
@@ -35,7 +35,7 @@ A **memory leak** is the one that never crashes on cue. Memory is allocated and 
 
 ## What each defensive layer actually buys
 
-The defenses arrived roughly in the order the attacks did, and it is worth being precise about what each one does and does not do.
+The defences arrived roughly in the order the attacks did, and it is worth being precise about what each one does and does not do.
 
 **Stack canaries** put a known value between local buffers and the saved return address and check it before returning. If it changed, something wrote past the buffer, and the program aborts rather than returning into attacker-chosen data. Cheap, compiler-inserted, on by default nearly everywhere - and strictly a *detector* of contiguous overwrites, not a preventer.
 

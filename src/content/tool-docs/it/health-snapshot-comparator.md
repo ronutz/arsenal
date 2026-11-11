@@ -1,0 +1,32 @@
+## Cosa fa
+
+Dichiara il confronto che stai facendo (perché lo fai: convalida dopo una modifica, ripristino dopo un incidente, cutover di una migrazione, controllo della deriva o decisione di rollback; su quale classe di oggetto; con quale ambito; quanto è davvero buona la baseline; quanto è completa l’acquisizione dopo; da quanto tempo osservi; quanto varia l’oggetto per conto suo) e un registro fisso di 27 regole originali produce il REPORT DI CONFRONTO A LIVELLI: una dichiarazione sulla qualità della baseline; il catalogo delle dimensioni di cui vale la pena acquisire uno snapshot per quell’oggetto (14 dimensioni, ciascuna con una classe di variabilità e l’indicazione esatta di cosa registrare); le indicazioni per INTERPRETARE LE DIFFERENZE in ogni dimensione (deve coincidere, da leggere con cautela o deriva attesa in base alla variabilità dichiarata), ciascuna con ciò che AVVALOREREBBE un rilievo e ciò che INDEBOLIREBBE una conclusione; le lacune nella completezza della convalida; e il VERDETTO: procedi, osserva, indaga o tieni pronto il rollback, con le condizioni esplicite che alzerebbero o abbasserebbero il livello.
+
+## Il patto di onestà sul nome
+
+Lo strumento non acquisisce mai dati di stato e non calcola mai differenze. TU DICHIARI GLI STATI, LO STRUMENTO VINCOLA LA CONCLUSIONE: questa frase non è marketing, è l’architettura. La regola di base del motore si attiva a ogni esecuzione per dire che il report è vincolato alle classi dichiarate, e la prima riga della checklist chiede di verificare le dichiarazioni rispetto alle acquisizioni reali. Ciò che il verdetto ti dà è disciplina, non onniscienza: una baseline a memoria limita il verdetto a indaga, per quanto pulito sembri lo stato dopo; una finestra di osservazione immediata lo limita a osserva, perché la convergenza non ha ancora dato la sua risposta; e in un contesto di decisione di rollback QUALSIASI lacuna nelle evidenze trasforma il verdetto in tieni pronto il rollback. Quando la domanda è «tornare indietro?», tutto ciò che non è un’evidenza pulita significa tenere armato il rollback.
+
+## Mai sui soli componenti verdi
+
+La regola sul rischio è strutturale: anche la regola che mette a confronto stato e servizio si attiva senza condizioni, e persino il verdetto migliore resta subordinato all’accordo tra una dimensione del livello di servizio (una sonda end-to-end, una vera transazione di autenticazione) e il livello dei componenti. Una configurazione invariata non è integrità; componenti verdi non sono un servizio funzionante; il report lo dice a ogni esecuzione.
+
+## Determinismo e verifica
+
+Le regole sono predicati puri sulle sette enumerazioni; la scala di gravità (0 procedi, 1 osserva, 2 indaga) prende il massimo, e la conversione al rollback è esplicita nel codice. La verifica segue il modello della famiglia, i vettori snapshot dell’attivazione delle regole, con due vincoli propri di questo strumento: il VERDETTO esatto e l’esatto INSIEME DI DIMENSIONI selezionato sono fissati nei vettori accanto alle regole attivate e alle avvertenze. Sono tredici vettori (nove scenari, quattro rifiuti), fissati dall’esecuzione del motore; qualsiasi deriva fa fallire la build.
+
+## Condivisione dei risultati
+
+Sotto il verdetto, **Condividi i risultati** crea un link a questa pagina, solo quando lo premi, che contiene ogni campo del modulo dopo il `#`: le otto scelte con i loro ID (`context`, `target`, `scope`, `before`, `after`, `window`, `churn`, `preset`, sempre) e le tre note così come le hai inserite (`title`, `changeref`, `notes`). Il suo riquadro a comparsa indica prima cosa contiene il link, poi un’avvertenza specifica (le note possono nominare gli apparati confrontati e il ticket di modifica), poi offre Copia link e, se il browser ne ha uno, il menu di condivisione; l’indirizzo della pagina non cambia.
+
+Le tue spunte non ci sono: sono il tuo avanzamento personale su questa pagina (l’esportazione in Markdown le contiene) e appartengono al risultato, non a ciò che hai inserito.
+
+Nelle note finiscono nomi host, clienti, persone e numeri di ticket, quindi prima che venga proposto un link passano per il controllo dei segreti del sito. Se un valore è una credenziale per il suo formato, il link non viene creato e il riquadro a comparsa indica la nota: una chiave privata PEM ([RFC 7468](https://www.rfc-editor.org/rfc/rfc7468), sezioni 10 e 11), le credenziali di un’intestazione Authorization ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110), sezione 11.6.2), una riga Cookie ([RFC 6265](https://www.rfc-editor.org/rfc/rfc6265), sezione 4.2.1), un JWS o un JWE (la serializzazione usata dai JWT, [RFC 7519](https://www.rfc-editor.org/rfc/rfc7519), sezione 1), una password in un URL ([RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), sezione 3.2.1), un ID della chiave di accesso AWS o un valore FortiOS `ENC`. Sostituiscilo con un segnaposto e premi di nuovo. Un valore il cui nome sembra soltanto un segreto (`db_password=...`) ottiene comunque un link, e la riga di avvertenza indica la nota, così la controlli prima.
+
+La [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (sezione 3.5, consultata il 01/11/2026) stabilisce che il frammento viene separato dal resto dell’URI prima della dereferenziazione («separated from the rest of the URI prior to a dereference»), quindi il modulo non viene inviato al server quando si apre il link; resta nella barra degli indirizzi e nella cronologia di chi lo apre, e chiunque abbia il link può leggerlo.
+
+- **Lunghezza massima.** Al massimo 16.384 caratteri in tutto, il limite che il sito applica a ogni valore dopo il `#`; una condivisione più lunga non ottiene il link e il riquadro a comparsa ne indica la lunghezza.
+- **Apertura di un link.** Le scelte e le note vengono impostate, le spunte della checklist partono vuote e il verdetto viene calcolato come a ogni modifica del modulo; non viene scaricato nulla. I valori lasciano poi subito l’indirizzo della pagina, senza alcuna richiesta, quindi un ricaricamento o il pulsante Condividi della pagina stessa non contengono nulla.
+
+## Input dell’API
+
+Il punto di ingresso API equivalente all’interfaccia accetta un oggetto JSON: `{"context", "target", "scope", "beforeConfidence", "afterState", "window", "churn", "preset", "notes": {"changeRef", "title", "notes"}}`. Ogni campo tranne `notes` usa i vocabolari chiusi mostrati nel modulo; un valore fuori vocabolario è un errore di formato, mai un’ipotesi.

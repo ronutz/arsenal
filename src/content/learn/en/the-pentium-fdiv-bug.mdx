@@ -23,7 +23,7 @@ That is the whole engineering fault. A script, five cells, a wrong answer in the
 
 Intel's position was that the flaw was negligible, and the company published a study to support it: *Statistical Analysis of Floating Point Flaw in the Pentium Processor*, which estimated that a typical user would encounter an error roughly once in many thousands of years of ordinary computing. On random 64-bit divisions the rate is about one in nine billion.
 
-The arithmetic is correct and the conclusion does not follow, for a reason that is worth internalising because it recurs constantly in security and reliability work.
+The arithmetic is correct and the conclusion does not follow, for a reason that is worth internalizing because it recurs constantly in security and reliability work.
 
 **The flaw was deterministic.** For a particular pair of operands it did not fail rarely; it failed *every time*. A once-in-nine-billion figure describes what happens when inputs are drawn at random, and real computations do not draw at random. They run the same formula over the same data repeatedly, in a loop, in a spreadsheet model, in a nightly batch. A user whose work happened to touch an affected operand pair would meet the error on every run and never see a correct result - while the population average said the problem practically did not exist.
 

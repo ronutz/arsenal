@@ -175,7 +175,7 @@ export const fortinetLineage: VendorLineage = {
       price: "undisclosed (analyst estimate $200-230M)",
       what: "Cloud-native application protection - workload security and cloud posture.",
       became:
-        "The cloud security portfolio. Worth stating plainly: Lacework had raised more than $1.3B in venture capital, so at the estimated price its investors are unlikely to have seen a return. Forrester characterised it as a fire sale.",
+        "The cloud security portfolio. Worth stating plainly: Lacework had raised more than $1.3B in venture capital, so at the estimated price its investors are unlikely to have seen a return. Forrester characterized it as a fire sale.",
       sourceNote:
         "Terms were not disclosed. The $200-230M figure is Forrester's estimate and is presented as an estimate rather than a reported price.",
     },

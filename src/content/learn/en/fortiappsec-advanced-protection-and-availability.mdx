@@ -22,7 +22,7 @@ That is the gap a WAF cannot see. The malicious script is not in a request to yo
 
 **Client-side protection** inventories what actually executes in visitors' browsers and what those scripts talk to, then flags change: a new script nobody added, an existing script that started sending data somewhere new, a dependency that changed behaviour after an update.
 
-The uncomfortable finding in most first deployments is the inventory itself. Sites routinely run scripts nobody in the organisation can account for, often left from a campaign years ago, and every one of them can read the payment form.
+The uncomfortable finding in most first deployments is the inventory itself. Sites routinely run scripts nobody in the organization can account for, often left from a campaign years ago, and every one of them can read the payment form.
 
 ## Behavioural and biometric detection
 
@@ -38,7 +38,7 @@ The advantage a service has over an appliance is the population. Detection impro
 
 **AI-based threat detection** identifies patterns that do not match a known signature and are not individually anomalous, which is where signature and threshold approaches both run out.
 
-**FortiAI Assistant** addresses the more mundane and more expensive problem: the time it takes a person to decide whether an alert is real. It summarises, explains what triggered, and suggests where to look.
+**FortiAI Assistant** addresses the more mundane and more expensive problem: the time it takes a person to decide whether an alert is real. It summarizes, explains what triggered, and suggests where to look.
 
 The limitation deserves stating clearly rather than being discovered. These systems are confident regardless of whether they are right, and they are least reliable exactly where a case is unusual, which is the case you most needed help with. They shorten routine triage and are not a substitute for the judgement applied to the odd one. Treat the output as a well-informed opinion to verify, not a verdict.
 

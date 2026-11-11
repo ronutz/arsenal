@@ -1,7 +1,7 @@
 ---
 slug: billion-laughs-and-entity-expansion
 title: "Billion Laughs and Entity Expansion"
-summary: "Entities can reference other entities, and if each one multiplies the last, a tiny document can expand to gigabytes and exhaust memory. The billion laughs attack weaponizes this into a denial of service. The defense is to cap expansion or refuse the DOCTYPE outright."
+summary: "Entities can reference other entities, and if each one multiplies the last, a tiny document can expand to gigabytes and exhaust memory. The billion laughs attack weaponizes this into a denial of service. The defence is to cap expansion or refuse the DOCTYPE outright."
 concepts: ["xml", "billion laughs", "entity expansion", "denial of service", "doctype"]
 relatedTools: ["xml-decoder"]
 relatedArticles: ["xxe-and-external-entities", "xml-well-formedness", "reading-xml-structure"]
@@ -32,9 +32,9 @@ Each entity expands to ten of the previous one. With a handful of levels, a docu
 
 The attack exploits the same entity mechanism behind XXE (XML External Entity), but a different property of it. XXE abuses *external* entities to reach out and fetch things. Billion laughs abuses *internal* entities and the fact that expansion is **recursive and multiplicative**, so cost grows exponentially with depth while the source text grows only linearly. Everything needed is inside the document, which is why disabling external entities alone does not stop it.
 
-## The defense
+## The defence
 
-Two defenses apply, and the stronger one is familiar. Parsers can impose **expansion limits**, capping the total number of entity expansions or the resulting size and aborting when the cap is hit, which many modern parsers now do by default. But the cleaner answer is the same as for XXE: **refuse to process the DOCTYPE at all**. Entities can only be declared in a DOCTYPE, so a parser that rejects DOCTYPE declarations for untrusted input cannot be handed an expansion bomb in the first place. This is why a safe XML inspector flags any document that declares entities referencing other entities as an expansion risk, and reports it without ever performing the expansion. The signal to watch for is entities defined in terms of other entities, chained more than a level deep.
+Two defences apply, and the stronger one is familiar. Parsers can impose **expansion limits**, capping the total number of entity expansions or the resulting size and aborting when the cap is hit, which many modern parsers now do by default. But the cleaner answer is the same as for XXE: **refuse to process the DOCTYPE at all**. Entities can only be declared in a DOCTYPE, so a parser that rejects DOCTYPE declarations for untrusted input cannot be handed an expansion bomb in the first place. This is why a safe XML inspector flags any document that declares entities referencing other entities as an expansion risk, and reports it without ever performing the expansion. The signal to watch for is entities defined in terms of other entities, chained more than a level deep.
 
 
 ## A denial of service that arrives as a valid document

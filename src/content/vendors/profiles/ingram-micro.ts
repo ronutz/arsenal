@@ -40,7 +40,7 @@ export const ingramMicroProfile: VendorProfile = {
       year: 1996,
       title: "Public, but not really",
       detail:
-        "The listing raised around $392M at a market capitalisation near $3.5B - and the family retained roughly three quarters of the voting stock. That structure is why the company could later be sold whole to a single buyer without a fight: it had been publicly traded and privately controlled at the same time for twenty years.",
+        "The listing raised around $392M at a market capitalization near $3.5B - and the family retained roughly three quarters of the voting stock. That structure is why the company could later be sold whole to a single buyer without a fight: it had been publicly traded and privately controlled at the same time for twenty years.",
     },
   ],
   products: [
@@ -53,7 +53,7 @@ export const ingramMicroProfile: VendorProfile = {
     {
       title: "Buying the other half of the channel",
       detail:
-        "Two distributors serving different customer types are not really competitors, which is why the merger produced complementary reach rather than overlap. Recognising that before your rivals do is how consolidation creates something rather than merely subtracting a competitor.",
+        "Two distributors serving different customer types are not really competitors, which is why the merger produced complementary reach rather than overlap. Recognizing that before your rivals do is how consolidation creates something rather than merely subtracting a competitor.",
     },
     {
       title: "Publicly listed, privately controlled",
@@ -67,7 +67,7 @@ export const ingramMicroProfile: VendorProfile = {
     },
   ],
   markets: [
-    "Resellers, managed service providers and integrators, in around two hundred countries. The customer is not the organisation that uses the technology but the one that sells and installs it - which is why almost nobody outside the channel can name the largest company in it.",
+    "Resellers, managed service providers and integrators, in around two hundred countries. The customer is not the organization that uses the technology but the one that sells and installs it - which is why almost nobody outside the channel can name the largest company in it.",
     "Its competitors are the other broadline distributors and, at the edges, the specialists and the manufacturers selling direct. Direct sales have been predicted to end distribution for forty years and have not, because a manufacturer that sells direct also has to finance, warehouse and support tens of thousands of small resellers.",
   ],
   analyst: [

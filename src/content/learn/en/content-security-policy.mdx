@@ -42,7 +42,7 @@ Set `default-src` first, then open up specific types only as needed. A policy th
 
 `script-src` controls where JavaScript may come from. The most important thing a strong policy does is avoid `'unsafe-inline'` in this directive. `'unsafe-inline'` permits inline `<script>` blocks and inline event handlers such as `onclick`, which is exactly the vector an injected script uses. With `'unsafe-inline'` present, an attacker who injects `<script>steal()</script>` has their script run, and the policy provided no protection against the one thing it exists to stop.
 
-Removing `'unsafe-inline'` usually means moving inline scripts into external files, or allowing specific inline blocks with a nonce or hash (below). It is the single highest-value change you can make to a CSP, and the analyzer flags `'unsafe-inline'` as a weakness for that reason.
+Removing `'unsafe-inline'` usually means moving inline scripts into external files, or allowing specific inline blocks with a nonce or hash (below). It is the single highest-value change you can make to a CSP, and the analyser flags `'unsafe-inline'` as a weakness for that reason.
 
 ## 'unsafe-eval' and dynamic code
 
@@ -79,7 +79,7 @@ Two smaller directives close real gaps. `object-src 'none'` blocks legacy plugin
 
 ## Report-Only: staging a policy
 
-`Content-Security-Policy-Report-Only` applies a policy without enforcing it: the browser reports what it would have blocked but does not block anything. This is how you roll out or tighten a policy on a live site without breaking it. The important caveat is that report-only does not protect the page. If you ship only the report-only header and no enforced `Content-Security-Policy`, you have monitoring, not a defense, and the analyzer marks that case as a weakness.
+`Content-Security-Policy-Report-Only` applies a policy without enforcing it: the browser reports what it would have blocked but does not block anything. This is how you roll out or tighten a policy on a live site without breaking it. The important caveat is that report-only does not protect the page. If you ship only the report-only header and no enforced `Content-Security-Policy`, you have monitoring, not a defence, and the analyser marks that case as a weakness.
 
 ## Common mistakes
 

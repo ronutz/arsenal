@@ -25,7 +25,7 @@ Cisco shipped the LocalDirector to its first customer in **April 1996**, four mo
 
 **F5 Labs** was incorporated in February 1996 by Jeffrey Hussey in Seattle and began operating in April. It spent more than a year building before it had anything to sell, needing to re-staff and re-develop after a first attempt failed, and brought **BIG/ip** to market in July 1997.
 
-Its first-year revenue was **200,000 dollars**. Its competitors were Cisco, then a five-billion-dollar company, and Nortel - both with distribution and marketing organisations F5 could not approach.
+Its first-year revenue was **200,000 dollars**. Its competitors were Cisco, then a five-billion-dollar company, and Nortel - both with distribution and marketing organizations F5 could not approach.
 
 F5 won that market anyway, and the reason is the most reusable lesson in this article. Cisco was first to market and never led the category: after the acquisitions, development slowed, the follow-on product was effectively frozen at its year-2000 feature set, and a company with every structural advantage lost a market it had invented. **Being first is a position, not an advantage. What compounds is continuing to develop.**
 
@@ -37,7 +37,7 @@ Through the late 1990s the field filled: Alteon WebSystems, Foundry with ServerI
 
 Somewhere in the 2000s the term changed from load balancer to **application delivery controller**. The rename was partly honest and partly not. Honest, because the box had genuinely accumulated functions - TLS termination, compression, caching, content rewriting, health monitoring, persistence and eventually a web application firewall. Not honest, because the sceptical reading holds up: calling it an application delivery controller does not change that it is still primarily a load balancing router and reverse proxy with health checks, and the fundamentals of layer 4 and layer 7 balancing have not moved much since about 2002.
 
-Both things are true. The function stabilised early; what changed was how much else got attached to the same point in the path.
+Both things are true. The function stabilized early; what changed was how much else got attached to the same point in the path.
 
 ## What the device is actually for
 
@@ -53,7 +53,7 @@ The parts that decide outcomes are three:
 
 ## The jobs and the practices
 
-This family produced a specialist that sits between two organisational tribes. The load balancer belongs to neither the network team nor the application team, and knowing both is what the role requires: virtual servers, pools, monitors, profiles and persistence on one side; how the application holds state and what its health endpoint actually proves on the other.
+This family produced a specialist that sits between two organizational tribes. The load balancer belongs to neither the network team nor the application team, and knowing both is what the role requires: virtual servers, pools, monitors, profiles and persistence on one side; how the application holds state and what its health endpoint actually proves on the other.
 
 It also produced a distinctive habit of practice. **Draining rather than disabling** - taking a member out of rotation without killing established sessions - is a discipline invented here that later became normal in deployment tooling everywhere. **The maintenance page** as a routed destination rather than a server change. And the permanent operational argument about **what a health monitor should test**, which is really an argument about how much the network is entitled to know about the application.
 

@@ -16,7 +16,7 @@ Caching is off entirely unless `proxy_cache` names a zone, by far the most commo
 
 NGINX excludes cookied **responses** from storage. It does **not** exclude cookied **requests** from being served a shared entry.
 
-That is usually harmless, because the personalised responses were never stored, until someone adds `proxy_ignore_headers Set-Cookie` to make caching "work" on a backend that sets a session cookie on every response. Now per-user responses sit under a key every user shares. The tool warns on exactly this combination, because it is a two-line change that looks like a performance fix.
+That is usually harmless, because the personalized responses were never stored, until someone adds `proxy_ignore_headers Set-Cookie` to make caching "work" on a backend that sets a session cookie on every response. Now per-user responses sit under a key every user shares. The tool warns on exactly this combination, because it is a two-line change that looks like a performance fix.
 
 ## Honest limits
 

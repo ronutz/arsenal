@@ -39,7 +39,7 @@ Below every format above sits a more basic agreement. **[Character encoding](/le
 
 This layer is invisible until it is not, and when it fails it fails in a distinctive way: nothing errors, and the text is simply wrong - a name in a certificate, an accented city in a log, a hostname that does not match. The [Mars](/learn/mars-climate-orbiter-and-the-boundary) lesson applies verbatim, because both sides were internally correct there too.
 
-**[Base64](/learn/base64-in-practice)** and **[base32](/learn/base32)** are the adjacent skill: not encryption, not compression, but a way of moving arbitrary bytes through a channel that only tolerates text. Recognising them on sight, and knowing that recognising them is not the same as reading them, saves a great deal of time in a capture or a log.
+**[Base64](/learn/base64-in-practice)** and **[base32](/learn/base32)** are the adjacent skill: not encryption, not compression, but a way of moving arbitrary bytes through a channel that only tolerates text. Recognizing them on sight, and knowing that recognizing them is not the same as reading them, saves a great deal of time in a capture or a log.
 
 ## Time: the number that means several things
 
@@ -66,7 +66,7 @@ Every article above describes a place where two implementations can disagree abo
 The transferable questions are short, and they are the same for all of them:
 
 - **What did the sender mean, and is that written down anywhere?** [Mars Climate Orbiter](/learn/mars-climate-orbiter-and-the-boundary) had it written down and lost anyway, because nothing compared the document with the traffic.
-- **Would a second implementation agree?** Duplicate keys, timestamp precision, whitespace in a block scalar, a normalised URL - if two parsers can differ, a filter and its target can differ.
+- **Would a second implementation agree?** Duplicate keys, timestamp precision, whitespace in a block scalar, a normalized URL - if two parsers can differ, a filter and its target can differ.
 - **What expands?** Anchors, entities, includes, escapes. Anything that makes a document larger on the way in is a resource question before it is a correctness question.
 - **And what is in the file that is not the data?** Comments, processing instructions, byte-order marks, trailing whitespace. Each has been the whole of somebody's outage.
 

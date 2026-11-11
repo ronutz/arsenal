@@ -45,6 +45,6 @@ export const decProfile: VendorProfile = {
     "DEC's markets dissolved into the PC and server world it declined to take seriously; its DNA persists in Windows NT's architecture, in Ethernet's ubiquity, and in the engineering diaspora of New England computing.",
   ],
   analyst: [
-    "For two decades the counterweight to IBM in every evaluation that mattered - and afterward, the canonical study in a great engineering company missing a platform shift it had itself made possible.",
+    "For two decades the counterweight to IBM in every evaluation that mattered - and afterwards, the canonical study in a great engineering company missing a platform shift it had itself made possible.",
   ],
 };

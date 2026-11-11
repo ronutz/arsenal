@@ -7,7 +7,7 @@ date: "2026-10-27"
 tags: ["vulnerability-management", "php", "waf"]
 category: security
 status: reviewed
-updated: "2026-11-05"
+updated: "2026-11-11"
 relatedArticles: ["php-october-2026-vulnerabilities", "the-disclosure-record", "there-is-no-perfect-code", "waf-family-history"]
 ---
 
@@ -34,6 +34,8 @@ None of those is negligence in the usual sense. Each is a reasonable decision by
 **Updated 2 November 2026.** Palo Alto has since shipped hotfixes for every supported PAN-OS train, the last on 29 October, and raised its own rating to Critical. It also now reports active exploitation of PAN-OS management interfaces exposed to the internet, and its Unit 42 puts the impacted share at about 0.02% of its installed base. That is the appliance case again, and this time it is not hypothetical: the runtime inside the box was reached through the one interface that should never have faced the internet. F5, for its part, has concluded that no F5 product is vulnerable to the third issue, CVE-2026-115560 (K000163878, updated 29 October). The [Learn article](/learn/php-october-2026-vulnerabilities) has the detail and the sources.
 
 **Updated 5 November 2026.** Siemens has since listed products of its own that carry PHP and are affected, among them Spectrum Power and AMIS TS, several with no fix available yet and one, Energy Engage V2.0SP9, with none planned (SSA-166980, V1.2, 29 October). That is the appliance case once more, this time in industrial and energy products. The Learn article has the detail and the sources.
+
+**Updated 11 November 2026.** Siemens has since revised its advisory to V1.3 (5 November), updating its lists of products known to be affected and not affected, and Fortinet has listed FortiSOAR, on-premise and PaaS, as affected, with fixes for some of its trains still to come (FG-IR-26-186, updated 5 November). The Learn article has the detail.
 
 ## Half the PHP web runs a branch with no more upstream releases
 

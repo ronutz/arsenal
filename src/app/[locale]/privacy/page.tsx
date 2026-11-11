@@ -23,6 +23,8 @@
 // of compliance; the controller should review it and may seek qualified counsel.
 // ============================================================================
 
+// English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
+import { intlLocale } from "@/i18n/locales";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
@@ -116,8 +118,8 @@ export default async function PrivacyPage({
   );
   // DATES IN BRITISH ORDER ON THE ENGLISH PAGE (ANVIL follow-up, 2026-10-26). The English copy is British ("1 December
   // 2026"), but Intl's plain "en" formats a long date the US way ("October 26, 2026"). Every date this page prints
-  // (the read dates, "Last updated", the revision list) goes through dateLocale: en-GB for en, every other locale as is.
-  const dateLocale = locale === "en" ? "en-GB" : locale;
+  // (the read dates, "Last updated", the revision list) goes through dateLocale: en-001 for en, every other locale as is.
+  const dateLocale = intlLocale(locale);
   // THE COUNT, CHECKABLE (Round 1 batch B, B9, 2026-10-26). Under the section that says what the count writes and
   // never writes, one paragraph names the public files that do it and the provider page that says how long the store
   // keeps a row, with the date it was read; src/config/countingSource.ts holds the addresses and why.

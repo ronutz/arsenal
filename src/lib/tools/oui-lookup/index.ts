@@ -125,7 +125,7 @@ export const manifest = Object.freeze({
       type: "registry", // an IANA registry
       url: "https://www.iana.org/assignments/ethernet-numbers/ethernet-numbers.txt", // text form read on the day
       access_date: "2026-10-19", // downloaded 2026-10-19
-      scope: "every named row under 00-00-5E and 01-00-5E that this tool recognises", // VRRP, IPv4/MPLS multicast, documentation, and the small assignments
+      scope: "every named row under 00-00-5E and 01-00-5E that this tool recognizes", // VRRP, IPv4/MPLS multicast, documentation, and the small assignments
       status: "active", // live registry
     },
     {

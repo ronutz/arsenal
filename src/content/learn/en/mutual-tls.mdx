@@ -1,6 +1,6 @@
 ---
 slug: mutual-tls
-title: "Mutual TLS: two identities, two trust decisions, and the authorisation that comes after"
+title: "Mutual TLS: two identities, two trust decisions, and the authorization that comes after"
 summary: "In mutual TLS the server asks the client for a certificate too, and each side decides on its own whether to trust what it was shown. How the request travels in a TLS 1.3 handshake, what the server may do when the certificate is missing or unacceptable, why HTTP/2 and HTTP/3 rule out asking later, and why a valid client certificate authenticates a connection without deciding what that client may do."
 concepts: ["mtls", "mutual tls", "client certificate", "certificaterequest", "client authentication", "extended key usage", "authorisation", "tls 1.3"]
 relatedTools: ["x509", "cert-chain-builder"]
@@ -27,7 +27,7 @@ What "acceptable" means is ordinary certificate path validation, the same steps 
 
 TLS 1.3 also defines post-handshake authentication: a client that offered it can be asked for a certificate at any time after the handshake ([RFC 9846, section 4.7.2](https://www.rfc-editor.org/rfc/rfc9846.html#section-4.7.2)). It looks like the natural way to require a certificate only for one part of a site. The two multiplexed versions of HTTP forbid it: HTTP/2 servers must not send post-handshake CertificateRequest messages, even when the client offered post-handshake authentication ([RFC 9113, section 9.2.3](https://www.rfc-editor.org/rfc/rfc9113.html#section-9.2.3)), and QUIC servers must not use post-handshake client authentication at all, because with many requests multiplexed on one connection the client cannot tell which request the certificate request belongs to ([RFC 9001, section 4.4](https://www.rfc-editor.org/rfc/rfc9001.html#section-4.4)). Over those versions, then, the decision to ask for a client certificate is made when the connection is set up, so a service that needs client certificates on only some of its paths has to separate them at that level, for example by giving them their own host name.
 
-## Authenticated is not authorised
+## Authenticated is not authorized
 
 A client certificate that validates proves one thing: whoever is at the other end holds the private key of a certificate issued, directly or through intermediates, by a CA this server trusts for client authentication. It does not say what that client may do. Many certificates can chain to the same accepted CA, and an operation still needs a decision: which identity in the certificate the application uses (a subject name, a subject alternative name), which account or role that identity maps to, and whether that role may perform this request on this resource. A partner with a valid certificate and read permission is still refused a write. Keeping those two steps separate in design and in logs is what makes an access failure readable: "the handshake failed" is a trust-anchor or certificate problem, while "the request was refused" is a mapping or permission problem.
 

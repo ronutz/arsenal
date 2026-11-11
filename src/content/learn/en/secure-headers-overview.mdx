@@ -1,7 +1,7 @@
 ---
 slug: secure-headers-overview
 title: "HTTP Security Headers: The Defense-in-Depth Layer"
-summary: "What HTTP security headers are, why they form a layer of defense on top of secure code rather than a replacement for it, the headers that carry the most weight, and how to read a response's posture at a glance."
+summary: "What HTTP security headers are, why they form a layer of defence on top of secure code rather than a replacement for it, the headers that carry the most weight, and how to read a response's posture at a glance."
 concepts: ["security headers", "defense in depth", "csp", "hsts", "clickjacking", "cors", "cookies"]
 relatedTools: ["secure-headers"]
 relatedArticles: ["content-security-policy", "hsts-and-https", "cookie-security-flags", "clickjacking-and-framing"]
@@ -25,7 +25,7 @@ The right mental model is layers that each fail independently. Input handling is
 
 ## The headers that carry the most weight
 
-A handful of headers do most of the work, and the analyzer weights them accordingly:
+A handful of headers do most of the work, and the analyser weights them accordingly:
 
 **Strict-Transport-Security (HSTS)** forces the browser to use HTTPS for the host, removing the downgrade window where an attacker on the network turns an `https://` request into plain HTTP. It is the single most impactful transport control. See [HSTS and HTTPS enforcement](/learn/hsts-and-https).
 
@@ -45,7 +45,7 @@ A handful of headers do most of the work, and the analyzer weights them accordin
 
 ## How the grade is reached
 
-The analyzer scores the protective headers it can evaluate, weights them by importance, and then applies a small set of gates that reflect how real risk works rather than letting a pile of minor wins paper over a critical gap:
+The analyser scores the protective headers it can evaluate, weights them by importance, and then applies a small set of gates that reflect how real risk works rather than letting a pile of minor wins paper over a critical gap:
 
 - If HSTS is missing or weak, or CSP is missing, the grade is capped, because each leaves a whole attack class open. If both are absent, the cap is lower.
 - A cookie with weak attributes caps the grade, because a stealable session cookie undermines the rest.
@@ -60,7 +60,7 @@ Paste a full response (the status line plus headers) or just a block of headers.
 
 ## What this does not check
 
-The analyzer reads a response. It does not see request headers (such as `Origin` or the `Sec-Fetch-*` set), because those are sent by the browser, not returned by the server. It does not evaluate your TLS configuration, certificate, or cipher suites; those are separate concerns with their own tools. And it cannot tell whether a permissive setting is a real problem or an intentional choice for a public, credential-free endpoint. It flags the posture and explains the trade-off; the decision about intent is yours.
+The analyser reads a response. It does not see request headers (such as `Origin` or the `Sec-Fetch-*` set), because those are sent by the browser, not returned by the server. It does not evaluate your TLS configuration, certificate, or cipher suites; those are separate concerns with their own tools. And it cannot tell whether a permissive setting is a real problem or an intentional choice for a public, credential-free endpoint. It flags the posture and explains the trade-off; the decision about intent is yours.
 
 ## This series, in order
 

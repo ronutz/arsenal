@@ -33,7 +33,7 @@
 // keep their strings; the page looks them up by flag name (flag.<name>).
 // ============================================================================
 
-import { say, plainText, engineError, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
+import { say, enPlural, plainText, engineError, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
 
 const MAX_INPUT = 200_000;
 const MAX_SESSIONS = 500;
@@ -112,7 +112,7 @@ const STATE_FLAGS: Readonly<Record<string, string>> = Object.freeze({
   redir: "session was redirected",
   dirty: "session is flagged for re-evaluation against the policy set",
   npu: "session is offloaded to the network processor",
-  synced: "session has been synchronised to the HA peer",
+  synced: "session has been synchronized to the HA peer",
 });
 
 /**
@@ -217,7 +217,7 @@ function derive(s: {
   }
   if (s.expire !== null && s.expire <= 10) {
     const seconds = String(s.expire); // how soon
-    out.push(say("find.expiring", `This session expires in ${seconds} seconds and is about to be removed from the table, which is why a second look may not find it.`, { seconds })); // about to go
+    out.push(say("find.expiring", `This session expires in ${seconds} ${enPlural(seconds, "second", "seconds")} and is about to be removed from the table, which is why a second look may not find it.`, { seconds })); // about to go
   }
   if (s.offloaded) {
     out.push(say("find.offloaded", "The session is offloaded to hardware. Offloaded traffic does not traverse the CPU path, so a packet sniffer on the device will not show it unless offload is disabled for the test.")); // offloaded
@@ -331,7 +331,7 @@ export function runLocalisable(input: string): ToolRunResult<EngineText> {
   const blocks = splitSessions(text);
   const warnings: EngineText[] = []; // each warning with its id
   if (blocks.length === 0) {
-    warnings.push(say("warn.noBlocks", "No session blocks were recognised. Each session starts with a line beginning 'session info:'.")); // nothing recognised
+    warnings.push(say("warn.noBlocks", "No session blocks were recognized. Each session starts with a line beginning 'session info:'.")); // nothing recognised
     return { result: { mode: "decode", sessions: [], notes: [], parseWarnings: warnings } };
   }
   const capped = blocks.slice(0, MAX_SESSIONS);

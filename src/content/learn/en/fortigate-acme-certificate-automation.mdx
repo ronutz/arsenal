@@ -27,7 +27,7 @@ How the FortiGate proves ownership has evolved. Newer FortiOS releases support t
 
 ## Configuring it
 
-In the GUI, the flow is short. Under System, Certificates, you create a certificate and choose Use Let's Encrypt (in earlier releases, an imported Local Certificate with Type set to Automated and ACME service set to Let's Encrypt). You set a certificate name, which is what the rest of the configuration references, a Domain equal to the FortiGate's public FQDN, and an Email, which Fortinet notes is not actually used during enrollment. You then select the ACME interface. Let's Encrypt provisions the certificate, it lands in the Local Certificates list, and you point System, Settings, HTTPS server certificate at it.
+In the GUI, the flow is short. Under System, Certificates, you create a certificate and choose Use Let's Encrypt (in earlier releases, an imported Local Certificate with Type set to Automated and ACME service set to Let's Encrypt). You set a certificate name, which is what the rest of the configuration references, a Domain equal to the FortiGate's public FQDN, and an Email, which Fortinet notes is not actually used during enrolment. You then select the ACME interface. Let's Encrypt provisions the certificate, it lands in the Local Certificates list, and you point System, Settings, HTTPS server certificate at it.
 
 The same thing on the CLI is compact:
 

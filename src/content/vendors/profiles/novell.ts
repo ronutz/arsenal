@@ -30,7 +30,7 @@ export const novellProfile: VendorProfile = {
     { year: 1994, title: "The WordPerfect mistake", detail: "The ~$855 million WordPerfect acquisition tries to build a Microsoft-scale rival and fails at speed - sold to Corel in 1996 as NetWare's own franchise comes under Windows NT siege." },
     { year: 2003, title: "The Linux pivot: SUSE", detail: "Novell buys SUSE and Ximian, remaking itself as an enterprise-Linux company; the controversial 2006 Microsoft interoperability pact defines its final independent act." },
     { year: 2011, title: "Into the consolidators", detail: "Attachmate acquires Novell for ~$2.2 billion, separating SUSE; Micro Focus swallows Attachmate in 2014 - NetWare's descendants become maintenance-mode products in an acquirer's portfolio." },
-    { year: 2023, title: "The last flag: OpenText", detail: "January 31, 2023: OpenText completes its acquisition of Micro Focus - the final corporate resting place of the lineage that once ran the world's LANs.", sourceNote: "OpenText close per the deal record." },
+    { year: 2023, title: "The last flag: OpenText", detail: "31 January 2023: OpenText completes its acquisition of Micro Focus - the final corporate resting place of the lineage that once ran the world's LANs.", sourceNote: "OpenText close per the deal record." },
   ],
   products: [
     { name: "NetWare", what: "THE network operating system of the LAN era - file, print, and later directory services that defined what a server was." },

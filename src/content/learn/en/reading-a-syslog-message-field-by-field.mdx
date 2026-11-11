@@ -46,7 +46,7 @@ Each SD-PARAM is `PARAM-NAME="PARAM-VALUE"`. Inside the value, §6.3.3 requires 
 
 Three SD-IDs are registered by §7 and the parser knows their parameters:
 
-- `timeQuality`: `tzKnown`, `isSynced`, `syncAccuracy`. `[timeQuality tzKnown="1" isSynced="1" syncAccuracy="60000"]` says the sender knows its zone, is synchronised, and is accurate to 60,000 microseconds.
+- `timeQuality`: `tzKnown`, `isSynced`, `syncAccuracy`. `[timeQuality tzKnown="1" isSynced="1" syncAccuracy="60000"]` says the sender knows its zone, is synchronized, and is accurate to 60,000 microseconds.
 - `origin`: `ip`, `enterpriseId`, `software`, `swVersion`. Where the message came from and which software version wrote it.
 - `meta`: `sequenceId`, `sysUpTime`, `language`. A sequence counter for detecting loss, the uptime in hundredths of a second, and the MSG's language tag.
 

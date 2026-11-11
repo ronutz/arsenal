@@ -21,7 +21,7 @@ That is what this page is for. Five practices, none of them novel and none of th
 
 **The practice:** [baselines before you need them](/learn/baselines-before-you-need-them). Capture the normal state - counters, timings, versions, config - while nothing is wrong, because every comparison is only as honest as its weaker side.
 
-**The case:** the [500-mile email](/learn/the-500-mile-email). A department could not send mail beyond about 520 miles, and the fault was a timeout silently set to zero by an upgrade. The reason it took months to characterise is that nobody could say what the connect time had been *before*. The statistics department eventually produced the baseline themselves, in the form of a map.
+**The case:** the [500-mile email](/learn/the-500-mile-email). A department could not send mail beyond about 520 miles, and the fault was a timeout silently set to zero by an upgrade. The reason it took months to characterize is that nobody could say what the connect time had been *before*. The statistics department eventually produced the baseline themselves, in the form of a map.
 
 **And the harder version:** [Mars Climate Orbiter](/learn/mars-climate-orbiter-and-the-boundary), where the interface specification was correct and nothing ever compared the specification with the traffic. A baseline is not only a performance artefact. It is any recorded expectation that a later observation can be checked against.
 
@@ -45,7 +45,7 @@ That is what this page is for. Five practices, none of them novel and none of th
 
 **The practice:** [backups and ransomware recovery](/learn/backups-and-ransomware-recovery). Ransomware turned backups from an availability concern into the last line of defence, and the attackers adapted accordingly.
 
-**The case:** the [STJ attack](/learn/the-stj-ransomware-attack), where the court's account says the backup survived and security reporting says the backups were destroyed. Whichever is right, the case turns on it - and the number to keep is that recovery took **fifteen days with the resources of a state**: the federal police, army intelligence, and unlimited political attention. Any organisation estimating its own recovery time against a smaller budget should use that as a floor.
+**The case:** the [STJ attack](/learn/the-stj-ransomware-attack), where the court's account says the backup survived and security reporting says the backups were destroyed. Whichever is right, the case turns on it - and the number to keep is that recovery took **fifteen days with the resources of a state**: the federal police, army intelligence, and unlimited political attention. Any organization estimating its own recovery time against a smaller budget should use that as a floor.
 
 The instruction is the one [NotPetya](/learn/eternalblue-wannacry-notpetya) supplies from the other direction: a backup reachable from the network being encrypted is not a backup. Offline or immutable copies, tested restores, and a documented recovery time are the three things that decide the length of the outage, and none can be arranged afterwards.
 
@@ -53,7 +53,7 @@ The instruction is the one [NotPetya](/learn/eternalblue-wannacry-notpetya) supp
 
 **The practice:** [segmentation, from VLANs to microsegmentation](/learn/network-segmentation-from-vlans-to-microsegmentation). It began as a performance fix and became a security control, and the security version asks a different question: what can this credential reach?
 
-**The case:** [Target](/learn/the-target-breach). A heating and refrigeration contractor's billing portal login reached the systems that processed payment cards. The useful question after that case is not *do we trust this vendor* but the narrower and answerable one: **what can this vendor's credentials reach, and who checked?** Most organisations can list their suppliers. Far fewer can produce, per supplier, the set of systems its access actually touches.
+**The case:** [Target](/learn/the-target-breach). A heating and refrigeration contractor's billing portal login reached the systems that processed payment cards. The useful question after that case is not *do we trust this vendor* but the narrower and answerable one: **what can this vendor's credentials reach, and who checked?** Most organizations can list their suppliers. Far fewer can produce, per supplier, the set of systems its access actually touches.
 
 The complement to all five, and the article to read after any of them, is **[root cause is a verb, not a noun](/learn/root-cause-is-a-verb-not-a-noun)**.
 
@@ -68,7 +68,7 @@ There is no product for this. What there is instead is a written answer to four 
 - What is said to customers before the investigation is complete, and by whom?
 - What would have to be true for us to stop trading, stop shipping, or take the service down?
 
-An organisation that has answered those has an incident. One that has not has an improvisation, and the [disclosure record](/learn/the-disclosure-record) is largely a catalogue of improvisations.
+An organization that has answered those has an incident. One that has not has an improvisation, and the [disclosure record](/learn/the-disclosure-record) is largely a catalogue of improvisations.
 
 ## Why the pairing matters
 

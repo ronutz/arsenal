@@ -15,7 +15,7 @@ updated: "2026-10-26"
 
 A session cookie is a credential. Whoever holds it is the user for the length of the session. That makes the attributes on `Set-Cookie` security controls, not formatting details: they decide whether the cookie can be stolen by a script, sent over plain HTTP, or attached to a request the user did not intend to make. A well-built application can still be compromised through a session cookie that lacks the right flags.
 
-These attributes travel on the `Set-Cookie` response header, so they are part of the same posture the analyzer grades for the rest of the response. `Secure` and `HttpOnly` are defined in [RFC 6265](https://www.rfc-editor.org/rfc/rfc6265.html#section-4.1.2), the cookie specification; `SameSite` and the name prefixes further down come from its revision, [draft-ietf-httpbis-rfc6265bis](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-22), an Internet-Draft that was waiting in the RFC Editor's queue when this was checked.
+These attributes travel on the `Set-Cookie` response header, so they are part of the same posture the analyser grades for the rest of the response. `Secure` and `HttpOnly` are defined in [RFC 6265](https://www.rfc-editor.org/rfc/rfc6265.html#section-4.1.2), the cookie specification; `SameSite` and the name prefixes further down come from its revision, [draft-ietf-httpbis-rfc6265bis](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-22), an Internet-Draft that was waiting in the RFC Editor's queue when this was checked.
 
 ```
 set-cookie: session=abc123; Secure; HttpOnly; SameSite=Lax; Path=/
@@ -41,7 +41,7 @@ set-cookie: session=abc123; Secure; HttpOnly; SameSite=Lax; Path=/
 
 ## SameSite=None requires Secure
 
-A cookie set with `SameSite=None` must also be marked `Secure`. Browsers reject a `SameSite=None` cookie that is not `Secure`, so the cookie silently fails to set: the draft's storage model ignores such a cookie entirely ([section 5.7, step 19](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-22#section-5.7)), and Chrome has enforced the same rule since version 80 ([Chromium, SameSite updates](https://www.chromium.org/updates/same-site/)). Beyond the mechanics, sending a cross-site cookie without `Secure` would mean a credential that travels everywhere and over plain HTTP, which is the worst combination. The analyzer flags `SameSite=None` without `Secure` as a weakness for both reasons: it is insecure, and it does not even work.
+A cookie set with `SameSite=None` must also be marked `Secure`. Browsers reject a `SameSite=None` cookie that is not `Secure`, so the cookie silently fails to set: the draft's storage model ignores such a cookie entirely ([section 5.7, step 19](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-22#section-5.7)), and Chrome has enforced the same rule since version 80 ([Chromium, SameSite updates](https://www.chromium.org/updates/same-site/)). Beyond the mechanics, sending a cross-site cookie without `Secure` would mean a credential that travels everywhere and over plain HTTP, which is the worst combination. The analyser flags `SameSite=None` without `Secure` as a weakness for both reasons: it is insecure, and it does not even work.
 
 The flags are the last checks the browser runs, not the first. Before them, the request's host must be the cookie's own host when the cookie is host-only, or domain-match its `Domain`, and the request's path must path-match the cookie's path, which is the directory of the URL that set it when `Path` is absent; a `Domain` that does not cover the host setting the cookie makes the browser ignore the cookie altogether ([RFC 6265, sections 5.1.3, 5.1.4, 5.3 and 5.4](https://www.rfc-editor.org/rfc/rfc6265.html#section-5.4); the rules are walked through in [HTTP cookies: state over a stateless protocol](/learn/http-cookies-state-over-stateless)). Two details of `SameSite` complete the rules: `document.cookie` in a page framed by another site reads cross-site, so it sees only `SameSite=None` cookies ([draft section 5.8.2](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-22#section-5.8.2)), and a browser may let a cookie with no `SameSite` attribute ride a cross-site POST if the cookie was created recently, the draft's Lax-allowing-unsafe mode, for which it names two minutes as a reasonable limit ([section 5.6.7.2](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-22#section-5.6.7.2)). GET is a safe method and POST is not ([RFC 9110, section 9.2.1](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.1)).
 
@@ -55,7 +55,7 @@ A cookie name can start with a special prefix that the browser enforces, which p
 
 **__Host-** is stricter. It requires `Secure`, requires `Path=/`, and forbids a `Domain` attribute, which pins the cookie to the exact host that set it ([sections 4.1.3.2 and 5.7, step 21](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-22#section-4.1.3.2): no `Domain` means a host-only cookie). This closes subdomain-based cookie attacks, where a cookie set on a sibling or parent domain is sent to your host. A `__Host-` session cookie is the strongest standard form a session cookie can take.
 
-The analyzer checks that a prefixed cookie actually meets its prefix's requirements, because a cookie named `__Host-session` that lacks `Secure` or carries a `Domain` is a contradiction the browser will reject, and a sign the configuration is not doing what its name implies.
+The analyser checks that a prefixed cookie actually meets its prefix's requirements, because a cookie named `__Host-session` that lacks `Secure` or carries a `Domain` is a contradiction the browser will reject, and a sign the configuration is not doing what its name implies.
 
 ## A strong session cookie
 
@@ -65,7 +65,7 @@ Putting it together, a hardened session cookie looks like this:
 set-cookie: __Host-session=abc123; Secure; HttpOnly; SameSite=Lax; Path=/
 ```
 
-It cannot be read by script, never travels over plain HTTP, is not sent on cross-site subrequests, is pinned to the exact host, and announces all of that through a prefix the browser enforces. That is the target the analyzer grades cookies against.
+It cannot be read by script, never travels over plain HTTP, is not sent on cross-site subrequests, is pinned to the exact host, and announces all of that through a prefix the browser enforces. That is the target the analyser grades cookies against.
 
 ## Sources
 

@@ -55,7 +55,7 @@ export const kyndrylProfile: VendorProfile = {
     },
   ],
   products: [
-    { name: "Managed infrastructure services", what: "The original business: running mainframes, networks, storage and data centres for organisations that will not run them themselves. Unfashionable, enormous, and the reason three quarters of the Fortune 100 were customers on day one." },
+    { name: "Managed infrastructure services", what: "The original business: running mainframes, networks, storage and data centres for organizations that will not run them themselves. Unfashionable, enormous, and the reason three quarters of the Fortune 100 were customers on day one." },
     { name: "Kyndryl Consult", what: "Advisory and implementation, and the deliberate move up the value chain - now around $3.6B of revenue, growing in the mid-twenties per cent, and the part of the business that decides whether the company is a contractor or an adviser." },
     { name: "Kyndryl Bridge", what: "The operating platform: the delivery telemetry from thousands of managed estates turned into a product customers see. It is what an outsourcer has that nobody else does - observed data about how large estates actually behave." },
     { name: "Hyperscaler practices", what: "Dedicated practices for the major clouds, staffed and certified separately. The point is that all of them exist at once, which is the entire proposition." },
@@ -65,7 +65,7 @@ export const kyndrylProfile: VendorProfile = {
     {
       title: "Neutrality as a balance-sheet item",
       detail:
-        "The argument that an independent adviser can recommend any cloud is easy to make and hard to prove. Here it is measurable: hyperscaler-linked revenue more than doubled in a single year and is running toward $1.8B. That is not brand positioning, it is business that could not previously have been written.",
+        "The argument that an independent adviser can recommend any cloud is easy to make and hard to prove. Here it is measurable: hyperscaler-linked revenue more than doubled in a single year and is running towards $1.8B. That is not brand positioning, it is business that could not previously have been written.",
     },
     {
       title: "Automating delivery to redeploy rather than to cut",
@@ -80,11 +80,11 @@ export const kyndrylProfile: VendorProfile = {
     {
       title: "Selling the operations data back",
       detail:
-        "Bridge productises what the company sees across thousands of estates. An outsourcer's real asset is not its people but its observations, and turning those into something the customer can look at is the difference between selling hours and selling knowledge.",
+        "Bridge productizes what the company sees across thousands of estates. An outsourcer's real asset is not its people but its observations, and turning those into something the customer can look at is the difference between selling hours and selling knowledge.",
     },
   ],
   markets: [
-    "Large enterprises and governments in more than sixty countries, at around $15B of annual revenue - the organisations whose technology estates are too large, too old or too regulated to move wholesale, which is a durable position for as long as those conditions hold.",
+    "Large enterprises and governments in more than sixty countries, at around $15B of annual revenue - the organizations whose technology estates are too large, too old or too regulated to move wholesale, which is a durable position for as long as those conditions hold.",
     "It competes with the global integrators and consultancies, with the hyperscalers' own professional services, and with the offshore service providers on cost. Its distinguishing claim is the one the separation created: it can be credibly indifferent about which cloud a customer chooses.",
   ],
   analyst: [

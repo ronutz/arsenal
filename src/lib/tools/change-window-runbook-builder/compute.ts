@@ -277,7 +277,7 @@ const STEPS: StepDef[] = [
   {
     id: "S-PF-BASELINE",
     phase: "preflight",
-    text: "Capture a health baseline now - the metrics and a few known-good probes you will re-check afterward - so 'working' has a definition.",
+    text: "Capture a health baseline now - the metrics and a few known-good probes you will re-check afterwards - so 'working' has a definition.",
     command: (p) =>
       cmd(p, {
         "load-balancer": "tmsh show sys performance; note virtual-server and pool member status",
@@ -666,7 +666,7 @@ const RULES: Rule[] = [
     id: "R-FAILOVER-MAINT",
     when: (i) => i.changeType === "failover-maintenance",
     steps: ["S-PF-HA", "S-EX-DRAIN", "S-VF-RESTORE-STATE"],
-    because: "A failover or maintenance change turns on a healthy peer: confirm HA state, drain the node before touching it, and restore it to service afterward.",
+    because: "A failover or maintenance change turns on a healthy peer: confirm HA state, drain the node before touching it, and restore it to service afterwards.",
   },
   {
     id: "R-SCALE-CAPACITY",
@@ -725,7 +725,7 @@ const WARNINGS: WarnDef[] = [
   {
     id: "W-ONEWAY-PROD",
     when: (i) => i.reversibility === "one-way-door" && (i.environment === "production-critical" || i.environment === "production-standard"),
-    message: "A one-way change in production has no clean back-out. Weight the plan toward prevention: extra pre-change verification and an agreed forward-fix path.",
+    message: "A one-way change in production has no clean back-out. Weight the plan towards prevention: extra pre-change verification and an agreed forward-fix path.",
   },
   {
     id: "W-NO-MONITORING",

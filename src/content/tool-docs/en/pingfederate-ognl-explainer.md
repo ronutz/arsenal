@@ -4,11 +4,11 @@ PingFederate lets you write OGNL expressions in attribute mappings and issuance 
 
 ## Why the context selector matters
 
-An attribute mapping and an issuance criterion are both expressions, and they are supposed to return different things. A mapping produces the value that gets sent onward in the assertion or token. A criterion produces true or false, and issuance proceeds only when it is true. Choosing the wrong one is a common configuration error, and it does not fail loudly: a criterion that returns a string rather than a boolean will behave in ways that look like an authorisation problem somewhere else entirely. The selector exists so the tool can tell you when what you have written does not match where you are putting it.
+An attribute mapping and an issuance criterion are both expressions, and they are supposed to return different things. A mapping produces the value that gets sent onward in the assertion or token. A criterion produces true or false, and issuance proceeds only when it is true. Choosing the wrong one is a common configuration error, and it does not fail loudly: a criterion that returns a string rather than a boolean will behave in ways that look like an authorization problem somewhere else entirely. The selector exists so the tool can tell you when what you have written does not match where you are putting it.
 
 ## What it explains
 
-The recognised constructs are the ones that appear in real mappings: reading an attribute by name, checking it for null, converting a value to a string, normalising case, the string operations that strip a domain off a username or tidy whitespace a directory has been carrying since 2004, conditionals that supply a default, map literals that translate directory group names into application role names, and the projections and selections that handle multi-valued attributes such as group membership.
+The recognized constructs are the ones that appear in real mappings: reading an attribute by name, checking it for null, converting a value to a string, normalizing case, the string operations that strip a domain off a username or tidy whitespace a directory has been carrying since 2004, conditionals that supply a default, map literals that translate directory group names into application role names, and the projections and selections that handle multi-valued attributes such as group membership.
 
 ## The diagnostics, and why each one is there
 

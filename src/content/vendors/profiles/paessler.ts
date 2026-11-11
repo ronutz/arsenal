@@ -24,15 +24,15 @@ export const paesslerProfile: VendorProfile = {
       place: "Nuremberg, Germany",
       founders: ["Dirk Paessler"],
       story:
-        "Paessler began the way German engineering companies do: with a student annoyed by a tool. Dirk Paessler, writing software for the Fireball search engine in 1997, built the Webserver Stress Tool when his own code kept crashing servers - then, needing to monitor a growing network and refusing to fight MRTG's seven pages of installation instructions, wrote PRTG Traffic Grapher instead (the name itself a tip of the hat to MRTG). Paessler GmbH followed on August 22, 2001, the AG in 2005 - and the company grew from a dorm project to half a million users in 190 countries with no venture capital at all, the Mittelstand counter-story to every funding-led vendor on these pages.",
+        "Paessler began the way German engineering companies do: with a student annoyed by a tool. Dirk Paessler, writing software for the Fireball search engine in 1997, built the Webserver Stress Tool when his own code kept crashing servers - then, needing to monitor a growing network and refusing to fight MRTG's seven pages of installation instructions, wrote PRTG Traffic Grapher instead (the name itself a tip of the hat to MRTG). Paessler GmbH followed on 22 August 2001, the AG in 2005 - and the company grew from a dorm project to half a million users in 190 countries with no venture capital at all, the Mittelstand counter-story to every funding-led vendor on these pages.",
     },
   ],
   timeline: [
     { year: 1997, title: "A student, a vision, a garage", detail: "Dirk Paessler's Fireball work spawns the Webserver Stress Tool - the fore-runner - and the frustration with MRTG that will become PRTG." },
-    { year: 2001, title: "Paessler GmbH", detail: "Founded August 22, 2001; PRTG Traffic Grapher and IPCheck Server Monitor sell as shareware while the company graduates from living room to office." },
+    { year: 2001, title: "Paessler GmbH", detail: "Founded 22 August 2001; PRTG Traffic Grapher and IPCheck Server Monitor sell as shareware while the company graduates from living room to office." },
     { year: 2008, title: "PRTG Network Monitor", detail: "Traffic Grapher and IPCheck merge into PRTG Network Monitor 7 - one product, sensors for everything, licensed by sensor count: the shape PRTG keeps to this day. The company had moved to Nuremberg, by the castle, the year before." },
     { year: 2018, title: "The founder steps back", detail: "Dirk Paessler hands the CEO role on (Christian Twardawa, then Helmut Binder in 2019) with the company past 300 people - still family-and-employee owned, still monitoring-only by explicit strategy." },
-    { year: 2024, title: "Turn/River: the first outside capital", detail: "May 23, 2024: Turn/River Capital makes a strategic investment - after 27 years of purely organic growth to 500,000+ users, the first institutional money in the company's history, opening the OT and enterprise expansion chapter.", sourceNote: "Paessler/Turn-River joint announcement." },
+    { year: 2024, title: "Turn/River: the first outside capital", detail: "23 May 2024: Turn/River Capital makes a strategic investment - after 27 years of purely organic growth to 500,000+ users, the first institutional money in the company's history, opening the OT and enterprise expansion chapter.", sourceNote: "Paessler/Turn-River joint announcement." },
   ],
   products: [
     { name: "PRTG Network Monitor", what: "The flagship: agentless monitoring by sensors - SNMP, WMI, NetFlow, packet sniffing, HTTP, and hundreds more - with maps, alerting, and reporting in one install." },

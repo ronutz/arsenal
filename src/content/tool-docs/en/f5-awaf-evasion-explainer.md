@@ -1,12 +1,12 @@
 ## What it does
 
-F5 AWAF - Advanced WAF (formerly BIG-IP ASM - Application Security Manager) detects a whole class of attacks that hide behind encoding, where a payload is escaped or encoded so an attack signature never sees the real characters, and the web server decodes it back into the attack only after the firewall has looked. F5 groups the defenses under one violation, "Evasion technique detected" (`VIOL_EVASION`), split into eight sub-violations. This tool is the decode side of that violation: type a sub-violation name (or the word `evasions`) to get all eight explained, or paste the `evasions` block of a declarative policy to read each one back as enabled or disabled. It is grounded verbatim in F5's own K7929 and the current BIG-IP ASM violation chapter, and it runs entirely in your browser.
+F5 AWAF - Advanced WAF (formerly BIG-IP ASM - Application Security Manager) detects a whole class of attacks that hide behind encoding, where a payload is escaped or encoded so an attack signature never sees the real characters, and the web server decodes it back into the attack only after the firewall has looked. F5 groups the defences under one violation, "Evasion technique detected" (`VIOL_EVASION`), split into eight sub-violations. This tool is the decode side of that violation: type a sub-violation name (or the word `evasions`) to get all eight explained, or paste the `evasions` block of a declarative policy to read each one back as enabled or disabled. It is grounded verbatim in F5's own K7929 and the current BIG-IP ASM violation chapter, and it runs entirely in your browser.
 
 ## Two modes, one input
 
-Type `evasions` and the tool lists F5's eight sub-violations, each with its default state (all eight ship enabled), a plain-language description of what it normalises or detects, and the encoding trick an attacker uses it to catch. Type a single name, like `Multiple decoding` or `Bad unescape`, and you get just that card. The lookup is forgiving about spacing, case, and percent signs, so `multiple decoding` and `Multiple decoding` both resolve.
+Type `evasions` and the tool lists F5's eight sub-violations, each with its default state (all eight ship enabled), a plain-language description of what it normalizes or detects, and the encoding trick an attacker uses it to catch. Type a single name, like `Multiple decoding` or `Bad unescape`, and you get just that card. The lookup is forgiving about spacing, case, and percent signs, so `multiple decoding` and `Multiple decoding` both resolve.
 
-Paste JSON instead, a bare `evasions` array, the `blocking-settings` object, or a whole `{ "policy": { ... } }` wrapper, and the tool switches to read-back mode: it reports each of the eight sub-violations as enabled, disabled, or not set, where "not set" means the policy inherits its template default rather than turning the check off. A disabled sub-violation is called out as a warning, because switching one off means that normalisation is skipped and the evasion it caught can reach the application unresolved.
+Paste JSON instead, a bare `evasions` array, the `blocking-settings` object, or a whole `{ "policy": { ... } }` wrapper, and the tool switches to read-back mode: it reports each of the eight sub-violations as enabled, disabled, or not set, where "not set" means the policy inherits its template default rather than turning the check off. A disabled sub-violation is called out as a warning, because switching one off means that normalization is skipped and the evasion it caught can reach the application unresolved.
 
 ## The eight sub-violations
 
@@ -18,7 +18,7 @@ Multiple decoding is the one sub-violation with a tuning value. In the declarati
 
 ## The bridge to the encoding tools
 
-Several of these sub-violations are the very same decode operations the toolbox already performs. The `%u` escapes, bare bytes, and the `%XX` percent-encoding that Bad unescape polices are the territory of the [Base64, Base32, Hex & Percent Codec](/tools/base64), and Multiple decoding is simply percent-decoding run more than once. Each reference card names the related tool, so you can take an encoded string and watch the decode happen by hand, which is the fastest way to build intuition for what the WAF is normalising away.
+Several of these sub-violations are the very same decode operations the toolbox already performs. The `%u` escapes, bare bytes, and the `%XX` percent-encoding that Bad unescape polices are the territory of the [Base64, Base32, Hex & Percent Codec](/tools/base64), and Multiple decoding is simply percent-decoding run more than once. Each reference card names the related tool, so you can take an encoded string and watch the decode happen by hand, which is the fastest way to build intuition for what the WAF is normalizing away.
 
 ## One rule from the schema
 

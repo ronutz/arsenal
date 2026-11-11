@@ -1,6 +1,6 @@
 ## What it does
 
-Characterise a Traffic Learning suggestion from F5 AWAF - Advanced WAF (formerly BIG-IP ASM - Application Security Manager): its action, its learning score, the average violation rating, the learning mode, and whether the traffic behind it is trusted. The tool tells you whether accepting the suggestion loosens or tightens the policy, whether a loosening is a genuine false-positive fix or a security relaxation, and whether Automatic learning is about to enforce it for you. It is the bridge between the poisoning estimator and the false-positive triage, and it runs entirely in your browser.
+Characterize a Traffic Learning suggestion from F5 AWAF - Advanced WAF (formerly BIG-IP ASM - Application Security Manager): its action, its learning score, the average violation rating, the learning mode, and whether the traffic behind it is trusted. The tool tells you whether accepting the suggestion loosens or tightens the policy, whether a loosening is a genuine false-positive fix or a security relaxation, and whether Automatic learning is about to enforce it for you. It is the bridge between the poisoning estimator and the false-positive triage, and it runs entirely in your browser.
 
 ## Loosening vs tightening
 

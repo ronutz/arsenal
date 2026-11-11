@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-08-10"
 ---
 
-OpenID Connect defines how an application actually obtains an ID token, and the flow it steers you toward is the **authorization code flow**. It is a redirect dance with a deliberate split between what travels through the browser and what does not.
+OpenID Connect defines how an application actually obtains an ID token, and the flow it steers you towards is the **authorization code flow**. It is a redirect dance with a deliberate split between what travels through the browser and what does not.
 
 ## The steps
 
@@ -34,7 +34,7 @@ Three parameters do the security heavy lifting. **`state`** ties the response ba
 
 They are frequently implemented as if either satisfies the requirement. They do not overlap.
 
-**`state`** binds the redirect to the browser session that started it. Without it, an attacker can complete their own authorisation and have the victim's browser deliver the resulting code: the victim ends up logged into the attacker's account, which is quiet, confusing, and worse than it sounds when the account is then used to collect what the victim uploads.
+**`state`** binds the redirect to the browser session that started it. Without it, an attacker can complete their own authorization and have the victim's browser deliver the resulting code: the victim ends up logged into the attacker's account, which is quiet, confusing, and worse than it sounds when the account is then used to collect what the victim uploads.
 
 **`nonce`** binds the ID token to that same request, so a token issued for one login cannot be replayed into another.
 

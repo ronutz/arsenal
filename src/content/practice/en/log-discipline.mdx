@@ -41,7 +41,7 @@ Ten minutes per platform, once, and it is worth more than any amount of searchin
 - **What does this component log at default level, and what does it not?**
 - **Where does it go** - local, collector, both - and how long does each keep it?
 - **How long is the local ring under load**, not at rest? A ring holding four days on a quiet system may hold forty minutes during an incident.
-- **What is the clock source**, and is it synchronised? Log timestamps are a device's opinion of the time, and cross-device correlation is only as good as that opinion - the same constraint as any [timeline](/practice/timelines-reconstructing-what-happened).
+- **What is the clock source**, and is it synchronized? Log timestamps are a device's opinion of the time, and cross-device correlation is only as good as that opinion - the same constraint as any [timeline](/practice/timelines-reconstructing-what-happened).
 - **What does normal look like?** Which recurring errors are benign here - because without a healthy sample, every one of them is a lead at three in the morning.
 
 That last item is the one most often skipped and the one that costs the most hours, and it is why [baselines](/practice/baselines-knowing-what-normal-looks-like) lists a healthy log sample among the six things to capture.

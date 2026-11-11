@@ -25,7 +25,7 @@ export const snifferLineageProfile: VendorProfile = {
       place: "Mountain View, California",
       founders: ["Harry Saal", "Len Shustek"],
       story:
-        "Harry Saal and Len Shustek productized something engineers had been improvising with oscilloscopes and hex dumps: a machine that captured network traffic and DECODED it, protocol by protocol, into English. The Sniffer named an entire activity - to this day engineers 'sniff' traffic regardless of whose analyzer they hold - and Sniffer University trained the first generation of people who could read a network's actual conversation. Everything this site teaches about capture points descends from the profession Network General created.",
+        "Harry Saal and Len Shustek productized something engineers had been improvising with oscilloscopes and hex dumps: a machine that captured network traffic and DECODED it, protocol by protocol, into English. The Sniffer named an entire activity - to this day engineers 'sniff' traffic regardless of whose analyser they hold - and Sniffer University trained the first generation of people who could read a network's actual conversation. Everything this site teaches about capture points descends from the profession Network General created.",
     },
     {
       company: "NetScout Systems",
@@ -33,7 +33,7 @@ export const snifferLineageProfile: VendorProfile = {
       place: "Westford, Massachusetts",
       founders: ["Anil Singhal", "Narendra Popat"],
       story:
-        "Founded as Frontier Software Development two years before the Sniffer existed, NetScout took the other road: not the portable analyzer in a field bag but permanent, distributed visibility - probes and the nGenius platform watching production networks continuously. Two decades later the roads merged: NetScout became the house where the whole packet-analysis bloodline - the Sniffer itself, and later Arbor's DDoS telemetry - came home.",
+        "Founded as Frontier Software Development two years before the Sniffer existed, NetScout took the other road: not the portable analyser in a field bag but permanent, distributed visibility - probes and the nGenius platform watching production networks continuously. Two decades later the roads merged: NetScout became the house where the whole packet-analysis bloodline - the Sniffer itself, and later Arbor's DDoS telemetry - came home.",
     },
   ],
   timeline: [
@@ -45,16 +45,16 @@ export const snifferLineageProfile: VendorProfile = {
     { year: 2015, title: "Arbor joins", detail: "NetScout acquires Danaher's communications businesses (~$2.3 billion in stock) - Tektronix Communications and Arbor Networks, whose Peakflow and ATLAS defined DDoS detection and internet-scale threat telemetry since 2000. The bloodline now spans from a single captured frame to planetary attack weather.", sourceNote: "Deal structure per the public record." },
   ],
   products: [
-    { name: "The Sniffer", what: "The original protocol analyzer - capture and human-readable decode, the product that named the practice." },
-    { name: "nGenius platform", what: "NetScout's continuous, distributed visibility line - the analyzer grown into infrastructure." },
+    { name: "The Sniffer", what: "The original protocol analyser - capture and human-readable decode, the product that named the practice." },
+    { name: "nGenius platform", what: "NetScout's continuous, distributed visibility line - the analyser grown into infrastructure." },
     { name: "Arbor Peakflow / ATLAS", what: "Flow-based DDoS detection and the global attack-telemetry network - packet analysis at internet scale." },
   ],
   innovations: [
-    { title: "The decode", detail: "Turning frames into labeled, explained conversations created a profession; every Wireshark column header is the Sniffer's grandchild." },
+    { title: "The decode", detail: "Turning frames into labelled, explained conversations created a profession; every Wireshark column header is the Sniffer's grandchild." },
     { title: "Visibility as a permanent layer", detail: "The lineage's arc - from a luggable you carry to the problem, to probes that never leave - is the history of network operations growing up." },
   ],
   markets: [
-    "NetScout today spans service assurance and DDoS defense (Arbor) across carriers and enterprises - the consolidated home of the analyzer tradition.",
+    "NetScout today spans service assurance and DDoS defence (Arbor) across carriers and enterprises - the consolidated home of the analyser tradition.",
   ],
   analyst: [
     "One entry for five companies, deliberately: the Sniffer, its Dolch chassis, the NAI detour, Arbor's telemetry, and NetScout's roof are a single story - the biography of the capture point.",

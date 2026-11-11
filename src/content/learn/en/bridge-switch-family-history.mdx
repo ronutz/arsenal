@@ -35,7 +35,7 @@ A bridge joined two or three segments. Everything on a segment still shared the 
 
 **Kalpana**, founded in Sunnyvale in 1990 by Vinod Bhardwaj and Larry Blair - named after Bhardwaj's wife, whose name means *imagination* in Sanskrit - introduced the seven-port **EtherSwitch**, the first multiport Ethernet switch, followed by the fifteen-port EPS-1500. The idea was a bridge with a port per device instead of a port per segment. Frames went only where they needed to go.
 
-The consequences were larger than the description suggests. Each device got the full link rate rather than a share of it. Collisions disappeared, which is what made full duplex possible. Ethernet could scale to speeds the shared medium could never have supported, which is why the transition to Fast Ethernet and then Gigabit was straightforward. Kalpana also invented **EtherChannel**, running several links in parallel for more bandwidth between switches, which the IEEE later standardised as 802.3ad in 2000.
+The consequences were larger than the description suggests. Each device got the full link rate rather than a share of it. Collisions disappeared, which is what made full duplex possible. Ethernet could scale to speeds the shared medium could never have supported, which is why the transition to Fast Ethernet and then Gigabit was straightforward. Kalpana also invented **EtherChannel**, running several links in parallel for more bandwidth between switches, which the IEEE later standardized as 802.3ad in 2000.
 
 And one consequence nobody sold: on a hub, capture was trivial because every station saw everything. On a switch, it was not. **Switching was a significant security improvement that the industry marketed purely as a performance upgrade**, and the mirror ports and taps that monitoring now depends on exist to deliberately undo it.
 
@@ -44,9 +44,9 @@ Cisco acquired Kalpana in 1994, along with Grand Junction and Crescendo, and com
 ## Evolution, and the arguments that keep returning
 
 - **Transparent bridging**, mid-1980s. Learn by listening, flood what you do not know.
-- **Spanning tree**, 1985, standardised 1990. One active path, redundancy held in reserve.
+- **Spanning tree**, 1985, standardized 1990. One active path, redundancy held in reserve.
 - **Switching**, 1990. Per-port bridging in hardware; the hub disappears.
-- **Virtual local area networks (VLANs)**, standardised as 802.1Q in 1998. One physical switch presenting several logical networks, which is where segmentation as a discipline starts.
+- **Virtual local area networks (VLANs)**, standardized as 802.1Q in 1998. One physical switch presenting several logical networks, which is where segmentation as a discipline starts.
 - **Layer 3 switching**, from the late 1990s. Routing at hardware speed, which quietly ended Cisco's slow-and-complex framing.
 - **Data centre fabrics**, from around 2010. TRILL, SPB and then leaf-and-spine with routing at the edge, all designed to escape the fact that spanning tree deliberately wastes links.
 - **Overlays**, VXLAN and friends. A layer 2 network built on top of a layer 3 one, which is the industry admitting the applications never stopped assuming one flat Ethernet.
@@ -55,9 +55,9 @@ That last point is the recurring joke. Perlman's mistake - treating Ethernet as 
 
 ## The jobs and habits it left behind
 
-Switching created the largest technical job family in networking. Most certification ladders start here for a reason: the switch is where a career begins, because it is the device an organisation has the most of and where a mistake is most survivable.
+Switching created the largest technical job family in networking. Most certification ladders start here for a reason: the switch is where a career begins, because it is the device an organization has the most of and where a mistake is most survivable.
 
-The practices that came with it are still recognisable. **VLAN design** as the first act of segmentation. **Trunk allow-lists**, which decide whether that segmentation is real. **Port security and 802.1X**, which is authentication arriving at a layer that was designed to trust anything plugged into it. **Cable and port documentation**, forever out of date. And **spanning tree fear** - a specific professional caution, present in every operator who has watched a loop take out a site, which is why one of the most common serious outages in enterprise networking is still somebody connecting two ports that should not have been connected.
+The practices that came with it are still recognizable. **VLAN design** as the first act of segmentation. **Trunk allow-lists**, which decide whether that segmentation is real. **Port security and 802.1X**, which is authentication arriving at a layer that was designed to trust anything plugged into it. **Cable and port documentation**, forever out of date. And **spanning tree fear** - a specific professional caution, present in every operator who has watched a loop take out a site, which is why one of the most common serious outages in enterprise networking is still somebody connecting two ports that should not have been connected.
 
 ## The companies
 

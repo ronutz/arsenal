@@ -21,6 +21,8 @@
 // Words: "learnLabs.lacp-hashing".
 // ============================================================================
 
+// English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
+import { intlLocale } from "@/i18n/locales";
 import { useState, type ReactNode } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -71,7 +73,7 @@ export default function LacpHashingLab() {
   // Shares as percentages.
   const pct = new Intl.NumberFormat(locale, { style: "percent", maximumFractionDigits: 0 });
   // Lists in the page's language; English as British English writes them, without the serial comma ("a, b and c").
-  const lf = new Intl.ListFormat(locale === "en" ? "en-GB" : locale, { style: "long", type: "conjunction" });
+  const lf = new Intl.ListFormat(intlLocale(locale), { style: "long", type: "conjunction" });
 
   /** A policy's name for the reader. */
   const policyName = (p: HashPolicy): string => (p === "layer2" ? t("policyLayer2") : p === "layer2+3" ? t("policyLayer23") : t("policyLayer34"));

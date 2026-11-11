@@ -25,6 +25,8 @@
 // Statically generated per locale.
 // ============================================================================
 
+// English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
+import { intlLocale } from "@/i18n/locales";
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -51,7 +53,7 @@ export async function generateMetadata({
   // The hub names come from the hub registry, joined the locale's way, so the description lists every hub there is
   // (2026-10-06: the typed list named six of the eight hubs). Intl.ListFormat is the platform's list joiner.
   const tVendors = await getTranslations({ locale, namespace: "tools" });
-  const names = new Intl.ListFormat(locale, { style: "long", type: "conjunction" }).format(
+  const names = new Intl.ListFormat(intlLocale(locale), { style: "long", type: "conjunction" }).format(
     VENDOR_FAMILIES.map((fam) => tVendors(`vendors.${fam.key}`)),
   );
   return {

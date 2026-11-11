@@ -105,7 +105,7 @@ export const cloudflareProfile: VendorProfile = {
     },
     {
       name: "1.1.1.1",
-      what: "A public recursive resolver, offered free, which also gives the company a view of DNS behaviour at a scale very few organisations have.",
+      what: "A public recursive resolver, offered free, which also gives the company a view of DNS behaviour at a scale very few organizations have.",
     },
   ],
 

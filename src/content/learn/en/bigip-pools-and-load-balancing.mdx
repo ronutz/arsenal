@@ -23,7 +23,7 @@ The methods fall into two families. **Static** methods follow a fixed pattern re
 **Dynamic** methods react to live conditions:
 
 - **Least Connections** sends the next connection to the member with the fewest active connections, which self-levels when requests vary in length.
-- **Fastest** favors the member responding quickest, and **Observed** and **Predictive** blend connection counts and response trends over time.
+- **Fastest** favours the member responding quickest, and **Observed** and **Predictive** blend connection counts and response trends over time.
 
 Least Connections and its relatives distribute better when requests are uneven, at the cost of tracking per-member state; Round Robin is predictable and cheap but assumes every request costs about the same.
 

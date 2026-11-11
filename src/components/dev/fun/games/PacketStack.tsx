@@ -472,7 +472,7 @@ export default function PacketStack({ locale }: { locale: string }) {
       // The panel.
       setResult(makeResult(r, day !== null, ms));
       // Announced.
-      setSay(t("sayOver", { delivered: r.delivered, score: r.score.toLocaleString(locale) }));
+      setSay(t("sayOver", { delivered: r.delivered, score: r.score }));
     },
     [goPhase, show, today, makeResult, t, locale],
   );

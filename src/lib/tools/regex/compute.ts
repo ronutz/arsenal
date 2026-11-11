@@ -107,7 +107,7 @@ export function findMatches(pattern: string, flags: string, input: string): Matc
   if (!compiled.ok) return { ok: false, matches: [], count: 0, truncated: false, inputTooLong: false, error: compiled.error };
 
   if (input.length > MAX_INPUT_LENGTH) {
-    return { ok: false, matches: [], count: 0, truncated: false, inputTooLong: true, error: { message: `Input is ${input.length.toLocaleString()} characters; the limit is ${MAX_INPUT_LENGTH.toLocaleString()}.` } };
+    return { ok: false, matches: [], count: 0, truncated: false, inputTooLong: true, error: { message: `Input is ${input.length.toLocaleString("en-001")} characters; the limit is ${MAX_INPUT_LENGTH.toLocaleString("en-001")}.` } };
   }
 
   const re = new RegExp(pattern, flags);

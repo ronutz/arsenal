@@ -46,8 +46,8 @@ export const sophosProfile: VendorProfile = {
     { name: "Sophos Endpoint and Intercept X", what: "The core protection product, with the anti-ransomware and exploit prevention work that became its distinguishing capability." },
     { name: "Sophos MDR", what: "Managed detection and response, now the largest part of the proposition and the reason the Secureworks purchase made sense." },
     { name: "Taegis", what: "The Secureworks platform, retained rather than absorbed - and since September 2025 shipping with Sophos Endpoint included at no extra cost, which is an unusually direct way to demonstrate that an acquisition benefits existing customers." },
-    { name: "Sophos Firewall, Switch, Email and ZTNA", what: "Network and access products, zero trust network access (ZTNA) among them, managed from the same console. The breadth is aimed squarely at organisations with one person doing all of security." },
-    { name: "Sophos X-Ops", what: "The combined research organisation - threat intelligence, malware analysis and offensive research published openly, now joined by the Counter Threat Unit." },
+    { name: "Sophos Firewall, Switch, Email and ZTNA", what: "Network and access products, zero trust network access (ZTNA) among them, managed from the same console. The breadth is aimed squarely at organizations with one person doing all of security." },
+    { name: "Sophos X-Ops", what: "The combined research organization - threat intelligence, malware analysis and offensive research published openly, now joined by the Counter Threat Unit." },
   ],
   innovations: [
     { title: "Serving the organisation without a security team", detail: "The mid-market has always been the harder problem: the same threats as an enterprise, none of the staff. A single console covering endpoint, firewall, email and access is a product decision derived from that constraint rather than from a feature matrix." },
@@ -56,7 +56,7 @@ export const sophosProfile: VendorProfile = {
     { title: "Keeping the acquired platform", detail: "Taegis was kept and extended rather than shut down, with the acquirer's endpoint product added to it free. Acquisitions in this industry more often end with the smaller platform quietly retired." },
   ],
   markets: [
-    "More than 600,000 customers, weighted toward small and mid-sized organisations and served largely through partners and managed service providers rather than direct - a distribution model that suits the customer size and is hard to build late.",
+    "More than 600,000 customers, weighted towards small and mid-sized organizations and served largely through partners and managed service providers rather than direct - a distribution model that suits the customer size and is hard to build late.",
     "It competes with the endpoint platform vendors above it and the operating-system-bundled products below it, and increasingly on managed services, where the competition is as much other providers' analysts as other vendors' software.",
   ],
   analyst: [

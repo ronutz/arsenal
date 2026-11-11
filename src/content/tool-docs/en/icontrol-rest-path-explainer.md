@@ -16,7 +16,7 @@ A name written without a partition is resolved **in the caller's current partiti
 
 ## What it will not do
 
-The module table is finite. If a path uses a module the tool does not know, it decodes the structure and **says the module is unrecognised rather than describing it from a guess**. It validates nothing against a device and cannot tell you whether the object exists.
+The module table is finite. If a path uses a module the tool does not know, it decodes the structure and **says the module is unrecognized rather than describing it from a guess**. It validates nothing against a device and cannot tell you whether the object exists.
 
 ## Share results
 

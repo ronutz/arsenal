@@ -42,7 +42,7 @@ export const ivantiProfile: VendorProfile = {
   timeline: [
     { year: 2017, title: "Formed", detail: "LANDESK and HEAT combined in January." },
     { year: 2020, title: "MobileIron and Pulse Secure", detail: "Both completed 1 December, adding mobile device management and the SSL VPN line." },
-    { year: 2021, title: "Cherwell and RiskSense", detail: "Service management and vulnerability prioritisation, bought within months of each other." },
+    { year: 2021, title: "Cherwell and RiskSense", detail: "Service management and vulnerability prioritization, bought within months of each other." },
     {
       year: 2023,
       title: "December: the exploitation begins",
@@ -94,11 +94,11 @@ export const ivantiProfile: VendorProfile = {
     },
   ],
   markets: [
-    "Enterprise and public sector IT operations, with a heavy footprint in organisations that value one vendor across many functions - and, in the case of the access products, in government networks, which is why the 2024 exploitation drew national advisories rather than trade coverage.",
+    "Enterprise and public sector IT operations, with a heavy footprint in organizations that value one vendor across many functions - and, in the case of the access products, in government networks, which is why the 2024 exploitation drew national advisories rather than trade coverage.",
     "It competes with endpoint management specialists, service management platforms, and access vendors separately rather than as one market, which is the cost of the consolidation strategy: every competitor is a specialist in one thing the company does among many.",
   ],
   analyst: [
-    "Assessed as a substantial presence in unified endpoint management and IT service management, with breadth as the recognised strength and integration depth across the acquired lines as the recurring criticism.",
+    "Assessed as a substantial presence in unified endpoint management and IT service management, with breadth as the recognized strength and integration depth across the acquired lines as the recurring criticism.",
     "The security record is now part of every assessment. The honest position is that the response has been more structural than most - a foundation rebuild and public, checkable commitments - and that the disclosures have continued regardless, which is what remediating a decade of inherited code actually looks like from the outside.",
   ],
 };

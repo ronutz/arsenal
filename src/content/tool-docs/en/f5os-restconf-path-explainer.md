@@ -1,6 +1,6 @@
 ## What it does
 
-Paste an F5OS RESTCONF path and the tool decodes it segment by segment: the API root, the YANG module prefixes, the container hierarchy, and any list keys such as `tenant=tenant1`. It names the modules it recognises and says what each one governs. It parses the path text only: nothing is fetched, no schema is consulted, and nothing leaves the browser.
+Paste an F5OS RESTCONF path and the tool decodes it segment by segment: the API root, the YANG module prefixes, the container hierarchy, and any list keys such as `tenant=tenant1`. It names the modules it recognizes and says what each one governs. It parses the path text only: nothing is fetched, no schema is consulted, and nothing leaves the browser.
 
 ## Why an F5OS path needs decoding
 
@@ -18,7 +18,7 @@ It also explains the port arrangement that catches people: F5OS originally expos
 
 ## What it will not do
 
-The module table is finite and deliberately short. If a path uses a module the tool does not know, it decodes the structure and **says the module is unrecognised rather than describing it from a guess**. It also validates nothing against a schema, because it has none: it cannot tell you whether a node exists in your F5OS release, only how the path you typed is constructed.
+The module table is finite and deliberately short. If a path uses a module the tool does not know, it decodes the structure and **says the module is unrecognized rather than describing it from a guess**. It also validates nothing against a schema, because it has none: it cannot tell you whether a node exists in your F5OS release, only how the path you typed is constructed.
 
 ## Using it
 

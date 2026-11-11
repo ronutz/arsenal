@@ -2,7 +2,7 @@
 
 Toma HTML (un documento o un fragmento) y uno o más selectores, uno por línea, y muestra con qué elementos coincide cada selector: los elementos resaltados en el árbol analizado con su ruta y su línea en el código fuente, el recuento por selector, la tripleta de especificidad contada según la sección 15, un aviso cuando el selector nombra un pseudoelemento (en ese caso se cuentan los elementos de origen, porque un pseudoelemento es una caja, no un elemento) y, cuando un selector no es válido, el motivo y la posición.
 
-El HTML se analiza de forma inerte con parse5, el mismo analizador que usa el Explicador de estructura HTML; los selectores los analiza y los evalúa un motor propio escrito a partir de Selectors Level 4 (W3C Working Draft, 22 de enero de 2026) y de las reglas de selectores del HTML Standard, y se comprueban frente a `querySelectorAll` de Chromium con los vectores que acompañan a la herramienta (coinciden 139 de 146 selectores; los siete que difieren se enumeran más abajo y cada uno es intencionado). No se ejecuta, descarga ni renderiza nada; la API alojada ejecuta el mismo código.
+El HTML se analiza de forma inerte con parse5, el mismo analizador que usa el Explicador de estructura HTML; los selectores los analiza y los evalúa un motor propio escrito a partir de Selectors Level 4 (W3C Working Draft, 22 de enero de 2026) y de las reglas de selectores del HTML Standard, y se comprueban frente a `querySelectorAll` de Chromium con los vectores que acompañan a la herramienta (coinciden 139 de 146 selectores; los siete que difieren entran en los casos enumerados más abajo, y cada uno es intencionado). No se ejecuta, descarga ni renderiza nada; la API alojada ejecuta el mismo código.
 
 ## Qué se evalúa y cómo
 

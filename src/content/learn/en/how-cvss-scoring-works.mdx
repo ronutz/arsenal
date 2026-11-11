@@ -15,7 +15,7 @@ The Common Vulnerability Scoring System (CVSS) is an open framework, owned by FI
 
 ## Three metric groups
 
-CVSS v3.1 has three groups. The **Base** group captures the intrinsic properties of the flaw that do not change over time or across environments, and it is the only group that is usually published. The **Temporal** group adjusts the base for things that change over time, such as whether exploit code exists. The **Environmental** group lets a specific organisation re-score the flaw for its own systems. Base metrics are mandatory; the other two are optional refinements.
+CVSS v3.1 has three groups. The **Base** group captures the intrinsic properties of the flaw that do not change over time or across environments, and it is the only group that is usually published. The **Temporal** group adjusts the base for things that change over time, such as whether exploit code exists. The **Environmental** group lets a specific organization re-score the flaw for its own systems. Base metrics are mandatory; the other two are optional refinements.
 
 ## The Base score is two sub-scores
 
@@ -25,7 +25,7 @@ The Base score is assembled from two pieces.
 
 `Exploitability = 8.22 x AttackVector x AttackComplexity x PrivilegesRequired x UserInteraction`
 
-A flaw reachable over the network, with low complexity, needing no privileges and no user interaction, maximises this term.
+A flaw reachable over the network, with low complexity, needing no privileges and no user interaction, maximizes this term.
 
 **Impact** measures how bad a successful attack is. It starts from an impact sub-score built from the Confidentiality, Integrity, and Availability metrics:
 
@@ -60,7 +60,7 @@ This article opens the series **CVSS**. It shows the formula's two halves, explo
 
 1. **[Reading a CVSS Vector String](/learn/cvss-vector-string-format)**. The version prefix and the metric:value pairs, read directly instead of trusting a rendered score.
 2. **[The CVSS Base Metrics, Explained](/learn/cvss-base-metrics-explained)**. Four exploitability metrics and four impact metrics, and what each one asks about the flaw.
-3. **[CVSS Temporal and Environmental Scores](/learn/cvss-temporal-and-environmental)**. Temporal metrics can only lower the score as facts emerge; environmental metrics re-score it for one organisation.
+3. **[CVSS Temporal and Environmental Scores](/learn/cvss-temporal-and-environmental)**. Temporal metrics can only lower the score as facts emerge; environmental metrics re-score it for one organization.
 4. **[CVSS Severity Bands, and What the Score Does Not Tell You](/learn/cvss-severity-bands-and-limits)**. None to Critical, useful for triage, and why a base score measures severity rather than risk.
 5. **[CVSS v3.0, v3.1, and v4.0: What Changed](/learn/cvss-v3-vs-v4)**. v3.0 and v3.1 share a formula and differ in rounding; v4.0, released in 2023, is a larger change.
 

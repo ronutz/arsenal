@@ -59,7 +59,7 @@ The unifying idea is worth stating on its own: **the backup must not be within t
 
 An attacker who has been inside for weeks may have corrupted or encrypted data long before the visible event. If your retention window is shorter than the intruder's dwell time, every surviving copy contains the problem.
 
-This is the argument for keeping restore points that reach back further than your worst plausible dwell time, and for keeping some of them immutable. It is also the argument for knowing your dwell time at all, which most organisations do not measure.
+This is the argument for keeping restore points that reach back further than your worst plausible dwell time, and for keeping some of them immutable. It is also the argument for knowing your dwell time at all, which most organizations do not measure.
 
 ## An untested restore is a rumour
 
@@ -93,7 +93,7 @@ The discipline that fixes all of these is the same: **restore regularly, on a sc
 - **Cloud-native services**: provider backup and snapshot services, cheapest to adopt and usually inside the same account and identity boundary as the data. Cross-account or cross-tenant configuration is what turns them into a real control.
 - **Storage-layer immutability**: object lock on object stores, write-once modes on purpose-built appliances. This is where the strongest guarantee lives, because the refusal to delete comes from the platform.
 - **Tape, still**: for very large retention at low cost and genuine offline separation. Unfashionable, and the only medium where a credential cannot reach the media.
-- **Software-as-a-service backup**: Microsoft 365, Salesforce and similar. The gap most organisations discover late: the provider protects its own infrastructure, not you from your own deletions or from an attacker with a valid session, and the shared-responsibility line sits exactly where people assume it does not.
+- **Software-as-a-service backup**: Microsoft 365, Salesforce and similar. The gap most organizations discover late: the provider protects its own infrastructure, not you from your own deletions or from an attacker with a valid session, and the shared-responsibility line sits exactly where people assume it does not.
 
 The buying question, as everywhere in this series: **which failure domain does the copy live in**, and who can delete it.
 

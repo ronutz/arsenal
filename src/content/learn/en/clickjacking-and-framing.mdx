@@ -25,7 +25,7 @@ The enabling condition is simple: your page can be framed by another site. If yo
 x-frame-options: DENY
 ```
 
-**DENY** forbids framing by any site, including your own. **SAMEORIGIN** allows framing only by pages on the same origin, which is what you want if your own application legitimately frames its own pages. A third value, `ALLOW-FROM`, was meant to permit a single named origin, but it was inconsistently implemented and is now obsolete: modern browsers ignore it. If you need to allow specific origins to frame your page, the modern directive below is the way to do it, and the analyzer flags `ALLOW-FROM` as deprecated.
+**DENY** forbids framing by any site, including your own. **SAMEORIGIN** allows framing only by pages on the same origin, which is what you want if your own application legitimately frames its own pages. A third value, `ALLOW-FROM`, was meant to permit a single named origin, but it was inconsistently implemented and is now obsolete: modern browsers ignore it. If you need to allow specific origins to frame your page, the modern directive below is the way to do it, and the analyser flags `ALLOW-FROM` as deprecated.
 
 `X-Frame-Options` is a whole-header switch with no expressiveness beyond those values. It is still worth sending for older clients, but it is not the primary control anymore.
 
@@ -49,8 +49,8 @@ Because it lives in CSP, `frame-ancestors` is part of the same policy that contr
 
 When both are present, browsers that support `frame-ancestors` use it and ignore `X-Frame-Options`. So the practical approach is to set `frame-ancestors` as the real control and optionally keep `X-Frame-Options: DENY` or `SAMEORIGIN` as a fallback for any old client that does not understand CSP. The two should agree; a page that denies framing in one and allows it in the other is a configuration smell.
 
-The analyzer treats `frame-ancestors` as the authoritative framing control and notes `X-Frame-Options` as the legacy companion. A page with neither is flagged, because it can be framed and is therefore exposed to clickjacking.
+The analyser treats `frame-ancestors` as the authoritative framing control and notes `X-Frame-Options` as the legacy companion. A page with neither is flagged, because it can be framed and is therefore exposed to clickjacking.
 
 ## Beyond the headers
 
-Frame control headers stop the framing that clickjacking depends on, which is the right layer for the attack. For actions with real consequences, defense in depth still applies: a confirmation step, re-authentication for sensitive operations, or a check that the request is intentional all reduce the value of a click that does slip through. But the foundation is refusing to be framed in the first place, and that is a header away.
+Frame control headers stop the framing that clickjacking depends on, which is the right layer for the attack. For actions with real consequences, defence in depth still applies: a confirmation step, re-authentication for sensitive operations, or a check that the request is intentional all reduce the value of a click that does slip through. But the foundation is refusing to be framed in the first place, and that is a header away.

@@ -1,7 +1,7 @@
 ---
 slug: fortirecon-attack-surface-and-digital-risk
 title: "FortiRecon: Attack Surface Management and What the Dark Web Actually Is"
-summary: "External attack surface management answers a question most organisations cannot: what does an attacker see when they look at us. It works from the outside with no credentials and no agents, which is exactly how an attacker starts, and it routinely finds assets nobody knew were exposed."
+summary: "External attack surface management answers a question most organizations cannot: what does an attacker see when they look at us. It works from the outside with no credentials and no agents, which is exactly how an attacker starts, and it routinely finds assets nobody knew were exposed."
 concepts: ["fortinet", "fortirecon", "attack surface management", "asm", "digital risk protection", "surface web", "deep web", "dark web", "mitre attack", "kill chain", "seed data"]
 relatedTools: []
 sub: fortirecon
@@ -30,7 +30,7 @@ The distinction that matters operationally is that **deep does not mean hidden f
 
 Attack frameworks describe the sequence, and the first phase is the one FortiRecon addresses.
 
-The **kill chain** begins with reconnaissance, before any exploitation. **MITRE ATT&CK** formalises the same idea and adds detail: an adversary gathers information about the target's hosts, domains, employees and technology before touching anything.
+The **kill chain** begins with reconnaissance, before any exploitation. **MITRE ATT&CK** formalizes the same idea and adds detail: an adversary gathers information about the target's hosts, domains, employees and technology before touching anything.
 
 That reconnaissance is not detectable by your own defences, because it happens against public sources and third-party infrastructure. Nothing crosses your firewall. The only way to know what it yields is to perform it yourself, which is what external attack surface management is.
 
@@ -54,7 +54,7 @@ The value is not that these are exotic. It is that they are ordinary and invisib
 
 **Brand protection** watches for impersonation: lookalike domains registered against yours, fake applications, fraudulent social accounts. Registration of a lookalike domain frequently precedes a phishing campaign, so it is an early warning rather than a complaint.
 
-**Adversary-centric intelligence** watches criminal forums and markets for mentions of your organisation: credentials for sale, access being advertised, data being traded, or your name appearing in target lists.
+**Adversary-centric intelligence** watches criminal forums and markets for mentions of your organization: credentials for sale, access being advertised, data being traded, or your name appearing in target lists.
 
 The finding that changes an afternoon is leaked credentials. Knowing that a set of your accounts appears in a dump lets you reset them before they are used, and that window is the entire value.
 
@@ -64,9 +64,9 @@ Discovery produces a list, and a list is not yet work. Two disciplines:
 
 **Ownership.** A finding nobody owns is a finding nobody fixes. The unmanaged cloud account is exactly the case where nobody is sure whose it is, and establishing that is most of the remediation.
 
-**Prioritisation by exposure and consequence.** An expired certificate on a decommissioned host is not an emergency; an exposed administrative interface on a live system is. Sorting by severity alone misses that.
+**Prioritization by exposure and consequence.** An expired certificate on a decommissioned host is not an emergency; an exposed administrative interface on a live system is. Sorting by severity alone misses that.
 
-**MSSP (managed security service provider) deployments** add a tenancy dimension: each customer's estate is separate, onboarding requires that customer's seed data, and findings must never cross between tenants. The separation is a security control, not an organisational convenience.
+**MSSP (managed security service provider) deployments** add a tenancy dimension: each customer's estate is separate, onboarding requires that customer's seed data, and findings must never cross between tenants. The separation is a security control, not an organizational convenience.
 
 ## APIs
 
@@ -76,4 +76,4 @@ A console that must be visited to be useful will not be visited often enough for
 
 ## What an exam candidate should be able to state cold
 
-Surface web is indexed, deep web is reachable but unindexed and includes ordinary content, dark web needs specific software and hosts criminal markets; deep does not mean hidden from an attacker. Reconnaissance is the first phase of the kill chain and happens outside your visibility, so the only way to see it is to perform it. ASM starts from seed data and expands via certificate transparency, DNS and hosting relationships, reliably finding forgotten infrastructure, unmanaged cloud and exposed management interfaces. Digital risk protection covers lookalike domains and criminal-forum mentions, and leaked credentials are the finding with the shortest useful window. Findings need an owner and prioritisation by exposure, and the API matters because the output is a feed.
+Surface web is indexed, deep web is reachable but unindexed and includes ordinary content, dark web needs specific software and hosts criminal markets; deep does not mean hidden from an attacker. Reconnaissance is the first phase of the kill chain and happens outside your visibility, so the only way to see it is to perform it. ASM starts from seed data and expands via certificate transparency, DNS and hosting relationships, reliably finding forgotten infrastructure, unmanaged cloud and exposed management interfaces. Digital risk protection covers lookalike domains and criminal-forum mentions, and leaked credentials are the finding with the shortest useful window. Findings need an owner and prioritization by exposure, and the API matters because the output is a feed.

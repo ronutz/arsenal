@@ -1,7 +1,7 @@
 ---
 slug: fortigate-fgcp-ha-clustering
 title: "FortiGate FGCP High Availability: Active-Passive, Active-Active, and Failover"
-summary: "FGCP clusters two or more FortiGates so one can take over from another. Which unit becomes primary is decided by an override-sensitive election, session survival depends on what was being synchronised, and the most common surprise is that inspected sessions do not always survive a failover. This covers the two modes, the election order, heartbeat and session synchronisation, and split brain."
+summary: "FGCP clusters two or more FortiGates so one can take over from another. Which unit becomes primary is decided by an override-sensitive election, session survival depends on what was being synchronized, and the most common surprise is that inspected sessions do not always survive a failover. This covers the two modes, the election order, heartbeat and session synchronization, and split brain."
 concepts: ["fortinet", "fortigate", "fgcp", "high availability", "active-passive", "active-active", "failover", "heartbeat", "session pickup", "split brain"]
 relatedTools: ["fortigate-ha-failover-simulator"]
 sub: fortigate
@@ -12,11 +12,11 @@ status: reviewed
 updated: "2026-10-26"
 ---
 
-A high-availability pair exists to survive the failure of one unit. Whether it actually does depends on three things: how the primary is elected, what state is synchronised, and whether the heartbeat can be lost independently of the data path.
+A high-availability pair exists to survive the failure of one unit. Whether it actually does depends on three things: how the primary is elected, what state is synchronized, and whether the heartbeat can be lost independently of the data path.
 
 ## Active-passive and active-active
 
-**Active-passive** is the common deployment. One unit is primary and processes all traffic; the secondary maintains a synchronised configuration and session table and processes nothing until it takes over. Capacity is that of one unit; the second is insurance.
+**Active-passive** is the common deployment. One unit is primary and processes all traffic; the secondary maintains a synchronized configuration and session table and processes nothing until it takes over. Capacity is that of one unit; the second is insurance.
 
 **Active-active** distributes some traffic across members. In FortiOS this is narrower than the name suggests: the primary still receives all traffic and makes all the routing and policy decisions, then distributes **inspection** work to secondaries. It raises inspection throughput, not raw forwarding capacity, and it adds complexity to troubleshooting because a given session may be inspected on a unit other than the one you are logged into.
 
@@ -37,7 +37,7 @@ Enabling **override** moves priority above age, so the preferred unit reclaims p
 
 ## Heartbeat, and split brain
 
-Cluster members exchange heartbeats over dedicated interfaces. The heartbeat carries the health signal and the configuration and session synchronisation.
+Cluster members exchange heartbeats over dedicated interfaces. The heartbeat carries the health signal and the configuration and session synchronization.
 
 **Use two heartbeat interfaces.** A single heartbeat link is a single point of failure whose failure mode is the worst one available: if members cannot hear each other but both remain connected to the network, both conclude the other has failed and both become primary. That is split brain, and two units serving the same addresses and the same MAC produces symptoms far more confusing than a plain outage.
 
@@ -45,7 +45,7 @@ Heartbeat interfaces should be directly connected where possible, or at minimum 
 
 ## What survives a failover, and what does not
 
-Configuration synchronisation is continuous, so the secondary always holds the current configuration. Session synchronisation is where expectations diverge from behaviour.
+Configuration synchronization is continuous, so the secondary always holds the current configuration. Session synchronization is where expectations diverge from behaviour.
 
 | Session type | Survives failover |
 |---|---|
@@ -54,14 +54,14 @@ Configuration synchronisation is continuous, so the secondary always holds the c
 | Sessions being inspected by a proxy-mode profile | No; they must be restarted (an active-active cluster can resume some sessions its subordinate units were processing) |
 | Sessions inspected by a flow-mode profile | Yes with session pickup, but they are not inspected after the failover |
 | A session with both flow-mode and proxy-mode features applied | No |
-| IPsec tunnels | With IPsec synchronisation configured |
+| IPsec tunnels | With IPsec synchronization configured |
 | Agentless VPN (virtual private network) sessions, the SSL VPN web mode under its FortiOS 7.6.3 name | Partly: authentication and cookie failover let users carry on without logging in again, but the sessions inside the tunnel restart |
 
-**Session pickup is not enabled by default.** Without it, every session drops on failover, and the cluster still "works" in that the secondary takes over; it just breaks every connection in the process. Enabling it costs synchronisation overhead, which is the reason for the default, but for most deployments the overhead is the better trade.
+**Session pickup is not enabled by default.** Without it, every session drops on failover, and the cluster still "works" in that the secondary takes over; it just breaks every connection in the process. Enabling it costs synchronization overhead, which is the reason for the default, but for most deployments the overhead is the better trade.
 
-The row worth internalising is proxy-mode inspection. A session being buffered and inspected by a proxy holds state that is not synchronised, so it does not survive. This is the concrete cost of the flow-versus-proxy choice showing up somewhere unexpected.
+The row worth internalizing is proxy-mode inspection. A session being buffered and inspected by a proxy holds state that is not synchronized, so it does not survive. This is the concrete cost of the flow-versus-proxy choice showing up somewhere unexpected.
 
-Flow mode is not a free pass either. In the [FortiOS 7.6.6 pass-through session table](https://docs.fortinet.com/document/fortigate/7.6.6/administration-guide/126801/pass-through-sessions), a flow-inspected session does fail over with session pickup, but its internal inspection state is not synchronised, so the connection survives and the inspection does not: from the failover onwards that session is forwarded uninspected. A session that has both flow-mode and proxy-mode features applied does not resume at all. Connection continuity and protection continuity are two separate answers, and a failover test that only checks whether the download finished has measured the first one.
+Flow mode is not a free pass either. In the [FortiOS 7.6.6 pass-through session table](https://docs.fortinet.com/document/fortigate/7.6.6/administration-guide/126801/pass-through-sessions), a flow-inspected session does fail over with session pickup, but its internal inspection state is not synchronized, so the connection survives and the inspection does not: from the failover onwards that session is forwarded uninspected. A session that has both flow-mode and proxy-mode features applied does not resume at all. Connection continuity and protection continuity are two separate answers, and a failover test that only checks whether the download finished has measured the first one.
 
 ## Verifying a cluster is actually healthy
 

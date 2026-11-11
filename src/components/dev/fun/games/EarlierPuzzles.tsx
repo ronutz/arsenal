@@ -24,6 +24,8 @@
 "use client";
 
 // Strings and the page's language.
+// English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
+import { intlLocale } from "@/i18n/locales";
 import { useLocale, useTranslations } from "next-intl";
 // Day arithmetic and puzzle numbers.
 import { LAUNCH_DAY, addDays, puzzleNumber } from "@/lib/fun/daily";
@@ -67,7 +69,7 @@ function formatDay(day: string, locale: string, opts: Intl.DateTimeFormatOptions
   // Formatting can throw on an unknown language tag: the plain date then.
   try {
     // The site writes British English, so "en" dates read the British way (Tuesday 3 November 2026).
-    const tag = locale === "en" ? "en-GB" : locale;
+    const tag = intlLocale(locale);
     // Midnight UTC of that day, formatted in UTC, so no time zone moves it to the day before.
     return new Intl.DateTimeFormat(tag, { ...opts, timeZone: "UTC" }).format(new Date(`${day}T00:00:00Z`));
   } catch {

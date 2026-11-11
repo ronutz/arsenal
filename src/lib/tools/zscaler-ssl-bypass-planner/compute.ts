@@ -148,7 +148,7 @@ function planOne(a: SslAsset): PlanRow<EngineText> {
         rationale: [
           pinning, // pinned
           say("why.zccBypass", "The Client Connector controls this path, so the cleanest exemption is a ZCC application/process bypass - the traffic never enters the tunnel at all."), // the agent's bypass
-          say("why.depth", "Defense in depth: pair it with a destination-scoped Do Not Inspect policy rule at the Edge, so paths that reach ZIA without the agent stay exempt too."), // and a DNI rule
+          say("why.depth", "Defence in depth: pair it with a destination-scoped Do Not Inspect policy rule at the Edge, so paths that reach ZIA without the agent stay exempt too."), // and a DNI rule
         ],
         blindSpots: BLIND_SPOTS,
       };
@@ -171,7 +171,7 @@ function planOne(a: SslAsset): PlanRow<EngineText> {
       verdict: "dni-policy",
       rationale: [
         say("why.governance", "Governance category: policy or regulation requires this traffic to stay sealed."), // regulated
-        say("why.dniCategory", "Exempt via a Do Not Inspect rule scoped to the category or destinations, set to Evaluate Other Policies - and keep the outside backstops strict, because the wrapper is now the whole defense."), // a DNI rule by category
+        say("why.dniCategory", "Exempt via a Do Not Inspect rule scoped to the category or destinations, set to Evaluate Other Policies - and keep the outside backstops strict, because the wrapper is now the whole defence."), // a DNI rule by category
       ],
       blindSpots: BLIND_SPOTS,
     };

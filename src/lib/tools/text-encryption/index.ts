@@ -166,7 +166,7 @@ export const manifest = Object.freeze({
       type: "standard", // W3C
       url: "https://www.w3.org/TR/WebCryptoAPI/", // fetched 2026-10-26 and 2026-10-27, HTTP 200, with the 2017 Recommendation at /TR/2017/REC-WebCryptoAPI-20170126/
       access_date: "2026-10-27", // read again the day the build was finished (first read 2026-10-26)
-      scope: "getRandomValues fills at most 65,536 bytes with cryptographically secure random bytes (10.1.1); AES-GCM encrypt returns C | T, decrypt throws OperationError on FAIL, tagLength defaults to 128 (29.4); PBKDF2 deriveBits runs RFC 8018 section 5.2 and refuses 0 iterations (34.4.1); keys are not required to be zeroised and script injection can exfiltrate keys or data (6.2)", // what it pins
+      scope: "getRandomValues fills at most 65,536 bytes with cryptographically secure random bytes (10.1.1); AES-GCM encrypt returns C | T, decrypt throws OperationError on FAIL, tagLength defaults to 128 (29.4); PBKDF2 deriveBits runs RFC 8018 section 5.2 and refuses 0 iterations (34.4.1); keys are not required to be zeroized and script injection can exfiltrate keys or data (6.2)", // what it pins
       status: "active", // the Recommendation, and the Level 2 draft
     },
     {

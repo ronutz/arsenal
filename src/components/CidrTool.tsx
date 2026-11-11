@@ -25,7 +25,9 @@
 // ============================================================================
 
 import { useState, useCallback, useMemo } from "react"; // useMemo derives the classification from the result (2026-10-19)
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+// Numbers grouped the page's way (International English formats as en-001), 11/11/2026.
+import { intlLocale } from "@/i18n/locales";
 import { cidrAnalyze } from "@/lib/tools/cidr";
 // Arsenal-local extended compute (pure; structured so it could be lifted into an open library later).
 import {
@@ -175,6 +177,7 @@ const EXAMPLE = "192.168.1.0/24";
 
 export default function CidrTool() {
   const t = useTranslations("tools.cidr");
+  const numLocale = intlLocale(useLocale()); // the page locale's grouping for every count below
   const [mode, setMode] = useState<Mode>("subnet");
   const [error, setError] = useState<string | null>(null);
 
@@ -314,8 +317,8 @@ export default function CidrTool() {
         { label: t("results.wildcard"), value: subnet.wildcard },
         { label: t("results.firstHost"), value: subnet.firstHost },
         { label: t("results.lastHost"), value: subnet.lastHost },
-        { label: t("results.totalAddresses"), value: subnet.totalAddresses.toLocaleString() },
-        { label: t("results.usableHosts"), value: subnet.usableHosts.toLocaleString() },
+        { label: t("results.totalAddresses"), value: subnet.totalAddresses.toLocaleString(numLocale) },
+        { label: t("results.usableHosts"), value: subnet.usableHosts.toLocaleString(numLocale) },
       ]
     : [];
 
@@ -629,7 +632,7 @@ export default function CidrTool() {
           </div>
           {(() => {
             const allUsable = subnet.usableHosts === subnet.totalAddresses;
-            const usableStr = subnet.usableHosts.toLocaleString();
+            const usableStr = subnet.usableHosts.toLocaleString(numLocale);
             const rangeStr =
               subnet.network === subnet.broadcast
                 ? subnet.network
@@ -693,7 +696,7 @@ export default function CidrTool() {
             {classification.status === "special"
               ? t("classifySpecial", { range: classification.matches[0].block, name: classification.matches[0].name, rfc: rfcText(classification.matches[0].rfc) })
               : classification.status === "partial"
-                ? t("classifyPartial", { special: classification.specialAddresses.toLocaleString(), total: classification.totalAddresses.toLocaleString() })
+                ? t("classifyPartial", { special: classification.specialAddresses.toLocaleString(numLocale), total: classification.totalAddresses.toLocaleString(numLocale) })
                 : t("classifyNone")}
           </p>
           {/* Every listed range the block falls in or overlaps, with the registry's flags. */}
@@ -747,8 +750,8 @@ export default function CidrTool() {
           <p className="cidr-note">{t("vlsm.orderNote")}</p>
           <div className="cidr-stats">
             <Stat label={t("vlsm.stat.parent")} value={vlsm.parent} mono />
-            <Stat label={t("vlsm.stat.used")} value={vlsm.usedAddresses.toLocaleString()} />
-            <Stat label={t("vlsm.stat.free")} value={vlsm.freeAddresses.toLocaleString()} />
+            <Stat label={t("vlsm.stat.used")} value={vlsm.usedAddresses.toLocaleString(numLocale)} />
+            <Stat label={t("vlsm.stat.free")} value={vlsm.freeAddresses.toLocaleString(numLocale)} />
             <Stat label={t("vlsm.stat.utilization")} value={vlsm.utilizationPct + "%"} />
           </div>
           <div className="cidr-table-wrap">
@@ -769,7 +772,7 @@ export default function CidrTool() {
                 {vlsm.subnets.map((s, i) => (
                   <tr key={i}>
                     <td>{s.label || "-"}</td>
-                    <td>{s.requestedHosts.toLocaleString()}</td>
+                    <td>{s.requestedHosts.toLocaleString(numLocale)}</td>
                     <td className="mono">{s.network}</td>
                     <td className="mono">/{s.prefix}</td>
                     <td className="mono">{s.netmask}</td>
@@ -778,7 +781,7 @@ export default function CidrTool() {
                     </td>
                     {/* A /31 has no broadcast (RFC 3021), so its row says so instead of naming its last host as one. */}
                     <td className="mono">{s.pointToPoint31 ? t("vlsm.noBroadcast") : s.broadcast}</td>
-                    <td>{s.usableHosts.toLocaleString()}</td>
+                    <td>{s.usableHosts.toLocaleString(numLocale)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -802,7 +805,7 @@ export default function CidrTool() {
               <span className="cidr-section-title">{t("vlsm.unfit")}</span>
               <ul className="cidr-unfit-list">
                 {vlsm.unallocated.map((u, i) => (
-                  <li key={i}>{(u.label || "-") + ": " + u.hosts.toLocaleString()}</li>
+                  <li key={i}>{(u.label || "-") + ": " + u.hosts.toLocaleString(numLocale)}</li>
                 ))}
               </ul>
             </div>
@@ -814,9 +817,9 @@ export default function CidrTool() {
       {mode === "supernet" && agg && (
         <div className="cidr-output">
           <div className="cidr-stats">
-            <Stat label={t("supernet.stat.inputs")} value={agg.inputCount.toLocaleString()} />
-            <Stat label={t("supernet.stat.addresses")} value={agg.inputAddresses.toLocaleString()} />
-            <Stat label={t("supernet.stat.blocks")} value={agg.aggregatedCount.toLocaleString()} />
+            <Stat label={t("supernet.stat.inputs")} value={agg.inputCount.toLocaleString(numLocale)} />
+            <Stat label={t("supernet.stat.addresses")} value={agg.inputAddresses.toLocaleString(numLocale)} />
+            <Stat label={t("supernet.stat.blocks")} value={agg.aggregatedCount.toLocaleString(numLocale)} />
           </div>
           <span className="cidr-section-title">{t("supernet.minimal")}</span>
           <ul className="cidr-block-list">
@@ -834,7 +837,7 @@ export default function CidrTool() {
               </ul>
               {agg.supernetExtraAddresses > 0 && (
                 <p className="cidr-note">
-                  {t("supernet.singleExtra", { extra: agg.supernetExtraAddresses.toLocaleString() })}
+                  {t("supernet.singleExtra", { extra: agg.supernetExtraAddresses })}
                 </p>
               )}
             </>
@@ -846,9 +849,9 @@ export default function CidrTool() {
       {mode === "overlap" && ov && (
         <div className="cidr-output">
           <div className="cidr-stats">
-            <Stat label={t("overlap.stat.covered")} value={ov.coveredAddresses.toLocaleString()} />
+            <Stat label={t("overlap.stat.covered")} value={ov.coveredAddresses.toLocaleString(numLocale)} />
             {ov.scopeAddresses !== null && (
-              <Stat label={t("overlap.stat.scope")} value={ov.scopeAddresses.toLocaleString()} />
+              <Stat label={t("overlap.stat.scope")} value={ov.scopeAddresses.toLocaleString(numLocale)} />
             )}
           </div>
           <span className="cidr-section-title">{t("overlap.overlapsTitle")}</span>
@@ -862,7 +865,7 @@ export default function CidrTool() {
                   <span className={"cidr-badge cidr-badge--" + o.kind}>{t(`overlap.kind.${o.kind}`)}</span>
                   <span className="mono">{o.b}</span>
                   <span className="cidr-overlap-meta mono">
-                    {o.overlapStart} – {o.overlapEnd} · {o.overlapAddresses.toLocaleString()} {t("overlap.addresses")}
+                    {o.overlapStart} – {o.overlapEnd} · {o.overlapAddresses.toLocaleString(numLocale)} {t("overlap.addresses")}
                   </span>
                 </li>
               ))}

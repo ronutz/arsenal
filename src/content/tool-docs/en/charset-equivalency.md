@@ -45,7 +45,7 @@ The UTF-8 and UTF-16 decoders follow the WHATWG Encoding Standard step by step. 
 
 UTF-16 replaces unpaired surrogates and a leftover odd byte; UTF-32, which browsers do not decode, follows the Unicode Standard's definitions D99 and D100 and replaces each four-byte unit that is a surrogate or beyond U+10FFFF.
 
-**Byte order marks.** With "Let a byte order mark decide the charset" on (the default), data that starts with EF BB BF, FE FF or FF FE is decoded as UTF-8, UTF-16BE or UTF-16LE whatever charset you chose, and the mark is not part of the text: the WHATWG standard treats the mark as more authoritative than a label. The tool also recognises the UTF-32 marks 00 00 FE FF and FF FE 00 00, which a browser does not: it takes the FF FE of FF FE 00 00 for UTF-16LE's mark and decodes the rest as UTF-16LE (Chromium 141, measured on 2026-10-03).
+**Byte order marks.** With "Let a byte order mark decide the charset" on (the default), data that starts with EF BB BF, FE FF or FF FE is decoded as UTF-8, UTF-16BE or UTF-16LE whatever charset you chose, and the mark is not part of the text: the WHATWG standard treats the mark as more authoritative than a label. The tool also recognizes the UTF-32 marks 00 00 FE FF and FF FE 00 00, which a browser does not: it takes the FF FE of FF FE 00 00 for UTF-16LE's mark and decodes the rest as UTF-16LE (Chromium 141, measured on 2026-10-03).
 
 **Detect.** With the charset set to Detect, the tool says why it chose one: a byte order mark; every byte ASCII (every ASCII-compatible charset then reads the same text); well-formed UTF-8 with characters beyond ASCII; zero bytes where ASCII text in UTF-16 or UTF-32 puts them; or the pattern of EBCDIC (0x40 common, no ASCII spaces, most bytes above 0x80). Otherwise it says there is no single answer, and the table of readings is the answer.
 
@@ -59,7 +59,7 @@ UTF-16 replaces unpaired surrogates and a leftover odd byte; UTF-32, which brows
 | Percent-encoding | `caf%C3%A9`, read as the WHATWG URL Standard reads it: a % not followed by two hex digits stays a % |
 | Base64 | standard or URL-safe alphabet, padding optional |
 
-A hex dump is recognised when every line starts with an offset and the offsets step by the line width, so that the ASCII column is never read as bytes, even when it happens to look like hex.
+A hex dump is recognized when every line starts with an offset and the offsets step by the line width, so that the ASCII column is never read as bytes, even when it happens to look like hex.
 
 ## Writing bytes
 

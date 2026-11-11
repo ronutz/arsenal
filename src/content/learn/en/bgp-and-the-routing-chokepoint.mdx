@@ -1,7 +1,7 @@
 ---
 slug: bgp-and-the-routing-chokepoint
 title: "BGP: the trust fall the whole internet is standing on"
-summary: "BGP carries reachability between about 74,000 independently run networks and has no built-in way to check whether an announcement is authorised or a path is real. After reading, you can tell a hijack from a route leak as the standards define them, explain why a more specific route wins and why upstream filtering decides the damage, read the documented incidents in their owners' and regulators' records, and say which defence (filtering, signed route origins, peering roles, path signatures) answers which failure."
+summary: "BGP carries reachability between about 74,000 independently run networks and has no built-in way to check whether an announcement is authorized or a path is real. After reading, you can tell a hijack from a route leak as the standards define them, explain why a more specific route wins and why upstream filtering decides the damage, read the documented incidents in their owners' and regulators' records, and say which defence (filtering, signed route origins, peering roles, path signatures) answers which failure."
 concepts: ["bgp", "routing", "hijacking", "rpki", "resilience", "route leak", "route origin validation", "manrs", "bgpsec", "aspa"]
 relatedTools: ["cidr", "ipv6", "rpki-origin-validation"]
 relatedArticles: ["the-chokepoints-of-the-internet", "route-origin-validation-worked-by-hand", "what-happens-if-the-dns-root-goes-dark", "bgp-primer", "cloudflare", "routing-tables-and-default-gateway", "static-routes-and-longest-match", "dynamic-routing-compared", "supernetting-and-aggregation", "choosing-a-public-dns-resolver", "icmp-ping-and-traceroute"]
@@ -46,7 +46,7 @@ The same section puts the defence at provider borders: route policy filters, and
 
 ### Pakistan Telecom and YouTube, 24 February 2008
 
-The Réseaux IP Européens (RIPE) Network Coordination Centre (RIPE NCC) followed it through its Routing Information Service (RIS) collectors. Pakistan's aim was to block the YouTube website ([RIPE NCC case study](https://www.ripe.net/about-us/news/youtube-hijacking-a-ripe-ncc-ris-case-study/)). At 18:47 UTC, Pakistan Telecom (AS17557) started an unauthorised announcement covering part of YouTube's address space, and "One of Pakistan Telecom's upstream providers, PCCW Global (AS3491) forwarded this announcement to the rest of the Internet, which resulted in the hijacking of YouTube traffic on a global scale". Within two minutes the route "had spread to its largest extent in the RIS routing view".
+The Réseaux IP Européens (RIPE) Network Coordination Centre (RIPE NCC) followed it through its Routing Information Service (RIS) collectors. Pakistan's aim was to block the YouTube website ([RIPE NCC case study](https://www.ripe.net/about-us/news/youtube-hijacking-a-ripe-ncc-ris-case-study/)). At 18:47 UTC, Pakistan Telecom (AS17557) started an unauthorized announcement covering part of YouTube's address space, and "One of Pakistan Telecom's upstream providers, PCCW Global (AS3491) forwarded this announcement to the rest of the Internet, which resulted in the hijacking of YouTube traffic on a global scale". Within two minutes the route "had spread to its largest extent in the RIS routing view".
 
 The timeline records YouTube (AS36561) announcing the affected range itself at 20:07 and more specific routes at 20:18, and PCCW Global withdrawing every prefix AS17557 originated at 21:01. RIPE concluded that appropriate routing configuration stops such announcements spreading, and noted talk of certificates for number resources: the future RPKI.
 
@@ -60,7 +60,7 @@ The Federal Communications Commission (FCC) records that in 2017 "traffic from a
 
 ### Verizon and DQE, 24 June 2019
 
-Cloudflare, one of the affected operators, wrote the same day: DQE Communications (AS33154) ran a BGP optimiser that produced many more specific routes, announced them to its customer Allegheny Technologies (AS396531), and that customer sent them to its other transit provider, Verizon (AS701), which passed them to the whole internet ([Cloudflare, 24 June 2019](https://blog.cloudflare.com/how-verizon-and-a-bgp-optimizer-knocked-large-parts-of-the-internet-offline-today/)). Cloudflare lost about 15% of its global traffic at the worst point.
+Cloudflare, one of the affected operators, wrote the same day: DQE Communications (AS33154) ran a BGP optimizer that produced many more specific routes, announced them to its customer Allegheny Technologies (AS396531), and that customer sent them to its other transit provider, Verizon (AS701), which passed them to the whole internet ([Cloudflare, 24 June 2019](https://blog.cloudflare.com/how-verizon-and-a-bgp-optimizer-knocked-large-parts-of-the-internet-offline-today/)). Cloudflare lost about 15% of its global traffic at the worst point.
 
 ### Facebook, 4 October 2021: a withdrawal, not a hijack
 
@@ -78,7 +78,7 @@ From 18:51 UTC the Brazilian network Eletronet (AS267613) originated a route for
 
 ### RPKI and route origin validation
 
-The RPKI follows the allocation tree from the Internet Assigned Numbers Authority (IANA) to the five RIRs, and provides authorisation, not authentication ([RFC 6480, sections 2 and 2.1](https://www.rfc-editor.org/rfc/rfc6480.txt)). A ROA is a signed statement that a block's holder lets one AS originate routes for it; without maxLength, only the exact prefix is authorised ([RFC 9582, Abstract and section 4.3.2.2](https://www.rfc-editor.org/rfc/rfc9582.txt)).
+The RPKI follows the allocation tree from the Internet Assigned Numbers Authority (IANA) to the five RIRs, and provides authorization, not authentication ([RFC 6480, sections 2 and 2.1](https://www.rfc-editor.org/rfc/rfc6480.txt)). A ROA is a signed statement that a block's holder lets one AS originate routes for it; without maxLength, only the exact prefix is authorized ([RFC 9582, Abstract and section 4.3.2.2](https://www.rfc-editor.org/rfc/rfc9582.txt)).
 
 Routers do not check signatures: validating caches verify the RPKI and feed routers ([RFC 8210, section 3](https://www.rfc-editor.org/rfc/rfc8210.txt)), and "the router cannot validate the data cryptographically from a well-known trust anchor. The router trusts the cache to provide correct data" ([RFC 7115, section 3](https://www.rfc-editor.org/rfc/rfc7115.txt)). The router compares each route with these Validated ROA Payloads (VRPs) and marks it Valid, Invalid or NotFound ([RFC 6811, section 2](https://www.rfc-editor.org/rfc/rfc6811.txt)). Illustrative, with documentation values ([RFC 5398, section 4](https://www.rfc-editor.org/rfc/rfc5398.txt)) and one VRP, 192.0.2.0/24, maxLength 24, AS64496:
 
@@ -150,7 +150,7 @@ The [route origin validation calculator](/tools/rpki-origin-validation) applies 
 ## What to remember
 
 - BGP has no internal way to check an announcement; its 1995 specification did not discuss security.
-- A hijack is an unauthorised origination; a route leak is a genuine route sent beyond its intended scope (six types in RFC 7908); most are accidents.
+- A hijack is an unauthorized origination; a route leak is a genuine route sent beyond its intended scope (six types in RFC 7908); most are accidents.
 - The more specific route wins wherever it is accepted, so the first upstream's filtering decides the damage, as in 2008 and 2019.
 - Routers do not verify RPKI signatures: caches do, routers mark routes Valid, Invalid or NotFound, and dropping Invalid routes is the operator's explicit policy.
 - Origin validation does not stop leaks (the 2024 leak was RPKI Valid); RFC 9234's roles and OTC address them, BGPsec is not in commercial routers, and ASPA is a draft.

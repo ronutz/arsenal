@@ -264,7 +264,7 @@ export const SECURITY_HEADERS: readonly SecurityHeaderRecord[] = Object.freeze([
     flag: "presence",
     sourceIds: ["owasp-secure-headers", "mdn-http-headers"],
     summary:
-      "A Server header that discloses product and version (e.g. 'Apache/2.4.41') hands attackers a head start on version-specific exploits. Minimise it to the product name or remove it.",
+      "A Server header that discloses product and version (e.g. 'Apache/2.4.41') hands attackers a head start on version-specific exploits. Minimize it to the product name or remove it.",
   },
   {
     id: "x-powered-by",

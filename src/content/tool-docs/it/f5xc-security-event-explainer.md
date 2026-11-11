@@ -1,0 +1,26 @@
+## Cosa fa
+
+Questo strumento decodifica un evento di sicurezza di F5 Distributed Cloud (XC). Incolla il JSON dell’evento, dalla pagina degli eventi di sicurezza della Console, da un global log receiver o dall’API, e lo strumento espone cosa è successo: quale servizio di sicurezza ha prodotto l’evento, l’azione eseguita e se la richiesta è stata bloccata, il contesto della richiesta e il motivo esatto per cui l’evento è scattato. Viene eseguito interamente nel tuo browser.
+
+## I quattro tipi di evento
+
+XC produce quattro tipi di evento di sicurezza, e lo strumento riconosce quale hai incollato dal campo sec_event_type. Un evento WAF (web application firewall) proviene dall’application firewall e contiene firme, violazioni e tipi di attacco. Un evento Bot Defense contiene il verdetto sul bot. Un evento Service Policy contiene la policy e la regola che hanno trovato corrispondenza. Un evento API contiene i risultati della convalida OpenAPI e le corrispondenze con le policy. Se manca l’etichetta del tipo, lo strumento deduce il tipo dalla forma dell’evento.
+
+## Azione eseguita e azione consigliata
+
+Un evento di sicurezza registra sia ciò che il WAF ha consigliato sia ciò che ha fatto davvero, e le due cose non sempre coincidono. L’azione consigliata (o calcolata) riflette il verdetto della policy; l’azione eseguita riflette la modalità di applicazione. In modalità di monitoraggio, o mentre una firma è in staging, il WAF registra un evento completo con firme e violazioni ma non blocca, quindi l’azione è report anche se la firma ha trovato corrispondenza. Lo strumento mostra entrambe e ne ricava un esito semplice: bloccato, segnalato o consentito.
+
+## Il motivo per cui è scattato
+
+La parte più utile di un evento è il motivo per cui è scattato, e si trova in campi diversi a seconda del tipo. Per un evento WAF, lo strumento elenca ogni firma con ID, nome, accuratezza e tipo di attacco, ogni violazione con il suo contesto e i tipi di attacco rilevati. Per un evento Bot Defense, mostra l’analisi del bot (umano, bot legittimo o malevolo), il tipo di automazione e la raccomandazione. Per un evento Service Policy, indica la policy, la regola e il policy set. Per un evento API, mostra la policy e la regola che hanno trovato corrispondenza, lo stato della convalida OpenAPI della richiesta e della risposta ed eventuali firme. Insieme all’ID della richiesta, basta per aprire un caso di supporto o per costruire un’esclusione precisa.
+
+## Condivisione dei risultati
+
+Sotto il tipo e l’esito dell’evento, **Condividi i risultati** crea un link a questa pagina, solo quando lo premi, che contiene dopo il `#` una copia dell’evento, mai l’evento così come l’hai incollato. La [Security Events Reference](https://docs.cloud.f5.com/docs-v2/platform/reference/security-events-reference) di F5 (consultata il 01/11/2026) elenca ciò che un evento può contenere: `req_headers` («Request headers»), `req_body` («Request body»), `req_parameters`, `user` («User identifier as configured in User Identification Policy»), `tenant`, e l’indirizzo e la posizione del client. Le intestazioni della richiesta contengono cookie e valori `Authorization`, e un corpo può contenere una password. La pagina legge un insieme fisso di campi, quindi la copia contiene solo quelli: tipo e nome dell’evento, azione, risultato e raccomandazione; metodo, host, percorso, indirizzo del client, load balancer, namespace, ID della richiesta e ora; ID, nome, accuratezza e tipo di attacco di ogni firma (mai il suo `matching_info`, che può citare la richiesta), nome e contesto di ogni violazione, i tipi di attacco, il verdetto sul bot, e la policy di servizio o API con la sua regola. Un envelope (una stringa `message`, una pagina `events`, un elenco) fornisce l’unico evento che la pagina legge. Prima che il link venga offerto, la pagina rilegge la copia e deve ottenere la stessa lettura, altrimenti il link non viene creato; poi nella copia viene cercata una credenziale ancora presente in un campo che la pagina mostra (un token nel percorso): una sola significa niente link.
+
+Il suo riquadro a comparsa indica prima cosa contiene il link, poi offre Copia link e, se il browser ne ha uno, il menu di condivisione; l’indirizzo della pagina non cambia. Indica anche che la copia conserva host, percorso, indirizzo del client, load balancer e namespace, così puoi controllarli.
+
+La [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (sezione 3.5, consultata il 01/11/2026) stabilisce che il frammento viene separato dal resto dell’URI prima della dereferenziazione («separated from the rest of the URI prior to a dereference»), quindi ciò che segue il `#` non viene inviato al server quando si apre il link; resta nella barra degli indirizzi e nella cronologia di chi lo apre, e chiunque abbia il link può leggerlo.
+
+- **Lunghezza massima.** Al massimo 16.384 caratteri in tutto, il limite che il sito applica a ogni valore dopo il `#`; una condivisione più lunga non ottiene il link e il riquadro a comparsa ne indica la lunghezza.
+- **Apertura di un link.** La copia riempie la casella come farebbe un incolla, e la pagina la legge. I valori lasciano poi subito l’indirizzo della pagina, senza alcuna richiesta, quindi un ricaricamento o il pulsante Condividi della pagina stessa non contengono nulla.

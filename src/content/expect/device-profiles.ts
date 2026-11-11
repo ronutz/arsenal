@@ -229,7 +229,7 @@ export const COMMON_SOURCES: readonly ProfileSource[] = deepFreeze([
     url: "https://core.tcl-lang.org/expect/raw?name=expect.man&ci=trunk",
     accessDate: "2026-10-27",
     release: "Expect 5.45.4",
-    supports: "a return character is denoted \\r and line-buffered programs read on it; ^ and $ match the beginning and end of the data in the matching buffer; exp_continue restarts the timeout timer unless -continue_timer is given; send -s and send_slow; match_max and the 2000-byte default; spawn's pty is initialised like the user's tty and then made sane",
+    supports: "a return character is denoted \\r and line-buffered programs read on it; ^ and $ match the beginning and end of the data in the matching buffer; exp_continue restarts the timeout timer unless -continue_timer is given; send -s and send_slow; match_max and the 2000-byte default; spawn's pty is initialized like the user's tty and then made sane",
   },
   // POSIX: the General Terminal Interface chapter.
   {
@@ -523,7 +523,7 @@ export const DEVICE_PROFILES: readonly DeviceProfile[] = deepFreeze<DeviceProfil
         url: "https://my.f5.com/manage/s/article/K5903",
         accessDate: "2026-10-27",
         release: "BIG-IP 21.1.x, 17.5.x and 17.1.x (the branches supported with active software development)",
-        supports: "17.5.x: first customer ship February 27, 2025; End of Software Development and End of Technical Support January 1, 2029; a Long-Term Stability Release with a longer than three-year Standard Support phase",
+        supports: "17.5.x: first customer ship 27 February 2025; End of Software Development and End of Technical Support 1 January 2029; a Long-Term Stability Release with a longer than three-year Standard Support phase",
       },
     ],
   },

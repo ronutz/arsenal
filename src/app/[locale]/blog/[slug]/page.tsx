@@ -10,6 +10,8 @@
 // way an evergreen Learn article is not.
 // ============================================================================
 
+// English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
+import { intlLocale } from "@/i18n/locales";
 import { notFound } from "next/navigation";
 import MessageSlice from "@/components/MessageSlice";
 import ShareControl from "@/components/ShareControl";
@@ -72,7 +74,7 @@ export default async function BlogPostPage({
   const tNav = await getTranslations("nav");
   const t = await getTranslations("blog");
 
-  const fmt = new Intl.DateTimeFormat(locale, {
+  const fmt = new Intl.DateTimeFormat(intlLocale(locale), {
     year: "numeric",
     month: "long",
     day: "numeric",

@@ -80,7 +80,7 @@
 // MAX_OCTETS octets, MAX_TAGS tags).
 // ============================================================================
 
-import { say, plainText, withEngineText, EngineText, type EngineList } from "../engine-text"; // sentences with ids, lists, and the API's English projection
+import { say, resolvePlurals, plainText, withEngineText, EngineText, type EngineList } from "../engine-text"; // sentences with ids, lists, and the API's English projection
 import { ETHERTYPES } from "./ethertypes"; // IANA's Ethertypes list, packed
 
 // ----------------------------------------------------------------------------
@@ -424,7 +424,7 @@ function argText(a: Arg): string {
  * @returns the sentence
  */
 function sayT(id: string, tpl: string, args: Record<string, Arg>): EngineText {
-  return say(id, tpl.replace(/\{(\w+)\}/g, (m: string, k: string) => (k in args ? argText(args[k]) : m)), args); // filled for the API, values kept for the page
+  return say(id, resolvePlurals(tpl, args).replace(/\{(\w+)\}/g, (m: string, k: string) => (k in args ? argText(args[k]) : m)), args); // filled for the API, values kept for the page
 } // sayT
 
 // ----------------------------------------------------------------------------
@@ -497,7 +497,7 @@ function parseHex(raw: unknown): number[] {
     hex += body; // kept
   } // tokens
   if (hex === "") throw inputError(say("err.tag.empty", "Enter the octets in hexadecimal: a tag (81 00 00 0a) or a frame's start, destination and source MAC first.")); // only separators
-  if (hex.length % 2 !== 0) throw inputError(sayT("err.tag.odd", "The text holds {n} hexadecimal digits, an odd number: every octet is two digits.", { n: String(hex.length) })); // half an octet
+  if (hex.length % 2 !== 0) throw inputError(sayT("err.tag.odd", "The text holds {n, plural, one {{n} hexadecimal digit} other {{n} hexadecimal digits}}, an odd number: every octet is two digits.", { n: String(hex.length) })); // half an octet
   if (hex.length / 2 > MAX_OCTETS) throw inputError(sayT("err.tag.octets", "That is {n} octets; the decoder reads at most {max}, which is far more than a frame's MACs, tags and EtherType take.", { n: String(hex.length / 2), max: String(MAX_OCTETS) })); // bounded
   const out: number[] = []; // the octets
   for (let i = 0; i < hex.length; i += 2) out.push(parseInt(hex.slice(i, i + 2), 16)); // two digits each
@@ -570,7 +570,7 @@ export function ianaEthertype(v: number): string | null {
 function nextOf(v: number): NextReading<EngineText> {
   const value = hex4(v); // as text
   if (v <= 0x05dc) { // RFC 9542 s3: a length "must ... be less than 0x5DD"
-    return { value, number: v, kind: "length", name: ianaEthertype(v), text: sayT("next.length", "{value} is a length, {n} octets, not an EtherType: an IEEE 802.3 frame whose data starts with LLC (DSAP, SSAP, control) (RFC 9542, section 3).", { value, n: String(v) }) }; // a length
+    return { value, number: v, kind: "length", name: ianaEthertype(v), text: sayT("next.length", "{value} is a length, {n, plural, one {{n} octet} other {{n} octets}}, not an EtherType: an IEEE 802.3 frame whose data starts with LLC (DSAP, SSAP, control) (RFC 9542, section 3).", { value, n: String(v) }) }; // a length
   } // length
   if (v < 0x0600) { // between the two ranges
     return { value, number: v, kind: "neither", name: null, text: sayT("next.neither", "{value} is neither a length (below 0x05DD) nor an EtherType (0x0600 and above) (RFC 9542, section 3).", { value }) }; // neither
@@ -610,7 +610,7 @@ export function tagLocalisable(r: TagRequest): TagResult<EngineText> {
     const first = o.length >= 2 ? u16(o, 0) : -1; // the first two octets
     if (first in TPIDS) { start = "tpid"; notes.push(sayT("note.autoTpid", "Read as a tag because the octets start with {tpid}; choose \"Destination MAC\" if they are the start of a frame.", { tpid: hex4(first) })); } // a TPID first; 09/11/2026: the quoted option is written as its label, start.mac "Destination MAC"
     else if (o.length >= 14) start = "mac"; // long enough for two MACs and a type
-    else throw inputError(sayT("err.tag.short", "{n} octets that do not start with 0x8100, 0x88A8 or 0x9100: too short for a frame's start (6 + 6 octets of MAC, then 2 of type) and not a tag.", { n: String(o.length) })); // neither
+    else throw inputError(sayT("err.tag.short", "{n, plural, one {{n} octet that does not start} other {{n} octets that do not start}} with 0x8100, 0x88A8 or 0x9100: too short for a frame's start (6 + 6 octets of MAC, then 2 of type) and not a tag.", { n: String(o.length) })); // neither
   } else start = startRaw; // as chosen
   let at = 0; // the next octet to read
   let destination: MacReading | null = null; // filled for a frame
@@ -669,7 +669,7 @@ export function tagLocalisable(r: TagRequest): TagResult<EngineText> {
   if (start === "tpid" && tags.length === 0) throw inputError(sayT("err.tag.notTag", "The octets start with {value}, which is not 0x8100, 0x88A8 or 0x9100: choose \"Destination MAC\" if they are a frame's start.", { value: o.length >= 2 ? hex4(u16(o, 0)) : "?" })); // no tag where one was asked for; 09/11/2026: the quoted option is written as its label, start.mac "Destination MAC"
   if (next === null) notes.push(say("note.endAfterTags", "The octets end after the last tag, so the EtherType that follows is not in them.")); // tag only
   const after = o.length - at; // octets not decoded
-  if (next !== null && after > 0) notes.push(sayT("note.after", "{n} octets after the EtherType or length are not decoded.", { n: String(after) })); // the rest
+  if (next !== null && after > 0) notes.push(sayT("note.after", "{n, plural, one {{n} octet after the EtherType or length is} other {{n} octets after the EtherType or length are}} not decoded.", { n: String(after) })); // the rest
   // Stacking checks: P802.1ad/D2.4 9.7 puts a C-TAG inside an S-TAG ("the MSDU ... can contain a Customer VLAN tag").
   for (let i = 1; i < tags.length; i++) { // each inner tag
     const outer = tags[i - 1].kind; // the one outside it

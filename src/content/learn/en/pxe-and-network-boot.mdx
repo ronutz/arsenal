@@ -115,7 +115,7 @@ Everything above runs inside the firmware, before an operating system or any of 
 
 ## What to remember
 
-- PXE is DHCP plus TFTP with a convention on top; Intel's specification is version 2.1 of September 20, 1999.
+- PXE is DHCP plus TFTP with a convention on top; Intel's specification is version 2.1 of 20 September 1999.
 - The client sends option 60 "PXEClient:Arch:xxxxx:UNDI:yyyzzz" and options 93, 94 and 97; RFC 4578 documents the three and never mentions option 60.
 - The file is named in option 67 or the file field, the server in option 54 or siaddr; option 66 is a server name, not an address.
 - Port 4011 is the port of a Proxy DHCP that shares a host with the DHCP server, which "cannot share port (67)"; on its own host a proxy answers on 67.

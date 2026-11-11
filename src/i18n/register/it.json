@@ -1,0 +1,350 @@
+{
+  "language": "it",
+  "source": "Italian research of 11/11/2026 (AgID, ACN, Treccani, vendor documentation in Italian): renderings that read as machine translation, calques or anglicised verbs to a professional reader in Italy, chosen from the writers' FORBIDDEN list where a whole-word match cannot hit a legitimate use (gettone, bandierina, punto finale, marca temporale, decrittare, whitelist and the other judgement calls stay with the writers).",
+  "forbidden": [
+    {
+      "avoid": "stretta di mano",
+      "use": "handshake (l’handshake TLS)"
+    },
+    {
+      "avoid": "ascoltatore",
+      "use": "listener"
+    },
+    {
+      "avoid": "equilibratore di carico",
+      "use": "load balancer"
+    },
+    {
+      "avoid": "bilanciatore di carichi",
+      "use": "load balancer"
+    },
+    {
+      "avoid": "controlli sanitari",
+      "use": "controllo di integrità (health check)"
+    },
+    {
+      "avoid": "controllo sanitario",
+      "use": "controllo di integrità (health check)"
+    },
+    {
+      "avoid": "tempesta di trasmissione",
+      "use": "broadcast storm"
+    },
+    {
+      "avoid": "salto successivo",
+      "use": "next hop"
+    },
+    {
+      "avoid": "luppolo",
+      "use": "hop"
+    },
+    {
+      "avoid": "instradatore",
+      "use": "router"
+    },
+    {
+      "avoid": "instradatori",
+      "use": "router"
+    },
+    {
+      "avoid": "muro tagliafuoco",
+      "use": "firewall"
+    },
+    {
+      "avoid": "parafuoco",
+      "use": "firewall"
+    },
+    {
+      "avoid": "barriera tagliafuoco",
+      "use": "firewall"
+    },
+    {
+      "avoid": "criptare",
+      "use": "cifrare, cifrato, cifratura"
+    },
+    {
+      "avoid": "criptato",
+      "use": "cifrare, cifrato, cifratura"
+    },
+    {
+      "avoid": "criptata",
+      "use": "cifrare, cifrato, cifratura"
+    },
+    {
+      "avoid": "criptati",
+      "use": "cifrare, cifrato, cifratura"
+    },
+    {
+      "avoid": "criptate",
+      "use": "cifrare, cifrato, cifratura"
+    },
+    {
+      "avoid": "criptaggio",
+      "use": "cifrare, cifrato, cifratura"
+    },
+    {
+      "avoid": "encriptare",
+      "use": "cifrare, cifrato, cifratura"
+    },
+    {
+      "avoid": "encriptato",
+      "use": "cifrare, cifrato, cifratura"
+    },
+    {
+      "avoid": "crittare",
+      "use": "cifrare, cifrato, cifratura"
+    },
+    {
+      "avoid": "crittato",
+      "use": "cifrare, cifrato, cifratura"
+    },
+    {
+      "avoid": "decriptare",
+      "use": "decifrare"
+    },
+    {
+      "avoid": "decriptato",
+      "use": "decifrare"
+    },
+    {
+      "avoid": "decriptata",
+      "use": "decifrare"
+    },
+    {
+      "avoid": "decriptati",
+      "use": "decifrare"
+    },
+    {
+      "avoid": "crittografare",
+      "use": "cifrare, cifrato"
+    },
+    {
+      "avoid": "crittografato",
+      "use": "cifrare, cifrato"
+    },
+    {
+      "avoid": "crittografata",
+      "use": "cifrare, cifrato"
+    },
+    {
+      "avoid": "crittografati",
+      "use": "cifrare, cifrato"
+    },
+    {
+      "avoid": "crittografate",
+      "use": "cifrare, cifrato"
+    },
+    {
+      "avoid": "hashare",
+      "use": "calcolare l’hash"
+    },
+    {
+      "avoid": "hashato",
+      "use": "calcolare l’hash"
+    },
+    {
+      "avoid": "hashata",
+      "use": "calcolare l’hash"
+    },
+    {
+      "avoid": "droppare",
+      "use": "scartare, scartato"
+    },
+    {
+      "avoid": "droppato",
+      "use": "scartare, scartato"
+    },
+    {
+      "avoid": "droppati",
+      "use": "scartare, scartato"
+    },
+    {
+      "avoid": "droppa",
+      "use": "scartare, scartato"
+    },
+    {
+      "avoid": "matchare",
+      "use": "corrispondere, trovare una corrispondenza"
+    },
+    {
+      "avoid": "matchato",
+      "use": "corrispondere, trovare una corrispondenza"
+    },
+    {
+      "avoid": "matcha",
+      "use": "corrispondere, trovare una corrispondenza"
+    },
+    {
+      "avoid": "flaggare",
+      "use": "segnalare, contrassegnare"
+    },
+    {
+      "avoid": "flaggato",
+      "use": "segnalare, contrassegnare"
+    },
+    {
+      "avoid": "settare",
+      "use": "impostare, configurare, impostazione"
+    },
+    {
+      "avoid": "settato",
+      "use": "impostare, configurare, impostazione"
+    },
+    {
+      "avoid": "settata",
+      "use": "impostare, configurare, impostazione"
+    },
+    {
+      "avoid": "settaggio",
+      "use": "impostare, configurare, impostazione"
+    },
+    {
+      "avoid": "deployare",
+      "use": "distribuire, eseguire il deployment"
+    },
+    {
+      "avoid": "deployato",
+      "use": "distribuire, eseguire il deployment"
+    },
+    {
+      "avoid": "pingare",
+      "use": "eseguire un ping"
+    },
+    {
+      "avoid": "loggare",
+      "use": "registrare nei log, accedere"
+    },
+    {
+      "avoid": "loggarsi",
+      "use": "registrare nei log, accedere"
+    },
+    {
+      "avoid": "loggato",
+      "use": "registrare nei log, accedere"
+    },
+    {
+      "avoid": "taggare",
+      "use": "con tag, assegnare il tag"
+    },
+    {
+      "avoid": "taggato",
+      "use": "con tag, assegnare il tag"
+    },
+    {
+      "avoid": "taggata",
+      "use": "con tag, assegnare il tag"
+    },
+    {
+      "avoid": "fixare",
+      "use": "correggere, applicare una patch"
+    },
+    {
+      "avoid": "patchare",
+      "use": "correggere, applicare una patch"
+    },
+    {
+      "avoid": "customizzare",
+      "use": "personalizzare, personalizzazione"
+    },
+    {
+      "avoid": "customizzazione",
+      "use": "personalizzare, personalizzazione"
+    },
+    {
+      "avoid": "triggerare",
+      "use": "attivare, far scattare"
+    },
+    {
+      "avoid": "parsare",
+      "use": "analizzare"
+    },
+    {
+      "avoid": "parsificare",
+      "use": "analizzare"
+    },
+    {
+      "avoid": "uploadare",
+      "use": "caricare, scaricare"
+    },
+    {
+      "avoid": "downloadare",
+      "use": "caricare, scaricare"
+    },
+    {
+      "avoid": "linkare",
+      "use": "collegare, inserire un link"
+    },
+    {
+      "avoid": "switchare",
+      "use": "passare a, commutare"
+    },
+    {
+      "avoid": "troubleshootare",
+      "use": "diagnosticare, risolvere i problemi"
+    },
+    {
+      "avoid": "sniffare",
+      "use": "catturare il traffico, sniffer"
+    },
+    {
+      "avoid": "annusatore",
+      "use": "catturare il traffico, sniffer"
+    },
+    {
+      "avoid": "cliccare",
+      "use": "fai clic su, seleziona"
+    },
+    {
+      "avoid": "clicca",
+      "use": "fai clic su, seleziona"
+    },
+    {
+      "avoid": "clicca qui",
+      "use": "fai clic su, seleziona"
+    },
+    {
+      "avoid": "performante",
+      "use": "efficiente, veloce, con prestazioni elevate"
+    },
+    {
+      "avoid": "performanti",
+      "use": "efficiente, veloce, con prestazioni elevate"
+    },
+    {
+      "avoid": "spiegatore",
+      "use": "analizzatore, guida"
+    },
+    {
+      "avoid": "esplicatore",
+      "use": "analizzatore, guida"
+    },
+    {
+      "avoid": "editare",
+      "use": "modificare"
+    },
+    {
+      "avoid": "servitore",
+      "use": "server"
+    },
+    {
+      "avoid": "si prega di",
+      "use": "l’imperativo semplice"
+    },
+    {
+      "avoid": "allorquando",
+      "use": "quando, ogni volta che"
+    },
+    {
+      "avoid": "ogniqualvolta",
+      "use": "quando, ogni volta che"
+    },
+    {
+      "avoid": "qual'è",
+      "use": "qual è"
+    },
+    {
+      "avoid": "qual’è",
+      "use": "qual è"
+    }
+  ]
+}

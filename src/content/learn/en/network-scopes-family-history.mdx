@@ -21,7 +21,7 @@ A wide area network is one where **somebody else owns the circuit and bills you 
 
 Metropolitan sits between them because its economics do: a university or a hospital group with fibre across a city has a link that is neither free nor charged by the byte.
 
-**Every protocol carries an assumption about which side of that line it will run on.** Chatty protocols that ask and wait were fine on a floor and disastrous over a leased line. The entire wide area optimisation industry - compression, caching, deduplication, protocol acceleration - exists because software written for one side of the line was deployed on the other.
+**Every protocol carries an assumption about which side of that line it will run on.** Chatty protocols that ask and wait were fine on a floor and disastrous over a leased line. The entire wide area optimization industry - compression, caching, deduplication, protocol acceleration - exists because software written for one side of the line was deployed on the other.
 
 ## What the categories were actually used for
 
@@ -33,7 +33,7 @@ That assumption survived for decades because it was mostly true, and it produced
 
 ## 1998: the first word to lose its meaning
 
-The virtual local area network, standardised as 802.1Q, made one physical switch present several logical networks. From that moment **local stopped being a property of the wire**. Two machines in the same rack could be on different networks, and two machines in different buildings could be on the same one.
+The virtual local area network, standardized as 802.1Q, made one physical switch present several logical networks. From that moment **local stopped being a property of the wire**. Two machines in the same rack could be on different networks, and two machines in different buildings could be on the same one.
 
 This is where segmentation begins as a discipline, and where the vocabulary starts to drift. A VLAN is not a smaller local area network; it is a decision that certain traffic should be kept apart, expressed in equipment that used to express geography.
 
@@ -65,7 +65,7 @@ What replaced it is **identity and policy**, which is where the [identity articl
 
 ## Jobs and practices
 
-The categories still organise the profession even though they no longer organise the network. Certifications are structured around them, teams are named after them, and budgets are split along the line between the link you own and the link you rent.
+The categories still organize the profession even though they no longer organize the network. Certifications are structured around them, teams are named after them, and budgets are split along the line between the link you own and the link you rent.
 
 The practices that survive are the ones tied to the economics rather than the geography. **Knowing what a byte costs on each path**, because that is still the real difference. **Knowing who to call**, since the administrative boundary outlived the physical one. **Designing for the latency you have** rather than the latency you would like, because the speed of light is the one constraint in this article that has never moved.
 
@@ -75,7 +75,7 @@ And the practice worth keeping longest: **when someone says local, ask whether t
 
 **Scope is becoming a policy label.** Systems increasingly describe reachability in terms of workload identity and intent, with the physical path an implementation detail the operator never names.
 
-**The economics are converging but not equalising.** Inter-region traffic charges keep a version of the old wide area calculation alive inside cloud environments, so the distinction that started with leased lines survives as an egress fee.
+**The economics are converging but not equalizing.** Inter-region traffic charges keep a version of the old wide area calculation alive inside cloud environments, so the distinction that started with leased lines survives as an egress fee.
 
 **And one thing genuinely has not changed.** Light is still slow, distance still costs milliseconds, and no abstraction has repealed it. Every architecture that treats a remote resource as though it were local eventually meets a round trip it cannot hide - which is the same lesson the first wide area designers learned, arriving by a different route.
 

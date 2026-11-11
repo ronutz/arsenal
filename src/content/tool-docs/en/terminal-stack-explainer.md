@@ -14,7 +14,7 @@ The four one-line definitions are shown **before** you paste anything, because a
 
 ## What it will not do
 
-It reads a path, not a system. It cannot tell you who holds the master for your particular `/dev/pts/3`, and it does not guess at unfamiliar device names: an unrecognised path is reported as unrecognised, because a platform-specific device should not be inferred from its spelling.
+It reads a path, not a system. It cannot tell you who holds the master for your particular `/dev/pts/3`, and it does not guess at unfamiliar device names: an unrecognized path is reported as unrecognized, because a platform-specific device should not be inferred from its spelling.
 
 ## Share results
 

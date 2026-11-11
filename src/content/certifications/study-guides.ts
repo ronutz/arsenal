@@ -193,7 +193,9 @@ export interface StudyGuide {
   retirement?: {
     /** The exam version being withdrawn, exactly as the vendor names it. */
     exam: string;
-    /** Last day it can be sat, exactly as published. */
+    /** Last day it can be sat, exactly as published. A quotation of the vendor, so it keeps the vendor's own date form
+     *  (month first, as published) and is left out of the site's day-first date style (11/11/2026); the pages show the
+     *  day itself from untilIso, and only quote this beside it. */
     until: string;
     /** The same day as an ISO date (YYYY-MM-DD), so the page can compute whether it has passed. Added 2026-10-06
      *  (SCOUT's Round 1 adoption audit, row 8: five notices dated in the past still read as future). The guard
@@ -354,7 +356,7 @@ export const certifications: Certification[] = [
     prerequisites: [],
     requirementMode: "custom",
     requirementNote:
-      "A HackingPoint course credential, NOT an Infinity Specialist Accreditation. Check Point lists these in their own table, separate from the certification program model, and they do NOT count toward the CCSM or CCSM Elite - only ISAs do that. Exams are delivered at Pearson VUE.",
+      "A HackingPoint course credential, NOT an Infinity Specialist Accreditation. Check Point lists these in their own table, separate from the certification program model, and they do NOT count towards the CCSM or CCSM Elite - only ISAs do that. Exams are delivered at Pearson VUE.",
     renewalNote: null,
     sourceUrl: "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
     // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
@@ -370,7 +372,7 @@ export const certifications: Certification[] = [
     prerequisites: [],
     requirementMode: "custom",
     requirementNote:
-      "A HackingPoint course credential, NOT an Infinity Specialist Accreditation. Check Point lists these in their own table, separate from the certification program model, and they do NOT count toward the CCSM or CCSM Elite - only ISAs do that. Exams are delivered at Pearson VUE.",
+      "A HackingPoint course credential, NOT an Infinity Specialist Accreditation. Check Point lists these in their own table, separate from the certification program model, and they do NOT count towards the CCSM or CCSM Elite - only ISAs do that. Exams are delivered at Pearson VUE.",
     renewalNote: null,
     sourceUrl: "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
     // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
@@ -386,7 +388,7 @@ export const certifications: Certification[] = [
     prerequisites: [],
     requirementMode: "custom",
     requirementNote:
-      "A HackingPoint course credential, NOT an Infinity Specialist Accreditation. Check Point lists these in their own table, separate from the certification program model, and they do NOT count toward the CCSM or CCSM Elite - only ISAs do that. Exams are delivered at Pearson VUE.",
+      "A HackingPoint course credential, NOT an Infinity Specialist Accreditation. Check Point lists these in their own table, separate from the certification program model, and they do NOT count towards the CCSM or CCSM Elite - only ISAs do that. Exams are delivered at Pearson VUE.",
     renewalNote: null,
     sourceUrl: "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
     // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
@@ -402,7 +404,7 @@ export const certifications: Certification[] = [
     prerequisites: [],
     requirementMode: "custom",
     requirementNote:
-      "A HackingPoint course credential, NOT an Infinity Specialist Accreditation. Check Point lists these in their own table, separate from the certification program model, and they do NOT count toward the CCSM or CCSM Elite - only ISAs do that. Exams are delivered at Pearson VUE.",
+      "A HackingPoint course credential, NOT an Infinity Specialist Accreditation. Check Point lists these in their own table, separate from the certification program model, and they do NOT count towards the CCSM or CCSM Elite - only ISAs do that. Exams are delivered at Pearson VUE.",
     renewalNote: null,
     sourceUrl: "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
     // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
@@ -418,7 +420,7 @@ export const certifications: Certification[] = [
     prerequisites: [],
     requirementMode: "custom",
     requirementNote:
-      "A HackingPoint course credential, NOT an Infinity Specialist Accreditation. Check Point lists these in their own table, separate from the certification program model, and they do NOT count toward the CCSM or CCSM Elite - only ISAs do that. Exams are delivered at Pearson VUE.",
+      "A HackingPoint course credential, NOT an Infinity Specialist Accreditation. Check Point lists these in their own table, separate from the certification program model, and they do NOT count towards the CCSM or CCSM Elite - only ISAs do that. Exams are delivered at Pearson VUE.",
     renewalNote: null,
     sourceUrl: "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
     // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
@@ -663,7 +665,7 @@ export const certifications: Certification[] = [
     examSlugs: ["ping-cp-pingaccess"],
     sourceUrl: "https://training.pingidentity.com/certification",
     renewalNote:
-      "Credential valid for 3 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing center. Exam based on PingAccess version 8 or later. Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalog, verified 2026-07-22.",
+      "Credential valid for 3 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing centre. Exam based on PingAccess version 8 or later. Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalogue, verified 2026-07-22.",
     // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
     ptBr: { renewalNote: "Credencial válida por 3 anos; a renovação é feita refazendo e passando na prova, o que pode ser feito a partir de 3 meses antes do vencimento. Supervisionada pela Kryterion, remotamente ou em um centro de testes. Prova baseada no PingAccess versão 8 ou posterior. Fatos segundo o Certification Guide oficial (certification-exams-policies-procedures.pdf) e o catálogo de training.pingidentity.com/certification, verificados em 22 de julho de 2026." },
   },
@@ -675,7 +677,7 @@ export const certifications: Certification[] = [
     examSlugs: ["ping-cp-pingdirectory"],
     sourceUrl: "https://training.pingidentity.com/certification",
     renewalNote:
-      "Credential valid for 3 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing center. The Certifications page gives the exam code PDP-001 (read 2026-10-26). Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalog, verified 2026-07-22.",
+      "Credential valid for 3 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing centre. The Certifications page gives the exam code PDP-001 (read 2026-10-26). Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalogue, verified 2026-07-22.",
     ptBr: { renewalNote: "Credencial válida por 3 anos; a renovação é feita refazendo e passando na prova, o que pode ser feito a partir de 3 meses antes do vencimento. Supervisionada pela Kryterion, remotamente ou em um centro de testes. A página de certificações informa o código da prova, PDP-001 (lida em 26 de outubro de 2026). Fatos segundo o Certification Guide oficial (certification-exams-policies-procedures.pdf) e o catálogo de training.pingidentity.com/certification, verificados em 22 de julho de 2026." },
   },
   {
@@ -686,7 +688,7 @@ export const certifications: Certification[] = [
     examSlugs: ["ping-cp-pingone"],
     sourceUrl: "https://training.pingidentity.com/certification",
     renewalNote:
-      "Credential valid for 3 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing center. The Certifications page gives the exam code POP-001 (read 2026-10-26). Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalog, verified 2026-07-22.",
+      "Credential valid for 3 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing centre. The Certifications page gives the exam code POP-001 (read 2026-10-26). Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalogue, verified 2026-07-22.",
     ptBr: { renewalNote: "Credencial válida por 3 anos; a renovação é feita refazendo e passando na prova, o que pode ser feito a partir de 3 meses antes do vencimento. Supervisionada pela Kryterion, remotamente ou em um centro de testes. A página de certificações informa o código da prova, POP-001 (lida em 26 de outubro de 2026). Fatos segundo o Certification Guide oficial (certification-exams-policies-procedures.pdf) e o catálogo de training.pingidentity.com/certification, verificados em 22 de julho de 2026." },
   },
   {
@@ -697,7 +699,7 @@ export const certifications: Certification[] = [
     examSlugs: ["ping-cp-pingone-davinci"],
     sourceUrl: "https://training.pingidentity.com/certification",
     renewalNote:
-      "Credential valid for 3 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing center. The Certifications page gives the exam code PODV-001 (read 2026-10-26). Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalog, verified 2026-07-22.",
+      "Credential valid for 3 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing centre. The Certifications page gives the exam code PODV-001 (read 2026-10-26). Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalogue, verified 2026-07-22.",
     ptBr: { renewalNote: "Credencial válida por 3 anos; a renovação é feita refazendo e passando na prova, o que pode ser feito a partir de 3 meses antes do vencimento. Supervisionada pela Kryterion, remotamente ou em um centro de testes. A página de certificações informa o código da prova, PODV-001 (lida em 26 de outubro de 2026). Fatos segundo o Certification Guide oficial (certification-exams-policies-procedures.pdf) e o catálogo de training.pingidentity.com/certification, verificados em 22 de julho de 2026." },
   },
   {
@@ -708,7 +710,7 @@ export const certifications: Certification[] = [
     examSlugs: ["ping-cp-pingam"],
     sourceUrl: "https://training.pingidentity.com/certification",
     renewalNote:
-      "Credential valid for 3 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing center. Exam based on PingAM version 7 (the product formerly ForgeRock Access Management). Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalog, verified 2026-07-22.",
+      "Credential valid for 3 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing centre. Exam based on PingAM version 7 (the product formerly ForgeRock Access Management). Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalogue, verified 2026-07-22.",
     // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
     ptBr: { renewalNote: "Credencial válida por 3 anos; a renovação é feita refazendo e passando na prova, o que pode ser feito a partir de 3 meses antes do vencimento. Supervisionada pela Kryterion, remotamente ou em um centro de testes. Prova baseada no PingAM versão 7 (o produto antes chamado ForgeRock Access Management). Fatos segundo o Certification Guide oficial (certification-exams-policies-procedures.pdf) e o catálogo de training.pingidentity.com/certification, verificados em 22 de julho de 2026." },
   },
@@ -720,7 +722,7 @@ export const certifications: Certification[] = [
     examSlugs: ["ping-cp-pingone-aic"],
     sourceUrl: "https://training.pingidentity.com/certification",
     renewalNote:
-      "Credential valid for 2 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing center. Formerly the ForgeRock Identity Cloud certification. Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalog, verified 2026-07-22.",
+      "Credential valid for 2 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing centre. Formerly the ForgeRock Identity Cloud certification. Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalogue, verified 2026-07-22.",
     // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
     ptBr: { renewalNote: "Credencial válida por 2 anos; a renovação é feita refazendo e passando na prova, o que pode ser feito a partir de 3 meses antes do vencimento. Supervisionada pela Kryterion, remotamente ou em um centro de testes. Antes, era a certificação ForgeRock Identity Cloud. Fatos segundo o Certification Guide oficial (certification-exams-policies-procedures.pdf) e o catálogo de training.pingidentity.com/certification, verificados em 22 de julho de 2026." },
   },
@@ -732,7 +734,7 @@ export const certifications: Certification[] = [
     examSlugs: ["ping-cp-pingidm"],
     sourceUrl: "https://training.pingidentity.com/certification",
     renewalNote:
-      "Credential valid for 3 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing center. The product formerly ForgeRock Identity Management. Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalog, verified 2026-07-22.",
+      "Credential valid for 3 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing centre. The product formerly ForgeRock Identity Management. Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalogue, verified 2026-07-22.",
     // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
     ptBr: { renewalNote: "Credencial válida por 3 anos; a renovação é feita refazendo e passando na prova, o que pode ser feito a partir de 3 meses antes do vencimento. Supervisionada pela Kryterion, remotamente ou em um centro de testes. O produto antes se chamava ForgeRock Identity Management. Fatos segundo o Certification Guide oficial (certification-exams-policies-procedures.pdf) e o catálogo de training.pingidentity.com/certification, verificados em 22 de julho de 2026." },
   },
@@ -744,7 +746,7 @@ export const certifications: Certification[] = [
     examSlugs: ["ping-cp-pingone-idg"],
     sourceUrl: "https://training.pingidentity.com/certification",
     renewalNote:
-      "Credential valid for 2 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing center. Delivered on PingOne Advanced Identity Cloud with the Identity Governance functionality. Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalog, verified 2026-07-22.",
+      "Credential valid for 2 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing centre. Delivered on PingOne Advanced Identity Cloud with the Identity Governance functionality. Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalogue, verified 2026-07-22.",
     // pt-BR of the notes above (CC06; completed 26/10/2026, PRIME: translate the remaining English); names and codes verbatim.
     ptBr: { renewalNote: "Credencial válida por 2 anos; a renovação é feita refazendo e passando na prova, o que pode ser feito a partir de 3 meses antes do vencimento. Supervisionada pela Kryterion, remotamente ou em um centro de testes. Entregue no PingOne Advanced Identity Cloud, com a funcionalidade Identity Governance. Fatos segundo o Certification Guide oficial (certification-exams-policies-procedures.pdf) e o catálogo de training.pingidentity.com/certification, verificados em 22 de julho de 2026." },
   },
@@ -3035,7 +3037,7 @@ export const studyGuides: StudyGuide[] = [
     checks: [
       // F5 blueprint PDFs (2026-10-26): the official blueprint, downloaded from F5's document viewer in a real browser, compared objective by objective with this guide.
       { url: "https://f5.my.salesforce.com/sfc/p/#00000000hXqv/a/Po000005Iynd/6HvW3BjLVe1m6EZn8OwF0IzrDDP5gj4mQIvlW5zLyCc", title: "F5 Certified Administrator, BIG-IP Certification Blueprint", on: "2026-10-26", outcome: "verified", facts: ["blueprint", "objectives"], finding: { en: "Downloaded from F5's document viewer in a real browser (the viewer returns no content to automated reads and dates the document 20 November 2025) and compared in full. Blueprint F5-CAB.0425 covers all five F5CAB exams; its F5CAB5 part (7 topics and their examples) matches this guide word for word. The blueprint states no exam length, question count or fee.", "pt-BR": "Baixado do visualizador de documentos da F5 em um navegador real (o visualizador não devolve conteúdo a leituras automáticas e atribui ao documento a data de 20 de novembro de 2025) e comparado na íntegra. O blueprint F5-CAB.0425 cobre as cinco provas F5CAB; a parte da F5CAB5 (7 tópicos e seus exemplos) confere palavra por palavra com este guia. O blueprint não informa duração, número de questões nem preço." } },
-      { url: "https://education.f5.com/certification/big-ip-administration-support-and-troubleshooting-f5cab5", title: "BIG-IP Administration Support and Troubleshooting (F5CAB5)", on: "2026-10-26", outcome: "verified", facts: ["availability", "duration"], finding: { en: "The exam page names this exam BIG-IP Administration Support and Troubleshooting (F5CAB5): 30 minutes, passing score 245, online through Certiverse or at a Pearson VUE test center. The blueprint it links opens in a document viewer that returned no content without a browser.", "pt-BR": "A página da prova a chama de BIG-IP Administration Support and Troubleshooting (F5CAB5): 30 minutos, nota de aprovação 245, online pela Certiverse ou em centro de testes Pearson VUE. O blueprint indicado abre em um visualizador de documentos que não devolveu conteúdo sem um navegador." } },
+      { url: "https://education.f5.com/certification/big-ip-administration-support-and-troubleshooting-f5cab5", title: "BIG-IP Administration Support and Troubleshooting (F5CAB5)", on: "2026-10-26", outcome: "verified", facts: ["availability", "duration"], finding: { en: "The exam page names this exam BIG-IP Administration Support and Troubleshooting (F5CAB5): 30 minutes, passing score 245, online through Certiverse or at a Pearson VUE test centre. The blueprint it links opens in a document viewer that returned no content without a browser.", "pt-BR": "A página da prova a chama de BIG-IP Administration Support and Troubleshooting (F5CAB5): 30 minutos, nota de aprovação 245, online pela Certiverse ou em centro de testes Pearson VUE. O blueprint indicado abre em um visualizador de documentos que não devolveu conteúdo sem um navegador." } },
       // R1-b3 (2026-10-26): the F5-CA article, read in a real browser.
       { url: "https://support.education.f5.com/hc/en-us/articles/37607208476059-What-is-the-F5-Certified-Administrator-BIG-IP-F5-CA-BIG-IP-certification", title: "What is the F5 Certified Administrator, BIG-IP (F5-CA, BIG-IP) certification?", on: "2026-10-26", outcome: "verified", facts: ["lifecycle", "duration"], finding: { en: "Read in a browser (the address answers automated reads with a bot challenge): the certification requires five exams, F5CAB1 to F5CAB5, this one being F5CAB5; each runs 30 minutes with 25-30 items, and the series replaces the 101 and 201 exams.", "pt-BR": "Lida em um navegador (o endereço responde a leituras automáticas com um desafio anti-bot): a certificação exige cinco provas, de F5CAB1 a F5CAB5, sendo esta a F5CAB5; cada uma dura 30 minutos, com 25-30 itens, e a série substitui as provas 101 e 201." } },
     ],
@@ -3176,7 +3178,7 @@ export const studyGuides: StudyGuide[] = [
       minutes: 90,
       passMark: "64%",
       cost: "USD 395 / EUR 365 / GBP 310",
-      note: "Proctored by Kryterion (online or at a test center). Credential valid for 3 years. Recommended background: 6-12 months of hands-on PingFederate experience plus identity fundamentals (SAML, OAuth, LDAP, SCIM, REST, JSON).",
+      note: "Proctored by Kryterion (online or at a test centre). Credential valid for 3 years. Recommended background: 6-12 months of hands-on PingFederate experience plus identity fundamentals (SAML, OAuth, LDAP, SCIM, REST, JSON).",
     },
     sections: [
       {
@@ -3541,7 +3543,7 @@ export const studyGuides: StudyGuide[] = [
       minutes: 90,
       passMark: "64%",
       cost: "USD 395 - purchased through the Ping Identity Certification Center (regional tax may apply); each voucher is valid for a single attempt",
-      note: "Proctored by Kryterion (remote or testing center). Credential valid for 3 years. Validates basic installation and configuration of PingAccess. Official recommended training: Introduction to PingAccess; Getting Started With PingAccess; PingAccess Administration Training.",
+      note: "Proctored by Kryterion (remote or testing centre). Credential valid for 3 years. Validates basic installation and configuration of PingAccess. Official recommended training: Introduction to PingAccess; Getting Started With PingAccess; PingAccess Administration Training.",
     },
     sections: [
       {
@@ -10413,7 +10415,7 @@ export const studyGuides: StudyGuide[] = [
       passMark: "245 (scaled range 100-350)",
       cost: "US$180 per attempt (not including local taxes and fees)",
       note:
-        "Computer-based, multiple-choice; delivered at Pearson VUE test centers (English). Credential awarded: F5 Certified Technology Specialist, BIG-IP DNS. Prerequisite: F5 Certified BIG-IP Administrator (F5-CA). The time limit excludes any non-native English or other accommodations, and some questions contain exhibits or scenarios. After a failed attempt the exam is on hold for 15 days (first failure), 30 days (second), 45 days (third), 365 days (fourth) and 90 days (fifth and later).",
+        "Computer-based, multiple-choice; delivered at Pearson VUE test centres (English). Credential awarded: F5 Certified Technology Specialist, BIG-IP DNS. Prerequisite: F5 Certified BIG-IP Administrator (F5-CA). The time limit excludes any non-native English or other accommodations, and some questions contain exhibits or scenarios. After a failed attempt the exam is on hold for 15 days (first failure), 30 days (second), 45 days (third), 365 days (fourth) and 90 days (fifth and later).",
     },
     sections: [
       {
@@ -10684,7 +10686,7 @@ export const studyGuides: StudyGuide[] = [
       passMark: "245 (scaled range 100-350)",
       cost: "US$180 per attempt (not including local taxes and fees)",
       note:
-        "Computer-based, multiple-choice; delivered at Pearson VUE test centers (English). Credential awarded: F5 Certified Technology Specialist, BIG-IP ASM. Prerequisite: F5 Certified BIG-IP Administrator (F5-CA); the catalog lists F5-CTS, BIG-IP ASM as a prerequisite for the Security Solutions Expert track. The time limit excludes any non-native English or other accommodations, and some questions contain exhibits or scenarios. After a failed attempt the exam is on hold for 15 days (first failure), 30 days (second), 45 days (third), 365 days (fourth) and 90 days (fifth and later).",
+        "Computer-based, multiple-choice; delivered at Pearson VUE test centres (English). Credential awarded: F5 Certified Technology Specialist, BIG-IP ASM. Prerequisite: F5 Certified BIG-IP Administrator (F5-CA); the catalogue lists F5-CTS, BIG-IP ASM as a prerequisite for the Security Solutions Expert track. The time limit excludes any non-native English or other accommodations, and some questions contain exhibits or scenarios. After a failed attempt the exam is on hold for 15 days (first failure), 30 days (second), 45 days (third), 365 days (fourth) and 90 days (fifth and later).",
     },
     sections: [
       {
@@ -11020,7 +11022,7 @@ export const studyGuides: StudyGuide[] = [
       passMark: "245 (scaled range 100-350)",
       cost: "US$180 per attempt (not including local taxes and fees)",
       note:
-        "Computer-based, multiple-choice; delivered at Pearson VUE test centers (English). Credential awarded: F5 Certified Technology Specialist, APM. Prerequisite: F5 Certified BIG-IP Administrator (F5-CA); the catalog lists the BIG-IP APM Specialist certification as a prerequisite for the Security Solutions Expert track. The time limit excludes any non-native English or other accommodations, and some questions contain exhibits or scenarios. After a failed attempt the exam is on hold for 15 days (first failure), 30 days (second), 45 days (third), 365 days (fourth) and 90 days (fifth and later).",
+        "Computer-based, multiple-choice; delivered at Pearson VUE test centres (English). Credential awarded: F5 Certified Technology Specialist, APM. Prerequisite: F5 Certified BIG-IP Administrator (F5-CA); the catalogue lists the BIG-IP APM Specialist certification as a prerequisite for the Security Solutions Expert track. The time limit excludes any non-native English or other accommodations, and some questions contain exhibits or scenarios. After a failed attempt the exam is on hold for 15 days (first failure), 30 days (second), 45 days (third), 365 days (fourth) and 90 days (fifth and later).",
     },
     sections: [
       {
@@ -11443,7 +11445,7 @@ export const studyGuides: StudyGuide[] = [
       passMark: "245 (scaled range 100-350)",
       cost: "US$180 per attempt (not including local taxes and fees)",
       note:
-        "Computer-based, multiple-choice; delivered at Pearson VUE test centers (English). Credential awarded: F5 Certified Solution Expert, Security (F5-CSE, Security). Prerequisites: F5-CA plus F5-CTS LTM, F5-CTS ASM, and F5-CTS APM. The time limit excludes any non-native English or other accommodations, and some questions contain exhibits or scenarios. After a failed attempt the exam is on hold for 15 days (first failure), 30 days (second), 45 days (third), 365 days (fourth) and 90 days (fifth and later).",
+        "Computer-based, multiple-choice; delivered at Pearson VUE test centres (English). Credential awarded: F5 Certified Solution Expert, Security (F5-CSE, Security). Prerequisites: F5-CA plus F5-CTS LTM, F5-CTS ASM, and F5-CTS APM. The time limit excludes any non-native English or other accommodations, and some questions contain exhibits or scenarios. After a failed attempt the exam is on hold for 15 days (first failure), 30 days (second), 45 days (third), 365 days (fourth) and 90 days (fifth and later).",
     },
     sections: [
       {
@@ -11742,7 +11744,7 @@ export const studyGuides: StudyGuide[] = [
       passMark: "245 (scaled range 100-350)",
       cost: "US$180 per attempt (not including local taxes and fees)",
       note:
-        "Computer-based, multiple-choice; delivered at Pearson VUE test centers (English). Credential awarded: F5 Certified Solution Expert, Cloud (F5-CSE, Cloud). Prerequisites: F5-CA plus F5-CTS LTM and F5-CTS DNS. The time limit excludes any non-native English or other accommodations, and some questions contain exhibits or scenarios. After a failed attempt the exam is on hold for 15 days (first failure), 30 days (second), 45 days (third), 365 days (fourth) and 90 days (fifth and later).",
+        "Computer-based, multiple-choice; delivered at Pearson VUE test centres (English). Credential awarded: F5 Certified Solution Expert, Cloud (F5-CSE, Cloud). Prerequisites: F5-CA plus F5-CTS LTM and F5-CTS DNS. The time limit excludes any non-native English or other accommodations, and some questions contain exhibits or scenarios. After a failed attempt the exam is on hold for 15 days (first failure), 30 days (second), 45 days (third), 365 days (fourth) and 90 days (fifth and later).",
     },
     sections: [
       {
@@ -12211,10 +12213,10 @@ export const studyGuides: StudyGuide[] = [
       { url: "https://f5.my.salesforce.com/sfc/p/#00000000hXqv/a/Po000005J0e9/2n5kz1ssn.j6DyvNKlmFXEw6D6.HrZLOZPNmldvsmGI", title: "NGINX Administrator Full Certification Blueprint", on: "2026-10-26", outcome: "verified", facts: ["blueprint", "objectives"], finding: { en: "Downloaded from F5's document viewer in a real browser (the viewer returns no content to automated reads and dates the document 20 November 2025) and compared in full. The certification blueprint covers all four exams and prints no document id or exam code; its Management part (4 objectives with their examples) matches this guide word for word. It states no exam length, question count or fee.", "pt-BR": "Baixado do visualizador de documentos da F5 em um navegador real (o visualizador não devolve conteúdo a leituras automáticas e atribui ao documento a data de 20 de novembro de 2025) e comparado na íntegra. O blueprint da certificação cobre as quatro provas e não traz identificador de documento nem código de prova; a parte Management (4 objetivos, com seus exemplos) confere palavra por palavra com este guia. Ele não informa duração, número de questões nem preço." } },
     ],
     examFacts: {
-      questions: "Question count not published in the catalog or the certification blueprint",
+      questions: "Question count not published in the catalogue or the certification blueprint",
       minutes: 30,
       passMark: "245",
-      cost: "US$50 online proctored / US$65 test center (not including local taxes and fees)",
+      cost: "US$50 online proctored / US$65 test centre (not including local taxes and fees)",
       note:
         "Exam ID F5N1 on F5's exam page. Online proctored via Certiverse (camera access required) or test-center proctored via Pearson VUE; English; Administrator NGINX level. One of the four exams (taken in any order) that earn F5 Certified Administrator, NGINX (F5-CA, NGINX); the certification is based on NGINX Open Source Software (OSS).",
     },
@@ -12306,10 +12308,10 @@ export const studyGuides: StudyGuide[] = [
       { url: "https://f5.my.salesforce.com/sfc/p/#00000000hXqv/a/Po000005J0e9/2n5kz1ssn.j6DyvNKlmFXEw6D6.HrZLOZPNmldvsmGI", title: "NGINX Administrator Full Certification Blueprint", on: "2026-10-26", outcome: "verified", facts: ["blueprint", "objectives"], finding: { en: "Downloaded from F5's document viewer in a real browser (the viewer returns no content to automated reads and dates the document 20 November 2025) and compared in full. The certification blueprint covers all four exams and prints no document id or exam code; its Configuration: Knowledge part (4 objectives with their examples) matches this guide word for word. It states no exam length, question count or fee.", "pt-BR": "Baixado do visualizador de documentos da F5 em um navegador real (o visualizador não devolve conteúdo a leituras automáticas e atribui ao documento a data de 20 de novembro de 2025) e comparado na íntegra. O blueprint da certificação cobre as quatro provas e não traz identificador de documento nem código de prova; a parte Configuration: Knowledge (4 objetivos, com seus exemplos) confere palavra por palavra com este guia. Ele não informa duração, número de questões nem preço." } },
     ],
     examFacts: {
-      questions: "Question count not published in the catalog or the certification blueprint",
+      questions: "Question count not published in the catalogue or the certification blueprint",
       minutes: 30,
       passMark: "245",
-      cost: "US$50 online proctored / US$65 test center (not including local taxes and fees)",
+      cost: "US$50 online proctored / US$65 test centre (not including local taxes and fees)",
       note:
         "Exam ID F5N2 on F5's exam page. Online proctored via Certiverse (camera access required) or test-center proctored via Pearson VUE; English; Administrator NGINX level. One of the four exams (taken in any order) that earn F5 Certified Administrator, NGINX (F5-CA, NGINX); the certification is based on NGINX Open Source Software (OSS).",
     },
@@ -12416,10 +12418,10 @@ export const studyGuides: StudyGuide[] = [
       { url: "https://f5.my.salesforce.com/sfc/p/#00000000hXqv/a/Po000005J0e9/2n5kz1ssn.j6DyvNKlmFXEw6D6.HrZLOZPNmldvsmGI", title: "NGINX Administrator Full Certification Blueprint", on: "2026-10-26", outcome: "verified", facts: ["blueprint", "objectives"], finding: { en: "Downloaded from F5's document viewer in a real browser (the viewer returns no content to automated reads and dates the document 20 November 2025) and compared in full. The certification blueprint covers all four exams and prints no document id or exam code; its Configuration: Demonstrate part (5 objectives with their examples) matches this guide word for word. It states no exam length, question count or fee.", "pt-BR": "Baixado do visualizador de documentos da F5 em um navegador real (o visualizador não devolve conteúdo a leituras automáticas e atribui ao documento a data de 20 de novembro de 2025) e comparado na íntegra. O blueprint da certificação cobre as quatro provas e não traz identificador de documento nem código de prova; a parte Configuration: Demonstrate (5 objetivos, com seus exemplos) confere palavra por palavra com este guia. Ele não informa duração, número de questões nem preço." } },
     ],
     examFacts: {
-      questions: "Question count not published in the catalog or the certification blueprint",
+      questions: "Question count not published in the catalogue or the certification blueprint",
       minutes: 30,
       passMark: "245",
-      cost: "US$50 online proctored / US$65 test center (not including local taxes and fees)",
+      cost: "US$50 online proctored / US$65 test centre (not including local taxes and fees)",
       note:
         "Exam ID F5N3 on F5's exam page. Online proctored via Certiverse (camera access required) or test-center proctored via Pearson VUE; English; Administrator NGINX level. One of the four exams (taken in any order) that earn F5 Certified Administrator, NGINX (F5-CA, NGINX); the certification is based on NGINX Open Source Software (OSS).",
     },
@@ -12529,10 +12531,10 @@ export const studyGuides: StudyGuide[] = [
       { url: "https://f5.my.salesforce.com/sfc/p/#00000000hXqv/a/Po000005J0e9/2n5kz1ssn.j6DyvNKlmFXEw6D6.HrZLOZPNmldvsmGI", title: "NGINX Administrator Full Certification Blueprint", on: "2026-10-26", outcome: "verified", facts: ["blueprint", "objectives"], finding: { en: "Downloaded from F5's document viewer in a real browser (the viewer returns no content to automated reads and dates the document 20 November 2025) and compared in full. The certification blueprint covers all four exams and prints no document id or exam code; its Troubleshooting part (3 objectives with their examples) matches this guide word for word. It states no exam length, question count or fee. It lists this exam as NGINX Troubleshooting; F5's exam page titles it Troubleshoot (F5CAN4).", "pt-BR": "Baixado do visualizador de documentos da F5 em um navegador real (o visualizador não devolve conteúdo a leituras automáticas e atribui ao documento a data de 20 de novembro de 2025) e comparado na íntegra. O blueprint da certificação cobre as quatro provas e não traz identificador de documento nem código de prova; a parte Troubleshooting (3 objetivos, com seus exemplos) confere palavra por palavra com este guia. Ele não informa duração, número de questões nem preço. O blueprint lista esta prova como NGINX Troubleshooting; a página da prova na F5 a intitula Troubleshoot (F5CAN4)." } },
     ],
     examFacts: {
-      questions: "Question count not published in the catalog or the certification blueprint",
+      questions: "Question count not published in the catalogue or the certification blueprint",
       minutes: 30,
       passMark: "245",
-      cost: "US$50 online proctored / US$65 test center (not including local taxes and fees)",
+      cost: "US$50 online proctored / US$65 test centre (not including local taxes and fees)",
       note:
         "Exam ID F5N4 on F5's exam page. Online proctored via Certiverse (camera access required) or test-center proctored via Pearson VUE; English; Administrator NGINX level. One of the four exams (taken in any order) that earn F5 Certified Administrator, NGINX (F5-CA, NGINX); the certification is based on NGINX Open Source Software (OSS).",
     },

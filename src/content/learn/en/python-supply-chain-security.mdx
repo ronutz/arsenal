@@ -21,13 +21,13 @@ PyPI's page on common attacks lists five. For most of them it says what the inde
 
 | Attack | What PyPI describes | What PyPI does | What you do |
 | --- | --- | --- | --- |
-| Typosquatting | a malicious project named as a misspelling, its example "pyth0n-dateutil instead of python-dateutil" | rejects new names that collide after normalisation, and names of standard library modules | check spellings, install from a requirements file |
+| Typosquatting | a malicious project named as a misspelling, its example "pyth0n-dateutil instead of python-dateutil" | rejects new names that collide after normalization, and names of standard library modules | check spellings, install from a requirements file |
 | Dependency confusion | a public project with the same name as your private one | no index-side measure listed | no advice listed; see the section on indexes below |
 | Man-in-the-middle | a download replaced on an insecure network | a checksum for every file | hash-checking mode |
 | Account takeover | a maintainer's account pushes a malicious release | Trusted Publishing, attestations | prefer projects with attestations |
 | Supply chain | code inserted before upload, in the repository or the build | attestations naming the source and workflow | inspect where a file came from |
 
-The normalisation PyPI applies to new names goes further than the standard one: it removes `.`, `_` and `-` and treats easily confused characters ("l, i, and 1, or o and 0") as identical. It adds two warnings: "These checks don't catch every typosquat", and "Always check package names from LLM output, as an attacker could register a malicious package that an LLM may hallucinate (this is known as slopsquatting)."
+The normalization PyPI applies to new names goes further than the standard one: it removes `.`, `_` and `-` and treats easily confused characters ("l, i, and 1, or o and 0") as identical. It adds two warnings: "These checks don't catch every typosquat", and "Always check package names from LLM output, as an attacker could register a malicious package that an LLM may hallucinate (this is known as slopsquatting)."
 
 These are not hypothetical. PyPI's incident report of 2 April 2026 describes how, "after an API token exposure from an exploited Trivy dependency", releases of the popular packages litellm and telnyx "were published to PyPI containing credential harvesting malware" that "ran on install". The compromised litellm versions were downloaded over 119,000 times; the first user report arrived 1 hour 19 minutes after the upload, and the project was quarantined 2 hours 32 minutes after it. From litellm's normal install rate, PyPI estimated that "between ~40-50% of all installs of LiteLLM were unpinned and fetching the latest version on each install invocation". Each control below is a way of not being in that half.
 
@@ -76,7 +76,7 @@ line 4: 'pyth0n-dateutil' is not on the approved list
 line 5: 'reqeusts' is not on the approved list
 ```
 
-The approved list held `netaudit`, `prefixfmt`, `python-dateutil` and `requests`. `NetAudit` passes, since case does not matter; `prefix_fmt` normalises to `prefix-fmt`, a different project from `prefixfmt`, exactly the near miss a reviewer should look at; the two misspellings fail.
+The approved list held `netaudit`, `prefixfmt`, `python-dateutil` and `requests`. `NetAudit` passes, since case does not matter; `prefix_fmt` normalizes to `prefix-fmt`, a different project from `prefixfmt`, exactly the near miss a reviewer should look at; the two misspellings fail.
 
 ## Indexes: one is safer than two
 
@@ -293,7 +293,7 @@ Reports lead to quarantine. The project-status specification (originally PEP 792
 
 ## A routine for teams
 
-1. Keep an approved list of package names, and check requirements against it after normalisation.
+1. Keep an approved list of package names, and check requirements against it after normalization.
 2. Install from one index you control; never rely on `--extra-index-url` for private names.
 3. Deploy from hashed requirements or a reviewed `pylock.toml` in version control, with `--only-binary :all:` where possible.
 4. Set a dependency cooldown such as `uploaded-prior-to = P3D`, and let security updates through deliberately.

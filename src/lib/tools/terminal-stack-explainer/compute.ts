@@ -63,7 +63,7 @@ export function explainDevice(input: string): DeviceFacts {
       "This is what `tty` prints when standard input is a pipe or a file rather than a terminal. It is the single most useful thing the command tells you: a program in this position has no terminal to ask about window size, no line discipline doing echo, and no job control. Interactive prompts will not work and progress bars will look wrong.",
     );
     notes.push(
-      "It is also how a program should decide whether to colourise its output. The check is whether the file descriptor is a terminal, not whether a variable is set - which is why piping a command into `less` usually turns the colours off by itself.",
+      "It is also how a program should decide whether to colourize its output. The check is whether the file descriptor is a terminal, not whether a variable is set - which is why piping a command into `less` usually turns the colours off by itself.",
     );
     return { path: raw, layer: "not-a-tty", kind: "no terminal", otherEnd: "a pipe or a file", facts, notes, warnings };
   }
@@ -159,7 +159,7 @@ export function explainDevice(input: string): DeviceFacts {
 
   facts.push({ label: "Device", value: path });
   warnings.push(
-    "This is not a device path this tool recognises. It reports what it can identify and does not guess: an unfamiliar path is more likely a platform-specific device than something to be inferred from its name.",
+    "This is not a device path this tool recognizes. It reports what it can identify and does not guess: an unfamiliar path is more likely a platform-specific device than something to be inferred from its name.",
   );
   return { path, layer: "unknown", kind: "unrecognised", otherEnd: "unknown", facts, notes, warnings };
 }

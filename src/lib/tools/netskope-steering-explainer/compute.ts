@@ -111,7 +111,7 @@ export function explainSteeringLocalisable(s: Situation): SteeringResult<EngineT
     fit: clientFits ? "primary" : "unsuitable",
     why: clientFits
       ? say("why.client", "The endpoint agent is the recommended method for end-user traffic, and the only one that carries user identity and device posture with the flow rather than inferring them. It follows the user off the corporate network, which a tunnel from a site cannot do.") // the client fits
-      : say("why.clientUnmanaged", "An agent cannot be installed on a device the organisation does not manage. That is not a limitation of the product; it is what unmanaged means."), // unmanaged
+      : say("why.clientUnmanaged", "An agent cannot be installed on a device the organization does not manage. That is not a limitation of the product; it is what unmanaged means."), // unmanaged
     costs: [
       say("cost.clientDeploy", "It has to be deployed and kept current on every device, which is an endpoint-management problem before it is a security one."), // deployment
       say("cost.clientTamper", "Steering exceptions live on the client, so a device that has been tampered with is a device whose exceptions you no longer control."), // tampering

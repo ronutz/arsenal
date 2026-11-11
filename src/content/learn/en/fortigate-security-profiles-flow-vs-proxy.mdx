@@ -69,7 +69,7 @@ It works by inspecting traffic patterns and payload characteristics against Fort
 Its limits follow directly from how it works:
 
 - **Encryption.** Without deep inspection, application control sees only handshake metadata. Some applications remain identifiable from SNI alone; many do not.
-- **Identification takes packets.** The engine needs to observe enough of a session to classify it. The first few packets of a flow may pass before the application is recognised, which is why application control shapes behaviour rather than acting as a hard gate on the very first packet.
+- **Identification takes packets.** The engine needs to observe enough of a session to classify it. The first few packets of a flow may pass before the application is recognized, which is why application control shapes behaviour rather than acting as a hard gate on the very first packet.
 - **Deliberate evasion.** Applications designed to look like ordinary web traffic are hard to distinguish from ordinary web traffic. The database is updated continuously, and this remains an arms race rather than a solved problem.
 
 ## The dependency chain the exam is really testing

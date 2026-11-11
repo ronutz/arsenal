@@ -30,6 +30,7 @@
 import ES from "./answers/es.json"; // Spanish (International), 09/11/2026: 209 puzzles
 import DE from "./answers/de.json"; // German, 09/11/2026: 209 puzzles, 1,055 answers
 import FR from "./answers/fr.json"; // French, 09/11/2026: 209 puzzles, 1,002 answers
+import IT from "./answers/it.json"; // Italian, 11/11/2026: 209 puzzles, 1,126 answers
 
 /** Accepted answers per interface locale beyond en and pt-BR, by puzzle id. */
 export const LOCALE_ANSWERS: Record<string /* locale */, Record<string /* puzzle id */, readonly string[]>> = {
@@ -39,4 +40,6 @@ export const LOCALE_ANSWERS: Record<string /* locale */, Record<string /* puzzle
   de: DE,
   // French: the category names as the French page shows them, then the other natural ways to say them.
   fr: FR,
+  // Italian: the category names as the Italian page shows them, then the other natural ways to say them.
+  it: IT,
 };

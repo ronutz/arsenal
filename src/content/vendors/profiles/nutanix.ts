@@ -30,10 +30,10 @@ export const nutanixProfile: VendorProfile = {
   timeline: [
     { year: 2009, title: "Founded on Google-style storage", detail: "Three founders with distributed-systems pedigree start building a scale-out platform where every node contributes compute and storage - the SAN designed out of the architecture." },
     { year: 2011, title: "'No SAN'", detail: "The first Virtual Computing Platform ships with a marketing line that names the revolution; hyperconverged infrastructure becomes the fastest-drawn category of the decade with Nutanix as its axis." },
-    { year: 2015, title: "AHV: the free hypervisor", detail: "Nutanix ships its own KVM-based Acropolis Hypervisor, turning the VMware relationship from symbiosis toward rivalry - own the platform, and the hypervisor becomes a feature." },
+    { year: 2015, title: "AHV: the free hypervisor", detail: "Nutanix ships its own KVM-based Acropolis Hypervisor, turning the VMware relationship from symbiosis towards rivalry - own the platform, and the hypervisor becomes a feature." },
     { year: 2016, title: "IPO: NTNX", detail: "The September Nasdaq listing is the year's marquee enterprise-tech IPO (initial public offering) - the HCI category leader arriving on the public market mid-transition from appliances to software." },
     { year: 2020, title: "Bain, and the founder departs", detail: "Bain Capital's $750 million convertible investment lands alongside Dheeraj Pandey's retirement announcement; Rajiv Ramaswami, VMware's COO, takes over in December - and VMware sues over the hire, a suit later resolved as the subscription pivot accelerates." },
-    { year: 2023, title: "The Broadcom dividend", detail: "As Broadcom's VMware acquisition upends licensing across the industry, Nutanix Cloud Platform with AHV becomes the canonical migration conversation - the alternative platform argument the company had built toward for a decade." },
+    { year: 2023, title: "The Broadcom dividend", detail: "As Broadcom's VMware acquisition upends licensing across the industry, Nutanix Cloud Platform with AHV becomes the canonical migration conversation - the alternative platform argument the company had built towards for a decade." },
   ],
   products: [
     { name: "Nutanix Cloud Platform", what: "The HCI core grown up: distributed storage (AOS), the AHV hypervisor, and management under one subscription platform." },

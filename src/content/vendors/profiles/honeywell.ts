@@ -40,7 +40,7 @@ export const honeywellProfile: VendorProfile = {
       year: 1975,
       title: "Project Guardian",
       detail:
-        "A joint Honeywell, MIT and Air Force effort initiated by Schell to build a minimised, verifiable security kernel in response to his own report. The conclusion the work rested on was that restructuring around such a kernel was essential before any system could be exposed to determined professional attackers - which was written about timesharing and reads as a description of the internet.",
+        "A joint Honeywell, MIT and Air Force effort initiated by Schell to build a minimized, verifiable security kernel in response to his own report. The conclusion the work rested on was that restructuring around such a kernel was essential before any system could be exposed to determined professional attackers - which was written about timesharing and reads as a description of the internet.",
     },
     {
       year: 1985,
@@ -73,7 +73,7 @@ export const honeywellProfile: VendorProfile = {
     {
       title: "The critic who wrote the standard",
       detail:
-        "Schell led the team that documented Multics' weaknesses, then directed the agency that produced the Orange Book - the criteria against which secure systems were evaluated for the next decade, and which reads throughout as though written by somebody who had spent years attacking a specific system. The evaluation became the standard because its author was given the chance to generalise it.",
+        "Schell led the team that documented Multics' weaknesses, then directed the agency that produced the Orange Book - the criteria against which secure systems were evaluated for the next decade, and which reads throughout as though written by somebody who had spent years attacking a specific system. The evaluation became the standard because its author was given the chance to generalize it.",
     },
   ],
   markets: [

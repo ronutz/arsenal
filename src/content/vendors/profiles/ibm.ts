@@ -33,7 +33,7 @@ export const ibmProfile: VendorProfile = {
     { year: 1964, title: "System/360: the $5 billion bet", detail: "One compatible architecture from small to large - the gamble that created the mainframe world, the software industry that ran on it, and the compatibility concept computing still lives by." },
     { year: 1981, title: "The PC, and the giveaway", detail: "The IBM PC legitimizes personal computing overnight - and its open architecture plus outsourced DOS and processor crown Microsoft and Intel, the most consequential make-versus-buy decision in business history." },
     { year: 1993, title: "Gerstner", detail: "After the largest corporate loss in American history to that date, Lou Gerstner keeps IBM whole and pivots it to services - the elephant learns to dance, and the integrated-solutions model defines its next two decades." },
-    { year: 2019, title: "Red Hat: $34 billion", detail: "July 9, 2019: the largest software acquisition to that date closes - IBM buys the open-source standard-bearer for hybrid cloud, the story told from the other side on this section's Red Hat page. Arvind Krishna, the deal's architect, becomes CEO in 2020." },
+    { year: 2019, title: "Red Hat: $34 billion", detail: "9 July 2019: the largest software acquisition to that date closes - IBM buys the open-source standard-bearer for hybrid cloud, the story told from the other side on this section's Red Hat page. Arvind Krishna, the deal's architect, becomes CEO in 2020." },
     { year: 2021, title: "Kyndryl, and the focused IBM", detail: "The managed-infrastructure business spins off as Kyndryl; what remains is hybrid cloud, AI (watsonx), quantum, and the eternal mainframe - the z-series still clearing the world's transactions." },
   ],
   products: [

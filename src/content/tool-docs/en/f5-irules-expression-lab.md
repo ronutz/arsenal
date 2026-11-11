@@ -14,7 +14,7 @@ Each box is one part of the expression: its source, an arrow, and what it produc
 - In a text comparison character codes decide, so every upper-case letter sorts before every lower-case one: `"bench" < "Chair"` is false.
 - `true == 1` is false: `true` is a boolean word, not a number, so the comparison is between texts.
 - Tcl 8.4 has no `**` operator; `2 ** 3` is a syntax error.
-- Integer division rounds toward negative infinity (`7 / -2` is `-4`) and a remainder takes the divisor's sign.
+- Integer division rounds towards negative infinity (`7 / -2` is `-4`) and a remainder takes the divisor's sign.
 - A literal such as `08` written in the expression is rejected when the expression is compiled, before any part of it runs.
 - Brace your expressions. Without braces Tcl substitutes the text twice, which is slower and lets data run as code (F5 K57410758 and K15650046). The script stepper shows this happening.
 

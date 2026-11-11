@@ -19,6 +19,8 @@
 // the next 30 days so the next build is not left to chance.
 // ============================================================================
 
+// English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
+import { intlLocale } from "@/i18n/locales";
 /** Where a retirement notice stands on the day of the build. */
 export type RetirementState = "upcoming" | "passed";
 
@@ -40,5 +42,5 @@ export function retirementState(untilIso: string, now: Date = new Date()): Retir
  *  (CC05-C); scripts/check-dated-status.mts uses the same function to know what each page must print. */
 export function formatIsoDay(iso: string, locale: string): string {
   // Midnight UTC of that day, formatted in the locale with the UTC timezone, so the calendar day is exactly `iso`.
-  return new Date(`${iso}T00:00:00Z`).toLocaleDateString(locale, { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+  return new Date(`${iso}T00:00:00Z`).toLocaleDateString(intlLocale(locale), { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 }

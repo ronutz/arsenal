@@ -19,13 +19,13 @@ Fabric Connect provisions services at the Backbone Edge Bridge, which is a big s
 
 FA has three element types:
 
-- **FA Server** - runs on a fabric node (a BEB). It accepts FA requests from its neighbors and provisions the I-SID mappings into the fabric.
+- **FA Server** - runs on a fabric node (a BEB). It accepts FA requests from its neighbours and provisions the I-SID mappings into the fabric.
 - **FA Proxy** - a switch, often in the wiring closet, that sits between end devices and the Server and relays FA information. An EXOS switch typically plays this role.
 - **FA Client** - an end device such as an IP phone or access point that requests a service directly.
 
 ## How it signals
 
-FA rides **LLDP**. The Server discovers FA neighbors through FA-specific TLVs carried inside LLDP PDUs, so no separate control protocol is needed. FA is enabled globally (`fa enable`) and then on the relevant ports. When a Proxy or Client advertises a binding between a VLAN and an I-SID, the Server provisions that Layer 2 VSN automatically - the Zero Touch idea. The exchange can be secured with message authentication (a shared key), which the Server enables by default when you turn FA on for a port.
+FA rides **LLDP**. The Server discovers FA neighbours through FA-specific TLVs carried inside LLDP PDUs, so no separate control protocol is needed. FA is enabled globally (`fa enable`) and then on the relevant ports. When a Proxy or Client advertises a binding between a VLAN and an I-SID, the Server provisions that Layer 2 VSN automatically - the Zero Touch idea. The exchange can be secured with message authentication (a shared key), which the Server enables by default when you turn FA on for a port.
 
 ## Where EXOS fits
 

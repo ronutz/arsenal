@@ -1770,6 +1770,8 @@ a.fg-link-button { display: inline-flex; align-items: center; }
 .fg-tb-initials { font-weight: 700; letter-spacing: 0.12em; color: var(--text-primary); }
 /* The flag. */
 .fg-tb-flag { display: inline-flex; align-items: center; }
+/* The flag as a same-origin SVG file (2026-11-10, PRIME: emoji flags show as letters on Windows desktops). */
+.fg-tb-flag-img { width: 1.25em; height: auto; flex: none; border-radius: 2px; box-shadow: 0 0 0 1px var(--border-subtle); }
 /* The score, at the right. */
 .fg-tb-score { text-align: right; font-family: var(--font-mono); color: var(--text-primary); overflow-wrap: anywhere; }
 /* The initials form. */

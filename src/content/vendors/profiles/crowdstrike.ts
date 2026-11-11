@@ -33,7 +33,7 @@ export const crowdstrikeProfile: VendorProfile = {
       place: "Sunnyvale, California",
       founders: ["George Kurtz", "Dmitri Alperovitch", "Gregg Marston"],
       story:
-        "Incorporated on 7 November. Kurtz had been chief technology officer at McAfee, which had bought his previous company Foundstone; Alperovitch had run threat research there. The founding claim was that the industry was asking the wrong question - identifying malicious files rather than identifying the people sending them - and that an adversary who changes their tools is still recognisable by how they work.",
+        "Incorporated on 7 November. Kurtz had been chief technology officer at McAfee, which had bought his previous company Foundstone; Alperovitch had run threat research there. The founding claim was that the industry was asking the wrong question - identifying malicious files rather than identifying the people sending them - and that an adversary who changes their tools is still recognizable by how they work.",
     },
   ],
 
@@ -116,7 +116,7 @@ export const crowdstrikeProfile: VendorProfile = {
     {
       title: "The cloud as the correlation point",
       detail:
-        "Detection quality improves with the number of sensors reporting, because behaviour that looks unremarkable at one customer is recognisable across thousands. That makes the install base an asset rather than a liability, and it is why the model is difficult to enter late.",
+        "Detection quality improves with the number of sensors reporting, because behaviour that looks unremarkable at one customer is recognizable across thousands. That makes the install base an asset rather than a liability, and it is why the model is difficult to enter late.",
     },
     {
       title: "Adversary tracking as a product",
@@ -131,7 +131,7 @@ export const crowdstrikeProfile: VendorProfile = {
     {
       title: "Selling the analysts as well as the software",
       detail:
-        "OverWatch and Complete exist because most organisations cannot staff a security operations centre around the clock. Packaging expertise as a subscription is now normal, and this company did much to make it so.",
+        "OverWatch and Complete exist because most organizations cannot staff a security operations centre around the clock. Packaging expertise as a subscription is now normal, and this company did much to make it so.",
     },
   ],
 

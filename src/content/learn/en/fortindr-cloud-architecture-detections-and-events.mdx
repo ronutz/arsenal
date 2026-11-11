@@ -22,7 +22,7 @@ Three things justify watching traffic when you already have endpoint agents.
 
 **Lateral movement.** Movement between hosts is visible as traffic in a way it may not be from either endpoint individually, particularly when the credentials being used are legitimate.
 
-**The unknown estate.** Traffic reveals devices no inventory lists. In most organisations the first sensor deployment finds something nobody could account for, and that alone tends to justify the exercise.
+**The unknown estate.** Traffic reveals devices no inventory lists. In most organizations the first sensor deployment finds something nobody could account for, and that alone tends to justify the exercise.
 
 ## Architecture and sensors
 
@@ -34,7 +34,7 @@ Sensor placement is the decision that determines everything the product can do. 
 
 The sensor does not retain every packet. It extracts **metadata** per protocol: for a connection, who talked to whom and for how long; for DNS, the name queried and the answer; for HTTP, the host, path and user agent; for TLS, the certificate and the SNI, since the payload is encrypted.
 
-That last one is the point worth internalising. Most traffic is encrypted, and network detection works anyway, because a great deal is observable without the payload: which server, what certificate, connection timing and volume, how the session behaves. Beaconing to a command and control server is recognisable from timing and size regularity without reading a single byte of content.
+That last one is the point worth internalizing. Most traffic is encrypted, and network detection works anyway, because a great deal is observable without the payload: which server, what certificate, connection timing and volume, how the session behaves. Beaconing to a command and control server is recognizable from timing and size regularity without reading a single byte of content.
 
 Event types are worth knowing because queries and detections are written against them, and knowing which type carries which field is the difference between a query that returns what you meant and one that returns nothing.
 
@@ -52,4 +52,4 @@ The mistake is treating observations as alerts. They are the material investigat
 
 ## What an exam candidate should be able to state cold
 
-Network detection covers agentless devices, lateral movement, and devices no inventory knows about. Sensors observe at a tap or span and extract per-protocol metadata rather than retaining packets, and sensor placement determines what can be seen at all: edge sees egress, internal sees lateral. Detection works on encrypted traffic because certificate, SNI, timing and volume are observable without payload, and beaconing is recognisable from regularity alone. Detections are actionable judgements; behavioural observations are context and should not be treated as a work queue.
+Network detection covers agentless devices, lateral movement, and devices no inventory knows about. Sensors observe at a tap or span and extract per-protocol metadata rather than retaining packets, and sensor placement determines what can be seen at all: edge sees egress, internal sees lateral. Detection works on encrypted traffic because certificate, SNI, timing and volume are observable without payload, and beaconing is recognizable from regularity alone. Detections are actionable judgements; behavioural observations are context and should not be treated as a work queue.

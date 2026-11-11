@@ -81,7 +81,7 @@ export const KEYWORDS: Record<string, KwDef> = {
   SSLV2: { category: "protocol", label: "SSL 2.0", note: "An obsolete, broken protocol. It should never be enabled.", security: "weak" },
   SSLV3: { category: "protocol", label: "SSL 3.0", note: "A deprecated protocol vulnerable to POODLE. Disable it.", security: "weak" },
   TLSV1: { category: "protocol", label: "TLS 1.0", note: "A deprecated protocol; most compliance regimes now require it off.", security: "weak" },
-  TLSV1_1: { category: "protocol", label: "TLS 1.1", note: "A deprecated protocol; disable it in favor of TLS 1.2 and 1.3.", security: "weak" },
+  TLSV1_1: { category: "protocol", label: "TLS 1.1", note: "A deprecated protocol; disable it in favour of TLS 1.2 and 1.3.", security: "weak" },
   TLSV1_2: { category: "protocol", label: "TLS 1.2", note: "A current, secure protocol version.", security: "strong" },
   TLSV1_3: { category: "protocol", label: "TLS 1.3", note: "The newest protocol version; note BIG-IP manages its suites separately.", security: "strong" },
   DTLSV1: { category: "protocol", label: "DTLS 1.0", note: "Datagram TLS 1.0, the UDP analogue of TLS 1.0; deprecated.", security: "weak" },
@@ -178,7 +178,7 @@ function explainKeyword(text: string): KeywordExplain<EngineText> {
   if (looksLikeLiteralSuite(up)) {
     return { text, known: true, category: "literal", label: say("literal.label", "Literal cipher suite"), note: say("literal.note", "A fully-named cipher suite, taken as-is."), security: "neutral" }; // pack keys engine.literal.*
   }
-  return { text, known: false, category: "unknown", label: text, note: say("unknown.note", "Not a recognised BIG-IP cipher keyword."), security: "neutral" }; // pack key engine.unknown.note
+  return { text, known: false, category: "unknown", label: text, note: say("unknown.note", "Not a recognized BIG-IP cipher keyword."), security: "neutral" }; // pack key engine.unknown.note
 }
 
 function classifySet(operator: Operator, keywords: KeywordExplain<EngineText>[]): EngineText {
@@ -191,7 +191,7 @@ function classifySet(operator: Operator, keywords: KeywordExplain<EngineText>[])
     case "delete":
       return say("set.delete", `Removes ${joined} from the list so far (it may be re-added later).`, { list }); // pack key engine.set.delete
     case "lower-priority":
-      return say("set.lower", `Lowers the priority of ${joined}, moving it toward the end.`, { list }); // pack key engine.set.lower
+      return say("set.lower", `Lowers the priority of ${joined}, moving it towards the end.`, { list }); // pack key engine.set.lower
     case "sort":
       return keywords[0]?.note ?? say("set.resort", "Re-sorts the list."); // the directive's note (pack key engine.set.resort when there is none)
     default:

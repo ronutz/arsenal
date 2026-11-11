@@ -19,7 +19,7 @@ Unicode marks a set of code points as Default_Ignorable_Code_Point: format contr
 
 Many of them have real jobs: the joiners control whether neighbouring letters join in cursive scripts such as Arabic, and the byte order mark serves as a signature for a file's byte order and encoding. The trouble starts when one ends up where nobody expects it. It still counts in the string's length, changes its hash, and breaks equality, and a parser sees it even though a reader cannot. The DevCentral iRules Style Guide's own example ends with a zero-width space after a closing brace, and Tcl 8.4.6 rejects that line with "extra characters after close-brace" (see [the iRules Style Guide, reviewed](/learn/irules-style-guide-explained)).
 
-Vendor documentation is not immune either. F5's BIG-IP ASM operations guide, K13050156 (updated 2024-07-29), shows a custom blocking page whose `charset="utf-8"` holds U+00AD SOFT HYPHEN where the hyphen should be, so a browser does not recognise the label and [reads the page in another charset](/learn/mojibake-and-code-pages).
+Vendor documentation is not immune either. F5's BIG-IP ASM operations guide, K13050156 (updated 2024-07-29), shows a custom blocking page whose `charset="utf-8"` holds U+00AD SOFT HYPHEN where the hyphen should be, so a browser does not recognize the label and [reads the page in another charset](/learn/mojibake-and-code-pages).
 
 ## Bidirectional controls: Trojan Source
 
@@ -59,7 +59,7 @@ None of them is visible in most editors. The [iRules style checker](/tools/f5-ir
 ## What to do about it
 
 - **Look before you trust.** Paste the suspect text into the [Unicode inspector](/tools/unicode-inspector). It lists every code point, flags the hidden and lookalike ones, and shows the text in stored order.
-- **Clean code and configuration, not prose.** Removing invisible characters and normalising spaces, quotes and dashes is right for an iRule or a config file. Replacing lookalikes is right for an identifier, but it would also change genuine Cyrillic or Greek words, which is why the inspector leaves that option off by default.
+- **Clean code and configuration, not prose.** Removing invisible characters and normalizing spaces, quotes and dashes is right for an iRule or a config file. Replacing lookalikes is right for an identifier, but it would also change genuine Cyrillic or Greek words, which is why the inspector leaves that option off by default.
 - **Keep bidirectional controls where they belong.** In right-to-left text they are needed. In code they belong only where a review shows they are intended, and never left open at the end of a line.
 - **Check where text enters.** A comparison, a hash, a URL or a user name check is only as good as the characters it compares.
 

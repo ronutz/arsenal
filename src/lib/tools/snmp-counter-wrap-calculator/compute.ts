@@ -500,9 +500,9 @@ function parseUtilisation(raw: unknown): Q {
   const s = fieldText(raw); // trimmed and bounded
   if (s === "") return q(100n); // line rate by default
   const m = PERCENT_RE.exec(s); // the number
-  if (!m) throw inputError(say("err.utilBad", `"${s}" is not a percentage. Enter the utilisation as a number above 0 and at most 100, with a point for decimals, for example 40.`, { value: s })); // not a number
+  if (!m) throw inputError(say("err.utilBad", `"${s}" is not a percentage. Enter the utilization as a number above 0 and at most 100, with a point for decimals, for example 40.`, { value: s })); // not a number
   const u = decimal(m[1]) as Q; // exact
-  if (u.n <= 0n || cmp(u, q(100n)) > 0) throw inputError(say("err.utilRange", `Utilisation must be above 0 and at most 100 percent; "${s}" is outside that range.`, { value: s })); // 0 never wraps; over 100 is impossible
+  if (u.n <= 0n || cmp(u, q(100n)) > 0) throw inputError(say("err.utilRange", `Utilization must be above 0 and at most 100 percent; "${s}" is outside that range.`, { value: s })); // 0 never wraps; over 100 is impossible
   return u; // percent
 } // parseUtilisation
 

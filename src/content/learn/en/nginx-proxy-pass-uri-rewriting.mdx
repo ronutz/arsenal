@@ -48,7 +48,7 @@ If the location does not end in a slash but proxy_pass carries a URI part, the r
 
 `location /app` with `proxy_pass http://backend/` and a request for `/app/page` sends **`//page`**. Two slashes, genuinely, upstream.
 
-Some backends normalise that away and some return 404. It is worth knowing this is a real behaviour rather than a display artefact, because when you see it in an upstream log this is where it came from. Matching the trailing slashes on both sides is the fix.
+Some backends normalize that away and some return 404. It is worth knowing this is a real behaviour rather than a display artefact, because when you see it in an upstream log this is where it came from. Matching the trailing slashes on both sides is the fix.
 
 ## Two configurations NGINX refuses
 

@@ -19,9 +19,9 @@ He built it in three stages, and the third is the one that matters.
 
 **Stage one** is a program that prints its own source code. This is an old programming curiosity and it does nothing harmful; it exists in the lecture to establish that a program can contain a complete description of itself.
 
-**Stage two** is a compiler taught to recognise a particular piece of source code - the `login` program - and, when it sees it, to compile in a backdoor that accepts a password Thompson chose. Anyone reading the source of `login` would find nothing, because there is nothing there. The backdoor is added during compilation.
+**Stage two** is a compiler taught to recognize a particular piece of source code - the `login` program - and, when it sees it, to compile in a backdoor that accepts a password Thompson chose. Anyone reading the source of `login` would find nothing, because there is nothing there. The backdoor is added during compilation.
 
-**Stage three** is the move that makes it permanent. The compiler is also taught to recognise **when it is compiling itself**, and to reinsert both tricks - the `login` backdoor and the self-recognition - into the new compiler binary it produces.
+**Stage three** is the move that makes it permanent. The compiler is also taught to recognize **when it is compiling itself**, and to reinsert both tricks - the `login` backdoor and the self-recognition - into the new compiler binary it produces.
 
 Once that compiler exists as a binary, the malicious source can be deleted. From then on the compiler's source is clean and always will be. Every time somebody rebuilds the compiler from that clean source, using the existing compiler, the new binary is infected again. The bug lives in the binary, is invisible in every source listing, and is passed forward indefinitely.
 
@@ -77,7 +77,7 @@ Nobody is going to diverse-double-compile their toolchain, and pretending otherw
 
 **Prefer projects that produce reproducible builds**, and say so in procurement questions. It is a concrete, checkable property, unlike most security claims on a datasheet.
 
-**Treat the build system as production infrastructure**, because it is. It holds signing keys, it has network access, it runs code from dependencies, and a compromise of it is a compromise of everything it has ever shipped. Most organisations protect the production servers and leave the build server to the team that needed it.
+**Treat the build system as production infrastructure**, because it is. It holds signing keys, it has network access, it runs code from dependencies, and a compromise of it is a compromise of everything it has ever shipped. Most organizations protect the production servers and leave the build server to the team that needed it.
 
 **And remember which question a signature answers.** It says a binary came out of a particular pipeline. It says nothing whatever about whether the pipeline was honest - which is the sentence Thompson wrote in 1984, restated in the vocabulary of 2026.
 

@@ -25,7 +25,7 @@
 // analyzeP0f() returns plainText() of the same reading, so the API and the
 // golden vectors are unchanged. Thrown P0fInputErrors keep their class and
 // message and carry their sentence (withEngineText).
-import { say, plainText, withEngineText, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
+import { say, enPlural, plainText, withEngineText, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
 
 export class P0fInputError extends Error {}
 
@@ -167,7 +167,7 @@ function classifyWindow(wsize: string, mss: string): EngineText {
   if (/^\d+$/.test(wsize)) {
     const n = Number(wsize);
     const hint = n === 65535 ? " 65535 is the classic 16-bit maximum advertised by Windows before scaling." : "";
-    return hint ? say("win.fixed65535", `A fixed window of ${n} bytes.${hint}`) : say("win.fixed", `A fixed window of ${n} bytes.`, { n: String(n) }); // 65535 has its own sentence
+    return hint ? say("win.fixed65535", `A fixed window of ${n} bytes.${hint}`) : say("win.fixed", `A fixed window of ${n} ${enPlural(n, "byte", "bytes")}.`, { n: String(n) }); // 65535 has its own sentence
   }
   return say("win.other", `Window value "${wsize}".`, { value: wsize }); // anything else
 }
@@ -209,7 +209,7 @@ export function analyzeP0fLocalisable(raw: string): P0fAnalysis<EngineText> {
   const fieldNotes: FieldNote<EngineText>[] = [ // the eight fields, labels and meanings with ids
     { field: say("field.version", "version"), value: f.ver, meaning: f.ver === "*" ? say("mean.verAny", "matches both IPv4 and IPv6") : say("mean.ver", `IPv${f.ver} traffic`, { ver: f.ver }) }, // version
     { field: say("field.ittl", "initial TTL"), value: f.ittl, meaning: ttl.initial ? say("mean.ittl", `inferred initial TTL near ${ttl.initial}`, { initial: String(ttl.initial) }) : say("mean.unparsed", "unparsed") }, // initial TTL
-    { field: say("field.olen", "IP options length"), value: f.olen, meaning: f.olen === "0" ? say("mean.olenNone", "no IP options (the normal case)") : say("mean.olen", `${f.olen} bytes of IP options / IPv6 extension headers`, { n: f.olen }) }, // IP options length
+    { field: say("field.olen", "IP options length"), value: f.olen, meaning: f.olen === "0" ? say("mean.olenNone", "no IP options (the normal case)") : say("mean.olen", `${f.olen} ${enPlural(f.olen, "byte", "bytes")} of IP options / IPv6 extension headers`, { n: f.olen }) }, // IP options length
     { field: say("field.mss", "MSS"), value: f.mss, meaning: f.mss === "*" ? say("mean.mssAny", "varies with the sender's link; used to guess the network type") : say("mean.mss", `${f.mss}-byte maximum segment`, { n: f.mss }) }, // MSS
     { field: say("field.window", "window"), value: `${f.wsize},${f.scale}`, meaning: windowNote }, // window
     { field: say("field.olayout", "options layout"), value: f.olayout.join(", ") || "(none)", meaning: say("mean.olayout", "the order of TCP options - one of the strongest signals") }, // options layout (the "(none)" value stays as the API writes it)
@@ -220,10 +220,10 @@ export function analyzeP0fLocalisable(raw: string): P0fAnalysis<EngineText> {
   const options: OptionNote<EngineText>[] = f.olayout.map((tok) => { // each option token, notes with ids
     const base = tok.replace(/\+.*$/, ""); // eol+N -> eol
     const hit = OPTION_NAMES[base];
-    return { token: tok, name: hit ? hit[0] : say("opt.unknown", "unknown option"), note: hit ? say(`opt.${base}`, hit[1]) : say("opt.unknownNote", "not a recognised p0f option token") }; // a known option's note by its token
+    return { token: tok, name: hit ? hit[0] : say("opt.unknown", "unknown option"), note: hit ? say(`opt.${base}`, hit[1]) : say("opt.unknownNote", "not a recognized p0f option token") }; // a known option's note by its token
   });
 
-  const quirks: QuirkNote<EngineText>[] = f.quirks.map((tok) => ({ token: tok, meaning: QUIRK_MEANINGS[tok] !== undefined ? say(`quirk.${tok.replace(/\+/g, "_plus").replace(/-/g, "_minus")}`, QUIRK_MEANINGS[tok]) : say("quirk.unknown", "an unrecognised quirk token") })); // each quirk, by its token
+  const quirks: QuirkNote<EngineText>[] = f.quirks.map((tok) => ({ token: tok, meaning: QUIRK_MEANINGS[tok] !== undefined ? say(`quirk.${tok.replace(/\+/g, "_plus").replace(/-/g, "_minus")}`, QUIRK_MEANINGS[tok]) : say("quirk.unknown", "an unrecognized quirk token") })); // each quirk, by its token
 
   // OS hint: exact shape match on ittl + olayout + required quirks.
   const layoutStr = f.olayout.join(",");

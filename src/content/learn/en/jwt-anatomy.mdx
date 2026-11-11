@@ -42,7 +42,7 @@ The signature is what separates a JWT from any string a client could fabricate. 
 
 Verifying recomputes or checks the signature against the encoded header and payload. If a single byte of either segment is altered, the signature no longer matches and the token is rejected.
 
-Two classic pitfalls are worth knowing. The `alg: none` value declares an unsigned token; a verifier that does not explicitly reject it can be tricked into trusting forged claims. And in the **algorithm-confusion** attack, an attacker takes an RS256 token, switches the header to HS256, and signs it using the public key as the HMAC secret, which succeeds against verifiers that take the algorithm from the token rather than pinning it. The defense for both is the same: the verifier decides which algorithm is acceptable, not the token.
+Two classic pitfalls are worth knowing. The `alg: none` value declares an unsigned token; a verifier that does not explicitly reject it can be tricked into trusting forged claims. And in the **algorithm-confusion** attack, an attacker takes an RS256 token, switches the header to HS256, and signs it using the public key as the HMAC secret, which succeeds against verifiers that take the algorithm from the token rather than pinning it. The defence for both is the same: the verifier decides which algorithm is acceptable, not the token.
 
 ## Decoding is not verifying
 

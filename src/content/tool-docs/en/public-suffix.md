@@ -16,7 +16,7 @@ The list has two parts. The **ICANN** section is the set of registry-operated su
 
 ## Notes
 
-Enter a bare hostname; a scheme, port, path, or a leading `*.` wildcard label are stripped automatically, and internationalised names are converted to their punycode form before matching. IP addresses are reported as such rather than parsed as domains, since they have no public suffix. Because the Public Suffix List changes over time, the bundled copy is a dated snapshot; treat the result as accurate as of that snapshot and refresh against publicsuffix.org if you need the very latest rules.
+Enter a bare hostname; a scheme, port, path, or a leading `*.` wildcard label are stripped automatically, and internationalized names are converted to their punycode form before matching. IP addresses are reported as such rather than parsed as domains, since they have no public suffix. Because the Public Suffix List changes over time, the bundled copy is a dated snapshot; treat the result as accurate as of that snapshot and refresh against publicsuffix.org if you need the very latest rules.
 
 ## Share results
 

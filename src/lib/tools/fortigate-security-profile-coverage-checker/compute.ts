@@ -138,7 +138,7 @@ function parseInputLocalisable(text: string): Parsed<EngineText> {
     if (/deep|full/.test(sslRaw)) ssl = "deep";
     else if (/cert/.test(sslRaw)) ssl = "certificate";
     else if (/none|no-inspection|off|disable/.test(sslRaw)) ssl = "none";
-    else warnings.push(say("warn.sslUnknown", `Did not recognise ssl "${sslRaw}"; expected none, certificate or deep. Assuming certificate.`, { value: sslRaw })); // an unknown ssl value
+    else warnings.push(say("warn.sslUnknown", `Did not recognize ssl "${sslRaw}"; expected none, certificate or deep. Assuming certificate.`, { value: sslRaw })); // an unknown ssl value
   } else {
     warnings.push(say("warn.sslMissing", "No ssl setting supplied; assuming certificate inspection, which is the common default and the usual cause of a blind profile.")); // no ssl line
   }
@@ -148,7 +148,7 @@ function parseInputLocalisable(text: string): Parsed<EngineText> {
   if (modeRaw) {
     if (/proxy/.test(modeRaw)) inspection = "proxy";
     else if (/flow/.test(modeRaw)) inspection = "flow";
-    else warnings.push(say("warn.modeUnknown", `Did not recognise mode "${modeRaw}"; expected flow or proxy. Assuming flow.`, { value: modeRaw })); // an unknown mode
+    else warnings.push(say("warn.modeUnknown", `Did not recognize mode "${modeRaw}"; expected flow or proxy. Assuming flow.`, { value: modeRaw })); // an unknown mode
   }
 
   const trafficRaw = get("traffic");

@@ -319,7 +319,7 @@ export function parseProfileStack(input: string): VirtualConfig {
   if (!matched) {
     throw new EventOrderInputError(
       "invalid",
-      "no recognisable profiles (try: standard, clientssl, http, serverssl, pool)"
+      "no recognizable profiles (try: standard, clientssl, http, serverssl, pool)"
     );
   }
   return config;

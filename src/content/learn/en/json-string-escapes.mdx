@@ -32,7 +32,7 @@ The catch is that `\\uXXXX` only reaches U+FFFF. Characters above that, includin
 
 ## The escape that survives one layer and not the next
 
-A JSON string is decoded by the parser, and **whatever it contained is then plain data.** `\u003cscript\u003e` and `<script>` are the same string after parsing, which means an escape is not a sanitisation and never was.
+A JSON string is decoded by the parser, and **whatever it contained is then plain data.** `\u003cscript\u003e` and `<script>` are the same string after parsing, which means an escape is not a sanitization and never was.
 
 The failure appears where two layers disagree about when decoding happened. A filter scanning the **raw JSON text** for dangerous characters misses everything written as `\u` escapes; a filter scanning the **parsed value** catches them, because by then there is only one form.
 

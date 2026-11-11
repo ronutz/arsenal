@@ -44,7 +44,7 @@ export const stefaniniProfile: VendorProfile = {
     { year: 2025, title: "Forty-odd acquisitions on", detail: "More than forty purchases since founding, thirteen of them in four years, against a stated target of R$2B more by 2027." },
   ],
   products: [
-    { name: "Application development and maintenance", what: "The original consulting business: building and running software for organisations that would rather not employ the people who do it." },
+    { name: "Application development and maintenance", what: "The original consulting business: building and running software for organizations that would rather not employ the people who do it." },
     { name: "IT outsourcing and service desk", what: "The volume business, and the one that made the international footprint necessary - supporting a multinational client means supporting it wherever it operates." },
     { name: "Digital and data services", what: "Cloud migration, analytics and automation, much of it acquired rather than built, including specialist practices around individual cloud providers." },
     { name: "Vertical platforms", what: "Banking and financial software sold as products rather than as project work - the attempt every services firm makes to earn something other than by the hour." },
@@ -76,7 +76,7 @@ export const stefaniniProfile: VendorProfile = {
     "It competes with the global systems integrators and the Indian services majors, on a footprint that is genuinely worldwide but a scale that is not. Roughly 40% of revenue now comes from outside Brazil.",
   ],
   analyst: [
-    "Its distinguishing characteristic is easy to state and hard to achieve: it is a technology services multinational headquartered in a country that mostly receives them. Rankings of internationalised Brazilian firms have placed it near the top for years, having placed it seventeenth in 2011.",
+    "Its distinguishing characteristic is easy to state and hard to achieve: it is a technology services multinational headquartered in a country that mostly receives them. Rankings of internationalized Brazilian firms have placed it near the top for years, having placed it seventeenth in 2011.",
     "The trajectory to watch is whether a company built on labour arbitrage and client relationships can hold those relationships as the work itself becomes more automated. Twelve-year average relationships are an asset in a stable market and a liability in one where the service being bought changes underneath the contract.",
   ],
 };

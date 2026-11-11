@@ -17,13 +17,13 @@ Every other family in this series began with a device. This one began with a fil
 
 **James P. Anderson**'s technical report *Computer Security Threat Monitoring and Surveillance*, published in April 1980, is where automated intrusion detection is usually traced from. Its proposal was modest and consequential: audit a computer's data to identify abnormal usage patterns at the end of each day, using statistical analysis.
 
-Two things about that framing matter. It was **after the fact** - a daily review rather than a live alarm - and it worked on **records the system already produced**. Intrusion detection did not begin by adding a sensor. It began by reading what was already there, which is still the cheapest security improvement available to most organisations and still the one most often skipped.
+Two things about that framing matter. It was **after the fact** - a daily review rather than a live alarm - and it worked on **records the system already produced**. Intrusion detection did not begin by adding a sensor. It began by reading what was already there, which is still the cheapest security improvement available to most organizations and still the one most often skipped.
 
 ## 1984 to 1986: the model
 
 At SRI International, which had been researching audit-trail analysis since 1983, **Dorothy Denning** and **Peter Neumann** developed a model for a real-time intrusion detection system under government contract between 1984 and 1986. Denning presented **An Intrusion Detection Model** at the IEEE Symposium on Security and Privacy in Oakland in May 1986, published in *IEEE Transactions on Software Engineering* in February 1987.
 
-The model's core idea is still the field's organising principle. Build a statistical profile of normal behaviour for each subject, then flag deviation from it - detection without knowing in advance what the attack looks like. The prototype was the **Intrusion Detection Expert System**, developed at SRI under Teresa Lunt, and it had two components that map exactly onto the split every product still has: one that learns normal behaviour and flags deviation, and one that encodes known vulnerabilities as rules.
+The model's core idea is still the field's organizing principle. Build a statistical profile of normal behaviour for each subject, then flag deviation from it - detection without knowing in advance what the attack looks like. The prototype was the **Intrusion Detection Expert System**, developed at SRI under Teresa Lunt, and it had two components that map exactly onto the split every product still has: one that learns normal behaviour and flags deviation, and one that encodes known vulnerabilities as rules.
 
 **Anomaly detection and signature detection were siblings from the beginning**, in the same prototype, and the entire subsequent history of this family is the two of them trading places depending on which was cheaper to run.
 
@@ -48,7 +48,7 @@ The move from **detection** to **prevention** followed. An intrusion detection s
 - **Network detection**, from 1990. Watch the wire.
 - **Open signatures**, from 1998. Snort, and a rule format others adopted.
 - **Prevention**, from the early 2000s. In-path, dropping.
-- **Absorption**, from around 2009. Intrusion prevention stops being a product and becomes a feature of the next-generation firewall, which is where most organisations run it today.
+- **Absorption**, from around 2009. Intrusion prevention stops being a product and becomes a feature of the next-generation firewall, which is where most organizations run it today.
 - **Behavioural analytics and endpoint detection**, from the 2010s. Denning's anomaly model returning with enough computing power to actually run it, on hosts, where the traffic is still readable.
 
 That last point deserves the emphasis. **The field's founding idea - profile normal, flag deviation - was correct in 1986 and impractical for twenty-five years**, because nobody had the storage or the processing to build per-subject baselines at scale. The current wave of behavioural products is not a new idea; it is the original idea finally affordable.
@@ -63,7 +63,7 @@ It also created **the rule writer** - a specific craft of expressing an attack p
 
 ## The companies
 
-The research came from SRI, Purdue, the Air Force and university labs rather than from vendors. The first commercial wave was Internet Security Systems, Cisco through WheelGroup, and a set of host products from government work. Sourcefire, founded by Roesch to commercialise Snort, was acquired by Cisco in 2013. Today the function lives mostly inside other products - Palo Alto, Fortinet, Check Point, Cisco - while the open lineage continues in Snort, Suricata and Zeek, the last of which descends directly from the network monitoring research of the 1990s.
+The research came from SRI, Purdue, the Air Force and university labs rather than from vendors. The first commercial wave was Internet Security Systems, Cisco through WheelGroup, and a set of host products from government work. Sourcefire, founded by Roesch to commercialize Snort, was acquired by Cisco in 2013. Today the function lives mostly inside other products - Palo Alto, Fortinet, Check Point, Cisco - while the open lineage continues in Snort, Suricata and Zeek, the last of which descends directly from the network monitoring research of the 1990s.
 
 ## Where it goes
 

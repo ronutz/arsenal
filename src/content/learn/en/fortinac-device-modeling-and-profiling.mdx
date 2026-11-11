@@ -20,7 +20,7 @@ FortiNAC needs to know about the **network devices** (switches, wireless control
 
 Modeling a device means telling FortiNAC how to reach it and how to talk to it: the management address, the SNMP credentials for reading port and MAC data, and the CLI credentials for making changes. Both matter, and they fail differently. Wrong SNMP means FortiNAC sees nothing on that device's ports. Wrong CLI credentials mean FortiNAC sees everything and can change nothing, which presents as policies that evaluate correctly and never take effect.
 
-Devices are organised into containers and groups, which is not cosmetic: groups are what policies and scheduled tasks target, so a device in the wrong group is outside the scope of the rules meant to cover it.
+Devices are organized into containers and groups, which is not cosmetic: groups are what policies and scheduled tasks target, so a device in the wrong group is outside the scope of the rules meant to cover it.
 
 ## Profiling: deciding what an endpoint is
 
@@ -32,14 +32,14 @@ The classification matters because policy is written against device type. A rule
 
 ## Rogue is a classification, not an accusation
 
-An endpoint FortiNAC has not classified and cannot match to a known host is a **rogue**. The word suggests hostility; the meaning is unrecognised.
+An endpoint FortiNAC has not classified and cannot match to a known host is a **rogue**. The word suggests hostility; the meaning is unrecognized.
 
 That distinction matters operationally, because the correct response to a rogue is usually not to block it but to work out why it did not classify:
 
 - Profiling rules do not cover that device type yet.
 - The device does not respond to the signals the rules rely on, which is common for embedded and OT equipment that ignores active scans.
 - It appeared on a device FortiNAC is not modelling, or on one whose SNMP credentials are wrong, so nothing was learned about it at all.
-- It is genuinely unauthorised, which is the case the system exists for and the least common in practice.
+- It is genuinely unauthorized, which is the case the system exists for and the least common in practice.
 
 A deployment producing large numbers of rogues is usually under-profiled rather than under attack.
 

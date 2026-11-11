@@ -251,7 +251,7 @@ const MESSAGES: Record<XmlFormatErrorCode, string> = {
   "unterminated-doctype": "The document type declaration is never closed with >.", // no ">"
   "bad-internal-subset": "The internal DTD subset may hold only markup declarations (<!ELEMENT, <!ATTLIST, <!ENTITY, <!NOTATION), comments, processing instructions, parameter-entity references and white space; a parameter-entity reference may not appear inside a declaration there, and an entity declaration must follow its grammar (sections 2.8 and 4.2).", // [28b], [29], WFC PEs in Internal Subset
   "misplaced-doctype": "The document type declaration must come once, before the root element (section 2.8).", // prolog
-  "unknown-markup": "Unrecognised markup: in a document, <! starts only a comment, a CDATA section or the document type declaration.", // "<!" otherwise
+  "unknown-markup": "Unrecognized markup: in a document, <! starts only a comment, a CDATA section or the document type declaration.", // "<!" otherwise
   "bad-start-tag": "Malformed start tag: a name, an attribute, > or /> was expected here (section 3.1). Write &lt; for a literal less-than sign.", // [40], [44]
   "bad-attribute": "Malformed attribute: an attribute is a name, =, and a value in single or double quotes, separated from the one before it by white space (section 3.1).", // [41]
   "duplicate-attribute": "The attribute {name} appears twice in the same tag (section 3.1, Unique Att Spec).", // WFC

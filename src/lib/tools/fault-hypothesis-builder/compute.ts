@@ -270,7 +270,7 @@ const HYPOTHESES: HypothesisDef[] = [
     rationale:
       "Slowness that tracks load - time of day, growth trend, or an event - points at a saturated resource: link, CPU, memory, connection table, or a queue in between.",
     supports: [
-      "Utilisation graphs at the incident hour sit at or near a ceiling",
+      "Utilization graphs at the incident hour sit at or near a ceiling",
       "Symptom intensity tracks traffic volume",
       "Connection counts or queue drops climb with the symptom",
     ],
@@ -312,7 +312,7 @@ const HYPOTHESES: HypothesisDef[] = [
     evidence: () => [
       { id: "E-CLI-1", action: "Reproduce from a second machine and from a different network (e.g. a phone hotspot); note which combination fails." },
       { id: "E-CLI-2", action: "Compare the affected client's resolver, proxy, and VPN settings against a working client's." },
-      { id: "E-CLI-3", action: "Temporarily rule the endpoint security stack in or out in line with your organisation's policy." },
+      { id: "E-CLI-3", action: "Temporarily rule the endpoint security stack in or out in line with your organization's policy." },
     ],
   },
   {

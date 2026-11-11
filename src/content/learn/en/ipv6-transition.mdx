@@ -1,7 +1,7 @@
 ---
 slug: ipv6-transition
 title: "Running IPv6 and IPv4 together: dual-stack and translation"
-summary: "IPv4 and IPv6 cannot exchange packets, so networks run both side by side, carry IPv6 inside IPv4, or translate one protocol into the other. After reading, you can predict which family a dual-stack host tries first, build 6to4, Teredo, 6rd and NAT64 addresses by hand, follow a NAT64 and DNS64 session step by step, explain why 464XLAT translates rather than tunnels, and recognise the failures these mechanisms cause with IPv4 literals, signed DNS answers and packet sizes."
+summary: "IPv4 and IPv6 cannot exchange packets, so networks run both side by side, carry IPv6 inside IPv4, or translate one protocol into the other. After reading, you can predict which family a dual-stack host tries first, build 6to4, Teredo, 6rd and NAT64 addresses by hand, follow a NAT64 and DNS64 session step by step, explain why 464XLAT translates rather than tunnels, and recognize the failures these mechanisms cause with IPv4 literals, signed DNS answers and packet sizes."
 concepts: ["ipv6", "ipv4", "dual-stack", "nat64", "happy-eyeballs", "transition", "dns64", "464xlat", "6to4", "teredo", "6rd", "siit", "ds-lite", "pref64", "ipv4-mapped", "tunnel", "encapsulation", "mtu", "dnssec"]
 relatedTools: ["ipv6", "mtu-mss", "python-playground", "dig-command-builder", "dig-output-explainer", "cgn-port-blocks"]
 relatedArticles: ["ipv6-addressing", "ipv4-addressing", "ipv6-subnetting", "ipv6-address-configuration", "ipv6-neighbor-discovery", "anycast", "private-vs-public-ip-ranges", "nat-explained", "cgnat-address-sharing-and-attribution", "dnssec-end-to-end", "choosing-a-public-dns-resolver", "icmp-ping-and-traceroute", "dns-message-header-and-flags", "port-blocks-and-port-sets"]
@@ -84,7 +84,7 @@ As 0064 plus ff9b is ffff, zero in one's complement, the prefix is checksum neut
 
 ## NAT64 and DNS64, step by step
 
-Stateful NAT64 lets IPv6-only clients reach IPv4 servers through shared public IPv4 addresses ([RFC 6146, abstract](https://www.rfc-editor.org/rfc/rfc6146.txt)). DNS64 feeds it: for a name without AAAA resource records (RRs), normal for an IPv4-only server, it fetches the A record and synthesises an AAAA ([RFC 6147, section 2](https://www.rfc-editor.org/rfc/rfc6147.txt)), and "By default, DNS64 implementations MUST NOT synthesize AAAA RRs when real AAAA RRs exist" (section 5.1.1). RFC 6146's walk-through uses documentation addresses that a real translator would drop ([RFC 6146, section 1.2.2](https://www.rfc-editor.org/rfc/rfc6146.txt)):
+Stateful NAT64 lets IPv6-only clients reach IPv4 servers through shared public IPv4 addresses ([RFC 6146, abstract](https://www.rfc-editor.org/rfc/rfc6146.txt)). DNS64 feeds it: for a name without AAAA resource records (RRs), normal for an IPv4-only server, it fetches the A record and synthesizes an AAAA ([RFC 6147, section 2](https://www.rfc-editor.org/rfc/rfc6147.txt)), and "By default, DNS64 implementations MUST NOT synthesize AAAA RRs when real AAAA RRs exist" (section 5.1.1). RFC 6146's walk-through uses documentation addresses that a real translator would drop ([RFC 6146, section 1.2.2](https://www.rfc-editor.org/rfc/rfc6146.txt)):
 
 ```text
 1  H1 asks the DNS64 for the AAAA of h2.example.com
@@ -103,7 +103,7 @@ NAT64 thus translates both address and port ([RFC 6146, section 1.2.1](https://w
 
 ## How a host learns the prefix
 
-A host that synthesises for itself learns the prefix by querying the AAAA records of ipv4only.arpa, whose addresses are 192.0.0.170 and 192.0.0.171 ([RFC 7050, section 2.2](https://www.rfc-editor.org/rfc/rfc7050.txt)), with the Checking Disabled (CD) bit clear, or a DNS64 would not synthesise; the answers show the prefix around those addresses, and a positive A answer marks a resolver that is not a DNS64 (section 3). Router Advertisements (RAs), covered in [Neighbor Discovery](/learn/ipv6-neighbor-discovery), can carry the prefix instead, in the PREF64 option, type 38, coded 0 to 5 for /96, /64, /56, /48, /40 and /32 ([RFC 8781, section 4](https://www.rfc-editor.org/rfc/rfc8781.txt)).
+A host that synthesizes for itself learns the prefix by querying the AAAA records of ipv4only.arpa, whose addresses are 192.0.0.170 and 192.0.0.171 ([RFC 7050, section 2.2](https://www.rfc-editor.org/rfc/rfc7050.txt)), with the Checking Disabled (CD) bit clear, or a DNS64 would not synthesize; the answers show the prefix around those addresses, and a positive A answer marks a resolver that is not a DNS64 (section 3). Router Advertisements (RAs), covered in [Neighbor Discovery](/learn/ipv6-neighbor-discovery), can carry the prefix instead, in the PREF64 option, type 38, coded 0 to 5 for /96, /64, /56, /48, /40 and /32 ([RFC 8781, section 4](https://www.rfc-editor.org/rfc/rfc8781.txt)).
 
 ## 464XLAT: two translations, no tunnel
 
@@ -117,7 +117,7 @@ Dual-Stack Lite (DS-Lite) tunnels IPv4 in IPv6 from the customer's Basic Bridgin
 
 **IPv4 literals.** Behind IPv6-only access, IPv4 literals and older APIs fail unless a CLAT, Happy Eyeballs version 2 or Bump-in-the-Host with DNS64 steps in ([RFC 8683, section 4.6](https://www.rfc-editor.org/rfc/rfc8683.txt)), and protocols that protect IP header information are "essentially incompatible with NAT64" ([RFC 6146, section 5.1](https://www.rfc-editor.org/rfc/rfc6146.txt)).
 
-**Signed answers.** The Domain Name System Security Extensions (DNSSEC) clash with synthesis "because DNSSEC is designed to detect changes to DNS answers, and DNS64 may alter answers coming from an authoritative server" ([RFC 6147, section 3](https://www.rfc-editor.org/rfc/rfc6147.txt)). A validating DNS64 (vDNS64) may synthesise when DNSSEC OK (DO) is set and CD clear, setting the Authentic Data (AD) bit, but "If the CD bit is set and DO is set, then vDNS64 MAY perform validation, but MUST NOT perform synthesis" (section 5.5): a validating host must then do DNS64 itself (section 3). RFC 8683 cites studies putting the breakage at about 1.7% of cases ([RFC 8683, section 4.1](https://www.rfc-editor.org/rfc/rfc8683.txt)). RFC 8880 reversed RFC 7050's demand that the discovery name be signed ([RFC 7050, section 4](https://www.rfc-editor.org/rfc/rfc7050.txt)): "the 'ipv4only.arpa' zone MUST be an insecure delegation" ([RFC 8880, section 5](https://www.rfc-editor.org/rfc/rfc8880.txt)); see [DNSSEC end to end](/learn/dnssec-end-to-end).
+**Signed answers.** The Domain Name System Security Extensions (DNSSEC) clash with synthesis "because DNSSEC is designed to detect changes to DNS answers, and DNS64 may alter answers coming from an authoritative server" ([RFC 6147, section 3](https://www.rfc-editor.org/rfc/rfc6147.txt)). A validating DNS64 (vDNS64) may synthesize when DNSSEC OK (DO) is set and CD clear, setting the Authentic Data (AD) bit, but "If the CD bit is set and DO is set, then vDNS64 MAY perform validation, but MUST NOT perform synthesis" (section 5.5): a validating host must then do DNS64 itself (section 3). RFC 8683 cites studies putting the breakage at about 1.7% of cases ([RFC 8683, section 4.1](https://www.rfc-editor.org/rfc/rfc8683.txt)). RFC 8880 reversed RFC 7050's demand that the discovery name be signed ([RFC 7050, section 4](https://www.rfc-editor.org/rfc/rfc7050.txt)): "the 'ipv4only.arpa' zone MUST be an insecure delegation" ([RFC 8880, section 5](https://www.rfc-editor.org/rfc/rfc8880.txt)); see [DNSSEC end to end](/learn/dnssec-end-to-end).
 
 **Resolvers.** A device using a resolver other than the one learned from the network can seriously break DNS64 and NAT64 ([RFC 8880, section 3.1](https://www.rfc-editor.org/rfc/rfc8880.txt)), a cost of [choosing a public resolver](/learn/choosing-a-public-dns-resolver).
 
@@ -167,7 +167,7 @@ dig @2001:4860:4860::6464 +dns64prefix
 dig @2001:4860:4860::6464 +dnssec +cd ipv4only.arpa AAAA   # DO and CD set: no synthesis expected
 ```
 
-An illustrative synthesised answer, in the zone form of [RFC 8683, section 4.1](https://www.rfc-editor.org/rfc/rfc8683.txt):
+An illustrative synthesized answer, in the zone form of [RFC 8683, section 4.1](https://www.rfc-editor.org/rfc/rfc8683.txt):
 
 ```text
 ipv4only.arpa. AAAA 64:ff9b::192.0.0.170
@@ -186,7 +186,7 @@ curl -s 'https://dns.google/resolve?name=ipv4only.arpa&type=A'
 {"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"ipv4only.arpa.","type":1}],"Answer":[{"name":"ipv4only.arpa.","type":1,"TTL":16109,"data":"192.0.0.170"},{"name":"ipv4only.arpa.","type":1,"TTL":16109,"data":"192.0.0.171"}]}
 ```
 
-The AAAA query (type 28) got status 0, no Answer and one Authority record, the negative answer a DNS64 synthesises from ([RFC 8305, section 7.2](https://www.rfc-editor.org/rfc/rfc8305.txt)); the A query (type 1) got 192.0.0.170 and 192.0.0.171, the mark of a resolver that is not a DNS64 ([RFC 7050, section 3](https://www.rfc-editor.org/rfc/rfc7050.txt)); AD is false in both, as an insecure delegation implies ([RFC 8880, section 5](https://www.rfc-editor.org/rfc/rfc8880.txt)). [The DNS header](/learn/dns-message-header-and-flags) explains the flags, the [dig output explainer](/tools/dig-output-explainer) decodes AD and CD, and the [dig command builder](/tools/dig-command-builder) writes `-6`, `+dnssec` and `+cd`, though not `+dns64prefix`.
+The AAAA query (type 28) got status 0, no Answer and one Authority record, the negative answer a DNS64 synthesizes from ([RFC 8305, section 7.2](https://www.rfc-editor.org/rfc/rfc8305.txt)); the A query (type 1) got 192.0.0.170 and 192.0.0.171, the mark of a resolver that is not a DNS64 ([RFC 7050, section 3](https://www.rfc-editor.org/rfc/rfc7050.txt)); AD is false in both, as an insecure delegation implies ([RFC 8880, section 5](https://www.rfc-editor.org/rfc/rfc8880.txt)). [The DNS header](/learn/dns-message-header-and-flags) explains the flags, the [dig output explainer](/tools/dig-output-explainer) decodes AD and CD, and the [dig command builder](/tools/dig-command-builder) writes `-6`, `+dnssec` and `+cd`, though not `+dns64prefix`.
 
 Python's ipaddress decodes 6to4 (`sixtofour`), Teredo (`teredo`) and mapped addresses (`ipv4_mapped`), but not NAT64 ([Python ipaddress documentation](https://docs.python.org/3/library/ipaddress.html)). A CPython 3.13.16 session; the [Python playground](/tools/python-playground) runs CPython 3.14:
 
@@ -208,14 +208,14 @@ IPv4Address('192.0.2.33')
 (None, None, None)
 ```
 
-The [IPv6 Toolkit](/tools/ipv6) shows the IPv4 inside an IPv4-mapped address and labels 64:ff9b::/96 and 2002::/16 addresses without extracting it; it does not recognise Teredo addresses or 64:ff9b:1::/48. The [MTU / MSS calculator](/tools/mtu-mss) gives a 1500-byte link with `6in4` an inner MTU of 1480 and an IPv6 MSS of 1420, and with `ipip v6`, as in DS-Lite, 1460 and an IPv4 MSS of 1420.
+The [IPv6 Toolkit](/tools/ipv6) shows the IPv4 inside an IPv4-mapped address and labels 64:ff9b::/96 and 2002::/16 addresses without extracting it; it does not recognize Teredo addresses or 64:ff9b:1::/48. The [MTU / MSS calculator](/tools/mtu-mss) gives a 1500-byte link with `6in4` an inner MTU of 1480 and an IPv6 MSS of 1420, and with `ipip v6`, as in DS-Lite, 1460 and an IPv4 MSS of 1420.
 
 ## What to remember
 
 - RFC 6144's three families are dual stack, tunnelling and translation; only translation joins IPv6-only and IPv4-only hosts.
 - RFC 6724 ranks IPv6 (40) over IPv4 (35), 6to4 (30) and Teredo (5); Happy Eyeballs spaces attempts 250 ms apart.
 - 6to4 builds `2002:V4ADDR::/48`; its anycast relays were deprecated in 2015, and routers must ship it disabled.
-- 64:ff9b::/96 holds a global IPv4 address in its last 32 bits; DNS64 synthesises, NAT64 translates address and port.
+- 64:ff9b::/96 holds a global IPv4 address in its last 32 bits; DNS64 synthesizes, NAT64 translates address and port.
 - Hosts learn the prefix from ipv4only.arpa, queried with CD clear, or from PREF64 in Router Advertisements.
 - 464XLAT translates twice and encapsulates nothing; DS-Lite and MAP-E carry IPv4 inside IPv6.
 - On a 1500-byte path a 6in4 tunnel leaves 1480 bytes and a TCP MSS of 1420; a small ping hides the fault.

@@ -75,11 +75,11 @@ export const arrowProfile: VendorProfile = {
     },
   ],
   markets: [
-    "Original equipment manufacturers, contract manufacturers and design engineers on the components side; resellers, integrators and managed service providers on the enterprise side. The company sits in the Fortune 500 and serves customers in most industrialised countries.",
+    "Original equipment manufacturers, contract manufacturers and design engineers on the components side; resellers, integrators and managed service providers on the enterprise side. The company sits in the Fortune 500 and serves customers in most industrialized countries.",
     "It competes with Avnet in components - a neighbour from the same street in the 1930s and still its principal rival ninety years later - and with the broadline technology distributors on the enterprise side.",
   ],
   analyst: [
-    "Component distribution is judged on franchise breadth, design-win registration and inventory turns, and the enterprise business on vendor authorisations and partner reach. They are separate assessments of the same company, which is itself the observation.",
+    "Component distribution is judged on franchise breadth, design-win registration and inventory turns, and the enterprise business on vendor authorizations and partner reach. They are separate assessments of the same company, which is itself the observation.",
     "The rivalry with Avnet is worth noting for how old it is. Two businesses founded within a few doors of each other during the Depression are still, ninety years later, the two largest electronics component distributors in the world and still measured against one another. Very little else in this industry has been stable enough to sustain a rivalry that long.",
   ],
 };

@@ -85,11 +85,11 @@ export const emcProfile: VendorProfile = {
     },
   ],
   markets: [
-    "Enterprise data centres, mainframes first and then open systems - the organisations for whom storage is a line item large enough to have its own procurement. Revenue passed $5B by 1999 and the company was the reference against which NetApp, HDS and IBM's storage divisions were measured.",
+    "Enterprise data centres, mainframes first and then open systems - the organizations for whom storage is a line item large enough to have its own procurement. Revenue passed $5B by 1999 and the company was the reference against which NetApp, HDS and IBM's storage divisions were measured.",
     "Its position rested on being independent of the server vendors, which is what made 'best of breed' a phrase storage buyers actually used - and which ended when it became part of one.",
   ],
   analyst: [
     "For roughly two decades it was assessed as the leader in enterprise storage without serious argument, and the interesting question was always which competitor was gaining rather than whether EMC was ahead.",
-    "The closing verdict is arithmetic. A company built on memory boards for other people's minicomputers became a $67B acquisition, and a substantial part of that price was a virtualisation company it had never made part of its own product line. The best investment a storage company ever made was in software that had nothing to do with storage.",
+    "The closing verdict is arithmetic. A company built on memory boards for other people's minicomputers became a $67B acquisition, and a substantial part of that price was a virtualization company it had never made part of its own product line. The best investment a storage company ever made was in software that had nothing to do with storage.",
   ],
 };

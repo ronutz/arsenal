@@ -28,16 +28,16 @@ export const marconiProfile: VendorProfile = {
     },
   ],
   timeline: [
-    { year: 1901, title: "Across the Atlantic", detail: "December 12, 1901: the letter S, sent from Poldhu in Cornwall, is received at Signal Hill, Newfoundland - long-distance wireless is real, and Marconi's company owns the moment and the market." },
+    { year: 1901, title: "Across the Atlantic", detail: "12 December 1901: the letter S, sent from Poldhu in Cornwall, is received at Signal Hill, Newfoundland - long-distance wireless is real, and Marconi's company owns the moment and the market." },
     { year: 1912, title: "Titanic", detail: "The Marconi operators aboard Titanic work the CQD and SOS calls that bring Carpathia; over 700 survive because wireless was aboard - the disaster that made radio at sea mandatory, and the company a household name." },
-    { year: 1968, title: "Into the GEC empire", detail: "English Electric, which had absorbed Marconi in 1946, is acquired by Arnold Weinstock's General Electric Company - the Marconi name becomes the electronics and defense crown of Britain's great conglomerate for three decades." },
-    { year: 1999, title: "The fateful rebirth", detail: "GEC sells its defense business to British Aerospace (the seed of BAE Systems), renames the remainder Marconi plc, and spends the famous cash pile on American telecom equipment - FORE Systems for ~$4.5 billion, RELTEC for ~$2.1 billion - at the precise top of the market.", sourceNote: "Deal values as reported at announcement." },
+    { year: 1968, title: "Into the GEC empire", detail: "English Electric, which had absorbed Marconi in 1946, is acquired by Arnold Weinstock's General Electric Company - the Marconi name becomes the electronics and defence crown of Britain's great conglomerate for three decades." },
+    { year: 1999, title: "The fateful rebirth", detail: "GEC sells its defence business to British Aerospace (the seed of BAE Systems), renames the remainder Marconi plc, and spends the famous cash pile on American telecom equipment - FORE Systems for ~$4.5 billion, RELTEC for ~$2.1 billion - at the precise top of the market.", sourceNote: "Deal values as reported at announcement." },
     { year: 2001, title: "The collapse", detail: "Carrier spending stops; profit warnings cascade; the shares lose roughly 97% of their value, and the 2003 debt-for-equity restructuring effectively wipes the old shareholders - the U.K.'s starkest dot-com corporate casualty." },
     { year: 2006, title: "Ericsson takes the assets", detail: "January 2006: Ericsson completes the ~GBP 1.2 billion acquisition of Marconi's principal telecom businesses; the remainder becomes telent, a services firm - and the name that began radio leaves network equipment.", sourceNote: "Close per the deal record." },
   ],
   products: [
     { name: "Marine and long-distance wireless", what: "The founding business: ship-to-shore stations, transoceanic circuits, and the operators who staffed them." },
-    { name: "GEC-Marconi electronics", what: "Radar, avionics, and defense electronics - the conglomerate decades, sold into what became BAE Systems." },
+    { name: "GEC-Marconi electronics", what: "Radar, avionics, and defence electronics - the conglomerate decades, sold into what became BAE Systems." },
     { name: "Optical and access networks (Marconi plc)", what: "The final act's SDH, optical, and access portfolio - the pieces Ericsson kept." },
   ],
   innovations: [

@@ -30,6 +30,7 @@
 // slugs (the same reason the earlier-sites page keeps the default card).
 // ============================================================================
 
+import { formatDay } from "@/lib/changelogView"; // a date in the reader's own words (2026-11-11)
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -116,7 +117,7 @@ export default async function OldSiteClonePage({
               </Link>
               <p className="era-years mono">{t("eyebrow")}</p>
               <h1 className="era-title">{t(`title.${clone.slug}`)}</h1>
-              <p className="era-subtitle">{t("lede", { exportDate: CLONE_EXPORT_DATE, pages: m.pageCount, assets: m.assets })}</p>
+              <p className="era-subtitle">{t("lede", { exportDate: formatDay(CLONE_EXPORT_DATE, locale), pages: m.pageCount, assets: m.assets })}</p>
             </div>
           </section>
 
@@ -147,7 +148,7 @@ export default async function OldSiteClonePage({
                 {kinds.map((k) => (
                   <li key={k} className="es-clone-change">
                     <span className="es-clone-count mono">{m.changes[k]}</span>
-                    <span>{t(`changes.${k}`, { count: m.changes[k], made: CLONE_MADE, pages: Object.keys(m.dead).length, list: deadList })}</span>
+                    <span>{t(`changes.${k}`, { count: m.changes[k], made: formatDay(CLONE_MADE, locale), pages: Object.keys(m.dead).length, list: deadList })}</span>
                   </li>
                 ))}
                 <li className="es-clone-change">
@@ -245,7 +246,7 @@ export default async function OldSiteClonePage({
           <section className="section era-closer-section">
             <div className="container era-container">
               <h2 className="es-h2">{tEs("sourcesTitle")}</h2>
-              <p className="es-sources">{t("sourcesBody", { exportDate: CLONE_EXPORT_DATE, cdxDate: CLONE_CDX_READ_DATE, made: CLONE_MADE })}</p>
+              <p className="es-sources">{t("sourcesBody", { exportDate: formatDay(CLONE_EXPORT_DATE, locale), cdxDate: formatDay(CLONE_CDX_READ_DATE, locale), made: formatDay(CLONE_MADE, locale) })}</p>
             </div>
           </section>
         </article>

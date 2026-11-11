@@ -27,11 +27,11 @@ A traditional gateway sits in the mail path: mail flows through it before reachi
 
 **What it gives up:** it is not inline, so there is a window between delivery and evaluation. The design accepts that window in exchange for retroactive removal.
 
-Connecting requires authorising the service in the platform's own admin console with the permissions it needs to read and act on mail. That authorisation is the deployment, and its scope deserves reading rather than clicking.
+Connecting requires authorizing the service in the platform's own admin console with the permissions it needs to read and act on mail. That authorization is the deployment, and its scope deserves reading rather than clicking.
 
-## Organisations and hierarchy
+## Organizations and hierarchy
 
-The service models tenancy as **organisations**, which can nest.
+The service models tenancy as **organizations**, which can nest.
 
 The hierarchy exists so that policy can be set once and inherited, with exceptions where they are warranted: a parent for the group, children per business unit or per acquired company, each with its own administrators.
 
@@ -59,7 +59,7 @@ The operational advice matters more than the mechanics:
 
 **Policies** decide what happens to what: which detections apply to which recipients, and what action follows.
 
-**Extensions** add capability beyond mail: protection for the file sharing, chat and collaboration surfaces that live alongside mail in the same platform. That is worth taking seriously, because an organisation that has hardened mail and ignored the file sharing built into the same suite has moved the target rather than removed it.
+**Extensions** add capability beyond mail: protection for the file sharing, chat and collaboration surfaces that live alongside mail in the same platform. That is worth taking seriously, because an organization that has hardened mail and ignored the file sharing built into the same suite has moved the target rather than removed it.
 
 **Channel integration** connects those collaboration surfaces so that a malicious file shared in chat is subject to the same scrutiny as one attached to a message.
 
@@ -71,8 +71,8 @@ The operational advice matters more than the mechanics:
 
 **Service status and feature updates** matter more for a service than for an appliance, because the platform changes under you. A feature that appears without announcement can change behaviour, and a service interruption is someone else's incident that becomes yours.
 
-**Error messages** in this environment usually mean the API connection: authorisation revoked or expired, permissions changed on the platform side, or throttling under load. That is the first place to look, because it produces symptoms that resemble a policy fault.
+**Error messages** in this environment usually mean the API connection: authorization revoked or expired, permissions changed on the platform side, or throttling under load. That is the first place to look, because it produces symptoms that resemble a policy fault.
 
 ## What an exam candidate should be able to state cold
 
-The service connects through the platform API rather than the mail path, which lets it inspect after the platform's own filtering, act on already-delivered mail, and see internal mail, at the cost of not being inline. Organisations nest and policy inherits downward, so debug upward before blaming a child. Allowlists are more dangerous than blocklists because a wrong entry fails silently, and they should be as narrow as possible and reviewed. Extensions cover the collaboration surfaces beside mail, which is where an attacker moves when mail is hardened. Errors usually trace to the API authorisation.
+The service connects through the platform API rather than the mail path, which lets it inspect after the platform's own filtering, act on already-delivered mail, and see internal mail, at the cost of not being inline. Organizations nest and policy inherits downward, so debug upward before blaming a child. Allowlists are more dangerous than blocklists because a wrong entry fails silently, and they should be as narrow as possible and reviewed. Extensions cover the collaboration surfaces beside mail, which is where an attacker moves when mail is hardened. Errors usually trace to the API authorization.

@@ -20,6 +20,8 @@
 // a press; the Router IDs are addresses and stay typed.
 // ============================================================================
 
+// English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
+import { intlLocale } from "@/i18n/locales";
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import LabFrame, { LabField, LabSelect } from "./LabFrame";
@@ -49,7 +51,7 @@ export default function OspfNeighbourAndDrLab() {
   // The page's language, for lists.
   const locale = useLocale();
   // Lists in the page's language; English as British English writes them, without the serial comma ("a, b and c").
-  const lf = new Intl.ListFormat(locale === "en" ? "en-GB" : locale, { style: "long", type: "conjunction" });
+  const lf = new Intl.ListFormat(intlLocale(locale), { style: "long", type: "conjunction" });
   // The reader's settings, opening with every router up together.
   const [input, setInput] = useState<OspfInput>(DEFAULT_INPUT);
 

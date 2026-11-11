@@ -91,7 +91,7 @@ const RULES: Rule[] = [
     id: "caseNorm", // pack key rule.caseNorm
     re: /\.toLowerCase\(\)|\.toUpperCase\(\)/g,
     meaning:
-      "Case normalisation, usually applied to an email address or username before it is compared or sent onward.",
+      "Case normalization, usually applied to an email address or username before it is compared or sent onward.",
   },
   {
     id: "stringManip", // pack key rule.stringManip
@@ -194,7 +194,7 @@ export function explainExpressionLocalisable(
     diagnostics.push({
       severity: "caution",
       message: uniqueGets.length === 1 // one attribute or several, one id each
-        ? say("diag.noNullOne", `Reads an attribute (${uniqueGets.join(", ")}) with no null check. If any of them is ever absent the expression fails at runtime, and directories are less consistent than the accounts used to test them.`, { attrs: uniqueGets.join(", ") }) // one
+        ? say("diag.noNullOne", `Reads an attribute (${uniqueGets.join(", ")}) with no null check. If it is ever absent the expression fails at runtime, and directories are less consistent than the accounts used to test them.`, { attrs: uniqueGets.join(", ") }) // one attribute: "it", not "any of them" (11/11/2026)
         : say("diag.noNullMany", `Reads ${uniqueGets.length} attributes (${uniqueGets.join(", ")}) with no null check. If any of them is ever absent the expression fails at runtime, and directories are less consistent than the accounts used to test them.`, { count: String(uniqueGets.length), attrs: uniqueGets.join(", ") }), // several
     });
   }

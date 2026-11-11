@@ -33,7 +33,7 @@ strict-transport-security: max-age=63072000; includeSubDomains; preload
 
 ## How long is long enough
 
-The analyzer treats `max-age` in bands. A value of one year or more is the recommended baseline and is marked strong. A value under roughly six months is flagged as low, because a short lifetime means the protection lapses quickly for a user who does not return often. A `max-age` of `0` is a special case: it does not set a short policy, it disables HSTS and tells the browser to forget any existing policy for the host. That is the correct value only when you are deliberately turning HSTS off; otherwise it is a misconfiguration that removes the protection entirely.
+The analyser treats `max-age` in bands. A value of one year or more is the recommended baseline and is marked strong. A value under roughly six months is flagged as low, because a short lifetime means the protection lapses quickly for a user who does not return often. A `max-age` of `0` is a special case: it does not set a short policy, it disables HSTS and tells the browser to forget any existing policy for the host. That is the correct value only when you are deliberately turning HSTS off; otherwise it is a misconfiguration that removes the protection entirely.
 
 ## Trust on first use, and what preload fixes
 

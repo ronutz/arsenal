@@ -22,7 +22,7 @@ Two questions get treated as one, and they are not. Whether NGINX **stores** a r
 
 **The method.** `proxy_cache_methods` defaults to GET and HEAD. A POST is never cached unless you add it deliberately, and adding it deliberately is rarely what you want.
 
-**`Set-Cookie` in the response.** NGINX will not store a response that sets a cookie, on the assumption it is user-specific. This default is doing real work: it is why a login page or a personalised dashboard is never cached by accident.
+**`Set-Cookie` in the response.** NGINX will not store a response that sets a cookie, on the assumption it is user-specific. This default is doing real work: it is why a login page or a personalized dashboard is never cached by accident.
 
 **The origin's own instruction.** `Cache-Control: no-cache`, `no-store` or `private`, or an `Expires` in the past, prevent storage. The application is telling you something about the response, and by default NGINX listens.
 
@@ -52,7 +52,7 @@ NGINX excludes cookied **responses** from storage. It does **not** exclude cooki
 
 A request arriving with `Cookie: session=abc` is looked up under the ordinary key. If a shared entry exists, that user is served the shared entry. NGINX never considered their cookie, because the key did not mention it.
 
-On its own that is usually harmless, because the personalised responses were never stored. It stops being harmless the moment someone adds `proxy_ignore_headers Set-Cookie`, often to make caching "work" on a site where the backend sets a session cookie on every response.
+On its own that is usually harmless, because the personalized responses were never stored. It stops being harmless the moment someone adds `proxy_ignore_headers Set-Cookie`, often to make caching "work" on a site where the backend sets a session cookie on every response.
 
 Now per-user responses are stored under a key every user shares. The first logged-in user's page is served to everybody. This is not an exotic attack; it is a two-line configuration change that looks like a performance fix.
 

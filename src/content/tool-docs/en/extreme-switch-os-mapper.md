@@ -11,14 +11,14 @@ Both apply **only to Universal hardware**: 4120, 4220, 5320, 5420, 5520, 5720, 7
 
 ## The warning it always gives
 
-**Changing persona deletes the configuration.** Extreme's own wording: changing the network operating system deletes all configuration files, debug information, logs, events and statistics belonging to the previous one. **It is a rebuild, not a migration**, and the tool says so on every lookup rather than only when a model is recognised.
+**Changing persona deletes the configuration.** Extreme's own wording: changing the network operating system deletes all configuration files, debug information, logs, events and statistics belonging to the previous one. **It is a rebuild, not a migration**, and the tool says so on every lookup rather than only when a model is recognized.
 
 It also flags that the boot question picks Switch Engine with a no: asked "Would you like to change the switch OS to VOSS? [y/N/q]" ([Switch Engine 33.1.100 release notes](https://documentation.extremenetworks.com/release_notes/SwitchEngine/33.1.100/GUID-EEE4A4A1-99DC-4691-B6B5-F88A6FA8042F.shtml), read 2026-11-09), **N keeps Switch Engine, y moves to Fabric Engine**.
 
 ## Series caveats it surfaces
 
 - **7520**: stacking works under Switch Engine and **not** under Fabric Engine. If the design needs stacking, the persona choice is already made.
-- **5420 and 5520**: upgrading to Switch Engine 31.6 **changes the SNMP SysObjectID**, so monitoring that identifies the device by that value stops recognising it, with nothing looking wrong from the console.
+- **5420 and 5520**: upgrading to Switch Engine 31.6 **changes the SNMP SysObjectID**, so monitoring that identifies the device by that value stops recognizing it, with nothing looking wrong from the console.
 - **Fabric Engine minimums differ**: 8.6 on the 5320, 5420 and 5520; 8.7 on the 5720.
 
 ## What it will not do

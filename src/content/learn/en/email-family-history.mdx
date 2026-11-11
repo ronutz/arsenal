@@ -37,7 +37,7 @@ Sluizer said why, in a 2004 interview: at the time they were doing the work, the
 
 **SPF** was conceived in 1997 and released as a draft by **Meng Weng Wong** in June 2003. It publishes, in DNS, which servers may send for a domain - which makes the naming system the trust anchor for mail, another instance of the [DNS record becoming a general-purpose carrier](/learn/dns-family-history).
 
-**DomainKeys** came from Yahoo in 2004 and became **DKIM**, signing the message cryptographically so a receiver can verify it was authorised by the domain and not altered in transit.
+**DomainKeys** came from Yahoo in 2004 and became **DKIM**, signing the message cryptographically so a receiver can verify it was authorized by the domain and not altered in transit.
 
 **DMARC** followed in 2012, and its contribution is the missing piece rather than a third signature: it ties the visible From address to SPF and DKIM results, tells receivers what to do on failure, and, crucially, sends **reports back to the domain owner**, so a domain can discover who is sending mail in its name. Its specification entered the RFC series in March 2015 as RFC 7489, an Informational document; since May 2026 DMARC is a Proposed Standard, RFC 9989, with its aggregate and failure reports specified in RFC 9990 and RFC 9991, and the three together obsolete RFC 7489 ([RFC Editor, RFC 7489](https://www.rfc-editor.org/info/rfc7489); [RFC 9989, Appendix C.1](https://www.rfc-editor.org/rfc/rfc9989.txt)).
 
@@ -65,15 +65,15 @@ Everything expensive in security follows from that. Business email compromise is
 
 ## Jobs and practices
 
-Email produces administrators rather than engineers in most organisations, and its practices are dominated by deliverability - the discipline of being believed by other people's servers.
+Email produces administrators rather than engineers in most organizations, and its practices are dominated by deliverability - the discipline of being believed by other people's servers.
 
-**Publishing all three records, correctly**, since a partial or malformed policy is common and is worse than none because it produces confidence without protection. **Reading the DMARC reports**, which most organisations enable and never look at, and which are the only way to discover unauthorised sending in your own name. **Moving to enforcement**, from monitoring to quarantine to reject, on a date - the same staged pattern as [intrusion prevention](/learn/ids-ips-family-history) and web application firewalls, for the same reason: the failure mode of enforcement is a business outage.
+**Publishing all three records, correctly**, since a partial or malformed policy is common and is worse than none because it produces confidence without protection. **Reading the DMARC reports**, which most organizations enable and never look at, and which are the only way to discover unauthorized sending in your own name. **Moving to enforcement**, from monitoring to quarantine to reject, on a date - the same staged pattern as [intrusion prevention](/learn/ids-ips-family-history) and web application firewalls, for the same reason: the failure mode of enforcement is a business outage.
 
 And the practice that no configuration replaces: **training people that the From field is a claim, not a fact.**
 
 ## Where it goes
 
-**Enforcement is becoming a condition of doing business.** With the largest receivers requiring authentication, the incentive has shifted from security to deliverability, which turns out to motivate organisations far more reliably.
+**Enforcement is becoming a condition of doing business.** With the largest receivers requiring authentication, the incentive has shifted from security to deliverability, which turns out to motivate organizations far more reliably.
 
 **Encryption in transit is normal and end-to-end is not.** Server-to-server encryption is now widespread; encrypted content between people remains a minority practice, because key management for ordinary users has never been solved and the mailbox providers' business models rely on reading the content.
 

@@ -2,7 +2,7 @@
 
 An SNMP interface counter only ever counts up, and when it reaches its largest value it starts again from zero. A monitoring system turns those counters into traffic rates by reading them twice and dividing the difference by the time between the readings, which works only while the counter goes round less than once between two polls. This calculator answers the two questions that follow, exactly:
 
-- **Wrap time.** For a Counter32 or Counter64 that counts octets or packets, at a given interface speed and utilisation: how long it takes to wrap at that load and at line rate, the longest poll interval that can never miss a wrap, a safer interval with the tool's margin, a verdict on your own poll interval, and what RFC 2863 requires at that speed.
+- **Wrap time.** For a Counter32 or Counter64 that counts octets or packets, at a given interface speed and utilization: how long it takes to wrap at that load and at line rate, the longest poll interval that can never miss a wrap, a safer interval with the tool's margin, a verdict on your own poll interval, and what RFC 2863 requires at that speed.
 - **Rate from two readings.** For two readings of one counter, with their times in seconds or as sysUpTime: the delta, allowing for one wrap of the counter's width, the rate in bit/s or packets/s, and, when you give the interface speed, whether that rate can be trusted at all.
 
 Everything is computed in your browser with exact integer arithmetic: 2^64 does not fit the integer range of a JavaScript number (2^53), so every quantity is held as a fraction of two BigInts and rounded only when it is printed, to six decimals.
@@ -16,13 +16,13 @@ RFC 2578 defines both counter types the same way: a Counter32 "monotonically inc
 - **Counter type**: Counter32 or Counter64.
 - **Counts**: octets (ifInOctets, ifHCInOctets and their Out siblings) or packets (ifInUcastPkts, ifHCInUcastPkts and the rest).
 - **Interface speed**: a number and a unit, with a point for decimals: `100M`, `2.5 Gb/s`, `10G`, `400 Gb/s`, `1 Tb/s`. The prefixes k, M, G and T are powers of 1000, and a bare number is bit/s, as ifSpeed reports it; ifHighSpeed reports units of 1,000,000 bits per second ([RFC 2863](https://www.rfc-editor.org/rfc/rfc2863.txt)), so an ifHighSpeed of 10000 is `10000M`. A capital B (`125 MB/s`) is refused: interface speeds are written in bits. Seven presets fill the field: 100 Mb/s, 1, 10, 25, 40, 100 and 400 Gb/s.
-- **Utilisation**: a percentage above 0 and at most 100. Blank means 100.
+- **Utilization**: a percentage above 0 and at most 100. Blank means 100.
 - **Poll interval** (optional): seconds, or a number and a unit (`ms`, `s`, `min`, `h`): `300`, `5 min`, `0.25 h`. Without it there is no verdict.
 - **Packet size** (packets only): whole octets from 1 to 65535. Blank means 84.
 
 ## Wrap time: what it computes
 
-- **Counted per second**: for octets, the speed times the utilisation divided by 8; for packets, divided by 8 times the packet size.
+- **Counted per second**: for octets, the speed times the utilization divided by 8; for packets, divided by 8 times the packet size.
 - **Time to wrap at this load**: 2^32 or 2^64 divided by that rate. It is also the time between two wraps.
 - **Time to wrap at line rate**: the same at 100 %, the shortest possible time between two wraps. Line rate for octets is the speed divided by 8: an interface cannot count more octets per second than its bits carry. For packets it is the speed divided by 8 times the packet size, and the default of 84 octets is the smallest Ethernet frame on the wire. RFC 2544 Appendix B gives an Ethernet frame of N octets as a 64-bit preamble, 8 x N bits and a 96-bit gap ([RFC 2544](https://www.rfc-editor.org/rfc/rfc2544.txt)), so a 64-octet frame takes 84 octets of line time, and its table gives 14,880 frames per second at 10 Mb/s. Packet counters move fastest with the smallest packets, so the default is the worst case; a larger packet size gives the line-rate figures for packets of that size only.
 - **The other width at this load**, for comparison: a Counter32 user sees what a Counter64 would give, and the other way round.

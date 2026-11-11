@@ -94,7 +94,7 @@
 // MAX_INPUT characters and the bytes at most MAX_OCTETS.
 // ============================================================================
 
-import { say, plainText, withEngineText, EngineText } from "../engine-text"; // sentences with ids, and the API's English projection
+import { say, resolvePlurals, plainText, withEngineText, EngineText } from "../engine-text"; // sentences with ids, and the API's English projection
 import { PACKET_CODES, ATTRIBUTE_TYPES, EXTENDED_TYPES, VALUE_NAMES, EAP_CODES, EAP_TYPES } from "./iana-data"; // IANA's tables, generated
 import { VENDORS, type SubType } from "./vendors"; // the vendors the decoder names
 import { RFC_EXAMPLES } from "./examples"; // the RFCs' own example packets, recognised by their octets
@@ -405,7 +405,7 @@ type Arg = string | EngineText; // what a {placeholder} holds
  * @returns the sentence
  */
 function sayT(id: string, tpl: string, args: Record<string, Arg>): EngineText {
-  return say(id, tpl.replace(/\{(\w+)\}/g, (m: string, k: string) => (k in args ? String(args[k] instanceof EngineText ? (args[k] as EngineText).text : args[k]) : m)), args); // filled for the API, values kept for the page
+  return say(id, resolvePlurals(tpl, args).replace(/\{(\w+)\}/g, (m: string, k: string) => (k in args ? String(args[k] instanceof EngineText ? (args[k] as EngineText).text : args[k]) : m)), args); // filled for the API, values kept for the page
 } // sayT
 
 // ----------------------------------------------------------------------------
@@ -588,7 +588,7 @@ function parseDump(live: readonly { l: string; n: number }[]): number[] {
   const bytes: number[] = []; // the octets
   for (let k = 0; k < parsed.length; k++) { // each line
     const { n, offset, rest } = parsed[k]; // this line
-    if (offset !== bytes.length) throw inputError(sayT("err.dumpOffset", "Line {line} begins with offset {found}, but {expected} bytes came before it: a hex dump's offsets count the bytes (the format text2pcap reads).", { line: String(n), found: `0x${offset.toString(16)}`, expected: `0x${bytes.length.toString(16)}` })); // offsets must be right
+    if (offset !== bytes.length) throw inputError(sayT("err.dumpOffset", "Line {line} begins with offset {found}, but {expected, plural, one {{expected} byte} other {{expected} bytes}} came before it: a hex dump's offsets count the bytes (the format text2pcap reads).", { line: String(n), found: `0x${offset.toString(16)}`, expected: `0x${bytes.length.toString(16)}` })); // offsets must be right
     const room = k + 1 < parsed.length ? parsed[k + 1].offset - offset : Infinity; // how many bytes this line holds
     let got = 0; // bytes read on this line
     for (const tok of rest.split(/[ \t]+/)) { // the tokens after the offset
@@ -681,8 +681,8 @@ function walk(b: readonly number[], start: number, end: number): RawAttr[] {
     if (length < 2) throw inputError(sayT("err.attrLength", "Attribute {index} at octet {offset}, {label}, has Length {length}. An attribute's Length counts its Type and Length octets, so it is at least 2 (RFC 2865, section 5): the packet is malformed, and RFC 2865 has an Access-Request with an invalid attribute Length answered with an Access-Reject, and a reply with one treated as an Access-Reject or silently discarded.", { index: String(index), offset: String(o), label: lab, length: String(length) })); // below 2
     if (o + length > end) { // runs past the end
       const args = { index: String(index), offset: String(o), label: lab, length: String(length), end: String(end), over: String(o + length - end) }; // the sentence's values
-      if (exampleOf(b) === "rfc2865-7.3-request-2-published") throw inputError(sayT("err.rfc2865erratum6486", "Attribute {index} at octet {offset}, {label}, has Length {length}, which runs {over} octets past the end of the packet at octet {end}. These are the octets of RFC 2865's example in section 7.3 as published: its last attribute, State, says 0x10 where 10 octets (0x0a) follow, and verified erratum 6486 corrects it to 0x0a.", args)); // the RFC's own misprint
-      throw inputError(sayT("err.attrOverrun", "Attribute {index} at octet {offset}, {label}, has Length {length}, which runs {over} octets past the end of the packet at octet {end} (RFC 2865, section 5): the packet is malformed. The capture may be cut short, or the Length field of the packet or of the attribute is wrong.", args)); // the general case
+      if (exampleOf(b) === "rfc2865-7.3-request-2-published") throw inputError(sayT("err.rfc2865erratum6486", "Attribute {index} at octet {offset}, {label}, has Length {length}, which runs {over, plural, one {{over} octet} other {{over} octets}} past the end of the packet at octet {end}. These are the octets of RFC 2865's example in section 7.3 as published: its last attribute, State, says 0x10 where 10 octets (0x0a) follow, and verified erratum 6486 corrects it to 0x0a.", args)); // the RFC's own misprint
+      throw inputError(sayT("err.attrOverrun", "Attribute {index} at octet {offset}, {label}, has Length {length}, which runs {over, plural, one {{over} octet} other {{over} octets}} past the end of the packet at octet {end} (RFC 2865, section 5): the packet is malformed. The capture may be cut short, or the Length field of the packet or of the attribute is wrong.", args)); // the general case
     } // overrun
     out.push({ index, offset: o, type, length, value: b.slice(o + 2, o + length) }); // the attribute
     o += length; // the next one
@@ -860,7 +860,7 @@ function readPrefix6(v: readonly number[]): ValueReading {
   const plen = v[1]; // Prefix-Length
   if (plen > 128) { r.invalid = sayT("attr.prefixLen", "Prefix-Length {plen} is above {max}, so the value MUST be treated as an invalid attribute (RFC 8044, section {section}).", { plen: String(plen), max: "128", section: "3.10" }); return r; } // too long
   const need = Math.ceil(plen / 8); // octets the prefix needs
-  if (v.length - 2 < need) { r.invalid = sayT("attr.prefixShort", "Prefix-Length {plen} needs {need} octets of prefix, and only {got} follow, so the prefix cannot be read and the attribute is invalid (RFC 8044, section {section}; RFC 6929, section 2.8).", { plen: String(plen), need: String(need), got: String(v.length - 2), section: "3.10" }); return r; } // too few octets
+  if (v.length - 2 < need) { r.invalid = sayT("attr.prefixShort", "Prefix-Length {plen} needs {need, plural, one {{need} octet} other {{need} octets}} of prefix, and only {got} follow, so the prefix cannot be read and the attribute is invalid (RFC 8044, section {section}; RFC 6929, section 2.8).", { plen: String(plen), need: String(need), got: String(v.length - 2), section: "3.10" }); return r; } // too few octets
   const a = [...v.slice(2), ...new Array(18 - v.length).fill(0)]; // padded to 16 octets
   r.value = `${ipv6(a, 0)}/${plen}`; // the prefix
   if (v[0] !== 0) r.notes.push(sayT("attr.reserved", "The Reserved octet is {value}; RFC 8044 says it is always zero (section {section}).", { value: String(v[0]), section: "3.10" })); // non-zero Reserved
@@ -1143,14 +1143,14 @@ const RFC3046_SUBS: Readonly<Record<number, string>> = Object.freeze({ 1: "Agent
  */
 function readHwDhcp(v: readonly number[], sub: VendorSubReading<EngineText>): void {
   const opts = tlvs(v); // the options
-  if (!opts.ok) { sub.notes.push(sayT("sub.dhcpBad", "Huawei's table describes this value as DHCP options in Type-Length-Value form, but the option starting at octet {at} of the value needs {need} octets and only {left} remain, so the value is shown as octets.", { at: String(opts.at), need: String(opts.need), left: String(opts.left) })); return; } // does not divide
+  if (!opts.ok) { sub.notes.push(sayT("sub.dhcpBad", "Huawei's table describes this value as DHCP options in Type-Length-Value form, but the option starting at octet {at} of the value needs {need, plural, one {{need} octet} other {{need} octets}} and only {left} remain, so the value is shown as octets.", { at: String(opts.at), need: String(opts.need), left: String(opts.left) })); return; } // does not divide
   sub.notes.push(say("sub.dhcpRead", "Read as DHCP options, as Huawei's table describes this value: \"DHCP Option, encapsulated in Type-Length-Value (TLV) format\".")); // how it is read
   sub.dhcp = opts.items.map(([code, length, val]) => { // each option
     const o: DhcpOption = { code, length, name: code === 82 ? "Relay Agent Information" : null, hex: toHex(val), subs: null }; // the shape
     if (code !== 82) { sub.notes.push(sayT("sub.dhcpOnly82", "Option {code} is not Option 82, and Huawei's table says \"Only Option 82 can be delivered.\"", { code: String(code) })); return o; } // not deliverable
     if (length < 2) { sub.notes.push(sayT("sub.dhcp82Short", "Option 82 has length {length}, but RFC 3046 (section 2.0) gives the Relay Agent Information option a minimum length of two, since at least one sub-option must be present, so its value is shown as octets.", { length: String(length) })); return o; } // too short
     const s = tlvs(val); // its sub-options
-    if (!s.ok) { sub.notes.push(sayT("sub.dhcp82Bad", "Option 82's value does not divide into the sub-options of RFC 3046 (section 2.0): the sub-option starting at octet {at} of the option's value needs {need} octets and only {left} remain, so the value is shown as octets.", { at: String(s.at), need: String(s.need), left: String(s.left) })); return o; } // does not divide
+    if (!s.ok) { sub.notes.push(sayT("sub.dhcp82Bad", "Option 82's value does not divide into the sub-options of RFC 3046 (section 2.0): the sub-option starting at octet {at} of the option's value needs {need, plural, one {{need} octet} other {{need} octets}} and only {left} remain, so the value is shown as octets.", { at: String(s.at), need: String(s.need), left: String(s.left) })); return o; } // does not divide
     o.subs = s.items.map(([sc, sl, sv]) => ({ code: sc, length: sl, name: RFC3046_SUBS[sc] ?? null, hex: toHex(sv), text: printable(sv) })); // the sub-options
     for (const x of o.subs) if (x.name === null) sub.notes.push(sayT("sub.dhcp82Unknown", "Sub-option {code} of Option 82 is not one RFC 3046 defines (section 2.0 assigns 1, Agent Circuit ID, and 2, Agent Remote ID), so its value is shown as octets.", { code: String(x.code) })); // not RFC 3046's
     return o; // read
@@ -1279,13 +1279,13 @@ function readEap(raws: readonly RawAttr[], warnings: EngineText[]): EapReading |
   if (!consecutive) warnings.push(say("warn.eapSplit", "The EAP-Message attributes are not consecutive: when there are several, they MUST be in order and consecutive (RFC 3579, section 3.1). The EAP packet below joins them in the order they appear.")); // split
   const data = eaps.flatMap((a) => a.value); // joined
   const r: EapReading = { attributes: eaps.length, consecutive, hex: toHex(data), code: null, codeName: null, identifier: null, length: null, type: null, typeName: null, identity: null }; // the shape
-  if (data.length < 4) { warnings.push(sayT("warn.eapShort", "The EAP-Message data is {octets} octets, shorter than an EAP header: Code, Identifier and a two-octet Length (RFC 3748, section 4).", { octets: String(data.length) })); return r; } // too short
+  if (data.length < 4) { warnings.push(sayT("warn.eapShort", "The EAP-Message data is {octets, plural, one {{octets} octet} other {{octets} octets}}, shorter than an EAP header: Code, Identifier and a two-octet Length (RFC 3748, section 4).", { octets: String(data.length) })); return r; } // too short
   r.code = data[0]; r.identifier = data[1]; r.length = uint(data, 2, 2); // the header
   const cn = rowName(EAP_CODES, data[0]); // IANA's name
   r.codeName = cn && !PLACEHOLDER.test(cn) ? cn : null; // assigned only
   if (r.codeName === null) warnings.push(sayT("warn.eapCode", "EAP Code {code} is not one IANA's EAP registry assigns; RFC 3748 (section 4) has EAP packets with codes it does not define silently discarded.", { code: String(data[0]) })); // unknown code
-  if (r.length > data.length) warnings.push(sayT("warn.eapLength", "The EAP Length says {length}, but the EAP-Message attributes hold {octets} octets: an EAP message with a Length larger than the octets received MUST be silently discarded (RFC 3748, section 4).", { length: String(r.length), octets: String(data.length) })); // too long
-  else if (r.length < data.length) warnings.push(sayT("warn.eapPadding", "The EAP Length says {length}, and the EAP-Message attributes hold {octets} octets: octets beyond the Length are padding and are ignored (RFC 3748, section 4).", { length: String(r.length), octets: String(data.length) })); // padding
+  if (r.length > data.length) warnings.push(sayT("warn.eapLength", "The EAP Length says {length}, but the EAP-Message attributes hold {octets, plural, one {{octets} octet} other {{octets} octets}}: an EAP message with a Length larger than the octets received MUST be silently discarded (RFC 3748, section 4).", { length: String(r.length), octets: String(data.length) })); // too long
+  else if (r.length < data.length) warnings.push(sayT("warn.eapPadding", "The EAP Length says {length}, and the EAP-Message attributes hold {octets, plural, one {{octets} octet} other {{octets} octets}}: octets beyond the Length are padding and are ignored (RFC 3748, section 4).", { length: String(r.length), octets: String(data.length) })); // padding
   if ((data[0] === 1 || data[0] === 2) && r.length >= 5 && data.length >= 5) { // a Request or Response has a Type
     r.type = data[4]; // the Type
     const tn = rowName(EAP_TYPES, data[4]); // IANA's name
@@ -1511,7 +1511,7 @@ function commonNotes(example: string | null, vlan: VlanReading | null, eap: EapR
 function decodePacket(b: number[], format: InputFormat, redacted: boolean): PacketResult<EngineText> {
   if (b.length < HEADER_OCTETS) { // shorter than the header
     refuseOtherProtocols(b); // a TACACS+ header fits in 12
-    throw inputError(sayT("err.short", "These are {octets} octets; a RADIUS packet has at least 20: Code (1), Identifier (1), Length (2) and the Authenticator (16) (RFC 2865, section 3). If they are attributes without the header, choose Attributes only.", { octets: String(b.length) })); // too short
+    throw inputError(sayT("err.short", "These are {octets, plural, one {{octets} octet} other {{octets} octets}}; a RADIUS packet has at least 20: Code (1), Identifier (1), Length (2) and the Authenticator (16) (RFC 2865, section 3). If they are attributes without the header, choose Attributes only.", { octets: String(b.length) })); // too short
   } // short
   refuseOtherProtocols(b); // a frame, an IP packet, TACACS+
   const code = b[0]; // Code
@@ -1530,7 +1530,7 @@ function decodePacket(b: number[], format: InputFormat, redacted: boolean): Pack
   if (ci.row === "reserved") warnings.push(sayT("warn.codeReserved", "Code {code} is reserved in IANA's RADIUS Packet Type Codes registry; a receiver silently discards a packet with an invalid Code (RFC 2865, section 3).", { code: String(code) })); // reserved
   if (ci.row === "experimental") notes.push(sayT("note.codeExperimental", "Code {code} is in the range IANA keeps for experimental use (250 to 253).", { code: String(code) })); // experimental
   if ((code === 4 || code === 5) && length > 4095) warnings.push(say("warn.acctMax", "An accounting packet is at most 4095 octets (RFC 2866, section 3); this one's Length is 4096.")); // RFC 2866 s3
-  if (length < b.length) warnings.push(sayT("warn.padding", "{n} octets follow the end the Length field gives ({length}): RFC 2865 (section 3) has them treated as padding and ignored, so they are not decoded.", { n: String(b.length - length), length: String(length) })); // padding
+  if (length < b.length) warnings.push(sayT("warn.padding", "{n, plural, one {{n} octet follows} other {{n} octets follow}} the end the Length field gives ({length}): RFC 2865 (section 3) has them treated as padding and ignored, so they are not decoded.", { n: String(b.length - length), length: String(length) })); // padding
   packetWarnings(code, attributes, warnings); // the packet type's rules
   for (const a of attributes) if (a.invalid) warnings.push(sayT("warn.invalidAttr", "Attribute {index}, {label}, is an invalid attribute; RFC 6929 (section 2.8) says a receiver SHOULD silently discard it, and MUST NOT discard the whole packet for it.", { index: String(a.index), label: label(a.name, a.id) })); // invalid attributes
   const eap = readEap(raws, warnings); // the EAP packet
@@ -1539,7 +1539,7 @@ function decodePacket(b: number[], format: InputFormat, redacted: boolean): Pack
   const marks = redacted ? markRedacted(b, raws, attributes, { code, length }) : { authenticator: false, padding: 0, any: false }; // a Share results copy's zeroed fields (the page says where it came from, above the reading)
   notes.push(auth.note); // the Authenticator
   if (marks.authenticator) notes.push(say("note.redactedAuthenticator", "Redacted in this link: the Authenticator is 16 zero octets, since the original is an MD5 with the shared secret, against which a reader could test guesses of the secret offline.")); // the header field
-  if (marks.padding > 0) notes.push(sayT("note.redactedPadding", "Redacted in this link: the {n} octets after the Length are zeros, since this tool does not read them and cannot tell what they held.", { n: String(marks.padding) })); // the padding
+  if (marks.padding > 0) notes.push(sayT("note.redactedPadding", "Redacted in this link: {n, plural, one {the {n} octet after the Length is zero, since this tool does not read it and cannot tell what it held} other {the {n} octets after the Length are zeros, since this tool does not read them and cannot tell what they held}}.", { n: String(marks.padding) })); // the padding
   commonNotes(example, vlan, eap, notes, warnings); // example, VLAN, EAP
   return {
     mode: "packet", // the mode
@@ -1795,7 +1795,7 @@ function markRedacted(b: readonly number[], raws: readonly RawAttr[], attrs: Dec
   for (const [index, octets] of perAttr) { // each marked attribute
     const d = attrs[index - 1]; // its reading (positions count from 1)
     d.redacted = true; // marked
-    d.notes.push(sayT("attr.redacted", "Redacted in this link: {octets} octets of this value were replaced by zeros when the link was made, so they are not the originals.", { octets: String(octets) })); // how many
+    d.notes.push(sayT("attr.redacted", "Redacted in this link: {octets, plural, one {{octets} octet of this value was replaced by zeros when the link was made, so it is not the original} other {{octets} octets of this value were replaced by zeros when the link was made, so they are not the originals}}.", { octets: String(octets) })); // how many
   } // marked
   const authenticator = fields.some((f) => f.where === "authenticator"); // the header field
   const padding = fields.filter((f) => f.where === "padding").reduce((n, f) => n + f.octets, 0); // the padding octets

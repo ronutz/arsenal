@@ -73,7 +73,7 @@ interface ClassInfo {
 // Exported (2026-11-02) for the page's lookup by class name and the catalogue guard.
 export const CLASS_CATALOG: Record<string, ClassInfo> = {
   // Licensing and provisioning: gate everything downstream.
-  License: { phase: "license", explain: "a BYOL license (regKey or a BIG-IQ licensePool); omit it for PAYG images that are already licensed" },
+  License: { phase: "license", explain: "a BYOL licence (regKey or a BIG-IQ licensePool); omit it for PAYG images that are already licensed" },
   Provision: { phase: "license", explain: "module provisioning levels (ltm, gtm, asm, apm, afm, avr, and so on: dedicated, nominal, minimum, or none)" },
   // System identity and access.
   System: { phase: "system", explain: "system-level settings: hostname, CLI/console inactivity timeouts, autoPhonehome, autoCheck" },
@@ -99,7 +99,7 @@ export const CLASS_CATALOG: Record<string, ClassInfo> = {
   RouteDomain: { phase: "network", explain: "a route domain (an isolated L3 address space), referenced elsewhere by its id" },
   Trunk: { phase: "network", explain: "a link-aggregation trunk of physical interfaces" },
   Tunnel: { phase: "network", explain: "a network tunnel (for example a VXLAN overlay)" },
-  RoutingBGP: { phase: "network", explain: "BGP routing configuration (neighbors, local AS, address families)" },
+  RoutingBGP: { phase: "network", explain: "BGP routing configuration (neighbours, local AS, address families)" },
   RoutingAsPath: { phase: "network", explain: "a BGP AS-path access list" },
   RoutingPrefixList: { phase: "network", explain: "a routing prefix list of permit/deny entries" },
   RouteMap: { phase: "network", explain: "a route map applied to routing protocols" },

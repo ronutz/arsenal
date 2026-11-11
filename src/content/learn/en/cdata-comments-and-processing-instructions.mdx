@@ -40,6 +40,6 @@ These three share a common trait: none of them is an element, so none of them ap
 
 A CDATA section tells the parser to stop interpreting markup. It does **not** mark the content as safe, and it does not survive into whatever consumes the value: once parsed, `<![CDATA[<script>]]>` is the string `<script>`, indistinguishable from the same characters written as escaped entities.
 
-That distinction is where sanitisation goes wrong. **Code that strips dangerous markup by pattern-matching the raw XML misses anything wrapped in CDATA**, and code that trusts CDATA content because "it was escaped" is trusting a parsing instruction as if it were a security control.
+That distinction is where sanitization goes wrong. **Code that strips dangerous markup by pattern-matching the raw XML misses anything wrapped in CDATA**, and code that trusts CDATA content because "it was escaped" is trusting a parsing instruction as if it were a security control.
 
-**Sanitise the parsed value, never the document text.** By the time you hold a string, how it was encoded in the source has stopped mattering to everything except the sanitiser that looked at the wrong layer.
+**Sanitize the parsed value, never the document text.** By the time you hold a string, how it was encoded in the source has stopped mattering to everything except the sanitizer that looked at the wrong layer.

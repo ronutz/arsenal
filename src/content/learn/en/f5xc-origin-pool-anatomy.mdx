@@ -25,7 +25,7 @@ By default, every Regional Edge health-checks your origins, which is why the Con
 
 ## The port trick
 
-The pool port has three modes, and the automatic one has a rule worth memorising: automatic port means 443 when TLS to origin is enabled and 80 when it is not. So if you enable TLS and leave the port automatic, XC talks to your origin on 443 without you typing it. An explicit port overrides that, and "same as endpoint" takes the port from the discovered endpoint - the usual choice for Consul, where the port comes from service discovery.
+The pool port has three modes, and the automatic one has a rule worth memorizing: automatic port means 443 when TLS to origin is enabled and 80 when it is not. So if you enable TLS and leave the port automatic, XC talks to your origin on 443 without you typing it. An explicit port overrides that, and "same as endpoint" takes the port from the discovered endpoint - the usual choice for Consul, where the port comes from service discovery.
 
 ## TLS to the origin
 

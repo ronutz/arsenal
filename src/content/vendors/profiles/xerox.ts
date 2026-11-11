@@ -31,7 +31,7 @@ export const xeroxProfile: VendorProfile = {
     { year: 1970, title: "PARC opens", detail: "The Palo Alto Research Center assembles the best computer scientists money can find and gives them room; the Alto, laser printing, Smalltalk, and the modern GUI follow within five years." },
     { year: 1973, title: "Ethernet is born", detail: "Bob Metcalfe's memo describes a broadcast network for the Alto - built with David Boggs, named for the luminiferous ether. Metcalfe leaves in 1979 to found 3Com and commercialize it; DEC, Intel, and Xerox publish the DIX standard in 1980. Every wire on this site descends from that memo." },
     { year: 1979, title: "The famous visit", detail: "Apple's team tours PARC and sees the GUI future Xerox headquarters could not; the phrase 'fumbling the future' enters the industry's vocabulary as its most-studied cautionary tale." },
-    { year: 2025, title: "Lexmark", detail: "July 1, 2025: Xerox completes the $1.5 billion acquisition of Lexmark from Ninestar and PAG - two print icons combined, top-five in every major print segment, under CEO Steve Bandrowczak.", sourceNote: "Xerox 8-K and 10-K, July 2025 close." },
+    { year: 2025, title: "Lexmark", detail: "1 July 2025: Xerox completes the $1.5 billion acquisition of Lexmark from Ninestar and PAG - two print icons combined, top-five in every major print segment, under CEO Steve Bandrowczak.", sourceNote: "Xerox 8-K and 10-K, July 2025 close." },
   ],
   products: [
     { name: "Production and office print", what: "The copier-descended core: printers, MFPs, and managed print services - now including the Lexmark A4 line." },

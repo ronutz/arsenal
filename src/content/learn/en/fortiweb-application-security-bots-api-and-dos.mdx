@@ -1,7 +1,7 @@
 ---
 slug: fortiweb-application-security-bots-api-and-dos
 title: "FortiWeb Protection: Signatures, Machine Learning, Bots, APIs, and DoS"
-summary: "Web application protection combines things that recognise known attacks with things that learn what your application normally does. Bots and APIs each need their own treatment, because a bot is not distinguished by its payload and an API has no user to challenge."
+summary: "Web application protection combines things that recognize known attacks with things that learn what your application normally does. Bots and APIs each need their own treatment, because a bot is not distinguished by its payload and an API has no user to challenge."
 concepts: ["fortinet", "fortiweb", "signature", "machine learning", "bot mitigation", "api protection", "openapi", "dos protection", "rate limiting", "vulnerability scan", "fortiai"]
 relatedTools: []
 sub: fortiweb
@@ -16,7 +16,7 @@ Protecting a web application means answering two different questions: is this re
 
 ## Signatures and known attacks
 
-Signature-based detection recognises the recognisable: SQL injection, cross-site scripting, command injection, path traversal, known exploit attempts against known platforms.
+Signature-based detection recognizes the recognizable: SQL injection, cross-site scripting, command injection, path traversal, known exploit attempts against known platforms.
 
 Known exploit attempts get signatures of their own when a vulnerability is published. For the PHP2Shell flaws of October 2026, Fortinet's PSIRT advisory FG-IR-26-186 lists a FortiWeb web application security signature, 1090502648, beside IPS (intrusion prevention system) signatures 62657 and 62658, and lists FortiWeb itself as not affected ([FG-IR-26-186](https://fortiguard.fortinet.com/psirt/FG-IR-26-186); [the October 2026 PHP vulnerabilities](/learn/php-october-2026-vulnerabilities)).
 
@@ -48,7 +48,7 @@ The signals:
 
 **Capability challenges.** JavaScript execution and cookie handling filter out simple tooling, since a script that does not run JavaScript fails silently. CAPTCHA is the escalation, and it costs real users something, which is why it belongs on suspicion rather than by default.
 
-The categorisation that makes this manageable is that bots are not one thing. Search engine crawlers are wanted. Monitoring and uptime checkers are yours. Scrapers and credential stuffers are not. A configuration that treats all automation identically either blocks your own monitoring or permits credential stuffing.
+The categorization that makes this manageable is that bots are not one thing. Search engine crawlers are wanted. Monitoring and uptime checkers are yours. Scrapers and credential stuffers are not. A configuration that treats all automation identically either blocks your own monitoring or permits credential stuffing.
 
 ## API protection
 
@@ -81,4 +81,4 @@ The limitation to be honest about is that a WAF protects what is behind it and i
 
 ## What an exam candidate should be able to state cold
 
-Signatures recognise known attacks and produce false positives where legitimate input resembles them, so exceptions should be scoped to signature, URL and parameter. Machine learning covers what signatures cannot describe and depends on a representative learning period and a stable application. Bots are distinguished by behaviour rather than payload, and treating all automation alike either blocks your monitoring or permits credential stuffing. API protection rests on schema validation, because a request violating the contract is invalid without reference to attacks, plus discovery of undocumented endpoints and per-key rate limiting. Application-layer DoS needs no volume, and volumetric attacks must be handled upstream of any inline device.
+Signatures recognize known attacks and produce false positives where legitimate input resembles them, so exceptions should be scoped to signature, URL and parameter. Machine learning covers what signatures cannot describe and depends on a representative learning period and a stable application. Bots are distinguished by behaviour rather than payload, and treating all automation alike either blocks your monitoring or permits credential stuffing. API protection rests on schema validation, because a request violating the contract is invalid without reference to attacks, plus discovery of undocumented endpoints and per-key rate limiting. Application-layer DoS needs no volume, and volumetric attacks must be handled upstream of any inline device.

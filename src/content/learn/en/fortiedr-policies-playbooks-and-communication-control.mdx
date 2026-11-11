@@ -16,7 +16,7 @@ FortiEDR's policies come in two families that are easy to conflate and answer ge
 
 ## Security policies: what a process may do
 
-Security policies detect and block behaviour at the point of action: a process attempting something that matches a malicious pattern. They are organised by the stage of an attack they address, which is a more useful grouping than it first appears, because it lets you be strict about the stages where false positives are rare and cautious where legitimate software behaves suspiciously.
+Security policies detect and block behaviour at the point of action: a process attempting something that matches a malicious pattern. They are organized by the stage of an attack they address, which is a more useful grouping than it first appears, because it lets you be strict about the stages where false positives are rare and cautious where legitimate software behaves suspiciously.
 
 Every policy runs in one of two modes:
 
@@ -30,7 +30,7 @@ The deployment sequence that works is simulation first, long enough to see what 
 
 Communication control is a different question. It inventories the applications on your endpoints that communicate over the network, and lets you decide which are permitted to.
 
-Its value is visibility before enforcement. Most organisations do not have an accurate list of what is talking to the internet from their endpoints, and the inventory alone frequently finds unapproved software, unmaintained utilities and applications with known vulnerabilities still in daily use.
+Its value is visibility before enforcement. Most organizations do not have an accurate list of what is talking to the internet from their endpoints, and the inventory alone frequently finds unapproved software, unmaintained utilities and applications with known vulnerabilities still in daily use.
 
 Policy can then act on that: deny an application outright, or allow it while restricting where it may connect. Reputation and vulnerability information about each application feeds the decision, which is what makes this more useful than a manually maintained list.
 
@@ -54,4 +54,4 @@ The practical takeaway is not to reach for one family when the other is the righ
 
 ## What an exam candidate should be able to state cold
 
-Security policies detect and block behaviour at the point of action and are organised by attack stage; communication control governs which applications may use the network. Both offer simulation before prevention, and the rollout sequence is simulate, understand exceptions, then enforce. Exceptions should be as narrow as possible. Playbooks automate response, and the action should match the confidence of the detection: isolation for high confidence, data collection and notification for low.
+Security policies detect and block behaviour at the point of action and are organized by attack stage; communication control governs which applications may use the network. Both offer simulation before prevention, and the rollout sequence is simulate, understand exceptions, then enforce. Exceptions should be as narrow as possible. Playbooks automate response, and the action should match the confidence of the detection: isolation for high confidence, data collection and notification for low.

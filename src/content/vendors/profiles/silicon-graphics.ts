@@ -33,7 +33,7 @@ export const siliconGraphicsProfile: VendorProfile = {
     { year: 2016, title: "The name lands at HPE", detail: "Hewlett Packard Enterprise completes the ~$275 million acquisition of SGI in November 2016, folding its high-performance computing line into HPE's - the final flag over a storied name.", sourceNote: "HPE announcement/close per the deal record." },
   ],
   products: [
-    { name: "IRIS and Onyx workstations", what: "The graphics supercomputers of the film, science, and defense worlds - IRIX on MIPS at the high-water mark of proprietary Unix." },
+    { name: "IRIS and Onyx workstations", what: "The graphics supercomputers of the film, science, and defence worlds - IRIX on MIPS at the high-water mark of proprietary Unix." },
     { name: "OpenGL", what: "The open graphics API distilled from IRIS GL in 1992 - SGI's most durable product, and it was free." },
     { name: "Origin and Altix servers", what: "The NUMA high-performance computing line whose lineage HPE acquired." },
   ],

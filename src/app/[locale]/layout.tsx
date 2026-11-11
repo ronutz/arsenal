@@ -26,7 +26,7 @@ import { getTranslations, setRequestLocale, getMessages } from "next-intl/server
 import { GLOBAL_CLIENT_NAMESPACES, pickNamespaces } from "@/i18n/clientMessages";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { routing } from "@/i18n/routing";
-import { dirFor, getLocale, AUTHORED_CONTENT_LOCALES } from "@/i18n/locales";
+import { dirFor, getLocale, AUTHORED_CONTENT_LOCALES, intlLocale } from "@/i18n/locales";
 // The index routes that are not articles or entries, for the preference script (2026-11-02).
 import { LEARN_INDEX_SEGMENTS, GLOSSARY_INDEX_SEGMENTS } from "@/i18n/corpus-routing";
 import InputModality from "@/components/InputModality";
@@ -145,8 +145,8 @@ export default async function LocaleLayout({
   // Text direction from the registry — this is the RTL switch.
   const dir = dirFor(locale);
 
-  // Show the machine-translation notice only on machine-draft locales (English
-  // and any human-reviewed locale never show it). Strings are resolved here, in
+  // Show the machine-translation notice only on machine-draft locales (a human-reviewed locale never shows it; since
+  // 2026-11-10 that is every live locale, English included, after PRIME demoted English to machine-draft). Strings are resolved here, in
   // the page's own language, and handed to the presentational notice component.
   const isMachineDraft = getLocale(locale)?.status === "machine-draft";
   // Which notice: a locale written with AI in its own language (Brazilian Portuguese) says so in PRIME's words; the
@@ -200,7 +200,9 @@ export default async function LocaleLayout({
   };
 
   return (
-    <html lang={locale} dir={dir} className={`${inter.variable} ${jetbrainsMono.variable}`}>
+    // The page's language as BCP 47: English pages say en-001, International English, the English the site writes (PRIME 11/11/2026 00:09 and 01:30,
+    // option B); the URL prefix and hreflang stay "en".
+    <html lang={intlLocale(locale)} dir={dir} className={`${inter.variable} ${jetbrainsMono.variable}`}>
       <body>
         {/* Apply the saved theme before first paint (no flash). Runs synchronously
             ahead of hydration; ThemeSwitcher reads the same key thereafter. */}

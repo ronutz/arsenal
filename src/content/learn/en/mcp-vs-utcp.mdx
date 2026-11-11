@@ -1,0 +1,154 @@
+---
+slug: mcp-vs-utcp
+title: "MCP vs UTCP: Wrapping a Tool or Describing It"
+summary: "Two answers to one question: how should an AI agent call a tool? The Model Context Protocol puts a server in front of every tool and gives every client one standard interface; the Universal Tool Calling Protocol publishes a manual and lets the agent call the tool directly over its own protocol. Here is how each works, checked against both projects' documents as they stand in November 2026 (MCP 2026-07-28, UTCP 1.x), what each costs, where each moves the trust boundary, and why the choice is less a verdict on protocols than a decision about where the work and the trust should sit."
+concepts: ["mcp", "utcp", "ai", "llm", "agents", "tool calling", "json-rpc", "api", "security"]
+relatedTools: ["json-formatter", "ssrf-url-classifier", "oauth-flow-chooser", "jwt"]
+relatedArticles: ["bigip-ai-mcp"]
+category: web
+order: 150
+status: reviewed
+updated: "2026-11-10"
+---
+
+An AI (artificial intelligence) agent that can only talk is a chatbot. The moment it can look something up, open a ticket or change a setting, someone has to decide how it reaches the system that does the work, and two open specifications answer that question in opposite ways. The Model Context Protocol (MCP) wraps the tool in a server and gives every agent one standard way to talk to it. The Universal Tool Calling Protocol (UTCP) leaves the tool as it is and hands the agent a manual that says how to call it. A KodeKloud short of under three minutes put the contrast in one sentence: MCP trades an extra hop for one standard interface, and UTCP trades that standard for direct, faster calls, with a manual needed for every service. It is a fair summary. What follows is the detail behind it, read from both projects' own documents and from writers with no stake in either.
+
+## The problem both are solving
+
+When Anthropic announced MCP on 25 November 2024, its complaint was that "Every new data source requires its own custom implementation." With N applications and M tools, hand-written integrations grow as N times M; a shared protocol brings that down to N plus M, because each tool is made reachable once and each application learns the protocol once. Both MCP and UTCP accept the argument. They disagree about what "made reachable once" should mean: a new server in front of the tool, or a description of the tool that already exists.
+
+## MCP: put a server in front of the tool
+
+MCP defines three roles. The host is the LLM (large language model) application the user works in, such as a chat app or an IDE (integrated development environment); a client is a connector inside the host; a server is the service that offers capabilities. They exchange JSON-RPC 2.0 messages, remote procedure calls encoded in JSON (JavaScript Object Notation), over standard input and output when the server runs locally and over Streamable HTTP (Hypertext Transfer Protocol) when it runs remotely. A server can offer three kinds of thing: tools, functions the model can execute; resources, data for the model or the user; and prompts, templated messages and workflows. The specification names the Language Server Protocol as an inspiration, the standard that let one implementation of a programming language serve every editor, and the project's own introduction says to think of MCP like a USB-C (Universal Serial Bus Type-C) port "for AI applications": one standard socket instead of a different cable for every device.
+
+Before calling anything, the agent asks the server for `tools/list`, which returns each tool's name, description and JSON Schema for its inputs. A call in the current revision then looks like this, copied from the specification's tools page, which notes that it leaves out, for brevity, the `_meta` block every real request must carry with its protocol version, client information and client capabilities:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "tools/call",
+  "params": {
+    "name": "get_weather",
+    "arguments": {
+      "location": "New York"
+    }
+  }
+}
+```
+
+Every call travels from the agent to the client, from the client to the server, from the server to the real system and back. The server is where discovery, authentication and the translation into the real system's API (application programming interface) happen. That is the point of the design, and also its price.
+
+The protocol has moved a long way since 2024. Revisions are named by date, the date of the last backwards-incompatible change, and the current one, 2026-07-28, made MCP stateless: the initialization handshake and the protocol-level session are gone, each request carries its own version and capabilities, a mandatory `server/discover` call advertises what a server supports, and a server that needs state across calls mints a handle and receives it back as an ordinary tool argument. The same revision deprecated the Roots, Sampling and Logging features and moved long-running tasks into an optional extension. The [BIG-IP MCP article](/learn/bigip-ai-mcp) covers what that did to load balancers that used to pin a conversation to one backend by its session header.
+
+The governance moved too. On 9 December 2025 Anthropic donated MCP to the Agentic AI Foundation, a directed fund under the Linux Foundation co-founded by Anthropic, Block and OpenAI. The announcement counted "more than 10,000 active public MCP servers" and 97 million monthly SDK (software development kit) downloads, and named ChatGPT, Cursor, Gemini, Microsoft Copilot and Visual Studio Code among the adopters. Those are Anthropic's own figures, as of that date.
+
+## UTCP: publish a manual and step aside
+
+UTCP starts from the other end. Its draft RFC (request for comments), written by Razvan-Ion Radulescu, calls the cost of wrapping a "wrapper tax", "the significant overhead of building, deploying, and maintaining adapter services for every tool", and objects that MCP "introduces an unnecessary network hop for every single tool call, increasing latency." Its alternative is a manual: a JSON document listing each tool's name, description and input schema, with a tool call template that says which protocol to use and how. Once the agent has read the manual, the protocol's job is done.
+
+Here is an illustrative manual for the same weather tool, assembled from the field names in UTCP's documentation:
+
+```json
+{
+  "manual_version": "1.0.0",
+  "utcp_version": "1.0.1",
+  "tools": [
+    {
+      "name": "get_weather",
+      "description": "Get current weather for a location",
+      "inputs": {
+        "type": "object",
+        "properties": { "location": { "type": "string" } },
+        "required": ["location"]
+      },
+      "tool_call_template": {
+        "call_template_type": "http",
+        "url": "https://api.example.com/weather",
+        "http_method": "GET",
+        "auth": {
+          "auth_type": "api_key",
+          "api_key": "${WEATHER_API_KEY}",
+          "var_name": "appid",
+          "location": "query"
+        }
+      }
+    }
+  ]
+}
+```
+
+Three details matter. The call template type names the transport: version 1.0 split UTCP's core into plugins, one per protocol, and the stable set covers HTTP, command-line programs, Server-Sent Events, text files and MCP itself, with gRPC and GraphQL also named on the project's site. The credential is not in the manual: `${WEATHER_API_KEY}` is a placeholder the client fills from its own environment or a dotenv file, and the `auth` object only says where the key goes, here a query parameter called `appid`. And discovery can be as plain as a well-known `/utcp` path on the API server that returns the manual, or a manual converted from an OpenAPI description the service already publishes.
+
+UTCP is younger and smaller. The Python client first appeared on the Python Package Index on 10 July 2025, reached 1.0.0 on 19 August 2025 and 1.2.0 on 16 September 2026. The software development kits live in a community organization on GitHub, the main ones under the Mozilla Public License 2.0, and the specification is still a draft RFC.
+
+## Side by side
+
+| | MCP | UTCP |
+|---|---|---|
+| What the tool's provider builds | A server in front of the tool | A manual describing the tool as it is |
+| Path of one call | Agent, client, server, tool, and back | Agent straight to the tool |
+| On the wire | JSON-RPC 2.0 over standard input and output, or Streamable HTTP | Whatever the tool already speaks: HTTP, command line, Server-Sent Events, MCP and more through plugins |
+| Discovery | `tools/list` and `server/discover`, asked of the server | The manual, for example from a `/utcp` path |
+| Credentials | The server authenticates the client and holds its own access to the tool; OAuth-based authorization for remote servers | The client keeps them and injects them into the tool's own authentication |
+| Beyond tools | Resources, prompts, input requests to the user, extensions such as tasks | Tools only |
+| Where policy and logging can sit | One place: the server | Each client, plus each tool's own controls |
+| Governance | Agentic AI Foundation, under the Linux Foundation | Community project, draft RFC |
+
+## Security: where the trust boundary moves
+
+Neither design makes an agent safe. Each puts the risk somewhere different.
+
+MCP adds a party. The server is a new process with credentials and reach, and the specification is unusually frank about it: tools "represent arbitrary code execution and must be treated with appropriate caution", descriptions of tool behaviour should be treated as untrusted unless they come from a trusted server, and hosts must get explicit user consent before invoking any tool. Its security best-practice guide lists what goes wrong in practice: confused-deputy attacks through proxy servers that use one static client identity towards a third-party API; token passthrough, which is forbidden because a server must not accept tokens that were not issued for it; SSRF (server-side request forgery) through addresses a malicious server plants during OAuth discovery; state handles that can be guessed; and local servers installed with one click whose startup command nobody read. In exchange, the server is a natural checkpoint, one place to authenticate, log, rate-limit and refuse. An analysis published by Glama in September 2025 credited MCP with providing "a single point for implementing enterprise-wide guardrails, security policies, and auditing". The [SSRF URL classifier](/tools/ssrf-url-classifier) and the [OAuth flow chooser](/tools/oauth-flow-chooser) work on two of those failure modes directly.
+
+UTCP removes the party and hands its job to the client. The RFC sets the goal as "No security tax": an agent calling a tool should get the same security as a person calling it, through the tool's own authentication. It also says, without hedging, that "The primary drawback of UTCP is that it places more responsibility on the client." The project's security page spells out what that responsibility means: substituted variables can carry injection, so values with dangerous characters are rejected; command-line execution "poses significant security risks" and belongs in a sandbox with minimal permissions; connections must use HTTPS (HTTP Secure) or secure WebSockets except towards a loopback address; and manual endpoints become discovery targets that need authentication. What a direct-call design does not have, by construction, is a single point that sees every call.
+
+Both inherit the problem no tool-calling protocol solves. Simon Willison's "lethal trifecta", described in June 2025, is an agent with access to private data, exposure to untrusted content and a way to communicate externally: put the three in one session and text the agent reads can steer it into sending one person's data to someone else. He wrote that MCP "encourages users to mix and match tools from different sources", but a UTCP agent that reads a web page and holds an email tool is in exactly the same position, and he added that "we still don't know how to 100% reliably prevent this from happening." The defences are the same on both sides: least privilege for every tool, tool output treated as data and never as instruction, and a person able to say no, which MCP's tools page puts as "there SHOULD always be a human in the loop with the ability to deny tool invocations."
+
+## Context, tokens and the turn to code
+
+There is a cost the two share, and the short does not mention it: the model has to read the tools. Every description and schema an agent might use sits in its context window, and every intermediate result passes back through the model. Anthropic's engineers wrote in November 2025 that presenting MCP servers as code APIs instead, so that the agent writes a small program that calls only what it needs and filters data before the model sees it, cut one Google Drive to Salesforce workflow "from 150,000 tokens to 2,000 tokens", a saving of 98.7 per cent, at the price of a sandbox to run agent-written code safely; they noted that Cloudflare had reported the same pattern under the name Code Mode. For the comparison this matters because latency is only part of the bill. A direct call saves one hop of network time; a lean tool surface saves tokens, and tokens are both time and money.
+
+## They are converging, a little
+
+The sharpest differences of 2025 have softened. MCP 2026-07-28 dropped sessions and the handshake, so a remote MCP server now behaves much more like an ordinary stateless HTTP service that load balancers and caches can treat as one, and its list results carry caching hints. UTCP, for its part, ships an MCP plugin, so a UTCP client can keep calling existing MCP servers, and its own comparison page recommends a hybrid for teams with MCP investments. Nordic APIs, in an analysis published on 20 January 2026, went further: UTCP, it said, "does not compete with MCP it incorporates it", and it expected both to keep developing in parallel, with hybrids in which tools described in UTCP are surfaced through MCP servers.
+
+## Choosing, with each side's bias declared
+
+Most comparisons are written by one side. UTCP's comparison page concludes that "For most organizations, UTCP's 'manual' approach offers significant advantages", supported by latency and memory figures it does not source and that do not agree with each other from one section to the next. MCP's documentation does not discuss UTCP at all. The independent verdict is plainer: "Neither approach is universally superior," wrote Nordic APIs, and the core trade-off is "operational simplicity versus performance and architectural flexibility."
+
+A few questions settle it better than any benchmark:
+
+- Does the tool already have a documented API with its own authentication? Then a UTCP manual describes what exists, and an MCP server would be a wrapper someone now has to run, patch and watch.
+- Is there a need for one place to enforce consent, log every call and revoke access? That is what an MCP server provides, and what a direct-call design gives up by construction.
+- Which clients must work with it? MCP has the adoption: the main assistants and editors speak it. UTCP clients are fewer.
+- Is more than function calling needed? Resources, prompts and the round trips that ask the user for input exist only in MCP.
+- Who carries the security burden, and are they equipped for it? MCP concentrates it in servers that need hardening; UTCP spreads it across every client.
+
+For many teams the honest answer is both: MCP where the ecosystem and central control matter, and a UTCP manual, or simply a well-documented API, where a tool already exists and an extra server would only add a hop. The [MCP](/glossary/mcp) and [UTCP](/glossary/utcp) glossary entries carry the longer history of each.
+
+## Sources
+
+Everything above was read on 10 November 2026. The MCP material comes from the specification's current revision and from Anthropic's two announcements; the UTCP material from the project's RFC, documentation and package history; the comparisons from UTCP's own page and from two independent analyses. The KodeKloud short was read in a browser, from its description.
+
+- [Anthropic, Introducing the Model Context Protocol, 25 November 2024](https://www.anthropic.com/news/model-context-protocol)
+- [Model Context Protocol, Specification, current revision 2026-07-28 (roles, JSON-RPC 2.0, features, security principles)](https://modelcontextprotocol.io/specification/latest)
+- [Model Context Protocol, What is MCP? (the USB-C comparison)](https://modelcontextprotocol.io/docs/getting-started/intro)
+- [Model Context Protocol, Key Changes in 2026-07-28 (stateless, server/discover, deprecations)](https://modelcontextprotocol.io/specification/2026-07-28/changelog)
+- [Model Context Protocol, Versioning (date-based revisions)](https://modelcontextprotocol.io/specification/versioning)
+- [Model Context Protocol, Tools, 2026-07-28 (tools/list, tools/call, human in the loop)](https://modelcontextprotocol.io/specification/2026-07-28/server/tools)
+- [Model Context Protocol, Security Best Practices, 2026-07-28](https://modelcontextprotocol.io/specification/2026-07-28/basic/security_best_practices)
+- [Anthropic, Donating the Model Context Protocol and establishing the Agentic AI Foundation, 9 December 2025](https://www.anthropic.com/news/donating-the-model-context-protocol-and-establishing-of-the-agentic-ai-foundation)
+- [Anthropic Engineering, Code execution with MCP, 4 November 2025](https://www.anthropic.com/engineering/code-execution-with-mcp)
+- [UTCP, RFC UTCP 1.0.0 (draft)](https://utcp.io/about/RFC)
+- [Universal Tool Calling Protocol, home page and version 1.1 documentation](https://www.utcp.io/)
+- [UTCP, For Tool Providers (the manual, auth in the call template, OpenAPI conversion)](https://www.utcp.io/for-tool-providers)
+- [UTCP, Migration Guide v0.1 to v1.0 (plugins, call templates)](https://www.utcp.io/migration-v0.1-to-v1.0)
+- [UTCP, Security Considerations](https://www.utcp.io/security)
+- [UTCP, UTCP vs MCP (the project's own comparison)](https://www.utcp.io/utcp-vs-mcp)
+- [PyPI, utcp release history](https://pypi.org/project/utcp/#history)
+- [GitHub, universal-tool-calling-protocol organisation](https://github.com/universal-tool-calling-protocol)
+- [Nordic APIs, Model Context Protocol (MCP) vs. Universal Tool-Calling Protocol (UTCP), 20 January 2026](https://nordicapis.com/model-context-protocol-mcp-vs-universal-tool-calling-protocol-utcp/)
+- [Glama, The Universal Tool Calling Protocol (UTCP) and the Future of Agent-Tool Interaction, 10 September 2025](https://glama.ai/blog/2025-09-10-rethinking-tool-calling-towards-a-scalable-standard)
+- [Simon Willison, The lethal trifecta for AI agents, 16 June 2025](https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/)
+- [KodeKloud, MCP vs UTCP (YouTube short)](https://youtube.com/shorts/7VfKiaGOZcA)

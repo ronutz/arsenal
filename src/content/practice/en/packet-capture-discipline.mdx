@@ -55,7 +55,7 @@ Under-filtering has the opposite failure and is more recoverable: a forty-gigaby
 
 ## The things that quietly ruin a capture
 
-**Clock.** Timestamps come from the capturing host, not from the network. Two captures from two hosts with unsynchronised clocks cannot be interleaved, and the resulting "sequence" is fiction - the same defect as any cross-device [timeline](/practice/timelines-reconstructing-what-happened).
+**Clock.** Timestamps come from the capturing host, not from the network. Two captures from two hosts with unsynchronized clocks cannot be interleaved, and the resulting "sequence" is fiction - the same defect as any cross-device [timeline](/practice/timelines-reconstructing-what-happened).
 
 **Drops on the capture itself.** A saturated span port or an overloaded capture host silently discards packets, and the missing packets look exactly like network loss. **Check the interface's drop counters on the capturing host** before concluding anything about loss, or the capture becomes evidence of its own limitations.
 
@@ -67,13 +67,13 @@ Under-filtering has the opposite failure and is more recoverable: a forty-gigaby
 
 Not a footnote. A full-payload capture on a production segment contains credentials, personal data, session tokens and customer content, and it is now a file on somebody's laptop.
 
-Treat it accordingly: **headers-only where it suffices**, a deliberate decision when it does not, restricted storage, a deletion date, and care about what leaves the organisation. A capture attached to a vendor case has left your control - see the sanitisation argument in [building an evidence pack](/practice/building-an-evidence-pack), which applies with more force here than anywhere else.
+Treat it accordingly: **headers-only where it suffices**, a deliberate decision when it does not, restricted storage, a deletion date, and care about what leaves the organization. A capture attached to a vendor case has left your control - see the sanitization argument in [building an evidence pack](/practice/building-an-evidence-pack), which applies with more force here than anywhere else.
 
 ## Record the metadata or the capture is half useless
 
 A file called `capture.pcap` six months later is nearly worthless. Written alongside it, in one line each:
 
-**Where** it was taken, on which interface, and on which side of what. **When**, with a timezone. **What filter** was applied - including *"none"*. **What snaplen**. **Whether the clock was synchronised**, and to what. **What the drop counters said** afterwards.
+**Where** it was taken, on which interface, and on which side of what. **When**, with a timezone. **What filter** was applied - including *"none"*. **What snaplen**. **Whether the clock was synchronized**, and to what. **What the drop counters said** afterwards.
 
 That is the difference between evidence and a large binary file.
 
@@ -83,7 +83,7 @@ That is the difference between evidence and a large binary file.
 2. **Filter** - by host or subnet first; port only if volume forces it
 3. **Snaplen** - headers unless you need payload; a privacy decision as much as a size one
 4. **Duration and shape** - ring buffer for anything intermittent; start before, stop after
-5. **Clock** - synchronised across every capture point, and verified rather than assumed
+5. **Clock** - synchronized across every capture point, and verified rather than assumed
 6. **Handling** - where it is stored, who can read it, when it is deleted
 
 The [capture plan builder](/tools/packet-capture-plan-builder) on this site exists to walk these six, because they are decided in about ninety seconds and are effectively unfixable afterwards: **you cannot re-run a capture of an event that has finished.**

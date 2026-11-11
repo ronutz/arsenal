@@ -63,13 +63,13 @@ Both, paired: the claim, then the extract that supports it, then the pointer to 
 
 **Name files so they sort into sense**: what, where, when. `bigip-01_pool-stats_2026-08-09T0214-0300.txt` tells a stranger everything before they open it. `output2.txt` tells them nothing and will be opened last.
 
-## Sanitise deliberately, and say that you did
+## Sanitize deliberately, and say that you did
 
 Configurations carry keys, community strings, credentials, internal addressing and sometimes customer data. Exporting wholesale and hoping is not a strategy - see [opening a vendor case](/practice/opening-a-vendor-case).
 
 Redact, and then **say what you redacted and how**, in one line. Unannounced redaction is worse than either extreme: the reader hits a blank where a value should be and cannot tell whether they are looking at your caution or at the fault.
 
-When a picture is the right format after all ([Code on slides and in tickets](/learn/code-on-slides-and-in-tickets) weighs when it is, and what a reader loses when it is not), the [code to image tool](/tools/code-to-image) lists the secrets it recognises with their line and column, masks them before it draws, and says in the alt text where a value was masked; it names the formats it knows, and anything else is still yours to find. The [openssl s_client explainer](/tools/openssl-s-client-explainer) flags the session secrets an `s_client` report prints, such as the TLS 1.2 `Master-Key`, before that report goes into the pack.
+When a picture is the right format after all ([Code on slides and in tickets](/learn/code-on-slides-and-in-tickets) weighs when it is, and what a reader loses when it is not), the [code to image tool](/tools/code-to-image) lists the secrets it recognizes with their line and column, masks them before it draws, and says in the alt text where a value was masked; it names the formats it knows, and anything else is still yours to find. The [openssl s_client explainer](/tools/openssl-s-client-explainer) flags the session secrets an `s_client` report prints, such as the TLS 1.2 `Master-Key`, before that report goes into the pack.
 
 ## The pack, and the test it has to pass
 
@@ -79,6 +79,6 @@ When a picture is the right format after all ([Code on slides and in tickets](/l
 | **For** | each item: what, when, from where, what it shows |
 | **Against, and gaps** | contradictions and missing data, named by you |
 | **Ask** | the specific thing you want done |
-| **Attachments** | raw material, named so it sorts, sanitised and said so |
+| **Attachments** | raw material, named so it sorts, sanitized and said so |
 
 And the test, which is worth applying before sending and which this part returns to later in its own right: **could somebody with none of your context, who cannot ask you a question, act on this?** If the answer depends on a conversation you are expecting to have, the pack is not finished - it is a prompt for a meeting.

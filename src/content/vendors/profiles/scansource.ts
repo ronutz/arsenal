@@ -76,7 +76,7 @@ export const scansourceProfile: VendorProfile = {
     {
       title: "Answering the question the broadline houses are still asking",
       detail:
-        "Distribution's defining problem is that it ties up capital in stock. The escape route usually proposed is a platform or a cloud marketplace, bolted onto the existing business. This company took a different route: it bought a business that had never held inventory and ran it as a separate segment. Whether that generalises is doubtful - the margin structures are wholly different - but it is the clearest example on this timeline of a distributor actually completing the transition rather than announcing it.",
+        "Distribution's defining problem is that it ties up capital in stock. The escape route usually proposed is a platform or a cloud marketplace, bolted onto the existing business. This company took a different route: it bought a business that had never held inventory and ran it as a separate segment. Whether that generalizes is doubtful - the margin structures are wholly different - but it is the clearest example on this timeline of a distributor actually completing the transition rather than announcing it.",
     },
     {
       title: "Following the resellers rather than the products",

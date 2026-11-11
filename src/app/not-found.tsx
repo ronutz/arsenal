@@ -52,7 +52,8 @@ export default function NotFound() {
   }
 
   return (
-    <html lang="en">
+    // en-001, International English, the English the site writes (PRIME 11/11/2026 00:09 and 01:30).
+    <html lang="en-001">
       <body
         style={{
           margin: 0,

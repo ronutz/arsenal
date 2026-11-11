@@ -62,7 +62,7 @@ export const equinixProfile: VendorProfile = {
       year: 2015,
       title: "Conversion to a real estate investment trust",
       detail:
-        "A structural decision with behavioural consequences: a REIT must distribute the large majority of its taxable income, which pushes a business toward predictable recurring revenue and long contracts rather than growth at any cost.",
+        "A structural decision with behavioural consequences: a REIT must distribute the large majority of its taxable income, which pushes a business towards predictable recurring revenue and long contracts rather than growth at any cost.",
     },
     {
       year: 2025,
@@ -120,7 +120,7 @@ export const equinixProfile: VendorProfile = {
   ],
 
   markets: [
-    "Around 260 facilities across roughly 70 metros in 33 countries, serving more than 10,000 customers - cloud and hyperscale providers, carriers, content networks, and enterprises running hybrid architectures that need to touch several clouds without crossing the public internet to do it. Reported revenue was approximately $8.3B to $8.8B for 2024 with 2025 guided toward $9.2B.",
+    "Around 260 facilities across roughly 70 metros in 33 countries, serving more than 10,000 customers - cloud and hyperscale providers, carriers, content networks, and enterprises running hybrid architectures that need to touch several clouds without crossing the public internet to do it. Reported revenue was approximately $8.3B to $8.8B for 2024 with 2025 guided towards $9.2B.",
     "Recent expansion has been into markets without established interconnection density - Johannesburg, Kuala Lumpur, Chennai - where the proposition is to become the meeting point before anybody else does, which is the same play as the original one and depends on arriving first.",
   ],
 

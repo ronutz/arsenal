@@ -26,6 +26,8 @@
 // since a step of "one" means nothing there. Now still fills the box.
 // ============================================================================
 
+// English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
+import { intlLocale } from "@/i18n/locales";
 import { useMemo, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { analyzeEpochLocalisable, EpochInputError, type EpochAnalysis } from "@/lib/tools/epoch/compute"; // the reading with sentence ids (02/11/2026)
@@ -51,7 +53,7 @@ const FORMAT_ROWS: { key: keyof EpochAnalysis["formats"]; label: string }[] = [
 
 function relativeTime(targetMs: number, nowMs: number, locale: string): string {
   const diff = targetMs - nowMs;
-  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
+  const rtf = new Intl.RelativeTimeFormat(intlLocale(locale), { numeric: "auto" });
   const units: [Intl.RelativeTimeFormatUnit, number][] = [
     ["year", 31_536_000_000],
     ["month", 2_592_000_000],

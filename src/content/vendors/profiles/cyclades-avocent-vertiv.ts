@@ -45,7 +45,7 @@ export const cycladesAvocentVertivProfile: VendorProfile = {
     { year: 2006, title: "Cyclades joins Avocent", detail: "Avocent acquires Cyclades (~$90 million): serial consoles and KVM under one roof - the complete out-of-band toolkit, Linux heritage included.", sourceNote: "Deal figure per the public record." },
     { year: 2009, title: "Into Emerson Network Power", detail: "Emerson Electric acquires Avocent (~$1.2 billion), joining it to the Liebert cooling and power lines - management plane and physical plane consolidated." },
     { year: 2016, title: "Vertiv", detail: "Emerson carves out Network Power to Platinum Equity (~$4 billion); renamed Vertiv, it goes public in 2020 - UPS, cooling, PDUs, and the Avocent/Cyclades access heritage as one company whose product is, effectively, uptime itself.", sourceNote: "Deal figures per the public record." },
-    { year: 2023, title: "The AI density era", detail: "As racks climb from kilowatts toward the tens, Vertiv's problem set - power, liquid cooling, and still that serial console when everything else is dark - becomes the constraint the whole industry plans around." },
+    { year: 2023, title: "The AI density era", detail: "As racks climb from kilowatts towards the tens, Vertiv's problem set - power, liquid cooling, and still that serial console when everything else is dark - becomes the constraint the whole industry plans around." },
   ],
   products: [
     { name: "Cyclades TS/ACS console servers", what: "The out-of-band access line - serial consoles reachable when the production network is not." },

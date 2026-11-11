@@ -52,7 +52,7 @@ export const accentureProfile: VendorProfile = {
       year: 2001,
       title: "And then they hired them",
       detail:
-        "On 1 March, alongside the releases and indemnities that finalised the separation, the two sides entered service agreements under which Arthur Andersen would provide services including tax work to Accenture for six years at $60 million a year. Having fought for three years to get away, the first thing the new company did was sign a six-year contract with the firm it had left.",
+        "On 1 March, alongside the releases and indemnities that finalized the separation, the two sides entered service agreements under which Arthur Andersen would provide services including tax work to Accenture for six years at $60 million a year. Having fought for three years to get away, the first thing the new company did was sign a six-year contract with the firm it had left.",
     },
   ],
   products: [
@@ -65,7 +65,7 @@ export const accentureProfile: VendorProfile = {
     {
       title: "The precision that matters about the ruling",
       detail:
-        "The tribunal's finding is usually summarised as a defeat, and the company's own filing puts it more narrowly: Andersen Worldwide, the coordinating entity that sat above both businesses, was found to have breached its material obligations. That is not the same as a finding against the accounting firm, and the distinction is exactly the sort that matters when a criminal prosecution later reaches for everything connected to a name.",
+        "The tribunal's finding is usually summarized as a defeat, and the company's own filing puts it more narrowly: Andersen Worldwide, the coordinating entity that sat above both businesses, was found to have breached its material obligations. That is not the same as a finding against the accounting firm, and the distinction is exactly the sort that matters when a criminal prosecution later reaches for everything connected to a name.",
     },
     {
       title: "Separation as a legal structure rather than a feeling",

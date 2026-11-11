@@ -21,7 +21,7 @@
 // ============================================================================
 
 /** Input ceiling; a pasted switch config can be large, so this is generous. */
-import { say, plainText, engineError, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
+import { say, enPlural, plainText, engineError, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
 // PAGE LANGUAGE (02/11/2026): every summary, note, reference line and error is built as an EngineText (a stable id,
 // the English as before, and its values). runLocalisable() returns them as such for the page (pack keys
 // tools.exos-config-explainer.engine.<id>); run() returns plainText() of the same reading, so the API, the share spec
@@ -364,7 +364,7 @@ function classify(line: string, vlans: Map<string, VlanAcc>): { category: ExosCa
       summary: verbSummary(verb, target), // the verb on its object
     };
   }
-  return { category: "other", summary: say("other.unrecognised", "Unrecognised line (not a create/configure/enable/disable/delete/unconfigure command).") }; // not a command
+  return { category: "other", summary: say("other.unrecognised", "Unrecognized line (not a create/configure/enable/disable/delete/unconfigure command).") }; // not a command
 }
 
 /** Heuristic: a "configure NAME ..." line that omits the optional vlan keyword. */
@@ -403,7 +403,7 @@ function referenceResult(): ExosResult<EngineText> {
     vlans: [],
     groups: [],
     notes: [
-      { kind: "info", text: say("ref.paste", "Paste an ExtremeXOS (EXOS / Switch Engine) configuration to have each command explained, the VLANs summarised, and the commands grouped by category. This tool reads the config; it never touches a switch.") }, // what to paste
+      { kind: "info", text: say("ref.paste", "Paste an ExtremeXOS (EXOS / Switch Engine) configuration to have each command explained, the VLANs summarized, and the commands grouped by category. This tool reads the config; it never touches a switch.") }, // what to paste
     ],
     reference: {
       verbs: VERBS.map((v) => ({ verb: v.verb, explain: v.explain })),
@@ -451,13 +451,13 @@ function parseConfig(src: string): ExosResult<EngineText> {
   // Notes.
   const notes: ExosNote<EngineText>[] = []; // each note with its id
   if (lines.length === 0) {
-    notes.push({ kind: "warn", text: say("note.none", "No EXOS commands were recognised. Make sure this is an ExtremeXOS configuration (lines beginning with create, configure, enable, disable, delete, or unconfigure).") }); // nothing recognised
+    notes.push({ kind: "warn", text: say("note.none", "No EXOS commands were recognized. Make sure this is an ExtremeXOS configuration (lines beginning with create, configure, enable, disable, delete, or unconfigure).") }); // nothing recognised
     return { mode: "parse", lines, vlans, groups, notes };
   }
   const count = String(lines.length), vcount = String(vlans.length); // the tallies
   notes.push({ kind: "good", text: vlans.length // lines and VLANs, or lines only
-    ? say("note.readVlans", `Read ${count} command line(s) and ${vcount} VLAN(s).`, { count, vcount }) // with VLANs
-    : say("note.read", `Read ${count} command line(s).`, { count }) }); // lines only
+    ? say("note.readVlans", `Read ${count} ${enPlural(count, "command line", "command lines")} and ${vcount} ${enPlural(vcount, "VLAN", "VLANs")}.`, { count, vcount }) // with VLANs
+    : say("note.read", `Read ${count} ${enPlural(count, "command line", "command lines")}.`, { count }) }); // lines only
 
   // If nothing begins with an EXOS verb, this probably is not an EXOS config.
   const recognized = lines.filter((l) => VERB_SET.has(l.verb)).length;

@@ -37,11 +37,11 @@ export const credlyProfile: VendorProfile = {
       year: 2022,
       title: "Fifteen times revenue",
       detail:
-        "The purchase price was around $200M against 2021 revenue of $13.3M. That is not a multiple anybody pays for an earnings stream. It is the price of a registry: fifty million credentials held by twenty-five million people, issued by two thousand organisations including the largest technology vendors. What was bought was the record of who holds what.",
+        "The purchase price was around $200M against 2021 revenue of $13.3M. That is not a multiple anybody pays for an earnings stream. It is the price of a registry: fifty million credentials held by twenty-five million people, issued by two thousand organizations including the largest technology vendors. What was bought was the record of who holds what.",
     },
   ],
   products: [
-    { name: "The credential platform", what: "Issuing, hosting and verifying badges, sold to the organisations that award them rather than to the people who hold them - which is worth knowing, because it means the customer is the issuer and the holder is the product's subject rather than its buyer." },
+    { name: "The credential platform", what: "Issuing, hosting and verifying badges, sold to the organizations that award them rather than to the people who hold them - which is worth knowing, because it means the customer is the issuer and the holder is the product's subject rather than its buyer." },
     { name: "The verification endpoint", what: "The thing that actually matters: a link that resolves to the issuer's own current record, including revocation. A certificate that can answer for itself is a different object from a PDF." },
     { name: "Analytics for issuers", what: "Which credentials are earned, shared and acted on. For a vendor running a certification programme this is the feedback loop that was previously absent entirely." },
   ],
@@ -63,7 +63,7 @@ export const credlyProfile: VendorProfile = {
     },
   ],
   markets: [
-    "Certification bodies, technology vendors, universities and professional associations - the organisations that award something and need it to be believed afterwards. The technology vendors on the customer list are the same ones whose certifications appear throughout this timeline.",
+    "Certification bodies, technology vendors, universities and professional associations - the organizations that award something and need it to be believed afterwards. The technology vendors on the customer list are the same ones whose certifications appear throughout this timeline.",
     "Its competitors are the other credentialing platforms and, increasingly, the issuers themselves deciding whether to run their own verification rather than delegate it.",
   ],
   analyst: [

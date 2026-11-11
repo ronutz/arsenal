@@ -13,7 +13,7 @@ updated: "2026-07-07"
 
 ## Origins: a browser bug that had no clean fix
 
-The Public Suffix List exists because of a security problem nobody could solve properly. A browser has to decide whether one site may set a cookie readable by another, and the honest answer requires knowing where an organisation's control over a name begins.
+The Public Suffix List exists because of a security problem nobody could solve properly. A browser has to decide whether one site may set a cookie readable by another, and the honest answer requires knowing where an organization's control over a name begins.
 
 That boundary is not in DNS. There is no record type that says "below this point, different owners". `com` sells to anyone, `co.uk` sells to anyone, `github.io` gives a subdomain to any user with an account, and to the protocol all three look exactly like any other label. Cookie rules based on counting labels therefore failed in both directions: too permissive on `co.uk`, where a site could set a cookie for every British company at once, and too restrictive elsewhere.
 
@@ -21,7 +21,7 @@ Mozilla began maintaining a list in the mid-2000s to fix the cookie behaviour, a
 
 ## What it actually is
 
-A list of suffixes under which anybody can register a name, so the label immediately to the left of a listed suffix is the smallest unit an organisation controls. That unit is the **registrable domain**, or eTLD+1.
+A list of suffixes under which anybody can register a name, so the label immediately to the left of a listed suffix is the smallest unit an organization controls. That unit is the **registrable domain**, or eTLD+1.
 
 Two properties surprise people. It is **not** a list of top-level domains: it contains thousands of entries, most of them deeper than one label. And it is **not** a specification with a numbered document behind it; it is a curated file with a submission process, which means the boundary a browser enforces is a maintained artefact rather than a derived fact.
 
@@ -45,7 +45,7 @@ The list is split into two sections, and the distinction is not cosmetic. The **
 
 ## Why the PRIVATE section exists, and what it changes
 
-The file has two divisions. The **ICANN** section covers registry suffixes - the ordinary domain hierarchy. The **PRIVATE** section is where organisations add their own names, and it is added by request.
+The file has two divisions. The **ICANN** section covers registry suffixes - the ordinary domain hierarchy. The **PRIVATE** section is where organizations add their own names, and it is added by request.
 
 The reason is subdomain hosting. If a platform gives every customer `customer.example-platform.com`, then without an entry, all those customers share a cookie origin and a certificate rate-limit bucket. One tenant can set cookies readable by another, which is a real isolation failure between people who are strangers to each other. Adding the suffix to PRIVATE turns each tenant into its own registrable domain, and that is the fix.
 
@@ -55,7 +55,7 @@ It also has consequences the requester may not want. Being a public suffix means
 
 **Staleness.** The consumer that matters is not the list but the copy compiled into a browser, a library or an appliance. A new suffix is only enforced where the file has been refreshed, so behaviour differs by client version - and a rarely updated device can hold a boundary years out of date.
 
-**Treating it as authoritative about ownership.** It says where registration is open, not who owns what. Two names under the same registrable domain are usually the same organisation; usually is not always, and security decisions built on that assumption inherit the gap.
+**Treating it as authoritative about ownership.** It says where registration is open, not who owns what. Two names under the same registrable domain are usually the same organization; usually is not always, and security decisions built on that assumption inherit the gap.
 
 **Vendoring the file and forgetting it.** The failure is silent: cookies scope slightly wrong, a certificate request is refused for a reason nobody can reproduce, and nothing logs "your public suffix list is old".
 
@@ -63,7 +63,7 @@ It also has consequences the requester may not want. Being a public suffix means
 
 ## Where the boundary shows up, by category
 
-- **Browsers** - cookie scoping, same-site enforcement, permission grouping, and the part of the URL bar some browsers emphasise.
+- **Browsers** - cookie scoping, same-site enforcement, permission grouping, and the part of the URL bar some browsers emphasize.
 - **Certificate authorities** - rate limits and issuance policy are commonly counted per registrable domain, which is why a platform's tenants share a bucket until the suffix is listed.
 - **Security tooling** - grouping DNS queries, phishing heuristics that compare a registrable domain against a lookalike, and any control that needs to say "same organisation".
 - **Analytics and advertising**, which needs the same boundary for the same reason browsers do, and which is why the list is quietly commercially important.

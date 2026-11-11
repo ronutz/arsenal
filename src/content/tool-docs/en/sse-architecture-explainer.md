@@ -16,7 +16,7 @@ The tool states this as the contrast on every result, because "converged" is oft
 
 ## What it will not do
 
-It does not model any specific tenant, and it is not a policy simulator. Turn decryption off and it will tell you that everything below application identification is working from metadata, which is the failure mode it most wants a learner to internalise, because a policy written as though content were visible will sit in the console looking correct.
+It does not model any specific tenant, and it is not a policy simulator. Turn decryption off and it will tell you that everything below application identification is working from metadata, which is the failure mode it most wants a learner to internalize, because a policy written as though content were visible will sit in the console looking correct.
 
 ## Vendor scope
 

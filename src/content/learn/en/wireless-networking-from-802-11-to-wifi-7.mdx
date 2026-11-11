@@ -55,7 +55,7 @@ Read as a whole, the arc is unmistakable: the early generations sold raw rate; t
 
 **Autonomous access points.** Each configured independently. Fine for a handful, unmanageable beyond that.
 
-**Controller-based.** A hardware or virtual controller centralises configuration, radio management and often the data path. Tunnelling all traffic back to the controller simplifies policy and creates a bottleneck and a [chokepoint](/learn/the-chokepoints-of-the-internet); local switching avoids that and complicates policy. The protocol underneath is typically CAPWAP, standardised in the RFC series, which is why controller and access point interoperability is at least conceptually possible.
+**Controller-based.** A hardware or virtual controller centralizes configuration, radio management and often the data path. Tunnelling all traffic back to the controller simplifies policy and creates a bottleneck and a [chokepoint](/learn/the-chokepoints-of-the-internet); local switching avoids that and complicates policy. The protocol underneath is typically CAPWAP, standardized in the RFC series, which is why controller and access point interoperability is at least conceptually possible.
 
 **Cloud-managed.** The control plane is a service; the data plane stays local. Operationally the lightest, and it makes your wireless management a dependency on someone else's availability and jurisdiction.
 
@@ -71,7 +71,7 @@ Read as a whole, the arc is unmistakable: the early generations sold raw rate; t
 
 ## The vendor landscape, by category
 
-- **Enterprise controller and cloud platforms**: Cisco, HPE Aruba, Extreme Networks, Juniper Mist. Deep radio management, roaming optimisation and analytics; you are buying a management model as much as radios, and the difference between vendors is mostly in how they automate channel and power planning.
+- **Enterprise controller and cloud platforms**: Cisco, HPE Aruba, Extreme Networks, Juniper Mist. Deep radio management, roaming optimization and analytics; you are buying a management model as much as radios, and the difference between vendors is mostly in how they automate channel and power planning.
 - **Cloud-first managed**: Cisco Meraki and similar. Fastest to operate, licence-dependent, and the management plane is a subscription you cannot pause.
 - **Security-platform vendors**: Fortinet, Palo Alto and others integrate access points with firewall policy, which is attractive when you want one policy language across wired, wireless and remote.
 - **Value and prosumer**: Ubiquiti, TP-Link Omada, and similar, competent for small and mid-size sites at a fraction of the cost, with less radio-resource sophistication in dense environments.
@@ -84,7 +84,7 @@ The buying question that separates them in practice is not throughput on a datas
 
 - Count clients per access point and per channel, not just signal strength.
 - Confirm channel width matches density, and that 2.4 GHz is limited to the three non-overlapping channels.
-- Look for co-channel interference and airtime utilisation before adding access points, since adding more is often what caused it.
+- Look for co-channel interference and airtime utilization before adding access points, since adding more is often what caused it.
 - Verify 802.11k, 802.11v and 802.11r behaviour with the actual client devices, because support varies by manufacturer and firmware.
 - Test authentication end to end (RADIUS, directory, certificates, clocks) since that path fails more often than the air does.
 

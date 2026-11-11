@@ -29,6 +29,8 @@
 // the lede and opens the one dialog inside the Understand world.
 // ============================================================================
 
+// English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
+import { intlLocale } from "@/i18n/locales";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { STORY_GROUPS, STORY_SLUGS } from "@/content/learn/stories";
 // The article series (LS-0, 2026-10-06), for their door among the areas around Learn.
@@ -130,7 +132,7 @@ export default async function LearnIndexPage({
     .sort((a, b) => (a.updated < b.updated ? 1 : a.updated > b.updated ? -1 : a.title.localeCompare(b.title, locale)))
     .slice(0, 6)
     .map((a) => ({ slug: a.slug, title: a.title, updated: a.updated, isNew: announcedOn.get(a.slug) === a.updated }));
-  const dateFmt = new Intl.DateTimeFormat(locale, { day: "numeric", month: "short", year: "numeric" });
+  const dateFmt = new Intl.DateTimeFormat(intlLocale(locale), { day: "numeric", month: "short", year: "numeric" });
   // THE TOOLS AN ARTICLE NAMES (L30): the first two of its relatedTools that are live, by name, on its index row.
   const toolName = (id: string) => (toolRegistry.some((tl) => tl.id === id && tl.available) ? tTools(`${id}.name`) : null);
   // People in the glossary, the count on the People row.

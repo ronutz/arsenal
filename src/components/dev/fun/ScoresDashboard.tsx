@@ -29,6 +29,8 @@
 "use client";
 
 // React's state, effects, memo and ids.
+// English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
+import { intlLocale } from "@/i18n/locales";
 import { useEffect, useId, useMemo, useState } from "react";
 // The page's strings and language.
 import { useLocale, useTranslations } from "next-intl";
@@ -228,7 +230,7 @@ export default function ScoresDashboard(props: { names: Record<string, string>; 
   // A board's name: the game's, with the level when it has two.
   const boardName = (game: string, mode: string) => (mode === "daily" ? props.names[game] ?? game : `${props.names[game] ?? game} (${props.levels[mode] ?? mode})`);
   // A day as a short date in the page's language.
-  const shortDate = useMemo(() => new Intl.DateTimeFormat(locale, { day: "numeric", month: "short", timeZone: "UTC" }), [locale]);
+  const shortDate = useMemo(() => new Intl.DateTimeFormat(intlLocale(locale), { day: "numeric", month: "short", timeZone: "UTC" }), [locale]);
   const dayText = (d: string) => shortDate.format(new Date(`${d}T12:00:00Z`));
   // A whole number in the page's language.
   const num = (n: number) => n.toLocaleString(locale);

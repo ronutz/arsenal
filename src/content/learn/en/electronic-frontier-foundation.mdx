@@ -1,7 +1,7 @@
 ---
 slug: electronic-frontier-foundation
 title: "The Electronic Frontier Foundation: the lawyers who built a codebreaking machine and a certificate authority"
-summary: "It began with an FBI agent in a Wyoming ranch kitchen in 1990. It established that source code is speech, built the machine that ended DES, put the room on Folsom Street into a courtroom, and then stopped suing long enough to write the software that made HTTPS the default. This is what a civil-liberties organisation did to the network engineer's daily work."
+summary: "It began with an FBI agent in a Wyoming ranch kitchen in 1990. It established that source code is speech, built the machine that ended DES, put the room on Folsom Street into a courtroom, and then stopped suing long enough to write the software that made HTTPS the default. This is what a civil-liberties organization did to the network engineer's daily work."
 concepts: ["eff", "bernstein v. doj", "des cracker", "room 641a", "let's encrypt", "digital rights"]
 relatedTools: []
 relatedArticles: ["lod-mod-and-operation-sundevil", "encryption-family-history", "hacking-in-the-20th-century", "tor-and-onion-routing"]
@@ -11,11 +11,11 @@ status: reviewed
 updated: "2026-09-07"
 ---
 
-## Why a network engineer should know this organisation
+## Why a network engineer should know this organization
 
 Three things a security practitioner takes for granted were, within living memory, either illegal, officially denied, or unavailable. Publishing cryptographic source code was regulated as arms export. The fifty-six-bit Data Encryption Standard (DES) was described by the government that mandated it as adequate, and the cost of breaking it as prohibitive. And an HTTPS (Hypertext Transfer Protocol Secure) certificate cost money and effort, so most of the web did not have one.
 
-Each of those changed because of the same San Francisco nonprofit. The Electronic Frontier Foundation (EFF) is usually described as a digital-rights group, which is true and incomplete. It is also the organisation that built the first unclassified DES cracker, that took AT&T to court with a fibre splitter as evidence, and that co-founded the certificate authority which now issues most of the certificates on the internet. This article follows that line - from a lawsuit about a game company to a piece of software on every web server - because it is the part of the EFF's history that shows up in a practitioner's work every day.
+Each of those changed because of the same San Francisco nonprofit. The Electronic Frontier Foundation (EFF) is usually described as a digital-rights group, which is true and incomplete. It is also the organization that built the first unclassified DES cracker, that took AT&T to court with a fibre splitter as evidence, and that co-founded the certificate authority which now issues most of the certificates on the internet. This article follows that line - from a lawsuit about a game company to a piece of software on every web server - because it is the part of the EFF's history that shows up in a practitioner's work every day.
 
 ## The visit, and the game company
 
@@ -37,7 +37,7 @@ The United States government had, for two decades, pressed industry to limit its
 
 Six months later, on 19 January 1999, Deep Crack working with distributed.net's network of nearly 100,000 PCs won DES Challenge III in twenty-two hours and fifteen minutes. The plaintext this time was an invitation to the second AES conference in Rome. The National Institute of Standards and Technology had already opened the competition to replace DES; the machine turned a theoretical objection into a demonstrated fact, and the design was published in full, as a book with O'Reilly, so that nobody could claim the result was special to one laboratory. Later that year the federal standard was reaffirmed with Triple DES recommended in its place.
 
-The lesson worth carrying is the one the EFF stated at the time: the government had exaggerated both the strength of the cipher and the cost of breaking it, and any well-funded organisation could have built the same machine in secret. A key length that a civil-liberties group can exhaust for a quarter of a million dollars is not a key length; it is a delay. The [RSA Security entry](/industry/rsa-security) in the industry catalogue records what the same government did, a few years later, to a random-number generator - the two stories are the same argument from opposite ends.
+The lesson worth carrying is the one the EFF stated at the time: the government had exaggerated both the strength of the cipher and the cost of breaking it, and any well-funded organization could have built the same machine in secret. A key length that a civil-liberties group can exhaust for a quarter of a million dollars is not a key length; it is a delay. The [RSA Security entry](/industry/rsa-security) in the industry catalogue records what the same government did, a few years later, to a random-number generator - the two stories are the same argument from opposite ends.
 
 ## The room on Folsom Street: 2006-2022
 
@@ -47,7 +47,7 @@ On 31 January 2006 the EFF filed Hepting v. AT&T on behalf of the company's cust
 
 The foundation refiled against the government itself as Jewel v. NSA the same summer, with Klein's documents joined over the years by declarations from three NSA whistleblowers and, after 2013, by the published Snowden material describing the upstream collection from fibre cables that Room 641A was part of. In April 2019 the district court found that Klein could not establish the content or purpose of the room from his own knowledge; the Ninth Circuit ruled for the government on standing; and in June 2022 the Supreme Court declined to hear the case, ending sixteen years of litigation without a court ever ruling on whether the programme was lawful. Klein died in March 2025.
 
-For the reader of this site the room matters as a fact about infrastructure. A splitter on a backbone fibre is invisible to every endpoint, every application and every certificate; it is defeated only by encryption that the tapping party cannot undo. Which is why the organisation that lost this case in the courts spent the following decade winning it in software.
+For the reader of this site the room matters as a fact about infrastructure. A splitter on a backbone fibre is invisible to every endpoint, every application and every certificate; it is defeated only by encryption that the tapping party cannot undo. Which is why the organization that lost this case in the courts spent the following decade winning it in software.
 
 ## From lawsuits to software: the Eckersley years
 
@@ -55,11 +55,11 @@ Peter Eckersley, an Australian computer scientist, joined the EFF in 2006 and be
 
 Panopticlick, in 2010, showed that a browser could be identified without cookies, from the combination of its version, fonts, plugins and screen - the research that named browser fingerprinting as a problem before the advertising industry admitted using it. HTTPS Everywhere, built with the Tor Project the same year, forced browsers onto encrypted connections wherever a site offered one, which at the time most did not. The SSL Observatory catalogued every certificate visible on the public internet and found how many were mis-issued. And Certbot automated the part of running a web server that most administrators got wrong: obtaining and renewing a certificate.
 
-The largest of them began at the RSA Conference in 2012, when Eckersley met the researcher Alex Halderman and the two began planning a certificate authority that would issue certificates free, automatically, to anyone. Let's Encrypt, run by the Internet Security Research Group, in whose founding the EFF was a partner alongside Mozilla and others, opened to the public at the end of 2015 and became the largest certificate authority in the world. The reason the web is now encrypted by default - the reason a browser warns about a plain HTTP page rather than treating it as normal - is that the organisation which could not persuade a court to look inside Room 641A made the traffic passing through it unreadable instead.
+The largest of them began at the RSA Conference in 2012, when Eckersley met the researcher Alex Halderman and the two began planning a certificate authority that would issue certificates free, automatically, to anyone. Let's Encrypt, run by the Internet Security Research Group, in whose founding the EFF was a partner alongside Mozilla and others, opened to the public at the end of 2015 and became the largest certificate authority in the world. The reason the web is now encrypted by default - the reason a browser warns about a plain HTTP page rather than treating it as normal - is that the organization which could not persuade a court to look inside Room 641A made the traffic passing through it unreadable instead.
 
 ## What it is now
 
-The EFF in 2025 had about 40,000 members, 125 staff, revenue of 26 million dollars and an endowment of 22 million; it funds legal defence, files amicus briefs, and runs the Pioneer Awards that have recognised, among many others, Klein himself. Its executive director is Nicole Ozer. It is criticised from the right as an obstacle to law enforcement and from the left as too close to the technology companies whose founders funded it, and both criticisms have been made continuously since 1990.
+The EFF in 2025 had about 40,000 members, 125 staff, revenue of 26 million dollars and an endowment of 22 million; it funds legal defence, files amicus briefs, and runs the Pioneer Awards that have recognized, among many others, Klein himself. Its executive director is Nicole Ozer. It is criticized from the right as an obstacle to law enforcement and from the left as too close to the technology companies whose founders funded it, and both criticisms have been made continuously since 1990.
 
 ## What the thread teaches
 

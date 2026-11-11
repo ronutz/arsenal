@@ -16,11 +16,11 @@ The leading words place the object in BIG-IP's module and component hierarchy (`
 
 ## What it explains
 
-Rather than leaving you to recognise each field, the tool describes what the common objects and settings mean: a virtual server's `destination`, `pool`, `profiles`, and `source-address-translation`; a pool's `members`, `monitor`, and `load-balancing-mode`; and the many other objects a configuration ties together. The result is a readable map of what a configuration actually does, which is useful when you inherit a device, review a change, or learn the object model.
+Rather than leaving you to recognize each field, the tool describes what the common objects and settings mean: a virtual server's `destination`, `pool`, `profiles`, and `source-address-translation`; a pool's `members`, `monitor`, and `load-balancing-mode`; and the many other objects a configuration ties together. The result is a readable map of what a configuration actually does, which is useful when you inherit a device, review a change, or learn the object model.
 
 ## The one thing that is not tmsh
 
-There is a deliberate exception. An `ltm rule` object carries a Tcl iRule in its body, and that body is a script, not tmsh configuration. The parser recognises this and captures the iRule verbatim rather than trying to parse it as objects and fields, so your rule is preserved exactly as written instead of being mangled.
+There is a deliberate exception. An `ltm rule` object carries a Tcl iRule in its body, and that body is a script, not tmsh configuration. The parser recognizes this and captures the iRule verbatim rather than trying to parse it as objects and fields, so your rule is preserved exactly as written instead of being mangled.
 
 ## Using it
 

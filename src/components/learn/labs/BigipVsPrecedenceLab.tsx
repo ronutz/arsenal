@@ -20,6 +20,8 @@
 // switches it to every port and, pressed again, back to the number it had.
 // ============================================================================
 
+// English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
+import { intlLocale } from "@/i18n/locales";
 import { useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import LabFrame, { LabField, LabSelect } from "./LabFrame";
@@ -61,7 +63,7 @@ export default function BigipVsPrecedenceLab() {
   // The page's language, for lists of names.
   const locale = useLocale();
   // "VS 1, VS 2 and VS 3" in the page's language (British English for en).
-  const lf = new Intl.ListFormat(locale === "en" ? "en-GB" : locale, { style: "long", type: "conjunction" });
+  const lf = new Intl.ListFormat(intlLocale(locale), { style: "long", type: "conjunction" });
   // The reader's settings, opening on K14800's configuration and an ordinary client.
   const [input, setInput] = useState<VsPrecedenceInput>(copyOf(DEFAULT_INPUT));
 

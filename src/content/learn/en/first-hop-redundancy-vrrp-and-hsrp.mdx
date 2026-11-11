@@ -1,7 +1,7 @@
 ---
 slug: first-hop-redundancy-vrrp-and-hsrp
 title: "First-hop redundancy: VRRP, HSRP, and the gateway that is a fiction"
-summary: "First-hop redundancy protocols such as VRRP and HSRP let several routers share one default gateway address and one virtual MAC address, so that hosts keep forwarding when the router behind that address fails. After reading, you can say what a host can and cannot do on its own, compute a VRRPv3 failover time from priority and interval, compare HSRP's defaults, recognise the usual failures and the attack surface, and find both protocols in a capture and in router output."
+summary: "First-hop redundancy protocols such as VRRP and HSRP let several routers share one default gateway address and one virtual MAC address, so that hosts keep forwarding when the router behind that address fails. After reading, you can say what a host can and cannot do on its own, compute a VRRPv3 failover time from priority and interval, compare HSRP's defaults, recognize the usual failures and the attack surface, and find both protocols in a capture and in router output."
 concepts: ["vrrp", "arp", "bfd", "stp", "hsrp", "virtual mac", "gratuitous arp", "preemption", "object tracking"]
 relatedTools: ["vrrp-timer-calculator", "oui-lookup", "ipv6", "python-playground", "packet-capture-plan-builder"]
 relatedArticles: ["arp-and-mac-addresses", "routing-tables-and-default-gateway", "bfd-when-a-link-is-up-and-dead", "what-is-an-oui", "ipv6-neighbor-discovery", "ipv6-address-configuration"]
@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-10-26"
 ---
 
-An IPv4 host sends everything for other subnets to one address, its [default gateway](/learn/routing-tables-and-default-gateway), so the router behind that address is a single point of failure. First-hop redundancy removes it from the network side. The Virtual Router Redundancy Protocol (VRRP), a standard of the Internet Engineering Task Force (IETF), and Cisco's older Hot Standby Router Protocol (HSRP) let several routers share the gateway's IP address and a media access control (MAC) address, one router answering at a time. After reading, you can say what a host can do alone, compute a VRRP failover time, compare HSRP, and recognise and capture both.
+An IPv4 host sends everything for other subnets to one address, its [default gateway](/learn/routing-tables-and-default-gateway), so the router behind that address is a single point of failure. First-hop redundancy removes it from the network side. The Virtual Router Redundancy Protocol (VRRP), a standard of the Internet Engineering Task Force (IETF), and Cisco's older Hot Standby Router Protocol (HSRP) let several routers share the gateway's IP address and a media access control (MAC) address, one router answering at a time. After reading, you can say what a host can do alone, compute a VRRP failover time, compare HSRP, and recognize and capture both.
 
 ## What the host can do on its own
 
@@ -169,7 +169,7 @@ The [OUI lookup](/tools/oui-lookup) resolves 00:00:5E:00:01:05 to "ICANN, IANA D
 ## What to remember
 
 - The gateway is a role: a VRID, its addresses and a well-known virtual MAC, held by whichever router is Active; the owner (priority 255) always wins.
-- Hosts must detect a dead gateway, but can switch only to one they know, and no detection algorithm was standardised.
+- Hosts must detect a dead gateway, but can switch only to one they know, and no detection algorithm was standardized.
 - The virtual MAC keeps every host's cache valid; the Active Router sources advertisements from it so that switches learn its port.
 - VRRPv3 declares the Active Router down after three intervals plus a skew: 3.6094 seconds at priority 100 and the default interval, under 4 seconds for any Backup; HSRP's 3 and 10 seconds are 2.77 times slower.
 - Preemption is on by default in VRRP and off in HSRP; neither sees a failed uplink unless vendor tracking lowers the priority enough.

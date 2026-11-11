@@ -52,7 +52,7 @@ export const aristaProfile: VendorProfile = {
     "The switching vendor of the hyperscale and AI era: dominant in cloud data centres alongside its cloud-titan anchor customers, expanding into campus and routing - the modern challenger that became an incumbent, with Cisco, Juniper, and NVIDIA as the competitive frame.",
   ],
   analyst: [
-    "A Leader of the data-center networking evaluations since the category's modern form took shape - the reference EOS-and-merchant-silicon model the rest of the market moved toward.",
+    "A Leader of the data-center networking evaluations since the category's modern form took shape - the reference EOS-and-merchant-silicon model the rest of the market moved towards.",
     "The contemporary every fabric discussion on this site eventually touches: leaf-spine, EVPN/VXLAN, and the Ethernet-for-AI case are all arguments Arista either made or mainstreamed.",
   ],
 };

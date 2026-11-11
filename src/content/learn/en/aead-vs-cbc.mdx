@@ -24,7 +24,7 @@ Only the first is safe in general, and the industry picked the other two. The re
 The record is specific:
 
 - **The 2002 padding-oracle result** showed that leaking whether padding was valid leaks plaintext, one byte at a time.
-- **BEAST (2011)** exploited predictable initialisation vectors in TLS 1.0's CBC chaining.
+- **BEAST (2011)** exploited predictable initialization vectors in TLS 1.0's CBC chaining.
 - **Lucky 13 (2013)** extracted plaintext from the *timing* difference between valid and invalid padding, so even implementations that returned identical error messages leaked through how long they took to fail.
 - **POODLE (2014)** forced a downgrade to SSL 3.0, then used its underspecified padding to read bytes.
 
@@ -75,7 +75,7 @@ Where that goes wrong in practice:
 
 TLS 1.3 avoids all of it by deriving the nonce from the sequence number rather than transmitting it, so reuse cannot happen without a protocol-level fault. Anyone building their own record layer must solve this deliberately.
 
-NIST SP 800-38D puts the rule as a number: the probability that the same IV (initialisation vector, GCM's nonce) and the same key are ever used on two different inputs shall be no greater than 2^-32 (section 8), and a key used with random IVs may seal at most 2^32 messages (section 8.3). Encrypting with a passphrase can avoid the count altogether by deriving a new key for every message from a new random salt: the [text encryption tool](/tools/text-encryption) does that and draws a new random 96-bit IV as well, as the article on [passphrase encryption in the browser](/learn/passphrase-encryption-in-the-browser) explains.
+NIST SP 800-38D puts the rule as a number: the probability that the same IV (initialization vector, GCM's nonce) and the same key are ever used on two different inputs shall be no greater than 2^-32 (section 8), and a key used with random IVs may seal at most 2^32 messages (section 8.3). Encrypting with a passphrase can avoid the count altogether by deriving a new key for every message from a new random salt: the [text encryption tool](/tools/text-encryption) does that and draws a new random 96-bit IV as well, as the article on [passphrase encryption in the browser](/learn/passphrase-encryption-in-the-browser) explains.
 
 **Record size is the other tradeoff.** Each record carries a tag, 16 bytes for both dominant constructions, so many small records cost proportionally more overhead than a few large ones, while large records add latency because nothing can be delivered until the whole record verifies.
 

@@ -15,7 +15,7 @@ An HTTP response leads with three digits, and the design's genius is that a clie
 
 ## The families, and what each one obligates
 
-**1xx (informational)** - interim responses before the real one: `100 Continue` releases a client waiting to send a large body, `101 Switching Protocols` is how WebSocket upgrades leave HTTP/1.1. **2xx (success)** - the request was received, understood, accepted: `200 OK` with a body, `204 No Content` deliberately without one, `206 Partial Content` answering range requests (the code behind resumable downloads and video seeking). **3xx (redirection)** - further action needed, usually elsewhere. **4xx (client error)** - the request itself is at fault; fix it before retrying. **5xx (server error)** - the request may be fine; the server failed to fulfill it. That last distinction is operational gold: 4xx storms point at clients, bots, or broken links; 5xx storms point at your own stack.
+**1xx (informational)** - interim responses before the real one: `100 Continue` releases a client waiting to send a large body, `101 Switching Protocols` is how WebSocket upgrades leave HTTP/1.1. **2xx (success)** - the request was received, understood, accepted: `200 OK` with a body, `204 No Content` deliberately without one, `206 Partial Content` answering range requests (the code behind resumable downloads and video seeking). **3xx (redirection)** - further action needed, usually elsewhere. **4xx (client error)** - the request itself is at fault; fix it before retrying. **5xx (server error)** - the request may be fine; the server failed to fulfil it. That last distinction is operational gold: 4xx storms point at clients, bots, or broken links; 5xx storms point at your own stack.
 
 ## The redirects worth telling apart
 

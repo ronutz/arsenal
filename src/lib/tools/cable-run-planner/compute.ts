@@ -194,13 +194,13 @@ function environmentNotes(env: Environment, medium: "copper" | "fiber"): EngineT
       n.push(say("env.copper.plenum", "Air-handling space: plenum-rated (CMP) jacket required by fire code."));
     if (env === "outdoor")
       n.push(
-        say("env.copper.outdoor", "Outdoor route: copper needs OSP-rated jacket and surge protection at entry; fiber avoids both concerns and is usually the better answer."),
+        say("env.copper.outdoor", "Outdoor route: copper needs OSP-rated jacket and surge protection at entry; fibre avoids both concerns and is usually the better answer."),
       );
   } else {
-    if (env === "plenum") n.push(say("env.fiber.plenum", "Air-handling space: plenum-rated (OFNP) fiber jacket required."));
+    if (env === "plenum") n.push(say("env.fiber.plenum", "Air-handling space: plenum-rated (OFNP) fibre jacket required."));
     if (env === "industrial")
-      n.push(say("env.fiber.industrial", "Fiber is immune to EMI - a natural fit for the electrically noisy environment."));
-    if (env === "outdoor") n.push(say("env.fiber.outdoor", "Use OSP or armored fiber construction for the outdoor segment."));
+      n.push(say("env.fiber.industrial", "Fibre is immune to EMI - a natural fit for the electrically noisy environment."));
+    if (env === "outdoor") n.push(say("env.fiber.outdoor", "Use OSP or armoured fibre construction for the outdoor segment."));
   }
   return n;
 }
@@ -209,7 +209,7 @@ function poeNotes(poe: PoeClass, medium: "copper" | "fiber"): EngineText[] {
   if (poe === "none") return [];
   if (medium === "fiber")
     return [
-      say("poe.fiber", `PoE class ${poe} requested: fiber carries no power - budget a media converter or PoE switch at the far end, or reconsider copper if distance allows.`, { poe }),
+      say("poe.fiber", `PoE class ${poe} requested: fibre carries no power - budget a media converter or PoE switch at the far end, or reconsider copper if distance allows.`, { poe }),
     ];
   const n: EngineText[] = [
     say("poe.copper", `PoE 802.3${poe} is supported on any compliant Cat 5e-or-better channel.`, { poe }),
@@ -237,7 +237,7 @@ export function parseInput(raw: unknown): PlannerInput {
     throw engineError(say("err.speed", `speedMbps: expected one of ${SPEEDS.join(", ")} (got ${String(o.speedMbps)})`, { speeds: SPEEDS.join(", "), got: String(o.speedMbps) }));
   const dist = Number(o.distanceM);
   if (!Number.isFinite(dist) || dist <= 0 || dist > 10000)
-    throw engineError(say("err.distance", `distanceM: expected a number in (0, 10000] meters (got ${String(o.distanceM)})`, { got: String(o.distanceM) }));
+    throw engineError(say("err.distance", `distanceM: expected a number in (0, 10000] metres (got ${String(o.distanceM)})`, { got: String(o.distanceM) }));
   const env = String(o.environment ?? "office") as Environment;
   if (!ENVS.includes(env)) throw engineError(say("err.environment", `environment: expected one of ${ENVS.join(", ")}`, { values: ENVS.join(", ") }));
   const poe = String(o.poe ?? "none") as PoeClass;
@@ -358,8 +358,8 @@ function verdict(input: PlannerInput, options: MediaOption<EngineText>[]): Engin
     parts.push(
       say("verdict.copper", `${s} over ${input.distanceM} m works on copper: ${copper.map((c) => c.label.text).join(", ")}.`, { speed: s, distance: d, list: listOf(copper.map((c) => c.label), ", ") }),
     );
-  else parts.push(say("verdict.fiberOnly", `${s} over ${input.distanceM} m exceeds every copper channel; this is a fiber run.`, { speed: s, distance: d }));
+  else parts.push(say("verdict.fiberOnly", `${s} over ${input.distanceM} m exceeds every copper channel; this is a fibre run.`, { speed: s, distance: d }));
   if (fiber.length)
-    parts.push(say("verdict.fiber", `Fiber options: ${fiber.map((f) => f.label.text).join(", ")}.`, { list: listOf(fiber.map((f) => f.label), ", ") }));
+    parts.push(say("verdict.fiber", `Fibre options: ${fiber.map((f) => f.label.text).join(", ")}.`, { list: listOf(fiber.map((f) => f.label), ", ") }));
   return parts.length === 2 ? say("verdict.both", `${parts[0].text} ${parts[1].text}`, { first: parts[0], second: parts[1] }) : parts[0]; // the parts, joined by a space
 }

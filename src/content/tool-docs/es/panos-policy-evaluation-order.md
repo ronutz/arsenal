@@ -68,8 +68,8 @@ Debajo del orden de evaluación, **Compartir resultados** genera un enlace a est
 
 ## Fuentes
 
-- Palo Alto Networks, *Device Groups*: un firewall evalúa las reglas de política por capa y por tipo, de arriba abajo; las reglas locales del firewall se muestran entre las reglas previas y las posteriores
-- Palo Alto Networks, *Security Policy Rulebase Best Practices*: gana la primera coincidencia y la comparación se detiene; Commit y Push no dan información sobre el sombreado
-- Palo Alto Networks, *Security Policy Rule Best Practices*: definición del sombreado; intrazone-default permite e interzone-default deniega
-- Palo Alto Networks, *Defining Policies on Panorama*: las reglas previas se evalúan primero, y las posteriores, al final
+- [Palo Alto Networks, Device Groups](https://docs.paloaltonetworks.com/panorama/getting-started/panorama-overview/centrally-manage-firewall-configuration-and-updates-with-panorama/device-groups) (consultado el 2026-11-11): un firewall evalúa las reglas de política por capa y por tipo, de arriba abajo; las reglas locales del firewall se muestran entre las reglas previas y las posteriores
+- [Palo Alto Networks, Security Policy Rulebase Best Practices](https://docs.paloaltonetworks.com/best-practices/security-policy-best-practices/security-policy-best-practices/deploy-security-policy-best-practices/security-policy-rulebase-best-practices) (consultado el 2026-11-11): gana la primera coincidencia y la comparación se detiene; Commit and Push no da información sobre el sombreado
+- [Palo Alto Networks, Security Policy Rule Best Practices](https://docs.paloaltonetworks.com/best-practices/security-policy-best-practices/security-policy-best-practices/deploy-security-policy-best-practices/security-policy-rule-best-practices) (consultado el 2026-11-11): definición del sombreado; intrazone-default permite e interzone-default deniega
+- [Palo Alto Networks, Defining Policies on Panorama](https://docs.paloaltonetworks.com/ngfw/help/11-1/panorama-web-interface/defining-policies-on-panorama) (consultado el 2026-11-11): las reglas previas se añaden al principio del orden de reglas y se evalúan primero; las posteriores se añaden al final y se evalúan después de las previas y de las reglas locales del firewall
 - [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (consultado el 2026-10-27): sección 3.5, el fragmento, que lleva los valores de un enlace de Compartir resultados

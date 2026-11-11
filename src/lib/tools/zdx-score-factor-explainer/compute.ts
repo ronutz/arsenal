@@ -140,7 +140,7 @@ function explainOne(key: MetricKey, value: number): MetricReading<EngineText> {
     }
     // The pessimism and roll-up rules every score reading rides on.
     lines.push(say("score.pessimism", // the lowest value wins
-      "Remember the pessimism: an hourly value is the LOWEST five-minute value observed during the hour. An application's score averages each user's lowest value over the period; department, location, city and organisation scores average the lowest value of each time interval; a user's score is their lowest-scoring application.",
+      "Remember the pessimism: an hourly value is the LOWEST five-minute value observed during the hour. An application's score averages each user's lowest value over the period; department, location, city and organization scores average the lowest value of each time interval; a user's score is their lowest-scoring application.",
     ));
   } else if (key === "pft") {
     lines.push(say("metric.pft", // Page Fetch Time

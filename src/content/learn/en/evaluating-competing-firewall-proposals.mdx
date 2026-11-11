@@ -1,7 +1,7 @@
 ---
 slug: evaluating-competing-firewall-proposals
 title: "How to evaluate competing firewall proposals"
-summary: "Three firewall proposals arrive, each with a datasheet throughput, a licence bundle and a reference customer, and none of them answers the question you have, which is what each would do in your network, with your traffic, run by your team. A method for comparing them on the same terms: how to normalise throughput claims, what a licence really counts, where high availability differs, what the migration of your existing rule base will cost, and how to score the three so that the scoring, not the discount, decides."
+summary: "Three firewall proposals arrive, each with a datasheet throughput, a licence bundle and a reference customer, and none of them answers the question you have, which is what each would do in your network, with your traffic, run by your team. A method for comparing them on the same terms: how to normalize throughput claims, what a licence really counts, where high availability differs, what the migration of your existing rule base will cost, and how to score the three so that the scoring, not the discount, decides."
 concepts: ["firewall", "vendor-evaluation", "procurement", "scoring", "throughput", "licensing", "decision"]
 relatedTools: ["fortigate-security-profile-coverage-checker", "fortigate-policy-match-order", "checkpoint-policy-layer-evaluator", "network-os-comparer", "mtu-mss"]
 relatedArticles: ["firewall-family-history", "what-a-technically-fair-rfp-looks-like", "capex-versus-subscription-networking", "product-limitations-versus-architecture-failures"]
@@ -13,9 +13,9 @@ updated: "2026-10-03"
 
 ## The three documents are not comparable as written
 
-Each supplier wrote its proposal to make its own product look best, which is their job. The consequence is that the three documents measure different things: one quotes throughput with every inspection feature off, another with a particular traffic mix, a third quotes the appliance above the one it priced. One bundles three years of subscriptions; another prices them per year; the third leaves two of them out and calls them optional. Before any comparison means anything, the proposals have to be rewritten onto one sheet in your organisation's terms. That rewriting is most of the work, and it is work the suppliers cannot do for you.
+Each supplier wrote its proposal to make its own product look best, which is their job. The consequence is that the three documents measure different things: one quotes throughput with every inspection feature off, another with a particular traffic mix, a third quotes the appliance above the one it priced. One bundles three years of subscriptions; another prices them per year; the third leaves two of them out and calls them optional. Before any comparison means anything, the proposals have to be rewritten onto one sheet in your organization's terms. That rewriting is most of the work, and it is work the suppliers cannot do for you.
 
-## Normalise the performance claims
+## Normalize the performance claims
 
 A firewall datasheet carries several throughput figures, and the one on the first page is the largest. For the comparison you need the figure that matches your traffic: the inspection features you will actually enable (threat prevention, TLS decryption, application identification, logging), at your packet and session sizes, with the number of concurrent sessions and new sessions per second you actually see. Ask each supplier for the same figure under the same stated conditions, in writing. Then ask what their published figure assumes, and compare the two answers.
 
@@ -29,7 +29,7 @@ Ask explicitly which features in the demonstration were on a licence that is not
 
 ## High availability, in detail
 
-All three will say "active-passive or active-active, stateful failover". The details differ, and the details are what you live with: the failover time measured rather than claimed; what session state survives (TCP, VPN (virtual private network) tunnels, inspection state); whether both members need the same licences; how the pair is upgraded without an outage, and how long that takes; whether management and logging survive the loss of one member; and what the configuration synchronisation does when the two members disagree. Ask for the procedure, not the feature name. The [network operating system comparer](/tools/network-os-comparer) records how differently the platforms treat state and upgrades.
+All three will say "active-passive or active-active, stateful failover". The details differ, and the details are what you live with: the failover time measured rather than claimed; what session state survives (TCP, VPN (virtual private network) tunnels, inspection state); whether both members need the same licences; how the pair is upgraded without an outage, and how long that takes; whether management and logging survive the loss of one member; and what the configuration synchronization does when the two members disagree. Ask for the procedure, not the feature name. The [network operating system comparer](/tools/network-os-comparer) records how differently the platforms treat state and upgrades.
 
 ## The policy you already have
 
@@ -47,6 +47,6 @@ Then, and only then, look at the discount. A discount changes one row of the she
 
 ## The comparison is a document
 
-Write the result as a comparison that a reader who was not in the room can follow: the question, the three proposals normalised, the criteria and weights, the scores with their evidence, the open questions with owners, and the recommendation with the conditions attached to it. The [example decision memorandum](/advisory/decision-memorandum) shows the structure for a decision of this kind.
+Write the result as a comparison that a reader who was not in the room can follow: the question, the three proposals normalized, the criteria and weights, the scores with their evidence, the open questions with owners, and the recommendation with the conditions attached to it. The [example decision memorandum](/advisory/decision-memorandum) shows the structure for a decision of this kind.
 
 If three such proposals are on your desk and the comparison has to be defended to a board, that comparison is work I do professionally: [independent technical advisory](/advisory).

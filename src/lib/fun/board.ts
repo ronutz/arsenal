@@ -526,19 +526,8 @@ export async function fetchTotals(days: TotalsWindow): Promise<TotalsAnswer | nu
   }
 }
 
-/**
- * A country's flag, built from its two letters as regional indicator symbols (the code itself goes beside it as
- * text for screen readers, and where a system draws no flag it shows the two letters).
- *
- * @param code two capital letters
- * @returns the flag, or an empty string for anything else
- */
-export function flagOf(code: string | null): string {
-  // Only two capital letters.
-  if (!code || !/^[A-Z]{2}$/.test(code)) return "";
-  // Each letter as its regional indicator.
-  return String.fromCodePoint(...Array.from(code, (c) => 0x1f1e6 + c.charCodeAt(0) - 65));
-}
+// (flagOf, which built a flag emoji from regional indicator letters, was removed on 2026-11-10: Windows desktops
+// draw those as two letters. Flags are SVG files now; see src/lib/flags.ts.)
 
 /**
  * A score as a game shows it: tries and clues and answers out of their total ("3/6"), a time as m:ss, points as a

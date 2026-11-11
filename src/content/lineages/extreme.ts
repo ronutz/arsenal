@@ -81,7 +81,7 @@ export const extremeLineage: VendorLineage = {
       price: "~$55M",
       what: "The WLAN line that had passed through Symbol Technologies and Motorola Solutions before Zebra, including the WiNG operating system and the AirDefense wireless security product.",
       became:
-        "ExtremeWireless WiNG. Extreme expected the business to generate over $115M in annualised revenue. This is why Extreme carried two wireless architectures for years - WiNG from Zebra, and later a cloud-managed line from Aerohive.",
+        "ExtremeWireless WiNG. Extreme expected the business to generate over $115M in annualized revenue. This is why Extreme carried two wireless architectures for years - WiNG from Zebra, and later a cloud-managed line from Aerohive.",
       sourceNote: "Acquisition completed 31 October 2016.",
       subAcquisitions: [
         {
@@ -104,7 +104,7 @@ export const extremeLineage: VendorLineage = {
       price: "$100M",
       what: "Avaya's campus networking division, acquired out of Avaya's bankruptcy process where Extreme acted as the stalking-horse bidder. It brought Shortest Path Bridging fabric technology descended from Nortel.",
       became:
-        "The VSP series and Fabric Connect, which became Extreme Fabric - the SPB-based fabric taught in the Extreme certification track. Extreme expected over $200M in annualised revenue from the business.",
+        "The VSP series and Fabric Connect, which became Extreme Fabric - the SPB-based fabric taught in the Extreme certification track. Extreme expected over $200M in annualized revenue from the business.",
       sourceNote:
         "Announced 7 March 2017, closed 17 July 2017.",
       subAcquisitions: [
@@ -154,10 +154,10 @@ export const extremeLineage: VendorLineage = {
       price: "$272M ($210M net of cash)",
       what: "A cloud-managed wireless and network-access-control company, and a pioneer of controllerless Wi-Fi. Extreme paid $4.45 per share, a roughly 40% premium.",
       became:
-        "ExtremeCloud IQ - the cloud management platform the modern portfolio is organised around, and the reason the company's revenue mix shifted toward subscription. Extreme valued the deal at $210M after subtracting Aerohive's $62M net cash.",
+        "ExtremeCloud IQ - the cloud management platform the modern portfolio is organized around, and the reason the company's revenue mix shifted towards subscription. Extreme valued the deal at $210M after subtracting Aerohive's $62M net cash.",
       founder: "co-founded by Changming Liu, previously a senior engineer at NetScreen",
       sourceNote:
-        "Announced 26 June 2019, completed 9 August 2019. Both the headline $272M and the net-of-cash $210M were published; they describe the same transaction. The founder detail is not trivia: NetScreen produced founders for Fortinet, Palo Alto Networks and - through Aerohive - the cloud platform Extreme's portfolio is now organised around.",
+        "Announced 26 June 2019, completed 9 August 2019. Both the headline $272M and the net-of-cash $210M were published; they describe the same transaction. The founder detail is not trivia: NetScreen produced founders for Fortinet, Palo Alto Networks and - through Aerohive - the cloud platform Extreme's portfolio is now organized around.",
     },
     {
       year: 2021,

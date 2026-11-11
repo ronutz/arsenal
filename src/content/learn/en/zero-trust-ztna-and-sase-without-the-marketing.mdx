@@ -31,7 +31,7 @@ The vocabulary is recent; the argument is not.
 
 **The term (2010).** An industry analyst named the model *zero trust* and stated the rule that still defines it: never trust, always verify. The naming mattered more than the novelty, because it gave a purchasing category to an architectural argument.
 
-**BeyondCorp (2014 onward).** After a state-linked intrusion, Google published a multi-year programme to remove privileged status from its corporate network entirely: every request authenticated and authorised on device and user, with no VPN and no trusted subnet. This is the first credible large-scale implementation, and it is the reason the model stopped being theory: one organisation demonstrated that it could be run.
+**BeyondCorp (2014 onward).** After a state-linked intrusion, Google published a multi-year programme to remove privileged status from its corporate network entirely: every request authenticated and authorized on device and user, with no VPN and no trusted subnet. This is the first credible large-scale implementation, and it is the reason the model stopped being theory: one organization demonstrated that it could be run.
 
 **NIST SP 800-207 (2020).** The architecture was given a vendor-neutral definition: a **policy engine** decides, a **policy administrator** executes, and a **policy enforcement point** sits in the traffic path. That decomposition is the useful thing to hold on to, because every product in this space is some arrangement of those three, and naming them lets you compare offers that use incompatible marketing language.
 
@@ -41,7 +41,7 @@ The vocabulary is recent; the argument is not.
 
 **ZTNA (zero trust network access)** is the concrete product category: instead of putting a user on the network with a VPN (virtual private network) and letting them reach whatever routes allow, a broker authenticates the user and device and then connects them to **one specific application**.
 
-The genuine improvement is not encryption, which the VPN already had. It is the **absence of lateral movement**. A compromised session reaches the applications that session was authorised for, and cannot scan the subnet, because it was never on the subnet. That is a real architectural gain and it is the reason the category exists.
+The genuine improvement is not encryption, which the VPN already had. It is the **absence of lateral movement**. A compromised session reaches the applications that session was authorized for, and cannot scan the subnet, because it was never on the subnet. That is a real architectural gain and it is the reason the category exists.
 
 Two properties worth understanding before you buy:
 
@@ -95,7 +95,7 @@ The same placement question decides what a cloud-application control can prove, 
 - **Network and security clouds**: Zscaler, Netskope, Cloudflare, Cisco, Palo Alto, Fortinet. Enforcement in the provider's edge, delivering ZTNA alongside web and cloud-application controls, the practical shape most SASE purchases take.
 - **Remote-access replacements**: vendors positioning primarily against the VPN. Fastest to show value, narrowest scope; the risk is a project that stops at remote access and reports itself as zero trust.
 - **Microsegmentation and workload identity**: Illumio, service meshes and similar, enforcing between workloads rather than at the user edge. Complementary to the above rather than competing, and the two halves are frequently bought by different teams who never reconcile the policy.
-- **Open standards and self-built**: SPIFFE and SPIRE for workload identity, an identity provider plus a proxy for user access. Real work, no licence, and full portability of the parts that are standardised.
+- **Open standards and self-built**: SPIFFE and SPIRE for workload identity, an identity provider plus a proxy for user access. Real work, no licence, and full portability of the parts that are standardized.
 
 The structural question to ask any of them is the same: **where is the enforcement point, what happens to traffic that cannot pass through it, and what does your policy look like the day you leave?**
 
@@ -107,7 +107,7 @@ Say this part plainly, because the marketing does not.
 
 **Device posture is a claim, not a fact.** Signals come from an agent running on a machine that may already be compromised, and a compromised endpoint can report healthy.
 
-**Application-layer flaws are untouched.** If the application has an injection bug, the perfectly authorised user reaches it perfectly.
+**Application-layer flaws are untouched.** If the application has an injection bug, the perfectly authorized user reaches it perfectly.
 
 **Legacy stays legacy.** The systems that cannot speak modern identity (the industrial controller, the ancient appliance, the thing nobody will recertify) end up in an exception, and the exceptions are where the risk migrates. Every real deployment has them, and the useful question to ask a vendor is not how their product works but **what happens to your exceptions**.
 
@@ -134,8 +134,8 @@ This article opens the series **Zero trust, SSE and the proxy**. It separates a 
 3. **[How a PAC File Chooses a Proxy](/learn/how-a-pac-file-chooses-a-proxy)**. FindProxyForURL, the return-string grammar, and how a browser decides between direct and a proxy for every request.
 4. **[How a Proxy Knows Who You Are: User Authentication Methods Inline](/learn/proxy-user-authentication-methods)**. Policy per user means an identity on every flow, including the ones that cannot log in: the four methods.
 5. **[Browser Isolation: When You Cannot Trust the Page, Move the Browser](/learn/browser-isolation-fundamentals)**. Stop asking whether a page is safe: the real browser runs in a disposable container and the endpoint receives a rendering.
-6. **[Sandbox Detonation: Judging a File by What It Does](/learn/sandbox-detonation-fundamentals)**. Signatures recognise malware that has been seen; a sandbox convicts what has not, by watching it run.
-7. **[Data Loss Prevention: How Machines Recognise Secrets](/learn/dlp-fundamentals)**. Patterns, dictionaries, exact data matching and fingerprints: the four ways a machine recognises a secret.
+6. **[Sandbox Detonation: Judging a File by What It Does](/learn/sandbox-detonation-fundamentals)**. Signatures recognize malware that has been seen; a sandbox convicts what has not, by watching it run.
+7. **[Data Loss Prevention: How Machines Recognise Secrets](/learn/dlp-fundamentals)**. Patterns, dictionaries, exact data matching and fingerprints: the four ways a machine recognizes a secret.
 8. **[DLP tuning: the argument is almost always about a checksum](/learn/dlp-checksums-and-why-the-rule-did-not-fire)**. A predefined identifier is a pattern plus a validation, and the validation (Luhn and its kin) is where the surprises live.
 
 ## Sources

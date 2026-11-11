@@ -154,7 +154,7 @@ export const VECTORS: readonly VectorInfo[] = Object.freeze([
     undefined,
     [
       "The device-level vector behind AFM's SYN-cookie response. F5's troubleshooting series states the precedence plainly: AFM Device DoS has preference over the LTM global SYN cookie, so when this vector's rate limit sits at or below the LTM global-syn-challenge-threshold, the AFM vector triggers first.",
-      "Incompatible neighbor: per-VLAN hardware-syncookie (net vlan) is documented as not compatible with the DoS device configuration.",
+      "Incompatible neighbour: per-VLAN hardware-syncookie (net vlan) is documented as not compatible with the DoS device configuration.",
     ]),
   // ---- sweep / flood (packet-type driven) -----------------------------------
   V("sweep", "sweep-flood",
@@ -493,7 +493,7 @@ export function runLocalisable(input: string): DosResult<EngineText> {
       mode: "catalog",
       catalog: order.map((c) => ({ category: c, label: CATEGORY_LABELS[c], vectors: VECTORS.filter((v) => v.category === c) })),
       notes: [
-        say("note.catalog", "Names and descriptions reproduce the tmsh security dos device-config reference's vector table, sys-db tunables included; the grouping is this tool's organisation. Vector sets vary by version and provisioning."), // where the catalogue comes from
+        say("note.catalog", "Names and descriptions reproduce the tmsh security dos device-config reference's vector table, sys-db tunables included; the grouping is this tool's organization. Vector sets vary by version and provisioning."), // where the catalogue comes from
       ],
     };
   }

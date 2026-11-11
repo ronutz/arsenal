@@ -54,7 +54,7 @@ export const googleSearchProfile: VendorProfile = {
   ],
   products: [
     { name: "The index and the ranking", what: "The original product, still the core one, and now built on hundreds of signals of which the original link analysis is only the oldest." },
-    { name: "AdWords and AdSense", what: "The auction that monetises the query, and its extension onto other people's pages. The search engine is the funnel; this is the business." },
+    { name: "AdWords and AdSense", what: "The auction that monetizes the query, and its extension onto other people's pages. The search engine is the funnel; this is the business." },
     { name: "The clean page", what: "Worth listing as a product decision rather than a design one. Everything a competitor added to its front page took attention away from the box, and the box was the entire proposition." },
   ],
   innovations: [

@@ -1,6 +1,6 @@
 ## What it does
 
-A MAC address is a 48-bit hardware address, usually written as six hex bytes like `00:1b:54:11:22:33`. The first three bytes are the OUI (Organizationally Unique Identifier), which the IEEE assigns to a manufacturer. This tool takes a MAC (in any common format) or a bare OUI, looks the OUI up in an embedded snapshot of the IEEE MA-L registry to name the manufacturer, and reads the two meaningful bits of the first byte. It also recognises addresses whose meaning a standard sets rather than a manufacturer: multicast mappings, VRRP virtual routers, IANA assignments and well-known group addresses. It all runs in your browser.
+A MAC address is a 48-bit hardware address, usually written as six hex bytes like `00:1b:54:11:22:33`. The first three bytes are the OUI (Organizationally Unique Identifier), which the IEEE assigns to a manufacturer. This tool takes a MAC (in any common format) or a bare OUI, looks the OUI up in an embedded snapshot of the IEEE MA-L registry to name the manufacturer, and reads the two meaningful bits of the first byte. It also recognizes addresses whose meaning a standard sets rather than a manufacturer: multicast mappings, VRRP virtual routers, IANA assignments and well-known group addresses. It all runs in your browser.
 
 ## The two bits that matter
 
@@ -20,7 +20,7 @@ So `02:...` is locally administered (there is no vendor to find), and `01:...` i
 
 IANA holds the OUI `00-00-5E`. RFC 9568 section 7.3 builds a VRRP virtual router MAC as `00-00-5E-00-01-{VRID}` for IPv4 and `00-00-5E-00-02-{VRID}` for IPv6, where the VRID is "An integer value (1-255)". The tool shows, for example, `VRRP virtual router (IPv4), VRID 1` for `00:00:5e:00:01:01`, and flags a VRID of 0 as outside that range.
 
-The other named rows of the IANA Ethernet Numbers registry are recognised too, each with the RFC the registry cites:
+The other named rows of the IANA Ethernet Numbers registry are recognized too, each with the RFC the registry cites:
 
 | Address or range | Meaning | Reference |
 | --- | --- | --- |

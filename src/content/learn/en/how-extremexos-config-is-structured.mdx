@@ -34,7 +34,7 @@ Give a VLAN an IP address with `configure vlan engineering ipaddress 10.1.1.1/24
 
 ## The EXOS word for a LAG
 
-Link aggregation is where EXOS terminology surprises people. What most platforms call a port-channel or a LAG, EXOS calls "sharing." You create one with `enable sharing 1:1 grouping 1:1, 1:2 algorithm address-based`, and from then on the whole group is referred to by its master port (1:1 here). Add `lacp` and it negotiates dynamically with the neighbor; leave it off and it is a static bundle. Knowing that "sharing" and "master port" are the aggregation vocabulary is most of what you need to read that part of a config.
+Link aggregation is where EXOS terminology surprises people. What most platforms call a port-channel or a LAG, EXOS calls "sharing." You create one with `enable sharing 1:1 grouping 1:1, 1:2 algorithm address-based`, and from then on the whole group is referred to by its master port (1:1 here). Add `lacp` and it negotiates dynamically with the neighbour; leave it off and it is a static bundle. Knowing that "sharing" and "master port" are the aggregation vocabulary is most of what you need to read that part of a config.
 
 ## Running, saved and booted
 

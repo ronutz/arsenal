@@ -58,7 +58,7 @@ The pieces fit together in one direction:
 
 - A **performance SLA** (health check) probes a server through each member and records latency, jitter, and packet loss. It defines thresholds that make a member pass or fail.
 - An **SD-WAN rule** matches traffic (by source, destination, application, or user) and names the members that may carry it, plus a strategy for choosing among them.
-- The **strategy** decides how: manual (a fixed member), best quality (the member with the best measured metric), lowest cost (the cheapest member that still meets SLA), or maximise bandwidth (spread across all members that meet SLA).
+- The **strategy** decides how: manual (a fixed member), best quality (the member with the best measured metric), lowest cost (the cheapest member that still meets SLA), or maximize bandwidth (spread across all members that meet SLA).
 
 Rules are evaluated in order, first match wins, and traffic matching no rule falls through to the implicit rule, which uses the routing table.
 

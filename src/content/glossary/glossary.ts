@@ -13039,16 +13039,31 @@ const GLOSSARY_PART_3: GlossaryEntry[] = [
   // ACRONYM GLOSSARY - Wave A companion, Batch 4: F5 / infrastructure / AI-era
   // acronyms from the BIG-IP article cluster. Added 2026-07-19.
   // ==========================================================================
+  // MCP made a rich entry, PRIME 10/11/2026 11:16 ("we need rich entries on mcp and utcp and maybe a comparison"):
+  // origin, architecture, the stateless 2026-07-28 revision, the Linux Foundation donation, the specification's own
+  // security principles and best practices, prompt injection, and the costs UTCP and code execution respond to.
   {
-    slug: "mcp",
-    headword: "MCP",
-    kind: "acronym",
-    domains: ["cloud", "programming"],
-    expansion: "Model Context Protocol",
-    aliases: ["mcp"],
-    relatedArticles: ["bigip-ai-mcp"],
-    relatedTerms: ["llm", "rag"],
-    sources: [{ label: "Model Context Protocol specification", href: "https://modelcontextprotocol.io/" }],
+    // MCP (rich entry since 2026-11-10; the bare acronym entry of 2026-07-19 grew a depth body and sources).
+    slug: "mcp", // the /glossary/mcp address, unchanged
+    headword: "MCP", // the initials, as the protocol is universally called
+    kind: "acronym", // an abbreviation with its expansion in the field below
+    domains: ["cloud", "programming"], // unchanged: where AI applications and their integrations live
+    expansion: "Model Context Protocol", // the name on modelcontextprotocol.io
+    aliases: ["mcp", "model context protocol", "mcp server", "mcp client", "mcp host", "agentic ai foundation"], // the long form, the three roles, and the foundation that now governs it
+    relatedArticles: ["bigip-ai-mcp", "mcp-vs-utcp"], // the BIG-IP article, then the comparison written with this entry
+    relatedTerms: ["utcp", "llm", "rag", "sse", "oauth", "confused-deputy", "ssrf", "least-privilege", "api"], // the alternative first, then the model terms, the transport, the authorisation and the failure modes the depth names
+    sources: [ // every label says what the page says and when it was read
+      { label: "Anthropic, Introducing the Model Context Protocol, 25 November 2024 (read 2026-11-10): an open standard for secure, two-way connections between data sources and AI-powered tools; every new data source requires its own custom implementation; specification and SDKs, local MCP server support in the Claude Desktop apps, an open-source repository of servers (Google Drive, Slack, GitHub, Git, Postgres, Puppeteer); early adopters Block and Apollo", href: "https://www.anthropic.com/news/model-context-protocol" }, // the launch
+      { label: "Model Context Protocol, Specification 2026-07-28, overview (read 2026-11-10): JSON-RPC 2.0 between hosts, clients and servers; inspiration from the Language Server Protocol; resources, prompts, tools and elicitation; security principles of user consent and control, data privacy and tool safety, which MCP itself cannot enforce at the protocol level", href: "https://modelcontextprotocol.io/specification/latest" }, // the roles and principles
+      { label: "Model Context Protocol, What is MCP? (read 2026-11-10): an open-source standard for connecting AI applications to external systems; think of MCP like a USB-C port for AI applications", href: "https://modelcontextprotocol.io/docs/getting-started/intro" }, // the USB-C analogy
+      { label: "Model Context Protocol, Versioning and Key Changes in 2026-07-28 (read 2026-11-10): date-based revisions marking the last backwards-incompatible change; current revision 2026-07-28; initialize handshake and protocol-level sessions removed; server/discover; explicit server-minted handles; Roots, Sampling and Logging deprecated; HTTP+SSE reclassified as deprecated; feature lifecycle policy with a minimum twelve-month deprecation window", href: "https://modelcontextprotocol.io/specification/2026-07-28/changelog" }, // the stateless revision
+      { label: "Model Context Protocol, Security Best Practices, 2026-07-28 (read 2026-11-10): confused deputy and per-client consent; token passthrough forbidden; SSRF during OAuth discovery; state handle hijacking; local MCP server compromise and pre-configuration consent; scope minimization", href: "https://modelcontextprotocol.io/specification/2026-07-28/basic/security_best_practices" }, // the failure modes
+      { label: "Model Context Protocol, Tools, 2026-07-28 (read 2026-11-10): there SHOULD always be a human in the loop with the ability to deny tool invocations; clients MUST consider tool annotations untrusted unless they come from trusted servers", href: "https://modelcontextprotocol.io/specification/2026-07-28/server/tools" }, // the human in the loop
+      { label: "Anthropic, Donating the Model Context Protocol and establishing the Agentic AI Foundation, 9 December 2025 (read 2026-11-10): a directed fund under the Linux Foundation co-founded by Anthropic, Block and OpenAI, supported by Google, Microsoft, AWS, Cloudflare and Bloomberg; more than 10,000 active public MCP servers; 97M+ monthly SDK downloads across Python and TypeScript; adopted by ChatGPT, Cursor, Gemini, Microsoft Copilot and Visual Studio Code; governance model unchanged", href: "https://www.anthropic.com/news/donating-the-model-context-protocol-and-establishing-of-the-agentic-ai-foundation" }, // the donation
+      { label: "Simon Willison, The lethal trifecta for AI agents, 16 June 2025 (read 2026-11-10): private data, untrusted content and external communication; MCP encourages users to mix and match tools from different sources; prompt injection cannot yet be prevented 100% reliably", href: "https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/" }, // the independent security critique
+      { label: "Anthropic Engineering (Adam Jones, Conor Kelly), Code execution with MCP, 4 November 2025 (read 2026-11-10): tool definitions and intermediate results consume context; MCP servers presented as code APIs; 150,000 tokens to 2,000, a 98.7% saving; agent-generated code needs a secure sandbox; Cloudflare's similar findings, Code Mode", href: "https://www.anthropic.com/engineering/code-execution-with-mcp" }, // the cost and the code-mode answer
+      { label: "UTCP, RFC UTCP 1.0.0 (draft, Razvan-Ion Radulescu; read 2026-11-10): the wrapper tax; MCP introduces an unnecessary network hop for every single tool call, increasing latency", href: "https://utcp.io/about/RFC" }, // the critique from the alternative
+    ], // ten sources, one object per line
   },
   {
     slug: "llm",
@@ -19285,6 +19300,181 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
       { label: "Embassy of the Russian Federation in France, 'Dmitry Polyanskiy on the Address by the Secretary General of the Council of Europe, 11 June 2026', commentary at the 1568th meeting of the Permanent Council, English text marked as an AI-driven translation, posted 17 June 2026 (read 2026-11-09): under the euphemistic label of fighting foreign information manipulation (FIMI) an instrument for suppressing dissent is being created", href: "https://france.mid.ru/fr/presse/dmitry_polyanskiy_on_the_address_by_the_secretary_general_of_the_council_of_europe_11_june_2026/" }, // polyanskiy2026
       { label: "Swedish Psychological Defence Agency, James Pamment and Darejan Tsurtsumia (Lund University), 'Beyond Operation Doppelgänger: A Capability Assessment of the Social Design Agency', 12 May 2025 (read 2026-11-09): based on 3,100 leaked documents; the counter-FIMI community got a lot right, but also a lot wrong; the authors alone responsible for the content", href: "https://mpf.se/download/18.7cffbee41969f6d83e115221/1747230166207/Beyond%20Operation%20Doppelganger.pdf" }, // mpf2025
     ], // seven sources, one object per line
+  },
+  // ==========================================================================
+  // UTCP, PRIME 10/11/2026 11:16 ("we need rich entries on mcp and utcp and maybe a comparison"): the manual
+  // instead of the wrapper server, the 1.0 redesign, security at both ends, and the comparisons from each side.
+  // ==========================================================================
+  {
+    // UTCP (new rich entry): the RFC's case, the manual and call templates, the release history, the security guidance, the debate.
+    slug: "utcp", // the /glossary/utcp address
+    headword: "UTCP", // the initials, as the project writes them
+    kind: "acronym", // an abbreviation with its expansion in the field below
+    domains: ["cloud", "programming"], // the same homes as its sibling mcp
+    expansion: "Universal Tool Calling Protocol", // the name on utcp.io
+    aliases: ["universal tool calling protocol", "utcp manual", "call template", "tool call template"], // the long form and the two concepts people search for
+    relatedTerms: ["mcp", "api", "rest", "cli", "sse", "websocket", "llm"], // the protocol it answers, then the kinds of tools a call template reaches, then the model
+    relatedArticles: ["mcp-vs-utcp"], // the comparison written with this entry
+    sources: [ // every label says what the page says and when it was read
+      { label: "UTCP, RFC UTCP 1.0.0 (draft, Razvan-Ion Radulescu; last updated 1 August 2025; read 2026-11-10): enables applications, including but not limited to AI agents, to discover and use external tools; the wrapper tax; MCP adds an unnecessary network hop; the UTCPManual with version information and tool definitions; a well-known /utcp endpoint; authentication delegated to the native protocol; no security tax; the primary drawback is more responsibility on the client", href: "https://utcp.io/about/RFC" }, // the design and its own drawback
+      { label: "Universal Tool Calling Protocol, home page, version 1.1 documentation (read 2026-11-10): a lightweight, secure and scalable standard for discovering and calling tools directly using their native protocols; HTTP, CLI, Server-Sent Events, text and MCP plugins; an api_key taken from an environment variable", href: "https://www.utcp.io/" }, // the definition and plugins
+      { label: "UTCP, For Tool Providers (read 2026-11-10): a manual is a standardized description of your tools that tells clients how to call them directly; auth sits inside the tool call template; manuals can be converted from OpenAPI", href: "https://www.utcp.io/for-tool-providers" }, // the manual's shape
+      { label: "UTCP, Migration Guide v0.1 to v1.0 (last updated 30 November 2025; read 2026-11-10): core functionality split into pluggable components; providers become manual call templates; provider_type becomes call_template_type; tool_call_template; structured auth with auth_type, var_name and location", href: "https://www.utcp.io/migration-v0.1-to-v1.0" }, // the 1.0 redesign
+      { label: "PyPI, utcp release history (read 2026-11-10): 0.1.0 on 10 July 2025, 1.0.0 on 19 August 2025, 1.1.0 on 29 November 2025, 1.2.0 on 16 September 2026; MPL-2.0", href: "https://pypi.org/project/utcp/#history" }, // the dates
+      { label: "GitHub, universal-tool-calling-protocol organisation (read 2026-11-10): python-utcp, typescript-utcp, go-utcp and the utcp-mcp bridge; MPL-2.0 on the main SDKs", href: "https://github.com/universal-tool-calling-protocol" }, // where the work happens
+      { label: "UTCP, Security Considerations (read 2026-11-10): variable substitution introduces injection risks; CLI execution poses significant security risks, use with extreme caution; HTTPS or WSS except to a loopback address; manual endpoints become discovery targets and need authentication", href: "https://www.utcp.io/security" }, // the client-side burden
+      { label: "UTCP, UTCP vs MCP (last updated 30 November 2025; read 2026-11-10): manual versus middleman; an MCP plugin for gradual migration; latency and resource figures given without methodology", href: "https://www.utcp.io/utcp-vs-mcp" }, // the project's own comparison
+      { label: "Nordic APIs (J Simpson), Model Context Protocol (MCP) vs. Universal Tool-Calling Protocol (UTCP), 20 January 2026 (read 2026-11-10): neither approach is universally superior; operational simplicity versus performance and architectural flexibility; UTCP does not compete with MCP, it incorporates it; hybrids likely", href: "https://nordicapis.com/model-context-protocol-mcp-vs-universal-tool-calling-protocol-utcp/" }, // the independent comparison
+      { label: "Glama (Om-Shree-0709), The Universal Tool Calling Protocol (UTCP) and the Future of Agent-Tool Interaction, 10 September 2025 (read 2026-11-10): the mandatory extra hop through the MCP server; MCP provides a single point for enterprise-wide guardrails, security policies and auditing; the burden shifts to the client", href: "https://glama.ai/blog/2025-09-10-rethinking-tool-calling-towards-a-scalable-standard" }, // the second independent view
+    ], // ten sources, one object per line
+  },
+  // ==========================================================================
+  // Brazil's cyber framework, PRIME 11/11/2026 00:25 and 00:27 (the Santos post: "enhance and enlarge and improve
+  // the Brazilian cyber [...] content", "Include Febraban and laboratório de segurança cibernética"): the policy,
+  // the strategy, the federal response centre, Pix, the technology providers, the port security code and Febraban.
+  // ==========================================================================
+  {
+    // E-Ciber (new rich entry): the 2025 strategy's four axes, the plan that waits for consent, and the missing law.
+    slug: "e-ciber", // the /glossary/e-ciber address the Santos post links
+    headword: "E-Ciber", // the strategy's own short name
+    kind: "acronym", // a short form with its expansion below
+    domains: ["grc", "cyber-security"], // public policy first, then the field it governs
+    expansion: "Estratégia Nacional de Cibersegurança (National Cybersecurity Strategy)", // the decree's name, then its English
+    aliases: ["estratégia nacional de cibersegurança", "national cybersecurity strategy", "decreto 12.573", "decree 12573", "p-ciber", "plano nacional de cibersegurança", "national cybersecurity plan", "cimbra"], // the long forms, the decree, the plan and the maturity models people search for
+    relatedTerms: ["pnciber", "ctir-gov", "isps-code", "psti", "pix", "nist-csf", "cobit", "coordinated-disclosure"], // the policy above it, the bodies and rules it reaches, then the frameworks its maturity models draw on
+    relatedArticles: ["brazilian-cybercrime-from-boleto-to-pix", "brazil-internet-governance"], // the Brazilian context
+    sources: [ // every label says what the page says and when it was read
+      { label: "Câmara dos Deputados, Legislação Informatizada, Decreto nº 12.573, de 4 de agosto de 2025 (publicação original; read 2026-11-11): institutes the E-Ciber in four thematic axes; definitions of ciberativos, ciberincidente and tecnologia operacional; the high-risk list, the national seal and the reduction of the technological debt; article 11 on the National Cybersecurity Plan; revokes Decree No. 10,222 of 2020", href: "https://www2.camara.leg.br/legin/fed/decret/2025/decreto-12573-4-agosto-2025-797813-publicacaooriginal-176048-pe.html" }, // the decree itself
+      { label: "Teletime, 'Governo atualiza Estratégia Nacional de Cibersegurança', 5 August 2025 (read 2026-11-11): the new strategy replaces the 2020 version", href: "https://teletime.com.br/05/08/2025/governo-atualiza-estrategia-nacional-de-ciberseguranca/" }, // the news of the update
+      { label: "DPL News (Mayara Figueiredo), 'Governo cria selo nacional de cibersegurança para produtos e serviços críticos', 5 August 2025 (read 2026-11-11): the seal for high-risk products and services, to be detailed in the plan", href: "https://dplnews.com/?p=283959" }, // the seal
+      { label: "GSI, CNCiber, Ata da 9ª Reunião Ordinária, 25 March 2026, with the draft P-Ciber Estruturante annexed (read 2026-11-11): the structuring initiatives, from the Brasil Ciberseguro seal to the general cybersecurity law and the governance body", href: "https://www.gov.br/gsi/pt-br/colegiados-do-gsi/comite-nacional-de-ciberseguranca-cnciber/atas/ata-da-9a-reuniao-ordinaria-do-cnciber-25-de-marco-de-2026" }, // the draft plan
+      { label: "GSI, CNCiber, Ata e anexos da 10ª Reunião Ordinária, 17 June 2026 (read 2026-11-11; the latest minutes listed on the cabinet's page that day): tacit consent ruled inadmissible; consent to publish the P-Ciber still missing from Anatel, the Ministry of Finance, the Casa Civil and the Central Bank; the CIMBRA-N and CIMBRA-I maturity models; the committee cannot impose them", href: "https://www.gov.br/gsi/pt-br/colegiados-do-gsi/comite-nacional-de-ciberseguranca-cnciber/atas/ata-e-anexos-da-10a-reuniao-ordinaria-do-cnciber-17-de-junho-de-2026" }, // the plan's status
+      { label: "Tribunal de Contas da União, 'Tribunal monitora recomendação ao GSI sobre Política Nacional de Cibersegurança', Acórdão 2909/2026-Plenário, session of 21 October 2026 (read 2026-11-11): without a law the policy may lack national reach and an authority; the committee's draft bill not yet sent to Congress", href: "https://portal.tcu.gov.br/imprensa/noticias/tribunal-monitora-recomendacao-ao-gsi-sobre-politica-nacional-de-ciberseguranca" }, // the audit court's finding
+      { label: "DPL News, 'Anatel deve assumir regulação de cibersegurança no governo federal', 30 October 2025 (read 2026-11-11): the original ANCiber proposal (five years, 800 staff, R$ 600 million a year) and the turn to Anatel", href: "https://dplnews.com/?p=294322" }, // the agency question
+      { label: "Congresso em Foco, 'Senado avança na criação de marco legal para cibersegurança no Brasil', 11 December 2025 (read 2026-11-11): PL 4.752/2025 approved by the Constitution and Justice Committee; the national authority, the programme and its funding", href: "https://www.congressoemfoco.com.br/noticia/114765/senado-avanca-na-criacao-de-marco-legal-para-ciberseguranca-no-brasil" }, // the Senate bill's content
+      { label: "Senado Federal, Dados Abertos, processo PL 4752/2025 (read 2026-11-11): filed 24 September 2025 by Senators Esperidião Amin, Jorge Seif, Chico Rodrigues, Astronauta Marcos Pontes and Sergio Moro; with the rapporteur in the CCT since 3 September 2026, redistributed to Senator Jorge Seif; amendments 1 to 3 received 4 September 2026", href: "https://legis.senado.leg.br/dadosabertos/processo?sigla=PL&numero=4752&ano=2025" }, // the bill's status
+    ], // nine sources, one object per line
+  },
+  {
+    // PNCiber (new entry): the 2023 policy, its principles and instruments, and the committee it created.
+    slug: "pnciber", // the /glossary/pnciber address
+    headword: "PNCiber", // the policy's own short name
+    kind: "acronym", // a short form with its expansion below
+    domains: ["grc", "cyber-security"], // public policy first, then the field it governs
+    expansion: "Política Nacional de Cibersegurança (National Cybersecurity Policy)", // the decree's name, then its English
+    aliases: ["política nacional de cibersegurança", "national cybersecurity policy", "cnciber", "comitê nacional de cibersegurança", "national cybersecurity committee", "decreto 11.856", "decree 11856"], // the long forms, the committee and the decree
+    relatedTerms: ["e-ciber", "ctir-gov", "cgi-br", "lgpd", "anpd"], // the strategy it spawned, the response centre, the internet committee that sits on it, then the data protection pair
+    relatedArticles: ["brazil-internet-governance", "brazilian-cybercrime-from-boleto-to-pix"], // the Brazilian context
+    sources: [ // every label says what the page says and when it was read
+      { label: "Presidência da República, Decreto nº 11.856, de 26 de dezembro de 2023 (read 2026-11-11 in Chrome; the container's request was refused): institutes the PNCiber and the CNCiber; seven principles, eleven objectives, two instruments; the committee's twenty-five seats, quarterly meetings and the GSI's secretariat", href: "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2023/decreto/D11856.htm" }, // the decree itself
+      { label: "Câmara dos Deputados, Legislação Informatizada, Decreto nº 12.573, de 4 de agosto de 2025 (read 2026-11-11): the PNCiber's objectives are to be reached through the E-Ciber", href: "https://www2.camara.leg.br/legin/fed/decret/2025/decreto-12573-4-agosto-2025-797813-publicacaooriginal-176048-pe.html" }, // the link to the strategy
+    ], // two sources, one object per line
+  },
+  {
+    // CTIR Gov (new entry): the federal response centre, the 2021 network it coordinates and the incident counts.
+    slug: "ctir-gov", // the /glossary/ctir-gov address
+    headword: "CTIR Gov", // the centre's own short name
+    kind: "acronym", // a short form with its expansion below
+    domains: ["cyber-security", "grc"], // incident response first, then public administration
+    expansion: "Centro de Prevenção, Tratamento e Resposta a Incidentes Cibernéticos de Governo", // the name in Decree No. 10,748
+    aliases: ["ctir", "ctirgov", "regic", "rede federal de gestão de incidentes cibernéticos", "federal cyber incident management network", "decreto 10.748", "decree 10748"], // the short forms, the network and the decree
+    relatedTerms: ["cert-br", "cert", "pnciber", "e-ciber", "social-engineering"], // the internet-wide team it is not, the generic term, the policy pair, then the incident type that dominates its counts
+    relatedArticles: ["the-stj-ransomware-attack", "brazilian-cybercrime-from-boleto-to-pix"], // attacks on the state's systems
+    sources: [ // every label says what the page says and when it was read
+      { label: "Câmara dos Deputados, Legislação Informatizada, Decreto nº 10.748, de 16 de julho de 2021 (publicação original; read 2026-11-11): institutes the Rede Federal de Gestão de Incidentes Cibernéticos; compulsory for the direct, autarchic and foundational federal administration, voluntary for state-owned companies; sector coordination teams; the Cyber Defence Command for Defence; the centre's duties in article 11", href: "https://www2.camara.leg.br/legin/fed/decret/2021/decreto-10748-16-julho-2021-791600-publicacaooriginal-163223-pe.html" }, // the decree itself
+      { label: "Acessa.com, 'Sistemas do governo registram cerca de 6.700 incidentes em 2026, aponta GSI', June 2026 (read 2026-11-11): the GSI's yearly counts from 2021, 6,774 by early June 2026, social engineering and abusive content, the 2025 change of classification", href: "https://www.acessa.com/noticias/2026/06/331600-sistemas-do-governo-registram-cerca-de-6-700-incidentes-em-2026-aponta-gsi.html" }, // the counts
+    ], // two sources, one object per line
+  },
+  {
+    // Pix (new entry): the Central Bank's instant payment system, its scale, and the 2025-2026 attacks around it.
+    slug: "pix", // the /glossary/pix address
+    headword: "Pix", // the system's own name, a brand rather than an acronym
+    kind: "term", // a name, not an abbreviation
+    domains: ["cyber-security", "grc"], // the attacks first, then the regulation
+    aliases: ["pix brasil", "instant payment system brazil", "sistema de pagamentos instantâneos", "spi", "conta pi", "med pix", "mecanismo especial de devolução"], // the system, its settlement layer and its return mechanism
+    relatedTerms: ["psti", "supply-chain-attack", "social-engineering", "credential-stuffing", "e-ciber"], // the providers that were the door, the attack class, the fraud users meet, then the strategy
+    relatedArticles: ["brazilian-cybercrime-from-boleto-to-pix"], // the history of Brazilian financial fraud
+    sources: [ // every label says what the page says and when it was read
+      { label: "Banco Central do Brasil, Pix (read 2026-11-11 in Chrome; the container gets only the page's script shell): what Pix is; more than 150 million individuals and 7.8 billion transactions in September 2026; a record of 318,116,744 transactions on 4 September 2026; launched 16 November 2020; the security additions in its timeline", href: "https://www.bcb.gov.br/estabilidadefinanceira/pix" }, // the system's own page
+      { label: "Banco Central do Brasil, Voto 109/2025-BCB, 3 September 2025 (read 2026-11-11): Resolution BCB No. 1 of 2020 and No. 429 of 2024; the recent cyber attacks made new adjustments necessary; the schedule brought forward to May 2026; caps for transactions through providers; responsible participants limited to segments S1 to S4", href: "https://normativos.bcb.gov.br/Votos/BCB/2025109/Voto_do_BC_109_2025.pdf" }, // the regulator's reasoning
+      { label: "Finsiders Brasil, 'Pix: BC lança mais medidas para combater fraudes', 24 March 2026 (read 2026-11-11): Resolution BCB No. 554 and the Conta PI minimum balance and automatic block", href: "https://finsidersbrasil.com.br/pagamentos/apos-ataque-hacker-bc-aprimora-seguranca-em-sistema-do-pix/" }, // the settlement-account controls
+      { label: "Estadão / TecMundo, 'Pix do BTG Pactual volta a funcionar após pausa por ataque cibernético', 23 March 2026 (read 2026-11-11): the Central Bank said its systems, Pix included, were not affected", href: "https://www.tecmundo.com.br/seguranca/411840-pix-do-btg-pactual-volta-a-funcionar-apos-pausa-por-ataque-cibernetico.htm" }, // the regulator's statement
+    ], // four sources, one object per line
+  },
+  {
+    // PSTI (new entry): the accredited technology providers, the 2025 rules, the cap and the shrinking market.
+    slug: "psti", // the /glossary/psti address
+    headword: "PSTI", // the regulator's short form
+    kind: "acronym", // a short form with its expansion below
+    domains: ["grc", "cyber-security"], // the regulation first, then the attacks that prompted it
+    expansion: "Provedor de Serviços de Tecnologia da Informação (information technology service provider)", // the Central Bank's term, then its English
+    aliases: ["provedor de serviços de tecnologia da informação", "provedores de serviços de tecnologia da informação", "rsfn", "rede do sistema financeiro nacional", "resolução bcb 498", "c&m software", "sinqia"], // the long forms, the network and the two providers attacked
+    relatedTerms: ["pix", "supply-chain-attack", "iso-27001", "e-ciber"], // the system they connect to, the attack class, the certification the rules ask for, then the strategy
+    relatedArticles: ["brazilian-cybercrime-from-boleto-to-pix"], // the history of Brazilian financial fraud
+    sources: [ // every label says what the page says and when it was read
+      { label: "Demarest, 'Nova resolução do Banco Central altera atuação de instituições e provedores de serviços de tecnologia da informação no âmbito do SFN e SPB', 8 September 2025 (read 2026-11-11): Resolutions BCB Nos. 494 to 498 of 5 September 2025; the PSTI definition and the accreditation requirements of Resolution No. 498, including R$ 15 million of capital", href: "https://www.demarest.com.br/bc-altera-atuacao-de-instituicoes-e-provedores-de-servicos-de-tecnologia-da-informacao-no-ambito-do-sfn-e-spb/" }, // the requirements
+      { label: "Agência Brasil (Wellton Máximo), 'BC aperta regras de provedores de TI para instituições financeiras', 30 January 2026 (read 2026-11-11): the January 2026 adjustments; the R$ 15,000 cap per Pix and TED transaction under Resolutions 496 and 497 until accreditation; the Banco do Nordeste attack the same week", href: "https://agenciabrasil.ebc.com.br/economia/noticia/2026-01/bc-aperta-regras-de-provedores-de-ti-para-instituicoes-financeiras" }, // the adjustments and the cap
+      { label: "Banco Central do Brasil, Voto 109/2025-BCB, 3 September 2025 (read 2026-11-11): the measures against the risks of using providers, after failures observed in recent events", href: "https://normativos.bcb.gov.br/Votos/BCB/2025109/Voto_do_BC_109_2025.pdf" }, // the regulator's reasoning
+      { label: "Finsiders Brasil, 'Mercado de provedores de tecnologia encolhe após BC apertar regras', 22 July 2026 (read 2026-11-11): from nine providers in September 2025 to three in operation (Gokei, JD and Tivit); ABBC, C&M and Sinqia in orderly exit; the concentration risk", href: "https://finsidersbrasil.com.br/reportagem-exclusiva-fintechs/mercado-de-provedores-de-tecnologia-encolhe-apos-aperto-nas-regras-do-bc/" }, // the market
+    ], // four sources, one object per line
+  },
+  {
+    // ISPS Code (new entry): the maritime security code, its three levels, the separate cyber guidance, and Santos.
+    slug: "isps-code", // the /glossary/isps-code address
+    headword: "ISPS Code", // the code's usual short name
+    kind: "acronym", // a short form with its expansion below
+    domains: ["grc", "cyber-security"], // a security regime first, then where cyber meets it
+    expansion: "International Ship and Port Facility Security Code", // the IMO's name
+    aliases: ["isps", "código isps", "código internacional para a proteção de navios e instalações portuárias", "security level 2", "nível de proteção 2", "solas xi-2", "cesportos", "msc.428(98)"], // the short forms, the Portuguese name, the level searched in November 2026, the chapter, the commission and the cyber resolution
+    relatedTerms: ["e-ciber", "ransomware", "iso-27001", "nist-csf"], // the Brazilian strategy whose second axis covers critical infrastructure, the attack class, then the standards the IMO's cyber page points to
+    relatedArticles: ["backups-and-ransomware-recovery"], // what kept Santos's recovery going
+    sources: [ // every label says what the page says and when it was read
+      { label: "International Maritime Organization, Frequently Asked Questions on Maritime Security (read 2026-11-11): what the ISPS Code is; SOLAS chapter XI-2; the three security levels; adopted in December 2002; what changed since 1 July 2004; no black list and no penalties; the 2002 conference resolutions on the WCO and the ILO", href: "https://www.imo.org/en/ourwork/security/pages/faq.aspx" }, // the code from its owner
+      { label: "International Maritime Organization, Maritime cyber risk (read 2026-11-11): MSC-FAL.1/Circ.3/Rev.4 guidelines; Resolution MSC.428(98) of June 2017 and the 1 January 2021 verification date; the IAPH guidelines for ports", href: "https://www.imo.org/en/OurWork/Security/Pages/Cyber-security.aspx" }, // the separate cyber guidance
+      { label: "CLM Brasil, 'Porto de Santos confirma invasão hacker e Polícia Federal eleva o nível de segurança', 10 November 2026 (read 2026-11-11): Cesportos raised Santos to protection level II after the cyber vulnerability and failures at the public gates; the consultation of Sunday 8 November; the order formalised by the Federal Police officer who coordinates the commission", href: "https://www.clmbrasil.com.br/porto-de-santos-confirma-invasao-hacker-e-policia-federal-eleva-o-nivel-de-seguranca" }, // the Santos decision
+      { label: "TMC, 'Porto de Santos é alvo de ataque hacker; sistemas estão fora do ar' (read 2026-11-11): the port authority's note; the Comissão Estadual de Segurança Pública nos Portos, Terminais e Vias Navegáveis (Cesportos-SP) raised the protection of the accesses", href: "https://tmc.com.br/brasil/aps-ataque-cibernetico-porto-santos-pf-nivel-ii/" }, // the commission's name
+    ], // four sources, one object per line
+  },
+  {
+    // Febraban (new entry): the banks' federation and its cybersecurity laboratory, PRIME 11/11/2026 00:27.
+    slug: "febraban", // the /glossary/febraban address
+    headword: "Febraban", // the federation's usual short name
+    kind: "acronym", // a short form with its expansion below
+    domains: ["cyber-security", "grc"], // the laboratory first, then the sector body
+    expansion: "Federação Brasileira de Bancos (Brazilian Federation of Banks)", // the federation's name, then its English
+    aliases: ["federação brasileira de bancos", "brazilian federation of banks", "laboratório de segurança cibernética", "febraban cybersecurity laboratory", "cyber academy", "febraban tech", "pesquisa febraban de tecnologia bancária"], // the long forms, the laboratory, its course, the conference and the survey
+    relatedTerms: ["pix", "psti", "supply-chain-attack", "e-ciber"], // the system its members run on, the providers, the attack class, then the strategy that asks for laboratories
+    relatedArticles: ["brazilian-cybercrime-from-boleto-to-pix"], // the history of Brazilian financial fraud
+    sources: [ // every label says what the page says and when it was read
+      { label: "Febraban, 'FEBRABAN inaugura Laboratório de Segurança Cibernética', September 2020 (read 2026-11-11): the first of its kind for the financial system; R$ 6 million; fourteen banks; the four fronts, the standardisation front analysing suppliers; Accenture; R$ 2 billion a year in information security", href: "https://portal.febraban.org.br/noticia/3524/pt-br" }, // the opening
+      { label: "Febraban, Laboratório de Segurança Cibernética (read 2026-11-11): the laboratory's own page", href: "https://portal.febraban.org.br/pagina/3322/1108/pt-br/lab-seguranca-cibernetica" }, // the laboratory
+      { label: "Febraban, 'Treinamentos do Laboratório de Segurança Cibernética já tiveram 3.900 inscrições de 72 bancos', 9 February 2022 (read 2026-11-11): 40 free courses, 14 with attack exercises; 72 of 114 member institutions; capture the flag; the monthly briefing and technical reports", href: "https://portal.febraban.org.br/noticia/3752/pt-br/" }, // the first two years
+      { label: "Febraban, 'Laboratório da Febraban abre hoje inscrição para curso gratuito de cibersegurança', 8 June 2026 (read 2026-11-11): the Cyber Academy's sixth edition, 10,000 places, 40 hours online, 6 to 31 July", href: "https://portal.febraban.org.br/noticia/4461/pt-br/" }, // the open course
+      { label: "Febraban and Deloitte, Pesquisa Febraban de Tecnologia Bancária 2026, volume 1 (read 2026-11-11): cybersecurity a high priority for 83% and a medium one for 17% of the 25 banks sampled", href: "https://cmsarquivos.febraban.org.br/Arquivos/documentos/PDF/Pesquisa%20Febraban%20de%20Tecnologia%20Banca%CC%81ria%202026%20-%20Vol1.pdf" }, // the survey
+      { label: "Finsiders Brasil (Amanda Meneses), 'Bancos querem investir R$ 50,4 bi em tecnologia neste ano, alta de 8%', 25 August 2026 (read 2026-11-11): the R$ 50.4 billion budget; 58% of banks with a cybersecurity specialist on the board", href: "https://finsidersbrasil.com.br/noticias-sobre-fintechs/bancos-querem-investir-r-504-bi-em-tecnologia-neste-ano-alta-de-8/" }, // the budget and the boards
+    ], // six sources, one object per line
+  },
+  {
+    // en-001 (new rich entry), PRIME 11/11/2026 00:09 and 01:30: International English, the tag, CLDR's intent, the
+    // inheritance, what it changes in Node and Chromium, what it does not decide, and why hreflang stays "en".
+    slug: "en-001", // the /glossary/en-001 address
+    headword: "en-001", // the tag as BCP 47 writes it
+    kind: "term", // a code with a name, not an abbreviation
+    domains: ["web-development", "programming"], // where language tags and locale data are used
+    expansion: "International English (English, World)", // CLDR's name and the tag's literal reading
+    aliases: ["international english", "en_001", "english (world)", "inglês internacional", "cldr en_001", "region 001", "un m49 001"], // the names people search for
+    relatedTerms: ["unicode", "utf-8"], // the consortium whose data defines it, and its encoding
+    sources: [ // every label says what the page says and when it was read
+      { label: "Unicode CLDR, common/main/en_001.xml on GitHub (read 2026-11-11): long date d MMMM y, short date dd/MM/y; unit names in metres and litres; display names written Normalised Sorting, Sort Without Normalisation, St Kitts & Nevis", href: "https://github.com/unicode-org/cldr/blob/main/common/main/en_001.xml" }, // the data itself
+      { label: "Unicode CLDR, English Inheritance design proposal (read 2026-11-11): en_001 was intended to remove much of the U.S. specific data from en; make en_001 be as country neutral as possible; day-month-year dates, a 12-hour clock, metre after the BIPM spelling", href: "https://cldr.unicode.org/development/development-process/design-proposals/english-inheritance" }, // the intent
+      { label: "Unicode CLDR, common/supplemental/supplementalData.xml, parentLocales (read 2026-11-11): 86 English locales inherit from en_001, among them en_GB, en_AU, en_IN, en_IE, en_NZ, en_SG, en_ZA and en_150; en_CA does not", href: "https://github.com/unicode-org/cldr/blob/main/common/supplemental/supplementalData.xml" }, // the inheritance
+      { label: "RFC 5646, Tags for Identifying Languages (BCP 47), section 2.2.4 (read 2026-11-11): region subtags of two letters (ISO 3166-1) or three digits (UN M.49); the numeric codes for macro-geographical regions are registered", href: "https://www.rfc-editor.org/rfc/rfc5646" }, // the tag grammar
+      { label: "United Nations Statistics Division, Standard country or area codes for statistical use (M49) (read 2026-11-11): World 001, Africa 002, Europe 150, Latin America and the Caribbean 419", href: "https://unstats.un.org/unsd/methodology/m49/" }, // what 001 means
+      { label: "Google Search Central, Localized versions of your pages (read 2026-11-11): hreflang takes ISO 639-1 language codes and ISO 3166-1 alpha-2 region codes only; codes such as es-419 are not supported; Google does not use hreflang or the lang attribute to detect a page's language", href: "https://developers.google.com/search/docs/specialty/international/localized-versions" }, // why hreflang stays en
+      { label: "ISO house style, Spelling (read 2026-11-11): ISO documents use Oxford English spelling, which is British spelling in combination with the suffix -ize; -ize for words from Greek (organize, standardize), -ise for the others (advise, revise, supervise)", href: "https://www.iso.org/ISO-house-style.html" }, // Oxford spelling, defined
+      { label: "United Nations Editorial Manual, Spelling (May 2025 edition, read 2026-11-11): the online Oxford Dictionary set to British English is the authority for spelling; the list gives organize, minimize and stabilize beside analyse and paralyse", href: "https://www.un.org/dgacm/sites/www.un.org.dgacm/files/Documents_Editorial_manual/spell_print_may2025.pdf" }, // the UN's Oxford spelling
+      { label: "European Commission, English Style Guide, sections 3.2 and 3.4 (read 2026-11-11): use the -is- spelling for consistency in EU texts, though both are correct; -yse is the only correct spelling of paralyse and analyse", href: "https://commission.europa.eu/system/files/2023-11/styleguide_english_dgt_en.pdf" }, // the EU's -ise
+    ], // nine sources, one object per line
   },
 ];
 

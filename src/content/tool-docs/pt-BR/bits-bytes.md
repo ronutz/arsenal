@@ -2,9 +2,9 @@
 
 Três campos: um tamanho, uma taxa e um tempo. Qualquer um deles é explicado sozinho; quaisquer dois dão o terceiro.
 
-- **Um tamanho** ("1.5 GB", "700 MiB", "10K", "8 bits", "2 kilobytes") volta como um número exato de bits e de bytes, como um valor em todas as unidades das duas convenções (bits com prefixos do SI e binários, bytes com prefixos do SI, bytes com prefixos do IEC) e, quando o rótulo era um prefixo do SI em bytes, como o mesmo rótulo lido das duas maneiras, com a diferença entre elas.
-- **Uma taxa** ("100 Mbit/s", "12.5 MB/s", "1 Gbps", "56k") volta em bits e bytes por segundo, em todas as unidades de taxa, e como o volume que ela move num minuto, numa hora e num dia.
-- **Um tempo** ("90 s", "2h 30min", "1 dia") é lido exatamente, ao milissegundo. As unidades são ms, s, min, h e d, por extenso em inglês, português, espanhol, alemão ou francês (seconds, minutes, hours, days; segundos, minutos, horas, dias ou días; Sekunden, Minuten, Stunden, Tage; secondes, heures, jours, ou j para dia).
+- **Um tamanho** ("1,5 GB", "700 MiB", "10K", "8 bits", "2 kilobytes") volta como um número exato de bits e de bytes, como um valor em todas as unidades das duas convenções (bits com prefixos do SI e binários, bytes com prefixos do SI, bytes com prefixos do IEC) e, quando o rótulo era um prefixo do SI em bytes, como o mesmo rótulo lido das duas maneiras, com a diferença entre elas.
+- **Uma taxa** ("100 Mbit/s", "12,5 MB/s", "1 Gbps", "56k") volta em bits e bytes por segundo, em todas as unidades de taxa, e como o volume que ela move num minuto, numa hora e num dia.
+- **Um tempo** ("90 s", "2h 30min", "1 dia") é lido exatamente, ao milissegundo. As unidades são ms, s, min, h e d, por extenso em inglês, português, espanhol, alemão, francês ou italiano (seconds, minutes, hours, days; segundos, minutos, horas, dias ou días; Sekunden, Minuten, Stunden, Tage; secondes, heures, jours, ou j para dia; secondi, minuti, ore, giorni).
 - **Dois dos três** dão o terceiro: tamanho sobre taxa é o tempo de transferência (com as suas partes), tamanho sobre tempo é a taxa alcançada, taxa vezes tempo é o volume movido. Com os três, o tempo é recalculado a partir de tamanho e taxa.
 - **A eficiência** escala a taxa: um predefinido para TCP sobre IPv4 sobre Ethernet, TCP sobre IPv6, UDP sobre IPv4, ou qualquer porcentagem.
 - **A tabela de conexões** responde à pergunta do tempo de transferência para um conjunto de enlaces padrão de uma vez, na eficiência escolhida.

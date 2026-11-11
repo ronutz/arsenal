@@ -25,7 +25,7 @@ Two things about that origin decide everything after it.
 
 **And it assumed physical control of the wire.** Credentials went across in cleartext, which was acceptable on a network of research institutions and military bases where the cable was accounted for. That assumption is the one the [scopes article](/learn/network-scopes-family-history) names as the foundation of the whole perimeter model - inside was trusted because inside was administered - and it is the assumption every later entry in this family is trying to repair.
 
-Cisco began supporting TACACS in its products in the late 1980s, extended it incompatibly as XTACACS in 1990, and replaced it with **TACACS+** from 1993 - a separate protocol that split the function into **authentication, authorisation and accounting**, the three questions this family has asked ever since. **RADIUS** (remote authentication dial-in user service) arrived from Livingston Enterprises in 1991 as the counterpart, and became the language of dial-up.
+Cisco began supporting TACACS in its products in the late 1980s, extended it incompatibly as XTACACS in 1990, and replaced it with **TACACS+** from 1993 - a separate protocol that split the function into **authentication, authorization and accounting**, the three questions this family has asked ever since. **RADIUS** (remote authentication dial-in user service) arrived from Livingston Enterprises in 1991 as the counterpart, and became the language of dial-up.
 
 ## Why the local area network lost the habit
 
@@ -35,7 +35,7 @@ Here is the part that explains why network access control had to be reinvented a
 
 **The local area network made access free**, and the asking disappeared with the cost. A wall jack does not meter anything. Plugging in was the authentication, and for roughly fifteen years the industry built enormous networks on the premise that physical presence in a building was sufficient proof of anything.
 
-Everything after this point in the article is the long project of putting back onto the local area network the discipline that the dial-up world never had the luxury of dropping. **802.1X**, standardised in 2001, is exactly that: the authentication exchange from point-to-point links, carried over a switch port, arriving at a layer designed to trust whatever was plugged into it. That is why retrofitting it is so painful, and why it is the only piece of this family that survived unambiguously.
+Everything after this point in the article is the long project of putting back onto the local area network the discipline that the dial-up world never had the luxury of dropping. **802.1X**, standardized in 2001, is exactly that: the authentication exchange from point-to-point links, carried over a switch port, arriving at a layer designed to trust whatever was plugged into it. That is why retrofitting it is so painful, and why it is the only piece of this family that survived unambiguously.
 
 ## 1999: a switch that asks permission
 
@@ -49,11 +49,11 @@ And a conversation could be **refused**. In that model a VLAN is not a broadcast
 
 **That is network access control, in a switching architecture, published in 1999.** The decision to permit a conversation happened before the conversation existed, in the fabric, based on who the endpoints were rather than where they were plugged in.
 
-It lost, comprehensively. Connection-oriented Ethernet was expensive in silicon and state, cheap merchant switching was arriving, and the industry standardised on 802.1Q, which the [scopes article](/learn/network-scopes-family-history) traces - a tag on a frame rather than a call the network agrees to place. **The simpler model won because it was cheaper, exactly as the switch beat the bridge and stateful inspection beat proxies.**
+It lost, comprehensively. Connection-oriented Ethernet was expensive in silicon and state, cheap merchant switching was arriving, and the industry standardized on 802.1Q, which the [scopes article](/learn/network-scopes-family-history) traces - a tag on a frame rather than a call the network agrees to place. **The simpler model won because it was cheaper, exactly as the switch beat the bridge and stateful inspection beat proxies.**
 
 ## Enterasys Secure Networks, and what it actually did
 
-Cabletron reorganised in 2000 and the enterprise line became **Enterasys**, which spent the following decade building the second version of the same conviction: that the network itself should enforce policy, not just carry traffic.
+Cabletron reorganized in 2000 and the enterprise line became **Enterasys**, which spent the following decade building the second version of the same conviction: that the network itself should enforce policy, not just carry traffic.
 
 By 2007 the product documentation describes something the market took another decade to converge on:
 
@@ -95,7 +95,7 @@ By roughly 2010 network access control was a punchline, and the reasons were ope
 
 It did not die. It was renamed and re-scoped.
 
-**Zero trust** is, in its substance, the same claim: never trust by location, evaluate continuously, authorise per resource. **Device posture** in an identity provider is the health check, moved from the switch to the login. **Conditional access** is the policy engine. **Endpoint detection and response** feeding an identity platform to revoke a session is detect-locate-contain-remediate, running above the network instead of inside it.
+**Zero trust** is, in its substance, the same claim: never trust by location, evaluate continuously, authorize per resource. **Device posture** in an identity provider is the health check, moved from the switch to the login. **Conditional access** is the policy engine. **Endpoint detection and response** feeding an identity platform to revoke a session is detect-locate-contain-remediate, running above the network instead of inside it.
 
 The differences are real and worth naming. Modern enforcement happens at the application and identity layer rather than at the port, which works for a laptop in a café and does nothing for a compromised camera on a factory VLAN. **The old model could reach the port and could not reach the cloud; the new one is the reverse**, and the estates that need both are running both.
 
@@ -105,7 +105,7 @@ Meanwhile the original problem returned under new pressure: operational technolo
 
 This family produced no lasting job title and a set of practices that transfer completely.
 
-**Monitor before enforce, with a date** - the discipline this catalogue keeps finding in every family that can break production. **The exception register**, because unauthenticatable devices are permanent and pretending otherwise produces shadow policy. **Profiling before policy**, since you cannot write rules for an estate you have not inventoried, and every deployment discovers devices nobody knew were connected. And **a tested way back**, because the failure mode here is locking out the organisation.
+**Monitor before enforce, with a date** - the discipline this catalogue keeps finding in every family that can break production. **The exception register**, because unauthenticatable devices are permanent and pretending otherwise produces shadow policy. **Profiling before policy**, since you cannot write rules for an estate you have not inventoried, and every deployment discovers devices nobody knew were connected. And **a tested way back**, because the failure mode here is locking out the organization.
 
 The most valuable habit it left is the least technical: **decide in advance who is allowed to quarantine a device at three in the morning, and what happens if they are wrong.**
 

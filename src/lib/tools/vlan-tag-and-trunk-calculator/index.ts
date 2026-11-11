@@ -165,7 +165,7 @@ export const manifest = Object.freeze({
       type: "vendor-doc", // vendor documentation
       url: "https://www.juniper.net/documentation/us/en/software/junos/multicast-l2/topics/topic-map/bridging-and-vlans.html", // fetched 2026-11-08, HTTP 200
       access_date: "2026-11-08", // read the day the tool was built
-      scope: "VLAN IDs 0 and 4095 reserved by Junos; the TPID 0x9100 for Q-in-Q; an ELS trunk does not recognise untagged data packets without native-vlan-id, and the logical interface must be a member of the native VLAN; vlan members by name or ID", // what it pins
+      scope: "VLAN IDs 0 and 4095 reserved by Junos; the TPID 0x9100 for Q-in-Q; an ELS trunk does not recognize untagged data packets without native-vlan-id, and the logical interface must be a member of the native VLAN; vlan members by name or ID", // what it pins
       status: "active", // the page resolves
     },
     {

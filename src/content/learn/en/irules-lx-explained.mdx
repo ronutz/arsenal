@@ -87,7 +87,7 @@ From 13.0 an extension can be a stream handler rather than a method server. The 
 
 ## When to use it, and when not to
 
-The honest case for iRules LX is a specific one: a per-request decision that needs a library or a data source Tcl cannot reach, with an answer small enough for 65K and fast enough for a three-second ceiling, on a box with the memory for the processes. User lookups in an external database, F5's own launch example, fit it. Token handling that needs a real JSON parser fits it. Anything that could be a data group, a sideband connection, an APM policy or a plain Tcl rule should stay there, because each ILX::call adds a process boundary, a serialisation and a wait to the request path.
+The honest case for iRules LX is a specific one: a per-request decision that needs a library or a data source Tcl cannot reach, with an answer small enough for 65K and fast enough for a three-second ceiling, on a box with the memory for the processes. User lookups in an external database, F5's own launch example, fit it. Token handling that needs a real JSON parser fits it. Anything that could be a data group, a sideband connection, an APM policy or a plain Tcl rule should stay there, because each ILX::call adds a process boundary, a serialization and a wait to the request path.
 
 Before a design depends on it, the questions a reviewer should ask:
 

@@ -83,7 +83,7 @@ export const manifest = Object.freeze({
       type: "reference",
       url: "https://clouddocs.f5.com/api/irules/HowToWriteFastRules.html",
       access_date: "2026-07-07",
-      scope: "brace expr expressions so the bytecode compiler can optimise them, rather than paying for string re-substitution; general iRule performance guidance",
+      scope: "brace expr expressions so the bytecode compiler can optimize them, rather than paying for string re-substitution; general iRule performance guidance",
       status: "active",
     },
   ],

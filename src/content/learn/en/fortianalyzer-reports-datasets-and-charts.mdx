@@ -36,9 +36,9 @@ This is the single most common FortiAnalyzer support question, and the causes ar
 
 The fastest test is to take the dataset's underlying condition and search the logs directly for the same period and ADOM. If the search is empty, the report is behaving correctly and the problem is upstream.
 
-## Customising without breaking things
+## Customizing without breaking things
 
-Predefined reports, datasets and charts ship with the product and are overwritten on upgrade. **Clone before editing.** A customised predefined report that quietly reverts after a firmware update is a self-inflicted wound that is easy to avoid and annoying to diagnose.
+Predefined reports, datasets and charts ship with the product and are overwritten on upgrade. **Clone before editing.** A customized predefined report that quietly reverts after a firmware update is a self-inflicted wound that is easy to avoid and annoying to diagnose.
 
 When a chart needs data the shipped datasets do not provide, the dataset is where the work happens. That means writing the query, and it means knowing which log type carries the field: traffic logs, UTM logs and event logs are different tables with different columns, and a field that exists in one is not available in another.
 

@@ -19,15 +19,15 @@ The first segmentation was physical and had nothing to do with attackers. Early 
 
 Broadcast traffic remained the shared cost, and that is what produced the **VLAN**, a way to carve one physical switch into several broadcast domains. The relevant standard, IEEE 802.1Q, defines a four-byte tag inserted into the Ethernet header carrying a twelve-bit VLAN identifier, which is where the familiar limit of 4,094 usable VLANs comes from.
 
-Note what motivated it: broadcast containment and administrative tidiness. **Security was a side effect**: if two groups cannot exchange frames without passing a router, you have accidentally built a policy enforcement point. The industry then spent thirty years formalising that accident, and the fact that the foundation was a performance optimisation explains several problems that follow.
+Note what motivated it: broadcast containment and administrative tidiness. **Security was a side effect**: if two groups cannot exchange frames without passing a router, you have accidentally built a policy enforcement point. The industry then spent thirty years formalizing that accident, and the fact that the foundation was a performance optimization explains several problems that follow.
 
 ## Evolution, generation by generation
 
-**Router ACLs and the DMZ (1990s).** Once VLANs needed a router between them, the router became the place to write policy. The demilitarised zone formalised the first real security architecture: untrusted outside, trusted inside, and a third zone for things that must be reachable from both. It maps cleanly onto a building with a lobby, and it fails for the same reason a lobby does: once past it, everything is inside.
+**Router ACLs and the DMZ (1990s).** Once VLANs needed a router between them, the router became the place to write policy. The demilitarized zone formalized the first real security architecture: untrusted outside, trusted inside, and a third zone for things that must be reachable from both. It maps cleanly onto a building with a lobby, and it fails for the same reason a lobby does: once past it, everything is inside.
 
 **Stateful firewalls and zones (2000s).** Policy moved from per-interface access lists to named zones with connection state, which made rules expressible in human terms. This is the model most enterprises still run, and its defining property is that it is strong north-south (in and out of the estate) and nearly absent east-west (server to server inside it).
 
-**VRFs and overlays.** A VRF (virtual routing and forwarding instance) gives a router multiple independent routing tables, so two segments can be genuinely separate at layer three, even reusing address space. Then virtualisation broke the twelve-bit VLAN ceiling and the assumption that a segment lives in one physical place: **VXLAN**, specified in RFC 7348, encapsulates Ethernet frames in UDP with a 24-bit network identifier, roughly sixteen million segments, letting a segment span datacentres over an IP fabric.
+**VRFs and overlays.** A VRF (virtual routing and forwarding instance) gives a router multiple independent routing tables, so two segments can be genuinely separate at layer three, even reusing address space. Then virtualization broke the twelve-bit VLAN ceiling and the assumption that a segment lives in one physical place: **VXLAN**, specified in RFC 7348, encapsulates Ethernet frames in UDP with a 24-bit network identifier, roughly sixteen million segments, letting a segment span datacentres over an IP fabric.
 
 **Host-based and identity-based (2010s onward).** The insight that produced microsegmentation is that the enforcement point does not have to be the network at all. If a policy agent runs on each workload, the boundary follows the workload, survives migration, and no longer depends on where a cable lands. In parallel, tag- or identity-based approaches (security group tags, cloud security groups, labels) let policy be written about *what a thing is* rather than *where it sits*.
 
@@ -49,7 +49,7 @@ Each generation solved the previous ceiling. Each also inherited the same unsolv
 
 Segmentation is unusually dependent on things outside the network team's control, and this is where projects stall:
 
-- **An inventory.** You cannot write a policy about systems you cannot enumerate. Most organisations discover mid-project that no accurate inventory exists.
+- **An inventory.** You cannot write a policy about systems you cannot enumerate. Most organizations discover mid-project that no accurate inventory exists.
 - **Identity.** Identity-based policy requires an authoritative source of what a workload or user *is*, and it inherits that source's accuracy.
 - **Telemetry.** Writing rules without flow data is guesswork; this is where segmentation meets [detection engineering](/learn/siem-and-detection-engineering), because both need to know what actually talks to what.
 - **Name resolution and certificates.** Segments that break DNS or certificate validation paths produce failures that look nothing like a firewall problem.

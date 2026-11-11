@@ -114,7 +114,7 @@ Network Destination        Netmask          Gateway       Interface  Metric
 
 The netmask 255.255.255.240 is 28 ones, so the first line is 172.26.188.240/28. The two ff00::/8 lines have the same length, so the metric decides: "If there are multiple routes to the same destination with different metrics, the route with the lowest metric is selected" (Microsoft Learn, The IP routing table), and 331 wins over 5256.
 
-The two stores are easy to confuse. "The Route Print command shows routes from the active network configuration store in the 'Active Routes' section of the command output, and from the persistent network configuration store in the 'Persistent Routes' section of the command output" ([Microsoft Learn, KB 2966111](https://learn.microsoft.com/en-us/troubleshoot/windows-client/networking/incorrect-default-gateways-in-persistent-routes)). A persistent route is configuration that `route /p add` wrote and that initialises the table whenever TCP/IP starts (Microsoft Learn, route); the routes in use are the active ones.
+The two stores are easy to confuse. "The Route Print command shows routes from the active network configuration store in the 'Active Routes' section of the command output, and from the persistent network configuration store in the 'Persistent Routes' section of the command output" ([Microsoft Learn, KB 2966111](https://learn.microsoft.com/en-us/troubleshoot/windows-client/networking/incorrect-default-gateways-in-persistent-routes)). A persistent route is configuration that `route /p add` wrote and that initializes the table whenever TCP/IP starts (Microsoft Learn, route); the routes in use are the active ones.
 
 ## Which default wins
 

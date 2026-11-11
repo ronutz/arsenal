@@ -15,7 +15,7 @@ updated: "2026-10-18"
 
 A network engineer spends the day in vendor interfaces: a web console, a proprietary command line, a management platform. Underneath almost all of it is the same thing. The load balancer has a filesystem with `/var/log` in it. The firewall runs cron jobs. The access point has a shell. When a vendor's documentation tells you to run `tcpdump` on the appliance, it is not an analogy - it is tcpdump, reading a BPF filter, writing a pcap file, exactly as the [capture article](/learn/capture-points-before-packets) describes.
 
-That is worth knowing for a practical reason before a historical one: the moment you recognise the appliance as a Unix host wearing a product, a large amount of troubleshooting instinct transfers. Disk full is disk full. A process that will not die is a process that will not die. Log rotation, file permissions, time synchronisation, DNS resolution, a full inode table - these fail on a firewall for the same reasons and with the same symptoms as anywhere else, and vendor documentation frequently describes the symptom without naming the cause.
+That is worth knowing for a practical reason before a historical one: the moment you recognize the appliance as a Unix host wearing a product, a large amount of troubleshooting instinct transfers. Disk full is disk full. A process that will not die is a process that will not die. Log rotation, file permissions, time synchronization, DNS resolution, a full inode table - these fail on a firewall for the same reasons and with the same symptoms as anywhere else, and vendor documentation frequently describes the symptom without naming the cause.
 
 ## 1969, and the game
 
@@ -49,7 +49,7 @@ That is the second half of the [protocol wars](/learn/the-protocol-wars) story, 
 
 Commercial Unix then split. Every large manufacturer shipped its own - Sun, IBM, HP, DEC, SGI - each incompatible enough to be annoying and similar enough to be frustrating, which is what POSIX was written to contain. Meanwhile ownership of the original code changed hands and was litigated over: Unix System Laboratories sued the Berkeley distribution's commercial arm in the early 1990s, and a decade later a further round of litigation attempted to assert claims against Linux.
 
-The timing is the historically decisive part. The free Unix with the clearest legal position was tied up in court at exactly the moment a Finnish student announced, in 1991, a kernel he had written himself. Linux arrived without the encumbrance, and organisations that would have hesitated over a lawsuit did not have to. That is why the appliance in your rack is far more likely to be Linux than BSD - though the BSD line is very much alive, and some network operating systems are built on it.
+The timing is the historically decisive part. The free Unix with the clearest legal position was tied up in court at exactly the moment a Finnish student announced, in 1991, a kernel he had written himself. Linux arrived without the encumbrance, and organizations that would have hesitated over a lawsuit did not have to. That is why the appliance in your rack is far more likely to be Linux than BSD - though the BSD line is very much alive, and some network operating systems are built on it.
 
 ## What this means when something breaks
 

@@ -38,7 +38,7 @@ export const redHatProfile: VendorProfile = {
     { year: 1999, title: "The IPO heard round the Valley", detail: "The August listing rockets on day one - open source arrives on Wall Street, with Red Hat as the proof that free software could carry a ticker." },
     { year: 2002, title: "RHEL: the model perfected", detail: "Red Hat Enterprise Linux splits the stable, certified, subscription product from the fast-moving community stream - Fedora, from 2003 - creating the template every open-source business since has studied." },
     { year: 2006, title: "Up the stack: JBoss", detail: "The JBoss acquisition adds middleware; Ansible (2015) later adds automation and CoreOS (2018) adds container-Linux DNA - each one widening subscriptions beyond the operating system." },
-    { year: 2019, title: "IBM: $34 billion", detail: "IBM completes the acquisition on July 9, 2019 - then the largest software deal in history - buying OpenShift's hybrid-cloud position as much as RHEL, with Red Hat kept deliberately semi-autonomous. Matt Hicks takes the CEO chair in 2022." },
+    { year: 2019, title: "IBM: $34 billion", detail: "IBM completes the acquisition on 9 July 2019 - then the largest software deal in history - buying OpenShift's hybrid-cloud position as much as RHEL, with Red Hat kept deliberately semi-autonomous. Matt Hicks takes the CEO chair in 2022." },
     { year: 2020, title: "CentOS Stream", detail: "The December announcement moves CentOS from downstream rebuild to upstream Stream - controversial with rebuilders, clarifying for the RHEL business, and the spark for a new generation of downstream distributions." },
   ],
   products: [

@@ -1,0 +1,28 @@
+## Cosa fa
+
+Incolla due policy di sicurezza dichiarative di F5 AWAF (Advanced WAF, in precedenza BIG-IP ASM, Application Security Manager), una prima e una dopo, e lo strumento le confronta classificando ogni modifica rilevante per la sicurezza come allentamento o restringimento. Esiste per rispondere all’unica domanda che conta dopo una sessione di tuning: questa modifica ha aperto una falla? Viene eseguito interamente nel tuo browser e non contatta mai un BIG-IP.
+
+## La distinzione che traccia
+
+Non tutti gli allentamenti sono pericolosi. Aggiungere un URL o un parametro consentito è un ampliamento circoscritto a una singola entità: il modo normale e corretto di eliminare un falso positivo. Ciò che merita attenzione è un allentamento che amplia la protezione sull’intera policy: passare l’applicazione a Transparent (che impedisce all’intera policy di bloccare), disattivare una violazione o un’evasione, disattivare Data Guard, fidarsi di un’intestazione X-Forwarded-For fornita dal client, spostare le firme in staging o aggiungere un’entità con carattere jolly che corrisponde a molti URL insieme. Lo strumento separa questi allentamenti a livello di policy da quelli circoscritti, così un diff di tuning non diventa in silenzio una regressione della sicurezza.
+
+## Il verdetto
+
+Se è presente un qualsiasi allentamento a livello di policy, il verdetto è «ha aperto una falla», e quelle modifiche sono elencate per prime, ognuna con un livello di gravità. Se gli ampliamenti restano tutti circoscritti alle singole entità, il verdetto è «solo modifiche circoscritte», la zona sicura per il tuning dei falsi positivi. Se ogni modifica aumenta la protezione, il verdetto è «restringimento». Lo strumento elenca anche i restringimenti, così vedi il quadro completo di ciò che è cambiato tra le due policy.
+
+## Cosa confronta
+
+Legge le sezioni rilevanti per la sicurezza definite dallo schema delle policy dichiarative di F5: enforcementMode, lo staging di signature-settings, general.trustXff, data-guard, csrf-protection, i flag di blocco per ogni violazione in blocking-settings, l’attivazione di ogni evasione e gli elenchi di entità URL, parametri e tipi di file (dove un nome che contiene un asterisco viene trattato come carattere jolly). Sono gli stessi percorsi di campo convalidati nell’analizzatore di policy dichiarative e nell’analizzatore delle tecniche di evasione.
+
+## Fondamenti
+
+La semantica degli allentamenti segue lo schema delle policy WAF dichiarative di F5 e la documentazione di ASM su come una policy Transparent e un flag di blocco disattivato fermano l’applicazione, insieme alla regola del K70544352 secondo cui si allenta solo dove si è verificato un falso positivo, in modo circoscritto. Nessuna delle due policy che incolli viene inviata o lascia la pagina.
+
+## Condivisione dei risultati
+
+Sotto il verdetto, **Condividi i risultati** crea un link a questa pagina, solo quando lo premi, che contiene dopo il `#` entrambe le policy così come le hai incollate, chiamate `before` e `after` come le due caselle, una volta che la pagina le ha confrontate. Il suo riquadro a comparsa indica prima cosa contiene il link, poi offre Copia link e, se il browser ne ha uno, il menu di condivisione; l’indirizzo della pagina non cambia. Le policy possono riportare host, URL e indirizzi interni, quindi il riquadro a comparsa ti chiede di rileggerle entrambe prima di inviare il link. Entrambe le caselle passano per lo stesso controllo dell’analizzatore di policy dichiarative. Prima che venga offerto un link, nel testo viene cercata una credenziale definita da uno standard: una chiave privata PEM, una riga `Authorization` o `Proxy-Authorization` con qualsiasi schema ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110), sezioni 11.6.2 e 11.7.2: il valore è costituito da credenziali, «consists of credentials»), una riga `Cookie` o `Set-Cookie` con un valore ([RFC 6265](https://www.rfc-editor.org/rfc/rfc6265), sezioni 4.1.1, 4.2.1 e 8.4, dove un cookie contiene di solito un identificatore di sessione), un JWT ([RFC 7519](https://www.rfc-editor.org/rfc/rfc7519), sezione 1), una password in un URL ([RFC 3986](https://www.rfc-editor.org/rfc/rfc3986), sezione 3.2.1), un ID della chiave di accesso AWS o un valore `ENC` di FortiOS; tutte consultate il 01/11/2026. Una sola di queste significa niente link: il riquadro a comparsa ne indica la riga, e tu la sostituisci con un segnaposto e premi di nuovo. Un valore il cui nome sembra soltanto un segreto (un membro JSON `token`, un `password=` nella query di un URL) non blocca il link; il riquadro a comparsa indica il primo, così puoi controllarlo. Il riquadro a comparsa indica in quale casella si trova la riga.
+
+La [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (sezione 3.5, consultata il 01/11/2026) stabilisce che il frammento viene separato dal resto dell’URI prima della dereferenziazione («separated from the rest of the URI prior to a dereference»), quindi ciò che segue il `#` non viene inviato al server quando si apre il link; resta nella barra degli indirizzi e nella cronologia di chi lo apre, e chiunque abbia il link può leggerlo.
+
+- **Lunghezza massima.** Al massimo 16.384 caratteri in tutto, il limite che il sito applica a ogni valore dopo il `#`; una condivisione più lunga non ottiene il link e il riquadro a comparsa ne indica la lunghezza.
+- **Apertura di un link.** Entrambe le caselle si riempiono come farebbe un incolla e la pagina le confronta come al solito. Un link a cui manca una delle due viene ignorato. I valori lasciano poi subito l’indirizzo della pagina, senza alcuna richiesta, quindi un ricaricamento o il pulsante Condividi della pagina stessa non contengono nulla.

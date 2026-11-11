@@ -7,7 +7,7 @@ date: "2026-11-02"
 tags: ["vulnerability-management", "firmware", "disclosure"]
 category: security
 status: reviewed
-updated: "2026-11-05"
+updated: "2026-11-11"
 relatedArticles: ["pxe-and-network-boot", "icmp-ping-and-traceroute", "the-disclosure-record", "memory-safety"]
 ---
 
@@ -129,7 +129,7 @@ Então a pergunta para cada máquina tem três partes: o firmware dela deriva do
 | Quem | Classificação | Nota | O que muda |
 | --- | --- | --- | --- |
 | TianoCore (a CNA) | Critical | 9.5, CVSS 4.0 | Attack vector Network, attack requirements Present |
-| Red Hat | Critical | 8.8, CVSS 3.1 (rascunho) | Attack vector Adjacent |
+| Red Hat | Critical | 8.8, CVSS 3.1 | Attack vector Adjacent |
 | SUSE | Important | 8.8, CVSS 3.1 | Attack vector Adjacent |
 | Ubuntu | Prioridade Medium | usa o 9.5 do TianoCore | a prioridade é julgamento do próprio Ubuntu |
 | Debian | trixie marcado como "Minor issue" | nenhuma própria | a nota vale para a release trixie |
@@ -180,18 +180,22 @@ Cada linha vem da página ou do repositório da própria parte, lida no horário
 | Microsoft Project Mu | Correção com cherry-pick em release/202608 em 22 de outubro, em release/202511 em 23 de outubro e em release/202502 em 3 de novembro (UTC); primeiras releases com tag que a trazem: v2026080000.0.5 (26 de outubro) e v2025110002.0.20 (28 de outubro, UTC); ainda nenhuma tag em release/202502 | 18:36 de 5 de novembro |
 | Debian | edk2 vulnerável em bookworm, trixie, forky e sid; sem versão corrigida | 02:00 |
 | Ubuntu | edk2 em "Needs evaluation" da 16.04 à 26.10; prioridade Medium | 02:03 |
-| Red Hat | edk2 Affected no Red Hat Enterprise Linux (RHEL) 8, 9 e 10; OpenShift 4 e 5 (rhel-coreos-9) Affected; Critical | 02:03 |
+| Red Hat | Corrigido no Red Hat Enterprise Linux (RHEL) 10: edk2-20251114-5.el10_2.3, RHSA-2026:96240, 9 de novembro; RHEL 8 e 9 ainda Affected; OpenShift 4 e 5 (rhel-coreos) agora listados como Not affected; Critical | 16:01 de 11 de novembro |
 | SUSE | ovmf Affected nas releases suportadas; estado geral "Pending" | 02:03 |
-| AMI | Nenhum boletim citando a CVE; o boletim mensal mais recente, AMI-SA-2026002, de 13 de outubro, não a lista | 02:01 |
+| AMI | Nenhum boletim citando a CVE; o boletim mensal mais recente, AMI-SA-2026003, de 10 de novembro, não a lista | 16:01 de 11 de novembro |
 | Insyde | Nenhum boletim citando a CVE; o mais recente listado é de 8 de setembro | 02:09 |
 | Phoenix Technologies | Nenhuma notificação citando a CVE | 02:09 |
-| Intel | Nenhum boletim na Security Center citando a CVE; a Intel disse à Ars Technica que nenhum produto seu sob suporte de segurança é sabidamente afetado | 02:59 |
+| Intel | Nenhum boletim na Security Center citando a CVE: dos 24 boletins de 10 de novembro, os dois de firmware, INTEL-SA-01554 (UEFI das Server Boards D50DNP e M50FCP) e INTEL-SA-01526 (Slim Bootloader), listam outras CVEs e não mencionam PXE; a Intel disse à Ars Technica que nenhum produto seu sob suporte de segurança é sabidamente afetado | 17:45 de 11 de novembro |
 | Supermicro | Boletim de outubro de 2026: BIOS atualizada para placas com Intel e Ampere (entre elas as gerações X12, X13 e X14) e para placas com AMD (H11 a H15), com a versão corrigida por placa; placas mais antigas, todas as X11 da lista entre elas, marcadas como "By request"; sem conhecimento de anúncios públicos ou uso malicioso | 12:18 de 5 de novembro |
-| Catálogo Known Exploited Vulnerabilities (KEV) da CISA | Não listada (catálogo 2026.11.04) | 18:33 de 5 de novembro |
+| AMD | Bulletin AMD-SB-7081 (3 de novembro, revisado em 5 de novembro): cita a CVE como "non-AMD", classifica como Medium e recomenda pedir o update de BIOS ao OEM | 16:20 de 11 de novembro |
+| Gigabyte (Giga Computing) | Security Bulletin de 10 de novembro: reconhece a vulnerabilidade nos produtos enterprise (plataformas AMD, Intel, NVIDIA Grace e Ampere); updates de BIOS previstos para dezembro de 2026, exceto as plataformas AMD EPYC 9005 e 9004 com BIOS Insyde | 16:28 de 11 de novembro |
+| Catálogo Known Exploited Vulnerabilities (KEV) da CISA | Não listada (catálogo 2026.11.10) | 00:08 de 11 de novembro |
 
 A tabela tem um formato óbvio. O upstream open source corrigiu o código uma semana antes do boletim e o Project Mu acompanhou no mesmo dia, enquanto nenhuma das quatro distribuições acima entregou um pacote corrigido ainda. O lado do firmware comercial, por onde a maioria dos servidores físicos recebe correções, tem um fabricante de placas com boletim público e versões de BIOS corrigidas por placa, e silêncio nas páginas públicas de boletins dos fabricantes de firmware. Silêncio numa página pública não é inação: o próprio boletim da AMI sobre as PixieFail registra que ela avisou os clientes sob acordo de confidencialidade dois meses antes de publicar. Mas quem cuida de um parque não consegue agir sobre um aviso privado que nunca recebeu.
 
 Atualização, 5 de novembro de 2026: reli a tabela hoje. Nada mudou no essencial: nenhuma tag estável do EDK II ainda (a mais nova continua sendo a edk2-stable202608), a entrada SSVC da CISA no registro da CVE continua dizendo exploração "none", nenhuma distribuição tem pacote corrigido, e AMI, Insyde, Phoenix e Intel continuam sem boletim citando a CVE. Duas linhas cresceram: o boletim da Supermicro agora também lista placas AMD EPYC com versões de BIOS corrigidas, e o Project Mu levou a correção a um terceiro branch, o release/202502, com releases com tag nos outros dois.
+
+Atualização, 11 de novembro de 2026: a primeira distribuição publicou a correção, e o primeiro fabricante de placas citou a CVE. A Red Hat lançou o edk2 corrigido para o RHEL 10 em 9 de novembro (RHSA-2026:96240) e agora lista as imagens CoreOS do OpenShift como não afetadas; RHEL 8 e 9 continuam marcados como Affected. Debian, Ubuntu e SUSE ainda não têm pacote corrigido. Do lado do firmware, a AMI publicou o boletim mensal seguinte, o AMI-SA-2026003, em 10 de novembro; ele lista quatro outras CVEs e continua sem citar esta. O braço enterprise da Gigabyte, a Giga Computing, publicou em 10 de novembro um boletim que a cita, com updates de BIOS previstos para dezembro de 2026, e o bulletin AMD-SB-7081 da AMD, de 3 de novembro e revisado em 5 de novembro, a classifica como Medium e orienta os clientes a pedir o update de BIOS ao OEM. O score CVSS 3.1 de 8.8 da Red Hat não está mais marcado como rascunho.
 
 Há mais um sinal: um repositório de terceiros, publicado abertamente, diz ter uma prova de conceito de negação de serviço para essa falha. Eu não testei e não coloco o link. Nos termos do SSVC da CISA, uma prova de conceito pública é o degrau entre a exploração "none" e a "active", então é a primeira coisa a acompanhar no registro da CVE.
 
@@ -264,18 +268,20 @@ Tudo lido em 2 de novembro de 2026, entre 01:58 e 02:59, horário de São Paulo;
 - [Microsoft Project Mu, pull requests 1989 e 1990 do mu_basecore: os três commits do EDK II com cherry-pick, em release/202608 em 22 de outubro e em release/202511 em 23 de outubro de 2026 (UTC); na leitura de 5 de novembro com git, os mesmos três commits em release/202502, com commit em 3 de novembro de 2026, 03:11 UTC, e as tags v2026080000.0.5 (26 de outubro, 18:19 UTC) e v2025110002.0.20 (28 de outubro, 01:48 UTC) com a correção](https://github.com/microsoft/mu_basecore/pull/1990)
 - [Security tracker do Debian: edk2 vulnerável em bookworm, trixie, forky e sid, sem correção em unstable, bug 1151853, trixie anotado como problema menor](https://security-tracker.debian.org/tracker/CVE-2026-97631)
 - [Ubuntu: edk2 em "Needs evaluation" da 16.04 à 26.10, prioridade Medium, publicado em 22 de outubro e atualizado em 28 de outubro de 2026](https://ubuntu.com/security/CVE-2026-97631)
-- [Red Hat: Critical; CVSS 3.1 8.8 com attack vector Adjacent (rascunho); edk2 afetado no RHEL 8, 9 e 10; o posicionamento sobre guests virtualizados e boot pela rede](https://access.redhat.com/security/cve/CVE-2026-97631)
+- [Red Hat: Critical; CVSS 3.1 8.8 com attack vector Adjacent (marcado como verified na leitura de 11 de novembro de 2026); edk2 corrigido no RHEL 10 pelo RHSA-2026:96240 (9 de novembro de 2026), ainda afetado no RHEL 8 e 9, imagens rhel-coreos do OpenShift não afetadas (lido em 11 de novembro de 2026); o posicionamento sobre guests virtualizados e boot pela rede](https://access.redhat.com/security/cve/CVE-2026-97631)
 - [SUSE: severidade important, CVSS 3.1 8.8 com attack vector Adjacent, ovmf afetado nos produtos suportados, estado geral Pending](https://www.suse.com/security/cve/CVE-2026-97631.html)
-- [AMI Security Advisories: a lista de boletins, com o AMI-SA-2026002, de 13 de outubro de 2026, como o mais recente e sem entrada para a CVE-2026-97631, o AMI-SA-2024001 das PixieFail e o posicionamento do CISO](https://www.ami.com/security-advisories/)
+- [AMI Security Advisories: a lista de boletins, com o AMI-SA-2026003, de 10 de novembro de 2026, como o mais recente (lido em 11 de novembro de 2026) e sem entrada para a CVE-2026-97631, o AMI-SA-2024001 das PixieFail e o posicionamento do CISO](https://www.ami.com/security-advisories/)
 - [AMI, AMI-SA-2024001, 16 de janeiro de 2024: as CVEs das PixieFail no AptioV, com clientes avisados sob acordo de confidencialidade (NDA) em 7 de novembro de 2023](https://9443417.fs1.hubspotusercontent-na1.net/hubfs/9443417/Security%20Advisories/2024/AMI-SA-2024001.pdf)
 - [AMI, carta do seu Chief Information Security Officer: coordenar achados com os fornecedores da cadeia antes de anúncios públicos, e a "Forever Vulnerability"](https://9443417.fs1.hubspotusercontent-na1.net/hubfs/9443417/Security%20Advisories/CISO%20Statement.pdf)
 - [AMI, Aptio V: integra as especificações UEFI, EDKII, ACPI e PI; o Aptio Community Edition é baseado no EDK II](https://www.ami.com/products/aptio-v/)
 - [Insyde, Security Pledge: a lista de boletins, com as entradas mais recentes de 8 de setembro de 2026](https://www.insyde.com/security-pledge/)
 - [Phoenix Technologies, Security Notifications](https://phoenixtech.com/security-notifications/)
 - [Supermicro, "PXE Network Boot Buffer Overflow in EDK II Vulnerability, October 2026": CVSS 4.0 9.5, as placas afetadas com Intel, Ampere e AMD e a versão de BIOS que traz a correção, placas mais antigas (todas as X11 da lista entre elas) marcadas como "By request", sem exploração pública conhecida](https://www.supermicro.com/en/support/security_BIOS_Oct_2026)
-- [Intel Security Center: a lista de boletins, sem boletim para a CVE-2026-97631](https://www.intel.com/content/www/us/en/security-center/default.html)
-- [Wiki da Thomas-Krenn, "Kritische PXE Boot Sicherheitslücke in EDK2", atualizado em 30 de outubro de 2026: quem é e quem não é afetado, a exigência de adivinhar endereços, a divulgação planejada para o começo de 2027 e as versões de BIOS da Supermicro por placa](https://www.thomas-krenn.com/de/wiki/Kritische_PXE_Boot_Sicherheitsl%C3%BCcke_in_EDK2)
-- [CISA, catálogo Known Exploited Vulnerabilities, versão 2026.10.30: a CVE-2026-97631 não está listada](https://www.cisa.gov/known-exploited-vulnerabilities-catalog)
+- [AMD, AMD-SB-7081, "Pre-boot RCE in EDK II PXE Driver", 3 de novembro de 2026, revisado em 5 de novembro: Medium, a CVE marcada como "non-AMD", updates de BIOS pelo OEM (lido em 11 de novembro de 2026)](https://www.amd.com/en/resources/product-security/bulletin/amd-sb-7081.html)
+- [Gigabyte (Giga Computing), Security Bulletin de novembro de 2026, publicado em 10 de novembro de 2026: a CVE-2026-97631 nas plataformas enterprise, BIOS prevista para "December 2026", exceto AMD EPYC 9005/9004 com BIOS Insyde (lido em 11 de novembro de 2026)](https://www.gigabyte.com/security/security-advisory/2466)
+- [Intel Security Center: a lista de boletins, sem boletim para a CVE-2026-97631; os 24 boletins de 10 de novembro, entre eles o INTEL-SA-01554 e o INTEL-SA-01526, nenhum citando a CVE (lido em 11 de novembro de 2026)](https://www.intel.com/content/www/us/en/security-center/default.html)
+- [Wiki da Thomas-Krenn, "Kritische PXE Boot Sicherheitslücke in EDK2", atualizado em 11 de novembro de 2026: quem é e quem não é afetado, a exigência de adivinhar endereços, a divulgação planejada para o começo de 2027 e as versões de BIOS da Supermicro por placa](https://www.thomas-krenn.com/de/wiki/Kritische_PXE_Boot_Sicherheitsl%C3%BCcke_in_EDK2)
+- [CISA, catálogo Known Exploited Vulnerabilities, versão 2026.11.10: a CVE-2026-97631 não está listada](https://www.cisa.gov/known-exploited-vulnerabilities-catalog)
 - [DMTF Redfish, schema ComputerSystem: a origem de boot Pxe, "Boot from the Pre-boot eXecution Environment (PXE)"](https://redfish.dmtf.org/schemas/v1/ComputerSystem.json)
 - [RFC 792, Internet Control Message Protocol](https://www.rfc-editor.org/rfc/rfc792)
 - [RFC 1122, Requirements for Internet Hosts, seção 3.2.2: o que uma mensagem de erro ICMP carrega e quando ela sobe para a camada de transporte](https://www.rfc-editor.org/rfc/rfc1122)

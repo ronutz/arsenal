@@ -24,42 +24,16 @@
 // Where a company was genuinely founded across two countries, or where the
 // sources disagree, the entry carries a comment rather than a confident flag.
 //
-// THE FLAG IS COMPUTED, NEVER STORED. An ISO 3166-1 alpha-2 code converts to a
-// flag by mapping each letter to its regional indicator symbol. Storing the
-// emoji instead would mean two representations of one fact that could drift,
-// which is the failure this codebase has already had once with the Red
-// Education partner list.
+// THE FLAG IS DRAWN, NEVER STORED. An ISO 3166-1 alpha-2 code picks an SVG flag (CountryFlag.tsx, or the
+// vendored files through src/lib/flags.ts); emoji flags are not used, because Windows shows them as letters.
 // ============================================================================
 
 /** ISO 3166-1 alpha-2, uppercase. */
 export type CountryCode = string;
 
-/**
- * Turn "BR" into the flag emoji by offsetting each letter into the regional
- * indicator block.
- *
- * *** RETAINED BUT NO LONGER USED ON THE TIMELINE (PRIME 2026-08-06). ***
- *
- * Flag emoji DO NOT RENDER ON WINDOWS. Microsoft has never shipped country flag
- * glyphs in Segoe UI Emoji, so Chrome, Edge and Firefox on Windows fall back to
- * displaying the two regional indicator letters - a reader on Windows 11 saw
- * "BR" where a reader on macOS saw the Brazilian flag. That is a platform
- * decision, not a font-stack or CSS problem, and no amount of styling fixes it.
- *
- * Since Windows is most of this site's desktop audience, the cards now show the
- * ISO code with the country name beside it, which renders identically
- * everywhere. The function stays because it is correct and costs nothing, and
- * because a future decision to bundle SVG flags would want the code-to-country
- * mapping that sits beside it.
- */
-export function flagFor(code: CountryCode): string {
-  if (!/^[A-Z]{2}$/.test(code)) return "";
-  const A = 0x1f1e6; // REGIONAL INDICATOR SYMBOL LETTER A
-  return String.fromCodePoint(
-    A + code.charCodeAt(0) - 65,
-    A + code.charCodeAt(1) - 65,
-  );
-}
+// flagFor (the regional indicator flag emoji builder) was removed on 2026-11-10 (PRIME 23:50: flags must ALWAYS
+// render on any regular browser, and Windows draws flag emoji as two letters). Flags are SVG: CountryFlag.tsx for the
+// hand-drawn set, src/lib/flags.ts for the vendored files; scripts/check-no-emoji-flags.mjs keeps emoji flags out.
 
 /**
  * Country names for the codes this timeline actually uses.

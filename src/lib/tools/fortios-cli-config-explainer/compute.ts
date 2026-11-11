@@ -40,7 +40,7 @@
 // spec and the golden vectors are unchanged.
 // ============================================================================
 
-import { say, plainText, withEngineText, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
+import { say, enPlural, plainText, withEngineText, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
 
 export type Verb = "config" | "edit" | "set" | "unset" | "append" | "next" | "end" | "abort" | "delete" | "purge" | "unknown";
 
@@ -189,7 +189,7 @@ export function decodeConfigLocalisable(input: string): ConfigDecode<EngineText>
         warnings.push(say("warn.purge", `Line ${i + 1}: purge removes every entry in the table, not one.`, { line: String(i + 1) })); // and its warning
         break;
       default:
-        explain = say("explain.unknown", "Not a FortiOS configuration verb this tool recognises. It is shown in place and nothing is claimed about it."); // anything else
+        explain = say("explain.unknown", "Not a FortiOS configuration verb this tool recognizes. It is shown in place and nothing is claimed about it."); // anything else
     }
 
     lines.push({ line: i + 1, depth: stack.length, verb, rest, explain });
@@ -206,7 +206,7 @@ export function decodeConfigLocalisable(input: string): ConfigDecode<EngineText>
     const count = String(stack.length); // how many
     const path = stack.join(" -> "); // which
     warnings.push(say("warn.unclosed", // blocks left open
-      `${count} block(s) were opened and never closed: ${path}. An unclosed block has not been committed, and pasting it into a live device leaves the session somewhere unexpected.`, { count, path },
+      `${count} ${enPlural(count, "block was", "blocks were")} opened and never closed: ${path}. An unclosed block has not been committed, and pasting it into a live device leaves the session somewhere unexpected.`, { count, path },
     ));
   }
 

@@ -1,7 +1,7 @@
 ---
 slug: virtualization-family-history
-title: "Virtualisation: Solved in 1967, Forgotten, Then Proved Impossible, Then Done Anyway"
-summary: "IBM put a working hypervisor into production use in January 1967. The industry then spent fifteen years without one, because cheap personal hardware removed the reason to share a machine - and when the reason came back, a formal analysis said the dominant processor could not be virtualised at all. A Stanford group did it anyway. This is the family history of virtual machines and containers: two separate lineages, one from mainframes and one from a Unix command that was never meant for security, meeting in the infrastructure everything now runs on."
+title: "Virtualization: Solved in 1967, Forgotten, Then Proved Impossible, Then Done Anyway"
+summary: "IBM put a working hypervisor into production use in January 1967. The industry then spent fifteen years without one, because cheap personal hardware removed the reason to share a machine - and when the reason came back, a formal analysis said the dominant processor could not be virtualized at all. A Stanford group did it anyway. This is the family history of virtual machines and containers: two separate lineages, one from mainframes and one from a Unix command that was never meant for security, meeting in the infrastructure everything now runs on."
 concepts: ["virtualization", "hypervisor", "cp-40", "vmware", "container", "chroot", "history"]
 relatedTools: []
 relatedArticles: ["sdn-family-history", "bridge-switch-family-history", "identity-family-history"]
@@ -21,37 +21,37 @@ Two details from the period are worth carrying because they contradict how the t
 
 **Performance was never the goal.** Overhead on VM/370 was estimated at ten to fifteen per cent, and the people who built it did not consider efficient execution a primary objective - the aim was efficient *utilisation* of an expensive machine. The trade was judged worthwhile partly on security grounds.
 
-**Isolation was understood immediately.** Running several operating systems on one machine, each unable to touch the others, was recognised as a security property in the 1960s and did not need rediscovering.
+**Isolation was understood immediately.** Running several operating systems on one machine, each unable to touch the others, was recognized as a security property in the 1960s and did not need rediscovering.
 
 ## The disappearance
 
-Minicomputers and then personal computers collapsed the economics. **If hardware is cheap and personal, there is no reason to share it**, and virtualisation survived only inside mainframe shops for roughly fifteen years.
+Minicomputers and then personal computers collapsed the economics. **If hardware is cheap and personal, there is no reason to share it**, and virtualization survived only inside mainframe shops for roughly fifteen years.
 
 That is a pattern worth naming, because it recurs: **a technology does not survive on merit, it survives on whether the constraint that produced it still exists.** When hardware became expensive again - as a datacentre full of underused servers - the constraint returned and so did the technology.
 
 ## The formal impossibility
 
-**Popek and Goldberg** set out the formal requirements for virtualisable architectures in the mid-1970s. Intel's x86 did not satisfy them.
+**Popek and Goldberg** set out the formal requirements for virtualizable architectures in the mid-1970s. Intel's x86 did not satisfy them.
 
 A 2000 USENIX Security paper by **John Robin and Cynthia Irvine** made this precise: seventeen x86 instructions were sensitive but unprivileged - able to read or alter privileged state, and failing **silently** in user mode instead of trapping to the supervisor. A hypervisor cannot intercept what does not trap.
 
-For two decades, virtualisation on commodity hardware was considered formally impossible. The proof was correct. The conclusion drawn from it was wrong, and the difference between those two statements is the whole lesson: **the analysis showed it could not be done the expected way, and everyone read it as showing it could not be done.**
+For two decades, virtualization on commodity hardware was considered formally impossible. The proof was correct. The conclusion drawn from it was wrong, and the difference between those two statements is the whole lesson: **the analysis showed it could not be done the expected way, and everyone read it as showing it could not be done.**
 
 ## 1997 to 1998: doing it anyway
 
 At Stanford, **Mendel Rosenblum** with doctoral students **Edouard Bugnion** and **Scott Devine** published *Disco*, running commodity operating systems on hardware they were not designed for. **VMware** followed in 1998, founded by Rosenblum, **Diane Greene** as chief executive, Bugnion, Devine and **Edward Wang**.
 
-Their answer was **binary translation**: rewrite the kernel code as it runs, replacing the instructions that would fail silently. It is an ugly solution to an elegant impossibility, and it made x86 virtualisation commercially viable seven years before Intel and AMD added hardware support in the mid-2000s.
+Their answer was **binary translation**: rewrite the kernel code as it runs, replacing the instructions that would fail silently. It is an ugly solution to an elegant impossibility, and it made x86 virtualization commercially viable seven years before Intel and AMD added hardware support in the mid-2000s.
 
-Note the sequence, because it inverts the usual story. **The chip vendors added virtualisation support after a software company proved there was a market**, not before. Hardware followed demand that software had already created.
+Note the sequence, because it inverts the usual story. **The chip vendors added virtualization support after a software company proved there was a market**, not before. Hardware followed demand that software had already created.
 
 ## The other lineage: containers
 
 Containers did not descend from virtual machines. They descend from a Unix command.
 
-**chroot**, introduced in Unix Version 7 in 1979, changes the apparent root directory for a process. It was not designed for security or for virtualisation, and it was the first step toward both anyway. **FreeBSD jails** in 2000 and **Solaris containers** in 2004 hardened the idea, and Linux namespaces and control groups turned it into a general mechanism that **Docker** made usable in 2013 and **Kubernetes** made schedulable a year later.
+**chroot**, introduced in Unix Version 7 in 1979, changes the apparent root directory for a process. It was not designed for security or for virtualization, and it was the first step towards both anyway. **FreeBSD jails** in 2000 and **Solaris containers** in 2004 hardened the idea, and Linux namespaces and control groups turned it into a general mechanism that **Docker** made usable in 2013 and **Kubernetes** made schedulable a year later.
 
-The two lineages answer different questions and the confusion between them is expensive. **A virtual machine virtualises the hardware; a container partitions the operating system.** One gives you a different kernel and a strong boundary at higher cost; the other gives you a shared kernel and a weaker boundary at almost no cost. Choosing between them is a decision about what you are isolating *from*, and treating a container boundary as equivalent to a hypervisor boundary is the single most common mistake in this family.
+The two lineages answer different questions and the confusion between them is expensive. **A virtual machine virtualizes the hardware; a container partitions the operating system.** One gives you a different kernel and a strong boundary at higher cost; the other gives you a shared kernel and a weaker boundary at almost no cost. Choosing between them is a decision about what you are isolating *from*, and treating a container boundary as equivalent to a hypervisor boundary is the single most common mistake in this family.
 
 ## Jobs and practices
 
@@ -61,11 +61,11 @@ It created **sprawl** as a discipline problem. The machine that is trivial to cr
 
 It created **the image** as the unit of work, and with it the supply chain question the industry is still answering: what is in the base image, who built it, and when was it last rebuilt.
 
-And it created the **snapshot** - the ability to capture and restore state - which changed backup, testing and forensics simultaneously, and which is why virtualisation is discussed in incident response as often as in capacity planning.
+And it created the **snapshot** - the ability to capture and restore state - which changed backup, testing and forensics simultaneously, and which is why virtualization is discussed in incident response as often as in capacity planning.
 
 ## The companies
 
-IBM built it and kept it inside the mainframe. VMware defined the commercial market and was bought by Broadcom; Xen and KVM carried the open lineage into the cloud providers, whose entire businesses rest on this technology; Docker created the container market and struggled to monetise it; and Kubernetes, donated by Google to a foundation, became the scheduling layer nearly everyone standardised on.
+IBM built it and kept it inside the mainframe. VMware defined the commercial market and was bought by Broadcom; Xen and KVM carried the open lineage into the cloud providers, whose entire businesses rest on this technology; Docker created the container market and struggled to monetize it; and Kubernetes, donated by Google to a foundation, became the scheduling layer nearly everyone standardized on.
 
 ## Where it goes
 

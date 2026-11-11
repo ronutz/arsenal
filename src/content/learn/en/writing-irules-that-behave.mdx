@@ -13,7 +13,7 @@ updated: "2026-09-16"
 
 Most iRules that misbehave are not slow. They are in the wrong place, and the symptom looks like a logic bug: a variable that is empty, a header that is not there yet, a decision made before the information needed to make it has arrived.
 
-That is why performance is the last question here and not the first. An iRule in the wrong event cannot be rescued by optimisation, and optimising one before checking where it runs is work spent on the wrong object.
+That is why performance is the last question here and not the first. An iRule in the wrong event cannot be rescued by optimization, and optimizing one before checking where it runs is work spent on the wrong object.
 
 ## Question zero: should this be an iRule at all
 
@@ -43,7 +43,7 @@ Checking command context before writing is faster than discovering it afterwards
 
 Only now does performance become a real question, because only now is the rule in the right place doing legal things.
 
-Two different concerns hide under "performance". One is patterns that are expensive by nature: regular expressions where a string comparison would do, per-request table operations, anything that allocates per connection. A linter finds those because they are recognisable shapes.
+Two different concerns hide under "performance". One is patterns that are expensive by nature: regular expressions where a string comparison would do, per-request table operations, anything that allocates per connection. A linter finds those because they are recognizable shapes.
 
 The other is volume. A rule that costs a little is still a problem at enough connections per second, and the arithmetic is worth doing explicitly rather than estimating. The useful output is not "this is fast" but "at your actual connection rate, this rule will consume roughly this much", which is a number you can hold against the platform you are running on.
 

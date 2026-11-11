@@ -34,6 +34,6 @@ Webhooks flip the direction. A provider (a payment processor, a Git host) calls 
 
 ## Replay protection
 
-A valid signed request that an attacker captures could be **replayed** verbatim. The standard defenses are to include a **timestamp** in the signed data and reject requests outside a short window, and optionally a **nonce** (a one-time value the server remembers briefly) so the same request cannot be accepted twice. Signing proves authenticity; the timestamp and nonce keep an old, genuine request from being reused.
+A valid signed request that an attacker captures could be **replayed** verbatim. The standard defences are to include a **timestamp** in the signed data and reject requests outside a short window, and optionally a **nonce** (a one-time value the server remembers briefly) so the same request cannot be accepted twice. Signing proves authenticity; the timestamp and nonce keep an old, genuine request from being reused.
 
 The [HMAC tool](/tools/hmac) computes the HMAC-SHA256 (and SHA-384/512) at the heart of every one of these schemes, over a message and key you provide, entirely in your browser.

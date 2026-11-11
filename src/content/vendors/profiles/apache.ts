@@ -32,7 +32,7 @@ export const apacheProfile: VendorProfile = {
       place: "the internet, coordinated from the California Bay Area",
       founders: [],
       story:
-        "Not a company and not, at the start, a project - a mailing list for people who each had a fix for the same abandoned server and nowhere to put it. The problem it solved first was organisational rather than technical: the code worked, the patches existed, and there was no route from one to the other.",
+        "Not a company and not, at the start, a project - a mailing list for people who each had a fix for the same abandoned server and nowhere to put it. The problem it solved first was organizational rather than technical: the code worked, the patches existed, and there was no route from one to the other.",
     },
     {
       company: "The Apache Software Foundation",
@@ -40,7 +40,7 @@ export const apacheProfile: VendorProfile = {
       place: "Delaware",
       founders: ["twenty-one members of the Apache Group"],
       story:
-        "Twenty-one founders, incorporating to hold intellectual property and trademarks. The organisation was built to solve the problem that had created it, which is a tidier piece of engineering than most software.",
+        "Twenty-one founders, incorporating to hold intellectual property and trademarks. The organization was built to solve the problem that had created it, which is a tidier piece of engineering than most software.",
     },
   ],
   timeline: [
@@ -73,7 +73,7 @@ export const apacheProfile: VendorProfile = {
     {
       title: "A foundation as succession planning",
       detail:
-        "The ASF exists so that the departure of any contributor changes nothing structural - the same failure that produced Apache in the first place. Incorporating to make yourself unnecessary is an unusual thing for founders to do, and it is why the organisation now hosts projects that have nothing to do with web servers.",
+        "The ASF exists so that the departure of any contributor changes nothing structural - the same failure that produced Apache in the first place. Incorporating to make yourself unnecessary is an unusual thing for founders to do, and it is why the organization now hosts projects that have nothing to do with web servers.",
     },
     {
       title: "The permissive licence as an invitation",
@@ -86,7 +86,7 @@ export const apacheProfile: VendorProfile = {
     "The foundation's own position is different and stronger: it is where a corporate-sponsored project goes to become credibly independent, which is a service with almost no competitors.",
   ],
   analyst: [
-    "There is no vendor here to assess, which is the point of the arrangement. What can be measured is durability: a codebase that began as patches to abandoned software is still in production thirty years later, and the organisation built around it now stewards several hundred other projects.",
+    "There is no vendor here to assess, which is the point of the arrangement. What can be measured is durability: a codebase that began as patches to abandoned software is still in production thirty years later, and the organization built around it now stewards several hundred other projects.",
     "The lasting contribution is arguably not the server at all. Several of the original eight went on to write the specifications the web runs on, and the governance model the foundation invented has been copied by nearly every large open-source project since - including by companies that would never have released anything without a neutral structure to release it into.",
   ],
 };

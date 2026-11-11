@@ -1,7 +1,7 @@
 ---
 slug: netskope-private-access-npa
 title: "Netskope Private Access: ZTNA Instead of the VPN"
-summary: "The Integrator blueprint's 'private application publication' objective names the platform's answer to remote access: NPA, a zero-trust network access service where lightweight publishers inside the data center dial out to the cloud, users' clients dial in, and the broker stitches per-application connections between them. No inbound firewall holes; for the per-application access the objective describes, no network-level access and no lateral movement (Netskope also documents Layer 3 access for the flows that need it) - and a policy model where 'can reach the app' is decided per user, per app, continuously. How it works, why the VPN comparison lands, and where the operational sharp edges are."
+summary: "The Integrator blueprint's 'private application publication' objective names the platform's answer to remote access: NPA, a zero-trust network access service where lightweight publishers inside the data centre dial out to the cloud, users' clients dial in, and the broker stitches per-application connections between them. No inbound firewall holes; for the per-application access the objective describes, no network-level access and no lateral movement (Netskope also documents Layer 3 access for the flows that need it) - and a policy model where 'can reach the app' is decided per user, per app, continuously. How it works, why the VPN comparison lands, and where the operational sharp edges are."
 concepts: ["netskope", "npa", "ztna", "zero trust", "vpn", "publisher", "private access", "remote access"]
 relatedTools: []
 relatedArticles: ["netskope-platform-architecture-and-newedge", "netskope-client-deployment", "netskope-steering-methods", "ipsec-and-ike-fundamentals"]
@@ -26,7 +26,7 @@ That per-application model is no longer the whole of NPA, and the [current docum
 | Subcomponent | Console name today | What it covers |
 |---|---|---|
 | Netskope Private Application Access | Netskope Private Access | Endpoint-initiated applications, per application, as described above |
-| Netskope Private Optimised Access | Netskope Endpoint SD-WAN (software-defined WAN) | Endpoint-initiated and server-initiated applications, including bi-directional and server-to-client flows, with traffic optimisation |
+| Netskope Private Optimised Access | Netskope Endpoint SD-WAN (software-defined WAN) | Endpoint-initiated and server-initiated applications, including bi-directional and server-to-client flows, with traffic optimization |
 | Netskope Private Unified Access | - | Both of the above combined |
 
 So the "applications, not networks" contract holds for Private Application Access. Where a tenant also runs Optimised or Unified Access, find out which subcomponent carries a given flow before assuming the per-application boundary applies to it.

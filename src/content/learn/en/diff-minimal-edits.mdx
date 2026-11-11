@@ -28,8 +28,8 @@ None of this means the diff is wrong; it is a correct minimal explanation, just 
 
 ## Minimal is not the same as understandable
 
-A diff algorithm optimises for the **fewest edits**, and that objective has no notion of meaning. The smallest edit script and the clearest explanation of a change are different things, and where they diverge the tool always chooses the first.
+A diff algorithm optimizes for the **fewest edits**, and that objective has no notion of meaning. The smallest edit script and the clearest explanation of a change are different things, and where they diverge the tool always chooses the first.
 
 This is why a change to a line that resembles its neighbours produces baffling output: the algorithm found a shorter alignment through the surrounding lines, which is correct by its own measure and useless by yours. Adding a closing brace can be reported as changing a different closing brace three lines away.
 
-**When a diff is unreadable, change the question rather than the change.** Word-level comparison, whitespace insensitivity, or a different base often produce output a human can read: the edits did not change, only what the algorithm was asked to minimise across.
+**When a diff is unreadable, change the question rather than the change.** Word-level comparison, whitespace insensitivity, or a different base often produce output a human can read: the edits did not change, only what the algorithm was asked to minimize across.

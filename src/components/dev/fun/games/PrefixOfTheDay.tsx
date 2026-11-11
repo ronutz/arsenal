@@ -945,7 +945,7 @@ export default function PrefixOfTheDay({ locale }: { locale: string }) {
 
   // The answers in words, for the result panels.
   const answerLine = (a: Facts) =>
-    t("answerLine", { network: formatAddress(a.network), broadcast: formatAddress(a.broadcast), mask: formatAddress(a.mask), hosts: a.hosts.toLocaleString(locale) });
+    t("answerLine", { network: formatAddress(a.network), broadcast: formatAddress(a.broadcast), mask: formatAddress(a.mask), hosts: a.hosts });
 
   // The daily result, once finished.
   const result: ShellResult | null =

@@ -19,7 +19,7 @@ Producing an HMAC (hash-based message authentication code) correctly is well und
 
 To verify, the receiver recomputes the HMAC over the message and checks it against the tag the sender supplied. The natural way to compare two strings, a normal `==`, returns as soon as it finds the first differing byte. That early exit leaks timing: a tag whose first byte is correct takes very slightly longer to reject than one that is wrong immediately. By measuring response times over many attempts, an attacker can recover the correct tag one byte at a time, a **timing attack**.
 
-The defense is a **constant-time comparison** that always examines every byte regardless of where the first difference is, so the time taken reveals nothing about how close a guess was. Most languages provide one:
+The defence is a **constant-time comparison** that always examines every byte regardless of where the first difference is, so the time taken reveals nothing about how close a guess was. Most languages provide one:
 
 - Node.js: `crypto.timingSafeEqual(a, b)`
 - Python: `hmac.compare_digest(a, b)`

@@ -291,7 +291,7 @@ export function decodeOgnlLocalisable(input: string): DecodeResult<EngineText> {
   let summary: EngineText; // the summary, with its id
   if (!looksLikeOgnl) {
     summary = say("summary.none", // nothing recognised
-      "No OGNL constructs recognised. This may be an unrelated string, an encoded payload that needs decoding first, or a form this tool does not know.");
+      "No OGNL constructs recognized. This may be an unrelated string, an encoded payload that needs decoding first, or a form this tool does not know.");
   } else if (hasEscape && hasExecution) {
     summary = say("summary.both", // escape and execution
       "This has both halves of a working attempt: something that tries to disable the expression sandbox, and something that tries to run a command. Treat it as a genuine exploitation attempt rather than a scan, and establish whether the request was blocked and what the application did with it.");
@@ -308,7 +308,7 @@ export function decodeOgnlLocalisable(input: string): DecodeResult<EngineText> {
 
   const caveats = [ // the three caveats, each with its id
     say("caveat.syntax", "This reads syntax. It cannot tell you whether the request was blocked, whether the application evaluated it, or whether it succeeded - those answers are in the WAF event and the application log, not in the payload."), // what it cannot tell
-    say("caveat.absence", "Absence of a recognised construct is not absence of risk. Payloads are routinely URL-encoded, double-encoded or split across parameters; decode first, then read."), // absence is not safety
+    say("caveat.absence", "Absence of a recognized construct is not absence of risk. Payloads are routinely URL-encoded, double-encoded or split across parameters; decode first, then read."), // absence is not safety
     say("caveat.families", "Advisory families are reported as consistent with the payload's shape, not as identification. Several share a shape, and a payload proves what was attempted rather than what was present."), // families are not identification
   ];
 

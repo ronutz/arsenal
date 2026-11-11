@@ -85,7 +85,7 @@
 // match is linear (ReDoS-safe). Values are BigInts, so 64 bits are exact.
 // ============================================================================
 
-import { say, plainText, withEngineText, EngineText } from "../engine-text"; // sentences with ids, and the API's English projection
+import { say, resolvePlurals, plainText, withEngineText, EngineText } from "../engine-text"; // sentences with ids, and the API's English projection
 
 // ----------------------------------------------------------------------------
 // Public shapes
@@ -389,13 +389,13 @@ export const SENTENCES = Object.freeze({
   "err.macInValue": "\"{value}\" looks like a MAC address: choose the MAC address mode to read it.", // a MAC in the number field
   "err.tooWide": "The value has more than 64 bits; this tool reads 1 to 64.", // past 64 bits
   "err.width": "\"{value}\" is not a width: write a whole number of bits from 1 to 64.", // a bad width
-  "err.fit": "The value needs {need} bits, more than the width of {width}: widen it or check the value.", // does not fit
-  "err.negativeFit": "{value} does not fit {width} bits as a two's complement number, which holds {min} to {max}.", // a negative too big for the width
+  "err.fit": "The value needs {need, plural, one {{need} bit} other {{need} bits}}, more than the width of {width}: widen it or check the value.", // does not fit
+  "err.negativeFit": "{value} does not fit {width, plural, one {{width} bit} other {{width} bits}} as a two's complement number, which holds {min} to {max}.", // a negative too big for the width
   "err.layout": "Choose a layout: none, lacp, mac-octet, tcp-flags, dns-flags, tos or vlan-tci.", // an unknown layout
   "err.layoutWidth": "The {layout} layout is {need} bits wide, and the value is {width}: set the width to {need}.", // a layout of another width
   "err.numbering": "Choose a numbering: lsb0 (bit 0 is the least significant), msb0 (bit 0 is the most significant) or one (bit 1 is the least significant).", // an unknown numbering
   "err.fieldNumber": "\"{value}\" is not a bit number: write a whole number.", // a bad index
-  "err.fieldRange": "Bit {value} does not exist in {width} bits numbered {numbering}: the bits run from {low} to {high}.", // out of range
+  "err.fieldRange": "Bit {value} does not exist in {width, plural, one {{width} bit} other {{width} bits}} numbered {numbering}: the bits run from {low} to {high}.", // out of range
   "err.toWithoutFrom": "Give the first bit of the field as well as the last.", // to without from
   // ---- Refusals: printed mode ----
   "err.printed": "\"{value}\" is not a printed bit string: write only 0s and 1s, with single spaces, underscores or dots between groups if you like (10111100).", // not bits
@@ -408,7 +408,7 @@ export const SENTENCES = Object.freeze({
   "note.msb0": "MSB 0 numbers them from the most significant, as the RFC diagrams do: \"the bit labeled 0 is the most significant bit\", so the octet drawn 1 0 1 0 1 0 1 0 is 170 (RFC 791, Appendix B).", // RFC 791
   "note.one": "1-based numbering counts from 1 at the least significant bit: SNMP places a BITS value in \"bits 8 (high order bit) to 1 (low order bit)\" of each octet (RFC 3417, section 8), and Huawei's display eth-trunk numbers its PortState Bit 1 to Bit 8.", // RFC 3417, Huawei
   "note.inferredHex": "No width was given: {width} bits, four for each hexadecimal digit typed, leading zeros included.", // inferred from hex
-  "note.inferredBin": "No width was given: {width} bits, one for each binary digit typed, leading zeros included.", // inferred from binary
+  "note.inferredBin": "No width was given: {width, plural, one {{width} bit} other {{width} bits}}, one for each binary digit typed, leading zeros included.", // inferred from binary
   "note.inferredDec": "No width was given: {width} bits, the smallest of 8, 16, 32 and 64 that holds the decimal value.", // inferred from decimal
   "note.sign": "The most significant bit is set, so read as a two's complement signed number the value is negative. Intel: \"The sign bit is located in bit 7 in a byte integer, bit 15 in a word integer, bit 31 in a doubleword integer, and bit 63 in a quadword integer\".", // Intel SDM 4.2.1.2
   "note.parity": "Parity counts the ones: with even parity a link adds the bit that makes \"an even number of logic 1s in the data and parity bits\", with odd parity the bit that makes the count odd (TI TL16C550D UART).", // TI
@@ -496,7 +496,7 @@ type SentenceId = keyof typeof SENTENCES; // the catalogue's keys
  */
 function s(id: SentenceId, args?: Record<string, string | EngineText>): EngineText {
   const tpl: string = SENTENCES[id]; // the English template
-  const text = args ? tpl.replace(/\{(\w+)\}/g, (m: string, k: string) => (k in args ? String(args[k]) : m)) : tpl; // filled for the API (a nested sentence by its English)
+  const text = args ? resolvePlurals(tpl, args).replace(/\{(\w+)\}/g, (m: string, k: string) => (k in args ? String(args[k]) : m)) : tpl; // filled for the API (a nested sentence by its English)
   return say(id, text, args); // the values kept for the page
 } // s
 

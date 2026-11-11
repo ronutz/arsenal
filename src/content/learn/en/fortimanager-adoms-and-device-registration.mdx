@@ -57,7 +57,7 @@ Revision retention is finite and configurable. A deployment that keeps only a ha
 The common ones, and what distinguishes them:
 
 - **Single FortiManager** managing devices directly. Simplest, and the availability of the manager becomes an operational concern.
-- **FortiManager HA**, a cluster with one primary handling configuration and peers holding synchronised copies.
+- **FortiManager HA**, a cluster with one primary handling configuration and peers holding synchronized copies.
 - **Manager of managers**, where a central FortiManager coordinates subordinate ones, used at scale or where administrative separation is required across regions.
 - **FortiManager with FortiAnalyzer features enabled**, letting one appliance both manage configuration and store logs. Convenient for smaller deployments, and it means the two workloads compete for the same resources.
 

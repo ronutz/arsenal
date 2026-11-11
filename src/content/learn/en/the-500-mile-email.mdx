@@ -27,7 +27,7 @@ It was the statistics department. They had done the analysis.
 
 Harris tested it himself, and it was true.
 
-Some time earlier a consultant had "patched the server". In doing so he had upgraded the operating system, SunOS, and with it *downgraded* sendmail - from version 8 to the SunOS version 5 - while leaving the version 8 configuration file in place. Sendmail 5 read a configuration written for a newer generation of itself. It parsed what it recognised. For the settings it did not recognise, the binary had no compiled-in defaults, so they came out as **zero**.
+Some time earlier a consultant had "patched the server". In doing so he had upgraded the operating system, SunOS, and with it *downgraded* sendmail - from version 8 to the SunOS version 5 - while leaving the version 8 configuration file in place. Sendmail 5 read a configuration written for a newer generation of itself. It parsed what it recognized. For the settings it did not recognize, the binary had no compiled-in defaults, so they came out as **zero**.
 
 One of the settings that came out as zero was the timeout for connecting to a remote mail server.
 

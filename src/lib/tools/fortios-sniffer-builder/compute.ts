@@ -30,7 +30,7 @@
 // up by level (verb.<n>) and code (ts.<a|l|rel>.label / .detail).
 // ============================================================================
 
-import { say, plainText, engineError, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
+import { say, enPlural, plainText, engineError, type EngineText } from "../engine-text"; // sentences with ids (02/11/2026)
 
 /** Hard input ceiling; a sniffer command is short, so this is generous. */
 const MAX_INPUT = 4000;
@@ -222,7 +222,7 @@ function explainArgs(
     explain:
       count === "0"
         ? say("arg.count0", "Packet count 0 means capture until you stop it with Ctrl+C. Set a number to auto-stop after that many packets.") // until Ctrl+C
-        : say("arg.count", `Stop automatically after ${count} packet(s). Ctrl+C stops earlier.`, { count }), // a count
+        : say("arg.count", `Stop automatically after ${count} ${enPlural(count, "packet", "packets")}. Ctrl+C stops earlier.`, { count }), // a count
   });
 
   const tinfo = TSFORMATS.find((t) => t.code === ts)!;

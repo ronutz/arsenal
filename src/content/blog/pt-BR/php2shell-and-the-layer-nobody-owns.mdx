@@ -7,7 +7,7 @@ date: "2026-10-27"
 tags: ["vulnerability-management", "php", "waf"]
 category: security
 status: reviewed
-updated: "2026-11-05"
+updated: "2026-11-11"
 relatedArticles: ["php-october-2026-vulnerabilities", "the-disclosure-record", "there-is-no-perfect-code", "waf-family-history"]
 ---
 
@@ -34,6 +34,8 @@ Nada disso é negligência no sentido comum. Cada caso é uma decisão razoável
 **Atualizado em 2 de novembro de 2026.** Desde então a Palo Alto liberou hotfixes para todas as linhas suportadas do PAN-OS, o último em 29 de outubro, e elevou a própria nota para Critical. Ela agora também relata exploração ativa de interfaces de gerência do PAN-OS expostas à internet, e a Unit 42 estima a parcela afetada em cerca de 0,02% da base instalada. É de novo o caso do appliance, e desta vez não é hipótese: o runtime dentro da caixa foi alcançado pela única interface que nunca deveria estar de frente para a internet. A F5, por sua vez, concluiu que nenhum produto F5 é vulnerável ao terceiro problema, a CVE-2026-115560 (K000163878, atualizado em 29 de outubro). O [artigo do Learn](/learn/php-october-2026-vulnerabilities) tem os detalhes e as fontes.
 
 **Atualizado em 5 de novembro de 2026.** Desde então a Siemens listou produtos próprios que carregam PHP e são afetados, entre eles o Spectrum Power e o AMIS TS, vários ainda sem correção disponível e um, o Energy Engage V2.0SP9, sem correção planejada (SSA-166980, V1.2, 29 de outubro). É de novo o caso do appliance, desta vez em produtos industriais e de energia. O artigo do Learn tem os detalhes e as fontes.
+
+**Atualizado em 11 de novembro de 2026.** Desde então a Siemens revisou o boletim para a V1.3 (5 de novembro), atualizando as listas de produtos sabidamente afetados e não afetados, e a Fortinet passou a listar o FortiSOAR, on-premise e PaaS, como afetado, com correções para alguns trains ainda por vir (FG-IR-26-186, atualizado em 5 de novembro). O artigo do Learn tem os detalhes.
 
 ## Metade da web em PHP está numa linha sem novas versões do projeto
 

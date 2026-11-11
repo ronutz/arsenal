@@ -28,11 +28,11 @@ export const netscapeProfile: VendorProfile = {
   ],
   timeline: [
     { year: 1994, title: "Navigator - and the cookie", detail: "The browser ships and immediately owns the young web; the same year, Lou Montulli invents the HTTP cookie so a shopping cart can remember itself - state for a stateless protocol, and a privacy debate that never ended." },
-    { year: 1995, title: "The IPO (initial public offering) that started an era", detail: "August 9, 1995: priced at $28, touching about $75 on day one - the moment Wall Street discovered the internet. The same year ships SSLv2 (Kipp Hickman's design) and Brendan Eich's ten-day language, JavaScript." },
+    { year: 1995, title: "The IPO (initial public offering) that started an era", detail: "9 August 1995: priced at $28, touching about $75 on day one - the moment Wall Street discovered the internet. The same year ships SSLv2 (Kipp Hickman's design) and Brendan Eich's ten-day language, JavaScript." },
     { year: 1996, title: "SSLv3: the ancestor of TLS", detail: "Paul Kocher and Netscape's engineers rebuild SSL properly; SSLv3 becomes the direct basis of IETF TLS 1.0 (1999) - the protocol family every certificate, cipher, and handshake tool on this site exists to explain." },
     { year: 1997, title: "The browser war turns", detail: "Internet Explorer, bundled free with Windows, grinds Navigator's share down release by release - the fight that becomes the centerpiece of United States v. Microsoft." },
-    { year: 1998, title: "Mozilla: opening the source", detail: "March 31, 1998: Netscape releases its browser source - the act that coins 'open source' as a movement's name and, through the Mozilla Foundation (2003), eventually yields Firefox." },
-    { year: 1999, title: "AOL closes", detail: "March 17, 1999: AOL completes the all-stock acquisition (announced at ~$4.2 billion, worth roughly $10 billion by close as AOL stock climbed); the Netscape brand fades, the inventions - TLS, JavaScript, the cookie - run everything.", sourceNote: "Announced November 24, 1998; values per the deal record." },
+    { year: 1998, title: "Mozilla: opening the source", detail: "31 March 1998: Netscape releases its browser source - the act that coins 'open source' as a movement's name and, through the Mozilla Foundation (2003), eventually yields Firefox." },
+    { year: 1999, title: "AOL closes", detail: "17 March 1999: AOL completes the all-stock acquisition (announced at ~$4.2 billion, worth roughly $10 billion by close as AOL stock climbed); the Netscape brand fades, the inventions - TLS, JavaScript, the cookie - run everything.", sourceNote: "Announced 24 November 1998; values per the deal record." },
   ],
   products: [
     { name: "Navigator", what: "The browser that took the web mainstream - at its 1996 peak, the way most of the world saw the internet." },

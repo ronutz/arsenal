@@ -29,17 +29,17 @@ The [cypherpunks](/glossary/cypherpunks) had been making the same case since 199
 
 ## The Clipper chip
 
-The government's counter-proposal in 1993 was the **Clipper chip**: strong encryption for telephones, built into the hardware, with a copy of every key held in escrow so authorities could decrypt with legal authorisation. The pitch was that citizens would get real privacy and the state would keep lawful access - the exact trade-off proposed under new names in every decade since.
+The government's counter-proposal in 1993 was the **Clipper chip**: strong encryption for telephones, built into the hardware, with a copy of every key held in escrow so authorities could decrypt with legal authorization. The pitch was that citizens would get real privacy and the state would keep lawful access - the exact trade-off proposed under new names in every decade since.
 
 It collapsed for two reasons that are still the correct reasons.
 
-The **political** objection was that a key held by someone else is not your key, and a system designed to be opened by an authorised party can be opened by an unauthorised one.
+The **political** objection was that a key held by someone else is not your key, and a system designed to be opened by an authorized party can be opened by an unauthorized one.
 
 The **technical** objection was that this was demonstrated. Matt Blaze published a flaw in the escrow mechanism in 1994 showing the system could be used in a way that defeated the escrow function, which meant Clipper failed on its own terms. Adoption never happened.
 
 ## Bernstein, and code as speech
 
-The legal question was settled by **Daniel Bernstein**, a graduate student who wanted to publish an encryption algorithm called Snuffle and sued rather than accept that publishing it required an arms licence. The courts found that **source code is expressive speech** protected by the First Amendment, and the export regime was substantially liberalised in 1996 and 2000.
+The legal question was settled by **Daniel Bernstein**, a graduate student who wanted to publish an encryption algorithm called Snuffle and sued rather than accept that publishing it required an arms licence. The courts found that **source code is expressive speech** protected by the First Amendment, and the export regime was substantially liberalized in 1996 and 2000.
 
 That ruling is load-bearing for everything that followed. Without it there is no lawful export of strong TLS, no worldwide HTTPS, no e-commerce as it actually developed, and no open publication of cryptographic research. The same principle resurfaced immediately in the [DeCSS](/glossary/dvd-jon) fight, where a decryption program circulated as a haiku, a T-shirt and a prime number to make the point that banning a program means banning a number.
 
@@ -49,7 +49,7 @@ The 1990s settlement did not end the argument; it moved it.
 
 The **Snowden disclosures** in 2013 showed the state had continued the project by other means - bulk collection, weakened standards, and the case of the **Dual EC DRBG** random number generator, a NIST-standardised algorithm widely believed to contain a deliberate backdoor and paid into a commercial product. The response was an industry-wide sprint to encrypt everything by default: HTTPS everywhere, encrypted messaging as a consumer expectation, certificate transparency, and free certificates at scale.
 
-The third round is ongoing and uses different words. Lawful access, client-side scanning, exceptional access, traceability requirements. The technical answer has not changed since Blaze broke Clipper in 1994: a mechanism that lets an authorised party read encrypted content is a mechanism, and mechanisms do not check credentials at the door.
+The third round is ongoing and uses different words. Lawful access, client-side scanning, exceptional access, traceability requirements. The technical answer has not changed since Blaze broke Clipper in 1994: a mechanism that lets an authorized party read encrypted content is a mechanism, and mechanisms do not check credentials at the door.
 
 ## Why this belongs in a hacker history
 

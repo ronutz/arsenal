@@ -25,7 +25,7 @@ The `gopher://` scheme is the most abused, because it lets an attacker place nea
 
 `dict://` can probe and interact with services and leak banners. `ftp://`, `tftp://`, `ldap://`, `sftp://`, and `jar://` each reach services a plain web request cannot, and several have been used to move from a fetch to an internal action.
 
-## The defense is a scheme allow-list
+## The defence is a scheme allow-list
 
 Because these schemes provide capabilities far beyond fetching a web page, the fix is simple and strict: allow only `http` and `https`, and reject every other scheme before the request is built. [SSRF URL classifier](/tools/ssrf-url-classifier) flags a dangerous scheme as soon as it sees one, raising the risk to high regardless of the host, because the scheme alone is enough to matter.
 

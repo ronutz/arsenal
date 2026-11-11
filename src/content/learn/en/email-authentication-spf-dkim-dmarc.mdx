@@ -55,12 +55,12 @@ The honest deployment path is not the one that gets recommended in a single sent
 
 1. **Publish SPF and DKIM properly**, then DMARC at `p=none`. Nothing is blocked yet.
 2. **Read the reports for weeks.** You will find legitimate senders nobody told you about: the invoicing system, the marketing platform, the ticketing tool, a branch office relay.
-3. **Fix or authorise each one.** This is the real work, it is organisational rather than technical, and it is where projects die.
+3. **Fix or authorize each one.** This is the real work, it is organizational rather than technical, and it is where projects die.
 4. **Move to `quarantine`, then `reject`,** one step at a time, comparing the reports at each.
 
 RFC 9989 puts numbers on that patience for any domain whose users post to mailing lists: publish `p=none` "for at least a month", then `p=quarantine` for an equally long period, and compare the results before thinking of `p=reject`, which it advises such domains not to publish at all ([RFC 9989, section 7.4](https://www.rfc-editor.org/rfc/rfc9989.txt)). A domain that does publish `p=reject` "MUST apply valid DKIM signatures to their messages", because forwarding breaks SPF (section 7.4). The percentage rollout that older guides recommend is gone: RFC 9989 removed the `pct` tag, because receivers usually applied it accurately only at 0 and 100, and kept its useful half as the `t` tag, for testing, where `t=y` asks receivers to apply one level below the published policy, `none` instead of `quarantine` and `quarantine` instead of `reject` (Appendices A.6 and C.5.2, section 4.7).
 
-Organisations sit at `p=none` for years because step 3 requires finding every system that sends mail as the company, in a company where nobody has that list. Publishing `p=reject` before finishing it means blocking your own invoices.
+Organizations sit at `p=none` for years because step 3 requires finding every system that sends mail as the company, in a company where nobody has that list. Publishing `p=reject` before finishing it means blocking your own invoices.
 
 ## What breaks it in the real world
 
@@ -76,7 +76,7 @@ This is the part that gets oversold, so state it plainly:
 - **Display-name spoofing.** A message from a random address showing the display name of your chief executive passes everything, because nothing here authenticates a human-readable name.
 - **Compromised legitimate accounts.** Mail sent from a real, hijacked mailbox is authentic by every measure these standards apply.
 
-The accurate summary: **these standards stop others from sending as your domain. They do not stop your users from being phished.** That second problem needs different controls, and conflating the two is how organisations end up believing an authentication project made them safe.
+The accurate summary: **these standards stop others from sending as your domain. They do not stop your users from being phished.** That second problem needs different controls, and conflating the two is how organizations end up believing an authentication project made them safe.
 
 ## Neighbours often confused with these
 

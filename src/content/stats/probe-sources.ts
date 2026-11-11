@@ -97,6 +97,7 @@ export const PROBE_SOURCES: Readonly<Record<ProbeFamily, readonly ProbeSource[]>
   "wp-core": [
     { label: "CVE-2026-119977, WordPress Core 4.7.0 - 7.1.3: upgrade-window remote code execution", url: "https://www.cve.org/CVERecord?id=CVE-2026-119977", read: "2026-11-05" },
     { label: "WordPress.org, WordPress 7.1.4 (28 October 2026)", url: "https://wordpress.org/news/2026/10/wordpress-7-1-4/", read: "2026-11-05" },
+    { label: "WordPress.org, Releases (7.0.8, 6.9.11, 6.8.12 ... 4.7.39, each 28 October 2026)", url: "https://wordpress.org/download/releases/", read: "2026-11-11" },
     { label: "CISA, Known Exploited Vulnerabilities Catalog, CVE-2026-119977 (added 3 November 2026)", url: "https://www.cisa.gov/known-exploited-vulnerabilities-catalog?field_cve=CVE-2026-119977", read: "2026-11-05" },
   ],
   // Each file the explanation names, in its order, from the project that defines it (the Antigravity CLI by its folder,
@@ -104,23 +105,28 @@ export const PROBE_SOURCES: Readonly<Record<ProbeFamily, readonly ProbeSource[]>
   secrets: [
     { label: "Git, gitrepository-layout", url: "https://git-scm.com/docs/gitrepository-layout", read: "2026-11-02" },
     { label: "Apache Subversion, Version Control the Subversion Way (svnbook 1.7)", url: "https://svnbook.red-bean.com/en/1.7/svn.basic.in-action.html", read: "2026-11-02" },
+    { label: "Mercurial wiki, FileFormats (.hg/requires, .hg/dirstate, the store)", url: "https://wiki.mercurial-scm.org/FileFormats", read: "2026-11-11" },
     { label: "Git, git-credential-store", url: "https://git-scm.com/docs/git-credential-store", read: "2026-11-02" },
     { label: "Dotenv, Security: .env", url: "https://www.dotenv.org/docs/security/env", read: "2026-11-02" },
     { label: "GNU Emacs manual, Single or Numbered Backups", url: "https://www.gnu.org/software/emacs/manual/html_node/emacs/Backup-Names.html", read: "2026-11-02" },
     { label: "AWS CLI, configuration and credential files", url: "https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html", read: "2026-11-02" },
-    { label: "OpenBSD manual, ssh-keygen(1), FILES", url: "https://man.openbsd.org/ssh-keygen", read: "2026-11-02" },
+    { label: "OpenBSD manual, ssh-keygen(1), FILES (~/.ssh/id_rsa, id_ecdsa, id_ed25519)", url: "https://man.openbsd.org/ssh-keygen", read: "2026-11-11" },
+    { label: "OpenBSD manual, sshd(8), FILES (~/.ssh/authorized_keys)", url: "https://man.openbsd.org/sshd", read: "2026-11-11" },
+    { label: "HashiCorp Vault docs, Token helpers (the ~/.vault-token file)", url: "https://developer.hashicorp.com/vault/docs/commands/token-helper", read: "2026-11-11" },
     { label: "Google Antigravity docs, Authenticate (CLI): the ~/.gemini/antigravity-cli folder", url: "https://antigravity.google/docs/install?tab=cli", read: "2026-11-05" },
     { label: "Kubernetes, Organizing Cluster Access Using kubeconfig Files ($HOME/.kube/config)", url: "https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/", read: "2026-11-05" },
     { label: "Microsoft Learn, Azure CLI configuration ($HOME/.azure, its config file)", url: "https://learn.microsoft.com/en-us/cli/azure/azure-cli-configuration", read: "2026-11-05" },
     { label: "Linux man-pages, proc_pid_environ(5)", url: "https://man7.org/linux/man-pages/man5/proc_pid_environ.5.html", read: "2026-11-05" },
     { label: "GNU Bash manual, HISTFILE", url: "https://www.gnu.org/software/bash/manual/html_node/Bash-Variables.html", read: "2026-11-02" },
-    { label: "Python, the site module (~/.python_history)", url: "https://docs.python.org/3/library/site.html", read: "2026-11-02" },
+    { label: "Python, the site module (~/.python_history; lib/pythonX.Y/site-packages on Unix and macOS, Lib/site-packages on Windows)", url: "https://docs.python.org/3/library/site.html", read: "2026-11-11" },
     { label: "Node.js, REPL persistent history", url: "https://nodejs.org/api/repl.html", read: "2026-11-02" },
+    { label: "SendGrid, sendgrid-python README (SENDGRID_API_KEY, sendgrid.env or .env; the mail helper at sendgrid/helpers/mail)", url: "https://github.com/sendgrid/sendgrid-python", read: "2026-11-11" },
     { label: "Juniper Networks, signature HTTP:INFO-LEAK:DS-STORE", url: "https://signatures.juniper.net/documentation/signatures/HTTP:INFO-LEAK:DS-STORE.html", read: "2026-11-02" },
     { label: "Apple Support, Adjust SMB browsing behavior in macOS (.DS_Store, a folder's metadata)", url: "https://support.apple.com/en-us/102064", read: "2026-11-05" },
     { label: "CVE-2025-30208, Vite bypasses server.fs.deny when using ?raw??", url: "https://www.cve.org/CVERecord?id=CVE-2025-30208", read: "2026-11-05" },
     { label: "CVE-2025-31125, Vite server.fs.deny bypassed for inline and raw with ?import", url: "https://www.cve.org/CVERecord?id=CVE-2025-31125", read: "2026-11-05" },
     { label: "CISA, Known Exploited Vulnerabilities Catalog, CVE-2025-31125 (added 22 January 2026)", url: "https://www.cisa.gov/known-exploited-vulnerabilities-catalog?field_cve=CVE-2025-31125", read: "2026-11-05" },
+    { label: "CVE-2026-118662, Vite 6.4.4 evaluates server.fs.deny before stripping loader query parameters (fixed in 6.4.5)", url: "https://www.cve.org/CVERecord?id=CVE-2026-118662", read: "2026-11-11" },
   ],
   // Spring Boot's endpoints now and in version 1 (root paths, the /manage prefix), the Yii 2 debugger (localhost only,
   // what it shows), Magento's version module, the Kubernetes health endpoints (healthz deprecated), and Symfony's
@@ -138,7 +144,7 @@ export const PROBE_SOURCES: Readonly<Record<ProbeFamily, readonly ProbeSource[]>
   ],
   // Livewire's update endpoint and its flaw (CVE record, CISA's catalogue, the route in 3.6.4 and the docs), the
   // dashboards' default addresses (Telescope, Horizon and Pulse local-only by default), Nova's path, and the routes
-  // Fortify and laravel/ui define.
+  // Fortify and laravel/ui define, and Jetstream's profile and API token pages (2026-11-11).
   laravel: [
     { label: "CVE-2025-54068, Livewire vulnerable to remote command execution during property update hydration", url: "https://www.cve.org/CVERecord?id=CVE-2025-54068", read: "2026-11-05" },
     { label: "CISA, Known Exploited Vulnerabilities Catalog, CVE-2025-54068 (added 20 March 2026)", url: "https://www.cisa.gov/known-exploited-vulnerabilities-catalog?field_cve=CVE-2025-54068", read: "2026-11-05" },
@@ -151,6 +157,7 @@ export const PROBE_SOURCES: Readonly<Record<ProbeFamily, readonly ProbeSource[]>
     { label: "Laravel Nova docs, Installation (the /nova path)", url: "https://nova.laravel.com/docs/v5/installation", read: "2026-11-05" },
     { label: "Laravel docs 12.x, Fortify (/two-factor-challenge, /email/verify)", url: "https://laravel.com/docs/12.x/fortify", read: "2026-11-05" },
     { label: "laravel/ui, AuthRouteMethods.php (password/reset, email/verify)", url: "https://github.com/laravel/ui/blob/4.x/src/AuthRouteMethods.php", read: "2026-11-05" },
+    { label: "laravel/jetstream 5.x, routes/livewire.php (/user/profile, /user/api-tokens)", url: "https://github.com/laravel/jetstream/blob/5.x/routes/livewire.php", read: "2026-11-11" },
   ],
   // Drupal's public files folder, Joomla's administrator address, OpenCart's admin code folder, cPanel's sign-in and
   // Next.js's build folder.

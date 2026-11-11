@@ -17,6 +17,8 @@
 // or when a block has no valid date.
 // ============================================================================
 
+// English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
+import { intlLocale } from "@/i18n/locales";
 import type { ReactNode } from "react";
 import { getLocale, getTranslations } from "next-intl/server";
 
@@ -31,7 +33,7 @@ export default async function RodVoice({ said, children }: { said: string; child
   // The block's words.
   const t = await getTranslations("learnVoice");
   // The day, written the way the page's language writes a date (noon UTC, so no time zone shifts the day).
-  const day = new Intl.DateTimeFormat(locale, { dateStyle: "long", timeZone: "UTC" }).format(new Date(`${said}T12:00:00Z`));
+  const day = new Intl.DateTimeFormat(intlLocale(locale), { dateStyle: "long", timeZone: "UTC" }).format(new Date(`${said}T12:00:00Z`));
   return (
     <aside className="rod-voice" role="note" aria-label={t("kicker")}>
       {/* Whose view this is, first, so no reader takes it for the article's finding. */}

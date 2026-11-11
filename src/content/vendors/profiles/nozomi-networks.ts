@@ -56,7 +56,7 @@ export const nozomiProfile: VendorProfile = {
     { name: "Guardian", what: "The passive network sensor, formerly SCADAguardian: it reads the traffic already on the wire, builds the asset inventory from what it hears, learns what normal looks like, and reports deviation. Nothing is sent to the devices." },
     { name: "Guardian Air", what: "A wireless spectrum sensor. A rogue device on a rooftop or in a vehicle never touches the wired network, so a wired-only inventory cannot see it - this listens to the radio instead." },
     { name: "Arc", what: "An endpoint sensor for the machines that can carry one, extending visibility to where network traffic alone cannot reach, and from 2025 automating response in environments where automated response has historically been unthinkable." },
-    { name: "Vantage", what: "The cloud console tying network, wireless and endpoint together across sites - a single view for organisations whose plants are in dozens of countries." },
+    { name: "Vantage", what: "The cloud console tying network, wireless and endpoint together across sites - a single view for organizations whose plants are in dozens of countries." },
     { name: "Smart Polling", what: "Selective, carefully-shaped active queries for the cases where passive listening genuinely cannot answer the question. The interesting part is how narrowly it is scoped, because the entire product philosophy exists to avoid exactly this." },
     { name: "Asset and Threat Intelligence", what: "Feeds identifying industrial equipment and known vulnerabilities in it - the reference data that turns an observed device into an assessed one." },
   ],

@@ -21,24 +21,24 @@ export const cienaProfile: VendorProfile = {
       place: "Maryland, United States",
       founders: ["David Huber (Patrick Nettles, founding CEO)"],
       story:
-        "David Huber's insight was that the fiber already in the ground could carry many wavelengths at once - colours, each a full channel - if someone productized dense wavelength-division multiplexing. In June 1996 Sprint lit Ciena's MultiWave 1600 and one strand of glass became sixteen: capacity multiplied without digging. The February 1997 IPO (initial public offering) set records, the crash nearly killed the sector, and Ciena emerged as the optical layer's defining pure-play - eventually inheriting Nortel's optical crown.",
+        "David Huber's insight was that the fibre already in the ground could carry many wavelengths at once - colours, each a full channel - if someone productized dense wavelength-division multiplexing. In June 1996 Sprint lit Ciena's MultiWave 1600 and one strand of glass became sixteen: capacity multiplied without digging. The February 1997 IPO (initial public offering) set records, the crash nearly killed the sector, and Ciena emerged as the optical layer's defining pure-play - eventually inheriting Nortel's optical crown.",
     },
   ],
   timeline: [
-    { year: 1996, title: "First commercial DWDM", detail: "Sprint deploys the MultiWave 1600: sixteen 2.5 Gb/s channels on one fiber. The economics of long-haul change overnight - bandwidth stops meaning trenches and starts meaning transponders.", sourceNote: "Deployment date per the public record." },
-    { year: 1997, title: "The record IPO", detail: "February 1997: Ciena goes public at the largest first-day valuation yet for a venture-backed startup - the market pricing in what multiplied fiber meant for the coming internet build-out." },
+    { year: 1996, title: "First commercial DWDM", detail: "Sprint deploys the MultiWave 1600: sixteen 2.5 Gb/s channels on one fibre. The economics of long-haul change overnight - bandwidth stops meaning trenches and starts meaning transponders.", sourceNote: "Deployment date per the public record." },
+    { year: 1997, title: "The record IPO", detail: "February 1997: Ciena goes public at the largest first-day valuation yet for a venture-backed startup - the market pricing in what multiplied fibre meant for the coming internet build-out." },
     { year: 2002, title: "Surviving the winter", detail: "The telecom crash guts optical spending; Ciena cuts deep, diversifies (ONI Systems and others), and outlasts a field of funded rivals - the discipline that positions it for the decade's biggest prize." },
     { year: 2010, title: "The Nortel optical inheritance", detail: "Ciena acquires Nortel's Metro Ethernet Networks business (~$770 million) out of the bankruptcy - the 40G coherent pioneers and the OME/6500 lines join, making Ciena the heir of the great Canadian optical tradition.", sourceNote: "Deal figure per the public record." },
-    { year: 2012, title: "WaveLogic coherent era", detail: "Coherent detection - encoding in phase and polarization, undoing impairments in DSP - becomes Ciena's franchise; each WaveLogic generation roughly doubles what a wavelength carries, from 40G toward today's 800G-class." },
+    { year: 2012, title: "WaveLogic coherent era", detail: "Coherent detection - encoding in phase and polarization, undoing impairments in DSP - becomes Ciena's franchise; each WaveLogic generation roughly doubles what a wavelength carries, from 40G towards today's 800G-class." },
     { year: 2020, title: "The layer under everything", detail: "Submarine builds, metro DCI, Blue Planet automation - Ciena settles into its role: whoever's logo is on the router, the photons underneath very often ride Ciena line systems." },
   ],
   products: [
-    { name: "MultiWave 1600", what: "The first commercial dense-WDM system - the 1996 artifact that multiplied installed fiber." },
+    { name: "MultiWave 1600", what: "The first commercial dense-WDM system - the 1996 artifact that multiplied installed fibre." },
     { name: "6500 family", what: "The converged packet-optical platform (with the Nortel heritage inside) that anchors carrier and DCI networks." },
     { name: "WaveLogic coherent optics", what: "The DSP-defined modem line that turned wavelength capacity into a software-improved product." },
   ],
   innovations: [
-    { title: "DWDM as a product", detail: "Others demonstrated wavelength multiplexing; Ciena SHIPPED it into a live carrier network - the moment fiber capacity decoupled from construction." },
+    { title: "DWDM as a product", detail: "Others demonstrated wavelength multiplexing; Ciena SHIPPED it into a live carrier network - the moment fibre capacity decoupled from construction." },
     { title: "Coherent optics leadership", detail: "Betting the company on coherent DSP made distance-times-capacity a semiconductor curve - the optical layer's own Moore's Law." },
   ],
   markets: [

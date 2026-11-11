@@ -18,7 +18,7 @@ Type or click a topic and the tool explains it in F5's terms: the iQuery mesh of
 
 At the top of the reading, **Share results** builds a link to this page, only when you press it, that carries the box as typed after the `#`, and nothing else. Its popover says first what the link carries, then a caution of its own: the output can name your BIG-IP systems, self IPs and versions, so read it before you send the link. Then it offers Copy link and, where the browser has one, its share sheet; the page's address is not changed.
 
-The topic index is not a result: while it shows (an empty box, `list`, or text the tool does not recognise) the button is disabled. Neither `iqdump` output nor these log lines carry credentials: the iQuery trust is the certificates the systems exchange.
+The topic index is not a result: while it shows (an empty box, `list`, or text the tool does not recognize) the button is disabled. Neither `iqdump` output nor these log lines carry credentials: the iQuery trust is the certificates the systems exchange.
 
 [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986) (section 3.5, read 2026-10-27) has the fragment "separated from the rest of the URI prior to a dereference", so the text is not sent to the server when the link is opened; it stays in the address bar and the history of whoever opens it, and anyone who has the link can read it.
 

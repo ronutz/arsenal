@@ -211,7 +211,7 @@ function symbolFor(letter: string, binary: boolean, bytes: boolean): string {
 export const MAX_FIELD = 64;
 
 /** The time units the engine reads: ms, s, min, h, d and their English, Portuguese, Spanish and German words (segundos, minutos and horas are shared; días is Spanish; Sekunde(n), Minute(n), Stunde(n), Tag(e/en) German, 09/11/2026). */
-const TIME_UNIT = "ms|s|sec|secs|seconds?|segundos?|sekunden?|secondes?|min|mins|minutes?|minutos?|minuten?|h|hr|hrs|hours?|horas?|stunden?|heures?|d|days?|dias?|días?|tagen|tage|tag|jours?|j"; // French words and "j" since 09/11/2026
+const TIME_UNIT = "ms|s|sec|secs|seconds?|segundos?|sekunden?|secondes?|second[oi]|min|mins|minutes?|minutos?|minuten?|minuti|h|hr|hrs|hours?|horas?|stunden?|heures?|ora|ore|d|days?|dias?|días?|tagen|tage|tag|jours?|j|giorn[oi]"; // French words and "j" since 09/11/2026; Italian secondo/i, minuto/i, ora/ore, giorno/i since 11/11/2026 (minuto is minutos? already)
 /** A whole duration: one or more number+unit groups and nothing else. */
 const TIME_SHAPE = new RegExp(`^(\\d+(?:[.,]\\d+)?\\s*(${TIME_UNIT})\\s*)+$`, "i");
 /** One number+unit group, for matchAll. */
@@ -227,7 +227,7 @@ export function parseQuantity(raw: string, expect?: Kind): Quantity | null {
   if (!text) return null;
   const notes: QuantityNote[] = [];
 
-  // ---- time: one or more number+unit groups ("2h 30min", "90 s", "1.5 days", "2 horas"); the unit words are English, Portuguese, Spanish, German and French
+  // ---- time: one or more number+unit groups ("2h 30min", "90 s", "1.5 days", "2 horas"); the unit words are English, Portuguese, Spanish, German, French and Italian
   if (expect === "time" || TIME_SHAPE.test(text)) {
     // In the time field the whole text must still be number+unit groups: "1 semana" is not a duration the engine knows.
     if (!TIME_SHAPE.test(text)) return null;
@@ -238,7 +238,7 @@ export function parseQuantity(raw: string, expect?: Kind): Quantity | null {
     for (const g of groups) {
       const v = parseDec(g[1]); if (!v) return null;
       const u = g[2].toLowerCase();
-      const factorMs = u === "ms" ? 1n : /^(s|sec|secs|second|seconds|segundos?|sekunden?|secondes?)$/.test(u) ? 1000n : /^(min|mins|minute|minutes|minutos?|minuten)$/.test(u) ? 60_000n : /^(h|hr|hrs|hour|hours|horas?|stunden?|heures?)$/.test(u) ? 3_600_000n : 86_400_000n; // German words since 09/11/2026 ("minute" is shared), French since the same day ("jours" and "j" fall through to days)
+      const factorMs = u === "ms" ? 1n : /^(s|sec|secs|second|seconds|segundos?|sekunden?|secondes?|second[oi])$/.test(u) ? 1000n : /^(min|mins|minute|minutes|minutos?|minuten|minuti)$/.test(u) ? 60_000n : /^(h|hr|hrs|hour|hours|horas?|stunden?|heures?|ora|ore)$/.test(u) ? 3_600_000n : 86_400_000n; // German words since 09/11/2026 ("minute" is shared), French since the same day ("jours" and "j" fall through to days), Italian since 11/11/2026 ("giorno" and "giorni" fall through to days)
       // v (scale k) * factorMs ms -> as a Dec in ms, then to seconds by adding 3 to the scale.
       const ms: Dec = { num: v.num * factorMs, scale: v.scale };
       const asSeconds: Dec = { num: ms.num, scale: ms.scale + 3 };

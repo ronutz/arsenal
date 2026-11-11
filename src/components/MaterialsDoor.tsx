@@ -26,6 +26,8 @@
 // words are read here, in the page's locale, from the "materials" namespace.
 // ============================================================================
 
+// English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
+import { intlLocale } from "@/i18n/locales";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { MATERIALS, slideImagePath } from "@/content/materials/materials";
@@ -64,7 +66,7 @@ export default async function MaterialsDoor({
   // The one-sentence door: the courses named and linked, joined the locale's way ("A and B", "A e B").
   if (variant === "line") {
     // The list's parts: each course's title as an element, the locale's connectors as literals.
-    const parts = new Intl.ListFormat(locale, { style: "long", type: "conjunction" }).formatToParts(courses.map((c) => c.title));
+    const parts = new Intl.ListFormat(intlLocale(locale), { style: "long", type: "conjunction" }).formatToParts(courses.map((c) => c.title));
     // Each element is matched back to its course by position.
     let i = 0;
     return (

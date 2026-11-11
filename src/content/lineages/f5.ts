@@ -76,7 +76,7 @@ export interface VendorLineage {
   tagline: string;
   founded: {
     year: number;
-    dateText: string; // e.g. "February 26, 1996"
+    dateText: string; // e.g. "26 February 1996"
     place: string;
     asName: string; // the name at founding
     founder?: string;
@@ -109,7 +109,7 @@ export const f5Lineage: VendorLineage = {
     "From a single load balancer to an application delivery and security platform, largely assembled by acquisition.",
   founded: {
     year: 1996,
-    dateText: "February 26, 1996",
+    dateText: "26 February 1996",
     place: "Seattle, Washington",
     asName: "F5 Labs, Inc.",
     founder: "Jeff Hussey",
@@ -127,7 +127,7 @@ export const f5Lineage: VendorLineage = {
     { year: 2005, name: "Swan Labs", price: "$43M", what: "WAN optimization and web acceleration." },
     { year: 2007, name: "Acopia Networks", price: "$210M", what: "Intelligent file virtualization (file-area networking).", became: "Folded into the BIG-IP LTM product line.", sourceNote: "SEC 10-K FY2007: $207.8M plus $2.2M costs, ~$210M total." },
     { year: 2011, name: "Crescendo Networks", price: "undisclosed", what: "Web application acceleration and optimization IP." },
-    { year: 2012, name: "Traffix Systems", price: "$135M", what: "Diameter signaling for mobile carrier networks." },
+    { year: 2012, name: "Traffix Systems", price: "$135M", what: "Diameter signalling for mobile carrier networks." },
     { year: 2013, name: "LineRate Systems", price: "~$125M", what: "Software-defined, x86-based load balancing with a Node.js datapath." },
     { year: 2013, name: "Versafe", price: "$91.7M", what: "Anti-fraud, anti-phishing and anti-malware for web and mobile.", sourceNote: "SEC 10-K FY2013: $91.7M (some sources cite ~$92M)." },
     { year: 2014, name: "Defense.Net", price: "$49.4M", what: "Cloud-based DDoS mitigation as a service.", sourceNote: "SEC 10-K FY2014: $49.4M in cash, acquired 22 May 2014; the business-combination note states $49.7M consideration plus ~$0.3M of transaction costs expensed separately, so both figures are the company's own." },

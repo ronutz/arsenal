@@ -61,7 +61,7 @@ And then the patch chain, which is a lesson in itself. Version 2.15.0 only parti
 
 **Code review does not reliably find it either**, because each half is defensible in isolation. Exporting functions through the environment is a feature. Substituting values into log messages is a feature. Passing HTTP headers to CGI programs as environment variables is a specification. The vulnerability exists only in the join, and the join is usually across a boundary nobody owns - between the shell and the web server, between the application and the library it logs with.
 
-**And it is a supply-chain problem by construction.** Almost nobody who was exposed to Log4Shell had heard of the lookup feature, because almost nobody chose Log4j directly; it arrived as a dependency of a dependency. The question "do we use Log4j" turned out, for most organisations, to be genuinely hard to answer in December 2021, and that difficulty is the reason software bills of materials stopped being a compliance exercise and started being an operational one.
+**And it is a supply-chain problem by construction.** Almost nobody who was exposed to Log4Shell had heard of the lookup feature, because almost nobody chose Log4j directly; it arrived as a dependency of a dependency. The question "do we use Log4j" turned out, for most organizations, to be genuinely hard to answer in December 2021, and that difficulty is the reason software bills of materials stopped being a compliance exercise and started being an operational one.
 
 ## The recurring theme
 
@@ -79,7 +79,7 @@ The formats where two implementations can disagree about the same bytes are coll
 
 **Assume the first patch is not the last.** Both of these needed several. When an advisory is this severe, the correct plan includes re-checking the version a week later.
 
-**And keep the dependency question answerable in advance.** The organisations that handled December 2021 well were not the ones with better security products; they were the ones that could produce, in an afternoon, a list of every application containing a given library. That is an inventory problem, and it is solvable before the emergency rather than during it.
+**And keep the dependency question answerable in advance.** The organizations that handled December 2021 well were not the ones with better security products; they were the ones that could produce, in an afternoon, a list of every application containing a given library. That is an inventory problem, and it is solvable before the emergency rather than during it.
 
 ## Sources
 

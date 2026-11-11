@@ -12,7 +12,7 @@ F5 defines accuracy as a signature's ability to identify the attack, including i
 
 ## The accuracy-by-risk quadrant
 
-The tool places the signature in a 2x2. Low accuracy plus low risk is the prime relax candidate: frequent false positives, little lost by relaxing. Low accuracy plus high risk is false-positive-prone but dangerous, so you investigate the actual request before disabling rather than waving a possible real attack through. High accuracy plus high risk is a reliable, high-stakes block you do not relax. High accuracy plus low risk is reliable but low-stakes. It also flags a signature that targets a system your application does not run as pure noise, and surfaces accuracy as a lever: because accuracy is a signature-set filter criterion, a set weighted toward higher-accuracy signatures produces fewer false positives.
+The tool places the signature in a 2x2. Low accuracy plus low risk is the prime relax candidate: frequent false positives, little lost by relaxing. Low accuracy plus high risk is false-positive-prone but dangerous, so you investigate the actual request before disabling rather than waving a possible real attack through. High accuracy plus high risk is a reliable, high-stakes block you do not relax. High accuracy plus low risk is reliable but low-stakes. It also flags a signature that targets a system your application does not run as pure noise, and surfaces accuracy as a lever: because accuracy is a signature-set filter criterion, a set weighted towards higher-accuracy signatures produces fewer false positives.
 
 ## Grounding
 
