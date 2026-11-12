@@ -5,7 +5,7 @@ summary: "Three tunnels carry traffic to the Zero Trust Exchange, and they are n
 concepts: ["zscaler", "z-tunnel", "gre", "ipsec", "capacity", "mtu", "dtls", "forwarding"]
 relatedTools: ["zscaler-tunnel-chooser"]
 relatedArticles: ["gre-tunnels-fundamentals", "ipsec-and-ike-fundamentals", "tunnel-overhead-mtu-and-mss", "zia-traffic-forwarding-methods", "tls12-tls13-dtls-quic"]
-category: networking
+category: sase
 order: 177
 status: reviewed
 updated: "2026-10-26"
@@ -17,7 +17,7 @@ updated: "2026-10-26"
 
 **Z-Tunnel** is the transport Zscaler Client Connector (and Cloud Connector) establishes to a Public Service Edge. Version 1.0 is an HTTP CONNECT tunnel - a proxy connection, in essence, shaped for web traffic. Version 2.0 upgrades the transport to TLS or its datagram sibling DTLS ([the same split this series covered for the protocols themselves](/learn/tls12-tls13-dtls-quic)), and with it the coverage: 2.0 is built to carry all ports and protocols from the device, not only the web pair, which is why the vendor's guidance steers new deployments towards it. The practical reading: Z-Tunnel is a per-device, authenticated transport whose capacity question is the device's, not the site's - sizing math lives with the location tunnels below.
 
-One condition on 2.0 is easy to miss because the failure is quiet. Zscaler's page asks for a NAT device that uses a single IP address for all connections from a device; otherwise the control and data connections can land on different Service Edges, Z-Tunnel 2.0 fails to establish, and the device falls back to Z-Tunnel 1.0. A profile set to 2.0 is therefore a request, not a guarantee: a device behind the wrong NAT carries only what 1.0 carries, and the non-web traffic the design counted on goes elsewhere.
+One condition on 2.0 is easy to miss because the failure is quiet. Zscaler's page asks for a NAT (network address translation) device that uses a single IP address for all connections from a device; otherwise the control and data connections can land on different Service Edges, Z-Tunnel 2.0 fails to establish, and the device falls back to Z-Tunnel 1.0. A profile set to 2.0 is therefore a request, not a guarantee: a device behind the wrong NAT carries only what 1.0 carries, and the non-web traffic the design counted on goes elsewhere.
 
 ## The location tunnels: GRE first, for a reason
 

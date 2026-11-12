@@ -8,7 +8,7 @@ relatedArticles: ["jwt-anatomy", "hmac", "jwt-security"]
 category: identity
 order: 2
 status: machine-draft
-updated: "2026-06-27"
+updated: "2026-11-12"
 ---
 
 ## El encabezado alg lo decide todo
@@ -27,7 +27,7 @@ Eso hace de la familia HMAC una buena opción cuando la **misma parte** emite y 
 
 Esto es lo que quieres cuando **muchos servicios independientes** deben verificar tokens de un único emisor. Un proveedor de identidad firma con su clave privada y publica sus claves públicas (comúnmente como un endpoint JWKS); todo servicio posterior verifica con la clave pública y ninguno de ellos puede acuñar tokens. Por eso los proveedores OpenID Connect emiten tokens de ID RS256 o ES256 por defecto.
 
-Entre RSA y ECDSA, el compromiso es tamaño y velocidad: las claves y firmas ECDSA son mucho más pequeñas para una seguridad equivalente, mientras que RSA es más antiguo y tiene soporte más universal. El `EdDSA` (Ed25519) es una alternativa moderna y rápida que gana adopción.
+Entre RSA y ECDSA, el compromiso es tamaño y velocidad: las claves y firmas ECDSA son mucho más pequeñas para una seguridad equivalente, mientras que RSA es más antiguo y tiene soporte más universal. El `EdDSA` (Ed25519) es una alternativa moderna y rápida que gana adopción. En JOSE (JSON Object Signing and Encryption), la familia de estándares que define los JWT, el identificador ha cambiado: desde el RFC 9864 (octubre de 2025), el registro de la Internet Assigned Numbers Authority (IANA) marca el valor `EdDSA`, que deja la curva en manos de la clave, como Deprecated en favor de los valores totalmente especificados `Ed25519` y `Ed448`, mientras que `ES256` sigue siendo Recommended+ ([IANA, registro JOSE, consultado el 2026-11-12](https://www.iana.org/assignments/jose/jose.xhtml)).
 
 ## Elegir
 

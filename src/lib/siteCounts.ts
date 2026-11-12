@@ -35,6 +35,7 @@ import { isVendorArticle } from "@/lib/learn";
 import { MATERIALS } from "@/content/materials/materials";
 // The Learn series registry, for the article series' count in the five worlds (row 62, 2026-10-07).
 import { LEARN_SERIES } from "@/content/learn/series";
+import { FUN_SHELF_COUNT } from "@/config/funGames"; // the puzzles, games and toys, counted once (11/11/2026)
 
 /** The counts the directory, the footer and the guide state. */
 export interface SiteCounts {
@@ -80,6 +81,8 @@ export interface SiteCounts {
   stories: number;
   /** Article series: subjects told in order, opener first (/learn/series). */
   series: number;
+  /** Puzzles, arcade games and toys (/dev/fun and /arcade): the home band's fourth figure (PRIME 11/11/2026 21:20). */
+  fun: number;
 }
 
 /** Count everything once for the given locale (only The Practice is per locale). */
@@ -115,5 +118,6 @@ export function getSiteCounts(locale: string): SiteCounts {
     endorsements: TESTIMONIALS.length,
     stories: STORY_SLUGS.length,
     series: LEARN_SERIES.length,
+    fun: FUN_SHELF_COUNT, // every game in every group, plus the toys
   };
 }

@@ -58,6 +58,9 @@ export type { VerifyReport } from "./golden-vectors";
  */
 export const manifest = Object.freeze({
   toolSlug: "cidr",
+  /** My desk (12/11/2026): eligible for the desk's Quick tools widget. Its engine is small and pure, and runs in the
+   *  widget through the adapter in src/lib/desk/quickTools.ts (scripts/check-desk-store.mts keeps the two in step). */
+  deskQuick: true,
   /** Added 2026-10-27 with Share results, which records its share here as every manifest does; this manifest had no
    *  dangerousInputHandling key before (the calculator's parsing is guarded in compute.ts). */
   dangerousInputHandling: [

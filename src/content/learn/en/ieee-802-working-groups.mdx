@@ -8,12 +8,12 @@ relatedArticles: ["jumbo-frames", "what-is-an-algorithm"]
 category: networking
 order: 232
 status: reviewed
-updated: "2026-07-22"
+updated: "2026-11-12"
 ---
 
 ## One committee, many working groups
 
-When a datasheet says a switch is "802.1Q capable" or a laptop does "802.11ax", the number is a street address inside a single organization: the IEEE 802 LAN/MAN Standards Committee, known internally as the LMSC. It was formed in February 1980 - which, in one popular telling, is where the "802" itself comes from - and it develops the standards for local, metropolitan, and personal area networks through an open, accredited process.
+When a datasheet says a switch is "802.1Q capable" or a laptop does "802.11ax", the number is a street address inside a single organization: the IEEE 802 LAN/MAN Standards Committee, known internally as the LMSC. Its first meeting, as Project 802, was held in February 1980; a popular telling reads that date into the number, but the IEEE's own overview says 802 was simply the next number in the sequence it was issuing to standards projects. It develops the standards for local, metropolitan, and personal area networks through an open, accredited process.
 
 The committee does not write standards as a monolith. It delegates each technology area to a **working group**, and the number after the "802." tells you which one. 802.3 is the Ethernet working group. 802.11 is the Wireless LAN working group. 802.1 handles bridging and the architecture that ties the family together. A trailing letter (or letters) names a specific amendment produced by that group: 802.11ac, 802.11ax, 802.3bt. So "802.11be" parses as *the Wireless LAN group's amendment "be"* - the one the market calls Wi-Fi 7.
 
@@ -37,10 +37,15 @@ The 802 committee keeps a public register of which groups are active, which are 
 
 Still active alongside the four above are the radio-regulatory and coexistence groups - 802.18 (Radio Regulatory), 802.19 (Wireless Coexistence), 802.24 (Vertical Applications) - and the 5G/IMT-2020 standing committee.
 
-Hibernating: **802.16**, Broadband Wireless Access, the group behind WiMAX; **802.21**, Media Independent Handover; and **802.22**, Wireless Regional Area Networks. Dormant rather than dead - the standards remain in force until withdrawn.
+Hibernating: **802.21**, Media Independent Handover, and **802.22**, Wireless Regional Area Networks. Dormant rather than dead, their standards remain in force until withdrawn.
 
-Disbanded, and worth knowing as history: **802.2** (Logical Link Control - folded into the architecture once the LLC sublayer stabilized), **802.4** (Token Bus), **802.5** (**Token Ring**, IBM's ring technology that Ethernet outcompeted), **802.6** (Metropolitan Area Network), and **802.14** (Cable Modem, superseded by DOCSIS). A standard staying "in place until replaced or withdrawn" is why you can still meet 802.5 gear in the wild decades after its group closed.
+Disbanded, and worth knowing as history: **802.2** (Logical Link Control - folded into the architecture once the LLC sublayer stabilized), **802.4** (Token Bus), **802.5** (**Token Ring**, IBM's ring technology that Ethernet outcompeted), **802.6** (Metropolitan Area Network), **802.14** (Cable Modem, superseded by DOCSIS), and **802.16** (Broadband Wireless Access, the group behind WiMAX, which entered hibernation on 9 March 2018 and whose page now marks it disbanded). A standard staying "in place until replaced or withdrawn" is why you can still meet 802.5 gear in the wild decades after its group closed.
 
 ## Reading an 802 label
 
 Put together, the grammar is simple. **`802.<group>`** names the technology area; a **trailing letter** names an amendment within it; and the working group's status tells you whether the technology is current, coasting, or historical. 802.1Q is a VLAN tag. 802.3bt is four-pair PoE. 802.11be is Wi-Fi 7. And 802.5 is a museum piece with a working group that closed years ago. Once the addressing clicks, the alphabet soup on every switch and access-point datasheet resolves into a map you can actually read.
+
+## Sources
+
+- [IEEE 802 LMSC, overview for participants, 2004 (read 2026-11-12): the first meeting of the IEEE Computer Society Local Network Standards Committee, Project 802, was held in February 1980; the project number, 802, was simply the next number in the sequence being issued by the IEEE for standards projects](https://grouper.ieee.org/groups/802/802%20overview.pdf)
+- [IEEE 802.16 Working Group on Broadband Wireless Access Standards (read 2026-11-12): the page is headed "[disbanded]" and says the group has been disbanded; it ceased activity and entered hibernation on 9 March 2018; IEEE Std 802.16-2017 was published on 2 March 2018](https://www.ieee802.org/16/)

@@ -45,6 +45,8 @@ import MaterialsDoor from "@/components/MaterialsDoor";
 // The training series (milestone NF-1, 2026-10-06), rendered before the reading paths.
 import TrainingSeriesSection from "@/components/study-guides/TrainingSeriesSection";
 import { readingPathVendor, READING_PATH_VENDOR_KEYS } from "@/lib/reading-path-vendors";
+// The nested message provider (A1), for My desk's controls on the reading path cards (12/11/2026).
+import MessageSlice from "@/components/MessageSlice";
 import ReadingPathSections, {
   type PathGroup,
 } from "@/components/ReadingPathSections";
@@ -236,6 +238,8 @@ export default async function StudyGuidesPage({
                   vendor, everything else is vendor-agnostic. Deriving beats
                   adding a field nobody remembers to set (D-74), and the guard
                   below fails the build if a group has no heading. */}
+              {/* The deskItem slice: every card's My desk controls (12/11/2026) read it. */}
+              <MessageSlice namespaces={["deskItem"]}>
               <ReadingPathSections
                 groups={pathGroups}
                 expandAllLabel={t("expandAll")}
@@ -247,6 +251,7 @@ export default async function StudyGuidesPage({
                 outcomeLabel={t("outcomeLabel")}
                 startLabel={t("startPath")}
               />
+              </MessageSlice>
             </div>
           </section>
 

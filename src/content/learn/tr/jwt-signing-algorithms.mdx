@@ -8,7 +8,7 @@ relatedArticles: ["jwt-anatomy", "hmac", "jwt-security"]
 category: identity
 order: 2
 status: machine-draft
-updated: "2026-06-27"
+updated: "2026-11-12"
 ---
 
 ## alg başlığı her şeye karar verir
@@ -27,7 +27,7 @@ Bu, **aynı tarafın** token'ı verdiği ve doğruladığı, ya da veren ile do�
 
 **Birçok bağımsız hizmetin** tek bir verenin token'larını doğrulaması gerektiğinde istediğiniz şey budur. Bir kimlik sağlayıcı kendi özel anahtarıyla imzalar ve açık anahtarlarını yayımlar (yaygın olarak bir JWKS uç noktası olarak); akış aşağısındaki her hizmet açık anahtarla doğrular ve hiçbiri token basamaz. OpenID Connect sağlayıcılarının varsayılan olarak RS256 veya ES256 kimlik token'ları vermesinin nedeni budur.
 
-RSA ile ECDSA arasında ödünleşim boyut ve hızdır: ECDSA anahtarları ve imzaları eşdeğer güvenlik için çok daha küçüktür, RSA ise daha eski ve daha evrensel olarak desteklenir. `EdDSA` (Ed25519), benimsenme kazanan modern, hızlı bir alternatiftir.
+RSA ile ECDSA arasında ödünleşim boyut ve hızdır: ECDSA anahtarları ve imzaları eşdeğer güvenlik için çok daha küçüktür, RSA ise daha eski ve daha evrensel olarak desteklenir. `EdDSA` (Ed25519), benimsenme kazanan modern, hızlı bir alternatiftir. JWT'yi tanımlayan standart ailesi JOSE'de (JSON Object Signing and Encryption) tanımlayıcı değişti: RFC 9864'ten (Ekim 2025) bu yana Internet Assigned Numbers Authority (IANA) kaydı, eğriyi anahtara bırakan `EdDSA` değerini tam olarak belirtilmiş `Ed25519` ve `Ed448` lehine Deprecated olarak işaretliyor; `ES256` ise Recommended+ olarak kalıyor ([IANA, JOSE kaydı, 2026-11-12 tarihinde okundu](https://www.iana.org/assignments/jose/jose.xhtml)).
 
 ## Seçmek
 

@@ -63,7 +63,8 @@ const NOT_IZO = new Set(["advertise", "advise", "apprise", "arise", "chastise", 
   "improvise", "incise", "merchandise", "noise", "poise", "practise", "precise", "premise", "promise", "raise", "praise",
   "appraise", "braise", "revise", "rise", "supervise", "unsupervise", "surmise", "surprise", "televise", "treatise",
   "cruise", "bruise", "guise", "paradise", "reprise", "valise", "sunrise", "uprise", "imprecise", "disenfranchise",
-  "turquoise", "tortoise", "porpoise", "cerise", "chemise", "mortise", "anise"]);
+  "turquoise", "tortoise", "porpoise", "cerise", "chemise", "mortise", "anise",
+  "microenterprise"]); // the ANPD's sanction on a microenterprise (glossary anpd, 12/11/2026): enterprise with a prefix
 /** An -ise word and its suffixes: organise, organisation, tokeniser (the British form Oxford spelling writes -ize). */
 const ISE = /^([a-z]+?)is(e|es|ed|ing|ation|ations|er|ers|able|ational)$/;
 /** Words that end in -ize but are not the American spelling of anything (size, seize, citizen...). */
@@ -78,6 +79,7 @@ const IZE = /^([a-z]+?)(iz|yz)(e|es|ed|ing|ation|ations|er|ers|able|ational)$/;
 const KEEP = [
   /range, color/gi, /gray and grey/gi, // HTML's input type, CSS's two spellings
   /bot defense/gi, /defense attributes/gi, // F5's product and policy names
+  /gray failures?/gi, // the term Huang et al. named in "Gray Failure: The Achilles' Heel of Cloud-Scale Systems" (HotOS 2017); the glossary's gray-failure headword
 ];
 /** Pack paths outside the check: external titles, protocol and file field names, the US-English courses. */
 const SKIP_PREFIXES = ["glossary.entries.", "learnLabs.", "toolReferences.", "toolProvenance.", "materials.",

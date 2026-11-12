@@ -2,8 +2,9 @@
 // src/components/HomeStats.tsx
 // ----------------------------------------------------------------------------
 // TOOLBOX TOTALS — a small "by the numbers" band shown on the home page, just
-// below the hero. It displays two figures: how many tools are live and how many
-// Learn articles exist.
+// below the hero. It displays up to four figures: how many tools are live, how many
+// Learn articles exist, the companies on the industry record and (since 11/11/2026)
+// the puzzles, games and toys of /dev/fun and /arcade.
 //
 // WHERE THE NUMBERS COME FROM (important): this component does NOT know the
 // totals itself. They are computed on the server (in page.tsx) from the single
@@ -51,9 +52,12 @@ interface HomeStatsProps {
   /** Number of companies in the industry record — derived in page.tsx from partners.ts (2026-10-05: the
    *  third figure of the new front door, "utility · knowledge · history"). Optional so older callers hold. */
   companies?: number;
+  /** Puzzles, arcade games and toys - derived in siteCounts.ts from src/config/funGames.ts (PRIME 11/11/2026 21:20:
+   *  "one additional counter for puzzles+games+toys", one word for its name). Optional so older callers hold. */
+  fun?: number;
 }
 
-export default function HomeStats({ tools, articles, companies }: HomeStatsProps) {
+export default function HomeStats({ tools, articles, companies, fun }: HomeStatsProps) {
   const t = useTranslations("home");
 
   // Ref to the band, so the IntersectionObserver can watch it.
@@ -119,6 +123,9 @@ export default function HomeStats({ tools, articles, companies }: HomeStatsProps
   const shownTools = Math.round(progress * tools);
   const shownArticles = Math.round(progress * articles);
   const shownCompanies = Math.round(progress * (companies ?? 0));
+  const shownFun = Math.round(progress * (fun ?? 0));
+  // Four figures cannot sit on one phone-width line: the modifier lays them out two by two there (components.css).
+  const four = typeof companies === "number" && typeof fun === "number";
 
   return (
     <section
@@ -130,7 +137,7 @@ export default function HomeStats({ tools, articles, companies }: HomeStatsProps
         {/* Headline above the figures. */}
         <p className="stats-headline">{t("stats.headline")}</p>
 
-        <div className="stats-band-inner">
+        <div className={four ? "stats-band-inner stats-band-inner--four" : "stats-band-inner"}>
           {/* Tools — the whole figure links to the Tools index. */}
           <Link href="/tools" className="stat stat-link">
             {/* True value for assistive tech — announced regardless of animation. */}
@@ -174,6 +181,24 @@ export default function HomeStats({ tools, articles, companies }: HomeStatsProps
                 </span>
                 <span className="stat-label" aria-hidden="true">
                   {t("stats.companies")}
+                </span>
+              </Link>
+            </>
+          )}
+
+          {/* Puzzles, games and toys - the fourth figure (11/11/2026), only when the page passes it; it leads to /dev/fun. */}
+          {typeof fun === "number" && (
+            <>
+              <span className="stat-sep" aria-hidden="true" />
+              <Link href="/dev/fun" className="stat stat-link">
+                <span className="sr-only">
+                  {fun} {t("stats.fun")}
+                </span>
+                <span className="stat-value" aria-hidden="true">
+                  {shownFun}
+                </span>
+                <span className="stat-label" aria-hidden="true">
+                  {t("stats.fun")}
                 </span>
               </Link>
             </>

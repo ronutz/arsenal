@@ -9,7 +9,7 @@ relatedArticles: ["voss-vs-exos", "network-devices-switch-router-firewall"]
 category: networking
 order: 138
 status: reviewed
-updated: "2026-10-26"
+updated: "2026-11-12"
 ---
 
 Anyone coming to ExtremeXOS from Cisco IOS notices the difference within a few lines: there is no `interface` mode, no `configure terminal`, no nesting at all. An EXOS (Extreme Operating System) configuration is a flat sequence of complete commands. Once that clicks, the whole config becomes easy to read top to bottom. This explains the model the paired tool is built around.
@@ -20,7 +20,7 @@ The lines that make up an EXOS configuration begin with a verb, six verbs do nea
 
 `create` makes a new object, such as a VLAN, a local account, or a spanning-tree domain. `configure` sets a property on something that already exists, and it is by far the most common verb. `enable` and `disable` turn a feature or object on and off, from a single port to IP routing. `delete` removes an object, and `unconfigure` resets part of the configuration to its default.
 
-The CLI has other verbs as well, such as `show`, `save` and `use`, but those read or manage the configuration rather than change what it says ([Switch Engine 33.7.1 Command References](https://documentation.extremenetworks.com/Switch%20Engine%20v33.7.1%20Command%20References/downloads/Switch_Engine_33_7_1_Command_References.pdf)).
+The CLI has other verbs as well, such as `show`, `save` and `use`, but those read or manage the configuration rather than change what it says ([Switch Engine 34.1.1 Command References](https://documentation.extremenetworks.com/Switch%20Engine%20v34.1.1%20Command%20References/downloads/Switch_Engine_34_1_1_Command_References.pdf)).
 
 Because nothing is nested, each line stands on its own. `configure vlan engineering add ports 1:1, 1:2 tagged` means exactly what it says regardless of what came before it. This is why reading an EXOS config is really just reading a list, and why explaining it line by line loses nothing.
 
@@ -38,7 +38,7 @@ Link aggregation is where EXOS terminology surprises people. What most platforms
 
 ## Running, saved and booted
 
-A command takes effect when you enter it, in the running configuration, and nothing reaches non-volatile memory until you run `save configuration`, unless someone has turned on auto-save with `save configuration automatic`, which is off by default. Without an argument it saves to the location used on the last reboot; `primary` and `secondary` name the two standard files, and you can save to a file of your own. The saved file takes effect on the next reboot, and `use configuration <file>` chooses which saved file the switch boots from next. `show switch` reports both sides in its Config Selected and Config Booted fields ([Switch Engine 33.7.1 Command References](https://documentation.extremenetworks.com/Switch%20Engine%20v33.7.1%20Command%20References/downloads/Switch_Engine_33_7_1_Command_References.pdf)).
+A command takes effect when you enter it, in the running configuration, and nothing reaches non-volatile memory until you run `save configuration`, unless someone has turned on auto-save with `save configuration automatic`, which is off by default. Without an argument it saves to the location used on the last reboot; `primary` and `secondary` name the two standard files, and you can save to a file of your own. The saved file takes effect on the next reboot, and `use configuration <file>` chooses which saved file the switch boots from next. `show switch` reports both sides in its Config Selected and Config Booted fields ([Switch Engine 34.1.1 Command References](https://documentation.extremenetworks.com/Switch%20Engine%20v34.1.1%20Command%20References/downloads/Switch_Engine_34_1_1_Command_References.pdf)).
 
 That gives a change three states worth checking separately: the switch is doing it now, it is in the file that will be read at the next boot, and that file is the one selected. A change that was entered and tested but never saved is gone after a reboot, and a change saved to a file that is not selected is never loaded.
 
@@ -46,4 +46,4 @@ That gives a change three states worth checking separately: the switch is doing 
 
 Everything here is drawn from Extreme Networks' own material: the ExtremeXOS Command Reference for the command grammar and the specific behaviour of `configure vlan add ports`, and the Switch Engine user guide for VLANs, routing, and sharing. The paired tool reads a pasted config lexically and explains it; it never connects to a switch.
 
-- [Extreme Networks, Switch Engine v33.7.1 Command References](https://documentation.extremenetworks.com/Switch%20Engine%20v33.7.1%20Command%20References/downloads/Switch_Engine_33_7_1_Command_References.pdf) (read 2026-10-26): `save configuration` saves the running configuration to non-volatile memory, defaults to the location used on the last reboot and takes effect on the next reboot; `use configuration` selects the saved file for the next reboot; auto-save is off by default; `show switch` reports Config Selected and Config Booted
+- [Extreme Networks, Switch Engine v34.1.1 Command References, November 2026](https://documentation.extremenetworks.com/Switch%20Engine%20v34.1.1%20Command%20References/downloads/Switch_Engine_34_1_1_Command_References.pdf) (read 2026-11-12): `save configuration` saves the running configuration to non-volatile memory, defaults to the location used on the last reboot and takes effect on the next reboot; `use configuration` selects the saved file for the next reboot; auto-save is off by default; `show switch` reports Config Selected and Config Booted

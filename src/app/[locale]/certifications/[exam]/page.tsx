@@ -55,6 +55,11 @@ import { getGuideVerification } from "@/content/certifications/verification";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
+// My desk (12/11/2026): Save, Mark as read and Add to path for this guide, with the slice of words they use.
+import DeskItemControls from "@/components/desk/DeskItemControls";
+// "Continue this path": the reader's paths holding this guide and what comes next in each (drawn only when it is in one).
+import DeskPathNext from "@/components/desk/DeskPathNext";
+import MessageSlice from "@/components/MessageSlice";
 // The training box, and the vendors whose courses are taught (row 70: the box appears only on their guides).
 import TrainingCta, { TAUGHT_VENDORS } from "@/components/TrainingCta";
 import { ogImages } from "@/lib/og";
@@ -263,6 +268,13 @@ export default async function StudyGuidePage({
                   {t("partOf", { cert: cert.name })}
                 </p>
               )}
+              {/* My desk (12/11/2026): keep this guide, mark it read, or put it on a path; kept in this browser. Under
+                  them, when the guide is in one of the reader's paths, what comes next there ("Continue this path";
+                  nothing is drawn otherwise). */}
+              <MessageSlice namespaces={["deskItem", "deskPath"]}>
+                <DeskItemControls item={`guide:${guide.slug}`} />
+                <DeskPathNext item={`guide:${guide.slug}`} />
+              </MessageSlice>
 
               {/* Metadata row: status, target version, exam facts, blueprint source. */}
               <ul className="certguide-meta">

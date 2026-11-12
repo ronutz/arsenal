@@ -8,7 +8,7 @@ relatedArticles: ["ipv6-addressing", "ipv4-addressing", "ipv6-subnetting", "ipv6
 category: networking
 order: 14
 status: reviewed
-updated: "2026-10-18"
+updated: "2026-11-12"
 ---
 
 IPv4 and IPv6 have different headers, so a host that speaks only one cannot talk to a host that speaks only the other. Request for Comments (RFC) 6144 sorts the bridges into three families: "Besides dual-stack deployment, there are two fundamental approaches one could take to interworking between IPv4 and IPv6: tunneling and translation" ([RFC 6144, section 1.1](https://www.rfc-editor.org/rfc/rfc6144.txt)). Only translation lets an IPv6-only client reach an IPv4-only server, since a tunnel needs dual-stack hosts at its ends (section 1.1), and any network carrying both protocols uses at least one family. By the end you can predict which family a host picks, build each mechanism's addresses, follow a NAT64 session and check it all with real commands.
@@ -259,6 +259,6 @@ The [IPv6 Toolkit](/tools/ipv6) shows the IPv4 inside an IPv4-mapped address and
 - [getent(1), Linux manual page, man7.org (read 2026-10-18)](https://man7.org/linux/man-pages/man1/getent.1.html)
 - [gai.conf(5), Linux manual page, man7.org (read 2026-10-18)](https://man7.org/linux/man-pages/man5/gai.conf.5.html)
 - [curl man page (curl 8.23.0), curl.se: -4, -6, -w and --happy-eyeballs-timeout-ms (read 2026-10-18)](https://curl.se/docs/manpage.html)
-- [BIND 9 9.20.29 documentation, Manual Pages: dig (read 2026-10-18)](https://bind9.readthedocs.io/en/stable/manpages.html)
+- [BIND 9 9.20.29 documentation, Manual Pages: dig (read 2026-10-18)](https://bind9.readthedocs.io/en/v9.20.29/manpages.html)
 - [Google Public DNS64, Google for Developers, last updated 2024-09-03 (read 2026-10-18)](https://developers.google.com/speed/public-dns/docs/dns64)
 - [Python 3.15.0 documentation, ipaddress module (read 2026-10-18)](https://docs.python.org/3/library/ipaddress.html)

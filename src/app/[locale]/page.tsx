@@ -102,6 +102,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const toolCount = counted.tools;
   const articleCount = counted.articles;
   const industryCount = counted.industry;
+  // The puzzles, games and toys: the band's fourth figure (PRIME 11/11/2026 21:20), linked to /dev/fun.
+  const funCount = counted.fun;
   const endorsementCount = counted.endorsements;
 
   // RECENTLY SHIPPED: the newest tool, the newest article, the newest improvement, read from the changelog.
@@ -144,7 +146,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </section>
 
         {/* --- The three counts: utility · knowledge · history (count-up on scroll, D-63) --- */}
-        <MessageSlice namespaces={["home"]}><HomeStats tools={toolCount} articles={articleCount} companies={industryCount} /></MessageSlice>
+        <MessageSlice namespaces={["home"]}><HomeStats tools={toolCount} articles={articleCount} companies={industryCount} fun={funCount} /></MessageSlice>
 
         {/* --- 2. START HERE: intents, not taxonomy --- */}
         <section className="section" id="start">

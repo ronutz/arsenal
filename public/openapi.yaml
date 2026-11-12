@@ -8670,7 +8670,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      x-golden-vector-set: f5-topology-longest-match-golden-v1
+      x-golden-vector-set: f5-topology-longest-match-golden-v2-2026-11-12
     post:
       tags:
         - F5 GTM, AFM & APM
@@ -8703,7 +8703,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      x-golden-vector-set: f5-topology-longest-match-golden-v1
+      x-golden-vector-set: f5-topology-longest-match-golden-v2-2026-11-12
   /f5os-restconf-path-explainer:
     get:
       tags:

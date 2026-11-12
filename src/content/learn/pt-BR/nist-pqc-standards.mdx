@@ -8,7 +8,7 @@ relatedArticles: ["quantum-threat-to-cryptography", "hash-function-families", "p
 category: transport
 order: 7
 status: reviewed
-updated: "2026-09-27"
+updated: "2026-11-12"
 ---
 
 A ameaça quântica recai sobre a criptografia de chave pública: estabelecimento de chaves e assinaturas, os dois trabalhos que o RSA e as curvas elípticas fazem hoje. Então as substituições vêm exatamente nesses dois formatos. O NIST conduziu uma competição aberta desde 2016, selecionou os primeiros vencedores em 2022 e, em 13 de agosto de 2024, publicou os três primeiros padrões finalizados. São com eles que se deve construir hoje.
@@ -31,7 +31,7 @@ O ponto prático que o NIST e as orientações seguintes enfatizam: esses três 
 
 ## Níveis de segurança, e como eles se mapeiam ao que você conhece
 
-O NIST expressa a força de cada conjunto de parâmetros como uma categoria ligada a um equivalente simétrico: o nível 1 é comparável a quebrar o AES-128, o nível 3 ao AES-192, e o nível 5 ao AES-256. Esses equivalentes já incorporam o algoritmo de Grover, a busca quântica que reduz pela metade a força simétrica, então o mapeamento é uma comparação pós-quântica, não clássica. Para sistemas de segurança nacional, o conjunto CNSA 2.0 da NSA nomeia especificamente os conjuntos de parâmetros mais altos: ML-KEM-1024 e ML-DSA-87, com um prazo de migração em 2030. A própria orientação de transição do NIST (rascunho IR 8547) esboça depreciar o RSA e o ECC para novos sistemas federais depois de 2030 e proibi-los, inclusive para interoperabilidade legada, depois de 2035.
+O NIST expressa a força de cada conjunto de parâmetros como uma categoria ligada a um equivalente simétrico: o nível 1 é comparável a quebrar o AES-128, o nível 3 ao AES-192, e o nível 5 ao AES-256. Esses equivalentes já incorporam o algoritmo de Grover, a busca quântica que reduz pela metade a força simétrica, então o mapeamento é uma comparação pós-quântica, não clássica. Para sistemas de segurança nacional, o conjunto CNSA 2.0 da NSA nomeia especificamente os conjuntos de parâmetros mais altos: ML-KEM-1024 e ML-DSA-87, com um prazo de migração em 2030. A própria orientação de transição do NIST (IR 8547, versão final desde outubro de 2026) deprecia o RSA e o ECC para novos sistemas federais depois de 2030 e proibi-los, inclusive para interoperabilidade legada, depois de 2035.
 
 ## As reservas ainda na fila
 

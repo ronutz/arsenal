@@ -10,12 +10,20 @@
 // (src/lib/fun/games/patch-path/engine.ts) builds the day's panel; this
 // component draws it and takes the moves:
 //   - drag from port 1 (or from the cable's end) to run the cable; drag back
-//     over it to pull it back; press any cell of the cable to cut it there;
+//     over it to pull it back, in one of two modes (PRIME 11/11/2026 23:39):
+//     Classic, the default, where a drag over any cell of the cable cuts it
+//     back there, and Careful pull-back, a switch under the panel kept in this
+//     browser, where a drag pulls back at most two cells per move so brushing
+//     an earlier stretch leaves it alone (23:18); press any cell of the cable
+//     to cut it there;
 //   - or click a cell next to the cable's end to extend it;
 //   - on a touch screen (PRIME 05/11/2026: swiping "means moving the screen")
-//     a finger draws only when it lands on the pen, the cable's end (or port 1
-//     before the cable starts); anywhere else the page scrolls, and a tap
-//     (a touch that ends where it began) cuts or extends when the finger lifts;
+//     a finger draws only when it lands on the pen, the cable's end or a cell
+//     beside it (or port 1 before the cable starts; the zone widened on
+//     11/11/2026, when a finger a little off the end scrolled the page);
+//     anywhere else the page scrolls, and a tap (a touch that ends where it
+//     began) cuts or extends when the finger lifts; while a finger draws, a
+//     native non-passive touchmove listener keeps the page from scrolling;
 //   - keyboard: the panel takes focus; arrows extend the cable (an arrow back
 //     along it pulls it back), Backspace undoes a step;
 //   - a port reached out of order, or the last port before every cell is
@@ -56,9 +64,16 @@ import { puzzleNumber } from "@/lib/fun/daily";
 import { formatDuration, shareText } from "@/lib/fun/share";
 // Today's UTC day, after mount.
 import { useToday } from "@/lib/fun/hooks";
+// The game's record in this browser, where the pull-back switch is kept beside the board view (11/11/2026).
+import { loadRecord, updateRecord } from "@/lib/fun/storage";
 
 /** How far a finger may wobble and still tap, in CSS pixels; further is a scroll. */
 const TAP_SLOP_PX = 10;
+
+/** How many cells one move of a drag may pull the cable back (PRIME 11/11/2026 23:18: brushing an early cell on the way to
+ *  the last ports cut the cable back to it). Pulling back further takes the drag back along the cable, cell by cell; a
+ *  deliberate press on a cable cell still cuts there at once. Two, not one, so a quick pull-back that skips a cell holds. */
+const DRAG_PULLBACK_MAX = 2;
 
 /** Seconds added per Check. */
 const PENALTY_S = 10;
@@ -162,11 +177,55 @@ export default function PatchPath(props: { locale: string }) {
   const live = useRef<number[]>([]);
   // Kept current.
   live.current = path ?? [];
+  // The pull-back mode: false is Classic, true is Careful pull-back. Read after mount (the server render has no browser),
+  // shown by the switch under the panel and read by the drag through the ref below.
+  const [carefulOn, setCarefulOn] = useState(false);
+  // For the pointer handlers, which run between renders.
+  const careful = useRef(false);
+  // Kept current.
+  careful.current = carefulOn;
+  // This browser's choice, once mounted.
+  useEffect(() => {
+    // The game's record; the switch lives in its extra field.
+    setCarefulOn(loadRecord(PP_ID).extra?.ppCarefulPullback === true);
+  }, []);
+  /**
+   * Turn Careful pull-back on or off, and keep the choice with the game's settings (a reset of the stats keeps it).
+   *
+   * @param on the new state
+   */
+  const chooseCareful = (on: boolean) => {
+    // Shown.
+    setCarefulOn(on);
+    // Kept.
+    updateRecord(PP_ID, (r) => ({ ...r, extra: { ...r.extra, ppCarefulPullback: on } }));
+  };
 
   // Port number by cell (1-based), for drawing and rules.
   const portOf = useMemo(() => new Map((p?.ports ?? []).map((c, k) => [c, k + 1])), [p]);
   // Ports reached so far on a cable.
   const reached = (cable: readonly number[]) => cable.filter((c) => portOf.has(c)).length;
+
+  // While a drag is in progress the page must not scroll under the finger (PRIME 11/11/2026 23:18: on an iPhone the whole
+  // page sometimes moved with the finger instead of the cable). touch-action: none on the pen decides it when the touch
+  // lands; this listener is the second line, for a pan the browser would start mid-drag. It is added natively because
+  // React registers its touch listeners as passive, and a passive listener cannot cancel the scroll.
+  const boardShown = Boolean(s.started && p && path); // the panel is on the page only after Start
+  useEffect(() => {
+    // The panel, when it is on the page.
+    const el = boardRef.current;
+    // Not yet.
+    if (!el) return;
+    // A move of a touch that is drawing: no scroll.
+    const hold = (ev: TouchEvent) => {
+      // Only during a drag; a touch that is scrolling the page keeps scrolling.
+      if (dragging.current && ev.cancelable) ev.preventDefault();
+    };
+    // Non-passive, so preventDefault is honoured.
+    el.addEventListener("touchmove", hold, { passive: false });
+    // Removed with the panel.
+    return () => el.removeEventListener("touchmove", hold);
+  }, [boardShown]);
 
   // The refusal's timer is cleared when the game goes away.
   useEffect(() => () => {
@@ -377,9 +436,39 @@ export default function PatchPath(props: { locale: string }) {
   const isPen = (cell: number): boolean => {
     // The cable now.
     const cable = live.current;
-    // Its end, or port 1 when there is no cable yet.
-    return cable.length === 0 ? portOf.get(cell) === 1 : cell === cable[cable.length - 1];
+    // Port 1 when there is no cable yet.
+    if (cable.length === 0) return portOf.get(cell) === 1;
+    // The cable's end, or a cell beside it (PRIME 11/11/2026 23:18: a finger that landed a little off the end scrolled the
+    // page instead of drawing): the same cells penZone() gives the touch-action: none class to.
+    return penZone(cable).has(cell);
   };
+
+  /**
+   * The cells a finger may start drawing from: the cable's end and its side neighbours on the panel, or port 1 before the
+   * cable starts. Rendered with the fg-pp-pen class (touch-action: none), so the browser never takes a touch there to scroll.
+   *
+   * @param cable the cable
+   * @returns the cells
+   */
+  function penZone(cable: readonly number[]): Set<number> {
+    // No puzzle: nothing.
+    if (!p) return new Set();
+    // Before the cable: port 1 alone.
+    if (cable.length === 0) return new Set([p.ports[0]]);
+    // The end and its row and column.
+    const head = cable[cable.length - 1], hr = Math.floor(head / p.n), hc = head % p.n;
+    // The end itself.
+    const zone = new Set([head]);
+    // Its side neighbours inside the panel.
+    for (const d of DIRS) {
+      // The neighbour's row and column.
+      const r = hr + d.dr, c = hc + d.dc;
+      // Inside.
+      if (r >= 0 && r < p.n && c >= 0 && c < p.n) zone.add(r * p.n + c);
+    }
+    // The zone.
+    return zone;
+  }
 
   // Pointer down: a mouse or a pen starts, cuts or extends at once; a finger does so only on the pen.
   const onDown = (e: PointerEvent<HTMLDivElement>) => {
@@ -398,8 +487,10 @@ export default function PatchPath(props: { locale: string }) {
     }
     // Keep the moves coming here.
     e.currentTarget.setPointerCapture?.(e.pointerId);
-    // Acted on now; a drag follows when it may.
-    dragging.current = act(cell);
+    // Acted on now; a drag follows when it may. A finger in the pen zone drags on from the cable's end even when its
+    // first cell was refused (it landed on the wrong side of a duct, say): the touch did not scroll, so it should draw.
+    const ok = act(cell);
+    dragging.current = ok || (e.pointerType === "touch" && live.current.length > 0);
   };
 
   // Pointer move: a waiting tap that travels becomes a scroll; a drag follows the pointer.
@@ -419,7 +510,26 @@ export default function PatchPath(props: { locale: string }) {
     const cell = cellAt(e);
     // Outside, or the end itself.
     if (cell < 0 || cell === live.current[live.current.length - 1]) return;
-    // Towards it.
+    // Classic (the default since PRIME 11/11/2026 23:39): any cell of the cable the drag passes over cuts it back there.
+    if (!careful.current) {
+      // Cut back, or extend towards it.
+      reach(cell);
+      // Done.
+      return;
+    }
+    // Careful pull-back (PRIME 11/11/2026 23:18, now a switch): a drag pulls back only a step or two at a time, along the
+    // cable. An earlier cell the pointer brushes on its way is ignored, so the cable is never cut back by accident.
+    const at = live.current.indexOf(cell);
+    // On the cable.
+    if (at >= 0) {
+      // How far back it is from the end.
+      const back = live.current.length - 1 - at;
+      // Near: pulled back to it.
+      if (back <= DRAG_PULLBACK_MAX) commit(live.current.slice(0, at + 1));
+      // Far: ignored.
+      return;
+    }
+    // Off the cable: towards it.
     reach(cell);
   };
 
@@ -668,6 +778,8 @@ export default function PatchPath(props: { locale: string }) {
   const onCable = new Set(path ?? []);
   // The end of the cable.
   const head = path && path.length ? path[path.length - 1] : -1;
+  // The cells a finger may start drawing from (the pen class, touch-action: none).
+  const pen = path ? penZone(path) : new Set<number>();
   // The port the player needs next (1-based).
   const nextPort = path ? reached(path) + 1 : 1;
   // The panel in words, for a screen reader: every port and every duct.
@@ -744,7 +856,7 @@ export default function PatchPath(props: { locale: string }) {
               const hinted = hint?.target === i ? (hint.wrong ? " fg-lpk-hint-wrong" : " fg-lpk-hint-target") : hint?.area.has(i) ? " fg-lpk-hint-area" : "";
               // The cell (the panel's words and the live line carry it for a screen reader).
               return (
-                <div key={i} className={`fg-cell fg-pp-cell${onCable.has(i) ? " fg-pp-on" : ""}${i === head ? " fg-pp-head" : ""}${(path.length === 0 ? port === 1 : i === head) ? " fg-pp-pen" : ""}${checked.has(i) ? " fg-cell-error fg-pp-bad" : ""}${hinted}`} aria-hidden="true">
+                <div key={i} className={`fg-cell fg-pp-cell${onCable.has(i) ? " fg-pp-on" : ""}${i === head ? " fg-pp-head" : ""}${pen.has(i) ? " fg-pp-pen" : ""}${checked.has(i) ? " fg-cell-error fg-pp-bad" : ""}${hinted}`} aria-hidden="true">
                   {port !== undefined && <span className={`fg-pp-port${port < nextPort ? " fg-pp-port-done" : port === nextPort ? " fg-pp-port-next" : ""}`}>{port}</span>}
                 </div>
               );
@@ -779,6 +891,23 @@ export default function PatchPath(props: { locale: string }) {
           <p className={`fg-small fg-pp-progress${refused ? " fg-pp-refused" : " fg-muted"}`}>
             {refused ?? (nextPort > p.ports.length ? t("progressDone", { k: path.length, total: p.n * p.n }) : t("progress", { k: path.length, total: p.n * p.n, next: nextPort }))}
           </p>
+          {/* The pull-back mode (PRIME 11/11/2026 23:39): Classic by default, Careful pull-back as a choice kept in this
+              browser. The site's switch (a native checkbox with the switch role; the label is the whole target), as on
+              the sharing switch; the line under it says what the current mode does. */}
+          <span className="fg-share-wrap fg-pp-mode">
+            <label className="fg-share">
+              {/* The control, announced as a switch. */}
+              <input type="checkbox" role="switch" className="fg-share-input" checked={carefulOn} onChange={(e) => chooseCareful(e.target.checked)} />
+              {/* The drawn track and thumb. */}
+              <span className={`fg-share-track${carefulOn ? " fg-share-track-on" : ""}`} aria-hidden="true">
+                <span className="fg-share-thumb" />
+              </span>
+              {/* The words. */}
+              <span className="fg-share-label">{t("mode.careful")}</span>
+            </label>
+            {/* What the mode in force does. */}
+            <span className="fg-small fg-muted fg-share-note">{t(carefulOn ? "mode.carefulOn" : "mode.carefulOff")}</span>
+          </span>
           </>
           )}
           {/* Clock, checks, hints, the day's size and difficulty, the buttons and the hint on show. */}

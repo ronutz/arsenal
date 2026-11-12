@@ -34,6 +34,10 @@ import { TRAINING_SERIES } from "@/content/study-guides/training-series";
 import { trainingStops, nextLevel, getTrainingSeries } from "@/lib/trainingPlaces";
 // Which parts embed a Learn lab, and the labs of a module's parts (2026-10-26): the marker and the module's labs line.
 import { isInteractive, labsOfArticles } from "@/lib/learnLabs";
+// My desk (PRIME 12/11/2026 12:42): the reader's progress through the series, Save and "Add as a path".
+import MessageSlice from "@/components/MessageSlice";
+import DeskCollectionControls from "@/components/desk/DeskCollectionControls";
+import { trainingArticles } from "@/content/study-guides/training-series";
 
 /** Every training series in every locale. */
 export function generateStaticParams() {
@@ -114,6 +118,10 @@ export default async function TrainingSeriesPage({ params }: { params: Promise<{
             <p className="hero-eyebrow">{t("training.startPage.eyebrow", { short, level: s.level })}</p>
             <h1 className="page-hero-title">{title}</h1>
             <p className="page-hero-lede">{t(`${key}.lede`)}</p>
+            {/* My desk: how far the reader is through this series, Save, and "Add as a path". */}
+            <MessageSlice namespaces={["deskItem"]}>
+              <DeskCollectionControls item={`training:${s.id}`} members={trainingArticles(s).map((slug) => `learn:${slug}` as const)} />
+            </MessageSlice>
 
             {/* The start: the outcome, what to read first, the size, and the one button that begins. */}
             <div className="training-start-box">

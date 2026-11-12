@@ -8,7 +8,7 @@ relatedArticles: ["python-as-a-network-engineers-calculator", "python-sockets-fo
 category: operations
 order: 339
 status: reviewed
-updated: "2026-10-27"
+updated: "2026-11-12"
 ---
 
 The [calculator article](/learn/python-as-a-network-engineers-calculator) walked through the everyday arithmetic of Python's `ipaddress` module: splitting a /24 into /26s, the hosts of a /31, the host mask as an access list's wildcard, `collapse_addresses()` for route summarization. This part of [the Python series](/learn/python-explained) goes underneath. It covers what the module accepts and what it refuses, word for word; the three kinds of object it builds; the operations a change review needs, from overlap to carving one prefix out of another; IPv6's text forms, zones and embedded IPv4 addresses; and what `is_private` and `is_global` mean, how Python 3.13 changed them, and where they disagree with IANA's registry today.
@@ -249,6 +249,8 @@ Most rows are what the registries say. The NAT64 address `64:ff9b::808:808` is g
 | 2001:1::3/128 | DNS-SD Service Registration Protocol Anycast (RFC 9665) | True | False |
 | 5f00::/16 | Segment Routing (SRv6) SIDs (RFC 9602) | False | True |
 
+One row is moving. On 12 November 2026 the main branch of CPython's source had added 2001:1::3/128 to the IPv6 exceptions, with a comment citing RFC 9665, so a release built from it would call that address global, as IANA does; 3.15.2 still answers False, and the other three rows are unchanged on main ([CPython source, Lib/ipaddress.py on the main branch, read 2026-11-12](https://raw.githubusercontent.com/python/cpython/main/Lib/ipaddress.py)).
+
 For a log report this hardly matters. For a security decision it does: code that refuses to fetch a URL unless its address `is_global` would let an SRv6 SID through. Keep an explicit deny list beside the property, rate addresses against the registries themselves, and check every address a name resolves to, not only the first. The [SSRF URL classifier](/tools/ssrf-url-classifier) rates an address against every row of both registries, and [defending against SSRF with allow-lists](/learn/ssrf-defenses-allowlists) explains why an allow-list beats both.
 
 The lab below puts any string through the three factories and either method, the way CPython 3.13 does: which class tried it and what each one raised, the object and a selection of its attributes, its `is_*` properties, and the registry row when the address falls in one of the four blocks above. Its model was compared with CPython 3.13.16 on 200,000 generated cases, valid and malformed, without a difference. One property differs in 3.15: `IPv4Interface` gained its own `is_unspecified`, which on 3.13 is always False because the property compares the interface with the bare address 0.0.0.0, and an interface never equals an address.
@@ -307,6 +309,7 @@ The module's behaviour and the quotations about it are the Python 3.13 documenta
 - [Python 3.13 documentation, An introduction to the ipaddress module: strict networks, host interfaces, other modules, detailed errors from the class constructors (read 2026-10-27)](https://docs.python.org/3.13/howto/ipaddress.html)
 - [CPython source, Lib/ipaddress.py at tag v3.13.16: the factories, the parsers and their messages, the special-purpose tables (read 2026-10-27)](https://raw.githubusercontent.com/python/cpython/v3.13.16/Lib/ipaddress.py)
 - [CPython source, Lib/ipaddress.py at tag v3.15.2: the same tables, and IPv4Interface.is_unspecified (read 2026-10-27)](https://raw.githubusercontent.com/python/cpython/v3.15.2/Lib/ipaddress.py)
+- [CPython source, Lib/ipaddress.py on the main branch (read 2026-11-12): 2001:1::3/128 added to the IPv6 _private_networks_exceptions with an RFC 9665 comment; 192.88.99.2/32, 100:0:0:1::/64 and 5f00::/16 still absent from _private_networks](https://raw.githubusercontent.com/python/cpython/main/Lib/ipaddress.py)
 - [Python 3.13 changelog: bpo-36384 (leading zeros, 3.9.5), bpo-43633 (mapped addresses' text), gh-113171 (is_private and is_global), gh-122792 and gh-124217 (3.13.1), gh-128840 (3.13.4), bpo-44012 (3.13.16) (read 2026-10-27)](https://docs.python.org/3.13/whatsnew/changelog.html)
 - [What's New in Python 3.13: ipaddress, ipv6_mapped and the is_global and is_private fix (read 2026-10-27)](https://docs.python.org/3/whatsnew/3.13.html)
 - [Python 3.13 documentation, socket: inet_aton, inet_ntop, getaddrinfo and AI_NUMERICHOST (read 2026-10-27)](https://docs.python.org/3.13/library/socket.html)

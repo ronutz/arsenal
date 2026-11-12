@@ -248,6 +248,15 @@ export default function KeyboardShortcuts({ labels }: KeyboardShortcutsProps) {
           case "red-room":
             navigateRef.current?.("/dev/out");
             break;
+          // MY DESK (PRIME 12/11/2026 12:42): save, and mark read, the item of the page shown. The page's own
+          // controls (DeskItemControls) answer the event and confirm in words with an Undo; a page with no item has
+          // no listener, so the key does nothing there.
+          case "desk-save":
+            window.dispatchEvent(new CustomEvent("ronutz:desk-command", { detail: "save" }));
+            break;
+          case "desk-read":
+            window.dispatchEvent(new CustomEvent("ronutz:desk-command", { detail: "read" }));
+            break;
         }
       }
     },

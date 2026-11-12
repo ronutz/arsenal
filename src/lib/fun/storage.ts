@@ -49,6 +49,8 @@
 
 // The day arithmetic used for streaks and for pruning old daily states.
 import { addDays, epochDay, utcDayKey } from "./daily";
+// The interest counts: one function that sends a count only for a reader who said yes (src/lib/interest/client.ts).
+import { track } from "@/lib/interest/client";
 // The earlier puzzle in play, read from the page's address (null on today's puzzle).
 import { earlierDayInPlay } from "./archive";
 
@@ -328,6 +330,9 @@ export function recordResult(
   gameId: string,
   opts: { dayKey: string; won: boolean; score?: number; higherIsBetter?: boolean; daily?: boolean },
 ): GameRecord {
+  // The interest counts (PRIME 12/11/2026): a finished round is counted for the game, won or lost, for a reader who
+  // said yes; nothing about the round itself (the public board is a separate thing, with its own switch).
+  track("game_end", "fun", gameId, opts.won ? "won" : "lost");
   // An earlier puzzle's daily result (its page, its day): one more round played and its own result, nothing else.
   if (opts.daily && earlierDayInPlay() === opts.dayKey) {
     // Inside one read-change-write.

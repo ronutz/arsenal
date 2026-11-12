@@ -5,7 +5,7 @@ summary: "Uma localidade do ZIA é um site que a plataforma reconhece - pelos se
 concepts: ["zscaler", "zia", "locations", "sublocations", "gateway options", "bandwidth control", "egress", "gre", "ipsec"]
 relatedTools: ["zscaler-tunnel-chooser"]
 relatedArticles: ["zia-traffic-forwarding-methods", "zscaler-tunnel-types-z-tunnel-gre-ipsec", "zscaler-mergers-and-acquisitions", "private-address-space"]
-category: networking
+category: sase
 order: 200
 status: reviewed
 updated: "2026-07-21"
@@ -19,7 +19,7 @@ Uma localidade é uma regra de reconhecimento: a plataforma conhece um site pelo
 
 ## Sublocalidades: política no grão do armário de rede
 
-Sites reais não são uniformes: o andar corporativo, o Wi-Fi de visitantes, a VLAN de servidores e o segmento IoT dividem um mesmo link de internet e merecem quatro políticas diferentes. As **sublocalidades** são a resposta - subdivisões de uma localidade chaveadas em **segmentos de rede interna** ([as faixas de endereço privado](/learn/private-address-space) atrás do egresso do site), cada uma carregando sua própria postura de política. O exemplo canônico se escreve sozinho: a rede de visitantes como sublocalidade sem expectativa de autenticação e com filtragem estrita; o segmento corporativo autenticado e plenamente inspecionado; o segmento de servidores com sua própria postura de firewall. Um site, um conjunto de túneis, quatro cidadãos de política.
+Sites reais não são uniformes: o andar corporativo, o Wi-Fi de visitantes, a VLAN (rede local virtual) de servidores e o segmento IoT dividem um mesmo link de internet e merecem quatro políticas diferentes. As **sublocalidades** são a resposta - subdivisões de uma localidade chaveadas em **segmentos de rede interna** ([as faixas de endereço privado](/learn/private-address-space) atrás do egresso do site), cada uma carregando sua própria postura de política. O exemplo canônico se escreve sozinho: a rede de visitantes como sublocalidade sem expectativa de autenticação e com filtragem estrita; o segmento corporativo autenticado e plenamente inspecionado; o segmento de servidores com sua própria postura de firewall. Um site, um conjunto de túneis, quatro cidadãos de política.
 
 ## Controle de banda: os três modos documentados
 

@@ -1,14 +1,14 @@
 ---
 slug: firewall-family-history
 title: "The Firewall: Birth, Generations, and What Comes After the Perimeter"
-summary: "Nobody invented the firewall. It was argued into existence over roughly six years by people at Digital Equipment Corporation, Bell Labs and Trusted Information Systems who disagreed about almost everything except that a network needed a place to say no. This is the family history: the 1988 paper, the first product delivered on 13 June 1991, the stateful inspection patent that decided the market, the proxy camp that lost on performance and was right about inspection, the appliance, the next-generation label, and what happens to a boundary device in an estate that no longer has a boundary."
+summary: "Nobody invented the firewall. It was argued into existence over roughly six years by people at Digital Equipment Corporation, Bell Labs and Trusted Information Systems who disagreed about almost everything except that a network needed a place to say no. This is the family history: the 1989 paper, the first product delivered on 13 June 1991, the stateful inspection patent that decided the market, the proxy camp that lost on performance and was right about inspection, the appliance, the next-generation label, and what happens to a boundary device in an estate that no longer has a boundary."
 concepts: ["firewall", "packet filter", "stateful inspection", "proxy", "ngfw", "utm", "history"]
 relatedTools: []
 relatedArticles: ["ssl-forward-proxy-interception", "network-segmentation-from-vlans-to-microsegmentation", "security-versus-availability", "tcp-proxy-layer-4"]
 category: security
 order: 140
 status: reviewed
-updated: "2026-09-03"
+updated: "2026-11-12"
 ---
 
 Almost every technology in this catalogue has a moment somebody can point at. The firewall does not. It was argued into existence over about six years, by several groups who disagreed on nearly everything except that a network needed a place where the answer could be no, and the disagreement between them is still visible in the products sold today.
@@ -19,9 +19,9 @@ The word is borrowed from building construction, where a firewall is a barrier t
 
 Bellovin also produced the best definition anyone has managed. A firewall, he said, is a barrier between us and them for arbitrary values of them. Every argument about where to place one, and every later claim that the perimeter is dead, is really an argument about who counts as *them* this year.
 
-## Birth: 1988 to 1991
+## Birth: the late 1980s to 1991
 
-The first paper describing network packet filtering was published by **Digital Equipment Corporation** in 1988, out of work by **Jeff Mogul**, **Brian Reid** and **Paul Vixie** around the `gatekeeper.dec.com` gateway and Mogul's `screend` software. The idea itself was not exotic - routers already carried access lists - but writing down that filtering was a security function rather than a traffic-management convenience is what started the field.
+Most accounts trace the firewall to late-1980s work at **Digital Equipment Corporation** by **Jeff Mogul**, **Brian Reid** and **Paul Vixie** around the `gatekeeper.dec.com` gateway and Mogul's `screend` software. The primary record is Mogul's own paper, *Simple and Flexible Datagram Access Controls for Unix-based Gateways*: DEC's Western Research Laboratory issued it as Research Report 89/4 in March 1989, as a preprint for the Summer 1989 USENIX Technical Conference, and in it Mogul thanks Reid and Vixie for getting him interested in a specific solution. Secondary histories give earlier years (Wikipedia says 1987); the report itself is dated March 1989. The idea itself was not exotic, since routers already carried access lists, but writing down that filtering was a security function rather than a traffic-management convenience is what started the field.
 
 At Bell Labs between 1989 and 1990, **David Presotto** and colleagues built circuit-level gateways, and Cheswick and Bellovin experimented with circuit relays in 1991. A circuit gateway relays a connection rather than examining each packet, which was the first move away from judging traffic one packet at a time.
 
@@ -43,7 +43,7 @@ That argument then returned, twice. Deep packet inspection and next-generation f
 
 ## The generations, and who named them
 
-- **Static packet filtering**, from 1988. Addresses, protocol, ports, each packet judged alone. Fast, cheap, and unable to tell a reply from an unsolicited packet.
+- **Static packet filtering**, from the late 1980s, first written up in March 1989. Addresses, protocol, ports, each packet judged alone. Fast, cheap, and unable to tell a reply from an unsolicited packet.
 - **Circuit gateways**, 1989 onward. Relay the connection rather than the packet.
 - **Application proxies**, from DEC SEAL in 1991 and Gauntlet from 1994. Understand the protocol; pay for it.
 - **Stateful inspection**, patented 1993, shipped in FireWall-1 in 1994. Remember the connection, judge the flow.
@@ -89,8 +89,10 @@ The warning worth ending on is the oldest one in the field, and it was written b
 
 ## Sources
 
-- [Who Invented the Firewall - Dark Reading, on the DEC, Bell Labs and TIS lineage and the attribution problem](https://www.darkreading.com/cybersecurity-analytics/who-invented-the-firewall-)
+- [Who Invented the Firewall - Dark Reading, on the DEC, Bell Labs and TIS lineage and the attribution problem; roots traced to work at DEC in the late 1980s (read 2026-11-12)](https://www.darkreading.com/cybersecurity-analytics/who-invented-the-firewall-)
 - [Fred Avolio, Firewalls and Internet Security: the first commercial firewall delivered 13 June 1991, and the SEAL architecture](https://avolio.com/fw2hundred/)
 - [Palo Alto Networks on the history of firewalls, and the list of contributors](https://www.paloaltonetworks.com/cyberpedia/history-of-firewalls)
 - [Application firewall - the Firewall Toolkit released under licence in October 1993 by Ranum, Wei Xu and Peter Churchyard](https://en.wikipedia.org/wiki/Application_firewall)
 - [FireMon, A Practical History of the Firewall: stateful inspection against proxies on performance, protocol support and security](https://www.firemon.com/blog/a-practical-history-of-the-firewall-part-1-early-days)
+- [Jeffrey C. Mogul, Simple and Flexible Datagram Access Controls for Unix-based Gateways, DEC Western Research Laboratory Research Report 89/4, March 1989, a preprint for the Summer 1989 USENIX Technical Conference, from the bitsavers mirror (read 2026-11-12)](https://ftp.mirrorservice.org/sites/www.bitsavers.org/pdf/dec/tech_reports/WRL-89-4.pdf)
+- [Wikipedia, Firewall (computing): dates the first paper by DEC engineers to 1987 (read 2026-11-12)](https://en.wikipedia.org/wiki/Firewall_%28computing%29)

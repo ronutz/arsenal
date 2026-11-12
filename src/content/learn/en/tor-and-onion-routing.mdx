@@ -8,14 +8,14 @@ relatedArticles: ["peer-to-peer-evolution"]
 category: security
 order: 242
 status: reviewed
-updated: "2026-07-23"
+updated: "2026-11-12"
 ---
 
 ## The paradox at the origin
 
 Onion routing was invented in the mid-1990s at the **US Naval Research Laboratory**, by Paul Syverson with David Goldschlag and Michael Reed. That sounds like a contradiction (a military lab building a tool to defeat surveillance) until you see the problem they actually had. If intelligence traffic goes out over an obviously-government network, the metadata gives the game away before anyone breaks the encryption. Knowing *that* a connection happened, and between whom, is often more valuable than knowing what it said.
 
-The fix has an awkward consequence, and it is the single most important idea in this whole subject: **a network used only by spies protects no spies**. If everyone on the network is a Navy analyst, then being on the network identifies you as a Navy analyst. Anonymity requires a crowd, and the crowd has to be varied. Roger Dingledine and Nick Mathewson later titled a paper on this "Anonymity Loves Company." So the tool had to be released publicly, to everyone, including people the Navy would never choose as allies. Tor's alpha shipped on **20 September 2002**; the NRL released the code under a free licence in 2004; the EFF funded it; and **The Tor Project became a 501(c)(3) nonprofit in 2006**. The design's strength depends on serving people with incompatible motives, which is also why arguments about "who Tor is for" tend to miss.
+The fix has an awkward consequence, and it is the single most important idea in this whole subject: **a network used only by spies protects no spies**. If everyone on the network is a Navy analyst, then being on the network identifies you as a Navy analyst. Anonymity requires a crowd, and the crowd has to be varied. Roger Dingledine and Nick Mathewson later titled a paper on this "Anonymity Loves Company." So the tool had to be released publicly, to everyone, including people the Navy would never choose as allies. Tor's alpha shipped on **20 September 2002**; the code was [under a free licence when the network was deployed that October](https://www.torproject.org/about/history/); the EFF began funding the work in 2004; and **The Tor Project became a 501(c)(3) nonprofit in 2006**. The design's strength depends on serving people with incompatible motives, which is also why arguments about "who Tor is for" tend to miss.
 
 ## What a circuit actually is
 
@@ -25,7 +25,7 @@ The result is that **no single relay knows both ends**. The guard sees your real
 
 Two supporting pieces matter. A small set of **directory authorities** publishes a signed **consensus** listing the relays and their properties, so clients agree on who exists without asking a single server they must trust blindly. And the **guard** is deliberately sticky: clients keep the same entry relay for months rather than picking fresh ones, because a client that reshuffles its entry point constantly will eventually, by chance, pick an adversary's relay. Rotating slowly is safer than rotating often.
 
-Relays are volunteer-run: on the order of several thousand at any time, though **exit relays are a much smaller subset**, since running one means receiving abuse complaints and legal attention for traffic you did not generate. That structural scarcity of exits is a permanent feature of the network's economics.
+Relays are volunteer-run: [about 9,500 in early November 2026, with some 2,500 bridges beside them](https://metrics.torproject.org/networksize.html), though **exit relays are a much smaller subset**, since running one means receiving abuse complaints and legal attention for traffic you did not generate. That structural scarcity of exits is a permanent feature of the network's economics.
 
 ## Onion services: the half with no exit
 
@@ -50,7 +50,7 @@ Because Tor's relay list is public, a censor can simply block every relay. The a
 
 Here is the fact that most surprises people, and it is worth stating plainly: according to the Tor Project's own metrics, **only a small single-digit percentage of Tor traffic goes to onion services at all**. The overwhelming majority of it exits to the ordinary web. Tor is, in daily practice, a tool for reading the normal internet privately, not a door to a hidden one.
 
-The visible users bear that out. **SecureDrop**, run at hundreds of newsrooms, uses onion services to take documents from sources. The New York Times, the BBC, ProPublica, and DuckDuckGo run onion addresses. Debian distributes packages over them. Millions of daily users connect from countries with ordinary internet access, and Germany consistently supplies the largest single share, which is not a profile of a criminal underground.
+The visible users bear that out. **SecureDrop**, run at hundreds of newsrooms, uses onion services to take documents from sources. The New York Times, the BBC, ProPublica, and DuckDuckGo run onion addresses. Debian distributes packages over them. Millions of daily users connect from countries with ordinary internet access, and in the Tor Project's own count of directly connecting users the United States supplies the largest single share and Germany the second, which is not a profile of a criminal underground.
 
 The funding story has an epilogue worth noting for accuracy: US government sources once supplied more than half the Tor Project's revenue, and by the 2023–2024 reporting that had fallen to roughly a third, with corporate and nonprofit support (OpenSats, Mullvad, Proton) and individual donations making up much of the rest. The dependency people cite as a scandal has been actively reduced.
 

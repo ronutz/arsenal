@@ -49,6 +49,8 @@
 // ============================================================================
 
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from "react"; // state, the popover's id, the root element, the fit check
+// The interest counts (PRIME 12/11/2026): sharing a tool's results is counted for the tool, for a reader who said yes; never the results.
+import { trackPage } from "@/lib/interest/client";
 import { useTranslations } from "next-intl"; // the shareResults and share namespaces
 import { buildShareLink } from "@/lib/share/format"; // the one link format
 import type { ShareEncoding } from "@/lib/share/spec"; // what the tool's spec gave
@@ -147,6 +149,7 @@ export default function ShareResultsButton({ encoding: baseEncoding, carries: ba
     try {
       await navigator.clipboard.writeText(href); // to the clipboard only
       setCopied(true); // say so
+      trackPage("share", "results"); // counted for this tool (that results were shared, never what they were)
       window.setTimeout(() => setCopied(false), 2000); // then back
     } catch {
       setCopyFailed(true); // the field below shows the link
@@ -157,6 +160,7 @@ export default function ShareResultsButton({ encoding: baseEncoding, carries: ba
   const onSheet = useCallback(async (href: string) => {
     try {
       await navigator.share({ title: title || (typeof document !== "undefined" ? document.title : ""), url: href }); // the OS sheet
+      trackPage("share", "results"); // counted for this tool
     } catch {
       // Dismissed or refused: nothing to do.
     } // try

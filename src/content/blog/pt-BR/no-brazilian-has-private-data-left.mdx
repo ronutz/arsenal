@@ -1,0 +1,485 @@
+---
+slug: no-brazilian-has-private-data-left
+title: "Nenhum brasileiro tem mais dados privados: a ficha de todos os 214 milhões já é pública, e está à venda"
+summary: "O Brasil tinha 214 milhões de habitantes em 1º de julho de 2026, pela estimativa oficial, e os vazamentos já puseram em circulação mais registros do que isso: um arquivo de 2021 trazia 223 milhões de CPFs, mortos incluídos; uma senha esquecida numa página do Ministério da Saúde abriu 243 milhões de registros em 2020; um único acesso indevido a um sistema do Judiciário, em 2025, expôs os dados de Pix de 11 milhões de pessoas. Outros vazamentos acrescentaram telefones, endereços, renda, score de crédito, veículos, CNH, dados de saúde e fotos, e tudo isso se junta pelo CPF numa ficha só. Operações policiais encontraram essa ficha vendida por assinatura, com dez milhões de consultas por mês num único painel. O que foi cada caso, o que se apurou e o que não se apurou, por que CPF, data de nascimento e nome da mãe já não provam quem ninguém é, o que a lei e os tribunais fizeram e, passo a passo, o que uma pessoa no Brasil ainda pode fazer."
+author: "Rodolfo Nützmann"
+date: "2026-11-12"
+tags: ["brazil", "privacy", "lgpd", "data-breach"]
+category: security
+status: reviewed
+updated: "2026-11-12"
+relatedArticles: ["lgpd-for-engineers-the-vocabulary-that-matters", "brazilian-cybercrime-from-boleto-to-pix", "social-engineering-pretexting-vishing-and-baiting", "passkeys-and-phishing-resistant-authentication", "scams-at-scale-why-a-tiny-success-rate-pays"]
+---
+
+## Mais registros do que gente
+
+Em 28 de agosto de 2026 o Instituto Brasileiro de Geografia e Estatística (IBGE) publicou a estimativa da população residente no país em 1º de julho de 2026: 214.211.951 pessoas, 0,37% a mais do que um ano antes. É uma estimativa, projetada a partir do último recenseamento. O Censo 2022 contou 203.080.756 pessoas, número que o IBGE revisou em 31 de agosto de 2023 a partir dos 203.062.512 divulgados em 28 de junho daquele ano. Qualquer que seja o número usado, ele é menor do que os maiores arquivos de dados pessoais de brasileiros que circularam desde 2019.
+
+Em janeiro de 2021 um único arquivo trazia 223 milhões de números do Cadastro de Pessoas Físicas (CPF), o número que todo brasileiro carrega desde o nascimento. No fim de 2020, uma senha esquecida no código-fonte de uma página do Ministério da Saúde abriu um banco de dados que o jornal O Estado de S. Paulo descreveu como contendo registros de mais de 243 milhões de pessoas. As duas contagens passam da população pelo mesmo motivo: incluem os mortos. Essa é a primeira coisa a entender sobre todos os números deste texto. **Contagem de registros não é contagem de pessoas.** Os arquivos têm duplicatas, falecidos, empresas e a mesma pessoa em várias entradas; quando a fonte diz isso, este texto também diz. A questão não é que cada arquivo tenha exatamente uma linha por brasileiro vivo. É que os arquivos, somados, não deixam nenhum brasileiro vivo de fora.
+
+É o CPF que torna isso possível. Atribuído uma única vez e para a vida inteira pela Receita Federal, ele está, nas palavras dos consultores legislativos da Câmara dos Deputados em abril de 2021, "na raiz de praticamente todos os processos de identificação das pessoas" no país; a Lei 14.129, de 2021, a lei do governo digital, fez dele um número "suficiente" para identificar o cidadão nos bancos de dados de serviços públicos. Os mesmos consultores registraram a consequência: o número não pode ser trocado pela via administrativa. Só a Justiça mandou emitir um novo, em casos de fraude comprovada. Uma senha vazada se troca. Um CPF vazado continua vazado.
+
+O que "público" quer dizer aqui precisa ser dito com clareza. Nenhum governo publicou esses arquivos. Eles se tornaram públicos no sentido prático: copiados, oferecidos de graça como amostra, vendidos, revendidos, carregados em serviços de consulta e consultados por assinatura, fora do alcance de quem quisesse recolhê-los. Seção por seção, o que vem a seguir é o registro que sustenta essa descrição: os vazamentos do tamanho da população ou maiores, os vazamentos menores que preenchem os detalhes, o mercado que vende o resultado, as fraudes que dependem dele, o que a lei e os tribunais fizeram e o que uma pessoa ainda pode fazer.
+
+## Os vazamentos, em ordem
+
+| Data | Caso | Registros, conforme noticiado | Fonte |
+| --- | --- | --- | --- |
+| 8 de outubro de 2019 | Uma falha no site do Departamento Estadual de Trânsito (Detran) do Rio Grande do Norte dá acesso, pelos sistemas integrados, à base nacional de motoristas | Cerca de 70 milhões de motoristas | Olhar Digital, via O Povo |
+| 26 de novembro de 2020 | Usuários e senhas de dois sistemas de Covid-19 do Ministério da Saúde publicados no GitHub | Pelo menos 16 milhões de pessoas | O Estado de S. Paulo, via ESET |
+| Fim de novembro e início de dezembro de 2020 | Credenciais de um banco de dados encontradas no código-fonte de um site de notificação de Covid-19 do Ministério da Saúde | Mais de 243 milhões de registros, de vivos e mortos | O Estado de S. Paulo, via Canaltech e ESET |
+| 19 de janeiro de 2021 | Um arquivo com CPFs, veículos e empresas aparece na internet | 223 milhões de CPFs, 104 milhões de veículos, 40 milhões de empresas | dfndr lab, da PSafe, via Olhar Digital e Tecnoblog |
+| 3 de fevereiro de 2021 | Dados de contas de celular postos à venda | 102.828.814 contas | PSafe, via NeoFeed |
+| Fim de fevereiro de 2021 | Dados de crédito e de cartão postos à venda | 12 milhões de pessoas | IG e Estadão, via Teletime |
+| Março de 2021 | Um arquivo com CPF, telefone e nome da mãe oferecido a empresas | 112 milhões de pessoas | CNN Brasil, via consultores da Câmara |
+| 30 de setembro de 2021 | Comunicado do Banco Central sobre dados de chaves Pix expostos no Banese, o banco estadual de Sergipe | 395.009 chaves | Forbes Brasil |
+| 10 de dezembro de 2021 | Ataque com pedido de resgate ao Ministério da Saúde; ConecteSUS e sistemas de vacinação saem do ar | Dados copiados e apagados, segundo os próprios atacantes | Movimento Econômico; Polícia Federal |
+| 24 de junho de 2024 | O Instituto Nacional do Seguro Social (INSS) diz que credenciais de ex-servidores foram usadas no seu sistema de informações de benefícios | Até 40 milhões de segurados | INSS, via Diario de Pernambuco |
+| 20 e 21 de julho de 2025 | Acesso indevido a dados de Pix pelo sistema de busca de bens do Judiciário | 11.003.398 registros; cerca de 46 milhões de chaves | Conselho Nacional de Justiça e Banco Central, via Migalhas e Jornal de Brasília |
+| 10 de março de 2026 | Total acumulado do Banco Central de chaves Pix expostas desde 2020 | Cerca de 47,9 milhões de chaves | Banco Central, via Jornal de Brasília |
+| 22 de abril de 2026 | Uma consulta do Meu INSS responde sem login durante um dia | 2,8 milhões de CPFs, cerca de 98% de pessoas falecidas | Dataprev, via O Povo |
+
+A tabela é uma lista do que foi contado, por quem e como, e não uma soma. A mesma pessoa aparece em muitas linhas; umas contam contas, outras chaves, outras CPFs. Vários casos (as 102 milhões de contas de celular, o arquivo de 2021) foram negados pelas empresas que os vendedores apontaram, e as negativas aparecem abaixo junto com as alegações. O que a tabela mostra é a escala e a persistência: arquivos do tamanho da população ou maiores, surgindo ano após ano, de sistemas públicos e privados.
+
+## Janeiro de 2021: 223 milhões de CPFs
+
+### Como foi encontrado e o que continha
+
+Na terça-feira, 19 de janeiro de 2021, o dfndr lab, laboratório de pesquisa em segurança da empresa PSafe, identificou um arquivo circulando na internet. O Olhar Digital noticiou no dia seguinte que ele trazia nome completo, data de nascimento e CPF de cerca de 220 milhões de pessoas, "praticamente toda a população do Brasil", além de dados de 104 milhões de veículos (chassi, placa, município, cor, marca, modelo, ano de fabricação, cilindrada e combustível) e de 40 milhões de empresas (número no Cadastro Nacional da Pessoa Jurídica, o CNPJ, razão social, nome fantasia e data de fundação). Em 22 de janeiro o Tecnoblog mostrou que era pior do que se pensava: o arquivo também tinha foto do rosto, endereço, telefone, e-mail, score de crédito e salário.
+
+As contagens finais vieram depois. Quando a Polícia Federal (PF) agiu, em março de 2021, o Olhar Digital descreveu o arquivo como contendo "223 milhões de CPFs" de pessoas nascidas até 2019, além de registros de empresas e veículos, nome, data de nascimento, endereço, foto, score de crédito, renda, dados do Imposto de Renda da Pessoa Física (IRPF) e dados de telefonia. Um ano depois do vazamento, o Tecnoblog contou 223,74 milhões de CPFs distintos, falecidos incluídos, e listou o que havia nas 37 bases do arquivo: nome, sexo e data de nascimento; telefone; score de crédito e poder aquisitivo; salário e situação no INSS; endereço completo, com latitude e longitude; número do Registro Geral (RG) e lista de parentes; estado civil, escolaridade, e-mail, classe social e Fundo de Garantia do Tempo de Serviço (FGTS). Nem todo CPF tinha todos os campos.
+
+O Tecnoblog também notou algo fora do comum. As 37 bases vinham em pastas numeradas, com nomes descritivos, cada uma com uma amostra diferente de CPFs escolhidos ao acaso. Um analista forense de criptomoedas ouvido pelo site observou que dados roubados costumam ser limpos e organizados em linhas para máquinas; aquele arquivo estava organizado para leitores humanos, "fantasiado para ser apresentável".
+
+### Como foi vendido
+
+O padrão é o mesmo que o mercado usa até hoje. Parte dos dados foi liberada de graça para provar que eram reais, e o resto foi oferecido mediante pagamento em criptomoeda, segundo a PF. O Tecnoblog noticiou em 5 de março de 2021 que o arquivo estava em "promoção" por US$ 30 mil; a ESET noticiou, em março de 2021, que uma base com informações de 223 milhões de brasileiros era vendida por R$ 95 mil, ou 0,3 bitcoin. O vendedor anunciava o arquivo como vindo da Serasa Experian, o birô de crédito, segundo o Tecnoblog.
+
+### Quem agiu, e como
+
+O caso pôs à prova todas as instituições que existiam para responder a ele, num momento em que a mais nova delas ainda não podia punir ninguém.
+
+- **A autoridade de proteção de dados.** A Agência Nacional de Proteção de Dados (ANPD) era então a Autoridade Nacional de Proteção de Dados; ganhou o nome atual com a Medida Provisória 1.317, de 17 de setembro de 2025, convertida na Lei 15.352, de 25 de fevereiro de 2026, e o texto da lei hoje diz "Agência". Em 27 de janeiro de 2021 ela disse ao Tecnoblog que estava "apurando tecnicamente informações sobre o caso" e que cooperaria com os órgãos de investigação; como a reportagem registrou, ainda não podia multar, porque as sanções da lei só valeriam a partir de agosto de 2021. Em 4 de fevereiro de 2021 o Teletime noticiou que a ANPD tinha recebido informações da Serasa e enviado ofícios à Polícia Federal, à PSafe, ao Comitê Gestor da Internet no Brasil (CGI.br) e ao Gabinete de Segurança Institucional da Presidência (GSI). A Ordem dos Advogados do Brasil (OAB) tinha cobrado a investigação na semana anterior.
+- **Defesa do consumidor.** A Secretaria Nacional do Consumidor (Senacon) e o Procon-SP (Programa de Proteção e Defesa do Consumidor de São Paulo) notificaram a Serasa para dar explicações, noticiou o Tecnoblog em 27 de janeiro de 2021. Em 7 de abril de 2021 o Procon-SP disse que as respostas da Serasa "não foram suficientes para eximir a empresa da obrigação de implementar as medidas de segurança" e que poderia multá-la com base no Código de Defesa do Consumidor, segundo o Teletime.
+- **Ministério Público.** O Ministério Público do Distrito Federal e Territórios (MPDFT) analisava o caso, e o Ministério Público Federal (MPF) em São Paulo confirmou ter recebido uma representação, segundo a mesma reportagem de janeiro.
+- **Polícia.** Em 19 de março de 2021 a PF deflagrou a Operação Deepwater, com cinco mandados de busca e dois de prisão preventiva, em Uberlândia (MG) e Petrolina (PE), por ordem do Supremo Tribunal Federal (STF). A PF disse investigar a "obtenção, divulgação e comercialização" dos dados. Um era suspeito da invasão e da venda; o outro, da revenda dos dados em redes sociais. Em abril de 2024 a PF prendeu de novo um suspeito detido pela primeira vez na Operação Deepwater, por mandado da Justiça Federal em Uberlândia, depois de ele romper a tornozeleira eletrônica em novembro de 2023, noticiou o Canaltech. Este texto não cita o nome dos suspeitos.
+
+### O que se apurou sobre a origem, e o que não se apurou
+
+É a pergunta que mais importa, e ela não tem resposta pública. Um ano depois do vazamento, em 4 de janeiro de 2022, a FolhaPress noticiou que o inquérito da PF não tinha sido concluído. O então diretor-presidente da ANPD, Waldemar Gonçalves Ortunho, disse que as investigações "estão avançadas" e tinham chegado "em um nome em Uberlândia"; a reportagem registrou que a hipótese mais forte era a de que os dados tinham sido "agregados ao longo de vários anos", a partir de várias fontes, e que a hipótese de uma fonte única "ainda não foi descartada". Os consultores da Câmara tinham escrito, em abril de 2021, que identificar a instituição invadida era "tarefa árdua", dada a facilidade de replicação dos dados digitais e a provável multiplicidade de fontes.
+
+A posição da Serasa não mudou desde 2021: ela disse que não era a origem dos dados, que a própria investigação não encontrou indício de vazamento em massa nem de comprometimento dos seus sistemas, e apresentou parecer técnico de uma empresa especializada atestando a segurança deles. A questão foi parar na Justiça. Em fevereiro de 2021 o Instituto Sigilo, associação de defesa da privacidade, ajuizou ação civil pública na 22ª Vara Cível Federal de São Paulo, pedindo R$ 200 milhões por danos coletivos e R$ 15 mil para cada titular afetado. Em janeiro de 2024 o Migalhas noticiou que o MPF tinha aderido à ação e pedia R$ 30 mil por pessoa e multa de até 10% do faturamento da Serasa, "não inferior a R$ 200 milhões"; o MPF afirmou que "as investigações constataram que a Serasa comercializou" acesso indevido a dados pessoais. A Serasa respondeu que nenhuma decisão judicial fixou indenização desse tipo, que o pedido liminar do MPF foi indeferido e que demonstrou a ausência de invasão dos seus sistemas e de qualquer sinal de que o vazamento tenha saído das suas bases. Quando este texto foi escrito, nenhuma decisão definitiva foi encontrada. As duas posições continuam de pé, cada uma atribuída a quem a sustenta; a origem do arquivo de 2021 segue sem comprovação pública.
+
+Um assunto vizinho é outro e não deve ser confundido com esse. Em 2026 a ANPD abriu processo administrativo sancionador contra a operadora Claro por um contrato de compartilhamento de dados de clientes com a Serasa, firmado para desenvolver metodologias de análise de crédito, apontando "indícios de compartilhamento excessivo de dados pessoais" e falhas de transparência, e abriu nova fiscalização sobre as práticas da própria Serasa, segundo o balanço de seis anos da ANPD publicado em novembro de 2026. Esse processo trata de compartilhamento contratual de dados, e não do vazamento de 2021.
+
+## O Ministério da Saúde, em 2020 e 2021
+
+### Dezesseis milhões de pacientes de Covid-19
+
+Em 26 de novembro de 2020 O Estado de S. Paulo revelou que um funcionário do Hospital Israelita Albert Einstein, em São Paulo, tinha publicado no GitHub um arquivo com usuários e senhas de dois sistemas do Ministério da Saúde, o e-SUS-VE e o Sivep-Gripe, que registram casos suspeitos, confirmados e internados de Covid-19. Segundo o resumo da ESET, o funcionário disse que era para um teste de implantação e esqueceu de apagar. As credenciais davam acesso a dados de pelo menos 16 milhões de pessoas, com nome, CPF, endereço e histórico médico, durante cerca de um mês. O DataSUS, departamento de informática do ministério, cancelou as credenciais expostas, e o ministério disse que elas não davam acesso direto a dados pessoais sem "outros fatores técnicos". O hospital disse que a informação foi retirada na hora e que o incidente foi comunicado ao ministério.
+
+### 243 milhões de registros por uma senha no código-fonte
+
+Poucos dias depois, o mesmo jornal, ao verificar outros sites do governo depois do primeiro caso, encontrou as credenciais de acesso a um banco de dados escritas no código-fonte do site de notificação de Covid-19 do ministério, protegidas só por base64, uma codificação que qualquer ferramenta gratuita desfaz. O Canaltech, em 2 de dezembro de 2020, deu a escala de "cerca de 243 milhões de brasileiros", vivos e mortos, e os campos: nome completo, CPF, endereço e telefone; a ESET acrescentou dados médicos. A consulta estava aberta "por, pelo menos, seis meses". Pelo Sistema Único de Saúde (SUS) o ministério tem registro de praticamente todo mundo, e é por isso que a contagem passou da população: a base incluía os mortos. O ministério disse que retirou as credenciais, que não houve acesso às informações e que estava apurando.
+
+### ConecteSUS, dezembro de 2021
+
+Na madrugada de sexta-feira, 10 de dezembro de 2021, o site do ministério e o aplicativo ConecteSUS, que emitia o certificado nacional de vacinação contra a Covid-19, saíram do ar. Um grupo que se apresentava como Lapsus$ reivindicou o ataque, disse ter copiado e apagado os dados e deixou a mensagem: "Nos contatem caso queiram o retorno dos dados". O ministério disse que o incidente "comprometeu temporariamente" o e-SUS Notifica, o sistema de informação do Programa Nacional de Imunizações (SI-PNI), o ConecteSUS e a emissão de certificados, e acionou o GSI e a PF. Em 16 de agosto de 2022 a PF deflagrou a Operação Dark Cloud, com oito mandados de busca em Minas Gerais, Paraná, Santa Catarina e Paraíba; disse que um ambiente de computação em nuvem do ministério foi acessado indevidamente, com "informações, pastas e demais instâncias sendo apagados pelos criminosos", e que o ConecteSUS ficou fora do ar por quase duas semanas. O mesmo grupo foi ligado a ataques à Polícia Rodoviária Federal, ao Ministério da Economia e à Controladoria-Geral da União (CGU). Quando um suspeito de integrar o grupo foi preso, em outubro de 2022, o The Hacker News noticiou a suposta exfiltração de 50 terabytes do ministério. Quanto de dado pessoal saiu nesse ataque não foi apurado em nenhuma fonte lida para este texto; o caso está aqui porque mostrou que os sistemas que guardam os registros de saúde de toda a população podiam ser esvaziados e desligados.
+
+## Outros sistemas do governo
+
+### Habilitação, 2019
+
+Em 8 de outubro de 2019 o Olhar Digital noticiou que um pesquisador de segurança tinha encontrado uma falha no site do Departamento Estadual de Trânsito do Rio Grande do Norte (Detran-RN) que devolvia os dados de uma pessoa a partir do CPF. Como os sistemas dos Detrans são integrados, a falha alcançava a base nacional. Um CPF devolvia endereço residencial completo, telefone e operadora, dados da Carteira Nacional de Habilitação (CNH), foto, RG, data de nascimento, sexo e idade, de cerca de 70 milhões de motoristas. O pesquisador disse ter avisado o Detran duas vezes sem resposta; o site depois deixou de exibir os dados, e o Detran-RN confirmou a falha, segundo o Tecnoblog.
+
+### O INSS, três vezes
+
+O INSS paga quase 42 milhões de pessoas por mês, segundo o InfoMoney em maio de 2026, e os seus sistemas foram expostos pelo menos três vezes em cinco anos.
+
+- **2022, Sisben.** Uma falha no sistema de benefícios expôs CPF, dados bancários e data de nascimento de aposentados e pensionistas. O INSS comunicou à ANPD, mas não avisou os afetados, alegando que não conseguia identificá-los e que a divulgação "poderia gerar pânico e desconfiança". Em 1º de fevereiro de 2024 a ANPD determinou que ele publicasse a infração no site e no aplicativo Meu INSS por 60 dias, e em 26 de julho de 2024 negou o recurso do instituto, segundo o Migalhas e o Canaltech.
+- **2024, Suibe.** Em 24 de junho de 2024 o INSS informou que logins e senhas de servidores de outros órgãos federais, pessoas que tinham se aposentado, sido exoneradas ou pedido exoneração mas cujas credenciais continuavam valendo, foram usados para acessar o Sistema Único de Informações de Benefícios (Suibe). O sistema guarda nome, CPF, espécie de benefício, data de concessão e valor de cerca de 40 milhões de aposentados e pensionistas. O acesso pedia só login e senha, sem segundo fator, certificado digital ou criptografia, e o INSS disse que o problema existia "por décadas". Entre os usos possíveis, listou a venda dos dados a financeiras que oferecem consignado a beneficiários e pedidos de crédito em nome deles. O instituto não tinha confirmado que houve vazamento e disse que o caso iria para a PF depois da sua análise.
+- **2026, Meu INSS.** Em 22 de abril de 2026 a Dataprev, empresa federal de tecnologia que opera os sistemas do INSS, descobriu que uma consulta do aplicativo Meu INSS que deveria exigir login respondia sem ele, durante um dia. Em 26 de maio informou ao Conselho Nacional de Previdência Social que 2,8 milhões de CPFs e datas de nascimento foram consultados, cerca de 98% de pessoas falecidas e uns 52 mil de pessoas vivas. O INSS disse que nenhum benefício nem empréstimo foi concedido indevidamente e que a ANPD foi comunicada.
+
+### O sistema do Judiciário, e as chaves Pix
+
+O Pix, sistema de pagamentos instantâneos do Banco Central, liga cada "chave" (CPF, telefone, e-mail ou chave aleatória) a uma conta, num diretório chamado Diretório de Identificadores de Contas Transacionais (DICT). Desde 2021 o Banco Central do Brasil (BC) publica comunicados quando participantes expõem dados desse diretório. Os comunicados seguem um modelo e dizem sempre três coisas: os dados expostos são "exclusivamente de natureza cadastral", como nome, CPF, instituição, agência e conta; não permitem pagamentos nem acesso à conta; e estão "em grande medida disponíveis em fontes de consulta lícitas". Essa última frase, do próprio regulador, é um resumo tão preciso da situação dos dados pessoais no Brasil quanto qualquer outro.
+
+| Quando | Instituição | Chaves, conforme noticiado |
+| --- | --- | --- |
+| 30 de setembro de 2021 | Banese, banco estadual de Sergipe | 395.009 |
+| 21 de janeiro de 2022 (incidente de 3 a 5 de dezembro de 2021) | Acesso Soluções de Pagamento | Cerca de 160,1 mil |
+| 24 e 25 de setembro de 2024 | Caixa Econômica Federal | Não informado no comunicado; os campos incluíam nome, CPF, instituição, agência, número e tipo da conta, data de abertura da conta e data de criação da chave |
+| 20 e 21 de julho de 2025 | Conselho Nacional de Justiça (CNJ), pelo Sisbajud, o sistema de busca de bens do Judiciário | 11.003.398 registros; cerca de 46 milhões de chaves de cerca de 11 milhões de pessoas |
+| 12 de maio de 2026 | Credifit, o quarto comunicado de 2026 | 46 |
+| Total acumulado, 10 de março de 2026 | Todos os incidentes desde 2020 | Cerca de 47,9 milhões de chaves |
+
+O caso do CNJ foge da curva de dois jeitos. É de longe o maior, e o sistema pelo qual passou pertence ao Judiciário, feito para que juízes encontrem bens de devedores. O CNJ disse que detectou e corrigiu o problema rapidamente e comunicou a PF e a ANPD. O BC, ao dar o total acumulado em março de 2026, disse que uma mesma chave pode ser contada em mais de um incidente.
+
+## A camada de enriquecimento
+
+Sozinho, o CPF é um número. O que o transforma numa ficha é o acréscimo constante de campos vindos de outros vazamentos, todos ligados pela mesma chave. É por isso que os vazamentos menores importam tanto quanto os grandes, e por isso que o termo técnico para esses dados, informação pessoal identificável (PII, personally identifiable information), fica aquém do que acontece aqui: os arquivos não só identificam as pessoas, eles as descrevem.
+
+Três casos de 2021 mostram como as descrições se acumularam.
+
+- **102 milhões de contas de celular.** Em 10 de fevereiro de 2021 o NeoFeed noticiou que a PSafe tinha encontrado, no dia 3, 102.828.814 contas de celular à venda por US$ 1 o registro, caindo para cerca de um centavo para quem comprasse milhões. O vendedor dizia que vinham da Vivo e da Claro. Os registros atribuídos à Vivo tinham nome, telefone, RG, data de ativação, endereço, atrasos de pagamento, dívidas, valor das faturas e se a linha era pré ou pós-paga; os atribuídos à Claro tinham CPF, CNPJ, tipo de plano, endereço, e-mail e telefone. Alguns traziam a duração das ligações e, no caso de uma figura pública conhecida, filiação e data de nascimento. A PSafe disse que não conseguia confirmar as operadoras citadas; a Vivo disse que não teve vazamento, e a Claro, que não encontrou nenhum.
+- **12 milhões de registros de crédito.** No fim de fevereiro de 2021 um vendedor ofereceu, por US$ 50 mil, nome, e-mail, telefone, CPF, senhas e números de cartão de crédito de 12 milhões de pessoas, segundo o Teletime, citando o IG e o Estadão. A ANPD disse que estava analisando o caso.
+- **112 milhões, com nome da mãe.** Em março de 2021 a CNN Brasil noticiou um pacote de 112 milhões de pessoas oferecido a empresas por R$ 38 mil, com CPF, nome completo, telefone e WhatsApp, data de nascimento, nome da mãe, endereço, profissão, faixa salarial, registro de óbito e dados do Bolsa Família e de aposentadoria, conforme o resumo dos consultores da Câmara. No mesmo mês, outro arquivo de 223 milhões de CPFs, com telefones e e-mails, foi atribuído pelo vendedor ao Poupatempo, o serviço de atendimento do governo paulista; o Poupatempo, como a Serasa, negou qualquer violação.
+
+Cinco anos depois, as descrições são entregues sob demanda. Em março de 2026 a Derechos Digitales, organização latino-americana de direitos digitais, publicou um estudo sobre o comércio de dados pessoais no Telegram, noticiado pelo ConvergenciaDigital em 13 de março de 2026. O estudo encontrou dez grupos brasileiros ativos, cada um administrado por um bot que responde o dia inteiro. A consulta gratuita devolve nome e CPF; o acesso pago, de cerca de US$ 1 por semana a quase US$ 80 por dois anos, pago por Pix, devolve, a partir de um CPF: nome completo, RG, data de nascimento, sexo, município de origem, histórico de endereços, renda estimada e classe de poder aquisitivo, score de risco de crédito, profissão e código de ocupação, empregador, salário, escolaridade e datas de admissão, número do Programa de Integração Social (PIS), histórico de Bolsa Família e de Auxílio Emergencial, contribuições ao INSS, em alguns casos registros de vacinação, e dados de parentes e vizinhos. Pelos campos padronizados e valores nulos, os pesquisadores inferiram que os registros podem vir diretamente de bases institucionais; é uma inferência, e eles disseram isso.
+
+### Como os campos se juntam pelo CPF
+
+A tabela abaixo mostra, campo a campo, quais casos noticiados forneceram cada tipo de dado. É um mapa de fontes, não uma ficha: não contém dado de ninguém. Cada linha se liga a todas as outras pelo CPF, e a maioria também pelo telefone e pelo endereço.
+
+| Campo da ficha | Casos que o forneceram, conforme noticiado |
+| --- | --- |
+| CPF, nome completo, data de nascimento, sexo | Arquivo de 223 milhões de 2021; Ministério da Saúde 2020; Detran-RN 2019; comunicados do Pix; INSS 2026 (CPF e data de nascimento); bots do Telegram |
+| Nome da mãe, parentes | Arquivo de 112 milhões, 2021 (nome da mãe); arquivo de 223 milhões de 2021 (lista de parentes); 102 milhões de contas de celular (filiação, em alguns registros); bots do Telegram (parentes e vizinhos) |
+| RG | Detran-RN 2019; arquivo de 223 milhões de 2021; 102 milhões de contas de celular; bots do Telegram |
+| Endereço residencial | Arquivo de 223 milhões de 2021 (com coordenadas); Ministério da Saúde 2020; Detran-RN 2019; 102 milhões de contas de celular; arquivo de 112 milhões; bots do Telegram (histórico de endereços) |
+| Telefone e operadora | Detran-RN 2019 (com operadora); Ministério da Saúde 2020; 102 milhões de contas de celular (com faturas, dívidas e duração das ligações); arquivo de 112 milhões (com WhatsApp); arquivo de crédito de 12 milhões |
+| E-mail | Arquivo de 223 milhões de 2021; 102 milhões de contas de celular; arquivo de crédito de 12 milhões |
+| Foto do rosto | Arquivo de 223 milhões de 2021; Detran-RN 2019 |
+| Habilitação e veículos | Detran-RN 2019 (dados da CNH); arquivo de 2021 (104 milhões de veículos); caso Dark Spot da Polícia Civil do Distrito Federal (PCDF), 2026 (cadastros de CNH e de veículos) |
+| Renda, salário, poder aquisitivo, classe social | Arquivo de 223 milhões de 2021; arquivo de 112 milhões (faixa salarial); bots do Telegram (renda estimada e classe) |
+| Score de crédito | Arquivo de 223 milhões de 2021; bots do Telegram (score parecido com o dos birôs) |
+| Empregador, profissão, escolaridade | Arquivo de 223 milhões de 2021 (escolaridade); arquivo de 112 milhões (profissão); bots do Telegram (empregador, ocupação, datas de admissão) |
+| Benefícios sociais e previdência | Arquivo de 223 milhões de 2021 (FGTS, situação no INSS); arquivo de 112 milhões (Bolsa Família, aposentadoria); Suibe do INSS 2024 (espécie e valor do benefício); bots do Telegram (Bolsa Família, Auxílio Emergencial, contribuições) |
+| Dados fiscais | Arquivo de 223 milhões de 2021 (dados do IRPF, segundo a PF); caso Dark Spot da PCDF, 2026 (cadastro de contribuintes da Receita Federal) |
+| Saúde | Ministério da Saúde 2020 (histórico médico, diagnóstico de Covid-19); bots do Telegram (registros de vacinação, em alguns casos) |
+| Banco, agência, conta, chaves Pix | Sisben do INSS 2022 (dados bancários); comunicados do Pix (instituição, agência, conta, datas da chave); CNJ 2025 |
+| Números de cartão e senhas | Arquivo de crédito de 12 milhões, 2021 |
+| Processos judiciais | Caso Dark Spot da PCDF, 2026 |
+| Óbito | Arquivo de 223 milhões de 2021; Ministério da Saúde 2020; arquivo de 112 milhões; INSS 2026 |
+
+Lida linha a linha, a tabela deixa o ponto claro. Para quase todo campo que um banco, uma loja ou um serviço público possa pedir para a pessoa confirmar, há pelo menos um vazamento noticiado que o pôs em circulação e um serviço de consulta que o devolve a partir do CPF.
+
+## O mercado: painéis e bots
+
+O que a polícia encontra, operação após operação, é um negócio de varejo. O produto tem nome no Brasil: painel de consulta, um site ou bot em que o assinante digita CPF, nome, placa ou telefone e recebe de volta a ficha acima. Este texto descreve esse comércio a partir de relatórios policiais e de pesquisa, e não cita nem aponta nenhum lugar em que ele funcione.
+
+- **Junho de 2023, Distrito Federal.** A Polícia Civil do Distrito Federal (PCDF) prendeu duas pessoas que vendiam acesso a um painel em grupos do Telegram, a R$ 150 por sete dias, R$ 200 por quinze e R$ 300 por trinta, noticiou o Olhar Digital em 22 de junho de 2023. A polícia contou 1.453 compradores. A maior parte dos dados, segundo a reportagem, vinha de invasões a órgãos públicos, e o painel ainda dava acesso a câmeras de reconhecimento óptico de caracteres (OCR, optical character recognition) que leem placas de veículos em rodovias de todo o país. Entre os consultados estavam o governador do Distrito Federal, ministros do STF e deputados federais.
+- **Janeiro de 2024, sistemas federais.** Em 31 de janeiro de 2024 a PF deflagrou a Operação I-Fraude contra um grupo que, segundo ela, invadiu bancos de dados federais e vendia acesso a um painel em planos mensais, cujo preço variava conforme o número de consultas. A PF contou cerca de 10 mil assinantes e uma média de 10 milhões de consultas por mês; o SBT News noticiou plano de R$ 30 por mês e faturamento estimado de pelo menos R$ 10 milhões. Entre os clientes havia integrantes de facções criminosas. Também havia integrantes das forças de segurança, que recebiam o serviço de graça desde que enviassem foto da carteira funcional, o que deu ao grupo um cadastro com fotos de milhares de servidores da segurança pública. Sete policiais federais foram afastados das funções, segundo o Correio Braziliense.
+- **Julho de 2026, Distrito Federal.** Em 30 de julho de 2026 a delegacia de crimes cibernéticos da PCDF deflagrou a Operação Dark Spot contra uma plataforma com "interface profissional" e créditos pré-pagos, quitados por Pix ou criptoativos, vendida por uma rede de revendedores em redes sociais e aplicativos de mensagem. Os dados vinham de acesso irregular ao cadastro de contribuintes da Receita Federal, a cadastros de CNH e de veículos, a processos judiciais e a "sistemas corporativos de órgãos de segurança pública". A polícia contou mais de 18 milhões de consultas entre maio de 2023 e junho de 2024, mais de 257 mil endereços IP distintos, 45.134 cadastros e 7.242 usuários ativos, além de mais de R$ 1 milhão movimentado entre dezembro de 2024 e março de 2025; a Justiça bloqueou R$ 2 milhões.
+
+Duas coisas ligam esses casos aos vazamentos de governo acima. A primeira é a porta de entrada: os painéis são abastecidos, pelo relato da própria polícia, a partir de sistemas do governo, e a nota do INSS de 2024 descreve exatamente como esses sistemas são abertos, com senhas ainda válidas de gente que já não trabalha lá e nenhum segundo fator para impedir. A segunda é que o mercado lícito se sobrepõe ao ilícito. Os próprios comunicados do BC dizem que os dados cadastrais do Pix estão em grande medida disponíveis em fontes de consulta lícitas. Em 4 de novembro de 2025 a Quarta Turma do Superior Tribunal de Justiça (STJ) decidiu, no REsp 2.221.650, que os birôs de crédito podem abrir cadastro sem consentimento, mas "em regra, não estão autorizados a disponibilizar tais dados a terceiros sem o consentimento prévio de seus titulares". A fronteira entre um serviço lícito de enriquecimento de dados e um painel é traçada pela lei; os dados dos dois lados, muitas vezes, são os mesmos.
+
+## Para que os dados servem
+
+### A ligação "do banco"
+
+A fraude mais relatada que depende desses dados é uma ligação telefônica. A Federação Brasileira de Bancos (Febraban) contou, no primeiro semestre de 2025, 139 mil relatos de clientes dos bancos associados sobre o golpe da falsa central ou do falso funcionário de banco, 195,7% a mais do que um ano antes, atrás só da falsa venda (174 mil), noticiou o Diario de Pernambuco em 12 de novembro de 2025. Em março de 2026 a Febraban alertou para a versão do falso gerente: os criminosos ligam de um número mascarado como o do banco ou da agência (spoofing), falam em cobranças não autorizadas, clonagem de cartão ou necessidade de "atualização de segurança" e pedem dados pessoais e bancários, senhas incluídas. Quem liga já sabendo nome, CPF, endereço, banco e agência da vítima parece o banco. Todas as tabelas deste texto explicam como ele sabe.
+
+### Sequestro da linha
+
+A Agência Nacional de Telecomunicações (Anatel) descreve o "sequestro da linha" como o momento em que o número da vítima passa a funcionar num novo chip (cartão SIM, subscriber identity module) controlado pelo criminoso; o primeiro sinal é o celular parar de fazer ligações e de enviar ou receber mensagens de texto fora do Wi-Fi. Um número sequestrado recebe os códigos que bancos e aplicativos enviam por SMS (Short Message Service). A Anatel diz que as operadoras já usam biometria facial ou de voz para identificar clientes e que determinou um segundo fator de autenticação na portabilidade. Em 28 de outubro de 2026 foi além: a Norma Técnica GT-SEG.2026.11 exige reconhecimento facial com prova de vida nas novas linhas pré-pagas até 30 de setembro de 2027; na troca de chip, na portabilidade e nas novas linhas pós-pagas até 31 de dezembro de 2027; e de todos os usuários atuais até 31 de dezembro de 2028, com suspensão das linhas não validadas a partir de janeiro de 2029.
+
+### Contas e empréstimos no nome de outra pessoa
+
+Uma conta aberta com identidade roubada recebe dinheiro de golpe e toma crédito; um empréstimo contratado no nome de alguém é pago por esse alguém. Quando lançou o bloqueio de abertura de contas, em 1º de dezembro de 2025, o BC listou entre os resultados esperados "mais segurança para quem já sofreu vazamentos de dados", e o bloqueio recusou 263 tentativas de abertura de conta até o início da tarde do primeiro dia. Os consultores da Câmara listaram em 2021 as consequências para a vítima: nome negativado, contas que não são dela, problemas com a Receita, chantagem e coisas piores.
+
+### Consignado e INSS
+
+O crédito consignado é descontado direto do salário ou do benefício, o que faz do benefício de um aposentado uma garantia atraente. A própria nota do INSS de junho de 2024 apontou, entre os usos possíveis dos dados expostos, a venda a financeiras que oferecem esse tipo de empréstimo e pedidos de crédito em nome dos beneficiários. A orientação do instituto, atualizada em 28 de outubro de 2026, é manter o benefício bloqueado e conferir o extrato em busca de descontos que a pessoa não reconheça.
+
+O escândalo de 2025 no INSS precisa ser descrito com precisão. Em abril de 2025 a PF e a CGU deflagraram a Operação Sem Desconto contra associações e sindicatos que cobravam mensalidades direto dos benefícios. A auditoria da CGU, tornada pública naquele mês, tinha entrevistado 1.273 beneficiários: 97,6% disseram não ter autorizado o desconto e 95,9% disseram não ser associados a nenhuma entidade; os descontos não autorizados entre 2019 e 2024 podiam chegar a R$ 6,3 bilhões, valor que a Advocacia-Geral da União disse ainda precisar ser reavaliado, segundo o Correio Braziliense em 30 de abril de 2025. Em alguns meses, entidades filiaram dezenas de milhares de beneficiários, um ritmo que exigiria entre 778 e 1.569 filiações por hora, noticiou o SBT News. Nenhuma das fontes lidas para este texto diz como as associações obtiveram os dados dos beneficiários, e nenhuma liga o esquema a um vazamento. Se dados vazados tiveram algum papel, isso não foi estabelecido.
+
+### Por que saber os seus dados não prova nada
+
+Tudo isso desfaz um hábito que atravessa o atendimento ao cliente no Brasil: tratar o conhecimento do CPF, da data de nascimento, do nome da mãe ou do endereço como prova de identidade. Esse hábito tem nome, autenticação baseada em conhecimento (KBA, knowledge-based authentication), e parte do pressuposto de que os fatos perguntados só são conhecidos pela própria pessoa. No Brasil, como mostra o registro acima, são conhecidos por qualquer assinante de painel.
+
+As normas técnicas já mudaram. O Instituto Nacional de Padrões e Tecnologia dos Estados Unidos (NIST, National Institute of Standards and Technology), nas diretrizes de identidade digital revisadas em julho de 2025, diz na SP 800-63A-4 que "knowledge-based verification (KBV) or knowledge-based authentication SHALL NOT be used for identity verification" (a verificação ou autenticação baseada em conhecimento não deve ser usada para verificar identidade), e na SP 800-63B-4 que os verificadores não devem pedir KBA nem perguntas de segurança. A Febraban disse a mesma coisa pelo avesso em março de 2026: o representante do banco que liga já tem as informações de que precisa, por isso o banco nunca pede dados pessoais, senhas, atualizações de sistema ou chaves de segurança. A consequência para quem está do outro lado da linha é direta. Quem recita o seu CPF, o nome da sua mãe e o seu endereço provou só que comprou uma consulta.
+
+## A resposta
+
+### A lei
+
+| Data | Etapa |
+| --- | --- |
+| 14 de agosto de 2018 | É sancionada a Lei Geral de Proteção de Dados (LGPD), Lei 13.709 |
+| 28 de dezembro de 2018 | Entram em vigor os dispositivos que criam a autoridade nacional (Medida Provisória 869, convertida na Lei 13.853 de 2019) |
+| Setembro de 2020 | Entram em vigor as disposições gerais, direitos e princípios da lei, como registraram os consultores da Câmara |
+| 1º de agosto de 2021 | Entram em vigor as sanções administrativas (artigos 52 a 54), pela Lei 14.010 de 2020 |
+| 6 de julho de 2023 | É publicada a primeira sanção |
+| 17 de setembro de 2025 | A Medida Provisória 1.317 transforma a autoridade em Agência Nacional de Proteção de Dados |
+| 25 de fevereiro de 2026 | A Lei 15.352 converte a medida |
+
+Pela LGPD, o controlador tem de comunicar à ANPD e aos titulares o incidente de segurança "que possa acarretar risco ou dano relevante" (artigo 48), e controladores e operadores que causem dano violando a lei são obrigados a repará-lo (artigo 42). As sanções do artigo 52 vão da advertência à multa de até 2% do faturamento da empresa privada no Brasil, limitada a R$ 50 milhões por infração, passando por multa diária, publicização da infração, bloqueio ou eliminação dos dados e suspensão ou proibição, parcial ou total, do tratamento. O parágrafo 3º do mesmo artigo lista quais delas podem ser aplicadas a órgãos e entidades públicas: advertência, publicização, bloqueio, eliminação, suspensão e proibição. **As multas não estão na lista.** Os órgãos que guardavam os maiores arquivos deste texto, um ministério, o INSS, um Detran, o sistema de busca de bens do Judiciário, não podem ser multados pela ANPD por perdê-los.
+
+### O que a ANPD fez
+
+A primeira sanção, publicada em 6 de julho de 2023, foi para a Telekall Infoservice, uma pequena empresa de Vila Velha (ES): advertência e duas multas que somaram R$ 14,4 mil. Quando a ANPD divulgou pela primeira vez a lista de processos sancionadores em andamento, em março de 2023, todos menos um eram contra órgãos públicos, entre eles o Ministério da Saúde (duas vezes, inclusive por não comunicar incidente de segurança), a Secretaria de Educação do Distrito Federal, a Secretaria de Estado da Saúde de Santa Catarina e o Instituto de Assistência Médica ao Servidor Público Estadual de São Paulo (Iamspe), segundo o Teletime. Os resultados foram os que o parágrafo 3º permite: o Iamspe recebeu advertência em outubro de 2023, com ordem de publicar a comunicação do incidente; o INSS foi condenado em fevereiro de 2024 a publicizar a infração por 60 dias.
+
+O balanço de seis anos da ANPD, publicado em 5 de novembro de 2026, dá a situação atual: até outubro de 2026 a agência tinha concluído 8 processos sancionadores e mantinha outros 28 em análise, contra agentes públicos e privados. A maior sanção até agora saiu em agosto de 2026, multa de R$ 153,7 milhões à ByteDance Brasil, controladora do TikTok, por dados de crianças e adolescentes. Entre os processos abertos estão o da Claro e um contra o Instituto Saúde e Cidadania (Isac), organização social que administra unidades públicas de saúde, por um incidente de 2025 que expôs dados de cerca de 500 mil pacientes. A ANPD também informou ter recebido 9.548 requerimentos, entre petições de titulares e denúncias, de janeiro a agosto de 2026, 28,45% a mais do que no mesmo período de 2025.
+
+### O que os tribunais disseram
+
+O STJ resolveu uma questão que interessa a todos os que aparecem nas tabelas acima. Em 7 de março de 2023, no AREsp 2.130.619, a Segunda Turma, com relatoria do ministro Francisco Falcão, decidiu que "o vazamento de dados pessoais não gera dano moral presumido": num caso em que uma concessionária de energia elétrica tinha exposto nome, endereço, RG, data de nascimento e telefone de uma cliente, a pessoa teria de provar o dano efetivamente sofrido. A Quarta Turma repetiu o princípio no REsp 2.221.650, em 4 de novembro de 2025: "a disponibilização de dados pessoais, por si só, não configura dano moral presumido", e cabe à pessoa provar que os dados foram de fato compartilhados de forma ilícita e que isso causou lesão relevante. No primeiro caso, o STJ também decidiu que o rol de dados sensíveis da LGPD é taxativo. Quando o dado não é sensível, e a maior parte dos campos da tabela de enriquecimento não é, o vazamento sozinho não dá direito a indenização.
+
+A ação do Instituto Sigilo e do MPF contra a Serasa, que pede indenização para todos os que estavam no arquivo de 2021, estava em fase de produção de provas em fevereiro de 2024, segundo a DatacenterDynamics, e nenhuma decisão definitiva foi encontrada quando este texto foi escrito.
+
+## O que você pode fazer
+
+Os dados não vão voltar. Tudo nesta seção parte desse fato: o objetivo não é esconder o CPF, o endereço ou o nome da mãe, o que já não é possível, e sim tornar esses dados inúteis para quem os tem. Cada passo abaixo foi conferido na página oficial em 12 de novembro de 2026.
+
+### As regras que decorrem de os dados serem públicos
+
+1. **Saber os seus dados não prova nada.** Quem liga, manda mensagem ou abre um site já sabendo o seu CPF, data de nascimento, nome da mãe, endereço, banco e agência mostrou só que teve acesso a um vazamento ou a um painel. Trate isso como prova nenhuma.
+2. **Banco não liga para pedir.** A Febraban diz que, nesses contatos, os bancos nunca pedem dados pessoais, senhas, atualizações de sistema ou chaves de segurança, nunca pedem pagamento ou estorno e nunca pedem que o cliente faça uma transação para resolver um problema; em julho de 2025 acrescentou que o banco nunca liga pedindo para o cliente instalar aplicativo ou ferramenta nenhuma. Se a ligação pedir qualquer uma dessas coisas, desligue.
+3. **Ligue de volta num número que você já tem.** Use o telefone do verso do cartão, do aplicativo ou do site oficial do banco, nunca um número passado durante a ligação, que pode estar mascarado.
+4. **Código não se passa a ninguém.** Senhas do aplicativo, códigos recebidos por SMS e tokens são pessoais e nunca devem ser ditos, digitados ou informados durante uma ligação, diz a Febraban.
+5. **Ficar sem sinal é alarme.** Se o celular de repente parar de fazer ligações e de enviar ou receber mensagens fora do Wi-Fi, o primeiro sinal de linha sequestrada segundo a Anatel, ligue na hora para a operadora pelos canais oficiais.
+
+### Ameaças e defesas num relance
+
+| Ameaça | Defesa | Onde | Custo |
+| --- | --- | --- | --- |
+| Conta de banco ou de pagamento aberta no seu nome | BC Protege+: bloqueia novas contas correntes, de poupança e de pagamento pré-paga, e a sua inclusão como titular ou representante em conta de terceiros | Meu BC, com conta gov.br prata ou ouro e verificação em duas etapas | Gratuito |
+| Empréstimos, contas, chaves Pix ou cheques sem fundos que você não reconhece | Relatórios do Registrato | Meu BC | Gratuito |
+| Seu CPF incluído entre os sócios de uma empresa | Proteger Meu CPF, da Receita Federal | Redesim, com gov.br | Gratuito |
+| Consignado no seu benefício do INSS | Manter o benefício bloqueado; conferir o extrato de consignado | Aplicativo ou site Meu INSS; telefone 135 | Gratuito |
+| Conta gov.br invadida | Nível ouro, verificação em duas etapas, revisão dos dispositivos autorizados | Aplicativo gov.br | Gratuito |
+| Linhas pré-pagas no seu CPF | Consulta no Cadastro Pré, depois a operadora | cadastropre.com.br; a operadora | Custo não informado na página da Anatel |
+| Sequestro da linha (troca de chip) | Agir ao primeiro sinal; operadora e boletim de ocorrência | Canais oficiais da operadora | Gratuito |
+| Dado errado num birô de crédito; cadastro positivo indesejado | Consulta gratuita; correção; saída do Cadastro Positivo | Qualquer um dos quatro birôs registrados | Gratuito, por lei |
+| Pix fraudulento | Limite noturno; limites menores; dispositivos cadastrados; botão de contestação do Mecanismo Especial de Devolução (MED) | Aplicativo do seu banco | Gratuito |
+| Ligações de venda, inclusive ofertas de consignado | Não Me Perturbe | naomeperturbe.com.br, aplicativo ou Procon | Custo não informado na página do governo |
+| Golpe que já aconteceu | Banco, boletim de ocorrência, consumidor.gov.br ou Procon, Banco Central, ANPD | Ver os últimos passos | Gratuito |
+
+### Passo 1. Suba de nível e tranque a sua conta gov.br
+
+A conta gov.br é a chave de quase todos os serviços abaixo, por isso é a primeira coisa a proteger. Ela tem três níveis: bronze, o mais básico; prata; e ouro, "o mais completo e seguro", segundo o Ministério da Gestão e da Inovação em Serviços Públicos.
+
+1. Instale o aplicativo gov.br pela loja oficial. No aplicativo, toque no nível exibido e escolha aumentar. Chega-se ao ouro pelo reconhecimento facial ou lendo o QR code da Carteira de Identidade Nacional (CIN); o ministério diz que leva poucos minutos. A orientação do Ministério da Justiça diz que o nível prata também pode ser obtido pelo seu banco.
+2. No aplicativo, abra "Segurança da conta" e ative a "verificação em duas etapas". Os códigos vêm só do próprio aplicativo gov.br ("Gerar código de acesso"), não por SMS, e o celular precisa estar com data e hora automáticas. A verificação em duas etapas está disponível para contas prata e ouro.
+3. Em "Segurança da conta", depois "Verificação em duas etapas", depois "Dispositivos autorizados", confira os aparelhos com acesso, exclua os que não reconhecer e leia o histórico de acessos.
+4. Se a conta foi invadida: registre boletim de ocorrência; recupere a conta por "Esqueci minha senha" com reconhecimento facial, que mantém o nível ouro (a recuperação por telefone ou e-mail derruba a conta para bronze); troque a senha; bloqueie os dispositivos desconhecidos; e atualize os métodos de acesso e de recuperação, como orientam o Ministério da Justiça e a equipe do gov.br.
+
+O que isso impede: entrar na conta só com a senha roubada. O que não impede: a pessoa entregar um código durante uma ligação.
+
+### Passo 2. Bloqueie a abertura de contas no seu nome: o serviço certo não é o Registrato
+
+Circula a afirmação de que o Registrato permite bloquear empréstimos e abertura de contas no próprio nome. Nas páginas do próprio Banco Central, não é bem assim. **O Registrato mostra; não bloqueia.** O bloqueio é outro serviço do Meu BC, o BC Protege+, e ele vale para contas, não para crédito.
+
+O BC Protege+ foi lançado em 1º de dezembro de 2025, com base na Resolução BCB nº 475 e na Instrução Normativa BCB nº 661, que o descrevem como um sistema de comunicação de "restrição a contratações" no Sistema Financeiro Nacional. Pela página do serviço (modificada em 27 de janeiro de 2026), ele faz isto: com a proteção ativa, nenhum banco ou instituição de pagamento pode abrir conta corrente, poupança ou conta de pagamento pré-paga no seu nome, nem incluir você como titular ou representante em conta de terceiros, porque "antes de abrir uma conta, todas as instituições são obrigadas a consultar o sistema". Ele não bloqueia empréstimos, cartões de crédito nem chaves Pix; no lançamento, o BC disse que avaliaria estendê-lo a chaves Pix, operações de crédito e cartões de crédito só se a adesão fosse significativa. Até 7 de janeiro de 2026, 545 mil pessoas tinham ativado a proteção e cerca de 111 mil tentativas de abertura de contas fraudulentas tinham sido barradas, segundo a Agência Brasil; em 20 de fevereiro de 2026 o BC informou ter chegado a um milhão de usuários.
+
+1. Confirme que a sua conta gov.br é prata ou ouro, com verificação em duas etapas ativa (passo 1).
+2. Entre no Meu BC com o gov.br. Clique em "BC Protege+" na página inicial ou no menu lateral ("Gerenciar a proteção").
+3. No cartão das contas ("Contas", abertura e inclusão), clique no botão para ativar a proteção e confirme. Uma mensagem confirma a ativação. O serviço informa atendimento imediato.
+4. Quando você mesmo for abrir uma conta, desative no mesmo cartão, escolhendo um prazo de até 30 dias ou um período definido, e depois reative.
+5. Consulte de vez em quando o "Histórico de consultas": ele mostra quais instituições consultaram o seu cadastro enquanto a proteção estava ativa.
+
+É gratuito. Empresas podem usar por meio de sócios, representantes ou colaboradores cadastrados no módulo de empresas do gov.br.
+
+### Passo 3. Leia a sua pegada financeira no Registrato
+
+O Registrato, também no Meu BC e gratuito, oferece os relatórios que mostram o que foi feito no seu nome. Todos exigem conta gov.br prata ou ouro com verificação em duas etapas.
+
+- **Empréstimos e financiamentos**, do Sistema de Informações de Crédito (SCR): "todas as suas dívidas com bancos e financeiras", com saldo, tipo de operação e se cada uma está em dia ou em atraso.
+- **Contas e relacionamentos**, do Cadastro de Clientes do Sistema Financeiro Nacional (CCS): todas as instituições em que você tem ou teve conta, investimento ou outro relacionamento, com datas de início e fim; não mostra número de conta nem saldo.
+- **Chaves Pix**: as chaves cadastradas no seu nome e a situação de cada uma; o relatório completo, com as chaves excluídas, sai em até dois dias úteis.
+- **Cheques sem fundos**, do Cadastro de Emitentes de Cheques sem Fundos (CCF), e **câmbio e transferências internacionais**.
+
+1. Entre no Meu BC com o gov.br e abra o relatório desejado; os relatórios atuais saem na hora.
+2. Procure o que você não reconhece: um empréstimo, uma instituição, uma chave.
+3. Se encontrar uma conta que você não abriu, a orientação do governo de março de 2026 é registrar boletim de ocorrência na Polícia Civil e procurar o banco para bloquear e encerrar a conta. Para chave ou empréstimo que você não reconhece, procure a instituição indicada; as páginas do serviço apontam o "Fale Conosco" do BC para dúvidas e a ouvidoria para irregularidades.
+
+O Registrato tem ainda uma "Central de autorizações", para gerenciar quem você autorizou a ver os seus relatórios.
+
+### Passo 4. Impeça que o seu CPF seja incluído numa empresa
+
+Criminosos também usam o CPF para registrar empresas, cada uma com seu número no Cadastro Nacional da Pessoa Jurídica (CNPJ). O serviço "Proteger Meu CPF", da Receita Federal, impede a inclusão do seu CPF na composição societária de qualquer pessoa jurídica, em todos os órgãos de registro (juntas comerciais, cartórios de registro de pessoas jurídicas e OAB) e em qualquer qualificação (titular, sócio, representante, administrador), inclusive de microempreendedor individual (MEI), segundo a página do serviço, modificada em 8 de setembro de 2026.
+
+1. Entre no canal Proteger Meu CPF, na Redesim, e escolha "Impedir Participação". Para impedir, basta conta gov.br bronze.
+2. Para reverter, escolha "Permitir Participação" e informe o código enviado à sua caixa postal no Centro Virtual de Atendimento (e-CAC) da Receita; reverter exige conta prata ou ouro.
+3. Para ver as empresas de que você já participa, use a consulta pública de CNPJ da Redesim ("Minhas empresas").
+
+Vale só para novas inscrições a partir da data do pedido e não altera as empresas de que você já faz parte. É gratuito e imediato.
+
+### Passo 5. Se você recebe benefício do INSS, mantenha-o bloqueado para empréstimo
+
+1. Entre no Meu INSS (aplicativo ou gov.br/meuinss) com CPF e senha do gov.br. Qualquer nível de conta, inclusive bronze, usa o serviço.
+2. Em "Do que você precisa?", busque "Empréstimo" ou "Bloquear / Desbloquear" e escolha "Bloqueio/Desbloqueio de Benefício para Empréstimo". Leia as instruções e confirme.
+3. Acompanhe o pedido em "Consultar Pedidos". A página do serviço dá prazo de até 45 dias corridos para a resposta.
+4. Desbloqueie só quando for de fato contratar um empréstimo. O desbloqueio exige autorização expressa sua, primeiro por biometria facial no Meu INSS, ou, se não houver cadastro biométrico, por login no gov.br com validação de dados bancários, diz o INSS.
+5. Confira com frequência o "Extrato de Empréstimo Consignado" no Meu INSS, em busca de descontos que você não reconheça.
+
+Benefícios novos já ficam bloqueados para consignado nos primeiros 90 dias. O serviço é gratuito e também está disponível pelo telefone 135, de segunda a sábado, das 7h às 22h, horário de Brasília. Se aparecer empréstimo ou desconto que você não autorizou, o INSS orienta procurar a instituição que fez o empréstimo, pedir cancelamento e devolução, reclamar nos canais oficiais de defesa do consumidor e guardar todos os protocolos; aponta também os Procons, as Defensorias Públicas e os Juizados Especiais Cíveis.
+
+### Passo 6. Confira as suas linhas e fique atento à troca de chip
+
+1. Entre em cadastropre.com.br, o portal que as operadoras lançaram em janeiro de 2020, sob a Anatel. Ele mostra quais operadoras têm linhas pré-pagas ativas no seu CPF, sem nome, número ou quantidade. A página da Anatel não fala de linhas pós-pagas.
+2. Se aparecer uma operadora que você não usa, procure-a e peça o cancelamento ou a desvinculação da linha; a Anatel diz que a operadora tem de fazer isso em até 24 horas num pedido a um atendente, ou 48 horas num pedido automático. Os números listados pela Anatel são Claro 1052, TIM 1056, Vivo 1058, Oi 1057 e Algar 1055.
+3. Se o celular perder o serviço de repente, ligue na hora para a operadora pelo canal oficial e registre boletim de ocorrência, como orienta a Anatel.
+
+O que existe hoje contra a troca de chip são as verificações de identidade das próprias operadoras e o segundo fator que a Anatel exigiu na portabilidade; a biometria facial com prova de vida passa a ser obrigatória na troca de chip e na portabilidade até 31 de dezembro de 2027. Onde o banco e outros serviços permitirem, prefira a autenticação pelo aplicativo aos códigos por SMS, porque um número sequestrado recebe o SMS.
+
+### Passo 7. Consulte os birôs de crédito de graça e decida sobre o Cadastro Positivo
+
+A Lei 12.414, de 2011, alterada pela Lei Complementar 166, de 2019, dá a todos o direito de acessar gratuitamente, "independentemente de justificativa", as informações que um birô de crédito tem sobre si, inclusive histórico e nota de crédito, por telefone ou meio eletrônico; de ter informação errada corrigida em até dez dias em todos os bancos de dados que a compartilharam; e de cancelar ou reabrir o cadastro no Cadastro Positivo, o banco de dados de pagamentos em dia. Em outubro de 2019 o BC registrou quatro gestoras desse cadastro: Serasa, Quod, Boa Vista Serviços e o SPC Brasil (Serviço de Proteção ao Crédito), da Confederação Nacional de Dirigentes Lojistas (CNDL).
+
+1. Consulte o seu cadastro e a sua nota no canal gratuito que cada birô é obrigado a manter. Se o site do birô oferecer planos pagos, você não precisa deles para isso: o acesso gratuito é direito previsto em lei.
+2. Procure dívidas, consultas ou cadastros que você não reconhece e conteste com o birô; a fonte tem de verificar e confirmar ou corrigir a informação contestada em até dois dias úteis.
+3. Se preferir não estar no Cadastro Positivo, peça a qualquer uma das quatro gestoras, por telefone, pessoalmente ou por meio eletrônico, o cancelamento do cadastro. A lei obriga a gestora a encerrá-lo em até dois dias úteis e a repassar o pedido às demais, que têm de fazer o mesmo.
+
+Sair do cadastro positivo não impede um fraudador de contratar no seu nome; só impede que o seu histórico de pagamentos seja compartilhado.
+
+### Passo 8. Reduza o que um Pix pode fazer
+
+- **Limite noturno.** Desde 4 de outubro de 2021, as transferências Pix de pessoas físicas entre 20h e 6h ficam limitadas, por padrão, a R$ 1 mil; você pode pedir ao banco que o período noturno seja das 22h às 6h. O pedido de aumento de limite leva no mínimo 24 e no máximo 48 horas para valer, um prazo que o BC fixou também por causa de sequestros-relâmpago.
+- **Limites menores.** O relatório de gestão do Pix do BC lista, entre os aprimoramentos operacionais, a obrigação de os bancos fixarem limites com base no perfil de risco e de comportamento de cada cliente e de permitirem ao cliente fixar limite de Pix igual a R$ 0.
+- **Dispositivos cadastrados.** Desde novembro de 2024, pessoas físicas só cadastram chaves e iniciam Pix a partir de um dispositivo cadastrado previamente; de um dispositivo não cadastrado, as transações ficam limitadas a R$ 200 cada e R$ 1 mil por dia.
+- **Botão de contestação.** O MED existe desde novembro de 2021. Desde 1º de outubro de 2025 a versão de autoatendimento, o "botão de contestação", está disponível nos aplicativos das instituições participantes do Pix, para contestar um Pix enviado por golpe, fraude ou coação. O banco recebedor tem de bloquear na hora o dinheiro na conta do golpista, os dois bancos têm até sete dias para analisar e, se concordarem que foi golpe, a devolução chega à vítima em até onze dias depois da contestação. Desde fevereiro de 2026 o dinheiro também pode ser rastreado e recuperado além da primeira conta que o recebeu. Não vale para desacordo comercial, arrependimento nem chave digitada errada.
+
+1. No aplicativo do banco, procure os limites Pix, reduza os limites noturno e diurno ao que você realmente usa e escolha o período noturno.
+2. Se cair num golpe, use na hora o botão de contestação no aplicativo, depois procure o banco pelo canal oficial e registre boletim de ocorrência.
+
+### Passo 9. Telemarketing: o Não Me Perturbe, dentro dos seus limites
+
+A lista nacional de bloqueio, o Não Me Perturbe, em naomeperturbe.com.br, no aplicativo ou por meio de um Procon, bloqueia ligações de venda das prestadoras de telecomunicações, e a cobertura inclui ofertas de empréstimo consignado e de cartão de crédito consignado, segundo o Ministério das Comunicações em janeiro de 2026; o bloqueio vale em até 30 dias corridos. Não se aplica a ligações para confirmação de dados, prevenção a fraudes, cobrança ou retenção de pedidos de portabilidade. Golpista não respeita a lista: o cadastro reduz as ofertas legítimas, o que torna mais suspeita uma ligação que diz ser uma delas, mas não impede crime nenhum.
+
+### Passo 10. Quando algo já aconteceu: onde registrar
+
+1. **O seu banco, primeiro e rápido.** Só pelos canais oficiais, para qualquer transação que você não reconheça; é o primeiro passo do Ministério da Justiça depois de uma perda financeira. Para um Pix, use o botão de contestação (passo 8).
+2. **Boletim de ocorrência.** Numa delegacia da Polícia Civil ou pela delegacia virtual do seu estado, com datas, horários, prints e outras provas.
+3. **consumidor.gov.br.** O serviço público, monitorado pela Senacon, em que você reclama direto com uma empresa cadastrada; a empresa tem até dez dias para responder, e você tem vinte para avaliar a resposta.
+4. **Procon.** Os órgãos estaduais e municipais de defesa do consumidor, para conflitos com empresas.
+5. **O Banco Central.** Pelo Meu BC, em "Reclamar contra bancos e outras instituições supervisionadas".
+6. **A ANPD.** Pelo serviço "Abrir requerimento relacionado à LGPD", no gov.br, gratuito, com conta prata ou ouro. Há dois tipos de requerimento. A denúncia, comunicação de que a lei foi violada, pode ser feita por qualquer pessoa e pode ser anônima. A petição de titular, sobre os seus próprios direitos, tem uma condição: você precisa ter feito antes um pedido formal à empresa ou ao órgão que trata os seus dados (o controlador) e guardado o comprovante, e só pode recorrer à ANPD se o pedido não foi atendido ou a resposta foi insatisfatória, como exigem o artigo 55-J da LGPD e o fluxo da petição publicado pela ANPD. O prazo estimado é de até 30 dias úteis. A ANPD diz que, em geral, analisa as petições em conjunto e não necessariamente intervém em cada caso; elas orientam a escolha das suas fiscalizações.
+
+## O que o registro mostra
+
+O registro acima sustenta a descrição do título nos seus próprios termos. Os maiores bancos de dados públicos e privados do Brasil foram expostos repetidas vezes desde 2019, em arquivos com contagens de registros iguais ou maiores que a população; vazamentos menores acrescentaram os campos que transformam um número na descrição de uma vida; operações policiais encontraram essas descrições vendidas por assinatura, abastecidas em parte por sistemas do governo, com dezenas de milhões de consultas. O regulador que recebe as comunicações de incidente não pode multar os órgãos públicos que guardam os maiores arquivos, e o tribunal superior da lei federal exige que cada pessoa prove dano concreto. As proteções que existem, um bloqueio de abertura de contas, um bloqueio de consignado, um bloqueio de inclusão em empresas, um botão de contestação do Pix, funcionam todas tornando os dados vazados insuficientes para agir em nome de alguém. Nenhuma delas torna esses dados privados de novo.
+
+<ReaderQuestions>
+
+- Se o CPF, a data de nascimento, o nome da mãe e o endereço de quase todos os brasileiros estão em circulação, quais serviços públicos e bancos ainda os aceitam como prova de identidade, e o que deveria substituí-los?
+- O arquivo de 2021 foi anunciado como vindo de um birô de crédito, o birô nega e a origem nunca foi estabelecida publicamente: quem deveria ter o ônus de provar de onde saiu uma base vazada?
+- A LGPD não permite que a ANPD multe órgãos públicos, e vários dos maiores vazamentos aconteceram em sistemas públicos: uma advertência ou a publicização da infração bastam para mudar o modo como um ministério ou um instituto protege dados?
+- O STJ exige prova de dano concreto para indenização por dano moral depois de um vazamento; como alguém prova qual vazamento causou o dano, se os mesmos dados circulam a partir de dezenas de fontes?
+- O BC Protege+ bloqueia a abertura de contas, mas não o crédito; um bloqueio de contratação no nome de alguém deveria alcançar empréstimos, cartões e chaves Pix, e quem deveria arcar com o atrito que isso acrescenta?
+- Quando painéis de consulta são abastecidos com credenciais ainda válidas de servidores públicos, quem deveria auditar o acesso às bases do governo, e com que frequência?
+
+</ReaderQuestions>
+
+## Fontes
+
+Todas as fontes foram acessadas em 12 de novembro de 2026. Estão em português, salvo quando a fonte é em inglês.
+
+**População**
+
+- [IBGE, Estimativas da população residente no Brasil e unidades da federação com data de referência em 1º de julho de 2026 (214.211.951)](https://ftp.ibge.gov.br/Estimativas_de_Populacao/Estimativas_2026/estimativa_dou_2026.pdf)
+- [SBT News, Brasil chega a 214,2 milhões de habitantes em 2026, diz IBGE (publicada em 28 de agosto de 2026; crescimento de 0,37%)](https://sbtnews.sbt.com.br/noticia/brasil/brasil-chega-a-214-2-milhoes-de-habitantes-em-2026-diz-ibge)
+- [O Povo, IBGE revisa dados do Censo 2022; população brasileira sobe para 203.080.756 pessoas, 31 de agosto de 2023](https://www.opovo.com.br/noticias/economia/2023/08/31/ibge-revisa-dados-do-censo-2022-populacao-brasileira-sobe-para-203-080-756-pessoas.html)
+- [Câmara dos Deputados, Consultoria Legislativa, Nota técnica: consequências dos megavazamentos de dados para os cidadãos, abril de 2021 (o CPF, os arquivos de 112 milhões e do Poupatempo, as vias judicial e administrativa)](https://www2.camara.leg.br/atividade-legislativa/estudos-e-notas-tecnicas/publicacoes-da-consultoria-legislativa/arquivos-pdf/nota-tecnica-megavazamento-de-dados)
+
+**O arquivo de 2021**
+
+- [Olhar Digital, Vazamento de banco de dados expõe CPF de quase toda a população do Brasil, 20 de janeiro de 2021](https://olhardigital.com.br/2021/01/20/noticias/vazamento-de-banco-de-dados-expoe-cpf-de-quase-toda-a-populacao-do-brasil/)
+- [Baguete, PSafe: todos os CPFs do Brasil vazaram, 22 de janeiro de 2021](https://www.baguete.com.br/noticias/psafe-todos-os-cpfs-do-brasil-vazaram)
+- [Tecnoblog Comunidade, Exclusivo: vazamento que expôs 220 milhões de brasileiros é pior do que se pensava, 22 de janeiro de 2021](https://tecnoblog.net/comunidade/t/exclusivo-vazamento-que-expos-220-milhoes-de-brasileiros-e-pior-do-que-se-pensava/27379)
+- [Tecnoblog, Megavazamento de CPFs tinha algo que "não é normal": ser organizado demais (37 bases, 223,74 milhões de CPFs)](https://tecnoblog.net/noticias/megavazamento-de-cpfs-tinha-algo-que-nao-e-normal-ser-organizado-demais/)
+- [Tecnoblog, Exclusivo: Vazamento de 223 milhões de CPFs é vendido em "promoção" por US$ 30 mil, 5 de março de 2021](https://tecnoblog.net/noticias/2021/03/05/exclusivo-vazamento-de-223-milhoes-de-cpfs-e-vendido-por-preco-menor/)
+- [Idec, ANPD enfim se pronuncia sobre vazamento de 220 milhões de CPFs (Tecnoblog, 27 de janeiro de 2021: ANPD, Senacon, Procon-SP, MPDFT, MPF-SP)](https://idec.org.br/idec-na-imprensa/anpd-enfim-se-pronuncia-sobre-vazamento-de-220-milhoes-de-cpfs)
+- [Teletime, ANPD inicia apuração do vazamento de dados de mais de 200 milhões de brasileiros, 4 de fevereiro de 2021](https://teletime.com.br/04/02/2021/anpd-inicia-apuracao-do-vazamento-de-dados-de-mais-de-200-milhoes-de-brasileiros/)
+- [Teletime, Respostas da Serasa sobre megavazamento são insuficientes, diz Procon-SP, 7 de abril de 2021](https://teletime.com.br/07/04/2021/respostas-da-serasa-sobre-megavazamento-sao-insuficientes-diz-procon-sp/)
+- [ESET WeLiveSecurity, Suspeitos de envolvimento em megavazamento de dados são identificados pela Operação Deepwater, 19 de março de 2021](https://www.welivesecurity.com/br/2021/03/19/suspeitos-de-envolvimento-em-megavazamento-de-dados-sao-identificados-pela-operacao-deepwater/)
+- [Olhar Digital, Polícia Federal prende suspeito do megavazamento de 223 milhões de CPFs, 19 de março de 2021](https://olhardigital.com.br/2021/03/19/seguranca/pf-prende-suspeito-megavazamento-223-milhoes-cpfs/)
+- [Jornal de Brasília / FolhaPress, PF ainda investiga ataques hacker e megavazamento de dados um ano depois, 4 de janeiro de 2022](https://jornaldebrasilia.com.br/noticias/politica-e-poder/pf-ainda-investiga-ataques-hacker-e-megavazamento-de-dados-um-ano-depois/)
+- [O Popular, PF ainda investiga ataques hacker e megavazamento de dados um ano depois (as hipóteses sobre a origem)](https://opopular.com.br/economia/pf-ainda-investiga-ataques-hacker-e-megavazamento-de-dados-um-ano-depois-1.2381193)
+- [Canaltech, Polícia prende suspeito de vazar dados de 223 milhões de brasileiros, 10 de abril de 2024](https://canaltech.com.br/seguranca/policia-prende-suspeito-de-vazar-dados-de-223-milhoes-de-brasileiros-285181/)
+- [Migalhas, MPF pede que Serasa seja multada em R$ 200 mi por vazamento de dados, 18 de janeiro de 2024](https://www.migalhas.com.br/quentes/400585/mpf-pede-que-serasa-seja-multada-em-r-200-mi-por-vazamento-de-dados)
+- [DatacenterDynamics, Vazamento de dados do Serasa está em fase de produção de provas, fevereiro de 2024](https://www.datacenterdynamics.com/br/not%C3%ADcias/vazamento-de-dados-do-serasa-esta-em-fase-de-producao-de-provas-/)
+
+**O Ministério da Saúde**
+
+- [ESET WeLiveSecurity, Senhas do Ministério da Saúde vazam e dados de 16 milhões de pacientes de Covid-19 são expostos, 27 de novembro de 2020](https://www.welivesecurity.com/br/2020/11/27/senhas-do-ministerio-da-saude-vazam-e-dados-de-16-milhoes-de-pacientes-de-covid-19-sao-expostos/)
+- [Canaltech, Nova falha no Ministério da Saúde expõe dados de 240 milhões de brasileiros, 2 de dezembro de 2020](https://canaltech.com.br/seguranca/nova-falha-no-ministerio-da-saude-expoe-dados-de-240-milhoes-de-brasileiros-175578/)
+- [ESET WeLiveSecurity, Falha do Ministério da Saúde expõe dados de mais de 243 milhões de brasileiros, 4 de dezembro de 2020](https://www.welivesecurity.com/br/2020/12/04/falha-do-ministerio-da-saude-expoe-dados-de-mais-de-243-milhoes-de-brasileiros/)
+- [Movimento Econômico, App ConecteSUS e site do Ministério da Saúde sofrem ataque cibernético, 10 de dezembro de 2021](https://movimentoeconomico.com.br/tecnologia/2021/12/10/app-conectesus-e-site-do-ministerio-da-saude-sofrem-ataque-cibernetico/)
+- [Canaltech, PF faz operação contra grupo cibercriminoso que atacou Ministério da Saúde (Operação Dark Cloud), 16 de agosto de 2022](https://canaltech.com.br/seguranca/pf-faz-operacao-contra-grupo-cibercriminoso-que-atacou-ministerio-da-saude-223210/)
+- [The Hacker News, Brazilian Police Arrest Suspected Member of Lapsus$ Hacking Group, 20 de outubro de 2022 (em inglês)](https://thehackernews.com/2022/10/brazilian-police-arrest-suspected.html?m=1)
+
+**Outros sistemas do governo e o Pix**
+
+- [O Povo, Detran vaza dados de 70 milhões de brasileiros, diz site, 8 de outubro de 2019](https://www.opovo.com.br/noticias/brasil/2019/10/08/detran-vaza-dados-de-70-milhoes-de-brasileiros--diz-site.html)
+- [Tecnoblog, Detran-RN confirma falha que expôs dados de 70 milhões de brasileiros](https://tecnoblog.net/311005/detran-rn-confirma-falha-expos-dados-brasileiros/)
+- [Diario de Pernambuco, INSS confirma exposição de dados de até 40 milhões de segurados, 24 de junho de 2024](https://www.diariodepernambuco.com.br/noticia/economia/2024/06/inss-confirma-exposicao-de-dados-de-ate-40-milhoes-de-segurados.html)
+- [Migalhas, ANPD condena INSS por vazamento de dados, 5 de fevereiro de 2024](https://www.migalhas.com.br/quentes/401393/anpd-condena-inss-por-vazamento-de-dados)
+- [Canaltech, INSS terá de comunicar vazamento de dados, decide ANPD ao negar recurso, 29 de julho de 2024](https://canaltech.com.br/governo/inss-tera-de-comunicar-vazamento-de-dados-decide-anpd-ao-negar-recurso/)
+- [InfoMoney, Dados de beneficiários do INSS vazam após falha de segurança da Dataprev, 22 de maio de 2026](https://www.infomoney.com.br/politica/dados-de-beneficiarios-do-inss-vazam-apos-falha-de-seguranca-da-dataprev/)
+- [O Povo, Vazamento de dados no INSS expõe 2,8 milhões de CPFs; 98% de falecidos, 26 de maio de 2026](https://www.opovo.com.br/noticias/economia/2026/05/26/vazamento-de-dados-no-inss-expoe-28-milhoes-de-cpfs-98-de-falecidos.html)
+- [Banco Central do Brasil, Banco Central comunica ocorrência em instituição (Acesso Soluções de Pagamento; o texto-modelo)](https://www.bcb.gov.br/content/estabilidadefinanceira/pix/Incidentes%20DICT/BC_comunica_ocorrencia_Pix-2.pdf)
+- [Banco Central do Brasil, Banco Central comunica ocorrência em instituição (Caixa Econômica Federal, 24 e 25 de setembro de 2024)](https://www.bcb.gov.br/content/estabilidadefinanceira/pix/Incidentes%20DICT/BC_comunica_ocorrencia_Pix-16.pdf)
+- [Forbes Brasil, BC comunica vazamento de dados cadastrais do Pix no Banese, 30 de setembro de 2021](https://forbes.com.br/forbes-money/2021/09/bc-comunica-vazamento-de-dados-cadastrais-do-pix-no-banese/)
+- [Movimento Econômico, Banco Central comunica vazamento de dados de 160,1 mil chaves Pix, 21 de janeiro de 2022](https://movimentoeconomico.com.br/financas/mercado-financeiro/2022/01/21/banco-central-comunica-vazamento-de-dados-de-1601-mil-chaves-pix/)
+- [Migalhas, BC e CNJ confirmam vazamento de 11 milhões de chaves Pix, 24 de julho de 2025](https://www.migalhas.com.br/quentes/435324/bc-e-cnj-confirmam-vazamento-de-11-milhoes-de-chaves-pix)
+- [Jornal de Brasília, Quase 48 milhões de chaves Pix foram expostas em incidentes desde 2020, diz Banco Central, 10 de março de 2026](https://jornaldebrasilia.com.br/noticias/brasil/quase-48-milhoes-de-chaves-pix-foram-expostas-em-incidentes-desde-2020-diz-banco-central/)
+- [ConvergenciaDigital, Banco Central comunica 4º vazamento de dados vinculados a chaves Pix em 2026, 12 de maio de 2026](https://convergenciadigital.com.br/mercado/banco-central-comunica-4o-vazamento-de-dados-vinculados-a-chaves-pix-em-2026/)
+
+**Enriquecimento e mercado**
+
+- [NeoFeed, Exclusivo: novo vazamento expõe mais de 100 milhões de contas de celular, 10 de fevereiro de 2021](https://neofeed.com.br/insiders/exclusivo-novo-vazamento-expoe-mais-de-100-milhoes-de-contas-de-celular/)
+- [Teletime, ANPD apura vazamento de dados de crédito de 12 milhões de brasileiros, 1º de março de 2021](https://teletime.com.br/01/03/2021/anpd-apura-vazamento-de-dados-de-credito-de-12-milhoes-de-brasileiros/)
+- [ConvergenciaDigital, Bots no Telegram expõem dados de brasileiros em segundos por menos de R$ 6 (o estudo da Derechos Digitales), 13 de março de 2026](https://convergenciadigital.com.br/governo/bots-no-telegram-expoem-dados-de-brasileiros-em-segundos-por-menos-de-r-6/)
+- [Olhar Digital, Hackers que roubaram e venderam dados de milhões de brasileiros são presos, 22 de junho de 2023](https://olhardigital.com.br/2023/06/22/seguranca/hackers-que-roubaram-e-venderam-dados-de-milhoes-de-brasileiros-sao-presos/)
+- [Correio Braziliense, Facções e agentes de segurança usaram dados roubados de brasileiros, diz PF, 31 de janeiro de 2024](https://www.correiobraziliense.com.br/brasil/2024/01/6795795-faccoes-e-agentes-de-seguranca-usaram-dados-roubados-de-brasileiros-diz-pf.html)
+- [SBT News, Polícia Federal investiga venda de dados obtidos com invasão a sistemas federais (Operação I-Fraude), 31 de janeiro de 2024](https://sbtnews.sbt.com.br/noticia/policia/policia-federal-investiga-venda-de-dados-obtidos-com-invasao-a-sistemas-federais)
+- [SBT News, PF prende 3 acusados de invadir sistemas federais e vender dados pessoais na internet, 2 de fevereiro de 2024](https://sbtnews.sbt.com.br/noticia/policia/pf-prende-3-acusados-de-invadir-sistemas-federais-e-vender-dados-pessoais-na-internet)
+- [Correio da Manhã, PCDF desarticula grupo criminoso que vendia dados sigilosos (Operação Dark Spot), 31 de julho de 2026](https://www.correiodamanha.com.br/nacional/distrito-federal/2026/07/amp/306899-pcdf-desarticula-grupo-criminoso-que-vendia-dados-sigilosos.html)
+
+**Consequências**
+
+- [Diario de Pernambuco, Febraban: golpe da falsa venda lidera entre os golpes mais relatados por clientes bancários no primeiro semestre, 12 de novembro de 2025](https://www.diariodepernambuco.com.br/economia/2025/11/11700388-febraban-golpe-da-falsa-venda-lidera-entre-os-golpes-mais-relatados-por-clientes-bancarios-no-primeiro-semestre.html)
+- [Febraban, Febraban faz alerta sobre o golpe do falso gerente, 6 de março de 2026](https://portal.febraban.org.br/noticia/4431/pt-br/)
+- [Febraban, Golpe da mão fantasma: bancos nunca pedem que clientes instalem app para resolver problemas na conta, 2 de julho de 2025](https://portal.febraban.org.br/noticia/4318/pt-br/)
+- [Anatel, Golpes atuais mais comuns (sequestro da linha; modificada em 30 de abril de 2026)](https://www.gov.br/anatel/pt-br/assuntos/dicas-contra-fraudes/golpes-atuais-mais-comuns)
+- [Anatel, Anatel aprova validação biométrica obrigatória para usuários de telefonia móvel, 28 de outubro de 2026](https://www.gov.br/anatel/pt-br/assuntos/noticias/anatel-aprova-validacao-biometrica-obrigatoria-para-usuarios-de-telefonia-movel)
+- [Correio Braziliense, Fraudes no INSS: entenda como funcionava o esquema, 30 de abril de 2025](https://www.correiobraziliense.com.br/economia/2025/04/7130518-fraudes-no-inss-entenda-como-funcionava-o-esquema.html)
+- [Gazeta do Povo, Caiu o sigilo: relatório revela que INSS abriu brechas para golpe contra aposentados, 24 de abril de 2025](https://www.gazetadopovo.com.br/economia/caiu-o-sigilo-relatorio-revela-inss-abriu-brechas-para-golpe-contra-aposentados/)
+- [SBT News, Fraude no INSS: relatório da CGU mostra que associações chegaram a filiar mais de 1,5 mil aposentados por hora, 7 de maio de 2025](https://sbtnews.sbt.com.br/noticia/economia/fraude-no-inss-relatorio-da-cgu-mostra-que-associacoes-chegaram-a-filiar-mais-de-1-5-mil-aposentados-por-hora)
+- [NIST, SP 800-63A-4, Digital Identity Guidelines: Identity Proofing and Enrollment, julho de 2025 (em inglês)](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-63A-4.pdf)
+- [NIST, SP 800-63B-4, Digital Identity Guidelines: Authentication and Authenticator Management, julho de 2025 (em inglês)](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-63B-4.pdf)
+
+**A lei, a ANPD e os tribunais**
+
+- [Câmara dos Deputados, Legislação Informatizada, Lei nº 13.709, de 14 de agosto de 2018, norma atualizada (artigos 42, 48, 52, 55-A, 55-J e 65)](https://www2.camara.leg.br/legin/fed/lei/2018/lei-13709-14-agosto-2018-787077-normaatualizada-pl.html)
+- [ANPD, Balanço ANPD 6 anos, 2020–2026, publicado em 5 de novembro de 2026 (sanções, requerimentos, os processos da Claro e do Isac)](https://www.gov.br/anpd/pt-br/centrais-de-conteudo/outros-documentos-e-publicacoes-institucionais/balanco-anpd-6-anos.pdf/@@display-file/file)
+- [Teletime, ANPD publica primeira sanção ao setor privado por descumprimento da LGPD, 6 de julho de 2023](https://teletime.com.br/06/07/2023/anpd-publica-primeira-sancao-ao-setor-privado-por-descumprimento-da-lgpd/)
+- [Teletime, ANPD divulga processos sancionatórios em andamento; apenas um do setor privado, 23 de março de 2023](https://teletime.com.br/23/03/2023/anpd-divulga-processos-sancionatorios-em-andamento-apenas-um-do-setor-privado/)
+- [Mobile Time, ANPD aplica segunda sanção, dessa vez a órgão público de SP, 6 de outubro de 2023](https://www.mobiletime.com.br/noticias/06/10/2023/anpd-aplica-segunda-sancao-dessa-vez-a-orgao-publico-de-sp/)
+- [Dizer o Direito, O vazamento de dados pessoais não gera dano moral presumido (STJ, AREsp 2.130.619-SP, julgado em 7 de março de 2023)](https://www.dizerodireito.com.br/2023/03/o-vazamento-de-dados-pessoais-nao-gera.html)
+- [Mayer Brown, Brazilian Superior Court of Justice: no presumed moral damage in non-sensitive personal data leak, 17 de março de 2023 (em inglês)](https://www.mayerbrown.com/en/perspectives-events/publications/2023/03/brazilian-superior-court-of-justice-no-presumed-moral-damage-in-non-sensitive-personal-data-leak)
+- [Trilhante Informativos, STJ, REsp 2.221.650-SP, julgado em 4 de novembro de 2025](https://informativos.trilhante.com.br/julgados/stj-resp-2221650-sp)
+
+**O que você pode fazer (páginas oficiais)**
+
+- [gov.br, Proteger-se com o BC Protege+ (modificada em 27 de janeiro de 2026)](https://www.gov.br/pt-br/servicos/proteger-se-com-o-bc-protege)
+- [Banco Central do Brasil, BC Protege+: apresentação de lançamento, 1º de dezembro de 2025](https://www.bcb.gov.br/conteudo/home-ptbr/TextosApresentacoes/PROTEGE%2B_EVENTO_1_12_25.pdf)
+- [Banco Central do Brasil, Gabriel Galípolo no Febraban Tech, 24 de agosto de 2026 (Resolução BCB nº 475 e Instrução Normativa nº 661)](https://www.bcb.gov.br/conteudo/home-ptbr/TextosApresentacoes/Apresentacao_GabrielGalipolo_FebrabanTech_24.8.2026.pdf)
+- [Diario de Pernambuco / Agência Brasil, Ferramenta do Banco Central permite bloquear abertura de contas falsas em bancos, 1º de dezembro de 2025](https://www.diariodepernambuco.com.br/economia/2025/12/11701917-ferramenta-do-banco-central-permite-bloquear-abertura-de-contas-falsas-em-bancos.html)
+- [Agência Brasil, Banco Central bloqueia 111 mil fraudes com novo serviço, 7 de janeiro de 2026](https://agenciabrasil.ebc.com.br/radioagencia-nacional/economia/audio/2026-01/banco-central-bloqueia-111-mil-fraudes-com-novo-servico)
+- [Agência Brasil, BC Protege+ alcança um milhão de usuários, 20 de fevereiro de 2026](https://agenciabrasil.ebc.com.br/radioagencia-nacional/geral/audio/2026-02/bc-protege-alcanca-um-milhao-de-usuarios)
+- [gov.br, Meu BC: Serviços Digitais (os relatórios do Registrato)](https://www.gov.br/pt-br/temas/meu-bc-servicos-digitais)
+- [gov.br, Emitir Relatório de Empréstimos e Financiamentos (SCR) (modificada em 27 de janeiro de 2026)](https://www.gov.br/pt-br/servicos/obter-relatorio-do-sistema-de-informacoes-de-credito-scr)
+- [gov.br, Emitir Relatório de Contas e Relacionamentos em Bancos (CCS) (modificada em 15 de dezembro de 2025)](https://www.gov.br/pt-br/servicos/gerar-relatorio-de-contas-e-investimentos-ccs)
+- [gov.br, Emitir Relatórios de Chaves Pix (modificada em 15 de dezembro de 2025)](https://www.gov.br/pt-br/servicos/emitir-relatorio-de-chaves-pix)
+- [Agência Gov, Gov.br: conheça três serviços digitais que protegem seus dados pessoais contra golpistas, 20 de março de 2026](https://agenciagov.ebc.com.br/noticias/202603/gov-br-conheca-tres-servicos-digitais-que-protegem-seus-dados-pessoais-contra-golpistas)
+- [gov.br, Impedir/permitir participação do meu CPF no Cadastro Nacional de Pessoas Jurídicas (modificada em 8 de setembro de 2026)](https://www.gov.br/pt-br/servicos/impedir-permitir-participacao-do-meu-cpf-no-cadastro-nacional-de-pessoas-juridicas-cnpj)
+- [gov.br, Bloquear ou Desbloquear Benefício para Empréstimo (modificada em 12 de agosto de 2026)](https://www.gov.br/pt-br/servicos/bloquear-ou-desbloquear-beneficio-para-emprestimo)
+- [INSS, Consignação em benefícios do INSS: seus direitos e medidas de segurança (atualizada em 28 de outubro de 2026)](https://www.gov.br/inss/pt-br/direitos-e-deveres/pagamento-de-beneficios/consignacao-em-beneficios-do-inss-seus-direitos-e-medidas-de-seguranca)
+- [Governo Digital, Segurança da conta (verificação em duas etapas e dispositivos autorizados)](https://www.gov.br/governodigital/pt-br/identidade/conta-gov-br/seguranca-da-conta)
+- [Ministério da Gestão e da Inovação, Aumente os níveis de sua conta GOV.BR (atualizada em 26 de outubro de 2026)](https://www.gov.br/gestao/pt-br/assuntos/editoria-defeso-eleitoral/aumente-os-niveis-de-sua-conta-gov-br-para-ter-mais-seguranca-e-acesso-a-todos-os-servicos)
+- [Agência Gov, Gov.br: o que fazer em caso de golpes de roubo da identidade digital, 29 de abril de 2026](https://agenciagov.ebc.com.br/noticias/202604/gov-br-o-que-fazer-em-caso-de-golpes-de-roubo-da-identidade-digital)
+- [Ministério da Justiça e Segurança Pública, Sofri um golpe, e agora? Invadiram minha conta gov.br](https://www.gov.br/mj/pt-br/acesso-a-informacao/acoes-e-programas/sofri-um-golpe-e-agora/invadiram-minha-conta-gov.br)
+- [Ministério da Justiça e Segurança Pública, Sofri um golpe, e agora? Tive perdas financeiras](https://www.gov.br/mj/pt-br/acesso-a-informacao/acoes-e-programas/sofri-um-golpe-e-agora/tive-perdas-financeiras)
+- [Anatel, Cadastro de celulares pré-pagos (publicada em 12 de setembro de 2024)](https://www.gov.br/anatel/pt-br/regulado/acompanhamento-e-controle/combate-a-golpes-e-fraudes/cadastro-de-celulares-pre-pagos)
+- [Câmara dos Deputados, Legislação Informatizada, Lei nº 12.414, de 9 de junho de 2011, norma atualizada (artigo 5º)](https://www2.camara.leg.br/legin/fed/lei/2011/lei-12414-9-junho-2011-610758-normaatualizada-pl.html)
+- [ConvergenciaDigital, Banco Central seleciona gestoras de dados do Cadastro Positivo, 11 de outubro de 2019](https://convergenciadigital.com.br/mercado/banco-central-seleciona-gestoras-de-dados-do-cadastro-positivo/)
+- [Banco Central do Brasil, Relatório de Gestão do Pix 2023–2025 (autoatendimento do MED, cadastro de dispositivos, limites)](https://www.bcb.gov.br/content/estabilidadefinanceira/pix/relatorio_de_gestao_pix/relatorio_gestao_pix_2026.pdf)
+- [Mercado e Consumo, Pix: BC limita opções para horário noturno às faixas de 20h às 6h ou de 22h às 6h, 19 de novembro de 2021](https://mercadoeconsumo.com.br/2021/11/19/pix-bc-limita-opcoes-para-horario-noturno-as-faixas-de-20h-as-6h-ou-de-22h-as-6h/)
+- [Diario de Pernambuco / Agência Brasil, Botão de contestação do Pix está disponível aos usuários, 1º de outubro de 2025](https://www.diariodepernambuco.com.br/economia/2025/10/11697117-botao-de-contestacao-do-pix-esta-disponivel-aos-usuarios.html)
+- [Ministério das Comunicações, Plataforma Não Me Perturbe fechou 2025 com 14,2 milhões de números de telefone cadastrados, 2 de janeiro de 2026](https://www.gov.br/mcom/pt-br/noticias/2026/janeiro/plataforma-nao-me-perturbe-fechou-2025-com-14-2-milhoes-de-numeros-de-telefone-cadastrados)
+- [Ministério da Justiça e Segurança Pública, O que é o Consumidor.gov.br](https://www.gov.br/mj/pt-br/assuntos/seus-direitos/consumidor/consumidor-gov.br)
+- [gov.br, Abrir requerimento relacionado à LGPD (ANPD) (modificada em 23 de outubro de 2026)](https://www.gov.br/pt-br/servicos/abrir-requerimento-relacionado-a-lgpd)
+- [ANPD, Fluxo da petição do titular](https://www.gov.br/anpd/pt-br/fluxo-da-peticao-do-titular)

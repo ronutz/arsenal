@@ -47,20 +47,43 @@
   //
   // Datasets are created on first write; nothing to provision.
   // ==========================================================================
+  // THE INTEREST COUNTS (PRIME 12/11/2026 02:35): a THIRD dataset, for the same reason the first two are apart. A
+  // row says what was used on the site (kind, section, item, language, and for a few kinds one fixed word) and
+  // carries no country, device, referrer, path or identifier, so it cannot be laid beside a pageview. Written only
+  // by POST /api/e, which a page calls only after the reader said yes (worker/events.ts, src/lib/interest/).
   "analytics_engine_datasets": [
     { "binding": "PAGEVIEWS", "dataset": "ronutz_pageviews" },
-    { "binding": "REFERRERS", "dataset": "ronutz_referrers" }
+    { "binding": "REFERRERS", "dataset": "ronutz_referrers" },
+    { "binding": "EVENTS", "dataset": "ronutz_events" }
   ],
+
+  // ==========================================================================
+  // THE DAILY ADDING-UP (PRIME 12/11/2026 02:35)
+  // --------------------------------------------------------------------------
+  // Once a day, at 03:17 UTC (after the UTC day has turned, away from the top
+  // of the hour), the Worker's scheduled handler adds yesterday's counts up
+  // and keeps the day's totals in D1 (worker/rollup.ts,
+  // migrations/0002_daily_rollups.sql), because the counting store keeps a row
+  // for three months only. Totals per address, per kind and item, and a few
+  // whole-site figures; nothing about a reader, kept for 760 days.
+  // ==========================================================================
+  "triggers": { "crons": ["17 3 * * *"] },
 
   // ==========================================================================
   // D1: THE /dev/fun GAMES' PUBLIC SCOREBOARD (PRIME 08/11/2026)
   // --------------------------------------------------------------------------
   // One table, fun_scores (migrations/0001_fun_scores.sql), written and read by
-  // worker/scores.ts under /api/v1/fun/. A row keeps the game, the puzzle's day,
+  // worker/scores.ts under /api/v1/fun/. Since 12/11/2026 the same database also
+  // holds the daily totals (daily_pages, daily_events, daily_totals:
+  // migrations/0002_daily_rollups.sql, worker/rollup.ts), which describe the
+  // site's pages and never a reader. A row keeps the game, the puzzle's day,
   // the mode, solved or not, the server's own score and its parts, the initials,
   // the country Cloudflare reports and the UTC date of receipt; never an IP
   // address, a user agent, a cookie, an account, a device identifier or a time
   // finer than the day. Rows are deleted 400 days after they arrive.
+  // Since 12/11/2026 it also holds desk_sync (migrations/0003_desk_sync.sql, worker/desk.ts): the encrypted copy of
+  // a reader's desk, for the readers who turn sync on, under an id derived from a code the server never sees; no IP
+  // address, user agent or time finer than the day; deleted by the daily run after 365 days untouched.
   // Created 2026-11-08 20:43 UTC in ENAM (PRIME's "Yes, create it"); the
   // migration's statements were applied the same minute.
   // ==========================================================================

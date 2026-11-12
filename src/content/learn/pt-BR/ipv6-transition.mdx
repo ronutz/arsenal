@@ -8,7 +8,7 @@ relatedArticles: ["ipv6-addressing", "ipv4-addressing", "ipv6-subnetting", "ipv6
 category: networking
 order: 14
 status: reviewed
-updated: "2026-10-18"
+updated: "2026-11-12"
 ---
 
 IPv4 e IPv6 têm headers diferentes: um host que só fala um deles não conversa com quem só fala o outro. A Request for Comments (RFC) 6144 divide as pontes em três famílias: "Besides dual-stack deployment, there are two fundamental approaches one could take to interworking between IPv4 and IPv6: tunneling and translation", dual-stack, túneis e tradução ([RFC 6144, seção 1.1](https://www.rfc-editor.org/rfc/rfc6144.txt)). Só a tradução leva um cliente somente IPv6 a um servidor somente IPv4, já que o túnel exige hosts dual-stack nas pontas (seção 1.1), e toda rede com os dois protocolos usa ao menos uma família. Ao final você consegue prever qual família um host escolhe, montar os endereços de cada mecanismo, acompanhar uma sessão NAT64 e conferir tudo com comandos reais.
@@ -259,6 +259,6 @@ O [Kit de ferramentas IPv6](/tools/ipv6) mostra o IPv4 dentro de um endereço IP
 - [getent(1), página de manual do Linux, man7.org (lida em 2026-10-18)](https://man7.org/linux/man-pages/man1/getent.1.html)
 - [gai.conf(5), página de manual do Linux, man7.org (lida em 2026-10-18)](https://man7.org/linux/man-pages/man5/gai.conf.5.html)
 - [curl man page (curl 8.23.0), curl.se: -4, -6, -w e --happy-eyeballs-timeout-ms (lida em 2026-10-18)](https://curl.se/docs/manpage.html)
-- [BIND 9 9.20.29 documentation, Manual Pages: dig (lida em 2026-10-18)](https://bind9.readthedocs.io/en/stable/manpages.html)
+- [BIND 9 9.20.29 documentation, Manual Pages: dig (lida em 2026-10-18)](https://bind9.readthedocs.io/en/v9.20.29/manpages.html)
 - [Google Public DNS64, Google for Developers, atualizada em 2024-09-03 (lida em 2026-10-18)](https://developers.google.com/speed/public-dns/docs/dns64)
 - [Python 3.15.0 documentation, ipaddress module (lida em 2026-10-18)](https://docs.python.org/3/library/ipaddress.html)

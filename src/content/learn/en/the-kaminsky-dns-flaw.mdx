@@ -1,6 +1,6 @@
 ---
 slug: the-kaminsky-dns-flaw
-title: "The Kaminsky flaw: the summer eighty vendors patched the same bug on the same day"
+title: "The Kaminsky flaw: the summer the vendors patched one DNS bug together"
 summary: "In 2008 a researcher realized that a known weakness in DNS was far worse than anyone had calculated - not a way to poison one record, but a way to take a whole domain in seconds, repeatably. What followed was the largest coordinated patch the internet had ever attempted, a fix that bought entropy rather than certainty, and a reminder that publishing a patch also publishes the vulnerability."
 concepts: ["dns cache poisoning", "kaminsky", "transaction id", "source port randomisation", "dnssec", "coordinated disclosure", "bailiwick"]
 relatedTools: []
@@ -8,7 +8,7 @@ relatedArticles: ["dns-family-history", "dnssec-records-in-dig", "there-is-no-pe
 category: security
 order: 121
 status: reviewed
-updated: "2026-09-08"
+updated: "2026-11-12"
 ---
 
 ## What was already known, and what was not
@@ -31,7 +31,7 @@ That is the whole discovery, and it converts a slow, chancy attack into one that
 
 What happened next had no precedent. Kaminsky went to the Department of Homeland Security and to executives at Cisco and Microsoft. A secret meeting was convened. Vendors who competed with each other, and whose implementations shared nothing but the protocol, were briefed on a flaw none of them could fix alone - because a patched resolver talking to unpatched infrastructure is still exposed, and the whole point of DNS is that everyone's resolvers talk to everyone's servers.
 
-On 8 July 2008 more than eighty vendors released patches simultaneously. The advisory carried CVE-2008-1447 and CERT vulnerability note VU#800113. The Internet Systems Consortium's own bulletin for BIND listed every affected version - which was, effectively, all of them - and said something worth quoting for its bluntness: DNSSEC is the only full solution, and the new versions provide increased resilience to the attack.
+On 8 July 2008 the coordinated patches went out, from what Dark Reading counted as more than eighty technology vendors. The advisory carried CVE-2008-1447 and CERT vulnerability note VU#800113, whose vendor list, last revised in April 2014, holds 91 records: 84 vendors notified between 14 April and 14 July 2008 and seven more, with 37 marked affected, 10 not affected and 44 unknown. Not every fix shipped on the day: Apple's first security update for it is dated 31 July ([CERT/CC, VU#800113](https://www.kb.cert.org/vuls/id/800113)). The Internet Systems Consortium's own bulletin for BIND listed every affected version - which was, effectively, all of them - and said something worth quoting for its bluntness: DNSSEC is the only full solution, and the new versions provide increased resilience to the attack.
 
 **Resilience, not immunity.** That word choice is the honest part of the whole episode.
 
@@ -53,14 +53,15 @@ But the month did not stay quiet, and the reason is structural rather than anyon
 
 **The resolver you run is the one that matters.** The flaw was in resolvers, not authoritative servers, and the exposure belonged to whoever operated the recursive service - which is why the [choosing a public resolver](/learn/choosing-a-public-dns-resolver) question is a security question and not just a latency one.
 
-**Coordination at that scale is possible and is rare.** Eighty vendors patching one protocol flaw on one day happened because someone spent months organizing it in private, and because the alternative was visibly catastrophic. It is the model the industry cites, and it has not often been repeated at that scale.
+**Coordination at that scale is possible and is rare.** One release day for one protocol flaw, shared by more than eighty vendors on the count of the time, happened because someone spent months organizing it in private, and because the alternative was visibly catastrophic. It is the model the industry cites, and it has not often been repeated at that scale.
 
 **And the person mattered.** Kaminsky found it, chose to coordinate rather than publish, and spent the years afterwards on the fix rather than the finding - ICANN named him one of the trusted community representatives for the DNSSEC root in 2010. He died in April 2021, aged forty-two. The New York Times had called him a digital Paul Revere, which is florid and, on the record of that summer, not wrong.
 
 ## Sources
 
 - [Internet Systems Consortium advisory, 8 July 2008: a weakness in the DNS protocol may enable the poisoning of caching recursive resolvers with spoofed data; DNSSEC is the only full solution and new versions of BIND provide increased resilience; CVE-2008-1447, VU#800113; affected versions include BIND 8 (all), 9.0 through 9.4.2 and 9.5.0 betas; full details to be explained by Kaminsky at Black Hat on 7 August](https://kb.isc.org/docs/aa-00924)
-- [Dark Reading, 6 August 2008: on Tuesday 8 July, Kaminsky and more than 80 technology vendors launched an unprecedented campaign to fix a flaw in widely distributed DNS software; at Black Hat attendees occupied every available seat and most of the floor space](https://www.darkreading.com/vulnerabilities-threats/dan-kaminsky-reveals-dns-flaw-at-black-hat)
+- [Dark Reading, 6 August 2008: on Tuesday 8 July, Kaminsky and more than 80 technology vendors launched an unprecedented campaign to fix a flaw in widely distributed DNS software; at Black Hat attendees occupied every available seat and most of the floor space (read 2026-11-12)](https://www.darkreading.com/vulnerabilities-threats/dan-kaminsky-reveals-dns-flaw-at-black-hat)
+- [CERT/CC, Vulnerability Note VU#800113, Multiple DNS implementations vulnerable to cache poisoning, first published 8 July 2008, last updated 14 April 2014 (read 2026-11-12): 91 vendor records, 84 of them with notification dates from 14 April to 14 July 2008; 37 affected, 10 not affected and 44 unknown; Apple's advisories begin with APPLE-SA-2008-07-31](https://www.kb.cert.org/vuls/id/800113)
 - [United States Naval Academy course notes: in 2008 Kaminsky discovered a fundamental flaw in DNS allowing easy cache poisoning on most nameservers, making website impersonation, email interception and authentication bypass via password-reset features feasible; he contacted Paul Vixie, who described the severity as meaning everything in the digital universe was going to have to get patched, then alerted the Department of Homeland Security and executives at Cisco and Microsoft; before the attack was announced most DNS implementations used a fixed source port](https://www.usna.edu/Users/cs/choi/it432/lec/l07/lec.html)
 - [On the mechanism: the attacker issues a flurry of queries for different random names under the target domain, evading the resolver's cache and triggering outstanding outgoing queries, then generates replies guessing the source port and transaction ID, each containing spoofed NS and glue records as delegation information; the resolver caches these and uses them as authoritative for subsequent resolutions](https://arxiv.org/pdf/1605.01394)
 - [On the arithmetic: the DNS transaction ID field is 16 bits, so a correctly implemented random ID requires on average 32,768 attempts; some implementations used fewer bits or generated IDs with known randomness defects](https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/7930428)

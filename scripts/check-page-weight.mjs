@@ -51,7 +51,11 @@ const CEILINGS = new Map([
   // plus the enriched hacktivism entry, written at PRIME's requests that day (11:14, 11:16), not a template change.
   // The page still renders every entry; splitting it is the rendering decision the audit of 2026-10-15 (F07) left
   // open. New ceiling: that weight plus about five per cent.
-  ["/glossary", 3_750_000],
+  // RAISED 2026-11-12 (pt-BR 3,787,205 at the 18:59 six-language build, 37,205 bytes over 3,750,000; en 3,706,455): the
+  // growth is the content sweep's batches 12 to 15 (PRIME 11/11 21:09 and 12/11 11:21 to 12:49), whose rewritten entries
+  // carry longer stand-alone definitions, net of the four merges of 12/11 12:42; no template change. The split of the
+  // page (F07) is still the open rendering decision. New ceiling: that weight plus about five per cent.
+  ["/glossary", 3_980_000],
   // The changelog: every entry since the site began (2026-10-19: en 2,811,787; pt-BR 2,832,054). RAISED 2026-10-26
   // (pt-BR 3,004,130 at the 02:45 build): the growth is the week's new entries, each with its Portuguese title, not a
   // template change; the page still renders every entry, and splitting it (by year or with a "show older" fold) is the

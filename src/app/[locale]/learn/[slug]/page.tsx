@@ -18,6 +18,10 @@ import { notFound } from "next/navigation";
 import LearnArticleSchema from "@/components/LearnArticleSchema";
 import MessageSlice from "@/components/MessageSlice";
 import ShareControl from "@/components/ShareControl";
+// My desk's controls (PRIME 12/11/2026 12:42): Save, Mark as read, Add to path, beside Share.
+import DeskItemControls from "@/components/desk/DeskItemControls";
+// "Continue this path": the reader's paths holding this article and what comes next in each (drawn only when it is in one).
+import DeskPathNext from "@/components/desk/DeskPathNext";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import rehypeLocaliseLinks from "@/lib/rehypeLocaliseLinks";
@@ -31,7 +35,7 @@ import DiversionScene from "@/components/learn/DiversionScene";
 import Lab from "@/components/learn/Lab";
 // The psychological-operations series' blocks (PRIME 2026-11-09): a labelled opinion, a claim with its evidence status,
 // and the standing method note.
-import RodVoice from "@/components/learn/RodVoice";
+import ReaderQuestions from "@/components/learn/ReaderQuestions"; // open questions for the reader (PRIME 12/11/2026 15:18; the opinion block is gone)
 import Claim from "@/components/learn/Claim";
 import MethodNote from "@/components/learn/MethodNote";
 // Which labs the article embeds, for the "Interactive" marker under its summary.
@@ -175,6 +179,12 @@ export default async function ArticlePage({
             <TrainingRail slug={slug} locale={locale} placement="top" />
             {/* Where this article sits in its series, and the series' contents (LS-0). */}
             <SeriesRail slug={slug} locale={locale} placement="top" />
+            {/* My desk (12/11/2026): on a narrow screen, the reader's paths holding this article and what comes next in
+                each, near the top too; nothing is drawn when the article is in no path. Only its own few words travel
+                with it (the deskPath namespace). */}
+            <MessageSlice namespaces={["deskPath"]}>
+              <DeskPathNext item={`learn:${slug}`} placement="top" />
+            </MessageSlice>
             {(locale === "en" || locale === "pt-BR") && (
               <p className="doc-md-link">
                 <a href={`/${locale}/learn/${slug}.md`}>
@@ -204,9 +214,12 @@ export default async function ArticlePage({
                     rehypePlugins: [[rehypeGlossaryHints, getHintSurfaces()], [rehypeLocaliseLinks, locale], rehypeExternalLinks],
                   },
                 }}
-                components={{ BigipTimeline, GlossaryTerm, DiversionScene, Lab, RodVoice, Claim, MethodNote }}
+                components={{ BigipTimeline, GlossaryTerm, DiversionScene, Lab, ReaderQuestions, Claim, MethodNote }}
               />
             </div>
+            {/* The article's end, marked for the interest counts (PRIME 12/11/2026): coming into view after the page has
+                been open a while counts one read to the end, for a reader who said yes (InterestRuntime). */}
+            <span className="interest-end" data-interest-end={`read_end:learn:${slug}`} aria-hidden="true" />
 
             {/* The training series' way on, before anything that leads elsewhere: the next part as the main
                 button, the end of a module or of the series announced (row 58). */}
@@ -214,9 +227,15 @@ export default async function ArticlePage({
 
             {/* End-of-read share (A1 nested provider: the share namespace only),
                 at the natural moment a reader finishes the article. */}
-            <MessageSlice namespaces={["share"]}>
+            <MessageSlice namespaces={["share", "deskItem", "deskPath"]}>
               <div className="article-share">
                 <ShareControl title={article.title} />
+                {/* My desk (12/11/2026): keep the article, mark it read (reaching the end above marks it, with an
+                    Undo), or put it on a path; kept in this browser. */}
+                <DeskItemControls item={`learn:${slug}`} endRead />
+                {/* "Continue this path": what comes next in each of the reader's paths holding this article, or that
+                    the path is finished; nothing is drawn when the article is in no path. */}
+                <DeskPathNext item={`learn:${slug}`} />
               </div>
             </MessageSlice>
 

@@ -8,7 +8,7 @@ relatedArticles: ["choosing-a-public-dns-resolver", "bigip-dns-multi-rpz", "dns-
 category: security
 order: 256
 status: reviewed
-updated: "2026-08-11"
+updated: "2026-11-12"
 ---
 
 ## Origins: blocking arrived at the resolver by accident
@@ -19,7 +19,7 @@ Two lineages grew from that:
 
 **Reputation lists queried at message time**, still the backbone of mail filtering.
 
-**Recursive resolver policy**, where the resolver answering a client's ordinary lookups is also the place where a name can be refused. **Response Policy Zones** were introduced in 2010 by Paul Vixie and Vernon Schryver, and the design decision that made them spread was the same one that made the original lists spread: **the policy is shipped as an ordinary DNS zone**, so it transfers, refreshes and scales using machinery every operator already runs.
+**Recursive resolver policy**, where the resolver answering a client's ordinary lookups is also the place where a name can be refused. **Response Policy Zones** were designed by Paul Vixie and Vernon Schryver in 2009; Schryver wrote the first patch adding them to BIND in late 2009, and patches for several BIND 9 versions were distributed from 2010 ([Vixie and Schryver, draft-vixie-dnsop-dns-rpz-00, section 10, read 2026-11-12](https://www.ietf.org/archive/id/draft-vixie-dnsop-dns-rpz-00.txt)). The design decision that made them spread was the same one that made the original lists spread: **the policy is shipped as an ordinary DNS zone**, so it transfers, refreshes and scales using machinery every operator already runs.
 
 The uncomfortable inheritance is that both are censorship mechanisms whose legitimacy comes entirely from who operates them and why. The same zone transfer that blocks a phishing domain for a company's own staff is, in another jurisdiction, how a government blocks a news site, which is why this technique appears in the article on [internet shutdowns](/learn/internet-shutdowns-and-kill-switches) as well as in this one.
 

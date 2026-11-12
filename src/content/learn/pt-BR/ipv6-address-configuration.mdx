@@ -8,7 +8,7 @@ relatedArticles: ["ipv6-addressing", "ipv6-neighbor-discovery", "ipv6-subnetting
 category: networking
 order: 11
 status: reviewed
-updated: "2026-10-26"
+updated: "2026-11-12"
 ---
 
 Uma interface IPv6 raramente tem um endereço só. A Request for Comments (RFC) 7934 conta três ou mais por interface em muitos hosts, entre eles o link-local, o estável, o de privacidade e o do Dynamic Host Configuration Protocol for IPv6 (DHCPv6) ([RFC 7934, seção 2](https://www.rfc-editor.org/rfc/rfc7934.txt)). O próprio host monta a maioria, por autoconfiguração sem estado (stateless address autoconfiguration, SLAAC): "The IPv6 stateless autoconfiguration mechanism requires no manual configuration of hosts, minimal (if any) configuration of routers, and no additional servers", sem configuração manual nem servidores extras ([RFC 4862, seção 1](https://www.rfc-editor.org/rfc/rfc4862.txt)). Os roteadores conduzem o SLAAC, e o DHCPv6 ao lado dele (seção 1), com os Router Advertisements (RAs) e suas opções Prefix Information (PIOs). Depois da leitura, você consegue acompanhar a detecção de endereço duplicado (Duplicate Address Detection, DAD), decifrar um RA, derivar um identificador de interface (interface identifier, IID), distinguir os modos do DHCPv6, prever o endereço de origem de um host, reconhecer as falhas comuns e ver cada passo com `ip`, `rdisc6`, tcpdump e Wireshark.
@@ -164,7 +164,7 @@ O [Kit de ferramentas IPv6](/tools/ipv6) classifica o endereço só pelo prefixo
 - [RFC 7559, Packet-Loss Resiliency for Router Solicitations, maio de 2015: seções 1 e 2 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7559.txt)
 - [RFC 7934, Host Address Availability Recommendations, julho de 2016: seção 2 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7934.txt)
 - [RFC 9762, Using Router Advertisements to Signal the Availability of DHCPv6 Prefix Delegation to Clients, junho de 2025: seções 1, 5, 7, 9.1 e 10 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9762.txt)
-- [IANA, Internet Control Message Protocol version 6 (ICMPv6) Parameters, última atualização em 2026-06-09: números de tipo, flags do RA e da PIO (lida em 2026-10-18)](https://www.iana.org/assignments/icmpv6-parameters/icmpv6-parameters.txt)
+- [IANA, Internet Control Message Protocol version 6 (ICMPv6) Parameters, última atualização em 2026-10-30: números de tipo, flags do RA e da PIO (lida em 2026-11-12)](https://www.iana.org/assignments/icmpv6-parameters/icmpv6-parameters.txt)
 - [ip-address(8), página de manual do Linux (iproute2), man7.org, obtida em 2026-08-04: ip address show (lida em 2026-10-18)](https://man7.org/linux/man-pages/man8/ip-address.8.html)
 - [ip-route(8), página de manual do Linux (iproute2), man7.org, obtida em 2026-08-04: protocolos de rota e expires (lida em 2026-10-18)](https://man7.org/linux/man-pages/man8/ip-route.8.html)
 - [ip-addrlabel(8), página de manual do Linux (iproute2), man7.org, obtida em 2026-08-04: ip addrlabel list (lida em 2026-10-18)](https://man7.org/linux/man-pages/man8/ip-addrlabel.8.html)

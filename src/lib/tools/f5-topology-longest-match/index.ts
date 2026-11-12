@@ -72,8 +72,17 @@ export const manifest = Object.freeze({
       label: "BIG-IP GTM: Load Balancing - Using Topology Load Balancing (record anatomy, the sort keys, scoring the candidates, the both-tiers fallback rule)",
       type: "vendor-docs",
       url: "https://techdocs.f5.com/kb/en-us/products/big-ip_gtm/manuals/product/gtm-lb-configuring-11-5-0/1.html",
-      access_date: "2026-07-03",
-      scope: "Longest Match as a sort by source statement, destination statement and weight; subnets ranked by mask specificity; weight is called score in tmsh; scores assigned to pools or pool members from the ordered list",
+      access_date: "2026-11-12", // re-read 2026-11-12 for the two ladders (first read 2026-07-03)
+      scope: "Longest Match as a sort by source statement, destination statement and weight; the source ladder (subnet by mask specificity, region, ISP, state, country, continent, LDNS negation, wildcard) and the destination ladder (subnet, data center, pool, region, ISP, state, country, continent, destination negation, wildcard); weight is called score in tmsh; scores assigned to pools or pool members from the ordered list. This 11.5 edition sorts equal types by weight from lowest to highest; the 15.0.0 edition, which the engine follows, says highest to lowest",
+      status: "active",
+    },
+    {
+      id: "dns-lb-manual-topology-15", // added 2026-11-12 with the ladder correction
+      label: "BIG-IP DNS: Load Balancing 15.0.0, Using Topology Load Balancing to Distribute DNS Requests to Specific Resources",
+      type: "vendor-docs",
+      url: "https://techdocs.f5.com/en-us/bigip-15-0-0/big-ip-dns-load-balancing/using-topology-load-balancing-to-distribute-dns-requests-to-specific-resources.html",
+      access_date: "2026-11-12",
+      scope: "Understanding Longest Match topology record sorting: the source ladder (subnet with the most specific first, region, ISP, state, country, continent, LDNS request source negation, wildcard), the destination ladder (subnet, data center, pool, region, ISP, state, country, continent, destination negation, wildcard), and the weight from highest to lowest when both types are the same",
       status: "active",
     },
     {
@@ -82,7 +91,7 @@ export const manifest = Object.freeze({
       type: "vendor-kb",
       url: "https://my.f5.com/manage/s/article/K10721",
       access_date: "2026-07-03",
-      scope: "the sorting rules this engine implements: longest netmask first, the type ladder demonstrated in the worked examples, negation buckets (server-side above LDNS-side above wildcards), wildcards last, and weights governing when Longest Match is disabled",
+      scope: "the sorting rules this engine implements: longest netmask first, negation buckets (server-side above LDNS-side above wildcards), wildcards last, and weights governing when Longest Match is disabled; its worked examples showed the type order only in part (data center and pool together, no state), so since 2026-11-12 the engine takes the type ladders from the manual",
       status: "active",
     },
   ],

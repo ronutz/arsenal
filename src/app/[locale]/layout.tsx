@@ -34,12 +34,18 @@ import SearchKind from "@/components/SearchKind";
 import MachineTranslationNotice from "@/components/MachineTranslationNotice";
 import ConsoleGreeting from "@/components/ConsoleGreeting";
 import RecentPagesRecorder from "@/components/RecentPagesRecorder";
+// The interest counts' one piece of page chrome (PRIME 12/11/2026): asks once, and listens for the countable things.
+import InterestRuntime from "@/components/InterestRuntime";
+// My desk's sync on every page, for a reader who made a sync code (12/11/2026): loads nothing for anyone else.
+import DeskRuntime from "@/components/desk/DeskRuntime";
 import KeyboardShortcuts from "@/components/KeyboardShortcuts";
 // The one skip-to-content link for every page in the layout (Round 1 RT04, 2026-10-20).
 import SkipLink from "@/components/SkipLink";
 // Measures the sticky header and bars so every in-page jump lands below them (PRIME 2026-10-27).
 import StickyAnchorOffset from "@/components/StickyAnchorOffset";
 import { SHORTCUT_ACTIONS } from "@/config/shortcuts";
+// The feed of new articles per language, for the page head's discovery link (12/11/2026).
+import { feedUrlForLocale } from "@/lib/feeds";
 import { LIVE_LOCALE_CODES, DEFAULT_LOCALE } from "@/i18n/locales";
 import "@/app/globals.css";
 
@@ -110,7 +116,12 @@ export async function generateMetadata({
       // points search engines back to ronutz.com as the canonical source.
       canonical: "./",
       types: {
-        "application/rss+xml": [{ url: "/feed.xml", title: `${t("name")} Learn` }],
+        // The site's English feed, and since 12/11/2026 the feed of new articles in the page's own language (DESK-SERVER's
+        // src/lib/feeds.ts, generated beside /feed.xml), so a feed reader pointed at any page finds the reader's language.
+        "application/rss+xml": [
+          { url: "/feed.xml", title: `${t("name")} Learn` },
+          { url: feedUrlForLocale(locale), title: `${t("name")} Learn (${locale})` },
+        ],
       },
     },
   };
@@ -182,6 +193,17 @@ export default async function LocaleLayout({
   // The skip link's text, in the page's language, from the nav namespace every pack carries (nav.skipToContent).
   const tNav = await getTranslations({ locale, namespace: "nav" });
   const skipLabel = tNav("skipToContent");
+
+  // The interest counts' question (PRIME 12/11/2026), in the page's language, handed to the client component as props
+  // so it adds no message namespace to every page.
+  const tInterest = await getTranslations({ locale, namespace: "interest" });
+  const interestLabels = {
+    title: tInterest("askTitle"),
+    body: tInterest("askBody"),
+    yes: tInterest("askYes"),
+    no: tInterest("askNo"),
+    more: tInterest("askMore"),
+  };
 
   const shortcutsLabels = {
     bossHint: tShortcuts("bossHint"),
@@ -287,6 +309,13 @@ export default async function LocaleLayout({
               current page into this browser's storage and nowhere else; renders nothing. Inside the
               provider because next-intl's usePathname needs the locale context. */}
           <RecentPagesRecorder />
+          {/* The interest counts (PRIME 12/11/2026): asks once whether this reader's use may be counted, and listens
+              for the things the pages mark as countable; sends nothing without a yes. Inside the provider because
+              next-intl's usePathname and Link need the locale context. */}
+          <InterestRuntime labels={interestLabels} />
+          {/* My desk's automatic sync (PRIME 12/11/2026 13:38, portable storage): after changes, on focus, when a page is
+              hidden with something unsynced. Starts only where this browser holds a sync code; renders nothing. */}
+          <DeskRuntime />
         </NextIntlClientProvider>
         {/* The one console line (PRIME, 2026-10-04): side effect only, no markup, no messages needed. */}
         <ConsoleGreeting />

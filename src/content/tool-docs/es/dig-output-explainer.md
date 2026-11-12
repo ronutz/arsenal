@@ -60,6 +60,6 @@ El mismo motor responde a la operación `/api/v1/dig-output-explainer` de la API
 - [RFC 8490: DNS Stateful Operations](https://www.rfc-editor.org/rfc/rfc8490) (consultado el 2026-10-19): secciones 10.1 y 10.2, el opcode 6 (DSO) y el RCODE 11 (DSOTYPENI)
 - [RFC 6761: Special-Use Domain Names](https://www.rfc-editor.org/rfc/rfc6761) (consultado el 2026-10-19): la sección 6.4, los nombres bajo `.invalid`
 - [RFC 9824: Compact Denial of Existence in DNSSEC](https://www.rfc-editor.org/rfc/rfc9824) (consultado el 2026-10-19): NOERROR sin datos para un nombre que no existe
-- [ISC, BIND 9 9.20.29 documentation, Manual Pages: dig](https://bind9.readthedocs.io/en/stable/manpages.html) (consultado el 2026-10-19): `+ttlunits`, `+ttlid`, `+multiline`, `+opcode`
+- [ISC, BIND 9 9.20.29 documentation, Manual Pages: dig](https://bind9.readthedocs.io/en/v9.20.29/manpages.html) (consultado el 2026-10-19): `+ttlunits`, `+ttlid`, `+multiline`, `+opcode`
 - [BIND 9 source at tag v9.20.29, bin/dig/dig.c](https://github.com/isc-projects/bind9/blob/v9.20.29/bin/dig/dig.c) (consultado el 2026-10-19): los nombres de opcode que imprime dig, entre ellos `RESERVED6`; `RESERVED11` sale de lib/dns/rcode.c
 - [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (consultado el 2026-10-27): la sección 3.5, el fragmento, que lleva los valores de un enlace de Compartir resultados

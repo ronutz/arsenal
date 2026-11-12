@@ -68,7 +68,7 @@
 "use client";
 
 // React's state, effects and refs.
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 // The shell's own strings.
 import { useLocale, useTranslations } from "next-intl";
 // The countdown to the next UTC day.
@@ -91,6 +91,10 @@ import { useMorePuzzles, useNextPuzzle } from "../MorePuzzlesSlot";
 import { boardGame } from "@/lib/fun/board-rules";
 import TodaysBoard from "./TodaysBoard";
 import ShareSwitch from "./ShareSwitch";
+// Bringing the playing area into view when a round starts (PRIME 11/11/2026 23:39).
+import { PlayAreaContext, revealElement } from "./playArea";
+// The interest counts (PRIME 12/11/2026): a round's start is counted for the game, for a reader who said yes.
+import { track } from "@/lib/interest/client";
 
 /** The board's sizes, as CSS zoom factors: 100% to 200% in quarter steps. */
 const ZOOM_STEPS = [1, 1.25, 1.5, 1.75, 2] as const;
@@ -226,6 +230,13 @@ export default function GameShell(props: GameShellProps) {
   const [canFull, setCanFull] = useState(false);
   // The playing area and the result panel, for full screen and for scrolling the result into view.
   const boardRef = useRef<HTMLDivElement>(null);
+  // The game's "bring the playing area into view", for StartCover and the games that start another way (playArea.ts).
+  const revealPlay = useCallback(() => {
+    // The playing area comes into view.
+    revealElement(boardRef.current);
+    // A round has started (this is called exactly then): counted for this game.
+    track("game_start", "fun", props.gameId);
+  }, [props.gameId]);
   // The frame around the zoom layer, and its width in pixels (the width the game is laid out at when zoomed).
   const frameRef = useRef<HTMLDivElement>(null);
   const [frameW, setFrameW] = useState<number | null>(null);
@@ -580,7 +591,8 @@ export default function GameShell(props: GameShellProps) {
         <div ref={frameRef} className={`fg-board-frame${view.zoom > 1 ? " fg-board-zoomed" : ""}`}>
           {/* The zoom layer: laid out at the frame's width, then drawn larger as a whole (text, drawings, hit areas). */}
           <div className="fg-board-zoom" style={view.zoom > 1 ? { zoom: view.zoom, width: frameW ? `${frameW}px` : undefined } : undefined}>
-            {props.children}
+            {/* The game, with the reveal it calls when a round starts. */}
+            <PlayAreaContext.Provider value={revealPlay}>{props.children}</PlayAreaContext.Provider>
           </div>
         </div>
       </div>

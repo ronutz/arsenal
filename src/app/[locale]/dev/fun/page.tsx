@@ -30,30 +30,13 @@ import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import { Link } from "@/i18n/navigation";
 // The games on the shelf, listed once, and each one's page.
-import { FUN_GAME_GROUPS, funPagePath } from "@/config/funGames";
+import { FUN_GAME_GROUPS, FUN_TOYS, funPagePath } from "@/config/funGames"; // the games, the toys and their addresses
 // Each game's and toy's small drawing, on its card (PRIME 08/11/2026).
 import GameGlyph from "@/components/dev/fun/GameGlyph";
 // Today's state on the daily cards and the line over the games (client islands; PRIME 03/11/2026).
 import { ShelfCardStatus, ShelfToday } from "@/components/dev/fun/ShelfStatus";
 
-// The shelf, in shipping order. `badged` marks a toy whose content exists in a
-// single language and shows that language on its card. None does now: the Mega
-// Brain, once Portuguese only, reads fully in English as well (PRIME 03/11/2026:
-// "fully translate the card and the actual page for Mega Brain").
-const TOYS = [
-  { key: "megaBrain", href: "/dev/fun/mega-brain", badged: false },
-  { key: "meetingBingo", href: "/dev/fun/meeting-bingo", badged: false },
-  { key: "bossScreens", href: "/dev/fun/boss-screens", badged: false },
-  { key: "catDistribution", href: "/dev/fun/cat-distribution", badged: false },
-  // Added 2026-07-30 (PRIME): an inconspicuous card, last on the shelf. It was
-  // built unlisted and stays modest here on purpose - the copy does not say
-  // what it measures, so it still rewards the person who opens it.
-  // enOnly (R-18 audit fix, 2026-08-27): the meter generates for en alone by
-  // design, so every locale's card links the EN page explicitly — a link to a
-  // route that exists, instead of a locale-prefixed path that was never built.
-  // Outside English its card says so with an "EN" badge (review R4-10).
-  { key: "importanceMeter", href: "/dev/fun/importance-meter", badged: false, enOnly: true },
-] as const;
+// The toys live in src/config/funGames.ts (FUN_TOYS) since 11/11/2026, so the home page's fourth figure counts them.
 
 // The games (PRIME 03/11/2026: "I want all of them, including the two smaller ideas", with ideas from LinkedIn's
 // daily games, and a whack-a-bug). The list lives in src/config/funGames.ts, where the guard
@@ -175,7 +158,7 @@ export default async function DevFunIndexPage({
             {/* The toys, as before. */}
             <h2 id="toys" className="devfun-section-title">{t("toysTitle")}</h2>
             <div className="devfun-list">
-              {TOYS.map((toy) => {
+              {FUN_TOYS.map((toy) => {
                 // A toy that exists in English only.
                 const enOnly = "enOnly" in toy && toy.enOnly;
                 // Its card wears the "EN" badge on every other language's shelf (review R4-10).

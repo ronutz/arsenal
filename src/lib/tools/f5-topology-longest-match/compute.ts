@@ -24,15 +24,20 @@
 //     optional `candidates ...` line naming the destinations to score
 //     (defaults to every destination the records mention).
 //
-// Sort ranks are implemented exactly as far as the sources verify them
-// (K10721's worked examples + the 11.x manual's subnet-first sentence);
-// anything the sources do not rank is placed after the verified types and
-// flagged as such in the output. Honest limits beat guessed ones.
+// Sort ranks follow the manual's two Longest Match ladders (corrected
+// 2026-11-12, read that day in the BIG-IP DNS 15.0.0 and GTM 11.5 manuals):
+// the source statement ranks subnet (longest mask first), region, ISP,
+// state, country, continent; the destination statement ranks subnet, data
+// center, pool, region, ISP, state, country, continent. The earlier engine
+// ranked data center and pool together and left state unranked, as far as
+// K10721's worked examples went. Any type neither ladder names (geoip-isp,
+// for one) is placed after the ranked types and flagged in the output.
+// Honest limits beat guessed ones.
 //
 // Sources: the BIG-IP DNS Load Balancing manual, Topology chapter
-// ("Understanding how the BIG-IP system prioritizes topology records";
+// ("Understanding Longest Match topology record sorting": the two ladders;
 // weight is called score in tmsh); K10721 (the Longest Match sorting rules:
-// subnet mask length, type order, negation buckets, wildcards last, and the
+// subnet mask length, negation buckets, wildcards last, and the
 // weights-govern behavior when Longest Match is disabled). Pure and offline.
 //
 // PAGE LANGUAGE (2026-11-02, batch H5): bucket labels, sort rationales, match
@@ -55,7 +60,7 @@ import { say, listOf, plainText, engineError, type EngineText } from "../engine-
 /** One side (ldns: or server:) of a topology record. */
 export interface TopoOperand {
   negated: boolean;
-  kind: string; // subnet | region | country | continent | isp | datacenter | pool | (other, flagged)
+  kind: string; // subnet | region | country | continent | isp | state | datacenter | pool | (other, such as geoip-isp, flagged)
   value: string;
   /** For subnets: prefix length (used for the within-type sort). */
   maskLen?: number;
@@ -104,27 +109,33 @@ export interface TopoResult<S = string> { // S as above
 export type ToolRunResult = TopoResult;
 
 // ---------------------------------------------------------------------------
-// Verified sort ranks. LDNS-side and server-side share the type ladder that
-// K10721's examples demonstrate: subnet (longest mask first) above
-// datacenter/pool, above user-defined region, above ISP, above country,
-// above continent. The two K10721 examples do not order datacenter against
-// pool relative to each other, so they share a rank and the tie falls
-// through to the next sort key - the output says so. Types the sources do
-// not rank at all (state, city, geoip-isp, ...) sit after the verified
-// ladder and are flagged.
+// Sort ranks, from the manual's Longest Match ladders (BIG-IP DNS Load
+// Balancing, "Understanding Longest Match topology record sorting", read
+// 2026-11-12). The source statement ladder, highest first: IP subnet (most
+// specific first), region, ISP, state, country, continent, then LDNS
+// negation, then wildcard. The destination statement ladder: IP subnet, data
+// center, pool, region, ISP, state, country, continent, then destination
+// negation, then wildcard. The types both ladders share appear in the same
+// order, and tmsh never allows a data center or a pool as an LDNS operand,
+// so one table serves both sides. Until 2026-11-12 this table followed
+// K10721's worked examples only: data center and pool shared a rank and
+// state was unranked. Types neither ladder names (geoip-isp, ...) sit after
+// the ranked types and are flagged. Negations and wildcards are handled by
+// the bucket below (K10721's rules), not by this table.
 // ---------------------------------------------------------------------------
 
 const TYPE_RANK: Record<string, number> = {
-  subnet: 1,
-  datacenter: 2,
-  pool: 2, // shares the rank; relative order not distinguished in the cited examples
-  region: 3,
-  isp: 4,
-  country: 5,
-  continent: 6,
+  subnet: 1, // both ladders: first, longest mask first within the type
+  datacenter: 2, // destination ladder only: data center above pool
+  pool: 3, // destination ladder only: below data center, above region
+  region: 4, // both ladders: user-defined region
+  isp: 5, // both ladders
+  state: 6, // both ladders: between ISP and country
+  country: 7, // both ladders
+  continent: 8, // both ladders: the last named type
 };
-const UNRANKED = 7; // verified-unranked types: after the ladder, before wildcards
-const WILDCARD_RANK = 9;
+const UNRANKED = 9; // types neither ladder names: after the ranked types, before wildcards, and flagged
+const WILDCARD_RANK = 10; // the wildcard subnet (0.0.0.0/0 or ::/0): last on either ladder
 
 function typeRank(op: TopoOperand): number {
   if (op.wildcard) return WILDCARD_RANK;
@@ -431,7 +442,7 @@ export function runLocalisable(input: string): TopoResult<EngineText> {
       rankBits.push(say("rank.ldns", `ldns ${lOp} rank ${typeRank(ldns)}`, { operand: lOp, rank: String(typeRank(ldns)) })); // pack key engine.rank.ldns
       rankBits.push(say("rank.server", `server ${sOp} rank ${typeRank(server)}`, { operand: sOp, rank: String(typeRank(server)) })); // pack key engine.rank.server
       if (typeRank(ldns) === UNRANKED || typeRank(server) === UNRANKED) {
-        rankBits.push(say("rank.unranked", "contains a type outside the verified K10721 ladder - placed after the verified types, before wildcards, and flagged")); // pack key engine.rank.unranked
+        rankBits.push(say("rank.unranked", "contains a type the manual's Longest Match ladders do not name: placed after the ranked types, before wildcards, and flagged")); // pack key engine.rank.unranked (wording of 2026-11-12)
       }
       if (!scoreSeen) rankBits.push(say("rank.defaultScore", "no score in the stanza - the GUI default weight 1 assumed")); // pack key engine.rank.defaultScore
       records.push({
@@ -484,7 +495,7 @@ export function runLocalisable(input: string): TopoResult<EngineText> {
   // ---- sort (Longest Match enabled semantics) ------------------------------
   const sorted = sortRecords(records);
   notes.push(
-    say("note.sorted", "Sorted with Longest Match ENABLED semantics: bucket (plain > server-negation > LDNS-negation > wildcard, per K10721), then LDNS type rank (subnet by longest mask, then datacenter/pool, region, ISP, country, continent), then the server side the same way, then weight. With Longest Match disabled, the list order and the weights govern instead."), // pack key engine.note.sorted
+    say("note.sorted", "Sorted with Longest Match ENABLED semantics: bucket (plain > server-negation > LDNS-negation > wildcard, per K10721), then the LDNS type on the manual's source ladder (subnet by longest mask, region, ISP, state, country, continent), then the server type on its destination ladder (subnet by longest mask, data centre, pool, region, ISP, state, country, continent), then weight. With Longest Match disabled, the list order and the weights govern instead."), // pack key engine.note.sorted (wording of 2026-11-12)
   );
 
   const regionList = [...regions.entries()].map(([name, members]) => ({

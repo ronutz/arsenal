@@ -1,14 +1,14 @@
 ---
 slug: firewall-family-history
 title: "O firewall: nascimento, gerações, e o que vem depois do perímetro"
-summary: "Ninguém inventou o firewall. Ele foi discutido até existir, ao longo de uns seis anos, por gente da Digital Equipment Corporation, do Bell Labs e da Trusted Information Systems que discordava de quase tudo, menos de que uma rede precisava de um lugar para dizer não. Esta é a história da família: o artigo de 1988, o primeiro produto entregue em 13 de junho de 1991, a patente de inspeção com estado que decidiu o mercado, o campo dos proxies que perdeu no desempenho e estava certo sobre inspeção, o appliance, o rótulo de próxima geração, e o que acontece com um equipamento de fronteira num parque que não tem mais fronteira."
+summary: "Ninguém inventou o firewall. Ele foi discutido até existir, ao longo de uns seis anos, por gente da Digital Equipment Corporation, do Bell Labs e da Trusted Information Systems que discordava de quase tudo, menos de que uma rede precisava de um lugar para dizer não. Esta é a história da família: o artigo de 1989, o primeiro produto entregue em 13 de junho de 1991, a patente de inspeção com estado que decidiu o mercado, o campo dos proxies que perdeu no desempenho e estava certo sobre inspeção, o appliance, o rótulo de próxima geração, e o que acontece com um equipamento de fronteira num parque que não tem mais fronteira."
 concepts: ["firewall", "packet filter", "stateful inspection", "proxy", "ngfw", "utm", "history"]
 relatedTools: []
 relatedArticles: ["ssl-forward-proxy-interception", "network-segmentation-from-vlans-to-microsegmentation", "security-versus-availability", "tcp-proxy-layer-4"]
 category: security
 order: 140
 status: reviewed
-updated: "2026-09-03"
+updated: "2026-11-12"
 ---
 
 Quase toda tecnologia deste catálogo tem um momento que alguém consegue apontar. O firewall não tem. Ele foi discutido até existir, ao longo de uns seis anos, por vários grupos que discordavam de quase tudo, menos de que uma rede precisava de um lugar onde a resposta pudesse ser não - e a discordância entre eles ainda é visível nos produtos vendidos hoje.
@@ -19,9 +19,9 @@ A palavra vem da construção civil, em que uma parede corta-fogo impede que o f
 
 Bellovin também produziu a melhor definição que alguém conseguiu. Um firewall, disse ele, é uma barreira entre nós e eles, para valores arbitrários de eles. Toda discussão sobre onde colocar um, e toda alegação posterior de que o perímetro morreu, é na verdade uma discussão sobre quem conta como *eles* neste ano.
 
-## Nascimento: 1988 a 1991
+## Nascimento: do fim dos anos 1980 a 1991
 
-O primeiro artigo descrevendo filtragem de pacotes foi publicado pela **Digital Equipment Corporation** em 1988, a partir do trabalho de **Jeff Mogul**, **Brian Reid** e **Paul Vixie** em torno do gateway `gatekeeper.dec.com` e do software `screend`, do Mogul. A ideia não era exótica - roteadores já tinham listas de acesso -, mas escrever que filtrar era função de SEGURANÇA, e não conveniência de gestão de tráfego, é o que iniciou o campo.
+A maioria dos relatos situa a origem do firewall no trabalho de **Jeff Mogul**, **Brian Reid** e **Paul Vixie** na **Digital Equipment Corporation**, no fim dos anos 1980, em torno do gateway `gatekeeper.dec.com` e do software `screend`, do Mogul. O registro primário é o próprio artigo do Mogul, *Simple and Flexible Datagram Access Controls for Unix-based Gateways*: o Western Research Laboratory da DEC o publicou como Research Report 89/4 em março de 1989, como versão preliminar do artigo para a Summer 1989 USENIX Technical Conference, e nele Mogul agradece a Reid e a Vixie por o terem levado a buscar uma solução concreta. Histórias secundárias dão anos anteriores (a Wikipédia diz 1987); o relatório em si é de março de 1989. A ideia não era exótica - roteadores já tinham listas de acesso -, mas escrever que filtrar era função de SEGURANÇA, e não conveniência de gestão de tráfego, é o que iniciou o campo.
 
 No Bell Labs, entre 1989 e 1990, **David Presotto** e colegas construíram gateways de nível de circuito, e Cheswick e Bellovin experimentaram relés de circuito em 1991. Um gateway de circuito repassa uma conexão em vez de examinar cada pacote, e foi o primeiro passo para longe de julgar tráfego um pacote por vez.
 
@@ -43,7 +43,7 @@ E essa discussão voltou, duas vezes. Inspeção profunda de pacotes e firewalls
 
 ## As gerações, e quem as batizou
 
-- **Filtragem estática de pacotes**, a partir de 1988. Endereços, protocolo, portas, cada pacote julgado sozinho. Rápida, barata, e incapaz de distinguir resposta de pacote não solicitado.
+- **Filtragem estática de pacotes**, a partir do fim dos anos 1980, descrita por escrito pela primeira vez em março de 1989. Endereços, protocolo, portas, cada pacote julgado sozinho. Rápida, barata, e incapaz de distinguir resposta de pacote não solicitado.
 - **Gateways de circuito**, de 1989 em diante. Repassam a conexão, e não o pacote.
 - **Proxies de aplicação**, do DEC SEAL em 1991 e do Gauntlet a partir de 1994. Entendem o protocolo; pagam por isso.
 - **Inspeção com estado**, patenteada em 1993, entregue no FireWall-1 em 1994. Lembra a conexão, julga o fluxo.
@@ -89,8 +89,10 @@ O aviso com que vale terminar é o mais antigo da área, e foi escrito por quem 
 
 ## Fontes
 
-- [Who Invented the Firewall - Dark Reading, sobre a linhagem DEC, Bell Labs e TIS e o problema da atribuição](https://www.darkreading.com/cybersecurity-analytics/who-invented-the-firewall-)
+- [Who Invented the Firewall - Dark Reading, sobre a linhagem DEC, Bell Labs e TIS e o problema da atribuição; situa as raízes no trabalho da DEC no fim dos anos 1980 (lida em 12/11/2026)](https://www.darkreading.com/cybersecurity-analytics/who-invented-the-firewall-)
 - [Fred Avolio, Firewalls and Internet Security: o primeiro firewall comercial entregue em 13 de junho de 1991, e a arquitetura do SEAL](https://avolio.com/fw2hundred/)
 - [Palo Alto Networks sobre a história dos firewalls, e a lista de contribuidores](https://www.paloaltonetworks.com/cyberpedia/history-of-firewalls)
 - [Application firewall - o Firewall Toolkit liberado sob licença em outubro de 1993 por Ranum, Wei Xu e Peter Churchyard](https://en.wikipedia.org/wiki/Application_firewall)
 - [FireMon, A Practical History of the Firewall: inspeção com estado contra proxies em desempenho, suporte a protocolos e segurança](https://www.firemon.com/blog/a-practical-history-of-the-firewall-part-1-early-days)
+- [Jeffrey C. Mogul, Simple and Flexible Datagram Access Controls for Unix-based Gateways, DEC Western Research Laboratory, Research Report 89/4, março de 1989, versão preliminar para a Summer 1989 USENIX Technical Conference, no espelho do bitsavers (lida em 12/11/2026)](https://ftp.mirrorservice.org/sites/www.bitsavers.org/pdf/dec/tech_reports/WRL-89-4.pdf)
+- [Wikipédia, Firewall (computing): data de 1987 o primeiro artigo de engenheiros da DEC (lida em 12/11/2026)](https://en.wikipedia.org/wiki/Firewall_%28computing%29)

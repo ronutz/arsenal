@@ -25,6 +25,8 @@ import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 // The message slice the client components read.
 import MessageSlice from "@/components/MessageSlice";
+// My desk's controls (PRIME 12/11/2026 12:42): Save, Mark as done, Add to path.
+import DeskItemControls from "@/components/desk/DeskItemControls";
 // The game's roots, at the foot of the page.
 import GameOrigins from "@/components/dev/fun/GameOrigins";
 // Locale-aware links.
@@ -83,6 +85,10 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
               <h1 className="article-title">{t("title")}</h1>
               <p className="fg-tagline">{t("tagline")}</p>
               <p className="fg-intro">{t("intro")}</p>
+              {/* My desk (12/11/2026): keep the game, tick it off as done, or put it on a path; kept in this browser. */}
+              <MessageSlice namespaces={["deskItem"]}>
+                <DeskItemControls item="game:access-points" />
+              </MessageSlice>
             </div>
             <MessageSlice namespaces={["devFun.games.common", "devFun.games.access-points"]}>
               {/* "Solve the other puzzles", placed by the game's frame right after its result (PRIME 05/11/2026). */}

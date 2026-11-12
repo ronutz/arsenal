@@ -55,7 +55,7 @@ Uma cifra **CBC** (cipher block chaining, o encadeamento de blocos) só faz a cr
 
 Originalmente, o TLS usava MAC-then-encrypt (MAC é o message authentication code): calcular o HMAC sobre o texto claro, anexar o resultado, completar com padding até fechar o bloco e, por fim, criptografar tudo com CBC. O problema é que o receptor precisa descriptografar e remover o padding antes de conferir o MAC, então um padding malformado e um MAC errado são detectados em etapas diferentes. Se o atacante consegue ver se um registro falhou no padding ou no MAC, seja por uma mensagem de erro, seja só pelo tempo de resposta, ele descobre um bit do texto claro a cada tentativa. Repetindo o processo, esse bit vira a mensagem inteira.
 
-Isso é um padding oracle, e não é teoria. Uma série de ataques ao longo dos anos, como BEAST, Lucky 13 e POODLE, explorou a proteção CBC dos registros do TLS. Cada um foi corrigido com código de tempo constante cada vez mais delicado, mas a construção de base continuava gerando variantes novas. A conclusão da indústria foi parar de usá-la.
+Isso é um padding oracle, e não é teoria. Uma série de ataques ao longo dos anos, como Lucky 13 e POODLE, explorou a proteção CBC dos registros do TLS. Cada um foi corrigido com código de tempo constante cada vez mais delicado, mas a construção de base continuava gerando variantes novas. A conclusão da indústria foi parar de usá-la.
 
 ## Por que o AEAD virou o padrão
 

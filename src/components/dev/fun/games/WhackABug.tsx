@@ -31,6 +31,8 @@
 
 // React's state, effects, refs and memoisation.
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+// Bringing the playing area into view when a round starts (PRIME 11/11/2026 23:39).
+import { usePlayAreaReveal } from "./playArea";
 // The game's strings and the shell's.
 import { useTranslations } from "next-intl";
 // The frame around every game.
@@ -280,12 +282,16 @@ export default function WhackABug({ locale }: { locale: string }) {
     setResult(makeResult(saved, true));
   }, [today, makeResult]);
 
+  // The game's "bring the playing area into view" (GameShell, playArea.ts).
+  const revealPlay = usePlayAreaReveal();
   /**
    * Start a round in a mode.
    *
    * @param m daily or practice
    */
   const start = (m: "daily" | "practice") => {
+    // The board and its controls brought into view once laid out (PRIME 11/11/2026 23:39).
+    revealPlay();
     // The mode.
     setMode(m);
     // A fresh practice seed (the engine stays pure; the page picks the seed).

@@ -8,7 +8,7 @@ relatedArticles: ["forward-secrecy", "tls13-cipher-suites", "hash-function-famil
 category: transport
 order: 6
 status: reviewed
-updated: "2026-07-06"
+updated: "2026-11-12"
 ---
 
 A frase "computadores quânticos vão quebrar a criptografia" é comum e meio errada. Um computador quântico grande e tolerante a falhas quebraria por completo parte da criptografia sobre a qual a internet funciona, e deixaria o resto quase intocado. Saber qual é qual é toda a base da migração em curso, então vale ser preciso.
@@ -64,7 +64,7 @@ A autenticação é diferente de um jeito importante. Uma assinatura só precisa
 
 ## Uma dose de humildade, e por que ela cabe aqui
 
-O **SIKE** foi candidato no mesmo processo do NIST, baseado em isogenias supersingulares, e foi quebrado em 2022 - num único computador clássico, em cerca de uma hora, por matemática sem relação com computação quântica. Ele tinha sobrevivido a anos de análise pública antes disso.
+O **SIKE** foi candidato no mesmo processo do NIST, baseado em isogenias supersingulares, e foi quebrado em 2022 - num único computador clássico, em cerca de uma hora (cerca de dez minutos num único núcleo, numa versão posterior do artigo do ataque), por matemática sem relação com computação quântica. Ele tinha sobrevivido a anos de análise pública antes disso.
 
 É esse o argumento pela implantação híbrida, dito melhor do que qualquer avaliação de risco conseguiria: os algoritmos novos são jovens, a análise segue em curso, e combiná-los com algo bem compreendido não é timidez, é a resposta de engenharia correta a essa incerteza.
 

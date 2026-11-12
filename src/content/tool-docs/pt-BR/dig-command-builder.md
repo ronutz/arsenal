@@ -71,7 +71,7 @@ Desde 2026-10-19, `{"name": "example.com", "bufsize": "0"}` devolve o achado `bu
 - [RFC 7858: DNS over TLS](https://www.rfc-editor.org/rfc/rfc7858) e [RFC 8484: DNS Queries over HTTPS](https://www.rfc-editor.org/rfc/rfc8484) (lidas em 2026-10-04)
 - [RFC 5001: NSID](https://www.rfc-editor.org/rfc/rfc5001), [RFC 7871: Client Subnet in DNS Queries](https://www.rfc-editor.org/rfc/rfc7871), [RFC 7873: DNS Cookies](https://www.rfc-editor.org/rfc/rfc7873) (lidas em 2026-10-04)
 - [IANA: Domain Name System (DNS) Parameters](https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml) (lido em 2026-10-04): o registro de RR TYPEs que o campo de tipo aceita, e os códigos de opção do EDNS
-- [ISC, BIND 9 9.20.29 documentation, Manual Pages: dig](https://bind9.readthedocs.io/en/stable/manpages.html) (lido em 2026-10-19): `+bufsize[=B]` define o tamanho anunciado em B bytes, de 0 a 65535; `+bufsize` sem valor restaura o padrão
+- [ISC, BIND 9 9.20.29 documentation, Manual Pages: dig](https://bind9.readthedocs.io/en/v9.20.29/manpages.html) (lido em 2026-10-19): `+bufsize[=B]` define o tamanho anunciado em B bytes, de 0 a 65535; `+bufsize` sem valor restaura o padrão
 - [BIND 9 source at tag v9.20.29, bin/dig/dighost.h](https://github.com/isc-projects/bind9/blob/v9.20.29/bin/dig/dighost.h) (lido em 2026-10-19): `DEFAULT_EDNS_BUFSIZE 1232`
 - [ISC, BIND 9.18.0 CHANGES](https://downloads.isc.org/isc/bind9/9.18.0/CHANGES) (lido em 2026-10-19): a entrada 5516, sob a 9.17.6, muda o tamanho padrão do buffer EDNS de 4096 para 1232 bytes
 - [BIND 9 source at tag v9.16.50, bin/dig/include/dig/dig.h](https://github.com/isc-projects/bind9/blob/v9.16.50/bin/dig/include/dig/dig.h) (lido em 2026-10-19): `DEFAULT_EDNS_BUFSIZE 4096`, o padrão do dig no ramo 9.16

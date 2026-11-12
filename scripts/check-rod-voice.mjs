@@ -13,9 +13,11 @@
 // For every article of the series "psyops" in src/content/learn/series.ts
 // (opener and written parts), in English and Brazilian Portuguese:
 //   1. the standing note <MethodNote /> is present;
-//   2. every <RodVoice> block carries said="YYYY-MM-DD", the day PRIME stated
-//      the view;
-//   3. outside <RodVoice> blocks the article does not speak in the first
+//   2. no opinion block (<RodVoice>, removed 12/11/2026) and no "Rodolfo Nützmann's view"
+//      style label anywhere in Learn, the blog or the six message packs (PRIME
+//      12/11/2026 15:18: open points are put to the reader as questions,
+//      <ReaderQuestions>, never as anyone's opinion);
+//   3. the article does not speak in the first
 //      person singular (I, me, my; eu, me, meu, minha, mim, comigo). Quoted
 //      words (in quotation marks, guillemets or a blockquote) and code are not
 //      the article's voice and are not read.
@@ -57,7 +59,7 @@ const FIRST_PERSON = {
   "pt-BR": /\b(?:[Ee]u|[Mm]eu|[Mm]eus|[Mm]inha|[Mm]inhas|[Mm]im|[Cc]omigo|[Mm]e)\b/g,
 };
 
-/** The text an article speaks in its own voice: no frontmatter, code, quotations, blockquotes or RodVoice blocks. */
+/** The text an article speaks in its own voice: no frontmatter, code, quotations or blockquotes. */
 function ownVoice(src) {
   // Line numbers are kept: each removed span is replaced by the same number of newlines.
   const blank = (s) => s.replace(/[^\n]/g, " ");
@@ -68,8 +70,6 @@ function ownVoice(src) {
     .replace(/```[\s\S]*?```/g, blank)
     // Inline code.
     .replace(/`[^`\n]*`/g, blank)
-    // PRIME's own labelled blocks: his voice is allowed there.
-    .replace(/<RodVoice\b[\s\S]*?<\/RodVoice>/g, blank)
     // Blockquotes: other people's words.
     .replace(/^>.*$/gm, blank)
     // Quotations in curly quotes, straight quotes, guillemets (French spacing included) and single curly quotes.
@@ -102,16 +102,30 @@ for (const { slug, dir } of targets) {
     const src = readFileSync(file, "utf8");
     // 1. The method note.
     if (!/<MethodNote\s*\/>/.test(src)) problems.push(`${file}: no <MethodNote /> (every part of the series carries it)`);
-    // 2. Every RodVoice block names the day the view was stated.
-    for (const m of src.matchAll(/<RodVoice\b([^>]*)>/g)) {
-      if (!/\bsaid="\d{4}-\d{2}-\d{2}"/.test(m[1])) problems.push(`${file}: <RodVoice${m[1]}> has no said="YYYY-MM-DD"`);
-    }
     // 3. No first person outside the blocks.
     const lines = ownVoice(src).split("\n");
     lines.forEach((line, i) => {
-      for (const w of line.matchAll(FIRST_PERSON[locale])) problems.push(`${file}:${i + 1}: first person "${w[0]}" outside <RodVoice> (put the view in a labelled block, or attribute it)`);
+      for (const w of line.matchAll(FIRST_PERSON[locale])) problems.push(`${file}:${i + 1}: first person "${w[0]}" (the series speaks from its sources; put an open point to the reader as a question in <ReaderQuestions>, or attribute it)`);
     });
   }
+}
+
+
+// 2. No opinion block and no opinion label anywhere (PRIME 12/11/2026 15:18), whatever the series or language.
+const OPINION = /<RodVoice\b|Rodolfo Nützmann['’]s (?:view|opinion|vision|take)|(?:visão|opinião) de Rodolfo|opinión de Rodolfo|Sicht von Rodolfo|point de vue de Rodolfo|punto di vista di Rodolfo/i; // the forms used before
+// Every Learn article and blog post in every language folder, and the six written packs.
+const opinionFiles = [];
+for (const root of [LEARN, BLOG]) {
+  // Each language folder under the root.
+  for (const loc of existsSync(root) ? readdirSync(root).filter((d) => !d.includes(".")) : []) {
+    // Each article or post in it.
+    for (const f of readdirSync(join(root, loc)).filter((x) => x.endsWith(".mdx"))) opinionFiles.push(join(root, loc, f));
+  }
+}
+for (const loc of ["en", "pt-BR", "es", "de", "fr", "it"]) opinionFiles.push(join("src/i18n/messages", `${loc}.json`)); // the packs
+for (const file of opinionFiles) {
+  // A file that names an opinion block or label is a failure, with its line.
+  readFileSync(file, "utf8").split("\n").forEach((line, i) => { if (OPINION.test(line)) problems.push(`${file}:${i + 1}: opinion block or label (put open points to the reader as questions in <ReaderQuestions>)`); });
 }
 
 // The verdict.
@@ -119,4 +133,4 @@ if (problems.length) {
   console.error(`${TAG} FAIL: ${problems.length} problem(s):\n  ${problems.join("\n  ")}`);
   process.exit(1);
 }
-console.log(`${TAG} OK: ${read} file(s): the series "${SERIES_ID}" (${slugs.length} slug(s)) and ${blogSlugs.length} tagged blog post(s): each carries the method note, every view of Rodolfo Nützmann is in a dated, labelled block, and nothing else speaks in the first person.`);
+console.log(`${TAG} OK: ${read} file(s): the series "${SERIES_ID}" (${slugs.length} slug(s)) and ${blogSlugs.length} tagged blog post(s): each carries the method note, nothing speaks in the first person, and no opinion block or label appears in Learn, the blog or the six packs (open points are questions for the reader).`);

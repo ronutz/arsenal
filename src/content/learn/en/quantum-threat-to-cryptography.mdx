@@ -8,7 +8,7 @@ relatedArticles: ["forward-secrecy", "tls13-cipher-suites", "hash-function-famil
 category: transport
 order: 6
 status: reviewed
-updated: "2026-07-06"
+updated: "2026-11-12"
 ---
 
 The phrase "quantum computers will break encryption" is common and half wrong. A large, fault-tolerant quantum computer would break some of the cryptography the internet runs on completely, and leave the rest almost untouched. Knowing which is which is the whole basis of the migration now underway, so it is worth being precise.
@@ -64,7 +64,7 @@ Authentication is different in an important way. A signature only has to resist 
 
 ## A dose of humility, and why it belongs here
 
-**SIKE** was a candidate in the same NIST process, based on supersingular isogenies, and it was broken in 2022, on a single classical computer, in about an hour, by mathematics unrelated to quantum computing. It had survived years of public analysis before that.
+**SIKE** was a candidate in the same NIST process, based on supersingular isogenies, and it was broken in 2022, on a single classical computer, in about an hour (about ten minutes on one core in a later version of the attack paper), by mathematics unrelated to quantum computing. It had survived years of public analysis before that.
 
 This is the argument for hybrid deployment stated better than any risk assessment could: the new algorithms are young, the analysis is ongoing, and combining them with something well understood is not timidity but the correct engineering response to that uncertainty.
 

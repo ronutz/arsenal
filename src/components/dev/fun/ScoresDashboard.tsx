@@ -41,7 +41,7 @@ import { funPagePath } from "@/config/funGames";
 // The games on the board and the totals window type.
 import { BOARD_GAMES, boardGame, type BoardGame } from "@/lib/fun/board-rules";
 // The board, browser side.
-import { fetchTotals, formatScore, type BoardRow, type TotalsAnswer } from "@/lib/fun/board";
+import { browsersOn, fetchTotals, formatScore, type BoardRow, type TotalsAnswer } from "@/lib/fun/board";
 // The day arithmetic, the first day of the games, and the time to the next puzzles.
 import { LAUNCH_DAY, addDays, epochDay, msToNextDay } from "@/lib/fun/daily";
 // Today's UTC day, after mount.
@@ -274,8 +274,8 @@ export default function ScoresDashboard(props: { names: Record<string, string>; 
     if (!today || !t30) return [];
     // Rounds by day.
     const byDay = new Map(t30.byDay.map((d) => [d.day, d]));
-    // The 30 days ending today.
-    return Array.from({ length: 30 }, (_, i) => addDays(today, i - 29)).map((d) => ({ day: d, played: byDay.get(d)?.played ?? 0, solved: byDay.get(d)?.solved ?? 0 }));
+    // The 30 days ending today, each with its unique browsers (null: no data for that day).
+    return Array.from({ length: 30 }, (_, i) => addDays(today, i - 29)).map((d) => ({ day: d, played: byDay.get(d)?.played ?? 0, solved: byDay.get(d)?.solved ?? 0, browsers: browsersOn(t30, d) }));
   }, [today, t30]);
   // The tallest day.
   const peak = Math.max(1, ...series.map((d) => d.played));
@@ -323,6 +323,10 @@ export default function ScoresDashboard(props: { names: Record<string, string>; 
   // Today's totals, for the tiles.
   const playedToday = t1?.played ?? 0;
   const solvedToday = t1?.solved ?? 0;
+  // Today's unique browsers: each browser counts once a day (null: no data, never shown as zero).
+  const browsersToday = t1 && today ? browsersOn(t1, today) : null;
+  // Whether any of the 30 days has the browsers' count, for the chart's note.
+  const anyBrowsers = series.some((d) => d.browsers !== null);
 
   // The page body.
   return (
@@ -393,6 +397,15 @@ export default function ScoresDashboard(props: { names: Record<string, string>; 
                     )}
                   </dd>
                 </div>
+                {/* Unique browsers today, the width of the row: browsers, not people, and the rounds per browser. */}
+                <div className="fg-dash-kpi fg-dash-kpi-wide">
+                  <dt>{t("dash.browsersToday")}</dt>
+                  <dd>
+                    <span className="fg-dash-kpi-value">{browsersToday === null ? t("dash.browsersNoData") : num(browsersToday)}</span>
+                    <span className="fg-dash-kpi-sub">{t("dash.browsersHint")}</span>
+                    {browsersToday ? <span className="fg-dash-kpi-sub">{t("dash.roundsPerBrowser", { n: (playedToday / browsersToday).toLocaleString(locale, { maximumFractionDigits: 1 }) })}</span> : null}
+                  </dd>
+                </div>
               </dl>
               {playedToday === 0 && <p className="fg-small fg-muted">{t("dash.quietToday")}</p>}
             </>
@@ -407,13 +420,16 @@ export default function ScoresDashboard(props: { names: Record<string, string>; 
                   const x = i * 10 + 1;
                   const h = (d.played / peak) * 58;
                   const hs = (d.solved / peak) * 58;
+                  // The day's unique browsers on the same scale (never more than its rounds), as a short line across the bar.
+                  const hb = d.browsers ? (d.browsers / peak) * 58 : 0;
                   // A day without rounds still shows a hairline, so the 30 slots read as days.
                   return (
                     <g key={d.day}>
-                      <title>{t("dash.sparkDay", { date: dayText(d.day), played: d.played, solved: d.solved })}</title>
+                      <title>{t("dash.sparkDayBrowsers", { date: dayText(d.day), played: d.played, solved: d.solved, browsers: d.browsers === null ? t("dash.browsersNoData") : num(d.browsers) })}</title>
                       <rect className="fg-dash-spark-hit" x={i * 10} y={0} width={10} height={64} />
                       <rect className="fg-dash-spark-all" x={x} y={64 - Math.max(1, h)} width={8} height={Math.max(1, h)} rx={1.5} />
                       {hs > 0 && <rect className="fg-dash-spark-won" x={x} y={64 - hs} width={8} height={hs} rx={1.5} />}
+                      {hb > 0 && <rect className="fg-dash-spark-browsers" x={x} y={Math.max(0, 64 - hb - 1)} width={8} height={2} />}
                     </g>
                   );
                 })}
@@ -422,6 +438,8 @@ export default function ScoresDashboard(props: { names: Record<string, string>; 
                 <span>{dayText(series[0].day)}</span>
                 <span>{dayText(series[series.length - 1].day)}</span>
               </div>
+              {/* What the short lines are, in words, once any day has the count. */}
+              {anyBrowsers && <p className="fg-small fg-muted">{t("dash.sparkBrowsersNote")}</p>}
             </figure>
           )}
         </section>

@@ -8,7 +8,7 @@ relatedArticles: ["f5-clientssl-vs-serverssl", "f5-ssl-renegotiation-and-ocsp", 
 category: transport
 order: 2
 status: reviewed
-updated: "2026-06-29"
+updated: "2026-11-12"
 ---
 
 Quando você quer desligar uma versão antiga do TLS num BIG-IP, não procura uma caixa de seleção "habilitar TLS 1.2". Você adiciona uma flag que *desabilita* as versões que não quer. O controle fica no campo `options` do perfil SSL, e inverter a lógica dele é uma das configurações SSL mais comumente erradas.
@@ -35,6 +35,6 @@ options { dont-insert-empty-fragments no-sslv3 no-tlsv1 no-tlsv1.1 }
 
 ## Duas flags não relacionadas a protocolo que vale conhecer
 
-`dont-insert-empty-fragments` desliga a antiga divisão de registro 1/n−1 que foi uma mitigação inicial do BEAST (Browser Exploit Against SSL/TLS); aparece na maioria dos conjuntos de options padrão e hoje é em grande parte histórica. `cipher-server-preference` diz ao BIG-IP para escolher a cifra a partir da **sua própria** lista ordenada, em vez de honrar a ordem de preferência do cliente — geralmente o que você quer, para que suas suites com sigilo futuro, cuidadosamente ordenadas, prevaleçam.
+`dont-insert-empty-fragments` desliga a contramedida de fragmento vazio do OpenSSL, um registro de tamanho zero enviado antes de cada registro CBC (a referência tmsh da F5 a descreve para cifras CBC de SSL 3.0 e TLS 1.0), que foi uma mitigação inicial do BEAST (Browser Exploit Against SSL/TLS), anterior à divisão de registro 1/n−1 que os navegadores adotaram depois; aparece na maioria dos conjuntos de options padrão e hoje é em grande parte histórica. `cipher-server-preference` diz ao BIG-IP para escolher a cifra a partir da **sua própria** lista ordenada, em vez de honrar a ordem de preferência do cliente — geralmente o que você quer, para que suas suites com sigilo futuro, cuidadosamente ordenadas, prevaleçam.
 
 Como a matriz de protocolos é derivada puramente de quais flags `no-` estão presentes, o explicador de perfis SSL mostra, versão por versão, exatamente o que uma linha `options` colada permite — e sinaliza as descontinuadas que ela deixa abertas.

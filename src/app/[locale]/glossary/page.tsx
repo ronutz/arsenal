@@ -27,6 +27,8 @@ import { DefinedTermSetSchema } from "@/components/GlossarySchema";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import ScrollToTop from "@/components/ScrollToTop";
+// My desk's saved and read labels on the cards.
+import DeskListMarks from "@/components/desk/DeskListMarks";
 import GlossaryFilter from "@/components/glossary/GlossaryFilter";
 import type { CSSProperties } from "react";
 
@@ -51,6 +53,8 @@ export default async function GlossaryIndexPage({
   setRequestLocale(locale);
 
   const t = await getTranslations("glossary");
+  // My desk's labels on the cards (saved, read, done), drawn in the browser after paint (12/11/2026).
+  const tDesk = await getTranslations("deskItem");
 
   const entries = getAllGlossaryEntries(); // A-Z by headword
   const domains = getGlossaryDomains(); // canonical order
@@ -287,6 +291,9 @@ export default async function GlossaryIndexPage({
 
       <SiteFooter />
       <ScrollToTop label={t("backToIndex")} />
+      {/* My desk: "★ Saved", "✓ Read" or "✓ Done" on the cards of items the reader keeps, placed after paint over each
+          card's top border so nothing moves (src/components/desk/DeskListMarks.tsx). */}
+      <DeskListMarks selector=".gloss-entry" labels={{ saved: tDesk("saved"), read: tDesk("readOn"), done: tDesk("doneOn") }} />
     </>
   );
 }

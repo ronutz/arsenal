@@ -60,6 +60,6 @@ The same engine answers the `/api/v1/dig-output-explainer` operation of the site
 - [RFC 8490: DNS Stateful Operations](https://www.rfc-editor.org/rfc/rfc8490) (read 2026-10-19): sections 10.1 and 10.2, opcode 6 (DSO) and RCODE 11 (DSOTYPENI)
 - [RFC 6761: Special-Use Domain Names](https://www.rfc-editor.org/rfc/rfc6761) (read 2026-10-19): section 6.4, names under `.invalid`
 - [RFC 9824: Compact Denial of Existence in DNSSEC](https://www.rfc-editor.org/rfc/rfc9824) (read 2026-10-19): NOERROR with no data for a name that does not exist
-- [ISC, BIND 9 9.20.29 documentation, Manual Pages: dig](https://bind9.readthedocs.io/en/stable/manpages.html) (read 2026-10-19): `+ttlunits`, `+ttlid`, `+multiline`, `+opcode`
+- [ISC, BIND 9 9.20.29 documentation, Manual Pages: dig](https://bind9.readthedocs.io/en/v9.20.29/manpages.html) (read 2026-10-19): `+ttlunits`, `+ttlid`, `+multiline`, `+opcode`
 - [BIND 9 source at tag v9.20.29, bin/dig/dig.c](https://github.com/isc-projects/bind9/blob/v9.20.29/bin/dig/dig.c) (read 2026-10-19): the opcode names dig prints, `RESERVED6` among them; `RESERVED11` comes from lib/dns/rcode.c
 - [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (read 2026-10-27): section 3.5, the fragment, which carries a Share results link's values

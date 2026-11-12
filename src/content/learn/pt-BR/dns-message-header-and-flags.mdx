@@ -8,7 +8,7 @@ relatedArticles: ["reading-dig-output", "dns-record-types-in-answers", "dnssec-r
 category: networking
 order: 41
 status: reviewed
-updated: "2026-10-27"
+updated: "2026-11-12"
 ---
 
 A Request for Comments (RFC) 1035 dá a toda mensagem DNS o mesmo header (cabeçalho) de 12 bytes ([RFC 1035, seção 4.1.1](https://www.rfc-editor.org/rfc/rfc1035.txt)), que o dig imprime nas linhas `->>HEADER<<-` e `flags:` que quase todo mundo pula. Esses bytes dizem quem respondeu, se houve oferta de recursão, se a resposta foi cortada, se um resolver a garante sob as Domain Name System Security Extensions (DNSSEC) e como o pedido acabou. Na parte 4 de [DNS, lido a partir da resposta](/learn/reading-a-dns-answer), você decodifica uma troca real em hexadecimal e lê cada campo pelo que ele conta a um diagnóstico.
@@ -226,8 +226,8 @@ O [explicador de saída do dig](/tools/dig-output-explainer) lê as linhas de he
 - [RFC 9520, Negative Caching of DNS Resolution Failures, dezembro de 2023: seções 2.1, 2.2, 2.6, 2.7 e 3.2 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9520.txt)
 - [RFC 9824, Compact Denial of Existence in DNSSEC, setembro de 2025: seções 1, 2 e 6 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9824.txt)
 - [IANA, Domain Name System (DNS) Parameters, outubro de 2026: DNS OpCodes, DNS RCODEs, DNS Header Flags e EDNS Header Flags (16 bits) (lida em 2026-10-18)](https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml)
-- [ISC, BIND 9 9.20.29 documentation, Manual Pages: dig - DNS lookup utility, página sem data: Query Options e Return Codes (lida em 2026-10-18)](https://bind9.readthedocs.io/en/stable/manpages.html)
-- [ISC, BIND 9 9.20.29 documentation, DNSSEC Guide, página sem data: Verifying Protection From Bad Domain Names; How Do I Know I Have a Validation Problem? (lida em 2026-10-18)](https://bind9.readthedocs.io/en/stable/dnssec-guide.html)
+- [ISC, BIND 9 9.20.29 documentation, Manual Pages: dig - DNS lookup utility, página sem data: Query Options e Return Codes (lida em 2026-10-18)](https://bind9.readthedocs.io/en/v9.20.29/manpages.html)
+- [ISC, BIND 9 9.20.29 documentation, DNSSEC Guide, página sem data: Verifying Protection From Bad Domain Names; How Do I Know I Have a Validation Problem? (lida em 2026-10-18)](https://bind9.readthedocs.io/en/v9.20.29/dnssec-guide.html)
 - [ISC, BIND 9 source code at tag v9.20.29, bin/dig/dig.c: as linhas de header e de flags (lida em 2026-10-18)](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/dig.c)
 - [ISC, BIND 9 source code at tag v9.20.29, bin/dig/dighost.c: o ID da consulta, as conferências da resposta e as repetições (lida em 2026-10-18)](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/dighost.c)
 - [ISC, BIND 9 source code at tag v9.20.29, lib/dns/message.c: a pseudosseção OPT e o RCODE estendido (lida em 2026-10-18)](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/lib/dns/message.c)

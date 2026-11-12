@@ -48,15 +48,15 @@ export interface StatsEnv {
   STATS_DETAIL_KEY?: string;
 }
 
-const SQL_API = (account: string) =>
+export const SQL_API = (account: string) =>
   `https://api.cloudflare.com/client/v4/accounts/${account}/analytics_engine/sql`;
 
-const PAGEVIEWS = "ronutz_pageviews";
-const REFERRERS = "ronutz_referrers";
+export const PAGEVIEWS = "ronutz_pageviews";
+export const REFERRERS = "ronutz_referrers";
 
 /** Windows the UI offers. Anything else is rejected rather than interpolated,
  *  because these strings are concatenated into SQL. */
-const WINDOWS: Record<string, string> = {
+export const WINDOWS: Record<string, string> = {
   "24h": "1' DAY",
   "7d": "7' DAY",
   "30d": "30' DAY",
@@ -82,7 +82,7 @@ const json = (body: unknown, status = 200) =>
  * derived from a request ever reaches the query except through the WINDOWS
  * whitelist and a path that is matched against a strict pattern first.
  */
-async function query(env: StatsEnv, sql: string): Promise<unknown[]> {
+export async function query(env: StatsEnv, sql: string): Promise<unknown[]> {
   const res = await fetch(SQL_API(env.CF_ACCOUNT_ID!), {
     method: "POST",
     headers: {
@@ -102,7 +102,7 @@ async function query(env: StatsEnv, sql: string): Promise<unknown[]> {
  * as though it were exact would be the same class of error the site's own
  * test-and-measurement article warns about: a number without its conditions.
  */
-const VIEWS = "SUM(_sample_interval) AS views";
+export const VIEWS = "SUM(_sample_interval) AS views";
 
 // ---------------------------------------------------------------------------
 // ---------------------------------------------------------------------------
@@ -142,11 +142,11 @@ const HUMAN = `(blob4 = 'human' AND NOT ${PRE_CLASSIFIER})`;
 // "missing" route's, grouped by what they were looking for.
 // ---------------------------------------------------------------------------
 /** A page served: 200 or 304, or an older row whose path is a page. */
-const SERVED = `(blob6 IN ('200', '304') OR (blob6 = '' AND NOT ${LEGACY_NOT_A_PAGE}))`;
+export const SERVED = `(blob6 IN ('200', '304') OR (blob6 = '' AND NOT ${LEGACY_NOT_A_PAGE}))`;
 /** A request for a page that does not exist: a 404, or an older row whose path is not a page. */
-const MISSING = `(blob6 = '404' OR (blob6 = '' AND ${LEGACY_NOT_A_PAGE}))`;
+export const MISSING = `(blob6 = '404' OR (blob6 = '' AND ${LEGACY_NOT_A_PAGE}))`;
 /** The people panels' filter: a person, served a page. */
-const PEOPLE = `(${HUMAN} AND ${SERVED})`;
+export const PEOPLE = `(${HUMAN} AND ${SERVED})`;
 /** The "missing" route lists this many addresses per family, the most requested first (the counts cover all). Raised from
  *  8 on 2026-11-02 so the panel's own rule applies (the first 13 shown, "Expand all" for the rest, PRIME 01/11) and the
  *  scheduled /stats findings check sees more of what the scanners ask for than the top few. */
@@ -210,7 +210,7 @@ const PATH_SHOWN_MAX = 96;
 // google.com referrals reappeared in the panel as ~19,500 requests under "other
 // sites", while the panel's own copy promised that traffic was not shown.
 // PRIME caught it. One floor, one reason.
-const REFERRER_SINCE = `timestamp >= toDateTime('${CLASSIFIER_LIVE}')`;
+export const REFERRER_SINCE = `timestamp >= toDateTime('${CLASSIFIER_LIVE}')`;
 
 export async function handleStats(
   url: URL,

@@ -25,6 +25,10 @@ import ContentStrings from "@/components/ContentStrings";
 import { contentStringsFor } from "@/i18n/contentStrings";
 import { INTERFACE_LOCALES } from "@/i18n/locales";
 import ShareControl from "@/components/ShareControl";
+// My desk's controls (PRIME 12/11/2026 12:42): Save, Mark as done, Add to path, beside Share.
+import DeskItemControls from "@/components/desk/DeskItemControls";
+// "Continue this path": the reader's paths holding this tool and what comes next in each (drawn only when it is in one).
+import DeskPathNext from "@/components/desk/DeskPathNext";
 import { routing } from "@/i18n/routing";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
@@ -1551,7 +1555,7 @@ export default async function ToolDetailPage({
                 every built tool, so guarded) paired with a quiet share control.
                 Wrapped in a nested provider carrying only the share namespace
                 (A1), matching the tool's own tools.<slug> slice below. */}
-            <MessageSlice namespaces={["share"]}>
+            <MessageSlice namespaces={["share", "deskItem", "deskPath"]}>
               <div className="tool-meta-links">
                 {hasToolDoc(slug) && (
                   <Link href={`/tools/${slug}/docs`} className="tool-doc-link">
@@ -1560,6 +1564,11 @@ export default async function ToolDetailPage({
                 )}
                 <ShareControl title={tTools(`${slug}.name`)} />
               </div>
+              {/* My desk (12/11/2026): keep the tool, tick it off as done, or put it on a path; kept in this browser. */}
+              <DeskItemControls item={`tool:${slug}`} />
+              {/* "Continue this path": what comes next in each of the reader's paths holding this tool; nothing is
+                  drawn when the tool is in no path. */}
+              <DeskPathNext item={`tool:${slug}`} />
             </MessageSlice>
 
             {/* A1 nested provider: only this tool's namespace + the API
@@ -1570,7 +1579,12 @@ export default async function ToolDetailPage({
             <MessageSlice namespaces={[`tools.${slug}`, "apiAffordance", "share", "shareResults", ...extraNs]}>
               {/* The strings this tool keeps in code, in the page's language (src/i18n/contentStrings.ts, 09/11/2026). */}
               <ContentStrings strings={contentStringsFor(locale, [slug])}>
-                <Component />
+                {/* The tool, marked for the interest counts (PRIME 12/11/2026): the first typing or button press inside
+                    it counts one use of this tool, once per page view, and only for a reader who said yes
+                    (src/components/InterestRuntime.tsx). The wrapper draws no box (display: contents). */}
+                <div className="interest-zone" data-interest-zone={`tool_use:tools:${slug}`}>
+                  <Component />
+                </div>
               </ContentStrings>
 
               <ToolApiEndpoint slug={slug} processingOn={processingOn} labels={endpointLabels} />

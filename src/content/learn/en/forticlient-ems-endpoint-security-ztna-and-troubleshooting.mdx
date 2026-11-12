@@ -9,7 +9,7 @@ relatedArticles: ["forticlient-ems-architecture-and-deployment", "fortigate-clou
 category: security
 order: 66
 status: reviewed
-updated: "2026-07-26"
+updated: "2026-11-12"
 ---
 
 An endpoint management platform earns its place at the moment something goes wrong on an endpoint. Everything below is about that moment and the mechanisms that make it survivable.
@@ -41,16 +41,16 @@ ZTNA (zero trust network access) replaces "you are on the network, therefore you
 The pieces:
 
 - **The endpoint** presents a client certificate issued through EMS, which identifies the device rather than the user.
-- **EMS** supplies device posture (is it registered, is protection on, is it compliant) as **ZTNA tags**.
+- **EMS** supplies device posture (is it registered, is protection on, is it compliant) as **security posture tags**, the FortiOS 7.6 name: its guide writes "security posture tags (formerly ZTNA tags)" ([Fortinet, FortiOS 7.6.0 Administration Guide, read 2026-11-12](https://docs.fortinet.com/document/fortigate/7.6.0/administration-guide/855420/zero-trust-network-access-introduction)), and FortiOS 7.4 still calls them ZTNA tags ([FortiOS 7.4.8 Administration Guide, read 2026-11-12](https://docs.fortinet.com/document/fortigate/7.4.8/administration-guide/335228)).
 - **The FortiGate** acts as the access proxy, terminating the session and deciding per request using the user's identity plus those tags.
 
 The practical difference from VPN (virtual private network) is worth stating plainly. A VPN grants network access and then relies on firewall policy to narrow it; ZTNA grants nothing until a specific request is evaluated, and posture is part of that evaluation. A device that falls out of compliance loses access without any network change, because the tag it was relying on is gone.
 
-The dependency to remember is that ZTNA tags come from EMS. An endpoint that has stopped reporting to EMS has stale or absent tags, and the resulting access failure looks like a firewall problem while being an endpoint management problem.
+The dependency to remember is that posture tags come from EMS. An endpoint that has stopped reporting to EMS has stale or absent tags, and the resulting access failure looks like a firewall problem while being an endpoint management problem.
 
 ## Security Fabric integration
 
-Connecting EMS to the Fabric lets a FortiGate use what EMS knows. Firewall policy can then match on ZTNA tags or endpoint compliance, and a detection anywhere in the Fabric can trigger endpoint quarantine.
+Connecting EMS to the Fabric lets a FortiGate use what EMS knows. Firewall policy can then match on posture tags or endpoint compliance, and a detection anywhere in the Fabric can trigger endpoint quarantine.
 
 That is the loop worth having: the FortiGate sees traffic and the endpoint sees the process that generated it, and neither alone can act on both.
 
@@ -72,4 +72,4 @@ The pattern is the same one that runs through the rest of this platform: establi
 
 ## What an exam candidate should be able to state cold
 
-Protective features are enabled through the endpoint profile, and endpoint-side web filtering follows the device off the corporate network. Quarantine blocks traffic locally so it works wherever the endpoint is, and must leave a path back to EMS. ZTNA combines a client certificate identifying the device, ZTNA tags from EMS describing posture, and a FortiGate acting as access proxy deciding per session; stale tags from an endpoint that stopped reporting look like a firewall fault. Diagnose in order: registered and reporting, which profile it received, licensing, local client logs, then connectivity.
+Protective features are enabled through the endpoint profile, and endpoint-side web filtering follows the device off the corporate network. Quarantine blocks traffic locally so it works wherever the endpoint is, and must leave a path back to EMS. ZTNA combines a client certificate identifying the device, security posture tags (ZTNA tags before FortiOS 7.6) from EMS describing posture, and a FortiGate acting as access proxy deciding per session; stale tags from an endpoint that stopped reporting look like a firewall fault. Diagnose in order: registered and reporting, which profile it received, licensing, local client logs, then connectivity.

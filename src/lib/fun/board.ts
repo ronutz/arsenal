@@ -24,6 +24,17 @@
 // be changed the same day. Nothing here identifies the browser: a new nonce
 // is made for every submission.
 //
+// ONE YES OR NO FOR THE DAY'S COUNT OF BROWSERS (the site owner, 12/11/2026
+// 17:06 to 17:09). This browser keeps the puzzle day of the last round it
+// published, under a key of its own that never leaves it and never travels
+// with the desk's sync (ronutz:fun:posted-day; src/lib/desk/registry.ts lists
+// it as local-only). A round of a later day than that is the first this
+// browser publishes on its day, and goes with `first: true`; every other
+// round goes with `first: false`. The day is written only after the board
+// answers that the round is stored; changing initials never touches it. The
+// server adds the yeses up per day: how many browsers published a round, not
+// how many people, and nothing in it says which browser (worker/scores.ts).
+//
 // READING. fetchBoard() and fetchTotals() read the board's public answers.
 // The player's own score is never put in an address (an address is what the
 // host's request logs keep); the place shown after posting comes from the
@@ -177,6 +188,48 @@ function newNonce(): string {
   return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
 }
 
+/** The key of the puzzle day of this browser's last published round: local-only, never sent, never synced. */
+export const POSTED_DAY_KEY = "ronutz:fun:posted-day";
+
+/**
+ * The puzzle day of the last round this browser published, as YYYY-MM-DD, or "" when none is known.
+ *
+ * @returns the day, or ""
+ */
+function postedDay(): string {
+  // Storage can be missing or refuse (a private window, blocked site data): nothing known then.
+  try {
+    // The stored value.
+    const v = window.localStorage.getItem(POSTED_DAY_KEY);
+    // Only a well-formed day counts.
+    return v !== null && /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : "";
+  } catch {
+    // Unreadable.
+    return "";
+  }
+}
+
+/**
+ * Remember a published round's puzzle day, never moving the day backwards (yesterday's round, sent in the first hour
+ * after midnight after today's, leaves today's day in place).
+ *
+ * @param day the round's puzzle day
+ */
+function rememberPostedDay(day: string): void {
+  // An earlier day than the one kept changes nothing.
+  if (day <= postedDay()) return;
+  // Written; a storage that refuses only means the next round may count this browser again.
+  try {
+    // The day, as YYYY-MM-DD.
+    window.localStorage.setItem(POSTED_DAY_KEY, day);
+  } catch {
+    // Not kept.
+  }
+}
+
+/** The sends carrying `first: true`, by puzzle day: a second round of that day waits for the first's answer. */
+const FIRST_SENDS = new Map<string, Promise<void>>();
+
 /** What sending a round came to. */
 export type PostOutcome = "posted" | "refused" | "unavailable" | "initials" | "late";
 
@@ -261,19 +314,28 @@ async function sendRound(game: string, mode: string, day: string, initials?: str
   const nonce = before?.nonce ?? newNonce();
   // Remembered as pending before anything is sent.
   remember(key, { nonce, status: "pending", initials: use ?? NO_INITIALS });
+  // Another round of this day already on its way with `first: true`: its answer decides this round's flag.
+  for (let wait = FIRST_SENDS.get(day); wait; wait = FIRST_SENDS.get(day)) await wait;
+  // The first round this browser publishes on this puzzle day, by the day it keeps (no day kept: the first).
+  const first = postedDay() < day;
+  // While this send carries the yes, other rounds of the day wait for it; released whatever the outcome.
+  let release: () => void = () => undefined;
+  if (first) FIRST_SENDS.set(day, new Promise<void>((done) => (release = done)));
   // The request; any failure leaves the round pending, to be tried again later today.
   try {
     // Sent; keepalive lets it finish if the player leaves the page at once.
     const res = await fetch(`${BOARD_API}/score`, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ game, mode, day, state, nonce, ...(use ? { initials: use } : {}) }),
+      body: JSON.stringify({ game, mode, day, state, nonce, first, ...(use ? { initials: use } : {}) }),
       keepalive: true,
     });
     // The answer.
     const a = (await res.json().catch(() => ({}))) as PostAnswer;
     // Stored.
     if (res.ok && a.ok) {
+      // The board holds a round of this day from this browser: the next ones go with `first: false`.
+      rememberPostedDay(day);
       // Remembered with the server's numbers.
       remember(key, { nonce, status: "posted", initials: use ?? NO_INITIALS, score: a.score ?? null, won: a.won === true, plausible: a.plausible !== false, place: a.place, of: a.of, beat: a.beat });
       // Done.
@@ -293,6 +355,13 @@ async function sendRound(game: string, mode: string, day: string, initials?: str
   } catch {
     // No network, or no board.
     return "unavailable";
+  } finally {
+    // The yes is settled: the day's other rounds may go (with `first: false` once this one was stored).
+    if (first) {
+      // Forgotten, then the waiting sends released.
+      FIRST_SENDS.delete(day);
+      release();
+    }
   }
 }
 
@@ -480,10 +549,32 @@ export interface TotalsAnswer {
   solved: number;
   /** Per game and mode, with its best round. */
   games: { game: string; mode: string; played: number; solved: number; days: number; record: BoardRow | null }[];
-  /** The shelf per day. */
-  byDay: { day: string; played: number; solved: number }[];
+  /** The shelf per day; `browsers` is how many browsers published a round that day, or null for "no data". */
+  byDay: { day: string; played: number; solved: number; browsers?: number | null }[];
+  /** The first day the browsers' count covers, or null (none yet); absent from an answer before the count existed. */
+  browsersFrom?: string | null;
   /** Countries with at least three rounds. */
   countries: { code: string; n: number }[];
+}
+
+/**
+ * How many browsers published a round on a day, from a totals answer, or null for "no data" (a day before the count
+ * began, a day whose rounds carried no yes, or a board that does not count yet). A day after the count began with no
+ * round at all is 0.
+ *
+ * @param t the totals
+ * @param day the puzzle day
+ * @returns the browsers, or null
+ */
+export function browsersOn(t: TotalsAnswer, day: string): number | null {
+  // No count, or a day before it.
+  if (!t.browsersFrom || day < t.browsersFrom) return null;
+  // The day's line, when it had rounds.
+  const line = t.byDay.find((d) => d.day === day);
+  // No rounds that day: nobody published.
+  if (!line) return 0;
+  // The board's own figure (null stays "no data").
+  return line.browsers ?? null;
 }
 
 /**

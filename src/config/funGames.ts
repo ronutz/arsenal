@@ -82,6 +82,38 @@ export const FUN_GAME_GROUPS: readonly FunGameGroup[] = [
 /** Every game, flattened, in shelf order. */
 export const FUN_GAMES: readonly FunGame[] = FUN_GAME_GROUPS.flatMap((g) => g.games);
 
+/** One toy on the /dev/fun shelf (a page under /dev/fun with no puzzle or engine). */
+export interface FunToy {
+  /** The card's message key: devFun.toys.<key> (its name and blurb). */
+  readonly key: string;
+  /** The toy's page below the locale. */
+  readonly href: string;
+  /** Whether the card shows the one language its content exists in (none does now). */
+  readonly badged: boolean;
+  /** The page is generated in English alone, so every locale's card links the English page. */
+  readonly enOnly?: boolean;
+}
+
+// The toys, in shipping order (moved here from the shelf page on 11/11/2026 so the home page can count them; PRIME 21:20,
+// a counter for the puzzles, games and toys under "Currently serving"). `badged` marks a toy whose content exists in a
+// single language and shows that language on its card. None does now: the Mega Brain, once Portuguese only, reads fully
+// in English as well (PRIME 03/11/2026: "fully translate the card and the actual page for Mega Brain").
+export const FUN_TOYS: readonly FunToy[] = [
+  { key: "megaBrain", href: "/dev/fun/mega-brain", badged: false }, // the Mega Brain
+  { key: "meetingBingo", href: "/dev/fun/meeting-bingo", badged: false }, // meeting bingo
+  { key: "bossScreens", href: "/dev/fun/boss-screens", badged: false }, // the boss screens
+  { key: "catDistribution", href: "/dev/fun/cat-distribution", badged: false }, // the cat distribution
+  // Added 2026-07-30 (PRIME): an inconspicuous card, last on the shelf. It was built unlisted and stays modest here on
+  // purpose - the copy does not say what it measures, so it still rewards the person who opens it. enOnly (R-18 audit
+  // fix, 2026-08-27): the meter generates for en alone by design, so every locale's card links the EN page explicitly - a
+  // link to a route that exists, instead of a locale-prefixed path that was never built. Outside English its card says so
+  // with an "EN" badge (review R4-10).
+  { key: "importanceMeter", href: "/dev/fun/importance-meter", badged: false, enOnly: true },
+];
+
+/** The puzzles, games and toys together: the home page's fourth figure (PRIME 11/11/2026 21:20). Derived, never typed. */
+export const FUN_SHELF_COUNT: number = FUN_GAMES.length + FUN_TOYS.length;
+
 /** The arcade group's ids, read once for the two address helpers below. */
 const ARCADE_IDS: ReadonlySet<string> = new Set(FUN_GAME_GROUPS.find((g) => g.key === "arcade")?.games.map((g) => g.id) ?? []);
 

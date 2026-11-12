@@ -38,7 +38,7 @@ const DECLARED = new Map([
   ["darpa|quadro", "permanent staff (quadro permanente)"],
   ["goto-considered-harmful|salto", "a jump in code"],
   ["goto-considered-harmful|saltos", "jumps in code"],
-  ["jude-milhon|quadro", "a bulletin board (quadro de avisos)"],
+  // jude-milhon|quadro came off the list on 12/11/2026: the content sweep's text says "mural eletrônico".
   ["kanban|quadro", "the kanban board"],
   ["lb|balanceador de carga", "allowed gloss in parentheses after 'load balancer'"],
   ["marco-civil-da-internet|quadro", "a framework law (lei-quadro)"],

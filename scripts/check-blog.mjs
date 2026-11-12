@@ -98,6 +98,11 @@ if (!existsSync(enDir)) {
 // Category keys the site already uses (source of truth: the tools config).
 const toolsSrc = readFileSync(path.join(root, "src", "config", "tools.ts"), "utf-8");
 const categories = new Set([...toolsSrc.matchAll(/category:\s*"([a-z-]+)"/g)].map((m) => m[1]));
+// Since the 12/11/2026 split, "security" names no tool section but stays a site category for Learn and the blog:
+// the shared colour taxonomy (src/config/categoryColors.ts) holds every category key the site uses.
+const colorsSrc = readFileSync(path.join(root, "src", "config", "categoryColors.ts"), "utf-8"); // the taxonomy file
+const colorsBody = colorsSrc.slice(colorsSrc.indexOf("CATEGORY_COLORS"), colorsSrc.indexOf("};", colorsSrc.indexOf("CATEGORY_COLORS"))); // its key block
+for (const m of colorsBody.matchAll(/^\s+([a-z-]+):\s*"#/gm)) categories.add(m[1]); // each key counts as a site category
 
 const enPosts = readdirSync(enDir).filter((f) => f.endsWith(".mdx"));
 

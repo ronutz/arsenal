@@ -8,7 +8,7 @@ relatedArticles: ["tls-certificate-lifetimes", "certificate-validity-windows", "
 category: pki
 order: 10
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-11-12"
 ---
 
 ## Emitir um certificado significa provar coisas
@@ -17,11 +17,11 @@ Antes de uma AC (autoridade certificadora, do inglês certificate authority) ass
 
 ## Validação de controle de domínio, e sua reutilização cada vez menor
 
-A Validação de Controle de Domínio (DCV) é a prova de que você controla um nome, demonstrada ao servir um token por HTTP, publicar um registro DNS, ou um desafio por e-mail. A janela durante a qual uma AC pode reutilizar uma DCV aprovada está encolhendo em sincronia com a validade: 398 dias hoje, 200 a partir de 15 de março de 2026, 100 a partir de 15 de março de 2027, e apenas 10 dias a partir de 15 de março de 2029. Nesse valor final, com certificados de 47 dias, o controle do domínio precisa ser reprovado a cada renovação, na ordem de cerca de trinta vezes por ano para um único domínio. A era do "configure e esqueça" da validação anual de domínio é o que esse número encerra.
+A Validação de Controle de Domínio (DCV) é a prova de que você controla um nome, demonstrada ao servir um token por HTTP, publicar um registro DNS, ou um desafio por e-mail. A janela durante a qual uma AC pode reutilizar uma DCV aprovada está encolhendo em sincronia com a validade: 398 dias até 15 de março de 2026, 200 desde então, 100 a partir de 15 de março de 2027, e apenas 10 dias a partir de 15 de março de 2029. Nesse valor final, com certificados de 47 dias, o controle do domínio precisa ser reprovado a cada renovação, na ordem de cerca de trinta vezes por ano para um único domínio. A era do "configure e esqueça" da validação anual de domínio é o que esse número encerra.
 
 ## Informação de identidade do titular, e reverificações anuais
 
-A Informação de Identidade do Titular (SII) são os dados da organização dentro de um certificado OV ou EV, o nome legal e os detalhes relacionados, tudo além do próprio domínio. Sua janela de reutilização cai de 825 dias para 398 dias a partir de 15 de março de 2026, o que significa que uma empresa terá de revalidar sua identidade efetivamente uma vez por ano, em vez de uma vez a cada dois anos. Isso afeta apenas certificados OV e EV; certificados Domain Validated não carregam SII e ficam intocados por essa mudança específica, embora estejam plenamente sujeitos às reduções de DCV e de validade.
+A Informação de Identidade do Titular (SII) são os dados da organização dentro de um certificado OV ou EV, o nome legal e os detalhes relacionados, tudo além do próprio domínio. Sua janela de reutilização caiu de 825 dias para 398 dias em 15 de março de 2026, o que significa que uma empresa terá de revalidar sua identidade efetivamente uma vez por ano, em vez de uma vez a cada dois anos. Isso afeta apenas certificados OV e EV; certificados Domain Validated não carregam SII e ficam intocados por essa mudança específica, embora estejam plenamente sujeitos às reduções de DCV e de validade.
 
 ## Por que as duas janelas interagem
 

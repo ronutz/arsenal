@@ -23,7 +23,7 @@ Un cifrado **CBC** hace solo el cifrado. Para obtener integridad, la suite lo co
 
 TLS usaba originalmente MAC-then-encrypt: calcular el HMAC sobre el texto plano, añadirlo, rellenar el resultado hasta un límite de bloque y luego cifrarlo todo con CBC. El problema es que el receptor tiene que descifrar y quitar el relleno antes de poder comprobar el MAC, así que un relleno mal formado y un MAC incorrecto se detectan en etapas distintas. Un atacante que pueda ver si un registro falló en el relleno o en el MAC — ya sea por un mensaje de error o solo por el tiempo de respuesta — aprende un bit sobre el texto plano por intento. Repetido, ese bit se convierte en todo el mensaje.
 
-Esto es un oráculo de relleno, y no es teórico. Una serie de ataques a lo largo de los años, incluidos BEAST, Lucky13 y POODLE, explotaron todos la protección de registros CBC en TLS. Cada uno se parcheó con código de tiempo constante cada vez más delicado, pero la construcción subyacente seguía produciendo nuevas variantes. La lección que sacó la industria fue dejar de usarla.
+Esto es un oráculo de relleno, y no es teórico. Una serie de ataques a lo largo de los años, incluidos Lucky13 y POODLE, explotaron todos la protección de registros CBC en TLS. Cada uno se parcheó con código de tiempo constante cada vez más delicado, pero la construcción subyacente seguía produciendo nuevas variantes. La lección que sacó la industria fue dejar de usarla.
 
 ## Por qué AEAD es ahora el valor por defecto
 

@@ -23,7 +23,7 @@ Bir **CBC** şifresi yalnızca şifrelemeyi yapar. Bütünlük için paket onu a
 
 TLS başlangıçta MAC-then-encrypt kullanıyordu: HMAC'i düz metin üzerinden hesapla, ekle, sonucu bir blok sınırına kadar doldur, sonra hepsini CBC ile şifrele. Sorun şu ki alıcı, MAC'i denetleyebilmeden önce şifreyi çözüp dolguyu çıkarmak zorundadır, bu yüzden bozuk dolgu ile yanlış bir MAC farklı aşamalarda saptanır. Bir kaydın dolguda mı yoksa MAC'te mi başarısız olduğunu görebilen bir saldırgan, bir hata iletisiyle ya da yalnızca yanıt süresiyle, deneme başına düz metin hakkında bir bit öğrenir. Tekrarlandığında o bit, tüm iletiye dönüşür.
 
-Bu bir dolgu kâhinidir ve kuramsal değildir. Yıllar içinde BEAST, Lucky13 ve POODLE dâhil bir dizi saldırı, TLS'teki CBC kayıt korumasını sömürdü. Her biri giderek daha hassas sabit zamanlı kodla yamandı, ama altta yatan yapı yeni türevler üretmeyi sürdürdü. Sektörün çıkardığı ders, onu kullanmayı bırakmak oldu.
+Bu bir dolgu kâhinidir ve kuramsal değildir. Yıllar içinde Lucky13 ve POODLE dâhil bir dizi saldırı, TLS'teki CBC kayıt korumasını sömürdü. Her biri giderek daha hassas sabit zamanlı kodla yamandı, ama altta yatan yapı yeni türevler üretmeyi sürdürdü. Sektörün çıkardığı ders, onu kullanmayı bırakmak oldu.
 
 ## AEAD neden artık varsayılan
 

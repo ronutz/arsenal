@@ -8,10 +8,10 @@ relatedArticles: ["dlp-fundamentals", "awaf-data-guard-response-masking"]
 category: security
 order: 95
 status: reviewed
-updated: "2026-07-19"
+updated: "2026-11-12"
 ---
 
-The LGPD - the Lei Geral de Proteção de Dados, Brazil's general data protection law, Law 13.709 of 2018 - reads like a legal document because it is one. But underneath the articles is a small vocabulary that decides, in practice, what your systems must do. If you build or run anything that touches personal data of people in Brazil, these are the words that reach your architecture. The law took effect in 2020, its administrative sanctions in 2021, and its enforcement lives with the ANPD, the Autoridade Nacional de Proteção de Dados, the national data protection authority.
+The LGPD - the Lei Geral de Proteção de Dados, Brazil's general data protection law, Law 13.709 of 2018 - reads like a legal document because it is one. But underneath the articles is a small vocabulary that decides, in practice, what your systems must do. If you build or run anything that touches personal data of people in Brazil, these are the words that reach your architecture. The law took effect in 2020, its administrative sanctions in 2021, and its enforcement lives with the ANPD, since [Provisional Measure 1.317](https://www12.senado.leg.br/publicacoes/estudos-legislativos/tipos-de-estudos/sumarios-de-proposicoes/mpv1317/@@download/file/Sumario_Executivo_MP1317.pdf) took effect on 18 September 2025, converted into Law 15.352 of 25 February 2026, the Agência Nacional de Proteção de Dados (before it, the Autoridade; read 2026-11-12), the national data protection regulator.
 
 ## Three roles, and you are one of them
 
@@ -48,6 +48,8 @@ Three working days is an engineering constraint. It assumes you can detect the i
 ## LGPD and GDPR: cousins, not twins
 
 The family resemblance to Europe's GDPR, the General Data Protection Regulation, is deliberate - roles, rights, principles, and international transfer rules all rhyme. The differences are real: ten legal bases instead of six, credit protection as a base with no GDPR equivalent, penalty ceilings set in Brazilian terms (up to two percent of revenue in Brazil, capped at fifty million reais per infraction), and a younger authority still writing its regulations. Building for one law gets you most of the way to the other - and the remaining distance is exactly where legal review earns its keep.
+
+Since 26 January 2026 the two systems also recognize each other. That day the ANPD's Resolution CD/ANPD number 32 recognized the European Union (EU) as an international body with a level of personal data protection adequate to the LGPD ([ANPD, list of regulations, read 2026-11-12](https://www.gov.br/anpd/pt-br/acesso-a-informacao/institucional/atos-normativos/regulamentacoes_anpd)), and the European Commission's adequacy decision for Brazil carries the same date; the Commission announced the mutual decisions on 27 January ([European Commission, adequacy decisions, read 2026-11-12](https://commission.europa.eu/law/law-topic/data-protection/international-dimension-data-protection/adequacy-decisions_en)). For an engineer, that means personal data moving between Brazil and the EU can rest on adequacy rather than on standard contractual clauses.
 
 ## What to remember
 

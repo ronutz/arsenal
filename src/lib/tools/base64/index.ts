@@ -38,6 +38,9 @@ export const manifest = Object.freeze({
   // -- Identity & routing --
   toolFamily: "Encoding",
   toolSlug: "base64",
+  /** My desk (12/11/2026): eligible for the desk's Quick tools widget. Its engine is small and pure, and runs in the
+   *  widget through the adapter in src/lib/desk/quickTools.ts (scripts/check-desk-store.mts keeps the two in step). */
+  deskQuick: true,
   canonicalAliases: ["b64", "base64url", "base32", "base16", "hex", "hex-encode", "hex-decode", "percent-encode", "percent-decode", "url-encode", "url-decode", "base64-decode", "base64-encode"],
   inputDetectors: [
     {

@@ -2,17 +2,27 @@
 // src/lib/tools/f5-topology-longest-match/golden-vectors.ts
 // ----------------------------------------------------------------------------
 // Vectors for the topology longest-match scorer. They pin: the Longest Match
-// sort (mask length within subnets, the verified type ladder, the K10721
-// negation buckets, wildcards last), the first-match-per-candidate scoring
-// walk with shadowing, the wildcard-heavy-weight-beats-specific-light-weight
-// outcome, ties resolving to round robin, region resolution (direct, nested,
-// declared), candidate auto-derivation, and the honest v1 scope errors.
+// sort (mask length within subnets, the manual's source and destination
+// ladders, the K10721 negation buckets, wildcards last), the first-match-per-
+// candidate scoring walk with shadowing, the wildcard-heavy-weight-beats-
+// specific-light-weight outcome, ties resolving to round robin, region
+// resolution (direct, nested, declared), candidate auto-derivation, and the
+// honest v1 scope errors.
 // Sources: the BIG-IP DNS Load Balancing manual (Topology chapter), K10721.
+//
+// SET v2 (2026-11-12): the manual's ladders, read that day, rank data center
+// above pool on the destination side and state between ISP and country on
+// both sides; v1 had data center and pool sharing a rank and state unranked.
+// Every v1 vector is kept as written except unranked-type-flagged, whose
+// state record is now ranked: it moves to geoip-isp, a type neither ladder
+// names, and the state input becomes sort-source-ladder-state. Two vectors
+// are new (sort-source-ladder-state, sort-destination-ladder), and a record's
+// sort note can now be asserted (expectRecordNoteIncludes).
 // ============================================================================
 
-import { run } from "./compute";
+import { run } from "./compute"; // the engine under test
 
-export const GOLDEN_VECTOR_SET_ID = "f5-topology-longest-match-golden-v1";
+export const GOLDEN_VECTOR_SET_ID = "f5-topology-longest-match-golden-v2-2026-11-12"; // v2: the manual's ladders (v1 until 2026-11-12)
 
 export interface TopoVector {
   id: string;
@@ -28,6 +38,7 @@ export interface TopoVector {
   expectCandidateScore?: { name: string; score: number; fromRecord?: number };
   expectShadowed?: { index: number; by: number };
   expectRecordBucket?: { index: number; bucket: number };
+  expectRecordNoteIncludes?: { index: number; text: string }; // a record's sort note (its rank rationale) contains this text (v2)
   expectNoteIncludes?: string;
 }
 
@@ -64,6 +75,34 @@ export const TOPO_VECTORS: TopoVector[] = [
     ].join("\n"),
     expectOk: true,
     expectSortedIndexOrder: [5, 4, 3, 2, 1],
+  },
+  {
+    id: "sort-source-ladder-state", // v2: state is ranked, between ISP and country (the manual's source ladder)
+    description: "The manual's source ladder places state below ISP and above country and continent",
+    input: [
+      "gtm topology ldns: continent Europe server: pool /Common/P { score 1 }",
+      "gtm topology ldns: country DE server: pool /Common/P { score 1 }",
+      'gtm topology ldns: state "US/California" server: pool /Common/P { score 1 }',
+      'gtm topology ldns: isp "Comcast" server: pool /Common/P { score 1 }',
+    ].join("\n"),
+    expectOk: true,
+    expectSortedIndexOrder: [4, 3, 2, 1],
+    expectRecordNoteIncludes: { index: 3, text: "ldns state rank 6" },
+  },
+  {
+    id: "sort-destination-ladder", // v2: data center above pool, state between ISP and country (the manual's destination ladder)
+    description: "With the same source, the destination ladder decides: data center above pool above region above ISP above state above country",
+    input: [
+      "gtm topology ldns: country US server: pool /Common/P { score 1 }",
+      "gtm topology ldns: country US server: datacenter /Common/DC { score 1 }",
+      'gtm topology ldns: country US server: state "US/Texas" { score 1 }',
+      "gtm topology ldns: country US server: region /Common/R { score 1 }",
+      'gtm topology ldns: country US server: isp "Comcast" { score 1 }',
+      "gtm topology ldns: country US server: country US { score 1 }",
+    ].join("\n"),
+    expectOk: true,
+    expectSortedIndexOrder: [2, 1, 4, 5, 3, 6],
+    expectRecordNoteIncludes: { index: 2, text: "server datacenter rank 2" },
   },
   {
     id: "negation-buckets",
@@ -148,11 +187,12 @@ export const TOPO_VECTORS: TopoVector[] = [
     expectWinnerScore: 1,
   },
   {
-    id: "unranked-type-flagged",
-    description: "A type outside the verified ladder is placed after it and flagged in the sort note",
-    input: 'gtm topology ldns: state "US/California" server: pool /Common/P { score 2 }\ngtm topology ldns: continent Europe server: pool /Common/Q { score 2 }',
+    id: "unranked-type-flagged", // v2: geoip-isp, since state is now ranked
+    description: "A type neither ladder names (geoip-isp) is placed after the ranked types and flagged in the sort note",
+    input: 'gtm topology ldns: geoip-isp "Comcast" server: pool /Common/P { score 2 }\ngtm topology ldns: continent Europe server: pool /Common/Q { score 2 }',
     expectOk: true,
     expectSortedIndexOrder: [2, 1],
+    expectRecordNoteIncludes: { index: 1, text: "do not name" },
   },
   {
     id: "no-match-chain-note",
@@ -237,6 +277,10 @@ export function verifyVectors(): string[] {
       if (v.expectRecordBucket) {
         const rec = r.records.find((x) => x.index === v.expectRecordBucket!.index);
         if (rec?.bucket !== v.expectRecordBucket.bucket) failures.push(`${v.id}: bucket ${rec?.bucket} != ${v.expectRecordBucket.bucket}`);
+      }
+      if (v.expectRecordNoteIncludes) { // v2: a record's rank rationale
+        const rec = r.records.find((x) => x.index === v.expectRecordNoteIncludes!.index); // the record, by as-pasted index
+        if (!rec?.sortNote.includes(v.expectRecordNoteIncludes.text)) failures.push(`${v.id}: record #${v.expectRecordNoteIncludes.index} sort note "${rec?.sortNote}" lacks "${v.expectRecordNoteIncludes.text}"`); // missing text
       }
       if (v.expectNoteIncludes && !r.notes.some((n) => n.includes(v.expectNoteIncludes!)))
         failures.push(`${v.id}: notes missing "${v.expectNoteIncludes}"`);

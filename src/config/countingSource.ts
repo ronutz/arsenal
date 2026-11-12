@@ -52,6 +52,43 @@ export const SCORES_VERIFY_SOURCE = `${SOURCE_REPOSITORY}/blob/main/src/lib/fun/
 /** The table itself: its columns, and the ones it does not have. */
 export const SCORES_SCHEMA_SOURCE = `${SOURCE_REPOSITORY}/blob/main/migrations/0001_fun_scores.sql`;
 
+// THE INTEREST COUNTS (PRIME 12/11/2026 02:35). The Privacy page's "Interest counts" section links the four files that
+// decide what a count may hold, send it only after a yes, write it, and hold the code to the section at every build.
+// They join the repository with the feature; until that change is pushed the links name files that exist in this tree
+// only (scripts/check-counting-source.mjs checks the tree).
+/** The rules for what a count may hold: the kinds, the sections, the fixed words, and when a search's words are plain. */
+export const INTEREST_SHAPE_SOURCE = `${SOURCE_REPOSITORY}/blob/main/src/lib/interest/shape.ts`;
+
+/** The page's side: the choice kept in the browser, and the one function that sends a count, only after a yes. */
+export const INTEREST_CLIENT_SOURCE = `${SOURCE_REPOSITORY}/blob/main/src/lib/interest/client.ts`;
+
+/** The server's side: what is refused, what is dropped, and the one row of five fields that is written. */
+export const INTEREST_WRITE_SOURCE = `${SOURCE_REPOSITORY}/blob/main/worker/events.ts`;
+
+/** The check run at every build, which holds the three files above to what the Privacy page says. */
+export const INTEREST_CHECK_SOURCE = `${SOURCE_REPOSITORY}/blob/main/scripts/check-interest-counts.mts`;
+
+// THE DESK'S OPTIONAL ENCRYPTED SYNC (PRIME 12/11/2026 12:42, "My desk"). For the Privacy page's description of the
+// sync: the route that stores the encrypted copy, the table it is kept in, and the check that holds the route to its
+// contract at every build. Like the interest files, they join the repository with the feature
+// (scripts/check-counting-source.mjs checks each linked file exists in this tree).
+/** The server's side: the three routes, the limits, what is refused, and the daily deletion of idle copies. */
+export const DESK_SYNC_SOURCE = `${SOURCE_REPOSITORY}/blob/main/worker/desk.ts`;
+
+/** The table: its seven columns, and the ones it does not have. */
+export const DESK_SYNC_SCHEMA_SOURCE = `${SOURCE_REPOSITORY}/blob/main/migrations/0003_desk_sync.sql`;
+
+/** The check run at every build, which holds the route to its contract. */
+export const DESK_SYNC_CHECK_SOURCE = `${SOURCE_REPOSITORY}/blob/main/scripts/check-desk-sync.mts`;
+
+// The browser's side of the same sync (DESK-UI, 12/11/2026): what the page sends and when, and how the code becomes a
+// name and a key. Linked from the Privacy page's "My desk" section beside the three files above.
+/** The browser's side: when a copy is read, merged and written, and what travels (never the code or the key). */
+export const DESK_CLIENT_SOURCE = `${SOURCE_REPOSITORY}/blob/main/src/lib/desk/sync.ts`;
+
+/** The encryption: the sync code, the name and the key derived from it, and the AES-GCM blob. */
+export const DESK_CRYPTO_SOURCE = `${SOURCE_REPOSITORY}/blob/main/src/lib/desk/crypto.ts`;
+
 /** Cloudflare's own statement of how long Analytics Engine keeps what is written to it (read 2026-10-26). */
 export const COUNTING_RETENTION_SOURCE = "https://developers.cloudflare.com/analytics/analytics-engine/limits/";
 

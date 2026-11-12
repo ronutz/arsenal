@@ -1,0 +1,485 @@
+---
+slug: no-brazilian-has-private-data-left
+title: "No Brazilian has private data left: the files of all 214 million are already public, and for sale"
+summary: "Brazil had 214 million people on 1 July 2026, by the official estimate, and its leaks have already put more records than that into circulation: a 2021 file held 223 million CPF numbers, the dead included; a password left in a Ministry of Health web page opened 243 million records in 2020; a single improper access to a court system in 2025 exposed the Pix data of 11 million people. Other leaks added phones, addresses, incomes, credit scores, vehicles, driving licences, health records and photos, all of which join on the CPF into one profile, and police operations have found that profile sold by subscription, with ten million queries a month on one panel alone. What each case was, what was and was not established about it, why the CPF, a date of birth and a mother's name no longer prove who anyone is, what the law and the courts have done, and, step by step, what a person in Brazil can still do."
+author: "Rodolfo Nützmann"
+date: "2026-11-12"
+tags: ["brazil", "privacy", "lgpd", "data-breach"]
+category: security
+status: reviewed
+updated: "2026-11-12"
+relatedArticles: ["lgpd-for-engineers-the-vocabulary-that-matters", "brazilian-cybercrime-from-boleto-to-pix", "social-engineering-pretexting-vishing-and-baiting", "passkeys-and-phishing-resistant-authentication", "scams-at-scale-why-a-tiny-success-rate-pays"]
+---
+
+## More records than people
+
+On 28 August 2026 the Brazilian Institute of Geography and Statistics (Instituto Brasileiro de Geografia e Estatística, IBGE) published its estimate of the country's resident population on 1 July 2026: 214,211,951 people, 0.37 per cent more than a year earlier. It is an estimate, projected from the last census. The 2022 Census itself counted 203,080,756 people, a figure the IBGE revised on 31 August 2023 from the 203,062,512 it had first published on 28 June 2023. Whichever figure is used, it is smaller than the largest files of Brazilian personal data that have circulated since 2019.
+
+In January 2021 a single file held 223 million numbers of the CPF (Cadastro de Pessoas Físicas), the individual taxpayer number that every Brazilian carries from birth. In late 2020 a password left in the source code of a Ministry of Health web page opened a database that the newspaper O Estado de S. Paulo described as holding the records of more than 243 million people. Both counts are higher than the population for the same reason: they include the dead. That is the first thing to understand about every number in this post. **A record count is not a count of people.** Files contain duplicates, deceased people, companies, and the same person under several entries; when a source says so, this post says so too. The point is not that each file holds exactly one entry per living Brazilian. It is that the files, taken together, leave no living Brazilian out.
+
+The CPF is what makes that possible. Assigned once and for life by the Federal Revenue Service, it is, in the words of the Chamber of Deputies' legislative consultants writing in April 2021, "at the root of practically every identification process" in the country; Law 14,129 of 2021, the digital government law, made it "sufficient" by itself to identify a citizen in public databases. The same consultants recorded what follows from that: the number cannot be changed through administrative channels. Only a court has ordered a new one, in cases of proven fraud. A leaked password can be reset. A leaked CPF stays leaked.
+
+What "public" means here needs saying plainly. No government published these files. They became public in the practical sense: copied, offered free as samples, sold, resold, loaded into lookup services and queried by subscription, out of reach of anyone who would take them back. Section by section, the record that supports that description is set out below: the leaks whose size matches or exceeds the population, the smaller leaks that fill in the details, the market that sells the result, the frauds that depend on it, what the law and the courts have done, and what a person can still do.
+
+## The leaks, in order
+
+| Date | Case | Records, as reported | Reported by |
+| --- | --- | --- | --- |
+| 8 October 2019 | A flaw in the website of the traffic department of Rio Grande do Norte (Detran-RN) gives access, through integrated systems, to the national driver base | About 70 million drivers | Olhar Digital, through O Povo |
+| 26 November 2020 | Usernames and passwords to two Ministry of Health COVID-19 systems published on GitHub | At least 16 million people | O Estado de S. Paulo, through ESET |
+| Late November and early December 2020 | Database credentials found in the source code of a Ministry of Health COVID-19 notification website | More than 243 million records, living and deceased | O Estado de S. Paulo, through Canaltech and ESET |
+| 19 January 2021 | A file with CPFs, vehicles and companies is found on the internet | 223 million CPFs, 104 million vehicles, 40 million companies | PSafe's dfndr lab, through Olhar Digital and Tecnoblog |
+| 3 February 2021 | Data of mobile phone accounts offered for sale | 102,828,814 accounts | PSafe, through NeoFeed |
+| Late February 2021 | Credit and card data offered for sale | 12 million people | IG and Estadão, through Teletime |
+| March 2021 | A file of CPFs, phones and mother's names offered to companies | 112 million people | CNN Brasil, through the Chamber of Deputies' consultants |
+| 30 September 2021 | Central Bank notice of exposed Pix key data at Banese, Sergipe's state bank | 395,009 keys | Forbes Brasil |
+| 10 December 2021 | Ransom attack on the Ministry of Health; ConecteSUS and vaccination systems go down | Data copied and deleted, by the attackers' claim | Movimento Econômico; Federal Police |
+| 24 June 2024 | The National Social Security Institute (INSS) says credentials of former servants were used in its benefits information system | Up to 40 million insured people | INSS, through Diario de Pernambuco |
+| 20 and 21 July 2025 | Improper access to Pix data through the courts' asset-search system | 11,003,398 records; about 46 million keys | National Council of Justice and Central Bank, through Migalhas and Jornal de Brasília |
+| 10 March 2026 | Central Bank's running total of Pix keys exposed since 2020 | About 47.9 million keys | Central Bank, through Jornal de Brasília |
+| 22 April 2026 | A Meu INSS query answers without login for one day | 2.8 million CPFs, about 98 per cent of deceased people | Dataprev, through O Povo |
+
+Read the table as a list of what was counted, by whom and how, not as a sum. The same person appears in many rows; some rows count accounts, others keys, others CPFs. Several cases (the 102 million phone accounts, the 2021 file) were denied by the companies the sellers named, and the denials are reported below with the claims. What the table shows is the scale and the persistence: files at or above the size of the population, appearing year after year, from public and private systems alike.
+
+## January 2021: 223 million CPFs
+
+### How it was found and what it held
+
+On Tuesday 19 January 2021 the dfndr lab, the security research laboratory of the company PSafe, identified a file circulating on the internet. Olhar Digital reported the next day that it held full names, dates of birth and CPF numbers for about 220 million people, "practically the whole population of Brazil", together with data on 104 million vehicles (chassis number, plate, municipality, colour, make, model, year of manufacture, engine size and fuel) and on 40 million companies (tax number, registered and trade names, founding date). On 22 January Tecnoblog reported that it was worse than first thought: the file also carried face photos, addresses, phone numbers, email addresses, credit scores and salaries.
+
+The final counts came later. When the Federal Police (Polícia Federal, PF) acted in March 2021, Olhar Digital described the file as holding "223 million CPFs" of people born up to 2019, alongside company and vehicle records, names, dates of birth, addresses, photos, credit scores, income, personal income tax (Imposto de Renda da Pessoa Física, IRPF) data and phone data. A year after the leak, Tecnoblog counted 223.74 million distinct CPFs, the dead included, and listed what the file's 37 databases contained: name, sex and date of birth; phone number; credit score and purchasing power; salary and social security status; full address, with latitude and longitude; the general identity card number (Registro Geral, RG) and a list of relatives; marital status, education, email, social class, and the severance fund (Fundo de Garantia do Tempo de Serviço, FGTS). Not every CPF had every field.
+
+Tecnoblog also noticed something unusual. The 37 databases came in numbered folders with descriptive names, each with a different random sample of CPFs. A cryptocurrency forensic analyst it interviewed observed that stolen data is normally cleaned and arranged in rows for machines; this was arranged for human readers, "dressed up to be presentable".
+
+### How it was sold
+
+The pattern was the one the market still uses. Part of the data was released free to prove it was real, and the rest was offered for payment in cryptocurrency, according to the PF. Tecnoblog reported on 5 March 2021 that the file was being offered at a "promotional" price of US$ 30,000; ESET reported in March 2021 that a base with information on 223 million Brazilians was sold for R$ 95,000, or 0.3 bitcoin. The seller advertised the file as coming from Serasa Experian, the credit bureau, Tecnoblog reported.
+
+### Who acted, and how
+
+The case tested every institution that existed to answer it, at a moment when the newest of them could not yet punish anyone.
+
+- **The data protection authority.** The National Data Protection Agency (Agência Nacional de Proteção de Dados, ANPD) was then the Autoridade Nacional de Proteção de Dados; it took its current name under Provisional Measure 1,317 of 17 September 2025, converted into Law 15,352 of 25 February 2026, and the law's text now reads "Agência". On 27 January 2021 it told Tecnoblog it was "technically investigating" the case and would cooperate with investigative bodies; as the report noted, it could not yet fine anyone, because the law's sanctions only took effect in August 2021. On 4 February 2021 Teletime reported that the ANPD had received information from Serasa and had sent official letters to the Federal Police, to PSafe, to the Brazilian Internet Steering Committee (Comitê Gestor da Internet no Brasil, CGI.br) and to the Institutional Security Cabinet of the Presidency (Gabinete de Segurança Institucional, GSI). The Brazilian Bar Association (Ordem dos Advogados do Brasil, OAB) had asked it to investigate the week before.
+- **Consumer protection.** The National Consumer Secretariat (Secretaria Nacional do Consumidor, Senacon) and São Paulo's consumer protection foundation, Procon-SP (Programa de Proteção e Defesa do Consumidor), notified Serasa to explain itself, Tecnoblog reported on 27 January 2021. On 7 April 2021 Procon-SP said Serasa's answers "were not sufficient to exempt the company from the obligation to implement security measures" and that it could fine the company under the Consumer Defence Code, Teletime reported.
+- **Prosecutors.** The Public Prosecutor's Office of the Federal District and Territories (Ministério Público do Distrito Federal e Territórios, MPDFT) was analysing the case, and the Federal Public Prosecutor's Office (Ministério Público Federal, MPF) in São Paulo confirmed it had received a complaint, according to the same January report.
+- **Police.** On 19 March 2021 the PF ran Operation Deepwater, with five search warrants and two preventive arrests, in Uberlândia (Minas Gerais) and Petrolina (Pernambuco), on orders from the Supreme Federal Court (Supremo Tribunal Federal, STF). The PF said it was investigating the "obtaining, disclosure and sale" of the data. One suspect was suspected of the intrusion and the sale, the other of reselling the data on social media. In April 2024 the PF arrested again a suspect first detained in Operation Deepwater, on a warrant from the federal court in Uberlândia, after he had cut off his electronic ankle monitor in November 2023, Canaltech reported. This post does not name the suspects.
+
+### What was established about the origin, and what was not
+
+That is the question that matters most, and it has no public answer. A year after the leak, on 4 January 2022, FolhaPress reported that the PF investigation had not concluded. The ANPD's then president, Waldemar Gonçalves Ortunho, said the investigations "are advanced" and had reached "a name in Uberlândia"; the report said the strongest hypothesis was that the data had been "aggregated over several years" from several sources, while the hypothesis of a single source "has not been ruled out". The Chamber of Deputies' consultants had written in April 2021 that identifying the institution that was breached was "an arduous task", given how easily digital data are copied and the likely multiplicity of sources.
+
+Serasa's position has not changed since 2021: it said it was not the source of the data, that its own investigation found no evidence of a massive leak or of its systems being compromised, and it presented a technical opinion from a specialized firm saying its systems were secure. The question went to court. In February 2021 the Instituto Sigilo, a privacy association, filed a public civil action in the 22nd Federal Civil Court of São Paulo, asking for R$ 200 million in collective damages and R$ 15,000 for each person affected. In January 2024 Migalhas reported that the MPF had joined the action and was asking for R$ 30,000 per person and a fine of up to 10 per cent of Serasa's revenue, "not less than R$ 200 million"; the MPF said that "the investigations found that Serasa commercialized" improper access to personal data. Serasa answered that no court had decided any such indemnity, that the MPF's request for an injunction had been refused, and that it had shown there was no intrusion into its systems and no sign that the leak came from its databases. When this was written, no final judgment had been found. Both positions stand, each attributed to its author; the origin of the 2021 file remains publicly unproven.
+
+One related matter is separate and should not be confused with it. In 2026 the ANPD opened a sanction proceeding against the mobile carrier Claro over a contract under which it shared customer data with Serasa to develop credit analysis methods, citing "evidence of excessive sharing of personal data" and failures of transparency, and opened a new inspection of Serasa's own practices, according to the ANPD's six-year report published in November 2026. That proceeding concerns lawful data sharing, not the 2021 leak.
+
+## The Ministry of Health, 2020 and 2021
+
+### Sixteen million COVID-19 patients
+
+On 26 November 2020 O Estado de S. Paulo revealed that an employee of the Hospital Israelita Albert Einstein, in São Paulo, had published on GitHub a file containing usernames and passwords for two Ministry of Health systems, e-SUS-VE and Sivep-Gripe, which record suspected, diagnosed and hospitalized cases of COVID-19. According to ESET's summary of the report, the employee said it was for an implementation test and forgot to delete it. The credentials gave access to the data of at least 16 million people, including names, CPFs, addresses and medical history, for about a month. DataSUS, the ministry's IT department, cancelled the exposed credentials, and the ministry said they did not give direct access to personal data without "other technical factors". The hospital said the information was removed at once and the incident reported to the ministry.
+
+### 243 million records through a password in the source code
+
+A few days later the same newspaper, checking other government sites after the first case, found the login credentials of a database written into the source code of the ministry's COVID-19 notification website, protected only by base64, an encoding that any free tool reverses. Canaltech, reporting on 2 December 2020, gave the scale as "about 243 million Brazilians", living and dead, and the fields as full names, CPFs, addresses and phone numbers; ESET added medical data. The query had been open "for at least six months". Through the public health system (Sistema Único de Saúde, SUS) the ministry holds records on practically everyone, and that is why the count exceeded the population: the base included the dead. The ministry said the credentials were removed, that there had been no access to the information and that it was investigating.
+
+### ConecteSUS, December 2021
+
+In the early hours of Friday 10 December 2021 the ministry's website and its ConecteSUS app, which issued the national COVID-19 vaccination certificate, went down. A group calling itself Lapsus$ claimed the attack, saying it had copied and deleted the data, and left the message: "Contact us if you want the data back." The ministry said the incident "temporarily compromised" e-SUS Notifica, the National Immunization Program's information system (SI-PNI), ConecteSUS and certificate issuance, and called in the GSI and the PF. On 16 August 2022 the PF ran Operation Dark Cloud, with eight search warrants in Minas Gerais, Paraná, Santa Catarina and Paraíba; it said a cloud computing environment of the ministry had been improperly accessed, with "information, folders and other instances deleted by the criminals", and that ConecteSUS had been unavailable for almost two weeks. The same group was linked to attacks on the Federal Highway Police, the Ministry of the Economy and the Office of the Comptroller General (Controladoria-Geral da União, CGU). When a suspected member was arrested in October 2022, The Hacker News reported the alleged exfiltration of 50 terabytes from the ministry. How much personal data left in that attack has not been established in any source read for this post; the case belongs here because it showed that the systems holding the health records of the whole population could be emptied and switched off.
+
+## Other government systems
+
+### Driving licences, 2019
+
+On 8 October 2019 Olhar Digital reported that a security researcher had found a flaw in the website of the State Traffic Department of Rio Grande do Norte (Departamento Estadual de Trânsito, Detran-RN) that returned a person's data from their CPF. Because the Detrans' systems are integrated, the flaw reached the national base. A CPF returned the full home address, phone number and carrier, the data of the driving licence (Carteira Nacional de Habilitação, CNH), a photo, the RG, date of birth, sex and age, for some 70 million drivers. The researcher said he had reported the flaw twice without reply; the site later stopped showing the data, and Detran-RN confirmed the flaw, Tecnoblog reported.
+
+### The INSS, three times
+
+The National Social Security Institute (Instituto Nacional do Seguro Social, INSS) pays almost 42 million people a month, InfoMoney reported in May 2026, and its systems have been exposed at least three times in five years.
+
+- **2022, Sisben.** A flaw in the benefits system exposed CPFs, bank details and dates of birth of retirees and pensioners. The INSS reported it to the ANPD but did not tell the people affected, arguing it could not identify them and that disclosure "could generate panic and distrust". On 1 February 2024 the ANPD ordered it to publish the infraction on its website and in the Meu INSS app for 60 days, and on 26 July 2024 it rejected the INSS's appeal, Migalhas and Canaltech reported.
+- **2024, Suibe.** On 24 June 2024 the INSS said that logins and passwords of public servants of other federal bodies, people who had retired, been dismissed or resigned but whose credentials still worked, had been used to access its Unified Benefits Information System (Sistema Único de Informações de Benefícios, Suibe). The system holds name, CPF, benefit type, grant date and amount for about 40 million retirees and pensioners. Access required only a login and password, without a second factor, a digital certificate or encryption, and the INSS said the problem had existed "for decades". It listed the possible uses as selling the data to lenders that offer payroll-deductible loans to beneficiaries and requesting credit in beneficiaries' names. It had not confirmed that a leak occurred and said the case would go to the PF after its analysis.
+- **2026, Meu INSS.** On 22 April 2026 Dataprev, the federal data company that runs the INSS systems, found that a query in the Meu INSS app that should have required login answered without it, for one day. On 26 May it told the National Social Security Council that 2.8 million CPFs and dates of birth had been queried, about 98 per cent of them of deceased people and some 52,000 of living ones. The INSS said no benefit or loan had been improperly granted and that the ANPD had been notified.
+
+### The courts' system, and the Pix keys
+
+Pix, the Central Bank's instant payment system, links each "key" (a CPF, phone number, email or random code) to an account in a directory, the DICT (Diretório de Identificadores de Contas Transacionais). Since 2021 the Central Bank of Brazil (Banco Central do Brasil, BC) has published notices when participants expose data from that directory. The notices follow one template and say the same three things: the exposed data were "exclusively registration data", such as name, CPF, institution, branch and account number; they do not allow payments or access to accounts; and they are "to a large extent available in lawful lookup sources". The last phrase, from the regulator itself, is as precise a summary of the state of Brazilian personal data as any.
+
+| When | Institution | Keys, as reported |
+| --- | --- | --- |
+| 30 September 2021 | Banese, Sergipe's state bank | 395,009 |
+| 21 January 2022 (incident 3 to 5 December 2021) | Acesso Soluções de Pagamento | About 160,100 |
+| 24 and 25 September 2024 | Caixa Econômica Federal | Not given in the notice; the fields included name, CPF, institution, branch, account number and type, account opening date and key creation date |
+| 20 and 21 July 2025 | National Council of Justice (Conselho Nacional de Justiça, CNJ), through Sisbajud, the courts' asset-search system | 11,003,398 records; about 46 million keys of about 11 million people |
+| 12 May 2026 | Credifit, the fourth notice of 2026 | 46 |
+| Running total, 10 March 2026 | All incidents since 2020 | About 47.9 million keys |
+
+The CNJ case is the outlier in two ways. It is by far the largest, and the system it went through belongs to the judiciary, built so that judges can find debtors' assets. The CNJ said it had found and corrected the problem quickly and informed the PF and the ANPD. The BC, giving its running total in March 2026, said that one key can be counted in more than one incident.
+
+## The enrichment layer
+
+A CPF on its own is a number. What turns it into a profile is the steady addition of fields from other leaks, each joined on the same key. That is why the smaller leaks matter as much as the large ones, and why the term for the data involved, personally identifiable information (PII), undersells it here: the files do not just identify people, they describe them.
+
+Three 2021 cases show how the descriptions accumulated.
+
+- **102 million phone accounts.** On 10 February 2021 NeoFeed reported that PSafe had found, on 3 February, 102,828,814 mobile accounts offered for sale at US$ 1 a record, falling to about one cent for buyers of millions. The seller said they came from Vivo and Claro. The records attributed to Vivo held name, phone number, RG, activation date, address, payment delays, debts, invoice amounts and whether the line was prepaid or postpaid; those attributed to Claro held CPF, company number, plan type, address, email and phone number. Some included the duration of calls and, for a well-known public figure, parentage and date of birth. PSafe said it could not confirm the carriers named; Vivo said it had no leak and Claro said it found none.
+- **12 million credit records.** At the end of February 2021 a seller offered, for US$ 50,000, name, email, phone, CPF, passwords and credit card numbers of 12 million people, Teletime reported, citing IG and Estadão. The ANPD said it was analysing it.
+- **112 million, with mothers' names.** In March 2021 CNN Brasil reported a package of 112 million people offered to companies for R$ 38,000 with CPF, full name, phone and WhatsApp number, date of birth, mother's name, address, profession, salary band, death record, and Bolsa Família and retirement data, as the Chamber of Deputies' consultants summarized it. In the same month another file of 223 million CPFs, with phones and emails, was attributed by its seller to Poupatempo, the São Paulo state service centres; Poupatempo, like Serasa, denied any breach.
+
+Five years later the descriptions are delivered on demand. In March 2026 Derechos Digitales, a Latin American digital rights organization, published a study of the trade in personal data on Telegram, reported by ConvergenciaDigital on 13 March 2026. It found ten active Brazilian groups, each run by a bot that answers around the clock. A free query returns name and CPF; paid access, from about US$ 1 a week to almost US$ 80 for two years, paid by Pix, returns for a CPF: full name, RG, date of birth, sex, municipality of origin, address history, estimated income and purchasing-power class, credit-risk scores, profession and occupation code, employer, salary, education and admission dates, the number of the Programa de Integração Social (PIS), Bolsa Família and Auxílio Emergencial history, social security contributions, in some cases vaccination records, and data on relatives and neighbours. The researchers inferred from the standardized fields and null values that the records may come directly from institutional databases; it is an inference, and they said so.
+
+### How the fields join on the CPF
+
+The table below shows, field by field, which reported cases supplied each kind of data. It is a map of sources, not a record: it contains no one's data. Every row joins to every other on the CPF, and most on the phone number and address as well.
+
+| Field in the profile | Cases that supplied it, as reported |
+| --- | --- |
+| CPF, full name, date of birth, sex | 2021 file of 223 million; Ministry of Health 2020; Detran-RN 2019; Pix notices; INSS 2026 (CPF and date of birth); Telegram bots |
+| Mother's name, relatives | 112 million file, 2021 (mother's name); 2021 file of 223 million (list of relatives); 102 million phone accounts (parentage, for some records); Telegram bots (relatives and neighbours) |
+| RG | Detran-RN 2019; 2021 file of 223 million; 102 million phone accounts; Telegram bots |
+| Home address | 2021 file of 223 million (with coordinates); Ministry of Health 2020; Detran-RN 2019; 102 million phone accounts; 112 million file; Telegram bots (address history) |
+| Phone number and carrier | Detran-RN 2019 (with carrier); Ministry of Health 2020; 102 million phone accounts (with billing, debts and call duration); 112 million file (with WhatsApp); 12 million credit file |
+| Email | 2021 file of 223 million; 102 million phone accounts; 12 million credit file |
+| Face photo | 2021 file of 223 million; Detran-RN 2019 |
+| Driving licence and vehicles | Detran-RN 2019 (licence data); 2021 file (104 million vehicles); Dark Spot case of the Federal District civil police (PCDF), 2026 (licence and vehicle registries) |
+| Income, salary, purchasing power, social class | 2021 file of 223 million; 112 million file (salary band); Telegram bots (estimated income and class) |
+| Credit score | 2021 file of 223 million; Telegram bots (scores similar to the bureaus') |
+| Employer, profession, education | 2021 file of 223 million (education); 112 million file (profession); Telegram bots (employer, occupation, admission dates) |
+| Social benefits and social security | 2021 file of 223 million (FGTS, social security status); 112 million file (Bolsa Família, retirement); INSS Suibe 2024 (benefit type and amount); Telegram bots (Bolsa Família, Auxílio Emergencial, contributions) |
+| Tax data | 2021 file of 223 million (IRPF data, as reported by the PF); PCDF Dark Spot case, 2026 (Receita Federal taxpayer records) |
+| Health | Ministry of Health 2020 (medical history, COVID-19 diagnoses); Telegram bots (vaccination records, in some cases) |
+| Bank, branch, account, Pix keys | INSS Sisben 2022 (bank details); Pix notices (institution, branch, account, key dates); CNJ 2025 |
+| Card numbers and passwords | 12 million credit file, 2021 |
+| Court records | PCDF Dark Spot case, 2026 |
+| Death | 2021 file of 223 million; Ministry of Health 2020; 112 million file; INSS 2026 |
+
+Read across a row and the point is plain. For almost any field that a bank, a store or a public service might ask a person to confirm, there is at least one reported leak that put it in circulation, and a lookup service that returns it from a CPF.
+
+## The market: panels and bots
+
+What police have found, operation after operation, is a retail business. Brazilians call its product a *painel de consulta*, a lookup panel: a website or bot where a subscriber types a CPF, a name, a plate or a phone number and gets back the profile above. This post describes the trade from police and research reports and does not name or link to any place where it operates.
+
+- **June 2023, Federal District.** The civil police of the Federal District (Polícia Civil do Distrito Federal, PCDF) arrested two people who sold access to a panel through Telegram groups, at R$ 150 for seven days, R$ 200 for fifteen and R$ 300 for thirty, Olhar Digital reported on 22 June 2023. The police counted 1,453 buyers. Most of the data, the report said, came from intrusions into public bodies, and the panel also gave access to optical character recognition (OCR) cameras that read vehicle plates on highways across the country. Among the people looked up were the governor of the Federal District, justices of the STF and federal deputies.
+- **January 2024, federal systems.** On 31 January 2024 the PF ran Operation I-Fraude against a group that, it said, had invaded federal databases and sold access to a panel on monthly plans priced by number of queries. It counted about 10,000 subscribers and an average of 10 million queries a month; SBT News reported a plan price of R$ 30 a month and estimated revenue of at least R$ 10 million. Members of criminal factions were among the customers. So were members of the security forces, who were given the service free on condition that they sent a photo of their work identity card, which gave the group a register of thousands of public security employees. Seven federal police officers were suspended from duty, Correio Braziliense reported.
+- **July 2026, Federal District.** On 30 July 2026 the PCDF's cybercrime unit ran Operation Dark Spot against a platform with "a professional interface" and prepaid credits paid by Pix or crypto-assets, sold through a network of resellers on social networks and messaging apps. Its data came from irregular access to Federal Revenue taxpayer records, driving licence and vehicle registries, court case records and "corporate systems of public security agencies". The police counted more than 18 million queries from May 2023 to June 2024, more than 257,000 distinct IP addresses, 45,134 registrations and 7,242 active users, and more than R$ 1 million moved between December 2024 and March 2025; a court froze R$ 2 million.
+
+Two things connect these cases with the government leaks above. The first is the way in: the panels are fed, by the police's own account, from government systems, and the INSS's 2024 statement describes exactly how such systems are opened, with the still-valid passwords of people who no longer work there and no second factor to stop them. The second is that the lawful market overlaps the unlawful one. The BC's own notices say Pix registration data are largely available in lawful lookup sources. On 4 November 2025 the Fourth Panel of the Superior Court of Justice (Superior Tribunal de Justiça, STJ) held, in REsp 2,221,650, that credit bureaus may open records without consent but, "as a rule, are not authorized to make such data available to third parties without the prior consent of their holders". The boundary between a lawful enrichment service and a panel is drawn by law; the data on either side of it are often the same.
+
+## What the data are used for
+
+### Calls from "the bank"
+
+The most reported fraud that depends on this data is a phone call. The Brazilian Federation of Banks (Federação Brasileira de Bancos, Febraban) counted, in the first half of 2025, 139,000 reports from customers of its member banks of the "false call centre" or "false bank employee" scam, 195.7 per cent more than a year earlier, behind only the false sale (174,000), Diario de Pernambuco reported on 12 November 2025. In March 2026 Febraban warned of the "false manager" version: criminals call from a number disguised as the bank's or the branch's (spoofing), claim unauthorized charges, card cloning or the need for a "security update", and ask for personal and banking data, passwords included. A caller who already knows the victim's name, CPF, address, bank and branch sounds like the bank. Every table in this post explains how they know.
+
+### SIM swap
+
+The National Telecommunications Agency (Agência Nacional de Telecomunicações, Anatel) describes "line hijacking" as the moment the victim's number starts working on a new subscriber identity module (SIM) card controlled by the criminal; the first sign is that the phone stops making calls and sending or receiving text messages when not on Wi-Fi. A hijacked number receives the codes banks and apps send by Short Message Service (SMS). Anatel says carriers already use facial or voice biometrics to identify customers and that it required a second authentication factor for number portability. On 28 October 2026 it went further: Technical Standard GT-SEG.2026.11 requires facial recognition with proof of life for new prepaid lines by 30 September 2027, for SIM swaps, portability and new postpaid lines by 31 December 2027, and for all existing users by 31 December 2028, with unverified lines suspended from January 2029.
+
+### Accounts and loans in someone else's name
+
+An account opened with a stolen identity receives scam money and takes out credit; a loan contracted in someone's name is paid by them. When the BC launched its account-opening block on 1 December 2025 it listed, among the expected results, "more security for those who have already suffered data leaks", and the block refused 263 account-opening attempts by the early afternoon of its first day. The Chamber of Deputies' consultants listed in 2021 the consequences for a victim: a name put on a bad-credit list, bills not theirs, problems with the Revenue, blackmail, and worse.
+
+### Payroll-deductible loans and the INSS
+
+Payroll-deductible credit (*consignado*) is repaid straight out of a salary or benefit, which makes a pensioner's benefit attractive collateral. The INSS's own statement of June 2024 named, as possible uses of its exposed data, sale to lenders that offer such loans and credit requests in beneficiaries' names. Its guidance, updated on 28 October 2026, tells beneficiaries to keep the benefit blocked and to check their statement for deductions they do not recognize.
+
+The 2025 scandal over the INSS must be stated precisely. In April 2025 the PF and the CGU ran Operation Sem Desconto against associations and unions that took membership fees directly from benefits. The CGU audit, made public that month, had interviewed 1,273 beneficiaries: 97.6 per cent said they had not authorized the deduction and 95.9 per cent said they belonged to no association; the unauthorized deductions between 2019 and 2024 could reach R$ 6.3 billion, a figure the government's attorneys said still needed to be reassessed, Correio Braziliense reported on 30 April 2025. In some months entities enrolled tens of thousands of beneficiaries, a rate that would have required between 778 and 1,569 enrolments an hour, SBT News reported. None of the sources read for this post says how the associations obtained the beneficiaries' data, and none ties the scheme to a data leak. Whether leaked data played a part is not established.
+
+### Why knowing your data proves nothing
+
+All of this undoes a habit that runs through Brazilian customer service: treating knowledge of the CPF, the date of birth, the mother's name or the address as proof of identity. That habit has a name, knowledge-based authentication (KBA), and it assumes that the facts asked for are known only to the person. In Brazil, as the record above shows, they are known to anyone with a subscription.
+
+The standards have already moved. The United States National Institute of Standards and Technology (NIST), in its digital identity guidelines revised in July 2025, says in SP 800-63A-4 that "knowledge-based verification (KBV) or knowledge-based authentication SHALL NOT be used for identity verification", and in SP 800-63B-4 that verifiers "SHALL NOT prompt subscribers to use knowledge-based authentication (KBA)" or security questions. Febraban put the same rule the other way round in March 2026: bank representatives who call already have the information they need, so they never ask for personal data, passwords, system updates or security keys. The consequence for the person on the other end of the line is direct. A caller who recites your CPF, your mother's name and your address has proved only that they bought a lookup.
+
+## The response
+
+### The law
+
+| Date | Step |
+| --- | --- |
+| 14 August 2018 | The General Data Protection Law (Lei Geral de Proteção de Dados, LGPD), Law 13,709, is signed |
+| 28 December 2018 | The provisions creating the national authority take effect (Provisional Measure 869, converted into Law 13,853 of 2019) |
+| September 2020 | The law's general provisions, rights and principles take effect, as the Chamber's consultants recorded |
+| 1 August 2021 | Administrative sanctions (articles 52 to 54) take effect, under Law 14,010 of 2020 |
+| 6 July 2023 | The first sanction is published |
+| 17 September 2025 | Provisional Measure 1,317 turns the authority into the Agência Nacional de Proteção de Dados |
+| 25 February 2026 | Law 15,352 converts the measure |
+
+Under the LGPD a controller must tell the ANPD and the people affected of a security incident "that may cause relevant risk or damage" (article 48), and controllers and operators that cause damage in breach of the law must repair it (article 42). The sanctions in article 52 run from a warning to a fine of up to 2 per cent of a private company's revenue in Brazil, capped at R$ 50 million per infraction, a daily fine, publication of the infraction, blocking or deletion of the data, and partial or total suspension or prohibition of the processing. Paragraph 3 of the same article lists which of these may be applied to public bodies: the warning, publication, blocking, deletion, suspension and prohibition. **The fines are not on the list.** The bodies that held the largest files in this post, a ministry, the INSS, a state traffic department, the courts' asset-search system, cannot be fined by the ANPD for losing them.
+
+### What the ANPD has done
+
+The first sanction, published on 6 July 2023, went to Telekall Infoservice, a small company in Vila Velha (Espírito Santo): a warning and two fines totalling R$ 14,400. When the ANPD first published its list of open sanction proceedings, in March 2023, all but one concerned public bodies, among them the Ministry of Health (twice, including for failing to report a security incident), the Federal District's education secretariat, the Santa Catarina health secretariat and São Paulo's public servants' health institute (IAMSPE), Teletime reported. The outcomes were what paragraph 3 allows: IAMSPE received a warning in October 2023, with an order to publish its incident communication; the INSS was ordered in February 2024 to publish its infraction for 60 days.
+
+The ANPD's six-year report, published on 5 November 2026, gives the current position: by October 2026 it had concluded eight sanction proceedings and had 28 under analysis, against public and private agents. Its largest sanction so far came in August 2026, a fine of R$ 153.7 million on ByteDance Brasil, the controller of TikTok, over children's data. Among the open proceedings are the Claro case and one against the Instituto Saúde e Cidadania (Isac), a social organization that manages public health units, over a 2025 incident that exposed the data of about 500,000 patients. The ANPD also reported receiving 9,548 petitions and complaints between January and August 2026, 28.45 per cent more than in the same period of 2025.
+
+### What the courts have said
+
+The STJ has settled one question that matters to everyone in the tables above. On 7 March 2023, in AREsp 2,130,619, its Second Panel, with Justice Francisco Falcão as rapporteur, held that "the leak of personal data does not generate presumed moral damage": in a case in which an electricity distributor had exposed a customer's name, address, RG, date of birth and phone number, the person had to prove the harm actually suffered. The Fourth Panel repeated the principle in REsp 2,221,650 on 4 November 2025: making personal data available "does not by itself constitute presumed moral damage", and the person must prove that the data were actually and unlawfully shared and that this caused significant harm. The STJ has also held, in the first case, that the LGPD's list of sensitive data is exhaustive. Where data are not sensitive, and most of the fields in the enrichment table are not, a leak alone does not entitle anyone to compensation.
+
+The Instituto Sigilo and MPF action against Serasa, which asks for compensation for everyone in the 2021 file, was in its evidence phase in February 2024, according to DatacenterDynamics, and no final decision was found when this was written.
+
+## What you can do
+
+The data will not come back. Everything in this section starts from that fact: the aim is not to hide the CPF, the address or the mother's name, which is no longer possible, but to make those facts useless to someone who has them. Each step below was checked on its official page on 12 November 2026.
+
+### The rules that follow from the data being public
+
+1. **Knowing your data proves nothing.** A caller, message or website that knows your CPF, date of birth, mother's name, address, bank and branch has shown only that they had access to a leak or a panel. Treat it as no evidence at all.
+2. **Banks do not call to ask.** Febraban says banks never ask, in these contacts, for personal data, passwords, system updates or security keys, never ask for a payment or a reversal, and never ask a customer to make a transaction to fix a problem; in July 2025 it added that banks never call asking a customer to install any app or tool. If a call asks for any of these, end it.
+3. **Call back on a number you already have.** Use the number on the back of the card, in the bank's app or on its official site, never one given during the call, which may be spoofed.
+4. **Codes are never shared.** App passwords, codes sent by SMS and tokens are personal and are never read out, typed or entered during a call, Febraban says.
+5. **Losing signal is an alarm.** If the phone suddenly stops making calls and sending or receiving texts off Wi-Fi, Anatel's first warning sign of a hijacked line, call the carrier through its official channels at once.
+
+### Threats and defences at a glance
+
+| Threat | Defence | Where | Cost |
+| --- | --- | --- | --- |
+| A bank or payment account opened in your name | BC Protege+: blocks new current, savings and prepaid payment accounts, and your inclusion as holder or representative in someone else's | Meu BC, with a gov.br account at silver or gold level and two-step verification | Free |
+| Loans, accounts, Pix keys or bounced cheques you do not recognize | Registrato reports | Meu BC | Free |
+| Your CPF placed on a company's board | Proteger Meu CPF, from the Federal Revenue Service | Redesim, with gov.br | Free |
+| A payroll-deductible loan on an INSS benefit | Keep the benefit blocked; check the consigned-loan statement | Meu INSS app or site; phone 135 | Free |
+| Your gov.br account taken over | Gold level, two-step verification, review of authorized devices | gov.br app | Free |
+| Prepaid lines registered to your CPF | Cadastro Pré consultation, then the carrier | cadastropre.com.br; the carrier | Cost not stated on Anatel's page |
+| A hijacked line (SIM swap) | Act on the warning sign; carrier and police report | Carrier's official channels | Free |
+| Wrong data at a credit bureau; unwanted positive register | Free consultation; correction; opt-out of the Cadastro Positivo | Any of the four registered bureaus | Free, by law |
+| A fraudulent Pix | Night limit; lower limits; registered devices; the contest button of the Special Return Mechanism (Mecanismo Especial de Devolução, MED) | Your bank's app | Free |
+| Sales calls, including consigned-credit offers | Não Me Perturbe | naomeperturbe.com.br, app or Procon | Cost not stated on the government's page |
+| A scam that already happened | Bank, police report, consumidor.gov.br or Procon, Central Bank, ANPD | See the last steps | Free |
+
+### Step 1. Raise and lock your gov.br account
+
+The gov.br account is the key to almost every service below, which makes it the first thing to protect. It has three levels: bronze, the most basic; silver (*prata*); and gold (*ouro*), "the most complete and secure", according to the Ministry of Management and Innovation.
+
+1. Install the gov.br app from the official store. In the app, tap the level shown and choose to raise it. Gold is reached through facial recognition, or by scanning the QR code of the new national identity card (Carteira de Identidade Nacional, CIN); the ministry says it takes a few minutes. The Ministry of Justice's guidance says silver can also be obtained through your bank.
+2. In the app, open "Segurança da conta" and turn on two-step verification ("verificação em duas etapas"). The codes come only from the gov.br app ("Gerar código de acesso"), not by SMS, and the phone's automatic date and time must be on. Two-step verification is available for silver and gold accounts.
+3. Under "Segurança da conta", then "Verificação em duas etapas", then "Dispositivos autorizados", review the devices with access, delete any you do not recognize, and read the access history.
+4. If the account was taken over: file a police report; recover the account through "Esqueci minha senha" with facial recognition, which keeps gold level (recovery by phone or email drops it to bronze); change the password; block unknown devices; and update the access and recovery methods, as the Ministry of Justice and the gov.br team advise.
+
+What it stops: logins with a stolen password alone. What it does not stop: a person who hands over a code during a call.
+
+### Step 2. Block new accounts in your name: BC Protege+, not Registrato
+
+A claim circulates that Registrato lets a person block loans and account openings in their name. On the Central Bank's own pages that is not quite right. **Registrato shows; it does not block.** The block is a separate Meu BC service, BC Protege+, and it covers accounts, not credit.
+
+BC Protege+ was launched on 1 December 2025, under BCB Resolution 475 and Normative Instruction BCB 661, which describe it as a system for communicating "restrictions on contracting" in the national financial system. As of its service page (last modified 27 January 2026), it does this: with protection on, no bank or payment institution may open a current, savings or prepaid payment account in your name, or include you as a holder or representative in someone else's, because every institution "is obliged to consult the system" before opening an account. It does not block loans, credit cards or Pix keys; when it launched, the BC said it would consider extending it to Pix keys, credit operations and credit cards only if adoption was significant. By 7 January 2026, 545,000 people had activated it and about 111,000 fraudulent account-opening attempts had been refused, Agência Brasil reported; on 20 February 2026 the BC said it had reached one million users.
+
+1. Make sure your gov.br account is silver or gold, with two-step verification on (Step 1).
+2. Go to Meu BC and log in with gov.br. Click "BC Protege+" on the home page or in the left menu ("Gerenciar a proteção").
+3. In the accounts box ("Contas", for opening and inclusion), click the button to activate protection and confirm. A message confirms it. The service lists the step as immediate.
+4. To open an account yourself later, deactivate it in the same box, choosing a period of up to 30 days or a set period, then reactivate.
+5. Check "Histórico de consultas" from time to time: it shows which institutions consulted your record while protection was on.
+
+It is free. Companies can use it through partners, representatives or collaborators registered in the gov.br company module.
+
+### Step 3. Read your financial footprint in Registrato
+
+Registrato, also in Meu BC and free, gives the reports that let you see what has been done in your name. Each requires a gov.br account at silver or gold level with two-step verification.
+
+- **Loans and financing**, from the Credit Information System (Sistema de Informações de Crédito, SCR): "all your debts with banks and finance companies", with balances, type of operation and whether each is current or overdue.
+- **Accounts and relationships**, from the CCS (Cadastro de Clientes do Sistema Financeiro Nacional): every institution where you have or had an account, investment or other relationship, with start and end dates; it shows no account numbers or balances.
+- **Pix keys**: the keys registered in your name and their status; the complete report, with deleted keys, takes up to two business days.
+- **Bounced cheques**, from the CCF (Cadastro de Emitentes de Cheques sem Fundos), and **foreign exchange and international transfers**.
+
+1. Log in to Meu BC with gov.br and open the report you want; the current reports are immediate.
+2. Read it for anything you do not recognize: a loan, an institution, a key.
+3. If you find an account you did not open, the government's guidance of March 2026 says to file a police report with the civil police and contact the bank to have the account blocked and closed. For a key or loan you do not recognize, contact the institution named; the BC's service pages point to its "Fale Conosco" channel for questions and to its ombudsman for irregularities.
+
+Registrato also has a "Central de autorizações" to manage who you have allowed to see your reports.
+
+### Step 4. Stop your CPF from being placed in a company
+
+Criminals also use a CPF to register companies, each with its own number in the national company registry (Cadastro Nacional da Pessoa Jurídica, CNPJ). The Federal Revenue Service's "Proteger Meu CPF" blocks the inclusion of your CPF in the board of any legal entity, at every registry (commercial boards, legal entity registries and the OAB) and in every role (owner, partner, representative, administrator), including individual micro-entrepreneurs, according to its service page, last modified 8 September 2026.
+
+1. Go to the Proteger Meu CPF channel at Redesim and choose "Impedir Participação". A bronze gov.br account is enough to block.
+2. To reverse it, choose "Permitir Participação" and enter the code sent to your mailbox in e-CAC (Centro Virtual de Atendimento), the Revenue's online service; reversing requires a silver or gold account.
+3. To see the companies you already belong to, use Redesim's public CNPJ consultation ("Minhas empresas").
+
+It applies only to new registrations from the date of the request and does not change companies you already belong to. It is free and immediate.
+
+### Step 5. If you receive an INSS benefit, keep it blocked for loans
+
+1. Log in to Meu INSS (app or gov.br/meuinss) with your CPF and gov.br password. Any account level, bronze included, can use the service.
+2. In "Do que você precisa?", search for "Empréstimo" or "Bloquear / Desbloquear" and choose "Bloqueio/Desbloqueio de Benefício para Empréstimo". Read the instructions and confirm.
+3. Follow the request under "Consultar Pedidos". The service page gives up to 45 calendar days for the answer.
+4. Unblock only when you intend to take a loan. Unblocking requires your express authorization, by facial biometrics in Meu INSS first, or, where no biometric record exists, by gov.br login with validation of bank data, the INSS says.
+5. Check the "Extrato de Empréstimo Consignado" in Meu INSS regularly for deductions you do not recognize.
+
+New benefits are already blocked for consigned loans for their first 90 days. The service is free and is also available by phone on 135, Monday to Saturday, 07:00 to 22:00 Brasília time. If a loan or deduction you did not authorize appears, the INSS tells you to contact the lender, ask for cancellation and refund, complain through official consumer channels and keep every protocol; it also points to Procons, public defenders and small claims courts.
+
+### Step 6. Check your phone lines and watch for a swap
+
+1. Go to cadastropre.com.br, the portal the carriers launched in January 2020 under Anatel. It tells you which carriers have active prepaid lines registered to your CPF, without names, numbers or counts. Anatel's page does not mention postpaid lines.
+2. If a carrier you do not use appears, contact it and ask to cancel or unlink the line; Anatel says the carrier must do it within 24 hours for a request to an attendant, or 48 hours for an automatic one. The numbers listed by Anatel are Claro 1052, TIM 1056, Vivo 1058, Oi 1057 and Algar 1055.
+3. If your phone suddenly loses service, call your carrier through its official channel immediately and file a police report, as Anatel advises.
+
+What exists today against SIM swaps is the carriers' own identity checks and the second factor Anatel required for portability; facial biometrics with proof of life becomes mandatory for swaps and portability by 31 December 2027. Where your bank or other services allow it, prefer authentication in the app over codes by SMS, since a hijacked number receives the SMS.
+
+### Step 7. Consult the credit bureaus free, and decide on the Cadastro Positivo
+
+Law 12,414 of 2011, as amended by Complementary Law 166 of 2019, gives every person the right to access free of charge, "regardless of justification", the information a credit bureau holds about them, including their history and score, by phone or electronically; to have wrong information corrected within ten days in every database that shared it; and to cancel or reopen their record in the Cadastro Positivo, the register of payments made on time. In October 2019 the BC registered four managers for that register: Serasa, Quod, Boa Vista Serviços and SPC Brasil (Serviço de Proteção ao Crédito), run by the National Confederation of Retail Managers (Confederação Nacional de Dirigentes Lojistas, CNDL).
+
+1. Consult your record and score on the free channel each bureau must keep. If the bureau's site offers paid plans, you do not need them for this: the free access is a legal right.
+2. Look for debts, inquiries or registrations you do not recognize, and contest them with the bureau; the source must check and confirm or correct a contested record within two business days.
+3. If you prefer not to be in the Cadastro Positivo, ask any one of the four managers, by phone, in person or electronically, to cancel your record. The law obliges it to close the record within two business days and to pass the request to the others, which must do the same.
+
+Being out of the positive register does not stop a fraudster from contracting in your name; it only stops your payment history from being shared.
+
+### Step 8. Narrow what a Pix can do
+
+- **Night limit.** Since 4 October 2021, Pix transfers by individuals between 20:00 and 06:00 are limited to R$ 1,000 by default; you can ask your bank to make the night period 22:00 to 06:00 instead. A request to raise a limit takes at least 24 and at most 48 hours to take effect, a delay the BC set partly against express kidnappings.
+- **Lower limits.** The BC's Pix management report lists, among its operational improvements, the obligation for banks to set limits by each customer's risk and behaviour profile and to let the customer set a Pix limit as low as R$ 0.
+- **Registered devices.** Since November 2024 individuals can register keys and start a Pix only from a previously registered device; from an unregistered one, transactions are limited to R$ 200 each and R$ 1,000 a day.
+- **The contest button.** The MED has existed since November 2021. Since 1 October 2025 its self-service version, the "botão de contestação" (contest button), has been available in the apps of the institutions that take part in Pix, to contest a Pix sent through a scam, fraud or coercion. The receiving bank must block the money in the scammer's account at once, both banks have up to seven days to analyse, and if they agree it was a scam the refund reaches the victim within up to eleven days of the contest. Since February 2026 the money can also be traced and recovered beyond the first account it reached. It does not cover commercial disputes, regret or a mistyped key.
+
+1. In your bank's app, find the Pix limits (*limites Pix*), lower the night and daytime limits to what you use, and choose the night period.
+2. If you are a victim, use the contest button in the app at once, then contact the bank through its official channel and file a police report.
+
+### Step 9. Telemarketing: Não Me Perturbe, within its limits
+
+The national opt-out list, Não Me Perturbe, at naomeperturbe.com.br or its app, or through a Procon, blocks sales calls from telecom providers, and its coverage includes offers of consigned loans and consigned credit cards, according to the Ministry of Communications in January 2026; the block takes effect within 30 calendar days. It does not apply to calls to confirm data, prevent fraud, collect debts or retain portability requests. A scammer is not bound by it: registration reduces legitimate offers, which makes a call that claims to be one more suspicious, but it stops no crime.
+
+### Step 10. When something has already happened: where to report
+
+1. **Your bank, first and fast.** Through the official channels only, for any transaction you do not recognize; this is the Ministry of Justice's first step after a financial loss. For a Pix, use the contest button (Step 8).
+2. **A police report.** At a civil police station or online through your state's virtual police station (*delegacia virtual*), with dates, times, screenshots and other evidence.
+3. **consumidor.gov.br.** The public service, monitored by Senacon, where you complain directly to a registered company; the company has up to ten days to answer, and you have twenty to rate the answer.
+4. **Procon.** The state and municipal consumer protection bodies, for disputes with companies.
+5. **The Central Bank.** Through Meu BC, "Reclamar contra bancos e outras instituições supervisionadas".
+6. **The ANPD.** Through the gov.br service "Abrir requerimento relacionado à LGPD", free, with a silver or gold account. There are two kinds of request. A *denúncia*, a complaint that a law was broken, can be made by anyone and can be anonymous. A *petição de titular*, a petition about your own rights, has a precondition: you must first have made a formal request to the company or body holding your data (the controller) and kept the proof, and you may go to the ANPD only if it was not met or the answer was unsatisfactory, as article 55-J of the LGPD and the ANPD's petition flow require. The estimated time is up to 30 business days. The ANPD says it generally analyses petitions in aggregate and does not necessarily intervene in individual cases; they inform its choice of inspections.
+
+## What the record shows
+
+The record above supports the title's description in its own terms. Brazil's largest government and private databases have been exposed repeatedly since 2019, in files whose record counts match or exceed the population; smaller leaks have added the fields that turn a number into a description of a life; police operations have found those descriptions sold by subscription, fed in part from government systems, with tens of millions of queries. The regulator that receives the incident reports cannot fine the public bodies that hold the largest files, and the highest court for federal law requires each person to prove concrete harm. The protections that exist, a block on account opening, a block on consigned loans, a block on company registrations, a contest button for Pix, all work by making the leaked facts insufficient to act in a person's name. None of them makes the facts private again.
+
+<ReaderQuestions>
+
+- If the CPF, date of birth, mother's name and address of almost every Brazilian are in circulation, which public services and banks still accept them as proof of identity, and what should replace them?
+- The 2021 file was advertised as coming from a credit bureau, the bureau denies it, and its origin has never been publicly established: who should carry the burden of proving where a leaked database came from?
+- The LGPD does not let the ANPD fine public bodies, and several of the largest exposures were in public systems: is a warning or a published infraction enough to change how a ministry or an institute protects data?
+- The STJ requires proof of concrete harm for moral damages after a leak; how can anyone prove which leak caused the harm when the same data circulate from dozens of sources?
+- BC Protege+ blocks account opening but not credit; should a block on contracting in a person's name reach loans, cards and Pix keys, and who should bear the friction it adds?
+- When lookup panels are fed through the still-valid credentials of public servants, who should audit access to government databases, and how often?
+
+</ReaderQuestions>
+
+## Sources
+
+All sources were accessed on 12 November 2026. They are in Portuguese unless the source is in English.
+
+**Population**
+
+- [IBGE, Estimativas da população residente no Brasil e unidades da federação com data de referência em 1º de julho de 2026 (214,211,951)](https://ftp.ibge.gov.br/Estimativas_de_Populacao/Estimativas_2026/estimativa_dou_2026.pdf)
+- [SBT News, Brasil chega a 214,2 milhões de habitantes em 2026, diz IBGE (published 28 August 2026; growth of 0.37 per cent)](https://sbtnews.sbt.com.br/noticia/brasil/brasil-chega-a-214-2-milhoes-de-habitantes-em-2026-diz-ibge)
+- [O Povo, IBGE revisa dados do Censo 2022; população brasileira sobe para 203.080.756 pessoas, 31 August 2023](https://www.opovo.com.br/noticias/economia/2023/08/31/ibge-revisa-dados-do-censo-2022-populacao-brasileira-sobe-para-203-080-756-pessoas.html)
+- [Câmara dos Deputados, Consultoria Legislativa, Nota técnica: consequências dos megavazamentos de dados para os cidadãos, April 2021 (the CPF, the 112 million and Poupatempo files, judicial and administrative routes)](https://www2.camara.leg.br/atividade-legislativa/estudos-e-notas-tecnicas/publicacoes-da-consultoria-legislativa/arquivos-pdf/nota-tecnica-megavazamento-de-dados)
+
+**The 2021 file**
+
+- [Olhar Digital, Vazamento de banco de dados expõe CPF de quase toda a população do Brasil, 20 January 2021](https://olhardigital.com.br/2021/01/20/noticias/vazamento-de-banco-de-dados-expoe-cpf-de-quase-toda-a-populacao-do-brasil/)
+- [Baguete, PSafe: todos os CPFs do Brasil vazaram, 22 January 2021](https://www.baguete.com.br/noticias/psafe-todos-os-cpfs-do-brasil-vazaram)
+- [Tecnoblog Comunidade, Exclusivo: vazamento que expôs 220 milhões de brasileiros é pior do que se pensava, 22 January 2021](https://tecnoblog.net/comunidade/t/exclusivo-vazamento-que-expos-220-milhoes-de-brasileiros-e-pior-do-que-se-pensava/27379)
+- [Tecnoblog, Megavazamento de CPFs tinha algo que "não é normal": ser organizado demais (37 databases, 223.74 million CPFs)](https://tecnoblog.net/noticias/megavazamento-de-cpfs-tinha-algo-que-nao-e-normal-ser-organizado-demais/)
+- [Tecnoblog, Exclusivo: Vazamento de 223 milhões de CPFs é vendido em "promoção" por US$ 30 mil, 5 March 2021](https://tecnoblog.net/noticias/2021/03/05/exclusivo-vazamento-de-223-milhoes-de-cpfs-e-vendido-por-preco-menor/)
+- [Idec, ANPD enfim se pronuncia sobre vazamento de 220 milhões de CPFs (Tecnoblog, 27 January 2021: ANPD, Senacon, Procon-SP, MPDFT, MPF-SP)](https://idec.org.br/idec-na-imprensa/anpd-enfim-se-pronuncia-sobre-vazamento-de-220-milhoes-de-cpfs)
+- [Teletime, ANPD inicia apuração do vazamento de dados de mais de 200 milhões de brasileiros, 4 February 2021](https://teletime.com.br/04/02/2021/anpd-inicia-apuracao-do-vazamento-de-dados-de-mais-de-200-milhoes-de-brasileiros/)
+- [Teletime, Respostas da Serasa sobre megavazamento são insuficientes, diz Procon-SP, 7 April 2021](https://teletime.com.br/07/04/2021/respostas-da-serasa-sobre-megavazamento-sao-insuficientes-diz-procon-sp/)
+- [ESET WeLiveSecurity, Suspeitos de envolvimento em megavazamento de dados são identificados pela Operação Deepwater, 19 March 2021](https://www.welivesecurity.com/br/2021/03/19/suspeitos-de-envolvimento-em-megavazamento-de-dados-sao-identificados-pela-operacao-deepwater/)
+- [Olhar Digital, Polícia Federal prende suspeito do megavazamento de 223 milhões de CPFs, 19 March 2021](https://olhardigital.com.br/2021/03/19/seguranca/pf-prende-suspeito-megavazamento-223-milhoes-cpfs/)
+- [Jornal de Brasília / FolhaPress, PF ainda investiga ataques hacker e megavazamento de dados um ano depois, 4 January 2022](https://jornaldebrasilia.com.br/noticias/politica-e-poder/pf-ainda-investiga-ataques-hacker-e-megavazamento-de-dados-um-ano-depois/)
+- [O Popular, PF ainda investiga ataques hacker e megavazamento de dados um ano depois (the hypotheses on the origin)](https://opopular.com.br/economia/pf-ainda-investiga-ataques-hacker-e-megavazamento-de-dados-um-ano-depois-1.2381193)
+- [Canaltech, Polícia prende suspeito de vazar dados de 223 milhões de brasileiros, 10 April 2024](https://canaltech.com.br/seguranca/policia-prende-suspeito-de-vazar-dados-de-223-milhoes-de-brasileiros-285181/)
+- [Migalhas, MPF pede que Serasa seja multada em R$ 200 mi por vazamento de dados, 18 January 2024](https://www.migalhas.com.br/quentes/400585/mpf-pede-que-serasa-seja-multada-em-r-200-mi-por-vazamento-de-dados)
+- [DatacenterDynamics, Vazamento de dados do Serasa está em fase de produção de provas, February 2024](https://www.datacenterdynamics.com/br/not%C3%ADcias/vazamento-de-dados-do-serasa-esta-em-fase-de-producao-de-provas-/)
+
+**The Ministry of Health**
+
+- [ESET WeLiveSecurity, Senhas do Ministério da Saúde vazam e dados de 16 milhões de pacientes de Covid-19 são expostos, 27 November 2020](https://www.welivesecurity.com/br/2020/11/27/senhas-do-ministerio-da-saude-vazam-e-dados-de-16-milhoes-de-pacientes-de-covid-19-sao-expostos/)
+- [Canaltech, Nova falha no Ministério da Saúde expõe dados de 240 milhões de brasileiros, 2 December 2020](https://canaltech.com.br/seguranca/nova-falha-no-ministerio-da-saude-expoe-dados-de-240-milhoes-de-brasileiros-175578/)
+- [ESET WeLiveSecurity, Falha do Ministério da Saúde expõe dados de mais de 243 milhões de brasileiros, 4 December 2020](https://www.welivesecurity.com/br/2020/12/04/falha-do-ministerio-da-saude-expoe-dados-de-mais-de-243-milhoes-de-brasileiros/)
+- [Movimento Econômico, App ConecteSUS e site do Ministério da Saúde sofrem ataque cibernético, 10 December 2021](https://movimentoeconomico.com.br/tecnologia/2021/12/10/app-conectesus-e-site-do-ministerio-da-saude-sofrem-ataque-cibernetico/)
+- [Canaltech, PF faz operação contra grupo cibercriminoso que atacou Ministério da Saúde (Operation Dark Cloud), 16 August 2022](https://canaltech.com.br/seguranca/pf-faz-operacao-contra-grupo-cibercriminoso-que-atacou-ministerio-da-saude-223210/)
+- [The Hacker News, Brazilian Police Arrest Suspected Member of Lapsus$ Hacking Group, 20 October 2022 (in English)](https://thehackernews.com/2022/10/brazilian-police-arrest-suspected.html?m=1)
+
+**Other government systems and Pix**
+
+- [O Povo, Detran vaza dados de 70 milhões de brasileiros, diz site, 8 October 2019](https://www.opovo.com.br/noticias/brasil/2019/10/08/detran-vaza-dados-de-70-milhoes-de-brasileiros--diz-site.html)
+- [Tecnoblog, Detran-RN confirma falha que expôs dados de 70 milhões de brasileiros](https://tecnoblog.net/311005/detran-rn-confirma-falha-expos-dados-brasileiros/)
+- [Diario de Pernambuco, INSS confirma exposição de dados de até 40 milhões de segurados, 24 June 2024](https://www.diariodepernambuco.com.br/noticia/economia/2024/06/inss-confirma-exposicao-de-dados-de-ate-40-milhoes-de-segurados.html)
+- [Migalhas, ANPD condena INSS por vazamento de dados, 5 February 2024](https://www.migalhas.com.br/quentes/401393/anpd-condena-inss-por-vazamento-de-dados)
+- [Canaltech, INSS terá de comunicar vazamento de dados, decide ANPD ao negar recurso, 29 July 2024](https://canaltech.com.br/governo/inss-tera-de-comunicar-vazamento-de-dados-decide-anpd-ao-negar-recurso/)
+- [InfoMoney, Dados de beneficiários do INSS vazam após falha de segurança da Dataprev, 22 May 2026](https://www.infomoney.com.br/politica/dados-de-beneficiarios-do-inss-vazam-apos-falha-de-seguranca-da-dataprev/)
+- [O Povo, Vazamento de dados no INSS expõe 2,8 milhões de CPFs; 98% de falecidos, 26 May 2026](https://www.opovo.com.br/noticias/economia/2026/05/26/vazamento-de-dados-no-inss-expoe-28-milhoes-de-cpfs-98-de-falecidos.html)
+- [Banco Central do Brasil, Banco Central comunica ocorrência em instituição (Acesso Soluções de Pagamento; the template wording)](https://www.bcb.gov.br/content/estabilidadefinanceira/pix/Incidentes%20DICT/BC_comunica_ocorrencia_Pix-2.pdf)
+- [Banco Central do Brasil, Banco Central comunica ocorrência em instituição (Caixa Econômica Federal, 24 and 25 September 2024)](https://www.bcb.gov.br/content/estabilidadefinanceira/pix/Incidentes%20DICT/BC_comunica_ocorrencia_Pix-16.pdf)
+- [Forbes Brasil, BC comunica vazamento de dados cadastrais do Pix no Banese, 30 September 2021](https://forbes.com.br/forbes-money/2021/09/bc-comunica-vazamento-de-dados-cadastrais-do-pix-no-banese/)
+- [Movimento Econômico, Banco Central comunica vazamento de dados de 160,1 mil chaves Pix, 21 January 2022](https://movimentoeconomico.com.br/financas/mercado-financeiro/2022/01/21/banco-central-comunica-vazamento-de-dados-de-1601-mil-chaves-pix/)
+- [Migalhas, BC e CNJ confirmam vazamento de 11 milhões de chaves Pix, 24 July 2025](https://www.migalhas.com.br/quentes/435324/bc-e-cnj-confirmam-vazamento-de-11-milhoes-de-chaves-pix)
+- [Jornal de Brasília, Quase 48 milhões de chaves Pix foram expostas em incidentes desde 2020, diz Banco Central, 10 March 2026](https://jornaldebrasilia.com.br/noticias/brasil/quase-48-milhoes-de-chaves-pix-foram-expostas-em-incidentes-desde-2020-diz-banco-central/)
+- [ConvergenciaDigital, Banco Central comunica 4º vazamento de dados vinculados a chaves Pix em 2026, 12 May 2026](https://convergenciadigital.com.br/mercado/banco-central-comunica-4o-vazamento-de-dados-vinculados-a-chaves-pix-em-2026/)
+
+**Enrichment and the market**
+
+- [NeoFeed, Exclusivo: novo vazamento expõe mais de 100 milhões de contas de celular, 10 February 2021](https://neofeed.com.br/insiders/exclusivo-novo-vazamento-expoe-mais-de-100-milhoes-de-contas-de-celular/)
+- [Teletime, ANPD apura vazamento de dados de crédito de 12 milhões de brasileiros, 1 March 2021](https://teletime.com.br/01/03/2021/anpd-apura-vazamento-de-dados-de-credito-de-12-milhoes-de-brasileiros/)
+- [ConvergenciaDigital, Bots no Telegram expõem dados de brasileiros em segundos por menos de R$ 6 (the Derechos Digitales study), 13 March 2026](https://convergenciadigital.com.br/governo/bots-no-telegram-expoem-dados-de-brasileiros-em-segundos-por-menos-de-r-6/)
+- [Olhar Digital, Hackers que roubaram e venderam dados de milhões de brasileiros são presos, 22 June 2023](https://olhardigital.com.br/2023/06/22/seguranca/hackers-que-roubaram-e-venderam-dados-de-milhoes-de-brasileiros-sao-presos/)
+- [Correio Braziliense, Facções e agentes de segurança usaram dados roubados de brasileiros, diz PF, 31 January 2024](https://www.correiobraziliense.com.br/brasil/2024/01/6795795-faccoes-e-agentes-de-seguranca-usaram-dados-roubados-de-brasileiros-diz-pf.html)
+- [SBT News, Polícia Federal investiga venda de dados obtidos com invasão a sistemas federais (Operation I-Fraude), 31 January 2024](https://sbtnews.sbt.com.br/noticia/policia/policia-federal-investiga-venda-de-dados-obtidos-com-invasao-a-sistemas-federais)
+- [SBT News, PF prende 3 acusados de invadir sistemas federais e vender dados pessoais na internet, 2 February 2024](https://sbtnews.sbt.com.br/noticia/policia/pf-prende-3-acusados-de-invadir-sistemas-federais-e-vender-dados-pessoais-na-internet)
+- [Correio da Manhã, PCDF desarticula grupo criminoso que vendia dados sigilosos (Operation Dark Spot), 31 July 2026](https://www.correiodamanha.com.br/nacional/distrito-federal/2026/07/amp/306899-pcdf-desarticula-grupo-criminoso-que-vendia-dados-sigilosos.html)
+
+**Consequences**
+
+- [Diario de Pernambuco, Febraban: golpe da falsa venda lidera entre os golpes mais relatados por clientes bancários no primeiro semestre, 12 November 2025](https://www.diariodepernambuco.com.br/economia/2025/11/11700388-febraban-golpe-da-falsa-venda-lidera-entre-os-golpes-mais-relatados-por-clientes-bancarios-no-primeiro-semestre.html)
+- [Febraban, Febraban faz alerta sobre o golpe do falso gerente, 6 March 2026](https://portal.febraban.org.br/noticia/4431/pt-br/)
+- [Febraban, Golpe da mão fantasma: bancos nunca pedem que clientes instalem app para resolver problemas na conta, 2 July 2025](https://portal.febraban.org.br/noticia/4318/pt-br/)
+- [Anatel, Golpes atuais mais comuns (line hijacking; modified 30 April 2026)](https://www.gov.br/anatel/pt-br/assuntos/dicas-contra-fraudes/golpes-atuais-mais-comuns)
+- [Anatel, Anatel aprova validação biométrica obrigatória para usuários de telefonia móvel, 28 October 2026](https://www.gov.br/anatel/pt-br/assuntos/noticias/anatel-aprova-validacao-biometrica-obrigatoria-para-usuarios-de-telefonia-movel)
+- [Correio Braziliense, Fraudes no INSS: entenda como funcionava o esquema, 30 April 2025](https://www.correiobraziliense.com.br/economia/2025/04/7130518-fraudes-no-inss-entenda-como-funcionava-o-esquema.html)
+- [Gazeta do Povo, Caiu o sigilo: relatório revela que INSS abriu brechas para golpe contra aposentados, 24 April 2025](https://www.gazetadopovo.com.br/economia/caiu-o-sigilo-relatorio-revela-inss-abriu-brechas-para-golpe-contra-aposentados/)
+- [SBT News, Fraude no INSS: relatório da CGU mostra que associações chegaram a filiar mais de 1,5 mil aposentados por hora, 7 May 2025](https://sbtnews.sbt.com.br/noticia/economia/fraude-no-inss-relatorio-da-cgu-mostra-que-associacoes-chegaram-a-filiar-mais-de-1-5-mil-aposentados-por-hora)
+- [NIST, SP 800-63A-4, Digital Identity Guidelines: Identity Proofing and Enrollment, July 2025 (in English)](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-63A-4.pdf)
+- [NIST, SP 800-63B-4, Digital Identity Guidelines: Authentication and Authenticator Management, July 2025 (in English)](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-63B-4.pdf)
+
+**The law, the ANPD and the courts**
+
+- [Câmara dos Deputados, Legislação Informatizada, Lei nº 13.709, de 14 de agosto de 2018, norma atualizada (articles 42, 48, 52, 55-A, 55-J and 65)](https://www2.camara.leg.br/legin/fed/lei/2018/lei-13709-14-agosto-2018-787077-normaatualizada-pl.html)
+- [ANPD, Balanço ANPD 6 anos, 2020–2026, published 5 November 2026 (sanctions, petitions, the Claro and Isac proceedings)](https://www.gov.br/anpd/pt-br/centrais-de-conteudo/outros-documentos-e-publicacoes-institucionais/balanco-anpd-6-anos.pdf/@@display-file/file)
+- [Teletime, ANPD publica primeira sanção ao setor privado por descumprimento da LGPD, 6 July 2023](https://teletime.com.br/06/07/2023/anpd-publica-primeira-sancao-ao-setor-privado-por-descumprimento-da-lgpd/)
+- [Teletime, ANPD divulga processos sancionatórios em andamento; apenas um do setor privado, 23 March 2023](https://teletime.com.br/23/03/2023/anpd-divulga-processos-sancionatorios-em-andamento-apenas-um-do-setor-privado/)
+- [Mobile Time, ANPD aplica segunda sanção, dessa vez a órgão público de SP, 6 October 2023](https://www.mobiletime.com.br/noticias/06/10/2023/anpd-aplica-segunda-sancao-dessa-vez-a-orgao-publico-de-sp/)
+- [Dizer o Direito, O vazamento de dados pessoais não gera dano moral presumido (STJ, AREsp 2.130.619-SP, judged 7 March 2023)](https://www.dizerodireito.com.br/2023/03/o-vazamento-de-dados-pessoais-nao-gera.html)
+- [Mayer Brown, Brazilian Superior Court of Justice: no presumed moral damage in non-sensitive personal data leak, 17 March 2023 (in English)](https://www.mayerbrown.com/en/perspectives-events/publications/2023/03/brazilian-superior-court-of-justice-no-presumed-moral-damage-in-non-sensitive-personal-data-leak)
+- [Trilhante Informativos, STJ, REsp 2.221.650-SP, judged 4 November 2025](https://informativos.trilhante.com.br/julgados/stj-resp-2221650-sp)
+
+**What you can do (official pages)**
+
+- [gov.br, Proteger-se com o BC Protege+ (modified 27 January 2026)](https://www.gov.br/pt-br/servicos/proteger-se-com-o-bc-protege)
+- [Banco Central do Brasil, BC Protege+: launch presentation, 1 December 2025](https://www.bcb.gov.br/conteudo/home-ptbr/TextosApresentacoes/PROTEGE%2B_EVENTO_1_12_25.pdf)
+- [Banco Central do Brasil, Gabriel Galípolo at Febraban Tech, 24 August 2026 (BCB Resolution 475 and Normative Instruction 661)](https://www.bcb.gov.br/conteudo/home-ptbr/TextosApresentacoes/Apresentacao_GabrielGalipolo_FebrabanTech_24.8.2026.pdf)
+- [Diario de Pernambuco / Agência Brasil, Ferramenta do Banco Central permite bloquear abertura de contas falsas em bancos, 1 December 2025](https://www.diariodepernambuco.com.br/economia/2025/12/11701917-ferramenta-do-banco-central-permite-bloquear-abertura-de-contas-falsas-em-bancos.html)
+- [Agência Brasil, Banco Central bloqueia 111 mil fraudes com novo serviço, 7 January 2026](https://agenciabrasil.ebc.com.br/radioagencia-nacional/economia/audio/2026-01/banco-central-bloqueia-111-mil-fraudes-com-novo-servico)
+- [Agência Brasil, BC Protege+ alcança um milhão de usuários, 20 February 2026](https://agenciabrasil.ebc.com.br/radioagencia-nacional/geral/audio/2026-02/bc-protege-alcanca-um-milhao-de-usuarios)
+- [gov.br, Meu BC: Serviços Digitais (the Registrato reports)](https://www.gov.br/pt-br/temas/meu-bc-servicos-digitais)
+- [gov.br, Emitir Relatório de Empréstimos e Financiamentos (SCR) (modified 27 January 2026)](https://www.gov.br/pt-br/servicos/obter-relatorio-do-sistema-de-informacoes-de-credito-scr)
+- [gov.br, Emitir Relatório de Contas e Relacionamentos em Bancos (CCS) (modified 15 December 2025)](https://www.gov.br/pt-br/servicos/gerar-relatorio-de-contas-e-investimentos-ccs)
+- [gov.br, Emitir Relatórios de Chaves Pix (modified 15 December 2025)](https://www.gov.br/pt-br/servicos/emitir-relatorio-de-chaves-pix)
+- [Agência Gov, Gov.br: conheça três serviços digitais que protegem seus dados pessoais contra golpistas, 20 March 2026](https://agenciagov.ebc.com.br/noticias/202603/gov-br-conheca-tres-servicos-digitais-que-protegem-seus-dados-pessoais-contra-golpistas)
+- [gov.br, Impedir/permitir participação do meu CPF no Cadastro Nacional de Pessoas Jurídicas (modified 8 September 2026)](https://www.gov.br/pt-br/servicos/impedir-permitir-participacao-do-meu-cpf-no-cadastro-nacional-de-pessoas-juridicas-cnpj)
+- [gov.br, Bloquear ou Desbloquear Benefício para Empréstimo (modified 12 August 2026)](https://www.gov.br/pt-br/servicos/bloquear-ou-desbloquear-beneficio-para-emprestimo)
+- [INSS, Consignação em benefícios do INSS: seus direitos e medidas de segurança (updated 28 October 2026)](https://www.gov.br/inss/pt-br/direitos-e-deveres/pagamento-de-beneficios/consignacao-em-beneficios-do-inss-seus-direitos-e-medidas-de-seguranca)
+- [Governo Digital, Segurança da conta (two-step verification and authorized devices)](https://www.gov.br/governodigital/pt-br/identidade/conta-gov-br/seguranca-da-conta)
+- [Ministério da Gestão e da Inovação, Aumente os níveis de sua conta GOV.BR (updated 26 October 2026)](https://www.gov.br/gestao/pt-br/assuntos/editoria-defeso-eleitoral/aumente-os-niveis-de-sua-conta-gov-br-para-ter-mais-seguranca-e-acesso-a-todos-os-servicos)
+- [Agência Gov, Gov.br: o que fazer em caso de golpes de roubo da identidade digital, 29 April 2026](https://agenciagov.ebc.com.br/noticias/202604/gov-br-o-que-fazer-em-caso-de-golpes-de-roubo-da-identidade-digital)
+- [Ministério da Justiça e Segurança Pública, Sofri um golpe, e agora? Invadiram minha conta gov.br](https://www.gov.br/mj/pt-br/acesso-a-informacao/acoes-e-programas/sofri-um-golpe-e-agora/invadiram-minha-conta-gov.br)
+- [Ministério da Justiça e Segurança Pública, Sofri um golpe, e agora? Tive perdas financeiras](https://www.gov.br/mj/pt-br/acesso-a-informacao/acoes-e-programas/sofri-um-golpe-e-agora/tive-perdas-financeiras)
+- [Anatel, Cadastro de celulares pré-pagos (published 12 September 2024)](https://www.gov.br/anatel/pt-br/regulado/acompanhamento-e-controle/combate-a-golpes-e-fraudes/cadastro-de-celulares-pre-pagos)
+- [Câmara dos Deputados, Legislação Informatizada, Lei nº 12.414, de 9 de junho de 2011, norma atualizada (article 5)](https://www2.camara.leg.br/legin/fed/lei/2011/lei-12414-9-junho-2011-610758-normaatualizada-pl.html)
+- [ConvergenciaDigital, Banco Central seleciona gestoras de dados do Cadastro Positivo, 11 October 2019](https://convergenciadigital.com.br/mercado/banco-central-seleciona-gestoras-de-dados-do-cadastro-positivo/)
+- [Banco Central do Brasil, Relatório de Gestão do Pix 2023–2025 (MED self-service, device registration, limits)](https://www.bcb.gov.br/content/estabilidadefinanceira/pix/relatorio_de_gestao_pix/relatorio_gestao_pix_2026.pdf)
+- [Mercado e Consumo, Pix: BC limita opções para horário noturno às faixas de 20h às 6h ou de 22h às 6h, 19 November 2021](https://mercadoeconsumo.com.br/2021/11/19/pix-bc-limita-opcoes-para-horario-noturno-as-faixas-de-20h-as-6h-ou-de-22h-as-6h/)
+- [Diario de Pernambuco / Agência Brasil, Botão de contestação do Pix está disponível aos usuários, 1 October 2025](https://www.diariodepernambuco.com.br/economia/2025/10/11697117-botao-de-contestacao-do-pix-esta-disponivel-aos-usuarios.html)
+- [Ministério das Comunicações, Plataforma Não Me Perturbe fechou 2025 com 14,2 milhões de números de telefone cadastrados, 2 January 2026](https://www.gov.br/mcom/pt-br/noticias/2026/janeiro/plataforma-nao-me-perturbe-fechou-2025-com-14-2-milhoes-de-numeros-de-telefone-cadastrados)
+- [Ministério da Justiça e Segurança Pública, O que é o Consumidor.gov.br](https://www.gov.br/mj/pt-br/assuntos/seus-direitos/consumidor/consumidor-gov.br)
+- [gov.br, Abrir requerimento relacionado à LGPD (ANPD) (modified 23 October 2026)](https://www.gov.br/pt-br/servicos/abrir-requerimento-relacionado-a-lgpd)
+- [ANPD, Fluxo da petição do titular](https://www.gov.br/anpd/pt-br/fluxo-da-peticao-do-titular)

@@ -8,7 +8,7 @@ relatedArticles: ["choosing-a-public-dns-resolver", "bigip-dns-multi-rpz", "dns-
 category: security
 order: 256
 status: reviewed
-updated: "2026-08-11"
+updated: "2026-11-12"
 ---
 
 ## Origem: o bloqueio chegou ao resolver por acaso
@@ -19,7 +19,7 @@ Daí nasceram duas linhagens:
 
 **Listas de reputação consultadas a cada mensagem**, que até hoje são a base da filtragem de e-mail.
 
-**Política no resolver recursivo**: o mesmo resolver que responde às consultas comuns do cliente é também o ponto onde um nome pode ser recusado. As **Response Policy Zones** foram apresentadas em 2010 por Paul Vixie e Vernon Schryver, e o que fez com que elas se espalhassem foi a mesma decisão de projeto que espalhou as listas originais: **a política é distribuída como uma zona DNS comum**, então ela é transferida, atualizada e escala com os mesmos mecanismos que todo operador já tem rodando.
+**Política no resolver recursivo**: o mesmo resolver que responde às consultas comuns do cliente é também o ponto onde um nome pode ser recusado. As **Response Policy Zones** foram projetadas por Paul Vixie e Vernon Schryver em 2009; Schryver escreveu o primeiro patch que as levou ao BIND no fim de 2009, e patches para várias versões do BIND 9 passaram a ser distribuídos a partir de 2010 ([Vixie e Schryver, draft-vixie-dnsop-dns-rpz-00, seção 10, lida em 12/11/2026](https://www.ietf.org/archive/id/draft-vixie-dnsop-dns-rpz-00.txt)). O que fez com que elas se espalhassem foi a mesma decisão de projeto que espalhou as listas originais: **a política é distribuída como uma zona DNS comum**, então ela é transferida, atualizada e escala com os mesmos mecanismos que todo operador já tem rodando.
 
 A herança incômoda é que as duas são mecanismos de censura, e a legitimidade delas depende inteiramente de quem as opera e com que objetivo. A mesma transferência de zona que bloqueia um domínio de phishing para os funcionários de uma empresa é, em outra jurisdição, o jeito como um governo bloqueia um site de notícias; é por isso que essa técnica aparece também no artigo sobre [desligamentos de internet](/learn/internet-shutdowns-and-kill-switches), e não só neste.
 

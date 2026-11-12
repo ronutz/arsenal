@@ -56,6 +56,16 @@ import { handleStats, type StatsEnv } from "./stats";
 // The /dev/fun games' public scoreboard (PRIME 08/11/2026): its four routes under /api/v1/fun/, on an optional D1
 // binding; see worker/scores.ts for what a row keeps and what it never keeps.
 import { handleScores, type ScoresEnv } from "./scores";
+// The interest counts (PRIME 12/11/2026): the one endpoint a page posts a count to, after the reader said yes; see
+// worker/events.ts for what a row holds and what it never holds.
+import { handleEvent, type EventsEnv } from "./events";
+// The read side of the interest counts and of the daily totals, and the daily adding-up that keeps them past the
+// counting store's three months (worker/intel.ts, worker/rollup.ts).
+import { handleIntel, type IntelEnv } from "./intel";
+import { rollupDue } from "./rollup";
+// The desk's optional encrypted sync (PRIME 12/11/2026 12:42): GET, PUT and DELETE /api/desk/<id>, same origin only,
+// and the daily deletion of copies idle for more than a year; see worker/desk.ts for what a row holds.
+import { cleanIdleDesks, handleDesk, type DeskEnv } from "./desk";
 
 // The random quote header (PRIME 2026-10-05 22:48): the pool of character lines,
 // one of which rides on every HTML response in the tradition of slashdot.org's
@@ -64,7 +74,7 @@ import { handleScores, type ScoresEnv } from "./scores";
 // TypeScript toolchain; wrangler bundles the import.
 import quoteHeaders from "./quote-headers.json";
 
-interface Env extends AnalyticsEnv, StatsEnv, ScoresEnv {
+interface Env extends AnalyticsEnv, StatsEnv, ScoresEnv, EventsEnv, IntelEnv, DeskEnv {
   ASSETS: { fetch(request: Request): Promise<Response> };
 }
 
@@ -195,6 +205,15 @@ const MERGED_GLOSSARY_SLUGS = new Map<string, string>([
   ["the-year-2038-problem", "year-2038-problem"],
   ["there-are-two-hard-things", "two-hard-things"],
   ["two-generals", "two-generals-problem"],
+  // PRIME 12/11/2026 01:48 ("Region: merge"): the thin cloud-region entry merged into region, which the content sweep had
+  // just rewritten in full (batch 5B); the old address answers with a 308 to the survivor.
+  ["cloud-region", "region"],
+  // PRIME 12/11/2026 12:42 ("Do the c2 and doh, caa and pmtud merges as recommended"): each thinner or duplicate
+  // entry merged into the one the content sweep had written in full; the old addresses answer with a 308.
+  ["c2", "command-and-control"],
+  ["doh", "dns-over-https"],
+  ["caa-record", "caa"],
+  ["pmtud", "path-mtu-discovery"],
 ]);
 
 // Vanity short paths -> their canonical destination. Resolved in the locale-
@@ -217,9 +236,33 @@ export default {
   async fetch(request: Request, env: Env, ctx?: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
 
+    // ---- /api/desk/<id> : the desk's encrypted copy, same origin only --------
+    // Answered BEFORE the CORS preflight below, on purpose: that preflight allows any origin, and the desk's route
+    // must not. worker/desk.ts answers its own OPTIONS with 405, so no other site's page may PUT or DELETE a copy.
+    {
+      const deskResponse = await handleDesk(request, url, env);
+      if (deskResponse) return deskResponse;
+    }
+
     // CORS preflight.
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: CORS });
+    }
+
+    // ---- /api/e : one interest count, from a reader who said yes ------------
+    // Answered first and on its own: it is the one address a page posts to, and nothing below should ever see it.
+    // See worker/events.ts for the row's five fields and for everything that is never written.
+    {
+      const eventResponse = await handleEvent(request, url, env);
+      if (eventResponse) return eventResponse;
+    }
+
+    // ---- /api/stats/* : the interest counts and the daily totals ------------
+    // The routes worker/intel.ts names (interest, pulse, history, and the two that ask for the operator's key),
+    // BEFORE worker/stats.ts, whose own switch answers every other name under /api/stats/ with a 404.
+    {
+      const intelResponse = await handleIntel(request, url, env);
+      if (intelResponse) return intelResponse;
     }
 
     // ---- /api/stats/* : the site's own aggregate request counts -----------
@@ -579,5 +622,27 @@ export default {
 
     // The page, with the random quote header of the day's request on it.
     return withQuoteHeader(page);
+  },
+
+  /**
+   * THE DAILY ADDING-UP (PRIME 12/11/2026). Run by the schedule in wrangler.jsonc (triggers.crons), once a day after
+   * the UTC day has turned: yesterday's counts are added up and kept as daily totals in D1, so a trend can be read
+   * past the counting store's three months (worker/rollup.ts). It answers nobody and writes nothing to the Worker's
+   * log (the Privacy page says the Worker's code logs nothing, and scripts/check-counting-source.mjs holds it to
+   * that): what was added up is on record in D1 itself (the "rolled" figure of each day, shown on the operator's
+   * dashboard), and a night that failed is made good by the next one, which adds up any of the last week's days
+   * that are missing.
+   *
+   * The same run deletes the desk's encrypted copies that nobody has read or written for more than 365 days
+   * (worker/desk.ts, cleanIdleDesks). It is kept apart from the adding-up, so one failing never stops the other, and
+   * like it, it logs nothing: a night that fails (the table not there yet) is tried again the next night.
+   */
+  async scheduled(_controller: unknown, env: Env, ctx: ExecutionContext): Promise<void> {
+    // The moment of the run, once, for both jobs.
+    const now = Date.now();
+    // Kept alive until the adding-up has finished; a failure is swallowed here and healed by the next run.
+    ctx.waitUntil(rollupDue(env, now).then(() => undefined, () => undefined));
+    // The idle desks deleted; a failure is swallowed the same way.
+    ctx.waitUntil(cleanIdleDesks(env, now).then(() => undefined, () => undefined));
   },
 };

@@ -50,6 +50,8 @@
 
 "use client";
 
+// Bringing the playing area into view when a round starts (PRIME 11/11/2026 23:39).
+import { usePlayAreaReveal } from "./playArea";
 // React's state, effects, ids, refs and memo.
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type CSSProperties, type FocusEvent, type ReactNode } from "react";
 // The time format.
@@ -728,9 +730,18 @@ export function PuzzleHud<P, B>(props: { session: PuzzleSession<P, B>; labels: K
 export function StartCover(props: { label: string; note: string; onStart: () => void; className?: string; style?: CSSProperties }) {
   // The line's id, so the button is described by it.
   const noteId = useId();
+  // The game's "bring the playing area into view" (PRIME 11/11/2026 23:39), from GameShell.
+  const reveal = usePlayAreaReveal();
+  // Start, then the board and what goes with it scrolled into view.
+  const start = () => {
+    // The round starts (the board replaces this cover).
+    props.onStart();
+    // Brought into view once laid out.
+    reveal();
+  };
   // The cover.
   return (
-    <div className={`fg-start${props.className ? ` ${props.className}` : ""}`} style={props.style} onClick={props.onStart}>
+    <div className={`fg-start${props.className ? ` ${props.className}` : ""}`} style={props.style} onClick={start}>
       {/* The control: its click bubbles to the cover, which starts the round. */}
       <button type="button" className="fg-button fg-button-primary fg-start-button" aria-describedby={noteId}>
         {props.label}

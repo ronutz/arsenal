@@ -203,6 +203,11 @@
 .fg-result-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
 /* The countdown. */
 .fg-result-next { margin: 0.75rem 0 0; font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+/* A game that failed while drawing (GameErrorBoundary, PRIME 11/11/2026 23:53): "Error details" under the two buttons,
+   the browser's own words wrapped so a long message never widens the page. */
+.fg-crash-details { margin: 0.75rem 0 0; text-align: left; }
+/* The one line naming what failed. */
+.fg-crash-text { margin: 0.4rem 0 0; overflow-wrap: anywhere; color: var(--text-secondary); }
 /* The notice when the UTC day turns with the page open: a message and the button that loads today's puzzle. */
 .fg-newday { display: flex; flex-wrap: wrap; gap: 0.5rem 0.75rem; align-items: center; justify-content: center; border: 1px solid var(--accent-primary); border-radius: var(--radius-md); background: var(--surface-elevated); padding: 0.6rem 0.9rem; color: var(--text-primary); text-align: center; }
 /* ---- Earlier puzzles (PRIME 05/11/2026) ----------------------------------- */
@@ -529,8 +534,11 @@ a.fg-link-button { display: inline-flex; align-items: center; }
 .fg-pp-on { background: color-mix(in srgb, var(--accent-primary) 14%, var(--surface-elevated)); }
 /* The end of the cable. */
 .fg-pp-head { box-shadow: inset 0 0 0 2px var(--accent-primary); }
-/* The pen (the cable's end, or port 1 before the cable starts): a finger landing here draws, so no page scroll. */
+/* The pen (the cable's end and the cells beside it since 11/11/2026, or port 1 before the cable starts): a finger landing
+   here draws, so no page scroll. */
 .fg-pp-pen { touch-action: none; }
+/* The pull-back mode switch under the progress line (11/11/2026): the site's switch, centred, its note wrapping. */
+.fg-pp-mode { display: flex; width: fit-content; max-width: 100%; margin: 0.25rem auto 0; text-align: center; }
 /* A cell off the route after a Check: red stripes. */
 .fg-pp-bad { background-image: repeating-linear-gradient(45deg, color-mix(in srgb, var(--color-danger) 26%, transparent) 0 4px, transparent 4px 9px); }
 /* A port: a round numbered badge above the cable. */
@@ -1953,6 +1961,9 @@ a.fg-link-button { display: inline-flex; align-items: center; }
 .fg-dash-kpi-value { font-family: var(--font-mono); font-size: clamp(1.25rem, 3.6vw, 1.7rem); line-height: 1.1; color: var(--text-primary); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 /* The line under it. */
 .fg-dash-kpi-sub { font-size: 0.75rem; color: var(--text-tertiary); overflow-wrap: anywhere; }
+/* Unique browsers today (12/11/2026): a tile the width of the row, under the four, its figures side by side. */
+.fg-dash-kpi-wide { grid-column: 1 / -1; }
+.fg-dash-kpi-wide dd { flex-direction: row; flex-wrap: wrap; align-items: baseline; column-gap: 0.85rem; }
 /* A thin meter of a share solved: the site's accent on the pulse, the game's own accent on a card. */
 .fg-dash-meter { display: block; height: 6px; border-radius: 999px; background: color-mix(in oklab, var(--border-subtle) 80%, transparent); overflow: hidden; }
 .fg-dash-meter-fill { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--accent-primary), var(--color-success)); transition: width 0.5s ease; }
@@ -1974,6 +1985,8 @@ a.fg-link-button { display: inline-flex; align-items: center; }
 /* The rounds of the day, quiet, and the solved part, bright. */
 .fg-dash-spark-all { fill: color-mix(in oklab, var(--text-tertiary) 35%, transparent); }
 .fg-dash-spark-won { fill: var(--accent-primary); }
+/* A day's unique browsers: a short line across its bar, on the same scale (the note under the chart says so in words). */
+.fg-dash-spark-browsers { fill: var(--text-primary); }
 .fg-dash-spark-svg g:hover .fg-dash-spark-all { fill: var(--text-secondary); }
 /* The first and last dates under it. */
 .fg-dash-spark-axis { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-tertiary); margin-top: 0.25rem; }

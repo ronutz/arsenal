@@ -1,14 +1,14 @@
 ---
 slug: waf-family-history
 title: "O firewall de aplicação web: comprado por auditores, culpado por engenheiros"
-summary: "O primeiro firewall de aplicação web e o primeiro scanner de aplicação web foram construídos pela mesma empresa, e esse é o fato estrutural que costuma faltar quando esta família é explicada. O AppShield saiu no verão de 1999; o ModSecurity abriu a categoria em 2002; o OWASP Top 10 deu vocabulário a ela em 2003; e o PCI DSS a transformou em compra em 2004. Esta é a história da família, inclusive por que uma tecnologia com vinte e cinco anos de desenvolvimento ainda é descrita pelos próprios órgãos profissionais como uma caixa preta mágica que faz segurança."
+summary: "O primeiro firewall de aplicação web e o primeiro scanner de aplicação web foram construídos pela mesma empresa, e esse é o fato estrutural que costuma faltar quando esta família é explicada. O AppShield saiu no verão de 1999; o ModSecurity abriu a categoria em 2002; o OWASP Top 10 deu vocabulário a ela em 2003; e o PCI DSS a transformou em compra quando seu Requisito 6.6 entrou em vigor, em 2008. Esta é a história da família, inclusive por que uma tecnologia com vinte e cinco anos de desenvolvimento ainda é descrita pelos próprios órgãos profissionais como uma caixa preta mágica que faz segurança."
 concepts: ["waf", "appshield", "modsecurity", "owasp", "pci dss", "history"]
 relatedTools: []
 relatedArticles: ["firewall-family-history", "adc-family-history", "awaf-false-positives", "awaf-enforcement-mode-blocking-vs-transparent", "php-october-2026-vulnerabilities"]
-category: security
+category: waf
 order: 145
 status: reviewed
-updated: "2026-09-03"
+updated: "2026-11-12"
 ---
 
 Firewalls de rede filtram por endereço e porta. Isso bastou enquanto o tráfego interessante eram muitos protocolos em muitas portas, e deixou de bastar no momento em que quase tudo de valor passou a chegar por uma porta só, carregando uma aplicação que ninguém conseguia descrever.
@@ -23,15 +23,15 @@ A mesma empresa também construiu o **AppScan**, um scanner que atacava aplicaç
 
 Kavado e Gilian Technologies lançaram produtos comparáveis na mesma época. O mercado a que todos reagiam era o auge do comércio eletrônico - o valor das transações on-line tinha chegado a cerca de 2,4 bilhões de dólares em 1998, e os ataques foram para onde estava o dinheiro.
 
-## 2002 a 2004: as peças que fizeram disso uma disciplina
+## 2002 a 2008: as peças que fizeram disso uma disciplina
 
-Três coisas aconteceram em sequência rápida, e nenhuma delas era recurso de produto.
+Três coisas aconteceram em poucos anos, e nenhuma delas era recurso de produto.
 
 O **ModSecurity**, em 2002, era um motor de regras de código aberto embutido no Apache e depois no NGINX e no IIS. Ele tornou a tecnologia acessível a qualquer um com um servidor web e, mais importante, tornou as regras LEGÍVEIS - o que transformou uma categoria opaca de appliance em algo que engenheiros podiam estudar e discutir. A mesma coisa que o Firewall Toolkit fez pelos firewalls e o Snort pela detecção de intrusão, e pela mesma razão.
 
 O **OWASP**, fundado em dezembro de 2001, publicou o primeiro **Top 10** em 2003. Aquela lista deu à área um vocabulário compartilhado - injeção, script entre sites, controle de acesso quebrado - e os fabricantes imediatamente construíram detecção para as categorias nomeadas. O **Core Rule Set** veio depois, como biblioteca aberta e compartilhada de assinaturas com pontuação de anomalia, e ainda é o que boa parte das implantações de fato roda.
 
-O **PCI DSS**, a partir de 2004, nomeou o firewall de aplicação web como controle aceitável para proteger aplicações expostas. É esse o momento em que a categoria deixou de ser compra de segurança e virou compra de conformidade.
+O **PCI DSS**, o padrão de segurança da indústria de cartões de pagamento, cuja primeira versão é de dezembro de 2004 ([Wikipedia, Payment Card Industry Data Security Standard, lido em 2026-11-12](https://en.wikipedia.org/wiki/Payment_Card_Industry_Data_Security_Standard)), nomeou o firewall de aplicação web como uma das duas formas de cumprir seu Requisito 6.6 para aplicações web expostas, sendo a outra a revisão de código da aplicação; o PCI Security Standards Council anunciou que o requisito entraria em vigor em 30 de junho de 2008 ([PCI Security Standards Council, comunicado de imprensa de 22 de abril de 2008, lido em 2026-11-12](https://east.pcisecuritystandards.org/pdfs/04-22-08.pdf)). É esse o momento em que a categoria deixou de ser compra de segurança e virou compra de conformidade.
 
 ## O que a conformidade fez com a tecnologia
 
@@ -54,7 +54,7 @@ Um WAF é um segundo modelo, externo e aproximado, de uma aplicação, mantido p
 - **Appliances de proxy reverso**, 1999. AppShield, Kavado, Gilian.
 - **Módulos embutidos**, 2002. ModSecurity dentro do próprio servidor web.
 - **Regras compartilhadas**, de 2003 em diante. O OWASP Top 10 e o Core Rule Set.
-- **Adoção puxada por conformidade**, a partir de 2004. PCI DSS, e um mercado que cresceu por razões diferentes de eficácia.
+- **Adoção puxada por conformidade**, a partir de 2008. O Requisito 6.6 do PCI DSS, e um mercado que cresceu por razões diferentes de eficácia.
 - **Absorção na camada de entrega**, do fim dos anos 2000. O WAF virou módulo do controlador de entrega de aplicação que já terminava o tráfego, que é onde a maioria das empresas o roda - consolidação que o artigo anterior desta série traça do outro lado.
 - **Nuvem e borda**, dos anos 2010. Entregue como serviço na frente da origem, o que muda a economia e move o texto em claro para o provedor.
 - **Comportamento, bots e interfaces de programação**, agora. O tráfego a ser defendido cada vez menos é navegador e página, e as regras escritas para envio de formulário não o descrevem.
@@ -89,6 +89,7 @@ Hoje a função é módulo em controladores de entrega da F5, da Citrix e da Rad
 - [Firewall de aplicação web: produtos iniciais da Kavado e da Gilian Technologies, o ModSecurity formado em 2002 para tornar a tecnologia mais acessível, e as regras padronizadas pelo OWASP Top 10 a partir de 2003](https://handwiki.org/wiki/Software:Web_application_firewall)
 - [Informe técnico da ISACA sobre firewalls de aplicação web: a Perfecto foi a primeira empresa a oferecer um firewall de aplicação web dedicado, e a maioria das implantações segue não entregando o prometido depois de vinte anos, sendo percebida como caixa preta mágica que faz segurança](https://www.approach-cyber.com/wp-content/uploads/2024/08/isaca_techbrief_-_waf_where_do_we_stand_final.pdf)
 - [A história dos firewalls de aplicação web: o PCI DSS de 2004 nomeando o firewall de aplicação web como controle compensatório, e o Core Rule Set do OWASP como biblioteca compartilhada de assinaturas com pontuação de anomalia](https://www.cdnhandbook.com/waf/history/)
+- [PCI Security Standards Council, comunicado de imprensa 'PCI Security Standards Council Issues Latest Information Supplements to PCI Data Security Standard', 22 de abril de 2008 (lido em 2026-11-12): o Requisito 6.6, em vigor a partir de 30 de junho de 2008, oferece duas opções, revisão de código da aplicação ou firewall de aplicação; a segunda opção definida como firewall de aplicação web, um ponto de aplicação de política de segurança entre a aplicação web e o cliente; a data que a história secundária acima dá como 2004](https://east.pcisecuritystandards.org/pdfs/04-22-08.pdf)
 - [HCL AppScan: a primeira versão do AppShield construída por um time liderado por Gili Raanan, rodando num servidor Linux dedicado](https://en.wikipedia.org/wiki/HCL_AppScan)
 - [Cloudflare, Cloudflare deploys protections against php2shell vulnerability, 21 de outubro de 2026: proteções de WAF no ar cerca de 9 horas antes da divulgação pública, a partir de 03:02 UTC, e a orientação de também aplicar o patch no PHP (lida em 2026-10-27)](https://blog.cloudflare.com/php-vulnerabilities-waf-protection/)
 - [AWS Security Blog, Using AWS WAF to apply mitigations for PHP2Shell: versões do grupo de regras gerenciadas de 22 e 23 de outubro de 2026, e o patch como única correção completa (lida em 2026-10-27)](https://aws.amazon.com/blogs/security/using-aws-waf-to-apply-mitigations-for-php2shell-rce-vulnerabilities-cve-2026-109618-and-cve-2026-109619/)

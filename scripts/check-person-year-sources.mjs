@@ -104,12 +104,11 @@ const src = fs.readFileSync(
 // editorial judgement. Generated from the 2026-09-30 sweep; every entry here
 // was fetched and read. This list may only shrink.
 const DECLARED_ANCHOR = new Map([
-  // NEITHER (9) - NOTHING states it: no label, no cited page, no entry copy - awaiting PRIME
+  // NEITHER (7 since 12/11/2026) - NOTHING states it: no label, no cited page, no entry copy - awaiting PRIME
   ["susan-headley", { year: 1980, why: "NEITHER" }],
-  ["anchises-moraes", { year: 2011, why: "NEITHER" }],
   ["filipe-balestra", { year: 2008, why: "NEITHER" }],
   ["jaime-andres-restrepo", { year: 2009, why: "NEITHER" }],
-  ["jude-milhon", { year: 1992, why: "NEITHER" }],
+  // jude-milhon came off the list on 12/11/2026: the content sweep's entry cites a page for 1992 and its label names the year.
   ["liane-tarouco", { year: 1988, why: "NEITHER" }],
   ["nii-quaynor", { year: 1993, why: "NEITHER" }],
   ["rodrigo-rubira-branco", { year: 2007, why: "NEITHER" }],
@@ -119,11 +118,10 @@ const DECLARED_ANCHOR = new Map([
   // Re-read 2026-10-02: the Wikipedia articles for dvd-jon and space-rogue carry
   // no 1999 and no 1998 in their wikitext either, so citing them would not help.
   ["sandro-suffert", { year: 2010, why: "COPY-ONLY" }],
-  ["dvd-jon", { year: 1999, why: "COPY-ONLY" }],
   ["solar-designer", { year: 1996, why: "COPY-ONLY" }],
   ["space-rogue", { year: 1998, why: "COPY-ONLY" }],
 
-  // PAGE-ONLY (5) - the cited page states it; neither the label nor the entry copy does
+  // PAGE-ONLY (4 since 12/11/2026) - the cited page states it; neither the label nor the entry copy does
   //
   // RE-READ 2026-10-02, and the category is weaker than it looks. Read as
   // wikitext rather than as a rendered page: katie-moussouris's article carries
@@ -135,7 +133,7 @@ const DECLARED_ANCHOR = new Map([
   ["glenn-ricart", { year: 1989, why: "PAGE-ONLY" }],
   ["katie-moussouris", { year: 2013, why: "PAGE-ONLY" }],
   ["nelson-murilo", { year: 1997, why: "PAGE-ONLY" }],
-  ["wietse-venema", { year: 1995, why: "PAGE-ONLY" }],
+  // wietse-venema came off the list on 12/11/2026: the content sweep's entry cites a page whose label names 1995.
 
   // COPY+PAGE (1) - the entry copy and the cited page both state it; only the label is silent
   // emmanuel-goldstein, re-read 2026-10-02: in the Eric Corley article's wikitext
@@ -152,12 +150,12 @@ const DECLARED_ANCHOR = new Map([
 // where an INCIDENTAL year hides, and only reading tells the two apart.
 // dan-kaminsky was the case that proved it: his 2008 was satisfied by the string
 // "CVE-2008-1447", a vulnerability identifier and not a date. Both his labels now
-// state the date, so he is not on this list.
+// state the date, so he is not on this list. paul-vixie left it on 12/11/2026: the
+// content sweep's sources for him state 1988 on its own.
 const DECLARED_RANGE_ONLY = new Map([
   ["elizabeth-feinler", "her group ran the Host Naming Registry from 1972 to 1989; 1972 is when it started"],
   ["grace-hopper", "the IEEE milestone proposal is itself titled 'Compiler and Programming Language Work, 1952-1959'"],
   ["karen-banks", "from 1990 to 1997 she maintained the GnFido gateway at GreenNet; 1990 is when it started"],
-  ["paul-vixie", "he worked on BIND at DEC from 1988 to 1993; 1988 is when that work started"],
   ["tadao-takahashi", "associated with the organisation from 1989 to 1996; 1989 is when that started"],
   ["tarek-kamel", "from 1992 to 1999 he established Egypt's first internet connection; 1992 is when that started"],
   ["william-crookes", "the tube was invented around 1869 to 1875; 1875 is the end of that range and what the entry anchors"],

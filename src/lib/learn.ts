@@ -183,6 +183,8 @@ export const LEARN_CATEGORY_ORDER = [
   "transport",
   "networking",
   "security",
+  "waf", // WAF and web app protection (12/11/2026)
+  "sase", // secure access: SSE and SASE (12/11/2026)
 ] as const;
 
 /** A category group: its KEY (label resolved in the page) plus its articles. */

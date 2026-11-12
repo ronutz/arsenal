@@ -23,6 +23,8 @@
 
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+// The link to the intelligence dashboard, in the page's language.
+import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import AdminPanel, { type AdminData, type AdminCopy } from "@/components/AdminPanel";
@@ -152,6 +154,10 @@ export default async function AdminConsolePage({
             <p className="hero-eyebrow">{t("eyebrow")}</p>
             <h1 className="admin-title">{t("title")}</h1>
             <p className="admin-lede">{t("lede")}</p>
+            {/* The intelligence dashboard (12/11/2026): what is read and used, per section and item. */}
+            <p className="admin-lede">
+              <Link href="/admin1029384756/intelligence">Intelligence: what is read and what is used</Link>
+            </p>
             <AdminPanel data={data} copy={copy} />
           </div>
         </section>

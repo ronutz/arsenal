@@ -318,7 +318,7 @@ export function explainSslProfileLocalisable(input: string): SslProfileAnalysis<
       key: "options",
       value: options.join(" "),
       explain:
-        say("field.options", "Protocol and behaviour flags. Each no-<version> flag DISABLES that version; a version is enabled when its flag is absent. dont-insert-empty-fragments turns off the 1/n-1 record split (a legacy BEAST workaround)."), // pack key engine.field.options
+        say("field.options", "Protocol and behaviour flags. Each no-<version> flag DISABLES that version; a version is enabled when its flag is absent. dont-insert-empty-fragments turns off the empty-fragment countermeasure, a zero-length record before each CBC record (a legacy BEAST workaround)."), // pack key engine.field.options
     });
   }
   if (options.includes("cipher-server-preference")) {

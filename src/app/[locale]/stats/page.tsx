@@ -137,6 +137,36 @@ export default async function StatsPage({
     panelSources: t("panelSources"),
     sourceNote: t("sourceNote"),
     col_source: t("col_source"),
+    // The interest counts' three panels (PRIME 12/11/2026 02:35): titles, notes, column headings and the kinds' names.
+    panelInterestKinds: t("panelInterestKinds"),
+    interestKindsNote: t("interestKindsNote"),
+    panelInterestTools: t("panelInterestTools"),
+    interestToolsNote: t("interestToolsNote"),
+    panelInterestGames: t("panelInterestGames"),
+    interestGamesNote: t("interestGamesNote"),
+    col_kind: t("col_kind"),
+    col_tool: t("col_tool"),
+    col_game: t("col_game"),
+    col_times: t("col_times"),
+    kind_tool_use: t("kind_tool_use"),
+    kind_share: t("kind_share"),
+    kind_game_start: t("kind_game_start"),
+    kind_game_end: t("kind_game_end"),
+    kind_read_end: t("kind_read_end"),
+    kind_search: t("kind_search"),
+    kind_out_red: t("kind_out_red"),
+    // The fourth interest panel and the eighth kind (PRIME 12/11/2026 12:42): items saved to My desk.
+    kind_save: t("kind_save"),
+    panelInterestSaves: t("panelInterestSaves"),
+    interestSavesNote: t("interestSavesNote"),
+    col_item: t("col_item"),
+    // The scoreboard's unique browsers per day (the site owner, 12/11/2026 17:06): title, note, column, "no data" and
+    // the rounds per browser over the window ('{n}' replaced in the panel).
+    panelFunBrowsers: t("panelFunBrowsers"),
+    funBrowsersNote: t("funBrowsersNote"),
+    col_browsers: t("col_browsers"),
+    funNoData: t("funNoData"),
+    funPerBrowser: t("funPerBrowser"),
   };
 
   return (
@@ -160,6 +190,14 @@ export default async function StatsPage({
                 stats: (chunks: ReactNode) => <a href={COUNTING_READ_SOURCE} target="_blank" rel="noopener noreferrer">{chunks}</a>,
                 retention: (chunks: ReactNode) => <a href={COUNTING_RETENTION_SOURCE} target="_blank" rel="noopener noreferrer">{chunks}</a>,
                 date: formatRevisionDate(COUNTING_RETENTION_READ, locale),
+              })}
+            </p>
+            {/* THE INTEREST COUNTS (12/11/2026): the last four panels are not counted at the edge; they come from the
+                browsers of readers who said yes. One line says so, with where it is set out and where it is chosen. */}
+            <p className="section-body">
+              {t.rich("interestLine", {
+                privacy: (chunks: ReactNode) => <Link href="/privacy#interest">{chunks}</Link>,
+                settings: (chunks: ReactNode) => <Link href="/settings#interest">{chunks}</Link>,
               })}
             </p>
           </div>

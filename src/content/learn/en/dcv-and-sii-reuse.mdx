@@ -8,7 +8,7 @@ relatedArticles: ["tls-certificate-lifetimes", "certificate-validity-windows", "
 category: pki
 order: 10
 status: reviewed
-updated: "2026-06-30"
+updated: "2026-11-12"
 ---
 
 ## Issuing a certificate means proving things
@@ -17,11 +17,11 @@ Before a CA (certificate authority) signs a certificate it must verify two kinds
 
 ## Domain control validation, and its shrinking reuse
 
-Domain Control Validation (DCV) is the proof that you control a name, demonstrated by serving a token over HTTP, publishing a DNS record, or an email challenge. The window during which a CA may reuse a passed DCV is collapsing in lockstep with validity: 398 days today, 200 from 15 March 2026, 100 from 15 March 2027, and just 10 days from 15 March 2029. At that final figure, with 47-day certificates, domain control must be re-proved roughly every renewal, on the order of thirty-odd times a year for a single domain. The "set it and forget it" era of yearly domain validation is what this number ends.
+Domain Control Validation (DCV) is the proof that you control a name, demonstrated by serving a token over HTTP, publishing a DNS record, or an email challenge. The window during which a CA may reuse a passed DCV is collapsing in lockstep with validity: 398 days until 15 March 2026, 200 since then, 100 from 15 March 2027, and just 10 days from 15 March 2029. At that final figure, with 47-day certificates, domain control must be re-proved roughly every renewal, on the order of thirty-odd times a year for a single domain. The "set it and forget it" era of yearly domain validation is what this number ends.
 
 ## Subject identity information, and annual re-checks
 
-Subject Identity Information (SII) is the organization data inside an OV or EV certificate: the legal name and related details, everything beyond the domain itself. Its reuse window drops from 825 days to 398 days starting 15 March 2026, meaning a business must effectively re-validate its identity once a year rather than once every couple of years. This affects only OV and EV certificates; Domain Validated certificates carry no SII and are untouched by this particular change, though they are fully subject to the DCV and validity reductions.
+Subject Identity Information (SII) is the organization data inside an OV or EV certificate: the legal name and related details, everything beyond the domain itself. Its reuse window dropped from 825 days to 398 days on 15 March 2026, meaning a business must effectively re-validate its identity once a year rather than once every couple of years. This affects only OV and EV certificates; Domain Validated certificates carry no SII and are untouched by this particular change, though they are fully subject to the DCV and validity reductions.
 
 ## Why the two windows interact
 

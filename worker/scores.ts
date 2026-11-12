@@ -8,10 +8,12 @@
  * the four endpoints under /api/v1/fun/, backed by one Cloudflare D1 table
  * (migrations/0001_fun_scores.sql).
  *
- *   POST /api/v1/fun/score            a finished daily round: { game, mode?, day, state, initials?, nonce }
+ *   POST /api/v1/fun/score            a finished daily round: { game, mode?, day, state, initials?, nonce, first? }
  *   POST /api/v1/fun/score/initials   change that round's initials the same day: { nonce, initials }
  *   GET  /api/v1/fun/board            one game's board for one day: ?game=&mode=&day= (and ?score=&time=)
- *   GET  /api/v1/fun/totals           the shelf over the last days: ?days=1|7|30|all (1 = today, for the dashboard)
+ *   GET  /api/v1/fun/totals           the shelf over the last days: ?days=1|7|30|all (1 = today, for the dashboard);
+ *                                     each byDay entry carries `browsers` (a number, or null for "no data"), and
+ *                                     `browsersFrom` names the first day the count covers (null: none yet)
  *
  * WHY THIS SHAPE
  * --------------
@@ -54,6 +56,19 @@
  * and the reason the board shows initials rather than claiming identities.
  * For the same reason streaks are not computed: nothing links one day's round
  * to the next day's.
+ *
+ * UNIQUE BROWSERS A DAY, WITHOUT AN IDENTIFIER (the site owner, 12/11/2026
+ * 17:06 to 17:09; migrations/0004_fun_first_today.sql). The browser keeps the
+ * day of its last published round in its own storage (src/lib/fun/board.ts,
+ * ronutz:fun:posted-day, never sent) and says, with one yes or no in the body
+ * (`first`), whether this round is the first it publishes on the round's day.
+ * Only that bit is stored, on the new row, as first_today; a nonce already
+ * stored or a refused round adds nothing. The day's sum of the bits is how
+ * many browsers published a round that day: browsers, not people (a phone and
+ * a laptop count two; a private window or cleared site data counts again).
+ * The day is the puzzle's day (the `day` column), as every count here is. If
+ * the column is missing (the migration not yet applied), the round is stored
+ * without the bit and the count is reported as unavailable, never as zero.
  *
  * Rows are kept for 400 days from the day they were received; about one write
  * in 200 also deletes the rows past that.
@@ -495,13 +510,32 @@ async function postScore(request: Request, url: URL, db: D1Database, later: Late
   const v: Verified | null = verifyRound(gm.g.id, day, body.state, gm.mode);
   // Not a genuine finished round of that day's puzzle.
   if (!v) return json({ error: "not_verified" }, 422);
-  // The row, inserted once per nonce.
-  const ins = await db
-    .prepare(
-      "INSERT INTO fun_scores (nonce, game, day, mode, won, score, time_ms, parts, initials, country, verified, plausible, received) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13) ON CONFLICT(nonce) DO NOTHING",
-    )
-    .bind(nonce, gm.g.id, day, gm.mode, v.won ? 1 : 0, v.score, v.timeMs, JSON.stringify(v.parts), initials, countryOf(request), v.verified ? 1 : 0, v.plausible ? 1 : 0, utcDayKey(now))
-    .run();
+  // The browser's one yes or no: this is the first round it publishes on this puzzle day (anything but true is no).
+  const first = body.first === true ? 1 : 0;
+  // The row's values, the same with or without the bit.
+  const values = [nonce, gm.g.id, day, gm.mode, v.won ? 1 : 0, v.score, v.timeMs, JSON.stringify(v.parts), initials, countryOf(request), v.verified ? 1 : 0, v.plausible ? 1 : 0, utcDayKey(now)];
+  // The row, inserted once per nonce; the bit goes only on a new row (a nonce already stored keeps its own).
+  let ins: D1Result;
+  // With the bit, where the table has its column (migrations/0004).
+  try {
+    // Inserted with first_today as the fourteenth value.
+    ins = await db
+      .prepare(
+        "INSERT INTO fun_scores (nonce, game, day, mode, won, score, time_ms, parts, initials, country, verified, plausible, received, first_today) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14) ON CONFLICT(nonce) DO NOTHING",
+      )
+      .bind(...values, first)
+      .run();
+  } catch (err) {
+    // Any other failure is the database's, answered as "unavailable" by the caller.
+    if (!/first_today/.test(err instanceof Error ? err.message : String(err))) throw err;
+    // The column is not there yet: the round is stored without the bit, and the count reads as unavailable.
+    ins = await db
+      .prepare(
+        "INSERT INTO fun_scores (nonce, game, day, mode, won, score, time_ms, parts, initials, country, verified, plausible, received) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13) ON CONFLICT(nonce) DO NOTHING",
+      )
+      .bind(...values)
+      .run();
+  }
   // Whether this nonce was already on the board.
   const duplicate = (ins.meta?.changes ?? 0) === 0;
   // The stored round: this one, or the one posted before with the same nonce.
@@ -662,6 +696,59 @@ async function getBoard(url: URL, db: D1Database): Promise<Response> {
   );
 }
 
+/** The browsers' count over a window: the first day any round carried the bit, and the bits per day from `since`. */
+interface BrowserCounts {
+  /** The first puzzle day with the bit set on any kept row, or null when none has it yet. */
+  from: string | null;
+  /** Rounds with the bit set, per puzzle day, from the window's first day. */
+  perDay: Map<string, number>;
+}
+
+/**
+ * Read the browsers' count for a window, through the index of the rows that carry the bit (migrations/0004).
+ *
+ * @param db the database
+ * @param since the window's first day
+ * @returns the counts, or null when they cannot be read (the column is not there yet)
+ */
+async function browserCounts(db: D1Database, since: string): Promise<BrowserCounts | null> {
+  // A failure here is the missing column: the count is unavailable, the rest of the answer stands.
+  try {
+    // Two reads in one round trip, both on the rows with the bit set.
+    const [first, days] = await db.batch([
+      // The first day counted, over every kept row.
+      db.prepare("SELECT MIN(day) AS d FROM fun_scores WHERE first_today = 1"),
+      // The bits per day in the window.
+      db.prepare("SELECT day, COUNT(*) AS n FROM fun_scores WHERE first_today = 1 AND day >= ?1 GROUP BY day").bind(since),
+    ]);
+    // The first day, when there is one.
+    const d = (first.results[0] as { d?: unknown } | undefined)?.d;
+    // Both, as plain values.
+    return { from: typeof d === "string" ? d : null, perDay: new Map((days.results as Array<{ day: string; n: number }>).map((r) => [r.day, Number(r.n)])) };
+  } catch {
+    // Not readable: "no data" everywhere.
+    return null;
+  }
+}
+
+/**
+ * One day's browsers, or null for "no data": a day before the first one counted, any day while the count cannot be
+ * read, and a day whose rounds all came without the bit (from pages loaded before the count began) are never zero.
+ *
+ * @param c the window's counts, or null
+ * @param day the puzzle day
+ * @param played the rounds posted that day
+ * @returns the browsers, or null
+ */
+function browsersOn(c: BrowserCounts | null, day: string, played: number): number | null {
+  // No count, or a day before it began.
+  if (!c || c.from === null || day < c.from) return null;
+  // The day's bits.
+  const n = c.perDay.get(day) ?? 0;
+  // Rounds without a single bit cannot mean no browser: no data.
+  return n === 0 && played > 0 ? null : n;
+}
+
 /**
  * GET /api/v1/fun/totals: the shelf over the last 7 or 30 days, or every day kept.
  *
@@ -718,8 +805,15 @@ async function getTotals(url: URL, db: D1Database): Promise<Response> {
     })
     .filter((r): r is NonNullable<typeof r> => r !== null)
     .sort((a, b) => BOARD_GAMES.findIndex((g) => g.id === a.game) - BOARD_GAMES.findIndex((g) => g.id === b.game) || a.mode.localeCompare(b.mode));
-  // The shelf per day.
-  const series = (byDay.results as Array<{ day: string; played: number; solved: number }>).map((r) => ({ day: r.day, played: Number(r.played), solved: Number(r.solved) }));
+  // The browsers per day, read apart: a table without the bit's column (migration not applied) must not fail the rest.
+  const counts = await browserCounts(db, since);
+  // The shelf per day, each day with its browsers (null: no data for that day).
+  const series = (byDay.results as Array<{ day: string; played: number; solved: number }>).map((r) => ({
+    day: r.day,
+    played: Number(r.played),
+    solved: Number(r.solved),
+    browsers: browsersOn(counts, r.day, Number(r.played)),
+  }));
   // The answer; streaks are not computed, because nothing links one day's rounds to another's.
   return json(
     {
@@ -729,9 +823,13 @@ async function getTotals(url: URL, db: D1Database): Promise<Response> {
       solved: series.reduce((a, r) => a + r.solved, 0),
       games: perGame,
       byDay: series,
+      // The first day the browsers' count covers; null while there is none (no bit stored yet, or no column).
+      browsersFrom: counts?.from ?? null,
       countries: (countries.results as Array<{ code: string; n: number }>).map((r) => ({ code: r.code, n: Number(r.n) })),
       streaks: null,
       note: "Streaks are not computed: no identifier links one day's rounds to another day's.",
+      // What the browsers' count is, in words, for anyone reading the answer.
+      browsersNote: "byDay[].browsers: browsers that published at least one round that puzzle day, each counted once by a yes or no its first round carried; not people, and no identifier. null means no data.",
     },
     200,
     CACHE_SECONDS,

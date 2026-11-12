@@ -53,6 +53,8 @@ import { VENDOR_FAMILIES } from "@/config/vendors";
 import { getPracticeArticles } from "@/lib/practice";
 import { ROLES } from "@/lib/roles";
 import ScrollToTop from "@/components/ScrollToTop";
+// My desk's saved and read labels on the cards.
+import DeskListMarks from "@/components/desk/DeskListMarks";
 import CategoryFilter from "@/components/CategoryFilter";
 import ViewToggle from "@/components/ViewToggle";
 import Header from "@/components/Header";
@@ -63,6 +65,8 @@ import HubViewSwitch from "@/components/HubViewSwitch";
 // the tools an article names shown on its index row. Nothing typed by hand except the three starting sentences.
 import HomePopular from "@/components/HomePopular";
 import MessageSlice from "@/components/MessageSlice";
+// The feed of new articles in the page's language (DESK-SERVER, 12/11/2026).
+import { feedUrlForLocale, FEED_MEDIA_TYPE } from "@/lib/feeds";
 import { CHANGELOG } from "@/content/changelog/changelog";
 import { tools as toolRegistry } from "@/config/tools";
 import SiteFooter from "@/components/SiteFooter";
@@ -156,6 +160,8 @@ export default async function LearnIndexPage({
   // text"): one card per lab, named by what the reader does in it, with the article it lives in under that, grouped by
   // the article's subject in the subject browser's own labels and colours, groups A->Z and labs A->Z inside each.
   const tLabs = await getTranslations("learnLabs");
+  // My desk's labels on the cards (saved, read, done), drawn in the browser after paint (12/11/2026).
+  const tDesk = await getTranslations("deskItem");
   // One entry per lab and article (a lab embedded in two articles gets a card in each, saying which).
   const labEntries = interactiveArticles(locale).flatMap((a) =>
     a.labs.map((id) => ({ id, slug: a.slug, category: a.category, title: tLabs(`${id}.title`), article: a.title })),
@@ -189,6 +195,12 @@ export default async function LearnIndexPage({
             <p className="hero-eyebrow">{t("eyebrow")}</p>
             <h1 className="page-hero-title">{t("title")}</h1>
             <p className="page-hero-lede learn-hero-lede">{t("lede")}</p>
+            {/* The new articles' feed in this language, for a feed reader (DESK-SERVER's src/lib/feeds.ts, 12/11/2026). */}
+            <p className="desk-feed">
+              <a href={feedUrlForLocale(locale)} type={FEED_MEDIA_TYPE} className="desk-link">
+                <span aria-hidden="true">{"\u25C9"}</span> {t("feed")}
+              </a>
+            </p>
             {/* The scoped search field (wave 0, 2026-10-05; SCOUT L17): opens the one dialog inside the Understand world. */}
             <HubSearch scope="understand" label={t("hubSearch.label")} placeholder={t("hubSearch.placeholder")} examplesLabel={t("hubSearch.examples")} examples={["BGP", "TLS 1.3", "SASE", "NSE 4", "802.1X", "OUI"]} />
 
@@ -540,6 +552,9 @@ export default async function LearnIndexPage({
       <SiteFooter />
 
       <ScrollToTop label={tTools("backToTop")} />
+      {/* My desk: "★ Saved", "✓ Read" or "✓ Done" on the cards of items the reader keeps, placed after paint over each
+          card's top border so nothing moves (src/components/desk/DeskListMarks.tsx). */}
+      <DeskListMarks selector=".learn-grid--index .learn-card" labels={{ saved: tDesk("saved"), read: tDesk("readOn"), done: tDesk("doneOn") }} />
     </>
   );
 }

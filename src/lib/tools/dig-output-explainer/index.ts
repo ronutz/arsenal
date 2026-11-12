@@ -109,7 +109,7 @@ export const manifest = Object.freeze({
     { id: "rfc8490", label: "RFC 8490 - DNS Stateful Operations (opcode 6 DSO, RCODE 11 DSOTYPENI)", url: "https://www.rfc-editor.org/rfc/rfc8490", access_date: "2026-10-19" }, // sections 10.1 and 10.2
     { id: "rfc6761", label: "RFC 6761 - Special-Use Domain Names (section 6.4, \"invalid.\")", url: "https://www.rfc-editor.org/rfc/rfc6761", access_date: "2026-10-19" }, // NXDOMAIN examples under .invalid
     { id: "rfc9824", label: "RFC 9824 - Compact Denial of Existence in DNSSEC", url: "https://www.rfc-editor.org/rfc/rfc9824", access_date: "2026-10-19" }, // why example.com answers NOERROR/NODATA
-    { id: "bind9-dig-manual", label: "ISC, BIND 9 9.20.29 documentation, Manual Pages: dig (+ttlunits, +ttlid, +multiline, +opcode)", url: "https://bind9.readthedocs.io/en/stable/manpages.html", access_date: "2026-10-19" }, // the output options parsed here
+    { id: "bind9-dig-manual", label: "ISC, BIND 9 9.20.29 documentation, Manual Pages: dig (+ttlunits, +ttlid, +multiline, +opcode)", url: "https://bind9.readthedocs.io/en/v9.20.29/manpages.html", access_date: "2026-10-19" }, // the output options parsed here
     { id: "bind9-dig-source", label: "ISC, BIND 9 source at tag v9.20.29, bin/dig/dig.c (opcodetext: RESERVED6) and lib/dns/rcode.c (RESERVED11)", url: "https://github.com/isc-projects/bind9/blob/v9.20.29/bin/dig/dig.c", access_date: "2026-10-19" }, // how dig spells opcode 6 and RCODE 11
   ],
 });

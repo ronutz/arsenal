@@ -32,6 +32,11 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import { ogImages } from "@/lib/og";
 import { getArticle } from "@/lib/learn";
 import { LEARN_SERIES, SERIES_GROUPS, SERIES_VENDOR_GROUPS, seriesArticles } from "@/content/learn/series";
+// My desk (PRIME 12/11/2026 12:42): each series' progress, Save and "Add as a path", in the page's deskItem slice.
+import MessageSlice from "@/components/MessageSlice";
+import DeskCollectionControls from "@/components/desk/DeskCollectionControls";
+// The feeds per series (DESK-SERVER's src/lib/feeds.ts): a plain link to each series' RSS feed.
+import { feedUrlForSeries, FEED_MEDIA_TYPE } from "@/lib/feeds";
 
 /** The index's title and description, from the namespace. */
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -68,6 +73,8 @@ export default async function LearnSeriesIndex({ params }: { params: Promise<{ l
       opener: opener ? { title: opener.title, href: `/learn/${s.opener}` } : null,
       parts,
       written: parts.filter((p) => p.href).length,
+      // The written articles in reading order, as the desk names them (its progress and its paths).
+      members: seriesArticles(s).map((slug) => `learn:${slug}` as const),
     };
   });
   // The groups in the registry's order, each with its series; a group with none is left out.
@@ -114,7 +121,9 @@ export default async function LearnSeriesIndex({ params }: { params: Promise<{ l
                 </ul>
               </div>
             ))}
-            {/* The halves: a heading and a sentence, then each group with its heading and its cards. */}
+            {/* The halves: a heading and a sentence, then each group with its heading and its cards. One slice for
+                every card's desk controls (My desk, 12/11/2026), so the words travel once. */}
+            <MessageSlice namespaces={["deskItem"]}>
             {halves.map((h) => (
               <section key={h.key} id={`half-${h.key}`} className="series-part" aria-labelledby={`half-${h.key}-title`}>
                 <h2 id={`half-${h.key}-title`} className="series-part-title">
@@ -140,6 +149,14 @@ export default async function LearnSeriesIndex({ params }: { params: Promise<{ l
                               </Link>
                             </p>
                           )}
+                          {/* My desk: how far the reader is, Save, and "Add as a path" (following it, or a copy). */}
+                          <DeskCollectionControls item={`series:${s.id}`} members={s.members} />
+                          {/* The series' own feed, for a feed reader (a plain link: the feed is a file, not a page). */}
+                          <p className="desk-feed">
+                            <a href={feedUrlForSeries(locale, s.id)} type={FEED_MEDIA_TYPE} className="desk-link">
+                              <span aria-hidden="true">{"\u25C9"}</span> {t("feed")}
+                            </a>
+                          </p>
                           {/* The parts, in order, behind the browser's own disclosure. */}
                           <details className="series-card-parts">
                             <summary className="series-card-parts-summary">{t("parts")}</summary>
@@ -162,6 +179,7 @@ export default async function LearnSeriesIndex({ params }: { params: Promise<{ l
                 ))}
               </section>
             ))}
+            </MessageSlice>
           </div>
         </section>
       </main>

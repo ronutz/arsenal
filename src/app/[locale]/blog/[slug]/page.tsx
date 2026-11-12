@@ -22,8 +22,8 @@ import rehypeLocaliseLinks from "@/lib/rehypeLocaliseLinks";
 import rehypeExternalLinks from "@/lib/rehypeExternalLinks";
 import GlossaryTerm from "@/components/GlossaryTerm";
 // The psychological-operations blocks (PRIME 2026-11-09): a labelled opinion of Rodolfo Nützmann, a claim with its
-// evidence status, and the method note; a post tagged "psychological-operations" is held to them (check-rod-voice.mjs).
-import RodVoice from "@/components/learn/RodVoice";
+// evidence status, and the method note; a post tagged "psychological-operations" is held to them (check-rod-voice.mjs, which also keeps opinion blocks out).
+import ReaderQuestions from "@/components/learn/ReaderQuestions"; // open questions for the reader (PRIME 12/11/2026 15:18; the opinion block is gone)
 import Claim from "@/components/learn/Claim";
 import MethodNote from "@/components/learn/MethodNote";
 import { rehypeGlossaryHints } from "@/lib/rehypeGlossaryHints";
@@ -156,7 +156,7 @@ export default async function BlogPostPage({
                     rehypePlugins: [[rehypeGlossaryHints, getHintSurfaces()], [rehypeLocaliseLinks, locale], rehypeExternalLinks],
                   },
                 }}
-                components={{ GlossaryTerm, RodVoice, Claim, MethodNote }}
+                components={{ GlossaryTerm, ReaderQuestions, Claim, MethodNote }}
               />
             </div>
 

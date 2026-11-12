@@ -7843,6 +7843,17 @@ p.vendor-hub-strip { margin: -1rem 0 1.75rem; }
   .stats-band-inner:has(.stat:nth-of-type(5)) .stat-sep {
     display: none;
   }
+  /* The home band's four figures (tools, articles, companies, and the puzzles, games and toys since 11/11/2026): two by
+     two on a phone, in a grid so the pairs line up, with the rules dropped (a rule would sit between unrelated cells). */
+  .stats-band-inner--four {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    justify-items: center;
+    column-gap: 1.25rem;
+  }
+  .stats-band-inner--four .stat-sep {
+    display: none;
+  }
 }
 
 /* ==========================================================================
@@ -17812,6 +17823,8 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   font-family: var(--font-mono); color: var(--text-secondary);
   word-break: break-all; padding-right: 1rem;
 }
+/* A key that is a phrase, not an address (the kinds of use, 12/11/2026): it wraps between words. */
+.stats-key-words { word-break: normal; overflow-wrap: break-word; }
 .stats-num { text-align: right; font-variant-numeric: tabular-nums; color: var(--text-primary); }
 /* The numeric column's header over its numbers (2026-10-07): every th.stats-num asked for the right edge and the
  * header rule above, more specific, kept it on the left, away from the figures it heads. */
@@ -24472,18 +24485,16 @@ html.presenter-covering body {
 }
 
 /* ---------------------------------------------------------------------------------------------------------------------
-   The psychological-operations series' blocks (PRIME 2026-11-09): RodVoice (a labelled opinion), Claim (a claim with its
+   The psychological-operations series' blocks (PRIME 2026-11-09): ReaderQuestions (open questions for the reader, since 12/11/2026), Claim (a claim with its
    evidence status) and MethodNote (the standing note on method). Tokens only; colour always repeats words, never
    replaces them.
    ------------------------------------------------------------------------------------------------------------------- */
 /* Rodolfo Nützmann's view: set apart from the article's findings by a warning-coloured rule and its own ground. */
-.rod-voice { margin: 1.75rem 0; padding: 1rem 1.25rem; border: 1px solid var(--border-strong); border-left: 3px solid var(--color-warning); border-radius: var(--radius-md); background: var(--surface-elevated); }
-/* Whose view: the first thing read. */
-.rod-voice-kicker { margin: 0 0 0.2rem; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-warning); }
-/* What it is not, and when it was said. */
-.article-body .rod-voice-label, .rod-voice-label { margin: 0 0 0.75rem; font-size: 0.85rem; color: var(--text-secondary); }
-/* The view itself; its paragraphs keep the article's rhythm, without the last one's bottom margin. */
-.rod-voice-body > :last-child { margin-bottom: 0; }
+.reader-questions { margin: 1.75rem 0; padding: 1rem 1.25rem; border: 1px solid var(--border-strong); border-left: 3px solid var(--color-info); border-radius: var(--radius-md); background: var(--surface-elevated); }
+/* the box's title, small and quiet */
+.reader-questions-title { margin: 0 0 0.5rem; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
+/* the questions keep the article's own list style; the last one closes the box without extra space */
+.reader-questions-body > :last-child { margin-bottom: 0; }
 /* A claim's status label, after the claim, small and boxed so it never reads as part of the sentence. */
 .claim-status { display: inline-block; margin-left: 0.15rem; padding: 0 0.35rem; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); font-size: 0.72rem; line-height: 1.5; vertical-align: 0.1em; white-space: nowrap; color: var(--text-secondary); }
 /* The status colours, repeating the word: green for established, blue for attributed and reported, amber for alleged
@@ -24498,3 +24509,503 @@ html.presenter-covering body {
 .article-body .method-note-title, .method-note-title { margin: 0 0 0.3rem; font-weight: 600; color: var(--text-primary); }
 /* Its paragraph. */
 .article-body .method-note-body, .method-note-body { margin: 0; }
+
+/* The page shown instead of Next's bare "Application error" (src/app/[locale]/error.tsx, PRIME 11/11/2026 23:53):
+   a narrow column, the buttons in a wrapping row, "Error details" in small print with long words broken. */
+.page-error { max-width: 42rem; padding-block: 2rem; }
+/* The one paragraph under the title, and the "reloading" line. */
+.page-error-body { color: var(--text-secondary); margin: 0 0 1.25rem; }
+/* The three ways on. */
+.page-error-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0 0 1.25rem; }
+/* "Error details". */
+.page-error-details { font-size: 0.85rem; color: var(--text-secondary); }
+/* The one line naming what failed. */
+.page-error-text { margin: 0.4rem 0 0; overflow-wrap: anywhere; }
+
+/* THE INTEREST COUNTS' QUESTION (src/components/InterestRuntime.tsx, PRIME 12/11/2026 02:35): a small panel at the
+   foot of the window, asked once. Not a dialog: it sits over the page's corner, takes no focus and blocks nothing.
+   On a phone it spans the width above the home indicator; on a wide screen it is a card at the lower left, clear of
+   the scroll-to-top button at the lower right. Below the search overlay and the boss screen, above page content. */
+.interest-ask {
+  position: fixed;
+  left: 1rem;
+  right: 1rem;
+  bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+  z-index: 60;
+  max-width: 28rem;
+  padding: 0.9rem 1rem 1rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface-elevated);
+  color: var(--text-primary);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+}
+/* The question itself. */
+.interest-ask-title { margin: 0 0 0.3rem; font-weight: 600; font-size: 0.98rem; line-height: 1.35; }
+/* What would be counted, with the link to the privacy page at its end. */
+.interest-ask-body { margin: 0 0 0.8rem; font-size: 0.88rem; line-height: 1.5; color: var(--text-secondary); }
+/* The link, underlined so it reads as one inside the sentence. */
+.interest-ask-more { color: var(--accent-primary); text-decoration: underline; text-underline-offset: 2px; white-space: nowrap; }
+/* Yes and No side by side, sharing the width equally: neither answer is drawn as the easier one. */
+.interest-ask-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+/* One button style for both answers; 44px tall for a finger. */
+.interest-ask-btn {
+  min-height: 2.75rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface-base);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+/* The same response for both: the accent on the border and the text. */
+.interest-ask-btn:hover,
+.interest-ask-btn:focus-visible { border-color: var(--accent-primary); color: var(--accent-primary); }
+/* The Settings switch's link to the privacy page: drawn as a link, since it sits where a description usually does. */
+.interest-toggle-more { color: var(--accent-primary); text-decoration: underline; text-underline-offset: 2px; }
+/* On a wide screen the question is a narrower card, so it covers less of the page beside it. */
+@media (min-width: 48rem) { .interest-ask { max-width: 24rem; } }
+/* Never on paper. */
+@media print { .interest-ask { display: none; } }
+/* A marked zone (data-interest-zone) wraps a tool without becoming a box of its own. */
+.interest-zone { display: contents; }
+/* A marked end (data-interest-end): an empty element the reader never sees, tall enough for the observer to meet. */
+.interest-end { display: block; height: 1px; }
+
+
+/* THE OPERATOR'S INTELLIGENCE DASHBOARD (src/components/IntelDashboard.tsx, PRIME 12/11/2026 02:35). One hue for
+   every mark (the theme's accent), text in the text tokens, numbers in tabular figures. A change is written with its
+   sign and words; the small triangle before it only repeats the direction. Works from a phone's width to a wide
+   screen: the tiles and the section cards fill the row and wrap, and every table scrolls inside its own frame. */
+.intel { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 2.25rem; }
+/* The window buttons and the key field share a row and wrap on a phone. */
+.intel-controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem 1.5rem; }
+.intel-controls .stats-controls { margin-bottom: 0; }
+/* The lede's links (to the dashboard from the Console, and back) are drawn as links. */
+.admin-lede a { color: var(--accent-primary); text-decoration: underline; text-underline-offset: 2px; }
+/* The operator's key: label, field, button. */
+.intel-key, .intel-split { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+.intel-key-label { font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-tertiary); }
+.intel-key-input {
+  min-height: 2.4rem;
+  min-width: 0;
+  max-width: 100%;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface-base);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 0.9rem;
+}
+.intel-key-btn, .intel-more {
+  min-height: 2.4rem;
+  padding: 0.35rem 0.8rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface-elevated);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.intel-key-btn:hover, .intel-key-btn:focus-visible,
+.intel-more:hover, .intel-more:focus-visible { border-color: var(--accent-primary); color: var(--accent-primary); }
+.intel-more { margin-top: 0.6rem; }
+/* A block of the page: its heading, a note, its content. */
+.intel-block { min-width: 0; }
+.intel-h2 { font-size: 1.3rem; font-weight: 700; letter-spacing: -0.01em; margin: 0 0 0.4rem; color: var(--text-primary); }
+.intel-h3 { font-size: 1rem; font-weight: 600; margin: 0 0 0.6rem; color: var(--text-primary); }
+.intel-note { font-size: 0.86rem; line-height: 1.55; color: var(--text-secondary); margin: 0 0 0.9rem; max-width: 72ch; }
+.intel-empty { font-family: var(--font-mono); font-size: 0.86rem; line-height: 1.55; color: var(--text-secondary); margin: 0.5rem 0 0; max-width: 72ch; }
+/* The headline tiles: as many across as fit, never narrower than a readable figure. */
+.intel-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(9.75rem, 1fr)); gap: 0.9rem; margin-bottom: 0.9rem; }
+.intel-tile, .intel-sec, .intel-panel {
+  min-width: 0;
+  padding: 0.85rem 0.95rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-elevated);
+}
+.intel-tile-name, .intel-sec-name { margin: 0; font-size: 0.82rem; line-height: 1.3; color: var(--text-secondary); }
+.intel-sec-name { font-family: var(--font-mono); }
+.intel-tile-value { margin: 0.15rem 0 0; font-size: 1.7rem; font-weight: 700; line-height: 1.15; letter-spacing: -0.01em; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+.intel-sec-value { margin: 0.15rem 0 0.35rem; font-size: 1.15rem; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+.intel-sec-share { font-size: 0.8rem; font-weight: 400; color: var(--text-tertiary); }
+/* The change on the stretch before: words in secondary ink, a triangle before them for the direction. */
+.intel-tile-delta { margin: 0.1rem 0 0.35rem; min-height: 1.2rem; font-size: 0.78rem; line-height: 1.5; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.intel-tile-delta[data-dir="up"]::before { content: "\25B2\00A0"; color: var(--color-success); font-size: 0.7em; }
+.intel-tile-delta[data-dir="down"]::before { content: "\25BC\00A0"; color: var(--color-danger); font-size: 0.7em; }
+.intel-tile-extra { margin: 0.3rem 0 0; font-size: 0.74rem; line-height: 1.4; color: var(--text-tertiary); }
+/* The sparkline: a 2px line from a zero baseline, a ringed point on the marked day, a hairline where the pointer is. */
+.intel-spark { display: block; width: 100%; height: auto; max-height: 3.2rem; touch-action: pan-y; }
+.intel-spark-base { stroke: var(--border-subtle); stroke-width: 1; }
+.intel-spark-cross { stroke: var(--border-strong); stroke-width: 1; }
+.intel-spark-line { fill: none; stroke: var(--accent-primary); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.intel-spark-dot { fill: var(--accent-primary); stroke: var(--surface-elevated); stroke-width: 2; }
+/* The sections: small multiples, the same scale in every card. */
+.intel-sections { display: grid; grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr)); gap: 0.9rem; margin-bottom: 0.9rem; }
+.intel-share { display: block; height: 4px; border-radius: 2px; background: var(--border-subtle); margin-bottom: 0.5rem; overflow: hidden; }
+.intel-share-fill { display: block; height: 100%; border-radius: 2px; background: var(--accent-primary); }
+/* The item tables: two across on a wide screen, one on a phone. */
+.intel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr)); gap: 1rem; }
+.intel-panel--wide { grid-column: 1 / -1; }
+/* A table scrolls sideways inside its frame; the page never does. */
+.intel-table-wrap { min-width: 0; overflow-x: auto; }
+.intel-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+.intel-table th { padding: 0.3rem 0.4rem 0.3rem 0; border-bottom: 1px solid var(--border-subtle); text-align: left; white-space: nowrap; }
+.intel-table td { padding: 0.35rem 0.4rem 0.35rem 0; border-bottom: 1px solid var(--border-subtle); vertical-align: top; }
+.intel-table tr:last-child td { border-bottom: none; }
+.intel-table th.intel-num, .intel-table td.intel-num { text-align: right; padding-right: 0; padding-left: 0.6rem; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--text-primary); }
+.intel-name { font-family: var(--font-mono); color: var(--text-secondary); overflow-wrap: anywhere; min-width: 9rem; }
+/* A heading that sorts: a plain button in the heading's own ink. */
+.intel-sort { appearance: none; border: 0; padding: 0; background: none; cursor: pointer; font-family: var(--font-mono); font-size: 0.74rem; font-weight: 600; color: var(--text-tertiary); }
+.intel-sort:hover, .intel-sort:focus-visible { color: var(--accent-primary); }
+/* The bar under a row's name: the sorted column's value against the largest. */
+.intel-bar { display: block; height: 3px; margin-top: 0.3rem; border-radius: 2px; background: var(--accent-primary); opacity: 0.55; min-width: 2px; }
+/* The daily figures, folded away under the tiles. */
+.intel-details { font-size: 0.86rem; color: var(--text-secondary); }
+.intel-details summary { cursor: pointer; margin-bottom: 0.6rem; }
+
+/* ============================================================================
+   MY DESK (PRIME 12/11/2026 12:42; PLAN-personal-desk-20261112): the reader's own page (/desk), the Save, Mark as read
+   and Add to path controls on item pages, the "Add to a path" panel (item pages and the search dialog), the progress
+   lines on series pages, the Home block beside "continue", the header link and the Settings section. Semantic tokens
+   only; every state is said in words and a sign (a star, a tick, a ring), colour is never the only channel; buttons
+   are 2rem tall at least; nothing moves when the reader's own data arrives after paint (progress lines keep their
+   height, widgets keep a minimum height).
+   ============================================================================ */
+
+/* --- Shared: buttons, signs, chips, links, inputs ---------------------------------------------------------------- */
+/* One button for every desk action: the share pill's shape in the body's ink; pressed is the accent plus the sign. */
+.desk-btn { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2rem; padding: 0.3rem 0.65rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: color-mix(in srgb, var(--surface-base) 60%, transparent); color: var(--text-primary); font: inherit; font-size: 0.85rem; font-weight: 600; line-height: 1.2; cursor: pointer; transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease; }
+.desk-btn:hover, .desk-btn:focus-visible { border-color: var(--accent-primary); background: color-mix(in srgb, var(--accent-primary) 10%, var(--surface-base)); }
+/* Pressed (saved, read): the accent ink and border; the filled star or the tick says it without colour. */
+.desk-btn[aria-pressed="true"] { color: var(--accent-primary); border-color: color-mix(in srgb, var(--accent-primary) 60%, transparent); }
+.desk-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+/* A quieter button for the less used actions (cancel, delete, forget). */
+.desk-btn--quiet { background: transparent; color: var(--text-secondary); }
+/* The one destructive confirmation: deleting the copy on the server. */
+.desk-btn--danger { color: var(--color-danger); border-color: color-mix(in srgb, var(--color-danger) 55%, transparent); }
+/* A square button for a sign alone (move, remove, the read ring in a list); its name is its aria-label. */
+.desk-icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; padding: 0; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); background: transparent; color: var(--text-secondary); font: inherit; font-size: 0.95rem; cursor: pointer; flex: none; }
+.desk-icon-btn:hover, .desk-icon-btn:focus-visible { border-color: var(--accent-primary); color: var(--text-primary); }
+.desk-icon-btn[aria-pressed="true"] { color: var(--accent-primary); border-color: color-mix(in srgb, var(--accent-primary) 60%, transparent); font-weight: 700; }
+.desk-icon-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+/* The sign in front of a word (star, tick, ring, plus): one width so the words line up. */
+.desk-sign { display: inline-block; min-width: 1ch; text-align: center; font-weight: 700; }
+/* A small label in a pill: an item's kind, "Example", "In English", "Updated since you read it". */
+.desk-chip { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.05rem 0.45rem; border: 1px solid var(--border-subtle); border-radius: 999px; color: var(--text-secondary); font-size: 0.7rem; line-height: 1.5; white-space: nowrap; }
+/* Examples are dashed: plainly not the reader's own. */
+.desk-chip--example { border-style: dashed; color: var(--text-primary); }
+/* Changed since read: the information hue on the border, the sign and the words carry it. */
+.desk-chip--updated { border-color: color-mix(in srgb, var(--color-info) 60%, transparent); color: var(--text-primary); }
+/* A puzzle solved today: the success hue on the border beside the tick and the word. */
+.desk-chip--done { border-color: color-mix(in srgb, var(--color-success) 60%, transparent); color: var(--text-primary); }
+.desk-link { color: var(--accent-primary); text-decoration: underline; text-underline-offset: 2px; }
+.desk-input { width: 100%; min-width: 0; padding: 0.4rem 0.55rem; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--canvas-primary); color: var(--text-primary); font: inherit; font-size: 0.88rem; }
+.desk-input:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 1px; }
+.desk-input--wide { max-width: 36rem; }
+.desk-check { display: inline-flex; align-items: center; gap: 0.45rem; color: var(--text-primary); font-size: 0.88rem; cursor: pointer; }
+.desk-visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.desk-label { margin: 0 0 0.35rem; color: var(--text-tertiary); font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
+.desk-muted { margin: 0.2rem 0; color: var(--text-tertiary); font-size: 0.8rem; }
+.desk-note { margin: 0.4rem 0; color: var(--text-secondary); font-size: 0.86rem; line-height: 1.5; }
+/* A state that needs attention: a sign, the words, and a rail in the warning hue. */
+.desk-alert { margin: 0.5rem 0; padding: 0.5rem 0.75rem; border-inline-start: 3px solid var(--color-warning); border-radius: var(--radius-sm); background: var(--surface-base); color: var(--text-primary); font-size: 0.88rem; line-height: 1.5; }
+/* What just happened, with its Undo; a fixed minimum height so the announcement does not move the page. */
+.desk-status { min-height: 1.4em; margin: 0.6rem 0 0; color: var(--text-secondary); font-size: 0.85rem; }
+.desk-h3 { margin: 1.5rem 0 0.4rem; color: var(--text-primary); font-size: 1rem; }
+
+/* --- The item page's controls ------------------------------------------------------------------------------------ */
+.desk-controls { margin: 0.75rem 0 1.25rem; }
+.desk-controls-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+.desk-controls-note { margin: 0.45rem 0 0; color: var(--text-tertiary); font-size: 0.78rem; }
+/* The panel opens as a full row under the buttons (no popover to fall off a phone's edge): its end margin fills the rest
+   of the row, so the 26rem cap cannot pull it up beside the buttons on a wide screen. */
+.desk-menu-wrap { display: contents; }
+.desk-menu { flex: 1 1 100%; max-width: 26rem; margin: 0.4rem max(0px, calc(100% - 26rem)) 0 0; padding: 0.75rem; border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--surface-elevated); color: var(--text-primary); box-shadow: 0 8px 24px rgba(2, 6, 23, 0.3); }
+.desk-menu-title { margin: 0.5rem 0 0.35rem; font-size: 0.85rem; font-weight: 600; }
+.desk-menu-none { margin: 0 0 0.4rem; color: var(--text-secondary); font-size: 0.82rem; }
+.desk-menu-list { display: grid; gap: 0.25rem; max-height: 12rem; margin: 0; padding: 0; overflow: auto; list-style: none; }
+.desk-menu-path { display: flex; align-items: center; gap: 0.45rem; width: 100%; min-height: 2rem; padding: 0.35rem 0.5rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); background: transparent; color: var(--text-primary); font: inherit; font-size: 0.85rem; text-align: start; cursor: pointer; }
+.desk-menu-path:hover, .desk-menu-path:focus-visible { border-color: var(--accent-primary); }
+.desk-menu-path[aria-pressed="true"] { border-color: color-mix(in srgb, var(--accent-primary) 60%, transparent); }
+.desk-menu-path-name { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.desk-menu-path-count { color: var(--text-tertiary); font-size: 0.72rem; }
+.desk-menu-new { display: flex; gap: 0.4rem; margin: 0.6rem 0 0; }
+.desk-menu-new-label { flex: 1; min-width: 0; }
+.desk-menu-status { min-height: 1.2em; margin: 0.4rem 0 0; color: var(--text-secondary); font-size: 0.8rem; }
+.desk-menu-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem; margin: 0.4rem 0 0; color: var(--text-tertiary); font-size: 0.78rem; }
+.desk-menu-close { margin-inline-start: auto; padding: 0.2rem 0.5rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); background: transparent; color: var(--text-secondary); font: inherit; font-size: 0.78rem; cursor: pointer; }
+/* The confirmation of a change made by a key or by reaching the end: under the sticky header, clear of the interest
+   question at the foot of the window and of the scroll-to-top button. */
+.desk-toast { position: fixed; top: calc(var(--sticky-stack) + 0.75rem); left: 1rem; right: 1rem; z-index: 70; display: flex; align-items: center; gap: 0.6rem; max-width: 26rem; margin-inline-start: auto; padding: 0.55rem 0.7rem; border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--surface-elevated); color: var(--text-primary); box-shadow: 0 8px 24px rgba(2, 6, 23, 0.35); }
+.desk-toast-msg { flex: 1; font-size: 0.88rem; }
+.desk-toast-close { padding: 0 0.3rem; border: none; background: none; color: var(--text-secondary); font-size: 1.2rem; line-height: 1; cursor: pointer; }
+@media print { .desk-toast, .desk-controls, .desk-collection { display: none; } }
+
+/* --- A series' progress, Save and adoption (series cards, training series, reading paths) -------------------------- */
+.desk-collection { margin: 0.6rem 0 0.5rem; }
+.desk-collection-choose { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.5rem 0 0; }
+.desk-collection-on { color: var(--text-secondary); font-size: 0.85rem; }
+/* Progress: the words, then a bar in one hue on one scale everywhere; never a gauge, never traffic lights. */
+.desk-progress { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 0.6rem; min-height: 1.5rem; margin: 0.3rem 0; }
+.desk-progress-text { color: var(--text-secondary); font-size: 0.8rem; }
+.desk-bar { flex: 1 1 6rem; max-width: 14rem; height: 6px; border-radius: 3px; background: var(--border-subtle); overflow: hidden; }
+.desk-bar-fill { display: block; height: 100%; border-radius: 3px; background: var(--accent-primary); }
+/* Before the reader's desk is read: the line keeps its place, unseen. */
+.desk-pending { visibility: hidden; }
+.desk-feed { margin: 0.3rem 0; font-size: 0.82rem; }
+
+/* --- The desk page ------------------------------------------------------------------------------------------------- */
+.desk-section { padding-block: clamp(1.5rem, 4vw, 3rem); }
+.desk-where { max-width: 60ch; margin: 0 0 1rem; color: var(--text-secondary); font-size: 0.88rem; line-height: 1.55; }
+.desk { min-width: 0; }
+.desk-statuses { min-height: 0.5rem; }
+.desk-incoming { margin: 0.75rem 0; padding: 0.75rem 0.9rem; border: 1px solid color-mix(in srgb, var(--accent-primary) 50%, transparent); border-radius: var(--radius-md); background: var(--surface-elevated); }
+.desk-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 0.5rem; margin: 0.5rem 0 1rem; }
+.desk-toolbar .desk-label { margin: 0; }
+/* The density switch: two buttons in one frame; the chosen one is heavier and underlined, not only coloured. */
+.desk-seg { display: inline-flex; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); overflow: hidden; }
+.desk-seg-btn { min-height: 2rem; padding: 0.3rem 0.7rem; border: none; background: transparent; color: var(--text-secondary); font: inherit; font-size: 0.82rem; cursor: pointer; }
+.desk-seg-btn + .desk-seg-btn { border-inline-start: 1px solid var(--border-subtle); }
+.desk-seg-btn[aria-pressed="true"] { background: color-mix(in srgb, var(--accent-primary) 14%, transparent); color: var(--text-primary); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+/* The widgets: one column on a phone, the stored sizes on a wider screen (one stored layout for every screen). */
+.desk-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+.desk-w { min-width: 0; min-height: 7rem; padding: 1rem 1.1rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-base); }
+.desk-w-title { margin: 0 0 0.7rem; color: var(--text-primary); font-size: 1.02rem; }
+@media (min-width: 48rem) {
+  .desk-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+  .desk-w--wide { grid-column: span 12; }
+  .desk-w--medium { grid-column: span 6; }
+  .desk-w--small { grid-column: span 6; }
+}
+@media (min-width: 64rem) { .desk-w--small { grid-column: span 4; } }
+/* Compact: the reader's choice, less space everywhere on the page. */
+.desk--compact .desk-grid { gap: 0.6rem; }
+.desk--compact .desk-w { min-height: 5rem; padding: 0.6rem 0.75rem; }
+.desk--compact .desk-list { gap: 0.2rem; }
+.desk--compact .desk-w-title { margin-bottom: 0.4rem; font-size: 0.95rem; }
+.desk-empty { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5; }
+.desk-empty > p { margin: 0 0 0.6rem; }
+.desk-list { display: grid; gap: 0.4rem; margin: 0; padding: 0; list-style: none; }
+.desk-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 0.6rem; }
+.desk-row-n { min-width: 1.5rem; color: var(--text-tertiary); font-size: 0.72rem; text-align: end; }
+.desk-row-actions, .desk-path-move { display: inline-flex; gap: 0.25rem; margin-inline-start: auto; }
+/* One item: its title (linked), then its chips. */
+.desk-item { display: inline-flex; flex: 1 1 12rem; flex-wrap: wrap; align-items: baseline; gap: 0.3rem 0.45rem; min-width: 0; }
+.desk-item-link { color: var(--text-primary); text-decoration: underline; text-decoration-color: var(--border-strong); text-underline-offset: 3px; overflow-wrap: anywhere; }
+.desk-item-link:hover, .desk-item-link:focus-visible { text-decoration-color: var(--accent-primary); }
+.desk-item--loading .desk-item-link { color: var(--text-tertiary); }
+.desk-item-gone { color: var(--text-secondary); font-size: 0.88rem; font-style: italic; }
+/* Continue: the next item of the path in progress beside the last pages opened. */
+.desk-continue { display: grid; gap: 1rem; }
+@media (min-width: 48rem) { .desk-continue { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.desk-continue-next, .desk-continue-recent { min-width: 0; }
+.desk-continue-item { margin: 0.2rem 0 0.4rem; font-size: 1rem; }
+/* Paths. */
+.desk-paths, .desk-favourites { min-width: 0; }
+.desk-path { padding: 0.6rem 0; border-top: 1px solid var(--border-subtle); }
+.desk-path:first-child { border-top: none; padding-top: 0; }
+.desk-path-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 0.7rem; }
+.desk-path-name { padding: 0.2rem 0; border: none; background: none; color: var(--text-primary); font: inherit; font-size: 0.95rem; font-weight: 600; text-align: start; cursor: pointer; }
+.desk-path-name:hover, .desk-path-name:focus-visible { color: var(--accent-primary); }
+.desk-path-body { margin: 0.6rem 0 0 0.2rem; padding-inline-start: 0.8rem; border-inline-start: 2px solid var(--border-subtle); }
+.desk-path-items { margin: 0.6rem 0; }
+.desk-path-add { display: grid; gap: 0.75rem; margin: 0.6rem 0; }
+@media (min-width: 48rem) { .desk-path-add { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.desk-path-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; margin: 0.6rem 0 0; }
+.desk-inline-form { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.4rem 0.5rem; margin: 0.75rem 0 0; }
+.desk-inline-form > .desk-input { flex: 1 1 12rem; width: auto; }
+.desk-inline-form > .desk-picker-label { flex: 1 1 100%; }
+/* The add picker. */
+.desk-picker { display: grid; gap: 0.3rem; min-width: 0; }
+.desk-picker-label { color: var(--text-secondary); font-size: 0.78rem; font-weight: 600; }
+.desk-picker-list { display: grid; gap: 0.25rem; max-height: 16rem; margin: 0.2rem 0 0; padding: 0; overflow: auto; list-style: none; }
+.desk-picker-row { display: flex; align-items: center; gap: 0.4rem; }
+.desk-picker-title { flex: 1; min-width: 0; font-size: 0.86rem; overflow-wrap: anywhere; }
+/* Adopting a collection. */
+.desk-adopt { margin: 0.9rem 0 0; }
+.desk-adopt > summary { color: var(--accent-primary); font-size: 0.88rem; cursor: pointer; }
+.desk-adopt-body { display: grid; gap: 0.5rem; max-width: 36rem; margin: 0.5rem 0 0; }
+.desk-adopt-mode { display: grid; gap: 0.3rem; margin: 0; padding: 0; border: none; font-size: 0.85rem; }
+/* Favourites: tools as launch tiles. */
+.desk-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr)); gap: 0.5rem; margin: 0 0 0.6rem; padding: 0; list-style: none; }
+.desk-tile { display: flex; align-items: center; gap: 0.3rem; padding: 0.45rem 0.5rem 0.45rem 0.65rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--canvas-primary); }
+.desk-tile:hover, .desk-tile:focus-within { border-color: var(--accent-primary); }
+.desk-tile-link { flex: 1; min-width: 0; color: var(--text-primary); font-size: 0.86rem; font-weight: 600; overflow-wrap: anywhere; }
+.desk-fav-group { margin: 0.8rem 0 0; }
+.desk-puzzles .desk-row { gap: 0.3rem 0.5rem; }
+.desk-widget-action { margin: 0.7rem 0 0; font-size: 0.85rem; }
+
+/* --- Arranging the desk (phase 3): the editor's bar, the widgets as frames, the add list and the starters ---------- */
+/* The one action that ends a mode: the accent border and a heavier weight beside its tick. */
+.desk-btn--primary { border-color: var(--accent-primary); font-weight: 700; }
+.desk-edit { min-width: 0; }
+/* The bar stays in view under the sticky header while a long page scrolls: Undo and Done always within reach. */
+.desk-edit-bar { position: sticky; top: var(--sticky-stack); z-index: 20; margin: 0 0 0.75rem; padding: 0.6rem 0.8rem; border: 1px solid var(--accent-primary); border-radius: var(--radius-md); background: var(--surface-elevated); box-shadow: 0 6px 18px rgba(2, 6, 23, 0.18); }
+.desk-edit-bar-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem 1rem; }
+.desk-edit-title { margin: 0; color: var(--text-primary); font-size: 1rem; }
+.desk-edit-title:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+.desk-edit-actions { display: inline-flex; flex-wrap: wrap; gap: 0.5rem; }
+/* What just happened: a fixed minimum height, so each change's sentence does not move the bar. */
+.desk-edit-said { min-height: 1.4em; margin: 0.4rem 0 0; color: var(--text-secondary); font-size: 0.85rem; }
+/* After Done: the line takes no room until it has something to say. */
+.desk-edit-kept { min-height: 0; margin: 0; }
+.desk-edit-kept:not(:empty) { margin: 0 0 0.6rem; }
+/* The frames: the grid of the page itself, as a list; dashed, so arranging never looks like using. */
+.desk-edit-grid { margin: 0.75rem 0 0; padding: 0; list-style: none; }
+.desk-w--edit { min-height: 0; border-style: dashed; border-color: color-mix(in srgb, var(--accent-primary) 55%, var(--border-subtle)); }
+.desk-w--edit:focus-visible { outline: 3px solid var(--accent-primary); outline-offset: 2px; }
+.desk-edit-where { display: flex; flex-wrap: wrap; gap: 0.3rem; margin: 0 0 0.4rem; }
+.desk-edit-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin: 0.6rem 0 0; }
+/* The add list and the starters: a name and its line, the button at the end. */
+.desk-edit-add { margin: 1rem 0 0; }
+.desk-edit-catalogue { margin: 0.5rem 0 0; }
+.desk-edit-cat-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.35rem 0.75rem; padding: 0.45rem 0; border-top: 1px solid var(--border-subtle); }
+.desk-edit-cat-row:first-child { border-top: none; }
+.desk-edit-cat-text { display: grid; flex: 1 1 14rem; min-width: 0; }
+.desk-edit-cat-name { color: var(--text-primary); font-size: 0.9rem; font-weight: 600; }
+
+/* --- New for you (phase 3): three groups, each row with its sign and words ------------------------------------------- */
+.desk-news { min-width: 0; }
+.desk-news > .desk-muted:first-child { margin: 0 0 0.6rem; }
+.desk-news-group { margin: 0.8rem 0 0; }
+.desk-news-group:first-of-type { margin-top: 0.4rem; }
+/* New or revised, new or changed: the accent on the border beside the ✦ sign and the words. */
+.desk-chip--new { border-color: color-mix(in srgb, var(--accent-primary) 60%, transparent); color: var(--text-primary); }
+
+/* --- Saved and read on the index pages (Learn, Tools, Glossary): labels placed after paint ----------------------------- */
+/* The card positions its label (the Learn and Tools cards already do; a glossary entry is given it here). */
+.desk-marked { position: relative; }
+/* The label straddles the card's top border at its end: out of the text's way, and taking no room, so the page does
+   not move when it appears; the pointer goes through it to the card's link. */
+.desk-mark { position: absolute; top: -0.62rem; right: 0.75rem; z-index: 2; display: inline-flex; gap: 0.25rem; pointer-events: none; }
+/* One part: the sign and the word on the raised surface, in the accent's border (the sign and the word carry it). */
+.desk-mark-chip { display: inline-flex; align-items: center; gap: 0.2rem; padding: 0 0.42rem; border: 1px solid color-mix(in srgb, var(--accent-primary) 65%, var(--border-subtle)); border-radius: 999px; background: var(--surface-elevated); color: var(--text-primary); font-size: 0.68rem; font-weight: 600; line-height: 1.5; white-space: nowrap; }
+@media print { .desk-mark { display: none; } }
+
+/* --- Notes (phase 4): a box of the reader's own text, where it is kept and the count under it -------------------------- */
+.desk-notes { display: grid; gap: 0.4rem; min-width: 0; }
+.desk-notes-box { min-height: 7rem; resize: vertical; line-height: 1.5; }
+.desk-notes-foot { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.2rem 0.75rem; margin: 0; }
+.desk-notes-foot > .desk-muted { margin: 0; }
+
+/* --- The exam countdown (phase 4): the exam, the days in large figures, the date ------------------------------------- */
+.desk-countdown, .desk-countdown-form { display: grid; gap: 0.35rem; min-width: 0; }
+.desk-countdown-form .desk-picker-label { margin-top: 0.2rem; }
+.desk-countdown-exam { margin: 0; color: var(--text-primary); font-weight: 600; overflow-wrap: anywhere; }
+.desk-countdown-days { margin: 0; color: var(--text-primary); font-size: 1.6rem; font-weight: 700; line-height: 1.2; font-variant-numeric: tabular-nums; }
+
+/* --- A quick tool (phase 4): the tool's name, a field, the answer as labelled rows with a Copy button each ------------ */
+.desk-quick { display: grid; gap: 0.4rem; min-width: 0; }
+.desk-quick-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.2rem 0.75rem; margin: 0; font-weight: 600; }
+.desk-quick-open { font-size: 0.8rem; font-weight: 400; }
+.desk-quick-form { margin: 0; }
+/* The answer: label, value (wrapping anywhere: addresses and Base64 are long), and the copy button, one line each. */
+.desk-quick-out { display: grid; gap: 0.3rem; margin: 0.2rem 0 0; }
+.desk-quick-row { display: grid; grid-template-columns: minmax(6rem, 9rem) minmax(0, 1fr) auto; align-items: center; gap: 0.5rem; padding: 0.15rem 0; border-top: 1px solid var(--border-subtle); }
+.desk-quick-row:first-child { border-top: none; }
+.desk-quick-row > dt { color: var(--text-secondary); font-size: 0.8rem; }
+.desk-quick-row > dd { margin: 0; color: var(--text-primary); font-size: 0.85rem; overflow-wrap: anywhere; }
+.desk-quick-copied { margin: 0; }
+
+/* --- The reading streak and milestones: the run, fourteen days as dots and rings, the milestones; a quiet line when one
+   is reached, fading in only when the reader has not asked for reduced motion -------------------------------------- */
+.desk-streak { display: grid; gap: 0.3rem; min-width: 0; }
+.desk-streak-now { margin: 0; color: var(--text-primary); font-size: 1.35rem; font-weight: 700; line-height: 1.25; }
+.desk-streak-strip { display: flex; flex-wrap: wrap; gap: 0.2rem; margin: 0.2rem 0 0; color: var(--text-tertiary); font-size: 0.9rem; line-height: 1; }
+.desk-streak-day--on { color: var(--accent-primary); }
+.desk-streak-marks { margin: 0.4rem 0 0; }
+.desk-celebrate { margin: 0 0 0.3rem; padding: 0.4rem 0.6rem; border: 1px solid color-mix(in srgb, var(--accent-primary) 60%, transparent); border-radius: var(--radius-sm); background: color-mix(in srgb, var(--accent-primary) 8%, var(--surface-base)); color: var(--text-primary); font-size: 0.88rem; font-weight: 600; }
+.desk-toast-milestone { display: block; margin: 0.25rem 0 0; font-weight: 600; }
+@media (prefers-reduced-motion: no-preference) {
+  .desk-celebrate, .desk-toast-milestone { animation: desk-celebrate-in 0.9s ease-out 1; }
+}
+@keyframes desk-celebrate-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+/* --- "Continue this path" on item pages (the site owner, 12/11/2026 15:22) ----------------------------------------- */
+/* Drawn only when the page's item is in one of the reader's paths: a quiet box with the accent on its start edge. */
+.desk-pathnext { margin: 0.9rem 0 1.25rem; padding: 0.65rem 0.85rem; border: 1px solid var(--border-subtle); border-inline-start: 3px solid var(--accent-primary); border-radius: var(--radius-md); background: var(--surface-base); }
+.desk-pathnext .desk-list { gap: 0.6rem; }
+/* One path: the sentence with its link, then the progress and the path on My desk, wrapping on a phone. */
+.desk-pathnext-row { display: grid; gap: 0.2rem; min-width: 0; }
+.desk-pathnext-say { color: var(--text-primary); font-size: 0.92rem; line-height: 1.5; overflow-wrap: anywhere; }
+.desk-pathnext-meta { color: var(--text-tertiary); font-size: 0.8rem; }
+.desk-pathnext-done { font-weight: 600; }
+/* At the top of an article, only on a narrow screen (on a wide one the end of the article is enough). */
+.desk-pathnext--top { margin: 0.6rem 0 1rem; }
+@media (min-width: 48rem) { .desk-pathnext--top { display: none; } }
+/* A path finished while the page is open: one short fade-in, only when motion is welcome. */
+@media (prefers-reduced-motion: no-preference) {
+  .desk-pathnext-done--now { display: inline-block; animation: desk-celebrate-in 0.9s ease-out 1; }
+}
+/* A path opened from such a link lands below the sticky header. */
+.desk-path { scroll-margin-top: calc(var(--sticky-stack) + 1rem); }
+
+/* --- Privacy and settings (the site owner, 12/11/2026 15:27) ------------------------------------------------------- */
+/* Its parts stacked with a hairline between them; the counting switch keeps the Settings page's own frame. */
+.desk-privacy { display: grid; gap: 0.7rem; min-width: 0; }
+.desk-privacy-part { min-width: 0; padding-top: 0.6rem; border-top: 1px solid var(--border-subtle); }
+.desk-privacy-part:first-child { padding-top: 0; border-top: none; }
+.desk-privacy-part > .desk-label { margin-bottom: 0.4rem; }
+.desk-privacy-part .gloss-hint-toggle { gap: 0.6rem; margin: 0; padding: 0.6rem 0.75rem; }
+.desk-privacy-part .desk-check { align-items: flex-start; margin: 0.25rem 0; line-height: 1.45; }
+.desk-privacy-part .desk-check > input { flex: 0 0 auto; margin-top: 0.2rem; }
+.desk-privacy-part .desk-sync-line { margin: 0 0 0.3rem; }
+.desk-privacy-part .desk-incoming { margin: 0; }
+/* The merge choice's legend sits like the other parts' labels. */
+.desk-privacy-part legend.desk-label { padding: 0; }
+/* The two links, one per line on a phone, side by side when there is room. */
+.desk-privacy-links { display: flex; flex-wrap: wrap; gap: 0.35rem 1rem; }
+
+/* --- Settings: the desk's data ------------------------------------------------------------------------------------- */
+.desk-data { margin: 1rem 0 0; }
+.desk-data .desk-controls-row { margin: 0.5rem 0; }
+.desk-code { color: var(--text-primary); font-family: var(--font-mono); font-size: 0.95rem; letter-spacing: 0.04em; overflow-wrap: anywhere; }
+/* "Use this on another browser" (Portable storage, 12/11/2026): its three ways, each under a small heading. */
+.desk-h4 { margin: 1.1rem 0 0.3rem; color: var(--text-primary); font-size: 0.92rem; font-weight: 600; }
+/* The pairing: the QR code beside the warning, the link and its buttons; one column on a phone. */
+.desk-pair { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 1rem 1.25rem; margin: 0.6rem 0; padding: 0.75rem 0.9rem; border: 1px solid color-mix(in srgb, var(--accent-primary) 55%, transparent); border-radius: var(--radius-md); background: var(--surface-elevated); }
+.desk-pair-side { flex: 1 1 16rem; min-width: 0; }
+.desk-pair-side .desk-alert { margin-top: 0; }
+.desk-pair-side .desk-picker-label { display: block; margin: 0.5rem 0 0.25rem; }
+/* The QR code: dark modules on a light ground in both themes (a scanner needs that contrast), its quiet zone inside. */
+.desk-qr { display: block; flex: 0 0 auto; width: 12rem; max-width: 100%; height: auto; border-radius: var(--radius-sm); }
+/* While this browser syncs: when it last synced, the choices and the ways out. */
+.desk-sync-box { margin: 0.75rem 0; padding: 0.6rem 0.9rem; border-inline-start: 3px solid var(--accent-primary); border-radius: var(--radius-sm); background: var(--surface-base); }
+/* The desk page's one sync line: the time, the outcome, Sync now and the link to Settings, wrapping on a phone. */
+.desk-sync-line { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 0.6rem; }
+
+/* --- The header link ----------------------------------------------------------------------------------------------- */
+.desk-nav-link { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.4rem 0.6rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); color: var(--text-secondary); font-size: 0.875rem; white-space: nowrap; transition: border-color 0.15s ease, color 0.15s ease; }
+.desk-nav-link:hover, .desk-nav-link:focus-visible { border-color: var(--accent-primary); color: var(--text-primary); }
+/* On the desk itself: heavier, the accent border; aria-current says it to assistive technology. */
+.desk-nav-link[aria-current="page"] { border-color: var(--accent-primary); color: var(--text-primary); font-weight: 600; }
+.desk-nav-mark { color: var(--accent-primary); font-size: 0.8rem; }
+/* On a phone the star alone shows; the words stay for assistive technology (the link's name). */
+@media (max-width: 39.99rem) { .desk-nav-text { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; } }
+/* On a phone the star link sits beside search, theme and the language's native name: at 390 px "Português (Brasil)"
+   pushed the row 9 px past the edge, so below 26rem the row's gaps and the star's padding are a little tighter. */
+@media (max-width: 25.99rem) { .site-header-actions { gap: 0.4rem; } .desk-nav-link { padding-inline: 0.45rem; } }
+
+/* --- The search dialog's "Add to..." -------------------------------------------------------------------------------- */
+/* A result that names a desk item: the link, then the button under its end, then the panel when open. */
+.search-result-item { display: grid; }
+.search-result-add { justify-self: end; margin: -0.35rem 0.6rem 0.35rem 0; padding: 0.15rem 0.55rem; border: 1px solid var(--border-subtle); border-radius: 999px; background: transparent; color: var(--text-secondary); font: inherit; font-size: 0.75rem; cursor: pointer; }
+.search-result-add:hover, .search-result-add:focus-visible, .search-result-add[aria-expanded="true"] { border-color: var(--accent-primary); color: var(--text-primary); }
+.search-result-item > .desk-menu { margin: 0 0.6rem 0.5rem; max-width: none; }
+
+/* --- Home: My desk beside "continue" --------------------------------------------------------------------------------- */
+.continue-grid { display: grid; gap: 1.5rem 2.5rem; }
+@media (min-width: 48rem) { .continue-grid { grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); } }
+.continue-trail { min-width: 0; }
+.home-desk { min-width: 0; }
+.home-desk-summary { margin: 0.75rem 0 0.4rem; color: var(--text-secondary); font-size: 0.85rem; }
+.home-desk-invite { max-width: 46ch; }
+.home-desk-open { margin: 0.75rem 0 0; }

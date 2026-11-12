@@ -8,7 +8,7 @@ relatedArticles: ["edns-and-the-opt-pseudosection", "dnssec-records-in-dig", "dn
 category: networking
 order: 255
 status: reviewed
-updated: "2026-10-18"
+updated: "2026-11-12"
 ---
 
 A public DNS resolver is a recursive resolver that anyone on the internet may use; 1.1.1.1, 8.8.8.8, 9.9.9.9 and 208.67.222.222 are the four this part follows. You meet one when a router, an operating system or a browser offers to replace the resolver your network handed out over the Dynamic Host Configuration Protocol (DHCP), usually on a promise of speed. What you are choosing is the party that sees every name you look up: what it logs and for how long, whether it filters, whether it validates the DNS Security Extensions (DNSSEC), whether it tells authoritative servers where you are, and which encrypted transports it offers. After reading, you can read an operator's own pages against the list Request for Comments (RFC) 8932 asks it to publish, choose by those criteria, and test each one with dig and curl.
@@ -176,7 +176,7 @@ NXDOMAIN with no authority record and EDE 17 is the block signature Quad9 docume
 - [RFC 9463, DHCP and Router Advertisement Options for the Discovery of Network-designated Resolvers (DNR), November 2023: abstract and section 1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9463.txt)
 - [RFC 8952, Captive Portal Architecture, November 2020: section 1 and appendix A (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8952.txt)
 - [RFC 8910, Captive-Portal Identification in DHCP and Router Advertisements (RAs), September 2020: sections 1, 2 and 5 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8910.txt)
-- [ISC, BIND 9 9.20.29 documentation, Manual Pages: dig - DNS lookup utility and delv - DNS lookup and validation utility, undated page: Synopsis, Simple Usage and Query Options (read 2026-10-19)](https://bind9.readthedocs.io/en/stable/manpages.html)
+- [ISC, BIND 9 9.20.29 documentation, Manual Pages: dig - DNS lookup utility and delv - DNS lookup and validation utility, undated page: Synopsis, Simple Usage and Query Options (read 2026-10-19)](https://bind9.readthedocs.io/en/v9.20.29/manpages.html)
 - [Cloudflare, 1.1.1.1 docs: IP addresses, April 2026 (read 2026-10-18)](https://developers.cloudflare.com/1.1.1.1/ip-addresses/)
 - [Cloudflare, 1.1.1.1 docs: Set up, May 2026 (read 2026-10-18)](https://developers.cloudflare.com/1.1.1.1/setup/)
 - [Cloudflare, 1.1.1.1 docs: DNS over TLS, May 2026 (read 2026-10-18)](https://developers.cloudflare.com/1.1.1.1/encryption/dns-over-tls/)

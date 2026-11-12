@@ -46,7 +46,7 @@ export interface ShortcutAction {
    * component switches on this. Kept as a closed union so the component and the
    * registry cannot drift.
    */
-  command?: "search-overlay" | "cheat-sheet" | "focus-search" | "boss-key" | "green-room" | "red-room";
+  command?: "search-overlay" | "cheat-sheet" | "focus-search" | "boss-key" | "green-room" | "red-room" | "desk-save" | "desk-read";
   /** i18n key (under the `shortcuts` namespace) for the human label. */
   labelKey: string;
 }
@@ -76,6 +76,10 @@ export const SHORTCUT_ACTIONS: ShortcutAction[] = [
   { id: "tool-panos-policy-order", kind: "navigate", path: "/tools/panos-policy-evaluation-order", labelKey: "actionToolPanosPolicyOrder" },
   { id: "tool-x509", kind: "navigate", path: "/tools/x509", labelKey: "actionToolX509" },
   { id: "nav-vendors", kind: "navigate", path: "/vendor-hubs", labelKey: "actionVendors" },
+  // My desk (PRIME 12/11/2026 12:42): the reader's own page, and the two things to do on an item page from the keyboard.
+  // The commands are answered by the page's own controls (src/components/desk/DeskItemControls.tsx); on a page with no
+  // item they do nothing.
+  { id: "nav-desk", kind: "navigate", path: "/desk", labelKey: "actionDesk" },
   // Commands — handled inside the shortcut layer
   { id: "cmd-search", kind: "command", command: "search-overlay", labelKey: "actionSearch" },
   { id: "cmd-focus-search", kind: "command", command: "focus-search", labelKey: "actionFocusSearch" },
@@ -87,6 +91,9 @@ export const SHORTCUT_ACTIONS: ShortcutAction[] = [
   // or click leaves the room.
   { id: "cmd-green-room", kind: "command", command: "green-room", labelKey: "actionGreenRoom" },
   { id: "cmd-red-room", kind: "command", command: "red-room", labelKey: "actionRedRoom" },
+  // My desk: save or unsave this page's item; mark it read (or done) or take the mark off.
+  { id: "cmd-desk-save", kind: "command", command: "desk-save", labelKey: "actionDeskSave" },
+  { id: "cmd-desk-read", kind: "command", command: "desk-read", labelKey: "actionDeskRead" },
 ];
 
 // Fast lookup by id (used by the resolver and the component).
@@ -106,6 +113,7 @@ export const ACTION_BY_ID: Record<string, ShortcutAction> = Object.fromEntries(
 //     web conventions)
 //   1-5 favorite tools (PRIME-ratified: CIDR, Base64, JWT, JSON⇄YAML, F5 hub)
 //   6-0 more quick launches: Hash, UUID, URL inspector, X.509, Vendors home
+//   d My desk · k keep (save) this page's item · x tick it off as read (My desk, 12/11/2026)
 export const DEFAULT_BINDINGS: Record<string, string> = {
   b: "cmd-boss",
   g: "cmd-green-room",
@@ -129,10 +137,14 @@ export const DEFAULT_BINDINGS: Record<string, string> = {
   "8": "tool-url-inspector",
   "9": "tool-x509",
   "0": "nav-vendors",
+  // My desk (12/11/2026): d opens it, k keeps (saves) this page's item, x ticks it off as read or done.
+  d: "nav-desk",
+  k: "cmd-desk-save",
+  x: "cmd-desk-read",
 };
 
 // The keys the settings UI exposes, in display order (matches DEFAULT_BINDINGS).
-export const SHORTCUT_KEYS: string[] = ["b", "g", "r", "f", "t", "l", "m", "z", "s", "/", "?", "h", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
+export const SHORTCUT_KEYS: string[] = ["b", "g", "r", "f", "t", "l", "m", "z", "s", "/", "?", "h", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "d", "k", "x"];
 
 // ---- Sysadmin policy -------------------------------------------------------
 // Per-key operator rules. Any key absent from this map is fully customizable

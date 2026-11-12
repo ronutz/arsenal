@@ -38,6 +38,9 @@
 import { useState } from "react";
 import type { CSSProperties } from "react";
 import { Link } from "@/i18n/navigation";
+// My desk (PRIME 12/11/2026 12:42): each path's progress, Save and "Add as a path". It reads the deskItem namespace,
+// which the study guides page passes in a slice around this component.
+import DeskCollectionControls from "@/components/desk/DeskCollectionControls";
 
 /** One resolved step (article) in a path, already localized server-side. */
 export interface PathStep {
@@ -158,6 +161,13 @@ export default function ReadingPathSections({
                     <p className="reading-path-outcome-label">{outcomeLabel}</p>
                     <p className="reading-path-outcome-text">{path.outcome}</p>
                   </div>
+
+                  {/* My desk: how far the reader is along this path, Save, and "Add as a path" (following it, or a
+                      copy). The members are the path's articles, then its tools, as the desk's site index lists them. */}
+                  <DeskCollectionControls
+                    item={`reading:${path.id}`}
+                    members={[...path.steps.map((a) => `learn:${a.slug}` as const), ...path.tools.map((x) => `tool:${x.id}` as const)]}
+                  />
 
                   {/* The two actions: the way in (primary: the path's first article; the syllabus below lists
                       them all), and the toggle (secondary) that shows the syllabus and the practice bench. */}

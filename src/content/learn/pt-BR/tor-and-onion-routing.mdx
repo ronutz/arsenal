@@ -8,14 +8,14 @@ relatedArticles: ["peer-to-peer-evolution"]
 category: security
 order: 242
 status: reviewed
-updated: "2026-07-23"
+updated: "2026-11-12"
 ---
 
 ## O paradoxo na origem
 
 O roteamento em cebola foi inventado em meados dos anos 1990 no **Laboratório de Pesquisa Naval dos Estados Unidos** (US Naval Research Laboratory), por Paul Syverson com David Goldschlag e Michael Reed. Soa como contradição — um laboratório militar construindo uma ferramenta para derrotar a vigilância — até você ver o problema que eles de fato tinham. Se o tráfego de inteligência sai por uma rede obviamente governamental, os metadados entregam o jogo antes de alguém quebrar a criptografia. Saber *que* uma conexão aconteceu, e entre quem, costuma valer mais do que saber o que ela disse.
 
-A solução tem uma consequência incômoda, e ela é a ideia mais importante de todo este assunto: **uma rede usada só por espiões não protege espião nenhum**. Se todo mundo na rede é um analista da Marinha, então estar na rede identifica você como um analista da Marinha. Anonimato exige uma multidão, e a multidão precisa ser variada. Roger Dingledine e Nick Mathewson depois intitularam um artigo sobre isso de "Anonymity Loves Company" (o anonimato adora companhia). Então a ferramenta tinha que ser lançada publicamente, para todos, inclusive para pessoas que a Marinha jamais escolheria como aliadas. O alfa do Tor saiu em **20 de setembro de 2002**; o NRL liberou o código sob licença livre em 2004; a EFF financiou; e **o Tor Project virou uma organização sem fins lucrativos 501(c)(3) em 2006**. A força do projeto depende de servir pessoas com motivos incompatíveis — que é também por que discussões sobre "para quem o Tor serve" costumam errar o alvo.
+A solução tem uma consequência incômoda, e ela é a ideia mais importante de todo este assunto: **uma rede usada só por espiões não protege espião nenhum**. Se todo mundo na rede é um analista da Marinha, então estar na rede identifica você como um analista da Marinha. Anonimato exige uma multidão, e a multidão precisa ser variada. Roger Dingledine e Nick Mathewson depois intitularam um artigo sobre isso de "Anonymity Loves Company" (o anonimato adora companhia). Então a ferramenta tinha que ser lançada publicamente, para todos, inclusive para pessoas que a Marinha jamais escolheria como aliadas. O alfa do Tor saiu em **20 de setembro de 2002**; o código já estava [sob licença livre quando a rede entrou no ar, naquele outubro](https://www.torproject.org/about/history/); a EFF passou a financiar o trabalho em 2004; e **o Tor Project virou uma organização sem fins lucrativos 501(c)(3) em 2006**. A força do projeto depende de servir pessoas com motivos incompatíveis — que é também por que discussões sobre "para quem o Tor serve" costumam errar o alvo.
 
 ## O que é, de fato, um circuito
 
@@ -25,7 +25,7 @@ O resultado é que **nenhum relay sozinho conhece as duas pontas**. O guard vê 
 
 Duas peças de apoio importam. Um pequeno conjunto de **autoridades de diretório** publica um **consenso** assinado listando os relays e suas propriedades, para que os clientes concordem sobre quem existe sem precisar confiar cegamente em um servidor único. E o **guard** é deliberadamente fixo — clientes mantêm o mesmo relay de entrada por meses em vez de sortear novos, porque um cliente que embaralha seu ponto de entrada o tempo todo acabará, por acaso, escolhendo o relay de um adversário. Girar devagar é mais seguro do que girar sempre.
 
-Os relays são mantidos por voluntários: alguns milhares a qualquer momento, mas os **relays de saída são um subconjunto bem menor**, já que operar um significa receber reclamações de abuso e atenção jurídica por tráfego que você não gerou. Essa escassez estrutural de saídas é um traço permanente da economia da rede.
+Os relays são mantidos por voluntários: [cerca de 9.500 no início de novembro de 2026, com uns 2.500 bridges ao lado deles](https://metrics.torproject.org/networksize.html), mas os **relays de saída são um subconjunto bem menor**, já que operar um significa receber reclamações de abuso e atenção jurídica por tráfego que você não gerou. Essa escassez estrutural de saídas é um traço permanente da economia da rede.
 
 ## Serviços onion: a metade sem saída
 
@@ -50,7 +50,7 @@ Como a lista de relays do Tor é pública, um censor pode simplesmente bloquear 
 
 Eis o fato que mais surpreende, e vale dizer sem rodeios: segundo as métricas do próprio Tor Project, **apenas uma porcentagem baixa de um dígito do tráfego Tor vai para serviços onion**. A esmagadora maioria sai para a web comum. Na prática cotidiana, o Tor é uma ferramenta para ler a internet normal com privacidade — não uma porta para uma internet escondida.
 
-Os usuários visíveis confirmam isso. O **SecureDrop**, rodando em centenas de redações, usa serviços onion para receber documentos de fontes. The New York Times, BBC, ProPublica e DuckDuckGo mantêm endereços onion. O Debian distribui pacotes por eles. Milhões de usuários diários se conectam de países com acesso normal à internet, e a Alemanha fornece consistentemente a maior fatia — o que não é o perfil de um submundo criminoso.
+Os usuários visíveis confirmam isso. O **SecureDrop**, rodando em centenas de redações, usa serviços onion para receber documentos de fontes. The New York Times, BBC, ProPublica e DuckDuckGo mantêm endereços onion. O Debian distribui pacotes por eles. Milhões de usuários diários se conectam de países com acesso normal à internet, e, na contagem do próprio Tor Project de usuários que se conectam diretamente, os Estados Unidos fornecem a maior fatia e a Alemanha a segunda — o que não é o perfil de um submundo criminoso.
 
 A história do financiamento tem um epílogo que vale registrar por precisão: fontes do governo dos EUA já supriram mais da metade da receita do Tor Project, e no relatório de 2023–2024 isso havia caído para cerca de um terço, com apoio corporativo e de organizações sem fins lucrativos (OpenSats, Mullvad, Proton) e doações individuais compondo boa parte do restante. A dependência que as pessoas citam como escândalo vem sendo ativamente reduzida.
 

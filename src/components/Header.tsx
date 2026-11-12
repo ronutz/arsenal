@@ -17,6 +17,8 @@ import Search from "./Search";
 // The navigation is a client island since 2026-10-04 so it can mark the
 // current section (aria-current); the labels are still translated here.
 import SiteNav from "./SiteNav";
+// The link to My desk, the reader's own page (PRIME 12/11/2026 12:42), with the header's tools.
+import DeskNavLink from "./desk/DeskNavLink";
 
 export default async function Header() {
   const t = await getTranslations("nav");
@@ -67,6 +69,8 @@ export default async function Header() {
         />
 
         <div className="site-header-actions">
+          {/* My desk (12/11/2026): the reader's own page, beside search; not one of the six destinations above. */}
+          <DeskNavLink label={t("desk")} />
           <Search />
           <ThemeSwitcher />
           <LanguageSwitcher />

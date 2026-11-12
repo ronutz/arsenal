@@ -23,7 +23,7 @@ Un cifrario **CBC** svolge solo la cifratura. Per ottenere l'integrità, la suit
 
 TLS usava in origine il MAC-then-encrypt: calcolare l'HMAC sul testo in chiaro, accodarlo, riempire il risultato fino a un confine di blocco, poi cifrare il tutto con CBC. Il problema è che il ricevitore deve decifrare e rimuovere il riempimento prima di poter verificare il MAC, quindi un riempimento malformato e un MAC errato vengono rilevati in fasi diverse. Un aggressore in grado di vedere se un record è fallito sul riempimento o sul MAC — tramite un messaggio di errore o solo per i tempi — apprende un bit sul testo in chiaro per tentativo. Ripetuto, quel bit diventa l'intero messaggio.
 
-Questo è un padding oracle, e non è teorico. Una serie di attacchi nel corso degli anni, tra cui BEAST, Lucky13 e POODLE, hanno tutti sfruttato la protezione dei record CBC in TLS. Ciascuno è stato corretto con codice a tempo costante sempre più delicato, ma la costruzione sottostante continuava a produrre nuove varianti. La lezione che il settore ne ha tratto è stata smettere di usarlo.
+Questo è un padding oracle, e non è teorico. Una serie di attacchi nel corso degli anni, tra cui Lucky13 e POODLE, hanno tutti sfruttato la protezione dei record CBC in TLS. Ciascuno è stato corretto con codice a tempo costante sempre più delicato, ma la costruzione sottostante continuava a produrre nuove varianti. La lezione che il settore ne ha tratto è stata smettere di usarlo.
 
 ## Perché AEAD è ora il valore predefinito
 

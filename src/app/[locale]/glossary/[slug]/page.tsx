@@ -31,6 +31,10 @@ import { DefinedTermSchema } from "@/components/GlossarySchema";
 import Header from "@/components/Header";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import SiteFooter from "@/components/SiteFooter";
+// The nested message provider (A1), for My desk's controls.
+import MessageSlice from "@/components/MessageSlice";
+// My desk's controls (PRIME 12/11/2026 12:42): Save, Mark as read, Add to path.
+import DeskItemControls from "@/components/desk/DeskItemControls";
 // Whether a related article embeds a Learn lab in this locale (2026-10-26): the rail marks it "Interactive".
 import { isInteractive } from "@/lib/learnLabs";
 
@@ -156,6 +160,12 @@ export default async function GlossaryEntryPage({
               ))}
             </p>
 
+            {/* My desk (12/11/2026): keep the entry, mark it read (reaching its end marks it, with an Undo), or put it
+                on a path; kept in this browser. */}
+            <MessageSlice namespaces={["deskItem"]}>
+              <DeskItemControls item={`term:${slug}`} endRead />
+            </MessageSlice>
+
             {entry.expansion && (
               <p className="gloss-detail-expansion">
                 <span className="gloss-detail-label">{t("expansionLabel")}:</span>{" "}
@@ -186,6 +196,9 @@ export default async function GlossaryEntryPage({
                     {para}
                   </p>
                 ))}
+            {/* The entry's end, marked for the interest counts (PRIME 12/11/2026): coming into view after the page has
+                been open a while counts one read to the end, for a reader who said yes (InterestRuntime). */}
+            <span className="interest-end" data-interest-end={`read_end:glossary:${slug}`} aria-hidden="true" />
 
             {/* Optional original illustration (site policy: original art only). */}
             {entry.image && (

@@ -8,7 +8,7 @@ relatedArticles: ["hacking-in-the-20th-century", "phrack-2600-and-the-hacker-man
 category: security
 order: 106
 status: reviewed
-updated: "2026-08-28"
+updated: "2026-11-12"
 ---
 
 ## A loft full of salvaged hardware
@@ -21,9 +21,9 @@ Their tools made the arguments concrete. **L0phtCrack** cracked Windows password
 
 The Senate Committee on Governmental Affairs invited them to testify on government computer security, and they appeared **under their handles** - the record shows a US Senate hearing with witnesses named Mudge and Space Rogue - because their employers did not know what they did at night.
 
-Their headline claim was that the seven of them could render the internet unusable within **thirty minutes**. The substance behind it was the fragility of **BGP** (Border Gateway Protocol), the routing protocol that decides where traffic goes, which then had essentially no authentication: announce a route you do not own and traffic follows. They were not exaggerating for the cameras, which is the uncomfortable part - route leaks have knocked large parts of the internet offline repeatedly in the decades since, usually by accident.
+Their headline claim was that the seven of them could make the internet unusable for the entire nation in under **thirty minutes**. The printed hearing record never names the protocol: the written statement says only that the major backbone providers would no longer be able to route traffic to each other ([US Senate, S. Hrg. 105-609, hearing of 19 May 1998, read 2026-11-12](https://nsarchive.gwu.edu/sites/default/files/documents/5680645/Document-01-Senate-Committee-on-Governmental.pdf)). The Washington Post, retelling the hearing in 2015, put the flaw behind the claim in **BGP** (Border Gateway Protocol), the routing protocol that decides where traffic goes between networks, which then had essentially no authentication: announce a route you do not own and traffic follows ([The Washington Post, Craig Timberg, 'A disaster foretold, and ignored', 22 June 2015, read 2026-11-12](https://tuftsdev.github.io/DefenseAgainstTheDarkArts/readings/a_disaster_foretold.pdf)). They were not exaggerating for the cameras, which is the uncomfortable part: route leaks have knocked large parts of the internet offline repeatedly in the decades since, usually by accident.
 
-The hearing changed the relationship. It was the first time the American state treated hackers as expert witnesses rather than defendants, and it is the reason the pipeline into government exists: **Mudge** later ran DARPA's Cyber Fast Track, funding hacker-scale research on hacker-scale timelines, and went on to security leadership at Google's Motorola division and Twitter.
+The hearing changed the relationship. It was the first time the American state treated hackers as expert witnesses rather than defendants, and it is the reason the pipeline into government exists: **Mudge** later spent three years at DARPA, where he ran Cyber Fast Track, funding hacker-scale research on hacker-scale timelines. In 2013 he left for an unspecified role in the Advanced Technology and Projects group of Motorola Mobility, then owned by Google ([The Register, 16 April 2013, read 2026-11-12](https://www.theregister.com/security/2013/04/16/ex-hacker-leaves-pentagons-top-secret-war-boffins-for-google/1174536)), and from November 2020 to January 2022 he was Twitter's Security Lead ([Peiter Zatko, written statement to the Senate Judiciary Committee, 13 September 2022, read 2026-11-12](https://www.judiciary.senate.gov/download/testimony_-zatko_-2022-09-13)).
 
 ## Two months later, a stage at DEF CON
 
@@ -41,6 +41,6 @@ Three things, and they define the industry that followed.
 
 **Disclosure got its permanent shape.** After 1998 the argument was no longer whether to publish, but how - and the negotiated compromise everyone now uses, coordinated disclosure with a deadline, is the settlement of a fight these two groups forced into the open.
 
-**The threat model went structural.** L0phtCrack was about weak hashing; the Senate testimony was about a routing protocol with no authentication. That shift - from individual bugs to the load-bearing weaknesses of shared infrastructure - is the intellectual move that produced everything from [DNSSEC arguments](/glossary/kaminsky-dns-flaw) to today's supply-chain security work.
+**The threat model went structural.** L0phtCrack was about weak hashing; the thirty-minute claim, as the Post later explained it, was about a routing protocol with no authentication. That shift, from individual bugs to the load-bearing weaknesses of shared infrastructure, is the intellectual move that produced everything from [DNSSEC arguments](/glossary/kaminsky-dns-flaw) to today's supply-chain security work.
 
-The counterweight is worth stating. @stake later fired a researcher for publishing findings about a client's product, which told the field exactly what the trade-off costs: the loft was free to say anything precisely because nobody was paying it. That tension - independence versus a salary - has never been resolved, and every researcher who has ever hesitated before hitting publish is living inside it.
+The counterweight is worth stating. Microsoft, the L0pht's old target, became one of @stake's biggest clients and required nondisclosure agreements about what the consultants found; in September 2003 @stake fired its chief technology officer, Dan Geer, after he co-authored a study arguing that Microsoft's dominance of the software industry undermined security ([The Washington Post, 22 June 2015, read 2026-11-12](https://tuftsdev.github.io/DefenseAgainstTheDarkArts/readings/a_disaster_foretold.pdf)). That told the field exactly what the trade-off costs: the loft was free to say anything precisely because nobody was paying it. That tension, independence versus a salary, has never been resolved, and every researcher who has ever hesitated before hitting publish is living inside it.

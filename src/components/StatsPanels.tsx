@@ -44,8 +44,17 @@ import { STATS_ROWS_SHOWN, bringBackIntoView } from "@/components/statsRows";
 
 type Row = Record<string, string | number>;
 type PanelKind = "ranked" | "timeline" | "countries" | "locales" | "referrers" | "pages" | "devices"
-  | "aishare" | "sections" | "tail" | "hourofday" | "weekday" | "coverage";
-type Panel = { route: string; titleKey: string; noteKey: string; cols: [string, string]; kind: PanelKind };
+  | "aishare" | "sections" | "tail" | "hourofday" | "weekday" | "coverage"
+  // The interest counts (PRIME 12/11/2026 02:35): what gets used, per kind, per tool and per game; and (12:42) what
+  // is saved to My desk, per item.
+  | "ikinds" | "itools" | "igames" | "isaves"
+  // The scoreboard's unique browsers per day (the site owner, 12/11/2026 17:06), from the board's own public totals.
+  | "funbrowsers";
+// numKey: the number column's heading when it is not "Requests" (the interest panels count uses, not requests).
+type Panel = { route: string; titleKey: string; noteKey: string; cols: [string, string]; kind: PanelKind; numKey?: string };
+
+/** The scoreboard panel's route name: its rows come from the board's own totals, not from /api/stats. */
+const FUN_ROUTE = "funboard";
 
 const PANELS: Panel[] = [
   { route: "timeline",  titleKey: "panelTimeline",  noteKey: "timelineNote",  cols: ["day", "views"],     kind: "timeline" },
@@ -69,9 +78,42 @@ const PANELS: Panel[] = [
   { route: "hourly",    titleKey: "panelHour",     noteKey: "hourNote",     cols: ["hour", "views"],    kind: "hourofday" },
   { route: "hourly",    titleKey: "panelWeekday",  noteKey: "weekdayNote",  cols: ["weekday", "views"], kind: "weekday" },
   { route: "locales",   titleKey: "panelLocales",   noteKey: "localesNote",   cols: ["locale", "views"],  kind: "locales" },
+  // ---- The interest counts (12/11/2026). Sent by the browsers of readers who said yes to the site's one question
+  //      (src/lib/interest/client.ts), never counted at the edge. One route feeds all four: its "rows" list every
+  //      kind and item, and its "kinds" list (kept here under "interest#kinds") holds each kind's exact total. -------
+  { route: "interest",  titleKey: "panelInterestKinds", noteKey: "interestKindsNote", cols: ["kind", "views"], kind: "ikinds", numKey: "col_times" },
+  { route: "interest",  titleKey: "panelInterestTools", noteKey: "interestToolsNote", cols: ["tool", "views"], kind: "itools", numKey: "col_times" },
+  { route: "interest",  titleKey: "panelInterestGames", noteKey: "interestGamesNote", cols: ["game", "views"], kind: "igames", numKey: "col_times" },
+  // Items saved to My desk (PRIME 12/11/2026 12:42), per section and item, from the same route's rows (kind "save").
+  { route: "interest",  titleKey: "panelInterestSaves", noteKey: "interestSavesNote", cols: ["item", "views"], kind: "isaves", numKey: "col_times" },
+  // ---- The scoreboard (12/11/2026): how many browsers published at least one round each puzzle day. Not an
+  //      /api/stats route: read from GET /api/v1/fun/totals (worker/scores.ts), public and cached at the edge. ----
+  { route: FUN_ROUTE, titleKey: "panelFunBrowsers", noteKey: "funBrowsersNote", cols: ["day", "views"], kind: "funbrowsers", numKey: "col_browsers" },
 ];
 
 const WINDOWS = ["24h", "7d", "30d", "90d"];
+
+/** The board's totals window for each of the page's windows ("all" for 90 days: the board keeps 400, cut to 90 here). */
+const FUN_DAYS: Record<string, string> = { "24h": "1", "7d": "7", "30d": "30", "90d": "all" };
+/** The days each window covers, for cutting the board's answer to the window. */
+const FUN_SPAN: Record<string, number> = { "24h": 1, "7d": 7, "30d": 30, "90d": 90 };
+
+/**
+ * The scoreboard panel's rows from the board's totals: one per puzzle day with rounds in the window, oldest first,
+ * its unique browsers in "views" and, where the day has no count (before it began), "nodata" set and no number.
+ *
+ * @param body the board's totals answer
+ * @param win the page's window
+ * @returns the rows
+ */
+function funRows(body: { byDay?: Array<{ day?: unknown; played?: unknown; browsers?: unknown }> }, win: string): Row[] {
+  // The window's first day, in UTC as the board's days are.
+  const from = new Date(Date.now() - ((FUN_SPAN[win] ?? 30) - 1) * 86400000).toISOString().slice(0, 10);
+  // Each day of the answer inside the window.
+  return (body.byDay ?? [])
+    .filter((d) => typeof d.day === "string" && d.day >= from)
+    .map((d) => ({ day: String(d.day), views: typeof d.browsers === "number" ? d.browsers : 0, rounds: Number(d.played ?? 0), nodata: typeof d.browsers === "number" ? 0 : 1 }));
+}
 
 /**
  * Panels shown whole, never cut at STATS_ROWS_SHOWN (01/11/2026). The hour-of-day panel is a fixed 24-row cycle read
@@ -150,19 +192,24 @@ export default function StatsPanels({
     const routes = [...new Set(PANELS.map((p) => p.route))];
     Promise.all(
       routes.map((route) =>
-        fetch(`/api/stats/${route}?window=${win}`)
+        fetch(route === FUN_ROUTE ? `/api/v1/fun/totals?days=${FUN_DAYS[win] ?? "30"}` : `/api/stats/${route}?window=${win}`)
           .then(async (r) => ({ route, status: r.status, body: await r.json() }))
           .catch(() => ({ route, status: 0, body: null }))
       )
     ).then((results) => {
       if (cancelled) return;
-      if (results.some((r) => r.status === 503)) return setState("unconfigured");
+      // A board that is down (503) only empties its own panel; the counting store's 503 means the page is not set up.
+      if (results.some((r) => r.status === 503 && r.route !== FUN_ROUTE)) return setState("unconfigured");
       if (results.every((r) => r.status !== 200)) return setState("error");
       const next: Record<string, Row[] | null> = {};
       // The limit each cut list reached (only a 200 whose answer says cut: true counts as cut).
       const nextCuts: Record<string, number> = {};
       for (const r of results) {
-        next[r.route] = r.status === 200 && r.body && Array.isArray(r.body.rows) ? r.body.rows : null;
+        next[r.route] = r.route === FUN_ROUTE
+          ? (r.status === 200 && r.body && Array.isArray(r.body.byDay) ? funRows(r.body, win) : null)
+          : r.status === 200 && r.body && Array.isArray(r.body.rows) ? r.body.rows : null;
+        // The interest answer carries a second list, each kind's total, kept beside its rows.
+        if (r.route === "interest") next["interest#kinds"] = r.status === 200 && r.body && Array.isArray(r.body.kinds) ? r.body.kinds : null;
         // The limit as the Worker sent it, or the rows' own count if it sent none: either way a positive number.
         nextCuts[r.route] = r.status === 200 && r.body && r.body.cut === true ? Number(r.body.limit) || (r.body.rows?.length ?? 0) : 0;
       }
@@ -269,6 +316,34 @@ export default function StatsPanels({
           ? (k: number) => `${String(k).padStart(2, "0")}:00 UTC`
           : (k: number) => strings[`wd_${k}`] ?? String(k);
         out[key(p)] = [[null, keys.map((k) => ({ [p.cols[0]]: labels(k), views: acc.get(k) ?? 0 }))]];
+      } else if (p.kind === "ikinds") {
+        // Each kind's total, as the Worker summed it (exact even when the item list was cut).
+        out[key(p)] = [[null, [...(data["interest#kinds"] ?? [])].sort((a, b) => Number(b.views) - Number(a.views))]];
+      } else if (p.kind === "itools" || p.kind === "igames") {
+        // One kind of count, summed per item: tools worked with, or rounds started.
+        const want = p.kind === "itools" ? "tool_use" : "game_start";
+        const byItem = new Map<string, number>();
+        for (const r of rows) if (String(r.kind ?? "") === want) byItem.set(String(r.item ?? ""), (byItem.get(String(r.item ?? "")) ?? 0) + Number(r.n ?? 0));
+        out[key(p)] = [[null, [...byItem.entries()].sort((a, b) => b[1] - a[1]).map(([item, n]) => ({ [p.cols[0]]: item, views: n }))]];
+      } else if (p.kind === "isaves") {
+        // Saves summed per item, named "section/slug" (a tool, an article, an entry and a game may share a slug).
+        const bySaved = new Map<string, number>();
+        for (const r of rows) {
+          // Only the saves.
+          if (String(r.kind ?? "") !== "save") continue;
+          // The item's name with its section.
+          const name = `${String(r.section ?? "")}/${String(r.item ?? "")}`;
+          // Added to its total.
+          bySaved.set(name, (bySaved.get(name) ?? 0) + Number(r.n ?? 0));
+        }
+        // The most saved first.
+        out[key(p)] = [[null, [...bySaved.entries()].sort((a, b) => b[1] - a[1]).map(([item, n]) => ({ [p.cols[0]]: item, views: n }))]];
+      } else if (p.kind === "funbrowsers") {
+        // The days in order; the rounds per browser over the days that have the count, when any browser published.
+        out[key(p)] = [[null, rows]];
+        const counted = rows.filter((r) => !Number(r.nodata));
+        const browsers = counted.reduce((a, r) => a + Number(r.views ?? 0), 0);
+        if (browsers > 0) totals[key(p)] = strings.funPerBrowser.replace("{n}", (counted.reduce((a, r) => a + Number(r.rounds ?? 0), 0) / browsers).toLocaleString(intlLocale(locale), { maximumFractionDigits: 1 }));
       } else if (p.kind === "timeline") {
         out[key(p)] = [[null, rows]];
       } else {
@@ -304,6 +379,8 @@ export default function StatsPanels({
     }
     if (p.kind === "locales") return `${raw} - ${localeNames[raw] ?? raw}`;
     if (p.kind === "devices") return strings[`device_${raw}`] ?? raw;
+    // A kind of use, in the reader's language: words, so they wrap between words (the cell breaks anywhere, for addresses).
+    if (p.kind === "ikinds") return <span className="stats-key-words">{strings[`kind_${raw}`] ?? raw}</span>;
     return raw;
   };
 
@@ -335,7 +412,7 @@ export default function StatsPanels({
             // The timeline is the exception: its rows run oldest to newest, so its first 13 would be the oldest days
             // and hide today; it keeps its order and shows the 13 most recent, the older days coming back on Expand all.
             let budget = open || WHOLE_PANELS.has(p.kind) ? Number.POSITIVE_INFINITY : STATS_ROWS_SHOWN;
-            const fromEnd = p.kind === "timeline" && !open; // the most recent days, not the oldest
+            const fromEnd = (p.kind === "timeline" || p.kind === "funbrowsers") && !open; // the most recent days, not the oldest
             const shown = groups
               .map(([label, rows]) => {
                 const n = Math.min(rows.length, Math.max(0, budget)); // how many rows this group may show
@@ -349,7 +426,7 @@ export default function StatsPanels({
                 <h3 className="stats-panel-title">{strings[p.titleKey]}</h3>
                 <p className="stats-panel-note">{strings[p.noteKey]}</p>
                 {/* A list the Worker cut at its row limit: the panel says it covers the most-read part only. */}
-                {cuts[p.route] ? <p className="stats-panel-cut">{strings.listCut.replace("{limit}", cuts[p.route].toLocaleString(intlLocale(locale)))}</p> : null}
+                {cuts[p.route] && p.kind !== "ikinds" ? <p className="stats-panel-cut">{strings.listCut.replace("{limit}", cuts[p.route].toLocaleString(intlLocale(locale)))}</p> : null}
                 {totals[key(p)] ? <p className="stats-panel-total">{totals[key(p)]}</p> : null}
                 {all.length === 0 ? (
                   <p className="stats-empty">{strings.noData}</p>
@@ -358,7 +435,7 @@ export default function StatsPanels({
                     <thead>
                       <tr>
                         <th>{strings[`col_${p.cols[0]}`] ?? p.cols[0]}</th>
-                        <th className="stats-num">{strings.col_views}</th>
+                        <th className="stats-num">{strings[p.numKey ?? "col_views"] ?? strings.col_views}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -386,6 +463,8 @@ export default function StatsPanels({
                                     ? `${n}% · ${Number(row.raw ?? 0).toLocaleString(intlLocale(locale))} / ${Number(row.all ?? 0).toLocaleString(intlLocale(locale))}`
                                     : p.kind === "sections"
                                     ? `${n}% · ${Number(row.raw ?? 0).toLocaleString(intlLocale(locale))}`
+                                    : p.kind === "funbrowsers" && Number(row.nodata)
+                                    ? strings.funNoData
                                     : n.toLocaleString(intlLocale(locale))}
                                 </td>
                               </tr>

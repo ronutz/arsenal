@@ -77,7 +77,7 @@ const RULED = {
   "CAB": ["change advisory board", "comit\u00ea de mudan\u00e7as"],
   "HSM": ["hardware security module", "m\u00f3dulo de seguran\u00e7a em hardware"],
   "CRL": ["certificate revocation list", "lista de revoga\u00e7\u00e3o de certificados"],
-  "VRF": ["virtual routing and forwarding"],
+  "VRF": ["virtual routing and forwarding", "VPN routing and forwarding"], // the second is RFC 4364's own wording (added 12/11/2026, content sweep: glossary mpls)
   "ACL": ["access control list", "lista de controle de acesso"],
   "CI/CD": ["continuous integration", "integra\u00e7\u00e3o e entrega cont\u00ednuas"],
   "IPO": ["initial public offering", "oferta p\u00fablica inicial"],

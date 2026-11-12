@@ -104,6 +104,30 @@ const GRAVE = /[àèìòù]/;
 // Declared exceptions, keyed "message.key|word". MAY ONLY SHRINK.
 const DECLARED = new Map([
   [
+    "glossary.entries.unix.depth|travel",
+    "Space Travel, the name of the game Ken Thompson ran on the PDP-7 in 1969 (an English proper name, content sweep 11/11/2026).",
+  ],
+  [
+    "glossary.entries.felix-lindner.depth|ultima",
+    "Ultima Ratio, the Latin name of the Cisco IOS tool the entry says was released with slides from DEF CON X and Black Hat: a tool's own name, not the Portuguese word (content sweep 12/11/2026).",
+  ],
+  [
+    "glossary.entries.si.def|système",
+    "Système international d'unités, the French name the abbreviation SI comes from: a quoted French name, not a Portuguese word (content sweep 12/11/2026).",
+  ],
+  [
+    "glossary.entries.si.depth|système",
+    "Système international d'unités, the French name the abbreviation SI comes from: a quoted French name, not a Portuguese word (content sweep 12/11/2026).",
+  ],
+  [
+    "glossary.entries.si.depth|sèvres",
+    "Sèvres, the French town where the International Bureau of Weights and Measures sits: a place's own name (content sweep 12/11/2026).",
+  ],
+  [
+    "glossary.entries.kdf.depth|vigenère",
+    "Blaise de Vigenère's surname, which names the cipher Cisco's type 7 passwords use: a surname keeps its French spelling (content sweep 12/11/2026).",
+  ],
+  [
     "glossary.entries.uucp.context|voce",
     "A hostname in the UUCP bang path the entry quotes (minhamaquina!maquinadeles!voce). Hostnames carry no accents.",
   ],

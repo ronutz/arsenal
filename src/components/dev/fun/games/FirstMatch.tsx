@@ -36,6 +36,8 @@
 // English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
 import { intlLocale } from "@/i18n/locales";
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
+// Bringing the playing area into view when a round starts (PRIME 11/11/2026 23:39).
+import { usePlayAreaReveal } from "./playArea";
 // Strings.
 import { useTranslations } from "next-intl";
 // The frame every game sits in.
@@ -617,12 +619,16 @@ export default function FirstMatch({ locale }: { locale: string }) {
     if (!more) window.setTimeout(() => hintsBox.current?.focus(), 0);
   };
 
+  // The game's "bring the playing area into view" (GameShell, playArea.ts).
+  const revealPlay = usePlayAreaReveal();
   /**
    * Open another level.
    *
    * @param i the level (0-based)
    */
   const openLevel = (i: number) => {
+    // The level and its controls brought into view once laid out (PRIME 11/11/2026 23:39).
+    revealPlay();
     // Inside the range.
     const k = Math.max(0, Math.min(LEVELS.length - 1, i));
     // Opened.

@@ -5,7 +5,7 @@ summary: "Três túneis levam tráfego ao Zero Trust Exchange, e eles não são 
 concepts: ["zscaler", "z-tunnel", "gre", "ipsec", "capacity", "mtu", "dtls", "forwarding"]
 relatedTools: ["zscaler-tunnel-chooser"]
 relatedArticles: ["gre-tunnels-fundamentals", "ipsec-and-ike-fundamentals", "tunnel-overhead-mtu-and-mss", "zia-traffic-forwarding-methods", "tls12-tls13-dtls-quic"]
-category: networking
+category: sase
 order: 177
 status: reviewed
 updated: "2026-10-26"
@@ -17,7 +17,7 @@ updated: "2026-10-26"
 
 O **Z-Tunnel** é o transporte que o Zscaler Client Connector (e o Cloud Connector) estabelece até um Public Service Edge. A versão 1.0 é um túnel HTTP CONNECT - uma conexão de proxy, em essência, moldada para tráfego web. A versão 2.0 atualiza o transporte para TLS ou seu irmão de datagramas, o DTLS ([a mesma divisão que esta série cobriu para os próprios protocolos](/learn/tls12-tls13-dtls-quic)), e com isso a cobertura: o 2.0 é feito para carregar todas as portas e protocolos do dispositivo, não só o par web, e é por isso que a orientação do fabricante direciona implantações novas para ele. A leitura prática: o Z-Tunnel é um transporte por dispositivo, autenticado, cuja pergunta de capacidade é do dispositivo, não do site - a matemática de dimensionamento vive nos túneis de localidade abaixo.
 
-Uma condição do 2.0 passa despercebida porque a falha é silenciosa. A página da Zscaler pede um dispositivo de NAT que use um único endereço IP para todas as conexões de um dispositivo; do contrário, as conexões de controle e de dados podem cair em Service Edges diferentes, o Z-Tunnel 2.0 não se estabelece e o dispositivo volta para o Z-Tunnel 1.0. Um perfil configurado com 2.0 é, portanto, um pedido, e não uma garantia: um dispositivo atrás do NAT errado carrega só o que o 1.0 carrega, e o tráfego não-web com que o projeto contava vai para outro lugar.
+Uma condição do 2.0 passa despercebida porque a falha é silenciosa. A página da Zscaler pede um dispositivo de NAT (tradução de endereços de rede) que use um único endereço IP para todas as conexões de um dispositivo; do contrário, as conexões de controle e de dados podem cair em Service Edges diferentes, o Z-Tunnel 2.0 não se estabelece e o dispositivo volta para o Z-Tunnel 1.0. Um perfil configurado com 2.0 é, portanto, um pedido, e não uma garantia: um dispositivo atrás do NAT errado carrega só o que o 1.0 carrega, e o tráfego não-web com que o projeto contava vai para outro lugar.
 
 ## Os túneis de localidade: GRE primeiro, por um motivo
 

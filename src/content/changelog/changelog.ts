@@ -56,6 +56,328 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // My desk (PLAN-personal-desk-20261112, approved 12/11/2026 12:42) with its portable encrypted sync (13:38), the
+    // four-way split of the security tools (15:29 to 15:40), the opinion boxes turned into questions (15:18), the
+    // scoreboard's unique browsers (17:09) and the blog post on Brazil's data leaks (16:01).
+    date: "2026-11-12", // the day it was done
+    time: "17:40", // São Paulo time
+    kind: "feature", // a new part of the site
+    title: "My desk: your own page on the site, kept in your browser and portable to any other", // the headline
+    titlePt: "Minha bancada: sua própria página no site, guardada no seu navegador e levada para qualquer outro", // the Portuguese headline
+    body: // what changed, in plain words
+      "My desk is the reader's own page on the site. Save any tool, Learn article, glossary entry or certification guide; mark what you have read (automatically at the end of an article, with a one-tap undo, or by hand anywhere); gather items into paths of your own, and every article in one of your paths ends with a link to the next unread item in it. You arrange the desk from widgets: saved items, paths, New for you (what changed since your last visit in the series, paths and tool families you follow), reading streaks and milestones counted only from your own read marks, notes, an exam countdown, quick tools (a subnet calculator, Base64, epoch time and UUID (universally unique identifier)) and a privacy and settings panel with links to every preference. Everything is kept in this browser. To use the same desk and settings in another browser or on a phone, an optional sync carries them end-to-end encrypted: the key is made from a sync code only you hold, and the site stores ciphertext it cannot read. Pairing works by QR code, by link or by typing the code, and a file or a link moves a profile with no server at all. The Privacy page lists what travels and what never leaves the browser. Learn feeds now exist per series and per language. Elsewhere: the security tools are split into four sections, Firewalls and policy, WAF (web application firewall) and web app protection, Secure access (Security Service Edge (SSE) and Secure Access Service Edge (SASE)), and Threat analysis, with 43 Learn articles gathered on the new secure access shelf; the boxes of personal opinion in Learn and the blog are gone, replaced by questions left to the reader; the games' scoreboard counts unique browsers a day from a single yes-or-no mark on each round, with no identifier stored; and a new blog post sets out how Brazil's leaks have put more records into circulation than the country has people, with ten steps a citizen can take.",
+    links: [ // where to see it
+      { label: "My desk", href: "/desk" }, // the reader's own page
+      { label: "Secure access (SSE and SASE)", href: "/category/sase" }, // the new section
+      { label: "No Brazilian has private data left", href: "/blog/no-brazilian-has-private-data-left" }, // the new post
+      { label: "Scoreboard", href: "/dev/fun/scores" }, // unique browsers per day
+    ],
+  },
+  {
+    // The content sweep, batches 14 and 15 (PLAN-content-sweep-20261111), the four merges of 12/11/2026 12:42 and the
+    // writers' findings fixed across Learn, the glossary, two tools and the blog, each from a page read the same day.
+    date: "2026-11-12", // the day it was done
+    time: "14:20", // São Paulo time
+    kind: "content", // glossary entries, merges and corrections
+    title: "Eighty more glossary entries in full, four merges, and corrections across the site", // the headline
+    titlePt: "Mais oitenta verbetes do glossário por inteiro, quatro fusões e correções pelo site todo", // the Portuguese headline
+    body: // what changed, in plain words
+      "Eighty more glossary entries now have a definition that stands alone, a paragraph on why the thing matters and a longer, sourced account, which ends this round of the rewrite at 573 entries. Routing and addressing: interior gateway protocols, EIGRP, equal-cost multipath, VRF, discard routes, BGP hijacks, GTSM, MANRS, asymmetric routing, wildcard masks, NAT64, 6to4, Teredo, DHCPv6, SLAAC, the subnet-router anycast address, IANA's special-purpose registries, RA Guard, DHCP snooping and PXE. DNS and mail: DNS over TLS, DNSKEY, NSEC, TSIG, response policy zones, SRV records, top-level domains, the DNS header flags, DMARC and DKIM. Certificates and keys: DER, certificate signing requests, subject alternative names, authority key identifiers, certificate pinning, ES256, HOTP, one-time passwords, subject identity information and GREASE. Controls and governance: air gaps, microsegmentation, DMZs, access control lists (ACLs), egress filtering, conditional access, security groups, multi-tenancy, data at rest, correlated failure, the GDPR, the ANPD, PCI DSS, Schrems II, CVE Numbering Authorities, disclosure embargoes, the ISPS Code, channel standards and resellers, and Y2K. History and the scene: DEF CON, Black Hat, Security BSides, SBSeg, Nullbyte, DragonJAR, Campus Party, YSTS, Anchises Moraes's calendar, CERT.br, the L0pht, pwned, the Tetrade, the Chaos Computer Club, Operation Sundevil, the crypto wars, the Clipper chip, the Declaration of the Independence of Cyberspace, Room 641A and Garoa Hacker Clube. Four thin duplicates were merged into their full entries, and their old addresses now lead there: C2 into command and control, DoH into DNS over HTTPS, the CAA record into CAA, and PMTUD into Path MTU Discovery. Errors the writers found elsewhere were corrected from the sources: among them Mind The Sec's move to Black Hat in September 2026, the Extreme 5120 and 7830 among the Universal switches, what Phill Gross's 1991 message actually said about GOSIP, who made M.E.Doc, the NHS and Merck figures for WannaCry and NotPetya, the ANPD's change to an agency and the Brazil-EU adequacy decisions, the JOSE registry's deprecation of EdDSA, the Kaminsky disclosure's vendor count, the DEC packet-filter report of March 1989, PCI DSS requirement 6.6 of June 2008, and what F5's dont-insert-empty-fragments option disables. The F5 topology Longest Match tool now ranks data centre above pool and places state between ISP and country, as F5's manuals do.",
+    links: [ // where to read a few of them
+      { label: "Command and control", href: "/glossary/command-and-control" }, // the merged C2 entry
+      { label: "The protocol wars", href: "/learn/the-protocol-wars" }, // Phill Gross's message
+      { label: "F5 topology Longest Match", href: "/tools/f5-topology-longest-match" }, // the corrected ladder
+    ],
+  },
+  {
+    // The content sweep, batch 13 (PLAN-content-sweep-20261111): forty entries by four writers on Opus 5.5, integrated on
+    // 12/11/2026. The corrections are the writers', each from a page the entry cites.
+    date: "2026-11-12", // the day it was done
+    time: "12:38", // São Paulo time
+    kind: "content", // glossary entries
+    title: "Forty more glossary entries in full, from the spanning tree to post-quantum cryptography", // the headline
+    titlePt: "Mais quarenta verbetes do glossário por inteiro, da spanning tree à criptografia pós-quântica", // the Portuguese headline
+    body: // what changed, in plain words
+      "Forty more entries now have a definition that stands alone, a paragraph on why the thing matters and a longer, sourced account. Switching: IEEE 802.11, LLDP, LACP, STP, the spanning tree, trunk ports, broadcast storms, duplex mismatches, jumbo frames and repeaters. Cryptography: key derivation functions, Diffie-Hellman, ECDH, ephemeral keys, stream and block ciphers, initialization vectors, CCM, digital signatures and post-quantum cryptography. Security history: EternalBlue, Stuxnet, the Morris worm, Conficker, Shellshock, the Kaminsky DNS flaw, KRACK, BEAST, Sweet32 and Prilex. Security operations: the security operations centre (SOC), detection engineering, alert fatigue, MITRE ATT&CK, tactics, techniques and procedures, red teams, post-incident reviews, command and control, C2 and credential stuffing. Old statements were corrected on the way, each from its source: Radia Perlman solved the spanning tree the night she was given the problem and wrote it up the following Monday and Tuesday; the Morris worm's 6,000 infected machines was a press extrapolation, against a Harvard estimate of 1,000 to 3,000; WPA3 still runs WPA2's four-way handshake; the answer to Sweet32 was data limits as well as retiring 64-bit ciphers; signing does not encrypt a digest with the private key; and ECDH is the same primitive whether its keys are static or ephemeral. IEEE 802.1AB-2026, published on 6 November 2026, now supersedes the 2016 edition of LLDP.",
+    links: [ // where to read a few of them
+      { label: "Spanning tree", href: "/glossary/spanning-tree" }, // the corrected Perlman story
+      { label: "KRACK", href: "/glossary/krack" }, // WPA3 and the four-way handshake
+      { label: "Post-quantum cryptography", href: "/glossary/post-quantum-cryptography" }, // NIST's standards and dates
+    ],
+  },
+  {
+    // The content sweep, batch 12 (PLAN-content-sweep-20261111): forty entries by four writers on Opus 5.5, integrated on
+    // 12/11/2026. The corrections are the writers', each from a page the entry cites. Follow-ups by ANVIL from pages the
+    // writers read the same day: the USENIX Mirai study, the IEEE 802 overview of 2004 and the 802.16 page, Tosconf's
+    // organizers, and the BOD 26-04 FAQ. Links to pages carrying attack code stay (PRIME, 12/11 12:07).
+    date: "2026-11-12", // the day it was done
+    time: "11:53", // São Paulo time
+    kind: "content", // glossary entries and Learn corrections
+    title: "Forty more glossary entries in full, from port security and NETCONF to Mirai and WireGuard", // the headline
+    titlePt: "Mais quarenta verbetes do glossário por inteiro, de port security e NETCONF a Mirai e WireGuard", // the Portuguese headline
+    body: // what changed, in plain words
+      "Forty more entries now have a definition that stands alone, a paragraph on why the thing matters and a longer, sourced account. Networks: port security, NETCONF, link aggregation, IMAP, IKE, flapping, the frame check sequence, CNAME records, autonomous system numbers and route leaks. Cryptography and the web: HS256, hashes, cross-origin resource sharing, cache poisoning, XML external entities, time-based one-time passwords, key rotation, proofs of concept, the National Vulnerability Database and the catalogue of known exploited vulnerabilities kept by the US Cybersecurity and Infrastructure Security Agency. History and the scene: the ARPANET, Phrack, Tosconf, OSINET, the Corporation for Open Systems, the Fórum Brasileiro de CSIRTs, CryptoRave, BHack, Mirai and botnets. Operations: forensics, cloud access security brokers, silent failures, dwell time, metropolitan area networks, wizards, WireGuard, TFTP, stateful inspection and SSL virtual private networks. Old statements were corrected on the way, each from its source: the ARPANET's switch to TCP/IP on 1 January 1983 was a flag day planned for years, with relay hosts from November 1981; ANAME was an IETF draft, expired since 2019; a device that copies a permitted MAC address passes port security; the National Vulnerability Database no longer routinely publishes its own score when the numbering authority has supplied one; Binding Operational Directive 26-04 replaced 22-01 on 10 June 2026; and BHack 2026 is on 28 and 29 November. The Learn article on Mirai now says that only the original strain used no exploit, and dates the attacks on OVH from 18 September 2016; the article on the IEEE 802 groups takes the origin of the number from the IEEE's own overview and lists 802.16 as disbanded.",
+    links: [ // where to read a few of them
+      { label: "Route leak", href: "/glossary/route-leak" }, // the six types of RFC 7908
+      { label: "KEV", href: "/glossary/kev" }, // the catalogue and BOD 26-04
+      { label: "Mirai: the botnet that logged in", href: "/learn/mirai-and-the-default-password" }, // the corrected article
+    ],
+  },
+  {
+    // The content sweep, batch 11 (PLAN-content-sweep-20261111): forty entries by four writers on Opus 5.5, integrated on
+    // 12/11/2026. The corrections are the writers', each from a page the entry cites. Follow-ups by ANVIL from pages read
+    // the same day: the NVD record of CVE-2015-0204 (FREAK) and the BSidesSP and weakdh.org addresses.
+    date: "2026-11-12", // the day it was done
+    time: "10:45", // São Paulo time
+    kind: "content", // glossary entries and Learn corrections
+    title: "Forty more glossary entries in full, from DNS over HTTPS and BFD to the Therac-25", // the headline
+    titlePt: "Mais quarenta verbetes do glossário por inteiro, de DNS over HTTPS e BFD ao Therac-25", // the Portuguese headline
+    body: // what changed, in plain words
+      "Forty more entries now have a definition that stands alone, a paragraph on why the thing matters and a longer, sourced account. Networks: DNS referrals, DNS over HTTPS, carrier-grade NAT, captive portals, BFD, CAA records, SSIDs, SIP, router advertisements and link-local addresses. Security: GCM, FREAK, Content Security Policy, brute force, attack vectors, remote code execution, MITRE, honeypots, SQL injection and lateral movement. Cloud, regulation and the scene: Zscaler Private Access, SASE, the Shadow Brokers, Brazil's PSTI providers and its national cybersecurity policy, Mind The Sec, LulzSec, Latinoware, BSides São Paulo and the Therac-25. Operations and programming: channel distributors, profiling, MIME, hypervisors, Expect's expect_out, change management, the byte order mark, replication, regressions and public-key cryptography. Old statements were corrected on the way, each from its source: BFD detects in tens of milliseconds against routing protocols' tens of seconds; GCM works with any approved 128-bit block cipher, not only AES; FREAK was a flaw in clients that accepted a server's export-grade key; the Therac-25's beam stayed at X-ray intensity while the turntable had moved to the electron position; Latinoware's first edition was in Foz do Iguaçu and its second in Curitiba; the PSTI rules were eased by Central Bank Resolution 547 of January 2026; and public-key cryptography covers signatures and key agreement as well as encryption. The Learn article on the named TLS attacks now says the same about FREAK.",
+    links: [ // where to read a few of them
+      { label: "BFD", href: "/glossary/bfd" }, // a corrected comparison
+      { label: "PSTI", href: "/glossary/psti" }, // both versions of the rules
+      { label: "The named TLS attacks", href: "/learn/the-named-tls-attacks" }, // the corrected FREAK paragraph
+    ],
+  },
+  {
+    // The content sweep, batch 10 (PLAN-content-sweep-20261111): forty entries, three by the first writers before the
+    // weekly usage limit stopped them and thirty-seven by four writers on Opus 5.5, integrated on 12/11/2026. The
+    // corrections are the writers', each from a page the entry cites. The Learn and glossary follow-ups were made by
+    // ANVIL from pages read the same day: F5's platform guides, chkrootkit.org, the RFC 6962 header, the New York Times
+    // obituary of Joe Engressia (as reposted), and Anchises Moraes's posts on Roadsec and H2HC.
+    date: "2026-11-12", // the day it was done
+    time: "09:42", // São Paulo time
+    kind: "content", // glossary entries and Learn corrections
+    title: "Forty more glossary entries in full, and the record set straight on Roadsec, H2HC, F5's DF models and Joe Engressia", // the headline
+    titlePt: "Mais quarenta verbetes do glossário por inteiro, e o registro corrigido sobre Roadsec, H2HC, os modelos DF da F5 e Joe Engressia", // the Portuguese headline
+    body: // what changed, in plain words
+      "Forty more entries now have a definition that stands alone, a paragraph on why the thing matters and a longer, sourced account. Networks: ExtremeXOS, EtherType, VXLAN, virtual IP addresses, supernets, SPBM, MPLS, PTR records and packet filters, with F5's DF models. Cryptography: entropy, CRLs, ALPN, Certificate Transparency, salts, RS256, ML-KEM, Logjam, JWK and HSTS. Security and its Brazilian scene: SPF, WannaCry, phreaking, Roadsec, hackerspaces, CTIR Gov, chkrootkit, banking trojans, GOSIP and concentration risk. Operations and programming: QR codes, pagers, knowledge bases, audit trails, the International System of Units, pseudo-terminals, tracing, tracebacks, service accounts and Python Enhancement Proposals. Old statements were corrected on the way, each from its source: DF on an F5 model is the FIPS variant with a hardware security module and dual SSDs, not a dual-fan model; a CRL lists revoked certificates only until they expire, so it does not grow without bound; ALPN is a TLS extension, number 16; CTIR Gov now sits in the GSI's Department of Cybersecurity; and GOSIP required agencies to buy OSI products, not to use them. Several Learn articles follow: Roadsec is now described in the past tense, since its last edition was in July 2023; the articles on the Brazilian scene and the conference circuit add that no 2026 date has been announced for H2HC; chkrootkit's current release is 0.60, of 11 October 2026; Joe Engressia found his whistle about four years after learning to dial at four or five, not at seven; and RFC 6962 has three authors, B. Laurie, A. Langley and E. Kasper.",
+    links: [ // where to read a few of them
+      { label: "DF", href: "/glossary/df" }, // the corrected meaning
+      { label: "Roadsec", href: "/glossary/roadsec" }, // now in the past tense
+      { label: "ML-KEM", href: "/glossary/ml-kem" }, // post-quantum key establishment
+    ],
+  },
+  {
+    // The content sweep, batch 9 (PLAN-content-sweep-20261111): forty entries by four writers, written and integrated on
+    // 12/11/2026. The corrections are the writers', each from a page the entry cites. Three more Learn articles (en and
+    // pt-BR) and three glossary records were corrected by ANVIL from pages read the same day: F5's BIG-IP DNS Load
+    // Balancing manual (Topology chapter), the Tor Project's history page and Tor Metrics, Wikipedia on the Cypherpunks
+    // list, Saltzer's publications list, and Congresso em Foco on Law 15.352/2026.
+    date: "2026-11-12", // the day it was done
+    time: "06:28", // São Paulo time
+    kind: "content", // glossary entries and Learn corrections
+    title: "Forty more glossary entries in full, with corrections to GTM topology, Tor and the ANPD's name", // the headline
+    titlePt: "Mais quarenta verbetes do glossário por inteiro, com correções em topologia do GTM, Tor e no nome da ANPD", // the Portuguese headline
+    body: // what changed, in plain words
+      "Forty more entries now have a definition that stands alone, a paragraph on why the thing matters and a longer, sourced account. Network basics: OUI, ICMPv6, duplex, IEEE 802.3, Token Ring, RIP, netmasks, jitter, Layer 7 and application delivery controllers. DNS and routing: NODATA, DNS response codes, AAAA records, RPKI, recursive resolvers, the OPT record, MX records, fully qualified domain names, ICANN and global server load balancing. Security and privacy: ZTNA, SCIM, multi-factor authentication, intrusion prevention, coordinated disclosure, CBC, POODLE, least privilege, the LGPD and Febraban. Programming and culture: virtual environments, PyPI, pip, single points of failure, YANG, RESTCONF, the User-Agent header, Tor, the Cypherpunks and pcap. Old statements were corrected on the way, each from its source: a duplex mismatch arises when one end is fixed at full duplex and the other, negotiating alone, falls back to half; what protects a route in RPKI is a Route Origin Authorization; BEAST came from the predictable initialization vector of TLS 1.0; and Saltzer and Schroeder's paper on protecting information appeared in the Proceedings of the IEEE in September 1975. Three Learn articles follow: the one on GTM topology records now gives the two Longest Match ladders as F5's manual lists them (states included, data centres and pools on the destination side only); the one on Tor says the code was under a free licence when the network was deployed in October 2002 and gives the current size of the network; and the one on the hacker manifestos gives the Cypherpunks list's size in 1994 and 1997. In the glossary, Tor's name is expanded as the Tor Project expands it, The Onion Routing, and the ANPD entry carries its name since February 2026, Agência Nacional de Proteção de Dados.",
+    links: [ // where to read a few of them
+      { label: "Duplex", href: "/glossary/duplex" }, // a corrected mechanism
+      { label: "GTM topology records: Longest Match is a sort, not the pick", href: "/learn/gtm-topology-records-and-longest-match" }, // the corrected ladders
+      { label: "ANPD", href: "/glossary/anpd" }, // the new name
+    ],
+  },
+  {
+    // The content sweep, batch 8 (PLAN-content-sweep-20261111): thirty-five entries by four writers, written and
+    // integrated on 12/11/2026. The corrections are the writers', each from a page the entry cites. Three Learn articles
+    // (en and pt-BR) were corrected by ANVIL from pages read the same day: Anchises Moraes's posts of 6 November 2017 and
+    // 19 November 2025 (H2HC), DragonJAR's own list of events, and the New Jersey Appellate Division's opinion of 1 May 2023.
+    date: "2026-11-12", // the day it was done
+    time: "05:10", // São Paulo time
+    kind: "content", // glossary entries and Learn corrections
+    title: "Thirty-five more glossary entries in full, and three Learn articles corrected from their sources", // the headline
+    titlePt: "Mais trinta e cinco verbetes do glossário por inteiro, e três artigos do Aprender corrigidos pelas fontes", // the Portuguese headline
+    body: // what changed, in plain words
+      "Thirty-five more entries now have a definition that stands alone, a paragraph on why the thing matters and a longer, sourced account. Identity and cryptography: PKI, PKCE, OpenID Connect, JWKS, Kerberos, PEM, SHA, AEAD, key management and DTLS. Networking and the web: longest prefix match, forward proxies, CDNs, EDNS, SSE, proxy auto-configuration, administrative distance, Pix, Kubernetes and virtual machines. Security and its culture: exfiltration, supply-chain attacks, social engineering, zero-days, NotPetya, the Scene, the Electronic Frontier Foundation, open source, H2HC and Jaime Andrés Restrepo. And BSD, maintenance windows, idempotence, graphical interfaces and F5 DevCentral. Old statements were corrected on the way, each from its source: with Kerberos the password never crosses the network at all; RFC 7468 records the PEM text encoding and is not the Privacy-Enhanced Mail specification; TLS with CBC cipher suites computed the authentication code first and encrypted second; by default an external BGP route beats an OSPF route on Cisco and FRRouting (administrative distance 20 against 110); the war exclusion did not make NotPetya uninsurable, since a New Jersey appeals court held in May 2023 that it did not apply to such a loss; and H2HC's first edition, in 2004, was in Brasília, with São Paulo its home since 2008. Three Learn articles follow: the two on the Brazilian scene and on the Latin American conference circuit now record that H2HC's 2025 edition was cancelled and that the DragonJAR conference was held in Bogotá in 2023 and 2024 and in Medellín in 2025 and 2026, and the article on EternalBlue, WannaCry and NotPetya now cites that court's opinion for the figures it actually states.",
+    links: [ // where to read a few of them
+      { label: "Kerberos", href: "/glossary/kerberos" }, // a corrected definition
+      { label: "H2HC", href: "/glossary/h2hc" }, // the corrected history
+      { label: "The Latin American security conference circuit", href: "/learn/latin-american-security-conferences" }, // one of the corrected articles
+    ],
+  },
+  {
+    // The content sweep, batches 6 and 7 (PLAN-content-sweep-20261111): fifty-five entries written on 11 and 12 November
+    // 2026 by six writers and integrated on 12/11 (6A, 7C and 7B earlier in the night; 7A, 7D and 6B with this entry).
+    // The corrections named below are the writers', each from the page it cites (the entries' own sources).
+    date: "2026-11-12", // the day it was done
+    time: "03:46", // São Paulo time
+    kind: "content", // glossary entries
+    title: "Fifty-five more glossary entries in full: from traceroute, YAML and OCSP to Diffie, Merkle and Troy Hunt", // the headline
+    titlePt: "Mais cinquenta e cinco verbetes do glossário por inteiro: de traceroute, YAML e OCSP a Diffie, Merkle e Troy Hunt", // the Portuguese headline
+    body: // what changed, in plain words
+      "Fifty-five more entries now have a definition that stands alone, a paragraph on why the thing matters and a longer, sourced account. Among the terms: traceroute, BIND, FIPS, data loss prevention, rate limiting, containment, the Linux kernel, PHP and ISP; Active Directory and the abbreviation AD, YAML, runbooks, root cause, observability, consensus, code points and health checks; TCP/IP, HTTP/3, FTP, fragmentation, GRE, the TCP maximum segment size, WAN, hubs, static routes and SNAT; man-in-the-middle, SSRF, ransomware, DDoS, CVSS, OWASP, trust anchors, OCSP, ACME and ECDSA; ECDHE, the DNS SOA record, the syslog PRI value, POSIX, SQL and compilers. Among the people: Whitfield Diffie, Ralph Merkle, Wietse Venema, Aleph One, Troy Hunt, Jude Milhon, Felix Lindner, Fabio Assolini and Carlos Afonso, with the 8dot8 conference. Old statements were corrected on the way, each from its source: YAML 1.2 is a superset of JSON and not the other way round; each side of a TCP connection announces its maximum segment size, and the two do not negotiate one; GRE is not IP-in-IP; a hub regenerates signals, not frames; Ralph Merkle's public-key idea was turned down twice, by a course instructor in 1974 and by a journal's referee in 1975; and automated certificates moved HTTPS to most of the web, not nearly all of it. This year's changes are in: TLS 1.3 is now specified by RFC 9846, and the hybrid post-quantum key exchange groups by RFC 10024.",
+    links: [ // where to read a few of them
+      { label: "Traceroute", href: "/glossary/traceroute" }, // a term
+      { label: "Ralph Merkle", href: "/glossary/ralph-merkle" }, // a person, with the corrected account
+      { label: "ECDHE", href: "/glossary/ecdhe" }, // this year's RFC numbers
+    ],
+  },
+  {
+    // PRIME 12/11/2026 02:35: "I accept and agree with all your suggestions and recommendations, especially not bringing
+    // in 3rd-party trackers. Please implement all the good ideas you had". The interest counts: asked once, sent only
+    // after a yes, written by worker/events.ts to a third dataset; the daily totals in D1 (worker/rollup.ts); the read
+    // routes (worker/intel.ts); the Settings switch, the Privacy section, three Stats panels and the operator's dashboard.
+    date: "2026-11-12", // the day it was done
+    time: "03:20", // São Paulo time
+    kind: "feature", // a new capability of the site
+    title: "The site can count what is used, and only with your yes", // the headline
+    titlePt: "O site pode contar o que é usado, e só com o seu sim", // the Portuguese headline
+    body: // what changed, in plain words
+      "The site now asks one question: may it count what you use? With a yes, your browser tells the site's own server when a tool is worked with, a game is started or finished, an article or a glossary entry is read to its end, a page is shared, a link to Red Education is followed, or a search is run. A count names the thing and never the reader: the site's own code sends it with no cookie and no identifier, with nothing typed into a tool, and to no third party. One case carries typed words: a search that finds nothing sends its words when they are a few plain words, because those words are the list of what to write next, and they are never published. A browser that sends Global Privacy Control or Do Not Track is taken as a no without being asked, and a reader who leaves the question unanswered is shown it on at most two pages of a visit. The answer can be changed at any time on the Settings page. The Privacy page has a new section that sets out what a count holds, what it never holds and how long it is kept, and links the code that does it. The Stats page has three new panels: what gets used, which tools and which games. Once a day the server now also adds the previous day's counts up and keeps the daily totals for about 25 months, so a trend can be read beyond the three months the counting store keeps.",
+    links: [ // where to read it and where to choose
+      { label: "Privacy: interest counts", href: "/privacy#interest" }, // what is counted, and what never is
+      { label: "Settings", href: "/settings#interest" }, // the switch
+      { label: "Stats", href: "/stats" }, // the three new panels
+    ],
+  },
+  {
+    // PRIME 12/11/2026 01:48: "xkcd: split", "Region: merge", "Cert: do as recommended" (three registry questions raised
+    // by the content sweep's writers). Sources for the new xkcd 1172 text read by ANVIL on 12/11.
+    date: "2026-11-12", // the day it was done
+    time: "01:55", // São Paulo time
+    kind: "content", // glossary entries
+    title: "Two xkcd comics get one entry each, the two cloud region entries become one, and CERT is treated as a name", // the headline
+    titlePt: "Duas tirinhas do xkcd ganham um verbete cada, os dois verbetes de região de nuvem viram um, e o CERT passa a ser tratado como nome", // the Portuguese headline
+    body: // what changed, in plain words
+      "The glossary entry at xkcd-workflow had mixed up two comics: its title and definition were about xkcd 1205, \"Is It Worth the Time?\", the chart of how long you may spend automating a task, while its address and older text were about xkcd 1172, \"Workflow\", the update that stopped spacebar heating. Each now has its own full entry. \"Workflow\" is written from the comic, Hyrum Wright's page on Hyrum's law, the chapter of Software Engineering at Google that cites it, Linus Torvalds's \"we do not break userspace\" message of 23 December 2012 and Joel Spolsky's account of Windows keeping SimCity's memory bug working. The two cloud region entries were the same subject, so the thin one now leads to the full entry on regions. And CERT is no longer listed as an acronym: Carnegie Mellon University, which owns CERT as a registered mark, asks that it not be expanded or used generically, so the entry tells the history of the old expansion instead of presenting it as the meaning.",
+    links: [ // where to read them
+      { label: "\"Workflow\" (xkcd 1172)", href: "/glossary/xkcd-workflow" }, // the rewritten entry
+      { label: "\"Is it worth the time?\" (xkcd 1205)", href: "/glossary/xkcd-is-it-worth-the-time" }, // the new entry
+      { label: "Region", href: "/glossary/region" }, // the merged entry
+      { label: "CERT", href: "/glossary/cert" }, // the name, not the acronym
+    ],
+  },
+  {
+    // The content sweep, batch 5 (PLAN-content-sweep-20261111): twelve myths, two expressions, sixteen terms and ten
+    // people, written and integrated on 12/11. With it, a Learn sentence corrected against Tor Metrics, and the People
+    // timeline's "Brazil" strand relabelled (it holds Argentine and Colombian people too).
+    date: "2026-11-12", // the day it was done
+    time: "01:30", // São Paulo time
+    kind: "content", // glossary entries
+    title: "Forty more glossary entries in full: twelve network myths, Assange, Mudge and Gonzalez, IS-IS, REST and Wi-Fi", // the headline
+    titlePt: "Mais quarenta verbetes do glossário por inteiro: doze mitos de rede, Assange, Mudge e Gonzalez, IS-IS, REST e Wi-Fi", // the Portuguese headline
+    body: // what changed, in plain words
+      "Twelve common beliefs now have full entries that say what is true and why the belief took hold: that a VPN makes you anonymous, that Tor is mostly for criminals, that quantum computers will break all encryption, that public Wi-Fi is dangerous by itself, that forced password changes make you safer, that NAT is a firewall, that a MAC address is permanent, that incognito mode hides you, that the HTTPS padlock means a site is safe, that 5 GHz is simply better, that deleting a file erases it, and that more bandwidth means a faster connection. So do two expressions (\"the cloud is just someone else's computer\" and xkcd's chart of when automation pays), sixteen terms (channel vendors and carriers, CPython, cloud regions, AWS, Zscaler Internet Access, IS-IS, REST, DNS TXT records, Wi-Fi, radio spectrum, CERT, assets, F5 Distributed Cloud's Customer Edge, PDF and workarounds) and ten people: Mudge, Albert Gonzalez, Julian Assange, Mafiaboy, Susan Headley, Nick Farr, Cristine Hoepers, Francisco Amato, Federico Kirschbaum and Leonardo Pigner. They bring in this year's changes: NIST's final schedule for retiring RSA and elliptic-curve keys, NIST's rule that services shall not force periodic password changes, DMARC as RFC 9989 and Anatel's August 2026 decision to narrow Brazil's 6 GHz Wi-Fi band from 1 March 2027. Old statements were corrected on the way: Albert Gonzalez was released on 19 September 2023, Cristine Hoepers was the first woman inducted into FIRST's Incident Response Hall of Fame, and the Learn article on Tor now says, from the Tor Project's own metrics, that the United States supplies the largest share of its users and Germany the second. On the People timeline, the strand that read \"Brazil\" now reads \"Brazil and Latin America\".",
+    links: [ // where to read it
+      { label: "\"A VPN makes you anonymous\"", href: "/glossary/vpn-anonymity-myth" }, // the first myth
+      { label: "Cristine Hoepers", href: "/glossary/cristine-hoepers" }, // one of the people
+      { label: "People", href: "/people" }, // the relabelled strand
+    ],
+  },
+  {
+    // The content sweep, batch 4 (PLAN-content-sweep-20261111): ten people and thirty terms (identity, operations,
+    // protocols), written on 11 and 12 November 2026 and integrated on 12/11. Also a Learn summary corrected from the SEC
+    // order (Knight Capital's Power Peg: unused since 2003, broken since 2005).
+    date: "2026-11-12", // the day it was done
+    time: "00:35", // São Paulo time
+    kind: "content", // glossary entries
+    title: "Forty more glossary entries in full: Postel, Perlman, Kaminsky and Torvalds, single sign-on, phishing, rollback and triage", // the headline
+    titlePt: "Mais quarenta verbetes do glossário por inteiro: Postel, Perlman, Kaminsky e Torvalds, single sign-on, phishing, rollback e triagem", // the Portuguese headline
+    body: // what changed, in plain words
+      "Ten people of the internet and of security now have full entries: Jon Postel, Radia Perlman, Paul Vixie, Steven Bellovin, Dan Kaminsky, Linus Torvalds, Cliff Stoll, Mitch Kapor, Tsutomu Shimomura and Peter Eckersley. So do thirty terms: identity providers, service providers, single sign-on, federation, assertions, phishing, threat models, attack surface, blast radius, nonces, AES, the command line, daemons, firmware, HTTP/2, regular expressions, UTC, default routes, metrics, telemetry, throughput, metadata, anonymity and the Anonymous collective, triage, escalation, rollback, retention, capacity, transactions and debugging. Each is written in English and Portuguese from seven to twenty sources read on 11 and 12 November 2026. Where two primary sources disagree, the entry says so: the moth taped into the Harvard Mark II log book is dated 1947 by the Smithsonian and 9 September 1945 by the US Navy's own caption. The Learn article on Knight Capital now follows the SEC order exactly: the Power Peg code had been unused since 2003 and broken since 2005.",
+    links: [ // where to read it
+      { label: "Jon Postel", href: "/glossary/jon-postel" }, // the first of the people
+      { label: "Rollback", href: "/glossary/rollback" }, // one of the terms
+      { label: "Knight Capital and the rollback that made it worse", href: "/learn/knight-capital-and-the-rollback-that-made-it-worse" }, // the corrected article
+    ],
+  },
+  {
+    // The content sweep, batch 3 (PLAN-content-sweep-20261111): ten people (3A), the languages and text encodings (3B),
+    // governance and operations (3C) and cryptography and services (3D); 3A and 3B went in on 11/11 at 23:0x, 3C and 3D
+    // on 12/11.
+    date: "2026-11-12", // the day it was done
+    time: "00:30", // São Paulo time
+    kind: "content", // glossary entries
+    title: "Forty more glossary entries in full: Mitnick, Barlow and Hutchins, Unicode and UTF-8, zero trust, forward secrecy and audits", // the headline
+    titlePt: "Mais quarenta verbetes do glossário por inteiro: Mitnick, Barlow e Hutchins, Unicode e UTF-8, zero trust, forward secrecy e auditoria", // the Portuguese headline
+    body: // what changed, in plain words
+      "Ten people now have full entries: John Perry Barlow, Kevin Mitnick, Gary McKinnon, Filipe Balestra, Barnaby Jack, John Gilmore, Anchises Moraes, Rodrigo Rubira Branco, Marcus Hutchins and Jon Lech Johansen. So do thirty terms: C, Python, Tcl, Expect, the shell, Unix, the kernel, ASCII, Unicode, UTF-8, Base64, XML, checksums, cipher suites, forward secrecy, zero trust, reverse proxies, ping, provisioning, the control plane, containers, audits, compliance, patches, backups, malware, persistence, exploits, severity and tickets. Each is written in English and Portuguese from seven to twenty-one sources read on 11 and 12 November 2026. Some old statements were corrected on the way: Kevin Mitnick's 15 February 1995 was his first court appearance; Marcus Hutchins was arrested on 2 August 2017, as the US Department of Justice records it; Anchises Moraes is a former leader of the Cloud Security Alliance's Brazil chapter; and the claim about a former US vice-president's heart device is now set against the BBC's report that its wireless function was disabled in 2007.",
+    links: [ // where to read it
+      { label: "Kevin Mitnick", href: "/glossary/kevin-mitnick" }, // the first of the people
+      { label: "Zero trust", href: "/glossary/zero-trust" }, // one of the terms
+    ],
+  },
+  {
+    // PRIME 11/11/2026 23:53: Phish or Legit ended in Next's bare "Application error: a client-side exception has
+    // occurred" on Chrome for iPhone. Not reproduced in Chromium (WebKit is not available to test); every page and every
+    // game now catch such a failure: src/app/[locale]/error.tsx, src/components/dev/fun/games/GameErrorBoundary.tsx (put
+    // around every game by MorePuzzlesProvider) and src/lib/crashRecovery.ts. Checked by forcing an error in a game and
+    // in the page header, and by failing a page's code file on a link, on an emulated iPhone and a 1280-pixel desktop.
+    date: "2026-11-12", // the day it was done
+    time: "00:15", // São Paulo time
+    kind: "infra", // how pages behave when they fail
+    title: "A page or a game that fails in your browser now says what went wrong, instead of a blank error", // the headline
+    titlePt: "Uma página ou um jogo que falha no seu navegador agora diz o que deu errado, em vez de um erro em branco", // the Portuguese headline
+    body: // what changed, in plain words
+      "When a page's code failed in the browser, all that showed was a bare line, \"Application error: a client-side exception has occurred\", and nothing else on the page. Now a game that fails is replaced, in its own place, by a short message, \"Try again\" (the game starts afresh; a daily puzzle comes back from what was saved as you played) and \"Reload the page\", with the header and the rest of the page still there; any other page that fails shows the same kind of message with a way home. Both carry \"Error details\", one line naming what failed, so a screenshot is enough to find the cause. The commonest cause, a page left open while a new version is published, whose next step then asks for a file the new version no longer has, now fixes itself: the page reloads once, by itself.",
+    links: [ // where it shows
+      { label: "Phish or Legit", href: "/dev/fun/phish-or-legit" }, // the game it was seen on
+    ],
+  },
+  {
+    // PRIME 11/11/2026 23:39: "For as many pastimes as possible, when it is started, scroll and align the screen ensuring
+    // the entire game board or field, and everything important to the gameplay ... is visible on the screen."
+    // src/components/dev/fun/games/playArea.ts, called by GameShell, the Start cover, Whack-a-Bug and First Match.
+    date: "2026-11-12", // the day it was done
+    time: "00:10", // São Paulo time
+    kind: "feature", // the games' behaviour
+    title: "Games scroll into view when you start them", // the headline
+    titlePt: "Os jogos rolam para a vista quando você começa", // the Portuguese headline
+    body: // what changed, in plain words
+      "Starting a game now brings its whole playing area into view: the board or the field, its controls, and what sits under it, such as the clues and the progress line. When the area fits on the screen it is shown whole, just below the header; when it is taller than the screen, its top is aligned there, so the board comes first and the rest follows as you scroll. A game already in full view does not move. It works for every game that starts with a Start button (Patch Path, Bit Balance, Access Points, Spanning Tree, Log Detective, Phish or Legit, Exit the Editor, Packet Stack, TTL, Rule Inspector and Incident Commander), for Whack-a-Bug's runs and for First Match's levels; with reduced motion switched on, the page jumps instead of scrolling. Five Clues, Prefix of the Day and Aggregate have no start to scroll from, and the toys are left as they are.",
+    links: [ // where to try it
+      { label: "Whack-a-Bug", href: "/arcade/whack-a-bug" }, // a game that starts with a button of its own
+      { label: "Spanning Tree", href: "/dev/fun/spanning-tree" }, // a puzzle with a Start cover
+    ],
+  },
+  {
+    // PRIME 11/11/2026 23:18: Patch Path cut the cable back to an early port when a drag brushed it, and on an iPhone the
+    // page sometimes scrolled instead of drawing. Then PRIME 23:39: keep both behaviours, with a toggle, the original as
+    // it was. Done in src/components/dev/fun/games/PatchPath.tsx and checked with mouse and real touch input on an
+    // emulated iPhone.
+    date: "2026-11-11", // the day it was done
+    time: "23:26", // São Paulo time
+    kind: "feature", // a game's behaviour, fixed
+    title: "Patch Path adds a careful pull-back switch, and holds the page still while you draw", // the headline
+    titlePt: "O Patch Path ganha um botão de recolher com cuidado, e segura a página enquanto você desenha", // the Portuguese headline
+    body: // what changed, in plain words
+      "Patch Path now plays two ways, chosen with a switch under the panel and remembered in your browser. Classic, the default, is the game as it was: dragging over any cell of the cable cuts the cable back to that cell. Careful pull-back, when switched on, lets a drag pull the cable back only along its last steps, a cell or two at a time, so a finger or a pointer that brushes an early port on its way to the last ones no longer undoes most of the panel; pressing a cell of the cable on purpose still cuts it there. In both, on a touch screen a finger may start drawing from the cable's end or from any cell beside it, and while it draws the page no longer scrolls under it. The rules under the panel describe both ways in all six languages.",
+    links: [ // where to play it
+      { label: "Patch Path", href: "/dev/fun/patch-path" }, // the game
+    ],
+  },
+  {
+    // The content sweep, batch 2 (PLAN-content-sweep-20261111): forty more glossary entries, routing and switching, the
+    // network services, and cryptography and identity, each read again on 11/11.
+    date: "2026-11-11", // the day it was done
+    time: "22:58", // São Paulo time
+    kind: "content", // glossary entries
+    title: "Forty more glossary entries in full: routing, switching, network services, cryptography and identity", // the headline
+    titlePt: "Mais quarenta verbetes do glossário por inteiro: roteamento, switching, serviços de rede, criptografia e identidade", // the Portuguese headline
+    body: // what changed, in plain words
+      "BGP, OSPF, ARP, DHCP, ICMP, MTU, CIDR, TTL, multicast, unicast, anycast, MAC addresses, sockets, LANs, bridges, trunks, 802.1Q, SNMP, syslog, NTP, SSH, IPsec, SAML, OAuth, JWT, HMAC, RSA, key exchange, X.509, OpenSSL, DNSSEC, SNI, LDAP, SMTP, CVE, SIEM, NIST, failover, load balancing and MD5 now have full entries in English and Portuguese, each built from seven to seventeen sources read on 11 November 2026. They bring in this year's standards: TLS 1.3 as RFC 9846, Encrypted Client Hello as RFC 9849, DMARC as RFC 9989, the hybrid post-quantum key agreement of RFC 10024, the root zone's move to KSK-2024 and NIST IR 8547 on retiring RSA and elliptic-curve keys. Some old statements were corrected: NTP can step a clock backwards, not only slew it; an OSPF neighbour stuck on an MTU mismatch is eventually torn down; and TLS 1.3 still sends the server name in clear unless Encrypted Client Hello is used.",
+    links: [ // where to read it
+      { label: "BGP", href: "/glossary/bgp" }, // the first of the forty
+      { label: "The glossary", href: "/glossary" }, // all of them
+    ],
+  },
+  {
+    // PRIME 11/11/2026 21:09: the content sweep (QUEUE rows 23 and 45; canon PLAN-content-sweep-20261111). Batch 1, the forty
+    // glossary entries readers meet most, each with a sourced body in English and Portuguese read on 11/11.
+    date: "2026-11-11", // the day it was done
+    time: "22:15", // São Paulo time
+    kind: "content", // glossary entries
+    title: "Forty core glossary entries rewritten in full, from TCP and IP to TLS and DNS", // the headline
+    titlePt: "Quarenta verbetes centrais do glossário reescritos por inteiro, do TCP e do IP ao TLS e ao DNS", // the Portuguese headline
+    body: // what changed, in plain words
+      "The forty terms that appear most often across the articles now have full entries: TCP, IP, UDP, ports, packets, Ethernet, subnets, broadcast, VLANs, switches, routers, gateways, NAT, proxies, firewalls, VPNs, web application firewalls, load balancers, latency, DNS, TLS, certificates, certificate authorities, handshakes, authentication, authorization, sessions, vulnerabilities, risk, payloads, RFCs, the IETF, the IEEE, IANA, APIs, encoding, bytes, bits, logging and incidents. Each one explains how the thing works, where it came from, the standards behind it, how it shows up in practice and what goes wrong, in English and Portuguese, with between eight and nineteen sources read on 11 November 2026. Several entries had no body or no source at all before. The rewrite also corrected some small errors in the old text, among them the author of RFC 919, now credited to Jeffrey Mogul.",
+    links: [ // where to read it
+      { label: "TCP", href: "/glossary/tcp" }, // the first of the forty
+      { label: "The glossary", href: "/glossary" }, // all of them
+    ],
+  },
+  {
     // PRIME 11/11/2026 17:32 ("Do it all now"): the items left over from the second currency check, each re-read live
     // between 17:34 and 17:45 (F5 and Danfoss in a browser; AWS, PHP, AlmaLinux, ENISA, NCSC-NL, Intel and kernel.org fetched).
     date: "2026-11-11", // the day it was done
@@ -368,7 +690,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     title: "Psychological operations: a new series",
     titlePt: "Operações psicológicas: uma nova série",
     body:
-      "A new Learn series follows influence and deception from the small lie repeated until it feels true to campaigns run by states, companies and criminal networks. The opener maps the field and names all 23 parts; the first three are here: the words as their owners define them, why repetition works on people, and why mass scams pay at a tiny success rate. Every claim carries its status, from established to alleged or denied, each accused party's published response sits beside the accusation, and personal views appear only in blocks marked as Rodolfo Nützmann's view. Fifteen glossary entries come with it, from PSYOP, MISO and FIMI (Foreign Information Manipulation and Interference) to the illusory truth effect, advance-fee fraud and pig butchering.",
+      "A new Learn series follows influence and deception from the small lie repeated until it feels true to campaigns run by states, companies and criminal networks. The opener maps the field and names all 23 parts; the first three are here: the words as their owners define them, why repetition works on people, and why mass scams pay at a tiny success rate. Every claim carries its status, from established to alleged or denied, each accused party's published response sits beside the accusation, and what the evidence leaves open is put to the reader as questions (amended 12/11/2026: the series first carried labelled personal views, since removed). Fifteen glossary entries come with it, from PSYOP, MISO and FIMI (Foreign Information Manipulation and Interference) to the illusory truth effect, advance-fee fraud and pig butchering.",
     links: [{ label: "The series opener", href: "/learn/psychological-operations-from-the-small-lie-to-the-campaign" }, { label: "Glossary: PSYOP", href: "/glossary/psyop" }],
   },
   {
@@ -3800,7 +4122,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     kind: "content",
     title: "Who writes each language, said the same way everywhere",
     body:
-      "The Portuguese pages' notice now says what is true of them: the site's Portuguese is written with AI and reviewed gradually, where it used to say each page had been translated automatically. The colophon's note on how translations are marked, the user guide and the ideas page now say the same thing in the same words: English is the source, written with AI and published only when a person decides it should be; Brazilian Portuguese is written with AI too; the other languages are machine-translated. In the fourteen machine-translated languages that note also gave the wrong colour for a complete language, amber where the language menu shows blue. The footer and About now give the title as Senior Technical Instructor at Red Education.",
+      "The Portuguese pages' notice now says what is true of them: the site's Portuguese is written with AI and reviewed gradually, where it used to say each page had been translated automatically. The colophon's note on how translations are marked, the user guide and the ideas page now say the same thing in the same words: English is the source, written with AI; Brazilian Portuguese is written with AI too; the other languages are machine-translated. In the fourteen machine-translated languages that note also gave the wrong colour for a complete language, amber where the language menu shows blue. The footer and About now give the title as Senior Technical Instructor at Red Education.",
     links: [{ label: "Colophon", href: "/colophon" }, { label: "Site Guide", href: "/guide" }, { label: "Share an idea", href: "/contribute/ideas" }],
   },
   {

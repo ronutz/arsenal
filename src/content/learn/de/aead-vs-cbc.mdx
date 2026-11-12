@@ -23,7 +23,7 @@ Eine **CBC**-Chiffre erledigt nur die Verschlüsselung. Für die Integrität kop
 
 TLS verwendete ursprünglich MAC-then-encrypt: den HMAC über den Klartext berechnen, anhängen, das Ergebnis bis zu einer Blockgrenze auffüllen und dann alles mit CBC verschlüsseln. Das Problem ist, dass der Empfänger entschlüsseln und das Padding entfernen muss, bevor er den MAC prüfen kann, sodass fehlerhaftes Padding und ein falscher MAC in verschiedenen Stufen erkannt werden. Ein Angreifer, der sehen kann, ob ein Record am Padding oder am MAC scheiterte – sei es durch eine Fehlermeldung oder nur durch das Timing –, lernt ein Bit über den Klartext pro Versuch. Wiederholt wird aus diesem Bit die ganze Nachricht.
 
-Das ist ein Padding-Oracle, und es ist nicht theoretisch. Eine Reihe von Angriffen über die Jahre, darunter BEAST, Lucky13 und POODLE, nutzte allesamt den CBC-Record-Schutz in TLS aus. Jeder wurde mit immer heiklerem Constant-Time-Code geflickt, aber die zugrunde liegende Konstruktion brachte weiter neue Varianten hervor. Die Lehre, die die Branche zog, war, ihn nicht mehr zu verwenden.
+Das ist ein Padding-Oracle, und es ist nicht theoretisch. Eine Reihe von Angriffen über die Jahre, darunter Lucky13 und POODLE, nutzte allesamt den CBC-Record-Schutz in TLS aus. Jeder wurde mit immer heiklerem Constant-Time-Code geflickt, aber die zugrunde liegende Konstruktion brachte weiter neue Varianten hervor. Die Lehre, die die Branche zog, war, ihn nicht mehr zu verwenden.
 
 ## Warum AEAD jetzt Standard ist
 

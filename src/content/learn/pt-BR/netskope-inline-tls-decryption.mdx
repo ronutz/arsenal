@@ -6,10 +6,10 @@ concepts: ["netskope", "swg", "forward proxy", "interceptacao tls", "descriptogr
 relatedTools: ["x509"]
 sub: swg
 relatedArticles: ["ssl-forward-proxy-interception", "http-proxy-forward-and-reverse", "saml-proxy-explained", "certificate-validation"]
-category: security
+category: sase
 order: 43
 status: reviewed
-updated: "2026-09-27"
+updated: "2026-11-12"
 ---
 
 O artigo genérico sobre SSL forward proxy descreve a interceptação de TLS de saída realizada por um proxy na borda da rede. O Netskope faz o mesmo trabalho, mas realoca o proxy: em vez de um appliance no data center, a interceptação acontece na nuvem do Netskope, a rede global NewEdge de data planes, e o tráfego é direcionado até lá de onde quer que o usuário esteja. Essa única mudança arquitetural é o que o torna um produto de Secure Service Edge (SSE) em vez de uma caixa, e ela muda como as peças do modelo genérico são arranjadas sem mudar a mecânica da interceptação em si.
@@ -21,6 +21,8 @@ Como o proxy não está na rede local, o primeiro problema é levar o tráfego a
 ## Interceptação, inalterada no meio
 
 Assim que o tráfego alcança a NewEdge, a interceptação é exatamente o modelo genérico. O Next Gen Secure Web Gateway termina o TLS do usuário, abre sua própria sessão até o destino, descriptografa, inspeciona, aplica política (filtragem web, proteção contra ameaças, DLP (data loss prevention), controles CASB (cloud access security broker) inline), e recriptografa. E depende da mesma âncora de confiança de que toda interceptação depende: a **root CA (autoridade certificadora, do inglês certificate authority) do Netskope precisa ser confiável nos endpoints**, ou os clientes rejeitarão os certificados reassinados. A própria documentação do Netskope é explícita em que a autenticação SAML do usuário e a inspeção SSL só são possíveis se o pacote de certificados root e intermediário do Netskope puder ser instalado nos endpoints. Para usuários remotos no Cloud Explicit Proxy, o certificado root é baixado e instalado por dispositivo. Essa é a versão hospedada na nuvem do requisito "instale a CA do proxy nos dispositivos gerenciados" do artigo genérico.
+
+Confiar na root nem sempre encerra a questão. Um guia de um funcionário da Netskope na Netskope Community, publicado em 12 de fevereiro de 2026 e atualizado pela última vez em maio de 2026, avisa que o Python 3.13 e as versões seguintes, que validam certificados com mais rigor, podem falhar através da descriptografia SSL mesmo com o pacote de CAs configurado, com `[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Missing Authority Key Identifier`. A explicação do guia é que algumas CAs de tenant mais antigas, e os certificados de interceptação que elas produzem, podem não ter extensões X.509 modernas, especificamente o Authority Key Identifier, ou não marcar o Basic Constraints como crítico. As respostas recomendadas são administrativas: uma política de bypass da descriptografia para domínios essenciais de desenvolvimento no curto prazo e, como correção de longo prazo, um chamado ao suporte da Netskope para rotacionar o certificado da CA do tenant, o que, segundo o guia, basta, sem precisar regenerar a root CA. O verbete [authority key identifier](/glossary/authority-key-identifier) explica por que a extensão importa ([guia da Netskope Community](https://community.netskope.com/next-gen-swg-2/configuring-developer-tools-with-netskope-ssl-inspection-8493)).
 
 ## Como identificar o usuário: SAML no caminho de forward proxy
 
@@ -35,4 +37,5 @@ Sendo um forward proxy, o Netskope encontra a mesma parede que o artigo genéric
 O caminho de identidade para o proxy explícito, incluindo onde é configurado, é da própria Netskope; o padrão que ele fala é um OASIS Standard com data.
 
 - [Cloud Explicit Proxy, Netskope - autenticação SAML 2.0 pelo SAML Proxy, configurada em Settings > Security Cloud Platform > Forward Proxy > SAML](https://docs.netskope.com/en/explicit-proxy/)
+- [Netskope Community, Configuring Developer Tools with Netskope SSL Inspection, guia de jforrest, funcionário da Netskope, publicado em 12 de fevereiro de 2026 e atualizado pela última vez em maio de 2026 (lido em 2026-11-12): o Python 3.13 e as versões seguintes falham com Missing Authority Key Identifier porque algumas CAs de tenant mais antigas não têm extensões X.509 modernas; uma política de bypass da descriptografia, ou a rotação da CA do tenant pelo suporte da Netskope](https://community.netskope.com/next-gen-swg-2/configuring-developer-tools-with-netskope-ssl-inspection-8493)
 - [Assertions and Protocols for the OASIS Security Assertion Markup Language (SAML) V2.0 - OASIS Standard, 15 de março de 2005](https://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf)

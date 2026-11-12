@@ -1,14 +1,14 @@
 ---
 slug: waf-family-history
 title: "The Web Application Firewall: Bought by Auditors, Blamed by Engineers"
-summary: "The first web application firewall and the first web application scanner were built by the same company, which is the structural fact this family is usually explained without. AppShield shipped in the summer of 1999; ModSecurity opened the category in 2002; the OWASP Top 10 gave it a vocabulary in 2003; and PCI DSS made it a purchase in 2004. This is the family history, including why a technology with twenty-five years of development is still described by its own professional bodies as a magic black box that does security."
+summary: "The first web application firewall and the first web application scanner were built by the same company, which is the structural fact this family is usually explained without. AppShield shipped in the summer of 1999; ModSecurity opened the category in 2002; the OWASP Top 10 gave it a vocabulary in 2003; and PCI DSS made it a purchase when its Requirement 6.6 took effect in 2008. This is the family history, including why a technology with twenty-five years of development is still described by its own professional bodies as a magic black box that does security."
 concepts: ["waf", "appshield", "modsecurity", "owasp", "pci dss", "history"]
 relatedTools: []
 relatedArticles: ["firewall-family-history", "adc-family-history", "awaf-false-positives", "awaf-enforcement-mode-blocking-vs-transparent", "php-october-2026-vulnerabilities"]
-category: security
+category: waf
 order: 145
 status: reviewed
-updated: "2026-09-03"
+updated: "2026-11-12"
 ---
 
 Network firewalls filter by address and port. That was sufficient while the interesting traffic was many protocols on many ports, and it stopped being sufficient the moment nearly everything valuable arrived over one port carrying an application nobody could describe.
@@ -23,15 +23,15 @@ The same company also built **AppScan**, a scanner that attacked web application
 
 Kavado and Gilian Technologies shipped comparable products around the same time. The market they were all reacting to was the electronic commerce boom - online transaction value had reached roughly 2.4 billion dollars by 1998, and attacks moved to where the money was.
 
-## 2002 to 2004: the parts that made it a discipline
+## 2002 to 2008: the parts that made it a discipline
 
-Three things happened in quick succession, and none of them was a product feature.
+Three things happened within a few years, and none of them was a product feature.
 
 **ModSecurity**, in 2002, was an open-source rule engine embedded in Apache and later NGINX and IIS. It made the technology accessible to anyone with a web server and, more importantly, made the rules readable - which turned an opaque appliance category into something engineers could study and argue about. The same thing the Firewall Toolkit did for firewalls and Snort did for intrusion detection, and for the same reason.
 
 **OWASP**, founded in December 2001, published the first **Top 10** in 2003. That list gave the field a shared vocabulary - injection, cross-site scripting, broken access control - and vendors immediately built detection for the named categories. The **Core Rule Set** followed as a shared, open library of signatures with anomaly scoring, and it is still what a large share of deployments actually run.
 
-**PCI DSS**, from 2004, named a web application firewall as an acceptable control for protecting public-facing applications. That is the moment the category stopped being a security purchase and became a compliance one.
+**PCI DSS**, the payment card industry's security standard, whose first version dates from December 2004 ([Wikipedia, Payment Card Industry Data Security Standard, read 2026-11-12](https://en.wikipedia.org/wiki/Payment_Card_Industry_Data_Security_Standard)), named a web application firewall as one of two ways to meet its Requirement 6.6 for public-facing web applications, the other being application code review; the PCI Security Standards Council announced that the requirement would take effect on 30 June 2008 ([PCI Security Standards Council, press release of 22 April 2008, read 2026-11-12](https://east.pcisecuritystandards.org/pdfs/04-22-08.pdf)). That is the moment the category stopped being a security purchase and became a compliance one.
 
 ## What compliance did to the technology
 
@@ -54,7 +54,7 @@ A WAF is a second, external, approximate model of an application, maintained by 
 - **Reverse proxy appliances**, 1999. AppShield, Kavado, Gilian.
 - **Embedded modules**, 2002. ModSecurity in the web server itself.
 - **Shared rules**, 2003 onward. The OWASP Top 10 and the Core Rule Set.
-- **Compliance-driven adoption**, from 2004. PCI DSS, and a market that grew for reasons other than efficacy.
+- **Compliance-driven adoption**, from 2008. PCI DSS Requirement 6.6, and a market that grew for reasons other than efficacy.
 - **Absorption into the delivery tier**, from the late 2000s. The WAF became a module on the application delivery controller already terminating the traffic, which is where most enterprises run it - a consolidation the previous article in this series traces from the other side.
 - **Cloud and edge**, from the 2010s. Delivered as a service in front of the origin, which changes the economics and moves the plaintext to the provider.
 - **Behaviour, bots and application programming interfaces**, currently. The traffic being defended is increasingly not a browser and not a page, and the rules written for form submissions do not describe it.
@@ -89,6 +89,7 @@ Today the function is a module on delivery controllers from F5, Citrix and Radwa
 - [Web application firewall: early products from Kavado and Gilian Technologies, ModSecurity formed in 2002 to make the technology more accessible, and rules standardised through the OWASP Top 10 from 2003](https://handwiki.org/wiki/Software:Web_application_firewall)
 - [ISACA technical brief on web application firewalls: Perfecto was the first company to offer a dedicated web application firewall, and a majority of implementations are still not delivering on their promises after twenty years, remaining perceived as magic black boxes that do security](https://www.approach-cyber.com/wp-content/uploads/2024/08/isaca_techbrief_-_waf_where_do_we_stand_final.pdf)
 - [The history of web application firewalls: the 2004 Payment Card Industry Data Security Standard naming the web application firewall as a compensating control, and the OWASP Core Rule Set as a shared library of signatures with anomaly scoring](https://www.cdnhandbook.com/waf/history/)
+- [PCI Security Standards Council, press release 'PCI Security Standards Council Issues Latest Information Supplements to PCI Data Security Standard', 22 April 2008 (read 2026-11-12): Requirement 6.6, effective on 30 June 2008, offers two options, application code review or an application firewall; the second option defined as a web application firewall, a security policy enforcement point between a web application and a client end point; the date the secondary history above gives as 2004](https://east.pcisecuritystandards.org/pdfs/04-22-08.pdf)
 - [HCL AppScan: the first version of AppShield built by a team led by Gili Raanan, running on a dedicated Linux server](https://en.wikipedia.org/wiki/HCL_AppScan)
 - [Cloudflare, Cloudflare deploys protections against php2shell vulnerability, 21 October 2026: WAF protections deployed about 9 hours ahead of public disclosure, from 03:02 UTC, and the advice to patch PHP as well (read 2026-10-27)](https://blog.cloudflare.com/php-vulnerabilities-waf-protection/)
 - [AWS Security Blog, Using AWS WAF to apply mitigations for PHP2Shell: managed rule group versions of 22 and 23 October 2026, and patching as the only complete fix (read 2026-10-27)](https://aws.amazon.com/blogs/security/using-aws-waf-to-apply-mitigations-for-php2shell-rce-vulnerabilities-cve-2026-109618-and-cve-2026-109619/)

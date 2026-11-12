@@ -5,7 +5,7 @@ summary: "The M&A integration scenario is where zero trust earns its architectur
 concepts: ["zscaler", "mergers", "acquisitions", "zpa", "overlapping ip", "identity", "phased migration", "zero trust"]
 relatedTools: []
 relatedArticles: ["zpa-architecture-app-connectors-service-edges", "zpa-app-segments-and-access-policy", "nat-explained", "saml-overview", "scim-overview", "zia-locations-and-sublocations"]
-category: networking
+category: sase
 order: 199
 status: reviewed
 updated: "2026-07-21"
@@ -19,7 +19,7 @@ The day-one requirement is always the same sentence: *these named people from th
 
 ## The overlapping-address problem dissolves
 
-Two companies of any age both live in RFC 1918 space, and both own a 10.0.0.0-something; the traditional project's most tedious workstream is [the NAT and readdressing](/learn/nat-explained) that lets the twins coexist. The Exchange's geometry makes the collision largely irrelevant, and the reason is one already-established fact: [the client never routes to the application's address - the connector reaches the server, resolving locally on its own side](/learn/zpa-architecture-app-connectors-service-edges). Two applications at the same private address in the two estates are simply two segments served by two connector groups, each resolving its own truth. The address plans can stay contradictory for years; many integrations never reconcile them at all.
+Two companies of any age both live in RFC 1918 space, and both own a 10.0.0.0-something; the traditional project's most tedious workstream is [the NAT (network address translation) and readdressing](/learn/nat-explained) that lets the twins coexist. The Exchange's geometry makes the collision largely irrelevant, and the reason is one already-established fact: [the client never routes to the application's address - the connector reaches the server, resolving locally on its own side](/learn/zpa-architecture-app-connectors-service-edges). Two applications at the same private address in the two estates are simply two segments served by two connector groups, each resolving its own truth. The address plans can stay contradictory for years; many integrations never reconcile them at all.
 
 ## Identity merges in phases, behind the brokers
 

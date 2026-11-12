@@ -5,7 +5,7 @@ summary: "O cenário de integração de M&A é onde o zero trust paga sua arquit
 concepts: ["zscaler", "mergers", "acquisitions", "zpa", "overlapping ip", "identity", "phased migration", "zero trust"]
 relatedTools: []
 relatedArticles: ["zpa-architecture-app-connectors-service-edges", "zpa-app-segments-and-access-policy", "nat-explained", "saml-overview", "scim-overview", "zia-locations-and-sublocations"]
-category: networking
+category: sase
 order: 199
 status: reviewed
 updated: "2026-07-21"
@@ -19,7 +19,7 @@ O requisito do dia um é sempre a mesma frase: *estas pessoas nomeadas da empres
 
 ## O problema dos endereços sobrepostos se dissolve
 
-Duas empresas de qualquer idade vivem ambas no espaço RFC 1918, e ambas possuem um 10.0.0.0-alguma-coisa; a frente mais tediosa do projeto tradicional é [o NAT e o reendereçamento](/learn/nat-explained) que deixam os gêmeos coexistirem. A geometria do Exchange torna a colisão largamente irrelevante, e a razão é um fato já estabelecido: [o cliente nunca roteia até o endereço da aplicação - o connector alcança o servidor, resolvendo localmente do seu próprio lado](/learn/zpa-architecture-app-connectors-service-edges). Duas aplicações no mesmo endereço privado nos dois patrimônios são simplesmente dois segmentos servidos por dois grupos de connectors, cada um resolvendo a sua verdade. Os planos de endereçamento podem seguir contraditórios por anos; muitas integrações nunca os reconciliam.
+Duas empresas de qualquer idade vivem ambas no espaço RFC 1918, e ambas possuem um 10.0.0.0-alguma-coisa; a frente mais tediosa do projeto tradicional é [o NAT (tradução de endereços de rede) e o reendereçamento](/learn/nat-explained) que deixam os gêmeos coexistirem. A geometria do Exchange torna a colisão largamente irrelevante, e a razão é um fato já estabelecido: [o cliente nunca roteia até o endereço da aplicação - o connector alcança o servidor, resolvendo localmente do seu próprio lado](/learn/zpa-architecture-app-connectors-service-edges). Duas aplicações no mesmo endereço privado nos dois patrimônios são simplesmente dois segmentos servidos por dois grupos de connectors, cada um resolvendo a sua verdade. Os planos de endereçamento podem seguir contraditórios por anos; muitas integrações nunca os reconciliam.
 
 ## A identidade se funde em fases, atrás dos brokers
 

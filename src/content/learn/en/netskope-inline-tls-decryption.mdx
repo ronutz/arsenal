@@ -6,10 +6,10 @@ concepts: ["netskope", "swg", "forward proxy", "tls interception", "inline decry
 relatedTools: ["x509"]
 sub: swg
 relatedArticles: ["ssl-forward-proxy-interception", "http-proxy-forward-and-reverse", "saml-proxy-explained", "certificate-validation"]
-category: security
+category: sase
 order: 43
 status: reviewed
-updated: "2026-09-27"
+updated: "2026-11-12"
 ---
 
 The generic SSL forward proxy article describes outbound TLS interception performed by a proxy at the network edge. Netskope does the same job, but relocates the proxy: instead of an appliance in the data centre, the interception happens in Netskope's cloud, the NewEdge global network of data planes, and traffic is steered there from wherever the user is. That single architectural shift is what makes it a Secure Service Edge (SSE) product rather than a box, and it changes how the pieces of the generic model are arranged without changing the mechanics of interception itself.
@@ -21,6 +21,8 @@ Because the proxy is not on the local network, the first problem is getting traf
 ## Interception, unchanged in the middle
 
 Once traffic reaches NewEdge, the interception is the generic model exactly. The Next Gen Secure Web Gateway terminates the user's TLS, opens its own session to the destination, decrypts, inspects, applies policy (web filtering, threat protection, DLP (data loss prevention), inline CASB (cloud access security broker) controls), and re-encrypts. And it depends on the same trust anchor every interception depends on: the **Netskope root CA (certificate authority) must be trusted on the endpoints**, or clients will reject the re-signed certificates. Netskope's own documentation is explicit that user SAML authentication and SSL inspection are possible only if the Netskope root and intermediate certificate bundle can be installed on the endpoints. For remote users on the Cloud Explicit Proxy, the root certificate is downloaded and installed per device. This is the cloud-hosted version of the "install the proxy's CA on managed devices" requirement from the generic article.
+
+Trusting the root is not always the end of it. A guide by a Netskope employee on the Netskope Community, first posted on 12 February 2026 and last updated in May 2026, warns that Python 3.13 and newer, which validate certificates more strictly, can fail through SSL decryption even with the CA bundle configured, with `[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Missing Authority Key Identifier`. The guide's explanation is that some older tenant CAs, and the interception certificates they produce, may lack modern X.509 extensions, specifically the Authority Key Identifier, or may not mark Basic Constraints critical. Its recommended answers are administrative: a decryption bypass policy for essential developer domains in the short term and, as the long-term fix, a ticket to Netskope Support to rotate the tenant CA certificate, which it says is sufficient without regenerating the root CA. The [authority key identifier](/glossary/authority-key-identifier) entry explains why the extension matters ([Netskope Community guide](https://community.netskope.com/next-gen-swg-2/configuring-developer-tools-with-netskope-ssl-inspection-8493)).
 
 ## Identifying the user: SAML in the forward-proxy path
 
@@ -35,4 +37,5 @@ Being a forward proxy, Netskope hits the same wall the generic article describes
 The identity path for the explicit proxy, including where it is configured, is Netskope's own; the standard it speaks is an OASIS Standard with a date.
 
 - [Cloud Explicit Proxy, Netskope - SAML 2.0 authentication via the SAML Proxy, configured under Settings > Security Cloud Platform > Forward Proxy > SAML](https://docs.netskope.com/en/explicit-proxy/)
+- [Netskope Community, Configuring Developer Tools with Netskope SSL Inspection, a guide by jforrest, a Netskope employee, posted 12 February 2026 and last updated May 2026 (read 2026-11-12): Python 3.13 and newer fail with Missing Authority Key Identifier because some older tenant CAs lack modern X.509 extensions; a decryption bypass policy, or rotating the tenant CA through Netskope Support](https://community.netskope.com/next-gen-swg-2/configuring-developer-tools-with-netskope-ssl-inspection-8493)
 - [Assertions and Protocols for the OASIS Security Assertion Markup Language (SAML) V2.0 - OASIS Standard, 15 March 2005](https://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf)

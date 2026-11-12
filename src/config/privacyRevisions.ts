@@ -29,6 +29,30 @@ export interface PrivacyRevision {
 
 /** The revisions, newest first. Every date is a changelog entry's date. */
 export const PRIVACY_REVISIONS: readonly PrivacyRevision[] = [
+  // Unique browsers on the scoreboard (the site owner, 12/11/2026 17:06 to 17:09): the first round a browser publishes on
+  // a puzzle day carries one yes or no saying so (`first`), decided from the day of its last published round, kept in
+  // that browser only (ronutz:fun:posted-day, a local-only key; src/lib/fun/board.ts); the server stores only that bit
+  // on a new row (first_today, migrations/0004_fun_first_today.sql; worker/scores.ts), and the day's sum is shown as
+  // unique browsers (browsers, not people) on the scores and Stats pages and kept in the daily totals (fun_browsers,
+  // worker/rollup.ts). gamesBody, gamesStored, browserBody and deskPortable say so, in the six written packs.
+  { date: "2026-11-12", key: "r20261112browsers" },
+  // My desk (PRIME 12/11/2026 12:42, "yes on the most functionally rich and user convenient options"): the reader's own
+  // page keeps its saved items, read marks, paths, layout, settings and notes in this browser under ronutz:desk:v1
+  // (src/lib/desk/store.ts); an optional sync sends an encrypted copy the site cannot read (src/lib/desk/sync.ts,
+  // worker/desk.ts); saving an item is a new interest kind, "save". A section of its own ("My desk") says what is kept,
+  // what the server holds and for how long, and what it cannot read; browserBody, prefsBody, short4, noTrackBody and
+  // interestBody say so too. In the six written packs. The same day, 14:42 (the site owner): a setting changed in two
+  // browsers takes the latest change, by change times to the minute kept in this browser (ronutz:portable:times) and
+  // inside the encrypted copy, unless the reader chooses in Settings to keep this browser's value and record none
+  // (ronutz:portable:no-times; src/lib/desk/settingTimes.ts); deskPortable and this note say so.
+  { date: "2026-11-12", key: "r20261112desk" },
+  // The interest counts (PRIME 12/11/2026 02:35, "I accept and agree with all your suggestions and recommendations,
+  // especially not bringing in 3rd-party trackers"): with the reader's yes, and only then, the pages send the site's
+  // own Worker a count of what was used (worker/events.ts, src/lib/interest/). A section of its own ("Interest counts")
+  // says what a count holds, the one case that carries typed words (an empty search's plain words), what is never
+  // sent, the three months in the Analytics Engine and the 760 days of daily totals in the site's database, and where
+  // the choice is changed; short1, short4, noTrackBody and browserBody say so too. In the six written packs.
+  { date: "2026-11-12", key: "r20261112interest" },
   // The games' public scoreboard (PRIME's decisions of 08/11/2026): a finished daily puzzle of today is sent to the
   // board unless "Share my results on the public board" is off; the "Game scores" section (en and pt-BR) lists what a
   // row keeps and never keeps, the 400 days and how to ask for a removal; short4, noTrackBody and prefsBody (en and

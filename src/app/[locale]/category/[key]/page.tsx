@@ -118,7 +118,8 @@ export default async function CategoryPage({
               {t(`categories.${key}`)}
             </h1>
             <p className="page-hero-lede" style={{ marginBottom: "2.5rem" }}>
-              {tCat("lede")}
+              {/* A subject with its own introduction says what it covers (since 12/11/2026, "sase"); the rest keep the shared line. */}
+              {tCat.has(`ledes.${key}`) ? tCat(`ledes.${key}`) : tCat("lede")}
             </p>
 
             {/* Tools in this category. */}

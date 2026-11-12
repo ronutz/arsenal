@@ -36,7 +36,11 @@
  * - languageStatus:   LanguageSwitcher fallback notice    ~651 B
  * - search:           Search overlay (header)             ~565 B
  * - stepper:          up and down arrows of numeric fields ~60 B (NumberStepper, any page with a number to set)
- * Total ~1.4 KB vs the former ~423 KB pack.
+ * - pageError:        src/app/[locale]/error.tsx, the page shown instead of Next's bare "Application error" when a
+ *                     page's code fails in the browser ~400 B (PRIME 11/11/2026 23:53)
+ * - deskItem.menu:    the search dialog's "Add to..." and its panel (My desk, PRIME 12/11/2026 12:42): only the panel's
+ *                     words, a dotted path, not the whole deskItem namespace ~1.1 KB
+ * Total ~2.9 KB vs the former ~423 KB pack.
  */
 export const GLOBAL_CLIENT_NAMESPACES = [
   "theme",
@@ -44,6 +48,8 @@ export const GLOBAL_CLIENT_NAMESPACES = [
   "languageStatus",
   "search",
   "stepper",
+  "pageError",
+  "deskItem.menu",
 ] as const;
 
 /**

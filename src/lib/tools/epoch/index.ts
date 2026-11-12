@@ -17,6 +17,9 @@ export type { EpochVector, VerifyReport } from "./golden-vectors";
 /** Tool manifest. `sources` are surfaced on the tool page as reference links. */
 export const manifest = Object.freeze({
   toolSlug: "epoch",
+  /** My desk (12/11/2026): eligible for the desk's Quick tools widget. Its engine is small and pure, and runs in the
+   *  widget through the adapter in src/lib/desk/quickTools.ts (scripts/check-desk-store.mts keeps the two in step). */
+  deskQuick: true,
   // How input is handled: Share results (2026-11-01) builds a link only when pressed, carrying the timestamp or date as typed.
   dangerousInputHandling: ["share-input"],
   /** The Learn article written for this tool. Added 2026-08-12: this manifest

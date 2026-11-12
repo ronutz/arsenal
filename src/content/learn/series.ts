@@ -93,7 +93,7 @@ export const LEARN_SERIES: LearnSeries[] = [
   {
     // The psychological-operations series (PRIME 2026-11-09 14:57: "we need a whole series on it"; PLAN-psyops-series-
     // 20261109): from the small lie to the campaign, the amplifier, arbitration and the defences, in the order the
-    // opener's own list gives. Every part carries <MethodNote />, PRIME's views only in <RodVoice> (check-rod-voice.mjs).
+    // opener's own list gives. Every part carries <MethodNote />; open points go to the reader as <ReaderQuestions>, never as a personal view (check-rod-voice.mjs; PRIME 12/11/2026 15:18).
     id: "psyops",
     group: "influence",
     opener: "psychological-operations-from-the-small-lie-to-the-campaign",

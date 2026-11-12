@@ -29,6 +29,8 @@ import WasmChip from "@/components/WasmChip";
 import { categoryColor } from "@/config/categoryColors";
 import { vendorColor, populatedVendors } from "@/config/vendors";
 import ScrollToTop from "@/components/ScrollToTop";
+// My desk's saved and read labels on the cards.
+import DeskListMarks from "@/components/desk/DeskListMarks";
 import CategoryFilter from "@/components/CategoryFilter";
 import ViewToggle from "@/components/ViewToggle";
 // Wave T, the cheap half (2026-10-05; SCOUT E6, E7): the Guided | Directory switch built for Learn, and "Recently
@@ -60,6 +62,8 @@ export default async function ToolsPage({
   const t = await getTranslations("tools");
   const tHub = await getTranslations("vendorHub"); // hub-strip chrome
   const tp = await getTranslations("tools.portal");
+  // My desk's labels on the cards (saved, read, done), drawn in the browser after paint (12/11/2026).
+  const tDesk = await getTranslations("deskItem");
 
   // The generic index lists VENDOR-AGNOSTIC tools only (PRIME directive
   // 2026-07-03); vendor tools live on their hubs, linked in the strip above.
@@ -598,6 +602,9 @@ export default async function ToolsPage({
       <SiteFooter />
 
       <ScrollToTop label={t("backToTop")} />
+      {/* My desk: "★ Saved", "✓ Read" or "✓ Done" on the cards of items the reader keeps, placed after paint over each
+          card's top border so nothing moves (src/components/desk/DeskListMarks.tsx). */}
+      <DeskListMarks selector=".tools-card" labels={{ saved: tDesk("saved"), read: tDesk("readOn"), done: tDesk("doneOn") }} />
     </>
   );
 }

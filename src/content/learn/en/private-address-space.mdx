@@ -8,7 +8,7 @@ relatedArticles: ["cidr-notation", "ipv4-addressing", "vlsm", "private-vs-public
 category: networking
 order: 9
 status: reviewed
-updated: "2026-10-18"
+updated: "2026-11-12"
 ---
 
 IPv4 addresses are 32 bits long, 2³² = 4,294,967,296 in all, as Request for Comments (RFC) 791 defines them ([RFC 791, section 2.3](https://www.rfc-editor.org/rfc/rfc791.txt)); see [how IPv4 addresses work](/learn/ipv4-addressing). RFC 1918, Best Current Practice (BCP) 5 since February 1996, records that the Internet Assigned Numbers Authority (IANA) has "reserved the following three blocks of the IP address space for private internets" ([RFC 1918, section 3](https://www.rfc-editor.org/rfc/rfc1918.txt)). You meet them on internal interfaces, in reverse lookups and in network mergers. By the end you can state each block in Classless Inter-Domain Routing (CIDR) notation, apply RFC 1918's rules for routers and DNS, explain why mergers force renumbering, recognize a leaked reverse lookup, and check it all with `ip`, `dig` and Python.
@@ -195,14 +195,14 @@ So `is_private` is no RFC 1918 test: it is `True` for 127.0.0.1, 169.254.1.1 and
 - [IANA, DNS Parameters registry: DNS RCODEs (read 2026-10-18)](https://www.iana.org/assignments/dns-parameters/dns-parameters-6.csv)
 - [RFC 6761, Special-Use Domain Names, February 2013: section 6.1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6761.txt)
 - [IANA, Locally-Served DNS Zones registry, last updated 2025-06-16 (read 2026-10-18)](https://www.iana.org/assignments/locally-served-dns-zones/locally-served-dns-zones.txt)
-- [BIND 9 9.20.29 documentation, Configuration Reference: Built-in Empty Zones and deny-answer-addresses (read 2026-10-18)](https://bind9.readthedocs.io/en/stable/reference.html)
+- [BIND 9 9.20.29 documentation, Configuration Reference: Built-in Empty Zones and deny-answer-addresses (read 2026-10-18)](https://bind9.readthedocs.io/en/v9.20.29/reference.html)
 - [RFC 6305, I'm Being Attacked by PRISONER.IANA.ORG!, July 2011: Abstract and section 7 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6305.txt)
 - [RFC 6598, IANA-Reserved IPv4 Prefix for Shared Address Space, April 2012: sections 1, 3, 4 and 5 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6598.txt)
 - [RFC 3927, Dynamic Configuration of IPv4 Link-Local Addresses, May 2005: sections 1.9 and 7, Appendix A.3 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc3927.txt)
 - [Microsoft Learn, IP_PER_ADAPTER_INFO_W2KSP1 structure: Remarks (read 2026-10-18)](https://learn.microsoft.com/en-us/windows/win32/api/iptypes/ns-iptypes-ip_per_adapter_info_w2ksp1)
 - [ip-address(8), Linux manual page (iproute2, man7.org) (read 2026-10-18)](https://man7.org/linux/man-pages/man8/ip-address.8.html)
 - [ip-route(8), Linux manual page (iproute2, man7.org) (read 2026-10-18)](https://man7.org/linux/man-pages/man8/ip-route.8.html)
-- [BIND 9 9.20.29 documentation, Manual Pages: dig (read 2026-10-18)](https://bind9.readthedocs.io/en/stable/manpages.html)
+- [BIND 9 9.20.29 documentation, Manual Pages: dig (read 2026-10-18)](https://bind9.readthedocs.io/en/v9.20.29/manpages.html)
 - [Google Public DNS, JSON API for DNS over HTTPS (DoH) (read 2026-10-18)](https://developers.google.com/speed/public-dns/docs/doh/json)
 - [Cloudflare 1.1.1.1 documentation, Using JSON (read 2026-10-18)](https://developers.cloudflare.com/1.1.1.1/encryption/dns-over-https/make-api-requests/dns-json/)
 - [Python 3.14 documentation, ipaddress: IPv4/IPv6 manipulation library (read 2026-10-18)](https://docs.python.org/3.14/library/ipaddress.html)

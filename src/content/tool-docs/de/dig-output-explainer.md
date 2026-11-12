@@ -60,6 +60,6 @@ Dieselbe Engine beantwortet die Operation `/api/v1/dig-output-explainer` der HTT
 - [RFC 8490: DNS Stateful Operations](https://www.rfc-editor.org/rfc/rfc8490) (abgerufen am 19.10.2026): Abschnitte 10.1 und 10.2, Opcode 6 (DSO) und RCODE 11 (DSOTYPENI)
 - [RFC 6761: Special-Use Domain Names](https://www.rfc-editor.org/rfc/rfc6761) (abgerufen am 19.10.2026): Abschnitt 6.4, Namen unter `.invalid`
 - [RFC 9824: Compact Denial of Existence in DNSSEC](https://www.rfc-editor.org/rfc/rfc9824) (abgerufen am 19.10.2026): NOERROR ohne Daten für einen Namen, der nicht existiert
-- [ISC, BIND 9 9.20.29 documentation, Manual Pages: dig](https://bind9.readthedocs.io/en/stable/manpages.html) (abgerufen am 19.10.2026): `+ttlunits`, `+ttlid`, `+multiline`, `+opcode`
+- [ISC, BIND 9 9.20.29 documentation, Manual Pages: dig](https://bind9.readthedocs.io/en/v9.20.29/manpages.html) (abgerufen am 19.10.2026): `+ttlunits`, `+ttlid`, `+multiline`, `+opcode`
 - [BIND 9 source at tag v9.20.29, bin/dig/dig.c](https://github.com/isc-projects/bind9/blob/v9.20.29/bin/dig/dig.c) (abgerufen am 19.10.2026): die Opcode-Namen, die dig ausgibt, darunter `RESERVED6`; `RESERVED11` stammt aus lib/dns/rcode.c
 - [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986) (abgerufen am 27.10.2026): Abschnitt 3.5, das Fragment, das die Werte eines Links von „Ergebnisse teilen“ enthält

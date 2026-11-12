@@ -8,7 +8,7 @@ relatedArticles: ["quantum-threat-to-cryptography", "hash-function-families", "p
 category: transport
 order: 7
 status: reviewed
-updated: "2026-09-27"
+updated: "2026-11-12"
 ---
 
 The quantum threat falls on public-key cryptography: key establishment and signatures, the two jobs RSA and the elliptic curves do today. So the replacements come in exactly those two shapes. NIST ran an open competition from 2016, selected the first winners in 2022, and on 13 August 2024 published the first three finalized standards. They are the ones to build with today.
@@ -31,7 +31,7 @@ The practical point NIST and follow-on guidance stress: these three are not inte
 
 ## Security levels, and how they map to what you know
 
-NIST expresses the strength of each parameter set as a category tied to a symmetric-equivalent: level 1 is comparable to breaking AES-128, level 3 to AES-192, and level 5 to AES-256. Those equivalents already fold in Grover's algorithm, the quantum search that halves symmetric strength, so the mapping is a post-quantum comparison, not a classical one. For national-security systems, the NSA's CNSA 2.0 suite names the top parameter sets specifically: ML-KEM-1024 and ML-DSA-87, with a 2030 migration deadline. NIST's own transition guidance (draft IR 8547) sketches deprecating RSA and ECC for new federal systems after 2030 and disallowing them, including for legacy interoperability, after 2035.
+NIST expresses the strength of each parameter set as a category tied to a symmetric-equivalent: level 1 is comparable to breaking AES-128, level 3 to AES-192, and level 5 to AES-256. Those equivalents already fold in Grover's algorithm, the quantum search that halves symmetric strength, so the mapping is a post-quantum comparison, not a classical one. For national-security systems, the NSA's CNSA 2.0 suite names the top parameter sets specifically: ML-KEM-1024 and ML-DSA-87, with a 2030 migration deadline. NIST's own transition guidance (IR 8547, final since October 2026) deprecates RSA and ECC for new federal systems after 2030 and disallowing them, including for legacy interoperability, after 2035.
 
 ## The backups still in the pipeline
 

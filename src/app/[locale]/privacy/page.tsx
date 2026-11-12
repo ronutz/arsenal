@@ -43,6 +43,16 @@ import {
   SCORES_WRITE_SOURCE,
   SCORES_VERIFY_SOURCE,
   SCORES_SCHEMA_SOURCE,
+  INTEREST_SHAPE_SOURCE,
+  INTEREST_CLIENT_SOURCE,
+  INTEREST_WRITE_SOURCE,
+  INTEREST_CHECK_SOURCE,
+  // My desk's optional sync (12/11/2026): the server's route, its table, its check, and the browser's side.
+  DESK_SYNC_SOURCE,
+  DESK_SYNC_SCHEMA_SOURCE,
+  DESK_SYNC_CHECK_SOURCE,
+  DESK_CLIENT_SOURCE,
+  DESK_CRYPTO_SOURCE,
 } from "@/config/countingSource";
 // What Cloudflare does as the host, each fact from its own documentation (privacy round 3, 2026-10-26).
 import {
@@ -175,6 +185,32 @@ export default async function PrivacyPage({
     contact: (chunks: ReactNode) => <Link href="/contact">{chunks}</Link>,
   });
 
+  // THE INTEREST COUNTS (PRIME 12/11/2026 02:35). Their section says what the site asks and what a count holds, then
+  // four more paragraphs: the one case that carries typed words, what a count never carries (with the public files
+  // that decide it), how long counts and daily totals are kept, and where the choice is changed (the Settings page).
+  const interestNever = t.rich("interestNever", {
+    shape: out(INTEREST_SHAPE_SOURCE),
+    client: out(INTEREST_CLIENT_SOURCE),
+    events: out(INTEREST_WRITE_SOURCE),
+    check: out(INTEREST_CHECK_SOURCE),
+  });
+  // The choice paragraph, with the site's own Settings page.
+  const interestChoice = t.rich("interestChoice", {
+    settings: (chunks: ReactNode) => <Link href="/settings">{chunks}</Link>,
+  });
+
+  // MY DESK (PRIME 12/11/2026 12:42). Its section says what the page keeps in this browser (ronutz:desk:v1) and what
+  // leaves it (a save's interest count, under the existing yes; the optional sync), then three paragraphs on the sync:
+  // how the code becomes a name and a key in the browser, what the server's row holds and for how long, and the public
+  // files that do it.
+  const deskSyncSource = t.rich("deskSyncSource", {
+    code: out(DESK_SYNC_SOURCE),
+    schema: out(DESK_SYNC_SCHEMA_SOURCE),
+    client: out(DESK_CLIENT_SOURCE),
+    crypto: out(DESK_CRYPTO_SOURCE),
+    check: out(DESK_SYNC_CHECK_SOURCE),
+  });
+
   // The "short version" points, rendered as a set of lead paragraphs.
   const short = ["short1", "short2", "short3", "short4"];
 
@@ -186,6 +222,10 @@ export default async function PrivacyPage({
     ["prefsTitle", "prefsBody"],
     // The games' public scoreboard (08/11/2026), after what the browser keeps, which it refers to.
     ["gamesTitle", "gamesBody"],
+    // The interest counts (12/11/2026), after the scoreboard: the second thing a page may send, and only after a yes.
+    ["interestTitle", "interestBody"],
+    // My desk (12/11/2026), after the interest counts, which its save count belongs to.
+    ["deskTitle", "deskBody"],
     ["shortcutsTitle", "shortcutsBody"],
     ["hostingTitle", "hostingBody"],
     ["toolsTitle", "toolsBody"],
@@ -226,7 +266,8 @@ export default async function PrivacyPage({
 
           {/* Body sections */}
           {sections.map(([titleKey, bodyKey]) => (
-            <section className="section" key={titleKey}>
+            // The interest counts' section carries an id: the question's "What is counted" link and the Settings page land on it.
+            <section className="section" key={titleKey} id={titleKey === "interestTitle" ? "interest" : titleKey === "deskTitle" ? "desk" : undefined}>
               <div className="container colophon-container">
                 <h2 className="colophon-h2">{t(titleKey)}</h2>
                 <p className="colophon-body">{bodyKey === "controllerBody" ? withEmail("controllerBody") : t(bodyKey)}</p>
@@ -240,6 +281,18 @@ export default async function PrivacyPage({
                 {titleKey === "gamesTitle" && <p className="colophon-body">{gamesStored}</p>}
                 {titleKey === "gamesTitle" && <p className="colophon-body">{t("gamesKept")}</p>}
                 {titleKey === "gamesTitle" && <p className="colophon-body">{gamesRemoval}</p>}
+                {/* The interest counts' section closes with the typed-words case, what is never sent, the keeping and the choice. */}
+                {titleKey === "interestTitle" && <p className="colophon-body">{t("interestWords")}</p>}
+                {titleKey === "interestTitle" && <p className="colophon-body">{interestNever}</p>}
+                {titleKey === "interestTitle" && <p className="colophon-body">{t("interestKept")}</p>}
+                {titleKey === "interestTitle" && <p className="colophon-body">{interestChoice}</p>}
+                {/* My desk's section closes with the sync: how it works, what the server holds, and the code that does it. */}
+                {titleKey === "deskTitle" && <p className="colophon-body">{t("deskSync")}</p>}
+                {/* What moves to another browser and what stays with each one (PRIME 12/11/2026 13:38, "Portable storage"):
+                    the same two lists as src/lib/desk/portable.ts, PORTABLE_KEYS and LOCAL_ONLY_KEYS. */}
+                {titleKey === "deskTitle" && <p className="colophon-body" id="desk-portable">{t("deskPortable")}</p>}
+                {titleKey === "deskTitle" && <p className="colophon-body">{t("deskSyncKept")}</p>}
+                {titleKey === "deskTitle" && <p className="colophon-body">{deskSyncSource}</p>}
               </div>
             </section>
           ))}

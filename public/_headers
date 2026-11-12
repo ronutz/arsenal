@@ -67,6 +67,11 @@
 /feed.xml
   Content-Type: application/rss+xml; charset=utf-8
 
+# The Learn feeds per language and per series (12/11/2026, "My desk"): written at prebuild by scripts/gen-feeds.mts
+# under /feeds/<locale>/, every one of them RSS 2.0 (scripts/check-feeds.mts checks this rule is here).
+/feeds/*
+  Content-Type: application/rss+xml; charset=utf-8
+
 /llms.txt
   Content-Type: text/plain; charset=utf-8
 
@@ -112,6 +117,19 @@
 
 /workers/*.mjs
   Content-Type: text/javascript; charset=utf-8
+
+# ---------------------------------------------------------------------------
+# My desk's site index (PRIME 12/11/2026 12:42): one JSON file per live language,
+# named by the hash of its content (scripts/gen-desk-index.mts), so a file never
+# changes under its name and a browser may keep it for a year; a new content gets
+# a new name, which the page learns from src/generated/desk-index.ts. Fetched only
+# by My desk and its "add" pickers; not a page, so not for search engines.
+# ---------------------------------------------------------------------------
+
+/desk-index/*
+  Cache-Control: public, max-age=31536000, immutable
+  Content-Type: application/json; charset=utf-8
+  X-Robots-Tag: noindex
 
 # ---------------------------------------------------------------------------
 # The open materials (milestone (m1), 2026-10-06): the course files a datasheet

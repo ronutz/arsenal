@@ -5,7 +5,7 @@ summary: "A ZIA location is a site the platform recognizes - by its tunnels or i
 concepts: ["zscaler", "zia", "locations", "sublocations", "gateway options", "bandwidth control", "egress", "gre", "ipsec"]
 relatedTools: ["zscaler-tunnel-chooser"]
 relatedArticles: ["zia-traffic-forwarding-methods", "zscaler-tunnel-types-z-tunnel-gre-ipsec", "zscaler-mergers-and-acquisitions", "private-address-space"]
-category: networking
+category: sase
 order: 200
 status: reviewed
 updated: "2026-07-21"
@@ -19,7 +19,7 @@ A location is a recognition rule: the platform knows a site by the **tunnels it 
 
 ## Sublocations: policy at the wiring-closet grain
 
-Real sites are not uniform: the corporate floor, the guest Wi-Fi, the server VLAN, and the IoT segment share one internet pipe and deserve four different policies. **Sublocations** are the answer - subdivisions of a location keyed on **internal network segments** ([the private address ranges](/learn/private-address-space) behind the site's egress), each carrying its own policy posture. The canonical example writes itself: the guest network as a sublocation with authentication not expected and a strict filtering posture; the corporate segment authenticated and fully inspected; the server segment with its own firewall stance. One site, one tunnel set, four policy citizens.
+Real sites are not uniform: the corporate floor, the guest Wi-Fi, the server VLAN (virtual local area network), and the IoT segment share one internet pipe and deserve four different policies. **Sublocations** are the answer - subdivisions of a location keyed on **internal network segments** ([the private address ranges](/learn/private-address-space) behind the site's egress), each carrying its own policy posture. The canonical example writes itself: the guest network as a sublocation with authentication not expected and a strict filtering posture; the corporate segment authenticated and fully inspected; the server segment with its own firewall stance. One site, one tunnel set, four policy citizens.
 
 ## Bandwidth control: the three documented modes
 

@@ -26,6 +26,10 @@ import { tools } from "@/config/tools";
 export const CATEGORY_COLORS: Record<string, string> = {
   networking: "#22D3EE", // cyan — the site's core identity
   security: "#F43F5E", // rose
+  waf: "#6366F1", // indigo (12/11/2026: WAF and web app protection, split from security)
+  firewall: "#DC2626", // deep red (12/11/2026: firewalls and policy, split from security)
+  threat: "#22C55E", // green (12/11/2026: threat analysis, split from security)
+  sase: "#D946EF", // fuchsia (12/11/2026: secure access, SSE and SASE, split from firewalls and security)
   identity: "#8B5CF6", // violet
   pki: "#F59E0B", // amber
   transport: "#14B8A6", // teal

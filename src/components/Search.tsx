@@ -58,6 +58,16 @@ import { tools } from "@/config/tools";
 import { WORLD_KEYS, type WorldKey } from "@/config/worlds";
 // Row 55 (2026-10-07): a page that owns the keyboard (the slide presenter) switches Ctrl/Cmd+K off with the rest.
 import { areSiteShortcutsSuppressed, subscribeSiteShortcuts } from "@/lib/pageCapabilities";
+// The interest counts (PRIME 12/11/2026): a settled search is counted, found or not, for a reader who said yes.
+import { trackSearch } from "@/lib/interest/client";
+// MY DESK (PRIME 12/11/2026 12:42): "Add to..." beside a result that names an item a desk can keep (a tool, an article,
+// a glossary entry, a game, a training series or a study guide), opening the shared panel (src/components/desk/).
+import { itemFromUrl, type ItemId } from "@/lib/desk/ids";
+// The games' ids, so a toy under /dev/fun is not taken for a game.
+import { FUN_GAMES } from "@/config/funGames";
+// The panel and its words (deskItem.menu travels with the global messages: src/i18n/clientMessages.ts).
+import DeskAddMenu from "@/components/desk/DeskAddMenu";
+import { menuLabels } from "@/components/desk/menuLabels";
 
 // Minimal shapes for the parts of the Pagefind API we use (it ships no types).
 // What result.data() resolves to: the page URL, the highlighted excerpt, and the
@@ -100,6 +110,9 @@ interface PagefindApi {
     unfilteredResultCount?: number;
   }>;
 }
+
+/** The games' ids, for telling a game's page from a toy's (My desk's "Add to..."). */
+const GAME_IDS: readonly string[] = FUN_GAMES.map((g) => g.id);
 
 /** How many hits load per page of results (each hit is one small fragment fetch). */
 const PAGE_SIZE = 20;
@@ -169,6 +182,8 @@ const KIND_LABEL_KEY: Record<ResultKind, "kindTool" | "kindArticle" | "kindGuide
 // before until the reader chooses to narrow it. The pill label keys are plural
 // ("Tools", "Articles", "User Guide", "Pages") to read as category filters.
 const FILTER_KINDS: readonly ResultKind[] = ["tool", "article", "guide", "page"];
+/** How long a query must stand unchanged, with its results in, before the search counts as settled, in milliseconds. */
+const SEARCH_SETTLE_MS = 1500;
 const FILTER_LABEL_KEY: Record<
   ResultKind,
   "filterTools" | "filterArticles" | "filterGuide" | "filterPages"
@@ -254,6 +269,9 @@ const DIALOG_FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled])
 
 export default function Search() {
   const t = useTranslations("search");
+  // My desk's "Add to..." panel: its words, and the result whose panel is open (by its address), if any.
+  const tDesk = useTranslations("deskItem.menu");
+  const [addOpen, setAddOpen] = useState<string | null>(null);
 
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -665,6 +683,36 @@ export default function Search() {
     };
   }, [query, open, enabled, scope, section, loadPagefind, loadPage]);
 
+  // THE INTEREST COUNTS (PRIME 12/11/2026). A search that has settled (no typing for SEARCH_SETTLE_MS, results in) is
+  // counted once per dialog opening and query: that it found something, or that it found nothing. Only a search that
+  // found nothing, with no filter narrowing it, carries its words, and only when they are plain words
+  // (src/lib/interest/shape.ts): they are the list of what the site lacks. Nothing is sent unless the reader said yes
+  // (src/lib/interest/client.ts), and what is typed while the search is still changing is never sent at all.
+  const countedQueries = useRef<Set<string>>(new Set());
+  useEffect(() => {
+    // A closed dialog forgets what it counted, so the next opening counts afresh.
+    if (!open) { countedQueries.current = new Set(); return; }
+    // The query as searched.
+    const q = query.trim();
+    // Nothing typed, still searching, or the index could not be loaded: nothing to count.
+    if (!q || loading || unavailable) return;
+    // Counted once the reader has stopped typing.
+    const timer = window.setTimeout(() => {
+      // Once per query per opening.
+      if (countedQueries.current.has(q)) return;
+      countedQueries.current.add(q);
+      // Whether a kind pill, a world chip or a section narrowed the search (an empty result then says nothing about the site).
+      const narrowed = enabled.size < FILTER_KINDS.length || scope !== null || section !== null;
+      // Counted.
+      trackSearch(q, total, narrowed);
+    }, SEARCH_SETTLE_MS);
+    // A change before then starts the wait again.
+    return () => window.clearTimeout(timer);
+  }, [open, query, loading, unavailable, total, enabled, scope, section]);
+
+  // My desk's panel closes when the query changes or the dialog closes: it belongs to one result of one search.
+  useEffect(() => { setAddOpen(null); }, [query, open]);
+
   /** "Show more": append the next page of the same result set. */
   const showMore = useCallback(async () => {
     if (loadingMore || pendingRef.current.length === 0) return;
@@ -839,8 +887,11 @@ export default function Search() {
               )}
               {!unavailable && shown.length > 0 && (
                 <ul className="search-result-list">
-                  {shown.map((r, i) => (
-                    <li key={`${r.url}-${i}`}>
+                  {shown.map((r, i) => {
+                    // The desk item this result names, if any (My desk, 12/11/2026).
+                    const deskId: ItemId | null = itemFromUrl(r.url, GAME_IDS);
+                    return (
+                    <li key={`${r.url}-${i}`} className={deskId ? "search-result-item" : undefined}>
                       {/* The result row carries its kind too (search-result--tool,
                           --article, --guide, --page) so the whole row, not only
                           the badge, can be coloured: the stylesheet paints a rail
@@ -866,8 +917,25 @@ export default function Search() {
                           dangerouslySetInnerHTML={{ __html: sanitizeExcerpt(r.excerpt) }}
                         />
                       </a>
+                      {/* "Add to...": save the item or put it on a path, without leaving the search (My desk). Beside the
+                          link, never inside it; the panel opens under the result and says where this is kept. */}
+                      {deskId && (
+                        <button
+                          type="button"
+                          className="search-result-add"
+                          aria-expanded={addOpen === r.url}
+                          aria-label={tDesk("addToLabel", { title: r.title || deskId })}
+                          onClick={() => setAddOpen(addOpen === r.url ? null : r.url)}
+                        >
+                          {tDesk("addTo")}
+                        </button>
+                      )}
+                      {deskId && addOpen === r.url && (
+                        <DeskAddMenu id={deskId} showSave labels={menuLabels((k, v) => tDesk(k, v))} onClose={() => setAddOpen(null)} />
+                      )}
                     </li>
-                  ))}
+                    );
+                  })}
                 </ul>
               )}
               {/* The rest of the ranked set, a page at a time; the count line says how far the list goes. */}

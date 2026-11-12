@@ -23,6 +23,8 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 // Whether the address carries a tool value in its fragment (RT01, 2026-10-20).
 import { fragmentCarriesHandoff } from "@/lib/handoff";
+// The interest counts (PRIME 12/11/2026): a share is counted for this page, for a reader who said yes; never the address.
+import { trackPage } from "@/lib/interest/client";
 
 export default function ShareControl({ title }: { title?: string }) {
   const t = useTranslations("share");
@@ -58,6 +60,8 @@ export default function ShareControl({ title }: { title?: string }) {
         title: title || (typeof document !== "undefined" ? document.title : ""),
         url,
       });
+      // Shared through the system's sheet: counted for this page (which page, never where to).
+      trackPage("share", "sheet");
     } catch {
       // The reader dismissed the sheet or the share was aborted; nothing to do.
     }
@@ -85,6 +89,8 @@ export default function ShareControl({ title }: { title?: string }) {
     try {
       await navigator.clipboard.writeText(url);
       setCopied(true);
+      // The address copied: counted for this page.
+      trackPage("share", "link");
       window.setTimeout(() => setCopied(false), 2000);
     } catch {
       // Clipboard access was blocked; leave the popover open to copy manually.

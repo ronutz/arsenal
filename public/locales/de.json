@@ -40,7 +40,8 @@
     "advisory": "Beratung",
     "earlierSites": "Die früheren Websites",
     "cv": "Lebenslauf und Pressemappe",
-    "arcade": "Arcade"
+    "arcade": "Arcade",
+    "desk": "Mein Schreibtisch"
   },
   "languageSwitcher": {
     "label": "Sprache",
@@ -96,7 +97,8 @@
       "tools": "Tools",
       "articles": "Artikel",
       "sectionLabel": "Die Toolbox auf einen Blick",
-      "companies": "Unternehmen"
+      "companies": "Unternehmen",
+      "fun": "Spiele"
     },
     "map": {
       "title": "Bereiche",
@@ -331,7 +333,13 @@
       "quickSpecialNone": "Kein Bereich für besondere Zwecke",
       "quickSpecialMore": "Die Bereiche im vollständigen Rechner ansehen",
       "quickHandoffNote": "Die Links unten enthalten Ihren Block nach dem # in der Adresse, einem Teil, den Ihr Browser nie in einer Anfrage sendet; er bleibt aber in der Adressleiste und im Verlauf, und wer die Adresse teilt, teilt ihn mit.",
-      "quickP2p31": "Punkt-zu-Punkt-Link (RFC 3021): Beide Adressen sind Host-Adressen, es gibt keine Netzwerk- und keine Broadcast-Adresse."
+      "quickP2p31": "Punkt-zu-Punkt-Link (RFC 3021): Beide Adressen sind Host-Adressen, es gibt keine Netzwerk- und keine Broadcast-Adresse.",
+      "deskTitle": "Mein Schreibtisch",
+      "deskInvite": "Merken Sie sich Werkzeuge und Artikel, folgen Sie Lesepfaden und haken Sie ab, was Sie gelesen haben, auf einer eigenen Seite, die in diesem Browser gespeichert wird.",
+      "deskSummary": "{saved, plural, one {# gemerkt} other {# gemerkt}} · {paths, plural, one {# Pfad} other {# Pfade}} · {read, plural, one {# gelesen} other {# gelesen}}",
+      "deskPath": "{name}: {done} von {total} gelesen",
+      "deskPathUnnamed": "Ihr laufender Pfad: {done} von {total} gelesen",
+      "deskOpen": "Mein Schreibtisch öffnen"
     }
   },
   "tools": {
@@ -452,10 +460,14 @@
       "networking": "Netzwerk",
       "web": "Web und HTTP",
       "transport": "TLS und Transport",
-      "security": "Sicherheit und WAF",
+      "security": "Sicherheit",
       "text": "Text und Hilfsmittel",
       "operations": "Betrieb und Praxis",
-      "cloud": "Cloud"
+      "cloud": "Cloud",
+      "waf": "WAF und Webanwendungsschutz",
+      "firewall": "Firewalls und Richtlinien",
+      "threat": "Bedrohungsanalyse",
+      "sase": "Sicherer Zugriff (SSE und SASE)"
     },
     "cert-renewal-planner": {
       "name": "Planer für Zertifikatserneuerungen",
@@ -5132,7 +5144,7 @@
           "legacy": "Alte Bindung einzeln über cert/key/chain (vor cert-key-chain). Sie funktioniert, aber cert-key-chain wird bevorzugt und ist nötig, um mehrere Zertifikatstypen aus einem Profil auszuliefern.",
           "ocspOff": "OCSP-Stapling ist aus; Clients, die die Sperrung prüfen, müssen den OCSP-Responder der CA selbst erreichen.",
           "ocspOn": "Das BIG-IP heftet eine aktuelle OCSP-Antwort an den Handshake (RFC 6066/6961), sodass Clients die CA nicht selbst kontaktieren müssen: schneller und datensparsamer. Erfordert ein OCSP-Stapling-Profil.",
-          "options": "Flags für Protokoll und Verhalten. Jedes Flag no-'<'version> DEAKTIVIERT die jeweilige Version; eine Version ist aktiviert, wenn ihr Flag fehlt. dont-insert-empty-fragments schaltet die Aufteilung der Records nach 1/n-1 ab (ein alter Workaround gegen BEAST).",
+          "options": "Flags für Protokoll und Verhalten. Jedes Flag no-'<'version> DEAKTIVIERT die jeweilige Version; eine Version ist aktiviert, wenn ihr Flag fehlt. dont-insert-empty-fragments schaltet die Gegenmaßnahme mit leerem Fragment ab, einen Record der Länge null vor jedem CBC-Record (ein alter Workaround gegen BEAST).",
           "peerIgnore": "Es wird kein Peer-Zertifikat angefordert (der Standardwert). Kein Mutual TLS.",
           "peerRequest": "Das Peer-Zertifikat wird ANGEFORDERT, ist aber optional: Der Handshake wird auch abgeschlossen, wenn keines vorgelegt wird. Oft kombiniert mit einer iRule oder APM, die das Ergebnis prüft.",
           "peerRequireClient": "Mutual TLS wird ERZWUNGEN: Clients müssen ein gültiges Zertifikat vorlegen, dessen Kette zur vertrauenswürdigen CA führt, sonst scheitert der Handshake.",
@@ -5486,7 +5498,7 @@
           "skipped": "Zeile {line}: Ein Kopf gtm topology ohne die Form ldns:/server: wurde übersprungen.",
           "parserLine": "Parser: {message} (Zeile {line}). Ausgewertet wird, was sich sauber parsen ließ.",
           "parser": "Parser: {message}. Ausgewertet wird, was sich sauber parsen ließ.",
-          "sorted": "Sortiert mit der Semantik für Longest Match AKTIVIERT: Klasse (einfach > serverseitige Negation > LDNS-Negation > Wildcard, laut K10721), dann Rang des LDNS-Typs (Subnetz nach längster Maske, dann Rechenzentrum/Pool, Region, ISP, Land, Kontinent), dann die Serverseite auf dieselbe Weise, dann die Gewichtung. Ist Longest Match deaktiviert, bestimmen stattdessen die Reihenfolge der Liste und die Gewichtungen.",
+          "sorted": "Sortiert mit der Semantik für Longest Match AKTIVIERT: Klasse (einfach > serverseitige Negation > LDNS-Negation > Wildcard, laut K10721), dann der LDNS-Typ nach der Rangfolge des Handbuchs für die Quelle (Subnetz nach längster Maske, Region, ISP, Bundesstaat, Land, Kontinent), dann der Servertyp nach der Rangfolge für das Ziel (Subnetz nach längster Maske, Rechenzentrum, Pool, Region, ISP, Bundesstaat, Land, Kontinent), dann die Gewichtung. Ist Longest Match deaktiviert, bestimmen stattdessen die Reihenfolge der Liste und die Gewichtungen.",
           "noSource": "Keine Zeile „source ...“ angegeben: Angezeigt wird nur die sortierte Liste. Ergänzen Sie eine (source ip=10.1.2.3 country=US ...), um eine Anfrage auszuwerten.",
           "noScore": "Kein Kandidat hat eine Topologiepunktzahl erhalten: Die Methode Topology liefert für diese Quelle nichts, und die Kette des Pools geht zu ihrer alternativen Methode über.",
           "tie": "Zwei oder mehr Kandidaten teilen sich die höchste Punktzahl: Das System verteilt per Round Robin zwischen ihnen (die Punktzahl entscheidet, und gleiche Punktzahlen teilen sich den Datenverkehr)."
@@ -5494,7 +5506,7 @@
         "rank": {
           "ldns": "ldns {operand} Rang {rank}",
           "server": "server {operand} Rang {rank}",
-          "unranked": "enthält einen Typ außerhalb der geprüften Rangfolge aus K10721; nach den geprüften Typen und vor Wildcards einsortiert und markiert",
+          "unranked": "enthält einen Typ, den die Longest-Match-Rangfolgen des Handbuchs nicht nennen; nach den eingeordneten Typen und vor Wildcards einsortiert und markiert",
           "defaultScore": "keine Punktzahl in der Stanza; angenommen wird die Standardgewichtung 1 aus der GUI",
           "list": "{items}"
         },
@@ -27330,16 +27342,16 @@
     "title": "Ihre Daten und was diese Website damit tut",
     "lede": "Eine Darstellung in verständlicher Sprache, was genau diese Website mit Ihren Informationen tut und was nicht. Sie ist auf Genauigkeit angelegt, nicht nur auf Beruhigung, denn nach Regelwerken wie der DSGVO und der brasilianischen LGPD kommt es auf die genaue Offenlegung an.",
     "shortTitle": "Die Kurzfassung",
-    "short1": "Der eigene Code der Website setzt keine Cookies, zeigt keine Werbung und fügt keine Tracker von Dritten und kein Fingerprinting hinzu; nichts, was er ausführt, verfolgt Sie über das Web. Cloudflare, das die Website hostet, betreibt eine eigene Bot-Prüfung, die bis zu zwei Cookies setzen kann; erklärt im Abschnitt Hosting und Server-Logs. Die Website zählt Anfragen am Server, aggregiert, und diese Zählung ist unten vollständig beschrieben.",
+    "short1": "Der eigene Code der Website setzt keine Cookies, zeigt keine Werbung und fügt keine Tracker von Dritten und kein Fingerprinting hinzu; nichts, was er ausführt, verfolgt Sie über das Web. Cloudflare, das die Website hostet, betreibt eine eigene Bot-Prüfung, die bis zu zwei Cookies setzen kann; erklärt im Abschnitt Hosting und Server-Logs. Die Website zählt Anfragen am Server, aggregiert, und diese Zählung ist unten vollständig beschrieben. Mit Ihrem Ja, und nur dann, teilen die Seiten dem Server außerdem mit, was Sie nutzen (ein Werkzeug, ein Spiel, eine Suche); beschrieben im Abschnitt Interessenzählung weiter unten.",
     "short2": "Sie verkauft und teilt keine Daten der Menschen, die sie besuchen, erstellt keine Profile von ihnen und verlangt nichts von Ihnen, damit Sie sie lesen können.",
     "short3": "Die interaktiven Tools des Katalogs laufen vollständig in Ihrem Browser: Was Sie dort einfügen oder eingeben, bleibt auf Ihrem Gerät. Die einzige Ausnahme ist der rote Raum (/dev/out), dessen Tools eine Abfrage senden, wenn Sie „Abfragen“ wählen oder „Enter“ drücken, oder Testdaten, wenn Sie beim Speedtest „Starten“ wählen, und zwar direkt aus Ihrem Browser an den offiziellen Dienst, den sie nennen; nichts davon geht an die Server dieser Website.",
-    "short4": "Nur fünf Dinge betreffen überhaupt Daten, und jedes wird unten erklärt: eine Handvoll Einstellungen und ein kurzer Leseverlauf, gespeichert in Ihrem eigenen Browser; was Cloudflare als Host tut, wenn es eine Seite ausliefert (seine Verbindungsprotokolle, ein Log jeder Anfrage, die den Worker der Website erreicht, eine Bot-Prüfung, die bis zu zwei Cookies setzen kann, und die Fehlerberichte, die Ihr Browser ihm senden kann, wenn eine Anfrage fehlschlägt); die aggregierten Anfragezählungen auf dem eigenen Server der Website; die Ergebnisse der Tagesrätsel und Tagesdurchgänge, die Sie in /dev/fun und /arcade abschließen und die auf eine öffentliche Bestenliste kommen, sofern Sie das Teilen nicht ausschalten; und jede Nachricht, die Sie per E-Mail senden.",
+    "short4": "Nur sieben Dinge betreffen überhaupt Daten, und jedes wird unten erklärt: eine Handvoll Einstellungen, ein kurzer Leseverlauf und „Mein Schreibtisch“, gespeichert in Ihrem eigenen Browser; was Cloudflare als Host tut, wenn es eine Seite ausliefert (seine Verbindungsprotokolle, ein Log jeder Anfrage, die den Worker der Website erreicht, eine Bot-Prüfung, die bis zu zwei Cookies setzen kann, und die Fehlerberichte, die Ihr Browser ihm senden kann, wenn eine Anfrage fehlschlägt); die aggregierten Anfragezählungen auf dem eigenen Server der Website; die Ergebnisse der Tagesrätsel und Tagesdurchgänge, die Sie in /dev/fun und /arcade abschließen und die auf eine öffentliche Bestenliste kommen, sofern Sie das Teilen nicht ausschalten; die Interessenzählungen, die Ihr Browser nur sendet, wenn Sie Ja gesagt haben; die verschlüsselte Kopie von „Mein Schreibtisch“, nur wenn Sie einen Synchronisierungscode erstellen, die die Website nicht lesen kann; und jede Nachricht, die Sie per E-Mail senden.",
     "controllerTitle": "Wer verantwortlich ist",
     "controllerBody": "Dies ist die persönliche Website von Rodolfo Nützmann (ronutz.com). Für jede Frage zum Datenschutz oder um eines der unten beschriebenen Rechte auszuüben, schreiben Sie an {email}. Anfragen bearbeitet Rodolfo Nützmann direkt, als Verantwortlicher.",
     "noTrackTitle": "Keine Cookies aus dem Code der Website, keine Analytics von Dritten, und was stattdessen gezählt wird",
-    "noTrackBody": "Der eigene Code der Website setzt keine Cookies. Sie nutzt keinen Analysedienst von Dritten (etwa Google Analytics oder Plausible), kein Werbenetzwerk, keine Tracking-Pixel sozialer Medien und kein Geräte-Fingerprinting, und keines ihrer eigenen Skripte meldet irgendetwas über Sie; das Einzige, was sie senden, ist das Ergebnis eines Tagesrätsels oder Tagesdurchgangs, den Sie in /dev/fun oder /arcade abschließen, an die öffentliche Bestenliste, sofern Sie das nicht ausschalten (siehe „Punktestände der Spiele“ unten). Das Einzige auf der Seite, das nicht aus dem Code der Website stammt, ist die Bot-Prüfung von Cloudflare, ein Skript und bis zu zwei Cookies von Cloudflare selbst, erklärt unten im Abschnitt Hosting und Server-Logs.\n\nWas die Website behält, ist eine Zählung, die ihr eigener Server beim Beantworten jeder Anfrage vornimmt. Dabei werden zwei getrennte Datensätze geschrieben, und sie werden bewusst getrennt gehalten, sodass keiner dem anderen zugeordnet werden kann. Der erste erfasst die angefragte Adresse und ob dort eine Seite gefunden wurde, die Sprache, das Land des Besuchs, wie Ihr Netzwerk es meldet, ob die Anfrage von einem Menschen oder einem bekannten Crawler kam und, bei einem Menschen, die grobe Geräteklasse (Smartphone oder Tablet, Desktop oder Laptop, anderes). Der zweite erfasst nur eine verweisende Adresse, wenn Ihr Browser eine sendet und eine Seite ausgeliefert wurde, und enthält sonst überhaupt nichts: keine Seite, kein Land, keine zeitliche Verknüpfung mit dem ersten.\n\nDer Zählcode schreibt nie Ihre IP-Adresse. Er schreibt auch nie den User-Agent Ihres Browsers oder das Netzwerk, aus dem Ihre Verbindung kommt; beides wird nur gelesen, um zu entscheiden, ob die Anfrage von einem Menschen oder einem Crawler kam (ein Browser im Netzwerk eines Cloud- oder Hosting-Providers zählt als Maschine) und, bei einem Menschen, welche Geräteklasse sie gesendet hat, und gespeichert wird ein Label wie „Suchmaschine“, „Monitoring-Tool“ oder „Smartphone oder Tablet“. Es wird keinerlei Kennung verwendet, es gibt also kein Profil eines Besuchers, das sich erstellen ließe, keine Sitzung, die sich rekonstruieren ließe, und nichts, was sich weitergeben ließe.",
+    "noTrackBody": "Der eigene Code der Website setzt keine Cookies. Sie nutzt keinen Analysedienst von Dritten (etwa Google Analytics oder Plausible), kein Werbenetzwerk, keine Tracking-Pixel sozialer Medien und kein Geräte-Fingerprinting, und keines ihrer eigenen Skripte meldet irgendetwas über Sie; sie senden nur dreierlei: das Ergebnis eines Tagesrätsels oder Tagesdurchgangs, den Sie in /dev/fun oder /arcade abschließen, an die öffentliche Bestenliste, sofern Sie das nicht ausschalten (siehe „Punktestände der Spiele“ unten); nur wenn Sie auf die Frage der Website mit Ja geantwortet haben, die Interessenzählungen, die benennen, was genutzt wurde, und nie, wer es genutzt hat (siehe „Interessenzählung“ unten); und, nur wenn Sie einen Synchronisierungscode erstellen, eine verschlüsselte Kopie von „Mein Schreibtisch“, die die Website nicht lesen kann (siehe „Mein Schreibtisch“ unten). Das Einzige auf der Seite, das nicht aus dem Code der Website stammt, ist die Bot-Prüfung von Cloudflare, ein Skript und bis zu zwei Cookies von Cloudflare selbst, erklärt unten im Abschnitt Hosting und Server-Logs.\n\nWas die Website behält, ist eine Zählung, die ihr eigener Server beim Beantworten jeder Anfrage vornimmt. Dabei werden zwei getrennte Datensätze geschrieben, und sie werden bewusst getrennt gehalten, sodass keiner dem anderen zugeordnet werden kann. Der erste erfasst die angefragte Adresse und ob dort eine Seite gefunden wurde, die Sprache, das Land des Besuchs, wie Ihr Netzwerk es meldet, ob die Anfrage von einem Menschen oder einem bekannten Crawler kam und, bei einem Menschen, die grobe Geräteklasse (Smartphone oder Tablet, Desktop oder Laptop, anderes). Der zweite erfasst nur eine verweisende Adresse, wenn Ihr Browser eine sendet und eine Seite ausgeliefert wurde, und enthält sonst überhaupt nichts: keine Seite, kein Land, keine zeitliche Verknüpfung mit dem ersten.\n\nDer Zählcode schreibt nie Ihre IP-Adresse. Er schreibt auch nie den User-Agent Ihres Browsers oder das Netzwerk, aus dem Ihre Verbindung kommt; beides wird nur gelesen, um zu entscheiden, ob die Anfrage von einem Menschen oder einem Crawler kam (ein Browser im Netzwerk eines Cloud- oder Hosting-Providers zählt als Maschine) und, bei einem Menschen, welche Geräteklasse sie gesendet hat, und gespeichert wird ein Label wie „Suchmaschine“, „Monitoring-Tool“ oder „Smartphone oder Tablet“. Es wird keinerlei Kennung verwendet, es gibt also kein Profil eines Besuchers, das sich erstellen ließe, keine Sitzung, die sich rekonstruieren ließe, und nichts, was sich weitergeben ließe.",
     "browserTitle": "Was in Ihrem Browser gespeichert wird",
-    "browserBody": "Ein paar kleine Dinge, alle im lokalen Speicher Ihres Browsers, keines davon an diese Website oder an jemand anderen gesendet, außer wie unter „Punktestände der Spiele“ beschrieben, und jedes jederzeit über Ihren Browser löschbar: Ihr Farbschema (ronutz-theme); die zuletzt verwendete Sprache, damit die bloße Domain Sie dorthin zurückführen kann (ronutz-lang); ob Glossarhinweise angezeigt werden (ronutz-glossary-hints); alle Tastenkürzel, die Sie neu belegt haben (ronutz-shortcuts); ob das Suchfeld bei jedem Öffnen leer startet (ronutz-search-fresh); die Dichte Karten oder Liste, die Sie auf einer Übersichtsseite gewählt haben (ronutz:view:*); die Ansicht „Geführt“ oder „Verzeichnis“, die Sie auf den Seiten Lernen und Tools gewählt haben (ronutz:hub:*); die letzten sechs Seiten, die Sie geöffnet haben, damit die Startseite sie unter „Weitermachen, wo Sie aufgehört haben“ erneut anbieten kann, mit einer Schaltfläche, die sie vergisst (ronutz:recent:v1); nur auf zwei Seiten der Dev-Räume ein Schalter für Bewegungseffekte und eine Übungsstatistik (ronutz-mb-motion, ronutz:subnet-drill:stats); und in den Spielen von /dev/fun und /arcade für jedes Spiel Serie, Punkte, Einstellungen, Fortschritt und die Tagesrätsel der letzten sieben Tage, ob jedes Tagesrätsel gelöst wurde (400 Tage lang gespeichert), die 14 zuletzt gespielten früheren Rätsel, die laufende Karte des Meeting-Bingos, ob abgeschlossene Tagesrätsel an die öffentliche Bestenliste gehen, die Initialen, die Sie dafür angegeben haben, und die Zufallszahl, mit der jede Runde der letzten zwei Tage gesendet wurde (ronutz:fun:v1); die Schaltfläche „Meine Statistik zurücksetzen“ eines Spiels löscht seine Serie und seine Punkte, und alte Tagesrätsel fallen nach sieben Tagen heraus. Ein Flag, das nur für die Sitzung gilt (ronutz.privPreview), dient der privaten Vorschau unveröffentlichter Seiten durch den Autor und wird für Lesende nie gesetzt. Sonst wird auf Ihrem Gerät nichts über Sie gespeichert.",
+    "browserBody": "Ein paar kleine Dinge, alle im lokalen Speicher Ihres Browsers, keines davon an diese Website oder an jemand anderen gesendet, außer wie unter „Punktestände der Spiele“ beschrieben, und jedes jederzeit über Ihren Browser löschbar: Ihr Farbschema (ronutz-theme); die zuletzt verwendete Sprache, damit die bloße Domain Sie dorthin zurückführen kann (ronutz-lang); ob Glossarhinweise angezeigt werden (ronutz-glossary-hints); alle Tastenkürzel, die Sie neu belegt haben (ronutz-shortcuts); ob das Suchfeld bei jedem Öffnen leer startet (ronutz-search-fresh); die Dichte Karten oder Liste, die Sie auf einer Übersichtsseite gewählt haben (ronutz:view:*); die Ansicht „Geführt“ oder „Verzeichnis“, die Sie auf den Seiten Lernen und Tools gewählt haben (ronutz:hub:*); die letzten sechs Seiten, die Sie geöffnet haben, damit die Startseite sie unter „Weitermachen, wo Sie aufgehört haben“ erneut anbieten kann, mit einer Schaltfläche, die sie vergisst (ronutz:recent:v1); nur auf zwei Seiten der Dev-Räume ein Schalter für Bewegungseffekte und eine Übungsstatistik (ronutz-mb-motion, ronutz:subnet-drill:stats); und in den Spielen von /dev/fun und /arcade für jedes Spiel Serie, Punkte, Einstellungen, Fortschritt und die Tagesrätsel der letzten sieben Tage, ob jedes Tagesrätsel gelöst wurde (400 Tage lang gespeichert), die 14 zuletzt gespielten früheren Rätsel, die laufende Karte des Meeting-Bingos, ob abgeschlossene Tagesrätsel an die öffentliche Bestenliste gehen, die Initialen, die Sie dafür angegeben haben, und die Zufallszahl, mit der jede Runde der letzten zwei Tage gesendet wurde (ronutz:fun:v1); die Schaltfläche „Meine Statistik zurücksetzen“ eines Spiels löscht seine Serie und seine Punkte, und alte Tagesrätsel fallen nach sieben Tagen heraus. Ein Flag, das nur für die Sitzung gilt (ronutz.privPreview), dient der privaten Vorschau unveröffentlichter Seiten durch den Autor und wird für Lesende nie gesetzt. Ihre Antwort auf die Frage der Interessenzählung wird auf dieselbe Weise gespeichert (ronutz:interest:v1). „Mein Schreibtisch“ (/desk) speichert die Elemente, die Sie sich merken, die, die Sie als gelesen oder erledigt markieren (mit dem Tag jeder Markierung, nie der Uhrzeit), Ihre Lesepfade, sein Layout und seine Einstellungen, Ihre Notizen und, wenn Sie die Synchronisierung einschalten, Ihren Synchronisierungscode (ronutz:desk:v1); er speichert die Namen der Seiten der Website, nicht ihre Titel. Wenn Sie synchronisieren, wird außerdem die zuletzt synchronisierte Kopie der unter „Mein Schreibtisch“ aufgeführten Dinge mit der Uhrzeit dieser Synchronisierung auf die Minute gespeichert, damit die nächste Synchronisierung erkennt, welche Seite sich geändert hat (ronutz:portable:base). Die Spiele speichern außerdem den Tag, an dem dieser Browser zuletzt eine Runde in die Bestenliste eingetragen hat (ronutz:fun:posted-day), damit die Bestenliste jeden Browser einmal pro Tag zählen kann, ohne zu wissen, welchen; der Tag selbst wird nie gesendet, nur ob eine Runde die erste ihres Tages ist (siehe Punktestände der Spiele unten). Sonst wird auf Ihrem Gerät nichts über Sie gespeichert.",
     "hostingTitle": "Hosting und Server-Logs",
     "hostingBody": "Die Website wird über Cloudflare ausgeliefert, das Hosting und Content Delivery bereitstellt. Wie bei jeder Website bedeutet das Laden einer Seite, dass sich Ihr Gerät mit einem Server verbindet, und Cloudflare verarbeitet als Hosting-Anbieter grundlegende Verbindungsdaten, darunter Ihre IP-Adresse und übliche Angaben zur Anfrage, um Ihnen die Seiten auszuliefern und die Website vor Missbrauch und Angriffen zu schützen. Diese Verarbeitung ist für den Betrieb und die Absicherung der Website erforderlich (ein berechtigtes Interesse nach Art. 6 Abs. 1 lit. f DSGVO und die entsprechenden Rechtsgrundlagen nach Art. 7 und 10 LGPD). Wie lange Cloudflare diese Daten aufbewahrt, legen die eigenen Richtlinien von Cloudflare fest, nicht der Code dieser Website, und sie werden hier nicht genutzt, um Sie zu identifizieren oder zu verfolgen.",
     "toolsTitle": "Die Tools laufen in Ihrem Browser",
@@ -27374,11 +27386,14 @@
       "r20261103fun": "Die Spiele in /dev/fun kommen zur Liste der gespeicherten Werte hinzu: für jedes Spiel Serie, Punkte, Einstellungen, Fortschritt und die Tagesrätsel der letzten sieben Tage sowie die laufende Karte des Meeting-Bingos, in einem Schlüssel; die Schaltfläche „Meine Statistik zurücksetzen“ eines Spiels löscht seine Serie und seine Punkte.",
       "r20261103catlink": "Der Teilen-Link des globalen Katzenverteilungssystems wird beschrieben: Er wird nur erzeugt, wenn „Kopieren“ gewählt wird, und enthält hinter dem # den Namen und, falls angegeben, die Stadt.",
       "r20261105earlier": "Die Spiele in /dev/fun speichern außerdem, ob jedes Tagesrätsel gelöst wurde (400 Tage lang), und die 14 zuletzt gespielten früheren Rätsel, für die Liste früherer Rätsel, die jedes Tagesspiel jetzt anbietet.",
-      "r20261108scores": "Die öffentliche Bestenliste der Spiele in /dev/fun und /arcade wird unter „Punktestände der Spiele“ dargelegt: was ein abgeschlossenes Tagesrätsel sendet, sofern das Teilen nicht ausgeschaltet ist, was jeder Eintrag speichert und nie speichert, dass Einträge 400 Tage lang aufbewahrt werden und wie sich einer entfernen lässt."
+      "r20261108scores": "Die öffentliche Bestenliste der Spiele in /dev/fun und /arcade wird unter „Punktestände der Spiele“ dargelegt: was ein abgeschlossenes Tagesrätsel sendet, sofern das Teilen nicht ausgeschaltet ist, was jeder Eintrag speichert und nie speichert, dass Einträge 400 Tage lang aufbewahrt werden und wie sich einer entfernen lässt.",
+      "r20261112interest": "Die Interessenzählungen sind neu: Mit Ihrem Ja, und nur dann, teilen die Seiten dem Server der Website mit, was Sie nutzen (ein Werkzeug, ein Spiel, einen bis zum Ende gelesenen Artikel, das Teilen, eine Suche), in Meldungen, die das Genutzte benennen und nie Sie. Was eine Meldung enthält, der eine Fall, der von Ihnen eingegebene Wörter mitführt, wie lange die Zählungen und die Tagessummen aufbewahrt werden und wo sich die Entscheidung ändern lässt, steht in einem eigenen Abschnitt.",
+      "r20261112desk": "Mein Schreibtisch: sein Schlüssel in diesem Browser (ronutz:desk:v1), die optionale verschlüsselte Synchronisierung (was der Server aufbewahrt, wie lange und was er nicht lesen kann) und die Zählung, die beim Merken eines Elements gesendet wird; was per Synchronisierung, Datei oder Link in einen anderen Browser mitgeht und was in jedem Browser bleibt (darunter ronutz:portable:base); und bei einer in zwei Browsern geänderten Einstellung gilt die jüngste Änderung, anhand von Änderungszeiten in diesem Browser und in der verschlüsselten Kopie (ronutz:portable:times), es sei denn, Sie legen in den Einstellungen fest, den Wert dieses Browsers zu behalten (ronutz:portable:no-times).",
+      "r20261112browsers": "Punktestände der Spiele: Die erste Runde, die ein Browser an einem Rätseltag einträgt, trägt ein Ja oder Nein, das genau das angibt, ermittelt aus dem Tag seiner zuletzt eingetragenen Runde, den dieser Browser speichert (ronutz:fun:posted-day) und nie sendet; der Server bewahrt nur dieses Bit bei der Runde auf, und die tägliche Summe wird als eindeutige Browser angezeigt (Browser, keine Personen) und in den Tagessummen aufbewahrt."
     },
     "backHome": "Zurück zur Startseite",
     "prefsTitle": "Farbschema, Sprache und was diese Website sich merkt",
-    "prefsBody": "Ihre Einstellungen, Ihr Leseverlauf, die zwei Werte der Dev-Räume sowie die Punkte, Einstellungen und Fortschritte der Spiele werden nur im localStorage dieses Browsers auf Ihrem Gerät gespeichert; das Farbschema wird bei Ihrem nächsten Besuch vor dem ersten Rendern angewendet. Es gibt kein Cookie und kein Konto, und kein Server sieht etwas davon, mit einer Ausnahme, die Sie steuern: Sofern Sie das Teilen nicht ausschalten, geht das Ergebnis eines abgeschlossenen Tagesrätsels an die öffentliche Bestenliste, die unter „Punktestände der Spiele“ beschrieben ist. Nichts davon kann Ihnen folgen: Ein privates Fenster, gelöschte Websitedaten oder ein anderer Browser bzw. ein anderes Gerät setzen Sie bewusst auf die Standardwerte zurück. Ihre Sprache funktioniert auf zwei Ebenen: Sie steckt in der Adresse selbst (/en/ und /pt-BR/ sind verschiedene Seiten, sodass ein Lesezeichen oder eine geteilte URL in Ihrer Sprache sie beibehält), und die zuletzt verwendete Sprache wird außerdem in diesem Browser gespeichert, sodass ein Besuch der bloßen Domain bei ihr landet statt bei der Standardsprache. Das Suchfeld der Zertifizierungsübersicht und ihr Schalter für ausgemusterte Zertifizierungen stehen ebenfalls in der Adresse, hinter dem # (#q=...), einem Teil, den Ihr Browser nie in einer Anfrage sendet, sodass Ihre Suchbegriffe den Server nicht erreichen; sie bleiben aber in Ihrem Verlauf, und eine geteilte Adresse teilt sie mit. Ein älterer Link mit ?q= sandte seine Begriffe mit dieser einen Anfrage; die Übersicht verschiebt sie dann hinter das #. Das ist der ganze Kompromiss: Ohne Konten und ohne Tracking können Einstellungen nur dort liegen, wo Sie sie sehen und löschen können.",
+    "prefsBody": "Ihre Einstellungen, Ihr Leseverlauf, „Mein Schreibtisch“, die zwei Werte der Dev-Räume sowie die Punkte, Einstellungen und Fortschritte der Spiele werden nur im localStorage dieses Browsers auf Ihrem Gerät gespeichert; das Farbschema wird bei Ihrem nächsten Besuch vor dem ersten Rendern angewendet. Es gibt kein Cookie und kein Konto, und kein Server sieht etwas davon, mit einer Ausnahme, die Sie steuern: Sofern Sie das Teilen nicht ausschalten, geht das Ergebnis eines abgeschlossenen Tagesrätsels an die öffentliche Bestenliste, die unter „Punktestände der Spiele“ beschrieben ist. Wenn Sie einen Synchronisierungscode erstellen, geht außerdem eine verschlüsselte Kopie von „Mein Schreibtisch“ an den Server der Website, der sie nicht lesen kann (siehe „Mein Schreibtisch“ unten). Nichts davon kann Ihnen folgen: Ein privates Fenster, gelöschte Websitedaten oder ein anderer Browser bzw. ein anderes Gerät setzen Sie bewusst auf die Standardwerte zurück. Ihre Sprache funktioniert auf zwei Ebenen: Sie steckt in der Adresse selbst (/en/ und /pt-BR/ sind verschiedene Seiten, sodass ein Lesezeichen oder eine geteilte URL in Ihrer Sprache sie beibehält), und die zuletzt verwendete Sprache wird außerdem in diesem Browser gespeichert, sodass ein Besuch der bloßen Domain bei ihr landet statt bei der Standardsprache. Das Suchfeld der Zertifizierungsübersicht und ihr Schalter für ausgemusterte Zertifizierungen stehen ebenfalls in der Adresse, hinter dem # (#q=...), einem Teil, den Ihr Browser nie in einer Anfrage sendet, sodass Ihre Suchbegriffe den Server nicht erreichen; sie bleiben aber in Ihrem Verlauf, und eine geteilte Adresse teilt sie mit. Ein älterer Link mit ?q= sandte seine Begriffe mit dieser einen Anfrage; die Übersicht verschiebt sie dann hinter das #. Das ist der ganze Kompromiss: Ohne Konten und ohne Tracking können Einstellungen nur dort liegen, wo Sie sie sehen und löschen können.",
     "shortcutsTitle": "Tastenkürzel",
     "shortcutsBody": "Die Website hat eine Handvoll Tastenkürzel aus einer einzigen Taste zur schnellen Navigation, aktiv auf jeder Seite. Drücken Sie b für den Boss-Key, der alles, was Sie gerade lesen, hinter einer überzeugenden Büroanwendung aus den 1980er-Jahren versteckt, bis Sie eine beliebige Taste drücken oder klicken; t springt zur Übersicht der Tools; l zur Übersicht unter Lernen; m öffnet die Mega Brain Console; und z öffnet das Meeting-Bingo. Diese Kürzel sind bewusst wirkungslos, solange Sie tippen: Liegt der Fokus in einem Textfeld, einem Einfügefeld, einer Sucheingabe oder einem anderen bearbeitbaren Bereich, gehört der Tastendruck diesem Feld, und das Kürzel tut nichts, sodass nichts, was Sie eingeben, je verschluckt wird. Sie werden auch ignoriert, wenn eine Zusatztaste gedrückt ist, sodass die eigenen Kombinationen Ihres Browsers wie Strg+T für einen neuen Tab nie überdeckt werden. Die Tastenkürzel laufen vollständig in Ihrem Browser, fügen kein Tracking hinzu und sind eine reine Bequemlichkeit, die Sie ignorieren können.",
     "noTrackSource": "Dieser Abschnitt beschreibt, was der Code tut, und der Code ist öffentlich: Die Zählung übernimmt <analytics>worker/analytics.ts</analytics>, die Seite Statistik liefert <stats>worker/stats.ts</stats> aus, und die beiden getrennten Datensätze sind in <config>wrangler.jsonc</config> eingebunden. Die Zählungen liegen in der Workers Analytics Engine von Cloudflare, die das, was hineingeschrieben wird, drei Monate lang speichert (<retention>Dokumentation von Cloudflare</retention>, gelesen am {date}). Was Cloudflare selbst als Host verarbeitet, liegt außerhalb dieses Codes und ist unten im Abschnitt Hosting und Server-Logs beschrieben.",
@@ -27387,10 +27402,22 @@
     "hostingBots": "Cloudflare betreibt vor der Website außerdem einen Bot-Schutz, der Menschen von automatisiertem Datenverkehr unterscheiden soll, und zwei Teile davon erreichen Ihren Browser; keiner stammt aus dem Code der Website. Erstens fügt Cloudflare jeder Seite ein eigenes kleines Skript hinzu, geladen von der Adresse der Website unter <c>/cdn-cgi/challenge-platform/</c>; es läuft im Hintergrund und liefert Cloudflare Signale aus Ihrem Browser, die bei der Beurteilung helfen, ob ein Mensch ihn benutzt. Cloudflare nennt das <jsd>JavaScript Detections</jsd>. Zweitens kann Cloudflare bis zu zwei Cookies setzen: <c>__cf_bm</c>, das nach 30 Minuten ohne Aktivität abläuft, und <c>cf_clearance</c>, das das Ergebnis dieser Prüfung speichert und an das Gerät gebunden ist, für das es ausgestellt wurde; die Standardlebensdauer bei Cloudflare beträgt 30 Minuten (<clearance>Clearance</clearance>, <passage>Challenge Passage</passage>). Cloudflare bezeichnet beide als unbedingt erforderlich für seinen Bot-Schutz. Abgesehen von Zeitangaben ist der Inhalt von <c>__cf_bm</c> verschlüsselt und nur für Cloudflare lesbar, und für jede Website wird ein eigenes <c>__cf_bm</c> ausgestellt, weil Cloudflare nach eigener Aussage niemanden von Website zu Website oder von Sitzung zu Sitzung verfolgt. Cloudflare gibt außerdem an, dass Cookie-Daten in seinem Rechenzentrum in den Vereinigten Staaten verarbeitet werden können (<cookies>Cookie-Dokumentation von Cloudflare</cookies>, gelesen am {date}).",
     "hostingNel": "Cloudflare fügt außerdem jeder Antwort zwei eigene Header hinzu, <c>NEL</c> und <c>Report-To</c>, die Network Error Logging einrichten: Sie bitten einen Browser, der das unterstützt, fehlgeschlagene Anfragen an die Website zu melden. Stand {date}: Sie verlangen, dass jede fehlgeschlagene Anfrage gemeldet wird und keine der erfolgreichen (<c>success_fraction</c> 0.0), und der Browser behält diese Anweisung sieben Tage lang. Schlägt eine Anfrage fehl, kann ein solcher Browser später einen kurzen Bericht direkt an Cloudflare unter <c>a.nel.cloudflare.com</c> senden, nicht an die Website: die Adresse, die er laden wollte, und die verweisende Seite, Methode und Protokoll der Anfrage, die Phase, in der sie fehlschlug, und die Art des Fehlers, den Statuscode, die Serveradresse und wie lange sie dauerte. Laut Cloudflare leitet es Netzwerk, Land und Großraum aus der IP-Adresse ab, von der der Bericht kommt, hält diese Adresse nur während der Verarbeitung des Berichts im Speicher, protokolliert sie nicht und gibt Berichte nicht an Dritte weiter (<nel>Network Error Logging</nel>, gelesen am {date}; was die Header bedeuten, legt die <spec>Spezifikation des W3C</spec> dar). Der eigene Code der Website setzt diese Header nicht, und er empfängt und liest die Berichte auch nicht.",
     "gamesTitle": "Punktestände der Spiele",
-    "gamesBody": "Die Tagesrätsel in /dev/fun und die Tagesdurchgänge der Arcade-Spiele in /arcade haben eine öffentliche Bestenliste. Wenn Sie ein Tagesrätsel an seinem eigenen Tag abschließen, sendet Ihr Browser die Runde an den Server der Website, es sei denn, Sie haben „Meine Ergebnisse auf der öffentlichen Bestenliste teilen“ ausgeschaltet (in jedem Tagesspiel und auf der Seite mit den Punkteständen; die Einstellung wird in diesem Browser gespeichert). Übungsrunden, frühere Rätsel und Runden eines anderen Tages werden nie gesendet. Gesendet wird der Teil der vom Spiel gespeicherten Runde, den der Server braucht, um sie mit dem Rätsel des Tages abzugleichen (das Spielfeld, die Antworten oder die getroffene Auswahl und die Zeit), dazu Ihre Initialen, sofern Sie welche angegeben haben, und eine Zufallszahl, die nur für diese eine Übermittlung erzeugt wird. Mit ihr kann Ihr Browser die Initialen dieser Runde am selben Tag ändern; einen anderen Zweck hat sie nicht.",
-    "gamesStored": "Für jede Runde speichert der Server das Spiel, den Tag des Rätsels, den Modus, ob es gelöst wurde, die Punktzahl, die er selbst ermittelt, und die Teile, die das Spiel anzeigt (etwa Prüfungen, Hinweise oder falsche Antworten), Ihre Initialen (drei Zeichen oder ???, wenn keine angegeben wurden), das Land, das Cloudflare der Anfrage beifügt (zwei Buchstaben oder nichts), diese Zufallszahl und das Datum des Eingangs in UTC. Er speichert nie Ihre IP-Adresse, den User-Agent Ihres Browsers oder einen anderen Anfrage-Header, ein Cookie, ein Konto, eine Kennung Ihres Browsers oder Geräts oder eine Zeitangabe, die genauer ist als der Tag. Weil nichts eine Runde mit einer anderen verknüpft, kann die Bestenliste niemanden von einem Tag zum nächsten wiedererkennen, und sie zählt keine Serien. Der Code ist öffentlich: <scores>worker/scores.ts</scores> speichert und liest die Runden, <verify>src/lib/fun/verify.ts</verify> prüft sie, und <schema>migrations/0001_fun_scores.sql</schema> definiert die Tabelle.",
+    "gamesBody": "Die Tagesrätsel in /dev/fun und die Tagesdurchgänge der Arcade-Spiele in /arcade haben eine öffentliche Bestenliste. Wenn Sie ein Tagesrätsel an seinem eigenen Tag abschließen, sendet Ihr Browser die Runde an den Server der Website, es sei denn, Sie haben „Meine Ergebnisse auf der öffentlichen Bestenliste teilen“ ausgeschaltet (in jedem Tagesspiel und auf der Seite mit den Punkteständen; die Einstellung wird in diesem Browser gespeichert). Übungsrunden, frühere Rätsel und Runden eines anderen Tages werden nie gesendet. Gesendet wird der Teil der vom Spiel gespeicherten Runde, den der Server braucht, um sie mit dem Rätsel des Tages abzugleichen (das Spielfeld, die Antworten oder die getroffene Auswahl und die Zeit), dazu Ihre Initialen, sofern Sie welche angegeben haben, und eine Zufallszahl, die nur für diese eine Übermittlung erzeugt wird. Mit ihr kann Ihr Browser die Initialen dieser Runde am selben Tag ändern; einen anderen Zweck hat sie nicht. Mit der ersten Runde, die Ihr Browser an einem Rätseltag einträgt, sendet er außerdem ein Ja oder Nein, das genau das angibt, und mit jeder weiteren Runde dieses Tages ein Nein. Um zu wissen, welche Runde die erste ist, speichert Ihr Browser den Tag seiner zuletzt eingetragenen Runde (ronutz:fun:posted-day), erst nachdem der Server die Runde gespeichert hat; dieser Tag wird nie gesendet und geht nie auf einen anderen Browser über.",
+    "gamesStored": "Für jede Runde speichert der Server das Spiel, den Tag des Rätsels, den Modus, ob es gelöst wurde, die Punktzahl, die er selbst ermittelt, und die Teile, die das Spiel anzeigt (etwa Prüfungen, Hinweise oder falsche Antworten), Ihre Initialen (drei Zeichen oder ???, wenn keine angegeben wurden), das Land, das Cloudflare der Anfrage beifügt (zwei Buchstaben oder nichts), diese Zufallszahl und das Datum des Eingangs in UTC. Er speichert nie Ihre IP-Adresse, den User-Agent Ihres Browsers oder einen anderen Anfrage-Header, ein Cookie, ein Konto, eine Kennung Ihres Browsers oder Geräts oder eine Zeitangabe, die genauer ist als der Tag. Weil nichts eine Runde mit einer anderen verknüpft, kann die Bestenliste niemanden von einem Tag zum nächsten wiedererkennen, und sie zählt keine Serien. Der Code ist öffentlich: <scores>worker/scores.ts</scores> speichert und liest die Runden, <verify>src/lib/fun/verify.ts</verify> prüft sie, und <schema>migrations/0001_fun_scores.sql</schema> definiert die Tabelle. Der Server speichert dieses Ja oder Nein ebenfalls bei der Runde, und nur bei einer Runde, die er zum ersten Mal speichert. Es ist bei der ersten Runde des Tages jedes Browsers gleich, sagt also nicht, welcher Browser eine Runde gesendet hat, und verknüpft keine Runde mit einer anderen. Zählt man pro Tag die mit Ja markierten Runden, ergibt sich, wie viele Browser mindestens eine Runde eingetragen haben: die eindeutigen Browser, gezeigt auf der Seite der Punktestände (/dev/fun/scores) und in der Statistik (/stats). Es sind Browser, keine Personen: Ein Smartphone und ein Laptop zählen als zwei, und ein privates Fenster oder gelöschte Websitedaten zählen erneut. Die Summe jedes Tages wird außerdem 760 Tage lang in den Tagessummen der Website aufbewahrt, sodass die Zählung die 400 Tage der Runden überdauert; die Spalte fügt migrations/0004_fun_first_today.sql hinzu.",
     "gamesKept": "Runden werden ab dem Tag ihres Eingangs 400 Tage lang in einer D1-Datenbank von Cloudflare aufbewahrt und dann gelöscht; die Löschung läuft mit, während neue Runden geschrieben werden. Die Bestenlisten sind öffentlich: Jeder kann für einen Tag die Zahl der Spielenden, Durchschnitt, Median, Histogramm und die zehn Besten (Initialen, Land und Punktzahl) lesen, dazu die Länder mit mindestens drei Runden.",
-    "gamesRemoval": "Um eine Runde entfernen zu lassen, nutzen Sie die <contact>Kontaktseite</contact> und nennen Spiel, Tag und die Initialen, mit denen sie eingetragen wurde; ohne Kennung ist das der einzige Weg, sie zu finden, und eine als ??? eingetragene Runde lässt sich möglicherweise nicht von anderen desselben Tages unterscheiden. Ihr Eintrag in diesem Browser ist davon in keinem Fall betroffen, und wenn Sie das Teilen ausschalten, wird keine weitere Runde mehr gesendet."
+    "gamesRemoval": "Um eine Runde entfernen zu lassen, nutzen Sie die <contact>Kontaktseite</contact> und nennen Spiel, Tag und die Initialen, mit denen sie eingetragen wurde; ohne Kennung ist das der einzige Weg, sie zu finden, und eine als ??? eingetragene Runde lässt sich möglicherweise nicht von anderen desselben Tages unterscheiden. Ihr Eintrag in diesem Browser ist davon in keinem Fall betroffen, und wenn Sie das Teilen ausschalten, wird keine weitere Runde mehr gesendet.",
+    "interestTitle": "Interessenzählung, nur mit Ihrem Ja",
+    "interestBody": "Die Website fragt, ob sie zählen darf, was Sie nutzen, und zählt ohne Ihr Ja nichts dergleichen. Mit einem Ja sendet Ihr Browser dem eigenen Server der Website eine kurze Meldung, wenn Sie mit einem Werkzeug arbeiten (beim ersten Tippen oder Tastendruck darin, je Besuch seiner Seite), ein Spiel beginnen oder beenden, einen Artikel oder Glossareintrag nach mindestens zwanzig Sekunden auf der Seite bis zum Ende lesen, „Teilen“ benutzen, ein Element auf „Mein Schreibtisch“ merken, einem Link zu Red Education folgen oder eine Suche ausführen. Jede Meldung nennt die Art des Vorgangs, den Bereich der Website, das Element (den Namen des Werkzeugs oder Artikels, wie er in der Adresse steht), die Sprache der Seite und, bei zwei Arten, ein festes Wort: bei einem Spiel gewonnen oder verloren; beim Teilen, ob die Adresse kopiert, das Teilen-Menü des Systems benutzt oder die Ergebnisse eines Werkzeugs geteilt wurden. Die Meldung einer Suche sagt, ob die Suche etwas gefunden hat, und die Meldung zu einem Link, dem Sie gefolgt sind, nennt anstelle eines Elements die Art der Seite, auf der der Link stand.",
+    "interestWords": "Eine Art von Meldung kann Wörter enthalten, die Sie eingegeben haben. Eine Suche, die nichts gefunden hat und durch keinen Filter eingeschränkt war, sendet ihre Wörter, denn diese Wörter sind die Liste dessen, was der Website fehlt. Sie werden nur gesendet, wenn es wenige einfache Wörter sind: höchstens vier Wörter und vierzig Zeichen, insgesamt nicht mehr als vier Ziffern, nichts außer Buchstaben, Ziffern und einigen Zeichen und kein Wort mit mehr als einem Punkt oder mehr als einem Schrägstrich. Eine Suche, die nicht dazu passt, wird als leere Suche ganz ohne Wörter gezählt; so bleiben eine E-Mail-Adresse, eine IP-Adresse, eine Webadresse mit Schema, Pfad oder Subdomain, eine lange Nummer, ein Schlüssel oder ein Satz außen vor. Dieselbe Prüfung läuft in Ihrem Browser vor dem Senden und auf dem Server, bevor etwas gespeichert wird. Die Wörter werden nie veröffentlicht: Die öffentlichen Zahlen zählen Suchen und listen sie nicht auf.",
+    "interestNever": "Der eigene Code der Website sendet eine Meldung ohne Anmeldedaten, sodass kein Cookie mit ihr übertragen wird. Eine Meldung enthält keine Kennung irgendeiner Art, nichts, was Sie in ein Werkzeug eingeben, keine Adresse der Seite über den Namen des Elements hinaus und weder Land noch Gerät. Der Server liest dieselben Header der Anfrage, die er liest, um einen Menschen von einem Crawler zu unterscheiden, verwirft eine Meldung, die von Automatisierung stammt, und speichert keinen dieser Header; er schreibt nie Ihre IP-Adresse oder den User-Agent Ihres Browsers. Die Meldungen kommen in einen dritten Datensatz, getrennt von den beiden, die bei der Zählung der Anfragen beschrieben sind, ohne etwas Gemeinsames, über das sich einer dem anderen zuordnen ließe. Wie jede Anfrage, die den Worker der Website erreicht, kann auch die Anfrage mit einer Meldung in den Workers Logs von Cloudflare festgehalten werden, wie unten im Abschnitt Hosting und Server-Logs beschrieben: Ihre Adresse ist für jede Meldung dieselbe (/api/e) und hat keinen Query-String, und die Meldung selbst steht im Rumpf der Anfrage. Der Code ist öffentlich: <shape>die Regeln dafür, was eine Meldung enthalten darf</shape>, <client>der Teil im Browser</client>, <events>der Teil auf dem Server</events> und <check>die Prüfung, die bei jedem Build läuft</check>, damit der Code diesem Abschnitt entspricht.",
+    "interestKept": "Die Meldungen werden drei Monate lang in Cloudflares Workers Analytics Engine aufbewahrt, wie die Zählung der Anfragen. Einmal täglich summiert der Server den Vortag und speichert die Summen in der Datenbank der Website: an Menschen ausgelieferte Seiten je Adresse, die Interessenzählungen je Art und Element (darunter die aufbewahrten Wörter leerer Suchen) und einige Zahlen zur Website insgesamt. Diese Tagessummen sind Summen; sie beschreiben die Seiten der Website und nie einen Besuch. Sie werden 760 Tage, etwa 25 Monate, aufbewahrt und dann gelöscht.",
+    "interestChoice": "Die Entscheidung liegt bei Ihnen und lässt sich jederzeit auf der <settings>Seite Einstellungen</settings> ändern; sie ist ein Wert im Speicher Ihres Browsers, wie die anderen Einstellungen. Sendet Ihr Browser Global Privacy Control oder Do Not Track, versteht die Website das als Nein: Sie fragt nicht und sendet nichts, selbst wenn zuvor ein Ja gespeichert wurde. Diese Zählung beruht auf Ihrer Einwilligung (DSGVO, Artikel 6 Absatz 1 Buchstabe a; LGPD, Artikel 7, I), und der Widerruf ist derselbe Schalter.",
+    "deskTitle": "Mein Schreibtisch",
+    "deskBody": "„Mein Schreibtisch“ (/desk) ist eine Seite nur für Sie: die Elemente, die Sie sich merken, die, die Sie als gelesen oder erledigt markieren, Ihre Lesepfade, das Layout und die Einstellungen der Seite und die Notizen, die Sie schreiben. Er existiert nur, weil Sie ihn nutzen: Nichts wird gespeichert, bevor Sie etwas merken, markieren oder anordnen. Alles bleibt im lokalen Speicher dieses Browsers, unter einem einzigen Schlüssel, ronutz:desk:v1, als Namen der Seiten der Website (etwa learn:acme-protocol) mit dem Tag jeder Markierung, nie als Titel und nie mit einer genaueren Zeit als dem Tag; um Titel zu zeigen, lädt die Seite eine Liste der Elemente der Website, eine Datei dieser Website, und sendet dabei nichts mit. Nichts vom Schreibtisch erreicht diese Website, mit zwei Ausnahmen, die Sie steuern: Das Merken eines Elements sendet eine Interessenzählung, nur wenn Sie zu den Interessenzählungen Ja gesagt haben (siehe „Interessenzählung“ oben); und die unten beschriebene verschlüsselte Synchronisierung, nur wenn Sie sie einschalten. Auf der Seite „Einstellungen“ können Sie den Schreibtisch unter „In einem anderen Browser verwenden“ samt den weiter unten aufgeführten Dingen in einen anderen Browser bringen: durch Koppeln mit einem QR-Code oder Link, durch Eintippen des Synchronisierungscodes oder ohne den Server als Datei oder mit einem Link, der ihn nach dem # trägt (einem Teil der Adresse, den Ihr Browser nie sendet). Dort können Sie ihn auch leeren.",
+    "deskSync": "Die Synchronisierung ist ausgeschaltet, bis Sie auf der Seite „Einstellungen“ einen Synchronisierungscode erstellen. Der Code besteht aus 20 Zufallsbytes, die Ihr Browser erzeugt und Ihnen als 32 Buchstaben und Ziffern zeigt; die Website erhält ihn nie. Daraus leitet Ihr Browser zwei Dinge ab: einen Namen für Ihre Kopie (die erste Hälfte eines SHA-256-Hashwerts des Codes, Secure Hash Algorithm, aus dem sich der Code nicht zurückgewinnen lässt) und einen Schlüssel, der aus dem Code entsteht und den Browser nie verlässt. Ihr Browser sammelt den Schreibtisch und die weiteren Dinge, die mit ihm gehen (unten aufgeführt), komprimiert sie mit gzip und verschlüsselt sie mit diesem Schlüssel, mit AES-GCM (dem Advanced Encryption Standard im Galois/Counter Mode) und einem 256-Bit-Schlüssel, und der eigene Code der Website sendet dem Server nur den Namen der Kopie und die verschlüsselte Kopie, ohne Anmeldedaten, sodass kein Cookie mitgeschickt wird. Notizen bleiben außen vor, solange Sie „Notizen einschließen“ nicht ankreuzen. Auf einem anderen Gerät findet derselbe Code die Kopie, und jener Browser entschlüsselt sie und führt sie mit seiner eigenen zusammen: Gemerkte Elemente und Gelesen-Markierungen werden vereint (ein Entfernen gilt nur, wenn es das spätere ist), und bei jedem Pfad sowie beim Layout und bei den Einstellungen bleibt die neuere Fassung. Ohne den Code kann niemand die Kopie lesen, auch diese Website nicht, und ein verlorener Code lässt sich nicht wiederherstellen. QR-Code und Kopplungslink auf der Seite „Einstellungen“ tragen den Code nach dem # der Adresse, den ein Browser nie sendet; wer sie hat, kann die synchronisierte Kopie lesen und ändern, zeigen Sie sie also nur Ihren eigenen Geräten. Ihr Browser bewahrt die zuletzt synchronisierte Kopie und die Uhrzeit dieser Synchronisierung auf die Minute in seinem eigenen Speicher auf (ronutz:portable:base), damit die nächste Synchronisierung eine hier gemachte Änderung von einer anderswo gemachten unterscheiden kann; die Uhrzeit wird nie gesendet.",
+    "deskSyncKept": "Die Kopie liegt in der einzigen Datenbank der Website, Cloudflare D1, als eine Zeile, die nur den Namen der Kopie, die verschlüsselte Kopie, ihre Versionsnummer, ihre Größe, den Tag, an dem sie zuletzt gelesen oder geschrieben wurde, den Tag des letzten Schreibens und die Zahl der Schreibvorgänge an diesem Tag enthält. Darin stehen keine IP-Adresse, kein User-Agent, kein Cookie und keine genauere Zeit als der Tag, und der eigene Code der Website schreibt kein Log darüber. Eine Kopie darf höchstens 98.304 Bytes groß sein (eine Anfrage höchstens 140.000 Bytes), eine Kopie nimmt höchstens 300 Schreibvorgänge pro Tag (UTC) an, und nur Seiten dieser Website dürfen sie senden. Die tägliche Bereinigung löscht eine Kopie, die mehr als 365 Tage weder gelesen noch geschrieben wurde; „Kopie auf dem Server löschen“ auf der Seite „Einstellungen“ löscht sie sofort, und „Synchronisierung in diesem Browser beenden“ vergisst den Code nur in diesem Browser. Wie jede Anfrage, die den Worker der Website erreicht, kann eine Synchronisierungsanfrage in den Workers Logs von Cloudflare erfasst werden (siehe Hosting und Server-Logs unten): Ihre Adresse trägt den Namen der Kopie, und die verschlüsselte Kopie steht im Rumpf der Anfrage. Ist die Datenbank nicht verfügbar, sagt der Server das (die Synchronisierung ist gerade nicht verfügbar), und der Schreibtisch funktioniert in Ihrem Browser weiter.",
+    "deskSyncSource": "Der Code ist öffentlich: <code>die Seite des Servers</code>, <schema>die Tabelle</schema>, <client>die Seite des Browsers</client>, <crypto>die Verschlüsselung</crypto> und <check>die Prüfung bei jedem Build</check>.",
+    "deskPortable": "Was in einen anderen Browser mitgeht und was bleibt. Per Synchronisierung, Datei oder Link gehen mit: Mein Schreibtisch (ronutz:desk:v1; seine Notizen nur, wenn Sie sie einschließen, und nie der darin gespeicherte Synchronisierungscode); Ergebnisse, Serien, Bestwerte, Einstellungen und Fortschritt der Spiele (ronutz:fun:v1, ohne die Entscheidungen zur öffentlichen Bestenliste, die in jedem Browser bleiben); die zuletzt geöffneten Seiten (ronutz:recent:v1); der Punktestand der Subnetz-Übung (ronutz:subnet-drill:stats); und Ihre Einstellungen: das Design (ronutz-theme), die Sprache (ronutz-lang), die Glossar-Hinweise (ronutz-glossary-hints), der Bewegungsschalter (ronutz-mb-motion), umbelegte Tastenkürzel (ronutz-shortcuts) sowie die Wahl von Dichte und Leseart auf Übersichtsseiten (ronutz:view:*, ronutz:hub:*). Weichen zwei Browser voneinander ab, werden Aufzeichnungen vereint (Ergebnisse und Markierungen beider Seiten, die längere Serie und der bessere Wert), und bei einer Einstellung, die zwischen zwei Synchronisierungen in beiden Browsern geändert wurde, gilt die jüngste Änderung: Um zu erkennen, welche die letzte war, notiert jeder Browser die Minute, in der sich jede Ihrer Einstellungen zuletzt geändert hat (ronutz:portable:times), gespeichert in diesem Browser und nur innerhalb der verschlüsselten Kopie übertragen, die nur Ihre eigenen Browser lesen können, nie der Server. Auf der Seite Einstellungen können Sie stattdessen festlegen, dass der Wert des gerade genutzten Browsers bleibt und keine Änderungszeiten notiert werden (gespeichert als ronutz:portable:no-times); die gespeicherten Zeiten werden dann gelöscht, und eine ältere Kopie ohne Zeiten wird ebenso zusammengeführt. Ein Browser, der sich koppelt, übernimmt die Einstellungen des anderen, außer denen, die er selbst später geändert hat. Nie mitgenommen werden: Ihre Antwort auf die Interessenzählung (ronutz:interest:v1), weil eine Einwilligung zu dem Browser gehört, in dem sie gegeben wurde; wie sich das Suchfeld öffnet (ronutz-search-fresh), eine Gewohnheit eines Geräts; die zuletzt synchronisierte Kopie (ronutz:portable:base), die jeder Browser für sein eigenes Zusammenführen braucht; und was nur für eine Sitzung gespeichert wird: die Vorschau-Markierung des Autors (ronutz.privPreview), der Schlüssel des Betreibers für das private Dashboard (ronutz:intel:key) und eine Markierung, die verhindert, dass sich eine abgestürzte Seite zweimal neu lädt (ronutz:crash-reload). Auch der Tag, an dem Ihr Browser zuletzt eine Runde in die Bestenliste eingetragen hat (ronutz:fun:posted-day), wandert nie: Jeder Browser zählt einmal pro Tag als er selbst. Eine Prüfung, die bei jedem Build läuft, schlägt fehl, wenn der Code der Website etwas unter einem Namen speichert, der in keiner der beiden Listen steht."
   },
   "footer": {
     "guide": "Leitfaden zur Website",
@@ -28881,7 +28908,7 @@
     "complete": "Maschinell, vollständig",
     "partial": "Maschinell, in Arbeit",
     "explainTitle": "Wie Übersetzungen gekennzeichnet sind",
-    "explainBody": "Englisch ist die Quelle: mit KI in internationalem Englisch (en-001) geschrieben, in Oxford-Schreibweise (britisch mit -ize, wie ISO und die Vereinten Nationen schreiben) und mit Datums- und Zahlenformaten, die Leserinnen und Leser überall kennen, und erst veröffentlicht, wenn ein Mensch entscheidet, dass es veröffentlicht werden soll. Brasilianisches Portugiesisch wird ebenfalls mit KI geschrieben und nach und nach geprüft, ebenso die Oberfläche und die Tools auf Spanisch, auf Deutsch, auf Französisch und auf Italienisch; der Rest der spanischen, der deutschen, der französischen und der italienischen Website ist maschinell übersetzt. Weitere Sprachen kommen hinzu, sobald ihre Oberfläche, ihre Tools und ihre Spiele in ihnen geschrieben sind. Jede Sprache ist danach gekennzeichnet, wie weit sie ist: blau, sobald sie die ganze Website abdeckt, gelb, solange neuere Inhalte noch auf Englisch sind und nachgezogen werden. Noch keine Sprache ist von einem Menschen geprüft, deshalb zeigt jede einen kurzen Hinweis, auch Englisch, und Sie können gern helfen, jede davon zu verbessern.",
+    "explainBody": "Englisch ist die Quelle: mit KI in internationalem Englisch (en-001) geschrieben, in Oxford-Schreibweise (britisch mit -ize, wie ISO und die Vereinten Nationen schreiben) und mit Datums- und Zahlenformaten, die Leserinnen und Leser überall kennen. Brasilianisches Portugiesisch wird ebenfalls mit KI geschrieben und nach und nach geprüft, ebenso die Oberfläche und die Tools auf Spanisch, auf Deutsch, auf Französisch und auf Italienisch; der Rest der spanischen, der deutschen, der französischen und der italienischen Website ist maschinell übersetzt. Weitere Sprachen kommen hinzu, sobald ihre Oberfläche, ihre Tools und ihre Spiele in ihnen geschrieben sind. Jede Sprache ist danach gekennzeichnet, wie weit sie ist: blau, sobald sie die ganze Website abdeckt, gelb, solange neuere Inhalte noch auf Englisch sind und nachgezogen werden. Noch keine Sprache ist von einem Menschen geprüft, deshalb zeigt jede einen kurzen Hinweis, auch Englisch, und Sie können gern helfen, jede davon zu verbessern.",
     "stub": "Noch nicht übersetzt"
   },
   "changelog": {
@@ -28950,7 +28977,10 @@
     "toolsHeading": "Tools",
     "articlesHeading": "Artikel",
     "read": "Lesen",
-    "backToTools": "Alle Tools"
+    "backToTools": "Alle Tools",
+    "ledes": {
+      "sase": "Security Service Edge (SSE) und Secure Access Service Edge (SASE): Webfilterung, Kontrolle von Cloud-Anwendungen, Schutz vor Datenabfluss, Zero-Trust-Zugriff auf private Anwendungen und Firewall, bereitgestellt aus den Points of Presence eines Anbieters statt aus eigener Hardware. SASE ergänzt das Netz selbst, meist als SD-WAN (softwaredefiniertes Weitverkehrsnetz). Jedes Tool und jeder Artikel dazu, an einem Ort gesammelt."
+    }
   },
   "vendorHub": {
     "eyebrow": "Herstellerseite",
@@ -29121,7 +29151,8 @@
     },
     "portalSeriesCount": "{count, plural, one {# Serie} other {# Serien}}",
     "metaDescription": "Artikel, die die Netzwerk- und Sicherheitskonzepte hinter den Tools erklären, nach Fachgebiet durchsuchbar, mit Vorschlägen für den Einstieg und einem herstellerneutralen Index.",
-    "interactive": "Interaktiv"
+    "interactive": "Interaktiv",
+    "feed": "Neue Artikel in einem Feedreader"
   },
   "meetingBingo": {
     "metaTitle": "Meeting-Bingo",
@@ -29721,6 +29752,14 @@
           "narrow": "Schmaler",
           "full": "Vollbild",
           "exitFull": "Vollbild beenden"
+        },
+        "crash": {
+          "title": "Das Spiel wurde durch einen Fehler angehalten",
+          "body": "Im Spiel ist in Ihrem Browser etwas fehlgeschlagen. Ihre Statistik und der Fortschritt des Tagesrätsels bleiben in diesem Browser gespeichert; versuchen Sie es erneut oder laden Sie die Seite neu.",
+          "retry": "Erneut versuchen",
+          "reload": "Seite neu laden",
+          "details": "Fehlerdetails",
+          "updating": "Diese Seite wurde aktualisiert, während sie geöffnet war. Sie wird neu geladen …"
         }
       },
       "access-points": {
@@ -29866,7 +29905,7 @@
           "goal": "Verlegen Sie ein Kabel von Port 1 bis zum Port mit der höchsten Nummer.",
           "order": "Es läuft durch jedes Feld genau einmal, nach oben, unten, links oder rechts, und erreicht die Ports in der Reihenfolge ihrer Nummern.",
           "ducts": "Dicke Balken zwischen Feldern sind Kabelkanäle: Das Kabel kann sie nicht überqueren.",
-          "draw": "Ziehen Sie von Port 1 aus, um das Kabel zu verlegen, und ziehen Sie darüber zurück, um es zurückzunehmen; drücken Sie auf ein beliebiges Feld des Kabels, um es dort abzuschneiden. Sie können auch die Felder neben dem Kabelende anklicken, eines nach dem anderen. Auf einem Touchscreen zeichnet eine Ziehbewegung, die am Kabelende (oder an Port 1) beginnt; eine Wischbewegung anderswo scrollt die Seite, und ein Tippen schneidet das Kabel ab oder verlängert es.",
+          "draw": "Ziehen Sie von Port 1 aus, um das Kabel zu verlegen, und ziehen Sie darüber zurück, um es zurückzunehmen: Ziehen über ein beliebiges Feld des Kabels schneidet es bis dorthin ab, mit eingeschaltetem „Vorsichtig zurücknehmen“ unter dem Panel dagegen nur über die letzten Felder, sodass ein früherer Abschnitt, den Sie streifen, unverändert bleibt; drücken Sie auf ein beliebiges Feld des Kabels, um es dort abzuschneiden. Sie können auch die Felder neben dem Kabelende anklicken, eines nach dem anderen. Auf einem Touchscreen zeichnet eine Ziehbewegung, die am Kabelende oder auf einem Feld daneben (oder an Port 1) beginnt, und die Seite bewegt sich dabei nicht; eine Wischbewegung anderswo scrollt die Seite, und ein Tippen schneidet das Kabel ab oder verlängert es.",
           "keys": "Tastatur: Fokussieren Sie das Panel, dann verlängern die Pfeiltasten das Kabel (ein Pfeil zurück entlang des Kabels nimmt es zurück), und die Rücktaste entfernt den letzten Schritt.",
           "check": "Ihre Zeit ist Ihre Punktzahl. Die Prüfung markiert, wo das Kabel die Route verlässt, und kostet bei jeder Nutzung {s} Sekunden.",
           "week": "Jeden Tag um 00:00 in koordinierter Weltzeit (UTC) ein neues Panel, für alle gleich, mit genau einer Route. Montags gibt es ein 6×6 mit vielen Ports; ab Donnerstag ist das Panel 7×7, an manchen Tagen tauchen Kabelkanäle auf, und die Panels am Wochenende haben die wenigsten Ports."
@@ -29903,6 +29942,11 @@
           "p1": "LinkedIn führte Zip am 18. März 2025 ein. GM Puzzles, das an Entwurf und Redaktion mitwirkt, nennt die Regeln: einen Pfad durch alle Felder zeichnen, waagerecht oder senkrecht zwischen benachbarten Feldern, ohne sich selbst oder eine Wand zu kreuzen, beginnend bei 1, die übrigen Zahlen in aufsteigender Reihenfolge durchlaufend und bei der höchsten endend. Patch Path behält diese Regeln bei, mit Ports statt Zahlen und einem langen Kabel als Pfad.",
           "p2": "Numberlink von Nikoli ist ein Verwandter: Es verbindet Paare gleicher Zahlen mit durchgehenden Linien, statt einen einzigen nummerierten Pfad zu ziehen.",
           "p3": "Darunter liegt Graphentheorie. Ein Pfad, der jedes Feld genau einmal besucht, ist ein Hamiltonpfad, und das früheste Beispiel ist der Springerweg im Schach; die erste bekannte Springertour gilt als das Werk von al-Adli ar-Rumi, einem Philosophen, der im neunten Jahrhundert in Bagdad lebte."
+        },
+        "mode": {
+          "careful": "Vorsichtig zurücknehmen",
+          "carefulOn": "An: Beim Ziehen wird das Kabel nur über seine letzten Felder zurückgenommen; ein früherer Abschnitt, über den Sie fahren, bleibt unverändert.",
+          "carefulOff": "Aus (klassisch): Wenn Sie über ein beliebiges Feld des Kabels ziehen, wird es bis zu diesem Feld abgeschnitten."
         }
       },
       "phish-or-legit": {
@@ -31484,7 +31528,6 @@
         "countriesHint": "mit drei oder mehr Runden",
         "sparkTitle": "Runden pro Tag, letzte 30 Tage",
         "sparkLabel": "Balkendiagramm der Runden, die in den letzten 30 Tagen pro Tag eingetragen wurden, insgesamt {n, plural, one {# Runde} other {# Runden}}; der helle Teil jedes Balkens sind die gelösten Runden",
-        "sparkDay": "{date}: {played, plural, one {# Runde} other {# Runden}}, {solved} gelöst",
         "quietToday": "Heute wurde noch keine Runde eingetragen: Das erste abgeschlossene Rätsel eröffnet die Bestenliste.",
         "clockTitle": "Nächste Rätsel in",
         "clockNote": "Jedes Tagesrätsel und jede Bestenliste wechselt um 00:00 UTC.",
@@ -31531,7 +31574,13 @@
         "streakChip": "{n, plural, one {# Tag in Folge} other {# Tage in Folge}}",
         "fullBoard": "Vollständige Bestenliste",
         "leadersTitle": "Am meisten gespielt, letzte 30 Tage",
-        "countriesTitle30": "Länder, letzte 30 Tage"
+        "countriesTitle30": "Länder, letzte 30 Tage",
+        "browsersToday": "Eindeutige Browser",
+        "browsersHint": "jeder Browser zählt einmal pro Tag; keine Personen",
+        "browsersNoData": "keine Daten",
+        "roundsPerBrowser": "Runden pro Browser: {n}",
+        "sparkDayBrowsers": "{date}: {played, plural, one {# Runde} other {# Runden}}, {solved} gelöst, eindeutige Browser: {browsers}",
+        "sparkBrowsersNote": "Der kurze Strich über einem Balken markiert die eindeutigen Browser des Tages (jeder Browser zählt einmal pro Tag; keine Personen). Tage vor Beginn der Zählung haben keinen."
       }
     },
     "arcadeCardName": "Die Arcade",
@@ -31683,7 +31732,10 @@
     "actionGreenRoom": "Grüner Raum (Übersicht /dev/other)",
     "actionRedRoom": "Roter Raum (Übersicht /dev/out)",
     "actionToolDhcpOption43": "Generator für DHCP-Option 43",
-    "actionToolPanosPolicyOrder": "Auswertungsreihenfolge von PAN-OS-Richtlinien"
+    "actionToolPanosPolicyOrder": "Auswertungsreihenfolge von PAN-OS-Richtlinien",
+    "actionDesk": "Mein Schreibtisch",
+    "actionDeskSave": "Das Element dieser Seite merken (oder nicht mehr merken)",
+    "actionDeskRead": "Das Element dieser Seite als gelesen oder erledigt markieren (oder die Markierung entfernen)"
   },
   "settings_page": {
     "eyebrow": "Präferenzen",
@@ -31705,7 +31757,16 @@
     "hintToggleDesc": "Glossarbegriffe in Artikeln und Tool-Dokumentationen unterstreichen: die erste Erwähnung jedes Begriffs, jede Erwähnung oder keine.",
     "hintFirst": "Erste",
     "hintAll": "Alle",
-    "hintNone": "Keine"
+    "hintNone": "Keine",
+    "interestTitle": "Interessenzählung",
+    "interestBody": "Mit Ihrem Ja zählt die Website, was Sie nutzen: ein Werkzeug, mit dem Sie gearbeitet haben, ein begonnenes oder beendetes Spiel, einen bis zum Ende gelesenen Artikel oder Glossareintrag, das Teilen einer Seite, einen Link zu Red Education, dem Sie gefolgt sind, und ob eine Suche etwas gefunden hat. Eine Suche, die nichts findet, sendet außerdem ihre Wörter, wenn es wenige einfache Wörter sind. Die Zählungen benennen, was genutzt wurde, und niemals Sie: Der eigene Code der Website sendet sie ohne Cookie, ohne Kennung und ohne etwas, was Sie in ein Werkzeug eingeben. Sie zeigen, welche Teile der Website mehr Arbeit verdienen.",
+    "interestToggle": "Meine Nutzung zählen",
+    "interestOn": "Ein: Zählungen werden von diesem Browser gesendet.",
+    "interestOff": "Aus: Es wird nichts gesendet.",
+    "interestBrowserNo": "Ihr Browser sendet Global Privacy Control oder Do Not Track; die Website versteht das als Nein: Es wird nichts gesendet, unabhängig von diesem Schalter.",
+    "interestMore": "Was gezählt wird und was nie",
+    "deskTitle": "Mein Schreibtisch",
+    "deskBody": "Ihr Schreibtisch (/desk) lebt in diesem Browser. Bewahren Sie eine Kopie als Datei auf, bringen Sie ihn mit einem Link woandershin oder synchronisieren Sie ihn zwischen Ihren Geräten mit einem Code, den nur Sie haben."
   },
   "bossScreens": {
     "metaTitle": "Boss-Key-Bildschirme · /dev/fun",
@@ -32200,7 +32261,7 @@
       },
       "languages": {
         "h": "Sprachen",
-        "b": "Die Oberfläche gibt es in mehreren Sprachen; wechseln Sie über die Sprachauswahl im Kopfbereich. Englisch ist die Ausgangssprache, mit KI geschrieben und erst veröffentlicht, wenn ein Mensch das entscheidet; brasilianisches Portugiesisch wird ebenfalls mit KI geschrieben und nach und nach geprüft, ebenso die Oberfläche und die Tools auf Spanisch, auf Deutsch, auf Französisch und auf Italienisch; der Rest der spanischen, der deutschen, der französischen und der italienischen Website ist maschinell übersetzt. Wo eine Formulierung für eine Sprache noch nicht übersetzt ist, wird für diese Formulierung der englische Text angezeigt, sodass nie etwas fehlt."
+        "b": "Die Oberfläche gibt es in mehreren Sprachen; wechseln Sie über die Sprachauswahl im Kopfbereich. Englisch ist die Ausgangssprache, mit KI geschrieben; brasilianisches Portugiesisch wird ebenfalls mit KI geschrieben und nach und nach geprüft, ebenso die Oberfläche und die Tools auf Spanisch, auf Deutsch, auf Französisch und auf Italienisch; der Rest der spanischen, der deutschen, der französischen und der italienischen Website ist maschinell übersetzt. Wo eine Formulierung für eine Sprache noch nicht übersetzt ist, wird für diese Formulierung der englische Text angezeigt, sodass nie etwas fehlt."
       },
       "offline": {
         "h": "Offline-Nutzung",
@@ -37662,7 +37723,7 @@
       "crypto": "Kryptografie",
       "security": "Sicherheit",
       "hacker-culture": "Hackerkultur",
-      "brazil": "Brasilien"
+      "brazil": "Brasilien und Lateinamerika"
     },
     "searchLabel": "Nach Namen suchen",
     "searchPlaceholder": "Namen eingeben",
@@ -37852,7 +37913,34 @@
     },
     "sourceLine": "Der Code, der zählt, ist <analytics>worker/analytics.ts</analytics>, und der Code, der diese Panels bedient, ist <stats>worker/stats.ts</stats>, beide im öffentlichen Repository. Die Workers Analytics Engine von Cloudflare, in der die Zahlen liegen, speichert sie drei Monate lang (<retention>Dokumentation von Cloudflare</retention>, gelesen am {date}).",
     "expandAll": "Alle aufklappen ('{count}')",
-    "collapse": "Die ersten '{count}' anzeigen"
+    "collapse": "Die ersten '{count}' anzeigen",
+    "panelInterestKinds": "Was genutzt wird",
+    "interestKindsNote": "Zählungen von Leserinnen und Lesern, die der Interessenzählung zugestimmt haben: benutzte Werkzeuge, begonnene und beendete Runden, bis zum Ende gelesene Artikel und Einträge, geteilte Seiten, Suchen, Links zu Red Education, denen gefolgt wurde, und in „Mein Schreibtisch“ gespeicherte Einträge. Sie zeigen, was genutzt wird, nicht, wie viele Menschen es sind.",
+    "panelInterestTools": "Benutzte Werkzeuge",
+    "interestToolsNote": "Wie oft mit jedem Werkzeug gearbeitet wurde (das erste Tippen oder der erste Tastendruck je Besuch seiner Seite), unter denen, die Ja gesagt haben.",
+    "panelInterestGames": "Begonnene Runden",
+    "interestGamesNote": "Wie oft eine Runde jedes Rätsels oder Spiels begonnen wurde, unter denen, die Ja gesagt haben.",
+    "col_kind": "Art der Nutzung",
+    "col_tool": "Werkzeug",
+    "col_game": "Spiel",
+    "kind_tool_use": "Benutzte Werkzeuge",
+    "kind_share": "Geteilte Seiten",
+    "kind_game_start": "Begonnene Runden",
+    "kind_game_end": "Beendete Runden",
+    "kind_read_end": "Bis zum Ende gelesen",
+    "kind_search": "Suchen",
+    "kind_out_red": "Gefolgte Links zu Red Education",
+    "col_times": "Anzahl",
+    "interestLine": "Die letzten vier Panels werden anders gezählt: Es sind die Interessenzählungen, gesendet von den Browsern der Leserinnen und Leser, die auf die Frage der Website mit Ja geantwortet haben, und von niemandem sonst. <privacy>Was eine Zählung enthält</privacy>, steht auf der Datenschutzseite, und die Entscheidung lässt sich auf der <settings>Seite Einstellungen</settings> ändern.",
+    "kind_save": "Gespeicherte Einträge",
+    "panelInterestSaves": "Gespeicherte Einträge",
+    "interestSavesNote": "Wie oft jeder Eintrag in „Mein Schreibtisch“ gespeichert wurde, unter denen, die Ja gesagt haben. Gezählt wird nur das Speichern selbst, einmal; das Entfernen eines Eintrags, Lesemarkierungen, Lesepfade und die Anordnung des Schreibtischs werden nie gezählt.",
+    "col_item": "Eintrag",
+    "panelFunBrowsers": "Bestenliste: eindeutige Browser pro Tag",
+    "funBrowsersNote": "Wie viele Browser an jedem Rätseltag mindestens eine Runde in die Bestenliste von /dev/fun eingetragen haben, aus den öffentlichen Summen der Bestenliste selbst. Jeder Browser zählt einmal pro Tag; das ist keine Zählung von Personen: Ein Smartphone und ein Laptop zählen als zwei, und ein privates Fenster oder gelöschte Websitedaten zählen erneut. Tage vor Beginn der Zählung zeigen keine Daten.",
+    "col_browsers": "Eindeutige Browser",
+    "funNoData": "keine Daten",
+    "funPerBrowser": "Runden pro Browser an den gezählten Tagen: '{n}'"
   },
   "learning_page": {
     "eyebrow": "Branche",
@@ -39290,7 +39378,8 @@
     "bySubjectLede": "Der Boden, auf dem jede Plattform steht: Protokolle, Kryptografie, das Web, Identität, Formate und die Tools für den Betrieb.",
     "byVendor": "Nach Hersteller",
     "byVendorLede": "Die Plattform eines Herstellers nach der anderen: ihr eigenes Modell und ihr eigenes Vokabular, in Lesereihenfolge.",
-    "interactive": "Interaktiv"
+    "interactive": "Interaktiv",
+    "feed": "Dieser Serie in einem Feedreader folgen"
   },
   "shareResults": {
     "button": "Ergebnisse teilen",
@@ -40175,7 +40264,7 @@
     "dig-command-builder": {
       "bind9-dig": "BIND 9 Administrator Reference Manual, Manual Pages: dig - DNS lookup utility (neueste Version, 9.21)",
       "bind9-dig-c": "Quellcode von BIND 9, bin/dig/dig.c (isc-projects/bind9 auf GitHub, Branch main)",
-      "bind9-dig-920": "ISC, Dokumentation zu BIND 9 9.20.29, Manual Pages: dig - DNS lookup utility (stabil)",
+      "bind9-dig-920": "ISC, Dokumentation zu BIND 9 9.20.29, Manual Pages: dig - DNS lookup utility",
       "bind9-dighost-h-920": "Quellcode von BIND 9 am Tag v9.20.29, bin/dig/dighost.h",
       "bind9-dig-h-916": "Quellcode von BIND 9 am Tag v9.16.50, bin/dig/include/dig/dig.h"
     },
@@ -40669,10 +40758,6 @@
     "gamesTitle": "Die Spiele",
     "shelfLink": "Die Tagesrätsel und das Spielzeug stehen im Regal unter /dev/fun."
   },
-  "learnVoice": {
-    "kicker": "Die Sicht von Rodolfo Nützmann",
-    "label": "Persönliche Meinung, keine gesicherte Tatsache. Geäußert am {date}."
-  },
   "learnClaims": {
     "status": {
       "established": "Gesichert",
@@ -40686,6 +40771,522 @@
   },
   "learnMethod": {
     "title": "Wie diese Reihe berichtet",
-    "body": "Jeder Teil berichtet, was anderswo veröffentlicht wurde (Gerichtsakten, amtliche und parlamentarische Berichte, begutachtete Forschung, die Dokumente der Plattformen selbst und die Erklärungen der Beteiligten), jeweils mit dem Datum, an dem die Quelle gelesen wurde. Er erklärt nicht, wer recht hat. Jede Aussage ist danach gekennzeichnet, was sie stützt, von gesichert bis behauptet oder bestritten, und wird eine Partei beschuldigt, steht ihre veröffentlichte Antwort neben dem Vorwurf. Was nicht bekannt ist, wird als unbekannt benannt, und Schlussfolgerungen ändern sich, wenn sich die Belege ändern. Persönliche Meinung erscheint nur in Blöcken, die als Sicht von Rodolfo Nützmann gekennzeichnet sind."
+    "body": "Jeder Teil berichtet, was anderswo veröffentlicht wurde (Gerichtsakten, amtliche und parlamentarische Berichte, begutachtete Forschung, die Dokumente der Plattformen selbst und die Erklärungen der Beteiligten), jeweils mit dem Datum, an dem die Quelle gelesen wurde. Er erklärt nicht, wer recht hat. Jede Aussage ist danach gekennzeichnet, was sie stützt, von gesichert bis behauptet oder bestritten, und wird eine Partei beschuldigt, steht ihre veröffentlichte Antwort neben dem Vorwurf. Was nicht bekannt ist, wird als unbekannt benannt, und Schlussfolgerungen ändern sich, wenn sich die Belege ändern. Wo die Belege etwas offenlassen, entscheidet der Teil es nicht, sondern gibt den Lesenden Fragen zum Nachdenken mit."
+  },
+  "pageError": {
+    "title": "Diese Seite wurde durch einen Fehler angehalten",
+    "body": "Auf dieser Seite ist in Ihrem Browser etwas fehlgeschlagen. Ein neuer Versuch oder ein Neuladen behebt das meist; falls nicht, steht unten, was schiefgelaufen ist.",
+    "retry": "Erneut versuchen",
+    "reload": "Seite neu laden",
+    "home": "Zur Startseite",
+    "details": "Fehlerdetails",
+    "updating": "Diese Seite wurde aktualisiert, während sie geöffnet war. Sie wird neu geladen …"
+  },
+  "interest": {
+    "askTitle": "Mitentscheiden, was als Nächstes entsteht?",
+    "askBody": "Mit Ihrem Ja zählt der eigene Code der Website, welche Werkzeuge, Spiele und Artikel genutzt werden, und die Wörter von Suchen, die nichts finden. Keine Cookies, keine Dritten, nichts, was Sie identifiziert.",
+    "askYes": "Ja, mitzählen",
+    "askNo": "Nein, danke",
+    "askMore": "Was gezählt wird"
+  },
+  "feeds": {
+    "englishNote": "Die Artikel sind auf Englisch und brasilianischem Portugiesisch geschrieben; in den anderen Sprachen öffnen sie sich auf Englisch."
+  },
+  "deskItem": {
+    "save": "Merken",
+    "saved": "Gemerkt",
+    "read": "Als gelesen markieren",
+    "readOn": "Gelesen",
+    "done": "Als erledigt markieren",
+    "doneOn": "Erledigt",
+    "path": "Zu einem Pfad hinzufügen",
+    "kept": "In diesem Browser gespeichert",
+    "open": "Mein Schreibtisch",
+    "storageOff": "Dieser Browser speichert nichts für diese Website (ein privates Fenster oder blockierte Websitedaten), daher gilt dies nur, solange die Seite geöffnet ist",
+    "autoRead": "Als gelesen markiert: Sie sind am Ende angekommen.",
+    "undo": "Rückgängig",
+    "dismiss": "Schließen",
+    "keySaved": "Gemerkt: jetzt auf Ihrem Schreibtisch.",
+    "keyUnsaved": "Aus Ihren gemerkten Elementen entfernt.",
+    "keyRead": "Als gelesen markiert.",
+    "keyUnread": "Gelesen-Markierung entfernt.",
+    "keyDone": "Als erledigt markiert.",
+    "keyUndone": "Erledigt-Markierung entfernt.",
+    "progress": "{done} von {total} gelesen",
+    "adopt": "Als Pfad hinzufügen",
+    "adoptLive": "Dem Original folgen: neue Teile erscheinen",
+    "adoptFrozen": "Als Kopie: zum Umordnen und Ändern",
+    "adopted": "Als Pfad auf Ihren Schreibtisch gelegt.",
+    "onDesk": "Als Pfad auf Ihrem Schreibtisch",
+    "menu": {
+      "title": "Zu einem Pfad hinzufügen",
+      "save": "Merken",
+      "saved": "Gemerkt",
+      "paths": "Ihre Pfade",
+      "none": "Noch keine Pfade: Benennen Sie unten einen.",
+      "newName": "Name des neuen Pfads",
+      "create": "Anlegen und hinzufügen",
+      "added": "Zu {name} hinzugefügt.",
+      "already": "Schon in {name}.",
+      "full": "{name} ist voll: Ein Pfad fasst 300 Elemente.",
+      "tooMany": "Sie haben 20 Pfade, mehr fasst der Schreibtisch nicht.",
+      "live": "{name} folgt seiner Serie; machen Sie ihn auf Ihrem Schreibtisch zu Ihrer eigenen Kopie, um ihn zu ändern.",
+      "untitled": "Pfad ohne Namen",
+      "close": "Schließen",
+      "kept": "In diesem Browser gespeichert",
+      "open": "Mein Schreibtisch öffnen",
+      "limitSaved": "Ihr Schreibtisch hat bereits 1.000 gemerkte Elemente, sein Limit: Entfernen Sie dort einige, um weitere zu merken.",
+      "addTo": "Hinzufügen zu …",
+      "addToLabel": "{title} auf Ihren Schreibtisch legen"
+    },
+    "milestoneToast": "Meilenstein erreicht: {names}.",
+    "milestones": {
+      "read10": "10 Einträge gelesen",
+      "path1": "Erster Pfad abgeschlossen",
+      "week": "Eine Woche am Stück",
+      "read50": "50 Einträge gelesen",
+      "series1": "Eine Serie abgeschlossen",
+      "read100": "100 Einträge gelesen"
+    }
+  },
+  "desk": {
+    "title": "Mein Schreibtisch",
+    "metaDescription": "Ihre eigene Seite auf ronutz.com: die Werkzeuge und Artikel, die Sie sich merken, Ihre Lesepfade mit ihrem Fortschritt, was Sie zuletzt gelesen haben, und die Rätsel des Tages. In Ihrem Browser gespeichert.",
+    "lede": "Die Werkzeuge, Artikel und Spiele, die Sie sich merken, Ihre Lesepfade und wie weit Sie darin sind, und was Sie zuletzt gelesen haben, auf einer Seite, die Ihnen gehört.",
+    "where": "Er wird nur in diesem Browser gespeichert, unter einem einzigen Schlüssel, und die Website sieht nichts davon, solange Sie die verschlüsselte Synchronisierung nicht einschalten. Um eine Kopie zu behalten oder ihn auf ein anderes Gerät zu bringen, siehe",
+    "whereLink": "Einstellungen",
+    "example": "Beispiel",
+    "undo": "Rückgängig",
+    "progress": "{done} von {total} gelesen",
+    "widgets": {
+      "continue": "Weitermachen",
+      "paths": "Meine Pfade",
+      "favourites": "Gemerkt",
+      "recent": "Zuletzt gelesen",
+      "puzzles": "Rätsel des Tages",
+      "search": "Suche",
+      "news": "Neu für Sie",
+      "notes": "Notizen",
+      "countdown": "Countdown bis zur Prüfung",
+      "quicktool": "Schnellwerkzeug",
+      "streak": "Leseserie",
+      "privacy": "Datenschutz und Einstellungen"
+    },
+    "kinds": {
+      "tool": "Werkzeuge",
+      "learn": "Artikel",
+      "term": "Glossar",
+      "game": "Spiele",
+      "series": "Serien",
+      "training": "Trainingsserien",
+      "reading": "Lesepfade",
+      "guide": "Lernleitfäden"
+    },
+    "item": {
+      "gone": "Nicht mehr auf der Website",
+      "english": "Auf Englisch",
+      "updated": "Aktualisiert, seit Sie es gelesen haben"
+    },
+    "status": {
+      "loading": "Ihr Schreibtisch wird gelesen …",
+      "unavailable": "Dieser Browser speichert nichts für diese Website (ein privates Fenster oder blockierte Websitedaten), daher bleibt, was Sie hier hinzufügen, nur erhalten, solange die Seite geöffnet ist.",
+      "cleared": "Ihr Schreibtisch wurde in diesem Browser gelöscht, während die Seite geöffnet war. Wenn Sie eine Datei gespeichert oder einen Synchronisierungscode erstellt haben, können Sie ihn zurückholen:",
+      "toSettings": "Einstellungen",
+      "damaged": "Was für Ihren Schreibtisch gespeichert war, ließ sich nicht lesen, daher beginnt er leer. Speichern Sie die beschädigte Kopie, bevor Sie etwas ändern:",
+      "damagedSave": "Beschädigte Kopie speichern",
+      "repaired": "{count, plural, one {Ein gespeicherter Eintrag ließ sich nicht lesen und wurde ausgelassen.} other {# gespeicherte Einträge ließen sich nicht lesen und wurden ausgelassen.}}",
+      "notPersisted": "Dieser Browser kann Ihren Schreibtisch löschen, wenn Sie die Website eine Weile nicht besuchen. Speichern Sie eine Datei oder schalten Sie die Synchronisierung ein, um eine Kopie zu haben:",
+      "persisted": "Dieser Browser hat zugesagt, Ihren Schreibtisch aufzubewahren.",
+      "indexError": "Die Liste der Elemente der Website ließ sich nicht laden, daher fehlen die Titel. Laden Sie die Seite neu, um es noch einmal zu versuchen."
+    },
+    "incoming": {
+      "title": "Ein Schreibtisch aus einem Übertragungslink",
+      "body": "Er enthält gemerkte Elemente: {saved}; Gelesen-Markierungen: {read}; Pfade: {paths}. Zu Ihrem Schreibtisch hinzufügen oder statt des jetzigen verwenden?",
+      "merge": "Zu meinem Schreibtisch hinzufügen",
+      "replace": "Stattdessen verwenden",
+      "ignore": "Ignorieren",
+      "done": "Erledigt."
+    },
+    "density": {
+      "label": "Dichte",
+      "comfortable": "Großzügig",
+      "compact": "Kompakt"
+    },
+    "layout": {
+      "empty": "Diese Seite zeigt keine Bausteine.",
+      "reset": "Ursprüngliches Layout wiederherstellen"
+    },
+    "continue": {
+      "empty": "Hier erscheinen die Seiten, die Sie öffnen, und das nächste Element des Pfads, an dem Sie gerade sind.",
+      "next": "Als Nächstes in {path}",
+      "recent": "Zuletzt geöffnet"
+    },
+    "paths": {
+      "untitled": "Pfad ohne Namen",
+      "tooMany": "Sie haben {max} Pfade, mehr fasst der Schreibtisch nicht.",
+      "adopted": "{name} ist jetzt ein Pfad.",
+      "liveNote": "Dieser Pfad folgt {name}: Neue Teile erscheinen darin. Um Elemente umzuordnen oder zu entfernen, machen Sie ihn zu Ihrer eigenen Kopie.",
+      "full": "{name} ist voll: Ein Pfad fasst {max} Elemente.",
+      "addedCount": "{count, plural, =0 {Nichts Neues hinzuzufügen.} one {# Element hinzugefügt.} other {# Elemente hinzugefügt.}}",
+      "deleted": "Pfad {name} gelöscht.",
+      "empty": "Noch keine Pfade. Legen Sie unten einen an oder übernehmen Sie eine Serie oder einen Lesepfad.",
+      "adoptShort": "Als Pfad hinzufügen",
+      "follows": "Folgt seiner Serie",
+      "changed": "{count, plural, one {# seit dem Lesen aktualisiert} other {# seit dem Lesen aktualisiert}}",
+      "upPath": "{name} nach oben",
+      "downPath": "{name} nach unten",
+      "rename": "Name",
+      "renameSave": "Namen speichern",
+      "renamed": "Name gespeichert.",
+      "freeze": "Zu meiner eigenen Kopie machen",
+      "noItems": "Dieser Pfad ist leer: Fügen Sie Elemente von ihren Seiten, aus der Suche oder hier unten hinzu.",
+      "readToggle": "Gelesen: {title}",
+      "up": "Nach oben",
+      "down": "Nach unten",
+      "remove": "Aus dem Pfad entfernen",
+      "removed": "Aus dem Pfad entfernt.",
+      "addItem": "Ein Element hinzufügen",
+      "addSeries": "Eine ganze Serie hinzufügen",
+      "count": "{count, plural, one {# Element} other {# Elemente}} von {max}",
+      "delete": "Pfad löschen",
+      "new": "Neuer Pfad",
+      "newPlaceholder": "Benennen Sie Ihren Pfad",
+      "create": "Anlegen",
+      "adopt": "Eine Serie oder einen Lesepfad übernehmen",
+      "adoptPick": "Serie, Trainingsserie oder Lesepfad",
+      "adoptChoose": "Bitte wählen",
+      "adoptHow": "Wie",
+      "adoptLive": "Dem Original folgen: neue Teile erscheinen",
+      "adoptFrozen": "Als Kopie: zum Umordnen und Ändern",
+      "adoptDo": "Als Pfad hinzufügen"
+    },
+    "picker": {
+      "placeholder": "Ein Werkzeug, einen Artikel, einen Begriff finden …",
+      "none": "Keine Treffer.",
+      "add": "Hinzufügen",
+      "seriesPlaceholder": "Eine Serie oder einen Lesepfad finden …",
+      "addAll": "Alle hinzufügen"
+    },
+    "favourites": {
+      "empty": "Noch nichts gemerkt. Nutzen Sie „Merken“ bei einem Werkzeug, einem Artikel, einem Glossareintrag oder einem Spiel, oder drücken Sie auf seiner Seite K.",
+      "saveExample": "Merken",
+      "removed": "Nicht mehr gemerkt.",
+      "remove": "{title} nicht mehr merken"
+    },
+    "recent": {
+      "empty": "Noch nichts als gelesen markiert. Wer das Ende eines Artikels erreicht, markiert ihn damit; „Als gelesen markieren“ tut es von Hand."
+    },
+    "puzzles": {
+      "solved": "Gelöst",
+      "played": "Gespielt",
+      "notYet": "Noch nicht gespielt",
+      "streak": "{count, plural, one {# Tag in Folge} other {# Tage in Folge}}",
+      "all": "Alle Rätsel und Spiele"
+    },
+    "search": {
+      "label": "Website durchsuchen",
+      "placeholder": "Website durchsuchen …",
+      "go": "Suchen"
+    },
+    "sync": {
+      "syncedAt": "Synchronisiert um {time}.",
+      "never": "Noch nicht synchronisiert.",
+      "now": "Jetzt synchronisieren",
+      "settings": "Synchronisierung einstellen"
+    },
+    "pair": {
+      "title": "Denselben Schreibtisch und dieselben Einstellungen hier verwenden?",
+      "body": "Dieser Kopplungslink verbindet diesen Browser mit der verschlüsselten Kopie, die Ihr anderer Browser auf dem Server dieser Website führt. Was dieser Browser enthält, wird ihr hinzugefügt, und die Einstellungen des anderen Browsers (Design, Sprache und Ähnliches) gelten hier. Danach synchronisieren beide Browser nach jeder Änderung.",
+      "switch": "Dieser Browser synchronisiert gerade mit einem anderen Code; mit Ja wechselt er zu diesem. Was er enthält, bleibt und wird hinzugefügt.",
+      "same": "Dieser Browser verwendet diesen Schreibtisch bereits.",
+      "join": "Ja, hier verwenden",
+      "notNow": "Jetzt nicht",
+      "close": "Schließen",
+      "bad": "Dieser Link ist unvollständig oder beschädigt, daher wurde nichts geändert."
+    },
+    "profile": {
+      "title": "Aus einem anderen Browser",
+      "body": "Dieser Link enthält gemerkte Elemente: {saved}; Gelesen-Markierungen: {read}; Pfade: {paths}; weitere Einstellungen und Aufzeichnungen: {others}. Zum Vorhandenen hinzufügen oder stattdessen verwenden?",
+      "done": "Erledigt."
+    },
+    "edit": {
+      "start": "Seite anordnen",
+      "title": "Seite anordnen",
+      "undo": "Rückgängig",
+      "done": "Fertig",
+      "entered": "Sie ordnen die Seite an: Bausteine verschieben, in der Größe ändern, hinzufügen oder entfernen. Jede Änderung wird sofort gespeichert und lässt sich rückgängig machen. Wenn Sie fertig sind, wählen Sie Fertig.",
+      "help": "Nutzen Sie die Schaltflächen an jedem Baustein, oder setzen Sie den Fokus auf den Rahmen eines Bausteins und nutzen Sie die Tasten unten. Größen gelten auf breiteren Bildschirmen; auf dem Smartphone stehen die Bausteine in einer Spalte, in dieser Reihenfolge.",
+      "keys": "Tasten auf einem fokussierten Rahmen: Die Pfeiltasten verschieben ihn nach vorn oder hinten, Pos1 und Ende an den Anfang oder ans Ende, Minus und Plus ändern seine Größe, Entf entfernt ihn, und Strg+Z (Cmd+Z auf dem Mac) macht die letzte Änderung rückgängig.",
+      "escape": "Zum Beenden wählen Sie Fertig. Ihre Änderungen sind bereits gespeichert.",
+      "finished": "Ihr Layout ist in diesem Browser gespeichert.",
+      "none": "Keine Bausteine auf der Seite. Fügen Sie unten einen hinzu oder setzen Sie ein Start-Layout ein.",
+      "unknown": "Ein Baustein, den diese Seite nicht anzeigen kann",
+      "unknownInfo": "Von einer neueren Version dieser Seite angelegt; er bleibt in Ihrem Layout, bis Sie ihn entfernen.",
+      "position": "{n} von {total}",
+      "controlsLabel": "{name} anordnen",
+      "earlier": "Nach vorn",
+      "later": "Nach hinten",
+      "earlierLabel": "{name} nach vorn verschieben",
+      "laterLabel": "{name} nach hinten verschieben",
+      "sizeLabel": "Größe von {name}",
+      "sizes": {
+        "small": "Klein",
+        "medium": "Mittel",
+        "wide": "Breit"
+      },
+      "remove": "Entfernen",
+      "removeLabel": "{name} entfernen",
+      "moved": "{name} steht jetzt an Stelle {n} von {total}.",
+      "resized": "Größe von {name}: {size}.",
+      "removed": "Baustein entfernt: {name}.",
+      "added": "Baustein am Ende der Seite hinzugefügt: {name}.",
+      "full": "Die Seite fasst höchstens {max} Bausteine: Entfernen Sie einen, um einen weiteren hinzuzufügen.",
+      "onPageAlready": "{name} ist bereits auf der Seite.",
+      "undone": "Rückgängig gemacht: {what}",
+      "nothingToUndo": "Nichts rückgängig zu machen.",
+      "add": "Baustein hinzufügen",
+      "addDo": "Hinzufügen",
+      "addLabel": "{name} hinzufügen",
+      "onPage": "Auf der Seite",
+      "starters": "Auf ein Start-Layout zurücksetzen",
+      "startersNote": "Ein Start-Layout ersetzt die Bausteine dieser Seite; was Sie gemerkt, gelesen und geplant haben, bleibt. Rückgängig holt Ihr Layout zurück.",
+      "starterUse": "Dieses Layout verwenden",
+      "starterUseLabel": "Layout {name} verwenden",
+      "starterApplied": "Layout auf {name} zurückgesetzt.",
+      "removedNote": "Seine Notiz wird geleert, wenn Sie Fertig wählen; bis dahin holt Rückgängig sie zurück."
+    },
+    "starters": {
+      "study": {
+        "name": "Lernen für eine Zertifizierung",
+        "body": "Wo Sie aufgehört haben und was sich geändert hat, Ihre Pfade, der Countdown bis zur Prüfung, Ihre Leseserie und ein Suchfeld, Ihre Notizen neben dem Gelesenen und das Gemerkte neben Datenschutz und Einstellungen."
+      },
+      "oncall": {
+        "name": "Bereitschaftsdienst",
+        "body": "Ein Suchfeld neben Datenschutz und Einstellungen, ein Schnellwerkzeug neben Ihren gemerkten Werkzeugen und Ihre Notizen neben den zuletzt geöffneten Seiten."
+      },
+      "browse": {
+        "name": "Einfach stöbern",
+        "body": "Wo Sie aufgehört haben und was sich geändert hat, was Sie sich merken und lesen, die Rätsel des Tages, Ihre Leseserie, Datenschutz und Einstellungen und ein Suchfeld."
+      }
+    },
+    "widgetInfo": {
+      "continue": "Der nächste Eintrag Ihres aktuellen Pfads und die zuletzt geöffneten Seiten.",
+      "paths": "Ihre Lesepfade und wie weit Sie in jedem sind.",
+      "favourites": "Was Sie sich gemerkt haben, Werkzeuge als Kacheln, die sich mit einem Tipp öffnen.",
+      "recent": "Was Sie als gelesen markiert haben, das Neueste zuerst, und was sich seitdem geändert hat.",
+      "puzzles": "Die Rätsel des Tages und ob Sie sie schon gespielt haben.",
+      "search": "Ein Feld, das die ganze Website durchsucht.",
+      "news": "Was sich seit Ihrem letzten Besuch in dem geändert hat, was Sie lesen, verfolgen und sich merken.",
+      "notes": "Ein paar eigene Zeilen, in diesem Browser gespeichert.",
+      "countdown": "Die verbleibenden Tage bis zu einer Prüfung, die Sie angeben, in diesem Browser gespeichert.",
+      "quicktool": "Ein kleines Werkzeug, das direkt hier funktioniert: Subnetze, Base64, Unix-Zeit oder UUIDs (universell eindeutige Kennungen).",
+      "streak": "Die Tage, an denen Sie am Stück gelesen haben, Ihre längste Serie und die erreichten Meilensteine.",
+      "privacy": "Ob Ihre Nutzung gezählt wird, die Synchronisierung, wie Einstellungen zusammengeführt werden, automatische Lesemarkierungen und das Leeren des Schreibtischs, mit Links zu allen Einstellungen und zur Datenschutzseite."
+    },
+    "news": {
+      "sinceVisit": "Seit Ihrem letzten Besuch am {date}.",
+      "sinceWindow": "In den letzten {days} Tagen: Dies ist Ihr erster Besuch auf Ihrem Schreibtisch.",
+      "updated": "Aktualisiert, seit Sie es gelesen haben",
+      "follow": "Neu oder überarbeitet in dem, was Sie verfolgen",
+      "family": "Neu oder geändert in den Werkzeugfamilien, die Sie sich merken",
+      "newOrRevised": "Neu oder überarbeitet",
+      "newOrChanged": "Neu oder geändert",
+      "inName": "in {name}",
+      "more": "{count, plural, one {und # weiterer} other {und # weitere}}",
+      "nothing": "Seitdem nichts Neues in dem, was Sie lesen, verfolgen oder sich merken.",
+      "howTo": "Merken Sie sich eine Serie oder einen Lesepfad, legen Sie daraus einen Pfad an oder merken Sie sich ein Werkzeug: Was sich darin ändert, erscheint hier, neben dem, was sich in den gelesenen Seiten geändert hat."
+    },
+    "notes": {
+      "label": "Notiz",
+      "placeholder": "Schreiben Sie, was Sie möchten: was zu wiederholen ist, einen Befehl zum Merken, eine Frage für später …",
+      "count": "{count} von {max} Zeichen",
+      "kept": "In diesem Browser gespeichert; sie geht nur in Ihre anderen Browser, wenn Sie in den Einstellungen Notizen einschließen ankreuzen.",
+      "synced": "In diesem Browser gespeichert und, da Notizen einschließen angekreuzt ist, in Ihrer verschlüsselten Synchronisierungskopie.",
+      "full": "Ein Schreibtisch hält höchstens {max} Notizen: Leeren Sie eine, um diesen Text zu behalten."
+    },
+    "countdown": {
+      "empty": "Geben Sie eine Prüfung und ihr Datum an, um die Tage herunterzuzählen.",
+      "name": "Prüfung",
+      "namePlaceholder": "Name oder Code der Prüfung",
+      "date": "Datum",
+      "badDate": "Wählen Sie das Datum der Prüfung.",
+      "save": "Countdown starten",
+      "cancel": "Abbrechen",
+      "change": "Ändern",
+      "unnamed": "Ihre Prüfung",
+      "days": "{count, plural, one {Noch # Tag} other {Noch # Tage}}",
+      "today": "Heute",
+      "ago": "{count, plural, one {Vor # Tag} other {Vor # Tagen}}",
+      "on": "Am {date}",
+      "kept": "Mit Ihrem Schreibtisch in diesem Browser gespeichert und, wenn Sie synchronisieren, in der verschlüsselten Kopie."
+    },
+    "quick": {
+      "choose": "Werkzeug",
+      "use": "Dieses Werkzeug verwenden",
+      "others": "Alle anderen Werkzeuge öffnen sich auf ihrer eigenen Seite.",
+      "allTools": "Alle Werkzeuge",
+      "input": "Eingabe für {tool}",
+      "example": "Beispiel: {example}",
+      "tryExample": "Beispiel ausprobieren",
+      "open": "Vollständiges Werkzeug öffnen",
+      "change": "Werkzeug wechseln",
+      "loading": "Werkzeug wird geladen …",
+      "loadFailed": "Das Werkzeug konnte nicht geladen werden. Laden Sie die Seite neu, um es erneut zu versuchen.",
+      "invalid": "Dieses Werkzeug kann das nicht lesen. Probieren Sie das Beispiel: {example}",
+      "private": "In diesem Browser berechnet: Nichts, was Sie hier eingeben, wird gespeichert oder gesendet.",
+      "copy": "{label} kopieren",
+      "copied": "Kopiert: {label}",
+      "yes": "Ja",
+      "no": "Nein",
+      "notBase64": "Kein gültiges Base64",
+      "rows": {
+        "network": "Netzwerk",
+        "netmask": "Netzmaske",
+        "wildcard": "Wildcard-Maske",
+        "broadcast": "Broadcast-Adresse",
+        "firstHost": "Erster nutzbarer Host",
+        "lastHost": "Letzter nutzbarer Host",
+        "usable": "Nutzbare Hosts",
+        "total": "Adressen",
+        "encoded": "Der Text in Base64",
+        "decoded": "Aus Base64 dekodiert",
+        "utf8": "Ergibt UTF-8-Text",
+        "iso8601": "ISO 8601",
+        "httpDate": "HTTP-Datum",
+        "unixSeconds": "Unix-Sekunden",
+        "unixMillis": "Unix-Millisekunden",
+        "version": "Version",
+        "variant": "Variante",
+        "timestamp": "Zeit in der UUID"
+      }
+    },
+    "streak": {
+      "current": "{count, plural, one {# Tag am Stück} other {# Tage am Stück}}",
+      "none": "Jeder Tag, an dem Sie lesen, zählt.",
+      "longest": "{count, plural, =0 {Längste Serie: noch keine} one {Längste Serie: # Tag} other {Längste Serie: # Tage}}",
+      "recent": "Gelesen an {count} der letzten {days} Tage.",
+      "read": "gelesen",
+      "rest": "Pause",
+      "items": "{count, plural, =0 {Noch nichts gelesen.} one {# Eintrag gelesen.} other {# Einträge gelesen.}}",
+      "milestones": "Meilensteine",
+      "next": "Nächster: {name}",
+      "toGo": "{count, plural, one {noch #} other {noch #}}",
+      "celebrate": "Meilenstein erreicht: {names}.",
+      "kept": "Aus Ihren Lesemarkierungen gezählt, nur nach dem Tag, in diesem Browser."
+    },
+    "privacy": {
+      "counting": "Zählung Ihrer Nutzung",
+      "sync": "Synchronisierung",
+      "syncOff": "Keine Synchronisierung: Mein Schreibtisch bleibt nur in diesem Browser.",
+      "syncStart": "In einem anderen Browser nutzen",
+      "syncStop": "Synchronisierung in diesem Browser beenden",
+      "syncStopped": "Dieser Browser synchronisiert nicht mehr; sein Schreibtisch bleibt hier.",
+      "notes": "Notizen in die Synchronisierung einschließen (aus: Notizen bleiben in diesem Browser)",
+      "merge": "Wenn eine Einstellung in zwei Browsern geändert wurde",
+      "mergeLatest": "Die neueste Änderung gilt",
+      "mergeKeep": "Dieser Browser behält seinen Wert",
+      "autoRead": "Einen Artikel oder Glossareintrag als gelesen markieren, wenn ich sein Ende erreiche (mit Rückgängig)",
+      "empty": "Meinen Schreibtisch leeren",
+      "emptyAsk": "Meinen Schreibtisch in diesem Browser leeren? Gemerkte Einträge, Lesemarkierungen, Pfade, Notizen und die Anordnung verschwinden; gleich danach können Sie es rückgängig machen.",
+      "emptyYes": "Leeren",
+      "emptyNo": "Behalten",
+      "emptied": "Ihr Schreibtisch ist leer.",
+      "allSettings": "Alle Einstellungen von Mein Schreibtisch",
+      "privacyPage": "Was die Datenschutzseite über Mein Schreibtisch und die Synchronisierung sagt"
+    }
+  },
+  "deskData": {
+    "fileTitle": "Mit einer Datei mitnehmen",
+    "fileBody": "Speichern Sie, was mitgehen kann, in einer Datei (Ihren Schreibtisch mit den Notizen, die Ergebnisse der Spiele, die zuletzt geöffneten Seiten und Ihre Einstellungen; nie den Synchronisierungscode), und öffnen Sie sie im anderen Browser, um sie zum Vorhandenen hinzuzufügen oder stattdessen zu verwenden.",
+    "export": "Als Datei speichern",
+    "import": "Datei öffnen",
+    "importBad": "Diese Datei enthält weder einen Schreibtisch noch ein Profil dieser Website.",
+    "importTitle": "Aus einer Datei",
+    "importAsk": "Sie enthält gemerkte Elemente: {saved}; Gelesen-Markierungen: {read}; Pfade: {paths}; weitere Einstellungen und Aufzeichnungen: {others}. Zum Vorhandenen hinzufügen oder stattdessen verwenden?",
+    "merge": "Zu meinem Schreibtisch hinzufügen",
+    "replace": "Stattdessen verwenden",
+    "cancel": "Abbrechen",
+    "imported": "Erledigt.",
+    "undo": "Rückgängig",
+    "linkTitle": "Mit einem Link mitnehmen",
+    "linkBody": "Ein Link, der dasselbe komprimiert nach dem # der Adresse trägt, einem Teil, den ein Browser nie an einen Server sendet: Öffnen Sie ihn im anderen Browser. Wer den Link hat, kann ihn lesen. Ein großer Schreibtisch macht den Link zu lang; dann verwenden Sie die Datei.",
+    "includeNotes": "Notizen einschließen",
+    "linkMake": "Link erstellen",
+    "copyLink": "Link kopieren",
+    "copied": "Kopiert",
+    "syncEnter": "Ich habe einen Code",
+    "syncCodeLabel": "Synchronisierungscode",
+    "syncUse": "Diesen Code verwenden",
+    "syncStartNew": "Eine Kopie unter diesem Code anlegen",
+    "syncOn": "Die Synchronisierung ist in diesem Browser eingeschaltet.",
+    "syncNever": "Noch nicht synchronisiert.",
+    "syncSize": "Die verschlüsselte Kopie belegt {kb} KB der {max} KB, die der Server aufbewahrt.",
+    "syncNow": "Jetzt synchronisieren",
+    "syncShow": "Code anzeigen",
+    "syncHide": "Code verbergen",
+    "syncCopy": "Code kopieren",
+    "syncAuto": "Nach jeder Änderung synchronisieren",
+    "syncNotes": "Notizen einschließen (aus: Notizen bleiben in diesem Browser)",
+    "syncForget": "Synchronisierung in diesem Browser beenden",
+    "syncDelete": "Kopie auf dem Server löschen",
+    "syncDeleteNow": "Jetzt löschen",
+    "syncDeleteNote": "Das Löschen entfernt die verschlüsselte Kopie sofort vom Server, und dieser Browser synchronisiert nicht mehr. Ihre anderen Browser erfahren es bei ihrer nächsten Synchronisierung und behalten, was sie enthalten.",
+    "syncForgetNote": "Beim Beenden vergisst dieser Browser den Code und behält Ihren Schreibtisch, Ihre Aufzeichnungen und Einstellungen; die Kopie auf dem Server bleibt für Ihre anderen Browser.",
+    "phase": {
+      "working": "Synchronisierung läuft …",
+      "done": "Synchronisiert.",
+      "merged": "Synchronisiert: Änderungen von einem anderen Gerät wurden übernommen.",
+      "unavailable": "Die Synchronisierung ist gerade nicht verfügbar. Ihr Schreibtisch funktioniert in diesem Browser weiter; versuchen Sie es später noch einmal.",
+      "offline": "Die Website war nicht erreichbar. Ihr Schreibtisch funktioniert in diesem Browser weiter.",
+      "tooLarge": "Ihr Schreibtisch ist zu groß zum Synchronisieren: {kb} KB von den {max} KB, die der Server aufbewahrt. Entfernen Sie einige Gelesen-Markierungen oder Pfade und synchronisieren Sie erneut.",
+      "rateLimited": "Diese Kopie wurde heute zu oft geschrieben; die Synchronisierung geht morgen (UTC) weiter.",
+      "notFound": "Unter diesem Code ist keine Kopie gespeichert. Prüfen Sie den Code oder legen Sie unter ihm eine Kopie an.",
+      "badCode": "Das ist kein Synchronisierungscode: Ein Code hat 32 Buchstaben und Ziffern in Vierergruppen.",
+      "unreadable": "Die gespeicherte Kopie ließ sich mit diesem Code nicht öffnen, daher wurde nichts geändert.",
+      "unsupported": "Dieser Browser kann auf dieser Seite nicht verschlüsseln und daher nicht synchronisieren.",
+      "deleted": "Die Kopie auf dem Server ist gelöscht.",
+      "error": "Der Server hat die Synchronisierung abgelehnt. Versuchen Sie es später noch einmal.",
+      "deletedElsewhere": "Die Kopie auf dem Server wurde von einem anderen Browser aus gelöscht, deshalb synchronisiert dieser Browser nicht mehr. Was er enthält, bleibt hier; koppeln Sie erneut, um zu synchronisieren."
+    },
+    "readingTitle": "Lesen",
+    "autoRead": "Einen Artikel oder Glossareintrag als gelesen markieren, wenn ich sein Ende erreiche (mit Rückgängig)",
+    "clearTitle": "Schreibtisch leeren",
+    "clear": "Meinen Schreibtisch leeren",
+    "cleared": "Ihr Schreibtisch ist leer.",
+    "open": "Mein Schreibtisch öffnen",
+    "anotherTitle": "In einem anderen Browser verwenden",
+    "anotherBody": "Ihr Schreibtisch, die Ergebnisse der Spiele, die zuletzt geöffneten Seiten und Ihre Einstellungen (Design, Sprache, Glossar-Hinweise und Ähnliches) können Ihnen auf drei Wegen in einen anderen Browser oder auf ein anderes Gerät folgen. Die Seite „Datenschutz“ führt auf, was mitgeht und was in jedem Browser bleibt, und warum.",
+    "pairTitle": "Mit QR-Code oder Link koppeln",
+    "pairBody": "Dieser Browser zeigt einen QR-Code und einen Link, die einen Synchronisierungscode tragen. Scannen Sie den QR-Code oder öffnen Sie den Link im anderen Browser und bestätigen Sie dort: Dann führen beide Browser eine gemeinsame Kopie auf dem Server dieser Website, hier verschlüsselt mit einem Schlüssel, der aus dem Code entsteht, sodass der Server sie nicht lesen kann. Danach synchronisieren beide nach jeder Änderung und wenn Sie zum Tab zurückkehren.",
+    "pairShow": "QR-Code und Link zeigen",
+    "pairQrLabel": "QR-Code des Kopplungslinks",
+    "pairWarn": "QR-Code und Link tragen Ihren Synchronisierungscode: Wer sie hat, kann lesen und ändern, was Sie synchronisieren. Zeigen Sie sie nur Ihren eigenen Geräten.",
+    "pairLinkLabel": "Kopplungslink",
+    "pairHide": "Ausblenden",
+    "typedTitle": "Synchronisierungscode eintippen",
+    "typedBody": "Derselbe Synchronisierungscode, von Hand in Vierergruppen eingetippt, leistet dasselbe wie der Kopplungslink. Der Code entsteht in Ihrem Browser; die Website erhält ihn nie und kann ihn nicht wiederherstellen, bewahren Sie ihn also sicher auf, etwa in einem Passwortmanager.",
+    "syncedAt": "Synchronisiert um {time}.",
+    "settingsLater": "Manche Einstellungen aus dem anderen Browser gelten ab der nächsten Seite, die Sie öffnen.",
+    "serverlessTitle": "Ohne den Server",
+    "serverlessBody": "Diese beiden Wege bringen dasselbe direkt von einem Browser in den anderen; an die Website wird nichts gesendet.",
+    "linkTooLong": "Dieser Link wäre {kb} KB lang, mehr als die {max} KB, die ein Link zuverlässig trägt. Verwenden Sie die Datei.",
+    "timesTitle": "Wenn eine Einstellung in zwei Browsern geändert wurde",
+    "timesBody": "Standardmäßig gilt die jüngste Änderung. Um zu erkennen, welche die letzte war, notiert dieser Browser die Minute, in der sich jede Ihrer Einstellungen (Design, Sprache, Tastenkürzel, die Ansicht einer Indexseite und Ähnliches) hier zuletzt geändert hat. Diese Zeiten bleiben in diesem Browser und, wenn Sie synchronisieren, in der verschlüsselten Kopie, die nur Ihre eigenen Browser lesen können; der Server der Website kann sie nicht lesen.",
+    "timesKeep": "Den Wert dieses Browsers behalten, wenn beide geändert wurden (notiert keine Änderungszeiten)",
+    "timesKeepNote": "Ist dies eingeschaltet, notiert dieser Browser keine Zeiten, sendet keine und löscht die gespeicherten; eine in beiden Browsern geänderte Einstellung behält dann beim Synchronisieren den Wert dieses Browsers, und ein Browser, der zum ersten Mal synchronisiert, übernimmt den des anderen."
+  },
+  "learnQuestions": {
+    "title": "Fragen zum Nachdenken"
+  },
+  "deskPath": {
+    "label": "{count, plural, one {Diesen Pfad fortsetzen} other {Diese Pfade fortsetzen}}",
+    "next": "Als Nächstes in <b>{path}</b>:",
+    "last": "Dies ist der letzte offene Eintrag in <b>{path}</b>.",
+    "finished": "Sie haben <b>{path}</b> abgeschlossen.",
+    "onDesk": "Pfad auf Mein Schreibtisch ansehen",
+    "more": "{count, plural, one {# weiterer Ihrer Pfade enthält diese Seite.} other {# weitere Ihrer Pfade enthalten diese Seite.}}",
+    "progress": "{done} von {total} gelesen",
+    "untitled": "Pfad ohne Namen",
+    "open": "Mein Schreibtisch öffnen"
   }
 }

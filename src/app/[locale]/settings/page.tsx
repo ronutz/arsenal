@@ -17,7 +17,12 @@ import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import ShortcutSettings from "@/components/ShortcutSettings";
 import GlossaryHintToggle from "@/components/GlossaryHintToggle";
+// The interest counts' switch (PRIME 12/11/2026 02:35): the answer to the site's one question, changeable here.
+import InterestToggle from "@/components/InterestToggle";
 import { SHORTCUT_ACTIONS, SHORTCUT_KEYS } from "@/config/shortcuts";
+// My desk's section (PRIME 12/11/2026 12:42): a file, a transfer link, the encrypted sync, reading, emptying.
+import MessageSlice from "@/components/MessageSlice";
+import DeskDataPanel from "@/components/desk/DeskDataPanel";
 
 // Pretty key-cap label: letters uppercased; punctuation/digits as-is.
 function keyLabel(key: string): string {
@@ -101,6 +106,35 @@ export default async function SettingsPage({
               allLabel={t("hintAll")}
               offLabel={t("hintNone")}
             />
+          </div>
+        </section>
+
+        {/* The interest counts (12/11/2026): what a yes sends, and the switch that gives or withdraws it. */}
+        <section className="section" id="interest">
+          <div className="container colophon-container">
+            <h2 className="colophon-h2">{t("interestTitle")}</h2>
+            <p className="colophon-body">{t("interestBody")}</p>
+            <InterestToggle
+              labels={{
+                toggle: t("interestToggle"),
+                on: t("interestOn"),
+                off: t("interestOff"),
+                browserNo: t("interestBrowserNo"),
+                more: t("interestMore"),
+              }}
+            />
+          </div>
+        </section>
+
+        {/* My desk (12/11/2026): where the reader's own page is kept and how to keep a copy or sync it. The page links
+            here as /settings#desk. */}
+        <section className="section" id="desk">
+          <div className="container colophon-container">
+            <h2 className="colophon-h2">{t("deskTitle")}</h2>
+            <p className="colophon-body">{t("deskBody")}</p>
+            <MessageSlice namespaces={["deskData"]}>
+              <DeskDataPanel />
+            </MessageSlice>
           </div>
         </section>
 

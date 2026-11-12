@@ -8,7 +8,7 @@ relatedArticles: ["jwt-anatomy", "hmac", "jwt-security"]
 category: identity
 order: 2
 status: machine-draft
-updated: "2026-06-27"
+updated: "2026-11-12"
 ---
 
 ## alg 头决定一切
@@ -27,7 +27,7 @@ updated: "2026-06-27"
 
 当**许多独立服务**必须验证来自一个签发者的令牌时，这正是你想要的。一个身份提供方用其私钥签名，并发布其公钥（通常作为一个 JWKS 端点）；每个下游服务用公钥验证，而它们谁都不能铸造令牌。这就是为什么 OpenID Connect 提供方默认签发 RS256 或 ES256 的 ID 令牌。
 
-在 RSA 与 ECDSA 之间，取舍是大小与速度：在同等安全下，ECDSA 的密钥与签名要小得多，而 RSA 更古老、得到更普遍的支持。`EdDSA`（Ed25519）是一个正在获得采用的现代、快速的替代品。
+在 RSA 与 ECDSA 之间，取舍是大小与速度：在同等安全下，ECDSA 的密钥与签名要小得多，而 RSA 更古老、得到更普遍的支持。`EdDSA`（Ed25519）是一个正在获得采用的现代、快速的替代品。不过在定义 JWT 的 JOSE（JSON Object Signing and Encryption）标准族中，它的标识符已经改变：自 RFC 9864（2025 年 10 月）起，互联网号码分配机构（IANA）的注册表把由密钥决定曲线的 `EdDSA` 值标为 Deprecated，改用完全指定的 `Ed25519` 和 `Ed448`，而 `ES256` 仍为 Recommended+（[IANA，JOSE 注册表，2026-11-12 查阅](https://www.iana.org/assignments/jose/jose.xhtml)）。
 
 ## 选择
 

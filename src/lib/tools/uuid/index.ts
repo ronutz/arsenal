@@ -29,6 +29,9 @@ export const manifest = Object.freeze({
   // -- Identity & routing --
   toolFamily: "Identifiers & time",
   toolSlug: "uuid",
+  /** My desk (12/11/2026): eligible for the desk's Quick tools widget. Its engine is small and pure, and runs in the
+   *  widget through the adapter in src/lib/desk/quickTools.ts (scripts/check-desk-store.mts keeps the two in step). */
+  deskQuick: true,
   canonicalAliases: ["guid", "uuidv4", "uuidv7", "unique-id"],
   inputDetectors: [
     {

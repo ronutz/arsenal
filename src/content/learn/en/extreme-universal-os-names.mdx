@@ -8,7 +8,7 @@ relatedArticles: ["spb-fabric-vocabulary"]
 category: operations
 order: 13
 status: reviewed
-updated: "2026-08-14"
+updated: "2026-11-12"
 ---
 
 ## Two names for each of two things
@@ -19,8 +19,9 @@ Extreme states there are no feature or functional differences arising from the
 change.
 
 The confusion is not the rename. It is that **the rename applies only to
-Universal hardware**: the 4120, 4220, 5320, 5420, 5520, 5720, 7520 and 7720
-series. **Every older model keeps EXOS and VOSS**, and always will.
+Universal hardware**: the 4120, 4220, 5120, 5320, 5420, 5520, 5720, 7520, 7720
+and 7830 series, the models [Extreme's documentation index](https://supportdocs.extremenetworks.com/support/documentation/) lists under
+Universal Platforms. **Every older model keeps EXOS and VOSS**, and always will.
 
 So two engineers can describe the same estate correctly using different words,
 and a third can search for the wrong one and find nothing. Worse: **the image
@@ -63,7 +64,9 @@ fine and your monitoring has quietly lost it.
 
 **Fabric Engine support does not begin at the same version everywhere.** 5320
 and 5420 from 8.6, 5520 from 8.6 having run VOSS 8.2.5 through 8.5, 5720 from
-8.7. A version that is current on one series may not exist for another, and the
+8.7; Fabric Engine 9.4's own tables give [the fabric modes' starting releases](https://documentation.extremenetworks.com/Fabric%20Engine%20v9.4%20User%20Guide/fe_9.4_ug_revacdev/content/documents/Switch_Operating_Systems/VOSS_and_Fabric_Engine/fabric_engine_user_guide/bcbs_and_bebs.shtml)
+for the newer series: 4220 from 9.2, 7520 and 7720 from 8.10, 7830 from 9.3. A
+version that is current on one series may not exist for another, and the
 per-series minimums are published in [Extreme's software support
 matrix](https://supportdocs.extremenetworks.com/s_comp_matrices/summit-extremeswitching-and-e4g-components-extremexos-software-support/),
 which is also where the SysObjectID note above comes from.
