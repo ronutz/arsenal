@@ -27532,7 +27532,8 @@
       "preparing": "Mi preparo a insegnare:",
       "cylk2020": "Consulenza sulle soluzioni e prevendita tramite CYLK, l’integratore di sicurezza di San Paolo, mentre iniziava la docenza a tempo pieno con la consociata InLearn: application delivery e sicurezza F5, firewall Palo Alto Networks, Fortinet, gestione delle vulnerabilità Tenable, accesso privilegiato CyberArk e analisi di rete Corvil, sotto forma di proof of concept, progetti e formazione dei clienti. Tutti e sei sono contrassegnati qui, e ognuno ha il suo capitolo nel percorso professionale.",
       "implementationWhere": "Implementazione · tramite CYLK, TDec e incarichi diretti",
-      "cylk2020Where": "Prevendita e consulenza · tramite CYLK"
+      "cylk2020Where": "Prevendita e consulenza · tramite CYLK",
+      "instructorProfile": "Il profilo da istruttore di Rodolfo Nützmann presso Red Education"
     },
     "origins": {
       "title": "Dove è cominciato",
@@ -31581,7 +31582,9 @@
         "roundsPerBrowser": "Partite per browser: {n}",
         "sparkDayBrowsers": "{date}: {played, plural, one {# partita} other {# partite}}, {solved} risolte, browser unici: {browsers}",
         "sparkBrowsersNote": "Il tratto corto su una barra indica i browser unici di quel giorno (ogni browser conta una volta al giorno; non sono persone). I giorni prima dell’inizio del conteggio non lo hanno."
-      }
+      },
+      "playGame": "Gioca a {game}",
+      "gameScoreboard": "Vedi i punteggi di {game}"
     },
     "arcadeCardName": "L’arcade",
     "arcadeCardBlurb": "{count, plural, one {{count} gioco costruito} other {{count} giochi costruiti}} su formule di gioco classiche, da giocare quanto vuoi; {daily, plural, one {{daily} ha} other {{daily} hanno}} una partita del giorno che va nella classifica pubblica."
@@ -31969,7 +31972,9 @@
     "fullTitle": "File completo",
     "close": "Chiudi",
     "copied": "Copiato",
-    "namespaceLabel": "Namespace"
+    "namespaceLabel": "Namespace",
+    "loading": "Caricamento dei testi di questa lingua…",
+    "loadFailed": "Impossibile caricare i testi di questa lingua. Ricarica la pagina per riprovare."
   },
   "toolRequirements": {
     "heading": "Di cosa ha bisogno questa pagina",
@@ -33829,7 +33834,8 @@
       "read": "Leggi l’opuscolo",
       "page": "La sua pagina nel sito di Red Education",
       "readOn": "Letto per intero il 6 ottobre 2026."
-    }
+    },
+    "instructorProfile": "Il profilo da istruttore di Rodolfo Nützmann presso Red Education"
   },
   "toolDocs": {
     "titleSuffix": "(documentazione)",

@@ -10,6 +10,8 @@
 // placeholder email so it is never shipped silently. Statically generated.
 // ============================================================================
 
+// The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
+import { ogImages } from "@/lib/og";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
@@ -29,10 +31,8 @@ import {
  * fault check-page-titles was written for on 2026-08-16; the fix that day
  * reached the index routes and never came back for these.
  *
- * Title only, deliberately: ogImages() would point at public/og/page/contact-<locale>.png,
- * and this slug is not in gen-og's STATIC_PAGES list, so the card does not exist
- * and check-og would fail on a manifest entry with nothing behind it. The page
- * keeps the default social card until the slug is added to that list.
+ * SOCIAL CARD (12/11/2026): "contact" is in gen-og's PACK_PAGES list, so the
+ * page names its own titled card instead of the generic one.
  */
 export async function generateMetadata({
   params,
@@ -41,7 +41,7 @@ export async function generateMetadata({
 }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "contact" });
-  return { title: t("title") };
+  return { title: t("title"), ...ogImages("page", "contact", locale, t("title")) }; // the page's card (12/11/2026: it shipped the generic one)
 }
 
 export default async function ContactPage({

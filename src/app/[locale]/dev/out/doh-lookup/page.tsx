@@ -11,6 +11,10 @@
 // 2026-10-27, with POST for the resolvers whose CORS preflight passed).
 // ============================================================================
 // The metadata type for generateMetadata.
+// The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
+import { ogImages } from "@/lib/og";
+// One description for the meta, og and twitter fields, merged into the card.
+import { withDescription } from "@/lib/metaDescription";
 import type { Metadata } from "next";
 // The nested provider that hands the client component its message slice.
 import MessageSlice from "@/components/MessageSlice";
@@ -55,7 +59,8 @@ export async function generateMetadata({
   // Title and description from devOut.doh.
   return {
     title: t("doh.metaTitle"),
-    description: t("doh.metaDescription"),
+    // The description in the meta, og and twitter fields, and the page's card (12/11/2026: it shipped the generic one).
+    ...withDescription(t("doh.metaDescription"), ogImages("page", "dev-out", locale, t("doh.metaTitle")), "dev/out/doh-lookup"),
   };
 }
 

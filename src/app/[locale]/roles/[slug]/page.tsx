@@ -7,6 +7,10 @@
 // is what `turnsOn` then names.
 // ============================================================================
 
+// The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
+import { ogImages } from "@/lib/og";
+// One description for the meta, og and twitter fields, merged into the card.
+import { withDescription } from "@/lib/metaDescription";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
@@ -40,7 +44,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const m = messages.roles;
   const title = prose(m, role.slug, "title", role.title);
   const what = prose(m, role.slug, "whatItIs", role.whatItIs);
-  return { title: `${title} - ${t("title")}`, description: what.slice(0, 155) };
+  // The Roles card (12/11/2026: it shipped the generic one), with the description in the meta, og and twitter fields.
+  return { title: `${title} - ${t("title")}`, ...withDescription(what.slice(0, 155), ogImages("page", "roles", locale, title), `roles/${slug}`) };
 }
 
 export default async function RolePage({ params }: { params: Promise<{ locale: string; slug: string }> }) {

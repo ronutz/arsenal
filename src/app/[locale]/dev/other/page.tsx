@@ -9,6 +9,10 @@
 // page keeps the .env-other green mini-theme: same darkness, different hue,
 // different paperwork. Currently unoccupied, and honest about it.
 // ============================================================================
+// The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
+import { ogImages } from "@/lib/og";
+// One description for the meta, og and twitter fields, merged into the card.
+import { withDescription } from "@/lib/metaDescription";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import Header from "@/components/Header";
@@ -24,7 +28,8 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "devOther" });
   return {
     title: t("metaTitle"),
-    description: t("metaDescription"),
+    // The description in the meta, og and twitter fields, and the page's card (12/11/2026: it shipped the generic one).
+    ...withDescription(t("metaDescription"), ogImages("page", "dev-other", locale, t("metaTitle")), "dev/other"),
   };
 }
 

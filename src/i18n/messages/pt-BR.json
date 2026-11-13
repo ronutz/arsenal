@@ -27535,7 +27535,8 @@
       "preparing": "Em preparação para ensinar:",
       "cylk2020": "Consultoria de soluções e pré-vendas pela CYLK, a integradora de segurança de São Paulo, enquanto começava a dar aulas em tempo integral na empresa-irmã dela, a InLearn: entrega e segurança de aplicações F5, firewalls Palo Alto Networks, Fortinet, gestão de vulnerabilidades Tenable, acesso privilegiado CyberArk e analítica de rede Corvil, em provas de conceito, projetos e treinamento de clientes. As seis aparecem aqui com a sua marca, e cada uma tem o seu capítulo no registro de carreira.",
       "implementationWhere": "Implementação · via CYLK, TDec e contratos diretos",
-      "cylk2020Where": "Pré-vendas e consultoria · via CYLK"
+      "cylk2020Where": "Pré-vendas e consultoria · via CYLK",
+      "instructorProfile": "O perfil de instrutor de Rodolfo Nützmann na Red Education"
     },
     "origins": {
       "title": "Onde tudo começou",
@@ -31584,7 +31585,9 @@
         "roundsPerBrowser": "Rodadas por navegador: {n}",
         "sparkDayBrowsers": "{date}: {played, plural, one {# rodada} other {# rodadas}}, {solved} resolvidas, navegadores únicos: {browsers}",
         "sparkBrowsersNote": "O traço curto sobre uma barra marca os navegadores únicos daquele dia (cada navegador conta uma vez por dia; não são pessoas). Os dias antes do início da contagem não têm traço."
-      }
+      },
+      "playGame": "Jogar {game}",
+      "gameScoreboard": "Ver o placar de {game}"
     },
     "arcadeCardName": "O arcade",
     "arcadeCardBlurb": "{count, plural, one {{count} jogo feito sobre fórmulas clássicas de jogo, jogado} other {{count} jogos feitos sobre fórmulas clássicas de jogo, jogados}} pelo tempo que você quiser; {daily, plural, one {{daily} deles tem} other {{daily} deles têm}} uma rodada diária que vai para o placar público."
@@ -31972,7 +31975,9 @@
     "fullTitle": "Arquivo completo",
     "close": "Fechar",
     "copied": "Copiado",
-    "namespaceLabel": "Namespace"
+    "namespaceLabel": "Namespace",
+    "loading": "Carregando os textos deste idioma…",
+    "loadFailed": "Não foi possível carregar os textos deste idioma. Recarregue a página para tentar de novo."
   },
   "toolRequirements": {
     "heading": "Do que esta página precisa",
@@ -42709,7 +42714,8 @@
       "read": "Ler o livreto",
       "page": "A página dele na Red Education",
       "readOn": "Lido na íntegra em 6 de outubro de 2026."
-    }
+    },
+    "instructorProfile": "O perfil de instrutor de Rodolfo Nützmann na Red Education"
   },
   "toolDocs": {
     "titleSuffix": "documentação",

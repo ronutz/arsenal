@@ -18,6 +18,10 @@
 // messages ride a MessageSlice of stats_page.missing, not the strings below.
 // ============================================================================
 
+// The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
+import { ogImages } from "@/lib/og";
+// One description for the meta, og and twitter fields, merged into the card.
+import { withDescription } from "@/lib/metaDescription";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
@@ -42,7 +46,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "stats_page" });
-  return { title: t("title"), description: t("metaDescription") };
+  return { title: t("title"), ...withDescription(t("metaDescription"), ogImages("page", "stats", locale, t("title")), "stats") }; // the page's card (12/11/2026: it shipped the generic one)
 }
 
 export default async function StatsPage({

@@ -13,6 +13,8 @@
 // generated; localized across all live locales.
 // ============================================================================
 
+// The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
+import { ogImages } from "@/lib/og";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
@@ -22,8 +24,8 @@ import LicenseBadges from "@/components/LicenseBadges";
 /**
  * PAGE TITLE (2026-09-26). Shipped with no generateMetadata export, so it
  * inherited the site-wide default <title> and shared one string with thirteen
- * other pages. Title only: this slug is not in gen-og's STATIC_PAGES, so
- * ogImages() would name a card that does not exist and check-og would fail.
+ * other pages. Since 12/11/2026 "license" is in gen-og's PACK_PAGES list, so the
+ * page also names its own titled card instead of the generic one.
  */
 export async function generateMetadata({
   params,
@@ -32,7 +34,7 @@ export async function generateMetadata({
 }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "license_page" });
-  return { title: t("title") };
+  return { title: t("title"), ...ogImages("page", "license", locale, t("title")) }; // the page's card (12/11/2026: it shipped the generic one)
 }
 
 export default async function LicensePage({

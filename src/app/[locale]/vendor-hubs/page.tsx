@@ -26,6 +26,10 @@
 // ============================================================================
 
 // English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
+// The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
+import { ogImages } from "@/lib/og";
+// One description for the meta, og and twitter fields, merged into the card.
+import { withDescription } from "@/lib/metaDescription";
 import { intlLocale } from "@/i18n/locales";
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
@@ -58,7 +62,8 @@ export async function generateMetadata({
   );
   return {
     title: t("metaTitle"),
-    description: t("metaDescription", { count: VENDOR_FAMILIES.length, names }),
+    // The description in the meta, og and twitter fields, and the page's card (12/11/2026: it shipped the generic one).
+    ...withDescription(t("metaDescription", { count: VENDOR_FAMILIES.length, names }), ogImages("page", "vendor-hubs", locale, t("metaTitle")), "vendor-hubs"),
   };
 }
 

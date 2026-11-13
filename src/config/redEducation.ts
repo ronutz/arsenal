@@ -144,6 +144,15 @@ const VENDOR_ALIASES: Readonly<Record<string, string>> = Object.freeze({
 export const RED_EDUCATION_ALL_VENDORS = "https://www.rededucation.com/certifications/";
 
 /**
+ * Rodolfo Nützmann's instructor profile on Red Education's own site (PRIME 12/11/2026: "please link / feature my
+ * profile page at https://www.rededucation.com/team/rodolfo-nutzmann/ in the website's Red Education page, and
+ * wherever you also deem appropriate"). Verified live on 12/11/2026 (HTTP 200, titled "Rodolfo Nützmann - Red
+ * Education", "a valued member of Red Education's global instructor team"). A destination only, like the two above:
+ * every link to it is attributed at render with attributeRedEducationUrl() and the placement's full context.
+ */
+export const RED_EDUCATION_INSTRUCTOR_PROFILE = "https://www.rededucation.com/team/rodolfo-nutzmann/";
+
+/**
  * The best verified destination for a placement: the vendor's own page where
  * one is known, the all-vendor course index otherwise. Never invents a path.
  */

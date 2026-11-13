@@ -26,6 +26,10 @@
 // a link into those simply redirects for the rest.
 // ============================================================================
 
+// The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
+import { ogImages } from "@/lib/og";
+// One description for the meta, og and twitter fields, merged into the card.
+import { withDescription } from "@/lib/metaDescription";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
@@ -67,7 +71,8 @@ export async function generateMetadata({
   const count = entriesFor(domain).length;
   return {
     title: t("domainPageTitle", { domain: label }),
-    description: t("domainPageDescription", { domain: label, count }),
+    // The Glossary card (12/11/2026: the page shipped the generic one), with the description in the meta, og and twitter fields.
+    ...withDescription(t("domainPageDescription", { domain: label, count }), ogImages("page", "glossary", locale, t("domainPageTitle", { domain: label })), `glossary/domain/${domain}`),
   };
 }
 

@@ -24,6 +24,8 @@
 // ============================================================================
 
 // English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
+// The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
+import { ogImages } from "@/lib/og";
 import { intlLocale } from "@/i18n/locales";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -80,7 +82,8 @@ export async function generateMetadata({
   // The title wording in the page's language.
   const t = await getTranslations({ locale, namespace: "training" });
   // "Course - Platform training", localized.
-  return { title: t("courseMetaTitle", { course: c.name, platform: p.name }) };
+  // The title, and the Training card (12/11/2026: the page shipped the generic one).
+  return { title: t("courseMetaTitle", { course: c.name, platform: p.name }), ...ogImages("page", "training", locale, c.name) };
 }
 
 /** The message key (under training.certKind) for each certification-relevance kind. */

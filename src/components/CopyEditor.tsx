@@ -27,7 +27,7 @@
 // coerced back to their original kind on export (null stays null unless edited).
 // ============================================================================
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react"; // React state, memo and the pack fetch
 
 // A single editable leaf: its dotted path, current (possibly edited) value, the
 // original value, and what kind it was so we can restore structure on export.
@@ -61,6 +61,8 @@ export interface CopyEditorLabels {
   close: string;
   copied: string;
   namespaceLabel: string;
+  loading: string; // shown while a language's pack is fetched
+  loadFailed: string; // shown when the fetch fails
 }
 
 interface LocaleData {
@@ -68,8 +70,7 @@ interface LocaleData {
   code: string;
   /** Display name, e.g. "Português (Brasil)". */
   name: string;
-  /** The full message object for this locale. */
-  messages: unknown;
+  // No messages here since 12/11/2026: the editor fetches /locales/<code>.json for the language being edited.
 }
 
 // ---- flatten / unflatten ---------------------------------------------------
@@ -155,14 +156,31 @@ export default function CopyEditor({
   const [modal, setModal] = useState<null | { title: string; text: string }>(null);
   const [copied, setCopied] = useState(false);
 
-  const active = locales.find((l) => l.code === activeCode) ?? locales[0];
+  // The fetched packs, by code (each fetched once, when its language is first picked).
+  const [packs, setPacks] = useState<Record<string, unknown>>({});
+  // The code whose fetch failed, if any (the page then says so instead of showing an empty editor).
+  const [failed, setFailed] = useState<string | null>(null);
 
-  // Flatten the active locale once per language change.
+  // Fetch the active language's published pack the first time it is picked (same origin, no third party).
+  useEffect(() => {
+    if (activeCode in packs) return; // already here
+    let live = true; // ignore an answer that arrives after the language changed again
+    setFailed(null); // a new attempt
+    fetch(`/locales/${encodeURIComponent(activeCode)}.json`) // the copy scripts/copy-locales.mjs publishes
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status))))) // the pack, or a failure
+      .then((m: unknown) => { if (live) setPacks((p) => ({ ...p, [activeCode]: m })); }) // kept for this visit
+      .catch(() => { if (live) setFailed(activeCode); }); // said on the page
+    return () => { live = false; }; // the language changed before the answer
+  }, [activeCode, packs]);
+
+  const activePack = packs[activeCode]; // the messages being edited, once fetched
+
+  // Flatten the active locale once per language change (nothing until its pack has arrived).
   const leaves = useMemo(() => {
-    const out: Leaf[] = [];
-    if (active) flatten(active.messages, "", [], out);
-    return out;
-  }, [active]);
+    const out: Leaf[] = []; // the leaves, in pack order
+    if (activePack !== undefined) flatten(activePack, "", [], out); // flattened
+    return out; // possibly empty while loading
+  }, [activePack]);
 
   const editKey = (path: string) => `${activeCode}::${path}`;
   const currentValue = (leaf: Leaf) => edits[editKey(leaf.path)] ?? leaf.original;
@@ -225,7 +243,7 @@ export default function CopyEditor({
     return JSON.stringify(lines, null, 2) + "\n";
   };
 
-  const openFull = () => setModal({ title: `${labels.fullTitle} - ${active?.code}.json`, text: buildFull() });
+  const openFull = () => setModal({ title: `${labels.fullTitle} - ${activeCode}.json`, text: buildFull() });
   const openDiff = () => setModal({ title: labels.diffTitle, text: buildDiff() });
 
   const copyModal = async () => {
@@ -242,7 +260,7 @@ export default function CopyEditor({
   const downloadModal = () => {
     if (!modal) return;
     const isFull = modal.title.startsWith(labels.fullTitle);
-    const name = isFull ? `${active?.code}.json` : `${active?.code}.changes.json`;
+    const name = isFull ? `${activeCode}.json` : `${activeCode}.changes.json`;
     const blob = new Blob([modal.text], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -319,7 +337,7 @@ export default function CopyEditor({
 
       <div className="copyedit-list">
         {visible.length === 0 ? (
-          <p className="copyedit-empty">{labels.empty}</p>
+          <p className="copyedit-empty">{failed === activeCode ? labels.loadFailed : activePack === undefined ? labels.loading : labels.empty}</p>
         ) : (
           visible.map((leaf) => {
             const changed = isChanged(leaf);

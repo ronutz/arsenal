@@ -19,12 +19,14 @@
 // catalogue, and a catalogue wants tables and links. The 1996-2020 era page
 // carries a one-paragraph section pointing here; the about page carries a card.
 //
-// Title only in generateMetadata, with a description: ogImages() would name a
-// card under public/og/page/ that gen-og does not generate for this slug, and
-// check-og fails on a manifest entry with nothing behind it (the same reason
-// the era pages keep the default social card).
+// Title and description in generateMetadata, with the About card (12/11/2026:
+// the page shipped the generic one; every page under /about now names "about").
 // ============================================================================
 
+// The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
+import { ogImages } from "@/lib/og";
+// One description for the meta, og and twitter fields, merged into the card.
+import { withDescription } from "@/lib/metaDescription";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
@@ -66,7 +68,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "earlierSites" });
-  return { title: t("metaTitle"), description: t("metaDescription") };
+  return { title: t("metaTitle"), ...withDescription(t("metaDescription"), ogImages("page", "about", locale, t("metaTitle")), "about/earlier-sites") }; // the page's card (12/11/2026: it shipped the generic one)
 }
 
 export default async function EarlierSitesPage({

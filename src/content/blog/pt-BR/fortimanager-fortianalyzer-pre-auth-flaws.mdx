@@ -1,0 +1,293 @@
+---
+slug: fortimanager-fortianalyzer-pre-auth-flaws
+title: "Quatro entradas antes do login: os alertas de novembro da Fortinet para FortiManager e FortiAnalyzer"
+summary: "Em 10 de novembro de 2026 a Fortinet publicou quatro alertas críticos, FG-IR-26-219, FG-IR-26-274, FG-IR-26-275 e FG-IR-26-276, sobre falhas que um atacante sem autenticação consegue alcançar no FortiManager e no FortiAnalyzer, os equipamentos que guardam a configuração de cada FortiGate gerenciado e os logs de todo o ambiente. O que é cada falha, por qual porta ela é alcançada, as versões afetadas e corrigidas em cada branch, o único workaround publicado, como verificar a exposição com os comandos que a Fortinet documenta, o que os alertas dizem sobre exploração, onde as notas e os registros divergem e em que pé estão as correções, com o horário em que cada valor foi lido."
+author: "Rodolfo Nützmann"
+date: "2026-11-12"
+tags: ["vulnerability-management", "disclosure", "ai"]
+category: firewall
+status: reviewed
+updated: "2026-11-12"
+relatedArticles: ["fortimanager-adoms-and-device-registration", "fortianalyzer-log-ingestion-and-storage", "what-is-ssrf", "cvss-severity-bands-and-limits"]
+---
+
+## O que aconteceu
+
+Em 10 de novembro de 2026, o Product Security Incident Response Team (PSIRT) da Fortinet publicou no site FortiGuard quatro alertas classificados como Critical. Cada um descreve uma falha que, nas palavras da Fortinet, pode ser usada por um atacante que não fez login, e todas estão nos mesmos dois produtos: o FortiManager, a plataforma central de gerência dos firewalls FortiGate, e o FortiAnalyzer, a plataforma de coleta e análise de logs que fica ao lado dele. Um dos alertas alcança também o FortiManager Cloud, o FortiAnalyzer Cloud, o FortiAnalyzer-BigData e o FortiSASE-Sovereign, a edição soberana da oferta de secure access service edge da Fortinet.
+
+Os quatro alertas trazem a mesma nota de descoberta: as falhas foram encontradas internamente pela equipe de Product Security da Fortinet "with the use of Frontier AI model: Claude Mythos", e um deles, o FG-IR-26-276, agradece também a um pesquisador externo do time XOR do JP Morgan Chase, que reportou a falha por divulgação responsável. Os quatro marcam o campo "Known Exploited" como "No". Nenhum publica indicadores de comprometimento. Só um, o FG-IR-26-219, oferece workaround.
+
+O CISO Advisor noticiou os alertas num endereço que os resume como falhas críticas que permitem execução sem login, e esse resumo explica por que eles merecem atenção: os produtos afetados são justamente os que guardam as chaves de todo o resto.
+
+Tudo o que vem a seguir sai das quatro páginas de alerta do FortiGuard e dos arquivos legíveis por máquina no formato Common Security Advisory Framework (CSAF) que a Fortinet anexa a elas, dos registros Common Vulnerabilities and Exposures (CVE) que a Fortinet publicou como CVE Numbering Authority (CNA), da National Vulnerability Database (NVD), do catálogo Known Exploited Vulnerabilities (KEV) da Cybersecurity and Infrastructure Security Agency (CISA) e da documentação de produto da própria Fortinet, cada um lido em 12 de novembro de 2026 no horário de São Paulo indicado na tabela de situação e nas Fontes.
+
+## Os quatro alertas, lado a lado
+
+| Alerta | Título da Fortinet | CVE | Nota (CVSS 3.1, como a Fortinet mostra) | Fraqueza | Exige login | Alcançado por |
+| --- | --- | --- | --- | --- | --- | --- |
+| FG-IR-26-219 | JSON Injection in JRPC API | CVE-2026-126170 | 9.8 Critical | CWE-116, codificação ou escape impróprio da saída | Não | A JSON API, via HTTPS, quando habilitada num perfil de administrador |
+| FG-IR-26-274 | Pre-auth SSRF | CVE-2026-126260 | 9.0 Critical | CWE-918, server-side request forgery (SSRF) | Não | A porta OFTP, com pacotes OFTP forjados |
+| FG-IR-26-275 | FGFM elevation before registration password is verified | CVE-2026-126261 | 9.0 Critical | CWE-285, autorização imprópria | Não | A porta FGFM, com pacotes FGFM forjados |
+| FG-IR-26-276 | SQL injection | CVE-2026-126262 | 9.3 Critical | CWE-89, SQL injection | Não | A porta OFTP, com pacotes OFTP forjados |
+
+As notas do Common Vulnerability Scoring System (CVSS) são as que o FortiGuard exibe; os identificadores do Common Weakness Enumeration (CWE) são os da própria Fortinet. Dois nomes de protocolo se repetem. O FGFM é o protocolo entre FortiGate e FortiManager, o canal que o FortiGate usa para se registrar no gerenciador e receber configuração, que a documentação de portas da Fortinet lista em TCP/541. O OFTP é o protocolo que os FortiGate e outros equipamentos Fortinet usam para enviar logs, listado pela mesma documentação em TCP/514, tanto no FortiManager quanto no FortiAnalyzer.
+
+## As quatro falhas, uma por uma
+
+### FG-IR-26-219: JSON injection na API JSON-RPC
+
+O resumo da Fortinet: uma vulnerabilidade de codificação ou escape impróprio da saída "in FortiSASE-Sovereign, FortiAnalyzer, FortiManager, FortiAnalyzer Cloud, FortiManager Cloud and FortiAnalyzer Big-Data GUI may allow an unauthenticated attacker to execute unauthorized code or commands via a specially crafted HTTP request". O arquivo CSAF dá a ela o título "Unauthenticated RCE in multiple products", sendo remote code execution (RCE) o resultado. Curiosamente, o campo "Impact" do alerta diz "Denial of service", e o registro CVE traz a mesma expressão ao lado do CWE-116; o resumo e o título do CSAF descrevem execução de código, e é por eles que vale planejar.
+
+A condição mais importante está no workaround: "The vulnerability exists only when the JSON API is enabled (Disabled by default)". A JSON API é a interface JSON remote procedure call (JSON-RPC) usada por ferramentas de automação e integrações; a documentação de portas do FortiManager a lista em TCP/443 e TCP/80. Ela é habilitada por perfil de administrador, e a Fortinet indica como desligá-la:
+
+```
+config system admin profile
+    edit <profile name>
+        set rpc-permit none
+end
+```
+
+Versões afetadas e corrigidas, como listadas:
+
+| Produto | Branch | Afetadas | Corrigida |
+| --- | --- | --- | --- |
+| FortiManager | 8.0 | 8.0.0 a 8.0.2 | "upcoming 8.0.3", ou o workaround |
+| FortiManager | 7.6 | 7.6.0 a 7.6.7 | 7.6.8 |
+| FortiManager | 7.4, 7.2 | Não afetadas | |
+| FortiAnalyzer | 8.0 | 8.0.0 a 8.0.2 | "upcoming 8.0.3", ou o workaround |
+| FortiAnalyzer | 7.6 | 7.6.0 a 7.6.7 | 7.6.8 |
+| FortiAnalyzer | 7.4, 7.2 | Não afetadas | |
+| FortiManager Cloud, FortiAnalyzer Cloud | 8.0 | 8.0.1 a 8.0.2 | "upcoming 8.0.3", ou o workaround |
+| FortiManager Cloud, FortiAnalyzer Cloud | 7.6 | 7.6.0 a 7.6.7 | 7.6.8 |
+| FortiAnalyzer-BigData | 7.6 | 7.6.0 a 7.6.2 | "upcoming 7.6.3", ou o workaround |
+| FortiSASE-Sovereign | 25, 25.3, 25.4 | todas as versões | "Migrate to a fixed release" |
+| FortiSASE-Sovereign | 26.2 | todas as versões | corrigida na 26.2 "(not released)"; nenhuma ação do cliente |
+
+Ou seja: no branch 8.0, e no FortiAnalyzer-BigData 7.6, ainda não existe versão corrigida publicada, e por ora o workaround é a correção. O vetor CVSS que a própria Fortinet publicou para esta falha, no arquivo CSAF e no registro CVE, termina em `E:P/RL:O/RC:R`, o que em termos de CVSS 3.1 significa que existe código de exploração em prova de conceito, que há correção oficial e que o relato é razoável, mas não totalmente confirmado.
+
+### FG-IR-26-274: server-side request forgery via OFTP
+
+O resumo da Fortinet: uma vulnerabilidade de SSRF "in FortiAnalyzer, FortiManager with FortiAnalyzer features, may allow an attacker that can reach the oftp port to execute requests server side via crafted OFTP packets". Um SSRF faz o servidor enviar requisições em nome do atacante, o que pesa mais quando o servidor alcança lugares que o atacante não alcança, como os próprios serviços locais ou uma rede interna. O campo Impact do alerta diz "Execute unauthorized code or commands".
+
+| Produto | Branch | Afetadas | Corrigida |
+| --- | --- | --- | --- |
+| FortiAnalyzer, FortiManager | 8.0 | 8.0.0 | 8.0.1 |
+| FortiAnalyzer, FortiManager | 7.6 | 7.6.0 a 7.6.7 | 7.6.8 |
+| FortiAnalyzer, FortiManager | 7.4 | 7.4.0 a 7.4.11 | 7.4.12 |
+| FortiAnalyzer, FortiManager | 7.2 | Não afetadas | |
+
+Nenhum workaround é listado. O resumo do arquivo CSAF acrescenta o FortiAnalyzer-BigData aos produtos citados ("FortiAnalyzer, FortiManager with FortiAnalyzer features & FortiAnalyzer-BigData"), mas nem a tabela do alerta nem as entradas de correção do CSAF listam versão alguma do BigData. Quem roda BigData tem aí uma pergunta para o suporte da Fortinet.
+
+### FG-IR-26-275: elevação no FGFM antes de a senha de registro ser verificada
+
+O resumo da Fortinet: "An improper authorization vulnerability in FortiManager FGFM may allow an unauthenticated attacker that can reach the FGFM port to execute code or commands via crafted FGFM packets." O título diz onde a verificação falha: a elevação acontece "before registration password is verified", isto é, antes da etapa que deveria provar que o equipamento conversando com o FortiManager é um que ele espera.
+
+| Produto | Branch | Afetadas | Corrigida |
+| --- | --- | --- | --- |
+| FortiManager | 8.0 | 8.0.0 | 8.0.1 |
+| FortiManager | 7.6 | 7.6.0 a 7.6.7 | 7.6.8 |
+| FortiManager | 7.4 | 7.4.0 a 7.4.5 | 7.4.6 |
+| FortiManager | 7.2 | 7.2.0 a 7.2.8 | 7.2.9 |
+
+Nenhum workaround é listado. É a falha com o histórico mais claro, porque o FGFM já passou por isso: em outubro de 2024, o FG-IR-24-423 da Fortinet descreveu "a missing authentication for critical function vulnerability [CWE-306] in FortiManager fgfmd daemon", a CVE-2024-47575, que a CISA incluiu no catálogo KEV em 23 de outubro de 2024. A descrição da própria Fortinet sobre o que os atacantes fizeram com ela na época é o melhor guia do que está em jogo agora: "to automate via a script the exfiltration of various files from the FortiManager which contained the IPs, credentials and configurations of the managed devices."
+
+### FG-IR-26-276: SQL injection via OFTP
+
+O resumo da Fortinet: uma vulnerabilidade de SQL injection "in FortiAnalyzer or FortiManager with FortiAnalyzer features may allow an unauthenticated attacker who has access to the oftp port to execute code or command on the system via crafted OFTP packets."
+
+| Produto | Branch | Afetadas | Corrigida |
+| --- | --- | --- | --- |
+| FortiAnalyzer | 8.0 | 8.0.0 a 8.0.1 | 8.0.2 |
+| FortiAnalyzer | 7.6 | 7.6.0 a 7.6.7 | 7.6.8 |
+| FortiAnalyzer | 7.4 | 7.4.0 a 7.4.11 | 7.4.12 |
+| FortiAnalyzer | 7.2 | 7.2.0 a 7.2.12 | 7.2.13 |
+| FortiManager | 8.0 | 8.0.0 | 8.0.1 |
+| FortiManager | 7.6 | 7.6.0 a 7.6.7 | 7.6.8 |
+| FortiManager | 7.4 | 7.4.0 a 7.4.11 | 7.4.12 |
+| FortiManager | 7.2 | 7.2.0 a 7.2.12 | 7.2.13 |
+
+Nenhum workaround é listado. Assim como no FG-IR-26-219, o vetor traz `E:P`: a Fortinet registra que existe código de exploração em prova de conceito. É também a única das quatro com uma entrada da CISA no registro CVE, discutida mais abaixo.
+
+## Por que "sem login" pesa tanto nesses dois produtos
+
+Uma falha sem autenticação em qualquer serviço exposto à internet já é grave. Nesses dois é pior, por motivos que vêm da própria função dos produtos.
+
+O FortiManager guarda a configuração de cada FortiGate que gerencia: políticas, objetos, configurações de VPN (virtual private network), contas de administrador e as credenciais e chaves pré-compartilhadas que fazem tudo isso funcionar. E ele empurra configuração para baixo. Comprometer o gerenciador é, em termos operacionais, comprometer o ambiente que ele gerencia, e é exatamente isso que a descrição da Fortinet sobre a exploração do FGFM em 2024 registra: arquivos com "the IPs, credentials and configurations of the managed devices" levados por script.
+
+O FortiAnalyzer guarda os logs. Isso faz dele o primeiro lugar para onde olha quem responde a um incidente e, por isso mesmo, um lugar que um invasor tem todo motivo para alcançar: os logs revelam a rede, e logs podem ser alterados.
+
+Os dois escutam onde precisam escutar. O FGFM em TCP/541 tem de ser alcançável por cada FortiGate que o gerenciador controla, e para filiais e sites remotos isso muitas vezes significa alcançável pela internet. O OFTP em TCP/514 tem de ser alcançável por cada equipamento que envia logs. A autenticação que esses produtos exigem fica nas interfaces administrativas; os canais de equipamento autenticam equipamentos, por registro, número de série e certificado. Três das quatro falhas estão nesses canais de equipamento, antes de o equipamento provar qualquer coisa. A quarta está na JSON API, antes de o administrador provar.
+
+Avaliação, sinalizada como tal: uma plataforma de gerência ou de logs é um equipamento de borda sempre que suas portas voltadas a equipamentos estão alcançáveis de fora, mesmo que nenhuma pessoa jamais faça login nela por ali. A pergunta do inventário não é "a interface administrativa está exposta", e sim "quais portas de equipamento estão".
+
+## Caminhos de upgrade por branch
+
+Lendo as quatro tabelas juntas, chega-se à versão mínima de cada branch que resolve todos os alertas que se aplicam a ele. Os alertas da Fortinet listam os branches de 7.2 a 8.0; branches anteriores não aparecem em nenhuma das quatro tabelas, então a situação deles não é declarada por esses documentos.
+
+| Produto e branch | Resolve os quatro alertas que se aplicam | Observação |
+| --- | --- | --- |
+| FortiManager 8.0 | Ainda não: a 8.0.1 resolve 274, 275 e 276; o 219 espera a "upcoming 8.0.3" | Aplicar já o workaround `rpc-permit none` |
+| FortiManager 7.6 | 7.6.8 | Os quatro se aplicam |
+| FortiManager 7.4 | 7.4.12 | Aplicam-se 274, 275 (corrigido a partir da 7.4.6) e 276 |
+| FortiManager 7.2 | 7.2.13 | Aplicam-se 275 (corrigido a partir da 7.2.9) e 276 |
+| FortiAnalyzer 8.0 | Ainda não: a 8.0.2 resolve 274 e 276; o 219 espera a "upcoming 8.0.3" | Aplicar já o workaround `rpc-permit none` |
+| FortiAnalyzer 7.6 | 7.6.8 | Aplicam-se 219, 274 e 276 |
+| FortiAnalyzer 7.4 | 7.4.12 | Aplicam-se 274 e 276 |
+| FortiAnalyzer 7.2 | 7.2.13 | Só o 276 se aplica |
+| FortiManager Cloud, FortiAnalyzer Cloud | 7.6.8; o 8.0 espera a "upcoming 8.0.3" | Só o 219 se aplica |
+| FortiAnalyzer-BigData 7.6 | Ainda não: "upcoming 7.6.3" | Só o 219 está listado; ver a observação sobre o 274 acima |
+| FortiSASE-Sovereign 25.x | "Migrate to a fixed release" | A 26.2 está corrigida e não foi lançada |
+
+Dois detalhes passam fácil. No branch 8.0, o FortiAnalyzer precisa da 8.0.2 para o FG-IR-26-276, enquanto o FortiManager precisa só da 8.0.1 para o mesmo alerta. E o FortiManager 7.4 está corrigido para o FG-IR-26-275 a partir da 7.4.6, mas precisa da 7.4.12 para os outros dois, então um FortiManager entre a 7.4.6 e a 7.4.11 está livre de um e não dos outros. Os alertas dão as versões de destino, não os passos intermediários entre o build em execução e o destino.
+
+## Como verificar a exposição
+
+Os alertas da Fortinet não publicam uma verificação, então os passos abaixo usam os comandos e as portas que a Fortinet documenta em outros lugares, cada um com sua fonte.
+
+**1. Qual versão está rodando.** Registre a versão de firmware de cada unidade, física, virtual ou par de alta disponibilidade, e compare com as tabelas acima.
+
+**2. O FortiManager está com os recursos de FortiAnalyzer ligados?** Dois dos alertas, o 274 e o 276, só se aplicam ao FortiManager "with FortiAnalyzer features". O guia de administração da Fortinet mostra a chave:
+
+```
+config system global
+    set faz-status {enable | disable}
+end
+```
+
+A mesma página avisa que "When FortiAnalyzer is added to FortiManager, FortiAnalyzer features are automatically enabled to support the managed FortiAnalyzer unit, and cannot be disabled", e que mudar a configuração reinicia o FortiManager. Um FortiManager que gerencia um FortiAnalyzer deve ser tratado como estando com os recursos ligados.
+
+**3. A JSON API está habilitada em algum perfil de administrador?** O FG-IR-26-219 só se aplica quando está. O workaround da Fortinet nomeia a configuração, `rpc-permit`, dentro de `config system admin profile`; todo perfil que não mostra `rpc-permit none` merece uma olhada, e qualquer automação que dependa da API precisa ser conhecida antes da mudança, porque a mudança vai interrompê-la.
+
+**4. Quem alcança TCP/541, TCP/514 e TCP/443 nesses equipamentos.** A documentação de portas da Fortinet lista, para o FortiManager, a gerência FGFM em TCP/541 (FGFM em IPv6 a partir do FortiManager 7.4.1), o OFTP em TCP/514 e a JSON API em TCP/443 e TCP/80, e, para o FortiAnalyzer, o OFTP em TCP/514. Uma varredura externa das faixas de endereço da própria organização, mais uma revisão das regras de firewall e da tradução de endereços de rede na frente do segmento de gerência, respondem à pergunta para a internet; a mesma revisão nos segmentos internos responde para um invasor que já está dentro.
+
+**5. Se já existe restrição por origem.** Para a falha de FGFM de 2024, a Fortinet documentou local-in policies que aceitam TCP/541 apenas de endereços de FortiGate listados:
+
+```
+config system local-in-policy
+    edit 1
+        set action accept
+        set dport 541
+        set src <allowed FortiGate addresses>
+    next
+    edit 2
+        set dport 541
+    next
+end
+```
+
+Esse exemplo vem do FG-IR-24-423, escrito para a CVE-2024-47575; a Fortinet não disse que ele mitiga nenhuma das quatro falhas de novembro. Avaliação: limitar quem alcança uma porta de pré-autenticação reduz o número de pessoas que podem tentar uma falha de pré-autenticação nela, seja qual for a falha, e a mesma ideia vale para TCP/514 no OFTP. Não substitui o upgrade.
+
+## Detecção e indicadores de comprometimento
+
+Nenhum dos quatro alertas publica indicadores de comprometimento, assinaturas de log ou caminhos de arquivo, e nenhum tem virtual patch do FortiGuard: o campo "Virtual Patch" de cada alerta diz "No".
+
+O material publicado mais próximo é o do caso FGFM de 2024. O FG-IR-24-423 listou entradas de log de evento do tipo `event`, subtipo `dvm`, com mensagens como "Unregistered device localhost add succeeded", além de arquivos em `/tmp/.tm` e `/var/tmp/.tm`. Esses são indicadores da CVE-2024-47575, não das falhas de novembro, e a própria Fortinet avisou na época que as entradas de log "may keep being logged even on an up-to-date, patched system", caso em que indicam uma tentativa frustrada e não um comprometimento. Avaliação: os logs de evento do device manager no FortiManager, onde registros e inclusões de equipamento ficam gravados, são o lugar onde uma tentativa inesperada de registro apareceria, e revisá-los desde o último upgrade dos produtos é um primeiro passo razoável. O que aparecer ali é uma pista, não uma prova.
+
+## Situação de exploração, como a Fortinet e a CISA a declaram
+
+- **Fortinet:** cada um dos quatro alertas marca "Known Exploited" como "No", lido às 21:29 de 12 de novembro de 2026.
+- **A maturidade de exploração segundo a própria Fortinet:** os vetores CVSS publicados pela Fortinet trazem `E:P` (existe código em prova de conceito) para o FG-IR-26-219 e o FG-IR-26-276, e `E:U` (não comprovado) para o FG-IR-26-274 e o FG-IR-26-275. Código de prova de conceito nas mãos do fabricante não é exploração pública, mas significa que o caminho da falha até um código funcional já foi percorrido uma vez.
+- **CISA KEV:** nenhuma das quatro CVEs está no catálogo, versão 2026.11.10, publicada em 10 de novembro de 2026 às 19:03 UTC e lida às 21:30, horário de São Paulo, de 12 de novembro. O catálogo lista 32 entradas da Fortinet, entre elas a CVE-2024-47575, do FortiManager.
+- **A entrada da CISA no registro CVE:** só a CVE-2026-126262 (FG-IR-26-276) tem uma. A entrada de Stakeholder-Specific Vulnerability Categorization (SSVC) da CISA, com horário de 12 de novembro de 2026 às 14:16 UTC, registra "Exploitation: none", "Automatable: yes" e "Technical Impact: total". Avaliação: um "automatable" positivo ao lado de um impacto técnico "total" é a combinação que permite a uma única falha virar uma campanha executada por script.
+
+## Onde os registros e as notas divergem
+
+Quatro divergências estavam visíveis em 12 de novembro, e cada uma afeta a forma como scanners e ferramentas de patch vão enxergar essas falhas.
+
+**As notas não batem com os próprios vetores.** Para o FG-IR-26-274, o 275 e o 276, as strings de vetor que a Fortinet publicou nos arquivos CSAF e nos registros CVE começam com `AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H`: vetor de ataque pela rede, baixa complexidade, nenhum privilégio, nenhuma interação do usuário, escopo inalterado e impacto alto em confidencialidade, integridade e disponibilidade. Pela fórmula do CVSS 3.1, esse vetor dá nota base 9.8. O FortiGuard mostra 9.0, 9.0 e 9.3. A NVD, que exibe a métrica da Fortinet calculada a partir do vetor, mostra 9.8 para as três que lista. Todas são Critical de qualquer forma; o que muda é a posição dessas falhas diante de outras num painel que ordena por nota.
+
+**Um registro CVE não existia.** A CVE-2026-126260, o identificador que o FortiGuard dá ao FG-IR-26-274, retornou "CVE_RECORD_DNE", "The cve record for the cve id does not exist", na API do CVE Services às 21:29 de 12 de novembro, dois dias depois do alerta, e a NVD não tinha entrada para ela. Ferramentas que montam o inventário a partir da lista CVE ou da NVD não vão saber do SSRF via OFTP até esse registro ser publicado.
+
+**A NVD não analisou nenhuma delas.** Os três registros que a NVD mantém estão marcados como "Awaiting Analysis", sem configurações de produto da NVD; scanners que casam pelos dados de produto da NVD podem ainda não apontá-las.
+
+**As listas de produtos mudam conforme o documento.** O resumo do CSAF do FG-IR-26-274 cita o FortiAnalyzer-BigData; a tabela dele, não. O resumo do CSAF do FG-IR-26-276 diz "in FortiManager", enquanto a tabela lista FortiAnalyzer e FortiManager. As tabelas dos alertas são os documentos mais completos; os resumos são o que alguns feeds exibem.
+
+## Em que pé estão as correções, conforme lido em 12 de novembro de 2026
+
+Cada linha vem da página ou do feed da própria parte, lido no horário de São Paulo indicado. São os valores com maior chance de mudar.
+
+| Fonte | Situação | Lido às |
+| --- | --- | --- |
+| FortiGuard FG-IR-26-219 | Publicado em 10 de novembro; corrigido na 7.6.8 (FortiManager, FortiAnalyzer e as edições Cloud); 8.0 e FortiAnalyzer-BigData 7.6 à espera das "upcoming" 8.0.3 e 7.6.3, workaround `rpc-permit none`; Known Exploited "No" | 21:29 |
+| FortiGuard FG-IR-26-274 | Publicado em 10 de novembro; corrigido nas 8.0.1, 7.6.8 e 7.4.12; sem workaround; Known Exploited "No" | 21:29 |
+| FortiGuard FG-IR-26-275 | Publicado em 10 de novembro; corrigido nas 8.0.1, 7.6.8, 7.4.6 e 7.2.9; sem workaround; Known Exploited "No" | 21:29 |
+| FortiGuard FG-IR-26-276 | Publicado em 10 de novembro; corrigido nas 8.0.2 (FortiAnalyzer), 8.0.1 (FortiManager), 7.6.8, 7.4.12 e 7.2.13; sem workaround; Known Exploited "No" | 21:29 |
+| Arquivos CSAF da Fortinet | Os quatro na versão 0, "Initial Publication", de 10 de novembro; nenhuma revisão desde então | 21:30 |
+| Registro CVE-2026-126170 | Publicado em 11 de novembro, 21:30 UTC; CVSS 3.1 9.8; sem entrada da CISA | 21:29 |
+| Registro CVE-2026-126260 | Não existe ("CVE_RECORD_DNE") | 21:29 |
+| Registro CVE-2026-126261 | Publicado em 10 de novembro, 22:23 UTC; o vetor dá 9.8, o registro mostra 9.0; sem entrada da CISA | 21:29 |
+| Registro CVE-2026-126262 | Publicado em 11 de novembro, 21:31 UTC; o vetor dá 9.8, o registro mostra 9.3; SSVC da CISA de 12 de novembro: exploração nenhuma, automatizável sim, impacto técnico total | 21:29 |
+| NVD | Três registros, todos "Awaiting Analysis"; nenhum para a CVE-2026-126260 | 21:30 |
+| Catálogo KEV da CISA | Nenhuma das quatro listada (versão 2026.11.10) | 21:30 |
+
+## O que fazer agora
+
+Nesta ordem, para quem roda FortiManager, FortiAnalyzer ou as edições em nuvem deles:
+
+1. **Inventariar os equipamentos e as versões**, incluindo unidades FortiManager com os recursos de FortiAnalyzer ligados (passo 2 acima) e máquinas virtuais em que ninguém entra há tempos.
+2. **Fazer o upgrade para os mínimos de cada branch** da tabela de caminhos de upgrade: 7.6.8, 7.4.12 ou 7.2.13, ou 8.0.1 (FortiManager) e 8.0.2 (FortiAnalyzer) no branch 8.0. Planejar os passos intermediários a partir do build em execução antes da janela de manutenção.
+3. **No 8.0, no FortiAnalyzer-BigData 7.6 e onde quer que o upgrade espere, aplicar o workaround do FG-IR-26-219**: `set rpc-permit none` em cada perfil de administrador que não precise da JSON API, depois de identificar as integrações que a usam. Onde uma integração precisar dela, restringir quais endereços alcançam TCP/443 no equipamento.
+4. **Tirar TCP/541 e TCP/514 da internet onde não precisam estar**, e restringi-las a endereços de equipamento conhecidos onde precisam. Avaliação: para o FGFM, um túnel site-to-site das filiais até o segmento de gerência elimina a necessidade de uma porta FGFM exposta à internet.
+5. **Revisar os logs de evento do device manager no FortiManager** em busca de registros ou inclusões de equipamento inesperados desde o último upgrade, como pista para investigação, lembrando que os únicos indicadores publicados são os da falha de 2024.
+6. **Confirmar com a Fortinet a situação das edições em nuvem.** O FortiManager Cloud e o FortiAnalyzer Cloud aparecem no FG-IR-26-219; quem faz o upgrade delas, e quando, é pergunta para o time de conta.
+7. **Acompanhar quatro valores todo dia**: o campo "Known Exploited" de cada alerta, o catálogo KEV, as entradas da CISA nos registros CVE e a publicação da CVE-2026-126260. Uma mudança em qualquer um deles é o sinal para acelerar.
+8. **Não esperar que um scanner aponte essas falhas.** Com um registro CVE faltando e os outros três sem análise da NVD, ferramentas que dependem desses feeds podem não sinalizá-las; as tabelas dos alertas são os dados com que trabalhar.
+
+## Linha do tempo
+
+| Data (UTC, salvo indicação) | Evento | Fonte |
+| --- | --- | --- |
+| 23 de outubro de 2024 | A CISA inclui no KEV a CVE-2024-47575, a falha de autenticação ausente no FGFM do FortiManager | CISA KEV |
+| 10 de novembro de 2026, 20:04 a 20:10 | A Fortinet reserva as CVE-2026-126170, 126261 e 126262 | Registros CVE |
+| 10 de novembro de 2026 | O FortiGuard publica o FG-IR-26-219, o 274, o 275 e o 276, com os arquivos CSAF | FortiGuard; CSAF |
+| 10 de novembro de 2026, 22:23 | Publicado o registro CVE da CVE-2026-126261 (FG-IR-26-275) | Registro CVE |
+| 11 de novembro de 2026, 21:30 e 21:31 | Publicados os registros CVE das CVE-2026-126170 e CVE-2026-126262 | Registros CVE |
+| 12 de novembro de 2026, 14:16 | A CISA acrescenta sua entrada SSVC à CVE-2026-126262: exploração nenhuma, automatizável sim | Registro CVE |
+| 12 de novembro de 2026, 21:29 (São Paulo) | A CVE-2026-126260 (FG-IR-26-274) segue sem registro CVE | API do CVE Services |
+
+## O padrão por trás dos quatro
+
+Três coisas se destacam, e nenhuma é novidade para quem acompanha os alertas da Fortinet, o que é parte da questão.
+
+A primeira é onde as falhas estão. As quatro ficam em interfaces feitas para máquinas, não para pessoas: um canal de registro de equipamentos, um transporte de logs e uma API de automação. Essas interfaces foram feitas para aceitar entrada de muitas origens em escala, e são as que menos costumam estar atrás dos controles que protegem uma página de login humano.
+
+A segunda é como foram encontradas. A Fortinet credita um modelo de IA de fronteira nas quatro e diz isso no texto do alerta. É um fabricante usando a mesma classe de ferramenta que outros podem usar contra o mesmo código. O [post anterior sobre o argumento do SATAN e o Mythos](/blog/satan-to-mythos-the-argument-that-comes-back) mostrou como esse debate já se desenrolou antes; o que este lote acrescenta é um fabricante publicando o resultado como corrigido, encontrado internamente e não explorado, que é a melhor versão da história, desde que as correções cheguem aos equipamentos antes que o modelo de outra pessoa chegue às mesmas falhas.
+
+A terceira é a distância entre um alerta publicado e os dados que a maioria das organizações usa para agir sobre ele. Dois dias depois da publicação, uma das quatro CVEs não tinha registro, nenhuma tinha análise da NVD e três notas não batiam com os próprios vetores. Organizações que esperam esses feeds se acomodarem estão esperando um processo que não tem nada a ver com a exposição delas.
+
+<ReaderQuestions>
+
+- A Fortinet classifica a maturidade do código de exploração como "proof-of-concept" em duas das quatro falhas; um fabricante que tem prova de conceito funcional para uma falha sem autenticação deveria publicar só as versões corrigidas, ou também os detalhes de que os defensores precisam para detectar tentativas?
+- O FGFM em TCP/541 já teve duas falhas de pré-autenticação em dois anos; as implantações de FortiManager deveriam tratar uma porta FGFM exposta à internet como exceção que exige justificativa por escrito?
+- Três das quatro falhas são alcançadas por canais de equipamento (FGFM e OFTP), e não pelo login administrativo; quantas organizações incluem as portas voltadas a equipamentos nas revisões da superfície de ataque externa?
+- No branch 8.0 a falha da JSON API tem workaround e nenhuma correção publicada; como um time deve pesar desligar a API contra quebrar a automação que depende dela?
+- Quando o registro CVE de um alerta não existe dois dias depois da publicação, quem um fabricante de scanner deve tratar como fonte de autoridade: o alerta do fabricante ou a lista CVE?
+- A Fortinet encontrou as quatro com um modelo de IA; se atacantes usarem modelos parecidos no mesmo código, por quanto tempo alguém pode supor que uma falha encontrada internamente continua desconhecida lá fora?
+
+</ReaderQuestions>
+
+## Fontes
+
+Todas acessadas em 12 de novembro de 2026, entre 21:29 e 21:33, horário de São Paulo; a tabela de situação dá o horário em que cada valor foi lido.
+
+- [Fortinet PSIRT, FG-IR-26-219, "JSON Injection in JRPC API": CVE-2026-126170, CWE-116, CVSS 3.1 9.8 e temporal 8.9, sem autenticação, versões afetadas e corrigidas de FortiManager, FortiAnalyzer, edições Cloud, FortiAnalyzer-BigData e FortiSASE-Sovereign, o workaround rpc-permit, Known Exploited No, Virtual Patch No, publicado em 10 de novembro de 2026 (acessado em 12 de novembro de 2026)](https://fortiguard.fortinet.com/psirt/FG-IR-26-219)
+- [Fortinet PSIRT, FG-IR-26-274, "Pre-auth SSRF": CVE-2026-126260, CWE-918, CVSS 3.1 9.0, alcançado pela porta OFTP, versões afetadas e corrigidas, Known Exploited No, publicado em 10 de novembro de 2026 (acessado em 12 de novembro de 2026)](https://fortiguard.fortinet.com/psirt/FG-IR-26-274)
+- [Fortinet PSIRT, FG-IR-26-275, "FGFM elevation before registration password is verified": CVE-2026-126261, CVSS 3.1 9.0, alcançado pela porta FGFM, versões afetadas e corrigidas, Known Exploited No, publicado em 10 de novembro de 2026 (acessado em 12 de novembro de 2026)](https://fortiguard.fortinet.com/psirt/FG-IR-26-275)
+- [Fortinet PSIRT, FG-IR-26-276, "SQL injection": CVE-2026-126262, CWE-89, CVSS 3.1 9.3, alcançado pela porta OFTP, versões afetadas e corrigidas, agradecimento à equipe de Product Security da Fortinet e a um pesquisador do time XOR do JP Morgan Chase, Known Exploited No, publicado em 10 de novembro de 2026 (acessado em 12 de novembro de 2026)](https://fortiguard.fortinet.com/psirt/FG-IR-26-276)
+- [Arquivo CSAF da Fortinet para o FG-IR-26-219: título "Unauthenticated RCE in multiple products", vetor CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H/E:P/RL:O/RC:R, versão 0, publicação inicial em 10 de novembro de 2026 (acessado em 12 de novembro de 2026)](https://filestore.fortinet.com/fortiguard/psirt/csaf_json-injection-in-jrpc-api_fg-ir-26-219.json)
+- [Arquivo CSAF da Fortinet para o FG-IR-26-274: resumo que cita o FortiAnalyzer-BigData, nota base 9.0 com o vetor CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H/E:U/RL:O/RC:C (acessado em 12 de novembro de 2026)](https://filestore.fortinet.com/fortiguard/psirt/csaf_pre-auth-ssrf_fg-ir-26-274.json)
+- [Arquivo CSAF da Fortinet para o FG-IR-26-275: CWE-285, nota base 9.0 com o vetor CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H/E:U/RL:O/RC:C (acessado em 12 de novembro de 2026)](https://filestore.fortinet.com/fortiguard/psirt/csaf_fgfm-elevation-before-registration-password-is-verified_fg-ir-26-275.json)
+- [Arquivo CSAF da Fortinet para o FG-IR-26-276: nota base 9.3 com o vetor CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H/E:P/RL:O/RC:C (acessado em 12 de novembro de 2026)](https://filestore.fortinet.com/fortiguard/psirt/csaf_sql-injection_fg-ir-26-276.json)
+- [API do CVE Services, CVE-2026-126170: publicada pela Fortinet em 11 de novembro de 2026, 21:30 UTC, CWE-116, CVSS 3.1 9.8, sem entrada da CISA (acessado em 12 de novembro de 2026)](https://cveawg.mitre.org/api/cve/CVE-2026-126170)
+- [API do CVE Services, CVE-2026-126260: "CVE_RECORD_DNE", o registro não existe (acessado em 12 de novembro de 2026)](https://cveawg.mitre.org/api/cve/CVE-2026-126260)
+- [API do CVE Services, CVE-2026-126261: publicada pela Fortinet em 10 de novembro de 2026, 22:23 UTC, CWE-285, nota 9.0 com um vetor que dá 9.8, sem entrada da CISA (acessado em 12 de novembro de 2026)](https://cveawg.mitre.org/api/cve/CVE-2026-126261)
+- [API do CVE Services, CVE-2026-126262: publicada pela Fortinet em 11 de novembro de 2026, 21:31 UTC, CWE-89, nota 9.3; entrada SSVC do CISA ADP de 12 de novembro de 2026, 14:16 UTC: Exploitation none, Automatable yes, Technical Impact total (acessado em 12 de novembro de 2026)](https://cveawg.mitre.org/api/cve/CVE-2026-126262)
+- [NVD, CVE-2026-126170: "Awaiting Analysis", métrica CVSS 3.1 da Fortinet exibida como 9.8 (acessado em 12 de novembro de 2026)](https://nvd.nist.gov/vuln/detail/CVE-2026-126170)
+- [NVD, CVE-2026-126261: "Awaiting Analysis", métrica CVSS 3.1 da Fortinet exibida como 9.8 (acessado em 12 de novembro de 2026)](https://nvd.nist.gov/vuln/detail/CVE-2026-126261)
+- [NVD, CVE-2026-126262: "Awaiting Analysis", métrica CVSS 3.1 da Fortinet exibida como 9.8 (acessado em 12 de novembro de 2026)](https://nvd.nist.gov/vuln/detail/CVE-2026-126262)
+- [CISA, catálogo Known Exploited Vulnerabilities, feed JSON versão 2026.11.10, publicado em 10 de novembro de 2026: nenhuma das quatro CVEs listada; CVE-2024-47575, do FortiManager, incluída em 23 de outubro de 2024 (acessado em 12 de novembro de 2026)](https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json)
+- [Fortinet PSIRT, FG-IR-24-423, "Missing authentication in fgfmsd": CVE-2024-47575, os workarounds de 2024 (fgfm-deny-unknown, local-in policies na porta 541, um certificado FGFM próprio), os indicadores de comprometimento e a descrição da exfiltração observada (acessado em 12 de novembro de 2026)](https://fortiguard.fortinet.com/psirt/FG-IR-24-423)
+- [Fortinet Document Library, FortiManager 7.6.0, portas de entrada: gerência FGFM em TCP/541 (IPv6 a partir da 7.4.1), OFTP em TCP/514, JSON API em TCP/443 e TCP/80 (acessado em 12 de novembro de 2026)](https://docs.fortinet.com/document/fortimanager/7.6.0/fortimanager-ports)
+- [Fortinet Document Library, FortiAnalyzer 7.6.0, portas de entrada: OFTP em TCP/514 (acessado em 12 de novembro de 2026)](https://docs.fortinet.com/document/fortianalyzer/7.6.0/fortianalyzer-ports)
+- [Fortinet Document Library, FortiManager 7.2.7 Administration Guide, "Enable or disable FortiAnalyzer features": a configuração faz-status, o reinício e a habilitação automática quando um FortiAnalyzer é adicionado (acessado em 12 de novembro de 2026)](https://docs.fortinet.com/document/fortimanager/7.2.7/administration-guide/478954)
+- [CISO Advisor, reportagem sobre os alertas; a página pedia verificação de navegador em 12 de novembro de 2026 e fica listada aqui como referência, sem citação (acessado em 12 de novembro de 2026)](https://www.cisoadvisor.com.br/fortinet-falhas-criticas-permitem-execucao-sem-login/)

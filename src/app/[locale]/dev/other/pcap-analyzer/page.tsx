@@ -5,6 +5,10 @@
 // room's compact notice, the file-drop dissector island, and an inline about
 // with the honest depth statement (v1 = L2-L4; deeper payload parsing later).
 // ============================================================================
+// The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
+import { ogImages } from "@/lib/og";
+// One description for the meta, og and twitter fields, merged into the card.
+import { withDescription } from "@/lib/metaDescription";
 import type { Metadata } from "next";
 import MessageSlice from "@/components/MessageSlice";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -22,7 +26,8 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "devOther" });
   return {
     title: t("pcap.metaTitle"),
-    description: t("pcap.metaDescription"),
+    // The description in the meta, og and twitter fields, and the page's card (12/11/2026: it shipped the generic one).
+    ...withDescription(t("pcap.metaDescription"), ogImages("page", "dev-other", locale, t("pcap.metaTitle")), "dev/other/pcap-analyzer"),
   };
 }
 

@@ -11,6 +11,10 @@
 // sitemap convention applies to sitemap.(xml|ts) FILES, not folders.
 // ============================================================================
 
+// The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
+import { ogImages } from "@/lib/og";
+// One description for the meta, og and twitter fields, merged into the card.
+import { withDescription } from "@/lib/metaDescription";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
@@ -28,7 +32,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "sitemap" });
-  return { title: t("metaTitle"), description: t("metaDescription") };
+  return { title: t("metaTitle"), ...withDescription(t("metaDescription"), ogImages("page", "sitemap", locale, t("metaTitle")), "sitemap") }; // the page's card (12/11/2026: it shipped the generic one)
 }
 
 export default async function SitemapPage({

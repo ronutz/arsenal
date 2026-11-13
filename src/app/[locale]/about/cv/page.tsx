@@ -32,6 +32,10 @@
 // the Speaking page, the profiles and the protected address. Headshots join when
 // PRIME supplies approved photos.
 // ============================================================================
+// The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
+import { ogImages } from "@/lib/og";
+// One description for the meta, og and twitter fields, merged into the card.
+import { withDescription } from "@/lib/metaDescription";
 import { getTranslations, setRequestLocale } from "next-intl/server"; // translations
 import { Link } from "@/i18n/navigation"; // locale-aware links
 import Header from "@/components/Header"; // the site header
@@ -48,7 +52,7 @@ import { TESTIMONIAL_COUNT } from "@/content/testimonials/data"; // the endorsem
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params; // the locale
   const t = await getTranslations({ locale, namespace: "cv" }); // the page's words
-  return { title: t("metaTitle"), description: t("metaDescription") }; // title and description
+  return { title: t("metaTitle"), ...withDescription(t("metaDescription"), ogImages("page", "about", locale, t("metaTitle")), "about/cv") }; // the page's card (12/11/2026: it shipped the generic one) // title and description
 }
 
 /** The profiles the CV lists, in this order (LinkedIn, Credly; the site itself is added first). */

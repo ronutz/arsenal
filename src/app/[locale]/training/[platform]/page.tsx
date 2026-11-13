@@ -17,6 +17,10 @@
 // re-check of one course never refreshes the others (CC08-E).
 // ============================================================================
 
+// The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
+import { ogImages } from "@/lib/og";
+// One description for the meta, og and twitter fields, merged into the card.
+import { withDescription } from "@/lib/metaDescription";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -58,8 +62,8 @@ export async function generateMetadata({
   return {
     // The title, as before.
     title: t("platformMetaTitle", { platform: p.name, tagline: localizedText(p.tagline, locale, contentStringsFor(locale, ["training"])).text }),
-    // The description, with the platform's display name.
-    description: t("platformMetaDescription", { platform: p.name }),
+    // The description, with the platform's display name, and the Training card (12/11/2026: the page shipped the generic one).
+    ...withDescription(t("platformMetaDescription", { platform: p.name }), ogImages("page", "training", locale, p.name), `training/${platform}`),
   };
 }
 

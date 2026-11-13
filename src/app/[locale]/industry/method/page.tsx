@@ -17,6 +17,10 @@
 // social card like its siblings /industry/learning and /industry/milestones.
 // Copy lives in the `industryMethod` namespace, authored in en and pt-BR.
 // ============================================================================
+// The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
+import { ogImages } from "@/lib/og";
+// One description for the meta, og and twitter fields, merged into the card.
+import { withDescription } from "@/lib/metaDescription";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
@@ -33,7 +37,8 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "industryMethod" });
-  return { title: t("title"), description: t("metaDescription") };
+  // The page's Industry card (12/11/2026: it shipped the generic one), with the description in the meta, og and twitter fields.
+  return { title: t("title"), ...withDescription(t("metaDescription"), ogImages("page", "industry", locale, t("title")), "industry/method") };
 }
 
 /** The sections, in reading order; each has a title and two or three paragraphs in the messages. */

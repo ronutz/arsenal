@@ -40,6 +40,8 @@ import { Link } from "@/i18n/navigation";
 import ScoresBoard from "@/components/dev/fun/ScoresBoard";
 // The games on the board.
 import { BOARD_GAMES, boardGame } from "@/lib/fun/board-rules";
+// Each game's own page, for the link back to the game (PRIME 12/11/2026).
+import { funPagePath } from "@/config/funGames";
 
 /**
  * One page per locale and game on the board.
@@ -112,6 +114,13 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
               </p>
               <h1 className="article-title">{t("gameTitle", { game: names[game] })}</h1>
               <p className="fg-intro">{t("intro")}</p>
+              {/* The way to the game itself, under the title (PRIME 12/11/2026: "add a link to the actual pastime"). */}
+              <p className="fg-scores-cta">
+                {/* The game's own page: /arcade/<id> or /dev/fun/<id>, in the page's language. */}
+                <Link href={funPagePath(game)} className="fg-scores-cta-link">
+                  {t("playGame", { game: names[game] })}
+                </Link>
+              </p>
             </div>
             <MessageSlice namespaces={["devFun.scores"]}>
               <ScoresBoard names={names} levels={levels} only={game} />

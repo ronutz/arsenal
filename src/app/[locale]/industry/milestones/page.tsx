@@ -14,6 +14,10 @@
 // Hertz - rather than jumping between physics and storage by date.
 // ============================================================================
 
+// The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
+import { ogImages } from "@/lib/og";
+// One description for the meta, og and twitter fields, merged into the card.
+import { withDescription } from "@/lib/metaDescription";
 import { setRequestLocale } from "next-intl/server";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
@@ -42,7 +46,8 @@ export async function generateMetadata({
 }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "milestones" });
-  return { title: t("title"), description: t("intro") };
+  // The page's Industry card (12/11/2026: it shipped the generic one), with the description in the meta, og and twitter fields.
+  return { title: t("title"), ...withDescription(t("intro"), ogImages("page", "industry", locale, t("title")), "industry/milestones") };
 }
 
 export default async function MilestonesPage({

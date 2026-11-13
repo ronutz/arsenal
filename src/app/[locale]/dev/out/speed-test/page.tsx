@@ -11,6 +11,10 @@
 // link to another site (the engine's repository) opens in a new tab.
 // ============================================================================
 // The metadata type for generateMetadata.
+// The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
+import { ogImages } from "@/lib/og";
+// One description for the meta, og and twitter fields, merged into the card.
+import { withDescription } from "@/lib/metaDescription";
 import type { Metadata } from "next";
 // The nested provider that hands the client component its message slice.
 import MessageSlice from "@/components/MessageSlice";
@@ -48,7 +52,8 @@ export async function generateMetadata({
   // Title and description from devOut.speed.
   return {
     title: t("speed.metaTitle"),
-    description: t("speed.metaDescription"),
+    // The description in the meta, og and twitter fields, and the page's card (12/11/2026: it shipped the generic one).
+    ...withDescription(t("speed.metaDescription"), ogImages("page", "dev-out", locale, t("speed.metaTitle")), "dev/out/speed-test"),
   };
 }
 

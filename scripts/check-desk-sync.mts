@@ -491,12 +491,18 @@ check(answers.every(({ a }) => a.status === 204 || (a.headers.get("content-type"
   // No database: nothing to do, no failure.
   check((await cleanIdleDesks({}, NOW)) === 0, "the clean-up without a database does nothing");
   // Through the Worker's daily scheduled run (its adding-up fails here for want of credentials, and is swallowed).
-  const older = newId();
-  insert.run(older, shiftDay(TODAY, -400));
+  // The scheduled run reads the real clock (Date.now()), not the fixed NOW above, so its rows are dated from the real
+  // UTC day: fixed to NOW, the 365th-day row turned idle once the real UTC day passed 12/11/2026 (the build of
+  // 12/11/2026 21:52 São Paulo, 00:5x UTC on the 13th, failed on exactly that).
+  const realToday = utcDay(Date.now()); // the day the scheduled run will compute
+  const older = newId(); // idle for 400 days
+  insert.run(older, shiftDay(realToday, -400)); // must go
+  const realEdge = newId(); // idle for exactly 365 days by the real clock
+  insert.run(realEdge, shiftDay(realToday, -365)); // must stay
   const pending: Promise<unknown>[] = [];
   await worker.scheduled({}, { SCORES: db } as never, { waitUntil: (p: Promise<unknown>) => { pending.push(p); }, passThroughOnException: () => undefined } as never);
   await Promise.all(pending);
-  check(db.row(older) === undefined && db.row(edge) !== undefined, "the Worker's daily scheduled run deletes idle rows");
+  check(db.row(older) === undefined && db.row(realEdge) !== undefined, "the Worker's daily scheduled run deletes idle rows");
   // A database without the table: the scheduled run swallows the failure.
   let threw = false;
   const pending2: Promise<unknown>[] = [];

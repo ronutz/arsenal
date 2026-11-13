@@ -27532,7 +27532,8 @@
       "preparing": "Se prépare à enseigner :",
       "cylk2020": "Conseil en solutions et avant-vente chez CYLK, l’intégrateur de sécurité de São Paulo, au moment où commençait la formation à temps plein avec sa société sœur InLearn : distribution et sécurité des applications F5, pare-feux Palo Alto Networks, Fortinet, gestion des vulnérabilités Tenable, accès à privilèges CyberArk et analyse réseau Corvil, sous forme de preuves de concept, de conceptions et de formations clients. Les six ont chacun leur repère ici, et chacun a son chapitre dans le parcours professionnel.",
       "implementationWhere": "Implémentation · via CYLK, TDec et en direct",
-      "cylk2020Where": "Avant-vente et conseil · via CYLK"
+      "cylk2020Where": "Avant-vente et conseil · via CYLK",
+      "instructorProfile": "Le profil de formateur de Rodolfo Nützmann chez Red Education"
     },
     "origins": {
       "title": "Les débuts",
@@ -31581,7 +31582,9 @@
         "roundsPerBrowser": "Parties par navigateur : {n}",
         "sparkDayBrowsers": "{date} : {played, plural, one {# partie} other {# parties}}, {solved} résolues, navigateurs uniques : {browsers}",
         "sparkBrowsersNote": "Le trait court sur une barre marque les navigateurs uniques du jour (chaque navigateur compte une fois par jour ; ce ne sont pas des personnes). Les jours d’avant le début du comptage n’en ont pas."
-      }
+      },
+      "playGame": "Jouer à {game}",
+      "gameScoreboard": "Voir les scores de {game}"
     },
     "arcadeCardName": "L’arcade",
     "arcadeCardBlurb": "{count, plural, one {{count} jeu construit sur des formules de jeu classiques, auquel} other {{count} jeux construits sur des formules de jeu classiques, auxquels}} jouer aussi longtemps que vous le souhaitez ; {daily, plural, one {{daily} d’entre eux propose} other {{daily} d’entre eux proposent}} une partie du jour qui rejoint le tableau des scores public."
@@ -31969,7 +31972,9 @@
     "fullTitle": "Fichier complet",
     "close": "Fermer",
     "copied": "Copié",
-    "namespaceLabel": "Espace de noms"
+    "namespaceLabel": "Espace de noms",
+    "loading": "Chargement des textes de cette langue…",
+    "loadFailed": "Impossible de charger les textes de cette langue. Rechargez la page pour réessayer."
   },
   "toolRequirements": {
     "heading": "Ce dont cette page a besoin",
@@ -33829,7 +33834,8 @@
       "read": "Lire le livret",
       "page": "Sa page chez Red Education",
       "readOn": "Lu intégralement le 6 octobre 2026."
-    }
+    },
+    "instructorProfile": "Le profil de formateur de Rodolfo Nützmann chez Red Education"
   },
   "toolDocs": {
     "titleSuffix": "(documentation)",

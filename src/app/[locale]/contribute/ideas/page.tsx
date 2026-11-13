@@ -19,6 +19,8 @@
 // into every locale pack in the same commit.
 // ============================================================================
 
+// The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
+import { ogImages } from "@/lib/og";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
@@ -36,7 +38,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "contributeIdeas" });
-  return { title: t("title") };
+  return { title: t("title"), ...ogImages("page", "contribute", locale, t("title")) }; // the page's card (12/11/2026: it shipped the generic one)
 }
 
 export default async function ContributeIdeasPage({

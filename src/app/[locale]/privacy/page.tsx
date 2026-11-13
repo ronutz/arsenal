@@ -24,6 +24,10 @@
 // ============================================================================
 
 // English dates and lists in British form, through one helper (PRIME 11/11/2026 00:09).
+// The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
+import { ogImages } from "@/lib/og";
+// One description for the meta, og and twitter fields, merged into the card.
+import { withDescription } from "@/lib/metaDescription";
 import { intlLocale } from "@/i18n/locales";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
@@ -73,8 +77,8 @@ import type { ReactNode } from "react";
 /**
  * PAGE TITLE (2026-09-26). Shipped with no generateMetadata export, so it
  * inherited the site-wide default <title> and shared one string with thirteen
- * other pages. Title only: this slug is not in gen-og's STATIC_PAGES, so
- * ogImages() would name a card that does not exist and check-og would fail.
+ * other pages. Since 12/11/2026 "privacy" is in gen-og's PACK_PAGES list, so the
+ * page also names its own titled card instead of the generic one.
  */
 export async function generateMetadata({
   params,
@@ -86,7 +90,7 @@ export async function generateMetadata({
   // The title, and the page's own one-sentence description (PRIME 2026-10-26: it had inherited the site tagline as its
   // meta, og and twitter description). No openGraph is set here, so Next.js derives og:description and
   // twitter:description from `description`.
-  return { title: t("title"), description: t("metaDescription") };
+  return { title: t("title"), ...withDescription(t("metaDescription"), ogImages("page", "privacy", locale, t("title")), "privacy") }; // the page's card (12/11/2026: it shipped the generic one)
 }
 
 export default async function PrivacyPage({

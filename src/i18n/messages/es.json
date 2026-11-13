@@ -27532,7 +27532,8 @@
       "preparing": "Me preparo para impartir:",
       "cylk2020": "Consultoría de soluciones y preventa a través de CYLK, el integrador de seguridad de São Paulo, mientras empezaba la instrucción a tiempo completo con su empresa hermana InLearn: entrega y seguridad de aplicaciones de F5, firewalls de Palo Alto Networks, Fortinet, gestión de vulnerabilidades de Tenable, acceso privilegiado de CyberArk y analítica de red de Corvil, en forma de pruebas de concepto, diseños y capacitación de clientes. Los seis tienen aquí una marca, y cada uno tiene su capítulo en la trayectoria profesional.",
       "implementationWhere": "Implementación · a través de CYLK, TDec y encargos directos",
-      "cylk2020Where": "Preventa y consultoría · a través de CYLK"
+      "cylk2020Where": "Preventa y consultoría · a través de CYLK",
+      "instructorProfile": "El perfil de instructor de Rodolfo Nützmann en Red Education"
     },
     "origins": {
       "title": "Dónde empezó",
@@ -31581,7 +31582,9 @@
         "roundsPerBrowser": "Rondas por navegador: {n}",
         "sparkDayBrowsers": "{date}: {played, plural, one {# ronda} other {# rondas}}, {solved} resueltas, navegadores únicos: {browsers}",
         "sparkBrowsersNote": "La línea corta sobre una barra marca los navegadores únicos de ese día (cada navegador cuenta una vez al día; no son personas). Los días anteriores al inicio del recuento no la tienen."
-      }
+      },
+      "playGame": "Jugar a {game}",
+      "gameScoreboard": "Ver las puntuaciones de {game}"
     },
     "arcadeCardName": "El arcade",
     "arcadeCardBlurb": "{count, plural, one {{count} juego basado} other {{count} juegos basados}} en fórmulas de juego clásicas, para jugar todo lo que quieras; {daily, plural, one {{daily} de ellos tiene} other {{daily} de ellos tienen}} una partida diaria que va a la tabla pública de puntuaciones."
@@ -31969,7 +31972,9 @@
     "fullTitle": "Archivo completo",
     "close": "Cerrar",
     "copied": "Copiado",
-    "namespaceLabel": "Espacio de nombres"
+    "namespaceLabel": "Espacio de nombres",
+    "loading": "Cargando los textos de este idioma…",
+    "loadFailed": "No se pudieron cargar los textos de este idioma. Recarga la página para intentarlo de nuevo."
   },
   "toolRequirements": {
     "heading": "Qué necesita esta página",
@@ -33829,7 +33834,8 @@
       "read": "Leer el folleto",
       "page": "Su página en Red Education",
       "readOn": "Leído completo el 6 de octubre de 2026."
-    }
+    },
+    "instructorProfile": "El perfil de instructor de Rodolfo Nützmann en Red Education"
   },
   "toolDocs": {
     "titleSuffix": "(documentación)",

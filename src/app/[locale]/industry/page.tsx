@@ -22,6 +22,10 @@
 // (authored en + pt-BR natively; other locales fall back per key).
 // ============================================================================
 
+// The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
+import { ogImages } from "@/lib/og";
+// One description for the meta, og and twitter fields, merged into the card.
+import { withDescription } from "@/lib/metaDescription";
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -64,7 +68,8 @@ export async function generateMetadata({
   const ti = await getTranslations({ locale, namespace: "industry" });
   return {
     title: ti("metaTitle"),
-    description: ti("metaDescription"),
+    // The Industry card (12/11/2026: the page shipped the generic one), with the description in the meta, og and twitter fields.
+    ...withDescription(ti("metaDescription"), ogImages("page", "industry", locale, ti("title")), "industry"),
   };
 }
 

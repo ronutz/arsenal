@@ -27535,7 +27535,8 @@
       "preparing": "Preparing to teach:",
       "cylk2020": "Solutions consulting and pre-sales through CYLK, the São Paulo security integrator, while full-time instruction with its sister company InLearn began: F5 application delivery and security, Palo Alto Networks firewalls, Fortinet, Tenable vulnerability management, CyberArk privileged access and Corvil network analytics, as proofs of concept, designs and customer training. All six hold a mark here, and each has its chapter in the career record.",
       "implementationWhere": "Implementation · via CYLK, TDec and direct engagements",
-      "cylk2020Where": "Pre-sales and consulting · via CYLK"
+      "cylk2020Where": "Pre-sales and consulting · via CYLK",
+      "instructorProfile": "Rodolfo Nützmann's instructor profile at Red Education"
     },
     "origins": {
       "title": "Where it started",
@@ -31584,7 +31585,9 @@
         "roundsPerBrowser": "Rounds per browser: {n}",
         "sparkDayBrowsers": "{date}: {played, plural, one {# round} other {# rounds}}, {solved} solved, unique browsers: {browsers}",
         "sparkBrowsersNote": "The short line across a bar marks that day's unique browsers (each browser counts once a day; not people). Days before the count began have none."
-      }
+      },
+      "playGame": "Play {game}",
+      "gameScoreboard": "See the {game} scoreboard"
     },
     "arcadeCardName": "The arcade",
     "arcadeCardBlurb": "{count, plural, one {{count} game} other {{count} games}} built on classic game formulas, played for as long as you like; {daily} of them have a daily run that goes to the public scoreboard."
@@ -31972,7 +31975,9 @@
     "fullTitle": "Full file",
     "close": "Close",
     "copied": "Copied",
-    "namespaceLabel": "Namespace"
+    "namespaceLabel": "Namespace",
+    "loading": "Loading this language's text…",
+    "loadFailed": "This language's text could not be loaded. Reload the page to try again."
   },
   "toolRequirements": {
     "heading": "What this page needs",
@@ -42709,7 +42714,8 @@
       "read": "Read the booklet",
       "page": "Its page at Red Education",
       "readOn": "Read in full on 6 October 2026."
-    }
+    },
+    "instructorProfile": "Rodolfo Nützmann's instructor profile at Red Education"
   },
   "toolDocs": {
     "titleSuffix": "documentation",

@@ -24,6 +24,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+// The routes allowed to share the generic card, each with its reason, and the route matcher (12/11/2026).
+import { GENERIC_CARD_ALLOW, routeMatches } from "./og-generic-allow.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const read = (p) => fs.readFileSync(path.join(ROOT, p), "utf8");
@@ -32,6 +34,82 @@ const exists = (p) => fs.existsSync(path.join(ROOT, p));
 const LOCALES = ["en", "pt-BR"];
 const JPEG_PAGES = new Set(["home", "about", "training", "red-education"]);
 const errors = [];
+
+// ---- 0. every page with a title of its own names a card (12/11/2026) --------
+// PRIME 12/11/2026: the endorsements page shared the generic card instead of its own, and so did 585 other English
+// pages. A page that sets its own metadata must name a card (ogImages(...) or its own images, never ogDefault()),
+// unless its route is in scripts/og-generic-allow.mjs with the reason it is deliberately generic; and every page card
+// a page names must be one gen-og draws. `--source-only` runs this part alone: the card files are drawn in CI, and a
+// sandbox without them can still check the source.
+const SOURCE_ONLY = process.argv.includes("--source-only");
+// The page slugs gen-og draws: its STATIC_PAGES and PACK_PAGES lists, which sit together before the LOCALES line.
+const genOg = read("scripts/gen-og.mts");
+// The two lists' source.
+const pageListSeg = genOg.slice(genOg.indexOf("const STATIC_PAGES"), genOg.indexOf("const LOCALES"));
+// Every `{ slug: "..."` entry of the two lists; "" is the home page, drawn as "home".
+const drawnPageSlugs = [...pageListSeg.matchAll(/\{\s*slug:\s*"([a-z0-9-]*)"/g)].map((m) => m[1] || "home");
+// The localised pages' source folder.
+const appDir = path.join(ROOT, "src/app/[locale]");
+// Every page.tsx below it, as [file, route] with the route in source form ("/x/[slug]").
+const pageFiles = [];
+// The folders still to read.
+const dirs = [appDir];
+// Walk depth-first.
+while (dirs.length) {
+  // The next folder.
+  const dir = dirs.pop();
+  // Each entry in it.
+  for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+    // A subfolder: read it later.
+    if (e.isDirectory()) dirs.push(path.join(dir, e.name));
+    // A page: remembered with its route ("/" for the home page).
+    else if (e.name === "page.tsx") pageFiles.push([path.join(dir, e.name), "/" + path.relative(appDir, dir).split(path.sep).join("/")]);
+  }
+}
+// Allow-list keys that matched a page, for the stale check.
+const allowSeen = new Set();
+// Each page, read without its comments (a comment may mention ogImages without calling it).
+for (const [file, route] of pageFiles) {
+  // The code: block comments, then line comments (not the "//" of a URL, which follows a colon).
+  const code = fs.readFileSync(file, "utf8").replace(/\/\*[\s\S]*?\*\//g, "").replace(/(^|[^:"'`])\/\/[^\n]*/g, "$1");
+  // The file as the findings name it.
+  const rel = path.relative(ROOT, file);
+  // Each literal page card it names must be one gen-og draws (a material's card is derived from its registry).
+  for (const m of code.matchAll(/ogImages\(\s*"page",\s*"([a-z0-9-]+)"/g)) {
+    // A card gen-og never draws unfurls blank.
+    if (!drawnPageSlugs.includes(m[1]) && !m[1].startsWith("materials-")) errors.push(`${rel} names the page card "${m[1]}", which scripts/gen-og.mts does not draw (add it to STATIC_PAGES or PACK_PAGES).`);
+  }
+  // Only a page that sets its own metadata (a title of its own) is held to a card of its own.
+  if (!/generateMetadata|export const metadata/.test(code)) continue;
+  // It names a card: ogImages(...) or its own images, and never the generic one.
+  const named = /\bogImages\(|images:/.test(code) && !/\bogDefault\(|og\/default\.png/.test(code);
+  // A page that names one passes.
+  if (named) continue;
+  // The allow-list key for its route (a [param] segment is matched only by "*").
+  const key = [...GENERIC_CARD_ALLOW.keys()].find((k) => routeMatches(k, route));
+  // Listed: deliberate, and remembered for the stale check.
+  if (key) { allowSeen.add(key); continue; }
+  // Otherwise the page would ship the generic card under a title of its own.
+  errors.push(`${rel} sets its own title but names no card (it would ship /og/default.png): call ogImages(...) or list "${route}" in scripts/og-generic-allow.mjs with a reason.`);
+}
+// An allow-list entry that no page needs any more must be removed (the list may only shrink).
+for (const key of GENERIC_CARD_ALLOW.keys()) if (!allowSeen.has(key)) errors.push(`og-generic-allow "${key}" no longer matches a page without a card and must be removed.`);
+// The source-only run reports this part and stops.
+if (SOURCE_ONLY) {
+  // Any finding fails.
+  if (errors.length) {
+    // The headline.
+    console.error("[check-og] FAILED (source only):");
+    // The findings, the first forty.
+    for (const e of errors.slice(0, 40)) console.error("  - " + e);
+    // A failed guard stops the run.
+    process.exit(1);
+  }
+  // The summary.
+  console.log(`[check-og] OK (source only): ${pageFiles.length} page file(s) read; every page with a title of its own names a card, but ${allowSeen.size} deliberate exception(s) in scripts/og-generic-allow.mjs, and each named page card is one of the ${drawnPageSlugs.length} gen-og draws.`);
+  // Done.
+  process.exit(0);
+}
 
 // 1. generator ran
 if (!exists("public/og/manifest.json")) errors.push("public/og/manifest.json missing - run scripts/gen-og.mts (prebuild).");
@@ -54,7 +132,9 @@ const guides = [...guideReg.slice(guideReg.indexOf("export const studyGuides")).
 // Every vendor family in src/config/vendors.ts (05/11/2026; the list of four missed the four hubs added later).
 const vendors = [...read("src/config/vendors.ts").matchAll(/\{\s*key:\s*"([a-z0-9-]+)"/g)].map((m) => m[1]);
 // The static pages, with advisory, speaking and stories since 05/11/2026 (they call ogImages and had no card).
-const staticPages = ["home", "tools", "learn", "certifications", "glossary", "training", "about", "red-education", "advisory", "speaking", "stories"];
+// Since 12/11/2026 read from gen-og's own STATIC_PAGES and PACK_PAGES lists (above), so the two cannot drift: the hand
+// list missed blog, study-guides, practice, roles and materials, and would have missed every card added that day.
+const staticPages = drawnPageSlugs;
 // The /dev/fun games and the shelf (05/11/2026): every game listed in src/config/funGames.ts, and "shelf".
 const games = [...[...read("src/config/funGames.ts").matchAll(/\{\s*id:\s*"([a-z0-9-]+)",\s*daily:/g)].map((m) => m[1]), "shelf"];
 

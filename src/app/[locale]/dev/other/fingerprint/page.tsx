@@ -5,6 +5,10 @@
 // inspector island (environment-as-input; output differs per visitor, so no
 // golden vectors apply), and an inline about tying it to the privacy thesis.
 // ============================================================================
+// The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
+import { ogImages } from "@/lib/og";
+// One description for the meta, og and twitter fields, merged into the card.
+import { withDescription } from "@/lib/metaDescription";
 import type { Metadata } from "next";
 import MessageSlice from "@/components/MessageSlice";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -16,7 +20,7 @@ import { Link } from "@/i18n/navigation";
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "devOther" });
-  return { title: t("fingerprint.metaTitle"), description: t("fingerprint.metaDescription") };
+  return { title: t("fingerprint.metaTitle"), ...withDescription(t("fingerprint.metaDescription"), ogImages("page", "dev-other", locale, t("fingerprint.metaTitle")), "dev/other/fingerprint") }; // the page's card (12/11/2026: it shipped the generic one)
 }
 
 export default async function FingerprintPage({ params }: { params: Promise<{ locale: string }> }) {

@@ -109,7 +109,14 @@ if (!fs.existsSync(BASE)) {
 // answered 404 on 2026-10-06 and left Red Education's own index, gives its place to /course-explained/red-education-
 // training-resources/, so that list stays at ten and its path swap is declared below. The booklet's flipbook lives at
 // rededucation.aflip.in, not rededucation.com, so it is outside this count by construction. Not in the Learn corpus.
-const BASELINE_TOTAL = 122;
+// 122 -> 124 on 2026-11-12, deliberately (PRIME: "please link / feature my profile page at
+// https://www.rededucation.com/team/rodolfo-nutzmann/ in the website's Red Education page, and wherever you also deem
+// appropriate and fitting"). TWO links to the instructor profile, an identity page and a destination declared since
+// 2026-09-11 (/contact): ONE on /red-education/ under the identity line (cta instructor-profile) and ONE on /about/
+// closing the Red Education era (pageType about, cta instructor-profile). The blog byline was considered and left
+// out: one link per post would put a Red Education link on every commentary page, the creep this baseline resists.
+// Not a route into the course catalogue; not in the Learn corpus.
+const BASELINE_TOTAL = 124;
 // The marker that identifies the footer affiliation link in built HTML: the
 // attribution parameters SiteFooter.tsx sets, in the order URLSearchParams writes
 // them (utm_content before utm_term).

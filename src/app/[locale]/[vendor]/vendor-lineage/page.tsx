@@ -16,6 +16,10 @@
 // has no page - rather than an empty one promising more soon.
 // ============================================================================
 
+// The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
+import { ogImages } from "@/lib/og";
+// One description for the meta, og and twitter fields, merged into the card.
+import { withDescription } from "@/lib/metaDescription";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
@@ -53,7 +57,8 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "lineages" });
   return {
     title: t("titleFor", { vendor: lineage.name }),
-    description: lineage.tagline,
+    // The vendor's own card (12/11/2026: the page shipped the generic one), with the description in the meta, og and twitter fields.
+    ...withDescription(lineage.tagline, ogImages("vendor", vendor, locale, lineage.name), `${vendor}/vendor-lineage`),
   };
 }
 

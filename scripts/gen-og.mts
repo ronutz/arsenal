@@ -456,8 +456,48 @@ const STATIC_PAGES: { slug: string; title: Record<string, string>; tagline: Reco
   { slug: "about", title: { en: "About", "pt-BR": "Sobre" }, tagline: { en: "Rodolfo Nützmann - senior technical instructor and the architect of ronutz.com.", "pt-BR": "Rodolfo Nützmann - instrutor técnico sênior e arquiteto do ronutz.com." }, brand: true },
   // The open materials index (milestone (m1), 2026-10-06); each material's own card is derived from the registry below.
   { slug: "materials", title: { en: "Open materials", "pt-BR": "Materiais abertos" }, tagline: { en: "Complete trainings shared for anyone to use: slides, speaker notes, outline and licence.", "pt-BR": "Treinamentos completos compartilhados para qualquer pessoa usar: slides, notas do apresentador, programa e licença." } },
+  // Pages with their own title that shipped the generic card until 12/11/2026 (PRIME: "the social sharing card for the
+  // endorsements page is a generic one ... check that there are no other such cases"). Each section card also serves the
+  // section's inner pages: "industry" every company, chapter and index page of /industry, "changelog" every month.
+  { slug: "endorsements", title: { en: "Endorsements", "pt-BR": "Depoimentos" }, tagline: { en: "Recommendations and reviews from two decades of teaching and consulting, preserved verbatim.", "pt-BR": "Recomendações e avaliações de duas décadas de ensino e consultoria, preservadas na íntegra." } },
+  { slug: "industry", title: { en: "The industry, from the inside", "pt-BR": "A indústria, vista de dentro" }, tagline: { en: "Corporate genealogies of networking and security: foundings, acquisitions, and where every bloodline ended up.", "pt-BR": "Genealogias corporativas de redes e segurança: fundações, aquisições e onde cada linhagem foi parar." } },
+  { slug: "changelog", title: { en: "Changelog", "pt-BR": "Changelog" }, tagline: { en: "A dated record of new tools, articles, and significant changes to ronutz.com.", "pt-BR": "Um registro datado de novas ferramentas, artigos e mudanças significativas no ronutz.com." } },
   { slug: "red-education", title: { en: "Red Education", "pt-BR": "Red Education" }, tagline: { en: "A global Authorized Training Center - and the home of Rodolfo Nützmann's classroom since 2021.", "pt-BR": "Um Centro de Treinamento Autorizado global - e a casa das aulas de Rodolfo Nützmann desde 2021." }, brand: true }, // 2021, as the page's lede and its thanks say (teaching through Red from 2021, full-time from 2023); the card said 2023 until 2026-10-06
 ];
+
+// Pages whose card is titled and subtitled from the page's own message namespace (12/11/2026: each of them has its
+// own title and shipped the generic card). `title` is the key of the card's title in `ns`; the tagline is the first
+// sentence of the first plain (placeholder-free) description the namespace holds, in TAGLINE_KEYS order. The "dev-out"
+// and "dev-other" cards also serve the tools listed on those two pages.
+const PACK_PAGES: { slug: string; ns: string; title: string }[] = [
+  { slug: "api", ns: "api", title: "title" },
+  { slug: "colophon", ns: "colophon_page", title: "title" },
+  { slug: "contact", ns: "contact", title: "title" },
+  { slug: "contribute", ns: "contribute", title: "hubTitle" },
+  { slug: "dev", ns: "dev", title: "title" },
+  { slug: "dev-out", ns: "devOut", title: "title" },
+  { slug: "dev-other", ns: "devOther", title: "title" },
+  { slug: "disclaimer", ns: "disclaimer_page", title: "title" },
+  { slug: "guide", ns: "guide", title: "title" },
+  { slug: "license", ns: "license_page", title: "title" },
+  { slug: "people", ns: "people", title: "title" },
+  { slug: "privacy", ns: "privacy_page", title: "title" },
+  { slug: "roadmap", ns: "roadmap", title: "title" },
+  { slug: "sitemap", ns: "sitemap", title: "title" },
+  { slug: "stats", ns: "stats_page", title: "title" },
+  { slug: "support", ns: "support", title: "title" },
+  { slug: "vendor-hubs", ns: "vendorsHome", title: "title" },
+];
+// The keys a PACK_PAGES tagline is read from, in order of preference.
+const TAGLINE_KEYS = ["metaDescription", "hubLede", "lede", "intro"];
+
+/** A plain string at <ns>.<key> of a language's pack, or "" when it is absent or not a string. */
+function packString(locale: string, ns: string, key: string): string {
+  // The namespace's object in that language's pack.
+  const node = messages(locale)?.[ns];
+  // The value when it is a string, else nothing.
+  return node && typeof node[key] === "string" ? node[key] : "";
+}
 
 // The languages drawn: the same list src/lib/og.ts points the other fourteen at English with.
 const LOCALES = [...OG_CARD_LOCALES];
@@ -526,6 +566,15 @@ function enumerateJobs(): Job[] {
         ? { dataUri: imgDataUri(path.join(ROOT, BRAND_PORTRAITS[p.slug].file)), mode: BRAND_PORTRAITS[p.slug].mode }
         : undefined;
       jobs.push({ kind: "page", slug: p.slug || "home", locale, ext: portrait ? "jpeg" : "png", input: { eyebrow: EYEBROW.page[locale] ?? EYEBROW.page.en, locale, title: p.title[locale] ?? p.title.en, tagline: p.tagline[locale] ?? p.tagline.en, color: p.slug === "red-education" ? C.amber : C.cyan, portrait } });
+    }
+    // The PACK_PAGES cards (12/11/2026), titled and subtitled from each page's own namespace.
+    for (const p of PACK_PAGES) {
+      // The card's title in this language, else in English.
+      const title = packString(locale, p.ns, p.title) || packString("en", p.ns, p.title);
+      // The first plain description of the namespace in this language (a placeholder cannot be filled here).
+      const blurb = TAGLINE_KEYS.map((k) => packString(locale, p.ns, k)).find((v) => v && !v.includes("{")) ?? "";
+      // One card per page and language, in the static pages' colour.
+      jobs.push({ kind: "page", slug: p.slug, locale, ext: "png", input: { eyebrow: EYEBROW.page[locale] ?? EYEBROW.page.en, locale, title, tagline: blurb ? firstSentence(blurb) : "", color: C.cyan } });
     }
     // Each open material's datasheet (2026-10-06): its card is "materials-<slug>", titled and subtitled from the
     // materials namespace, so a material added to the registry gets its card without an edit here.

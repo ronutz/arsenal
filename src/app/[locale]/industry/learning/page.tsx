@@ -15,6 +15,10 @@
 // here automatically and nothing tagged is ever silently dropped. Copy lives in
 // the `learning_page` namespace in every locale.
 // ============================================================================
+// The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
+import { ogImages } from "@/lib/og";
+// One description for the meta, og and twitter fields, merged into the card.
+import { withDescription } from "@/lib/metaDescription";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
@@ -53,7 +57,8 @@ const SECTIONS: ReadonlyArray<{ key: string; slugs: readonly string[] }> = [
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "learning_page" });
-  return { title: t("title"), description: t("metaDescription") };
+  // The page's Industry card (12/11/2026: it shipped the generic one), with the description in the meta, og and twitter fields.
+  return { title: t("title"), ...withDescription(t("metaDescription"), ogImages("page", "industry", locale, t("title")), "industry/learning") };
 }
 
 export default async function LearningIndexPage({ params }: { params: Promise<{ locale: string }> }) {

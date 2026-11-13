@@ -50,7 +50,7 @@ import { localizePartnerVendor, localizeProfile } from "@/lib/vendorLocale";
 // One plain-text, bounded summary per page for description, og:description and twitter:description (ARC-06).
 import { withDescription } from "@/lib/metaDescription";
 // The layout's default social card, restated so adding a description keeps it (ARC-06).
-import { ogDefault } from "@/lib/og";
+import { ogImages } from "@/lib/og";
 import { routing } from "@/i18n/routing";
 import VendorProfileSections from "@/components/VendorProfileSections";
 import type { VendorProfile } from "@/content/vendors/profile-types";
@@ -407,7 +407,16 @@ export async function generateMetadata({
   const tag = TAG_ROUTES[slug];
   if (tag) {
     const tTag = await getTranslations({ locale, namespace: "industryTags" });
-    return { title: tTag(`${tag}.title`) };
+    // The tag lists (carriers, vendors, training, standards, services...) carry the Industry card too, titled with the
+    // list's own name (12/11/2026: check-og-references rule 5 found them on the generic card after the first pass).
+    const tSiteTag = await getTranslations({ locale, namespace: "site" }); // the site's name for og:site_name
+    const tagTitle = tTag(`${tag}.title`); // the list's title
+    const tagCard = ogImages("page", "industry", locale, tagTitle); // the Industry card
+    return {
+      title: tagTitle, // the page title, as before
+      openGraph: { type: "website" as const, siteName: tSiteTag("name"), ...tagCard.openGraph }, // the card, restating the layout's type and name
+      twitter: tagCard.twitter, // the same card for X/Twitter
+    };
   }
 
   // The record, with its prose in this locale where an overlay was authored.
@@ -429,12 +438,13 @@ export async function generateMetadata({
   // the same text the card and the hero show, instead of the site-wide
   // tagline every company page inherited. Plain text, bounded, one value for
   // the three description fields. Canonical and hreflang still come from the
-  // layout. This route never set its own card, and Next.js replaces the
-  // layout's whole openGraph/twitter object once a page sets one, so the base
-  // below restates the layout's own default card, type and site name exactly
-  // (same image, same alt) and the description is merged into it.
+  // layout. Next.js replaces the layout's whole openGraph/twitter object once
+  // a page sets one, so the base below restates the layout's type and site name
+  // around the Industry card (12/11/2026; before, the generic card), and the
+  // description is merged into it.
   const tSite = await getTranslations({ locale, namespace: "site" });
-  const card = ogDefault(tSite("name"));
+  // The Industry card (12/11/2026: these pages shipped the generic one), titled with the company's name.
+  const card = ogImages("page", "industry", locale, vendor.name);
   const base = {
     openGraph: { type: "website" as const, siteName: tSite("name"), ...card.openGraph },
     twitter: card.twitter,

@@ -9,6 +9,10 @@
 // lets it connect to 'self' and https://api.pwnedpasswords.com, nothing else.
 // ============================================================================
 // The metadata type for generateMetadata.
+// The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
+import { ogImages } from "@/lib/og";
+// One description for the meta, og and twitter fields, merged into the card.
+import { withDescription } from "@/lib/metaDescription";
 import type { Metadata } from "next";
 // The nested provider that hands the client component its message slice.
 import MessageSlice from "@/components/MessageSlice";
@@ -42,7 +46,8 @@ export async function generateMetadata({
   // Title and description from devOut.pwned.
   return {
     title: t("pwned.metaTitle"),
-    description: t("pwned.metaDescription"),
+    // The description in the meta, og and twitter fields, and the page's card (12/11/2026: it shipped the generic one).
+    ...withDescription(t("pwned.metaDescription"), ogImages("page", "dev-out", locale, t("pwned.metaTitle")), "dev/out/pwned-passwords"),
   };
 }
 

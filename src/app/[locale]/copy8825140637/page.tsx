@@ -18,8 +18,8 @@
 //
 // WHY EXPORT, NOT SAVE: ronutz.com is a static export with no server and no
 // database (the Worker only serves assets and runs stateless compute). There is
-// nowhere to POST an edit, so this page cannot write to the live site. It loads
-// every LIVE locale's message file at build time, lets you edit in the browser,
+// nowhere to POST an edit, so this page cannot write to the live site. It fetches
+// the chosen LIVE locale's published pack (/locales/<code>.json) when you pick it, lets you edit in the browser,
 // and EXPORTS the result (full <locale>.json or a changed-keys diff) to commit
 // into src/i18n/messages/ and redeploy. It is a workbench, not a live CMS.
 //
@@ -37,29 +37,11 @@ import PrivPreviewOnly from "@/components/PrivPreviewOnly";
 import CopyEditor, { type CopyEditorLabels } from "@/components/CopyEditor";
 import { LIVE_LOCALES } from "@/i18n/locales";
 
-// Static imports of every LIVE locale's messages (build-time; no runtime fetch).
-import deMsgs from "@/i18n/messages/de.json";
-import enMsgs from "@/i18n/messages/en.json";
-import esMsgs from "@/i18n/messages/es.json";
-import frMsgs from "@/i18n/messages/fr.json";
-import itMsgs from "@/i18n/messages/it.json";
-import ptBRMsgs from "@/i18n/messages/pt-BR.json";
-import ruMsgs from "@/i18n/messages/ru.json";
-import trMsgs from "@/i18n/messages/tr.json";
-import zhHansMsgs from "@/i18n/messages/zh-Hans.json";
-
-// Map code -> messages, so we can assemble the prop from LIVE_LOCALES in order.
-const MESSAGES_BY_CODE: Record<string, unknown> = {
-  de: deMsgs,
-  en: enMsgs,
-  es: esMsgs,
-  fr: frMsgs,
-  it: itMsgs,
-  "pt-BR": ptBRMsgs,
-  ru: ruMsgs,
-  tr: trMsgs,
-  "zh-Hans": zhHansMsgs,
-};
+// The locales whose message pack is published at /locales/<code>.json (scripts/copy-locales.mjs copies
+// src/i18n/messages/ there at prebuild). Since 12/11/2026 the editor FETCHES the pack of the language being edited
+// instead of having all of them embedded in the page: embedded, the six live packs made this one page 31.9 MiB and
+// Cloudflare Workers refuses any asset over 25 MiB (the deploy of 12/11/2026 23:43 UTC failed on it).
+const PACK_CODES = new Set(["de", "en", "es", "fr", "it", "pt-BR", "ru", "tr", "zh-Hans"]); // packs that exist
 
 // Internal surface: keep it out of search engines.
 export const metadata: Metadata = {
@@ -84,10 +66,9 @@ export default async function CopyEditorPage({
 
   // Assemble the editor's data: every live locale, in LIVE_LOCALES order, with
   // its display name. English leads (it is the source-of-truth locale).
-  const locales = LIVE_LOCALES.filter((l) => MESSAGES_BY_CODE[l.code]).map((l) => ({
-    code: l.code,
-    name: l.nativeName,
-    messages: MESSAGES_BY_CODE[l.code],
+  const locales = LIVE_LOCALES.filter((l) => PACK_CODES.has(l.code)).map((l) => ({
+    code: l.code, // the language's code, which names its pack at /locales/<code>.json
+    name: l.nativeName, // its own name for the picker
   }));
 
   const labels: CopyEditorLabels = {
@@ -98,6 +79,8 @@ export default async function CopyEditorPage({
     changedCount: t.raw("changedCount"),
     exportFull: t("exportFull"),
     exportDiff: t("exportDiff"),
+    loading: t("loading"), // while a language's pack is fetched
+    loadFailed: t("loadFailed"), // when the fetch fails
     copyClipboard: t("copyClipboard"),
     download: t("download"),
     reset: t("reset"),

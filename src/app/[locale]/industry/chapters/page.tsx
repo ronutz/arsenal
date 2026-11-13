@@ -9,6 +9,8 @@
 // single-sourced in the "vendors" namespace. Statically generated per locale.
 // ============================================================================
 
+// The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
+import { ogImages } from "@/lib/og";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
@@ -36,10 +38,8 @@ import { CLIENT_ENGAGEMENTS, CLIENT_SECTORS, CLIENT_SOURCES, CLIENT_COUNT, type 
  * fault check-page-titles was written for on 2026-08-16; the fix that day
  * reached the index routes and never came back for these.
  *
- * Title only, deliberately: ogImages() would point at public/og/page/chapters-<locale>.png,
- * and this slug is not in gen-og's STATIC_PAGES list, so the card does not exist
- * and check-og would fail on a manifest entry with nothing behind it. The page
- * keeps the default social card until the slug is added to that list.
+ * SOCIAL CARD (12/11/2026): the page names the Industry card ("industry" in
+ * gen-og's STATIC_PAGES list), as every page of the industry section does.
  */
 export async function generateMetadata({
   params,
@@ -48,7 +48,8 @@ export async function generateMetadata({
 }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "vendors" });
-  return { title: t("indexTitle") };
+  // The title, and the Industry card (12/11/2026: the page shipped the generic one).
+  return { title: t("indexTitle"), ...ogImages("page", "industry", locale, t("indexTitle")) };
 }
 
 export default async function VendorsIndexPage({

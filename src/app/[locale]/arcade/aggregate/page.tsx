@@ -32,6 +32,8 @@ import DeskItemControls from "@/components/desk/DeskItemControls";
 import GameOrigins from "@/components/dev/fun/GameOrigins";
 // The crumb back to the shelf.
 import { Link } from "@/i18n/navigation";
+// The link to this game's full scoreboard, under the introduction (PRIME 12/11/2026).
+import GameScoresLink from "@/components/dev/fun/GameScoresLink";
 // The board.
 import Aggregate from "@/components/dev/fun/games/Aggregate";
 // "Solve the other puzzles" (PRIME 05/11/2026): the call-out, rendered here, and the slot that hands it to the frame.
@@ -87,6 +89,8 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
               <h1 className="article-title">{t("title")}</h1>
               <p className="fg-tagline">{t("tagline")}</p>
               <p className="fg-intro">{t("intro")}</p>
+              {/* The way to this game's scoreboard, where a player looks before playing (PRIME 12/11/2026). */}
+              <GameScoresLink game="aggregate" />
               {/* My desk (12/11/2026): keep the game, tick it off as done, or put it on a path; kept in this browser. */}
               <MessageSlice namespaces={["deskItem"]}>
                 <DeskItemControls item="game:aggregate" />

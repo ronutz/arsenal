@@ -6,6 +6,10 @@
 // is what lets the roster grow without a curator deciding where things go.
 // ============================================================================
 
+// The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
+import { ogImages } from "@/lib/og";
+// One description for the meta, og and twitter fields, merged into the card.
+import { withDescription } from "@/lib/metaDescription";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { LIVE_LOCALE_CODES } from "@/i18n/locales";
@@ -27,7 +31,8 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "roles" });
-  return { title: t("title"), description: t("metaDescription") };
+  // The page's own card (12/11/2026: it shipped the generic one), with the description in the meta, og and twitter fields.
+  return { title: t("title"), ...withDescription(t("metaDescription"), ogImages("page", "roles", locale, t("title")), "roles") };
 }
 
 export default async function RolesPage({ params }: { params: Promise<{ locale: string }> }) {

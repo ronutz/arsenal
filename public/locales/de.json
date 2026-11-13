@@ -27532,7 +27532,8 @@
       "preparing": "Unterricht in Vorbereitung:",
       "cylk2020": "Lösungsberatung und Pre-Sales über CYLK, den Sicherheitsintegrator aus São Paulo, während die Trainertätigkeit in Vollzeit bei dessen Schwesterunternehmen InLearn begann: Application Delivery und Sicherheit von F5, Firewalls von Palo Alto Networks, Fortinet, Schwachstellenmanagement von Tenable, Privileged Access von CyberArk und Netzwerkanalyse von Corvil, als Proofs of Concept, Designs und Kundenschulungen. Alle sechs sind hier vermerkt, und jeder hat sein Kapitel im beruflichen Werdegang.",
       "implementationWhere": "Implementierung · über CYLK, TDec und direkte Aufträge",
-      "cylk2020Where": "Pre-Sales und Beratung · über CYLK"
+      "cylk2020Where": "Pre-Sales und Beratung · über CYLK",
+      "instructorProfile": "Das Trainerprofil von Rodolfo Nützmann bei Red Education"
     },
     "origins": {
       "title": "Wo es anfing",
@@ -31581,7 +31582,9 @@
         "roundsPerBrowser": "Runden pro Browser: {n}",
         "sparkDayBrowsers": "{date}: {played, plural, one {# Runde} other {# Runden}}, {solved} gelöst, eindeutige Browser: {browsers}",
         "sparkBrowsersNote": "Der kurze Strich über einem Balken markiert die eindeutigen Browser des Tages (jeder Browser zählt einmal pro Tag; keine Personen). Tage vor Beginn der Zählung haben keinen."
-      }
+      },
+      "playGame": "{game} spielen",
+      "gameScoreboard": "Punktestände von {game} ansehen"
     },
     "arcadeCardName": "Die Arcade",
     "arcadeCardBlurb": "{count, plural, one {{count} Spiel} other {{count} Spiele}} nach klassischen Spielprinzipien, so lange spielbar, wie Sie möchten; {daily, plural, one {{daily} davon hat} other {{daily} davon haben}} einen Tagesdurchgang, der auf die öffentliche Bestenliste kommt."
@@ -31969,7 +31972,9 @@
     "fullTitle": "Vollständige Datei",
     "close": "Schließen",
     "copied": "Kopiert",
-    "namespaceLabel": "Namespace"
+    "namespaceLabel": "Namespace",
+    "loading": "Die Texte dieser Sprache werden geladen…",
+    "loadFailed": "Die Texte dieser Sprache konnten nicht geladen werden. Laden Sie die Seite neu, um es erneut zu versuchen."
   },
   "toolRequirements": {
     "heading": "Was diese Seite braucht",
@@ -33829,7 +33834,8 @@
       "read": "Die Broschüre lesen",
       "page": "Ihre Seite bei Red Education",
       "readOn": "Vollständig gelesen am 6. Oktober 2026."
-    }
+    },
+    "instructorProfile": "Das Trainerprofil von Rodolfo Nützmann bei Red Education"
   },
   "toolDocs": {
     "titleSuffix": "(Dokumentation)",

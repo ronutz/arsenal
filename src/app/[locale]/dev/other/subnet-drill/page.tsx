@@ -6,6 +6,10 @@
 // and an inline "about" (this room's tools live outside the catalogue, so the
 // short provenance renders here rather than through the tool-page map).
 // ============================================================================
+// The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
+import { ogImages } from "@/lib/og";
+// One description for the meta, og and twitter fields, merged into the card.
+import { withDescription } from "@/lib/metaDescription";
 import type { Metadata } from "next";
 import MessageSlice from "@/components/MessageSlice";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -23,7 +27,8 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "devOther" });
   return {
     title: t("subnetDrill.metaTitle"),
-    description: t("subnetDrill.metaDescription"),
+    // The description in the meta, og and twitter fields, and the page's card (12/11/2026: it shipped the generic one).
+    ...withDescription(t("subnetDrill.metaDescription"), ogImages("page", "dev-other", locale, t("subnetDrill.metaTitle")), "dev/other/subnet-drill"),
   };
 }
 

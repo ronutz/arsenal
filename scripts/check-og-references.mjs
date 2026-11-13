@@ -11,7 +11,10 @@
 //   2. og:image names a file the export does not contain;
 //   3. twitter:image names a different file from og:image;
 //   4. the file is not a PNG or JPEG, or its pixel size differs from the
-//      og:image:width and og:image:height the page declares.
+//      og:image:width and og:image:height the page declares;
+//   5. (12/11/2026) the page ships the generic card /og/default.png and its
+//      route is not a declared deliberate exception in scripts/og-generic-allow.mjs
+//      (PRIME: the endorsements page, and 585 other English pages, shared it).
 //
 // WHY THIS EXISTS. scripts/check-og.mjs checks the cards a hand-kept list of
 // routes names, before the build. On 05/11/2026 a check of the built pages
@@ -33,6 +36,8 @@ import fs from "node:fs";
 import path from "node:path";
 // The script's own location, to find the repository root from it.
 import { fileURLToPath } from "node:url";
+// The routes allowed to share the generic card, with their reasons (12/11/2026).
+import { GENERIC_CARD_ALLOW, allowedGeneric } from "./og-generic-allow.mjs";
 
 // The repository root, one folder above this script.
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -55,6 +60,8 @@ const sizes = new Map();
 const perFolder = new Map();
 // Exceptions that matched, for the stale check.
 const exemptSeen = new Set();
+// Generic-card exceptions that matched, for their stale check (12/11/2026).
+const genericSeen = new Set();
 
 /** A PNG's or a JPEG's pixel size as [width, height], from its header; null for anything else. */
 function imageSize(file) {
@@ -120,6 +127,17 @@ function checkPage(file, rel) {
   let pathname;
   // An absolute URL is parsed; a relative one is taken as a path.
   try { pathname = new URL(og, "https://invalid.invalid").pathname; } catch { errors.push(`${rel} og:image is not a URL: ${og}`); return; }
+  // THE GENERIC CARD (12/11/2026): a page ships a card of its own or of its section, unless its route is declared.
+  if (pathname === "/og/default.png") {
+    // The route without the language folder and the trailing slash ("/en/x/y/" -> "/x/y").
+    const route = "/" + rel.split("/").filter(Boolean).slice(1).join("/");
+    // The allow-list key that covers it, if any.
+    const key = allowedGeneric(route);
+    // Listed: deliberate, and remembered for the stale check.
+    if (key) genericSeen.add(key);
+    // Otherwise a page with a title of its own unfurls with the site's generic picture.
+    else errors.push(`${rel} ships the generic card /og/default.png: name a card with ogImages(...) or list "${route}" in scripts/og-generic-allow.mjs with a reason`);
+  }
   // The file that path names in the export.
   const card = path.join(OUT, decodeURIComponent(pathname));
   // The file must exist, or the link unfurls blank.
@@ -179,6 +197,8 @@ for (const folder of folders) {
 if (pages < 100) errors.push(`only ${pages} pages found under out/ (has the layout changed?)`);
 // THE STALE HALF: an exception that matched nothing has done its job.
 for (const rel of NO_CARD.keys()) if (!exemptSeen.has(rel)) errors.push(`NO_CARD "${rel}" no longer matches a page without a card and must be removed.`);
+// The same for the generic-card exceptions: one no built page needs any more must go (12/11/2026).
+for (const key of GENERIC_CARD_ALLOW.keys()) if (!genericSeen.has(key)) errors.push(`og-generic-allow "${key}" no longer matches a page with the generic card and must be removed.`);
 
 // Any finding fails the build, with the first forty shown.
 if (errors.length) {
@@ -197,6 +217,7 @@ const breakdown = [...perFolder].map(([f, n]) => `${f} ${n}`).join(", ");
 // The summary line.
 console.log(
   `[check-og-references] OK: ${pages} built page(s) read (${breakdown}); every page but ${NO_CARD.size} declared ` +
-    `exception(s) names a social card, og:image and twitter:image agree, and all ${sizes.size} card file(s) exist ` +
+    `exception(s) names a social card, og:image and twitter:image agree, only ${genericSeen.size} declared route(s) share the ` +
+    `generic card, and all ${sizes.size} card file(s) exist ` +
     `at the size the pages declare.`
 );

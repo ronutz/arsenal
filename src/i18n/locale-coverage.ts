@@ -10,10 +10,10 @@ export const LOCALE_COVERAGE: Record<string, number> = {
   "fr": 0.802,
   "it": 0.802,
   "pt-BR": 0.9988,
-  "ru": 0.0351,
-  "tr": 0.0351,
-  "zh-Hans": 0.0351,
+  "ru": 0.035,
+  "tr": 0.035,
+  "zh-Hans": 0.035,
 };
 
 /** English keys counted at generation time (the denominator). */
-export const LOCALE_COVERAGE_DENOMINATOR = 36204;
+export const LOCALE_COVERAGE_DENOMINATOR = 36210;

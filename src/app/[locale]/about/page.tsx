@@ -30,6 +30,8 @@
 import type { CSSProperties } from "react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ogImages } from "@/lib/og";
+// The author's Red Education instructor profile, attributed at render, and the rel that keeps its referrer (12/11/2026).
+import { RED_EDUCATION_INSTRUCTOR_PROFILE, attributeRedEducationUrl, externalRel } from "@/config/redEducation";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 // MARKS (PRIME 2026-10-04): the era-matched vendor wordmarks beside the platform cards and the timeline entries.
@@ -441,6 +443,19 @@ export default async function AboutPage({
                 <span className="about-era-teaching about-era-teaching--preparing">
                   <span className="about-era-teaching-label">{t("path.preparing")}</span>
                   <span className="mark-row about-era-teaching-marks"><VendorMark vendor="checkpoint" year={thisYear} eraLabel={era} since={since} compact /><VendorMark vendor="zscaler" year={thisYear} eraLabel={era} since={since} compact /><VendorMark vendor="ping" year={thisYear} eraLabel={era} since={since} compact /><VendorMark vendor="forgerock" year={2023} eraLabel={era} since={since} compact /><VendorMark vendor="idira" year={thisYear} eraLabel={era} since={since} compact /><VendorMark vendor="cyberark" year={2026} eraLabel={era} since={since} compact /></span>
+                </span>
+                {/* THE INSTRUCTOR PROFILE (PRIME 12/11/2026: "link / feature my profile page ... wherever you also deem
+                    appropriate"): the Red Education era closes with the author's own page on Red Education's site,
+                    attributed at render (pageType about, cta instructor-profile) and keeping the referrer. */}
+                <span className="about-era-teaching">
+                  <a
+                    href={attributeRedEducationUrl(RED_EDUCATION_INSTRUCTOR_PROFILE, { pageType: "about", locale, cta: "instructor-profile" })}
+                    target="_blank"
+                    rel={externalRel(RED_EDUCATION_INSTRUCTOR_PROFILE)}
+                    className="redu-inline-link"
+                  >
+                    {t("path.instructorProfile")}
+                  </a>
                 </span>
               </li>
             </ol>

@@ -10,6 +10,8 @@
 // "Endorsements" is the canon nav name for this section. Statically generated.
 // ============================================================================
 
+// The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
+import { ogImages } from "@/lib/og";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import MessageSlice from "@/components/MessageSlice";
 import Header from "@/components/Header";
@@ -58,10 +60,9 @@ function ReviewReminder({ count }: { count: number }) {
  * fault check-page-titles was written for on 2026-08-16; the fix that day
  * reached the index routes and never came back for these.
  *
- * Title only, deliberately: ogImages() would point at public/og/page/endorsements-<locale>.png,
- * and this slug is not in gen-og's STATIC_PAGES list, so the card does not exist
- * and check-og would fail on a manifest entry with nothing behind it. The page
- * keeps the default social card until the slug is added to that list.
+ * SOCIAL CARD (12/11/2026, PRIME: "the social sharing card for the endorsements
+ * page is a generic one"). The slug "endorsements" is now in gen-og's STATIC_PAGES
+ * list, so the page names its own titled card, "Endorsements", like the other main pages.
  */
 export async function generateMetadata({
   params,
@@ -70,7 +71,8 @@ export async function generateMetadata({
 }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "endorsements" });
-  return { title: t("title") };
+  // The title, and the page's own card, titled with the page's eyebrow ("Endorsements").
+  return { title: t("title"), ...ogImages("page", "endorsements", locale, t("eyebrow")) };
 }
 
 export default async function EndorsementsPage({

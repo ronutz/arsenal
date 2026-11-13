@@ -7,6 +7,10 @@
 // serial console island (hardware-permission API + live session, no golden
 // vectors), and an inline about with the Chromium-only / permission caveats.
 // ============================================================================
+// The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
+import { ogImages } from "@/lib/og";
+// One description for the meta, og and twitter fields, merged into the card.
+import { withDescription } from "@/lib/metaDescription";
 import type { Metadata } from "next";
 import MessageSlice from "@/components/MessageSlice";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -18,7 +22,7 @@ import { Link } from "@/i18n/navigation";
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "devOther" });
-  return { title: t("webserial.metaTitle"), description: t("webserial.metaDescription") };
+  return { title: t("webserial.metaTitle"), ...withDescription(t("webserial.metaDescription"), ogImages("page", "dev-other", locale, t("webserial.metaTitle")), "dev/other/web-serial-console") }; // the page's card (12/11/2026: it shipped the generic one)
 }
 
 export default async function SerialConsolePage({ params }: { params: Promise<{ locale: string }> }) {

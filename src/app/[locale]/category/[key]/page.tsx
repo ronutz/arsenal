@@ -17,6 +17,8 @@
 // otherwise carry here.
 // ============================================================================
 
+// The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
+import { ogImages } from "@/lib/og";
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -58,7 +60,10 @@ export async function generateMetadata({
   if (!categoryKeys().includes(key)) return {};
   const t = await getTranslations({ locale, namespace: "tools" });
   const tCat = await getTranslations({ locale, namespace: "category" });
-  return { title: `${t(`categories.${key}`)} ${tCat("eyebrow")}` };
+  // The category's title.
+  const title = `${t(`categories.${key}`)} ${tCat("eyebrow")}`;
+  // The title, and the Tools card (12/11/2026: the page shipped the generic one).
+  return { title, ...ogImages("page", "tools", locale, title) };
 }
 
 export default async function CategoryPage({

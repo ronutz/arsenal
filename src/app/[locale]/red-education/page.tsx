@@ -63,6 +63,8 @@ import SiteFooter from "@/components/SiteFooter";
 import {
   RED_EDUCATION_BASE,
   RED_EDUCATION_ALL_VENDORS,
+  // The author's instructor profile on Red Education's site (12/11/2026), attributed below like every other link.
+  RED_EDUCATION_INSTRUCTOR_PROFILE,
   redEducationUrl,
   attributeRedEducationUrl,
   externalRel,
@@ -224,6 +226,19 @@ export default async function RedEducationPage({
                   before the figures: the institution behind the author's authorised training and his
                   commercial professional engagements. */}
               <p className="redu-identity">{t("identityLine")}</p>
+              {/* THE INSTRUCTOR PROFILE (PRIME 12/11/2026: "please link / feature my profile page ... in the website's
+                  Red Education page"): one line under the identity line, to the author's own page on Red Education's
+                  site, attributed at render (pageType red-education, cta instructor-profile) and keeping the referrer. */}
+              <p className="redu-identity">
+                <a
+                  href={attributeRedEducationUrl(RED_EDUCATION_INSTRUCTOR_PROFILE, { pageType: "red-education", locale, cta: "instructor-profile" })}
+                  target="_blank"
+                  rel={externalRel(RED_EDUCATION_INSTRUCTOR_PROFILE)}
+                  className="redu-inline-link"
+                >
+                  {t("instructorProfile")}
+                </a>
+              </p>
               {/* SECTION ANCHORS (PRIME 2026-08-16; restructured 2026-10-06, G7). The page is long and now
                   reads in six parts, in the order a reader deciding whether to train here needs them: why
                   Red Education, what it enables, where the author's work fits, the bench, the case evidence,

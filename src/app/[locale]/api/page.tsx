@@ -14,6 +14,8 @@
 // interactive reference it drives are English by convention.
 // ============================================================================
 
+// The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
+import { ogImages } from "@/lib/og";
 import type { Metadata } from "next";
 import MessageSlice from "@/components/MessageSlice";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -29,7 +31,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "api" });
-  return { title: t("title") };
+  return { title: t("title"), ...ogImages("page", "api", locale, t("title")) }; // the page's card (12/11/2026: it shipped the generic one)
 }
 
 export default async function ApiPage({

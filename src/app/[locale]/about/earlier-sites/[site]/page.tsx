@@ -25,11 +25,14 @@
 // is allowed by a path-scoped Content-Security-Policy (frame-ancestors 'self')
 // in public/_headers; the global policy still says 'none' everywhere else.
 //
-// Title only in generateMetadata, with a description: ogImages() would name a
-// social card under public/og/page/ that gen-og does not generate for these
-// slugs (the same reason the earlier-sites page keeps the default card).
+// Title and description in generateMetadata, with the About card (12/11/2026:
+// these pages shipped the generic one; every page under /about now names "about").
 // ============================================================================
 
+// The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
+import { ogImages } from "@/lib/og";
+// One description for the meta, og and twitter fields, merged into the card.
+import { withDescription } from "@/lib/metaDescription";
 import { formatDay } from "@/lib/changelogView"; // a date in the reader's own words (2026-11-11)
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -66,7 +69,7 @@ export async function generateMetadata({
   const clone = findClone(site);
   if (!clone) return {};
   const t = await getTranslations({ locale, namespace: "earlierSites.clone" });
-  return { title: t(`metaTitle.${clone.slug}`), description: t(`metaDescription.${clone.slug}`) };
+  return { title: t(`metaTitle.${clone.slug}`), ...withDescription(t(`metaDescription.${clone.slug}`), ogImages("page", "about", locale, t(`metaTitle.${clone.slug}`)), "about/earlier-sites/site") }; // the page's card (12/11/2026: it shipped the generic one)
 }
 
 /** The today's-equivalent links for the tools section, per clone. */

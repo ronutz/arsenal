@@ -23,6 +23,10 @@
 // the locales that actually have a translated pack. Statically generated.
 // ============================================================================
 
+// The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
+import { ogImages } from "@/lib/og";
+// One description for the meta, og and twitter fields, merged into the card.
+import { withDescription } from "@/lib/metaDescription";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import Header from "@/components/Header";
@@ -42,7 +46,7 @@ export async function generateMetadata({
   // The document title names the hub, not its translations section (audit F12, 2026-10-18): "title" is the
   // heading of the translations section further down the page, and the browser tab, history and social cards
   // were calling the whole page "Help improve the translations". The description is the hub's lede.
-  return { title: t("hubTitle"), description: t("hubLede") };
+  return { title: t("hubTitle"), ...withDescription(t("hubLede"), ogImages("page", "contribute", locale, t("hubTitle")), "contribute") }; // the page's card (12/11/2026: it shipped the generic one)
 }
 
 export default async function ContributePage({
