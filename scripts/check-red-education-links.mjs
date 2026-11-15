@@ -117,6 +117,12 @@ if (!fs.existsSync(BASE)) {
 // out: one link per post would put a Red Education link on every commentary page, the creep this baseline resists.
 // Not a route into the course catalogue; not in the Learn corpus.
 const BASELINE_TOTAL = 124;
+// 2026-11-15, PRIME's decision (15/11/2026 01:40, "ok, link to my Red Education profile"), reversing the 12/11 note
+// above: every blog post's byline ends with ONE attributed link to the author's instructor profile (pageType blog,
+// pageSlug the post, cta byline). Like the footer affiliation link it is a per-page identity link, so it is checked on
+// its own below (exactly one per post page, destination /team/rodolfo-nutzmann/, none anywhere else) and kept out of
+// this baseline, which would otherwise grow with every post and could no longer see a swap.
+const BYLINE_PROFILE = /utm_content=blog(?:%2F|\/)[a-z0-9._-]+&(?:amp;)?utm_term=[a-z0-9._-]+\.byline/; // URLSearchParams writes the slash as %2F
 // The marker that identifies the footer affiliation link in built HTML: the
 // attribution parameters SiteFooter.tsx sets, in the order URLSearchParams writes
 // them (utm_content before utm_term).
@@ -219,6 +225,10 @@ let total = 0;
 let pages = 0;
 // Pages whose footer affiliation link is missing, doubled or pointing anywhere but the root.
 const footerProblems = [];
+// Post pages whose byline profile link is missing, doubled or misdirected, and other pages that carry one.
+const bylineProblems = [];
+// Blog post pages seen, for the summary line.
+let postPages = 0;
 const inLearn = [];
 // path -> the routes that link to it, so a finding names where to look.
 const foundPaths = new Map();
@@ -229,7 +239,19 @@ for (const file of walk(BASE)) {
   // its own) and the rest (the baseline, the Learn rule, the declared paths).
   const urls = [...html.matchAll(LINK_URL)].map((m) => m[1]);
   const footerLinks = urls.filter((u) => FOOTER_AFFILIATION.test(u));
-  const others = urls.filter((u) => !FOOTER_AFFILIATION.test(u));
+  // The blog byline's profile link (since 2026-11-15), also checked on its own.
+  const bylineLinks = urls.filter((u) => BYLINE_PROFILE.test(u));
+  const others = urls.filter((u) => !FOOTER_AFFILIATION.test(u) && !BYLINE_PROFILE.test(u));
+  // A blog post page (/blog/<slug>) carries exactly one byline link, to the instructor profile; no other page carries one.
+  const isPost = /^\/blog\/[^/]+$/.test(route);
+  if (isPost && bylineLinks.length !== 1) bylineProblems.push(`${route} (${bylineLinks.length})`);
+  if (!isPost && bylineLinks.length > 0) bylineProblems.push(`${route} (not a post, ${bylineLinks.length})`);
+  for (const u of bylineLinks) {
+    let p;
+    try { p = new URL(u.replace(/&amp;/g, "&")).pathname; } catch { p = "(malformed)"; }
+    if (p !== "/team/rodolfo-nutzmann/") bylineProblems.push(`${route} -> ${p}`);
+  }
+  if (isPost) postPages += 1;
   // The affiliation link lives in the site footer, so the check applies only to
   // pages that actually render the footer. A handful of bare routes (the three
   // title-less dev/admin pages that check-page-titles also exempts) ship without
@@ -271,6 +293,12 @@ if (footerProblems.length > 0) {
   problems.push(
     `${footerProblems.length} page(s) without exactly one footer affiliation link to the Red Education root:\n        ` +
     footerProblems.slice(0, 10).join("\n        "),
+  );
+}
+if (bylineProblems.length > 0) {
+  problems.push(
+    `${bylineProblems.length} page(s) where the blog byline profile link is not exactly one, on a post, to /team/rodolfo-nutzmann/:\n        ` +
+    bylineProblems.slice(0, 10).join("\n        "),
   );
 }
 if (inLearn.length > 0) {
@@ -315,6 +343,6 @@ if (unseenPaths.length > 0) {
 console.log(
   `[check-red-education-links] OK: ${total} attributed link(s) (baseline ${BASELINE_TOTAL}) across ` +
   `${foundPaths.size} declared destination(s) of ${DECLARED_PATHS.size}; Learn corpus clear; ` +
-  `footer affiliation link present once on all ${pages} page(s).` +
+  `footer affiliation link present once on all ${pages} page(s); byline profile link once on all ${postPages} post page(s).` +
   (total < BASELINE_TOTAL ? ` LOWER - drop BASELINE_TOTAL to ${total}.` : ""),
 );

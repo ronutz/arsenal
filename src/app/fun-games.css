@@ -1053,6 +1053,44 @@ a.fg-link-button { display: inline-flex; align-items: center; }
 @media (prefers-reduced-motion: reduce) { .fg-pod-switch-thumb { transition: none; } }
 /* The line under the switch. */
 .fg-pod-hard-desc { margin: 0; font-size: 0.8rem; color: var(--text-secondary); max-width: 34rem; }
+/* The bit view (PRIME 12/11/2026 18:28): its switch and question under the form. */
+.fg-pod-bits-switch { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.75rem; }
+/* The question asked before a daily try is spent on it. */
+.fg-pod-bits-ask { align-self: center; font-weight: 600; color: var(--text-primary); }
+/* The row on the board that records the try the bit view cost: one line across the four columns. */
+.fg-pod-row-bits { grid-template-columns: 1fr; }
+/* Its words, in the place of the four squares. */
+.fg-pod-bits-note { border: 1px dashed var(--border-strong); border-radius: var(--radius-sm); padding: 0.45rem 0.6rem; font-size: 0.85rem; color: var(--text-secondary); text-align: center; }
+/* The panel: the rows of octets and bits, set like the teaching line after a round. */
+.fg-pod-bits { border-left: 3px solid var(--accent-primary); background: var(--surface-elevated); border-radius: var(--radius-sm); padding: 0.75rem 0.95rem; margin-top: 0.75rem; display: flex; flex-direction: column; gap: 0.6rem; }
+/* Its opening line and the line without a mask. */
+.fg-pod-bits-intro { margin: 0; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; }
+/* The legend under the rows. */
+.fg-pod-bits-legend { margin: 0; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; }
+/* One row: its label over its four octets. */
+.fg-pod-bits-row { display: flex; flex-direction: column; gap: 0.25rem; }
+/* The row's label. */
+.fg-pod-bits-label { margin: 0; font-size: 0.8rem; font-weight: 700; color: var(--text-primary); }
+/* The four octets side by side, two by two on a narrow phone; every row wraps the same way, so bits stay aligned. */
+.fg-pod-bits-octets { display: grid; grid-template-columns: repeat(4, max-content); gap: 0.35rem 0.6rem; }
+/* Two by two below 26rem (a 390-pixel phone). */
+@media (max-width: 26rem) { .fg-pod-bits-octets { grid-template-columns: repeat(2, max-content); } }
+/* One octet: its decimal over its bits. */
+.fg-pod-bits-octet { display: flex; flex-direction: column; align-items: center; gap: 0.15rem; }
+/* The decimal value. */
+.fg-pod-bits-dec { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 0.85rem; color: var(--text-primary); }
+/* The eight bits in a row. */
+.fg-pod-bits-cells { display: flex; gap: 2px; }
+/* One bit: its 1 or 0 printed, in a small box. */
+.fg-pod-bit { display: inline-flex; align-items: center; justify-content: center; width: 1.05rem; height: 1.35rem; font-family: var(--font-mono); font-size: 0.78rem; border: 1px solid var(--border-subtle); border-radius: 3px; color: var(--text-secondary); background: var(--surface-base); }
+/* A set bit reads heavier. */
+.fg-pod-bit-one { color: var(--text-primary); font-weight: 700; }
+/* Under a 1 of the mask: the network part, a solid outline. */
+.fg-pod-bit-net { border-style: solid; border-color: var(--accent-primary); }
+/* Under a 0 of the mask: the host part, a dashed outline. */
+.fg-pod-bit-host { border-style: dashed; border-color: var(--border-strong); }
+/* The last network bit: a bar on its right edge marks where the mask's ones end. */
+.fg-pod-bit-edge { box-shadow: 3px 0 0 0 var(--accent-primary); }
 /* The statistics after the daily round. */
 .fg-pod-stats { border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-elevated); padding: 0.85rem 1rem; display: flex; flex-direction: column; gap: 0.6rem; }
 /* Its heading. */
@@ -2120,3 +2158,14 @@ a.fg-dash-rank-name:hover, a.fg-dash-rank-name:focus-visible { text-decoration: 
 /* "Play next": the result's first button, in the next game's accent, with its arrow. */
 .fg-button-next { display: inline-flex; align-items: center; gap: 0.45rem; text-decoration: none; background: var(--glyph-accent, var(--accent-primary)); border-color: var(--glyph-accent, var(--accent-primary)); color: var(--canvas-primary); box-shadow: 0 0 0 3px color-mix(in oklab, var(--glyph-accent, var(--accent-primary)) 25%, transparent); }
 .fg-button-next:hover, .fg-button-next:focus-visible { filter: brightness(1.08); }
+
+/* ---- The Ping-Pong virus simulator (15/11/2026, PongVirus.tsx) ------------
+   One bullet in a text-mode cell, over every page while p v has let it loose.
+   The layer is fixed over the viewport and ignores the pointer; the ball is
+   moved by the component's transform, one cell per step, and keeps moving
+   under reduced motion by the site owner's decision (it jumps, never glides). */
+
+/* The layer over the whole viewport. */
+.pong-virus { position: fixed; inset: 0; z-index: 9990; pointer-events: none; overflow: hidden; }
+/* The ball: a 10 by 20 pixel cell holding the bullet character, in the theme's text colour. */
+.pong-virus-ball { position: absolute; left: 0; top: 0; display: flex; align-items: center; justify-content: center; width: 10px; height: 20px; font-family: var(--font-mono); font-size: 20px; line-height: 20px; color: var(--text-primary); will-change: transform; }

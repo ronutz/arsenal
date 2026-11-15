@@ -70,17 +70,20 @@ import { liveStreak, loadRecord, recordResult, saveDailyState, updateRecord, typ
 import { handoffHref } from "@/lib/handoff";
 // The rules.
 import {
+  BITS_TRY,
   BUCKETS,
   FIELDS,
   GAME_ID,
   MAX_TRIES,
   allOk,
+  bitView,
   bucketOf,
   dailyPuzzle,
   formatAddress,
   grade,
   hardBounds,
   hardViolation,
+  isBitsTry,
   maskOf,
   parseAddress,
   parseHosts,
@@ -91,6 +94,7 @@ import {
   solve,
   tierForDay,
   why,
+  type BitRow,
   type Bounds,
   type Bucket,
   type Facts,
@@ -388,6 +392,12 @@ interface RoundProps {
   locale: string;
   /** Hard mode: a field once right is locked, every arrow must be followed (the daily round only). */
   hard?: boolean;
+  /** The bit view is on (PRIME 12/11/2026 18:28): each octet in decimal and bits, the mask, and what it makes of the address. */
+  bitsOn?: boolean;
+  /** Turn the bit view on (or, in practice, off); absent where it is not offered. */
+  onBits?: () => void;
+  /** Turning the bit view on costs a try (the daily round); false in practice, where it is free. */
+  bitsCost?: boolean;
 }
 
 /**
@@ -396,7 +406,7 @@ interface RoundProps {
  * @param props see RoundProps
  * @returns the round
  */
-function Round({ puzzle, guesses, onGuess, idBase, locale, hard = false }: RoundProps) {
+function Round({ puzzle, guesses, onGuess, idBase, locale, hard = false, bitsOn = false, onBits, bitsCost = false }: RoundProps) {
   // The game's strings.
   const t = useTranslations("devFun.games.prefix-of-the-day");
   // The shell's shared strings.
@@ -409,8 +419,12 @@ function Round({ puzzle, guesses, onGuess, idBase, locale, hard = false }: Round
   const marks = useMemo(() => guesses.map((g) => grade(g, answer)), [guesses, answer]);
   // Solved or out of tries.
   const done = marks.some(allOk) || guesses.length >= MAX_TRIES;
-  // The form's text, prefilled with the last try so only the wrong fields need retyping.
-  const [values, setValues] = useState<Record<Field, string>>(() => (guesses.length ? toTexts(guesses[guesses.length - 1]) : EMPTY));
+  // The tries the player typed (the bit view's marker row is a cost, not a try at the answer).
+  const typedTries = guesses.filter((g) => !isBitsTry(g));
+  // The form's text, prefilled with the last typed try so only the wrong fields need retyping.
+  const [values, setValues] = useState<Record<Field, string>>(() => (typedTries.length ? toTexts(typedTries[typedTries.length - 1]) : EMPTY));
+  // Asking "use a try to show the bits?" before the bit view is turned on in the daily round.
+  const [askBits, setAskBits] = useState(false);
   // A validation message, or null.
   const [error, setError] = useState<string | null>(null);
   // The polite announcement of the last try.
@@ -503,8 +517,12 @@ function Round({ puzzle, guesses, onGuess, idBase, locale, hard = false }: Round
     if (firstWrong) window.setTimeout(() => inputs.current[firstWrong]?.select(), 0);
   };
 
-  // The latest marks, shown beside each label.
-  const lastMarks = marks.length ? marks[marks.length - 1] : null;
+  // The latest marks of a typed try, shown beside each label (the bit view's row has none to show).
+  const lastTyped = guesses.map((g, i) => (isBitsTry(g) ? -1 : i)).filter((i) => i >= 0).pop();
+  // Its marks, or none yet.
+  const lastMarks = lastTyped === undefined ? null : marks[lastTyped];
+  // The bit view needs a try to spare after the one it costs, so it is offered while two or more are left.
+  const bitsAffordable = !bitsCost || MAX_TRIES - guesses.length >= 2;
 
   // The round.
   return (
@@ -531,6 +549,13 @@ function Round({ puzzle, guesses, onGuess, idBase, locale, hard = false }: Round
                   {FIELDS.map((f) => (
                     <span key={f} className="fg-pod-sq fg-pod-sq-empty" />
                   ))}
+                </li>
+              );
+            // The bit view's row: the try it cost, said in words.
+            if (isBitsTry(g))
+              return (
+                <li key={i} className="fg-pod-row fg-pod-row-bits" aria-label={t("bitsRow")}>
+                  <span className="fg-pod-bits-note">{t("bitsRow")}</span>
                 </li>
               );
             // A try: four marked squares, read as one sentence.
@@ -639,7 +664,128 @@ function Round({ puzzle, guesses, onGuess, idBase, locale, hard = false }: Round
       <p className="sr-only" aria-live="polite">
         {live}
       </p>
+
+      {/* The bit view's switch (PRIME 12/11/2026 18:28): offered while the round is open; in the daily round it costs a
+          try, said before it is spent, and stays on; in practice it is free and can be turned off again. */}
+      {onBits && !done && (!bitsOn || !bitsCost) && (
+        <div className="fg-pod-bits-switch">
+          {!askBits ? (
+            <button
+              type="button"
+              className="fg-button"
+              aria-pressed={bitsOn}
+              aria-describedby={`${idBase}-bits-cost`}
+              disabled={!bitsOn && !bitsAffordable}
+              onClick={() => (bitsCost ? setAskBits(true) : onBits())}
+            >
+              {bitsOn ? t("bitsHide") : t("bitsButton")}
+            </button>
+          ) : (
+            <div className="fg-buttons" role="group" aria-label={t("bitsConfirm")}>
+              <span className="fg-pod-bits-ask">{t("bitsConfirm")}</span>
+              <button
+                type="button"
+                className="fg-button fg-button-primary"
+                onClick={() => {
+                  // The question is answered.
+                  setAskBits(false);
+                  // The try is spent and the view turns on.
+                  onBits();
+                }}
+              >
+                {t("bitsYes")}
+              </button>
+              <button type="button" className="fg-link-button" onClick={() => setAskBits(false)}>
+                {t("bitsCancel")}
+              </button>
+            </div>
+          )}
+          {/* What it costs, or why it cannot be had now. */}
+          <p id={`${idBase}-bits-cost`} className="fg-pod-hard-desc">
+            {!bitsCost ? t("bitsFree") : bitsAffordable ? t("bitsCost") : t("bitsTooLate")}
+          </p>
+        </div>
+      )}
+      {/* The bit view itself, following the mask typed or stepped in the form. */}
+      {bitsOn && <BitsPanel address={puzzle.address} mask={parseMask(values.mask)} />}
     </div>
+  );
+}
+
+/**
+ * One row of the bit view: a label, then the four octets, each its decimal over its eight bits. Every bit is printed
+ * as 1 or 0; whether it falls in the network part (under a 1 of the mask) or the host part is drawn as a solid or a
+ * dashed outline and said in each octet's screen-reader line, so colour never carries it alone.
+ *
+ * @param props the label, the row and the mask's bits (null when there is no valid mask)
+ * @returns the row
+ */
+function BitsRowView({ label, row, mask }: { label: string; row: BitRow; mask: BitRow | null }) {
+  // The game's strings.
+  const t = useTranslations("devFun.games.prefix-of-the-day");
+  // The row.
+  return (
+    <div className="fg-pod-bits-row">
+      <p className="fg-pod-bits-label">{label}</p>
+      <div className="fg-pod-bits-octets">
+        {row.octets.map((o, i) => (
+          <div key={i} className="fg-pod-bits-octet">
+            {/* The decimal, then the bits, for sighted readers; one sentence for screen readers. */}
+            <span className="fg-pod-bits-dec" aria-hidden="true">
+              {o.dec}
+            </span>
+            <span className="fg-pod-bits-cells" aria-hidden="true">
+              {o.bits.map((b, j) => {
+                // Under a 1 of the mask: the network part; under a 0, the host part; no mask, neither.
+                const part = mask === null ? "" : mask.octets[i].bits[j] === 1 ? " fg-pod-bit-net" : " fg-pod-bit-host";
+                // The last network bit carries the boundary bar.
+                const edge = mask !== null && mask.octets[i].bits[j] === 1 && (j === 7 ? i < 3 && mask.octets[i + 1].bits[0] === 0 : mask.octets[i].bits[j + 1] === 0);
+                // One cell.
+                return (
+                  <span key={j} className={`fg-pod-bit${b ? " fg-pod-bit-one" : ""}${part}${edge ? " fg-pod-bit-edge" : ""}`}>
+                    {b}
+                  </span>
+                );
+              })}
+            </span>
+            <span className="sr-only">{t("bitsOctet", { n: i + 1, dec: o.dec, bits: o.bits.join("") })}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * The bit view: the address, the mask the player has set, and what that mask makes of the address (AND keeps the
+ * network part, OR with the inverted mask sets the host part to ones), so changing the mask shows at once which bits
+ * of the address it keeps.
+ *
+ * @param props the puzzle's address and the player's mask (null when the field holds nothing valid)
+ * @returns the panel
+ */
+function BitsPanel({ address, mask }: { address: number; mask: number | null }) {
+  // The game's strings.
+  const t = useTranslations("devFun.games.prefix-of-the-day");
+  // The rows, recomputed as the mask changes.
+  const v = useMemo(() => bitView(address, mask), [address, mask]);
+  // The panel.
+  return (
+    <section className="fg-pod-bits" aria-label={t("bitsTitle")}>
+      <p className="fg-pod-why-title">{t("bitsTitle")}</p>
+      <p className="fg-pod-bits-intro">{t("bitsIntro")}</p>
+      <BitsRowView label={t("bitsAddress")} row={v.address} mask={v.mask} />
+      {v.mask ? (
+        <>
+          <BitsRowView label={v.length === null ? t("bitsMaskHoles") : t("bitsMaskLen", { n: v.length })} row={v.mask} mask={v.mask} />
+          <BitsRowView label={t("bitsNetwork")} row={v.network!} mask={v.mask} />
+          <BitsRowView label={t("bitsBroadcast")} row={v.broadcast!} mask={v.mask} />
+          <p className="fg-pod-bits-legend">{t("bitsLegend")}</p>
+        </>
+      ) : (
+        <p className="fg-pod-bits-intro">{t("bitsNoMask")}</p>
+      )}
+    </section>
   );
 }
 
@@ -824,6 +970,8 @@ export default function PrefixOfTheDay({ locale }: { locale: string }) {
   const [pRound, setPRound] = useState(0);
   // The hard-mode switch, as the player left it (kept in the record's extra field).
   const [hardOn, setHardOn] = useState(false);
+  // The bit view in practice, free there (the daily round's is read from its tries: a marker row means on).
+  const [pBits, setPBits] = useState(false);
   // Whether today's round is a hard one: on from its first try and never turned off since.
   const [dayHard, setDayHard] = useState(false);
   // The note under the switch after a press it cannot honour, announced politely; null when there is none.
@@ -865,6 +1013,8 @@ export default function PrefixOfTheDay({ locale }: { locale: string }) {
   const won = marks.some(allOk);
   // Finished today.
   const done = !!daily && (won || daily.length >= MAX_TRIES);
+  // The bit view is on today: its marker row, the try it cost, is among the day's tries.
+  const dayBits = !!daily && daily.some(isBitsTry);
 
   // Hard mode is in force on today's round: on now, and (after the first try) on since the first try.
   const hardActive = hardOn && (!daily || daily.length === 0 || dayHard);
@@ -956,7 +1106,8 @@ export default function PrefixOfTheDay({ locale }: { locale: string }) {
           detail: answerLine(answer),
           share: shareText({
             title: `${t("shareName")} #${puzzleNumber(today)}`,
-            lines: marks.map((m) => FIELDS.map((f) => EMOJI[m[f]]).join("")),
+            // One line per try; the bit view's row is a single sign, so the card shows where the try went.
+            lines: daily.map((g, i) => (isBitsTry(g) ? "🔢" : FIELDS.map((f) => EMOJI[marks[i][f]]).join(""))),
             // "3/6", or "3/6 · Hard" when the whole round was played in hard mode.
             summary: dayHard ? t("shareHard", { result: `${won ? daily.length : "X"}/${MAX_TRIES}` }) : `${won ? daily.length : "X"}/${MAX_TRIES}`,
             locale,
@@ -982,6 +1133,8 @@ export default function PrefixOfTheDay({ locale }: { locale: string }) {
     setPGuesses([]);
     // Not given up.
     setPGaveUp(false);
+    // The bit view starts off again.
+    setPBits(false);
     // A new key for the round.
     setPRound((r) => r + 1);
   };
@@ -1069,7 +1222,7 @@ export default function PrefixOfTheDay({ locale }: { locale: string }) {
           )}
           {/* The round, once the saved tries are read. */}
           {puzzle && daily ? (
-            <Round key={`daily-${today}`} puzzle={puzzle} guesses={daily} onGuess={onDailyGuess} idBase="pod-daily" locale={locale} hard={hardActive} />
+            <Round key={`daily-${today}`} puzzle={puzzle} guesses={daily} onGuess={onDailyGuess} idBase="pod-daily" locale={locale} hard={hardActive} bitsOn={dayBits} onBits={() => onDailyGuess(BITS_TRY)} bitsCost />
           ) : (
             <p className="fg-muted">{tc("loading")}</p>
           )}
@@ -1098,7 +1251,7 @@ export default function PrefixOfTheDay({ locale }: { locale: string }) {
           <div className="fg-pod-wrap">
             <p className="fg-pod-target fg-pod-target-small">{puzzleLabel(practice)}</p>
             {!pGaveUp && (
-              <Round key={`practice-${pRound}`} puzzle={practice} guesses={pGuesses} onGuess={onPracticeGuess} idBase="pod-practice" locale={locale} />
+              <Round key={`practice-${pRound}`} puzzle={practice} guesses={pGuesses} onGuess={onPracticeGuess} idBase="pod-practice" locale={locale} bitsOn={pBits} onBits={() => setPBits((b) => !b)} />
             )}
             {pDone && pAnswer ? (
               <div className={`fg-result ${pWon ? "fg-result-won" : "fg-result-lost"}`} role="status">

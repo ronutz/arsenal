@@ -1,0 +1,216 @@
+---
+slug: bug-bounty-record-payouts-and-the-brazilian-list
+title: "Os maiores bug bounties já pagos, as histórias por trás deles e os programas brasileiros"
+summary: "O maior bug bounty individual do registro público é de US$ 10 milhões, por uma falha no protocolo cross-chain Wormhole; os maiores programas pagam hoje de US$ 17 milhões a US$ 89 milhões por ano. Este post reúne os pagamentos e programas recordistas com as suas bases, as histórias que moldaram a prática, dos US$ 1.000 da Netscape aos US$ 100 mil da Uber e à saída do curl, como começar a caçar bugs sem problema jurídico e uma lista dos programas e canais de divulgação brasileiros verificados nas próprias páginas em 15 de novembro de 2026."
+author: "Rodolfo Nützmann"
+date: "2026-11-15"
+tags: ["vulnerability-management", "disclosure", "brazil", "career"]
+category: security
+status: reviewed
+updated: "2026-11-15"
+relatedArticles: ["bug-bounties-and-vulnerability-disclosure", "the-disclosure-record", "the-brazilian-hacker-scene", "lgpd-for-engineers-the-vocabulary-that-matters", "there-is-no-perfect-code"]
+---
+
+## O que "recorde" quer dizer aqui
+
+Um recorde de bug bounty pode significar três coisas diferentes: o maior pagamento por um único relatório, o maior valor que um programa pagou num ano, ou o teto que um programa diz estar disposto a pagar. As três raramente coincidem, e os números vêm de quem paga. Cada valor abaixo traz a sua fonte e a sua base. Para os conceitos (o que é um bounty, como ele difere de um programa de divulgação de vulnerabilidades, como funcionam escopo, safe harbor e divulgação, e o que diz a lei nos Estados Unidos e no Brasil), veja o artigo complementar do Learn, [Programas de bug bounty](/learn/bug-bounties-and-vulnerability-disclosure).
+
+## Os maiores pagamentos individuais
+
+### Criptomoedas: os bounties de oito dígitos
+
+Os maiores bounties já pagos não saíram de empresas de software, e sim de projetos de criptomoeda, pela plataforma de bounties Web3 Immunefi. No seu relatório de 2023 sobre bounties em cripto, a Immunefi listou os maiores pagamentos públicos: US$ 10 milhões por uma vulnerabilidade no Wormhole, "um protocolo genérico de mensagens entre blockchains", US$ 6 milhões por uma no Aurora, "uma ponte e solução de escalabilidade para o Ethereum", e US$ 2,2 milhões por uma na Polygon; os cinco maiores somavam US$ 21.700.042 ([Immunefi, Top Crypto Bounty and Ransom Payments Report, 1º de fevereiro de 2023](https://immunefi.com/blog/research/top-crypto-bounty-and-ransom-payments-report/)). A comparação é da própria Immunefi: "só a recompensa do Wormhole é maior que o total de bounties pagos em todos os Vulnerability Reward Programs do Google em 2021, de US$ 8,7 milhões" (mesma fonte). Em junho de 2024 a plataforma disse ter pago mais de US$ 100 milhões a pesquisadores e ter <Claim status="attributed" by="pela Immunefi">"intermediado os maiores pagamentos de bounty da história do software"</Claim> ([Immunefi, 20 de junho de 2024](https://immunefi.com/blog/company-announcement/immunefi-surpasses-100-million-in-whitehat-rewards-a-milestone-in-web3-security/)).
+
+A razão alegada é o tamanho do que está em jogo: em finanças descentralizadas uma falha pode significar a perda direta de fundos guardados num smart contract, de modo que, "se a perda direta de fundos numa vulnerabilidade web3 pode chegar a 50 milhões de dólares, faz sentido oferecer um bounty muito maior para incentivar o bom comportamento" ([Immunefi, 2023](https://immunefi.com/blog/research/top-crypto-bounty-and-ransom-payments-report/)). O mesmo relatório também contabiliza os resgates que projetos pagaram a atacantes para reaver parte dos fundos roubados, o que lembra que bounty e resgate podem parecer iguais quando o dinheiro se move depois do estrago.
+
+### Os grandes programas de tecnologia
+
+Fora das criptomoedas, os prêmios individuais são menores, mas crescem. A maior recompensa individual do Vulnerability Reward Program (VRP) do Google em 2025 foi de US$ 250 mil ([Google, VRP 2025 Year in Review, 31 de março de 2026](https://blog.google/security/vrp-2025-year-in-review/)). Em 2024 o maior prêmio do Chrome foi de US$ 100.115, por um bypass do MiraclePtr, a mitigação do Chrome contra bugs de use-after-free, e o Google elevou o teto do Chrome por problema para US$ 250 mil em caso de execução remota de código no navegador ou noutro processo fora do sandbox ([Google Online Security Blog, Vulnerability Reward Program: 2024 in Review, março de 2025](https://security.googleblog.com/2025/03/vulnerability-reward-program-2024-in.html)). A Apple diz que, desde que abriu o seu bounty público em 2020, "vários relatórios individuais" renderam US$ 500 mil ([Apple Security Research, 10 de outubro de 2025](https://security.apple.com/blog/apple-security-bounty-evolved/)).
+
+### Os tetos
+
+O que os programas dizem estar dispostos a pagar é ainda mais alto. O novo prêmio máximo da Apple, anunciado em outubro de 2025 e em vigor desde novembro, é de US$ 2 milhões "por cadeias de exploits capazes de atingir objetivos semelhantes aos de ataques sofisticados de spyware mercenário", e o seu sistema de bônus "pode mais que dobrar essa recompensa, com pagamento máximo acima de US$ 5 milhões"; a Apple o chama de "o maior pagamento oferecido por qualquer programa de bounty de que temos notícia" ([Apple, 10 de outubro de 2025](https://security.apple.com/blog/apple-security-bounty-evolved/)). Para comparar, o corretor privado Crowdfense anuncia "recompensas de 10 mil a 7 milhões de dólares por cadeias completas de exploits", em aquisição exclusiva e conforme o "interesse do cliente" ([Crowdfense, Exploit Acquisition Program](https://www.crowdfense.com/exploit-acquisition-program/)). O bounty compra um relatório e uma correção; o corretor compra o exploit e o silêncio.
+
+## Os maiores programas pelo dinheiro pago
+
+| Programa | Ano ou período | Pago | Pesquisadores pagos | Fonte |
+| --- | --- | --- | --- | --- |
+| Todos os clientes da HackerOne | julho de 2025 a junho de 2026 | US$ 89 milhões (alta de 18%) | não informado | [HackerOne, 7 de outubro de 2026](https://www.hackerone.com/press-release/hackerone-report-reveals-growing-exposure-debt-vulnerability-backlogs-grew-131-even) |
+| Todos os clientes da HackerOne | relatório de outubro de 2025 | US$ 81 milhões (alta de 13%) | não informado | [HackerOne, 1º de outubro de 2025](https://www.hackerone.com/press-release/hackerone-report-finds-210-spike-ai-vulnerability-reports-amid-rise-ai-autonomy) |
+| Microsoft | ano do programa relatado em agosto de 2026 | mais de US$ 20 milhões | 562 | [Microsoft Security Response Center (MSRC), 3 de agosto de 2026](https://www.microsoft.com/en-us/msrc/blog/2026/08/microsoft-bounty-program-year-in-review-more-than-20-million-awarded-biggest-year) |
+| Microsoft | ano do programa relatado em agosto de 2025 | US$ 17 milhões | 344 | [MSRC, 5 de agosto de 2025](https://www.microsoft.com/msrc/blog/2025/08/microsoft-bounty-program-year-in-review-17-million-in-rewards) |
+| Google | 2025 | mais de US$ 17 milhões | 747 | [Google, 31 de março de 2026](https://blog.google/security/vrp-2025-year-in-review/) |
+| Google | 2024 | "pouco menos de US$ 12 milhões" | mais de 600 | [Google, março de 2025](https://security.googleblog.com/2025/03/vulnerability-reward-program-2024-in.html) |
+| Meta | 2025 | US$ 4 milhões | não informado | [SecurityWeek, 18 de novembro de 2025](https://www.securityweek.com/meta-paid-out-4-million-via-bug-bounty-program-in-2025/) |
+| Meta | 2024 | mais de US$ 2,3 milhões, de quase 10 mil relatórios | não informado | [Meta, 13 de fevereiro de 2025](https://engineering.fb.com/2025/02/13/security/looking-back-at-our-bug-bounty-program-in-2024/) |
+| Immunefi (todos os programas) | até junho de 2024 | mais de US$ 100 milhões | não informado | [Immunefi, 20 de junho de 2024](https://immunefi.com/blog/company-announcement/immunefi-surpasses-100-million-in-whitehat-rewards-a-milestone-in-web3-security/) |
+
+No acumulado, o Google diz que os seus programas pagaram US$ 81,6 milhões desde 2010, a Meta mais de US$ 25 milhões desde 2011 e a Apple mais de US$ 35 milhões a mais de 800 pesquisadores desde 2020 ([Google, 31 de março de 2026](https://blog.google/security/vrp-2025-year-in-review/); [SecurityWeek, 18 de novembro de 2025](https://www.securityweek.com/meta-paid-out-4-million-via-bug-bounty-program-in-2025/); [Apple, 10 de outubro de 2025](https://security.apple.com/blog/apple-security-bounty-evolved/)). Eventos ao vivo concentram dinheiro: o Zero Day Quest da Microsoft recebeu quase 700 relatórios e pagou US$ 2,3 milhões no ano do programa relatado em agosto de 2026 ([MSRC, 3 de agosto de 2026](https://www.microsoft.com/en-us/msrc/blog/2026/08/microsoft-bounty-program-year-in-review-more-than-20-million-awarded-biggest-year)), e um bugSWAT de Google Cloud em Sunnyvale, em junho de 2025, rendeu 130 relatórios e US$ 1,6 milhão ([Google, 31 de março de 2026](https://blog.google/security/vrp-2025-year-in-review/)).
+
+Nenhum desses números mede o que ganha um hunter típico. Em 2020 Katie Moussouris, que montou os primeiros bounties da Microsoft, disse à CSO Online que <Claim status="attributed" by="por Katie Moussouris">o número de pessoas que ganharam mais de US$ 100 mil em todo o tempo na HackerOne estava "na casa das poucas centenas"</Claim>, e a HackerOne não quis informar a mediana nem a média dos ganhos ([CSO Online, 2 de abril de 2020](https://www.csoonline.com/article/3535888/bug-bounty-platforms-buy-researcher-silence-violate-labor-laws-critics-say.html)).
+
+## Histórias que ficaram no registro
+
+### Um Fusca por um bug, 1983
+
+A oferta documentada mais antiga é um cartaz de 1983 da Hunter & Ready, guardado pelo Computer History Museum: um Fusca sob a frase "Get a bug if you find a bug" (ganhe um bug se encontrar um bug), oferecendo um carro a quem achasse um bug no sistema operacional de tempo real VRTX e garantindo ao leitor que "também não há nenhum no seu sistema operacional" ([Computer History Museum, catálogo 102782474](https://www.computerhistory.org/collections/catalog/102782474)). Não se encontrou registro de alguém que tenha levado o carro.
+
+### Netscape, 1995: o bounty depois do vexame
+
+O "Bugs Bounty" de US$ 1.000 da Netscape para a versão beta do Navigator 2.0, noticiado pelo Wall Street Journal em 11 de outubro de 1995 ([Edupage, 12 de outubro de 1995](https://seclists.org/bugtraq/1995/Oct/12)), veio três semanas depois de a empresa ter de avisar os clientes de que dois estudantes de Berkeley haviam mostrado que as suas chaves de sessão podiam ser recuperadas "em poucas horas de computação" ([Netscape, comunicado reencaminhado em 19 de setembro de 1995](https://diswww.mit.edu/MENELAUS.MIT.EDU/cpunks/39522)). O bounty veio depois de uma falha pública encontrada por gente de fora.
+
+### O prêmio "leet" do Chromium, 2010
+
+Quando o projeto Chromium, do Google, lançou o seu programa em janeiro de 2010, fixou o prêmio máximo em US$ 1.337 para bugs "particularmente graves ou particularmente engenhosos" e deu crédito à Mozilla pelo seu "programa de recompensa por vulnerabilidades antigo e bem-sucedido" ([Chromium Blog, 28 de janeiro de 2010](https://blog.chromium.org/2010/01/encouraging-more-chromium-security.html)); o programa web do Google, em novembro, limitou os prêmios a US$ 3.133,70 ([Google, 1º de novembro de 2010](https://security.googleblog.com/2010/11/rewarding-web-application-security.html)). Em 2024 o teto do Chrome por problema já tinha chegado a US$ 250 mil ([Google, março de 2025](https://security.googleblog.com/2025/03/vulnerability-reward-program-2024-in.html)).
+
+### A aposta da Microsoft na fase beta, 2013
+
+Os programas de 2013 da Microsoft pagavam durante a fase beta do Internet Explorer 11 e do Windows 8.1 porque, segundo Moussouris, era quando os corretores do "mercado branco" não compravam; o Mitigation Bypass Bounty oferecia até US$ 100 mil por uma técnica nova de exploração, numa época em que ela estimava que as pessoas capazes de achar essas técnicas eram "menos de mil no mundo" ([Microsoft, 31 de julho de 2013](https://blogs.microsoft.com/blog/2013/07/31/microsofts-new-programs-attract-bounty-hunters-who-help-make-safer-products/)).
+
+### Hack the Pentagon, 2016
+
+O piloto do Departamento de Defesa dos EUA convidou "mais de 1.400 hackers", dos quais mais de 250 enviaram ao menos um relatório, confirmou 138 vulnerabilidades "legítimas, únicas e elegíveis", corrigiu todas e gastou US$ 150 mil; o secretário de Defesa Ash Carter disse que a auditoria externa habitual teria custado mais de US$ 1 milhão ([Carter, 17 de junho de 2016, reproduzido pelo Belfer Center](https://www.belfercenter.org/publication/pentagons-first-bug-bounty-exceeded-all-expectations)).
+
+### Zoom e DJI: os bounties recusados
+
+Dois pesquisadores ficaram conhecidos por recusar dinheiro. A CSO Online relatou em 2020 que Jonathan Leitschuh recusou um bounty do Zoom oferecido com um acordo de confidencialidade (NDA, na sigla em inglês), deu 90 dias à empresa e depois publicou; e que Kevin Finisterre abriu mão de US$ 30 mil oferecidos pela fabricante de drones DJI porque a oferta vinha com NDA ([CSO Online, 2 de abril de 2020](https://www.csoonline.com/article/3535888/bug-bounty-platforms-buy-researcher-silence-violate-labor-laws-critics-say.html)). O veredito de Leitschuh, na mesma reportagem: "no fim, a sensação que tenho é de que estão tentando comprar o silêncio do pesquisador".
+
+### Uber, 2016: US$ 100 mil que não eram um bounty
+
+A Uber pagou US$ 100 mil pelo seu programa de bounty a pessoas que tinham baixado nomes e números de carteira de motorista de cerca de 600 mil pessoas do seu armazenamento em nuvem, em troca de um NDA e da promessa de apagar os dados; o seu ex-diretor de segurança, Joseph Sullivan, foi condenado por obstruir uma investigação da Federal Trade Commission (FTC) e por ocultação de crime, o Nono Circuito confirmou a condenação e a Suprema Corte recusou o recurso em 29 de junho de 2026 ([Nono Circuito, acórdão revisto, 12 de novembro de 2025](https://cdn.ca9.uscourts.gov/datastore/opinions/2025/11/12/23-927.pdf); [Suprema Corte, processo 25-1082](https://www.supremecourt.gov/search.aspx?filename=/docket/docketfiles/html/public/25-1082.html)). O tribunal entendeu que o acesso dos hackers "não podia ser lavado por meio de um NDA" e deixou em aberto se um bounty pode autorizar a pesquisa de antemão (mesmo acórdão). O artigo do Learn apresenta os dois lados do caso.
+
+### curl, de 2019 a 2026: o programa que fechou
+
+O curl começou o seu primeiro bounty de verdade em abril de 2019 com a HackerOne, pagou mais de US$ 100 mil por 87 vulnerabilidades confirmadas e o encerrou em janeiro de 2026, quando o mantenedor escreveu que a taxa de confirmação tinha caído abaixo de 5% em meio a "uma explosão de relatórios inúteis feitos com IA", submissões de baixa qualidade produzidas com ferramentas de inteligência artificial (IA) ([Daniel Stenberg, 26 de janeiro de 2026](https://daniel.haxx.se/blog/2026/01/26/the-end-of-the-curl-bug-bounty/)). Dois meses depois o Internet Bug Bounty, que bancava as recompensas do curl, suspendeu novas submissões ([HackerOne, política do Internet Bug Bounty](https://hackerone.com/ibb/policy_versions)). Na direção oposta, a HackerOne relatou que agentes totalmente autônomos enviaram "mais de 560 relatórios válidos" nos seus dados de 2025 ([HackerOne, 1º de outubro de 2025](https://www.hackerone.com/press-release/hackerone-report-finds-210-spike-ai-vulnerability-reports-amid-rise-ai-autonomy)).
+
+## Como começar com segurança
+
+As regras abaixo vêm dos programas e das autoridades citados; são o que essas partes pedem aos pesquisadores, não aconselhamento jurídico.
+
+1. **Teste só onde um programa publicado convida.** Escopo é autorização: "o teste só está autorizado nos alvos listados como em escopo", como diz o briefing da QuintoAndar ([Bugcrowd, QuintoAndar](https://bugcrowd.com/engagements/quintoandar)). No Brasil, o artigo 154-A do Código Penal gira em torno da falta de "autorização expressa ou tácita" e prevê, desde 2021, até quatro anos de reclusão ([Senado Federal, Lei nº 14.155/2021](https://legis.senado.leg.br/norma/34016289/publicacao/34016562)).
+2. **Leia a política inteira, não só o título do safe harbor.** A VTEX publica um safe harbor e, no mesmo documento, diz que "a existência desta política não concede permissão para conduzir testes de intrusão ou varreduras ativas" ([VTEX, Security Disclosure Policy](https://vtex.com/.well-known/security-disclosure-policy.txt)). O texto de safe harbor do disclose.io também declara que "não vincula terceiros independentes" ([disclose.io](https://raw.githubusercontent.com/disclose/dioterms/master/terms/safe-harbor/en-US.md)).
+3. **Use contas próprias ou de teste.** "Por favor, teste apenas a sua própria conta ou uma conta de teste" é a regra do Google desde 2010 ([Google, 1º de novembro de 2010](https://security.googleblog.com/2010/11/rewarding-web-application-security.html)); o iFood pede cadastro com um endereço fornecido pela Bugcrowd ([Bugcrowd, iFood](https://bugcrowd.com/engagements/ifood-og)).
+4. **Não toque em dados de outras pessoas, e pare quando os vir.** A Microsoft: "se encontrar informação sensível ou não tiver certeza de que uma ação é segura, pare imediatamente e fale conosco" ([MSRC, Microsoft Bounty Program](https://www.microsoft.com/en-us/msrc/bounty)). A VTEX proíbe explorar "além do estritamente necessário para demonstrar" a falha ([VTEX](https://vtex.com/.well-known/security-disclosure-policy.txt)).
+5. **Nada de negação de serviço nem de varredura automatizada pesada, salvo se o programa permitir.** O Google pediu em 2010 que os pesquisadores "evitem usar ferramentas automatizadas de teste" ([Google, 2010](https://security.googleblog.com/2010/11/rewarding-web-application-security.html)); a VTEX proíbe "varredura automatizada ou de alto volume que afete a estabilidade do serviço" ([VTEX](https://vtex.com/.well-known/security-disclosure-policy.txt)).
+6. **Valide à mão, sobretudo o que uma ferramenta de IA produziu.** A VTEX recusa relatórios "que consistam apenas em saída de ferramenta, sem análise manual e sem uma PoC demonstrável" (prova de conceito) ([VTEX](https://vtex.com/.well-known/security-disclosure-policy.txt)); o curl bane quem envia o que ele chama de lixo gerado por IA ([Stenberg, 2026](https://daniel.haxx.se/blog/2026/01/26/the-end-of-the-curl-bug-bounty/)).
+7. **Escreva um relatório completo.** A Microsoft diz que relatórios com "passos claros de reprodução, código de prova de conceito e análise detalhada" não só aceleram a triagem como "se qualificam para prêmios maiores" ([MSRC](https://www.microsoft.com/en-us/msrc/bounty)); a HackerOne pede "passos de reprodução claros e concisos ou uma prova de conceito funcional", sem dados pessoais de terceiros ([HackerOne, Vulnerability Disclosure Guidelines](https://www.hackerone.com/disclosure-guidelines)).
+8. **Conheça os termos de divulgação antes de entrar.** Na HackerOne, os programas privados ficam "sujeitos a sigilo estrito por padrão", e quem pretende qualquer divulgação pública "não deve participar de programas privados" ([HackerOne, diretrizes](https://www.hackerone.com/disclosure-guidelines)).
+9. **Conheça as regras de pagamento.** A HackerOne paga em dólares, não pode pagar residentes de países sob sanções dos EUA, paga menores por meio dos pais ou responsáveis e deixa os impostos por conta do pesquisador ([HackerOne, diretrizes](https://www.hackerone.com/disclosure-guidelines)).
+10. **Não trate a política de um promotor como imunidade.** A política de 2022 do Departamento de Justiça dos EUA (DOJ, na sigla em inglês) orienta os promotores federais a não acusar a pesquisa de boa-fé, mas avisa que "alegar estar fazendo pesquisa de segurança não é passe livre para quem age de má-fé" ([DOJ, 19 de maio de 2022](https://www.justice.gov/archives/opa/pr/department-justice-announces-new-policy-charging-cases-under-computer-fraud-and-abuse-act)). O Brasil não tem política nem lei equivalente.
+
+## O cenário brasileiro
+
+### A plataforma local
+
+A BugHunt se apresenta na página inicial como "Referência em Bug Bounty na América Latina" e diz: "Conectamos especialistas em segurança com empresas que querem testar seu software. É grátis e você recompensa apenas os resultados" ([BugHunt, página inicial](https://bughunt.com.br/)). Os seus fundadores, Bruno Telles e Caio Telles, a descrevem como a <Claim status="attributed" by="pelos fundadores">"primeira plataforma de bug bounty do Brasil"</Claim> ([Baguete, 26 de agosto de 2026](https://www.baguete.com.br/noticias/inseguranca-juridica-tambem-e-inseguranca-da-informacao)). Numa coluna de julho de 2026 eles citaram a pesquisa Brazilian Security Index, da própria empresa: 72% das empresas brasileiras investiam em cibersegurança em 2021 e 96% hoje, e 56% das empresas com alta maturidade em cibersegurança são "promotoras ativas do modelo de bug bounty"; a coluna não informa a amostra nem o método da pesquisa ([Baguete, 15 de julho de 2026](https://www.baguete.com.br/noticias/a-relacao-com-hackers-precisa-acompanhar-o-mercado-de-ciberseguranca)). Não se encontrou no site da BugHunt, em 15 de novembro de 2026, uma lista pública dos programas que ela hospeda, de modo que esses programas não puderam ser verificados nas próprias páginas e não aparecem na lista abaixo.
+
+### O pano de fundo jurídico
+
+Os fundadores sustentam que a lei brasileira fala com as empresas e não com os pesquisadores, e que os contratos das plataformas cobrem a lacuna ([Baguete, 26 de agosto de 2026](https://www.baguete.com.br/noticias/inseguranca-juridica-tambem-e-inseguranca-da-informacao)). O principal projeto de lei (PL) de cibersegurança do Senado, o PL 4752/2025, não trata dos pesquisadores no texto apresentado ([Senado Federal, PL 4752/2025](https://legis.senado.gov.br/sdleg-getter/dadosabertos/documento/fbe682b0-5a29-41c7-aa0b-b219f76b4ea8)). O artigo do Learn cobre o artigo 154-A, a Lei Geral de Proteção de Dados (LGPD) e o canal federal de incidentes.
+
+### A lista, verificada em 15 de novembro de 2026
+
+Cada item foi conferido na página ou no arquivo do próprio programa em 15 de novembro de 2026. Nada foi testado; só se leram páginas e arquivos públicos. "Brasileiro", aqui, quer dizer empresa sediada ou fundada no Brasil, ou órgão público brasileiro; uma empresa latino-americana com grande operação no Brasil aparece marcada à parte.
+
+**Programas de bug bounty**
+
+| Organização | Plataforma | Tipo | Recompensas exibidas | Início listado | Observações | Fonte |
+| --- | --- | --- | --- | --- | --- | --- |
+| Nubank | Bugcrowd | Bug bounty gerenciado | US$ 50 a US$ 4.000 | 31 de agosto de 2023 | Escopo inclui *.nubank.com.br, *.nu.com.mx e *.nu.com.co; metas de dois dias para primeira resposta e triagem; pesquisadores brasileiros com Cadastro de Pessoas Físicas (CPF) podem abrir conta para testar mais a fundo; selo de safe harbor pleno | [Bugcrowd, Nubank](https://bugcrowd.com/engagements/nubank) |
+| iFood | Bugcrowd | Bug bounty | US$ 150 a US$ 3.750 | 25 de agosto de 2020 | Escopo inclui www.ifood.com.br e domínios do iFood Pago, da Zoop e da Movile Pay; usa a Vulnerability Rating Taxonomy (VRT) da Bugcrowd; selo de safe harbor pleno | [Bugcrowd, iFood](https://bugcrowd.com/engagements/ifood-og) |
+| QuintoAndar | Bugcrowd | Bug bounty gerenciado | de pontos a US$ 1.000 | 2 de julho de 2024 | Só P1 a P3 são recompensados; o que não está listado está fora do escopo; selo de safe harbor pleno | [Bugcrowd, QuintoAndar](https://bugcrowd.com/engagements/quintoandar) |
+| Mercado Livre (latino-americana, grande operação no Brasil) | HackerOne | Bug bounty | não exibidas | não exibido | O título da página é "MercadoLibre - Bug Bounty Program"; os detalhes não apareceram sem JavaScript | [HackerOne, MercadoLibre](https://hackerone.com/mercadolibre) |
+
+**Canais de divulgação e arquivos security.txt**
+
+| Organização | O que o arquivo ou a página diz | Expires | Fonte |
+| --- | --- | --- | --- |
+| Nubank | Contato security@nubank.com.br; um endereço de divulgação de vulnerabilidades na Bugcrowd; "Bug Bounty Program: https://bugcrowd.com/nubank" | sem campo Expires | [nubank.com.br/.well-known/security.txt](https://nubank.com.br/.well-known/security.txt) |
+| QuintoAndar | Contato security@quintoandar.com.br; Policy apontando para o programa na Bugcrowd | 31 de dezembro de 2026 | [quintoandar.com.br/.well-known/security.txt](https://www.quintoandar.com.br/.well-known/security.txt) |
+| VTEX | Contato security-report@vtex.com; uma política completa com safe harbor, janela de 90 dias e metas de resposta por severidade; "este não é um programa público de bug bounty" | 12 de junho de 2027 | [vtex.com/.well-known/security.txt](https://vtex.com/.well-known/security.txt); [política da VTEX](https://vtex.com/.well-known/security-disclosure-policy.txt) |
+| Banco Central do Brasil | Contato security@bcb.gov.br e link para uma página no Open Bug Bounty (a página recusou o acesso automatizado e não foi lida); o arquivo é servido como página HTML | nenhum | [bcb.gov.br/.well-known/security.txt](https://www.bcb.gov.br/.well-known/security.txt) |
+| B3 | Contato incidente.seguranca@b3.com.br | 1º de janeiro de 2030 | [b3.com.br/.well-known/security.txt](https://www.b3.com.br/.well-known/security.txt) |
+| Registro.br | Contato security@registro.br, com endereço separado para abuso de domínios .br; chave de criptografia; inglês e português | 31 de janeiro de 2027 | [registro.br/.well-known/security.txt](https://registro.br/.well-known/security.txt) |
+| CERT.br | Contato security@cert.br; chave de criptografia; inglês e português | 15 de janeiro de 2027 | [cert.br/.well-known/security.txt](https://www.cert.br/.well-known/security.txt) |
+| OLX Brasil | Dois contatos em olxbr.com | 10 de outubro de 2030 | [olx.com.br/.well-known/security.txt](https://www.olx.com.br/.well-known/security.txt) |
+| Neon | Contato security@neon.com.br | 1º de janeiro de 2026 (já passou) | [neon.com.br/.well-known/security.txt](https://www.neon.com.br/.well-known/security.txt) |
+
+A RFC 9116, o Request for Comments da Internet Engineering Task Force (IETF) que define o arquivo, diz que os campos "Contact" e "Expires" "devem estar sempre presentes" e recomenda uma validade "a menos de um ano no futuro" ([RFC 9116](https://www.rfc-editor.org/rfc/rfc9116)); um arquivo vencido é, nas palavras da RFC, um dado que "não deve ser usado". As datas acima são as que cada arquivo trazia em 15 de novembro de 2026.
+
+**Canais do governo**
+
+| Órgão | O que oferece | Fonte |
+| --- | --- | --- |
+| Centro de Prevenção, Tratamento e Resposta a Incidentes Cibernéticos de Governo (CTIR Gov), no Gabinete de Segurança Institucional | Ponto único de contato ctir@ctir.gov.br para notificação de incidentes; contabiliza as notificações como "incidentes + vulnerabilidades" (15.132 em 2023, 14.921 em 2024); nenhuma política de divulgação para pesquisadores externos encontrada nas páginas lidas | [GSI, CTIR Gov](https://www.gov.br/gsi/pt-br/assuntos/ctir); [Orientações](https://www.gov.br/gsi/pt-br/assuntos/ctir/operacoes-e-servicos/notificacao-de-incidentes/orientacoes-para-notificacoes-de-incidentes-ciberneticos) |
+| Centro Integrado de Segurança Cibernética do Governo Digital (CISC Gov.br) | Notificação de incidentes para órgãos e entidades do SISP; testes de intrusão e análise de vulnerabilidades sob demanda para órgãos federais | [CISC Gov.br, notificação](https://www.gov.br/cisc/pt-br/denuncias-e-notificacoes/notificar-incidente-cibernetico); [CISC Gov.br, serviços](https://www.gov.br/cisc/pt-br/sobre-nos-rfc-2350/servicos) |
+
+**O que a verificação não encontrou.** Pedidos de arquivo security.txt nos sites principais de vários grandes bancos, varejistas e órgãos públicos brasileiros não devolveram arquivo em 15 de novembro de 2026, e alguns recusaram de saída requisições automatizadas; por isso uma ausência aqui não prova que não exista canal. As listagens públicas da Intigriti e da YesWeHack lidas para este post não mostravam nenhum programa brasileiro, mas só as primeiras páginas puderam ser lidas. Reportagens citam outras empresas brasileiras com programas na BugHunt; sem página pública do programa, elas não entram na lista.
+
+## O que o registro mostra
+
+O dinheiro dos bug bounties passou de um carro e US$ 1.000 a pagamentos de oito dígitos em cripto e a totais de nove dígitos nas plataformas, enquanto a renda mediana dos hunters continua sem divulgação. As histórias que ficaram não são os cheques grandes, e sim as brigas em torno do silêncio: os NDAs recusados no Zoom e na DJI, o NDA que virou prova no caso Uber e um mantenedor fechando o seu programa porque pagar por relatórios atraía mais ruído que sinal. No Brasil, a prática existe por meio de plataformas internacionais, de uma plataforma local e de um punhado de arquivos security.txt publicados, sob uma lei penal que só reconhece a autorização.
+
+<ReaderQuestions>
+
+- Os maiores bounties devem ser comparados com as perdas que evitam, como faz a Immunefi, ou com o que um corretor pagaria pela mesma falha?
+- Se um teto de US$ 2 milhões raramente é pago, ele é um incentivo aos pesquisadores ou um recado ao mercado?
+- As plataformas deveriam publicar a renda mediana dos seus pesquisadores ao lado dos totais anuais?
+- Uma política federal brasileira de divulgação de vulnerabilidades, como a que a CISA impôs aos órgãos americanos, mudaria o que os pesquisadores brasileiros fazem com as falhas que encontram?
+- Um security.txt vencido ou ausente é um pequeno descuido de manutenção, ou um sinal de como a organização vai tratar um relatório?
+
+</ReaderQuestions>
+
+## Fontes
+
+- [Immunefi, Top Crypto Bounty and Ransom Payments Report, 1º de fevereiro de 2023: os cinco maiores bounties públicos em cripto, a comparação com o Google, a justificativa dos bounties altos (acesso em 15/11/2026)](https://immunefi.com/blog/research/top-crypto-bounty-and-ransom-payments-report/)
+- [Immunefi, Immunefi Surpasses $100 Million in Whitehat Rewards, 20 de junho de 2024 (acesso em 15/11/2026)](https://immunefi.com/blog/company-announcement/immunefi-surpasses-100-million-in-whitehat-rewards-a-milestone-in-web3-security/)
+- [Google, VRP 2025 Year in Review, 31 de março de 2026: totais, maior recompensa, pesquisadores, eventos bugSWAT (acesso em 15/11/2026)](https://blog.google/security/vrp-2025-year-in-review/)
+- [Google Online Security Blog, Vulnerability Reward Program: 2024 in Review, março de 2025: totais, teto e maior prêmio do Chrome (acesso em 15/11/2026)](https://security.googleblog.com/2025/03/vulnerability-reward-program-2024-in.html)
+- [Apple Security Research, Apple Security Bounty: evolved, 10 de outubro de 2025: totais desde 2020, prêmios individuais, novo teto e bônus (acesso em 15/11/2026)](https://security.apple.com/blog/apple-security-bounty-evolved/)
+- [Crowdfense, Exploit Acquisition Program: faixa de recompensas e termos de aquisição (acesso em 15/11/2026)](https://www.crowdfense.com/exploit-acquisition-program/)
+- [HackerOne, comunicado sobre o Security Research Report 2026, 7 de outubro de 2026 (acesso em 15/11/2026)](https://www.hackerone.com/press-release/hackerone-report-reveals-growing-exposure-debt-vulnerability-backlogs-grew-131-even)
+- [HackerOne, comunicado sobre o 9º Hacker-Powered Security Report, 1º de outubro de 2025: pagamentos e agentes autônomos (acesso em 15/11/2026)](https://www.hackerone.com/press-release/hackerone-report-finds-210-spike-ai-vulnerability-reports-amid-rise-ai-autonomy)
+- [Microsoft Security Response Center, balanço anual do Microsoft Bounty Program: mais de US$ 20 milhões pagos, 3 de agosto de 2026: totais e Zero Day Quest (acesso em 15/11/2026)](https://www.microsoft.com/en-us/msrc/blog/2026/08/microsoft-bounty-program-year-in-review-more-than-20-million-awarded-biggest-year)
+- [Microsoft Security Response Center, Microsoft Bounty Program year in review: $17 million in rewards, 5 de agosto de 2025 (acesso em 15/11/2026)](https://www.microsoft.com/msrc/blog/2025/08/microsoft-bounty-program-year-in-review-17-million-in-rewards)
+- [Microsoft Security Response Center, página do Microsoft Bounty Program: qualidade do relatório e teste responsável (acesso em 15/11/2026)](https://www.microsoft.com/en-us/msrc/bounty)
+- [SecurityWeek, Meta Paid Out $4 Million via Bug Bounty Program in 2025, 18 de novembro de 2025 (acesso em 15/11/2026)](https://www.securityweek.com/meta-paid-out-4-million-via-bug-bounty-program-in-2025/)
+- [Meta Engineering, Looking back at our Bug Bounty program in 2024, 13 de fevereiro de 2025 (acesso em 15/11/2026)](https://engineering.fb.com/2025/02/13/security/looking-back-at-our-bug-bounty-program-in-2024/)
+- [J.M. Porup, Bug bounty platforms buy researcher silence, violate labor laws, critics say, CSO Online, 2 de abril de 2020: ganhos, Zoom, DJI (acesso em 15/11/2026)](https://www.csoonline.com/article/3535888/bug-bounty-platforms-buy-researcher-silence-violate-labor-laws-critics-say.html)
+- [Computer History Museum, catálogo 102782474, VRTX poster, Hunter & Ready, 1983 (acesso em 15/11/2026, via WebFetch)](https://www.computerhistory.org/collections/catalog/102782474)
+- [Educom, Edupage de 12 de outubro de 1995, reencaminhado à Bugtraq: o "Bugs Bounty" da Netscape (acesso em 15/11/2026)](https://seclists.org/bugtraq/1995/Oct/12)
+- [Netscape Communications, comunicado sobre a fraqueza na geração de chaves do Navigator, reencaminhado à lista Cypherpunks em 19 de setembro de 1995 (acesso em 15/11/2026)](https://diswww.mit.edu/MENELAUS.MIT.EDU/cpunks/39522)
+- [Chromium Blog, Encouraging More Chromium Security Research, 28 de janeiro de 2010 (acesso em 15/11/2026)](https://blog.chromium.org/2010/01/encouraging-more-chromium-security.html)
+- [Google Online Security Blog, Rewarding web application security research, 1º de novembro de 2010: teto de prêmio e regras de teste (acesso em 15/11/2026)](https://security.googleblog.com/2010/11/rewarding-web-application-security.html)
+- [Microsoft, Microsoft's new programs attract bounty hunters who help make safer products, 31 de julho de 2013 (acesso em 15/11/2026)](https://blogs.microsoft.com/blog/2013/07/31/microsofts-new-programs-attract-bounty-hunters-who-help-make-safer-products/)
+- [Belfer Center, reprodução de Ash Carter, The Pentagon's First Bug Bounty Exceeded All Expectations, 17 de junho de 2016 (acesso em 15/11/2026)](https://www.belfercenter.org/publication/pentagons-first-bug-bounty-exceeded-all-expectations)
+- [Tribunal de Apelações do Nono Circuito dos EUA, United States v. Sullivan, nº 23-927, acórdão revisto, 12 de novembro de 2025 (acesso em 15/11/2026)](https://cdn.ca9.uscourts.gov/datastore/opinions/2025/11/12/23-927.pdf)
+- [Suprema Corte dos EUA, processo 25-1082, Sullivan v. United States: certiorari negado em 29 de junho de 2026 (acesso em 15/11/2026)](https://www.supremecourt.gov/search.aspx?filename=/docket/docketfiles/html/public/25-1082.html)
+- [Daniel Stenberg, The end of the curl bug-bounty, 26 de janeiro de 2026: início em abril de 2019, totais, taxa de confirmação, novo canal de relato (acesso em 15/11/2026)](https://daniel.haxx.se/blog/2026/01/26/the-end-of-the-curl-bug-bounty/)
+- [HackerOne, Internet Bug Bounty, versões da política: suspensão a partir de 27 de março de 2026 (acesso em 15/11/2026)](https://hackerone.com/ibb/policy_versions)
+- [HackerOne, Vulnerability Disclosure Guidelines, versão 1.3, 27 de julho de 2026: conteúdo do relatório, programas privados, pagamentos (acesso em 15/11/2026)](https://www.hackerone.com/disclosure-guidelines)
+- [Departamento de Justiça dos EUA, Department of Justice Announces New Policy for Charging Cases under the Computer Fraud and Abuse Act, 19 de maio de 2022 (acesso em 15/11/2026, via WebFetch)](https://www.justice.gov/archives/opa/pr/department-justice-announces-new-policy-charging-cases-under-computer-fraud-and-abuse-act)
+- [Senado Federal, Lei nº 14.155/2021, texto publicado: a redação e a pena atuais do artigo 154-A (acesso em 15/11/2026)](https://legis.senado.leg.br/norma/34016289/publicacao/34016562)
+- [disclose.io, dioterms, modelo Safe Harbor (en-US) (acesso em 15/11/2026)](https://raw.githubusercontent.com/disclose/dioterms/master/terms/safe-harbor/en-US.md)
+- [IETF, RFC 9116, A File Format to Aid in Security Vulnerability Disclosure, abril de 2022 (acesso em 15/11/2026)](https://www.rfc-editor.org/rfc/rfc9116)
+- [BugHunt, página inicial: título e descrição (acesso em 15/11/2026)](https://bughunt.com.br/)
+- [Bruno Telles e Caio Telles, Insegurança jurídica também é insegurança da informação, Baguete, 26 de agosto de 2026 (acesso em 15/11/2026)](https://www.baguete.com.br/noticias/inseguranca-juridica-tambem-e-inseguranca-da-informacao)
+- [Caio Telles e Bruno Telles, A relação com hackers precisa acompanhar o mercado de cibersegurança, Baguete, 15 de julho de 2026: os números do Brazilian Security Index (acesso em 15/11/2026)](https://www.baguete.com.br/noticias/a-relacao-com-hackers-precisa-acompanhar-o-mercado-de-ciberseguranca)
+- [Senado Federal, PL 4752/2025, texto apresentado (acesso em 15/11/2026)](https://legis.senado.gov.br/sdleg-getter/dadosabertos/documento/fbe682b0-5a29-41c7-aa0b-b219f76b4ea8)
+- [Bugcrowd, Nubank Brasil Managed Bug Bounty Program: data de início, escopo, metas, selo de safe harbor (acesso em 15/11/2026)](https://bugcrowd.com/engagements/nubank)
+- [Bugcrowd, iFood: Bug Bounty Program: data de início, escopo, classificação, selo de safe harbor (acesso em 15/11/2026)](https://bugcrowd.com/engagements/ifood-og)
+- [Bugcrowd, QuintoAndar Managed Bug Bounty Engagement: data de início, escopo, prioridades recompensadas, selo de safe harbor (acesso em 15/11/2026)](https://bugcrowd.com/engagements/quintoandar)
+- [HackerOne, página do MercadoLibre Bug Bounty Program: título e descrição (acesso em 15/11/2026, via WebFetch)](https://hackerone.com/mercadolibre)
+- [Nubank, security.txt (acesso em 15/11/2026)](https://nubank.com.br/.well-known/security.txt)
+- [QuintoAndar, security.txt (acesso em 15/11/2026)](https://www.quintoandar.com.br/.well-known/security.txt)
+- [VTEX, security.txt (acesso em 15/11/2026)](https://vtex.com/.well-known/security.txt)
+- [VTEX, Security Disclosure Policy (acesso em 15/11/2026)](https://vtex.com/.well-known/security-disclosure-policy.txt)
+- [Banco Central do Brasil, security.txt (acesso em 15/11/2026)](https://www.bcb.gov.br/.well-known/security.txt)
+- [B3, security.txt (acesso em 15/11/2026)](https://www.b3.com.br/.well-known/security.txt)
+- [Registro.br, security.txt (acesso em 15/11/2026)](https://registro.br/.well-known/security.txt)
+- [CERT.br, security.txt (acesso em 15/11/2026)](https://www.cert.br/.well-known/security.txt)
+- [OLX Brasil, security.txt (acesso em 15/11/2026)](https://www.olx.com.br/.well-known/security.txt)
+- [Neon, security.txt (acesso em 15/11/2026)](https://www.neon.com.br/.well-known/security.txt)
+- [Gabinete de Segurança Institucional, página do CTIR Gov (acesso em 15/11/2026)](https://www.gov.br/gsi/pt-br/assuntos/ctir)
+- [CISC Gov.br, Notificar incidente cibernético (acesso em 15/11/2026)](https://www.gov.br/cisc/pt-br/denuncias-e-notificacoes/notificar-incidente-cibernetico)
+- [Gabinete de Segurança Institucional, CTIR Gov, Orientações para notificações de incidentes cibernéticos (acesso em 15/11/2026)](https://www.gov.br/gsi/pt-br/assuntos/ctir/operacoes-e-servicos/notificacao-de-incidentes/orientacoes-para-notificacoes-de-incidentes-ciberneticos)
+- [CISC Gov.br, Serviços (RFC 2350) (acesso em 15/11/2026)](https://www.gov.br/cisc/pt-br/sobre-nos-rfc-2350/servicos)

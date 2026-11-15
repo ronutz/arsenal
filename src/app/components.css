@@ -20120,6 +20120,10 @@ main[data-view="list"] .boss-viewer-item.has-share > .boss-viewer-card { padding
 .intent-grid { list-style: none; margin: 1.5rem 0 0; padding: 0; display: grid; grid-template-columns: 1fr; gap: 1rem; }
 @media (min-width: 36rem) { .intent-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 56rem) { .intent-grid { grid-template-columns: repeat(3, 1fr); } }
+/* The home page's Start here holds seven cards since 15/11/2026 (the Blog joined as the sixth). Four columns from 56rem
+   and the last card, "Take me somewhere", spanning two at two or four columns: 2+2+2+2 and 4+3 rows, none ragged. */
+@media (min-width: 36rem) { .intent-grid--home .intent--surprise { grid-column: span 2; } }
+@media (min-width: 56rem) { .intent-grid--home { grid-template-columns: repeat(4, 1fr); } }
 /* The item carries the accent as a custom property set inline by the page; the link reads it. */
 .intent { min-width: 0; }
 .intent-link { display: flex; flex-direction: column; gap: 0.45rem; height: 100%; padding: 1rem 1.1rem 1.05rem; border: 1px solid var(--border-subtle); border-inline-start: 3px solid var(--intent-accent, var(--accent-primary)); border-radius: var(--radius-md); background: color-mix(in srgb, var(--intent-accent, var(--accent-primary)) 6%, var(--surface-base)); color: inherit; text-decoration: none; transition: transform 140ms ease, border-color 140ms ease, background 140ms ease; }

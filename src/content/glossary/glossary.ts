@@ -2324,13 +2324,33 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     sources: [{ label: "Hackers on Planet Earth", href: "https://en.wikipedia.org/wiki/Hackers_on_Planet_Earth" }],
   },
   {
+    // CTF content agent 15/11/2026: replacement; depth, sources and links (Learn capture-the-flag-competitions, blog flags-finals-and-the-brazilian-list).
     slug: "capture-the-flag",
     headword: "Capture the Flag (CTF)",
     kind: "term",
-    domains: ["cyber-security", "events"],
-    aliases: ["ctf", "jeopardy ctf", "attack defense", "pwn challenge"],
-    relatedTerms: ["defcon", "pwn2own", "pentest"],
-    sources: [{ label: "Capture the flag (cybersecurity)", href: "https://en.wikipedia.org/wiki/Capture_the_flag_(cybersecurity)" }],
+    domains: ["cyber-security", "events", "hacking"],
+    expansion: "Capture the Flag",
+    aliases: ["ctf", "capture the flag", "ctf competition", "pwn challenge", "competição de ctf", "campeonato de ctf"],
+    relatedArticles: ["capture-the-flag-competitions", "defcon-culture-and-the-goons", "the-brazilian-hacker-scene", "latin-american-security-conferences"], // the Learn articles that teach it (15/11/2026)
+    relatedTerms: ["defcon", "defcon-goons", "pwn2own", "bug-bounty", "pentest", "red-team", "blue-team", "buffer-overflow", "sql-injection", "h2hc", "roadsec", "bhack", "307conf", "sbseg", "lei-carolina-dieckmann", "jeopardy-ctf", "attack-defence-ctf", "king-of-the-hill-ctf", "ctftime", "write-up", "ctf-flag", "dynamic-scoring", "pwn2win", "ctf-br"], // the last nine are NEW (2.3)
+    sources: [ // every label says what the page says and when it was read (15/11/2026)
+      { label: "ENISA, CTF Events: Contemporary Use of Capture-the-Flag Competitions, May 2021 (read 2026-11-15): definition of a CTF as a competitive computer security event; name from the outdoor game and early wargaming and king-of-the-hill exercises; DEF CON CTF since 1996; jeopardy and attack-defence formats, categories, scoring and variants; 879 CTFtime events 2015-2020, more than 87% jeopardy, attack-defence nearly 25% of in-person events and about 5% of online ones", href: "https://www.enisa.europa.eu/sites/default/files/publications/ENISA%20Report%20-%20CTF%20Events.pdf" }, // ENISA
+      { label: "CTFtime, What is CTF (read 2026-11-15): 'Capture the Flag (CTF) is a special kind of information security competitions'; three common types, Jeopardy, Attack-Defence and mixed", href: "https://ctftime.org/ctf-wtf/" }, // CTFtime
+      { label: "DEF CON, Capture the Flag Archive (read 2026-11-15): first CTF at DEF CON 4 in 1996; organizers The People 1996-2001, Ghetto Hackers 2002-2004, Kenshoto 2005-2008, DDTek 2009-2012, Legitimate Business Syndicate 2013-2017, Order of the Overflow 2018-2021, Nautilus Institute 2022-2025, Benevolent Bureau of Birds from 2026; results 2016-2025", href: "https://defcon.org/html/links/dc-ctf.html" }, // DEF CON
+      { label: "DEF CON, CTF History by vulc@n of DDTek (read 2026-11-15): winners and hosts 1996-2011; judges from DEF CON 4; custom services to attack and patch since DEF CON 10; the qualification round", href: "https://defcon.org/html/links/dc-ctf-history.html" }, // DEF CON
+      { label: "DEF CON 34, Contest Results (read 2026-11-15): the 2026 final with attack-defense and King of the Hill challenges; more than 600 qualifier teams, 12 finalists, more than 30,000 flags; Blue Water first", href: "https://defcon.org/html/defcon-34/dc-34-contest-results.html" }, // DEF CON
+      { label: "iCTF, UC Santa Barbara (read 2026-11-15): local live exercises 2001-2002, first wide-area edition December 2003 with fourteen teams, international from 2004; the attack-defence design; a flag 'is just a string of characters'", href: "https://ictf.cs.ucsb.edu/" }, // iCTF
+      { label: "CTFd documentation, Dynamic Value (read 2026-11-15): a challenge whose point value decreases after each solve; the parabolic decay formula", href: "https://docs.ctfd.io/docs/custom-challenges/dynamic-value/" }, // CTFd
+      { label: "Order of the Overflow, DEF CON CTF 2019 Finals (read 2026-11-15): attack/defense and King of the Hill services; scoring 40% attack, 40% defense, 20% King of the Hill", href: "https://oooverflow.io/dc-ctf-2019-finals/" }, // Order of the Overflow
+      { label: "Benevolent Bureau of Birds, DEF CON CTF Quals 2026 Rules (read 2026-11-15): flag format bbb{...}; write-ups required to qualify; attacking contest/organizer infrastructure prohibited; flag sharing disqualifies; fully or primarily autonomous teams disallowed", href: "https://bbbirds.org/static/rules/defcon-2026-quals-rules.pdf" }, // BBB
+      { label: "Carnegie Mellon University, 13 March 2013 (read 2026-11-15): the first picoCTF, 26 April to 6 May 2013, for grades 6-12, designed by the Plaid Parliament of Pwning and Team Osiris", href: "https://www.cmu.edu/news/stories/archives/2013/march/march13_computercontest.html" }, // CMU
+      { label: "Google Security Blog, Announcing Google Capture the Flag 2017, 2 June 2017 (read 2026-11-15): 2016 winners competing against 2,400 teams; reasons for hosting; write-up rewards", href: "https://security.googleblog.com/2017/06/announcing-google-capture-flag-2017.html" }, // Google
+      { label: "ENISA, 20 May 2026 (read 2026-11-15): fifth International Cybersecurity Challenge in Brisbane, Team Europe first, Team USA second, Team Oceania third; jeopardy and attack-defence formats; ICC 2027 in Ireland", href: "https://www.enisa.europa.eu/news/5th-consecutive-victory-for-team-europe-the-still-undefeated-eu-champions-of-the-international-cybersecurity-challenge" }, // ENISA
+      { label: "ENISA, 16 October 2026 (read 2026-11-15): twelfth European Cybersecurity Challenge in Bochum, Sweden, Finland and Austria on the podium; jeopardy, attack-defense and CTF Unplugged", href: "https://www.enisa.europa.eu/news/sweden-sweeps-the-winning-title-of-the-european-cybersecurity-challenge" }, // ENISA
+      { label: "Chothia and Novakovic, USENIX 3GSE 2015 (read 2026-11-15): flag counts correlate highly with written marks overall but weakly among top students; flags measure basic skill, not deep understanding", href: "https://www.usenix.org/system/files/conference/3gse15/3gse15-chothia.pdf" }, // Chothia and Novakovic
+      { label: "Švábenský, Čeleda, Vykopal and Brišáková, Computers & Security, 2021 (read 2026-11-15): 15,963 CTFtime write-ups mapped to ACM/IEEE guidelines; cryptography and network security prominent, human aspects neglected; limitations", href: "https://arxiv.org/abs/2101.01421" }, // Švábenský et al.
+      { label: "Senado Federal, Lei nº 14.155, de 27 de maio de 2021 (read 2026-11-15): article 154-A of the Penal Code, invading another person's computing device, reclusão de 1 a 4 anos e multa", href: "https://legis.senado.leg.br/norma/34016289/publicacao/34016562" }, // Senado Federal
+    ], // 16 sources, one object per line
   },
   {
     slug: "defcon-badge",
@@ -6110,8 +6130,13 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     personField: "security",
     domains: ["cyber-security", "grc"],
     aliases: ["moussouris", "bug bounty"],
+    relatedArticles: ["bug-bounties-and-vulnerability-disclosure"], // the bug bounty article (15/11/2026)
     relatedTerms: ["bug-bounty", "responsible-disclosure", "dan-kaminsky"],
-    sources: [{ label: "Katie Moussouris: created the bug bounty programme at Microsoft and helped create the US Department of Defense's first", href: "https://en.wikipedia.org/wiki/Katie_Moussouris" }],
+    sources: [ // two read 2026-11-15 for the bug bounty article, beside the encyclopaedia entry
+      { label: "Katie Moussouris: created the bug bounty programme at Microsoft and helped create the US Department of Defense's first", href: "https://en.wikipedia.org/wiki/Katie_Moussouris" }, // Wikipedia
+      { label: "Microsoft, Microsoft's new programs attract bounty hunters who help make safer products, 31 July 2013 (read 2026-11-15): Moussouris as head of security community and strategy at the Microsoft Security Response Center; the IE11 preview, Mitigation Bypass and BlueHat Bonus for Defense programmes; the beta-phase gap left by white-market brokers", href: "https://blogs.microsoft.com/blog/2013/07/31/microsofts-new-programs-attract-bounty-hunters-who-help-make-safer-products/" }, // Microsoft
+      { label: "J.M. Porup, CSO Online, 2 April 2020 (read 2026-11-15): Moussouris as HackerOne's former chief policy officer and founder and CEO of Luta Security; her criticism of platform NDAs as a 'perversion' and of claimed researcher numbers", href: "https://www.csoonline.com/article/3535888/bug-bounty-platforms-buy-researcher-silence-violate-labor-laws-critics-say.html" }, // CSO Online
+    ], // 3 sources, one object per line
   },
   {
     slug: "daniel-j-bernstein",
@@ -6208,9 +6233,9 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     headword: "coordinated disclosure",
     kind: "term",
     domains: ["cyber-security", "grc"],
-    aliases: ["cvd"],
-    relatedArticles: ["the-disclosure-record", "the-kaminsky-dns-flaw", "satan-and-the-tool-release-argument", "there-is-no-perfect-code", "php-october-2026-vulnerabilities"], // the Learn articles that teach it (sweep 9C)
-    relatedTerms: ["responsible-disclosure", "bug-bounty", "dan-kaminsky", "embargo", "cna", "dmca", "kaminsky-dns-flaw", "cve", "katie-moussouris", "cert", "first", "zero-day"], // its neighbours, the existing ones first (sweep 9C)
+    aliases: ["cvd", "coordinated vulnerability disclosure", "divulgação coordenada", "divulgação coordenada de vulnerabilidades"], // the CVD aliases moved here from responsible-disclosure (15/11/2026)
+    relatedArticles: ["the-disclosure-record", "the-kaminsky-dns-flaw", "satan-and-the-tool-release-argument", "there-is-no-perfect-code", "php-october-2026-vulnerabilities", "bug-bounties-and-vulnerability-disclosure"], // the Learn articles that teach it (sweep 9C)
+    relatedTerms: ["responsible-disclosure", "bug-bounty", "dan-kaminsky", "embargo", "cna", "dmca", "kaminsky-dns-flaw", "cve", "katie-moussouris", "cert", "first", "zero-day", "vulnerability-disclosure-programme", "safe-harbour", "security-txt"], // its neighbours, the existing ones first (sweep 9C)
     sources: [ // every label says what the page says and when it was read (sweep 9C)
       { label: "CERT/CC (Software Engineering Institute, Carnegie Mellon University), The CERT Guide to Coordinated Vulnerability Disclosure, web edition of report CMU/SEI-2017-SR-022, page 'Coordinated Vulnerability Disclosure is a Process, Not an Event' (read 2026-11-12): the two core questions, what to do with the knowledge and who else needs to know what and when; the roles of finder, reporter, vendor and deployer", href: "https://certcc.github.io/CERT-Guide-to-CVD/tutorials/cvd_is_a_process/" }, // CERT/CC (Software Engineering Institute
       { label: "CERT/CC, The CERT Guide to Coordinated Vulnerability Disclosure, Disclosure Timing (read 2026-11-12): no single right deadline; conference schedules drive timing; reasons to release early and to hold back; all disclosure agreements are contingent, because adversaries and independent finders are not party to them; 'Don't tease'", href: "https://certcc.github.io/CERT-Guide-to-CVD/howto/coordination/disclosure_timing/" }, // CERT/CC
@@ -6224,7 +6249,8 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
       { label: "IETF, RFC 9116, A File Format to Aid in Security Vulnerability Disclosure (E. Foudil, Y. Shafranovich), April 2022 (read 2026-11-12): the security.txt file, its location under the well-known path, and the Contact and Expires fields that must always be present", href: "https://www.rfc-editor.org/rfc/rfc9116" }, // IETF
       { label: "United States Department of Justice, press release 'Department of Justice Announces New Policy for Charging Cases under the Computer Fraud and Abuse Act', 19 May 2022 (read 2026-11-12): good-faith security research should not be charged; its definition", href: "https://www.justice.gov/archives/opa/pr/department-justice-announces-new-policy-charging-cases-under-computer-fraud-and-abuse-act" }, // United States Department of Justice
       { label: "European Commission, Cyber Resilience Act policy page (read 2026-11-12): in force since 10 December 2024; reporting obligations from 11 September 2026; main obligations from 11 December 2027; manufacturers must handle vulnerabilities during the lifecycle of their products", href: "https://digital-strategy.ec.europa.eu/en/policies/cyber-resilience-act" }, // European Commission
-    ], // 12 sources, one object per line
+      { label: "EUR-Lex, Directive (EU) 2022/2555 (NIS2), article 12 (read 2026-11-15): each member state designates a CSIRT as coordinator for coordinated vulnerability disclosure, a trusted intermediary that negotiates disclosure timelines; anonymous reporting; the ENISA European vulnerability database", href: "https://eur-lex.europa.eu/eli/dir/2022/2555/oj/eng" }, // EUR-Lex (15/11/2026)
+    ], // 13 sources, one object per line
   },
   {
     // Content sweep 11/11/2026, batch 3C/3D: depth, sources and links rewritten to the minimum level (PLAN-content-sweep-20261111).
@@ -9212,20 +9238,55 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     relatedTerms: ["salt", "hash", "brute-force"],
   },
   {
+    // Bug bounty article (15/11/2026): depth, sources and links rewritten to the minimum level; the CVD aliases moved to coordinated-disclosure.
     slug: "responsible-disclosure",
     headword: "responsible disclosure",
     kind: "term",
     domains: ["cyber-security", "grc"],
-    aliases: ["coordinated disclosure", "responsible-disclosure", "CVD"],
-    relatedTerms: ["zero-day", "cve", "bug-bounty", "embargo"],
+    aliases: ["responsible-disclosure", "responsible vulnerability disclosure", "divulgação responsável"],
+    relatedArticles: ["bug-bounties-and-vulnerability-disclosure", "the-disclosure-record", "the-kaminsky-dns-flaw"], // the Learn articles that teach it (15/11/2026)
+    relatedTerms: ["coordinated-disclosure", "bug-bounty", "vulnerability-disclosure-programme", "safe-harbour", "security-txt", "embargo", "zero-day", "cve", "katie-moussouris", "dan-kaminsky"], // the three new slugs only after 2c-2e are added
+    sources: [ // every label says what the page says and when it was read (15/11/2026)
+      { label: "Chromium Blog, Encouraging More Chromium Security Research, 28 January 2010 (read 2026-11-15): 'We encourage responsible disclosure. Note that we believe responsible disclosure is a two-way street; it's our job to fix serious bugs within a reasonable time frame'", href: "https://blog.chromium.org/2010/01/encouraging-more-chromium-security.html" }, // Chromium Blog
+      { label: "Google Online Security Blog, Rewarding web application security research, 1 November 2010 (read 2026-11-15): handling vulnerabilities responsibly as a two-way street; advance private notice requested; reports disclosed to other parties usually do not qualify; public disclosure after the fix encouraged", href: "https://security.googleblog.com/2010/11/rewarding-web-application-security.html" }, // Google
+      { label: "TrendAI Zero Day Initiative, Disclosure Policy (read 2026-11-15): 'responsible vulnerability disclosure' to vendors; 120 days to fix after a vendor responds; an advisory if the vendor cannot be reached; no acquired vulnerability kept quiet", href: "https://www.zerodayinitiative.com/advisories/disclosure_policy/" }, // ZDI
+      { label: "ISO, ISO/IEC 29147:2018, Vulnerability disclosure, catalogue page (read 2026-11-15 through WebFetch): requirements and recommendations to vendors on the disclosure of vulnerabilities; confirmed in 2024", href: "https://www.iso.org/standard/72311.html" }, // ISO
+      { label: "ISO, ISO/IEC 30111:2019, Vulnerability handling processes, catalogue page (read 2026-11-15 through WebFetch): how to process and remediate reported potential vulnerabilities; confirmed in 2025", href: "https://www.iso.org/standard/69725.html" }, // ISO
+      { label: "CISA, Binding Operational Directive 20-01, 2 September 2020 (read 2026-11-15 through WebFetch): federal VDPs with a commitment not to recommend or pursue legal action against good-faith research; recommended 3-business-day acknowledgement and 90-day resolution", href: "https://www.cisa.gov/binding-operational-directive-20-01" }, // CISA
+      { label: "EUR-Lex, Directive (EU) 2022/2555 (NIS2), article 12 (read 2026-11-15): a CSIRT coordinator in each member state as trusted intermediary; anonymous reporting; the European vulnerability database", href: "https://eur-lex.europa.eu/eli/dir/2022/2555/oj/eng" }, // EUR-Lex
+      { label: "US Department of Justice, Justice Manual 9-48.000, updated May 2022 (read 2026-11-15): prosecutors should decline to charge good-faith security research; its definition; research to extort owners is not in good faith", href: "https://www.justice.gov/jm/jm-9-48000-computer-fraud" }, // DOJ
+      { label: "VTEX, Security Disclosure Policy (read 2026-11-15): a company policy asking researchers to 'report it responsibly', with a 90-day coordinated window, response targets by severity and a legal safe harbour", href: "https://vtex.com/.well-known/security-disclosure-policy.txt" }, // VTEX
+      { label: "Electronic Frontier Foundation, Coders' Rights Are At Risk in Brazil, and Harms Could Affect Everyone, September 2019 (read 2026-11-15): broad cybercrime offences can impair security research; Brazil's offence then required the violation of a security mechanism", href: "https://www.eff.org/deeplinks/2019/09/coders-rights-are-risk-brazil-and-harms-could-affect-everyone" }, // EFF
+      { label: "Senado Federal, Lei nº 14.155/2021, published text (read 2026-11-15): the current article 154-A, with no research exception and authorization as the only exit", href: "https://legis.senado.leg.br/norma/34016289/publicacao/34016562" }, // Senado Federal
+    ], // 11 sources, one object per line
   },
   {
+    // Bug bounty article (15/11/2026): depth, sources and links rewritten to the minimum level.
     slug: "bug-bounty",
     headword: "bug bounty",
     kind: "term",
-    domains: ["cyber-security", "hacking"],
-    aliases: ["bug-bounty", "vulnerability reward"],
-    relatedTerms: ["responsible-disclosure", "pentest"],
+    domains: ["cyber-security", "hacking", "grc"],
+    aliases: ["bug-bounty", "vulnerability reward", "vulnerability reward program", "vrp", "bug bounty programme", "bug bounty program", "programa de bug bounty", "recompensa por bugs"],
+    relatedArticles: ["bug-bounties-and-vulnerability-disclosure", "the-disclosure-record", "there-is-no-perfect-code"], // the Learn articles that teach it (15/11/2026)
+    relatedTerms: ["responsible-disclosure", "coordinated-disclosure", "vulnerability-disclosure-programme", "safe-harbour", "security-txt", "pentest", "katie-moussouris", "embargo", "cvss", "pwn2own", "zero-day", "lei-carolina-dieckmann"], // its neighbours; the three new slugs only after 2c-2e are added
+    sources: [ // every label says what the page says and when it was read (15/11/2026)
+      { label: "Computer History Museum, catalogue 102782474, VRTX poster, Hunter & Ready, 1983 (read 2026-11-15 through WebFetch): a Volkswagen Beetle under 'Get a bug if you find a bug', offered to anyone who found a bug in the VRTX real-time operating system", href: "https://www.computerhistory.org/collections/catalog/102782474" }, // Computer History Museum
+      { label: "Educom, Edupage of 12 October 1995, forwarded to Bugtraq on 13 October 1995 (read 2026-11-15): Netscape's 'Bugs Bounty' of US$1,000 for the first major security bug in the Navigator 2.0 beta, citing the Wall Street Journal of 11 October 1995", href: "https://seclists.org/bugtraq/1995/Oct/12" }, // Educom via Bugtraq
+      { label: "Mozilla, Mozilla Foundation Announces Security Bug Bounty Program, 2 August 2004 (read 2026-11-15): US$500 for critical security bugs as judged by Mozilla staff; seed funding from Linspire and Mark Shuttleworth", href: "https://blog.mozilla.org/press/2004/08/mozilla-foundation-announces-security-bug-bounty-program/" }, // Mozilla
+      { label: "Chromium Blog, Encouraging More Chromium Security Research, 28 January 2010 (read 2026-11-15): base reward US$500 as per Mozilla, US$1,337 for particularly severe or clever bugs; only the first report of an unknown issue is eligible", href: "https://blog.chromium.org/2010/01/encouraging-more-chromium-security.html" }, // Chromium Blog
+      { label: "Google Online Security Blog, Rewarding web application security research, 1 November 2010 (read 2026-11-15): scope, exclusions, no automated tools, own or test accounts only, US$500 to US$3,133.7, earliest report wins, not open to minors", href: "https://security.googleblog.com/2010/11/rewarding-web-application-security.html" }, // Google
+      { label: "Microsoft, Microsoft's new programs attract bounty hunters who help make safer products, 31 July 2013 (read 2026-11-15): the IE11 preview bounty (US$500 to US$11,000), the Mitigation Bypass Bounty (up to US$100,000) and BlueHat Bonus for Defense (US$50,000); Katie Moussouris on the beta-phase gap left by white-market brokers", href: "https://blogs.microsoft.com/blog/2013/07/31/microsofts-new-programs-attract-bounty-hunters-who-help-make-safer-products/" }, // Microsoft
+      { label: "Belfer Center, reproduction of Ash Carter, The Pentagon's First Bug Bounty Exceeded All Expectations, US Department of Defense, 17 June 2016 (read 2026-11-15): more than 1,400 invited, more than 250 submitted, 138 valid and unique, US$150,000 against more than US$1 million for an outside audit", href: "https://www.belfercenter.org/publication/pentagons-first-bug-bounty-exceeded-all-expectations" }, // Belfer Center
+      { label: "HackerOne, press release on the 2026 Security Research Report, 7 October 2026 (read 2026-11-15): US$89 million awarded July 2025 to June 2026, up 18%; valid unresolved backlog up 131% in two years; resolution time 135 to 62 days; bases: platform data, 111 security leaders, 408 researchers", href: "https://www.hackerone.com/press-release/hackerone-report-reveals-growing-exposure-debt-vulnerability-backlogs-grew-131-even" }, // HackerOne
+      { label: "Google, VRP 2025 Year in Review, 31 March 2026 (read 2026-11-15): over US$17 million to over 700 researchers in 2025; highest reward US$250,000; US$81.6 million since 2010", href: "https://blog.google/security/vrp-2025-year-in-review/" }, // Google
+      { label: "Microsoft Security Response Center, Microsoft Bounty Program year in review, 3 August 2026 (read 2026-11-15): more than US$20 million to 562 researchers from 64 countries; US$17 million to 344 the year before", href: "https://www.microsoft.com/en-us/msrc/blog/2026/08/microsoft-bounty-program-year-in-review-more-than-20-million-awarded-biggest-year" }, // MSRC
+      { label: "Bugcrowd, Inside the Mind of a Hacker 2026 (read 2026-11-15): over 2,000 survey responses from Bugcrowd hackers; 82% use AI; 65% have chosen not to disclose a vulnerability for lack of a clear pathway", href: "https://www.bugcrowd.com/wp-content/uploads/2026/01/Inside-the-Mind-of-a-Hacker-2026.pdf" }, // Bugcrowd
+      { label: "Akgul et al., Bug Hunters' Perspectives on the Challenges and Benefits of the Bug Bounty Ecosystem, USENIX Security 2023 (read 2026-11-15): surveys of 56 and 159 hunters and 24 interviews; rewards and learning the main benefits; scope the top differentiator; communication problems the main challenge", href: "https://www.usenix.org/conference/usenixsecurity23/presentation/akgul" }, // USENIX
+      { label: "J.M. Porup, CSO Online, Bug bounty platforms buy researcher silence, violate labor laws, critics say, 2 April 2020 (read 2026-11-15): NDAs at Zoom, DJI and PayPal; Katie Moussouris on concentrated earnings; Alex Rice's defence of private programmes", href: "https://www.csoonline.com/article/3535888/bug-bounty-platforms-buy-researcher-silence-violate-labor-laws-critics-say.html" }, // CSO Online
+      { label: "US Court of Appeals for the Ninth Circuit, United States v. Sullivan, No. 23-927, amended opinion, 12 November 2025 (read 2026-11-15): Uber's 2016 US$100,000 payment and NDA under its bounty programme; authorization assessed at the moment of access; whether a bounty can authorize research in advance left open", href: "https://cdn.ca9.uscourts.gov/datastore/opinions/2025/11/12/23-927.pdf" }, // Ninth Circuit
+      { label: "Daniel Stenberg, The end of the curl bug-bounty, 26 January 2026 (read 2026-11-15): 87 confirmed vulnerabilities and over US$100,000 since April 2019; confirmed rate from above 15% to below 5% in 2025; rewards ended", href: "https://daniel.haxx.se/blog/2026/01/26/the-end-of-the-curl-bug-bounty/" }, // curl
+      { label: "HackerOne, Vulnerability Disclosure Guidelines, version 1.3, 27 July 2026 (read 2026-11-15): Disclosure, Mutual Agreement (180-day last resort) and Disabled settings; private programmes non-disclosure by default; payment eligibility", href: "https://www.hackerone.com/disclosure-guidelines" }, // HackerOne
+    ], // 16 sources, one object per line
   },
 
   // ------------------------------------------------------------- DARKWEB ----
@@ -13525,7 +13586,11 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     kind: "acronym",
     domains: ["programming", "ops-culture"],
     expansion: "looks good to me",
-    sources: [{ label: "Common code-review usage; see e.g. Google Engineering Practices documentation", href: "https://google.github.io/eng-practices/review/" }],
+    sources: [ // re-read 2026-11-15 for the depth paragraph (queue 5d extra (b)); every label says what the page says
+      { label: "Google Engineering Practices, 'Speed of Code Reviews' (read 2026-11-15): one business day is the maximum time to respond to a review request; 'LGTM with comments', an approval given while unresolved comments remain, is worth considering when author and reviewer are in different time zones", href: "https://google.github.io/eng-practices/review/reviewer/speed.html" }, // the speed page
+      { label: "Google Engineering Practices, 'The Standard of Code Review' (read 2026-11-15): reviewers should favour approving a change once it definitely improves the overall code health, even if it is not perfect; nothing justifies checking in a change that definitely worsens it", href: "https://google.github.io/eng-practices/review/reviewer/standard.html" }, // the standard page
+      { label: "Google Engineering Practices, 'Code Review Developer Guide' (read 2026-11-15): the reviewer's and the author's guides, and what a reviewer looks for (design, functionality, complexity, tests, naming, comments, style, documentation)", href: "https://google.github.io/eng-practices/review/" }, // the guide's index
+    ], // 3 sources, one object per line
   },
   {
     slug: "decnet",
@@ -28585,6 +28650,670 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
       { label: "United Nations Editorial Manual, Spelling (May 2025 edition, read 2026-11-11): the online Oxford Dictionary set to British English is the authority for spelling; the list gives organize, minimize and stabilize beside analyse and paralyse", href: "https://www.un.org/dgacm/sites/www.un.org.dgacm/files/Documents_Editorial_manual/spell_print_may2025.pdf" }, // the UN's Oxford spelling
       { label: "European Commission, English Style Guide, sections 3.2 and 3.4 (read 2026-11-11): use the -is- spelling for consistency in EU texts, though both are correct; -yse is the only correct spelling of paralyse and analyse", href: "https://commission.europa.eu/system/files/2023-11/styleguide_english_dgt_en.pdf" }, // the EU's -ise
     ], // nine sources, one object per line
+  },
+  {
+    // psyops Arc 2 (15/11/2026): business email compromise, its definitions and variants as the FBI and FinCEN describe them.
+    slug: "bec", // the /glossary/bec address
+    headword: "BEC", // the acronym as the FBI, FinCEN and MITRE write it
+    kind: "acronym", // spelled out in expansion
+    expansion: "business email compromise",
+    domains: ["cyber-security"],
+    aliases: ["business email compromise", "business e-mail compromise", "email account compromise", "eac", "bec fraud", "comprometimento de e-mail corporativo"],
+    relatedArticles: ["business-email-compromise-and-impersonation", "social-engineering-pretexting-vishing-and-baiting", "email-authentication-spf-dkim-dmarc", "scams-at-scale-why-a-tiny-success-rate-pays"],
+    relatedTerms: ["phishing", "social-engineering", "typosquatting", "dmarc", "spf", "dkim", "mfa", "ceo-fraud", "display-name-spoofing", "financial-fraud-kill-chain"], // the last three NEW in this batch
+    sources: [
+      { label: "FBI Internet Crime Complaint Center, 2025 IC3 Annual Report, April 2026 (read 2026-11-15): Appendix B definition of BEC, including phone numbers and virtual meeting applications as channels; 24,768 complaints and $3,046,598,558 in 2025; second component of losses after investment fraud; over $30 million in BEC losses involving AI", href: "https://www.ic3.gov/AnnualReport/Reports/2025_IC3Report.pdf" },
+      { label: "FBI Internet Crime Complaint Center, Business Email Compromise: The $55 Billion Scam, I-091124-PSA, 11 September 2024 (read 2026-11-15): 305,033 incidents and $55,499,915,582 in exposed losses from October 2013 to December 2023, from IC3, law enforcement and financial filings; reported in 186 countries", href: "https://www.ic3.gov/PSA/2024/PSA240911" },
+      { label: "FBI Internet Crime Complaint Center, I-050417-PSA, 4 May 2017 (read 2026-11-15): the five scenarios (foreign supplier, executive wire request, compromised employee email, executive and attorney impersonation, W-2 and PII data theft)", href: "https://www.ic3.gov/PSA/2017/PSA170504" },
+      { label: "FinCEN, Updated Advisory on Email Compromise Fraud Schemes Targeting Vulnerable Business Processes, FIN-2019-A005, 16 July 2019 (read 2026-11-15): BEC and email account compromise (EAC) defined; payments by wire, ACH, virtual currency and gift cards; over 32,000 reports and almost $9 billion in attempted theft since 2016", href: "https://www.fincen.gov/sites/default/files/advisory/2019-07-16/Updated%20BEC%20Advisory%20FINAL%20508.pdf" },
+      { label: "MITRE ATT&CK, Social Engineering: Impersonation, T1684.001 (read 2026-11-15): impersonating an executive, colleague or third-party vendor in business email compromise, after reconnaissance and acquiring domains", href: "https://attack.mitre.org/techniques/T1684/001/" },
+    ],
+  },
+  {
+    // psyops Arc 2 (15/11/2026): the executive-impersonation variant of BEC.
+    slug: "ceo-fraud",
+    headword: "CEO fraud",
+    kind: "term",
+    domains: ["cyber-security"],
+    aliases: ["ceo scam", "business executive scam", "whaling fraud", "fraude do ceo", "golpe do falso ceo", "golpe do falso presidente"],
+    relatedArticles: ["business-email-compromise-and-impersonation", "voice-clones-and-deepfakes-in-fraud", "social-engineering-pretexting-vishing-and-baiting"],
+    relatedTerms: ["bec", "phishing", "social-engineering", "deepfake", "voice-cloning"], // bec, deepfake and voice-cloning NEW in this batch
+    sources: [
+      { label: "FBI Internet Crime Complaint Center, I-050417-PSA, 4 May 2017 (read 2026-11-15): scenario 2, an executive's account spoofed or hacked to request a wire, also called CEO Fraud, Business Executive Scam, Masquerading and Financial Industry Wire Frauds", href: "https://www.ic3.gov/PSA/2017/PSA170504" },
+      { label: "FinCEN, FIN-2019-A005, 16 July 2019 (read 2026-11-15): impersonating executives to discourage employees from challenging or confirming the order; about half of BEC against financial institutions impersonated the CEO or president", href: "https://www.fincen.gov/sites/default/files/advisory/2019-07-16/Updated%20BEC%20Advisory%20FINAL%20508.pdf" },
+      { label: "Asaf Cidon and others, High Precision Detection of Business Email Compromise, 28th USENIX Security Symposium, August 2019 (read 2026-11-15): the CEO or founder impersonated in about 43% of sampled attacks; about 60% of BEC attacks carry no link", href: "https://www.usenix.org/system/files/sec19-cidon.pdf" },
+      { label: "Europol, Franco-Israeli gang behind EUR 38 million CEO fraud busted, 17 February 2023 (read 2026-11-15): an accountant asked by a fake CEO for an urgent and confidential transfer; a developer defrauded of almost EUR 38 million by fake lawyers", href: "https://www.europol.europa.eu/media-press/newsroom/news/franco-israeli-gang-behind-eur-38-million-ceo-fraud-busted" },
+      { label: "Hong Kong Government, LCQ9: Combating frauds involving deepfake, 26 June 2024 (read 2026-11-15): a pre-recorded deepfake video conference impersonating a UK head office CFO and a loss of about HK$200 million", href: "https://www.info.gov.hk/gia/general/202406/26/P2024062600192.htm" },
+    ],
+  },
+  {
+    // psyops Arc 2 (15/11/2026): the sender-name layer that DMARC leaves out of scope.
+    slug: "display-name-spoofing",
+    headword: "display-name spoofing",
+    kind: "term",
+    domains: ["cyber-security"],
+    aliases: ["display name attack", "display-name attack", "display name spoofing", "falsificação do nome de exibição"],
+    relatedArticles: ["business-email-compromise-and-impersonation", "email-authentication-spf-dkim-dmarc", "deceptive-urls"],
+    relatedTerms: ["dmarc", "spf", "dkim", "typosquatting", "phishing", "bec"], // bec NEW in this batch
+    sources: [
+      { label: "IETF, RFC 9989, Domain-Based Message Authentication, Reporting, and Conformance (DMARC), May 2026 (read 2026-11-15): section 11.4, a well-known name in the display name with an arbitrary address; such display name attacks are out of scope for DMARC; section 2.4 lists them among out-of-scope topics", href: "https://www.rfc-editor.org/rfc/rfc9989.txt" },
+      { label: "Asaf Cidon and others, High Precision Detection of Business Email Compromise, USENIX Security 2019 (read 2026-11-15): many email clients do not display the sender address, so recipients can be deceived even by an unrelated address; lookalike domains such as acrne.com for acme.com", href: "https://www.usenix.org/system/files/sec19-cidon.pdf" },
+      { label: "FBI Internet Crime Complaint Center, I-040620-PSA, 6 April 2020 (read 2026-11-15): recommendations for administrators, among them an email banner on messages from outside the organization and SPF, DKIM and DMARC against spoofing", href: "https://www.ic3.gov/PSA/2020/PSA200406" },
+    ],
+  },
+  {
+    // psyops Arc 2 (15/11/2026): the IC3 Recovery Asset Team's freezing process after fraudulent transfers.
+    slug: "financial-fraud-kill-chain",
+    headword: "Financial Fraud Kill Chain",
+    kind: "term",
+    domains: ["cyber-security", "grc"],
+    aliases: ["ffkc", "recovery asset team", "ic3 rat", "fraud kill chain"],
+    relatedArticles: ["business-email-compromise-and-impersonation", "scams-at-scale-why-a-tiny-success-rate-pays"],
+    relatedTerms: ["bec", "kill-chain", "pig-butchering", "pix"], // bec NEW in this batch
+    sources: [
+      { label: "FBI Internet Crime Complaint Center, 2025 IC3 Annual Report, April 2026 (read 2026-11-15): Recovery Asset Team established 2018; 3,900 FFKC incidents in 2025, $1,163,919,846 attempted and $679,013,183 frozen (a 58% success rate as the IC3 defines it); domestic and international processes with FinCEN's Rapid Response Team and FBI legal attachés; second-hop freezes; guidance to request a recall at once and file whatever the amount", href: "https://www.ic3.gov/AnnualReport/Reports/2025_IC3Report.pdf" },
+      { label: "FinCEN, Financial Trend Analysis: Business Email Compromise in the Real Estate Sector, March 2023 (read 2026-11-15): recovery outcomes reported by banks for 2,013 incidents in 2020 and 2021 (full 22.21%, partial 14.51%, none 20.37%, blocked or declined 12.47%, unclear 30.45%)", href: "https://www.fincen.gov/sites/default/files/shared/Financial_Trend_Analysis_BEC_FINAL.pdf" },
+    ],
+  },
+  {
+    // psyops Arc 2 (15/11/2026): the Brazilian falsified payment slip, the local form of invoice fraud.
+    slug: "golpe-do-falso-boleto",
+    headword: "golpe do falso boleto",
+    kind: "term",
+    domains: ["cyber-security"],
+    aliases: ["boleto falso", "falso boleto", "boleto adulterado", "fake boleto scam", "golpe do boleto"],
+    relatedArticles: ["business-email-compromise-and-impersonation", "brazilian-cybercrime-from-boleto-to-pix"],
+    relatedTerms: ["febraban", "cert-br", "pix", "bec", "banking-trojan"], // bec NEW in this batch
+    sources: [
+      { label: "FEBRABAN, Saiba quais foram os 10 golpes mais aplicados contra clientes bancários em 2024, 14 April 2025 (read 2026-11-15): item 7, the golpe do falso boleto, and how to check the beneficiary", href: "https://portal.febraban.org.br/noticia/4279/pt-br/" },
+      { label: "CNN Brasil, Não imprima boletos, alerta Febraban, 1 April 2024 (read 2026-11-15): 4.2 billion boletos in 2023; the Plataforma Centralizada de Recebíveis eliminated about R$ 450 million a year in fraud; malware altering slips at printing; DDA and the bank code in the barcode", href: "https://www.cnnbrasil.com.br/economia/financas/nao-imprima-boletos-alerta-febraban-entenda/" },
+      { label: "CERT.br, Golpes: Evite Fraudes, March 2026 (read 2026-11-15): check that the recipient's name and CNPJ belong to the supplier hired; prefer the registered electronic boleto", href: "https://cartilha.cert.br/fasciculos/golpes-evite-fraudes/fasciculo-golpes-evite-fraudes.pdf" },
+      { label: "Consultor Jurídico, 18 October 2023, on STJ REsp 2.077.278 (read 2026-11-15): a financial company liable when fraudsters who held confidential banking data sent a customer a false boleto; no causal link when the data are general", href: "https://www.conjur.com.br/2023-out-18/vazamento-dados-bancarios-falha-prestacao-servico/" },
+      { label: "Polícia Civil de Goiás, Operação Cobrança Verdadeira, 24 September 2025 (read 2026-11-15): a company induced to pay a falsified boleto, a loss of more than R$ 74,000; a structure set up to receive fraud proceeds", href: "https://goias.gov.br/policiacivil/pcgo-deflagra-operacao-cobranca-verdadeira-e-prende-homem-por-aplicar-golpe-do-boleto-falso/" },
+    ],
+  },
+  {
+    // psyops Arc 2 (15/11/2026): deepfake as the EU AI Act and FinCEN define it, with the fraud cases and the detection limits.
+    slug: "deepfake",
+    headword: "deepfake",
+    kind: "term",
+    domains: ["cyber-security", "privacy"],
+    aliases: ["deep fake", "deep-fake", "synthetic media", "mídia sintética", "face swap"],
+    relatedArticles: ["voice-clones-and-deepfakes-in-fraud", "business-email-compromise-and-impersonation", "psychological-operations-from-the-small-lie-to-the-campaign"],
+    relatedTerms: ["voice-cloning", "liveness-detection", "liars-dividend", "ceo-fraud", "disinformation", "social-engineering"], // the first four NEW in this batch
+    sources: [
+      { label: "Regulation (EU) 2024/1689 (AI Act), 13 June 2024 (read 2026-11-15): Article 3(60) definition of deep fake; Article 50(2) machine-readable marking by providers and 50(4) disclosure by deployers, applying from 2 August 2026", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689" },
+      { label: "FinCEN, FIN-2024-Alert004, 13 November 2024 (read 2026-11-15): deepfakes as synthetic content creating realistic but inauthentic video, pictures, audio and text; rising suspicious activity reports since 2023; red flags and live verification checks", href: "https://www.fincen.gov/sites/default/files/shared/FinCEN-Alert-DeepFakes-Alert508FINAL.pdf" },
+      { label: "Hong Kong Government, LCQ9: Combating frauds involving deepfake, 26 June 2024 (read 2026-11-15): a pre-recorded deepfake video conference and a loss of about HK$200 million; a face-swap loan syndicate; 21 deepfake clips of officials and celebrities removed", href: "https://www.info.gov.hk/gia/general/202406/26/P2024062600192.htm" },
+      { label: "Nils C. Köbis, Barbora Doležalová and Ivan Soraperra, Fooled twice: People cannot detect deepfakes but think they can, iScience, November 2021 (read 2026-11-15): pre-registered experiment, N = 210; awareness and incentives did not improve detection; bias towards authenticity and overconfidence", href: "https://pmc.ncbi.nlm.nih.gov/articles/PMC8602050/" },
+      { label: "Brian Dolhansky and others, The DeepFake Detection Challenge (DFDC) Dataset, arXiv 2006.07397, 2020 (read 2026-11-15): 2,114 teams; many submissions simply random; best models' average precision 0.753 on real videos", href: "https://arxiv.org/pdf/2006.07397" },
+    ],
+  },
+  {
+    // psyops Arc 2 (15/11/2026): synthetic speech in a target's voice, as makers and regulators describe it.
+    slug: "voice-cloning",
+    headword: "voice cloning",
+    kind: "term",
+    domains: ["cyber-security", "privacy"],
+    aliases: ["voice clone", "cloned voice", "audio deepfake", "speech deepfake", "clonagem de voz", "voz clonada"],
+    relatedArticles: ["voice-clones-and-deepfakes-in-fraud", "social-engineering-pretexting-vishing-and-baiting"],
+    relatedTerms: ["deepfake", "virtual-kidnapping", "ceo-fraud", "social-engineering", "smishing"], // the first three NEW in this batch
+    sources: [
+      { label: "Chengyi Wang and others (Microsoft), VALL-E, arXiv 2301.02111, January 2023 (read 2026-11-15): personalized speech from a 3-second enrolled recording; risks of spoofing voice identification or impersonating a speaker", href: "https://arxiv.org/pdf/2301.02111" },
+      { label: "Federal Communications Commission, Declaratory Ruling FCC 24-17, released 8 February 2024 (read 2026-11-15): AI-generated voices are artificial voices under the Telephone Consumer Protection Act; calls need prior express consent", href: "https://docs.fcc.gov/public/attachments/FCC-24-17A1.pdf" },
+      { label: "Consumer Reports, New Report: Do These 6 AI Voice Cloning Companies Do Enough to Prevent Misuse?, 10 March 2025 (read 2026-11-15): four of six companies examined failed to take basic steps against unauthorized cloning", href: "https://innovation.consumerreports.org/new-report-do-these-6-ai-voice-cloning-companies-do-enough-to-prevent-misuse/" },
+      { label: "Sarah Barrington, Emily A. Cooper and Hany Farid, People are poorly equipped to detect AI-powered voice clones, Scientific Reports 15, 2025 (read 2026-11-15): identity judged the same as the real voice about 80% of the time; AI voices identified as AI about 60% of the time", href: "https://escholarship.org/content/qt8wc5d5q8/qt8wc5d5q8.pdf" },
+      { label: "FBI Internet Crime Complaint Center, I-120324-PSA, 3 December 2024 (read 2026-11-15): short clips of a loved one's voice used in crisis scams; create a secret word or phrase with your family", href: "https://www.ic3.gov/PSA/2024/PSA241203" },
+    ],
+  },
+  {
+    // psyops Arc 2 (15/11/2026): live verification checks and the attacks that defeat them.
+    slug: "liveness-detection",
+    headword: "liveness detection",
+    kind: "term",
+    domains: ["cyber-security", "privacy"],
+    aliases: ["liveness check", "presentation attack detection", "pad", "prova de vida", "injection attack", "presentation attack"],
+    relatedArticles: ["voice-clones-and-deepfakes-in-fraud", "passkeys-and-phishing-resistant-authentication"],
+    relatedTerms: ["deepfake", "mfa", "passkey", "webauthn"], // deepfake NEW in this batch
+    sources: [
+      { label: "ENISA, Remote Identity Proofing: Attacks & Countermeasures, January 2022 (read 2026-11-15): photo, video replay, 3D mask and deepfake presentation attacks; movement-on-command checks effective against unsophisticated attackers only; involuntary signals and depth sensing", href: "https://www.enisa.europa.eu/sites/default/files/publications/ENISA%20Report%20-%20Remote%20Identity%20Proofing%20-%20Attacks%20%26%20Countermeasures.pdf" },
+      { label: "FinCEN, FIN-2024-Alert004, 13 November 2024 (read 2026-11-15): live verification checks as a best practice; actors may generate synthetic responses; repeated glitches and third-party webcam plugins as red flags", href: "https://www.fincen.gov/sites/default/files/shared/FinCEN-Alert-DeepFakes-Alert508FINAL.pdf" },
+    ],
+  },
+  {
+    // psyops Arc 2 (15/11/2026): Chesney and Citron's term for the cost of deepfakes to true evidence.
+    slug: "liars-dividend",
+    headword: "liar's dividend",
+    kind: "term",
+    domains: ["privacy", "grc"],
+    aliases: ["liars dividend", "dividendo do mentiroso"],
+    relatedArticles: ["voice-clones-and-deepfakes-in-fraud", "psychological-operations-from-the-small-lie-to-the-campaign"],
+    relatedTerms: ["deepfake", "disinformation", "psyop"], // deepfake NEW in this batch
+    sources: [
+      { label: "Robert Chesney and Danielle Citron, Deep Fakes: A Looming Challenge for Privacy, Democracy, and National Security, California Law Review 107, December 2019 (read 2026-11-15): deep fakes make it easier for liars to avoid accountability for things that are true; the dividend grows with success in educating the public", href: "https://www.californialawreview.org/print/deep-fakes-a-looming-challenge-for-privacy-democracy-and-national-security" },
+      { label: "ARTIGO 19, Aláfia Lab and IRIS, technical note on TSE Resolution 23.755/2026, March 2026 (read 2026-11-15): the inversion of the burden of proof for synthetic content could be used maliciously against authentic content", href: "https://artigo19.org/wp-content/blogs.dir/24/files/2026/03/NOTA_TSE2026-VF.pdf" },
+    ],
+  },
+  {
+    // psyops Arc 2 (15/11/2026): fake kidnapping claims backed by altered photos or cloned voices.
+    slug: "virtual-kidnapping",
+    headword: "virtual kidnapping",
+    kind: "term",
+    domains: ["cyber-security"],
+    aliases: ["virtual kidnapping scam", "fake kidnapping", "falso sequestro", "sequestro virtual", "family emergency scam", "grandparent scam", "distress scam"],
+    relatedArticles: ["voice-clones-and-deepfakes-in-fraud", "social-engineering-pretexting-vishing-and-baiting"],
+    relatedTerms: ["voice-cloning", "deepfake", "social-engineering", "advance-fee-fraud"], // the first two NEW in this batch
+    sources: [
+      { label: "FBI Internet Crime Complaint Center, I-120525-PSA, 5 December 2025 (read 2026-11-15): altered social media photos sent as proof of life; timed messages; missing tattoos or scars; establish a code word; contact the loved one before paying", href: "https://www.ic3.gov/PSA/2025/PSA251205" },
+      { label: "FBI Internet Crime Complaint Center, 2025 IC3 Annual Report, April 2026 (read 2026-11-15): over $5 million in losses to voice-cloned distress scams in 2025", href: "https://www.ic3.gov/AnnualReport/Reports/2025_IC3Report.pdf" },
+      { label: "Federal Trade Commission, Scammers use AI to enhance their family emergency schemes, 20 March 2023 (read 2026-11-15 through WebFetch): a short audio clip posted online is enough; call the person on a number you know", href: "https://consumer.ftc.gov/consumer-alerts/2023/03/scammers-use-ai-enhance-their-family-emergency-schemes" },
+    ],
+  },
+  {
+    // Internet Research Agency (new rich entry): the 2018 indictment, the Special Counsel and Senate findings, the dropped Concord case, the denials and Prigozhin's admissions, and the effect study.
+    slug: "internet-research-agency", // the /glossary/internet-research-agency address
+    headword: "Internet Research Agency", // the organization's English name, as the indictment gives it
+    kind: "term", // an organization's name, written out
+    domains: ["cyber-security", "grc"], // security and governance, as for the rest of the series
+    aliases: ["ira", "glavset", "mediasintez", "internet research agency llc", "agência de pesquisa na internet"], // the abbreviation the reports use, two of the a/k/a names in the indictment, the corporate form, Portuguese
+    relatedTerms: ["active-measures", "influence-operation", "coordinated-inauthentic-behavior", "disinformation", "perception-hacking", "doppelganger"], // the series entries it sits beside, then two new entries of the same batch
+    relatedArticles: ["state-influence-campaigns-on-the-record", "psychological-operations-from-the-small-lie-to-the-campaign"], // the part that sets out its record, and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "US District Court for the District of Columbia, United States v. Internet Research Agency LLC et al., case 1:18-cr-00032, indictment filed 16 February 2018, GPO copy (read 2026-11-15): defendants; strategic goal to sow discord; hundreds of employees; Project Lakhta monthly budget over 73 million roubles by September 2016; allegations, not findings", href: "https://www.govinfo.gov/content/pkg/GOVPUB-J-PURL-gpo89499/pdf/GOVPUB-J-PURL-gpo89499.pdf" }, // ira2018
+      { label: "Special Counsel Robert S. Mueller III, Report On The Investigation Into Russian Interference In The 2016 Presidential Election, Volume I, March 2019 (read 2026-11-15): sweeping and systematic; information warfare; 470 Facebook accounts, 80,000 posts, up to 126 million people; 3,814 Twitter accounts; no evidence that any US person conspired with the IRA", href: "https://www.justice.gov/archives/sco/file/1373816/dl" }, // mueller
+      { label: "US Senate Select Committee on Intelligence, Report Volume 2: Russia's Use of Social Media, 2019 (read 2026-11-15): the Russian government tasked and supported the IRA; Instagram 187 million engagements; full scope unknown even to the companies", href: "https://www.intelligence.senate.gov/sites/default/files/documents/Report_Volume2.pdf" }, // ssci
+      { label: "NPR, 'Citing Security, Feds Drop Case Against Russians Linked To Election Interference', 17 March 2020 (read 2026-11-15): the case against the Concord companies dismissed weeks before trial and the stated reasons", href: "https://www.npr.org/2020/03/17/817215010/citing-security-feds-drop-case-against-russians-linked-to-election-interference" }, // npr2020
+      { label: "The Moscow Times, 'Russia Reacts to Charges of Election Meddling in Mueller Investigation', 19 February 2018 (read 2026-11-15): Prigozhin, Zakharova and Lavrov dismiss the indictment", href: "https://www.themoscowtimes.com/2018/02/19/russia-reacts-charges-election-meddling-mueller-investigation-a60553" }, // mt2018
+      { label: "Al Jazeera, 'Russia's Wagner Group founder admits to US election interference', 7 November 2022 (read 2026-11-15): Prigozhin's statement through his company's press service", href: "https://www.aljazeera.com/news/2022/11/7/wagner-group-founder-admits-to-us-election-interference" }, // aj2022
+      { label: "The Moscow Times, 'Wagner Founder Prigozhin Admits He Was Behind Russia's Infamous Troll Farms', 14 February 2023 (read 2026-11-15): I invented it, I created it, I ran it for a long time", href: "https://www.themoscowtimes.com/2023/02/14/wagner-founder-prigozhin-admits-he-was-behind-russias-infamous-troll-farms-a80228" }, // mt2023
+      { label: "Nature Communications 14:62, Gregory Eady and co-authors, 9 January 2023 (read 2026-11-15): 1% of users accounted for 70% of exposures; no evidence of a meaningful relationship with attitudes, polarization or voting; Twitter only, observational", href: "https://www.nature.com/articles/s41467-022-35576-9" }, // eady2023
+    ], // eight sources, one object per line
+  },
+  {
+    // Doppelganger (new rich entry): the 2022 naming without attribution, the attributions by Meta, the EU, Germany and the US, the affidavit's allegation, the Kremlin's denial.
+    slug: "doppelganger", // the /glossary/doppelganger address
+    headword: "Doppelganger", // the name EU DisinfoLab gave it, in the English spelling most reports use
+    kind: "term", // a campaign's name
+    domains: ["cyber-security", "grc"], // security and governance
+    aliases: ["doppelgänger", "recent reliable news", "rrn", "operação doppelganger", "social design agency", "structura"], // the German spelling, the brand the EU sanctions name, its abbreviation, Portuguese, and the two companies attributed
+    relatedTerms: ["influence-operation", "fimi", "coordinated-inauthentic-behavior", "disinformation", "internet-research-agency", "perception-hacking"], // the series entries, then two of the same batch
+    relatedArticles: ["state-influence-campaigns-on-the-record", "anatomy-of-an-influence-operation-abc-disarm-and-kill-chains"], // the record part and the anatomy part that walks it through the frameworks
+    sources: [ // every label says what the page says and when it was read
+      { label: "EU DisinfoLab, 'Doppelganger: Media clones serving Russian propaganda', 27 September 2022 (read 2026-11-15): clones of at least 17 outlets; no formal attribution; false flag not excluded", href: "https://www.disinfo.eu/wp-content/uploads/2022/09/Doppelganger-1.pdf" }, // disinfolab
+      { label: "Meta, 'Recapping Our 2022 Coordinated Inauthentic Behavior Enforcements', 15 December 2022 (read 2026-11-15): attribution to Structura and the Social Design Agency", href: "https://about.fb.com/news/2022/12/metas-2022-coordinated-inauthentic-behavior-enforcements/" }, // meta2022
+      { label: "European External Action Service, 'Information manipulation in Russia's war of aggression against Ukraine: EU lists seven individuals and five entities', 28 July 2023 (read 2026-11-15): sanctions over the RRN campaign, ANO Dialog, SDA and Structura", href: "https://www.eeas.europa.eu/delegations/ukraine/information-manipulation-russia%E2%80%99s-war-aggression-against-ukraine-eu-lists-seven-individuals-and-five_en" }, // eu2023
+      { label: "US Department of the Treasury, 'Treasury Sanctions Actors Supporting Kremlin-Directed Malign Influence Efforts', 20 March 2024 (read 2026-11-15): SDA and Structura at the direction of the Russian Presidential Administration; over 60 impersonating websites", href: "https://home.treasury.gov/news/press-releases/jy2195" }, // treasury2024
+      { label: "FBI affidavit, case 2:24-mj-01395, US District Court for the Eastern District of Pennsylvania, 4 September 2024 (read 2026-11-15): probable cause to seize 32 domains; direction by the Presidential Administration alleged", href: "https://www.justice.gov/d9/2024-09/doppelganger_affidavit_9.4.24.pdf" }, // affidavit2024
+      { label: "Horizont, from dpa, '50.000 unechte Profile auf X', January 2024 (read 2026-11-15): the German Foreign Office analysis of 50,000 fake accounts assigned to Doppelganger, as reported", href: "https://www.horizont.net/medien/nachrichten/50.000-unechte-profile-auf-x-auswaertiges-amt-deckt-prorussische-desinformationskampagne-auf-217508" }, // horizont2024
+      { label: "The Washington Post via the Anchorage Daily News, 'Russia dismisses charges of election meddling', 5 September 2024 (read 2026-11-15): Peskov, of course it's nonsense, we're not interfering", href: "https://adn.com/nation-world/2024/09/05/russia-dismisses-charges-of-election-meddling-putin-claims-he-backs-harris" }, // wapo2024
+      { label: "James Pamment and Darejan Tsurtsumia, 'Beyond Operation Doppelgänger', Swedish Psychological Defence Agency, 2025 (read 2026-11-15): exposure discourse contributed to SDA receiving more funding, medium confidence", href: "https://mpf.se/download/18.7cffbee41969f6d83e115221/1747230166207/Beyond%20Operation%20Doppelganger.pdf" }, // mpf2025
+    ], // eight sources, one object per line
+  },
+  {
+    // Spamouflage (new rich entry): Graphika's naming and caveat, the DOJ complaint, Meta's link to Chinese law enforcement, Google's counts, China's replies.
+    slug: "spamouflage", // the /glossary/spamouflage address
+    headword: "Spamouflage", // Graphika's name, the one Meta uses
+    kind: "term", // a network's name
+    domains: ["cyber-security", "grc"], // security and governance
+    aliases: ["spamouflage dragon", "dragonbridge", "dragon bridge", "912 special project working group"], // Graphika's longer name, Google's and Mandiant's name with its spaced spelling, and the police unit the DOJ complaint names
+    relatedTerms: ["influence-operation", "coordinated-inauthentic-behavior", "fimi", "disinformation", "doppelganger"], // the series entries, then the other campaign of the batch
+    relatedArticles: ["state-influence-campaigns-on-the-record", "anatomy-of-an-influence-operation-abc-disarm-and-kill-chains"], // the record part and the anatomy part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Graphika, 'Spamouflage Dragon Goes to America', August 2020 (read 2026-11-15): uncovered in September 2019; Twitter attributed it to operators linked to Chinese state actors; Graphika had not established a connection to government entities", href: "https://public-assets.graphika.com/reports/graphika_report_spamouflage_dragon_goes_to_america.pdf" }, // graphika2020
+      { label: "US Department of Justice press release, 17 April 2023, print hosted by Poder360 (read 2026-11-15): the 912 Special Project Working Group complaint alleging thousands of fake online personas", href: "https://static.poder360.com.br/2023/04/DOJ-policiais-china-presos.pdf" }, // doj2023
+      { label: "Meta, Adversarial Threat Report, Second Quarter 2023, 29 August 2023, extract (read 2026-11-15): 7,704 Facebook accounts, 954 Pages, 15 Groups, 15 Instagram accounts; links to individuals associated with Chinese law enforcement", href: "https://transparency.meta.com/sr/Q2-2023-Adversarial-threat-report" }, // meta2023
+      { label: "Google Threat Analysis Group, 'Google disrupted over 10,000 instances of DRAGONBRIDGE activity in Q1 2024', 26 June 2024 (read 2026-11-15): over 175,000 instances in the network's lifetime; 80% of channels disabled in 2023 had no subscribers", href: "https://blog.google/threat-analysis-group/google-disrupted-dragonbridge-activity-q1-2024/" }, // tag2024
+      { label: "Consulate-General of the PRC in Adelaide, foreign ministry press conference of 30 August 2023 (read 2026-11-15): Wang Wenbin, not aware; rumor campaigns against China; avoid double standards", href: "https://adelaide.china-consulate.gov.cn/eng/wjbfyrth/202308/t20230830_11135713.htm" }, // mfa2023
+      { label: "Associated Press via the Anchorage Daily News, 3 September 2024 (read 2026-11-15): Chinese embassy spokesperson Liu Pengyu, prejudice and malicious speculation; China has no intention and will not interfere", href: "https://www.adn.com/nation-world/2024/09/03/china-linked-spamouflage-network-mimics-americans-online-to-sway-us-political-debate/" }, // ap2024
+    ], // six sources, one object per line
+  },
+  {
+    // Perception hacking (new rich entry): Meta's definition and its 2018 example, and two later findings that point the same way.
+    slug: "perception-hacking", // the /glossary/perception-hacking address
+    headword: "Perception hacking", // Meta's term, sentence case
+    kind: "term", // a platform's analytical term
+    domains: ["cyber-security", "grc"], // security and governance
+    aliases: ["perception hack", "hackeamento de percepção"], // the singular noun and a Portuguese rendering (the term is usually left in English)
+    relatedTerms: ["influence-operation", "coordinated-inauthentic-behavior", "internet-research-agency", "doppelganger", "disinformation"], // the series entries and the two campaigns where the pattern was reported
+    relatedArticles: ["state-influence-campaigns-on-the-record", "psychological-operations-from-the-small-lie-to-the-campaign"], // the record part, and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "Meta, 'Threat Report: The State of Influence Operations 2017-2020', May 2021 (read 2026-11-15): perception hacking defined; the IRA's 2018 midterm website claiming thousands of accounts; Meta found a small network and no larger operation", href: "https://about.fb.com/wp-content/uploads/2021/05/IO-Threat-Report-May-20-2021.pdf" }, // meta2021
+      { label: "Nature Communications 14:62, Gregory Eady and co-authors, 9 January 2023 (read 2026-11-15): the campaign may have had its largest effects by convincing Americans that it was successful", href: "https://www.nature.com/articles/s41467-022-35576-9" }, // eady2023
+      { label: "James Pamment and Darejan Tsurtsumia, 'Beyond Operation Doppelgänger', Swedish Psychological Defence Agency, 2025 (read 2026-11-15): Western discourse on the exposure contributed to SDA receiving more funding, medium confidence", href: "https://mpf.se/download/18.7cffbee41969f6d83e115221/1747230166207/Beyond%20Operation%20Doppelganger.pdf" }, // mpf2025
+    ], // three sources, one object per line
+  },
+  {
+    // Cambridge Analytica (new rich entry): the data, the FTC default opinion, the ICO fine settled without admission, the ICO's final findings, the director's disqualification, Brazil.
+    slug: "cambridge-analytica", // the /glossary/cambridge-analytica address
+    headword: "Cambridge Analytica", // the company's name
+    kind: "term", // a company's name
+    domains: ["grc", "cyber-security"], // governance first (regulators' findings), then security
+    aliases: ["scl elections", "scl group", "cambridge analytica ltd", "emerdata", "thisisyourdigitallife"], // the parent and group, the corporate form, the successor the DCMS Committee named, and the app
+    relatedTerms: ["influence-for-hire", "computational-propaganda", "influence-operation", "team-jorge"], // the batch entries, then the series entry
+    relatedArticles: ["influence-for-hire-the-firms-that-sell-influence-operations", "lgpd-for-engineers-the-vocabulary-that-matters"], // the part that sets out the regulators' findings, and the data-protection article
+    sources: [ // every label says what the page says and when it was read
+      { label: "Facebook (Mike Schroepfer), 'An Update on Our Plans to Restrict Data Access on Facebook', 4 April 2018 (read 2026-11-15): information of up to 87 million people may have been improperly shared with Cambridge Analytica", href: "https://about.fb.com/news/2018/04/restricting-data-access/" }, // fb2018
+      { label: "Federal Trade Commission, Business Blog, 'Commission issues opinion in Cambridge Analytica case', 6 December 2019 (read 2026-11-15): deceptive claims to app users; Nix and Kogan settled; the company did not answer; deletion order", href: "https://search.ftc.gov/business-guidance/blog/2019/12/commission-issues-opinion-cambridge-analytica-case" }, // ftc2019
+      { label: "Society for Computers and Law, reproducing the ICO statement, 30 October 2019 (read 2026-11-15): Facebook agreed to pay the £500,000 fine with no admission of liability", href: "https://www.scl.org/10716-ico-and-facebook-reach-agreement-regarding-misuse-of-data-in-political-campaigns/" }, // ico2019
+      { label: "Information Commissioner's Office, letter to the DCMS Committee chair, 2 October 2020, with annexes (read 2026-11-15): over 130 billion data points; off-the-shelf tools; staff concern about leadership claims; no involvement in the EU referendum beyond initial enquiries; no additional evidence of Russian involvement; real-world accuracy likely much lower", href: "https://ico.org.uk/media2/migrated/2618383/20201002_ico-o-ed-l-rtl-0181_to-julian-knight-mp.pdf" }, // ico2020
+      { label: "Al Jazeera, from Reuters, 'Ex-Cambridge Analytica head banned from running firms in UK', 25 September 2020 (read 2026-11-15): seven-year disqualification of Alexander Nix; shady political services; Nix admitted no wrongdoing", href: "https://www.aljazeera.com/economy/2020/9/25/uk-bans-ex-cambridge-analytica-boss-for-unethical-services" }, // aj2020
+      { label: "Forbes Brasil, from Reuters, 'Brasil multa Facebook em R$ 6,6 mi', 30 December 2019 (read 2026-11-15): the consumer protection department's fine over data on about 443,000 Brazilian users", href: "https://forbes.com.br/last/2019/12/brasil-multa-facebook-em-r-66-mi-em-apuracao-sobre-compartilhamento-de-dados/" }, // forbesbr2019
+    ], // six sources, one object per line
+  },
+  {
+    // Team Jorge (new rich entry): the 2023 Story Killers investigation, what was claimed, what was verified, and the denial.
+    slug: "team-jorge", // the /glossary/team-jorge address
+    headword: "Team Jorge", // the name the consortium reported the team using
+    kind: "term", // a group's name
+    domains: ["cyber-security", "grc"], // security and governance
+    aliases: ["story killers", "advanced impact media solutions", "aims"], // the investigation's name and the software the team demonstrated, with its abbreviation
+    relatedTerms: ["influence-for-hire", "cambridge-analytica", "computational-propaganda", "influence-operation", "disinformation"], // the batch entries, then the series entries
+    relatedArticles: ["influence-for-hire-the-firms-that-sell-influence-operations"], // the part that sets out the investigation
+    sources: [ // every label says what the page says and when it was read
+      { label: "The Guardian, 'Revealed: the hacking and disinformation team meddling in elections', 15 February 2023 (read 2026-11-15): consortium of more than 100 journalists from 30 outlets; 33 presidential-level campaigns claimed; €6m to €15m; AIMS; not all claims verifiable; Hanan denies wrongdoing", href: "https://www.theguardian.com/world/2023/feb/15/revealed-disinformation-team-jorge-claim-meddling-elections-tal-hanan" }, // guardian2023
+      { label: "Organized Crime and Corruption Reporting Project, 'Hacks, Bots and Blackmail: How Secret Cyber Mercenaries Disrupt Elections', February 2023 (read 2026-11-15): reporters verified access to messaging accounts and fake-account campaigns; AIMS claimed sold to more than 10 intelligence services", href: "https://www.occrp.org/en/project/story-killers/hacks-bots-and-blackmail-how-secret-cyber-mercenaries-disrupt-elections" }, // occrp2023
+      { label: "Forbidden Stories, '\"Team Jorge\": In the heart of a global disinformation machine', 15 February 2023 (read 2026-11-15): the election tally a claim difficult to verify; the 2015 pitch to Cambridge Analytica", href: "https://forbiddenstories.org/story-killers/team-jorge-disinformation/" }, // fs2023
+    ], // three sources, one object per line
+  },
+  {
+    // Computational propaganda (new rich entry): the Oxford definition, cyber troops, the three inventories and their method.
+    slug: "computational-propaganda", // the /glossary/computational-propaganda address
+    headword: "Computational propaganda", // the Oxford researchers' term, sentence case
+    kind: "term", // an academic term
+    domains: ["cyber-security", "grc"], // security and governance
+    aliases: ["cyber troops", "cyber troop", "propaganda computacional", "organized social media manipulation", "organised social media manipulation"], // the inventories' term for the teams, Portuguese, and the inventories' subtitle in both spellings
+    relatedTerms: ["propaganda", "influence-operation", "coordinated-inauthentic-behavior", "influence-for-hire", "disinformation"], // the series entries and the batch entry on firms
+    relatedArticles: ["influence-for-hire-the-firms-that-sell-influence-operations"], // the part that reads the inventories
+    sources: [ // every label says what the page says and when it was read
+      { label: "Samantha Bradshaw and Philip N. Howard, 'Troops, Trolls and Troublemakers', Oxford Internet Institute, 2017 (read 2026-11-15): cyber troops defined as government, military or political-party teams; 28 countries", href: "https://demtech.oii.ox.ac.uk//wp-content/uploads/sites/12/2017/07/Troops-Trolls-and-Troublemakers.pdf" }, // oii2017
+      { label: "Samantha Bradshaw and Philip N. Howard, 'The Global Disinformation Order', Oxford Internet Institute, 2019 (read 2026-11-15): computational propaganda as the use of algorithms, automation and big data to shape public life; 70 countries; firms in 25", href: "https://demtech.oii.ox.ac.uk/wp-content/uploads/sites/12/2020/10/CyberTroop-Report19_V2NOV.pdf" }, // oii2019
+      { label: "Samantha Bradshaw, Hannah Bailey and Philip N. Howard, 'Industrialized Disinformation: 2020 Global Inventory of Organized Social Media Manipulation', January 2021 (read 2026-11-15): 81 countries; private firms in 48; almost US$60 million since 2009; method from news content analysis; media bias and language as limitations", href: "https://demtech.oii.ox.ac.uk/wp-content/uploads/sites/8/2021/02/CyberTroop-Report20-Draft9.pdf" }, // oii2020
+    ], // three sources, one object per line
+  },
+  {
+    // Influence for hire (new rich entry): Meta's IO-for-hire, the firms platforms named, the enforcement and its reach.
+    slug: "influence-for-hire", // the /glossary/influence-for-hire address
+    headword: "Influence for hire", // the series' name for the practice
+    kind: "expression", // a descriptive phrase rather than a defined technical term
+    domains: ["cyber-security", "grc"], // security and governance
+    aliases: ["io-for-hire", "io for hire", "io as a service", "disinformation for hire", "influência de aluguel"], // Meta's two labels, the press's phrase, and the series' Portuguese title
+    relatedTerms: ["influence-operation", "coordinated-inauthentic-behavior", "computational-propaganda", "cambridge-analytica", "team-jorge"], // the series entries, then the batch
+    relatedArticles: ["influence-for-hire-the-firms-that-sell-influence-operations", "state-influence-campaigns-on-the-record"], // the part on firms, and the state part where firms blur attribution
+    sources: [ // every label says what the page says and when it was read
+      { label: "Meta, 'Threat Report: The State of Influence Operations 2017-2020', May 2021 (read 2026-11-15): IO as a service providing deniability; commercial operators in Myanmar, the US, the Philippines, Ukraine, the UAE and Egypt; Archimedes Group; not a sustainable business model in the long run", href: "https://about.fb.com/wp-content/uploads/2021/05/IO-Threat-Report-May-20-2021.pdf" }, // meta2021
+      { label: "Meta, 'Removing Coordinated Inauthentic Behavior From Israel', 16 May 2019 (read 2026-11-15): Archimedes Group banned and sent a cease-and-desist letter; about $812,000 in ads paid in Brazilian reals, shekels and dollars", href: "https://about.fb.com/news/2019/05/removing-coordinated-inauthentic-behavior-from-israel/" }, // meta2019
+      { label: "The Washington Post via the Anchorage Daily News, 8 October 2020 (read 2026-11-15): Rally Forge permanently banned, its client not penalized; Turning Point Action's statement; Gleicher asks regulators for standards", href: "https://www.adn.com/nation-world/2020/10/08/facebook-bans-marketing-firm-running-troll-farm-for-pro-trump-youth-group/" }, // wapo2020
+      { label: "OpenAI, 'Disrupting malicious uses of AI: June 2025' (read 2026-11-15): Operation High Five connected to Comm&Sense Inc, consistent with a PR firm working for multiple clients; Breakout Scale category 2", href: "https://cdn.openai.com/threat-intelligence-reports/5f73af09-a3a3-4a55-992e-069237681620/disrupting-malicious-uses-of-ai-june-2025.pdf" }, // openai2025
+      { label: "Tribunal Superior Eleitoral, AIJEs 0601968-80 and 0601771-28, judgment of 28 October 2021 (read 2026-11-15): WhatsApp found four Brazilian vendors offering mass messaging against its terms and banned accounts of two; the cases dismissed for lack of proof of content, reach and financing", href: "https://sjur-servicos.tse.jus.br/sjur-servicos/rest/download/pdf/2673321" }, // tse2021
+    ], // five sources, one object per line
+  },
+  {
+    // CTF content agent 15/11/2026: new entry.
+    slug: "jeopardy-ctf",
+    headword: "jeopardy CTF",
+    kind: "term",
+    domains: ["cyber-security", "events"],
+    aliases: ["jeopardy ctf", "jeopardy-style ctf", "ctf jeopardy", "hack quest"],
+    relatedArticles: ["capture-the-flag-competitions"],
+    relatedTerms: ["capture-the-flag", "attack-defence-ctf", "king-of-the-hill-ctf", "dynamic-scoring", "ctf-flag", "ctftime"],
+    sources: [
+      { label: "ENISA, CTF Events, May 2021 (read 2026-11-15): jeopardy as the most common format; standalone custom challenges by category; strengths and the remark that it is more gamified and less representative of realistic skillsets; Hack Quest, vulnerable-VM and quiz variants; more than 87% of 879 CTFtime events 2015-2020", href: "https://www.enisa.europa.eu/sites/default/files/publications/ENISA%20Report%20-%20CTF%20Events.pdf" }, // ENISA
+      { label: "CTFtime, What is CTF (read 2026-11-15): jeopardy-style CTFs have tasks in a range of categories, points for every solved task, and chains opened only after a previous task is solved", href: "https://ctftime.org/ctf-wtf/" }, // CTFtime
+      { label: "Švábenský et al., Computers & Security, 2021 (read 2026-11-15): 969 CTFtime events from 2012 to 9 October 2020, jeopardy the dominant format, Hack Quest treated as a synonym", href: "https://arxiv.org/abs/2101.01421" }, // Švábenský et al.
+    ],
+  },
+  {
+    // CTF content agent 15/11/2026: new entry.
+    slug: "attack-defence-ctf",
+    headword: "attack-defence CTF",
+    kind: "term",
+    domains: ["cyber-security", "events"],
+    aliases: ["attack defense", "attack-defense", "attack/defense", "a/d ctf", "attack and defence", "ataque e defesa"],
+    relatedArticles: ["capture-the-flag-competitions"],
+    relatedTerms: ["capture-the-flag", "jeopardy-ctf", "king-of-the-hill-ctf", "red-team", "blue-team", "defcon"],
+    sources: [
+      { label: "ENISA, CTF Events, May 2021 (read 2026-11-15): the earliest CTF format, grown from wargames; points per interval for each host controlled while services stay available; higher barrier to entry; VPN isolation and strictly in-scope targets; nearly 25% of in-person and about 5% of online events", href: "https://www.enisa.europa.eu/sites/default/files/publications/ENISA%20Report%20-%20CTF%20Events.pdf" }, // ENISA
+      { label: "iCTF, UC Santa Barbara (read 2026-11-15): identical copies of the vulnerable services for every team; attack points for captured flags, defence points for services kept functional and intact", href: "https://ictf.cs.ucsb.edu/" }, // iCTF
+      { label: "SRLabs, Competing at the DEF CON CTF Finals 2025 (read 2026-11-15): ticks, traffic replay of other teams' exploits, public patches and backdoored patches at DEF CON", href: "https://srlabs.de/blog/competing-at-the-def-con-ctf-finals-2025" }, // SRLabs
+      { label: "CTFtime, FAQ (read 2026-11-15): event weight factor X = 2 for attack-defence events and 1.5 for the rest", href: "https://ctftime.org/faq/" }, // CTFtime
+    ],
+  },
+  {
+    // CTF content agent 15/11/2026: new entry.
+    slug: "king-of-the-hill-ctf",
+    headword: "King of the Hill (CTF)",
+    kind: "term",
+    domains: ["cyber-security", "events"],
+    aliases: ["koth", "king of the hill", "king-of-the-hill"],
+    relatedArticles: ["capture-the-flag-competitions"],
+    relatedTerms: ["capture-the-flag", "attack-defence-ctf", "jeopardy-ctf", "defcon"],
+    sources: [
+      { label: "Order of the Overflow, DEF CON CTF 2019 Finals (read 2026-11-15): King of the Hill as competing for the best solution; 10, 6, 3, 2 and 1 points per tick for the first five; 20% of the total score", href: "https://oooverflow.io/dc-ctf-2019-finals/" }, // Order of the Overflow
+      { label: "SRLabs, Competing at the DEF CON CTF Finals 2025 (read 2026-11-15): rounds of several hours; teams ranked by how well their solution performs; example of the shortest shellcode with more bytes banned each round", href: "https://srlabs.de/blog/competing-at-the-def-con-ctf-finals-2025" }, // SRLabs
+      { label: "DEF CON 34, Contest Results (read 2026-11-15): the 2026 final with attack-defense and King of the Hill challenges", href: "https://defcon.org/html/defcon-34/dc-34-contest-results.html" }, // DEF CON
+    ],
+  },
+  {
+    // CTF content agent 15/11/2026: new entry.
+    slug: "ctftime",
+    headword: "CTFtime",
+    kind: "term",
+    domains: ["cyber-security", "events"],
+    aliases: ["ctftime.org", "ctf time"],
+    relatedArticles: ["capture-the-flag-competitions"],
+    relatedTerms: ["capture-the-flag", "write-up", "jeopardy-ctf", "attack-defence-ctf"],
+    sources: [
+      { label: "CTFtime, Rating formula (read 2026-11-15): rating counted per year; event weight from tasks, organization level, teams or public voting; since 2017 only the 10 best results count", href: "https://ctftime.org/rating-formula/" }, // CTFtime
+      { label: "CTFtime, FAQ (read 2026-11-15): write-ups posted to CTFtime because team websites do not live long; weight factor by format", href: "https://ctftime.org/faq/" }, // CTFtime
+      { label: "ENISA, CTF Events, May 2021 (read 2026-11-15): CTFtime as a de facto publication platform for CTF events, populated voluntarily, free, with an open API", href: "https://www.enisa.europa.eu/sites/default/files/publications/ENISA%20Report%20-%20CTF%20Events.pdf" }, // ENISA
+      { label: "Švábenský et al., Computers & Security, 2021 (read 2026-11-15): community-run since its foundation in 2012; more than 969 events, 12,952 challenges and 23,517 write-ups by October 2020", href: "https://arxiv.org/abs/2101.01421" }, // Švábenský et al.
+      { label: "CTFtime, Brazil, 2026 rating (read 2026-11-15): Ganesh first in Brazil and 145th in the world", href: "https://ctftime.org/stats/2026/BR" }, // CTFtime
+    ],
+  },
+  {
+    // CTF content agent 15/11/2026: new entry.
+    slug: "write-up",
+    headword: "write-up",
+    kind: "jargon",
+    domains: ["hacking", "cyber-security"],
+    aliases: ["writeup", "write up", "ctf write-up"],
+    relatedArticles: ["capture-the-flag-competitions"],
+    relatedTerms: ["capture-the-flag", "ctftime", "ctf-flag"],
+    sources: [
+      { label: "CTFtime, FAQ (read 2026-11-15): post a copy of your write-up to CTFtime so new generations can study, because most team websites do not live long", href: "https://ctftime.org/faq/" }, // CTFtime
+      { label: "DEF CON, Capture the Flag Archive (read 2026-11-15): collections of qualifier and final write-ups; 'Please read them, learn from them, and share them'", href: "https://defcon.org/html/links/dc-ctf.html" }, // DEF CON
+      { label: "Benevolent Bureau of Birds, DEF CON CTF Quals 2026 Rules (read 2026-11-15): write-ups required within a week to qualify, primarily written by humans, prompts disclosed if an LLM assisted", href: "https://bbbirds.org/static/rules/defcon-2026-quals-rules.pdf" }, // BBB
+      { label: "Google Security Blog, 2 June 2017 (read 2026-11-15): rewards for the best and most creative write-ups of the qualifying round", href: "https://security.googleblog.com/2017/06/announcing-google-capture-flag-2017.html" }, // Google
+      { label: "Švábenský et al., Computers & Security, 2021 (read 2026-11-15): write-ups as step-by-step solutions; 15,963 analysed to map the skills CTFs teach", href: "https://arxiv.org/abs/2101.01421" }, // Švábenský et al.
+    ],
+  },
+  {
+    // CTF content agent 15/11/2026: new entry.
+    slug: "ctf-flag",
+    headword: "flag (CTF)",
+    kind: "jargon",
+    domains: ["hacking", "cyber-security"],
+    aliases: ["flag", "ctf flag", "first blood"],
+    relatedArticles: ["capture-the-flag-competitions"],
+    relatedTerms: ["capture-the-flag", "write-up", "dynamic-scoring"],
+    sources: [
+      { label: "iCTF, UC Santa Barbara (read 2026-11-15): a flag is just a string of characters, presented to the organizers as proof of compromise", href: "https://ictf.cs.ucsb.edu/" }, // iCTF
+      { label: "ENISA, CTF Events, May 2021 (read 2026-11-15): standardized flag formats such as [CTF Name]{[Flag Text]} for automatic checking; random strings versus guessable phrases; first-blood awards", href: "https://www.enisa.europa.eu/sites/default/files/publications/ENISA%20Report%20-%20CTF%20Events.pdf" }, // ENISA
+      { label: "Benevolent Bureau of Birds, DEF CON CTF Quals 2026 Rules (read 2026-11-15): flag format bbb{...}; sharing flags with other teams disqualifies", href: "https://bbbirds.org/static/rules/defcon-2026-quals-rules.pdf" }, // BBB
+      { label: "Vykopal, Švábenský and Chang, ACM SIGCSE 2020 (read 2026-11-15): flag sharing in a weeks-long course CTF; three students confessed to using shared flags", href: "https://arxiv.org/abs/2004.11556" }, // Vykopal et al.
+    ],
+  },
+  {
+    // CTF content agent 15/11/2026: new entry.
+    slug: "dynamic-scoring",
+    headword: "dynamic scoring (CTF)",
+    kind: "term",
+    domains: ["cyber-security", "events"],
+    aliases: ["dynamic value challenge", "dynamic points", "pontuação dinâmica"],
+    relatedArticles: ["capture-the-flag-competitions"],
+    relatedTerms: ["capture-the-flag", "jeopardy-ctf", "ctf-flag"],
+    sources: [
+      { label: "CTFd documentation, Dynamic Value (read 2026-11-15): value decreases after each solve, also lowering earlier solvers' scores; initial, decay and minimum; parabolic formula", href: "https://docs.ctfd.io/docs/custom-challenges/dynamic-value/" }, // CTFd
+      { label: "ENISA, CTF Events, May 2021 (read 2026-11-15): values set by base score, time, first blood and the number of solving teams, which acts as a proxy for difficulty", href: "https://www.enisa.europa.eu/sites/default/files/publications/ENISA%20Report%20-%20CTF%20Events.pdf" }, // ENISA
+    ],
+  },
+  {
+    // CTF content agent 15/11/2026: new entry.
+    slug: "pwn2win",
+    headword: "Pwn2Win CTF",
+    kind: "lore",
+    domains: ["cyber-security", "events", "hacking"],
+    aliases: ["pwn2win", "pwn 2 win", "epic leet team", "elt"],
+    relatedArticles: ["capture-the-flag-competitions", "the-brazilian-hacker-scene"],
+    relatedTerms: ["capture-the-flag", "ctf-br", "ctftime", "jeopardy-ctf", "h2hc"],
+    sources: [
+      { label: "Epic Leet Team, home page (read 2026-11-15): Pwn2Win as a thematic, multidisciplinary CTF organized by ELT; first edition 2014, international from 2016; FPGA reversing (2016), adversarial machine learning (2017), quantum circuit reversing (2018); 864 registered teams in 2020", href: "https://epicleet.team/" }, // ELT
+      { label: "CTFtime, Pwn2Win CTF (read 2026-11-15): 'Brazilian Thematic CTF' organized by Epic Leet Team members; editions 2016-2021, weight from 19.90 to 83.41; none after 2021", href: "https://ctftime.org/ctf/130/" }, // CTFtime
+      { label: "CTFtime, Pwn2Win CTF 2021 (read 2026-11-15): 28-30 May 2021, online jeopardy, 48 hours, 719 teams, DiceGang first", href: "https://ctftime.org/event/1186" }, // CTFtime
+      { label: "Canaltech, 13 May 2021 (read 2026-11-15): winner earns a DEF CON finals place; UFSCar support since 2016; Google cloud hosting; founder Álisson Bertochi", href: "https://canaltech.com.br/hacker/pwn2win-torneio-de-hacking-abre-portas-do-mercado-e-incentiva-especializacao-184873/" }, // Canaltech
+      { label: "Ganesh, ICMC-USP, 30 June 2021 (read 2026-11-15): Ganesh 18th overall and first Brazilian team at Pwn2Win 2021", href: "https://ganesh.icmc.usp.br/en/content/activity/cmdltvh1y0003jw0nxvp835fc" }, // Ganesh
+    ],
+  },
+  {
+    // CTF content agent 15/11/2026: new entry.
+    slug: "ctf-br",
+    headword: "CTF-BR",
+    kind: "term",
+    domains: ["cyber-security", "events", "ops-culture"],
+    aliases: ["ctf-br", "ctf br", "projeto ctf-br", "batalha br", "ctf-br university", "tecland"],
+    relatedArticles: ["capture-the-flag-competitions", "the-brazilian-hacker-scene"],
+    relatedTerms: ["capture-the-flag", "pwn2win", "ctftime", "sbseg", "roadsec", "bsides-sao-paulo"],
+    sources: [
+      { label: "CTF-BR, Sobre (read 2026-11-15): goals (CTFs as popular as programming contests, CTF-BR University, a national ranking, a write-up repository, more long-running Brazilian CTFs such as Hacking n' Roll, In Memorian, and Pwn2Win); types and categories of CTF", href: "https://ctf-br.org/sobre/" }, // CTF-BR
+      { label: "CTF-BR, Batalha BR (read 2026-11-15): created in 2015; TheGoonies won 2015 and 2016, ELT 2017-2021", href: "https://ctf-br.org/batalha-br/" }, // CTF-BR
+      { label: "CTF-BR, CTFTime Hall (read 2026-11-15): best Brazilian result per year 2015-2025; ELT 18th in 2020 as the best of all time", href: "https://ctf-br.org/ctftime-hall/" }, // CTF-BR
+      { label: "CTF-BR, CTF-BR University (read 2026-11-15): introductory CTFs at events and universities 2015-2018; run on demand by ELT since the second half of 2016", href: "https://ctf-br.org/ctf-br-university/" }, // CTF-BR
+      { label: "UFSCar Cloud Labs, DEF CON Quals 2026, 1 June 2026 (read 2026-11-15): pwn de queijo, joint team of CTF-BR affiliated teams, 28th of 686", href: "https://blog.cloudlabs.ufscar.br/sec/defcon-quals-2026/" }, // UFSCar
+    ],
+  },
+  {
+    // Social bot (new entry): the Ferrara et al. definition, the prevalence estimates and the detection dispute.
+    slug: "social-bot", // the /glossary/social-bot address
+    headword: "Social bot", // sentence case, the researchers' term
+    kind: "term", // a plain term from computational social science
+    domains: ["cyber-security", "grc"], // security (platform manipulation) and governance (platform policy), as for the rest of the series
+    aliases: ["social bots", "bot account", "automated account", "bot social", "bots sociais", "conta automatizada"], // plural, the plain forms and Portuguese
+    relatedTerms: ["cyborg-account", "sockpuppet", "astroturfing", "fake-engagement", "coordinated-inauthentic-behavior", "botnet", "influence-operation"], // the batch, then existing entries
+    relatedArticles: ["bots-sockpuppets-and-astroturfing", "psychological-operations-from-the-small-lie-to-the-campaign"], // the part and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "arXiv 1407.5225, Emilio Ferrara, Onur Varol, Clayton Davis, Filippo Menczer and Alessandro Flammini, 'The Rise of Social Bots', version 4, 6 March 2017 (read 2026-11-15): a social bot is a computer algorithm that automatically produces content and interacts with humans on social media; many bots are benign; their abundance is uncertain", href: "https://arxiv.org/pdf/1407.5225" }, // ferrara2016
+      { label: "arXiv 1703.03107, Onur Varol and colleagues, 'Online Human-Bot Interactions: Detection, Estimation, and Characterization', ICWSM 2017 (read 2026-11-15): between 9% and 15% of active Twitter accounts estimated to be bots", href: "https://arxiv.org/pdf/1703.03107" }, // varol2017
+      { label: "US Securities and Exchange Commission, Twitter, Inc. Form 10-Q for the first quarter of 2022 (read 2026-11-15): false or spam accounts estimated at fewer than 5% of monetizable daily active users, with significant judgment applied", href: "https://www.sec.gov/Archives/edgar/data/1418091/000141809122000075/twtr-20220331.htm" }, // twitter10q
+      { label: "PLOS ONE 15(10): e0241045, Adrian Rauchfleisch and Jonas Kaiser, 'The False positive problem of automatic bot detection in social science research', 22 October 2020 (read 2026-11-15): Botometer scores imprecise, especially in another language; thresholds vary over time, producing false positives and negatives", href: "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0241045" }, // rk2020
+      { label: "arXiv 2201.01608, Kai-Cheng Yang, Emilio Ferrara and Filippo Menczer, 'Botometer 101', August 2022 (read 2026-11-15): scores are transient; compare distributions and validate thresholds; critics accused of cherry-picking and strawman arguments", href: "https://arxiv.org/pdf/2201.01608" }, // botometer101
+      { label: "Science 359, Soroush Vosoughi, Deb Roy and Sinan Aral, 'The spread of true and false news online', 9 March 2018 (read 2026-11-15): bots accelerated true and false news at the same rate; humans, not robots, spread false news more", href: "https://politics.media.mit.edu/papers/Vosoughi_Science.pdf" }, // vosoughi2018
+      { label: "Nature Communications 9, Chengcheng Shao and colleagues, 'The spread of low-credibility content by social bots', 20 November 2018 (read 2026-11-15): bots played a disproportionate role in spreading low-credibility articles, early in their spread", href: "https://www.nature.com/articles/s41467-018-06930-7" }, // shao2018
+    ], // seven sources, one object per line
+  },
+  {
+    // Cyborg account (new entry): the hybrid between automation and a human operator, and why detectors miss it.
+    slug: "cyborg-account", // the /glossary/cyborg-account address
+    headword: "Cyborg account", // sentence case
+    kind: "jargon", // researchers' jargon for a hybrid account
+    domains: ["cyber-security"], // platform manipulation
+    aliases: ["cyborg", "cyborgs", "bot-assisted human", "human-assisted bot", "conta ciborgue", "ciborgue"], // the short form and the two directions of the hybrid
+    relatedTerms: ["social-bot", "sockpuppet", "astroturfing", "coordinated-inauthentic-behavior"], // the batch and CIB
+    relatedArticles: ["bots-sockpuppets-and-astroturfing"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "arXiv 2007.03604, Stefano Cresci, 'A Decade of Social Bot Detection', Communications of the ACM, July 2020 (read 2026-11-15): cyborgs defined as either bot-assisted humans or human-assisted bots; newer bots resemble humans more than older bots; generated texts and profile pictures", href: "https://arxiv.org/pdf/2007.03604" }, // cresci2020
+      { label: "arXiv 1407.5225, Emilio Ferrara and colleagues, 'The Rise of Social Bots', version 4, 6 March 2017 (read 2026-11-15): strategies mixing human and bot features, sometimes called cyborgs, currently impossible to detect for feature-based systems", href: "https://arxiv.org/pdf/1407.5225" }, // ferrara2016
+    ], // two sources, one object per line
+  },
+  {
+    // Sockpuppet (new entry): one person, several accounts; Kumar et al.'s definition and the Devumi findings.
+    slug: "sockpuppet", // the /glossary/sockpuppet address
+    headword: "Sockpuppet", // sentence case, one word as in Kumar et al.
+    kind: "jargon", // online-community jargon
+    domains: ["cyber-security", "grc"], // platform manipulation and its regulation
+    aliases: ["sock puppet", "sock-puppet account", "sockpuppetry", "puppetmaster", "conta-fantoche", "contas-fantoche"], // spellings, the practice, the operator and Portuguese
+    relatedTerms: ["social-bot", "cyborg-account", "astroturfing", "fake-engagement", "coordinated-inauthentic-behavior"], // the batch and CIB
+    relatedArticles: ["bots-sockpuppets-and-astroturfing"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "arXiv 1703.07355, Srijan Kumar, Justin Cheng, Jure Leskovec and V. S. Subrahmanian, 'An Army of Me: Sockpuppets in Online Discussion Communities', WWW 2017 (read 2026-11-15): a sockpuppet is an account controlled by an individual who controls at least one other account; 3,656 sockpuppets and 1,623 puppetmasters in nine communities", href: "https://arxiv.org/pdf/1703.07355" }, // kumar2017
+      { label: "New York Attorney General, 'Attorney General James Announces Groundbreaking Settlement With Sellers Of Fake Followers And Likes On Social Media', 30 January 2019 (read 2026-11-15): Devumi supplied fake activity from bot accounts and sock-puppet accounts, one person pretending to be many other people", href: "https://ag.ny.gov/press-release/2019/attorney-general-james-announces-groundbreaking-settlement-sellers-fake-followers" }, // nyag2019
+    ], // two sources, one object per line
+  },
+  {
+    // Astroturfing (new entry): orchestrated activity posing as grassroots, with the South Korean conviction, the Chinese 50c study and the Sunday Riley case.
+    slug: "astroturfing", // the /glossary/astroturfing address
+    headword: "Astroturfing", // the common term
+    kind: "jargon", // political and marketing jargon named after a brand of artificial turf
+    domains: ["cyber-security", "grc"], // influence operations and their regulation
+    aliases: ["astroturf", "fake grassroots", "political astroturfing", "digital astroturfing", "50 cent party", "50c party"], // forms and the documented Chinese case's name
+    relatedTerms: ["sockpuppet", "social-bot", "fake-engagement", "coordinated-inauthentic-behavior", "propaganda", "influence-operation"], // the batch, then existing entries
+    relatedArticles: ["bots-sockpuppets-and-astroturfing", "psychological-operations-from-the-small-lie-to-the-campaign"], // the part and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "University of Illinois News Bureau, 'Evidence of humans, not bots, key to uncovering disinformation campaigns', 2019 (read 2026-11-15): astroturfing fakes the appearance of organic grassroots participation while being secretly orchestrated and funded; the South Korean campaign's 1,000-plus accounts drew little public response", href: "https://news.illinois.edu/evidence-of-humans-not-bots-key-to-uncovering-disinformation-campaigns/" }, // illinois2019
+      { label: "The Korea Times, 'Top court confirms four-year jail term for ex-spy chief for election meddling', 19 April 2018 (read 2026-11-15): the Supreme Court upheld Won Sei-hoon's conviction over NIS comment campaigns before the 2012 election", href: "https://www.koreatimes.co.kr/amp/southkorea/law-crime/20180419/top-court-confirms-four-year-jail-term-for-ex-spy-chief-for-election-meddling" }, // koreatimes2018
+      { label: "American Political Science Review 111(3), Gary King, Jennifer Pan and Margaret E. Roberts, 'How the Chinese Government Fabricates Social Media Posts for Strategic Distraction, Not Engaged Argument', 2017 (read 2026-11-15): about 448 million fabricated comments a year, aimed at distraction rather than argument", href: "https://gking.harvard.edu/files/gking/files/how_the_chinese_government_fabricates_social_media_posts_for_strategic_distraction_not_engaged_argument.pdf" }, // kpr2017
+      { label: "Federal Trade Commission press release, 21 October 2019, read through a fetch tool (read 2026-11-15): Sunday Riley managers allegedly posted Sephora reviews from fake accounts and told staff to do the same; consent order approved 3-2", href: "https://www.ftc.gov/news-events/news/press-releases/2019/10/devumi-owner-ceo-settle-ftc-charges-they-sold-fake-indicators-social-media-influence-cosmetics-firm" }, // ftc2019
+    ], // four sources, one object per line
+  },
+  {
+    // Fake engagement (new entry): bought followers, likes and views; the Devumi cases, the FTC rule and the NATO StratCom COE experiment.
+    slug: "fake-engagement", // the /glossary/fake-engagement address
+    headword: "Fake engagement", // YouTube's policy name, sentence case
+    kind: "term", // a policy and regulatory term
+    domains: ["cyber-security", "grc"], // platform manipulation and consumer protection
+    aliases: ["fake followers", "fake likes", "fake indicators of social media influence", "purchased engagement", "engajamento falso", "seguidores falsos"], // the forms and the FTC rule's wording
+    relatedTerms: ["social-bot", "sockpuppet", "astroturfing", "coordinated-inauthentic-behavior"], // the batch and CIB
+    relatedArticles: ["bots-sockpuppets-and-astroturfing"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "The New York Times, 'The Follower Factory', 27 January 2018, republished by the Anchorage Daily News (read 2026-11-15): Devumi sold more than 200 million Twitter followers from at least 3.5 million automated accounts; its founder denied the allegations", href: "https://www.adn.com/nation-world/2018/01/27/the-follower-factory-inside-social-medias-black-market/" }, // nyt2018
+      { label: "New York Attorney General, settlement with Devumi, 30 January 2019 (read 2026-11-15): first finding by a law enforcement agency that selling fake engagement and using stolen identities is illegal", href: "https://ag.ny.gov/press-release/2019/attorney-general-james-announces-groundbreaking-settlement-sellers-fake-followers" }, // nyag2019
+      { label: "Electronic Code of Federal Regulations, 16 CFR Part 465, sections 465.1 and 465.8 (read 2026-11-15): fake indicators of social media influence defined; selling or buying them for commercial misrepresentation an unfair or deceptive practice", href: "https://www.ecfr.gov/api/renderer/v1/content/enhanced/current/title-16?part=465" }, // ecfr465
+      { label: "NATO Strategic Communications Centre of Excellence, 'Social Media Manipulation 2020', December 2020 (read 2026-11-15): 337,768 fake engagements bought for 300 euros; more than 98% still online after four weeks", href: "https://stratcomcoe.org/cuploads/pfiles/social_media_manipulation_2020_stratcom_coe_21-12-2020_v2-1.pdf" }, // stratcom2020
+      { label: "YouTube Help, 'Fake engagement policy' (read 2026-11-15): nothing that artificially increases views, likes, comments or other metrics is allowed", href: "https://support.google.com/youtube/answer/3399767?hl=en" }, // youtube
+    ], // five sources, one object per line
+  },
+  {
+    // Disparo em massa (new entry): the Brazilian electoral term for mass messaging, its legal definition, the 2018 cases and WhatsApp's limits.
+    slug: "disparo-em-massa", // the /glossary/disparo-em-massa address
+    headword: "Disparo em massa", // the Portuguese original, kept in every locale (spec section 3)
+    kind: "term", // a legal and campaign term
+    domains: ["grc", "cyber-security"], // electoral regulation first, then platform abuse
+    aliases: ["disparos em massa", "mass messaging", "bulk messaging", "mass sending", "envio em massa", "envio massivo"], // plural, English renderings and synonyms
+    relatedTerms: ["aije", "cpmi", "end-to-end-encryption", "coordinated-inauthentic-behavior", "disinformation"], // the batch, then existing entries
+    relatedArticles: ["brazil-mass-messaging-the-courts-and-the-cpmi", "bots-sockpuppets-and-astroturfing"], // the part and its neighbour
+    sources: [ // every label says what the page says and when it was read
+      { label: "Tribunal Superior Eleitoral, Resolution 23.610/2019, consolidated text, read through a fetch tool (read 2026-11-15): mass instant messaging without consent banned (art. 34, II, Resolution 23.671/2021); mass sending defined as a coordinated strategy of sending, sharing or forwarding the same content (art. 37, XXI, Resolution 23.732/2024)", href: "https://www.tse.jus.br/legislacao/compilada/res/2019/resolucao-no-23-610-de-18-de-dezembro-de-2019" }, // res23610
+      { label: "WhatsApp, 'Stopping Abuse: How WhatsApp Fights Bulk Messaging and Automated Behavior', 6 February 2019, InternetLab copy (read 2026-11-15): automated and bulk messaging violates the terms; over two million accounts removed a month, over 75% without a recent user report", href: "https://www.internetlab.org.br/wp-content/uploads/2019/10/WA_StoppingAbuse_Whitepaper_020618-Final-1.pdf" }, // waabuse2019
+      { label: "Folha de S.Paulo, Patrícia Campos Mello, 'Empresários bancam campanha contra o PT pelo WhatsApp', 18 October 2018 (read 2026-11-15): the report on paid mass-sending packages and the answers of those named", href: "https://www1.folha.uol.com.br/poder/2018/10/empresarios-bancam-campanha-contra-o-pt-pelo-whatsapp.shtml" }, // folha2018
+      { label: "Tribunal Superior Eleitoral, judgment in AIJEs 0601968-80 and 0601771-28, 28 October 2021 (read 2026-11-15): mass sending found, gravity not proven, actions dismissed unanimously; thesis by majority that such sending with disinformation can be abuse of economic power and misuse of the media", href: "https://sjur-servicos.tse.jus.br/sjur-servicos/rest/download/pdf/2673321" }, // tse2021
+    ], // four sources, one object per line
+  },
+  {
+    // AIJE (new entry): the Brazilian electoral action under art. 22 of Lei Complementar 64/1990, with the 2018 mass-messaging cases as the example.
+    slug: "aije", // the /glossary/aije address
+    headword: "AIJE", // the abbreviation Brazilian courts use
+    kind: "acronym", // an abbreviation with its expansion below
+    domains: ["grc"], // electoral law
+    expansion: "Ação de Investigação Judicial Eleitoral", // the court's own term
+    aliases: ["ação de investigação judicial eleitoral", "electoral judicial investigation action", "AIJEs"], // the expansion, an English rendering and the plural
+    relatedTerms: ["disparo-em-massa", "cpmi", "inquerito-das-fake-news"], // the batch
+    relatedArticles: ["brazil-mass-messaging-the-courts-and-the-cpmi"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Tribunal Superior Eleitoral, judgment in AIJEs 0601968-80 and 0601771-28, rapporteur Luis Felipe Salomão, 28 October 2021 (read 2026-11-15): actions for abuse of economic power and misuse of the media under art. 22 of LC 64/90; headnote, operative part, Barroso's proclamation and the February 2021 headnote of AIJE 0601779-05 quoted in a vote", href: "https://sjur-servicos.tse.jus.br/sjur-servicos/rest/download/pdf/2673321" }, // tse2021
+    ], // one source
+  },
+  {
+    // CPMI (new entry): the joint parliamentary committee of inquiry, with the CPMI das Fake News as the example.
+    slug: "cpmi", // the /glossary/cpmi address
+    headword: "CPMI", // the abbreviation used by Congress
+    kind: "acronym", // an abbreviation with its expansion below
+    domains: ["grc"], // legislative oversight
+    expansion: "Comissão Parlamentar Mista de Inquérito", // the Congress page's own wording
+    aliases: ["comissão parlamentar mista de inquérito", "CPMI das Fake News", "CPI mista", "joint parliamentary committee of inquiry"], // the expansion, the best-known example, the press's short form and an English rendering
+    relatedTerms: ["aije", "disparo-em-massa", "pl-das-fake-news"], // the batch
+    relatedArticles: ["brazil-mass-messaging-the-courts-and-the-cpmi"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Congresso Nacional, CPMI das Fake News committee page, read through a fetch tool (read 2026-11-15): RQN 11/2019, installed 4 September 2019, purpose of 180 days on cyberattacks on democracy and fake profiles in the 2018 elections, deadline suspended from 20 March 2020, status Encerrada", href: "https://legis.senado.leg.br/comissoes/comissao?codcol=2292" }, // senado
+      { label: "Congresso em Foco, 'CPI das Fake News é prorrogada por tempo indeterminado', 22 April 2020 (read 2026-11-15): chair Angelo Coronel, rapporteur Lídice da Mata, suspension of the deadline", href: "https://www.congressoemfoco.com.br/legislativo/cpi-das-fake-news-e-prorrogada-por-tempo-indeterminado/" }, // cef2020
+      { label: "O Antagonista, 'Senadores descartam retomada da CPI das Fake News', 13 March 2022 (read 2026-11-15): the committee inactive for two years; its chair said it cooled after the TSE shelved the 2018 cases", href: "https://oantagonista.com.br/?p=737128" }, // oa2022
+    ], // three sources, one object per line
+  },
+  {
+    // Inquérito das fake news (new entry): INQ 4781, opened ex officio by the STF in 2019, upheld 10-1 in 2020, with both sides' arguments.
+    slug: "inquerito-das-fake-news", // the /glossary/inquerito-das-fake-news address
+    headword: "Inquérito das fake news", // the Portuguese name, kept in every locale
+    kind: "term", // the common name of a judicial proceeding
+    domains: ["grc"], // law and courts
+    aliases: ["INQ 4781", "inquérito 4781", "fake news inquiry", "Brazilian Supreme Court fake news inquiry"], // the case number and English renderings
+    relatedTerms: ["aije", "cpmi", "pl-das-fake-news", "marco-civil-da-internet", "disinformation"], // the batch, then existing entries
+    relatedArticles: ["brazil-mass-messaging-the-courts-and-the-cpmi"], // the part
+    disputed: false, // the facts are not disputed; the inquiry's legitimacy is, and the context says so
+    sources: [ // every label says what the page says and when it was read
+      { label: "Tribuna do Paraná, 'Raquel arquiva inquérito sobre fake news e ofensas contra membros do STF', 16 April 2019 (read 2026-11-15): opened by Dias Toffoli on 14 March 2019 under the internal rules; the Prosecutor General's archiving and her defence of the accusatory system", href: "https://www.tribunapr.com.br/noticias/politica/raquel-arquiva-inquerito-sobre-fake-news-e-ofensas-contra-membros-do-stf/" }, // tribuna2019
+      { label: "InfoMoney, 'Alexandre de Moraes rejeita decisão de Dodge e mantém inquérito sobre ofensas ao STF aberto', 16 April 2019 (read 2026-11-15): Moraes rejected the archiving", href: "https://www.infomoney.com.br/politica/alexandre-de-moraes-rejeita-decisao-de-dodge-e-mantem-inquerito-sobre-ofensas-ao-stf-aberto/" }, // infomoney2019
+      { label: "Associated Press, 'Brazil judge reverses order censoring news sites', 19 April 2019, republished by KSL (read 2026-11-15): the order against Crusoé and O Antagonista, its criticism and reversal", href: "https://www.ksl.com/article/46534991" }, // ap2019
+      { label: "Agência Brasil, André Richter, 'Por 10 votos a 1, STF valida inquérito sobre fake news', 18 June 2020 (read 2026-11-15): Fachin's reasoning on institutional defence and Marco Aurélio's dissent that the victim cannot open an inquiry", href: "https://agenciabrasil.ebc.com.br/justica/noticia/2020-06/por-10-votos-1-stf-valida-inquerito-sobre-fake-news" }, // agbr2020
+    ], // four sources, one object per line
+  },
+  {
+    // PL das Fake News (new entry): bill PL 2630/2020, passed by the Senate in 2020, stalled in the Chamber in 2023, with both sides' arguments.
+    slug: "pl-das-fake-news", // the /glossary/pl-das-fake-news address
+    headword: "PL das Fake News", // the name used in Brazil, kept in every locale
+    kind: "term", // the common name of a bill
+    domains: ["grc", "privacy"], // platform regulation; the bill also touched data and identification
+    aliases: ["PL 2630", "PL 2630/2020", "Lei Brasileira de Liberdade, Responsabilidade e Transparência na Internet", "Brazilian fake news bill"], // the number and the official name
+    relatedTerms: ["marco-civil-da-internet", "lgpd", "cpmi", "inquerito-das-fake-news", "disparo-em-massa"], // existing Brazilian law entries, then the batch
+    relatedArticles: ["brazil-mass-messaging-the-courts-and-the-cpmi", "brazil-internet-governance"], // the part and the governance article
+    sources: [ // every label says what the page says and when it was read
+      { label: "Câmara dos Deputados, PL 2630/2020, record of proceedings (read 2026-11-15): presented by Senator Alessandro Vieira; arrived 3 July 2020; urgency approved 25 April 2023; withdrawn from the agenda on 2 May 2023; ready for the plenary agenda", href: "https://www.camara.leg.br/proposicoesWeb/fichadetramitacao?idProposicao=2256735" }, // camara
+      { label: "Congresso em Foco, 'Veja como os senadores votaram o PL das fake news', 30 June 2020 (read 2026-11-15): Senate approval by 44 votes to 32", href: "https://www.congressoemfoco.com.br/legislativo/veja-como-os-senadores-votaram-o-pl-das-fake-news/" }, // cef2020b
+      { label: "Google Brasil blog, Marcelo Lacerda, 'Como o PL 2630 pode piorar a sua internet', 27 April 2023 (read 2026-11-15): Google's arguments that the bill would protect disinformation producers, empower a regulator and push over-removal", href: "https://blog.google/intl/pt-br/novidades/iniciativas/como-o-pl-2630-pode-piorar-a-sua-internet/" }, // google2023
+      { label: "Agência Câmara, 'Lira adia votação do Projeto das Fake News', 2 May 2023 (read 2026-11-15): the rapporteur's aims and the deputies' arguments for and against", href: "https://www.camara.leg.br/noticias/957823-lira-adia-votacao-do-projeto-das-fake-news/" }, // agcam2023
+      { label: "Agência Brasil, 'Arthur Lira cria grupo para discutir regras para redes sociais', 6 June 2024 (read 2026-11-15): Lira called the bill contaminated and created a working group", href: "https://agenciabrasil.ebc.com.br/politica/noticia/2024-06/apos-57-dias-lira-cria-grupo-para-discutir-regras-para-redes-sociais" }, // agbr2024
+    ], // five sources, one object per line
+  },
+  {
+    // New entry (bug bounty article, 15/11/2026).
+    slug: "vulnerability-disclosure-programme",
+    headword: "vulnerability disclosure programme (VDP)",
+    kind: "term",
+    domains: ["cyber-security", "grc"],
+    aliases: ["vdp", "vulnerability disclosure program", "vulnerability disclosure policy", "programa de divulgação de vulnerabilidades", "política de divulgação de vulnerabilidades"],
+    relatedArticles: ["bug-bounties-and-vulnerability-disclosure", "the-disclosure-record"], // the Learn articles that teach it (15/11/2026)
+    relatedTerms: ["bug-bounty", "coordinated-disclosure", "responsible-disclosure", "safe-harbour", "security-txt", "embargo", "cve", "nis2", "ctir-gov", "cert-br"], // the new slugs only after they are added
+    sources: [ // every label says what the page says and when it was read (15/11/2026)
+      { label: "CISA, Binding Operational Directive 20-01, Develop and Publish a Vulnerability Disclosure Policy, 2 September 2020 (read 2026-11-15 through WebFetch): VDP at /vulnerability-disclosure-policy within 180 days; scope, testing methods, anonymous reports, a no-legal-action commitment; all internet-accessible systems by 2 September 2022; no bounty required", href: "https://www.cisa.gov/binding-operational-directive-20-01" }, // CISA
+      { label: "ISO, ISO/IEC 29147:2018, Vulnerability disclosure, catalogue page (read 2026-11-15 through WebFetch): requirements and recommendations to vendors on vulnerability disclosure; confirmed in 2024", href: "https://www.iso.org/standard/72311.html" }, // ISO
+      { label: "ISO, ISO/IEC 30111:2019, Vulnerability handling processes, catalogue page (read 2026-11-15 through WebFetch): processing and remediating reported vulnerabilities; confirmed in 2025", href: "https://www.iso.org/standard/69725.html" }, // ISO
+      { label: "US Department of Justice, Criminal Division, A Framework for a Vulnerability Disclosure Program for Online Systems, version 1.0, July 2017 (read 2026-11-15): a process for designing a programme rather than prescribed terms", href: "https://www.justice.gov/criminal-ccips/page/file/983996/download" }, // DOJ
+      { label: "disclose.io, dioterms README (read 2026-11-15): CC0 templates for a VDP, a VDP with a stated coordinated-disclosure window, a full and a condensed safe-harbour clause; a policy generator and an adopters' directory", href: "https://raw.githubusercontent.com/disclose/dioterms/master/README.md" }, // disclose.io
+      { label: "Belfer Center, reproduction of Ash Carter, The Pentagon's First Bug Bounty Exceeded All Expectations, 17 June 2016 (read 2026-11-15): no reporting pathway for outsiders and legal hurdles; a central point of contact and a DoD vulnerability disclosure policy announced", href: "https://www.belfercenter.org/publication/pentagons-first-bug-bounty-exceeded-all-expectations" }, // Belfer Center
+      { label: "EUR-Lex, Directive (EU) 2022/2555 (NIS2), article 12 (read 2026-11-15): CSIRT coordinators for coordinated vulnerability disclosure and anonymous reporting in every member state", href: "https://eur-lex.europa.eu/eli/dir/2022/2555/oj/eng" }, // EUR-Lex
+      { label: "J.M. Porup, CSO Online, 2 April 2020 (read 2026-11-15): a VDP described as a welcome mat; Alex Rice of HackerOne: getting ready for a VDP is technically straightforward but politically harder; private bounties launched before VDPs", href: "https://www.csoonline.com/article/3535888/bug-bounty-platforms-buy-researcher-silence-violate-labor-laws-critics-say.html" }, // CSO Online
+      { label: "Bugcrowd, Inside the Mind of a Hacker 2026 (read 2026-11-15): 65% of over 2,000 surveyed hackers have chosen not to disclose a vulnerability because there was no clear pathway to report it", href: "https://www.bugcrowd.com/wp-content/uploads/2026/01/Inside-the-Mind-of-a-Hacker-2026.pdf" }, // Bugcrowd
+      { label: "VTEX, Security Disclosure Policy (read 2026-11-15): a Brazilian-founded company's VDP with no bounty, a 90-day window, response targets by CVSS severity and a safe harbour, which also states that the policy grants no permission to test", href: "https://vtex.com/.well-known/security-disclosure-policy.txt" }, // VTEX
+      { label: "Gabinete de Segurança Institucional, CTIR Gov home page (read 2026-11-15): federal notifications counted as incidents plus vulnerabilities, 15,132 in 2023 and 14,921 in 2024", href: "https://www.gov.br/gsi/pt-br/assuntos/ctir" }, // GSI
+    ], // 11 sources, one object per line
+  },
+  {
+    // New entry (bug bounty article, 15/11/2026).
+    slug: "safe-harbour",
+    headword: "safe harbour (security research)",
+    kind: "term",
+    domains: ["cyber-security", "grc", "hacking"],
+    aliases: ["safe harbor", "legal safe harbor", "research safe harbour", "security research safe harbor", "porto seguro"],
+    relatedArticles: ["bug-bounties-and-vulnerability-disclosure"], // the Learn article that teaches it (15/11/2026)
+    relatedTerms: ["bug-bounty", "vulnerability-disclosure-programme", "responsible-disclosure", "coordinated-disclosure", "dmca", "lei-carolina-dieckmann", "pentest"], // the new slug only after it is added
+    sources: [ // every label says what the page says and when it was read (15/11/2026)
+      { label: "disclose.io, dioterms, Safe Harbor template (en-US), CC0 (read 2026-11-15): research under the policy authorized concerning anti-hacking and anti-circumvention laws; terms-of-service restrictions waived; help if a third party sues; applies only to claims under the organization's control and does not bind third parties", href: "https://raw.githubusercontent.com/disclose/dioterms/master/terms/safe-harbor/en-US.md" }, // disclose.io
+      { label: "CISA, Binding Operational Directive 20-01, 2 September 2020 (read 2026-11-15 through WebFetch): every federal VDP must commit not to recommend or pursue legal action against good-faith security research that follows it", href: "https://www.cisa.gov/binding-operational-directive-20-01" }, // CISA
+      { label: "US Department of Justice, Department of Justice Announces New Policy for Charging Cases under the Computer Fraud and Abuse Act, 19 May 2022 (read 2026-11-15 through WebFetch): good-faith security research should not be charged; claiming research is not a free pass for those acting in bad faith", href: "https://www.justice.gov/archives/opa/pr/department-justice-announces-new-policy-charging-cases-under-computer-fraud-and-abuse-act" }, // DOJ
+      { label: "US Department of Justice, Justice Manual 9-48.000, updated May 2022 (read 2026-11-15): the definition of good-faith security research prosecutors apply", href: "https://www.justice.gov/jm/jm-9-48000-computer-fraud" }, // DOJ
+      { label: "Bugcrowd, Nubank Brasil Managed Bug Bounty Program (read 2026-11-15): safe-harbour status 'This engagement is fully committed to providing safe harbor for good-faith security research'", href: "https://bugcrowd.com/engagements/nubank" }, // Bugcrowd
+      { label: "J.M. Porup, CSO Online, 2 April 2020 (read 2026-11-15): EFF's Andrew Crocker on terms that let a company decide 'in its sole discretion' whether safe harbour applies; PayPal's terms tying safe harbour to an NDA", href: "https://www.csoonline.com/article/3535888/bug-bounty-platforms-buy-researcher-silence-violate-labor-laws-critics-say.html" }, // CSO Online
+      { label: "US Court of Appeals for the Ninth Circuit, United States v. Sullivan, amended opinion, 12 November 2025 (read 2026-11-15): authorization under the CFAA assessed at the moment of access; an NDA cannot retroactively authorize; whether a bounty can give prior authorization left open (footnotes 6 and 7)", href: "https://cdn.ca9.uscourts.gov/datastore/opinions/2025/11/12/23-927.pdf" }, // Ninth Circuit
+      { label: "VTEX, Security Disclosure Policy (read 2026-11-15): a legal safe harbour for good-faith researchers alongside the statement that the policy grants no permission to conduct penetration tests or active scanning", href: "https://vtex.com/.well-known/security-disclosure-policy.txt" }, // VTEX
+      { label: "Senado Federal, Lei nº 14.155/2021, published text (read 2026-11-15): article 154-A of the Brazilian Penal Code as amended, with authorization, express or tacit, as the only exception", href: "https://legis.senado.leg.br/norma/34016289/publicacao/34016562" }, // Senado Federal
+      { label: "Bruno Telles and Caio Telles, Baguete, 26 August 2026 (read 2026-11-15): BugHunt's founders on the absence of a statutory safe harbour for researchers in Brazil and contractual safe harbour on platforms", href: "https://www.baguete.com.br/noticias/inseguranca-juridica-tambem-e-inseguranca-da-informacao" }, // Baguete
+    ], // 10 sources, one object per line
+  },
+  {
+    // New entry (bug bounty article, 15/11/2026).
+    slug: "security-txt",
+    headword: "security.txt",
+    kind: "term",
+    domains: ["cyber-security", "web-development"],
+    aliases: ["security txt", "rfc 9116", "/.well-known/security.txt", "security.txt file", "arquivo security.txt"],
+    relatedArticles: ["bug-bounties-and-vulnerability-disclosure"], // the Learn article that teaches it (15/11/2026)
+    relatedTerms: ["rfc", "vulnerability-disclosure-programme", "bug-bounty", "coordinated-disclosure", "responsible-disclosure", "cert-br", "pgp", "iana"], // the new slug only after it is added
+    sources: [ // every label says what the page says and when it was read (15/11/2026)
+      { label: "IETF, RFC 9116, A File Format to Aid in Security Vulnerability Disclosure, E. Foudil and Y. Shafranovich, April 2022 (read 2026-11-15): the file at /.well-known/security.txt; Contact and Expires must always be present; Expires recommended less than a year ahead; stale data should not be used; Policy for programme details", href: "https://www.rfc-editor.org/rfc/rfc9116" }, // IETF
+      { label: "CISA, Binding Operational Directive 20-01, 2 September 2020 (read 2026-11-15 through WebFetch): security.txt not required for US federal agencies but helpful in finding whom to report to; the .gov registrar security contact required instead", href: "https://www.cisa.gov/binding-operational-directive-20-01" }, // CISA
+      { label: "CERT.br, security.txt (read 2026-11-15): Contact security@cert.br, an encryption key, English and Portuguese, Expires 15 January 2027", href: "https://www.cert.br/.well-known/security.txt" }, // CERT.br
+      { label: "Registro.br, security.txt (read 2026-11-15): Contact security@registro.br, a separate address for .br abuse, a PGP key, Expires 31 January 2027", href: "https://registro.br/.well-known/security.txt" }, // Registro.br
+      { label: "Nubank, security.txt (read 2026-11-15): Contact, Encryption and Canonical fields plus extension fields naming a Bugcrowd VDP address and the Bugcrowd bug bounty; no Expires field", href: "https://nubank.com.br/.well-known/security.txt" }, // Nubank
+      { label: "QuintoAndar, security.txt (read 2026-11-15): a Policy field pointing to its Bugcrowd programme; Expires 31 December 2026", href: "https://www.quintoandar.com.br/.well-known/security.txt" }, // QuintoAndar
+      { label: "VTEX, security.txt (read 2026-11-15): Contact, Encryption, Policy pointing to a full disclosure policy, Canonical, Preferred-Languages en and pt-BR, Expires 12 June 2027", href: "https://vtex.com/.well-known/security.txt" }, // VTEX
+    ], // 7 sources, one object per line
   },
 ];
 

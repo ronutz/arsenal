@@ -38,6 +38,9 @@ import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import SiteFooter from "@/components/SiteFooter";
+// The author's instructor profile on Red Education's site, linked from every byline (PRIME 15/11/2026 01:40: "ok, link to my
+// Red Education profile"), attributed at render like every outbound Red Education link (UTM rule 2026-07-22).
+import { RED_EDUCATION_INSTRUCTOR_PROFILE, attributeRedEducationUrl, externalRel } from "@/config/redEducation";
 
 /** Pre-generate every post page for every locale at build time. */
 export function generateStaticParams() {
@@ -107,6 +110,18 @@ export default async function BlogPostPage({
               {post.author}
               {" - "}
               <time dateTime={post.date}>{fmt.format(new Date(`${post.date}T12:00:00Z`))}</time>
+              {/* The byline ends with the author's instructor profile at Red Education: one attributed link per post
+                  (pageType blog, the post's slug, cta byline), checked on its own by check-red-education-links.mjs
+                  (exactly one per post page) and kept out of the site-wide baseline, as the footer link is. */}
+              {" - "}
+              <a
+                href={attributeRedEducationUrl(RED_EDUCATION_INSTRUCTOR_PROFILE, { pageType: "blog", pageSlug: post.slug, locale, cta: "byline" })}
+                target="_blank"
+                rel={externalRel(RED_EDUCATION_INSTRUCTOR_PROFILE)}
+                className="redu-inline-link"
+              >
+                {t("bylineProfile")}
+              </a>
             </p>
             <p className="article-summary">{post.summary}</p>
 

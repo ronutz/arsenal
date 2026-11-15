@@ -487,14 +487,17 @@ const PACK_PAGES: { slug: string; ns: string; title: string }[] = [
   { slug: "stats", ns: "stats_page", title: "title" },
   { slug: "support", ns: "support", title: "title" },
   { slug: "vendor-hubs", ns: "vendorsHome", title: "title" },
+  // The LGTM homage and its stamp toy (15/11/2026), from their nested namespaces (devFun.lgtm, devFun.lgtmStamp).
+  { slug: "dev-fun-lgtm", ns: "devFun.lgtm", title: "title" },
+  { slug: "dev-fun-lgtm-stamp", ns: "devFun.lgtmStamp", title: "title" },
 ];
 // The keys a PACK_PAGES tagline is read from, in order of preference.
 const TAGLINE_KEYS = ["metaDescription", "hubLede", "lede", "intro"];
 
 /** A plain string at <ns>.<key> of a language's pack, or "" when it is absent or not a string. */
 function packString(locale: string, ns: string, key: string): string {
-  // The namespace's object in that language's pack.
-  const node = messages(locale)?.[ns];
+  // The namespace's object in that language's pack, walked one dotted segment at a time (devFun.lgtm, 15/11/2026).
+  const node = ns.split(".").reduce((n, seg) => (n && typeof n === "object" ? n[seg] : undefined), messages(locale));
   // The value when it is a string, else nothing.
   return node && typeof node[key] === "string" ? node[key] : "";
 }

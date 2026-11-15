@@ -104,13 +104,13 @@ export const LEARN_SERIES: LearnSeries[] = [
       { slug: "social-engineering-pretexting-vishing-and-baiting" },
       { slug: "scams-at-scale-why-a-tiny-success-rate-pays" },
       { slug: "scam-compounds-and-pig-butchering" },
-      { planned: "bec" },
-      { planned: "voiceClones" },
+      { slug: "business-email-compromise-and-impersonation" }, // Arc 2, written 15/11/2026
+      { slug: "voice-clones-and-deepfakes-in-fraud" }, // Arc 2, written 15/11/2026
       { slug: "anatomy-of-an-influence-operation-abc-disarm-and-kill-chains" },
-      { planned: "stateCampaigns" },
-      { planned: "influenceForHire" },
-      { planned: "botsSockpuppets" },
-      { planned: "brazilMassMessaging" },
+      { slug: "state-influence-campaigns-on-the-record" }, // Arc 3a, written 15/11/2026
+      { slug: "influence-for-hire-the-firms-that-sell-influence-operations" }, // Arc 3a, written 15/11/2026
+      { slug: "bots-sockpuppets-and-astroturfing" }, // Arc 3b, written 15/11/2026
+      { slug: "brazil-mass-messaging-the-courts-and-the-cpmi" }, // Arc 3b, written 15/11/2026
       { planned: "lodgeToNetwork" },
       { planned: "echoChambers" },
       { planned: "profiling" },

@@ -1,0 +1,240 @@
+---
+slug: flags-finals-and-the-brazilian-list
+title: "Flags, finais e a lista brasileira: o cenário de CTF em 2026"
+summary: "Em agosto de 2026, um novo organizador comandou a final do Capture the Flag da DEF CON, com rodadas de King of the Hill e um navegador web de 1994 ressuscitado, e as competições passaram o ano escrevendo regras para agentes de IA que já resolvem desafios sozinhos. Este post mostra onde estão os maiores eventos, os momentos que a cena ainda conta e o cenário brasileiro fonte por fonte: a comunidade CTF-BR, o Pwn2Win, o ranking brasileiro no CTFtime, os eventos que seguem no calendário, os que pararam e o que as Forças Armadas fazem no lugar."
+author: "Rodolfo Nützmann"
+date: "2026-11-15"
+tags: ["brazil", "career", "ai", "industry"]
+category: security
+status: reviewed
+updated: "2026-11-15"
+relatedArticles: ["capture-the-flag-competitions", "the-brazilian-hacker-scene", "latin-american-security-conferences", "defcon-culture-and-the-goons"]
+---
+
+Como funcionam as competições Capture the Flag (CTF), dos placares jeopardy às finais attack-defence e à pontuação dinâmica, está explicado no artigo **[Capture the Flag: como funcionam as competições de segurança](/learn/capture-the-flag-competitions)**. Este post trata do cenário em si em 2026: quem ganhou o quê, o que mudou, as histórias que os jogadores ainda contam e, no fim, uma lista de competições e times brasileiros em que cada linha foi conferida na página do próprio evento ou time e no CTFtime.org, o calendário e ranking da comunidade.
+
+## A final de agosto de 2026
+
+A DEF CON, a conferência hacker de Las Vegas, fez a sua 34ª edição em agosto de 2026 ([BBB, Quals 2026 Rules](https://bbbirds.org/static/rules/defcon-2026-quals-rules.pdf)), e o seu CTF teve organizadores novos pela primeira vez desde 2022. Ao anunciá-los em março, a DEF CON lembrou que a disputa começou na DEF CON 4, em 1996, e apresentou o Benevolent Bureau of Birds como sucessor do Nautilus Institute, que a organizou de 2022 a 2025 ([DEF CON, CTF Archive, 3 de março de 2026](https://defcon.org/html/links/dc-ctf.html)). A primeira final dos Birds, segundo a DEF CON, misturou desafios de attack-defence e King of the Hill, "de escapar de travamentos de jogo e programar numa linguagem própria de emojis de pássaros a reverter uma arquitetura própria e exfiltrar dados por padrões do Jogo da Vida", e pediu aos times que explorassem e protegessem "uma versão de 1994 do Netscape Navigator, recém-ressuscitada" ([DEF CON 34, resultados dos concursos](https://defcon.org/html/defcon-34/dc-34-contest-results.html)). Mais de 600 times jogaram a classificatória, 12 chegaram à final e, em três dias, capturaram mais de 30 mil flags; o Blue Water venceu, à frente do 0x4B52 e do SuperDiceCodeLovers ([DEF CON 34, resultados](https://defcon.org/html/defcon-34/dc-34-contest-results.html)).
+
+O resultado encerrou uma sequência. O Maple Mallard Magistrates (MMM), o time combinado formado em torno do Plaid Parliament of Pwning (PPP), da Universidade Carnegie Mellon, tinha vencido todas as finais de 2022 a 2025 ([DEF CON, CTF Archive](https://defcon.org/html/links/dc-ctf.html)). Pelas contas da Carnegie Mellon, o título de 2024 foi o oitavo do PPP em doze anos, depois das vitórias de 2013, 2014, 2016, 2017, 2019, 2022 e 2023 ([Carnegie Mellon University, 12 de agosto de 2024](https://www.cmu.edu/news/stories/archives/2024/august/carnegie-mellons-hacking-team-wins-third-straight-record-eighth-overall-def-con-capture-the-flag)).
+
+## O ano em que os agentes sentaram à mesa
+
+O anúncio de março explicava por que a DEF CON esperava mudanças: "ferramentas agênticas" estavam sacudindo o setor, e na final da DEF CON 33, em 2025, um jogador do Blue Water só soube que o agente do time tinha resolvido um desafio quando um juiz avisou que eles já tinham vencido; "Este ano, esperamos que essa novidade vire a norma", escreveu a DEF CON ([DEF CON, CTF Archive, 3 de março de 2026](https://defcon.org/html/links/dc-ctf.html)). Um jogador de outro time finalista descreveu o mesmo episódio de 2025 com mais detalhes: no LiveCTF, o torneio paralelo de um contra um transmitido ao vivo, o agente que rodava em segundo plano resolveu três das cinco partidas que o Blue Water venceu a caminho do título daquele torneio, e "embora alguns jogadores tenham achado que a abordagem do Blue Water beirava a trapaça, ela não violava as regras" ([SRLabs, Competing at the DEF CON CTF Finals 2025](https://srlabs.de/blog/competing-at-the-def-con-ctf-finals-2025)).
+
+Em 2026 as regras alcançaram a prática, e cada evento escolheu um caminho:
+
+- A classificatória da DEF CON de maio de 2026 proibiu "times total ou principalmente autônomos", permitiu que humanos usassem qualquer ferramenta, inclusive as baseadas em LLMs (grandes modelos de linguagem), avisou que apenas dizer "sim" aos prompts de um agente não contaria como um humano usando uma ferramenta e ofereceu um placar só de humanos, baseado na honra, que não contaria para a classificação ([Benevolent Bureau of Birds, DEF CON CTF Quals 2026 Rules](https://bbbirds.org/static/rules/defcon-2026-quals-rules.pdf)). O regulamento creditou experiências anteriores com políticas de IA (inteligência artificial) feitas pelos organizadores de outros CTFs, entre eles Kalmar CTF, Dice CTF e b01lers CTF ([BBB, Quals 2026 Rules](https://bbbirds.org/static/rules/defcon-2026-quals-rules.pdf)).
+- Na DEF CON 34, o concurso Capture the Packet "introduziu tráfego e texto adversariais aos provedores de IA de fronteira" e relatou que os jogadores alcançaram só 61% dos pontos possíveis ([DEF CON 34, resultados](https://defcon.org/html/defcon-34/dc-34-contest-results.html)). O CTF da Bug Bounty Village montou flags que exigiam encadear até três vulnerabilidades, uma profundidade que os organizadores chamaram de "difícil de resolver só com reconhecimento de padrões assistido por IA. Foi intencional." ([DEF CON 34, resultados](https://defcon.org/html/defcon-34/dc-34-contest-results.html)).
+- Outros concursos foram na direção oposta. O CTF da OWASP, o Open Worldwide Application Security Project, pedia aos jogadores que corrigissem vulnerabilidades no código-fonte por pull requests validados automaticamente e "incentivou os competidores a usar agentes de IA para programação", e o CTF da Red Team Village incluiu uma trilha de desafios de modelos de linguagem e de IA agêntica ([DEF CON 34, resultados](https://defcon.org/html/defcon-34/dc-34-contest-results.html)).
+- O International Capture The Flag (iCTF), da Universidade da Califórnia em Santa Bárbara (UCSB), anunciou para março de 2026 os seus primeiros desafios baseados em agentes, em que os participantes escrevem agentes que são enviados e precisam resolver os desafios sozinhos ([slides do iCTF 2026](https://ictf.cs.ucsb.edu/media/iCTF_2026_Slides.pdf)).
+
+O artigo do Learn mostra como os pesquisadores já usam tarefas de CTF para medir agentes de IA; no chão da competição, a pergunta em 2026 já não era se os agentes conseguiam jogar, e sim quais eventos os deixariam jogar.
+
+## Os maiores eventos, e onde estão
+
+| Evento | Organizador | Última edição encontrada | O que aconteceu | Fonte |
+| --- | --- | --- | --- | --- |
+| CTF da DEF CON | Benevolent Bureau of Birds (desde 2026) | Classificatória de 22 a 24 de maio de 2026; final na DEF CON 34, agosto de 2026 | Vitória do Blue Water; mais de 600 times na classificatória | [DEF CON 34, resultados](https://defcon.org/html/defcon-34/dc-34-contest-results.html); [regras do BBB](https://bbbirds.org/static/rules/defcon-2026-quals-rules.pdf) |
+| Google CTF | Google | De 27 a 29 de junho de 2025, online, com final presencial para os melhores | Friendly Maltese Citizens em primeiro no placar online | [CTFtime, evento 2718](https://ctftime.org/event/2718) |
+| picoCTF | Universidade Carnegie Mellon | Competição de 2024, resultados anunciados em 24 de junho de 2024 | Plataforma com mais de 600 mil usuários, 100 mil deles de graduação | [Carnegie Mellon, 28 de junho de 2024](https://www.cmu.edu/news/stories/archives/2024/june/cmus-picoctf-seeks-to-make-cybersecurity-education-more-accessible) |
+| iCTF | UCSB, Shellphish, ACTION Institute | Anunciado para 9 a 13 de março de 2026 | Primeiros desafios baseados em agentes | [iCTF](https://ictf.cs.ucsb.edu/); [slides do iCTF 2026](https://ictf.cs.ucsb.edu/media/iCTF_2026_Slides.pdf) |
+| European Cybersecurity Challenge (ECSC) | ENISA, a Agência da União Europeia para a Cibersegurança, e um país-sede | Bochum, Alemanha, outubro de 2026 | Suécia, Finlândia e Áustria no pódio; 35 seleções e 7 convidados | [ENISA, 16 de outubro de 2026](https://www.enisa.europa.eu/news/sweden-sweeps-the-winning-title-of-the-european-cybersecurity-challenge) |
+| International Cybersecurity Challenge (ICC) | ENISA com organizações regionais | Brisbane, Austrália, maio de 2026 | Quinto título do Team Europe; Team USA em segundo, Team Oceania em terceiro | [ENISA, 20 de maio de 2026](https://www.enisa.europa.eu/news/5th-consecutive-victory-for-team-europe-the-still-undefeated-eu-champions-of-the-international-cybersecurity-challenge) |
+
+A ENISA também anunciou que o ICC de 2027 será na Irlanda, em outubro ([ENISA, 20 de maio de 2026](https://www.enisa.europa.eu/news/5th-consecutive-victory-for-team-europe-the-still-undefeated-eu-champions-of-the-international-cybersecurity-challenge)).
+
+## Momentos que a cena ainda conta
+
+**Os organizadores que sentaram na mesa de um time.** Quando o DDTek foi anunciado como organizador da DEF CON em 2009, ninguém conhecia o nome. A história escrita pelo próprio grupo conta que, do anúncio até o fim da disputa, "ninguém suspeitou que o pessoal sentado na mesa do time sk3wl0fr00t estava, na verdade, comandando o jogo", e que os gritos dos times na cerimônia de premiação "foram muito gratificantes" ([DEF CON, CTF History](https://defcon.org/html/links/dc-ctf-history.html)). A mesma página resume a cultura das classificatórias numa linha: "ficar em 132º lugar parece uma bela conquista" ([DEF CON, CTF History](https://defcon.org/html/links/dc-ctf-history.html)).
+
+**A máquina que terminou em último, mas liderou às vezes.** Em 4 de agosto de 2016, a DARPA, a Agência de Projetos de Pesquisa Avançada de Defesa dos Estados Unidos, declarou o Mayhem, criado pela ForAllSecure, vencedor preliminar do seu Cyber Grand Challenge, um CTF só de máquinas, e disse que a DEF CON o convidaria a jogar contra humanos ([DARPA, 4 de agosto de 2016](https://www.darpa.mil/news/2016/mayhem-winner-cyber-grand-challenge)). Ele jogou, e os organizadores escreveram depois: "embora o Mayhem tenha terminado em último lugar, muitas vezes ao longo do jogo ele conseguiu passar à frente de times humanos" ([Legitimate Business Syndicate, 2016 DEF CON CTF Final Scores](https://blog.legitbs.net/2016/09/2016-def-con-ctf-final-scores.html)). O mesmo post admitiu um erro de pontuação: as provas de vulnerabilidade não tinham sido executadas de novo nas rodadas seguintes, como alguns times tinham sido informados, e o jogo foi repontuado depois da conferência ([Legitimate Business Syndicate, 2016](https://blog.legitbs.net/2016/09/2016-def-con-ctf-final-scores.html)).
+
+**A arquitetura que ninguém tinha visto.** Na sua última final, em 2017, a Legitimate Business Syndicate fez todos os times trabalharem numa arquitetura de processador inventada por ela, a cLEMENCy, e disse estar "muito feliz porque todos os times conseguiram pontuar e corrigir serviços" nela; na tabela final, um time em último lugar com o nome dos organizadores guardava as flags que sobravam à espera de redistribuição ([DEF CON, CTF Archive](https://defcon.org/html/links/dc-ctf.html)).
+
+**A regra que premiava o melhor, e não o primeiro.** Em 2019, a Order of the Overflow explicou aos finalistas a pontuação do King of the Hill, dez pontos por tick para a melhor solução, até um para a quinta, e fechou com "A Ordem sugere que vocês considerem hackear com mais força." ([Order of the Overflow, DEF CON CTF 2019 Finals](https://oooverflow.io/dc-ctf-2019-finals/)). A mesma página depois pediu desculpas por hospedar menos arquivos, porque "alguém andou sugando os nossos arquivos feito louco e a conta de armazenamento ficou surreal" ([Order of the Overflow, 2019](https://oooverflow.io/dc-ctf-2019-finals/)).
+
+**Bugs reportados pelo placar.** O Google contou que, no seu primeiro CTF, em 2016, recebeu relatos de bugs de segurança no próprio placar e pagou recompensas por eles no seu Vulnerability Reward Program ([Google Security Blog, 2 de junho de 2017](https://security.googleblog.com/2017/06/announcing-google-capture-flag-2017.html)).
+
+**A flag postada no Facebook.** Numa disciplina da Universidade de Birmingham que usava desafios de CTF, um aluno que foi o primeiro a resolver um desafio difícil postou um print da flag no Facebook; um "amigo" a transcreveu e submeteu antes dele, e os pesquisadores registram que os dois foram punidos, "por falta de previdência e por falta de ética, respectivamente" ([Chothia e Novakovic, USENIX 3GSE 2015](https://www.usenix.org/system/files/conference/3gse15/3gse15-chothia.pdf)).
+
+## O cenário brasileiro
+
+### Uma comunidade que se organizou sozinha
+
+O CTF-BR é o projeto da comunidade brasileira em torno dos CTFs. Entre os objetivos declarados estão tornar as competições tão populares no Brasil quanto as maratonas de programação, levar CTFs introdutórios às universidades, manter um ranking nacional no estilo do CTFtime, montar um repositório de write-ups brasileiros e ajudar times e universidades a criar CTFs brasileiros de longa duração ([CTF-BR, Sobre](https://ctf-br.org/sobre/)). Com o nome CTF-BR University, levou CTFs introdutórios a eventos e universidades a partir de 2015, entre eles a BSides São Paulo, a Campus Party, a CryptoRave, o Roadsec, a Universidade Estadual de Campinas (Unicamp, 26 de novembro de 2015) e a Universidade Federal de São Carlos (UFSCar, setembro de 2017), e desde o segundo semestre de 2016 o Epic Leet Team (ELT) os faz sob demanda ([CTF-BR, CTF-BR University](https://ctf-br.org/ctf-br-university/)). A Batalha BR, criada em 2015, escolhe por ano um CTF internacional em que todos os times brasileiros jogam com força total; o TheGoonies venceu em 2015 e 2016, e o ELT todos os anos de 2017 a 2021 ([CTF-BR, Batalha BR](https://ctf-br.org/batalha-br/)).
+
+### O ranking brasileiro
+
+A página do Brasil no CTFtime, lida em 15 de novembro de 2026, mostrava estes sete times no topo do rating de 2026, que segue em andamento até o fim do ano ([CTFtime, Brasil 2026](https://ctftime.org/stats/2026/BR)):
+
+| Brasil | Mundo | Time | Pontos | Eventos |
+| --- | --- | --- | --- | --- |
+| 1 | 145 | Ganesh | 349,364 | 24 |
+| 2 | 176 | Duckware | 320,728 | 23 |
+| 3 | 389 | CS Team - Inatel | 193,305 | 9 |
+| 4 | 391 | GRIS | 193,004 | 34 |
+| 5 | 459 | AsylumBR | 172,879 | 10 |
+| 6 | 902 | Epic Leet Team | 91,358 | 4 |
+| 7 | 934 | Ç_Ç CyberDimension | 88,909 | 27 |
+
+O rating fechado de 2025 tinha o Ganesh em 52º no mundo, seguido, entre os brasileiros, por Marcio Herobrine (103º), Epic Leet Team (207º), Duckware (258º), Hawksec UNIFEI (520º), SeaDragons (830º) e GRIS (991º) ([CTFtime, Brasil 2025](https://ctftime.org/stats/2025/BR)). O CTF-BR mantém uma página, o CTFTime Hall, com o melhor resultado brasileiro de cada ano: TheGoonies em 2015 e 2016, ELT de 2017 a 2023, Ganesh em 2024 e 2025, com o 18º lugar do ELT em 2020 como o melhor de todos os tempos ([CTF-BR, CTFTime Hall](https://ctf-br.org/ctftime-hall/)). Dois detalhes diferem entre as fontes: o CTFTime Hall dá ao Ganesh o 51º lugar em 2025, enquanto a tabela do CTFtime mostrava 52º no dia da leitura; e o ELT escreveu em 2021 que mantinha o primeiro lugar brasileiro "desde 2014 (o ano em que o time entrou no CTFTime)", enquanto o CTFTime Hall credita 2015 e 2016 ao TheGoonies ([Epic Leet Team, retrospectiva de 2021](https://epicleet.team/); [CTF-BR, CTFTime Hall](https://ctf-br.org/ctftime-hall/)).
+
+Vários dos times mais fortes são grupos universitários. O Ganesh pertence ao Instituto de Ciências Matemáticas e de Computação da Universidade de São Paulo (ICMC-USP), em São Carlos, e começou formalmente em 2017 ([Ganesh, About](https://ganesh.icmc.usp.br/en/about); [CTFtime, time 54706](https://ctftime.org/team/54706)); o GRIS é o time acadêmico da Universidade Federal do Rio de Janeiro (UFRJ) ([CTFtime, time 926](https://ctftime.org/team/926)); o Hawksec é o time da Universidade Federal de Itajubá (UNIFEI) ([CTFtime, time 226098](https://ctftime.org/team/226098)); o IMEsec é o time do Instituto de Matemática e Estatística da Universidade de São Paulo (IME-USP) ([CTFtime, time 25516](https://ctftime.org/team/25516)).
+
+### O Pwn2Win, o evento brasileiro que o mundo jogou
+
+O ELT descreve o Pwn2Win como um CTF temático e multidisciplinar organizado por ele, com primeira edição em 2014 e internacional desde 2016, pioneiro em desafios como reversão de FPGA (field-programmable gate array) em 2016, machine learning adversarial em 2017 e reversão de circuitos quânticos em 2018; o ELT acrescentou que a edição de 2020 teve 864 times inscritos ([Epic Leet Team](https://epicleet.team/)). O CTFtime lista seis edições, de 2016 a 2021, com o peso do evento subindo de 19,90 para 83,41 ([CTFtime, Pwn2Win CTF](https://ctftime.org/ctf/130/)). A edição de 2021 foi online, por 48 horas, de 28 a 30 de maio, teve 719 times no placar do CTFtime e foi vencida pelo DiceGang ([CTFtime, Pwn2Win CTF 2021](https://ctftime.org/event/1186)); o Ganesh terminou em 18º e em primeiro entre os brasileiros ([Ganesh, 30 de junho de 2021](https://ganesh.icmc.usp.br/en/content/activity/cmdltvh1y0003jw0nxvp835fc)). Antes dessa edição, a imprensa informou que o time vencedor garantiria vaga na final da DEF CON e que a UFSCar apoiava o evento desde 2016, e citou o fundador, Álisson Bertochi: "Os melhores times do mundo jogam nosso CTF esperando novidades" ([Canaltech, 13 de maio de 2021](https://canaltech.com.br/hacker/pwn2win-torneio-de-hacking-abre-portas-do-mercado-e-incentiva-especializacao-184873/)). Nenhuma edição posterior a 2021 aparece no CTFtime, e o site do evento ainda mostra a edição de 2021 ([Pwn2Win](https://pwn2win.party/)).
+
+### Um time brasileiro na classificatória da DEF CON
+
+Os times brasileiros também jogam juntos. Na classificatória da DEF CON de maio de 2026, um time conjunto chamado pwn de queijo, formado por vários times filiados ao CTF-BR, terminou em 28º entre 686, com cerca de 73 participantes vindos do ELT, do Ganesh, do Duckware, do GRIS, do IMEsec, do Marcio Herobrine, da Boitatech e de outros, e de instituições como ICMC-USP, IME-USP, UFSCar, UFRJ e Inatel, entre eles "pelo menos um estudante do ensino médio" ([UFSCar Cloud Labs, DEF CON Quals 2026, 1º de junho de 2026](https://blog.cloudlabs.ufscar.br/sec/defcon-quals-2026/)). O time declarou a política de IA HumanLedAi, de acordo com regras que permitiam trabalho assistido por IA desde que o esforço continuasse liderado por humanos ([UFSCar Cloud Labs, 2026](https://blog.cloudlabs.ufscar.br/sec/defcon-quals-2026/)).
+
+### O Brasil nas competições internacionais por seleção
+
+O Brasil disputa o ICC dentro do time CyberLATAM, organizado por um comitê diretivo da América Latina e do Caribe, com Bolívia, Chile, Colômbia, Costa Rica, El Salvador, México e Peru ([ICC, Teams](https://icc.ecsc.eu/teams)). Em 2023, esse time terminou em sexto entre sete, com 4.687,84 pontos contra 15.189,14 do Team Europe ([ICC, 2023](https://icc.ecsc.eu/past-editions/2023)). Em maio de 2021, antes da primeira edição, a imprensa tinha noticiado um plano para o Brasil ter uma seleção própria ([Canaltech, 27 de maio de 2021](https://canaltech.com.br/seguranca/brasil-esta-entre-os-paises-escolhidos-para-competicao-mundial-de-ciberseguranca-185974/)); o ICC realizado a partir de 2022 lista times regionais ([ENISA, 20 de junho de 2022](https://enisa.europa.eu/news/enisa-news/hats-off-to-team-europe-winners-of-the-1st-international-cybersecurity-challenge)).
+
+### Os eventos no calendário
+
+**O CTF do SBSeg.** O simpósio anual de segurança da Sociedade Brasileira de Computação (SBC), o SBSeg, hoje chamado Simpósio Brasileiro de Cibersegurança ([UTFPR, 2025](https://www.utfpr.edu.br/cursos/coordenacoes/stricto-sensu/ppgca-ct/destaques/ppgca-apresenta-artigos-no-sbseg-2025-conquista-premio-de-melhor-artigo-e-podio-no-cybergame)), fez em 15 de setembro de 2024 um CTF híbrido, individual, de oito horas, com desafios escritos por POMBO (UFSCar), Ganesh (ICMC-USP), ELT (Pwn2Win) e CTF-BR, realizado com o programa Hackers do Bem e apoio técnico da Rede Nacional de Ensino e Pesquisa (RNP), com patrocínio do Google na premiação (R$ 3.000 para o primeiro lugar) e um prêmio extra para as duas mulheres mais bem colocadas ([SBSeg 2024, CTF](https://sbseg2024.ita.br/chamadas/ctf/)). No simpósio de 2025, em Foz do Iguaçu, a competição foi o CyberGame, organizado pelo Hackers do Bem com a RNP; uma equipe de estudantes da Universidade Tecnológica Federal do Paraná (UTFPR) chegou ao pódio das classificatórias ([UTFPR, PPGCA no SBSeg 2025](https://www.utfpr.edu.br/cursos/coordenacoes/stricto-sensu/ppgca-ct/destaques/ppgca-apresenta-artigos-no-sbseg-2025-conquista-premio-de-melhor-artigo-e-podio-no-cybergame)).
+
+**Hackers do Bem.** O programa é financiado pelo Ministério da Ciência, Tecnologia e Inovação (MCTI) e executado pela RNP em parceria com o Serviço Nacional de Aprendizagem Industrial de São Paulo (SENAI-SP); lançado em janeiro de 2024, tinha certificado mais de 36 mil alunos até outubro de 2025 ([Agência Gov, 1º de outubro de 2025](https://agenciagov.ebc.com.br/noticias/202510/programa-hackers-do-bem-abre-inscricoes-para-25-mil-novas-vagas-em-ciberseguranca)). O primeiro CTF, em 16 de março de 2024, foi híbrido, online e no SENAI de São Caetano do Sul (SP), com um enredo sobre uma IA bancária que se volta contra o banco que deveria proteger ([ABC do ABC, 15 de março de 2024](https://abcdoabc.com.br/estudantes-irao-enfrentar-ia-rebelde-em-competicao-de-ciberseguranca/)); a RNP relatou 516 competidores, 18 deles presenciais, seis horas de competição e R$ 20 mil em prêmios ([RNP, Over 500 students face 'rebellious' AI](https://rnp.br/en/news/over-500-students-face-rebellious-ai-cybersecurity-competition)).
+
+**CTFs de comunidade nas conferências regionais.** O cronista dos eventos brasileiros de segurança, Anchises Moraes, creditou à comunidade Hack in Cariri o CTF da BSides São Paulo de 2024 e escreveu que ela "chegou dominando os eventos de todo o Brasil, organizando CTFs" ([Anchises Moraes, 30 de janeiro de 2025](https://anchisesbr.blogspot.com/2025/01/seguranca-como-foram-os-eventos-de.html)); ele listou um CTF da Hack in Cariri na Bxsec, em Santos, em agosto de 2025 ([Anchises Moraes, 5 de setembro de 2025](https://anchisesbr.blogspot.com/2025/09/seguranca-eventos-de-seguranca-no.html)). A BHack, de Belo Horizonte, anunciou um CTF com o time FireShell para a edição de 28 e 29 de novembro de 2026 ([BHack](https://bhack.com.br)).
+
+### Os que pararam, e um em pausa
+
+**Hackaflag e Roadsec.** O campeonato #HFBR, da plataforma Hackaflag, foi lançado em 2014, mesmo ano de estreia do festival Roadsec, e até 2022 já tinha passado por 30 cidades; naquele ano, oito classificatórias online com 240 competidores levaram a uma final de 12 em São Paulo, com prêmio de R$ 50 mil e desafios "baseados em falhas de seguranças reais, exploradas em programas de Bug Bounty" ([Canaltech, 30 de junho de 2022](https://canaltech.com.br/hacker/maior-campeonato-hacker-da-america-latina-premia-vencedor-com-r-50-mil-219950/)). O Roadsec de 2023 ainda anunciava "a grande final do CTF do #HFBR23" ([Roadsec](https://www.roadsec.com.br/)). O Roadsec não aconteceu em 2024, e Moraes listou Roadsec e Hackaflag em "Sentimos saudades" ([Anchises Moraes, 30 de janeiro de 2025](https://anchisesbr.blogspot.com/2025/01/seguranca-como-foram-os-eventos-de.html)); em setembro de 2025, escreveu que o fim do Roadsec, "pelo jeito, está sacramentado" ([Anchises Moraes, 5 de setembro de 2025](https://anchisesbr.blogspot.com/2025/09/seguranca-eventos-de-seguranca-no.html)). Em setembro de 2026, o outro evento da mesma organizadora, o Mind The Sec, passou a integrar a família Black Hat, sob a compradora, a Informa ([Anchises Moraes, 18 de setembro de 2026](https://anchisesbr.blogspot.com/2026/09/seguranca-o-mind-sec-agora-e-black-hat.html)).
+
+**Hacking n' Roll.** O CTF-BR o cita, ao lado do Pwn2Win, como exemplo dos CTFs brasileiros de longa duração que quer ver multiplicados, e o marca como "In Memorian" ([CTF-BR, Sobre](https://ctf-br.org/sobre/)).
+
+**H2HC.** A Hackers to Hackers Conference (H2HC) lista uma função de CTF na sua equipe ([H2HC, About](https://h2hc.pages.dev/en/pages/about)); a edição de 21 anos foi em 14 e 15 de dezembro de 2024, no Novotel Center Norte, em São Paulo ([H2HC, About](https://h2hc.pages.dev/en/pages/about)), com mais de 3.100 participantes pelas contas de Moraes ([Anchises Moraes, 30 de janeiro de 2025](https://anchisesbr.blogspot.com/2025/01/seguranca-como-foram-os-eventos-de.html)). Em 19 de novembro de 2025, ele relatou que a organização tinha cancelado a edição daquele ano e que "será realizado no ano que vem" ([Anchises Moraes, 19 de novembro de 2025](https://anchisesbr.blogspot.com/2025/11/seguranca-h2hc-cancelada.html)); a 307 Temporary Security Conference ocupou o fim de semana, com uma programação gratuita de palestras, villages e CTF ([Anchises Moraes, 5 de setembro de 2025](https://anchisesbr.blogspot.com/2025/09/seguranca-eventos-de-seguranca-no.html)). Em maio de 2026, nenhuma data da H2HC tinha sido anunciada, e a 307 marcou a sua segunda edição para 5 e 6 de dezembro de 2026 ([Anchises Moraes, maio de 2026](https://anchisesbr.blogspot.com/2026/05/seguranca-vai-ter-h2hc-em-2026.html); [307 Temporary Security Conference](https://307conf.com.br/)).
+
+### O que as Forças Armadas fazem, e que não é CTF
+
+O Comando de Defesa Cibernética (ComDCiber) do Exército Brasileiro coordena o Exercício Guardião Cibernético, cuja oitava edição foi de 21 a 25 de setembro de 2026 na Escola Superior de Defesa, em Brasília, com cerca de 1.300 participantes, 300 organizações e representantes de 14 países, usando simulações construtivas e virtuais de ataques a energia, transporte, recursos hídricos, comunicações e economia ([Agência Gov, Ministério da Defesa, setembro de 2026](https://agenciagov.ebc.com.br/noticias/202609/exercicio-guardiao-cibernetico-8-0-reunira-cerca-de-1-300-participantes-em-brasilia)). O governo o apresenta como treinamento com simulações e planos de contingência para incidentes complexos, não como uma competição por flags. O mesmo comando participou do Locked Shields 2024, o exercício do Centro Cooperativo de Excelência em Defesa Cibernética da Organização do Tratado do Atlântico Norte (NATO CCDCOE), com mais de 3.500 profissionais de 41 países; o Brasil jogou num time azul com Espanha, Chile e Portugal, e a Força Aérea informou que ele ficou entre os cinco times que mais responderam aos problemas ([Agência Gov, 29 de abril de 2024](https://agenciagov.ebc.com.br/noticias/202404/forcas-armadas-participam-de-exercicio-de-defesa-cibernetica-da-otan-forca-aerea-brasileira)).
+
+## A lista brasileira
+
+Cada item abaixo foi conferido em 15 de novembro de 2026 na página do próprio organizador, no CTFtime ou em ambos. "Última edição" quer dizer a mais recente que uma fonte documenta, não uma promessa da próxima.
+
+### Competições
+
+| Competição | Organizador | Formato | Última edição encontrada | Situação | Fontes |
+| --- | --- | --- | --- | --- | --- |
+| Pwn2Win CTF | Epic Leet Team (ELT) | Jeopardy online, internacional | 28 a 30 de maio de 2021 | Nenhuma edição posterior listada | [CTFtime](https://ctftime.org/ctf/130/); [evento 1186](https://ctftime.org/event/1186); [site](https://pwn2win.party/) |
+| CTF do SBSeg | Simpósio da SBC, com Hackers do Bem e RNP; desafios de POMBO, Ganesh, ELT e CTF-BR | Híbrido, individual, 8 horas | 15 de setembro de 2024 (CTF); em 2025, o CyberGame do Hackers do Bem | Simpósio anual | [SBSeg 2024](https://sbseg2024.ita.br/chamadas/ctf/); [CTF-BR](https://ctf-br.org/2024/09/ctf-da-sbseg-2024/); [UTFPR](https://www.utfpr.edu.br/cursos/coordenacoes/stricto-sensu/ppgca-ct/destaques/ppgca-apresenta-artigos-no-sbseg-2025-conquista-premio-de-melhor-artigo-e-podio-no-cybergame) |
+| Capture The Flag Hackers do Bem | RNP e SENAI-SP, programa do MCTI | Híbrido, individual, 6 horas | 16 de março de 2024 | Programa ativo | [RNP](https://rnp.br/en/news/over-500-students-face-rebellious-ai-cybersecurity-competition); [ABC do ABC](https://abcdoabc.com.br/estudantes-irao-enfrentar-ia-rebelde-em-competicao-de-ciberseguranca/) |
+| CTF da BHack | BHack com FireShell | CTF de conferência | Anunciado para 28 e 29 de novembro de 2026 | Anunciado | [BHack](https://bhack.com.br) |
+| CTF da 307c | 307 Temporary Security Conference (comunidade) | CTF de conferência | Dezembro de 2025; próxima edição em 5 e 6 de dezembro de 2026 | Ativo | [Anchises Moraes, 2025](https://anchisesbr.blogspot.com/2025/09/seguranca-eventos-de-seguranca-no.html); [307c](https://307conf.com.br/) |
+| CTFs da Hack in Cariri | Comunidade Hack in Cariri | CTFs de conferência | BSides São Paulo 2024; Bxsec, agosto de 2025 | Ativo | [Anchises Moraes, janeiro de 2025](https://anchisesbr.blogspot.com/2025/01/seguranca-como-foram-os-eventos-de.html); [setembro de 2025](https://anchisesbr.blogspot.com/2025/09/seguranca-eventos-de-seguranca-no.html) |
+| CTF da H2HC | Hackers to Hackers Conference | CTF de conferência | 14 e 15 de dezembro de 2024 (conferência) | Conferência cancelada em 2025; 2026 indefinido | [H2HC](https://h2hc.pages.dev/en/pages/about); [Anchises Moraes, 19 de novembro de 2025](https://anchisesbr.blogspot.com/2025/11/seguranca-h2hc-cancelada.html) |
+| #HFBR (Hackaflag) | Hackaflag, no Roadsec (Flipside) | Classificatórias online, final presencial | Final no Roadsec 2023 | Encerrado junto com o Roadsec | [Roadsec](https://www.roadsec.com.br/); [Canaltech, 2022](https://canaltech.com.br/hacker/maior-campeonato-hacker-da-america-latina-premia-vencedor-com-r-50-mil-219950/); [Anchises Moraes, setembro de 2025](https://anchisesbr.blogspot.com/2025/09/seguranca-eventos-de-seguranca-no.html) |
+| FireShell CTF | FireShell | Jeopardy online | 21 e 22 de março de 2020 | Nenhuma edição posterior listada | [CTFtime, evento 944](https://ctftime.org/event/944); [time 25526](https://ctftime.org/team/25526) |
+| 3DSCTF | 318br, com DESEC e Sucuri | Jeopardy | 15 a 18 de dezembro de 2017 | Nenhuma edição posterior listada | [CTFtime, evento 547](https://ctftime.org/event/547); [time 24500](https://ctftime.org/team/24500) |
+| CTF-BR University | CTF-BR, feito pelo ELT desde 2016 | CTFs introdutórios em eventos e universidades | 10 de novembro de 2018 (Roadsec) | Sob demanda | [CTF-BR University](https://ctf-br.org/ctf-br-university/) |
+| Batalha BR | CTF-BR | Times brasileiros dentro de um CTF internacional | 2021 (inCTF) | Nenhuma edição posterior listada | [Batalha BR](https://ctf-br.org/batalha-br/) |
+| Hacking n' Roll | (citado pelo CTF-BR) | CTF de longa duração | Não documentada | "In Memorian" | [CTF-BR, Sobre](https://ctf-br.org/sobre/) |
+| Exercício Guardião Cibernético | ComDCiber, Ministério da Defesa | Exercício de simulação, não é CTF | 21 a 25 de setembro de 2026 | Anual | [Agência Gov](https://agenciagov.ebc.com.br/noticias/202609/exercicio-guardiao-cibernetico-8-0-reunira-cerca-de-1-300-participantes-em-brasilia) |
+
+### Times
+
+| Time | Vínculo, como as páginas o informam | CTFtime, posição no Brasil e no mundo | Observações | Fontes |
+| --- | --- | --- | --- | --- |
+| Ganesh | ICMC-USP, São Carlos | 1º, 145º (2026, em andamento); 1º, 52º (2025) | Melhor time brasileiro de 2024 e 2025 | [CTFtime, 2026](https://ctftime.org/stats/2026/BR); [2025](https://ctftime.org/stats/2025/BR); [time 54706](https://ctftime.org/team/54706) |
+| Duckware | Não informado nas páginas lidas | 2º, 176º (2026); 4º, 258º (2025) | Integrou o pwn de queijo em 2026 | [CTFtime, 2026](https://ctftime.org/stats/2026/BR); [UFSCar Cloud Labs](https://blog.cloudlabs.ufscar.br/sec/defcon-quals-2026/) |
+| CS Team - Inatel | Inatel, pelo nome | 3º, 389º (2026) | | [CTFtime, 2026](https://ctftime.org/stats/2026/BR) |
+| GRIS | UFRJ | 4º, 391º (2026); 7º, 991º (2025) | | [CTFtime, 2026](https://ctftime.org/stats/2026/BR); [time 926](https://ctftime.org/team/926) |
+| AsylumBR | Não informado nas páginas lidas | 5º, 459º (2026) | | [CTFtime, 2026](https://ctftime.org/stats/2026/BR) |
+| Epic Leet Team (ELT) | Interinstitucional, pela própria descrição | 6º, 902º (2026); 3º, 207º (2025) | Organizador do Pwn2Win; melhor resultado brasileiro da história, 18º em 2020 | [CTFtime, 2026](https://ctftime.org/stats/2026/BR); [ELT](https://epicleet.team/); [CTF-BR, CTFTime Hall](https://ctf-br.org/ctftime-hall/) |
+| Ç_Ç CyberDimension | Não informado nas páginas lidas | 7º, 934º (2026) | | [CTFtime, 2026](https://ctftime.org/stats/2026/BR) |
+| Marcio Herobrine | Não informado nas páginas lidas | 2º, 103º (2025) | | [CTFtime, 2025](https://ctftime.org/stats/2025/BR) |
+| Hawksec UNIFEI | UNIFEI | 5º, 520º (2025) | | [CTFtime, 2025](https://ctftime.org/stats/2025/BR); [time 226098](https://ctftime.org/team/226098) |
+| SeaDragons | Não informado nas páginas lidas | 6º, 830º (2025) | | [CTFtime, 2025](https://ctftime.org/stats/2025/BR) |
+| FireShell | Não informado nas páginas lidas | Melhor posição mundial, 40º (2019, 2º no Brasil) | Organizador do FireShell CTF; parceiro do CTF da BHack | [CTFtime, time 25526](https://ctftime.org/team/25526); [BHack](https://bhack.com.br) |
+| IMEsec | IME-USP | Joga CTFs internacionais desde 2016 | Integrou o pwn de queijo em 2026 | [CTFtime, time 25516](https://ctftime.org/team/25516) |
+| POMBO | UFSCar | Fora das tabelas lidas | Escreveu desafios do SBSeg 2024 | [SBSeg 2024](https://sbseg2024.ita.br/chamadas/ctf/) |
+| 318br | Não informado nas páginas lidas | Fora das tabelas lidas | Organizador do 3DSCTF | [CTFtime, time 24500](https://ctftime.org/team/24500) |
+| TheGoonies | Não informado nas páginas lidas | Melhor time brasileiro de 2015 e 2016 | Vencedor da Batalha BR em 2015 e 2016 | [CTF-BR, CTFTime Hall](https://ctf-br.org/ctftime-hall/); [Batalha BR](https://ctf-br.org/batalha-br/) |
+
+<ReaderQuestions>
+
+- O Pwn2Win chegou a um dos pesos mais altos do CTFtime e parou depois de 2021: o que seria preciso para um CTF brasileiro voltar a ser jogado pelos melhores times do mundo, e quem deveria pagar por isso?
+- Se os agentes já vencem duelos ao vivo, os eventos devem manter placares só de humanos, proibir agentes ou desenhar desafios contra eles, como fizeram alguns concursos da DEF CON 34?
+- Os times brasileiros mais fortes são, em boa parte, grupos universitários: as universidades devem reconhecer formalmente o trabalho em CTF, como a UFSCar faz com créditos de atividades complementares, ou isso mudaria o que esses grupos são?
+- Programas do governo como o Hackers do Bem agora fazem CTFs para milhares de iniciantes: isso complementa a cena comunitária do CTF-BR ou disputa com ela os mesmos voluntários?
+- Com a H2HC em pausa e o Roadsec encerrado, quais eventos devem receber as finais presenciais de CTF no Brasil, e o que faria uma final regional valer a viagem?
+
+</ReaderQuestions>
+
+## Fontes
+
+Todas as fontes foram acessadas em 15 de novembro de 2026 (horário de São Paulo); as páginas de ranking do CTFtime foram lidas nesse dia e mudam à medida que os eventos são pontuados. As fontes estão em inglês, salvo indicação, e as citações de fontes em inglês foram traduzidas livremente.
+
+**A DEF CON e os eventos internacionais**
+
+- [DEF CON, Capture the Flag Archive: o anúncio dos organizadores de 2026, de 3 de março de 2026, organizadores por período, resultados de 2016 a 2025 e a final de 2017 (acesso em 15 de novembro de 2026)](https://defcon.org/html/links/dc-ctf.html)
+- [DEF CON, CTF History, por vulc@n, do DDTek: o primeiro ano do DDTek e a cultura das classificatórias (acesso em 15 de novembro de 2026)](https://defcon.org/html/links/dc-ctf-history.html)
+- [DEF CON 34, Contest Results, 2026: CTF da DEF CON, Capture the Packet e os CTFs da Bug Bounty Village, da OWASP e da Red Team Village (acesso em 15 de novembro de 2026)](https://defcon.org/html/defcon-34/dc-34-contest-results.html)
+- [Carnegie Mellon University, Carnegie Mellon's Hacking Team Wins Third Straight, Record Eighth Overall DEF CON Capture the Flag Title, 12 de agosto de 2024 (acesso em 15 de novembro de 2026)](https://www.cmu.edu/news/stories/archives/2024/august/carnegie-mellons-hacking-team-wins-third-straight-record-eighth-overall-def-con-capture-the-flag)
+- [SRLabs, Competing at the DEF CON CTF Finals 2025: o LiveCTF e o agente autônomo (acesso em 15 de novembro de 2026)](https://srlabs.de/blog/competing-at-the-def-con-ctf-finals-2025)
+- [Benevolent Bureau of Birds, DEF CON CTF Quals 2026 Rules, maio de 2026: política de IA, LLMs e agentes (acesso em 15 de novembro de 2026)](https://bbbirds.org/static/rules/defcon-2026-quals-rules.pdf)
+- [iCTF, the International Capture The Flag Competition, UC Santa Barbara: próxima edição e organizadores (acesso em 15 de novembro de 2026)](https://ictf.cs.ucsb.edu/)
+- [iCTF, The 2026 iCTF, slides de apresentação: desafios baseados em agentes (acesso em 15 de novembro de 2026)](https://ictf.cs.ucsb.edu/media/iCTF_2026_Slides.pdf)
+- [CTFtime, Google Capture The Flag 2025, página do evento (acesso em 15 de novembro de 2026)](https://ctftime.org/event/2718)
+- [Carnegie Mellon University, CMU's picoCTF Seeks To Make Cybersecurity Education More Accessible, 28 de junho de 2024 (acesso em 15 de novembro de 2026)](https://www.cmu.edu/news/stories/archives/2024/june/cmus-picoctf-seeks-to-make-cybersecurity-education-more-accessible)
+- [ENISA, Sweden sweeps the winning title of the European Cybersecurity Challenge, 16 de outubro de 2026 (acesso em 15 de novembro de 2026)](https://www.enisa.europa.eu/news/sweden-sweeps-the-winning-title-of-the-european-cybersecurity-challenge)
+- [ENISA, 5th consecutive victory for Team Europe, 20 de maio de 2026: ICC 2026 e ICC 2027 (acesso em 15 de novembro de 2026)](https://www.enisa.europa.eu/news/5th-consecutive-victory-for-team-europe-the-still-undefeated-eu-champions-of-the-international-cybersecurity-challenge)
+- [ENISA, Hats off to Team Europe: Winners of the 1st International Cybersecurity Challenge, 20 de junho de 2022 (acesso em 15 de novembro de 2026)](https://enisa.europa.eu/news/enisa-news/hats-off-to-team-europe-winners-of-the-1st-international-cybersecurity-challenge)
+- [International Cybersecurity Challenge, Teams: o time CyberLATAM e os seus países (acesso em 15 de novembro de 2026)](https://icc.ecsc.eu/teams)
+- [International Cybersecurity Challenge, ICC 2023, San Diego: placar (acesso em 15 de novembro de 2026)](https://icc.ecsc.eu/past-editions/2023)
+- [DARPA, "Mayhem" Declared Preliminary Winner of Historic Cyber Grand Challenge, 4 de agosto de 2016 (acesso em 15 de novembro de 2026)](https://www.darpa.mil/news/2016/mayhem-winner-cyber-grand-challenge)
+- [Legitimate Business Syndicate, 2016 DEF CON CTF Final Scores, setembro de 2016: o Mayhem e a repontuação (acesso em 15 de novembro de 2026)](https://blog.legitbs.net/2016/09/2016-def-con-ctf-final-scores.html)
+- [Order of the Overflow, DEF CON CTF 2019 Finals: pontuação do King of the Hill e o aviso sobre hospedagem (acesso em 15 de novembro de 2026)](https://oooverflow.io/dc-ctf-2019-finals/)
+- [Google Security Blog, Announcing Google Capture the Flag 2017, 2 de junho de 2017: relatos de bugs no placar de 2016 (acesso em 15 de novembro de 2026)](https://security.googleblog.com/2017/06/announcing-google-capture-flag-2017.html)
+- [Chothia e Novakovic, An Offline Capture The Flag-Style Virtual Machine and an Assessment of Its Value for Cybersecurity Education, USENIX Summit on Gaming, Games, and Gamification in Security Education (3GSE) 2015: a flag postada no Facebook (acesso em 15 de novembro de 2026)](https://www.usenix.org/system/files/conference/3gse15/3gse15-chothia.pdf)
+
+**O cenário brasileiro**
+
+- [CTF-BR, Sobre: objetivos, tipos de CTF e o Hacking n' Roll, em português (acesso em 15 de novembro de 2026)](https://ctf-br.org/sobre/)
+- [CTF-BR, CTF-BR University: edições de 2015 a 2018 e o papel do ELT, em português (acesso em 15 de novembro de 2026)](https://ctf-br.org/ctf-br-university/)
+- [CTF-BR, Batalha BR: vencedores de 2015 a 2021, em português (acesso em 15 de novembro de 2026)](https://ctf-br.org/batalha-br/)
+- [CTF-BR, CTFTime Hall: melhor resultado brasileiro por ano, de 2015 a 2025, em português (acesso em 15 de novembro de 2026)](https://ctf-br.org/ctftime-hall/)
+- [CTF-BR, CTF da SBSeg 2024, 3 de setembro de 2024, em português (acesso em 15 de novembro de 2026)](https://ctf-br.org/2024/09/ctf-da-sbseg-2024/)
+- [CTFtime, Brasil, rating de 2026, lido em 15 de novembro de 2026 (acesso em 15 de novembro de 2026)](https://ctftime.org/stats/2026/BR)
+- [CTFtime, Brasil, rating de 2025, lido em 15 de novembro de 2026 (acesso em 15 de novembro de 2026)](https://ctftime.org/stats/2025/BR)
+- [CTFtime, time Ganesh (54706): vínculo e posições por ano (acesso em 15 de novembro de 2026)](https://ctftime.org/team/54706)
+- [CTFtime, time GRIS (926): vínculo (acesso em 15 de novembro de 2026)](https://ctftime.org/team/926)
+- [CTFtime, time Hawksec UNIFEI (226098): vínculo (acesso em 15 de novembro de 2026)](https://ctftime.org/team/226098)
+- [CTFtime, time IMEsec (25516): vínculo e eventos (acesso em 15 de novembro de 2026)](https://ctftime.org/team/25516)
+- [CTFtime, time FireShell (25526): posições por ano e eventos organizados (acesso em 15 de novembro de 2026)](https://ctftime.org/team/25526)
+- [CTFtime, FireShell CTF 2020, página do evento (acesso em 15 de novembro de 2026)](https://ctftime.org/event/944)
+- [CTFtime, time 318br (24500): eventos organizados (acesso em 15 de novembro de 2026)](https://ctftime.org/team/24500)
+- [CTFtime, 3DSCTF, dezembro de 2017, página do evento (acesso em 15 de novembro de 2026)](https://ctftime.org/event/547)
+- [Ganesh, ICMC-USP, About (acesso em 15 de novembro de 2026)](https://ganesh.icmc.usp.br/en/about)
+- [Ganesh, Pwn2Win CTF 2021, 30 de junho de 2021 (acesso em 15 de novembro de 2026)](https://ganesh.icmc.usp.br/en/content/activity/cmdltvh1y0003jw0nxvp835fc)
+- [Epic Leet Team, página inicial: descrição do Pwn2Win, inscrições de 2020, retrospectiva de 2021 e TecLand, em inglês e português (acesso em 15 de novembro de 2026)](https://epicleet.team/)
+- [CTFtime, Pwn2Win CTF: edições e pesos, de 2016 a 2021 (acesso em 15 de novembro de 2026)](https://ctftime.org/ctf/130/)
+- [CTFtime, Pwn2Win CTF 2021, página do evento (acesso em 15 de novembro de 2026)](https://ctftime.org/event/1186)
+- [Pwn2Win CTF, site oficial (acesso em 15 de novembro de 2026)](https://pwn2win.party/)
+- [Canaltech, Pwn2Win: Torneio de hacking abre portas do mercado e incentiva especialização, 13 de maio de 2021, em português (acesso em 15 de novembro de 2026)](https://canaltech.com.br/hacker/pwn2win-torneio-de-hacking-abre-portas-do-mercado-e-incentiva-especializacao-184873/)
+- [UFSCar Cloud Labs, DEF CON Quals 2026, 1º de junho de 2026: o pwn de queijo (acesso em 15 de novembro de 2026)](https://blog.cloudlabs.ufscar.br/sec/defcon-quals-2026/)
+- [Canaltech, Brasil está entre os países escolhidos para competição mundial de cibersegurança, 27 de maio de 2021, em português (acesso em 15 de novembro de 2026)](https://canaltech.com.br/seguranca/brasil-esta-entre-os-paises-escolhidos-para-competicao-mundial-de-ciberseguranca-185974/)
+- [SBSeg 2024, CTF (Capture The Flag) no SBSeg 2024: data, formato, organização e prêmios, em português (acesso em 15 de novembro de 2026)](https://sbseg2024.ita.br/chamadas/ctf/)
+- [UTFPR, PPGCA apresenta artigos no SBSeg 2025, conquista prêmio de melhor artigo e pódio no CyberGame, em português (acesso em 15 de novembro de 2026)](https://www.utfpr.edu.br/cursos/coordenacoes/stricto-sensu/ppgca-ct/destaques/ppgca-apresenta-artigos-no-sbseg-2025-conquista-premio-de-melhor-artigo-e-podio-no-cybergame)
+- [Agência Gov, Programa Hackers do Bem abre inscrições para 25 mil vagas em cibersegurança, 1º de outubro de 2025, em português (acesso em 15 de novembro de 2026)](https://agenciagov.ebc.com.br/noticias/202510/programa-hackers-do-bem-abre-inscricoes-para-25-mil-novas-vagas-em-ciberseguranca)
+- [ABC do ABC, Estudantes irão enfrentar IA 'rebelde' em competição de cibersegurança, 15 de março de 2024, em português (acesso em 15 de novembro de 2026)](https://abcdoabc.com.br/estudantes-irao-enfrentar-ia-rebelde-em-competicao-de-ciberseguranca/)
+- [RNP, Over 500 students face 'rebellious' AI in cybersecurity competition, sem data, sobre o CTF de 16 de março de 2024 (acesso em 15 de novembro de 2026)](https://rnp.br/en/news/over-500-students-face-rebellious-ai-cybersecurity-competition)
+- [Anchises Moraes, Como foram os eventos de segurança em 2024, 30 de janeiro de 2025: Hack in Cariri, Roadsec, Hackaflag e H2HC, em português (acesso em 15 de novembro de 2026)](https://anchisesbr.blogspot.com/2025/01/seguranca-como-foram-os-eventos-de.html)
+- [Anchises Moraes, Eventos de segurança no segundo semestre de 2025, 5 de setembro de 2025: Bxsec, Roadsec e a 307, em português (acesso em 15 de novembro de 2026)](https://anchisesbr.blogspot.com/2025/09/seguranca-eventos-de-seguranca-no.html)
+- [Anchises Moraes, H2HC Cancelada!, 19 de novembro de 2025, em português (acesso em 15 de novembro de 2026)](https://anchisesbr.blogspot.com/2025/11/seguranca-h2hc-cancelada.html)
+- [Anchises Moraes, Vai ter H2HC em 2026?, maio de 2026, atualizado em 27 de agosto de 2026, em português (acesso em 15 de novembro de 2026)](https://anchisesbr.blogspot.com/2026/05/seguranca-vai-ter-h2hc-em-2026.html)
+- [Anchises Moraes, O Mind The Sec agora é Black Hat, 18 de setembro de 2026, em português (acesso em 15 de novembro de 2026)](https://anchisesbr.blogspot.com/2026/09/seguranca-o-mind-sec-agora-e-black-hat.html)
+- [BHack Conference, site oficial: edição de 2026 e o CTF com a FireShell, em português (acesso em 15 de novembro de 2026)](https://bhack.com.br)
+- [307 Temporary Security Conference, site oficial: edição de 2026, em português (acesso em 15 de novembro de 2026)](https://307conf.com.br/)
+- [H2HC, About Conference: edição de 2024 e equipe, no site da conferência no Cloudflare Pages; h2hc.com.br não publicava endereço web no DNS em 15 de novembro de 2026 (acesso em 15 de novembro de 2026)](https://h2hc.pages.dev/en/pages/about)
+- [Roadsec, site oficial, edição de 2023: a final do #HFBR23, em português (acesso em 15 de novembro de 2026)](https://www.roadsec.com.br/)
+- [Canaltech, Maior campeonato hacker da América Latina premia vencedor com R$ 50 mil, 30 de junho de 2022, em português (acesso em 15 de novembro de 2026)](https://canaltech.com.br/hacker/maior-campeonato-hacker-da-america-latina-premia-vencedor-com-r-50-mil-219950/)
+- [Agência Gov, Exercício Guardião Cibernético 8.0 reunirá cerca de 1.300 participantes em Brasília, Ministério da Defesa, setembro de 2026, em português (acesso em 15 de novembro de 2026)](https://agenciagov.ebc.com.br/noticias/202609/exercicio-guardiao-cibernetico-8-0-reunira-cerca-de-1-300-participantes-em-brasilia)
+- [Agência Gov, Forças Armadas participam de exercício de defesa cibernética da OTAN, 29 de abril de 2024, em português (acesso em 15 de novembro de 2026)](https://agenciagov.ebc.com.br/noticias/202404/forcas-armadas-participam-de-exercicio-de-defesa-cibernetica-da-otan-forca-aerea-brasileira)

@@ -22,6 +22,8 @@
 @import "./fun-ttl.css";
 /* Rule Inspector (2026-11-08): the arcade game's own block (prefix fg-ri-), after the shared fg- classes it builds on. */
 @import "./fun-rule-inspector.css";
+/* LGTM (2026-11-15): the homage page and the stamp toy (prefix lgtm-), after the shared fg- classes they reuse. */
+@import "./fun-lgtm.css";
 
 
 :root {

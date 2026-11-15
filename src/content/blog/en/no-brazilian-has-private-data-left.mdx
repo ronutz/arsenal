@@ -7,7 +7,7 @@ date: "2026-11-12"
 tags: ["brazil", "privacy", "lgpd", "data-breach"]
 category: security
 status: reviewed
-updated: "2026-11-13"
+updated: "2026-11-14"
 relatedArticles: ["lgpd-for-engineers-the-vocabulary-that-matters", "brazilian-cybercrime-from-boleto-to-pix", "social-engineering-pretexting-vishing-and-baiting", "passkeys-and-phishing-resistant-authentication", "scams-at-scale-why-a-tiny-success-rate-pays"]
 ---
 
@@ -38,7 +38,8 @@ What "public" means here needs saying plainly. No government published these fil
 | 20 and 21 July 2025 | Improper access to Pix data through the courts' asset-search system | 11,003,398 records; about 46 million keys | National Council of Justice and Central Bank, through Migalhas and Jornal de Brasília |
 | 10 March 2026 | Central Bank's running total of Pix keys exposed since 2020 | About 47.9 million keys | Central Bank, through Jornal de Brasília |
 | 22 April 2026 | A Meu INSS query answers without login for one day | 2.8 million CPFs, about 98 per cent of deceased people | Dataprev, through O Povo |
-| 4 November 2026 (announced 12 November) | Unauthorized access to systems of the National Treasury (Secretaria do Tesouro Nacional, STN): its services portal, e-Serviços, and an internal base for analytical queries | About 34,000 registrations: about 30,000 portal users (name, CPF and email) and about 4,000 Pix keys of federal benefit recipients, with information on the payments made | National Treasury, through UOL |
+| 4 November 2026 (announced 12 November) | Unauthorized access to systems of the National Treasury (Secretaria do Tesouro Nacional, STN): its services portal, e-Serviços, and an internal base for analytical queries | About 34,000 registrations: about 30,000 portal users (name, CPF and email) and about 4,000 Pix keys of federal benefit recipients, with information on the payments made | National Treasury, through UOL, Agência Brasil and Tecnoblog |
+| 6 November 2026 (customers told by email on 12 November) | Unauthorized access to systems of Caixa Vida e Previdência, the pension and life-insurance arm of the state bank Caixa (controlled by Caixa Seguridade) | At least 7.6 million customers and former customers: name, CPF, date of birth, nationality, email and phone | Caixa Seguridade's filing with the Securities and Exchange Commission of Brazil (CVM), through Tecnoblog |
 
 Read the table as a list of what was counted, by whom and how, not as a sum. The same person appears in many rows; some rows count accounts, others keys, others CPFs. Several cases (the 102 million phone accounts, the 2021 file) were denied by the companies the sellers named, and the denials are reported below with the claims. What the table shows is the scale and the persistence: files at or above the size of the population, appearing year after year, from public and private systems alike.
 
@@ -114,7 +115,9 @@ Pix, the Central Bank's instant payment system, links each "key" (a CPF, phone n
 | 12 May 2026 | Credifit, the fourth notice of 2026 | 46 |
 | Running total, 10 March 2026 | All incidents since 2020 | About 47.9 million keys |
 
-Update, 13 November 2026: the National Treasury announced on the evening of 12 November that an unauthorized access on 4 November had reached an internal base used for analytical queries, exposing about 4,000 Pix keys of federal benefit recipients together with information on the payments made, and that its services portal had exposed the name, CPF and email of about 30,000 users. It said there was no financial impact on public funds and that none of its core systems was affected, and that it had informed the ANPD and the federal government's incident response centre (CTIR Gov). That announcement came from the Treasury itself, as reported by UOL; it is not a Central Bank notice, so it is not counted in the table above.
+Update, 13 November 2026: the National Treasury announced on the evening of 12 November that an unauthorized access on 4 November had reached an internal base used for analytical queries, exposing about 4,000 Pix keys of federal benefit recipients together with information on the payments made, and that its services portal had exposed the name, CPF and email of about 30,000 users. It said there was no financial impact on public funds and that none of its core systems was affected, and that it had informed the ANPD and the federal government's incident response centre (CTIR Gov). That announcement came from the Treasury itself, as reported by UOL; it is not a Central Bank notice, so it is not counted in the table above. Agência Brasil and Tecnoblog added on 13 November that the portal is used mainly by federal civil servants, representatives of states and municipalities and accountants; that the keys sat in a base the federal government uses to pay people and companies, and that their exposure does not mean the accounts behind them were compromised; that the Treasury had identified and contained the access on 4 November; that it has not said how the intrusion happened; and that the response centre it informed is the government's Centre for the Prevention, Treatment and Response to Cyber Incidents (Centro de Prevenção, Tratamento e Resposta a Incidentes Cibernéticos de Governo).
+
+Update, 14 November 2026: in the same week, Caixa Vida e Previdência began telling customers by email on 12 November that an unauthorized access identified on 6 November had taken the name, CPF, date of birth, nationality, email and phone of at least 7.6 million customers and former customers, according to the filing its parent Caixa Seguridade sent to the Securities and Exchange Commission of Brazil (CVM), as reported by Tecnoblog. Caixa said it had found no evidence so far that the data had been published or misused. Those are exactly the fields that make a convincing call from a false bank employee.
 
 The CNJ case is the outlier in two ways. It is by far the largest, and the system it went through belongs to the judiciary, built so that judges can find debtors' assets. The CNJ said it had found and corrected the problem quickly and informed the PF and the ANPD. The BC, giving its running total in March 2026, said that one key can be counted in more than one incident.
 
@@ -367,9 +370,12 @@ The record above supports the title's description in its own terms. Brazil's lar
 
 ## Sources
 
-All sources were accessed on 12 November 2026, except the one on the National Treasury, read on 13 November 2026 at 00:12. They are in Portuguese unless the source is in English.
+All sources were accessed on 12 November 2026, except those on the National Treasury and Caixa Vida e Previdência, read on 13 November 2026 at 00:12 (UOL) and 14 November 2026 at 23:33 (Agência Brasil, Tecnoblog). They are in Portuguese unless the source is in English.
 
 **National Treasury, November 2026**
+- [Agência Brasil, Tesouro Nacional identifica vazamento de dados de 30 mil cadastros (November 2026)](https://agenciabrasil.ebc.com.br/geral/noticia/2026-11/tesouro-nacional-identifica-vazamento-de-dados-de-30-mil-cadastros)
+- [Tecnoblog, Tesouro Nacional alerta para vazamento de dados pessoais e chaves Pix (13 November 2026, 12:23)](https://tecnoblog.net/noticias/tesouro-nacional-alerta-para-vazamento-de-dados-pessoais-e-chaves-pix/)
+- [Tecnoblog, Alerta: vazamento na Caixa expõe dados de 7,6 milhões de clientes (12 November 2026, updated 13 November)](https://tecnoblog.net/noticias/alerta-vazamento-na-caixa-expoe-dados-de-76-milhoes-de-clientes/)
 - [UOL, Ataque hacker ao Tesouro expõe chaves Pix e dados de 34 mil cadastros (12 November 2026, 20:37)](https://economia.uol.com.br/noticias/redacao/2026/11/12/ataque-hacker-ao-tesouro-expoe-chaves-pix-e-dados-de-34-mil-cadastros.htm)
 
 **Population**

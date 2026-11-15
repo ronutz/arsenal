@@ -31,6 +31,16 @@
 // (Ctrl+T, Cmd+L, Cmd/Ctrl+K for search) are never shadowed. Only unmodified
 // single keys are ours; matched on e.key (lowercased for letters).
 //
+// THE PING-PONG VIRUS (15/11/2026, queue 5p): the two keys p then v, typed one
+// after the other outside any field, let a harmless homage to the 1988 boot
+// sector virus loose on the site (PongVirus.tsx: one bouncing bullet), and the
+// same two keys call it off. The choice is kept in this browser only
+// (ronutz:fun:pong-virus, a local-only key in src/lib/desk/registry.ts named on
+// the Privacy page), so the ball comes back on the next page until p v again.
+// Neither p nor v is a shortcut of its own (src/config/shortcuts.ts), so the
+// sequence never fights a binding; a page that owns the alphabet (a game
+// listening for its own codes) owns these two letters too.
+//
 // ESC: dismissal is centralized in spirit — each popup owns its own Esc/click
 // handler (BossApp installs its own; Search handles Escape; the cheat-sheet
 // overlay below handles Escape). This component makes sure `?`/boss/search all
@@ -53,6 +63,12 @@ import {
   type PageCapability,
 } from "@/lib/pageCapabilities";
 import { manPageToHtml } from "@/lib/manPageMarkdown";
+import PongVirus from "@/components/dev/fun/PongVirus";
+
+/** Where this browser remembers that the Ping-Pong virus simulator is loose (a local-only key). */
+const PONG_KEY = "ronutz:fun:pong-virus";
+/** The longest pause between p and v that still counts as the sequence, in milliseconds. */
+const PONG_GAP_MS = 1500;
 
 export interface ShortcutsLabels {
   /** Boss overlay "press any key" hint. */
@@ -82,6 +98,12 @@ export interface ShortcutsLabels {
   contextLoading: string;
   /** Shown if the man page fails to load. */
   contextError: string;
+
+  // --- The Ping-Pong virus simulator (15/11/2026) ---
+  /** Announced when p v lets the ball loose. */
+  pongOn: string;
+  /** Announced when p v calls it off. */
+  pongOff: string;
 }
 
 interface KeyboardShortcutsProps {
@@ -153,6 +175,22 @@ export default function KeyboardShortcuts({ labels }: KeyboardShortcutsProps) {
   } | null>(null);
   // Effective bindings, kept in sync with the store (settings UI edits, policy).
   const [bindings, setBindings] = useState<Record<string, string>>(DEFAULT_BINDINGS);
+  // The Ping-Pong virus simulator: loose or not, read from this browser after mount (never during server rendering).
+  const [pong, setPong] = useState(false);
+  // What the live region last announced about it ("" before any toggle, so nothing is read on page load).
+  const [pongNote, setPongNote] = useState("");
+  // The last letter typed outside a field and when, to recognise p then v.
+  const lastLetter = useRef<{ key: string; at: number }>({ key: "", at: 0 });
+  // The remembered choice, read once in the browser.
+  useEffect(() => {
+    // Stored as "1" while loose.
+    try {
+      // Read.
+      if (window.localStorage.getItem(PONG_KEY) === "1") setPong(true);
+    } catch {
+      // No storage: the ball starts caged.
+    }
+  }, []);
 
   // Read the resolved bindings on mount and whenever the store changes (same
   // tab via subscribe, other tabs via the native storage event).
@@ -334,12 +372,40 @@ export default function KeyboardShortcuts({ labels }: KeyboardShortcutsProps) {
       // so search, help and the context panel keep working.
       if (/^[a-z]$/.test(key) && areLetterShortcutsSuppressed()) return;
 
+      // The Ping-Pong virus: v right after p (within PONG_GAP_MS) lets the ball loose or calls it off.
+      if (key === "v" && lastLetter.current.key === "p" && e.timeStamp - lastLetter.current.at <= PONG_GAP_MS) {
+        // The sequence is used up.
+        lastLetter.current = { key: "", at: 0 };
+        // The key is ours.
+        e.preventDefault();
+        // Toggled.
+        setPong((on) => {
+          // The new state.
+          const next = !on;
+          // Remembered in this browser, or forgotten.
+          try {
+            // "1" while loose; removed when caged.
+            if (next) window.localStorage.setItem(PONG_KEY, "1");
+            else window.localStorage.removeItem(PONG_KEY);
+          } catch {
+            // No storage: this page only.
+          }
+          // Said aloud for screen readers.
+          setPongNote(next ? labels.pongOn : labels.pongOff);
+          // Applied.
+          return next;
+        });
+        return;
+      }
+      // Any other letter is remembered as the possible start of the sequence.
+      if (/^[a-z]$/.test(key)) lastLetter.current = { key, at: e.timeStamp };
+
       const actionId = bindings[key];
       if (!actionId) return;
       e.preventDefault();
       runAction(actionId);
     },
-    [bindings, bossScreen, cheatOpen, contextOpen, manPage, caps, runAction],
+    [bindings, bossScreen, cheatOpen, contextOpen, manPage, caps, runAction, labels.pongOn, labels.pongOff],
   );
 
   useEffect(() => {
@@ -350,6 +416,12 @@ export default function KeyboardShortcuts({ labels }: KeyboardShortcutsProps) {
   return (
     <>
       {mounted && <ShortcutRouterBridge navigateRef={navigateRef} />}
+      {/* The Ping-Pong virus simulator, while loose (p v). */}
+      {mounted && pong && <PongVirus />}
+      {/* What p v just did, for screen readers (the ball itself is hidden from them). */}
+      <p className="sr-only" aria-live="polite">
+        {pongNote}
+      </p>
       {bossScreen && (
         <BossApp
           kind={bossScreen}

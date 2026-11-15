@@ -80,7 +80,7 @@ if (free >= need) {
   console.log(`[check-build-space] OK: ${line}${staleNote}.`); // enough room
   process.exit(0); // pass
 }
-const msg = `[check-build-space] ${verify.length ? "FAIL" : "WARN"}: ${line}${staleNote}. Free at least ${fmt(need - free)} before building (old working files, caches, earlier build output).`; // what to do
+const msg = `[check-build-space] ${verify.length ? "FAIL" : "WARN"}: ${line}${staleNote}. Free at least ${fmt(need - free)} before building, in this order: .next and out, caches, deliveries already sent; research, downloads and drafts only after a verified copy is out of the workspace (canon RULE-research-retention-20261113).`; // what to do
 if (verify.length && !inCi) {
   console.error(msg); // a sandbox verification build would fail at the end: stop now
   process.exit(1); // fail

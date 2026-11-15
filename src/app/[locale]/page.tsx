@@ -15,7 +15,8 @@
 //   1. Hero: the broader thesis (a workbench, not only a toolbox), the search
 //      field as the first interaction, three counts (utility · knowledge ·
 //      history).
-//   2. Start here: five intents and "surprise me", not a taxonomy.
+//   2. Start here: six intents and "surprise me", not a taxonomy (the Blog joined
+//      as the sixth, just before "surprise me", 15/11/2026 at PRIME's request).
 //   3. Try something now: the compact CIDR check with the privacy sentence
 //      beside the data it protects.
 //   4. Browse by platform: the vendor hubs, kept apart from the platforms the
@@ -118,13 +119,15 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     newImprovement && { key: "improvement", entry: newImprovement, href: "/changelog" },
   ].filter(Boolean) as { key: string; entry: ChangelogEntry; href: string }[];
 
-  // THE FIVE INTENTS of "Start here": a question, a destination, a verb.
+  // THE SIX INTENTS of "Start here": a question, a destination, a verb. The Blog is the sixth, the penultimate card
+  // of the section, before "Take me somewhere" (PRIME 15/11/2026 05:35).
   const intents: { key: string; href: string; accent: string }[] = [
     { key: "tools", href: "/tools", accent: "var(--accent-primary)" },
     { key: "learn", href: "/learn", accent: "var(--color-warning)" },
     { key: "industry", href: "/industry", accent: "var(--color-success)" },
     { key: "training", href: "/training", accent: "var(--redu-brand)" },
     { key: "advisory", href: "/advisory", accent: "var(--accent-amber)" },
+    { key: "blog", href: "/blog", accent: "var(--color-info)" }, // sky blue: kept apart from the amber Advisory card beside it
   ];
 
 
@@ -152,7 +155,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <section className="section" id="start">
           <div className="container">
             <h2 className="section-title">{t("front.startTitle")}</h2>
-            <ul className="intent-grid">
+            <ul className="intent-grid intent-grid--home">{/* seven cards: four columns, "surprise" spans two so no row is left ragged */}
               {intents.map((i) => (
                 <li key={i.key} className="intent" style={{ "--intent-accent": i.accent } as CSSProperties}>
                   <Link href={i.href} className="intent-link">
@@ -162,7 +165,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   </Link>
                 </li>
               ))}
-              {/* The sixth: not an intent, a door to the "Take me somewhere" column below. Neutral grey, the colour of
+              {/* The seventh: not an intent, a door to the "Take me somewhere" column below. Neutral grey, the colour of
                   "not yet decided" (never the fuchsia WebAssembly mark, reserved for that one meaning site-wide). A click
                   asks the column for a draw and goes there, so the reader lands on a destination already named and chooses
                   (PRIME 03:10, 11:03, 11:35). Without JavaScript it is the plain anchor. */}

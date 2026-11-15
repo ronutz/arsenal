@@ -219,6 +219,9 @@ export default async function LocaleLayout({
     contextBack: tShortcuts("contextBack"),
     contextLoading: tShortcuts("contextLoading"),
     contextError: tShortcuts("contextError"),
+    // The Ping-Pong virus simulator (15/11/2026): what p v announces.
+    pongOn: tShortcuts("pongOn"),
+    pongOff: tShortcuts("pongOff"),
   };
 
   return (

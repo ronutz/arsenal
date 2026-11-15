@@ -53,7 +53,7 @@
 // React's state, effects, memos and refs.
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 // The strings.
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 // The strings the game keeps in code, in the page's language beyond en and pt-BR (09/11/2026).
 import { useContentString } from "@/components/ContentStrings";
 // The frame: stats, rules, result.
@@ -67,7 +67,9 @@ import { shareText } from "@/lib/fun/share";
 // The one storage key: the record, its daily states and its extra field.
 import { loadRecord, recordResult, saveDailyState, updateRecord, type GameRecord, type LegacyMarks } from "@/lib/fun/storage";
 // The rules.
-import { CLUES, GAME_ID, WARMUPS, clueText, dailyFor, judge, langOf, puzzleFor, type Lang } from "@/lib/fun/games/five-clues/engine";
+import { CLUES, GAME_ID, WARMUPS, clueText, dailyFor, explain, judge, langOf, puzzleFor, type Explanation, type Lang } from "@/lib/fun/games/five-clues/engine";
+// The page locale, for joining the player's words in a list ("cyber, kill and phases") the way the language does.
+import { intlLocale } from "@/i18n/locales";
 // The puzzle type.
 import type { Clue, FivePuzzle } from "@/lib/fun/games/five-clues/puzzles";
 
@@ -277,6 +279,23 @@ function Round({ puzzle, lang, progress, onSpend, idBase }: RoundProps) {
   const reduce = useReducedMotion();
   // The text being typed.
   const [text, setText] = useState("");
+  // The page locale, for the word lists in the comments.
+  const locale = useLocale();
+  // The player's words joined as a list in the page's language.
+  const list = (words: string[]) => new Intl.ListFormat(intlLocale(locale), { style: "long", type: "conjunction" }).format(words);
+  // The comment for a wrong guess (PRIME 12/11/2026 18:20: comments that analyse the guess, not just "Not guess").
+  const commentFor = (ex: Explanation, guess: string): string => {
+    // One sentence per kind, from the guess's own words only.
+    switch (ex.kind) {
+      case "clue": return t("fbClue", { guess });
+      case "otherCategory": return t("fbOther", { guess });
+      case "warm": return t("fbWarm", { hits: list(ex.hits), hitCount: ex.hits.length, misses: list(ex.misses), missCount: ex.misses.length });
+      case "mixed": return t("fbMixed", { hits: list(ex.hits) });
+      case "near": return t("fbNear", { near: list(ex.near) });
+      // Repeat and extra cost no clue and are notes, handled in submit; cold is the rest.
+      default: return t("fbCold", { guess });
+    }
+  };
   // A hint that costs nothing ("close", "type something"), or null.
   const [note, setNote] = useState<string | null>(null);
   // The comment on the last spent clue, shown under the form (a wrong guess or a pass), or null.
@@ -314,12 +333,29 @@ function Round({ puzzle, lang, progress, onSpend, idBase }: RoundProps) {
       // Nothing spent.
       return;
     }
+    // Why a wrong guess missed (null when it is right).
+    const ex = v === "right" ? null : explain(text, puzzle, progress.guesses);
+    // A repeat, or a whole accepted answer with words too many: a note, and no clue spent, like "close".
+    if (ex && (ex.kind === "repeat" || ex.kind === "extra")) {
+      // The note.
+      const msg = ex.kind === "repeat" ? t("noteRepeat") : t("noteExtra", { extra: list(ex.extra) });
+      // Shown and announced.
+      setNote(msg);
+      // Announced.
+      setLive(msg);
+      // Back to the box.
+      input.current?.focus();
+      // Nothing spent.
+      return;
+    }
     // A clue is spent: right ends the round, wrong reveals the next clue.
     setNote(null);
-    // The comment the player sees: the guess was not it, and the next clue is up (or the round is over).
-    setComment(v === "right" ? null : progress.guesses.length + 1 >= CLUES ? null : t("commentWrong", { guess: text.trim(), n: progress.guesses.length + 2 }));
+    // The comment on the miss, from the guess's own words.
+    const why = ex ? commentFor(ex, text.trim()) : "";
+    // The comment the player sees: why the guess missed, and that the next clue is up (or nothing, when the round is over).
+    setComment(v === "right" ? null : progress.guesses.length + 1 >= CLUES ? null : `${why} ${t("commentPass", { n: progress.guesses.length + 2 })}`);
     // Announced.
-    setLive(v === "right" ? t("liveRight", { cat: catName }) : progress.guesses.length + 1 >= CLUES ? t("liveOut", { cat: catName }) : t("liveWrong", { guess: text.trim(), n: progress.guesses.length + 2, clue: clueOf(puzzle.clues[progress.guesses.length + 1]) }));
+    setLive(v === "right" ? t("liveRight", { cat: catName }) : progress.guesses.length + 1 >= CLUES ? `${why} ${t("liveOut", { cat: catName })}` : `${why} ${t("livePass", { n: progress.guesses.length + 2, clue: clueOf(puzzle.clues[progress.guesses.length + 1]) })}`);
     // Recorded by the owner.
     onSpend(text.trim(), v === "right");
     // The box empties for the next guess.

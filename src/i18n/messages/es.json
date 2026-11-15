@@ -205,6 +205,11 @@
           "label": "Llévame a algún sitio",
           "verb": "curiosear",
           "busy": "Abriendo una puerta"
+        },
+        "blog": {
+          "q": "Quiero ponerme al día con lo que está pasando",
+          "label": "Blog",
+          "verb": "seguir"
         }
       },
       "tryTitle": "Prueba algo ahora",
@@ -27389,7 +27394,8 @@
       "r20261108scores": "La tabla pública de puntuaciones de los juegos de /dev/fun y /arcade se expone en Puntuaciones de los juegos: qué envía un reto diario terminado salvo que se desactive la opción de compartir, qué guarda cada fila y qué no guarda nunca, que las filas se conservan durante 400 días y cómo pedir que se elimine una.",
       "r20261112interest": "Los recuentos de interés son nuevos: con tu sí, y solo entonces, las páginas le dicen al servidor del sitio qué usas (una herramienta, un juego, un artículo leído hasta el final, un uso de Compartir, una búsqueda), en avisos que nombran lo que se usó y nunca a ti. Qué contiene un aviso, el único caso que lleva palabras que escribiste, cuánto tiempo se conservan los recuentos y los totales diarios y dónde se cambia la elección se exponen en una sección propia.",
       "r20261112desk": "Mi escritorio: su clave en este navegador (ronutz:desk:v1), la sincronización cifrada opcional (lo que guarda el servidor, durante cuánto tiempo y lo que no puede leer) y el recuento que se envía al guardar un elemento; lo que viaja a otro navegador por sincronización, archivo o enlace, y lo que se queda en cada navegador (entre ello ronutz:portable:base); y, en una preferencia cambiada en dos navegadores, gana el cambio más reciente, por horas de cambio guardadas en este navegador y dentro de la copia cifrada (ronutz:portable:times), salvo que elijas en Configuración conservar el valor de este navegador (ronutz:portable:no-times).",
-      "r20261112browsers": "Puntuaciones de los juegos: la primera ronda que un navegador publica en un día de reto lleva un sí o no que lo indica, decidido por el día de su última ronda publicada, que ese navegador guarda (ronutz:fun:posted-day) y nunca envía; el servidor guarda solo ese bit en la ronda, y la suma diaria se muestra como navegadores únicos (navegadores, no personas) y se guarda en los totales diarios."
+      "r20261112browsers": "Puntuaciones de los juegos: la primera ronda que un navegador publica en un día de reto lleva un sí o no que lo indica, decidido por el día de su última ronda publicada, que ese navegador guarda (ronutz:fun:posted-day) y nunca envía; el servidor guarda solo ese bit en la ronda, y la suma diaria se muestra como navegadores únicos (navegadores, no personas) y se guarda en los totales diarios.",
+      "r20261115fun": "La página de LGTM: un vídeo de YouTube cargado solo después de pulsar reproducir, desde youtube-nocookie.com; y dos elecciones lúdicas guardadas en tu navegador: la era de la melodía (ronutz:fun:lgtm-era) y si el simulador del virus Ping-Pong anda suelto por el sitio (ronutz:fun:pong-virus)."
     },
     "backHome": "Volver al inicio",
     "prefsTitle": "Tema, idioma y lo que recuerda este sitio",
@@ -27417,7 +27423,9 @@
     "deskSync": "La sincronización está desactivada hasta que creas un código de sincronización en la página de Configuración. El código son 20 bytes aleatorios generados por tu navegador que se te muestran como 32 letras y cifras; el sitio nunca lo recibe. A partir de él, tu navegador obtiene dos cosas: un nombre para tu copia (la primera mitad de un hash SHA-256 del código, el Secure Hash Algorithm, que no permite volver al código) y una clave de cifrado, hecha a partir del código, que nunca sale del navegador. Tu navegador reúne el escritorio y las demás cosas que viajan con él (enumeradas abajo), las comprime con gzip y las cifra con esa clave, con AES-GCM (el Advanced Encryption Standard en modo Galois/Counter) y una clave de 256 bits, y el propio código del sitio envía al servidor solo el nombre de la copia y la copia cifrada, sin credenciales, así que no viaja ninguna cookie con ellas. Las notas se quedan fuera salvo que marques Incluir las notas. En otro dispositivo, el mismo código encuentra la copia, y ese navegador la descifra y la combina con la suya: los elementos guardados y las marcas de leído se unen (una eliminación solo gana cuando es la más reciente) y, para cada itinerario, y para la disposición y la configuración, se conserva la versión más nueva. Sin el código nadie, ni siquiera este sitio, puede leer la copia, y un código perdido no se puede recuperar. El código QR y el enlace de emparejamiento de la página de Configuración llevan el código después del # de la dirección, que el navegador nunca envía; quien los tenga puede leer y cambiar la copia sincronizada, así que muéstralos solo a tus propios dispositivos. Tu navegador guarda la última copia sincronizada, y la hora de esa sincronización al minuto, en su propio almacenamiento (ronutz:portable:base), para que la siguiente sincronización distinga un cambio hecho aquí de uno hecho en otro sitio; la hora nunca se envía.",
     "deskSyncKept": "La copia se guarda en la única base de datos del sitio, Cloudflare D1, como una fila que contiene solo el nombre de la copia, la copia cifrada, su número de versión, su tamaño, el día en que se leyó o escribió por última vez, el día de la escritura más reciente y el número de escrituras de ese día. No hay en ella dirección IP, user agent ni cookie, ni ninguna hora más precisa que el día, y el propio código del sitio no escribe ningún log sobre ella. Una copia puede tener como máximo 98 304 bytes (una solicitud, como máximo 140 000 bytes), una copia admite como máximo 300 escrituras al día (UTC) y solo las páginas de este sitio pueden enviarla. La limpieza diaria elimina una copia que lleva más de 365 días sin leerse ni escribirse; Eliminar la copia del servidor, en la página de Configuración, la elimina de inmediato, y Dejar de sincronizar este navegador olvida el código solo en este navegador. Como toda solicitud que llega al Worker del sitio, una solicitud de sincronización puede quedar registrada en los Workers Logs de Cloudflare (consulta Alojamiento y logs del servidor, más abajo): su dirección lleva el nombre de la copia, y la copia cifrada viaja en el cuerpo de la solicitud. Cuando la base de datos no está disponible, el servidor lo dice (la sincronización no está disponible ahora mismo) y el escritorio sigue funcionando en tu navegador.",
     "deskSyncSource": "El código es público: <code>el lado del servidor</code>, <schema>la tabla</schema>, <client>el lado del navegador</client>, <crypto>el cifrado</crypto> y <check>la comprobación que se ejecuta en cada build</check>.",
-    "deskPortable": "Lo que viaja a otro navegador, y lo que se queda. Por sincronización, archivo o enlace viajan: Mi escritorio (ronutz:desk:v1; sus notas solo si las incluyes, y nunca el código de sincronización que guarda); los resultados, rachas, mejores marcas, preferencias y el progreso de los juegos (ronutz:fun:v1, sin las elecciones del marcador público, que se quedan en cada navegador); las últimas páginas que abriste (ronutz:recent:v1); la puntuación del ejercicio de subredes (ronutz:subnet-drill:stats); y tus preferencias: el tema (ronutz-theme), el idioma (ronutz-lang), las pistas del glosario (ronutz-glossary-hints), el interruptor de movimiento (ronutz-mb-motion), los atajos redefinidos (ronutz-shortcuts) y las elecciones de densidad y de lectura de las páginas de índice (ronutz:view:*, ronutz:hub:*). Cuando dos navegadores difieren, los registros se combinan (resultados y marcas de ambos lados, la racha más larga y la mejor marca) y, en una preferencia cambiada en ambos navegadores entre dos sincronizaciones, gana el cambio más reciente: para saber cuál fue el último, cada navegador anota el minuto en que cada una de tus preferencias cambió por última vez (ronutz:portable:times), guardado en ese navegador y enviado solo dentro de la copia cifrada, que solo tus propios navegadores pueden leer, nunca el servidor. En la página de Configuración puedes elegir, en cambio, conservar el valor del navegador en uso y no anotar horas de cambio (elección guardada en ronutz:portable:no-times); las horas guardadas se borran entonces, y una copia antigua sin horas se combina del mismo modo. Un navegador que se empareja adopta las preferencias del otro, salvo las que él mismo cambió más recientemente. Nunca viajan: tu respuesta al recuento de interés (ronutz:interest:v1), porque un consentimiento pertenece al navegador en que se dio; cómo se abre el cuadro de búsqueda (ronutz-search-fresh), un hábito de un dispositivo; la última copia sincronizada (ronutz:portable:base), que cada navegador necesita para sus propias combinaciones; y lo que se guarda solo durante la sesión: la marca de la vista previa del autor (ronutz.privPreview), la clave del operador para el panel privado (ronutz:intel:key) y una marca que impide que una página que falló se recargue dos veces (ronutz:crash-reload). El día en que tu navegador publicó su última ronda en la tabla (ronutz:fun:posted-day) tampoco sale nunca de él: cada navegador cuenta una vez al día como sí mismo. Una comprobación que se ejecuta en cada compilación falla si el código del sitio guarda algo con un nombre que no esté en estas dos listas."
+    "deskPortable": "Lo que viaja a otro navegador, y lo que se queda. Por sincronización, archivo o enlace viajan: Mi escritorio (ronutz:desk:v1; sus notas solo si las incluyes, y nunca el código de sincronización que guarda); los resultados, rachas, mejores marcas, preferencias y el progreso de los juegos (ronutz:fun:v1, sin las elecciones del marcador público, que se quedan en cada navegador); las últimas páginas que abriste (ronutz:recent:v1); la puntuación del ejercicio de subredes (ronutz:subnet-drill:stats); y tus preferencias: el tema (ronutz-theme), el idioma (ronutz-lang), las pistas del glosario (ronutz-glossary-hints), el interruptor de movimiento (ronutz-mb-motion), los atajos redefinidos (ronutz-shortcuts) y las elecciones de densidad y de lectura de las páginas de índice (ronutz:view:*, ronutz:hub:*). Cuando dos navegadores difieren, los registros se combinan (resultados y marcas de ambos lados, la racha más larga y la mejor marca) y, en una preferencia cambiada en ambos navegadores entre dos sincronizaciones, gana el cambio más reciente: para saber cuál fue el último, cada navegador anota el minuto en que cada una de tus preferencias cambió por última vez (ronutz:portable:times), guardado en ese navegador y enviado solo dentro de la copia cifrada, que solo tus propios navegadores pueden leer, nunca el servidor. En la página de Configuración puedes elegir, en cambio, conservar el valor del navegador en uso y no anotar horas de cambio (elección guardada en ronutz:portable:no-times); las horas guardadas se borran entonces, y una copia antigua sin horas se combina del mismo modo. Un navegador que se empareja adopta las preferencias del otro, salvo las que él mismo cambió más recientemente. Nunca viajan: tu respuesta al recuento de interés (ronutz:interest:v1), porque un consentimiento pertenece al navegador en que se dio; cómo se abre el cuadro de búsqueda (ronutz-search-fresh), un hábito de un dispositivo; la última copia sincronizada (ronutz:portable:base), que cada navegador necesita para sus propias combinaciones; y lo que se guarda solo durante la sesión: la marca de la vista previa del autor (ronutz.privPreview), la clave del operador para el panel privado (ronutz:intel:key) y una marca que impide que una página que falló se recargue dos veces (ronutz:crash-reload). El día en que tu navegador publicó su última ronda en la tabla (ronutz:fun:posted-day) tampoco sale nunca de él: cada navegador cuenta una vez al día como sí mismo. Dos elecciones lúdicas también se quedan en el navegador donde se hicieron: la era de la melodía de LGTM (ronutz:fun:lgtm-era) y si el simulador del virus Ping-Pong anda suelto por el sitio (ronutz:fun:pong-virus), que solo las teclas p y v, tecleadas de nuevo, apagan. Una comprobación que se ejecuta en cada compilación falla si el código del sitio guarda algo con un nombre que no esté en estas dos listas.",
+    "videoTitle": "Un vídeo, cargado solo cuando lo pides",
+    "videoBody": "La página de LGTM (/dev/fun/lgtm) muestra un videoclip alojado en YouTube. Hasta que pulsas su botón de reproducir, la página muestra una imagen dibujada por este sitio y no se pide nada a YouTube. Cuando lo pulsas, tu navegador carga el reproductor de YouTube desde youtube-nocookie.com, el dominio del modo de privacidad mejorada de YouTube, que según YouTube evita que las reproducciones en el reproductor insertado personalicen tu navegación por YouTube y los anuncios que muestra; a partir de ahí, lo que recibe YouTube se rige por la propia política de privacidad de Google. La melodía de la misma página la genera tu navegador y no descarga nada salvo medio segundo de silencio de este sitio."
   },
   "footer": {
     "guide": "Guía del sitio",
@@ -29647,6 +29655,14 @@
       "importanceMeter": {
         "name": "Medidor de importancia",
         "desc": "Sopesa una petición frente al trabajo del que de verdad eres responsable. La aritmética es real y el resultado, reproducible."
+      },
+      "lgtm": {
+        "name": "LGTM",
+        "desc": "Un homenaje a un videoclip sobre la revisión de código a golpe de sello, una melodía original en cuatro eras del sonido de los videojuegos y cómo este sitio llega al sí."
+      },
+      "lgtmStamp": {
+        "name": "El sello LGTM",
+        "desc": "Pega un diff o una configuración. Lee cada línea antes de sellar."
       }
     },
     "games": {
@@ -30200,7 +30216,26 @@
         "origins": {
           "p1": "El formato diario viene de Wordle. Josh Wardle limitó a los jugadores a una partida al día y lo lanzó para el resto del mundo en octubre de 2021; los jugadores tienen seis intentos, y The New York Times compró el juego en enero de 2022.",
           "p2": "La aritmética es el enrutamiento entre dominios sin clases (CIDR, Classless Inter-Domain Routing), definido en septiembre de 1993 en el RFC 1519, “an Address Assignment and Aggregation Strategy”, de V. Fuller, T. Li, J. Yu y K. Varadhan. El RFC 4632 lo sustituyó en agosto de 2006 y escribe la antigua red “Class C” 192.168.99.0 como el prefijo 192.168.99.0/24, la notación de dirección y longitud del reto de cada día."
-        }
+        },
+        "bitsButton": "Mostrar los bits",
+        "bitsHide": "Ocultar los bits",
+        "bitsCost": "Cuesta uno de tus seis intentos y queda activada el resto de la ronda.",
+        "bitsConfirm": "¿Usar un intento para mostrar los bits?",
+        "bitsYes": "Sí, usar un intento",
+        "bitsCancel": "Ahora no",
+        "bitsTooLate": "No quedan intentos suficientes: la vista de bits necesita un intento de sobra.",
+        "bitsFree": "Gratis en la práctica.",
+        "bitsRow": "Vista de bits activada (un intento)",
+        "bitsTitle": "Los bits",
+        "bitsIntro": "Cada octeto en decimal y en sus ocho bits. La fila de la máscara sigue la máscara que pusiste en el formulario; las filas de abajo muestran lo que esa máscara hace con la dirección.",
+        "bitsAddress": "Dirección",
+        "bitsMaskLen": "Máscara (/{n})",
+        "bitsMaskHoles": "Máscara (sus unos no son contiguos, así que no es una máscara válida)",
+        "bitsNetwork": "Dirección AND máscara: la red",
+        "bitsBroadcast": "Dirección OR máscara invertida: el broadcast",
+        "bitsNoMask": "Pon una máscara en el formulario para ver su efecto en la dirección.",
+        "bitsOctet": "Octeto {n}: {dec}, en binario {bits}.",
+        "bitsLegend": "Un bit bajo un 1 de la máscara está en la parte de red (contorno continuo); bajo un 0, en la parte de host (contorno discontinuo). La barra marca dónde terminan los unos de la máscara."
       },
       "aggregate": {
         "metaTitle": "Agregación | Arcade",
@@ -30273,7 +30308,7 @@
         "cardBlurb": "Nombra la categoría de TI que hay detrás de hasta cinco pistas. Cuantas menos necesites, mejor.",
         "shareName": "Cinco pistas",
         "rule1": "La primera pista es la más difícil. Escribe lo que crees que une las pistas y presiona Adivinar; un intento fallido revela la siguiente pista.",
-        "rule2": "Las respuestas son flexibles: no importan las mayúsculas, los acentos ni la puntuación, se acepta una errata en una respuesta larga, y el inglés y el portugués también cuentan. Un intento que solo es parte de la respuesta, como DNS (sistema de nombres de dominio, Domain Name System) para tipos de registro DNS, se marca como cercano y no cuesta nada.",
+        "rule2": "Las respuestas son flexibles: no importan las mayúsculas, los acentos ni la puntuación, se acepta una errata en una respuesta larga, y el inglés y el portugués también cuentan. Un intento que solo es parte de la respuesta, como DNS (sistema de nombres de dominio, Domain Name System) para tipos de registro DNS, se marca como cercano y no cuesta nada. Tampoco cuestan nada un intento repetido ni uno que contiene la respuesta entera con una palabra de más. Un intento equivocado recibe un comentario hecho con tus propias palabras: cuáles están en la respuesta y cuáles no, o si nombraste una pista o la categoría de otro día.",
         "rule3": "¿Dudas? Siguiente pista revela una sin intentar, pero cuenta como pista usada. Tu puntuación es el número de pistas que necesitaste, de 1 a 5. Cada pista gastada sin la respuesta añade una ayuda bajo el cuadro: cuántas palabras tiene la respuesta, dónde se enumeran sus miembros y luego su forma, con la primera letra de cada palabra.",
         "rule4": "Cada pista se comprueba con el documento que la enumera (un RFC, o Request for Comments; un registro de la IANA, o Internet Assigned Numbers Authority; una página de manual o la documentación de un fabricante), enlazado al final. La práctica de abajo repite los últimos 30 días y unos cuantos calentamientos.",
         "cluesLabel": "Pistas",
@@ -30290,7 +30325,6 @@
         "noteEmpty": "Escribe un intento o presiona Siguiente pista para ver otra.",
         "noteClose": "Cerca: {guess} es parte de la respuesta. Sé más concreto; no se gasta ninguna pista.",
         "liveRight": "Correcto: {cat}.",
-        "liveWrong": "No es {guess}. Pista {n}: {clue}",
         "livePass": "Pista {n}: {clue}",
         "liveOut": "Sin más pistas. Era {cat}.",
         "categoryWas": "La categoría era",
@@ -30312,12 +30346,19 @@
           "p2": "La televisión ya jugaba con categorías mucho antes. The $10,000 Pyramid empezó en 1973, presentado al principio por Dick Clark; en su ronda final, el Winner's Circle, un concursante describe seis categorías a su compañero en 60 segundos enumerando cosas que pertenecen a ellas.",
           "p3": "The New York Times convirtió la agrupación en un juego diario con Connections, que se lanzó en beta en junio de 2023: 16 palabras que hay que repartir en cuatro grupos."
         },
-        "commentWrong": "No es “{guess}”. Ya tienes la pista {n}.",
         "commentPass": "Ya tienes la pista {n}.",
         "nudgesTitle": "Ayudas",
         "nudgeWords": "{n, plural, one {La respuesta es una palabra.} other {La respuesta tiene # palabras.}}",
         "nudgeSource": "{kind, select, rfc {Los miembros se enumeran en un RFC (Request for Comments).} man {Los miembros se enumeran en una página de manual.} iana {Los miembros se enumeran en un registro de la IANA (Internet Assigned Numbers Authority).} standard {Los miembros se enumeran en un estándar o una especificación.} other {Los miembros se enumeran en la documentación de un proyecto, un fabricante o una comunidad.}}",
-        "nudgeShape": "Su forma: {shape}"
+        "nudgeShape": "Su forma: {shape}",
+        "noteRepeat": "Ya probaste eso, con estas u otras palabras. No se gasta ninguna pista.",
+        "noteExtra": "Casi: sin {extra}, lo tendrías. No se gasta ninguna pista.",
+        "fbClue": "“{guess}” es una de las propias pistas; la respuesta es lo que las pistas tienen en común.",
+        "fbOther": "“{guess}” es una categoría de este juego, pero no la de hoy.",
+        "fbWarm": "Caliente: {hits} {hitCount, plural, one {está} other {están}} en la respuesta; {misses} {missCount, plural, one {no está} other {no están}}.",
+        "fbMixed": "Caliente: {hits} forman parte de la respuesta, pero no en esa combinación.",
+        "fbNear": "Cerca: {near} tiene un sentido parecido al de una palabra de la respuesta, que lo dice de otra forma.",
+        "fbCold": "Frío: ninguna palabra de “{guess}” está en la respuesta."
       },
       "first-match": {
         "metaTitle": "First Match | Arcade",
@@ -31587,7 +31628,91 @@
       "gameScoreboard": "Ver las puntuaciones de {game}"
     },
     "arcadeCardName": "El arcade",
-    "arcadeCardBlurb": "{count, plural, one {{count} juego basado} other {{count} juegos basados}} en fórmulas de juego clásicas, para jugar todo lo que quieras; {daily, plural, one {{daily} de ellos tiene} other {{daily} de ellos tienen}} una partida diaria que va a la tabla pública de puntuaciones."
+    "arcadeCardBlurb": "{count, plural, one {{count} juego basado} other {{count} juegos basados}} en fórmulas de juego clásicas, para jugar todo lo que quieras; {daily, plural, one {{daily} de ellos tiene} other {{daily} de ellos tienen}} una partida diaria que va a la tabla pública de puntuaciones.",
+    "lgtm": {
+      "metaTitle": "LGTM | /dev/fun",
+      "metaDescription": "Looks good to me («a mí me parece bien»): un homenaje al videoclip LGTM, una melodía chiptune original en cuatro eras del sonido de los videojuegos y cómo este sitio llega al sí.",
+      "title": "LGTM",
+      "tagline": "Looks good to me: un homenaje, una melodía y un sello",
+      "intro": "LGTM, abreviatura de «looks good to me» («a mí me parece bien»), es la forma en que una revisión de código dice que sí. En el videoclip «LGTM (Looks Good to Me)», de Degenerative Pixels, también es la forma en que todo sale mal: las aprobaciones llegan más rápido de lo que nadie puede leer, y las marcas verdes siguen llegando de todos modos. Esta página le rinde homenaje: el vídeo, que solo se carga cuando pulsas reproducir; una melodía original en cuatro eras del sonido de los videojuegos; y un sello que lee antes de aprobar.",
+      "videoTitle": "El vídeo",
+      "videoPlay": "Reproducir el vídeo",
+      "videoNote": "Al pulsar reproducir se carga el reproductor de YouTube desde youtube-nocookie.com, el dominio de su modo de privacidad mejorada. Hasta entonces, esta página no pide nada a YouTube.",
+      "videoFrameTitle": "LGTM (Looks Good to Me), videoclip de Degenerative Pixels",
+      "videoCredit": "El vídeo es de Degenerative Pixels. Su descripción atribuye la canción a Suno y la animación a Claude Opus 5.5, escrita en TypeScript con three.js. Míralo en <link>YouTube</link>.",
+      "siteTitle": "Cómo dice LGTM este sitio",
+      "site1": "Este sitio se escribe con Claude Opus 5.5, así que el chiste nos toca de cerca. Precisamente por eso aquí nada se aprueba con un gesto de la cabeza. Antes de que se publique una sola página, una compilación de trece mil páginas en seis idiomas tiene que superar más de cien controles, y cada control tiene un solo trabajo: decir que no.",
+      "site2": "Uno rechaza la raya en inglés. Otro rechaza la sigla que nadie desarrolló. Uno rechazó una página de 31,9 MiB que habría llegado al alojamiento y se habría quedado ahí. Otro atrapó una prueba que confiaba en un reloj fijo y se caía a medianoche UTC. Cada herramienta lleva vectores de referencia que deben coincidir byte a byte, y una persona lee y aprueba cada push.",
+      "site3": "El modelo también se revisa. Su trabajo pasa por los mismos controles que el de cualquiera, y cuando se equivoca (se equivoca), el error se convierte en un control nuevo, para que la próxima vez ese mismo no se diga solo. Es la canción del revés: allí, las marcas están en verde porque nadie miró; aquí, están en verde porque algo miró y podría haber dicho que no.",
+      "tuneTitle": "La melodía",
+      "tuneIntro": "La melodía es nuestra, no la de la canción. Su motivo principal deletrea LGTM en código Morse (la L es ·−··, la G −−·, la T −, la M −−; un punto dura una semicorchea y una raya, tres); se acelera a medida que se acumulan las aprobaciones; en su segunda pasada, el puente toca cada nota dos veces, un cobro doble hecho sonido; y termina en un acorde que nunca vuelve a casa. Tu navegador la toca en vivo, en la era que elijas. No se descarga nada salvo medio segundo de silencio de este sitio, que permite a un iPhone en modo silencio reproducirla como cualquier otro contenido multimedia.",
+      "stampTitle": "El sello",
+      "stampIntro": "Al lado, el <link>sello LGTM</link> hace lo que los revisores de la canción no hicieron: lee cada línea de un diff o de una configuración antes de sellar.",
+      "eraLegend": "Era del sonido y del aspecto",
+      "eraLabel": "{bits} bits",
+      "eraLine8": "8 bits: dos ondas de pulso, un bajo de onda triangular y percusión de ruido, las voces de los chips de sonido de 8 bits.",
+      "eraLine16": "16 bits: síntesis por modulación de frecuencia (FM), el sonido de los chips FM de las consolas de 16 bits y de las tarjetas de sonido de PC, con un eco oscuro.",
+      "eraLine32": "32 bits: melodías de dientes de sierra desafinados, colchones filtrados, un breakbeat y reverberación, a la manera de las bandas sonoras electrónicas de la era del CD.",
+      "eraLine64": "64 bits: dientes de sierra apilados y desafinados, un bombo en cada tiempo que hace latir los colchones, un delay estéreo y una reverberación larga, como se produce hoy.",
+      "stageLabel": "Lo que cuenta la melodía",
+      "status": {
+        "friday": "Viernes, 16:58. Un cambio pequeñito antes del fin de semana.",
+        "opened": "Pull request abierta. Revisión solicitada.",
+        "approvals": "Cuatro aprobaciones más. Nadie abrió el diff.",
+        "green": "Todas las comprobaciones en verde. Algunas hasta ejecutan pruebas.",
+        "roadmap": "La hoja de ruta del año que viene, fusionada para el viernes.",
+        "billing": "El módulo de facturación decía: no tocar.",
+        "twice": "Tocado. Cada cliente cobrado dos veces.",
+        "passed": "Todas las comprobaciones superadas. Todas. El prompt lo dejó claro: no cometas errores.",
+        "merged": "Fusionado. Líneas entendidas: 0."
+      },
+      "statApprovals": "Aprobaciones",
+      "statTempo": "Tempo, BPM",
+      "statInvoices": "Facturas por pedido",
+      "statLines": "Líneas entendidas",
+      "play": "Reproducir",
+      "stop": "Detener",
+      "playAgain": "Volver a reproducir",
+      "volume": "Volumen",
+      "noAudio": "Este navegador no puede reproducir Web Audio. Un Chrome, Edge, Firefox o Safari actual sí puede."
+    },
+    "lgtmStamp": {
+      "metaTitle": "El sello LGTM | /dev/fun",
+      "metaDescription": "Pega un diff o una configuración: TODO olvidados, cosas con forma de secreto, impresiones de depuración, marcadores de conflicto y más, cada uno con su número de línea, y luego un sello.",
+      "title": "El sello LGTM",
+      "tagline": "Lee antes de aprobar",
+      "intro": "Pega un diff o una configuración y pulsa Sellar. Busca marcadores TODO y FIXME olvidados, cosas con forma de secreto (claves privadas, claves de acceso, tokens, contraseñas en claro), impresiones de depuración, marcadores de conflicto de fusión, espacios al final de línea, líneas muy largas y la falta de un salto de línea final, cada uno con su número de línea. En un diff solo lee las líneas añadidas. El LGTM solo cae cuando no encuentra nada. El sello funciona por completo en tu navegador: no se envía ni se guarda nada.",
+      "inputLabel": "Diff o configuración",
+      "example": "Ejemplo",
+      "clear": "Borrar",
+      "stamp": "Sellar",
+      "verdictLgtm": "LGTM",
+      "verdictChanges": "Cambios solicitados",
+      "empty": "Pega primero algo que revisar.",
+      "count": "{n, plural, one {# hallazgo} other {# hallazgos}}",
+      "diffNote": "Leído como diff: solo se revisaron las líneas añadidas.",
+      "lineN": "Línea {n}",
+      "wholeText": "Todo el texto",
+      "kind": {
+        "todo": "Un marcador de trabajo olvidado (TODO, FIXME, XXX o HACK)",
+        "secret": "Algo con forma de secreto (aquí el valor aparece enmascarado)",
+        "trailing": "Espacios al final de la línea",
+        "noFinalNewline": "Falta el salto de línea al final del texto",
+        "conflict": "Un marcador de conflicto de fusión",
+        "longLine": "Una línea de más de 120 caracteres",
+        "debug": "Una impresión de depuración"
+      },
+      "quipLgtm0": "Aprobado, y alguien lo leyó de verdad.",
+      "quipLgtm1": "Sin TODO, sin secretos, sin impresiones perdidas. Fusiona con la conciencia tranquila.",
+      "quipLgtm2": "A mí me parece bien, y esta vez es una conclusión, no un reflejo.",
+      "quipLgtm3": "Limpio. En algún lugar, un módulo de facturación respira aliviado.",
+      "quipChanges0": "Hoy no. El sello solo cae sobre un texto que ha leído hasta el final.",
+      "quipChanges1": "Cambios solicitados. Mejor aquí que en producción a las cinco y cinco de un viernes.",
+      "quipChanges2": "He encontrado algo. Una marca verde habría sido más rápida, y errónea.",
+      "quipChanges3": "Cambios solicitados, línea por línea, como debe ser una revisión.",
+      "chime": "Hacer sonar la campanita",
+      "homeLink": "Volver a la página de LGTM"
+    }
   },
   "megaBrain": {
     "bossAria": "Tecla del jefe: minimizar la consola",
@@ -31738,7 +31863,9 @@
     "actionToolPanosPolicyOrder": "Orden de evaluación de políticas de PAN-OS",
     "actionDesk": "Mi escritorio",
     "actionDeskSave": "Guardar el elemento de esta página (o dejar de guardarlo)",
-    "actionDeskRead": "Marcar el elemento de esta página como leído o hecho (o quitar la marca)"
+    "actionDeskRead": "Marcar el elemento de esta página como leído o hecho (o quitar la marca)",
+    "pongOn": "El virus Ping-Pong anda suelto: una pelotita rebota por la página. Teclea p y v otra vez para atraparla.",
+    "pongOff": "El virus Ping-Pong está atrapado. La página vuelve a estar tranquila."
   },
   "settings_page": {
     "eyebrow": "Preferencias",
@@ -34439,7 +34566,8 @@
     "empty": "Todavía no hay entradas.",
     "furtherReading": "Lecturas adicionales",
     "furtherReadingAria": "Lecturas adicionales",
-    "status": "{n, plural, one {Una entrada hasta ahora} other {# entradas hasta ahora}}, que se publican a medida que se escriben, sin una cadencia fija. Lo que cambia en el propio sitio está en el <link>registro de cambios</link>."
+    "status": "{n, plural, one {Una entrada hasta ahora} other {# entradas hasta ahora}}, que se publican a medida que se escriben, sin una cadencia fija. Lo que cambia en el propio sitio está en el <link>registro de cambios</link>.",
+    "bylineProfile": "perfil de instructor en Red Education"
   },
   "importanceMeter": {
     "metaTitle": "Medidor de importancia",
@@ -39340,12 +39468,6 @@
         "title": "Operaciones psicológicas",
         "lede": "De la pequeña mentira repetida hasta que parece verdad a las campañas de Estados, empresas y redes criminales: los mecanismos, los actores y sus fines declarados, el amplificador digital, quién decide qué es dañino y las defensas, cada afirmación con sus pruebas y la respuesta de cada parte acusada.",
         "planned": {
-          "bec": "Compromiso del correo electrónico empresarial y suplantación de identidad",
-          "voiceClones": "Clonación de voz y deepfakes en el fraude",
-          "stateCampaigns": "Campañas estatales documentadas",
-          "influenceForHire": "Influencia por encargo",
-          "botsSockpuppets": "Bots, cuentas títere y astroturfing",
-          "brazilMassMessaging": "Brasil: envíos masivos, los tribunales y la CPMI",
           "lodgeToNetwork": "De la logia a la red: cómo cambió el alcance",
           "echoChambers": "Cámaras de eco y burbujas de filtro: las pruebas y la controversia",
           "profiling": "Recomendación y perfilado: lo que revelan las plataformas",

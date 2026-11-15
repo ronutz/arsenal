@@ -205,6 +205,46 @@ for (const path of DOH_PATHS) {
   }
 }
 
+// The LGTM page's video (2026-11-15): one frame host, on that page alone.
+const LGTM_FRAME_SOURCE = "https://www.youtube-nocookie.com";
+// The global policy with frame-src added after connect-src, naming that host alone; nothing else changed.
+const expectedLgtm = globalCsp.replace(/connect-src 'self'(;|$)/, `connect-src 'self'; frame-src ${LGTM_FRAME_SOURCE}$1`);
+// Both forms of its path.
+const LGTM_PATHS = ["/:locale/dev/fun/lgtm", "/:locale/dev/fun/lgtm/*"];
+// Each rule.
+for (const path of LGTM_PATHS) {
+  // The rule itself.
+  const rule = rules.find((r) => r.path === path);
+  // Missing altogether: the video would be refused by default-src 'self'.
+  if (!rule) {
+    failures.push(`public/_headers: no rule for ${path} (the LGTM page's video frame exception is missing).`);
+    continue;
+  }
+  // The global policy is detached first.
+  if (!rule.headers.includes("! Content-Security-Policy")) {
+    failures.push(`public/_headers: ${path} does not detach the global Content-Security-Policy before setting its own.`);
+  }
+  // The global policy plus frame-src for the one host, nothing else changed.
+  const csp = (rule.headers.find((h) => h.startsWith("Content-Security-Policy:")) ?? "").replace(/^Content-Security-Policy:\s*/, "");
+  if (csp !== expectedLgtm) {
+    failures.push(`public/_headers: ${path} sets a policy that differs from the global one by more than frame-src ${LGTM_FRAME_SOURCE}.`);
+  }
+}
+// No other rule may let a page frame a third party (same-origin framing, as /archive/sites/* needs, is not one).
+for (const r of rules) {
+  // The LGTM page's own two rules are held above.
+  if (LGTM_PATHS.includes(r.path)) continue;
+  // The policy of this rule, without its header name.
+  const csp = (r.headers.find((h) => h.startsWith("Content-Security-Policy:")) ?? "").replace(/^Content-Security-Policy:\s*/, "");
+  // Each frame-src or child-src (its fallback) directive's sources.
+  for (const d of csp.split(";").map((x) => x.trim()).filter((x) => /^(frame|child)-src\s/.test(x))) {
+    // Same-origin framing ('self', as the reconstructed earlier sites need) or none at all is not a third party.
+    const foreign = d.split(/\s+/).slice(1).filter((src) => src !== "'self'" && src !== "'none'");
+    // Anything else is a leak of the exception.
+    if (foreign.length) failures.push(`public/_headers: ${r.path} lets a page frame ${foreign.join(" ")}; only the LGTM page may frame a third party.`);
+  }
+}
+
 // No other rule may relax connect-src: the exception is the red room's alone.
 for (const r of rules) {
   // Skip the global rule and the six red room rules (the two registry lookups and the Pwned Passwords check).
@@ -213,6 +253,9 @@ for (const r of rules) {
   if (/^\/:locale\/dev\/out\/speed-test(\/\*)?$/.test(r.path)) continue;
   // The DNS-over-HTTPS lookup's two rules are held above to their own host list (2026-10-27).
   if (DOH_PATHS.includes(r.path)) continue;
+  // The LGTM page's two rules keep connect-src 'self' (held exactly above); skipped here only because the frame-src
+  // that follows connect-src there would otherwise read as a relaxation to the pattern below.
+  if (LGTM_PATHS.includes(r.path)) continue;
   // Any other policy that names a connect-src beyond 'self' is a leak of the exception.
   const csp = r.headers.find((h) => h.startsWith("Content-Security-Policy:")) ?? "";
   if (/connect-src(?! 'self'(;|$))/.test(csp)) failures.push(`public/_headers: ${r.path} relaxes connect-src; only the red room's egress pages may.`);
@@ -226,4 +269,6 @@ if (failures.length) {
 }
 // The DNS-over-HTTPS lookup's exception (2026-10-27), on a line of its own so the verdict line below stays as it is.
 console.log(`check-headers-csp: OK (DNS-over-HTTPS lookup: 2 paths, connect-src 'self' ${DOH_HOST_SOURCES.join(" ")}, the hosts the page offers)`);
+// The LGTM page's frame exception (2026-11-15), on its own line too.
+console.log(`check-headers-csp: OK (LGTM page: 2 paths, frame-src ${LGTM_FRAME_SOURCE} only; no other rule frames a third party)`);
 console.log(`check-headers-csp: OK (${rules.length} rules; global connect-src 'self'; red room egress exception present on 8 paths: 4 with https:, 2 with ${PWNED_HOST_SOURCE} only, 2 with ${SPEED_HOST_SOURCE} only)`);

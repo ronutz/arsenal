@@ -214,8 +214,10 @@ export function hardBounds(guesses: readonly Facts[], answer: Facts): Record<Fie
     mask: { fixed: null, above: null, below: null },
     hosts: { fixed: null, above: null, below: null },
   };
-  // Each try in turn.
+  // Each try in turn (the bit view's spent try proves nothing and is skipped).
   for (const g of guesses) {
+    // The bit view's marker row is a cost, not a guess.
+    if (isBitsTry(g)) continue;
     // Its marks.
     const m = grade(g, answer);
     // Each field.
@@ -244,6 +246,8 @@ export function hardBounds(guesses: readonly Facts[], answer: Facts): Record<Fie
  * @returns the first field (in display order) that ignores a hint, with its bounds, or null when the try is fine
  */
 export function hardViolation(guesses: readonly Facts[], answer: Facts, next: Facts): HardViolation | null {
+  // Turning the bit view on is not a guess, so it can never break a hint.
+  if (isBitsTry(next)) return null;
   // What the earlier tries proved.
   const all = hardBounds(guesses, answer);
   // Each field, in the order of the form.
@@ -585,6 +589,102 @@ export function why(p: Puzzle): Why {
   };
 }
 
+// ---- The bit view (PRIME 12/11/2026 18:28) ------------------------------------------
+//
+// "add a mode enabled by a toggle, that costs a penalty to enable, that displays each the decimal and corresponding
+// binary value AND REPRESENTATION of set/unset bits - for every octet of the ip address, and for the netmask below.
+// Then, additional row(s) dynamically changing according to the selections of the player, so it becomes very easily
+// visible the effect of changing the netmask bits in regards to the IP address bits."
+//
+// The penalty is one of the six tries, spent as a marker row the board shows as "bit view turned on". Its four values
+// are 2^32, one above anything an address, a mask or a host count can be typed as, so the marker can never be a
+// player's try; the scoreboard's check reads it as a wrong try like any other (it is one try spent), and hard mode
+// skips it. So nothing else in the rules changes: six rows at most, fewer is better, and the tally counts it.
+
+/** The marker row of the bit view: the try it costs. */
+export const BITS_TRY: Facts = { network: 2 ** 32, broadcast: 2 ** 32, mask: 2 ** 32, hosts: 2 ** 32 };
+
+/**
+ * Whether a try is the bit view's marker row.
+ *
+ * @param f a try
+ * @returns true for the marker
+ */
+export function isBitsTry(f: Facts): boolean {
+  // All four at 2^32, which no typed value can reach.
+  return f.network === 2 ** 32 && f.broadcast === 2 ** 32 && f.mask === 2 ** 32 && f.hosts === 2 ** 32;
+}
+
+/** One row of the bit view: its four octets, each as a decimal and its eight bits, most significant first. */
+export interface BitRow {
+  /** The value as a 32-bit number. */
+  value: number;
+  /** The four octets. */
+  octets: { dec: number; bits: (0 | 1)[] }[];
+}
+
+/**
+ * A 32-bit value as a bit-view row.
+ *
+ * @param v the value
+ * @returns its octets and bits
+ */
+export function bitRow(v: number): BitRow {
+  // Kept unsigned.
+  const u = v >>> 0;
+  // Four octets, high first.
+  const octets = [24, 16, 8, 0].map((shift) => {
+    // The octet.
+    const dec = (u >>> shift) & 255;
+    // Its bits, high first.
+    const bits = Array.from({ length: 8 }, (_, i) => ((dec >> (7 - i)) & 1) as 0 | 1);
+    // The pair.
+    return { dec, bits };
+  });
+  // The row.
+  return { value: u, octets };
+}
+
+/** The rows the bit view shows for an address and the mask the player has set. */
+export interface BitView {
+  /** The puzzle's address. */
+  address: BitRow;
+  /** The mask the player has set, or null when the field holds nothing valid. */
+  mask: BitRow | null;
+  /** The mask's prefix length when its ones are contiguous, or null. */
+  length: number | null;
+  /** The address AND the mask: what the mask keeps, the network part (null without a mask). */
+  network: BitRow | null;
+  /** The address OR the mask's inverse: the host part all ones (null without a mask). */
+  broadcast: BitRow | null;
+}
+
+/**
+ * The bit view for an address and a mask: the address, the mask, and what the mask makes of the address.
+ *
+ * @param address the puzzle's address
+ * @param mask the player's mask, or null
+ * @returns the rows
+ */
+export function bitView(address: number, mask: number | null): BitView {
+  // The address row is always there.
+  const a = bitRow(address);
+  // Without a mask, only the address.
+  if (mask === null) return { address: a, mask: null, length: null, network: null, broadcast: null };
+  // The mask, unsigned.
+  const m = mask >>> 0;
+  // Contiguous ones from the top: its inverse plus one is a power of two (or zero for /0).
+  const inv = ~m >>> 0;
+  // Ones then zeros only.
+  const contiguous = ((inv + 1) & inv) === 0;
+  // The length: the number of ones.
+  let ones = 0;
+  // Counted bit by bit.
+  for (let i = 0; i < 32; i++) if ((m >>> i) & 1) ones++;
+  // The rows.
+  return { address: a, mask: bitRow(m), length: contiguous ? ones : null, network: bitRow(address & m), broadcast: bitRow((address | inv) >>> 0) };
+}
+
 // ---- The self-test -----------------------------------------------------------
 
 /**
@@ -768,5 +868,21 @@ export function selfTest(): SelfTestReport {
   // The fallback is reported as a failure only if it was ever needed, so it is seen.
   if (fallbacks > 0) failures.push(`generator fell back ${fallbacks} time(s)`);
   // The report.
+  // The bit view (12/11/2026): fixed cases from the CIDR arithmetic of RFC 4632.
+  {
+    // 192.168.10.77 with /26: network 192.168.10.64, broadcast 192.168.10.127.
+    const v = bitView(parseAddress("192.168.10.77")!, maskOf(26));
+    // Each value, as the address arithmetic gives it.
+    if (v.length !== 26 || formatAddress(v.network!.value) !== "192.168.10.64" || formatAddress(v.broadcast!.value) !== "192.168.10.127")
+      failures.push("bitView: 192.168.10.77/26 gave the wrong network, broadcast or length");
+    // The fourth octet of the address in bits: 77 = 01001101.
+    if (v.address.octets[3].bits.join("") !== "01001101") failures.push("bitView: 77 is not 01001101");
+    // A mask with a hole is not contiguous.
+    if (bitView(0, parseAddress("255.0.255.0")).length !== null) failures.push("bitView: a non-contiguous mask got a length");
+    // The marker row is never a typed value and never breaks hard mode.
+    if (!isBitsTry(BITS_TRY) || parseAddress("255.255.255.255")! >= BITS_TRY.network) failures.push("bitView: the marker is reachable by typing");
+    // Checked.
+    checked += 4;
+  }
   return { checked, failures };
 }

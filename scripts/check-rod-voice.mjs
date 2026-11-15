@@ -51,9 +51,13 @@ const block = registry.slice(start, nextId < 0 ? undefined : nextId);
 // The opener and the written parts (planned parts have no slug and no file yet).
 const slugs = [...block.matchAll(/(?:opener|slug):\s*"([a-z0-9-]+)"/g)].map((m) => m[1]);
 
-/** First-person singular, per language. English "I" is skipped after the words that make it a numeral or a class. */
+/**
+ * First-person singular, per language. English "I" is skipped after the words that make it a numeral or a class, in
+ * an identifier that runs on with a hyphen and digits (the FBI IC3's public service announcements, "I-050417-PSA"),
+ * and as the letter of a Brazilian article suffix ("article 9º-I"), since 15/11/2026 (psyops Arc 2).
+ */
 const FIRST_PERSON = {
-  en: /(?<!\b(?:War|Class|Phase|Type|Part|Level|Tier|Article|Title|Category|Volume|Schedule|Annex|Appendix|Vol\.)\s)\b(?:I|I'm|I’m|I've|I’ve|I'd|I’d|I'll|I’ll)\b|\b(?:me|my|mine|myself)\b/g,
+  en: /(?<!\b(?:War|Class|Phase|Type|Part|Level|Tier|Article|Title|Category|Volume|Schedule|Annex|Appendix|Vol\.)\s)(?<![º°]-)\b(?:I|I'm|I’m|I've|I’ve|I'd|I’d|I'll|I’ll)\b(?!-\d)|\b(?:me|my|mine|myself)\b/g,
   // Case-sensitive, with the capitalised forms listed, so the abbreviation "EU" (European Union, União Europeia) is
   // never read as the pronoun "eu" (2026-11-09, found by the first Portuguese draft).
   "pt-BR": /\b(?:[Ee]u|[Mm]eu|[Mm]eus|[Mm]inha|[Mm]inhas|[Mm]im|[Cc]omigo|[Mm]e)\b/g,

@@ -334,3 +334,29 @@
 /:locale/dev/out/speed-test/*
   ! Content-Security-Policy
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://speed.cloudflare.com; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests
+
+# ---------------------------------------------------------------------------
+# The LGTM page's video (2026-11-15). /dev/fun/lgtm shows a music video hosted
+# on YouTube behind a click: until the reader presses play the page draws its
+# own picture and asks YouTube for nothing; the press inserts YouTube's player
+# as an iframe from https://www.youtube-nocookie.com, the domain of YouTube's
+# privacy-enhanced mode (YouTube Help, answer 171780, read 2026-11-15).
+#
+# The global policy has no frame-src, so frames fall back to default-src
+# 'self' and the player would be refused. For this path only, the global
+# policy is detached and set again with one addition: frame-src names that one
+# host, with the https scheme and no path, so nothing else may be framed and
+# no other directive changes (scripts, connections and images stay 'self').
+# The player's own requests run inside its frame under YouTube's policy, not
+# this one. Bare and trailing-slash forms, as above. The Privacy page says all
+# of this; scripts/check-headers-csp.mjs holds this rule's exact policy and
+# fails the build if any other rule lets a page frame a third party.
+# ---------------------------------------------------------------------------
+
+/:locale/dev/fun/lgtm
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests
+
+/:locale/dev/fun/lgtm/*
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests

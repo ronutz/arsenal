@@ -260,6 +260,163 @@ export function judge(guess: string, p: FivePuzzle): Verdict {
   return "wrong";
 }
 
+// ---- Comments on a wrong guess (PRIME 12/11/2026 18:20) -------------------------
+//
+// "Five clues needs to provide additional comments to the player's guesses, contextually analyzing and giving more
+// contextual and relatable responses to the tries, instead of just 'Not "guess"'." The verdict stays judge()'s (the
+// score, and the scoreboard's server check, are unchanged); explain() only says WHY a guess that is not right missed,
+// from the guess's own words and the puzzle's data: a repeat, one word too many, a clue named back, another day's
+// category, which of the player's words are in the answer, a word close in meaning, or nothing in common. It never
+// shows a word of the answer the player did not type. Two of the kinds cost no clue (a repeat, and a guess that holds a
+// whole accepted answer plus extra words), like "close". Pure and deterministic, so every player of the day reads the
+// same comment for the same guess.
+
+/** Why a guess that is not right missed. */
+export type Explanation =
+  /** The same guess as an earlier one (same words, any order or plural): no clue spent. */
+  | { kind: "repeat" }
+  /** Every word of an accepted answer is there, plus words that are not: no clue spent. */
+  | { kind: "extra"; extra: string[] }
+  /** The guess is one of the clues: the answer is what they have in common. */
+  | { kind: "clue" }
+  /** The guess is another puzzle's category. */
+  | { kind: "otherCategory" }
+  /** Some of the guess's words are in an answer (hits), others not (misses). */
+  | { kind: "warm"; hits: string[]; misses: string[] }
+  /** Every word is in some answer, but no one answer holds them together. */
+  | { kind: "mixed"; hits: string[] }
+  /** No word is in the answer, but one is close in meaning to a word that is. */
+  | { kind: "near"; near: string[] }
+  /** Nothing in common with any accepted answer. */
+  | { kind: "cold" };
+
+/**
+ * A word reduced to a rough stem, so plurals meet their singulars in English and Portuguese ("phases" and "phase",
+ * "mensagens" and "mensagem", "operacoes" and "operacao").
+ *
+ * @param w a normalised word
+ * @returns its stem
+ */
+function stem(w: string): string {
+  // Short words are left alone ("dns", "bgp", "ssl").
+  if (w.length <= 3) return w;
+  // Portuguese plurals first, then English.
+  if (w.endsWith("oes") || w.endsWith("aes")) return w.slice(0, -3) + "ao";
+  // "mensagens" -> "mensagem".
+  if (w.endsWith("ns")) return w.slice(0, -2) + "m";
+  // "nacionais" -> "nacional".
+  if (w.endsWith("ais")) return w.slice(0, -3) + "al";
+  // "entries" -> "entry".
+  if (w.endsWith("ies")) return w.slice(0, -3) + "y";
+  // "phases" -> "phase", but "class" stays "class".
+  if (w.endsWith("s") && !w.endsWith("ss")) return w.slice(0, -1);
+  // Already a stem.
+  return w;
+}
+
+/** Words close in meaning, as stems, each group checked against the answers' own words (English and Portuguese). */
+const NEAR_GROUPS: readonly (readonly string[])[] = [
+  ["phase", "stage", "step", "fase", "etapa", "passo"],
+  ["message", "packet", "pdu", "frame", "datagram", "mensagem", "pacote", "quadro"],
+  ["flag", "bit", "bandeira"],
+  ["code", "number", "value", "codigo", "numero", "valor"],
+  ["state", "status", "estado"],
+  ["method", "verb", "operation", "metodo", "verbo", "operacao"],
+  ["level", "severity", "nivel", "severidade"],
+  ["attack", "intrusion", "threat", "ataque", "intrusao", "ameaca"],
+  ["record", "entry", "registro", "entrada"],
+  ["command", "instruction", "comando", "instrucao"],
+  ["algorithm", "cipher", "algoritmo", "cifra"],
+  ["port", "service", "porta", "servico"],
+  ["address", "endereco"],
+  ["error", "fault", "failure", "erro", "falha"],
+];
+
+/**
+ * The meaningful words of a text, stemmed: no stop words, nothing shorter than two characters.
+ *
+ * @param s the text
+ * @returns the stems, in order, without repeats
+ */
+function stems(s: string): string[] {
+  // Normalised words, filtered, stemmed, de-duplicated in order.
+  return [...new Set(normalise(s).split(" ").filter((w) => w.length >= 2 && !STOP.has(w)).map(stem))];
+}
+
+/**
+ * Why a guess that is not right missed (call it only after judge() said "wrong").
+ *
+ * @param guess what the player typed
+ * @param p the puzzle
+ * @param earlier the guesses already spent in this round (passes are empty strings)
+ * @param pool every puzzle, for the "another day's category" case (defaults to the whole pool)
+ * @returns the explanation
+ */
+export function explain(guess: string, p: FivePuzzle, earlier: readonly string[], pool: readonly FivePuzzle[] = PUZZLES): Explanation {
+  // The guess's stems, and as a set.
+  const g = stems(guess);
+  // Each stem back to the word as the player typed it, so a comment quotes "phases", not the stem "phase".
+  const typed = new Map<string, string>();
+  // Every typed token, and the normalised words inside it.
+  for (const tok of guess.trim().split(/\s+/))
+    for (const w of normalise(tok).split(" ")) if (w && !typed.has(stem(w))) typed.set(stem(w), tok.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, "") || tok);
+  // A stem as typed.
+  const asTyped = (s: string) => typed.get(s) ?? s;
+  // For membership tests.
+  const gSet = new Set(g);
+  // A repeat: the same compact text, or the same set of stems, as an earlier guess that was not a pass.
+  for (const e of earlier) {
+    // Passes are not guesses.
+    if (!e.trim()) continue;
+    // The earlier guess's stems.
+    const es = stems(e);
+    // Same text, or same words in any order.
+    if (compact(e) === compact(guess) || (es.length > 0 && es.length === g.length && es.every((w) => gSet.has(w)))) return { kind: "repeat" };
+  }
+  // Each accepted answer's stems (only answers of two or more meaningful words can be "held with extras").
+  const answerStems = acceptedAnswers(p).map(stems);
+  // Every stem that appears in any accepted answer.
+  const anyAnswer = new Set(answerStems.flat());
+  // One word too many: some answer of two or more words is wholly inside the guess.
+  for (const a of answerStems) {
+    // Too short to be meaningful on its own.
+    if (a.length < 2) continue;
+    // All of the answer's words are in the guess.
+    if (a.every((w) => gSet.has(w))) {
+      // The extras, as the player typed them (stems are close enough to read).
+      const extra = g.filter((w) => !a.includes(w));
+      // Something extra is there (otherwise judge would have said right or close).
+      if (extra.length > 0) return { kind: "extra", extra: extra.map(asTyped) };
+    }
+  }
+  // A clue named back: the guess is a clue, or contains one as whole words.
+  const n = ` ${normalise(guess)} `;
+  // Any clue, in either language.
+  for (const c of p.clues)
+    for (const lang of ["en", "pt"] as const) {
+      // The clue, normalised.
+      const cn = normalise(clueText(c, lang));
+      // Whole-word containment.
+      if (cn && n.includes(` ${cn} `)) return { kind: "clue" };
+    }
+  // Another day's category.
+  if (pool.some((q) => q.id !== p.id && judge(guess, q) === "right")) return { kind: "otherCategory" };
+  // Which of the player's words are in some accepted answer.
+  const hits = g.filter((w) => anyAnswer.has(w));
+  // And which are not.
+  const misses = g.filter((w) => !anyAnswer.has(w));
+  // Some in, some out.
+  if (hits.length > 0 && misses.length > 0) return { kind: "warm", hits: hits.map(asTyped), misses: misses.map(asTyped) };
+  // All in, but not in one answer together.
+  if (hits.length > 0) return { kind: "mixed", hits: hits.map(asTyped) };
+  // None in: is any word close in meaning to a word of the answers?
+  const near = g.filter((w) => NEAR_GROUPS.some((grp) => grp.includes(w) && grp.some((x) => x !== w && anyAnswer.has(x))));
+  // Close in meaning.
+  if (near.length > 0) return { kind: "near", near: near.map(asTyped) };
+  // Nothing in common.
+  return { kind: "cold" };
+}
+
 // ---- The self-test -----------------------------------------------------------
 
 /**
@@ -360,6 +517,30 @@ export function selfTest(): SelfTestReport {
       failures.push("judge is off on the DNS cases");
     // Brazilian accents are optional.
     if (judge("tipos de registro dns", dns) !== "right") failures.push("judge is off on the accent-free Portuguese case");
+  }
+  // The comments on wrong guesses (PRIME 12/11/2026 18:20), on the round in his screenshot (Cyber Kill Chain phases).
+  const kc = PUZZLES.find((p) => p.id === "kill-chain");
+  // The kill-chain puzzle must exist for these.
+  if (kc) {
+    // "cyber kill chain process" holds the accepted answer "Cyber Kill Chain" plus one word.
+    const e1 = explain("cyber kill chain process", kc, []);
+    if (e1.kind !== "extra" || e1.extra.join(" ") !== "process") failures.push(`explain: extra case gave ${JSON.stringify(e1)}`);
+    // "attack chain phases": chain and phases are in, attack is not, and no accepted answer is wholly inside.
+    const e2 = explain("attack chain phases", kc, []);
+    if (e2.kind !== "warm" || e2.hits.join(" ") !== "chain phases" || e2.misses.join(" ") !== "attack") failures.push(`explain: warm case gave ${JSON.stringify(e2)}`);
+    // "attack kill chain" holds the accepted answer "kill chain" plus "attack": one word too many, no clue spent.
+    const e3 = explain("attack kill chain", kc, []);
+    if (e3.kind !== "extra" || e3.extra.join(" ") !== "attack") failures.push(`explain: second extra case gave ${JSON.stringify(e3)}`);
+    // The same words in another order is a repeat.
+    if (explain("kill chain attack", kc, ["attack kill chain"]).kind !== "repeat") failures.push("explain: repeat in another order not seen");
+    // A clue named back.
+    if (explain(clueText(kc.clues[0], "en"), kc, []).kind !== "clue") failures.push("explain: clue case not seen");
+    // Nothing in common.
+    if (explain("routing protocols", kc, []).kind !== "cold") failures.push(`explain: cold case gave ${JSON.stringify(explain("routing protocols", kc, []))}`);
+    // Close in meaning: "stages" for "phases".
+    if (explain("stages", kc, []).kind !== "near") failures.push(`explain: near case gave ${JSON.stringify(explain("stages", kc, []))}`);
+    // Another day's category.
+    if (dns && explain(dns.answers.en[0], kc, []).kind !== "otherCategory") failures.push("explain: other category not seen");
   }
   // A different digit is never forgiven.
   const v4 = PUZZLES.find((p) => p.id === "ipv4-header");

@@ -29,6 +29,11 @@ export interface PrivacyRevision {
 
 /** The revisions, newest first. Every date is a changelog entry's date. */
 export const PRIVACY_REVISIONS: readonly PrivacyRevision[] = [
+  // The LGTM page (queue 5d, 15/11/2026): its YouTube video loads only after the play button is pressed, from
+  // youtube-nocookie.com (videoTitle, videoBody; the path's frame-src in public/_headers); and two playful choices kept
+  // in the browser as local-only keys, the tune's era (ronutz:fun:lgtm-era) and the Ping-Pong virus simulator
+  // (ronutz:fun:pong-virus), named in deskPortable. Six written packs.
+  { date: "2026-11-15", key: "r20261115fun" },
   // Unique browsers on the scoreboard (the site owner, 12/11/2026 17:06 to 17:09): the first round a browser publishes on
   // a puzzle day carries one yes or no saying so (`first`), decided from the day of its last published round, kept in
   // that browser only (ronutz:fun:posted-day, a local-only key; src/lib/fun/board.ts); the server stores only that bit

@@ -7,7 +7,7 @@ date: "2026-11-12"
 tags: ["brazil", "privacy", "lgpd", "data-breach"]
 category: security
 status: reviewed
-updated: "2026-11-13"
+updated: "2026-11-14"
 relatedArticles: ["lgpd-for-engineers-the-vocabulary-that-matters", "brazilian-cybercrime-from-boleto-to-pix", "social-engineering-pretexting-vishing-and-baiting", "passkeys-and-phishing-resistant-authentication", "scams-at-scale-why-a-tiny-success-rate-pays"]
 ---
 
@@ -38,7 +38,8 @@ O que "público" quer dizer aqui precisa ser dito com clareza. Nenhum governo pu
 | 20 e 21 de julho de 2025 | Acesso indevido a dados de Pix pelo sistema de busca de bens do Judiciário | 11.003.398 registros; cerca de 46 milhões de chaves | Conselho Nacional de Justiça e Banco Central, via Migalhas e Jornal de Brasília |
 | 10 de março de 2026 | Total acumulado do Banco Central de chaves Pix expostas desde 2020 | Cerca de 47,9 milhões de chaves | Banco Central, via Jornal de Brasília |
 | 22 de abril de 2026 | Uma consulta do Meu INSS responde sem login durante um dia | 2,8 milhões de CPFs, cerca de 98% de pessoas falecidas | Dataprev, via O Povo |
-| 4 de novembro de 2026 (comunicado em 12 de novembro) | Acesso não autorizado a sistemas do Tesouro Nacional (Secretaria do Tesouro Nacional, STN): o portal de serviços, e-Serviços, e uma base interna de consultas analíticas | Cerca de 34 mil cadastros: cerca de 30 mil usuários do portal (nome, CPF e e-mail) e cerca de 4 mil chaves Pix de beneficiários do governo federal, com informações dos pagamentos realizados | Tesouro Nacional, via UOL |
+| 4 de novembro de 2026 (comunicado em 12 de novembro) | Acesso não autorizado a sistemas do Tesouro Nacional (Secretaria do Tesouro Nacional, STN): o portal de serviços, e-Serviços, e uma base interna de consultas analíticas | Cerca de 34 mil cadastros: cerca de 30 mil usuários do portal (nome, CPF e e-mail) e cerca de 4 mil chaves Pix de beneficiários do governo federal, com informações dos pagamentos realizados | Tesouro Nacional, via UOL, Agência Brasil e Tecnoblog |
+| 6 de novembro de 2026 (clientes avisados por e-mail em 12 de novembro) | Acesso não autorizado a sistemas da Caixa Vida e Previdência, braço de previdência e seguros de vida da Caixa (controlada pela Caixa Seguridade) | Pelo menos 7,6 milhões de clientes e ex-clientes: nome, CPF, data de nascimento, nacionalidade, e-mail e telefone | Comunicado da Caixa Seguridade à Comissão de Valores Mobiliários (CVM), via Tecnoblog |
 
 A tabela é uma lista do que foi contado, por quem e como, e não uma soma. A mesma pessoa aparece em muitas linhas; umas contam contas, outras chaves, outras CPFs. Vários casos (as 102 milhões de contas de celular, o arquivo de 2021) foram negados pelas empresas que os vendedores apontaram, e as negativas aparecem abaixo junto com as alegações. O que a tabela mostra é a escala e a persistência: arquivos do tamanho da população ou maiores, surgindo ano após ano, de sistemas públicos e privados.
 
@@ -114,7 +115,9 @@ O Pix, sistema de pagamentos instantâneos do Banco Central, liga cada "chave" (
 | 12 de maio de 2026 | Credifit, o quarto comunicado de 2026 | 46 |
 | Total acumulado, 10 de março de 2026 | Todos os incidentes desde 2020 | Cerca de 47,9 milhões de chaves |
 
-Atualização, 13 de novembro de 2026: o Tesouro Nacional comunicou na noite de 12 de novembro que um acesso não autorizado, em 4 de novembro, atingiu uma base interna de consultas analíticas e expôs cerca de 4 mil chaves Pix de beneficiários do governo federal, com informações dos pagamentos realizados, e que o portal de serviços expôs nome, CPF e e-mail de cerca de 30 mil usuários. Disse que não houve impacto financeiro aos cofres públicos nem em sistemas estruturantes, e que comunicou a ANPD e o centro de tratamento de incidentes do governo federal (CTIR Gov). O comunicado é do próprio Tesouro, conforme noticiado pelo UOL; não é um comunicado do Banco Central, e por isso não entra na tabela acima.
+Atualização, 13 de novembro de 2026: o Tesouro Nacional comunicou na noite de 12 de novembro que um acesso não autorizado, em 4 de novembro, atingiu uma base interna de consultas analíticas e expôs cerca de 4 mil chaves Pix de beneficiários do governo federal, com informações dos pagamentos realizados, e que o portal de serviços expôs nome, CPF e e-mail de cerca de 30 mil usuários. Disse que não houve impacto financeiro aos cofres públicos nem em sistemas estruturantes, e que comunicou a ANPD e o centro de tratamento de incidentes do governo federal (CTIR Gov). O comunicado é do próprio Tesouro, conforme noticiado pelo UOL; não é um comunicado do Banco Central, e por isso não entra na tabela acima. Agência Brasil e Tecnoblog acrescentaram em 13 de novembro que o portal é usado principalmente por servidores públicos federais, representantes de estados e municípios e profissionais de contabilidade; que as chaves estavam numa base que o governo federal usa para pagar pessoas e empresas, e que a exposição delas não significa que as contas associadas tenham sido comprometidas; que o Tesouro identificou e conteve o acesso em 4 de novembro; que não informou como a invasão ocorreu; e que o centro de resposta comunicado é o Centro de Prevenção, Tratamento e Resposta a Incidentes Cibernéticos de Governo (CTIR Gov).
+
+Atualização, 14 de novembro de 2026: na mesma semana, a Caixa Vida e Previdência começou a avisar clientes por e-mail, em 12 de novembro, que um acesso não autorizado identificado em 6 de novembro capturou nome, CPF, data de nascimento, nacionalidade, e-mail e telefone de pelo menos 7,6 milhões de clientes e ex-clientes, segundo o comunicado que a controladora Caixa Seguridade enviou à Comissão de Valores Mobiliários (CVM), conforme noticiado pelo Tecnoblog. A Caixa disse não ter encontrado, até agora, evidência de que os dados tenham sido divulgados ou usados indevidamente. São exatamente os campos que tornam convincente a ligação de um falso funcionário do banco.
 
 O caso do CNJ foge da curva de dois jeitos. É de longe o maior, e o sistema pelo qual passou pertence ao Judiciário, feito para que juízes encontrem bens de devedores. O CNJ disse que detectou e corrigiu o problema rapidamente e comunicou a PF e a ANPD. O BC, ao dar o total acumulado em março de 2026, disse que uma mesma chave pode ser contada em mais de um incidente.
 
@@ -367,9 +370,12 @@ O registro acima sustenta a descrição do título nos seus próprios termos. Os
 
 ## Fontes
 
-Todas as fontes foram acessadas em 12 de novembro de 2026, exceto a do Tesouro Nacional, lida em 13 de novembro de 2026 às 00:12. Estão em português, salvo quando a fonte é em inglês.
+Todas as fontes foram acessadas em 12 de novembro de 2026, exceto as do Tesouro Nacional e da Caixa Vida e Previdência, lidas em 13 de novembro de 2026 às 00:12 (UOL) e em 14 de novembro de 2026 às 23:33 (Agência Brasil, Tecnoblog). Estão em português, salvo quando a fonte é em inglês.
 
 **Tesouro Nacional, novembro de 2026**
+- [Agência Brasil, Tesouro Nacional identifica vazamento de dados de 30 mil cadastros (novembro de 2026)](https://agenciabrasil.ebc.com.br/geral/noticia/2026-11/tesouro-nacional-identifica-vazamento-de-dados-de-30-mil-cadastros)
+- [Tecnoblog, Tesouro Nacional alerta para vazamento de dados pessoais e chaves Pix (13 de novembro de 2026, 12h23)](https://tecnoblog.net/noticias/tesouro-nacional-alerta-para-vazamento-de-dados-pessoais-e-chaves-pix/)
+- [Tecnoblog, Alerta: vazamento na Caixa expõe dados de 7,6 milhões de clientes (12 de novembro de 2026, atualizado em 13 de novembro)](https://tecnoblog.net/noticias/alerta-vazamento-na-caixa-expoe-dados-de-76-milhoes-de-clientes/)
 - [UOL, Ataque hacker ao Tesouro expõe chaves Pix e dados de 34 mil cadastros (12 de novembro de 2026, 20h37)](https://economia.uol.com.br/noticias/redacao/2026/11/12/ataque-hacker-ao-tesouro-expoe-chaves-pix-e-dados-de-34-mil-cadastros.htm)
 
 **População**

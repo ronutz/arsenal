@@ -71,6 +71,10 @@ export const LOCAL_ONLY_KEYS: readonly LocalOnlyKey[] = [
   { match: "ronutz:portable:times", storage: "local", why: "when each setting last changed in this browser, to the minute, so the newer of two changes wins when browsers sync (it also travels inside the encrypted copy); not kept when the reader chooses to keep this browser's value" },
   { match: "ronutz:portable:no-times", storage: "local", why: "the reader's choice, for this browser, to keep its own value when both changed and record no change times" },
   { match: "ronutz:fun:posted-day", storage: "local", why: "the day this browser last published a scoreboard round, so its first round of a day says so once and each browser counts once a day as itself (src/lib/fun/board.ts)" },
+  // Two playful choices (15/11/2026): the LGTM tune's era (src/components/dev/fun/LgtmTune.tsx) and whether the Ping-Pong
+  // virus simulator is loose on the site (src/components/KeyboardShortcuts.tsx). A taste of one browser, not a record.
+  { match: "ronutz:fun:lgtm-era", storage: "local", why: "the era the LGTM tune last played in (8, 16, 32 or 64-bit), a taste of this browser" },
+  { match: "ronutz:fun:pong-virus", storage: "local", why: "whether the Ping-Pong virus simulator is loose on the site in this browser; only the keys p and v, typed again, turn it off" },
 ];
 
 /**

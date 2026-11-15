@@ -121,7 +121,7 @@ const DECLARED_ANCHOR = new Map([
   ["solar-designer", { year: 1996, why: "COPY-ONLY" }],
   ["space-rogue", { year: 1998, why: "COPY-ONLY" }],
 
-  // PAGE-ONLY (4 since 12/11/2026) - the cited page states it; neither the label nor the entry copy does
+  // PAGE-ONLY (3 since 15/11/2026) - the cited page states it; neither the label nor the entry copy does
   //
   // RE-READ 2026-10-02, and the category is weaker than it looks. Read as
   // wikitext rather than as a rendered page: katie-moussouris's article carries
@@ -131,8 +131,9 @@ const DECLARED_ANCHOR = new Map([
   // These need a document that dates the contribution, not a tightened label.
   ["barbara-liskov", { year: 1988, why: "PAGE-ONLY" }],
   ["glenn-ricart", { year: 1989, why: "PAGE-ONLY" }],
-  ["katie-moussouris", { year: 2013, why: "PAGE-ONLY" }],
   ["nelson-murilo", { year: 1997, why: "PAGE-ONLY" }],
+  // katie-moussouris came off the list on 15/11/2026: Microsoft's own post of 31 July 2013, the document that dates her
+  // bounty programmes, is now cited with a label that names the year (the bug bounty article's batch).
   // wietse-venema came off the list on 12/11/2026: the content sweep's entry cites a page whose label names 1995.
 
   // COPY+PAGE (1) - the entry copy and the cited page both state it; only the label is silent

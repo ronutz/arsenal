@@ -230,6 +230,8 @@ export default async function PrivacyPage({
     ["interestTitle", "interestBody"],
     // My desk (12/11/2026), after the interest counts, which its save count belongs to.
     ["deskTitle", "deskBody"],
+    // The LGTM page's video (15/11/2026): the one page that may load a third party's frame, and only on a press.
+    ["videoTitle", "videoBody"],
     ["shortcutsTitle", "shortcutsBody"],
     ["hostingTitle", "hostingBody"],
     ["toolsTitle", "toolsBody"],

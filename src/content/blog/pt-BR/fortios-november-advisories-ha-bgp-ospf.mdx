@@ -1,0 +1,192 @@
+---
+slug: fortios-november-advisories-ha-bgp-ospf
+title: "Três falhas do FortiOS no encanamento da rede: sincronização de HA, BGP e OSPF nos alertas de novembro da Fortinet"
+summary: "Em 10 de novembro de 2026, ao lado de quatro falhas do FortiManager e do FortiAnalyzer, a Fortinet publicou três alertas críticos do FortiOS sobre os protocolos que os firewalls usam para conversar entre si: a sincronização de alta disponibilidade (FG-IR-26-273), o BGP (FG-IR-26-268) e o OSPF (FG-IR-26-267). O que cada um exige, as versões corrigidas por branch, as notas que não batem com os próprios vetores e o que verificar."
+author: "Rodolfo Nützmann"
+date: "2026-11-15"
+tags: ["vulnerability-management", "disclosure", "networking", "ai"]
+category: firewall
+status: reviewed
+updated: "2026-11-15"
+relatedArticles: ["fortigate-fgcp-ha-clustering", "bgp-primer", "ospf-primer", "bgp-and-the-routing-chokepoint", "cvss-severity-bands-and-limits"]
+---
+
+## O que aconteceu
+
+Em 10 de novembro de 2026, no mesmo dia em que publicou quatro alertas críticos para o FortiManager e o FortiAnalyzer, tratados no [post anterior sobre esses quatro](/blog/fortimanager-fortianalyzer-pre-auth-flaws), o Product Security Incident Response Team (PSIRT) da Fortinet publicou três alertas críticos para o FortiOS, o sistema operacional dos firewalls FortiGate. Nenhum dos três está em uma função em que uma pessoa faz login. Um está na sincronização de alta disponibilidade (high availability, HA) entre FortiGates, outro no daemon que roda o Border Gateway Protocol (BGP) e o terceiro no daemon que roda o Open Shortest Path First (OSPF) ([FG-IR-26-273](https://fortiguard.fortinet.com/psirt/FG-IR-26-273); [FG-IR-26-268](https://fortiguard.fortinet.com/psirt/FG-IR-26-268); [FG-IR-26-267](https://fortiguard.fortinet.com/psirt/FG-IR-26-267)).
+
+Os três foram encontrados dentro da própria Fortinet: cada alerta dá o crédito a um integrante da equipe de Product Security da empresa e diz que o trabalho usou o modelo de IA de fronteira Claude Mythos, a mesma nota que acompanha os alertas do FortiManager e do FortiAnalyzer daquele dia ([FG-IR-26-273](https://fortiguard.fortinet.com/psirt/FG-IR-26-273); [FG-IR-26-268](https://fortiguard.fortinet.com/psirt/FG-IR-26-268); [FG-IR-26-267](https://fortiguard.fortinet.com/psirt/FG-IR-26-267)). Dois deles também alcançam o FortiSASE, o serviço de secure access service edge (SASE) da Fortinet, que roda sobre o FortiOS.
+
+As versões corrigidas não eram novidade em 10 de novembro. Em um post de 21 de outubro de 2026, atualizado em 10 de novembro, o chief information security officer (CISO) da Fortinet, Carl Windsor, anunciou uma versão de reforço de segurança vinda do "frontier AI-assisted security testing program" da empresa, o programa de testes de segurança assistidos por IA de fronteira, com as correções do FortiOS programadas para 22 de outubro nas versões 8.0.2, 7.6.8, 7.4.13 e 7.2.14, as que resolvem os três alertas em cada branch, e com os alertas em si prometidos para a Patch Tuesday de novembro ([Fortinet, 21 de outubro de 2026, atualizado em 10 de novembro](https://www.fortinet.com/blog/ciso-collective/fortinet-releases-security-hardening-release-for-multiple-products)). As correções ficaram, portanto, disponíveis por 19 dias antes que os alertas dissessem o que elas corrigiam, que é também como o site brasileiro CISO Advisor relatou o lote ([CISO Advisor, 11 de novembro de 2026](https://www.cisoadvisor.com.br/fortinet-falhas-criticas-permitem-execucao-sem-login/)).
+
+Tudo o que vem a seguir sai das três páginas de alerta do FortiGuard, dos registros Common Vulnerabilities and Exposures (CVE) que a Fortinet publicou para elas, da National Vulnerability Database (NVD) e do catálogo Known Exploited Vulnerabilities (KEV) da Cybersecurity and Infrastructure Security Agency (CISA) dos Estados Unidos, todos lidos em 15 de novembro de 2026 entre 16:20 e 16:50, horário de São Paulo, e da documentação da própria Fortinet quando uma configuração é descrita. Onde este post vai além do que esses documentos dizem, ele avisa com a palavra "Avaliação".
+
+## Os três alertas, lado a lado
+
+| Alerta | Título da Fortinet | CVE | Nota exibida pela Fortinet | Fraqueza | O que o atacante precisa | Campo de impacto da Fortinet | Patch virtual |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| FG-IR-26-273 | Unauthenticated adjacent command execution via HA | CVE-2026-126259 | 9.0 Critical | CWE-306, falta de autenticação em função crítica | Nenhum login; um FortiGate usando HA com o FortiGate Session Life Support Protocol (FGSP) e sincronização de configuração standalone, ou autoscale; pacotes de HA forjados | Execute unauthorized code or commands | Sim, FG-VD-61445.0day |
+| FG-IR-26-268 | Numeric truncation error | CVE-2026-126254 | 9.6 Critical | CWE-197, erro de truncamento numérico | Ser um vizinho BGP interno (iBGP) configurado | Denial of service | Sim, FG-VD-62507.0day, incluído em 13 de novembro |
+| FG-IR-26-267 | Authentication bypass by primary weakness | CVE-2026-126253 | 9.3 Critical | CWE-305, contorno de autenticação por fraqueza primária | Nenhum login; uma posição na rede adjacente | Improper access control | Não |
+
+Os identificadores da Common Weakness Enumeration (CWE) são os da própria Fortinet, e as notas são as que o FortiGuard exibe no Common Vulnerability Scoring System (CVSS) 3.1 ([FG-IR-26-273](https://fortiguard.fortinet.com/psirt/FG-IR-26-273); [FG-IR-26-268](https://fortiguard.fortinet.com/psirt/FG-IR-26-268); [FG-IR-26-267](https://fortiguard.fortinet.com/psirt/FG-IR-26-267)).
+
+## FG-IR-26-273: comandos pela sincronização de alta disponibilidade
+
+O resumo da Fortinet diz que a falha, no FortiOS, "may allow an unauthenticated attacker with HA FGSP + standalone-config-sync, or autoscale to execute command as super admin via crafted HA packets", isto é, pode permitir que um atacante sem autenticação, diante de HA com FGSP e standalone-config-sync, ou de autoscale, execute comandos como super admin por meio de pacotes de HA forjados ([CVE-2026-126259](https://cveawg.mitre.org/api/cve/CVE-2026-126259)). Super admin é o perfil administrativo mais alto de um FortiGate.
+
+Duas configurações são citadas, e as duas existem para copiar estado de um FortiGate para outro:
+
+- **FGSP com sincronização de configuração standalone.** O FGSP é a forma da Fortinet de fazer FortiGates independentes compartilharem sessões, ao contrário do cluster FortiGate Clustering Protocol (FGCP) descrito no [artigo do Learn sobre clusters FGCP](/learn/fortigate-fgcp-ha-clustering). A página da Fortinet sobre a configuração básica do FGSP monta a relação entre pares em `config system standalone-cluster`, com cada unidade apontando o endereço da outra em `set peerip`, e diz que as sessões são sincronizadas por padrão em camada 3, pela interface que alcança o par ([Fortinet, FGSP basic peer setup, FortiOS 7.6.7](https://docs.fortinet.com/document/fortigate/7.6.7/administration-guide/869218)). A sincronização de configuração standalone é uma chave adicional, `set standalone-config-sync enable` em `config system ha`, que copia "firewall policies, firewall addresses, and UTM profiles" (políticas de firewall, endereços de firewall e perfis de UTM) de um primário para os secundários por "one or more layer 2 heartbeat connections", uma ou mais conexões de heartbeat em camada 2 ([Fortinet, cookbook, Using standalone configuration synchronization, FortiOS 6.2.6](https://docs.fortinet.com/document/fortigate/6.2.6/cookbook/84777)).
+- **Autoscale.** `config system auto-scale` liga a sincronização de configuração entre uma unidade primária e as secundárias, com as opções `status`, `role`, `sync-interface`, `primary-ip` e `psksecret` ([Fortinet, config system auto-scale, FortiOS 7.6.7 CLI reference](https://docs.fortinet.com/document/fortigate/7.6.7/cli-reference/336417547)).
+
+Avaliação: nos dois casos a falha está no canal cuja função é aceitar configuração vinda de um par, e é por isso que a falta de uma verificação de autenticação ali termina em comandos executados como super admin, e não em um problema menor.
+
+| Branch do FortiOS | Afetadas | Corrigido em |
+| --- | --- | --- |
+| 8.0 | 8.0.0 | 8.0.1 |
+| 7.6 | 7.6.0 a 7.6.7 | 7.6.8 |
+| 7.4 | 7.4.0 a 7.4.12 | 7.4.13 |
+| 7.2 | 7.2.0 a 7.2.13 | 7.2.14 |
+| 7.0 | Todas as versões | Migrar para uma versão corrigida |
+
+Fonte: [FG-IR-26-273](https://fortiguard.fortinet.com/psirt/FG-IR-26-273). Não há seção de workaround; em vez disso, o alerta lista um patch virtual do FortiGuard, FG-VD-61445.0day, na atualização de banco de dados 26.082.
+
+Dois detalhes da página não combinam. O título diz "adjacent", enquanto o vetor publicado começa com `AV:N`, vetor de ataque pela rede, que no CVSS significa um atacante em qualquer ponto que consiga rotear pacotes até o alvo. E a nota exibida é 9.0, enquanto esse vetor, `AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H`, resulta em 9.8 pela fórmula do CVSS 3.1; com vetor adjacente, resultaria em 8.8 ([FG-IR-26-273](https://fortiguard.fortinet.com/psirt/FG-IR-26-273); [FIRST, especificação do CVSS v3.1](https://www.first.org/cvss/v3-1/specification-document)). Avaliação: as páginas de configuração acima descrevem links de heartbeat em camada 2 e sincronização de sessões pela interface voltada ao par, o que combina com "adjacent"; a pergunta prática, em cada ambiente, é quem, além dos próprios pares, consegue colocar um pacote nesses links.
+
+## FG-IR-26-268: um truncamento numérico no daemon de BGP
+
+O resumo da Fortinet diz que um erro de truncamento numérico no daemon de BGP do FortiOS e do FortiSASE "may allow a configured ibgp neighbor to send malicious/malformed attributes to all connected routers via a specially crafted request", ou seja, pode permitir que um vizinho iBGP configurado envie atributos maliciosos ou malformados a todos os roteadores conectados por meio de uma requisição forjada ([FG-IR-26-268](https://fortiguard.fortinet.com/psirt/FG-IR-26-268)). A MITRE define essa fraqueza como o que acontece "when a primitive is cast to a primitive of a smaller size and data is lost in the conversion", quando um tipo primitivo é convertido para outro de tamanho menor e dados se perdem na conversão ([MITRE, CWE-197](https://cwe.mitre.org/data/definitions/197.html)).
+
+É o único dos três que exige uma relação já existente: o tipo de ataque aparece como autenticado, com privilégios baixos, e o atacante precisa ser um vizinho iBGP configurado, isto é, um par BGP dentro do mesmo sistema autônomo (o [primer de BGP](/learn/bgp-primer) explica a diferença entre pares internos e externos). O vetor, `AV:N/AC:L/PR:L/UI:N/S:C/C:N/I:H/A:H`, marca o escopo como alterado: o dano vai além do FortiGate e chega aos roteadores com que ele conversa, o que bate com o "all connected routers" do resumo. O campo de impacto da Fortinet diz "Denial of service" ([FG-IR-26-268](https://fortiguard.fortinet.com/psirt/FG-IR-26-268)).
+
+A maturidade de exploit que a própria Fortinet atribui a essa falha é a mais alta entre os oito alertas críticos de 10 de novembro: o vetor termina em `E:F`, código de exploit funcional, enquanto os outros sete trazem `E:P` (prova de conceito) ou `E:U` (não comprovado) ([FG-IR-26-268](https://fortiguard.fortinet.com/psirt/FG-IR-26-268); [FIRST, especificação do CVSS v3.1](https://www.first.org/cvss/v3-1/specification-document)). O alerta foi revisado em 13 de novembro para incluir informação de pacote do intrusion prevention system (IPS), o sistema de prevenção de intrusão, e lista um patch virtual, FG-VD-62507.0day, na atualização de banco de dados 26.118.
+
+| Produto e branch | Afetadas | Corrigido em |
+| --- | --- | --- |
+| FortiOS 8.0 | 8.0.0 a 8.0.1 | 8.0.2 |
+| FortiOS 7.6 | 7.6.0 a 7.6.7 | 7.6.8 |
+| FortiOS 7.4 | 7.4.0 a 7.4.12 | 7.4.13 |
+| FortiOS 7.2 | 7.2.0 a 7.2.13 | 7.2.14 |
+| FortiSASE 26.3 | 26.3.1 e 26.3.1_a | Corrigido na 26.3.2, sem ação do cliente |
+| FortiSASE 25.1 a 26.2 | Todas as versões | Migrar para uma versão corrigida |
+| FortiSASE 22.4 a 24.4 | Não afetadas | Não se aplica |
+
+Fonte: [FG-IR-26-268](https://fortiguard.fortinet.com/psirt/FG-IR-26-268). O FortiOS 7.0 não aparece na tabela, então a situação dele não é declarada por esse alerta.
+
+Avaliação: um vizinho iBGP costuma ser outro roteador da mesma organização, então os caminhos realistas até essa falha são um roteador já comprometido, um peering configurado de forma mais ampla do que se pretendia e provedores ou parceiros que compartilham um sistema autônomo. O [artigo do Learn sobre o BGP como ponto de estrangulamento](/learn/bgp-and-the-routing-chokepoint) mostra por que um atributo malformado que um roteador repassa pode virar problema de todos.
+
+## FG-IR-26-267: um contorno de autenticação no daemon de OSPF
+
+O resumo da Fortinet fala em "An Authentication Bypass by Primary Weakness vulnerability [cwe-305] in FortiOS and FortiSASE ospf daemon", uma vulnerabilidade de contorno de autenticação por fraqueza primária no daemon de OSPF do FortiOS e do FortiSASE ([FG-IR-26-267](https://fortiguard.fortinet.com/psirt/FG-IR-26-267)), que "may allow an unauthenticated attacker to broadcast LSA via specially crafted request", isto é, pode permitir que um atacante sem autenticação divulgue LSAs por meio de uma requisição forjada ([CVE-2026-126253](https://cveawg.mitre.org/api/cve/CVE-2026-126253)). O link-state advertisement (LSA) é a unidade em que os roteadores OSPF descrevem a rede uns aos outros, como explica o [primer de OSPF](/learn/ospf-primer); um roteador que aceita um LSA falso pode ser levado a calcular rotas diferentes.
+
+A definição da MITRE para a fraqueza é precisa: "The authentication algorithm is sound, but the implemented mechanism can be bypassed as the result of a separate weakness that is primary to the authentication error", ou seja, o algoritmo de autenticação é sólido, mas o mecanismo implementado pode ser contornado por causa de outra fraqueza, anterior ao erro de autenticação ([MITRE, CWE-305](https://cwe.mitre.org/data/definitions/305.html)). O vetor, `AV:A/AC:L/PR:N/UI:N/S:C/C:N/I:H/A:H`, define o vetor de ataque como adjacente: o atacante precisa estar em um segmento de rede onde o OSPF roda. O campo de impacto da Fortinet diz "Improper access control"; não há patch virtual nem workaround ([FG-IR-26-267](https://fortiguard.fortinet.com/psirt/FG-IR-26-267)).
+
+| Produto e branch | Afetadas | Corrigido em |
+| --- | --- | --- |
+| FortiOS 8.0 | 8.0.0 a 8.0.1 | 8.0.2 |
+| FortiOS 7.6 | 7.6.0 a 7.6.7 | 7.6.8 |
+| FortiOS 7.4 | 7.4.0 a 7.4.12 | 7.4.13 |
+| FortiOS 7.2 | 7.2.0 a 7.2.13 | 7.2.14 |
+| FortiOS 7.0 | 7.0.1 a 7.0.19 | Migrar para uma versão corrigida |
+| FortiSASE 26.3 | 26.3.1 e 26.3.1_a | Corrigido na 26.3.2, sem ação necessária |
+| FortiSASE 25.1 a 26.2 | Todas as versões | Migrar para uma versão corrigida |
+| FortiSASE 22.4 a 24.4 | Não afetadas | Não se aplica |
+
+Fonte: [FG-IR-26-267](https://fortiguard.fortinet.com/psirt/FG-IR-26-267).
+
+O alerta não diz se a autenticação de OSPF configurada em uma interface faz alguma diferença. Avaliação: a CWE escolhida descreve justamente o caso em que a autenticação está configurada, é sólida e mesmo assim é contornada; por isso, um segmento com autenticação de OSPF ligada não deve ser tratado como seguro só por isso, até que a Fortinet diga o contrário.
+
+## Caminhos de upgrade por branch
+
+Lendo as três tabelas juntas, chega-se a uma versão mínima por branch do FortiOS que resolve os três alertas.
+
+| Branch do FortiOS | Resolve os três | Observação |
+| --- | --- | --- |
+| 8.0 | 8.0.2 | A 8.0.1 resolve só o FG-IR-26-273 |
+| 7.6 | 7.6.8 | Os três se aplicam |
+| 7.4 | 7.4.13 | Os três se aplicam |
+| 7.2 | 7.2.14 | Os três se aplicam |
+| 7.0 | Nenhuma: "Migrate to a fixed release" | Valem o FG-IR-26-273 e o FG-IR-26-267; o FG-IR-26-268 não lista a 7.0 |
+
+Os alertas dão as versões de destino, não os passos intermediários; para eles, a Fortinet aponta sua ferramenta de caminho de upgrade ([FG-IR-26-268](https://fortiguard.fortinet.com/psirt/FG-IR-26-268)). O FortiSASE é operado pela própria Fortinet: nos alertas, a 26.3.2 está corrigida sem ação do cliente, e as versões anteriores trazem "Migrate to a fixed release".
+
+## Como verificar a exposição
+
+1. **Versões.** Registrar a versão do FortiOS de cada FortiGate, incluindo membros de cluster e máquinas virtuais, e comparar com a tabela acima.
+2. **FG-IR-26-273: alguma das duas configurações está em uso?** Procurar `set standalone-config-sync enable` em `config system ha` junto com um bloco `config system standalone-cluster`, e `config system auto-scale` com `set status enable` ([Fortinet, cookbook 6.2.6](https://docs.fortinet.com/document/fortigate/6.2.6/cookbook/84777); [Fortinet, FGSP basic peer setup, 7.6.7](https://docs.fortinet.com/document/fortigate/7.6.7/administration-guide/869218); [Fortinet, config system auto-scale, 7.6.7](https://docs.fortinet.com/document/fortigate/7.6.7/cli-reference/336417547)). Onde uma delas estiver ligada, listar quais interfaces levam o heartbeat, a sincronização de sessões e a `sync-interface` do autoscale, e quem mais consegue alcançá-las.
+3. **FG-IR-26-268: quais vizinhos iBGP existem?** Listar os vizinhos BGP cujo sistema autônomo remoto é igual ao local e perguntar, de cada um, se ele poderia ser, ou já foi, controlado por outra pessoa.
+4. **FG-IR-26-267: onde o OSPF roda?** Listar as interfaces com OSPF habilitado e todos os equipamentos que compartilham esses segmentos. Avaliação: OSPF em um segmento que também leva equipamentos de usuários ou de visitantes é o caso a corrigir primeiro.
+5. **Patches virtuais.** Para o FG-IR-26-273 e o FG-IR-26-268 a Fortinet lista patches virtuais; se eles cobrem um ambiente específico depende da assinatura FortiGuard e da configuração de IPS. Avaliação: são uma ponte até o upgrade, não um substituto dele.
+
+## Situação de exploração, como a Fortinet e a CISA a declaram
+
+- **Fortinet:** os três alertas marcam "Known Exploited" como "No", lido em 15 de novembro de 2026 ([FG-IR-26-273](https://fortiguard.fortinet.com/psirt/FG-IR-26-273); [FG-IR-26-268](https://fortiguard.fortinet.com/psirt/FG-IR-26-268); [FG-IR-26-267](https://fortiguard.fortinet.com/psirt/FG-IR-26-267)).
+- **Maturidade de exploit segundo a Fortinet:** `E:F` (funcional) para o FG-IR-26-268, `E:P` (prova de conceito) para o FG-IR-26-267, `E:U` (não comprovado) para o FG-IR-26-273. Código em poder do fabricante não é exploração em campo, mas um exploit funcional para a falha de BGP significa que o caminho da falha até o código que funciona já foi percorrido uma vez.
+- **KEV da CISA:** nenhuma das três CVEs está no catálogo, versão 2026.11.13, publicada em 13 de novembro de 2026 às 20:24 UTC, com 1.781 entradas, 32 delas da Fortinet ([feed KEV da CISA](https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json)).
+- **Entradas da CISA nos registros CVE**, no esquema Stakeholder-Specific Vulnerability Categorization (SSVC): CVE-2026-126259, exploração nenhuma, automatizável sim, impacto técnico total (13 de novembro); CVE-2026-126254, exploração nenhuma, automatizável não, impacto técnico parcial (12 de novembro); CVE-2026-126253, exploração nenhuma, automatizável sim, impacto técnico parcial (12 de novembro) ([CVE-2026-126259](https://cveawg.mitre.org/api/cve/CVE-2026-126259); [CVE-2026-126254](https://cveawg.mitre.org/api/cve/CVE-2026-126254); [CVE-2026-126253](https://cveawg.mitre.org/api/cve/CVE-2026-126253)).
+- **NVD:** a CVE-2026-126259 e a CVE-2026-126253 estavam em "Awaiting Analysis" ([NVD, CVE-2026-126259](https://nvd.nist.gov/vuln/detail/CVE-2026-126259); [NVD, CVE-2026-126253](https://nvd.nist.gov/vuln/detail/CVE-2026-126253)); o serviço da NVD não respondeu para a CVE-2026-126254 no momento da leitura.
+
+## O resto do lote
+
+O mesmo dia trouxe mais um alerta crítico do lado da gerência, o FG-IR-26-244, "Authorization bypass through user-controlled key in dmserver" (CVE-2026-126229, 9.1). Ele exige login de administrador, e a Fortinet diz que ele "may allow an authenticated administrator to access to other VDOMs via specially crafted HTTP requests", isto é, pode permitir que um administrador autenticado acesse outros VDOMs por meio de requisições HTTP forjadas, no FortiManager, no FortiAnalyzer e nas edições Cloud de ambos, com correção nas versões 8.0.2, 7.6.8, 7.4.12 e 7.2.13 e orientação de migrar na 7.0 ([FG-IR-26-244](https://fortiguard.fortinet.com/psirt/FG-IR-26-244); [CVE-2026-126229](https://cveawg.mitre.org/api/cve/CVE-2026-126229)). As quatro falhas sem autenticação do FortiManager e do FortiAnalyzer daquele dia estão no [post anterior](/blog/fortimanager-fortianalyzer-pre-auth-flaws).
+
+## Onde os registros e as notas divergem
+
+- **FG-IR-26-273:** o título diz "adjacent" e o vetor diz rede; o vetor resulta em 9.8 e a página mostra 9.0. A mesma distância entre um vetor de 9.8 e um 9.0 exibido aparece em dois dos alertas do FortiManager daquele dia.
+- **FG-IR-26-267:** o vetor traz `RL:U`, nível de remediação "indisponível", em um alerta que lista versões corrigidas para todas as branches suportadas.
+- **FG-IR-26-268 e FG-IR-26-267:** as duas notas, 9.6 e 9.3, batem com os respectivos vetores pela fórmula do CVSS 3.1 ([FIRST, especificação do CVSS v3.1](https://www.first.org/cvss/v3-1/specification-document)).
+
+Avaliação: scanners e ferramentas de patch que leem o vetor, e não a nota exibida, vão classificar o FG-IR-26-273 acima do que a página do FortiGuard mostra; equipes que ordenam só pela nota deveriam ordenar esses três pela exposição.
+
+## Linha do tempo
+
+| Data (UTC, salvo indicação) | Evento | Fonte |
+| --- | --- | --- |
+| 21 de outubro de 2026 | O CISO da Fortinet anuncia a versão de reforço; correções do FortiOS programadas para 22 de outubro (8.0.2, 7.6.8, 7.4.13, 7.2.14) | Blog da Fortinet |
+| 10 de novembro de 2026 | O FortiGuard publica o FG-IR-26-273, o FG-IR-26-268 e o FG-IR-26-267 | FortiGuard |
+| 11 de novembro de 2026, 21:31 | Publicados os registros das CVE-2026-126253, 126254 e 126259 | Registros CVE |
+| 12 de novembro de 2026 | A CISA inclui entradas SSVC nas CVE-2026-126253 e CVE-2026-126254 | Registros CVE |
+| 13 de novembro de 2026 | A CISA inclui sua entrada SSVC na CVE-2026-126259; o FG-IR-26-268 é revisado com informação de pacote de IPS | Registro CVE; FortiGuard |
+| 13 de novembro de 2026, 20:24 | Catálogo KEV versão 2026.11.13: nenhuma das três listada | KEV da CISA |
+| 15 de novembro de 2026, 16:20 a 16:50, horário de São Paulo | Os três alertas continuam com "Known Exploited: No" | FortiGuard |
+
+## O que os três têm em comum
+
+Os três estão em código que existe para confiar em outro equipamento: um par de cluster, um vizinho BGP, um roteador OSPF. Esses protocolos nasceram para redes em que o equipamento do outro lado pertence ao mesmo administrador, e as defesas em volta deles costumam ser de posicionamento (links dedicados, peerings internos, roteamento em segmentos de infraestrutura), e não autenticação forte em cada pacote. Quando o código que interpreta os pacotes de um par tem uma falha, o posicionamento é a defesa inteira.
+
+E, assim como nos quatro alertas do lado da gerência publicados no mesmo dia, a Fortinet encontrou essas falhas com um modelo de IA e as publicou como corrigidas e não exploradas, com código funcional ou de prova de conceito em mãos para duas das três.
+
+<ReaderQuestions>
+
+- O FG-IR-26-273 tem "adjacent" no título, mas nota de falha alcançável pela rede; em torno de qual das duas uma organização deveria se planejar?
+- Para o FG-IR-26-268, a Fortinet registra código de exploit funcional; com que rapidez uma equipe que roda iBGP em FortiGates deveria agir, comparado ao seu ciclo normal de patches?
+- A CWE-305 descreve uma autenticação sólida que mesmo assim é contornada; isso muda o quanto uma equipe de rede deveria confiar na autenticação de OSPF como controle?
+- Links de alta disponibilidade e de roteamento raramente entram nas revisões de superfície de ataque externa; quem, em uma organização, responde pela pergunta de quem consegue alcançá-los?
+- Com três alertas encontrados por um mesmo modelo de IA em uma semana de FortiOS, os fabricantes deveriam publicar quanto do seu código esses modelos já revisaram?
+
+</ReaderQuestions>
+
+## Fontes
+
+Todas acessadas em 15 de novembro de 2026, entre 16:20 e 16:50, horário de São Paulo.
+
+- [Fortinet, Carl Windsor, "Fortinet Releases Security Hardening Release for Multiple Products", blog CISO Collective, 21 de outubro de 2026, atualizado em 10 de novembro de 2026: correções do programa de testes assistidos por IA de fronteira, FortiOS 8.0.2, 7.6.8, 7.4.13 e 7.2.14 programados para 22 de outubro, alertas na Patch Tuesday de novembro (acessado em 15 de novembro de 2026)](https://www.fortinet.com/blog/ciso-collective/fortinet-releases-security-hardening-release-for-multiple-products)
+- [CISO Advisor (Da Redação), "Fortinet: falhas críticas permitem execução de código sem login", 11 de novembro de 2026: os alertas do FortiManager, do FortiAnalyzer e do FortiOS de 10 de novembro e as correções liberadas antes deles (acessado em 15 de novembro de 2026)](https://www.cisoadvisor.com.br/fortinet-falhas-criticas-permitem-execucao-sem-login/)
+- [Fortinet PSIRT, FG-IR-26-273, "Unauthenticated adjacent command execution via HA": CVE-2026-126259, CWE-306, CVSS 3.1 9.0 com vetor AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H/E:U/RL:O/RC:C, versões afetadas e corrigidas do FortiOS, patch virtual FG-VD-61445.0day na atualização 26.082, Known Exploited No, descoberta interna com o Claude Mythos, publicado em 10 de novembro de 2026 (acessado em 15 de novembro de 2026)](https://fortiguard.fortinet.com/psirt/FG-IR-26-273)
+- [Fortinet PSIRT, FG-IR-26-268, "Numeric truncation error": CVE-2026-126254, CWE-197, CVSS 3.1 9.6 com vetor AV:N/AC:L/PR:L/UI:N/S:C/C:N/I:H/A:H/E:F/RL:O/RC:C, vizinho iBGP configurado, versões afetadas e corrigidas do FortiOS e do FortiSASE, revisão de 13 de novembro com informação de pacote de IPS, patch virtual FG-VD-62507.0day na atualização 26.118, Known Exploited No (acessado em 15 de novembro de 2026)](https://fortiguard.fortinet.com/psirt/FG-IR-26-268)
+- [Fortinet PSIRT, FG-IR-26-267, "Authentication bypass by primary weakness": CVE-2026-126253, CWE-305, CVSS 3.1 9.3 com vetor AV:A/AC:L/PR:N/UI:N/S:C/C:N/I:H/A:H/E:P/RL:U/RC:C, versões afetadas e corrigidas do FortiOS e do FortiSASE, sem patch virtual, Known Exploited No (acessado em 15 de novembro de 2026)](https://fortiguard.fortinet.com/psirt/FG-IR-26-267)
+- [Fortinet PSIRT, FG-IR-26-244, "Authorization bypass through user-controlled key in dmserver": CVE-2026-126229, CWE-639, CVSS 3.1 9.1, administrador autenticado, versões corrigidas do FortiManager, do FortiAnalyzer e das edições Cloud (acessado em 15 de novembro de 2026)](https://fortiguard.fortinet.com/psirt/FG-IR-26-244)
+- [CVE Services API, CVE-2026-126259: publicado em 11 de novembro de 2026, 21:31 UTC; descrição da Fortinet; SSVC do CISA ADP de 13 de novembro: exploração nenhuma, automatizável sim, impacto técnico total (acessado em 15 de novembro de 2026)](https://cveawg.mitre.org/api/cve/CVE-2026-126259)
+- [CVE Services API, CVE-2026-126254: publicado em 11 de novembro de 2026, 21:31 UTC; SSVC do CISA ADP de 12 de novembro: exploração nenhuma, automatizável não, impacto técnico parcial (acessado em 15 de novembro de 2026)](https://cveawg.mitre.org/api/cve/CVE-2026-126254)
+- [CVE Services API, CVE-2026-126253: publicado em 11 de novembro de 2026, 21:31 UTC; descrição da Fortinet sobre a divulgação de LSAs; SSVC do CISA ADP de 12 de novembro: exploração nenhuma, automatizável sim, impacto técnico parcial (acessado em 15 de novembro de 2026)](https://cveawg.mitre.org/api/cve/CVE-2026-126253)
+- [CVE Services API, CVE-2026-126229: descrição da Fortinet sobre o acesso a outros VDOMs por um administrador autenticado (acessado em 15 de novembro de 2026)](https://cveawg.mitre.org/api/cve/CVE-2026-126229)
+- [NVD, CVE-2026-126259: "Awaiting Analysis" (acessado em 15 de novembro de 2026)](https://nvd.nist.gov/vuln/detail/CVE-2026-126259)
+- [NVD, CVE-2026-126253: "Awaiting Analysis" (acessado em 15 de novembro de 2026)](https://nvd.nist.gov/vuln/detail/CVE-2026-126253)
+- [CISA, catálogo Known Exploited Vulnerabilities, feed JSON versão 2026.11.13, publicado em 13 de novembro de 2026, 20:24 UTC: 1.781 entradas, 32 da Fortinet, nenhuma das três CVEs (acessado em 15 de novembro de 2026)](https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json)
+- [MITRE, CWE-197, Numeric Truncation Error: definição (acessado em 15 de novembro de 2026)](https://cwe.mitre.org/data/definitions/197.html)
+- [MITRE, CWE-305, Authentication Bypass by Primary Weakness: definição (acessado em 15 de novembro de 2026)](https://cwe.mitre.org/data/definitions/305.html)
+- [FIRST, especificação do Common Vulnerability Scoring System v3.1: fórmula da nota base, vetor de ataque, escopo e métricas temporais (acessado em 15 de novembro de 2026)](https://www.first.org/cvss/v3-1/specification-document)
+- [Fortinet Document Library, FortiOS 7.6.7 Administration Guide, FGSP basic peer setup: config system standalone-cluster, peerip, sincronização de sessões em camada 3 pela interface voltada ao par (acessado em 15 de novembro de 2026)](https://docs.fortinet.com/document/fortigate/7.6.7/administration-guide/869218)
+- [Fortinet Document Library, FortiOS 6.2.6 Cookbook, Using standalone configuration synchronization: set standalone-config-sync enable, o que é sincronizado, conexões de heartbeat em camada 2 (acessado em 15 de novembro de 2026)](https://docs.fortinet.com/document/fortigate/6.2.6/cookbook/84777)
+- [Fortinet Document Library, FortiOS 7.6.7 CLI Reference, config system auto-scale: status, role, sync-interface, primary-ip, psksecret (acessado em 15 de novembro de 2026)](https://docs.fortinet.com/document/fortigate/7.6.7/cli-reference/336417547)

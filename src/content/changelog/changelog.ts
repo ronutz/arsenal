@@ -56,6 +56,72 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // The LGTM homage and its stamp toy (queue 5d; PRIME 12/11/2026 21:24, 14/11 18:19 and 22:09, 15/11 05:14 to 05:34
+    // and 17:34), the Five Clues comments (PRIME 12/11/2026 18:20) and the Prefix of the Day bit view (18:28).
+    date: "2026-11-15", // the day it was done
+    time: "17:40", // São Paulo time
+    kind: "feature", // new toys and game improvements
+    title: "LGTM: a homage with a tune in four eras of game sound and a stamp that reads before it approves; Five Clues explains its answers; Prefix of the Day shows the bits", // the headline
+    titlePt: "LGTM: uma homenagem com uma música em quatro eras do som dos videogames e um carimbo que lê antes de aprovar; o Cinco Pistas explica as respostas; o Prefixo do Dia mostra os bits", // the Portuguese headline
+    body: // what changed, in plain words
+      "A new page on the /dev/fun shelf pays homage to a music video about code review by rubber stamp: the video loads only when you press play, an original tune spells LGTM in Morse code and plays in 8, 16, 32 or 64-bit game sound, and a few paragraphs say how this site gets to yes. Next to it, the LGTM stamp reads a pasted diff or configuration line by line, finds leftover TODOs, things shaped like secrets, debug prints and conflict markers, and stamps LGTM only when it finds nothing. Five Clues now says why a guess was wrong (a near miss, the right words in the wrong place, another category) instead of a bare no, and Prefix of the Day can show the address and the mask in binary, at the price of one try in the daily round.", // the body
+    links: [ // where to see it
+      { label: "LGTM", href: "/dev/fun/lgtm" }, // the homage
+      { label: "The LGTM stamp", href: "/dev/fun/lgtm-stamp" }, // the stamp toy
+      { label: "Five Clues", href: "/dev/fun/five-clues" }, // the explained answers
+      { label: "Prefix of the Day", href: "/dev/fun/prefix-of-the-day" }, // the bit view
+    ],
+  },
+  {
+    // The content round of 15/11/2026: the agents' psyops parts (Arcs 2, 3a and 3b), the CTF and bug bounty pieces with
+    // their Brazilian lists, the FortiOS companion post and the FortiManager re-read, forty glossary entries, and the
+    // blog byline's link to the Red Education profile (PRIME 12/11/2026 18:44).
+    date: "2026-11-15", // the day it was done
+    time: "17:40", // São Paulo time
+    kind: "content", // new writing
+    title: "Six new parts of the psychological operations series; capture-the-flag contests and bug bounties explained, each with a Brazilian list; FortiOS's November advisories", // the headline
+    titlePt: "Seis partes novas da série sobre operações psicológicas; competições capture the flag e bug bounties explicados, cada um com uma lista brasileira; os alertas de novembro do FortiOS", // the Portuguese headline
+    body: // what changed, in plain words
+      "The psychological operations series gains six parts: business email compromise and impersonation, voice clones and deepfakes in fraud, state campaigns on the record, influence for hire, bots, sockpuppets and astroturfing, and Brazil's mass messaging, the courts and the Congressional inquiry. Two new Learn articles explain capture-the-flag competitions and bug bounty programmes with vulnerability disclosure, and two posts follow them with this year's finals and record payouts and with Brazilian lists of contests, teams, bounty programmes and disclosure channels. A new post covers FortiOS's November advisories on high availability and two routing protocols, and the post on FortiManager and FortiAnalyzer is re-read against the United States catalogue of exploited flaws and Fortinet's latest statements. The glossary gains forty entries and six are rewritten or enriched with dated sources. Each post's byline now links to the author's instructor profile at Red Education.", // the body
+    articles: ["business-email-compromise-and-impersonation", "voice-clones-and-deepfakes-in-fraud", "state-influence-campaigns-on-the-record", "influence-for-hire-the-firms-that-sell-influence-operations", "bots-sockpuppets-and-astroturfing", "brazil-mass-messaging-the-courts-and-the-cpmi", "capture-the-flag-competitions", "bug-bounties-and-vulnerability-disclosure"], // the new Learn articles
+    links: [ // where to see it
+      { label: "Flags, finals and the Brazilian list", href: "/blog/flags-finals-and-the-brazilian-list" }, // the CTF post
+      { label: "The biggest bug bounties on record", href: "/blog/bug-bounty-record-payouts-and-the-brazilian-list" }, // the bug bounty post
+      { label: "Three FortiOS flaws in the network's plumbing", href: "/blog/fortios-november-advisories-ha-bgp-ospf" }, // the FortiOS post
+      { label: "Four ways in before the login", href: "/blog/fortimanager-fortianalyzer-pre-auth-flaws" }, // the re-read post
+    ],
+  },
+  {
+    // The Blog joins the home page's Start here as its sixth card, before "Take me somewhere" (PRIME 15/11/2026 05:35),
+    // and the Brazil leaks post's update of 14/11 (Treasury sources, the Caixa Vida e Previdência incident) ships with it.
+    date: "2026-11-15", // the day it was done
+    time: "05:45", // São Paulo time
+    kind: "content", // page improvements and an updated post
+    title: "The Blog joins Start here on the home page; the Brazil leaks post adds the Caixa Vida e Previdência incident", // the headline
+    titlePt: "O Blog entra no Comece aqui da página inicial; o post sobre os vazamentos no Brasil inclui o incidente da Caixa Vida e Previdência", // the Portuguese headline
+    body: // what changed, in plain words
+      "The home page's Start here now has a card for the Blog, for readers who want to catch up on what is happening, placed just before Take me somewhere. The post on Brazil's data leaks records the incident at Caixa Vida e Previdência, identified on 6 November and disclosed to customers on 12 November, with at least 7.6 million people affected, and adds further sources on the National Treasury incident.",
+    links: [ // where to see it
+      { label: "Home", href: "/" }, // the Start here section
+      { label: "No Brazilian has private data left", href: "/blog/no-brazilian-has-private-data-left" }, // the updated post
+    ],
+  },
+  {
+    // The round of 12/11/2026 21:24 to 13/11/2026 01:30: the Fortinet post, the credential spills post, the Treasury
+    // update, the sharing cards (queue 5c), score and game links (queue 5) and the Red Education profile (queue 5b).
+    date: "2026-11-13", // the day it was done
+    time: "01:30", // São Paulo time
+    kind: "content", // new writing and page improvements
+    title: "Two new posts on Fortinet's pre-login flaws and on credential spills; every page gets its own sharing card", // the headline
+    titlePt: "Dois posts novos, sobre as falhas pré-login da Fortinet e sobre vazamentos de credenciais; cada página ganha o seu card de compartilhamento", // the Portuguese headline
+    body: // what changed, in plain words
+      "Two new blog posts: the four Fortinet advisories of 10 November 2026 for FortiManager and FortiAnalyzer, all exploitable before a login, with a status table of fixes and read times; and a report on the largest credential spills and the account takeovers that password reuse turned them into, with the regulators' findings and the defences that work. The post on Brazil's data leaks now records the National Treasury incident announced on 12 November. Pages that shared the generic image when linked on social networks now carry their own or their section's card (Endorsements, Industry, Roles, Training, Changelog, About and more), and a check stops a titled page from shipping the generic one. Each game links to its scoreboard and each scoreboard back to its game, and Rodolfo Nützmann's instructor profile at Red Education is linked from the Red Education and About pages.",
+    links: [ // where to see it
+      { label: "Four ways in before the login", href: "/blog/fortimanager-fortianalyzer-pre-auth-flaws" }, // the Fortinet post
+      { label: "Credential spills and the stuffing that follows", href: "/blog/credential-spills-and-the-stuffing-that-follows" }, // the credentials post
+    ],
+  },
+  {
     // My desk (PLAN-personal-desk-20261112, approved 12/11/2026 12:42) with its portable encrypted sync (13:38), the
     // four-way split of the security tools (15:29 to 15:40), the opinion boxes turned into questions (15:18), the
     // scoreboard's unique browsers (17:09) and the blog post on Brazil's data leaks (16:01).

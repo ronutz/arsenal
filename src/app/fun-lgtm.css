@@ -1,0 +1,273 @@
+/* SPDX-FileCopyrightText: 2026 Rodolfo Nützmann <https://ronutz.com>
+   SPDX-License-Identifier: Apache-2.0 */
+
+/* ============================================================================
+   src/app/fun-lgtm.css
+   ----------------------------------------------------------------------------
+   THE LGTM PAGES (queue 5d): /dev/fun/lgtm (the video facade, the prose, the
+   tune in four eras) and /dev/fun/lgtm-stamp (the stamp toy). Imported by
+   globals.css after fun-games.css, whose buttons (.fg-button) and heading
+   (.fg-head, .fg-intro) these pages reuse.
+
+   THE STAGE. The tune's readout is a little game screen, and each era of game
+   sound gets its own single dark look, set as tokens on .lgtm-stage[data-era]
+   (the attribute LgtmTune writes): 8-bit flat indigo with a hard outline,
+   16-bit a blue gradient panel with a light frame, 32-bit brushed grey with
+   scan lines, 64-bit frosted glass on a violet and cyan glow. The screen is a
+   deliberate visual world, like an arcade cabinet's, so it stays dark in every
+   site theme; everything around it (the era switch, the prose, the video, the
+   toy) takes the site theme's own tokens.
+
+   Motion: the Morse lights and the stamp's fall are the only animations, and
+   reduced motion turns both off. Phone width: the stats go to two columns and
+   the dashes shorten under 33rem.
+   ============================================================================ */
+
+/* ---- The page ------------------------------------------------------------ */
+
+/* The parts of the page, spaced as one column. */
+.lgtm-page { display: grid; gap: 2.25rem; }
+/* Each part: its heading, then its content. */
+.lgtm-part { display: grid; gap: 0.9rem; }
+/* A part's heading, in the site's heading voice. */
+.lgtm-part-title { margin: 0; font-size: 1.35rem; line-height: 1.25; text-wrap: balance; color: var(--text-primary); }
+/* Running prose, kept to a readable measure. */
+.lgtm-prose { margin: 0; max-width: 66ch; line-height: 1.65; color: var(--text-primary); }
+/* Links in the prose, in the accent. */
+.lgtm-prose a { color: var(--accent-primary); }
+
+/* ---- The video facade ---------------------------------------------------- */
+
+/* The figure: the box and the note under it. */
+.lgtm-video { margin: 0; display: grid; gap: 0.5rem; }
+/* One 16:9 box for both the picture and the player, so nothing moves when the player arrives. */
+.lgtm-video-box { position: relative; width: 100%; max-width: 100%; aspect-ratio: 16 / 9; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border-subtle); background: var(--surface-elevated); }
+/* YouTube's player fills the box. */
+.lgtm-video-frame { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+/* The facade is a button the size of the box. */
+.lgtm-video-poster { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; border: 0; background: none; cursor: pointer; color: inherit; font: inherit; }
+/* Its keyboard focus, drawn inside the rounded box. */
+.lgtm-video-poster:focus-visible { outline: 3px solid var(--accent-primary); outline-offset: -3px; }
+/* The drawing fills the button. */
+.lgtm-video-art { display: block; width: 100%; height: 100%; }
+/* The drawing's colours, all from the theme. */
+.lgtm-art-bg { fill: var(--surface-elevated); }
+/* Added diff lines. */
+.lgtm-art-add { fill: var(--color-success); opacity: 0.55; }
+/* Removed diff lines. */
+.lgtm-art-del { fill: var(--color-danger); opacity: 0.5; }
+/* The checks down the side. */
+.lgtm-art-check { fill: none; stroke: var(--color-success); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+/* The stamp's frame. */
+.lgtm-art-stamp { fill: none; stroke: var(--color-success); stroke-width: 6; }
+/* The stamp's word. */
+.lgtm-art-stamp-text { fill: var(--color-success); font-family: var(--font-mono); font-weight: 700; font-size: 52px; letter-spacing: 0.04em; }
+/* The play button's disc. */
+.lgtm-art-play-ring { fill: var(--accent-primary); }
+/* The play button's triangle. */
+.lgtm-art-play { fill: var(--canvas-primary); }
+/* The play button grows a little under the pointer. */
+.lgtm-video-poster:hover .lgtm-art-play-ring { opacity: 0.88; }
+/* The label beside the play button, for sighted readers too. */
+.lgtm-video-label { position: absolute; left: 50%; bottom: 0.6rem; transform: translateX(-50%); padding: 0.15rem 0.6rem; border-radius: var(--radius-sm); background: var(--canvas-primary); color: var(--text-primary); font-size: 0.85rem; font-weight: 600; white-space: nowrap; }
+/* What pressing play loads. */
+.lgtm-video-note { font-size: 0.85rem; color: var(--text-secondary); max-width: 66ch; }
+
+/* ---- The tune: the era switch --------------------------------------------- */
+
+/* The player: switch, era line, stage, controls. */
+.lgtm-player { display: grid; gap: 0.9rem; }
+/* The four eras as a row of pills that wrap on a phone. */
+.lgtm-eras { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0; padding: 0; border: 0; }
+/* One era. */
+.lgtm-era { display: inline-flex; align-items: center; min-height: 44px; padding: 0.35rem 0.9rem; border: 2px solid var(--border-strong); border-radius: var(--radius-md); color: var(--text-secondary); font-family: var(--font-mono); font-weight: 600; cursor: pointer; }
+/* The chosen era. */
+.lgtm-era-on { background: var(--accent-primary); border-color: var(--accent-primary); color: var(--canvas-primary); }
+/* Keyboard focus on the hidden radio shows on its pill. */
+.lgtm-era:focus-within { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+/* What the chosen era's sound is made of. */
+.lgtm-era-line { margin: 0; max-width: 66ch; color: var(--text-secondary); font-size: 0.95rem; }
+
+/* ---- The tune: the stage, per era ------------------------------------------ */
+
+/* The 8-bit look is the default: flat indigo, a hard outline, square lights. */
+.lgtm-stage {
+  --lgtm-panel: #221b5c;
+  --lgtm-border: 4px solid #3d348f;
+  --lgtm-shadow: none;
+  --lgtm-radius: 10px;
+  --lgtm-scan: none;
+  --lgtm-blur: none;
+  --lgtm-idle: #3d348f;
+  --lgtm-ink: #f1edff;
+  --lgtm-muted: #aea6dd;
+  --lgtm-check: #61e8a6;
+  --lgtm-glitch: #ff62a8;
+  --lgtm-bar: #ffc761;
+  --lgtm-stamp-bg: #221b5c;
+  --lgtm-sym-radius: 2px;
+  --lgtm-display: var(--font-mono);
+}
+/* 16-bit: a blue gradient panel in a light frame, softer lights. */
+.lgtm-stage[data-era="16"] {
+  --lgtm-panel: linear-gradient(180deg, #3349c9, #121c7d);
+  --lgtm-border: 3px solid #eef1ff;
+  --lgtm-shadow: 0 0 0 3px #08103a, 0 8px 0 #08103a88;
+  --lgtm-radius: 8px;
+  --lgtm-idle: #2a3796;
+  --lgtm-ink: #f4f6ff;
+  --lgtm-muted: #c3cbff;
+  --lgtm-check: #7cf29a;
+  --lgtm-glitch: #ff6fa0;
+  --lgtm-bar: #ffd34d;
+  --lgtm-stamp-bg: #121c7d;
+  --lgtm-sym-radius: 4px;
+}
+/* 32-bit: brushed grey, bevelled, with scan lines. */
+.lgtm-stage[data-era="32"] {
+  --lgtm-panel: linear-gradient(180deg, #2b323c 0%, #1b2028 100%);
+  --lgtm-border: 1px solid #5d6a7c;
+  --lgtm-shadow: inset 0 1px 0 #93a1b5, inset 0 -2px 0 #07090c, 0 10px 30px #00000088;
+  --lgtm-radius: 4px;
+  --lgtm-scan: repeating-linear-gradient(0deg, #ffffff08 0 1px, transparent 1px 3px);
+  --lgtm-idle: #2f3742;
+  --lgtm-ink: #e8eef6;
+  --lgtm-muted: #93a0b2;
+  --lgtm-check: #2ee6d6;
+  --lgtm-glitch: #ff3d6e;
+  --lgtm-bar: #ff8a1f;
+  --lgtm-stamp-bg: #1b2028;
+  --lgtm-sym-radius: 1px;
+  --lgtm-display: var(--font-inter), system-ui, -apple-system, sans-serif;
+}
+/* 64-bit: frosted glass over a violet and cyan glow, round lights. */
+.lgtm-stage[data-era="64"] {
+  --lgtm-panel: radial-gradient(55% 60% at 12% 0%, #4a33b3aa 0%, transparent 70%), radial-gradient(45% 55% at 95% 8%, #0fb5c288 0%, transparent 70%), #17152e;
+  --lgtm-border: 1px solid #ffffff26;
+  --lgtm-shadow: 0 24px 60px #00000073;
+  --lgtm-radius: 18px;
+  --lgtm-blur: blur(14px);
+  --lgtm-idle: #ffffff1f;
+  --lgtm-ink: #f6f5ff;
+  --lgtm-muted: #aaa6cc;
+  --lgtm-check: #5df0c0;
+  --lgtm-glitch: #ff5c8a;
+  --lgtm-bar: linear-gradient(90deg, #8b6cff, #22d3ee);
+  --lgtm-stamp-bg: #17152e;
+  --lgtm-sym-radius: 99px;
+  --lgtm-display: var(--font-inter), system-ui, -apple-system, sans-serif;
+}
+/* The screen itself, painted from its era's tokens. */
+.lgtm-stage { position: relative; display: grid; gap: 1.1rem; padding: 1.25rem; background: var(--lgtm-panel); border: var(--lgtm-border); box-shadow: var(--lgtm-shadow); border-radius: var(--lgtm-radius); -webkit-backdrop-filter: var(--lgtm-blur); backdrop-filter: var(--lgtm-blur); color: var(--lgtm-ink); overflow: hidden; }
+/* The scan lines, over everything and never in the way. */
+.lgtm-stage::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: var(--lgtm-scan); }
+/* The double charge: the frame flashes in the era's alarm colour. */
+.lgtm-stage-glitch { border-color: var(--lgtm-glitch); box-shadow: 0 0 0 2px var(--lgtm-glitch); }
+/* The story's line, given room for two lines so the stage does not jump. */
+.lgtm-status { margin: 0; min-height: 2.9em; font-family: var(--lgtm-display); font-weight: 600; font-size: clamp(0.95rem, 3.2vw, 1.15rem); line-height: 1.45; }
+/* LGTM in Morse: four letters in a wrapping row. */
+.lgtm-morse { display: flex; flex-wrap: wrap; gap: 1.1rem 1.4rem; align-items: flex-end; }
+/* One letter: its signals over its name. */
+.lgtm-letter { display: grid; gap: 0.5rem; justify-items: start; }
+/* The letter's name. */
+.lgtm-letter b { font-family: var(--lgtm-display); font-size: 0.85rem; color: var(--lgtm-muted); }
+/* The signals in a row. */
+.lgtm-signals { display: flex; gap: 7px; align-items: center; height: 16px; }
+/* A dot, unlit. */
+.lgtm-sig { display: block; width: 14px; height: 14px; background: var(--lgtm-idle); border-radius: var(--lgtm-sym-radius); transition: background 0.06s, box-shadow 0.06s; }
+/* A dash is three dots long, as in the code. */
+.lgtm-sig-dash { width: 44px; }
+/* Lit while its note plays. */
+.lgtm-sig-on { background: var(--lgtm-check); box-shadow: 0 0 14px var(--lgtm-check); }
+/* The four counters. */
+.lgtm-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.75rem; margin: 0; }
+/* One counter: the number over its name. */
+.lgtm-stat { display: grid; gap: 2px; min-width: 0; }
+/* Its name, under the number. */
+.lgtm-stat dt { order: 2; font-size: 0.8rem; color: var(--lgtm-muted); }
+/* Its number. */
+.lgtm-stat dd { order: 1; margin: 0; font-family: var(--lgtm-display); font-weight: 700; font-size: 1.5rem; font-variant-numeric: tabular-nums; }
+/* More than one invoice per order: the alarm colour. */
+.lgtm-stat-hot { color: var(--lgtm-glitch); }
+/* The progress bar's track. */
+.lgtm-bar { height: 6px; background: var(--lgtm-idle); border-radius: 3px; overflow: hidden; }
+/* Its fill, set by the player. */
+.lgtm-bar span { display: block; height: 100%; width: 0; background: var(--lgtm-bar); }
+/* The stamp that comes down at the end. */
+.lgtm-stamp { position: absolute; right: 1.1rem; bottom: 2.75rem; z-index: 1; padding: 2px 14px; border: 4px solid var(--lgtm-check); border-radius: 8px; background: var(--lgtm-stamp-bg); color: var(--lgtm-check); font-family: var(--lgtm-display); font-weight: 700; font-size: clamp(2rem, 9vw, 3.2rem); line-height: 1.1; transform: rotate(-11deg); animation: lgtm-thunk 0.18s ease-out; }
+/* The fall: from large and clear to its place. */
+@keyframes lgtm-thunk { from { transform: rotate(-11deg) scale(1.8); opacity: 0; } to { transform: rotate(-11deg) scale(1); opacity: 1; } }
+
+/* ---- The tune: the controls ------------------------------------------------ */
+
+/* Play, volume and time in a wrapping row. */
+.lgtm-controls { display: flex; flex-wrap: wrap; gap: 0.9rem 1.4rem; align-items: center; }
+/* The volume slider and its label. */
+.lgtm-volume { display: flex; gap: 0.6rem; align-items: center; color: var(--text-secondary); font-size: 0.9rem; }
+/* The slider, in the accent. */
+.lgtm-volume input { accent-color: var(--accent-primary); width: 140px; max-width: 40vw; }
+/* Elapsed over total. */
+.lgtm-time { color: var(--text-secondary); font-size: 0.9rem; }
+
+/* ---- The stamp toy ----------------------------------------------------------- */
+
+/* The toy: box, action, verdict. */
+.lgtm-stamp-toy { display: grid; gap: 1rem; }
+/* The text box keeps a code-friendly height. */
+.lgtm-stamp-input { min-height: 14rem; white-space: pre; overflow-x: auto; }
+/* The Stamp button on its own row. */
+.lgtm-stamp-actions { display: flex; gap: 0.75rem; }
+/* The verdict area: stamp, wry line, counts, findings. */
+.lgtm-stamp-result { display: grid; gap: 0.7rem; justify-items: start; }
+/* Nothing pasted. */
+.lgtm-stamp-empty { margin: 0; color: var(--text-secondary); }
+/* The rubber stamp: a framed word, tilted, landing with a thunk. */
+.lgtm-stamp-mark { margin: 0.4rem 0 0.2rem 0.3rem; padding: 0.2rem 0.9rem; border: 4px solid currentColor; border-radius: var(--radius-md); font-family: var(--font-mono); font-weight: 700; font-size: clamp(1.6rem, 7vw, 2.4rem); line-height: 1.15; transform: rotate(-6deg); animation: lgtm-stamp-fall 0.2s ease-out; }
+/* Approved: the theme's success colour. */
+.lgtm-stamp-mark-ok { color: var(--color-success); }
+/* Changes requested: the theme's danger colour. */
+.lgtm-stamp-mark-no { color: var(--color-danger); }
+/* The fall of the toy's stamp. */
+@keyframes lgtm-stamp-fall { from { transform: rotate(-6deg) scale(1.7); opacity: 0; } to { transform: rotate(-6deg) scale(1); opacity: 1; } }
+/* The wry line. */
+.lgtm-stamp-quip { margin: 0; max-width: 66ch; font-style: italic; color: var(--text-primary); }
+/* Counts and the diff note. */
+.lgtm-stamp-meta { margin: 0; color: var(--text-secondary); font-size: 0.9rem; }
+/* The findings, one per row. */
+.lgtm-stamp-findings { margin: 0; padding: 0; list-style: none; display: grid; gap: 0.5rem; width: 100%; }
+/* One finding: where, what, and the line. */
+.lgtm-stamp-finding { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: 0.2rem 0.75rem; padding: 0.55rem 0.75rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-base); }
+/* Where: the line number. */
+.lgtm-stamp-where { color: var(--text-secondary); font-size: 0.85rem; }
+/* What was found. */
+.lgtm-stamp-what { color: var(--text-primary); }
+/* The line itself, under what was found, scrolling sideways when long. */
+.lgtm-stamp-excerpt { grid-column: 2; display: block; overflow-x: auto; white-space: pre; font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-secondary); }
+
+/* ---- Phone width ------------------------------------------------------------ */
+
+@media (max-width: 33rem) {
+  /* The story's longest line (the passed checks and the prompt that asked for no mistakes) takes three lines here. */
+  .lgtm-status { min-height: 4.35em; }
+  /* Two counters per row. */
+  .lgtm-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* Tighter Morse. */
+  .lgtm-morse { gap: 0.9rem; }
+  /* Shorter dashes. */
+  .lgtm-sig-dash { width: 32px; }
+  /* Closer signals. */
+  .lgtm-signals { gap: 6px; }
+  /* A finding stacks: where over what over the line. */
+  .lgtm-stamp-finding { grid-template-columns: minmax(0, 1fr); }
+  /* The line under them, full width. */
+  .lgtm-stamp-excerpt { grid-column: 1; }
+}
+
+/* ---- Reduced motion ---------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  /* The stamps land without falling. */
+  .lgtm-stamp, .lgtm-stamp-mark { animation: none; }
+  /* The Morse lights switch without fading. */
+  .lgtm-sig { transition: none; }
+}

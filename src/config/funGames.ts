@@ -109,6 +109,11 @@ export const FUN_TOYS: readonly FunToy[] = [
   // link to a route that exists, instead of a locale-prefixed path that was never built. Outside English its card says so
   // with an "EN" badge (review R4-10).
   { key: "importanceMeter", href: "/dev/fun/importance-meter", badged: false, enOnly: true },
+  // The LGTM homage and its stamp toy (queue 5d; PRIME 12/11/2026 21:24, 14/11/2026 18:19 and 22:09): the music video
+  // behind a click, the site's own way to yes, an original tune in four eras of game sound, and a stamp that reads
+  // before it approves. Both in every live language.
+  { key: "lgtm", href: "/dev/fun/lgtm", badged: false }, // the LGTM homage
+  { key: "lgtmStamp", href: "/dev/fun/lgtm-stamp", badged: false }, // the LGTM stamp
 ];
 
 /** The puzzles, games and toys together: the home page's fourth figure (PRIME 11/11/2026 21:20). Derived, never typed. */

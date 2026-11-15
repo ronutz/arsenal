@@ -41,7 +41,7 @@
 // The day arithmetic, for the self-test's run of days.
 import { LAUNCH_DAY, addDays } from "./daily";
 // Prefix of the Day: the day's answer, the marks and hard mode.
-import { MAX_TRIES, allOk, dailyPuzzle, grade, hardViolation, solve as podSolve, type Facts } from "./games/prefix-of-the-day/engine";
+import { MAX_TRIES, allOk, dailyPuzzle, grade, hardViolation, isBitsTry, solve as podSolve, type Facts } from "./games/prefix-of-the-day/engine";
 // Five Clues: the day's puzzle and the judge.
 import { CLUES, acceptedAnswers, dailyFor, judge as fiveJudge } from "./games/five-clues/engine";
 // Access Points: the day's floor and the solved test.
@@ -241,7 +241,10 @@ function verifyPrefix(day: string, state: unknown): Verified | null {
   // Each try against the ones before it.
   for (let i = 1; hard && i < facts.length; i++) if (hardViolation(facts.slice(0, i), answer, facts[i]) !== null) hard = false;
   // The round: tries are the score (fewer is better), X when unsolved.
-  return { won, score: won ? facts.length : null, timeMs: null, parts: { tries: facts.length, hard }, verified: true, plausible: true };
+  // The bit view was turned on: its marker row is one of the tries (the penalty), counted like any other try.
+  const bits = facts.some(isBitsTry);
+  // The round: tries are the score (fewer is better), X when unsolved.
+  return { won, score: won ? facts.length : null, timeMs: null, parts: { tries: facts.length, hard, bits }, verified: true, plausible: true };
 }
 
 /**
@@ -918,6 +921,10 @@ export function verifySelfTest(): VerifyReport {
     ok(`${day} prefix six wrong is a lost round`, verifyRound("prefix-of-the-day", day, { guesses: [wrong, wrong, wrong, wrong, wrong, wrong] })?.won === false);
     ok(`${day} prefix try after the solve refused`, verifyRound("prefix-of-the-day", day, { guesses: [right, wrong] }) === null);
     ok(`${day} prefix open round refused`, verifyRound("prefix-of-the-day", day, { guesses: [wrong] }) === null);
+    // The bit view (12/11/2026): its marker row is one try spent, keeps a hard round hard, and is reported in the parts.
+    const bitsRow = [2 ** 32, 2 ** 32, 2 ** 32, 2 ** 32];
+    const withBits = verifyRound("prefix-of-the-day", day, { guesses: [bitsRow, right], hard: true });
+    ok(`${day} prefix bit view costs one try`, withBits?.score === 2 && withBits?.parts.bits === true && withBits?.parts.hard === true);
 
     // Five Clues: right on the first clue; five passes; a forged "solved" on a wrong guess.
     const fp = dailyFor(day);
