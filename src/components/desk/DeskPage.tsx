@@ -19,16 +19,16 @@
 // cleared while the page was open; what was stored being unreadable (offered
 // as a file before anything overwrites it); parts repaired; whether the
 // browser agreed to keep the site's storage; the site index not loading. A
-// transfer link (/desk#desk=...) is read here and offered to merge or to use
+// transfer link (/my-desk#desk=...) is read here and offered to merge or to use
 // instead, with an Undo. When this browser syncs, the page syncs on arrival.
 //
 // PORTABLE STORAGE (PRIME 12/11/2026 13:38). Two more links arrive here:
-//   /desk#pair=<code>: the pairing link (or QR code) another browser shows in
+//   /my-desk#pair=<code>: the pairing link (or QR code) another browser shows in
 //     Settings. The code leaves the address at once; the page asks "Use the
 //     same desk and settings here?" and, on yes, joins the encrypted sync
 //     (src/lib/desk/sync.ts, joinWithCode), which merges what this browser
 //     holds into the stored copy and takes the other browser's settings.
-//   /desk#profile=<data>: the whole portable profile carried after the "#",
+//   /my-desk#profile=<data>: the whole portable profile carried after the "#",
 //     made in Settings without the server; offered to add or to use instead,
 //     with an Undo.
 // While this browser syncs, one line says when it last synced ("Synced 14:02",

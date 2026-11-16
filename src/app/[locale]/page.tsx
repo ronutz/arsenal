@@ -15,8 +15,9 @@
 //   1. Hero: the broader thesis (a workbench, not only a toolbox), the search
 //      field as the first interaction, three counts (utility · knowledge ·
 //      history).
-//   2. Start here: six intents and "surprise me", not a taxonomy (the Blog joined
-//      as the sixth, just before "surprise me", 15/11/2026 at PRIME's request).
+//   2. Start here: eight intents and "surprise me", not a taxonomy (the Blog joined
+//      15/11/2026 05:35; Study guides and Fun lab joined at 18:17 so the section is
+//      a 3 x 3 grid on desktop, Blog penultimate, "surprise me" last).
 //   3. Try something now: the compact CIDR check with the privacy sentence
 //      beside the data it protects.
 //   4. Browse by platform: the vendor hubs, kept apart from the platforms the
@@ -119,15 +120,25 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     newImprovement && { key: "improvement", entry: newImprovement, href: "/changelog" },
   ].filter(Boolean) as { key: string; entry: ChangelogEntry; href: string }[];
 
-  // THE SIX INTENTS of "Start here": a question, a destination, a verb. The Blog is the sixth, the penultimate card
-  // of the section, before "Take me somewhere" (PRIME 15/11/2026 05:35).
+  // THE EIGHT INTENTS of "Start here": a question, a destination, a verb. With "Take me somewhere" they make nine
+  // cards, a 3 x 3 grid on a wide screen (PRIME 15/11/2026 18:17: "add two more sections so it is a 3 x 3 grid on
+  // desktop browsers"); the two added are Study guides (preparing for an exam, the instructor's own ground) and the
+  // Fun lab (the puzzles and games), and the Blog stays the penultimate card (PRIME 15/11/2026 05:35).
+  // Rows on a wide screen: Tools, Learn, Study guides / Industry, Training, Advisory / Fun lab, Blog, Take me somewhere.
   const intents: { key: string; href: string; accent: string }[] = [
-    { key: "tools", href: "/tools", accent: "var(--accent-primary)" },
-    { key: "learn", href: "/learn", accent: "var(--color-warning)" },
-    { key: "industry", href: "/industry", accent: "var(--color-success)" },
-    { key: "training", href: "/training", accent: "var(--redu-brand)" },
-    { key: "advisory", href: "/advisory", accent: "var(--accent-amber)" },
-    { key: "blog", href: "/blog", accent: "var(--color-info)" }, // sky blue: kept apart from the amber Advisory card beside it
+    // PRIME's order (15/11/2026 19:01): Tools, Learn, Industry, Training, Advisory, About, Blog, Fun lab, then "surprise
+    // me". Accents are chosen so no two neighbours share a hue in either grid: three columns from 56rem
+    // (Tools Learn Industry / Training Advisory About / Blog Fun surprise) and two below it.
+    { key: "tools", href: "/tools", accent: "var(--accent-primary)" }, // cyan
+    { key: "learn", href: "/learn", accent: "var(--color-warning)" }, // amber
+    { key: "industry", href: "/industry", accent: "var(--color-success)" }, // green
+    { key: "training", href: "/training", accent: "var(--redu-brand)" }, // the training partner's brand colour
+    // Violet, mixed from the theme's sky and red so it follows every theme; Advisory sits under the amber Learn card in
+    // the three-column grid, so it no longer wears amber here.
+    { key: "advisory", href: "/advisory", accent: "color-mix(in oklab, var(--color-info) 45%, var(--color-danger))" },
+    { key: "about", href: "/about", accent: "var(--color-neutral)" }, // slate: a quiet card for the person behind the site
+    { key: "blog", href: "/blog", accent: "var(--color-info)" }, // sky blue
+    { key: "fun", href: "/dev/fun", accent: "var(--color-orange)" }, // orange, under the violet Advisory card
   ];
 
 
@@ -155,7 +166,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <section className="section" id="start">
           <div className="container">
             <h2 className="section-title">{t("front.startTitle")}</h2>
-            <ul className="intent-grid intent-grid--home">{/* seven cards: four columns, "surprise" spans two so no row is left ragged */}
+            <ul className="intent-grid">{/* nine cards: three columns on a wide screen, two in between, one on a phone; none spans two (PRIME 15/11/2026 20:26) */}
               {intents.map((i) => (
                 <li key={i.key} className="intent" style={{ "--intent-accent": i.accent } as CSSProperties}>
                   <Link href={i.href} className="intent-link">
@@ -165,7 +176,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   </Link>
                 </li>
               ))}
-              {/* The seventh: not an intent, a door to the "Take me somewhere" column below. Neutral grey, the colour of
+              {/* The ninth: not an intent, a door to the "Take me somewhere" column below. Neutral grey, the colour of
                   "not yet decided" (never the fuchsia WebAssembly mark, reserved for that one meaning site-wide). A click
                   asks the column for a draw and goes there, so the reader lands on a destination already named and chooses
                   (PRIME 03:10, 11:03, 11:35). Without JavaScript it is the plain anchor. */}

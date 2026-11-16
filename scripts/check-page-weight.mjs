@@ -55,7 +55,11 @@ const CEILINGS = new Map([
   // growth is the content sweep's batches 12 to 15 (PRIME 11/11 21:09 and 12/11 11:21 to 12:49), whose rewritten entries
   // carry longer stand-alone definitions, net of the four merges of 12/11 12:42; no template change. The split of the
   // page (F07) is still the open rendering decision. New ceiling: that weight plus about five per cent.
-  ["/glossary", 3_980_000],
+  // RAISED 2026-11-16 (pt-BR 4,026,009 at the six-language build started 15/11 22:56, 46,009 bytes over 3,980,000; en
+  // 3,939,509): the growth is 72 new entries written at PRIME's requests on 15/11 (the psyops Arcs 4 to 6 terms, 32,
+  // and the electronic-trading series' 40, PRIME 21:31) and the PTP entry's enrichment; no template change. The split
+  // of the page (F07) is still the open rendering decision. New ceiling: that weight plus about five per cent.
+  ["/glossary", 4_230_000],
   // The changelog: every entry since the site began (2026-10-19: en 2,811,787; pt-BR 2,832,054). RAISED 2026-10-26
   // (pt-BR 3,004,130 at the 02:45 build): the growth is the week's new entries, each with its Portuguese title, not a
   // template change; the page still renders every entry, and splitting it (by year or with a "show older" fold) is the

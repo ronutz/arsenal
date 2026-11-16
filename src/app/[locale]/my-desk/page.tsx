@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 // ============================================================================
-// src/app/[locale]/desk/page.tsx
+// src/app/[locale]/my-desk/page.tsx (the address /my-desk since 15/11/2026; it was /desk)
 // ----------------------------------------------------------------------------
 // MY DESK, THE READER'S OWN PAGE (PRIME 12/11/2026 12:42: "yes on the most
 // functionally rich and user convenient options"; PLAN-personal-desk-20261112).

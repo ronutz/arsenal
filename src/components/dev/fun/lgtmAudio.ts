@@ -94,40 +94,102 @@ export function newAudioContext(): AudioContext | null {
   return AC ? new AC() : null;
 }
 
+/** Which chime: the green check after an LGTM, or the falling one after "Changes requested". */
+export type ChimeKind = "lgtm" | "changes";
+
+/** One note of a chime: its pitch in hertz, its start and length in steps, and a slow bend down at the end. */
+interface ChimeNote {
+  /** Hertz. */
+  f: number;
+  /** Start, in steps from the first note. */
+  at: number;
+  /** Length, in steps. */
+  len: number;
+  /** A held, wobbling fall at the end (the last note of the "changes" chime). */
+  sag?: boolean;
+}
+
+/** The chimes. LGTM: the green-check arpeggio G5, B5, D6, G6, rising in sixteenths. Changes requested (PRIME
+ *  15/11/2026 21:08): four falling semitones, D5, C#5, C5, B4, in eighths, the last one held and sagging, the old
+ *  "not this time" figure, in the same square-wave voice. */
+const CHIMES: Record<ChimeKind, { step: number; wave: OscillatorType; level: number; notes: readonly ChimeNote[] }> = {
+  lgtm: {
+    step: 60 / 132 / 4, // a sixteenth at 132 beats a minute
+    wave: "square", // the 8-bit sound
+    level: 0.08, // the peak
+    notes: [
+      { f: 783.99, at: 0, len: 0.9 }, // G5
+      { f: 987.77, at: 1, len: 0.9 }, // B5
+      { f: 1174.66, at: 2, len: 0.9 }, // D6
+      { f: 1567.98, at: 3, len: 3 }, // G6, ringing longer
+    ],
+  },
+  changes: {
+    step: 60 / 132 / 2, // an eighth at 132 beats a minute
+    wave: "square", // the same 8-bit voice
+    level: 0.07, // a touch softer than the good news
+    notes: [
+      { f: 587.33, at: 0, len: 0.85 }, // D5
+      { f: 554.37, at: 1, len: 0.85 }, // C#5
+      { f: 523.25, at: 2, len: 0.85 }, // C5
+      { f: 493.88, at: 3, len: 4, sag: true }, // B4, held, wobbling and sagging
+    ],
+  },
+};
+
 /**
- * The green-check chime alone (G, B, D, G, rising): the stamp toy plays it on an LGTM.
+ * Schedule a chime on a context (a live one for the button, an offline one for a review recording).
+ *
+ * @param ctx the context
+ * @param kind which chime
+ * @param t0 when it starts, on the context's clock
+ * @returns how long it lasts, in seconds from t0
  */
-export function playChime(): void {
-  // Media playback first, inside the tap.
-  enterMediaPlayback();
-  // A context for the four notes.
-  const ctx = newAudioContext();
-  // No Web Audio: no chime.
-  if (!ctx) return;
-  // The four notes in hertz: G5, B5, D6, G6.
-  const notes = [783.99, 987.77, 1174.66, 1567.98];
-  // A sixteenth at 132 beats a minute.
-  const st = 60 / 132 / 4;
-  // Just ahead of the clock.
-  const t0 = ctx.currentTime + 0.05;
+export function scheduleChime(ctx: BaseAudioContext, kind: ChimeKind, t0: number): number {
+  // The chime asked for.
+  const c = CHIMES[kind];
+  // Where the last note ends, in seconds from t0.
+  let end = 0;
   // Each note.
-  notes.forEach((f, i) => {
+  c.notes.forEach((n) => {
     // A square-wave oscillator.
     const o = ctx.createOscillator();
     // Its volume envelope.
     const g = ctx.createGain();
-    // The 8-bit sound.
-    o.type = "square";
-    // Its pitch.
-    o.frequency.value = f;
+    // The chime's wave.
+    o.type = c.wave;
     // When it starts.
-    const t = t0 + i * st;
-    // The last note rings longer.
-    const d = i === notes.length - 1 ? st * 3 : st * 0.9;
+    const t = t0 + n.at * c.step;
+    // Its pitch, set as the published LGTM chime sets it (a value, not an automation event), so that chime stays the
+    // same sound sample for sample (PRIME 15/11/2026 21:15: "the one currently published is great").
+    o.frequency.value = n.f;
+    // How long it lasts.
+    const d = n.len * c.step;
+    // The sag: a wobble (a slow vibrato) and a fall of about a semitone over the held note.
+    if (n.sag) {
+      // The vibrato's oscillator.
+      const lfo = ctx.createOscillator();
+      // Its depth, in hertz.
+      const depth = ctx.createGain();
+      // Five wobbles a second.
+      lfo.frequency.value = 5;
+      // A third of a semitone either way.
+      depth.gain.value = n.f * 0.02;
+      // Into the pitch.
+      lfo.connect(depth).connect(o.frequency);
+      // Running for the note.
+      lfo.start(t);
+      // And stopped with it.
+      lfo.stop(t + d + 0.02);
+      // The fall, starting after the first quarter of the note.
+      o.frequency.setValueAtTime(n.f, t + d * 0.25);
+      // Down about a semitone by the end.
+      o.frequency.exponentialRampToValueAtTime(n.f * 0.94, t + d);
+    }
     // Silent at first.
     g.gain.setValueAtTime(0.0001, t);
     // A quick attack.
-    g.gain.linearRampToValueAtTime(0.08, t + 0.004);
+    g.gain.linearRampToValueAtTime(c.level, t + 0.004);
     // A fade to silence.
     g.gain.exponentialRampToValueAtTime(0.0001, t + d);
     // Wired.
@@ -136,12 +198,33 @@ export function playChime(): void {
     o.start(t);
     // Stopped.
     o.stop(t + d + 0.02);
+    // The latest end so far.
+    end = Math.max(end, n.at * c.step + d);
   });
+  // Its length.
+  return end;
+}
+
+/**
+ * A chime alone: the green check after an LGTM, or the falling figure after "Changes requested". The stamp toy plays
+ * it when its button is pressed.
+ *
+ * @param kind which chime
+ */
+export function playChime(kind: ChimeKind = "lgtm"): void {
+  // Media playback first, inside the tap.
+  enterMediaPlayback();
+  // A context for the notes.
+  const ctx = newAudioContext();
+  // No Web Audio: no chime.
+  if (!ctx) return;
+  // Scheduled just ahead of the clock.
+  const end = scheduleChime(ctx, kind, ctx.currentTime + 0.05);
   // The context closes after the last note, and the session is handed back.
   window.setTimeout(() => {
     // Closed.
     void ctx.close();
     // Handed back.
     leaveMediaPlayback();
-  }, Math.ceil((0.05 + st * 6 + 0.2) * 1000));
+  }, Math.ceil((0.05 + end + 0.2) * 1000));
 }

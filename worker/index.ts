@@ -230,6 +230,9 @@ const VANITY_REDIRECTS = new Map<string, string>([
   // /importance-meter, which was added a day earlier and never published, so
   // nothing external points at it.
   ["/im", "/en/dev/fun/importance-meter/"],
+  // PRIME 15/11/2026 20:56: "Redirect https://ronutz.com/lgtm/ to https://ronutz.com/en/dev/fun/lgtm/". The LGTM homage;
+  // a Worker entry, so it costs nothing against Cloudflare's _redirects limits (2,000 static, 100 dynamic).
+  ["/lgtm", "/en/dev/fun/lgtm/"],
 ]);
 
 export default {

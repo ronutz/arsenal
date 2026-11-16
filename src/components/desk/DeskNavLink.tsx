@@ -27,10 +27,10 @@ export default function DeskNavLink(props: { label: string }) {
   // The current path without its locale.
   const pathname = usePathname() ?? "";
   // On the desk.
-  const current = pathname === "/desk" || pathname.startsWith("/desk/");
+  const current = pathname === "/my-desk" || pathname.startsWith("/my-desk/");
   // The link: a mark and the word (the mark hidden from assistive technology; the word names it).
   return (
-    <Link href="/desk" className="desk-nav-link" aria-current={current ? "page" : undefined}>
+    <Link href="/my-desk" className="desk-nav-link" aria-current={current ? "page" : undefined}>
       <span className="desk-nav-mark" aria-hidden="true">{"★"}</span>
       <span className="desk-nav-text">{props.label}</span>
     </Link>

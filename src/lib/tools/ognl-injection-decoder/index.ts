@@ -60,6 +60,7 @@ export const manifest = Object.freeze({
     { id: "apache-s2-057", label: "Apache Struts security bulletin S2-057 (CVE-2018-11776): possible RCE when namespace and result values are evaluated", url: "https://cwiki.apache.org/confluence/display/WW/S2-057" },
     // 2026-10-18: Apache moved Commons OGNL to its dormant components; the old /proper/ address answers 404.
     { id: "ognl-language-guide", label: "Apache Commons OGNL language guide: expression syntax and static method access", url: "https://commons.apache.org/dormant/commons-ognl/language-guide.html" },
+    { id: "ognl-language-guide-dead-link", label: "Apache Commons OGNL language guide: expression syntax and static method access; link dead as of 18 October 2026", url: "https://commons.apache.org/proper/commons-ognl/language-guide.html" }, // restored 15/11/2026: dead link kept (RULE-dead-sources-keep-content-20261115)
   ],
 });
 

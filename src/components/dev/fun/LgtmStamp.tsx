@@ -18,8 +18,10 @@
 // tools' D-83 shape, the example being a golden example of the checks, and the
 // page opens with it already stamped so the first look shows what the toy
 // does. The stamp's fall is a CSS animation that reduced motion turns off; the
-// chime after an LGTM plays only when pressed (src/components/dev/fun/
-// lgtmAudio.ts, which also lets an iPhone in silent mode play it).
+// verdict's chime plays only when pressed: the green check after an LGTM, and
+// since PRIME's 15/11/2026 21:08 request a falling figure after "Changes
+// requested" (src/components/dev/fun/lgtmAudio.ts, which also lets an iPhone
+// in silent mode play it).
 // ============================================================================
 
 import { useState } from "react";
@@ -131,12 +133,11 @@ export default function LgtmStamp() {
                 </ol>
               </>
             )}
-            {/* After an LGTM, the green-check chime on request. */}
-            {result.verdict === "lgtm" && (
-              <button type="button" className="fg-button" onClick={() => playChime()}>
-                {t("chime")}
-              </button>
-            )}
+            {/* The verdict's chime on request: the green check after an LGTM, the falling figure after "Changes requested"
+                (PRIME 15/11/2026 21:08). */}
+            <button type="button" className="fg-button" onClick={() => playChime(result.verdict === "lgtm" ? "lgtm" : "changes")}>
+              {t("chime")}
+            </button>
           </>
         )}
       </div>

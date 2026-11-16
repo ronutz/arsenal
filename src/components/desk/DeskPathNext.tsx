@@ -12,7 +12,7 @@
 // src/lib/desk/pathNext.ts: "Next in <path>: <title>" linking to the next
 // unread item, "This is the last item left in <path>" when only this page
 // remains, or "You finished <path>" when every item is read; with the path's
-// progress in words and a link to the path on My desk (/desk#path=<id>, which
+// progress in words and a link to the path on My desk (/my-desk#path=<id>, which
 // opens it there). When the item is in no path, nothing is drawn: no box, no
 // space. Read from the desk in this browser; to name the next item it loads
 // the list of the site's items (a file on this site, the one My desk and the
@@ -132,7 +132,7 @@ export default function DeskPathNext(props: { item: ItemId; placement?: "end" | 
               <span className="desk-pathnext-meta">
                 <span className="desk-progress-text">{t("progress", { done: h.done, total: h.total })}</span>
                 {" · "}
-                <Link href={`/desk#path=${h.path.id}`} className="desk-link">{t("onDesk")}</Link>
+                <Link href={`/my-desk#path=${h.path.id}`} className="desk-link">{t("onDesk")}</Link>
               </span>
             </li>
           );
@@ -141,7 +141,7 @@ export default function DeskPathNext(props: { item: ItemId; placement?: "end" | 
       {/* More paths hold this page: counted, with the way to all of them. */}
       {more > 0 && (
         <p className="desk-muted">
-          {t("more", { count: more })} <Link href="/desk" className="desk-link">{t("open")}</Link>
+          {t("more", { count: more })} <Link href="/my-desk" className="desk-link">{t("open")}</Link>
         </p>
       )}
     </section>

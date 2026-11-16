@@ -75,8 +75,8 @@ export function ContinueWidget(props: { data: DeskData; index: SiteIndex | null 
       const raw = window.localStorage.getItem(RECENT_KEY);
       // Parsed.
       const list = raw ? (JSON.parse(raw) as RecentPage[]) : [];
-      // Well-formed ones, not this page in any language ("/desk", "/en/desk/", "/pt-BR/desk"), the first three.
-      setRecent(list.filter((p) => p && typeof p.path === "string" && typeof p.title === "string" && !/^(\/[A-Za-z]{2}(?:-[A-Za-z]{2})?)?\/desk\/?$/.test(p.path)).slice(0, 3));
+      // Well-formed ones, not this page in any language ("/my-desk", "/en/my-desk/", "/pt-BR/my-desk"), the first three.
+      setRecent(list.filter((p) => p && typeof p.path === "string" && typeof p.title === "string" && !/^(\/[A-Za-z]{2}(?:-[A-Za-z]{2})?)?\/my-desk\/?$/.test(p.path)).slice(0, 3));
     } catch {
       // No trail.
       setRecent([]);

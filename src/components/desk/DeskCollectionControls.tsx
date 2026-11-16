@@ -90,7 +90,7 @@ export default function DeskCollectionControls(props: { item: ItemId; members: I
         {/* Adopted already: said, with the way to it; otherwise the two ways to adopt. */}
         {adopted ? (
           <span className="desk-collection-on">
-            <span className="desk-sign" aria-hidden="true">{"✓"}</span> {t("onDesk")} · <Link href="/desk" className="desk-link">{t("open")}</Link>
+            <span className="desk-sign" aria-hidden="true">{"✓"}</span> {t("onDesk")} · <Link href="/my-desk" className="desk-link">{t("open")}</Link>
           </span>
         ) : (
           <button type="button" className="desk-btn" aria-expanded={choosing} onClick={() => setChoosing((v) => !v)}>

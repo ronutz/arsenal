@@ -1,0 +1,401 @@
+---
+slug: anatomy-of-a-fix-message-and-the-session-layer
+title: "Anatomy of a FIX message and the session layer"
+summary: "A FIX message is a string of tag=value fields separated by the SOH control character, framed by BeginString, BodyLength and CheckSum, and carried by a session layer that numbers every message, detects gaps and recovers them. After reading, you can take a NewOrderSingle and an ExecutionReport apart field by field, compute BodyLength and CheckSum by hand (the official example's printed values do not match its content), follow a logon, a heartbeat, a resend and a gap fill, explain what happens after a disconnect, and say what FIX over TLS adds, with B3's gateway as the Brazilian case."
+concepts: ["tag=value", "SOH delimiter", "BeginString", "BodyLength", "CheckSum", "MsgType", "standard header", "standard trailer", "repeating group", "NewOrderSingle", "ExecutionReport", "ExecType", "OrdStatus", "FIX session", "FIX connection", "Logon", "Heartbeat", "TestRequest", "MsgSeqNum", "ResendRequest", "PossDupFlag", "SequenceReset", "gap fill", "Logout", "cancel on disconnect", "FIXS", "FIX over TLS"]
+relatedTools: ["ascii-table"]
+relatedArticles: ["the-fix-protocol-origins-versions-and-the-community", "electronic-trading-from-the-pit-to-the-microsecond", "fix-networks-hubs-and-managed-connectivity", "brazil-bmf-bovespa-b3-and-electronic-access", "ascii-the-128-codes", "tcp-connection-lifecycle", "osi-model-in-practice", "mutual-tls", "tls12-tls13-dtls-quic", "hashing-encryption-encoding", "retries-timeouts-and-idempotency"]
+category: networking
+order: 367
+status: reviewed
+updated: "2026-11-15"
+---
+
+A Financial Information eXchange (FIX) message in its classic form is readable text: numbered fields such as `35=D` or `54=1`, one after another, separated by an invisible control character ([FIX TagValue Encoding technical standard, June 2020](https://fixtrading.org/packages/fix-tagvalue-encoding/)). Underneath it runs a session protocol that numbers every message in both directions, notices when one is missing and asks for it again, so that one session can survive several broken connections ([FIX Session Layer technical standard, November 2020](https://fixtrading.org/packages/fix-session-layer-technical-standard/)). This part of the series opened by [Electronic trading: from the pit to the microsecond](/learn/electronic-trading-from-the-pit-to-the-microsecond) follows [The FIX protocol: origins, versions and the community](/learn/the-fix-protocol-origins-versions-and-the-community). After reading, you will be able to take an order and its execution report apart field by field, compute the two integrity fields by hand, follow every session message from logon to logout, explain what happens after a disconnect, and say what FIX over Transport Layer Security (TLS) changes. Examples use the vertical bar `|` where the real delimiter sits, as version 2.7a of the specification did in 1995 ([FIX 2.7a specification](https://fixtrading.org/packages/fix-2-7-specification-document-pdf/)).
+
+## Two layers on one stream
+
+Version 2.7a of the specification already defined FIX "at two levels; session and application": the session level "is concerned with the delivery of data while the application level defines business related data content" ([FIX 2.7a specification, introduction, 1995](https://fixtrading.org/packages/fix-2-7-specification-document-pdf/)). The current standards place each part on the Open Systems Interconnection (OSI) model. The session layer "is a realization of the ISO/IEC 7498-1:1994 Open System Interconnection basic reference model level 5 session layer" ([FIX Session Layer technical standard, November 2020, scope](https://fixtrading.org/packages/fix-session-layer-technical-standard/)), and the `tag=value` encoding "corresponds to the Presentation Layer" ([FIX TagValue Encoding technical standard, June 2020, scope](https://fixtrading.org/packages/fix-tagvalue-encoding/)). See [the OSI model in practice](/learn/osi-model-in-practice) for the layers themselves.
+
+Below the session sits a transport. The standard asks only for "ordered and lossless message delivery and full duplex operation" and notes that TCP/IP "is widely used and is a de facto standard transport layer for FIX sessions" ([FIX Session Layer technical standard, sections 3.1.22 and 4.3.1](https://fixtrading.org/packages/fix-session-layer-technical-standard/)). The connection's own life is covered in [the TCP connection lifecycle](/learn/tcp-connection-lifecycle).
+
+Two words recur below. A FIX session is "a bidirectional stream of ordered messages between two peers within a continuous sequence number series beginning with 1", and it "can exist across multiple sequential (not concurrent) FIX connections". A FIX connection is one logon, message exchange and logout over one transport connection, and it "may be concluded by the unrecoverable loss of the transport layer, a system failure, or an application failure" (same standard, section 4). The session is "based on an optimistic model": there is no acknowledgement of each message at the session level, and errors show up as gaps in the sequence numbers (same section). The software that implements it is the "FIX session processor", "Commonly referred to as a FIX Engine" (section 3.1.5).
+
+## Tag=value and the delimiter
+
+Each field is an integer tag, the equals sign (character value 61), and a value; "Each tagvalue pair is separated by the Start of Heading control character" (SOH), "hexadecimal value 0x01", defined by ISO 6429 ([FIX TagValue Encoding, sections 1, 4.2.2 and 4.2.4](https://fixtrading.org/packages/fix-tagvalue-encoding/)). Values use the single-byte character set ISO/IEC 8859-1 by default, or another single-byte set by counterparty agreement (section 4.1). Version 2.7a described the delimiter as "the non-printing, ASCII" character SOH, code 001, ASCII being the American Standard Code for Information Interchange ([FIX 2.7a specification](https://fixtrading.org/packages/fix-2-7-specification-document-pdf/)); [ASCII, the 128 codes](/learn/ascii-the-128-codes) lists the other codes.
+
+The rules that make a stream of such fields parseable are few ([FIX TagValue Encoding, sections 4.2 and 4.3](https://fixtrading.org/packages/fix-tagvalue-encoding/)):
+
+- A well-formed field has the form `tag=value` followed by SOH. It is malformed if the tag or the value is empty, the equals sign is missing, or the value contains SOH when the field is not of a binary data type.
+- Binary or multibyte data must be "immediately preceded by its associated Length field", so the parser knows how many bytes to take even if they include 0x01.
+- Tags are unique across session and application fields, and a tag appears at most once in a message except inside a repeating group. Optional fields without a value are omitted, never sent empty.
+- Order is free, with exceptions: the message starts with BeginString(8), BodyLength(9) and MsgType(35) in that order, ends with CheckSum(10), and fields inside a repeating group follow the group's definition.
+- Components, the named bundles of fields in the specification, leave no trace on the wire: "Any component boundary is lost during encoding".
+
+A repeating group starts with a count field of type NumInGroup, named NoXXX by convention, which "must immediately precede the repeating group instances" ([FIX TagValue Encoding, section 4.3.6](https://fixtrading.org/packages/fix-tagvalue-encoding/)). The standard's own example has two instances, each opened by tag 372: `384=2|372=6|385=R|372=7|385=R|` (same section). In the Logon message that group is MsgTypeGrp, where NoMsgTypes(384) counts the entries, RefMsgType(372) names a message type and MsgDirection(385) says which way it flows ([FIX Session Layer technical standard, sections 4.3.8 and 8.4](https://fixtrading.org/packages/fix-session-layer-technical-standard/)).
+
+## Header, body and trailer
+
+"The general format of a message is a standard header followed by the message body fields and terminated with a standard trailer" ([FIX TagValue Encoding, section 4.3](https://fixtrading.org/packages/fix-tagvalue-encoding/)). The header fields every message carries:
+
+| Tag | Field | What it holds |
+|---|---|---|
+| 8 | BeginString | The session profile, `FIX.4.2`, `FIX.4.4` or `FIXT.1.1`; "ALWAYS FIRST FIELD IN MESSAGE" ([FIXimate, BeginString](https://orchimate.org/fixtrading/fix-latest/fields/BeginString); [BeginStringCodeSet](https://orchimate.org/fixtrading/fix-latest/codeSets/BeginStringCodeSet)) |
+| 9 | BodyLength | "Message length, in bytes, forward to the CheckSum field"; always second ([FIXimate, BodyLength](https://orchimate.org/fixtrading/fix-latest/fields/BodyLength)) |
+| 35 | MsgType | The message type; always third; case sensitive; a value starting with "U" marks a privately defined message ([FIXimate, MsgType](https://orchimate.org/fixtrading/fix-latest/fields/MsgType)) |
+| 49 | SenderCompID | "Assigned value used to identify firm sending message" ([FIXimate, SenderCompID](https://orchimate.org/fixtrading/fix-latest/fields/SenderCompID)) |
+| 56 | TargetCompID | The receiving firm ([FIXimate, TargetCompID](https://orchimate.org/fixtrading/fix-latest/fields/TargetCompID)) |
+| 34 | MsgSeqNum | "Integer message sequence number" ([FIXimate, MsgSeqNum](https://orchimate.org/fixtrading/fix-latest/fields/MsgSeqNum)) |
+| 52 | SendingTime | "Time of message transmission", always in Coordinated Universal Time (UTC) ([FIXimate, SendingTime](https://orchimate.org/fixtrading/fix-latest/fields/SendingTime)) |
+| 43, 97, 122 | PossDupFlag, PossResend, OrigSendingTime | Markers for retransmitted or resent messages, explained under recovery below ([FIX Session Layer technical standard, sections 4.8.4 and 4.9](https://fixtrading.org/packages/fix-session-layer-technical-standard/)) |
+
+The trailer is a single required field, CheckSum(10), "ALWAYS LAST FIELD IN MESSAGE", which with its own trailing SOH marks the end of the message and is "Always defined as three characters" ([FIXimate, CheckSum](https://orchimate.org/fixtrading/fix-latest/fields/CheckSum)). Optional fields such as SenderSubID(50), TargetSubID(57) and the third-party routing fields OnBehalfOfCompID(115) and DeliverToCompID(128) can identify desks, traders and intermediaries ([FIX Session Layer technical standard, section 4.2.4](https://fixtrading.org/packages/fix-session-layer-technical-standard/); [FIX 4.0 release notes, 13 January 1996](https://fixtrading.org/packages/fix-4-0-specification-release-notes/)).
+
+The message types used in this article, with their codes from the MsgType code set ([FIXimate, MsgTypeCodeSet](https://orchimate.org/fixtrading/fix-latest/codeSets/MsgTypeCodeSet)):
+
+| MsgType(35) | Message | Layer |
+|---|---|---|
+| `0` | Heartbeat | Session |
+| `1` | TestRequest | Session |
+| `2` | ResendRequest | Session |
+| `3` | Reject | Session |
+| `4` | SequenceReset | Session |
+| `5` | Logout | Session |
+| `A` | Logon | Session |
+| `D` | NewOrderSingle | Application |
+| `8` | ExecutionReport | Application |
+
+## BodyLength and CheckSum, worked out by hand
+
+### The rules
+
+BodyLength counts the octets that follow the SOH ending BodyLength(9), "up to and including the end of field delimiter" of the field just before CheckSum(10) ([FIX TagValue Encoding, section 5.1.1](https://fixtrading.org/packages/fix-tagvalue-encoding/)). The checksum is computed "by summing the binary value of each octet from the start of the BeginString(8) field up to and including the end of field delimiter" of that same field, "then transforming this value using a modulo 256", and is written as three digits, so a result of 23 becomes `10=023` (same standard, section 5.2.2). So BodyLength excludes the BeginString and BodyLength fields, while the checksum includes them. The rule was already in version 2.7, which compared "the least significant eight bits of the calculated value" ([FIX 2.7a specification, data integrity](https://fixtrading.org/packages/fix-2-7-specification-document-pdf/)), and version 3.0 "Corrected Checksum calculation in Appendix B" ([FIX 3.0 release notes, August 1995](https://fixtrading.org/packages/fix-3-0-specification-release-notes/)).
+
+### The official example
+
+The TagValue Encoding standard prints this FIX 4.2 NewOrderSingle as its example ([FIX TagValue Encoding, section 4.2.6](https://fixtrading.org/packages/fix-tagvalue-encoding/)):
+
+```
+8=FIX.4.2|9=251|35=D|49=AFUNDMGR|56=ABROKER|34=2|52=2003061501:14:49|11=12345|1=111111|63=0|64=20030621|21=3|110=1000|111=50000|55=IBM|48=459200101|22=1|54=1|60=2003061501:14:49|38=5000|40=1|44=15.75|15=USD|59=0|10=127|
+```
+
+Start with one field to see the arithmetic. The bytes of `8=FIX.4.2` and its SOH are the ASCII codes of each character:
+
+| Character | `8` | `=` | `F` | `I` | `X` | `.` | `4` | `.` | `2` | SOH |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Byte value | 56 | 61 | 70 | 73 | 88 | 46 | 52 | 46 | 50 | 1 |
+
+They add up to 543. Doing the same for every field, and counting bytes from `35=D` onwards for BodyLength, gives the table below. It was computed for this article with two independent programs (a Python script and a JavaScript one), which agree on every figure. Each field's byte count includes its SOH.
+
+| # | Field | Bytes | Byte sum | Running sum | Running BodyLength |
+|---|---|---|---|---|---|
+| 1 | `8=FIX.4.2` | 10 | 543 | 543 | not counted |
+| 2 | `9=196` | 6 | 279 | 822 | not counted |
+| 3 | `35=D` | 5 | 234 | 1,056 | 5 |
+| 4 | `49=AFUNDMGR` | 12 | 767 | 1,823 | 17 |
+| 5 | `56=ABROKER` | 11 | 687 | 2,510 | 28 |
+| 6 | `34=2` | 5 | 215 | 2,725 | 33 |
+| 7 | `52=2003061501:14:49` | 20 | 989 | 3,714 | 53 |
+| 8 | `11=12345` | 9 | 415 | 4,129 | 62 |
+| 9 | `1=111111` | 9 | 405 | 4,534 | 71 |
+| 10 | `63=0` | 5 | 215 | 4,749 | 76 |
+| 11 | `64=20030621` | 12 | 566 | 5,315 | 88 |
+| 12 | `21=3` | 5 | 212 | 5,527 | 93 |
+| 13 | `110=1000` | 9 | 401 | 5,928 | 102 |
+| 14 | `111=50000` | 10 | 454 | 6,382 | 112 |
+| 15 | `55=IBM` | 7 | 384 | 6,766 | 119 |
+| 16 | `48=459200101` | 13 | 624 | 7,390 | 132 |
+| 17 | `22=1` | 5 | 211 | 7,601 | 137 |
+| 18 | `54=1` | 5 | 216 | 7,817 | 142 |
+| 19 | `60=2003061501:14:49` | 20 | 988 | 8,805 | 162 |
+| 20 | `38=5000` | 8 | 366 | 9,171 | 170 |
+| 21 | `40=1` | 5 | 211 | 9,382 | 175 |
+| 22 | `44=15.75` | 9 | 422 | 9,804 | 184 |
+| 23 | `15=USD` | 7 | 400 | 10,204 | 191 |
+| 24 | `59=0` | 5 | 220 | 10,424 | 196 |
+
+The body is 196 bytes long, so the second field should read `9=196`. The total of 10,424 is 40 × 256 + 184, so the trailer should read `10=184`. The example as printed carries `9=251` and `10=127`; with its own `9=251` left in place the sum would be 10,416 and the checksum `176`, so neither printed value matches the content. The example is a syntax illustration, and in other details too it is not a working order: its SendingTime(52) lacks the hyphen that the FIX 4.2 timestamp format "YYYYMMDD-HH:MM:SS" requires ([FIX 4.2 with errata 20010501, data types](https://fixtrading.org/packages/fix-4-2-specification-with-errata-20010501/)). A receiving engine would treat a message with a wrong BodyLength or CheckSum as garbled and discard it (see below). The FIX documents give one more worked figure: a byte sum of 274 has a modulo of 18 and is sent as `10=018` ([FIX TagValue Encoding, annex A](https://fixtrading.org/packages/fix-tagvalue-encoding/)).
+
+The checksum catches accidental corruption, not tampering: anyone who changes a field can recompute the sum. That is the general limit of checksums, discussed in [hashing, encryption and encoding](/learn/hashing-encryption-encoding); protection against deliberate change comes from TLS, covered at the end.
+
+## NewOrderSingle (35=D), field by field
+
+The NewOrderSingle "is used by the order submitter wishing to electronically place orders for execution with their counterparty" ([FIXimate, NewOrderSingle](https://orchimate.org/fixtrading/fix-latest/messages/NewOrderSingle)). The fields of the official example, read with the FIX 4.2 definitions ([FIX 4.2 with errata 20010501, field definitions](https://fixtrading.org/packages/fix-4-2-specification-with-errata-20010501/)):
+
+| Tag | Field (FIX 4.2 name) | Value | Meaning |
+|---|---|---|---|
+| 35 | MsgType | `D` | NewOrderSingle |
+| 49 | SenderCompID | `AFUNDMGR` | The fund manager sending the order |
+| 56 | TargetCompID | `ABROKER` | The broker receiving it |
+| 34 | MsgSeqNum | `2` | Second message of the session in this direction |
+| 52 | SendingTime | `2003061501:14:49` | Transmission time (malformed, as noted above) |
+| 11 | ClOrdID | `12345` | The client's own order identifier |
+| 1 | Account | `111111` | "Account mnemonic as agreed between broker and institution" |
+| 63 | SettlmntTyp | `0` | Regular settlement |
+| 64 | FutSettDate | `20030621` | A settlement date, which FIX 4.2 requires only for future or seller's-option settlement |
+| 21 | HandlInst | `3` | "Manual order, best execution" |
+| 110 | MinQty | `1000` | "Minimum quantity of an order to be executed" |
+| 111 | MaxFloor | `50000` | Maximum number of shares "to be shown on the exchange floor at any given time" |
+| 55 | Symbol | `IBM` | Ticker symbol |
+| 48 | SecurityID | `459200101` | Alternate security identifier |
+| 22 | IDSource | `1` | Identifier type 1 of the FIX 4.2 list, `CUSIP` |
+| 54 | Side | `1` | Buy |
+| 60 | TransactTime | `2003061501:14:49` | When the order was created |
+| 38 | OrderQty | `5000` | Number of shares |
+| 40 | OrdType | `1` | Market |
+| 44 | Price | `15.75` | Price per share |
+| 15 | Currency | `USD` | Currency of the price |
+| 59 | TimeInForce | `0` | Day |
+
+The example also shows how loosely a syntax example may treat business sense: OrdType 1 is a market order, "An order without a price" ([FIXimate, OrdTypeCodeSet](https://orchimate.org/fixtrading/fix-latest/codeSets/OrdTypeCodeSet)), yet a price is given, and MaxFloor (50,000) is larger than the order (5,000).
+
+What is actually required has changed over time. FIX 4.2 required ClOrdID, HandlInst, Symbol, Side, TransactTime and OrdType ([FIX 4.2 with errata 20010501](https://fixtrading.org/packages/fix-4-2-specification-with-errata-20010501/)); FIX 4.4 dropped HandlInst from the required list and added the OrderQtyData component ([FIX 4.4, volume 4, New Order - Single](https://fixtrading.org/packages/fix-4-4-specification-with-20030618-errata/)); FIX Latest requires ClOrdID, the Instrument component, Side, TransactTime, OrderQtyData and OrdType ([FIXimate, NewOrderSingle](https://orchimate.org/fixtrading/fix-latest/messages/NewOrderSingle)). ClOrdID must be unique "within a single trading day", and firms with multi-day orders should embed a date in it ([FIXimate, ClOrdID](https://orchimate.org/fixtrading/fix-latest/fields/ClOrdID)).
+
+A modern order in FIX 4.4, built for this article with invented firms, identifiers and prices, looks like this, and its two integrity fields were computed the same way:
+
+```
+8=FIX.4.4|9=137|35=D|49=BUYSIDE|56=SELLSIDE|34=215|52=20261113-13:05:00.123|11=ORD-0001|55=EXMP3|54=1|60=20261113-13:05:00.120|38=100|40=2|44=38.50|59=0|10=136|
+```
+
+The body counts 137 bytes and the bytes up to the trailer add up to 7,816, which is 30 × 256 + 136. Read field by field, with the rules that the FIX gateway of Brazil's exchange, B3 (Brasil, Bolsa, Balcão, as its documents sign it: [B3, Comunicado Externo 004/2026-VNC](https://www.b3.com.br/data/files/22/90/30/AD/D67EB9109B5E99B9AC094EA8/CE%20004-2026-VNC%20ENTRYPOINT%20FIX%20E%20BINARIO%20INTERFACE%20DE%20ENVIO%20DE%20ORDENS_PT.pdf)), adds in its specification version 2.40 ([B3, EntryPoint message specification, 27 November 2025](https://www.b3.com.br/data/files/A7/77/7B/FE/5789491029BEEC39AC094EA8/EntryPointMessageSpecs.pdf)):
+
+| Tag | Field | Value | Meaning | At B3 (EntryPoint, FIX 4.4) |
+|---|---|---|---|---|
+| 11 | ClOrdID | `ORD-0001` | Client order identifier | Up to 38 characters |
+| 55 | Symbol | `EXMP3` | Instrument (invented here) | Required; "the human readable form of the SecurityID tag" from the market data feed |
+| 54 | Side | `1` | Buy | 1 buy, 2 sell |
+| 60 | TransactTime | `20261113-13:05:00.120` | Order creation time, UTC | Required, UTC |
+| 38 | OrderQty | `100` | Quantity | Required |
+| 40 | OrdType | `2` | Limit ([FIXimate, OrdTypeCodeSet](https://orchimate.org/fixtrading/fix-latest/codeSets/OrdTypeCodeSet)) | 1 market, 2 limit, 3 stop loss, 4 stop limit, K market with leftover as limit, P pegged, W retail liquidity provider (RLP) |
+| 44 | Price | `38.50` | Limit price | Required when the order type needs a price |
+| 59 | TimeInForce | `0` | Day ([FIXimate, TimeInForceCodeSet](https://orchimate.org/fixtrading/fix-latest/codeSets/TimeInForceCodeSet)) | 0, 1, 3, 4, 6, 7 and A (good for auction) |
+
+B3 also makes the parties group, NoPartyIDs(453) with PartyID, PartyIDSource and PartyRole, required on every order, with roles such as entering trader (36) and executing trader (12); the generic sketch above leaves it out (same specification). B3 describes the RLP order as "a new type of order within the B3 PUMA Trading System" ([B3, Binary EntryPoint messaging guidelines 8.4.2.3, 28 September 2026](https://www.b3.com.br/data/files/69/35/F1/AB/94711A103BBB511AAC094EA8/BinaryEntryPoint-MessageSpecificationGuidelines-8.4.2.3-enUS.pdf)).
+
+## ExecutionReport (35=8), field by field
+
+The ExecutionReport is the sell side's answer to almost everything. FIXimate lists seven uses: to "confirm the receipt of an order", confirm changes, relay order status, relay fills on working orders and on quotes, "reject orders" and report post-trade fees ([FIXimate, MsgTypeCodeSet](https://orchimate.org/fixtrading/fix-latest/codeSets/MsgTypeCodeSet)). Two fields carry its meaning: ExecType(150) "Describes the specific ExecutionRpt (e.g. Pending Cancel) while OrdStatus(39) will always identify the current order status (e.g. Partially Filled)" ([FIXimate, ExecType](https://orchimate.org/fixtrading/fix-latest/fields/ExecType)).
+
+A fill for the order above, again built for this article:
+
+```
+8=FIX.4.4|9=199|35=8|49=SELLSIDE|56=BUYSIDE|34=309|52=20261113-13:05:00.456|37=SS-778899|11=ORD-0001|17=EX-0002|150=F|39=2|55=EXMP3|54=1|38=100|44=38.50|32=100|31=38.50|151=0|14=100|6=38.50|60=20261113-13:05:00.450|10=089|
+```
+
+Its body is 199 bytes and its byte sum 10,841, which is 42 × 256 + 89, written with the leading zero as `10=089`.
+
+| Tag | Field | Value | Meaning | At B3 |
+|---|---|---|---|---|
+| 37 | OrderID | `SS-778899` | "Unique identifier for Order as assigned by sell-side" ([FIXimate, OrderID](https://orchimate.org/fixtrading/fix-latest/fields/OrderID)) | Required, up to 26 characters |
+| 11 | ClOrdID | `ORD-0001` | Echo of the client's identifier | Optional in the report |
+| 17 | ExecID | `EX-0002` | Unique identifier of this execution message ([FIXimate, ExecID](https://orchimate.org/fixtrading/fix-latest/fields/ExecID)) | Required |
+| 150 | ExecType | `F` | Trade, a partial fill or fill ([FIXimate, ExecTypeCodeSet](https://orchimate.org/fixtrading/fix-latest/codeSets/ExecTypeCodeSet)) | Values 0, 4, 5, 8, C, D, F and H |
+| 39 | OrdStatus | `2` | Filled ([FIXimate, OrdStatusCodeSet](https://orchimate.org/fixtrading/fix-latest/codeSets/OrdStatusCodeSet)) | Adds Z, "Previous Final State" |
+| 32 | LastQty | `100` | Quantity of this fill ([FIXimate, LastQty](https://orchimate.org/fixtrading/fix-latest/fields/LastQty)) | Optional |
+| 31 | LastPx | `38.50` | Price of this fill ([FIXimate, LastPx](https://orchimate.org/fixtrading/fix-latest/fields/LastPx)) | Optional |
+| 151 | LeavesQty | `0` | "Quantity open for further execution", OrderQty minus CumQty while the order is active ([FIXimate, LeavesQty](https://orchimate.org/fixtrading/fix-latest/fields/LeavesQty)) | Required |
+| 14 | CumQty | `100` | "Total quantity (e.g. number of shares) filled" ([FIXimate, CumQty](https://orchimate.org/fixtrading/fix-latest/fields/CumQty)) | Required |
+| 6 | AvgPx | `38.50` | "Calculated average price of all fills on this order" ([FIXimate, AvgPx](https://orchimate.org/fixtrading/fix-latest/fields/AvgPx)) | Required but "Always 0 (zero)" |
+
+FIX 4.4 required OrderID, ExecID, ExecType, OrdStatus, the Instrument, Side, LeavesQty, CumQty and AvgPx ([FIX 4.4, volume 4, Execution Report](https://fixtrading.org/packages/fix-4-4-specification-with-20030618-errata/)); FIX Latest no longer lists AvgPx among the required fields ([FIXimate, ExecutionReport](https://orchimate.org/fixtrading/fix-latest/messages/ExecutionReport)). The B3 column comes from its EntryPoint specification ([B3, EntryPoint message specification](https://www.b3.com.br/data/files/A7/77/7B/FE/5789491029BEEC39AC094EA8/EntryPointMessageSpecs.pdf)).
+
+### An order's life in execution reports
+
+The FIX 4.4 specification's own first worked case, "A.1.a - Filled order", shows how the quantities move as one order of 10,000 is filled in three executions ([FIX 4.4, volume 4, Order State Change Matrices](https://fixtrading.org/packages/fix-4-4-specification-with-20030618-errata/)):
+
+| Step | Message | ExecType | OrdStatus | OrderQty | CumQty | LeavesQty | LastQty |
+|---|---|---|---|---|---|---|---|
+| 1 | New Order received | | | 10,000 | | | |
+| 2 | Execution report | New | New | 10,000 | 0 | 10,000 | 0 |
+| 3 | Execution report | Trade | Partially filled | 10,000 | 2,000 | 8,000 | 2,000 |
+| 4 | Execution report | Trade | Partially filled | 10,000 | 3,000 | 7,000 | 1,000 |
+| 5 | Execution report | Trade | Filled | 10,000 | 10,000 | 0 | 7,000 |
+
+The matrix also shows the alternative at steps 2 and 3, a report with ExecType and OrdStatus "Rejected" if the sales desk or the exchange refuses the order (same source). Cancels, replaces, drop copies and allocations belong to a later part of this series, on the order's life in FIX.
+
+## The session: Logon
+
+A FIX connection has two roles. The initiator "establishes the transport layer connection and initiates the session via transmission of the initial Logon(35=A) message"; the acceptor receives Logon requests ([FIX Session Layer technical standard, sections 3.1.6 and 3.1.7](https://fixtrading.org/packages/fix-session-layer-technical-standard/)). The session is identified by "the unique combination of BeginString(8) + initiator CompID + acceptor CompID", and every later message must carry the same SenderCompID and TargetCompID as the Logon (section 4.2).
+
+"The Logon(35=A) request message must always be the first message transmitted over a FIX connection"; anything else is logged and the connection dropped without a Logout (section 4.3.1). The acceptor authenticates the initiator from the Logon and answers with its own Logon, the "acknowledgement", or with a Logout giving the reason in Text(58) (section 4.3.10). The fields that matter most:
+
+| Field | Rule in the session standard |
+|---|---|
+| EncryptMethod(98) | Must be present and `0` when application-level encryption is not used, which "has been discouraged since the FIX.4.3 version" (section 4.3.3) |
+| HeartBtInt(108) | Required; the heartbeat interval in seconds, the same on both sides (section 4.3.4) |
+| Username(553), Password(554) | Clear-text password "use is not recommended"; encrypted variants and RawData(96) exist (section 4.3.10, table 2) |
+| ResetSeqNumFlag(141) | Starts a new session with both sequence numbers at 1, by prior agreement (sections 4.4.2 and 4.4.3) |
+| NextExpectedMsgSeqNum(789) | Tells the peer which message is expected next, so missing ones can be resent without a ResendRequest (section 4.4.1) |
+| DefaultApplVerID(1137) | The application version under the FIX Transport (FIXT) profile (section 4.3.7) |
+| TestMessageIndicator(464) | `Y` on test sessions; a mismatch with the environment should end the connection, since "Failure to validate ... may potentially lead to financial losses" (section 4.3.2) |
+| MaxMessageSize(383) | The largest message the sender can receive (section 4.3.6) |
+
+Source for the table: [FIX Session Layer technical standard, November 2020](https://fixtrading.org/packages/fix-session-layer-technical-standard/). Each message's SendingTime(52) must be in UTC and within an agreed tolerance of a synchronized clock; otherwise the receiver sends a Reject with SessionRejectReason(373) 10, "SendingTime Accuracy Problem", and then a Logout (section 4.2.3). The tolerance may be "as low as seconds" for low-latency applications (same section).
+
+## Heartbeat and TestRequest
+
+During silence each side sends a Heartbeat(35=0) so that the peer receives something "within the heartbeat interval", and every message received resets the timer ([FIX Session Layer technical standard, sections 4.3.4 and 4.5.1](https://fixtrading.org/packages/fix-session-layer-technical-standard/)). If nothing arrives in time, the side that noticed sends a TestRequest(35=1) carrying a TestReqID(112), and the peer "must respond by sending a HeartBeat(35=0) message with TestReqID(112) present" (section 4.5.5). The standard suggests waiting the heartbeat interval multiplied by a TestRequestThreshold "anywhere from 1.2 to 2.0"; with no answer, the connection ends with a Logout stating the reason (same section). A TestRequest is also a way to make both sides synchronize, after a logon before orders are sent and before a logout (sections 4.3.11 and 4.6).
+
+A Heartbeat is the smallest complete message. Built for this article:
+
+```
+8=FIX.4.4|9=60|35=0|49=BUYSIDE|56=SELLSIDE|34=216|52=20261113-13:05:30.125|10=152|
+```
+
+Its body is 60 bytes and its byte sum 3,992, which is 15 × 256 + 152. Venues set the interval: the Pillar gateway of the New York Stock Exchange (NYSE) group ([NYSE](https://www.nyse.com/index)) accepts HeartBtInt values from 1 to 60 seconds ([NYSE Pillar Gateway FIX protocol specification, version 6.0, 14 August 2026](https://www.nyse.com/publicdocs/NYSE_Pillar_Gateway_FIX_Protocol_Specification.pdf)), and B3 recommends 30 ([B3, EntryPoint message specification](https://www.b3.com.br/data/files/A7/77/7B/FE/5789491029BEEC39AC094EA8/EntryPointMessageSpecs.pdf)).
+
+## Sequence numbers
+
+The session standard's rules are short ([FIX Session Layer technical standard, section 4.1](https://fixtrading.org/packages/fix-session-layer-technical-standard/)):
+
+- Every message carries "a unique sequence number in the MsgSeqNum(34) field", and the session starts with NextNumOut and NextNumIn both at 1.
+- Session and application messages "share the same sequence number space": a Heartbeat consumes a number just as an order does.
+- Both counters must be stored durably "to support FIX session recovery across multiple FIX connections".
+- "Resetting NextNumOut to 1 and NextNumIn to 1, for whatever reason, shall constitute the beginning of a new FIX session."
+- A session is valid and recoverable only while each side's NextNumIn is not greater than the other side's NextNumOut.
+
+How long a session lasts is a bilateral choice, "often configured to correspond to a certain period of time, such as a trading day" (section 4). Version 2.7 already said that sequence numbers "should initialize to one each day" ([FIX 2.7 release notes, 15 July 1994](https://fixtrading.org/packages/fix-2-7-specification-release-notes/)). For markets that never close, a session can be reset in place: at an agreed time the agreed side sends a Logon with ResetSeqNumFlag(141)=Y and MsgSeqNum 1, the other side answers the same way, and both end with NextNumIn and NextNumOut at 2 ([FIX Session Layer technical standard, section 4.4.2](https://fixtrading.org/packages/fix-session-layer-technical-standard/)). Allowing such a reset at logon carries a stated risk: "Operational risks, such as order overfills, could occur if both parties are not configured to support resetting" (section 4.4.3).
+
+## Gaps: ResendRequest, PossDupFlag, SequenceReset and gap fill
+
+### Asking again
+
+"A message gap occurs when the MsgSeqNum(34) of an incoming message is greater than the NextNumIn" ([FIX Session Layer technical standard, section 4.8](https://fixtrading.org/packages/fix-session-layer-technical-standard/)). The receiver sends a ResendRequest(35=2) with BeginSeqNo(7) and EndSeqNo(16): both equal for one message, a range for several, or EndSeqNo 0 for "all messages after" the first missing one, the recommended form since FIX 4.2 (section 4.8.2). The standard's example: if the second of five messages is lost, the receiver may ask for 2 to 0 and drop 3 to 5, or ask only for 2 and keep 3 to 5 aside, but "In both cases, messages 3 through 5 should not be processed before message 2" (same section). A message that arrives with a number lower than expected and without PossDupFlag(43)=Y means the state is broken, and the session should end with a Logout whose SessionStatus(1409) is 9, "received MsgSeqNum(34) is too low" (section 4.8.1).
+
+### Answering
+
+The responder resends the requested messages "with the original sequence numbers" and with PossDupFlag(43) set to Y, setting SendingTime(52) to now, OrigSendingTime(122) to the original time, and recomputing BodyLength and CheckSum ([FIX Session Layer technical standard, sections 4.8.4 and 4.8.5](https://fixtrading.org/packages/fix-session-layer-technical-standard/)). Session messages are not resent: Logon, Logout, ResendRequest, Heartbeat, TestRequest and SequenceReset are replaced by a SequenceReset(35=4) with GapFillFlag(123)=Y, whose own MsgSeqNum is the first number skipped and whose NewSeqNo(36) is the next number after the gap; only Reject and XMLnonFIX may be retransmitted (section 4.8.5). The responder may also decline to resend stale application messages, for example "aged orders", and fill them over the same way (same section).
+
+The standard's worked case asks for messages from 5 onwards, where 8, 10 and 11 are application messages and 5 to 7 and 9 are session messages (section 4.8.5.1). The response therefore runs:
+
+| Sent | MsgSeqNum(34) | Key fields | Effect |
+|---|---|---|---|
+| SequenceReset, gap fill | 5 | `123=Y`, `36=8` | Skips 5, 6 and 7 |
+| Application message 8, resent | 8 | `43=Y`, `122=` original time | Replays the business message |
+| SequenceReset, gap fill | 9 | `123=Y`, `36=10` | Skips 9 |
+| Application message 10, resent | 10 | `43=Y` | Replays |
+| Application message 11, resent | 11 | `43=Y` | Replays |
+
+The table applies the rules of sections 4.8.4 and 4.8.5 to the message numbers of the standard's example ([FIX Session Layer technical standard](https://fixtrading.org/packages/fix-session-layer-technical-standard/)).
+
+### Reset instead of fill
+
+A SequenceReset with GapFillFlag(123)=N, the "Reset" mode, forces the peer's expected number to NewSeqNo regardless of what was missed, and "The firm sending the SequenceReset(35=4) with GapFillFlag(123) set to 'N' is responsible for the results that occur at the application layer" ([FIX Session Layer technical standard, section 4.8.6](https://fixtrading.org/packages/fix-session-layer-technical-standard/)).
+
+### Retransmission is not resending
+
+Two different flags exist because two different things can happen. PossDupFlag(43)=Y marks a session-layer retransmission under the original sequence number. PossResend(97)=Y marks an application that resends a message it fears was lost, under a new sequence number, leaving the receiver to decide whether it is a duplicate; "The FIX session layer does not initiate a resend of an application message", nor does it detect duplicates ([FIX Session Layer technical standard, sections 3.1.13, 3.1.14 and 4.9](https://fixtrading.org/packages/fix-session-layer-technical-standard/)). The standard allows "a globally unique persistent identifier that enforces idempotent behavior" instead (section 4.9), the same idea discussed in [retries, timeouts and idempotency](/learn/retries-timeouts-and-idempotency).
+
+## Garbled messages and session rejects
+
+A message is garbled if BeginString(8) is not first or not a defined profile, BodyLength(9) is not second "or does not contain the correct byte count", MsgType(35) is not third, or CheckSum(10) is not last "or contains an incorrect value" ([FIX Session Layer technical standard, section 4.5.2](https://fixtrading.org/packages/fix-session-layer-technical-standard/)). The receiver discards it without incrementing NextNumIn, so the next good message reveals a gap and triggers a ResendRequest; the standard presumes a transmission error and warns against loops when a faulty peer keeps resending the same broken message (same section). That is what would happen to the official example above with its printed `9=251` and `10=127`.
+
+A message that is well formed but breaks session rules (a missing required field, an unknown MsgType) is answered with a Reject(35=3) carrying RefSeqNum(45), RefTagID(371), RefMsgType(372), a SessionRejectReason(373) and a Text(58) (section 4.5.4). The standard prefers that "messages should be forwarded to the trading application for business level rejections whenever possible" (same section). B3 lists the reasons it uses, from 0 "Invalid Tag Number" and 1 "Required Tag Missing" to 10 "Sendingtime Accuracy Problem", 16 "Incorrect Numingroup Count For Repeating Group" and 99 "Other" ([B3, EntryPoint message specification](https://www.b3.com.br/data/files/A7/77/7B/FE/5789491029BEEC39AC094EA8/EntryPointMessageSpecs.pdf)).
+
+## Logout, and what happens after a disconnect
+
+### The orderly end
+
+"Normal termination of the message exchange session shall be completed via the exchange of Logout(35=5) messages"; anything else "should be considered an abnormal condition" ([FIX Session Layer technical standard, section 4.6](https://fixtrading.org/packages/fix-session-layer-technical-standard/)). The side that sends the Logout waits for the peer's Logout, so that the peer can first request and fill any gap, and gives up after about twice HeartBtInt (same section). Two cases call for dropping the connection without a Logout: an invalid BeginString, CompID or address in a Logon, which "could be an unauthorized access attempt", and a second connection for a SenderCompID that already has a live session, since a Logout would consume a sequence number and disturb the real session (section 4.6.4).
+
+### After a drop
+
+Because the session outlives the connection, recovery is a matter of numbers. On reconnection each side compares the MsgSeqNum of the peer's Logon with its own NextNumIn: equal means carry on, greater means request the missing messages, lower means a state error and a Logout ([FIX Session Layer technical standard, section 4.3.11](https://fixtrading.org/packages/fix-session-layer-technical-standard/)). With NextExpectedMsgSeqNum(789) in the Logon, each side can resend what the other lacks without waiting for a ResendRequest (section 4.4.1).
+
+What happens to open orders is not the session layer's business: "The impact of a FIX connection termination on the application layer is left to the application layer; it is undefined in the FIX session layer" (section 4.6.3). Venues fill that gap with cancel-on-disconnect rules:
+
+| Venue | Rule in the venue's specification |
+|---|---|
+| B3, EntryPoint (FIX 4.4) | "In the event of an involuntary disconnection of a FIX EntryPoint session ... all open orders are automatically cancelled", configurable per session ([B3, EntryPoint FIX Order Entry](https://www.b3.com.br/en_us/solutions/platforms/puma-trading-system/for-developers-and-vendors/entrypoint-order-entry)); in the Logon, CancelOnDisconnectType(35002) chooses 0 none, 1 on disconnect, 2 on logout or 3 both, and CODTimeoutWindow(35003) gives a reconnection grace period of up to 60,000 milliseconds ([B3, EntryPoint message specification](https://www.b3.com.br/data/files/A7/77/7B/FE/5789491029BEEC39AC094EA8/EntryPointMessageSpecs.pdf)) |
+| NYSE, Pillar FIX gateway (FIX 4.2) | Logging in on the secondary address triggers the session's cancel-on-disconnect setting, and the sequence number there continues "from the last Application Layer message transacted on the primary IP", session messages not being counted; on a switch to the disaster-recovery environment "All open orders will be cancelled automatically" and "Sequence numbers will start with 1" ([NYSE Pillar Gateway FIX protocol specification, version 6.0](https://www.nyse.com/publicdocs/NYSE_Pillar_Gateway_FIX_Protocol_Specification.pdf)) |
+
+## FIX over TLS
+
+The early protocol left security to the firms. Version 2.7 offered fields for "a public key signature and encryption methodology, straight DES encryption and clear text", chosen in the Logon ([FIX 2.7a specification](https://fixtrading.org/packages/fix-2-7-specification-document-pdf/)), DES being the Data Encryption Standard ([NIST glossary, DES](https://csrc.nist.gov/glossary/term/des)); the EncryptMethod(98) code set still lists those options, `2` among them for DES ([FIXimate, EncryptMethodCodeSet](https://orchimate.org/fixtrading/fix-latest/codeSets/EncryptMethodCodeSet)). The field SecureData(91) used for that purpose was deprecated with FIXT 1.1 ([FIX Session Layer technical standard, footnote 12](https://fixtrading.org/packages/fix-session-layer-technical-standard/)).
+
+The replacement is FIX-over-TLS (FIXS), whose version 1.0 technical standard is dated February 2021 ([FIXS technical standard, version 1.0, 12 February 2021](https://fixtrading.org/packages/fixs-technical-specification-technical-standard/)). The community calls its use "a requirement as it introduces a basic level of security and standard options for interoperability" ([FIX Trading Community, FIXS](https://fixtrading.org/fixs/)), and the session standard says that FIX implementations over TCP/IP "must use the FIX-over-TLS (FIXS) specification" ([FIX Session Layer technical standard, section 4.3.1](https://fixtrading.org/packages/fix-session-layer-technical-standard/)). What FIXS 1.0 recommends ([FIXS technical standard, version 1.0](https://fixtrading.org/packages/fixs-technical-specification-technical-standard/)):
+
+- Authentication: "either Mutual TLS or to use Single TLS together with authentication of the client at the FIX session layer", the latter called FIX User Authentication (FIXA); see [mutual TLS](/learn/mutual-tls).
+- Certificates may be checked by "Leaf Certificate Pinning", matching the certificate to an expected one.
+- Protocol version: the latest TLS, "currently 1.3 in February 2021", with the previous version during transitions ([TLS 1.2, TLS 1.3, DTLS and QUIC](/learn/tls12-tls13-dtls-quic) compares them).
+- Features: support session resumption to speed reconnection; no TLS compression; no renegotiation.
+- Limits: FIXS "is not yet intended to be a substitute for other security controls in ultra-low latency environments".
+
+The community also publishes a guide to running FIXS with the open-source Stunnel program ([FIX Trading Community, FIXS](https://fixtrading.org/fixs/)).
+
+## Brazil: B3's FIX session in practice
+
+B3's FIX gateway applies the standard with a few local rules, all in its specification version 2.40 ([B3, EntryPoint message specification, 27 November 2025](https://www.b3.com.br/data/files/A7/77/7B/FE/5789491029BEEC39AC094EA8/EntryPointMessageSpecs.pdf)):
+
+- BeginString(8) is `FIX.4.4`, and SenderCompID and TargetCompID are assigned by the exchange.
+- In the Logon, EncryptMethod must be 0, HeartBtInt is recommended at 30, and Text(58) is required, giving "the name and certified version of the client solution", for example "Solution name 1.0"; NewPassword(925) lets the client change its password, and the cancel-on-disconnect tags described above are set here.
+- The SequenceReset may carry a B3-specific flag, PossMissingApplMsg(35033), saying that the retransmitted range "may not include all the application messages contained in the original range requested".
+- The ExecutionReport's AvgPx is required but always zero, as shown above.
+
+Market data recovery uses the same session layer: B3's TCP Replayer returns lost market data messages "over a TCP connection (a FIX 4.4 session)" ([B3, EntryPoint FIX Order Entry](https://www.b3.com.br/en_us/solutions/platforms/puma-trading-system/for-developers-and-vendors/entrypoint-order-entry)). The binary gateway keeps the ideas with other messages: B3 resets its sequence numbers to 1 "at the start of each trading session (day)", and the Negotiate message "must be the first message sent at every trading session, like the FIX protocol Logon message" ([B3, Binary EntryPoint messaging guidelines 8.4.2.3, 28 September 2026](https://www.b3.com.br/data/files/69/35/F1/AB/94711A103BBB511AAC094EA8/BinaryEntryPoint-MessageSpecificationGuidelines-8.4.2.3-enUS.pdf)). Binary encodings and the FIX Performance Session Layer (FIXP) are the subject of a later part of this series, on FIX encodings and their successors.
+
+## What to remember
+
+- A FIX `tag=value` message is fields of the form tag, equals sign, value, each ended by SOH (0x01); BeginString, BodyLength and MsgType come first, CheckSum last, and the rest may come in any order except inside repeating groups.
+- BodyLength counts the bytes after the BodyLength field up to the SOH before `10=`; CheckSum is the sum of every byte before `10=`, modulo 256, written in three digits. Computed on the official example, they give 196 and 184, not the printed 251 and 127.
+- NewOrderSingle (35=D) carries ClOrdID, the instrument, side, time, quantity and order type; ExecutionReport (35=8) answers with ExecType (what happened) and OrdStatus (where the order stands), plus CumQty, LeavesQty and the fill.
+- The session numbers every message in both directions in one shared space, detects gaps, and recovers them with ResendRequest, retransmission under PossDupFlag and SequenceReset gap fills; a reset to 1 starts a new session.
+- What a disconnect does to open orders is left to each venue: B3 and NYSE both offer cancel on disconnect, with their own rules.
+- FIXS secures FIX with TLS, recommending mutual TLS or TLS plus session-level client authentication.
+
+<ReaderQuestions>
+
+- If the official example of the standard carries a BodyLength and a CheckSum that do not match its content, what does that suggest about how people learn a protocol, and about why engines compute these fields rather than copy them?
+- A checksum that anyone can recompute protects against noise but not against an adversary: once every session runs over TLS, is the FIX checksum still worth its cost?
+- Should a session layer decide what happens to open orders after a disconnect, as venues now do with cancel on disconnect, or is leaving it to the application layer the better design?
+- Where would you draw the line between a gap fill that skips stale orders and a loss of information the counterparty had a right to receive?
+- If a venue reports an average price of zero in every execution report, where should the responsibility for computing it sit, and what could go wrong if a client system trusts the field?
+
+</ReaderQuestions>
+
+## Sources
+
+- [FIX Trading Community, FIX Session Layer technical standard, errata November 2020: FIX session and connection, sequence numbers, logon, heartbeat, test request, recovery, gap fill, reset, logout, session profiles (accessed 15 November 2026)](https://fixtrading.org/packages/fix-session-layer-technical-standard/)
+- [FIX Trading Community, FIX TagValue Encoding technical standard, version 1.0, June 2020: field syntax, SOH, message structure, repeating groups, BodyLength and CheckSum rules, the NewOrderSingle example, annex A (accessed 15 November 2026)](https://fixtrading.org/packages/fix-tagvalue-encoding/)
+- [FIX Protocol, FIX 2.7a specification, 17 January 1995: two levels, SOH delimiter, data integrity, encryption options (accessed 15 November 2026)](https://fixtrading.org/packages/fix-2-7-specification-document-pdf/)
+- [FIX Protocol, FIX 2.7 release notes, 15 July 1994: sequence numbers initialized each day (accessed 15 November 2026)](https://fixtrading.org/packages/fix-2-7-specification-release-notes/)
+- [FIX Protocol, FIX 3.0 release notes, 3 August 1995: corrected checksum calculation (accessed 15 November 2026)](https://fixtrading.org/packages/fix-3-0-specification-release-notes/)
+- [FIX Protocol, FIX 4.0 release notes, 13 January 1996: OnBehalfOf and DeliverTo fields (accessed 15 November 2026)](https://fixtrading.org/packages/fix-4-0-specification-release-notes/)
+- [FIX Protocol Limited, FIX 4.2 specification with errata 20010501: data types, field definitions, New Order - Single (accessed 15 November 2026)](https://fixtrading.org/packages/fix-4-2-specification-with-errata-20010501/)
+- [FIX Protocol Limited, FIX 4.4 specification with errata 20030618, volume 4: New Order - Single, Execution Report, Order State Change Matrices A.1.a (accessed 15 November 2026)](https://fixtrading.org/packages/fix-4-4-specification-with-20030618-errata/)
+- [FIXimate (Orchimate), field BeginString(8) (accessed 15 November 2026)](https://orchimate.org/fixtrading/fix-latest/fields/BeginString)
+- [FIXimate (Orchimate), BeginStringCodeSet (accessed 15 November 2026)](https://orchimate.org/fixtrading/fix-latest/codeSets/BeginStringCodeSet)
+- [FIXimate (Orchimate), field BodyLength(9) (accessed 15 November 2026)](https://orchimate.org/fixtrading/fix-latest/fields/BodyLength)
+- [FIXimate (Orchimate), field MsgType(35) (accessed 15 November 2026)](https://orchimate.org/fixtrading/fix-latest/fields/MsgType)
+- [FIXimate (Orchimate), MsgTypeCodeSet: message codes and the seven uses of the ExecutionReport (accessed 15 November 2026)](https://orchimate.org/fixtrading/fix-latest/codeSets/MsgTypeCodeSet)
+- [FIXimate (Orchimate), field SenderCompID(49) (accessed 15 November 2026)](https://orchimate.org/fixtrading/fix-latest/fields/SenderCompID)
+- [FIXimate (Orchimate), field TargetCompID(56) (accessed 15 November 2026)](https://orchimate.org/fixtrading/fix-latest/fields/TargetCompID)
+- [FIXimate (Orchimate), field MsgSeqNum(34) (accessed 15 November 2026)](https://orchimate.org/fixtrading/fix-latest/fields/MsgSeqNum)
+- [FIXimate (Orchimate), field SendingTime(52) (accessed 15 November 2026)](https://orchimate.org/fixtrading/fix-latest/fields/SendingTime)
+- [FIXimate (Orchimate), field CheckSum(10) (accessed 15 November 2026)](https://orchimate.org/fixtrading/fix-latest/fields/CheckSum)
+- [FIXimate (Orchimate), message NewOrderSingle (accessed 15 November 2026)](https://orchimate.org/fixtrading/fix-latest/messages/NewOrderSingle)
+- [FIXimate (Orchimate), message ExecutionReport (accessed 15 November 2026)](https://orchimate.org/fixtrading/fix-latest/messages/ExecutionReport)
+- [FIXimate (Orchimate), field ClOrdID(11) (accessed 15 November 2026)](https://orchimate.org/fixtrading/fix-latest/fields/ClOrdID)
+- [FIXimate (Orchimate), OrdTypeCodeSet (accessed 15 November 2026)](https://orchimate.org/fixtrading/fix-latest/codeSets/OrdTypeCodeSet)
+- [FIXimate (Orchimate), TimeInForceCodeSet (accessed 15 November 2026)](https://orchimate.org/fixtrading/fix-latest/codeSets/TimeInForceCodeSet)
+- [FIXimate (Orchimate), field ExecType(150) (accessed 15 November 2026)](https://orchimate.org/fixtrading/fix-latest/fields/ExecType)
+- [FIXimate (Orchimate), ExecTypeCodeSet (accessed 15 November 2026)](https://orchimate.org/fixtrading/fix-latest/codeSets/ExecTypeCodeSet)
+- [FIXimate (Orchimate), OrdStatusCodeSet (accessed 15 November 2026)](https://orchimate.org/fixtrading/fix-latest/codeSets/OrdStatusCodeSet)
+- [FIXimate (Orchimate), field OrderID(37) (accessed 15 November 2026)](https://orchimate.org/fixtrading/fix-latest/fields/OrderID)
+- [FIXimate (Orchimate), field ExecID(17) (accessed 15 November 2026)](https://orchimate.org/fixtrading/fix-latest/fields/ExecID)
+- [FIXimate (Orchimate), field LastQty(32) (accessed 15 November 2026)](https://orchimate.org/fixtrading/fix-latest/fields/LastQty)
+- [FIXimate (Orchimate), field LastPx(31) (accessed 15 November 2026)](https://orchimate.org/fixtrading/fix-latest/fields/LastPx)
+- [FIXimate (Orchimate), field LeavesQty(151) (accessed 15 November 2026)](https://orchimate.org/fixtrading/fix-latest/fields/LeavesQty)
+- [FIXimate (Orchimate), field CumQty(14) (accessed 15 November 2026)](https://orchimate.org/fixtrading/fix-latest/fields/CumQty)
+- [FIXimate (Orchimate), field AvgPx(6) (accessed 15 November 2026)](https://orchimate.org/fixtrading/fix-latest/fields/AvgPx)
+- [FIXimate (Orchimate), EncryptMethodCodeSet (accessed 15 November 2026)](https://orchimate.org/fixtrading/fix-latest/codeSets/EncryptMethodCodeSet)
+- [FIX Trading Community, FIXS (FIX over TLS): use considered a requirement, versions, Stunnel guide (accessed 15 November 2026)](https://fixtrading.org/fixs/)
+- [FIX Trading Community, FIXS technical standard, version 1.0, 12 February 2021: authentication options, FIXA, leaf certificate pinning, protocol parameters, scope (accessed 15 November 2026)](https://fixtrading.org/packages/fixs-technical-specification-technical-standard/)
+- [B3, Comunicado Externo 004/2026-VNC, 22 January 2026: signed by B3 S.A., Brasil, Bolsa, Balcão (accessed 15 November 2026)](https://www.b3.com.br/data/files/22/90/30/AD/D67EB9109B5E99B9AC094EA8/CE%20004-2026-VNC%20ENTRYPOINT%20FIX%20E%20BINARIO%20INTERFACE%20DE%20ENVIO%20DE%20ORDENS_PT.pdf)
+- [New York Stock Exchange, home page: the exchange's name (accessed 15 November 2026)](https://www.nyse.com/index)
+- [NIST Computer Security Resource Center, glossary, DES: Data Encryption Standard (accessed 15 November 2026)](https://csrc.nist.gov/glossary/term/des)
+- [NYSE Group, NYSE Pillar Gateway FIX protocol specification, version 6.0, 14 August 2026: failure recovery, cancel on disconnect, HeartBtInt range (accessed 15 November 2026)](https://www.nyse.com/publicdocs/NYSE_Pillar_Gateway_FIX_Protocol_Specification.pdf)
+- [B3, EntryPoint message specification, version 2.40, 27 November 2025: header, Logon, SequenceReset, Reject reasons, NewOrderSingle, ExecutionReport (accessed 15 November 2026)](https://www.b3.com.br/data/files/A7/77/7B/FE/5789491029BEEC39AC094EA8/EntryPointMessageSpecs.pdf)
+- [B3, EntryPoint, FIX Order Entry: cancel on disconnect, TCP Replayer as a FIX 4.4 session (accessed 15 November 2026)](https://www.b3.com.br/en_us/solutions/platforms/puma-trading-system/for-developers-and-vendors/entrypoint-order-entry)
+- [B3, Binary EntryPoint messaging guidelines 8.4.2.3, 28 September 2026: daily reset, Negotiate as the first message (accessed 15 November 2026)](https://www.b3.com.br/data/files/69/35/F1/AB/94711A103BBB511AAC094EA8/BinaryEntryPoint-MessageSpecificationGuidelines-8.4.2.3-enUS.pdf)

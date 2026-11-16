@@ -46,10 +46,10 @@ export type SeriesPart = { slug: string } | { planned: string };
 /**
  * The subjects the index groups the series under, in the order it shows them (LS-1a, 2026-10-06), then the
  * vendors whose platforms have series of their own (LS-1b, the same day); history joined the subjects in LS-1c,
- * with the family histories. Labels at
+ * with the family histories; markets joined them on 15/11/2026 with the electronic-trading series (PRIME 21:31). Labels at
  * learnSeries.groups.<group> in both packs; the guard checks every series names one of these.
  */
-export const SERIES_GROUPS = ["network", "crypto", "web", "identity", "security", "formats", "operations", "history", "influence", "f5", "fortinet", "checkpoint", "zscaler", "netskope", "ping", "extreme"] as const;
+export const SERIES_GROUPS = ["network", "crypto", "web", "identity", "security", "formats", "operations", "history", "influence", "markets", "f5", "fortinet", "checkpoint", "zscaler", "netskope", "ping", "extreme"] as const;
 /** One subject group of the index. */
 export type SeriesGroup = (typeof SERIES_GROUPS)[number];
 /** The groups that are vendors rather than subjects (LS-1b): the index lists them in a second half, after the subjects. */
@@ -111,16 +111,45 @@ export const LEARN_SERIES: LearnSeries[] = [
       { slug: "influence-for-hire-the-firms-that-sell-influence-operations" }, // Arc 3a, written 15/11/2026
       { slug: "bots-sockpuppets-and-astroturfing" }, // Arc 3b, written 15/11/2026
       { slug: "brazil-mass-messaging-the-courts-and-the-cpmi" }, // Arc 3b, written 15/11/2026
-      { planned: "lodgeToNetwork" },
-      { planned: "echoChambers" },
-      { planned: "profiling" },
-      { planned: "moderation" },
-      { planned: "theLaw" },
-      { planned: "surveillance" },
-      { planned: "verification" },
-      { planned: "prebunking" },
-      { planned: "misbeliefs" },
-      { planned: "genAi" },
+      { slug: "from-the-lodge-to-the-network-how-reach-changed" }, // psyops Arcs 4 to 6, written 15/11/2026
+      { slug: "echo-chambers-and-filter-bubbles-the-evidence-and-the-dispute" }, // psyops Arcs 4 to 6, written 15/11/2026
+      { slug: "recommendation-and-profiling-what-platforms-disclose" }, // psyops Arcs 4 to 6, written 15/11/2026
+      { slug: "content-moderation-at-scale" }, // psyops Arcs 4 to 6, written 15/11/2026
+      { slug: "platform-law-section-230-the-dsa-and-the-marco-civil" }, // psyops Arcs 4 to 6, written 15/11/2026
+      { slug: "surveillance-capability-and-restraint" }, // psyops Arcs 4 to 6, written 15/11/2026
+      { slug: "verification-and-fact-checking" }, // psyops Arcs 4 to 6, written 15/11/2026
+      { slug: "prebunking-and-inoculation" }, // psyops Arcs 4 to 6, written 15/11/2026
+      { slug: "why-misbeliefs-persist" }, // psyops Arcs 4 to 6, written 15/11/2026
+      { slug: "generative-ai-and-influence-operations" }, // psyops Arcs 4 to 6, written 15/11/2026
+    ],
+  },
+  {
+    // Electronic trading (PRIME 15/11/2026 21:31: "extra-rich content of the FIX protocol, FIX networks, Electronic Trading
+    // Solutions vendors ... It can start with the evolution of in-person stock to high-frequency electronic trading").
+    // Wave 1 (written 15/11/2026, five agents, orders 360 to 369): the opener and nine parts; the nine planned parts
+    // are named in the packs and in the opener's "This series, in order" list, which links each one when it lands.
+    id: "electronic-trading",
+    group: "markets",
+    opener: "electronic-trading-from-the-pit-to-the-microsecond", // 360
+    parts: [
+      { slug: "open-outcry-trading-floors-and-the-pregao" }, // 361
+      { slug: "the-screens-arrive-electronic-exchanges-from-nasdaq-to-globex" }, // 362
+      { slug: "the-rules-that-rewired-markets-reg-ats-reg-nms-mifid-and-brazil" }, // 363
+      { slug: "high-frequency-trading-what-it-is-and-the-dispute" }, // 364
+      { slug: "colocation-microwaves-and-the-race-for-latency" }, // 365
+      { slug: "the-fix-protocol-origins-versions-and-the-community" }, // 366
+      { slug: "anatomy-of-a-fix-message-and-the-session-layer" }, // 367
+      { slug: "fix-networks-hubs-and-managed-connectivity" }, // 368
+      { slug: "brazil-bmf-bovespa-b3-and-electronic-access" }, // 369
+      { planned: "fixEncodings" }, // FIXML, FAST, SBE, FIXP, OUCH and ITCH, B3's EntryPoint and UMDF
+      { planned: "orderLife" }, // order states, cancel and replace, drop copies, allocations, FIX beyond equities
+      { planned: "omsEms" }, // order and execution management systems and their vendors
+      { planned: "preTradeRisk" }, // SEC Rule 15c3-5, sponsored access, kill switches
+      { planned: "interdealer" }, // interdealer brokers, electronic fixed income and foreign exchange
+      { planned: "networkAnalytics" }, // network-derived analytics and monitoring (Corvil, Pico)
+      { planned: "marketData" }, // consolidated feeds against direct feeds
+      { planned: "surveillance" }, // MiFID II, the Consolidated Audit Trail, CVM
+      { planned: "fairnessByDesign" }, // speed bumps, batch auctions, IEX
     ],
   },
   // ------------------------------------------------------------------------------------------------------------------

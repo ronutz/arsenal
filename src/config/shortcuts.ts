@@ -79,7 +79,7 @@ export const SHORTCUT_ACTIONS: ShortcutAction[] = [
   // My desk (PRIME 12/11/2026 12:42): the reader's own page, and the two things to do on an item page from the keyboard.
   // The commands are answered by the page's own controls (src/components/desk/DeskItemControls.tsx); on a page with no
   // item they do nothing.
-  { id: "nav-desk", kind: "navigate", path: "/desk", labelKey: "actionDesk" },
+  { id: "nav-desk", kind: "navigate", path: "/my-desk", labelKey: "actionDesk" },
   // Commands — handled inside the shortcut layer
   { id: "cmd-search", kind: "command", command: "search-overlay", labelKey: "actionSearch" },
   { id: "cmd-focus-search", kind: "command", command: "focus-search", labelKey: "actionFocusSearch" },

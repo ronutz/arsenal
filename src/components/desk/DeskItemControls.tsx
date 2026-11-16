@@ -268,7 +268,7 @@ export default function DeskItemControls(props: { item: ItemId; endRead?: boolea
       </div>
       {/* Where this is kept, at the point of use; or, when the browser refuses storage, how long it lasts. */}
       <p className="desk-controls-note">
-        {status === "unavailable" ? t("storageOff") : t("kept")} · <Link href="/desk" className="desk-link">{t("open")}</Link>
+        {status === "unavailable" ? t("storageOff") : t("kept")} · <Link href="/my-desk" className="desk-link">{t("open")}</Link>
         {note && <> · <span role="status">{note}</span></>}
       </p>
       {/* The confirmation of a change made by a key or by reaching the end, with its Undo. */}

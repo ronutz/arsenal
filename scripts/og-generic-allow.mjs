@@ -33,7 +33,7 @@ export const GENERIC_CARD_ALLOW = new Map([
   // The owner's private copy-editing page.
   ["/copy8825140637", "Private, unlisted copy-editing page for the site owner; it is never shared as a link."],
   // The visitor's own desk, kept in the browser.
-  ["/desk", "The visitor's own desk, kept in this browser: a shared link opens the receiver's own desk, so no page-specific card applies."],
+  ["/my-desk", "The visitor's own desk, kept in this browser: a shared link opens the receiver's own desk, so no page-specific card applies."],
   // The visitor's own preferences, kept in the browser.
   ["/settings", "This browser's own preferences: nothing on the page is specific to share."],
 ]);

@@ -48,6 +48,15 @@ export const manifest = Object.freeze({
       status: "active",
     },
     {
+      id: "exos-no-spbm-fa-dead-link", // restored 15/11/2026: dead link kept (RULE-dead-sources-keep-content-20261115)
+      label: "Extreme Fabric Installation & Configuration Student Guide (2024): EXOS does not support SPBM; works with fabric via Fabric Attach; the user guide at its earlier address, link dead as of 27 September 2026",
+      type: "docs",
+      url: "https://documentation.extremenetworks.com/FABRICENGINE/SW/91/FabricEngineUserGuide/",
+      access_date: "2026-07-11",
+      scope: "the EXOS-does-not-run-SPBM fact and the Fabric Attach integration model",
+      status: "active",
+    },
+    {
       id: "voss-l3vsn-howto",
       label: "Extreme Portal How To: Configure L3VSN (VOSS SPBM/IS-IS, L2 VSN, and L3 VSN CLI)",
       type: "docs",

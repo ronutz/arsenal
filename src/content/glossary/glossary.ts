@@ -716,16 +716,22 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     ],
   },
   {
-    slug: "ptp",
-    headword: "PTP (Precision Time Protocol)",
-    kind: "acronym",
-    domains: ["enterprise-networking", "programming"],
-    aliases: ["precision time protocol", "ieee 1588", "1588v2"],
-    relatedTerms: ["ntp", "sntp"],
-    sources: [
-      { label: "IEEE 1588, Precision Time Protocol, and IEEE 1588-2008 (PTPv2)" },
-      { label: "Telecom and financial-market profiles of PTP, including ITU-T G.8275.1 and MiFID II timestamping requirements" },
-    ],
+    slug: "ptp", // unchanged address
+    headword: "PTP (Precision Time Protocol)", // unchanged
+    kind: "acronym", // unchanged
+    domains: ["enterprise-networking", "programming"], // unchanged
+    aliases: ["precision time protocol", "ieee 1588", "1588v2", "ieee 1588-2019"], // existing aliases kept, the current edition added
+    relatedTerms: ["ntp", "sntp", "utc", "nist", "jitter", "latency", "exchange-colocation", "high-frequency-trading"], // existing ntp and sntp first, then existing neighbours, then this batch
+    relatedArticles: ["colocation-microwaves-and-the-race-for-latency", "ntp-family-history"], // the part and the NTP history
+    sources: [ // the two existing labels kept verbatim, then sources read 2026-11-15
+      { label: "IEEE 1588, Precision Time Protocol, and IEEE 1588-2008 (PTPv2)" }, // existing source, kept
+      { label: "Telecom and financial-market profiles of PTP, including ITU-T G.8275.1 and MiFID II timestamping requirements" }, // existing source, kept
+      { label: "IEEE Standards Association, IEEE 1588-2019 (read 2026-11-15): active standard, approved 7 November 2019, published 16 June 2020, superseding 1588-2008; precise synchronization of clocks in packet-based networked systems, sub-microsecond accuracy and precision, sub-nanosecond time transfer in a properly designed network", href: "https://standards.ieee.org/ieee/1588/6825/" }, // the standard
+      { label: "EUR-Lex, Commission Delegated Regulation (EU) 2017/574 (RTS 25), applicable from 3 January 2018 (read 2026-11-15): business clocks traceable to UTC; high-frequency trading within 100 microseconds of UTC with 1-microsecond timestamps; venues with gateway-to-gateway latency of 1 ms or less within 100 microseconds", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32017R0574" }, // the financial requirement
+      { label: "CAT NMS Plan Participants, clock synchronization assessment, 15 May 2017 (read 2026-11-15): exchanges and FINRA within 100 microseconds of NIST time, industry members within 50 milliseconds, manual events one second", href: "https://acquia.catnmsplan.com/sites/default/files/2020-02/Clock-Synchronization-Assessment-Final-5.15.17.pdf" }, // the US requirement
+      { label: "Intercontinental Exchange, ICE Global Network and Colocation US Technical Specifications, 2026 (read 2026-11-15): NTP, direct PTP and GPS services at the Mahwah data centre; GPS-synchronized clock with rubidium holdover verified by NIST; PTP boundary switches; sub-1-microsecond precision with an IEEE 1588 hardware clock NIC", href: "https://www.ice.com/publicdocs/IGN_Colocation_Mahwah_Technical_Specs.pdf" }, // an exchange's service
+      { label: "B3, Política Comercial de Serviços de Co-location, 15 January 2024, and Tabela de Preços Co-location, 15 January 2026 (read 2026-11-15): GPS antennas on the data centre roof for clock synchronization services; racks for GPS, PTP and NTP distribution; GPS/PTP cross connect at R$227.01 a month", href: "https://sistemasweb.b3.com.br/normativos/POLITICA%20COMERCIAL%20COLOCATION%20-%20PORTUGUES.PDF" }, // Brazil
+    ], // seven sources, one object per line
   },
 
   {
@@ -1255,7 +1261,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["cyber-security", "events"],
     aliases: ["wall of sheep", "defcon wall", "sheep wall"],
     relatedTerms: ["defcon", "tls"],
-    sources: [{ label: "The Wall of Sheep's own site, now the Packet Hacking Village: 'Wall of Sheep - Spreading awareness to the flock', running at DEF CON", href: "https://www.phvillage.io/" }],
+    sources: [{ label: "The Wall of Sheep's own site, now the Packet Hacking Village: 'Wall of Sheep - Spreading awareness to the flock', running at DEF CON", href: "https://www.phvillage.io/" }, { label: "Wall of Sheep - DEF CON village; link dead as of 30 September 2026", href: "https://en.wikipedia.org/wiki/Wall_of_Sheep" }], // restored 15/11/2026: dead link kept (RULE-dead-sources-keep-content-20261115)
   },
   {
     slug: "pwnie-awards",
@@ -1336,7 +1342,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["cyber-security", "ops-culture"],
     aliases: ["kim zetter", "stuxnet book"],
     relatedTerms: ["stuxnet", "zero-day"],
-    sources: [{ label: "Kim Zetter, investigative journalist covering cybersecurity and national security since 1999; her bibliography lists 'Countdown to Zero Day: Stuxnet and the Launch of the World's First Digital Weapon', Crown, 2014", href: "https://en.wikipedia.org/wiki/Kim_Zetter" }],
+    sources: [{ label: "Kim Zetter, investigative journalist covering cybersecurity and national security since 1999; her bibliography lists 'Countdown to Zero Day: Stuxnet and the Launch of the World's First Digital Weapon', Crown, 2014", href: "https://en.wikipedia.org/wiki/Kim_Zetter" }, { label: "Countdown to Zero Day; link dead as of 30 September 2026", href: "https://en.wikipedia.org/wiki/Countdown_to_Zero_Day" }], // restored 15/11/2026: dead link kept (RULE-dead-sources-keep-content-20261115)
   },
   {
     // Content sweep 12/11/2026, batch 4D: depth, sources and links rewritten to the minimum level (PLAN-content-sweep-20261111).
@@ -2539,6 +2545,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
       { label: "Kaspersky GReAT, 'Fully equipped Spying Android RAT from Brazil: BRATA', Securelist, 29 August 2019 (read 2026-11-12): Brazil-only, widespread since January 2019, mostly in Google Play, more than 20 variants posing as WhatsApp updates around CVE-2019-3568; keylogging with real-time streaming through the Accessibility Service", href: "https://securelist.com/spying-android-rat-from-brazil-brata/92775/" }, // Kaspersky GReAT
       { label: "IBM Security Intelligence, IBM Trusteer research post on PixPirate, read through WebFetch (the rendered page shows no headline, date or byline) (read 2026-11-12): a downloader and a droppee with no launcher icon; the accessibility service used to automate Pix transfers or change the payee of a real one; SMS read, edited and deleted; Pix launched in November 2020, more than 3 billion transactions and 1.25 trillion reais in March 2023, 140 million users in May 2023", href: "https://securityintelligence.com/posts/pixpirate-brazilian-financial-malware/" }, // IBM Security Intelligence
       { label: "Banco Central do Brasil, Resolução BCB nº 142, de 23 de setembro de 2021, consolidated text through the BCB normative API (read 2026-11-12): a 1,000-real limit between 20:00 and 06:00 for payments between different natural persons; at least 24 hours before a limit increase takes effect; pre-registered accounts; daily fraud records; article 2-A, added by Resolução BCB nº 501 of 11 September 2025, requiring payments to accounts under well-founded suspicion of fraud to be rejected from 13 October 2025", href: "https://www.bcb.gov.br/api/conteudo/app/normativos/exibenormativo?p1=Resolu%C3%A7%C3%A3o%20BCB&p2=142" }, // Banco Central do Brasil
+      { label: "Banking trojan - technique overview; link dead as of 30 September 2026", href: "https://en.wikipedia.org/wiki/Banker_trojan" }, // restored 15/11/2026: dead link kept (RULE-dead-sources-keep-content-20261115)
     ], // 11 sources, one object per line
   },
   {
@@ -2551,13 +2558,23 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     sources: [{ label: "Lei nº 12.737, de 30 de novembro de 2012", href: "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12737.htm" }],
   },
   {
-    slug: "marco-civil-da-internet",
-    headword: "Marco Civil da Internet (Law 12.965/2014)",
-    kind: "term",
-    domains: ["grc", "privacy"],
-    aliases: ["lei 12.965", "internet bill of rights", "brazilian internet framework"],
-    relatedTerms: ["lgpd", "lei-carolina-dieckmann", "net-neutrality"],
-    sources: [{ label: "Lei nº 12.965, de 23 de abril de 2014", href: "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2014/lei/l12965.htm" }],
+    // Marco Civil da Internet (enriched 15/11/2026, psyops Arc 5): article 19 and the STF thesis of 2025 and 2026, records and court orders, sources moved to the Senado portal (Planalto answered "Acesso Temporariamente Interrompido" on 15/11/2026).
+    slug: "marco-civil-da-internet", // unchanged address
+    headword: "Marco Civil da Internet (Law 12.965/2014)", // unchanged
+    kind: "term", // unchanged
+    domains: ["grc", "privacy"], // unchanged
+    aliases: ["lei 12.965", "internet bill of rights", "brazilian internet framework", "artigo 19 do marco civil", "tema 987"], // existing three, plus the article and the STF theme people search for
+    relatedTerms: ["lgpd", "lei-carolina-dieckmann", "net-neutrality", "intermediary-liability", "section-230", "digital-services-act", "data-retention", "lawful-interception", "cgi-br"], // existing three first, then this batch and neighbours
+    relatedArticles: ["platform-law-section-230-the-dsa-and-the-marco-civil", "surveillance-capability-and-restraint", "brazil-internet-governance", "brazil-mass-messaging-the-courts-and-the-cpmi"], // the parts that teach it
+    sources: [ // every label says what the page says and when it was read
+      { label: "Lei nº 12.965, de 23 de abril de 2014", href: "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2014/lei/l12965.htm" }, // the original source, kept (15/11/2026)
+      { label: "Senado Federal, Lei nº 12.965, de 23 de abril de 2014 (read 2026-11-15): rights to secrecy of communications save by court order (art. 7); net neutrality and the ban on monitoring packet content (art. 9); records and content only by court order (art. 10); connection records 1 year (art. 13), application records 6 months (art. 15); liability only after a specific court order, to protect expression (art. 19); notice for intimate images (art. 21)", href: "https://legis.senado.leg.br/norma/584776/publicacao/15630642" }, // the law
+      { label: "Supremo Tribunal Federal, case summary of RE 1.037.396 (Tema 987) and RE 1.057.258 (Tema 533), judgment of 26 June 2025 (read 2026-11-15): article 19 partially unconstitutional by 8 votes to 3, Mendonça, Fachin and Nunes Marques dissenting", href: "https://sipla.ip.mpg.de/fileadmin/Files/Files/STF_Responsabilidade_de_plataformas_digitais_por_conteudo_de_terceiros.pdf" }, // 2025 judgment
+      { label: "Supremo Tribunal Federal, final thesis on article 19 after the motions for clarification, June 2026 (read 2026-11-15): joint liability after notice for crimes and unlawful acts unless reasonable doubt after qualified diligence; court order kept for honour and private messaging; presumed fault for paid ads and artificial dissemination; duty of care and systemic failure for grave crimes; representative in Brazil; effects from 5 August 2025", href: "https://noticias-stf-wp-prd.s3.sa-east-1.amazonaws.com/wp-content/uploads/wpallimport/uploads/2026/06/17180658/MCI_tese.pdf" }, // 2026 thesis
+      { label: "Teletime, STF finaliza tese em julgamento do Marco Civil da Internet, 17 June 2026 (read 2026-11-15): the motions by Facebook, Google and admitted parties judged; cases closed unanimously; 60 days to implement", href: "https://teletime.com.br/17/06/2026/stf-conteudos-marco-civil-internet/" }, // 2026 session
+      { label: "Proposta de tese e voto do Ministro Edson Fachin, 25 June 2025, published by Poder360 (read 2026-11-15): a court order is the only constitutionally adequate way to reconcile free expression with liability; risk of collateral censorship", href: "https://static.poder360.com.br/2025/06/proposta-tese-EdsonFachin-MarcoCivilInternet-25-jun-2025-1.pdf" }, // dissent
+      { label: "Transcrição do voto do Ministro Alexandre de Moraes, 12 June 2025, published by Poder360 (read 2026-11-15): freedom of expression is not freedom of aggression; failed self-regulation", href: "https://static.poder360.com.br/2025/06/transcricao-voto-AlexandreMoraes-STF-responsabilizacaodasredes-12-jun-2025.pdf" }, // majority
+    ], // seven sources, one object per line
   },
   {
     // Content sweep batch 14C: depth, sources and links rewritten to the minimum level (PLAN-content-sweep-20261111).
@@ -4966,7 +4983,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     aliases: ["akplogan", "afrinic", "togo"],
     relatedTerms: [],
-    sources: [{ label: "Internet Hall of Fame: an electrical engineer by training, between 1996 and 1997 Akplogan helped establish the first TCP/IP connection in his native Togo; he played a key role in the development of several of the first West African ISPs, and by 2003 had helped start AFRINIC, Africa's first Regional Internet Registry, serving as its first CEO until 2015", href: "https://www.internethalloffame.org/inductee/adiel-akplogan/" }, { label: "Internet Hall of Fame: Akplogan began as an intern promised a full-time job if he could succeed where others had failed, worked three days and nights to fix the technical problem and produce an online banking prototype based on Minitel technology, and described that as the start of the journey to the internet in Togo; he planned to spend two years at AFRINIC and stayed ten", href: "https://www.internethalloffame.org/2020/10/08/how-africas-regional-internet-network-started-one-driven-intern-quest-lan/" }, { label: "AFRINIC on his induction of 27 September 2019, noting he joins Nii Quaynor, one of AFRINIC's founders, among previous inductees", href: "https://web.archive.org/web/20210127104728/https://afrinic.net/2019-09-28-congratulatory-message-to-adiel" }],
+    sources: [{ label: "Internet Hall of Fame: an electrical engineer by training, between 1996 and 1997 Akplogan helped establish the first TCP/IP connection in his native Togo; he played a key role in the development of several of the first West African ISPs, and by 2003 had helped start AFRINIC, Africa's first Regional Internet Registry, serving as its first CEO until 2015", href: "https://www.internethalloffame.org/inductee/adiel-akplogan/" }, { label: "Internet Hall of Fame: Akplogan began as an intern promised a full-time job if he could succeed where others had failed, worked three days and nights to fix the technical problem and produce an online banking prototype based on Minitel technology, and described that as the start of the journey to the internet in Togo; he planned to spend two years at AFRINIC and stayed ten", href: "https://www.internethalloffame.org/2020/10/08/how-africas-regional-internet-network-started-one-driven-intern-quest-lan/" }, { label: "AFRINIC on his induction of 27 September 2019, noting he joins Nii Quaynor, one of AFRINIC's founders, among previous inductees", href: "https://web.archive.org/web/20210127104728/https://afrinic.net/2019-09-28-congratulatory-message-to-adiel" }, { label: "AFRINIC on his induction of 27 September 2019, noting he joins Nii Quaynor, one of AFRINIC's founders, among previous inductees; link dead as of 30 September 2026", href: "https://afrinic.net/2019-09-28-congratulatory-message-to-adiel" }], // restored 15/11/2026: dead link kept (RULE-dead-sources-keep-content-20261115)
   },
   {
     slug: "kees-neggers",
@@ -5095,7 +5112,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     aliases: ["beertema", "mcvax", "kremvax", "17 november 1988"],
     relatedTerms: [],
-    sources: [{ label: "CWI, on the 30th anniversary: on 17 November 1988 at 2:28 pm system administrator Piet Beertema received confirmation that CWI, as the first institute outside North America, had officially gained access to NSFNET; the institute was already the central hub of EUnet and its predecessor NLnet, and the connection came after years of preparation through good contacts in the network world", href: "https://www.cwi.nl/en/news/cwi-celebrates-30-year-of-open-internet-in-europe/" }, { label: "Wikipedia: born 22 October 1943 in Amsterdam; first job in 1965 at the national aerospace laboratory, where he met his first computer, an Elliott 803; joined the Mathematical Centre in 1966 and stayed until retirement; on 17 November 1988 linked the Netherlands to NSFNET as one of the first two countries, shortly after France's INRIA; on 1 April 1984 created the kremvax Usenet site, posting as Konstantin Chernenko to announce the Soviet Union joining the network", href: "https://en.wikipedia.org/wiki/Piet_Beertema" }, { label: "Newsweek, 2016: the 1984 hoax, posted from Amsterdam seven months after the Soviet Union shot down a Korean airliner, was the first online April Fool's with general international reach; Beertema revealed himself two weeks later and said it had caused genuine concern at the Pentagon; he had read Orwell's 1984, which came in handy", href: "https://www.newsweek.com/april-fools-day-april-fools-kremvax-kremlin-soviet-union-usenet-piet-beertema-318451" }, { label: "News2mail: Beertema administered mcvax, the institute's machine at the junction of European UUCP traffic, registered the .nl domain in 1986 and opened the link to NSFNET in 1988; when a genuine Moscow site, demos.su, joined in 1990, some readers needed convincing it was not another prank, and its senior programmer later named the gateway kremvax.demos.su - a joke made retrospectively true by administrative action", href: "https://news2mail.com/nl.html" }],
+    sources: [{ label: "CWI, on the 30th anniversary: on 17 November 1988 at 2:28 pm system administrator Piet Beertema received confirmation that CWI, as the first institute outside North America, had officially gained access to NSFNET; the institute was already the central hub of EUnet and its predecessor NLnet, and the connection came after years of preparation through good contacts in the network world", href: "https://www.cwi.nl/en/news/cwi-celebrates-30-year-of-open-internet-in-europe/" }, { label: "Wikipedia: born 22 October 1943 in Amsterdam; first job in 1965 at the national aerospace laboratory, where he met his first computer, an Elliott 803; joined the Mathematical Centre in 1966 and stayed until retirement; on 17 November 1988 linked the Netherlands to NSFNET as one of the first two countries, shortly after France's INRIA; on 1 April 1984 created the kremvax Usenet site, posting as Konstantin Chernenko to announce the Soviet Union joining the network", href: "https://en.wikipedia.org/wiki/Piet_Beertema" }, { label: "Newsweek, 2016: the 1984 hoax, posted from Amsterdam seven months after the Soviet Union shot down a Korean airliner, was the first online April Fool's with general international reach; Beertema revealed himself two weeks later and said it had caused genuine concern at the Pentagon; he had read Orwell's 1984, which came in handy", href: "https://www.newsweek.com/april-fools-day-april-fools-kremvax-kremlin-soviet-union-usenet-piet-beertema-318451" }, { label: "News2mail: Beertema administered mcvax, the institute's machine at the junction of European UUCP traffic, registered the .nl domain in 1986 and opened the link to NSFNET in 1988; when a genuine Moscow site, demos.su, joined in 1990, some readers needed convincing it was not another prank, and its senior programmer later named the gateway kremvax.demos.su - a joke made retrospectively true by administrative action", href: "https://news2mail.com/nl.html" }, { label: "CWI, on the 30th anniversary: on 17 November 1988 at 2:28 pm system administrator Piet Beertema received confirmation that CWI, as the first institute outside North America, had officially gained access to NSFNET; the institute was already the central hub of EUnet and its predecessor NLnet, and the connection came after years of preparation through good contacts in the network world; link dead as of 26 October 2026", href: "https://cwi.nl/news/2018/cwi-celebrates-30-year-of-open-internet-in-europe" }], // restored 15/11/2026: dead link kept (RULE-dead-sources-keep-content-20261115)
   },
   {
     slug: "daniel-karrenberg",
@@ -12533,7 +12550,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     domains: ["cyber-security", "programming"],
     aliases: ["the Thompson hack", "trusting trust", "compiler backdoor"],
     relatedTerms: ["the-morris-worm"],
-    sources: [{ label: "Thompson, 'Reflections on Trusting Trust', CACM (1984)", href: "https://dl.acm.org/doi/10.1145/358198.358210" }],
+    sources: [{ label: "Ken Thompson, Reflections on Trusting Trust, Turing Award lecture, Communications of the ACM 27(8), pages 761 to 763, 1 August 1984, read on the ACM Digital Library (read 2026-11-15): a C compiler altered to miscompile the UNIX login command so that it also accepts a particular known password, and to reinsert both Trojan horses whenever it compiles the compiler, so the login command remains bugged with no trace in source anywhere; the moral, that you cannot trust code you did not totally create yourself; the idea first read in an Air Force critique of an early implementation of Multics", href: "https://dl.acm.org/doi/10.1145/358198.358210" }], // enriched 15/11/2026 (queue 5p): the dated ACM label read in PRIME's Chrome
   },
   {
     slug: "the-first-spam",
@@ -21668,6 +21685,7 @@ const GLOSSARY_PART_3: GlossaryEntry[] = [
       { label: "IANA, Time Zone Database (read 2026-11-11): the history of local time for representative locations, updated for political changes to zone boundaries, UTC offsets and daylight-saving rules; latest version 2026f released 2026-10-27, with no more leap seconds and leap second tables that no longer expire", href: "https://www.iana.org/time-zones" }, // IANA
       { label: "Cloudflare, John Graham-Cumming, How and why the leap second affected Cloudflare DNS, 1 January 2017 (read 2026-11-11): at midnight UTC a value in RRDNS went negative and Go's rand.Int63n panicked; about 0.2% of DNS queries and less than 1% of HTTP requests affected; the fix checks whether the difference between two timestamps from a non-monotonic clock is negative", href: "https://blog.cloudflare.com/how-and-why-the-leap-second-affected-cloudflare-dns/" }, // Cloudflare
       { label: "Google, Public NTP, Leap Smear (read 2026-11-11): since 2008 Google smears leap seconds instead of stepping clocks; recommended 24-hour linear smear from noon to noon UTC, about 11.6 ppm, well under NTP's 500 ppm maximum slew rate; smeared time is just under 0.5 s from UTC at the leap; adopted by AWS", href: "https://developers.google.com/time/smear" }, // Google
+      { label: "ITU-R TF.460 / BIPM; link dead as of 30 September 2026", href: "https://www.bipm.org/en/time-metrology/time-scales" }, // restored 15/11/2026: dead link kept (RULE-dead-sources-keep-content-20261115)
     ], // 15 sources, one object per line
   },
   {
@@ -21928,7 +21946,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     expansion: "Security Incident Response Team",
     aliases: ["sirt"],
     relatedTerms: ["cert", "cve"],
-    sources: [{ label: "F5 Security Incident Response Team (F5 SIRT), F5's own page: contact the team for rapid expert assistance around the clock to mitigate attacks and resolve critical security issues", href: "https://www.f5.com/support/security-incident-response-team-sirt" }],
+    sources: [{ label: "F5 Security Incident Response Team (F5 SIRT), F5's own page: contact the team for rapid expert assistance around the clock to mitigate attacks and resolve critical security issues", href: "https://www.f5.com/support/security-incident-response-team-sirt" }, { label: "F5 SIRT; link dead as of 30 September 2026", href: "https://www.f5.com/services/support/f5-security-incident-response-team" }], // restored 15/11/2026: dead link kept (RULE-dead-sources-keep-content-20261115)
   },
   {
     slug: "adsp",
@@ -29314,6 +29332,1330 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
       { label: "QuintoAndar, security.txt (read 2026-11-15): a Policy field pointing to its Bugcrowd programme; Expires 31 December 2026", href: "https://www.quintoandar.com.br/.well-known/security.txt" }, // QuintoAndar
       { label: "VTEX, security.txt (read 2026-11-15): Contact, Encryption, Policy pointing to a full disclosure policy, Canonical, Preferred-Languages en and pt-BR, Expires 12 June 2027", href: "https://vtex.com/.well-known/security.txt" }, // VTEX
     ], // 7 sources, one object per line
+  },
+  {
+    // Queue 5p (PRIME 15/11/2026 04:43): the 1988 boot sector virus the site's p-v simulator pays homage to.
+    slug: "ping-pong-virus", // the /glossary/ping-pong-virus address
+    headword: "the Ping-Pong virus", // as the sources name it
+    kind: "lore", // a piece of security history
+    domains: ["cyber-security"],
+    aliases: ["ping-pong", "ping pong virus", "bouncing ball virus", "bouncing dot", "italian virus", "vírus ping-pong"],
+    relatedTerms: ["boot-sector-virus", "brain-virus", "malware", "trojan-horse"],
+    sources: [ // every label says what the page says and when it was read
+      { label: "Wikipedia, Ping-Pong virus (read 2026-11-15): discovered on 1 March 1988 at the Politecnico di Torino; also called Boot, Bouncing Ball, Bouncing Dot, Italian, Italian-A or VeraCruz; a boot sector virus hiding in a 1 KB cluster marked bad; memory resident; activated by a disk access exactly on the half hour; a small ball bouncing around the screen, in text mode the bullet character; crashes on 286 and later processors; variants A (floppies only, extinct), B and C (hard disks too); the most common boot sector virus until Stoned outnumbered it", href: "https://en.wikipedia.org/wiki/Ping-Pong_virus" }, // Wikipedia
+      { label: "F-Secure, virus description Ping-Pong (read 2026-11-15): when the virus activates a small ball starts bouncing around the screen; in most cases no serious damage; a bug crashes 286, V20, 386 and 486 machines; an infected diskette shows 1K in bad clusters; the Typo variant, which appeared in Israel, introduces typing errors in text sent to the printer", href: "https://www.f-secure.com/v-descs/pingpong.shtml" }, // F-Secure
+    ], // 2 sources, one object per line
+  },
+  {
+    // Queue 5p: the first IBM PC virus, the boot sector family's founder.
+    slug: "brain-virus",
+    headword: "the Brain virus",
+    kind: "lore",
+    domains: ["cyber-security"],
+    aliases: ["brain", "©brain", "pakistani brain", "vírus brain"],
+    relatedTerms: ["boot-sector-virus", "ping-pong-virus", "malware", "the-morris-worm"],
+    sources: [
+      { label: "Wikipedia, Brain (computer virus) (read 2026-11-15): first released on 19 January 1986 by Basit and Amjad Farooq Alvi of Lahore, Pakistan; considered the first virus for the IBM PC and compatibles; replaces a floppy's boot sector with itself, moves the real one and marks it bad, and usually changes the label to ©Brain; Mikko Hyppönen of F-Secure visited the brothers in 2011 for a documentary", href: "https://en.wikipedia.org/wiki/Brain_(computer_virus)" }, // Wikipedia
+      { label: "F-Secure, virus description Brain (read 2026-11-15): first detected in January 1986; the authors left their real names and a Lahore address in the code; hooks interrupt 13h and shows the original boot sector to anyone reading it while active; most of it in sectors marked bad in the FAT; the label usually becomes (c) Brain; fairly harmless; extinct", href: "http://www.f-secure.com/v-descs/brain.shtml" }, // F-Secure
+    ], // 2 sources, one object per line
+  },
+  {
+    // Queue 5p: the family Brain and Ping-Pong belong to, with today's descendant and the defence.
+    slug: "boot-sector-virus",
+    headword: "boot sector virus",
+    kind: "term",
+    domains: ["cyber-security"],
+    aliases: ["boot virus", "boot-sector virus", "mbr virus", "vírus de setor de boot", "vírus de boot"],
+    relatedTerms: ["brain-virus", "ping-pong-virus", "malware", "trojan-horse"],
+    sources: [
+      { label: "Wikipedia, Boot sector (read 2026-11-15): the BIOS passes control to whatever the boot sector holds when it ends with the 0x55 0xAA signature, so its code runs automatically, which made boot sectors a common attack vector for viruses; a BIOS option can block writes to a hard disk's first sector; UEFI does not rely on boot sectors and Secure Boot expects signed code", href: "https://en.wikipedia.org/wiki/Boot_sector" }, // Wikipedia
+      { label: "RFC 4949, Internet Security Glossary, Version 2 (read 2026-11-15): a virus is a self-replicating, usually hidden section of software that propagates by inserting a copy of itself into another program, and cannot run by itself", href: "https://www.rfc-editor.org/rfc/rfc4949" }, // RFC 4949
+      { label: "Cisco Talos, New Ransomware Variant Nyetya Compromises Systems Worldwide, 27 June 2017 (read 2026-11-15): Nyetya overwrites the boot sector on PhysicalDrive0 without saving a copy, or wipes the first ten sectors of the drive if that fails", href: "https://blog.talosintelligence.com/2017/06/worldwide-ransomware-variant.html" }, // Talos
+    ], // 3 sources, one object per line
+  },
+  {
+    // Queue 5p: the trojan horse, defined by the standards, with its earliest documented case.
+    slug: "trojan-horse",
+    headword: "trojan horse",
+    kind: "term",
+    domains: ["cyber-security"],
+    aliases: ["trojan", "trojan horse program", "cavalo de troia", "cavalo de tróia"],
+    relatedTerms: ["malware", "trusting-trust", "boot-sector-virus", "the-morris-worm"],
+    sources: [
+      { label: "RFC 4949, Internet Security Glossary, Version 2 (read 2026-11-15): a Trojan horse is a computer program that appears to have a useful function but also has a hidden and potentially malicious function that evades security mechanisms, sometimes by exploiting the legitimate authorizations of whoever runs it; a virus, by contrast, propagates by inserting a copy of itself into another program, and a worm runs independently and copies itself to other hosts", href: "https://www.rfc-editor.org/rfc/rfc4949" }, // RFC 4949
+      { label: "NIST Computer Security Resource Center, glossary, Trojan horse (read 2026-11-15): the same definition in NIST SP 800-12 Rev. 1 (from CNSSI 4009) and SP 800-82r3 (from RFC 4949); SP 800-28 defines it as a useful or seemingly useful program with hidden malicious code", href: "https://csrc.nist.gov/glossary/term/trojan_horse" }, // NIST
+      { label: "John Walker, The ANIMAL Episode (read 2026-11-15): ANIMAL, a twenty-questions game he wrote in April 1974, carried PERVADE, a subroutine that copied the program into other users' directories on a UNIVAC 1100/42 under Exec-8 in January 1975; he calls the method a classic Trojan Horse attack; PERVADE avoided destroying unrelated programs and did not subvert the system's security; a 1976 Univac operating system release changed the tables it read and ended the spreading", href: "https://www.fourmilab.ch/documents/univac/animal.html" }, // fourmilab
+      { label: "Ken Thompson, Reflections on Trusting Trust, Turing Award lecture, Communications of the ACM 27(8), pages 761 to 763, 1 August 1984, read on the ACM Digital Library (read 2026-11-15): a C compiler altered to miscompile the UNIX login command so that it also accepts a particular known password, and to reinsert both Trojan horses whenever it compiles the compiler, so the login command remains bugged with no trace in source anywhere; the moral, that you cannot trust code you did not totally create yourself; the idea first read in an Air Force critique of an early implementation of Multics", href: "https://dl.acm.org/doi/10.1145/358198.358210" }, // ACM (read in the user's browser after its check)
+    ], // 4 sources, one object per line
+  },
+  {
+    // Structural virality (new entry): Goel et al.'s measure, the billion-event finding and the true/false news dispute.
+    slug: "structural-virality", // the /glossary/structural-virality address
+    headword: "Structural virality", // the authors' term, sentence case
+    kind: "term", // a measure from computational social science
+    domains: ["cyber-security", "grc"], // influence operations and platform policy, as for the rest of the series
+    aliases: ["viralidade estrutural", "Wiener index of a cascade", "broadcast versus viral diffusion"], // Portuguese, the graph measure it uses and the contrast it captures
+    relatedTerms: ["information-cascade", "two-step-flow", "forwarding-limit", "misinformation", "social-bot"], // the batch, then existing entries
+    relatedArticles: ["from-the-lodge-to-the-network-how-reach-changed", "bots-sockpuppets-and-astroturfing"], // the part and the bots part, which cites the same studies
+    sources: [ // every label says what the page says and when it was read
+      { label: "Management Science 62(1), Sharad Goel, Ashton Anderson, Jake Hofman and Duncan J. Watts, 'The Structural Virality of Online Diffusion', published online July 2015 (read 2026-11-15): a measure interpolating between a single large broadcast and multigenerational spread, defined as the average distance between all pairs of nodes; about a billion Twitter diffusion events; structural virality typically low and independent of size, popularity largely driven by the largest broadcast", href: "https://5harad.com/papers/twiral.pdf" }, // goel2016
+      { label: "Sharad Goel, Duncan J. Watts and Daniel G. Goldstein, 'The Structure of Online Diffusion Networks', Proceedings of the 13th ACM Conference on Electronic Commerce, 2012 (read 2026-11-15): 73% to 95% of items show no diffusion; under 1% of cascades exceed seven nodes", href: "https://5harad.com/papers/diffusion.pdf" }, // goel2012
+      { label: "Science 359, Soroush Vosoughi, Deb Roy and Sinan Aral, 'The spread of true and false news online', 9 March 2018 (read 2026-11-15): structural virality among the cascade measures; falsehood diffused farther, faster, deeper and more broadly in a fact-checked sample", href: "https://politics.media.mit.edu/papers/Vosoughi_Science.pdf" }, // vosoughi2018
+      { label: "Proceedings of the National Academy of Sciences 118(46), Jonas L. Juul and Johan Ugander, 'Comparing information diffusion mechanisms by matching on cascade size', 8 November 2021 (read 2026-11-15): structural differences between true and false news almost entirely explained by size; differences persist for videos, images, news and petitions", href: "https://pmc.ncbi.nlm.nih.gov/articles/PMC8609637/" }, // juul2021
+    ], // four sources, one object per line
+  },
+  {
+    // Information cascade (new entry): the reshare tree in diffusion research, its rarity, its predictability, and the economists' homonym.
+    slug: "information-cascade", // the /glossary/information-cascade address
+    headword: "Information cascade", // the common term, sentence case
+    kind: "term", // a term shared by network science and economics
+    domains: ["cyber-security", "grc"], // influence operations and platform policy
+    aliases: ["cascade", "reshare cascade", "rumour cascade", "rumor cascade", "cascata de informação", "cascata"], // short form, the platform and Vosoughi forms in both spellings, Portuguese
+    relatedTerms: ["structural-virality", "forwarding-limit", "two-step-flow", "misinformation", "illusory-truth-effect"], // the batch, then existing entries
+    relatedArticles: ["from-the-lodge-to-the-network-how-reach-changed", "bots-sockpuppets-and-astroturfing"], // the part and the bots part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Science 359, Soroush Vosoughi, Deb Roy and Sinan Aral, 'The spread of true and false news online', 9 March 2018 (read 2026-11-15): a rumour cascade begins with an assertion in a tweet and is an unbroken retweet chain with a common, singular origin; about 126,000 cascades", href: "https://politics.media.mit.edu/papers/Vosoughi_Science.pdf" }, // vosoughi2018
+      { label: "Sharad Goel, Duncan J. Watts and Daniel G. Goldstein, 'The Structure of Online Diffusion Networks', Proceedings of the 13th ACM Conference on Electronic Commerce, 2012 (read 2026-11-15): most cascades small and shallow in seven domains", href: "https://5harad.com/papers/diffusion.pdf" }, // goel2012
+      { label: "arXiv 1403.4608, Justin Cheng, Lada A. Adamic, P. Alex Dow, Jon Kleinberg and Jure Leskovec, 'Can Cascades be Predicted?', 18 March 2014 (read 2026-11-15): on Facebook photo reshare cascades, strong performance in predicting whether a cascade will continue to grow; breadth, rather than depth, an early indicator of larger cascades", href: "https://arxiv.org/pdf/1403.4608" }, // cheng2014
+      { label: "Proceedings of the National Academy of Sciences 118(46), Jonas L. Juul and Johan Ugander, 8 November 2021 (read 2026-11-15): cascades compared by size; false and true news differ mainly in infectiousness", href: "https://pmc.ncbi.nlm.nih.gov/articles/PMC8609637/" }, // juul2021
+      { label: "David Yanagizawa-Drott, 'Propaganda and Conflict: Evidence from the Rwandan Genocide', Quarterly Journal of Economics, August 2014, author's copy (read 2026-11-15): footnote listing Banerjee (1992) and Bikchandani, Hirshleifer and Welch (1992) among early information-based models of herd behaviour and contagion", href: "https://dash.harvard.edu/server/api/core/bitstreams/7312037d-4eed-6bd4-e053-0100007fdf3b/content" }, // yanagizawa2014
+    ], // five sources, one object per line
+  },
+  {
+    // Two-step flow (new entry): the opinion-leader hypothesis, its 1957 review, and its echoes in Rwanda and in WhatsApp groups.
+    slug: "two-step-flow", // the /glossary/two-step-flow address
+    headword: "Two-step flow", // the usual short name, sentence case
+    kind: "term", // a communication-research term
+    domains: ["cyber-security", "grc"], // influence operations and their study
+    aliases: ["two-step flow of communication", "opinion leader", "opinion leaders", "personal influence", "fluxo em duas etapas", "líder de opinião"], // the full name, its central figure, the 1955 book's theme and Portuguese
+    relatedTerms: ["information-cascade", "structural-virality", "forwarding-limit", "propaganda", "influence-operation"], // the batch, then existing entries
+    relatedArticles: ["from-the-lodge-to-the-network-how-reach-changed", "echo-chambers-and-filter-bubbles-the-evidence-and-the-dispute"], // both parts of the batch cite it
+    sources: [ // every label says what the page says and when it was read
+      { label: "University of Pennsylvania repository record of 'The Two-Step Flow of Communication: An Up-To-Date Report on an Hypothesis', Public Opinion Quarterly, 1957, read through a fetch tool (read 2026-11-15): the hypothesis that ideas often flow from radio and print to opinion leaders and from these to less active sections of the population, largely supported and considerably refined", href: "https://repository.upenn.edu/asc_papers/271" }, // katz1957
+      { label: "Elizabeth Dubois and Grant Blank, 'The echo chamber is overstated', Information, Communication & Society, 2018, accepted manuscript in the Oxford University Research Archive (read 2026-11-15): Katz and Lazarsfeld (1955) identified the opinion leader found in every social stratum, an above-average consumer of news who shares political information with less interested associates", href: "https://ora.ox.ac.uk/objects/uuid%3A34c4d33f-7cee-4fc0-aaad-0ce5311ac0de/files/m988c6e898fd3b881e39fb291545f004e" }, // duboisblank2018
+      { label: "David Yanagizawa-Drott, 'Propaganda and Conflict: Evidence from the Rwandan Genocide', Quarterly Journal of Economics, August 2014, author's copy (read 2026-11-15): local opinion leaders intermediating media effects, traced to Katz and Lazarsfeld (1955); RTLM's spillovers through social interactions", href: "https://dash.harvard.edu/server/api/core/bitstreams/7312037d-4eed-6bd4-e053-0100007fdf3b/content" }, // yanagizawa2014
+      { label: "Shakuntala Banaji and Ram Bhat, 'WhatsApp Vigilantes', London School of Economics and Political Science, 2019 (read 2026-11-15): the immediate source of a forward one of the most important factors in deciding to forward; trust follows ideological, family and communal ties", href: "https://www.lse.ac.uk/media-and-communications/assets/documents/research/projects/WhatsApp-Misinformation-Report.pdf" }, // banajibhat2019
+      { label: "Sacha Altay, Manon Berriche and Alberto Acerbi, 'Misinformation on Misinformation', Social Media + Society, January to March 2023 (read 2026-11-15): the view of platforms as a return to a pre-Katz and Lazarsfeld era, and the authors' reply that such premises are at odds with what is known about human psychology", href: "https://iris.unitn.it/bitstream/11572/361723/6/altay-et-al-2023-misinformation-on-misinformation-conceptual-and-methodological-challenges.pdf" }, // altay2023
+    ], // five sources, one object per line
+  },
+  {
+    // Forwarding limit (new entry): WhatsApp's 2018-2020 limits, the company's measured effects and the modelled effect.
+    slug: "forwarding-limit", // the /glossary/forwarding-limit address
+    headword: "Forwarding limit", // a descriptive name, sentence case
+    kind: "term", // a platform design term
+    domains: ["cyber-security", "grc"], // platform abuse and its governance
+    aliases: ["forward limit", "message forwarding limit", "highly forwarded messages", "frequently forwarded", "limite de encaminhamento", "encaminhada com frequência"], // forms and labels in English and Portuguese
+    relatedTerms: ["disparo-em-massa", "end-to-end-encryption", "information-cascade", "structural-virality", "misinformation"], // the Brazilian mass-messaging entry and encryption first, then the batch
+    relatedArticles: ["from-the-lodge-to-the-network-how-reach-changed", "brazil-mass-messaging-the-courts-and-the-cpmi"], // the part and the Brazil part
+    sources: [ // every label says what the page says and when it was read
+      { label: "WhatsApp, 'More changes to forwarding', 19 July 2018, updated 21 January 2019, read through a fetch tool (read 2026-11-15): a test limiting forwarding for everyone; in India five chats and no quick-forward button; from January 2019 five chats for all users, after the limit significantly reduced forwarded messages", href: "https://blog.whatsapp.com/more-changes-to-forwarding?lang=en" }, // wa2018
+      { label: "WhatsApp, 'Keeping WhatsApp Personal and Private', 7 April 2020, read through a fetch tool (read 2026-11-15): highly forwarded messages limited to one chat at a time; a 25% decrease in total forwards after the earlier limits", href: "https://blog.whatsapp.com/Keeping-WhatsApp-Personal-and-Private" }, // wa2020
+      { label: "TechCrunch, Manish Singh, 27 April 2020 (read 2026-11-15): a WhatsApp spokesperson reported a 70% global reduction in highly forwarded messages after the one-chat limit", href: "https://techcrunch.com/2020/04/27/whatsapps-new-limit-cuts-virality-of-highly-forwarded-messages-by-70" }, // tc2020
+      { label: "arXiv 1909.08740, Philipe de Freitas Melo and colleagues, 'Can WhatsApp Counter Misinformation by Limiting Message Forwarding?', 23 September 2019 (read 2026-11-15): a model fed with public-group data from Brazil, India and Indonesia; limits delay propagation by up to two orders of magnitude but do not stop highly viral content", href: "https://arxiv.org/pdf/1909.08740" }, // melo2019
+      { label: "Press Information Bureau, Government of India, 'WhatsApp warned for abuse of their platform', 3 July 2018 (read 2026-11-15): lynchings linked to irresponsible and explosive messages circulating on WhatsApp; the company told to act immediately", href: "https://pib.gov.in/newsite/PrintRelease.aspx?relid=180364" }, // pib2018
+    ], // five sources, one object per line
+  },
+  {
+    // Echo chamber (new entry): the Jamieson-Cappella definition, the prevalence estimates and the dispute.
+    slug: "echo-chamber", // the /glossary/echo-chamber address
+    headword: "Echo chamber", // the common term, sentence case
+    kind: "term", // a social-science term in wide public use
+    domains: ["cyber-security", "grc"], // influence operations and platform policy
+    aliases: ["echo chambers", "partisan echo chamber", "câmara de eco", "câmaras de eco"], // plural, the measured kind and Portuguese
+    relatedTerms: ["filter-bubble", "selective-exposure", "affective-polarization", "misinformation", "disinformation"], // the batch, then existing entries
+    relatedArticles: ["echo-chambers-and-filter-bubbles-the-evidence-and-the-dispute", "from-the-lodge-to-the-network-how-reach-changed"], // the part and its companion
+    sources: [ // every label says what the page says and when it was read
+      { label: "Reuters Institute for the Study of Journalism, Amy Ross Arguedas, Craig T. Robertson, Richard Fletcher and Rasmus Kleis Nielsen, 'Echo chambers, filter bubbles, and polarisation: a literature review', 19 January 2022 (read 2026-11-15): Jamieson and Cappella's definition; between six and eight percent of the UK public in partisan online news echo chambers; echo chambers much less widespread than commonly assumed", href: "https://reutersinstitute.politics.ox.ac.uk/echo-chambers-filter-bubbles-and-polarisation-literature-review" }, // arguedas2022
+      { label: "Internet Policy Review 8(4), Axel Bruns, 'Filter bubble', 29 November 2019 (read 2026-11-15): minimal definitions of echo chamber (preferential connection) and filter bubble (preferential communication); a pronounced absence of evidence outside unusual contexts; the hallmarks of a moral panic", href: "https://policyreview.info/concepts/filter-bubble" }, // bruns2019
+      { label: "Elizabeth Dubois and Grant Blank, 'The echo chamber is overstated', Information, Communication & Society, 2018, accepted manuscript (read 2026-11-15): UK survey of 2,000; the politically interested and those with diverse media avoid echo chambers; about 8% at risk; supported by Google as part of the Quello Search Project", href: "https://ora.ox.ac.uk/objects/uuid%3A34c4d33f-7cee-4fc0-aaad-0ce5311ac0de/files/m988c6e898fd3b881e39fb291545f004e" }, // duboisblank2018
+      { label: "Nature 620, Brendan Nyhan and colleagues, 'Like-minded sources on Facebook are prevalent but not polarizing', 27 July 2023 (read 2026-11-15): median US user saw 50.4% like-minded content; 20.6% got over 75%; cutting exposure by a third had no measurable effect on eight attitude measures; the minority in echo chambers large in absolute terms", href: "https://www.nature.com/articles/s41586-023-06297-w" }, // nyhan2023
+      { label: "Proceedings of the National Academy of Sciences 118(9), Matteo Cinelli and colleagues, 'The echo chamber effect on social media', 23 February 2021 (read 2026-11-15): over 100 million pieces of content on Gab, Facebook, Reddit and Twitter; homophilic clusters dominate; higher segregation on Facebook than Reddit", href: "https://pmc.ncbi.nlm.nih.gov/articles/PMC7936330/" }, // cinelli2021
+    ], // five sources, one object per line
+  },
+  {
+    // Filter bubble (new entry): Pariser's 2011 coinage, the definitional critique and what the tests of algorithms found.
+    slug: "filter-bubble", // the /glossary/filter-bubble address
+    headword: "Filter bubble", // Pariser's term, sentence case
+    kind: "term", // a coinage now used in research and policy
+    domains: ["cyber-security", "grc", "privacy"], // influence, platform policy and personalization of user data
+    aliases: ["filter bubbles", "bolha de filtro", "bolhas de filtro", "bolha"], // plural and Portuguese
+    relatedTerms: ["echo-chamber", "selective-exposure", "affective-polarization", "misinformation"], // the batch, then an existing entry
+    relatedArticles: ["echo-chambers-and-filter-bubbles-the-evidence-and-the-dispute", "psychological-operations-from-the-small-lie-to-the-campaign"], // the part and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "TED, Eli Pariser, 'Beware online \"filter bubbles\"', recorded 3 March 2011, published 2 May 2011 (read 2026-11-15): TED's description of the talk, web companies tailoring services to personal tastes trap users in a filter bubble", href: "https://www.ted.com/talks/eli_pariser_beware_online_filter_bubbles" }, // ted2011
+      { label: "Internet Policy Review 8(4), Axel Bruns, 'Filter bubble', 29 November 2019 (read 2026-11-15): Pariser's BP anecdote; the concept vague and founded in anecdotes; little evidence of filter bubbles in search results; the more critical filter in our heads", href: "https://policyreview.info/concepts/filter-bubble" }, // bruns2019
+      { label: "Reuters Institute, Arguedas, Robertson, Fletcher and Nielsen, literature review, 19 January 2022 (read 2026-11-15): Pariser's 'unique universe of information for each of us'; a filter bubble as an echo chamber produced by ranking algorithms without active choice; algorithmic selection generally leads to slightly more diverse news use; no support for the filter bubble hypothesis", href: "https://reutersinstitute.politics.ox.ac.uk/echo-chambers-filter-bubbles-and-polarisation-literature-review" }, // arguedas2022
+      { label: "Science 348, Eytan Bakshy, Solomon Messing and Lada A. Adamic, 'Exposure to ideologically diverse news and opinion on Facebook', 7 May 2015, Europe PMC record (read 2026-11-15): individuals' choices played a stronger role than algorithmic ranking in limiting cross-cutting exposure", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI:%2210.1126/science.aaa1160%22&format=json&resultType=core" }, // bakshy2015
+      { label: "Science 381, Andrew M. Guess and colleagues, 'How do social media feed algorithms affect attitudes and behavior in an election campaign?', 27 July 2023, Europe PMC record (read 2026-11-15): a chronological feed cut time on platform, raised political and untrustworthy content, and did not significantly change polarization over three months", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI:%2210.1126/science.abp9364%22&format=json&resultType=core" }, // guess2023
+      { label: "Public Opinion Quarterly 80, Seth Flaxman, Sharad Goel and Justin M. Rao, 'Filter Bubbles, Echo Chambers, and Online News Consumption', published online 22 March 2016 (read 2026-11-15): social networks and search associated with more ideological distance and more exposure to the less preferred side; effects relatively modest", href: "https://5harad.com/papers/bubbles.pdf" }, // flaxman2016
+    ], // six sources, one object per line
+  },
+  {
+    // Selective exposure (new entry): choosing congenial sources, its difference from selective avoidance, and what diet studies found.
+    slug: "selective-exposure", // the /glossary/selective-exposure address
+    headword: "Selective exposure", // the research term, sentence case
+    kind: "term", // a communication-research term
+    domains: ["cyber-security", "grc"], // influence and its study
+    aliases: ["partisan selective exposure", "selective avoidance", "exposição seletiva", "evitação seletiva"], // the political form, its counterpart and Portuguese
+    relatedTerms: ["echo-chamber", "filter-bubble", "affective-polarization", "illusory-truth-effect"], // the batch, then an existing entry
+    relatedArticles: ["echo-chambers-and-filter-bubbles-the-evidence-and-the-dispute"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Reuters Institute, Arguedas, Robertson, Fletcher and Nielsen, literature review, 19 January 2022 (read 2026-11-15): self-selection as selective exposure to attitude-consistent information or selective avoidance of cross-cutting exposure; many engage in some selective exposure but not necessarily selective avoidance", href: "https://reutersinstitute.politics.ox.ac.uk/echo-chambers-filter-bubbles-and-polarisation-literature-review" }, // arguedas2022
+      { label: "Journalist's Resource, Harvard Kennedy School Shorenstein Center, May 2015 (read 2026-11-15): quotations from Bakshy, Messing and Adamic; individual choice lowered the likelihood of clicking cross-cutting articles by 17% for conservatives and 6% for liberals", href: "https://journalistsresource.org/?p=44819" }, // jr2015
+      { label: "NBER Working Paper 15916, Matthew Gentzkow and Jesse M. Shapiro, 'Ideological Segregation Online and Offline', April 2010, published in the Quarterly Journal of Economics, November 2011 (read 2026-11-15): online news segregation low in absolute terms and significantly lower than face-to-face interactions", href: "https://www.nber.org/papers/w15916" }, // gs2011
+      { label: "Public Opinion Quarterly 80, Seth Flaxman, Sharad Goel and Justin M. Rao, published online 22 March 2016 (read 2026-11-15): most online news consumption is visiting the home pages of favourite, typically mainstream, outlets", href: "https://5harad.com/papers/bubbles.pdf" }, // flaxman2016
+    ], // four sources, one object per line
+  },
+  {
+    // Affective polarization (new entry): the definition, its rise in the US, and what the deactivation, feed and reranking experiments found.
+    slug: "affective-polarization", // the /glossary/affective-polarization address
+    headword: "Affective polarization", // the research term, Oxford -ize spelling
+    kind: "term", // a political-science term
+    domains: ["cyber-security", "grc"], // influence and platform policy
+    aliases: ["affective polarisation", "partisan animosity", "polarização afetiva", "feeling thermometer"], // the -ise spelling, the experimental outcome, Portuguese and the usual measure
+    relatedTerms: ["echo-chamber", "filter-bubble", "selective-exposure", "misinformation", "coordinated-inauthentic-behavior"], // the batch, then existing entries
+    relatedArticles: ["echo-chambers-and-filter-bubbles-the-evidence-and-the-dispute"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Reuters Institute, Arguedas, Robertson, Fletcher and Nielsen, literature review, 19 January 2022 (read 2026-11-15): affective polarization refers to how much opposing partisans dislike one another; clearly on the rise in the United States, unlike ideological polarization", href: "https://reutersinstitute.politics.ox.ac.uk/echo-chambers-filter-bubbles-and-polarisation-literature-review" }, // arguedas2022
+      { label: "Nature 620, Brendan Nyhan and colleagues, 27 July 2023 (read 2026-11-15): reducing like-minded exposure by a third had no measurable effect on affective polarization among eight preregistered measures", href: "https://www.nature.com/articles/s41586-023-06297-w" }, // nyhan2023
+      { label: "Proceedings of the National Academy of Sciences, Hunt Allcott and colleagues, 'The effects of Facebook and Instagram on the 2020 election: A deactivation experiment', 13 May 2024, Europe PMC record (read 2026-11-15): six weeks of deactivation; effects on affective and issue polarization precisely estimated and close to zero", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI:%2210.1073/pnas.2321584121%22&format=json&resultType=core" }, // allcott2024
+      { label: "NBER Working Paper 25514, Hunt Allcott, Luca Braghieri, Sarah Eichmeyer and Matthew Gentzkow, 'The Welfare Effects of Social Media', January 2019, published in the American Economic Review 110(3) (read 2026-11-15): four weeks off Facebook before the 2018 midterms reduced factual news knowledge and political polarization", href: "https://www.nber.org/papers/w25514" }, // allcott2020
+      { label: "Science 390, T. Piccardi and colleagues, 'Reranking partisan animosity in algorithmic social media feeds alters affective polarization', 27 November 2025, PubMed abstract (read 2026-11-15): reranking antidemocratic and hostile posts on X for 1,256 participants shifted out-party animosity by more than 2 points on a 100-point thermometer, without platform cooperation", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=41308156&rettype=abstract&retmode=text" }, // piccardi2025
+      { label: "Holden Thorp, Science editor-in-chief, 'More doubts for Facebook on polarization', 27 September 2024 (read 2026-11-15): Science disputed Meta's statements on polarization as overstating the evidence; the break-glass eLetter; Meta stood behind Nick Clegg's statements", href: "https://holdenthorp.substack.com/p/more-doubts-for-facebook-on-polarization" }, // thorp2024
+    ], // six sources, one object per line
+  },
+  {
+    // Recommender system (new entry): the DSA definition, what platforms disclose, the rabbit-hole research and the 2026 findings.
+    slug: "recommender-system", // the /glossary/recommender-system address
+    headword: "Recommender system", // sentence case, the DSA's own term
+    kind: "term", // a plain term of computing and of EU law
+    domains: ["cyber-security", "grc", "privacy"], // influence (security), regulation (governance) and profiling (privacy)
+    aliases: ["recommender systems", "recommendation system", "recommendation algorithm", "feed ranking", "sistema de recomendação", "sistemas de recomendação", "algoritmo de recomendação"], // plural, plain forms and Portuguese
+    relatedTerms: ["profiling", "borderline-content", "systemic-risk-assessment", "ad-repository", "content-moderation", "coordinated-inauthentic-behavior", "influence-operation"], // the batch, then existing entries
+    relatedArticles: ["recommendation-and-profiling-what-platforms-disclose", "psychological-operations-from-the-small-lie-to-the-campaign"], // the part and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "EUR-Lex, Regulation (EU) 2022/2065 (Digital Services Act), 19 October 2022 (read 2026-11-15): article 3(s) defines a recommender system as a fully or partially automated system used to suggest or prioritize information or determine its relative order or prominence; article 27 main parameters in plain language; article 38 at least one option not based on profiling for very large platforms; article 34 recommender design in risk assessments", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32022R2065" }, // dsa-en.html
+      { label: "YouTube Blog, Cristos Goodrow, 'On YouTube's recommendation system', 15 September 2021 (read 2026-11-15): recommendations drive more viewership than subscriptions or search; over 80 billion signals; watch time added in 2012; borderline demotion from 2019 and a 70% drop in its recommended watch time in the US", href: "https://blog.youtube/inside-youtube/on-youtubes-recommendation-system/" }, // yt-recsys-2021
+      { label: "TikTok Newsroom, 'How TikTok recommends videos #ForYou', 18 June 2020 (read 2026-11-15): interactions, video information and device settings weighted as strong or weak indicators; follower count not a direct factor; the filter-bubble risk acknowledged", href: "https://newsroom.tiktok.com/en-us/how-tiktok-recommends-videos-for-you" }, // tiktok-foryou-2020
+      { label: "Meta, Nick Clegg, 'How AI Influences What You See on Facebook and Instagram', 29 June 2023 (read 2026-11-15): 22 system cards; signal categories for Feed; 'a limit to what we can disclose safely'", href: "https://about.fb.com/news/2023/06/how-ai-ranks-content-on-facebook-and-instagram/" }, // meta-ai-ranks-2023
+      { label: "European Commission, IP/26/2361, 6 November 2026 (read 2026-11-15, through the press corner's data service): preliminary finding that TikTok's For You feed produces a rabbit-hole effect; viewing time prioritized over the 'not interested' choice", href: "https://ec.europa.eu/commission/presscorner/detail/en/ip_26_2361" }, // pc-ip_26_2361
+      { label: "arXiv 1908.08313 v4, Manoel Horta Ribeiro and others, 'Auditing Radicalization Pathways on YouTube', 21 October 2021 (read 2026-11-15): users migrate from milder to more extreme content; recommendations collected without personalization", href: "https://arxiv.org/pdf/1908.08313" }, // ribeiro2020
+      { label: "PNAS, Homa Hosseinmardi and others, 'Causally estimating the effect of YouTube's recommender system using counterfactual bots', February 2024, abstract (read 2026-11-15): relying only on the recommender gives less partisan consumption; a moderating role since the 2019 changes", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI:%2210.1073/pnas.2313377121%22&format=json&resultType=core" }, // hosseinmardi2024
+      { label: "PNAS, Ferenc Huszár and others, 'Algorithmic amplification of politics on Twitter', January 2022, abstract (read 2026-11-15): a randomized control group of nearly 2 million accounts; the mainstream right amplified more than the mainstream left in six of seven countries", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI:%2210.1073/pnas.2025334119%22&format=json&resultType=core" }, // huszar2022
+    ], // eight sources, one object per line
+  },
+  {
+    // Systemic risk assessment (new entry): the DSA's annual risk duty for very large platforms, audits and the first findings.
+    slug: "systemic-risk-assessment", // the /glossary/systemic-risk-assessment address
+    headword: "Systemic risk assessment", // sentence case
+    kind: "term", // a term of EU law
+    domains: ["grc", "cyber-security"], // governance first: a regulatory duty
+    aliases: ["systemic risk", "systemic risks", "DSA risk assessment", "risk assessment report", "avaliação de riscos sistêmicos", "riscos sistêmicos"], // the plain forms and Portuguese
+    relatedTerms: ["recommender-system", "ad-repository", "content-moderation", "statement-of-reasons", "gdpr"], // the batch, then GDPR
+    relatedArticles: ["recommendation-and-profiling-what-platforms-disclose", "content-moderation-at-scale"], // the two parts
+    sources: [ // every label says what the page says and when it was read
+      { label: "EUR-Lex, Regulation (EU) 2022/2065 (Digital Services Act), 19 October 2022 (read 2026-11-15): article 33, 45 million average monthly active recipients; article 34, annual assessment of systemic risks including civic discourse and electoral processes, taking into account recommender design; article 35 mitigation; article 37 annual independent audit with a positive, positive with comments or negative opinion; article 42(4) publication; article 74 fines up to 6% of worldwide turnover", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32022R2065" }, // dsa-en.html
+      { label: "European Commission, 'The enforcement framework under the Digital Services Act', last updated 6 November 2026 (read 2026-11-15): 25 very large online platforms and 3 search engines designated; general application from 17 February 2024", href: "https://digital-strategy.ec.europa.eu/en/policies/dsa-enforcement" }, // ec-dsa-enforcement
+      { label: "DSA Observatory, Daniel Holznagel, 'Shortcomings of the first DSA Audits, and how to do better', 11 June 2025 (read 2026-11-15): Big Four auditors; provisions skipped where the Commission was investigating; EY's statement that it expresses no opinion on algorithmic systems", href: "https://dsa-observatory.eu/2025/06/11/shortcomings-of-the-first-dsa-audits-and-how-to-do-better/" }, // dsaobs-audits-2025
+      { label: "European Commission, IP/26/312, 6 February 2026 (read 2026-11-15, through the press corner's data service): preliminary finding that TikTok did not adequately assess the risks of its addictive design", href: "https://ec.europa.eu/commission/presscorner/detail/en/ip_26_312" }, // pc-ip_26_312
+      { label: "European Commission, IP/26/1579, 10 July 2026 (read 2026-11-15, through the press corner's data service): preliminary finding that Meta did not adequately assess the risks of the addictive design of Instagram and Facebook", href: "https://ec.europa.eu/commission/presscorner/detail/en/ip_26_1579" }, // pc-ip_26_1579
+      { label: "European Commission, IP/26/203, 26 January 2026 (read 2026-11-15, through the press corner's data service): investigation of whether X assessed risks of Grok's functionalities before deployment and of its switch to a Grok-based recommender system", href: "https://ec.europa.eu/commission/presscorner/detail/en/ip_26_203" }, // pc-ip_26_203
+    ], // six sources, one object per line
+  },
+  {
+    // Ad repository (new entry): the DSA's public ad archive, the cases against X and TikTok and Brazil's electoral rule.
+    slug: "ad-repository", // the /glossary/ad-repository address
+    headword: "Ad repository", // sentence case
+    kind: "term", // a plain term of EU and Brazilian electoral rules
+    domains: ["grc", "privacy"], // regulation and targeting data
+    aliases: ["ad library", "ads library", "advertising repository", "Meta Ad Library", "repositório de anúncios", "biblioteca de anúncios"], // common names and Portuguese
+    relatedTerms: ["recommender-system", "profiling", "systemic-risk-assessment", "coordinated-inauthentic-behavior", "influence-operation"], // the batch, then existing entries
+    relatedArticles: ["recommendation-and-profiling-what-platforms-disclose", "psychological-operations-from-the-small-lie-to-the-campaign"], // the part and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "EUR-Lex, Regulation (EU) 2022/2065 (Digital Services Act), article 39, 19 October 2022 (read 2026-11-15): very large platforms keep a searchable public repository with APIs, holding content, advertiser, payer, period, targeting parameters including exclusions, and reach, until one year after the ad last ran", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32022R2065" }, // dsa-en.html
+      { label: "Meta, Nick Clegg, 'New Features and Additional Transparency Measures as the Digital Services Act Comes Into Effect', 22 August 2023 (read 2026-11-15): the Ad Library expanded to all ads targeting people in the EU, after years of transparency for social issue, electoral and political ads", href: "https://about.fb.com/news/2023/08/new-features-and-additional-transparency-measures-as-the-digital-services-act-comes-into-effect/" }, // meta-dsa-2023
+      { label: "European Commission, IP/25/2934, 5 December 2025 (read 2026-11-15): first DSA non-compliance decision; X fined 120 million euros, including for an ad repository with excessive delays and without content, topic or payer", href: "https://ec.europa.eu/commission/presscorner/detail/en/ip_25_2934" }, // pc-ip_25_2934
+      { label: "European Commission, IP/25/2940, 5 December 2025 (read 2026-11-15): TikTok's binding commitments to show full ad content, update within 24 hours and publish advertisers' targeting criteria, after preliminary findings of May 2025", href: "https://ec.europa.eu/commission/presscorner/detail/en/ip_25_2940" }, // pc-ip_25_2940
+      { label: "Tribunal Superior Eleitoral, Resolução 23.610/2019, texto compilado, art. 27-A (incluído pela Resolução 23.732/2024), read through WebFetch (read 2026-11-15): providers selling political boosting keep a real-time repository of content, amounts, payers and audience profiling, searchable and with an API, as a permanent condition of accreditation", href: "https://www.tse.jus.br/legislacao/compilada/res/2019/resolucao-no-23-610-de-18-de-dezembro-de-2019" }, // wf-tse-res23610
+      { label: "Mobile Time, Anna Baisi, 'Google proíbe veiculação de anúncios eleitorais no Brasil em 2024', 24 April 2024 (read 2026-11-15): Google stopped political ads in Brazil from May 2024 rather than meet the TSE's repository requirements", href: "https://www.mobiletime.com.br/noticias/24/04/2024/google-proibe-veiculacao-de-anuncios-eleitorais-no-brasil-em-2024/" }, // mobiletime-google-ads-2024
+      { label: "CNN Brasil, 'Google mantém proibição de anúncios políticos para eleições de 2026', 1 June 2026 (read 2026-11-15): Google keeps the ban for the 2026 elections", href: "https://www.cnnbrasil.com.br/eleicoes/google-mantem-proibicao-de-anuncios-politicos-para-eleicoes-de-2026/" }, // cnnbrasil-google-2026
+    ], // seven sources, one object per line
+  },
+  {
+    // Borderline content (new entry): YouTube's category for material close to its rules, demoted rather than removed.
+    slug: "borderline-content", // the /glossary/borderline-content address
+    headword: "Borderline content", // sentence case, YouTube's term
+    kind: "jargon", // platform jargon
+    domains: ["cyber-security", "grc"], // influence and platform policy
+    aliases: ["borderline", "borderline videos", "demotion", "downranking", "conteúdo limítrofe", "rebaixamento"], // the related practice and Portuguese
+    relatedTerms: ["recommender-system", "content-moderation", "statement-of-reasons", "misinformation", "disinformation"], // the batch, then existing entries
+    relatedArticles: ["recommendation-and-profiling-what-platforms-disclose", "content-moderation-at-scale"], // the two parts
+    sources: [ // every label says what the page says and when it was read
+      { label: "YouTube Blog, 'Continuing our work to improve recommendations on YouTube', 25 January 2019 (read 2026-11-15): reducing recommendations of content that comes close to violating the Community Guidelines, under one percent of content, without removing it", href: "https://blog.youtube/news-and-events/continuing-our-work-to-improve/" }, // yt-improve-recs-2019
+      { label: "YouTube Blog, Cristos Goodrow, 'On YouTube's recommendation system', 15 September 2021 (read 2026-11-15): borderline content defined; classifiers trained on human evaluators; 70% drop in US watch time from non-subscribed recommendations; goal below 0.5% of views", href: "https://blog.youtube/inside-youtube/on-youtubes-recommendation-system/" }, // yt-recsys-2021
+      { label: "EUR-Lex, Regulation (EU) 2022/2065 (Digital Services Act), articles 3(t) and 17, 19 October 2022 (read 2026-11-15): demotion is content moderation, and restricting visibility, including demoting, requires a statement of reasons", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32022R2065" }, // dsa-en.html
+      { label: "European Commission, IP/24/2373, 30 April 2024 (read 2026-11-15): proceedings including Meta's policy that demotes political content in the recommender systems of Instagram and Facebook", href: "https://ec.europa.eu/commission/presscorner/detail/en/ip_24_2373" }, // pc-ip_24_2373
+      { label: "Science Advances, Annie Y. Chen and others, 'Subscriptions and external links help drive resentful users to alternative and extremist YouTube channels', 30 August 2023, abstract (read 2026-11-15): nonsubscribers rarely saw recommendations to such channels in 2020, possibly due to the 2019 changes", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI:%2210.1126/sciadv.add8080%22&format=json&resultType=core" }, // chen2023
+    ], // five sources, one object per line
+  },
+  {
+    // Content moderation (new entry): the DSA definition, the scale, the January 2025 change and the failures both ways.
+    slug: "content-moderation", // the /glossary/content-moderation address
+    headword: "Content moderation", // sentence case
+    kind: "term", // a plain term
+    domains: ["cyber-security", "grc"], // abuse handling and platform governance
+    aliases: ["moderation", "trust and safety", "content removal", "moderação de conteúdo", "moderação"], // plain forms and Portuguese
+    relatedTerms: ["statement-of-reasons", "oversight-board", "santa-clara-principles", "borderline-content", "recommender-system", "coordinated-inauthentic-behavior", "marco-civil-da-internet"], // the batch, then existing entries
+    relatedArticles: ["content-moderation-at-scale", "psychological-operations-from-the-small-lie-to-the-campaign"], // the part and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "EUR-Lex, Regulation (EU) 2022/2065 (Digital Services Act), article 3(t) and article 8, 19 October 2022 (read 2026-11-15): content moderation defined, automated or not, including demotion, demonetization, disabling of access, removal and account suspension; no general monitoring obligation", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32022R2065" }, // dsa-en.html
+      { label: "Harvard Law Review 131, Kate Klonick, 'The New Governors: The People, Rules, and Processes Governing Online Speech', April 2018 (read 2026-11-15): ex ante and ex post, reactive and proactive, automated and manual moderation; Facebook's early one-page rules, a 15,000-word draft in 2009, outsourcing from January 2009", href: "https://harvardlawreview.org/wp-content/uploads/2018/04/1598-1670_Online.pdf" }, // klonick-2018
+      { label: "European Commission, DSA Transparency Database home page (read 2026-11-15): 4,693,088,940 statements of reasons in the last 180 days from 396 platforms, 45% for fully automated decisions", href: "https://transparency.dsa.ec.europa.eu/" }, // dsa-db-home
+      { label: "Oversight Board, policy advisory opinion on Meta's cross-check program, 6 December 2022 (read 2026-11-15): about 100 million enforcement attempts a day; at 99% accuracy, a million mistakes a day", href: "https://www.oversightboard.com/news/501654971916288-oversight-board-publishes-policy-advisory-opinion-on-meta-s-cross-check-program/" }, // ob-crosscheck-pao-2022
+      { label: "Meta, Joel Kaplan, 'More Speech and Fewer Mistakes', 7 January 2025, updated 29 May 2025 (read 2026-11-15): one to two in ten removals possibly mistakes; proactive enforcement limited to illegal and high-severity violations; a reported 50% fall in US enforcement mistakes", href: "https://about.fb.com/news/2025/01/meta-more-speech-fewer-mistakes/" }, // meta-kaplan-2025
+      { label: "Engadget, Karissa Bell, 'Facebook sees rise in violent content and harassment after policy changes', 29 May 2025 (read 2026-11-15): prevalence of violent content and of bullying on Facebook up in the first quarter of 2025; hateful-conduct actions at their lowest since 2018", href: "https://www.engadget.com/social-media/facebook-sees-rise-in-violent-content-and-harassment-after-policy-changes-182651544.html" }, // engadget-meta-q1-2025
+      { label: "UN Human Rights Council, A/HRC/39/CRP.2, detailed findings of the Independent International Fact-Finding Mission on Myanmar, 17 September 2018 (read 2026-11-15): Facebook's slow and ineffective response; no country-specific data on hate speech", href: "https://www.ohchr.org/sites/default/files/Documents/HRBodies/HRCouncil/FFM-Myanmar/A_HRC_39_CRP.2.pdf" }, // un-ffm-myanmar-2018
+      { label: "Supremo Tribunal Federal, final thesis on Tema 987 (Marco Civil, article 19), 17 June 2026 (read 2026-11-15): liability after notice for crimes and unlawful acts; a duty against systemic failure for listed serious crimes; self-regulation with notices, due process and annual transparency reports", href: "https://noticias-stf-wp-prd.s3.sa-east-1.amazonaws.com/wp-content/uploads/wpallimport/uploads/2026/06/17180658/MCI_tese.pdf" }, // stf-tese-2026
+    ], // eight sources, one object per line
+  },
+  {
+    // Statement of reasons (new entry): the DSA's per-decision explanation and the Commission's public database of them.
+    slug: "statement-of-reasons", // the /glossary/statement-of-reasons address
+    headword: "Statement of reasons", // sentence case, the DSA's term
+    kind: "term", // a term of EU law
+    domains: ["grc"], // a regulatory artefact
+    aliases: ["statements of reasons", "SoR", "SoRs", "DSA Transparency Database", "declaração de motivos", "declarações de motivos"], // plural, the abbreviation, the database and Portuguese
+    relatedTerms: ["content-moderation", "systemic-risk-assessment", "santa-clara-principles", "borderline-content"], // the batch
+    relatedArticles: ["content-moderation-at-scale", "recommendation-and-profiling-what-platforms-disclose"], // the two parts
+    sources: [ // every label says what the page says and when it was read
+      { label: "EUR-Lex, Regulation (EU) 2022/2065 (Digital Services Act), articles 17, 20 and 24(5), 19 October 2022 (read 2026-11-15): a clear and specific statement of reasons for each restriction, stating facts, the use of automated means and the legal or contractual ground; free internal complaints for at least six months; submission to a public machine-readable Commission database without personal data", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32022R2065" }, // dsa-en.html
+      { label: "European Commission, DSA Transparency Database home page (read 2026-11-15): 4,693,088,940 statements in 180 days; most reported grounds other terms-of-service violations, unsafe products and consumer information; 45% fully automated", href: "https://transparency.dsa.ec.europa.eu/" }, // dsa-db-home
+      { label: "arXiv 2312.10269 v4, Amaury Trujillo, Tiziano Fagni and Stefano Cresci, 'The DSA Transparency Database: Auditing Self-reported Moderation Actions by Social Media', CSCW, 7 February 2025 (read 2026-11-15): 353.12 million records from eight social media platforms in the first 100 days; X declared no automation, TikTok 92% fully automated, Meta none despite its reports; X the most inconsistent", href: "https://arxiv.org/pdf/2312.10269" }, // trujillo2023
+      { label: "arXiv 2404.02894 v2, Rishabh Kaushal and others, 'Automated Transparency: A Legal and Empirical Analysis of the Digital Services Act Transparency Database', 3 May 2024 (read 2026-11-15): a sample of 131 million statements from November 2023; Google Shopping 52.2% of them; the structure leaves platforms much discretion", href: "https://arxiv.org/pdf/2404.02894" }, // kaushal2024
+    ], // four sources, one object per line
+  },
+  {
+    // Oversight Board (new entry): Meta's appeals body, its binding case decisions, its recommendations and its limits.
+    slug: "oversight-board", // the /glossary/oversight-board address
+    headword: "Oversight Board", // the body's own name
+    kind: "term", // a proper name used as a term
+    domains: ["grc", "cyber-security"], // governance of platform rules
+    aliases: ["Meta Oversight Board", "Facebook Oversight Board", "Comitê de Supervisão", "Comitê de Supervisão da Meta"], // the common names and Meta's Portuguese name
+    relatedTerms: ["content-moderation", "santa-clara-principles", "statement-of-reasons"], // the batch
+    relatedArticles: ["content-moderation-at-scale", "psychological-operations-from-the-small-lie-to-the-campaign"], // the part and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "Oversight Board, home page (read 2026-11-15): appeals after Meta's process is exhausted; case decisions binding unless implementing them could violate the law; counters of 250+ recommendations and 60% implemented or in progress", href: "https://www.oversightboard.com/" }, // ob-home
+      { label: "Oversight Board, 'From Bold Experiment to Essential Institution', 4 December 2025, read through WebFetch after a 403 (read 2026-11-15): 200+ decisions since January 2021; 75% of more than 300 recommendations implemented; irrevocable trust funding to 2027; Meta not legally required to implement recommendations; more than 7 million appeals to Meta in February 2024 for one policy", href: "https://www.oversightboard.com/news/from-bold-experiment-to-essential-institution/" }, // wf-ob-five-years-2025
+      { label: "Oversight Board, decision on former President Trump's suspension, 5 May 2021, read through WebFetch (read 2026-11-15): suspension upheld; indefinite suspension not appropriate; six months for Facebook to complete its review", href: "https://www.oversightboard.com/news/226612455899839-oversight-board-upholds-former-president-trump-s-suspension-finds-facebook-failed-to-impose-proper-penalty/" }, // wf-ob-trump-2021
+      { label: "Oversight Board, policy advisory opinion on Meta's cross-check program, 6 December 2022 (read 2026-11-15): structured to satisfy business concerns; unequal treatment; more than five days to decide on listed users' content", href: "https://www.oversightboard.com/news/501654971916288-oversight-board-publishes-policy-advisory-opinion-on-meta-s-cross-check-program/" }, // ob-crosscheck-pao-2022
+      { label: "Oversight Board, 'Brazilian General's Speech' decision, 22 June 2023, read through WebFetch (read 2026-11-15): a call to besiege Congress reported seven times and left up by moderators until after 8 January 2023; overturned", href: "https://www.oversightboard.com/news/6509720125757695-oversight-board-overturns-meta-s-original-decision-in-brazilian-general-s-speech-case/" }, // wf-ob-brazil-general-2023
+      { label: "Oversight Board, 'Wide-Ranging Decisions Protect Speech and Address Harms', 23 April 2025, read through WebFetch (read 2026-11-15): Meta's January 2025 changes announced hastily, without public human rights due diligence", href: "https://www.oversightboard.com/?p=39438" }, // wf-ob-april-2025
+    ], // six sources, one object per line
+  },
+  {
+    // Santa Clara Principles (new entry): the civil-society standard for moderation transparency and due process.
+    slug: "santa-clara-principles", // the /glossary/santa-clara-principles address
+    headword: "Santa Clara Principles", // the document's name
+    kind: "term", // a proper name used as a term
+    domains: ["grc"], // a governance standard
+    aliases: ["Santa Clara Principles on Transparency and Accountability in Content Moderation", "SCP 2.0", "Princípios de Santa Clara"], // full name, version and Portuguese
+    relatedTerms: ["content-moderation", "statement-of-reasons", "oversight-board"], // the batch
+    relatedArticles: ["content-moderation-at-scale"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "The Santa Clara Principles on Transparency and Accountability in Content Moderation, version 2.0 (read 2026-11-15): first version of 2018; second iteration of 2020-2021 after a consultation of more than 50 organizations and individuals; authors include InternetLab; twelve companies endorsed since 2018; foundational principles (human rights and due process, understandable rules, cultural competence, state involvement) and operational ones (numbers, notice, appeal)", href: "https://santaclaraprinciples.org/" }, // santaclara
+      { label: "EUR-Lex, Regulation (EU) 2022/2065 (Digital Services Act), articles 17, 20 and 42(2), 19 October 2022 (read 2026-11-15): statements of reasons, internal complaints, and moderation staff by official language, now legal duties in the EU", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32022R2065" }, // dsa-en.html
+      { label: "Aos Fatos, Gisele Lobato, 'Com demissões e sem PL das Fake News, big techs aprofundam apagão de dados sobre moderação', 15 July 2024 (read 2026-11-15): Portuguese-language moderator counts known only from European DSA reports; companies did not give Brazil-specific figures", href: "https://www.aosfatos.org/noticias/big-techs-apagao-dados-moderacao/" }, // aosfatos-apagao-dados
+    ], // three sources, one object per line
+  },
+  {
+    // Section 230 (new entry): the US rule that platforms are not the publisher of users' content, its origin and the disputes over its reach.
+    slug: "section-230", // the /glossary/section-230 address
+    headword: "Section 230 (47 U.S.C. 230)", // the name and its codification
+    kind: "term", // a statutory provision, named as such
+    domains: ["grc"], // law and governance of platforms
+    expansion: "Section 230 of the Communications Act of 1934, added by the Communications Decency Act of 1996", // the formal identity
+    aliases: ["section 230", "47 usc 230", "cda 230", "communications decency act section 230", "good samaritan clause", "seção 230"], // the common names and Portuguese
+    relatedTerms: ["intermediary-liability", "digital-services-act", "marco-civil-da-internet", "disinformation", "coordinated-inauthentic-behavior"], // this batch, then existing entries
+    relatedArticles: ["platform-law-section-230-the-dsa-and-the-marco-civil", "psychological-operations-from-the-small-lie-to-the-campaign"], // the part and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "GovInfo, 47 U.S.C. 230, United States Code, 2024 edition (read 2026-11-15): no provider or user shall be treated as the publisher or speaker of information provided by another; good-faith removal protected; policy of a free market unfettered by regulation; exceptions for federal criminal law, intellectual property, communications privacy and sex trafficking", href: "https://www.govinfo.gov/content/pkg/USCODE-2024-title47/html/USCODE-2024-title47-chap5-subchapII-partI-sec230.htm" }, // statute
+      { label: "House of Representatives, conference report 104-458 on the Telecommunications Act of 1996, 31 January 1996 (read 2026-11-15): a specific purpose of the section is to overrule Stratton-Oakmont v. Prodigy", href: "https://www.congress.gov/104/crpt/hrpt458/CRPT-104hrpt458.pdf" }, // legislative history
+      { label: "US Court of Appeals for the Fourth Circuit, Zeran v. America Online, 12 November 1997 (read 2026-11-15): tort liability would chill speech; notice-based liability gives a natural incentive to remove on notice whatever the content", href: "https://www.ca4.uscourts.gov/Opinions/Published/971523.P.pdf" }, // free-expression reading
+      { label: "US Court of Appeals for the Ninth Circuit, en banc, Fair Housing Council v. Roommates.com, 3 April 2008 (read 2026-11-15): a site that materially contributes to the alleged unlawfulness develops the content and loses immunity for it", href: "https://cdn.ca9.uscourts.gov/datastore/opinions/2008/04/02/0456916.pdf" }, // first judicial limit
+      { label: "Public Law 115-164 (FOSTA), 11 April 2018 (read 2026-11-15): section 230 does not prohibit enforcement of federal and state law on sex trafficking and child sexual exploitation", href: "https://www.congress.gov/115/plaws/publ164/PLAW-115publ164.pdf" }, // statutory carve-out
+      { label: "US Department of Justice, Section 230 review, key takeaways and recommendations, June 2020 (read 2026-11-15): expansive readings left platforms immune for illicit activity; proposed Bad Samaritan, child abuse, terrorism and cyber-stalking carve-outs", href: "https://www.justice.gov/file/1286331/download" }, // harm-prevention critique
+      { label: "Supreme Court of the United States, Gonzalez v. Google, per curiam, 18 May 2023 (read 2026-11-15): the Court declined to address section 230", href: "https://www.supremecourt.gov/opinions/22pdf/21-1333_6j7a.pdf" }, // the Court declines
+      { label: "US Court of Appeals for the Third Circuit, Anderson v. TikTok, 27 August 2024 (read 2026-11-15): a recommendation algorithm that decides what to include and present is the platform's own first-party speech, outside the immunity", href: "https://www2.ca3.uscourts.gov/opinarch/223061p.pdf" }, // algorithmic curation
+    ], // eight sources, one object per line
+  },
+  {
+    // DSA (new entry): the EU regulation that keeps the hosting safe harbour and adds notice, reasons, redress and systemic-risk duties.
+    slug: "digital-services-act", // the /glossary/digital-services-act address
+    headword: "DSA (Digital Services Act)", // acronym first, as for APT
+    kind: "acronym", // an acronym with its expansion
+    domains: ["grc", "privacy"], // platform regulation and profiling rules
+    expansion: "Digital Services Act, Regulation (EU) 2022/2065 of 19 October 2022", // the formal identity
+    aliases: ["digital services act", "regulation 2022/2065", "eu dsa", "vlop", "very large online platform", "lei de serviços digitais"], // names, the key term and Portuguese
+    relatedTerms: ["intermediary-liability", "section-230", "gdpr", "profiling", "marco-civil-da-internet", "disinformation"], // this batch, then existing entries
+    relatedArticles: ["platform-law-section-230-the-dsa-and-the-marco-civil", "surveillance-capability-and-restraint", "psychological-operations-from-the-small-lie-to-the-campaign"], // the two parts and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "EUR-Lex, Regulation (EU) 2022/2065 (Digital Services Act), 19 October 2022 (read 2026-11-15): hosting exemption (art. 6), good-faith own-initiative measures (7), no general monitoring (8), notice and action (16), statement of reasons (17), complaints (20), out-of-court bodies (21), trusted flaggers (22), no profiling-based ads with special data or to minors (26, 28), 45 million user threshold (33), systemic risks incl. civic discourse and elections (34, 35), non-profiling recommender option (38), data access (40), fines up to 6% (74), application from 17 February 2024 (93)", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32022R2065" }, // regulation
+      { label: "European Commission, supervision of the designated very large online platforms and search engines under the DSA (read 2026-11-15): first designations 25 April 2023; fines on X (5 December 2025, 120 million euros), Temu (28 May 2026, 200 million euros) and AliExpress (20 July 2026, 550 million euros)", href: "https://digital-strategy.ec.europa.eu/en/policies/list-designated-vlops-and-vloses" }, // enforcement record
+      { label: "European Commission, Commission fines X €120 million under the Digital Services Act, 5 December 2025 (read 2026-11-15): deceptive blue checkmark, ad repository, researcher data access; first non-compliance decision", href: "https://digital-strategy.ec.europa.eu/en/news/commission-fines-x-eu120-million-under-digital-services-act" }, // first decision
+      { label: "House Judiciary Committee majority staff, The Foreign Censorship Threat, 25 July 2025 (read 2026-11-15): calls the DSA the EU's comprehensive digital censorship law", href: "https://judiciary.house.gov/sites/evo-subsites/republicans-judiciary.house.gov/files/2025-07/DSA_Report&Appendix%2807.25.25%29.pdf" }, // critics
+      { label: "House Judiciary Committee Democrats, Debunking Republicans' Misleading Report on the EU's Digital Services Act, 2025 (read 2026-11-15): no evidence that the Commission classifies political debate as hate speech; the platform alone decides on flagged content", href: "https://democrats-judiciary.house.gov/sites/evo-subsites/democrats-judiciary.house.gov/files/evo-media-document/debunking-republicans-misleading-report-on-the-eu-s-digital-services-act-dsa.pdf" }, // reply
+    ], // five sources, one object per line
+  },
+  {
+    // Intermediary liability (new entry): the legal question of when a platform answers for what its users post, with the main models.
+    slug: "intermediary-liability", // the /glossary/intermediary-liability address
+    headword: "intermediary liability", // lower case, a plain legal term
+    kind: "term", // a concept of law
+    domains: ["grc"], // platform law
+    aliases: ["platform liability", "notice and action", "mere conduit", "hosting exemption", "responsabilidade de intermediários", "responsabilidade das plataformas"], // the models' names and Portuguese
+    relatedTerms: ["section-230", "digital-services-act", "marco-civil-da-internet", "dmca", "net-neutrality", "disinformation"], // this batch, then existing entries (dmca holds the alias "notice and takedown")
+    relatedArticles: ["platform-law-section-230-the-dsa-and-the-marco-civil", "brazil-mass-messaging-the-courts-and-the-cpmi", "psychological-operations-from-the-small-lie-to-the-campaign"], // the part, the Brazil part and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "EUR-Lex, Directive 2000/31/EC on electronic commerce, 8 June 2000 (read 2026-11-15): mere conduit, caching and hosting exemptions; a host is not liable without actual knowledge or if it acts expeditiously; no general obligation to monitor", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32000L0031" }, // knowledge model
+      { label: "Senado Federal, Lei nº 12.965/2014 (Marco Civil da Internet), read through a fetch tool (read 2026-11-15): connection providers not liable (art. 18); application providers liable only after a specific court order, to protect expression and prevent censorship (art. 19); notice for non-consensual intimate images (art. 21)", href: "https://legis.senado.leg.br/norma/584776/publicacao/15630642" }, // court-order model
+      { label: "Supreme Court of India, Shreya Singhal v. Union of India, 24 March 2015 (read 2026-11-15): section 79(3)(b) read down to actual knowledge from a court order or government notification, since intermediaries cannot judge millions of requests", href: "https://indiankanoon.org/doc/110813550/" }, // court order by interpretation
+      { label: "Supremo Tribunal Federal, final thesis on article 19 of the Marco Civil, June 2026 (read 2026-11-15): joint liability after notice for crimes and unlawful acts, court order kept for offences against honour and private messaging, presumed fault for paid and artificial distribution, duty of care with systemic failure for a closed list of grave crimes", href: "https://noticias-stf-wp-prd.s3.sa-east-1.amazonaws.com/wp-content/uploads/wpallimport/uploads/2026/06/17180658/MCI_tese.pdf" }, // notice and duty-of-care model
+      { label: "UN Special Rapporteur on freedom of expression, communication OL DEU 1/2017 on the NetzDG, 1 June 2017 (read 2026-11-15): liability to remove third-party content without judicial oversight is incompatible with international human rights law; short deadlines and high fines invite over-removal", href: "https://www.ohchr.org/Documents/Issues/Opinion/Legislation/OL-DEU-1-2017.pdf" }, // deadline model critique
+      { label: "US Court of Appeals for the Fourth Circuit, Zeran v. America Online, 12 November 1997 (read 2026-11-15): notice-based liability would give providers a natural incentive to remove messages on notification whether defamatory or not", href: "https://www.ca4.uscourts.gov/Opinions/Published/971523.P.pdf" }, // immunity model rationale
+    ], // six sources, one object per line
+  },
+  {
+    // Lawful interception (new entry): interception capability required of network operators by law, its standards and its abuse.
+    slug: "lawful-interception", // the /glossary/lawful-interception address
+    headword: "lawful interception (LI)", // the standards' term and its abbreviation
+    kind: "term", // a term of art in telecommunications and law
+    domains: ["isp-telecom", "grc", "privacy"], // operators' duty, its legal basis, its privacy stakes
+    aliases: ["li", "calea", "legal intercept", "wiretap", "handover interface", "interceptação legal", "interceptação telefônica", "grampo"], // abbreviations, the US law, the ETSI term and Portuguese
+    relatedTerms: ["section-702", "key-escrow", "the-crypto-wars", "end-to-end-encryption", "metadata", "data-retention", "dpi"], // this batch, then existing entries
+    relatedArticles: ["surveillance-capability-and-restraint", "the-crypto-wars-and-the-cypherpunks", "the-interception-tools"], // the part and two neighbours
+    sources: [ // every label says what the page says and when it was read
+      { label: "GovInfo, 47 U.S.C. 1002 (CALEA assistance capability requirements), 2024 edition (read 2026-11-15): carriers must be able to isolate and deliver communications and call-identifying information under court order; no required design; information services excluded; no duty to decrypt customer encryption", href: "https://www.govinfo.gov/content/pkg/USCODE-2024-title47/html/USCODE-2024-title47-chap9-subchapI-sec1002.htm" }, // US statute
+      { label: "GovInfo, 47 U.S.C. 1004, 2024 edition (read 2026-11-15): interception within switching premises only with a court order or other lawful authorization and an employee's affirmative intervention", href: "https://www.govinfo.gov/content/pkg/USCODE-2024-title47/html/USCODE-2024-title47-chap9-subchapI-sec1004.htm" }, // activation control
+      { label: "ETSI TS 101 331 V1.7.1, Lawful Interception (LI); Requirements of Law Enforcement Agencies, March 2021 (read 2026-11-15): EU Council Resolution of 1995; handover interface; content of communication and intercept related information; delivery en clair of provider-applied encryption; interception undetectable by unauthorized persons and by the communicating parties", href: "https://www.etsi.org/deliver/etsi_ts/101300_101399/101331/01.07.01_60/ts_101331v010701p.pdf" }, // European standard
+      { label: "IAB and IESG, RFC 2804, IETF Policy on Wiretapping, May 2000 (read 2026-11-15): the IETF will not consider wiretapping requirements; complexity jeopardizes security; mechanisms should be openly described", href: "https://www.rfc-editor.org/rfc/rfc2804.txt" }, // internet engineers' position
+      { label: "Senado Federal, Lei nº 9.296/1996, compiled text, read through a fetch tool (read 2026-11-15): interception of telephone and telematic communications only by a judge's order, for offences punished with reclusão, when no other means exists, 15 days renewable; unauthorized interception punished with 2 to 4 years", href: "https://legis.senado.leg.br/norma/551172/publicacao/34619655" }, // Brazilian statute
+      { label: "IEEE Spectrum, Vassilis Prevelakis and Diomidis Spinellis, The Athens Affair, 29 June 2007 (read 2026-11-15): rogue software used the lawful wiretapping functions of Vodafone Greece's switches to tap about 100 phones, including the prime minister's", href: "https://spectrum.ieee.org/the-athens-affair" }, // abuse case
+      { label: "Federal Communications Commission, Order on Reconsideration FCC 25-81, adopted 20 November 2025 (read 2026-11-15): Salt Typhoon disclosed in September 2024, at least eight US companies; the January 2025 reading of CALEA as a security duty rescinded, with a dissent", href: "https://docs.fcc.gov/public/attachments/FCC-25-81A1_Rcd.pdf" }, // abuse case and policy dispute
+    ], // seven sources, one object per line
+  },
+  {
+    // Section 702 (new entry): the US authority for targeting non-US persons abroad through compelled provider assistance, its reviews and its 2026 lapse.
+    slug: "section-702", // the /glossary/section-702 address
+    headword: "Section 702 (FISA)", // the provision and its act
+    kind: "term", // a statutory provision
+    domains: ["privacy", "grc"], // surveillance and its oversight
+    expansion: "Section 702 of the Foreign Intelligence Surveillance Act, added by the FISA Amendments Act of 2008", // the formal identity
+    aliases: ["section 702", "fisa 702", "fisa section 702", "prism collection", "upstream collection", "seção 702"], // names and the two collection types
+    relatedTerms: ["lawful-interception", "edward-snowden", "schrems-ii", "metadata", "citizenfour"], // this batch, then existing entries
+    relatedArticles: ["surveillance-capability-and-restraint", "psychological-operations-from-the-small-lie-to-the-campaign"], // the part and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "Privacy and Civil Liberties Oversight Board, Report on the Surveillance Program Operated Pursuant to Section 702, 2 July 2014 (read 2026-11-15): directives compel providers; selectors tasked; PRISM and upstream collection; PRISM clearly authorized; some aspects close to the line of constitutional reasonableness", href: "https://documents.pclob.gov/prod/Documents/OversightReport/823399ae-92ea-447a-ab60-0da28b555437/702-Report-2.pdf" }, // first review
+      { label: "Privacy and Civil Liberties Oversight Board, Report on the Section 702 program, 28 September 2023 (read 2026-11-15): about 246,073 targets in 2022; majority recommends FISC authorization of U.S. person query terms; two members dissent", href: "https://documents.pclob.gov/prod/Documents/OversightReport/054417e4-9d20-427a-9850-862a6f29ac42/2023%20PCLOB%20702%20Report%20%28002%29.pdf" }, // second review
+      { label: "Public Law 118-49, Reforming Intelligence and Securing America Act, 20 April 2024 (read 2026-11-15): authority extended to two years after enactment", href: "https://www.congress.gov/118/plaws/publ49/PLAW-118publ49.pdf" }, // 2024 extension
+      { label: "NPR, A key U.S. spy tool has lapsed. Now what?, as published by WAMC, 12 June 2026 (read 2026-11-15): renewal failed; collection under the court's annual certification continues; government says over 60% of the president's daily brief relies on it", href: "https://www.wamc.org/2026-06-12/a-key-u-s-spy-tool-has-lapsed-now-what" }, // 2026 lapse
+      { label: "Court of Justice of the European Union, press release 91/20, Schrems II, 16 July 2020 (read 2026-11-15): US surveillance programmes not limited to what is strictly necessary; no actionable rights; Privacy Shield invalid", href: "https://curia.europa.eu/jcms/upload/docs/application/pdf/2020-07/cp200091en.pdf" }, // European consequence
+    ], // five sources, one object per line
+  },
+  {
+    // Fact-checking (new entry): the IFCN definition and code, debunking and verification, Brazilian practice, the evidence on effects, the critiques and Meta's 2025 change.
+    slug: "fact-checking", // the /glossary/fact-checking address
+    headword: "Fact-checking", // the common English name, sentence case
+    kind: "term", // a plain term from journalism
+    domains: ["cyber-security", "grc"], // security (the human attack surface the series covers) and governance (platform policy), as for the rest of the series
+    aliases: ["fact checking", "fact-check", "fact-checker", "fact-checkers", "debunking", "checagem de fatos", "checagem", "checador", "desmentido"], // spellings, the agent noun, the sister activity and the Portuguese names the Brazilian checkers use
+    relatedTerms: ["lateral-reading", "community-notes", "prebunking", "misinformation", "disinformation", "continued-influence-effect", "backfire-effect"], // the batch, then the existing series entries
+    relatedArticles: ["verification-and-fact-checking", "the-human-attack-surface-why-repetition-works", "psychological-operations-from-the-small-lie-to-the-campaign"], // the part, the human attack surface and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "International Fact-Checking Network, The commitments of the Code of Principles (read 2026-11-15): organizations that regularly publish non-partisan reports on the accuracy of statements by public figures and widely circulated claims; 31 criteria under five commitments; state- or party-controlled outlets not eligible", href: "https://ifcncodeofprinciples.poynter.org/the-commitments" }, // ifcn-commitments
+      { label: "Lupa, Como a Lupa faz suas checagens?, updated 18 November 2025 (read 2026-11-15): debunking since May 2018 defined as verification of content published by unofficial sources; selection by who speaks, what is said and how much noise it makes", href: "https://www.agencialupa.org/noticias/2015/10/15/como-fazemos-nossas-checagens/" }, // lupa-como
+      { label: "Projeto Comprova, Metodologia (read 2026-11-15): each check normally by three journalists from different outlets, published only when at least three other newsrooms validate it", href: "https://projetocomprova.com.br/about/metodologia/" }, // comprova-metodologia
+      { label: "Political Communication 37(3), Nathan Walter, Jonathan Cohen, R. Lance Holbert and Yasmin Morag, 'Fact-Checking: A Meta-Analysis of What Works and for Whom', 2020, abstract via OpenAlex (read 2026-11-15): 30 studies, N = 20,963, d = 0.29, weaker with truth scales and partial refutations", href: "https://doi.org/10.1080/10584609.2019.1668894" }, // walter2020
+      { label: "Proceedings of the National Academy of Sciences, Ethan Porter and Thomas J. Wood, 'The global effectiveness of fact-checking', September 2021, abstract via Europe PMC (read 2026-11-15): experiments in Argentina, Nigeria, South Africa and the UK; at least 0.59 points on a 5-point scale", href: "https://doi.org/10.1073/pnas.2104235118" }, // porterwood2021
+      { label: "The Journal of Politics 84(4), Frederico Batista Pereira, Natália Bueno, Felipe Nunes and Nara de Carvalho Pavão, 'Fake News, Fact Checking, and Partisanship', 2022, abstract via OpenAlex (read 2026-11-15): corrections ineffective in a survey experiment during Brazil's 2018 elections", href: "https://doi.org/10.1086/719419" }, // batistapereira2022
+      { label: "Critical Review 25(2), Joseph E. Uscinski and Ryden W. Butler, 'The Epistemology of Fact Checking', 2013, abstract via OpenAlex (read 2026-11-15): objectionable methodological practices and a naive political epistemology", href: "https://doi.org/10.1080/08913811.2013.843872" }, // uscinski2013
+      { label: "Meta, Joel Kaplan, 'More Speech and Fewer Mistakes', 7 January 2025 (read 2026-11-15): ending the third-party fact-checking program in the US and moving to Community Notes; a program intended to inform too often became a tool to censor", href: "https://about.fb.com/news/2025/01/meta-more-speech-fewer-mistakes/" }, // meta2025
+    ], // eight sources, one object per line
+  },
+  {
+    // Lateral reading (new entry): Wineburg and McGrew's finding, click restraint, the national assessment, the teaching study and SIFT.
+    slug: "lateral-reading", // the /glossary/lateral-reading address
+    headword: "Lateral reading", // the researchers' term, sentence case
+    kind: "term", // a plain term from education research
+    domains: ["cyber-security"], // security awareness: judging sources before trusting them
+    aliases: ["read laterally", "reading laterally", "vertical reading", "click restraint", "SIFT", "SIFT method", "four moves", "leitura lateral"], // the verb form, its opposite, the companion habit, Caulfield's method and the Portuguese name
+    relatedTerms: ["fact-checking", "prebunking", "misinformation", "social-engineering"], // the batch and the existing series entries
+    relatedArticles: ["verification-and-fact-checking", "bots-sockpuppets-and-astroturfing"], // the part, and the part that recommends the habit to readers
+    sources: [ // every label says what the page says and when it was read
+      { label: "Stanford History Education Group, Sam Wineburg and Sarah McGrew, 'Lateral Reading: Reading Less and Learning More When Evaluating Digital Information', Working Paper 2017.A1, September 2017 (read 2026-11-15): 10 historians, 10 fact checkers, 25 Stanford undergraduates; fact checkers read laterally, others vertically; click restraint", href: "https://www.hendrix.edu/uploadedFiles/Academics/Faculty_Resources/Teaching_and_Learning/EvaluatingDigitalInformation.pdf" }, // wm2017
+      { label: "Teachers College Record 121(11), Sam Wineburg and Sarah McGrew, 'Lateral Reading and the Nature of Expertise', November 2019, abstract via Crossref (read 2026-11-15): the published version of the study", href: "https://doi.org/10.1177/016146811912101102" }, // wm2019
+      { label: "Educational Researcher 50(8), Joel Breakstone and colleagues, 'Students' Civic Online Reasoning: A National Portrait', 2021, abstract via OpenAlex (read 2026-11-15): 3,446 high school students; 96% never learned of a climate site's fossil-fuel ties", href: "https://doi.org/10.3102/0013189X211017495" }, // breakstone2021
+      { label: "Cognitive Research: Principles and Implications 6, Jessica E. Brodsky and colleagues, 31 March 2021, abstract and full text via Europe PMC (read 2026-11-15): students taught the DPI lateral-reading curriculum used lateral reading more and judged trustworthiness better than controls", href: "https://doi.org/10.1186/s41235-021-00291-4" }, // brodsky2021
+      { label: "Mike Caulfield, 'SIFT (The Four Moves)', Hapgood, 19 June 2019, read through a fetch tool (read 2026-11-15): stop; investigate the source; find better coverage; trace claims, quotes and media to the original context", href: "https://hapgood.us/2019/06/19/sift-the-four-moves/" }, // sift2019
+    ], // five sources, one object per line
+  },
+  {
+    // Content Credentials (new entry): the C2PA provenance record, how it is signed and found again, and the limits the C2PA and NIST state.
+    slug: "content-credentials", // the /glossary/content-credentials address
+    headword: "Content Credentials", // the specification's own name, kept capitalised as the C2PA writes it
+    kind: "term", // a named standard; the acronym C2PA is an alias
+    domains: ["cyber-security", "crypto"], // security (provenance against manipulated media) and cryptography (hashes and signatures)
+    aliases: ["content credential", "C2PA", "Coalition for Content Provenance and Authenticity", "C2PA manifest", "content provenance", "credenciais de conteúdo", "proveniência de conteúdo", "procedência de conteúdo"], // singular, the coalition and its acronym, the specification's other name for the record, and the Portuguese forms (the opener's pt-BR uses procedência)
+    relatedTerms: ["deepfake", "digital-signature", "x509", "metadata", "liars-dividend", "fact-checking"], // the media-manipulation and cryptography entries it relies on, then the batch
+    relatedArticles: ["verification-and-fact-checking", "voice-clones-and-deepfakes-in-fraud"], // the part and the deepfake part
+    sources: [ // every label says what the page says and when it was read
+      { label: "C2PA, 'C2PA and Content Credentials Explainer', version 2.3 (read 2026-11-15): a cryptographically bound structure that records an asset's provenance; no value judgments about whether provenance data is true; provenance alone cannot tell whether content is true; metadata can be removed, hence soft bindings", href: "https://spec.c2pa.org/specifications/specifications/2.3/explainer/Explainer.html" }, // c2pa23
+      { label: "Content Credentials, home page (read 2026-11-15): the specification is hosted by the C2PA; a collaboration with hundreds of companies led by Microsoft, Adobe, Intel, BBC, Truepic, Sony, Publicis Groupe, OpenAI, Google, Meta and Amazon", href: "https://contentcredentials.org/" }, // cchome
+      { label: "NIST AI 100-4, 'Reducing Risks Posed by Synthetic Content', November 2024 (read 2026-11-15): transparency may contribute to trustworthiness but does not guarantee it; can create a false sense of trust; metadata often stripped when files are shared on social media", href: "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.100-4.pdf" }, // nist1004
+    ], // three sources, one object per line
+  },
+  {
+    // Community Notes (new entry): crowd-written context, Meta's 2025 switch and 2026 Latin American test, the Oversight Board's opinion and the evidence from X.
+    slug: "community-notes", // the /glossary/community-notes address
+    headword: "Community Notes", // the product name X and Meta use, capitalised as they write it
+    kind: "term", // a named moderation feature
+    domains: ["cyber-security", "grc"], // security (misinformation on platforms) and governance (platform policy)
+    aliases: ["community notes", "community note", "Notas da Comunidade", "Notas de la Comunidad", "crowdsourced fact-checking"], // lower case and singular, the Portuguese and Spanish names Meta uses, and the generic description
+    relatedTerms: ["fact-checking", "misinformation", "coordinated-inauthentic-behavior", "social-bot"], // the batch, then the platform-manipulation entries the safeguards target
+    relatedArticles: ["verification-and-fact-checking"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Meta, 'Testing Begins for Community Notes on Facebook, Instagram and Threads', 13 March 2025, updated 7 April 2025 (read 2026-11-15): X's open-source algorithm; notes need agreement between people who normally disagree; no penalties; the US third-party fact-checking program ended on 7 April 2025", href: "https://about.fb.com/news/2025/03/testing-begins-community-notes-facebook-instagram-threads/" }, // meta2025cn
+      { label: "Oversight Board, 'Assessing Meta's Plans to Expand Community Notes', policy advisory opinion, 26 March 2026, read through a fetch tool (read 2026-11-15): only about 6% of notes published; fact-checkers among the most-cited sources; not to be introduced before or during major elections where risks are present", href: "https://www.oversightboard.com/decision/pao-007g5zuv/" }, // ob2026
+      { label: "Meta, 'Iniciamos los Tests de Notas de la Comunidad en Hispanoamérica', 9 September 2026 (read 2026-11-15): tests in 16 Spanish-speaking Latin American countries; fact-checking continues during the test; more than 1.4 million US contributors", href: "https://about.fb.com/ltam/news/2026/09/iniciamos-los-tests-de-notas-de-la-comunidad-en-hispanoamerica/" }, // metaltam2026
+      { label: "Proceedings of the National Academy of Sciences, Slaughter, Peytavin, Ugander and Saveski, 'Community notes reduce engagement with and diffusion of false information online', 18 September 2025, abstract via Europe PMC (read 2026-11-15): reposts down 46.1% after a note is attached, 11.6% over the post's lifespan", href: "https://doi.org/10.1073/pnas.2503413122" }, // slaughter2025
+      { label: "arXiv 2510.12559, Olesya Razuvayevskaya and colleagues, 'Timeliness, Consensus, and Composition of the Crowd: Community Notes on X', 14 October 2025 (read 2026-11-15): 1.8 million notes; 11.5% reach agreement; notes published 65.7 hours after the post on average", href: "https://arxiv.org/abs/2510.12559" }, // razuv2025
+      { label: "Science Advances, Bouchaud and Ramaciotti, 'Community Notes undermoderate polarizing content by design creating risks in electoral processes', July 2026, abstract via Europe PMC (read 2026-11-15): 1.9 million notes, 13 countries; election notes systematically undermoderated", href: "https://doi.org/10.1126/sciadv.aee6932" }, // bouchaud2026
+    ], // six sources, one object per line
+  },
+  {
+    // Prebunking (new entry): the definition, the games and videos, the YouTube field study, Jigsaw's campaigns and the discernment dispute.
+    slug: "prebunking", // the /glossary/prebunking address
+    headword: "Prebunking", // the common name, sentence case
+    kind: "term", // a plain term from misinformation research
+    domains: ["cyber-security", "grc"], // security awareness and governance (public campaigns), as for the rest of the series
+    aliases: ["pre-bunking", "prebunk", "pre-emptive debunking", "preemptive refutation", "technique-based inoculation", "pré-desmentido"], // spellings, the verb, the guide's longer name, the refutation step, the technique variant and a Portuguese rendering (the Brazilian usage keeps prebunking)
+    relatedTerms: ["inoculation-theory", "fact-checking", "lateral-reading", "misinformation", "illusory-truth-effect"], // the batch, then the existing series entries
+    relatedArticles: ["prebunking-and-inoculation", "verification-and-fact-checking", "psychological-operations-from-the-small-lie-to-the-campaign"], // the part, its sister part and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "Prebunking with Google (Jigsaw), home page and case studies (read 2026-11-15): prebunking is a technique to forewarn people of attempts to manipulate them; campaigns in Poland, Czechia and Slovakia (up to 8%), Germany and Indonesia", href: "https://prebunking.withgoogle.com/" }, // pbgoogle
+      { label: "University of Cambridge, BBC Media Action and Jigsaw, 'A Practical Guide to Prebunking Misinformation', November 2022 (read 2026-11-15): pre-emptive debunking or prebunking; forewarning and preemptive refutation with a micro-dose; booster videos; limitations", href: "https://prebunking.withgoogle.com/docs/A_Practical_Guide_to_Prebunking_Misinformation.pdf" }, // guide2022
+      { label: "Science Advances 8(34), Jon Roozenbeek, Sander van der Linden, Beth Goldberg, Steve Rathje and Stephan Lewandowsky, 24 August 2022, full text via Europe PMC (read 2026-11-15): five videos; YouTube field study (n = 22,632); recognition up about 5%; about $0.05 per view; funded by Google Jigsaw", href: "https://doi.org/10.1126/sciadv.abo6254" }, // roozenbeek2022
+      { label: "Journal of Experimental Psychology: General, Ariana Modirrousta-Galian and Philip A. Higham, 2023, abstract via OpenAlex (read 2026-11-15): ROC reanalysis of five studies; Bad News and Go Viral! did not improve discrimination but elicited more 'false' responses", href: "https://doi.org/10.1037/xge0001395" }, // mgh2023
+      { label: "Current Opinion in Psychology, Simchon, Zipori, Teitelbaum, Lewandowsky and van der Linden, published online 14 October 2025, abstract via Europe PMC (read 2026-11-15): signal detection reanalysis of 33 experiments (N = 37,025); improved discrimination without increased response bias", href: "https://doi.org/10.1016/j.copsyc.2025.102194" }, // simchon2025
+      { label: "Nature Human Behaviour, Gordon Pennycook and colleagues, 4 November 2024, abstract via Europe PMC (read 2026-11-15): an emotional-manipulation inoculation did not improve truth discernment on real headlines unless combined with an accuracy prompt", href: "https://doi.org/10.1038/s41562-024-02023-2" }, // pennycook2024
+    ], // six sources, one object per line
+  },
+  {
+    // Inoculation theory (new entry): McGuire's 1960s theory, its two components, the 2010 meta-analysis, prophylactic and therapeutic uses, and decay.
+    slug: "inoculation-theory", // the /glossary/inoculation-theory address
+    headword: "Inoculation theory", // the psychologists' name, sentence case
+    kind: "term", // a plain term from social psychology
+    domains: ["cyber-security", "grc"], // security awareness and governance, as for the rest of the series
+    aliases: ["psychological inoculation", "attitudinal inoculation", "inoculation", "teoria da inoculação", "inoculação psicológica"], // the applied names, the short form and the Portuguese names
+    relatedTerms: ["prebunking", "misinformation", "disinformation", "propaganda", "continued-influence-effect"], // the batch, then the existing series entries
+    relatedArticles: ["prebunking-and-inoculation", "the-human-attack-surface-why-repetition-works"], // the part and the human attack surface
+    sources: [ // every label says what the page says and when it was read
+      { label: "Crossref record of William J. McGuire and Demetrios Papageorgis, 'The relative efficacy of various types of prior belief-defense in producing immunity against persuasion', Journal of Abnormal and Social Psychology 62(2), 327-337, March 1961 (read 2026-11-15): bibliographic record only; the paper's text was not available", href: "https://doi.org/10.1037/h0042026" }, // mcguire1961
+      { label: "University of Cambridge, BBC Media Action and Jigsaw, 'A Practical Guide to Prebunking Misinformation', November 2022 (read 2026-11-15): inoculation theory developed in the 1960s by William McGuire as a psychological vaccine for brainwash; forewarning and preemptive refutation", href: "https://prebunking.withgoogle.com/docs/A_Practical_Guide_to_Prebunking_Misinformation.pdf" }, // guide2022
+      { label: "Communication Monographs 77(3), John A. Banas and Stephen A. Rains, 'A Meta-Analysis of Research on Inoculation Theory', September 2010, abstract via OpenAlex (read 2026-11-15): 54 cases; inoculation superior to supportive messages and no treatment; no increase with threat; decay after two weeks", href: "https://doi.org/10.1080/03637751003758193" }, // banas2010
+      { label: "Social and Personality Psychology Compass, Josh Compton, Sander van der Linden, John Cook and Melisa Basol, 'Inoculation theory in the post-truth era', 2021, abstract via OpenAlex (read 2026-11-15): a 50+ year history; prophylactic and therapeutic inoculation; contested science and conspiracy theories", href: "https://doi.org/10.1111/spc3.12602" }, // compton2021
+      { label: "PLOS ONE 12(5), John Cook, Stephan Lewandowsky and Ullrich K. H. Ecker, 5 May 2017 (read 2026-11-15): an inoculation has two elements, an explicit warning and a refutation that exposes the fallacy; more effective than supportive messages", href: "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0175799" }, // cook2017
+      { label: "Journal of Experimental Psychology: Applied 27(1), Rakoen Maertens, Jon Roozenbeek, Melisa Basol and Sander van der Linden, 2021, abstract via OpenAlex (read 2026-11-15): effect stable for at least 3 months with regular testing; significant decay over 2 months without", href: "https://doi.org/10.1037/xap0000315" }, // maertens2021
+    ], // six sources, one object per line
+  },
+  {
+    // Motivated reasoning (new entry): the definition used in the literature, the inattention account against it, the incentive experiments and the confound critique.
+    slug: "motivated-reasoning", // the /glossary/motivated-reasoning address
+    headword: "Motivated reasoning", // sentence case, the psychologists' term
+    kind: "term", // a plain term from social and political psychology
+    domains: ["cyber-security", "grc"], // security and governance, as for the rest of the series
+    aliases: ["politically motivated reasoning", "directional motivated reasoning", "partisan bias", "raciocínio motivado", "raciocínio motivado politicamente"], // the political and directional forms, the near-synonym used in the debate, Portuguese
+    relatedTerms: ["identity-protective-cognition", "accuracy-prompt", "backfire-effect", "continued-influence-effect", "misinformation"], // the batch, then existing entries
+    relatedArticles: ["why-misbeliefs-persist", "the-human-attack-surface-why-repetition-works"], // the part and the earlier part on repetition
+    sources: [ // every label says what the page says and when it was read
+      { label: "Ben M. Tappin, Gordon Pennycook and David G. Rand, 'Rethinking the link between cognitive sophistication and politically motivated reasoning', Journal of Experimental Psychology: General 150(6), June 2021, PubMed abstract (read 2026-11-15): politically motivated reasoning commonly defined as reasoning driven by the motivation to reach conclusions congenial to one's political group identity; identity confounded with prior beliefs; a robust direct effect of identity, no evidence that sophistication magnified it", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=33119359" }, // tappin2021
+      { label: "Gordon Pennycook and David G. Rand, 'Lazy, not biased', Cognition 188, July 2019, PubMed abstract (read 2026-11-15): two studies, N = 3,446; Cognitive Reflection Test linked to better discernment even for ideologically aligned headlines; susceptibility driven more by lazy thinking than by partisan bias", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=29935897" }, // pennycookrand2019
+      { label: "Steve Rathje, Jon Roozenbeek, Jay J. Van Bavel and Sander van der Linden, 'Accuracy and social motivations shape judgements of (mis)information', Nature Human Behaviour 7, published 6 March 2023, PubMed abstract (read 2026-11-15): four experiments, n = 3,364; financial incentives improved accuracy and reduced partisan bias by about 30%; rewarding allies' preferences decreased accuracy", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=36879042" }, // rathje2023
+      { label: "James N. Druckman and Mary C. McGrath, 'The evidence for motivated reasoning in climate change preference formation', Nature Climate Change, published 21 January 2019, abstract (read 2026-11-15): the evidence is equally consistent with accuracy-seeking citizens who differ on what evidence is credible", href: "https://www.nature.com/articles/s41558-018-0360-1" }, // druckman2019
+    ], // four sources, one object per line
+  },
+  {
+    // Identity-protective cognition (new entry): Dan Kahan's account, his 2012 and 2013 findings, and the replication and confound critiques.
+    slug: "identity-protective-cognition", // the /glossary/identity-protective-cognition address
+    headword: "Identity-protective cognition", // sentence case, Kahan's term
+    kind: "term", // a term from the cultural cognition research programme
+    domains: ["cyber-security", "grc"], // security and governance, as for the rest of the series
+    aliases: ["identity protective cognition", "identity-protective motivated reasoning", "cultural cognition", "motivated numeracy", "cognição de proteção da identidade"], // spelling, Kahan's longer form, the programme's name, the related experiment, Portuguese
+    relatedTerms: ["motivated-reasoning", "backfire-effect", "misinformation", "illusory-truth-effect"], // the batch, then existing entries
+    relatedArticles: ["why-misbeliefs-persist"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Dan M. Kahan, 'Ideology, motivated reasoning, and cognitive reflection', Judgment and Decision Making 8(4), July 2013, full text (read 2026-11-15): identity-protective cognition guides people to beliefs congruent with their affinity groups rather than the best evidence; individually rational; 1,750 US adults; those highest in cognitive reflection most likely to display ideologically motivated cognition", href: "https://journal.sjdm.org/13/13313/jdm13313.pdf" }, // kahan2013
+      { label: "Dan M. Kahan and colleagues, 'The polarizing impact of science literacy and numeracy on perceived climate change risks', Nature Climate Change 2, 27 May 2012, abstract (read 2026-11-15): people with the highest science literacy and technical reasoning were the most culturally polarized, not the most concerned", href: "https://www.nature.com/articles/nclimate1547" }, // kahan2012
+      { label: "Emil Persson, David Andersson, Lina Koppel, Daniel Västfjäll and Gustav Tinghög, 'A preregistered replication of motivated numeracy', Cognition 214, September 2021, PubMed abstract (read 2026-11-15): no good evidence for motivated numeracy; congruent responding not moderated by numeracy; cumulative evidence weaker than thought", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=34051421" }, // persson2021
+      { label: "Ben M. Tappin, Gordon Pennycook and David G. Rand, Journal of Experimental Psychology: General 150(6), June 2021, PubMed abstract (read 2026-11-15): identity confounded with prior beliefs in the paradigmatic designs; direct effect of identity robust, no evidence that cognitive sophistication magnified it", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=33119359" }, // tappin2021
+    ], // four sources, one object per line
+  },
+  {
+    // Accuracy prompt (new entry): the intervention, its internal meta-analysis and the independent replication.
+    slug: "accuracy-prompt", // the /glossary/accuracy-prompt address
+    headword: "Accuracy prompt", // sentence case
+    kind: "term", // a term from misinformation research
+    domains: ["cyber-security", "grc"], // security and governance, as for the rest of the series
+    aliases: ["accuracy nudge", "accuracy-nudge intervention", "accuracy prime", "lembrete de precisão"], // the replication's name for it, a variant, Portuguese
+    relatedTerms: ["motivated-reasoning", "misinformation", "illusory-truth-effect", "disinformation"], // the batch, then existing entries
+    relatedArticles: ["why-misbeliefs-persist"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Gordon Pennycook, Ziv Epstein, Mohsen Mosleh, Antonio A. Arechar, Dean Eckles and David G. Rand, 'Shifting attention to accuracy can reduce misinformation online', Nature 592, April 2021, PubMed abstract (read 2026-11-15): veracity has little effect on sharing intentions despite a large effect on accuracy judgements; four survey experiments and a Twitter field experiment; shifting attention to accuracy raised the quality of news shared", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=33731933" }, // pennycook2021
+      { label: "Gordon Pennycook and David G. Rand, 'Accuracy prompts are a replicable and generalizable approach for reducing the spread of misinformation', Nature Communications 13, 28 April 2022, PubMed abstract (read 2026-11-15): internal meta-analysis of 20 experiments, N = 26,863; sharing intentions for false headlines down 10% relative to control; funding from Google and Meta disclosed", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=35484277" }, // pennycookrand2022
+      { label: "Jon Roozenbeek, Alexandra L. J. Freeman and Sander van der Linden, 'How Accurate Are Accuracy-Nudge Interventions? A Preregistered Direct Replication of Pennycook et al. (2020)', Psychological Science 32(7), July 2021, PubMed abstract (read 2026-11-15): first stage unsuccessful (n = 701, p = .67); pooled N = 1,583 small but significant interaction; an unreported change of hypothesis in the original preregistration", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=34114521" }, // roozenbeek2021
+    ], // three sources, one object per line
+  },
+  {
+    // Breakout Scale (new entry): Nimmo's six categories and their use in the AI companies' threat reports.
+    slug: "breakout-scale", // the /glossary/breakout-scale address
+    headword: "Breakout Scale", // capitalised as the reports write it
+    kind: "term", // the name of an analytical scale
+    domains: ["cyber-security", "grc"], // security and governance, as for the rest of the series
+    aliases: ["breakout scale", "influence operation breakout scale", "IO impact Breakout Scale", "escala de rompimento"], // lower case, OpenAI's longer label, Portuguese gloss
+    relatedTerms: ["influence-operation", "coordinated-inauthentic-behavior", "perception-hacking", "spamouflage", "doppelganger"], // existing entries
+    relatedArticles: ["generative-ai-and-influence-operations", "state-influence-campaigns-on-the-record", "anatomy-of-an-influence-operation-abc-disarm-and-kill-chains"], // the part and the two parts that use breakout in their concepts
+    sources: [ // every label says what the page says and when it was read
+      { label: "Ben Nimmo, 'The Breakout Scale: Measuring the Impact of Influence Operations', Brookings Institution, September 2020 (read 2026-11-15): six categories, from one community on one platform (One) to amplification by mainstream media (Four), by celebrities and candidates (Five) and a policy response or call for violence (Six); based on observable, replicable data", href: "https://www.brookings.edu/wp-content/uploads/2020/09/Nimmo_influence_operations_PDF.pdf" }, // nimmo2020
+      { label: "OpenAI, 'AI and Covert Influence Operations: Latest Trends', May 2024 (read 2026-11-15): none of five AI-assisted operations scored higher than Category 2", href: "https://downloads.ctfassets.net/kftzwdyauwt9/5IMxzTmUclSOAcWUXbkVrK/3cfab518e6b10789ab8843bcca18b633/Threat_Intel_Report.pdf" }, // openai2024
+      { label: "OpenAI, 'Influence and cyber operations: an update', October 2024 (read 2026-11-15): all election-related operations in Category Two; Ben Nimmo listed first among the authors", href: "https://cdn.openai.com/threat-intelligence-reports/influence-and-cyber-operations-an-update_October-2024.pdf" }, // openai2024b
+      { label: "OpenAI, 'Disrupting a new covert influence campaign from Russia', 25 August 2026, read through a fetch tool (read 2026-11-15): an operation placed at the lower end of Category Three, multiple platforms with some indications of breakout", href: "https://openai.com/index/disrupting-malicious-uses-of-ai-influence-campaign-russia/" }, // openai2026
+    ], // four sources, one object per line
+  },
+  {
+    // AI watermarking (new entry): marking AI output at generation, the AI Act duty, SynthID-Text and the documented limits.
+    slug: "ai-watermarking", // the /glossary/ai-watermarking address
+    headword: "AI watermarking", // sentence case
+    kind: "term", // a plain technical term
+    domains: ["cyber-security", "privacy", "grc"], // detection, provenance of personal likeness, and the AI Act duty
+    aliases: ["watermarking AI-generated content", "generative watermark", "text watermark", "SynthID", "marca d'água de IA", "marca d'água"], // descriptive forms, the best documented scheme, Portuguese
+    relatedTerms: ["deepfake", "generative-ai", "large-language-model", "liars-dividend", "metadata", "digital-signature"], // existing entries
+    relatedArticles: ["generative-ai-and-influence-operations", "voice-clones-and-deepfakes-in-fraud"], // the part and the deepfake fraud part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Regulation (EU) 2024/1689 (AI Act), 13 June 2024 (read 2026-11-15): Article 50(2) machine-readable marking of synthetic audio, image, video and text outputs as far as technically feasible; recital 133 lists watermarks, metadata, cryptographic provenance, logging and fingerprints", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401689" }, // aiact
+      { label: "Sumanth Dathathri and co-authors, 'Scalable watermarking for identifying large language model outputs', Nature 634, 23 October 2024 (read 2026-11-15): SynthID-Text; a live experiment on nearly 20 million Gemini responses; limits: coordination between providers, open-source models, stealing, spoofing and scrubbing, weakening by paraphrase", href: "https://www.nature.com/articles/s41586-024-08025-4" }, // dathathri2024
+      { label: "Mehrdad Saberi and six co-authors, 'Robustness of AI-Image Detectors: Fundamental Limits and Practical Attacks', arXiv 2310.00076, September 2023 (read 2026-11-15): diffusion purification removes low-perturbation image watermarks; watermarking methods vulnerable to spoofing", href: "https://arxiv.org/abs/2310.00076" }, // saberi2023
+      { label: "National Institute of Standards and Technology, NIST AI 100-4, 'Reducing Risks Posed by Synthetic Content', November 2024 (read 2026-11-15): text watermarks unreliable at low entropy; metadata often stripped when shared; none of the techniques a comprehensive solution", href: "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.100-4.pdf" }, // nist2024
+    ], // four sources, one object per line
+  },
+  {
+    // Open outcry (new entry): trading by voice and gesture on a floor, how it worked, why it was trusted and when each floor closed.
+    slug: "open-outcry", // the /glossary/open-outcry address
+    headword: "open outcry", // lower case, a plain market term
+    kind: "term", // a method of trading
+    domains: ["grc"], // market structure and its rules (no markets domain exists today; see INTEGRATION.md)
+    aliases: ["outcry", "floor trading", "trading floor", "pit trading", "viva-voz trading", "negociação por viva-voz"], // English names and the Portuguese term (pregão viva-voz itself lives at pregao)
+    relatedTerms: ["pit", "pregao", "specialist", "jobber", "buttonwood-agreement", "clearing-house", "matching-engine", "high-frequency-trading"], // this batch, then wave-1 siblings (matching-engine, agent B; high-frequency-trading, agent C)
+    relatedArticles: ["open-outcry-trading-floors-and-the-pregao", "electronic-trading-from-the-pit-to-the-microsecond"], // the part and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "StoneX, Trading Pit, undated (read 2026-11-15): the highest bid or lowest offer sets the market, a trader must best it to set a new price (price discovery); a pit for each commodity; a trader's action or word is a bond", href: "https://futures.stonex.com/futures-options-101/trading-pit" }, // how the auction worked
+      { label: "New York Stock Exchange, History of the NYSE, undated (read 2026-11-15): brokers shouted bids from assigned chairs after the 1817 constitution; continuous trading at posts; Hybrid Market leading to the elimination of the open outcry system on the floor in 2006; floor closed 23 March 2020, partially reopened 26 May 2020", href: "https://www.nyse.com/history-of-nyse" }, // New York
+      { label: "Bank of England, Change in The Stock Exchange and regulation of the City, Quarterly Bulletin, February 1987 (read 2026-11-15): Big Bang on 27 October 1986; three quarters of business off the floor within weeks, perhaps 95% by December", href: "https://www.bankofengland.co.uk/-/media/boe/files/quarterly-bulletin/1987/change-in-the-stock-exchange-and-regulation-of-the-city.pdf" }, // London
+      { label: "B3 Bora Investir, Fim do pregão viva-voz faz 20 anos, 30 September 2025 (read 2026-11-15): Bovespa's open-outcry floor closed on 30 September 2005; 10,000 to 15,000 trades a day then, 8.4 million average now", href: "https://borainvestir.b3.com.br/noticias/fim-do-pregao-viva-voz-faz-20-anos-e-b3-celebra-historia-com-exposicao/" }, // São Paulo equities
+      { label: "BM&FBOVESPA, The Last Open Outcry Transaction Is Carried Out at BM&FBOVESPA, 1 July 2009, as published by Mondo Visione (read 2026-11-15): the last BM&F floor trade at 5:14 p.m. on 30 June 2009", href: "https://mondovisione.com/media-and-resources/news/the-last-open-outcry-transaction-is-carried-out-at-bmandfbovespa-2011124/" }, // São Paulo derivatives
+      { label: "CME Group, CME Group to Close Most Open Outcry Futures Trading in Chicago and New York by July, 4 February 2015 (read 2026-11-15 through a fetch tool): open outcry about 1% of futures volume; most futures pits closed by 2 July 2015", href: "https://www.cmegroup.com/media-room/press-releases/2015/2/04/cme_group_to_closemostopenoutcryfuturestradinginchicagoandnewyor.html" }, // Chicago
+      { label: "CME Group, CME Group to Permanently Close Most Open Outcry Trading Pits; Eurodollar Options Pit will Remain Open, 4 May 2021 (read 2026-11-15 through a fetch tool)", href: "https://www.cmegroup.com/media-room/press-releases/2021/5/04/cme_group_to_permanentlyclosemostopenoutcrytradingpitseurodollar.html" }, // Chicago after the pandemic
+      { label: "Kumar Venkataraman, Automated Versus Floor Trading, Journal of Finance vol. 56 no. 4, 2001, abstract (read 2026-11-15): execution costs 14 basis points higher on the automated Paris Bourse than on the floor-based NYSE after controls", href: "https://econpapers.repec.org/RePEc:bla:jfinan:v:56:y:2001:i:4:p:1445-1485" }, // the case for floors
+    ], // eight sources, one object per line
+  },
+  {
+    // Specialist (new entry): the NYSE member who was both broker and dealer in assigned stocks, its obligations, its abuse and its replacement.
+    slug: "specialist", // the /glossary/specialist address
+    headword: "specialist (NYSE)", // the exchange qualifies the common word
+    kind: "term", // a regulated role
+    domains: ["grc"], // a role defined by securities regulation
+    aliases: ["nyse specialist", "specialist firm", "specialist system", "especialista da nyse"], // the forms in use and Portuguese
+    relatedTerms: ["open-outcry", "jobber", "market-maker", "buttonwood-agreement"], // this batch, then the wave-1 sibling market-maker (agent C)
+    relatedArticles: ["open-outcry-trading-floors-and-the-pregao", "electronic-trading-from-the-pit-to-the-microsecond"], // the part and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "US Securities and Exchange Commission, Release No. 34-58845, 24 October 2008, Federal Register 29 October 2008 (read 2026-11-15): Section 11(b) lets a member be registered as a specialist and act as broker and dealer; Rule 11b-1 negative and affirmative obligations; the specialist oversaw all orders and ran the floor auction; advance look under the Hybrid Market; specialists phased out for designated market makers", href: "https://www.govinfo.gov/content/pkg/FR-2008-10-29/pdf/E8-25797.pdf" }, // the rule and the change
+      { label: "New York Stock Exchange, New York Stock Exchange Ends Member Seat Sales Today, 30 December 2005, as published by Mondo Visione (read 2026-11-15): continuous trading in 1871; brokers dealing in a stock remained at one location, giving rise to the specialist", href: "https://mondovisione.com/media-and-resources/news/new-york-stock-exchange-ends-member-seat-sales-today-trading-license-auction-occ-2011124/" }, // origin
+      { label: "US Securities and Exchange Commission, press release 2004-42, 30 March 2004 (read 2026-11-15 through a fetch tool): five specialist firms pay $241,823,257 for trading ahead of executable customer orders between 1999 and 2003; neither admitted nor denied", href: "https://www.sec.gov/news/press/2004-42.htm" }, // abuse
+      { label: "Terrence Hendershott and Pamela C. Moulton, Automation, speed, and stock market quality: The NYSE's Hybrid, Journal of Financial Markets vol. 14 no. 4, November 2011, abstract (read 2026-11-15): execution time cut from 10 seconds to under one; spreads up through adverse selection, prices more efficient", href: "https://ideas.repec.org/a/eee/finmar/v14y2011i4p568-604.html" }, // the automation that ended the role
+    ], // four sources, one object per line
+  },
+  {
+    // Pit (new entry): the trading ring of the futures floors, its hand signals and its closure.
+    slug: "pit", // the /glossary/pit address
+    headword: "pit (trading pit)", // the short word and its full form
+    kind: "term", // a place and an institution of the floor
+    domains: ["grc"], // market structure
+    aliases: ["trading pit", "futures pit", "hand signals", "roda de negociação"], // English forms, the sign language that belongs to it, and Portuguese
+    relatedTerms: ["open-outcry", "pregao", "clearing-house"], // this batch
+    relatedArticles: ["open-outcry-trading-floors-and-the-pregao"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "StoneX, Trading Pit, undated (read 2026-11-15): a pit for each commodity (lumber, Eurodollar, S&P 500 at CME); price discovery by bettering the best bid or offer", href: "https://futures.stonex.com/futures-options-101/trading-pit" }, // the pit
+      { label: "StoneX, Hand Signals, undated (read 2026-11-15): signals used at CME, widespread from the early 1970s after the International Monetary Market; distance of 30 to 40 yards, noise, anonymity; palms in to buy, out to sell; price as the last digit; quantity at the face", href: "https://futures.stonex.com/futures-options-101/hand-signals" }, // the signals
+      { label: "Commodity Futures Trading Commission, History of the CFTC before 1974, undated (read 2026-11-15): CBOT founded 3 April 1848; charter 1859; margin and delivery rules 1865; corners banned 1868; first clearing organization 1883; Chicago Butter and Egg Board 1898, CME 1919", href: "https://www.cftc.gov/About/HistoryoftheCFTC/history_precftc.html" }, // Chicago's exchanges
+      { label: "US Court of Appeals for the Seventh Circuit, Ryan v. CFTC, 21 May 1998, on FindLaw (read 2026-11-15 through a fetch tool): August 1989 indictment of 19 soybean traders and a CBOT clerk after an FBI sting in the soybean futures pit; mail and wire fraud and Commodity Exchange Act counts", href: "https://caselaw.findlaw.com/us-7th-circuit/1011365.html" }, // abuse
+      { label: "CME Group, CME Group to Close Most Open Outcry Futures Trading in Chicago and New York by July, 4 February 2015 (read 2026-11-15 through a fetch tool): open outcry about 1% of futures volume; most futures pits closed by 2 July 2015", href: "https://www.cmegroup.com/media-room/press-releases/2015/2/04/cme_group_to_closemostopenoutcryfuturestradinginchicagoandnewyor.html" }, // the closures
+      { label: "CME Group, CME Group to Permanently Close Most Open Outcry Trading Pits; Eurodollar Options Pit will Remain Open, 4 May 2021 (read 2026-11-15 through a fetch tool): pits closed in March 2020 not reopened; the Eurodollar options pit, reopened in August 2020, remains", href: "https://www.cmegroup.com/media-room/press-releases/2021/5/04/cme_group_to_permanentlyclosemostopenoutcrytradingpitseurodollar.html" }, // the end
+    ], // six sources, one object per line
+  },
+  {
+    // Pregão (new entry): the Brazilian trading session and floor, the viva-voz era of Bovespa and BM&F and when each ended.
+    slug: "pregao", // the /glossary/pregao address (ASCII slug for pregão)
+    headword: "pregão (viva-voz)", // the Portuguese word stays in Portuguese in every locale (spec section 3)
+    kind: "term", // a market term of art in Brazil
+    domains: ["grc"], // market structure
+    aliases: ["pregão", "pregão viva-voz", "viva-voz", "viva voz", "pregao", "operador de pregão"], // spellings and the floor trader's title
+    relatedTerms: ["open-outcry", "pit", "clearing-house", "b3", "direct-market-access"], // this batch, then wave-1 siblings b3 and direct-market-access (agent E)
+    relatedArticles: ["open-outcry-trading-floors-and-the-pregao", "brazil-bmf-bovespa-b3-and-electronic-access", "electronic-trading-from-the-pit-to-the-microsecond"], // the part, the Brazil part and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "MUB3, Museu da Bolsa do Brasil, Caderno do Professor, June 2025 (read 2026-11-15): pregão from apregoar, to announce aloud; the word bolsa from 1876; Bolsa de Fundos Públicos 1895; chalk boards until electronic panels in 1970; brokerage companies and floor operators with their gestures from 1965; the T-SCAN reading trade tickets in the 1970s", href: "https://mub3.org.br/docs/Caderno%20do%20Professor%20-%20Site.pdf" }, // the institution
+      { label: "B3, Como era a bolsa de valores em 1994, 5 July 2024 (read 2026-11-15): about 10 companies traded on the floor made 95% of trades; posts with controllers; trading cards checked by exchange staff; CATS and WINCATS for less liquid shares; 4,204 trades on 1 July 1994", href: "https://www.b3.com.br/pt_br/noticias/como-era-a-bolsa-de-valores-em-1994.htm" }, // a day on the floor
+      { label: "B3, B3 moderniza plataformas e reduz em 70% tempo de conclusão dos negócios, 4 April 2025 (read 2026-11-15): about 1,400 Bovespa and 1,200 BM&F floor operators at the peak in the 1990s; the article dates the end of BM&F's floor to mid-2006", href: "https://www.b3.com.br/pt_br/noticias/avanco-em-tecnologia.htm" }, // scale
+      { label: "B3 Bora Investir, Fim do pregão viva-voz faz 20 anos, 30 September 2025 (read 2026-11-15): Bovespa's pregão viva-voz, begun in 1895, ended on 30 September 2005", href: "https://borainvestir.b3.com.br/noticias/fim-do-pregao-viva-voz-faz-20-anos-e-b3-celebra-historia-com-exposicao/" }, // Bovespa's end
+      { label: "BM&FBOVESPA, Trading in the BM&F Segment to Become Fully Electronic as of July 1, 30 June 2009, as published by Mondo Visione (read 2026-11-15): electronic share from just over 3% in 2000 to over 98% of 22 million contracts in June 2009; programmes for floor traders and runners", href: "https://mondovisione.com/media-and-resources/news/trading-in-the-bmandf-segment-at-bmandfbovespa-to-become-fully-electronic-as-of--2011124/" }, // BM&F's end
+      { label: "BM&FBOVESPA, The Last Open Outcry Transaction Is Carried Out at BM&FBOVESPA, 1 July 2009, as published by Mondo Visione (read 2026-11-15): last trade at 5:14 p.m. on 30 June 2009, ten Ibovespa futures at 52,020 points", href: "https://mondovisione.com/media-and-resources/news/the-last-open-outcry-transaction-is-carried-out-at-bmandfbovespa-2011124/" }, // the last trade
+    ], // six sources, one object per line
+  },
+  {
+    // Buttonwood Agreement (new entry): the 1792 brokers' pact the NYSE treats as its founding, its text and the historians' doubts.
+    slug: "buttonwood-agreement", // the /glossary/buttonwood-agreement address
+    headword: "Buttonwood Agreement", // the document's name
+    kind: "lore", // its story dominates; sources required and given
+    domains: ["grc"], // a self-regulatory pact on commissions and dealing
+    aliases: ["buttonwood", "buttonwood tree", "acordo de buttonwood"], // short names and Portuguese
+    relatedTerms: ["open-outcry", "specialist"], // this batch
+    relatedArticles: ["open-outcry-trading-floors-and-the-pregao", "electronic-trading-from-the-pit-to-the-microsecond"], // the part and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "New York Stock Exchange, History of the NYSE, undated (read 2026-11-15): signed by 24 stockbrokers on 17 May 1792 after the first financial panic; set rules for trading and fixed commissions; marks the official founding of the NYSE; constitution of 8 March 1817", href: "https://www.nyse.com/history-of-nyse" }, // the exchange's account
+      { label: "Peter Eisenstadt, How the Buttonwood Tree Grew: The Making of a New York Stock Exchange Legend, Prospects vol. 19, October 1994, Cambridge University Press (read 2026-11-15): the 82-word text (a minimum commission of one quarter per cent on the specie value and a preference to each other); the traditional founding account largely legendary, claims that it established the exchange without foundation", href: "https://www.cambridge.org/core/journals/prospects/article/how-the-buttonwood-tree-grew-the-making-of-a-new-york-stock-exchange-legend/68D4F4577C720CFC004C6BB6076D46F6" }, // the historian's account
+    ], // two sources, one object per line
+    disputed: true, // the founding legend is disputed; the context says what is and is not established
+  },
+  {
+    // Clearing house (new entry): the institution that guarantees trades between members, its floor-era origins and its role as central counterparty.
+    slug: "clearing-house", // the /glossary/clearing-house address
+    headword: "clearing house", // two words, Oxford spelling
+    kind: "term", // a market infrastructure
+    domains: ["grc"], // financial market infrastructure and its regulation
+    aliases: ["clearinghouse", "central counterparty", "ccp", "clearing", "câmara de compensação", "contraparte central"], // spellings, the function and Portuguese
+    relatedTerms: ["open-outcry", "pit", "pregao", "b3"], // this batch, then the wave-1 sibling b3 (agent E)
+    relatedArticles: ["electronic-trading-from-the-pit-to-the-microsecond", "open-outcry-trading-floors-and-the-pregao"], // the opener and the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Commodity Futures Trading Commission, History of the CFTC before 1974, undated (read 2026-11-15): formal margin and delivery rules at the CBOT in 1865; the first clearing organization for CBOT contracts in 1883, initially voluntary", href: "https://www.cftc.gov/About/HistoryoftheCFTC/history_precftc.html" }, // origin
+      { label: "Bank for International Settlements, The US paper crunch, 1967-1970, Quarterly Review, December 2007 (read 2026-11-15): fails soared; trading days shortened in August 1967 and early 1968; about 160 NYSE members failed (Seligman 2003); a 1973 NYSE report found three in ten investors had lost or late securities", href: "https://www.bis.org/publ/qtrpdf/r_qt0712z.htm" }, // what failure looks like
+      { label: "DTCC, Celebrating DTCC's 50th Anniversary, 2023 (read 2026-11-15): the Depository Trust Company created in 1973 to solve the paperwork crisis; multilateral netting", href: "https://www.dtcc.com/insights/2023/celebrating-dtccs-50th-anniversary" }, // the US answer
+      { label: "Banco Central do Brasil, Relatório de Estabilidade Financeira, chapter 3, November 2002 (read 2026-11-15): STR from 22 April 2002; systemically important clearing houses act as central counterparty with guarantees, limits and stress tests; equity trades settle up to three business days after the trade; BM&F, CBLC and Cetip systems", href: "https://www.bcb.gov.br/content/publicacoes/ref/200211/RELESTAB2002-ref200201c3p.pdf" }, // the Brazilian framework
+      { label: "MUB3, Manoel Felix Cintra Neto (Google Arts and Culture story), undated (read 2026-11-15): BM&F's foreign exchange (2002) and assets (2004) clearinghouses alongside its derivatives clearinghouse", href: "https://artsandculture.google.com/story/iwWxkfwSiAYGAQ" }, // BM&F's clearinghouses
+    ], // five sources, one object per line
+  },
+  {
+    // Jobber (new entry): the London Stock Exchange dealer of the single-capacity era, until Big Bang in 1986.
+    slug: "jobber", // the /glossary/jobber address
+    headword: "jobber (London Stock Exchange)", // the exchange qualifies the old word
+    kind: "term", // a historical market role
+    domains: ["grc"], // a role defined by exchange rules
+    aliases: ["stockjobber", "single capacity", "dual capacity", "big bang 1986"], // the full form, the regime around it and the reform that ended it
+    relatedTerms: ["specialist", "open-outcry", "buy-side", "market-maker"], // this batch, then the wave-1 sibling market-maker (agent C)
+    relatedArticles: ["open-outcry-trading-floors-and-the-pregao"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Bank of England, Change in The Stock Exchange and regulation of the City, Quarterly Bulletin, December 1985 (read 2026-11-15): 4,852 members in 209 firms; brokers as agents for a minimum commission and jobbers as market makers on the floor, two to twelve per stock; only five of seventeen jobbing firms of institutional size; private quotes; minimum commissions since 1912; Office of Fair Trading referral in 1979 and the July 1983 agreement", href: "https://www.bankofengland.co.uk/-/media/boe/files/quarterly-bulletin/1985/change-in-the-stock-exchange-and-regulation-of-the-city.pdf" }, // the system
+      { label: "Bank of England, Change in The Stock Exchange and regulation of the City, Quarterly Bulletin, February 1987 (read 2026-11-15): single capacity and fixed commissions ended on 27 October 1986; 28 market-making firms on the floor against 19 jobbers before; the floor deserted within weeks; commissions and the touch before and after", href: "https://www.bankofengland.co.uk/-/media/boe/files/quarterly-bulletin/1987/change-in-the-stock-exchange-and-regulation-of-the-city.pdf" }, // the end
+    ], // two sources, one object per line
+  },
+  {
+    // Buy side (new entry): the institutions that manage money and send orders through brokers, against the sell side that serves them.
+    slug: "buy-side", // the /glossary/buy-side address
+    headword: "buy side", // the industry's two words
+    kind: "jargon", // practitioners' shorthand
+    domains: ["grc"], // market structure
+    aliases: ["buy-side", "sell side", "sell-side", "institutional investors", "investidores institucionais"], // both halves and Portuguese
+    relatedTerms: ["jobber", "specialist", "fix-protocol"], // this batch, then the wave-1 sibling fix-protocol (agent D)
+    relatedArticles: ["electronic-trading-from-the-pit-to-the-microsecond"], // the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "FIX Trading Community, Who we are, undated (read 2026-11-15): global membership drawn from the buy side, sell side, market infrastructure operators, financial technology firms, consultants, regulators and other industry associations", href: "https://www.fixtrading.org/who-we-are/" }, // the vocabulary in use
+      { label: "Bank of England, Quarterly Bulletin, December 1985 (read 2026-11-15): institutions seeking international portfolios after the US Employee Retirement Income Security Act of 1974 and the end of UK exchange controls in 1979", href: "https://www.bankofengland.co.uk/-/media/boe/files/quarterly-bulletin/1985/change-in-the-stock-exchange-and-regulation-of-the-city.pdf" }, // institutional pressure
+      { label: "Bank of England, Quarterly Bulletin, February 1987 (read 2026-11-15): commissions on £100,000 to £1 million deals from about 0.4% to 0.2% after Big Bang; client-driven fund managers and the largest institutions dealing net of commission with market makers; pension funds with limited resources still paying brokers", href: "https://www.bankofengland.co.uk/-/media/boe/files/quarterly-bulletin/1987/change-in-the-stock-exchange-and-regulation-of-the-city.pdf" }, // the buy side's bargaining power
+      { label: "Raptor Trading Systems, home page, undated (read 2026-11-15): electronic trading tools for buy-side and sell-side firms worldwide (a vendor's self-description)", href: "https://raptortrading.com/" }, // vendors sell to both sides
+    ], // four sources, one object per line
+  },
+  {
+    // Matching engine (new entry): the exchange software that keeps the order book and executes orders by fixed priority rules.
+    slug: "matching-engine", // the /glossary/matching-engine address
+    headword: "matching engine", // lower case, a plain technical term
+    kind: "term", // a component name, not an acronym
+    domains: ["programming", "enterprise-networking"], // engine logic and the latency it lives by
+    aliases: ["trading engine", "match engine", "order matching engine", "motor de casamento de ofertas", "motor de negociação"], // the CFTC and CME wording and Portuguese
+    relatedTerms: ["price-time-priority", "central-limit-order-book", "latency", "ptp", "exchange-colocation", "high-frequency-trading"], // this batch, existing entries, then wave siblings
+    relatedArticles: ["the-screens-arrive-electronic-exchanges-from-nasdaq-to-globex", "colocation-microwaves-and-the-race-for-latency", "electronic-trading-from-the-pit-to-the-microsecond"], // the part, the latency part and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "CFTC Letter No. 08-18 to BM&F Bovespa, 26 September 2008 (read 2026-11-15): BM&F's Trading Engine in São Paulo; orders matched by price/time priority; order time is arrival at the engine; pre-trade filters keep orders out of the matching engine", href: "https://cftc.gov/csl/08-18/download" }, // regulator's description of a real engine
+      { label: "Commission Delegated Regulation (EU) 2017/574 (RTS 25), 7 June 2016 (read 2026-11-15): gateway-to-gateway latency measured through the order submission protocol and the matching engine", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32017R0574" }, // legal definition of the path
+      { label: "CME, 10th anniversary of GLOBEX, 25 June 2002, Mondo Visione repost (read 2026-11-15): three-second response promised in 1992; match engine round trip 1.2 s (early 2001), 0.45 s (end 2001), 0.16 s (31 March 2002)", href: "https://mondovisione.com/news/cme-celebrates-10th-anniversary-of-globexsup-sup-electronic-trading-on-heels-of--2011124" }, // speed history
+      { label: "SEC, Concept Release on Equity Market Structure, Federal Register, 21 January 2010 (read 2026-11-15): exchange response times below 1 ms (BATS 320 µs, Nasdaq 294 µs); co-location close to the matching engine", href: "https://www.govinfo.gov/content/pkg/FR-2010-01-21/html/2010-1045.htm" }, // speed in 2010
+      { label: "B3, B3 moderniza plataformas e reduz em 70% tempo de conclusão dos negócios, 4 April 2025 (read 2026-11-15): latency from 1.2 ms (2023) to about 350 µs; target below 300 µs by 2026", href: "https://www.b3.com.br/pt_br/noticias/avanco-em-tecnologia.htm" }, // Brazil today
+      { label: "CME Group, Supported Matching Algorithms, client systems wiki (read 2026-11-15 through a fetch tool): FIFO, pro-rata, allocation and other algorithms", href: "https://cmegroupclientsite.atlassian.net/wiki/spaces/EPICSANDBOX/pages/457218479/Supported+Matching+Algorithms" }, // allocation rules
+    ], // six sources, one object per line
+  },
+  {
+    // Price-time priority (new entry): the rule that the best price trades first and, at one price, the earliest order.
+    slug: "price-time-priority", // the /glossary/price-time-priority address
+    headword: "price-time priority", // the usual English form
+    kind: "term", // a matching rule
+    domains: ["programming", "grc"], // an algorithm, written into regulation in Brazil
+    aliases: ["price/time priority", "price time priority", "fifo matching", "first in first out matching", "prioridade de preço e tempo", "precedência de preço e ordem cronológica"], // spellings, the CME name and Portuguese
+    relatedTerms: ["matching-engine", "central-limit-order-book", "order-protection-rule", "high-frequency-trading"], // this batch, then a wave sibling
+    relatedArticles: ["the-screens-arrive-electronic-exchanges-from-nasdaq-to-globex", "the-rules-that-rewired-markets-reg-ats-reg-nms-mifid-and-brazil"], // the two parts of this agent
+    sources: [ // every label says what the page says and when it was read
+      { label: "CFTC Letter No. 08-18 to BM&F Bovespa, 26 September 2008 (read 2026-11-15): lower offers and higher bids take precedence; at the same price earlier orders take precedence; the time assigned is arrival at the Trading Engine", href: "https://cftc.gov/csl/08-18/download" }, // the rule stated by a regulator
+      { label: "CVM, Resolução CVM 135, 10 June 2022, consolidated text (read 2026-11-15): art. 119, § 1º, precedence to the best price, respecting the chronological order of entry, in centralized multilateral exchange systems", href: "https://conteudo.cvm.gov.br/export/sites/cvm/legislacao/resolucoes/anexos/100/resol135consolid.pdf" }, // the rule in Brazilian law
+      { label: "CME Group, Supported Matching Algorithms, client systems wiki (read 2026-11-15 through a fetch tool): FIFO uses price and time as the only criteria; pro-rata allocates by size with FIFO for leftover lots", href: "https://cmegroupclientsite.atlassian.net/wiki/spaces/EPICSANDBOX/pages/457218479/Supported+Matching+Algorithms" }, // the alternative
+      { label: "SEC, Concept Release on Equity Market Structure, Federal Register, 21 January 2010 (read 2026-11-15): displayed orders generally have priority at a price over undisplayed orders and reserve size", href: "https://www.govinfo.gov/content/pkg/FR-2010-01-21/html/2010-1045.htm" }, // visibility as a further key
+    ], // four sources, one object per line
+  },
+  {
+    // CLOB (new entry): the single book of resting limit orders that a matching engine executes against.
+    slug: "central-limit-order-book", // the /glossary/central-limit-order-book address
+    headword: "central limit order book (CLOB)", // the full name with its abbreviation
+    kind: "term", // a market-structure term; the abbreviation is secondary
+    domains: ["programming", "grc"], // the data structure and the rules around it
+    expansion: "central limit order book", // the spelled-out form
+    aliases: ["clob", "order book", "limit order book", "central order book", "livro de ofertas", "livro central de ofertas"], // English forms and B3/CVM Portuguese
+    relatedTerms: ["matching-engine", "price-time-priority", "order-protection-rule", "electronic-communication-network"], // this batch
+    relatedArticles: ["the-screens-arrive-electronic-exchanges-from-nasdaq-to-globex", "the-rules-that-rewired-markets-reg-ats-reg-nms-mifid-and-brazil"], // the two parts of this agent
+    sources: [ // every label says what the page says and when it was read
+      { label: "CFTC Letter No. 08-18 to BM&F Bovespa, 26 September 2008 (read 2026-11-15): limit orders trade at their price or better; unfilled residual volume is maintained in the central order book", href: "https://cftc.gov/csl/08-18/download" }, // the book in a regulator's words
+      { label: "CVM, CVM moderniza regras sobre mercados organizados e melhor execução de ordens de clientes, 10 June 2022 (read 2026-11-15): liquidity and price formation in the livro central de ofertas", href: "https://www.gov.br/cvm/pt-br/assuntos/noticias/2022/cvm-moderniza-regras-sobre-mercados-organizados-e-melhor-execucao-de-ordens-de-clientes" }, // the Portuguese term
+      { label: "Deutsche Börse, Company history (read 2026-11-15): IBIS (April 1991) a hit-and-take market without automatic execution; Xetra (28 November 1997) with an open order book", href: "https://deutsche-boerse.com/dbg-en/about-us/deutsche-boerse-group/company-history" }, // book versus hit-and-take
+      { label: "SEC, Regulation NMS, Federal Register, 29 June 2005 (read 2026-11-15): only each market's best bid and offer is protected (Market BBO Alternative), not depth of book", href: "https://www.govinfo.gov/content/pkg/FR-2005-06-29/pdf/05-11802.pdf" }, // top of book in US rules
+    ], // four sources, one object per line
+  },
+  {
+    // ECN (new entry): the US electronic venues that matched orders as broker-dealers, from Instinet to Island and Archipelago.
+    slug: "electronic-communication-network", // the /glossary/electronic-communication-network address
+    headword: "ECN (electronic communication network)", // acronym first
+    kind: "acronym", // an acronym with its expansion
+    domains: ["grc"], // a regulatory category of trading venue
+    expansion: "electronic communication network", // the spelled-out form
+    aliases: ["ecn", "ecns", "electronic communications network", "rede eletrônica de comunicação"], // the SEC's two spellings and Portuguese
+    relatedTerms: ["alternative-trading-system", "reg-nms", "central-limit-order-book", "matching-engine"], // this batch
+    relatedArticles: ["the-screens-arrive-electronic-exchanges-from-nasdaq-to-globex", "the-rules-that-rewired-markets-reg-ats-reg-nms-mifid-and-brazil"], // the two parts of this agent
+    sources: [ // every label says what the page says and when it was read
+      { label: "SEC, Order Execution Obligations (Release 34-37619), Federal Register, 12 September 1996 (read 2026-11-15): ECN amendment to the Quote Rule; Instinet about 15% of Nasdaq volume in January 1996; effective 10 January 1997", href: "https://www.govinfo.gov/content/pkg/FR-1996-09-12/html/96-23210.htm" }, // the rule that named them
+      { label: "SEC Historical Society, Increments and ECNs (read 2026-11-15): the 1986 Instinet no-action letter; Island, BRUT, Archipelago and REDIBook after the Order Handling Rules; ECNs about a third of Nasdaq volume in 1999, Island 10%", href: "https://sechistorical.org/exhibition/transformation-regulation-equities-market-structure-1934-to-2018-2/rulemaking-and-linkages-1975-2005/increments-and-ecns/" }, // history
+      { label: "SEC, Regulation of Exchanges and Alternative Trading Systems, Federal Register, 22 December 1998 (read 2026-11-15): alternative trading systems encompass ECNs; more than 20% of orders in Nasdaq securities", href: "https://www.govinfo.gov/content/pkg/FR-1998-12-22/pdf/98-33299.pdf" }, // folded into ATS
+      { label: "Instinet Group and Island ECN, merger completed 20 September 2002, Mondo Visione repost (read 2026-11-15): Island about one in five Nasdaq trades", href: "https://mondovisione.com/news/instinet-and-island-ecn-close-historic-merger-2011124" }, // consolidation
+      { label: "Nasdaq, NASDAQ completes acquisition of INET, 8 December 2005, Mondo Visione repost (read 2026-11-15)", href: "https://mondovisione.com/news/nasdaq-completes-acquisition-of-inet-2011124" }, // consolidation
+      { label: "NYSE Group, NYSE/Archipelago merger complete, 7 March 2006, Mondo Visione repost (read 2026-11-15): NYSE Arca formerly ArcaEx and the Pacific Exchange", href: "https://mondovisione.com/news/new-york-stock-exchange-archipelago-holdings-merger-complete-merger-agreement-si-2011124" }, // consolidation
+      { label: "SEC Historical Society, Electric light (read 2026-11-15): maker-taker pricing begun by Island ECN in 1997; Rule 610 caps fees at $0.003", href: "https://sechistorical.org/exhibition/transformation-regulation-equities-market-structure-1934-to-2018-2/emergence-of-the-national-market-2003-2018/electric-light/" }, // pricing legacy
+    ], // seven sources, one object per line
+  },
+  {
+    // ATS (new entry): the US category for trading systems that run a market but register as broker-dealers under Regulation ATS.
+    slug: "alternative-trading-system", // the /glossary/alternative-trading-system address
+    headword: "ATS (alternative trading system)", // acronym first
+    kind: "acronym", // an acronym with its expansion
+    domains: ["grc"], // a regulatory category
+    expansion: "alternative trading system, under Regulation ATS (SEC Release 34-40760, 1998)", // the formal identity
+    aliases: ["ats", "regulation ats", "reg ats", "form ats-n", "rule 3b-16", "sistema alternativo de negociação"], // the rule, the form and Portuguese
+    relatedTerms: ["electronic-communication-network", "reg-nms", "mifid-ii", "central-limit-order-book"], // this batch
+    relatedArticles: ["the-rules-that-rewired-markets-reg-ats-reg-nms-mifid-and-brazil", "the-screens-arrive-electronic-exchanges-from-nasdaq-to-globex"], // the two parts of this agent
+    sources: [ // every label says what the page says and when it was read
+      { label: "SEC, Regulation of Exchanges and Alternative Trading Systems (Release 34-40760), Federal Register, 22 December 1998 (read 2026-11-15): register as an exchange or as a broker-dealer under Regulation ATS; notice, records and name limits under 5%; display linkage at 5%; fair access and capacity at 20%; Rule 3b-16; effective 21 April 1999", href: "https://www.govinfo.gov/content/pkg/FR-1998-12-22/pdf/98-33299.pdf" }, // the rule
+      { label: "SEC, Regulation of NMS Stock Alternative Trading Systems (Release 34-83663), Federal Register, 7 August 2018 (read 2026-11-15): Form ATS-N disclosure for NMS stock ATSs including dark pools; effective 9 October 2018", href: "https://www.govinfo.gov/content/pkg/FR-2018-08-07/pdf/2018-15896.pdf" }, // the 2018 amendment
+      { label: "SEC, Withdrawal of Proposed Regulatory Actions, Federal Register, 17 June 2025 (read 2026-11-15): the March 2022 proposal to extend Rule 3b-16 to communication protocol systems withdrawn", href: "https://www.govinfo.gov/content/pkg/FR-2025-06-17/html/2025-11110.htm" }, // the withdrawn extension
+      { label: "SEC Historical Society, Reg ATS (read 2026-11-15): Island ECN applied to become an exchange in 1999", href: "https://sechistorical.org/exhibition/transformation-regulation-equities-market-structure-1934-to-2018-2/rulemaking-and-linkages-1975-2005/reg-ats/" }, // aftermath
+      { label: "Directive 2004/39/EC (MiFID), EUR-Lex (read 2026-11-15): the multilateral trading facility, the European counterpart category", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32004L0039" }, // EU analogue
+    ], // five sources, one object per line
+  },
+  {
+    // Reg NMS (new entry): the 2005 SEC rules on order protection, access fees, sub-penny quotes and market data, and their 2024 amendments.
+    slug: "reg-nms", // the /glossary/reg-nms address
+    headword: "Regulation NMS (Reg NMS)", // the name and its short form
+    kind: "term", // a regulation, named as such
+    domains: ["grc"], // US market regulation
+    expansion: "Regulation National Market System, SEC Release 34-51808 of 9 June 2005", // the formal identity
+    aliases: ["regulation nms", "reg nms", "access rule", "sub-penny rule", "rule 610", "rule 612", "national market system"], // names of the parts
+    relatedTerms: ["order-protection-rule", "alternative-trading-system", "electronic-communication-network", "decimalization", "high-frequency-trading"], // this batch, then a wave sibling
+    relatedArticles: ["the-rules-that-rewired-markets-reg-ats-reg-nms-mifid-and-brazil", "high-frequency-trading-what-it-is-and-the-dispute"], // the part and the HFT part
+    sources: [ // every label says what the page says and when it was read
+      { label: "SEC, Regulation NMS (Release 34-51808), Federal Register, 29 June 2005 (read 2026-11-15): Order Protection, Access ($0.003 cap), Sub-Penny and Market Data rules; competition among markets and among orders; effective 29 August 2005", href: "https://www.govinfo.gov/content/pkg/FR-2005-06-29/pdf/05-11802.pdf" }, // the rule
+      { label: "SEC, Dissent of Commissioners Cynthia A. Glassman and Paul S. Atkins, 2005 (read 2026-11-15 through a fetch tool): adopted at the open meeting of 6 April 2005; trade-through rule anticompetitive and unsupported", href: "https://www.sec.gov/files/rules/final/34-51808-dissent.pdf" }, // the minority
+      { label: "SEC Historical Society, Reg NMS (read 2026-11-15): floor quotes unprotected; the Commission split, two Republicans against", href: "https://sechistorical.org/exhibition/transformation-regulation-equities-market-structure-1934-to-2018-2/rulemaking-and-linkages-1975-2005/reg-nms/" }, // history
+      { label: "SEC, Concept Release on Equity Market Structure, Federal Register, 21 January 2010 (read 2026-11-15): NYSE share of its listed stocks 79.1% (January 2005) to 25.1% (October 2009); exchanges 63.8% of volume", href: "https://www.govinfo.gov/content/pkg/FR-2010-01-21/html/2010-1045.htm" }, // aftermath
+      { label: "SEC, Regulation NMS: Minimum Pricing Increments, Access Fees, and Transparency of Better Priced Orders (Release 34-101070), Federal Register, 8 October 2024 (read 2026-11-15): $0.005 increment for stocks with a TWAQS of $0.015 or less; lower access fee caps; effective 9 December 2024", href: "https://www.govinfo.gov/content/pkg/FR-2024-10-08/pdf/2024-21867.pdf" }, // 2024 amendments
+      { label: "SEC, Release 34-105656, 11 June 2026 (read 2026-11-15 through a fetch tool): compliance with amended Rules 610(c) and 612 deferred to the first business day of November 2027", href: "https://www.sec.gov/files/rules/exorders/2026/34-105656.pdf" }, // current status
+    ], // six sources, one object per line
+  },
+  {
+    // Order protection rule (new entry): Rule 611 of Regulation NMS, the US trade-through rule for automated top-of-book quotes.
+    slug: "order-protection-rule", // the /glossary/order-protection-rule address
+    headword: "order protection rule (Rule 611)", // the name and its number
+    kind: "term", // a rule, named as such
+    domains: ["grc"], // US market regulation
+    expansion: "Rule 611 of Regulation NMS", // the formal identity
+    aliases: ["rule 611", "trade-through rule", "trade-through", "trade through", "intermarket sweep order", "regra de proteção de ordens"], // names, the concept, the key exception and Portuguese
+    relatedTerms: ["reg-nms", "price-time-priority", "central-limit-order-book", "high-frequency-trading"], // this batch, then a wave sibling
+    relatedArticles: ["the-rules-that-rewired-markets-reg-ats-reg-nms-mifid-and-brazil", "high-frequency-trading-what-it-is-and-the-dispute"], // the part and the HFT part
+    sources: [ // every label says what the page says and when it was read
+      { label: "SEC, Regulation NMS (Release 34-51808), Federal Register, 29 June 2005 (read 2026-11-15): policies to prevent trades at prices inferior to protected quotations; protected = immediately and automatically accessible best bid or offer; 1 in 40 trades a significant trade-through; ITS gaps 7.2% to 2.3%; one-second self-help; intermarket sweep order exception", href: "https://www.govinfo.gov/content/pkg/FR-2005-06-29/pdf/05-11802.pdf" }, // the rule and its data
+      { label: "SEC, Dissent of Commissioners Glassman and Atkins, 2005 (read 2026-11-15 through a fetch tool): failure to show a significant problem; does not protect limit orders at each BBO; limits competition among markets", href: "https://www.sec.gov/files/rules/final/34-51808-dissent.pdf" }, // the objection
+      { label: "SEC Historical Society, Consequences of NMS (read 2026-11-15): the rule arguably encouraged greater automation and a focus on speed", href: "https://sechistorical.org/exhibition/transformation-regulation-equities-market-structure-1934-to-2018-2/emergence-of-the-national-market-2003-2018/consequences-of-nms/" }, // the debate on effects
+      { label: "SEC Historical Society, Reevaluating the national market system (read 2026-11-15): the 2010 concept release raised protecting beyond the top of the book", href: "https://sechistorical.org/exhibition/transformation-regulation-equities-market-structure-1934-to-2018-2/emergence-of-the-national-market-2003-2018/reevaluating-the-national-market-system/" }, // the open question
+    ], // four sources, one object per line
+  },
+  {
+    // MiFID II (new entry): the EU's 2014 directive and regulation on trading venues, algorithmic trading, transparency and clock synchronization, with MiFID I behind it.
+    slug: "mifid-ii", // the /glossary/mifid-ii address
+    headword: "MiFID II (Markets in Financial Instruments Directive II)", // acronym first
+    kind: "acronym", // an acronym with its expansion
+    domains: ["grc"], // EU market regulation
+    expansion: "Markets in Financial Instruments Directive II, Directive 2014/65/EU, with Regulation (EU) No 600/2014 (MiFIR)", // the formal identity
+    aliases: ["mifid 2", "mifid", "mifir", "markets in financial instruments directive", "directive 2014/65/eu", "rts 25", "double volume cap", "multilateral trading facility", "organized trading facility"], // names, the regulation, key standards and venue types
+    relatedTerms: ["alternative-trading-system", "reg-nms", "high-frequency-trading", "ptp", "utc", "exchange-colocation"], // this batch, existing entries, then wave siblings
+    relatedArticles: ["the-rules-that-rewired-markets-reg-ats-reg-nms-mifid-and-brazil", "colocation-microwaves-and-the-race-for-latency", "high-frequency-trading-what-it-is-and-the-dispute"], // the part and two siblings
+    sources: [ // every label says what the page says and when it was read
+      { label: "Directive 2004/39/EC (MiFID), 21 April 2004, EUR-Lex (read 2026-11-15): MTF, systematic internalizer, best execution", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32004L0039" }, // MiFID I
+      { label: "Directive 2006/31/EC, EUR-Lex (read 2026-11-15): MiFID applied from 1 November 2007", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32006L0031" }, // MiFID I date
+      { label: "European Commission, COM(2011) 656, 21 October 2011, Council document 15939/11 (read 2026-11-15): MiFID abolished the possibility of requiring trading on traditional exchanges; more competition, lower costs, fragmentation", href: "https://data.consilium.europa.eu/doc/document/ST-15939-2011-INIT/en/pdf" }, // why MiFID II
+      { label: "Directive 2014/65/EU (MiFID II), 15 May 2014, EUR-Lex (read 2026-11-15): OTF (art. 4(1)(23)), algorithmic and high-frequency trading (art. 4(1)(39), (40)), art. 17, co-location (art. 48(8)), tick sizes (art. 49), clock synchronization (art. 50)", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32014L0065" }, // the directive
+      { label: "Regulation (EU) No 600/2014 (MiFIR), 15 May 2014, EUR-Lex (read 2026-11-15): volume caps of 4% per venue and 8% Union-wide (art. 5); share trading obligation (art. 23)", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32014R0600" }, // the regulation
+      { label: "Directive (EU) 2016/1034, EUR-Lex (read 2026-11-15): application deferred to 3 January 2018", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016L1034" }, // the date
+      { label: "Commission Delegated Regulation (EU) 2017/574 (RTS 25), EUR-Lex (read 2026-11-15): UTC traceability; 100 µs and 1 µs granularity for high-frequency trading and fast venues; 1 ms otherwise; 1 s for voice and negotiated trades", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32017R0574" }, // the clock standard
+      { label: "Regulation (EU) 2024/791, 28 February 2024, EUR-Lex (read 2026-11-15): consolidated tapes, single volume cap at 7%, ban on payment for order flow (art. 39a)", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32024R0791" }, // the 2024 review
+      { label: "ESMA, selection of EuroCTP as first consolidated tape provider for shares and ETFs, 19 December 2025 (read 2026-11-15)", href: "https://www.esma.europa.eu/sites/default/files/2025-12/ESMA74-276584410-11222_ESMA_selects_equity_CTP.pdf" }, // implementation
+    ], // nine sources, one object per line
+  },
+  {
+    // Decimalization (new entry): the US move from fractional to penny prices in 2000-2001 and the later debate over tick sizes.
+    slug: "decimalization", // the /glossary/decimalization address
+    headword: "decimalization", // Oxford -ize spelling
+    kind: "term", // a market reform
+    domains: ["grc"], // market regulation
+    aliases: ["decimalisation", "decimal pricing", "tick size", "half-penny tick", "decimalização"], // spellings, the related variable and Portuguese
+    relatedTerms: ["reg-nms", "order-protection-rule", "electronic-communication-network"], // this batch
+    relatedArticles: ["the-rules-that-rewired-markets-reg-ats-reg-nms-mifid-and-brazil"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "SEC staff, Report to Congress on Decimalization, July 2012 (read 2026-11-15 through a fetch tool): order of 8 June 2000; phase-in from September 2000 ending no later than 9 April 2001; spreads declined on average; mixed effect on institutional costs; recommendation not to raise tick sizes by rule", href: "https://www.sec.gov/files/decimalization-072012.pdf" }, // the official review
+      { label: "SEC Historical Society, Increments and ECNs (read 2026-11-15): eighths from the Spanish dollar; Christie and Schultz (1994) on odd-eighth avoidance; the Common Cents Stock Pricing Act (1997); sixteenths in 1997; pennies by April 2001", href: "https://sechistorical.org/exhibition/transformation-regulation-equities-market-structure-1934-to-2018-2/rulemaking-and-linkages-1975-2005/increments-and-ecns/" }, // history
+      { label: "TMX Group, History at a Glance (read 2026-11-15): Toronto Stock Exchange the first exchange in North America to introduce decimal trading, 1996", href: "https://www.courthouselibrary.ca/sites/default/files/inline-files/TMX_GroupHistoryAtAGlance.pdf" }, // the Canadian precedent
+      { label: "SEC, Release 34-101070, Federal Register, 8 October 2024 (read 2026-11-15): $0.005 increment for stocks priced $1.00 or more with a TWAQS of $0.015 or less", href: "https://www.govinfo.gov/content/pkg/FR-2024-10-08/pdf/2024-21867.pdf" }, // the half-penny tick
+      { label: "SEC, Release 34-105656, 11 June 2026 (read 2026-11-15 through a fetch tool): compliance with the new tick deferred to the first business day of November 2027", href: "https://www.sec.gov/files/rules/exorders/2026/34-105656.pdf" }, // status
+    ], // five sources, one object per line
+  },
+  {
+    // HFT (new entry): professional proprietary trading by machines at microsecond speed; the SEC's description, MiFID II's definition, the measurement problem.
+    slug: "high-frequency-trading", // the /glossary/high-frequency-trading address
+    headword: "HFT (high-frequency trading)", // acronym first, as for other acronym entries
+    kind: "acronym", // an acronym with its expansion
+    domains: ["grc", "enterprise-networking"], // market regulation and the infrastructure it runs on
+    expansion: "high-frequency trading; in EU law, a high-frequency algorithmic trading technique (Directive 2014/65/EU, article 4(1)(40))", // the formal identity
+    aliases: ["hft", "high frequency trading", "high-frequency trading", "high-frequency algorithmic trading technique", "negociação de alta frequência"], // spellings, the EU term and Portuguese
+    relatedTerms: ["latency-arbitrage", "market-maker", "exchange-colocation", "flash-crash", "tick-to-trade", "knight-capital", "latency", "fpga", "ptp", "mifid-ii", "matching-engine", "b3"], // this batch, existing entries, then wave siblings (mifid-ii, matching-engine: agent B; b3: agent E)
+    relatedArticles: ["high-frequency-trading-what-it-is-and-the-dispute", "colocation-microwaves-and-the-race-for-latency", "electronic-trading-from-the-pit-to-the-microsecond"], // the two parts and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "US Securities and Exchange Commission, Concept Release on Equity Market Structure, Release No. 34-61358, 14 January 2010, Federal Register 21 January 2010 (read 2026-11-15): HFT not yet clearly defined; professional traders acting in a proprietary capacity; five characteristics (high-speed programs, co-location and individual data feeds, very short holding periods, many cancelled orders, flat at the close); volume estimates typically 50% or higher", href: "https://www.govinfo.gov/content/pkg/FR-2010-01-21/pdf/2010-1045.pdf" }, // US description
+      { label: "EUR-Lex, Directive 2014/65/EU (MiFID II), 15 May 2014 (read 2026-11-15): algorithmic trading (art. 4(1)(39)); high-frequency algorithmic trading technique: low-latency infrastructure (co-location, proximity hosting or high-speed DEA), no human intervention per order, high message intraday rates (art. 4(1)(40)); own-account HFT firms authorized (art. 2(1)(d)(iii)); time-sequenced records of all orders (art. 17(2)); not a strategy in itself (recital 61)", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32014L0065" }, // EU definition
+      { label: "EUR-Lex, Commission Delegated Regulation (EU) 2017/565, article 19 (read 2026-11-15): a high message intraday rate is on average at least 2 messages per second in one instrument or 4 per second across all instruments on a venue", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32017R0565" }, // thresholds
+      { label: "ESMA, Economic Report No 1, 2014, High-frequency trading activity in EU equity markets (read 2026-11-15): 100 stocks, nine countries, May 2013; HFT 24% to 43% of value traded, 30% to 49% of trades, 58% to 76% of orders depending on the identification method", href: "https://www.esma.europa.eu/sites/default/files/library/2015/11/esma20141_-_hft_activity_in_eu_equity_markets.pdf" }, // measurement
+      { label: "UK Government Office for Science, Foresight: The Future of Computer Trading in Financial Markets, final report, 2012 (read 2026-11-15): liquidity improved, transaction costs fell, prices more efficient; potential for periodic illiquidity; no direct evidence that HFT increased volatility", href: "https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/289431/12-1086-future-of-computer-trading-in-financial-markets-report.pdf" }, // evidence review
+      { label: "B3, Avanço em tecnologia, 4 April 2025 (read 2026-11-15): high-frequency traders account for about 40% of trades in the Brazilian equity market; trading system latency about 350 microseconds", href: "https://www.b3.com.br/pt_br/noticias/avanco-em-tecnologia.htm" }, // Brazil
+    ], // six sources, one object per line
+  },
+  {
+    // Latency arbitrage (new entry): taking stale quotes faster than their owners can cancel them; the estimates and the industry's objections.
+    slug: "latency-arbitrage", // the /glossary/latency-arbitrage address
+    headword: "latency arbitrage", // lower case, a plain market term
+    kind: "term", // a concept of market microstructure
+    domains: ["grc", "enterprise-networking"], // market design and the speed infrastructure behind it
+    aliases: ["stale quote sniping", "sniping", "arbitragem de latência"], // the economists' synonym and Portuguese
+    relatedTerms: ["high-frequency-trading", "market-maker", "exchange-colocation", "tick-to-trade", "latency", "matching-engine"], // this batch, existing entries, then a wave sibling (matching-engine: agent B)
+    relatedArticles: ["high-frequency-trading-what-it-is-and-the-dispute", "colocation-microwaves-and-the-race-for-latency"], // the two parts
+    sources: [ // every label says what the page says and when it was read
+      { label: "US SEC, Concept Release on Equity Market Structure, 14 January 2010 (read 2026-11-15): structural strategies; firms with the fastest market data through co-location and direct feeds theoretically could profit by identifying participants offering executions at stale prices", href: "https://www.govinfo.gov/content/pkg/FR-2010-01-21/pdf/2010-1045.pdf" }, // first official description
+      { label: "EconPapers, Budish, Cramton and Shim, The High-Frequency Trading Arms Race, Quarterly Journal of Economics 130(4), 2015, abstract (read 2026-11-15): continuous limit order books create mechanical arbitrage rents from symmetrically observed public information; a socially wasteful arms race; frequent batch auctions as the remedy", href: "https://econpapers.repec.org/RePEc:oup:qjecon:v:130:y:2015:i:4:p:1547-1621" }, // theory
+      { label: "Budish, Cramton and Shim, NBER conference draft, 17 September 2013 (read 2026-11-15): median duration of E-Mini/SPY arbitrage opportunities fell from 97 ms in 2005 to 7 ms in 2011; about a thousand a day, on the order of $75 million a year", href: "https://conference.nber.org/conf_papers/f69665.pdf" }, // first measurement
+      { label: "Financial Conduct Authority, Occasional Paper 50, Aquilina, Budish and O'Neill, January 2020 (read 2026-11-15): LSE message data, 43 days of 2015; races once a minute per FTSE 100 symbol, modal margin 5 to 10 microseconds, about 22% of FTSE 100 volume, top 3 firms win about 55%; latency-arbitrage tax 0.42 basis points; eliminating it would cut the cost of liquidity by 17%; about $5 billion a year in global equities", href: "https://www.fca.org.uk/publication/occasional-papers/occasional-paper-50.pdf" }, // regulator-hosted estimate
+      { label: "FIA European Principal Traders Association, comments on FCA Occasional Paper 50, 30 April 2020 (read 2026-11-15): seven objections (definition, stale 2015 data, extrapolation, P&L against the mid, information horizon, investor types, the word tax); recalculated UK totals of about 13.5 and 3.1 million pounds a year", href: "https://www.fia.org/sites/default/files/2020-05/20200430_FIA%20EPTA%20Review_FCA%20Occasional%20Paper_0.pdf" }, // industry reply
+      { label: "EconPapers, Shkilko and Sokolov, Every Cloud Has a Silver Lining, Journal of Finance 75(6), 2020, abstract (read 2026-11-15): weather disruptions of the fastest traders' microwave networks are associated with lower adverse selection and lower trading costs", href: "https://econpapers.repec.org/RePEc:bla:jfinan:v:75:y:2020:i:6:p:2899-2927" }, // natural experiment
+    ], // six sources, one object per line
+  },
+  {
+    // Flash Crash (new entry): the minutes of 6 May 2010, what the joint report found, the academic reconstruction and the later spoofing case.
+    slug: "flash-crash", // the /glossary/flash-crash address
+    headword: "the Flash Crash (6 May 2010)", // the event and its date
+    kind: "lore", // an event whose story dominates; fact-checked against the official report
+    domains: ["grc", "ops-culture"], // market regulation and a case study in automated failure
+    aliases: ["flash crash", "2010 flash crash", "may 6 2010 flash crash", "6 de maio de 2010"], // common names and Portuguese
+    relatedTerms: ["high-frequency-trading", "market-maker", "knight-capital", "latency-arbitrage"], // this batch and an existing case
+    relatedArticles: ["high-frequency-trading-what-it-is-and-the-dispute"], // the part that tells it
+    sources: [ // every label says what the page says and when it was read
+      { label: "Staffs of the CFTC and SEC, Findings Regarding the Market Events of May 6, 2010, 30 September 2010 (read 2026-11-15): indices fell a further 5-6% in minutes; a mutual fund complex's algorithm sold 75,000 E-Mini contracts (about $4.1 billion) targeting 9% of volume without regard to price or time; HFT hot-potato trading of 27,000 contracts in 14 seconds; CME Stop Logic pause of five seconds at 2:45:28 CT; over 20,000 trades in 300+ securities 60% away, broken; single-stock circuit breakers", href: "https://www.cftc.gov/sites/default/files/idc/groups/public/@otherif/documents/ifdocs/staff-findings050610.pdf" }, // official report
+      { label: "Kirilenko, Kyle, Samadi and Tuzun, The Flash Crash: High-Frequency Trading in an Electronic Market, Journal of Finance 2017, Cambridge repository copy (read 2026-11-15): HFT trading pattern did not change as prices fell; intermediaries' combined inventories under 6,000 contracts; the joint report's E-Mini narrative drew on an earlier version of the paper", href: "https://www.repository.cam.ac.uk/bitstream/1810/304244/1/KirilenkoFlashCrash.pdf" }, // academic reconstruction
+      { label: "CFTC, release 7156-15, 21 April 2015 (read 2026-11-15): complaint alleging that Navinder Singh Sarao's layering algorithm contributed to an extreme E-mini order book imbalance that contributed to the conditions that led to the Flash Crash", href: "https://www.cftc.gov/PressRoom/PressReleases/7156-15" }, // allegation
+      { label: "CFTC, release 7486-16, 17 November 2016 (read 2026-11-15): consent order; Sarao admits the complaint's allegations, including contributing to the order book imbalance on 6 May 2010; more than $38 million in penalty and disgorgement", href: "https://www.cftc.gov/PressRoom/PressReleases/7486-16" }, // admission
+      { label: "Dechert LLP, January 2020 (read 2026-11-15): Sarao sentenced on 28 January 2020 to time served with one year of home confinement after pleading guilty to wire fraud and spoofing (statement of his lawyers)", href: "https://www.dechert.com/knowledge/news/2020/1/dechert-represents-london-based-trader-navinder-singh-sarao.html" }, // outcome, party statement
+    ], // five sources, one object per line
+  },
+  {
+    // Market maker (new entry): the firm that quotes both sides continuously; obligations then, high-frequency firms without them now.
+    slug: "market-maker", // the /glossary/market-maker address
+    headword: "market maker", // lower case, a plain market term
+    kind: "term", // a role defined in law and exchange rules
+    domains: ["grc"], // market structure
+    aliases: ["market making", "formador de mercado", "liquidity provider"], // the activity, B3's Portuguese term, the common synonym
+    relatedTerms: ["high-frequency-trading", "latency-arbitrage", "flash-crash", "specialist", "b3"], // this batch, then wave siblings (specialist: agent A; b3: agent E)
+    relatedArticles: ["high-frequency-trading-what-it-is-and-the-dispute"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "EUR-Lex, Directive 2014/65/EU (MiFID II) (read 2026-11-15): a market maker holds himself out on a continuous basis as willing to deal on own account at prices he defines (art. 4(1)(7)); algorithmic market makers must quote continuously for a specified proportion of trading hours (art. 17(3))", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32014L0065" }, // EU definition
+      { label: "US SEC, Concept Release on Equity Market Structure, 14 January 2010 (read 2026-11-15): passive market making earns the spread and rebates, with cancellation rates of 90% or more; proprietary firms largely replaced specialists and OTC market makers without their privileges or affirmative and negative obligations", href: "https://www.govinfo.gov/content/pkg/FR-2010-01-21/pdf/2010-1045.pdf" }, // the shift
+      { label: "Albert Menkveld, High frequency trading and the new market makers, Journal of Financial Markets 16(4), 2013, abstract at EconPapers (read 2026-11-15): one large HFT loses on inventory and earns on the spread; four of five trades passive", href: "https://econpapers.repec.org/RePEc:eee:finmar:v:16:y:2013:i:4:p:712-740" }, // empirical portrait
+      { label: "UK Government Office for Science, Foresight final report, 2012 (read 2026-11-15): high-frequency traders now provide the bulk of market making but, unlike designated specialists, hold small inventories and have no obligation to provide liquidity under stress", href: "https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/289431/12-1086-future-of-computer-trading-in-financial-markets-report.pdf" }, // the concern
+      { label: "Staffs of the CFTC and SEC, Findings Regarding the Market Events of May 6, 2010 (read 2026-11-15): stub quotes posted far from the market to meet continuous two-sided quoting obligations even after a market maker withdrew; trades executed against them at a penny", href: "https://www.cftc.gov/sites/default/files/idc/groups/public/@otherif/documents/ifdocs/staff-findings050610.pdf" }, // obligations gone wrong
+    ], // five sources, one object per line
+  },
+  {
+    // Exchange colocation (new entry): rack space beside a matching engine and proximity hosting nearby; the rules on fair access; NYSE, CME and B3.
+    slug: "exchange-colocation", // the /glossary/exchange-colocation address (the bare alias "colocation" belongs to channel-datacentre)
+    headword: "colocation (exchange)", // the trading sense, disambiguated
+    kind: "term", // a service defined by regulators
+    domains: ["enterprise-networking", "grc"], // data-centre networking and its regulation
+    aliases: ["co-location", "exchange co-location", "proximity hosting", "co-location b3", "hospedagem junto à bolsa"], // spellings, the neighbouring service, B3's spelling and Portuguese
+    relatedTerms: ["high-frequency-trading", "latency-arbitrage", "ptp", "latency", "tick-to-trade", "channel-datacentre", "matching-engine", "b3", "direct-market-access"], // this batch, existing entries, then wave siblings (matching-engine: B; b3, direct-market-access: E)
+    relatedArticles: ["colocation-microwaves-and-the-race-for-latency", "high-frequency-trading-what-it-is-and-the-dispute", "brazil-bmf-bovespa-b3-and-electronic-access"], // the part, its sibling and the Brazil part
+    sources: [ // every label says what the page says and when it was read
+      { label: "US SEC, Concept Release on Equity Market Structure, 14 January 2010 (read 2026-11-15): co-location is a service of trading centres or third parties renting rack space close to a matching engine; exchange co-location is subject to the Exchange Act, must not be unfairly discriminatory, fees reasonable; questions on fairness and barriers for smaller firms", href: "https://www.govinfo.gov/content/pkg/FR-2010-01-21/pdf/2010-1045.pdf" }, // US definition
+      { label: "US CFTC, Co-Location/Proximity Hosting Services, proposed rule, Federal Register 11 June 2010 (read 2026-11-15): definition covering space, power and telecommunications near a market's systems; equal access; uniform fees; monthly disclosure of longest, shortest and average latencies", href: "https://www.govinfo.gov/content/pkg/FR-2010-06-11/pdf/2010-13613.pdf" }, // proximity hosting
+      { label: "EUR-Lex, Directive 2014/65/EU (MiFID II) (read 2026-11-15): HFT is facilitated by co-location; venues must provide it on a non-discriminatory, fair and transparent basis (recital 62, art. 48(8))", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32014L0065" }, // EU duty
+      { label: "US SEC, Release No. 34-62960, 21 September 2010, Federal Register 27 September 2010 (read 2026-11-15): NYSE co-location fees approved; Mahwah data centre; all orders through the same order gateway; cabinet positions create no material difference", href: "https://www.govinfo.gov/content/pkg/FR-2010-09-27/pdf/2010-24061.pdf" }, // NYSE
+      { label: "CME Group and Google Cloud, joint release, 26 June 2024 (read 2026-11-15): private cloud region and co-location facility planned in Aurora, Illinois, with equal network latency for self-managed and Google infrastructure", href: "https://www.googlecloudpresscorner.com/2024-06-26-CME-Group-and-Google-Cloud-Announce-New-Chicago-Area-Private-Cloud-Region-and-Co-location-Facility-for-CME-Groups-Markets" }, // CME
+      { label: "B3, Política Comercial de Serviços de Co-location, version 3.5, 15 January 2024 (read 2026-11-15): Santana de Parnaíba data centre inaugurated 2017, Tier III; equidistant cables for equal treatment; 22 microseconds to order entry gateways (TCP) and 11 to market data (UDP) via the colocation LAN", href: "https://sistemasweb.b3.com.br/normativos/POLITICA%20COMERCIAL%20COLOCATION%20-%20PORTUGUES.PDF" }, // Brazil
+      { label: "Forbes Brasil with Reuters, 19 April 2021 (read 2026-11-15): orders from B3's colocation were 39% of cash equity average daily volume and 59% of derivatives in the first quarter of 2021", href: "https://forbes.com.br/forbes-money/2021/04/b3-oferta-dispositivos-mais-potentes-em-meio-a-alta-das-operacoes-de-alta-frequencia/" }, // Brazilian share
+    ], // seven sources, one object per line
+  },
+  {
+    // Tick-to-trade (new entry): the time from a market data update to the order sent in response, and how it differs from exchange latency figures.
+    slug: "tick-to-trade", // the /glossary/tick-to-trade address
+    headword: "tick-to-trade latency", // the trading-floor term
+    kind: "jargon", // practitioners' shorthand
+    domains: ["enterprise-networking"], // a network and systems measurement
+    aliases: ["tick to trade", "tick-to-trade"], // spellings
+    relatedTerms: ["latency", "high-frequency-trading", "exchange-colocation", "kernel-bypass", "fpga", "ptp", "pcap"], // this batch and existing entries
+    relatedArticles: ["colocation-microwaves-and-the-race-for-latency"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "FIA MarketVoice, 26 July 2019 (read 2026-11-15): Corvil's analytics let front-office staff determine execution performance such as fill ratios and tick-to-trade latencies and correlate them with network performance", href: "https://www.fia.org/marketvoice/articles/corvil-deal-bring-increased-transparency-data-pico-clients" }, // the term in use
+      { label: "Pico, Corvil Analytics (read 2026-11-15): nanosecond-precise visibility into every tick, order and hop; measure latency from market data to order response (vendor description)", href: "https://www.pico.net/corvil-analytics/" }, // the measurement
+      { label: "EUR-Lex, Commission Delegated Regulation (EU) 2017/574, article 2 (read 2026-11-15): gateway-to-gateway latency, from a message's arrival at a venue's outer gateway through the matching engine to the acknowledgement sent back", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32017R0574" }, // the venue-side counterpart
+      { label: "B3, Política Comercial de Serviços de Co-location, 15 January 2024 (read 2026-11-15): 11 microseconds for market data and 22 for order entry over the colocation LAN, measured in a laboratory", href: "https://sistemasweb.b3.com.br/normativos/POLITICA%20COMERCIAL%20COLOCATION%20-%20PORTUGUES.PDF" }, // the legs around it
+    ], // four sources, one object per line
+  },
+  {
+    // Kernel bypass (new entry): moving packets between the network adapter and the application without the operating system's stack.
+    slug: "kernel-bypass", // the /glossary/kernel-bypass address
+    headword: "kernel bypass", // lower case, a plain systems term
+    kind: "term", // a technique
+    domains: ["enterprise-networking", "programming"], // networking and systems programming
+    aliases: ["kernel-bypass networking", "user-space networking", "onload", "dpdk", "data plane development kit", "af_xdp"], // synonyms and the main implementations
+    relatedTerms: ["tick-to-trade", "fpga", "latency", "tcp", "udp", "high-frequency-trading"], // this batch and existing entries
+    relatedArticles: ["colocation-microwaves-and-the-race-for-latency"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "AMD, Onload User Guide UG1586 v1.2, 31 July 2023, copy published by Concurrent Real-Time (read 2026-11-15): TCP and UDP linked into the application with direct but safe access to the adapter, data moved without involvement of the operating system, known as kernel bypass; avoids system calls, context switches and interrupts; market-data and trading applications first among uses", href: "https://redhawk.concurrent-rt.com/docs/root/1Linux/1RedHawk/9.2/AMD-Onload-User-Guide-1.2.pdf" }, // vendor definition
+      { label: "DPDK, Programmer's Guide, Overview (read 2026-11-15): poll mode drivers designed to work without asynchronous, interrupt-based signalling; most sample applications use polling for performance", href: "https://doc.dpdk.org/guides/prog_guide/overview.html" }, // open-source framework
+      { label: "The Linux kernel documentation, AF_XDP (read 2026-11-15): an address family optimized for high-performance packet processing; XDP programs redirect frames to memory in a user-space application", href: "https://docs.kernel.org/networking/af_xdp.html" }, // the kernel's own fast path
+      { label: "The Linux kernel documentation, Timestamping (read 2026-11-15): receive and transmit timestamps generated by the network adapter", href: "https://docs.kernel.org/networking/timestamping.html" }, // hardware timestamps beside the bypass path
+    ], // four sources, one object per line
+  },
+  {
+    // FIX (new entry): the open messaging standard for trading, from the Fidelity and Salomon Brothers link of 1992 to FIX Latest.
+    slug: "fix-protocol", // the /glossary/fix-protocol address (the bare alias "fix" belongs to glenn-ricart)
+    headword: "FIX (Financial Information eXchange)", // acronym first, as for other acronym entries
+    kind: "acronym", // an acronym with its expansion
+    domains: ["enterprise-networking", "programming"], // a messaging protocol and its implementations
+    expansion: "Financial Information eXchange protocol, maintained by FIX Protocol Ltd under the FIX Trading Community brand", // the formal identity
+    aliases: ["financial information exchange", "fix protocol", "financial information exchange protocol", "fix 4.2", "fix 4.4", "fix 5.0", "protocolo fix"], // names, the versions people search for, Portuguese
+    relatedTerms: ["fix-session", "fix-trading-community", "fix-latest", "fixt", "fix-orchestra", "new-order-single", "execution-report", "fix-engine", "fixs", "fix-network", "b3", "osi-model", "tcp", "checksum"], // this batch, wave siblings (fix-network, b3: agent E), existing entries
+    relatedArticles: ["the-fix-protocol-origins-versions-and-the-community", "anatomy-of-a-fix-message-and-the-session-layer", "electronic-trading-from-the-pit-to-the-microsecond", "fix-networks-hubs-and-managed-connectivity", "brazil-bmf-bovespa-b3-and-electronic-access"], // the two parts, the opener, two siblings
+    sources: [ // every label says what the page says and when it was read
+      { label: "FIX 2.7a specification, 17 January 1995, preface of July 1994 by Christopher Morstatt, Salomon Brothers (read 2026-11-15): Fidelity Investments and Salomon Brothers began in mid-1992; link in production from early 1993; a group of firms refined it through 1993; offered as a starting point for a broker/institution standard; two levels, session and application; SOH delimiter; checksum", href: "https://fixtrading.org/packages/fix-2-7-specification-document-pdf/" }, // origin
+      { label: "FIX 2.7 release notes, 15 July 1994 (read 2026-11-15): version 2.6 published 14 February 1994; sequence numbers to initialize to one each day", href: "https://fixtrading.org/packages/fix-2-7-specification-release-notes/" }, // first dates
+      { label: "FIX Trading Community, Legacy FIX specifications (read 2026-11-15): FIX 2.7 the first version used in production; archive of FIX 3.0 to FIX 5.0 SP2; FIX 5.0 transport independence", href: "https://fixtrading.org/legacy-fix-specifications/" }, // versions
+      { label: "FIX 4.4 specification with errata 20030618, volume 1, preface (read 2026-11-15): initiated in 1992; open, vendor neutral, avoids over-standardization; the inter-firm messaging protocol of choice; equities plus CIVs, derivatives, fixed income and foreign exchange", href: "https://fixtrading.org/packages/fix-4-4-specification-with-20030618-errata/" }, // principles
+      { label: "FIX Trading Community, The FIX Protocol (read 2026-11-15): application-layer protocol independent of transport and encoding; FIX Latest since 2009; FIX 4.2 and 4.4 still supported; asset classes and regulatory reporting", href: "https://fixtrading.org/standards/fix-protocol/" }, // current status
+      { label: "FIX Trading Community, Who we are (read 2026-11-15): custodian of FIX, used by well over 10,000 firms sending billions of messages a day (the community's own figure)", href: "https://fixtrading.org/who-we-are/" }, // scale, attributed
+    ], // six sources, one object per line
+  },
+  {
+    // FIX Trading Community (new entry): the non-profit standards body behind FIX, its company, committees, process and IP terms.
+    slug: "fix-trading-community", // the /glossary/fix-trading-community address
+    headword: "FIX Trading Community", // the brand name
+    kind: "term", // an organization named as such
+    domains: ["grc", "enterprise-networking"], // standards governance for a protocol
+    expansion: "brand of FIX Protocol Ltd (FPL), the UK non-profit company that owns and maintains the FIX Protocol", // the formal identity
+    aliases: ["fix protocol ltd", "fix protocol limited", "fpl", "fixtrading.org", "comunidade fix"], // the company, its abbreviation, the site, Portuguese
+    relatedTerms: ["fix-protocol", "fix-latest", "fix-orchestra", "fixs", "fix-session"], // this batch
+    relatedArticles: ["the-fix-protocol-origins-versions-and-the-community", "electronic-trading-from-the-pit-to-the-microsecond"], // the part and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "Companies House, FIX PROTOCOL LTD, company 03760285 (read 2026-11-15): incorporated 23 April 1999; private company limited by guarantee without share capital; active", href: "https://find-and-update.company-information.service.gov.uk/company/03760285" }, // register
+      { label: "FIX Latest specification, introduction, as of EP284, November 2023, section 2 (read 2026-11-15): FIX Trading Community is a brand of FIX Protocol Ltd, a non-profit UK registered entity; managed under a purpose trust that owns the assets so FIX stays non-proprietary, free and open", href: "https://fixtrading.org/packages/fix-latest-specification-introduction/" }, // structure
+      { label: "Finance Magnates, FIX Protocol undergoes rebranding, 19 August 2013 (read 2026-11-15): FIX Protocol Ltd announced a name change to FIX Trading Community and a new website; over 275 members", href: "https://financemagnates.com/institutional-forex/technology/fix-protocol-rebrands-to-fix-trading-community-to-reflect-its-recent-expansion-of-resources/amp" }, // rebrand
+      { label: "FIX Trading Community, Committees (read 2026-11-15): Global Steering Committee reports to the FPL board; product, regional and service committees; the Global Technical Committee manages FIX's business and technical standards; guests cannot vote", href: "https://fixtrading.org/committees/" }, // governance
+      { label: "FIX Trading Community, The FIX Protocol (read 2026-11-15): working-group gap analysis, technical specification, GTC review, two to four week public review; a member base of more than 300 firms", href: "https://fixtrading.org/standards/fix-protocol/" }, // process
+      { label: "FIX Trading Community, Policies (read 2026-11-15): Standardisation IP Policy requires patent disclosure; RAND royalty and fee free patent licence; specifications under Creative Commons Attribution-NoDerivatives 4.0", href: "https://fixtrading.org/policies/" }, // IP
+      { label: "FIX Trading Community, Members (read 2026-11-15): 37 associate, 25 premier global and 281 regular members; 88 buy-side, 60 sell-side, 115 vendors, 49 venues, 29 associations, 2 regulators", href: "https://fixtrading.org/member/" }, // membership
+    ], // seven sources, one object per line
+  },
+  {
+    // FIX Latest (new entry): the application layer of FIX since 2009, grown by numbered cumulative extension packs instead of versions.
+    slug: "fix-latest", // the /glossary/fix-latest address
+    headword: "FIX Latest", // the community's own name
+    kind: "term", // a named version line of a standard
+    domains: ["enterprise-networking", "programming"], // protocol and implementations
+    aliases: ["fixlatest", "extension pack", "fix extension pack", "applverid 10", "pacote de extensão fix"], // spellings, the mechanism, the code value, Portuguese
+    relatedTerms: ["fix-protocol", "fixt", "fix-orchestra", "fix-trading-community"], // this batch
+    relatedArticles: ["the-fix-protocol-origins-versions-and-the-community", "anatomy-of-a-fix-message-and-the-session-layer"], // the two parts
+    sources: [ // every label says what the page says and when it was read
+      { label: "FIX Trading Community, The FIX Protocol (read 2026-11-15): from 2009 the protocol (FIX Latest) is upgraded incrementally through extension packs, backwards compatible and usable on legacy versions; firms strongly recommended to use FIX Latest", href: "https://fixtrading.org/standards/fix-protocol/" }, // definition
+      { label: "FIX Latest specification, introduction, as of EP284, November 2023, section 4.2 (read 2026-11-15): unique sequential EP number on GTC approval; cumulative; ApplExtID(1156) names the pack; partial implementation; subset set by bilateral rules of engagement", href: "https://fixtrading.org/packages/fix-latest-specification-introduction/" }, // management
+      { label: "FIX Session Layer technical standard, November 2020, section 3.1.17 (read 2026-11-15): an extension pack, once published, becomes the FIX Latest version of FIX", href: "https://fixtrading.org/packages/fix-session-layer-technical-standard/" }, // session view
+      { label: "FIX Trading Community, EP312, FIX Latest Session Layer Corrections (read 2026-11-15): last updated 11 September 2026, the newest pack listed on that day", href: "https://fixtrading.org/packages/ep312/" }, // current pack
+      { label: "FIXimate (Orchimate), ApplVerIDCodeSet (read 2026-11-15): 0 FIX27 to 9 FIX50SP2, 10 FIXLatest (added EP260)", href: "https://orchimate.org/fixtrading/fix-latest/codeSets/ApplVerIDCodeSet" }, // code value
+    ], // five sources, one object per line
+  },
+  {
+    // FIX Orchestra (new entry): machine-readable rules of engagement for FIX services, version 1.0 of February 2021.
+    slug: "fix-orchestra", // the /glossary/fix-orchestra address
+    headword: "FIX Orchestra", // the standard's name
+    kind: "term", // a named standard
+    domains: ["programming", "enterprise-networking"], // a schema standard used by implementers
+    aliases: ["orchestra", "fix orchestra standard", "orchestra xml", "machine-readable rules of engagement"], // short name, the file, the purpose
+    relatedTerms: ["fix-protocol", "fix-latest", "fix-session", "xml"], // this batch, then an existing entry
+    relatedArticles: ["the-fix-protocol-origins-versions-and-the-community"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "FIX Trading Community, Orchestra (read 2026-11-15): a standard for machine-readable definitions of messaging protocols: messages, fields, validation rules, workflows, network, session and encoding settings; uses: communicate, normalize, validate, self-validate, provision; parties often encode FIX slightly differently", href: "https://fixtrading.org/standards/orchestra/" }, // purpose
+      { label: "FIX Trading Community, FIX Orchestra standard (read 2026-11-15): version 1.0 final published 19 February 2021; version 1.1 at release candidate 3; Apache License 2.0", href: "https://fixtrading.org/standards/orchestra/fix-orchestra-standard/" }, // versions
+      { label: "FIX Session Layer technical standard, November 2020, section 3.1.8 and footnotes 1, 3 and 9 (read 2026-11-15): rules of engagement usually a document; Orchestra may specify them machine-readably, including session profile and TestRequestThreshold", href: "https://fixtrading.org/packages/fix-session-layer-technical-standard/" }, // session use
+      { label: "FIX Trading Community, The FIX Protocol (read 2026-11-15): FIX Latest distributed as an Orchestra repository", href: "https://fixtrading.org/standards/fix-protocol/" }, // the standard itself in Orchestra
+    ], // four sources, one object per line
+  },
+  {
+    // FIXT (new entry): the session protocol split from the application layer in 2006, BeginString FIXT.1.1, with the application version carried separately.
+    slug: "fixt", // the /glossary/fixt address
+    headword: "FIXT (FIX Transport)", // acronym first
+    kind: "acronym", // an acronym with its expansion
+    domains: ["enterprise-networking", "programming"], // session protocol
+    expansion: "FIX Transport session protocol; first and only version FIXT 1.1 (BeginString FIXT.1.1)", // the formal identity
+    aliases: ["fixt.1.1", "fixt 1.1", "fix transport", "transport independence", "lfixt", "lightweight fixt"], // spellings, the framework, the light profile
+    relatedTerms: ["fix-session", "fix-protocol", "fix-latest", "fix-sequence-number"], // this batch
+    relatedArticles: ["the-fix-protocol-origins-versions-and-the-community", "anatomy-of-a-fix-message-and-the-session-layer"], // the two parts
+    sources: [ // every label says what the page says and when it was read
+      { label: "FIXT 1.1 specification, errata March 2008 (read 2026-11-15): in October 2006 FPL's Global Technical Committee separated the FIX Session Protocol from the FIX Application Protocol; the moniker FIXT.x.y, the first version FIXT 1.1", href: "https://fixtrading.org/packages/fix-transport-fixt-v1-1-technical-standard/" }, // origin
+      { label: "FIX Trading Community, Legacy FIX specifications, FIX 5.0 of 30 December 2006 (read 2026-11-15): Transport Independence framework; application keeps FIX.x.y, session takes FIXTx.y; layers decoupled", href: "https://fixtrading.org/legacy-fix-specifications/" }, // FIX 5.0
+      { label: "FIX Session Layer technical standard, November 2020, table 1 and section 4.3.7 (read 2026-11-15): session profiles FIX.4.2, FIX4 (FIX.4.4), FIXT and LFIXT (FIXT.1.1); FIXT required when several application versions share a session; DefaultApplVerID(1137)", href: "https://fixtrading.org/packages/fix-session-layer-technical-standard/" }, // profiles
+      { label: "London Stock Exchange, MIT202 FIX Trading Gateway (FIX 5.0), issue 18.0, 11 September 2024 (read 2026-11-15): based on FIXT 1.1 and FIX 5.0 SP2; BeginString FIXT.1.1; DefaultApplVerID 9", href: "https://www.lseg.com/content/dam/lseg/en_us/documents/londonstockexchange-backup/mit202-fix-trading-gateway-fix-5-issue-18.0.1.pdf" }, // a venue using it
+    ], // four sources, one object per line
+  },
+  {
+    // FIX session (new entry): the ordered, numbered, recoverable message stream between two peers, surviving several connections.
+    slug: "fix-session", // the /glossary/fix-session address
+    headword: "FIX session", // lower case, a plain term
+    kind: "term", // a protocol concept
+    domains: ["enterprise-networking"], // session layer
+    aliases: ["fix session layer", "fix session protocol", "fix connection", "iso 3531-2", "sessão fix", "camada de sessão fix"], // related names, the ISO number, Portuguese
+    relatedTerms: ["fix-sequence-number", "fixt", "fix-engine", "fixs", "fix-protocol", "osi-model", "tcp", "idempotent"], // this batch, then existing entries
+    relatedArticles: ["anatomy-of-a-fix-message-and-the-session-layer", "the-fix-protocol-origins-versions-and-the-community", "tcp-connection-lifecycle"], // the part, the history, a neighbour
+    sources: [ // every label says what the page says and when it was read
+      { label: "FIX Session Layer technical standard, November 2020, scope and sections 4, 4.1, 4.3, 4.5, 4.6 (read 2026-11-15): OSI level 5; a bidirectional ordered stream within one sequence series from 1, across sequential connections; optimistic model; Logon first; heartbeat and test request; logout; application impact of a disconnect left undefined", href: "https://fixtrading.org/packages/fix-session-layer-technical-standard/" }, // the standard
+      { label: "ISO, ISO 3531-2:2022, FIX session layer, April 2022, ISO/TC 68/SC 9 (read 2026-11-15 through a fetch tool): normative specification of the FIX session layer and its session profiles", href: "https://www.iso.org/standard/81511.html" }, // ISO
+      { label: "FIX 2.7a specification, 1995 (read 2026-11-15): FIX defined at two levels; session level concerned with delivery; optimistic model with gaps found by sequence numbers", href: "https://fixtrading.org/packages/fix-2-7-specification-document-pdf/" }, // history
+      { label: "B3, EntryPoint FIX Order Entry (read 2026-11-15): FIX 4.4; involuntary disconnection of a FIX EntryPoint session cancels all open orders, configurable per session", href: "https://www.b3.com.br/en_us/solutions/platforms/puma-trading-system/for-developers-and-vendors/entrypoint-order-entry" }, // Brazil
+      { label: "NYSE Pillar Gateway FIX protocol specification, version 6.0, 14 August 2026 (read 2026-11-15): FIX.4.2; failover to the secondary address continues the application-message sequence; DR switch cancels open orders and restarts sequence numbers at 1", href: "https://www.nyse.com/publicdocs/NYSE_Pillar_Gateway_FIX_Protocol_Specification.pdf" }, // a venue's rules
+    ], // five sources, one object per line
+  },
+  {
+    // MsgSeqNum (new entry): the per-direction message counter of a FIX session and the recovery messages built on it.
+    slug: "fix-sequence-number", // the /glossary/fix-sequence-number address (the wave file's sequence-number-fix, made clearer)
+    headword: "MsgSeqNum (FIX sequence number)", // the field name and the plain term
+    kind: "term", // a protocol field and concept
+    domains: ["enterprise-networking"], // session layer
+    aliases: ["msgseqnum", "fix sequence number", "resendrequest", "resend request", "sequencereset", "gap fill", "possdupflag", "número de sequência fix"], // the field, the recovery messages and flags, Portuguese
+    relatedTerms: ["fix-session", "fixt", "fix-engine", "tcp", "idempotent"], // this batch, then existing entries
+    relatedArticles: ["anatomy-of-a-fix-message-and-the-session-layer"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "FIX Session Layer technical standard, November 2020, section 4.1 (read 2026-11-15): unique MsgSeqNum(34) on every message; NextNumIn and NextNumOut start at 1, are persisted and shared by session and application messages; resetting both to 1 starts a new session", href: "https://fixtrading.org/packages/fix-session-layer-technical-standard/" }, // rules
+      { label: "FIX Session Layer technical standard, sections 4.8.1 to 4.8.6 (read 2026-11-15): gap when MsgSeqNum exceeds NextNumIn; ResendRequest with BeginSeqNo and EndSeqNo (0 for all); retransmission with PossDupFlag=Y and OrigSendingTime; session messages replaced by SequenceReset gap fill; Reset mode leaves responsibility with the sender", href: "https://fixtrading.org/packages/fix-session-layer-technical-standard/" }, // recovery
+      { label: "FIX Session Layer technical standard, sections 4.4.2 and 4.4.3 (read 2026-11-15): ResetSeqNumFlag for 24-hour markets; reset at logon only by agreement, with the stated risk of order overfills", href: "https://fixtrading.org/packages/fix-session-layer-technical-standard/" }, // resets
+      { label: "FIXimate (Orchimate), MsgSeqNum(34) and EndSeqNo(16) (read 2026-11-15): integer message sequence number, added FIX 2.7; EndSeqNo 0 means infinity", href: "https://orchimate.org/fixtrading/fix-latest/fields/EndSeqNo" }, // field definitions
+      { label: "FIX 4.0 release notes, 13 January 1996 (read 2026-11-15): all messages increment the sequence number; some administrative messages replaced by Sequence Reset - Gap Fill; valid sequence numbers increased to 999,999", href: "https://fixtrading.org/packages/fix-4-0-specification-release-notes/" }, // history
+    ], // five sources, one object per line
+  },
+  {
+    // NewOrderSingle (new entry): the FIX message for a single order, its required fields across versions and an annotated example.
+    slug: "new-order-single", // the /glossary/new-order-single address
+    headword: "NewOrderSingle (35=D)", // the message name and its MsgType
+    kind: "term", // a named protocol message
+    domains: ["programming", "enterprise-networking"], // application layer of FIX
+    aliases: ["newordersingle", "new order single", "new order - single", "35=d", "msgtype d", "nova ordem fix"], // spellings, the wire form, Portuguese
+    relatedTerms: ["execution-report", "fix-protocol", "fix-session", "matching-engine", "direct-market-access"], // this batch, then wave siblings (matching-engine: agent B; direct-market-access: agent E)
+    relatedArticles: ["anatomy-of-a-fix-message-and-the-session-layer", "the-fix-protocol-origins-versions-and-the-community"], // the parts
+    sources: [ // every label says what the page says and when it was read
+      { label: "FIXimate (Orchimate), NewOrderSingle (read 2026-11-15): used by the order submitter to place orders electronically; required ClOrdID, Instrument, Side, TransactTime, OrderQtyData, OrdType", href: "https://orchimate.org/fixtrading/fix-latest/messages/NewOrderSingle" }, // FIX Latest
+      { label: "FIX 4.2 specification with errata 20010501 (read 2026-11-15): New Order - Single required ClOrdID, HandlInst, Symbol, Side, TransactTime, OrdType; field definitions and UTCTimestamp format YYYYMMDD-HH:MM:SS", href: "https://fixtrading.org/packages/fix-4-2-specification-with-errata-20010501/" }, // FIX 4.2
+      { label: "FIX TagValue Encoding technical standard, June 2020, section 4.2.6 (read 2026-11-15): FIX 4.2 NewOrderSingle example printed with 9=251 and 10=127; computed over its fields, BodyLength 196 and CheckSum 184 (computation in the part)", href: "https://fixtrading.org/packages/fix-tagvalue-encoding/" }, // example
+      { label: "FIXimate (Orchimate), ClOrdID(11) (read 2026-11-15): unique within a single trading day; embed a date for multi-day orders", href: "https://orchimate.org/fixtrading/fix-latest/fields/ClOrdID" }, // the key field
+      { label: "B3, EntryPoint message specification, version 2.40, 27 November 2025 (read 2026-11-15): FIX 4.4 NewOrderSingle; NoPartyIDs(453) required; Symbol required; OrdType 1, 2, 3, 4, K, P, W; TimeInForce 0, 1, 3, 4, 6, 7, A", href: "https://www.b3.com.br/data/files/A7/77/7B/FE/5789491029BEEC39AC094EA8/EntryPointMessageSpecs.pdf" }, // Brazil
+    ], // five sources, one object per line
+  },
+  {
+    // ExecutionReport (new entry): the sell side's report of acknowledgements, fills, changes and rejections; ExecType against OrdStatus.
+    slug: "execution-report", // the /glossary/execution-report address
+    headword: "ExecutionReport (35=8)", // the message name and its MsgType
+    kind: "term", // a named protocol message
+    domains: ["programming", "enterprise-networking"], // application layer of FIX
+    aliases: ["executionreport", "execution report", "35=8", "msgtype 8", "exec report", "relatório de execução"], // spellings, the wire form, Portuguese
+    relatedTerms: ["new-order-single", "fix-protocol", "fix-session", "matching-engine"], // this batch, then a wave sibling (agent B)
+    relatedArticles: ["anatomy-of-a-fix-message-and-the-session-layer"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "FIXimate (Orchimate), MsgTypeCodeSet, value 8 (read 2026-11-15): seven uses: confirm receipt, confirm changes, relay status, relay fills on orders and on quotes, reject orders, report post-trade fees", href: "https://orchimate.org/fixtrading/fix-latest/codeSets/MsgTypeCodeSet" }, // uses
+      { label: "FIXimate (Orchimate), ExecType(150) (read 2026-11-15): describes the specific report while OrdStatus(39) always identifies the current order status", href: "https://orchimate.org/fixtrading/fix-latest/fields/ExecType" }, // the two fields
+      { label: "FIXimate (Orchimate), LeavesQty(151) (read 2026-11-15): quantity open for further execution, OrderQty minus CumQty while the order is active", href: "https://orchimate.org/fixtrading/fix-latest/fields/LeavesQty" }, // quantities
+      { label: "FIX 4.4 specification with errata 20030618, volume 4 (read 2026-11-15): Execution Report required OrderID, ExecID, ExecType, OrdStatus, Instrument, Side, LeavesQty, CumQty, AvgPx; Order State Change Matrix A.1.a, an order of 10,000 filled by 2,000, 1,000 and 7,000", href: "https://fixtrading.org/packages/fix-4-4-specification-with-20030618-errata/" }, // FIX 4.4
+      { label: "FIXimate (Orchimate), ExecutionReport (read 2026-11-15): FIX Latest no longer lists AvgPx among the required fields", href: "https://orchimate.org/fixtrading/fix-latest/messages/ExecutionReport" }, // FIX Latest
+      { label: "B3, EntryPoint message specification, version 2.40, 27 November 2025 (read 2026-11-15): ExecType values 0, 4, 5, 8, C, D, F, H; OrdStatus adds Z (Previous Final State); AvgPx required but always 0 (zero)", href: "https://www.b3.com.br/data/files/A7/77/7B/FE/5789491029BEEC39AC094EA8/EntryPointMessageSpecs.pdf" }, // Brazil
+    ], // six sources, one object per line
+  },
+  {
+    // FIX engine (new entry): the software that implements the FIX session layer, the standard's "FIX session processor".
+    slug: "fix-engine", // the /glossary/fix-engine address
+    headword: "FIX engine", // the practitioners' word
+    kind: "jargon", // the standard's own term is "FIX session processor"; "FIX engine" is the colloquial name
+    domains: ["enterprise-networking", "programming"], // networking software
+    aliases: ["fix session processor", "fix engine software", "motor fix", "engine fix"], // the formal term, Portuguese
+    relatedTerms: ["fix-session", "fix-sequence-number", "fixs", "fix-protocol", "checksum"], // this batch, then an existing entry
+    relatedArticles: ["anatomy-of-a-fix-message-and-the-session-layer"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "FIX Session Layer technical standard, November 2020, section 3.1.5 (read 2026-11-15): FIX session processor, hardware, firmware and software that implements the FIX session layer, commonly referred to as a FIX Engine", href: "https://fixtrading.org/packages/fix-session-layer-technical-standard/" }, // definition
+      { label: "FIX Session Layer technical standard, section 4.3.9 (read 2026-11-15): by agreement the Logon may name the application system and the FIX engine in FIXEngineName(1600), FIXEngineVersion(1601) and FIXEngineVendor(1602), added by EP113", href: "https://fixtrading.org/packages/fix-session-layer-technical-standard/" }, // identification
+      { label: "FIXT 1.1 specification, errata March 2008 (read 2026-11-15): a FIX Engine, software which implements the FIX Session Protocol, can carry FIXML or other XML content", href: "https://fixtrading.org/packages/fix-transport-fixt-v1-1-technical-standard/" }, // older usage
+      { label: "B3, EntryPoint message specification, version 2.40, 27 November 2025 (read 2026-11-15): the Logon Text(58) must give the name and certified version of the client solution", href: "https://www.b3.com.br/data/files/A7/77/7B/FE/5789491029BEEC39AC094EA8/EntryPointMessageSpecs.pdf" }, // Brazil
+    ], // four sources, one object per line
+  },
+  {
+    // FIXS (new entry): FIX-over-TLS, the standard of February 2021 for securing FIX sessions, replacing in-message encryption.
+    slug: "fixs", // the /glossary/fixs address
+    headword: "FIXS (FIX-over-TLS)", // acronym first
+    kind: "acronym", // an acronym with its expansion
+    domains: ["crypto", "enterprise-networking"], // transport security for a session protocol
+    expansion: "FIX-over-TLS, the FIX Trading Community technical standard for securing FIX sessions with Transport Layer Security", // the formal identity
+    aliases: ["fix over tls", "fix-over-tls", "fixa", "fix user authentication", "fix sobre tls"], // spellings, the session-level client authentication, Portuguese
+    relatedTerms: ["tls", "certificate-pinning", "cipher-suite", "x509", "fix-session", "fix-engine"], // existing entries, then this batch
+    relatedArticles: ["anatomy-of-a-fix-message-and-the-session-layer", "mutual-tls", "tls12-tls13-dtls-quic"], // the part and two neighbours
+    sources: [ // every label says what the page says and when it was read
+      { label: "FIX Trading Community, FIXS (read 2026-11-15): FIXS secures FIX sessions with TLS; its use considered a requirement as a basic level of security and interoperability; v1.0 standard, v1.1 release candidate; Stunnel guide", href: "https://fixtrading.org/fixs/" }, // status
+      { label: "FIXS technical standard, version 1.0, 12 February 2021 (read 2026-11-15): Mutual TLS, or Single TLS with FIX User Authentication (FIXA); leaf certificate pinning; latest TLS (1.3 in February 2021); session resumption yes, compression and renegotiation no; not yet a substitute for other controls in ultra-low latency environments", href: "https://fixtrading.org/packages/fixs-technical-specification-technical-standard/" }, // content
+      { label: "FIX Session Layer technical standard, November 2020, sections 4.3.1 and 4.3.3, footnote 12 (read 2026-11-15): FIX over TCP/IP must use FIXS; application-layer encryption discouraged since FIX.4.3, EncryptMethod(98)=0; SecureData(91) deprecated with FIXT.1.1", href: "https://fixtrading.org/packages/fix-session-layer-technical-standard/" }, // session rules
+      { label: "FIX 2.7a specification, 1995 (read 2026-11-15): fields for a public key signature and encryption methodology, straight DES encryption and clear text, chosen in the Logon", href: "https://fixtrading.org/packages/fix-2-7-specification-document-pdf/" }, // history
+      { label: "FIXimate (Orchimate), EncryptMethodCodeSet (read 2026-11-15): 0 None/Other, 1 PKCS, 2 DES (ECB mode), 3 PKCS/DES, 4 PGP/DES (defunct), 5 PGP/DES-MD5, 6 PEM/DES-MD5", href: "https://orchimate.org/fixtrading/fix-latest/codeSets/EncryptMethodCodeSet" }, // legacy values
+    ], // five sources, one object per line
+  },
+  {
+    // B3 (new entry): Brazil's exchange and market infrastructure, its lineage from Bovespa, BM&F and Cetip, and its platform.
+    slug: "b3", // the /glossary/b3 address
+    headword: "B3 (Brasil, Bolsa, Balcão)", // the company's name and what the letters stand for
+    kind: "term", // a company name, not an abbreviation in use
+    domains: ["vendors", "grc"], // a market operator, and a regulated market infrastructure
+    expansion: "B3 S.A., Brasil, Bolsa, Balcão", // the corporate name
+    aliases: ["b3 s.a.", "b3 sa", "brasil bolsa balcão", "brasil, bolsa, balcão", "bm&fbovespa", "bmfbovespa", "bolsa do brasil", "bolsa brasileira"], // the name, its predecessor and the plain Portuguese description
+    relatedTerms: ["puma-trading-system", "direct-market-access", "sponsored-access", "fix-network", "pregao", "matching-engine", "exchange-colocation", "fix-protocol"], // this batch, then wave siblings (pregao: agent A; matching-engine: agent B; exchange-colocation: agent C; fix-protocol: agent D)
+    relatedArticles: ["brazil-bmf-bovespa-b3-and-electronic-access", "fix-networks-hubs-and-managed-connectivity", "open-outcry-trading-floors-and-the-pregao", "electronic-trading-from-the-pit-to-the-microsecond"], // the Brazil part, the networks part, the floor part and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "B3 Bora Investir, glossary entry B3 S/A, modified 23 July 2025 (read 2026-11-15): Bolsa Livre created in 1890 as Brazil's first stock exchange; named Bovespa in 1967; merged with BM&F in 2008 to form BM&FBovespa; merged with Cetip in 2017 to form B3 S/A, Brasil, Bolsa, Balcão", href: "https://borainvestir.b3.com.br/glossario/b3-s-a" }, // B3
+      { label: "B3 investor relations, history page, last updated 30 June 2020, read through a fetch tool (read 2026-11-15): BM&FBovespa created in 2008 from BM&F and Bovespa Holding; CME partnership signed 2010 and ended 2016; PUMA in derivatives and currencies 2011, equities 2013, private fixed income 2014; Cetip founded 1984 and operating 1986; Central Bank, CVM and Cade approval in 2017; B3 created in March 2017", href: "https://ri.b3.com.br/en/?p=42" }, // B3
+      { label: "MUB3 (Museu da Bolsa do Brasil) on Google Arts & Culture, Manoel Felix Cintra Neto, undated (read 2026-11-15): BM&F founded 1986 by Bovespa's board; 1991 integration of the Bolsa de Mercadorias de São Paulo; 1997 merger with BBF; Globex alliance and GTS in 2000; BM&F share listing on 30 November 2007 with 250,000 investors", href: "https://artsandculture.google.com/story/iwWxkfwSiAYGAQ" }, // MUB3
+      { label: "B3 Bora Investir, Fim do pregão viva-voz faz 20 anos, 30 September 2025 (read 2026-11-15): Bovespa's open outcry ended on 30 September 2005; 8.4 million trades a day on average against 10,000 to 15,000 in the floor era", href: "https://borainvestir.b3.com.br/noticias/fim-do-pregao-viva-voz-faz-20-anos-e-b3-celebra-historia-com-exposicao/" }, // B3
+      { label: "B3, Princípios para Infraestruturas do Mercado Financeiro, divulgação de informações, March 2022 (read 2026-11-15): PUMA trades equities, derivatives, fixed income, federal bonds and spot FX; Câmara B3 and Câmara de Câmbio B3 considered systemically important by the Banco Central; BSM is B3's self-regulatory arm", href: "https://www.b3.com.br/data/files/55/F1/B4/04/04A11810C493CD08AC094EA8/B3%20PFMI%20DISCLOSURE%202022%20PT%20SEM%20MARCAS.pdf" }, // B3
+      { label: "B3, B3 moderniza plataformas e reduz em 70% tempo de conclusão dos negócios, 4 April 2025 (read 2026-11-15): latency from 1.2 ms in 2023 to about 350 microseconds; co-location in Santana de Parnaíba; high-frequency traders about 40% of equity trades by B3's count", href: "https://www.b3.com.br/pt_br/noticias/avanco-em-tecnologia.htm" }, // B3
+      { label: "B3, Formulário de Referência 2024, version 16, item 1.1 and PUMA section (read 2026-11-15; download stopped at 16 MiB, these sections read): combination of BM&FBOVESPA and Cetip consummated on 29 March 2017; Bolsa Livre 1890 and the 1891 crisis; CATS from the Toronto exchange in the early 1990s; Bovespa floor closed 30 September 2005 and BM&F floor 30 June 2009; demutualizations in 2007; integration on 8 May 2008; CME contracts of 22 June 2010; PUMA in the BM&F segment in the second half of 2011, Bovespa segment first half of 2013, private fixed income July 2014", href: "https://api.mziq.com/mzfilemanager/v2/d/5fd7b7d8-54a1-472d-8426-eb896ad8a3c4/8d8a1c1b-991e-904f-e699-a9cb7cc6d9e5?origin=1" }, // B3
+    ], // seven sources, one object per line
+  },
+  {
+    // DMA (new entry): a client's orders reaching an exchange's matching engine through a broker's access, with the broker's controls; B3's models and CVM's rule.
+    slug: "direct-market-access", // the /glossary/direct-market-access address
+    headword: "DMA (direct market access)", // acronym first, as for other acronym entries
+    kind: "acronym", // an acronym with its expansion
+    domains: ["grc", "enterprise-networking"], // a regulated arrangement delivered over trading networks
+    expansion: "direct market access (acesso direto ao mercado)", // the English expansion and B3's and CVM's Portuguese term
+    aliases: ["direct market access", "acesso direto ao mercado", "dma trading", "dma1", "dma2", "dma3", "dma4", "dma provider", "provedor de dma"], // the names, B3's numbered models and the provider role
+    relatedTerms: ["sponsored-access", "b3", "fix-network", "puma-trading-system", "exchange-colocation", "fix-protocol", "high-frequency-trading"], // this batch, then wave siblings (exchange-colocation, high-frequency-trading: agent C; fix-protocol: agent D)
+    relatedArticles: ["brazil-bmf-bovespa-b3-and-electronic-access", "fix-networks-hubs-and-managed-connectivity", "colocation-microwaves-and-the-race-for-latency"], // the Brazil part, the networks part and the latency part
+    sources: [ // every label says what the page says and when it was read
+      { label: "CVM, Resolução CVM 35, 26 May 2021 (read 2026-11-15): orders may be transmitted by DMA systems (art. 12); intermediaries receiving DMA orders must seek to identify their origin and keep a pre-trade risk control system with limits and error parameters (art. 16); conditions for non-resident users (art. 17); market operators adopt DMA rules approved by the CVM and supervise them with the self-regulator (arts. 18 and 19)", href: "https://conteudo.cvm.gov.br/cvm_institucional/export/sites/cvm/legislacao/resolucoes/anexos/001/resol035.pdf" }, // CVM
+      { label: "B3, Direct Market Access (DMA), undated English page for non-resident investors (read 2026-11-15): four models, traditional DMA sponsored by a broker, via a DMA provider, via direct connection and via colocation; the investor must be registered with a B3 licensed brokerage house", href: "https://www.b3.com.br/en_us/non-resident-investor/how-to-get-connected-bm-fbovespa/direct-market-access-dma.htm" }, // B3
+      { label: "B3, EntryPoint Messaging Guidelines, version 2.9.31, 16 December 2025 (read 2026-11-15): SenderCompID formats C, P, Y and X for DMA1 to DMA4; Sender Location codes DMA1, provider code, DMA3 and COLO0/COLO1 replacing Bovespa ranges 300 to 769; DMA2 providers sponsored by several firms must use a separate FIX session per firm", href: "https://www.b3.com.br/data/files/FF/84/5F/93/DB81D8103152D4C8AC094EA8/EntryPointMessagingGuidelines.pdf" }, // B3
+      { label: "B3, Commercial Policy for Connectivity Services, English version with change log to September 2025 (read 2026-11-15): on 30 August 2021 the names DMA 1, 2, 3 and 4 were replaced by Sponsored Direct Connections or DMA connections, and order entry sessions classified by solution administrator, agent with access and hosting location", href: "https://www.b3.com.br/data/files/47/92/29/A6/EED1F910ADC36BE9AC094EA8/Commercial%20Politcy%20for%20Connectivity%20Services.pdf" }, // B3
+      { label: "B3, EntryPoint, undated web page (read 2026-11-15): Line EntryPoint lets brokers set pre-trade limits for clients on DMA 3 and DMA 4", href: "https://www.b3.com.br/en_us/solutions/platforms/puma-trading-system/for-developers-and-vendors/entrypoint-8AA8D0CC95C8AC5601961178692278BE" }, // B3
+      { label: "Intercontinental Exchange, ICE Integrates SFTI and 7ticks Networks, 8 September 2016 (read 2026-11-15): the SFTI Direct Market Access (DMA) network of over 150 venues", href: "https://s2.q4cdn.com/154085107/files/doc_news/archive/1c1734d7-d16f-44cc-b7f4-e38a87b3781b.pdf" }, // ICE
+    ], // six sources, one object per line
+  },
+  {
+    // FIX network (new entry): a managed network or hub that carries FIX sessions between buy side, sell side and venues, with routing, onboarding and monitoring; the main networks and owners.
+    slug: "fix-network", // the /glossary/fix-network address
+    headword: "FIX network", // the trade's own term, lower case
+    kind: "term", // a term of the trade
+    domains: ["enterprise-networking", "isp-telecom"], // a network service sold to financial firms
+    aliases: ["fix hub", "fix order routing network", "order routing network", "fix connectivity network", "managed fix connectivity", "financial extranet", "rede fix", "hub fix", "extranet financeira"], // the trade's variants and Portuguese
+    relatedTerms: ["fix-protocol", "fix-session", "direct-market-access", "b3", "mpls", "vpn", "tls", "multicast"], // wave siblings first (fix-protocol, fix-session: agent D), this batch, then existing entries
+    relatedArticles: ["fix-networks-hubs-and-managed-connectivity", "the-fix-protocol-origins-versions-and-the-community", "anatomy-of-a-fix-message-and-the-session-layer", "brazil-bmf-bovespa-b3-and-electronic-access"], // the part, the two FIX parts and the Brazil part
+    sources: [ // every label says what the page says and when it was read
+      { label: "FIX Trading Community, FIX Latest repository on Orchimate, OnBehalfOfCompID (115) and DeliverToCompID (128), both added in FIX 4.0 (read 2026-11-15): the third party's identifier goes in SenderCompID or TargetCompID and the originating or ultimate firm in these fields", href: "https://orchimate.org/fixtrading/fix-latest/fields/OnBehalfOfCompID" }, // FIX Trading Community
+      { label: "FIX Trading Community, Orchestra, undated (read 2026-11-15): parties commonly encode FIX slightly differently, possibly with user-defined tags; an Orchestra file can inform a translator to normalize the variants", href: "https://fixtrading.org/standards/orchestra/" }, // FIX Trading Community
+      { label: "NYSE Euronext, third quarter 2009 results, exhibit 99.1 to Form 8-K, 30 October 2009, read through a fetch tool (read 2026-11-15): agreement to acquire NYFIX for $144 million; NYFIX Marketplace of more than 1,000 counterparties over more than 9,000 managed FIX channels", href: "https://www.sec.gov/Archives/edgar/data/0001368007/000119312509219091/dex991.htm" }, // NYSE Euronext
+      { label: "Broadridge, Broadridge Extends Capital Markets Franchise with Acquisition of Itiviti, 29 March 2021 (read 2026-11-15): €2.143 billion from Nordic Capital; Itiviti's FIX connectivity and network offerings", href: "https://broadridge.com/press-release/2021/broadridge-agrees-to-acquire-itiviti" }, // Broadridge
+      { label: "Broadridge, NYFIX Order Routing Network, undated web page (read 2026-11-15): broker-independent FIX order routing network as a managed service; over 2,200 participants in one passage and 1,800+ firms in another; hub-and-spoke or point-to-point", href: "https://www.broadridge.com/capability/front-office-solutions/connectivity/order-routing-network" }, // Broadridge
+      { label: "BT, BT enters agreement with TNS for the sale of its Radianz business, 2 September 2025 (read 2026-11-15): Radianz provides financial information exchange networks; revenue of about £142 million in 2024/25", href: "https://newsroom.bt.com/bt-enters-agreement-with-tns-for-the-sale-of-its-radianz-business/" }, // BT
+      { label: "IPC Systems, IPC Systems Introduces Connexus Financial Extranet Service, PR Newswire, 21 November 2011 (read 2026-11-15): access to trade lifecycle services through a single connection; more than 4,000 locations in 58 countries; MPLS platform adhering to the FIX protocol", href: "https://prnewswire.com/news-releases/ipc-systems-introduces-connexus-financial-extranet-service-134230928.html" }, // IPC Systems
+      { label: "B3, Manual de Acesso à Infraestrutura Tecnológica da B3, version 8.5, 13 February 2026 (read 2026-11-15): access through the RCB, internet VPN, LAN co-location or the RTM agreement; two distinct carriers required for brokers; RCCF discontinued on 13 March 2015", href: "https://b3.com.br/data/files/B9/F0/1F/4F/DC7CF91094DCD8F9AC094EA8/2026%20-%20Manual%20de%20Acesso%20a%20Infraestrutura%20Tecnologica%20da%20B3.pdf" }, // B3
+      { label: "FIX Trading Community, FIX Session Layer, undated (read 2026-11-15): a FIX session is a bidirectional stream of ordered messages between two peers within a continuous sequence number series beginning with 1", href: "https://fixtrading.org/standards/fixsession/" }, // FIX Trading Community
+      { label: "B3, EntryPoint Messaging Guidelines, version 2.9.31, 16 December 2025 (read 2026-11-15): DeliverToCompID (128) no longer supported in any scenario; CompIDs assigned by B3 by connection category", href: "https://www.b3.com.br/data/files/FF/84/5F/93/DB81D8103152D4C8AC094EA8/EntryPointMessagingGuidelines.pdf" }, // B3
+      { label: "Thomson Reuters investor relations, BT and Reuters Sign Major Contract, 10 March 2005, read through a fetch tool (read 2026-11-15): BT to pay $175 million for Radianz plus balance-sheet cash", href: "https://ir.thomsonreuters.com/node/11296" }, // Thomson Reuters
+      { label: "BT, BT completes sale of its Radianz business to TNS, 2 February 2026 (read 2026-11-15): completion after regulatory clearance", href: "https://newsroom.bt.com/bt-completes-sale-of-its-radianz-business-to-tns/" }, // BT
+    ], // twelve sources, one object per line
+  },
+  {
+    // Sponsored access (new entry): a client trading directly on an exchange under a broker's responsibility and limits; B3's conexão direta patrocinada.
+    slug: "sponsored-access", // the /glossary/sponsored-access address
+    headword: "sponsored access", // lower case, a term of the trade
+    kind: "term", // a term of market structure
+    domains: ["grc", "enterprise-networking"], // the rule and the connection
+    aliases: ["sponsored direct connection", "sponsored market access", "conexão direta patrocinada", "acesso patrocinado", "dma patrocinado"], // B3's English and Portuguese names and common variants
+    relatedTerms: ["direct-market-access", "b3", "puma-trading-system", "exchange-colocation", "fix-network"], // this batch, then wave siblings (exchange-colocation: agent C)
+    relatedArticles: ["brazil-bmf-bovespa-b3-and-electronic-access", "fix-networks-hubs-and-managed-connectivity"], // the Brazil part and the networks part
+    sources: [ // every label says what the page says and when it was read
+      { label: "B3, Manual de Procedimentos Operacionais de Negociação da B3, 1 July 2026 (read 2026-11-15): the conexão direta patrocinada must be used by a client, always under the responsibility of a full trading participant, trading participant or foreign participant, only to register offers in its own name for its proprietary book; real-time market data; offers within the sponsor's pre-trade limits; contract clauses required; origin and hosting rules; conditions for independent providers", href: "https://www.b3.com.br/data/files/CF/D0/64/95/753D0A105BF9020AAC094EA8/MPO%20de%20Negociacao%20da%20B3.pdf" }, // B3
+      { label: "B3, Commercial Policy for Connectivity Services, English version with change log to September 2025 (read 2026-11-15): DMA 1 to 4 renamed Sponsored Direct Connections or DMA connections on 30 August 2021", href: "https://www.b3.com.br/data/files/47/92/29/A6/EED1F910ADC36BE9AC094EA8/Commercial%20Politcy%20for%20Connectivity%20Services.pdf" }, // B3
+      { label: "B3, Sender Location table, 2 January 2025 (read 2026-11-15): Conexão Direta Patrocinada (DMA) codes by origin and hosting, DMACF and DMACC for client-originated connections from another data centre or from B3 co-location", href: "https://b3.com.br/data/files/C6/75/31/C9/CBC2491029BEEC39AC094EA8/Sender%20Location_02012025%20.pdf" }, // B3
+      { label: "CVM, Resolução CVM 35, 26 May 2021 (read 2026-11-15): origin identification and pre-trade risk control duties for intermediaries receiving DMA orders (art. 16)", href: "https://conteudo.cvm.gov.br/cvm_institucional/export/sites/cvm/legislacao/resolucoes/anexos/001/resol035.pdf" }, // CVM
+      { label: "B3, EntryPoint, undated web page (read 2026-11-15): Line EntryPoint pre-trade limits for DMA 3 and DMA 4", href: "https://www.b3.com.br/en_us/solutions/platforms/puma-trading-system/for-developers-and-vendors/entrypoint-8AA8D0CC95C8AC5601961178692278BE" }, // B3
+    ], // five sources, one object per line
+  },
+  {
+    // PUMA Trading System (new entry): B3's multi-asset trading platform, developed with CME Group, its order entry interface and its rollout dates.
+    slug: "puma-trading-system", // the /glossary/puma-trading-system address
+    headword: "PUMA Trading System", // the platform's own name
+    kind: "term", // a product name
+    domains: ["vendors", "enterprise-networking"], // an exchange platform reached over trading networks
+    aliases: ["puma", "puma trading system", "plataforma puma", "sistema puma", "puma b3"], // the name and Portuguese usage
+    relatedTerms: ["b3", "matching-engine", "fix-protocol", "direct-market-access", "sponsored-access", "exchange-colocation"], // this batch, then wave siblings (matching-engine: agent B; fix-protocol: agent D; exchange-colocation: agent C)
+    relatedArticles: ["brazil-bmf-bovespa-b3-and-electronic-access", "the-screens-arrive-electronic-exchanges-from-nasdaq-to-globex", "fix-networks-hubs-and-managed-connectivity"], // the Brazil part, the screens part and the networks part
+    sources: [ // every label says what the page says and when it was read
+      { label: "CME Group and BM&FBovespa, Global Preferred Strategic Partners and new multi-asset class trading platform, PR Newswire, 12 February 2010 (read 2026-11-15): joint development of a multi-asset platform for BM&FBovespa's equities and derivatives, launch expected in early 2011; cross-holdings of about 5%; technology derived from CME Globex", href: "https://www.prnewswire.com/news-releases/cme-group-and-bmfbovespa-to-become-global-preferred-strategic-partners-jointly-develop-a-new-multi-asset-class-trading-platform-and-to-expand-cross-equity-ownership-84214252.html" }, // CME Group
+      { label: "B3, Formulário de Referência 2024, version 16, PUMA section (read 2026-11-15): technology contract with CME Group in 2010; definitive agreements of 22 June 2010 for an initial 15 years; stake in CME raised from 1.8% to 5% in July 2010, 20% of it sold in September 2015 and the rest in April 2016; PUMA in operation in the BM&F segment in the second half of 2011, the Bovespa segment in the first half of 2013 and private fixed income in July 2014; infrastructure fully renewed in 2017", href: "https://api.mziq.com/mzfilemanager/v2/d/5fd7b7d8-54a1-472d-8426-eb896ad8a3c4/8d8a1c1b-991e-904f-e699-a9cb7cc6d9e5?origin=1" }, // B3
+      { label: "B3 investor relations, history page, last updated 30 June 2020, read through a fetch tool (read 2026-11-15): PUMA launched in derivatives and currencies in 2011, equities in 2013, private fixed income in 2014; CME partnership ended 2016", href: "https://ri.b3.com.br/en/?p=42" }, // B3
+      { label: "B3, EntryPoint Messaging Guidelines, version 2.9.31, 16 December 2025 (read 2026-11-15): EntryPoint is based on FIX 4.4 and gives unified access to equities, fixed income, derivatives and FX on PUMA", href: "https://www.b3.com.br/data/files/FF/84/5F/93/DB81D8103152D4C8AC094EA8/EntryPointMessagingGuidelines.pdf" }, // B3
+      { label: "B3, Commercial Policy for Connectivity Services, English version with change log to September 2025 (read 2026-11-15): PUMA order entry in FIX 4.4 and in Simple Binary Encoding; market data in FIX 5.0 with FAST or SBE", href: "https://www.b3.com.br/data/files/47/92/29/A6/EED1F910ADC36BE9AC094EA8/Commercial%20Politcy%20for%20Connectivity%20Services.pdf" }, // B3
+      { label: "B3, Circular Letter 015/2024-PRE, 24 January 2024 (read 2026-11-15): binary gateway in derivatives from 4 December 2023 and in equities in waves on 29 January, 19 February and 4 March 2024", href: "https://www.b3.com.br/data/files/56/46/59/0D/3664D8103152D4C8AC094EA8/OC%20015-2024%20PRE%20%20Lan%C3%A7amento%20do%20Gateway%20Binario%20Segmento%20Bovespa%20%28Binary%20EntryPoint%29%20-%20EN.pdf" }, // B3
+      { label: "B3, Política Comercial de Serviços de Co-location B3, version 3.3, 20 January 2022 (read 2026-11-15): co-location network on the same infrastructure as PUMA's order routing components; equal-length cables; quoted latencies of 22 microseconds (TCP) and 11 microseconds (market data)", href: "https://www.b3.com.br/data/files/3E/03/2D/39/558C38101E311E28AC094EA8/Politica%20Comercial%20Colocation_PT_2022%20v3%20Abril22.pdf" }, // B3
+    ], // seven sources, one object per line
   },
 ];
 

@@ -300,7 +300,7 @@ for (const m of CONSOLE_METHODS) (console as unknown as Record<string, () => voi
   const db = new FakeD1(true);
   const env = { SCORES: db };
   // Other addresses are not the route's.
-  for (const path of ["/api/e", "/api/deskx", "/api/v1/fun/board", "/en/desk/", "/api/stats/interest"]) {
+  for (const path of ["/api/e", "/api/deskx", "/api/v1/fun/board", "/en/my-desk/", "/api/stats/interest"]) {
     check((await call("GET", path, { env })) === null, `${path} is not the desk route`);
   }
   // A bad id, in every shape.

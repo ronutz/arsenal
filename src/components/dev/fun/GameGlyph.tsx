@@ -48,6 +48,9 @@ export const GLYPH_IDS = [
   "boss-screens",
   "cat-distribution",
   "importance-meter",
+  // The LGTM homage and its stamp toy (PRIME 15/11/2026 21:12: their cards had no drawing like the others).
+  "lgtm",
+  "lgtm-stamp",
   // The shelf's card that leads to /arcade.
   "arcade",
 ] as const;
@@ -259,6 +262,40 @@ const DRAWINGS: Record<GlyphId, ReactElement> = {
       <path d="M24 34L8 34" {...S} strokeWidth={3} />
       <circle cx="24" cy="34" r="3.4" fill="currentColor" />
       <path d="M11.3 21.3l2.1 2.1M24 16v3M36.7 21.3l-2.1 2.1" {...F} />
+    </>
+  ),
+  // LGTM: a review comment's speech bubble that says it, a green check on its corner, and a note of the tune below.
+  lgtm: (
+    <>
+      {/* The bubble, its tail at the lower left. */}
+      <path d="M9 6h30a4 4 0 0 1 4 4v15a4 4 0 0 1-4 4H19l-7 6v-6H9a4 4 0 0 1-4-4V10a4 4 0 0 1 4-4z" {...S} />
+      {/* What the reviewer says. */}
+      <text x="24" y="22" textAnchor="middle" fontSize="11" fontWeight="800" fontFamily="ui-monospace, monospace" fill="currentColor" letterSpacing="0.5">LGTM</text>
+      {/* The check, on a disc over the bubble's corner. */}
+      <circle cx="40" cy="38" r="6.5" {...S} />
+      {/* Its tick. */}
+      <path d="M37 38.2l2.2 2.2 4-4.4" {...S} strokeWidth={2.2} />
+      {/* The tune: an eighth note, faint, under the bubble. */}
+      <path d="M24 44v-9l5 1.5" {...F} />
+      {/* The note's head. */}
+      <circle cx="21.8" cy="44" r="2.3" {...F} />
+    </>
+  ),
+  // The LGTM stamp: a rubber stamp's knob, neck and block over the check it has just printed.
+  "lgtm-stamp": (
+    <>
+      {/* The knob. */}
+      <circle cx="24" cy="8" r="4.5" {...S} />
+      {/* The neck, narrowing to the block. */}
+      <path d="M21.5 12.5l-1.5 8h8l-1.5-8" {...S} />
+      {/* The block. */}
+      <rect x="11" y="20.5" width="26" height="7" rx="2" {...S} />
+      {/* The rubber face under it. */}
+      <path d="M13 30.5h22" {...F} />
+      {/* The print on the page: a frame, slightly turned, as a stamp lands. */}
+      <rect x="9" y="34" width="30" height="10" rx="2" {...S} transform="rotate(-6 24 39)" />
+      {/* The check inside the print. */}
+      <path d="M19 39.5l3 3 6-6" {...S} transform="rotate(-6 24 39)" />
     </>
   ),
   // An arcade cabinet: marquee, screen, joystick and two buttons on the control panel, coin door below.

@@ -237,7 +237,7 @@ export default function DeskAddMenu(props: { id: ItemId; labels: DeskMenuLabels;
       <p className="desk-menu-status" role="status">{msg}</p>
       {/* Where this is kept, at the point of use, and the way to the page. */}
       <p className="desk-menu-foot">
-        <span>{L.kept}</span> · <Link href="/desk" className="desk-link">{L.open}</Link>
+        <span>{L.kept}</span> · <Link href="/my-desk" className="desk-link">{L.open}</Link>
         <button type="button" className="desk-menu-close" onClick={props.onClose}>{L.close}</button>
       </p>
     </div>

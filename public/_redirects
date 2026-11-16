@@ -1,3 +1,10 @@
+# AUDIT 15/11/2026 (PRIME 19:05, "audit the existing redirects against hits and remove the ones not hit in the last 30
+# days"): 290 rules removed that can no longer fire at all, because the Worker (run_worker_first "/*") answers their
+# address before the assets layer reads this file: 196 for retired locales and 84 for stub locales (the Worker 301s or
+# 302s them to /en/), and 10 bare paths (/f5, /fortinet, /netskope, /extreme, /games, with and without the slash; the
+# Worker's locale gate 301s them to /en/...). Checked live the same evening: /nl/games answered the Worker's
+# 301 to /en/games/, not this file's /nl/dev/fun/. The rules that can still fire wait for their 30-day hit counts.
+
 # Permanent redirects for the F5 tool-prefix rename (2026-07-03).
 # Static rules only (Workers static assets: 2,000 static / 100 dynamic).
 # Three forms per locale and slug: trailing-slash page, bare page, and the
@@ -17,23 +24,13 @@
 # Unpopulated vendors stay reserved as redirects to /tools until their
 # first tool ships, at which point the hub page materializes automatically.
 
-/f5 /en/f5/ 301
-/f5/ /en/f5/ 301
 
-/fortinet /en/tools/ 301
-/fortinet/ /en/tools/ 301
 
-/netskope /en/tools/ 301
-/netskope/ /en/tools/ 301
 
-/extreme /en/tools/ 301
-/extreme/ /en/tools/ 301
 
 
 # /games is an alias of the games shelf, /dev/fun (PRIME 08/11/2026). A bare /games reaches the Worker's
 # locale gate first (-> /en/games/); the per-locale rules below finish the trip. Bare forms kept as a fallback.
-/games /en/dev/fun/ 301
-/games/ /en/dev/fun/ 301
 /en/games /en/dev/fun/ 301
 /en/games/ /en/dev/fun/ 301
 /pt-BR/games /pt-BR/dev/fun/ 301
@@ -44,28 +41,8 @@
 /de/games/ /de/dev/fun/ 301
 /fr/games /fr/dev/fun/ 301
 /fr/games/ /fr/dev/fun/ 301
-/nl/games /nl/dev/fun/ 301
-/nl/games/ /nl/dev/fun/ 301
 /it/games /it/dev/fun/ 301
 /it/games/ /it/dev/fun/ 301
-/sv/games /sv/dev/fun/ 301
-/sv/games/ /sv/dev/fun/ 301
-/da/games /da/dev/fun/ 301
-/da/games/ /da/dev/fun/ 301
-/nb/games /nb/dev/fun/ 301
-/nb/games/ /nb/dev/fun/ 301
-/ru/games /ru/dev/fun/ 301
-/ru/games/ /ru/dev/fun/ 301
-/pl/games /pl/dev/fun/ 301
-/pl/games/ /pl/dev/fun/ 301
-/tr/games /tr/dev/fun/ 301
-/tr/games/ /tr/dev/fun/ 301
-/ms/games /ms/dev/fun/ 301
-/ms/games/ /ms/dev/fun/ 301
-/fil/games /fil/dev/fun/ 301
-/fil/games/ /fil/dev/fun/ 301
-/zh-Hans/games /zh-Hans/dev/fun/ 301
-/zh-Hans/games/ /zh-Hans/dev/fun/ 301
 
 # The arcade games moved from /dev/fun/<game> to /arcade/<game> (PRIME 08/11/2026 23:14, "Yes move them"), so each
 # game lives in one place. Static rules, in every language, with and without the trailing slash, so links, bookmarks
@@ -81,28 +58,8 @@
 /de/dev/fun/whack-a-bug /de/arcade/whack-a-bug/ 301
 /fr/dev/fun/whack-a-bug/ /fr/arcade/whack-a-bug/ 301
 /fr/dev/fun/whack-a-bug /fr/arcade/whack-a-bug/ 301
-/nl/dev/fun/whack-a-bug/ /nl/arcade/whack-a-bug/ 301
-/nl/dev/fun/whack-a-bug /nl/arcade/whack-a-bug/ 301
 /it/dev/fun/whack-a-bug/ /it/arcade/whack-a-bug/ 301
 /it/dev/fun/whack-a-bug /it/arcade/whack-a-bug/ 301
-/sv/dev/fun/whack-a-bug/ /sv/arcade/whack-a-bug/ 301
-/sv/dev/fun/whack-a-bug /sv/arcade/whack-a-bug/ 301
-/da/dev/fun/whack-a-bug/ /da/arcade/whack-a-bug/ 301
-/da/dev/fun/whack-a-bug /da/arcade/whack-a-bug/ 301
-/nb/dev/fun/whack-a-bug/ /nb/arcade/whack-a-bug/ 301
-/nb/dev/fun/whack-a-bug /nb/arcade/whack-a-bug/ 301
-/ru/dev/fun/whack-a-bug/ /ru/arcade/whack-a-bug/ 301
-/ru/dev/fun/whack-a-bug /ru/arcade/whack-a-bug/ 301
-/pl/dev/fun/whack-a-bug/ /pl/arcade/whack-a-bug/ 301
-/pl/dev/fun/whack-a-bug /pl/arcade/whack-a-bug/ 301
-/tr/dev/fun/whack-a-bug/ /tr/arcade/whack-a-bug/ 301
-/tr/dev/fun/whack-a-bug /tr/arcade/whack-a-bug/ 301
-/ms/dev/fun/whack-a-bug/ /ms/arcade/whack-a-bug/ 301
-/ms/dev/fun/whack-a-bug /ms/arcade/whack-a-bug/ 301
-/fil/dev/fun/whack-a-bug/ /fil/arcade/whack-a-bug/ 301
-/fil/dev/fun/whack-a-bug /fil/arcade/whack-a-bug/ 301
-/zh-Hans/dev/fun/whack-a-bug/ /zh-Hans/arcade/whack-a-bug/ 301
-/zh-Hans/dev/fun/whack-a-bug /zh-Hans/arcade/whack-a-bug/ 301
 /en/dev/fun/aggregate/ /en/arcade/aggregate/ 301
 /en/dev/fun/aggregate /en/arcade/aggregate/ 301
 /pt-BR/dev/fun/aggregate/ /pt-BR/arcade/aggregate/ 301
@@ -113,28 +70,8 @@
 /de/dev/fun/aggregate /de/arcade/aggregate/ 301
 /fr/dev/fun/aggregate/ /fr/arcade/aggregate/ 301
 /fr/dev/fun/aggregate /fr/arcade/aggregate/ 301
-/nl/dev/fun/aggregate/ /nl/arcade/aggregate/ 301
-/nl/dev/fun/aggregate /nl/arcade/aggregate/ 301
 /it/dev/fun/aggregate/ /it/arcade/aggregate/ 301
 /it/dev/fun/aggregate /it/arcade/aggregate/ 301
-/sv/dev/fun/aggregate/ /sv/arcade/aggregate/ 301
-/sv/dev/fun/aggregate /sv/arcade/aggregate/ 301
-/da/dev/fun/aggregate/ /da/arcade/aggregate/ 301
-/da/dev/fun/aggregate /da/arcade/aggregate/ 301
-/nb/dev/fun/aggregate/ /nb/arcade/aggregate/ 301
-/nb/dev/fun/aggregate /nb/arcade/aggregate/ 301
-/ru/dev/fun/aggregate/ /ru/arcade/aggregate/ 301
-/ru/dev/fun/aggregate /ru/arcade/aggregate/ 301
-/pl/dev/fun/aggregate/ /pl/arcade/aggregate/ 301
-/pl/dev/fun/aggregate /pl/arcade/aggregate/ 301
-/tr/dev/fun/aggregate/ /tr/arcade/aggregate/ 301
-/tr/dev/fun/aggregate /tr/arcade/aggregate/ 301
-/ms/dev/fun/aggregate/ /ms/arcade/aggregate/ 301
-/ms/dev/fun/aggregate /ms/arcade/aggregate/ 301
-/fil/dev/fun/aggregate/ /fil/arcade/aggregate/ 301
-/fil/dev/fun/aggregate /fil/arcade/aggregate/ 301
-/zh-Hans/dev/fun/aggregate/ /zh-Hans/arcade/aggregate/ 301
-/zh-Hans/dev/fun/aggregate /zh-Hans/arcade/aggregate/ 301
 /en/dev/fun/first-match/ /en/arcade/first-match/ 301
 /en/dev/fun/first-match /en/arcade/first-match/ 301
 /pt-BR/dev/fun/first-match/ /pt-BR/arcade/first-match/ 301
@@ -145,28 +82,8 @@
 /de/dev/fun/first-match /de/arcade/first-match/ 301
 /fr/dev/fun/first-match/ /fr/arcade/first-match/ 301
 /fr/dev/fun/first-match /fr/arcade/first-match/ 301
-/nl/dev/fun/first-match/ /nl/arcade/first-match/ 301
-/nl/dev/fun/first-match /nl/arcade/first-match/ 301
 /it/dev/fun/first-match/ /it/arcade/first-match/ 301
 /it/dev/fun/first-match /it/arcade/first-match/ 301
-/sv/dev/fun/first-match/ /sv/arcade/first-match/ 301
-/sv/dev/fun/first-match /sv/arcade/first-match/ 301
-/da/dev/fun/first-match/ /da/arcade/first-match/ 301
-/da/dev/fun/first-match /da/arcade/first-match/ 301
-/nb/dev/fun/first-match/ /nb/arcade/first-match/ 301
-/nb/dev/fun/first-match /nb/arcade/first-match/ 301
-/ru/dev/fun/first-match/ /ru/arcade/first-match/ 301
-/ru/dev/fun/first-match /ru/arcade/first-match/ 301
-/pl/dev/fun/first-match/ /pl/arcade/first-match/ 301
-/pl/dev/fun/first-match /pl/arcade/first-match/ 301
-/tr/dev/fun/first-match/ /tr/arcade/first-match/ 301
-/tr/dev/fun/first-match /tr/arcade/first-match/ 301
-/ms/dev/fun/first-match/ /ms/arcade/first-match/ 301
-/ms/dev/fun/first-match /ms/arcade/first-match/ 301
-/fil/dev/fun/first-match/ /fil/arcade/first-match/ 301
-/fil/dev/fun/first-match /fil/arcade/first-match/ 301
-/zh-Hans/dev/fun/first-match/ /zh-Hans/arcade/first-match/ 301
-/zh-Hans/dev/fun/first-match /zh-Hans/arcade/first-match/ 301
 /en/dev/fun/exit-the-editor/ /en/arcade/exit-the-editor/ 301
 /en/dev/fun/exit-the-editor /en/arcade/exit-the-editor/ 301
 /pt-BR/dev/fun/exit-the-editor/ /pt-BR/arcade/exit-the-editor/ 301
@@ -177,28 +94,8 @@
 /de/dev/fun/exit-the-editor /de/arcade/exit-the-editor/ 301
 /fr/dev/fun/exit-the-editor/ /fr/arcade/exit-the-editor/ 301
 /fr/dev/fun/exit-the-editor /fr/arcade/exit-the-editor/ 301
-/nl/dev/fun/exit-the-editor/ /nl/arcade/exit-the-editor/ 301
-/nl/dev/fun/exit-the-editor /nl/arcade/exit-the-editor/ 301
 /it/dev/fun/exit-the-editor/ /it/arcade/exit-the-editor/ 301
 /it/dev/fun/exit-the-editor /it/arcade/exit-the-editor/ 301
-/sv/dev/fun/exit-the-editor/ /sv/arcade/exit-the-editor/ 301
-/sv/dev/fun/exit-the-editor /sv/arcade/exit-the-editor/ 301
-/da/dev/fun/exit-the-editor/ /da/arcade/exit-the-editor/ 301
-/da/dev/fun/exit-the-editor /da/arcade/exit-the-editor/ 301
-/nb/dev/fun/exit-the-editor/ /nb/arcade/exit-the-editor/ 301
-/nb/dev/fun/exit-the-editor /nb/arcade/exit-the-editor/ 301
-/ru/dev/fun/exit-the-editor/ /ru/arcade/exit-the-editor/ 301
-/ru/dev/fun/exit-the-editor /ru/arcade/exit-the-editor/ 301
-/pl/dev/fun/exit-the-editor/ /pl/arcade/exit-the-editor/ 301
-/pl/dev/fun/exit-the-editor /pl/arcade/exit-the-editor/ 301
-/tr/dev/fun/exit-the-editor/ /tr/arcade/exit-the-editor/ 301
-/tr/dev/fun/exit-the-editor /tr/arcade/exit-the-editor/ 301
-/ms/dev/fun/exit-the-editor/ /ms/arcade/exit-the-editor/ 301
-/ms/dev/fun/exit-the-editor /ms/arcade/exit-the-editor/ 301
-/fil/dev/fun/exit-the-editor/ /fil/arcade/exit-the-editor/ 301
-/fil/dev/fun/exit-the-editor /fil/arcade/exit-the-editor/ 301
-/zh-Hans/dev/fun/exit-the-editor/ /zh-Hans/arcade/exit-the-editor/ 301
-/zh-Hans/dev/fun/exit-the-editor /zh-Hans/arcade/exit-the-editor/ 301
 /en/dev/fun/packet-stack/ /en/arcade/packet-stack/ 301
 /en/dev/fun/packet-stack /en/arcade/packet-stack/ 301
 /pt-BR/dev/fun/packet-stack/ /pt-BR/arcade/packet-stack/ 301
@@ -209,28 +106,8 @@
 /de/dev/fun/packet-stack /de/arcade/packet-stack/ 301
 /fr/dev/fun/packet-stack/ /fr/arcade/packet-stack/ 301
 /fr/dev/fun/packet-stack /fr/arcade/packet-stack/ 301
-/nl/dev/fun/packet-stack/ /nl/arcade/packet-stack/ 301
-/nl/dev/fun/packet-stack /nl/arcade/packet-stack/ 301
 /it/dev/fun/packet-stack/ /it/arcade/packet-stack/ 301
 /it/dev/fun/packet-stack /it/arcade/packet-stack/ 301
-/sv/dev/fun/packet-stack/ /sv/arcade/packet-stack/ 301
-/sv/dev/fun/packet-stack /sv/arcade/packet-stack/ 301
-/da/dev/fun/packet-stack/ /da/arcade/packet-stack/ 301
-/da/dev/fun/packet-stack /da/arcade/packet-stack/ 301
-/nb/dev/fun/packet-stack/ /nb/arcade/packet-stack/ 301
-/nb/dev/fun/packet-stack /nb/arcade/packet-stack/ 301
-/ru/dev/fun/packet-stack/ /ru/arcade/packet-stack/ 301
-/ru/dev/fun/packet-stack /ru/arcade/packet-stack/ 301
-/pl/dev/fun/packet-stack/ /pl/arcade/packet-stack/ 301
-/pl/dev/fun/packet-stack /pl/arcade/packet-stack/ 301
-/tr/dev/fun/packet-stack/ /tr/arcade/packet-stack/ 301
-/tr/dev/fun/packet-stack /tr/arcade/packet-stack/ 301
-/ms/dev/fun/packet-stack/ /ms/arcade/packet-stack/ 301
-/ms/dev/fun/packet-stack /ms/arcade/packet-stack/ 301
-/fil/dev/fun/packet-stack/ /fil/arcade/packet-stack/ 301
-/fil/dev/fun/packet-stack /fil/arcade/packet-stack/ 301
-/zh-Hans/dev/fun/packet-stack/ /zh-Hans/arcade/packet-stack/ 301
-/zh-Hans/dev/fun/packet-stack /zh-Hans/arcade/packet-stack/ 301
 /en/dev/fun/ttl/ /en/arcade/ttl/ 301
 /en/dev/fun/ttl /en/arcade/ttl/ 301
 /pt-BR/dev/fun/ttl/ /pt-BR/arcade/ttl/ 301
@@ -241,28 +118,8 @@
 /de/dev/fun/ttl /de/arcade/ttl/ 301
 /fr/dev/fun/ttl/ /fr/arcade/ttl/ 301
 /fr/dev/fun/ttl /fr/arcade/ttl/ 301
-/nl/dev/fun/ttl/ /nl/arcade/ttl/ 301
-/nl/dev/fun/ttl /nl/arcade/ttl/ 301
 /it/dev/fun/ttl/ /it/arcade/ttl/ 301
 /it/dev/fun/ttl /it/arcade/ttl/ 301
-/sv/dev/fun/ttl/ /sv/arcade/ttl/ 301
-/sv/dev/fun/ttl /sv/arcade/ttl/ 301
-/da/dev/fun/ttl/ /da/arcade/ttl/ 301
-/da/dev/fun/ttl /da/arcade/ttl/ 301
-/nb/dev/fun/ttl/ /nb/arcade/ttl/ 301
-/nb/dev/fun/ttl /nb/arcade/ttl/ 301
-/ru/dev/fun/ttl/ /ru/arcade/ttl/ 301
-/ru/dev/fun/ttl /ru/arcade/ttl/ 301
-/pl/dev/fun/ttl/ /pl/arcade/ttl/ 301
-/pl/dev/fun/ttl /pl/arcade/ttl/ 301
-/tr/dev/fun/ttl/ /tr/arcade/ttl/ 301
-/tr/dev/fun/ttl /tr/arcade/ttl/ 301
-/ms/dev/fun/ttl/ /ms/arcade/ttl/ 301
-/ms/dev/fun/ttl /ms/arcade/ttl/ 301
-/fil/dev/fun/ttl/ /fil/arcade/ttl/ 301
-/fil/dev/fun/ttl /fil/arcade/ttl/ 301
-/zh-Hans/dev/fun/ttl/ /zh-Hans/arcade/ttl/ 301
-/zh-Hans/dev/fun/ttl /zh-Hans/arcade/ttl/ 301
 /en/dev/fun/rule-inspector/ /en/arcade/rule-inspector/ 301
 /en/dev/fun/rule-inspector /en/arcade/rule-inspector/ 301
 /pt-BR/dev/fun/rule-inspector/ /pt-BR/arcade/rule-inspector/ 301
@@ -273,28 +130,8 @@
 /de/dev/fun/rule-inspector /de/arcade/rule-inspector/ 301
 /fr/dev/fun/rule-inspector/ /fr/arcade/rule-inspector/ 301
 /fr/dev/fun/rule-inspector /fr/arcade/rule-inspector/ 301
-/nl/dev/fun/rule-inspector/ /nl/arcade/rule-inspector/ 301
-/nl/dev/fun/rule-inspector /nl/arcade/rule-inspector/ 301
 /it/dev/fun/rule-inspector/ /it/arcade/rule-inspector/ 301
 /it/dev/fun/rule-inspector /it/arcade/rule-inspector/ 301
-/sv/dev/fun/rule-inspector/ /sv/arcade/rule-inspector/ 301
-/sv/dev/fun/rule-inspector /sv/arcade/rule-inspector/ 301
-/da/dev/fun/rule-inspector/ /da/arcade/rule-inspector/ 301
-/da/dev/fun/rule-inspector /da/arcade/rule-inspector/ 301
-/nb/dev/fun/rule-inspector/ /nb/arcade/rule-inspector/ 301
-/nb/dev/fun/rule-inspector /nb/arcade/rule-inspector/ 301
-/ru/dev/fun/rule-inspector/ /ru/arcade/rule-inspector/ 301
-/ru/dev/fun/rule-inspector /ru/arcade/rule-inspector/ 301
-/pl/dev/fun/rule-inspector/ /pl/arcade/rule-inspector/ 301
-/pl/dev/fun/rule-inspector /pl/arcade/rule-inspector/ 301
-/tr/dev/fun/rule-inspector/ /tr/arcade/rule-inspector/ 301
-/tr/dev/fun/rule-inspector /tr/arcade/rule-inspector/ 301
-/ms/dev/fun/rule-inspector/ /ms/arcade/rule-inspector/ 301
-/ms/dev/fun/rule-inspector /ms/arcade/rule-inspector/ 301
-/fil/dev/fun/rule-inspector/ /fil/arcade/rule-inspector/ 301
-/fil/dev/fun/rule-inspector /fil/arcade/rule-inspector/ 301
-/zh-Hans/dev/fun/rule-inspector/ /zh-Hans/arcade/rule-inspector/ 301
-/zh-Hans/dev/fun/rule-inspector /zh-Hans/arcade/rule-inspector/ 301
 /en/dev/fun/incident-commander/ /en/arcade/incident-commander/ 301
 /en/dev/fun/incident-commander /en/arcade/incident-commander/ 301
 /pt-BR/dev/fun/incident-commander/ /pt-BR/arcade/incident-commander/ 301
@@ -305,28 +142,8 @@
 /de/dev/fun/incident-commander /de/arcade/incident-commander/ 301
 /fr/dev/fun/incident-commander/ /fr/arcade/incident-commander/ 301
 /fr/dev/fun/incident-commander /fr/arcade/incident-commander/ 301
-/nl/dev/fun/incident-commander/ /nl/arcade/incident-commander/ 301
-/nl/dev/fun/incident-commander /nl/arcade/incident-commander/ 301
 /it/dev/fun/incident-commander/ /it/arcade/incident-commander/ 301
 /it/dev/fun/incident-commander /it/arcade/incident-commander/ 301
-/sv/dev/fun/incident-commander/ /sv/arcade/incident-commander/ 301
-/sv/dev/fun/incident-commander /sv/arcade/incident-commander/ 301
-/da/dev/fun/incident-commander/ /da/arcade/incident-commander/ 301
-/da/dev/fun/incident-commander /da/arcade/incident-commander/ 301
-/nb/dev/fun/incident-commander/ /nb/arcade/incident-commander/ 301
-/nb/dev/fun/incident-commander /nb/arcade/incident-commander/ 301
-/ru/dev/fun/incident-commander/ /ru/arcade/incident-commander/ 301
-/ru/dev/fun/incident-commander /ru/arcade/incident-commander/ 301
-/pl/dev/fun/incident-commander/ /pl/arcade/incident-commander/ 301
-/pl/dev/fun/incident-commander /pl/arcade/incident-commander/ 301
-/tr/dev/fun/incident-commander/ /tr/arcade/incident-commander/ 301
-/tr/dev/fun/incident-commander /tr/arcade/incident-commander/ 301
-/ms/dev/fun/incident-commander/ /ms/arcade/incident-commander/ 301
-/ms/dev/fun/incident-commander /ms/arcade/incident-commander/ 301
-/fil/dev/fun/incident-commander/ /fil/arcade/incident-commander/ 301
-/fil/dev/fun/incident-commander /fil/arcade/incident-commander/ 301
-/zh-Hans/dev/fun/incident-commander/ /zh-Hans/arcade/incident-commander/ 301
-/zh-Hans/dev/fun/incident-commander /zh-Hans/arcade/incident-commander/ 301
 
 # /dev-fun moved to /dev/fun (2026-07-08). Static rules per D-82 policy.
 
@@ -560,21 +377,11 @@
 # sent there rather than hitting a 404. Static rules, placed before the
 # dynamic block below as Cloudflare requires.
 # ===========================================================================
-/da/dev/fun/importance-meter/ /en/dev/fun/importance-meter/ 301
 /de/dev/fun/importance-meter/ /en/dev/fun/importance-meter/ 301
 /es/dev/fun/importance-meter/ /en/dev/fun/importance-meter/ 301
-/fil/dev/fun/importance-meter/ /en/dev/fun/importance-meter/ 301
 /fr/dev/fun/importance-meter/ /en/dev/fun/importance-meter/ 301
 /it/dev/fun/importance-meter/ /en/dev/fun/importance-meter/ 301
-/ms/dev/fun/importance-meter/ /en/dev/fun/importance-meter/ 301
-/nb/dev/fun/importance-meter/ /en/dev/fun/importance-meter/ 301
-/nl/dev/fun/importance-meter/ /en/dev/fun/importance-meter/ 301
-/pl/dev/fun/importance-meter/ /en/dev/fun/importance-meter/ 301
 /pt-BR/dev/fun/importance-meter/ /en/dev/fun/importance-meter/ 301
-/ru/dev/fun/importance-meter/ /en/dev/fun/importance-meter/ 301
-/sv/dev/fun/importance-meter/ /en/dev/fun/importance-meter/ 301
-/tr/dev/fun/importance-meter/ /en/dev/fun/importance-meter/ 301
-/zh-Hans/dev/fun/importance-meter/ /en/dev/fun/importance-meter/ 301
 
 
 # --- /about/vendors + /about/history MOVED to /industry (PRIME 2026-08-06) ---
@@ -606,165 +413,75 @@
 # first dynamic one and silently drops the remainder otherwise, which
 # check-redirects caught when these two blocks were written the other way round.
 
-/da/industry/history /da/about/ 301
 /de/industry/history /de/about/ 301
 /en/industry/history /en/about/ 301
 /es/industry/history /es/about/ 301
-/fil/industry/history /fil/about/ 301
 /fr/industry/history /fr/about/ 301
 /it/industry/history /it/about/ 301
-/ms/industry/history /ms/about/ 301
-/nb/industry/history /nb/about/ 301
-/nl/industry/history /nl/about/ 301
-/pl/industry/history /pl/about/ 301
 /pt-BR/industry/history /pt-BR/about/ 301
-/ru/industry/history /ru/about/ 301
-/sv/industry/history /sv/about/ 301
-/tr/industry/history /tr/about/ 301
-/zh-Hans/industry/history /zh-Hans/about/ 301
 
 # The three era chapters, enumerated rather than splatted. A splat would cost 16
 # of the 100 dynamic rules Cloudflare allows, against 2,000 static; there are
 # only three chapters, so the abundant budget covers them and the scarce one is
 # left for rules that genuinely need a wildcard.
 
-/da/industry/history/pre-1996 /da/about/pre-1996/ 301
 /de/industry/history/pre-1996 /de/about/pre-1996/ 301
 /en/industry/history/pre-1996 /en/about/pre-1996/ 301
 /es/industry/history/pre-1996 /es/about/pre-1996/ 301
-/fil/industry/history/pre-1996 /fil/about/pre-1996/ 301
 /fr/industry/history/pre-1996 /fr/about/pre-1996/ 301
 /it/industry/history/pre-1996 /it/about/pre-1996/ 301
-/ms/industry/history/pre-1996 /ms/about/pre-1996/ 301
-/nb/industry/history/pre-1996 /nb/about/pre-1996/ 301
-/nl/industry/history/pre-1996 /nl/about/pre-1996/ 301
-/pl/industry/history/pre-1996 /pl/about/pre-1996/ 301
 /pt-BR/industry/history/pre-1996 /pt-BR/about/pre-1996/ 301
-/ru/industry/history/pre-1996 /ru/about/pre-1996/ 301
-/sv/industry/history/pre-1996 /sv/about/pre-1996/ 301
-/tr/industry/history/pre-1996 /tr/about/pre-1996/ 301
-/zh-Hans/industry/history/pre-1996 /zh-Hans/about/pre-1996/ 301
 
-/da/industry/history/1996-2020 /da/about/1996-2020/ 301
 /de/industry/history/1996-2020 /de/about/1996-2020/ 301
 /en/industry/history/1996-2020 /en/about/1996-2020/ 301
 /es/industry/history/1996-2020 /es/about/1996-2020/ 301
-/fil/industry/history/1996-2020 /fil/about/1996-2020/ 301
 /fr/industry/history/1996-2020 /fr/about/1996-2020/ 301
 /it/industry/history/1996-2020 /it/about/1996-2020/ 301
-/ms/industry/history/1996-2020 /ms/about/1996-2020/ 301
-/nb/industry/history/1996-2020 /nb/about/1996-2020/ 301
-/nl/industry/history/1996-2020 /nl/about/1996-2020/ 301
-/pl/industry/history/1996-2020 /pl/about/1996-2020/ 301
 /pt-BR/industry/history/1996-2020 /pt-BR/about/1996-2020/ 301
-/ru/industry/history/1996-2020 /ru/about/1996-2020/ 301
-/sv/industry/history/1996-2020 /sv/about/1996-2020/ 301
-/tr/industry/history/1996-2020 /tr/about/1996-2020/ 301
-/zh-Hans/industry/history/1996-2020 /zh-Hans/about/1996-2020/ 301
 
-/da/industry/history/2020-present /da/about/2020-present/ 301
 /de/industry/history/2020-present /de/about/2020-present/ 301
 /en/industry/history/2020-present /en/about/2020-present/ 301
 /es/industry/history/2020-present /es/about/2020-present/ 301
-/fil/industry/history/2020-present /fil/about/2020-present/ 301
 /fr/industry/history/2020-present /fr/about/2020-present/ 301
 /it/industry/history/2020-present /it/about/2020-present/ 301
-/ms/industry/history/2020-present /ms/about/2020-present/ 301
-/nb/industry/history/2020-present /nb/about/2020-present/ 301
-/nl/industry/history/2020-present /nl/about/2020-present/ 301
-/pl/industry/history/2020-present /pl/about/2020-present/ 301
 /pt-BR/industry/history/2020-present /pt-BR/about/2020-present/ 301
-/ru/industry/history/2020-present /ru/about/2020-present/ 301
-/sv/industry/history/2020-present /sv/about/2020-present/ 301
-/tr/industry/history/2020-present /tr/about/2020-present/ 301
-/zh-Hans/industry/history/2020-present /zh-Hans/about/2020-present/ 301
 
 # The trailing-slash forms of the same 64 rules (production audit of 2026-10-15, F06): Cloudflare matches a
 # static rule exactly, so /en/industry/history/pre-1996/ (the form Next.js renders, trailingSlash being on) fell
 # through every bare rule above and answered 404 while the bare form redirected. Both forms are needed; both are
 # now written. Static, so they stay in the 2,000 budget and ahead of the first dynamic rule.
-/da/industry/history/ /da/about/ 301
 /de/industry/history/ /de/about/ 301
 /en/industry/history/ /en/about/ 301
 /es/industry/history/ /es/about/ 301
-/fil/industry/history/ /fil/about/ 301
 /fr/industry/history/ /fr/about/ 301
 /it/industry/history/ /it/about/ 301
-/ms/industry/history/ /ms/about/ 301
-/nb/industry/history/ /nb/about/ 301
-/nl/industry/history/ /nl/about/ 301
-/pl/industry/history/ /pl/about/ 301
 /pt-BR/industry/history/ /pt-BR/about/ 301
-/ru/industry/history/ /ru/about/ 301
-/sv/industry/history/ /sv/about/ 301
-/tr/industry/history/ /tr/about/ 301
-/zh-Hans/industry/history/ /zh-Hans/about/ 301
-/da/industry/history/pre-1996/ /da/about/pre-1996/ 301
 /de/industry/history/pre-1996/ /de/about/pre-1996/ 301
 /en/industry/history/pre-1996/ /en/about/pre-1996/ 301
 /es/industry/history/pre-1996/ /es/about/pre-1996/ 301
-/fil/industry/history/pre-1996/ /fil/about/pre-1996/ 301
 /fr/industry/history/pre-1996/ /fr/about/pre-1996/ 301
 /it/industry/history/pre-1996/ /it/about/pre-1996/ 301
-/ms/industry/history/pre-1996/ /ms/about/pre-1996/ 301
-/nb/industry/history/pre-1996/ /nb/about/pre-1996/ 301
-/nl/industry/history/pre-1996/ /nl/about/pre-1996/ 301
-/pl/industry/history/pre-1996/ /pl/about/pre-1996/ 301
 /pt-BR/industry/history/pre-1996/ /pt-BR/about/pre-1996/ 301
-/ru/industry/history/pre-1996/ /ru/about/pre-1996/ 301
-/sv/industry/history/pre-1996/ /sv/about/pre-1996/ 301
-/tr/industry/history/pre-1996/ /tr/about/pre-1996/ 301
-/zh-Hans/industry/history/pre-1996/ /zh-Hans/about/pre-1996/ 301
-/da/industry/history/1996-2020/ /da/about/1996-2020/ 301
 /de/industry/history/1996-2020/ /de/about/1996-2020/ 301
 /en/industry/history/1996-2020/ /en/about/1996-2020/ 301
 /es/industry/history/1996-2020/ /es/about/1996-2020/ 301
-/fil/industry/history/1996-2020/ /fil/about/1996-2020/ 301
 /fr/industry/history/1996-2020/ /fr/about/1996-2020/ 301
 /it/industry/history/1996-2020/ /it/about/1996-2020/ 301
-/ms/industry/history/1996-2020/ /ms/about/1996-2020/ 301
-/nb/industry/history/1996-2020/ /nb/about/1996-2020/ 301
-/nl/industry/history/1996-2020/ /nl/about/1996-2020/ 301
-/pl/industry/history/1996-2020/ /pl/about/1996-2020/ 301
 /pt-BR/industry/history/1996-2020/ /pt-BR/about/1996-2020/ 301
-/ru/industry/history/1996-2020/ /ru/about/1996-2020/ 301
-/sv/industry/history/1996-2020/ /sv/about/1996-2020/ 301
-/tr/industry/history/1996-2020/ /tr/about/1996-2020/ 301
-/zh-Hans/industry/history/1996-2020/ /zh-Hans/about/1996-2020/ 301
-/da/industry/history/2020-present/ /da/about/2020-present/ 301
 /de/industry/history/2020-present/ /de/about/2020-present/ 301
 /en/industry/history/2020-present/ /en/about/2020-present/ 301
 /es/industry/history/2020-present/ /es/about/2020-present/ 301
-/fil/industry/history/2020-present/ /fil/about/2020-present/ 301
 /fr/industry/history/2020-present/ /fr/about/2020-present/ 301
 /it/industry/history/2020-present/ /it/about/2020-present/ 301
-/ms/industry/history/2020-present/ /ms/about/2020-present/ 301
-/nb/industry/history/2020-present/ /nb/about/2020-present/ 301
-/nl/industry/history/2020-present/ /nl/about/2020-present/ 301
-/pl/industry/history/2020-present/ /pl/about/2020-present/ 301
 /pt-BR/industry/history/2020-present/ /pt-BR/about/2020-present/ 301
-/ru/industry/history/2020-present/ /ru/about/2020-present/ 301
-/sv/industry/history/2020-present/ /sv/about/2020-present/ 301
-/tr/industry/history/2020-present/ /tr/about/2020-present/ 301
-/zh-Hans/industry/history/2020-present/ /zh-Hans/about/2020-present/ 301
 
 
-/da/about/vendors/partner/* /da/industry/:splat 301
 /de/about/vendors/partner/* /de/industry/:splat 301
 /en/about/vendors/partner/* /en/industry/:splat 301
 /es/about/vendors/partner/* /es/industry/:splat 301
-/fil/about/vendors/partner/* /fil/industry/:splat 301
 /fr/about/vendors/partner/* /fr/industry/:splat 301
 /it/about/vendors/partner/* /it/industry/:splat 301
-/ms/about/vendors/partner/* /ms/industry/:splat 301
-/nb/about/vendors/partner/* /nb/industry/:splat 301
-/nl/about/vendors/partner/* /nl/industry/:splat 301
-/pl/about/vendors/partner/* /pl/industry/:splat 301
 /pt-BR/about/vendors/partner/* /pt-BR/industry/:splat 301
-/ru/about/vendors/partner/* /ru/industry/:splat 301
-/sv/about/vendors/partner/* /sv/industry/:splat 301
-/tr/about/vendors/partner/* /tr/industry/:splat 301
-/zh-Hans/about/vendors/partner/* /zh-Hans/industry/:splat 301
 
 # --- TIER 1 PLACEHOLDER COLLAPSE (PRIME 2026-08-06) ---
 # Three rules replacing 112 static ones, using TWO placeholders each: the

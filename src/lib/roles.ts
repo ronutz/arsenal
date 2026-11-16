@@ -1235,6 +1235,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       sources: [
         { label: "Cisco - IOS XR software architecture: independent protected processes, message passing between components, and the two-stage commit that constrains how configuration changes are written", url: "https://www.cisco.com/c/en/us/products/collateral/ios-nx-os-software/ios-xr-software/index.html" },
         { label: "Juniper - Junos OS Evolved architecture: a distributed state store from which a restarted process retrieves its state, including on a different node", url: "https://www.juniper.net/documentation/us/en/software/junos/overview-evo/topics/concept/evo-overview.html" },
+        { label: "Juniper - Junos OS Evolved architecture: a distributed state store from which a restarted process retrieves its state, including on a different node; link dead as of 27 September 2026", url: "https://www.juniper.net/documentation/us/en/software/junos/junos-evolved-overview/topics/concept/evo-overview.html" }, // restored 15/11/2026: dead link kept (RULE-dead-sources-keep-content-20261115)
         { label: "Arista - EOS architecture: an unmodified Linux kernel with a central state database, where processes publish and subscribe rather than communicating directly", url: "https://www.arista.com/en/products/eos" },
       ],
     },

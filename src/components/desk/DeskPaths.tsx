@@ -98,7 +98,7 @@ export default function DeskPaths(props: { data: DeskData; index: SiteIndex | nu
   // The paths.
   const { paths, read } = props.data;
 
-  // A link to one path (/desk#path=<id>, from "Continue this path" on an item page): that path opened, brought into
+  // A link to one path (/my-desk#path=<id>, from "Continue this path" on an item page): that path opened, brought into
   // view and given focus, once, when the widget first appears.
   useEffect(() => {
     // The id in the address, in the store's form.

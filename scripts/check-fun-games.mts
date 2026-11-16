@@ -28,10 +28,16 @@ import { readdirSync, existsSync, readFileSync } from "node:fs";
 // The engines.
 import { FUN_ENGINES } from "../src/lib/fun/registry";
 // The shelf's list of games, and the page each one's group gives it (/arcade/<id> or /dev/fun/<id>).
-import { FUN_GAMES, funPagePath, funSection } from "../src/config/funGames";
+import { FUN_GAMES, FUN_TOYS, funPagePath, funSection } from "../src/config/funGames";
+
 // The public scoreboard (08/11/2026): its honesty check's golden cases and its shared rules' own cases.
 import { verifySelfTest } from "../src/lib/fun/verify";
 import { BOARD_GAMES, rulesSelfTest } from "../src/lib/fun/board-rules";
+// The LGTM tune's score and the LGTM stamp: their self-tests were written with them (15/11/2026) and had not been
+// wired into any guard; they run here since 15/11/2026 21:15.
+import { scoreSelfTest } from "../src/lib/fun/lgtm/score";
+// The stamp's.
+import { stampSelfTest } from "../src/lib/fun/lgtm/stamp";
 
 // Problems found.
 const problems: string[] = [];
@@ -61,7 +67,7 @@ for (const engine of FUN_ENGINES) {
 // The scoreboard's checks (PRIME 08/11/2026): for each board game, a round built from the engine's own answer verifies
 // with the expected score and the same round tampered with is refused; then the initials, the day window and the
 // fields the browser sends. They run here, with the engines they rebuild the puzzles from.
-for (const [label, test] of [["scoreboard verify", verifySelfTest], ["scoreboard rules", rulesSelfTest]] as const) {
+for (const [label, test] of [["scoreboard verify", verifySelfTest], ["scoreboard rules", rulesSelfTest], ["lgtm score", scoreSelfTest], ["lgtm stamp", stampSelfTest]] as const) {
   // Timed, like the engines.
   const t0 = performance.now();
   // A throw is a failure too.
@@ -144,6 +150,22 @@ for (const section of ["/dev/fun", "/arcade"] as const) {
     // Listed, but its group puts it in the other section (a page left behind by a move).
     else if (funSection(entry.name) !== section) problems.push(`${entry.name}: its page is under ${section}, but its group puts it at ${funPagePath(entry.name)}`);
   }
+}
+
+// Every card on the shelf has its drawing: a game by its id, a toy by its page slug (as the shelf page looks them up).
+// (PRIME 15/11/2026 21:12: the LGTM cards had none, and nothing noticed.) The ids are read from GameGlyph.tsx's
+// GLYPH_IDS list as text: the drawings are JSX, which this script does not load.
+const glyphSrc = readFileSync("src/components/dev/fun/GameGlyph.tsx", "utf8");
+// The list's body.
+const glyphList = /export const GLYPH_IDS = \[([\s\S]*?)\] as const;/.exec(glyphSrc)?.[1] ?? "";
+// Its quoted ids.
+const glyphIds = new Set([...glyphList.matchAll(/"([a-z0-9-]+)"/g)].map((m) => m[1]));
+// An unreadable list is a failure of its own, not a pass.
+if (glyphIds.size === 0) problems.push("GameGlyph.tsx: the GLYPH_IDS list could not be read");
+// Each card.
+for (const id of [...FUN_GAMES.map((g) => g.id), ...FUN_TOYS.map((toy) => toy.href.split("/").pop() ?? "")]) {
+  // No drawing for this card.
+  if (!glyphIds.has(id)) problems.push(`${id}: its card on the shelf has no drawing in src/components/dev/fun/GameGlyph.tsx`);
 }
 
 // The verdict.

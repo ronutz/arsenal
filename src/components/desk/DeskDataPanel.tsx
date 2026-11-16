@@ -13,7 +13,7 @@
 //
 //   USE THIS ON ANOTHER BROWSER, three ways:
 //   1. pairing by QR code or link: this browser shows a QR code (the in-house
-//      encoder, src/lib/desk/qr.ts) and a link /<locale>/desk/#pair=<code>; the
+//      encoder, src/lib/desk/qr.ts) and a link /<locale>/my-desk/#pair=<code>; the
 //      other browser opens it and joins the encrypted sync;
 //   2. the sync code typed by hand, in groups of four;
 //   3. without the server: the whole portable profile in a file, or in a link
@@ -352,7 +352,7 @@ export default function DeskDataPanel() {
       <h3 className="desk-h3">{t("clearTitle")}</h3>
       <div className="desk-controls-row">
         <button type="button" className="desk-btn desk-btn--quiet" disabled={!ready} onClick={() => { setBeforeDesk(clearDesk()); setBeforeProfile(null); setMsg(t("cleared")); }}>{t("clear")}</button>
-        <Link href="/desk" className="desk-link">{t("open")} <span aria-hidden="true">{"→"}</span></Link>
+        <Link href="/my-desk" className="desk-link">{t("open")} <span aria-hidden="true">{"→"}</span></Link>
       </div>
       {/* What happened, with an Undo for an import or a clear. */}
       {msg && (

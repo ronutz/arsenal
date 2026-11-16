@@ -80,6 +80,7 @@ const KEEP = [
   /range, color/gi, /gray and grey/gi, // HTML's input type, CSS's two spellings
   /bot defense/gi, /defense attributes/gi, // F5's product and policy names
   /gray failures?/gi, // the term Huang et al. named in "Gray Failure: The Achilles' Heel of Cloud-Scale Systems" (HotOS 2017); the glossary's gray-failure headword
+  /\bPariser\b/g, // Eli Pariser's surname (he coined "filter bubble"), which the -ise rule misreads when it opens a sentence (15/11/2026)
 ];
 /** Pack paths outside the check: external titles, protocol and file field names, the US-English courses. */
 const SKIP_PREFIXES = ["glossary.entries.", "learnLabs.", "toolReferences.", "toolProvenance.", "materials.",

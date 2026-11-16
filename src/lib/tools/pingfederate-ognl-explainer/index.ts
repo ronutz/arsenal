@@ -62,6 +62,7 @@ export const manifest = Object.freeze({
   sources: [
     // 2026-10-18: Apache moved Commons OGNL to its dormant components; the old /proper/ address answers 404.
     { id: "ognl-language-guide", label: "Apache Commons OGNL language guide: expression syntax, projections and static method access", url: "https://commons.apache.org/dormant/commons-ognl/language-guide.html" },
+    { id: "ognl-language-guide-dead-link", label: "Apache Commons OGNL language guide: expression syntax, projections and static method access; link dead as of 18 October 2026", url: "https://commons.apache.org/proper/commons-ognl/language-guide.html" }, // restored 15/11/2026: dead link kept (RULE-dead-sources-keep-content-20261115)
     { id: "ping-expressions", label: "Ping Identity PingFederate documentation: attribute mapping expressions and the Expression Administrator role", url: "https://docs.pingidentity.com/pingfederate/latest/administrators_reference_guide/pf_attribute_mapping_expressions.html" },
   ],
 });

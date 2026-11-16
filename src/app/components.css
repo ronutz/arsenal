@@ -20116,14 +20116,12 @@ main[data-view="list"] .boss-viewer-item.has-share > .boss-viewer-card { padding
 .omnibox-example { padding: 0.25rem 0.7rem; border: 1px solid var(--border-subtle); border-radius: 999px; background: transparent; color: var(--text-secondary); font-family: var(--font-mono); font-size: 0.78rem; cursor: pointer; transition: border-color 0.15s ease, color 0.15s ease; }
 .omnibox-example:hover, .omnibox-example:focus-visible { border-color: var(--accent-primary); color: var(--accent-primary); }
 
-/* --- 2. Start here: six intents, each a question, a destination and a verb -- */
+/* --- 2. Start here: eight intents and the surprise card, each a question, a destination and a verb -- */
 .intent-grid { list-style: none; margin: 1.5rem 0 0; padding: 0; display: grid; grid-template-columns: 1fr; gap: 1rem; }
 @media (min-width: 36rem) { .intent-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 56rem) { .intent-grid { grid-template-columns: repeat(3, 1fr); } }
-/* The home page's Start here holds seven cards since 15/11/2026 (the Blog joined as the sixth). Four columns from 56rem
-   and the last card, "Take me somewhere", spanning two at two or four columns: 2+2+2+2 and 4+3 rows, none ragged. */
-@media (min-width: 36rem) { .intent-grid--home .intent--surprise { grid-column: span 2; } }
-@media (min-width: 56rem) { .intent-grid--home { grid-template-columns: repeat(4, 1fr); } }
+/* No card spans two columns (PRIME 15/11/2026 20:26): the home page's nine cards use the plain grid above, one column
+   on a phone, two in between (four full rows and the surprise card alone in the fifth) and three on a wide screen. */
 /* The item carries the accent as a custom property set inline by the page; the link reads it. */
 .intent { min-width: 0; }
 .intent-link { display: flex; flex-direction: column; gap: 0.45rem; height: 100%; padding: 1rem 1.1rem 1.05rem; border: 1px solid var(--border-subtle); border-inline-start: 3px solid var(--intent-accent, var(--accent-primary)); border-radius: var(--radius-md); background: color-mix(in srgb, var(--intent-accent, var(--accent-primary)) 6%, var(--surface-base)); color: inherit; text-decoration: none; transition: transform 140ms ease, border-color 140ms ease, background 140ms ease; }
@@ -24500,7 +24498,9 @@ html.presenter-covering body {
 /* the questions keep the article's own list style; the last one closes the box without extra space */
 .reader-questions-body > :last-child { margin-bottom: 0; }
 /* A claim's status label, after the claim, small and boxed so it never reads as part of the sentence. */
-.claim-status { display: inline-block; margin-left: 0.15rem; padding: 0 0.35rem; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); font-size: 0.72rem; line-height: 1.5; vertical-align: 0.1em; white-space: nowrap; color: var(--text-secondary); }
+/* A long status label ("Alleged by the Republican majority staff of ...") wraps inside its box instead of pushing the page
+   sideways on a phone (found 15/11/2026 at 390 px: up to 130 px of overflow on nine psyops pages). */
+.claim-status { display: inline-block; max-width: 100%; margin-left: 0.15rem; padding: 0 0.35rem; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); font-size: 0.72rem; line-height: 1.5; vertical-align: 0.1em; white-space: normal; overflow-wrap: anywhere; color: var(--text-secondary); }
 /* The status colours, repeating the word: green for established, blue for attributed and reported, amber for alleged
    and disputed, red for denied. */
 .claim--established .claim-status { border-color: var(--color-success); color: var(--color-success); }
@@ -24676,7 +24676,7 @@ html.presenter-covering body {
 .intel-details summary { cursor: pointer; margin-bottom: 0.6rem; }
 
 /* ============================================================================
-   MY DESK (PRIME 12/11/2026 12:42; PLAN-personal-desk-20261112): the reader's own page (/desk), the Save, Mark as read
+   MY DESK (PRIME 12/11/2026 12:42; PLAN-personal-desk-20261112): the reader's own page (/my-desk), the Save, Mark as read
    and Add to path controls on item pages, the "Add to a path" panel (item pages and the search dialog), the progress
    lines on series pages, the Home block beside "continue", the header link and the Settings section. Semantic tokens
    only; every state is said in words and a sign (a star, a tick, a ring), colour is never the only channel; buttons

@@ -56,6 +56,83 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // The electronic-trading series, wave 1 (PRIME 15/11/2026 21:31): the opener and nine parts, 40 glossary entries,
+    // the PTP entry enriched with its existing text and sources kept, and the new "Markets and trading" subject group.
+    date: "2026-11-15", // the day it was done
+    time: "22:54", // São Paulo time
+    kind: "content", // new writing and glossary entries
+    title: "New series: electronic trading, from the trading floor to FIX and the microsecond, in ten articles; 40 new glossary entries", // the headline
+    titlePt: "Nova série: negociação eletrônica, do pregão ao FIX e ao microssegundo, em dez artigos; 40 verbetes novos no glossário", // the Portuguese headline
+    body: // what changed, in plain words
+      "A new Learn series follows trading from people shouting on exchange floors to matching engines that answer in microseconds. The opener maps the venues, brokers, investors, protocols, networks, vendors and regulators, with a dated timeline. The parts cover open outcry and Brazil's pregão; the first electronic exchanges, from Nasdaq to CME Globex and Brazil's PUMA; the rules that reshaped markets, from Regulation ATS and Regulation NMS to MiFID II and the resolutions of Brazil's securities regulator, the Comissão de Valores Mobiliários (CVM); high-frequency trading and the dispute about it, with the evidence on both sides; colocation, microwave links and the race for latency; the Financial Information eXchange (FIX) protocol's origins, versions and community; the anatomy of a FIX message and its session layer, with a worked checksum; the FIX networks and managed connectivity providers; and Brazil's exchanges, from BM&F and Bovespa to B3 and electronic access. Forty glossary entries define the terms, from open outcry and the specialist to FIX sessions, direct market access and the PUMA Trading System, and the Precision Time Protocol (PTP) entry now covers the clock rules of financial markets. Nine more parts are named in the opener and will follow.",
+    articles: ["electronic-trading-from-the-pit-to-the-microsecond", "open-outcry-trading-floors-and-the-pregao", "the-screens-arrive-electronic-exchanges-from-nasdaq-to-globex", "the-rules-that-rewired-markets-reg-ats-reg-nms-mifid-and-brazil", "high-frequency-trading-what-it-is-and-the-dispute", "colocation-microwaves-and-the-race-for-latency", "the-fix-protocol-origins-versions-and-the-community", "anatomy-of-a-fix-message-and-the-session-layer", "fix-networks-hubs-and-managed-connectivity", "brazil-bmf-bovespa-b3-and-electronic-access"], // the ten new Learn articles
+    links: [ // where to see it
+      { label: "The series", href: "/learn/series#electronic-trading" }, // the series on the index
+      { label: "Glossary", href: "/glossary" }, // the new entries
+    ],
+  },
+  {
+    // Dead citations restored (15/11/2026, finished 21:43): a citation whose page died stays, marked dead, beside any
+    // newer source; the ones removed earlier came back with their original address.
+    date: "2026-11-15", // the day it was done
+    time: "21:43", // São Paulo time
+    kind: "content", // sources in articles, glossary and Industry entries
+    title: "Citations to pages that have gone offline are back, marked as dead links", // the headline
+    titlePt: "Citações de páginas que saíram do ar estão de volta, marcadas como links fora do ar", // the Portuguese headline
+    body: // what changed, in plain words
+      "Fifty citations removed earlier because their pages had gone offline or could no longer be read are back where they were, each with its original address and marked as a dead link with the date it was found dead, beside any newer source added since: 37 in Industry entries, seven in the glossary, and the rest in Learn articles and tool notes. Two Industry entries also get their group's website link back, marked dead.",
+    links: [ // where to see it
+      { label: "Industry", href: "/industry" }, // most of the restored citations
+      { label: "Glossary", href: "/glossary" }, // seven restored sources
+    ],
+  },
+  {
+    // The LGTM stamp's "Changes requested" chime (PRIME 15/11/2026 21:08; the LGTM chime unchanged, 21:15), the two LGTM
+    // cards' drawings on the shelf (21:12) and the /lgtm short address (20:56). The 128, 256 and 512-bit eras of the
+    // tune were built and dropped at PRIME's word (21:15), so nothing of them ships.
+    date: "2026-11-15", // the day it was done
+    time: "21:15", // São Paulo time
+    kind: "feature", // new toys and game improvements
+    title: "The LGTM stamp gets a chime for changes requested, and the LGTM cards get their drawings", // the headline
+    titlePt: "O carimbo LGTM ganha um sininho para mudanças solicitadas, e os cards do LGTM ganham seus desenhos", // the Portuguese headline
+    body: // what changed, in plain words
+      "The LGTM stamp now has a chime for a \"Changes requested\" verdict too: four falling notes, the last one held and sagging, beside the green-check chime of an LGTM, which is unchanged. On the /dev/fun shelf, the LGTM and LGTM stamp cards have drawings like the others, and ronutz.com/lgtm is a short address for the LGTM page.",
+    links: [ // where to see it
+      { label: "LGTM", href: "/dev/fun/lgtm" }, // the page the short address opens
+      { label: "The LGTM stamp", href: "/dev/fun/lgtm-stamp" }, // the new chime
+      { label: "/dev/fun", href: "/dev/fun" }, // the cards
+    ],
+  },
+  {
+    // The psyops series' Arcs 4 to 6 (ten parts), their 32 glossary entries, the Marco Civil entry's update and the
+    // sources added beside the existing ones in the earlier parts (15/11/2026; no existing citation removed).
+    date: "2026-11-15", // the day it was done
+    time: "19:35", // São Paulo time
+    kind: "content", // new writing and glossary entries
+    title: "The psychological operations series is complete: ten new parts on reach, platforms, law, surveillance and the defences; 32 new glossary entries", // the headline
+    titlePt: "A série sobre operações psicológicas está completa: dez partes novas sobre alcance, plataformas, leis, vigilância e defesas; 32 verbetes novos no glossário", // the Portuguese headline
+    body: // what changed, in plain words
+      "The psychological operations series gains its last ten parts. Three trace how reach changed, from word of mouth and the two-step flow to forwarding limits, what the research on echo chambers and filter bubbles does and does not show, and what platforms disclose about recommendation and profiling, with the rules of Brazil's ECA Digital (Law 15.211/2025) for children. Three cover the platforms and the state: content moderation at scale, with Meta's own integrity figures; the law, from Section 230 and the EU's Digital Services Act (DSA) to the Marco Civil da Internet after the Federal Supreme Court's (STF) 2025 judgment and 2026 thesis; and surveillance capability and the limits placed on it. The last four cover the defences and their limits: verification and fact-checking, prebunking and inoculation, why misbeliefs persist after correction, and generative artificial intelligence (AI) and influence operations, including the 2024 takedown of a Russian bot farm and what independent counts of AI's effect on elections found. The series opener now links every part. Thirty-two glossary entries, from structural virality to AI watermarking, define the terms the parts use, and the Marco Civil entry now states the STF's 2025 and 2026 rulings on article 19. Earlier parts and the opener gain further sources beside the ones they already cite, among them the Justice Department's archived release, the presidency's compiled laws and news agency reports.",
+    articles: ["from-the-lodge-to-the-network-how-reach-changed", "echo-chambers-and-filter-bubbles-the-evidence-and-the-dispute", "recommendation-and-profiling-what-platforms-disclose", "content-moderation-at-scale", "platform-law-section-230-the-dsa-and-the-marco-civil", "surveillance-capability-and-restraint", "verification-and-fact-checking", "prebunking-and-inoculation", "why-misbeliefs-persist", "generative-ai-and-influence-operations"], // the ten new Learn articles
+    links: [ // where to see it
+      { label: "The series opener", href: "/learn/psychological-operations-from-the-small-lie-to-the-campaign" }, // every part linked
+      { label: "Glossary", href: "/glossary" }, // the new entries
+    ],
+  },
+  {
+    // Start here (home page): eight cards in three columns in PRIME's order of 15/11/2026 19:01, then the surprise card.
+    date: "2026-11-15", // the day it was done
+    time: "19:35", // São Paulo time
+    kind: "feature", // page improvements
+    title: "Start here on the home page: eight cards in three columns, with About and Fun lab added", // the headline
+    titlePt: "Comece aqui na página inicial: oito cards em três colunas, com Sobre e Laboratório de diversão incluídos", // the Portuguese headline
+    body: // what changed, in plain words
+      "The home page's Start here now shows eight cards in three columns on wider screens: Tools, Learn, Industry, Training, Advisory, About, Blog and Fun lab, followed by Take me somewhere. About, for readers who want to know who is behind the site, and Fun lab, the games and toys shelf, are new.",
+    links: [ // where to see it
+      { label: "Home", href: "/" }, // the Start here section
+    ],
+  },
+  {
     // The LGTM homage and its stamp toy (queue 5d; PRIME 12/11/2026 21:24, 14/11 18:19 and 22:09, 15/11 05:14 to 05:34
     // and 17:34), the Five Clues comments (PRIME 12/11/2026 18:20) and the Prefix of the Day bit view (18:28).
     date: "2026-11-15", // the day it was done
@@ -133,7 +210,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     body: // what changed, in plain words
       "My desk is the reader's own page on the site. Save any tool, Learn article, glossary entry or certification guide; mark what you have read (automatically at the end of an article, with a one-tap undo, or by hand anywhere); gather items into paths of your own, and every article in one of your paths ends with a link to the next unread item in it. You arrange the desk from widgets: saved items, paths, New for you (what changed since your last visit in the series, paths and tool families you follow), reading streaks and milestones counted only from your own read marks, notes, an exam countdown, quick tools (a subnet calculator, Base64, epoch time and UUID (universally unique identifier)) and a privacy and settings panel with links to every preference. Everything is kept in this browser. To use the same desk and settings in another browser or on a phone, an optional sync carries them end-to-end encrypted: the key is made from a sync code only you hold, and the site stores ciphertext it cannot read. Pairing works by QR code, by link or by typing the code, and a file or a link moves a profile with no server at all. The Privacy page lists what travels and what never leaves the browser. Learn feeds now exist per series and per language. Elsewhere: the security tools are split into four sections, Firewalls and policy, WAF (web application firewall) and web app protection, Secure access (Security Service Edge (SSE) and Secure Access Service Edge (SASE)), and Threat analysis, with 43 Learn articles gathered on the new secure access shelf; the boxes of personal opinion in Learn and the blog are gone, replaced by questions left to the reader; the games' scoreboard counts unique browsers a day from a single yes-or-no mark on each round, with no identifier stored; and a new blog post sets out how Brazil's leaks have put more records into circulation than the country has people, with ten steps a citizen can take.",
     links: [ // where to see it
-      { label: "My desk", href: "/desk" }, // the reader's own page
+      { label: "My desk", href: "/my-desk" }, // the reader's own page
       { label: "Secure access (SSE and SASE)", href: "/category/sase" }, // the new section
       { label: "No Brazilian has private data left", href: "/blog/no-brazilian-has-private-data-left" }, // the new post
       { label: "Scoreboard", href: "/dev/fun/scores" }, // unique browsers per day

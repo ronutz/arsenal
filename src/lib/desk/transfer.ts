@@ -13,7 +13,7 @@
 // never the bookkeeping. Made in the browser and handed to the reader as a
 // download; nothing is sent anywhere.
 //
-// THE LINK: /<locale>/desk#desk=<data>. The part after "#" is never sent in a
+// THE LINK: /<locale>/my-desk#desk=<data>. The part after "#" is never sent in a
 // request, so the desk goes from one browser to another without reaching the
 // site. The data is the same JSON, compressed with the browser's own
 // CompressionStream where it has one ("z." + base64url of raw deflate), or
@@ -140,7 +140,7 @@ export async function makeTransferLink(d: DeskData, origin: string, locale: stri
     // Plain it is.
   }
   // The page, with the data after the "#".
-  return `${origin}/${locale}/desk#${TRANSFER_PARAM}=${data}`;
+  return `${origin}/${locale}/my-desk#${TRANSFER_PARAM}=${data}`;
 }
 
 /**
@@ -177,9 +177,9 @@ export async function readTransferFragment(hash: string): Promise<DeskSynced | n
 // "Move with a link"), and the pairing link that joins another browser to the sync.
 //   - The file: {"format": "ronutz-profile", "v": 2, "day": ..., "keys": {...}}, every portable key
 //     (src/lib/desk/portable.ts) with the desk's notes; never the sync code, never a local-only key.
-//   - The link: /<locale>/desk/#profile=<base64url of the gzip of that JSON>; for small profiles only (the page says
+//   - The link: /<locale>/my-desk/#profile=<base64url of the gzip of that JSON>; for small profiles only (the page says
 //     when it is too long and offers the file).
-//   - The pairing link: /<locale>/desk/#pair=<sync code>. The code travels after the "#", which browsers never send.
+//   - The pairing link: /<locale>/my-desk/#pair=<sync code>. The code travels after the "#", which browsers never send.
 // Whatever comes in is merged by the profile's rules (or used instead, the reader's choice) and can be undone.
 // ---------------------------------------------------------------------------
 
@@ -247,7 +247,7 @@ export async function makeProfileLink(origin: string, locale: string, includeNot
   // Compressed.
   const data = await gzipToBase64Url(JSON.stringify({ v: 2, keys: collectProfile(includeNotes) }));
   // The link.
-  const link = `${origin}/${locale}/desk/#profile=${data}`;
+  const link = `${origin}/${locale}/my-desk/#profile=${data}`;
   // Offered only when short enough.
   return { link: link.length <= PROFILE_LINK_MAX ? link : null, length: link.length };
 }
@@ -289,7 +289,7 @@ export async function readProfileFragment(hash: string): Promise<Profile | null>
  */
 export function pairLink(origin: string, locale: string, code: string): string {
   // The code after the "#".
-  return `${origin}/${locale}/desk/#pair=${code}`;
+  return `${origin}/${locale}/my-desk/#pair=${code}`;
 }
 
 /**

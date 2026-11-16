@@ -69,7 +69,7 @@ export default function HomeDesk() {
         </>
       )}
       <p className="home-desk-open">
-        <Link href="/desk" className="continue-link">{t("deskOpen")} <span aria-hidden="true">&#8594;</span></Link>
+        <Link href="/my-desk" className="continue-link">{t("deskOpen")} <span aria-hidden="true">&#8594;</span></Link>
       </p>
     </div>
   );

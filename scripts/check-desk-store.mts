@@ -168,7 +168,7 @@ const mem = new Map<string, string>();
   addEventListener: () => undefined,
   removeEventListener: () => undefined,
   dispatchEvent: () => true,
-  location: { pathname: "/en/desk/" },
+  location: { pathname: "/en/my-desk/" },
 };
 
 // The page's root element, for the theme and hints a merged profile applies at once.
@@ -573,11 +573,11 @@ for (const raw of [null, 42, "x", [], { v: 9, saved: "nope", read: [1], paths: {
   // The pairing link.
   const code = cryptoMod.newSyncCode();
   const pl = transfer.pairLink("https://ronutz.com", "pt-BR", code);
-  check(pl === `https://ronutz.com/pt-BR/desk/#pair=${code}` && transfer.readPairFragment(pl.slice(pl.indexOf("#"))) === code, "the pairing link is /<locale>/desk/#pair=<code>, read back");
+  check(pl === `https://ronutz.com/pt-BR/my-desk/#pair=${code}` && transfer.readPairFragment(pl.slice(pl.indexOf("#"))) === code, "the pairing link is /<locale>/my-desk/#pair=<code>, read back");
   check(transfer.readPairFragment("#pair=short") === null, "a cut pairing link is refused");
   // The profile link and file, from the stand-in's storage.
   const link = await transfer.makeProfileLink("https://ronutz.com", "en", false);
-  check(!!link.link && link.link.startsWith("https://ronutz.com/en/desk/#profile=") && link.length <= transfer.PROFILE_LINK_MAX, "the profile link carries the profile after the #");
+  check(!!link.link && link.link.startsWith("https://ronutz.com/en/my-desk/#profile=") && link.length <= transfer.PROFILE_LINK_MAX, "the profile link carries the profile after the #");
   const fromLink = link.link ? await transfer.readProfileFragment(link.link.slice(link.link.indexOf("#"))) : null;
   check(!!fromLink && fromLink["ronutz-theme"] === "paper" && store.DESK_KEY in fromLink && !("ronutz:interest:v1" in fromLink), "the profile link reads back the portable keys only");
   check(JSON.stringify(transfer.parseProfileFile(JSON.stringify({ format: transfer.PROFILE_FORMAT, keys: { "ronutz-theme": "paper", "ronutz:interest:v1": {} } }))) === JSON.stringify({ "ronutz-theme": "paper" }), "a profile file reads back its portable keys only");
@@ -587,7 +587,8 @@ for (const raw of [null, 42, "x", [], { v: 9, saved: "nope", read: [1], paths: {
 
 // ---- 10. The QR code: golden vectors read back by OpenCV's decoder on 12/11/2026 ------------------------------------
 {
-  // Text, version, first 32 hex of SHA-256 over the rows of 0s and 1s.
+  // Text, version, first 32 hex of SHA-256 over the rows of 0s and 1s. The two links below are encoder inputs read back
+  // by OpenCV on 12/11/2026, kept as they were when the page moved to /my-desk (15/11/2026): they test the QR encoder, not the route.
   const GOLDEN: [string, number, string][] = [
     ["A", 1, "2092585037e9da5651bc5530c31a5a1f"],
     ["https://ronutz.com/pt-BR/desk/#pair=7K2M9QXA4B5C6D7E8F9GHJKMNPQRSTVW", 5, "1aee3c1f3f6fc25ccb386b080b99f74d"],
@@ -1041,9 +1042,9 @@ for (const raw of [null, 42, "x", [], { v: 9, saved: "nope", read: [1], paths: {
   // The stylesheet: the top copy only on a narrow screen; the finish moves only when motion is welcome.
   const css = fs.readFileSync("src/app/components.css", "utf8");
   check(/@media \(min-width: 48rem\) \{ \.desk-pathnext--top \{ display: none; \} \}/.test(css) && /@media \(prefers-reduced-motion: no-preference\) \{\s*\.desk-pathnext-done--now \{[^}]*animation:/.test(css) && (css.match(/\.desk-pathnext-done--now \{/g) ?? []).length === 1, "the copy near an article's top shows only on a narrow screen, and a path finished on the page moves only without reduced motion");
-  // The desk opens a path named in its address (/desk#path=<id>), the link the control gives.
+  // The desk opens a path named in its address (/my-desk#path=<id>), the link the control gives.
   const pathsSrc = fs.readFileSync("src/components/desk/DeskPaths.tsx", "utf8");
-  check(/\^#path=\(\[a-z0-9\]\{4,24\}\)\$/.test(pathsSrc) && /id=\{`desk-path-\$\{p\.id\}`\}/.test(pathsSrc) && /href=\{`\/desk#path=\$\{h\.path\.id\}`\}/.test(comp), "the control links to its path on My desk, which opens that path from its address");
+  check(/\^#path=\(\[a-z0-9\]\{4,24\}\)\$/.test(pathsSrc) && /id=\{`desk-path-\$\{p\.id\}`\}/.test(pathsSrc) && /href=\{`\/my-desk#path=\$\{h\.path\.id\}`\}/.test(comp), "the control links to its path on My desk, which opens that path from its address");
   // Every word of the control in the six packs.
   for (const loc of ["en", "pt-BR", "es", "de", "fr", "it"]) {
     // The pack.
@@ -1074,7 +1075,7 @@ for (const raw of [null, 42, "x", [], { v: 9, saved: "nope", read: [1], paths: {
   const panel = fs.readFileSync("src/components/desk/DeskDataPanel.tsx", "utf8");
   check(/href="\/settings#desk"/.test(w) && /href="\/privacy#desk"/.test(w) && /href="\/settings#desk-sync"/.test(w) && /<section className="section" id="desk">/.test(settings) && /titleKey === "deskTitle" \? "desk"/.test(privacy) && /id="desk-sync"/.test(panel), "the widget's links land on the desk's sections of Settings and of the Privacy page");
   // The counting switch's words are the Settings page's own, given by the desk's route.
-  const route = fs.readFileSync("src/app/[locale]/desk/page.tsx", "utf8");
+  const route = fs.readFileSync("src/app/[locale]/my-desk/page.tsx", "utf8");
   check(/getTranslations\("settings_page"\)/.test(route) && /interestLabels=\{\{/.test(route), "the counting switch on the desk speaks the Settings page's own words");
   // Every word of the widget in the six packs.
   for (const loc of ["en", "pt-BR", "es", "de", "fr", "it"]) {

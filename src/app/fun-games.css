@@ -81,6 +81,9 @@
 .fg-glyph--boss-screens { --glyph-hue: 220; }
 .fg-glyph--cat-distribution { --glyph-hue: 30; }
 .fg-glyph--importance-meter { --glyph-hue: 15; }
+/* LGTM: the green of an approval; the stamp: the red of its ink (PRIME 15/11/2026 21:12). */
+.fg-glyph--lgtm { --glyph-hue: 140; }
+.fg-glyph--lgtm-stamp { --glyph-hue: 350; }
 .fg-glyph--arcade { --glyph-hue: 92; }
 /* The accent itself, wherever a glyph class is set. */
 [class*="fg-glyph--"] { --glyph-accent: color-mix(in oklab, hsl(var(--glyph-hue, 200) 85% 55%) 76%, var(--text-primary)); }

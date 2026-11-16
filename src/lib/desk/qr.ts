@@ -7,7 +7,7 @@
 // AN IN-HOUSE QR CODE ENCODER, for pairing a second browser with My desk's
 // sync (PRIME 12/11/2026 13:38, "Portable storage": "an in-house encoder, no
 // package and no third-party service; byte mode, error correction M"). The
-// pairing link (/<locale>/desk/#pair=<code>) is drawn as a QR code in this
+// pairing link (/<locale>/my-desk/#pair=<code>) is drawn as a QR code in this
 // browser and nowhere else: no image service, no library.
 //
 // WHAT IT DOES: ISO/IEC 18004 QR Code Model 2, byte mode, error correction

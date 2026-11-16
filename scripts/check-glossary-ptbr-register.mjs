@@ -36,12 +36,13 @@ const DECLARED = new Map([
   ["archive-formats|quadros", "video frame rate (taxa de quadros)"],
   ["carrier-hotel|inquilinos", "real-estate tenants of a building"],
   ["darpa|quadro", "permanent staff (quadro permanente)"],
+  ["digital-services-act|sinalizadores", "the regulation's own Portuguese term for trusted flaggers (sinalizador de confiança, Regulamento (UE) 2022/2065, recital 61, read 15/11/2026), glossed after the English term"],
   ["goto-considered-harmful|salto", "a jump in code"],
   ["goto-considered-harmful|saltos", "jumps in code"],
   // jude-milhon|quadro came off the list on 12/11/2026: the content sweep's text says "mural eletrônico".
   ["kanban|quadro", "the kanban board"],
   ["lb|balanceador de carga", "allowed gloss in parentheses after 'load balancer'"],
-  ["marco-civil-da-internet|quadro", "a framework law (lei-quadro)"],
+  // marco-civil-da-internet|quadro came off the list on 15/11/2026: the rewritten entry no longer says "lei-quadro".
   ["meet-me-room|inquilino", "a colocation tenant renting space"],
   ["newedge|quadro", "ordinary sense: a picture of the situation"],
   ["norad|quadro", "ordinary sense: a display board"],
