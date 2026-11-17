@@ -35,6 +35,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePlayAreaReveal } from "./playArea";
 // The game's strings and the shell's.
 import { useTranslations } from "next-intl";
+// The game's own keys, for the site's keyboard help (? or h; 16/11/2026).
+import { usePageKeys } from "@/components/PageKeys";
 // The frame around every game.
 import GameShell, { type ShellResult } from "./GameShell";
 // Today's UTC day, the reduced-motion preference, the frame loop.
@@ -177,6 +179,8 @@ export default function WhackABug({ locale }: { locale: string }) {
   // The game's strings and the shell's.
   const t = useTranslations("devFun.games.whack-a-bug");
   const tc = useTranslations("devFun.games.common");
+  // The keys, told to the site's keyboard help (? or h, PRIME 16/11/2026 03:14): while a run is under way the site's shortcuts are off.
+  usePageKeys({ when: "playing", lines: [t("keysHint")] });
   // Today, after mount.
   const today = useToday();
   // The earlier puzzle on the board (?day=), or null: its wording says "this day's" where today's says "today's".

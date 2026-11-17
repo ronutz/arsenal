@@ -45,22 +45,44 @@
 // handler (BossApp installs its own; Search handles Escape; the cheat-sheet
 // overlay below handles Escape). This component makes sure `?`/boss/search all
 // route through those popups so Esc closes whatever is up.
+//
+// THE HELP, REFRESHED (PRIME 16/11/2026 03:14: "refresh the contents of the
+// site's help menu ... Map the letter h to help ... place a "Customize" link
+// next to the keys that are customizable ... list all current key mappings ...
+// change the contents of the help contextually"). ? and h open it and close
+// it (h by default, since that day; Home moved to i). It lists, in order:
+//   1. On this page, when the page differs from the rest of the site: the
+//      page's own keys and when they apply (registered with usePageKeys,
+//      src/components/PageKeys.tsx), the letters being off on a page that owns
+//      the alphabet (? still opens this there, h does not), and "." when the
+//      page has actions;
+//   2. the site shortcuts, every binding in SHORTCUT_KEYS order as this
+//      browser resolves it, each marked when it does nothing here (a letter on
+//      a page that owns the alphabet, k and x on a page with no item) and with
+//      a Customize link to its row in Settings when the policy lets it change;
+//   3. the other keys (OTHER_KEYS in src/config/shortcuts.ts): ., Esc, Ctrl K
+//      or Cmd K, p then v, the boss screen's arrows, and typing in a field.
 // ============================================================================
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useRouter } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import BossApp from "@/components/dev/fun/BossApp";
 import { drawBossScreen, type BossScreenKind } from "@/components/dev/fun/boss-screens";
 import { resolveBindings, subscribe } from "@/lib/preferences";
-import { ACTION_BY_ID, DEFAULT_BINDINGS } from "@/config/shortcuts";
+import { ACTION_BY_ID, DEFAULT_BINDINGS, OTHER_KEYS, SHORTCUT_KEYS, isKeyCustomizable, shortcutSettingsHref } from "@/config/shortcuts";
 import {
   getPageCapabilities,
   subscribePageCapabilities,
   areLetterShortcutsSuppressed,
   subscribeLetterShortcuts,
   areSiteShortcutsSuppressed,
+  getPageKeys,
+  subscribePageKeys,
+  hasDeskItem,
   type PageCapabilitySet,
   type PageCapability,
+  type PageKeys,
+  type PageKeysWhen,
 } from "@/lib/pageCapabilities";
 import { manPageToHtml } from "@/lib/manPageMarkdown";
 import PongVirus from "@/components/dev/fun/PongVirus";
@@ -104,6 +126,34 @@ export interface ShortcutsLabels {
   pongOn: string;
   /** Announced when p v calls it off. */
   pongOff: string;
+
+  // --- The help's sections and marks (16/11/2026) ---
+  /** Heading: what differs on the page shown. */
+  helpHere: string;
+  /** Heading: the bindings. */
+  helpSite: string;
+  /** Heading: the keys that are not bindings. */
+  helpOther: string;
+  /** The link to a key's row in Settings. */
+  customize: string;
+  /** Its accessible name, with %KEY% where the key goes ("Customize the H key"). */
+  customizeAria: string;
+  /** A binding or key that does nothing on this page. */
+  offHere: string;
+  /** k and x on a page with no item to save. */
+  noItemHere: string;
+  /** "." on a page with no actions. */
+  notHere: string;
+  /** When the page's own keys apply, one note per mode. */
+  when: Record<PageKeysWhen, string>;
+  /** The letters are off on a page that owns the alphabet. */
+  lettersOff: string;
+  /** "." works on this page. */
+  dotHere: string;
+  /** The other keys' labels, by OTHER_KEYS id. */
+  otherLabels: Record<string, string>;
+  /** The other keys' caps, by OTHER_KEYS id, each cap separated by "|". */
+  otherCaps: Record<string, string>;
 }
 
 interface KeyboardShortcutsProps {
@@ -143,6 +193,122 @@ function ShortcutRouterBridge({
     navigateRef.current = (path: string) => router.push(path);
   }, [router, navigateRef]);
   return null;
+}
+
+/** The commands that act on the page's own item (My desk): they do nothing on a page without one. */
+const DESK_ACTIONS = new Set(["cmd-desk-save", "cmd-desk-read"]);
+
+/**
+ * The help's body (16/11/2026): what differs on this page, the site shortcuts with their Customize links, and the
+ * other keys. Rendered only while the help is open, so it reads the page's state at the moment it opens.
+ *
+ * @param props.labels the localized words
+ * @param props.bindings the bindings as this browser resolves them
+ * @param props.pageKeys the page's own keys, or null
+ * @param props.lettersOff whether the page owns the alphabet (letters do nothing here)
+ * @param props.dotHere whether "." opens page actions here
+ * @param props.deskItem whether the page has an item that k and x act on
+ * @param props.onLeave closes the help (a Customize link leaves for Settings)
+ * @returns the three lists
+ */
+function CheatSheetBody(props: {
+  labels: ShortcutsLabels;
+  bindings: Record<string, string>;
+  pageKeys: PageKeys | null;
+  lettersOff: boolean;
+  dotHere: boolean;
+  deskItem: boolean;
+  onLeave: () => void;
+}) {
+  // The values, unpacked.
+  const { labels, bindings, pageKeys, lettersOff, dotHere, deskItem, onLeave } = props;
+  // The keys in the registry's order, then any other key a resolved binding names (none today).
+  const keys = [...SHORTCUT_KEYS.filter((k) => k in bindings), ...Object.keys(bindings).filter((k) => !SHORTCUT_KEYS.includes(k))];
+  // Whether this page differs from the rest of the site at all.
+  const showHere = Boolean(pageKeys) || lettersOff || dotHere;
+  return (
+    <>
+      {/* 1. On this page: only when something here differs. */}
+      {showHere && (
+        <div className="kbd-cheat-section kbd-cheat-here">
+          <h3 className="kbd-cheat-sub">{labels.helpHere}</h3>
+          {/* When the page's own keys apply, and whether the site's stand down meanwhile. */}
+          {pageKeys && <p className="kbd-cheat-note">{labels.when[pageKeys.when]}</p>}
+          {/* The page's own keys, in the words of its own rules. */}
+          {pageKeys?.lines.map((line, i) => (
+            <p key={i} className="kbd-cheat-page-line">
+              {line}
+            </p>
+          ))}
+          {/* The letters, off on a page that owns the alphabet. */}
+          {lettersOff && <p className="kbd-cheat-note">{labels.lettersOff}</p>}
+          {/* The page's actions, on "." */}
+          {dotHere && <p className="kbd-cheat-note">{labels.dotHere}</p>}
+        </div>
+      )}
+
+      {/* 2. The site shortcuts, each with what it does, whether it does anything here, and a Customize link. */}
+      <h3 className="kbd-cheat-sub">{labels.helpSite}</h3>
+      <ul className="kbd-cheat-list">
+        {keys.map((key) => {
+          // What the key does in this browser.
+          const actionId = bindings[key];
+          // A letter on a page that owns the alphabet does nothing.
+          const off = lettersOff && /^[a-z]$/.test(key);
+          // k and x do nothing on a page with no item.
+          const noItem = !off && DESK_ACTIONS.has(actionId) && !deskItem;
+          return (
+            <li key={key} className={`kbd-cheat-row${off || noItem ? " kbd-cheat-row-off" : ""}`}>
+              <kbd className="kbd-cheat-key mono">{keyLabel(key)}</kbd>
+              <span className="kbd-cheat-action">
+                {labels.actionLabels[actionId] ?? actionId}
+                {/* Why it does nothing here. */}
+                {(off || noItem) && <span className="kbd-cheat-off">{off ? labels.offHere : labels.noItemHere}</span>}
+              </span>
+              {/* Customize: to this key's row in Settings, when the policy lets it change. */}
+              {isKeyCustomizable(key) && (
+                <Link
+                  href={shortcutSettingsHref(key)}
+                  className="kbd-cheat-customize"
+                  aria-label={labels.customizeAria.replace("%KEY%", keyLabel(key))}
+                  onClick={onLeave}
+                >
+                  {labels.customize}
+                </Link>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+
+      {/* 3. The other keys: not bindings, so nothing to customize. */}
+      <h3 className="kbd-cheat-sub">{labels.helpOther}</h3>
+      {/* Its own class: the caps sit in one column of fixed width, so the descriptions line up (stacked on a phone). */}
+      <ul className="kbd-cheat-list kbd-cheat-list-other">
+        {OTHER_KEYS.map((o) => {
+          // Letters on a page that owns the alphabet, or "." on a page without actions, do nothing here.
+          const off = (o.letters && lettersOff) || (o.id === "dot" && !dotHere);
+          return (
+            <li key={o.id} className={`kbd-cheat-row${off ? " kbd-cheat-row-off" : ""}`}>
+              {/* The caps: one key, a chord in two spellings, or a sequence. */}
+              <span className="kbd-cheat-keys">
+                {(labels.otherCaps[o.id] ?? "").split("|").map((cap, i) => (
+                  <kbd key={i} className="kbd-cheat-key mono">
+                    {cap}
+                  </kbd>
+                ))}
+              </span>
+              <span className="kbd-cheat-action">
+                {labels.otherLabels[o.id] ?? o.id}
+                {/* Why it does nothing here. */}
+                {off && <span className="kbd-cheat-off">{o.id === "dot" ? labels.notHere : labels.offHere}</span>}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+    </>
+  );
 }
 
 export default function KeyboardShortcuts({ labels }: KeyboardShortcutsProps) {
@@ -223,6 +389,15 @@ export default function KeyboardShortcuts({ labels }: KeyboardShortcutsProps) {
     };
     sync();
     return subscribePageCapabilities(sync);
+  }, []);
+
+  // The page's own keys, for the help's "On this page" (16/11/2026): mirrored from the page-keys store.
+  const [pageKeys, setPageKeysState] = useState<PageKeys | null>(null);
+  useEffect(() => {
+    // Read now and on every change (a page arriving, leaving, or switching mode).
+    const sync = () => setPageKeysState(getPageKeys());
+    sync();
+    return subscribePageKeys(sync);
   }, []);
 
   // Pick a boss screen using the shared shuffled bag (drawBossScreen) so none
@@ -312,7 +487,12 @@ export default function KeyboardShortcuts({ labels }: KeyboardShortcutsProps) {
       // Popups own their own Esc; if one is up, don't also fire shortcuts.
       if (bossScreen) return;
       if (cheatOpen) {
-        if (e.key === "Escape") setCheatOpen(false);
+        // Escape closes the help, and so does the key that opened it: ?, or any key bound to the help (h by default).
+        const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+        if (e.key === "Escape" || k === "?" || bindings[k] === "cmd-cheat-sheet") {
+          e.preventDefault();
+          setCheatOpen(false);
+        }
         return;
       }
       // T-DOT: while the context panel is open it owns the keyboard. Escape steps
@@ -451,16 +631,15 @@ export default function KeyboardShortcuts({ labels }: KeyboardShortcutsProps) {
                 ✕
               </button>
             </div>
-            <ul className="kbd-cheat-list">
-              {Object.entries(bindings).map(([key, actionId]) => (
-                <li key={key} className="kbd-cheat-row">
-                  <kbd className="kbd-cheat-key mono">{keyLabel(key)}</kbd>
-                  <span className="kbd-cheat-action">
-                    {labels.actionLabels[actionId] ?? actionId}
-                  </span>
-                </li>
-              ))}
-            </ul>
+            <CheatSheetBody
+              labels={labels}
+              bindings={bindings}
+              pageKeys={pageKeys}
+              lettersOff={areLetterShortcutsSuppressed()}
+              dotHere={Boolean(caps && caps.capabilities.length > 0)}
+              deskItem={hasDeskItem()}
+              onLeave={() => setCheatOpen(false)}
+            />
             <p className="kbd-cheat-hint mono">{labels.cheatHint}</p>
           </div>
         </div>

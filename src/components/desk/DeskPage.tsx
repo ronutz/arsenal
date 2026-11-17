@@ -59,10 +59,10 @@ import { Link } from "@/i18n/navigation";
 // The desk's state, verbs and shapes.
 import {
   clearDesk, followRedirects, getDeskState, mergeIntoDesk, pruneWidgetNotes, recordVisit, refreshLivePaths, replaceDesk, resetLayout, restoreDesk,
-  updateSettings, type DeskData, type DeskSynced, type DeskWidget,
+  setLayoutWidgets, updateSettings, type DeskData, type DeskSynced, type DeskWidget,
 } from "@/lib/desk/store";
-// The widget types this page draws.
-import { DESK_WIDGET_TYPES } from "@/lib/desk/layout";
+// The widget types this page draws, and a widget's own settings (folded or not).
+import { DESK_WIDGET_TYPES, setWidgetSettingsIn } from "@/lib/desk/layout";
 // The desk in a component.
 import { useDesk } from "@/lib/desk/useDesk";
 // The automatic sync, loaded only when this browser syncs.
@@ -280,6 +280,33 @@ export default function DeskPage(props: { interestLabels?: InterestToggleLabels 
   const widgets = data.layout.widgets.filter((w) => DESK_WIDGET_TYPES.includes(w.type));
 
   /**
+   * A widget's name as the reader sees it: its type's title, numbered when the type repeats ("Notes 2").
+   *
+   * @param w the widget
+   * @param i its place among the drawn widgets
+   * @returns the name
+   */
+  const widgetName = (w: DeskWidget, i: number) => {
+    // Widgets of the same type before this one.
+    const same = widgets.slice(0, i).filter((x) => x.type === w.type).length;
+    // Numbered from the second.
+    return same > 0 ? `${t(`widgets.${w.type}`)} ${same + 1}` : t(`widgets.${w.type}`);
+  };
+
+  /**
+   * Fold or unfold a widget (second improvement pass): kept in the widget's own settings in the layout, so the page
+   * looks the same on the reader's next visit and in every browser that syncs.
+   *
+   * @param w the widget
+   */
+  const toggleFold = (w: DeskWidget) => {
+    // The layout with the widget folded, or unfolded (the setting removed).
+    const next = setWidgetSettingsIn(data.layout.widgets, w.id, { folded: w.settings.folded === true ? null : true });
+    // Written.
+    if (next) setLayoutWidgets(next);
+  };
+
+  /**
    * One widget's content.
    *
    * @param w the widget
@@ -294,7 +321,7 @@ export default function DeskPage(props: { interestLabels?: InterestToggleLabels 
       case "favourites": return <FavouritesWidget data={data} index={index} empty={empty} />;
       case "recent": return <RecentWidget data={data} index={index} />;
       case "puzzles": return <PuzzlesWidget index={index} />;
-      case "search": return <SearchWidget />;
+      case "search": return <SearchWidget index={index} />;
       case "notes": return <DeskNotes data={data} widgetId={w.id} />;
       case "countdown": return <DeskCountdown data={data} widget={w} index={index} />;
       case "quicktool": return <DeskQuickTool data={data} widget={w} index={index} />;
@@ -402,14 +429,34 @@ export default function DeskPage(props: { interestLabels?: InterestToggleLabels 
             <span className="desk-sign" aria-hidden="true">{"✎"}</span> {t("edit.start")}
           </button>
         )}
-        <span className="desk-label" id="desk-density-label">{t("density.label")}</span>
-        <span className="desk-seg" role="group" aria-labelledby="desk-density-label">
-          <button type="button" className="desk-seg-btn" aria-pressed={data.settings.density === "comfortable"} onClick={() => updateSettings({ density: "comfortable" })}>{t("density.comfortable")}</button>
-          <button type="button" className="desk-seg-btn" aria-pressed={data.settings.density === "compact"} onClick={() => updateSettings({ density: "compact" })}>{t("density.compact")}</button>
+        {/* The density's name and its switch wrap together (on a phone the name was left alone at a line's end). */}
+        <span className="desk-density">
+          <span className="desk-label" id="desk-density-label">{t("density.label")}</span>
+          <span className="desk-seg" role="group" aria-labelledby="desk-density-label">
+            <button type="button" className="desk-seg-btn" aria-pressed={data.settings.density === "comfortable"} onClick={() => updateSettings({ density: "comfortable" })}>{t("density.comfortable")}</button>
+            <button type="button" className="desk-seg-btn" aria-pressed={data.settings.density === "compact"} onClick={() => updateSettings({ density: "compact" })}>{t("density.compact")}</button>
+          </span>
         </span>
       </div>
       {/* After arranging: the layout is kept (it was kept at every change). */}
       <p className="desk-status desk-edit-kept" role="status">{layoutSaid}</p>
+      {/* On a phone the desk is one long column: a row of links to each widget, in the reader's order (increment E). */}
+      {!editing && widgets.length > 2 && (
+        <nav className="desk-jump" aria-label={t("jump.label")}>
+          <ul className="desk-jump-list">
+            {widgets.map((w, i) => {
+              // The widget's title, numbered when the type repeats.
+              const name = widgetName(w, i);
+              // A link to the widget's heading.
+              return (
+                <li key={w.id}>
+                  <a className="desk-jump-link" href={`#desk-w-${w.id}`}>{name}</a>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+      )}
       {/* Arranging: the editor in place of the widgets, until Done. */}
       {editing ? (
         <DeskLayoutEditor
@@ -432,12 +479,34 @@ export default function DeskPage(props: { interestLabels?: InterestToggleLabels 
         </p>
       ) : (
         <div className="desk-grid">
-          {widgets.map((w) => (
-            <section key={w.id} className={`desk-w desk-w--${w.size} desk-w--${w.type}`} aria-labelledby={`desk-w-${w.id}`}>
-              <h2 className="desk-w-title" id={`desk-w-${w.id}`}>{t(`widgets.${w.type}`)}</h2>
-              {ready ? content(w) : <p className="desk-muted">{t("status.loading")}</p>}
-            </section>
-          ))}
+          {widgets.map((w, i) => {
+            // Folded: only its title row shows (second improvement pass).
+            const folded = w.settings.folded === true;
+            // Its name, for the fold button's words.
+            const name = widgetName(w, i);
+            // One widget: the title row with its fold button, then the content.
+            return (
+              <section key={w.id} className={`desk-w desk-w--${w.size} desk-w--${w.type}${folded ? " desk-w--folded" : ""}`} aria-labelledby={`desk-w-${w.id}`}>
+                <div className="desk-w-head">
+                  <h2 className="desk-w-title" id={`desk-w-${w.id}`}>{t(`widgets.${w.type}`)}</h2>
+                  <button
+                    type="button"
+                    className="desk-fold"
+                    aria-expanded={!folded}
+                    aria-controls={`desk-wb-${w.id}`}
+                    aria-label={folded ? t("fold.show", { name }) : t("fold.hide", { name })}
+                    title={folded ? t("fold.show", { name }) : t("fold.hide", { name })}
+                    onClick={() => toggleFold(w)}
+                  >
+                    <span aria-hidden="true">{folded ? "▸" : "▾"}</span>
+                  </button>
+                </div>
+                <div className="desk-w-body" id={`desk-wb-${w.id}`} hidden={folded}>
+                  {ready ? content(w) : <p className="desk-muted">{t("status.loading")}</p>}
+                </div>
+              </section>
+            );
+          })}
         </div>
       )}
     </div>

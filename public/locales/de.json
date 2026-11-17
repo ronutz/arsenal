@@ -27405,13 +27405,14 @@
       "r20261112interest": "Die Interessenzählungen sind neu: Mit Ihrem Ja, und nur dann, teilen die Seiten dem Server der Website mit, was Sie nutzen (ein Werkzeug, ein Spiel, einen bis zum Ende gelesenen Artikel, das Teilen, eine Suche), in Meldungen, die das Genutzte benennen und nie Sie. Was eine Meldung enthält, der eine Fall, der von Ihnen eingegebene Wörter mitführt, wie lange die Zählungen und die Tagessummen aufbewahrt werden und wo sich die Entscheidung ändern lässt, steht in einem eigenen Abschnitt.",
       "r20261112desk": "Mein Schreibtisch: sein Schlüssel in diesem Browser (ronutz:desk:v1), die optionale verschlüsselte Synchronisierung (was der Server aufbewahrt, wie lange und was er nicht lesen kann) und die Zählung, die beim Merken eines Elements gesendet wird; was per Synchronisierung, Datei oder Link in einen anderen Browser mitgeht und was in jedem Browser bleibt (darunter ronutz:portable:base); und bei einer in zwei Browsern geänderten Einstellung gilt die jüngste Änderung, anhand von Änderungszeiten in diesem Browser und in der verschlüsselten Kopie (ronutz:portable:times), es sei denn, Sie legen in den Einstellungen fest, den Wert dieses Browsers zu behalten (ronutz:portable:no-times).",
       "r20261112browsers": "Punktestände der Spiele: Die erste Runde, die ein Browser an einem Rätseltag einträgt, trägt ein Ja oder Nein, das genau das angibt, ermittelt aus dem Tag seiner zuletzt eingetragenen Runde, den dieser Browser speichert (ronutz:fun:posted-day) und nie sendet; der Server bewahrt nur dieses Bit bei der Runde auf, und die tägliche Summe wird als eindeutige Browser angezeigt (Browser, keine Personen) und in den Tagessummen aufbewahrt.",
-      "r20261115fun": "Die LGTM-Seite: ein YouTube-Video, das erst nach einem Druck auf Abspielen lädt, von youtube-nocookie.com; und zwei verspielte Einstellungen, die in deinem Browser bleiben: die Epoche der Melodie (ronutz:fun:lgtm-era) und ob der Simulator des Ping-Pong-Virus auf der Website los ist (ronutz:fun:pong-virus)."
+      "r20261115fun": "Die LGTM-Seite: ein YouTube-Video, das erst nach einem Druck auf Abspielen lädt, von youtube-nocookie.com; und zwei verspielte Einstellungen, die in deinem Browser bleiben: die Epoche der Melodie (ronutz:fun:lgtm-era) und ob der Simulator des Ping-Pong-Virus auf der Website los ist (ronutz:fun:pong-virus).",
+      "r20261116keys": "Der Absatz zu den Tastenkürzeln verweist auf die vollständige Liste (? oder h) und sagt, dass einige Seiten Tasten für sich in Anspruch nehmen."
     },
     "backHome": "Zurück zur Startseite",
     "prefsTitle": "Farbschema, Sprache und was diese Website sich merkt",
     "prefsBody": "Ihre Einstellungen, Ihr Leseverlauf, „Mein Schreibtisch“, die zwei Werte der Dev-Räume sowie die Punkte, Einstellungen und Fortschritte der Spiele werden nur im localStorage dieses Browsers auf Ihrem Gerät gespeichert; das Farbschema wird bei Ihrem nächsten Besuch vor dem ersten Rendern angewendet. Es gibt kein Cookie und kein Konto, und kein Server sieht etwas davon, mit einer Ausnahme, die Sie steuern: Sofern Sie das Teilen nicht ausschalten, geht das Ergebnis eines abgeschlossenen Tagesrätsels an die öffentliche Bestenliste, die unter „Punktestände der Spiele“ beschrieben ist. Wenn Sie einen Synchronisierungscode erstellen, geht außerdem eine verschlüsselte Kopie von „Mein Schreibtisch“ an den Server der Website, der sie nicht lesen kann (siehe „Mein Schreibtisch“ unten). Nichts davon kann Ihnen folgen: Ein privates Fenster, gelöschte Websitedaten oder ein anderer Browser bzw. ein anderes Gerät setzen Sie bewusst auf die Standardwerte zurück. Ihre Sprache funktioniert auf zwei Ebenen: Sie steckt in der Adresse selbst (/en/ und /pt-BR/ sind verschiedene Seiten, sodass ein Lesezeichen oder eine geteilte URL in Ihrer Sprache sie beibehält), und die zuletzt verwendete Sprache wird außerdem in diesem Browser gespeichert, sodass ein Besuch der bloßen Domain bei ihr landet statt bei der Standardsprache. Das Suchfeld der Zertifizierungsübersicht und ihr Schalter für ausgemusterte Zertifizierungen stehen ebenfalls in der Adresse, hinter dem # (#q=...), einem Teil, den Ihr Browser nie in einer Anfrage sendet, sodass Ihre Suchbegriffe den Server nicht erreichen; sie bleiben aber in Ihrem Verlauf, und eine geteilte Adresse teilt sie mit. Ein älterer Link mit ?q= sandte seine Begriffe mit dieser einen Anfrage; die Übersicht verschiebt sie dann hinter das #. Das ist der ganze Kompromiss: Ohne Konten und ohne Tracking können Einstellungen nur dort liegen, wo Sie sie sehen und löschen können.",
     "shortcutsTitle": "Tastenkürzel",
-    "shortcutsBody": "Die Website hat eine Handvoll Tastenkürzel aus einer einzigen Taste zur schnellen Navigation, aktiv auf jeder Seite. Drücken Sie b für den Boss-Key, der alles, was Sie gerade lesen, hinter einer überzeugenden Büroanwendung aus den 1980er-Jahren versteckt, bis Sie eine beliebige Taste drücken oder klicken; t springt zur Übersicht der Tools; l zur Übersicht unter Lernen; m öffnet die Mega Brain Console; und z öffnet das Meeting-Bingo. Diese Kürzel sind bewusst wirkungslos, solange Sie tippen: Liegt der Fokus in einem Textfeld, einem Einfügefeld, einer Sucheingabe oder einem anderen bearbeitbaren Bereich, gehört der Tastendruck diesem Feld, und das Kürzel tut nichts, sodass nichts, was Sie eingeben, je verschluckt wird. Sie werden auch ignoriert, wenn eine Zusatztaste gedrückt ist, sodass die eigenen Kombinationen Ihres Browsers wie Strg+T für einen neuen Tab nie überdeckt werden. Die Tastenkürzel laufen vollständig in Ihrem Browser, fügen kein Tracking hinzu und sind eine reine Bequemlichkeit, die Sie ignorieren können.",
+    "shortcutsBody": "Die Website hat Tastenkürzel aus einer einzigen Taste zur schnellen Navigation; drücken Sie auf jeder Seite ? oder h für die vollständige Liste, mit dem, was auf dieser Seite anders ist. Drücken Sie b für den Boss-Key, der alles, was Sie gerade lesen, hinter einer überzeugenden Büroanwendung aus den 1980er-Jahren versteckt, bis Sie eine beliebige Taste drücken oder klicken; t springt zur Übersicht der Tools; l zur Übersicht unter Lernen; m öffnet die Mega Brain Console; und z öffnet das Meeting-Bingo. Diese Kürzel sind bewusst wirkungslos, solange Sie tippen: Liegt der Fokus in einem Textfeld, einem Einfügefeld, einer Sucheingabe oder einem anderen bearbeitbaren Bereich, gehört der Tastendruck diesem Feld, und das Kürzel tut nichts, sodass nichts, was Sie eingeben, je verschluckt wird. Sie werden auch ignoriert, wenn eine Zusatztaste gedrückt ist, sodass die eigenen Kombinationen Ihres Browsers wie Strg+T für einen neuen Tab nie überdeckt werden. Einige Seiten nehmen Tasten für sich in Anspruch, etwa die Spiele, während Sie spielen, und die Hilfe sagt es dort. Die Tastenkürzel laufen vollständig in Ihrem Browser, fügen kein Tracking hinzu und sind eine reine Bequemlichkeit, die Sie ignorieren können.",
     "noTrackSource": "Dieser Abschnitt beschreibt, was der Code tut, und der Code ist öffentlich: Die Zählung übernimmt <analytics>worker/analytics.ts</analytics>, die Seite Statistik liefert <stats>worker/stats.ts</stats> aus, und die beiden getrennten Datensätze sind in <config>wrangler.jsonc</config> eingebunden. Die Zählungen liegen in der Workers Analytics Engine von Cloudflare, die das, was hineingeschrieben wird, drei Monate lang speichert (<retention>Dokumentation von Cloudflare</retention>, gelesen am {date}). Was Cloudflare selbst als Host verarbeitet, liegt außerhalb dieses Codes und ist unten im Abschnitt Hosting und Server-Logs beschrieben.",
     "metaDescription": "Was hier mit Ihren Informationen geschieht: was gezählt wird, was Ihr Browser speichert, was die Tools mit dem tun, was Sie einfügen, wer verantwortlich ist und welche Rechte Sie nach der DSGVO und der brasilianischen LGPD haben.",
     "hostingLogs": "Jede Seitenanfrage durchläuft den Worker der Website, das kleine Programm, das bei Cloudflare vor den Seiten läuft, und ebenso die Anfragen, die eine Seite für die angezeigten Besucherzahlen stellt; die Skripte, Stylesheets und der Suchindex werden, neben anderen Dateien, ohne ihn ausgeliefert. Die Workers Logs von Cloudflare können im Cloudflare-Konto der Website einen Eintrag zu jeder dieser Anfragen speichern. Cloudflare beschreibt jeden Eintrag so, dass er die Anfrage, die Antwort und zugehörige Metadaten enthält, und nennt unter seinen Feldern die Methode und die vollständige Adresse einschließlich Query-String, den Antwortstatus, die vom Worker benötigte Verarbeitungszeit und das Land des Besuchs (<logs>Workers Logs</logs> und <fields>deren Abfragefelder</fields>, gelesen am {date}). Cloudflare veröffentlicht keine vollständige Liste, daher behauptet dieser Hinweis nicht, dass Ihre IP-Adresse ausgelassen wird. Cloudflare schaltet diese Protokollierung für neue Worker standardmäßig ein, und die Konfiguration der Website schaltet sie nicht aus. Ein Eintrag wird bis zu sieben Tage aufbewahrt: drei Tage im kostenlosen Workers-Tarif von Cloudflare und sieben im kostenpflichtigen, ab dem 1. Dezember 2026 in beiden sieben (<pricing>Preise von Cloudflare</pricing>). Der eigene Code der Website fügt diesen Einträgen nichts hinzu, denn der Worker schreibt keine eigenen Logzeilen, was eine Build-Prüfung sicherstellt. Der Teil einer Adresse hinter einem #, über den ein Tool einen übergebenen Wert erhält, wird nie in einer Anfrage gesendet und erreicht diese Einträge daher nie.",
@@ -31721,7 +31722,8 @@
       "quipChanges2": "Etwas gefunden. Ein grünes Häkchen wäre schneller gewesen, und falsch.",
       "quipChanges3": "Änderungen angefordert, Zeile für Zeile, wie ein Review sein sollte.",
       "chime": "Glöckchen läuten",
-      "homeLink": "Zurück zur LGTM-Seite"
+      "homeLink": "Zurück zur LGTM-Seite",
+      "botAgain": "Den Roboter noch einmal bewegen: Jeder Druck spielt die nächste seiner vier Bewegungen"
     }
   },
   "megaBrain": {
@@ -31855,7 +31857,7 @@
     "bossDismiss": "Arbeitsanwendung. Drücken Sie eine beliebige Taste oder klicken Sie, um zurückzukehren.",
     "bossHint": "‹ beliebige Taste drücken ›",
     "cheatClose": "Schließen",
-    "cheatHint": "Schließen mit Esc oder einem Klick außerhalb. Anpassen lassen sich die Kürzel in den Einstellungen.",
+    "cheatHint": "Esc, ? oder h schließt diese Hilfe, ebenso ein Klick außerhalb. In den Einstellungen stehen alle Tasten, die Sie ändern können.",
     "cheatTitle": "Tastenkürzel",
     "contextBack": "Zurück zu den Seitenaktionen",
     "contextClose": "Seitenaktionen schließen",
@@ -31875,14 +31877,54 @@
     "actionDeskSave": "Das Element dieser Seite merken (oder nicht mehr merken)",
     "actionDeskRead": "Das Element dieser Seite als gelesen oder erledigt markieren (oder die Markierung entfernen)",
     "pongOn": "Das Ping-Pong-Virus ist los: Ein Ball hüpft über die Seite. Tippe noch einmal p und v, um ihn einzufangen.",
-    "pongOff": "Das Ping-Pong-Virus ist eingefangen. Die Seite ist wieder ruhig."
+    "pongOff": "Das Ping-Pong-Virus ist eingefangen. Die Seite ist wieder ruhig.",
+    "helpHere": "Auf dieser Seite",
+    "helpSite": "Tastenkürzel der Website",
+    "helpOther": "Weitere Tasten",
+    "customize": "Anpassen",
+    "customizeAria": "Taste {key} anpassen",
+    "offHere": "auf dieser Seite aus",
+    "noItemHere": "auf dieser Seite kein Eintrag",
+    "notHere": "auf dieser Seite keine",
+    "whenFocused": "Solange das Spiel die Tastatur hat (nachdem Sie in sein Spielfeld oder Terminal geklickt oder mit Tab hineingewechselt haben), sind die Tastenkürzel der Website aus, und diese Tasten gehören dem Spiel. Ein Klick außerhalb holt sie zurück.",
+    "whenPlaying": "Solange eine Runde läuft, sind die Tastenkürzel der Website aus, und diese Tasten gehören dem Spiel. Sie kommen zurück, wenn die Runde endet.",
+    "whenAlways": "Diese Seite reagiert außerdem auf diese Tasten, neben den Tastenkürzeln der Website:",
+    "whenArranging": "Während Sie die Seite anordnen, wirken diese Tasten auf einen fokussierten Rahmen, neben den Tastenkürzeln der Website:",
+    "lettersOff": "Die Buchstabenkürzel sind auf dieser Seite aus, weil sie auf das hört, was Sie tippen. Mit ? öffnen Sie diese Hilfe auch hier; die Zifferntasten und / funktionieren weiter.",
+    "dotHere": "Mit . öffnen Sie die Aktionen dieser Seite.",
+    "other": {
+      "dot": {
+        "label": "Seitenaktionen, auf Seiten, die welche haben. Im Bereich springt die Taste neben einem Abschnitt zu diesem.",
+        "caps": "."
+      },
+      "esc": {
+        "label": "Schließt diese Hilfe, die Suche und jeden anderen Bereich oder Dialog",
+        "caps": "Esc"
+      },
+      "search-chord": {
+        "label": "Suche, von überall, auch während Sie in einem Feld tippen",
+        "caps": "Strg K|⌘ K"
+      },
+      "pong": {
+        "label": "Nacheinander: das Ping-Pong-Virus, ein Ball, der auf jeder Seite springt, bis Sie beide erneut tippen",
+        "caps": "P|V"
+      },
+      "boss": {
+        "label": "Auf einem Boss-Bildschirm wechseln die Pfeiltasten die Tarnung; jede andere Taste oder ein Klick bringt die Seite zurück",
+        "caps": "←|→"
+      },
+      "typing": {
+        "label": "Ist eine davon gedrückt, gehört die Taste dem Browser; in einem Textfeld tippt jede Taste. In keinem der beiden Fälle nimmt ein Tastenkürzel sie.",
+        "caps": "Strg|Alt|⌘"
+      }
+    }
   },
   "settings_page": {
     "eyebrow": "Präferenzen",
     "title": "Einstellungen",
     "lede": "Passen Sie an, wie sich die Website verhält. Alles, was Sie hier einstellen, wird nur auf diesem Gerät gespeichert: Es gibt keine Konten und keinen Server, Ihre Auswahl verlässt den Browser also nie.",
     "shortcutsTitle": "Tastenkürzel",
-    "shortcutsBody": "Belegen Sie jede Taste mit einer anderen Aktion. Wählen Sie dazu in jedem Menü eine Aktion aus; die Änderung gilt sofort. Manche Tasten legt möglicherweise die Administration der Website fest; sie werden dann als gesperrt angezeigt. Drücken Sie an beliebiger Stelle der Website ?, um die aktuellen Tastenkürzel auf einen Blick zu sehen.",
+    "shortcutsBody": "Belegen Sie jede Taste mit einer anderen Aktion. Wählen Sie dazu in jedem Menü eine Aktion aus; die Änderung gilt sofort. Manche Tasten legt möglicherweise die Administration der Website fest; sie werden dann als gesperrt angezeigt. Drücken Sie an beliebiger Stelle der Website ? oder h, um alle Tasten auf einen Blick zu sehen, mit dem, was auf der aktuellen Seite anders ist; die Links „Anpassen“ der Hilfe führen zu den Zeilen unten.",
     "colKey": "Taste",
     "colAction": "Aktion",
     "locked": "Gesperrt",
@@ -32147,7 +32189,8 @@
       "quickref": "Tool-Referenz",
       "usage": "Empfohlene Nutzung",
       "manual": "Handbuch",
-      "map": "Die Website in einer Minute"
+      "map": "Die Website in einer Minute",
+      "keyboard": "Tastatur"
     },
     "datasheetHeading": "Auf einen Blick",
     "datasheetIntro": "Das Wichtigste in einer Übersicht. Diese Zahlen werden beim Build aus der Website selbst erzeugt und stimmen daher immer mit dem überein, was tatsächlich veröffentlicht ist.",
@@ -32420,6 +32463,10 @@
       "beyond": {
         "h": "Mehr als Tools",
         "b": "Die Website ist mehr als die Rechner. Die Lernbibliothek enthält Artikel, die die Konzepte erklären, mit denen die Tools arbeiten. Die Herstellerseiten bündeln die herstellerspezifischen Tools und das Nachschlagematerial für Plattformen wie F5, zusammen mit der Unternehmensgeschichte hinter den Namen. Und der Bereich Zertifizierungen bietet Lernleitfäden und Lesepfade für alle, die auf eine Zertifizierung hinarbeiten. All das erreichen Sie über den Kopfbereich."
+      },
+      "keyboard": {
+        "h": "Tastatur",
+        "b": "Die Website lässt sich mit der Tastatur bedienen. Auf jeder Seite öffnet ? oder h die Liste der Tasten, beginnend mit dem, was dort anders ist, und Esc schließt sie; s, / oder Strg K öffnet die Suche; und der Link „Anpassen“ einer Taste führt zu den Einstellungen, wo Sie ihr eine andere Aktion geben können. Kein Tastenkürzel nimmt je eine Taste, die Sie in einem Feld tippen. Die vollständige Liste hat in diesem Leitfaden einen eigenen Teil, Alle Tasten."
       }
     },
     "backToTools": "Alle Tools ansehen",
@@ -32481,9 +32528,10 @@
         "nav": "Suche",
         "h": "Suche und Tastenkürzel",
         "p1": "Das Suchfeld im Kopfbereich oder Strg+K öffnet einen Dialog, der Tools, Artikel, Leitfäden und Seiten gleichzeitig durchsucht; die Filter unter dem Feld grenzen die Suche auf eine Art ein. Das eigene Feld einer Herstellerseite durchsucht nur deren Welt, und das Feld eines Abschnitts (Die Praxis, Die Rollen) nur diesen Abschnitt, mit einem Filter Nur in, den ein Klick wieder aufhebt. Die Suche läuft in Ihrem Browser gegen einen Index, der mit der Website gebaut wird: Die eingegebenen Wörter werden nicht gesendet, allerdings lädt der Browser von der Website die Teile des Index, in die diese Wörter fallen.",
-        "p2": "Einige Tastenkürzel aus einer einzigen Taste funktionieren auf jeder Seite: Drücken Sie ?, um sie zu sehen, und belegen Sie jedes davon in den Einstellungen neu. Die Sitemap für Menschen listet jede Seite nach Welt auf, für die Fälle, in denen eine Karte besser ist als ein Suchfeld.",
+        "p2": "Tastenkürzel aus einer einzigen Taste funktionieren auf der ganzen Website: Drücken Sie ? oder h für die vollständige Liste, beginnend mit dem, was auf der aktuellen Seite anders ist, und folgen Sie dem Link „Anpassen“ einer Taste, um sie in den Einstellungen neu zu belegen. Einige Seiten nehmen Tasten für sich in Anspruch, etwa die Spiele, während Sie spielen, und die Hilfe sagt es dort. Die Sitemap für Menschen listet jede Seite nach Welt auf, für die Fälle, in denen eine Karte besser ist als ein Suchfeld.",
         "l1": "Einstellungen und Tastenkürzel",
-        "l2": "Die Sitemap"
+        "l2": "Die Sitemap",
+        "l3": "Alle Tasten"
       },
       "privacy": {
         "nav": "Datenschutz",
@@ -32494,6 +32542,14 @@
         "l2": "Statistik",
         "l3": "Kolophon"
       }
+    },
+    "keyboard": {
+      "h": "Alle Tasten",
+      "intro": "Das sind die Tasten, wie die Website sie ab Werk belegt. Drücken Sie auf jeder Seite ? oder h, um sie so zu sehen, wie dieser Browser sie hat, beginnend mit dem, was auf dieser Seite anders ist. Der Link „Anpassen“ einer Taste führt zu ihrer Zeile in den Einstellungen, wo Sie ihr eine andere Aktion geben können; die Änderung wird nur in diesem Browser gespeichert.",
+      "colKey": "Taste",
+      "colAction": "Was sie tut",
+      "pagesH": "Seiten mit eigenen Tasten",
+      "pagesBody": "Einige Seiten nehmen Tasten für sich in Anspruch, und dort nennt die Hilfe sie zuerst. Die Spiele schalten die Tastenkürzel der Website aus, solange eine Runde läuft oder ihr Spielfeld oder Terminal die Tastatur hat. Die Mega Brain Console und der Wichtigkeitsmesser schalten die Buchstaben aus, weil sie auf das hören, was Sie tippen; dort öffnet ? die Hilfe, h nicht. Der Folienvortrag schaltet alle Tastenkürzel der Website aus und nennt seine eigenen Tasten neben den Folien. k und x wirken nur auf einer Seite mit einem Eintrag zum Speichern."
     }
   },
   "disclaimer_page": {
@@ -33489,6 +33545,41 @@
       "domainLede": "{count, plural, one {{count} Fachgebiet} other {{count} Fachgebiete}}, jedes mit eigener Seite: Netzwerk, Sicherheit, die Cloud, das Handwerk selbst.",
       "mistoldSection": "Oft falsch erzählt",
       "mistoldSectionLede": "{count, plural, one {{count} Eintrag trägt} other {{count} Einträge tragen}} die Markierung umstritten: Die Geschichte, die alle wiederholen, ist nicht das, was in den Quellen steht. Jeder Eintrag nennt die übliche Fassung und die Korrektur."
+    },
+    "browse": {
+      "letterRailLabel": "Das Glossar von A bis Z",
+      "letterLinkAria": "{letter}: {count, plural, one {# Eintrag} other {# Einträge}}",
+      "otherLetter": "Ziffern und Zeichen",
+      "letterPageTitle": "Glossar: {letter}",
+      "letterPageDescription": "{count, plural, one {# Eintrag} other {# Einträge}}, deren Name mit {letter} beginnt, jeweils mit Definition.",
+      "otherPageDescription": "{count, plural, one {# Eintrag} other {# Einträge}}, deren Name mit einer Ziffer oder einem Zeichen beginnt, jeweils mit Definition.",
+      "pageSearchPlaceholder": "Diese Einträge nach Name, Langform oder anderem Namen filtern",
+      "pagerLabel": "Benachbarte Buchstaben",
+      "prevLetter": "Vorheriger Buchstabe: {letter}",
+      "nextLetter": "Nächster Buchstabe: {letter}",
+      "azTitle": "Von A bis Z stöbern",
+      "azLede": "Alle {count} Einträge, eine Seite pro Buchstabe, jeweils mit Definition und einem Filter nach Art, Fachgebiet und Text.",
+      "backToHub": "Zurück zum Glossar",
+      "backToTop": "Nach oben",
+      "backToLetter": "Zurück zu {letter}",
+      "entryPagerLabel": "Benachbarte Einträge, von A bis Z",
+      "prevEntry": "Vorheriger Eintrag",
+      "nextEntry": "Nächster Eintrag",
+      "neighboursTitle": "Benachbarte Fachgebiete",
+      "sharedCount": "{count} gemeinsam",
+      "alsoInLegend": "Auch in",
+      "finderLabel": "Begriff finden",
+      "finderPlaceholder": "Ein Name, eine Abkürzung oder ihre Langform",
+      "finderHint": "Durchsucht Namen, Langformen und andere Namen während der Eingabe. Die Eingabetaste öffnet den ersten Treffer; mit den Pfeiltasten gehen Sie die Liste durch.",
+      "finderLoading": "Die Namensliste wird geladen...",
+      "finderError": "Die Namensliste konnte nicht geladen werden. Das A bis Z unten führt alle Einträge.",
+      "finderCount": "{shown} von {total} angezeigt",
+      "finderNone": "Kein Eintrag heißt so. Versuchen Sie weniger Buchstaben, oder durchsuchen Sie auch die Definitionen.",
+      "finderFullText": "Auch die Definitionen durchsuchen",
+      "domainsLede": "{count} Fachgebiete, jedes mit eigener Seite. Die Schlüsselbegriffe sind die Einträge, auf die der Rest des Glossars am häufigsten verweist.",
+      "keyTermsLabel": "Schlüsselbegriffe:",
+      "recentTitle": "Kürzlich geprüft",
+      "recentLede": "Die Einträge, deren Quellen zuletzt gelesen wurden, die neuesten zuerst."
     }
   },
   "certGuides": {
@@ -34577,7 +34668,60 @@
     "furtherReading": "Weiterführende Lektüre",
     "furtherReadingAria": "Weiterführende Lektüre",
     "status": "{n, plural, one {Bisher ein Beitrag} other {Bisher # Beiträge}}, jeweils veröffentlicht, sobald er geschrieben ist, ohne festen Rhythmus. Was sich an der Website selbst ändert, steht im <link>Änderungsprotokoll</link>.",
-    "bylineProfile": "Trainerprofil bei Red Education"
+    "bylineProfile": "Trainerprofil bei Red Education",
+    "numberPrefix": "Nr.",
+    "numberAria": "Beitrag Nummer {n}",
+    "topicsAria": "Themen",
+    "filter": {
+      "label": "Beiträge filtern",
+      "categoryLegend": "Kategorie",
+      "topicLegend": "Thema",
+      "allCategories": "Alle",
+      "allTopics": "Alle",
+      "moreTopics": "{count, plural, one {# weiteres Thema} other {# weitere Themen}}",
+      "fewerTopics": "Weniger Themen",
+      "showing": "{shown} von {total} angezeigt",
+      "clear": "Filter zurücksetzen",
+      "empty": "Kein Beitrag passt zu beiden Filtern. Setzen Sie einen zurück, um mehr zu sehen."
+    },
+    "tags": {
+      "career": "Laufbahn",
+      "vulnerability-management": "Schwachstellenmanagement",
+      "ai": "Künstliche Intelligenz (KI)",
+      "disclosure": "Offenlegung",
+      "brazil": "Brasilien",
+      "industry": "Branche",
+      "incident-response": "Reaktion auf Sicherheitsvorfälle",
+      "networking": "Netzwerke",
+      "privacy": "Datenschutz",
+      "data-breach": "Datenlecks",
+      "threat-intelligence": "Bedrohungsaufklärung",
+      "lgpd": "Brasilianisches Datenschutzgesetz (LGPD)",
+      "teaching": "Lehre",
+      "operations": "Betrieb",
+      "supply-chain": "Lieferkette",
+      "security": "Sicherheit",
+      "vpn": "Virtuelle private Netze (VPN)",
+      "php": "PHP",
+      "waf": "Web-Application-Firewalls (WAF)",
+      "cloud": "Cloud",
+      "history": "Geschichte",
+      "certification": "Zertifizierung",
+      "psychological-operations": "Psychologische Operationen",
+      "disinformation": "Desinformation",
+      "iot": "Internet der Dinge (IoT)",
+      "ot-security": "Sicherheit der Betriebstechnik (OT)",
+      "linux": "Linux",
+      "tcp": "Transmission Control Protocol (TCP)",
+      "firmware": "Firmware",
+      "industry-history": "Branchengeschichte",
+      "sources": "Quellen",
+      "channel": "Fachhandel und Distribution",
+      "ransomware": "Ransomware",
+      "culture": "Kultur",
+      "games": "Spiele",
+      "books": "Bücher"
+    }
   },
   "importanceMeter": {
     "metaTitle": "Wichtigkeitsmesser",
@@ -39481,17 +39625,16 @@
       "electronic-trading": {
         "title": "Elektronischer Handel",
         "lede": "Von Maklern, die auf dem Parkett riefen, bis zu Matching-Engines, die in Mikrosekunden antworten: Börsen, Broker, Anleger, Protokolle, Netze, Anbieter und Aufsicht moderner Märkte, das FIX-Protokoll und die Netze, die es tragen, der Hochfrequenzhandel und der Streit um ihn, und die Börsen Brasiliens, jede Tatsache mit ihrer Quelle.",
-        "planned": {
-          "fixEncodings": "FIX-Kodierungen und ihre Nachfolger",
-          "orderLife": "Das Leben einer Order in FIX",
-          "omsEms": "Order- und Ausführungsmanagementsysteme",
-          "preTradeRisk": "Pre-Trade-Risiko und Marktzugang",
-          "interdealer": "Interdealer-Broker, elektronische Anleihen und Devisen",
-          "networkAnalytics": "Netzbasierte Analyse und Überwachung",
-          "marketData": "Marktdaten",
-          "surveillance": "Marktüberwachung und Meldewesen",
-          "fairnessByDesign": "Fairness durch Design"
-        }
+        "planned": {}
+      },
+      "mass-hysteria": {
+        "title": "Massenhysterie und kollektiver Glaube",
+        "lede": "Von Tanzwut und Hexenprozessen bis zu Ausbrüchen an Schulen, Spekulationsblasen, Gerüchten und Symptomen, die sich über Plattformen verbreiten: die Begriffe und ihre Geschichte, die Mechanismen und ihre Replikationen, die Fälle mit ihren Belegen und Streitpunkten, wer jede Episode lenkte, falls jemand sie lenkte, und was hilft, sie zu beenden."
+      },
+      "redundancy": {
+        "title": "Redundante Architekturen",
+        "lede": "Wie Netze Ausfälle überstehen: was Redundanz bringt und was sie kostet, die Arithmetik von Verfügbarkeit und gemeinsamem Schicksal, und die Redundanz jeder Schicht, von Strom und Glasfaser über Link-Aggregation, Gateways, Routing, zustandsbehaftete Cluster und globale Lastverteilung bis zu den Daten, mit den Störungsberichten, die zeigen, wo sie hielt und wo nicht, jede Tatsache mit ihrer Quelle.",
+        "planned": {}
       }
     },
     "parts": "Die Teile",
@@ -41061,7 +41204,9 @@
     "continue": {
       "empty": "Hier erscheinen die Seiten, die Sie öffnen, und das nächste Element des Pfads, an dem Sie gerade sind.",
       "next": "Als Nächstes in {path}",
-      "recent": "Zuletzt geöffnet"
+      "recent": "Zuletzt geöffnet",
+      "then": "Danach:",
+      "seePath": "Den Pfad ansehen"
     },
     "paths": {
       "untitled": "Pfad ohne Namen",
@@ -41113,22 +41258,29 @@
       "empty": "Noch nichts gemerkt. Nutzen Sie „Merken“ bei einem Werkzeug, einem Artikel, einem Glossareintrag oder einem Spiel, oder drücken Sie auf seiner Seite K.",
       "saveExample": "Merken",
       "removed": "Nicht mehr gemerkt.",
-      "remove": "{title} nicht mehr merken"
+      "remove": "{title} nicht mehr merken",
+      "filter": "Gemerkte filtern",
+      "noMatch": "Kein gemerkter Eintrag passt zu „{q}“."
     },
     "recent": {
-      "empty": "Noch nichts als gelesen markiert. Wer das Ende eines Artikels erreicht, markiert ihn damit; „Als gelesen markieren“ tut es von Hand."
+      "empty": "Noch nichts als gelesen markiert. Wer das Ende eines Artikels erreicht, markiert ihn damit; „Als gelesen markieren“ tut es von Hand.",
+      "today": "Heute",
+      "yesterday": "Gestern"
     },
     "puzzles": {
       "solved": "Gelöst",
       "played": "Gespielt",
       "notYet": "Noch nicht gespielt",
       "streak": "{count, plural, one {# Tag in Folge} other {# Tage in Folge}}",
-      "all": "Alle Rätsel und Spiele"
+      "all": "Alle Rätsel und Spiele",
+      "summary": "{played, plural, =0 {Noch keines der {total} heutigen Rätsel gespielt.} other {# von {total} heute gespielt.}}",
+      "summarySolved": "{count, plural, one {# gelöst.} other {# gelöst.}}"
     },
     "search": {
       "label": "Website durchsuchen",
       "placeholder": "Website durchsuchen …",
-      "go": "Suchen"
+      "go": "Suchen",
+      "browse": "Oder stöbern"
     },
     "sync": {
       "syncedAt": "Synchronisiert um {time}.",
@@ -41260,7 +41412,13 @@
       "today": "Heute",
       "ago": "{count, plural, one {Vor # Tag} other {Vor # Tagen}}",
       "on": "Am {date}",
-      "kept": "Mit Ihrem Schreibtisch in diesem Browser gespeichert und, wenn Sie synchronisieren, in der verschlüsselten Kopie."
+      "kept": "Mit Ihrem Schreibtisch in diesem Browser gespeichert und, wenn Sie synchronisieren, in der verschlüsselten Kopie.",
+      "weeks": "{weeks, plural, one {# Woche} other {# Wochen}}{days, plural, =0 {} one { und # Tag} other { und # Tage}}",
+      "path": "Pfad, der bis dahin fertig sein soll",
+      "pathNone": "Keiner",
+      "left": "{count, plural, =0 {Alle Einträge in <link>{path}</link> sind gelesen.} one {Noch # Eintrag in <link>{path}</link>.} other {Noch # Einträge in <link>{path}</link>.}}",
+      "pace": "Etwa {perDay} pro Tag, um ihn bis zur Prüfung abzuschließen.",
+      "paceWeek": "Etwa {perDay} pro Tag oder {perWeek} pro Woche, um ihn bis zur Prüfung abzuschließen."
     },
     "quick": {
       "choose": "Werkzeug",
@@ -41314,7 +41472,8 @@
       "next": "Nächster: {name}",
       "toGo": "{count, plural, one {noch #} other {noch #}}",
       "celebrate": "Meilenstein erreicht: {names}.",
-      "kept": "Aus Ihren Lesemarkierungen gezählt, nur nach dem Tag, in diesem Browser."
+      "kept": "Aus Ihren Lesemarkierungen gezählt, nur nach dem Tag, in diesem Browser.",
+      "thisWeek": "{days, plural, =0 {Diese Woche noch nichts als gelesen markiert.} one {Diese Woche: # Lesetag, {items, plural, one {# Eintrag gelesen} other {# Einträge gelesen}}.} other {Diese Woche: # Lesetage, {items, plural, one {# Eintrag gelesen} other {# Einträge gelesen}}.}}"
     },
     "privacy": {
       "counting": "Zählung Ihrer Nutzung",
@@ -41335,6 +41494,13 @@
       "emptied": "Ihr Schreibtisch ist leer.",
       "allSettings": "Alle Einstellungen von Mein Schreibtisch",
       "privacyPage": "Was die Datenschutzseite über Mein Schreibtisch und die Synchronisierung sagt"
+    },
+    "jump": {
+      "label": "Auf diesem Schreibtisch"
+    },
+    "fold": {
+      "hide": "{name} einklappen",
+      "show": "{name} ausklappen"
     }
   },
   "deskData": {

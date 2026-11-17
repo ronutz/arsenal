@@ -124,6 +124,32 @@ export const LEARN_SERIES: LearnSeries[] = [
     ],
   },
   {
+    // Mass hysteria and collective belief (PRIME 15/11/2026 23:14: "a broad and deep coverage of mass hysteria and link it
+    // to the psyops series"): sixteen parts, orders 292 to 307, written 16/11/2026 by eight agents (wave 1, A to E;
+    // wave 2, F to H) to the psyops standard (MethodNote, Claim, ReaderQuestions, no author's view), and cross-linked
+    // both ways with the psyops series. The order is the opener's own "This series, in order" list.
+    id: "mass-hysteria",
+    group: "influence",
+    opener: "mass-hysteria-how-groups-come-to-believe-anything", // 292
+    parts: [
+      { slug: "conformity-cascades-and-contagion-the-mechanisms" }, // 293
+      { slug: "mass-psychogenic-illness-when-symptoms-spread" }, // 294
+      { slug: "dancing-plagues-and-possessed-convents" }, // 295
+      { slug: "witch-hunts-and-moral-panics" }, // 296
+      { slug: "satanic-panic-false-memories-and-the-escola-base-case" }, // 297
+      { slug: "manias-and-bubbles-from-tulips-to-meme-stocks" }, // 298
+      { slug: "rumour-panic-and-lynching" }, // 299
+      { slug: "phantom-attackers-and-contested-outbreaks" }, // 300
+      { slug: "cults-failed-prophecies-and-the-closed-group" }, // 301
+      { slug: "conspiracy-theories-at-scale" }, // 302
+      { slug: "health-scares-from-the-revolta-da-vacina-to-the-autism-myth" }, // 303
+      { slug: "ufo-waves-and-skies-seen-together" }, // 304
+      { slug: "social-media-and-the-contagion-of-symptoms-and-beliefs" }, // 305
+      { slug: "how-manipulators-harness-collective-panic" }, // 306
+      { slug: "what-ends-an-outbreak-and-what-helps" }, // 307
+    ],
+  },
+  {
     // Electronic trading (PRIME 15/11/2026 21:31: "extra-rich content of the FIX protocol, FIX networks, Electronic Trading
     // Solutions vendors ... It can start with the evolution of in-person stock to high-frequency electronic trading").
     // Wave 1 (written 15/11/2026, five agents, orders 360 to 369): the opener and nine parts; the nine planned parts
@@ -141,15 +167,15 @@ export const LEARN_SERIES: LearnSeries[] = [
       { slug: "anatomy-of-a-fix-message-and-the-session-layer" }, // 367
       { slug: "fix-networks-hubs-and-managed-connectivity" }, // 368
       { slug: "brazil-bmf-bovespa-b3-and-electronic-access" }, // 369
-      { planned: "fixEncodings" }, // FIXML, FAST, SBE, FIXP, OUCH and ITCH, B3's EntryPoint and UMDF
-      { planned: "orderLife" }, // order states, cancel and replace, drop copies, allocations, FIX beyond equities
-      { planned: "omsEms" }, // order and execution management systems and their vendors
-      { planned: "preTradeRisk" }, // SEC Rule 15c3-5, sponsored access, kill switches
-      { planned: "interdealer" }, // interdealer brokers, electronic fixed income and foreign exchange
-      { planned: "networkAnalytics" }, // network-derived analytics and monitoring (Corvil, Pico)
-      { planned: "marketData" }, // consolidated feeds against direct feeds
-      { planned: "surveillance" }, // MiFID II, the Consolidated Audit Trail, CVM
-      { planned: "fairnessByDesign" }, // speed bumps, batch auctions, IEX
+      { slug: "fix-encodings-and-successors-fixml-fast-sbe-and-exchange-binary-protocols" }, // FIXML, FAST, SBE, FIXP, OUCH and ITCH, B3's EntryPoint and UMDF
+      { slug: "the-life-of-an-order-in-fix" }, // order states, cancel and replace, drop copies, allocations, FIX beyond equities
+      { slug: "oms-and-ems-order-and-execution-management-systems" }, // order and execution management systems and their vendors
+      { slug: "pre-trade-risk-and-market-access-controls" }, // SEC Rule 15c3-5, sponsored access, kill switches
+      { slug: "interdealer-brokers-and-electronic-fixed-income-and-fx" }, // interdealer brokers, electronic fixed income and foreign exchange
+      { slug: "network-derived-analytics-and-trading-monitoring" }, // network-derived analytics and monitoring (Corvil, Pico)
+      { slug: "market-data-consolidated-feeds-and-direct-feeds" }, // consolidated feeds against direct feeds
+      { slug: "surveillance-and-regulatory-reporting-mifid-ii-cat-and-cvm" }, // MiFID II, the Consolidated Audit Trail, CVM
+      { slug: "fairness-by-design-speed-bumps-batch-auctions-and-iex" }, // speed bumps, batch auctions, IEX
     ],
   },
   // ------------------------------------------------------------------------------------------------------------------
@@ -620,6 +646,26 @@ export const LEARN_SERIES: LearnSeries[] = [
       { slug: "persistence-mirroring-and-ha" },
       { slug: "gslb-two-tier-pool-then-member" },
       { slug: "adc-family-history" },
+    ],
+  },
+  {
+    // Redundant architectures (queue 5ad; PRIME 15/11/2026 17:04: "extra-rich content (article, explainer, etc) for
+    // redundant architectures and engineering ... If you'd prefer to make it a series with extra-rich focused articles,
+    // fine by me"). Wave 1 (16/11/2026, agents D and E): 370 to 373; wave 2 (agents F, G and H): 374 to 379, named in
+    // the packs as planned parts until they land.
+    id: "redundancy",
+    group: "network",
+    opener: "redundant-architectures-how-networks-survive-failure", // 370
+    parts: [
+      { slug: "the-arithmetic-of-redundancy-availability-mtbf-and-shared-fate" }, // 371
+      { slug: "physical-and-power-redundancy-feeds-paths-and-carriers" }, // 372
+      { slug: "layer-2-redundancy-lag-mlag-and-spanning-tree" }, // 373
+      { slug: "default-gateway-redundancy-vrrpv3-glbp-and-anycast-gateways" }, // 374: default gateway redundancy at scale
+      { slug: "layer-3-redundancy-ecmp-bfd-and-fast-reroute" }, // 375: ECMP, BFD, graceful restart and fast reroute
+      { slug: "stateful-clusters-active-standby-active-active-and-split-brain" }, // 376: active/standby, active/active and split brain
+      { slug: "adc-and-gslb-redundancy-health-monitors-pools-and-site-failover" }, // 377: health monitors, pools and site failover
+      { slug: "data-and-service-redundancy-replication-quorum-rpo-and-rto" }, // 378: replication, quorum, RPO and RTO
+      { slug: "testing-redundancy-failure-drills-chaos-and-the-failover-never-tried" }, // 379: failure drills and the failover never tried
     ],
   },
   {

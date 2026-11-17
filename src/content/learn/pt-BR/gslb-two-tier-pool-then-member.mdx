@@ -74,6 +74,8 @@ Só o nível de pool oferece métodos *dinâmicos* (Quality of Service, Completi
 
 Abra o simulador, monte a topologia de dois pools do exemplo e mude um método de cada vez. Ver o nível dos pools e o nível dos membros mudarem de forma independente é o jeito mais rápido de fixar que GSLB não é uma decisão, mas duas.
 
+A série [Arquiteturas redundantes](/learn/redundant-architectures-how-networks-survive-failure) calcula quanto tempo leva um failover entre sites por DNS depois de contar o cache dos resolvers e a vida dos registros, e quando o anycast move os usuários mais depressa, em [Redundância em ADC e GSLB: monitores de saúde, pools e failover entre sites](/learn/adc-and-gslb-redundancy-health-monitors-pools-and-site-failover).
+
 ## Fontes
 
 - [F5, BIG-IP DNS: Load Balancing, versão 15.0.0 (vale da 15.0.0 à 21.0.0), Global Server Load Balancing: nenhum método dinâmico está disponível no balanceamento de wide IP; entre os dinâmicos, Round Trip Time e Hops (lida em 07/10/2026)](https://techdocs.f5.com/en-us/bigip-15-0-0/big-ip-dns-load-balancing/global-server-load-balancing.html)

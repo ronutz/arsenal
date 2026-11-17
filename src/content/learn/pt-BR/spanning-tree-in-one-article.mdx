@@ -90,6 +90,8 @@ Não existe mais um padrão separado para o spanning tree: "IEEE Std 802.1D-2004
 
 O algoritmo é obra de Radia Perlman, que trabalhava na Digital Equipment Corporation e o apresentou num artigo publicado em 1985 ([Perlman, 1985](https://prl.khoury.northeastern.edu/img/p-sigcomm-1985.pdf)). O resumo (abstract) desse artigo é um poema, "Algorhyme", doze versos que resumem o algoritmo inteiro ([Heidelberg Laureate Forum](https://www.newsroom.hlf-foundation.org/blog/article/the-internet-chronicles-part-7-of-12-the-tree-the-internet-grows-on/)). Nas palavras dela: "I spent the remainder of the week working on the poem, which is the abstract of the paper" ([LACNIC, 2019](https://blog.lacnic.net/en?p=11775)). O Internet Hall of Fame a incluiu em 2014 por ter projetado "the spanning tree algorithm that transformed Ethernet" ([Internet Hall of Fame](https://www.internethalloffame.org/inductee/radia-perlman/)). A história das bridges e dos switches em torno do trabalho dela está em [uma ideia, resolvida duas vezes](/learn/bridge-switch-family-history).
 
+A série [Arquiteturas redundantes](/learn/redundant-architectures-how-networks-survive-failure) detalha os timers do spanning tree em [Redundância de camada 2](/learn/layer-2-redundancy-lag-mlag-and-spanning-tree): as fórmulas que os ligam ao diâmetro da rede e as proteções que impedem um link que só funciona num sentido de abrir um loop.
+
 ## Para lembrar
 
 - Frames Ethernet não têm TTL, então o tráfego preso num loop circula para sempre; o spanning tree evita loops bloqueando portas.

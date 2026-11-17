@@ -73,6 +73,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 // The game's strings and the shell's.
 import { useTranslations } from "next-intl";
+// The game's own keys, for the site's keyboard help (? or h; 16/11/2026).
+import { usePageKeys } from "@/components/PageKeys";
 // The frame around every game.
 import GameShell, { type ShellResult } from "./GameShell";
 // The cover that holds the terminal's place until Start.
@@ -259,6 +261,8 @@ export default function ExitTheEditor({ locale }: { locale: string }) {
   // The game's strings and the shell's.
   const t = useTranslations("devFun.games.exit-the-editor");
   const tc = useTranslations("devFun.games.common");
+  // The keys, told to the site's keyboard help (? or h, PRIME 16/11/2026 03:14): while its board has the keyboard the site's shortcuts are off.
+  usePageKeys({ when: "focused", lines: [t("rule1")] });
   // Today, after mount (the shell and the daily escape need it; the levels do not).
   const today = useToday();
   // The earlier puzzle on the board (?day=), or null: its wording says "this day's" where today's says "today's".

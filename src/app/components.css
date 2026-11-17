@@ -9228,6 +9228,64 @@ ul.lbm-facts > li, ol.lbm-facts > li { font-size: 0.88rem; margin-bottom: 0.3rem
 @media (prefers-reduced-motion: reduce) { .blog-entry { transition: none; } }
 .blog-status a { color: inherit; text-decoration: underline; text-underline-offset: 0.15em; }
 
+/* ---- The blog index: numbers, categories, topics and the filter (PRIME 16/11/2026 03:54) ----
+   The card becomes two columns: the post's number in the margin, the words beside it. The number column has one fixed
+   width, so titles line up from card to card whatever the number's digits. */
+.blog-entry { display: grid; grid-template-columns: 2.6rem minmax(0, 1fr); column-gap: 0.9rem; align-items: start; }
+/* The number: a small prefix over a large numeral, right-aligned so the digits stack by place value down the list. */
+.blog-entry-number { display: flex; flex-direction: column; align-items: flex-end; margin: 0; padding-top: 0.1rem; color: var(--text-tertiary); line-height: 1; transition: color 0.15s ease; }
+/* The prefix ("No.", "Nº"...), small. */
+.blog-entry-number-prefix { font-size: 0.7rem; letter-spacing: 0.02em; }
+/* The numeral, in even-width figures. */
+.blog-entry-number-n { font-size: 1.5rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+/* The number takes the accent with the card, so the whole card answers the pointer and the keyboard together. */
+.blog-entry:hover .blog-entry-number, .blog-entry:focus-within .blog-entry-number { color: var(--accent-primary); }
+/* The words: title, meta, summary and topics, stacked as the card stacked them before. */
+.blog-entry-body { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+/* The meta line: the date, then the category, wrapping as one unit each. */
+.blog-entry-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.2rem 0.9rem; }
+/* The category: its colour dot and its label. */
+.blog-entry-cat { display: inline-flex; align-items: center; gap: 0.4rem; }
+/* The category's colour, as a dot. */
+.blog-entry-cat-dot { display: inline-block; width: 0.5rem; height: 0.5rem; border-radius: 50%; flex: none; }
+/* The topics: a wrapping row of small links. */
+.blog-entry-topics { list-style: none; display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.25rem 0 0; padding: 0; }
+/* One topic: raised above the title's stretched link (which covers the card), so it takes its own click. */
+.blog-entry-topic { position: relative; z-index: 1; display: inline-block; padding: 0.1rem 0.55rem; font-size: 0.78rem; line-height: 1.5; color: var(--text-secondary); text-decoration: none; border: 1px solid var(--border-subtle); border-radius: 999px; background: var(--surface-elevated); transition: color 0.12s ease, border-color 0.12s ease; }
+/* A topic under the pointer or the keyboard, and the topic the filter has chosen. */
+.blog-entry-topic:hover, .blog-entry-topic:focus-visible, .blog-entry-topic.is-active { color: var(--accent-primary); border-color: var(--accent-primary); }
+/* The filter: the chips and the live line above the list; scrolled to below the sticky header when a card's topic is
+   clicked. */
+.blog-filter { margin: 0 0 1.25rem; scroll-margin-top: calc(var(--site-header-height, 4rem) + 1rem); }
+/* A chip's colour swatch (categories). */
+.blog-chip-swatch { display: inline-block; width: 0.55rem; height: 0.55rem; margin-right: 0.4rem; border-radius: 50%; vertical-align: middle; }
+/* A chip's count: how many posts are behind it given the other filter. */
+.blog-chip-count { margin-left: 0.45rem; font-size: 0.75rem; font-variant-numeric: tabular-nums; opacity: 0.8; }
+/* A chip with nothing behind it: present, so the row does not jump, but quiet and not pressable. */
+.blog-chip:disabled { opacity: 0.4; cursor: default; }
+/* A disabled chip ignores the pointer. */
+.blog-chip:disabled:hover { border-color: var(--border-subtle); color: var(--text-secondary); }
+/* The "more topics" control: a quiet text button at the end of the topic row. */
+.blog-more { font: inherit; font-size: 0.8rem; color: var(--accent-primary); background: none; border: 0; padding: 0.32rem 0.2rem; cursor: pointer; text-decoration: underline; text-underline-offset: 0.15em; }
+/* Nothing left by the two filters (only from a hand-written address). */
+.blog-filter-empty { margin: 0.75rem 0 0; color: var(--text-secondary); font-style: italic; }
+/* The number on a post's own page, at the start of the byline (PRIME 16/11/2026 04:19): even-width figures, kept on
+   one line, in the byline's own colour and size. */
+.blog-post-number { font-variant-numeric: tabular-nums; white-space: nowrap; }
+/* A post the filter leaves out. */
+.blog-hidden { display: none !important; }
+/* At phone width the chip rows would fill the screen before the first post, so each row becomes one line that scrolls
+   sideways (its own overflow container, so the page itself never scrolls sideways); the chips keep their size. */
+@media (max-width: 33rem) {
+  .blog-filter .gloss-chipset { flex-wrap: nowrap; overflow-x: auto; min-width: 0; padding-bottom: 0.35rem; scrollbar-width: thin; } /* a fieldset is min-content wide unless told otherwise */
+  .blog-filter .gloss-chip, .blog-filter .blog-more { flex: none; white-space: nowrap; }
+  /* The card gives its words more of the narrow screen: less padding, a narrower number column, a smaller numeral. */
+  .blog-entry { padding: 0.9rem; grid-template-columns: 2.2rem minmax(0, 1fr); column-gap: 0.7rem; }
+  .blog-entry-number-n { font-size: 1.3rem; }
+}
+/* Motion off: the number and the topics change colour at once. */
+@media (prefers-reduced-motion: reduce) { .blog-entry-number, .blog-entry-topic { transition: none; } }
+
 /* ---- f5-dos-vector-explainer -------------------------------------------- */
 .dve-posture { margin: 0.35rem 0 0; font-size: 0.8rem; color: var(--text-secondary); }
 .dve-cat { color: var(--text-secondary); }
@@ -10523,6 +10581,39 @@ select.cidr-input { max-width: 100%; }
 }
 .kbd-cheat-action { color: var(--text-2, #b8c2e0); font-size: 0.92rem; }
 .kbd-cheat-hint { margin: 1rem 0 0; font-size: 0.74rem; color: var(--text-3, #7c88b0); text-align: center; }
+/* The help's three parts (16/11/2026): this page, the site shortcuts, the other keys. A little wider, for the
+   Customize links. */
+.kbd-cheat-card { width: min(34rem, 94vw); }
+/* A part's heading. */
+.kbd-cheat-sub { margin: 1rem 0 0.5rem; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em; color: var(--text-3, #7c88b0); }
+/* The first heading sits right under the title. */
+.kbd-cheat-head + .kbd-cheat-sub, .kbd-cheat-head + .kbd-cheat-section .kbd-cheat-sub { margin-top: 0; }
+/* "On this page": set apart, since it is what differs here. */
+.kbd-cheat-here { padding: 0.6rem 0.8rem 0.7rem; border: 1px solid var(--border-1, #1e293b); border-radius: 10px; background: var(--surface-2, #131c31); }
+/* When the page's keys apply, the letters note, the page actions note. */
+.kbd-cheat-note { margin: 0 0 0.4rem; font-size: 0.86rem; color: var(--text-2, #b8c2e0); }
+/* The page's own keys, in its own words. */
+.kbd-cheat-page-line { margin: 0 0 0.4rem; font-size: 0.86rem; color: var(--text-1, #e6ecff); }
+/* The last line of the box has no gap under it. */
+.kbd-cheat-here > :last-child { margin-bottom: 0; }
+/* A row whose key does nothing on this page: faded, with its reason. */
+.kbd-cheat-row-off .kbd-cheat-key, .kbd-cheat-row-off .kbd-cheat-action { opacity: 0.55; }
+/* The reason, after the action. */
+.kbd-cheat-off { margin-left: 0.5rem; font-size: 0.78rem; font-style: italic; color: var(--text-3, #7c88b0); }
+/* The action takes the row's free width, so the Customize links line up on the right. */
+.kbd-cheat-row .kbd-cheat-action { flex: 1 1 auto; min-width: 0; }
+/* Customize: a small link at the end of the row. */
+.kbd-cheat-customize { flex: 0 0 auto; font-size: 0.8rem; color: var(--accent-1, #22d3ee); text-decoration: underline; text-underline-offset: 2px; }
+/* Its hover and keyboard focus. */
+.kbd-cheat-customize:hover, .kbd-cheat-customize:focus-visible { color: var(--text-1, #e6ecff); outline: 2px solid var(--accent-1, #22d3ee); outline-offset: 2px; border-radius: 3px; }
+/* Several caps for one entry (a chord in two spellings, a sequence), side by side. */
+.kbd-cheat-keys { flex: 0 0 auto; display: inline-flex; flex-wrap: wrap; gap: 0.3rem; }
+/* The other keys: the caps in a column of fixed width, the descriptions lined up beside it. */
+.kbd-cheat-list-other .kbd-cheat-row { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr); align-items: center; }
+/* On a phone, the caps sit above their description, which then takes the whole width. */
+@media (max-width: 33rem) {
+  .kbd-cheat-list-other .kbd-cheat-row { grid-template-columns: minmax(0, 1fr); gap: 0.3rem; margin-bottom: 0.35rem; }
+}
 
 /* --- T-DOT: the "." page-context panel ----------------------------------- */
 /* Same overlay/card idiom as the cheat sheet above, reusing the same tokens so
@@ -10866,6 +10957,12 @@ select.cidr-input { max-width: 100%; }
 .shortcut-row td { padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--border-subtle, rgba(30,41,59,0.5)); vertical-align: middle; }
 .shortcut-key { display: inline-flex; align-items: center; justify-content: center; min-width: 2rem; padding: 0.2rem 0.55rem; background: var(--surface-2, #131c31); color: var(--accent-primary, #22d3ee); border: 1px solid var(--border-strong, #1e293b); border-radius: 6px; font-size: 0.9rem; font-weight: 700; }
 .shortcut-td-action { vertical-align: middle; } /* plain table-cell; flex on the inner wrapper (flex on a td collapses it - see .admin-status-cell) */
+/* The row a Customize link landed on (the help's or the guide's, 16/11/2026): clear of the sticky header, and marked. */
+.shortcut-row { scroll-margin-top: 6rem; }
+/* Marked with the accent along its key cell, so the eye finds it. */
+.shortcut-row:target td { background: var(--surface-elevated); }
+/* The key cell carries the accent edge. */
+.shortcut-row:target .shortcut-td-key { box-shadow: inset 3px 0 0 var(--accent-primary); }
 .shortcut-action-inner { display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap; }
 .shortcut-select { background: var(--surface-base, #0b1120); color: var(--text-primary, #e6ecff); border: 1px solid var(--border-strong, #1e293b); border-radius: var(--radius-sm, 8px); padding: 0.4rem 0.6rem; font-size: 0.9rem; font-family: inherit; cursor: pointer; min-width: 16rem; max-width: 100%; }
 .shortcut-select:disabled { opacity: 0.55; cursor: not-allowed; }
@@ -11809,6 +11906,25 @@ select.cidr-input { max-width: 100%; }
   margin: 0 0 0.4rem;
   color: var(--text-primary);
 }
+
+/* 3b. Every key (16/11/2026): the shortcuts table, scrolling sideways on its own if a phone is too narrow. */
+.guide-keys-wrap { overflow-x: auto; margin: 0.5rem 0 1.5rem; }
+/* The table: key, what it does, Customize. */
+.guide-keys { width: 100%; max-width: 44rem; border-collapse: collapse; }
+/* Its headings, small and quiet. */
+.guide-keys th { text-align: left; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); padding: 0.35rem 0.6rem; border-bottom: 1px solid var(--border-subtle); }
+/* Its cells. */
+.guide-keys td { padding: 0.45rem 0.6rem; border-bottom: 1px solid var(--border-subtle); color: var(--text-primary); vertical-align: middle; }
+/* The Customize column, to the right. */
+.guide-keys-customize { text-align: right; white-space: nowrap; }
+/* A key cap, in the guide. */
+.guide-key { display: inline-flex; align-items: center; justify-content: center; min-width: 2rem; padding: 0.1rem 0.5rem; border: 1px solid var(--border-subtle); border-radius: 6px; background: var(--surface-elevated); color: var(--accent-primary); font-size: 0.88rem; font-weight: 700; }
+/* The other keys: caps, then what they do. */
+.guide-keys-other { list-style: none; margin: 0.5rem 0 1.5rem; padding: 0; display: grid; gap: 0.6rem; }
+/* One of them. */
+.guide-keys-other li { display: flex; gap: 0.8rem; align-items: baseline; color: var(--text-primary); }
+/* Its caps, side by side. */
+.guide-keys-caps { flex: 0 0 auto; display: inline-flex; gap: 0.3rem; flex-wrap: wrap; min-width: 6rem; }
 
 /* 0. The map (G9, 2026-10-06): the five worlds as five columns that wrap, each a verb, a title and its
    entries with the home's counts; the same information architecture as the home directory, in the guide's
@@ -14414,6 +14530,8 @@ main[data-view="list"] .boss-viewer-blurb {
   color: var(--text-secondary);
   text-decoration: none;
 }
+/* Since 16/11/2026 the foot holds two links (back to the entry's letter, back to the glossary): set apart, wrapping. */
+p.gloss-detail-back { display: flex; flex-wrap: wrap; gap: 0.5rem 1.75rem; }
 .gloss-detail-back a:hover {
   color: var(--accent-primary);
 }
@@ -18357,35 +18475,157 @@ main[data-view="list"] .boss-viewer-item.has-share > .boss-viewer-card { padding
   color: var(--text-primary);
 }
 
-/* The term list on a domain page. Two columns where there is room, one on a
-   phone; a domain can hold anything from 15 terms to 577. */
-.glossary-domain-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  columns: 2;
-  column-gap: 2rem;
+/* (2026-11-16) The bare two-column term list the domain and kind pages used is gone: they now show the same entry cards
+   as the letter pages (.gloss-entries, above). */
+
+/* ---------------------------------------------------------------------------
+   The split glossary (PRIME 16/11/2026 04:27): the letter pages, the A to Z
+   rail between pages, the hub's finder, tiles, domain cards and recent list,
+   and the junction at the foot of every browsing page.
+   --------------------------------------------------------------------------- */
+/* A chip's count, beside its label: quiet figures. */
+.glossary-chip-count { margin-left: 0.15rem; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-tertiary); }
+/* The page's own domain or kind among the chips at the foot. */
+.glossary-domain-chip.is-current { border-color: var(--accent-primary); color: var(--text-primary); background: color-mix(in srgb, var(--accent-primary) 12%, var(--surface-base)); }
+/* "Neighbouring domains" under a domain page's title. */
+.gloss-neighbours { margin: 1rem 0 0; }
+
+/* The A to Z between pages: one small box per letter, its count under it. */
+.gloss-letters { margin: 1rem 0 0.5rem; }
+/* The boxes in a wrapping row. */
+.gloss-letters-list { display: flex; flex-wrap: wrap; gap: 0.3rem; margin: 0; padding: 0; list-style: none; }
+/* One letter: the letter over its count. */
+.gloss-letter { display: inline-flex; flex-direction: column; align-items: center; justify-content: center; min-width: 2.4rem; padding: 0.3rem 0.35rem 0.25rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); background: var(--surface-base); color: var(--text-primary); text-decoration: none; line-height: 1.1; transition: border-color 0.12s, background 0.12s, transform 0.12s; }
+/* The letter, in the glossary's monospace. */
+.gloss-letter-mark { font-family: var(--font-mono); font-size: 0.95rem; font-weight: 700; }
+/* Its count, small. */
+.gloss-letter-count { font-family: var(--font-mono); font-size: 0.64rem; color: var(--text-tertiary); }
+/* Under the pointer or the keyboard. */
+a.gloss-letter:hover, a.gloss-letter:focus-visible { border-color: var(--accent-primary); background: color-mix(in srgb, var(--accent-primary) 8%, var(--surface-base)); }
+/* The letter of the page you are on, filled with the accent. */
+.gloss-letter.is-current { border-color: var(--accent-primary); background: var(--accent-primary); color: var(--canvas-primary); }
+/* Its count, on the filled box. */
+.gloss-letter.is-current .gloss-letter-count { color: var(--canvas-primary); }
+/* A letter no entry starts with: present for the shape of the alphabet, not a link. */
+.gloss-letter.is-empty { border-color: transparent; background: none; color: color-mix(in srgb, var(--text-tertiary) 55%, transparent); }
+/* The hub's tiles: a grid of larger boxes. */
+.gloss-letters--tiles .gloss-letters-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(4rem, 1fr)); gap: 0.5rem; }
+/* A tile: the whole grid cell, taller, the letter larger. */
+.gloss-letters--tiles .gloss-letter { display: flex; width: 100%; min-height: 3.6rem; padding: 0.45rem 0.4rem; background: var(--surface-elevated); }
+/* The tile's letter. */
+.gloss-letters--tiles .gloss-letter-mark { font-size: 1.3rem; }
+/* The tile's count. */
+.gloss-letters--tiles .gloss-letter-count { font-size: 0.72rem; margin-top: 0.15rem; }
+/* A tile lifts a little under the pointer. */
+.gloss-letters--tiles a.gloss-letter:hover { transform: translateY(-1px); }
+/* At phone width the rail between pages is one line that scrolls sideways (its own overflow), so the entries are not
+   pushed below four rows of letters; the hub's tiles keep their grid. */
+@media (max-width: 40rem) {
+  .gloss-letters:not(.gloss-letters--tiles) .gloss-letters-list { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 0.3rem; scrollbar-width: thin; }
+  .gloss-letters:not(.gloss-letters--tiles) .gloss-letter { flex: none; }
 }
-@media (max-width: 640px) {
-  .glossary-domain-list { columns: 1; }
+
+/* At phone width the glossary filter's chip rows (five kinds, up to fifteen domains) would fill the screen before the
+   first entry, so each row becomes one line that scrolls sideways; a fieldset is min-content wide unless told
+   otherwise, hence min-width: 0. */
+@media (max-width: 40rem) {
+  .gloss-filter .gloss-chipset { flex-wrap: nowrap; overflow-x: auto; min-width: 0; padding-bottom: 0.3rem; scrollbar-width: thin; }
+  .gloss-filter .gloss-chip { flex: none; white-space: nowrap; }
 }
-.glossary-domain-item {
-  break-inside: avoid;
-  margin-bottom: 0.55rem;
-}
-.glossary-domain-term {
-  color: var(--text-primary);
-  text-decoration: none;
-  border-bottom: 1px solid var(--border-subtle);
-}
-.glossary-domain-term:hover,
-.glossary-domain-term:focus-visible {
-  border-bottom-color: var(--accent-primary);
-}
-.glossary-domain-expansion {
-  display: block;
-  font-size: 0.8rem;
-  color: var(--text-secondary);
+
+/* The previous and next links: the neighbouring letters, or on an entry page the neighbouring entries. */
+.gloss-letter-pager { display: flex; justify-content: space-between; gap: 0.75rem; margin: 2rem 0 0; }
+/* One link: a quiet box. */
+.gloss-letter-pager-link { display: inline-flex; flex-direction: column; gap: 0.15rem; max-width: 48%; padding: 0.65rem 0.9rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-base); color: var(--text-primary); text-decoration: none; }
+/* The next one, on the right. */
+.gloss-letter-pager-next { margin-left: auto; text-align: right; align-items: flex-end; }
+/* Under the pointer or the keyboard. */
+.gloss-letter-pager-link:hover, .gloss-letter-pager-link:focus-visible { border-color: var(--accent-primary); }
+/* On an entry page, the neighbours sit above the "back" links with a little more room. */
+.gloss-entry-pager { margin: 2.25rem 0 0.75rem; }
+/* On an entry page: the direction, small, over the neighbour's name. */
+.gloss-entry-pager-dir { font-size: 0.75rem; color: var(--text-tertiary); }
+/* The neighbour's name. */
+.gloss-entry-pager-name { font-weight: 600; overflow-wrap: anywhere; }
+
+/* The junction at the foot of a browsing page. */
+.gloss-ways { border-top: 1px solid var(--border-subtle); }
+/* The way back to the hub. */
+.gloss-ways-hub { margin: 1.25rem 0 0; font-size: 0.9rem; }
+
+/* The hub's parts: spaced sections with a title and a short lede (the space above and below collapses between two). */
+.gloss-hub-part { margin-block: 2.5rem; }
+/* A part's title. */
+.gloss-hub-title { margin: 0; font-size: 1.2rem; font-weight: 650; color: var(--text-primary); }
+/* A part's title with no lede under it keeps a little room above what follows. */
+.gloss-hub-title--spaced { margin-bottom: 0.7rem; }
+/* A part's lede. */
+.gloss-hub-lede { margin: 0.3rem 0 0.9rem; font-size: 0.92rem; color: var(--text-secondary); max-width: 65ch; }
+
+/* "Find a term": the hub's lookup, an elevated control surface like the pages' filter. */
+.gloss-finder { margin: 1.5rem 0 1.25rem; padding: 1.1rem 1.2rem 1rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-base); }
+/* Its label, as the panel's heading. */
+.gloss-finder-label { display: block; margin: 0 0 0.6rem; font-weight: 600; color: var(--text-primary); }
+/* The field and the full-text button, side by side, stacking when narrow. */
+.gloss-finder-row { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: stretch; }
+/* The field's wrapper (it carries the search icon): takes the room. */
+.gloss-finder-field { flex: 1 1 16rem; margin-bottom: 0; }
+/* The full-text button: a quiet secondary action. */
+.gloss-finder-full { flex: none; padding: 0.7rem 0.95rem; font: inherit; font-size: 0.85rem; color: var(--text-secondary); background: var(--canvas-primary); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); cursor: pointer; }
+/* Under the pointer or the keyboard. */
+.gloss-finder-full:hover, .gloss-finder-full:focus-visible { border-color: var(--accent-primary); color: var(--text-primary); }
+/* How the keys work. */
+.gloss-finder-hint { margin: 0.5rem 0 0; font-size: 0.8rem; color: var(--text-tertiary); }
+/* The count or the loading line; keeps its height so the list does not jump. */
+.gloss-finder-status { margin: 0.35rem 0 0; min-height: 1.3rem; font-size: 0.85rem; color: var(--text-secondary); }
+/* The matches. */
+.gloss-finder-results { display: grid; gap: 0.35rem; margin: 0.4rem 0 0; padding: 0; list-style: none; }
+/* One match: the name and its kind on the first line, what it stands for under them; its kind's colour on the left
+   edge, as on the entry cards. Two fixed lines read the same at every width. */
+.gloss-finder-hit { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: 0.15rem 0.7rem; padding: 0.55rem 0.8rem; color: inherit; text-decoration: none; background: var(--surface-elevated); border: 1px solid var(--border-subtle); border-left: 3px solid var(--gloss-kind-hue); border-radius: var(--radius-md); }
+/* Under the pointer or the keyboard. */
+.gloss-finder-hit:hover, .gloss-finder-hit:focus-visible { border-color: color-mix(in srgb, var(--gloss-kind-hue) 55%, var(--border-subtle)); border-left-color: var(--gloss-kind-hue); background: color-mix(in srgb, var(--gloss-kind-hue) 6%, var(--surface-elevated)); }
+/* The name, first line, left. */
+.gloss-finder-name { grid-column: 1; grid-row: 1; font-weight: 600; color: var(--text-primary); overflow-wrap: anywhere; }
+/* What it stands for, or the other name that matched: the second line, across. */
+.gloss-finder-sub { grid-column: 1 / -1; grid-row: 2; min-width: 0; font-size: 0.85rem; color: var(--text-secondary); }
+/* The kind badge, first line, right. */
+.gloss-finder-hit .gloss-kind-badge { grid-column: 2; grid-row: 1; justify-self: end; }
+
+/* The domain cards: what each domain holds, before it is opened. */
+.gloss-domain-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 0.75rem; margin: 0; padding: 0; list-style: none; }
+/* One card. */
+.gloss-domain-card { padding: 0.9rem 1rem 0.95rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-elevated); }
+/* The domain's name, the card's link. */
+.gloss-domain-card-title { margin: 0; font-size: 1rem; font-weight: 600; }
+/* Its link. */
+.gloss-domain-card-title a { color: var(--text-primary); text-decoration: none; }
+/* Under the pointer or the keyboard. */
+.gloss-domain-card-title a:hover, .gloss-domain-card-title a:focus-visible { color: var(--accent-primary); text-decoration: underline; text-underline-offset: 0.15em; }
+/* How many entries. */
+.gloss-domain-card-count { margin: 0.15rem 0 0.5rem; font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-tertiary); }
+/* The key terms line. */
+.gloss-domain-card-terms { margin: 0; font-size: 0.85rem; line-height: 1.55; color: var(--text-secondary); }
+/* "Key terms". */
+.gloss-domain-card-terms-label { color: var(--text-tertiary); }
+/* Each key term's link. */
+.gloss-domain-card-terms a { color: var(--text-secondary); text-decoration: underline; text-decoration-color: var(--border-subtle); text-underline-offset: 0.15em; }
+/* Under the pointer or the keyboard. */
+.gloss-domain-card-terms a:hover, .gloss-domain-card-terms a:focus-visible { color: var(--text-primary); text-decoration-color: var(--accent-primary); }
+
+/* "Recently checked": name, kind and day, in columns where there is room. */
+.gloss-recent-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr)); gap: 0.45rem 1.5rem; margin: 0; padding: 0; list-style: none; }
+/* One entry on one line. */
+.gloss-recent-item { display: flex; align-items: baseline; gap: 0.5rem; min-width: 0; }
+/* Its name. */
+.gloss-recent-link { color: var(--text-primary); font-weight: 500; overflow-wrap: anywhere; }
+/* The day its sources were read, at the end of the line. */
+.gloss-recent-day { margin-left: auto; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-tertiary); white-space: nowrap; }
+
+/* Motion off: the boxes and tiles change colour without moving. */
+@media (prefers-reduced-motion: reduce) {
+  .gloss-letter { transition: none; }
+  .gloss-letters--tiles a.gloss-letter:hover { transform: none; }
 }
 
 /* ---------------------------------------------------------------------------
@@ -24684,9 +24924,23 @@ html.presenter-covering body {
    height, widgets keep a minimum height).
    ============================================================================ */
 
+/* --- The desk's scale (16/11/2026, second improvement pass: a design-system audit found 21 font sizes in this block). Seven
+   steps, 11, 12, 13, 14, 16, 21 and 24 px at the default root size, each desk size moved to its nearest step; one
+   shadow for everything that floats over the page (the add-to-path panel, the toast, the arranging bar). ------------- */
+:root {
+  --desk-fs-2xs: 0.6875rem; /* calendar months and weekdays, the smallest marks */
+  --desk-fs-xs: 0.75rem;    /* chips, mono labels, counts */
+  --desk-fs-sm: 0.8125rem;  /* muted lines, meta, captions */
+  --desk-fs-md: 0.875rem;   /* the widgets' running text and controls */
+  --desk-fs-lg: 1rem;       /* widget titles, item names that lead */
+  --desk-fs-xl: 1.3125rem;  /* the next item, the run of days */
+  --desk-fs-2xl: 1.5rem;    /* the countdown's days */
+  --desk-shadow-pop: 0 8px 24px rgba(2, 6, 23, 0.3); /* one elevation for floating desk parts */
+}
+
 /* --- Shared: buttons, signs, chips, links, inputs ---------------------------------------------------------------- */
 /* One button for every desk action: the share pill's shape in the body's ink; pressed is the accent plus the sign. */
-.desk-btn { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2rem; padding: 0.3rem 0.65rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: color-mix(in srgb, var(--surface-base) 60%, transparent); color: var(--text-primary); font: inherit; font-size: 0.85rem; font-weight: 600; line-height: 1.2; cursor: pointer; transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease; }
+.desk-btn { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2rem; padding: 0.3rem 0.65rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: color-mix(in srgb, var(--surface-base) 60%, transparent); color: var(--text-primary); font: inherit; font-size: var(--desk-fs-md); font-weight: 600; line-height: 1.2; cursor: pointer; transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease; }
 .desk-btn:hover, .desk-btn:focus-visible { border-color: var(--accent-primary); background: color-mix(in srgb, var(--accent-primary) 10%, var(--surface-base)); }
 /* Pressed (saved, read): the accent ink and border; the filled star or the tick says it without colour. */
 .desk-btn[aria-pressed="true"] { color: var(--accent-primary); border-color: color-mix(in srgb, var(--accent-primary) 60%, transparent); }
@@ -24696,14 +24950,14 @@ html.presenter-covering body {
 /* The one destructive confirmation: deleting the copy on the server. */
 .desk-btn--danger { color: var(--color-danger); border-color: color-mix(in srgb, var(--color-danger) 55%, transparent); }
 /* A square button for a sign alone (move, remove, the read ring in a list); its name is its aria-label. */
-.desk-icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; padding: 0; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); background: transparent; color: var(--text-secondary); font: inherit; font-size: 0.95rem; cursor: pointer; flex: none; }
+.desk-icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; padding: 0; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); background: transparent; color: var(--text-secondary); font: inherit; font-size: var(--desk-fs-lg); cursor: pointer; flex: none; }
 .desk-icon-btn:hover, .desk-icon-btn:focus-visible { border-color: var(--accent-primary); color: var(--text-primary); }
 .desk-icon-btn[aria-pressed="true"] { color: var(--accent-primary); border-color: color-mix(in srgb, var(--accent-primary) 60%, transparent); font-weight: 700; }
 .desk-icon-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 /* The sign in front of a word (star, tick, ring, plus): one width so the words line up. */
 .desk-sign { display: inline-block; min-width: 1ch; text-align: center; font-weight: 700; }
 /* A small label in a pill: an item's kind, "Example", "In English", "Updated since you read it". */
-.desk-chip { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.05rem 0.45rem; border: 1px solid var(--border-subtle); border-radius: 999px; color: var(--text-secondary); font-size: 0.7rem; line-height: 1.5; white-space: nowrap; }
+.desk-chip { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.05rem 0.45rem; border: 1px solid var(--border-subtle); border-radius: 999px; color: var(--text-secondary); font-size: var(--desk-fs-2xs); line-height: 1.5; white-space: nowrap; }
 /* Examples are dashed: plainly not the reader's own. */
 .desk-chip--example { border-style: dashed; color: var(--text-primary); }
 /* Changed since read: the information hue on the border, the sign and the words carry it. */
@@ -24711,78 +24965,111 @@ html.presenter-covering body {
 /* A puzzle solved today: the success hue on the border beside the tick and the word. */
 .desk-chip--done { border-color: color-mix(in srgb, var(--color-success) 60%, transparent); color: var(--text-primary); }
 .desk-link { color: var(--accent-primary); text-decoration: underline; text-underline-offset: 2px; }
-.desk-input { width: 100%; min-width: 0; padding: 0.4rem 0.55rem; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--canvas-primary); color: var(--text-primary); font: inherit; font-size: 0.88rem; }
+/* A field's edge at 3:1 at least against the widget and against its own ground in every theme (WCAG 1.4.11; the
+   strong border token alone measured 1.8 to 2.4:1): the tertiary ink, three quarters, over the surface. */
+.desk-input { width: 100%; min-width: 0; padding: 0.4rem 0.55rem; border: 1px solid color-mix(in srgb, var(--text-tertiary) 75%, var(--surface-base)); border-radius: var(--radius-sm); background: var(--canvas-primary); color: var(--text-primary); font: inherit; font-size: var(--desk-fs-md); }
 .desk-input:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 1px; }
 .desk-input--wide { max-width: 36rem; }
-.desk-check { display: inline-flex; align-items: center; gap: 0.45rem; color: var(--text-primary); font-size: 0.88rem; cursor: pointer; }
+.desk-check { display: inline-flex; align-items: center; gap: 0.45rem; color: var(--text-primary); font-size: var(--desk-fs-md); cursor: pointer; }
 .desk-visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-.desk-label { margin: 0 0 0.35rem; color: var(--text-tertiary); font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
-.desk-muted { margin: 0.2rem 0; color: var(--text-tertiary); font-size: 0.8rem; }
-.desk-note { margin: 0.4rem 0; color: var(--text-secondary); font-size: 0.86rem; line-height: 1.5; }
+.desk-label { margin: 0 0 0.35rem; color: var(--text-tertiary); font-family: var(--font-mono); font-size: var(--desk-fs-xs); font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
+.desk-muted { margin: 0.2rem 0; color: var(--text-tertiary); font-size: var(--desk-fs-sm); }
+.desk-note { margin: 0.4rem 0; color: var(--text-secondary); font-size: var(--desk-fs-md); line-height: 1.5; }
 /* A state that needs attention: a sign, the words, and a rail in the warning hue. */
-.desk-alert { margin: 0.5rem 0; padding: 0.5rem 0.75rem; border-inline-start: 3px solid var(--color-warning); border-radius: var(--radius-sm); background: var(--surface-base); color: var(--text-primary); font-size: 0.88rem; line-height: 1.5; }
+.desk-alert { margin: 0.5rem 0; padding: 0.5rem 0.75rem; border-inline-start: 3px solid var(--color-warning); border-radius: var(--radius-sm); background: var(--surface-base); color: var(--text-primary); font-size: var(--desk-fs-md); line-height: 1.5; }
 /* What just happened, with its Undo; a fixed minimum height so the announcement does not move the page. */
-.desk-status { min-height: 1.4em; margin: 0.6rem 0 0; color: var(--text-secondary); font-size: 0.85rem; }
-.desk-h3 { margin: 1.5rem 0 0.4rem; color: var(--text-primary); font-size: 1rem; }
+.desk-status { min-height: 1.4em; margin: 0.6rem 0 0; color: var(--text-secondary); font-size: var(--desk-fs-md); }
+.desk-h3 { margin: 1.5rem 0 0.4rem; color: var(--text-primary); font-size: var(--desk-fs-lg); }
 
 /* --- The item page's controls ------------------------------------------------------------------------------------ */
 .desk-controls { margin: 0.75rem 0 1.25rem; }
 .desk-controls-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
-.desk-controls-note { margin: 0.45rem 0 0; color: var(--text-tertiary); font-size: 0.78rem; }
+.desk-controls-note { margin: 0.45rem 0 0; color: var(--text-tertiary); font-size: var(--desk-fs-sm); }
 /* The panel opens as a full row under the buttons (no popover to fall off a phone's edge): its end margin fills the rest
    of the row, so the 26rem cap cannot pull it up beside the buttons on a wide screen. */
 .desk-menu-wrap { display: contents; }
-.desk-menu { flex: 1 1 100%; max-width: 26rem; margin: 0.4rem max(0px, calc(100% - 26rem)) 0 0; padding: 0.75rem; border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--surface-elevated); color: var(--text-primary); box-shadow: 0 8px 24px rgba(2, 6, 23, 0.3); }
-.desk-menu-title { margin: 0.5rem 0 0.35rem; font-size: 0.85rem; font-weight: 600; }
-.desk-menu-none { margin: 0 0 0.4rem; color: var(--text-secondary); font-size: 0.82rem; }
+.desk-menu { flex: 1 1 100%; max-width: 26rem; margin: 0.4rem max(0px, calc(100% - 26rem)) 0 0; padding: 0.75rem; border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--surface-elevated); color: var(--text-primary); box-shadow: var(--desk-shadow-pop); }
+.desk-menu-title { margin: 0.5rem 0 0.35rem; font-size: var(--desk-fs-md); font-weight: 600; }
+.desk-menu-none { margin: 0 0 0.4rem; color: var(--text-secondary); font-size: var(--desk-fs-sm); }
 .desk-menu-list { display: grid; gap: 0.25rem; max-height: 12rem; margin: 0; padding: 0; overflow: auto; list-style: none; }
-.desk-menu-path { display: flex; align-items: center; gap: 0.45rem; width: 100%; min-height: 2rem; padding: 0.35rem 0.5rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); background: transparent; color: var(--text-primary); font: inherit; font-size: 0.85rem; text-align: start; cursor: pointer; }
+.desk-menu-path { display: flex; align-items: center; gap: 0.45rem; width: 100%; min-height: 2rem; padding: 0.35rem 0.5rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); background: transparent; color: var(--text-primary); font: inherit; font-size: var(--desk-fs-md); text-align: start; cursor: pointer; }
 .desk-menu-path:hover, .desk-menu-path:focus-visible { border-color: var(--accent-primary); }
 .desk-menu-path[aria-pressed="true"] { border-color: color-mix(in srgb, var(--accent-primary) 60%, transparent); }
 .desk-menu-path-name { flex: 1; min-width: 0; overflow-wrap: anywhere; }
-.desk-menu-path-count { color: var(--text-tertiary); font-size: 0.72rem; }
+.desk-menu-path-count { color: var(--text-tertiary); font-size: var(--desk-fs-xs); }
 .desk-menu-new { display: flex; gap: 0.4rem; margin: 0.6rem 0 0; }
 .desk-menu-new-label { flex: 1; min-width: 0; }
-.desk-menu-status { min-height: 1.2em; margin: 0.4rem 0 0; color: var(--text-secondary); font-size: 0.8rem; }
-.desk-menu-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem; margin: 0.4rem 0 0; color: var(--text-tertiary); font-size: 0.78rem; }
-.desk-menu-close { margin-inline-start: auto; padding: 0.2rem 0.5rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); background: transparent; color: var(--text-secondary); font: inherit; font-size: 0.78rem; cursor: pointer; }
+.desk-menu-status { min-height: 1.2em; margin: 0.4rem 0 0; color: var(--text-secondary); font-size: var(--desk-fs-sm); }
+.desk-menu-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem; margin: 0.4rem 0 0; color: var(--text-tertiary); font-size: var(--desk-fs-sm); }
+.desk-menu-close { margin-inline-start: auto; padding: 0.2rem 0.5rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); background: transparent; color: var(--text-secondary); font: inherit; font-size: var(--desk-fs-sm); cursor: pointer; }
 /* The confirmation of a change made by a key or by reaching the end: under the sticky header, clear of the interest
    question at the foot of the window and of the scroll-to-top button. */
-.desk-toast { position: fixed; top: calc(var(--sticky-stack) + 0.75rem); left: 1rem; right: 1rem; z-index: 70; display: flex; align-items: center; gap: 0.6rem; max-width: 26rem; margin-inline-start: auto; padding: 0.55rem 0.7rem; border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--surface-elevated); color: var(--text-primary); box-shadow: 0 8px 24px rgba(2, 6, 23, 0.35); }
-.desk-toast-msg { flex: 1; font-size: 0.88rem; }
-.desk-toast-close { padding: 0 0.3rem; border: none; background: none; color: var(--text-secondary); font-size: 1.2rem; line-height: 1; cursor: pointer; }
+.desk-toast { position: fixed; top: calc(var(--sticky-stack) + 0.75rem); left: 1rem; right: 1rem; z-index: 70; display: flex; align-items: center; gap: 0.6rem; max-width: 26rem; margin-inline-start: auto; padding: 0.55rem 0.7rem; border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--surface-elevated); color: var(--text-primary); box-shadow: var(--desk-shadow-pop); }
+.desk-toast-msg { flex: 1; font-size: var(--desk-fs-md); }
+.desk-toast-close { padding: 0 0.3rem; border: none; background: none; color: var(--text-secondary); font-size: var(--desk-fs-xl); line-height: 1; cursor: pointer; }
 @media print { .desk-toast, .desk-controls, .desk-collection { display: none; } }
 
 /* --- A series' progress, Save and adoption (series cards, training series, reading paths) -------------------------- */
 .desk-collection { margin: 0.6rem 0 0.5rem; }
 .desk-collection-choose { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.5rem 0 0; }
-.desk-collection-on { color: var(--text-secondary); font-size: 0.85rem; }
+.desk-collection-on { color: var(--text-secondary); font-size: var(--desk-fs-md); }
 /* Progress: the words, then a bar in one hue on one scale everywhere; never a gauge, never traffic lights. */
 .desk-progress { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 0.6rem; min-height: 1.5rem; margin: 0.3rem 0; }
-.desk-progress-text { color: var(--text-secondary); font-size: 0.8rem; }
+.desk-progress-text { color: var(--text-secondary); font-size: var(--desk-fs-sm); }
 .desk-bar { flex: 1 1 6rem; max-width: 14rem; height: 6px; border-radius: 3px; background: var(--border-subtle); overflow: hidden; }
 .desk-bar-fill { display: block; height: 100%; border-radius: 3px; background: var(--accent-primary); }
+/* The trail (second improvement pass): one segment per item of a path in its order, as wide as the line allows and no
+   wider than 1.5rem; read ones filled in the accent, the rest outlined, the next one ringed in the body's ink. One hue,
+   on or off, like the reading calendar; the words beside it carry the count. */
+.desk-progress--trail { flex-wrap: wrap; }
+.desk-trail { display: flex; flex: 1 1 12rem; gap: 2px; min-width: 0; height: 8px; align-items: stretch; }
+.desk-trail-seg { flex: 1 1 0; min-width: 2px; max-width: 1.5rem; box-sizing: border-box; border: 1px solid var(--border-strong); border-radius: 2px; }
+.desk-trail-seg--read { border-color: var(--accent-primary); background: var(--accent-primary); }
+.desk-trail-seg--next { border-color: var(--text-primary); box-shadow: 0 0 0 1px var(--text-primary); }
+/* A path's trail sits under its name, the whole width of the row. */
+.desk-path-progress { margin: 0.35rem 0 0; }
+.desk-path-progress .desk-progress { margin: 0; }
 /* Before the reader's desk is read: the line keeps its place, unseen. */
 .desk-pending { visibility: hidden; }
-.desk-feed { margin: 0.3rem 0; font-size: 0.82rem; }
+.desk-feed { margin: 0.3rem 0; font-size: var(--desk-fs-sm); }
 
 /* --- The desk page ------------------------------------------------------------------------------------------------- */
 .desk-section { padding-block: clamp(1.5rem, 4vw, 3rem); }
-.desk-where { max-width: 60ch; margin: 0 0 1rem; color: var(--text-secondary); font-size: 0.88rem; line-height: 1.55; }
+.desk-where { max-width: 60ch; margin: 0 0 1rem; color: var(--text-secondary); font-size: var(--desk-fs-md); line-height: 1.55; }
 .desk { min-width: 0; }
 .desk-statuses { min-height: 0.5rem; }
 .desk-incoming { margin: 0.75rem 0; padding: 0.75rem 0.9rem; border: 1px solid color-mix(in srgb, var(--accent-primary) 50%, transparent); border-radius: var(--radius-md); background: var(--surface-elevated); }
 .desk-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 0.5rem; margin: 0.5rem 0 1rem; }
 .desk-toolbar .desk-label { margin: 0; }
+/* The density's name beside its switch, one unit when the toolbar wraps. */
+.desk-density { display: inline-flex; align-items: center; gap: 0.5rem; }
 /* The density switch: two buttons in one frame; the chosen one is heavier and underlined, not only coloured. */
 .desk-seg { display: inline-flex; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); overflow: hidden; }
-.desk-seg-btn { min-height: 2rem; padding: 0.3rem 0.7rem; border: none; background: transparent; color: var(--text-secondary); font: inherit; font-size: 0.82rem; cursor: pointer; }
+.desk-seg-btn { min-height: 2rem; padding: 0.3rem 0.7rem; border: none; background: transparent; color: var(--text-secondary); font: inherit; font-size: var(--desk-fs-sm); cursor: pointer; }
 .desk-seg-btn + .desk-seg-btn { border-inline-start: 1px solid var(--border-subtle); }
 .desk-seg-btn[aria-pressed="true"] { background: color-mix(in srgb, var(--accent-primary) 14%, transparent); color: var(--text-primary); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
-/* The widgets: one column on a phone, the stored sizes on a wider screen (one stored layout for every screen). */
-.desk-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+/* The widgets: one column on a phone, the stored sizes on a wider screen (one stored layout for every screen). Each
+   widget keeps its own height (increment E): a reader may set any two sizes side by side, and a short widget stretched
+   to its tallest neighbour showed a large empty box (a countdown beside fifteen puzzles). */
+.desk-grid { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; gap: 1rem; }
+/* A widget reached by its link in the phone's jump row lands below the sticky header. */
+.desk-w-title { scroll-margin-top: calc(var(--sticky-stack) + 0.9rem); }
+/* The page's native controls (radios, checkboxes) in the site's accent, not the browser's blue. */
+.desk { accent-color: var(--accent-primary); }
+/* The jump row (phones only): every widget's name as a link, one line that scrolls sideways inside itself. */
+.desk-jump { margin: 0 0 0.9rem; }
+.desk-jump-list { display: flex; gap: 0.4rem; margin: 0; padding: 0 0 0.35rem; overflow-x: auto; list-style: none; scrollbar-width: thin; }
+.desk-jump-list > li { flex: none; }
+.desk-jump-link { display: inline-flex; align-items: center; min-height: 2.75rem; padding: 0 0.8rem; border: 1px solid var(--border-subtle); border-radius: 999px; color: var(--text-secondary); font-size: var(--desk-fs-sm); white-space: nowrap; text-decoration: none; }
+.desk-jump-link:hover, .desk-jump-link:focus-visible { border-color: var(--accent-primary); color: var(--text-primary); }
+@media (min-width: 48rem) { .desk-jump { display: none; } }
+/* On a touch screen every desk control is at least 44 px square (WCAG 2.5.5), here and on the item pages. */
+@media (pointer: coarse) {
+  .desk-icon-btn { width: 2.75rem; height: 2.75rem; }
+  .desk-btn, .desk-seg-btn { min-height: 2.75rem; }
+}
 .desk-w { min-width: 0; min-height: 7rem; padding: 1rem 1.1rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-base); }
-.desk-w-title { margin: 0 0 0.7rem; color: var(--text-primary); font-size: 1.02rem; }
+.desk-w-title { margin: 0 0 0.7rem; color: var(--text-primary); font-size: var(--desk-fs-lg); }
 @media (min-width: 48rem) {
   .desk-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); }
   .desk-w--wide { grid-column: span 12; }
@@ -24794,30 +25081,59 @@ html.presenter-covering body {
 .desk--compact .desk-grid { gap: 0.6rem; }
 .desk--compact .desk-w { min-height: 5rem; padding: 0.6rem 0.75rem; }
 .desk--compact .desk-list { gap: 0.2rem; }
-.desk--compact .desk-w-title { margin-bottom: 0.4rem; font-size: 0.95rem; }
-.desk-empty { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5; }
+.desk--compact .desk-w-title { margin-bottom: 0.4rem; font-size: var(--desk-fs-lg); }
+/* A widget's title row (second improvement pass): the title, and at its end the button that folds the widget to this row
+   alone; the row carries the title's bottom margin, in both densities. */
+.desk-w-head { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin: 0 0 0.7rem; }
+.desk-w-head > .desk-w-title { margin: 0; }
+.desk--compact .desk-w-head { margin-bottom: 0.4rem; }
+.desk-fold { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 2rem; height: 2rem; padding: 0; border: 1px solid transparent; border-radius: var(--radius-sm); background: transparent; color: var(--text-tertiary); font: inherit; font-size: var(--desk-fs-md); cursor: pointer; }
+.desk-fold:hover, .desk-fold:focus-visible { border-color: var(--accent-primary); color: var(--text-primary); }
+/* 44 px on a touch screen, like every desk control (after the rule above, so it wins). */
+@media (pointer: coarse) { .desk-fold { width: 2.75rem; height: 2.75rem; } }
+/* Folded: the title row alone, no minimum height. */
+.desk-w--folded { min-height: 0; }
+.desk-w--folded .desk-w-head { margin-bottom: 0; }
+.desk-empty { color: var(--text-secondary); font-size: var(--desk-fs-md); line-height: 1.5; }
 .desk-empty > p { margin: 0 0 0.6rem; }
 .desk-list { display: grid; gap: 0.4rem; margin: 0; padding: 0; list-style: none; }
 .desk-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 0.6rem; }
-.desk-row-n { min-width: 1.5rem; color: var(--text-tertiary); font-size: 0.72rem; text-align: end; }
+.desk-row-n { min-width: 1.5rem; color: var(--text-tertiary); font-size: var(--desk-fs-xs); text-align: end; }
 .desk-row-actions, .desk-path-move { display: inline-flex; gap: 0.25rem; margin-inline-start: auto; }
 /* One item: its title (linked), then its chips. */
 .desk-item { display: inline-flex; flex: 1 1 12rem; flex-wrap: wrap; align-items: baseline; gap: 0.3rem 0.45rem; min-width: 0; }
 .desk-item-link { color: var(--text-primary); text-decoration: underline; text-decoration-color: var(--border-strong); text-underline-offset: 3px; overflow-wrap: anywhere; }
 .desk-item-link:hover, .desk-item-link:focus-visible { text-decoration-color: var(--accent-primary); }
 .desk-item--loading .desk-item-link { color: var(--text-tertiary); }
-.desk-item-gone { color: var(--text-secondary); font-size: 0.88rem; font-style: italic; }
-/* Continue: the next item of the path in progress beside the last pages opened. */
+.desk-item-gone { color: var(--text-secondary); font-size: var(--desk-fs-md); font-style: italic; }
+/* Continue, the desk's lead (increment E): the next item of the path in progress, on a faint wash of the accent, in the
+   largest type on the desk (the one place the page spends its emphasis), beside the last pages opened, each with when. */
 .desk-continue { display: grid; gap: 1rem; }
-@media (min-width: 48rem) { .desk-continue { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 48rem) { .desk-continue { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); align-items: start; } }
+/* Only one of the two (no path in progress, or no page opened yet): one column; the next item alone keeps a reading
+   width rather than a wash across the whole row. */
+@media (min-width: 48rem) { .desk-continue--one { grid-template-columns: minmax(0, 1fr); } }
+.desk-continue--one .desk-continue-next { max-width: 44rem; }
 .desk-continue-next, .desk-continue-recent { min-width: 0; }
-.desk-continue-item { margin: 0.2rem 0 0.4rem; font-size: 1rem; }
+.desk-continue-next { padding: 0.85rem 1rem 0.9rem; border: 1px solid color-mix(in srgb, var(--accent-primary) 38%, var(--border-subtle)); border-radius: var(--radius-md); background: color-mix(in srgb, var(--accent-primary) 6%, var(--surface-base)); }
+.desk-continue-item { margin: 0.25rem 0 0.5rem; font-size: var(--desk-fs-xl); font-weight: 600; line-height: 1.3; text-wrap: balance; }
+.desk-continue-item .desk-item-link { text-decoration-thickness: 2px; text-decoration-color: color-mix(in srgb, var(--accent-primary) 55%, transparent); }
+.desk-continue-item .desk-chip { font-weight: 400; vertical-align: 0.2em; }
+/* After the next item: what comes then (one line, quiet) and the link to the whole path. */
+.desk-continue-foot { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.3rem 1rem; margin: 0.45rem 0 0; color: var(--text-secondary); font-size: var(--desk-fs-md); }
+.desk-continue-then { min-width: 0; }
+.desk-continue-then .desk-item { display: inline; }
+.desk-continue-path { white-space: nowrap; }
+/* The last pages opened: the title, then when, quietly, at the line's end. */
+.desk-continue-recent .desk-list { gap: 0.55rem; }
+.desk-continue-opened { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.1rem 0.75rem; }
+.desk-continue-opened > .desk-muted { margin: 0; white-space: nowrap; }
 /* Paths. */
 .desk-paths, .desk-favourites { min-width: 0; }
 .desk-path { padding: 0.6rem 0; border-top: 1px solid var(--border-subtle); }
 .desk-path:first-child { border-top: none; padding-top: 0; }
 .desk-path-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 0.7rem; }
-.desk-path-name { padding: 0.2rem 0; border: none; background: none; color: var(--text-primary); font: inherit; font-size: 0.95rem; font-weight: 600; text-align: start; cursor: pointer; }
+.desk-path-name { padding: 0.2rem 0; border: none; background: none; color: var(--text-primary); font: inherit; font-size: var(--desk-fs-lg); font-weight: 600; text-align: start; cursor: pointer; }
 .desk-path-name:hover, .desk-path-name:focus-visible { color: var(--accent-primary); }
 .desk-path-body { margin: 0.6rem 0 0 0.2rem; padding-inline-start: 0.8rem; border-inline-start: 2px solid var(--border-subtle); }
 .desk-path-items { margin: 0.6rem 0; }
@@ -24829,36 +25145,70 @@ html.presenter-covering body {
 .desk-inline-form > .desk-picker-label { flex: 1 1 100%; }
 /* The add picker. */
 .desk-picker { display: grid; gap: 0.3rem; min-width: 0; }
-.desk-picker-label { color: var(--text-secondary); font-size: 0.78rem; font-weight: 600; }
+.desk-picker-label { color: var(--text-secondary); font-size: var(--desk-fs-sm); font-weight: 600; }
 .desk-picker-list { display: grid; gap: 0.25rem; max-height: 16rem; margin: 0.2rem 0 0; padding: 0; overflow: auto; list-style: none; }
 .desk-picker-row { display: flex; align-items: center; gap: 0.4rem; }
-.desk-picker-title { flex: 1; min-width: 0; font-size: 0.86rem; overflow-wrap: anywhere; }
+.desk-picker-title { flex: 1; min-width: 0; font-size: var(--desk-fs-md); overflow-wrap: anywhere; }
 /* Adopting a collection. */
 .desk-adopt { margin: 0.9rem 0 0; }
-.desk-adopt > summary { color: var(--accent-primary); font-size: 0.88rem; cursor: pointer; }
+.desk-adopt > summary { color: var(--accent-primary); font-size: var(--desk-fs-md); cursor: pointer; }
 .desk-adopt-body { display: grid; gap: 0.5rem; max-width: 36rem; margin: 0.5rem 0 0; }
-.desk-adopt-mode { display: grid; gap: 0.3rem; margin: 0; padding: 0; border: none; font-size: 0.85rem; }
+.desk-adopt-mode { display: grid; gap: 0.3rem; margin: 0; padding: 0; border: none; font-size: var(--desk-fs-md); }
 /* Favourites: tools as launch tiles. */
-.desk-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr)); gap: 0.5rem; margin: 0 0 0.6rem; padding: 0; list-style: none; }
+.desk-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr)); gap: 0.5rem; margin: 0 0 0.6rem; padding: 0; list-style: none; }
 .desk-tile { display: flex; align-items: center; gap: 0.3rem; padding: 0.45rem 0.5rem 0.45rem 0.65rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--canvas-primary); }
 .desk-tile:hover, .desk-tile:focus-within { border-color: var(--accent-primary); }
-.desk-tile-link { flex: 1; min-width: 0; color: var(--text-primary); font-size: 0.86rem; font-weight: 600; overflow-wrap: anywhere; }
+.desk-tile-link { flex: 1; min-width: 0; color: var(--text-primary); font-size: var(--desk-fs-md); font-weight: 600; overflow-wrap: anywhere; }
 .desk-fav-group { margin: 0.8rem 0 0; }
-.desk-puzzles .desk-row { gap: 0.3rem 0.5rem; }
-.desk-widget-action { margin: 0.7rem 0 0; font-size: 0.85rem; }
+/* The favourites' filter (second improvement pass), above the tiles. */
+.desk-fav-filter { margin: 0 0 0.7rem; max-width: 22rem; }
+/* A widget's content under its title row. */
+.desk-w-body { min-width: 0; }
+/* Removing a favourite (increment E): the sign alone, its frame shown on hover and focus, so eight framed squares no
+   longer speak as loudly as the favourites themselves; still 32 px, and 44 px on a touch screen. */
+.desk-favourites .desk-icon-btn { border-color: transparent; color: var(--text-tertiary); }
+.desk-favourites .desk-icon-btn:hover, .desk-favourites .desk-icon-btn:focus-visible { border-color: var(--accent-primary); color: var(--text-primary); }
+/* Search's indexes: a name and its count per line, two columns when there is room. */
+.desk-search { display: grid; gap: 0.9rem; min-width: 0; }
+.desk-search .desk-inline-form { margin: 0; }
+.desk-browse-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr)); gap: 0.3rem 1rem; margin: 0; padding: 0; list-style: none; }
+.desk-browse-link { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; min-height: 2rem; padding: 0.25rem 0; border-bottom: 1px solid var(--border-subtle); color: var(--text-primary); font-size: var(--desk-fs-md); text-decoration: none; }
+.desk-browse-link:hover, .desk-browse-link:focus-visible { border-bottom-color: var(--accent-primary); color: var(--accent-primary); }
+/* An index's name, in the link's own ink. */
+.desk-browse-name { color: inherit; }
+.desk-browse-n { color: var(--text-tertiary); font-family: var(--font-mono); font-size: var(--desk-fs-xs); font-variant-numeric: tabular-nums; }
+/* Today's puzzles (increment E): one line for the day, then the games in as many columns as fit (two in a small widget),
+   each a sign and a name; solved in the success hue beside its tick, played in the body's ink, not yet in the
+   tertiary ink with a ring (the sign and, for assistive technology, the word carry the state). */
+.desk-puzzles-w { min-width: 0; }
+.desk-puzzles-sum { margin: 0 0 0.6rem; color: var(--text-secondary); font-size: var(--desk-fs-md); }
+.desk-puzzles { display: grid; grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr)); gap: 0.45rem 0.9rem; margin: 0; padding: 0; list-style: none; }
+.desk-puzzle { display: flex; align-items: baseline; gap: 0.4rem; min-width: 0; font-size: var(--desk-fs-md); }
+.desk-puzzle-sign { flex: none; width: 1.1ch; color: var(--text-tertiary); font-weight: 700; text-align: center; }
+.desk-puzzle--solved .desk-puzzle-sign { color: var(--color-success); }
+.desk-puzzle--played .desk-puzzle-sign { color: var(--text-primary); }
+.desk-puzzle-text { display: grid; min-width: 0; }
+.desk-puzzle-text > .desk-item-link { overflow-wrap: anywhere; }
+.desk-puzzle-streak { color: var(--text-tertiary); font-size: var(--desk-fs-xs); }
+/* Recently read, by day (increment E): the day's name once, its items under it. */
+.desk-recent { display: grid; gap: 0.8rem; min-width: 0; }
+/* One day's group: its name, then its items. */
+.desk-recent-day { display: block; }
+.desk-recent-when { margin: 0 0 0.35rem; color: var(--text-tertiary); font-size: var(--desk-fs-sm); font-weight: 600; }
+.desk-widget-action { margin: 0.7rem 0 0; font-size: var(--desk-fs-md); }
 
 /* --- Arranging the desk (phase 3): the editor's bar, the widgets as frames, the add list and the starters ---------- */
 /* The one action that ends a mode: the accent border and a heavier weight beside its tick. */
 .desk-btn--primary { border-color: var(--accent-primary); font-weight: 700; }
 .desk-edit { min-width: 0; }
 /* The bar stays in view under the sticky header while a long page scrolls: Undo and Done always within reach. */
-.desk-edit-bar { position: sticky; top: var(--sticky-stack); z-index: 20; margin: 0 0 0.75rem; padding: 0.6rem 0.8rem; border: 1px solid var(--accent-primary); border-radius: var(--radius-md); background: var(--surface-elevated); box-shadow: 0 6px 18px rgba(2, 6, 23, 0.18); }
+.desk-edit-bar { position: sticky; top: var(--sticky-stack); z-index: 20; margin: 0 0 0.75rem; padding: 0.6rem 0.8rem; border: 1px solid var(--accent-primary); border-radius: var(--radius-md); background: var(--surface-elevated); box-shadow: var(--desk-shadow-pop); }
 .desk-edit-bar-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem 1rem; }
-.desk-edit-title { margin: 0; color: var(--text-primary); font-size: 1rem; }
+.desk-edit-title { margin: 0; color: var(--text-primary); font-size: var(--desk-fs-lg); }
 .desk-edit-title:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
 .desk-edit-actions { display: inline-flex; flex-wrap: wrap; gap: 0.5rem; }
 /* What just happened: a fixed minimum height, so each change's sentence does not move the bar. */
-.desk-edit-said { min-height: 1.4em; margin: 0.4rem 0 0; color: var(--text-secondary); font-size: 0.85rem; }
+.desk-edit-said { min-height: 1.4em; margin: 0.4rem 0 0; color: var(--text-secondary); font-size: var(--desk-fs-md); }
 /* After Done: the line takes no room until it has something to say. */
 .desk-edit-kept { min-height: 0; margin: 0; }
 .desk-edit-kept:not(:empty) { margin: 0 0 0.6rem; }
@@ -24874,7 +25224,7 @@ html.presenter-covering body {
 .desk-edit-cat-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.35rem 0.75rem; padding: 0.45rem 0; border-top: 1px solid var(--border-subtle); }
 .desk-edit-cat-row:first-child { border-top: none; }
 .desk-edit-cat-text { display: grid; flex: 1 1 14rem; min-width: 0; }
-.desk-edit-cat-name { color: var(--text-primary); font-size: 0.9rem; font-weight: 600; }
+.desk-edit-cat-name { color: var(--text-primary); font-size: var(--desk-fs-md); font-weight: 600; }
 
 /* --- New for you (phase 3): three groups, each row with its sign and words ------------------------------------------- */
 .desk-news { min-width: 0; }
@@ -24891,7 +25241,7 @@ html.presenter-covering body {
    not move when it appears; the pointer goes through it to the card's link. */
 .desk-mark { position: absolute; top: -0.62rem; right: 0.75rem; z-index: 2; display: inline-flex; gap: 0.25rem; pointer-events: none; }
 /* One part: the sign and the word on the raised surface, in the accent's border (the sign and the word carry it). */
-.desk-mark-chip { display: inline-flex; align-items: center; gap: 0.2rem; padding: 0 0.42rem; border: 1px solid color-mix(in srgb, var(--accent-primary) 65%, var(--border-subtle)); border-radius: 999px; background: var(--surface-elevated); color: var(--text-primary); font-size: 0.68rem; font-weight: 600; line-height: 1.5; white-space: nowrap; }
+.desk-mark-chip { display: inline-flex; align-items: center; gap: 0.2rem; padding: 0 0.42rem; border: 1px solid color-mix(in srgb, var(--accent-primary) 65%, var(--border-subtle)); border-radius: 999px; background: var(--surface-elevated); color: var(--text-primary); font-size: var(--desk-fs-2xs); font-weight: 600; line-height: 1.5; white-space: nowrap; }
 @media print { .desk-mark { display: none; } }
 
 /* --- Notes (phase 4): a box of the reader's own text, where it is kept and the count under it -------------------------- */
@@ -24904,29 +25254,52 @@ html.presenter-covering body {
 .desk-countdown, .desk-countdown-form { display: grid; gap: 0.35rem; min-width: 0; }
 .desk-countdown-form .desk-picker-label { margin-top: 0.2rem; }
 .desk-countdown-exam { margin: 0; color: var(--text-primary); font-weight: 600; overflow-wrap: anywhere; }
-.desk-countdown-days { margin: 0; color: var(--text-primary); font-size: 1.6rem; font-weight: 700; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.desk-countdown-days { margin: 0; color: var(--text-primary); font-size: var(--desk-fs-2xl); font-weight: 700; line-height: 1.2; font-variant-numeric: tabular-nums; }
+/* Exam pace (second improvement pass): the named path's items left and the pace that finishes them, set off from the
+   countdown by a hairline so the arithmetic reads as its own part. */
+.desk-countdown-pace { display: grid; gap: 0.2rem; margin: 0.45rem 0 0; padding: 0.55rem 0 0; border-top: 1px solid var(--border-subtle); }
+.desk-countdown-left { margin: 0; color: var(--text-primary); font-size: var(--desk-fs-md); }
+.desk-countdown-pace > .desk-muted { margin: 0; }
+/* The same time in weeks and days, under the number. */
+.desk-countdown-weeks { margin: 0; color: var(--text-secondary); font-size: var(--desk-fs-md); }
 
 /* --- A quick tool (phase 4): the tool's name, a field, the answer as labelled rows with a Copy button each ------------ */
 .desk-quick { display: grid; gap: 0.4rem; min-width: 0; }
 .desk-quick-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.2rem 0.75rem; margin: 0; font-weight: 600; }
-.desk-quick-open { font-size: 0.8rem; font-weight: 400; }
+.desk-quick-open { font-size: var(--desk-fs-sm); font-weight: 400; }
 .desk-quick-form { margin: 0; }
 /* The answer: label, value (wrapping anywhere: addresses and Base64 are long), and the copy button, one line each. */
 .desk-quick-out { display: grid; gap: 0.3rem; margin: 0.2rem 0 0; }
 .desk-quick-row { display: grid; grid-template-columns: minmax(6rem, 9rem) minmax(0, 1fr) auto; align-items: center; gap: 0.5rem; padding: 0.15rem 0; border-top: 1px solid var(--border-subtle); }
 .desk-quick-row:first-child { border-top: none; }
-.desk-quick-row > dt { color: var(--text-secondary); font-size: 0.8rem; }
-.desk-quick-row > dd { margin: 0; color: var(--text-primary); font-size: 0.85rem; overflow-wrap: anywhere; }
+.desk-quick-row > dt { color: var(--text-secondary); font-size: var(--desk-fs-sm); }
+.desk-quick-row > dd { margin: 0; color: var(--text-primary); font-size: var(--desk-fs-md); overflow-wrap: anywhere; }
 .desk-quick-copied { margin: 0; }
 
 /* --- The reading streak and milestones: the run, fourteen days as dots and rings, the milestones; a quiet line when one
    is reached, fading in only when the reader has not asked for reduced motion -------------------------------------- */
 .desk-streak { display: grid; gap: 0.3rem; min-width: 0; }
-.desk-streak-now { margin: 0; color: var(--text-primary); font-size: 1.35rem; font-weight: 700; line-height: 1.25; }
-.desk-streak-strip { display: flex; flex-wrap: wrap; gap: 0.2rem; margin: 0.2rem 0 0; color: var(--text-tertiary); font-size: 0.9rem; line-height: 1; }
-.desk-streak-day--on { color: var(--accent-primary); }
+.desk-streak-now { margin: 0; color: var(--text-primary); font-size: var(--desk-fs-xl); font-weight: 700; line-height: 1.25; }
+/* The reading calendar (increment E): weeks as columns, as many as the widget holds; a reading day is a filled square in
+   the accent, a rest day an outlined one, today has a ring in the body's ink; months over the columns, three weekday
+   initials in the margin. One hue on or off (a binary record, never a scale of intensity). */
+.desk-cal-frame { --desk-cal-cell: 12px; min-width: 0; margin: 0.35rem 0 0.1rem; }
+.desk-cal { display: grid; grid-template-rows: auto repeat(7, var(--desk-cal-cell)); gap: 3px; justify-content: start; }
+.desk-cal-month { overflow: visible; color: var(--text-tertiary); font-size: var(--desk-fs-2xs); line-height: 1.3; white-space: nowrap; }
+.desk-cal-wd { padding-inline-end: 0.3rem; color: var(--text-tertiary); font-size: var(--desk-fs-2xs); line-height: var(--desk-cal-cell); white-space: nowrap; }
+.desk-cal-day { display: inline-block; width: var(--desk-cal-cell); height: var(--desk-cal-cell); box-sizing: border-box; border: 1px solid var(--border-strong); border-radius: 3px; vertical-align: -1px; }
+.desk-cal-day--on { border-color: var(--accent-primary); background: var(--accent-primary); }
+.desk-cal-day--today { outline: 2px solid var(--text-primary); outline-offset: 1px; }
+/* The empty corner over the weekday names, named so its place in the grid is stated rather than left to placement. */
+.desk-cal-corner { grid-area: 1 / 1; }
+.desk-cal-key { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; margin: 0.5rem 0 0; color: var(--text-tertiary); font-size: var(--desk-fs-xs); }
+.desk-cal-key > .desk-cal-day:not(:first-child) { margin-inline-start: 0.5rem; }
+/* This week so far, in the body's ink under the calendar. */
+.desk-streak-week { margin: 0.2rem 0 0; color: var(--text-primary); font-size: var(--desk-fs-md); }
+/* The next milestone's bar beside its words, on its own line on a narrow widget. */
+.desk-streak-next-bar { flex: 1 1 5rem; max-width: 8rem; }
 .desk-streak-marks { margin: 0.4rem 0 0; }
-.desk-celebrate { margin: 0 0 0.3rem; padding: 0.4rem 0.6rem; border: 1px solid color-mix(in srgb, var(--accent-primary) 60%, transparent); border-radius: var(--radius-sm); background: color-mix(in srgb, var(--accent-primary) 8%, var(--surface-base)); color: var(--text-primary); font-size: 0.88rem; font-weight: 600; }
+.desk-celebrate { margin: 0 0 0.3rem; padding: 0.4rem 0.6rem; border: 1px solid color-mix(in srgb, var(--accent-primary) 60%, transparent); border-radius: var(--radius-sm); background: color-mix(in srgb, var(--accent-primary) 8%, var(--surface-base)); color: var(--text-primary); font-size: var(--desk-fs-md); font-weight: 600; }
 .desk-toast-milestone { display: block; margin: 0.25rem 0 0; font-weight: 600; }
 @media (prefers-reduced-motion: no-preference) {
   .desk-celebrate, .desk-toast-milestone { animation: desk-celebrate-in 0.9s ease-out 1; }
@@ -24939,8 +25312,8 @@ html.presenter-covering body {
 .desk-pathnext .desk-list { gap: 0.6rem; }
 /* One path: the sentence with its link, then the progress and the path on My desk, wrapping on a phone. */
 .desk-pathnext-row { display: grid; gap: 0.2rem; min-width: 0; }
-.desk-pathnext-say { color: var(--text-primary); font-size: 0.92rem; line-height: 1.5; overflow-wrap: anywhere; }
-.desk-pathnext-meta { color: var(--text-tertiary); font-size: 0.8rem; }
+.desk-pathnext-say { color: var(--text-primary); font-size: var(--desk-fs-lg); line-height: 1.5; overflow-wrap: anywhere; }
+.desk-pathnext-meta { color: var(--text-tertiary); font-size: var(--desk-fs-sm); }
 .desk-pathnext-done { font-weight: 600; }
 /* At the top of an article, only on a narrow screen (on a wide one the end of the article is enough). */
 .desk-pathnext--top { margin: 0.6rem 0 1rem; }
@@ -24971,9 +25344,9 @@ html.presenter-covering body {
 /* --- Settings: the desk's data ------------------------------------------------------------------------------------- */
 .desk-data { margin: 1rem 0 0; }
 .desk-data .desk-controls-row { margin: 0.5rem 0; }
-.desk-code { color: var(--text-primary); font-family: var(--font-mono); font-size: 0.95rem; letter-spacing: 0.04em; overflow-wrap: anywhere; }
+.desk-code { color: var(--text-primary); font-family: var(--font-mono); font-size: var(--desk-fs-lg); letter-spacing: 0.04em; overflow-wrap: anywhere; }
 /* "Use this on another browser" (Portable storage, 12/11/2026): its three ways, each under a small heading. */
-.desk-h4 { margin: 1.1rem 0 0.3rem; color: var(--text-primary); font-size: 0.92rem; font-weight: 600; }
+.desk-h4 { margin: 1.1rem 0 0.3rem; color: var(--text-primary); font-size: var(--desk-fs-lg); font-weight: 600; }
 /* The pairing: the QR code beside the warning, the link and its buttons; one column on a phone. */
 .desk-pair { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 1rem 1.25rem; margin: 0.6rem 0; padding: 0.75rem 0.9rem; border: 1px solid color-mix(in srgb, var(--accent-primary) 55%, transparent); border-radius: var(--radius-md); background: var(--surface-elevated); }
 .desk-pair-side { flex: 1 1 16rem; min-width: 0; }

@@ -166,6 +166,8 @@ standby use-bia [scope interface]
 
 O [OUI lookup](/tools/oui-lookup) resolve 00:00:5E:00:01:05 para "ICANN, IANA Department", um endereço unicast administrado universalmente; ele não diz VRRP, porque o bloco do VRRP é uma subatribuição dentro do OUI da IANA. O [IPv6 Toolkit](/tools/ipv6) mostra ff02::12 como multicast de escopo link-local, também sem citar o VRRP. Se dois roteadores discordam, o [packet capture plan builder](/tools/packet-capture-plan-builder) ajuda a posicionar as capturas.
 
+A série [Arquiteturas redundantes](/learn/redundant-architectures-how-networks-survive-failure) põe os tempos de detecção do VRRP e do HSRP ao lado dos de todas as outras camadas na tabela de timers da sua abertura, e [A aritmética da redundância](/learn/the-arithmetic-of-redundancy-availability-mtbf-and-shared-fate) mostra o que um segundo roteador compra em disponibilidade e o que uma causa comum aos dois roteadores toma de volta. A quinta parte, [Redundância do default gateway em escala](/learn/default-gateway-redundancy-vrrpv3-glbp-and-anycast-gateways), leva esta eleição à escala: o VRRP versão 3 e o que a RFC 9568 mudou, centenas de grupos num par de roteadores, o Gateway Load Balancing Protocol (GLBP) da Cisco, o rastreamento de objetos, o IPv6 e os gateways anycast dos fabrics de data center.
+
 ## Para lembrar
 
 - O gateway é um papel: um VRID, seus endereços e um MAC virtual conhecido, com quem estiver ativo; o owner (prioridade 255) sempre vence.

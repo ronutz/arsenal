@@ -16,10 +16,15 @@
 // syncs; the widget says so in words. The name field suggests the site's
 // certification guides (from the site index) and accepts any text. The page
 // may hold several countdowns, one per exam.
+//
+// EXAM PACE (second improvement pass, 16/11/2026): a countdown may name one of
+// the reader's paths. It then says how many of the path's items are left and
+// the pace that finishes them by the exam (items left over days left, as a
+// day and, from two weeks out, as a week): plain arithmetic, no verdict.
 // ============================================================================
 
-// React's state and ids.
-import { useId, useState } from "react";
+// React's state, ids and the node type (the pace's link).
+import { useId, useState, type ReactNode } from "react";
 // The page's strings and language.
 import { useLocale, useTranslations } from "next-intl";
 // The desk's layout write, today and the day check.
@@ -28,8 +33,10 @@ import { isDay, setLayoutWidgets, today, type DeskData, type DeskWidget } from "
 import { setWidgetSettingsIn } from "@/lib/desk/layout";
 // The index, for the guides' names.
 import type { SiteIndex } from "@/lib/desk/siteIndex";
-// Dates in the page's language.
-import { formatDay } from "./DeskItemRow";
+// A path's name as the desk shows it.
+import { titleOf } from "./DeskItemRow";
+// The language's tag for Intl (the exam's day, and the pace's numbers).
+import { intlLocale } from "@/i18n/locales";
 
 /** The longest exam name kept. */
 const NAME_MAX = 80;
@@ -44,6 +51,19 @@ const NAME_MAX = 80;
 export function daysBetween(from: string, to: string): number {
   // Both at noon UTC, their difference in days.
   return Math.round((Date.parse(`${to}T12:00:00Z`) - Date.parse(`${from}T12:00:00Z`)) / 86_400_000);
+}
+
+/**
+ * A day in full, with its weekday, in the page's language ("Wednesday, 9 December 2026"), from noon UTC so no zone
+ * moves it.
+ *
+ * @param day YYYY-MM-DD
+ * @param locale the page's language
+ * @returns the words
+ */
+export function longDay(day: string, locale: string): string {
+  // The language's long date with the weekday.
+  return new Intl.DateTimeFormat(intlLocale(locale), { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${day}T12:00:00Z`));
 }
 
 /**
@@ -63,10 +83,19 @@ export default function DeskCountdown(props: { data: DeskData; widget: DeskWidge
   const name = typeof props.widget.settings.exam === "string" ? props.widget.settings.exam : "";
   // The stored date, when well formed.
   const date = typeof props.widget.settings.date === "string" && isDay(props.widget.settings.date) ? props.widget.settings.date : "";
+  // The stored path's id, when one is named.
+  const pathId = typeof props.widget.settings.path === "string" ? props.widget.settings.path : "";
   // Whether the form is open (always, until a date is set).
   const [editing, setEditing] = useState(false);
   // The fields while editing.
-  const [draft, setDraft] = useState({ exam: name, date });
+  const [draft, setDraft] = useState({ exam: name, date, path: pathId });
+  /**
+   * A path's name as shown on the desk: what the reader typed, or its collection's title, or "Untitled path".
+   *
+   * @param p the path
+   * @returns the name
+   */
+  const nameOfPath = (p: DeskData["paths"][number]) => p.name || (p.from ? titleOf(props.index, p.from.id) : null) || t("paths.untitled");
   // A missing date, said in words.
   const [bad, setBad] = useState(false);
 
@@ -75,7 +104,7 @@ export default function DeskCountdown(props: { data: DeskData; widget: DeskWidge
     // A date is needed.
     if (!isDay(draft.date)) { setBad(true); return; }
     // The new layout, or nothing when unchanged.
-    const next = setWidgetSettingsIn(props.data.layout.widgets, props.widget.id, { exam: draft.exam.trim().slice(0, NAME_MAX), date: draft.date });
+    const next = setWidgetSettingsIn(props.data.layout.widgets, props.widget.id, { exam: draft.exam.trim().slice(0, NAME_MAX), date: draft.date, path: draft.path || null });
     // Written.
     if (next) setLayoutWidgets(next);
     // Closed.
@@ -108,6 +137,16 @@ export default function DeskCountdown(props: { data: DeskData; widget: DeskWidge
         <label className="desk-picker-label" htmlFor={`${uid}-date`}>{t("countdown.date")}</label>
         <input id={`${uid}-date`} className="desk-input" type="date" value={draft.date} aria-invalid={bad} aria-describedby={bad ? `${uid}-bad` : undefined} onChange={(e) => { setDraft({ ...draft, date: e.target.value }); setBad(false); }} />
         {bad && <p className="desk-alert" id={`${uid}-bad`} role="status"><span aria-hidden="true">{"⚠"}</span> {t("countdown.badDate")}</p>}
+        {/* One of the reader's paths to finish by then (only when there are paths). */}
+        {props.data.paths.length > 0 && (
+          <>
+            <label className="desk-picker-label" htmlFor={`${uid}-path`}>{t("countdown.path")}</label>
+            <select id={`${uid}-path`} className="desk-input" value={draft.path} onChange={(e) => setDraft({ ...draft, path: e.target.value })}>
+              <option value="">{t("countdown.pathNone")}</option>
+              {props.data.paths.map((p) => <option key={p.id} value={p.id}>{nameOfPath(p)}</option>)}
+            </select>
+          </>
+        )}
         <div className="desk-controls-row">
           <button type="submit" className="desk-btn">{t("countdown.save")}</button>
           {date && <button type="button" className="desk-btn desk-btn--quiet" onClick={() => { setEditing(false); setBad(false); }}>{t("countdown.cancel")}</button>}
@@ -119,6 +158,21 @@ export default function DeskCountdown(props: { data: DeskData; widget: DeskWidge
 
   // The days left (negative once it has passed).
   const left = daysBetween(today(), date);
+  // The named path, when it still exists.
+  const path = pathId ? props.data.paths.find((p) => p.id === pathId) ?? null : null;
+  // Its items not yet read.
+  const itemsLeft = path ? path.items.filter((i) => !(i in props.data.read)).length : 0;
+  // Numbers with at most one decimal, in the page's language.
+  const nf = new Intl.NumberFormat(intlLocale(locale), { maximumFractionDigits: 1 });
+  // Whether the paths widget is on the page (the path's name then links to it).
+  const pathsShown = props.data.layout.widgets.some((w) => w.type === "paths");
+  /**
+   * The path's name, linked to the path in My paths when that widget is on the page.
+   *
+   * @param chunks the name, as the message places it
+   * @returns the name or the link
+   */
+  const link = (chunks: ReactNode) => (pathsShown && path ? <a className="desk-link" href={`#path=${path.id}`}>{chunks}</a> : <strong>{chunks}</strong>);
   // The countdown.
   return (
     <div className="desk-countdown">
@@ -126,9 +180,25 @@ export default function DeskCountdown(props: { data: DeskData; widget: DeskWidge
       <p className="desk-countdown-days">
         {left === 0 ? t("countdown.today") : left > 0 ? t("countdown.days", { count: left }) : t("countdown.ago", { count: -left })}
       </p>
-      <p className="desk-muted">{t("countdown.on", { date: formatDay(date, locale) })}</p>
+      {/* Two weeks or more: the same time in weeks and days, the way an exam's preparation is planned (increment E). */}
+      {left >= 14 && <p className="desk-countdown-weeks">{t("countdown.weeks", { weeks: Math.floor(left / 7), days: left % 7 })}</p>}
+      {/* The day with its weekday, in the page's language ("On Wednesday, 9 December 2026"). */}
+      <p className="desk-muted">{t("countdown.on", { date: longDay(date, locale) })}</p>
+      {/* The pace: the path's items left, and what finishes them by the exam (only while the exam is ahead). */}
+      {path && (
+        <div className="desk-countdown-pace">
+          <p className="desk-countdown-left">{t.rich("countdown.left", { count: itemsLeft, path: nameOfPath(path), link })}</p>
+          {itemsLeft > 0 && left > 0 && (
+            <p className="desk-muted">
+              {left >= 14
+                ? t("countdown.paceWeek", { perDay: nf.format(itemsLeft / left), perWeek: nf.format((itemsLeft / left) * 7) })
+                : t("countdown.pace", { perDay: nf.format(itemsLeft / left) })}
+            </p>
+          )}
+        </div>
+      )}
       <p className="desk-widget-action">
-        <button type="button" className="desk-btn desk-btn--quiet" onClick={() => { setDraft({ exam: name, date }); setEditing(true); }}>{t("countdown.change")}</button>
+        <button type="button" className="desk-btn desk-btn--quiet" onClick={() => { setDraft({ exam: name, date, path: path ? path.id : "" }); setEditing(true); }}>{t("countdown.change")}</button>
       </p>
     </div>
   );

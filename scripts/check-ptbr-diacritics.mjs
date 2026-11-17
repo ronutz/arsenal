@@ -104,6 +104,10 @@ const GRAVE = /[àèìòù]/;
 // Declared exceptions, keyed "message.key|word". MAY ONLY SHRINK.
 const DECLARED = new Map([
   [
+    "glossary.entries.protocols-of-the-elders-of-zion.depth|pavel",
+    "Pavel Krushevan, the newspaper owner to whom some studies attribute the text (a Russian given name, the mass-hysteria series, 16/11/2026).",
+  ],
+  [
     "glossary.entries.unix.depth|travel",
     "Space Travel, the name of the game Ken Thompson ran on the PDP-7 in 1969 (an English proper name, content sweep 11/11/2026).",
   ],

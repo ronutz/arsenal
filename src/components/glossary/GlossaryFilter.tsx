@@ -22,6 +22,11 @@
 // The result count and the empty-state line are updated live so a fully
 // filtered page never looks broken. Since 2026-10-06 the empty-state line is
 // rendered only when a filter leaves nothing, never in the static HTML.
+//
+// Since 2026-11-16 (the glossary split) it runs on the letter, domain and kind
+// pages rather than on one page of every entry: each page passes only the
+// chips that can match something there, and a row with no chips (the kinds,
+// on a kind page) is left out.
 // ============================================================================
 "use client";
 
@@ -174,7 +179,9 @@ export default function GlossaryFilter({
         />
       </div>
 
-      {/* Kind chips (single-select, precedence order) */}
+      {/* Kind chips (single-select, precedence order). A page that is itself one kind passes none, and the row is left
+          out (16/11/2026: the filter now also runs on the letter, domain and kind pages). */}
+      {kinds.length > 0 && (
       <fieldset className="gloss-chipset">
         <legend className="gloss-chipset-legend">{kindLegend}</legend>
         <button
@@ -199,8 +206,11 @@ export default function GlossaryFilter({
           </button>
         ))}
       </fieldset>
+      )}
 
-      {/* Domain chips (single-select, canonical order) */}
+      {/* Domain chips (single-select, canonical order; on a domain page, the domains its entries also carry). Left out
+          when there are none. */}
+      {domains.length > 0 && (
       <fieldset className="gloss-chipset">
         <legend className="gloss-chipset-legend">{domainLegend}</legend>
         <button
@@ -223,6 +233,7 @@ export default function GlossaryFilter({
           </button>
         ))}
       </fieldset>
+      )}
 
       {/* Live count + clear */}
       <p className="gloss-filter-status" ref={liveRef} aria-live="polite">

@@ -32,6 +32,7 @@ import {
   SHORTCUT_ACTIONS,
   KEY_POLICY,
   isKeyCustomizable,
+  shortcutAnchor,
 } from "@/config/shortcuts";
 import {
   resolveBindings,
@@ -96,7 +97,8 @@ export default function ShortcutSettings({ labels }: { labels: ShortcutSettingsL
             const policy = KEY_POLICY[key];
             const isForced = Boolean(policy?.forced);
             return (
-              <tr key={key} className="shortcut-row">
+              // Each row carries its key's id, so the help's and the guide's Customize links land on it (16/11/2026).
+              <tr key={key} id={shortcutAnchor(key)} className="shortcut-row">
                 <td className="shortcut-td-key">
                   <kbd className="shortcut-key mono">{labels.keyLabels[key] ?? key}</kbd>
                 </td>

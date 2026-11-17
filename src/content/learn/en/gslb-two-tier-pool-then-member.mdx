@@ -74,6 +74,8 @@ Only the pool tier offers *dynamic* methods - Quality of Service, Completion Rat
 
 Load the simulator, build the two-pool topology above, and change one method at a time. Watching the pool tier and the member tier move independently is the fastest way to internalize that GSLB is not one decision but two.
 
+The series [Redundant architectures](/learn/redundant-architectures-how-networks-survive-failure) works out how long a site failover by DNS takes once resolvers' caches and record lifetimes are counted, and when anycast moves users faster, in [ADC and GSLB redundancy: health monitors, pools and site failover](/learn/adc-and-gslb-redundancy-health-monitors-pools-and-site-failover).
+
 ## Sources
 
 - [F5, BIG-IP DNS: Load Balancing, version 15.0.0 (applies to 15.0.0 to 21.0.0), Global Server Load Balancing: no dynamic method is available for wide IP load balancing; among the dynamic methods, Round Trip Time and Hops (read 2026-10-07)](https://techdocs.f5.com/en-us/bigip-15-0-0/big-ip-dns-load-balancing/global-server-load-balancing.html)

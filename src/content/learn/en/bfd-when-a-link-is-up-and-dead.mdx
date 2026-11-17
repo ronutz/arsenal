@@ -176,6 +176,8 @@ Echo receive interval: disabled
 
 A capture shows the packet table's fields, one second apart until Up, then at the agreed interval. The [BFD timer calculator](/tools/bfd-timers) computes both directions of a session from the six configured numbers and decodes a captured packet field by field, [Sizing BFD timers](/learn/bfd-timers-the-arithmetic-of-detection) works through the arithmetic, and the [Python playground](/tools/python-playground) checks a single product (`3 * max(300, 1000)`). The [Packet Capture Plan Builder](/tools/packet-capture-plan-builder) helps choose where to capture UDP 3784 when only one end is Down, and the [Flow Path Reasoner](/tools/flow-path-reasoner) names the boxes between two routers.
 
+The series [Redundant architectures](/learn/redundant-architectures-how-networks-survive-failure) puts BFD in its opener's table of detection times, beside link aggregation, spanning tree, first-hop gateways, routing protocols and firewall heartbeats, so its milliseconds can be read against every other layer's seconds. Its sixth part, [Layer 3 redundancy](/learn/layer-3-redundancy-ecmp-bfd-and-fast-reroute), follows what happens after BFD brings a session down: equal-cost multipath, graceful restart and when BFD should end it, loop-free alternates and BGP's convergence.
+
 ## What to remember
 
 - BFD calls a path up only when packets flow both ways, so it catches one-way faults, hidden far ends and stopped forwarding planes.

@@ -30,6 +30,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
 // The game's strings and the shell's.
 import { useTranslations } from "next-intl";
+// The game's own keys, for the site's keyboard help (? or h; 16/11/2026).
+import { usePageKeys } from "@/components/PageKeys";
 // Locale-aware links inside the site (the "Learn the real thing" line).
 import { Link } from "@/i18n/navigation";
 // The frame around every game.
@@ -245,6 +247,8 @@ export default function PacketStack({ locale }: { locale: string }) {
   // The game's strings and the shell's.
   const t = useTranslations("devFun.games.packet-stack");
   const tc = useTranslations("devFun.games.common");
+  // The keys, told to the site's keyboard help (? or h, PRIME 16/11/2026 03:14): while a run is under way the site's shortcuts are off.
+  usePageKeys({ when: "playing", lines: [t("keysHint")] });
   // The day in play (today, or the earlier day the address asks for), after mount.
   const today = useToday();
   // The earlier day on the board, or null: its wording says "this day's" where today's says "today's".

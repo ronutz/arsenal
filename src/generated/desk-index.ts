@@ -2,10 +2,10 @@
 // The current file of the desk's site index for each live language (a content hash in each name, so a browser may
 // keep a file as long as it likes); fetched only by the desk page and its "add" pickers.
 export const DESK_INDEX_FILES: Readonly<Record<string, string>> = {
-  "en": "/desk-index/en.b4a3c21a55.json",
-  "pt-BR": "/desk-index/pt-BR.93b222eecc.json",
-  "es": "/desk-index/es.bac18e70da.json",
-  "de": "/desk-index/de.b83c6cd8a5.json",
-  "fr": "/desk-index/fr.62700ea468.json",
-  "it": "/desk-index/it.90648756a0.json"
+  "en": "/desk-index/en.11bb135018.json",
+  "pt-BR": "/desk-index/pt-BR.d7773e0450.json",
+  "es": "/desk-index/es.02a3fd7bef.json",
+  "de": "/desk-index/de.e0eb11be42.json",
+  "fr": "/desk-index/fr.b70bcb9ed1.json",
+  "it": "/desk-index/it.5802a8b7b0.json"
 };

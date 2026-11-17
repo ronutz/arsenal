@@ -46,6 +46,8 @@ import { useDesk } from "@/lib/desk/useDesk";
 import { useAutoSync } from "@/lib/desk/autoSync";
 // Identifiers and the kinds whose mark reads "done".
 import { DONE_KINDS, splitItemId, type ItemId } from "@/lib/desk/ids";
+// Whether the page has an item that k and x act on, for the keyboard help (16/11/2026).
+import { countDeskItem } from "@/lib/pageCapabilities";
 // The shared "Add to a path" panel and its words.
 import DeskAddMenu from "./DeskAddMenu";
 import { menuLabels } from "./menuLabels";
@@ -186,8 +188,13 @@ export default function DeskItemControls(props: { item: ItemId; endRead?: boolea
     };
     // Listening.
     window.addEventListener(DESK_COMMAND_EVENT, onCommand);
-    // Stopped.
-    return () => window.removeEventListener(DESK_COMMAND_EVENT, onCommand);
+    // Counted in, so the help can say k and x act on this page (16/11/2026).
+    countDeskItem(1);
+    // Stopped, and counted out.
+    return () => {
+      window.removeEventListener(DESK_COMMAND_EVENT, onCommand);
+      countDeskItem(-1);
+    };
   }, [props.primary, toggleSave, toggleRead]);
 
   // Reaching the end of an article or an entry marks it read, once per page view, with an Undo.

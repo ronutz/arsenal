@@ -29,6 +29,10 @@ export interface PrivacyRevision {
 
 /** The revisions, newest first. Every date is a changelog entry's date. */
 export const PRIVACY_REVISIONS: readonly PrivacyRevision[] = [
+  // The keyboard help refreshed (PRIME 16/11/2026 03:14): the shortcuts paragraph points to the full list, opened with ?
+  // or h, and says that a few pages take keys for themselves (the games while played, the letter-owning pages, the
+  // slides). Nothing new is stored. Six written packs.
+  { date: "2026-11-16", key: "r20261116keys" },
   // The LGTM page (queue 5d, 15/11/2026): its YouTube video loads only after the play button is pressed, from
   // youtube-nocookie.com (videoTitle, videoBody; the path's frame-src in public/_headers); and two playful choices kept
   // in the browser as local-only keys, the tune's era (ronutz:fun:lgtm-era) and the Ping-Pong virus simulator

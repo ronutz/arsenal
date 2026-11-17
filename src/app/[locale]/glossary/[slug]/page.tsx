@@ -10,6 +10,10 @@
 // a disputed marker + note for apocryphal lore, the sources list, and three
 // cross-link rails — relatedTools (the site thesis: the term links to the tool
 // that computes it), relatedArticles, and relatedTerms.
+//
+// 2026-11-16 (PRIME 04:27, splitting the glossary page): the breadcrumb names the entry's letter page, and the foot of
+// the page links the entries just before and after it in the whole A to Z, so a reader can walk the glossary one entry
+// at a time as they once scrolled the single list.
 // ============================================================================
 
 import { notFound } from "next/navigation";
@@ -23,6 +27,8 @@ import {
 } from "@/content/glossary/glossary";
 import { CATALOGUE } from "@/content/catalogue/catalogue";
 import { getArticle } from "@/lib/learn";
+// The entry's letter page and its A to Z neighbours (16/11/2026).
+import { alphabeticalNeighbours, letterOf, letterSlug, OTHER_BUCKET } from "@/lib/glossaryBrowse";
 import { ogImages } from "@/lib/og";
 // One plain-text, bounded summary for description, og:description and twitter:description (ARC-06).
 import { withDescription } from "@/lib/metaDescription";
@@ -108,6 +114,10 @@ export default async function GlossaryEntryPage({
   const relatedTools = (entry.relatedTools ?? []).filter((s) =>
     TOOL_NAME.has(s),
   );
+  // The entry's letter, for the breadcrumb, and its neighbours in the whole A to Z, for the foot of the page.
+  const bucket = letterOf(entry.headword); // "A" to "Z", or "#"
+  const letterLabel = bucket === OTHER_BUCKET ? t("browse.otherLetter") : bucket; // the "#" bucket has a name
+  const { prev, next } = alphabeticalNeighbours(slug); // the entries before and after
 
   return (
     <>
@@ -121,6 +131,8 @@ export default async function GlossaryEntryPage({
               items={[
                 { label: tNav("home"), href: "/" },
                 { label: t("title"), href: "/glossary" },
+                // The entry's letter page (16/11/2026): every entry filed under the same letter.
+                { label: letterLabel, href: `/glossary/letter/${letterSlug(bucket)}` },
                 { label: entry.headword },
               ]}
             />
@@ -306,8 +318,32 @@ export default async function GlossaryEntryPage({
               </nav>
             )}
 
+            {/* The entries just before and after this one in the whole A to Z (16/11/2026). */}
+            {(prev || next) && (
+              <nav className="gloss-letter-pager gloss-entry-pager" aria-label={t("browse.entryPagerLabel")}>
+                {prev ? (
+                  <Link href={`/glossary/${prev.slug}`} className="gloss-letter-pager-link" rel="prev">
+                    <span className="gloss-entry-pager-dir">{t("browse.prevEntry")}</span>
+                    <span className="gloss-entry-pager-name">{prev.headword}</span>
+                  </Link>
+                ) : (
+                  <span />
+                )}
+                {next ? (
+                  <Link href={`/glossary/${next.slug}`} className="gloss-letter-pager-link gloss-letter-pager-next" rel="next">
+                    <span className="gloss-entry-pager-dir">{t("browse.nextEntry")}</span>
+                    <span className="gloss-entry-pager-name">{next.headword}</span>
+                  </Link>
+                ) : (
+                  <span />
+                )}
+              </nav>
+            )}
+
             <p className="gloss-detail-back">
-              <Link href="/glossary">&larr; {t("backToIndex")}</Link>
+              <Link href={`/glossary/letter/${letterSlug(bucket)}`}>&larr; {t("browse.backToLetter", { letter: letterLabel })}</Link>
+              {" "}
+              <Link href="/glossary">{t("browse.backToHub")}</Link>
             </p>
           </div>
         </article>

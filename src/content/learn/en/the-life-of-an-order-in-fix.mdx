@@ -1,0 +1,278 @@
+---
+slug: the-life-of-an-order-in-fix
+title: "The life of an order in FIX"
+summary: "An order in the Financial Information eXchange (FIX) protocol is born with a NewOrderSingle and then lives through execution reports: acknowledged, partly filled, modified, cancelled, busted, copied to risk systems, allocated to accounts and confirmed. After reading, you can read ExecType and OrdStatus together and rank order states by precedence, tell the four ways FIX says no, follow cancel and replace chains, spot where B3 departs from the standard, check a full eight-message order by computing it, and see how the same messages stretch to futures, options, fixed income and foreign exchange."
+concepts: ["order life cycle", "ExecType", "OrdStatus", "order state precedence", "ExecutionReport", "OrderCancelReplaceRequest", "OrderCancelRequest", "OrderCancelReject", "BusinessMessageReject", "DontKnowTrade", "ClOrdID chaining", "partial fill", "CumQty and LeavesQty", "restatement", "trade bust", "drop copy", "Message Replay", "AllocationInstruction", "give-up", "Confirmation", "multileg order", "request for quote", "TradeCaptureReport", "B3 certification"]
+relatedTools: []
+relatedArticles: ["anatomy-of-a-fix-message-and-the-session-layer", "fix-encodings-and-successors-fixml-fast-sbe-and-exchange-binary-protocols", "the-fix-protocol-origins-versions-and-the-community", "electronic-trading-from-the-pit-to-the-microsecond", "fix-networks-hubs-and-managed-connectivity", "brazil-bmf-bovespa-b3-and-electronic-access", "retries-timeouts-and-idempotency", "knight-capital-and-the-rollback-that-made-it-worse"]
+category: networking
+order: 381
+status: reviewed
+updated: "2026-11-16"
+---
+
+An order in the Financial Information eXchange (FIX) protocol is born as one message, a NewOrderSingle (35=D), and from then on it exists only as a sequence of reports about it. The FIX Trading Community's document on order states says the whole paradigm is "mainly driven by only two FIX fields": ExecType(150), which "conveys the reason" a report was sent, and OrdStatus(39), which "conveys the current status of an order, i.e. after the event causing the message to be sent" ([FIX Trading Community, FIX Latest, Order State Changes, as of extension pack 284, November 2023, section 1](https://fixtrading.org/packages/fix-latest-specification-order-state-changes/)). This part of the series opened by [Electronic trading: from the pit to the microsecond](/learn/electronic-trading-from-the-pit-to-the-microsecond) picks up where [Anatomy of a FIX message and the session layer](/learn/anatomy-of-a-fix-message-and-the-session-layer) stopped, after a filled order and the session that carried it, and uses the text form whose binary successors are described in [FIX encodings and successors](/learn/fix-encodings-and-successors-fixml-fast-sbe-and-exchange-binary-protocols). After reading, you will be able to rank order states by precedence, tell the four ways FIX says no, follow a chain of cancel and replace requests, see where Brazil's exchange, B3 (Brasil, Bolsa, Balcão), departs from the standard and why that matters to a developer, check an eight-message order by computing it, and follow the trade into drop copies, allocations and confirmations, and beyond equities into futures, options, fixed income and foreign exchange (FX).
+
+## Two fields: what happened, and where the order stands
+
+### The precedence ladder
+
+An order can be in more than one state at once, for example partly filled and waiting for a cancel. FIX settles which state to report with a ranking: "If an order simultaneously exists in more than one order state, the value with highest precedence is the value that is reported in OrdStatus(39)" ([FIX Latest, Order State Changes, chapter 2](https://fixtrading.org/packages/fix-latest-specification-order-state-changes/)). The ladder, with the codes from the FIX Trading Community's online reference, FIXimate, and the values B3 lists for its FIX 4.4 gateway, EntryPoint:
+
+| Precedence | OrdStatus | Code | Meaning, in the standard's words | At B3 |
+|---|---|---|---|---|
+| 11 | Pending Cancel | `6` | "DOES NOT INDICATE THAT THE ORDER HAS BEEN CANCELED" | Not used |
+| 10 | Pending Replace | `E` | "DOES NOT INDICATE THAT THE ORDER HAS BEEN REPLACED" | Not used |
+| 9 | Done for Day | `3` | "no further executions forthcoming for the trading day" | Not used |
+| 8 | Calculated | `B` | Commission or settlement details "calculated and reported" | Not used |
+| 7 | Filled | `2` | "Order completely filled, no remaining quantity" | Used |
+| 6 | Stopped | `7` | Price and quantity guaranteed at the exchange | Not used |
+| 5 | Suspended | `9` | Suspended "at the request of the client" | Not used |
+| 4 | Canceled | `4` | "Canceled order with or without executions" | Used |
+| 4 | Expired | `C` | Cancelled because of its time-in-force instructions | Used |
+| 3 | Partially Filled | `1` | "Outstanding order with executions and remaining quantity" | Used |
+| 2 | New | `0` | "Outstanding order with no executions" | Used |
+| 2 | Rejected | `8` | "an order can pass from New to Rejected status" | Used |
+| 2 | Pending New | `A` | Received but not yet accepted | Not used |
+| 1 | Accepted for Bidding | `D` | For disclosed-style list trading | Not used |
+| (none) | Replaced | `5` | Listed in FIX 4.4 as "Replaced (Removed/Replaced)"; absent from FIX Latest | Used after every accepted modification |
+| (none) | Previous Final State | `Z` | Not in the standard | B3's own value, used after a trade bust on an order no longer working |
+
+Sources: [FIX Latest, Order State Changes, chapter 2](https://fixtrading.org/packages/fix-latest-specification-order-state-changes/); [FIXimate, OrdStatusCodeSet](https://orchimate.org/fixtrading/fix-latest/codeSets/OrdStatusCodeSet); [FIX 4.4 with errata of 18 June 2003, volume 6, field 39](https://fixtrading.org/packages/fix-4-4-specification-with-20030618-errata/); [B3, EntryPoint message specification, version 2.40, 27 November 2025](https://www.b3.com.br/data/files/A7/77/7B/FE/5789491029BEEC39AC094EA8/EntryPointMessageSpecs.pdf); [B3, EntryPoint messaging guidelines, version 2.9.31, 16 December 2025, appendix B](https://www.b3.com.br/data/files/FF/84/5F/93/DB81D8103152D4C8AC094EA8/EntryPointMessagingGuidelines.pdf). FIXimate is the browser of the specification that the community recommends as "the easiest way to navigate the full FIX Protocol specification" ([FIX Trading Community, The FIX Protocol](https://fixtrading.org/standards/fix-protocol/)).
+
+The ladder explains reports that look odd at first. In the standard's scenario of a cancel sent while fills keep arriving, the report that acknowledges the cancel carries OrdStatus Pending Cancel, because "'Pending cancel' order status takes precedence over 'partially filled' order status", and a fill that arrives while the cancel is pending still reports Pending Cancel (same document, scenario B.1.b). Two details of the documents deserve a warning. FIX 4.4 already marked the Replaced status as removed, and its own list of allowed values for field 39 skips 5 ([FIX 4.4, volume 6](https://fixtrading.org/packages/fix-4-4-specification-with-20030618-errata/)); B3, which builds EntryPoint on FIX 4.4, reports it anyway. And the table of state transitions in section 3.2 of the current Order State Changes document prints Partially Filled with precedence 4 and Canceled with 5, where its chapter 2 gives 3 and 4; the table keeps the numbers of the FIX 4.4 version, which also used 8 for Filled and 12 for Pending Cancel, and only some of them were updated (same documents). The list in chapter 2 is the one to implement.
+
+### ExecType, the event
+
+ExecType says what just happened. Its main values, from FIXimate, with the history that explains the gaps:
+
+| ExecType | Meaning | Added | At B3 |
+|---|---|---|---|
+| `0` New | Order accepted | FIX 4.1 | Used |
+| `4` Canceled, `5` Replaced | Cancel or replace done | FIX 4.1 | Used; B3 names 5 "Replace" |
+| `6` Pending Cancel, `E` Pending Replace | Request being processed | FIX 4.1, FIX 4.2 | Not used |
+| `8` Rejected | Order refused | FIX 4.1 | Used |
+| `C` Expired | Validity ended | FIX 4.1 | Used |
+| `D` Restated | "Execution Report sent unsolicited by sellside, with ExecRestatementReason (378) set" | FIX 4.2 | Used |
+| `F` Trade | "partial fill or fill" | FIX 4.3 | Used |
+| `G` Trade Correct, `H` Trade Cancel | Correction or bust of an earlier fill | FIX 4.3 | H used |
+| `I` Order Status | Answer to a status request, no new information | FIX 4.3 | Not used |
+
+Sources: [FIXimate, ExecTypeCodeSet](https://orchimate.org/fixtrading/fix-latest/codeSets/ExecTypeCodeSet); [B3, EntryPoint message specification 2.40](https://www.b3.com.br/data/files/A7/77/7B/FE/5789491029BEEC39AC094EA8/EntryPointMessageSpecs.pdf). Before FIX 4.3, fills were reported with separate ExecType values for partial fill and fill and with a second field, ExecTransType(20), which FIX 4.4 lists as "No longer used as of FIX 4.3" ([FIX 4.4, volume 6](https://fixtrading.org/packages/fix-4-4-specification-with-20030618-errata/)); that is why codes 1 and 2 are missing from the current list.
+
+Three rules from the trade volume of FIX Latest hold the two fields together ([FIX Trading Community, FIX Latest, Trade, as of extension pack 284, November 2023, section 3.1.2](https://fixtrading.org/packages/fix-latest-specification-trade/)):
+
+- "Execution information (e.g. new partial fill or complete fill) should not be communicated in the same report as one which communicates other state changes (such as pending cancel, pending replace, canceled, replaced, accepted, done for day etc)."
+- "The general rule is: OrderQty(38) = CumQty(14) + LeavesQty(151)", with exceptions once the order is cancelled, done for the day, expired, calculated or rejected, when LeavesQty may be 0. The sentence that lists the exceptions writes "OrdStatus(38)", a slip for OrdStatus(39).
+- Quantities and average price "should be calculated to reflect the cumulative result of all versions of an order": if order A is replaced by order B, the fills reported on B include those on A.
+
+## Four ways to say no
+
+A refusal in FIX depends on what is being refused. The table separates the levels; the session-level reject is described in [Anatomy of a FIX message and the session layer](/learn/anatomy-of-a-fix-message-and-the-session-layer).
+
+| What is refused | Message | Reason field and examples | Source |
+|---|---|---|---|
+| A message that breaks session rules | Reject (35=3) | SessionRejectReason(373): 1 "Required Tag Missing", 5 "Value is incorrect (out of range) for this tag" | [FIXimate, SessionRejectReasonCodeSet](https://orchimate.org/fixtrading/fix-latest/codeSets/SessionRejectReasonCodeSet) |
+| A well-formed message the application cannot handle | BusinessMessageReject (35=j) | BusinessRejectReason(380): 3 "Unsupported Message Type", 8 "Throttle limit exceeded" | [FIXimate, BusinessRejectReasonCodeSet](https://orchimate.org/fixtrading/fix-latest/codeSets/BusinessRejectReasonCodeSet) |
+| A new order | ExecutionReport (35=8) with ExecType and OrdStatus Rejected | OrdRejReason(103): 6 "Duplicate Order (e.g. dupe ClOrdID)", 16 "Price exceeds current price band" | [FIXimate, OrdRejReasonCodeSet](https://orchimate.org/fixtrading/fix-latest/codeSets/OrdRejReasonCodeSet) |
+| A cancel or a replace | OrderCancelReject (35=9) | CxlRejResponseTo(434) says which request, 1 cancel or 2 cancel/replace; CxlRejReason(102): 0 "Too late to cancel", 1 "Unknown order", 3 already pending | [FIXimate, CxlRejReasonCodeSet](https://orchimate.org/fixtrading/fix-latest/codeSets/CxlRejReasonCodeSet); [FIXimate, CxlRejResponseToCodeSet](https://orchimate.org/fixtrading/fix-latest/codeSets/CxlRejResponseToCodeSet) |
+
+The buy side can refuse too. The DontKnowTrade (35=Q) message, "a.k.a. DK message", DK standing for "don't know", "can be thought of as an execution reject message", with reasons such as "No matching order" or "Price exceeds limit"; the optional ExecutionAck (35=BN) can either accept or "DK" a report ([FIX Latest, Trade, sections 3.1.3 and 3.1.4](https://fixtrading.org/packages/fix-latest-specification-trade/); [FIXimate, DKReasonCodeSet](https://orchimate.org/fixtrading/fix-latest/codeSets/DKReasonCodeSet)). The OrderCancelReject is the one exception to the rule that a change of status travels in an ExecutionReport: it rejects the request and reports the order's current OrdStatus at the same time (same source, section 3.1.2).
+
+B3 follows the structure and replaces the reason values. It "will issue an Execution Report message (tag 35=8) with field ExecType set to 'Rejected' (tag 150=8) for orders rejected by EntryPoint, the pre-trade risk control or the match engine", with "The code for the rejection" in OrdRejReason(103) and the text in Text(58) ([B3, EntryPoint messaging guidelines 2.9.31, section 7.3](https://www.b3.com.br/data/files/FF/84/5F/93/DB81D8103152D4C8AC094EA8/EntryPointMessagingGuidelines.pdf)). The codes are B3's own six-digit numbers, listed in a separate document by the component that raises them, from the FIX and binary gateways to the matching engine and the risk system; two examples are `002179` "Order price is outside bands" and `007039` "Duplicate Client Order Id for this Session/Contract." ([B3, EntryPoint error codes, version 1.0.35, 29 May 2026](https://www.b3.com.br/data/files/04/42/E9/2A/FF37E91064BF82E9AC094EA8/EntryPointErrorCodes_v1.0.35.pdf)). A program written against FIXimate's list of OrdRejReason values would misread every B3 reject.
+
+Exchanges also answer faster than the general model. The chapter of the order-state document written for exchanges says that "Filled and Canceled are considered to be terminal states", that "Pending order states requiring additional messages should be avoided in the interest of performance", and that the first report of a new order may already say Partially Filled, Filled or, for an immediate-or-cancel or fill-or-kill order, Canceled ([FIX Latest, Order State Changes, chapter 4](https://fixtrading.org/packages/fix-latest-specification-order-state-changes/)). B3's appendix of transitions shows the same choice: there is no pending state at all, a modification is answered directly with ExecType Replace and OrdStatus Replaced, and a rejected cancel or modification of a known order leaves it in its "Standing state" ([B3, EntryPoint messaging guidelines 2.9.31, appendix B](https://www.b3.com.br/data/files/FF/84/5F/93/DB81D8103152D4C8AC094EA8/EntryPointMessagingGuidelines.pdf)).
+
+## Fills and quantities
+
+Each fill is an ExecutionReport with ExecType F, the quantity of that fill in LastQty(32) and its price in LastPx(31), and the running totals in CumQty and LeavesQty; [Anatomy of a FIX message and the session layer](/learn/anatomy-of-a-fix-message-and-the-session-layer) walks through the standard's first example, one order filled in three executions. Two rules in FIX Latest matter once other requests are in flight. Fills that arrive while a request is pending "must contain the 'original' (current order prior to state change request) order parameters", and "An order cannot be considered replaced until it has been explicitly accepted and confirmed" by a report with ExecType Replaced ([FIX Latest, Trade, section 3.1.2](https://fixtrading.org/packages/fix-latest-specification-trade/)).
+
+B3 differs on three points that change how a client must count:
+
+- **Average price.** "This functionality is not available through EntryPoint. Tag AvgPx (6) is kept for FIX compatibility only. Client systems should calculate the average execution price based on the execution prices sent in tag LastPx (31) of each fill's Execution Report message. EntryPoint will always send tag AvgPx (6) = 0" ([B3, EntryPoint messaging guidelines 2.9.31, section 7.2](https://www.b3.com.br/data/files/FF/84/5F/93/DB81D8103152D4C8AC094EA8/EntryPointMessagingGuidelines.pdf)).
+- **Trade busts.** In FIX Latest, a bust on the day of the trade lowers CumQty by the busted quantity and raises LeavesQty by the same amount ([FIX Latest, Trade, section 3.1.2](https://fixtrading.org/packages/fix-latest-specification-trade/)). At B3, "trade busts do not roll back the busted quantity. Thus, LeavesQty does not increase when a bust take place", and if the busted trade had filled the order completely, "the CumQty sent in the Execution Report message is set to zero" (B3 guidelines, section 6.3). After a bust on an order that is no longer working, B3 reports OrdStatus Z, "Previous Final State" (appendix B).
+- **Iceberg replenishment.** An order that shows only part of its size is refilled by the matching engine, which "will assign a new order identifier (SecondaryOrderID) each time the order is replenished" and announces it with ExecType Restated (section 6.3).
+
+## Cancel and replace
+
+### The rules in the standard
+
+The OrderCancelReplaceRequest (35=G), "a.k.a. Order Modification Request", changes "any valid attribute of an open order", and the OrderCancelRequest (35=F) "requests the cancellation of all of the remaining quantity"; reducing an order is a replace, not a cancel ([FIX Latest, Trade, sections 3.1.5 and 3.1.6](https://fixtrading.org/packages/fix-latest-specification-trade/)). The rules that matter in practice (same sections):
+
+- **Identifiers.** Each request carries a new, unique ClOrdID(11) and points back with OrigClOrdID(41) to "ClOrdID (11) of the previous order (NOT the initial order of the day)" ([FIXimate, OrigClOrdID](https://orchimate.org/fixtrading/fix-latest/fields/OrigClOrdID)); the broker's OrderID(37) "does not necessarily have to change".
+- **Answer at once.** "An immediate response to this message is required", with a Pending Replace or Pending Cancel report recommended unless the request can be accepted or rejected immediately.
+- **Chaining.** When several replaces are in flight, "The order sender should chain client order IDs on an 'optimistic' basis", pointing at the last ClOrdID not rejected, while "The order receiver should chain client order IDs on a 'pessimistic' basis", pointing at the last one accepted. A sender chaining rapidly should put in each request "the full details of the order as they would now like it to be", in case an earlier one is rejected.
+- **Resend everything.** "All of the application-level fields in the original order should be retransmitted with the original values", except those being changed, and ExecInst(18) values must be re-declared or they are dropped.
+- **Limits.** A replace to a quantity below CumQty is read "as requests to stop executing the order", and "Requests to change price on a filled order will be rejected". A firm that will not allow a field to change answers with CxlRejReason 2, "Broker/Exchange Option".
+
+The [Retries, timeouts and idempotency](/learn/retries-timeouts-and-idempotency) article covers the general problem these identifiers solve: a request whose answer has not arrived yet must not be applied twice.
+
+### Where B3 differs
+
+B3 states the opposite of the resend rule: "Only the fields that are being changed need to be sent in the replacement. Fields that are not sent are considered to be the same as the original order" ([B3, EntryPoint messaging guidelines 2.9.31, section 6.5](https://www.b3.com.br/data/files/FF/84/5F/93/DB81D8103152D4C8AC094EA8/EntryPointMessagingGuidelines.pdf)). It reads OrderQty as "the total investor quantity, i.e. the total size of the order", including in modifications, and works through what happens when a fill and a modification cross on the wire (section 6.3). Its third scenario and the standard's corresponding case end differently:
+
+| Case | Order | Fill before the request is processed | Request | B3's answer | FIX Latest's answer |
+|---|---|---|---|---|---|
+| Increase while partly filled | Buy 1,000 at 12.00 | 200 | Total 1,300 | Replaced: CumQty 200, LeavesQty 1,100 | Replaced, Partially Filled, the same quantities (scenario C.1.b pattern) |
+| Decrease below what was filled | Buy 1,000 at 12.00 | 800 | Total 700 | Cancelled: CumQty 800, LeavesQty 0 | "order qty is amended to cum qty": Replaced, Filled (scenario C.3.c) |
+
+Sources: [B3, EntryPoint messaging guidelines 2.9.31, section 6.3, scenarios 2 and 3](https://www.b3.com.br/data/files/FF/84/5F/93/DB81D8103152D4C8AC094EA8/EntryPointMessagingGuidelines.pdf); [FIX Latest, Order State Changes, scenarios C.1.b and C.3.c](https://fixtrading.org/packages/fix-latest-specification-order-state-changes/). In both systems nothing is left open, but a client that expects a Replaced report after cutting an order below its fills will not get one from B3.
+
+A modification can also cost the order its place in the queue. B3 publishes the effect of each change: a new price, a stop price, a larger quantity or a new minimum quantity mean "Priority Loss"; a smaller quantity, a new order type, a new validity or a new account "Keep Priority" (B3 guidelines, section 6.6). Nasdaq's native protocol takes a simpler line: "Replacing an order always gives it a new timestamp for its time priority on the book", so a firm that only wants to shrink an order and keep its place sends a cancel for part of it, or a separate Modify message for the changes that "will not affect order priority" ([Nasdaq, OUCH 5.0, sections 2.2 and 2.4, October 2025](https://www.nasdaqtrader.com/content/technicalsupport/specifications/TradingProducts/Ouch5.0.pdf)). Nasdaq also counts quantity like FIX and B3, as the total for the whole chain: after 100 of 500 shares trade, a replace for 500 leaves 400 exposed, a design that "inhibits the risk of double-liability throughout the order/replace chain" (same document, section 2.2).
+
+## Restatements, orders that live for days, and busts
+
+Not every report answers a request. An ExecutionReport with ExecType D, Restated, "is sent by the sell-side communicating a change in the order or a restatement of the order's parameters without an electronic request from the customer", and must carry ExecRestatementReason(378) ([FIX Latest, Trade, section 3.1.2](https://fixtrading.org/packages/fix-latest-specification-trade/)). Orders that remain good for more than a day (good till cancel or good till date, together "GT orders") are where restatements are routine: a broker may restate each open GT order at the start of the next day with reason 1, "GT renewal / restatement (no corporate action)", or after a stock split with reason 0, "GT Corporate action", with quantities and average price adjusted to post-split shares (same section). Over several days, OrderQty, CumQty and AvgPx describe the whole order, while DayOrderQty(424), DayCumQty(425) and DayAvgPx(426) describe today; the standard's example is an order for 10,000 of which 2,000 traded on earlier days, where "a request to change OrderQty(38) to 15000 will mean that 13000 shares will be open" (same section).
+
+Unsolicited cancels use the same field, and here B3 and the standard each grew their own values. FIXimate lists 12 "Cancel On Connection Loss" and 13 "Cancel On Logout" ([FIXimate, ExecRestatementReasonCodeSet](https://orchimate.org/fixtrading/fix-latest/codeSets/ExecRestatementReasonCodeSet)); B3 sends 100 "Cancel On Hard Disconnection", 101 "Cancel On Logout" and 102 "Cancel On Disconnect And Logout", along with values in the 200s for market maker protection, risk management cancellations and cancellations after operational errors ([B3, EntryPoint message specification 2.40](https://www.b3.com.br/data/files/A7/77/7B/FE/5789491029BEEC39AC094EA8/EntryPointMessageSpecs.pdf)).
+
+A fill reported in error is withdrawn with ExecType H, Trade Cancel, or fixed with G, Trade Correct, the earlier report identified in ExecRefID(19); "one cannot cancel a cancel" ([FIX Latest, Trade, section 3.1.2](https://fixtrading.org/packages/fix-latest-specification-trade/)). B3's certification script ends its first block of tests with exactly that step, "TRADING CERTIFICATION: Cancel trade(s)", expecting "Trades cancelled" ([B3, EntryPoint order routing certification script, version 5.4, 21 July 2023, step A1.11](https://www.b3.com.br/data/files/99/15/C6/A5/3A4DC8103152D4C8AC094EA8/Certification_Script_EntryPoint_Equities_Derivatives_v5.6.pdf)).
+
+## Worked example: one order, eight messages
+
+B3's certification script, "the series of tests that qualify a third-party institution to connect to B3 for the purpose of routing orders for Derivatives and Equities segments using FIX4.4", opens with a block of limit orders valid for the day. Steps A1.2 to A1.5 are a complete life: the client buys 200 at 20.00, B3's certification desk sells 100 against it, the client modifies the remaining order "From: 100@20,00" "to: 300@21,00", leaving "Buy 200@21,00" on the book, the desk sells 100 more, and the client cancels the remaining 100 ([B3, EntryPoint order routing certification script, version 5.4, section A1](https://www.b3.com.br/data/files/99/15/C6/A5/3A4DC8103152D4C8AC094EA8/Certification_Script_EntryPoint_Equities_Derivatives_v5.6.pdf)). The file is named version 5.6 on B3's site; its cover says version 5.4, last modified 21 July 2023.
+
+Written out as FIX 4.4 in B3's dialect, that part of the script is eight messages between the client and the exchange. The CompIDs, account, instrument, party identifiers, sequence numbers and times are invented for this article; the parties use B3's roles 36, Entering Trader, and 54, Sender Location ([B3, EntryPoint message specification 2.40](https://www.b3.com.br/data/files/A7/77/7B/FE/5789491029BEEC39AC094EA8/EntryPointMessageSpecs.pdf)). The vertical bar stands for the Start of Heading (SOH) delimiter.
+
+```
+1 client   8=FIX.4.4|9=189|35=D|49=CABC0001|56=EXCHG|34=21|52=20261116-13:00:00.100|11=ORD-1|1=1234|453=2|448=TRDR1|447=D|452=36|448=DMA1|447=D|452=54|55=EXMP3|54=1|60=20261116-13:00:00.100|38=200|40=2|44=20.00|59=0|10=184|
+2 exchange 8=FIX.4.4|9=166|35=8|49=EXCHG|56=CABC0001|34=31|52=20261116-13:00:00.104|37=OID-77|11=ORD-1|17=E-1|150=0|39=0|55=EXMP3|54=1|38=200|44=20.00|151=200|14=0|6=0|60=20261116-13:00:00.103|10=236|
+3 exchange 8=FIX.4.4|9=184|35=8|49=EXCHG|56=CABC0001|34=32|52=20261116-13:00:05.201|37=OID-77|11=ORD-1|17=E-2|150=F|39=1|55=EXMP3|54=1|38=200|44=20.00|32=100|31=20.00|151=100|14=100|6=0|60=20261116-13:00:05.200|10=049|
+4 client   8=FIX.4.4|9=208|35=G|49=CABC0001|56=EXCHG|34=22|52=20261116-13:01:00.300|37=OID-77|41=ORD-1|11=ORD-2|1=1234|453=2|448=TRDR1|447=D|452=36|448=DMA1|447=D|452=54|55=EXMP3|54=1|60=20261116-13:01:00.300|38=300|40=2|44=21.00|59=0|10=194|
+5 exchange 8=FIX.4.4|9=177|35=8|49=EXCHG|56=CABC0001|34=33|52=20261116-13:01:00.304|37=OID-77|41=ORD-1|11=ORD-2|17=E-3|150=5|39=5|55=EXMP3|54=1|38=300|44=21.00|151=200|14=100|6=0|60=20261116-13:01:00.303|10=076|
+6 exchange 8=FIX.4.4|9=184|35=8|49=EXCHG|56=CABC0001|34=34|52=20261116-13:02:10.511|37=OID-77|11=ORD-2|17=E-4|150=F|39=1|55=EXMP3|54=1|38=300|44=21.00|32=100|31=21.00|151=100|14=200|6=0|60=20261116-13:02:10.510|10=062|
+7 client   8=FIX.4.4|9=189|35=F|49=CABC0001|56=EXCHG|34=23|52=20261116-13:03:00.000|37=OID-77|41=ORD-2|11=ORD-3|1=1234|453=2|448=TRDR1|447=D|452=36|448=DMA1|447=D|452=54|55=EXMP3|54=1|60=20261116-13:03:00.000|38=300|10=131|
+8 exchange 8=FIX.4.4|9=175|35=8|49=EXCHG|56=CABC0001|34=35|52=20261116-13:03:00.004|37=OID-77|41=ORD-2|11=ORD-3|17=E-5|150=4|39=4|55=EXMP3|54=1|38=300|44=21.00|151=0|14=200|6=0|60=20261116-13:03:00.003|10=235|
+```
+
+The same life in numbers:
+
+| # | Message | ClOrdID, OrigClOrdID | ExecType | OrdStatus | OrderQty | LastQty at LastPx | CumQty | LeavesQty | BodyLength, CheckSum |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | NewOrderSingle | ORD-1 | | | 200 at 20.00 | | | | 189, 184 |
+| 2 | ExecutionReport | ORD-1 | 0 New | 0 New | 200 | | 0 | 200 | 166, 236 |
+| 3 | ExecutionReport | ORD-1 | F Trade | 1 Partially Filled | 200 | 100 at 20.00 | 100 | 100 | 184, 049 |
+| 4 | OrderCancelReplaceRequest | ORD-2, ORD-1 | | | 300 at 21.00 | | | | 208, 194 |
+| 5 | ExecutionReport | ORD-2, ORD-1 | 5 Replace | 5 Replaced | 300 | | 100 | 200 | 177, 076 |
+| 6 | ExecutionReport | ORD-2 | F Trade | 1 Partially Filled | 300 | 100 at 21.00 | 200 | 100 | 184, 062 |
+| 7 | OrderCancelRequest | ORD-3, ORD-2 | | | 300 | | | | 189, 131 |
+| 8 | ExecutionReport | ORD-3, ORD-2 | 4 Canceled | 4 Canceled | 300 | | 200 | 0 | 175, 235 |
+
+Every BodyLength and CheckSum above was computed by one program and recomputed by a second, independent one, using the rules taken apart in [Anatomy of a FIX message and the session layer](/learn/anatomy-of-a-fix-message-and-the-session-layer); the second program also checked OrderQty = CumQty + LeavesQty on every active report and LeavesQty 0 on the cancellation. Four things to read in it:
+
+- **The modification is a total.** The client asked for 300 because B3 reads OrderQty as the order's whole size: 100 already traded plus 200 to show, which is the "Buy 200@21,00" the script expects. Asking for 200 would have left only 100 on the book.
+- **The chain.** Each request names the previous ClOrdID, never the first one: ORD-2 points to ORD-1, ORD-3 to ORD-2. OrderID OID-77 never changes.
+- **B3's dialect.** Message 5 reports OrdStatus 5, Replaced, although 100 have traded; under FIX Latest the same event would carry ExecType Replaced and OrdStatus 1, Partially Filled, as in scenario C.1.b ([FIX Latest, Order State Changes](https://fixtrading.org/packages/fix-latest-specification-order-state-changes/)). No pending report appears before messages 5 and 8.
+- **The average price the exchange does not send.** Every report says `6=0`. The client must compute it: (100 × 20.00 + 100 × 21.00) ÷ 200 = 20.50.
+
+## After the trade: drop copies
+
+A drop copy is a copy of the reports sent to another system, and [FIX networks: hubs and managed connectivity](/learn/fix-networks-hubs-and-managed-connectivity) covers the idea, the CopyMsgIndicator field and the CompID letters B3 gives drop copy sessions. B3's guidelines add how its service behaves, after "a major update in December 2021" with a new FIX engine ([B3, EntryPoint messaging guidelines 2.9.31, section 3.8](https://www.b3.com.br/data/files/FF/84/5F/93/DB81D8103152D4C8AC094EA8/EntryPointMessagingGuidelines.pdf)):
+
+- **Affinity.** Each drop copy gateway listens "exclusively to all messages coming from one or more specific matching engines", so "to be able to receive orders from the entire market, clients will need at least 1 FIX session at each Drop Copy Gateway".
+- **Read only.** Any attempt to send an application message, such as an order, "will be rejected with a session level reject (tag 35=3)".
+- **Failover.** Each gateway has a primary and a backup node; after a failover "some messages might be sent to client systems with a PossDupFlag set as true (43=Y)".
+- **Limits.** A resend request is limited to 10,000 messages, and only one is served at a time; a client that cannot keep up may be disconnected as a "slow consumer".
+- **The week.** Gateways start on Sunday and reset sequence numbers to 1 in an end-of-day procedure at 23:00 Brasília time; the text says this runs "from Tuesday to Thursday" while the table below it marks Monday to Thursday, and both agree that numbers carry over from Sunday to Monday.
+
+For larger recoveries B3 runs a separate Message Replay gateway, aimed at "late joiner Firms who need to get up to date with all operations performed by their clients during the current trading session"; replayed messages carry ApplID(1180), the original TargetCompID, and ApplSeqNum(1181), the original sequence number, and are requested with ApplicationMessageRequest (35=BW) (same guidelines, section 14.6). On the order entry gateways, a resend request above the limit is served in part and flagged with B3's own tag PossMissingApplMsg(35033), where the drop copy gateways reject it outright (sections 3.8 and 14.6). B3's drop copy certification script checks the same behaviour, including that "Messages with Tag 141=Y will not be sent in trading or drop copy sessions", 141 being ResetSeqNumFlag, and that a client can match orders from "distinct FIX sessions" by their ApplID ([B3, EntryPoint drop copy certification script, version 1.8, 25 October 2022](https://www.b3.com.br/data/files/95/D6/60/2C/101148101E311E28AC094EA8/Certification-Script-EntryPoint-Derivatives-Equities-DropCopy_v1.8.pdf)).
+
+## Allocations and confirmations
+
+### Three moments to allocate
+
+An asset manager often trades one block for many funds. FIX lets the block be split among accounts at three moments ([FIX Trading Community, FIX Latest, Post-Trade, as of extension pack 284, November 2023, chapter 3](https://fixtrading.org/packages/fix-latest-specification-post-trade/)):
+
+| Option | How | Typical message flow |
+|---|---|---|
+| Pre-allocated order | Accounts and quantities inside the NewOrderSingle, in AllocAccount(79) and AllocQty(80), under one AllocID(70) | 35=D, then 35=8 reports, optionally AllocationInstructionAck (35=P) with AllocStatus 3 "Received", then 0 "Accepted" |
+| Pre-trade allocation | AllocationInstruction (35=J) after the order, before it is complete | 35=D, 35=J, 35=8 reports, 35=P |
+| Post-trade allocation | AllocationInstruction (35=J) after the fills | 35=8 reports, then 35=J, 35=P |
+
+The respondent checks "that all accounts are known", that each slice meets the instrument's minimum and increment rules "and the sum of allocated quantities equals the block trade quantity", and rejects with AllocStatus 1, "Block level reject", or 2, "Account level reject" (same chapter, section 3.2). Post-trade allocation can use one average price per account, AllocAvgPx(153), or the executed prices, AllocPrice(366), the standard naming Japan as an example of the second (section 3.3). AllocType(626) says what the instruction is for; 5, "Ready-To-Book", tells the broker that orders can be booked "without specifying individual account breakdowns" (section 3.2; [FIXimate, AllocTypeCodeSet](https://orchimate.org/fixtrading/fix-latest/codeSets/AllocTypeCodeSet)). A block with many accounts can be split across messages: the standard's example sends 200 accounts as 80, 80 and 40, each fragment carrying TotNoAllocs(892) = 200 and the last one LastFragment(893) = Y (section 3.5).
+
+The order in the worked example above ends with 200 shares at an average of 20.50. Allocated after the trade to two funds of 120 and 80 shares at that average price, the instruction's slices sum to the block, 120 + 80 = 200, the check the standard asks the respondent to make.
+
+### Confirmation and the respondent's report
+
+Two message pairs close the loop. AllocationReport (35=AS), "a.k.a. 'Allocation Claim'", is sent by the respondent, a broker, a clearing house or an intermediary, with the account breakdown it has applied (section 3.6.6). Confirmation (35=AK) works "at an allocation account (trade) level rather than block trade level", one ticket per account with fees, net money and settlement details, and "When the buy-side, in response, 'affirms' with the ConfirmationAck(35=AU) message, the trade is ready to settle" (chapter 4).
+
+### Give-ups and allocation in Brazil
+
+At B3 the position can end up at a firm other than the one that executed. "A trade may be given up to another firm, i.e. the firm that carries the position is a firm other than the executing firm", either after the trade on B3's services website or "pre-trade, indicating the give up in the order message" by putting a source account in Account(1); "the take up firm ... will accept or reject the trade", and if it rejects, "the position is carried by the executing firm" ([B3, EntryPoint messaging guidelines 2.9.31, section 13.2](https://www.b3.com.br/data/files/FF/84/5F/93/DB81D8103152D4C8AC094EA8/EntryPointMessagingGuidelines.pdf)). B3's example: customer account 1234 at the executing firm GHI is linked to give-up firm DEF, where the target account is 9898; the order carries `1=1234`, and because the target account is not in the message, "the pre trade limit validation is performed on the source account" (same section). Orders from direct market access (DMA) customers must always carry "a valid account or give up link" (same section). The standard has matching vocabulary in AllocStatus 11, "Pending give-up approval", and 13, "Pending take-up approval" ([FIXimate, AllocStatusCodeSet](https://orchimate.org/fixtrading/fix-latest/codeSets/AllocStatusCodeSet)).
+
+For the asset manager's own allocation, B3 does not use FIX's allocation messages. Its iMercado service defines its own Extensible Markup Language (XML) messages, from `imb.500.01` to `imb.522.01`, for "Captura, Alocação e Repasse", capture, allocation and pass-through, with scenarios in which the manager, the "Gestor", adds or removes the allocation of a master account or a sub-account ([B3, iMercado, Captura, Alocação e Repasse, catálogo de mensagens, version 1.10, 25 April 2019](https://www.b3.com.br/data/files/48/25/0F/83/0E6CA610F33E5CA6AC094EA8/Catalogo_de_Mensagens_iMercado_Alocacao_v.1.10.pdf)); B3's post-trade FIX messaging lists iMercado among the interfaces whose XML travels inside FIX 4.4 sessions as XMLnonFIX (35=n), as [FIX encodings and successors](/learn/fix-encodings-and-successors-fixml-fast-sbe-and-exchange-binary-protocols) describes ([B3, Mensageria Pós Negociação B3, especificação técnica, version 2.0, September 2020](https://www.b3.com.br/data/files/2F/07/A8/54/214057102C784E47AC094EA8/MensageriaPosNegociacaoB3%20-%20Especificacao%20Tecnica.pdf)).
+
+## FIX beyond equities
+
+### Futures and options
+
+Derivatives bring orders with several instruments at once. "A multileg security is made up of multiple securities that are traded atomically. Swaps, option strategies, futures spreads, are a few examples", and FIX supports two approaches: a "product approach", where the market lists the combination as one product, "often used in electronic trading systems", and trading the legs as separate securities, "as is commonly done today in open outcry markets"; the order message is NewOrderMultileg (35=AB) ([FIX Latest, Trade, chapter 6](https://fixtrading.org/packages/fix-latest-specification-trade/)). B3 lists strategies of its own and lets members build theirs: user-defined spreads have "All or Nothing semantics, which guarantees that the participant will get fills on all strategy legs ... or none at all" ([B3, EntryPoint messaging guidelines 2.9.31, section 14.1](https://www.b3.com.br/data/files/FF/84/5F/93/DB81D8103152D4C8AC094EA8/EntryPointMessagingGuidelines.pdf)).
+
+Options add messages that have nothing to do with buying and selling. At B3, "All derivatives options are outright", so a participant closes a short position by buying the same option with PositionEffect(77) = C, "Close" (section 13.2); exercise requests arrive "as a Position Maintenance Request (35=AL)"; automatic blocking, which protects a written position after a purchase in the same series, is notified "with a Position Maintenance Report (35=AM)"; and a client can send "an Allocation Instruction (35=J) message associated to a particular trade in order to mimic an Automatic Blocking" (section 14.2), a use of the allocation message that the standard's post-trade chapter does not describe. In B3's equities segment, pre-arranged forward deals, the "Termo", are declared with a Quote Request sent privately from one counterparty to the other (section 14.4). At the Chicago Mercantile Exchange (CME) and the rest of its parent, CME Group, the binary iLink interface carries "futures, options, BrokerTec, and EBS markets" through one protocol ([CME Group, iLink functional specification](https://cmegroupclientsite.atlassian.net/wiki/spaces/EPICSANDBOX/pages/714539039/iLink+Functional+Specification)); those two platforms belong to [Interdealer brokers and electronic fixed income and FX](/learn/interdealer-brokers-and-electronic-fixed-income-and-fx).
+
+### Fixed income
+
+Bonds are often quoted before they are traded. In FIX, a QuoteRequest (35=R) is "commonly referred to as an RFQ (Request For Quote)", and "For Fixed Income in the indicative and tradeable quoting models, the quotes are typically sent directly to an interested counterparty as opposed to a marketplace" ([FIX Trading Community, FIX Latest, Pre-Trade, as of extension pack 284, November 2023, sections 5.1.1 and 5.1.2](https://fixtrading.org/packages/fix-latest-specification-pre-trade/)). After the trade, the TradeCaptureReport carries reports to regulators. In the United States, the Financial Industry Regulatory Authority (FINRA), which describes itself as "a private not-for-profit membership organization that is responsible under federal law for supervising our member firms" ([FINRA, About FINRA](https://www.finra.org/about)), runs the Trade Reporting and Compliance Engine (TRACE), which "facilitates the mandatory reporting of over-the-counter transactions in eligible fixed income securities" ([FINRA, TRACE](https://www.finra.org/filing-reporting/trace)). Its FIX specification for corporate bonds and agency debt, version 2.1 of 4 February 2026, says the messaging follows the standard FIX 4.4 protocol, that firms send a Trade Capture Report (35=AE) and get back acknowledgements as Trade Capture Reports distinguished by MessageEventSource(1011), the value CAEN marking a report FINRA accepted, or rejects as 35=AR, that the system does not support encryption, and that AllocQty(80) there gives the number of managed accounts the trade quantity is allocated to ([FINRA, Trade Reporting for OTC Corporate Bonds and Agency Debt, FIX specification, version 2.1, 4 February 2026](https://www.finra.org/sites/default/files/2026-02/FIX_Specification_for_Corps_Agcys_v2.1.pdf)). In Brazil, B3's over-the-counter platform Trademate has its own FIX order entry and drop copy catalogues; the April 2026 changes removed a "Liquidity Seeking" value from TimeInForce(59), moved it to a new RoutingInstruction(35487) with value 9, and added OrdType K, "Market with Leftover as Limit" ([B3, Comunicado Externo 016/2026-VNC, 16 April 2026](https://www.b3.com.br/data/files/25/C6/03/D6/0D69D9107DD5C8D9AC094EA8/CE%20016-2026-VNC%20ATUALIZACAO%20NO%20CATALOGO%20DE%20MENSAGERIA%20FIX%20ORDER%20ENTRY%20OE%20E%20DROP%20COPY%20DC_PT.pdf)).
+
+### Foreign exchange
+
+FX changes the meaning of familiar fields. In the post-trade messages, AvgPx(6) "For FX orders, should be the 'all-in' rate" ([FIX Latest, Post-Trade](https://fixtrading.org/packages/fix-latest-specification-post-trade/)), and the pre-trade volume has messages for the way FX dealers price clients: StreamAssignmentRequest (35=CC) lets an aggregator ask a price maker which pricing stream each client gets, used "in the FX markets where clients may be assigned to different pricing streams based on volume bands and currency pairs" ([FIX Latest, Pre-Trade, section 6.1.8](https://fixtrading.org/packages/fix-latest-specification-pre-trade/)). B3's FX segment shows how much local rules shape the order's life: "FX negotiation is restricted to banks. Thus, DMA is not available"; "All FX orders must contain an associated client. Post trade specification is not allowed"; self-trading is rejected before matching; market data is "a blind screen"; and "Only Limit orders are supported (OrdType (40) = 2)" ([B3, EntryPoint messaging guidelines 2.9.31, section 13.3](https://www.b3.com.br/data/files/FF/84/5F/93/DB81D8103152D4C8AC094EA8/EntryPointMessagingGuidelines.pdf)).
+
+## Proving the life cycle: B3's certification
+
+Before a system may send orders to B3, it has to show that it handles these lives correctly. B3 says the certification "involves executing the product's test script (test scenarios) with a B3 Certification analyst via telephone, following prior scheduling", after which the participant receives an email "granting production access for the certified software"; it "does not cover" information security aspects, such as logs, audit trails and password rules, nor "pre-trade risk control tools that serve as alternatives to Line solutions for DMA setups", Line being the pre-trade risk tool B3 provides, described in [Brazil: BM&F, Bovespa, B3 and electronic access](/learn/brazil-bmf-bovespa-b3-and-electronic-access) ([B3, How to certify](https://www.b3.com.br/en_us/solutions/platforms/puma-trading-system/for-developers-and-vendors/)). A solution certified for a software vendor can be used by other participants "with no need to repeat the certification process" ([B3, EntryPoint messaging guidelines 2.9.31, section 5](https://www.b3.com.br/data/files/FF/84/5F/93/DB81D8103152D4C8AC094EA8/EntryPointMessagingGuidelines.pdf)). The order routing script runs each block of scenarios "sequentially", each "available for 15 minutes", and its first block, the one turned into eight messages above, ends with a logout, a logon with "141=N (don't restart the sequence number)", a resend request and a trade cancellation ([B3, EntryPoint order routing certification script, version 5.4, sections 2 and A1](https://www.b3.com.br/data/files/99/15/C6/A5/3A4DC8103152D4C8AC094EA8/Certification_Script_EntryPoint_Equities_Derivatives_v5.6.pdf)). The controls a broker must run before an order reaches that point are the subject of [Pre-trade risk and market access](/learn/pre-trade-risk-and-market-access-controls).
+
+## What to remember
+
+- ExecType says what happened; OrdStatus says where the order stands, chosen by precedence when several states apply, with Pending Cancel at the top.
+- FIX says no in four places: Reject (35=3) for session errors, BusinessMessageReject (35=j) for messages the application cannot take, an ExecutionReport with Rejected for orders, OrderCancelReject (35=9) for cancels and replaces; the buy side answers with DontKnowTrade (35=Q).
+- Every cancel or replace gets a new ClOrdID and points to the previous one in OrigClOrdID; quantities are totals for the whole order, so OrderQty = CumQty + LeavesQty.
+- B3 speaks a dialect of FIX 4.4: OrdStatus Replaced after modifications, no pending states, AvgPx always 0, its own reject codes, only changed fields in a replace, and a cancellation when a decrease falls below what was filled.
+- After the trade, drop copies feed risk and back office, allocations split the block by account (before or after the trade), and confirmations per account lead to settlement; at B3, give-ups move positions between firms and iMercado carries the manager's allocation in its own XML.
+- Derivatives add multileg orders, position maintenance and exercise; fixed income adds requests for quote and trade capture reports such as FINRA's TRACE; FX turns AvgPx into an all-in rate.
+
+<ReaderQuestions>
+
+- B3 skips pending states and reports Replaced as a status, both against the general FIX model: is a faster, terser dialect worth the cost of every client keeping exchange-specific code?
+- If a replace below the filled quantity is cancelled at one venue and amended at another, should an order management system hide the difference from the trader, or show it?
+- An exchange that sends AvgPx = 0 pushes the calculation to every client; where should the authoritative average price of an order live?
+- Drop copy gateways tied to matching engines mean more sessions for a firm that wants the whole market: who should bear the cost of that architecture?
+- Certification checks how software handles messages but not its information security or alternative risk tools: what should an exchange require before letting software send orders?
+
+</ReaderQuestions>
+
+## Sources
+
+- [FIX Trading Community, FIX Latest, Order State Changes, as of extension pack 284, November 2023: ExecType and OrdStatus, precedence, scenario groups, state transition table, exchange chapter (accessed 16 November 2026)](https://fixtrading.org/packages/fix-latest-specification-order-state-changes/)
+- [FIX Trading Community, FIX Latest, Trade, as of extension pack 284, November 2023: uses and rules of the ExecutionReport, trade cancel and correct, restatements, GT orders, DontKnowTrade, ExecutionAck, cancel and replace rules, chaining, multileg orders (accessed 16 November 2026)](https://fixtrading.org/packages/fix-latest-specification-trade/)
+- [FIX Trading Community, FIX Latest, Post-Trade, as of extension pack 284, November 2023: allocation options, acknowledgements, Ready-To-Book, fragmentation, AllocationReport, Confirmation, FX all-in rate (accessed 16 November 2026)](https://fixtrading.org/packages/fix-latest-specification-post-trade/)
+- [FIX Trading Community, FIX Latest, Pre-Trade, as of extension pack 284, November 2023: quote requests, quotes for fixed income, stream assignment for FX (accessed 16 November 2026)](https://fixtrading.org/packages/fix-latest-specification-pre-trade/)
+- [FIX Protocol Limited, FIX 4.4 specification with errata of 18 June 2003, volumes 4 and 6: OrdStatus Replaced removed, ExecTransType no longer used as of FIX 4.3, precedence and transition table (accessed 16 November 2026)](https://fixtrading.org/packages/fix-4-4-specification-with-20030618-errata/)
+- [FIX Trading Community, The FIX Protocol: FIXimate recommended for navigating the specification (accessed 16 November 2026)](https://fixtrading.org/standards/fix-protocol/)
+- [FIXimate (Orchimate), OrdStatusCodeSet (accessed 16 November 2026)](https://orchimate.org/fixtrading/fix-latest/codeSets/OrdStatusCodeSet)
+- [FIXimate (Orchimate), ExecTypeCodeSet (accessed 16 November 2026)](https://orchimate.org/fixtrading/fix-latest/codeSets/ExecTypeCodeSet)
+- [FIXimate (Orchimate), SessionRejectReasonCodeSet (accessed 16 November 2026)](https://orchimate.org/fixtrading/fix-latest/codeSets/SessionRejectReasonCodeSet)
+- [FIXimate (Orchimate), BusinessRejectReasonCodeSet (accessed 16 November 2026)](https://orchimate.org/fixtrading/fix-latest/codeSets/BusinessRejectReasonCodeSet)
+- [FIXimate (Orchimate), OrdRejReasonCodeSet (accessed 16 November 2026)](https://orchimate.org/fixtrading/fix-latest/codeSets/OrdRejReasonCodeSet)
+- [FIXimate (Orchimate), CxlRejReasonCodeSet (accessed 16 November 2026)](https://orchimate.org/fixtrading/fix-latest/codeSets/CxlRejReasonCodeSet)
+- [FIXimate (Orchimate), CxlRejResponseToCodeSet (accessed 16 November 2026)](https://orchimate.org/fixtrading/fix-latest/codeSets/CxlRejResponseToCodeSet)
+- [FIXimate (Orchimate), DKReasonCodeSet (accessed 16 November 2026)](https://orchimate.org/fixtrading/fix-latest/codeSets/DKReasonCodeSet)
+- [FIXimate (Orchimate), ExecRestatementReasonCodeSet (accessed 16 November 2026)](https://orchimate.org/fixtrading/fix-latest/codeSets/ExecRestatementReasonCodeSet)
+- [FIXimate (Orchimate), AllocTypeCodeSet (accessed 16 November 2026)](https://orchimate.org/fixtrading/fix-latest/codeSets/AllocTypeCodeSet)
+- [FIXimate (Orchimate), AllocStatusCodeSet: give-up and take-up approval statuses (accessed 16 November 2026)](https://orchimate.org/fixtrading/fix-latest/codeSets/AllocStatusCodeSet)
+- [FIXimate (Orchimate), field OrigClOrdID (41) (accessed 16 November 2026)](https://orchimate.org/fixtrading/fix-latest/fields/OrigClOrdID)
+- [B3, EntryPoint messaging guidelines, version 2.9.31, 16 December 2025: drop copy, certification, quantities and in-flight modifications, modification rules, priority, average price, rejection codes, give-ups, FX segment, user-defined spreads, exercise and blocking, forward, message retransmission and replay, appendix B (accessed 16 November 2026)](https://www.b3.com.br/data/files/FF/84/5F/93/DB81D8103152D4C8AC094EA8/EntryPointMessagingGuidelines.pdf)
+- [B3, EntryPoint message specification, version 2.40, 27 November 2025: ExecType, OrdStatus, AvgPx, ExecRestatementReason, party roles, ApplID (accessed 16 November 2026)](https://www.b3.com.br/data/files/A7/77/7B/FE/5789491029BEEC39AC094EA8/EntryPointMessageSpecs.pdf)
+- [B3, EntryPoint error codes, version 1.0.35, 29 May 2026 (accessed 16 November 2026)](https://www.b3.com.br/data/files/04/42/E9/2A/FF37E91064BF82E9AC094EA8/EntryPointErrorCodes_v1.0.35.pdf)
+- [B3, EntryPoint order routing certification script, file named version 5.6, cover version 5.4, 21 July 2023: purpose, scenario rules, block A1 (accessed 16 November 2026)](https://www.b3.com.br/data/files/99/15/C6/A5/3A4DC8103152D4C8AC094EA8/Certification_Script_EntryPoint_Equities_Derivatives_v5.6.pdf)
+- [B3, EntryPoint drop copy certification script, version 1.8, 25 October 2022 (accessed 16 November 2026)](https://www.b3.com.br/data/files/95/D6/60/2C/101148101E311E28AC094EA8/Certification-Script-EntryPoint-Derivatives-Equities-DropCopy_v1.8.pdf)
+- [B3, For developers and vendors, How to certify: process with an analyst, exclusions (accessed 16 November 2026)](https://www.b3.com.br/en_us/solutions/platforms/puma-trading-system/for-developers-and-vendors/)
+- [B3, iMercado, Captura, Alocação e Repasse, catálogo de mensagens, version 1.10, 25 April 2019 (accessed 16 November 2026)](https://www.b3.com.br/data/files/48/25/0F/83/0E6CA610F33E5CA6AC094EA8/Catalogo_de_Mensagens_iMercado_Alocacao_v.1.10.pdf)
+- [B3, Mensageria Pós Negociação B3 para mensagens ISO 20022, especificação técnica e catálogo FIX, version 2.0, September 2020: interfaces, iMercado among them, carried in FIX 4.4 sessions (accessed 16 November 2026)](https://www.b3.com.br/data/files/2F/07/A8/54/214057102C784E47AC094EA8/MensageriaPosNegociacaoB3%20-%20Especificacao%20Tecnica.pdf)
+- [B3, Comunicado Externo 016/2026-VNC, 16 April 2026: Trademate FIX order entry and drop copy changes in production on 27 April 2026 (accessed 16 November 2026)](https://www.b3.com.br/data/files/25/C6/03/D6/0D69D9107DD5C8D9AC094EA8/CE%20016-2026-VNC%20ATUALIZACAO%20NO%20CATALOGO%20DE%20MENSAGERIA%20FIX%20ORDER%20ENTRY%20OE%20E%20DROP%20COPY%20DC_PT.pdf)
+- [Nasdaq, OUCH 5.0 order entry specification, updated October 2025: replace and modify, priority, total quantity on a replace chain (accessed 16 November 2026)](https://www.nasdaqtrader.com/content/technicalsupport/specifications/TradingProducts/Ouch5.0.pdf)
+- [CME Group, iLink functional specification: order entry for futures, options, BrokerTec and EBS markets (accessed 16 November 2026)](https://cmegroupclientsite.atlassian.net/wiki/spaces/EPICSANDBOX/pages/714539039/iLink+Functional+Specification)
+- [FINRA, About FINRA: a private not-for-profit membership organization responsible under federal law for supervising its member firms (accessed 16 November 2026)](https://www.finra.org/about)
+- [FINRA, Trade Reporting and Compliance Engine (TRACE): mandatory reporting of over-the-counter transactions in eligible fixed income securities (accessed 16 November 2026)](https://www.finra.org/filing-reporting/trace)
+- [FINRA, Trade Reporting for OTC Corporate Bonds and Agency Debt, FIX specification, version 2.1, 4 February 2026: FIX 4.4, Trade Capture Reports, acknowledgements, AllocQty (accessed 16 November 2026 through an automated extract; the PDF refused direct download)](https://www.finra.org/sites/default/files/2026-02/FIX_Specification_for_Corps_Agcys_v2.1.pdf)

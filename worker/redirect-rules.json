@@ -1,0 +1,2426 @@
+[
+  {
+    "line": 34,
+    "source": "/en/games",
+    "destination": "/en/dev/fun/",
+    "status": 301
+  },
+  {
+    "line": 35,
+    "source": "/en/games/",
+    "destination": "/en/dev/fun/",
+    "status": 301
+  },
+  {
+    "line": 36,
+    "source": "/pt-BR/games",
+    "destination": "/pt-BR/dev/fun/",
+    "status": 301
+  },
+  {
+    "line": 37,
+    "source": "/pt-BR/games/",
+    "destination": "/pt-BR/dev/fun/",
+    "status": 301
+  },
+  {
+    "line": 38,
+    "source": "/es/games",
+    "destination": "/es/dev/fun/",
+    "status": 301
+  },
+  {
+    "line": 39,
+    "source": "/es/games/",
+    "destination": "/es/dev/fun/",
+    "status": 301
+  },
+  {
+    "line": 40,
+    "source": "/de/games",
+    "destination": "/de/dev/fun/",
+    "status": 301
+  },
+  {
+    "line": 41,
+    "source": "/de/games/",
+    "destination": "/de/dev/fun/",
+    "status": 301
+  },
+  {
+    "line": 42,
+    "source": "/fr/games",
+    "destination": "/fr/dev/fun/",
+    "status": 301
+  },
+  {
+    "line": 43,
+    "source": "/fr/games/",
+    "destination": "/fr/dev/fun/",
+    "status": 301
+  },
+  {
+    "line": 44,
+    "source": "/it/games",
+    "destination": "/it/dev/fun/",
+    "status": 301
+  },
+  {
+    "line": 45,
+    "source": "/it/games/",
+    "destination": "/it/dev/fun/",
+    "status": 301
+  },
+  {
+    "line": 51,
+    "source": "/en/dev/fun/whack-a-bug/",
+    "destination": "/en/arcade/whack-a-bug/",
+    "status": 301
+  },
+  {
+    "line": 52,
+    "source": "/en/dev/fun/whack-a-bug",
+    "destination": "/en/arcade/whack-a-bug/",
+    "status": 301
+  },
+  {
+    "line": 53,
+    "source": "/pt-BR/dev/fun/whack-a-bug/",
+    "destination": "/pt-BR/arcade/whack-a-bug/",
+    "status": 301
+  },
+  {
+    "line": 54,
+    "source": "/pt-BR/dev/fun/whack-a-bug",
+    "destination": "/pt-BR/arcade/whack-a-bug/",
+    "status": 301
+  },
+  {
+    "line": 55,
+    "source": "/es/dev/fun/whack-a-bug/",
+    "destination": "/es/arcade/whack-a-bug/",
+    "status": 301
+  },
+  {
+    "line": 56,
+    "source": "/es/dev/fun/whack-a-bug",
+    "destination": "/es/arcade/whack-a-bug/",
+    "status": 301
+  },
+  {
+    "line": 57,
+    "source": "/de/dev/fun/whack-a-bug/",
+    "destination": "/de/arcade/whack-a-bug/",
+    "status": 301
+  },
+  {
+    "line": 58,
+    "source": "/de/dev/fun/whack-a-bug",
+    "destination": "/de/arcade/whack-a-bug/",
+    "status": 301
+  },
+  {
+    "line": 59,
+    "source": "/fr/dev/fun/whack-a-bug/",
+    "destination": "/fr/arcade/whack-a-bug/",
+    "status": 301
+  },
+  {
+    "line": 60,
+    "source": "/fr/dev/fun/whack-a-bug",
+    "destination": "/fr/arcade/whack-a-bug/",
+    "status": 301
+  },
+  {
+    "line": 61,
+    "source": "/it/dev/fun/whack-a-bug/",
+    "destination": "/it/arcade/whack-a-bug/",
+    "status": 301
+  },
+  {
+    "line": 62,
+    "source": "/it/dev/fun/whack-a-bug",
+    "destination": "/it/arcade/whack-a-bug/",
+    "status": 301
+  },
+  {
+    "line": 63,
+    "source": "/en/dev/fun/aggregate/",
+    "destination": "/en/arcade/aggregate/",
+    "status": 301
+  },
+  {
+    "line": 64,
+    "source": "/en/dev/fun/aggregate",
+    "destination": "/en/arcade/aggregate/",
+    "status": 301
+  },
+  {
+    "line": 65,
+    "source": "/pt-BR/dev/fun/aggregate/",
+    "destination": "/pt-BR/arcade/aggregate/",
+    "status": 301
+  },
+  {
+    "line": 66,
+    "source": "/pt-BR/dev/fun/aggregate",
+    "destination": "/pt-BR/arcade/aggregate/",
+    "status": 301
+  },
+  {
+    "line": 67,
+    "source": "/es/dev/fun/aggregate/",
+    "destination": "/es/arcade/aggregate/",
+    "status": 301
+  },
+  {
+    "line": 68,
+    "source": "/es/dev/fun/aggregate",
+    "destination": "/es/arcade/aggregate/",
+    "status": 301
+  },
+  {
+    "line": 69,
+    "source": "/de/dev/fun/aggregate/",
+    "destination": "/de/arcade/aggregate/",
+    "status": 301
+  },
+  {
+    "line": 70,
+    "source": "/de/dev/fun/aggregate",
+    "destination": "/de/arcade/aggregate/",
+    "status": 301
+  },
+  {
+    "line": 71,
+    "source": "/fr/dev/fun/aggregate/",
+    "destination": "/fr/arcade/aggregate/",
+    "status": 301
+  },
+  {
+    "line": 72,
+    "source": "/fr/dev/fun/aggregate",
+    "destination": "/fr/arcade/aggregate/",
+    "status": 301
+  },
+  {
+    "line": 73,
+    "source": "/it/dev/fun/aggregate/",
+    "destination": "/it/arcade/aggregate/",
+    "status": 301
+  },
+  {
+    "line": 74,
+    "source": "/it/dev/fun/aggregate",
+    "destination": "/it/arcade/aggregate/",
+    "status": 301
+  },
+  {
+    "line": 75,
+    "source": "/en/dev/fun/first-match/",
+    "destination": "/en/arcade/first-match/",
+    "status": 301
+  },
+  {
+    "line": 76,
+    "source": "/en/dev/fun/first-match",
+    "destination": "/en/arcade/first-match/",
+    "status": 301
+  },
+  {
+    "line": 77,
+    "source": "/pt-BR/dev/fun/first-match/",
+    "destination": "/pt-BR/arcade/first-match/",
+    "status": 301
+  },
+  {
+    "line": 78,
+    "source": "/pt-BR/dev/fun/first-match",
+    "destination": "/pt-BR/arcade/first-match/",
+    "status": 301
+  },
+  {
+    "line": 79,
+    "source": "/es/dev/fun/first-match/",
+    "destination": "/es/arcade/first-match/",
+    "status": 301
+  },
+  {
+    "line": 80,
+    "source": "/es/dev/fun/first-match",
+    "destination": "/es/arcade/first-match/",
+    "status": 301
+  },
+  {
+    "line": 81,
+    "source": "/de/dev/fun/first-match/",
+    "destination": "/de/arcade/first-match/",
+    "status": 301
+  },
+  {
+    "line": 82,
+    "source": "/de/dev/fun/first-match",
+    "destination": "/de/arcade/first-match/",
+    "status": 301
+  },
+  {
+    "line": 83,
+    "source": "/fr/dev/fun/first-match/",
+    "destination": "/fr/arcade/first-match/",
+    "status": 301
+  },
+  {
+    "line": 84,
+    "source": "/fr/dev/fun/first-match",
+    "destination": "/fr/arcade/first-match/",
+    "status": 301
+  },
+  {
+    "line": 85,
+    "source": "/it/dev/fun/first-match/",
+    "destination": "/it/arcade/first-match/",
+    "status": 301
+  },
+  {
+    "line": 86,
+    "source": "/it/dev/fun/first-match",
+    "destination": "/it/arcade/first-match/",
+    "status": 301
+  },
+  {
+    "line": 87,
+    "source": "/en/dev/fun/exit-the-editor/",
+    "destination": "/en/arcade/exit-the-editor/",
+    "status": 301
+  },
+  {
+    "line": 88,
+    "source": "/en/dev/fun/exit-the-editor",
+    "destination": "/en/arcade/exit-the-editor/",
+    "status": 301
+  },
+  {
+    "line": 89,
+    "source": "/pt-BR/dev/fun/exit-the-editor/",
+    "destination": "/pt-BR/arcade/exit-the-editor/",
+    "status": 301
+  },
+  {
+    "line": 90,
+    "source": "/pt-BR/dev/fun/exit-the-editor",
+    "destination": "/pt-BR/arcade/exit-the-editor/",
+    "status": 301
+  },
+  {
+    "line": 91,
+    "source": "/es/dev/fun/exit-the-editor/",
+    "destination": "/es/arcade/exit-the-editor/",
+    "status": 301
+  },
+  {
+    "line": 92,
+    "source": "/es/dev/fun/exit-the-editor",
+    "destination": "/es/arcade/exit-the-editor/",
+    "status": 301
+  },
+  {
+    "line": 93,
+    "source": "/de/dev/fun/exit-the-editor/",
+    "destination": "/de/arcade/exit-the-editor/",
+    "status": 301
+  },
+  {
+    "line": 94,
+    "source": "/de/dev/fun/exit-the-editor",
+    "destination": "/de/arcade/exit-the-editor/",
+    "status": 301
+  },
+  {
+    "line": 95,
+    "source": "/fr/dev/fun/exit-the-editor/",
+    "destination": "/fr/arcade/exit-the-editor/",
+    "status": 301
+  },
+  {
+    "line": 96,
+    "source": "/fr/dev/fun/exit-the-editor",
+    "destination": "/fr/arcade/exit-the-editor/",
+    "status": 301
+  },
+  {
+    "line": 97,
+    "source": "/it/dev/fun/exit-the-editor/",
+    "destination": "/it/arcade/exit-the-editor/",
+    "status": 301
+  },
+  {
+    "line": 98,
+    "source": "/it/dev/fun/exit-the-editor",
+    "destination": "/it/arcade/exit-the-editor/",
+    "status": 301
+  },
+  {
+    "line": 99,
+    "source": "/en/dev/fun/packet-stack/",
+    "destination": "/en/arcade/packet-stack/",
+    "status": 301
+  },
+  {
+    "line": 100,
+    "source": "/en/dev/fun/packet-stack",
+    "destination": "/en/arcade/packet-stack/",
+    "status": 301
+  },
+  {
+    "line": 101,
+    "source": "/pt-BR/dev/fun/packet-stack/",
+    "destination": "/pt-BR/arcade/packet-stack/",
+    "status": 301
+  },
+  {
+    "line": 102,
+    "source": "/pt-BR/dev/fun/packet-stack",
+    "destination": "/pt-BR/arcade/packet-stack/",
+    "status": 301
+  },
+  {
+    "line": 103,
+    "source": "/es/dev/fun/packet-stack/",
+    "destination": "/es/arcade/packet-stack/",
+    "status": 301
+  },
+  {
+    "line": 104,
+    "source": "/es/dev/fun/packet-stack",
+    "destination": "/es/arcade/packet-stack/",
+    "status": 301
+  },
+  {
+    "line": 105,
+    "source": "/de/dev/fun/packet-stack/",
+    "destination": "/de/arcade/packet-stack/",
+    "status": 301
+  },
+  {
+    "line": 106,
+    "source": "/de/dev/fun/packet-stack",
+    "destination": "/de/arcade/packet-stack/",
+    "status": 301
+  },
+  {
+    "line": 107,
+    "source": "/fr/dev/fun/packet-stack/",
+    "destination": "/fr/arcade/packet-stack/",
+    "status": 301
+  },
+  {
+    "line": 108,
+    "source": "/fr/dev/fun/packet-stack",
+    "destination": "/fr/arcade/packet-stack/",
+    "status": 301
+  },
+  {
+    "line": 109,
+    "source": "/it/dev/fun/packet-stack/",
+    "destination": "/it/arcade/packet-stack/",
+    "status": 301
+  },
+  {
+    "line": 110,
+    "source": "/it/dev/fun/packet-stack",
+    "destination": "/it/arcade/packet-stack/",
+    "status": 301
+  },
+  {
+    "line": 111,
+    "source": "/en/dev/fun/ttl/",
+    "destination": "/en/arcade/ttl/",
+    "status": 301
+  },
+  {
+    "line": 112,
+    "source": "/en/dev/fun/ttl",
+    "destination": "/en/arcade/ttl/",
+    "status": 301
+  },
+  {
+    "line": 113,
+    "source": "/pt-BR/dev/fun/ttl/",
+    "destination": "/pt-BR/arcade/ttl/",
+    "status": 301
+  },
+  {
+    "line": 114,
+    "source": "/pt-BR/dev/fun/ttl",
+    "destination": "/pt-BR/arcade/ttl/",
+    "status": 301
+  },
+  {
+    "line": 115,
+    "source": "/es/dev/fun/ttl/",
+    "destination": "/es/arcade/ttl/",
+    "status": 301
+  },
+  {
+    "line": 116,
+    "source": "/es/dev/fun/ttl",
+    "destination": "/es/arcade/ttl/",
+    "status": 301
+  },
+  {
+    "line": 117,
+    "source": "/de/dev/fun/ttl/",
+    "destination": "/de/arcade/ttl/",
+    "status": 301
+  },
+  {
+    "line": 118,
+    "source": "/de/dev/fun/ttl",
+    "destination": "/de/arcade/ttl/",
+    "status": 301
+  },
+  {
+    "line": 119,
+    "source": "/fr/dev/fun/ttl/",
+    "destination": "/fr/arcade/ttl/",
+    "status": 301
+  },
+  {
+    "line": 120,
+    "source": "/fr/dev/fun/ttl",
+    "destination": "/fr/arcade/ttl/",
+    "status": 301
+  },
+  {
+    "line": 121,
+    "source": "/it/dev/fun/ttl/",
+    "destination": "/it/arcade/ttl/",
+    "status": 301
+  },
+  {
+    "line": 122,
+    "source": "/it/dev/fun/ttl",
+    "destination": "/it/arcade/ttl/",
+    "status": 301
+  },
+  {
+    "line": 123,
+    "source": "/en/dev/fun/rule-inspector/",
+    "destination": "/en/arcade/rule-inspector/",
+    "status": 301
+  },
+  {
+    "line": 124,
+    "source": "/en/dev/fun/rule-inspector",
+    "destination": "/en/arcade/rule-inspector/",
+    "status": 301
+  },
+  {
+    "line": 125,
+    "source": "/pt-BR/dev/fun/rule-inspector/",
+    "destination": "/pt-BR/arcade/rule-inspector/",
+    "status": 301
+  },
+  {
+    "line": 126,
+    "source": "/pt-BR/dev/fun/rule-inspector",
+    "destination": "/pt-BR/arcade/rule-inspector/",
+    "status": 301
+  },
+  {
+    "line": 127,
+    "source": "/es/dev/fun/rule-inspector/",
+    "destination": "/es/arcade/rule-inspector/",
+    "status": 301
+  },
+  {
+    "line": 128,
+    "source": "/es/dev/fun/rule-inspector",
+    "destination": "/es/arcade/rule-inspector/",
+    "status": 301
+  },
+  {
+    "line": 129,
+    "source": "/de/dev/fun/rule-inspector/",
+    "destination": "/de/arcade/rule-inspector/",
+    "status": 301
+  },
+  {
+    "line": 130,
+    "source": "/de/dev/fun/rule-inspector",
+    "destination": "/de/arcade/rule-inspector/",
+    "status": 301
+  },
+  {
+    "line": 131,
+    "source": "/fr/dev/fun/rule-inspector/",
+    "destination": "/fr/arcade/rule-inspector/",
+    "status": 301
+  },
+  {
+    "line": 132,
+    "source": "/fr/dev/fun/rule-inspector",
+    "destination": "/fr/arcade/rule-inspector/",
+    "status": 301
+  },
+  {
+    "line": 133,
+    "source": "/it/dev/fun/rule-inspector/",
+    "destination": "/it/arcade/rule-inspector/",
+    "status": 301
+  },
+  {
+    "line": 134,
+    "source": "/it/dev/fun/rule-inspector",
+    "destination": "/it/arcade/rule-inspector/",
+    "status": 301
+  },
+  {
+    "line": 135,
+    "source": "/en/dev/fun/incident-commander/",
+    "destination": "/en/arcade/incident-commander/",
+    "status": 301
+  },
+  {
+    "line": 136,
+    "source": "/en/dev/fun/incident-commander",
+    "destination": "/en/arcade/incident-commander/",
+    "status": 301
+  },
+  {
+    "line": 137,
+    "source": "/pt-BR/dev/fun/incident-commander/",
+    "destination": "/pt-BR/arcade/incident-commander/",
+    "status": 301
+  },
+  {
+    "line": 138,
+    "source": "/pt-BR/dev/fun/incident-commander",
+    "destination": "/pt-BR/arcade/incident-commander/",
+    "status": 301
+  },
+  {
+    "line": 139,
+    "source": "/es/dev/fun/incident-commander/",
+    "destination": "/es/arcade/incident-commander/",
+    "status": 301
+  },
+  {
+    "line": 140,
+    "source": "/es/dev/fun/incident-commander",
+    "destination": "/es/arcade/incident-commander/",
+    "status": 301
+  },
+  {
+    "line": 141,
+    "source": "/de/dev/fun/incident-commander/",
+    "destination": "/de/arcade/incident-commander/",
+    "status": 301
+  },
+  {
+    "line": 142,
+    "source": "/de/dev/fun/incident-commander",
+    "destination": "/de/arcade/incident-commander/",
+    "status": 301
+  },
+  {
+    "line": 143,
+    "source": "/fr/dev/fun/incident-commander/",
+    "destination": "/fr/arcade/incident-commander/",
+    "status": 301
+  },
+  {
+    "line": 144,
+    "source": "/fr/dev/fun/incident-commander",
+    "destination": "/fr/arcade/incident-commander/",
+    "status": 301
+  },
+  {
+    "line": 145,
+    "source": "/it/dev/fun/incident-commander/",
+    "destination": "/it/arcade/incident-commander/",
+    "status": 301
+  },
+  {
+    "line": 146,
+    "source": "/it/dev/fun/incident-commander",
+    "destination": "/it/arcade/incident-commander/",
+    "status": 301
+  },
+  {
+    "line": 200,
+    "source": "/en/about/vendors/tandy-radioshack/",
+    "destination": "/en/industry/tandy-radioshack/",
+    "status": 301
+  },
+  {
+    "line": 201,
+    "source": "/en/about/vendors/crowdstrike/",
+    "destination": "/en/industry/crowdstrike/",
+    "status": 301
+  },
+  {
+    "line": 202,
+    "source": "/en/about/vendors/splunk/",
+    "destination": "/en/industry/splunk/",
+    "status": 301
+  },
+  {
+    "line": 203,
+    "source": "/en/about/vendors/netapp/",
+    "destination": "/en/industry/netapp/",
+    "status": 301
+  },
+  {
+    "line": 204,
+    "source": "/en/about/vendors/sophos/",
+    "destination": "/en/industry/sophos/",
+    "status": 301
+  },
+  {
+    "line": 205,
+    "source": "/en/about/vendors/ivanti/",
+    "destination": "/en/industry/ivanti/",
+    "status": 301
+  },
+  {
+    "line": 206,
+    "source": "/en/about/vendors/emc/",
+    "destination": "/en/industry/emc/",
+    "status": 301
+  },
+  {
+    "line": 207,
+    "source": "/en/about/vendors/eds/",
+    "destination": "/en/industry/eds/",
+    "status": 301
+  },
+  {
+    "line": 208,
+    "source": "/en/about/vendors/getronics/",
+    "destination": "/en/industry/getronics/",
+    "status": 301
+  },
+  {
+    "line": 209,
+    "source": "/en/about/vendors/altavista/",
+    "destination": "/en/industry/altavista/",
+    "status": 301
+  },
+  {
+    "line": 210,
+    "source": "/en/about/vendors/apache/",
+    "destination": "/en/industry/apache/",
+    "status": 301
+  },
+  {
+    "line": 211,
+    "source": "/en/about/vendors/arista/",
+    "destination": "/en/industry/arista/",
+    "status": 301
+  },
+  {
+    "line": 212,
+    "source": "/en/about/vendors/avaya/",
+    "destination": "/en/industry/chapters/avaya/",
+    "status": 301
+  },
+  {
+    "line": 213,
+    "source": "/en/about/vendors/aws/",
+    "destination": "/en/industry/aws/",
+    "status": 301
+  },
+  {
+    "line": 214,
+    "source": "/en/about/vendors/cyberark/",
+    "destination": "/en/industry/chapters/cyberark/",
+    "status": 301
+  },
+  {
+    "line": 215,
+    "source": "/en/about/vendors/epi/",
+    "destination": "/en/industry/epi/",
+    "status": 301
+  },
+  {
+    "line": 216,
+    "source": "/en/about/vendors/microsoft/",
+    "destination": "/en/industry/microsoft/",
+    "status": 301
+  },
+  {
+    "line": 217,
+    "source": "/en/about/vendors/mobileiron/",
+    "destination": "/en/industry/mobileiron/",
+    "status": 301
+  },
+  {
+    "line": 218,
+    "source": "/en/about/vendors/paessler/",
+    "destination": "/en/industry/paessler/",
+    "status": 301
+  },
+  {
+    "line": 219,
+    "source": "/en/about/vendors/red-hat/",
+    "destination": "/en/industry/red-hat/",
+    "status": 301
+  },
+  {
+    "line": 220,
+    "source": "/en/about/vendors/riverbed/",
+    "destination": "/en/industry/riverbed/",
+    "status": 301
+  },
+  {
+    "line": 221,
+    "source": "/en/about/vendors/symantec/",
+    "destination": "/en/industry/symantec/",
+    "status": 301
+  },
+  {
+    "line": 222,
+    "source": "/en/about/vendors/hpe-juniper-aruba/",
+    "destination": "/en/industry/hpe-juniper-aruba/",
+    "status": 301
+  },
+  {
+    "line": 223,
+    "source": "/en/about/vendors/brocade-broadcom/",
+    "destination": "/en/industry/brocade-broadcom/",
+    "status": 301
+  },
+  {
+    "line": 224,
+    "source": "/en/about/vendors/mcafee-fireeye-trellix/",
+    "destination": "/en/industry/mcafee-fireeye-trellix/",
+    "status": 301
+  },
+  {
+    "line": 225,
+    "source": "/en/about/vendors/mikrotik/",
+    "destination": "/en/industry/mikrotik/",
+    "status": 301
+  },
+  {
+    "line": 226,
+    "source": "/en/about/vendors/radware/",
+    "destination": "/en/industry/radware/",
+    "status": 301
+  },
+  {
+    "line": 227,
+    "source": "/en/about/vendors/imperva-thales/",
+    "destination": "/en/industry/imperva-thales/",
+    "status": 301
+  },
+  {
+    "line": 228,
+    "source": "/en/about/vendors/versa/",
+    "destination": "/en/industry/versa/",
+    "status": 301
+  },
+  {
+    "line": 229,
+    "source": "/en/about/vendors/nortel-bay/",
+    "destination": "/en/industry/nortel-bay/",
+    "status": 301
+  },
+  {
+    "line": 230,
+    "source": "/en/about/vendors/madge/",
+    "destination": "/en/industry/madge/",
+    "status": 301
+  },
+  {
+    "line": 231,
+    "source": "/en/about/vendors/sun-microsystems/",
+    "destination": "/en/industry/sun-microsystems/",
+    "status": 301
+  },
+  {
+    "line": 232,
+    "source": "/en/about/vendors/silicon-graphics/",
+    "destination": "/en/industry/silicon-graphics/",
+    "status": 301
+  },
+  {
+    "line": 233,
+    "source": "/en/about/vendors/xerox/",
+    "destination": "/en/industry/xerox/",
+    "status": 301
+  },
+  {
+    "line": 234,
+    "source": "/en/about/vendors/dec/",
+    "destination": "/en/industry/dec/",
+    "status": 301
+  },
+  {
+    "line": 235,
+    "source": "/en/about/vendors/nokia/",
+    "destination": "/en/industry/nokia/",
+    "status": 301
+  },
+  {
+    "line": 236,
+    "source": "/en/about/vendors/ericsson/",
+    "destination": "/en/industry/ericsson/",
+    "status": 301
+  },
+  {
+    "line": 237,
+    "source": "/en/about/vendors/huawei/",
+    "destination": "/en/industry/huawei/",
+    "status": 301
+  },
+  {
+    "line": 238,
+    "source": "/en/about/vendors/siemens/",
+    "destination": "/en/industry/siemens/",
+    "status": 301
+  },
+  {
+    "line": 239,
+    "source": "/en/about/vendors/novell/",
+    "destination": "/en/industry/novell/",
+    "status": 301
+  },
+  {
+    "line": 240,
+    "source": "/en/about/vendors/oracle/",
+    "destination": "/en/industry/oracle/",
+    "status": 301
+  },
+  {
+    "line": 241,
+    "source": "/en/about/vendors/ibm/",
+    "destination": "/en/industry/ibm/",
+    "status": 301
+  },
+  {
+    "line": 242,
+    "source": "/en/about/vendors/sap/",
+    "destination": "/en/industry/sap/",
+    "status": 301
+  },
+  {
+    "line": 243,
+    "source": "/en/about/vendors/3com/",
+    "destination": "/en/industry/3com/",
+    "status": 301
+  },
+  {
+    "line": 244,
+    "source": "/en/about/vendors/compaq/",
+    "destination": "/en/industry/compaq/",
+    "status": 301
+  },
+  {
+    "line": 245,
+    "source": "/en/about/vendors/netscape/",
+    "destination": "/en/industry/netscape/",
+    "status": 301
+  },
+  {
+    "line": 246,
+    "source": "/en/about/vendors/motorola/",
+    "destination": "/en/industry/motorola/",
+    "status": 301
+  },
+  {
+    "line": 247,
+    "source": "/en/about/vendors/unisys/",
+    "destination": "/en/industry/unisys/",
+    "status": 301
+  },
+  {
+    "line": 248,
+    "source": "/en/about/vendors/data-general/",
+    "destination": "/en/industry/data-general/",
+    "status": 301
+  },
+  {
+    "line": 249,
+    "source": "/en/about/vendors/marconi/",
+    "destination": "/en/industry/marconi/",
+    "status": 301
+  },
+  {
+    "line": 250,
+    "source": "/en/about/vendors/wang/",
+    "destination": "/en/industry/wang/",
+    "status": 301
+  },
+  {
+    "line": 251,
+    "source": "/en/about/vendors/tandem/",
+    "destination": "/en/industry/tandem/",
+    "status": 301
+  },
+  {
+    "line": 252,
+    "source": "/en/about/vendors/banyan/",
+    "destination": "/en/industry/banyan/",
+    "status": 301
+  },
+  {
+    "line": 253,
+    "source": "/en/about/vendors/fujitsu/",
+    "destination": "/en/industry/fujitsu/",
+    "status": 301
+  },
+  {
+    "line": 254,
+    "source": "/en/about/vendors/nec/",
+    "destination": "/en/industry/nec/",
+    "status": 301
+  },
+  {
+    "line": 255,
+    "source": "/en/about/vendors/bell-labs-lucent-alcatel/",
+    "destination": "/en/industry/bell-labs-lucent-alcatel/",
+    "status": 301
+  },
+  {
+    "line": 256,
+    "source": "/en/about/vendors/intel-amd/",
+    "destination": "/en/industry/intel-amd/",
+    "status": 301
+  },
+  {
+    "line": 257,
+    "source": "/en/about/vendors/rand/",
+    "destination": "/en/industry/rand/",
+    "status": 301
+  },
+  {
+    "line": 258,
+    "source": "/en/about/vendors/cyclades-network/",
+    "destination": "/en/industry/cyclades-network/",
+    "status": 301
+  },
+  {
+    "line": 259,
+    "source": "/en/about/vendors/toshiba/",
+    "destination": "/en/industry/toshiba/",
+    "status": 301
+  },
+  {
+    "line": 260,
+    "source": "/en/about/vendors/hitachi/",
+    "destination": "/en/industry/hitachi/",
+    "status": 301
+  },
+  {
+    "line": 261,
+    "source": "/en/about/vendors/bull/",
+    "destination": "/en/industry/bull/",
+    "status": 301
+  },
+  {
+    "line": 262,
+    "source": "/en/about/vendors/ncsa/",
+    "destination": "/en/industry/ncsa/",
+    "status": 301
+  },
+  {
+    "line": 263,
+    "source": "/en/about/vendors/ciena/",
+    "destination": "/en/industry/ciena/",
+    "status": 301
+  },
+  {
+    "line": 264,
+    "source": "/en/about/vendors/sniffer-lineage/",
+    "destination": "/en/industry/sniffer-lineage/",
+    "status": 301
+  },
+  {
+    "line": 265,
+    "source": "/en/about/vendors/dolch/",
+    "destination": "/en/industry/dolch/",
+    "status": 301
+  },
+  {
+    "line": 266,
+    "source": "/en/about/vendors/blue-coat-packeteer/",
+    "destination": "/en/industry/blue-coat-packeteer/",
+    "status": 301
+  },
+  {
+    "line": 267,
+    "source": "/en/about/vendors/cyclades-avocent-vertiv/",
+    "destination": "/en/industry/cyclades-avocent-vertiv/",
+    "status": 301
+  },
+  {
+    "line": 268,
+    "source": "/en/about/vendors/dell-force10/",
+    "destination": "/en/industry/dell-force10/",
+    "status": 301
+  },
+  {
+    "line": 269,
+    "source": "/en/about/vendors/zte/",
+    "destination": "/en/industry/zte/",
+    "status": 301
+  },
+  {
+    "line": 270,
+    "source": "/en/about/vendors/fluke/",
+    "destination": "/en/industry/fluke/",
+    "status": 301
+  },
+  {
+    "line": 271,
+    "source": "/en/about/vendors/dns-bind/",
+    "destination": "/en/industry/dns-bind/",
+    "status": 301
+  },
+  {
+    "line": 272,
+    "source": "/en/about/vendors/http-gopher/",
+    "destination": "/en/industry/http-gopher/",
+    "status": 301
+  },
+  {
+    "line": 273,
+    "source": "/en/about/vendors/nvidia/",
+    "destination": "/en/industry/nvidia/",
+    "status": 301
+  },
+  {
+    "line": 274,
+    "source": "/en/about/vendors/ubiquiti/",
+    "destination": "/en/industry/ubiquiti/",
+    "status": 301
+  },
+  {
+    "line": 275,
+    "source": "/en/about/vendors/access-home-fleet/",
+    "destination": "/en/industry/access-home-fleet/",
+    "status": 301
+  },
+  {
+    "line": 276,
+    "source": "/en/about/vendors/watchguard/",
+    "destination": "/en/industry/watchguard/",
+    "status": 301
+  },
+  {
+    "line": 277,
+    "source": "/en/about/vendors/a10-kemp/",
+    "destination": "/en/industry/a10/",
+    "status": 301
+  },
+  {
+    "line": 278,
+    "source": "/en/industry/a10-kemp/",
+    "destination": "/en/industry/a10/",
+    "status": 301
+  },
+  {
+    "line": 279,
+    "source": "/en/about/vendors/datacom/",
+    "destination": "/en/industry/datacom/",
+    "status": 301
+  },
+  {
+    "line": 280,
+    "source": "/en/about/vendors/asus-askey/",
+    "destination": "/en/industry/asus-askey/",
+    "status": 301
+  },
+  {
+    "line": 281,
+    "source": "/en/about/vendors/netgear/",
+    "destination": "/en/industry/netgear/",
+    "status": 301
+  },
+  {
+    "line": 282,
+    "source": "/en/about/vendors/tp-link/",
+    "destination": "/en/industry/tp-link/",
+    "status": 301
+  },
+  {
+    "line": 283,
+    "source": "/en/about/vendors/zyxel/",
+    "destination": "/en/industry/zyxel/",
+    "status": 301
+  },
+  {
+    "line": 284,
+    "source": "/en/about/vendors/allied-telesis/",
+    "destination": "/en/industry/allied-telesis/",
+    "status": 301
+  },
+  {
+    "line": 285,
+    "source": "/pt-BR/about/vendors/tandy-radioshack/",
+    "destination": "/pt-BR/industry/tandy-radioshack/",
+    "status": 301
+  },
+  {
+    "line": 286,
+    "source": "/pt-BR/about/vendors/crowdstrike/",
+    "destination": "/pt-BR/industry/crowdstrike/",
+    "status": 301
+  },
+  {
+    "line": 287,
+    "source": "/pt-BR/about/vendors/splunk/",
+    "destination": "/pt-BR/industry/splunk/",
+    "status": 301
+  },
+  {
+    "line": 288,
+    "source": "/pt-BR/about/vendors/netapp/",
+    "destination": "/pt-BR/industry/netapp/",
+    "status": 301
+  },
+  {
+    "line": 289,
+    "source": "/pt-BR/about/vendors/sophos/",
+    "destination": "/pt-BR/industry/sophos/",
+    "status": 301
+  },
+  {
+    "line": 290,
+    "source": "/pt-BR/about/vendors/ivanti/",
+    "destination": "/pt-BR/industry/ivanti/",
+    "status": 301
+  },
+  {
+    "line": 291,
+    "source": "/pt-BR/about/vendors/emc/",
+    "destination": "/pt-BR/industry/emc/",
+    "status": 301
+  },
+  {
+    "line": 292,
+    "source": "/pt-BR/about/vendors/eds/",
+    "destination": "/pt-BR/industry/eds/",
+    "status": 301
+  },
+  {
+    "line": 293,
+    "source": "/pt-BR/about/vendors/getronics/",
+    "destination": "/pt-BR/industry/getronics/",
+    "status": 301
+  },
+  {
+    "line": 294,
+    "source": "/pt-BR/about/vendors/altavista/",
+    "destination": "/pt-BR/industry/altavista/",
+    "status": 301
+  },
+  {
+    "line": 295,
+    "source": "/pt-BR/about/vendors/apache/",
+    "destination": "/pt-BR/industry/apache/",
+    "status": 301
+  },
+  {
+    "line": 296,
+    "source": "/pt-BR/about/vendors/arista/",
+    "destination": "/pt-BR/industry/arista/",
+    "status": 301
+  },
+  {
+    "line": 297,
+    "source": "/pt-BR/about/vendors/avaya/",
+    "destination": "/pt-BR/industry/chapters/avaya/",
+    "status": 301
+  },
+  {
+    "line": 298,
+    "source": "/pt-BR/about/vendors/aws/",
+    "destination": "/pt-BR/industry/aws/",
+    "status": 301
+  },
+  {
+    "line": 299,
+    "source": "/pt-BR/about/vendors/cyberark/",
+    "destination": "/pt-BR/industry/chapters/cyberark/",
+    "status": 301
+  },
+  {
+    "line": 300,
+    "source": "/pt-BR/about/vendors/epi/",
+    "destination": "/pt-BR/industry/epi/",
+    "status": 301
+  },
+  {
+    "line": 301,
+    "source": "/pt-BR/about/vendors/microsoft/",
+    "destination": "/pt-BR/industry/microsoft/",
+    "status": 301
+  },
+  {
+    "line": 302,
+    "source": "/pt-BR/about/vendors/mobileiron/",
+    "destination": "/pt-BR/industry/mobileiron/",
+    "status": 301
+  },
+  {
+    "line": 303,
+    "source": "/pt-BR/about/vendors/paessler/",
+    "destination": "/pt-BR/industry/paessler/",
+    "status": 301
+  },
+  {
+    "line": 304,
+    "source": "/pt-BR/about/vendors/red-hat/",
+    "destination": "/pt-BR/industry/red-hat/",
+    "status": 301
+  },
+  {
+    "line": 305,
+    "source": "/pt-BR/about/vendors/riverbed/",
+    "destination": "/pt-BR/industry/riverbed/",
+    "status": 301
+  },
+  {
+    "line": 306,
+    "source": "/pt-BR/about/vendors/symantec/",
+    "destination": "/pt-BR/industry/symantec/",
+    "status": 301
+  },
+  {
+    "line": 307,
+    "source": "/pt-BR/about/vendors/hpe-juniper-aruba/",
+    "destination": "/pt-BR/industry/hpe-juniper-aruba/",
+    "status": 301
+  },
+  {
+    "line": 308,
+    "source": "/pt-BR/about/vendors/brocade-broadcom/",
+    "destination": "/pt-BR/industry/brocade-broadcom/",
+    "status": 301
+  },
+  {
+    "line": 309,
+    "source": "/pt-BR/about/vendors/mcafee-fireeye-trellix/",
+    "destination": "/pt-BR/industry/mcafee-fireeye-trellix/",
+    "status": 301
+  },
+  {
+    "line": 310,
+    "source": "/pt-BR/about/vendors/mikrotik/",
+    "destination": "/pt-BR/industry/mikrotik/",
+    "status": 301
+  },
+  {
+    "line": 311,
+    "source": "/pt-BR/about/vendors/radware/",
+    "destination": "/pt-BR/industry/radware/",
+    "status": 301
+  },
+  {
+    "line": 312,
+    "source": "/pt-BR/about/vendors/imperva-thales/",
+    "destination": "/pt-BR/industry/imperva-thales/",
+    "status": 301
+  },
+  {
+    "line": 313,
+    "source": "/pt-BR/about/vendors/versa/",
+    "destination": "/pt-BR/industry/versa/",
+    "status": 301
+  },
+  {
+    "line": 314,
+    "source": "/pt-BR/about/vendors/nortel-bay/",
+    "destination": "/pt-BR/industry/nortel-bay/",
+    "status": 301
+  },
+  {
+    "line": 315,
+    "source": "/pt-BR/about/vendors/madge/",
+    "destination": "/pt-BR/industry/madge/",
+    "status": 301
+  },
+  {
+    "line": 316,
+    "source": "/pt-BR/about/vendors/sun-microsystems/",
+    "destination": "/pt-BR/industry/sun-microsystems/",
+    "status": 301
+  },
+  {
+    "line": 317,
+    "source": "/pt-BR/about/vendors/silicon-graphics/",
+    "destination": "/pt-BR/industry/silicon-graphics/",
+    "status": 301
+  },
+  {
+    "line": 318,
+    "source": "/pt-BR/about/vendors/xerox/",
+    "destination": "/pt-BR/industry/xerox/",
+    "status": 301
+  },
+  {
+    "line": 319,
+    "source": "/pt-BR/about/vendors/dec/",
+    "destination": "/pt-BR/industry/dec/",
+    "status": 301
+  },
+  {
+    "line": 320,
+    "source": "/pt-BR/about/vendors/nokia/",
+    "destination": "/pt-BR/industry/nokia/",
+    "status": 301
+  },
+  {
+    "line": 321,
+    "source": "/pt-BR/about/vendors/ericsson/",
+    "destination": "/pt-BR/industry/ericsson/",
+    "status": 301
+  },
+  {
+    "line": 322,
+    "source": "/pt-BR/about/vendors/huawei/",
+    "destination": "/pt-BR/industry/huawei/",
+    "status": 301
+  },
+  {
+    "line": 323,
+    "source": "/pt-BR/about/vendors/siemens/",
+    "destination": "/pt-BR/industry/siemens/",
+    "status": 301
+  },
+  {
+    "line": 324,
+    "source": "/pt-BR/about/vendors/novell/",
+    "destination": "/pt-BR/industry/novell/",
+    "status": 301
+  },
+  {
+    "line": 325,
+    "source": "/pt-BR/about/vendors/oracle/",
+    "destination": "/pt-BR/industry/oracle/",
+    "status": 301
+  },
+  {
+    "line": 326,
+    "source": "/pt-BR/about/vendors/ibm/",
+    "destination": "/pt-BR/industry/ibm/",
+    "status": 301
+  },
+  {
+    "line": 327,
+    "source": "/pt-BR/about/vendors/sap/",
+    "destination": "/pt-BR/industry/sap/",
+    "status": 301
+  },
+  {
+    "line": 328,
+    "source": "/pt-BR/about/vendors/3com/",
+    "destination": "/pt-BR/industry/3com/",
+    "status": 301
+  },
+  {
+    "line": 329,
+    "source": "/pt-BR/about/vendors/compaq/",
+    "destination": "/pt-BR/industry/compaq/",
+    "status": 301
+  },
+  {
+    "line": 330,
+    "source": "/pt-BR/about/vendors/netscape/",
+    "destination": "/pt-BR/industry/netscape/",
+    "status": 301
+  },
+  {
+    "line": 331,
+    "source": "/pt-BR/about/vendors/motorola/",
+    "destination": "/pt-BR/industry/motorola/",
+    "status": 301
+  },
+  {
+    "line": 332,
+    "source": "/pt-BR/about/vendors/unisys/",
+    "destination": "/pt-BR/industry/unisys/",
+    "status": 301
+  },
+  {
+    "line": 333,
+    "source": "/pt-BR/about/vendors/data-general/",
+    "destination": "/pt-BR/industry/data-general/",
+    "status": 301
+  },
+  {
+    "line": 334,
+    "source": "/pt-BR/about/vendors/marconi/",
+    "destination": "/pt-BR/industry/marconi/",
+    "status": 301
+  },
+  {
+    "line": 335,
+    "source": "/pt-BR/about/vendors/wang/",
+    "destination": "/pt-BR/industry/wang/",
+    "status": 301
+  },
+  {
+    "line": 336,
+    "source": "/pt-BR/about/vendors/tandem/",
+    "destination": "/pt-BR/industry/tandem/",
+    "status": 301
+  },
+  {
+    "line": 337,
+    "source": "/pt-BR/about/vendors/banyan/",
+    "destination": "/pt-BR/industry/banyan/",
+    "status": 301
+  },
+  {
+    "line": 338,
+    "source": "/pt-BR/about/vendors/fujitsu/",
+    "destination": "/pt-BR/industry/fujitsu/",
+    "status": 301
+  },
+  {
+    "line": 339,
+    "source": "/pt-BR/about/vendors/nec/",
+    "destination": "/pt-BR/industry/nec/",
+    "status": 301
+  },
+  {
+    "line": 340,
+    "source": "/pt-BR/about/vendors/bell-labs-lucent-alcatel/",
+    "destination": "/pt-BR/industry/bell-labs-lucent-alcatel/",
+    "status": 301
+  },
+  {
+    "line": 341,
+    "source": "/pt-BR/about/vendors/intel-amd/",
+    "destination": "/pt-BR/industry/intel-amd/",
+    "status": 301
+  },
+  {
+    "line": 342,
+    "source": "/pt-BR/about/vendors/rand/",
+    "destination": "/pt-BR/industry/rand/",
+    "status": 301
+  },
+  {
+    "line": 343,
+    "source": "/pt-BR/about/vendors/cyclades-network/",
+    "destination": "/pt-BR/industry/cyclades-network/",
+    "status": 301
+  },
+  {
+    "line": 344,
+    "source": "/pt-BR/about/vendors/toshiba/",
+    "destination": "/pt-BR/industry/toshiba/",
+    "status": 301
+  },
+  {
+    "line": 345,
+    "source": "/pt-BR/about/vendors/hitachi/",
+    "destination": "/pt-BR/industry/hitachi/",
+    "status": 301
+  },
+  {
+    "line": 346,
+    "source": "/pt-BR/about/vendors/bull/",
+    "destination": "/pt-BR/industry/bull/",
+    "status": 301
+  },
+  {
+    "line": 347,
+    "source": "/pt-BR/about/vendors/ncsa/",
+    "destination": "/pt-BR/industry/ncsa/",
+    "status": 301
+  },
+  {
+    "line": 348,
+    "source": "/pt-BR/about/vendors/ciena/",
+    "destination": "/pt-BR/industry/ciena/",
+    "status": 301
+  },
+  {
+    "line": 349,
+    "source": "/pt-BR/about/vendors/sniffer-lineage/",
+    "destination": "/pt-BR/industry/sniffer-lineage/",
+    "status": 301
+  },
+  {
+    "line": 350,
+    "source": "/pt-BR/about/vendors/dolch/",
+    "destination": "/pt-BR/industry/dolch/",
+    "status": 301
+  },
+  {
+    "line": 351,
+    "source": "/pt-BR/about/vendors/blue-coat-packeteer/",
+    "destination": "/pt-BR/industry/blue-coat-packeteer/",
+    "status": 301
+  },
+  {
+    "line": 352,
+    "source": "/pt-BR/about/vendors/cyclades-avocent-vertiv/",
+    "destination": "/pt-BR/industry/cyclades-avocent-vertiv/",
+    "status": 301
+  },
+  {
+    "line": 353,
+    "source": "/pt-BR/about/vendors/dell-force10/",
+    "destination": "/pt-BR/industry/dell-force10/",
+    "status": 301
+  },
+  {
+    "line": 354,
+    "source": "/pt-BR/about/vendors/zte/",
+    "destination": "/pt-BR/industry/zte/",
+    "status": 301
+  },
+  {
+    "line": 355,
+    "source": "/pt-BR/about/vendors/fluke/",
+    "destination": "/pt-BR/industry/fluke/",
+    "status": 301
+  },
+  {
+    "line": 356,
+    "source": "/pt-BR/about/vendors/dns-bind/",
+    "destination": "/pt-BR/industry/dns-bind/",
+    "status": 301
+  },
+  {
+    "line": 357,
+    "source": "/pt-BR/about/vendors/http-gopher/",
+    "destination": "/pt-BR/industry/http-gopher/",
+    "status": 301
+  },
+  {
+    "line": 358,
+    "source": "/pt-BR/about/vendors/nvidia/",
+    "destination": "/pt-BR/industry/nvidia/",
+    "status": 301
+  },
+  {
+    "line": 359,
+    "source": "/pt-BR/about/vendors/ubiquiti/",
+    "destination": "/pt-BR/industry/ubiquiti/",
+    "status": 301
+  },
+  {
+    "line": 360,
+    "source": "/pt-BR/about/vendors/access-home-fleet/",
+    "destination": "/pt-BR/industry/access-home-fleet/",
+    "status": 301
+  },
+  {
+    "line": 361,
+    "source": "/pt-BR/about/vendors/watchguard/",
+    "destination": "/pt-BR/industry/watchguard/",
+    "status": 301
+  },
+  {
+    "line": 362,
+    "source": "/pt-BR/about/vendors/a10-kemp/",
+    "destination": "/pt-BR/industry/a10/",
+    "status": 301
+  },
+  {
+    "line": 363,
+    "source": "/pt-BR/industry/a10-kemp/",
+    "destination": "/pt-BR/industry/a10/",
+    "status": 301
+  },
+  {
+    "line": 364,
+    "source": "/pt-BR/about/vendors/datacom/",
+    "destination": "/pt-BR/industry/datacom/",
+    "status": 301
+  },
+  {
+    "line": 365,
+    "source": "/pt-BR/about/vendors/asus-askey/",
+    "destination": "/pt-BR/industry/asus-askey/",
+    "status": 301
+  },
+  {
+    "line": 366,
+    "source": "/pt-BR/about/vendors/netgear/",
+    "destination": "/pt-BR/industry/netgear/",
+    "status": 301
+  },
+  {
+    "line": 367,
+    "source": "/pt-BR/about/vendors/tp-link/",
+    "destination": "/pt-BR/industry/tp-link/",
+    "status": 301
+  },
+  {
+    "line": 368,
+    "source": "/pt-BR/about/vendors/zyxel/",
+    "destination": "/pt-BR/industry/zyxel/",
+    "status": 301
+  },
+  {
+    "line": 369,
+    "source": "/pt-BR/about/vendors/allied-telesis/",
+    "destination": "/pt-BR/industry/allied-telesis/",
+    "status": 301
+  },
+  {
+    "line": 380,
+    "source": "/de/dev/fun/importance-meter/",
+    "destination": "/en/dev/fun/importance-meter/",
+    "status": 301
+  },
+  {
+    "line": 381,
+    "source": "/es/dev/fun/importance-meter/",
+    "destination": "/en/dev/fun/importance-meter/",
+    "status": 301
+  },
+  {
+    "line": 382,
+    "source": "/fr/dev/fun/importance-meter/",
+    "destination": "/en/dev/fun/importance-meter/",
+    "status": 301
+  },
+  {
+    "line": 383,
+    "source": "/it/dev/fun/importance-meter/",
+    "destination": "/en/dev/fun/importance-meter/",
+    "status": 301
+  },
+  {
+    "line": 384,
+    "source": "/pt-BR/dev/fun/importance-meter/",
+    "destination": "/en/dev/fun/importance-meter/",
+    "status": 301
+  },
+  {
+    "line": 416,
+    "source": "/de/industry/history",
+    "destination": "/de/about/",
+    "status": 301
+  },
+  {
+    "line": 417,
+    "source": "/en/industry/history",
+    "destination": "/en/about/",
+    "status": 301
+  },
+  {
+    "line": 418,
+    "source": "/es/industry/history",
+    "destination": "/es/about/",
+    "status": 301
+  },
+  {
+    "line": 419,
+    "source": "/fr/industry/history",
+    "destination": "/fr/about/",
+    "status": 301
+  },
+  {
+    "line": 420,
+    "source": "/it/industry/history",
+    "destination": "/it/about/",
+    "status": 301
+  },
+  {
+    "line": 421,
+    "source": "/pt-BR/industry/history",
+    "destination": "/pt-BR/about/",
+    "status": 301
+  },
+  {
+    "line": 428,
+    "source": "/de/industry/history/pre-1996",
+    "destination": "/de/about/pre-1996/",
+    "status": 301
+  },
+  {
+    "line": 429,
+    "source": "/en/industry/history/pre-1996",
+    "destination": "/en/about/pre-1996/",
+    "status": 301
+  },
+  {
+    "line": 430,
+    "source": "/es/industry/history/pre-1996",
+    "destination": "/es/about/pre-1996/",
+    "status": 301
+  },
+  {
+    "line": 431,
+    "source": "/fr/industry/history/pre-1996",
+    "destination": "/fr/about/pre-1996/",
+    "status": 301
+  },
+  {
+    "line": 432,
+    "source": "/it/industry/history/pre-1996",
+    "destination": "/it/about/pre-1996/",
+    "status": 301
+  },
+  {
+    "line": 433,
+    "source": "/pt-BR/industry/history/pre-1996",
+    "destination": "/pt-BR/about/pre-1996/",
+    "status": 301
+  },
+  {
+    "line": 435,
+    "source": "/de/industry/history/1996-2020",
+    "destination": "/de/about/1996-2020/",
+    "status": 301
+  },
+  {
+    "line": 436,
+    "source": "/en/industry/history/1996-2020",
+    "destination": "/en/about/1996-2020/",
+    "status": 301
+  },
+  {
+    "line": 437,
+    "source": "/es/industry/history/1996-2020",
+    "destination": "/es/about/1996-2020/",
+    "status": 301
+  },
+  {
+    "line": 438,
+    "source": "/fr/industry/history/1996-2020",
+    "destination": "/fr/about/1996-2020/",
+    "status": 301
+  },
+  {
+    "line": 439,
+    "source": "/it/industry/history/1996-2020",
+    "destination": "/it/about/1996-2020/",
+    "status": 301
+  },
+  {
+    "line": 440,
+    "source": "/pt-BR/industry/history/1996-2020",
+    "destination": "/pt-BR/about/1996-2020/",
+    "status": 301
+  },
+  {
+    "line": 442,
+    "source": "/de/industry/history/2020-present",
+    "destination": "/de/about/2020-present/",
+    "status": 301
+  },
+  {
+    "line": 443,
+    "source": "/en/industry/history/2020-present",
+    "destination": "/en/about/2020-present/",
+    "status": 301
+  },
+  {
+    "line": 444,
+    "source": "/es/industry/history/2020-present",
+    "destination": "/es/about/2020-present/",
+    "status": 301
+  },
+  {
+    "line": 445,
+    "source": "/fr/industry/history/2020-present",
+    "destination": "/fr/about/2020-present/",
+    "status": 301
+  },
+  {
+    "line": 446,
+    "source": "/it/industry/history/2020-present",
+    "destination": "/it/about/2020-present/",
+    "status": 301
+  },
+  {
+    "line": 447,
+    "source": "/pt-BR/industry/history/2020-present",
+    "destination": "/pt-BR/about/2020-present/",
+    "status": 301
+  },
+  {
+    "line": 453,
+    "source": "/de/industry/history/",
+    "destination": "/de/about/",
+    "status": 301
+  },
+  {
+    "line": 454,
+    "source": "/en/industry/history/",
+    "destination": "/en/about/",
+    "status": 301
+  },
+  {
+    "line": 455,
+    "source": "/es/industry/history/",
+    "destination": "/es/about/",
+    "status": 301
+  },
+  {
+    "line": 456,
+    "source": "/fr/industry/history/",
+    "destination": "/fr/about/",
+    "status": 301
+  },
+  {
+    "line": 457,
+    "source": "/it/industry/history/",
+    "destination": "/it/about/",
+    "status": 301
+  },
+  {
+    "line": 458,
+    "source": "/pt-BR/industry/history/",
+    "destination": "/pt-BR/about/",
+    "status": 301
+  },
+  {
+    "line": 459,
+    "source": "/de/industry/history/pre-1996/",
+    "destination": "/de/about/pre-1996/",
+    "status": 301
+  },
+  {
+    "line": 460,
+    "source": "/en/industry/history/pre-1996/",
+    "destination": "/en/about/pre-1996/",
+    "status": 301
+  },
+  {
+    "line": 461,
+    "source": "/es/industry/history/pre-1996/",
+    "destination": "/es/about/pre-1996/",
+    "status": 301
+  },
+  {
+    "line": 462,
+    "source": "/fr/industry/history/pre-1996/",
+    "destination": "/fr/about/pre-1996/",
+    "status": 301
+  },
+  {
+    "line": 463,
+    "source": "/it/industry/history/pre-1996/",
+    "destination": "/it/about/pre-1996/",
+    "status": 301
+  },
+  {
+    "line": 464,
+    "source": "/pt-BR/industry/history/pre-1996/",
+    "destination": "/pt-BR/about/pre-1996/",
+    "status": 301
+  },
+  {
+    "line": 465,
+    "source": "/de/industry/history/1996-2020/",
+    "destination": "/de/about/1996-2020/",
+    "status": 301
+  },
+  {
+    "line": 466,
+    "source": "/en/industry/history/1996-2020/",
+    "destination": "/en/about/1996-2020/",
+    "status": 301
+  },
+  {
+    "line": 467,
+    "source": "/es/industry/history/1996-2020/",
+    "destination": "/es/about/1996-2020/",
+    "status": 301
+  },
+  {
+    "line": 468,
+    "source": "/fr/industry/history/1996-2020/",
+    "destination": "/fr/about/1996-2020/",
+    "status": 301
+  },
+  {
+    "line": 469,
+    "source": "/it/industry/history/1996-2020/",
+    "destination": "/it/about/1996-2020/",
+    "status": 301
+  },
+  {
+    "line": 470,
+    "source": "/pt-BR/industry/history/1996-2020/",
+    "destination": "/pt-BR/about/1996-2020/",
+    "status": 301
+  },
+  {
+    "line": 471,
+    "source": "/de/industry/history/2020-present/",
+    "destination": "/de/about/2020-present/",
+    "status": 301
+  },
+  {
+    "line": 472,
+    "source": "/en/industry/history/2020-present/",
+    "destination": "/en/about/2020-present/",
+    "status": 301
+  },
+  {
+    "line": 473,
+    "source": "/es/industry/history/2020-present/",
+    "destination": "/es/about/2020-present/",
+    "status": 301
+  },
+  {
+    "line": 474,
+    "source": "/fr/industry/history/2020-present/",
+    "destination": "/fr/about/2020-present/",
+    "status": 301
+  },
+  {
+    "line": 475,
+    "source": "/it/industry/history/2020-present/",
+    "destination": "/it/about/2020-present/",
+    "status": 301
+  },
+  {
+    "line": 476,
+    "source": "/pt-BR/industry/history/2020-present/",
+    "destination": "/pt-BR/about/2020-present/",
+    "status": 301
+  },
+  {
+    "line": 479,
+    "source": "/de/about/vendors/partner/*",
+    "destination": "/de/industry/:splat",
+    "status": 301
+  },
+  {
+    "line": 480,
+    "source": "/en/about/vendors/partner/*",
+    "destination": "/en/industry/:splat",
+    "status": 301
+  },
+  {
+    "line": 481,
+    "source": "/es/about/vendors/partner/*",
+    "destination": "/es/industry/:splat",
+    "status": 301
+  },
+  {
+    "line": 482,
+    "source": "/fr/about/vendors/partner/*",
+    "destination": "/fr/industry/:splat",
+    "status": 301
+  },
+  {
+    "line": 483,
+    "source": "/it/about/vendors/partner/*",
+    "destination": "/it/industry/:splat",
+    "status": 301
+  },
+  {
+    "line": 484,
+    "source": "/pt-BR/about/vendors/partner/*",
+    "destination": "/pt-BR/industry/:splat",
+    "status": 301
+  },
+  {
+    "line": 514,
+    "source": "/:locale/dev-fun/:slug/",
+    "destination": "/:locale/dev/fun/:slug/",
+    "status": 301
+  },
+  {
+    "line": 515,
+    "source": "/:locale/about/history/:slug/",
+    "destination": "/:locale/about/:slug/",
+    "status": 301
+  },
+  {
+    "line": 516,
+    "source": "/:locale/dev/other/rdap-lookup/",
+    "destination": "/:locale/dev/out/rdap-lookup/",
+    "status": 301
+  },
+  {
+    "line": 523,
+    "source": "/:locale/dev-fun/:slug",
+    "destination": "/:locale/dev/fun/:slug/",
+    "status": 301
+  },
+  {
+    "line": 524,
+    "source": "/:locale/about/history/:slug",
+    "destination": "/:locale/about/:slug/",
+    "status": 301
+  },
+  {
+    "line": 525,
+    "source": "/:locale/dev/other/rdap-lookup",
+    "destination": "/:locale/dev/out/rdap-lookup/",
+    "status": 301
+  },
+  {
+    "line": 543,
+    "source": "/:locale/tools/bigip-persistence-cookie/",
+    "destination": "/:locale/tools/f5-bigip-persistence-cookie/",
+    "status": 301
+  },
+  {
+    "line": 544,
+    "source": "/:locale/tools/bigip-persistence-cookie",
+    "destination": "/:locale/tools/f5-bigip-persistence-cookie/",
+    "status": 301
+  },
+  {
+    "line": 545,
+    "source": "/:locale/tools/bigip-persistence-cookie.md",
+    "destination": "/:locale/tools/f5-bigip-persistence-cookie.md",
+    "status": 301
+  },
+  {
+    "line": 546,
+    "source": "/:locale/tools/bigip-tcpdump-builder/",
+    "destination": "/:locale/tools/f5-bigip-tcpdump-builder/",
+    "status": 301
+  },
+  {
+    "line": 547,
+    "source": "/:locale/tools/bigip-tcpdump-builder",
+    "destination": "/:locale/tools/f5-bigip-tcpdump-builder/",
+    "status": 301
+  },
+  {
+    "line": 548,
+    "source": "/:locale/tools/bigip-tcpdump-builder.md",
+    "destination": "/:locale/tools/f5-bigip-tcpdump-builder.md",
+    "status": 301
+  },
+  {
+    "line": 549,
+    "source": "/:locale/tools/irules-event-order/",
+    "destination": "/:locale/tools/f5-irules-event-order/",
+    "status": 301
+  },
+  {
+    "line": 550,
+    "source": "/:locale/tools/irules-event-order",
+    "destination": "/:locale/tools/f5-irules-event-order/",
+    "status": 301
+  },
+  {
+    "line": 551,
+    "source": "/:locale/tools/irules-event-order.md",
+    "destination": "/:locale/tools/f5-irules-event-order.md",
+    "status": 301
+  },
+  {
+    "line": 552,
+    "source": "/:locale/tools/tmsh-config-explainer/",
+    "destination": "/:locale/tools/f5-tmsh-config-explainer/",
+    "status": 301
+  },
+  {
+    "line": 553,
+    "source": "/:locale/tools/tmsh-config-explainer",
+    "destination": "/:locale/tools/f5-tmsh-config-explainer/",
+    "status": 301
+  },
+  {
+    "line": 554,
+    "source": "/:locale/tools/tmsh-config-explainer.md",
+    "destination": "/:locale/tools/f5-tmsh-config-explainer.md",
+    "status": 301
+  },
+  {
+    "line": 555,
+    "source": "/:locale/tools/persistence-method-explainer/",
+    "destination": "/:locale/tools/f5-persistence-method-explainer/",
+    "status": 301
+  },
+  {
+    "line": 556,
+    "source": "/:locale/tools/persistence-method-explainer",
+    "destination": "/:locale/tools/f5-persistence-method-explainer/",
+    "status": 301
+  },
+  {
+    "line": 557,
+    "source": "/:locale/tools/persistence-method-explainer.md",
+    "destination": "/:locale/tools/f5-persistence-method-explainer.md",
+    "status": 301
+  },
+  {
+    "line": 558,
+    "source": "/:locale/tools/f5",
+    "destination": "/:locale/f5/#tools",
+    "status": 301
+  },
+  {
+    "line": 559,
+    "source": "/:locale/tools/f5/",
+    "destination": "/:locale/f5/#tools",
+    "status": 301
+  },
+  {
+    "line": 560,
+    "source": "/:locale/learn/f5",
+    "destination": "/:locale/f5/#learn",
+    "status": 301
+  },
+  {
+    "line": 561,
+    "source": "/:locale/learn/f5/",
+    "destination": "/:locale/f5/#learn",
+    "status": 301
+  },
+  {
+    "line": 569,
+    "source": "/:locale/dev-fun/",
+    "destination": "/:locale/dev/fun/",
+    "status": 301
+  },
+  {
+    "line": 570,
+    "source": "/:locale/dev-fun",
+    "destination": "/:locale/dev/fun/",
+    "status": 301
+  },
+  {
+    "line": 571,
+    "source": "/:locale/vendors/",
+    "destination": "/:locale/vendor-hubs/",
+    "status": 301
+  },
+  {
+    "line": 572,
+    "source": "/:locale/vendors",
+    "destination": "/:locale/vendor-hubs/",
+    "status": 301
+  },
+  {
+    "line": 573,
+    "source": "/:locale/category/network/",
+    "destination": "/:locale/category/networking/",
+    "status": 301
+  },
+  {
+    "line": 574,
+    "source": "/:locale/category/network",
+    "destination": "/:locale/category/networking/",
+    "status": 301
+  },
+  {
+    "line": 575,
+    "source": "/:locale/about/vendors/",
+    "destination": "/:locale/industry/chapters/",
+    "status": 301
+  },
+  {
+    "line": 576,
+    "source": "/:locale/about/vendors/cabletron-enterasys/",
+    "destination": "/:locale/industry/chapters/cabletron-enterasys/",
+    "status": 301
+  },
+  {
+    "line": 577,
+    "source": "/:locale/about/vendors/check-point/",
+    "destination": "/:locale/industry/chapters/check-point/",
+    "status": 301
+  },
+  {
+    "line": 578,
+    "source": "/:locale/about/vendors/cisco/",
+    "destination": "/:locale/industry/chapters/cisco/",
+    "status": 301
+  },
+  {
+    "line": 579,
+    "source": "/:locale/about/vendors/cyberark/",
+    "destination": "/:locale/industry/chapters/cyberark/",
+    "status": 301
+  },
+  {
+    "line": 580,
+    "source": "/:locale/about/vendors/extreme/",
+    "destination": "/:locale/industry/chapters/extreme/",
+    "status": 301
+  },
+  {
+    "line": 581,
+    "source": "/:locale/about/vendors/f5/",
+    "destination": "/:locale/industry/chapters/f5/",
+    "status": 301
+  },
+  {
+    "line": 582,
+    "source": "/:locale/about/vendors/fireeye-mcafee-ixia/",
+    "destination": "/:locale/industry/chapters/fireeye-mcafee-ixia/",
+    "status": 301
+  },
+  {
+    "line": 583,
+    "source": "/:locale/about/vendors/fortinet/",
+    "destination": "/:locale/industry/chapters/fortinet/",
+    "status": 301
+  },
+  {
+    "line": 584,
+    "source": "/:locale/about/vendors/ironport/",
+    "destination": "/:locale/industry/chapters/ironport/",
+    "status": 301
+  },
+  {
+    "line": 585,
+    "source": "/:locale/about/vendors/netscreen-juniper/",
+    "destination": "/:locale/industry/chapters/netscreen-juniper/",
+    "status": 301
+  },
+  {
+    "line": 586,
+    "source": "/:locale/about/vendors/netskope/",
+    "destination": "/:locale/industry/chapters/netskope/",
+    "status": 301
+  },
+  {
+    "line": 587,
+    "source": "/:locale/about/vendors/palo-alto/",
+    "destination": "/:locale/industry/chapters/palo-alto/",
+    "status": 301
+  },
+  {
+    "line": 588,
+    "source": "/:locale/about/vendors/ping-identity/",
+    "destination": "/:locale/industry/chapters/ping-identity/",
+    "status": 301
+  },
+  {
+    "line": 589,
+    "source": "/:locale/about/vendors/pulse-secure/",
+    "destination": "/:locale/industry/chapters/pulse-secure/",
+    "status": 301
+  },
+  {
+    "line": 590,
+    "source": "/:locale/about/vendors/riverstone/",
+    "destination": "/:locale/industry/chapters/riverstone/",
+    "status": 301
+  },
+  {
+    "line": 591,
+    "source": "/:locale/about/vendors/tenable/",
+    "destination": "/:locale/industry/chapters/tenable/",
+    "status": 301
+  },
+  {
+    "line": 592,
+    "source": "/:locale/about/vendors/avaya/",
+    "destination": "/:locale/industry/chapters/avaya/",
+    "status": 301
+  },
+  {
+    "line": 593,
+    "source": "/:locale/about/vendors/polycom/",
+    "destination": "/:locale/industry/chapters/polycom/",
+    "status": 301
+  },
+  {
+    "line": 594,
+    "source": "/:locale/about/vendors/corvil/",
+    "destination": "/:locale/industry/chapters/corvil/",
+    "status": 301
+  },
+  {
+    "line": 595,
+    "source": "/:locale/about/vendors/commscope/",
+    "destination": "/:locale/industry/chapters/commscope/",
+    "status": 301
+  },
+  {
+    "line": 596,
+    "source": "/:locale/about/vendors/zscaler/",
+    "destination": "/:locale/industry/chapters/zscaler/",
+    "status": 301
+  },
+  {
+    "line": 597,
+    "source": "/:locale/about/history/",
+    "destination": "/:locale/about/",
+    "status": 301
+  },
+  {
+    "line": 598,
+    "source": "/:locale/about/vendors/nutanix/",
+    "destination": "/:locale/industry/nutanix/",
+    "status": 301
+  },
+  {
+    "line": 599,
+    "source": "/:locale/about/vendors/openai/",
+    "destination": "/:locale/industry/openai/",
+    "status": 301
+  },
+  {
+    "line": 600,
+    "source": "/:locale/about/vendors/anthropic/",
+    "destination": "/:locale/industry/anthropic/",
+    "status": 301
+  },
+  {
+    "line": 601,
+    "source": "/:locale/about/vendors/google-search/",
+    "destination": "/:locale/industry/google-search/",
+    "status": 301
+  },
+  {
+    "line": 602,
+    "source": "/:locale/about/vendors/sixdegrees/",
+    "destination": "/:locale/industry/sixdegrees/",
+    "status": 301
+  },
+  {
+    "line": 614,
+    "source": "/:locale/contribute/tools/",
+    "destination": "/:locale/contribute/ideas/",
+    "status": 301
+  },
+  {
+    "line": 615,
+    "source": "/:locale/contribute/tools",
+    "destination": "/:locale/contribute/ideas/",
+    "status": 301
+  },
+  {
+    "line": 623,
+    "source": "/:locale/industry/chapters/dec/",
+    "destination": "/:locale/industry/dec/",
+    "status": 301
+  },
+  {
+    "line": 624,
+    "source": "/:locale/industry/chapters/dec",
+    "destination": "/:locale/industry/dec/",
+    "status": 301
+  },
+  {
+    "line": 625,
+    "source": "/:locale/learn/hash-functions-overview/",
+    "destination": "/:locale/learn/hash-function-families/",
+    "status": 301
+  },
+  {
+    "line": 626,
+    "source": "/:locale/learn/hash-functions-overview",
+    "destination": "/:locale/learn/hash-function-families/",
+    "status": 301
+  },
+  {
+    "line": 627,
+    "source": "/:locale/learn/bigip-persistence-cookies/",
+    "destination": "/:locale/learn/f5-bigip-persistence-cookies/",
+    "status": 301
+  },
+  {
+    "line": 628,
+    "source": "/:locale/learn/bigip-persistence-cookies",
+    "destination": "/:locale/learn/f5-bigip-persistence-cookies/",
+    "status": 301
+  }
+]

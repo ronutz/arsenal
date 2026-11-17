@@ -59,7 +59,17 @@ const CEILINGS = new Map([
   // 3,939,509): the growth is 72 new entries written at PRIME's requests on 15/11 (the psyops Arcs 4 to 6 terms, 32,
   // and the electronic-trading series' 40, PRIME 21:31) and the PTP entry's enrichment; no template change. The split
   // of the page (F07) is still the open rendering decision. New ceiling: that weight plus about five per cent.
-  ["/glossary", 4_230_000],
+  // SPLIT 2026-11-16 (PRIME 04:27, the F07 decision taken): the hub carries no entry list any more (a name finder over
+  // public/glossary-index.json, the A to Z tiles, the domain cards, the kinds, commonly mistold, recently checked), and
+  // the entries live on one page per letter (/glossary/letter/<x>, 7 to 214 entries on that day) and on the domain and
+  // kind pages, the largest of which (500 entries or more) show compact cards without definitions (DENSE_FROM in
+  // src/lib/glossaryBrowse.ts), so every one of them is expected within the default ceiling. This ceiling is left as
+  // it was until the first build that renders the split, which re-bases it (the heavier of en and pt-BR, plus about
+  // five per cent), turning the ratchet down from about four megabytes.
+  // RE-BASED 2026-11-16 at the first build of the split (12:21): pt-BR 314,613 bytes, en 311,002 (from 4,026,009). New
+  // ceiling: the heavier plus about five per cent; the letter pages, the largest 675,790 bytes (pt-BR S), sit under the
+  // default.
+  ["/glossary", 331_000],
   // The changelog: every entry since the site began (2026-10-19: en 2,811,787; pt-BR 2,832,054). RAISED 2026-10-26
   // (pt-BR 3,004,130 at the 02:45 build): the growth is the week's new entries, each with its Portuguese title, not a
   // template change; the page still renders every entry, and splitting it (by year or with a "show older" fold) is the
@@ -85,7 +95,11 @@ const CEILINGS = new Map([
   // s_client and code-on-slides articles), each a card on the index, not a template change. The page still renders every
   // card; folding or paginating it is the same rendering decision the changelog took on 2026-10-26 (audit F07), PRIME's
   // to take. New ceiling: that weight plus about five per cent.
-  ["/learn", 2_730_000],
+  // RAISED 2026-11-16 (pt-BR 2,786,039 at the six-language build of 12:21, 56,039 bytes over 2,730,000; en 2,664,802):
+  // the growth is the new articles of 15 and 16 November, each a card on the index (the psyops Arcs 2 to 6, the
+  // electronic-trading series' ten and the mass-hysteria series' sixteen, PRIME 15/11 21:31 and 23:14), not a template
+  // change. Folding the index remains the F07 decision for this page. New ceiling: that weight plus about five per cent.
+  ["/learn", 2_930_000],
   // The industry index: every organisation record's card (2026-10-19: en 1,516,848; pt-BR 1,525,955). RAISED 2026-11-09
   // (pt-BR 1,634,488 at the 00:37 build; en 1,608,222, da 1,609,443): the growth is new organisation records, each a
   // card on the index, not a template change; the ceiling was crossed by those added on 08/11/2026 at PRIME's requests
@@ -104,6 +118,23 @@ const PATTERN_CEILINGS = [
   // heaviest month page of en and pt-BR, plus about five per cent). Should a month of more than about 250 entries
   // ever cross this ceiling, it is split into half-month pages rather than the ceiling raised (not built until needed).
   { re: /^\/changelog\/\d{4}-\d{2}$/, ceiling: 1_780_000 },
+  // The glossary's domain and kind pages, /glossary/domain/<d> and /glossary/kind/<k> (since the split of 2026-11-16):
+  // every entry of the domain or kind as a full card with its definition. PRIME 16/11/2026 11:59: "Show full cards
+  // instead of compact ones", told that four of them (terms 903 entries, networking 727, security 686, acronyms 523)
+  // would pass the 1.2 MB default with definitions. AN ESTIMATE: the pt-BR render of the terms page weighed 620,797
+  // bytes of HTML in the test harness, and the single page of 2,061 entries weighed 4,026,009 bytes in the export
+  // against about 1.42 MB of the same rows in the harness (a factor of about 2.7, the flight data and the page's
+  // chrome), so the terms page is expected near 1.9 MB. One ceiling for the family, 2.0 MB; re-base on the first build
+  // that renders them (the heaviest of en and pt-BR, plus about five per cent). The small ones stay far below it.
+  // RE-BASED 2026-11-16 at the first build that rendered them (12:21): the terms page weighed 2,063,945 bytes in pt-BR
+  // and 2,022,267 in English (the estimate of 1.9 MB was low), security 1,706,942 and networking 1,610,016 in pt-BR.
+  // New ceiling: the heaviest plus about five per cent.
+  // RE-BASED AGAIN 2026-11-16 night, at the build that carried the day's 123 new terms (the redundancy and
+  // electronic-trading series and the culture posts, all at PRIME's requests): the pt-BR terms page weighed 2,188,335
+  // bytes, over 2,170,000 by growth of content, not of template. New ceiling: that weight plus about five per cent.
+  // The terms page grows with every glossary batch; splitting it (by letter or in pages) is PRIME's rendering decision,
+  // raised with him the same night, and the ceiling is not to be raised again without it.
+  { re: /^\/glossary\/(domain|kind)\/[a-z0-9-]+$/, ceiling: 2_300_000 },
 ];
 // The ceiling for every other route: a page a phone can take in one breath. Raised only with a reason written here.
 const DEFAULT_CEILING = 1_200_000;

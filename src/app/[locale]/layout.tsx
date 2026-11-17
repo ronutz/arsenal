@@ -43,7 +43,7 @@ import KeyboardShortcuts from "@/components/KeyboardShortcuts";
 import SkipLink from "@/components/SkipLink";
 // Measures the sticky header and bars so every in-page jump lands below them (PRIME 2026-10-27).
 import StickyAnchorOffset from "@/components/StickyAnchorOffset";
-import { SHORTCUT_ACTIONS } from "@/config/shortcuts";
+import { OTHER_KEYS, SHORTCUT_ACTIONS } from "@/config/shortcuts";
 // The feed of new articles per language, for the page head's discovery link (12/11/2026).
 import { feedUrlForLocale } from "@/lib/feeds";
 import { LIVE_LOCALE_CODES, DEFAULT_LOCALE } from "@/i18n/locales";
@@ -222,6 +222,28 @@ export default async function LocaleLayout({
     // The Ping-Pong virus simulator (15/11/2026): what p v announces.
     pongOn: tShortcuts("pongOn"),
     pongOff: tShortcuts("pongOff"),
+    // The help's parts and marks (PRIME 16/11/2026 03:14): this page, the site shortcuts, the other keys.
+    helpHere: tShortcuts("helpHere"),
+    helpSite: tShortcuts("helpSite"),
+    helpOther: tShortcuts("helpOther"),
+    customize: tShortcuts("customize"),
+    // The key goes in on the client, so the placeholder %KEY% is passed through ICU as the key's value.
+    customizeAria: tShortcuts("customizeAria", { key: "%KEY%" }),
+    offHere: tShortcuts("offHere"),
+    noItemHere: tShortcuts("noItemHere"),
+    notHere: tShortcuts("notHere"),
+    // When a page's own keys apply, one note per mode (src/lib/pageCapabilities.ts, PageKeysWhen).
+    when: {
+      focused: tShortcuts("whenFocused"),
+      playing: tShortcuts("whenPlaying"),
+      always: tShortcuts("whenAlways"),
+      arranging: tShortcuts("whenArranging"),
+    },
+    lettersOff: tShortcuts("lettersOff"),
+    dotHere: tShortcuts("dotHere"),
+    // The keys that are not bindings (OTHER_KEYS): label and caps per id.
+    otherLabels: Object.fromEntries(OTHER_KEYS.map((o) => [o.id, tShortcuts(`other.${o.id}.label`)])),
+    otherCaps: Object.fromEntries(OTHER_KEYS.map((o) => [o.id, tShortcuts(`other.${o.id}.caps`)])),
   };
 
   return (

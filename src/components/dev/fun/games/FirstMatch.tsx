@@ -40,6 +40,8 @@ import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, 
 import { usePlayAreaReveal } from "./playArea";
 // Strings.
 import { useTranslations } from "next-intl";
+// The game's own keys, for the site's keyboard help (? or h; 16/11/2026).
+import { usePageKeys } from "@/components/PageKeys";
 // The frame every game sits in.
 import GameShell, { type ShellResult } from "./GameShell";
 // Today's day and the motion preference.
@@ -123,6 +125,8 @@ export default function FirstMatch({ locale }: { locale: string }) {
   const t = useTranslations("devFun.games.first-match");
   // The shell's strings.
   const tc = useTranslations("devFun.games.common");
+  // The keys, told to the site's keyboard help (? or h, PRIME 16/11/2026 03:14): beside the site's shortcuts, which bind none of these keys.
+  usePageKeys({ when: "always", lines: [t("keysHint")] });
   // Today's UTC day (null until mount).
   const today = useToday();
   // The earlier puzzle on the board (?day=), or null: its wording says "this day's" where today's says "today's".

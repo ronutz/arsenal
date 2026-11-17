@@ -60,6 +60,8 @@ import { getAllArticles } from "@/lib/learn";
 import { getAllGlossaryEntries } from "@/content/glossary/glossary";
 import { TRANSLATED_LOCALE_COUNT } from "@/i18n/locales";
 import { GUIDE_RECIPES } from "@/content/guide/recipes";
+// The keys out of the box, for "Every key" (PRIME 16/11/2026 03:14): the same registry the help and Settings read.
+import { DEFAULT_BINDINGS, OTHER_KEYS, SHORTCUT_ACTIONS, SHORTCUT_KEYS, isKeyCustomizable, shortcutSettingsHref } from "@/config/shortcuts";
 import { WORLDS } from "@/config/worlds";
 import { getSiteCounts } from "@/lib/siteCounts";
 import { getWorldCountLabels } from "@/lib/worldCounts";
@@ -87,6 +89,8 @@ export default async function GuidePage({
   const t = await getTranslations("guide");
   const tTools = await getTranslations("tools");
   const tNav = await getTranslations("nav");
+  // The shortcut words (action labels, Customize, the other keys), shared with the help so the two never differ.
+  const tShortcuts = await getTranslations("shortcuts");
 
   // --- Derived datasheet numbers (authoritative sources; never hand-typed) ---
   const liveToolCount = CATALOGUE.filter((tool) => tool.status === "live").length;
@@ -142,7 +146,7 @@ export default async function GuidePage({
     { key: "guides", links: [{ href: "/study-guides#training-series", label: t("how.guides.l3") }, { href: "/study-guides", label: t("how.guides.l1") }, { href: "/certifications", label: t("how.guides.l2") }] },
     { key: "hubs", links: [{ href: "/vendor-hubs", label: t("how.hubs.l1") }, { href: "/training", label: t("how.hubs.l2") }] },
     { key: "industry", links: [{ href: "/industry", label: t("how.industry.l1") }, { href: "/industry/chapters", label: t("how.industry.l2") }, { href: "/industry/method", label: t("how.industry.l3") }] },
-    { key: "search", links: [{ href: "/settings", label: t("how.search.l1") }, { href: "/sitemap", label: t("how.search.l2") }] },
+    { key: "search", links: [{ href: "/settings", label: t("how.search.l1") }, { href: "/sitemap", label: t("how.search.l2") }, { href: "/guide#keyboard", label: t("how.search.l3") }] },
     { key: "privacy", links: [{ href: "/privacy", label: t("how.privacy.l1") }, { href: "/stats", label: t("how.privacy.l2") }, { href: "/colophon", label: t("how.privacy.l3") }] },
   ];
 
@@ -183,6 +187,8 @@ export default async function GuidePage({
     { h: t("manual.api.h"), b: t.rich("manual.api.b", rich) },
     { h: t("manual.languages.h"), b: t.rich("manual.languages.b", rich) },
     { h: t("manual.offline.h"), b: t.rich("manual.offline.b", rich) },
+    // The keyboard (16/11/2026): the help, search, Customize; the full list is the "Every key" part.
+    { h: t("manual.keyboard.h"), b: t.rich("manual.keyboard.b", rich) },
     { h: t("manual.source.h"), b: t.rich("manual.source.b", rich) },
   ];
 
@@ -207,6 +213,7 @@ export default async function GuidePage({
                 <a href="#datasheet" className="guide-toc-link">{t("nav.datasheet")}</a>
                 <a href="#quickref" className="guide-toc-link">{t("nav.quickref")}</a>
                 <a href="#usage" className="guide-toc-link">{t("nav.usage")}</a>
+                <a href="#keyboard" className="guide-toc-link">{t("nav.keyboard")}</a>
                 <a href="#manual" className="guide-toc-link">{t("nav.manual")}</a>
               </nav>
             </div>
@@ -338,8 +345,69 @@ export default async function GuidePage({
             </div>
           </section>
 
+          {/* 3b. EVERY KEY (PRIME 16/11/2026 03:14): the site shortcuts out of the box, each with a Customize link to its row
+              in Settings when the policy lets it change, the keys that are not bindings, and the pages with keys of their
+              own. Derived from src/config/shortcuts.ts, like the help, so a new binding appears here by itself. */}
+          <section id="keyboard" className="section section-accent">
+            <div className="container colophon-container">
+              <h2 className="colophon-h2">{t("keyboard.h")}</h2>
+              <p className="colophon-body">{t("keyboard.intro")}</p>
+              <h3 className="guide-manual-h">{tShortcuts("helpSite")}</h3>
+              <div className="guide-keys-wrap">
+                <table className="guide-keys">
+                  <thead>
+                    <tr>
+                      <th scope="col">{t("keyboard.colKey")}</th>
+                      <th scope="col">{t("keyboard.colAction")}</th>
+                      {/* The Customize column has no heading: each link says what it customizes to a screen reader. */}
+                      <td />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {SHORTCUT_KEYS.filter((k) => k in DEFAULT_BINDINGS).map((k) => {
+                      // The action out of the box, by its label key.
+                      const action = SHORTCUT_ACTIONS.find((a) => a.id === DEFAULT_BINDINGS[k]);
+                      // The cap as the help shows it: letters in capitals, the rest as typed.
+                      const cap = /^[a-z]$/.test(k) ? k.toUpperCase() : k;
+                      return (
+                        <tr key={k}>
+                          <td><kbd className="guide-key mono">{cap}</kbd></td>
+                          <td>{action ? tShortcuts(action.labelKey) : DEFAULT_BINDINGS[k]}</td>
+                          <td className="guide-keys-customize">
+                            {isKeyCustomizable(k) && (
+                              <Link href={shortcutSettingsHref(k)} aria-label={tShortcuts("customizeAria", { key: cap })}>
+                                {tShortcuts("customize")}
+                              </Link>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+              <h3 className="guide-manual-h">{tShortcuts("helpOther")}</h3>
+              <ul className="guide-keys-other">
+                {OTHER_KEYS.map((o) => (
+                  <li key={o.id}>
+                    {/* One cap, a chord in two spellings, or a sequence. */}
+                    <span className="guide-keys-caps">
+                      {tShortcuts(`other.${o.id}.caps`).split("|").map((c, i) => (
+                        <kbd key={i} className="guide-key mono">{c}</kbd>
+                      ))}
+                    </span>
+                    <span>{tShortcuts(`other.${o.id}.label`)}</span>
+                  </li>
+                ))}
+              </ul>
+              <h3 className="guide-manual-h">{t("keyboard.pagesH")}</h3>
+              <p className="colophon-body">{t("keyboard.pagesBody")}</p>
+            </div>
+          </section>
+
           {/* 4. DETAILED MANUAL */}
-          <section id="manual" className="section section-accent">
+          {/* Plain since 16/11/2026, so the shading still alternates with "Every key" before it. */}
+          <section id="manual" className="section">
             <div className="container colophon-container">
               <h2 className="colophon-h2">{t("manualHeading")}</h2>
               {manual.map((m) => (

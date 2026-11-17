@@ -85,6 +85,8 @@ O Linux oferece sete modos de bonding, e só um deles é o protocolo padrão (ke
 
 O kernel ainda usa o termo antigo, "slave", e a configuração também. A regra prática está no mesmo documento: "the balance-rr, balance-xor and broadcast modes generally require that the switch have the appropriate ports grouped together", e o 802.3ad exige que o switch rode LACP. Quando não dá para mexer na configuração do switch, o active-backup é a escolha segura.
 
+A série [Arquiteturas redundantes](/learn/redundant-architectures-how-networks-survive-failure) leva a agregação de links a dois switches em [Redundância de camada 2](/learn/layer-2-redundancy-lag-mlag-and-spanning-tree): MLAG, vPC e StackWise Virtual, e o que cada um faz quando cai o link entre os seus dois switches.
+
 ## Para lembrar
 
 - Um LAG transforma links paralelos em um único link lógico: mais banda, e um membro que falha custa capacidade, não conectividade.

@@ -101,6 +101,8 @@ Num roteador com FRRouting, os mesmos números aparecem em `show bfd peers`, nos
 
 Para entender o que é o BFD, por que um enlace pode estar no ar e morto, e como os protocolos de roteamento usam o veredito, veja [BFD: quando um enlace está no ar e morto ao mesmo tempo](/learn/bfd-when-a-link-is-up-and-dead).
 
+A série [Arquiteturas redundantes](/learn/redundant-architectures-how-networks-survive-failure) leva o mesmo tipo de aritmética da detecção à disponibilidade em [A aritmética da redundância](/learn/the-arithmetic-of-redundancy-availability-mtbf-and-shared-fate): o tempo entre falhas, o tempo de reparo e por que dois de tudo não valem o dobro quando os dois compartilham uma causa. A sexta parte, [Redundância de camada 3](/learn/layer-3-redundancy-ecmp-bfd-and-fast-reroute), põe o tempo de detecção do BFD na cadeia de cinco passos entre uma falha e uma tabela de encaminhamento reparada, com os números dos passos que vêm depois dele.
+
 ## Para lembrar
 
 - O tempo de detecção nunca é enviado: cada receptor calcula o Detect Mult do emissor vezes o maior entre o Desired Min TX do emissor e o próprio Required Min RX.

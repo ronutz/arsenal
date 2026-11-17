@@ -109,8 +109,9 @@ export const ACTION_BY_ID: Record<string, ShortcutAction> = Object.fromEntries(
 // Chosen keys:
 //   b boss · t tools · l learn · m mega-brain · z bingo · f dev-fun index
 //     (existing set + the dev-fun landing page)
-//   s search overlay · / focus search · ? cheat-sheet · h home   (new "expected"
-//     web conventions)
+//   s search overlay · / focus search · ? and h help (the cheat-sheet; h since
+//     PRIME 16/11/2026 03:14: "Map the letter h to help") · i home (moved from h
+//     that day: i for início, inicio, inizio, and the site's index)
 //   1-5 favorite tools (PRIME-ratified: CIDR, Base64, JWT, JSON⇄YAML, F5 hub)
 //   6-0 more quick launches: Hash, UUID, URL inspector, X.509, Vendors home
 //   d My desk · k keep (save) this page's item · x tick it off as read (My desk, 12/11/2026)
@@ -126,7 +127,9 @@ export const DEFAULT_BINDINGS: Record<string, string> = {
   s: "cmd-search",
   "/": "cmd-focus-search",
   "?": "cmd-cheat-sheet",
-  h: "nav-home",
+  // h is help as well as ? (PRIME 16/11/2026 03:14); Home moved to i the same day.
+  h: "cmd-cheat-sheet",
+  i: "nav-home",
   "1": "tool-cidr",
   "2": "tool-base64",
   "3": "tool-jwt",
@@ -144,7 +147,7 @@ export const DEFAULT_BINDINGS: Record<string, string> = {
 };
 
 // The keys the settings UI exposes, in display order (matches DEFAULT_BINDINGS).
-export const SHORTCUT_KEYS: string[] = ["b", "g", "r", "f", "t", "l", "m", "z", "s", "/", "?", "h", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "d", "k", "x"];
+export const SHORTCUT_KEYS: string[] = ["b", "g", "r", "f", "t", "l", "m", "z", "s", "/", "?", "h", "i", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "d", "k", "x"];
 
 // ---- Sysadmin policy -------------------------------------------------------
 // Per-key operator rules. Any key absent from this map is fully customizable
@@ -182,3 +185,56 @@ export function isKeyCustomizable(key: string): boolean {
   if (!p) return true;
   return !p.locked && !p.forced;
 }
+
+/**
+ * The id of a key's row in the Settings table, so a "Customize" link can land on it (PRIME 16/11/2026 03:14: "In the
+ * keyboard shortcuts lists, place a "Customize" link next to the keys that are customizable"): letters and digits as
+ * they are, the two punctuation keys by name.
+ *
+ * @param key the bare key, as in SHORTCUT_KEYS
+ * @returns the element id, "shortcut-key-h", "shortcut-key-slash" and so on
+ */
+export function shortcutAnchor(key: string): string {
+  // Punctuation is not welcome in an id that a URL fragment carries; the two bound ones get names.
+  const name = key === "/" ? "slash" : key === "?" ? "question" : key;
+  // The id.
+  return `shortcut-key-${name}`;
+}
+
+/** The Settings address of a key's row, locale-relative (the i18n Link adds the language). */
+export function shortcutSettingsHref(key: string): string {
+  // The settings page, at the key's row.
+  return `/settings#${shortcutAnchor(key)}`;
+}
+
+// ---- Keys that are not bindings ----------------------------------------------
+// Everything else the keyboard does across the site, listed beside the bindings in the help (the "?" and "h"
+// overlay) and in the Site User Guide, so the two lists are one list (PRIME 16/11/2026 03:14: "Make sure you list all
+// current key mappings"). None of these can be rebound: each is handled by its own code, named in `where`.
+
+/** One key, or one sequence or chord, that the site answers outside the binding table. */
+export interface OtherKey {
+  /** Stable id; the label is shortcuts.other.<id>.label, the caps shortcuts.other.<id>.caps (localized: Esc is Échap
+   *  in French, Ctrl is Strg in German). */
+  id: "dot" | "esc" | "search-chord" | "pong" | "boss" | "typing";
+  /** Where it is handled, for the next reader of this file. */
+  where: string;
+  /** Whether it is letters, so a page that owns the alphabet switches it off too. */
+  letters: boolean;
+}
+
+/** The other keys, in the order the help lists them. */
+export const OTHER_KEYS: readonly OtherKey[] = [
+  // ".": the page-actions panel, on pages that register capabilities; inside it, 1-9, 0 and a-z jump to a section.
+  { id: "dot", where: "src/components/KeyboardShortcuts.tsx (T-DOT)", letters: false },
+  // Escape: every panel and dialog closes itself.
+  { id: "esc", where: "each popup's own handler", letters: false },
+  // Ctrl+K or Cmd+K: search, from anywhere, a text field included.
+  { id: "search-chord", where: "src/components/Search.tsx", letters: false },
+  // p then v: the Ping-Pong virus simulator, loose or caught (15/11/2026, queue 5p).
+  { id: "pong", where: "src/components/KeyboardShortcuts.tsx", letters: true },
+  // On a boss screen: the arrows change the disguise; any other key, or a click, returns.
+  { id: "boss", where: "src/components/dev/fun/BossApp.tsx", letters: false },
+  // In a text field: keys type. No shortcut takes a key from a field, nor one pressed with Ctrl, Alt or Cmd.
+  { id: "typing", where: "src/components/KeyboardShortcuts.tsx (isEditable, the modifier check)", letters: false },
+];

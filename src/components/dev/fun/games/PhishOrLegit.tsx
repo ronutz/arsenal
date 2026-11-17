@@ -44,6 +44,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 // The game's strings and the shell's.
 import { useTranslations } from "next-intl";
+// The game's own keys, for the site's keyboard help (? or h; 16/11/2026).
+import { usePageKeys } from "@/components/PageKeys";
 // The strings this game keeps in code, in the page's language beyond en and pt-BR (09/11/2026).
 import { useContentString } from "@/components/ContentStrings";
 // The frame: stats, rules, result.
@@ -179,6 +181,8 @@ export default function PhishOrLegit({ locale }: { locale: string }) {
   const t = useTranslations("devFun.games.phish-or-legit");
   // The shell's strings.
   const tc = useTranslations("devFun.games.common");
+  // The keys, told to the site's keyboard help (? or h, PRIME 16/11/2026 03:14): beside the site's shortcuts, which bind none of these keys.
+  usePageKeys({ when: "always", lines: [t("keysHint")] });
   // The explanations' language: Portuguese for pt-BR, English elsewhere (the source every other locale's text is keyed by).
   const lang: Lang = locale === "pt-BR" ? "pt" : "en";
   // The page's content strings: English in, the page's language out (the English where the locale has none written).

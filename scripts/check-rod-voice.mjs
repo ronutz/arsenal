@@ -10,8 +10,10 @@
 // there is something with MY (Rod) voice ... the site content guards will
 // explicitly and evidently state so").
 //
-// For every article of the series "psyops" in src/content/learn/series.ts
-// (opener and written parts), in English and Brazilian Portuguese:
+// For every article of the series "psyops" and of its sibling "mass-hysteria"
+// (PRIME 15/11/2026 23:14, written to the psyops standard by its run brief)
+// in src/content/learn/series.ts (opener and written parts), in English and
+// Brazilian Portuguese:
 //   1. the standing note <MethodNote /> is present;
 //   2. no opinion block (<RodVoice>, removed 12/11/2026) and no "Rodolfo Nützmann's view"
 //      style label anywhere in Learn, the blog or the six message packs (PRIME
@@ -32,32 +34,41 @@ const TAG = "[check-rod-voice]";
 // The series registry and the article folders.
 const SERIES = "src/content/learn/series.ts";
 const LEARN = "src/content/learn";
-// The series this guard governs.
-const SERIES_ID = "psyops";
+// The series this guard governs: psyops, and mass-hysteria since 16/11/2026 (its parts follow the psyops rules).
+const SERIES_IDS = ["psyops", "mass-hysteria"];
 
-// The series' block in the registry: from its id to the next series' id (or the end of the list).
+// The registry's text.
 const registry = readFileSync(SERIES, "utf8");
-// Where the series starts, if it is registered yet.
-const start = registry.indexOf(`id: "${SERIES_ID}"`);
-// Not registered: nothing to check, said plainly.
-if (start < 0) {
-  console.log(`${TAG} OK: the series "${SERIES_ID}" is not registered yet; nothing to check.`);
+// The series found registered, and every slug they hold.
+const registered = [];
+const slugs = [];
+for (const id of SERIES_IDS) {
+  // Where the series starts, if it is registered yet (a series not registered yet has nothing to check).
+  const start = registry.indexOf(`id: "${id}"`);
+  if (start < 0) continue;
+  registered.push(id);
+  // The end of the block: the next "id:" after this one.
+  const nextId = registry.indexOf("id: \"", start + 5);
+  // The block's text.
+  const block = registry.slice(start, nextId < 0 ? undefined : nextId);
+  // The opener and the written parts (planned parts have no slug and no file yet).
+  for (const m of block.matchAll(/(?:opener|slug):\s*"([a-z0-9-]+)"/g)) slugs.push(m[1]);
+}
+// None registered: nothing to check, said plainly.
+if (!registered.length) {
+  console.log(`${TAG} OK: the series ${SERIES_IDS.map((s) => `"${s}"`).join(" and ")} are not registered yet; nothing to check.`);
   process.exit(0);
 }
-// The end of the block: the next "id:" after this one.
-const nextId = registry.indexOf("id: \"", start + 5);
-// The block's text.
-const block = registry.slice(start, nextId < 0 ? undefined : nextId);
-// The opener and the written parts (planned parts have no slug and no file yet).
-const slugs = [...block.matchAll(/(?:opener|slug):\s*"([a-z0-9-]+)"/g)].map((m) => m[1]);
 
 /**
  * First-person singular, per language. English "I" is skipped after the words that make it a numeral or a class, in
  * an identifier that runs on with a hyphen and digits (the FBI IC3's public service announcements, "I-050417-PSA"),
- * and as the letter of a Brazilian article suffix ("article 9º-I"), since 15/11/2026 (psyops Arc 2).
+ * and as the letter of a Brazilian article suffix ("article 9º-I"), since 15/11/2026 (psyops Arc 2); and as a
+ * middle initial in a name ("Adam D. I. Kramer", "John I. Smith": a capitalised word, then "I", a full stop and another
+ * capitalised word), since 16/11/2026 (mass-hysteria part 293's source label).
  */
 const FIRST_PERSON = {
-  en: /(?<!\b(?:War|Class|Phase|Type|Part|Level|Tier|Article|Title|Category|Volume|Schedule|Annex|Appendix|Vol\.)\s)(?<![º°]-)\b(?:I|I'm|I’m|I've|I’ve|I'd|I’d|I'll|I’ll)\b(?!-\d)|\b(?:me|my|mine|myself)\b/g,
+  en: /(?<!\b(?:War|Class|Phase|Type|Part|Level|Tier|Article|Title|Category|Volume|Schedule|Annex|Appendix|Vol\.)\s)(?<![º°]-)(?<!\b[A-Z][A-Za-z]*\.?\s(?=I\.\s[A-Z]))\b(?:I|I'm|I’m|I've|I’ve|I'd|I’d|I'll|I’ll)\b(?!-\d)|\b(?:me|my|mine|myself)\b/g,
   // Case-sensitive, with the capitalised forms listed, so the abbreviation "EU" (European Union, União Europeia) is
   // never read as the pronoun "eu" (2026-11-09, found by the first Portuguese draft).
   "pt-BR": /\b(?:[Ee]u|[Mm]eu|[Mm]eus|[Mm]inha|[Mm]inhas|[Mm]im|[Cc]omigo|[Mm]e)\b/g,
@@ -137,4 +148,4 @@ if (problems.length) {
   console.error(`${TAG} FAIL: ${problems.length} problem(s):\n  ${problems.join("\n  ")}`);
   process.exit(1);
 }
-console.log(`${TAG} OK: ${read} file(s): the series "${SERIES_ID}" (${slugs.length} slug(s)) and ${blogSlugs.length} tagged blog post(s): each carries the method note, nothing speaks in the first person, and no opinion block or label appears in Learn, the blog or the six packs (open points are questions for the reader).`);
+console.log(`${TAG} OK: ${read} file(s): the series ${registered.map((s) => `"${s}"`).join(" and ")} (${slugs.length} slug(s)) and ${blogSlugs.length} tagged blog post(s): each carries the method note, nothing speaks in the first person, and no opinion block or label appears in Learn, the blog or the six packs (open points are questions for the reader).`);

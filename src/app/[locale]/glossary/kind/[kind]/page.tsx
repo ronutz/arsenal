@@ -24,6 +24,10 @@
 //
 // Same scope rule as the domain pages: every LIVE locale, matching the index
 // rather than the term pages.
+//
+// 2026-11-16 (PRIME 04:27, splitting the glossary page): the page lists its entries as full cards, the same cards the
+// letter and domain pages show, in letter sections with a sticky jump bar, with the filter by domain and text, and the
+// foot of the page leads to every domain, kind and letter.
 // ============================================================================
 
 // The page's own social card (12/11/2026: it shipped the generic one), named the way scripts/gen-og.mts draws it.
@@ -32,16 +36,21 @@ import { ogImages } from "@/lib/og";
 import { withDescription } from "@/lib/metaDescription";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import ScrollToTop from "@/components/ScrollToTop";
+// My desk's saved and read labels on the cards.
+import DeskListMarks from "@/components/desk/DeskListMarks";
+import GlossaryFilter from "@/components/glossary/GlossaryFilter";
+import { GlossaryInPageAz, GlossaryRows, GlossaryWaysIn } from "@/components/glossary/GlossaryBrowse";
 import { LIVE_LOCALE_CODES } from "@/i18n/locales";
 import {
   getAllGlossaryEntries,
+  getGlossaryDomains,
   getGlossaryKinds,
-  type GlossaryKind,
 } from "@/content/glossary/glossary";
+import { groupByLetter } from "@/lib/glossaryBrowse";
 
 export const dynamicParams = false;
 
@@ -52,12 +61,9 @@ export function generateStaticParams() {
   );
 }
 
+/** One kind's entries, in the registry's A to Z order (the order every other glossary page uses). */
 function entriesFor(kind: string) {
-  return getAllGlossaryEntries()
-    .filter((e) => e.kind === kind)
-    .sort((a, b) =>
-      a.headword.localeCompare(b.headword, "en", { sensitivity: "base" })
-    );
+  return getAllGlossaryEntries().filter((e) => e.kind === kind); // A to Z already
 }
 
 export async function generateMetadata({
@@ -70,7 +76,6 @@ export async function generateMetadata({
   const label = t(`kinds.${kind}`);
   return {
     title: t("kindPageTitle", { kind: label }),
-    // The Glossary card (12/11/2026: the page shipped the generic one), with the description in the meta, og and twitter fields.
     ...withDescription(t("kindPageDescription", { kind: label, count: entriesFor(kind).length }), ogImages("page", "glossary", locale, t("kindPageTitle", { kind: label })), `glossary/kind/${kind}`),
   };
 }
@@ -83,10 +88,13 @@ export default async function GlossaryKindPage({
   const { locale, kind } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("glossary");
+  const tNav = await getTranslations("nav"); // the breadcrumb's name and Home
+  const tDesk = await getTranslations("deskItem"); // the desk's marks
 
   const label = t(`kinds.${kind}`);
-  const entries = entriesFor(kind);
-  const others = getGlossaryKinds().filter((k) => k !== kind);
+  const entries = entriesFor(kind); // this kind's entries, A to Z
+  const groups = groupByLetter(entries); // in letter sections
+  const domains = getGlossaryDomains().filter((d) => entries.some((e) => e.domains.includes(d))); // the domains present here
 
   return (
     <>
@@ -95,7 +103,8 @@ export default async function GlossaryKindPage({
         <section className="section">
           <div className="container">
             <Breadcrumbs
-              items={[{ href: "/glossary", label: t("title") }, { label }]}
+              ariaLabel={tNav("breadcrumb")}
+              items={[{ label: tNav("home"), href: "/" }, { href: "/glossary", label: t("title") }, { label }]}
             />
             <h1 className="page-hero-title">
               {t("kindPageTitle", { kind: label })}
@@ -103,47 +112,37 @@ export default async function GlossaryKindPage({
             <p className="page-hero-lede">
               {t("kindPageDescription", { kind: label, count: entries.length })}
             </p>
+
+            {/* The filter: by domain and by text (the page is one kind, so no kind chips). */}
+            <div id="glossary-filter">
+              <GlossaryFilter
+                domains={domains.map((d) => ({ key: d, label: t(`domains.${d}`) }))}
+                kinds={[]}
+                domainLegend={t("filterDomainLegend")}
+                kindLegend={t("filterKindLegend")}
+                allDomainsLabel={t("allDomains")}
+                allKindsLabel={t("allKinds")}
+                searchPlaceholder={t("browse.pageSearchPlaceholder")}
+                searchAriaLabel={t("browse.pageSearchPlaceholder")}
+                clearLabel={t("clearFilters")}
+                countTemplate={t("resultsCount", { count: 0 }).replace(/\d+/, "{count}")}
+                noResultsLabel={t("noResults")}
+              />
+            </div>
+
+            {/* Jump to a letter of this kind, then the cards in letter sections. */}
+            <GlossaryInPageAz groups={groups} />
+            <GlossaryRows groups={groups} headings />
           </div>
         </section>
 
-        <section className="section">
-          <div className="container">
-            <ul className="glossary-domain-list">
-              {entries.map((e) => (
-                <li key={e.slug} className="glossary-domain-item">
-                  <Link href={`/glossary/${e.slug}`} className="glossary-domain-term">
-                    {e.headword}
-                  </Link>
-                  {e.expansion && (
-                    <span className="glossary-domain-expansion">{e.expansion}</span>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-
-        <section className="section">
-          <div className="container">
-            <h2 className="section-title">{t("otherKinds")}</h2>
-            <ul className="glossary-domain-rail">
-              {others.map((k) => (
-                <li key={k}>
-                  <Link href={`/glossary/kind/${k}`} className="glossary-domain-chip">
-                    {t(`kinds.${k}` as `kinds.${GlossaryKind}`)}
-                  </Link>
-                </li>
-              ))}
-              <li>
-                <Link href="/glossary" className="glossary-domain-chip">
-                  {t("allKinds")}
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </section>
+        {/* Every domain, every kind and the A to Z, this kind marked. */}
+        <GlossaryWaysIn currentKind={kind} />
       </main>
       <SiteFooter />
+      <ScrollToTop label={t("browse.backToTop")} />
+      {/* My desk: "★ Saved", "✓ Read" or "✓ Done" on the cards of items the reader keeps, placed after paint. */}
+      <DeskListMarks selector=".gloss-entry" labels={{ saved: tDesk("saved"), read: tDesk("readOn"), done: tDesk("doneOn") }} />
     </>
   );
 }

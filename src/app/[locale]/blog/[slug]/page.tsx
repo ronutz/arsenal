@@ -105,8 +105,15 @@ export default async function BlogPostPage({
               ]}
             />
             <h1 className="article-title">{post.title}</h1>
-            {/* Byline + date: commentary is signed and time-bound. */}
+            {/* Byline + date: commentary is signed and time-bound. It opens with the post's number in publication order, the
+                same number the blog index shows (PRIME 16/11/2026 04:19): read out in full, drawn as "No. 25", the
+                prefix and the numeral held together by a no-break space. */}
             <p className="lbm-facts">
+              <span className="sr-only">{t("numberAria", { n: post.number })}</span>
+              <span className="blog-post-number" aria-hidden="true">
+                {`${t("numberPrefix")} ${post.number}`}
+              </span>
+              {" - "}
               {post.author}
               {" - "}
               <time dateTime={post.date}>{fmt.format(new Date(`${post.date}T12:00:00Z`))}</time>

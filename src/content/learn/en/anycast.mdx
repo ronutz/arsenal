@@ -97,6 +97,8 @@ dig +norec @f.root-servers.net hostname.bind chaos txt
 
 It asks the server "to reveal the name of the particular server which answers the query. The hostname will contain an IATA three letter airport code, allowing the location of the server to be identified" ([ISC, F-Root](https://www.isc.org/f-root/)). The [dig command builder](/tools/dig-command-builder) assembles the line; [following delegation with dig +trace](/learn/dig-trace-and-delegation) covers the root's referral. Run it from the office and from a phone on a mobile network, then compare the airport codes: that is RFC 4786's "probes distributed representatively across the routing system" in miniature.
 
+The series [Redundant architectures](/learn/redundant-architectures-how-networks-survive-failure) sets anycast against DNS-based failover between sites, with the published measurements of how long each takes, in [its part on health monitors, pools and site failover](/learn/adc-and-gslb-redundancy-health-monitors-pools-and-site-failover); its fifth part covers the anycast gateway of data centre fabrics, which shares the idea but not the routing ([Default gateway redundancy at scale](/learn/default-gateway-redundancy-vrrpv3-glbp-and-anycast-gateways)).
+
 ## What to remember
 
 - Anycast is "the practice of making a particular Service Address available in multiple, discrete, autonomous locations"; the addresses are ordinary unicast.

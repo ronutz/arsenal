@@ -176,6 +176,8 @@ Echo receive interval: disabled
 
 Uma captura mostra os campos da tabela do pacote, a cada segundo até Up e depois no intervalo combinado. A [calculadora de timers do BFD](/tools/bfd-timers) calcula os dois sentidos de uma sessão a partir dos seis números configurados e decodifica um pacote capturado campo a campo, [Dimensionar timers do BFD](/learn/bfd-timers-the-arithmetic-of-detection) percorre a aritmética, e o [Python playground](/tools/python-playground) confere um produto avulso (`3 * max(300, 1000)`). O [Packet Capture Plan Builder](/tools/packet-capture-plan-builder) ajuda a escolher onde capturar UDP 3784 quando só uma ponta está Down, e o [Flow Path Reasoner](/tools/flow-path-reasoner) nomeia as caixas entre dois roteadores.
 
+A série [Arquiteturas redundantes](/learn/redundant-architectures-how-networks-survive-failure) põe o BFD na tabela de tempos de detecção da sua abertura, ao lado da agregação de links, do spanning tree, dos gateways de first hop, dos protocolos de roteamento e dos heartbeats de firewall, para que os seus milissegundos possam ser lidos contra os segundos de cada outra camada. A sexta parte, [Redundância de camada 3](/learn/layer-3-redundancy-ecmp-bfd-and-fast-reroute), acompanha o que acontece depois que o BFD derruba uma sessão: o equal-cost multipath, o graceful restart e quando o BFD deve encerrá-lo, as loop-free alternates e a convergência do BGP.
+
 ## Para lembrar
 
 - O BFD só considera um caminho no ar quando os pacotes passam nos dois sentidos, e pega falhas unidirecionais, pontas remotas escondidas e planos de encaminhamento parados.

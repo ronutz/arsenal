@@ -207,24 +207,31 @@ export function scheduleChime(ctx: BaseAudioContext, kind: ChimeKind, t0: number
 
 /**
  * A chime alone: the green check after an LGTM, or the falling figure after "Changes requested". The stamp toy plays
- * it when its button is pressed.
+ * it by itself when the stamp comes down (PRIME 16/11/2026 02:58: "sound the LGTM chimes automatically, and leave the
+ * buttons so the user can replay them at will"), and again whenever its button is pressed. Both calls come from a
+ * tap (Stamp, or the button), which is what lets browsers, and an iPhone in silent mode, play it; the page never
+ * sounds it on load.
  *
  * @param kind which chime
+ * @param after seconds to wait before the first note (the stamp's fall, so the chime lands with it); 0 by default
  */
-export function playChime(kind: ChimeKind = "lgtm"): void {
+export function playChime(kind: ChimeKind = "lgtm", after = 0): void {
   // Media playback first, inside the tap.
   enterMediaPlayback();
-  // A context for the notes.
+  // A context for the notes, made inside the tap so the browser lets it sound.
   const ctx = newAudioContext();
   // No Web Audio: no chime.
   if (!ctx) return;
-  // Scheduled just ahead of the clock.
-  const end = scheduleChime(ctx, kind, ctx.currentTime + 0.05);
+  // When the first note starts: just ahead of the clock, after any wait (scheduled on the audio clock, not a timer,
+  // so the tap's permission still covers it).
+  const lead = 0.05 + Math.max(0, after);
+  // Scheduled.
+  const end = scheduleChime(ctx, kind, ctx.currentTime + lead);
   // The context closes after the last note, and the session is handed back.
   window.setTimeout(() => {
     // Closed.
     void ctx.close();
     // Handed back.
     leaveMediaPlayback();
-  }, Math.ceil((0.05 + end + 0.2) * 1000));
+  }, Math.ceil((lead + end + 0.2) * 1000));
 }

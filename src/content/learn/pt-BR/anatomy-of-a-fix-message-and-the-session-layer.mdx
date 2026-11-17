@@ -212,7 +212,7 @@ O primeiro caso resolvido da própria especificação FIX 4.4, "A.1.a - Filled o
 | 4 | Relatório de execução | Trade | Partially filled | 10.000 | 3.000 | 7.000 | 1.000 |
 | 5 | Relatório de execução | Trade | Filled | 10.000 | 10.000 | 0 | 7.000 |
 
-A matriz mostra também a alternativa nos passos 2 e 3, um relatório com ExecType e OrdStatus "Rejected" se a mesa de vendas ou a bolsa recusarem a ordem (mesma fonte). Cancelamentos, alterações, drop copies e alocações ficam para uma parte posterior desta série, sobre a vida da ordem no FIX.
+A matriz mostra também a alternativa nos passos 2 e 3, um relatório com ExecType e OrdStatus "Rejected" se a mesa de vendas ou a bolsa recusarem a ordem (mesma fonte). Cancelamentos, alterações, drop copies e alocações são o tema de [A vida de uma ordem no FIX](/learn/the-life-of-an-order-in-fix).
 
 ## A sessão: Logon
 
@@ -333,7 +333,7 @@ O gateway FIX da B3 aplica o padrão com algumas regras locais, todas na especif
 - O SequenceReset pode levar uma flag própria da B3, PossMissingApplMsg(35033), avisando que o intervalo retransmitido "pode não incluir todas as mensagens de aplicação contidas no intervalo originalmente pedido".
 - O AvgPx do ExecutionReport é obrigatório, mas sempre zero, como visto acima.
 
-A recuperação de dados de mercado usa a mesma camada de sessão: o TCP Replayer da B3 devolve mensagens de dados de mercado perdidas "por uma conexão TCP (uma sessão FIX 4.4)" ([B3, EntryPoint FIX Order Entry](https://www.b3.com.br/en_us/solutions/platforms/puma-trading-system/for-developers-and-vendors/entrypoint-order-entry)). O gateway binário mantém as ideias com outras mensagens: a B3 zera os seus números de sequência em 1 "no início de cada sessão de negociação (dia)", e a mensagem Negotiate "deve ser a primeira mensagem enviada em cada sessão de negociação, como a mensagem Logon do protocolo FIX" ([B3, Binary EntryPoint messaging guidelines 8.4.2.3, 28 de setembro de 2026](https://www.b3.com.br/data/files/69/35/F1/AB/94711A103BBB511AAC094EA8/BinaryEntryPoint-MessageSpecificationGuidelines-8.4.2.3-enUS.pdf)). As codificações binárias e o FIX Performance Session Layer (FIXP) são tema de uma parte posterior desta série, sobre as codificações do FIX e seus sucessores.
+A recuperação de dados de mercado usa a mesma camada de sessão: o TCP Replayer da B3 devolve mensagens de dados de mercado perdidas "por uma conexão TCP (uma sessão FIX 4.4)" ([B3, EntryPoint FIX Order Entry](https://www.b3.com.br/en_us/solutions/platforms/puma-trading-system/for-developers-and-vendors/entrypoint-order-entry)). O gateway binário mantém as ideias com outras mensagens: a B3 zera os seus números de sequência em 1 "no início de cada sessão de negociação (dia)", e a mensagem Negotiate "deve ser a primeira mensagem enviada em cada sessão de negociação, como a mensagem Logon do protocolo FIX" ([B3, Binary EntryPoint messaging guidelines 8.4.2.3, 28 de setembro de 2026](https://www.b3.com.br/data/files/69/35/F1/AB/94711A103BBB511AAC094EA8/BinaryEntryPoint-MessageSpecificationGuidelines-8.4.2.3-enUS.pdf)). As codificações binárias e o FIX Performance Session Layer (FIXP) são tema de [Codificações e sucessores do FIX](/learn/fix-encodings-and-successors-fixml-fast-sbe-and-exchange-binary-protocols).
 
 ## Para lembrar
 

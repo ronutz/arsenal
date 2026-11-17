@@ -1066,6 +1066,35 @@ function entityTargets(locale, section, within) {
   return targets(main, re);
 }
 
+/**
+ * The glossary's entries as the site renders them. Until 16/11/2026 the hub (/glossary) listed every entry; since PRIME
+ * split it that day (04:27), the hub carries a finder and no list, and the letter pages (/glossary/letter/<x>) carry
+ * the entries, each on exactly one of them. So the set the footer's figure is checked against is the union of the
+ * entry links in every built letter page's <main>. Domain, kind and letter links are not entries (entityPattern
+ * excludes the static siblings), so the junction at each page's foot adds nothing to the set.
+ */
+function glossaryTargets(locale) {
+  // The letter pages' folder in the export.
+  const dir = path.join(OUT, locale, "glossary", "letter");
+  // No letter pages built in this locale: nothing to reconcile.
+  if (!fs.existsSync(dir)) return null;
+  // An entry's route in this locale.
+  const re = entityPattern(locale, "glossary");
+  // The union, each entry once.
+  const set = new Set();
+  // Every letter page.
+  for (const d of fs.readdirSync(dir, { withFileTypes: true })) {
+    // Only the page folders.
+    if (!d.isDirectory()) continue;
+    // The page, parsed.
+    const doc = load(locale, `glossary/letter/${d.name}`);
+    // Its entry links, added to the union.
+    for (const p of targets(mainOf(doc), re)) set.add(p);
+  }
+  // Hand the union back.
+  return set;
+}
+
 /** 10: the footer directory, read on the home page. */
 function checkFooter(locale, known) {
   // The home page.
@@ -1167,8 +1196,8 @@ for (const locale of LOCALES) {
       "/materials": materials,
       // The certification guides.
       "/certifications": guides,
-      // The glossary entries.
-      "/glossary": entityTargets(locale, "glossary"),
+      // The glossary entries: since 16/11/2026, the union of the letter pages (the hub lists none).
+      "/glossary": glossaryTargets(locale),
       // The Practice articles.
       "/practice": practice,
       // The industry records (company cards; the tag chips are checked against their own pages).

@@ -36,6 +36,8 @@
 import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 // The strings.
 import { useTranslations } from "next-intl";
+// The game's own keys, for the site's keyboard help (? or h; 16/11/2026).
+import { usePageKeys } from "@/components/PageKeys";
 // Locale-aware links inside the site.
 import { Link } from "@/i18n/navigation";
 // The frame: stats, rules, result.
@@ -245,6 +247,8 @@ export default function Aggregate({ locale }: { locale: string }) {
   const t = useTranslations("devFun.games.aggregate");
   // The shell's shared strings.
   const tc = useTranslations("devFun.games.common");
+  // The keys, told to the site's keyboard help (? or h, PRIME 16/11/2026 03:14): beside the site's shortcuts, which bind none of these keys.
+  usePageKeys({ when: "always", lines: [t("boardHelp")] });
   // Today's UTC day, null until mount.
   const today = useToday();
   // The earlier puzzle on the board (?day=), or null: its wording says "this day's" where today's says "today's".

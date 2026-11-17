@@ -34,6 +34,12 @@ export interface PostFrontmatter {
   author: string;
   /** Publication date, ISO (YYYY-MM-DD). Drives the reverse-chronological index. */
   date: string;
+  /**
+   * The post's number in publication order, 1 for the first post (PRIME 16/11/2026 03:54: the index shows it).
+   * Declared ONCE, in the English file: a translation inherits it by slug (see getAllPosts), so the two languages can
+   * never number the same post differently. check-blog keeps the numbers unique, gap-free and in date order.
+   */
+  number: number;
   /** Free-form topic tags shown on the post (e.g. "ai", "incident-response"). */
   tags: string[];
   /** Category KEY reused from the tools/Learn taxonomy (PRIME: reuse categories),
@@ -92,9 +98,10 @@ function readPostsFrom(dir: string): Post[] {
     });
 }
 
-/** Newest first — the only sane default order for dated commentary. */
+/** Newest first — the only sane default order for dated commentary. Posts of the same day go by number, highest first
+ *  (16/11/2026), so the numbers on the index always count down; the title only breaks a tie the numbers cannot. */
 function byDateDesc(a: Post, b: Post): number {
-  return b.date.localeCompare(a.date) || a.title.localeCompare(b.title);
+  return b.date.localeCompare(a.date) || (b.number ?? 0) - (a.number ?? 0) || a.title.localeCompare(b.title);
 }
 
 /**
@@ -108,7 +115,9 @@ export function getAllPosts(locale: string = SOURCE_LOCALE): Post[] {
   if (locale === SOURCE_LOCALE) return source.sort(byDateDesc);
   const bySlug = new Map<string, Post>(source.map((p) => [p.slug, p]));
   for (const p of readPostsFrom(path.join(CONTENT_ROOT, locale))) {
-    bySlug.set(p.slug, p); // localized post overrides the English one
+    const en = bySlug.get(p.slug); // the English post this translation overrides, if any
+    // The localized post overrides the English one, but keeps the English number: the number is declared once.
+    bySlug.set(p.slug, en ? { ...p, number: en.number } : p);
   }
   return [...bySlug.values()].sort(byDateDesc);
 }
@@ -128,4 +137,15 @@ export function getAllPostTags(locale: string = SOURCE_LOCALE): string[] {
   const tags = new Set<string>();
   for (const p of getAllPosts(locale)) for (const t of p.tags ?? []) tags.add(t);
   return [...tags].sort((a, b) => a.localeCompare(b));
+}
+
+/**
+ * countBy: how many posts carry each key, for the index's filter chips (PRIME 16/11/2026 03:54: categories and filters).
+ * `keysOf` gives one post's keys (its single category, or its tags); the result maps each key to its post count, so the
+ * page can order the chips by how much there is to read behind them.
+ */
+export function countBy(posts: Post[], keysOf: (p: Post) => string[]): Map<string, number> {
+  const counts = new Map<string, number>(); // key to post count
+  for (const p of posts) for (const k of new Set(keysOf(p))) counts.set(k, (counts.get(k) ?? 0) + 1); // a post counts once per key
+  return counts; // insertion order: first seen first
 }

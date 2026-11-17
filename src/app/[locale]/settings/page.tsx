@@ -87,7 +87,8 @@ export default async function SettingsPage({
           </div>
         </section>
 
-        <section className="section">
+        {/* The shortcuts (the guide links here as /settings#shortcuts; each key's row has its own id, 16/11/2026). */}
+        <section className="section" id="shortcuts">
           <div className="container colophon-container">
             <h2 className="colophon-h2">{t("shortcutsTitle")}</h2>
             <p className="colophon-body">{t("shortcutsBody")}</p>

@@ -33,6 +33,8 @@
 import { useEffect, useId, useRef, useState } from "react";
 // The page's strings.
 import { useTranslations } from "next-intl";
+// The arranging keys, for the site's keyboard help (? or h; 16/11/2026).
+import { usePageKeys } from "@/components/PageKeys";
 // The layout's one write.
 import { getDeskState, setLayoutWidgets, DESK_LIMITS, WIDGET_SIZES, type DeskWidget, type WidgetSize } from "@/lib/desk/store";
 // The catalogue, the starters and the pure changes.
@@ -84,6 +86,8 @@ function isTyping(el: EventTarget | null): boolean {
 export default function DeskLayoutEditor(props: { widgets: DeskWidget[]; onDone: () => void }) {
   // The words.
   const t = useTranslations("desk");
+  // While the page is being arranged (this editor is mounted only then), the help names the frames' keys first.
+  usePageKeys({ when: "arranging", lines: [t("edit.keys")] });
   // A prefix for the controls' ids, so focus can be put back on them.
   const uid = useId();
   // The changes that can be undone, oldest first.

@@ -37,6 +37,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 // The game's strings and the shell's.
 import { useTranslations } from "next-intl";
+// The game's own keys, for the site's keyboard help (? or h; 16/11/2026).
+import { usePageKeys } from "@/components/PageKeys";
 // The frame: stats, rules, result.
 import GameShell, { type ShellResult } from "./GameShell";
 // The cover that holds the log's place until Start.
@@ -136,6 +138,8 @@ export default function LogDetective({ locale }: { locale: string }) {
   const t = useTranslations("devFun.games.log-detective");
   // The shell's strings.
   const tc = useTranslations("devFun.games.common");
+  // The keys, told to the site's keyboard help (? or h, PRIME 16/11/2026 03:14): beside the site's shortcuts, which bind none of these keys.
+  usePageKeys({ when: "always", lines: [t("listHint")] });
   // Today, after mount.
   const today = useToday();
   // The earlier puzzle on the board (?day=), or null: its wording says "this day's" where today's says "today's".

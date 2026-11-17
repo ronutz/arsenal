@@ -65,7 +65,7 @@ Electronic trading did not keep one venue per market. The SEC described the US e
 
 Most investors cannot send an order straight to an exchange; a member firm does it for them. B3's museum defines brokerage firms (corretoras) as companies authorized to mediate the purchase and sale of financial products on the exchange ([MUB3, June 2025](https://mub3.org.br/docs/Caderno%20do%20Professor%20-%20Site.pdf)). Before 1986 the London Stock Exchange kept two roles strictly apart, brokers acting as agents for investors and dealers called jobbers making prices from their own books, an arrangement known as single capacity ([Bank of England, December 1985](https://www.bankofengland.co.uk/-/media/boe/files/quarterly-bulletin/1985/change-in-the-stock-exchange-and-regulation-of-the-city.pdf); [Bank of England, February 1987](https://www.bankofengland.co.uk/-/media/boe/files/quarterly-bulletin/1987/change-in-the-stock-exchange-and-regulation-of-the-city.pdf)). At the NYSE, US law allowed a member registered as a specialist to act as both broker and dealer, under an obligation to help maintain a fair and orderly market ([SEC, 24 October 2008](https://www.govinfo.gov/content/pkg/FR-2008-10-29/pdf/E8-25797.pdf)).
 
-The broker's gatekeeping role became more important when the orders were machines'. On 1 August 2012 a routing system at Knight Capital, a US broker-dealer, sent millions of orders in 45 minutes while processing 212 small retail orders, and the firm lost over $460 million; the SEC found that Knight had broken the rule requiring brokers with market access to control its risks, a rule adopted in November 2010, and fined it $12 million ([SEC, 16 October 2013](https://www.sec.gov/litigation/admin/2013/34-70694.pdf)). A later part, on pre-trade risk and market access, returns to that rule.
+The broker's gatekeeping role became more important when the orders were machines'. On 1 August 2012 a routing system at Knight Capital, a US broker-dealer, sent millions of orders in 45 minutes while processing 212 small retail orders, and the firm lost over $460 million; the SEC found that Knight had broken the rule requiring brokers with market access to control its risks, a rule adopted in November 2010, and fined it $12 million ([SEC, 16 October 2013](https://www.sec.gov/litigation/admin/2013/34-70694.pdf)). [Pre-trade risk and market access](/learn/pre-trade-risk-and-market-access-controls) returns to that rule.
 
 ### The buy side: the investors whose orders move
 
@@ -89,7 +89,7 @@ Vendors sell much of this machinery to the firms that trade, and the firms the s
 - **ICAP** calls itself "a world-leading intermediary in wholesale financial, energy, and commodities markets" that combines voice brokers with electronic platforms, operating in 22 countries; its site carries a TP ICAP copyright notice ([ICAP, undated](https://icap.com/)).
 - **Pico** says it was founded in 2009, is headquartered in New York and grew through acquisitions including Corvil (network analytics) and Redline Trading Solutions (low-latency software); it describes Corvil as its packet-level analytics platform, which "captures every packet" and computes nanosecond-resolution latency for every order ([Pico, undated](https://www.pico.net/)).
 
-Brazilian technology providers appear in the part on Brazil, as their own pages describe them. A later part covers order management systems (OMS) and execution management systems (EMS) and the firms that sell them, and another covers network-derived analytics and monitoring.
+Brazilian technology providers appear in the part on Brazil, as their own pages describe them. [OMS and EMS](/learn/oms-and-ems-order-and-execution-management-systems) covers order management systems (OMS) and execution management systems (EMS) and the firms that sell them, and [Network-derived analytics](/learn/network-derived-analytics-and-trading-monitoring) the tools that watch trading on the wire.
 
 ### Clearing and settlement: making sure the trade completes
 
@@ -135,7 +135,23 @@ The same 2009 announcement promised three levels of direct market access (DMA) b
 
 **[Brazil: BM&F, Bovespa, B3 and electronic access](/learn/brazil-bmf-bovespa-b3-and-electronic-access)** covers the Brazilian exchanges, their platforms, B3's access models and co-location, the participants and the growth in the number of investors, in B3's and the CVM's own figures.
 
-Later parts, now in preparation, will cover: **FIX encodings and successors** (the markup-language and binary forms of FIX and the exchanges' own binary protocols, such as Nasdaq's OUCH and ITCH and B3's EntryPoint); **the order's life in FIX** (order states, cancel and replace, drop copies, allocations, FIX beyond equities); **order and execution management systems** and their vendors; **pre-trade risk and market access** (the SEC's market access rule, sponsored access, kill switches); **interdealer brokers and electronic fixed income and foreign exchange** (ICAP, TP ICAP, CME and their platforms); **network-derived analytics and monitoring** (Corvil, Pico); **market data** (consolidated feeds against direct feeds); **surveillance and regulatory reporting** (MiFID II, the Consolidated Audit Trail, the CVM); and **fairness by design** (speed bumps and batch auctions).
+**[FIX encodings and successors: FIXML, FAST, SBE and the exchanges' binary protocols](/learn/fix-encodings-and-successors-fixml-fast-sbe-and-exchange-binary-protocols)** compares FIX's tag=value form with its XML, compressed and binary encodings and with the exchanges' own binary protocols, such as Nasdaq's OUCH and ITCH and B3's EntryPoint, with one price encoded nine ways.
+
+**[The life of an order in FIX](/learn/the-life-of-an-order-in-fix)** follows an order through its states, cancel and replace, rejects, partial fills, drop copies and allocations, and FIX beyond equities, with a full message sequence from B3's certification steps.
+
+**[OMS and EMS: order and execution management systems](/learn/oms-and-ems-order-and-execution-management-systems)** sets out what each system does for the buy side and the sell side, where it sits in the flow, algorithmic execution and smart order routing, and the vendors, from their own pages and filings.
+
+**[Pre-trade risk and market access: limits, sponsored access and kill switches](/learn/pre-trade-risk-and-market-access-controls)** covers the SEC's market access rule and its enforcement cases, Europe's rules on algorithmic trading, B3's and the CVM's controls, and kill switches, with Knight Capital as the case for them.
+
+**[Interdealer brokers and electronic fixed income and FX](/learn/interdealer-brokers-and-electronic-fixed-income-and-fx)** follows the brokers between dealers, from ICAP and its platforms BrokerTec and EBS to TP ICAP and the CME, the structure of the US Treasury market and its flash rally of 15 October 2014, the dispute over last look in electronic foreign exchange, and Brazil's electronic venues for fixed income and foreign exchange.
+
+**[Network-derived analytics: watching trading on the wire](/learn/network-derived-analytics-and-trading-monitoring)** covers packet capture and time stamping in trading networks, decoding FIX and the binary protocols from the wire, measuring latency, the vendors from Corvil and Pico onwards, and the clock and record-keeping rules of regulators, the CVM's included.
+
+**[Market data: consolidated feeds and direct feeds](/learn/market-data-consolidated-feeds-and-direct-feeds)** compares the consolidated feeds of the United States securities information processors with the venues' direct feeds and the latency between them, follows the SEC's 2020 market data rule through the courts and the consolidated tapes now arriving in Europe and the United Kingdom, and reads B3's market data on the network: multicast channels, feed arbitration and snapshot recovery.
+
+**[Surveillance and regulatory reporting: MiFID II, the Consolidated Audit Trail and CVM](/learn/surveillance-and-regulatory-reporting-mifid-ii-cat-and-cvm)** covers the rules on market manipulation in the European Union, the United States and Brazil, the spoofing and layering cases that tested them, suspicious order reports and MiFIR transaction reports, the Consolidated Audit Trail (CAT) with its cost and privacy disputes, and BSM and the CVM in Brazil.
+
+**[Fairness by design: speed bumps, batch auctions and IEX](/learn/fairness-by-design-speed-bumps-batch-auctions-and-iex)** sets out designs that change the rules of the race instead of the racers: IEX's 350-microsecond coil and the court cases over it, the delays other venues tried, frequent batch auctions and the evidence on each, and Brazil's debate on B3's Retail Liquidity Provider offers.
 
 ## This series, in order
 
@@ -150,15 +166,15 @@ This article opens the series **Electronic trading**.
 7. **[Anatomy of a FIX message and the session layer](/learn/anatomy-of-a-fix-message-and-the-session-layer)**. A message, field by field, and the session that carries it.
 8. **[FIX networks: hubs and managed connectivity](/learn/fix-networks-hubs-and-managed-connectivity)**. The networks between firms.
 9. **[Brazil: BM&F, Bovespa, B3 and electronic access](/learn/brazil-bmf-bovespa-b3-and-electronic-access)**. The Brazilian market and how firms reach it.
-10. **FIX encodings and successors** (in preparation).
-11. **The order's life in FIX** (in preparation).
-12. **Order and execution management systems** (in preparation).
-13. **Pre-trade risk and market access** (in preparation).
-14. **Interdealer brokers and electronic fixed income and foreign exchange** (in preparation).
-15. **Network-derived analytics and monitoring** (in preparation).
-16. **Market data** (in preparation).
-17. **Surveillance and regulatory reporting** (in preparation).
-18. **Fairness by design** (in preparation).
+10. **[FIX encodings and successors: FIXML, FAST, SBE and the exchanges' binary protocols](/learn/fix-encodings-and-successors-fixml-fast-sbe-and-exchange-binary-protocols)**. The encodings of FIX and the exchanges' binary protocols.
+11. **[The life of an order in FIX](/learn/the-life-of-an-order-in-fix)**. Order states, changes and what follows the trade.
+12. **[OMS and EMS: order and execution management systems](/learn/oms-and-ems-order-and-execution-management-systems)**. The systems that hold, route and execute orders, and their vendors.
+13. **[Pre-trade risk and market access: limits, sponsored access and kill switches](/learn/pre-trade-risk-and-market-access-controls)**. The controls between a client and the market.
+14. **[Interdealer brokers and electronic fixed income and FX](/learn/interdealer-brokers-and-electronic-fixed-income-and-fx)**. The brokers between dealers and the electronic markets for bonds and currencies.
+15. **[Network-derived analytics: watching trading on the wire](/learn/network-derived-analytics-and-trading-monitoring)**. Capture, time stamps and latency, read from the network itself.
+16. **[Market data: consolidated feeds and direct feeds](/learn/market-data-consolidated-feeds-and-direct-feeds)**. What the consolidated and direct feeds carry, who pays, and how a receiver recovers lost packets.
+17. **[Surveillance and regulatory reporting: MiFID II, the Consolidated Audit Trail and CVM](/learn/surveillance-and-regulatory-reporting-mifid-ii-cat-and-cvm)**. Manipulation rules and cases, suspicious order and transaction reports, the CAT, BSM and the CVM.
+18. **[Fairness by design: speed bumps, batch auctions and IEX](/learn/fairness-by-design-speed-bumps-batch-auctions-and-iex)**. Delays, batch auctions and the regulators and courts that weighed them.
 
 ## What to remember
 

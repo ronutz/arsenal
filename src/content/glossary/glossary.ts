@@ -1286,27 +1286,44 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     headword: "WarGames (1983)",
     kind: "lore",
     domains: ["cyber-security", "ops-culture"],
-    aliases: ["war games", "joshua", "shall we play a game", "wardialing"],
-    relatedTerms: ["norad", "the-414s", "war-dialing"],
-    sources: [{ label: "WarGames (1983 film)", href: "https://en.wikipedia.org/wiki/WarGames" }],
+    aliases: ["war games", "joshua", "shall we play a game", "wardialing", "jogos de guerra"], // + the Brazilian title (Apple TV Brasil, 16/11/2026)
+    relatedTerms: ["norad", "the-414s", "war-dialing", "nsdd-145", "cfaa"], // + the directive and the statute (proposed entries)
+    relatedArticles: ["the-414s-and-the-summer-of-1983", "hacking-in-the-20th-century"], // both discuss the film
+    sources: [
+      { label: "WarGames (1983 film)", href: "https://en.wikipedia.org/wiki/WarGames" },
+      { label: "American Film Institute, AFI Catalog, WarGames (read 2026-11-16): released 3 June 1983 after a Cannes screening; MGM/UA; three Academy Award nominations; Duncan Wilmore credited as technical adviser; Air Force officers on the film's inaccurate chain of command", href: "https://catalog.afi.com/Catalog/moviedetails/67139" },
+      { label: "Ronald Reagan Presidential Foundation, The Daily Diary of President Ronald Reagan, 4 June 1983 (read 2026-11-16): the President and the First Lady watched War Games at Camp David", href: "https://www.reaganfoundation.org/cms/assets/1716570167-presidents-schedule-06-04-1983.pdf" },
+      { label: "MEL Magazine, oral history, 17 March 2020 (read 2026-11-16): Lasker on Willis Ware as adviser; David Scott Lewis as a model for the hero; Kaplan on Reagan's question to General Vessey and NSDD-145; Weinberg and Bankston on how far the film moved policy", href: "https://melmagazine.com/en-us/story/wargames-ronald-reagan-cybersecurity" },
+      { label: "Ronald Reagan Presidential Library, NSDD-145, 17 September 1984 (read 2026-11-16)", href: "https://www.reaganlibrary.gov/public/archives/reference/scanned-nsdds/nsdd145.pdf" },
+    ],
   },
   {
     slug: "sneakers-film",
     headword: "Sneakers (1992)",
     kind: "lore",
     domains: ["cyber-security", "ops-culture"],
-    aliases: ["sneakers", "setec astronomy", "no more secrets"],
-    relatedTerms: ["social-engineering"],
-    sources: [{ label: "Sneakers (1992 film)", href: "https://en.wikipedia.org/wiki/Sneakers_(1992_film)" }],
+    aliases: ["sneakers", "setec astronomy", "no more secrets", "quebra de sigilo"], // + the Brazilian title (Apple TV Brasil, 16/11/2026)
+    relatedTerms: ["social-engineering", "leonard-adleman"], // + its mathematical consultant
+    relatedArticles: ["social-engineering-pretexting-vishing-and-baiting"],
+    sources: [
+      { label: "Sneakers (1992 film)", href: "https://en.wikipedia.org/wiki/Sneakers_(1992_film)" },
+      { label: "Leonard Adleman, The story of Sneakers, USC Laboratory for Molecular Science (read 2026-11-16): Lasker's approach; the lecture-scene slides; the number field sieve and a fantasy about towers of number fields and Artin maps; credited, in his recollection, as mathematical consultant", href: "https://molecularscience.usc.edu/?p=2041" },
+    ],
   },
   {
     slug: "hackers-film",
     headword: "Hackers (1995)",
     kind: "lore",
     domains: ["cyber-security", "ops-culture"],
-    aliases: ["hackers 1995", "acid burn", "crash override", "hack the planet"],
+    aliases: ["hackers 1995", "acid burn", "crash override", "hack the planet", "hackers - piratas de computador"], // + the Brazilian title (Apple TV Brasil, 16/11/2026)
     relatedTerms: ["the-hacker-manifesto", "2600-magazine", "social-engineering"],
-    sources: [{ label: "Hackers (1995 film)", href: "https://en.wikipedia.org/wiki/Hackers_(film)" }],
+    relatedArticles: ["anonymous-lulzsec-and-the-hacktivist-decade"], // Jake Davis's account, via Softley
+    sources: [
+      { label: "Hackers (1995 film)", href: "https://en.wikipedia.org/wiki/Hackers_(film)" },
+      { label: "The Spokesman-Review, Real 'Hackers' Computer-Savvy Intruders Give United Artists Taste Of Hacking On A Promotional Web Page, 22 August 1995 (read 2026-11-16): the month-old promotional page altered and signed Hacked by ILF; MGM kept it online", href: "https://www.spokesman.com/stories/1995/aug/22/real-hackers-computer-savvy-intruders-give-united" },
+      { label: "Christian Science Monitor, Passcode, Hackers at 20, 16 September 2015 (read 2026-11-16): Softley's urban fairy tale; Wysopal, Vincent and Kennedy on the film's reception", href: "https://www.csmonitor.com/World/Passcode/2015/0916/Hackers-at-20" },
+      { label: "Collider, Iain Softley interview, 30 September 2020 (read 2026-11-16): Rafael Moreu's research with the 2600 circle; advisers; the cast's boot camp", href: "https://collider.com/hackers-director-interview-iain-softley-25th-anniversary/" },
+    ],
   },
   {
     slug: "hackers-heroes-book",
@@ -1315,7 +1332,8 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["ops-culture", "hacking"],
     aliases: ["steven levy", "hacker ethic", "hackers heroes"],
     relatedTerms: ["the-hacker-manifesto", "open-source", "free-software"],
-    sources: [{ label: "Hackers: Heroes of the Computer Revolution", href: "https://en.wikipedia.org/wiki/Hackers:_Heroes_of_the_Computer_Revolution" }],
+    relatedArticles: ["hacking-in-the-20th-century"], // added 16/11/2026 (culture post C)
+    sources: [{ label: "Hackers: Heroes of the Computer Revolution", href: "https://en.wikipedia.org/wiki/Hackers:_Heroes_of_the_Computer_Revolution" }, { label: "Kirkus Reviews, Hackers: Heroes of the Computer Revolution (read 2026-11-16): Anchor/Doubleday, publication date 9 November 1984; the ninth floor of Tech Square at MIT", href: "https://www.kirkusreviews.com/book-reviews/a/steven-levy-4/hackers-heroes-of-the-computer-revolution/" }, { label: "O'Reilly Media, Hackers, 25th anniversary edition, May 2010 (read 2026-11-16 through the fetch tool): the hacker ethic; updated material from Gates, Zuckerberg, Stallman and Wozniak; afterwords 'Ten Years After' and '2010'", href: "https://www.oreilly.com/library/view/-/9781449390259/" }],
   },
   {
     slug: "the-art-of-deception",
@@ -1324,7 +1342,8 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["cyber-security", "ops-culture"],
     aliases: ["mitnick book", "art of deception", "social engineering book"],
     relatedTerms: ["kevin-mitnick", "social-engineering"],
-    sources: [{ label: "The Art of Deception", href: "https://en.wikipedia.org/wiki/The_Art_of_Deception" }],
+    relatedArticles: ["social-engineering-pretexting-vishing-and-baiting"], // added 16/11/2026 (culture post C)
+    sources: [{ label: "The Art of Deception", href: "https://en.wikipedia.org/wiki/The_Art_of_Deception" }, { label: "Publishers Weekly, review of The Art of Deception by Kevin D. Mitnick, 24 June 2002 (read 2026-11-16): Wiley; tales of social engineering; 'dated and nonspecific' as a manual but teaching 'the timeless spirit of the hack'", href: "https://www.publishersweekly.com/9780471237129" }],
   },
   {
     slug: "underground-book",
@@ -1333,7 +1352,8 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["hacking", "ops-culture"],
     aliases: ["suelette dreyfus", "mendax", "international subversives"],
     relatedTerms: ["wank-worm", "the-cuckoos-egg", "phreaking"],
-    sources: [{ label: "Underground (1997 book)", href: "https://en.wikipedia.org/wiki/Underground_(Dreyfus_book)" }],
+    relatedArticles: ["wank-worm-and-the-international-subversives"], // added 16/11/2026 (culture post C)
+    sources: [{ label: "Underground (1997 book)", href: "https://en.wikipedia.org/wiki/Underground_(Dreyfus_book)" }, { label: "Underground, official book site (read 2026-11-16): by Suelette Dreyfus with research by Julian Assange; Random House Australia, June 1997, 475 pages; complete text as a free download", href: "http://www.underground-book.net/" }, { label: "Underground, About (read 2026-11-16): 8LGM, The Realm and the publishers of International Subversive; more than two years of research; the first book published in Australia on the international computer hacker", href: "http://www.underground-book.net/about.html" }],
   },
   {
     slug: "countdown-to-zero-day",
@@ -1342,7 +1362,8 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["cyber-security", "ops-culture"],
     aliases: ["kim zetter", "stuxnet book"],
     relatedTerms: ["stuxnet", "zero-day"],
-    sources: [{ label: "Kim Zetter, investigative journalist covering cybersecurity and national security since 1999; her bibliography lists 'Countdown to Zero Day: Stuxnet and the Launch of the World's First Digital Weapon', Crown, 2014", href: "https://en.wikipedia.org/wiki/Kim_Zetter" }, { label: "Countdown to Zero Day; link dead as of 30 September 2026", href: "https://en.wikipedia.org/wiki/Countdown_to_Zero_Day" }], // restored 15/11/2026: dead link kept (RULE-dead-sources-keep-content-20261115)
+    relatedArticles: ["stuxnet-and-the-first-cyberweapon"], // added 16/11/2026 (culture post C)
+    sources: [{ label: "Kim Zetter, investigative journalist covering cybersecurity and national security since 1999; her bibliography lists 'Countdown to Zero Day: Stuxnet and the Launch of the World's First Digital Weapon', Crown, 2014", href: "https://en.wikipedia.org/wiki/Kim_Zetter" }, { label: "Countdown to Zero Day; link dead as of 30 September 2026", href: "https://en.wikipedia.org/wiki/Countdown_to_Zero_Day" }, { label: "Publishers Weekly, review of Countdown to Zero Day by Kim Zetter, 8 September 2014 (read 2026-11-16): Crown, 448 pages; Zetter a senior writer at Wired; her judgment that the attack was 'remarkably reckless'", href: "https://www.publishersweekly.com/9780770436179" }, { label: "Palo Alto Networks blog, Rick Howard, 2 April 2015 (read 2026-11-16): inducted into the Cybersecurity Canon, Cyber Warfare category", href: "https://www.paloaltonetworks.com/blog/2015/04/congratulations-to-this-years-cybersecurity-canon-honorees/" }], // restored 15/11/2026: dead link kept (RULE-dead-sources-keep-content-20261115)
   },
   {
     // Content sweep 12/11/2026, batch 4D: depth, sources and links rewritten to the minimum level (PLAN-content-sweep-20261111).
@@ -2237,7 +2258,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["ops-culture", "hacking"],
     aliases: ["william gibson", "cyberspace", "console cowboy", "ice"],
     relatedTerms: ["snow-crash", "the-matrix", "the-scene"],
-    sources: [{ label: "Neuromancer", href: "https://en.wikipedia.org/wiki/Neuromancer" }],
+    sources: [{ label: "Neuromancer", href: "https://en.wikipedia.org/wiki/Neuromancer" }, { label: "Aleph, Neuromancer (read 2026-11-16): Gibson's first novel, published in 1984; the first book to win the Hugo, Nebula and Philip K. Dick awards; Brazilian edition of 19 August 2016 translated by Fábio Fernandes", href: "https://editoraaleph.com.br/products/neuromancer" }, { label: "Science Fiction Awards Database (Locus), William Gibson (read 2026-11-16): Neuromancer (Ace), Hugo, Nebula and Philip K. Dick awards, 1985; 'Burning Chrome', Omni, July 1982", href: "https://www.sfadb.com/William_Gibson" }, { label: "Merriam-Webster, cyberspace (read 2026-11-16): first known use 1982", href: "https://www.merriam-webster.com/dictionary/cyberspace" }, { label: "Apple TV Press, Neuromancer (read 2026-11-16): series release date 22 January 2027; Callum Turner as Case, Briana Middleton as Molly", href: "https://www.apple.com/tv-pr/originals/neuromancer/" }],
   },
   {
     slug: "snow-crash",
@@ -2246,7 +2267,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["ops-culture", "programming"],
     aliases: ["neal stephenson", "metaverse", "avatar", "hiro protagonist"],
     relatedTerms: ["neuromancer", "the-matrix", "blockchain"],
-    sources: [{ label: "Snow Crash", href: "https://en.wikipedia.org/wiki/Snow_Crash" }],
+    sources: [{ label: "Snow Crash", href: "https://en.wikipedia.org/wiki/Snow_Crash" }, { label: "Merriam-Webster, What is the metaverse? (read 2026-11-16): Stephenson coined the term in Snow Crash, 1992", href: "https://www.merriam-webster.com/wordplay/meaning-of-metaverse" }, { label: "Kirkus Reviews, Snow Crash (read 2026-11-16): Bantam, publication date 15 May 1992; a computer-generated metaverse populated by hackers", href: "https://www.kirkusreviews.com/book-reviews/neal-stephenson/snow-crash/" }, { label: "Aleph, Snow Crash (read 2026-11-16): first published in Brazil in 2008; current edition of 5 July 2022 translated by Fábio Fernandes", href: "https://editoraaleph.com.br/products/snow-crash" }],
   },
   {
     slug: "the-shockwave-rider",
@@ -2255,7 +2276,8 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["ops-culture", "cyber-security"],
     aliases: ["john brunner", "tapeworm", "first worm in fiction"],
     relatedTerms: ["the-morris-worm", "neuromancer"],
-    sources: [{ label: "The Shockwave Rider", href: "https://en.wikipedia.org/wiki/The_Shockwave_Rider" }],
+    relatedArticles: ["the-morris-worm"], // added 16/11/2026 (culture post C)
+    sources: [{ label: "The Shockwave Rider", href: "https://en.wikipedia.org/wiki/The_Shockwave_Rider" }, { label: "Eugene H. Spafford, 'The Internet Worm Incident', Purdue University technical report CSD-TR-933, 19 September 1991 (read 2026-11-16): Brunner's 1975 tapeworms; the Xerox PARC researchers who in 1982 cited Brunner as the inspiration for the name worm", href: "https://www.cerias.purdue.edu/techreports-ssl/public/933.pdf" }],
   },
   {
     slug: "ghost-in-the-wires",
@@ -2264,7 +2286,8 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["cyber-security", "ops-culture"],
     aliases: ["mitnick memoir", "my adventures as the world's most wanted hacker"],
     relatedTerms: ["kevin-mitnick", "the-art-of-deception", "takedown-book"],
-    sources: [{ label: "Ghost in the Wires", href: "https://en.wikipedia.org/wiki/Ghost_in_the_Wires" }],
+    relatedArticles: ["kevin-mitnick-the-myth-and-the-man"], // added 16/11/2026 (culture post C)
+    sources: [{ label: "Ghost in the Wires", href: "https://en.wikipedia.org/wiki/Ghost_in_the_Wires" }, { label: "Publishers Weekly, review of Ghost in the Wires by Kevin Mitnick with William L. Simon, 18 April 2011 (read 2026-11-16): Little, Brown; the intrusions into Sun Microsystems and Digital Equipment Corporation; social engineering as the book's heart", href: "https://www.publishersweekly.com/9780316037709" }],
   },
   {
     slug: "takedown-book",
@@ -2273,7 +2296,8 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["cyber-security", "ops-culture"],
     aliases: ["the pursuit and capture of kevin mitnick", "track down film"],
     relatedTerms: ["tsutomu-shimomura", "john-markoff", "kevin-mitnick"],
-    sources: [{ label: "Takedown (book)", href: "https://en.wikipedia.org/wiki/Takedown_(book)" }],
+    relatedArticles: ["kevin-mitnick-the-myth-and-the-man"], // added 16/11/2026 (culture post C)
+    sources: [{ label: "Takedown (book)", href: "https://en.wikipedia.org/wiki/Takedown_(book)" }, { label: "Publishers Weekly, review of Take-Down by Tsutomu Shimomura with John Markoff, 29 January 1996 (read 2026-11-16): Hyperion; 100,000 first printing; film rights to Miramax; foreign rights to 13 countries including Brazil; the reviewer's advice to read Littman for a more disinterested account", href: "https://www.publishersweekly.com/9780786862108" }, { label: "Publishers Weekly, review of The Fugitive Game by Jonathan Littman, 1 January 1996 (read 2026-11-16): Little, Brown; the points on which it disputes Takedown; foreign rights to Japan and Brazil", href: "https://www.publishersweekly.com/9780316528580" }],
   },
   {
     slug: "cyberpunk-book",
@@ -2282,7 +2306,8 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["ops-culture", "hacking"],
     aliases: ["outlaws and hackers on the computer frontier", "katie hafner"],
     relatedTerms: ["susan-headley", "the-kgb-hack", "kevin-mitnick", "the-hacker-crackdown"],
-    sources: [{ label: "Cyberpunk: Outlaws and Hackers on the Computer Frontier", href: "https://en.wikipedia.org/wiki/Cyberpunk:_Outlaws_and_Hackers_on_the_Computer_Frontier" }],
+    relatedArticles: ["chaos-computer-club-btx-and-the-kgb"], // added 16/11/2026 (culture post C)
+    sources: [{ label: "Cyberpunk: Outlaws and Hackers on the Computer Frontier", href: "https://en.wikipedia.org/wiki/Cyberpunk:_Outlaws_and_Hackers_on_the_Computer_Frontier" }, { label: "Publishers Weekly, review of Cyberpunk by John Markoff and Katie Hafner, 1 July 1991 (read 2026-11-16): Simon & Schuster; three pieces of journalism on headline cases; 'Pengo and the Project Equalizer', a West Berlin hacker", href: "https://www.publishersweekly.com/9780671683221" }],
   },
   {
     slug: "the-matrix",
@@ -2291,16 +2316,26 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["ops-culture", "cyber-security"],
     aliases: ["wachowskis", "red pill", "nmap scene", "matrix reloaded"],
     relatedTerms: ["neuromancer", "snow-crash", "fyodor"],
-    sources: [{ label: "The Matrix", href: "https://en.wikipedia.org/wiki/The_Matrix" }],
+    sources: [
+      { label: "The Matrix", href: "https://en.wikipedia.org/wiki/The_Matrix" },
+      { label: "Nmap, Nmap in the movies (read 2026-11-16): Trinity's Nmap 2.54BETA25 scan and the SSH1 CRC32 exploit of 2001 in The Matrix Reloaded; the Scotland Yard and BCS warning", href: "https://nmap.org/movies/" },
+      { label: "CERT/CC, VU#945216, SSH CRC32 attack detection code contains remote integer overflow (read 2026-11-16)", href: "https://www.kb.cert.org/vuls/id/945216" },
+      { label: "Library of Congress, Complete National Film Registry Listing (read 2026-11-16): The Matrix, 1999, inducted 2012", href: "https://www.loc.gov/programs/national-film-preservation-board/film-registry/complete-national-film-registry-listing/" },
+    ],
   },
   {
     slug: "mr-robot",
     headword: "Mr. Robot (2015-2019)",
     kind: "lore",
     domains: ["cyber-security", "ops-culture"],
-    aliases: ["elliot alderson", "fsociety", "sam esmail"],
-    relatedTerms: ["the-matrix", "social-engineering", "anonymous"],
-    sources: [{ label: "Mr. Robot", href: "https://en.wikipedia.org/wiki/Mr._Robot" }],
+    aliases: ["elliot alderson", "fsociety", "sam esmail", "sociedade hacker"], // + the Brazilian title (Apple TV Brasil, 16/11/2026)
+    relatedTerms: ["the-matrix", "social-engineering", "anonymous", "metasploit"], // + a tool Wired confirms on screen
+    sources: [
+      { label: "Mr. Robot", href: "https://en.wikipedia.org/wiki/Mr._Robot" },
+      { label: "Wired, A Peek Inside Mr. Robot's Toolbox, 26 August 2015 (read 2026-11-16): DeepSound, ProtonMail, a Raspberry Pi into HVAC, Tastic RFID Thief, RSA SecurID, Metasploit and Meterpreter, SET SMS spoofing, FlexiSPY; technical adviser Michael Bazzell", href: "https://www.wired.com/2015/08/peek-inside-mr-robots-toolbox/" },
+      { label: "Vice, Where Mr. Robot Gets Inspiration for Its Hacks, 20 June 2016 (read 2026-11-16): Kor Adana, every attack based on a real attack", href: "https://www.vice.com/en/article/where-mr-robot-gets-inspiration-for-its-hacks" },
+      { label: "Comcast, Mr. Robot Wins Prestigious Peabody Award, 22 April 2016 (read 2026-11-16)", href: "https://corporate.comcast.com/news-information/news-feed/usa-networks-universal-cable-productions-mr-robot-wins-prestigious-peabody-award" },
+    ],
   },
   {
     slug: "citizenfour",
@@ -2308,8 +2343,12 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     kind: "lore",
     domains: ["privacy", "cyber-security"],
     aliases: ["laura poitras", "snowden documentary", "hong kong hotel"],
-    relatedTerms: ["cypherpunks", "tor", "hacktivism"],
-    sources: [{ label: "Citizenfour", href: "https://en.wikipedia.org/wiki/Citizenfour" }],
+    relatedTerms: ["cypherpunks", "tor", "hacktivism", "edward-snowden"], // + its subject
+    relatedArticles: ["surveillance-capability-and-restraint"],
+    sources: [
+      { label: "Citizenfour", href: "https://en.wikipedia.org/wiki/Citizenfour" },
+      { label: "TheWrap, Citizenfour Director Thanks Whistleblowers, 23 February 2015 (read 2026-11-16): the documentary Oscar shared with Mathilde Bonnefoy and Dirk Wilutzky; Poitras's speech", href: "https://www.thewrap.com/citzenfour-director-thanks-journalists-for-exposing-truth-during-best-documentary-acceptance-speech/" },
+    ],
   },
   {
     slug: "ccc-congress",
@@ -2607,7 +2646,15 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["ops-culture", "hacking"],
     aliases: ["the king of the internet", "daniel nascimento", "fabricio bittar"],
     relatedTerms: ["banking-trojan", "carding", "hackers-film"],
-    sources: [{ label: "O Rei da Internet (2026 film)", href: "https://pt.wikipedia.org/wiki/O_Rei_da_Internet" }],
+    relatedArticles: ["brazilian-cybercrime-from-boleto-to-pix"],
+    sources: [
+      { label: "O Rei da Internet (2026 film)", href: "https://pt.wikipedia.org/wiki/O_Rei_da_Internet" },
+      { label: "Jovem Pan, 12 March 2026 (read 2026-11-16): release on 14 May 2026 by Manequim Filmes, a Vitrine Filmes label; coproduction with Telecine and Clube Filmes; script by Bittar and Vinícius Perez", href: "https://jovempan.com.br/?p=3443" },
+      { label: "Omelete, interview with Fabrício Bittar, 14 May 2026 (read 2026-11-16): the book, the interviews with Nascimento, the film as partly documentary", href: "https://www.omelete.com.br/filmes/o-rei-da-internet-entrevista-influencias/" },
+      { label: "Omelete, review, 20 May 2026 (read 2026-11-16): set in 2004 and 2005; creative freedom and an unreliable narrator", href: "https://www.omelete.com.br/filmes/criticas/o-rei-da-internet-joao-guilherme-critica" },
+      { label: "DN Brasil, Diário de Notícias, 12 June 2026 (read 2026-11-16): release in Portugal on 6 July 2026 with NOS Lusomundo", href: "https://dnbrasil.dn.pt/entretenimento-dn-brasil/filme-brasileiro-sobre-o-maior-hacker-do-pas-estreia-em-portugal-em-julho" },
+      { label: "Omelete, 22 August 2026, citing Variety (read 2026-11-16): Magenta Light Studios for the United States and Canada", href: "https://www.omelete.com.br/filmes/o-rei-da-internet-distribuicao-estados-unidos-canada" },
+    ],
   },
   {
     slug: "demi-getschko",
@@ -3791,13 +3838,23 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     sources: [{ label: "RFC 7231 - HTTP/1.1 Semantics and Content", href: "https://www.rfc-editor.org/rfc/rfc7231.html" }],
   },
   {
-    slug: "slow-start",
-    headword: "Slow start and connection draining",
-    kind: "term",
-    domains: ["enterprise-networking", "cloud"],
-    aliases: ["ramp-up", "warm-up", "graceful shutdown", "drain"],
-    relatedTerms: ["load-balancer", "health-check", "session-persistence"],
-    sources: [{ label: "RFC 7231 - HTTP/1.1 Semantics and Content", href: "https://www.rfc-editor.org/rfc/rfc7231.html" }],
+    // slow-start (ENRICHMENT, redundancy series part 377, agent G, 2026-11-16): replaces the existing object; every existing field, alias, term and source kept
+    slug: "slow-start", // the /glossary/slow-start address
+    headword: "Slow start and connection draining", // the term as shown
+    kind: "term", // the entry kind
+    domains: ["enterprise-networking", "cloud"], // where the term is used
+    aliases: ["ramp-up", "warm-up", "graceful shutdown", "drain", "connection draining", "deregistration delay", "slow ramp", "slow-ramp-time"], // other names, checked absent from slugs, headwords and aliases on 2026-11-16
+    relatedTools: ["bigip-ltm-lb-simulator"], // registry tools that model it
+    relatedArticles: ["adc-and-gslb-redundancy-health-monitors-pools-and-site-failover", "bigip-pools-and-load-balancing", "bigip-ltm-request-distribution", "load-balancing-what-actually-decides-where-a-request-goes"], // the series part first, then existing articles
+    relatedTerms: ["load-balancer", "health-check", "session-persistence", "priority-group-activation", "outlier-detection", "flapping"], // existing entries and this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "RFC 7231 - HTTP/1.1 Semantics and Content", href: "https://www.rfc-editor.org/rfc/rfc7231.html" },
+      { label: "F5, TMSH Reference v17.0, ltm pool (read 2026-11-16): priority-group and min-active-members; session user-disabled used to drain connections gently; state user-down overriding monitors; service-down-action; slow-ramp-time, default 10 seconds", href: "https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_pool.html" },
+      { label: "HAProxy Technologies, HAProxy 3.2 Configuration Manual (read 2026-11-16): inter 2000 ms, fall 3, rise 2; backup and allbackups; observe; drain and maint; slowstart, linear and never at startup", href: "https://docs.haproxy.org/3.2/configuration.html" },
+      { label: "NGINX documentation, Module ngx_http_upstream_module (read 2026-11-16): max_fails 1 and fail_timeout 10 s, ignored for a single-server group; backup; drain; slow_start, default 0", href: "https://nginx.org/en/docs/http/ngx_http_upstream_module.html" },
+      { label: "Amazon Web Services, Elastic Load Balancing, Edit target group attributes for your Application Load Balancer (read 2026-11-16): deregistration delay 300 seconds by default, targets in the draining state; slow start mode, linear, only while another healthy target is not in slow start", href: "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/edit-target-group-attributes.html" },
+      { label: "Google Cloud, Load Balancing, Enabling connection draining, last updated 10 November 2026 (read 2026-11-16): a timeout from 0 to 3,600 seconds, 0 disabling draining; passthrough load balancers may send a TCP reset after the drain ends", href: "https://cloud.google.com/load-balancing/docs/enabling-connection-draining" },
+    ], // 6 source(s), one object per line
   },
   {
     // Content sweep batch 13D: depth, sources and links rewritten to the minimum level (PLAN-content-sweep-20261111).
@@ -5978,12 +6035,21 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     ], // 15 sources, one object per line
   },
   {
-    slug: "quorum",
-    headword: "quorum",
-    kind: "term",
-    domains: ["cloud", "enterprise-networking"],
-    aliases: ["majority"],
-    relatedTerms: ["consensus", "split-brain"],
+    // quorum (enrichment, 16/11/2026, redundancy part 9): sources, articles and neighbours added; existing fields kept.
+    slug: "quorum", // unchanged
+    headword: "quorum", // unchanged
+    kind: "term", // unchanged
+    domains: ["cloud", "enterprise-networking"], // unchanged
+    aliases: ["majority"], // unchanged
+    relatedArticles: ["data-and-service-redundancy-replication-quorum-rpo-and-rto", "the-arithmetic-of-redundancy-availability-mtbf-and-shared-fate", "layer-2-redundancy-lag-mlag-and-spanning-tree", "stateful-clusters-active-standby-active-active-and-split-brain"], // added: the part that teaches it, the arithmetic part, the virtual chassis split rule and the clusters part
+    relatedTerms: ["consensus", "split-brain", "paxos", "raft", "replication", "cap-theorem", "k-out-of-n", "quorum-witness", "pacelc"], // the existing two first, then existing neighbours, then this batch
+    sources: [ // added: every label says what the page says and when it was read
+      { label: "Leslie Lamport, Paxos Made Simple, ACM SIGACT News 32, 4, December 2001 (read 2026-11-16): a value is chosen when a majority of acceptors accepts it, because any two majorities have at least one acceptor in common", href: "https://lamport.azurewebsites.net/pubs/paxos-simple.pdf" }, // Lamport
+      { label: "etcd v3.5 documentation, Frequently Asked Questions (read 2026-11-16): quorum is (n/2)+1; a table of cluster size, majority and failure tolerance; an even size adds no tolerance; permanent quorum loss is catastrophic", href: "https://etcd.io/docs/v3.5/faq/" }, // etcd
+      { label: "Google, Site Reliability Engineering, chapter 23, Managing Critical State (read 2026-11-16): 2f+1 replicas tolerate f failures; five replicas so that maintenance and a failure can coincide; six replicas tolerate only 33%; replica placement against failure domains and latency", href: "https://sre.google/sre-book/managing-critical-state/" }, // Google SRE
+      { label: "Giuseppe DeCandia and others, Dynamo: Amazon's Highly Available Key-value Store, SOSP 2007 (read 2026-11-16): read and write quorums with R + W > N; (3,2,2) as the common configuration; sloppy quorum and hinted handoff", href: "https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf" }, // Amazon
+      { label: "Google Cloud Service Health, europe-west9 incident report, April 2023 (read 2026-11-16): regional Spanner lost quorum because two of its three replicas were in the building that was powered down", href: "https://status.cloud.google.com/incidents/dS9ps52MUnxQfyDGPfkY" }, // Google Cloud
+    ], // five sources, one object per line
   },
   {
     slug: "paxos",
@@ -7589,13 +7655,23 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     relatedTerms: ["api", "rollback"],
   },
   {
-    slug: "rto-rpo",
-    headword: "RTO and RPO",
-    kind: "term",
-    domains: ["grc", "ops-culture"],
-    expansion: "Recovery Time and Recovery Point Objectives",
-    aliases: ["RTO", "RPO"],
-    relatedTerms: ["backup", "fault-tolerance", "risk"],
+    // rto-rpo (enrichment, 16/11/2026, redundancy part 9): sources, articles and neighbours added; existing fields kept. Note: rpo-rto is a near-duplicate entry (see INTEGRATION.md).
+    slug: "rto-rpo", // unchanged
+    headword: "RTO and RPO", // unchanged
+    kind: "term", // unchanged
+    domains: ["grc", "ops-culture"], // unchanged
+    expansion: "Recovery Time and Recovery Point Objectives", // unchanged
+    aliases: ["RTO", "RPO"], // unchanged; the full names stay with rpo-rto, which owns them
+    relatedArticles: ["data-and-service-redundancy-replication-quorum-rpo-and-rto", "testing-redundancy-failure-drills-chaos-and-the-failover-never-tried", "redundant-architectures-how-networks-survive-failure", "backups-and-ransomware-recovery"], // added: the parts that define and test them, the hub and the backup article
+    relatedTerms: ["backup", "fault-tolerance", "risk", "rpo-rto", "replication", "mttr", "disaster-recovery", "business-continuity", "point-in-time-recovery", "replication-lag"], // the existing three first, then existing neighbours, then this batch
+    sources: [ // added: every label says what the page says and when it was read
+      { label: "NIST, SP 800-34 Rev. 1, Contingency Planning Guide for Federal Information Systems, May 2010, section 3.2.1 (read 2026-11-16): MTD, RTO and RPO defined in the business impact analysis; RTO normally shorter than MTD; RPO not part of MTD; the shorter the RTO, the more expensive the recovery", href: "https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-34r1.pdf" }, // NIST
+      { label: "Amazon Web Services, AWS Well-Architected, Reliability Pillar, Disaster Recovery (DR) objectives, marked for historical reference (read 2026-11-16): RTO as the maximum acceptable delay between interruption and restoration, RPO as the maximum acceptable time since the last recovery point; MTTR is a mean, RTO a target for one event", href: "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/disaster-recovery-dr-objectives.html" }, // AWS
+      { label: "Google Cloud, Disaster recovery planning guide, last updated 5 July 2024 (read 2026-11-16): RTO and RPO set by a business impact analysis; RPO describes only a length of time, not the amount or quality of data lost; both are measurable and should be treated as SLOs", href: "https://cloud.google.com/architecture/dr-scenarios-planning-guide" }, // Google Cloud
+      { label: "ISO/IEC 27031:2025, ICT readiness for business continuity, second edition, May 2025, preview published by VDE Verlag (read 2026-11-16): the standard serves the MBCO, the RPO and the RTO and has a clause on determining target ICT RTO and RPO", href: "https://www.vde-verlag.de/iec-normen/preview-pdf/info_isoiec27031%7Bed2.0%7Den.pdf" }, // ISO/IEC, through an authorized preview
+      { label: "European Union, Regulation (EU) 2022/2554 (DORA), 14 December 2022, article 12(6) (read 2026-11-16): recovery time and recovery point objectives set for each function, considering criticality and the impact on market efficiency", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32022R2554" }, // EU law
+      { label: "Atlassian, Post-Incident Review on the Atlassian April 2022 outage, 29 April 2022 (read 2026-11-16): a one-hour RPO met with at most five minutes of data lost, and the RTO missed, with restoration taking up to 14 days", href: "https://www.atlassian.com/engineering/post-incident-review-april-2022-outage" }, // Atlassian
+    ], // six sources, one object per line
   },
   {
     slug: "secure-boot",
@@ -7823,7 +7899,14 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     kind: "term",
     domains: ["ops-culture", "grc"],
     aliases: ["tabletop"],
-    relatedTerms: ["blameless", "change-management", "rto-rpo"],
+    relatedTerms: ["blameless", "change-management", "rto-rpo", "incident"], // the existing three, then incident (16/11/2026)
+    relatedArticles: ["backups-and-ransomware-recovery", "incident-to-escalation"], // added 16/11/2026, culture post B
+    sources: [ // added 16/11/2026: the entry had none; every label says what the page says and when it was read
+      { label: "CISA, Tabletop Exercise Packages (read 2026-11-16): more than 100 packages for stakeholders to conduct their own exercises", href: "https://www.cisa.gov/resources-tools/services/cisa-tabletop-exercise-packages" }, // cisa (read through a fetch tool only: see section 4)
+      { label: "NCSC, Exercise in a Box (read 2026-11-16): free; 20 exercises on 12 topics including ransomware, phishing and supply chain; table-top group discussion exercises", href: "https://www.ncsc.gov.uk/information/exercise-in-a-box" }, // ncsc
+      { label: "Black Hills Information Security, Backdoors & Breaches, Classic (read 2026-11-16): a cooperative card game that turns tabletop exercises into play; a four-stage hidden attack; detections and a d20; ten turns", href: "https://www.blackhillsinfosec.com/tools/backdoorsandbreaches/classic/" }, // bhis
+      { label: "CSO Online, Backdoors and Breaches incident response card game makes tabletop exercises fun, 6 January 2020 (read 2026-11-16): written procedures add +3 to a roll", href: "https://www.csoonline.com/article/3509467/backdoors-and-breaches-incident-response-card-game-makes-tabletop-exercises-fun.html" }, // cso2020
+    ], // four sources, one object per line
   },
   {
     // Content sweep 12/11/2026, batch 4D: depth, sources and links rewritten to the minimum level (PLAN-content-sweep-20261111).
@@ -12541,7 +12624,8 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     domains: ["cyber-security", "ops-culture"],
     aliases: ["Cliff Stoll", "Markus Hess", "the 75-cent hack"],
     relatedTerms: ["the-morris-worm"],
-    sources: [{ label: "Stoll, 'The Cuckoo's Egg', a 1989 nonfiction book by Clifford Stoll", href: "https://en.wikipedia.org/wiki/The_Cuckoo%27s_Egg_(book)" }],
+    relatedArticles: ["the-cuckoos-egg"], // added 16/11/2026 (culture post C)
+    sources: [{ label: "Stoll, 'The Cuckoo's Egg', a 1989 nonfiction book by Clifford Stoll", href: "https://en.wikipedia.org/wiki/The_Cuckoo%27s_Egg_(book)" }, { label: "Publishers Weekly, review of Cuckoo's Egg by Clifford Stoll, 1 September 1989 (read 2026-11-16): Doubleday, 326 pages; the 75-cent discrepancy; about 30 of 450 systems reached; Markus Hess of Hanover; a Literary Guild selection", href: "https://www.publishersweekly.com/9780385249461" }, { label: "Palo Alto Networks blog, Rick Howard, 2 April 2015 (read 2026-11-16): inducted into the Cybersecurity Canon, Cyber Espionage category", href: "https://www.paloaltonetworks.com/blog/2015/04/congratulations-to-this-years-cybersecurity-canon-honorees/" }],
   },
   {
     slug: "trusting-trust",
@@ -14166,20 +14250,37 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     sources: [{ label: "Blue screen of death - Wikipedia", href: "https://en.wikipedia.org/wiki/Blue_screen_of_death" }],
   },
   {
-    slug: "chaos-monkey",
-    headword: "Chaos Monkey",
-    kind: "jargon",
-    domains: ["cloud", "ops-culture"],
-    relatedTerms: ["cattle-not-pets"],
-    sources: [{ label: "Netflix Tech Blog / Chaos Monkey (open-sourced 2012)", href: "https://github.com/Netflix/chaosmonkey" }],
+    // chaos-monkey (enrichment, 16/11/2026, redundancy part 10): sources, articles and neighbours added; the existing source kept.
+    slug: "chaos-monkey", // unchanged
+    headword: "Chaos Monkey", // unchanged
+    kind: "jargon", // unchanged
+    domains: ["cloud", "ops-culture"], // unchanged
+    relatedArticles: ["testing-redundancy-failure-drills-chaos-and-the-failover-never-tried"], // added: the part that works its schedule
+    relatedTerms: ["cattle-not-pets", "chaos-engineering", "fault-injection", "game-day"], // the existing one first, then this batch
+    sources: [ // the existing source first, then the added ones; every added label says what the page says and when it was read
+      { label: "Netflix Tech Blog / Chaos Monkey (open-sourced 2012)", href: "https://github.com/Netflix/chaosmonkey" }, // unchanged
+      { label: "Netflix, Chaos Monkey documentation, Termination behavior (read 2026-11-16): each weekday a weighted coin per instance group; a termination at a random time between 9AM and 3PM; work days between terminations follow a geometric distribution with p = 1/mu", href: "https://netflix.github.io/chaosmonkey/Termination-behavior/" }, // Netflix
+      { label: "Netflix, Chaos Monkey documentation, Configuration file format and Outage checker (read 2026-11-16): start_hour 9 and end_hour 15 in America/Los_Angeles by default; an outage checker disables terminations during ongoing outages", href: "https://netflix.github.io/chaosmonkey/Configuration-file-format/" }, // Netflix
+      { label: "Ali Basiri and others (Netflix), Chaos Engineering, IEEE Software, May-June 2016 (read 2026-11-16): Chaos Monkey active only during normal working hours so that engineers can respond; run continuously on weekdays, beside monthly Chaos Kong exercises", href: "https://arxiv.org/pdf/1702.05843" }, // Netflix authors
+    ], // four sources, one object per line
   },
   {
-    slug: "split-brain",
-    headword: "split-brain",
-    kind: "jargon",
-    domains: ["enterprise-networking", "cloud", "ops-culture"],
-    relatedTerms: ["cap-theorem"],
-    sources: [{ label: "Split-brain (computing) - Wikipedia", href: "https://en.wikipedia.org/wiki/Split-brain_(computing)" }],
+    // split-brain (ENRICHMENT, redundancy series part 376, agent G, 2026-11-16): replaces the existing object; every existing field, alias, term and source kept
+    slug: "split-brain", // the /glossary/split-brain address
+    headword: "split-brain", // the term as shown
+    kind: "jargon", // the entry kind
+    domains: ["enterprise-networking", "cloud", "ops-culture"], // where the term is used
+    aliases: ["split brain", "dual primary", "dual primaryship"], // other names, checked absent from slugs, headwords and aliases on 2026-11-16
+    relatedArticles: ["stateful-clusters-active-standby-active-active-and-split-brain", "layer-2-redundancy-lag-mlag-and-spanning-tree", "fortigate-fgcp-ha-clustering", "bigip-failover-states-and-operations", "checkpoint-elasticxl-cluster"], // the series part first, then existing articles
+    relatedTerms: ["cap-theorem", "quorum", "failover", "fencing", "heartbeat", "state-synchronization", "shared-fate"], // existing entries and this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "Split-brain (computing) - Wikipedia", href: "https://en.wikipedia.org/wiki/Split-brain_(computing)" },
+      { label: "ClusterLabs, Pacemaker Explained 3.0, chapter 8, Fencing (read 2026-11-16): fencing defined, also known as STONITH; power and fabric fencing; fence devices must not depend on the cluster network or share power with the node they fence; split brain and an IP address brought up on two hosts", href: "https://clusterlabs.org/projects/pacemaker/doc/3.0/Pacemaker_Explained/html/fencing.html" },
+      { label: "Fortinet, FortiOS 7.6.6 Administration Guide, Troubleshoot an HA formation (read 2026-11-16): split-brain symptoms (IP and MAC conflicts, MAC flapping on layer 2 devices, each unit reporting itself primary) and causes (lost, blocked or congested heartbeat links)", href: "https://docs.fortinet.com/document/fortigate/7.6.6/administration-guide/946059/troubleshoot-an-ha-formation" },
+      { label: "Juniper Networks, Configure Cluster Failover Parameters (read 2026-11-16): heartbeats every 1,000 ms with a threshold of 3; a secondary that loses the control link but hears the fabric becomes ineligible, then disabled after 180 seconds; both links lost, it becomes primary", href: "https://www.juniper.net/documentation/us/en/software/junos/chassis-cluster-security-devices/topics/topic-map/security-chassis-cluster-failover-parameters.html" },
+      { label: "Palo Alto Networks, PAN-OS Administrator's Guide, PDF created 30 October 2026, High Availability chapter, pages 415 to 536 (read 2026-11-16): HA timer profiles, preemption disabled by default with a one-minute hold time, Flap Max, heartbeat backup against split brain, HA synchronization reference", href: "https://docs.paloaltonetworks.com/content/dam/techdocs/en_US/pdf/ngfw/ngfw-administration.pdf" },
+      { label: "Restena, Report: Crisis on 19 May 2023, version 1.0, public, PDF dated 1 August 2023 (read 2026-11-16): an active/passive firewall pair, a failed HA Control link on a faulty SFP+ module, dual primaryship, and recovery about 2 hours 47 minutes after the outage began", href: "https://restena.lu/files/inline-images/REP-CrisisMay2023-PUB_1.0.pdf" },
+    ], // 6 source(s), one object per line
   },
   {
     slug: "solid",
@@ -15542,12 +15643,21 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     relatedTerms: ["vxlan", "gre-tunnel"],
   },
   {
-    slug: "out-of-band-management",
-    headword: "out-of-band management",
-    kind: "expression",
-    domains: ["enterprise-networking", "it-support"],
-    aliases: [],
-    relatedTerms: ["loopback-interface", "bastion-host"],
+    // ENRICHMENT of the existing entry (full replacement): every existing field and source kept; articles, terms and sources added (agent E, 16/11/2026).
+    slug: "out-of-band-management", // unchanged address
+    headword: "out-of-band management", // unchanged
+    kind: "expression", // unchanged
+    domains: ["enterprise-networking", "it-support"], // unchanged
+    aliases: ["oob management", "out of band management"], // added: the spellings people search for (both checked absent)
+    relatedTools: ["flow-path-reasoner"], // added: trace the management path as well as the data path
+    relatedArticles: ["physical-and-power-redundancy-feeds-paths-and-carriers", "bigip-management-access-port-lockdown", "layer-2-redundancy-lag-mlag-and-spanning-tree"], // added: part 3 teaches it with three operators' cases
+    relatedTerms: ["loopback-interface", "bastion-host", "single-point-of-failure", "blast-radius", "path-diversity"], // the two existing terms first, then the new neighbours
+    sources: [ // added: the entry had none
+      { label: "Xona Partners for the Canadian Radio-television and Telecommunications Commission, Assessment of Rogers Networks for Resiliency and Reliability Following the 8 July 2022 Outage, Executive Summary, July 2024 (read 2026-11-16 via WebFetch): the management network relied on the IP core, remote staff could not reach it, staff were dispatched to routers; separate the management layer physically and logically and give it redundant connectivity from alternative providers", href: "https://crtc.gc.ca/eng/publications/reports/xona2024.htm" }, // regulator-commissioned report
+      { label: "Santosh Janardhan, Meta Engineering, More details about the October 4 outage, 5 October 2021 (read 2026-11-16): primary and out-of-band network access were down, engineers were sent on site", href: "https://engineering.fb.com/2021/10/05/networking-traffic/outage-details/" }, // operator post-mortem
+      { label: "John Halamka, The CareGroup Network Outage, 4 March 2008 (read 2026-11-16): lesson five, out-of-band tools were missing and the network had to work to diagnose the network", href: "https://geekdoctor.blogspot.com/2008/03/caregroup-network-outage.html" }, // the CIO's own account
+      { label: "FCC Public Safety and Homeland Security Bureau, Impact of the June 2012 Derecho on Communications Networks and Services, January 2013 (read 2026-11-16): NOCs interconnected only through one hub; monitoring on a thirty-minute UPS; recommendation of diverse monitor and control links", href: "https://docs.fcc.gov/public/attachments/DOC-318331A1.pdf" }, // US regulator report
+    ], // 4 sources, one object per line
   },
   {
     slug: "loopback-interface",
@@ -16114,14 +16224,22 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     relatedTerms: ["rack", "data-center-tiers"],
   },
   {
-    slug: "data-center-tiers",
-    headword: "Data centre tiers",
-    kind: "term",
-    domains: ["enterprise-networking", "grc"],
-    expansion: "Uptime Institute data centre tiers (I-IV)",
-    aliases: ["tier iv", "tier iii", "uptime institute", "data centre tier"],
-    relatedTerms: ["hot-cold-aisle", "rack", "tier-1-2-3"],
-    sources: [{ label: "Uptime Institute (official)", href: "https://uptimeinstitute.com/tiers" }],
+    // ENRICHMENT of the existing entry (full replacement): every existing field and the existing source kept; articles, terms and sources added (agent E, 16/11/2026).
+    slug: "data-center-tiers", // unchanged address
+    headword: "Data centre tiers", // unchanged
+    kind: "term", // unchanged
+    domains: ["enterprise-networking", "grc"], // unchanged
+    expansion: "Uptime Institute data centre tiers (I-IV)", // unchanged
+    aliases: ["tier iv", "tier iii", "uptime institute", "data centre tier", "data center tier", "tia-942"], // two added, both checked absent
+    relatedArticles: ["physical-and-power-redundancy-feeds-paths-and-carriers", "colocation-microwaves-and-the-race-for-latency", "brazil-bmf-bovespa-b3-and-electronic-access"], // added: part 3 reads the tiers; B3's data centre holds a Tier III
+    relatedTerms: ["hot-cold-aisle", "rack", "tier-1-2-3", "ups", "five-nines", "fault-tolerance"], // the three existing terms first
+    sources: [ // the existing source first, unchanged
+      { label: "Uptime Institute (official)", href: "https://uptimeinstitute.com/tiers" }, // existing
+      { label: "Uptime Institute, Tier Classification System (read 2026-11-16 via WebFetch): Tier I basic capacity, shut down for maintenance; Tier II redundant capacity components; Tier III concurrently maintainable, no shutdown for maintenance or replacement; Tier IV adds fault tolerance, a failed piece of equipment or an interrupted distribution path does not affect IT; over 4000 certifications in more than 122 countries", href: "https://uptimeinstitute.com/tiers" }, // Uptime Institute
+      { label: "Andy Lawrence, Uptime Institute Journal, 99 Red Flags: The Availability Nines, 28 October 2019 (read 2026-11-16 via WebFetch): no direct relationship between a number of nines and a Tier level; the early expected availability figures per Tier are no longer considered relevant", href: "https://journal.uptimeinstitute.com/?p=6064" }, // Uptime Institute
+      { label: "TIA, TIA Unveils Revision C of the Global Data Center Infrastructure Standard, 9 May 2024 (read 2026-11-16 via WebFetch): ANSI/TIA-942-C, the third revision of the standard", href: "https://tiaonline.org/news/tia-unveils-revision-c-of-the-global-data-center-infrastructure-standard/" }, // TIA
+      { label: "B3, Política Comercial de Serviços de Co-location, version 3.5, 15 January 2024 (read 2026-11-16): the Santana de Parnaíba data centre holds a Tier III certificate from the Uptime Institute", href: "https://sistemasweb.b3.com.br/normativos/POLITICA%20COMERCIAL%20COLOCATION%20-%20PORTUGUES.PDF" }, // Brazilian exchange
+    ], // 5 sources, one object per line
   },
   {
     slug: "patch-panel",
@@ -16186,12 +16304,24 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     relatedTerms: ["mttr", "slo"],
   },
   {
-    slug: "mttr",
-    headword: "MTTR",
-    kind: "acronym",
-    domains: ["isp-telecom", "it-support", "ops-culture"],
-    aliases: [],
-    relatedTerms: ["sla", "root-cause"],
+    // mttr (ENRICHMENT of the existing entry): every existing field kept (slug, headword, kind, domains, relatedTerms ["sla",
+    // "root-cause"]); the empty aliases filled, an expansion, related articles and sources added. The existing def and
+    // context sentences are kept word for word in both packs; a depth is added.
+    slug: "mttr", // the existing address
+    headword: "MTTR", // unchanged
+    kind: "acronym", // unchanged
+    domains: ["isp-telecom", "it-support", "ops-culture"], // unchanged
+    expansion: "mean time to repair, restoration, recovery or respond", // the four expansions in the standards
+    aliases: ["mean time to repair", "mean time to restoration", "mean time to recovery", "mean time to respond", "tempo médio de reparo"], // the expansions and the Portuguese term
+    relatedTools: ["python-playground"], // runs the availability arithmetic
+    relatedArticles: ["the-arithmetic-of-redundancy-availability-mtbf-and-shared-fate", "redundant-architectures-how-networks-survive-failure"], // part 2 and the hub
+    relatedTerms: ["sla", "root-cause", "slo", "five-nines", "mtbf", "mttf", "availability"], // the two existing links kept first, then neighbours
+    sources: [ // every label says what the page says and when it was read
+      { label: "ITU-T Recommendation E.800 (09/2008), section 3.3.11 (read 2026-11-16): mean time to restoration, mean time to recovery, mean time to repair: the expectation of repair time from the instant a fault is reported to the instant the service is restored for use by the customer", href: "https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-E.800-200809-I!!PDF-E&type=items" }, // ITU-T
+      { label: "IEEE Computer Society and ISO/IEC JTC 1/SC 7, SEVOCAB, entries mean time to repair and MTTR (read 2026-11-16): ISO/IEC/IEEE 24765:2017 defines the duration required to return a malfunctioning system or component to normal operations; MTTR expands to mean time to repair in IEEE 982:2024, mean time to recovery in IEEE 2675-2021 and mean time to respond in IEEE 7005-2021", href: "https://pascal.computer.org/sev_display/index.action" }, // IEEE and ISO/IEC vocabulary
+      { label: "Ben Treynor, Mike Dahlin, Vivek Rau and Betsy Beyer, The Calculus of Service Availability, ACM Queue, March-April 2017, PDF published by Google SRE (read 2026-11-16): availability is MTTF/(MTTF+MTTR); a service cannot be more available than its incident frequency multiplied by its detection and recovery time", href: "https://sre.google/static/pdf/calculus_of.pdf" }, // Treynor and others
+      { label: "David Oppenheimer, Archana Ganapathi and David A. Patterson, Why do Internet services fail, and what can be done about it?, USITS 2003, abstract, read from the PDF's page images (read 2026-11-16): operator error the largest contributor to time to repair in two of three services", href: "https://www.usenix.org/legacy/events/usits03/tech/full_papers/oppenheimer/oppenheimer.pdf" }, // Oppenheimer and others
+    ], // four sources, one object per line
   },
   {
     slug: "attenuation",
@@ -22896,6 +23026,11 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     kind: "jargon",
     domains: ["ops-culture", "isp-telecom"],
     aliases: ["99.999%", "five 9s"],
+    // 16/11/2026: the context's unsourced "roughly ten times more" per nine replaced by the SRE book's own sentence
+    // (flagged by the redundancy series' agent D, who read the chapter); the entry's first source.
+    sources: [
+      { label: "Marc Alvidrez, Embracing Risk, chapter 3 of Site Reliability Engineering (Google, O'Reilly, 2016), read 2026-11-16: cost does not increase linearly as reliability increments; an incremental improvement in reliability may cost 100x more than the previous increment", href: "https://sre.google/sre-book/embracing-risk/" }, // Google's own copy of the book
+    ],
   },
   {
     slug: "war-room",
@@ -22913,12 +23048,19 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     relatedTerms: ["cattle-not-pets"],
   },
   {
-    slug: "configuration-drift",
-    headword: "configuration drift",
-    kind: "jargon",
-    domains: ["ops-culture", "cloud"],
-    aliases: ["config drift"],
-    relatedTerms: ["snowflake-server"],
+    // configuration-drift (enrichment, 16/11/2026, redundancy part 10): sources, articles and neighbours added; existing fields kept.
+    slug: "configuration-drift", // unchanged
+    headword: "configuration drift", // unchanged
+    kind: "jargon", // unchanged
+    domains: ["ops-culture", "cloud"], // unchanged
+    aliases: ["config drift"], // unchanged
+    relatedArticles: ["testing-redundancy-failure-drills-chaos-and-the-failover-never-tried", "data-and-service-redundancy-replication-quorum-rpo-and-rto", "change-windows-that-do-not-become-incidents"], // added: the parts that treat recovery-site drift and the change-window article
+    relatedTerms: ["snowflake-server", "disaster-recovery", "failover", "runbook"], // the existing one first, then neighbours
+    sources: [ // added: every label says what the page says and when it was read
+      { label: "Amazon Web Services, AWS Well-Architected Framework, REL13-BP04, Manage configuration drift at the DR site or Region (read 2026-11-16): primary and recovery sites diverge as changes land on one only; the drift is exposed only at failover; continuous drift detection as the remedy", href: "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel13-bp04.html" }, // AWS
+      { label: "Amazon Web Services, Disaster Recovery of Workloads on AWS, Testing disaster recovery (read 2026-11-16): a secondary sized at the last test may no longer carry the load; the only recovery that works is the path tested frequently", href: "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/testing-disaster-recovery.html" }, // AWS
+      { label: "Google, Site Reliability Engineering, chapter 17, Testing for Reliability (read 2026-11-16): a configuration file changed only on failure has a release cadence slower than the MTBF", href: "https://sre.google/sre-book/testing-reliability/" }, // Google SRE
+    ], // three sources, one object per line
   },
   {
     slug: "crash-cart",
@@ -30656,6 +30798,3235 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
       { label: "B3, Circular Letter 015/2024-PRE, 24 January 2024 (read 2026-11-15): binary gateway in derivatives from 4 December 2023 and in equities in waves on 29 January, 19 February and 4 March 2024", href: "https://www.b3.com.br/data/files/56/46/59/0D/3664D8103152D4C8AC094EA8/OC%20015-2024%20PRE%20%20Lan%C3%A7amento%20do%20Gateway%20Binario%20Segmento%20Bovespa%20%28Binary%20EntryPoint%29%20-%20EN.pdf" }, // B3
       { label: "B3, Política Comercial de Serviços de Co-location B3, version 3.3, 20 January 2022 (read 2026-11-15): co-location network on the same infrastructure as PUMA's order routing components; equal-length cables; quoted latencies of 22 microseconds (TCP) and 11 microseconds (market data)", href: "https://www.b3.com.br/data/files/3E/03/2D/39/558C38101E311E28AC094EA8/Politica%20Comercial%20Colocation_PT_2022%20v3%20Abril22.pdf" }, // B3
     ], // seven sources, one object per line
+  },
+  {
+    // Mass hysteria (new entry): the popular term, its gendered medical past and the names researchers use instead.
+    slug: "mass-hysteria", // the /glossary/mass-hysteria address
+    headword: "Mass hysteria", // the popular term, sentence case
+    kind: "term", // a term shared by medicine, psychology and sociology
+    domains: ["cyber-security", "grc"], // as for the psyops series it links to: the human attack surface and information policy
+    aliases: ["histeria coletiva", "histeria em massa", "epidemic hysteria", "collective hysteria"], // Portuguese, and the older clinical names (Boss 1997)
+    relatedTerms: ["collective-delusion", "social-contagion", "nocebo-effect", "misinformation", "illusory-truth-effect"], // this batch, then existing entries
+    relatedArticles: ["mass-hysteria-how-groups-come-to-believe-anything", "conformity-cascades-and-contagion-the-mechanisms"], // the opener and the mechanisms part
+    sources: [ // every label says what the page says and when it was read
+      { label: "British Journal of Psychiatry 180, Robert E. Bartholomew and Simon Wessely, 'Protean nature of mass sociogenic illness: from possessed nuns to chemical and biological terrorism fears', April 2002 (read 2026-11-16): symptoms spreading in a cohesive group, exhibited unconsciously, without organic aetiology; motor symptoms before 1900, anxiety after odours and rumours in the twentieth century, terrorism themes after 2001; underreported and costly", href: "https://www.cambridge.org/core/journals/the-british-journal-of-psychiatry/article/protean-nature-of-mass-sociogenic-illness/2BDC2262E104B8A33F3DD49773DA0D8B" }, // bartholomew-wessely2002
+      { label: "Psychological Medicine 17(1), Simon Wessely, 'Mass hysteria: two syndromes?', February 1987, PubMed abstract (read 2026-11-16): mass anxiety hysteria in schoolchildren spreading by sight and ended by separation; mass motor hysteria after prolonged tension", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=3575566" }, // wessely1987
+      { label: "New England Journal of Medicine 342(2), T. F. Jones and seven co-authors, 'Mass psychogenic illness attributed to toxic exposure at a high school', 13 January 2000, PubMed abstract (read 2026-11-16): 80 students and 19 staff to the emergency department; no toxic cause; associations with female sex, seeing another ill person and an unusual odour", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=10631279" }, // jones2000
+      { label: "Behavioral Sciences 5(4), Carol S. North, 'The Classification of Hysteria and Related Disorders', 2015, full text via Europe PMC (read 2026-11-16): the word from hystera; 'Briquet's syndrome' adopted to replace a term laden with pejorative connotations; DSM-III's conversion disorder '(or hysterical neurosis, conversion type)'", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC4695775/fullTextXML" }, // north2015
+      { label: "Helen King, 'Once upon a Text: Hysteria from Hippocrates', in Sander L. Gilman and others, Hysteria Beyond Freud, University of California Press, 1993, UC Press E-Books Collection (read 2026-11-16): the Hippocratic texts use hysterikos only as 'from the womb'; the attribution of the disease name traces to Littré's nineteenth-century section headings", href: "https://publishing.cdlib.org/ucpressebooks/view?docId=ft0p3003d3&chunk.id=d0e94&toc.depth=1&toc.id=d0e94&brand=ucpress" }, // king1993
+      { label: "Skeptical Inquirer, Robert E. Bartholomew and Erich Goode, 'Mass Delusions and Hysterias: Highlights from the Past Millennium', May/June 2000 (read 2026-11-16): mass hysteria affects small, tightly knit groups in enclosed settings; anxiety and motor types", href: "https://cdn.centerforinquiry.org/wp-content/uploads/sites/29/2000/05/22164854/p20.pdf" }, // bartholomew-goode2000
+    ], // six sources, one object per line
+  },
+  {
+    // Social contagion (new entry): the idea that affect, beliefs and behaviour spread like infections, and the dispute over measuring it.
+    slug: "social-contagion", // the /glossary/social-contagion address
+    headword: "Social contagion", // the umbrella term, sentence case
+    kind: "term", // a term from sociology and network science
+    domains: ["cyber-security", "grc"], // influence and platform policy
+    aliases: ["contágio social", "behavioural contagion", "behavioral contagion", "complex contagion"], // Portuguese, both spellings of the behavioural form, and Centola's variant
+    relatedTerms: ["emotional-contagion", "social-proof", "information-cascade", "structural-virality", "mass-hysteria"], // this batch, then existing entries
+    relatedArticles: ["mass-hysteria-how-groups-come-to-believe-anything", "conformity-cascades-and-contagion-the-mechanisms"], // the opener and the mechanisms part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Journal of Memetics 2, P. Marsden, 'Memetics and Social Contagion: Two Sides of the Same Coin?', 1998 (read 2026-11-16): the social contagion thesis; its use for social phenomena from Baldwin, Tarde and Le Bon; no agreement on the mechanism", href: "http://cfpm.org/jom-emit/1998/vol2/marsden_p.html" }, // marsden1998
+      { label: "Project Gutenberg eBook 445, Gustave Le Bon, The Crowd: A Study of the Popular Mind, English translation of Psychologie des foules (read 2026-11-16): in a crowd every sentiment and act is contagious; affirmation, repetition and contagion as the leaders' means", href: "https://www.gutenberg.org/ebooks/445" }, // lebon
+      { label: "New England Journal of Medicine 357(4), Nicholas A. Christakis and James H. Fowler, 'The spread of obesity in a large social network over 32 years', 26 July 2007, PubMed abstract (read 2026-11-16): 12,067 people; 57% higher chance of obesity with an obese friend; clusters to three degrees", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=17652652" }, // christakis-fowler2007
+      { label: "arXiv 1004.4704, Cosma Rohilla Shalizi and Andrew C. Thomas, 'Homophily and Contagion Are Generically Confounded in Observational Social Network Studies' (read 2026-11-16): distinguishing homophily, contagion and individual causes requires strong assumptions", href: "https://arxiv.org/pdf/1004.4704" }, // shalizi-thomas
+      { label: "arXiv 1007.2876, Russell Lyons, 'The Spread of Evidence-Poor Medicine via Flawed Social-Network Analysis', version of 5 May 2011 (read 2026-11-16): the conclusions of the Christakis and Fowler papers do not follow from their analyses", href: "https://arxiv.org/pdf/1007.2876" }, // lyons2011
+      { label: "Science 329, D. Centola, 'The spread of behavior in an online social network experiment', 3 September 2010, PubMed abstract (read 2026-11-16): adoption more likely with reinforcement from several neighbours; faster spread in clustered networks", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=20813952" }, // centola2010
+    ], // six sources, one object per line
+  },
+  {
+    // Collective delusion (new entry): false or exaggerated beliefs spreading across a population, and the stories that themselves lack sources.
+    slug: "collective-delusion", // the /glossary/collective-delusion address
+    headword: "Collective delusion", // the sociologists' term, sentence case
+    kind: "term", // a term from the sociology of collective behaviour
+    domains: ["cyber-security", "grc"], // misinformation and its governance
+    aliases: ["delírio coletivo", "mass delusion", "popular delusion", "social delusion"], // Portuguese, Mackay's 'popular delusions' and the common variants
+    relatedTerms: ["mass-hysteria", "social-contagion", "misinformation", "illusory-truth-effect", "information-cascade"], // this batch, then existing entries
+    relatedArticles: ["mass-hysteria-how-groups-come-to-believe-anything", "conformity-cascades-and-contagion-the-mechanisms"], // the opener and the mechanisms part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Skeptical Inquirer, Robert E. Bartholomew and Erich Goode, 'Mass Delusions and Hysterias: Highlights from the Past Millennium', May/June 2000 (read 2026-11-16): collective delusions as the spontaneous, rapid spread of false or exaggerated beliefs within a population, temporarily affecting a region, culture or country", href: "https://cdn.centerforinquiry.org/wp-content/uploads/sites/29/2000/05/22164854/p20.pdf" }, // bartholomew-goode2000
+      { label: "Project Gutenberg eBook 24518, Charles Mackay, Memoirs of Extraordinary Popular Delusions and the Madness of Crowds, 1852 edition (read 2026-11-16): preface, men think in herds, go mad in herds and recover one by one", href: "https://www.gutenberg.org/ebooks/24518" }, // mackay1852
+      { label: "Slate, Jefferson Pooley and Michael J. Socolow, 'The Myth of the War of the Worlds Panic', October 2013 (read 2026-11-16): the Hooper survey of 5,000 households, 2% listening; Cantril's estimate of about one million frightened and its basis; newspapers' motive", href: "https://slate.com/culture/2013/10/orson-welles-war-of-the-worlds-panic-myth-the-infamous-radio-broadcast-did-not-cause-a-nationwide-hysteria.html" }, // pooley-socolow2013
+      { label: "J. F. C. Hecker, The Epidemics of the Middle Ages, London, 1844, Internet Archive scan (read 2026-11-16): the dancing mania of 1374; Zimmermann's unsourced 'good medical work' on a French convent's mewing nuns", href: "https://archive.org/details/epidemicsofmiddlin00heck" }, // hecker1844
+    ], // four sources, one object per line
+  },
+  {
+    // Moral entrepreneur (new entry): Becker's rule creators and rule enforcers, and how social media blur them with the public.
+    slug: "moral-entrepreneur", // the /glossary/moral-entrepreneur address
+    headword: "Moral entrepreneur", // Becker's term, sentence case
+    kind: "term", // a term from the sociology of deviance
+    domains: ["grc"], // the governance of norms and their enforcement
+    aliases: ["moral entrepreneurs", "moral entrepreneurship", "moral crusader", "empreendedor moral"], // plural, the abstract noun, the crusader form and Portuguese
+    relatedTerms: ["propaganda", "influence-operation", "mass-hysteria", "social-contagion", "pluralistic-ignorance"], // existing entries, then this batch
+    relatedArticles: ["mass-hysteria-how-groups-come-to-believe-anything"], // the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "Journal of Evaluation in Clinical Practice, Trisha Greenhalgh, Mustafa F. Ozbilgin, Barbara Prainsack and Sara Shaw, 'Moral entrepreneurship, the power-knowledge nexus, and the Cochrane crisis', 2019, full text via Europe PMC (read 2026-11-16): Becker (1963) on the crusading reformer or rule maker and the rule enforcer; 'the final outcome of a moral crusade is a police force'", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6952841/fullTextXML" }, // greenhalgh2019
+      { label: "Cultural Sociology 16(2), Natália Otto, Josée Johnston and Shyon Baumann, 'Moral Entrepreneurialism for the Hamburger', 2022, full text via Europe PMC (read 2026-11-16): Becker's concept of people who advance a moral agenda by defining behaviour as deviant; applied to agencies, NGOs, professions and firms", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC9158241/fullTextXML" }, // otto2022
+      { label: "International Journal of Cultural Studies, James P. Walsh, 'Social media and moral panics', 28 March 2020, full text via Europe PMC (read 2026-11-16): on social media the distinctions between the media, the public and moral entrepreneurs are blurring", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7201200/fullTextXML" }, // walsh2020
+    ], // three sources, one object per line
+  },
+  {
+    // Conformity (new entry, social-psychology sense): Sherif's ambiguous light, Asch's unanimous majorities and the replications across time and countries.
+    slug: "social-conformity", // /glossary/social-conformity: the plain "conformity" is the compliance entry's alias (conformity assessment)
+    headword: "Conformity (social psychology)", // qualified, to keep it apart from the compliance entry's alias "conformity"
+    kind: "term", // a term from social psychology
+    domains: ["cyber-security", "grc"], // the human attack surface and influence
+    aliases: ["social conformity", "Asch conformity", "majority influence", "conformidade social"], // the qualified forms, the paradigm's name and Portuguese
+    relatedTerms: ["social-proof", "pluralistic-ignorance", "information-cascade", "social-engineering", "illusory-truth-effect"], // this batch, then existing entries
+    relatedArticles: ["conformity-cascades-and-contagion-the-mechanisms", "mass-hysteria-how-groups-come-to-believe-anything"], // the mechanisms part and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "Muzafer Sherif, The Psychology of Social Norms, Harper, 1936, chapter VI, Internet Archive scan (read 2026-11-16): in the autokinetic situation individuals form a range and norm, converge on a group norm and keep it when alone, mostly without feeling influenced", href: "https://archive.org/details/in.ernet.dli.2015.264611" }, // sherif1936
+      { label: "Scientific American 193(5), Solomon E. Asch, 'Opinions and Social Pressure', November 1955, Internet Archive scan (read 2026-11-16): 123 subjects; 36.8% of selections followed a wrong unanimous majority against under 1% alone; a quarter never yielded; one supporting partner cut the effect to a quarter", href: "https://archive.org/details/solomon-asch_confirmaty" }, // asch1955
+      { label: "Psychological Monographs 70(9), Solomon E. Asch, 'Studies of Independence and Conformity: I. A Minority of One Against a Unanimous Majority', 1956, publisher's record (read in full 2026-11-16): the majority deflected one-third of the minority's estimates; the preponderance of judgements stayed independent; Office of Naval Research support", href: "https://doi.org/10.1037/h0093718" }, // asch1956
+      { label: "Psychological Bulletin 119(1), Rod Bond and Peter B. Smith, 'Culture and Conformity: A Meta-Analysis of Studies Using Asch's (1952b, 1956) Line Judgment Task', 1996, publisher's record (read in full 2026-11-16): 133 studies, 4,627 participants, 17 countries including three Brazilian studies; decline in the United States since the 1950s; higher conformity in collectivist countries", href: "https://doi.org/10.1037/0033-2909.119.1.111" }, // bond-smith1996
+      { label: "PLOS ONE 18(11), Axel Franzen and Sebastian Mader, 'The power of social influence: A replication and extension of the Asch experiment', 29 November 2023 (read 2026-11-16): N = 210 in Bern; 33% errors, 25% with incentives, 38% for political statements", href: "https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0294325&type=printable" }, // franzen-mader2023
+    ], // five sources, one object per line
+  },
+  {
+    // Pluralistic ignorance (new entry): private doubt, public conformity and the misreading of what others think, with the field evidence.
+    slug: "pluralistic-ignorance", // the /glossary/pluralistic-ignorance address
+    headword: "Pluralistic ignorance", // the term from Katz and Allport's work, sentence case
+    kind: "term", // a term from social psychology
+    domains: ["cyber-security", "grc"], // influence and norms
+    aliases: ["ignorância pluralística", "misperceived social norms", "misperceived norms"], // Portuguese and the economists' wording (Bursztyn et al.)
+    relatedTerms: ["social-conformity", "social-proof", "information-cascade", "moral-entrepreneur", "misinformation"], // this batch, then existing entries
+    relatedArticles: ["conformity-cascades-and-contagion-the-mechanisms", "mass-hysteria-how-groups-come-to-believe-anything"], // the mechanisms part and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "Journal of Applied Social Psychology 28(23), Christine M. Schroeder and Deborah A. Prentice, 'Exposing Pluralistic Ignorance to Reduce Alcohol Use Among College Students', 1998, Stanford SPARQ copy (read 2026-11-16): students assume their peers are more comfortable with drinking than they are; Prentice and Miller (1993); peer discussion of the misperception reduced drinking months later", href: "https://sparq.stanford.edu/sites/g/files/sbiybj19021/files/media/file/schroeder_prentice_1998_-_exposing_pluralistic_ignorance.pdf" }, // schroeder-prentice1998
+      { label: "American Economic Review 110(10), Leonardo Bursztyn, Alessandra L. González and David Yanagizawa-Drott, 'Misperceived Social Norms: Women Working Outside the Home in Saudi Arabia', 2020, authors' copy (read 2026-11-16): 87% private support, three-quarters underestimating others' support; correcting beliefs raised job-search sign-ups and later applications", href: "https://home.uchicago.edu/bursztyn/Misperceived_Norms.pdf" }, // bursztyn2020
+      { label: "American Journal of Sociology 115(2), Robb Willer, Ko Kuwabara and Michael W. Macy, 'The False Enforcement of Unpopular Norms', September 2009, publisher's record (read in full 2026-11-16): people who conform under pressure falsely enforce the norm to look sincere; witch trials among the examples", href: "https://doi.org/10.1086/599250" }, // willer2009
+      { label: "Sociological Science 4, Minjae Kim and Ezra W. Zuckerman Sivan, 'Faking It Is Hard to Do', 25 October 2017 (read 2026-11-16): self-initiated enforcement arouses suspicion; norms may be underenforced", href: "https://www.sociologicalscience.com/download/vol-4/october/SocSci_v4_580to610.pdf" }, // kim-zuckerman2017
+    ], // four sources, one object per line
+  },
+  {
+    // Emotional contagion (new entry): Hatfield's definition, the 2014 Facebook experiment and its consent dispute.
+    slug: "emotional-contagion", // the /glossary/emotional-contagion address
+    headword: "Emotional contagion", // Hatfield's term, sentence case
+    kind: "term", // a term from social psychology
+    domains: ["cyber-security", "grc", "privacy"], // influence, platform research governance and users' consent
+    aliases: ["contágio emocional", "mood contagion"], // Portuguese and the common variant
+    relatedTerms: ["social-contagion", "social-proof", "nocebo-effect", "misinformation"], // this batch, then an existing entry
+    relatedArticles: ["conformity-cascades-and-contagion-the-mechanisms"], // the mechanisms part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Frontiers in Psychology 16, Barret Michalec and 12 co-authors, 'A scoping review of emotional contagion research with human subjects', 2025, full text via Europe PMC (read 2026-11-16): Hatfield and colleagues' definition, the tendency to automatically mimic and synchronize expressions, vocalizations, postures and movements and to converge emotionally", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12164912/fullTextXML" }, // michalec2025
+      { label: "Proceedings of the National Academy of Sciences 111(24), Adam Kramer, Jamie E. Guillory and Jeffrey T. Hancock, 'Experimental evidence of massive-scale emotional contagion through social networks', 17 June 2014, PubMed abstract (read 2026-11-16): N = 689,003; reducing positive posts in News Feed led to fewer positive and more negative posts, and the reverse", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=24889601" }, // kramer2014
+      { label: "Retraction Watch, 'Rapid mood swing: PNAS issues Expression of Concern for controversial Facebook study', 3 July 2014 (read 2026-11-16): the full text of the Editorial Expression of Concern by Inder Verma; Facebook's Data Use Policy offered as consent", href: "https://retractionwatch.com/2014/07/03/rapid-mood-swing-pnas-issues-expression-of-concern-for-controversial-facebook-study/" }, // retractionwatch2014
+      { label: "Meta Newsroom, Mike Schroepfer, 'Research at Facebook', 2 October 2014 (read 2026-11-16): the company was unprepared for the reaction; enhanced review for research on deeply personal content such as emotions", href: "https://about.fb.com/news/2014/10/research-at-facebook/" }, // schroepfer2014
+      { label: "PLOS ONE 9(3), Lorenzo Coviello and six co-authors, 'Detecting Emotional Contagion in Massive Social Networks', 12 March 2014 (read 2026-11-16): rainfall changes the emotional content of status messages and of friends' messages in other cities", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC3951248/fullTextXML" }, // coviello2014
+    ], // five sources, one object per line
+  },
+  {
+    // Social proof (new entry): Cialdini's principle, herding in ratings and markets, and the boomerang of descriptive norms.
+    slug: "social-proof", // the /glossary/social-proof address
+    headword: "Social proof", // Cialdini's term, sentence case
+    kind: "term", // a term from the psychology of persuasion
+    domains: ["cyber-security", "grc"], // social engineering and influence
+    aliases: ["prova social", "social validation", "descriptive norm"], // Portuguese, the common variant and the research term the experiments use
+    relatedTerms: ["social-conformity", "information-cascade", "social-engineering", "astroturfing", "social-bot"], // this batch, then existing entries
+    relatedArticles: ["conformity-cascades-and-contagion-the-mechanisms", "the-human-attack-surface-why-repetition-works"], // the mechanisms part and the psyops part that treats the hotel towels
+    sources: [ // every label says what the page says and when it was read
+      { label: "Influence At Work (Robert Cialdini's consultancy), 'The Principles of Persuasion', undated page (read 2026-11-16): especially when uncertain, people look to the actions and behaviours of others to determine their own", href: "https://www.influenceatwork.com/7-principles-of-persuasion/" }, // influenceatwork
+      { label: "Psychological Science 18(5), P. W. Schultz, J. M. Nolan, R. B. Cialdini, N. J. Goldstein and V. Griskevicius, 'The constructive, destructive, and reconstructive power of social norms', May 2007, PubMed abstract (read 2026-11-16): a descriptive norm produced savings or a boomerang depending on prior use; an injunctive message removed the boomerang", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=17576283" }, // schultz2007
+      { label: "Science 341, L. Muchnik, S. Aral and S. J. Taylor, 'Social influence bias: a randomized experiment', 9 August 2013, PubMed abstract (read 2026-11-16): a random up-vote raised the chance of positive ratings by 32% and final ratings by 25%; negative manipulation was corrected", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=23929980" }, // muchnik2013
+      { label: "Science 311, Matthew J. Salganik, Peter Sheridan Dodds and Duncan J. Watts, 'Experimental Study of Inequality and Unpredictability in an Artificial Cultural Market', 10 February 2006, publisher's record (read in full 2026-11-16): 14,341 participants; social influence increased inequality and unpredictability of success", href: "https://doi.org/10.1126/science.1121066" }, // salganik2006
+      { label: "PLOS ONE 9(8), Gerd Bohner and Lena E. Schlüter, 'A room with a viewpoint revisited: descriptive norms and hotel guests' towel reuse behavior', 2014, full text via Europe PMC (read 2026-11-16): two German hotels (N = 724 and 204); every message beat no message, but descriptive norm messages were not more effective than the standard message", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC4118982/fullTextXML" }, // bohner-schlueter2014
+    ], // five sources, one object per line
+  },
+  {
+    // Nocebo effect (new entry): expectation that produces real symptoms, its laboratory analogues of mass psychogenic illness and the trial evidence.
+    slug: "nocebo-effect", // the /glossary/nocebo-effect address
+    headword: "Nocebo effect", // the clinical term, sentence case
+    kind: "term", // a term from medicine and psychology
+    domains: ["cyber-security", "grc"], // as for the series: health scares, media and risk communication
+    aliases: ["nocebo", "nocebo response", "efeito nocebo"], // the short form, the response form Colloca and Miller distinguish, Portuguese
+    relatedTerms: ["mass-hysteria", "emotional-contagion", "social-contagion", "misinformation"], // this batch, then an existing entry
+    relatedArticles: ["conformity-cascades-and-contagion-the-mechanisms", "mass-hysteria-how-groups-come-to-believe-anything"], // the mechanisms part and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "Psychosomatic Medicine 73(7), Luana Colloca and Franklin G. Miller, 'The nocebo effect and its relevance for clinical practice', 2011, author manuscript via PubMed Central E-utilities (read 2026-11-16): the negative counterpart of the placebo phenomenon; expectation, prior experience and observation of others; apparent and true nocebo effects", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=3167012&retmode=xml" }, // colloca-miller2011
+      { label: "Annals of Behavioral Medicine 33(1), Lorber, Mazzoni and Kirsch, 'Illness by suggestion: expectancy, modeling, and gender in the production of psychosomatic symptoms', February 2007, PubMed abstract (read 2026-11-16): an inert substance described as a toxin produced the specified symptoms; modelling increased them among women", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=17291177" }, // lorber2007
+      { label: "JAMA Network Open 5(1), Julia W. Haas and seven co-authors, 'Frequency of Adverse Events in the Placebo Arms of COVID-19 Vaccine Trials', 18 January 2022 (read 2026-11-16): 45,380 participants; 35% of placebo recipients reported systemic adverse events after the first dose; nocebo responses 76% and 52% of systemic adverse events", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC8767431/fullTextXML" }, // haas2022
+      { label: "British Heart Foundation, 'No difference in side effects with a statin or dummy pill', November 2020 (read 2026-11-16): the SAMSON trial, 60 patients; symptom scores 15.4 placebo, 16.3 statin, 8.0 no tablet; half restarted statins", href: "https://www.bhf.org.uk/what-we-do/news-from-the-bhf/news-archive/2020/november/no-difference-in-side-effects-with-a-statin-or-dummy-pill" }, // bhf2020
+      { label: "Journal of Psychosomatic Research 74(3), M. Witthöft and G. J. Rubin, 'Are media warnings about the adverse health effects of modern life self-fulfilling?', March 2013, PubMed abstract (read 2026-11-16): 147 participants; 54% reported symptoms after a sham Wi-Fi exposure; a television report increased worry and, in anxious participants, symptoms", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=23438710" }, // witthoft-rubin2013
+    ], // five sources, one object per line
+  },
+  {
+    // Mass psychogenic illness (new entry): real, involuntary symptoms shared by a group with no organic cause, its features and its misdiagnoses.
+    slug: "mass-psychogenic-illness", // the /glossary/mass-psychogenic-illness address
+    headword: "Mass psychogenic illness", // the clinical term, sentence case
+    kind: "term", // a medical and sociological term
+    domains: ["cyber-security", "grc"], // as for the psyops and mass-hysteria series it links to
+    aliases: ["mass sociogenic illness", "sociogenic illness", "doença psicogênica em massa", "doença sociogênica em massa"], // the synonym, its short form, Portuguese (MPI and MSI left out: IT acronyms)
+    relatedTerms: ["functional-neurological-disorder", "conversion-disorder", "immunization-stress-related-response", "mass-hysteria", "nocebo-effect", "social-contagion", "misinformation"], // this batch, siblings (A), an existing entry
+    relatedArticles: ["mass-psychogenic-illness-when-symptoms-spread", "dancing-plagues-and-possessed-convents", "mass-hysteria-how-groups-come-to-believe-anything"], // the part, its sibling, the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "British Journal of Psychiatry 180(4), Robert E. Bartholomew and Simon Wessely, 'Protean nature of mass sociogenic illness', April 2002 (read 2026-11-16): the definition; eight features; motor outbreaks before 1900 and anxiety outbreaks after; cases later traced to pesticide, carbon disulphide and toxic fumes", href: "https://www.cambridge.org/core/journals/the-british-journal-of-psychiatry/article/protean-nature-of-mass-sociogenic-illness/2BDC2262E104B8A33F3DD49773DA0D8B" }, // bjp2002
+      { label: "Psychological Medicine 17(1), Simon Wessely, 'Mass hysteria: two syndromes?', February 1987, PubMed abstract (read 2026-11-16): mass anxiety hysteria in schoolchildren, ended by separation; mass motor hysteria after prolonged tension", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=3575566" }, // wessely1987
+      { label: "Epidemiology 21(5), Lisa A. Page, Simon Wessely and colleagues, 'Frequency and predictors of mass psychogenic illness', September 2010, PubMed abstract (read 2026-11-16): 19 of 280 chemical incidents; odour a robust predictor; schools and health care settings", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=20592616" }, // page2010
+      { label: "New York State Department of Health, interim report on neurologic symptoms among Le Roy Jr/Sr High School students, 31 January 2012 (read 2026-11-16): 12 cases; no infectious or environmental cause; conversion disorder and mass psychogenic illness", href: "https://www.health.ny.gov/press/releases/2012/leroy/docs/investigation_summary.pdf" }, // nysdoh2012
+      { label: "Journal of Child Neurology 41, Jennifer McVige, Laszlo Mechtler and colleagues, 'An Occurrence of Mass Psychogenic Illness: LeRoy, New York', April 2026, full text via Europe PMC (read 2026-11-16): MPI as a functional neurologic symptom disorder; a rule-in diagnosis under DSM-5-TR; symptoms ended as media coverage fell", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13018255/fullTextXML" }, // mcvige2026
+      { label: "Journal of International Medical Research 49(12), Gang Zhao and colleagues, 'Mass hysteria attack rates in children and adolescents: a meta-analysis', December 2021, full text via Europe PMC (read 2026-11-16): 28 studies; pooled attack rate 9.8%; girls 2.43 times boys", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC8829737/fullTextXML" }, // zhao2021
+    ], // six sources, one object per line
+  },
+  {
+    // Functional neurological disorder (new entry): the clinical category for genuine symptoms produced by altered brain network function, not by damage or feigning.
+    slug: "functional-neurological-disorder", // the /glossary/functional-neurological-disorder address
+    headword: "Functional neurological disorder", // the clinical term, sentence case
+    kind: "term", // a diagnostic category
+    domains: ["cyber-security", "grc"], // as for the series
+    aliases: ["FND", "functional neurologic disorder", "functional neurologic symptom disorder", "transtorno neurológico funcional"], // the abbreviation (absent from IT usage), the US spellings, the DSM-5-TR name, Portuguese
+    relatedTerms: ["conversion-disorder", "mass-psychogenic-illness", "immunization-stress-related-response", "nocebo-effect"], // this batch, a sibling (A)
+    relatedArticles: ["mass-psychogenic-illness-when-symptoms-spread", "social-media-and-the-contagion-of-symptoms-and-beliefs"], // the part and the platform part (wave 2)
+    sources: [ // every label says what the page says and when it was read
+      { label: "National Institute of Neurological Disorders and Stroke, 'Functional Neurologic Disorder', last reviewed 13 March 2026 (read 2026-11-16): changes in how brain networks work; symptoms genuine and not intentionally produced; patients stigmatized when symptoms are taken for malingering", href: "https://www.ninds.nih.gov/health-information/disorders/functional-neurologic-disorder" }, // ninds
+      { label: "Journal of Child Neurology 41, Jennifer McVige and colleagues, Le Roy, April 2026, full text via Europe PMC (read 2026-11-16): DSM-5-TR criteria require evidence of incompatibility between the symptom and recognized neurological or medical conditions; once a diagnosis of exclusion, now a rule-in diagnosis", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13018255/fullTextXML" }, // mcvige2026
+      { label: "Brain 145(2), Kirsten R. Müller-Vahl and colleagues, 'Stop that! It's not Tourette's but a new type of mass sociogenic illness', published 23 August 2021, full text via Europe PMC (read 2026-11-16): functional tic-like behaviours copied from a YouTube channel; the proposed label mass social media-induced illness", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC9014744/fullTextXML" }, // mullervahl2021
+      { label: "Renato Luiz Marchetti, José Gallucci Neto and Inah Proença, presentation to the Chamber of Deputies' Social Security and Family Committee, November 2019 (read 2026-11-16): ten of twelve adolescents examined in Acre had psychogenic non-epileptic seizures after HPV vaccination; two had genetic epilepsy", href: "https://www2.camara.leg.br/atividade-legislativa/comissoes/comissoes-permanentes/cssf/arquivos/GALLUCCIRENATOEINAHCNEPHPVparaCmaraDeputados.pdf" }, // camara2019
+    ], // four sources, one object per line
+  },
+  {
+    // Conversion disorder (new entry): the older psychiatric name, still in use, for neurological symptoms with no organic explanation.
+    slug: "conversion-disorder", // the /glossary/conversion-disorder address
+    headword: "Conversion disorder", // the psychiatric term, sentence case
+    kind: "term", // a diagnostic name
+    domains: ["cyber-security", "grc"], // as for the series
+    aliases: ["conversion reaction", "transtorno conversivo", "transtorno de conversão"], // the variant and Portuguese
+    relatedTerms: ["functional-neurological-disorder", "mass-psychogenic-illness", "mass-hysteria"], // this batch and a sibling (A)
+    relatedArticles: ["mass-psychogenic-illness-when-symptoms-spread", "mass-hysteria-how-groups-come-to-believe-anything"], // the part and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "British Journal of Psychiatry 180(4), Bartholomew and Wessely, April 2002 (read 2026-11-16): psychiatric manuals of the time classed mass sociogenic illness as a somatoform disorder, in the form of conversion disorder", href: "https://www.cambridge.org/core/journals/the-british-journal-of-psychiatry/article/protean-nature-of-mass-sociogenic-illness/2BDC2262E104B8A33F3DD49773DA0D8B" }, // bjp2002
+      { label: "New York State Department of Health, Le Roy interim report, 31 January 2012 (read 2026-11-16): eight of twelve students diagnosed with conversion disorder by a pediatric neurologist; the cluster attributed to conversion disorder and mass psychogenic illness", href: "https://www.health.ny.gov/press/releases/2012/leroy/docs/investigation_summary.pdf" }, // nysdoh2012
+      { label: "Journal of Child Neurology 41, Jennifer McVige and colleagues, April 2026, full text via Europe PMC (read 2026-11-16): MPI is a functional neurologic symptom disorder, also known as mass sociogenic illness or conversion disorder", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13018255/fullTextXML" }, // mcvige2026
+      { label: "Clinical Practice and Epidemiology in Mental Health 8, Cecilia Tasca and colleagues, 'Women and hysteria in the history of mental health', 2012, full text via Europe PMC (read 2026-11-16): the word hysteria from the Greek for uterus; the history behind the later clinical names", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC3480686/fullTextXML" }, // tasca2012
+    ], // four sources, one object per line
+  },
+  {
+    // Immunization stress-related response (new entry): the WHO term for symptoms caused by the stress of being vaccinated, not by the vaccine, alone or in groups.
+    slug: "immunization-stress-related-response", // the /glossary/immunization-stress-related-response address
+    headword: "Immunization stress-related response", // the WHO term, sentence case
+    kind: "term", // a vaccine-safety classification
+    domains: ["cyber-security", "grc"], // as for the series
+    aliases: ["ISRR", "vaccination stress reaction", "reação de estresse vacinal", "reação ao estresse relacionada à imunização"], // the abbreviation, a plain variant, the two Portuguese forms the Brazilian societies use
+    relatedTerms: ["mass-psychogenic-illness", "functional-neurological-disorder", "nocebo-effect", "misinformation"], // this batch, a sibling (A), an existing entry
+    relatedArticles: ["mass-psychogenic-illness-when-symptoms-spread", "health-scares-from-the-revolta-da-vacina-to-the-autism-myth"], // the part and the health-scares part (wave 2)
+    sources: [ // every label says what the page says and when it was read
+      { label: "Sociedade Brasileira de Pediatria and Sociedade Brasileira de Imunizações, joint note 63, 'Reações psicogênicas e vacinas', 2 May 2023 (read 2026-11-16): reactions with a psychological, not biological, causal link to vaccination; the name adopted by the World Health Organization, replacing 'vaccine anxiety reactions'; acute stress, vasovagal and dissociative neurological forms; group spread; the Anvisa leaflet warning of 14 April 2023", href: "https://sbim.org.br/images/24035c-NEspConj_-_ReacoesPsicogenicas_e_vacinas.pdf_2025-07-28.pdf" }, // sbp-sbim2023
+      { label: "Pan American Health Organization, study on post-vaccination neurological symptoms in Acre, 29 November 2019 (read 2026-11-16): psychogenic seizures caused by the stress of the act of vaccination, not by the vaccine", href: "https://www.paho.org/pt/noticias/29-11-2019-estudo-conclui-que-sintomas-neurologicos-pos-vacinacao-contra-hpv-no-acre" }, // paho2019
+      { label: "Human Vaccines & Immunotherapeutics 15(1), Cristiana Simas and colleagues, 'HPV vaccine confidence and cases of mass psychogenic illness following immunization in Carmen de Bolivar, Colombia', 2019, full text via Europe PMC (read 2026-11-16): 517 girls investigated; no organic association; first-dose uptake from 98% in 2012 to 14% in 2016", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6363158/fullTextXML" }, // simas2019
+      { label: "Human Vaccines & Immunotherapeutics 15(5), Álvaro J. Idrovo and colleagues, 'more uncertainty is required', 2019, PubMed abstract (read 2026-11-16): a government case-control study with an adjusted odds ratio of 10.8 for HPV vaccination", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=30735450" }, // idrovo2019
+    ], // four sources, one object per line
+  },
+  {
+    // Dancing plague (new entry): the outbreaks of compulsive group dancing of 1374 and 1518 and their sources.
+    slug: "dancing-plague", // the /glossary/dancing-plague address
+    headword: "Dancing plague", // the historians' term, sentence case
+    kind: "term", // a historical term
+    domains: ["cyber-security", "grc"], // as for the series
+    aliases: ["dancing mania", "choreomania", "dance epidemic", "peste dançante", "mania dançante", "coreomania"], // the older names and Portuguese
+    relatedTerms: ["st-vitus-dance", "tarantism", "demonic-possession", "ergotism", "mass-psychogenic-illness", "mass-hysteria"], // this batch, then a sibling (A)
+    relatedArticles: ["dancing-plagues-and-possessed-convents", "mass-psychogenic-illness-when-symptoms-spread"], // the part and its sibling
+    sources: [ // every label says what the page says and when it was read
+      { label: "Tilemann Elhen von Wolfhagen, Die Limburger Chronik, Marburg, 1828, pages 70 to 73 (read 2026-11-16): the dancing of 1374 on the Rhine and Moselle; more than 500 dancers at Cologne; physicians', theologians' and the chronicler's explanations; about sixteen weeks", href: "https://gdz.sub.uni-goettingen.de/download/pdf/PPN518206289/PPN518206289.pdf" }, // limburg
+      { label: "Johann Schilter, edition of Königshofen's Strasbourg chronicle, 1698, pages 1086 to 1090, Internet Archive (read 2026-11-16): the 1374 accounts; Strasbourg council's instruction dated only 'XVIII' and its minutes; Schilter's own dating to 1418", href: "https://archive.org/details/bub_gb_OMg-AAAAcAAJ" }, // schilter1698
+      { label: "The Psychologist 22, John Waller, 'Dancing plagues and mass hysteria', July 2009 (read 2026-11-16): about 400 in Strasbourg in 1518; dissociative trance in an environment of belief; the ergot hypothesis rejected", href: "https://www.bps.org.uk/psychologist/dancing-plagues-and-mass-hysteria" }, // waller2009
+      { label: "The Public Domain Review, Ned Pennant-Rea, 'The Dancing Plague of 1518', 10 July 2018 (read 2026-11-16): the council's stages and musicians, the ban on drums, the shrine of Saint Vitus; deaths from a 1636 chronicle", href: "https://publicdomainreview.org/2018/07/10/the-dancing-plague-of-1518/" }, // pennant-rea2018
+      { label: "Public Health 111(4), L. J. Donaldson, J. Cavanagh and J. Rankin, 'The dancing plague: a public health conundrum', July 1997, PubMed abstract (read 2026-11-16): competing causes; unlikely a single one; unresolved", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=9242030" }, // donaldson1997
+    ], // five sources, one object per line
+  },
+  {
+    // Tarantism (new entry): the southern Italian dancing affliction blamed on a spider's bite and cured by music.
+    slug: "tarantism", // the /glossary/tarantism address
+    headword: "Tarantism", // the historical term
+    kind: "term", // a historical term
+    domains: ["cyber-security", "grc"], // as for the series
+    aliases: ["tarantismo", "tarantella cure"], // Portuguese and the cure's common name
+    relatedTerms: ["dancing-plague", "st-vitus-dance", "mass-psychogenic-illness"], // this batch
+    relatedArticles: ["dancing-plagues-and-possessed-convents"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Medical History 23, Jean Fogo Russell, 'Tarantism', 1979, full text, Cambridge University Press (read 2026-11-16): a dancing disorder after a spider's bite, cured by music; Apulia; Baglivi relied on his father; the bite comparatively harmless; modern outbreaks to be called dancing mania", href: "https://www.cambridge.org/core/services/aop-cambridge-core/content/view/E48236CE504359115D4450E9DF454F20/S0025727300052054a.pdf/div-class-title-tarantism-div.pdf" }, // russell1979
+      { label: "Giorgio Baglivi, dissertation on the tarantula, in The Practice of Physick, London, 1723, Internet Archive (read 2026-11-16): venomous only in Apulia in summer; a yearly return; women who counterfeit it; Il Carnevaletto delle Donne", href: "https://archive.org/details/practiceofphysic00bagl" }, // baglivi1723
+      { label: "Revista de Neurología 63(8), Corral-Corral and Corral-Corral, 'Tarantism in Spain in the eighteenth century: latrodectism and suggestion', October 2016, PubMed abstract (read 2026-11-16): the bite was the black widow's; the cure by dance was suggestion", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=27699754" }, // corral2016
+      { label: "Psychological Medicine 24(2), Robert E. Bartholomew, 'Tarantism, dancing mania and demonopathy', May 1994, PubMed abstract (read 2026-11-16): labelling these episodes as mass psychogenic illness may mislabel culturally conditioned roles", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=8084927" }, // bartholomew1994
+    ], // four sources, one object per line
+  },
+  {
+    // Demonic possession (new entry, historical term): the early modern belief that devils entered bodies, how it was tested, judged and later reinterpreted.
+    slug: "demonic-possession", // the /glossary/demonic-possession address
+    headword: "Demonic possession (historical term)", // qualified so the entry reads as history, not as a diagnosis
+    kind: "term", // a historical and theological term
+    domains: ["cyber-security", "grc"], // as for the series
+    aliases: ["demoniacal possession", "convent possession", "demonopathy", "possessão demoníaca"], // the older forms, the convent cases, the nineteenth-century medical word, Portuguese
+    relatedTerms: ["dancing-plague", "mass-psychogenic-illness", "conversion-disorder", "mass-hysteria"], // this batch, then a sibling (A)
+    relatedArticles: ["dancing-plagues-and-possessed-convents", "witch-hunts-and-moral-panics"], // the part and the witch-hunts part (agent C)
+    sources: [ // every label says what the page says and when it was read
+      { label: "Arrest de mort donné contre Urbain Grandier, 1634, Internet Archive (read 2026-11-16): royal commissioners under letters patent of 8 July 1634; guilty of magic, maleficium and the possession of Ursuline nuns; burned alive on 18 August 1634", href: "https://archive.org/details/per_witchcraft-in-europe-and-america_grandier-urbain_1634_404" }, // grandier1634
+      { label: "Histoire de Madeleine Bavent, reprint of 1652 with supplementary pieces, Rouen, 1878, Internet Archive (read 2026-11-16): the 1643 Examen testing the Louviers nuns against the Roman Ritual and advising separation; the Rouen judgment of 21 August 1647", href: "https://archive.org/details/histoiredemadel00lemogoog" }, // bavent1878
+      { label: "Encyclopædia Universalis, Michel de Certeau, 'Loudun (procès de)' (read 2026-11-16): public exorcisms as popular theatre; a political judgment organized by Richelieu's commissioner", href: "https://www.universalis.fr/encyclopedie/proces-de-loudun/" }, // decerteau
+      { label: "Sœur Jeanne des Anges, autobiographie d'une hystérique possédée, edited by Gabriel Legué and Gilles de la Tourette, preface by Charcot, Paris, 1886, Internet Archive (read 2026-11-16): the possessed as patients; separation ending the convulsions in December 1632", href: "https://archive.org/details/soeurjeannedesan00jean" }, // jeanne1886
+      { label: "British Journal of Psychiatry 180(4), Bartholomew and Wessely, April 2002 (read 2026-11-16): convent outbreaks from Lyon 1526 to Toulouse 1681 and Ohio 1880; motor hysteria under strict discipline", href: "https://www.cambridge.org/core/journals/the-british-journal-of-psychiatry/article/protean-nature-of-mass-sociogenic-illness/2BDC2262E104B8A33F3DD49773DA0D8B" }, // bjp2002
+    ], // five sources, one object per line
+  },
+  {
+    // St Vitus' dance (new entry): the saint's name given to the medieval dancing and, later, to Sydenham chorea.
+    slug: "st-vitus-dance", // the /glossary/st-vitus-dance address
+    headword: "St Vitus' dance", // the traditional name
+    kind: "term", // a historical and medical name
+    domains: ["cyber-security", "grc"], // as for the series
+    aliases: ["Saint Vitus dance", "St. Vitus dance", "Sydenham chorea", "Sydenham's chorea", "dança de São Vito", "coreia de Sydenham"], // spellings, the modern disease name, Portuguese
+    relatedTerms: ["dancing-plague", "tarantism", "demonic-possession"], // this batch
+    relatedArticles: ["dancing-plagues-and-possessed-convents"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Johann Schilter, edition of Königshofen's chronicle, 1698, pages 1088 to 1090, Internet Archive (read 2026-11-16): the Strasbourg council's instruction for the dancers sent to Saint Vitus near Saverne; the rhyme 'St. Vits Tantz ward genant die Plag'", href: "https://archive.org/details/bub_gb_OMg-AAAAcAAJ" }, // schilter1698
+      { label: "J. F. C. Hecker, The Black Death, and The Dancing Mania, translated by B. G. Babington, Project Gutenberg (read 2026-11-16): the legend of Vitus's prayer; his relics at Corvey in 836; Paracelsus's milder form close to the modern chorea", href: "https://www.gutenberg.org/files/1739/1739.txt" }, // hecker
+      { label: "StatPearls, K. Beier, F. Lui and D. P. Pratt, 'Sydenham Chorea', 2 February 2024, PubMed record (read 2026-11-16): Sydenham chorea, or St. Vitus dance, in up to 40% of rheumatic fever patients; autoimmune after group A streptococcus", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=28613588" }, // beier2024
+      { label: "Archives of Neurology 62(1), G. Aubert, 'Charcot revisited: the case of Bruegel's chorea', January 2005, PubMed abstract (read 2026-11-16): the engraving Charcot called St Vitus' dance shows a pilgrimage of epileptics", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=15642865" }, // aubert2005
+    ], // four sources, one object per line
+  },
+  {
+    // Ergotism (new entry): poisoning by the rye fungus ergot, and why it does not explain the dancing plagues.
+    slug: "ergotism", // the /glossary/ergotism address
+    headword: "Ergotism", // the medical term
+    kind: "term", // a medical term
+    domains: ["cyber-security", "grc"], // as for the series
+    aliases: ["ergot poisoning", "St Anthony's fire", "ergotismo", "fogo de Santo Antônio"], // the plain form, the historical name, Portuguese
+    relatedTerms: ["dancing-plague", "mass-psychogenic-illness", "misinformation"], // this batch and an existing entry
+    relatedArticles: ["dancing-plagues-and-possessed-convents", "witch-hunts-and-moral-panics"], // the part and the Salem discussion (agent C)
+    sources: [ // every label says what the page says and when it was read
+      { label: "Journal of the Royal College of Physicians of Edinburgh 39(2), M. R. Lee, 'The history of ergot of rye (Claviceps purpurea), Part I', June 2009, PubMed abstract (read 2026-11-16): gangrenous and convulsive forms; coma and death; 10 to 20 per cent mortality in major outbreaks", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=19847980" }, // lee2009
+      { label: "The Psychologist 22, John Waller, July 2009 (read 2026-11-16): a vogue for biological explanations; highly unlikely that ergotism caused remorseless bouts of dancing", href: "https://www.bps.org.uk/psychologist/dancing-plagues-and-mass-hysteria" }, // waller2009
+      { label: "The Public Domain Review, Ned Pennant-Rea, 10 July 2018 (read 2026-11-16): ergot restricts blood flow to the extremities; the poisoned could not dance for days", href: "https://publicdomainreview.org/2018/07/10/the-dancing-plague-of-1518/" }, // pennant-rea2018
+      { label: "Science 192(4234), Linnda R. Caporael, 'Ergotism: the satan loosed in Salem?', 2 April 1976, PubMed record (read 2026-11-16): the Salem ergot hypothesis", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=769159" }, // caporael1976
+      { label: "Science 194(4272), Nicholas P. Spanos and Jack Gottlieb, 'Ergotism and the Salem Village witch trials', 24 December 1976, PubMed record (read 2026-11-16): the reply in the same journal", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=795029" }, // spanos-gottlieb1976
+    ], // five sources, one object per line
+  },
+  {
+    // Moral panic (new entry): Stanley Cohen's concept, the five criteria that followed and the critiques.
+    slug: "moral-panic", // the /glossary/moral-panic address
+    headword: "Moral panic", // the sociologists' term, sentence case
+    kind: "term", // a term from sociology and criminology
+    domains: ["cyber-security", "grc"], // as for the psyops and mass-hysteria series: the human attack surface and information policy
+    aliases: ["moral panics", "pânico moral", "pânicos morais"], // plural and Portuguese
+    relatedTerms: ["folk-devil", "witch-hunt", "satanic-panic", "misinformation", "information-cascade"], // this batch, then existing entries
+    relatedArticles: ["witch-hunts-and-moral-panics", "satanic-panic-false-memories-and-the-escola-base-case", "mass-hysteria-how-groups-come-to-believe-anything"], // the two parts drafted here and the series opener (same batch)
+    sources: [ // every label says what the page says and when it was read
+      { label: "Erich Goode and Nachman Ben-Yehuda, Moral Panics: The Social Construction of Deviance, 2nd edition, Wiley-Blackwell, 2009, chapter 1 'Enter the Moral Panic', publisher's excerpt (read 2026-11-16): Cohen's 1972 definition; the Clacton events of Easter 1964, the headlines and the distortions Cohen documented; moral entrepreneurs", href: "https://media.wiley.com/product_data/excerpt/47/14051893/1405189347.pdf" }, // wiley-goode-benyehuda-2009-excerpt
+      { label: "Chas Critcher, 'Moral Panic Analysis: Past, Present and Future', Sociology Compass 2(4), 1127-1144, 2008, copy hosted by Erasmus University Rotterdam (read 2026-11-16): Goode and Ben-Yehuda's five criteria; the attributional and processual models; McRobbie and Thornton; Jewkes; Cornwell and Linders", href: "https://eur.nl/media/123420" }, // critcher2008
+      { label: "Paul Lashmar, 'Journalist, Folk Devil?', in Petley, Critcher, Hughes and Rohloff (eds.), Moral Panics in the Contemporary World, Bloomsbury Academic, 2013, accepted version in City Research Online (read 2026-11-16): Cohen's 2002 introduction on disproportionality; de Young on contestable stages; the 1964 to 1966 seaside clashes as iconic images", href: "https://openaccess.city.ac.uk/id/eprint/19050/3/MoralPanicBloomsburyLashmar%20%2528PL%20Revise%2529.pdf" }, // lashmar2013
+      { label: "International Journal of Cultural Studies, James P. Walsh, 'Social media and moral panics: Assessing the effects of technological change on societal reaction', published 28 March 2020, full text via Europe PMC (read 2026-11-16): folk devils who produce their own media can fight back; social media also facilitate division and hostility", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7201200/fullTextXML" }, // walsh2020
+      { label: "Hansard, House of Commons, Malicious Damage Bill, second reading, 23 June 1964 (read 2026-11-16): the bill introduced after the Whitsun disturbances at three seaside towns; the member for Brighton Pavilion on practically no damage at Brighton", href: "https://api.parliament.uk/historic-hansard/commons/1964/jun/23/malicious-damage-bill" }, // hansard-1964-06-23
+    ], // five sources, one object per line
+  },
+  {
+    // Folk devil (new entry): the person or group cast as the threat in a moral panic.
+    slug: "folk-devil", // the /glossary/folk-devil address
+    headword: "Folk devil", // Cohen's term, sentence case
+    kind: "term", // a term from sociology
+    domains: ["cyber-security", "grc"], // influence and information policy, as for the series
+    aliases: ["folk devils", "demônio popular", "demônios populares"], // plural and the Portuguese gloss used in the pt-BR draft
+    relatedTerms: ["moral-panic", "witch-hunt", "satanic-panic", "escola-base-case", "propaganda"], // this batch, then an existing entry
+    relatedArticles: ["witch-hunts-and-moral-panics", "satanic-panic-false-memories-and-the-escola-base-case"], // the two parts drafted here
+    sources: [ // every label says what the page says and when it was read
+      { label: "Erich Goode and Nachman Ben-Yehuda, Moral Panics: The Social Construction of Deviance, 2nd edition, Wiley-Blackwell, 2009, chapter 1, publisher's excerpt (read 2026-11-16): the folk devil as a 'suitable enemy' and the personification of evil; Cohen's 'gallery of contemporary folk devils'; the Mods and Rockers", href: "https://media.wiley.com/product_data/excerpt/47/14051893/1405189347.pdf" }, // wiley-goode-benyehuda-2009-excerpt
+      { label: "Chas Critcher, 'Moral Panic Analysis: Past, Present and Future', Sociology Compass 2(4), 2008, copy hosted by Erasmus University Rotterdam (read 2026-11-16): the hostility criterion, deviants collectively designated as the enemy of respectable society", href: "https://eur.nl/media/123420" }, // critcher2008
+      { label: "International Journal of Cultural Studies, James P. Walsh, 'Social media and moral panics', 28 March 2020, full text via Europe PMC (read 2026-11-16): McRobbie and Thornton on folk devils who produce their own media and fight back", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7201200/fullTextXML" }, // walsh2020
+      { label: "Paul Lashmar, 'Journalist, Folk Devil?', in Moral Panics in the Contemporary World, Bloomsbury Academic, 2013, accepted version in City Research Online (read 2026-11-16): de Young on accused day-care workers who organized and used publicity against their persecution", href: "https://openaccess.city.ac.uk/id/eprint/19050/3/MoralPanicBloomsburyLashmar%20%2528PL%20Revise%2529.pdf" }, // lashmar2013
+    ], // four sources, one object per line
+  },
+  {
+    // Witch hunt (new entry): the early modern prosecutions, their scale as estimated, and the metaphor.
+    slug: "witch-hunt", // the /glossary/witch-hunt address
+    headword: "Witch hunt", // the common term, sentence case
+    kind: "term", // a historical term that became a metaphor
+    domains: ["cyber-security", "grc"], // as for the series
+    aliases: ["witch-hunt", "witch hunts", "witch-hunting", "witch trials", "caça às bruxas", "caças às bruxas"], // spellings, the historians' "witch trials" and Portuguese
+    relatedTerms: ["malleus-maleficarum", "moral-panic", "folk-devil", "satanic-panic", "propaganda"], // this batch, then an existing entry
+    relatedArticles: ["witch-hunts-and-moral-panics", "satanic-panic-false-memories-and-the-escola-base-case"], // the two parts drafted here
+    sources: [ // every label says what the page says and when it was read
+      { label: "The Economic Journal 128, Peter T. Leeson and Jacob W. Russ, 'Witch Trials', August 2018, author's copy (read 2026-11-16): medieval scepticism; the 1398 Paris declaration; data on more than 43,000 people tried in 21 countries; the historians' consensus of 100,000 to 110,000 tried c. 1400 to c. 1750, about half executed", href: "https://www.peterleeson.com/Witch_Trials.pdf" }, // leeson-russ2018
+      { label: "Julian Goodare, Lauren Martin, Joyce Miller and Louise Yeoman, The Survey of Scottish Witchcraft, University of Edinburgh, Introduction (read 2026-11-16): 3,837 people accused in Scotland 1563 to 1736; sentences known in 305 cases; 84% of the accused women; most scholars' figure of about 60,000 executions in Europe, against the nine million sometimes given", href: "https://witches.hca.ed.ac.uk/faq/" }, // ssw-faq
+      { label: "Benjamin Ray, 'The Salem Witch Trials Digital Archive: How and Why', University of Virginia, 2022 (read 2026-11-16): at least 155 people arrested in 1692 and 1693; 30 convicted, 19 hanged, one man crushed to death with stones, five died in prison", href: "https://salem.lib.virginia.edu/intro.html" }, // salem-intro
+      { label: "United Nations Human Rights Council, resolution 47/8, 'Elimination of harmful practices related to accusations of witchcraft and ritual attacks', adopted without a vote on 12 July 2021 (read 2026-11-16): killings, mutilation and burning after witchcraft accusations, often with impunity", href: "https://documents.un.org/api/symbol/access?s=A/HRC/RES/47/8&l=en&t=pdf" }, // un-hrc-47-8
+      { label: "Scottish Government, 'International Women's Day 2022: First Minister's statement', 8 March 2022 (read 2026-11-16): a formal, posthumous apology to all those accused, convicted, vilified or executed under the Witchcraft Act 1563", href: "https://www.gov.scot/publications/international-womens-day-2022-first-ministers-statement-8-march-2022/" }, // govscot-2022
+    ], // five sources, one object per line
+  },
+  {
+    // Malleus Maleficarum (new entry): the witch-hunters' handbook of the 1480s, with its disputed date, authorship and approbation.
+    slug: "malleus-maleficarum", // the /glossary/malleus-maleficarum address
+    headword: "Malleus Maleficarum", // the Latin title, as the sources write it
+    kind: "lore", // a historical artefact, cited from the text and the historians who studied it
+    domains: ["cyber-security", "grc"], // as for the series (an early case of a printed manual for producing confessions)
+    aliases: ["Hammer of Witches", "Hexenhammer", "Martelo das Bruxas", "Martelo das Feiticeiras"], // English, German and Portuguese titles
+    relatedTerms: ["witch-hunt", "moral-panic", "propaganda"], // this batch, then an existing entry
+    relatedArticles: ["witch-hunts-and-moral-panics"], // part 296
+    disputed: true, // the date of the first printing, the authorship and the Cologne approbation are disputed; corrected in context
+    sources: [ // every label says what the page says and when it was read
+      { label: "Hans Peter Broedel, The Malleus Maleficarum and the construction of witchcraft: Theology and popular belief, Manchester University Press, 2003, open-access edition, Internet Archive copy of the OAPEN file (read 2026-11-16): Ravensburg 1484 and Innsbruck 1485; the bull; Golser's letters; Sprenger's minimal role; two Cologne approbations; editions to 1670", href: "https://archive.org/download/oapen-20.500.12657-35002/341393.pdf" }, // broedel2003 (see INTEGRATION section 3: check against https://library.oapen.org/handle/20.500.12657/35002)
+      { label: "Christopher S. Mackay, The Hammer of Witches: A Complete Translation of the Malleus Maleficarum, Cambridge University Press, 2009, publisher's excerpt of the introduction (read 2026-11-16): published in 1486 at Speyer and dispatched for sale by February 1487; the authorship question; Hansen and the approbation; a major role in the efforts to stamp out witchcraft", href: "https://assets.cambridge.org/97805217/47875/excerpt/9780521747875_excerpt.pdf" }, // mackay2009 (read only through the fetch tool; see section 4)
+      { label: "Heinrich Kramer (Institoris) and James Sprenger, Malleus Maleficarum, translated by Montague Summers (1928), Standard Ebooks edition (read 2026-11-16): the bull Summis desiderantes dated 9 December 1484; confession, promises and torture in Part III; the notarial document of 19 May 1487", href: "https://standardebooks.org/ebooks/heinrich-kramer/malleus-maleficarum/montague-summers/text/single-page" }, // summers1928
+      { label: "The Economic Journal 128, Peter T. Leeson and Jacob W. Russ, 'Witch Trials', August 2018, author's copy (read 2026-11-16): Christian authorities unwilling to admit witches existed between 900 and 1400; the 1258 canon; the 1398 Paris declaration", href: "https://www.peterleeson.com/Witch_Trials.pdf" }, // leeson-russ2018
+    ], // four sources, one object per line
+  },
+  {
+    // Satanic panic (new entry): the 1980s and 1990s wave of ritual-abuse accusations, what investigations and courts found, and the counter-reading.
+    slug: "satanic-panic", // the /glossary/satanic-panic address
+    headword: "Satanic panic", // the common name, sentence case
+    kind: "term", // a term for a historical episode, used by historians and journalists
+    domains: ["cyber-security", "grc"], // as for the series
+    aliases: ["satanic ritual abuse", "ritual abuse", "pânico satânico", "abuso ritual satânico"], // the allegations' own name and Portuguese
+    relatedTerms: ["moral-panic", "false-memory", "recovered-memory", "escola-base-case", "witch-hunt", "folk-devil"], // this batch
+    relatedArticles: ["satanic-panic-false-memories-and-the-escola-base-case", "witch-hunts-and-moral-panics"], // part 297, then 296
+    sources: [ // every label says what the page says and when it was read
+      { label: "Federal Bureau of Investigation, National Center for the Analysis of Violent Crime, Kenneth V. Lanning, 'Investigator's Guide to Allegations of \"Ritual\" Child Abuse', January 1992, NCJRS 136592 (read 2026-11-16): no bodies or physical evidence of murder in the cases he knew; allegations sorted into impossible, improbable, probable and corroborated; the number of people telling the same story as a reason to doubt it", href: "https://www.ojp.gov/pdffiles1/Digitization/136592NCJRS.pdf" }, // lanning1992
+      { label: "Douglas O. Linder, 'The McMartin Preschool Abuse Trial: An Account', Famous Trials, University of Missouri-Kansas City School of Law (read 2026-11-16): the police chief's letter to about 200 parents; the escalating allegations; the trials ending without a conviction", href: "https://famous-trials.com/mcmartin/902-home" }, // linder-mcmartin
+      { label: "National Registry of Exonerations, John Stoll (read 2026-11-16): at least 30 defendants convicted in linked Kern County cases 1984 to 1986; 20 of those imprisoned exonerated between 1991 and 2008, with evidence that child witnesses were coerced or persuaded", href: "https://exonerationregistry.org/cases/11009" }, // nre-stoll
+      { label: "Times Higher Education, Celia Kitzinger, 'The Satanic disabuser', 25 August 1995 (read 2026-11-16): Jean La Fontaine's study of 84 alleged ritual-abuse cases in England, three substantiated and none satanic; her critics and her replies", href: "https://www.timeshighereducation.com/node/5156" }, // the-1995
+      { label: "Supreme Court of New Zealand, Ellis v R, [2022] NZSC 115, 7 October 2022 (read 2026-11-16): the 1993 convictions of a Christchurch creche worker quashed; unbalanced expert evidence; risk of contamination of the children's accounts", href: "https://www.courtsofnz.govt.nz/assets/cases/2022/2022-NZSC-115.pdf" }, // nzsc-115
+      { label: "Michael Salter, 'Organised child sexual abuse in the media', forthcoming in the Oxford Research Encyclopedia of Criminology and Criminal Justice, 2016, author's copy hosted by Mémoire Traumatique et Victimologie (read 2026-11-16): the argument that medical evidence in McMartin was erased from coverage and that the witch-hunt framing is part of a backlash, drawing on Ross Cheit", href: "https://www.memoiretraumatique.org/assets/files/v1/Documents-pdf/2016_Organised_child_sexual_abuse_in_the_media.pdf" }, // salter2016
+    ], // six sources, one object per line
+  },
+  {
+    // False memory (new entry): recollections of events that did not happen, the implantation studies and the dispute over counting them.
+    slug: "false-memory", // the /glossary/false-memory address
+    headword: "False memory", // the psychologists' term, sentence case
+    kind: "term", // a term from cognitive psychology
+    domains: ["cyber-security", "grc"], // as for the psyops series' entries on memory and belief
+    aliases: ["false memories", "memory implantation", "lost in the mall", "falsa memória", "falsas memórias", "perdido no shopping"], // plural, the paradigm's names and Portuguese
+    relatedTerms: ["recovered-memory", "satanic-panic", "illusory-truth-effect", "continued-influence-effect", "misinformation"], // this batch, then existing entries
+    relatedArticles: ["satanic-panic-false-memories-and-the-escola-base-case", "why-misbeliefs-persist"], // part 297 and the psyops part on persistence
+    sources: [ // every label says what the page says and when it was read
+      { label: "Memory 31(6), Gillian Murphy, Caroline Dawson, Charlotte Huston and others, 'Lost in the mall again: a preregistered replication and extension of Loftus & Pickrell (1995)', 2023, accepted manuscript in the University College Cork repository (read 2026-11-16): the 1995 design and its 25%; the criticisms; 123 participants, 35% coded as false memories", href: "https://cora.ucc.ie/server/api/core/bitstreams/075c236a-356f-4694-94c5-9500b6c148d3/content" }, // murphy2023
+      { label: "Psychonomic Bulletin & Review 9(3), Kimberley A. Wade, Maryanne Garry, J. Don Read and D. Stephen Lindsay, 'A picture is worth a thousand lies', September 2002, PubMed abstract (read 2026-11-16): a doctored balloon-ride photograph; 50% of 20 participants with complete or partial false memories", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=12412902" }, // wade2002
+      { label: "Memory 25(2), Alan Scoboria, Kimberley A. Wade, D. Stephen Lindsay and others, 'A mega-analysis of memory reports from eight peer-reviewed false memory implantation studies', February 2017, PubMed abstract (read 2026-11-16): 423 participants; 30.4% false memories under a common coding scheme", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=27892833" }, // scoboria2017
+      { label: "Applied Cognitive Psychology 31(1), Chris R. Brewin and Bernice Andrews, 'Creating Memories for False Autobiographical Events in Childhood: A Systematic Review', 2017, PubMed abstract (read 2026-11-16): some recollection in 47% on average, but only 15% likely to be rated full memories; susceptibility more limited than suggested", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=28163368" }, // brewin-andrews2017
+      { label: "Royal Holloway, University of London, 'New research interrogates implanting and judgements of false memory', January 2025 (read 2026-11-16): Andrews and Brewin's reanalysis of the 2023 replication from the participants' own reports", href: "https://www.royalholloway.ac.uk/research-and-education/departments-and-schools/psychology/news/new-research-interrogates-implanting-and-judgements-of-false-memory" }, // rhul2025
+      { label: "Applied Cognitive Psychology, Kimberley A. Wade, Paul Riesthuis, Charlotte Bücken, Henry Otgaar and Elizabeth F. Loftus, 'Still Lost in the Mall: False Memories Happen and That's What Matters', 2025, open access via the University of Warwick (read 2026-11-16): the reply to Andrews and Brewin; even low rates of false memory can matter in practice", href: "https://wrap.warwick.ac.uk/189197/7/Applied%20Cognitive%20Psychology%20-%202025%20-%20Wade%20-%20Still%20Lost%20in%20the%20Mall%20False%20Memories%20Happen%20and%20That%20s%20What%20Matters.pdf" }, // wade2025
+    ], // six sources, one object per line
+  },
+  {
+    // Recovered memory (new entry): memories of trauma said to be forgotten and later recalled, and the "memory wars" over them.
+    slug: "recovered-memory", // the /glossary/recovered-memory address
+    headword: "Recovered memory", // the term used in the clinical and legal debate, sentence case
+    kind: "term", // a term from clinical psychology and law
+    domains: ["cyber-security", "grc"], // as for the series
+    aliases: ["recovered memories", "repressed memory", "repressed memories", "memory wars", "memória recuperada", "memória reprimida", "guerras da memória"], // plural, the repression wording, the debate's name and Portuguese
+    relatedTerms: ["false-memory", "satanic-panic", "moral-panic"], // this batch
+    relatedArticles: ["satanic-panic-false-memories-and-the-escola-base-case"], // part 297
+    sources: [ // every label says what the page says and when it was read
+      { label: "Psychological Science 25(2), Lawrence Patihis, Lavina Y. Ho, Ian W. Tingen, Scott O. Lilienfeld and Elizabeth F. Loftus, 'Are the \"memory wars\" over? A scientist-practitioner gap in beliefs about repressed memory', February 2014, PubMed abstract (read 2026-11-16): less belief in repressed memory among mainstream clinicians than in the 1990s; a gap between researchers and practitioners", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=24335599" }, // patihis2014
+      { label: "Psychological Science 25(10), Chris R. Brewin and Bernice Andrews, 'Why it is scientifically respectable to believe in repression', October 2014, PubMed record (read 2026-11-16): the reply's title and record", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=25134717" }, // brewin-andrews2014
+      { label: "Psychological Science 25(10), Lawrence Patihis, Scott O. Lilienfeld, Lavina Y. Ho and Elizabeth F. Loftus, 'Unconscious repressed memory is scientifically questionable', October 2014, PubMed record (read 2026-11-16): the rejoinder's title and record", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=25134716" }, // patihis2014b
+      { label: "Perspectives on Psychological Science 14(6), Henry Otgaar, Mark L. Howe, Lawrence Patihis and others, 'The Return of the Repressed: The Persistent and Problematic Claims of Long-Forgotten Trauma', 2019, full text via Europe PMC (read 2026-11-16): belief in repressed memories at 58%; dissociative amnesia argued to be a substitute term for repression", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6826861/fullTextXML" }, // otgaar2019
+      { label: "The Christian Science Monitor, 'Dredging the Past: Recovered Memory Or False Memory?', 25 July 1994 (read 2026-11-16): the Ramona verdict against two therapists, the first finding of a duty of care to a non-patient; the father's denial; the daughter did not recant", href: "https://www.csmonitor.com/1994/0725/25132.html" }, // csm1994
+    ], // five sources, one object per line
+  },
+  {
+    // Escola Base case (new entry): the 1994 São Paulo accusation, the archived inquiry and the indemnities against the State and the press.
+    slug: "escola-base-case", // the /glossary/escola-base-case address
+    headword: "Escola Base case", // the name used in Brazilian law and journalism, sentence case
+    kind: "lore", // a historical case, cited from the court record
+    domains: ["cyber-security", "grc"], // as for the series (an official source amplified without checking)
+    aliases: ["caso Escola Base", "Escola Base", "Escola de Educação Infantil Base"], // Portuguese names and the school's name
+    relatedTerms: ["moral-panic", "folk-devil", "satanic-panic", "misinformation"], // this batch, then an existing entry
+    relatedArticles: ["satanic-panic-false-memories-and-the-escola-base-case", "verification-and-fact-checking"], // part 297 and the psyops part on verification
+    sources: [ // every label says what the page says and when it was read
+      { label: "Superior Tribunal de Justiça, Recurso Especial nº 1.215.294/SP, Third Panel, rapporteur Justice Ricardo Villas Bôas Cueva, judged 17 December 2013, published 11 February 2014, full text published by Migalhas (read 2026-11-16): the facts found; the inquiry archived for lack of evidence; SBT's defence; Justice Nancy Andrighi's vote; REsp 351.779/SP against the State; the award reduced to R$100,000 each", href: "https://www.migalhas.com.br/arquivos/2014/2/art20140219-07.pdf" }, // stj-resp-1215294
+      { label: "Consultor Jurídico, 'IstoÉ é condenada a pagar R$ 120 mil a donos da Escola Base', 23 May 2006 (read 2026-11-16): the TJSP appeal; the judgments against the State; no payment after more than eleven years", href: "https://www.conjur.com.br/2006-mai-23/istoe_condenada_pagar_120_mil_donos_escola_base//?print=1" }, // conjur-2006-05-23
+      { label: "Consultor Jurídico, 'Jornal é condenado a indenizar no caso Escola Base', 28 May 2008 (read 2026-11-16): the Folha da Tarde headline; R$200,000 to a child named in it; awards against other outlets pending appeal", href: "https://www.conjur.com.br/2008-mai-28/jornal_condenado_indenizar_escola_base//?print=1" }, // conjur-2008-05-28
+      { label: "Diário do Nordeste, 'Caso Escola Base vira tema de documentário do Globoplay; relembre história', 9 November 2022 (read 2026-11-16): the reporter's 'Eu errei'; the owners' deaths by 2022; the case as compulsory study in journalism schools", href: "https://diariodonordeste.verdesmares.com.br/ultima-hora/pais/caso-escola-base-vira-tema-de-documentario-do-globoplay-relembre-historia-1.3298968" }, // dn-2022
+      { label: "Federação Nacional dos Jornalistas, Código de Ética dos Jornalistas Brasileiros, Vitória, 4 August 2007 (read 2026-11-16): presumption of innocence as a foundation of journalism (art. 9); no sensationalism in crime coverage (art. 11); hearing those accused (art. 12)", href: "https://fenaj.org.br/wp-content/uploads/2014/06/04-codigo_de_etica_dos_jornalistas_brasileiros.pdf" }, // fenaj-2007
+      { label: "Senado Federal, Lei nº 13.869, de 5 de setembro de 2019, compiled text (read 2026-11-16): article 38, the crime of an investigator attributing guilt through the media before the inquiry ends and the charge is made", href: "https://legis.senado.leg.br/norma/31300615/publicacao/34619199" }, // lei-13869-compilada
+    ], // six sources, one object per line
+  },
+  {
+    // Economic bubble (new entry): the competing definitions (Stiglitz, Shiller), Fama's objection and the tests since.
+    slug: "economic-bubble", // the /glossary/economic-bubble address
+    headword: "Economic bubble", // the common term, sentence case
+    kind: "term", // an economics term
+    domains: ["grc", "crypto"], // market regulation, and the crypto episodes the Learn part covers
+    aliases: ["speculative bubble", "asset bubble", "asset-price bubble", "financial bubble", "bolha econômica", "bolha especulativa", "bolha financeira"], // English forms and Portuguese (bare "bolha" stays with filter-bubble)
+    relatedTerms: ["tulip-mania", "south-sea-bubble", "encilhamento", "irrational-exuberance", "information-cascade", "social-contagion", "high-frequency-trading"], // this batch, an existing entry, hysteria-a's social-contagion, then trading
+    relatedArticles: ["manias-and-bubbles-from-tulips-to-meme-stocks", "high-frequency-trading-what-it-is-and-the-dispute"], // the part and the trading part it links
+    sources: [ // every label says what the page says and when it was read
+      { label: "Charles Himmelberg, Christopher Mayer and Todd Sinai, 'Assessing High House Prices: Bubbles, Fundamentals, and Misperceptions', NBER working paper 11643, September 2005 (read 2026-11-16): Joseph Stiglitz's 1990 definition, a price high today only because investors believe the selling price will be high tomorrow when fundamentals do not seem to justify it", href: "https://www.nber.org/system/files/working_papers/w11643/w11643.pdf" }, // himmelberg2005
+      { label: "Robert J. Shiller, 'Speculative Asset Prices', Nobel lecture, 8 December 2013 (read 2026-11-16): a speculative bubble as news of price increases spurring enthusiasm that spreads by psychological contagion and amplifies justifying stories; no widely accepted definition of the term", href: "https://www.nobelprize.org/uploads/2018/06/shiller-lecture.pdf" }, // shiller2013
+      { label: "Eugene F. Fama, 'Two Pillars of Asset Pricing', Nobel lecture, 8 December 2013 (read 2026-11-16): 'bubble' a treacherous term; no reliable evidence that price declines are predictable", href: "https://www.nobelprize.org/uploads/2018/06/fama-lecture.pdf" }, // fama2013
+      { label: "Robin Greenwood, Andrei Shleifer and Yang You, 'Bubbles for Fama', NBER working paper 23191, February 2017 (read 2026-11-16): sharp industry run-ups do not predict lower average returns but raise the probability of a crash, from 20% to 53% between a 50% and a 100% two-year net return", href: "https://www.nber.org/system/files/working_papers/w23191/w23191.pdf" }, // greenwood2017
+      { label: "Ben S. Bernanke, 'Asset-Price \"Bubbles\" and Monetary Policy', remarks, 15 October 2002 (read 2026-11-16): the Federal Reserve cannot reliably identify bubbles; monetary policy far too blunt a tool", href: "https://www.federalreserve.gov/boarddocs/speeches/2002/20021015/default.htm" }, // bernanke2002
+      { label: "Charles Mackay, 'Memoirs of Extraordinary Popular Delusions', London, Richard Bentley, 1841, Project Gutenberg eBook 636 (read 2026-11-16): the Mississippi scheme, the South Sea Bubble and the Tulipomania as the book's opening chapters", href: "https://www.gutenberg.org/cache/epub/636/pg636.txt" }, // mackay1841
+    ], // six sources, one object per line
+  },
+  {
+    // Tulip mania (new entry): Mackay's story of 1841 against the archival and price research.
+    slug: "tulip-mania", // the /glossary/tulip-mania address
+    headword: "Tulip mania", // the common English name, sentence case
+    kind: "term", // a term for a historical episode
+    domains: ["grc"], // the history of market regulation and speculation
+    aliases: ["tulipmania", "tulipomania", "Dutch tulip mania", "tulip bubble", "mania das tulipas", "tulipomania holandesa", "bolha das tulipas"], // spellings, Mackay's form and Portuguese
+    relatedTerms: ["economic-bubble", "south-sea-bubble", "collective-delusion", "illusory-truth-effect"], // this batch, hysteria-a's collective-delusion, then an existing entry on repetition
+    relatedArticles: ["manias-and-bubbles-from-tulips-to-meme-stocks"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Anne Goldgar, 'Tulip mania: the classic story of a Dutch financial bubble is mostly wrong', The Conversation, 12 February 2018 (read 2026-11-16): 37 buyers above 300 guilders identified, no chain of buyers longer than five, no one ruined, the economy unaffected, Mackay's anecdotes traced to satirical songs of 1637", href: "https://theconversation.com/tulip-mania-the-classic-story-of-a-dutch-financial-bubble-is-mostly-wrong-91413" }, // goldgar2018
+      { label: "University of Chicago Press blog, 'Financial speculation in the Dutch Golden Age', 29 May 2008 (read 2026-11-16): publication of Goldgar's Tulipmania: Money, Honor and Knowledge in the Dutch Golden Age (2007)", href: "https://pressblog.uchicago.edu/2008/05/29/financial-speculation-in-the-dutch-golden-age.html" }, // uchicago2008
+      { label: "Peter M. Garber, 'Tulipmania', Journal of Political Economy 97(3), June 1989, abstract in IDEAS/RePEc (read 2026-11-16): most of the episode not obvious madness; only the last month of common-bulb prices a potential bubble", href: "https://ideas.repec.org/a/ucp/jpolec/v97y1989i3p535-60.html" }, // garber1989
+      { label: "Earl Thompson, 'The tulipmania: Fact or artifact?', Public Choice 130(1), January 2007, abstract in IDEAS/RePEc (read 2026-11-16): prices an artefact of futures contracts converted into options", href: "https://ideas.repec.org/a/kap/pubcho/v130y2007i1p99-114.html" }, // thompson2007
+      { label: "Charles Mackay, 'Memoirs of Extraordinary Popular Delusions', 1841, Project Gutenberg eBook 636 (read 2026-11-16): the Tulipomania chapter, its chimney-sweeps, the sailor and the ruined merchants, and its named sources (Beckmann, Munting, Blainville)", href: "https://www.gutenberg.org/cache/epub/636/pg636.txt" }, // mackay1841
+    ], // five sources, one object per line
+    disputed: true, // the popular story is contradicted by the archival research; the depth explains
+  },
+  {
+    // South Sea Bubble (new entry): the 1720 scheme, the linked markets, the Committee of Secrecy and Newton's losses.
+    slug: "south-sea-bubble", // the /glossary/south-sea-bubble address
+    headword: "South Sea Bubble", // the historical name, as a proper noun
+    kind: "term", // a term for a historical episode
+    domains: ["grc"], // market regulation and corruption
+    aliases: ["South Sea Company", "South Sea scheme", "Bubble Act", "Bubble Act 1720", "bolha dos Mares do Sul", "Companhia dos Mares do Sul"], // the company, the scheme, the Act and Portuguese
+    relatedTerms: ["economic-bubble", "tulip-mania", "irrational-exuberance", "encilhamento"], // this batch
+    relatedArticles: ["manias-and-bubbles-from-tulips-to-meme-stocks"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Andrew Odlyzko, 'Isaac Newton and the perils of the financial South Sea', Physics Today, 1 July 2020 (read 2026-11-16): the company of 1711, the South Sea bill of 7 April 1720, the collapse by October to under a quarter of the peak, the 1720 operations as a Ponzi scheme, Newton's trades and net worth", href: "https://physicstoday.aip.org/features/isaac-newton-and-the-perils-of-the-financial-south-sea" }, // odlyzko2020
+      { label: "Rik G. P. Frehen, William N. Goetzmann and K. Geert Rouwenhorst, 'New Evidence on the First Financial Bubble', NBER working paper 15332, November 2009 (read 2026-11-16): 1720 in Paris, London and the Netherlands; speculation on the Atlantic trade and insurance; the Bubble Act of 9 June 1720; Aislabie's bribe of 20,000 pounds of stock", href: "https://www.nber.org/system/files/working_papers/w15332/w15332.pdf" }, // frehen2009
+      { label: "The Several Reports of the Committee of Secrecy to the Honourable House of Commons, relating to the late South-Sea Directors, London, 1721, Internet Archive text (read 2026-11-16): false and fictitious entries; stock of £574,500 booked as sold for £1,259,325 with no buyer named", href: "https://archive.org/download/bim_eighteenth-century_the-several-reports-of-t_great-britain-parliamen_1721/bim_eighteenth-century_the-several-reports-of-t_great-britain-parliamen_1721_djvu.txt" }, // secrecy1721
+      { label: "Joseph Spence, 'Anecdotes, Observations, and Characters, of Books and Men', ed. S. W. Singer, London, 1820, p. 368, Internet Archive text (read 2026-11-16): Lord Radnor's report that Newton could not calculate the madness of the people, asked while South Sea stock was rising", href: "https://archive.org/download/b29302547/b29302547_djvu.txt" }, // spence1820
+      { label: "Charles Mackay, 'Memoirs of Extraordinary Popular Delusions', 1841, Project Gutenberg eBook 636 (read 2026-11-16): the South Sea chapter and its unnamed 'scores of credible witnesses'", href: "https://www.gutenberg.org/cache/epub/636/pg636.txt" }, // mackay1841
+    ], // five sources, one object per line
+  },
+  {
+    // Encilhamento (new entry): Brazil's first great bubble, 1889 to 1891, from the decrees and the minister's own report.
+    slug: "encilhamento", // the /glossary/encilhamento address
+    headword: "Encilhamento", // the Portuguese name, kept in every locale
+    kind: "term", // a term for a historical episode
+    domains: ["grc"], // market regulation and its history in Brazil
+    aliases: ["Encilhamento crisis", "crise do Encilhamento", "bolha do Encilhamento"], // English and Portuguese forms
+    relatedTerms: ["economic-bubble", "south-sea-bubble", "irrational-exuberance"], // this batch
+    relatedArticles: ["manias-and-bubbles-from-tulips-to-meme-stocks"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Senado Federal, Decreto nº 165, de 17 de janeiro de 1890, 'Provê á organização de bancos de emissão' (read 2026-11-16): note-issuing banks backed by public bonds in three regions", href: "https://legis.senado.leg.br/norma/386185/publicacao/15722552" }, // decreto165
+      { label: "Revista Eletrônica da OAB-RJ, 'Os impactos da crise do Encilhamento e das medidas do Governo Provisório nos anos de 1890 e 1891 sobre o direito comercial' (read 2026-11-16): Decrees 164 and 165 of 17 January 1890, Decree 1,362 of 1891, the survivors, Decree 434 of 1891 in force until 1940", href: "https://revistaeletronicaoabrj.emnuvens.com.br/revista/article/download/512/498/943" }, // oabrj
+      { label: "Ney Carvalho, 'Furando a bolha do Encilhamento', Capital Aberto, 1 February 2011 (read 2026-11-16): more than 400 listed companies, the Bolsa Livre of August 1890, the 3% tax of 14 February 1891 and the brokers' strike, the name's origin in the racecourse", href: "https://capitalaberto.com.br/empresas/2011/02/furando-a-bolha-do-encilhamento" }, // carvalho2011
+      { label: "Relatório do Ministro da Fazenda Ruy Barbosa, Rio de Janeiro, Imprensa Nacional, January 1891, p. 53, Internet Archive page images (read 2026-11-16): companies devised to exploit the inexperienced; the decree of 13 October 1890", href: "https://archive.org/download/rmfazenda18891890/rmfazenda18891890.pdf" }, // ruibarbosa1891
+      { label: "Marcus Antônio Croce, Revista de História Econômica & Economia Regional Aplicada 6(11), July to December 2011 (read 2026-11-16): Taunay's novel against the republican government, Andrada against the monarchy, Levy and Stein on the speculation of financial agents", href: "https://periodicos.ufjf.br/index.php/heera/article/view/26334/18146" }, // croce2011
+    ], // five sources, one object per line
+  },
+  {
+    // Irrational exuberance (new entry): Greenspan's question of 1996, the test of the warning and the late-1990s dispute.
+    slug: "irrational-exuberance", // the /glossary/irrational-exuberance address
+    headword: "Irrational exuberance", // the phrase, sentence case
+    kind: "expression", // a phrase that became a label
+    domains: ["grc"], // central banking and market regulation
+    aliases: ["exuberância irracional"], // Portuguese
+    relatedTerms: ["economic-bubble", "south-sea-bubble", "tulip-mania"], // this batch
+    relatedArticles: ["manias-and-bubbles-from-tulips-to-meme-stocks"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Alan Greenspan, 'The Challenge of Central Banking in a Democratic Society', American Enterprise Institute, 5 December 1996 (read 2026-11-16): how do we know when irrational exuberance has unduly escalated asset values", href: "https://www.federalreserve.gov/boarddocs/speeches/1996/19961205.htm" }, // greenspan1996
+      { label: "Eugene F. Fama, 'Two Pillars of Asset Pricing', Nobel lecture, 8 December 2013 (read 2026-11-16): Shiller's warning to Greenspan of 3 December 1996 per his book's website; the index at 1518, 3191 in September 2000 and 1739 at the March 2003 low", href: "https://www.nobelprize.org/uploads/2018/06/fama-lecture.pdf" }, // fama2013
+      { label: "Ľuboš Pástor and Pietro Veronesi, 'Was There a Nasdaq Bubble in the Late 1990s?', NBER working paper 10581, 2004 (read 2026-11-16): the Nasdaq peak of 5,048.62 on 10 March 2000; peak valuations matched by high but plausible uncertainty", href: "https://www.nber.org/system/files/working_papers/w10581/w10581.pdf" }, // pastor2004
+      { label: "Eli Ofek and Matthew Richardson, 'DotCom Mania: The Rise and Fall of Internet Stock Prices', NBER working paper 8630, December 2001 (read 2026-11-16): short-sale constraints and the expiry of lockup agreements", href: "https://www.nber.org/system/files/working_papers/w8630/w8630.pdf" }, // ofek2001
+      { label: "Rik G. P. Frehen, William N. Goetzmann and K. Geert Rouwenhorst, 'New Evidence on the First Financial Bubble', NBER working paper 15332, November 2009 (read 2026-11-16): evidence against indiscriminate irrational exuberance in 1720", href: "https://www.nber.org/system/files/working_papers/w15332/w15332.pdf" }, // frehen2009
+    ], // five sources, one object per line
+  },
+  {
+    // Rumour (new entry): Allport and Postman's definition and law, what later research kept, and the routes to violence and runs.
+    slug: "rumour", // the /glossary/rumour address (Oxford spelling, as the site writes)
+    headword: "Rumour", // the common term, sentence case
+    kind: "term", // a social-psychology term
+    domains: ["cyber-security", "grc"], // influence operations and their governance, as the psyops entries are filed
+    aliases: ["rumor", "rumours", "rumors", "basic law of rumour", "basic law of rumor", "rumour clinic", "rumor clinic", "boato", "boatos", "lei básica do boato"], // both spellings, the law, the 1940s clinics and Portuguese ("rumour cascade" stays with information-cascade)
+    relatedTerms: ["information-cascade", "illusory-truth-effect", "misinformation", "fact-checking", "forwarding-limit", "bank-run", "lynching", "great-fear"], // existing entries, then this batch
+    relatedArticles: ["rumour-panic-and-lynching", "from-the-lodge-to-the-network-how-reach-changed", "why-misbeliefs-persist"], // the part, the reach part, the misbeliefs part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Gordon W. Allport and Leo Postman, 'The Psychology of Rumor', New York, Henry Holt, 1947 (1948 printing), Internet Archive text (read 2026-11-16): the definition, R ~ i × a, leveling, sharpening and assimilation, about 70% of details lost in five or six retellings, Knapp's 1,000 rumours, the rumour clinics, rumour and riot", href: "https://archive.org/download/psychology_of_rumor/psychology_of_rumor_djvu.txt" }, // allport1947
+      { label: "Adrien Friggeri, Lada A. Adamic, Dean Eckles and Justin Cheng, 'Rumor Cascades', Proceedings of the Eighth International AAAI Conference on Weblogs and Social Media, 2014 (read 2026-11-16): rumour cascades deeper than reshare cascades in general; Snopes links raise deletion without stopping large cascades", href: "https://cdn.aaai.org/ojs/14559/14559-28-18077-1-2-20201228.pdf" }, // friggeri2014
+      { label: "Estado de Minas, 'PF conclui que boato do Bolsa Família foi espontâneo', 12 July 2013 (read 2026-11-16): the Federal Police found the rumour of May 2013 spontaneous, with no crime", href: "https://www.em.com.br/app/noticia/politica/2013/07/12/interna_politica,421761/pf-conclui-que-boato-do-bolsa-familia-foi-espontaneo.shtml" }, // em2013
+      { label: "The Royal Swedish Academy of Sciences, The Prize in Economic Sciences 2022, press release, 10 October 2022 (read 2026-11-16): banks vulnerable to rumours about their imminent collapse; the rumour may become a self-fulfilling prophecy", href: "https://www.nobelprize.org/prizes/economic-sciences/2022/press-release/" }, // nobel2022
+    ], // four sources, one object per line
+  },
+  {
+    // Panic buying (new entry): the four causes in the literature and what purchase data showed in 2020.
+    slug: "panic-buying", // the /glossary/panic-buying address
+    headword: "Panic buying", // the common term, sentence case
+    kind: "term", // a consumer-behaviour term
+    domains: ["grc"], // crisis risk and its management
+    aliases: ["panic purchasing", "over-purchasing", "stockpiling", "compras de pânico", "compra por pânico"], // English forms and Portuguese (hoarding is a distinct problem, see the depth)
+    relatedTerms: ["bank-run", "rumour", "information-cascade", "social-proof"], // this batch, an existing entry, hysteria-a's social-proof
+    relatedArticles: ["rumour-panic-and-lynching"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Kum Fai Yuen and others, 'The Psychological Causes of Panic Buying Following a Health Crisis', International Journal of Environmental Research and Public Health 17(10), May 2020, Europe PMC (read 2026-11-16): panic buying a herd behaviour that often results in stockouts; four groups of causes", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7277661/fullTextXML" }, // yuen2020
+      { label: "Martin O'Connell, Áureo de Paula and Kate Smith, 'Preparing for a pandemic: spending dynamics and panic buying during the COVID-19 first wave', Fiscal Studies 42(2), June 2021, Europe PMC (read 2026-11-16): staples over 80% above 2019 on 14 March 2020; most households buying more; limits would have done little", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC8209877/fullTextXML" }, // oconnell2021
+      { label: "Richard P. Bentall and others, 'Pandemic buying', PLoS One 16(1), January 2021, Europe PMC (read 2026-11-16): about three quarters reported minimal over-purchasing in the United Kingdom and Ireland; predictors", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7840055/fullTextXML" }, // bentall2021
+      { label: "Jonathan David, Shanara Visvalingam and Melissa M. Norberg, 'Why did all the toilet paper disappear?', Psychiatry Research 303, 114062, 2021, Europe PMC (read 2026-11-16): panic buying distinguished from hoarding", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC8520319/fullTextXML" }, // david2021
+    ], // four sources, one object per line
+  },
+  {
+    // Bank run (new entry): the Diamond-Dybvig model, Northern Rock, Silicon Valley Bank and the Bolsa Família run.
+    slug: "bank-run", // the /glossary/bank-run address
+    headword: "Bank run", // the common term, sentence case
+    kind: "term", // a banking term
+    domains: ["grc"], // banking regulation and supervision
+    aliases: ["run on a bank", "run on the bank", "deposit run", "bank panic", "Diamond-Dybvig model", "corrida bancária", "corrida aos bancos"], // English forms, the model and Portuguese
+    relatedTerms: ["rumour", "panic-buying", "economic-bubble", "information-cascade"], // this batch, then an existing entry
+    relatedArticles: ["rumour-panic-and-lynching", "manias-and-bubbles-from-tulips-to-meme-stocks"], // the part, and the part on bubbles
+    sources: [ // every label says what the page says and when it was read
+      { label: "Douglas W. Diamond and Philip H. Dybvig, 'Bank Runs, Deposit Insurance, and Liquidity', Journal of Political Economy 91(3), 1983, reprinted in the Federal Reserve Bank of Minneapolis Quarterly Review, Winter 2000 (read 2026-11-16): multiple equilibria, one of them a run; sunspots; deposit insurance", href: "https://www.minneapolisfed.org/research/qr/qr2412.pdf" }, // diamond1983
+      { label: "The Royal Swedish Academy of Sciences, The Prize in Economic Sciences 2022, press release, 10 October 2022 (read 2026-11-16): the rumour may become a self-fulfilling prophecy", href: "https://www.nobelprize.org/prizes/economic-sciences/2022/press-release/" }, // nobel2022
+      { label: "Bank of England, Financial Stability Report, October 2007 (read 2026-11-16): the announcement of 14 September that led to a retail deposit run on Northern Rock; the guarantee of 17 September", href: "https://www.bankofengland.co.uk/-/media/boe/files/financial-stability-report/2007/october-2007.pdf" }, // boe2007
+      { label: "Board of Governors of the Federal Reserve System, 'Review of the Federal Reserve's Supervision and Regulation of Silicon Valley Bank', 28 April 2023 (read 2026-11-16): over $40 billion lost on 9 March; social media and the speed of runs; mismanagement", href: "https://www.federalreserve.gov/publications/files/svb-review-20230428.pdf" }, // fed2023
+      { label: "Federal Deposit Insurance Corporation, 'FDIC's Supervision of Signature Bank', 28 April 2023 (read 2026-11-16): panic through texts and social media, a short seller's allegation, poor management as root cause", href: "https://www.fdic.gov/sites/default/files/2024-03/pr23033a.pdf" }, // fdic2023
+      { label: "Congresso em Foco, 'Polícia Federal concluiu que não houve crime no caso dos boatos sobre o Bolsa Família', 12 July 2013 (read 2026-11-16): about 900,000 withdrawals, R$152 million, at least twelve states", href: "https://congressoemfoco.com.br/noticias/pf-descarta-crime-sobre-boatos-do-fim-do-bolsa-familia" }, // cef2013
+    ], // six sources, one object per line
+  },
+  {
+    // Lynching (new entry): from the US South to Tulsa, Guarujá and India, with what courts and counts found.
+    slug: "lynching", // the /glossary/lynching address
+    headword: "Lynching", // the common term, sentence case
+    kind: "term", // a legal and historical term
+    domains: ["cyber-security", "grc"], // rumour-driven violence and its governance, filed with the psyops entries
+    aliases: ["lynch mob", "lynch law", "mob lynching", "linchamento", "linchamentos", "justiçamento"], // English forms and Portuguese
+    relatedTerms: ["rumour", "forwarding-limit", "misinformation", "marco-civil-da-internet", "great-fear"], // this batch and existing entries (add moral-panic and witch-hunt when hysteria-c's land)
+    relatedArticles: ["rumour-panic-and-lynching", "from-the-lodge-to-the-network-how-reach-changed"], // the part and the reach part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Ida B. Wells, 'Southern Horrors: Lynch Law in All Its Phases', New York, 1892, Project Gutenberg (read 2026-11-16): 728 lynched in eight years, only one-third even charged with rape", href: "https://www.gutenberg.org/cache/epub/14975/pg14975.txt" }, // wells1892
+      { label: "Equal Justice Initiative, 'Lynching in America: Confronting the Legacy of Racial Terror', third edition (read 2026-11-16): 4,084 racial terror lynchings in twelve Southern states, 1877 to 1950", href: "https://lynchinginamerica.eji.org/drupal/sites/default/files/2021-05/report.pdf" }, // eji
+      { label: "Oklahoma Commission to Study the Tulsa Race Riot of 1921, report, 28 February 2001 (read 2026-11-16): the elevator incident, the Tulsa Tribune story, 1,256 homes, between one and three hundred killed, no prosecutions", href: "https://www.okhistory.org/research/forms/freport.pdf" }, // tulsa2001
+      { label: "Tribunal de Justiça de São Paulo, Apelação Cível 1087431-85.2019.8.26.0100, 1 September 2020, copy published by InternetLab (read 2026-11-16): the platform not liable without notice; the attackers already convicted", href: "https://internetlab.org.br/wp-content/uploads/2020/09/tjsplinchamento.pdf" }, // tjsp2020
+      { label: "Pesquisa FAPESP, 'Days of fury' (read 2026-11-16): José de Souza Martins's catalogue of 2,028 cases, 782 dead, 7.8% of victims innocent", href: "https://revistapesquisa.fapesp.br/en/days-of-fury-2/" }, // fapesp
+      { label: "Supreme Court of India, Tehseen S. Poonawalla v. Union of India, judgment of 17 July 2018 (read 2026-11-16): lynching and mob violence fed by fake news; directions; a separate offence recommended", href: "https://api.sci.gov.in/supremecourt/2016/27263/27263_2016_Judgement_17-Jul-2018.pdf" }, // sci2018
+    ], // six sources, one object per line
+  },
+  {
+    // Great Fear (new entry): the rural panic of July and August 1789, its centres, its archives and its consequence.
+    slug: "great-fear", // the /glossary/great-fear address
+    headword: "Great Fear", // the English name, as a proper noun
+    kind: "term", // a term for a historical episode
+    domains: ["cyber-security", "grc"], // filed with rumour and lynching
+    aliases: ["Grande Peur", "Great Fear of 1789", "Grande Medo"], // French, the dated form and Portuguese
+    relatedTerms: ["rumour", "lynching", "mass-hysteria", "collective-delusion"], // this batch, then hysteria-a's mass-hysteria and collective-delusion
+    relatedArticles: ["rumour-panic-and-lynching"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Jean Tulard, 'Grande Peur (1789)', Encyclopædia Universalis (read 2026-11-16): vagrants turned into armies of brigands, Lefebvre's six centres, 20 July to 6 August, Lefebvre and Faÿ, the night of 4 August", href: "https://www.universalis.fr/encyclopedie/grande-peur/" }, // tulard
+      { label: "Archives départementales du Jura, 'La Révolution dans les archives comtoises', document 9 (AD Haute-Saône 454 L 2/3) (read 2026-11-16): the explosion at Quincey on 19 July 1789 as the signal of the Great Fear in the province", href: "https://archives39.fr/document/la-revolution-dans-les-archives-comtoises" }, // ad39
+      { label: "Association 2a31, Lettre 60 (read 2026-11-16): Verfeil's consuls in emergency session on 30 July 1789", href: "https://www.2a31.net/lettres/Lettre_60.pdf" }, // 2a31
+      { label: "Dunod, Georges Lefebvre, 'La grande peur de 1789', 3rd edition, January 2021 (read 2026-11-16): contemporaries blamed a plot by the aristocracy or the revolutionaries", href: "https://dunod.com/histoire-geographie-et-sciences-politiques/grande-peur-1789" }, // dunod2021
+      { label: "Archives parlementaires, tome VIII, séance du 4 août 1789, Persée (read 2026-11-16): the Vicomte de Noailles on halting the ferment in the provinces", href: "https://www.persee.fr/doc/arcpa_0000-0000_1875_num_8_1_4791_t2_0343_0000_7" }, // ap1789
+    ], // five sources, one object per line
+  },
+  {
+    // Phantom attacker (new entry): the unseen assailant of a collective scare, its pattern and the cases.
+    slug: "phantom-attacker", // the /glossary/phantom-attacker address
+    headword: "Phantom attacker", // the researchers' category, sentence case
+    kind: "term", // a term from the sociology of collective behaviour
+    domains: ["cyber-security", "grc"], // as for the psyops and mass-hysteria series
+    aliases: ["phantom assailant", "phantom slasher", "mad gasser", "agressor fantasma"], // the scholars' wording, two classic cases, Portuguese
+    relatedTerms: ["collective-delusion", "mass-psychogenic-illness", "mass-hysteria", "koro", "havana-syndrome", "operacao-prato", "information-cascade"], // siblings of this wave first, then this batch, then an existing entry
+    relatedArticles: ["phantom-attackers-and-contested-outbreaks", "mass-hysteria-how-groups-come-to-believe-anything", "rumour-panic-and-lynching"], // the part, the opener, the rumour part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Crossref record of Robert W. Baloh and Robert E. Bartholomew, 'Phantom Assailants: Mad Gassers, Phantom Slashers, and Other Believed-in Imaginings', in Havana Syndrome, Springer, 2020, 129-149 (read 2026-11-16): bibliographic record only", href: "https://doi.org/10.1007/978-3-030-40746-9_8" }, // category name
+      { label: "Crossref record of Norman Jacobs, 'The Phantom Slasher of Taipei: Mass Hysteria in a Non-Western Society', Social Problems 12(3), January 1965 (read 2026-11-16): bibliographic record only", href: "https://doi.org/10.2307/798937" }, // early study
+      { label: "Mattoon Daily Journal-Gazette, front page, 11 September 1944, Eastern Illinois University copy (read 2026-11-16): 'Many Prowler Reports; Few Real'; a physician found no evidence of a poison gas; residents told to put away their guns", href: "https://www.eiu.edu/localite/9-11-44.JPG" }, // Mattoon primary
+      { label: "Alan J. Stein, HistoryLink essay 5136, 27 January 2003 (read 2026-11-16): Seattle windshield pitting, April 1954; university committee found ordinary road damage; police crime laboratory: '5 per cent hoodlum-ism, and 95 per cent public hysteria'", href: "https://www.historylink.org/File/5136" }, // Seattle
+      { label: "WHO IMSEAR record of S. K. Verma and D. K. Srivastava, 'A study on mass hysteria (monkey men?) victims in east Delhi', Indian Journal of Medical Sciences 57(8), August 2003 (read 2026-11-16): outbreak of mass hysteria in May 2001; injuries of an accidental nature", href: "https://pesquisa.bvsalud.org/gim/resource/en/sea-67288" }, // Delhi
+      { label: "Crossref record of Robert E. Bartholomew and Jeffrey S. Victor, 'A Social-Psychological Theory of Collective Anxiety Attacks: The \"Mad Gasser\" Reexamined', The Sociological Quarterly 45(2), 2004 (read 2026-11-16): bibliographic record only", href: "https://doi.org/10.1111/j.1533-8525.2004.tb00011.x" }, // reexamination
+    ], // six sources, one object per line
+  },
+  {
+    // Koro (new entry): the fear of genital retraction, its epidemics and the dispute over its classification.
+    slug: "koro", // the /glossary/koro address
+    headword: "Koro", // the Malay-derived name psychiatry uses
+    kind: "term", // a clinical and cultural term
+    domains: ["cyber-security", "grc"], // as for the series
+    aliases: ["genital retraction syndrome", "genital-shrinking panic", "koro epidemic", "síndrome de retração genital"], // descriptive names, the epidemic form, Portuguese
+    relatedTerms: ["phantom-attacker", "mass-psychogenic-illness", "collective-delusion", "social-contagion", "misinformation"], // this batch, siblings, an existing entry
+    relatedArticles: ["phantom-attackers-and-contested-outbreaks", "mass-psychogenic-illness-when-symptoms-spread"], // the part and the MPI part
+    sources: [ // every label says what the page says and when it was read
+      { label: "M. Coltheart and M. Davies, 'Koro: a socially-transmitted delusional belief', Cognitive Neuropsychiatry 29(1), 2024, PubMed abstract (read 2026-11-16): occurs in epidemic form in South-East and South Asia; adoption depends on prior belief, education, deference to media and rumour", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=38348821" }, // definition
+      { label: "Ivan Crozier, 'Making up koro', Journal of the History of Medicine and Allied Sciences 67(1), 2012, PubMed abstract (read 2026-11-16): the psychiatric category from the 1890s to DSM-IV (1994); the 1967 Singapore epidemic", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=21511718" }, // history of the category
+      { label: "D. Dutta and others, 'The koro epidemic in lower Assam', Indian Journal of Psychiatry 24(4), October 1982, full text via PubMed Central (read 2026-11-16): 83 cases, June to September 1982; 'only a fear psychosis based on rumour'; Ngui's Singapore series of 228 cases", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=3012798" }, // India 1982
+      { label: "A. N. Chowdhury and others, 'Analysis of north Bengal koro epidemic with three years follow up', Indian Journal of Psychiatry 30(1), 1988, full text via PubMed Central (read 2026-11-16): 405 cases 1982-1985; Singapore 1967 the largest epidemic, about three weeks", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=3010814" }, // India follow-up
+      { label: "W. S. Tseng and others, 'Koro epidemics in Guangdong, China. A questionnaire survey', Journal of Nervous and Mental Disease 180(2), February 1992, PubMed abstract (read 2026-11-16): more than 2,000 victims in 1984-1985 and 1987; survey of 214; folk belief and social tension", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=1737973" }, // China
+      { label: "V. A. Dzokoto and G. Adams, 'Understanding genital-shrinking epidemics in West Africa: koro, juju, or mass psychogenic illness?', Culture, Medicine and Psychiatry 29(1), 2005, PubMed abstract (read 2026-11-16): six countries, January 1997 to October 2003; 56 media reports", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=16108203" }, // West Africa
+      { label: "Robert E. Bartholomew, 'The social psychology of \"epidemic\" koro', International Journal of Social Psychiatry 40(1), 1994, PubMed abstract (read 2026-11-16): reclassify epidemic koro as a collective misperception rather than a culture-bound syndrome", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=8005778" }, // the classification dispute
+    ], // seven sources, one object per line
+  },
+  {
+    // Havana syndrome (new entry): the anomalous health incidents reported since 2016 and the unresolved dispute over their cause, to June 2026.
+    slug: "havana-syndrome", // the /glossary/havana-syndrome address
+    headword: "Havana syndrome", // the popular name, sentence case
+    kind: "term", // a contested clinical and intelligence label
+    domains: ["cyber-security", "grc"], // security (intelligence) and governance (official assessments)
+    aliases: ["anomalous health incidents", "ahi", "ahis", "síndrome de havana", "incidentes anômalos de saúde"], // the US government's term and abbreviation, Portuguese
+    relatedTerms: ["phantom-attacker", "mass-psychogenic-illness", "functional-neurological-disorder", "disinformation", "propaganda"], // this batch, siblings, existing entries
+    relatedArticles: ["phantom-attackers-and-contested-outbreaks", "mass-psychogenic-illness-when-symptoms-spread", "verification-and-fact-checking"], // the part, the MPI part, verification
+    sources: [ // every label says what the page says and when it was read
+      { label: "R. L. Swanson and others, JAMA 319(11), 2018, record and abstract via PubMed Central (read 2026-11-16): 21 people exposed to directional phenomena in Havana; concern for a novel mechanism of possible acquired brain injury", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=5885885" }, // first clinical series
+      { label: "National Academies of Sciences, Engineering, and Medicine, An Assessment of Illness in U.S. Government Employees and Their Families at Overseas Embassies, 2020, summary (read 2026-11-16): directed pulsed radio frequency energy the most plausible mechanism among those considered; psychological factors not ruled out", href: "https://nap.nationalacademies.org/read/25889/chapter/2" }, // NASEM
+      { label: "L. Chan and others, JAMA 331(13), published 18 March 2024, abstract via PubMed Central (read 2026-11-16): 86 participants and 30 controls; no significant differences in most tests and biomarkers; 28% with functional neurological disorders", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=10949151" }, // NIH clinical
+      { label: "C. Pierpaoli and others, JAMA 331(13), published 18 March 2024, abstract via PubMed Central (read 2026-11-16): 81 participants and 48 controls; no significant MRI differences after correction; did not replicate the earlier study", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=10949155" }, // NIH imaging
+      { label: "The Register, 4 September 2024 (read 2026-11-16): NIH stopped its study after finding consent requirements not met due to coercion, not by NIH researchers; NIH says the findings do not affect the conclusions", href: "https://www.theregister.com/2024/09/04/us_halts_havana_syndrome" }, // study halted
+      { label: "National Intelligence Council, Updated Assessment of Anomalous Health Incidents, as of December 2024, released 10 January 2025 (read 2026-11-16): five agencies 'very unlikely' a foreign actor is responsible; two shifted on a foreign radio-frequency capability", href: "https://archive.dni.gov/files/ODNI/documents/assessments/NIC-Unclassified-ICA-Updated-Assessment-AHI-December2024.pdf" }, // 2025 ICA
+      { label: "The Irish Times, 1 April 2024 (read 2026-11-16): The Insider, Der Spiegel and 60 Minutes link a GRU unit; the Kremlin's spokesman calls it a groundless accusation", href: "https://www.irishtimes.com/world/middle-east/2024/04/01/kremlin-denies-its-spies-are-behind-us-havana-syndrome-cases" }, // attribution dispute
+      { label: "CNN via CTV News, 12 June 2026 (read 2026-11-16): DNI Gabbard rescinds the 2023 and January 2025 assessments; the ODNI memo's grounds", href: "https://www.ctvnews.ca/world/article/gabbard-rescinds-biden-era-intel-assessments-that-were-skeptical-about-havana-syndrome/" }, // recall
+      { label: "DefenseScoop, 13 July 2026 (read 2026-11-16): first HAVANA Act payments, nearly $3 million; team renamed Directed Energy Bio-Effects", href: "https://defensescoop.com/2026/07/13/havana-syndrome-payments-directed-energy-bio-effects/" }, // compensation
+    ], // nine sources, one object per line
+  },
+  {
+    // Operação Prato (new entry): the Brazilian Air Force's 1977 investigation of the "chupa-chupa" lights in Colares, Pará, and the fate of its records.
+    slug: "operacao-prato", // the /glossary/operacao-prato address
+    headword: "Operação Prato", // the operation's Portuguese name
+    kind: "lore", // an iconic episode, told with its sources
+    domains: ["cyber-security", "grc"], // as for the series (official records and access to information)
+    aliases: ["operation prato", "operation saucer", "operacao prato", "chupa-chupa", "colares 1977"], // English renderings, the unaccented form, the phenomenon, place and year
+    relatedTerms: ["phantom-attacker", "ufo-flap", "collective-delusion", "mass-hysteria"], // this batch and siblings (ufo-flap is wave 2)
+    relatedArticles: ["phantom-attackers-and-contested-outbreaks", "ufo-waves-and-skies-seen-together"], // the part and the UFO part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Phillippe Fernandes and Marialva Barbosa, Conexão - Comunicação e Cultura 19(37), 2020 (read 2026-11-16): the 1977 coverage in A Província do Pará, O Estado do Pará and O Liberal; vigils; officials and doctors calling it autosuggestion and hysteria; photographs seized", href: "https://sou.ucs.br/etc/revistas/index.php/conexao/article/download/10179/4698/38123" }, // press of 1977
+      { label: "João Francisco Schramm, master's dissertation, Universidade de Brasília, 2016 (read 2026-11-16): the operation from September to December 1977 under Captain Uyrangê Hollanda; partial records at the Arquivo Nacional (160 typewritten sheets); Hollanda's 1997 interview", href: "https://repositorio.unb.br/bitstream/10482/21434/1/2016_Jo%c3%a3oFranciscoSchramm.pdf" }, // history
+      { label: "Comissão Mista de Reavaliação de Informações, decision on appeal 60502.000774/2012-53, 2012 (read 2026-11-16): request for the operation's reports, videos and images; COMAER says UFO records went to the Arquivo Nacional; appeal denied", href: "https://www.gov.br/casacivil/pt-br/assuntos/colegiados/comissao-mista-de-reavaliacao-de-informacoes-cmri/decisoes-de-recurso-de-4a-instancia/deliberacoes-anteriores/2012/decisao-0035-60502-000774-2012-53.pdf" }, // access request
+      { label: "Comissão Mista de Reavaliação de Informações, decision 00211/2015, 11 August 2015 (read 2026-11-16): COMAER says all documents from 1952 to 2014 were sent to the archive; cassette tapes of Operação Prato witness accounts", href: "https://www.gov.br/casacivil/pt-br/assuntos/colegiados/comissao-mista-de-reavaliacao-de-informacoes-cmri/decisoes-de-recurso-de-4a-instancia/deliberacoes-anteriores/2015/decisao-0212-2015-nup-60502-000921-2015-38.pdf" }, // second request
+      { label: "Justiça Federal, 3ª Vara Federal de Florianópolis, case 5002417-48.2022.4.04.7200, judgment signed 30 September 2022 (read 2026-11-16): a SIAN search returns six documents, none audiovisual; the claim of films rests on press and witnesses; request dismissed; Order 551/GC3 of 2010", href: "https://www.migalhas.com.br/arquivos/2026/1/A4577DFF00845A_sentenca3.pdf" }, // court
+      { label: "Agência Brasil, 19 April 2013 (read 2026-11-16): UFOs the most requested military subject under the access-to-information law; Operação Prato documents among the most requested", href: "http://memoria.ebc.com.br/agenciabrasil/noticia/2013-04-19/ministerio-da-defesa-e-ufologos-abrem-canal-para-troca-de-informacoes-sobre-ovnis" }, // demand
+    ], // six sources, one object per line
+  },
+  {
+    // Cognitive dissonance (new entry): the theory, its founding case study, and the 2025 archival challenge to that case.
+    slug: "cognitive-dissonance", // the /glossary/cognitive-dissonance address
+    headword: "Cognitive dissonance", // the psychologists' name
+    kind: "term", // a term from social psychology
+    domains: ["cyber-security", "grc"], // as for the series
+    aliases: ["dissonance", "cognitive dissonance theory", "dissonância cognitiva", "teoria da dissonância cognitiva"], // short form, the theory, Portuguese
+    relatedTerms: ["motivated-reasoning", "backfire-effect", "continued-influence-effect", "identity-protective-cognition", "millennialism", "cult"], // existing entries, then this batch
+    relatedArticles: ["cults-failed-prophecies-and-the-closed-group", "why-misbeliefs-persist", "conformity-cascades-and-contagion-the-mechanisms"], // the part, the psyops misbeliefs part, the mechanisms part
+    sources: [ // every label says what the page says and when it was read
+      { label: "APA Dictionary of Psychology, 'cognitive dissonance' (read 2026-11-16): an unpleasant psychological state from inconsistency between elements of a cognitive system, creating a drive to reduce it", href: "https://dictionary.apa.org/cognitive-dissonance" }, // definition
+      { label: "Lorne L. Dawson, 'When Prophecy Fails and Faith Persists: A Theoretical Overview', Nova Religio 3(1), 1999 (read 2026-11-16): the 1956 claim; covert observers; only four of thirteen later groups sought converts; Melton on denial of failure", href: "https://www.gwern.net/doc/sociology/1999-dawson.pdf" }, // later studies
+      { label: "Thomas Kelly, 'Debunking \"When Prophecy Fails\"', preprint revised 1 September 2025, OSF (read 2026-11-16): archival evidence that the group proselytized before the date and dissolved after it; researchers' interventions", href: "https://osf.io/9j7qc_v2" }, // archival critique
+      { label: "Crossref record of Thomas Kelly, 'Debunking \"When Prophecy Fails\"', Journal of the History of the Behavioral Sciences 62(1), published 4 November 2025 (read 2026-11-16): bibliographic record", href: "https://doi.org/10.1002/jhbs.70043" }, // published version
+      { label: "The Debrief, 13 November 2025 (read 2026-11-16): Kelly's comments; the historian Aaron Gulyas finds the focus on proselytizing narrow", href: "https://thedebrief.org/alarm-bells-went-off-new-research-takes-a-critical-look-at-the-landmark-ufo-cult-study-when-prophecy-fails/" }, // response
+      { label: "Sylvester Bliss, Memoirs of William Miller, 1853, Internet Archive (read 2026-11-16): Miller after 22 October 1844: 'I confess my error' yet the day of the Lord 'is near, even at the door'", href: "https://archive.org/details/memoirsofwilliam00blis" }, // a historical example
+    ], // six sources, one object per line
+  },
+  {
+    // Cult (new entry, a contested term): the 1986 task-force definition, the scholars' objection and the official inquiries' caution.
+    slug: "cult", // the /glossary/cult address
+    headword: "Cult (contested term)", // the word, flagged as disputed in the headword itself
+    kind: "term", // a disputed social-science and popular term
+    domains: ["cyber-security", "grc"], // as for the series
+    aliases: ["sect", "new religious movement", "nrm", "totalist group", "seita", "novo movimento religioso"], // near-synonyms, the scholars' preferred term and abbreviation, Portuguese
+    relatedTerms: ["coercive-control", "millennialism", "cognitive-dissonance", "social-engineering", "moral-panic", "satanic-panic"], // this batch, an existing entry, siblings
+    relatedArticles: ["cults-failed-prophecies-and-the-closed-group", "satanic-panic-false-memories-and-the-escola-base-case"], // the part and the Satanic-panic part
+    sources: [ // every label says what the page says and when it was read
+      { label: "APA task force DIMPAC, draft report, 1986, CESNUR copy (read 2026-11-16): definition of a 'totalist type' cult by unethically manipulative techniques; no reliable data comparing harm", href: "https://www.cesnur.org/testi/DIMPAC.htm" }, // definition
+      { label: "APA Board of Social and Ethical Responsibility for Psychology, memorandum of 11 May 1987, CESNUR copy (read 2026-11-16): the report rejected for lacking scientific rigor; no position taken; 'brainwashing' not a recognized theoretical concept (external reviewer)", href: "https://www.cesnur.org/testi/APA.htm" }, // APA response
+      { label: "APA and others, amicus brief in Molko v. Holy Spirit Association, February 1987, CESNUR copy (read 2026-11-16): coercive persuasion not accepted science; fewer than one in twenty workshop attendees remain two years; APA later withdrew on procedural grounds", href: "https://cesnur.org/testi/molko_brief.htm" }, // leaving on their own
+      { label: "Nancy T. Ammerman, Report to the Justice and Treasury Departments, 3 September 1993 (read 2026-11-16): self-described cult experts not recognized by the academic community; anti-cult sources at Waco", href: "https://hirr.hartfordinternational.edu/wp-content/uploads/2024/11/Report-to-the-Justice-and-Treasury-Departments.pdf" }, // scholars' objection
+      { label: "House Committee on Foreign Affairs, staff report on Jonestown, 15 May 1979, text at the Jonestown Institute (read 2026-11-16): whether Peoples Temple was a 'cult' outside the inquiry's parameters; recommended research on cults", href: "https://jonestown.sdsu.edu/?p=13674" }, // official caution
+      { label: "John C. Danforth, Special Counsel, Final Report on Waco, 8 November 2000 (read 2026-11-16): the word 'compound' replaced by 'complex' in deference to the Davidians", href: "https://www.policinginstitute.org/wp-content/uploads/2018/02/Danforth-Report-Waco-1993-Incident_11-8-2000.pdf" }, // naming
+    ], // six sources, one object per line
+  },
+  {
+    // Coercive control (new entry): the legal concept of controlling or coercive behaviour, and how it replaced "brainwashing" in courts.
+    slug: "coercive-control", // the /glossary/coercive-control address
+    headword: "Coercive control", // the legal and clinical term
+    kind: "term", // a legal term
+    domains: ["grc", "cyber-security"], // law first, then the series
+    aliases: ["controlling or coercive behaviour", "coercive persuasion", "thought reform", "brainwashing", "mind control", "controle coercitivo", "lavagem cerebral", "violência psicológica"], // the UK statute's words, the older disputed terms, Portuguese
+    relatedTerms: ["cult", "social-engineering", "psyop", "propaganda"], // this batch, then existing entries
+    relatedArticles: ["cults-failed-prophecies-and-the-closed-group", "social-engineering-pretexting-vishing-and-baiting"], // the part and the social-engineering part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Serious Crime Act 2015, section 76, legislation.gov.uk (read 2026-11-16): offence of repeatedly or continuously engaging in controlling or coercive behaviour in an intimate or family relationship with a serious effect", href: "https://www.legislation.gov.uk/ukpga/2015/9/section/76" }, // England and Wales
+      { label: "Senado Federal, Lei nº 14.188, de 28 de julho de 2021 (read 2026-11-16): article 147-B of the Penal Code, emotional harm to a woman by degrading or controlling her actions, behaviour, beliefs and decisions; six months to two years", href: "https://legis.senado.leg.br/norma/34628171/publicacao/34628407" }, // Brazil
+      { label: "United States v. Fishman, 743 F. Supp. 713 (N.D. Cal. 1990), CourtListener (read 2026-11-16): thought-reform testimony excluded for lack of general acceptance", href: "https://www.courtlistener.com/opinion/2593631/united-states-v-fishman/" }, // court
+      { label: "APA BSERP memorandum, 11 May 1987, CESNUR copy (read 2026-11-16): the DIMPAC report rejected; no position taken", href: "https://www.cesnur.org/testi/APA.htm" }, // APA
+      { label: "Correio Braziliense, Blog do Servidor, 15 March 2018 (read 2026-11-16): Operation Canaã; 565 workers of a church's businesses in conditions analogous to slavery; the inspector: the workers did not consider themselves exploited", href: "https://blogs.correiobraziliense.com.br/servidor/ministerio-do-trabalho-autua-empresa-ligada-igreja-por-manter-565-trabalhadores-em-condicao-analoga-escravidao/" }, // Brazilian case
+    ], // five sources, one object per line
+  },
+  {
+    // Millennialism (new entry): the expectation of an imminent transformation of the world, and what groups do when the date passes.
+    slug: "millennialism", // the /glossary/millennialism address
+    headword: "Millennialism", // the scholars' term
+    kind: "term", // a term from the study of religion
+    domains: ["cyber-security", "grc"], // as for the series
+    aliases: ["millenarianism", "millenarism", "millennial movement", "apocalyptic movement", "milenarismo", "movimento messiânico-milenarista"], // variants, Portuguese
+    relatedTerms: ["cognitive-dissonance", "cult", "mass-hysteria", "moral-panic"], // this batch, siblings
+    relatedArticles: ["cults-failed-prophecies-and-the-closed-group", "mass-hysteria-how-groups-come-to-believe-anything"], // the part and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "Davidson Belo Mangueira, dissertation, Universidade Federal da Paraíba, 2014 (read 2026-11-16): millenarianism follows Christian apocalyptic writings describing a thousand years of peace; the Borboletas Azuis' flood of 13 May 1980 and the reinterpretation that God changed his mind", href: "https://repositorio.ufpb.br/jspui/bitstream/tede/4248/1/arquivototal.pdf" }, // definition and Brazilian case
+      { label: "Lorne L. Dawson, Nova Religio 3(1), 1999 (read 2026-11-16): Melton: denial of failure is the common mode of adaptation of millennial groups", href: "https://www.gwern.net/doc/sociology/1999-dawson.pdf" }, // response to failure
+      { label: "William Miller, Evidence from Scripture and History of the Second Coming of Christ, about the Year 1843, 1836, Internet Archive (read 2026-11-16)", href: "https://archive.org/details/WilliamMillerEvidenceFromScriptureAndHistoryOfTheSecondComingOf" }, // Millerite source
+      { label: "Brian E. Strayer, 'Edson, Hiram', Encyclopedia of Seventh-day Adventists (read 2026-11-16): the Great Disappointment of 22 October 1844 and the sanctuary reinterpretation", href: "https://encyclopedia.adventist.org/assets/pdf/article-bjin.pdf" }, // reinterpretation
+      { label: "John C. Danforth, Final Report on Waco, 8 November 2000 (read 2026-11-16): Koresh's promised interpretation of the Seven Seals of Revelation", href: "https://www.policinginstitute.org/wp-content/uploads/2018/02/Danforth-Report-Waco-1993-Incident_11-8-2000.pdf" }, // apocalyptic text in a standoff
+    ], // five sources, one object per line
+  },
+  {
+    // Conspiracy theory (new entry): the research definition, what sets such theories apart, and the difference from a proven conspiracy.
+    slug: "conspiracy-theory", // the /glossary/conspiracy-theory address
+    headword: "Conspiracy theory", // sentence case, the researchers' term
+    kind: "term", // a term from social psychology and political science
+    domains: ["cyber-security", "grc"], // as for the psyops series: the human attack surface and information policy
+    aliases: ["conspiracy theories", "conspiracism", "conspiracy belief", "teoria da conspiração", "teorias da conspiração"], // plural, the general disposition, the belief, and the Portuguese names
+    relatedTerms: ["conspiracist-ideation", "qanon", "protocols-of-the-elders-of-zion", "misinformation", "disinformation"], // this batch, then existing entries
+    relatedArticles: ["conspiracy-theories-at-scale", "mass-hysteria-how-groups-come-to-believe-anything", "why-misbeliefs-persist"], // the part, the opener and the psyops misbeliefs part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Current Directions in Psychological Science 26(6), Karen M. Douglas, Robbie M. Sutton and Aleksandra Cichocka, 'The Psychology of Conspiracy Theories', December 2017, full text via Europe PMC (read 2026-11-16): explanations for important events involving secret plots by powerful and malevolent groups; speculative, complex and resistant to falsification; epistemic, existential and social motives; more appealing than satisfying", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC5724570/fullTextXML" }, // douglas2017
+      { label: "PLOS ONE 17(7), Joseph Uscinski and colleagues, 'Have beliefs in conspiracy theories increased over time?', 20 July 2022, full text via Europe PMC (read 2026-11-16): definition including theories not judged likely by the appropriate epistemological bodies; of 37 theories re-polled since 1966, 6 rose, 16 did not change, 15 fell", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC9299316/fullTextXML" }, // uscinski2022
+      { label: "FBI Phoenix Field Office, intelligence bulletin on conspiracy theories and domestic extremism, 2019, copy published by Just Security (read 2026-11-16): a conspiracy theory is an allegation that may or may not be true, a conspiracy a true causal chain of events; real exposed cover-ups encourage conspiracy theorizing", href: "https://www.justsecurity.org/wp-content/uploads/2021/06/FBI-Intelligence-Bulletin-on-Conspiracy-Theories-and-Domestic-Violent-Extremism.pdf" }, // fbi2019
+      { label: "US District Court for the District of Columbia, United States v. Philip Morris USA, Amended Final Opinion, 17 August 2006 (read 2026-11-16): the companies conspired to violate RICO and deceived the public about smoking for more than 50 years", href: "https://www.publichealthlawcenter.org/sites/default/files/resources/doj-final-opinion.pdf" }, // philipmorris2006
+      { label: "PLOS ONE 11(1), David Robert Grimes, 'On the Viability of Conspiratorial Beliefs', 26 January 2016, full text via Europe PMC (read 2026-11-16): a leak-rate model from three exposed affairs; large conspiracies (1,000 agents or more) quickly become untenable; corrected on 1 March 2016 without change to the conclusions", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC4728076/fullTextXML" }, // grimes2016
+    ], // five sources, one object per line
+  },
+  {
+    // Conspiracist ideation (new entry): the general tendency to believe conspiracy theories, its measures, correlates and the political dispute.
+    slug: "conspiracist-ideation", // the /glossary/conspiracist-ideation address
+    headword: "Conspiracist ideation", // the psychologists' term, sentence case
+    kind: "term", // a construct from social and personality psychology
+    domains: ["cyber-security", "grc"], // as for the rest of the series
+    aliases: ["conspiracy mentality", "conspiracy thinking", "conspiratorial ideation", "ideação conspiratória", "mentalidade conspiratória"], // the names other research teams use, and the Portuguese names
+    relatedTerms: ["conspiracy-theory", "motivated-reasoning", "misinformation", "continued-influence-effect"], // this batch, then existing entries
+    relatedArticles: ["conspiracy-theories-at-scale", "why-misbeliefs-persist"], // the part and the psyops misbeliefs part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Frontiers in Psychology 4, Robert Brotherton, Christopher C. French and Alan D. Pickering, 'Measuring belief in conspiracy theories: the generic conspiracist beliefs scale', 21 May 2013, full text via Europe PMC (read 2026-11-16): people who endorse one theory tend to endorse others, including unrelated and mutually contradictory ones; a 15-item scale", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC3659314/fullTextXML" }, // brotherton2013
+      { label: "Social Psychological and Personality Science, Michael J. Wood, Karen M. Douglas and Robbie M. Sutton, 'Dead and Alive: Beliefs in Contradictory Conspiracy Theories', 25 January 2012, abstract via Crossref (read 2026-11-16): belief that Princess Diana faked her death went with belief that she was murdered", href: "https://api.crossref.org/works/10.1177/1948550611434786" }, // wood2012
+      { label: "Psychological Bulletin 149(5-6), Shauna M. Bowes, Thomas H. Costello and Arber Tasimi, 'The conspiratorial mind', 2023, PubMed abstract (read 2026-11-16): 170 studies and 158,473 participants; strongest correlates in perceived threat, intuition and odd beliefs, and antagonism", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=37358543" }, // bowes2023
+      { label: "Nature Human Behaviour 6(3), Roland Imhoff and 41 co-authors, 'Conspiracy mentality and political orientation across 26 countries', March 2022, PubMed abstract (read 2026-11-16): 104,253 respondents; small linear and quadratic relations, stronger at the extremes, especially the extreme right, and among opposition voters", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=35039654" }, // imhoff2022
+      { label: "Political Behavior, Adam Enders and colleagues, 'Are Republicans and Conservatives More Likely to Believe Conspiracy Theories?', 22 July 2022, full text via Europe PMC (read 2026-11-16): 20 US surveys and 20 more countries; no systematic political asymmetry; the direction depends on the theories asked about and the context", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC9307120/fullTextXML" }, // enders2022
+      { label: "Public Opinion Quarterly 83(4), Scott Clifford, Yongkwang Kim and Brian W. Sullivan, 'An Improved Question Format for Measuring Conspiracy Beliefs', 2019, abstract via Crossref (read 2026-11-16): agree-disagree items inflate estimates; an explicit choice between explanations lowers them", href: "https://api.crossref.org/works/10.1093/poq/nfz049" }, // clifford2019
+    ], // six sources, one object per line
+  },
+  {
+    // Protocols of the Elders of Zion (new entry): the forged text, its exposure in 1921, the court rulings and its use, including in Brazil.
+    slug: "protocols-of-the-elders-of-zion", // the /glossary/protocols-of-the-elders-of-zion address
+    headword: "Protocols of the Elders of Zion", // the usual English title
+    kind: "term", // a named historical document
+    domains: ["cyber-security", "grc"], // propaganda and disinformation history, as for the psyops series
+    aliases: ["Protocols of the Learned Elders of Zion", "The Jewish Peril", "Protocolos dos Sábios de Sião", "Protocolos de Sião"], // the longer title, the 1920 London title, and the Portuguese titles
+    relatedTerms: ["conspiracy-theory", "propaganda", "disinformation", "active-measures"], // this batch, then existing entries
+    relatedArticles: ["conspiracy-theories-at-scale", "a-short-history-of-propaganda-and-psychological-warfare"], // the part and the propaganda history
+    sources: [ // every label says what the page says and when it was read
+      { label: "United States Holocaust Memorial Museum, Holocaust Encyclopedia, 'An Antisemitic Conspiracy: The Protocols of the Elders of Zion', last edited 23 April 2026 (read 2026-11-16): first serialized in Znamia in 1903; Nilus's 1905 appendix; the meetings never took place; Ford's International Jew; the Grahamstown and Bern cases; Goebbels; 22 Nazi party editions", href: "https://encyclopedia.ushmm.org/content/en/article/protocols-of-the-elders-of-zion" }, // ushmm2026
+      { label: "United States Holocaust Memorial Museum, 'Protocols of the Elders of Zion: Key Dates', last edited 19 November 2024 (read 2026-11-16): the Times exposure of August 1921; no mention of Jews in Joly's satire; the Bern suit filed in 1933; a Russian court's 1993 ruling; the 1964 Senate report; the 1988 Hamas charter; a 2024 State Department report", href: "https://encyclopedia.ushmm.org/content/en/article/protocols-of-the-elders-of-zion-key-dates" }, // ushmmkd
+      { label: "The Times, 'The Truth About \"The Protocols\": A Literary Forgery', reprint of the articles of 16, 17 and 18 August 1921, scan at the Internet Archive (read 2026-11-16): the text in the main a clumsy plagiarism of Joly's Dialogue aux Enfers; parallel passages; fully 50 paragraphs paraphrased", href: "https://archive.org/download/truthaboutthepro00londiala/truthaboutthepro00londiala.pdf" }, // times1921
+      { label: "Deutsches Historisches Museum, LeMO, 'Die \"Protokolle der Weisen von Zion\"' (read 2026-11-16): 33 German editions before 1933; the most widely spread antisemitic text of the twentieth century; its dubious historical value established in court in a Swiss case of 1934", href: "https://www.dhm.de/lemo/kapitel/weimarer-republik/antisemitismus/protokolle-der-weisen-von-zion.html" }, // dhm
+      { label: "Supremo Tribunal Federal, 'DJ publica acórdão de Habeas Corpus de editor condenado por racismo contra judeus', 19 March 2004 (read 2026-11-16): the publisher's conviction upheld seven to three; the books included the Protocols annotated by Gustavo Barroso", href: "https://noticias.stf.jus.br/?p=5404" }, // stf2004
+    ], // five sources, one object per line
+  },
+  {
+    // QAnon (new entry): the theory and movement, the FBI's 2019 and 2021 assessments, and how surveys measure it.
+    slug: "qanon", // the /glossary/qanon address
+    headword: "QAnon", // the movement's own spelling
+    kind: "term", // a named conspiracy theory and movement
+    domains: ["cyber-security", "grc"], // online movements, extremism and information policy
+    aliases: ["Q Anon", "QAnon movement", "movimento QAnon"], // a spacing variant, the movement, and the Portuguese name
+    relatedTerms: ["conspiracy-theory", "conspiracist-ideation", "disinformation", "influence-operation"], // this batch, then existing entries
+    relatedArticles: ["conspiracy-theories-at-scale", "cults-failed-prophecies-and-the-closed-group"], // the part and the part on failed prophecies
+    sources: [ // every label says what the page says and when it was read
+      { label: "FBI Phoenix Field Office, intelligence bulletin, 2019, copy published by Just Security (read 2026-11-16): QAnon described as the belief that an anonymous official called Q reveals a covert effort against a deep state and elites engaged in child sex trafficking; such theories very likely motivate some domestic extremists, with high confidence", href: "https://www.justsecurity.org/wp-content/uploads/2021/06/FBI-Intelligence-Bulletin-on-Conspiracy-Theories-and-Domestic-Violent-Extremism.pdf" }, // fbi2019
+      { label: "FBI and Department of Homeland Security, 'Adherence to QAnon Conspiracy Theory by Some Domestic Violent Extremists', 4 June 2021, copy released by Senator Martin Heinrich's office (read 2026-11-16): the foundational principle; narratives absorbing election fraud, COVID-19 and 5G; more than 20 adherents arrested over 6 January; some will stop trusting the plan, others disengage", href: "https://www.heinrich.senate.gov/download/qanon-fbi-response21" }, // fbi2021
+      { label: "Public Religion Research Institute, 'Understanding QAnon's Connection to American Politics, Religion, and Media Consumption', 2021 (read 2026-11-16): the movement emerged online in late 2017; 15% of 5,625 adults agreed with its core statement in March 2021", href: "https://www.prri.org/research/qanon-conspiracy-american-politics-report/" }, // prri2021
+      { label: "PLOS ONE 17(7), Joseph Uscinski and colleagues, 20 July 2022, full text via Europe PMC (read 2026-11-16): 5% called themselves believers in QAnon in August 2019 and 6% in May 2021; the movement's thermometer rating fell from 21 to 16", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC9299316/fullTextXML" }, // uscinski2022
+    ], // four sources, one object per line
+  },
+  {
+    // Plano Cohen (new entry): the forged communist plan of 1937, the state of war and the Estado Novo, and the conflicting confessions.
+    slug: "plano-cohen", // the /glossary/plano-cohen address
+    headword: "Plano Cohen", // the Portuguese name used in both languages
+    kind: "term", // a named historical document
+    domains: ["cyber-security", "grc"], // state disinformation, as for the psyops series
+    aliases: ["Cohen Plan", "Cohen plan forgery"], // English renderings; no bare "Cohen", which danny-cohen holds
+    relatedTerms: ["conspiracy-theory", "disinformation", "propaganda"], // this batch, then existing entries
+    relatedArticles: ["conspiracy-theories-at-scale", "how-manipulators-harness-collective-panic"], // the part and the part on manipulators
+    sources: [ // every label says what the page says and when it was read
+      { label: "Fundação Getulio Vargas, CPDOC, Dicionário Histórico-Biográfico Brasileiro, verbete Plano Cohen (read 2026-11-16): released on 30 September 1937 as Komintern instructions; state of war voted 138 to 58 and 23 to 5; Estado Novo on 10 November; written by Olímpio Mourão Filho as a working hypothesis, by his 1956 account; Góis Monteiro's accounts of 1945 and 1955", href: "https://www18.fgv.br/CPDOC/acervo/dicionarios/verbete-tematico/plano-cohen" }, // cpdoc
+    ], // one source; the dictionary entry is the fullest account found
+  },
+  {
+    // Vaccine hesitancy (new entry): the SAGE definition, the WHO's 2019 warning and its caveat, and Brazil's coverage fall.
+    slug: "vaccine-hesitancy", // the /glossary/vaccine-hesitancy address
+    headword: "Vaccine hesitancy", // the WHO's term, sentence case
+    kind: "term", // a public health term
+    domains: ["cyber-security", "grc"], // as for the rest of the series
+    aliases: ["vaccination hesitancy", "vaccine refusal", "hesitação vacinal", "recusa vacinal"], // the variant SAGE discussed, the extreme form, and the Portuguese names
+    relatedTerms: ["wakefield-affair", "5g-conspiracy", "adverse-event-following-immunization", "misinformation", "prebunking"], // this batch, then existing entries
+    relatedArticles: ["health-scares-from-the-revolta-da-vacina-to-the-autism-myth", "why-misbeliefs-persist"], // the part and the psyops misbeliefs part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Vaccine 33(34), Noni E. MacDonald and the SAGE Working Group on Vaccine Hesitancy, 'Vaccine hesitancy: Definition, scope and determinants', August 2015, PubMed abstract (read 2026-11-16): delay in acceptance or refusal of vaccination despite availability of services; complex and context specific; complacency, convenience and confidence", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=25896383" }, // macdonald2015
+      { label: "World Health Organization, 'Ten threats to global health in 2019' (read 2026-11-16): vaccine hesitancy threatens progress; vaccination prevents 2-3 million deaths a year; measles up 30%, not all of it due to hesitancy", href: "https://www.who.int/news-room/spotlight/ten-threats-to-global-health-in-2019" }, // who2019
+      { label: "Revista de Saúde Pública 52, Ana Paula Sayuri Sato, 2018, full text via Europe PMC (read 2026-11-16): Brazilian childhood coverage above 95% since the 1990s, falling 10 to 20 points since 2016; several causes; few Brazilians disagree that vaccines are important, safe and effective", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6284490/fullTextXML" }, // sato2018
+      { label: "Revista de Saúde Pública 54, Camila Matos, Carolina Barbieri and Marcia Couto, 2020, full text via Europe PMC (read 2026-11-16): the decline in Brazil multifactorial, from programme complexity and under-financing to hesitancy and fake news; 24,956 measles cases from August 2019 to July 2020", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7647464/fullTextXML" }, // matos2020
+    ], // four sources, one object per line
+  },
+  {
+    // Revolta da Vacina (new entry): the 1904 revolt in Rio de Janeiro, its toll, the fate of the law and the historians' explanations.
+    slug: "revolta-da-vacina", // the /glossary/revolta-da-vacina address
+    headword: "Revolta da Vacina", // the Portuguese name used in both languages
+    kind: "term", // a named historical event
+    domains: ["cyber-security", "grc"], // as for the rest of the series
+    aliases: ["Vaccine Revolt", "1904 Vaccine Revolt", "Revolt against the Vaccine", "Revolta contra a Vacina"], // English renderings and the Portuguese variant
+    relatedTerms: ["vaccine-hesitancy", "misinformation", "propaganda"], // this batch, then existing entries
+    relatedArticles: ["health-scares-from-the-revolta-da-vacina-to-the-autism-myth", "mass-hysteria-how-groups-come-to-believe-anything"], // the part and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "Fundação Oswaldo Cruz, Oswaldo Cruz biography, 'Luta contra a varíola' (read 2026-11-16): about 3,500 smallpox deaths in 1904; the 'Código de Torturas'; the law of 31 October; the revolt from 10 November; 30 dead, 110 wounded, 945 arrested; the end of compulsion and the 1908 epidemic", href: "https://oswaldocruz.fiocruz.br/index.php/biografia/trajetoria-cientifica/na-diretoria-geral-de-saude-publica/luta-contra-a-variola" }, // fiocruz
+      { label: "Arca Fiocruz, Aline Silva Salgado, master's dissertation, Casa de Oswaldo Cruz, 2018 (read 2026-11-16): the Senate vote of 20 July and the Chamber's final approval of 26 October; the press debate; the historians' explanations from Sevcenko to Benchimol", href: "https://www.arca.fiocruz.br/bitstreams/26341b37-b79e-4a87-a224-563e196417fd/download" }, // salgado2018
+      { label: "História, Ciências, Saúde-Manguinhos, interview with Tania Fernandes, 2026, full text via Europe PMC (read 2026-11-16): the law was not revoked but left unenforced until 1908; also known as the Revolta dos Lampiões", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13450908/fullTextXML" }, // fernandes2026
+      { label: "Militares e Política 5, Celso Castro and Juliana Gagliardi, 'A revolta da Escola Militar da Praia Vermelha (1904)', July to December 2009 (read 2026-11-16): the failed military rising of 14 November 1904, for which the popular revolt was only a pretext", href: "https://revistas.ufrj.br/index.php/mp/article/download/33819/18952" }, // castro2009
+    ], // four sources, one object per line
+  },
+  {
+    // Wakefield affair (new entry): the 1998 paper, the press conference, the retractions, the GMC findings and the studies that followed.
+    slug: "wakefield-affair", // the /glossary/wakefield-affair address
+    headword: "Wakefield affair", // the common English name, sentence case
+    kind: "term", // a named case in research ethics and public health
+    domains: ["cyber-security", "grc"], // research integrity and misinformation, as for the rest of the series
+    aliases: ["Wakefield paper", "MMR autism scare", "MMR scare", "caso Wakefield"], // the paper, the scare, and the Portuguese name; no bare "MMR", which meet-me-room holds
+    relatedTerms: ["vaccine-hesitancy", "adverse-event-following-immunization", "misinformation", "continued-influence-effect"], // this batch, then existing entries
+    relatedArticles: ["health-scares-from-the-revolta-da-vacina-to-the-autism-myth", "why-misbeliefs-persist"], // the part and the psyops misbeliefs part
+    sources: [ // every label says what the page says and when it was read
+      { label: "PubMed record of Wakefield and colleagues, The Lancet 351(9103), 28 February 1998, retracted (read 2026-11-16): twelve children; parents associated onset with MMR in eight; retractions of 2004 and 2010", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=9500320" }, // wakefield1998
+      { label: "High Court of England and Wales, Walker-Smith v General Medical Council [2012] EWHC 503 (Admin), 7 March 2012, copy published by Hempsons (read 2026-11-16): the press conference; the Legal Aid Board's £25,000; the GMC findings of 2010 and the erasures; Wakefield abandoned his appeal; no respectable body of opinion supports the hypothesis", href: "https://www.hempsons.co.uk/app/uploads/2020/01/Walker-Smith.pdf" }, // walkersmith2012
+      { label: "Indian Journal of Psychiatry 53(2), T. S. Sathyanarayana Rao and Chittaranjan Andrade, 'The MMR vaccine and autism: Sensation, refutation, retraction, and fraud', 2011, full text via Europe PMC (read 2026-11-16): the 2004 co-authors' retraction of the interpretation; the 2010 retraction on ethics and a selective sample reported as consecutive", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC3136032/fullTextXML" }, // rao2011
+      { label: "Court of Appeals of Texas, Third District, Wakefield v. British Medical Journal Publishing Group, 19 September 2014 (read 2026-11-16): the BMJ's 2011 article titles; Wakefield's petition; dismissal for lack of jurisdiction", href: "https://cases.justia.com/texas/third-court-of-appeals/2014-03-12-00576-cv.pdf" }, // texas2014
+      { label: "Cochrane Database of Systematic Reviews, Carlo Di Pietrantonj and colleagues, 'Vaccines for measles, mumps, rubella, and varicella in children', 22 November 2021, PubMed abstract (read 2026-11-16): 138 studies; no association with autism spectrum disorders; febrile seizures and immune thrombocytopenia as real, rare risks", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=34806766" }, // cochrane2021
+    ], // five sources, one object per line
+  },
+  {
+    // 5G conspiracy (new entry): the 2020 claim linking 5G and COVID-19, the mast fires, the official answers and the measurements.
+    slug: "5g-conspiracy", // the /glossary/5g-conspiracy address
+    headword: "5G conspiracy theory", // the claim, sentence case
+    kind: "term", // a named conspiracy theory
+    domains: ["cyber-security", "grc"], // critical infrastructure and misinformation
+    aliases: ["5G coronavirus conspiracy theory", "5G COVID-19 conspiracy theory", "5G mast arson", "teoria da conspiração do 5G"], // the fuller names, the attacks, and the Portuguese name
+    relatedTerms: ["5g", "misinformation", "conspiracy-theory", "qanon"], // the technology, then existing entries and this batch
+    relatedArticles: ["health-scares-from-the-revolta-da-vacina-to-the-autism-myth", "conspiracy-theories-at-scale"], // the part and the conspiracy part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Journal of Medical Internet Research 22(5), Wasim Ahmed and colleagues, 'COVID-19 and the 5G Conspiracy Theory: Social Network Analysis of Twitter Data', 6 May 2020, full text via Europe PMC (read 2026-11-16): traced to a Belgian doctor's comments in January 2020; at least 20 masts vandalized in the UK from 2 to 6 April 2020; 34.8% of 233 tweets linked 5G and the virus", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7205032/fullTextXML" }, // ahmed2020
+      { label: "BBC News, 'Mast fire probe amid 5G coronavirus claims', 4 April 2020 (read 2026-11-16): fires in Birmingham, Liverpool and Melling; the government said there is absolutely no credible evidence; the NHS medical director outraged", href: "https://www.bbc.com/news/uk-england-52164358" }, // bbc2020
+      { label: "The Register, 'UK man gets 3 years for torching 4G phone mast over 5G fears', 9 June 2020 (read 2026-11-16): sentencing at Liverpool Crown Court; the mast served 4G; a high degree of planning and premeditation", href: "https://www.theregister.com/2020/06/09/arsonist_sentencing/" }, // register2020
+      { label: "British Journal of Social Psychology 59(3), Daniel Jolley and Jenny L. Paterson, 'Pylons ablaze', 2020, full text via Europe PMC (read 2026-11-16): 601 Britons; belief linked to state anger and to justification of violence, most for those highest in paranoia", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7323354/fullTextXML" }, // jolley2020
+      { label: "Ofcom, 'Clearing up the myths around 5G and the coronavirus', published 17 April 2020, updated 5 March 2024 (read 2026-11-16): no scientific basis or credible evidence; the highest 5G level measured at 0.039% of the international maximum", href: "https://www.ofcom.org.uk/spectrum/electromagnetic-fields/clearing-up-myths-5g-and-coronavirus" }, // ofcom (page read only through the fetch tool; see section 4)
+    ], // five sources, one object per line
+  },
+  {
+    // Adverse event following immunization (new entry): the definition, Brazil's ESAVI system, and the real effects surveillance has found.
+    slug: "adverse-event-following-immunization", // the /glossary/adverse-event-following-immunization address
+    headword: "Adverse event following immunization", // the international term, sentence case
+    kind: "term", // a pharmacovigilance term
+    domains: ["cyber-security", "grc"], // monitoring and incident reporting, as for the rest of the series
+    aliases: ["AEFI", "adverse event following immunisation", "ESAVI", "evento supostamente atribuível à vacinação ou imunização", "evento adverso pós-vacinação"], // the acronym, the British spelling, and Brazil's current and older Portuguese names
+    relatedTerms: ["vaccine-hesitancy", "wakefield-affair", "misinformation"], // this batch, then an existing entry
+    relatedArticles: ["health-scares-from-the-revolta-da-vacina-to-the-autism-myth", "what-ends-an-outbreak-and-what-helps"], // the part and the part on endings
+    sources: [ // every label says what the page says and when it was read
+      { label: "Ministério da Saúde, Nota Técnica nº 88/2025-CGFAM/DPNI/SVSA/MS (read 2026-11-16): ESAVI defined as any unwanted medical occurrence temporally associated with vaccination, not necessarily caused by it; notification in e-SUS Notifica", href: "https://www.gov.br/saude/pt-br/vacinacao/esavi/notas-tecnicas/nota-tecnica-no-88-2025-cgfam-dpni-svsa-ms" }, // nt88
+      { label: "Ministério da Saúde, 'Eventos Supostamente Atribuíveis à Vacinação ou Imunização (ESAVI)' (read 2026-11-16): vaccines among the safest medicines but not free of risk; any health professional may notify; data shared with Anvisa", href: "https://www.gov.br/saude/pt-br/vacinacao/esavi" }, // msesavi
+      { label: "New England Journal of Medicine 344(8), T. V. Murphy and colleagues, 'Intussusception among infants given an oral rotavirus vaccine', February 2001, PubMed abstract (read 2026-11-16): an investigation begun after nine reports to VAERS; adjusted odds ratio 21.7 for days 3 to 14 after the first dose", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=11207352" }, // murphy2001
+      { label: "PLOS ONE 7(3), Hanna Nohynek and colleagues, Pandemrix and narcolepsy in Finland, 2012, full text via Europe PMC (read 2026-11-16): rate ratio 12.7; one case per 16,000 vaccinated people aged 4 to 19", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC3314666/fullTextXML" }, // nohynek2012
+      { label: "Anvisa, Comunicado GGMON 006/2021, June 2021 (read 2026-11-16): rare thrombosis with thrombocytopenia associated with adenovirus-vector vaccines; benefits outweigh the risks; suspension for pregnant women extended to all such vaccines", href: "https://www.gov.br/anvisa/pt-br/assuntos/noticias-anvisa/2021/anvisa-propoe-restricao-de-uso-de-vacinas-que-utilizam-vetor-adenoviral-em-gestantes/comunicado_ggmon_006_2021_atualizada-1.pdf/@@download/file" }, // anvisa2021
+    ], // five sources, one object per line
+  },
+  {
+    // UFO flap (new entry): investigators' word for a burst of sighting reports, how it grows and how it fades.
+    slug: "ufo-flap", // the /glossary/ufo-flap address
+    headword: "UFO flap", // the investigators' jargon, sentence case
+    kind: "jargon", // a working word of investigators and the Condon report
+    domains: ["cyber-security", "grc"], // as for the psyops and mass-hysteria series
+    aliases: ["ufo wave", "wave of sightings", "sighting wave", "onda de óvnis", "onda de avistamentos"], // the plain-English and Portuguese names; bare "flap" left out (network "flapping" exists)
+    relatedTerms: ["mass-hysteria", "social-contagion", "collective-delusion", "phantom-attacker", "project-blue-book", "condon-report", "aaro", "information-cascade"], // siblings, this batch, an existing entry
+    relatedArticles: ["ufo-waves-and-skies-seen-together", "mass-hysteria-how-groups-come-to-believe-anything", "conformity-cascades-and-contagion-the-mechanisms"], // the part, the opener, the mechanisms part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Scientific Study of Unidentified Flying Objects (Condon report), volume 1, 1969, DTIC edition AD0680975 at the Internet Archive (read 2026-11-16): a concentration of reports in a small region in a short time is called a flap; Washington, July 1952; clustering partly due to news attention; Harrisburg, 1967", href: "https://archive.org/details/DTIC_AD0680975" }, // definition and mechanism
+      { label: "Evening Star (Washington, DC), 6 July 1947, page 1, Library of Congress (read 2026-11-16): 'Hundreds in 31 States Report Seeing Weird Flying Saucers'", href: "https://www.loc.gov/resource/sn83045462/1947-07-06/ed-1/?sp=1" }, // the 1947 wave
+      { label: "Evening Star, 8 July 1947, page 2, Library of Congress (read 2026-11-16): 41 states since the first reports of 25 June", href: "https://www.loc.gov/resource/sn83045462/1947-07-08/ed-1/?sp=2" }, // the 1947 wave
+      { label: "ODNI, 2022 Annual Report on Unidentified Aerial Phenomena (read 2026-11-16): 247 new reports from 5 March 2021 to 30 August 2022 against 263 in the 17 years before; destigmatization", href: "https://archive.dni.gov/files/ODNI/documents/assessments/Unclassified-2022-Annual-Report-UAP.pdf" }, // reporting channels
+      { label: "White House, remarks by President Biden on recent aerial objects, 16 February 2023 (read 2026-11-16): more objects seen partly because of steps taken to increase radars", href: "https://bidenwhitehouse.archives.gov/briefing-room/speeches-remarks/2023/02/16/remarks-by-president-biden-on-the-united-states-response-to-recent-aerial-objects" }, // sensors
+      { label: "Richard M. Medina, Simon C. Brewer and Sean M. Kirkpatrick, An environmental analysis of public UAP sightings and sky view potential, Scientific Reports 13, December 2023 (read 2026-11-16): more sightings where people have more opportunity to see the sky", href: "https://www.nature.com/articles/s41598-023-49527-x" }, // opportunity
+      { label: "National Archives, Project BLUE BOOK page (read 2026-11-16): 12,618 sightings from 1947 to 1969, 701 unidentified", href: "https://www.archives.gov/research/military/air-force/ufos" }, // how a wave ends
+    ], // seven sources, one object per line
+  },
+  {
+    // Project Blue Book (new entry): the US Air Force's UFO programme, its count, its secrets and its end.
+    slug: "project-blue-book", // the /glossary/project-blue-book address
+    headword: "Project Blue Book", // the programme's own name
+    kind: "term", // a historical programme name
+    domains: ["cyber-security", "grc"], // as for the series
+    aliases: ["blue book", "project sign", "project grudge", "projeto blue book"], // short name, the two predecessors, Portuguese
+    relatedTerms: ["ufo-flap", "condon-report", "aaro", "propaganda", "psyop", "misinformation"], // this batch, then existing entries
+    relatedArticles: ["ufo-waves-and-skies-seen-together", "a-short-history-of-propaganda-and-psychological-warfare"], // the part and the propaganda history
+    sources: [ // every label says what the page says and when it was read
+      { label: "National Archives, Project BLUE BOOK - Unidentified Flying Objects, page reviewed 25 June 2024 (read 2026-11-16): records; the Air Force fact sheet: 12,618 sightings 1947-1969, 701 unidentified; closure announced 17 December 1969; no threat, no technology beyond present science, no extraterrestrial vehicles", href: "https://www.archives.gov/research/military/air-force/ufos" }, // the count and conclusions
+      { label: "Gerald K. Haines, CIA's Role in the Study of UFOs, 1947-90, Studies in Intelligence, 1997 (read 2026-11-16): Sign and Grudge; the 1952 Washington incidents; the Robertson panel's recommendation to debunk; U-2 and OXCART flights and the Air Force's misleading statements", href: "https://www.cia.gov/resources/csi/static/cia-role-study-UFOs.pdf" }, // the agency historian
+      { label: "Evening Star, 30 July 1952, page 1, Library of Congress (read 2026-11-16): General Samford's press conference; temperature inversion; 'adequate attention, but not frantic attention'", href: "https://www.loc.gov/resource/sn83045462/1952-07-30/ed-1/?sp=1" }, // the 1952 flap
+      { label: "Condon report, volume 1, DTIC edition at the Internet Archive (read 2026-11-16): the O'Brien committee of March 1966; the Colorado contract of 7 October 1966; briefings by Blue Book's head", href: "https://archive.org/details/DTIC_AD0680975" }, // the route to closure
+    ], // four sources, one object per line
+  },
+  {
+    // Condon report (new entry): the University of Colorado study of 1966-1968 and its conclusions.
+    slug: "condon-report", // the /glossary/condon-report address
+    headword: "Condon report", // the common name, after its director Edward U. Condon
+    kind: "term", // a document's common name
+    domains: ["cyber-security", "grc"], // as for the series
+    aliases: ["condon committee", "colorado project", "scientific study of unidentified flying objects", "relatório condon"], // the committee, the project, the official title, Portuguese
+    relatedTerms: ["project-blue-book", "ufo-flap", "aaro", "misinformation"], // this batch, then an existing entry
+    relatedArticles: ["ufo-waves-and-skies-seen-together", "mass-hysteria-how-groups-come-to-believe-anything"], // the part and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "Scientific Study of Unidentified Flying Objects, volume 1, University of Colorado, 1969, DTIC edition AD0680975 at the Internet Archive (read 2026-11-16): the summary's conclusion; no evidence of secrecy; the subject misrepresented by a small number of individuals; flaps; Harrisburg; McDonald's view; the $313,000 contract", href: "https://archive.org/details/DTIC_AD0680975" }, // the report itself
+      { label: "Condon report, volume 2, DTIC edition AD0680976 at the Internet Archive (read 2026-11-16): case studies and appendices", href: "https://archive.org/details/DTIC_AD0680976" }, // second volume
+      { label: "P. M. Boffey, UFO Project: Trouble on the Ground, Science 161, 26 July 1968, PubMed record (read 2026-11-16): bibliographic record only", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=17776734" }, // the internal dispute
+      { label: "National Archives, Project BLUE BOOK page (read 2026-11-16): the closure of Blue Book in December 1969 rested on the Colorado report and the National Academy of Sciences' review of it", href: "https://www.archives.gov/research/military/air-force/ufos" }, // consequence
+    ], // four sources, one object per line
+  },
+  {
+    // AARO (new entry): the Pentagon office for unidentified anomalous phenomena, its counts and the dispute over its findings.
+    slug: "aaro", // the /glossary/aaro address
+    headword: "AARO", // the office's acronym
+    kind: "acronym", // an acronym expanded below
+    domains: ["cyber-security", "grc"], // as for the series
+    expansion: "All-domain Anomaly Resolution Office", // the office's name
+    aliases: ["all-domain anomaly resolution office", "uap", "unidentified anomalous phenomena", "unidentified aerial phenomena", "fenômenos anômalos não identificados"], // full name and the phenomena it studies, English and Portuguese
+    relatedTerms: ["ufo-flap", "project-blue-book", "condon-report", "conspiracy-theory", "misinformation"], // this batch, sibling F, an existing entry
+    relatedArticles: ["ufo-waves-and-skies-seen-together", "conspiracy-theories-at-scale"], // the part and the conspiracy part
+    sources: [ // every label says what the page says and when it was read
+      { label: "ODNI and Department of Defense, Fiscal Year 2023 Consolidated Annual Report on UAP, October 2023 (read 2026-11-16): 291 new and 801 total reports; most UAP will likely resolve to ordinary phenomena", href: "https://www.aaro.mil/Portals/136/PDFs/UNCLASSIFIED-FY23_Consolidated_Annual_Report_on_UAP-Oct_25_2023_1236.pdf" }, // creation and counts
+      { label: "Department of Defense, AARO, Fiscal Year 2024 Consolidated Annual Report on UAP, November 2024 (read 2026-11-16): 757 new, 1,652 total; 21 for further analysis, 444 lacking data; no evidence of extraterrestrial beings, activity or technology; two different counts of resolved cases", href: "https://archive.dni.gov/files/ODNI/documents/assessments/DOD-AARO-Consolidated-Annual-Report-on-UAP-Nov2024.pdf" }, // counts and finding
+      { label: "Shane Harris and Dan Lamothe, The Washington Post, via Stars and Stripes, 8 March 2024 (read 2026-11-16): the historical record report, Volume I; no confirmed extraterrestrial technology; reverse-engineering claims inaccurate; Kona Blue never approved", href: "https://www.stripes.com/theaters/us/2024-03-08/pentagon-no-evidence-alien-visits-13253101.html" }, // historical review
+      { label: "Space.com, 8 March 2024 (read 2026-11-16): 'circular reporting'; Christopher Mellon's criticism; Sean Kirkpatrick's reply", href: "https://www.space.com/pentagon-ufo-office-aaro-historical-report-no-emprical-evidence-alien-technology" }, // the dispute
+      { label: "House Committee on Oversight and Accountability, hearing of 26 July 2023, Serial No. 118-53, GovInfo (read 2026-11-16): David Grusch's testimony", href: "https://www.govinfo.gov/content/pkg/CHRG-118hhrg53022/html/CHRG-118hhrg53022.htm" }, // the claims
+      { label: "DefenseScoop, 25 February 2026 (read 2026-11-16): more than 2,000 cases, about 1,000 lacking data; 2025 annual report and Volume II not yet published", href: "https://defensescoop.com/2026/02/25/hegseth-ufo-disclosure-trump-aaro-uap-caseload/" }, // the caseload
+    ], // six sources, one object per line
+  },
+  {
+    // Werther effect (new entry): suicide contagion after media reports, the evidence and the guidelines; no method detail.
+    slug: "werther-effect", // the /glossary/werther-effect address
+    headword: "Werther effect", // the research term, after Goethe's novel
+    kind: "term", // a research term
+    domains: ["cyber-security", "grc"], // as for the series
+    aliases: ["suicide contagion", "copycat suicide", "imitative suicide", "efeito werther", "contágio suicida"], // the WHO's synonym, common phrasings, Portuguese
+    relatedTerms: ["papageno-effect", "social-contagion", "emotional-contagion", "recommender-system", "content-moderation", "misinformation"], // this batch, siblings, existing entries
+    relatedArticles: ["social-media-and-the-contagion-of-symptoms-and-beliefs", "mass-hysteria-how-groups-come-to-believe-anything", "conformity-cascades-and-contagion-the-mechanisms"], // the part, the opener, the mechanisms part
+    sources: [ // every label says what the page says and when it was read
+      { label: "World Health Organization, Preventing suicide: a resource for media professionals, update 2023, full text at IRIS (read 2026-11-16): 'suicide contagion' and the 'Werther effect'; Phillips (1974) in the references; Dos and Don'ts; the IASP's lists of services", href: "https://iris.who.int/server/api/core/bitstreams/92773496-dc8b-4d42-aef3-3a5a517dfa63/content" }, // definition and guidance
+      { label: "Thomas Niederkrotenthaler and colleagues, Association between suicide reporting in the media and suicide: systematic review and meta-analysis, BMJ 368:m575, 2020, Europe PMC full text (read 2026-11-16): 13% rise after reports of a celebrity's suicide; general reporting not associated; guidelines the best intervention", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7190013/fullTextXML" }, // pooled evidence
+      { label: "Melanie Mestas, The 'Werther Effect' of Goethe's Werther, Health Communication 39(7), 2024, PubMed abstract (read 2026-11-16): the historical epidemic rests on unsystematically documented cases", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=37170580" }, // the founding anecdote
+      { label: "Robert A. Fahey, Tetsuya Matsubayashi and Michiko Ueda, Tracking the Werther Effect on social media, Social Science and Medicine 219, 2018, PubMed abstract (read 2026-11-16): about one million tweets on 18 suicides in Japan", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=30342383" }, // social media
+      { label: "Daniel Romer, Reanalysis of the effects of 13 Reasons Why: response to Bridge et al., PLoS One, November 2020, Europe PMC full text (read 2026-11-16): the March rise that preceded the release", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7673522/fullTextXML" }, // the dispute
+      { label: "S. Calvo and colleagues, Does suicide contagion (Werther effect) take place in response to social media? A systematic review, Spanish Journal of Psychiatry and Mental Health 19(1), 2026, PubMed abstract (read 2026-11-16): 25 studies; suicidal content on social media can be both contagious and protective", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=38848950" }, // review
+      { label: "Centro de Valorização da Vida (read 2026-11-16): free emotional support in Brazil on 188, 24 hours, by chat and e-mail", href: "https://cvv.org.br/" }, // support line
+    ], // seven sources, one object per line
+  },
+  {
+    // Papageno effect (new entry): the protective effect of stories of coping with a suicidal crisis.
+    slug: "papageno-effect", // the /glossary/papageno-effect address
+    headword: "Papageno effect", // the research term, after Mozart's character
+    kind: "term", // a research term
+    domains: ["cyber-security", "grc"], // as for the series
+    aliases: ["protective reporting", "stories of hope and recovery", "efeito papageno"], // the practice, the 2022 meta-analysis's phrase, Portuguese
+    relatedTerms: ["werther-effect", "prebunking", "fact-checking", "content-moderation"], // this batch, then existing entries
+    relatedArticles: ["social-media-and-the-contagion-of-symptoms-and-beliefs", "what-ends-an-outbreak-and-what-helps"], // the part and the remedies part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Thomas Niederkrotenthaler and colleagues, Role of media reports in completed and prevented suicide: Werther v. Papageno effects, British Journal of Psychiatry 197(3), 2010, PubMed abstract (read 2026-11-16): 497 Austrian reports; coping stories negatively associated with suicide", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=20807970" }, // naming study
+      { label: "Thomas Niederkrotenthaler and colleagues, Effects of media stories of hope and recovery on suicidal ideation and help-seeking attitudes and intentions, Lancet Public Health 7(2), 2022, PubMed abstract (read 2026-11-16): small reduction in ideation (SMD -0.22); no evidence on help-seeking", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=35122759" }, // trials
+      { label: "Gernot Sonneck, Elmar Etzersdorfer and Sibylle Nagel-Kuess, Social Science and Medicine 38(3), 1994, PubMed abstract (read 2026-11-16): a 75% fall after the 1987 Viennese media guidelines, sustained for five years", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=8153751" }, // natural experiment
+      { label: "Florian Arendt and colleagues, Investigating harmful and helpful effects of watching season 2 of 13 Reasons Why, Social Science and Medicine 232, 2019, PubMed abstract (read 2026-11-16): harm for those who stopped watching, declines in ideation for students who finished", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=31029484" }, // mixed effects
+      { label: "World Health Organization, Preventing suicide: a resource for media professionals, update 2023, full text at IRIS (read 2026-11-16): report stories of coping; online stories of people who coped should be actively encouraged", href: "https://iris.who.int/server/api/core/bitstreams/92773496-dc8b-4d42-aef3-3a5a517dfa63/content" }, // guidance
+    ], // five sources, one object per line
+  },
+  {
+    // Viral challenge (new entry): filmed tasks that spread on platforms, the rare dangerous ones, the law and the hoaxes.
+    slug: "viral-challenge", // the /glossary/viral-challenge address
+    headword: "Viral challenge", // the common phrase, sentence case
+    kind: "term", // a platform-culture term
+    domains: ["cyber-security", "grc"], // as for the series
+    aliases: ["online challenge", "internet challenge", "tiktok challenge", "desafio viral", "desafio online"], // common phrasings, Portuguese
+    relatedTerms: ["hoax-panic", "social-contagion", "recommender-system", "section-230", "marco-civil-da-internet", "content-moderation"], // this batch, sibling A, existing entries
+    relatedArticles: ["social-media-and-the-contagion-of-symptoms-and-beliefs", "platform-law-section-230-the-dsa-and-the-marco-civil", "recommendation-and-profiling-what-platforms-disclose"], // the part, the law part, the recommendation part
+    sources: [ // every label says what the page says and when it was read
+      { label: "TikTok newsroom, Helping our community stay safe while having fun on TikTok, 17 November 2021 (read 2026-11-16): survey of more than 10,000 teens, parents and teachers in ten countries; 48% safe, 3% very dangerous, 0.3% took part in a very dangerous one", href: "https://newsroom.tiktok.com/helping-our-community-stay-safe-while-having-fun-on-tiktok?lang=en" }, // prevalence
+      { label: "US Court of Appeals for the Third Circuit, Anderson v. TikTok, Inc., No. 22-3061, 27 August 2024, GovInfo (read 2026-11-16): algorithmic recommendation as the platform's own first-party speech; reversed in part, vacated in part, remanded", href: "https://www.govinfo.gov/content/pkg/USCOURTS-ca3-22-03061/pdf/USCOURTS-ca3-22-03061-0.pdf" }, // a court
+      { label: "Agência Câmara, Câmara aprova punição para quem induzir pessoas à automutilação, 29 October 2019 (read 2026-11-16): the 'deadly challenges' named by the rapporteur; penalty up to double online", href: "https://www.camara.leg.br/noticias/606247-camara-aprova-punicao-para-quem-induzir-pessoas-a-automutilacao/" }, // Brazilian law
+      { label: "Supremo Tribunal Federal, information sheet on RE 1.037.396 and RE 1.057.258, judgment of 26 June 2025 (read 2026-11-16): duty of care for crimes under article 122 of the Penal Code; systemic failure", href: "https://sipla.ip.mpg.de/fileadmin/Files/Files/STF_Responsabilidade_de_plataformas_digitais_por_conteudo_de_terceiros.pdf" }, // platform liability
+      { label: "Ant Adeane, BBC, 13 January 2019 (read 2026-11-16): no suicide proved linked to the Blue Whale groups", href: "https://bbc.in/2TIYti3" }, // a hoax
+      { label: "Full Fact, 1 March 2019 (read 2026-11-16): no clear evidence that anyone was subjected to the Momo challenge as described", href: "https://fullfact.org/online/momo-challenge-hoax/" }, // a hoax
+    ], // six sources, one object per line
+  },
+  {
+    // Hoax panic (new entry): alarm over a danger that does not exist as described, spread by warnings.
+    slug: "hoax-panic", // the /glossary/hoax-panic address
+    headword: "Hoax panic", // descriptive term, sentence case
+    kind: "term", // a descriptive term used here for the pattern the sources describe
+    domains: ["cyber-security", "grc"], // as for the series
+    aliases: ["self-harm hoax", "digital ghost story", "juvenoia", "momo challenge", "blue whale challenge", "baleia azul", "pânico por boato"], // TikTok's and SWGFL's words, Finkelhor's coinage, the two cases, Portuguese
+    relatedTerms: ["viral-challenge", "moral-panic", "rumour", "mass-hysteria", "misinformation", "illusory-truth-effect", "fact-checking"], // this batch, siblings C, D, A, existing entries
+    relatedArticles: ["social-media-and-the-contagion-of-symptoms-and-beliefs", "rumour-panic-and-lynching", "witch-hunts-and-moral-panics", "verification-and-fact-checking"], // the part, the rumour and moral-panic parts, verification
+    sources: [ // every label says what the page says and when it was read
+      { label: "Ant Adeane, BBC, Blue Whale: What is the truth behind an online 'suicide challenge'?, 13 January 2019 (read 2026-11-16): the 2016 report's figure of 130 traced to a bereaved father's count; no suicide proved linked to the groups; copycat 'curators' aged 12 to 14", href: "https://bbc.in/2TIYti3" }, // Blue Whale
+      { label: "Full Fact, The 'Momo challenge' is an online hoax fuelled by media coverage, 1 March 2019 (read 2026-11-16): no clear evidence; coverage spiked after a police statement relying on press reports; a feedback loop", href: "https://fullfact.org/online/momo-challenge-hoax/" }, // Momo
+      { label: "Conselho Federal de Psicologia, Jogo Baleia Azul: a internet estimula o suicídio?, 10 May 2017 (read 2026-11-16): SaferNet found no centralized command structure; the CFP president against feeding social panic", href: "https://site.cfp.org.br/jogo-baleia-azul-internet-estimula-o-suicidio/" }, // Brazil 2017
+      { label: "TikTok newsroom, 17 November 2021 (read 2026-11-16): hoaxes spread largely through warning messages; 31% of exposed teens reported a negative impact; alarmist warnings to be removed", href: "https://newsroom.tiktok.com/helping-our-community-stay-safe-while-having-fun-on-tiktok?lang=en" }, // the mechanism
+      { label: "SWGFL, Digital Ghost Stories: Impact, Risks and Reasons (read 2026-11-16): warnings raise curiosity and drive traffic to the content of concern", href: "https://www.swgfl.org.uk/research/digital-ghost-stories-impact-risks-and-reasons/" }, // the name
+      { label: "Larry Magid, Parenting for a Digital Future, London School of Economics, 21 September 2018 (read 2026-11-16): David Finkelhor's 'juvenoia'", href: "http://blogs.lse.ac.uk/parenting4digitalfuture/2018/09/21/dire-warnings-about-children-dying-because-of-apps-and-games-are-a-form-of-juvenoia/" }, // the reaction
+      { label: "Good Morning America, ABC News, 17 December 2021 (read 2026-11-16): DHS saw no specific, credible threat to schools; TikTok found only videos discussing the rumour and removed alarmist warnings", href: "https://www.goodmorningamerica.com/news/story/dhs-recommends-schools-remain-alert-amid-unfounded-threats-81811521" }, // school rumour
+      { label: "BBC News Brasil, 26 July 2018 (read 2026-11-16): SaferNet called Momo bait used by criminals to steal data and extort people", href: "https://www.bbc.com/portuguese/salasocial-44961410" }, // exploitation
+    ], // eight sources, one object per line
+  },
+  {
+    // Fear appeal (new entry): Rogers's three components, the meta-analyses, the Maastricht reanalysis and the 2018 dispute, emotion and belief in false news.
+    slug: "fear-appeal", // the /glossary/fear-appeal address
+    headword: "Fear appeal", // the research term, sentence case
+    kind: "term", // a term from health communication and social psychology
+    domains: ["cyber-security", "grc"], // the human attack surface and public campaigns, as for the series
+    aliases: ["fear appeals", "fear-arousing communication", "threatening communication", "apelo ao medo", "apelos ao medo"], // the plural, the 1953 wording, the Maastricht group's wording and the Portuguese
+    relatedTerms: ["social-engineering", "propaganda", "misinformation", "prebunking", "illusory-truth-effect"], // existing entries
+    relatedArticles: ["how-manipulators-harness-collective-panic", "the-human-attack-surface-why-repetition-works", "social-engineering-pretexting-vishing-and-baiting"], // the part and the two psyops parts on persuasion and pretext
+    sources: [ // every label says what the page says and when it was read
+      { label: "Journal of Psychology 91(1), Ronald W. Rogers, 'A Protection Motivation Theory of Fear Appeals and Attitude Change', September 1975, PubMed abstract (read 2026-11-16): three crucial components of a fear appeal, the magnitude of noxiousness of the event, the probability of its occurrence and the efficacy of a protective response", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=28136248" }, // rogers1975
+      { label: "Health Education & Behavior 27(5), Kim Witte and Mike Allen, 'A meta-analysis of fear appeals', October 2000, PubMed abstract (read 2026-11-16): strong fear appeals are more persuasive than weak ones; they motivate danger control and also defensive avoidance or reactance; strong fear with high efficacy produces the greatest change", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=11009129" }, // witte-allen2000
+      { label: "Psychological Bulletin 141(6), Melanie B. Tannenbaum, Dolores Albarracín and colleagues, 'Appealing to fear', November 2015, PubMed abstract (read 2026-11-16): 127 articles, 248 samples, 27,372 participants; random-effects d = 0.29; no identified circumstances of backfire", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=26501228" }, // tannenbaum2015
+      { label: "Health Psychology Review 7(supl. 1), Gjalt-Jorn Y. Peters, Robert A. C. Ruiter and Gerjo Kok, 'Threatening communication', May 2013, full text (read 2026-11-16): six studies with full factorial designs and behaviour measured; threat only works under high efficacy (d = 0.31), efficacy only under high threat (d = 0.71)", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC3678850/fullTextXML" }, // peters2013
+      { label: "Health Psychology Review 12(2), Gerjo Kok and colleagues, 'Ignoring theory and misinterpreting evidence: the false belief in fear appeals', June 2018, PubMed abstract (read 2026-11-16): the premise is simple and intuitive but only true under specific, rare circumstances; eight commentaries and a rejoinder followed", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=29233060" }, // kok2018
+      { label: "Cognitive Research: Principles and Implications 5, Cameron Martel, Gordon Pennycook and David G. Rand, 'Reliance on emotion promotes belief in fake news', October 2020, full text (read 2026-11-16): heightened emotionality predicted belief in false but not true headlines; inducing reliance on emotion increased belief in false news (N = 3,884)", href: "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7539247/fullTextXML" }, // martel2020
+    ], // six sources, one object per line
+  },
+  {
+    // Pump and dump (new entry): the SEC's definition, the coronavirus promotions and suspensions of 2020, the influencer case reinstated in 2025, a conviction for false COVID-19 claims.
+    slug: "pump-and-dump", // the /glossary/pump-and-dump address
+    headword: "Pump and dump", // the regulators' name for the scheme, sentence case
+    kind: "term", // a term of securities regulation
+    domains: ["grc", "cyber-security"], // market regulation and online fraud
+    aliases: ["pump and dump scheme", "pump-and-dump scheme", "pump and dump schemes", "esquema de pump and dump"], // the scheme wording in English and the Portuguese with the English term kept
+    relatedTerms: ["market-manipulation", "social-bot", "astroturfing", "advance-fee-fraud", "pig-butchering"], // the batch, then existing fraud and amplification entries
+    relatedArticles: ["how-manipulators-harness-collective-panic", "scams-at-scale-why-a-tiny-success-rate-pays", "manias-and-bubbles-from-tulips-to-meme-stocks"], // the part, the psyops part on fraud economics and the sibling on bubbles
+    sources: [ // every label says what the page says and when it was read
+      { label: "SEC, Office of Investor Education and Advocacy, 'Look Out for Coronavirus-Related Investment Scams', investor alert, 4 February 2020, updated 10 February 2021 (read 2026-11-16): promoters pump the price with positive but often false rumours and dump their shares; 39 trading suspensions over coronavirus claims; a suspension of up to ten days is not a finding of fraud", href: "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-alerts/look-out-coronavirus-related-investment-scams-investor-alert" }, // sec2020
+      { label: "US Court of Appeals for the Fifth Circuit, United States v. Constantinescu et al., No. 24-20143, 2 October 2025 (read 2026-11-16): the superseding indictment alleges buying a security, pumping its price with false and misleading posts on social media and selling; $114 million; dismissal reversed", href: "https://www.ca5.uscourts.gov/opinions/pub/24/24-20143-CV0.pdf" }, // ca5-2025
+      { label: "US Department of Justice, Criminal Division, United States v. Edward Constantinescu et al., victim notification case page, updated 5 August 2026 (read 2026-11-16): one guilty plea; the remaining defendants pleaded not guilty and denied the charges; an indictment is merely an allegation; trial set for 3 May 2027", href: "https://www.justice.gov/criminal/criminal-vns/case/united-states-v-constantinescu-et-al" }, // doj-vns
+      { label: "US Department of Justice, 'Silicon Valley Executive Sentenced for Defrauding Investors and Participating in COVID-19 and Allergy Testing Scheme', 18 October 2023 (read 2026-11-16): the president of Arrayit, convicted on 6 September 2022, sentenced to eight years and $24 million in restitution; he had falsely announced a test for COVID-19", href: "https://www.justice.gov/opa/pr/silicon-valley-executive-sentenced-defrauding-investors-and-participating-covid-19-and" }, // doj-arrayit
+    ], // four sources, one object per line
+  },
+  {
+    // Witch-finder (new entry): Hopkins and Stearne in East Anglia, 1645 to 1647, the fees, the method, the critics and the end; the Newcastle pricker paid by the head.
+    slug: "witch-finder", // the /glossary/witch-finder address
+    headword: "Witch-finder", // the seventeenth-century name, hyphenated as in Notestein and Gaule
+    kind: "lore", // a historical figure-type, like the existing lore entries
+    domains: ["cyber-security", "grc"], // influence for hire and moral panic, as for the series
+    aliases: ["witchfinder", "witch finder", "witch-finder general", "witchfinder general", "witch-pricker", "caçador de bruxas", "picador de bruxas"], // spellings, Hopkins's reputed title, the Scottish pricker and the Portuguese
+    relatedTerms: ["influence-operation", "propaganda"], // existing entries; witch-hunt, malleus-maleficarum and moral-panic to add when agent C's entries land
+    relatedArticles: ["how-manipulators-harness-collective-panic", "witch-hunts-and-moral-panics"], // the part and the sibling on witch hunts
+    sources: [ // every label says what the page says and when it was read
+      { label: "Wallace Notestein, A History of Witchcraft in England from 1558 to 1718, 1911, Project Gutenberg (read 2026-11-16): Hopkins's reputed title of witch-finder general; judicial anarchy in 1645 and 1646; fees at Great Yarmouth, Aldeburgh and Stowmarket; three hundred to a thousand pounds; the opposition and the parliamentary commission", href: "https://www.gutenberg.org/ebooks/31511.txt.utf-8" }, // notestein1911
+      { label: "Matthew Hopkins, The Discovery of Witches, London, 1647, Project Gutenberg (read 2026-11-16): his answers to the charge of fleecing the country; twenty shillings a town and a company of three horses", href: "https://www.gutenberg.org/ebooks/14015.txt.utf-8" }, // hopkins1647
+      { label: "John Gaule, Select Cases of Conscience Touching Witches and Witchcrafts, London, 1646, EarlyPrint transcription of EEBO-TCP A85867 (read 2026-11-16): the watching under privation; Hopkins's letter threatening to go where he would have thanks and recompense; witch-finding as a calling to be questioned", href: "https://distantreader.org/stacks/earlyprint/txt/A85867.txt" }, // gaule1646
+      { label: "John Stearne, A Confirmation and Discovery of Witchcraft, London, 1648, EarlyPrint transcription of EEBO-TCP A61373 (read 2026-11-16): about two hundred executed; the watching defended; fees unpaid; Hopkins's death at Manningtree", href: "https://distantreader.org/stacks/earlyprint/txt/A61373.txt" }, // stearne1648
+      { label: "Ralph Gardiner, England's Grievance Discovered, London, 1655, EarlyPrint transcription of EEBO-TCP A42371 (read 2026-11-16): depositions on the Scottish pricker hired by Newcastle's magistrates at twenty shillings a head, the bellman's call and the thirty women pricked; a pamphlet against the town's rulers", href: "https://distantreader.org/stacks/earlyprint/txt/A42371.txt" }, // gardiner1655
+      { label: "University of East Anglia research portal, Malcolm Gaskill, Witchfinders: A Seventeenth-Century English Tragedy, publisher's description (read 2026-11-16): at least 250 interrogated and tried by autumn 1647, more than a hundred hanged, a campaign never legally sanctioned", href: "https://research-portal.uea.ac.uk/en/publications/witchfinders-a-seventeenth-century-english-tragedy/" }, // gaskill-uea
+    ], // six sources, one object per line
+  },
+  {
+    // Market manipulation (new entry): the CVM's administrative definition and the RJCP and OGX cases, the 1814 false-news fraud, the SEC's trading suspensions.
+    slug: "market-manipulation", // the /glossary/market-manipulation address
+    headword: "Market manipulation", // the general term, sentence case
+    kind: "term", // a term of securities law
+    domains: ["grc", "cyber-security"], // market regulation and online fraud
+    aliases: ["price manipulation", "stock manipulation", "manipulação de mercado", "manipulação de preços"], // common English variants and the CVM's Portuguese
+    relatedTerms: ["pump-and-dump", "flash-crash", "high-frequency-trading", "social-bot"], // the batch, then existing market and amplification entries
+    relatedArticles: ["how-manipulators-harness-collective-panic", "manias-and-bubbles-from-tulips-to-meme-stocks", "scams-at-scale-why-a-tiny-success-rate-pays"], // the part, the sibling on bubbles and the psyops part on fraud
+    sources: [ // every label says what the page says and when it was read
+      { label: "Comissão de Valores Mobiliários, Processo Administrativo Sancionador RJ2013/8880, judgment of 11 June 2019 (read 2026-11-16): Instrução CVM nº 8/1979 defines price manipulation as any process or artifice meant to raise, hold or lower a security's price by inducing others to trade; unanimous sanctions over the RJCP Equity case; the rapporteur on repeated unofficial posts; the OGX decision of 27 May 2019 cited", href: "https://conteudo.cvm.gov.br/export/sites/cvm/sancionadores/sancionador/anexos/2018/RJ20138880__COMPLETO.pdf" }, // cvm2019
+      { label: "Capital Aberto, 'Decisão da CVM reforça preocupação com uso indevido de redes sociais', 28 June 2019 (read 2026-11-16): optimistic posts on Twitter and blogs around each announcement, then trading with net sales; the defence's argument", href: "https://capitalaberto.com.br/regulacao/2019/06/decisao-da-cvm-reforca-preocupacao-com-uso-indevido-de-redes-sociais" }, // capitalaberto2019
+      { label: "InfoMoney, 'Eike Batista é condenado a pagar R$ 536 mi por uso de informação privilegiada na OGX', 27 May 2019 (read 2026-11-16): administrative fines of about R$536 million for insider trading and manipulation through posts urging investors to hold; the defence's denial and appeal", href: "https://www.infomoney.com.br/mercados/eike-batista-e-condenado-a-pagar-r-536-mi-por-uso-de-informacao-privilegiada-na-ogx/" }, // infomoney2019
+      { label: "The Trial of Charles Random de Berenger, Sir Thomas Cochrane and others, for a Conspiracy, King's Bench, June 1814, Project Gutenberg (read 2026-11-16): a false messenger's news of Napoleon's death; omnium rising from 27 1/2 to 32 1/2 and falling back; fines, prison and the pillory; Cochrane's declaration of innocence", href: "https://www.gutenberg.org/ebooks/21027.txt.utf-8" }, // trial1814
+      { label: "SEC, Office of Investor Education and Advocacy, 'Look Out for Coronavirus-Related Investment Scams', 4 February 2020, updated 10 February 2021 (read 2026-11-16): trading suspensions of up to ten days where information is inaccurate or unreliable; 39 companies listed", href: "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-alerts/look-out-coronavirus-related-investment-scams-investor-alert" }, // sec2020
+    ], // five sources, one object per line
+  },
+  {
+    // Risk communication (new entry): the WHO's definition and graded guideline of 2017, the 2005 outbreak guidelines, the BSE Inquiry on reassurance.
+    slug: "risk-communication", // the /glossary/risk-communication address
+    headword: "Risk communication", // the public-health term, sentence case
+    kind: "term", // a term of public health and emergency management
+    domains: ["cyber-security", "grc"], // incident communication and governance, as for the series
+    aliases: ["emergency risk communication", "ERC", "comunicação de risco", "comunicação de riscos"], // the WHO's emergency wording and acronym, and the Portuguese (the WHO's Portuguese edition uses the plural)
+    relatedTerms: ["crisis-communication", "infodemic", "misinformation", "fact-checking", "prebunking"], // the batch, then existing entries
+    relatedArticles: ["what-ends-an-outbreak-and-what-helps", "mass-psychogenic-illness-when-symptoms-spread", "verification-and-fact-checking"], // the part, the sibling on psychogenic illness and the psyops part on verification
+    sources: [ // every label says what the page says and when it was read
+      { label: "World Health Organization, 'Communicating risk in public health emergencies: a WHO guideline for emergency risk communication (ERC) policy and practice', 2017 (read 2026-11-16): the real-time exchange of information, advice and opinions between experts, officials and people at risk; recommendations graded strong or conditional with evidence quality; strong recommendations on moderate or low evidence because of grey literature; no evidence on monitoring and evaluation tools", href: "https://iris.who.int/server/api/core/bitstreams/27ef4bb6-61ab-4870-b609-c09b2710633a/content" }, // who2017
+      { label: "Organização Mundial da Saúde, 'Comunicação de riscos em emergências de saúde pública', 2018 (read 2026-11-16): the Portuguese edition of the 2017 guideline", href: "https://iris.who.int/server/api/core/bitstreams/a35f2347-f077-4127-a43b-29eb871486af/content" }, // who2018-pt
+      { label: "World Health Organization, 'Outbreak communication guidelines', WHO/CDS/2005.28, 2005 (read 2026-11-16): trust, early announcement, transparency, the public and planning; public panic is rare when people are candidly informed; avoiding excessive reassurance", href: "https://iris.who.int/server/api/core/bitstreams/5b99e481-dcb3-43a5-88ab-895e1cf97ebb/content" }, // who2005
+      { label: "The BSE Inquiry Report, volume 1, executive summary, October 2000, copy filed with the Infected Blood Inquiry as CABO0000141_004 (read 2026-11-16): the government believed the risk remote and sought to prevent an alarmist reaction; 'this campaign of reassurance was a mistake'; confidence in pronouncements about risk a casualty", href: "https://www.infectedbloodinquiry.org.uk/sites/default/files/documents/CABO0000141_004%20-%20The%20BSE%20Inquiry%20Report%20Volume%201%20Findings%20and%20Conclusions%20-%2003%20Nov%202000.pdf" }, // bse2000
+      { label: "Hansard, House of Commons, 'BSE Inquiry Report', 26 October 2000 (read 2026-11-16): the minister reads the executive summary and welcomes the report; the opposition's reply quotes paragraph 1292 and apologizes", href: "https://api.parliament.uk/historic-hansard/commons/2000/oct/26/bse-inquiry-report" }, // hansard2000
+    ], // five sources, one object per line
+  },
+  {
+    // Crisis communication (new entry): the CDC's CERC manual, its six principles and its psychology chapter; the WHO's 2005 view of crisis communication as dialogue; a reassurance that triggered a run.
+    slug: "crisis-communication", // the /glossary/crisis-communication address
+    headword: "Crisis communication", // the general term, sentence case
+    kind: "term", // a term of emergency management
+    domains: ["cyber-security", "grc"], // incident communication and governance
+    aliases: ["crisis and emergency risk communication", "CERC", "comunicação de crise", "comunicação de crise e de risco em emergências"], // the CDC's framework and acronym, and the Portuguese
+    relatedTerms: ["risk-communication", "infodemic", "misinformation", "content-moderation"], // the batch, then existing entries
+    relatedArticles: ["what-ends-an-outbreak-and-what-helps", "rumour-panic-and-lynching", "how-manipulators-harness-collective-panic"], // the part, the sibling on rumour and runs, the part on steered panics
+    sources: [ // every label says what the page says and when it was read
+      { label: "Centers for Disease Control and Prevention, 'CERC: Introduction', 2018 update (read 2026-11-16): be first, be right, be credible, express empathy, promote action, show respect; the first source often becomes the preferred source; built around psychological and communication sciences and lessons from emergencies", href: "https://www.cdc.gov/cerc/media/pdfs/CERC_Introduction.pdf" }, // cerc-intro
+      { label: "Centers for Disease Control and Prevention, 'CERC: Psychology of a Crisis', 2019 update (read 2026-11-16): the first message may be the accepted one; information gaps produce rumours; do not over-reassure; people seldom act completely irrationally; unexplained physical symptoms and the 'worried well'", href: "https://www.cdc.gov/cerc/media/pdfs/CERC_Psychology_of_a_Crisis.pdf" }, // cerc-psych
+      { label: "Centers for Disease Control and Prevention, 'Crisis and Emergency Risk Communication (CERC) Manual', index page dated 20 November 2024 (read 2026-11-16): chapters dated from 2014 to 2019", href: "https://www.cdc.gov/cerc/php/cerc-manual/index.html" }, // cerc-index
+      { label: "World Health Organization, 'Outbreak communication guidelines', 2005 (read 2026-11-16): from 'decide and tell' to crisis communication as a dialogue; the first announcement sets the parameters of trust", href: "https://iris.who.int/server/api/core/bitstreams/5b99e481-dcb3-43a5-88ab-895e1cf97ebb/content" }, // who2005
+      { label: "Bank of England, Financial Stability Report, October 2007 (read 2026-11-16): the 14 September announcement of support for Northern Rock confirmed its difficulties and led to a retail deposit run; the government guarantee of 17 September", href: "https://www.bankofengland.co.uk/-/media/boe/files/financial-stability-report/2007/october-2007.pdf" }, // boe2007
+    ], // five sources, one object per line
+  },
+  {
+    // Infodemic (new entry): the WHO's definition, Resolution WHA73.1 and the WHO's own call for evidence on infodemic management.
+    slug: "infodemic", // the /glossary/infodemic address
+    headword: "Infodemic", // the WHO's term, sentence case
+    kind: "term", // a public-health term coined for the information side of outbreaks
+    domains: ["cyber-security", "grc"], // misinformation and governance
+    aliases: ["infodemia", "infodemic management", "gestão da infodemia"], // the Portuguese, and the management practice in both languages
+    relatedTerms: ["misinformation", "disinformation", "fact-checking", "risk-communication", "prebunking"], // existing entries and the batch
+    relatedArticles: ["what-ends-an-outbreak-and-what-helps", "verification-and-fact-checking", "prebunking-and-inoculation"], // the part and two psyops parts
+    sources: [ // every label says what the page says and when it was read
+      { label: "World Health Organization, 'Infodemic', health topic page (read 2026-11-16): too much information, including false or misleading information, in digital and physical environments during a disease outbreak; confusion, risk-taking, mistrust; infodemic management; more efforts needed to understand its scale and the impact of strategies", href: "https://www.who.int/health-topics/infodemic" }, // who-infodemic
+      { label: "WHO, UN, UNICEF, UNDP, UNESCO, UNAIDS, ITU, UN Global Pulse and IFRC, 'Managing the COVID-19 infodemic', joint statement, 23 September 2020 (read 2026-11-16): an overabundance of information online and offline, including deliberate attempts to spread wrong information; Resolution WHA73.1 of May 2020", href: "https://www.who.int/news/item/23-09-2020-managing-the-covid-19-infodemic-promoting-healthy-behaviours-and-mitigating-the-harm-from-misinformation-and-disinformation" }, // joint2020
+      { label: "Centers for Disease Control and Prevention, 'CERC: Psychology of a Crisis', 2019 update (read 2026-11-16): in the absence of information people speculate and fill in the blanks, which often results in rumours", href: "https://www.cdc.gov/cerc/media/pdfs/CERC_Psychology_of_a_Crisis.pdf" }, // cerc-psych
+      { label: "World Health Organization, 2017 ERC guideline, recommendation C3.1 (read 2026-11-16): social media may be used to monitor and respond to rumours, a conditional recommendation on moderate evidence", href: "https://iris.who.int/server/api/core/bitstreams/27ef4bb6-61ab-4870-b609-c09b2710633a/content" }, // who2017
+    ], // four sources, one object per line
+  },
+  {
+    // Right of reply (new entry): Brazil's Law 13,188 of 2015, the STF's ADIs of 2021, Tema 995 of 2023 and its 2025 revision, the press's objection.
+    slug: "right-of-reply", // the /glossary/right-of-reply address
+    headword: "Right of reply", // the legal term, sentence case
+    kind: "term", // a term of media law
+    domains: ["grc", "privacy"], // media regulation and the protection of honour and image
+    aliases: ["direito de resposta", "right of rectification", "direito de retificação", "direito de resposta ou retificação"], // the Portuguese legal names and the rectification variant
+    relatedTerms: ["fact-checking", "misinformation", "content-moderation"], // existing entries; escola-base-case to add when agent C's entry lands
+    relatedArticles: ["what-ends-an-outbreak-and-what-helps", "satanic-panic-false-memories-and-the-escola-base-case", "platform-law-section-230-the-dsa-and-the-marco-civil"], // the part, the Escola Base sibling and the psyops part on platform law
+    sources: [ // every label says what the page says and when it was read
+      { label: "Lei nº 13.188, de 11 de novembro de 2015, Senado Federal (read 2026-11-16): reply or rectification free of charge and in proportion to the offence; a spontaneous retraction does not bar the reply or a claim for moral damages; 60 days to ask, 7 days to publish, 24 hours for the judge, 30 days to sentence", href: "https://legis.senado.leg.br/norma/585000/publicacao/15638070" }, // lei13188
+      { label: "Supremo Tribunal Federal, ADI 5.436, judgment of 11 March 2021, Senado Federal (read 2026-11-16): arts. 2 §3, 5 §§1-2, 6 and 7 upheld; 'em juízo colegiado prévio' struck from art. 10; the reply triggered only after free expression; distinct from retraction; ADPF 130 recalled", href: "https://legis.senado.leg.br/norma/33351822/publicacao/34138059" }, // adi5436
+      { label: "Supremo Tribunal Federal, ADI 5.415, judgment of 11 March 2021, Senado Federal (read 2026-11-16): the words on prior collegiate decision declared unconstitutional; Justice Marco Aurélio dissenting", href: "https://legis.senado.leg.br/norma/33351748/publicacao/34138031" }, // adi5415
+      { label: "Supremo Tribunal Federal, news item, 29 November 2023 (read 2026-11-16): RE 1075412, Tema 995; liability for an interviewee's false accusation only with concrete signs of falsehood and a breach of the duty of care; two dissents", href: "https://noticias.stf.jus.br/postsnoticias/stf-fixa-criterios-para-responsabilizar-empresas-jornalisticas-por-divulgacao-de-acusacoes-falsas/" }, // stf2023
+      { label: "Associação Nacional de Jornais, filing in RE 1.075.412/PE, 15 April 2024 (read 2026-11-16): the thesis's vague terms create a chilling effect and self-censorship; liability should require intent or gross error", href: "https://www.anj.org.br/wp-content/uploads/2024/04/30-RE-1075412-manifestacao-ANJ.pdf" }, // anj2024
+      { label: "Supremo Tribunal Federal, news item, 20 March 2025 (read 2026-11-16): unanimous revised thesis; bad faith by intent or gross negligence; live interviews exempt but a reply on equal terms owed; removal on the outlet's initiative or the victim's notice", href: "https://noticias.stf.jus.br/postsnoticias/stf-fixa-criterios-para-responsabilizacao-de-empresas-jornalisticas-que-divulgarem-acusacoes-falsas/" }, // stf2025
+    ], // six sources, one object per line
+  },
+  {
+    // Truth sandwich (new entry): the format, the handbook's version, and the experiments of 2021 to 2026 that found order matters little.
+    slug: "truth-sandwich", // the /glossary/truth-sandwich address
+    headword: "Truth sandwich", // the practitioners' name, sentence case
+    kind: "expression", // a figurative name for a correction format
+    domains: ["cyber-security", "grc"], // misinformation response, as for the series
+    aliases: ["sanduíche da verdade", "fact-myth-fallacy-fact", "fato, mito, falácia, fato"], // the Portuguese and the handbook's sequence in both languages
+    relatedTerms: ["fact-checking", "continued-influence-effect", "backfire-effect", "prebunking", "illusory-truth-effect"], // existing entries
+    relatedArticles: ["what-ends-an-outbreak-and-what-helps", "why-misbeliefs-persist", "verification-and-fact-checking"], // the part and two psyops parts
+    sources: [ // every label says what the page says and when it was read
+      { label: "Stephan Lewandowsky, John Cook, Ullrich Ecker and 19 co-authors, The Debunking Handbook 2020, DOI 10.17910/b7.1182 (read 2026-11-16): fact, myth, fallacy, fact; lead with the fact only if it is clear and sticky; pick your battles", href: "https://sciencelearning.umd.edu/files/2020/10/DebunkingHandbook2020.pdf" }, // handbook2020
+      { label: "Cognitive Research: Principles and Implications 6, Briony Swire-Thompson, John Cook, Lucy H. Butler, Jasmyne A. Sanderson, Stephan Lewandowsky and Ullrich K. H. Ecker, 29 December 2021, PubMed abstract (read 2026-11-16): four experiments; myth-first, fact-first, fact-only and myth-only formats; impact largely independent of format", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=34964924" }, // swire2021
+      { label: "British Journal of Health Psychology 28(4), Laura M. König, 'Debunking nutrition myths', November 2023, PubMed abstract (read 2026-11-16): 302 participants; truth-sandwich texts lowered agreement with the targeted myth against a control text", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=37186138" }, // konig2023
+      { label: "British Journal of Health Psychology 28(4), Johannes Kotz, Helge Giese and Laura M. König, November 2023, PubMed abstract (read 2026-11-16): 4,906 participants representative of Germany; truth sandwich against bottom-heavy, statement against question headlines; no effect of structure or headline", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=37263771" }, // kotz2023
+      { label: "Journal of Educational Psychology 117(6), Briony Swire-Thompson, Lucy Butler and David N. Rapp, 'The truth sandwich format does not enhance the correction of misinformation', August 2025, PubMed abstract (read 2026-11-16): two experiments, N = 1,046, two-week delay; both formats highly effective; Bayesian evidence for no format effect", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=40860910" }, // swire2025
+      { label: "Health Communication 41(13), Rebecca Blase and Simone Dohle, online 11 February 2026, PubMed abstract (read 2026-11-16): N = 2,684; truth sandwiches from a general practitioner, a health institution or a company; no direct source effect; an indirect effect through trustworthiness and reactance", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&rettype=abstract&retmode=text&id=41674185" }, // blase2026
+    ], // six sources, one object per line
+  },
+  {
+    // Hackers on screen (blog post 26, 16/11/2026): the directive linked to WarGames by Fred Kaplan's reporting.
+    slug: "nsdd-145", // the directive's number, as it is cited
+    headword: "NSDD-145 (1984)", // number and year
+    kind: "lore", // a historical document with a story
+    expansion: "National Security Decision Directive 145, National Policy on Telecommunications and Automated Information Systems Security", // its title
+    domains: ["cyber-security", "grc"], // national security policy for computer systems
+    aliases: ["nsdd 145", "national security decision directive 145", "national policy on telecommunications and automated information systems security"], // search terms
+    relatedTerms: ["wargames", "the-414s", "norad"], // the film, the same summer's case, the command in the film
+    relatedArticles: ["the-414s-and-the-summer-of-1983", "hacking-in-the-20th-century"], // both mention it
+    sources: [
+      { label: "Ronald Reagan Presidential Library, NSDD-145, National Policy on Telecommunications and Automated Information Systems Security, 17 September 1984, scanned original (read 2026-11-16): systems highly susceptible to interception, unauthorized electronic access and related technical exploitation", href: "https://www.reaganlibrary.gov/public/archives/reference/scanned-nsdds/nsdd145.pdf" },
+      { label: "Federation of American Scientists, NSDD-145 transcription (read 2026-11-16): the Systems Security Steering Group, the NTISSC, the Secretary of Defense as Executive Agent and the Director of the NSA as National Manager", href: "https://irp.fas.org/offdocs/nsdd145.htm" },
+      { label: "Ronald Reagan Presidential Foundation, The Daily Diary of President Ronald Reagan, 4 June 1983 (read 2026-11-16): the President and the First Lady watched War Games at Camp David", href: "https://www.reaganfoundation.org/cms/assets/1716570167-presidents-schedule-06-04-1983.pdf" },
+      { label: "MEL Magazine, oral history excerpting Fred Kaplan's Dark Territory, 17 March 2020 (read 2026-11-16): Reagan's question to General Vessey after WarGames, Donald Latham's answer, the interagency work ending in NSDD-145, and Representative Jack Brooks's bill limiting the NSA's role", href: "https://melmagazine.com/en-us/story/wargames-ronald-reagan-cybersecurity" },
+    ],
+  },
+  {
+    // Hackers on screen (blog post 26, 16/11/2026): the statute behind WarGames' policy story and the Swartz case.
+    slug: "cfaa", // the acronym, as the law is usually called (house precedent: dmca)
+    headword: "CFAA", // the initials; expansion carries the short title
+    kind: "acronym", // a statute known by its initials, as dmca
+    expansion: "Computer Fraud and Abuse Act", // the short title
+    domains: ["grc", "hacking"], // law, and the field it polices
+    aliases: ["computer fraud and abuse act", "18 usc 1030", "18 u.s.c. 1030", "section 1030", "public law 99-474"], // search terms
+    relatedTerms: ["the-414s", "wargames", "aaron-swartz", "kevin-mitnick", "the-morris-worm"], // the cases and works that frame it
+    relatedArticles: ["the-414s-and-the-summer-of-1983", "the-morris-worm", "bug-bounties-and-vulnerability-disclosure"], // articles that discuss it
+    sources: [
+      { label: "Congressional Research Service, Charles Doyle, Cybercrime: An Overview of the Federal Computer Fraud and Abuse Statute and Related Federal Criminal Laws, Report 97-1025, updated 28 June 2005 (read 2026-11-16): congressional inquiry from no later than 1976; section 1030 enacted in the Comprehensive Crime Control Act of 1984 (P.L. 98-473); amended in 1986 (P.L. 99-474), 1988, 1989, 1990, 1994 and 1996, then by the USA PATRIOT Act and the Homeland Security Act", href: "https://www.everycrsreport.com/files/20050628_97-1025_a930ee431f0b4982f520249f48e0b72004b98232.html" },
+      { label: "United States Government Publishing Office, H.R. 2454, Aaron's Law Act of 2013, introduced 20 June 2013 (read 2026-11-16): would redefine access without authorization as knowingly circumventing technological or physical measures", href: "https://www.govinfo.gov/content/pkg/BILLS-113hr2454ih/html/BILLS-113hr2454ih.htm" },
+      { label: "Wired, Kevin Poulsen, Why I Hope Congress Never Watches Blackhat, 16 January 2015 (read 2026-11-16): the White House proposal to widen the CFAA after the Sony breach; Aaron's Law never seen again; the 1984 law described as a direct response to WarGames", href: "https://www.wired.com/2015/01/why-i-hope-congress-never-watches-blackhat/" },
+    ],
+  },
+  {
+    // Hackers on screen (blog post 26, 16/11/2026).
+    slug: "zero-days-documentary", // distinct from zero-day, the term
+    headword: "Zero Days (2016)", // title and year, the house form for films
+    kind: "lore", // a work with a story
+    domains: ["cyber-security", "hacking"], // cyber weapons
+    aliases: ["zero days film", "zero days documentary", "alex gibney"], // search terms
+    relatedTerms: ["stuxnet", "countdown-to-zero-day", "zero-day"], // the case, the book, the term
+    relatedArticles: ["stuxnet-and-the-first-cyberweapon"], // the case
+    sources: [
+      { label: "Berlinale 2016, Zero Days, programme page (read 2026-11-16): Stuxnet, designed to sabotage Iran's nuclear programme; insiders on the programme code-named Olympic Games; David Sanger and Yossi Melman credited as protagonists and consultants", href: "https://berlinale.de/en/2016/programme/201608480.html" },
+      { label: "The Hollywood Reporter, Berlin: Alex Gibney Angry About Cyber Secrecy, 17 February 2016 (read 2026-11-16): competition entry and world premiere in Berlin; Gibney on secrecy; Magnolia Pictures and Showtime rights", href: "https://www.hollywoodreporter.com/movies/movie-news/berlin-alex-gibney-angry-cyber-866603/" },
+    ],
+  },
+  {
+    // Hackers on screen (blog post 26, 16/11/2026).
+    slug: "the-internets-own-boy", // the title without the apostrophe
+    headword: "The Internet's Own Boy (2014)", // title and year
+    kind: "lore", // a work with a story
+    domains: ["hacking", "grc"], // the case and the law it argues about
+    aliases: ["internet's own boy", "the internets own boy", "brian knappenberger", "the story of aaron swartz"], // search terms
+    relatedTerms: ["aaron-swartz", "cfaa"], // its subject and the statute it argues against
+    relatedArticles: ["hacker-manifestos"], // the Learn article that discusses Swartz
+    sources: [
+      { label: "The Hollywood Reporter, Participant, FilmBuff Buy U.S. Rights to Aaron Swartz Doc, 27 February 2014 (read 2026-11-16): Sundance premiere in January 2014; North American rights; Knappenberger on using the film to advance Swartz's principles", href: "https://www.hollywoodreporter.com/news/participant-filmbuff-buy-us-rights-670573" },
+      { label: "Daily Dot, The Internet's Own Boy now online, 27 June 2014 (read 2026-11-16): release on Vimeo On Demand and other services; read as a call to reform the CFAA", href: "https://dailydot.com/entertainment/aaron-swartz-internets-own-boy-vimeo-online/" },
+      { label: "MIT, Report to the President: MIT and the Prosecution of Aaron Swartz (read 2026-11-16): Abelson's review delivered on 26 July 2013", href: "https://swartz-report.mit.edu/" },
+      { label: "United States Government Publishing Office, H.R. 2454, Aaron's Law Act of 2013, introduced 20 June 2013 (read 2026-11-16)", href: "https://www.govinfo.gov/content/pkg/BILLS-113hr2454ih/html/BILLS-113hr2454ih.htm" },
+    ],
+  },
+  {
+    // Hackers on screen (blog post 26, 16/11/2026).
+    slug: "the-great-hack", // the original title
+    headword: "The Great Hack (2019)", // title and year
+    kind: "lore", // a work with a story
+    domains: ["privacy"], // personal data and elections
+    aliases: ["privacidade hackeada", "karim amer", "jehane noujaim"], // the Brazilian title and the makers
+    relatedTerms: ["cambridge-analytica"], // its subject
+    relatedArticles: ["influence-for-hire-the-firms-that-sell-influence-operations"], // the trade it describes
+    sources: [
+      { label: "Netflix Brasil, Privacidade Hackeada (read 2026-11-16): Brazilian title; Karim Amer and Jehane Noujaim; dated 24 July 2019; Cambridge Analytica as the symbol of the dark side of social networks after the 2016 election", href: "https://www.netflix.com/br/title/80117542" },
+      { label: "WeLiveSecurity (ESET), Sonia Domínguez Waisbrod, Documentários sobre hacking e cibersegurança para maratonar, 29 February 2024 (read 2026-11-16): Brittany Kaiser's testimony", href: "https://www.welivesecurity.com/pt/seguranca-digital/documentarios-sobre-hacking-e-ciberseguranca-para-maratonar/" },
+    ],
+  },
+  {
+    // Hackers on screen (blog post 26, 16/11/2026). Not "blackhat": that alias belongs to the conference entry.
+    slug: "blackhat-film", // as hackers-film and sneakers-film
+    headword: "Blackhat (2015)", // title and year
+    kind: "lore", // a work with a story
+    domains: ["cyber-security", "ops-culture"], // as the other film entries
+    aliases: ["blackhat 2015", "michael mann", "hacker (2015 film)"], // search terms; the Brazilian title is Hacker
+    relatedTerms: ["kevin-poulsen", "wargames", "hackers-film", "cfaa"], // its adviser, its neighbours, the law in his warning
+    relatedArticles: ["kevin-poulsen-dark-dante"], // its adviser's story
+    sources: [
+      { label: "Wired, Kevin Poulsen, Why I Hope Congress Never Watches Blackhat, 16 January 2015 (read 2026-11-16): hacker adviser as his screen credit; Chris McKinley wrote code and trained the lead in Linux; the opening's exploding nuclear plant; nuclear plants are not exploding", href: "https://www.wired.com/2015/01/why-i-hope-congress-never-watches-blackhat/" },
+      { label: "Apple TV Brasil, Hacker (read 2026-11-16): Brazilian title; Michael Mann; Universal Pictures", href: "https://tv.apple.com/br/movie/blackhat/umc.cmc.3b81dxvan920ao8s9k8uyq2er" },
+      { label: "British Film Institute, 10 great technothrillers, 5 September 2024 (read 2026-11-16)", href: "https://www.bfi.org.uk/lists/10-great-technothrillers" },
+    ],
+  },
+  {
+    // Core War (new entry): the 1984 programming game in which programs fight in memory, and what its readers did next.
+    slug: "core-war", // the /glossary/core-war address
+    headword: "Core War", // the game's name as Dewdney gave it
+    kind: "lore", // a named historical game whose story matters
+    domains: ["hacking", "programming"], // a programming game about programs attacking each other
+    aliases: ["Core Wars", "Corewar", "Redcode", "MARS simulator"], // common spellings, its language and its simulator
+    relatedTerms: ["malware", "buffer-overflow", "the-morris-worm"], // existing entries
+    relatedArticles: ["the-worm-era"], // the Learn article on the self-replicating programs that followed
+    sources: [ // every label says what the page says and when it was read
+      { label: "A. K. Dewdney, Computer Recreations, Scientific American, May 1984, text hosted by Carleton University (read 2026-11-16): two programs written in Redcode, a language closely related to assembly languages, placed in a circular memory called Core and run alternately by MARS; the Creeper and Reaper story as the inspiration", href: "https://homeostasis.scs.carleton.ca/~soma/biosec/readings/akdewdney/First.htm" }, // dewdney1984
+      { label: "A. K. Dewdney, 'A Core War bestiary of viruses, worms and other threats to computer memories', Scientific American, March 1985, text hosted by Carleton University (read 2026-11-16): several hundred readers obtained the simulator guidelines; two readers in Brescia designed an Apple II disk virus after the Italian edition and chose not to release it", href: "https://homeostasis.scs.carleton.ca/~soma/biosec/readings/akdewdney/Second.htm" }, // dewdney1985
+      { label: "Scientific American, Computer Recreations, March 1985 (read 2026-11-16): the column's title and date", href: "https://www.scientificamerican.com/article/computer-recreations-1985-03/" }, // sciam1985
+    ], // three sources, one object per line
+  },
+  {
+    // Cyber range (new entry): what a range is, its types, and the national ranges and exercises built on them, Brazil included.
+    slug: "cyber-range", // the /glossary/cyber-range address
+    headword: "cyber range", // lower case, the generic term
+    kind: "term", // a general term
+    domains: ["cyber-security", "events"], // training infrastructure and the exercises run on it
+    aliases: ["cyber ranges", "cyber training range", "range cibernético"], // plural, a longer form, the Portuguese form
+    relatedTerms: ["capture-the-flag", "red-team", "blue-team", "tabletop", "locked-shields"], // existing entries, then this batch
+    relatedArticles: ["capture-the-flag-competitions"], // the Learn article on competitions, the nearest neighbour
+    sources: [ // every label says what the page says and when it was read
+      { label: "NIST NICE, The Cyber Range: A Guide, September 2023 (read 2026-11-16): ranges as interactive, simulated representations of networks, systems, tools and applications for performance-based learning and assessment; simulation, overlay, emulation and hybrid ranges; high fidelity in simulation does not necessarily equate to a real-world representation", href: "https://www.nist.gov/system/files/documents/2023/09/29/The%20Cyber%20Range_A%20Guide.pdf" }, // nist2023
+      { label: "Pete Christensen, The National Cyber Range, NDIA Systems Engineering Conference, October 2015 (read 2026-11-16): developed by DARPA in 2009 to 2012, transferred to the DoD Test Resources Management Center in October 2012 for testing, training and experimentation", href: "https://ndia.dtic.mil/wp-content/uploads/2015/system/17864_Christensen.pdf" }, // ndia2015
+      { label: "NATO CCDCOE, Locked Shields (read 2026-11-16): the live-fire cyber defence exercise held every year since 2010; 4,000 participants from 41 nations in 2026", href: "https://ccdcoe.org/exercises/locked-shields/" }, // ccdcoe
+      { label: "Baguete, Exército lança simulador para ciberguerra, 24 January 2013 (read 2026-11-16): SIMOC, developed at the Army's CCOMGEX by 30 military personnel with university research, in use since November 2012, to be offered to universities and training centres", href: "https://baguete.com.br/public/noticias/exercito-lanca-simulador-para-ciberguerra" }, // baguete2013
+      { label: "Souza and Gemmer, Cibersegurança com autonomia: como a RNP capacita o Brasil com simulações de ataque e defesa, SBSeg 2026, 1 September 2026 (read 2026-11-16): RNP CiberRange, attack and defence simulations in controlled environments, virtualization, flexible scenarios, event automation", href: "https://sol.sbc.org.br/index.php/sbseg_estendido/article/view/44541" }, // sbseg2026
+    ], // five sources, one object per line
+  },
+  {
+    // Security wargame (new entry): permanent practice levels, as opposed to a time-boxed CTF.
+    slug: "security-wargame", // the /glossary/security-wargame address; "wargames" is the 1983 film
+    headword: "wargame (security practice)", // disambiguated from the film entry
+    kind: "term", // a general term
+    domains: ["hacking", "cyber-security"], // practice of offensive techniques
+    aliases: ["wargame site", "hacking wargame", "security wargames", "site de wargame"], // forms in use, and the Portuguese form
+    relatedTerms: ["capture-the-flag", "jeopardy-ctf", "write-up", "ssh", "buffer-overflow"], // existing entries
+    relatedArticles: ["capture-the-flag-competitions"], // the Learn article's "How to start" section points to practice sites
+    sources: [ // every label says what the page says and when it was read
+      { label: "OverTheWire, Wargames (read 2026-11-16): wargames to learn and practice security concepts in the form of fun-filled games; each game reached over SSH on its own port; Narnia, Behemoth, Utumno and Maze for binary exploitation and reverse engineering", href: "https://overthewire.org/wargames/" }, // otw
+      { label: "OverTheWire, Bandit (read 2026-11-16): aimed at absolute beginners; organized in levels, each giving the way into the next", href: "https://overthewire.org/wargames/bandit/" }, // otwbandit
+      { label: "pwnable.tw (read 2026-11-16): find vulnerabilities in challenges and exploit remote services to get flags; do not share entire solutions of high-score challenges", href: "https://pwnable.tw/" }, // pwnabletw
+      { label: "Hackaday, Microcorruption Embedded CTF, 18 January 2014 (read 2026-11-16): Matasano Security and Square; a fictional lock; the assembly is actual MSP430 code; a debugger like GDB on a remote target", href: "https://hackaday.com/2014/01/18/microcorruption-embedded-ctf" }, // hackaday2014
+      { label: "Cryptopals (read 2026-11-16): eight sets of exercises derived from weaknesses in real-world systems and modern cryptographic constructions", href: "https://cryptopals.com/" }, // cryptopals
+    ], // five sources, one object per line
+  },
+  {
+    // Locked Shields (new entry): NATO CCDCOE's annual live-fire exercise, its growth and its director's caveat on scores.
+    slug: "locked-shields", // the /glossary/locked-shields address
+    headword: "Locked Shields", // the exercise's name
+    kind: "lore", // a named, recurring event
+    domains: ["cyber-security", "events"], // a defence exercise
+    aliases: ["Locked Shields exercise", "exercício Locked Shields"], // with its noun, and the Portuguese form
+    relatedTerms: ["blue-team", "red-team", "capture-the-flag", "cyber-range"], // existing entries, then this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "NATO CCDCOE, Locked Shields (read 2026-11-16): the world's largest and most complex international live-fire cyber defence exercise, hosted annually since 2010; legal and communication elements; 4,000 participants from 41 nations in 2026", href: "https://ccdcoe.org/exercises/locked-shields/" }, // ccdcoe
+      { label: "NATO CCDCOE, Locked Shields 2025 Showcased Nations' Commitment to Defending Cyberspace, 2025 (read 2026-11-16): more than 4,000 people from 41 nations in 17 multinational blue teams; virtualized power grids, battle management systems, satellite links and 5G networks; cloud infrastructure, quantum computing injects and a redesigned scoring system", href: "https://ccdcoe.org/news/2025/locked-shields-2025-showcased-nations-commitment-to-defending-cyberspace/" }, // ccdcoe2025
+      { label: "SecurityWeek, From 60 to 4,000: NATO's Locked Shields Reflects Cyber Defense Growth, 16 May 2025 (read 2026-11-16): four nations and 60 participants in 2010; more than 8,000 systems against more than 8,000 attacks in 2025; 450 planners and developers; the exercise director on what high scores do and do not represent", href: "https://www.securityweek.com/from-60-to-4000-natos-locked-shields-reflects-cyber-defense-growth/" }, // securityweek2025
+    ], // three sources, one object per line
+  },
+  {
+    // Elevation of Privilege (new entry): the threat-modelling card game, how it is played and what it led to.
+    slug: "elevation-of-privilege-game", // the /glossary/elevation-of-privilege-game address; the STRIDE category itself is covered by threat-model
+    headword: "Elevation of Privilege (card game)", // disambiguated from the threat category
+    kind: "lore", // a named game with a documented history
+    domains: ["cyber-security", "grc"], // secure design practice
+    aliases: ["EoP card game", "Elevation of Privilege card game", "EoP threat modelling game", "jogo Elevation of Privilege"], // forms in use, and the Portuguese form
+    relatedTerms: ["threat-model", "owasp", "tabletop", "privilege-escalation"], // existing entries
+    sources: [ // every label says what the page says and when it was read
+      { label: "Microsoft Download Center, Elevation of Privilege (EoP) Threat Modeling Card Game (read 2026-11-16): “the easy way to get started threat modeling”; part of the Security Development Lifecycle; Creative Commons Attribution 3.0 licence", href: "https://www.microsoft.com/en-us/download/details.aspx?id=20303" }, // msdownload
+      { label: "Shostack + Associates, Elevation of Privilege Game (read 2026-11-16): created by Adam Shostack in 2010; derivatives including OWASP Cornucopia by Colin Watson, 2012", href: "https://shostack.org/eop" }, // shostackeop
+      { label: "Adam Shostack, Elevation of Privilege: Drawing Developers into Threat Modeling, USENIX 3GSE 2014 (read 2026-11-16): 84 cards in six STRIDE suits; three to five players; tricks with Elevation of Privilege as trumps and a point per threat; under 10,000 dollars for the boxed sets' design firm; a request for 90 copies two years after its introduction", href: "https://www.usenix.org/system/files/conference/3gse14/3gse14-shostack.pdf" }, // shostack2014
+      { label: "OWASP, Cornucopia (read 2026-11-16): created and first used for developer training in August 2012 to help development teams identify application security requirements", href: "https://owasp.org/www-project-cornucopia/" }, // owaspcornucopia
+    ], // four sources, one object per line
+  },
+  {
+    // Little Brother (culture post C, 16/11/2026): Doctorow's 2008 novel; every fact from the culture-c corpus read on 2026-11-16.
+    slug: "little-brother-book", // "-book" as in cyberpunk-book and takedown-book
+    headword: "Little Brother (Doctorow, 2008)", // the house form for books: title, author, year
+    kind: "lore", // a work with a story
+    domains: ["ops-culture", "privacy"], // fiction about surveillance and counter-surveillance
+    aliases: ["cory doctorow", "pequeno irmão", "w1n5t0n"], // author, Brazilian title, the hero's handle
+    relatedTerms: ["neuromancer", "snow-crash", "hacktivism"], // the fiction shelf and the theme
+    relatedArticles: ["surveillance-capability-and-restraint"],
+    sources: [
+      { label: "Publishers Weekly, review of Little Brother by Cory Doctorow, 14 April 2008 (read 2026-11-16): Tor; near-future San Francisco after a terrorist attack; a high-school student detained and interrogated by the Department of Homeland Security; descriptions of countering gait-recognition cameras and RFID tags; ages 13 and up", href: "https://www.publishersweekly.com/9780765319852" },
+      { label: "Science Fiction Awards Database (Locus), Cory Doctorow (read 2026-11-16): Little Brother, 2009 Hugo and Nebula nominee, 2009 Prometheus Award winner, 2009 John W. Campbell Memorial Award winner (tie)", href: "https://www.sfadb.com/Cory_Doctorow" },
+      { label: "Cory Doctorow, craphound.com, Little Brother (read 2026-11-16): the novel offered as a free download by its author", href: "https://craphound.com/littlebrother/" },
+      { label: "Record, Pequeno irmão (read 2026-11-16): Brazilian edition of 30 June 2011, translated by André Gordirro, 400 pages; the hero's handle w1n5t0n", href: "https://www.record.com.br/products/pequeno-irmao" },
+    ],
+  },
+  {
+    // Cryptonomicon (culture post C, 16/11/2026): Stephenson's 1999 novel and Schneier's Solitaire.
+    slug: "cryptonomicon", // the title is unambiguous
+    headword: "Cryptonomicon (Stephenson, 1999)", // the house form for books
+    kind: "lore",
+    domains: ["ops-culture", "crypto"], // a novel about codebreaking and a real cipher
+    aliases: ["neal stephenson", "solitaire cipher", "pontifex", "randy waterhouse", "lawrence waterhouse"],
+    relatedTerms: ["bruce-schneier", "snow-crash", "alan-turing", "cypherpunks"],
+    sources: [
+      { label: "Publishers Weekly, review of Cryptonomicon by Neal Stephenson, 4 January 1999 (read 2026-11-16): Avon, 928 pages; Lawrence Waterhouse and the secret that Enigma had been broken; his grandson Randy, a hacker, and a data haven in Southeast Asia", href: "https://www.publishersweekly.com/9780380973460" },
+      { label: "Kirkus Reviews, Cryptonomicon (read 2026-11-16): Avon/HarperCollins, publication date 4 May 1999; Waterhouse posted to Bletchley Park", href: "https://www.kirkusreviews.com/book-reviews/neal-stephenson/cryptonomicon/" },
+      { label: "Bruce Schneier, The Solitaire Encryption Algorithm, version 1.2, 26 May 1999 (read 2026-11-16 through the fetch tool): a hand cipher for field agents without electronics, using a shuffled deck of cards; described in the novel by Enoch Root under the code name Pontifex; only as secure as the key", href: "https://www.schneier.com/academic/solitaire/" },
+      { label: "Science Fiction Awards Database (Locus), Neal Stephenson (read 2026-11-16): Cryptonomicon, Locus Award for science fiction novel 2000; Prometheus Hall of Fame 2013", href: "https://www.sfadb.com/Neal_Stephenson" },
+    ],
+  },
+  {
+    // True Names (culture post C, 16/11/2026): Vinge's 1981 novella and the 2001 Tor anthology.
+    slug: "true-names", // the title; no other entry uses it
+    headword: "True Names (Vinge, 1981)", // the house form for books
+    kind: "lore",
+    domains: ["ops-culture", "hacking"],
+    aliases: ["vernor vinge", "binary star 5", "true names and the opening of the cyberspace frontier"],
+    relatedTerms: ["neuromancer", "cypherpunks", "the-shockwave-rider"],
+    sources: [
+      { label: "Science Fiction Awards Database (Locus), Vernor Vinge (read 2026-11-16): 'True Names', Binary Star #5, 1981; Hugo and Nebula novella nominations 1982; Prometheus Hall of Fame 2007 (tie)", href: "https://www.sfadb.com/Vernor_Vinge" },
+      { label: "Publishers Weekly, review of True Names: And the Opening of the Cyberspace Frontier, edited by James Frenkel, 24 December 2001 (read 2026-11-16): Tor; the 1981 story with 11 essays; testimonials by pioneers of virtual reality, cryptography and artificial intelligence, including Marvin Minsky and Danny Hillis; a quarter of the essayists crypto-anarchists; 'the story that began SF's cyberpunk revolution'", href: "https://www.publishersweekly.com/9780312862077" },
+    ],
+  },
+  {
+    // Sandworm (culture post C, 16/11/2026): Greenberg's 2019 investigation; the GRU unit itself has no entry yet, so "sandworm" stays free for it.
+    slug: "sandworm-book",
+    headword: "Sandworm (Greenberg, 2019)", // the house form for books
+    kind: "lore",
+    domains: ["cyber-security", "ops-culture"],
+    aliases: ["andy greenberg", "sandworm book", "a new era of cyberwar"],
+    relatedTerms: ["notpetya", "eternalblue", "shadow-brokers", "countdown-to-zero-day"],
+    relatedArticles: ["eternalblue-wannacry-notpetya"],
+    sources: [
+      { label: "Publishers Weekly, review of Sandworm by Andy Greenberg, 13 September 2019 (read 2026-11-16): Doubleday; a team housed within the GRU, nicknamed for references to Dune in the code used against Ukraine's grid in December 2015; NotPetya in June 2017, using stolen NSA tools, billions of dollars in damage", href: "https://www.publishersweekly.com/9780385544405" },
+      { label: "Kirkus Reviews, Sandworm, posted 9 September 2019 (read 2026-11-16): publication date 5 November 2019; begins in 2014 with an analyst at a small private intelligence firm, a Microsoft Office flaw and Russian malware", href: "https://www.kirkusreviews.com/book-reviews/andy-greenberg/sandworm/" },
+      { label: "Cybersecurity Canon, CyberCanon 2026, 15 January 2026 (read 2026-11-16 through the fetch tool): Sandworm named among the Hall of Fame selections", href: "https://cybercanon.substack.com/p/cybercanon-2026" },
+    ],
+  },
+  {
+    // Cybersecurity Canon (culture post C, 16/11/2026): the practitioners' hall of fame for security books, 2014 onwards.
+    slug: "cybersecurity-canon",
+    headword: "the Cybersecurity Canon",
+    kind: "lore", // a culture institution
+    domains: ["ops-culture", "cyber-security"],
+    aliases: ["cybercanon", "cybersecurity canon hall of fame", "canon hall of fame"],
+    relatedTerms: ["the-cuckoos-egg", "countdown-to-zero-day", "metasploit", "kevin-poulsen"],
+    sources: [
+      { label: "Palo Alto Networks blog, Rick Howard, 'Congratulations to this year's Cybersecurity Canon honorees', 2 April 2015 (read 2026-11-16): four honorees in categories, among them The Cuckoo's Egg (Cyber Espionage), Countdown to Zero Day (Cyber Warfare) and Spam Nation (Cyber Crime); an advisory board of researchers, industry professionals and journalists", href: "https://www.paloaltonetworks.com/blog/2015/04/congratulations-to-this-years-cybersecurity-canon-honorees/" },
+      { label: "Palo Alto Networks blog, Rick Howard, 'Rejoice! Eight New Books Inducted into the Cybersecurity Canon', 5 April 2016 (read 2026-11-16): about 20 candidates and one inductee in 2014 (We Are Anonymous); eight in 2016, among them Cyber War and Kingpin; an internet March Madness vote won by Zero Day; the goal of a must-read list for practitioners in industry, government and academia", href: "https://www.paloaltonetworks.com/blog/2016/04/ignite-canon" },
+      { label: "Palo Alto Networks blog, Rick Howard, 'Announcing the 2018 Cybersecurity Canon Hall of Famers', 16 May 2018 (read 2026-11-16): four books inducted at a dinner in Washington, D.C., among them Metasploit: The Penetration Tester's Guide", href: "https://www.paloaltonetworks.com/blog/2018/05/announcing-the-2018-cybersecurity-canon-hall-of-famers/" },
+      { label: "Cybersecurity Canon, CyberCanon 2026, 15 January 2026 (read 2026-11-16 through the fetch tool): copyright of the Cybersecurity Canon Project, Inc.; Sandworm among the Hall of Fame selections", href: "https://cybercanon.substack.com/p/cybercanon-2026" },
+    ],
+  },
+  {
+    // Permanent Record (culture post C, 16/11/2026): Snowden's 2019 memoir and United States v. Snowden.
+    slug: "permanent-record-book",
+    headword: "Permanent Record (Snowden, 2019)", // the house form for books
+    kind: "lore",
+    domains: ["privacy", "ops-culture"],
+    aliases: ["eterna vigilância", "snowden memoir", "united states v. snowden"],
+    relatedTerms: ["edward-snowden"],
+    relatedArticles: ["surveillance-capability-and-restraint"],
+    sources: [
+      { label: "Publishers Weekly, review of Permanent Record by Edward Snowden, 17 September 2019 (read 2026-11-16): Metropolitan; the portrait of intelligence work and the reviewer's reservations", href: "https://www.publishersweekly.com/9781250237231" },
+      { label: "US Department of Justice, 'United States Files Civil Lawsuit Against Edward Snowden for Publishing a Book in Violation of CIA and NSA Non-Disclosure Agreements', 17 September 2019 (read 2026-11-16 through the fetch tool): the suit does not seek to stop or restrict publication or distribution; it seeks the proceeds", href: "https://www.justice.gov/opa/pr/united-states-files-civil-lawsuit-against-edward-snowden-publishing-book-violation-cia-and" },
+      { label: "US Department of Justice, 'United States Obtains Final Judgment and Permanent Injunction Against Edward Snowden', 1 October 2020 (read 2026-11-16 through the fetch tool): Eastern District of Virginia; liability found in December 2019; final judgment of 29 September 2020 for more than 5.2 million dollars and a constructive trust over further royalties; no pre-publication review", href: "https://www.justice.gov/opa/pr/united-states-obtains-final-judgment-and-permanent-injunction-against-edward-snowden" },
+      { label: "Planeta, Eterna vigilância (read 2026-11-16): Brazilian edition, 1 September 2019, 288 pages, ISBN 978-85-422-1743-8", href: "https://www.planetadelivros.com.br/livro-eterna-vigilancia/305254" },
+    ],
+  },
+  {
+    // redundancy (new entry): the engineering sense, from ISO/IEC/IEEE 24765, with its four kinds.
+    slug: "redundancy", // the /glossary/redundancy address
+    headword: "redundancy", // the plain term
+    kind: "term", // a defined engineering term
+    domains: ["enterprise-networking", "ops-culture"], // where network engineers and operators use it
+    aliases: ["redundância", "active redundancy", "standby redundancy", "homogeneous redundancy"], // the Portuguese word and the 24765 kinds
+    relatedTools: ["vrrp-timer-calculator", "lacp-hash-and-state-reader"], // tools that model a redundancy mechanism
+    relatedArticles: ["redundant-architectures-how-networks-survive-failure", "the-arithmetic-of-redundancy-availability-mtbf-and-shared-fate", "first-hop-redundancy-vrrp-and-hsrp", "link-aggregation-and-lacp", "spanning-tree-in-one-article", "fortigate-fgcp-ha-clustering"], // the series hub and part 2, then existing mechanism articles
+    relatedTerms: ["fault-tolerance", "single-point-of-failure", "failover", "hot-warm-cold-standby", "active-active-vs-active-passive", "correlated-failure", "failure-domain", "design-diversity", "shared-fate", "n-plus-1"], // existing entries first, then this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "IEEE Computer Society and ISO/IEC JTC 1/SC 7, SEVOCAB, entries redundancy, active redundancy, standby redundancy, homogeneous redundancy and diversity, from ISO/IEC/IEEE 24765:2017 (read 2026-11-16): redundancy as auxiliary components performing the same or similar functions to prevent or recover from failures; active elements run simultaneously, standby elements stay inoperative until a primary fails; homogeneous redundancy uses identical means, diversity different means", href: "https://pascal.computer.org/sev_display/index.action" }, // IEEE and ISO/IEC vocabulary
+      { label: "RFC 4427, Recovery (Protection and Restoration) Terminology for GMPLS, April 2006, sections 6.1 to 6.3 (read 2026-11-16): 1+1 protection with a permanent bridge, 1:N and M:N shared protection", href: "https://www.rfc-editor.org/rfc/rfc4427.txt" }, // IETF
+      { label: "David D. Clark, The Design Philosophy of the DARPA Internet Protocols, SIGCOMM 1988, reprinted in Computer Communication Review, January 1995 (read 2026-11-16): connection state kept at the endpoints (fate-sharing) instead of replicated in the network, because fate-sharing protects against any number of intermediate failures and is easier to engineer than replication", href: "http://ccr.sigcomm.org/archive/1995/jan95/ccr-9501-clark.pdf" }, // Clark
+      { label: "RFC 3439, Some Internet Architectural Guidelines and Philosophy, December 2002, sections 2 and 9 (read 2026-11-16): the Simplicity Principle and the robustness, complexity and fragility spiral in which complexity added for robustness adds new fragilities", href: "https://www.rfc-editor.org/rfc/rfc3439.txt" }, // IETF
+      { label: "Google, Site Reliability Engineering, chapter 3, Embracing Risk (read 2026-11-16): an incremental improvement in reliability may cost 100 times the previous one, paid in redundant resources and opportunity cost", href: "https://sre.google/sre-book/embracing-risk/" }, // Google SRE
+      { label: "Phillipa Gill, Navendu Jain and Nachiappan Nagappan, Understanding Network Failures in Data Centers, SIGCOMM 2011, section 5.1 (read 2026-11-16): median traffic during a link failure 93% across the redundancy group against 65% on the link; redundancy only 40% effective in reducing the median impact; failover bugs and the same configuration error on primary and backup", href: "https://conferences.sigcomm.org/sigcomm/2011/papers/sigcomm/p350.pdf" }, // Gill and others
+    ], // six sources, one object per line
+  },
+  {
+    // failure-domain (new entry): what one fault takes down together, as the cloud providers and the IETF define it.
+    slug: "failure-domain", // the /glossary/failure-domain address
+    headword: "failure domain", // the plain term
+    kind: "term", // a design term
+    domains: ["cloud", "enterprise-networking", "ops-culture"], // cloud design documents, network design, operations
+    aliases: ["fault domain", "fault isolation boundary", "domínio de falha"], // other names in use and the Portuguese term
+    relatedTools: ["change-blast-radius-mapper", "flow-path-reasoner"], // tools that map what a fault or a change reaches
+    relatedArticles: ["redundant-architectures-how-networks-survive-failure", "the-arithmetic-of-redundancy-availability-mtbf-and-shared-fate", "cloud-and-cdn-monoculture", "blast-radius-thinking-before-you-change-anything", "fault-isolation-first-hour"], // the series, then the existing articles on reach and isolation
+    relatedTerms: ["availability-zone", "region", "blast-radius", "correlated-failure", "single-point-of-failure", "concentration-risk", "shared-fate", "redundancy"], // existing entries first, then this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "Amazon Web Services, AWS Fault Isolation Boundaries, Availability Zones, undated web page (read 2026-11-16): zones with independent and redundant power, networking and connectivity, up to 60 miles (about 100 km) apart to prevent correlated failures, designed against shared fate scenarios, generators and cooling not shared, different substations, deployments separated in time", href: "https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/availability-zones.html" }, // AWS
+      { label: "Google Cloud, Compute Engine, Regions and zones, last updated 10 November 2026 (read 2026-11-16): zones reduce the risk of one infrastructure outage affecting all resources; regions give an even higher degree of failure independence across different failure domains", href: "https://cloud.google.com/compute/docs/regions-zones" }, // Google Cloud
+      { label: "Microsoft Learn, What are availability zones?, 11 February 2026 (read 2026-11-16): zones with independent power, cooling and networking, typically several kilometres apart and usually within 100 km", href: "https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview" }, // Microsoft
+      { label: "Daniel Ford and others (Google), Availability in Globally Distributed Storage Systems, OSDI 2010, sections 1 and 4 (read 2026-11-16): 37% of node failures part of a burst of at least two; most large bursts associated with rack or multi-rack events; racks validated as a failure domain", href: "https://www.usenix.org/legacy/event/osdi10/tech/full_papers/Ford.pdf" }, // Ford and others
+      { label: "RFC 3386, Network Hierarchy and Multilayer Survivability, November 2002, section 2.2.2 (read 2026-11-16): the shared risk group, network elements collectively impacted by one fault, from shared conduit and cable to shared right of way and office", href: "https://www.rfc-editor.org/rfc/rfc3386.txt" }, // IETF
+    ], // five sources, one object per line
+  },
+  {
+    // design-diversity (new entry): realizing one function by different means, the only redundancy against a common-mode fault.
+    slug: "design-diversity", // the /glossary/design-diversity address
+    headword: "design diversity", // the term as used in fault tolerance
+    kind: "term", // a defined fault-tolerance term
+    domains: ["enterprise-networking", "ops-culture", "programming"], // network design, operations, software engineering
+    aliases: ["diversity (fault tolerance)", "software diversity", "diversidade de projeto"], // the 24765 headword and its software form, and the Portuguese term
+    relatedArticles: ["redundant-architectures-how-networks-survive-failure", "the-arithmetic-of-redundancy-availability-mtbf-and-shared-fate", "cloud-and-cdn-monoculture"], // the series and the existing article on monoculture
+    relatedTerms: ["correlated-failure", "concentration-risk", "single-point-of-failure", "fault-tolerance", "redundancy", "shared-fate", "beta-factor-model"], // existing entries first, then this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "IEEE Computer Society and ISO/IEC JTC 1/SC 7, SEVOCAB, entries diversity and software diversity, from ISO/IEC/IEEE 24765:2017 (read 2026-11-16): diversity as the realization of the same function by different means, such as different processors, storage media, programming languages, algorithms or development teams; software diversity as functionally identical variants developed by different programmers or teams", href: "https://pascal.computer.org/sev_display/index.action" }, // IEEE and ISO/IEC vocabulary
+      { label: "Ben Treynor, Mike Dahlin, Vivek Rau and Betsy Beyer, The Calculus of Service Availability, ACM Queue, March-April 2017, PDF published by Google SRE (read 2026-11-16): correlation between instances is never zero; geographic separation is not always a good proxy for uncorrelated failures, and more than one system in nearby locations may be better than the same system in distant locations", href: "https://sre.google/static/pdf/calculus_of.pdf" }, // Treynor and others
+      { label: "Phillipa Gill, Navendu Jain and Nachiappan Nagappan, Understanding Network Failures in Data Centers, SIGCOMM 2011, section 5.1 (read 2026-11-16): the same configuration error, a typo in a configuration script, made on both the primary and the backup of a network connection", href: "https://conferences.sigcomm.org/sigcomm/2011/papers/sigcomm/p350.pdf" }, // Gill and others
+      { label: "Parliament of Australia, Senate Environment and Communications References Committee, Optus Network Outage, September 2024, chapter 2 (read 2026-11-16): almost 90 routers reached the same preset safety limit and shut down together, disconnecting all levels of redundancy", href: "https://www.aph.gov.au/Parliamentary_Business/Committees/Senate/Environment_and_Communications/OptusNetworkOutage/Report/Chapter_2_-_The_Optus_network_outage" }, // Australian Senate committee
+    ], // four sources, one object per line
+  },
+  {
+    // shared-fate (new entry): components that fail together because they depend on one thing; also Clark's deliberate fate-sharing.
+    slug: "shared-fate", // the /glossary/shared-fate address
+    headword: "shared fate", // the plain term
+    kind: "term", // a design term
+    domains: ["cloud", "enterprise-networking", "ops-culture"], // cloud design documents, network design, operations
+    aliases: ["fate-sharing", "fate sharing", "shared-fate scenario", "shared risk group", "destino compartilhado"], // Clark's word, AWS's phrase, RFC 3386's term and the Portuguese term
+    relatedArticles: ["redundant-architectures-how-networks-survive-failure", "the-arithmetic-of-redundancy-availability-mtbf-and-shared-fate", "cloud-and-cdn-monoculture", "submarine-cables-and-the-physical-internet"], // the series, then existing articles on concentration and physical paths
+    relatedTerms: ["correlated-failure", "single-point-of-failure", "availability-zone", "concentration-risk", "blast-radius", "failure-domain", "beta-factor-model", "design-diversity"], // existing entries first, then this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "Amazon Web Services, AWS Fault Isolation Boundaries, Availability Zones, undated web page (read 2026-11-16): zones designed to avoid simultaneous impact from shared fate scenarios such as utility power, water disruption, fiber isolation, earthquakes, fires, tornadoes or floods", href: "https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/availability-zones.html" }, // AWS
+      { label: "RFC 3386, Network Hierarchy and Multilayer Survivability, November 2002, section 2.2.2 (read 2026-11-16): a shared risk group is a set of network elements collectively impacted by a specific fault or fault type", href: "https://www.rfc-editor.org/rfc/rfc3386.txt" }, // IETF
+      { label: "RFC 4202, Routing Extensions in Support of GMPLS, October 2005, section 2.3 (read 2026-11-16): the shared risk link group; two fibers in the same conduit would be in the same SRLG", href: "https://www.rfc-editor.org/rfc/rfc4202.txt" }, // IETF
+      { label: "David D. Clark, The Design Philosophy of the DARPA Internet Protocols, SIGCOMM 1988, reprinted January 1995 (read 2026-11-16): fate-sharing, it is acceptable to lose the state information associated with an entity if the entity itself is lost at the same time", href: "http://ccr.sigcomm.org/archive/1995/jan95/ccr-9501-clark.pdf" }, // Clark
+      { label: "A. Mosleh, D. M. Rasmuson and F. M. Marshall, NUREG/CR-5485, Guidelines on Modeling Common-Cause Failures in Probabilistic Risk Assessment, US Nuclear Regulatory Commission, November 1998, section 1.2, copy hosted by Idaho National Laboratory (read 2026-11-16): a common cause event is the failure or unavailable state of more than one component during the mission time due to the same shared cause", href: "https://nrcoe.inl.gov/publicdocs/CCF/NUREGCR-5485_Guidelines%20on%20Modeling%20Common-Cause%20Failures%20in%20PRA.pdf" }, // US NRC
+      { label: "National Cyber Security Centre Ireland, CSIRT-IE advisory IR-18122019, HPE SAS SSD Vulnerability, 18 December 2019 (read 2026-11-16): drives with firmware older than HPD8 fail at 32,768 hours of operation; disks installed at the same time may fail at approximately the same time", href: "https://ncsc.gov.ie/pdfs/HPE_Advisory.pdf" }, // NCSC Ireland
+    ], // six sources, one object per line
+  },
+  {
+    // availability (new entry): the reliability-engineering measure and its nines.
+    slug: "availability", // the /glossary/availability address
+    headword: "availability", // the plain term
+    kind: "term", // a defined quality-of-service term
+    domains: ["ops-culture", "enterprise-networking", "isp-telecom"], // operations, network design, telecom quality rules
+    aliases: ["nines", "number of nines", "steady-state availability", "time-based availability", "aggregate availability", "disponibilidade"], // the colloquial measure, the two SRE forms and the Portuguese term
+    relatedTools: ["python-playground", "time-calculator"], // tools that run the arithmetic
+    relatedArticles: ["the-arithmetic-of-redundancy-availability-mtbf-and-shared-fate", "redundant-architectures-how-networks-survive-failure", "security-versus-availability"], // part 2, the hub, the existing article on the trade with security
+    relatedTerms: ["five-nines", "sla", "slo", "mttr", "fault-tolerance", "mtbf", "mttf", "redundancy"], // existing entries first, then this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "ITU-T Recommendation E.800 (09/2008), Definitions of terms related to quality of service, sections 2.13 and 3.1.1.5.4 (read 2026-11-16): availability of an item to be in a state to perform a required function at a given instant or at any instant of an interval, assuming external resources are provided; a 99.99% connection availability described as computed from router, access and core figures", href: "https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-E.800-200809-I!!PDF-E&type=items" }, // ITU-T
+      { label: "IEEE Computer Society and ISO/IEC JTC 1/SC 7, SEVOCAB, entry availability (read 2026-11-16): IEEE 982:2024 defines it as the ratio of uptime to uptime plus downtime; ISO/IEC 25010:2023 as the capability to be operational and accessible when required", href: "https://pascal.computer.org/sev_display/index.action" }, // IEEE and ISO/IEC vocabulary
+      { label: "Ben Treynor, Mike Dahlin, Vivek Rau and Betsy Beyer, The Calculus of Service Availability, ACM Queue, March-April 2017, PDF published by Google SRE (read 2026-11-16): availability is MTTF/(MTTF+MTTR); a service cannot be more available than the intersection of its critical dependencies; the rule of the extra 9", href: "https://sre.google/static/pdf/calculus_of.pdf" }, // Treynor and others
+      { label: "Google, Site Reliability Engineering, chapter 3, Embracing Risk (read 2026-11-16): time-based and aggregate availability; each additional nine an order of magnitude; 52.56 minutes a year at 99.99%; 250 errors in 2.5 million requests at a daily 99.99%", href: "https://sre.google/sre-book/embracing-risk/" }, // Google SRE
+      { label: "Google, Site Reliability Engineering, Appendix A, Availability Table (read 2026-11-16): allowed unavailability per year, quarter, month, week, day and hour for 90% to 99.999%, assuming no planned downtime", href: "https://sre.google/sre-book/availability-table/" }, // Google SRE
+      { label: "Andy Lawrence, Uptime Institute Journal, 99 Red Flags: The Availability Nines, 28 October 2019, read through a fetch tool (read 2026-11-16): the nines used casually and without scientific rigour; downtime definitions vary by service and provider; no direct relationship between a number of nines and a Tier level", href: "https://journal.uptimeinstitute.com/?p=6064" }, // Uptime Institute
+      { label: "Anatel, Resolução nº 574, de 28 de outubro de 2011, article 21, revoked by Resolução nº 717/2019 (read 2026-11-16): fixed broadband providers had to guarantee 99% monthly availability in 85%, then 90%, then 95% of measurements, preventive maintenance announced 24 hours ahead not counted", href: "https://informacoes.anatel.gov.br/legislacao/resolucoes/2011/57-resolucao-574" }, // Anatel
+    ], // seven sources, one object per line
+  },
+  {
+    // mtbf (new entry): mean time between failures, its definitions and its limits.
+    slug: "mtbf", // the /glossary/mtbf address
+    headword: "MTBF", // the acronym as written
+    kind: "acronym", // an abbreviation in use
+    domains: ["ops-culture", "it-support", "isp-telecom"], // operations, hardware support, telecom equipment
+    expansion: "mean time between failures", // the expansion
+    aliases: ["mean time between failures", "tempo médio entre falhas"], // the expansion and the Portuguese term
+    relatedTools: ["python-playground"], // runs the availability arithmetic
+    relatedArticles: ["the-arithmetic-of-redundancy-availability-mtbf-and-shared-fate", "redundant-architectures-how-networks-survive-failure"], // part 2 and the hub
+    relatedTerms: ["mttr", "five-nines", "sla", "mttf", "availability", "beta-factor-model"], // existing entries first, then this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "ITU-T Recommendation E.800 (09/2008), section 3.3.16.3 (read 2026-11-16): MTBF is the expectation of the time between failures computed from a statistically significant number of samples, usually the arithmetic mean", href: "https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-E.800-200809-I!!PDF-E&type=items" }, // ITU-T
+      { label: "IEEE Computer Society and ISO/IEC JTC 1/SC 7, SEVOCAB, entry mean time between failures, from ISO/IEC/IEEE 24765:2017 (read 2026-11-16): the expected or observed time between consecutive failures in a system or component", href: "https://pascal.computer.org/sev_display/index.action" }, // IEEE and ISO/IEC vocabulary
+      { label: "NIST/SEMATECH e-Handbook of Statistical Methods, 8.1.7.1, Homogeneous Poisson Process (read 2026-11-16): with a constant repair rate λ, 1/λ is the MTBF; the model fits the flat portion of the bathtub curve", href: "https://www.itl.nist.gov/div898/handbook/apr/section1/apr171.htm" }, // NIST
+      { label: "NIST/SEMATECH e-Handbook of Statistical Methods, 8.1.2.4, Bathtub curve (read 2026-11-16): early failure, intrinsic failure and wear-out periods; most systems spend most of their lifetimes in the flat portion", href: "https://www.itl.nist.gov/div898/handbook/apr/section1/apr124.htm" }, // NIST
+      { label: "Bianca Schroeder and Garth A. Gibson, Disk failures in the real world: What does an MTTF of 1,000,000 hours mean to you?, FAST 2007 (read 2026-11-16): datasheet MTTFs of 1,000,000 to 1,500,000 hours suggest at most 0.88% a year; field replacement rates typically above 1%, 2 to 4% common, up to 13%; average 3.01%", href: "https://www.usenix.org/legacy/events/fast07/tech/schroeder/schroeder.pdf" }, // Schroeder and Gibson
+    ], // five sources, one object per line
+  },
+  {
+    // mttf (new entry): mean time to failure, the non-repairable sibling of MTBF.
+    slug: "mttf", // the /glossary/mttf address
+    headword: "MTTF", // the acronym as written
+    kind: "acronym", // an abbreviation in use
+    domains: ["ops-culture", "it-support"], // operations and hardware support
+    expansion: "mean time to failure", // the expansion
+    aliases: ["mean time to failure", "tempo médio até a falha"], // the expansion and the Portuguese term
+    relatedTools: ["python-playground"], // runs the arithmetic
+    relatedArticles: ["the-arithmetic-of-redundancy-availability-mtbf-and-shared-fate"], // part 2
+    relatedTerms: ["mttr", "five-nines", "mtbf", "availability"], // existing entries first, then this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "ITU-T Recommendation E.800 (09/2008), sections 3.3.16.1 and 3.3.16.2 (read 2026-11-16): mean time to first failure and mean time to failure, each the expectation computed from a statistically significant number of samples", href: "https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-E.800-200809-I!!PDF-E&type=items" }, // ITU-T
+      { label: "NIST/SEMATECH e-Handbook of Statistical Methods, 8.1.6.1, Exponential (read 2026-11-16): the exponential is the only distribution with a constant failure rate; its mean is the MTTF, equal to 1/λ", href: "https://www.itl.nist.gov/div898/handbook/apr/section1/apr161.htm" }, // NIST
+      { label: "NIST/SEMATECH e-Handbook of Statistical Methods, 8.1.2.1 (read 2026-11-16): failure rates apply only to first failure times of non-repairable populations, not to repairable systems", href: "https://www.itl.nist.gov/div898/handbook/apr/section1/apr121.htm" }, // NIST
+      { label: "Ben Treynor, Mike Dahlin, Vivek Rau and Betsy Beyer, The Calculus of Service Availability, ACM Queue, March-April 2017, PDF published by Google SRE (read 2026-11-16): availability defined as MTTF/(MTTF+MTTR)", href: "https://sre.google/static/pdf/calculus_of.pdf" }, // Treynor and others
+      { label: "Bianca Schroeder and Garth A. Gibson, FAST 2007 (read 2026-11-16): datasheet MTTFs of 1,000,000 to 1,500,000 hours against field replacement rates of 2 to 4% a year and up to 13%", href: "https://www.usenix.org/legacy/events/fast07/tech/schroeder/schroeder.pdf" }, // Schroeder and Gibson
+    ], // five sources, one object per line
+  },
+  {
+    // n-plus-1 (new entry): the spare-counting notation N+1, N+2, 2N, 2N+1, N+M and its IETF equivalents.
+    slug: "n-plus-1", // the /glossary/n-plus-1 address
+    headword: "N+1 redundancy", // the notation as practitioners say it
+    kind: "term", // a design notation
+    domains: ["enterprise-networking", "cloud", "ops-culture"], // network and data centre design, capacity planning
+    aliases: ["n+1", "n+2", "2n", "2n+1", "n+m", "1+1 protection", "1:n protection", "m:n protection", "redundância n+1"], // the forms of the notation and the IETF protection types
+    relatedTools: ["python-playground"], // runs the k-out-of-n arithmetic
+    relatedArticles: ["the-arithmetic-of-redundancy-availability-mtbf-and-shared-fate", "redundant-architectures-how-networks-survive-failure"], // part 2 and the hub
+    relatedTerms: ["fault-tolerance", "single-point-of-failure", "hot-warm-cold-standby", "redundancy", "k-out-of-n", "availability"], // existing entries first, then this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "Google, Site Reliability Engineering, chapter 2, The Production Environment at Google, from the Viewpoint of an SRE (read 2026-11-16): 3,470 queries per second at 100 per task needs 35 tasks; 37 tasks, N+2, because one task is down during updates and a machine may fail during an update; South America run at N+1 to save hardware", href: "https://sre.google/sre-book/production-environment/" }, // Google SRE
+      { label: "RFC 4427, Recovery (Protection and Restoration) Terminology for GMPLS, April 2006, sections 6.1 to 6.3 (read 2026-11-16): 1+1 protection with a permanent bridge; 1:N protection, N working and one protection path; M:N protection, N working and M protection paths", href: "https://www.rfc-editor.org/rfc/rfc4427.txt" }, // IETF
+      { label: "NIST/SEMATECH e-Handbook of Statistical Methods, 8.1.8.4, R out of N model (read 2026-11-16): the binomial formula for a system that survives while at least r of n identical, independent components work", href: "https://www.itl.nist.gov/div898/handbook/apr/section1/apr184.htm" }, // NIST
+      { label: "Operador Nacional do Sistema Elétrico, RAP-ONS 00012/2023, final version of 18 October 2023 (read 2026-11-16): lines not re-energized until the condição de N-1 was met at the Igaporã III substation; the 15 August 2023 event began with the loss of a single 500 kV line", href: "https://www.ons.org.br/AcervoDigitalDocumentosEPublicacoes/RAP%202023.08.15%2008h30min%20vers%c3%a3o%20final%20com%20anexos%20de%20diverg%c3%aancia_Final.pdf" }, // ONS
+    ], // four sources, one object per line
+  },
+  {
+    // k-out-of-n (new entry): systems that work while at least k of n members work.
+    slug: "k-out-of-n", // the /glossary/k-out-of-n address
+    headword: "k-out-of-n system", // the term as reliability texts write it
+    kind: "term", // a reliability model
+    domains: ["ops-culture", "cloud"], // reliability modelling and distributed systems
+    aliases: ["k-of-n", "r-out-of-n", "m-out-of-n", "k-de-n"], // the other letters in use and the Portuguese form
+    relatedTools: ["python-playground"], // runs the binomial sum
+    relatedArticles: ["the-arithmetic-of-redundancy-availability-mtbf-and-shared-fate"], // part 2
+    relatedTerms: ["quorum", "raft", "consensus", "split-brain", "n-plus-1", "availability"], // existing entries first, then this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "NIST/SEMATECH e-Handbook of Statistical Methods, 8.1.8.4, R out of N model (read 2026-11-16): a system survives while at least r of its n identical, independent components work; reliability is the binomial sum; r = n is the series model and r = 1 the parallel model", href: "https://www.itl.nist.gov/div898/handbook/apr/section1/apr184.htm" }, // NIST
+      { label: "Diego Ongaro and John Ousterhout, In Search of an Understandable Consensus Algorithm (Extended Version), 2014, sections 1 and 5.1 (read 2026-11-16): available while any majority of servers is operational and can communicate; a typical five-server cluster tolerates the failure of any two", href: "https://raft.github.io/raft.pdf" }, // Ongaro and Ousterhout
+      { label: "NIST/SEMATECH e-Handbook of Statistical Methods, 8.1.8 (read 2026-11-16): the series, parallel, r out of n and standby models all assume independent components", href: "https://www.itl.nist.gov/div898/handbook/apr/section1/apr18.htm" }, // NIST
+    ], // three sources, one object per line
+  },
+  {
+    // beta-factor-model (new entry): the single-parameter model of common-cause failure.
+    slug: "beta-factor-model", // the /glossary/beta-factor-model address
+    headword: "beta factor model", // the model's name
+    kind: "term", // a risk-analysis model
+    domains: ["ops-culture", "grc"], // reliability modelling and risk assessment
+    aliases: ["beta factor", "β factor", "common-cause failure", "common cause failure", "ccf"], // the parameter and the phenomenon it models
+    relatedTools: ["python-playground"], // runs the arithmetic
+    relatedArticles: ["the-arithmetic-of-redundancy-availability-mtbf-and-shared-fate"], // part 2
+    relatedTerms: ["correlated-failure", "single-point-of-failure", "shared-fate", "design-diversity", "mtbf"], // existing entries first, then this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "A. Mosleh, D. M. Rasmuson and F. M. Marshall, NUREG/CR-5485, Guidelines on Modeling Common-Cause Failures in Probabilistic Risk Assessment, US Nuclear Regulatory Commission, November 1998, section 1.2 and appendix A, copy hosted by Idaho National Laboratory (read 2026-11-16): a constant fraction beta of each component's failure probability attributed to common cause events that fail every component of the group; the first model applied to common cause events; beta estimates do not appear to vary appreciably across widely different component types", href: "https://nrcoe.inl.gov/publicdocs/CCF/NUREGCR-5485_Guidelines%20on%20Modeling%20Common-Cause%20Failures%20in%20PRA.pdf" }, // US NRC
+      { label: "Daniel Ford and others (Google), Availability in Globally Distributed Storage Systems, OSDI 2010, section 8.3 (read 2026-11-16): failing to account for correlation of node failures overestimates availability by at least two orders of magnitude, eight for RS(8,4)", href: "https://www.usenix.org/legacy/event/osdi10/tech/full_papers/Ford.pdf" }, // Ford and others
+      { label: "CrowdStrike, External Technical Root Cause Analysis, Channel File 291, 6 August 2024 (read 2026-11-16): one content update defined 21 input fields while the sensor code supplied 20, on every host that ran it", href: "https://www.crowdstrike.com/wp-content/uploads/2024/08/Channel-File-291-Incident-Root-Cause-Analysis-08.06.2024.pdf" }, // CrowdStrike
+    ], // three sources, one object per line
+  },
+  {
+    // Shared risk link group (new entry): the IETF name for links that one failure takes down together.
+    slug: "srlg", // the /glossary/srlg address
+    headword: "SRLG", // the acronym as transport and routing engineers write it
+    kind: "acronym", // spelled out in expansion
+    domains: ["enterprise-networking", "isp-telecom"], // path design in enterprise and carrier networks
+    expansion: "Shared risk link group", // RFC 4202, section 2.3
+    aliases: ["shared risk link group", "srg", "shared conduit"], // "shared risk group" is left to agent D's shared-fate entry
+    relatedTools: ["flow-path-reasoner", "change-blast-radius-mapper"], // write the path down, then map what it shares
+    relatedArticles: ["physical-and-power-redundancy-feeds-paths-and-carriers", "submarine-cables-and-the-physical-internet", "the-arithmetic-of-redundancy-availability-mtbf-and-shared-fate"], // part 3 teaches it; part 2 has the arithmetic
+    relatedTerms: ["path-diversity", "shared-fate", "single-point-of-failure", "fault-tolerance", "blast-radius", "mpls"], // shared-fate is agent D's entry, landing in the same pass
+    sources: [ // every label says what the page says and when it was read
+      { label: "IETF, RFC 4202, Routing Extensions in Support of Generalized Multi-Protocol Label Switching (GMPLS), October 2005, Proposed Standard (read 2026-11-16): section 2.3, a set of links may constitute a shared risk link group if they share a resource whose failure may affect all of them, such as two fibers in the same conduit; a 32-bit SRLG number unique in an IGP domain; diverse paths should have disjoint SRLGs", href: "https://www.rfc-editor.org/rfc/rfc4202.txt" }, // IETF
+      { label: "IETF, RFC 3386, Network Hierarchy and Multilayer Survivability, November 2002, Informational (read 2026-11-16): section 2.2, a shared risk group is a set of network elements collectively impacted by a specific fault or fault type, including shared conduit, shared fiber cable, shared right of way, shared optical ring and shared office without power sharing", href: "https://www.rfc-editor.org/rfc/rfc3386.txt" }, // IETF
+      { label: "Durairajan, Barford, Sommers and Willinger, InterTubes: A Study of the US Long-haul Fiber-optic Infrastructure, ACM SIGCOMM 2015, 17 to 21 August 2015 (read 2026-11-16): 542 long-haul conduits; 89.67, 63.28 and 53.50 percent shared by at least two, three and four of the 20 major providers studied; 12 conduits shared by more than 17", href: "https://pages.cs.wisc.edu/~pb/tubes_final.pdf" }, // peer-reviewed measurement
+    ], // 3 sources, one object per line
+  },
+  {
+    // Path diversity (new entry): routes that share no segment, from the FCC's legal definition to a carrier contract.
+    slug: "path-diversity", // the /glossary/path-diversity address
+    headword: "path diversity", // the common name, lower case like other terms
+    kind: "term", // a design property, not a protocol
+    domains: ["enterprise-networking", "isp-telecom"], // where circuits are bought and where they are routed
+    aliases: ["physical diversity", "diverse routing", "route diversity", "carrier diversity", "circuit diversity", "diversity audit"], // the words contracts and regulators use
+    relatedTools: ["flow-path-reasoner", "change-blast-radius-mapper"], // trace each path, then list what the two share
+    relatedArticles: ["physical-and-power-redundancy-feeds-paths-and-carriers", "submarine-cables-and-the-physical-internet", "brazil-bmf-bovespa-b3-and-electronic-access", "first-hop-redundancy-vrrp-and-hsrp"], // part 3 teaches it; B3 requires it
+    relatedTerms: ["srlg", "design-diversity", "shared-fate", "single-point-of-failure", "fault-tolerance", "failover"], // design-diversity and shared-fate are agent D's entries
+    sources: [ // every label says what the page says and when it was read
+      { label: "United States, Code of Federal Regulations, title 47, section 9.19, Provision of reliable 911 service, eCFR current text (read 2026-11-16): circuits or paths are physically diverse if no common point would make both fail; a shared fiber-optic cable or circuit board makes them not physically diverse even if logically diverse; yearly diversity audits and inventory tagging so that rearrangements do not compromise diversity", href: "https://www.ecfr.gov/api/renderer/v1/content/enhanced/current/title-47?part=9&section=9.19" }, // US regulation
+      { label: "FCC Public Safety and Homeland Security Bureau, Impact of the June 2012 Derecho on Communications Networks and Services, January 2013 (read 2026-11-16): Fairfax County's redundant selective routers compromised by single points of failure; CSRIC best practice 8-7-0532, operators should periodically audit the physical and logical diversity called for by network design", href: "https://docs.fcc.gov/public/attachments/DOC-318331A1.pdf" }, // US regulator report
+      { label: "B3, Manual de Acesso à Infraestrutura Tecnológica, version 8.5, 13 February 2026 (read 2026-11-16): participants must contract two distinct network providers using distinct physical routes, except where no such providers exist; access forms with two links, two routers, two carriers and two sites", href: "https://b3.com.br/data/files/B9/F0/1F/4F/DC7CF91094DCD8F9AC094EA8/2026%20-%20Manual%20de%20Acesso%20a%20Infraestrutura%20Tecnologica%20da%20B3.pdf" }, // Brazilian exchange
+      { label: "Durairajan, Barford, Sommers and Willinger, InterTubes, ACM SIGCOMM 2015 (read 2026-11-16): most US long-haul conduits are shared by two or more major providers, so two carriers can share one trench", href: "https://pages.cs.wisc.edu/~pb/tubes_final.pdf" }, // peer-reviewed measurement
+    ], // 4 sources, one object per line
+  },
+  {
+    // UPS (new entry): the battery bridge between utility and generator, and how operators' reports show it running out.
+    slug: "ups", // the /glossary/ups address
+    headword: "UPS", // the acronym as written on the equipment
+    kind: "acronym", // spelled out in expansion
+    domains: ["enterprise-networking", "it-support"], // data centres, central offices and wiring closets
+    expansion: "Uninterruptible power supply", // the expansion in AWS's and Google's reports
+    aliases: ["uninterruptible power supply", "nobreak", "battery backup"], // "nobreak" is what Brazilians call it
+    relatedTools: ["time-calculator"], // battery windows are time arithmetic
+    relatedArticles: ["physical-and-power-redundancy-feeds-paths-and-carriers", "colocation-microwaves-and-the-race-for-latency"], // part 3 teaches it
+    relatedTerms: ["data-center-tiers", "n-plus-1", "single-point-of-failure", "fault-tolerance", "availability-zone", "rack"], // n-plus-1 is agent D's entry
+    sources: [ // every label says what the page says and when it was read
+      { label: "Amazon Web Services, Summary of the AWS Service Event in the US East Region, 2 July 2012 (read 2026-11-16): generators failed to provide stable voltage, servers ran on UPS power, UPS systems depleted and servers lost power at 8:04 pm PDT after the second utility failure at 7:57 pm; changes to generator stabilization time, power quality tolerances and staffing", href: "https://aws.amazon.com/message/67457/" }, // operator post-mortem
+      { label: "FCC Public Safety and Homeland Security Bureau, Impact of the June 2012 Derecho on Communications Networks and Services, January 2013 (read 2026-11-16): a central office on batteries for about six hours after two tandem generators failed; monitoring equipment on a UPS that lasts only thirty minutes", href: "https://docs.fcc.gov/public/attachments/DOC-318331A1.pdf" }, // US regulator report
+      { label: "Google Cloud, Multiple Google Cloud services in the europe-west9-a zone are impacted, Paris, 25 April 2023 (read 2026-11-16): a cooling water leak entered an uninterruptible power supply (UPS) room and led to a fire and a power shutdown of the whole building", href: "https://status.cloud.google.com/incidents/dS9ps52MUnxQfyDGPfkY" }, // operator incident report
+      { label: "United States, Code of Federal Regulations, title 47, section 9.19, eCFR current text (read 2026-11-16): IP 911 elements achieve operational integrity with an uninterruptible and continuous power supply and automatic switchover to geographically diverse backup facilities; legacy central offices need 24 or 72 hours of backup power at full office load", href: "https://www.ecfr.gov/api/renderer/v1/content/enhanced/current/title-47?part=9&section=9.19" }, // US regulation
+    ], // 4 sources, one object per line
+  },
+  {
+    // MLAG (new entry): one LACP partner made of two switches, and what each vendor calls it.
+    slug: "mlag", // the /glossary/mlag address
+    headword: "MLAG", // the acronym most vendors and engineers use
+    kind: "acronym", // spelled out in expansion
+    domains: ["enterprise-networking"], // data centre and campus switching
+    expansion: "Multi-chassis link aggregation", // Arista's expansion; Juniper writes multichassis
+    aliases: ["mc-lag", "mclag", "multi-chassis link aggregation", "multichassis link aggregation", "mlag peer link", "dual-active"], // vendor spellings and the failure people search for
+    relatedTools: ["lacp-hash-and-state-reader", "change-blast-radius-mapper"], // read the partner state; map what a peer-link failure reaches
+    relatedArticles: ["layer-2-redundancy-lag-mlag-and-spanning-tree", "link-aggregation-and-lacp", "fortiswitch-fortilink-provisioning-and-topologies", "voss-smlt-and-vist"], // part 4 teaches it
+    relatedTerms: ["link-aggregation", "lacp", "virtual-port-channel", "drni", "evpn-multihoming", "switch-stacking", "split-brain", "spanning-tree"], // its neighbours, existing first then the new siblings
+    sources: [ // every label says what the page says and when it was read
+      { label: "Arista Networks, EOS 4.37.0F, multi-chassis link aggregation (read 2026-11-16 via WebFetch): MLAG aggregates ports across two switches; peer link a normal port channel; heartbeat interval default 4 seconds, timeout 30 seconds; reload delay 300 seconds on fixed switches; dual-primary detection with errdisable on the secondary", href: "https://www.arista.com/en/um-eos/eos-multi-chassis-link-aggregation" }, // Arista
+      { label: "Juniper Networks, MC-LAG concepts (read 2026-11-16): ICCP over TCP/IP between two peers, the interchassis link, split brain changes the LACP system IDs and the CE keeps the first link's ID, block mask on ICL traffic", href: "https://www.juniper.net/documentation/us/en/software/junos/mc-lag/topics/concept/mc-lag-feature-concepts.html" }, // Juniper
+      { label: "Extreme Networks, Switch Engine 33.1.1 User Guide, inter-switch communication, 1 August 2024 (read 2026-11-16): health checks on the ISC, duplication without loops when the ISC alone fails, three missed checks, the lower IP disables its ports, 2-second wait on recovery", href: "https://documentation.extremenetworks.com/Switch%20Engine%20v33.1.1%20User%20Guide/GUID-43572973-7703-4C78-9F88-957267BB030E.shtml" }, // Extreme
+      { label: "Fortinet, FortiSwitch 7.2.4 Administration Guide, MCLAG (read 2026-11-16): node-level redundancy by grouping two FortiSwitch units, a maximum of two per MCLAG, ICL trunk", href: "https://docs.fortinet.com/document/fortiswitch/7.2.4/administration-guide/860027" }, // Fortinet
+      { label: "IETF, RFC 7275, Inter-Chassis Communication Protocol for L2VPN PE Redundancy, June 2014, Proposed Standard (read 2026-11-16): ICCP within LDP over TCP, redundancy groups of two or more PEs, the multi-chassis LACP application", href: "https://www.rfc-editor.org/rfc/rfc7275.txt" }, // IETF
+      { label: "GitHub, Downtime last Saturday, 26 December 2012 (read 2026-11-16): an MLAG pair's 5-second heartbeat timeout and 2-second link wait, a failover to standalone mode, about a minute and a half of blocked traffic", href: "https://github.blog/2012-12-26-downtime-last-saturday" }, // operator post-mortem
+    ], // 6 sources, one object per line
+  },
+  {
+    // vPC (new entry): Cisco's MLAG, under a slug that does not take the cloud VPC's alias.
+    slug: "virtual-port-channel", // not "vpc": that slug is the cloud Virtual Private Cloud
+    headword: "vPC (virtual port channel)", // Cisco's capitalisation with the expansion, to keep it apart from VPC
+    kind: "term", // a vendor feature name
+    domains: ["enterprise-networking", "vendors"], // Cisco Nexus data centre switching
+    aliases: ["virtual port channel", "cisco vpc", "vpc peer link", "vpc peer keepalive"], // no bare "vpc", per the series brief
+    relatedTools: ["lacp-hash-and-state-reader"], // the attached device sees an ordinary LACP partner
+    relatedArticles: ["layer-2-redundancy-lag-mlag-and-spanning-tree", "link-aggregation-and-lacp"], // part 4 teaches it
+    relatedTerms: ["mlag", "link-aggregation", "lacp", "split-brain", "spanning-tree"], // its neighbours
+    sources: [ // every label says what the page says and when it was read
+      { label: "Cisco, Design and Configuration Guide: Best Practices for Virtual Port Channels (vPC) on Cisco Nexus Series Switches, revised March 2021 (read 2026-11-16 via WebFetch): keepalive interval 1 s, hold timeout on peer-link loss 3 s, timeout 5 s; traffic from a vPC member crossing the peer link may not egress a vPC member port unless that member is down; on peer-link failure with keepalive up the secondary suspends its vPC member ports and SVIs; Type 1 and Type 2 consistency", href: "https://www.cisco.com/c/dam/en/us/td/docs/switches/datacenter/sw/design/vpc_design/vpc_best_practices_design_guide.pdf" }, // Cisco
+      { label: "Cisco, understand and configure Nexus 9000 vPC, document 218333, 15 July 2025 (read 2026-11-16 via WebFetch): a vPC domain is composed of two peer devices; delay restore and auto-recovery in show output", href: "https://www.cisco.com/c/en/us/support/docs/switches/nexus-9000-series-switches/218333-understand-and-configure-nexus-9000-vpc.html" }, // Cisco
+      { label: "Cisco, technote 217274 on virtual port channels (vPC), updated 5 December 2024 (read 2026-11-16 via WebFetch): a packet arriving over the peer link cannot leave a vPC interface that is up on the other peer; peer-gateway and peer-switch", href: "https://www.cisco.com/c/en/us/support/docs/ios-nx-os-software/nx-os-software/217274-understand-virtual-port-channel-vpc-en.html" }, // Cisco
+    ], // 3 sources, one object per line
+  },
+  {
+    // DRNI (new entry): the IEEE's multi-chassis aggregation, and the gap between the standard and what ships.
+    slug: "drni", // the /glossary/drni address
+    headword: "DRNI", // the acronym of IEEE 802.1AX
+    kind: "acronym", // spelled out in expansion
+    domains: ["enterprise-networking", "isp-telecom"], // network-to-network interconnect and data centre pairs
+    expansion: "Distributed Resilient Network Interconnect", // IEEE 802.1AX-2014 and 802.1AX-2020
+    aliases: ["distributed resilient network interconnect", "distributed relay", "drcp", "distributed relay control protocol"], // the protocol name H3C uses
+    relatedArticles: ["layer-2-redundancy-lag-mlag-and-spanning-tree", "link-aggregation-and-lacp"], // part 4 teaches it
+    relatedTerms: ["link-aggregation", "lacp", "mlag", "evpn-multihoming"], // its neighbours
+    sources: [ // every label says what the page says and when it was read
+      { label: "IEEE 802.1, 802.1AX-2020 project page (read 2026-11-16): a resilient interconnect among one to three nodes in a network and one to three nodes in another, separately administered, network; approved 30 January 2020; the revision corrects and clarifies the DRNI specifications in the light of implementation experience", href: "https://1.ieee802.org/tsn/802-1ax-rev/" }, // IEEE
+      { label: "IEEE 802.1, 802.1AXbq, Link Aggregation Amendment: Distributed Resilient Network Interconnect (read 2026-11-16): PAR approved 10 September 2011, superseded by 802.1AX-Rev", href: "https://www.ieee802.org/1/pages/802.1axbq.html" }, // IEEE
+      { label: "IEEE 802.1, 802.1AX-2014 (read 2026-11-16): standard approved 10 December 2014", href: "https://www.ieee802.org/1/pages/802.1AX-2014.html" }, // IEEE
+      { label: "H3C, S6890 Switch Series Configuration Guides (R27xx), Layer 2 LAN switching, DRNI configuration (read 2026-11-16): DRNI virtualizes two devices into one system; IPP and IPL; H3C proprietary DRCP with a 3-second short and 90-second long timeout; MAD on the secondary when the IPL fails with keepalive up; standard listed as IEEE P802.1AX-REV/D4.4c; DRNI is an H3C proprietary protocol", href: "https://www.h3c.com/en/d_202210/1709021_294551_0.htm" }, // H3C
+    ], // 4 sources, one object per line
+  },
+  {
+    // EVPN multihoming (new entry): Ethernet segments, designated forwarders and split horizon, in place of a peer link.
+    slug: "evpn-multihoming", // the /glossary/evpn-multihoming address
+    headword: "EVPN multihoming", // the RFCs' term
+    kind: "term", // a set of procedures within EVPN
+    domains: ["enterprise-networking", "isp-telecom"], // data centre fabrics and provider edges
+    aliases: ["esi-lag", "esi lag", "evpn lag", "ethernet segment", "ethernet segment identifier", "all-active multihoming", "single-active multihoming", "designated forwarder"], // vendor and RFC names
+    relatedTools: ["lacp-hash-and-state-reader"], // the attached device runs ordinary LACP (ESI type 1 is built from its LACP identity)
+    relatedArticles: ["layer-2-redundancy-lag-mlag-and-spanning-tree", "mpls-primer", "link-aggregation-and-lacp"], // part 4 teaches it
+    relatedTerms: ["mlag", "drni", "vxlan", "mpls", "bgp", "link-aggregation", "lacp"], // its neighbours; add "evpn" when that entry lands
+    sources: [ // every label says what the page says and when it was read
+      { label: "IETF, RFC 7432, BGP MPLS-Based Ethernet VPN, February 2015, Proposed Standard, updated by RFC 8584, 9161, 9572, 9573 and 9746 (read 2026-11-16): Ethernet segment and 10-octet ESI, single-active and all-active modes, fast convergence by A-D per ES withdrawal, aliasing, split horizon, DF election by V mod N after a 3-second timer", href: "https://www.rfc-editor.org/rfc/rfc7432.txt" }, // IETF
+      { label: "IETF, RFC 8365, A Network Virtualization Overlay Solution Using Ethernet VPN (EVPN), March 2018 (read 2026-11-16): section 8.3.1, local bias for split-horizon filtering over VXLAN and NVGRE", href: "https://www.rfc-editor.org/rfc/rfc8365.txt" }, // IETF
+      { label: "IETF, RFC 8584, Framework for Ethernet VPN Designated Forwarder Election Extensibility, April 2019 (read 2026-11-16): unfairness and churn of the modulo election, the 999/1000/1001 example, Highest Random Weight", href: "https://www.rfc-editor.org/rfc/rfc8584.txt" }, // IETF
+      { label: "Juniper Networks, introduction to EVPN LAG multihoming (read 2026-11-16): ESI LAGs give link and node level redundancy and active-active layer 2 extension without spanning tree", href: "https://www.juniper.net/documentation/us/en/software/nce/evpn-lag-multihoming-guide/topics/concept/evpn-lag-guide-introduction.html" }, // Juniper
+      { label: "Nokia, 7750 SR Layer 2 Services and EVPN Guide, release 22.5.R1, EVPN VXLAN multihoming (read 2026-11-16): RFC 8365 multihoming with DF election, split horizon and aliasing; local bias in VXLAN services", href: "https://infocenter.nokia.com/public/7750SR225R1A/topic/com.nokia.L2_Services_and_EVPN_Guide/evpn_vxlan_mult-ai9enrmqd0.html" }, // Nokia
+    ], // 5 sources, one object per line
+  },
+  {
+    // Switch stacking and virtual chassis (new entry): several switches, one control plane, and the rule for when it splits.
+    slug: "switch-stacking", // the /glossary/switch-stacking address
+    headword: "switch stacking", // the generic name; vendor names in aliases
+    kind: "term", // a design, several vendor implementations
+    domains: ["enterprise-networking"], // campus and data centre access
+    aliases: ["stacking", "virtual chassis", "stackwise virtual", "stack split"], // vendor names and the failure people search for
+    relatedTools: ["change-blast-radius-mapper"], // one control plane: a change reaches every member
+    relatedArticles: ["layer-2-redundancy-lag-mlag-and-spanning-tree", "fortiswitch-fortilink-provisioning-and-topologies", "extreme-universal-os-names"], // part 4 teaches it
+    relatedTerms: ["mlag", "split-brain", "quorum", "failure-domain", "single-point-of-failure", "blast-radius"], // failure-domain is agent D's entry
+    sources: [ // every label says what the page says and when it was read
+      { label: "Cisco, Catalyst 9500 IOS XE 17.12, configuring Cisco StackWise Virtual, 28 July 2023 (read 2026-11-16 via WebFetch): two switches as one logical switch with integrated control, management and data planes; StackWise Virtual link; dual-active detection by fast hello or ePAgP; the former active shuts down its non-SVL and non-DAD interfaces in recovery mode", href: "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9500/software/release/17-12/configuration_guide/ha/b_1712_ha_9500_cg/configuring_cisco_stackwise_virtual.html" }, // Cisco
+      { label: "Juniper Networks, understanding split and merge in a Virtual Chassis (read 2026-11-16): the part that stays active holds the stable primary and backup, or the primary and more than half the members, or the backup and at least half; the other part stays in the linecard role", href: "https://juniper.net/documentation/us/en/software/junos/virtual-chassis/topics/concept/virtual-chassis-split-merge.html" }, // Juniper
+      { label: "Juniper Networks, Virtual Chassis components (read 2026-11-16): primary, backup and linecard roles; up to 10 EX4400 members from Junos OS 21.1R1", href: "https://juniper.net/documentation/us/en/software/junos/virtual-chassis/topics/concept/virtual-chassis-components.html" }, // Juniper
+    ], // 3 sources, one object per line
+  },
+  {
+    // Loop guard (new entry): the protection for a blocked port that stops hearing BPDUs.
+    slug: "loop-guard", // the /glossary/loop-guard address
+    headword: "loop guard", // Cisco's and Arista's name, lower case
+    kind: "term", // a spanning tree protection
+    domains: ["enterprise-networking"], // switching
+    aliases: ["loop protection", "loop-inconsistent"], // Juniper's name and the state it leaves a port in
+    relatedTools: ["stp-election-calculator"], // shows which ports a topology blocks, the ports loop guard watches
+    relatedArticles: ["layer-2-redundancy-lag-mlag-and-spanning-tree", "spanning-tree-in-one-article", "fortiswitch-vlans-stp-ports-and-qos"], // part 4 compares it across vendors
+    relatedTerms: ["stp", "rstp", "bpdu", "spanning-tree", "storm-control", "broadcast-storm"], // its neighbours
+    sources: [ // every label says what the page says and when it was read
+      { label: "Juniper Networks, Spanning-Tree Protocols User Guide, published 11 December 2025 (read 2026-11-16): by default an interface that stops receiving BPDUs moves to the designated (forwarding) state, creating a potential loop; loop protection holds it in a loop-inconsistent state until a BPDU arrives", href: "https://www.juniper.net/documentation/us/en/software/junos/stp-l2/stp-l2.pdf" }, // Juniper
+      { label: "Arista Networks, EOS 4.37.0F, spanning tree protocol (read 2026-11-16 via WebFetch): loop guard prevents loops resulting from unidirectional failure of point-to-point links; root guard and BPDU guard compared", href: "https://www.arista.com/en/um-eos/eos-spanning-tree-protocol" }, // Arista
+      { label: "Cisco, Catalyst 9300 IOS XE 17.12, configuring UDLD, 28 July 2023 (read 2026-11-16 via WebFetch): unidirectional links can cause spanning-tree topology loops; UDLD disabled by default", href: "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/software/release/17-12/configuration_guide/lyr2/b_1712_lyr2_9300_cg/configuring_unidirectional_link_detection.html" }, // Cisco
+    ], // 3 sources, one object per line
+  },
+  {
+    // SBE (new entry): the FIX Trading Community's fixed-layout binary encoding, ISO/IEC 25390:2025, used by B3 and CME for order entry and market data.
+    slug: "simple-binary-encoding", // the /glossary/simple-binary-encoding address
+    headword: "SBE (Simple Binary Encoding)", // acronym first, as for other acronym entries
+    kind: "acronym", // an acronym with its expansion
+    domains: ["enterprise-networking", "programming"], // a wire encoding and its decoders
+    expansion: "Simple Binary Encoding, the FIX Trading Community's fixed-layout binary encoding of FIX messages, published as ISO/IEC 25390:2025", // the formal identity
+    aliases: ["sbe", "simple binary encoding", "iso/iec 25390", "fix sbe", "sbe 1.0", "sbe 2.0", "codificação binária sbe"], // names, the ISO number, versions, Portuguese
+    relatedTerms: ["fix-protocol", "fast-protocol", "fixp", "endianness", "fpga", "b3", "matching-engine"], // this batch, then existing entries
+    relatedArticles: ["fix-encodings-and-successors-fixml-fast-sbe-and-exchange-binary-protocols", "the-fix-protocol-origins-versions-and-the-community", "brazil-bmf-bovespa-b3-and-electronic-access", "big-endian-and-little-endian"], // the part, two wave-1 parts, byte order
+    sources: [ // every label says what the page says and when it was read
+      { label: "FIX Trading Community, Simple Binary Encoding (SBE) (read 2026-11-16): proposal of the High Performance Working Group, optimized for low latency; complements FAST, developed in 2005 with a focus on bandwidth for market data", href: "https://fixtrading.org/simple-binary-encoding-sbe/" }, // origin
+      { label: "SBE technical specification, version 1.0 with errata, November 2020 (read 2026-11-16): targets high performance trading systems; direct data access without complex transformations; little-endian by default; message header; decimal, decimal64 and decimal32; null values; order example whose hex dump and table disagree on TransactTime", href: "https://fixtrading.org/packages/simple-binary-encoding-technical-specification-final/" }, // the standard
+      { label: "Standards Council of Canada, ISO/IEC 25390:2025 (read 2026-11-16 through an automated extract): Simple binary encoding, published 2025-04-22", href: "https://ccn-scc.ca/standardsdb/standards/8189780" }, // ISO publication
+      { label: "B3, Binary EntryPoint messaging guidelines 8.4.2.3, 28 September 2026, sections 3.1 to 3.9 and 4.4 (read 2026-11-16): uses SBE 1.0; messages not self-describing; optional fields save no space; behaves like a C struct; 2-byte little-endian framing length with code 0xEB50", href: "https://www.b3.com.br/data/files/69/35/F1/AB/94711A103BBB511AAC094EA8/BinaryEntryPoint-MessageSpecificationGuidelines-8.4.2.3-enUS.pdf" }, // a venue
+      { label: "CME Group, iLink Simple Binary Encoding (read 2026-11-16): framing header differs from SOFH (little-endian, 2-byte length, private type 0xCAFE); New Order Single example with prices at exponent -9", href: "https://cmegroupclientsite.atlassian.net/wiki/spaces/EPICSANDBOX/pages/714113056/iLink+Simple+Binary+Encoding" }, // a second venue
+    ], // five sources, one object per line
+  },
+  {
+    // FAST (new entry): the FIX Trading Community's compression protocol for market data, version 1.1 of 2006, still published by B3.
+    slug: "fast-protocol", // the /glossary/fast-protocol address (the bare word "fast" is not used as an alias)
+    headword: "FAST (FIX Adapted for STreaming)", // acronym first
+    kind: "acronym", // an acronym with its expansion
+    domains: ["enterprise-networking", "programming"], // a wire encoding and its decoders
+    expansion: "FIX Adapted for STreaming, a template-driven compression protocol for market data; version 1.1 of 20 December 2006", // the formal identity
+    aliases: ["fix adapted for streaming", "fix fast", "fast protocol", "fast 1.1", "fast 1.2", "protocolo fast"], // names, versions, Portuguese
+    relatedTerms: ["simple-binary-encoding", "fix-protocol", "multicast", "b3"], // this batch, then existing entries
+    relatedArticles: ["fix-encodings-and-successors-fixml-fast-sbe-and-exchange-binary-protocols", "brazil-bmf-bovespa-b3-and-electronic-access"], // the part and the Brazil part
+    sources: [ // every label says what the page says and when it was read
+      { label: "FIX Trading Community, FAST (read 2026-11-16): developed and maintained by the Market Data Optimization Working Group; efficient use of bandwidth in high-volume messaging without material processing overhead or latency; CME intellectual property agreement listed", href: "https://fixtrading.org/standards/fast/" }, // purpose
+      { label: "FAST specification, version 1.1, 20 December 2006 (read 2026-11-16): field operators, stop-bit encoding, presence map, nullable integers, scaled numbers; CME patent application and covenant not to sue; appendix examples printing -8193 as 0x73 0x3f 0xff where the binary column gives 0x7f 0x3f 0xff", href: "https://fixtrading.org/packages/fast-specification-version-1-1/" }, // the specification
+      { label: "FAST version 1.2 extension proposal, 18 January 2009 (read 2026-11-16): enumerations, sets, bit groups and a timestamp type", href: "https://fixtrading.org/packages/fast-extension-version-1-2/" }, // extension
+      { label: "B3, Binary UMDF messaging specification guidelines 2.3.1.2, 28 September 2026, sections 4.1 and 5.1 (read 2026-11-16): SBE simpler and faster than FAST (no presence maps, no dictionary contexts, no variable-length integers) and not encumbered by patents", href: "https://www.b3.com.br/data/files/84/B7/1D/9E/AB611A103BBB511AAC094EA8/BinaryUMDF-MessageSpecificationGuidelines-v.2.3.1.2-enUS.pdf" }, // comparison
+      { label: "B3, Comunicado Externo 040/2026-VNC, 14 July 2026 (read 2026-11-16): new FIX/FAST template file 5.1.19, mandatory, alongside Binary UMDF schema version 17", href: "https://www.b3.com.br/data/files/B1/82/C0/73/8926F910CEC024F9AC094EA8/CE%20040-2026-VNC%20MARKET%20DATA%20B3%20ATUALIZACAO%20DE%20ESPECIFICACAO%20TECNICA%20E%20ARQUIVO%20DE%20TEMPLATES_PT.pdf" }, // still in use
+    ], // five sources, one object per line
+  },
+  {
+    // FIXML (new entry): the XML syntax of FIX application messages, from 1998, mainly used in derivatives post-trade.
+    slug: "fixml", // the /glossary/fixml address
+    headword: "FIXML (FIX Markup Language)", // acronym first
+    kind: "acronym", // an acronym with its expansion
+    domains: ["enterprise-networking", "programming"], // a message syntax
+    expansion: "FIX Markup Language, the XML syntax of the FIX application messages; technical standard version 1.1, May 2014", // the formal identity
+    aliases: ["fix markup language", "fixml schema", "fix xml", "fixml 1.1"], // names, the schema, version
+    relatedTerms: ["xml", "fix-protocol", "clearing-house", "simple-binary-encoding"], // existing entries, this batch
+    relatedArticles: ["fix-encodings-and-successors-fixml-fast-sbe-and-exchange-binary-protocols", "the-fix-protocol-origins-versions-and-the-community", "reading-xml-structure"], // the part, version history, XML basics
+    sources: [ // every label says what the page says and when it was read
+      { label: "FIXML technical standard, version 1.1, May 2014, sections 1, 2 and 4.3 (read 2026-11-16): working group from 1998; DTDs released 15 January 1999; schema with FIX 4.4; part of each release since FIX 5.0 SP2 (April 2009); abbreviation rules (Price = Px); no session layer; single-message example", href: "https://fixtrading.org/packages/fixml-technical-standard-version-1-1/" }, // the standard
+      { label: "FIX Trading Community, FIXML (read 2026-11-16): widely adopted for derivatives post-trade clearing and settlement globally, also used for reporting", href: "https://fixtrading.org/standards/fixml/" }, // adoption
+      { label: "Eurex Clearing FIXML Interface, volume 1, C7 release 12.1, production from 18 May 2026 (read 2026-11-16): transport AMQP/WebSphere MQ, syntax FIXML", href: "https://www.eurex.com/resource/blob/4826476/66cd67909ac2177dab3f9ddb63f17c50/data/Eurex%20Clearing%20FIXML%20Interface_Vol1_Rel_12_1_V_1.0.pdf" }, // a clearing house
+      { label: "FIXimate (Orchimate), XmlData (213) (read 2026-11-16): actual XML data stream (e.g. FIXML), in the standard header, added in FIX 4.2", href: "https://orchimate.org/fixtrading/fix-latest/fields/XmlData" }, // carriage in a FIX session
+    ], // four sources, one object per line
+  },
+  {
+    // FIXP (new entry): the FIX Performance Session Layer, version 1.0 of 2021, with per-direction delivery guarantees; used by B3 and CME.
+    slug: "fixp", // the /glossary/fixp address
+    headword: "FIXP (FIX Performance Session Layer)", // acronym first
+    kind: "acronym", // an acronym with its expansion
+    domains: ["enterprise-networking", "programming"], // a session protocol
+    expansion: "FIX Performance Session Layer, a lightweight point-to-point session protocol; technical standard version 1.0, 15 April 2021", // the formal identity
+    aliases: ["fix performance session layer", "fixp 1.0", "fix performance", "camada de sessão fixp"], // names, version, Portuguese
+    relatedTerms: ["fix-session", "simple-binary-encoding", "idempotent", "tcp", "udp", "b3"], // existing entries and this batch
+    relatedArticles: ["fix-encodings-and-successors-fixml-fast-sbe-and-exchange-binary-protocols", "anatomy-of-a-fix-message-and-the-session-layer", "retries-timeouts-and-idempotency"], // the part, the classic session, idempotency
+    sources: [ // every label says what the page says and when it was read
+      { label: "FIXP technical standard, version 1.0, 15 April 2021, sections 1, 1.1 and 3.4.4 (read 2026-11-16): derived from the FIX session layer and NASDAQOMX's SoupTCP, SoupBinTCP and UFO; encoding independent; flow types recoverable, idempotent, unsequenced, none; authors include Júlio L R Monteiro, formerly B3, editor", href: "https://fixtrading.org/packages/fixp-session-layer-technical-specification-v1-0-technical-standard/" }, // the standard
+      { label: "FIX Trading Community, High Performance FIX for the Web Era, white paper, 2018, updated June 2025, section 2.5.3 (read 2026-11-16): outbound executions recoverable, inbound orders idempotent; no message header imposed on application messages", href: "https://fixtrading.org/download/white-paper-high-performance-fix-for-the-web-era/" }, // rationale
+      { label: "B3, b3-entrypoint-messages-8.4.2.xml, schema version 6, 18 December 2025 (read 2026-11-16): Negotiate clientFlow IDEMPOTENT, NegotiateResponse serverFlow RECOVERABLE", href: "https://www.b3.com.br/data/files/37/37/9B/18/47F6B9105B12E5A9AC094EA8/b3-entrypoint-messages-8.4.2.xml" }, // a venue's constants
+      { label: "B3, Binary EntryPoint messaging guidelines 8.4.2.3, 28 September 2026, sections 4.5.1 to 4.5.7 (read 2026-11-16): daily reset, Negotiate with JSON credentials, Establish, Sequence as heartbeat, NotApplied accepting a higher sequence number, Terminate codes", href: "https://www.b3.com.br/data/files/69/35/F1/AB/94711A103BBB511AAC094EA8/BinaryEntryPoint-MessageSpecificationGuidelines-8.4.2.3-enUS.pdf" }, // B3 lifecycle
+      { label: "CME Group, iLink Binary Order Entry, session layer (read 2026-11-16): weekly FIXP sessions identified by UUID; business messages from the exchange recoverable; Not Applied; HMAC-signed Negotiate and Establish", href: "https://cmegroupclientsite.atlassian.net/wiki/spaces/EPICSANDBOX/pages/714145834/iLink+Binary+Order+Entry+-+Session+Layer" }, // CME lifecycle
+    ], // five sources, one object per line
+  },
+  {
+    // OUCH (new entry): Nasdaq's native fixed-length binary order entry protocol, version 5.0.
+    slug: "ouch-protocol", // the /glossary/ouch-protocol address
+    headword: "OUCH", // the protocol's own name (not an acronym in Nasdaq's documents)
+    kind: "term", // a named protocol
+    domains: ["vendors", "enterprise-networking"], // a vendor (exchange) protocol
+    aliases: ["ouch 5.0", "ouch 4.2", "nasdaq ouch", "ouch protocol"], // versions and qualified names
+    relatedTerms: ["itch-protocol", "fixp", "simple-binary-encoding", "matching-engine"], // this batch, then existing entries
+    relatedArticles: ["fix-encodings-and-successors-fixml-fast-sbe-and-exchange-binary-protocols", "the-life-of-an-order-in-fix"], // the two parts
+    sources: [ // every label says what the page says and when it was read
+      { label: "Nasdaq, OUCH 5.0 order entry specification, updated October 2025, sections 1, 2.1, 2.2 and 2.4 (read 2026-11-16): low-level native protocol for maximum performance at the cost of flexibility; fixed message lengths; big-endian; prices with 4 implied decimals; UserRefNum; inbound messages benignly resendable; Enter Order 47-byte fixed part; replace gives new time priority; Modify keeps it; chain quantity", href: "https://www.nasdaqtrader.com/content/technicalsupport/specifications/TradingProducts/Ouch5.0.pdf" }, // the specification
+      { label: "Nasdaq, OUCH 4.2, updated October 2025 (read 2026-11-16): 4-byte price and 14-character order token", href: "https://www.nasdaqtrader.com/content/technicalsupport/specifications/TradingProducts/OUCH4.2.pdf" }, // earlier version
+      { label: "Nasdaq, SoupBinTCP 3.00 (read 2026-11-16): length-prefixed logical packets, implied sequence numbers, history from 1999", href: "https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/soupbintcp.pdf" }, // carrier
+    ], // three sources, one object per line
+  },
+  {
+    // ITCH (new entry): Nasdaq's outbound order-level market data protocol, TotalView-ITCH 5.0.
+    slug: "itch-protocol", // the /glossary/itch-protocol address
+    headword: "ITCH", // the protocol's own name
+    kind: "term", // a named protocol
+    domains: ["vendors", "enterprise-networking"], // a vendor (exchange) protocol
+    aliases: ["totalview-itch", "itch 5.0", "nasdaq itch", "itch protocol"], // product name, version, qualified names
+    relatedTerms: ["ouch-protocol", "multicast", "fpga", "udp"], // this batch, then existing entries
+    relatedArticles: ["fix-encodings-and-successors-fixml-fast-sbe-and-exchange-binary-protocols", "multicast-what-it-costs-to-not-flood"], // the part, multicast
+    sources: [ // every label says what the page says and when it was read
+      { label: "Nasdaq, TotalView-ITCH 5.0 specification (read 2026-11-16): outbound market data feed only; tracks the life of each customer order; stock locate codes; nanoseconds since midnight; Add Order 36 bytes; FPGA feed from Carteret over MoldUDP64 only, 10 or 40 Gb; revision log January 2015 to April 2023", href: "https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/NQTVITCHspecification.pdf" }, // the specification
+      { label: "Nasdaq, MoldUDP64 protocol specification, version 1.00 (read 2026-11-16): one transmitter to many listeners; 10-byte session, 8-byte sequence number, 2-byte count; re-request servers; versions from 2 November 2004, 64-bit on 4 December 2008", href: "https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/moldudp64.pdf" }, // multicast carrier
+      { label: "Nasdaq, SoupBinTCP 3.00 (read 2026-11-16): TCP carrier with implied sequence numbers", href: "https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/soupbintcp.pdf" }, // TCP carrier
+    ], // three sources, one object per line
+  },
+  {
+    // OrdStatus (new entry): the FIX field giving an order's current state, chosen by precedence.
+    slug: "ord-status", // the /glossary/ord-status address
+    headword: "OrdStatus (tag 39)", // the field name and tag
+    kind: "term", // a protocol field
+    domains: ["enterprise-networking", "programming"], // protocol field used by implementers
+    aliases: ["ordstatus", "order status", "tag 39", "order state precedence", "status da ordem"], // names, tag, the rule, Portuguese
+    relatedTerms: ["exec-type", "execution-report", "order-cancel-replace-request", "fix-protocol"], // this batch, then existing entries
+    relatedArticles: ["the-life-of-an-order-in-fix", "anatomy-of-a-fix-message-and-the-session-layer"], // the part, the field basics
+    sources: [ // every label says what the page says and when it was read
+      { label: "FIX Latest, Order State Changes, as of EP284, November 2023, chapters 1, 2, 3.2 and 4 (read 2026-11-16): OrdStatus conveys the current status; precedence 11 Pending Cancel to 1 Accepted for Bidding; section 3.2 table prints Partially Filled 4 and Canceled 5 against 3 and 4 in chapter 2; exchanges avoid pending states", href: "https://fixtrading.org/packages/fix-latest-specification-order-state-changes/" }, // semantics
+      { label: "FIXimate (Orchimate), OrdStatusCodeSet (read 2026-11-16): values 0, 1, 2, 3, 4, 6, 7, 8, 9, A, B, C, D, E; some values replaced", href: "https://orchimate.org/fixtrading/fix-latest/codeSets/OrdStatusCodeSet" }, // codes
+      { label: "FIX 4.4 specification with errata 20030618, volume 6, field 39 (read 2026-11-16): 5 = Replaced (Removed/Replaced), left out of the allowed values", href: "https://fixtrading.org/packages/fix-4-4-specification-with-20030618-errata/" }, // history
+      { label: "B3, EntryPoint message specification 2.40, 27 November 2025 (read 2026-11-16): OrdStatus 0, 1, 2, 4, 5 (Replaced), 8, C and Z (Previous Final State)", href: "https://www.b3.com.br/data/files/A7/77/7B/FE/5789491029BEEC39AC094EA8/EntryPointMessageSpecs.pdf" }, // a venue's values
+      { label: "B3, EntryPoint messaging guidelines 2.9.31, 16 December 2025, appendix B (read 2026-11-16): a modification answered with ExecType Replace and OrdStatus Replaced; no pending states; Previous Final State after a bust on an order no longer working", href: "https://www.b3.com.br/data/files/FF/84/5F/93/DB81D8103152D4C8AC094EA8/EntryPointMessagingGuidelines.pdf" }, // a venue's transitions
+    ], // five sources, one object per line
+  },
+  {
+    // ExecType (new entry): the FIX field giving the event an execution report describes.
+    slug: "exec-type", // the /glossary/exec-type address
+    headword: "ExecType (tag 150)", // the field name and tag
+    kind: "term", // a protocol field
+    domains: ["enterprise-networking", "programming"], // protocol field used by implementers
+    aliases: ["exectype", "execution type", "tag 150", "exectranstype", "tipo de execução"], // names, tag, its predecessor, Portuguese
+    relatedTerms: ["ord-status", "execution-report", "order-cancel-replace-request"], // this batch, then existing entries
+    relatedArticles: ["the-life-of-an-order-in-fix", "anatomy-of-a-fix-message-and-the-session-layer"], // the part, the field basics
+    sources: [ // every label says what the page says and when it was read
+      { label: "FIXimate (Orchimate), ExecTypeCodeSet (read 2026-11-16): 0, 3 to 9, A to E added in FIX 4.1 and 4.2; F Trade, G Trade Correct, H Trade Cancel, I Order Status added in FIX 4.3; J to N later", href: "https://orchimate.org/fixtrading/fix-latest/codeSets/ExecTypeCodeSet" }, // codes and pedigree
+      { label: "FIX Latest, Trade, as of EP284, November 2023, section 3.1.2 (read 2026-11-16): execution information not combined with other state changes; Restated with ExecRestatementReason; Trade Cancel and Trade Correct with ExecRefID; one cannot cancel a cancel", href: "https://fixtrading.org/packages/fix-latest-specification-trade/" }, // rules
+      { label: "FIX 4.4 specification with errata 20030618, volume 6, field 20 (read 2026-11-16): ExecTransType no longer used as of FIX 4.3", href: "https://fixtrading.org/packages/fix-4-4-specification-with-20030618-errata/" }, // history
+      { label: "B3, EntryPoint message specification 2.40, 27 November 2025 (read 2026-11-16): ExecType 0, 4, 5 (Replace), 8, C, D, F, H; ExecRestatementReason 100 to 102 for cancels on disconnection and logout", href: "https://www.b3.com.br/data/files/A7/77/7B/FE/5789491029BEEC39AC094EA8/EntryPointMessageSpecs.pdf" }, // a venue's values
+    ], // four sources, one object per line
+  },
+  {
+    // OrderCancelReplaceRequest (new entry): the FIX message that modifies an open order, with ClOrdID chaining.
+    slug: "order-cancel-replace-request", // the /glossary/order-cancel-replace-request address
+    headword: "OrderCancelReplaceRequest (35=G)", // the message name and MsgType
+    kind: "term", // a protocol message
+    domains: ["enterprise-networking", "programming"], // protocol message used by implementers
+    aliases: ["cancel/replace", "cancel replace", "order modification request", "35=g", "origclordid", "modificação de ordem"], // names, MsgType, the chaining field, Portuguese
+    relatedTerms: ["ord-status", "exec-type", "new-order-single", "execution-report", "idempotent"], // this batch, then existing entries
+    relatedArticles: ["the-life-of-an-order-in-fix", "retries-timeouts-and-idempotency"], // the part, idempotency
+    sources: [ // every label says what the page says and when it was read
+      { label: "FIX Latest, Trade, as of EP284, November 2023, sections 3.1.5 to 3.1.7 (read 2026-11-16): immediate response required; Pending Replace recommended; optimistic chaining by the sender, pessimistic by the receiver; all application fields resent; CxlRejReason 2 for fields a firm will not change", href: "https://fixtrading.org/packages/fix-latest-specification-trade/" }, // rules
+      { label: "FIXimate (Orchimate), OrigClOrdID (41) (read 2026-11-16): ClOrdID of the previous order, not the initial order of the day", href: "https://orchimate.org/fixtrading/fix-latest/fields/OrigClOrdID" }, // chaining field
+      { label: "FIX Latest, Order State Changes, as of EP284, scenarios C.1.b and C.3.c (read 2026-11-16): replace of a partly filled order reported as Replaced and Partially Filled; a decrease below the filled quantity amended to it, Replaced and Filled", href: "https://fixtrading.org/packages/fix-latest-specification-order-state-changes/" }, // outcomes
+      { label: "B3, EntryPoint messaging guidelines 2.9.31, 16 December 2025, sections 6.3, 6.5 and 6.6 (read 2026-11-16): OrderQty is the total investor quantity; only changed fields need be sent; a decrease below CumQty cancels the order; priority lost on price, stop price, larger quantity, minimum quantity", href: "https://www.b3.com.br/data/files/FF/84/5F/93/DB81D8103152D4C8AC094EA8/EntryPointMessagingGuidelines.pdf" }, // a venue's dialect
+      { label: "Nasdaq, OUCH 5.0, updated October 2025, sections 2.2 and 2.4 (read 2026-11-16): a replace always gives a new time-priority timestamp; Modify keeps priority; quantity is the total for the chain", href: "https://www.nasdaqtrader.com/content/technicalsupport/specifications/TradingProducts/Ouch5.0.pdf" }, // a native protocol
+    ], // five sources, one object per line
+  },
+  {
+    // Drop copy (new entry): copies of execution reports sent to risk and back-office systems; B3's gateway rules.
+    slug: "drop-copy", // the /glossary/drop-copy address
+    headword: "drop copy", // the industry term
+    kind: "term", // an industry term
+    domains: ["enterprise-networking", "grc"], // a FIX service used for risk control
+    aliases: ["drop copies", "drop-copy", "drop copy session", "copymsgindicator", "tag 797"], // spellings, the session, the field
+    relatedTerms: ["execution-report", "fix-session", "fix-network", "b3"], // existing entries
+    relatedArticles: ["the-life-of-an-order-in-fix", "fix-networks-hubs-and-managed-connectivity"], // the part, the definition in wave 1
+    sources: [ // every label says what the page says and when it was read
+      { label: "FIXimate (Orchimate), CopyMsgIndicator (797) (read 2026-11-16): whether a message is a drop copy of another message; added in FIX 4.4", href: "https://orchimate.org/fixtrading/fix-latest/fields/CopyMsgIndicator" }, // the field
+      { label: "B3, EntryPoint messaging guidelines 2.9.31, 16 December 2025, sections 3.8 and 14.6 (read 2026-11-16): new drop copy engine in December 2021; gateways tied to matching engines, one session per gateway for the whole market; application messages rejected; PossDupFlag after failover; 10,000-message resend limit; end-of-day reset at 23:00; Message Replay with ApplID and ApplSeqNum", href: "https://www.b3.com.br/data/files/FF/84/5F/93/DB81D8103152D4C8AC094EA8/EntryPointMessagingGuidelines.pdf" }, // a venue's rules
+      { label: "B3, EntryPoint drop copy certification script, version 1.8, 25 October 2022 (read 2026-11-16): messages with 141=Y not sent in trading or drop copy sessions; ApplID checked across sessions", href: "https://www.b3.com.br/data/files/95/D6/60/2C/101148101E311E28AC094EA8/Certification-Script-EntryPoint-Derivatives-Equities-DropCopy_v1.8.pdf" }, // certification
+      { label: "CME Group, iLink functional specification (read 2026-11-16): drop copy payloads of binary iLink sessions sent in ASCII format", href: "https://cmegroupclientsite.atlassian.net/wiki/spaces/EPICSANDBOX/pages/714539039/iLink+Functional+Specification" }, // a second venue
+    ], // four sources, one object per line
+  },
+  {
+    // AllocationInstruction (new entry): the FIX message that splits a block among accounts, before or after the trade.
+    slug: "allocation-instruction", // the /glossary/allocation-instruction address
+    headword: "AllocationInstruction (35=J)", // the message name and MsgType
+    kind: "term", // a protocol message
+    domains: ["enterprise-networking", "grc"], // a FIX message used in booking controls
+    aliases: ["allocation instruction", "35=j", "block allocation", "allocationinstructionack", "35=p", "alocação de ordens"], // names, MsgTypes, Portuguese
+    relatedTerms: ["give-up", "execution-report", "clearing-house", "fix-protocol"], // this batch, then existing entries
+    relatedArticles: ["the-life-of-an-order-in-fix"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "FIX Latest, Post-Trade, as of EP284, November 2023, chapters 3 and 4 (read 2026-11-16): pre-allocated orders, pre-trade and post-trade allocation; AllocStatus 3 Received, 0 Accepted, 1 block-level and 2 account-level reject; average or executed price (Japan); Ready-To-Book; fragmentation; AllocationReport; Confirmation and ConfirmationAck", href: "https://fixtrading.org/packages/fix-latest-specification-post-trade/" }, // the standard
+      { label: "FIXimate (Orchimate), AllocTypeCodeSet (read 2026-11-16): 1 Calculated, 2 Preliminary, 5 Ready-To-Book, 17 Give-up, 18 Take-up and others", href: "https://orchimate.org/fixtrading/fix-latest/codeSets/AllocTypeCodeSet" }, // purposes
+      { label: "B3, EntryPoint messaging guidelines 2.9.31, 16 December 2025, section 14.2 (read 2026-11-16): an Allocation Instruction tied to a trade can mimic automatic blocking of an options position", href: "https://www.b3.com.br/data/files/FF/84/5F/93/DB81D8103152D4C8AC094EA8/EntryPointMessagingGuidelines.pdf" }, // a venue's use
+      { label: "B3, iMercado, Captura, Alocação e Repasse, catálogo de mensagens, version 1.10, 25 April 2019 (read 2026-11-16): B3's own XML messages imb.500.01 to imb.522.01 for allocation by the asset manager", href: "https://www.b3.com.br/data/files/48/25/0F/83/0E6CA610F33E5CA6AC094EA8/Catalogo_de_Mensagens_iMercado_Alocacao_v.1.10.pdf" }, // Brazil's route
+    ], // four sources, one object per line
+  },
+  {
+    // Give-up (new entry): passing a trade to the firm that will carry the position, which takes it up or refuses.
+    slug: "give-up", // the /glossary/give-up address
+    headword: "give-up", // the industry term
+    kind: "term", // an industry term
+    domains: ["grc"], // a clearing and booking arrangement (no finance domain exists)
+    aliases: ["give up", "trade give-up", "take-up", "take up", "give-up agent"], // spellings, the counterpart, the role
+    relatedTerms: ["allocation-instruction", "clearing-house", "direct-market-access", "b3"], // this batch, then existing entries
+    relatedArticles: ["the-life-of-an-order-in-fix", "brazil-bmf-bovespa-b3-and-electronic-access"], // the part, B3 access models
+    sources: [ // every label says what the page says and when it was read
+      { label: "B3, EntryPoint messaging guidelines 2.9.31, 16 December 2025, section 13.2 (read 2026-11-16): trade given up to the firm that carries the position, pre-trade through the source account in Account (1) or post-trade on the B3 services website; take-up firm accepts or rejects; example GHI, DEF, accounts 1234 and 9898; DMA orders need a valid account or give-up link", href: "https://www.b3.com.br/data/files/FF/84/5F/93/DB81D8103152D4C8AC094EA8/EntryPointMessagingGuidelines.pdf" }, // a venue's rules
+      { label: "FIXimate (Orchimate), AllocTypeCodeSet (read 2026-11-16): 17 Give-up, 18 Take-up, 19 Refuse take-up, 24 Approve give-up, 25 Approve take-up", href: "https://orchimate.org/fixtrading/fix-latest/codeSets/AllocTypeCodeSet" }, // FIX vocabulary
+      { label: "FIXimate (Orchimate), AllocStatusCodeSet (read 2026-11-16): 11 Pending give-up approval, 13 Pending take-up approval", href: "https://orchimate.org/fixtrading/fix-latest/codeSets/AllocStatusCodeSet" }, // FIX statuses
+      { label: "B3, EntryPoint error codes, version 1.0.35, 29 May 2026 (read 2026-11-16): 002108 Account or Give Up firm required for DMA customers; 002111 Give Up not valid for FX Spot contract", href: "https://www.b3.com.br/data/files/04/42/E9/2A/FF37E91064BF82E9AC094EA8/EntryPointErrorCodes_v1.0.35.pdf" }, // rejects
+    ], // four sources, one object per line
+  },
+  {
+    // OMS (new entry): the system of record for orders on the buy side and the sell side; what it does and who sells it.
+    slug: "order-management-system", // the /glossary/order-management-system address
+    headword: "OMS (order management system)", // acronym first, as for other acronym entries
+    kind: "acronym", // an acronym with its expansion
+    domains: ["vendors", "grc"], // sold by vendors; carries compliance checks and the order record
+    expansion: "order management system (sistema de gestão de ordens)", // the English expansion and the Portuguese term used in the drafts
+    aliases: ["oms", "order management system", "order management systems", "sistema de gestão de ordens", "sistemas de gestão de ordens"], // the bare acronym is free (grep 16/11/2026), plural forms and Portuguese
+    relatedTerms: ["execution-management-system", "smart-order-routing", "pre-trade-risk-controls", "fix-protocol", "new-order-single", "execution-report"], // this batch, then existing entries
+    relatedArticles: ["oms-and-ems-order-and-execution-management-systems", "pre-trade-risk-and-market-access-controls", "the-life-of-an-order-in-fix"], // the OMS part, the risk part and the order's-life part (wave 2)
+    sources: [ // every label says what the page says and when it was read
+      { label: "Bloomberg, Order Management System, undated web page (read 2026-11-16): AIM, a global multi-asset buy-side solution for portfolio management, trading, compliance and operations; TOMS, a sell-side solution for front-end inventory, trading, and middle- and back-office operations", href: "https://professional.bloomberg.com/products/trading/order-management-system/" }, // Bloomberg
+      { label: "Competition and Markets Authority, ION Investment Group and Fidessa, ME/6745/18, decision of 3 August 2018, published 22 August 2018 (read 2026-11-16): buy side and sell side defined; trading software segmented by asset class, trading stage and customer type; front-office software typically purchased externally", href: "https://assets.publishing.service.gov.uk/media/5b7d5c8aed915d14db8821fe/ion_fidessa_full_text_decision.pdf" }, // CMA
+      { label: "FIX Trading Community, Recommended Risk Control Guidelines, 2012 (read 2026-11-16): algorithmic orders typically delivered through a FIX interface from a third-party vendor OMS/EMS or the client's proprietary OMS; pausing an order with a pending new message to the client OMS", href: "https://fixtrading.org/download/recommended-risk-control-guidelines-2012/" }, // FIX Trading Community
+      { label: "Financial Conduct Authority, Final Notice to Citigroup Global Markets Limited, 22 May 2024 (read 2026-11-16): an erroneous basket loaded into an order management system called PTE, routed to the CitiSmart algorithmic system; order management systems that can create algorithmic orders need robust pre-trade controls", href: "https://www.fca.org.uk/publication/final-notices/citigroup-global-markets-limited-2024.pdf" }, // FCA
+      { label: "State Street Corporation, Form 8-K of 20 July 2018 and Form 8-K of 1 October 2018 (read 2026-11-16): agreement to buy Charles River Development for $2.6 billion in cash; completion on 1 October 2018", href: "https://www.sec.gov/Archives/edgar/data/93751/000009375118000430/form8-kxcharlesriversystems.htm" }, // State Street
+      { label: "SS&C Technologies, SS&C Completes Acquisition of Eze Software, exhibit 99.1, 1 October 2018 (read 2026-11-16): $1.45 billion all-cash, announced 31 July 2018; order management among Eze's products", href: "https://www.sec.gov/Archives/edgar/data/1402436/000156459018024003/ssnc-ex991_9.htm" }, // SS&C
+      { label: "FIX Trading Community, FIX Latest on Orchimate, OrdRejReasonCodeSet (read 2026-11-16): value 21, Algorithm risk threshold breached", href: "https://orchimate.org/fixtrading/fix-latest/codeSets/OrdRejReasonCodeSet" }, // FIX Trading Community
+    ], // seven sources, one object per line
+  },
+  {
+    // EMS (new entry): the trader's tool for working orders through brokers' algorithms and routers; the OEMS blend.
+    slug: "execution-management-system", // the /glossary/execution-management-system address
+    headword: "EMS (execution management system)", // acronym first; the bare alias "ems" is left out because FortiClient EMS uses the same letters on this site
+    kind: "acronym", // an acronym with its expansion
+    domains: ["vendors", "grc"], // a vendor product category used under best execution duties
+    expansion: "execution management system (sistema de gestão de execução)", // English and Portuguese
+    aliases: ["execution management system", "execution management systems", "oems", "order and execution management system", "sistema de gestão de execução", "broker-neutral ems"], // full forms, the combined OEMS, Portuguese and a common vendor phrase
+    relatedTerms: ["order-management-system", "smart-order-routing", "vwap", "implementation-shortfall", "fixatdl", "fix-protocol"], // this batch, then existing entries
+    relatedArticles: ["oms-and-ems-order-and-execution-management-systems", "pre-trade-risk-and-market-access-controls"], // the OMS part and the risk part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Bloomberg, Execution Management, undated web page (read 2026-11-16): execution management solutions including EMSX, TSOX and FXEM focus on end-to-end workflows and manage positions, portfolios and trading risk", href: "https://professional.bloomberg.com/products/trading/execution-management-system/" }, // Bloomberg
+      { label: "Competition and Markets Authority, ION Investment Group and Fidessa, decision of 3 August 2018 (read 2026-11-16): buy-side customers require execution management systems different from the tools sell-side customers need; some third parties said both buy the same product but use it differently", href: "https://assets.publishing.service.gov.uk/media/5b7d5c8aed915d14db8821fe/ion_fidessa_full_text_decision.pdf" }, // CMA
+      { label: "Virtu Financial, Annual Report on Form 10-K for 2025, filed 20 February 2026 (read 2026-11-16): Triton, a multi-asset, broker-neutral EMS, with the Algo Wheel to allocate volume between providers", href: "https://www.sec.gov/Archives/edgar/data/1592386/000159238626000009/virt-20251231.htm" }, // Virtu Financial
+      { label: "FlexTrade Systems, about, undated web page (read 2026-11-16): started in 1996; FlexTRADER described as a broker-neutral execution management trading system", href: "https://flextrade.com/about/" }, // FlexTrade
+      { label: "London Stock Exchange Group, LSEG to acquire TORA, 22 February 2022 (read 2026-11-16): TORA, founded 2004, offers an order and execution management system (OEMS) and a portfolio management system; price $325 million", href: "https://lseg.com/en/media-centre/press-releases/2022/lseg-acquire-tora" }, // LSEG
+      { label: "Raptor Trading Systems, products, undated web page (read 2026-11-16): OMEX, a multi-asset OEMS in a broker-neutral environment, with algorithmic, basket and multi-leg strategies and DMA with smart order routing", href: "https://raptortrading.com/products/" }, // Raptor Trading Systems
+      { label: "FIX Trading Community, FIXatdl 1.1 specification with errata, 21 December 2010 (read 2026-11-16): broker algorithms described for OMS and EMS screens; strategy parameters sent in StrategyParametersGrp (tags 957 to 960) or in user-defined tags", href: "https://fixtrading.org/packages/fixatdl-1-1-with-errata-20101221/" }, // FIX Trading Community
+      { label: "Staff of the US Securities and Exchange Commission, Staff Report on Algorithmic Trading in U.S. Capital Markets, 5 August 2020 (read 2026-11-16): transaction cost analysis and algo wheels used to choose brokers and algorithms; wheels can switch brokers without a human trader", href: "https://www.sec.gov/files/Algo_Trading_Report_2020.pdf" }, // SEC staff
+      { label: "Virtu Financial, Form 8-K, 1 March 2019 (read 2026-11-16): completion of the purchase of Investment Technology Group for $30.30 a share in cash", href: "https://www.sec.gov/Archives/edgar/data/1592386/000110465919012016/a19-5723_18k.htm" }, // Virtu Financial
+    ], // nine sources, one object per line
+  },
+  {
+    // Smart order routing (new entry): software that sends child orders to venues; why it exists and how rules treat it.
+    slug: "smart-order-routing", // the /glossary/smart-order-routing address
+    headword: "smart order routing", // lower case, a term of the trade
+    kind: "term", // a term of market structure
+    domains: ["vendors", "grc"], // a product feature shaped by routing and best execution rules
+    aliases: ["smart order router", "smart order routers", "smart order routing system", "roteamento inteligente de ordens", "roteador inteligente de ordens"], // the device and Portuguese; the bare "SOR" is left out because "SoR" is an alias of the statements-of-reasons entry
+    relatedTerms: ["execution-management-system", "order-management-system", "reg-nms", "mifid-ii", "direct-market-access"], // this batch, then existing entries
+    relatedArticles: ["oms-and-ems-order-and-execution-management-systems", "the-rules-that-rewired-markets-reg-ats-reg-nms-mifid-and-brazil"], // the OMS part and the rules part
+    sources: [ // every label says what the page says and when it was read
+      { label: "US Securities and Exchange Commission, Release No. 34-84528, Disclosure of Order Handling Information, 2 November 2018 (read 2026-11-16): execution algorithms and smart order routing systems decide the timing, pricing and quantity of orders routed to trading centers and divide parent orders into child orders; routing strategies hard to categorize", href: "https://www.sec.gov/files/rules/final/2018/34-84528.pdf" }, // SEC
+      { label: "FIX Trading Community, Recommended Risk Control Guidelines, 2012 (read 2026-11-16): a smart order router treated as a DMA order type, shorter execution horizon and lower latency tolerance; brokers route directed DMA orders through their SOR as a pass-through", href: "https://fixtrading.org/download/recommended-risk-control-guidelines-2012/" }, // FIX Trading Community
+      { label: "European Union, Directive 2014/65/EU (MiFID II), article 4(1)(39), 15 May 2014 (read 2026-11-16): algorithmic trading excludes any system only used to route orders to one or more trading venues", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32014L0065" }, // European Union
+      { label: "European Securities and Markets Authority, MiFID II/MiFIR review report on algorithmic trading, ESMA70-156-4572, 28 September 2021 (read 2026-11-16): stakeholders asked to differentiate pure execution algorithms and automated execution processes such as TWAP, VWAP and SOR", href: "https://www.esma.europa.eu/sites/default/files/library/esma70-156-4572_mifid_ii_final_report_on_algorithmic_trading.pdf" }, // ESMA
+    ], // four sources, one object per line
+  },
+  {
+    // VWAP (new entry): the volume-weighted average price, as benchmark and as algorithm.
+    slug: "vwap", // the /glossary/vwap address
+    headword: "VWAP (volume-weighted average price)", // acronym first
+    kind: "acronym", // an acronym with its expansion
+    domains: ["grc", "vendors"], // a best-execution benchmark and an algorithm sold by brokers and vendors
+    expansion: "volume-weighted average price (preço médio ponderado por volume)", // English and Portuguese
+    aliases: ["volume-weighted average price", "volume weighted average price", "vwap algorithm", "vwap benchmark", "preço médio ponderado por volume"], // spellings, the algorithm, the benchmark and Portuguese
+    relatedTerms: ["implementation-shortfall", "execution-management-system", "smart-order-routing", "flash-crash"], // this batch, then an existing entry
+    relatedArticles: ["oms-and-ems-order-and-execution-management-systems", "pre-trade-risk-and-market-access-controls"], // the OMS part (worked example) and the risk part (the CGML VWAP algorithm)
+    sources: [ // every label says what the page says and when it was read
+      { label: "Staff of the US Securities and Exchange Commission, Staff Report on Algorithmic Trading in U.S. Capital Markets, 5 August 2020 (read 2026-11-16): many brokers offer algorithms that provide a volume-weighted average price (VWAP), a time-weighted average price (TWAP), a minimum implementation shortfall, or a specified percentage of market volume", href: "https://www.sec.gov/files/Algo_Trading_Report_2020.pdf" }, // SEC staff
+      { label: "Financial Conduct Authority, Final Notice to Citigroup Global Markets Limited, 22 May 2024 (read 2026-11-16): $189 billion of an erroneous basket sent to a VWAP algorithm that sliced each order over the rest of the day; $1.4 billion executed before cancellation", href: "https://www.fca.org.uk/publication/final-notices/citigroup-global-markets-limited-2024.pdf" }, // FCA
+    ], // two sources, one object per line
+  },
+  {
+    // Implementation shortfall (new entry): the cost of trading against the price at the moment of decision.
+    slug: "implementation-shortfall", // the /glossary/implementation-shortfall address
+    headword: "implementation shortfall", // lower case, a term of the trade
+    kind: "term", // a measurement and an algorithm type
+    domains: ["grc", "vendors"], // a transaction cost measure and a broker algorithm
+    aliases: ["implementation shortfall algorithm", "shortfall algorithm"], // the algorithm; Portuguese practitioners keep the English term
+    relatedTerms: ["vwap", "execution-management-system", "order-management-system"], // this batch
+    relatedArticles: ["oms-and-ems-order-and-execution-management-systems"], // the OMS part, with the worked example
+    sources: [ // every label says what the page says and when it was read
+      { label: "Staff of the US Securities and Exchange Commission, Staff Report on Algorithmic Trading in U.S. Capital Markets, 5 August 2020 (read 2026-11-16): a minimum implementation shortfall algorithm minimizes the total costs of trading relative to the market price at the time a trading decision is made; institutions use transaction cost analysis to assess brokers, algorithms and venues", href: "https://www.sec.gov/files/Algo_Trading_Report_2020.pdf" }, // SEC staff
+    ], // one source
+  },
+  {
+    // FIXatdl (new entry): the FIX standard that describes broker algorithms and their parameters as XML for OMS and EMS screens.
+    slug: "fixatdl", // the /glossary/fixatdl address
+    headword: "FIXatdl", // the standard's own spelling
+    kind: "acronym", // an acronym with its expansion
+    domains: ["programming", "vendors"], // an XML schema implemented by OMS and EMS vendors
+    expansion: "FIX Algorithmic Trading Definition Language", // the standard's name
+    aliases: ["fix algorithmic trading definition language", "atdl", "fixatdl 1.1", "strategyparametersgrp", "strategy parameters group"], // the long name, the short form, the version and the FIX group it fills
+    relatedTerms: ["fix-protocol", "fix-trading-community", "new-order-single", "execution-management-system", "xml"], // existing entries, then this batch
+    relatedArticles: ["oms-and-ems-order-and-execution-management-systems", "the-fix-protocol-origins-versions-and-the-community", "reading-xml-structure"], // the OMS part, the FIX history part and the XML article
+    sources: [ // every label says what the page says and when it was read
+      { label: "FIX Trading Community, FIXatdl 1.1 specification with errata, 21 December 2010 (read 2026-11-16): approved by the GTC governance board on 2 March 2010; data contract and GUI halves; six XML schema files; a POV strategy example sent with StrategyParametersGrp tags 957 to 960 or user-defined tags; most providers identify strategies with a user-defined tag rather than TargetStrategy (847)", href: "https://fixtrading.org/packages/fixatdl-1-1-with-errata-20101221/" }, // FIX Trading Community
+      { label: "FIX Trading Community, FIX Algorithmic Trading Definition Language, undated web page (read 2026-11-16): a vendor-neutral way to describe algorithm user interfaces and parameters across order and execution management systems", href: "https://fixtrading.org/standards/fix-algorithmic-trading-definition-language/" }, // FIX Trading Community
+      { label: "FIX Trading Community, FIX Latest on Orchimate, StrategyParameterTypeCodeSet (read 2026-11-16): value 11 Percentage, 13 Boolean", href: "https://orchimate.org/fixtrading/fix-latest/codeSets/StrategyParameterTypeCodeSet" }, // FIX Trading Community
+    ], // three sources, one object per line
+  },
+  {
+    // Rule 15c3-5 (new entry): the SEC's market access rule of 2010 and its enforcement.
+    slug: "rule-15c3-5", // the /glossary/rule-15c3-5 address
+    headword: "Rule 15c3-5", // the rule's number as the SEC writes it
+    kind: "term", // a named rule
+    domains: ["grc"], // financial regulation
+    aliases: ["market access rule", "sec rule 15c3-5", "15c3-5", "regra de acesso ao mercado"], // the SEC's own short name, variants and Portuguese
+    relatedTerms: ["pre-trade-risk-controls", "naked-access", "sponsored-access", "direct-market-access", "trading-kill-switch"], // this batch, then existing entries
+    relatedArticles: ["pre-trade-risk-and-market-access-controls", "high-frequency-trading-what-it-is-and-the-dispute", "knight-capital-and-the-rollback-that-made-it-worse"], // the risk part and the two Knight Capital articles
+    sources: [ // every label says what the page says and when it was read
+      { label: "US Securities and Exchange Commission, Release No. 34-63241, Risk Management Controls for Brokers or Dealers with Market Access, 3 November 2010 (read 2026-11-16): adoption; the broker-dealer with market access is legally responsible for all trading under its MPID; the rule effectively prohibits access without pre-trade controls", href: "https://www.sec.gov/files/rules/final/2010/34-63241.pdf" }, // SEC
+      { label: "Federal Register vol. 75, 15 November 2010 (read 2026-11-16): effective 14 January 2011; compliance 14 July 2011", href: "https://www.govinfo.gov/content/pkg/FR-2010-11-15/pdf/2010-28303.pdf" }, // Federal Register
+      { label: "17 CFR 240.15c3-5, as published by the Cornell Legal Information Institute (read 2026-11-16): financial controls on credit and capital thresholds and erroneous orders; regulatory controls; direct and exclusive control; annual review and CEO certification", href: "https://www.law.cornell.edu/cfr/text/17/240.15c3-5" }, // Cornell LII
+      { label: "US Securities and Exchange Commission, press release 2013-222, 16 October 2013 (read 2026-11-16): Knight Capital pays $12 million, the SEC's first enforcement action under the market access rule", href: "https://www.sec.gov/newsroom/press-releases/2013-222" }, // SEC
+      { label: "US Securities and Exchange Commission, press release 2016-192, 2016 (read 2026-11-16): Merrill Lynch pays $12.5 million, the highest-ever SEC penalty for violations of the market access rule; limits of 5 million shares on a stock trading about 79,000 a day", href: "https://www.sec.gov/newsroom/press-releases/2016-192" }, // SEC
+      { label: "US Securities and Exchange Commission, order in the matter of Knight Capital Americas LLC, Release No. 34-70694, 16 October 2013 (read 2026-11-16): accounts not linked to firm-wide capital thresholds; controls not capable of preventing orders that exceeded pre-set capital thresholds", href: "https://www.sec.gov/files/litigation/admin/2013/34-70694.pdf" }, // SEC
+      { label: "US Securities and Exchange Commission, press release 2014-274, 2014 (read 2026-11-16): Morgan Stanley pays $4 million; a rogue trader at Rochdale Securities routed about $525 million of Apple orders; the $200 million limit raised to $500 million and then $750 million", href: "https://www.sec.gov/newsroom/press-releases/2014-274" }, // SEC
+    ], // seven sources, one object per line
+  },
+  {
+    // Naked access (new entry): sponsored access without pre-trade filters, and its end in the US.
+    slug: "naked-access", // the /glossary/naked-access address
+    headword: "naked access", // the trade's own jargon
+    kind: "jargon", // informal term later used by the regulator
+    domains: ["grc"], // financial regulation
+    aliases: ["unfiltered access", "naked sponsored access", "acesso nu", "acesso sem filtro"], // the SEC's alternative term and Portuguese
+    relatedTerms: ["sponsored-access", "direct-market-access", "rule-15c3-5", "pre-trade-risk-controls"], // existing entries, then this batch
+    relatedArticles: ["pre-trade-risk-and-market-access-controls"], // the risk part
+    sources: [ // every label says what the page says and when it was read
+      { label: "US Securities and Exchange Commission, Release No. 34-63241, 3 November 2010 (read 2026-11-16): unfiltered or naked access is a subset of sponsored access where pre-trade filters or controls are not applied; reported estimates of 38% of US equity volume (Aite Group, cited in the press) and a commenter's range of 10% to 38%; Rule 15c3-5 effectively prohibits any access without pre-trade controls", href: "https://www.sec.gov/files/rules/final/2010/34-63241.pdf" }, // SEC
+    ], // one source
+  },
+  {
+    // Pre-trade risk controls (new entry): the checks between an order and the market, by rule and by industry practice.
+    slug: "pre-trade-risk-controls", // the /glossary/pre-trade-risk-controls address
+    headword: "pre-trade risk controls", // lower case, a term of the trade
+    kind: "term", // a term of market practice and regulation
+    domains: ["grc", "enterprise-networking"], // regulation, enforced in gateways on the order path
+    aliases: ["pre-trade risk control", "pre-trade checks", "pre-trade limits", "price collar", "maximum order size", "controle de risco pré-negociação", "controles pré-negociação", "banda de preço"], // singular, common names of individual checks and Portuguese
+    relatedTerms: ["rule-15c3-5", "trading-kill-switch", "cancel-on-disconnect", "b3-line", "fat-finger", "throttling", "direct-market-access"], // this batch, then existing entries
+    relatedArticles: ["pre-trade-risk-and-market-access-controls", "oms-and-ems-order-and-execution-management-systems"], // the risk part and the OMS part
+    sources: [ // every label says what the page says and when it was read
+      { label: "European Union, Commission Delegated Regulation (EU) 2017/589 (RTS 6), 19 July 2016, article 15 (read 2026-11-16): price collars, maximum order values, maximum order volumes and maximum message limits for all financial instruments; repeated automated execution throttles", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32017R0589" }, // European Union
+      { label: "FIA, Best Practices for Automated Trading Risk Controls and System Safeguards, July 2024 (read 2026-11-16): localized pre-trade risk controls, not credit controls, as the primary tools; maximum order size, maximum intraday position, price tolerance", href: "https://fia.org/sites/default/files/2024-07/FIA_WP_AUTOMATED%20TRADING%20RISK%20CONTROLS_FINAL_0.pdf" }, // FIA
+      { label: "FIX Trading Community, Recommended Risk Control Guidelines, 2012 (read 2026-11-16): accept, pause and reject; symbology, order quantity, notional value, ADV and price limit checks; neither party should entirely rely on its counterparty", href: "https://fixtrading.org/download/recommended-risk-control-guidelines-2012/" }, // FIX Trading Community
+      { label: "National Futures Association, Interpretive Notice 9046, 21 June 2002, revised 12 December 2006 (read 2026-11-16): automated order-routing systems should allow pre-execution limits by commodity, quantity, order type or margin and block orders that exceed them", href: "https://www.nfa.futures.org/rulebook/rules.aspx?RuleID=9046&Section=9" }, // NFA
+      { label: "B3, Manual de Procedimentos Operacionais de Negociação, 1 July 2026 (read 2026-11-16): B3's pre-trade risk tool compulsory for every offer; message control, market protection, throttle, self-trade prevention, cancel on disconnect", href: "https://www.b3.com.br/data/files/CF/D0/64/95/753D0A105BF9020AAC094EA8/MPO%20de%20Negociacao%20da%20B3.pdf" }, // B3
+      { label: "European Union, Commission Delegated Regulation (EU) 2017/584 (RTS 7), articles 18 and 20 (read 2026-11-16): trading venues' kill functionality and pre-trade controls on members' orders", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32017R0584" }, // European Union
+      { label: "17 CFR 240.15c3-5, as published by the Cornell Legal Information Institute (read 2026-11-16): pre-trade financial and regulatory controls required of broker-dealers with market access", href: "https://www.law.cornell.edu/cfr/text/17/240.15c3-5" }, // Cornell LII
+      { label: "US Securities and Exchange Commission, press release 2016-192, 2016 (read 2026-11-16): Merrill Lynch limits set at levels that did not bind", href: "https://www.sec.gov/newsroom/press-releases/2016-192" }, // SEC
+      { label: "US Securities and Exchange Commission, press release 2015-133, 2015 (read 2026-11-16): Goldman Sachs options price checks unreasonably wide before the opening; an employee lifted message-rate circuit breaker blocks", href: "https://www.sec.gov/newsroom/press-releases/2015-133" }, // SEC
+      { label: "Financial Conduct Authority, Final Notice to Citigroup Global Markets Limited, 22 May 2024 (read 2026-11-16): no hard block on the whole basket; order management systems that can create algorithmic orders need robust pre-trade controls", href: "https://www.fca.org.uk/publication/final-notices/citigroup-global-markets-limited-2024.pdf" }, // FCA
+    ], // ten sources, one object per line
+  },
+  {
+    // Trading kill switch (new entry): the emergency control that blocks new orders and cancels working ones; the bare alias "kill switch" belongs to the internet shutdown entry.
+    slug: "trading-kill-switch", // the /glossary/trading-kill-switch address
+    headword: "kill switch (trading)", // disambiguated from the existing "kill switch" alias of the shutdown entry
+    kind: "term", // a term of market practice and regulation
+    domains: ["grc", "ops-culture"], // a regulated control and an operational last resort
+    aliases: ["kill functionality", "trading kill switch", "exchange kill switch", "kill switch de negociação"], // RTS 6 and RTS 7's term, variants and Portuguese usage
+    relatedTerms: ["pre-trade-risk-controls", "cancel-on-disconnect", "rule-15c3-5", "b3-line"], // this batch
+    relatedArticles: ["pre-trade-risk-and-market-access-controls", "knight-capital-and-the-rollback-that-made-it-worse"], // the risk part and the Knight Capital article
+    sources: [ // every label says what the page says and when it was read
+      { label: "European Union, Commission Delegated Regulation (EU) 2017/589 (RTS 6), article 12 and recital (read 2026-11-16): an investment firm shall be able to cancel immediately, as an emergency measure, any or all of its unexecuted orders on any or all trading venues, and should know which algorithms, traders or clients are responsible for an order", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32017R0589" }, // European Union
+      { label: "European Union, Commission Delegated Regulation (EU) 2017/584 (RTS 7), article 18 (read 2026-11-16): trading venues able to operate a kill functionality on a member's or sponsored access client's orders; policies on members' own kill functionality", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32017R0584" }, // European Union
+      { label: "FIA, Best Practices for Automated Trading Risk Controls and System Safeguards, July 2024, section 1.5 (read 2026-11-16): a kill switch immediately disables all trading activity for a participant, preventing new orders and cancelling working ones; a last resort that may be redundant where pre-trade controls are layered; an automated trader should not override a broker's kill switch", href: "https://fia.org/sites/default/files/2024-07/FIA_WP_AUTOMATED%20TRADING%20RISK%20CONTROLS_FINAL_0.pdf" }, // FIA
+      { label: "CME Group, Risk Management Services, client systems wiki, undated (read 2026-11-16): the CME Kill Switch tool lets risk administrators immediately block all new order entry and cancel all working orders", href: "https://cmegroupclientsite.atlassian.net/wiki/spaces/EPICSANDBOX/pages/457412195/Risk+Management+Services" }, // CME Group
+      { label: "US Securities and Exchange Commission, notice of filing of NYSE proposed Rule 7.19, Federal Register, 17 December 2019 (read 2026-11-16): optional pre-trade risk controls with automated breach actions including Cancel and Block", href: "https://www.govinfo.gov/content/pkg/FR-2019-12-17/html/2019-27082.htm" }, // SEC / NYSE
+      { label: "B3, Manual de Procedimentos Operacionais de Negociação, 1 July 2026 (read 2026-11-16): mass cancel of a connection's or client's offers, after which B3 may block and unblock the connection or client identifier", href: "https://www.b3.com.br/data/files/CF/D0/64/95/753D0A105BF9020AAC094EA8/MPO%20de%20Negociacao%20da%20B3.pdf" }, // B3
+      { label: "FIX Trading Community, FIX Latest on Orchimate, OrderMassCancelRequest (read 2026-11-16): MsgType q, requests cancellation of all remaining quantity of a group of orders matching criteria", href: "https://orchimate.org/fixtrading/fix-latest/messages/OrderMassCancelRequest" }, // FIX Trading Community
+    ], // seven sources, one object per line
+  },
+  {
+    // Cancel on disconnect (new entry): automatic cancellation of resting orders when a session drops; defaults differ by exchange.
+    slug: "cancel-on-disconnect", // the /glossary/cancel-on-disconnect address
+    headword: "cancel on disconnect", // the exchanges' term, lower case
+    kind: "term", // a term of exchange functionality
+    domains: ["enterprise-networking", "grc"], // triggered by session loss on the network, required or offered as a risk control
+    aliases: ["cancel-on-disconnect", "cancelamento automático por desconexão", "cancelamento por desconexão"], // hyphenated form and B3's Portuguese
+    relatedTerms: ["trading-kill-switch", "pre-trade-risk-controls", "fix-session"], // this batch, then an existing entry
+    relatedArticles: ["pre-trade-risk-and-market-access-controls", "anatomy-of-a-fix-message-and-the-session-layer"], // the risk part and the session-layer part
+    sources: [ // every label says what the page says and when it was read
+      { label: "CME Group, Cancel on Disconnect, client systems wiki, undated (read 2026-11-16): monitors iLink for involuntary lost connections and cancels resting orders except GTC and GTD; mandatory across iLink sessions with one exception; no charge; Test Request after a silent heartbeat interval, stale connection if no reply; not all orders may be cancelled in a no-cancel period", href: "https://cmegroupclientsite.atlassian.net/wiki/spaces/EPICSANDBOX/pages/457216487/Cancel+on+Disconnect" }, // CME Group
+      { label: "B3, Manual de Procedimentos Operacionais de Negociação, 1 July 2026 (read 2026-11-16): cancelamento automático por desconexão with four options, default not to cancel; a reconnection interval set in milliseconds", href: "https://www.b3.com.br/data/files/CF/D0/64/95/753D0A105BF9020AAC094EA8/MPO%20de%20Negociacao%20da%20B3.pdf" }, // B3
+      { label: "FIA, Best Practices for Automated Trading Risk Controls and System Safeguards, July 2024, section 1.4 (read 2026-11-16): a best-effort attempt to cancel resting orders when the exchange detects a lost connection; should be optional", href: "https://fia.org/sites/default/files/2024-07/FIA_WP_AUTOMATED%20TRADING%20RISK%20CONTROLS_FINAL_0.pdf" }, // FIA
+    ], // three sources, one object per line
+  },
+  {
+    // LiNe (new entry): B3's compulsory pre-trade risk system and its measures.
+    slug: "b3-line", // the /glossary/b3-line address; "line" alone is too common a word for a slug
+    headword: "LiNe (B3)", // B3's own spelling, with the exchange named
+    kind: "term", // a product name
+    domains: ["grc", "vendors"], // a risk control product run by the exchange
+    aliases: ["line 5", "line 5.0", "line trading", "line clearing", "entrypoint line", "spci", "spvi", "tmoc", "tmov", "limites de pré-negociação b3"], // versions, components, its measures and Portuguese
+    relatedTerms: ["b3", "puma-trading-system", "pre-trade-risk-controls", "sponsored-access", "direct-market-access"], // existing entries, then this batch
+    relatedArticles: ["pre-trade-risk-and-market-access-controls", "brazil-bmf-bovespa-b3-and-electronic-access"], // the risk part and the Brazil part
+    sources: [ // every label says what the page says and when it was read
+      { label: "B3, LiNe Trading, undated web page (read 2026-11-16): integrated with PUMA; participants set pre-trade limits whatever the access (DMA, desk or adviser); TMOC/TMOV, SPCI/SPVI and STD checked by the Trading risk centres before the matching core; the Trading centre in the offer's critical path", href: "https://b3.com.br/pt_br/solucoes/plataformas/gestao-de-risco/line-5/line-trading/" }, // B3
+      { label: "B3, LiNe Clearing, undated web page (read 2026-11-16): SPVD, SDP, SFD, RMKT and RMKTN evaluated after offers reach the matching core", href: "https://b3.com.br/pt_br/solucoes/plataformas/gestao-de-risco/line-5/line-clearing/" }, // B3
+      { label: "B3, LiNe, Manual Conceitual 3.12, 24 July 2026 (read 2026-11-16): the SPCI and SPVI formulas and the DOLF21 example; B3's per-instrument limit; LiNe does not replace all other risk management", href: "https://www.b3.com.br/data/files/28/14/BC/A8/D049F91094DCD8F9AC094EA8/LiNe%20-%20Manual%20Conceitual_3.12.pdf" }, // B3
+      { label: "B3, Manual de Procedimentos Operacionais de Negociação, 1 July 2026 (read 2026-11-16): use of B3's pre-trade risk tool compulsory for every offer; measures B3 may take on misuse, including blocking high-frequency connections not attached to it", href: "https://www.b3.com.br/data/files/CF/D0/64/95/753D0A105BF9020AAC094EA8/MPO%20de%20Negociacao%20da%20B3.pdf" }, // B3
+      { label: "B3, Ofício Circular 048/2023-PRE, 6 April 2023 (read 2026-11-16): fines for repeated breaches of client limits, including the LiNe pre-trade residual risk limit", href: "https://www.b3.com.br/data/files/5C/94/06/8A/5375781064456178AC094EA8/OC%20048-2023%20PRE%20Reincid%C3%AAncia%20de%20Viola%C3%A7%C3%B5es%20(PT).pdf" }, // B3
+    ], // five sources, one object per line
+  },
+  {
+    // glbp (new entry, redundancy series part 374, agent F, 2026-11-16): facts from the redundancy-f corpus.
+    slug: "glbp", // the /glossary/glbp address
+    headword: "GLBP", // the term as engineers write it
+    kind: "acronym", // spelled out in expansion
+    domains: ["enterprise-networking", "vendors"], // where the term is used
+    expansion: "Gateway Load Balancing Protocol", // the spelled-out form
+    aliases: ["gateway load balancing protocol", "active virtual gateway", "active virtual forwarder"], // checked absent from slugs, headwords and aliases on 2026-11-16
+    relatedTools: ["vrrp-timer-calculator", "oui-lookup"], // existing tools that compute or decode it
+    relatedArticles: ["default-gateway-redundancy-vrrpv3-glbp-and-anycast-gateways", "first-hop-redundancy-vrrp-and-hsrp", "arp-and-mac-addresses"], // the series part that teaches it first, then existing articles
+    relatedTerms: ["vrrp", "arp", "gratuitous-arp", "mac", "failover", "anycast-gateway", "object-tracking"], // existing entries and this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "Cisco, First Hop Redundancy Protocols Configuration Guide, Configuring GLBP, Cisco IOS XE 16, updated 3 June 2026, read through a fetch tool (read 2026-11-16): one active virtual gateway elected by priority, up to four virtual forwarders per group, hellos every 3 seconds to 224.0.0.102 on UDP 3222, redirect timer 600 s, secondary hold time 14,400 s, AVG preemption off and forwarder preemption on with a 30-second delay, weighting and tracking; Enhanced Object Tracking not usable with GLBP in SSO mode", href: "https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/ipapp_fhrp/configuration/xe-16/fhp-xe-16-book/fhp-glbp.html" },
+      { label: "Cisco, Nexus 7000 Series NX-OS Unicast Routing Configuration Guide 8.x, Configuring GLBP, updated 20 July 2026, read through a fetch tool (read 2026-11-16): default settings table (hello 3 s, hold 10 s, round robin, preemption disabled, priority 100, redirect 600 s, forwarder timeout 14400 s, forwarder preemption delay 30 s, weighting 100; the configuration text gives 14,440 s); round-robin, weighted and host-dependent methods, round robin the default for IPv4; a member below the lower weighting threshold is no longer an active virtual forwarder; the recommendation not to configure more than one first-hop redundancy protocol on the same interface", href: "https://www.cisco.com/c/en/us/td/docs/switches/datacenter/nexus7000/sw/unicast/config/cisco_nexus7000_unicast_routing_config_guide_8x/configuring_glbp.html" },
+      { label: "RFC 9568, Virtual Router Redundancy Protocol (VRRP) Version 3 for IPv4 and IPv6, April 2024, section 4.2 (read 2026-11-16): VRRP shares load with two virtual routers and half of the hosts configured with each gateway, leaving the details of load balancing out of scope", href: "https://www.rfc-editor.org/rfc/rfc9568.txt" },
+    ], // 3 sources, one object per line
+  },
+  {
+    // object-tracking (new entry, redundancy series part 374, agent F, 2026-11-16): facts from the redundancy-f corpus.
+    slug: "object-tracking", // the /glossary/object-tracking address
+    headword: "object tracking", // the term as engineers write it
+    kind: "term", // a defined networking term
+    domains: ["enterprise-networking"], // where the term is used
+    aliases: ["enhanced object tracking", "track object", "tracked object", "vrrp tracking", "priority decrement", "rastreamento de objetos"], // checked absent from slugs, headwords and aliases on 2026-11-16
+    relatedTools: ["vrrp-timer-calculator"], // existing tools that compute or decode it
+    relatedArticles: ["default-gateway-redundancy-vrrpv3-glbp-and-anycast-gateways", "first-hop-redundancy-vrrp-and-hsrp", "bfd-when-a-link-is-up-and-dead", "brazil-bmf-bovespa-b3-and-electronic-access"], // the series part that teaches it first, then existing articles
+    relatedTerms: ["vrrp", "glbp", "bfd", "failover", "default-route", "single-point-of-failure"], // existing entries and this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "Juniper Networks, Junos OS High Availability User Guide, published 15 November 2026, Configuring VRRP Route Tracking and Configuring a Logical Interface to Be Tracked for a VRRP Group (read 2026-11-16): up to 10 tracked logical interfaces per group, the sum of priority costs at most the configured priority, a priority hold time against flapping, priority zero allowed since Release 15.1, the example of priority 200 with three routes at cost 5 against 195", href: "https://www.juniper.net/documentation/us/en/software/junos/high-availability/high-availability.pdf" },
+      { label: "Nokia, 7750 SR Router Configuration Guide, Release 22.2.R1, VRRP priority control policy delta in-use priority limit (read 2026-11-16): delta events subtract from the in-use priority, explicit events set it, the lowest explicit value wins, and the delta floor of 1 by default keeps delta events from disabling the instance", href: "https://infocenter.nokia.com/public/7750SR222R1A/topic/com.nokia.Router_Configuration_Guide/vrrp_priority_c-ai9exj5xux.html" },
+      { label: "Fortinet, FortiOS 8.0.0 Administration Guide, VRRP failover (read 2026-11-16): up to two monitored destination addresses; an unreachable destination stops the primary's advertisements, or with vrdst-priority makes it advertise a lower priority", href: "https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide/237072/vrrp-failover" },
+      { label: "keepalived.conf(5), Keepalived Configuration's Manual, master branch (read 2026-11-16): vrrp_script weight -253 to 253, default 0 meaning a fault state after the configured failures; interval 1 second by default", href: "https://raw.githubusercontent.com/acassen/keepalived/master/doc/man/man5/keepalived.conf.5.in" },
+      { label: "Cisco, First Hop Redundancy Protocols Configuration Guide, Configuring HSRP, Cisco IOS XE 16, updated 3 June 2026, read through a fetch tool (read 2026-11-16): the priority falls by 10 by default when a tracked object goes down, cumulatively", href: "https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/ipapp_fhrp/configuration/xe-16/fhp-xe-16-book/fhp-hsrp.html" },
+      { label: "B3, Manual de Acesso à Infraestrutura Tecnológica da B3, version 8.5, 13 February 2026, section 3.2 (read 2026-11-16): participants' edge routers must support a first-hop redundancy protocol and Feature Track", href: "https://b3.com.br/data/files/B9/F0/1F/4F/DC7CF91094DCD8F9AC094EA8/2026%20-%20Manual%20de%20Acesso%20a%20Infraestrutura%20Tecnologica%20da%20B3.pdf" },
+    ], // 6 sources, one object per line
+  },
+  {
+    // anycast-gateway (new entry, redundancy series part 374, agent F, 2026-11-16): facts from the redundancy-f corpus.
+    slug: "anycast-gateway", // the /glossary/anycast-gateway address
+    headword: "anycast gateway", // the term as engineers write it
+    kind: "term", // a defined networking term
+    domains: ["enterprise-networking", "cloud"], // where the term is used
+    aliases: ["distributed anycast gateway", "anycast irb", "anycast gateway mac", "virtual gateway address", "varp", "virtual arp", "gateway anycast"], // checked absent from slugs, headwords and aliases on 2026-11-16
+    relatedTools: ["oui-lookup", "vrrp-timer-calculator"], // existing tools that compute or decode it
+    relatedArticles: ["default-gateway-redundancy-vrrpv3-glbp-and-anycast-gateways", "layer-2-redundancy-lag-mlag-and-spanning-tree", "first-hop-redundancy-vrrp-and-hsrp", "anycast"], // the series part that teaches it first, then existing articles
+    relatedTerms: ["evpn", "irb", "evpn-multihoming", "vxlan", "vrrp", "anycast", "arp"], // existing entries and this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "RFC 9135, Integrated Routing and Bridging in Ethernet VPN (EVPN), October 2021, Proposed Standard, sections 1, 4.1 and 7 (read 2026-11-16): the same anycast gateway IP and MAC on every PE recommended over per-PE MACs aliased by the Default Gateway extended community; auto-derivation from 00-00-5E-00-01-VRID with VRID 1 by default only without collision; hosts need not refresh their gateway entry after a move", href: "https://www.rfc-editor.org/rfc/rfc9135.txt" },
+      { label: "Nokia, SR Linux R24.7 EVPN Guide, EVPN for Layer 3 (read 2026-11-16): anycast-gw IRB subinterfaces with the same IP and MAC on all leaves of a broadcast domain, virtual-router-id 1 by default, duplicate address detection skipped for the anycast address", href: "https://documentation.nokia.com/srlinux/24-7/books/evpn-guide/evpn-vxlan-tunnels-layer-3.html" },
+      { label: "Juniper Networks, Using a Default Layer 3 Gateway to Route Traffic in an EVPN-VXLAN Overlay Network (read 2026-11-16): a virtual gateway address auto-generates 00:00:5e:00:01:01 or 00:00:5e:00:02:01; the same VMAC on every IRB with the same VGA", href: "https://www.juniper.net/documentation/us/en/software/junos/evpn-vxlan/topics/concept/mx-series-default-gateway-inter-vn-traffic.html" },
+      { label: "Juniper Networks, Understanding the MAC Addresses For a Default Virtual Gateway in an EVPN-VXLAN or EVPN-MPLS Overlay Network (read 2026-11-16): in centrally routed overlays, an ARP reply sourced from the IRB MAC leaves intermediate switches flooding unknown unicast to the virtual MAC", href: "https://www.juniper.net/documentation/us/en/software/junos/evpn/topics/concept/evpn-vxlan-mac-virtual-gateway.html" },
+      { label: "Fortinet, FortiOS 8.0.0 Administration Guide, EVPN support for VXLAN Anycast gateway and type-5 routing (read 2026-11-16): all leaf switches serving a VLAN share the virtual default gateway IP and MAC, virtual-mac-vrid 1 to 255", href: "https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide/170632/evpn-support-for-vxlan-anycast-gateway-and-type-5-routing-new" },
+      { label: "Arista Networks, EOS 4.37.0F User Manual, VRRP and VARP, read through a fetch tool (read 2026-11-16): VARP lets every switch answer ARP for a shared router address with one virtual MAC never used as a source, gratuitous ARP every 30 s by default, preferred over VRRP with MLAG", href: "https://www.arista.com/en/um-eos/eos-vrrp-and-varp" },
+    ], // 6 sources, one object per line
+  },
+  {
+    // evpn (new entry, redundancy series part 374, agent F, 2026-11-16): facts from the redundancy-f corpus.
+    slug: "evpn", // the /glossary/evpn address
+    headword: "EVPN", // the term as engineers write it
+    kind: "acronym", // spelled out in expansion
+    domains: ["enterprise-networking", "isp-telecom"], // where the term is used
+    expansion: "Ethernet virtual private network", // the spelled-out form
+    aliases: ["ethernet vpn", "ethernet virtual private network", "bgp evpn", "evpn-vxlan", "evpn-mpls"], // checked absent from slugs, headwords and aliases on 2026-11-16
+    relatedTools: ["lacp-hash-and-state-reader"], // existing tools that compute or decode it
+    relatedArticles: ["layer-2-redundancy-lag-mlag-and-spanning-tree", "default-gateway-redundancy-vrrpv3-glbp-and-anycast-gateways", "mpls-primer", "bgp-primer"], // the series part that teaches it first, then existing articles
+    relatedTerms: ["evpn-multihoming", "irb", "anycast-gateway", "vxlan", "mpls", "bgp", "mlag"], // existing entries and this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "RFC 7432, BGP MPLS-Based Ethernet VPN, February 2015, Proposed Standard, updated by RFC 8584, 9161, 9572, 9573 and 9746, sections 4, 10.1 and 15.1 (read 2026-11-16): MAC learning between PEs in the control plane through Multiprotocol BGP rather than in the data plane, the Default Gateway extended community, MAC mobility with sequence numbers and duplicate detection after N = 5 moves in M = 180 s, after which the PE alerts the operator and stops advertising the MAC", href: "https://www.rfc-editor.org/rfc/rfc7432.txt" },
+      { label: "RFC 8365, A Network Virtualization Overlay Solution Using Ethernet VPN (EVPN), March 2018 (read 2026-11-16): EVPN over VXLAN and NVGRE", href: "https://www.rfc-editor.org/rfc/rfc8365.txt" },
+      { label: "RFC 9135, Integrated Routing and Bridging in Ethernet VPN (EVPN), October 2021 (read 2026-11-16): routing on every PE instead of a centralized gateway, symmetric and asymmetric IRB, the anycast gateway", href: "https://www.rfc-editor.org/rfc/rfc9135.txt" },
+      { label: "RFC 9161, Operational Aspects of Proxy ARP/ND in Ethernet Virtual Private Networks, January 2022 (read 2026-11-16): proxy ARP and ND reduce or suppress the flooding of address resolution", href: "https://www.rfc-editor.org/rfc/rfc9161.txt" },
+      { label: "RFC 9136, IP Prefix Advertisement in Ethernet VPN (EVPN), October 2021, Proposed Standard (read 2026-11-16): the IP Prefix route that carries IP prefixes in EVPN", href: "https://www.rfc-editor.org/rfc/rfc9136.txt" },
+    ], // 5 sources, one object per line
+  },
+  {
+    // irb (new entry, redundancy series part 374, agent F, 2026-11-16): facts from the redundancy-f corpus.
+    slug: "irb", // the /glossary/irb address
+    headword: "IRB", // the term as engineers write it
+    kind: "acronym", // spelled out in expansion
+    domains: ["enterprise-networking", "isp-telecom"], // where the term is used
+    expansion: "Integrated routing and bridging", // the spelled-out form
+    aliases: ["integrated routing and bridging", "symmetric irb", "asymmetric irb", "evpn irb", "irb interface"], // checked absent from slugs, headwords and aliases on 2026-11-16
+    relatedTools: ["routing-table-explainer"], // existing tools that compute or decode it
+    relatedArticles: ["default-gateway-redundancy-vrrpv3-glbp-and-anycast-gateways", "layer-2-redundancy-lag-mlag-and-spanning-tree", "vlans-and-8021q-trunking"], // the series part that teaches it first, then existing articles
+    relatedTerms: ["evpn", "anycast-gateway", "vrf", "vxlan", "evpn-multihoming"], // existing entries and this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "RFC 9135, Integrated Routing and Bridging in Ethernet VPN (EVPN), October 2021, Proposed Standard, sections 1, 4, 4.1 and 4.2 (read 2026-11-16): IRB on each PE to avoid backhauling to a centralized gateway; symmetric IRB with MAC and IP lookups on both PEs and TTL decremented twice; asymmetric IRB with three lookups at the ingress, ARP entries for remote hosts and TTL decremented once; a trade-off between scale and control plane simplicity; both modes coexisting, the egress PE choosing by the Label2 field and the IP-VRF Route Target; non-anycast addresses on IRB interfaces for ping and traceroute", href: "https://www.rfc-editor.org/rfc/rfc9135.txt" },
+      { label: "Nokia, SR Linux R24.7 EVPN Guide, EVPN for Layer 3 (read 2026-11-16): anycast-gw IRB subinterfaces on leaf nodes", href: "https://documentation.nokia.com/srlinux/24-7/books/evpn-guide/evpn-vxlan-tunnels-layer-3.html" },
+      { label: "Juniper Networks, Using a Default Layer 3 Gateway to Route Traffic in an EVPN-VXLAN Overlay Network (read 2026-11-16): IRB interfaces as layer 3 gateways with a virtual gateway address", href: "https://www.juniper.net/documentation/us/en/software/junos/evpn-vxlan/topics/concept/mx-series-default-gateway-inter-vn-traffic.html" },
+    ], // 3 sources, one object per line
+  },
+  {
+    // graceful-restart (new entry, redundancy series part 375, agent F, 2026-11-16): facts from the redundancy-f corpus.
+    slug: "graceful-restart", // the /glossary/graceful-restart address
+    headword: "graceful restart", // the term as engineers write it
+    kind: "term", // a defined networking term
+    domains: ["enterprise-networking", "isp-telecom"], // where the term is used
+    aliases: ["nonstop forwarding", "non-stop forwarding", "graceful restart helper", "gr helper", "helper mode", "long-lived graceful restart", "llgr"], // checked absent from slugs, headwords and aliases on 2026-11-16
+    relatedTools: ["bfd-timers"], // existing tools that compute or decode it
+    relatedArticles: ["layer-3-redundancy-ecmp-bfd-and-fast-reroute", "bfd-when-a-link-is-up-and-dead", "bfd-timers-the-arithmetic-of-detection", "ospf-primer", "bgp-primer", "physical-and-power-redundancy-feeds-paths-and-carriers"], // the series part that teaches it first, then existing articles
+    relatedTerms: ["nonstop-routing", "bfd", "ospf", "bgp", "is-is", "failover"], // existing entries and this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "RFC 4724, Graceful Restart Mechanism for BGP, January 2007, updated by RFC 8538, sections 1, 3 and 4.2 (read 2026-11-16): capability 64, a 12-bit restart time, a forwarding-state bit per address family, stale routes kept until the End-of-RIB marker or the restart time, and deleted early if the peer's forwarding state is known not viable", href: "https://www.rfc-editor.org/rfc/rfc4724.txt" },
+      { label: "RFC 3623, Graceful OSPF Restart, November 2003, Abstract and sections 1, 2.1, 3.2 and 5 (read 2026-11-16): also called non-stop forwarding; grace-LSAs and a grace period not above LSRefreshTime (1800 s); helpers stop on a topology change; a router is unlikely to guarantee its forwarding tables across an unplanned restart, and the option must be able to be turned off", href: "https://www.rfc-editor.org/rfc/rfc3623.txt" },
+      { label: "Fortinet, FortiOS 8.0.0 Administration Guide, OSPF graceful restart upon a topology change (read 2026-11-16): restart-on-topology-change keeps the router in graceful restart mode when a topology change is detected during a restart", href: "https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide/409099/ospf-graceful-restart-upon-a-topology-change" },
+      { label: "RFC 9494, Long-Lived Graceful Restart for BGP, November 2023 (read 2026-11-16): stale routes kept far longer, a 24-bit stale time, the LLGR_STALE and NO_LLGR communities, long-lived stale routes least preferred", href: "https://www.rfc-editor.org/rfc/rfc9494.txt" },
+      { label: "RFC 5882, Generic Application of Bidirectional Forwarding Detection (BFD), June 2010, sections 4.3.1 and 4.3.2 (read 2026-11-16): with the C bit set on both ends a BFD failure should abort a graceful restart to avoid black holes; with BFD sharing fate with the control plane it should not", href: "https://www.rfc-editor.org/rfc/rfc5882.txt" },
+      { label: "FRRouting documentation, OSPFv2, latest (read 2026-11-16): when graceful restart is enabled the default grace period is 120 seconds; helper support disabled for all neighbours by default", href: "https://docs.frrouting.org/en/latest/ospfd.html" },
+      { label: "FRRouting documentation, BGP, latest (read 2026-11-16): restart-time 0 to 4095, default 120; long-lived graceful restart stale-time default 0, the feature off", href: "https://docs.frrouting.org/en/latest/bgp.html" },
+      { label: "Juniper Networks, Junos OS High Availability User Guide, published 15 November 2026, Graceful Restart Concepts and Using Control Plane Dependent BFD along with Graceful Restart Helper Mode (read 2026-11-16): restarting and helper routers; dont-help-shared-fate-bfd-down", href: "https://www.juniper.net/documentation/us/en/software/junos/high-availability/high-availability.pdf" },
+    ], // 8 sources, one object per line
+  },
+  {
+    // nonstop-routing (new entry, redundancy series part 375, agent F, 2026-11-16): facts from the redundancy-f corpus.
+    slug: "nonstop-routing", // the /glossary/nonstop-routing address
+    headword: "nonstop routing", // the term as engineers write it
+    kind: "term", // a defined networking term
+    domains: ["enterprise-networking", "isp-telecom"], // where the term is used
+    aliases: ["non-stop routing", "nonstop active routing", "nsr"], // checked absent from slugs, headwords and aliases on 2026-11-16
+    relatedTools: ["bfd-timers"], // existing tools that compute or decode it
+    relatedArticles: ["layer-3-redundancy-ecmp-bfd-and-fast-reroute", "physical-and-power-redundancy-feeds-paths-and-carriers", "default-gateway-redundancy-vrrpv3-glbp-and-anycast-gateways"], // the series part that teaches it first, then existing articles
+    relatedTerms: ["graceful-restart", "failover", "bgp", "ospf"], // existing entries and this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "Juniper Networks, Junos OS High Availability User Guide, published 15 November 2026, Nonstop Active Routing Concepts, Platform-Specific NSR Behavior and the GRES chapters (read 2026-11-16): NSR uses the GRES infrastructure for interface and kernel information and runs the routing protocol process on the backup Routing Engine, relies on no helper routers, requires GRES to be configured, and is called a natural replacement for graceful restart; to preserve routing, GRES must be combined with graceful restart or NSR; from Release 15.1R1 restarting routing on an NSR primary is never valid; on EX9214 the VRRP primary state might change during switchover even with NSR; a delay of about 20 to 40 seconds in OSPF link state updates on EX4400 Virtual Chassis when the backup Routing Engine reboots", href: "https://www.juniper.net/documentation/us/en/software/junos/high-availability/high-availability.pdf" },
+    ], // 1 sources, one object per line
+  },
+  {
+    // lfa (new entry, redundancy series part 375, agent F, 2026-11-16): facts from the redundancy-f corpus.
+    slug: "lfa", // the /glossary/lfa address
+    headword: "LFA", // the term as engineers write it
+    kind: "acronym", // spelled out in expansion
+    domains: ["enterprise-networking", "isp-telecom"], // where the term is used
+    expansion: "Loop-free alternate", // the spelled-out form
+    aliases: ["loop-free alternate", "loop-free alternates", "ip fast reroute", "ipfrr", "ip frr", "remote lfa", "rlfa"], // checked absent from slugs, headwords and aliases on 2026-11-16
+    relatedTools: ["ospf-cost-and-adjacency-checker"], // existing tools that compute or decode it
+    relatedArticles: ["layer-3-redundancy-ecmp-bfd-and-fast-reroute", "ospf-primer", "isis-primer", "dijkstra-and-the-twenty-minute-algorithm"], // the series part that teaches it first, then existing articles
+    relatedTerms: ["ti-lfa", "spf", "ospf", "is-is", "ecmp", "srlg"], // existing entries and this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "RFC 5286, Basic Specification for IP Fast Reroute: Loop-Free Alternates, September 2008, updated by RFC 8518, sections 1 and 3.2 and figure 1 (read 2026-11-16): a precomputed alternate next hop used until reconvergence; the loop-free, downstream and node-protecting inequalities; convergence of hundreds of milliseconds against applications sensitive to tens", href: "https://www.rfc-editor.org/rfc/rfc5286.txt" },
+      { label: "RFC 5714, IP Fast Reroute Framework, January 2010, section 4 (read 2026-11-16): the five steps of a routed failover and the goal of a repair path unaffected by subsequent reconvergence", href: "https://www.rfc-editor.org/rfc/rfc5714.txt" },
+      { label: "RFC 6571, Loop-Free Alternate (LFA) Applicability in Service Provider (SP) Networks, June 2012, sections 4.2 and 4.3 (read 2026-11-16): eleven core topologies of 16 to 600 nodes, per-link coverage 16% to 98%, per-prefix 67% to 99%, median 94%", href: "https://www.rfc-editor.org/rfc/rfc6571.txt" },
+      { label: "RFC 7490, Remote Loop-Free Alternate (LFA) Fast Reroute (FRR), April 2015 (read 2026-11-16): tunnelling to a remote node from which the packet will not return", href: "https://www.rfc-editor.org/rfc/rfc7490.txt" },
+      { label: "Nokia, SR Linux R26.7 Segment Routing Guide, Loop-free alternates (read 2026-11-16): no LFA for prefixes behind link C-B in a ring, remote LFA per RFC 7490 as the remedy", href: "https://documentation.nokia.com/srlinux/26-7/books/segment-routing/loop-free-alternates.html" },
+      { label: "Juniper Networks, Topology-Independent Loop-Free Alternate with Segment Routing for IS-IS and OSPF (read 2026-11-16): approximately 40 to 60 percent of destinations protected by LFA in a typical topology", href: "https://www.juniper.net/documentation/us/en/software/junos/is-is/topics/concept/understanding-ti-lfa-for-is-is.html" },
+    ], // 6 sources, one object per line
+  },
+  {
+    // ti-lfa (new entry, redundancy series part 375, agent F, 2026-11-16): facts from the redundancy-f corpus.
+    slug: "ti-lfa", // the /glossary/ti-lfa address
+    headword: "TI-LFA", // the term as engineers write it
+    kind: "acronym", // spelled out in expansion
+    domains: ["enterprise-networking", "isp-telecom"], // where the term is used
+    expansion: "Topology Independent Loop-Free Alternate", // the spelled-out form
+    aliases: ["topology independent lfa", "topology-independent loop-free alternate", "topology independent fast reroute"], // checked absent from slugs, headwords and aliases on 2026-11-16
+    relatedTools: ["ospf-cost-and-adjacency-checker"], // existing tools that compute or decode it
+    relatedArticles: ["layer-3-redundancy-ecmp-bfd-and-fast-reroute", "mpls-primer", "isis-primer", "ospf-primer"], // the series part that teaches it first, then existing articles
+    relatedTerms: ["lfa", "mpls", "srlg", "spf", "is-is", "ospf"], // existing entries and this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "RFC 9855, Topology Independent Fast Reroute Using Segment Routing, October 2025, Proposed Standard, Abstract (read 2026-11-16): builds on LFA, remote LFA and directed LFA to provide guaranteed coverage in any two-connected network using a link-state IGP, protecting over the expected post-convergence paths", href: "https://www.rfc-editor.org/rfc/rfc9855.txt" },
+      { label: "Juniper Networks, Topology-Independent Loop-Free Alternate with Segment Routing for IS-IS and OSPF (read 2026-11-16): the backup follows the post-convergence path, so capacity is planned for that path; protection against link, node, fate-sharing and SRLG failures", href: "https://www.juniper.net/documentation/us/en/software/junos/is-is/topics/concept/understanding-ti-lfa-for-is-is.html" },
+      { label: "FRRouting documentation, IS-IS, latest (read 2026-11-16): fast reroute commands for local LFA, remote LFA and TI-LFA, per-prefix TI-LFA link or node protection", href: "https://docs.frrouting.org/en/latest/isisd.html" },
+      { label: "FRRouting documentation, OSPFv2, latest (read 2026-11-16): experimental TI-LFA support, citing draft-bashandy-rtgwg-segment-routing-ti-lfa-05; TI-LFA requires a proper segment routing configuration", href: "https://docs.frrouting.org/en/latest/ospfd.html" },
+    ], // 4 sources, one object per line
+  },
+  {
+    // bgp-pic (new entry, redundancy series part 375, agent F, 2026-11-16): facts from the redundancy-f corpus.
+    slug: "bgp-pic", // the /glossary/bgp-pic address
+    headword: "BGP PIC", // the term as engineers write it
+    kind: "acronym", // spelled out in expansion
+    domains: ["enterprise-networking", "isp-telecom"], // where the term is used
+    expansion: "BGP Prefix Independent Convergence", // the spelled-out form
+    aliases: ["bgp pic", "prefix independent convergence", "pic edge", "pic core", "bgp-pic edge"], // checked absent from slugs, headwords and aliases on 2026-11-16
+    relatedTools: ["routing-table-explainer"], // existing tools that compute or decode it
+    relatedArticles: ["layer-3-redundancy-ecmp-bfd-and-fast-reroute", "bgp-primer", "mpls-primer"], // the series part that teaches it first, then existing articles
+    relatedTerms: ["bgp", "add-path", "lfa", "ecmp", "mpls"], // existing entries and this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "IETF datatracker, draft-ietf-rtgwg-bgp-pic-24, BGP Prefix Independent Convergence, 1 November 2026, intended Informational, state Revised I-D Needed (read 2026-11-16): hierarchical forwarding chains shared by prefixes; restoration independent of the number of prefixes, hinged on more than one path; PIC core and PIC edge; appendix D, 1M prefixes at 10 to 100 microseconds each against about 50 ms with local protection", href: "https://datatracker.ietf.org/doc/draft-ietf-rtgwg-bgp-pic/" },
+      { label: "Juniper Networks, BGP PIC for Layer 3 VPNs (read 2026-11-16): PIC edge installs an alternate VPN route in the forwarding table; a PE may hold 200,000 or more prefixes", href: "https://www.juniper.net/documentation/us/en/software/junos/vpn-l3/topics/topic-map/l3-vpns-bgp-pic.html" },
+      { label: "RFC 7938, Use of BGP for Routing in Large-Scale Data Centers, August 2016, section 7.4 (read 2026-11-16): with a hierarchical FIB only a single change is needed when many prefixes share one ECMP group", href: "https://www.rfc-editor.org/rfc/rfc7938.txt" },
+    ], // 3 sources, one object per line
+  },
+  {
+    // add-path (new entry, redundancy series part 375, agent F, 2026-11-16): facts from the redundancy-f corpus.
+    slug: "add-path", // the /glossary/add-path address
+    headword: "ADD-PATH", // the term as engineers write it
+    kind: "term", // a defined networking term
+    domains: ["enterprise-networking", "isp-telecom"], // where the term is used
+    aliases: ["add-paths", "addpath", "additional paths", "bgp add-path", "path identifier"], // checked absent from slugs, headwords and aliases on 2026-11-16
+    relatedTools: ["routing-table-explainer"], // existing tools that compute or decode it
+    relatedArticles: ["layer-3-redundancy-ecmp-bfd-and-fast-reroute", "bgp-primer"], // the series part that teaches it first, then existing articles
+    relatedTerms: ["bgp", "route-reflector", "bgp-pic", "ecmp"], // existing entries and this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "RFC 7911, Advertisement of Multiple Paths in BGP, July 2016, Proposed Standard, Abstract and section 1 (read 2026-11-16): each path identified by a Path Identifier in addition to the prefix, so new paths no longer implicitly replace earlier ones; alternate and backup paths help convergence", href: "https://www.rfc-editor.org/rfc/rfc7911.txt" },
+      { label: "RFC 6774, Distribution of Diverse BGP Paths, November 2012, Abstract and section 2.1 (read 2026-11-16): BGP propagates a single best path per prefix; add-paths proposed in 2002; per-path rather than per-prefix advertisement state, with its memory and processing cost", href: "https://www.rfc-editor.org/rfc/rfc6774.txt" },
+      { label: "FRRouting documentation, BGP, latest (read 2026-11-16): addpath-tx-all-paths, addpath-tx-bestpath-per-AS and addpath-tx-best-selected with 1 to 6 paths", href: "https://docs.frrouting.org/en/latest/bgp.html" },
+      { label: "Fortinet, FortiOS 8.0.0 Administration Guide, BGP multiple path support (read 2026-11-16): additional paths according to RFC 7911, enabled for the router and a neighbour group, four in the ADVPN example", href: "https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide/773406/bgp-multiple-path-support" },
+    ], // 4 sources, one object per line
+  },
+  {
+    // state-synchronization (new entry, redundancy series part 376, agent G, 2026-11-16)
+    slug: "state-synchronization", // the /glossary/state-synchronization address
+    headword: "state synchronization", // the term as shown
+    kind: "term", // the entry kind
+    domains: ["enterprise-networking", "cyber-security"], // where the term is used
+    aliases: ["state sync", "session synchronization", "session sync", "session pickup", "connection mirroring", "sincronização de estado"], // other names, checked absent from slugs, headwords and aliases on 2026-11-16
+    relatedTools: ["fortigate-ha-failover-simulator", "fortigate-session-table-explainer"], // registry tools that model it
+    relatedArticles: ["stateful-clusters-active-standby-active-active-and-split-brain", "fortigate-fgcp-ha-clustering", "persistence-mirroring-and-ha", "bigip-ha-concepts-device-trust-groups", "checkpoint-elasticxl-cluster"], // the series part first, then existing articles
+    relatedTerms: ["failover", "split-brain", "stateful-inspection", "active-active-vs-active-passive", "hot-warm-cold-standby", "heartbeat"], // existing entries and this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "Check Point, R82 ClusterXL Administration Guide, How State Synchronization Works (read 2026-11-16): Full Sync over TCP port 263 or 256 when a member joins, Delta Sync over UDP port 8116, about 90% of Cluster Control Protocol traffic", href: "https://sc1.checkpoint.com/documents/R82/WebAdminGuides/EN/CP_R82_ClusterXL_AdminGuide/Content/Topics-CXLG/How-State-Synchronization-Works.htm" },
+      { label: "Check Point, R82 ClusterXL Administration Guide, Configuring Services to Synchronize After a Delay (read 2026-11-16): short connections such as HTTP are likely to have finished before a failover, and every synchronized connection consumes resources", href: "https://sc1.checkpoint.com/documents/R82/WebAdminGuides/EN/CP_R82_ClusterXL_AdminGuide/Content/Topics-CXLG/Configuring-services-to-synchronize-after-delay.htm" },
+      { label: "Fortinet, FortiOS 7.6.6 Administration Guide, HA heartbeat interface (read 2026-11-16): heartbeats every 200 ms, 20 lost before failover, 4 seconds; heartbeat traffic surges during a failover with session pickup because the whole session table is synchronized; encryption and authentication disabled by default", href: "https://docs.fortinet.com/document/fortigate/7.6.6/administration-guide/849059/ha-heartbeat-interface" },
+      { label: "Fortinet, FortiOS 7.6.6 Administration Guide, Improving session sync performance (read 2026-11-16): session-pickup-delay synchronizes only sessions active for more than 30 seconds", href: "https://docs.fortinet.com/document/fortigate/7.6.6/administration-guide/269278/improving-session-sync-performance" },
+      { label: "Palo Alto Networks, PAN-OS Administrator's Guide, PDF created 30 October 2026, High Availability chapter, pages 415 to 536 (read 2026-11-16): HA timer profiles, preemption disabled by default with a one-minute hold time, Flap Max, heartbeat backup against split brain, HA synchronization reference", href: "https://docs.paloaltonetworks.com/content/dam/techdocs/en_US/pdf/ngfw/ngfw-administration.pdf" },
+      { label: "OpenBSD manual, pfsync(4) (read 2026-11-16): state changes collapsed and sent within at most one second, the defer option, the CARP demotion counter, no authenticity or integrity protection of its own", href: "https://man.openbsd.org/pfsync.4" },
+      { label: "Justine Sherry and others, Rollback-Recovery for Middleboxes, SIGCOMM 2015, section 2 (read 2026-11-16): vendors interviewed let flows active at a failure bypass some security inspections afterwards, without a correctness guarantee", href: "https://people.eecs.berkeley.edu/~sylvia/papers/ftmb.pdf" },
+    ], // 7 source(s), one object per line
+  },
+  {
+    // heartbeat (new entry, redundancy series part 376, agent G, 2026-11-16)
+    slug: "heartbeat", // the /glossary/heartbeat address
+    headword: "heartbeat (high availability)", // the term as shown
+    kind: "term", // the entry kind
+    domains: ["enterprise-networking", "ops-culture"], // where the term is used
+    aliases: ["cluster heartbeat", "HA heartbeat", "heartbeat link", "heartbeat interval", "hello interval", "dead interval"], // other names, checked absent from slugs, headwords and aliases on 2026-11-16
+    relatedTools: ["fortigate-ha-failover-simulator", "bfd-timers"], // registry tools that model it
+    relatedArticles: ["stateful-clusters-active-standby-active-active-and-split-brain", "fortigate-fgcp-ha-clustering", "bigip-failover-states-and-operations", "bfd-timers-the-arithmetic-of-detection", "first-hop-redundancy-vrrp-and-hsrp"], // the series part first, then existing articles
+    relatedTerms: ["failover", "split-brain", "bfd", "vrrp", "state-synchronization", "fencing"], // existing entries and this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "Fortinet, FortiOS 7.6.6 Administration Guide, HA heartbeat interface (read 2026-11-16): heartbeats every 200 ms, 20 lost before failover, 4 seconds; heartbeat traffic surges during a failover with session pickup because the whole session table is synchronized; encryption and authentication disabled by default", href: "https://docs.fortinet.com/document/fortigate/7.6.6/administration-guide/849059/ha-heartbeat-interface" },
+      { label: "Juniper Networks, Configure Cluster Failover Parameters (read 2026-11-16): heartbeats every 1,000 ms with a threshold of 3; a secondary that loses the control link but hears the fabric becomes ineligible, then disabled after 180 seconds; both links lost, it becomes primary", href: "https://www.juniper.net/documentation/us/en/software/junos/chassis-cluster-security-devices/topics/topic-map/security-chassis-cluster-failover-parameters.html" },
+      { label: "NetScaler, Configuring the communication intervals, last published 12 November 2026 (read 2026-11-16): hello every 200 ms on UDP port 3003, dead interval 3 seconds", href: "https://docs.netscaler.com/us/en/citrix-adc/current-release/system/high-availability-introduction/configuring-communication-intervals-high-availabil.html" },
+      { label: "Check Point, R82 ClusterXL Administration Guide, Glossary (read 2026-11-16): the HA Time Unit of 100 ms, a member silent for 0.7 second assumed Dying, probing of a segment that stops carrying CCP", href: "https://sc1.checkpoint.com/documents/R82/WebAdminGuides/EN/CP_R82_ClusterXL_AdminGuide/Content/Front-Matter/Front-Matter-Glossary.htm" },
+      { label: "Palo Alto Networks, PAN-OS Administrator's Guide, PDF created 30 October 2026, High Availability chapter, pages 415 to 536 (read 2026-11-16): HA timer profiles, preemption disabled by default with a one-minute hold time, Flap Max, heartbeat backup against split brain, HA synchronization reference", href: "https://docs.paloaltonetworks.com/content/dam/techdocs/en_US/pdf/ngfw/ngfw-administration.pdf" },
+      { label: "F5 Bug Tracker, Bug ID 1217077, last modified 25 October 2026 (read 2026-11-16): a network failover timeout of 1 second can produce unexpected failovers; the workaround is 2 or more", href: "https://cdn.f5.com/product/bugtracker/ID1217077.html" },
+    ], // 6 source(s), one object per line
+  },
+  {
+    // fencing (new entry, redundancy series part 376, agent G, 2026-11-16)
+    slug: "fencing", // the /glossary/fencing address
+    headword: "fencing", // the term as shown
+    kind: "term", // the entry kind
+    domains: ["enterprise-networking", "cloud", "ops-culture"], // where the term is used
+    aliases: ["STONITH", "node fencing", "fence device", "fence agent", "power fencing", "fabric fencing"], // other names, checked absent from slugs, headwords and aliases on 2026-11-16
+    relatedArticles: ["stateful-clusters-active-standby-active-active-and-split-brain", "layer-2-redundancy-lag-mlag-and-spanning-tree"], // the series part first, then existing articles
+    relatedTerms: ["split-brain", "quorum", "failover", "heartbeat", "consensus"], // existing entries and this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "ClusterLabs, Pacemaker Explained 3.0, chapter 8, Fencing (read 2026-11-16): fencing defined, also known as STONITH; power and fabric fencing; fence devices must not depend on the cluster network or share power with the node they fence; split brain and an IP address brought up on two hosts", href: "https://clusterlabs.org/projects/pacemaker/doc/3.0/Pacemaker_Explained/html/fencing.html" },
+      { label: "Debian manual page, votequorum(5), corosync 3.1.7 (read 2026-11-16): two_node sets quorum artificially to 1 and enables wait_for_all; the startup race in which nodes still offline are fenced", href: "https://manpages.debian.org/bookworm/corosync/votequorum.5.en.html" },
+      { label: "Microsoft Learn, Deploy a quorum witness (Windows Server failover clustering) (read 2026-11-16): a disk, file share or cloud witness adds a vote, and the guidance is to always configure a witness", href: "https://learn.microsoft.com/en-us/windows-server/failover-clustering/manage-cluster-quorum" },
+      { label: "Juniper Networks, Configure Cluster Failover Parameters (read 2026-11-16): heartbeats every 1,000 ms with a threshold of 3; a secondary that loses the control link but hears the fabric becomes ineligible, then disabled after 180 seconds; both links lost, it becomes primary", href: "https://www.juniper.net/documentation/us/en/software/junos/chassis-cluster-security-devices/topics/topic-map/security-chassis-cluster-failover-parameters.html" },
+    ], // 4 source(s), one object per line
+  },
+  {
+    // preemption (new entry, redundancy series part 376, agent G, 2026-11-16)
+    slug: "preemption", // the /glossary/preemption address
+    headword: "preemption (high availability)", // the term as shown
+    kind: "term", // the entry kind
+    domains: ["enterprise-networking"], // where the term is used
+    aliases: ["preempt", "failback", "auto-failback", "preempção"], // other names, checked absent from slugs, headwords and aliases on 2026-11-16
+    relatedTools: ["fortigate-ha-failover-simulator", "vrrp-timer-calculator"], // registry tools that model it
+    relatedArticles: ["stateful-clusters-active-standby-active-active-and-split-brain", "first-hop-redundancy-vrrp-and-hsrp", "fortigate-fgcp-ha-clustering", "bigip-failover-states-and-operations"], // the series part first, then existing articles
+    relatedTerms: ["failover", "vrrp", "flapping", "heartbeat", "active-active-vs-active-passive"], // existing entries and this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "Palo Alto Networks, PAN-OS Administrator's Guide, PDF created 30 October 2026, High Availability chapter, pages 415 to 536 (read 2026-11-16): HA timer profiles, preemption disabled by default with a one-minute hold time, Flap Max, heartbeat backup against split brain, HA synchronization reference", href: "https://docs.paloaltonetworks.com/content/dam/techdocs/en_US/pdf/ngfw/ngfw-administration.pdf" },
+      { label: "Fortinet, FortiOS 7.6.6 Administration Guide, HA primary unit selection criteria (read 2026-11-16): override disabled by default, so uptime outranks priority; uptime differences under 300 seconds treated as equal", href: "https://docs.fortinet.com/document/fortigate/7.6.6/administration-guide/996846/ha-primary-unit-selection-criteria" },
+      { label: "OpenBSD manual, carp(4) (read 2026-11-16): net.inet.carp.preempt disabled by default", href: "https://man.openbsd.org/carp.4" },
+      { label: "F5, BIG-IP Device Service Clustering: Administration, Managing Failover (read 2026-11-16): auto-failback timeout 0 to 300 seconds, default 60, and 40 to 60 seconds allowing state mirroring to be re-mirrored for traffic groups", href: "https://techdocs.f5.com/en-us/bigip-14-1-0/big-ip-device-service-clustering-administration-14-1-0/managing-failover.html" },
+      { label: "Check Point, R82 ClusterXL Administration Guide, Cluster Failover (read 2026-11-16): the cluster object chooses between Maintain current active Cluster Member and Switch to higher priority Cluster Member", href: "https://sc1.checkpoint.com/documents/R82/WebAdminGuides/EN/CP_R82_ClusterXL_AdminGuide/Content/Topics-CXLG/Cluster-Failover.htm" },
+      { label: "RFC 9568, Virtual Router Redundancy Protocol (VRRP) Version 3 for IPv4 and IPv6, April 2024, Proposed Standard, section 6.1 (read 2026-11-16): Preempt_Mode default True; the address owner always preempts", href: "https://www.rfc-editor.org/rfc/rfc9568.txt" },
+    ], // 6 source(s), one object per line
+  },
+  {
+    // priority-group-activation (new entry, redundancy series part 377, agent G, 2026-11-16)
+    slug: "priority-group-activation", // the /glossary/priority-group-activation address
+    headword: "priority group activation", // the term as shown
+    kind: "term", // the entry kind
+    domains: ["enterprise-networking", "vendors", "cloud"], // where the term is used
+    aliases: ["priority group", "priority groups", "min-active-members", "backup tier", "priority levels"], // other names, checked absent from slugs, headwords and aliases on 2026-11-16
+    relatedTools: ["bigip-ltm-lb-simulator", "f5-lb-method-chooser"], // registry tools that model it
+    relatedArticles: ["adc-and-gslb-redundancy-health-monitors-pools-and-site-failover", "bigip-ltm-request-distribution", "bigip-pools-and-load-balancing", "load-balancing-what-actually-decides-where-a-request-goes"], // the series part first, then existing articles
+    relatedTerms: ["load-balancer", "health-check", "slow-start", "outlier-detection", "dns-failover"], // existing entries and this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "F5, TMSH Reference v17.0, ltm pool (read 2026-11-16): priority-group and min-active-members; session user-disabled used to drain connections gently; state user-down overriding monitors; service-down-action; slow-ramp-time, default 10 seconds", href: "https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_pool.html" },
+      { label: "F5 clouddocs, F5 certification class 8, module 7, Load Balancing lab (read 2026-11-16): two primary members in priority group 10, a disaster recovery member at the default, activation at less than 2 available members", href: "https://clouddocs.f5.com/training/community/f5cert/html/class8/module07/lab1.html" },
+      { label: "HAProxy Technologies, HAProxy 3.2 Configuration Manual (read 2026-11-16): inter 2000 ms, fall 3, rise 2; backup and allbackups; observe; drain and maint; slowstart, linear and never at startup", href: "https://docs.haproxy.org/3.2/configuration.html" },
+      { label: "NGINX documentation, Module ngx_http_upstream_module (read 2026-11-16): max_fails 1 and fail_timeout 10 s, ignored for a single-server group; backup; drain; slow_start, default 0", href: "https://nginx.org/en/docs/http/ngx_http_upstream_module.html" },
+      { label: "Envoy documentation, Priority levels (read 2026-11-16): overprovisioning factor 1.4; priority 0 keeps all traffic until fewer than about 71.4% of its endpoints are healthy; each level must handle the whole load", href: "https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/upstream/load_balancing/priority" },
+      { label: "Amazon Web Services, Route 53 Developer Guide, Active-active and active-passive failover (read 2026-11-16): secondary returned only if all primaries are unhealthy; zero-weight records as a last resort can overload the last healthy resource", href: "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover-types.html" },
+    ], // 6 source(s), one object per line
+  },
+  {
+    // dns-failover (new entry, redundancy series part 377, agent G, 2026-11-16)
+    slug: "dns-failover", // the /glossary/dns-failover address
+    headword: "DNS failover", // the term as shown
+    kind: "term", // the entry kind
+    domains: ["enterprise-networking", "cloud"], // where the term is used
+    aliases: ["DNS-based failover", "DNS-based site failover", "failover por DNS"], // other names, checked absent from slugs, headwords and aliases on 2026-11-16
+    relatedTools: ["bigip-dns-gslb-simulator", "f5-gslb-decision-flow", "dig-command-builder", "dig-output-explainer"], // registry tools that model it
+    relatedArticles: ["adc-and-gslb-redundancy-health-monitors-pools-and-site-failover", "gslb-two-tier-pool-then-member", "redundant-architectures-how-networks-survive-failure", "anycast", "reading-a-dns-answer"], // the series part first, then existing articles
+    relatedTerms: ["gslb", "ttl", "health-check", "anycast", "serve-stale", "priority-group-activation"], // existing entries and this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "Microsoft Learn, Traffic Manager endpoint monitoring, 29 December 2025 (read 2026-11-16): probing interval 30 or 10 seconds, timeout 10, 3 tolerated failures, the documented timeline with a 30-second TTL, best effort when all endpoints are degraded", href: "https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-monitoring" },
+      { label: "Amazon Web Services, Route 53 Developer Guide, How Amazon Route 53 averts failover problems (read 2026-11-16): when all records are unhealthy, all are considered healthy; partitions, with São Paulo as the example", href: "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover-problems.html" },
+      { label: "Jeffrey Pang, Aditya Akella, Anees Shaikh, Balachander Krishnamurthy and Srinivasan Seshan, On the Responsiveness of DNS-based Network Control, IMC 2004 (read 2026-11-16): up to 47% of clients and local DNS servers together, and 14% of local DNS servers, violate TTLs, those that do by more than 2 hours", href: "https://conferences.sigcomm.org/imc/2004/papers/p21-pang.pdf" },
+      { label: "Giovane C. M. Moura, John Heidemann, Ricardo de O. Schmidt and Wes Hardaker, Cache Me If You Can: Effects of DNS Time-to-Live, IMC 2019 (read 2026-11-16): most resolvers trust their cache up to a one-hour TTL, about 2.25% of vantage points keep an old resolver, minimum caching times of tens of seconds, short TTLs of 5 or 15 minutes for CDNs and load balancers", href: "https://ant.isi.edu/%7ejohnh/PAPERS/Moura19b.pdf" },
+      { label: "RFC 2308, Negative Caching of DNS Queries (DNS NCACHE), March 1998, section 5 (read 2026-11-16): the TTL of a negative answer is the minimum of the SOA MINIMUM field and the TTL of the SOA itself", href: "https://www.rfc-editor.org/rfc/rfc2308.txt" },
+      { label: "RFC 8767, Serving Stale Data to Improve DNS Resiliency, March 2020, Proposed Standard, sections 4 to 6 (read 2026-11-16): stale answers with a TTL above 0, 30 seconds recommended; a client response timer of 1.8 seconds; a maximum stale timer of 1 to 3 days; a recommended TTL cap of 604,800 seconds", href: "https://www.rfc-editor.org/rfc/rfc8767.txt" },
+      { label: "Craig Labovitz, Abha Ahuja, Abhijit Bose and Farnam Jahanian, Delayed Internet Routing Convergence, SIGCOMM 2000 (read 2026-11-16): inter-domain path failovers averaged three minutes, with oscillations lasting up to fifteen minutes", href: "https://conferences.sigcomm.org/sigcomm/2000/conf/paper/sigcomm2000-5-2.pdf" },
+    ], // 7 source(s), one object per line
+  },
+  {
+    // serve-stale (new entry, redundancy series part 377, agent G, 2026-11-16)
+    slug: "serve-stale", // the /glossary/serve-stale address
+    headword: "serve-stale", // the term as shown
+    kind: "term", // the entry kind
+    domains: ["enterprise-networking", "isp-telecom"], // where the term is used
+    aliases: ["serve stale", "serving stale data", "stale answers", "respostas vencidas"], // other names, checked absent from slugs, headwords and aliases on 2026-11-16
+    relatedTools: ["dig-command-builder", "dig-output-explainer"], // registry tools that model it
+    relatedArticles: ["adc-and-gslb-redundancy-health-monitors-pools-and-site-failover", "reading-a-dns-answer", "choosing-a-public-dns-resolver", "what-happens-if-the-dns-root-goes-dark"], // the series part first, then existing articles
+    relatedTerms: ["ttl", "dns-failover", "gslb"], // existing entries and this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "RFC 8767, Serving Stale Data to Improve DNS Resiliency, March 2020, Proposed Standard, sections 4 to 6 (read 2026-11-16): stale answers with a TTL above 0, 30 seconds recommended; a client response timer of 1.8 seconds; a maximum stale timer of 1 to 3 days; a recommended TTL cap of 604,800 seconds", href: "https://www.rfc-editor.org/rfc/rfc8767.txt" },
+      { label: "RFC 2308, Negative Caching of DNS Queries (DNS NCACHE), March 1998, section 5 (read 2026-11-16): the TTL of a negative answer is the minimum of the SOA MINIMUM field and the TTL of the SOA itself", href: "https://www.rfc-editor.org/rfc/rfc2308.txt" },
+      { label: "RFC 1035, Domain Names: Implementation and Specification, November 1987, Internet Standard, section 3.2.1 (read 2026-11-16): the TTL as the time a record may be cached before the source is consulted again", href: "https://www.rfc-editor.org/rfc/rfc1035.txt" },
+    ], // 3 source(s), one object per line
+  },
+  {
+    // outlier-detection (new entry, redundancy series part 377, agent G, 2026-11-16)
+    slug: "outlier-detection", // the /glossary/outlier-detection address
+    headword: "outlier detection", // the term as shown
+    kind: "term", // the entry kind
+    domains: ["enterprise-networking", "cloud"], // where the term is used
+    aliases: ["passive health check", "passive health checking", "host ejection", "panic threshold"], // other names, checked absent from slugs, headwords and aliases on 2026-11-16
+    relatedTools: ["bigip-ltm-lb-simulator"], // registry tools that model it
+    relatedArticles: ["adc-and-gslb-redundancy-health-monitors-pools-and-site-failover", "load-balancing-what-actually-decides-where-a-request-goes", "ltm-health-monitors"], // the series part first, then existing articles
+    relatedTerms: ["health-check", "load-balancer", "flapping", "slow-start", "priority-group-activation", "fail-open-vs-fail-closed"], // existing entries and this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "Envoy documentation, config.cluster.v3.OutlierDetection (read 2026-11-16): consecutive_5xx 5, interval 10 s, base_ejection_time 30 s multiplied by the number of ejections, max_ejection_percent 10%, max_ejection_time 300 s", href: "https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/cluster/v3/outlier_detection.proto" },
+      { label: "Envoy documentation, Panic threshold (read 2026-11-16): 50% by default; below it traffic goes to all hosts, or to none if configured, to avoid failures cascading as load increases", href: "https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/upstream/load_balancing/panic_threshold" },
+      { label: "NGINX documentation, Module ngx_http_upstream_module (read 2026-11-16): max_fails 1 and fail_timeout 10 s, ignored for a single-server group; backup; drain; slow_start, default 0", href: "https://nginx.org/en/docs/http/ngx_http_upstream_module.html" },
+      { label: "HAProxy Technologies, HAProxy 3.2 Configuration Manual (read 2026-11-16): inter 2000 ms, fall 3, rise 2; backup and allbackups; observe; drain and maint; slowstart, linear and never at startup", href: "https://docs.haproxy.org/3.2/configuration.html" },
+      { label: "Amazon Web Services, Summary of the Amazon DynamoDB Service Disruption in the Northern Virginia (US-EAST-1) Region, October 2025 (read 2026-11-16): Network Load Balancer health checks failing although targets were healthy, automatic zone DNS failover, and a velocity control to limit the capacity health checks may remove", href: "https://aws.amazon.com/message/101925/" },
+    ], // 5 source(s), one object per line
+  },
+  {
+    // disaster-recovery (new entry): recovering a whole workload elsewhere after a large event, as the providers and NIST define it.
+    slug: "disaster-recovery", // the /glossary/disaster-recovery address
+    headword: "disaster recovery", // the plain term
+    kind: "term", // a defined operations and continuity term
+    domains: ["ops-culture", "cloud", "grc"], // operations, cloud architecture, continuity governance
+    aliases: ["disaster recovery plan", "drp", "pilot light", "multi-site active-active", "recuperação de desastres"], // the plan, two of the AWS strategy names and the Portuguese term; no bare "dr" (designated-router owns it)
+    relatedTools: ["incident-timeline-rca-builder", "time-calculator"], // timing a recovery against its objective
+    relatedArticles: ["data-and-service-redundancy-replication-quorum-rpo-and-rto", "testing-redundancy-failure-drills-chaos-and-the-failover-never-tried", "redundant-architectures-how-networks-survive-failure", "backups-and-ransomware-recovery"], // the two parts that teach it, the series hub and the backup article
+    relatedTerms: ["rto-rpo", "rpo-rto", "backup", "replication", "hot-warm-cold-standby", "failover", "failure-domain", "availability-zone", "region", "business-continuity", "point-in-time-recovery"], // existing entries first, then this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "Amazon Web Services, AWS Well-Architected Framework, REL13-BP02, Use defined recovery strategies to meet the recovery objectives (read 2026-11-16): backup and restore (RPO hours, RTO up to a day), pilot light (minutes, tens of minutes), warm standby (seconds, minutes), multi-site active-active (towards zero); a fully scaled warm standby becomes hot standby; replication alone does not make a workload recoverable", href: "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel13-bp02.html" }, // AWS
+      { label: "Amazon Web Services, Disaster Recovery of Workloads on AWS: Recovery in the Cloud, High availability is not disaster recovery (read 2026-11-16): availability is about components, disaster recovery about discrete copies of the whole workload; deletions and corruption replicate, so a point-in-time backup is also required", href: "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/high-availability-is-not-disaster-recovery.html" }, // AWS
+      { label: "NIST, SP 800-34 Rev. 1, Contingency Planning Guide for Federal Information Systems, May 2010, section 3.4.3 (read 2026-11-16): cold, warm and hot alternate sites by operational readiness", href: "https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-34r1.pdf" }, // NIST
+      { label: "Microsoft Learn, Azure Well-Architected Framework, Architecture strategies for disaster recovery, updated 19 November 2025 (read 2026-11-16): failover and failback defined; synchronous replication across zones and asynchronous across regions; tabletop, non-production and production drills; plan reviewed about every six months", href: "https://learn.microsoft.com/en-us/azure/well-architected/reliability/disaster-recovery" }, // Microsoft
+      { label: "European Union, Regulation (EU) 2022/2554 (DORA), 14 December 2022, articles 11 and 12 (read 2026-11-16): yearly tests including switchovers to redundant capacity; restores on segregated systems; a secondary processing site with a distinct risk profile for central securities depositories", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32022R2554" }, // EU law
+    ], // five sources, one object per line
+  },
+  {
+    // business-continuity (new entry): the management discipline that sets recovery objectives, from ISO 22301, ISO/IEC 27031, NIST and the BCB.
+    slug: "business-continuity", // the /glossary/business-continuity address
+    headword: "business continuity management", // the discipline's full name
+    kind: "term", // a defined management-system term
+    domains: ["grc", "ops-culture"], // governance and operations
+    aliases: ["business continuity", "bcm", "business continuity plan", "business impact analysis", "bia", "iso 22301", "continuidade de negócios"], // the short form, the acronyms, its main artefacts, the standard and the Portuguese term; no bare "bcp" (an IETF Best Current Practice is also a BCP)
+    relatedArticles: ["data-and-service-redundancy-replication-quorum-rpo-and-rto", "testing-redundancy-failure-drills-chaos-and-the-failover-never-tried", "backups-and-ransomware-recovery"], // the two parts that teach it and the backup article
+    relatedTerms: ["rto-rpo", "rpo-rto", "tabletop", "risk", "backup", "disaster-recovery", "game-day"], // existing entries first, then this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "ISO 22301:2019, Security and resilience: Business continuity management systems: Requirements, second edition, ISO/TC 292, contents and terms 3.1 to 3.14, preview published by iTeh Standards (read 2026-11-16): business continuity as the capability to continue delivering products and services within acceptable time frames at predefined capacity during a disruption; clause 8.2.2 business impact analysis, 8.5 exercise programme", href: "https://cdn.standards.iteh.ai/samples/75106/93796e84e77c4ea283721dff7333671e/ISO-22301-2019.pdf" }, // ISO, through an authorized preview
+      { label: "ISO/IEC 27031:2025, Cybersecurity: ICT readiness for business continuity, second edition, May 2025, preview published by VDE Verlag (read 2026-11-16): serves the MBCO, RPO and RTO; terms from ISO 22300 and ISO 22301; clauses on equipment redundancy planning, target ICT RTO and RPO, and testing, exercise and auditing", href: "https://www.vde-verlag.de/iec-normen/preview-pdf/info_isoiec27031%7Bed2.0%7Den.pdf" }, // ISO/IEC, through an authorized preview
+      { label: "NIST, SP 800-34 Rev. 1, Contingency Planning Guide for Federal Information Systems, May 2010, section 3.2.1 (read 2026-11-16): the business impact analysis sets the maximum tolerable downtime, the recovery time objective and the recovery point objective; RTO shorter than MTD; RPO outside MTD", href: "https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-34r1.pdf" }, // NIST
+      { label: "Banco Central do Brasil, Resolução CMN nº 4.557, de 23 de fevereiro de 2017, consolidated version, article 20 (read 2026-11-16): business impact analysis, continuity strategies, plans with procedures and estimated restart and recovery times, tests and reviews at suitable intervals", href: "https://normativos.bcb.gov.br/Lists/Normativos/Attachments/50344/Res_4557_v13_P.pdf" }, // BCB
+      { label: "European Union, Regulation (EU) 2022/2554 (DORA), 14 December 2022, article 11 (read 2026-11-16): ICT business continuity policy, business impact analysis, plans tested at least yearly and after substantive changes", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32022R2554" }, // EU law
+    ], // five sources, one object per line
+  },
+  {
+    // point-in-time-recovery (new entry): restoring data to a chosen moment before a deletion or corruption.
+    slug: "point-in-time-recovery", // the /glossary/point-in-time-recovery address
+    headword: "point-in-time recovery", // the plain term
+    kind: "term", // a defined data-protection term
+    domains: ["cloud", "it-support"], // managed databases and system administration
+    aliases: ["pitr", "point-in-time restore", "time travel", "recuperação para um ponto no tempo"], // the acronym, the restore form, Google's internal name and the Portuguese term
+    relatedArticles: ["data-and-service-redundancy-replication-quorum-rpo-and-rto", "backups-and-ransomware-recovery"], // the part that teaches it and the backup article
+    relatedTerms: ["backup", "rto-rpo", "replication", "immutable-backup", "disaster-recovery", "replication-lag"], // existing entries first, then this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "Google, Site Reliability Engineering, chapter 26, Data Integrity (read 2026-11-16): recovering artefacts to a unique point in time is called point-in-time recovery outside Google and time-travel inside; replication and redundancy are not recoverability; snapshots deeper in the stack are older", href: "https://sre.google/sre-book/data-integrity/" }, // Google SRE
+      { label: "Microsoft Learn, Overview of business continuity with Azure SQL Database, updated 2 April 2026 (read 2026-11-16): weekly full, 12- or 24-hourly differential and 5- to 10-minute log backups; point-in-time restore for up to 35 days to recover from corruption caused by human error", href: "https://learn.microsoft.com/en-us/azure/azure-sql/database/business-continuity-high-availability-disaster-recover-hadr-overview" }, // Microsoft
+      { label: "Atlassian, Post-Incident Review on the Atlassian April 2022 outage, 29 April 2022 (read 2026-11-16): full and incremental backups allow any point within 30 days; main data stores restored to five minutes before each deletion; RPO of one hour met", href: "https://www.atlassian.com/engineering/post-incident-review-april-2022-outage" }, // Atlassian
+      { label: "GitLab, Postmortem of database outage of January 31, 10 February 2017 (read 2026-11-16): without WAL archiving the newest usable copy was a six-hour-old snapshot; remedies included point-in-time recovery with continuous archiving", href: "https://about.gitlab.com/blog/postmortem-of-database-outage-of-january-31/" }, // GitLab
+    ], // four sources, one object per line
+  },
+  {
+    // replication-lag (new entry): how far a replica trails its primary, which is the asynchronous RPO in practice.
+    slug: "replication-lag", // the /glossary/replication-lag address
+    headword: "replication lag", // the plain term
+    kind: "term", // a defined database and storage term
+    domains: ["cloud", "ops-culture"], // replicated systems and their operation
+    aliases: ["replica lag", "replay lag", "replication delay", "atraso de replicação"], // other names in use and the Portuguese term
+    relatedArticles: ["data-and-service-redundancy-replication-quorum-rpo-and-rto", "testing-redundancy-failure-drills-chaos-and-the-failover-never-tried"], // the two parts that teach and monitor it
+    relatedTerms: ["replication", "rto-rpo", "failover", "backup", "point-in-time-recovery"], // existing entries first, then this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "PostgreSQL 18 documentation, 26.2.8 Synchronous Replication (read 2026-11-16): streaming replication is asynchronous by default and the data lost in a failover is proportional to the replication delay at that moment", href: "https://www.postgresql.org/docs/current/warm-standby.html" }, // PostgreSQL
+      { label: "PostgreSQL 18 documentation, 27.2 The Cumulative Statistics System, pg_stat_replication (read 2026-11-16): write_lag, flush_lag and replay_lag measure the time for recent WAL to be written, flushed and replayed on the standby", href: "https://www.postgresql.org/docs/current/monitoring-stats.html" }, // PostgreSQL
+      { label: "Apache Kafka 4.2 documentation, Design, Replication (read 2026-11-16): a follower that cannot catch up within the configured time is removed from the in-sync replicas, and only in-sync replicas are eligible as leader", href: "https://kafka.apache.org/42/design/design/" }, // Apache Kafka
+      { label: "GitHub, October 21 post-incident analysis, 30 October 2018 (read 2026-11-16): 954 writes on one busy cluster had not replicated when a cross-country failover happened; read replicas hours behind showed users inconsistent data; catch-up followed a power decay, not a line", href: "https://github.blog/news-insights/company-news/oct21-post-incident-analysis/" }, // GitHub
+      { label: "GitLab, Postmortem of database outage of January 31, 10 February 2017 (read 2026-11-16): under load the secondary fell so far behind that the WAL segments it needed had been removed from the primary", href: "https://about.gitlab.com/blog/postmortem-of-database-outage-of-january-31/" }, // GitLab
+    ], // five sources, one object per line
+  },
+  {
+    // quorum-witness (new entry): a voter that holds no data and breaks ties between two sites.
+    slug: "quorum-witness", // the /glossary/quorum-witness address
+    headword: "quorum witness", // the plain term
+    kind: "term", // a defined clustering term
+    domains: ["enterprise-networking", "cloud"], // clusters on premises and in the cloud
+    aliases: ["witness", "witness replica", "tiebreaker", "tie-breaker", "file share witness", "cloud witness", "testemunha"], // the short form, the Spanner name, the generic role, Microsoft's witness types and the Portuguese term
+    relatedArticles: ["data-and-service-redundancy-replication-quorum-rpo-and-rto", "stateful-clusters-active-standby-active-active-and-split-brain"], // the part that works the placement arithmetic and the clusters part
+    relatedTerms: ["quorum", "split-brain", "consensus", "failover", "raft", "failure-domain"], // existing entries
+    sources: [ // every label says what the page says and when it was read
+      { label: "Microsoft Learn, Understand cluster and pool quorum, updated 12 February 2025 (read 2026-11-16): a cluster generally requires more than half its nodes; a witness is required with two nodes, strongly recommended with three or four, not needed with five or more; dynamic witness keeps the total of votes odd", href: "https://learn.microsoft.com/en-us/windows-server/storage/storage-spaces/quorum" }, // Microsoft
+      { label: "Google Cloud, Spanner instance configurations, last updated 12 November 2026 (read 2026-11-16): dual-region configurations place two read-write replicas and one witness replica in each region; a write quorum needs at least two voting replicas in each region", href: "https://cloud.google.com/spanner/docs/instance-configurations" }, // Google Cloud
+      { label: "etcd v3.5 documentation, Frequently Asked Questions (read 2026-11-16): quorum is (n/2)+1; adding a member to reach an even size buys no fault tolerance; an odd size guarantees a majority partition", href: "https://etcd.io/docs/v3.5/faq/" }, // etcd
+    ], // three sources, one object per line
+  },
+  {
+    // pacelc (new entry): Abadi's extension of CAP to the latency and consistency trade of normal operation.
+    slug: "pacelc", // the /glossary/pacelc address
+    headword: "PACELC", // the formulation's own spelling
+    kind: "acronym", // a coined acronym
+    domains: ["cloud", "programming"], // distributed databases and their design
+    expansion: "if Partition, then Availability or Consistency; Else, Latency or Consistency", // the reading Abadi gives it
+    aliases: ["pacelc theorem"], // the form often used
+    relatedArticles: ["data-and-service-redundancy-replication-quorum-rpo-and-rto"], // the part that teaches it
+    relatedTerms: ["cap-theorem", "consensus", "replication", "latency", "quorum"], // existing entries
+    sources: [ // every label says what the page says and when it was read
+      { label: "Daniel J. Abadi, Consistency Tradeoffs in Modern Distributed Database System Design, IEEE Computer, February 2012 (read 2026-11-16): CAP is for failures; the consistency and latency trade is present at all times and arguably more influential; PACELC, pronounced pass-elk, unifies the two", href: "https://www.cs.umd.edu/~abadi/papers/abadi-pacelc.pdf" }, // Abadi
+      { label: "Seth Gilbert and Nancy A. Lynch, Perspectives on the CAP Theorem, 2012, author's copy at MIT (read 2026-11-16): CAP as one example of the impossibility of guaranteeing both safety and liveness in an unreliable distributed system", href: "https://groups.csail.mit.edu/tds/papers/Gilbert/Brewer2.pdf" }, // Gilbert and Lynch
+      { label: "Google, Site Reliability Engineering, chapter 23, Managing Critical State (read 2026-11-16): during a partition a system either stops serving some requests or serves inconsistent views; consensus over distance pays the round trip to a majority on every operation", href: "https://sre.google/sre-book/managing-critical-state/" }, // Google SRE
+    ], // three sources, one object per line
+  },
+  {
+    // chaos-engineering (new entry): the discipline Netflix named, from its own paper and the Principles.
+    slug: "chaos-engineering", // the /glossary/chaos-engineering address
+    headword: "chaos engineering", // the plain term
+    kind: "term", // a defined practice
+    domains: ["ops-culture", "cloud"], // operations culture and cloud reliability
+    aliases: ["engenharia do caos", "chaos experiment", "steady-state hypothesis", "chaos kong"], // the Portuguese term, the experiment, its hypothesis and Netflix's region exercise
+    relatedTools: ["fault-hypothesis-builder", "change-blast-radius-mapper"], // phrasing what an experiment should disprove and mapping its reach
+    relatedArticles: ["testing-redundancy-failure-drills-chaos-and-the-failover-never-tried", "redundant-architectures-how-networks-survive-failure"], // the part that teaches it and the series hub
+    relatedTerms: ["chaos-monkey", "blast-radius", "slo", "postmortem", "fault-injection", "game-day"], // existing entries first, then this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "Ali Basiri and others (Netflix), Chaos Engineering, IEEE Software 33, 3, May-June 2016, author's copy on arXiv (read 2026-11-16): the discipline of experimenting on a distributed system to build confidence in its capability to withstand turbulent conditions in production; four principles; Chaos Monkey on weekdays in working hours, Chaos Kong monthly; stream starts per second as the steady state", href: "https://arxiv.org/pdf/1702.05843" }, // Netflix authors
+      { label: "Principles of Chaos Engineering, last update March 2019 (read 2026-11-16): steady state, hypothesis over control and experimental groups, real-world variables, disproof; run in production, automate, minimize blast radius", href: "https://principlesofchaos.org/" }, // the Principles
+      { label: "Amazon Web Services, AWS Well-Architected Framework, REL12-BP04, Test resilience using chaos engineering (read 2026-11-16): controlled faults to verify recovery; stop conditions on steady-state metrics; successful experiments become automated regression tests", href: "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel12-bp04.html" }, // AWS
+      { label: "Microsoft Learn, Azure Well-Architected Framework, Architecture strategies for designing a reliability testing strategy, updated 29 May 2026 (read 2026-11-16): the error budget as the investment available for fault injection; start outside production; safeguards to stop and roll back", href: "https://learn.microsoft.com/en-us/azure/well-architected/reliability/testing-strategy" }, // Microsoft
+    ], // four sources, one object per line
+  },
+  {
+    // game-day (new entry): a scheduled exercise in which people respond to a simulated failure, with Google's and Meta's versions.
+    slug: "game-day", // the /glossary/game-day address
+    headword: "game day", // the plain term
+    kind: "term", // a defined practice
+    domains: ["ops-culture", "cloud"], // operations culture and cloud reliability
+    aliases: ["gameday", "game days", "disaster recovery testing", "storm drill", "resilience game day"], // spellings, Google's DiRT name and Meta's storm drills
+    relatedTools: ["change-window-runbook-builder", "incident-timeline-rca-builder"], // planning the window and timing the exercise
+    relatedArticles: ["testing-redundancy-failure-drills-chaos-and-the-failover-never-tried", "change-windows-that-do-not-become-incidents"], // the part that teaches it and the change-window article
+    relatedTerms: ["tabletop", "postmortem", "runbook", "failover", "chaos-engineering", "fault-injection"], // existing entries first, then this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "Amazon Web Services, AWS Well-Architected Framework, REL12-BP05, Conduct game days regularly (read 2026-11-16): a scheduled exercise responding to a simulated failure with the same people and procedures; anti-patterns include procedures never exercised and decision-makers left out; game days surface unknown dependencies", href: "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel12-bp05.html" }, // AWS
+      { label: "Google, Site Reliability Engineering, chapter 33, Lessons Learned from Other Industries (read 2026-11-16): annual Disaster and Recovery Testing (DiRT) drills in which SREs inflict actual outages; comparison with aviation simulators and the nuclear Navy's weekly live drills", href: "https://sre.google/sre-book/lessons-learned/" }, // Google SRE
+      { label: "Meta Engineering, More details about the October 4 outage, 5 October 2021 (read 2026-11-16): storm drills take a service, data centre or region offline; no storm had simulated the global backbone offline", href: "https://engineering.fb.com/2021/10/05/networking-traffic/outage-details/" }, // Meta
+      { label: "Microsoft Learn, Azure Well-Architected Framework, Architecture strategies for disaster recovery, updated 19 November 2025 (read 2026-11-16): scheduled drills combined with surprise game days; production drills as the only way to verify RTO and RPO in real conditions", href: "https://learn.microsoft.com/en-us/azure/well-architected/reliability/disaster-recovery" }, // Microsoft
+    ], // four sources, one object per line
+  },
+  {
+    // fault-injection (new entry): deliberately introducing a failure to see how a system responds.
+    slug: "fault-injection", // the /glossary/fault-injection address
+    headword: "fault injection", // the plain term
+    kind: "term", // a defined testing technique
+    domains: ["ops-culture", "programming", "cloud"], // operations, software testing, cloud reliability
+    aliases: ["failure injection", "failure injection testing", "fault injection testing", "injeção de falhas"], // other names, Netflix's FIT, and the Portuguese term
+    relatedTools: ["fault-hypothesis-builder"], // phrasing the hypothesis an injection tests
+    relatedArticles: ["testing-redundancy-failure-drills-chaos-and-the-failover-never-tried"], // the part that teaches it
+    relatedTerms: ["chaos-monkey", "blast-radius", "chaos-engineering", "game-day"], // existing entries first, then this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "Ali Basiri and others (Netflix), Chaos Engineering, IEEE Software, May-June 2016 (read 2026-11-16): Failure Injection Testing exercises fail requests between services to check graceful degradation; inputs include terminated instances, injected latency, failed services and a region made unavailable by redirecting traffic", href: "https://arxiv.org/pdf/1702.05843" }, // Netflix authors
+      { label: "Microsoft Learn, What is Azure Chaos Studio? (read 2026-11-16): a managed service for chaos engineering and resilience testing; service-direct faults through a resource's management API and agent-based faults inside virtual machines", href: "https://learn.microsoft.com/en-us/azure/chaos-studio/chaos-studio-overview" }, // Microsoft
+      { label: "Microsoft Learn, Azure Well-Architected Framework, Architecture strategies for designing a reliability testing strategy, updated 29 May 2026 (read 2026-11-16): fault-injection testing in production can be disruptive and cause downtime; safeguards to stop experiments and roll back", href: "https://learn.microsoft.com/en-us/azure/well-architected/reliability/testing-strategy" }, // Microsoft
+      { label: "Google, Site Reliability Engineering, chapter 14, Emergency Response (read 2026-11-16): a test blocking one database out of a hundred caused a wide outage; untested rollback procedures lengthened it; rollback now tested before large-scale tests", href: "https://sre.google/sre-book/emergency-response/" }, // Google SRE
+    ], // four sources, one object per line
+  },
+  {
+    // black-box-monitoring (new entry): watching a system from outside, with its white-box counterpart, as Google's SRE book separates them.
+    slug: "black-box-monitoring", // the /glossary/black-box-monitoring address
+    headword: "black-box monitoring", // the plain term
+    kind: "term", // a defined monitoring term
+    domains: ["ops-culture", "enterprise-networking"], // operations and network monitoring
+    aliases: ["white-box monitoring", "black box monitoring", "monitoração de caixa-preta"], // the counterpart, the unhyphenated spelling and the Portuguese term
+    relatedArticles: ["testing-redundancy-failure-drills-chaos-and-the-failover-never-tried", "observability-family-history"], // the part that applies it to standbys and the observability history
+    relatedTerms: ["observability", "slo", "health-check", "gray-failure", "silent-failure", "failover"], // existing entries
+    sources: [ // every label says what the page says and when it was read
+      { label: "Google, Site Reliability Engineering, chapter 6, Monitoring Distributed Systems (read 2026-11-16): black-box monitoring is symptom-oriented and shows problems happening now; white-box monitoring inspects internals and detects imminent problems and failures masked by retries", href: "https://sre.google/sre-book/monitoring-distributed-systems/" }, // Google SRE
+      { label: "Roblox, Roblox Return to Service 10/28-10/31 2021, 20 January 2022 (read 2026-11-16): monitoring that depended on the failed system hampered triage; telemetry no longer depends on the systems it monitors", href: "https://blog.roblox.com/2022/01/roblox-return-to-service-10-28-10-31-2021/" }, // Roblox
+      { label: "Atlassian, Post-Incident Review on the Atlassian April 2022 outage, 29 April 2022 (read 2026-11-16): internal monitoring did not detect the deletions because they ran through a standard workflow", href: "https://www.atlassian.com/engineering/post-incident-review-april-2022-outage" }, // Atlassian
+    ], // three sources, one object per line
+  },
+  {
+    // IDB (new entry): the intermediary that lets dealers trade with one another anonymously, by voice or on screens.
+    slug: "interdealer-broker", // the /glossary/interdealer-broker address
+    headword: "IDB (interdealer broker)", // acronym first, as for other acronym entries
+    kind: "acronym", // an acronym with its expansion
+    domains: ["grc", "enterprise-networking"], // market structure and the electronic platforms it runs on
+    expansion: "interdealer broker: an intermediary that arranges trades between dealers in bonds, currencies and derivatives, by voice or on electronic platforms, without revealing their identities to each other", // the formal identity
+    aliases: ["idb", "interdealer broker", "inter-dealer broker", "interdealer brokers", "inter-dealer brokers", "corretora interdealer"], // spellings and Portuguese (the bare "icap" is taken by the Internet Content Adaptation Protocol)
+    relatedTerms: ["matched-principal-trading", "primary-dealer", "principal-trading-firm", "last-look", "central-limit-order-book", "market-maker"], // this batch, then existing entries
+    relatedArticles: ["interdealer-brokers-and-electronic-fixed-income-and-fx", "electronic-trading-from-the-pit-to-the-microsecond", "open-outcry-trading-floors-and-the-pregao"], // the part, the opener, the Big Bang
+    sources: [ // every label says what the page says and when it was read
+      { label: "US Treasury, Federal Reserve Board, FRBNY, SEC and CFTC staffs, Joint Staff Report on 15 October 2014, 13 July 2015, footnote 31 (read 2026-11-16): in the interdealer market brokers facilitate anonymous trades between counterparties; dealer-to-customer trades occur directly", href: "https://home.treasury.gov/system/files/276/joint-staff-report-the-us-treasury-market-on-10-15-2014.pdf" }, // the definition by contrast
+      { label: "BIS Markets Committee, Electronic trading in fixed income markets, January 2016 (read 2026-11-16): dealers traditionally traded bilaterally by phone or multilaterally and anonymously via voice brokers; BrokerTec and eSpeed launched in 1999", href: "https://www.bis.org/publications/electronic-trading-fixed-income-markets.pdf" }, // history
+      { label: "ICAP, Financial Markets (read 2026-11-16): finds counterparties, offers anonymity, aggregates buy and sell orders and provides indicative pricing in OTC markets; Fusion platform", href: "https://icap.com/financial-markets" }, // what the service is, in a broker's words
+      { label: "TP ICAP, Tullett Prebon Brasil, History (read 2026-11-16): in 1985 the Bank of England named six groups eligible to operate as IDBs in the restructured gilt market; completion of the ICAP deal on 30 December 2016", href: "https://tpicap.com/tpbrasil/history" }, // a regulator's recognition
+      { label: "TP ICAP Group, Annual Report and Accounts 2025, April 2026 (read 2026-11-16): origins as a predominantly voice-driven interdealer broker; calls itself the world's largest inter-dealer broker", href: "https://tpicap.com/tpicap/sites/g/files/escbpb106/files/2026-04/ARA_Full%20report_2025.pdf" }, // today's largest, by its own account
+    ], // five sources, one object per line
+  },
+  {
+    // Last look (new entry): a liquidity provider's final chance to accept or reject an FX trade request after the client clicks.
+    slug: "last-look", // the /glossary/last-look address
+    headword: "last look", // the market's term
+    kind: "jargon", // practitioners' term
+    domains: ["grc"], // a conduct and market-structure question
+    aliases: ["last-look", "last look window", "janela de last look"], // spellings and Portuguese
+    relatedTerms: ["fx-global-code", "interdealer-broker", "latency-arbitrage", "high-frequency-trading"], // this batch, then existing entries
+    relatedArticles: ["interdealer-brokers-and-electronic-fixed-income-and-fx"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Global Foreign Exchange Committee, FX Global Code, updated December 2024, principle 17 (read 2026-11-16): definition of last look; only validity and price checks; disclosure; no trading on the request's information during the window", href: "https://www.globalfxc.org/uploads/fx_global.pdf" }, // the rule
+      { label: "GFXC, Execution Principles Working Group Report on Last Look, August 2021 (read 2026-11-16): principle 17 amended December 2017; symmetric and asymmetric price checks; delay beyond the checks contrary to principle 17; disclose window length", href: "https://www.globalfxc.org/uploads/gfxc_report_last_look-1.pdf" }, // the guidance
+      { label: "NYDFS press release of 18 November 2015, reprinted by Mondo Visione (read 2026-11-16): Barclays to pay an additional $150 million over its last look system, which rejected orders unprofitable to the bank during hold periods", href: "https://mondovisione.com/media-and-resources/news/new-york-state-department-of-financial-services-announces-barclays-to-pay-additi-20151118/" }, // the sanctioned case
+      { label: "LSEG, Tick History PCAP article, September 2023 (read 2026-11-16): no last look in FX Matching; all orders in Spot Matching are firm", href: "https://lseg.com/en/insights/fx/revolutionising-fx-price-transparency-with-tick-history-pcap" }, // a firm venue, by its operator
+    ], // four sources, one object per line
+  },
+  {
+    // PTF (new entry): firms trading their own capital with automated strategies, now most of the volume on interdealer screens.
+    slug: "principal-trading-firm", // the /glossary/principal-trading-firm address
+    headword: "PTF (principal trading firm)", // acronym first
+    kind: "acronym", // an acronym with its expansion
+    domains: ["grc"], // market structure
+    expansion: "principal trading firm: a firm that trades only its own capital, almost entirely with automated strategies, and has no clients in the usual broker-dealer sense", // the formal identity
+    aliases: ["ptf", "ptfs", "principal trading firms", "principal trading firm (ptf)"], // spellings
+    relatedTerms: ["high-frequency-trading", "interdealer-broker", "market-maker", "latency-arbitrage"], // existing entries and this batch
+    relatedArticles: ["interdealer-brokers-and-electronic-fixed-income-and-fx", "high-frequency-trading-what-it-is-and-the-dispute"], // the part and the HFT part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Joint Staff Report on 15 October 2014, 13 July 2015 (read 2026-11-16): PTFs characterized by almost exclusive use of automated trading and primarily principal trading; most do not trade for clients; more than half of Treasury cash and futures volume; access to interdealer platforms in the mid-2000s; about 80% of message traffic", href: "https://home.treasury.gov/system/files/276/joint-staff-report-the-us-treasury-market-on-10-15-2014.pdf" }, // definition and weight
+      { label: "BIS Markets Committee, Electronic trading in fixed income markets, January 2016 (read 2026-11-16): BrokerTec and eSpeed granted access to PTFs; over 50% of benchmark Treasury volume on formerly exclusive interdealer venues", href: "https://www.bis.org/publications/electronic-trading-fixed-income-markets.pdf" }, // the shift
+      { label: "Chaboud, Chung, Goldberg and Nordstrom, Liberty Street Economics, FRBNY, 11 January 2024 (read 2026-11-16): PTFs, also known as high-frequency traders, important participants in spot FX", href: "https://libertystreeteconomics.newyorkfed.org/2024/01/towards-increasing-complexity-the-evolution-of-the-fx-market" }, // FX
+      { label: "BIS, Triennial Survey 2025, FX annex tables revised June 2026, table 1 (read 2026-11-16): turnover with hedge funds and PTFs about $760 billion a day in April 2025", href: "https://www.bis.org/publications/triennial-survey/rpfx25-fx-annex-2606.pdf" }, // size
+    ], // four sources, one object per line
+  },
+  {
+    // Primary dealer (new entry): banks and brokers accredited by a central bank or treasury to make markets in government debt, in the US and in Brazil.
+    slug: "primary-dealer", // the /glossary/primary-dealer address
+    headword: "primary dealer", // the US term; Brazil says "dealer do Tesouro"
+    kind: "jargon", // market term
+    domains: ["grc"], // public debt market structure
+    aliases: ["primary dealers", "dealer do tesouro", "dealers do tesouro nacional", "sistema de dealers"], // US and Brazilian terms
+    relatedTerms: ["interdealer-broker", "market-maker", "b3"], // this batch and existing entries
+    relatedArticles: ["interdealer-brokers-and-electronic-fixed-income-and-fx"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Joint Staff Report on 15 October 2014, 13 July 2015, section 4 (read 2026-11-16): until 1992 the interdealer brokers only allowed primary dealers, as designated by the Federal Reserve Bank of New York, to access their platforms", href: "https://home.treasury.gov/system/files/276/joint-staff-report-the-us-treasury-market-on-10-15-2014.pdf" }, // the US designation
+      { label: "TCU, Tesouro Nacional aplica com regularidade normas relacionadas ao Sistema de Dealer, 7 May 2025 (read 2026-11-16): dealers are financial institutions authorized by the Banco Central and accredited by the National Treasury to develop the primary and secondary markets for government bonds", href: "https://portal.tcu.gov.br/imprensa/noticias/tesouro-nacional-aplica-com-regularidade-normas-relacionadas-ao-sistema-de-dealer" }, // the Brazilian definition
+      { label: "B3, recorde histórico de operações de Títulos Públicos Federais, 20 August 2026 (read 2026-11-16): the Treasury's dealers, nine banks and three brokers, chose Trademate for the 24th consecutive half-year", href: "https://b3.com.br/pt_br/noticias/trademate-8AE490C8A012158601A020A688A87098.htm" }, // who they are now
+      { label: "TP ICAP, Tullett Prebon Brasil, History (read 2026-11-16): Liberty Brokerage founded in 1986 by a majority of the primary US government securities dealers", href: "https://tpicap.com/tpbrasil/history" }, // dealers founding their own broker
+    ], // four sources, one object per line
+  },
+  {
+    // Matched principal trading (new entry): the facilitator stands between buyer and seller with no market risk, as BrokerTec does before novation to FICC.
+    slug: "matched-principal-trading", // the /glossary/matched-principal-trading address
+    headword: "matched principal trading", // the EU legal term
+    kind: "jargon", // legal and market term
+    domains: ["grc"], // trading capacity and settlement risk
+    aliases: ["matched principal", "riskless principal (matched)", "negociação de principal casado"], // short form and Portuguese
+    relatedTerms: ["interdealer-broker", "clearing-house", "mifid-ii"], // this batch and existing entries
+    relatedArticles: ["interdealer-brokers-and-electronic-fixed-income-and-fx"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "EUR-Lex, Directive 2014/65/EU (MiFID II), article 4(1)(38) (read 2026-11-16): the facilitator interposes itself between buyer and seller, is never exposed to market risk, both sides executed simultaneously, no profit or loss other than a disclosed commission, fee or charge", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32014L0065" }, // the legal definition
+      { label: "CME Group, Form 10-K for 2025, filed 26 February 2026 (read 2026-11-16): BrokerTec Americas' matched principal platform; trades between FICC members novated promptly to FICC as ultimate counterparty", href: "https://www.sec.gov/Archives/edgar/data/1156375/000115637526000009/cme-20251231.htm" }, // the practice
+      { label: "CME Group, Form 10-K for 2018, filed 28 February 2019 (read 2026-11-16): risk of loss from the failure of a matched principal counterparty to settle its trades at BrokerTec", href: "https://www.sec.gov/Archives/edgar/data/1156375/000115637519000010/cme-2018123110k.htm" }, // the risk that remains
+    ], // three sources, one object per line
+  },
+  {
+    // FX Global Code (new entry): the industry code of good practice for wholesale FX, kept by the GFXC; not law.
+    slug: "fx-global-code", // the /glossary/fx-global-code address
+    headword: "FX Global Code", // the document's name
+    kind: "jargon", // a named standard
+    domains: ["grc"], // conduct standard
+    aliases: ["global code (fx)", "fx code", "código global de câmbio", "gfxc code"], // names and Portuguese
+    relatedTerms: ["last-look", "interdealer-broker"], // this batch
+    relatedArticles: ["interdealer-brokers-and-electronic-fixed-income-and-fx"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "GFXC, Establishment of the FX Global Code (read 2026-11-16): developed under the BIS Markets Committee by central banks from 16 jurisdictions with a market participants group; complete Code published May 2017", href: "https://www.globalfxc.org/fx-global-code/establishment-of-the-fx-global-code/" }, // origin
+      { label: "Global Foreign Exchange Committee, FX Global Code, updated December 2024 (read 2026-11-16): does not impose legal or regulatory obligations; maintained by the GFXC, established May 2017; principle 17 on last look", href: "https://www.globalfxc.org/uploads/fx_global.pdf" }, // status and content
+      { label: "GFXC, Report on Last Look, August 2021 (read 2026-11-16): principle 17 amended in December 2017; three-year review kept its text", href: "https://www.globalfxc.org/uploads/gfxc_report_last_look-1.pdf" }, // revisions
+    ], // three sources, one object per line
+  },
+  {
+    // Network-derived analytics (new entry): measuring trading from passive packet copies, decoded to orders and market data.
+    slug: "network-derived-analytics", // the /glossary/network-derived-analytics address
+    headword: "network-derived analytics", // the vendors' and practitioners' term
+    kind: "jargon", // practitioners' term
+    domains: ["enterprise-networking", "vendors"], // a capture discipline defined by its products
+    aliases: ["network derived analytics", "análise derivada da rede", "packet-level trading analytics"], // spellings and Portuguese
+    relatedTerms: ["pcap", "network-tap", "hardware-timestamping", "tick-to-trade", "microburst", "port-mirroring"], // existing entries and this batch
+    relatedArticles: ["network-derived-analytics-and-trading-monitoring", "colocation-microwaves-and-the-race-for-latency"], // the part and 365
+    sources: [ // every label says what the page says and when it was read
+      { label: "Pico, Corvil Analytics (read 2026-11-16): Pico's network-derived analytics platform for financial markets; packet capture without agents or application changes; 1-second metrics; 600+ decoders; up to 200 Gbps (vendor description)", href: "https://www.pico.net/corvil-analytics/" }, // the term in a vendor's use
+      { label: "Pico, Pico to Acquire Corvil, 9 July 2019 (read 2026-11-16): definitive agreement; Corvil name kept for its products", href: "https://www.pico.net/about/news/pico-to-acquire-corvil-creating-the-new-benchmark-for-technology-services-in-financial-markets/" }, // the leading product's ownership
+      { label: "Beeks Financial Cloud, release of 15 April 2020 reprinted by Mondo Visione (read 2026-11-16): acquisition of Velocimetrics; packet capture, storage, analytics and data aggregation; network monitoring and trade analytics", href: "https://mondovisione.com/news/beeks-financial-cloud-acquires-velocimetrics-2020415" }, // a second vendor
+      { label: "BIS Markets Committee, Monitoring of fast-paced electronic markets, September 2018 (read 2026-11-16): indicators from millisecond or tick-by-tick data; timestamps of own executions for impact and cost monitoring", href: "https://www.bis.org/publications/monitoring-fast-paced-electronic-markets.pdf" }, // why central banks want such data
+    ], // four sources, one object per line
+  },
+  {
+    // Network tap (new entry): a passive device, often optical, that copies a link's traffic for capture without the switch's help.
+    slug: "network-tap", // the /glossary/network-tap address
+    headword: "network tap", // the device
+    kind: "jargon", // practitioners' term
+    domains: ["enterprise-networking"], // capture infrastructure
+    aliases: ["optical tap", "passive tap", "traffic analysis point", "tap de rede", "layer 1 tap"], // forms in use; the bare word "tap" is avoided
+    relatedTerms: ["port-mirroring", "pcap", "network-derived-analytics", "timestamp-trailer", "hardware-timestamping"], // existing entries and this batch
+    relatedArticles: ["network-derived-analytics-and-trading-monitoring", "capture-points-before-packets", "colocation-microwaves-and-the-race-for-latency"], // the parts and the capture guide
+    sources: [ // every label says what the page says and when it was read
+      { label: "Financial Conduct Authority, Occasional Paper 50, Aquilina, Budish and O'Neill, January 2020 (read 2026-11-16): messages recorded and timestamped on the external side of the exchange's firewall using an optical TAP (traffic analysis point), the ideal location for measuring races", href: "https://www.fca.org.uk/publication/occasional-papers/occasional-paper-50.pdf" }, // a regulator's research use
+      { label: "Cisco, Cisco and Pico collaborate to help High-Frequency Trading, 28 September 2020 (read 2026-11-16): Nexus 3550 layer 1 tapping, high-precision timestamping and aggregation with Pico's capture systems", href: "https://blogs.cisco.com/financialservices/cisco-and-pico-collaborate-to-help-high-frequency-trading" }, // layer 1 tapping in a switch
+      { label: "Arista Networks, press release, 5 March 2019 (read 2026-11-16 through an automated extract; to confirm in a browser): first platform from the Metamako acquisition announced September 2018; tapping and aggregating time-stamped packets for analysis or compliance", href: "https://www.arista.com/en/company/news/press-release/6777-pr-20190305" }, // a second vendor
+    ], // three sources, one object per line
+  },
+  {
+    // Hardware timestamp (new entry): a time stamp taken on the wire or in a dedicated device, against a software stamp taken by the application.
+    slug: "hardware-timestamping", // the /glossary/hardware-timestamping address
+    headword: "hardware timestamp (hardstamp)", // the term and B3's short form
+    kind: "jargon", // practitioners' term
+    domains: ["enterprise-networking"], // time and capture
+    aliases: ["hardware timestamp", "hardware timestamping", "hardstamp", "softstamp", "software timestamp", "carimbo de hardware"], // both kinds and Portuguese
+    relatedTerms: ["ptp", "utc", "pcap", "timestamp-trailer", "network-tap", "tick-to-trade"], // existing entries and this batch
+    relatedArticles: ["network-derived-analytics-and-trading-monitoring", "colocation-microwaves-and-the-race-for-latency"], // the parts
+    sources: [ // every label says what the page says and when it was read
+      { label: "B3, PUMA Trading System Timestamps, version 1.1.0, 13 June 2025 (read 2026-11-16): hardstamps captured in the wire or in a dedicated device, softstamps in application software; B3 publishes softstamps from PTP-synchronized clocks with offset standard deviation up to one microsecond; resolution, precision and accuracy defined", href: "https://b3.com.br/data/files/F3/30/BD/D4/E1F87910C2881879AC094EA8/B3-PUMA-Timestamps-1.1.0-enUS.pdf" }, // the definitions
+      { label: "Wireshark, display filter reference, Exablaze trailer (read 2026-11-16): a hardware timestamp in seconds and fractional seconds carried in a trailer, with device and port, since Wireshark 3.0.0", href: "https://www.wireshark.org/docs/dfref/e/exablaze.html" }, // a stamp in the packet
+      { label: "LSEG, Tick History PCAP article, September 2023 (read 2026-11-16): packet data captured in exchange data centres with GPS nanosecond timestamping", href: "https://lseg.com/en/insights/fx/revolutionising-fx-price-transparency-with-tick-history-pcap" }, // a data product built on it
+    ], // three sources, one object per line
+  },
+  {
+    // Timestamp trailer (new entry): bytes a capture switch appends to a frame to carry its time stamp and origin.
+    slug: "timestamp-trailer", // the /glossary/timestamp-trailer address
+    headword: "timestamp trailer", // the device-added trailer
+    kind: "jargon", // practitioners' term
+    domains: ["enterprise-networking", "vendors"], // capture formats defined by vendors
+    aliases: ["capture trailer", "ethernet timestamp trailer", "trailer de timestamp"], // forms and Portuguese
+    relatedTerms: ["hardware-timestamping", "pcap", "ethernet", "network-tap"], // this batch and existing entries
+    relatedArticles: ["network-derived-analytics-and-trading-monitoring", "reading-a-bigip-capture"], // the part and the F5 trailer article
+    sources: [ // every label says what the page says and when it was read
+      { label: "Wireshark, display filter reference, Metamako ethernet trailer, versions 2.2.0 to 4.6.9 (read 2026-11-16): sequence number, source device and port, timestamp-degraded flag", href: "https://www.wireshark.org/docs/dfref/m/metamako.html" }, // one vendor's trailer
+      { label: "Wireshark, display filter reference, Exablaze trailer, versions 3.0.0 to 4.6.9 (read 2026-11-16): timestamp, device, port, original FCS", href: "https://www.wireshark.org/docs/dfref/e/exablaze.html" }, // another
+      { label: "Wireshark, display filter reference, Ixia Trailer (read 2026-11-16): time stamp and original packet length", href: "https://www.wireshark.org/docs/dfref/i/ixiatrailer.html" }, // another
+      { label: "Wireshark, display filter reference, VSS Monitoring Ethernet trailer (read 2026-11-16): time stamp, clock source and source port", href: "https://www.wireshark.org/docs/dfref/v/vssmonitoring.html" }, // another
+    ], // four sources, one object per line
+  },
+  {
+    // pcapng (new entry): the block-based successor of the pcap capture file, with per-interface timestamp resolution.
+    slug: "pcapng", // the /glossary/pcapng address
+    headword: "pcapng (PCAP Now Generic)", // the format's name and expansion
+    kind: "acronym", // an acronym with its expansion
+    domains: ["enterprise-networking", "programming"], // a capture format and its readers
+    expansion: "PCAP Now Generic, a block-based capture file format that records interfaces, options and 64-bit timestamps whose resolution each interface declares", // the formal identity
+    aliases: ["pcap-ng", "pcap now generic", "pcap next generation", ".pcapng"], // spellings
+    relatedTerms: ["pcap", "utc", "hardware-timestamping", "ethernet"], // existing entries and this batch
+    relatedArticles: ["network-derived-analytics-and-trading-monitoring", "wireshark-and-the-capture-stack", "python-for-log-and-packet-analysis"], // the part and the capture articles
+    sources: [ // every label says what the page says and when it was read
+      { label: "IETF, draft-ietf-opsawg-pcapng-06, September 2026, intended Informational (read 2026-11-16): if_tsresol gives the timestamp resolution as a power of 10 or 2; if absent, 10^-6 is assumed; if_tsoffset", href: "https://datatracker.ietf.org/doc/draft-ietf-opsawg-pcapng/" }, // the format
+      { label: "IETF, draft-ietf-opsawg-pcap-09, September 2026, intended Historic (read 2026-11-16): pcap's magic numbers 0xA1B2C3D4 (microseconds) and 0xA1B23C4D (nanoseconds); 16-byte record header with 32-bit unsigned seconds", href: "https://datatracker.ietf.org/doc/draft-ietf-opsawg-pcap/" }, // the predecessor
+      { label: "tcpdump.org, Link-layer header types (read 2026-11-16): LINKTYPE_ETHERNET is 1", href: "https://www.tcpdump.org/linktypes.html" }, // the shared registry
+    ], // three sources, one object per line
+  },
+  {
+    // WORM (new entry): non-rewriteable, non-erasable record storage, long required of US broker-dealers, now with an audit-trail alternative.
+    slug: "write-once-read-many", // the /glossary/write-once-read-many address
+    headword: "WORM (write once, read many)", // acronym first
+    kind: "acronym", // an acronym with its expansion
+    domains: ["grc"], // record-keeping rules
+    expansion: "write once, read many: storage in a non-rewriteable, non-erasable format, used for regulated records", // the formal identity
+    aliases: ["worm storage", "worm format", "write once read many", "write-once-read-many", "non-rewriteable non-erasable"], // forms; the bare "worm" is avoided (malware sense)
+    relatedTerms: ["audit-trail"], // the alternative the SEC now allows
+    relatedArticles: ["network-derived-analytics-and-trading-monitoring"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "US SEC, Electronic Recordkeeping Requirements for Broker-Dealers, Release 34-96034, 12 October 2022 (read 2026-11-16): Rule 17a-4 required a non-rewriteable, non-erasable (WORM) format; the amendments add an audit-trail alternative permitting recreation of an original record if modified or deleted", href: "https://www.sec.gov/files/rules/final/2022/34-96034.pdf" }, // the US securities rule
+      { label: "US CFTC, Recordkeeping, final rule, Federal Register, 30 May 2017 (read 2026-11-16): Rule 1.31 made technology neutral as to the form and manner of keeping records, removing the prior WORM-format requirement; effective 28 August 2017", href: "https://www.govinfo.gov/content/pkg/FR-2017-05-30/pdf/2017-11014.pdf" }, // the US futures rule
+    ], // two sources, one object per line
+  },
+  {
+    // SIP (new entry): the two US processors that consolidate quotes and trades and compute the NBBO; latency and the 2020 rule.
+    slug: "securities-information-processor", // the /glossary/securities-information-processor address
+    headword: "SIP (securities information processor)", // acronym first, as for other acronym entries
+    kind: "acronym", // an acronym with its expansion
+    domains: ["grc", "enterprise-networking"], // market regulation and the network that carries the feeds
+    expansion: "securities information processor (processador de informações de valores mobiliários)", // English and Portuguese
+    aliases: ["securities information processor", "securities information processors", "exclusive sip", "cta/cq sip", "utp sip", "cta plan", "utp plan", "siac"], // full forms, the two processors, their plans and SIAC; the bare "sip" and "utp" are other entries' slugs
+    relatedTerms: ["national-best-bid-and-offer", "consolidated-tape", "direct-feed", "reg-nms", "latency-arbitrage", "matching-engine"], // this batch, then existing entries
+    relatedArticles: ["market-data-consolidated-feeds-and-direct-feeds", "the-rules-that-rewired-markets-reg-ats-reg-nms-mifid-and-brazil", "high-frequency-trading-what-it-is-and-the-dispute"], // part 386 and two wave-1 parts
+    sources: [ // every label says what the page says and when it was read
+      { label: "CTA Plan, overview page (read 2026-11-16): the SIP consolidates all protected quotes and trades from every venue into a single feed and computes the NBBO and LULD bands; Networks A and B; 20 exchanges and FINRA as participants; capacity and median latency as stated there", href: "https://www.ctaplan.com/" }, // CTA
+      { label: "CTA Plan, Odd Lots (read 2026-11-16): NYSE administers the CTA and CQ plans and SIAC is their processor; Nasdaq business units are administrator and processor of the UTP SIP", href: "https://www.ctaplan.com/odd-lots" }, // CTA
+      { label: "CTA, Key Operating Metrics, third quarter 2026 (read 2026-11-16): quote feed median latency 18.0 and 99th percentile 24.5 microseconds, measured from arrival at the network entrance to departure; units printed inconsistently between headings and footnotes", href: "https://www.ctaplan.com/publicdocs/ctaplan/CTA_SIP_Metrics_3Q_2026.pdf" }, // CTA
+      { label: "UTP Plan, overview page part (read 2026-11-16 with curl; the plan's main pages are a JavaScript shell): Tape C, the NBBO and each member's best bid and offer; capacity and latency as stated there", href: "https://utpplan.com/PageParts/Overview.html" }, // UTP
+      { label: "SEC, Market Data Infrastructure, Release 34-90610, 9 December 2020 (read 2026-11-16): geographic, aggregation and transmission latency; the processors in Mahwah and Carteret and the 'New Jersey Triangle'; competing consolidators under Rule 614", href: "https://www.sec.gov/files/rules/final/2020/34-90610.pdf" }, // SEC
+    ], // five sources, one object per line
+  },
+  {
+    // NBBO (new entry): the best bid and offer across US venues, the round-lot tiers of 2025 and the best odd-lot order of 2026.
+    slug: "national-best-bid-and-offer", // the /glossary/national-best-bid-and-offer address
+    headword: "NBBO (national best bid and offer)", // acronym first
+    kind: "acronym", // an acronym with its expansion
+    domains: ["grc"], // a regulatory price reference
+    expansion: "national best bid and offer (melhor oferta de compra e de venda nacional)", // English and Portuguese
+    aliases: ["nbbo", "national best bid and offer", "national best bid", "national best offer", "best odd-lot order", "bolo"], // the acronym, its halves and the BOLO that came with the 2024 amendments
+    relatedTerms: ["securities-information-processor", "consolidated-tape", "direct-feed", "reg-nms", "latency-arbitrage", "central-limit-order-book"], // this batch, then existing entries
+    relatedArticles: ["market-data-consolidated-feeds-and-direct-feeds", "the-rules-that-rewired-markets-reg-ats-reg-nms-mifid-and-brazil", "high-frequency-trading-what-it-is-and-the-dispute"], // part 386 and two wave-1 parts
+    sources: [ // every label says what the page says and when it was read
+      { label: "SEC, Regulation NMS: Minimum Pricing Increments, Access Fees, and Transparency of Better Priced Orders, Release 34-101070, Federal Register, 8 October 2024 (read 2026-11-16): round lots of 100, 40, 10 and 1 shares by price tier up to US$250, US$1,000, US$10,000 and above; sizes rounded down to a multiple of a round lot; odd-lot information through the processors", href: "https://www.govinfo.gov/content/pkg/FR-2024-10-08/pdf/2024-21867.pdf" }, // SEC
+      { label: "SEC, Release 34-104612, 15 January 2026 (read 2026-11-16): round lots implemented in November 2025; odd-lot quotations at every price level exempted until May 2028; the best odd-lot order from May 2026", href: "https://www.sec.gov/files/rules/exorders/2026/34-104612.pdf" }, // SEC
+      { label: "EconPapers, How Slow Is the NBBO? A Comparison with Direct Exchange Feeds, The Financial Review, vol. 49 no. 2, 2014, abstract (read 2026-11-16): dislocations between the consolidated and direct-feed NBBOs occur several times a second in active stocks and last one to two milliseconds", href: "https://econpapers.repec.org/RePEc:bla:finrev:v:49:y:2014:i:2:p:313-332" }, // EconPapers
+      { label: "Bartlett and McCrary, How Rigged Are Stock Markets? Evidence From Microsecond Timestamps, NBER Working Paper 22551, August 2016 (read 2026-11-16): reporting latencies of 1.13 ms for quotes and 22.84 ms for trades; orders priced at the SIP NBBO gained US$0.0002 a share on average", href: "https://www.nber.org/system/files/working_papers/w22551/w22551.pdf" }, // NBER
+    ], // four sources, one object per line
+  },
+  {
+    // Consolidated tape (new entry): one stream of every venue's data on equal terms; the US CT Plan, the EU's three tapes and the UK bond tape.
+    slug: "consolidated-tape", // the /glossary/consolidated-tape address
+    headword: "Consolidated tape", // the general term, sentence case
+    kind: "term", // a term of market structure
+    domains: ["grc"], // market regulation
+    aliases: ["consolidated tape", "consolidated tape provider", "consolidated tape providers", "ctp", "ct plan", "us consolidated tape", "european best bid and offer", "ebbo"], // the provider, the US plan and the EU's EBBO
+    relatedTerms: ["securities-information-processor", "national-best-bid-and-offer", "direct-feed", "mifid-ii", "reg-nms"], // this batch, then existing entries
+    relatedArticles: ["market-data-consolidated-feeds-and-direct-feeds", "the-rules-that-rewired-markets-reg-ats-reg-nms-mifid-and-brazil"], // part 386 and the wave-1 rules part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Regulation (EU) 2024/791, 28 February 2024, amending MiFIR (read 2026-11-16): no supervised entity had applied to act as a CTP; contributors send data as close to real time as technically possible; free for retail investors, academics and civil society; EBBO without the MIC; revenue redistribution to smaller venues", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32024R0791" }, // EUR-Lex
+      { label: "ESMA, Consolidated tape providers (read 2026-11-16): bond selection of Ediphy and authorization ongoing; EuroCTP selected and authorised for shares and ETFs, launched 14 September 2026; Etrading Software selected for OTC derivatives on 6 July 2026", href: "https://www.esma.europa.eu/esmas-activities/markets-and-infrastructure/consolidated-tape-providers" }, // ESMA
+      { label: "ESMA, press release ESMA71-545613100-2975, 27 July 2026 (read 2026-11-16): EuroCTP authorised as the consolidated tape provider for shares and ETFs; transition period and five-year term", href: "https://www.esma.europa.eu/sites/default/files/2026-07/ESMA71-545613100-2975%5FESMA%5Fauthorises%5FEuroCTP%5Fas%5Fthe%5FConsolidated%5FTape%5FProvider%5Ffor%5Fshares%5Fand%5Fexchange-traded%5Ffunds%5F-%5FPress%5Frelease.pdf" }, // ESMA
+      { label: "FCA, Bond consolidated tape, last updated 3 August 2026 (read 2026-11-16): ETS Connect UK appointed in August 2025, authorised in May 2026, UK bond tape launched 22 June 2026; no payments to data providers", href: "https://www.fca.org.uk/markets/data-reporting-services-providers/bond-consolidated-tape" }, // FCA
+      { label: "US Consolidated Tape, transition page (read 2026-11-16): CT Plan LLC approved in November 2024, DataCT LLC independent administrator, plan operative 1 April 2027, no technology change for subscribers", href: "https://consolidatedtape.com" }, // DataCT
+    ], // five sources, one object per line
+  },
+  {
+    // Direct feed (new entry): a venue's own market data product, faster and deeper than the consolidated feed; the 2012 NYSE penalty.
+    slug: "direct-feed", // the /glossary/direct-feed address
+    headword: "Direct feed (proprietary market data feed)", // the trade term with the SEC's phrase
+    kind: "term", // a term of market structure
+    domains: ["grc", "enterprise-networking"], // regulation and the network delivery
+    aliases: ["direct feed", "direct feeds", "proprietary data feed", "proprietary data feeds", "proprietary market data feed", "feed direto", "feeds diretos"], // singular, plural, the SEC's term and Portuguese
+    relatedTerms: ["securities-information-processor", "national-best-bid-and-offer", "exchange-colocation", "latency-arbitrage", "multicast", "fast-protocol"], // this batch, then existing entries
+    relatedArticles: ["market-data-consolidated-feeds-and-direct-feeds", "colocation-microwaves-and-the-race-for-latency", "fix-encodings-and-successors-fixml-fast-sbe-and-exchange-binary-protocols"], // part 386, the colocation part and part 380 (feed encodings)
+    sources: [ // every label says what the page says and when it was read
+      { label: "SEC, Market Data Infrastructure, Release 34-90610, 9 December 2020 (read 2026-11-16): three sources of latency for the exclusive SIPs; geographic latency the largest; many participants relegate SIP data to backup", href: "https://www.sec.gov/files/rules/final/2020/34-90610.pdf" }, // SEC
+      { label: "SEC, Release 34-67857, 14 September 2012 (read 2026-11-16): Rule 603(a) prohibits releasing data through proprietary feeds before sending it to the processor; NYSE feeds ahead by milliseconds to seconds; causes in system design", href: "https://www.sec.gov/files/litigation/admin/2012/34-67857.pdf" }, // SEC
+      { label: "SEC, press release 2012-189, 14 September 2012 (read 2026-11-16): US$5 million, the first-ever SEC financial penalty against an exchange", href: "https://www.sec.gov/news/press/2012/2012-189.htm" }, // SEC
+      { label: "D.C. Circuit, The Nasdaq Stock Market LLC v. SEC, No. 21-1100, 24 May 2022 (read 2026-11-16): exchanges develop and sell proprietary market data products, a lucrative business; the market data infrastructure rule upheld", href: "https://media.cadc.uscourts.gov/opinions/docs/2022/05/21-1100-1947763.pdf" }, // D.C. Circuit
+    ], // four sources, one object per line
+  },
+  {
+    // Feed arbitration (new entry): two multicast copies of the same data, first packet wins; B3's Feeds A, B and C and CME's A and B.
+    slug: "feed-arbitration", // the /glossary/feed-arbitration address
+    headword: "Feed arbitration (A/B line arbitration)", // the trade term with its common variant
+    kind: "jargon", // practitioners' term for a receiver technique
+    domains: ["enterprise-networking"], // multicast delivery and loss recovery
+    aliases: ["feed arbitration", "a/b arbitration", "line arbitration", "a/b feed arbitration", "arbitragem de feeds"], // variants and Portuguese usage
+    relatedTerms: ["snapshot-recovery", "multicast", "udp", "packet-loss", "pim", "igmp"], // this batch, then existing entries
+    relatedArticles: ["market-data-consolidated-feeds-and-direct-feeds", "multicast-what-it-costs-to-not-flood", "fix-encodings-and-successors-fixml-fast-sbe-and-exchange-binary-protocols"], // part 386, the multicast article and part 380
+    sources: [ // every label says what the page says and when it was read
+      { label: "B3, Binary UMDF Message Specification Guidelines, version 2.3.1.2 (read 2026-11-16): UDP trades reliability for performance; Feed A carries incrementals, instrument definitions and snapshots, Feed B only incrementals, Feed C the disaster recovery site; process the first packet received and discard the second; sequence number per channel", href: "https://www.b3.com.br/data/files/84/B7/1D/9E/AB611A103BBB511AAC094EA8/BinaryUMDF-MessageSpecificationGuidelines-v.2.3.1.2-enUS.pdf" }, // B3
+      { label: "B3, Binary UMDF IP address and connectivity data, spreadsheet (read 2026-11-16): production Feeds A, B and C in 233.252.8.0/24, 233.252.9.0/24 and 233.252.15.0/24 with rendezvous points", href: "https://www.b3.com.br/data/files/8D/60/3E/0D/630FD810066AFDD8AC094EA8/Binary%20UMDF%20-%20IP%20Address%20-%20Connectivity%20data.xlsx" }, // B3
+      { label: "CME Group, MDP 3.0 Dissemination (read 2026-11-16): Feeds A and B provide the first level of protection against missed market data messages", href: "https://cmegroupclientsite.atlassian.net/wiki/spaces/EPICSANDBOX/pages/457222936/MDP+3.0+-+Dissemination" }, // CME Group
+    ], // three sources, one object per line
+  },
+  {
+    // Snapshot recovery (new entry): rebuilding a book from a full-state message valid as of a sequence number, then applying later incrementals.
+    slug: "snapshot-recovery", // the /glossary/snapshot-recovery address
+    headword: "Snapshot recovery", // the general term, sentence case
+    kind: "term", // a receiver technique
+    domains: ["enterprise-networking"], // multicast market data and loss recovery
+    aliases: ["snapshot recovery", "market data snapshot", "snapshot feed", "late joiner recovery", "recuperação por snapshot"], // variants and Portuguese usage
+    relatedTerms: ["feed-arbitration", "multicast", "packet-loss", "udp", "central-limit-order-book"], // this batch, then existing entries
+    relatedArticles: ["market-data-consolidated-feeds-and-direct-feeds", "retries-timeouts-and-idempotency", "multicast-what-it-costs-to-not-flood"], // part 386 and two networking articles
+    sources: [ // every label says what the page says and when it was read
+      { label: "B3, Binary UMDF Message Specification Guidelines, version 2.3.1.2, sections 6.2, 6.3 and 7.4 (read 2026-11-16): snapshots valid as of LastMsgSeqNumProcessed (369) and LastSequenceVersion (37084); queue incrementals, discard those at or below the snapshot, unjoin; empty books for instruments without snapshots; RptSeq (83); heartbeat every second, inconsistency after three", href: "https://www.b3.com.br/data/files/84/B7/1D/9E/AB611A103BBB511AAC094EA8/BinaryUMDF-MessageSpecificationGuidelines-v.2.3.1.2-enUS.pdf" }, // B3
+      { label: "B3, UMDF FIX/FAST Market Data Messaging Specification, version 2.2.2, 9 July 2026, section 4.1.4 (read 2026-11-16): the TCP Replayer for the FAST feed, to be used only if few messages were lost", href: "https://b3.com.br/data/files/EC/B1/9A/AD/2E86F910FC0436F9AC094EA8/UMDF_MarketDataSpecification_v2.2.2.pdf" }, // B3
+      { label: "CME Group, MDP 3.0 Recovery Services (read 2026-11-16): TCP replay limited to 2,000 packets within the last 24 hours and only for small-scale recovery; after an unrecovered gap all books may be wrong", href: "https://cmegroupclientsite.atlassian.net/wiki/spaces/EPICSANDBOX/pages/457325847/MDP+3.0+-+Recovery+Services" }, // CME Group
+    ], // three sources, one object per line
+  },
+  {
+    // Spoofing and layering (new entry): orders placed to be cancelled, to move the price for a genuine order on the other side; the law and the cases.
+    slug: "spoofing-and-layering", // the /glossary/spoofing-and-layering address
+    headword: "Spoofing and layering", // the pair MAR's indicators name together
+    kind: "jargon", // the trade's names, which the EU indicators call 'usually known as'
+    domains: ["grc"], // market abuse law and surveillance
+    aliases: ["layering and spoofing", "spoofing (trading)", "layering (trading)", "spoof order", "spoof orders"], // the indicators' order and qualified forms; the bare words name other things on this site
+    relatedTerms: ["market-manipulation", "market-abuse-regulation", "suspicious-transaction-and-order-report", "high-frequency-trading", "flash-crash", "pre-trade-risk-controls", "central-limit-order-book"], // this batch, then existing entries
+    relatedArticles: ["surveillance-and-regulatory-reporting-mifid-ii-cat-and-cvm", "high-frequency-trading-what-it-is-and-the-dispute", "pre-trade-risk-and-market-access-controls"], // part 387, the HFT part and part 383 (Lek Securities)
+    sources: [ // every label says what the page says and when it was read
+      { label: "Commission Delegated Regulation (EU) 2016/522, Annex II (read 2026-11-16): orders often away from the touch on one side to trade on the other, removed once the trade has taken place, usually known as layering and spoofing", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016R0522" }, // EUR-Lex
+      { label: "FCA, Final Notice to Michael Coscia, 3 July 2013 (read 2026-11-16): layering on ICE Futures Europe, 6 September to 18 October 2011; order sequence in milliseconds; 0.1% of large and 44.5% of small Brent orders fully executed; US$903,176 penalty", href: "https://www.fca.org.uk/publication/final-notices/coscia.pdf" }, // FCA
+      { label: "Seventh Circuit, United States v. Coscia, No. 16-3017, 7 August 2017, in the petition appendix of Supreme Court docket 17-1099 (read 2026-11-16): spoofing criminalized by Dodd-Frank in 2010 as bidding or offering with the intent to cancel before execution; conviction and 36-month sentence affirmed", href: "https://www.supremecourt.gov/DocketPDF/17/17-1099/34287/20180202161853965_Coscia%20Petition%20Appendix.pdf" }, // Seventh Circuit
+      { label: "CFTC, release 8260-20, 29 September 2020 (read 2026-11-16): JPMorgan to pay US$920.2 million, the largest monetary relief ever imposed by the CFTC, for spoofing over at least eight years despite internal surveillance alerts", href: "https://www.cftc.gov/PressRoom/PressReleases/8260-20" }, // CFTC
+      { label: "BSM Supervisão de Mercados, Guia de Alertas BSM, version 2.0, September 2024 (read 2026-11-16): layering defined as offers without real intention to execute, forming layers in the book to trade on the opposite side at better prices", href: "https://www.bsmsupervisao.com.br/documents/d/guest/guia-de-alertas-2024" }, // BSM
+      { label: "Capital Aberto, CVM condena investidor por manipulação de mercado em caso de layering, 11 October 2019 (read 2026-11-16): the CVM's first layering judgment on 1 October 2019 and its first spoofing judgment in March 2018; the defence's arguments", href: "https://www.capitalaberto.com.br/regulacao/2019/10/cvm-condena-investidor-por-manipulacao-de-mercado-em-caso-de-layering" }, // Capital Aberto
+    ], // six sources, one object per line
+  },
+  {
+    // CAT (new entry): the US audit trail of every order, its cost against the 2016 estimate, the 2025 court ruling and the removal of names.
+    slug: "consolidated-audit-trail", // the /glossary/consolidated-audit-trail address
+    headword: "CAT (Consolidated Audit Trail)", // acronym first
+    kind: "acronym", // an acronym with its expansion
+    domains: ["grc", "privacy"], // market surveillance and the dispute over personal data
+    expansion: "Consolidated Audit Trail, under SEC Rule 613 and the CAT NMS Plan", // the formal identity
+    aliases: ["consolidated audit trail", "cat nms plan", "sec rule 613", "rule 613", "ccid", "cat customer identifier", "cais", "customer and account information system"], // names, the rule, the plan and its customer systems; the bare "cat" names the Unix command and "audit trail" the general entry
+    relatedTerms: ["audit-trail", "transaction-reporting", "reg-nms", "flash-crash", "pii", "data-minimization", "ptp"], // existing entries and this batch
+    relatedArticles: ["surveillance-and-regulatory-reporting-mifid-ii-cat-and-cvm", "colocation-microwaves-and-the-race-for-latency", "oms-and-ems-order-and-execution-management-systems"], // part 387, the colocation part (CAT clocks) and part 382
+    sources: [ // every label says what the page says and when it was read
+      { label: "SEC, Consolidated Audit Trail, Release 34-67457, 18 July 2012 (read 2026-11-16): nearly five months to reconstruct the order books of 6 May 2010, about 90% of activity; earlier trails OATS (1996) and OTS (1999); the US$4 billion estimate of the proposal", href: "https://www.sec.gov/files/rules/final/2012/34-67457.pdf" }, // SEC
+      { label: "SEC, Release 34-79318, 15 November 2016 (read 2026-11-16): approval of the CAT NMS Plan", href: "https://www.sec.gov/files/rules/sro/nms/2016/34-79318.pdf" }, // SEC
+      { label: "SEC, Release 34-105107, order of 27 March 2026, Federal Register, 1 April 2026 (read 2026-11-16): 2016 estimate US$55.8 million a year; 2025 budget about US$249 million, revised to about US$228 million; cloud fees and event volumes 2022 to 2024; CAIS amendment savings of US$7 to US$9 million", href: "https://www.govinfo.gov/content/pkg/FR-2026-04-01/pdf/2026-06255.pdf" }, // SEC
+      { label: "Eleventh Circuit, American Securities Association v. SEC, No. 23-13396, 25 July 2025 (read 2026-11-16): over US$500 million to build, about US$200 million a year to run; the 2023 funding order vacated and the judgment stayed", href: "https://www.govinfo.gov/content/pkg/USCOURTS-ca11-23-13396/pdf/USCOURTS-ca11-23-13396-0.pdf" }, // Eleventh Circuit
+      { label: "SEC, Release 34-104586, 13 January 2026 (read 2026-11-16): the transaction database holds only anonymized order and event data; CCID two-phase transformation since 2020; names, addresses and dates of birth removed; regulators ask brokers through FDIDs", href: "https://www.sec.gov/files/rules/sro/nms/2026/34-104586.pdf" }, // SEC
+      { label: "FINRA CAT, CAT Fee Alert 2026-3, 12 November 2026 (read 2026-11-16): CAT Fee 2027-1 at US$0.000008 per executed equivalent share, first invoice February 2027", href: "https://www.catnmsplan.com/sites/default/files/2026-11/11.12.26-CAT-Fee-Alert-2026-3.pdf" }, // FINRA CAT
+    ], // six sources, one object per line
+  },
+  {
+    // STOR (new entry): the EU's suspicious transaction and order report under MAR Article 16; volumes from ESMA and the FCA.
+    slug: "suspicious-transaction-and-order-report", // the /glossary/suspicious-transaction-and-order-report address
+    headword: "STOR (suspicious transaction and order report)", // acronym first
+    kind: "acronym", // an acronym with its expansion
+    domains: ["grc"], // market abuse reporting
+    expansion: "suspicious transaction and order report, under Article 16 of the Market Abuse Regulation", // the formal identity
+    aliases: ["stor", "stors", "suspicious transaction and order report", "suspicious transaction and order reports"], // the acronym and the full name; Brazil's anti-money-laundering 'comunicação de operação suspeita' is a different report and is left out
+    relatedTerms: ["market-abuse-regulation", "spoofing-and-layering", "market-manipulation", "transaction-reporting"], // this batch, then existing entries
+    relatedArticles: ["surveillance-and-regulatory-reporting-mifid-ii-cat-and-cvm"], // part 387
+    sources: [ // every label says what the page says and when it was read
+      { label: "Regulation (EU) No 596/2014, Article 16 (read 2026-11-16): market operators and persons professionally arranging or executing transactions must detect and report suspicious orders and transactions", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32014R0596" }, // EUR-Lex
+      { label: "Commission Delegated Regulation (EU) 2016/957 (read 2026-11-16): monitoring of all orders and transactions; analysis of each order placed, modified, cancelled or rejected; software for deferred replay of order book data at venues; human analysis; STOR without delay on the template; no tipping off", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016R0957" }, // EUR-Lex
+      { label: "ESMA, Report on Suspicious Transaction and Order Reports, 19 December 2025 (read 2026-11-16): 5,981 STORs in 2024, 8% fewer than 2023; Germany 30%, France 16%; insider trading 57% and manipulation 41% of notifications; the UK's 50% and 43% shares in 2017 and 2018", href: "https://www.esma.europa.eu/sites/default/files/2025-12/ESMA74-268544963-1554_Report_on_Suspicious_Transaction_and_Order_Reports__STORs_.pdf" }, // ESMA
+      { label: "FCA, Number of STORs received: 2024, last updated 16 March 2026 (read 2026-11-16): 4,528 STORs, 3,945 insider dealing, 581 market manipulation, 2 other", href: "https://www.fca.org.uk/markets/how-report-suspected-market-abuse-firm-or-trading-venue/number-stors-received-2024" }, // FCA
+      { label: "FCA, Our agenda to combat market abuse, speech of 28 April 2025, as drafted (read 2026-11-16): over 70% of current market abuse investigations originate from a STOR; organized crime groups around 25% of STORs", href: "https://www.fca.org.uk/news/speeches/our-agenda-combat-market-abuse" }, // FCA
+    ], // five sources, one object per line
+  },
+  {
+    // MAR (new entry): the EU Market Abuse Regulation; definitions, named practices, sanctions and the 2024 order data exchange.
+    slug: "market-abuse-regulation", // the /glossary/market-abuse-regulation address
+    headword: "MAR (Market Abuse Regulation)", // acronym first
+    kind: "acronym", // an acronym with its expansion
+    domains: ["grc"], // EU market regulation
+    expansion: "Market Abuse Regulation, Regulation (EU) No 596/2014 (Regulamento de Abuso de Mercado)", // the formal identity and Portuguese
+    aliases: ["market abuse regulation", "eu market abuse regulation", "regulation (eu) no 596/2014", "regulamento de abuso de mercado"], // names and Portuguese; the bare "mar" is a Portuguese word
+    relatedTerms: ["mifid-ii", "market-manipulation", "spoofing-and-layering", "suspicious-transaction-and-order-report", "transaction-reporting"], // existing entries and this batch
+    relatedArticles: ["surveillance-and-regulatory-reporting-mifid-ii-cat-and-cvm", "the-rules-that-rewired-markets-reg-ats-reg-nms-mifid-and-brazil"], // part 387 and the wave-1 rules part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Regulation (EU) No 596/2014, Articles 12, 16 and 30 (read 2026-11-16): manipulation as false or misleading signals or abnormal prices unless for legitimate reasons and an accepted market practice; algorithmic and high-frequency strategies named; detection and reporting duties; maximum sanctions of at least EUR 15 million or 15% of turnover for legal persons and EUR 5 million for natural persons", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32014R0596" }, // EUR-Lex
+      { label: "Commission Delegated Regulation (EU) 2016/522, Annex II (read 2026-11-16): indicators of manipulation, with layering and spoofing, quote stuffing and momentum ignition named", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016R0522" }, // EUR-Lex
+      { label: "Regulation (EU) 2024/2809 of 23 October 2024 (Listing Act), Article 2 inserting Article 25a into MAR (read 2026-11-16): a mechanism for the ongoing exchange of order data by 5 June 2026, extended to bonds and futures by 5 June 2028", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32024R2809" }, // EUR-Lex
+    ], // three sources, one object per line
+  },
+  {
+    // Transaction reporting (new entry): MiFIR Article 26 reports by the next working day, the 65 fields of RTS 22 and the algorithm codes.
+    slug: "transaction-reporting", // the /glossary/transaction-reporting address
+    headword: "Transaction reporting (MiFIR Article 26)", // the term with its legal anchor
+    kind: "term", // a regulatory term
+    domains: ["grc"], // EU and UK market regulation
+    aliases: ["transaction reporting", "transaction report", "transaction reports", "mifir transaction reporting", "article 26 mifir", "rts 22", "reporte de transações"], // forms, the standard and Portuguese; the bare "mifir" stays with mifid-ii
+    relatedTerms: ["mifid-ii", "market-abuse-regulation", "suspicious-transaction-and-order-report", "consolidated-audit-trail", "utc"], // existing entries and this batch
+    relatedArticles: ["surveillance-and-regulatory-reporting-mifid-ii-cat-and-cvm", "network-derived-analytics-and-trading-monitoring"], // part 387 and part 385 (record keeping)
+    sources: [ // every label says what the page says and when it was read
+      { label: "Regulation (EU) No 600/2014 (MiFIR), Articles 25 and 26 (read 2026-11-16): complete and accurate details as quickly as possible and no later than the close of the following working day; designation of the persons and computer algorithms responsible; five-year retention of order data", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32014R0600" }, // EUR-Lex
+      { label: "Commission Delegated Regulation (EU) 2017/590 (RTS 22), Annex I, Table 2, and Articles 8 and 9 (read 2026-11-16): 65 fields; LEI, MIC and ISIN codes; trading capacity DEAL, MTCH or AOTC; algorithms identified in fields 57 and 59; the CCP's LEI for an undisclosed counterparty", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32017R0590" }, // EUR-Lex
+      { label: "FCA, Discussion Paper DP24/2, Improving the UK transaction reporting regime, November 2024 (read 2026-11-16): over 7 billion transaction reports a year on over 20 million reportable instruments", href: "https://www.fca.org.uk/publication/discussion/dp24-2.pdf" }, // FCA
+      { label: "FCA, Our agenda to combat market abuse, speech of 28 April 2025, as drafted (read 2026-11-16): 76 million transaction reports on 7 April 2025 against a daily average of 30 million", href: "https://www.fca.org.uk/news/speeches/our-agenda-combat-market-abuse" }, // FCA
+    ], // four sources, one object per line
+  },
+  {
+    // BSM (new entry): B3's self-regulator; nature, funding, what it monitors, its 2025 numbers and its layering and spoofing benchmarks.
+    slug: "bsm-supervisao-de-mercados", // the /glossary/bsm-supervisao-de-mercados address
+    headword: "BSM Supervisão de Mercados", // the name as the body writes it
+    kind: "term", // an institution's name
+    domains: ["grc"], // Brazilian market self-regulation
+    aliases: ["bsm", "bsm supervisao de mercados"], // the short form and the unaccented spelling
+    relatedTerms: ["b3", "market-manipulation", "spoofing-and-layering", "direct-market-access", "matching-engine"], // existing entries and this batch
+    relatedArticles: ["surveillance-and-regulatory-reporting-mifid-ii-cat-and-cvm", "brazil-bmf-bovespa-b3-and-electronic-access"], // part 387 and the wave-1 Brazil part
+    sources: [ // every label says what the page says and when it was read
+      { label: "BSM Supervisão de Mercados, Quem somos (read 2026-11-16): main self-regulator of the Brazilian capital market; a civil association under private law created to supervise the organized markets B3 runs; administrative and budgetary autonomy; regulated by the CVM", href: "https://www.bsmsupervisao.com.br/quem-somos" }, // BSM
+      { label: "B3, Formulário de Referência 2024, version 16 (read 2026-11-16): BSM a non-profit civil association, not consolidated by B3; B3's contributions of about R$272 million from 2007 to 31 December 2023", href: "https://api.mziq.com/mzfilemanager/v2/d/5fd7b7d8-54a1-472d-8426-eb896ad8a3c4/8d8a1c1b-991e-904f-e699-a9cb7cc6d9e5?origin=1" }, // B3
+      { label: "BSM Supervisão de Mercados, Relatório Anual 2025 (read 2026-11-16): 100% of B3's offers and trades monitored daily; 2,264 analyses and 122 closed cases in 2025, 49 sent to the CVM; 73 alert letters; two different counts of disciplinary proceedings opened (16 and 20)", href: "https://www.bsmsupervisao.com.br/documents/1266368/1502039/Relat%C3%B3rio+Anual+2025.pdf/726df4f5-35da-1573-e2be-e699df474f06?version=1.0&t=1774992665214" }, // BSM
+      { label: "BSM Supervisão de Mercados, benchmarks of layering, spoofing and transfers for October 2026 (read 2026-11-16): monthly statistics for intermediaries to compare their patterns and build alerts", href: "https://www.bsmsupervisao.com.br/w/benchmarks-de-layering-spoofing-e-transfer%C3%AAncia-de-recursos-de-outubro-dispon%C3%ADveis-1" }, // BSM
+      { label: "CVM, Resolução CVM 135, 10 June 2022, consolidated text, Articles 47 and 48 (read 2026-11-16): market operators supervise trades, their own market activities and participants through a self-regulation department or an association", href: "https://conteudo.cvm.gov.br/export/sites/cvm/legislacao/resolucoes/anexos/100/resol135consolid.pdf" }, // CVM
+    ], // five sources, one object per line
+  },
+  {
+    // Speed bump (new entry): a deliberate delay an exchange adds to incoming messages; IEX's coil, the SEC's de minimis reading, NYSE American's copy and retreat.
+    slug: "speed-bump", // the /glossary/speed-bump address
+    headword: "speed bump", // lower case, a term of market design
+    kind: "term", // a concept of market structure
+    domains: ["grc", "enterprise-networking"], // market regulation and the latency engineering behind it
+    aliases: ["speedbump", "intentional access delay", "access delay", "symmetric speed bump", "atraso intencional de acesso"], // IEX's spelling, the SEC's term, the symmetric variant, Portuguese
+    relatedTerms: ["asymmetric-speed-bump", "iex", "frequent-batch-auction", "latency-arbitrage", "order-protection-rule", "exchange-colocation"], // this batch, then existing entries
+    relatedArticles: ["fairness-by-design-speed-bumps-batch-auctions-and-iex", "high-frequency-trading-what-it-is-and-the-dispute", "colocation-microwaves-and-the-race-for-latency"], // part 388, then the two parts on the race
+    sources: [ // every label says what the page says and when it was read
+      { label: "US SEC, Release 34-78101, order granting IEX's exchange registration, 17 June 2016, Federal Register public inspection copy (read 2026-11-16): access through a POP in Secaucus; a coil of 61,625 metres (about 38 miles) plus distance equal to 350 microseconds; inbound market data and SIP output not delayed; the delay lets IEX reprice pegged orders; Commissioner Piwowar dissenting in part", href: "https://s3.amazonaws.com/public-inspection.federalregister.gov/2016-14875.pdf" }, // the approval
+      { label: "US SEC, Release 34-78102, Commission Interpretation Regarding Automated Quotations Under Regulation NMS, 17 June 2016 (read 2026-11-16): 'immediate' precludes intentional delays unless de minimis; no bright-line threshold; individual review of every proposed delay; a staff study promised within two years", href: "https://s3.amazonaws.com/public-inspection.federalregister.gov/2016-14876.pdf" }, // the interpretation
+      { label: "IEX, Technology page, undated (read 2026-11-16): 44 miles of coiled fibre since the 2024 relocation of the primary data centre, historically 38 miles, keeping the 350-microsecond delay", href: "https://www.iex.io/technology" }, // the coil today
+      { label: "US SEC, Release 34-80700, NYSE MKT, order approving a delay mechanism, 16 May 2017 (read 2026-11-16): 350 microseconds added by software to inbound and outbound order messages, designed as a competitive model to IEX", href: "https://docs.regulations.justia.com/entries/2017-05-22/2017-10304.pdf" }, // the copy
+      { label: "NYSE American, Release 34-87550, notice eliminating the Delay Mechanism, 15 November 2019 (read 2026-11-16): no issuer interest and no added volume; quoted spread 208.2 to 292.4 basis points, market share 12.1% to 11.5%, before and with the delay", href: "https://www.govinfo.gov/content/pkg/FR-2019-11-21/pdf/2019-25207.pdf" }, // the retreat
+    ], // five sources, one object per line
+  },
+  {
+    // Asymmetric speed bump (new entry): a delay only on orders that would trade on arrival; Eurex, ICE Futures U.S., TSX Alpha, the LME platform; EDGA disapproved.
+    slug: "asymmetric-speed-bump", // the /glossary/asymmetric-speed-bump address
+    headword: "asymmetric speed bump", // lower case, a term of market design
+    kind: "term", // a concept of market structure
+    domains: ["grc", "enterprise-networking"], // market regulation and latency engineering
+    aliases: ["asymmetric delay", "passive liquidity protection", "passive order protection", "liquidity provider protection", "speed bump assimétrico"], // the generic phrase, Eurex's, ICE's and Cboe EDGA's names, Portuguese
+    relatedTerms: ["speed-bump", "frequent-batch-auction", "latency-arbitrage", "market-maker", "iex"], // this batch, then existing entries
+    relatedArticles: ["fairness-by-design-speed-bumps-batch-auctions-and-iex", "high-frequency-trading-what-it-is-and-the-dispute"], // part 388 and the high-frequency trading part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Eurex, Eurex Market Model: Passive Liquidity Protection, undated (read 2026-11-16): aggressive orders delayed by a segment-specific deferral time, passive orders not; FX products and German and French equity options in 2019, the DAX option in August 2020, the FTSE 100 option in May 2021, the EURO STOXX 50 option family since October 2022", href: "https://www.eurex.com/ex-en/trade/eurex-plp" }, // Eurex
+      { label: "Eurex, interview with Randolf Roth, 13 May 2020 (read 2026-11-16): aggressive orders delayed between 1 and 3 milliseconds; pilot results very encouraging; the buy side had not yet moved more activity into the book", href: "https://www.eurex.com/ec-en/find/news/Strengthening-liquidity-successful-pilot-phase-for-Eurex-s-Passive-Liquidity-Protection--1963602" }, // Eurex's own assessment
+      { label: "ICE Futures U.S., Submission 19-119, 1 February 2019 (read 2026-11-16): Passive Order Protection holds incoming orders that would match resting orders for 3 milliseconds in Gold Daily and Silver Daily futures; resting orders can be modified meanwhile", href: "https://cftc.gov/filings/orgrules/rule022019iceusdcm001.pdf" }, // ICE
+      { label: "CFTC, Release 7928-19, Division of Market Oversight statement, 15 May 2019 (read 2026-11-16): the first speed bump certified by a designated contract market; effective after the 90-day review; limited data on speed bumps; other products need new filings", href: "https://www.cftc.gov/PressRoom/PressReleases/7928-19" }, // the regulator
+      { label: "CFTC, Statement of Commissioner Dan M. Berkovitz, 15 May 2019 (read 2026-11-16): asymmetric speed bumps that purposely disadvantage particular entities, strategies or technologies called discriminatory and anti-competitive", href: "https://www.cftc.gov/PressRoom/SpeechesTestimony/berkovitzstatement051519" }, // the dissent
+      { label: "US SEC, Release 34-88261, order disapproving Cboe EDGA's Liquidity Provider Protection delay, 21 February 2020 (read 2026-11-16): up to 4 milliseconds on liquidity-removing orders; not shown to be tailored to latency arbitrage or free of unfair discrimination", href: "https://www.govinfo.gov/content/pkg/FR-2020-02-27/pdf/2020-03915.pdf" }, // a refusal
+      { label: "Ontario Securities Commission, Staff Notice 21-712, 2 February 2018 (read 2026-11-16): TSX Alpha's random 1 to 3 millisecond delay on all but post-only orders; displayed orders not protected; studies divergent; staff unable to conclude that market quality was harmed", href: "https://OSC.gov.on.ca/sites/default/files/pdfs/irps/20180202_21-712_sn-alpha-impact.pdf" }, // a review
+    ], // seven sources, one object per line
+  },
+  {
+    // Frequent batch auctions (new entry): discrete-time, uniform-price matching proposed by Budish, Cramton and Shim; Europe's periodic auctions; Taiwan's switch.
+    slug: "frequent-batch-auction", // the /glossary/frequent-batch-auction address
+    headword: "frequent batch auctions", // plural, as the literature names the design
+    kind: "term", // a market design
+    domains: ["grc"], // market design and regulation
+    aliases: ["frequent batch auction", "batch auction", "batch auctions", "fba", "fbas", "discrete-time trading", "leilões frequentes em lote", "leilão em lote"], // singular and plural, the acronym, a description, Portuguese
+    relatedTerms: ["latency-arbitrage", "speed-bump", "asymmetric-speed-bump", "central-limit-order-book", "high-frequency-trading", "mifid-ii"], // existing entries and this batch
+    relatedArticles: ["fairness-by-design-speed-bumps-batch-auctions-and-iex", "high-frequency-trading-what-it-is-and-the-dispute"], // part 388 and the high-frequency trading part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Budish, Cramton and Shim, Implementation Details for Frequent Batch Auctions, American Economic Review: Papers and Proceedings 104(5), May 2014, author's copy (read 2026-11-16): sealed orders during the interval; uniform-price clearing; pro-rata rationing within an interval with time priority across intervals; publication of aggregate curves; competition on price instead of speed", href: "https://ericbudish.org/files/implementation_details_frequent_batch_auctions.pdf" }, // the design
+      { label: "EconPapers, Budish, Cramton and Shim, The High-Frequency Trading Arms Race, Quarterly Journal of Economics 130(4), 2015, abstract (read 2026-11-16): frequent batch auctions as the market design response to the arms race", href: "https://econpapers.repec.org/RePEc:oup:qjecon:v:130:y:2015:i:4:p:1547-1621" }, // the theory
+      { label: "Eric Budish, response to ESMA's call for evidence on periodic auctions, 11 January 2019 (read 2026-11-16): scheduled intervals of 1 millisecond or less as a replacement for the continuous book, unlike Europe's order-triggered periodic auctions", href: "https://ericbudish.org/files/response_esmas_call_evidence_periodic_auctions.pdf" }, // the distinction
+      { label: "ESMA, Final Report, Call for Evidence on Periodic Auctions, ESMA70-156-1035, 11 June 2019 (read 2026-11-16): FBAs last some milliseconds and are triggered by orders; share rose from about 0.5% of on-venue equity trading in January 2018 to 2.4% in August 2018, then about 1.7%; double volume cap concerns", href: "https://www.esma.europa.eu/sites/default/files/library/esma70-156-1035_final_report_call_for_evidence_periodic_auctions.pdf" }, // Europe
+      { label: "Indriawan, Pascual and Shkilko, On the Effects of Continuous Trading, working paper, 3 March 2021 (read 2026-11-16): Taiwan's five-second batch auctions replaced by continuous trading on 23 March 2020; greater adverse selection, less displayed liquidity, higher trading costs", href: "https://pages.stern.nyu.edu/jhasbrou/SternMicroMtg/Old/SternMicroMtg2021/Papers/Effects%20of%20continuous%20trading.pdf" }, // one reading of Taiwan
+      { label: "Matthew Steinert, Citadel Securities, WFE Focus, April 2022 (read 2026-11-16): the same Taiwan switch read as better liquidity, narrower spreads and higher volume under continuous trading", href: "https://focus.world-exchanges.org/articles/citadel-trading-auctions" }, // the other reading
+      { label: "Budish, Lee and Shim, A Theory of Stock Exchange Competition and Innovation, Journal of Political Economy 132(4), April 2024, author's copy (read 2026-11-16): exchanges earn rents from selling speed, a wedge between private and social incentives to adopt the design", href: "https://ericbudish.org/files/A-Theory-of-Stock-Exchange-Competition-and-Innovation.pdf" }, // why exchanges have not switched
+    ], // seven sources, one object per line
+  },
+  {
+    // IEX (new entry): the Investors Exchange, from ATS to exchange with a 350-microsecond coil; D-Limit and IEX Options upheld in court.
+    slug: "iex", // the /glossary/iex address (not a vendor key in src/config/vendors.ts)
+    headword: "IEX (Investors Exchange)", // acronym first, as for other acronym entries
+    kind: "acronym", // a company and venue known by its acronym
+    domains: ["vendors", "grc"], // an exchange operator and the regulatory record around it
+    expansion: "Investors Exchange", // IEX's own name; the 2016 SEC order spells it Investors' Exchange, LLC
+    aliases: ["investors exchange", "investors' exchange", "iex exchange", "iex group", "iex options"], // the full names, the company and the options venue
+    relatedTerms: ["speed-bump", "crumbling-quote-indicator", "latency-arbitrage", "order-protection-rule", "alternative-trading-system", "reg-nms"], // this batch, then existing entries
+    relatedArticles: ["fairness-by-design-speed-bumps-batch-auctions-and-iex", "high-frequency-trading-what-it-is-and-the-dispute", "the-rules-that-rewired-markets-reg-ats-reg-nms-mifid-and-brazil"], // part 388, the HFT part, the rules part
+    sources: [ // every label says what the page says and when it was read
+      { label: "IEX, Company history page, undated (read 2026-11-16): co-founders met at RBC in 2009; founded 2012; ATS one year later; Flash Boys 2014; the Signal and D-Peg 2014; exchange approval 2016; D-Limit 2020; IEX Options announced 2024", href: "https://www.iex.io/about" }, // IEX's own account
+      { label: "US SEC, Release 34-78101, 17 June 2016 (read 2026-11-16): Form 1 of 21 August 2015, five amendments, 474 comments; operating as an ATS since October 2013; approved with Commissioner Piwowar dissenting in part", href: "https://s3.amazonaws.com/public-inspection.federalregister.gov/2016-14875.pdf" }, // the approval
+      { label: "US SEC, Release 34-89686, D-Limit approval, 26 August 2020 (read 2026-11-16): the crumbling quote indicator on 0.007% of regular hours, 33.7% of marketable orders and 24% of displayed volume in that time", href: "https://www.govinfo.gov/content/pkg/FR-2020-09-01/pdf/2020-19204.pdf" }, // D-Limit
+      { label: "US Court of Appeals for the D.C. Circuit, Citadel Securities LLC v. SEC, No. 20-1424, 29 July 2022 (read 2026-11-16): petition against the D-Limit approval denied", href: "https://media.cadc.uscourts.gov/opinions/docs/2022/07/20-1424-1956972.pdf" }, // first court case
+      { label: "US Court of Appeals for the Eleventh Circuit, Citadel Securities LLC v. SEC, No. 25-13631, 29 May 2026 (read 2026-11-16): petition against the IEX Options approval of 18 September 2025 denied; IEX's equity share about 3% per the 2025 order", href: "https://media.ca11.uscourts.gov/opinions/pub/files/202513631.pdf" }, // second court case
+      { label: "Options Price Reporting Authority, notice of 1 May 2026 (read 2026-11-16): IEX Options planned to begin trading on 2 October 2026", href: "https://cdn.opraplan.com/documents/notices/IEX_Options_New_Participant_100226.pdf" }, // the options launch plan
+    ], // six sources, one object per line
+  },
+  {
+    // Crumbling quote indicator (new entry): IEX's Signal, which predicts an imminent change in the national best bid or offer; D-Peg, D-Limit and the options ORP.
+    slug: "crumbling-quote-indicator", // the /glossary/crumbling-quote-indicator address
+    headword: "crumbling quote indicator (CQI)", // the court's and SEC's name with IEX's acronym
+    kind: "term", // a mechanism of one venue, named generically
+    domains: ["grc", "vendors"], // market regulation and an exchange's product
+    expansion: "crumbling quote indicator", // the spelled-out form
+    aliases: ["cqi", "crumbling quote", "iex signal", "d-limit", "discretionary limit", "d-peg", "discretionary peg", "options risk parameter", "orp"], // the acronym, IEX's name, the order types and the options quote type that use it
+    relatedTerms: ["iex", "speed-bump", "latency-arbitrage", "market-maker"], // this batch, then existing entries
+    relatedArticles: ["fairness-by-design-speed-bumps-batch-auctions-and-iex"], // part 388
+    sources: [ // every label says what the page says and when it was read
+      { label: "IEX, Technology page, undated (read 2026-11-16): the Signal, also known as the Crumbling Quote Indicator, predicts that the NBB is about to fall or the NBO about to rise and stays on for 2 milliseconds or until the price changes; D-Peg priced one tick less aggressively while it is on", href: "https://www.iex.io/technology" }, // IEX's description
+      { label: "US SEC, Release 34-89686, D-Limit approval, 26 August 2020 (read 2026-11-16): on 1.64 seconds per symbol per day, 0.007% of regular hours; 33.7% of marketable orders and 24% of displayed volume in that time; Citadel's objection about retail flow", href: "https://www.govinfo.gov/content/pkg/FR-2020-09-01/pdf/2020-19204.pdf" }, // the numbers
+      { label: "US Court of Appeals for the D.C. Circuit, No. 20-1424, 29 July 2022 (read 2026-11-16): the disparity is substantial evidence of latency arbitrage in those moments; sweeps can be timed to avoid triggering it", href: "https://media.cadc.uscourts.gov/opinions/docs/2022/07/20-1424-1956972.pdf" }, // the court
+      { label: "US Court of Appeals for the Eleventh Circuit, No. 25-13631, 29 May 2026 (read 2026-11-16): the options version, the Options Risk Parameter, affects quotes significantly less than 0.001% of the day on average, up to 0.2% for some options", href: "https://media.ca11.uscourts.gov/opinions/pub/files/202513631.pdf" }, // options
+    ], // four sources, one object per line
+  },
+  {
+    // RLP (new entry): B3's Retail Liquidity Provider offer, the CVM's experiment since 2019 and the 2026 recommendation on internalization.
+    slug: "retail-liquidity-provider", // the /glossary/retail-liquidity-provider address (bare "rlp" left out: NYSE's Retail Liquidity Program shares the letters in the Knight Capital article)
+    headword: "RLP (Retail Liquidity Provider)", // acronym first, B3's English name
+    kind: "acronym", // known by its acronym in Brazil
+    domains: ["grc"], // market regulation
+    expansion: "Retail Liquidity Provider (oferta RLP da B3)", // English name and B3's Portuguese usage
+    aliases: ["retail liquidity provider", "oferta rlp", "ofertas rlp", "rlp offer"], // full name, Portuguese, English
+    relatedTerms: ["b3", "high-frequency-trading", "market-maker", "asymmetric-speed-bump"], // existing entries, then this batch
+    relatedArticles: ["fairness-by-design-speed-bumps-batch-auctions-and-iex", "brazil-bmf-bovespa-b3-and-electronic-access"], // part 388 and the Brazil part
+    sources: [ // every label says what the page says and when it was read
+      { label: "B3, Ofício Circular 019/2019-VOP, 10 June 2019 (read 2026-11-16): a pegged offer hit only by retail-flagged orders of the same broker's clients; price improvement of at least one tick when the spread is two ticks or more; priority over other brokers but not over the broker's other clients; approved by the CVM on 21 and 28 May 2019", href: "https://www.b3.com.br/data/files/91/32/1A/FF/B534B610F94E03B6AC094EA8/OC%20019-2019-VOP%20%20RLP-V9%20-%2020190503%20limpo_REVISADO%20%28003%29_ANEXO_FORMATADO_R.pdf" }, // the rules
+      { label: "CVM, decision of 28 May 2019 (read 2026-11-16): institutional clients, including high-frequency traders, allowed to waive non-preterition during the experiment, against the staff's view, with a monitoring flag", href: "https://conteudo.cvm.gov.br/decisoes/2019/20190528_R1/20190528_D1410.html" }, // the HFT waiver
+      { label: "CVM, Memorando 25/2020-CVM/SMI, 29 July 2020 (read 2026-11-16): twelve-month results on the mini contracts; spreads unchanged, more investors and trades, neutral for investors, excellent for brokers; use capped at 15% of volume", href: "https://conteudo.cvm.gov.br/export/sites/cvm/decisoes/anexos/2020/20200804/141020.pdf" }, // the first evaluation
+      { label: "B3, Ofício Circular 038/2025-VNC, 30 September 2025 (read 2026-11-16): CVM decision of 13 August 2024 making the RLP permanent in WIN and WDO and extending the equity experiment 18 months in 20 stocks; new rules from 3 November 2025", href: "https://www.b3.com.br/data/files/17/B4/88/14/AEA99910F5D34899AC094EA8/OC%20038-2025-VNC%20NOVAS%20REGRAS%20DE%20FUNCIONAMENTO%20DE%20OFERTA%20RLP%20NO%20MERCADO%20DE%20ACOES%20E%20PARA%20OS%20MINICONTRATOS%20FUTUROS%20WIN%20E%20WDO_PT.pdf" }, // permanence
+      { label: "CVM, ASA, Internalização de Ordens, February 2026 (read 2026-11-16): keep internalization within exchange procedures such as the RLP, remove limits on eligible stocks and retail volume, evaluate within five years, standardize best-execution disclosure; authors' views, not necessarily the CVM's", href: "https://www.gov.br/cvm/pt-br/centrais-de-conteudo/publicacoes/estudos/internalizacao-de-ordens_air_2026-02-11_asa.pdf/@@download/file" }, // the 2026 study
+    ], // five sources, one object per line
   },
 ];
 

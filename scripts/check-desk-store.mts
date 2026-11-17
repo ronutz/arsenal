@@ -124,6 +124,21 @@
 //      the sync client's choices loaded only when used, the merge rule, the
 //      read-mark setting); emptying asked in words, never a browser dialog,
 //      undone by the page; its links land on real anchors; six packs.
+//  23. THE DESK IMPROVEMENT PASS (increment E, 16/11/2026): the reading
+//      calendar is whole weeks, oldest first, seven days a column, nothing
+//      after today, today marked, Sunday first in Brazilian Portuguese and
+//      Monday first elsewhere; "when" for the last pages opened is the
+//      language's own (yesterday, not "1 day ago"), and nothing for a clock
+//      ahead; widgets keep their own height; every desk control is 44 px on
+//      a touch screen; the phone's jump row links every widget's heading and
+//      goes while arranging; a path link leaves the address once followed;
+//      the new words in six packs.
+//  24. THE DESK'S SECOND PASS (PRIME 16/11/2026 15:46): a seven-step type
+//      scale and no other font size in the desk block; paths drawn as trails
+//      (read filled, the next ringed, the bar beyond 120 items); every widget
+//      folds to its title row, kept in the layout; the exam countdown's pace
+//      (items left over days left, only while both are above zero); a filter
+//      in Favourites; the words in six packs.
 // Prints what it checked.
 // ============================================================================
 
@@ -810,8 +825,10 @@ for (const raw of [null, 42, "x", [], { v: 9, saved: "nope", read: [1], paths: {
   // Placed after paint (an effect, at idle), absolutely (the CSS), so the page does not move.
   const css = fs.readFileSync("src/app/components.css", "utf8");
   check(/useEffect\(/.test(body) && /requestIdleCallback/.test(body) && /\.desk-mark \{ position: absolute;/.test(css), "the index labels are placed after paint and positioned absolutely");
-  // Mounted on the three index pages, each with the words "Saved", "Read" and "Done".
-  for (const page of ["learn", "tools", "glossary"]) {
+  // Mounted on the index pages that list items, each with the words "Saved", "Read" and "Done". Since the glossary
+  // split (16/11/2026) the glossary's entries are listed on its letter, domain and kind pages, not on /glossary, so the
+  // labels are checked there.
+  for (const page of ["learn", "tools", "glossary/letter/[letter]", "glossary/domain/[domain]", "glossary/kind/[kind]"]) {
     // The page's source.
     const src = fs.readFileSync(`src/app/[locale]/${page}/page.tsx`, "utf8");
     // The component with its three words.
@@ -1082,6 +1099,78 @@ for (const raw of [null, 42, "x", [], { v: 9, saved: "nope", read: [1], paths: {
     // The pack.
     const pack = JSON.parse(fs.readFileSync(`src/i18n/messages/${loc}.json`, "utf8")) as { desk?: { privacy?: Record<string, string> } };
     check(["counting", "sync", "syncOff", "syncStart", "syncStop", "syncStopped", "notes", "merge", "mergeLatest", "mergeKeep", "autoRead", "empty", "emptyAsk", "emptyYes", "emptyNo", "emptied", "allSettings", "privacyPage"].every((k) => !!pack.desk?.privacy?.[k]), `${loc}: every word of Privacy and settings is there`);
+  }
+}
+
+// ---- 23. The desk improvement pass (increment E, 16/11/2026) --------------------------------------------------------
+{
+  // The pure date helpers.
+  const cal = await import("../src/lib/desk/calendar");
+  // Monday 16 November 2026, twelve weeks, Monday first.
+  const weeks = cal.readingCalendar(["2026-11-16", "2026-11-14", "2026-08-31"], "2026-11-16", 12, 1);
+  // Shape: twelve columns of seven.
+  check(weeks.length === 12 && weeks.every((c) => c.length === 7), "the reading calendar is whole weeks, seven days a column");
+  // The first day shown is the Monday eleven weeks before this week's (31 August 2026), the last column holds only today.
+  check(weeks[0][0]?.d === "2026-08-31" && weeks[0][0]?.on === true && weeks[11][0]?.d === "2026-11-16" && weeks[11][0]?.today === true && weeks[11].slice(1).every((x) => x === null), "the calendar starts on the week's first day and draws nothing after today, today marked");
+  // A reading day two days back is on; a day not read is off.
+  check(weeks[10][5]?.d === "2026-11-14" && weeks[10][5]?.on === true && weeks[10][6]?.d === "2026-11-15" && weeks[10][6]?.on === false, "reading days are on, rest days off");
+  // Sunday first in Brazilian Portuguese: the last column starts on Sunday 15 November.
+  const br = cal.readingCalendar([], "2026-11-16", 2, cal.weekStartOf("pt-BR"));
+  check(cal.weekStartOf("pt-BR") === 0 && cal.weekStartOf("en") === 1 && cal.weekStartOf("de") === 1 && br[1][0]?.d === "2026-11-15" && br[1][1]?.today === true, "the week starts on Sunday in Brazilian Portuguese and on Monday in the other languages");
+  // This week so far: Monday 16 November 2026 counts Monday only; Sunday first counts Sunday 15 and Monday 16.
+  const wk = cal.thisWeek(["2026-11-14", "2026-11-15", "2026-11-16"], { "learn:a": "2026-11-16", "learn:b": "2026-11-15", "learn:c": "2026-11-09" }, "2026-11-16", 1);
+  const wkBr = cal.thisWeek(["2026-11-14", "2026-11-15", "2026-11-16"], { "learn:a": "2026-11-16", "learn:b": "2026-11-15", "learn:c": "2026-11-09" }, "2026-11-16", 0);
+  check(wk.days === 1 && wk.items === 1 && wkBr.days === 2 && wkBr.items === 2, "this week counts the reading days and the items read from the week's first day to today");
+  // "When", in the language's own words.
+  const now = Date.parse("2026-11-16T15:00:00Z");
+  check(cal.openedAgo(now - 30_000, now, "en") === "now" && cal.openedAgo(now - 12 * 60_000, now, "en") === "12 minutes ago" && cal.openedAgo(now - 3_600_000, now, "en") === "1 hour ago" && cal.openedAgo(now - 86_400_000, now, "en") === "yesterday" && cal.openedAgo(now - 86_400_000, now, "pt-BR") === "ontem", "the last pages opened say when in the language's own words (yesterday, not 1 day ago)");
+  check(cal.openedAgo(now + 60_000, now, "en") === "", "a page opened by a clock ahead of this one says nothing about when");
+  // The stylesheet: widgets keep their own height; 44 px controls on a touch screen; the jump row only on a phone.
+  const css = fs.readFileSync("src/app/components.css", "utf8");
+  check(/\.desk-grid \{[^}]*align-items: start;/.test(css) && /@media \(pointer: coarse\) \{\s*\.desk-icon-btn \{ width: 2\.75rem; height: 2\.75rem; \}\s*\.desk-btn, \.desk-seg-btn \{ min-height: 2\.75rem; \}/.test(css) && /@media \(min-width: 48rem\) \{ \.desk-jump \{ display: none; \} \}/.test(css), "widgets keep their own height, desk controls are 44 px on a touch screen, and the jump row is a phone's");
+  // The page: the jump row links each widget's heading and is not drawn while arranging.
+  const page = fs.readFileSync("src/components/desk/DeskPage.tsx", "utf8");
+  check(/\{!editing && widgets\.length > 2 && \(\s*<nav className="desk-jump"/.test(page) && /href=\{`#desk-w-\$\{w\.id\}`\}/.test(page) && /id=\{`desk-w-\$\{w\.id\}`\}/.test(page), "the phone's jump row links every widget's heading and goes while the page is arranged");
+  // A path link leaves the address once followed, and the paths widget hears one followed on the page.
+  const paths = fs.readFileSync("src/components/desk/DeskPaths.tsx", "utf8");
+  check(/addEventListener\("hashchange", openFromHash\)/.test(paths) && /history\.replaceState\(null, "", window\.location\.pathname \+ window\.location\.search\)/.test(paths), "a path link opens the path on arrival and on the page, then leaves the address");
+  // The new words in the six packs.
+  for (const loc of ["en", "pt-BR", "es", "de", "fr", "it"]) {
+    // The pack.
+    const pack = JSON.parse(fs.readFileSync(`src/i18n/messages/${loc}.json`, "utf8")) as { desk?: Record<string, Record<string, string>> };
+    // Each new key.
+    const d = pack.desk ?? {};
+    check(!!d.jump?.label && !!d.continue?.then && !!d.continue?.seePath && !!d.puzzles?.summary && !!d.puzzles?.summarySolved && !!d.recent?.today && !!d.recent?.yesterday && !!d.countdown?.weeks && !!d.search?.browse && !!d.streak?.thisWeek, `${loc}: every new word of the desk improvement pass is there`);
+  }
+}
+
+// ---- 24. The desk's second improvement pass (PRIME 16/11/2026 15:46) -------------------------------------------------
+{
+  // The stylesheet: the desk's seven-step type scale is defined and the desk block uses no other font size.
+  const css = fs.readFileSync("src/app/components.css", "utf8");
+  // The desk block, from its banner to the header link's.
+  const a = css.indexOf("MY DESK (PRIME 12/11/2026 12:42");
+  // Its end.
+  const b = css.indexOf("/* --- The header link ---");
+  // The block.
+  const block = css.slice(a, b);
+  check(a > 0 && b > a && ["2xs", "xs", "sm", "md", "lg", "xl", "2xl"].every((k) => new RegExp(`--desk-fs-${k}: [0-9.]+rem;`).test(block)) && !/font-size: [0-9.]+(rem|px|em)/.test(block.replace(/--desk-fs-[a-z0-9]+: [0-9.]+rem;/g, "")), "the desk's type scale has seven steps and the desk block uses no other font size");
+  // Paths are drawn as trails: one segment per item, read filled, the next ringed, words kept; long paths keep the bar.
+  const paths = fs.readFileSync("src/components/desk/DeskPaths.tsx", "utf8");
+  check(/export const TRAIL_MAX = 120;/.test(paths) && /desk-trail-seg--read/.test(paths) && /desk-trail-seg--next/.test(paths) && /<span className="desk-trail" aria-hidden="true">/.test(paths) && /desk-progress-text mono/.test(paths), "a path's progress is a trail of its items (read filled, next ringed, hidden from assistive technology beside the words), and the bar beyond 120 items");
+  // Folding: a button with aria-expanded and aria-controls on every widget's title row, kept in the layout.
+  const page = fs.readFileSync("src/components/desk/DeskPage.tsx", "utf8");
+  check(/aria-expanded=\{!folded\}/.test(page) && /aria-controls=\{`desk-wb-\$\{w\.id\}`\}/.test(page) && /hidden=\{folded\}/.test(page) && /setWidgetSettingsIn\(data\.layout\.widgets, w\.id, \{ folded: w\.settings\.folded === true \? null : true \}\)/.test(page), "each widget folds to its title row with a button that says so, kept in the layout");
+  // Exam pace: the countdown names one of the reader's paths, kept in its settings, removed when none is chosen.
+  const cd = fs.readFileSync("src/components/desk/DeskCountdown.tsx", "utf8");
+  check(/path: draft\.path \|\| null/.test(cd) && /itemsLeft \/ left/.test(cd) && /itemsLeft > 0 && left > 0/.test(cd), "the countdown's pace is the path's items left over the days left, shown only while both are above zero");
+  // The new words in the six packs.
+  for (const loc of ["en", "pt-BR", "es", "de", "fr", "it"]) {
+    // The pack.
+    const pack = JSON.parse(fs.readFileSync(`src/i18n/messages/${loc}.json`, "utf8")) as { desk?: Record<string, Record<string, string>> };
+    // The desk's words.
+    const d = pack.desk ?? {};
+    check(["path", "pathNone", "left", "pace", "paceWeek"].every((k) => !!d.countdown?.[k]) && !!d.fold?.hide && !!d.fold?.show && !!d.favourites?.filter && !!d.favourites?.noMatch, `${loc}: every word of the desk's second pass is there`);
   }
 }
 

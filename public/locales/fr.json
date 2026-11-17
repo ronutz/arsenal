@@ -27405,13 +27405,14 @@
       "r20261112interest": "Les comptages d’intérêt sont nouveaux : avec votre oui, et seulement alors, les pages indiquent au serveur du site ce que vous utilisez (un outil, un jeu, un article lu jusqu’au bout, un partage, une recherche), dans des notes qui nomment la chose et jamais vous. Ce qu’une note contient, le seul cas qui emporte des mots que vous avez saisis, la durée de conservation des comptages et des totaux quotidiens et l’endroit où le choix se modifie sont exposés dans une section à part.",
       "r20261112desk": "Mon bureau : sa clé dans ce navigateur (ronutz:desk:v1), la synchronisation chiffrée facultative (ce que le serveur conserve, combien de temps et ce qu’il ne peut pas lire) et le comptage envoyé quand un élément est enregistré ; ce qui vous suit sur un autre navigateur par la synchronisation, un fichier ou un lien, et ce qui reste dans chaque navigateur (dont ronutz:portable:base) ; et, pour un réglage changé dans deux navigateurs, la modification la plus récente l’emporte, grâce aux heures de modification conservées dans ce navigateur et dans la copie chiffrée (ronutz:portable:times), sauf si vous choisissez dans les Paramètres de garder la valeur de ce navigateur (ronutz:portable:no-times).",
       "r20261112browsers": "Scores des jeux : la première partie qu’un navigateur publie un jour d’énigme porte un oui ou non qui l’indique, décidé à partir du jour de sa dernière partie publiée, que ce navigateur garde (ronutz:fun:posted-day) et n’envoie jamais ; le serveur ne garde que ce bit avec la partie, et la somme quotidienne est affichée comme navigateurs uniques (des navigateurs, pas des personnes) et conservée dans les totaux quotidiens.",
-      "r20261115fun": "La page LGTM : une vidéo YouTube chargée seulement après un appui sur lecture, depuis youtube-nocookie.com ; et deux choix ludiques gardés dans votre navigateur : l’époque de l’air (ronutz:fun:lgtm-era) et si le simulateur du virus Ping-Pong est lâché sur le site (ronutz:fun:pong-virus)."
+      "r20261115fun": "La page LGTM : une vidéo YouTube chargée seulement après un appui sur lecture, depuis youtube-nocookie.com ; et deux choix ludiques gardés dans votre navigateur : l’époque de l’air (ronutz:fun:lgtm-era) et si le simulateur du virus Ping-Pong est lâché sur le site (ronutz:fun:pong-virus).",
+      "r20261116keys": "Le paragraphe des raccourcis clavier renvoie à la liste complète (? ou h) et dit que quelques pages prennent des touches pour elles."
     },
     "backHome": "Retour à l’accueil",
     "prefsTitle": "Thème, langue et ce dont ce site se souvient",
     "prefsBody": "Vos préférences, votre historique de lecture, Mon bureau, les deux valeurs de la salle /dev et les scores, réglages et progression des jeux sont stockés uniquement dans le localStorage de ce navigateur, sur votre appareil ; le thème est appliqué avant le premier affichage lors de votre visite suivante. Il n’y a ni cookie ni compte, et aucun serveur n’en voit quoi que ce soit, à une exception près, que vous maîtrisez : sauf si vous désactivez le partage, le résultat d’une énigme du jour que vous terminez va au tableau des scores public décrit sous Scores des jeux. Si vous créez un code de synchronisation, une copie chiffrée de Mon bureau va aussi au serveur du site, qui ne peut pas la lire (voir Mon bureau, plus bas). Rien de tout cela ne peut vous suivre : une fenêtre de navigation privée, des données de site effacées, ou un autre navigateur ou appareil vous ramènent aux valeurs par défaut, et c’est voulu. Votre langue fonctionne sur deux niveaux : elle figure dans l’adresse elle-même (/en/ et /pt-BR/ sont des pages différentes, si bien qu’ajouter aux favoris ou partager une URL dans votre langue la conserve), et la dernière langue utilisée est aussi mémorisée dans ce navigateur, pour qu’une visite du domaine nu y mène plutôt qu’à la langue par défaut. Le champ de recherche de l’espace des certifications et son interrupteur des certifications retirées figurent aussi dans l’adresse, après le # (#q=...), une partie que votre navigateur n’envoie jamais dans une requête : les mots que vous recherchez n’atteignent donc pas le serveur ; ils restent en revanche dans votre historique, et une adresse partagée les partage. Un ancien lien avec ?q= envoyait ses mots avec cette seule requête ; l’espace les déplace ensuite après le #. Voilà tout le compromis : sans compte ni suivi, les préférences ne peuvent vivre que là où vous pouvez les voir et les supprimer.",
     "shortcutsTitle": "Raccourcis clavier",
-    "shortcutsBody": "Le site propose quelques raccourcis à une touche pour naviguer rapidement, actifs sur toutes les pages. Appuyez sur b pour la touche patron, qui cache ce que vous lisez derrière une application de bureau des années 1980 très convaincante jusqu’à ce que vous appuyiez sur une touche ou cliquiez ; t mène à l’index des outils ; l à l’index Apprendre ; m ouvre la console Mega Brain ; et z ouvre Bingo de réunion. Ces raccourcis sont volontairement inactifs dès que vous saisissez du texte : si le focus est dans un champ de texte, une zone de collage, un champ de recherche ou toute zone modifiable, la frappe appartient à ce champ et le raccourci ne fait rien, si bien que rien de ce que vous tapez n’est jamais avalé. Ils sont aussi ignorés quand une touche de modification est enfoncée, pour que les combinaisons propres à votre navigateur, comme Ctrl+T pour un nouvel onglet, ne soient jamais masquées. Les raccourcis s’exécutent entièrement dans votre navigateur, n’ajoutent aucun suivi, et ne sont qu’un confort que vous pouvez ignorer.",
+    "shortcutsBody": "Le site propose des raccourcis à une touche pour naviguer rapidement ; appuyez sur ? ou h sur n’importe quelle page pour la liste complète, avec ce qui change sur cette page. Appuyez sur b pour la touche patron, qui cache ce que vous lisez derrière une application de bureau des années 1980 très convaincante jusqu’à ce que vous appuyiez sur une touche ou cliquiez ; t mène à l’index des outils ; l à l’index Apprendre ; m ouvre la console Mega Brain ; et z ouvre Bingo de réunion. Ces raccourcis sont volontairement inactifs dès que vous saisissez du texte : si le focus est dans un champ de texte, une zone de collage, un champ de recherche ou toute zone modifiable, la frappe appartient à ce champ et le raccourci ne fait rien, si bien que rien de ce que vous tapez n’est jamais avalé. Ils sont aussi ignorés quand une touche de modification est enfoncée, pour que les combinaisons propres à votre navigateur, comme Ctrl+T pour un nouvel onglet, ne soient jamais masquées. Quelques pages prennent des touches pour elles, comme les jeux pendant que vous jouez, et l’aide le signale sur place. Les raccourcis s’exécutent entièrement dans votre navigateur, n’ajoutent aucun suivi, et ne sont qu’un confort que vous pouvez ignorer.",
     "noTrackSource": "Cette section décrit ce que fait le code, et le code est public : le décompte est effectué par <analytics>worker/analytics.ts</analytics>, la page Statistiques est servie par <stats>worker/stats.ts</stats>, et les deux jeux de données distincts sont liés dans <config>wrangler.jsonc</config>. Les décomptes sont conservés dans Workers Analytics Engine de Cloudflare, qui stocke les données qui y sont écrites pendant trois mois (<retention>documentation de Cloudflare</retention>, consultée le {date}). Ce que Cloudflare traite lui-même en tant qu’hébergeur échappe à ce code, et est décrit sous Hébergement et journaux du serveur ci-dessous.",
     "metaDescription": "Ce que deviennent vos informations ici : ce qui est compté, ce que stocke votre navigateur, ce que font les outils de ce que vous collez, qui est responsable, et vos droits au titre du RGPD et de la LGPD brésilienne.",
     "hostingLogs": "Chaque requête de page passe par le Worker du site, le petit programme qui s’exécute chez Cloudflare devant les pages, de même que les requêtes qu’une page émet pour les décomptes de visites qu’elle affiche ; les scripts, les styles et l’index de recherche, entre autres fichiers, sont servis sans lui. Les Workers Logs de Cloudflare peuvent conserver un enregistrement de chacune de ces requêtes dans le compte Cloudflare du site. Cloudflare décrit chaque enregistrement comme contenant la requête, la réponse et les métadonnées associées, et cite parmi ses champs la méthode et l’adresse complète, chaîne de requête comprise, le statut de la réponse, le temps de traitement utilisé par le Worker et le pays de la visite (<logs>Workers Logs</logs> et <fields>ses champs de requête</fields>, consultés le {date}). Cloudflare ne publie aucune liste complète : cette notice n’affirme donc pas que votre adresse IP en est exclue. Cloudflare active cette journalisation par défaut pour les nouveaux Workers, et la configuration du site ne la désactive pas. Un enregistrement est conservé jusqu’à sept jours : trois jours avec l’offre Workers gratuite de Cloudflare et sept avec son offre payante, et sept dans les deux cas à partir du 1er décembre 2026 (<pricing>tarifs de Cloudflare</pricing>). Le code du site n’ajoute rien à ces enregistrements, car le Worker n’écrit aucune ligne de journal de son propre fait, ce que vérifie un contrôle au build. La partie d’une adresse située après un #, où un outil reçoit une valeur qui lui est transmise, n’est jamais envoyée dans une requête : elle ne les atteint donc jamais.",
@@ -31721,7 +31722,8 @@
       "quipChanges2": "Trouvé quelque chose. Une coche verte aurait été plus rapide, et fausse.",
       "quipChanges3": "Modifications demandées, ligne par ligne, comme doit l’être une relecture.",
       "chime": "Faire sonner le carillon",
-      "homeLink": "Retour à la page LGTM"
+      "homeLink": "Retour à la page LGTM",
+      "botAgain": "Faire bouger le robot de nouveau : chaque appui joue le suivant de ses quatre mouvements"
     }
   },
   "megaBrain": {
@@ -31855,7 +31857,7 @@
     "bossDismiss": "Application professionnelle. Appuyez sur une touche ou cliquez pour revenir.",
     "bossHint": "‹ appuyez sur une touche ›",
     "cheatClose": "Fermer",
-    "cheatHint": "Échap ou un clic à l’extérieur pour fermer. Personnalisez ces raccourcis dans Paramètres.",
+    "cheatHint": "Échap, ? ou h ferme cette aide, tout comme un clic à l’extérieur. Paramètres liste toutes les touches que vous pouvez changer.",
     "cheatTitle": "Raccourcis clavier",
     "contextBack": "Retour aux actions de la page",
     "contextClose": "Fermer les actions de la page",
@@ -31875,14 +31877,54 @@
     "actionDeskSave": "Enregistrer l’élément de cette page (ou le retirer)",
     "actionDeskRead": "Marquer l’élément de cette page comme lu ou fait (ou retirer la marque)",
     "pongOn": "Le virus Ping-Pong est lâché : une balle rebondit sur la page. Tapez de nouveau p et v pour l’attraper.",
-    "pongOff": "Le virus Ping-Pong est capturé. La page est de nouveau calme."
+    "pongOff": "Le virus Ping-Pong est capturé. La page est de nouveau calme.",
+    "helpHere": "Sur cette page",
+    "helpSite": "Raccourcis du site",
+    "helpOther": "Autres touches",
+    "customize": "Personnaliser",
+    "customizeAria": "Personnaliser la touche {key}",
+    "offHere": "inactif sur cette page",
+    "noItemHere": "aucun élément sur cette page",
+    "notHere": "aucune sur cette page",
+    "whenFocused": "Tant que le jeu a le clavier (une fois que vous avez cliqué ou tabulé dans sa grille ou son terminal), les raccourcis du site sont coupés et ces touches sont celles du jeu. Cliquez à l’extérieur pour les retrouver.",
+    "whenPlaying": "Pendant une manche, les raccourcis du site sont coupés et ces touches sont celles du jeu. Ils reviennent quand elle se termine.",
+    "whenAlways": "Cette page répond aussi à ces touches, à côté des raccourcis du site :",
+    "whenArranging": "Pendant que vous organisez la page, ces touches agissent sur un cadre sélectionné, à côté des raccourcis du site :",
+    "lettersOff": "Les raccourcis à une lettre sont coupés sur cette page, parce qu’elle écoute ce que vous tapez. Appuyez sur ? pour cette aide ici ; les touches numériques et / fonctionnent toujours.",
+    "dotHere": "Appuyez sur . pour les actions de cette page.",
+    "other": {
+      "dot": {
+        "label": "Les actions de la page, sur les pages qui en ont. Dans le panneau, la touche à côté d’une section y mène.",
+        "caps": "."
+      },
+      "esc": {
+        "label": "Ferme cette aide, la recherche et tout autre panneau ou dialogue",
+        "caps": "Échap"
+      },
+      "search-chord": {
+        "label": "La recherche, de partout, même pendant la saisie dans un champ",
+        "caps": "Ctrl K|⌘ K"
+      },
+      "pong": {
+        "label": "L’une après l’autre : le virus Ping-Pong, une balle qui rebondit sur toutes les pages jusqu’à ce que vous les tapiez de nouveau",
+        "caps": "P|V"
+      },
+      "boss": {
+        "label": "Sur un écran patron, les flèches changent le déguisement ; toute autre touche, ou un clic, ramène la page",
+        "caps": "←|→"
+      },
+      "typing": {
+        "label": "L’une d’elles enfoncée, la touche revient au navigateur ; dans un champ de texte, chaque touche s’écrit. Dans aucun des deux cas un raccourci ne la prend.",
+        "caps": "Ctrl|Alt|⌘"
+      }
+    }
   },
   "settings_page": {
     "eyebrow": "Préférences",
     "title": "Paramètres",
     "lede": "Personnalisez le comportement du site. Tout est enregistré sur cet appareil uniquement : il n’y a ni compte ni serveur, vos choix ne quittent donc jamais votre navigateur.",
     "shortcutsTitle": "Raccourcis clavier",
-    "shortcutsBody": "Associez n’importe quelle touche de raccourci à une autre action. Choisissez une action dans chaque menu ; la modification s’applique immédiatement. Certaines touches peuvent être fixées par l’administrateur du site : elles apparaissent alors verrouillées. Appuyez sur ? n’importe où sur le site pour voir d’un coup d’œil les raccourcis en vigueur.",
+    "shortcutsBody": "Associez n’importe quelle touche de raccourci à une autre action. Choisissez une action dans chaque menu ; la modification s’applique immédiatement. Certaines touches peuvent être fixées par l’administrateur du site : elles apparaissent alors verrouillées. Appuyez sur ? ou h n’importe où sur le site pour voir d’un coup d’œil toutes les touches, avec ce qui change sur la page où vous êtes ; les liens Personnaliser de l’aide mènent aux lignes ci-dessous.",
     "colKey": "Touche",
     "colAction": "Action",
     "locked": "Verrouillé",
@@ -32147,7 +32189,8 @@
       "quickref": "Référence des outils",
       "usage": "Usages suggérés",
       "manual": "Manuel",
-      "map": "Le site en une minute"
+      "map": "Le site en une minute",
+      "keyboard": "Clavier"
     },
     "datasheetHeading": "En bref",
     "datasheetIntro": "L’essentiel en un seul panneau. Ces chiffres sont générés à partir du site lui-même au moment du build : ils correspondent donc toujours à ce qui est réellement publié.",
@@ -32420,6 +32463,10 @@
       "beyond": {
         "h": "Au-delà des outils",
         "b": "Le site ne se limite pas aux calculateurs. La bibliothèque Apprendre réunit des articles qui expliquent les notions sur lesquelles travaillent les outils. Les pages Constructeurs rassemblent les outils et la documentation de référence propres à des plateformes comme F5, ainsi que l’histoire des entreprises derrière les noms. Et l’espace Certifications propose des guides de révision et des parcours de lecture à qui prépare une certification. Tout est accessible depuis l’en-tête."
+      },
+      "keyboard": {
+        "h": "Clavier",
+        "b": "Le site s’utilise au clavier. Sur n’importe quelle page, ? ou h ouvre la liste des touches, en commençant par ce qui change là, et Échap la ferme ; s, / ou Ctrl K ouvre la recherche ; et le lien Personnaliser d’une touche mène à Paramètres, où vous pouvez lui donner une autre action. Aucun raccourci ne prend jamais une touche que vous tapez dans un champ. La liste complète a sa propre partie dans ce guide, Toutes les touches."
       }
     },
     "backToTools": "Parcourir tous les outils",
@@ -32481,9 +32528,10 @@
         "nav": "Recherche",
         "h": "Recherche et raccourcis",
         "p1": "Le champ de recherche de l’en-tête, ou Ctrl K, ouvre une boîte de dialogue qui cherche à la fois dans les outils, les articles, les guides et les pages ; les pastilles sous le champ restreignent la recherche à un seul type. Le champ propre à un espace ne cherche que dans le monde de cet espace, et celui d’une section (La pratique, Les métiers) que dans cette section, avec une pastille Uniquement dans qu’un clic suffit à élargir de nouveau. La recherche s’exécute dans votre navigateur sur un index construit avec le site : les mots saisis ne sont envoyés nulle part, même si le navigateur récupère sur le site les parties de l’index où tombent ces mots.",
-        "p2": "Quelques raccourcis à une seule touche fonctionnent sur toutes les pages : appuyez sur ? pour les voir, et réaffectez celui que vous voulez dans Paramètres. Le plan du site, fait pour être lu, liste toutes les pages par monde, pour les fois où une carte vaut mieux qu’un champ de recherche.",
+        "p2": "Des raccourcis à une seule touche fonctionnent sur tout le site : appuyez sur ? ou h pour la liste complète, en commençant par ce qui change sur la page où vous êtes, et suivez le lien Personnaliser d’une touche pour la réaffecter dans Paramètres. Quelques pages prennent des touches pour elles, comme les jeux pendant que vous jouez, et l’aide le signale sur place. Le plan du site, fait pour être lu, liste toutes les pages par monde, pour les fois où une carte vaut mieux qu’un champ de recherche.",
         "l1": "Paramètres et raccourcis",
-        "l2": "Le plan du site"
+        "l2": "Le plan du site",
+        "l3": "Toutes les touches"
       },
       "privacy": {
         "nav": "Confidentialité",
@@ -32494,6 +32542,14 @@
         "l2": "Statistiques",
         "l3": "Colophon"
       }
+    },
+    "keyboard": {
+      "h": "Toutes les touches",
+      "intro": "Voici les touches telles que le site les définit d’origine. Appuyez sur ? ou h sur n’importe quelle page pour les voir comme ce navigateur les a, en commençant par ce qui change sur cette page. Le lien Personnaliser d’une touche mène à sa ligne dans Paramètres, où vous pouvez lui donner une autre action ; le changement n’est gardé que dans ce navigateur.",
+      "colKey": "Touche",
+      "colAction": "Ce qu’elle fait",
+      "pagesH": "Pages qui ont leurs propres touches",
+      "pagesBody": "Quelques pages prennent des touches pour elles, et l’aide les y liste en premier. Les jeux coupent les raccourcis du site pendant une manche, ou tant que leur grille ou leur terminal a le clavier. La Console Mega Brain et la Jauge d’importance coupent les lettres, parce qu’elles écoutent ce que vous tapez : là, ? ouvre l’aide et h non. Le présentateur de diapositives coupe tous les raccourcis du site et liste ses propres touches à côté des diapositives. k et x n’agissent que sur une page qui a un élément à garder."
     }
   },
   "disclaimer_page": {
@@ -33489,6 +33545,41 @@
       "domainLede": "{count, plural, one {{count} domaine} other {{count} domaines}}, chacun avec sa propre page : réseau, sécurité, cloud, le métier lui-même.",
       "mistoldSection": "Souvent mal racontées",
       "mistoldSectionLede": "{count, plural, one {{count} entrée porte} other {{count} entrées portent}} la marque « contesté » : l’histoire que tout le monde répète ne correspond pas à ce que disent les sources. Chaque entrée donne la version habituelle et la correction."
+    },
+    "browse": {
+      "letterRailLabel": "Le glossaire de A à Z",
+      "letterLinkAria": "{letter} : {count, plural, one {# entrée} other {# entrées}}",
+      "otherLetter": "chiffres et symboles",
+      "letterPageTitle": "Glossaire : {letter}",
+      "letterPageDescription": "{count, plural, one {# entrée dont le nom commence} other {# entrées dont le nom commence}} par {letter}, chacune avec sa définition.",
+      "otherPageDescription": "{count, plural, one {# entrée dont le nom commence} other {# entrées dont le nom commence}} par un chiffre ou un symbole, chacune avec sa définition.",
+      "pageSearchPlaceholder": "Filtrer ces entrées par nom, forme développée ou autre nom",
+      "pagerLabel": "Lettres voisines",
+      "prevLetter": "Lettre précédente : {letter}",
+      "nextLetter": "Lettre suivante : {letter}",
+      "azTitle": "Parcourir de A à Z",
+      "azLede": "Les {count} entrées, une page par lettre, chacune avec sa définition et un filtre par type, domaine et texte.",
+      "backToHub": "Retour au glossaire",
+      "backToTop": "Haut de page",
+      "backToLetter": "Retour à {letter}",
+      "entryPagerLabel": "Entrées voisines, de A à Z",
+      "prevEntry": "Entrée précédente",
+      "nextEntry": "Entrée suivante",
+      "neighboursTitle": "Domaines voisins",
+      "sharedCount": "{count} en commun",
+      "alsoInLegend": "Aussi dans",
+      "finderLabel": "Trouver un terme",
+      "finderPlaceholder": "Un nom, un sigle ou sa forme développée",
+      "finderHint": "Cherche dans les noms, les formes développées et les autres noms pendant la saisie. Entrée ouvre le premier résultat ; les flèches parcourent la liste.",
+      "finderLoading": "Chargement de la liste des noms...",
+      "finderError": "La liste des noms n’a pas pu être chargée. Le A à Z ci-dessous recense toutes les entrées.",
+      "finderCount": "Affichage : {shown} sur {total}",
+      "finderNone": "Aucune entrée ne porte ce nom. Essayez avec moins de lettres, ou cherchez aussi dans les définitions.",
+      "finderFullText": "Chercher aussi dans les définitions",
+      "domainsLede": "{count} domaines, chacun avec sa page. Les termes clés sont les entrées vers lesquelles le reste du glossaire renvoie le plus souvent.",
+      "keyTermsLabel": "Termes clés :",
+      "recentTitle": "Vérifiées récemment",
+      "recentLede": "Les entrées dont les sources ont été lues le plus récemment, les plus récentes d’abord."
     }
   },
   "certGuides": {
@@ -34577,7 +34668,60 @@
     "furtherReading": "Pour aller plus loin",
     "furtherReadingAria": "Pour aller plus loin",
     "status": "{n, plural, one {Un billet à ce jour} other {# billets à ce jour}}, publication au fil de l’écriture, sans rythme fixe. Ce qui change sur le site lui-même figure dans le <link>journal des modifications</link>.",
-    "bylineProfile": "profil de formateur chez Red Education"
+    "bylineProfile": "profil de formateur chez Red Education",
+    "numberPrefix": "N°",
+    "numberAria": "Billet numéro {n}",
+    "topicsAria": "Sujets",
+    "filter": {
+      "label": "Filtrer les billets",
+      "categoryLegend": "Catégorie",
+      "topicLegend": "Sujet",
+      "allCategories": "Toutes",
+      "allTopics": "Tous",
+      "moreTopics": "{count, plural, one {# autre sujet} other {# autres sujets}}",
+      "fewerTopics": "Moins de sujets",
+      "showing": "Affichage : {shown} sur {total}",
+      "clear": "Effacer les filtres",
+      "empty": "Aucun billet ne répond aux deux filtres. Effacez-en un pour en voir davantage."
+    },
+    "tags": {
+      "career": "Carrière",
+      "vulnerability-management": "Gestion des vulnérabilités",
+      "ai": "Intelligence artificielle (IA)",
+      "disclosure": "Divulgation",
+      "brazil": "Brésil",
+      "industry": "Secteur",
+      "incident-response": "Réponse aux incidents",
+      "networking": "Réseaux",
+      "privacy": "Vie privée",
+      "data-breach": "Fuites de données",
+      "threat-intelligence": "Renseignement sur les menaces",
+      "lgpd": "Loi brésilienne sur la protection des données (LGPD)",
+      "teaching": "Enseignement",
+      "operations": "Exploitation",
+      "supply-chain": "Chaîne d’approvisionnement",
+      "security": "Sécurité",
+      "vpn": "Réseaux privés virtuels (VPN)",
+      "php": "PHP",
+      "waf": "Pare-feu applicatifs web (WAF)",
+      "cloud": "Cloud",
+      "history": "Histoire",
+      "certification": "Certification",
+      "psychological-operations": "Opérations psychologiques",
+      "disinformation": "Désinformation",
+      "iot": "Internet des objets (IoT)",
+      "ot-security": "Sécurité des technologies opérationnelles (OT)",
+      "linux": "Linux",
+      "tcp": "Protocole de contrôle de transmission (TCP)",
+      "firmware": "Firmware",
+      "industry-history": "Histoire du secteur",
+      "sources": "Sources",
+      "channel": "Revendeurs et distributeurs",
+      "ransomware": "Rançongiciels",
+      "culture": "Culture",
+      "games": "Jeux",
+      "books": "Livres"
+    }
   },
   "importanceMeter": {
     "metaTitle": "Jauge d’importance",
@@ -39481,17 +39625,16 @@
       "electronic-trading": {
         "title": "Négociation électronique",
         "lede": "Des courtiers qui criaient à la corbeille aux moteurs d’appariement qui répondent en microsecondes : les bourses, intermédiaires, investisseurs, protocoles, réseaux, fournisseurs et régulateurs des marchés modernes, le protocole FIX et les réseaux qui le portent, le trading à haute fréquence et la controverse qui l’entoure, et les bourses du Brésil, chaque fait avec sa source.",
-        "planned": {
-          "fixEncodings": "Les encodages de FIX et leurs successeurs",
-          "orderLife": "La vie de l’ordre dans FIX",
-          "omsEms": "Systèmes de gestion des ordres et de l’exécution",
-          "preTradeRisk": "Risque pré-négociation et accès au marché",
-          "interdealer": "Courtiers interdealers, obligations et change électroniques",
-          "networkAnalytics": "Analyse et supervision fondées sur le réseau",
-          "marketData": "Données de marché",
-          "surveillance": "Surveillance et déclarations réglementaires",
-          "fairnessByDesign": "L’équité dès la conception"
-        }
+        "planned": {}
+      },
+      "mass-hysteria": {
+        "title": "Hystérie collective et croyances collectives",
+        "lede": "Des épidémies de danse et des procès en sorcellerie aux flambées dans les écoles, aux bulles, aux rumeurs et aux symptômes qui circulent sur les plateformes : les mots et leur histoire, les mécanismes et leurs réplications, les cas avec leurs preuves et leurs controverses, qui a orienté chaque épisode, si quelqu’un l’a fait, et ce qui aide à y mettre fin."
+      },
+      "redundancy": {
+        "title": "Architectures redondantes",
+        "lede": "Comment les réseaux survivent aux pannes : ce que la redondance apporte et ce qu’elle coûte, l’arithmétique de la disponibilité et du destin partagé, et la redondance de chaque couche, de l’énergie et de la fibre à l’agrégation de liens, aux passerelles, au routage, aux clusters à état et à la répartition de charge globale, jusqu’aux données, avec les rapports d’incidents qui montrent où elle a tenu et où elle a cédé, chaque fait avec sa source.",
+        "planned": {}
       }
     },
     "parts": "Les parties",
@@ -41061,7 +41204,9 @@
     "continue": {
       "empty": "Les pages que vous ouvrez, et l’élément suivant du parcours que vous suivez, apparaîtront ici.",
       "next": "Suivant dans {path}",
-      "recent": "Ouvert récemment"
+      "recent": "Ouvert récemment",
+      "then": "Ensuite :",
+      "seePath": "Voir le parcours"
     },
     "paths": {
       "untitled": "Parcours sans nom",
@@ -41113,22 +41258,29 @@
       "empty": "Rien d’enregistré pour l’instant. Utilisez Enregistrer sur un outil, un article, une entrée du glossaire ou un jeu, ou appuyez sur K sur sa page.",
       "saveExample": "Enregistrer",
       "removed": "Retiré des favoris.",
-      "remove": "Retirer {title} des favoris"
+      "remove": "Retirer {title} des favoris",
+      "filter": "Filtrer vos favoris",
+      "noMatch": "Aucun favori ne correspond à « {q} »."
     },
     "recent": {
-      "empty": "Rien n’est encore marqué comme lu. Arriver au bout d’un article le marque ; Marquer comme lu le fait à la main."
+      "empty": "Rien n’est encore marqué comme lu. Arriver au bout d’un article le marque ; Marquer comme lu le fait à la main.",
+      "today": "Aujourd’hui",
+      "yesterday": "Hier"
     },
     "puzzles": {
       "solved": "Résolue",
       "played": "Jouée",
       "notYet": "Pas encore jouée",
       "streak": "{count, plural, one {# jour d’affilée} other {# jours d’affilée}}",
-      "all": "Toutes les énigmes et tous les jeux"
+      "all": "Toutes les énigmes et tous les jeux",
+      "summary": "{played, plural, =0 {Aucune des {total} énigmes du jour jouée pour l’instant.} one {# sur {total} jouée aujourd’hui.} other {# sur {total} jouées aujourd’hui.}}",
+      "summarySolved": "{count, plural, one {# résolue.} other {# résolues.}}"
     },
     "search": {
       "label": "Rechercher sur le site",
       "placeholder": "Rechercher sur le site…",
-      "go": "Rechercher"
+      "go": "Rechercher",
+      "browse": "Ou parcourez"
     },
     "sync": {
       "syncedAt": "Synchronisé à {time}.",
@@ -41260,7 +41412,13 @@
       "today": "Aujourd’hui",
       "ago": "{count, plural, one {Il y a # jour} other {Il y a # jours}}",
       "on": "Le {date}",
-      "kept": "Conservé avec votre bureau dans ce navigateur et, quand vous synchronisez, dans la copie chiffrée."
+      "kept": "Conservé avec votre bureau dans ce navigateur et, quand vous synchronisez, dans la copie chiffrée.",
+      "weeks": "{weeks, plural, one {# semaine} other {# semaines}}{days, plural, =0 {} one { et # jour} other { et # jours}}",
+      "path": "Parcours à terminer d’ici là",
+      "pathNone": "Aucun",
+      "left": "{count, plural, =0 {Tous les éléments de <link>{path}</link> sont lus.} one {Il reste # élément dans <link>{path}</link>.} other {Il reste # éléments dans <link>{path}</link>.}}",
+      "pace": "Environ {perDay} par jour pour le terminer avant l’examen.",
+      "paceWeek": "Environ {perDay} par jour, soit {perWeek} par semaine, pour le terminer avant l’examen."
     },
     "quick": {
       "choose": "Outil",
@@ -41314,7 +41472,8 @@
       "next": "Prochaine : {name}",
       "toGo": "{count, plural, one {encore #} other {encore #}}",
       "celebrate": "Étape atteinte : {names}.",
-      "kept": "Compté à partir de vos marques de lecture, au jour près seulement, dans ce navigateur."
+      "kept": "Compté à partir de vos marques de lecture, au jour près seulement, dans ce navigateur.",
+      "thisWeek": "{days, plural, =0 {Rien n’est encore marqué comme lu cette semaine.} one {Cette semaine : # jour de lecture, {items, plural, one {# élément lu} other {# éléments lus}}.} other {Cette semaine : # jours de lecture, {items, plural, one {# élément lu} other {# éléments lus}}.}}"
     },
     "privacy": {
       "counting": "Comptage de votre usage",
@@ -41335,6 +41494,13 @@
       "emptied": "Votre bureau est vide.",
       "allSettings": "Tous les paramètres de Mon bureau",
       "privacyPage": "Ce que dit la page de confidentialité sur Mon bureau et la synchronisation"
+    },
+    "jump": {
+      "label": "Sur ce bureau"
+    },
+    "fold": {
+      "hide": "Replier {name}",
+      "show": "Déplier {name}"
     }
   },
   "deskData": {

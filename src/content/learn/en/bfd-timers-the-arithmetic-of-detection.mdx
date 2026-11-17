@@ -101,6 +101,8 @@ On an FRRouting router the same numbers appear under `show bfd peers`, in the `L
 
 For what BFD is, why a link can be up and dead, and how routing protocols use the verdict, see [BFD: when a link is up and dead at the same time](/learn/bfd-when-a-link-is-up-and-dead).
 
+The series [Redundant architectures](/learn/redundant-architectures-how-networks-survive-failure) carries the same kind of arithmetic from detection to availability in [The arithmetic of redundancy](/learn/the-arithmetic-of-redundancy-availability-mtbf-and-shared-fate): the time between failures, the time to repair, and why two of everything is not twice as good when both share a cause. Its sixth part, [Layer 3 redundancy](/learn/layer-3-redundancy-ecmp-bfd-and-fast-reroute), puts BFD's detection time in the chain of five steps between a failure and a repaired forwarding table, with the numbers for the steps that follow it.
+
 ## What to remember
 
 - The detection time is never sent: each receiver computes the sender's Detect Mult times the larger of the sender's Desired Min TX and its own Required Min RX.

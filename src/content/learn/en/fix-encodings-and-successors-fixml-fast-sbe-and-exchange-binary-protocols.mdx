@@ -1,0 +1,398 @@
+---
+slug: fix-encodings-and-successors-fixml-fast-sbe-and-exchange-binary-protocols
+title: "FIX encodings and successors: FIXML, FAST, SBE and the exchanges' binary protocols"
+summary: "The meaning of a FIX order can travel as text, as XML, as a compressed stream or as fixed binary structs, and the fastest venues chose the last: Simple Binary Encoding over the FIX Performance Session Layer at B3 and CME Group, native protocols such as OUCH and ITCH at Nasdaq. After reading, you can tell the encodings and session layers apart, read a price in each of them byte by byte, decode a real B3 binary order from its published hex dump, spot the local dialects of the framing header, and weigh why binary won at the matching engine and what it costs."
+concepts: ["FIX encoding", "tag=value", "FIXML", "FAST (FIX Adapted for STreaming)", "presence map", "stop bit encoding", "field operators", "Simple Binary Encoding (SBE)", "message schema", "block length", "fixed-point decimal", "little-endian", "Simple Open Framing Header (SOFH)", "FIX Performance Session Layer (FIXP)", "idempotent flow", "recoverable flow", "OUCH", "ITCH", "SoupBinTCP", "MoldUDP64", "B3 Binary EntryPoint", "Binary UMDF", "iLink 3"]
+relatedTools: ["ascii-table", "xml-formatter"]
+relatedArticles: ["anatomy-of-a-fix-message-and-the-session-layer", "the-fix-protocol-origins-versions-and-the-community", "electronic-trading-from-the-pit-to-the-microsecond", "brazil-bmf-bovespa-b3-and-electronic-access", "colocation-microwaves-and-the-race-for-latency", "fix-networks-hubs-and-managed-connectivity", "the-life-of-an-order-in-fix", "big-endian-and-little-endian", "hex-encoding", "reading-xml-structure", "multicast-what-it-costs-to-not-flood", "osi-model-in-practice", "ascii-the-128-codes", "retries-timeouts-and-idempotency"]
+category: networking
+order: 380
+status: reviewed
+updated: "2026-11-16"
+---
+
+A Financial Information eXchange (FIX) order says the same thing wherever it goes: buy this instrument, this many, at this price, for this account. How those facts are spelled on the wire is a separate decision, and the FIX Trading Community publishes several answers to it as separate technical standards: the original `tag=value` text, an Extensible Markup Language (XML) form called FIX Markup Language (FIXML), a compressed stream called FIX Adapted for STreaming (FAST) and a fixed-layout binary form called Simple Binary Encoding (SBE), with session layers and a framing header to carry them ([FIX Trading Community, Technical standards](https://fixtrading.org/standards/technical-standards/)). This part of the series opened by [Electronic trading: from the pit to the microsecond](/learn/electronic-trading-from-the-pit-to-the-microsecond) follows [Anatomy of a FIX message and the session layer](/learn/anatomy-of-a-fix-message-and-the-session-layer), which took the text form apart, and [The FIX protocol: origins, versions and the community](/learn/the-fix-protocol-origins-versions-and-the-community), which listed the family of standards. Here the subject is the bytes. After reading, you will be able to say what each encoding and session layer was built for, read one price in nine wire formats, decode a real binary order that Brazil's exchange, B3 (Brasil, Bolsa, Balcão), publishes as a hex dump, recognize the local variants of the framing header at B3 and at the Chicago Mercantile Exchange (CME) and its parent, CME Group, and weigh the case for binary at the matching engine against what it costs.
+
+## One meaning, several spellings
+
+### What the standards body lists
+
+The FIX Trading Community describes its technical standards by layer. Among the encodings, `tag=value` "is the original and most widely used encoding for the FIX Protocol", a "simple ASCII string format" that "became an ISO standard in 2022", ASCII being the American Standard Code for Information Interchange and ISO the International Organization for Standardization; FIXML "is widely adopted for derivatives post trade clearing and settlement globally"; SBE "is a high performance binary encoding in use within the industry for transactions and market data dissemination" and "became an ISO/IEC standard in 2025", IEC being the International Electrotechnical Commission, the two bodies that jointly run the committee for information technology standards ([ISO/IEC JTC 1, Mission, vision and principles](https://jtc1info.org/about/mission-and-vision/)); and FAST is "a protocol designed to reduce bandwidth use and latency for market data dissemination" ([FIX Trading Community, Technical standards, read 16 November 2026](https://fixtrading.org/standards/technical-standards/)). The same page lists guidelines for three external encodings, JavaScript Object Notation (JSON), Google Protocol Buffers and Abstract Syntax Notation One (ASN.1), and three session-level standards: the classic FIX session layer, the FIX Performance Session Layer (FIXP), "a lightweight point-to-point protocol", and the Simple Open Framing Header (SOFH), which "solves the basic problem of knowing where one message ends and the next begins" (same page). The record of the Standards Council of Canada gives the publication date of the SBE standard, ISO/IEC 25390:2025, as 22 April 2025 ([Standards Council of Canada, ISO/IEC 25390:2025](https://ccn-scc.ca/standardsdb/standards/8189780)).
+
+### Where each one sits
+
+FIX is "an application-layer protocol", which defines "what business information is being exchanged and what it means, rather than how that information is physically sent across a network" ([FIX Trading Community, The FIX Protocol](https://fixtrading.org/standards/fix-protocol/)). The encodings belong to the layer below, presentation, and the session protocols to the layer below that; [the OSI model in practice](/learn/osi-model-in-practice) describes the layers of the Open Systems Interconnection (OSI) model themselves. CME Group sets out the split for its order entry protocol, iLink, in a table that can serve as a map for this whole article ([CME Group, iLink functional specification](https://cmegroupclientsite.atlassian.net/wiki/spaces/EPICSANDBOX/pages/714539039/iLink+Functional+Specification)):
+
+| Layer | What it does, in CME's words | Classic FIX | iLink at CME, Binary EntryPoint at B3 |
+|---|---|---|---|
+| Application | Business logic | FIX messages and fields | "Improved FIX semantics" |
+| Presentation | Message encoding | `tag=value` text | Simple Binary Encoding |
+| Session | Authentication, recovery | FIX session (Logon, sequence numbers, ResendRequest) | FIX Performance Session Layer (FIXP) |
+| Transport | End-to-end delivery | Transmission Control Protocol (TCP) | TCP |
+
+The Binary EntryPoint column for B3 comes from B3's own description of its binary gateway, "based on FIXP protocol" and using SBE ([B3, Binary EntryPoint messaging guidelines 8.4.2.3, 28 September 2026](https://www.b3.com.br/data/files/69/35/F1/AB/94711A103BBB511AAC094EA8/BinaryEntryPoint-MessageSpecificationGuidelines-8.4.2.3-enUS.pdf)). The classic column is the one taken apart in [Anatomy of a FIX message and the session layer](/learn/anatomy-of-a-fix-message-and-the-session-layer).
+
+### The cost of text
+
+The `tag=value` form spells every number in ASCII digits and separates every field with the Start of Heading (SOH) character, so a receiver has to scan for delimiters and convert text into numbers before it can act ([FIX TagValue Encoding technical standard, June 2020](https://fixtrading.org/packages/fix-tagvalue-encoding/)); [ASCII, the 128 codes](/learn/ascii-the-128-codes) lists the characters involved. The FIX Trading Community's own white paper on high-performance FIX, first published in 2018 and updated in June 2025, puts the cost bluntly: "Constant translation between character data and native formats is a waste of resources from a performance perspective, resulting in unnecessary latency", and it claims that binary encodings "are two or three orders of magnitude faster than tag value"; that is the standards body's estimate, not a measurement reported in the paper ([FIX Trading Community, High Performance FIX for the Web Era, June 2025](https://fixtrading.org/download/white-paper-high-performance-fix-for-the-web-era/)). The same paper adds that speed is not the only goal: "Just as important as speed is deterministic performance, in other words, very low variability" (same source).
+
+## FIXML: FIX in XML
+
+### Origins
+
+FIXML is older than the binary encodings. Its technical standard records that "The FPL FIXML working group began investigating the XML format in 1998", released an initial version of its document type definitions on 15 January 1999 for FIX 4.1, 4.2 and 4.3, established a FIXML schema with FIX 4.4, and that the FIXML 1.1 standard "has been available as part of the standard release process since FIX 5.0 SP2 (April 2009)"; FPL is FIX Protocol Limited, the company behind the community, and SP2 is Service Pack 2 ([FIXML technical standard, version 1.1, May 2014](https://fixtrading.org/packages/fixml-technical-standard-version-1-1/)). The FIX 4.3 release of August 2001 made the syntax formally dual, `tag=value` and FIXML, as [The FIX protocol: origins, versions and the community](/learn/the-fix-protocol-origins-versions-and-the-community) records.
+
+### How FIX becomes XML
+
+The standard turns FIX names into short XML names. Its first design rule is to "Use meaningful abbreviations for element and attribute names wherever possible", with "Price = Px, Currency = Ccy" as examples; messages become elements, fields become attributes and components become nested elements; and counting fields of the NumInGroup type, which `tag=value` needs to announce a repeating group, are not generated, because XML nesting already shows the repetition ([FIXML technical standard, version 1.1, section 2](https://fixtrading.org/packages/fixml-technical-standard-version-1-1/)). FIXML "includes FIX application messages and does not include a session layer", so it can be "encapsulated within the FIX Session Protocol or within another protocol" (same standard, section 1.2). The standard's own single-message example is a NewOrderSingle:
+
+```
+<FIXML v="FIX.5.0SP2" xv="192" s="2014-05-07">
+    <Order ID="123456" Side="2" TxnTm="2001-09-11T09:30:47-05:00" Typ="2" Px="93.25"
+Acct="26522154">
+         <Instrmt Sym="IBM" ID="459200101" Src="1"/>
+         <OrdQty Qty="1000"/>
+    </Order>
+</FIXML>
+```
+
+Source: [FIXML technical standard, version 1.1, section 4.3](https://fixtrading.org/packages/fixml-technical-standard-version-1-1/). Read with the rules above, `Order` is the NewOrderSingle message, `Px` is Price(44) and `TxnTm` is TransactTime(60), the abbreviations listed for those fields by FIXimate, which the FIX Trading Community recommends as "the easiest way to navigate the full FIX Protocol specification" ([FIX Trading Community, The FIX Protocol](https://fixtrading.org/standards/fix-protocol/)), while the instrument and the quantity sit in their own nested elements ([FIXimate, Price](https://orchimate.org/fixtrading/fix-latest/fields/Price); [FIXimate, TransactTime](https://orchimate.org/fixtrading/fix-latest/fields/TransactTime)). [Reading XML structure](/learn/reading-xml-structure) explains elements and attributes for readers new to XML.
+
+### Where FIXML lives
+
+FIXML's home is post-trade. The FIX Trading Community says it is "widely adopted for derivatives post trade clearing and settlement globally" and "also used for reporting" ([FIX Trading Community, FIXML](https://fixtrading.org/standards/fixml/)). Eurex Clearing, whose interface document places it within Deutsche Börse's clearing infrastructure, is one example: its interface "allows members to choose and deploy their own operating systems and access interfaces", and "The transport layer is AMQP (Advanced Message Queueing Protocol)/WebSphere MQ, the syntax is FIXML" ([Eurex Clearing FIXML Interface, volume 1, C7 release 12.1, production from 18 May 2026](https://www.eurex.com/resource/blob/4826476/66cd67909ac2177dab3f9ddb63f17c50/data/Eurex%20Clearing%20FIXML%20Interface_Vol1_Rel_12_1_V_1.0.pdf)).
+
+XML can also ride inside a classic FIX session without being FIXML. FIX has a message for that, XMLnonFIX (35=n), added in FIX 4.3 ([FIXimate, XMLnonFIX](https://orchimate.org/fixtrading/fix-latest/messages/XMLnonFIX)), and a field of the standard header, XmlData (213), added in FIX 4.2, for an "Actual XML data stream (e.g. FIXML)" that "may contain embedded SOH characters" ([FIXimate, XmlData](https://orchimate.org/fixtrading/fix-latest/fields/XmlData)). B3's post-trade messaging uses the first route. Its technical specification says that B3 offers its post-trade systems an interface in FIX, "sendo que os dados de negócio continuam encapsulados no formato XML", the business data remaining encapsulated in the XML format of its message catalogue; the header carries BeginString(8) `FIX.4.4`, application messages are of type 35=n, and each request carries the size of the XML in XMLContentLen (20002) and an ISO 20022 message in XMLContent (20001), encoded in UTF-8, "a transformation format of ISO 10646" in the words of its Internet standard, [RFC 3629](https://www.rfc-editor.org/rfc/rfc3629.txt) of November 2003 ([B3, Mensageria Pós Negociação B3 para mensagens ISO 20022, especificação técnica e catálogo FIX, version 2.0, September 2020](https://www.b3.com.br/data/files/2F/07/A8/54/214057102C784E47AC094EA8/MensageriaPosNegociacaoB3%20-%20Especificacao%20Tecnica.pdf)). The same document lists five messaging interfaces served this way, from the clearing house and the risk simulator to the depository, iMercado and fixed income, and notes that "A B3 não suporta criptografia FIX embutida", B3 does not support FIX's built-in encryption, leaving security to lower layers and dedicated links (same source).
+
+## FAST: squeezing the stream
+
+### What it was for
+
+FAST was built for market data, where the same instruments, prices and counters repeat from one message to the next. The FIX Trading Community says the protocol "is developed, maintained and supported by the FIX Trading Community's Market Data Optimization Working Group" and "is intended to enable efficient use of band width in high volume messaging without incurring material processing overhead or latency" ([FIX Trading Community, FAST](https://fixtrading.org/standards/fast/)). Its page on SBE dates FAST to 2005, "the existing only binary encoding developed in 2005 (FAST) which had a focus on reducing bandwidth utilization for market data" ([FIX Trading Community, Simple Binary Encoding (SBE)](https://fixtrading.org/simple-binary-encoding-sbe/)). Version 1.1 of the specification is dated 20 December 2006 and was the "Final version approved by the Market Data Optimization Working Group" ([FAST specification, version 1.1, 20 December 2006](https://fixtrading.org/packages/fast-specification-version-1-1/)); an extension proposal for version 1.2, adding enumerations, sets, bit groups and a timestamp type, is dated 18 January 2009 ([FAST version 1.2 extension proposal, 18 January 2009](https://fixtrading.org/packages/fast-extension-version-1-2/)).
+
+The specification carries an unusual notice for an open standard: the Chicago Mercantile Exchange "HAS MADE A PATENT APPLICATION WHICH POTENTIALLY COVERS WITHIN ITS CLAIMS A LIMITED ELEMENT OF THE FAST PROTOCOL" and, through a patent agreement with FIX Protocol Limited, has offered users a "covenant not to sue" ([FAST specification, version 1.1, disclaimer](https://fixtrading.org/packages/fast-specification-version-1-1/)). The FIX Trading Community's FAST page lists the agreement among the protocol's documents ([FIX Trading Community, FAST](https://fixtrading.org/standards/fast/)).
+
+### How it works
+
+The specification describes two levels of saving. "First, a concept referred to as Field Operators allows data affinities of a stream to be leveraged and redundant data to be removed. Second, serialization of the remaining data is accomplished through binary encoding which draws on self-describing field lengths and bit maps indicating the presence or absence of fields" ([FAST specification, version 1.1, section 1](https://fixtrading.org/packages/fast-specification-version-1-1/)). Both levels are driven by a template that both sides hold. The parts that matter for reading bytes (same specification, sections 6.3, 10.1 to 10.6):
+
+- **Stop bits.** Integers, strings and the presence map are "stop bit encoded entities": in each byte the most significant bit says whether the entity ends there, and the other seven bits carry data. Integers are big-endian, and a signed integer is a two's complement value whose top data bit is the sign.
+- **Presence map.** Each message starts with a presence map, a stop-bit-encoded string of bits saying which optional or operator-driven fields actually appear.
+- **Field operators.** Constant, default, copy, increment, delta and tail let the decoder rebuild a value from a dictionary of previous values: an unchanged price under the copy operator costs one presence-map bit and no bytes at all.
+- **Nullability.** For a nullable field, "every non-negative integer is incremented by 1 before it is encoded", and the null value is a seven-bit entity of zeros, `0x80` on the wire.
+- **Scaled numbers.** A decimal is "a Signed Integer exponent followed by a Signed Integer mantissa", a base-10 exponent "in order to support exact representation of decimal numbers".
+
+The specification's own appendix of examples can be checked with a few lines of code. Every integer and decimal example in appendix 3.1 matches a stop-bit encoder written for this article, except the two that encode the number −8,193: signed integer example 6, and decimal example 8, which sends −8.193 as exponent −3 and mantissa −8,193. Both print the bytes as `0x73 0x3f 0xff` in the hexadecimal column but as `01111111 00111111 11111111` in the binary column beside it ([FAST specification, version 1.1, appendix 3.1.1, example 6, and appendix 3.1.5, example 8](https://fixtrading.org/packages/fast-specification-version-1-1/)). The binary column is right: −8,193 in 21-bit two's complement is `1111111 0111111 1111111`, which with the stop bit set on the last group gives `0x7f 0x3f 0xff`. Decoded as written, `0x73 0x3f 0xff` would mean −204,801. Two independent programs, one in Python and one in JavaScript, agree on every figure, and a rendering of the two pages confirms that the error is in the printed document, not in a text extraction.
+
+### Who still uses it
+
+At B3, FAST is alive beside the newer encoding. B3's connectivity policy describes market data sessions "Encoded in the FAST format (FIX Adapted for STreaming)" and others "Encoded in the binary format SBE" ([B3, Commercial Policy for Connectivity Services](https://www.b3.com.br/data/files/47/92/29/A6/EED1F910ADC36BE9AC094EA8/Commercial%20Politcy%20for%20Connectivity%20Services.pdf)), and in July 2026 B3 published new specifications for both, with a new FAST template file, version 5.1.19, whose adoption it made mandatory ([B3, Comunicado Externo 040/2026-VNC, 14 July 2026](https://www.b3.com.br/data/files/B1/82/C0/73/8926F910CEC024F9AC094EA8/CE%20040-2026-VNC%20MARKET%20DATA%20B3%20ATUALIZACAO%20DE%20ESPECIFICACAO%20TECNICA%20E%20ARQUIVO%20DE%20TEMPLATES_PT.pdf)).
+
+## SBE: an encoding built for the matching engine
+
+### Design
+
+SBE came from the community's High Performance Working Group, whose proposal "entails the use of a FIX Trading Community designed Simple Binary Encoding (SBE) to produce fast and compact encodings of FIX messages" and is "optimized for low latency" ([FIX Trading Community, Simple Binary Encoding (SBE)](https://fixtrading.org/simple-binary-encoding-sbe/)). The final version 1.0 of the standard, reissued with errata in November 2020, states the aim: SBE "targets high performance trading systems. It is optimized for low latency of encoding and decoding while keeping bandwidth utilization reasonably small. For compatibility, it is intended to represent all FIX semantics" ([SBE technical specification, version 1.0 with errata, November 2020, section 1](https://fixtrading.org/packages/simple-binary-encoding-technical-specification-final/)). Its design principles are short: "direct data access without complex transformations or conditional logic", achieved by "native binary datatypes" and a "Preference for fixed positions and fixed length fields" (same standard, section 1.2). A release candidate of version 2.0 dates from August 2019 ([SBE technical specification, version 2.0 release candidate 2, August 2019](https://fixtrading.org/packages/simple-binary-encoding-technical-specification-v2-rc2/)).
+
+What SBE does not send matters as much as what it sends. Tags and delimiters are gone; a message schema, an XML file exchanged in advance, tells both sides which fields a message holds and at what offset, and values that never change, such as a constant exponent, stay in the schema ([SBE technical specification, version 1.0, sections 1.3 and 4.5](https://fixtrading.org/packages/simple-binary-encoding-technical-specification-final/)). B3 states the consequence for its clients: "SBE messages are not self-describing, and all metadata (message schemas) must be previously fetched before decoding" ([B3, Binary EntryPoint messaging guidelines 8.4.2.3, section 3.9](https://www.b3.com.br/data/files/69/35/F1/AB/94711A103BBB511AAC094EA8/BinaryEntryPoint-MessageSpecificationGuidelines-8.4.2.3-enUS.pdf)).
+
+### The pieces of a message
+
+The rules a reader needs, from the standard ([SBE technical specification, version 1.0 with errata, sections 4 and 5](https://fixtrading.org/packages/simple-binary-encoding-technical-specification-final/)):
+
+- **Header.** Every message starts with a header giving the block length of the root, the template identifier, the schema identifier and the schema version, 2 bytes each; the recommended header adds the number of repeating groups and of variable-length fields, for 12 octets.
+- **Byte order.** "Little-Endian order is the default encoding, meaning that the least significant byte is serialized first on the wire"; a schema may choose big-endian. [Big-endian and little-endian](/learn/big-endian-and-little-endian) explains the two orders.
+- **Integers.** The standard's own example puts the value 10,000 in a `uint32` as `10270000` on the wire.
+- **Decimals.** A floating decimal is an `int64` mantissa plus an `int8` exponent, 9 bytes; a fixed-point decimal keeps the exponent constant in the schema and sends only the mantissa, 8 or 4 bytes. The standard's example, 123.45 with exponent −2, is `3930000000000000fe` as a floating decimal and `3930000000000000` as `decimal64`.
+- **Nulls.** An optional field still occupies its space; absence is a reserved value, such as the most negative `int64` for a mantissa.
+
+B3 stresses the last point to its developers: "Optional fields in SBE do not save space at all" ([B3, Binary EntryPoint messaging guidelines 8.4.2.3, section 3.5](https://www.b3.com.br/data/files/69/35/F1/AB/94711A103BBB511AAC094EA8/BinaryEntryPoint-MessageSpecificationGuidelines-8.4.2.3-enUS.pdf)). It also says that a message without repeating groups or variable-length fields "just behaves like a simple struct in C language", and that it lays out the most important fields inside a 64-byte cache line, aligned to their sizes, because "Alignment is especially important for speeding up FPGA processing", FPGA standing for field-programmable gate array (same guidelines, sections 3.3 and 3.4). [Colocation, microwaves and the race for latency](/learn/colocation-microwaves-and-the-race-for-latency) explains FPGAs in plain terms.
+
+### Checking the standard's own example
+
+The standard ends with a complete order message, written out as a hex dump and then as a table that interprets each field ([SBE technical specification, version 1.0 with errata, section 9.1.2](https://fixtrading.org/packages/simple-binary-encoding-technical-specification-final/)). Decoded field by field, the dump and the table agree on everything except the transaction time:
+
+| Field | Bytes in the hex dump | Bytes in the interpretation table | Decoded as nanoseconds since 1970 |
+|---|---|---|---|
+| TransactTime(60), dump | `80 16 b3 3b 13 65 29 15` | | 2018-04-27T20:31:22.122Z |
+| TransactTime(60), table | | `00b863e7343d2a15` | 2018-04-30T14:32:01.248Z, the value the table prints |
+| Price(44) | `1a 85 01 00 00 00 00 00` | `1a85010000000000` | 99,610 with exponent −3, so 99.610 |
+
+So in the November 2020 edition the dump carries a timestamp three days earlier than the one its own table announces. The release candidate of version 2.0, dated 2019, prints the same order with a different time, `c01a31962a5eb015`, and there dump and table agree, both decoding to 2019-07-11T13:43:27.699Z ([SBE technical specification, version 2.0 release candidate 2, section 7.2](https://fixtrading.org/packages/simple-binary-encoding-technical-specification-v2-rc2/)). The figures were computed for this article by two independent programs. As with the `tag=value` example taken apart in [Anatomy of a FIX message and the session layer](/learn/anatomy-of-a-fix-message-and-the-session-layer), the lesson is that published examples are illustrations, and decoders should be tested against the rules, not against a copied dump.
+
+## SOFH: where a message ends, and the local dialects
+
+Binary messages have no SOH to mark their end, so something has to say how long each one is. The SOFH working group wanted, in its words, "a simple and primitive message framing header that would communicate two pieces of information, the length of a message and the encoding type of that message" ([FIX Trading Community, SOFH](https://fixtrading.org/standards/sofh/)). The draft standard of 6 September 2016 defines a header of six octets: a four-octet Message_Length that includes the header itself, then a two-octet Encoding_Type, both "encoded using unsigned binary integer values in Network Byte Order", that is big-endian ([SOFH draft standard, version 1.0, 6 September 2016, section 2](https://fixtrading.org/packages/fix-simple-open-framing-header-draft-standard-v1-0/)). The registered encoding types include `0x5BE0` for SBE big-endian, `0xEB50` for SBE little-endian, `0xF000` for `tag=value`, `0xF100` for FIXML, `0xFA00` for FAST and `0xF500` for JSON, with `0x0001` to `0x00FF` reserved for private use (same standard, section 2.1.2).
+
+The two SBE venues in this series both changed it. CME Group lists the differences itself: its header "differs from the official SOFH specification in these ways: Byte order is little-endian and not big-endian. Message length is 2 bytes and not 4 bytes. Encoding type is private user defined value outside designated range", that value being `0xCAFE` ([CME Group, iLink Simple Binary Encoding](https://cmegroupclientsite.atlassian.net/wiki/spaces/EPICSANDBOX/pages/714113056/iLink+Simple+Binary+Encoding)). B3 says its framing header "is based on Simple Open Framing Header (SOFH), but MessageLength field occupy only 2 bytes", little-endian, with the standard's SBE little-endian code `0xEB50`, which therefore appears on the wire as `0x50 0xEB` ([B3, Binary EntryPoint messaging guidelines 8.4.2.3, section 4.4](https://www.b3.com.br/data/files/69/35/F1/AB/94711A103BBB511AAC094EA8/BinaryEntryPoint-MessageSpecificationGuidelines-8.4.2.3-enUS.pdf)). B3 also ends a session with the termination code `16 - INVALID_SOFH` if an inbound message announces a length above 512 bytes (same guidelines, section 4.5.7).
+
+| Framing header | Length field | Byte order | Encoding type for SBE | Bytes before the SBE header |
+|---|---|---|---|---|
+| SOFH draft standard, 2016 | 4 bytes, includes the header | Big-endian | `0xEB50` (little-endian SBE) or `0x5BE0` | 6 |
+| CME Group, iLink | 2 bytes | Little-endian | `0xCAFE`, a private value | 4 |
+| B3, Binary EntryPoint | 2 bytes | Little-endian | `0xEB50`, sent as `50 eb` | 4 |
+
+Sources for the table: [SOFH draft standard](https://fixtrading.org/packages/fix-simple-open-framing-header-draft-standard-v1-0/), [CME Group, iLink Simple Binary Encoding](https://cmegroupclientsite.atlassian.net/wiki/spaces/EPICSANDBOX/pages/714113056/iLink+Simple+Binary+Encoding), [B3, Binary EntryPoint messaging guidelines 8.4.2.3](https://www.b3.com.br/data/files/69/35/F1/AB/94711A103BBB511AAC094EA8/BinaryEntryPoint-MessageSpecificationGuidelines-8.4.2.3-enUS.pdf). The SBE standard itself notes that "the framing standard specifies that the framing header will always be encoded in big-endian byte order" ([SBE technical specification, version 1.0, section 5.1.1](https://fixtrading.org/packages/simple-binary-encoding-technical-specification-final/)); CME's page, describing its own variant, says the header "will always be encoded in little-endian byte order". A protocol analyser built from the standard alone would misread both venues' traffic.
+
+## FIXP: a session layer that gets out of the way
+
+### Where it came from
+
+The classic FIX session numbers every message, resends what is missing and wraps each message in a text header ([Anatomy of a FIX message and the session layer](/learn/anatomy-of-a-fix-message-and-the-session-layer)). FIXP drops most of that. Its technical standard, version 1.0 of 15 April 2021, opens with its ancestry: "FIXP is a derived work. The origin and basis for FIXP are the FIX session layer protocols and the designed and implemented by NASDAQOMX, SoupTCP, SoupBinTCP, and UFO (UDP for Orders)", and "Every attempt was made to keep FIXP as close to the functionality and behavior of SoupBinTCP and UFO as possible", UDP being the User Datagram Protocol ([FIXP technical standard, version 1.0, 15 April 2021, section 1](https://fixtrading.org/packages/fixp-session-layer-technical-specification-v1-0-technical-standard/)). The listed authors include two protocol designers from Goldman Sachs, contributors from CME Group and the Shanghai Stock Exchange, and, as editor and working group convener, Júlio L R Monteiro, described as "formerly B3" (same standard, section 1.1).
+
+### Flows instead of one rule
+
+FIXP is "Encoding independent" and "Restricted to initiating, maintaining, and reestablishing a session" ([FIXP technical standard, version 1.0, section 1](https://fixtrading.org/packages/fixp-session-layer-technical-specification-v1-0-technical-standard/)). Its main idea is that each direction of a session, a flow, chooses its own delivery guarantee (same standard, section 3.4.4):
+
+| Flow type | Guarantee, in the standard's words |
+|---|---|
+| Recoverable | "Guarantees exactly-once message delivery. If gaps are detected, then missed messages may be recovered by retransmission." |
+| Idempotent | "Guarantees at-most-once delivery. If gaps are detected, the sender is notified, but recovery is under control of the application, if it is done at all." |
+| Unsequenced | "Makes no delivery guarantees (best-effort)." |
+| None | "No application messages should be sent in one direction of a session." |
+
+The FIX Trading Community's white paper explains why trading sessions mix them: "A typical trading use case is to send outbound executions over a recoverable flow while inbound orders are idempotent", because "in a fast-moving market, there isn't time for recoverability; by the time a retransmission succeeds, the market may have moved"; and "unlike the original FIX protocol, the session layer imposes no message header on application messages" ([FIX Trading Community, High Performance FIX for the Web Era, June 2025, section 2.5.3](https://fixtrading.org/download/white-paper-high-performance-fix-for-the-web-era/)). [Retries, timeouts and idempotency](/learn/retries-timeouts-and-idempotency) covers the same choice outside finance.
+
+### FIXP at B3 and CME
+
+B3's schema writes that choice into constants: in the Negotiate message the client's flow is fixed as `IDEMPOTENT`, and B3's answer declares its own flow `RECOVERABLE` ([B3, b3-entrypoint-messages-8.4.2.xml, schema version 6, 18 December 2025](https://www.b3.com.br/data/files/37/37/9B/18/47F6B9105B12E5A9AC094EA8/b3-entrypoint-messages-8.4.2.xml)). The session runs through Negotiate, Establish, Sequence (which doubles as a heartbeat), RetransmitRequest, Retransmission and Terminate, and when B3 sees a gap in the client's numbering it sends NotApplied but "accept[s] messages with a higher-than-expected sequence number", leaving the client "a responsibility to decide about recovery at an application layer" ([B3, Binary EntryPoint messaging guidelines 8.4.2.3, sections 4.5 and 4.5.5](https://www.b3.com.br/data/files/69/35/F1/AB/94711A103BBB511AAC094EA8/BinaryEntryPoint-MessageSpecificationGuidelines-8.4.2.3-enUS.pdf)). Credentials travel inside Negotiate and Establish as a small JSON document with an `auth_type`, a `username` and an `access_key` (same guidelines, sections 4.3 and 4.5.2). CME's iLink uses the same pair of standards, SBE and FIXP; every new iLink session is created with cancel on disconnect enabled, and the feature is mandatory except on one gateway type for listed derivatives, where clearing firms may opt out ([CME Group, iLink functional specification](https://cmegroupclientsite.atlassian.net/wiki/spaces/EPICSANDBOX/pages/714539039/iLink+Functional+Specification)). Its session rules show the same split, with different details: "Business messages received from the exchange are recoverable", a customer that sends a higher sequence number than expected gets a Not Applied message, a FIXP session is kept for a week, where B3 resets its sequence numbers at the start of each trading day (B3 guidelines, section 4.5.1), and the customer authenticates "by digitally signing FIXP Negotiate and Establish messages using a hashed message authentication code (HMAC)" ([CME Group, iLink Binary Order Entry, session layer](https://cmegroupclientsite.atlassian.net/wiki/spaces/EPICSANDBOX/pages/714145834/iLink+Binary+Order+Entry+-+Session+Layer)).
+
+## Nasdaq's native protocols: OUCH, ITCH and their carriers
+
+### OUCH, for orders
+
+Nasdaq's order entry protocol is not an encoding of FIX: it defines its own messages, and maps only some fields to Nasdaq's FIX interface, such as time in force. Its specification, OUCH 5.0, updated in October 2025, calls it "the low-level native protocol for connecting to NASDAQ", "designed to offer the maximum possible performance at the cost of flexibility and ease of use", and points users who do not need that performance to "other, more standard interfaces" ([Nasdaq, OUCH 5.0 order entry specification, October 2025](https://www.nasdaqtrader.com/content/technicalsupport/specifications/TradingProducts/Ouch5.0.pdf)). Its rules (same specification, sections 1 and 2):
+
+- "Each message type has a fixed message length", apart from an optional appendage of tag, length and value options.
+- "All Numeric fields are binary formatted, big-endian numbers", and "Prices are numeric fields with an implied 4 decimal places", up to $199,999.9900.
+- An order is identified by the account and a UserRefNum that "must be both unique and strictly increasing throughout the trading day".
+- Messages from the client are not sequenced, but "All Inbound Messages may be repeated benignly", so a client unsure whether an order arrived can simply send it again.
+
+The Enter Order message has a fixed part of 47 bytes:
+
+| Offset | Length | Field | Content |
+|---|---|---|---|
+| 0 | 1 | Type | `O` |
+| 1 | 4 | UserRefNum | Day-unique, strictly increasing |
+| 5 | 1 | Side | B, S, T or E |
+| 6 | 4 | Quantity | Shares |
+| 10 | 8 | Symbol | Left-justified, padded with spaces |
+| 18 | 8 | Price | Implied 4 decimals |
+| 26 | 1 | Time in force | "Corresponds to TimeInForce (59) in Nasdaq FIX" |
+| 27 | 1 | Display | |
+| 28 | 1 | Capacity | |
+| 29 | 1 | InterMarket Sweep eligibility | |
+| 30 | 1 | CrossType | |
+| 31 | 14 | ClOrdID | Customer identifier |
+| 45 | 2 | Appendage length | Then the optional appendage |
+
+Source: [Nasdaq, OUCH 5.0, section 2.1](https://www.nasdaqtrader.com/content/technicalsupport/specifications/TradingProducts/Ouch5.0.pdf). The earlier OUCH 4.2, still published with the same October 2025 date, used a 4-byte price and a 14-character order token instead of the numeric UserRefNum ([Nasdaq, OUCH 4.2](https://www.nasdaqtrader.com/content/technicalsupport/specifications/TradingProducts/OUCH4.2.pdf)).
+
+### ITCH, for market data
+
+ITCH runs the other way. Nasdaq TotalView-ITCH 5.0 is "an outbound market data feed only" that "uses a series of messages to track the life of a customer order", identifies instruments by a daily "stock locate code" meant as "an array index for rapidly looking up instrument details", and stamps messages in "nanoseconds since midnight" ([Nasdaq, TotalView-ITCH 5.0 specification](https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/NQTVITCHspecification.pdf)). Its Add Order message is 36 bytes: a type `A`, a 2-byte locate code, a 2-byte tracking number, a 6-byte timestamp, an 8-byte order reference number, the side, a 4-byte share count, an 8-byte symbol and a 4-byte price with four implied decimals (same specification, section 1.3.1). The same document covers a hardware version of the feed, broadcast from Carteret, New Jersey, "in the MoldUDP64 protocol option only", for which Nasdaq requires a 10 or 40 Gb connection; its revision log runs from 2015 to an April 2023 change (same specification).
+
+### The carriers
+
+Both protocols ride on small Nasdaq session layers. SoupBinTCP "is a lightweight point-to-point protocol, built on top of TCP/IP sockets": each logical packet carries a two-byte big-endian length and a one-byte type, and "Sequenced Data Packets do not contain an explicit sequence number; instead both client and server compute the sequence number locally by counting messages as they go" ([Nasdaq, SoupBinTCP 3.00](https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/soupbintcp.pdf)). Its revision history begins with an initial distribution in 1999 and describes version 3.0, of 15 October 2008, as taken from SoupTCP 3.0 with packets "two byte length-prefixed instead of new-line terminated" (same document). MoldUDP64 serves the "one transmitter to many listeners" case over UDP multicast, with a header of a 10-byte session, an 8-byte sequence number and a 2-byte message count, and re-request servers for missed packets; its version log starts on 2 November 2004 and records 64-bit support on 4 December 2008 ([Nasdaq, MoldUDP64 protocol specification, version 1.00](https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/moldudp64.pdf)). [Multicast: what it costs to not flood](/learn/multicast-what-it-costs-to-not-flood) covers multicast delivery itself, and FIXP's flows are, by the standard's own account above, descendants of these designs.
+
+## Brazil: B3's binary order entry and market data
+
+### Binary EntryPoint
+
+B3's binary gateway is "a new order management interface for the PUMA Trading System, based on FIX Binary 1.0 RC2, using binary protocol", RC2 meaning release candidate 2 ([B3, Binary Order Entry](https://www.b3.com.br/en_us/solutions/platforms/puma-trading-system/for-developers-and-vendors/entrypoint/)). Its guidelines list three benefits, "FPGA-friendly", "Reduced message size" and "An execution report for each kind of message", and say that "B3 uses the version 1.0 of SBE" ([B3, Binary EntryPoint messaging guidelines 8.4.2.3, sections 1.1 and 3.2](https://www.b3.com.br/data/files/69/35/F1/AB/94711A103BBB511AAC094EA8/BinaryEntryPoint-MessageSpecificationGuidelines-8.4.2.3-enUS.pdf)). The schema file, package `b3.entrypoint.fixp.sbe`, schema identifier 1, version 6, semantic version 8.4.2 of 18 December 2025, declares little-endian byte order and defines a mandatory price as an `int64` mantissa with a constant exponent of −4, alongside an eight-decimal price type with exponent −8; its templates run from Negotiate (1) to SimpleNewOrder (100), NewOrderSingle (102), OrderCancelReplaceRequest (104) and separate execution reports for new, modified, cancelled, traded, rejected and forward orders (200 to 205) ([B3, b3-entrypoint-messages-8.4.2.xml](https://www.b3.com.br/data/files/37/37/9B/18/47F6B9105B12E5A9AC094EA8/b3-entrypoint-messages-8.4.2.xml)). The dates of the migration, derivatives in December 2023 and equities in three waves to March 2024, are in [The FIX protocol: origins, versions and the community](/learn/the-fix-protocol-origins-versions-and-the-community). B3's circular on the equities waves adds the matching engines moved in each, from EQT08 and EQT09 on 29 January 2024 to EQT03, EQT05 and EQT06 on 4 March, each with its market segment number (EQT01 is segment 80), and states the purpose: "to enable higher volumes of orders and transactions to be processed in a simplified manner and in less time" ([B3, Circular Letter 015/2024-PRE, 24 January 2024](https://www.b3.com.br/data/files/56/46/59/0D/3664D8103152D4C8AC094EA8/OC%20015-2024%20PRE%20%20Lan%C3%A7amento%20do%20Gateway%20Binario%20Segmento%20Bovespa%20%28Binary%20EntryPoint%29%20-%20EN.pdf)).
+
+### A real B3 binary order, decoded
+
+B3's message reference prints "a HEX Dump of a complete SimpleNewOrder message in one TCP packet" ([B3, Binary EntryPoint message reference 8.4.2, section 2.2](https://www.b3.com.br/data/files/E9/37/9F/18/47F6B9105B12E5A9AC094EA8/BinaryEntryPoint-MessageReference-8.4.2-enUS.pdf)):
+
+```
+75 00 50 eb 54 00 64 00 01 00 06 00 01 e1 f5 05
+05 00 00 00 80 11 49 0a 04 6e 6e 17 50 00 01 00
+6b 70 f3 1c 89 01 00 00 0f 00 00 00 54 41 44 41
+00 00 00 00 00 00 54 41 44 41 00 00 55 4f f0 90
+2e 00 00 00 31 32 30 00 64 00 00 00 00 00 00 00
+08 43 0f 00 00 00 00 00 2c 01 00 00 40 e2 01 00
+14 53 49 4d 50 4c 45 4e 45 57 4f 52 44 45 52 20
+42 55 59 20 35
+```
+
+Decoded with the field order and types of B3's schema, all little-endian and packed without padding ([B3, b3-entrypoint-messages-8.4.2.xml](https://www.b3.com.br/data/files/37/37/9B/18/47F6B9105B12E5A9AC094EA8/b3-entrypoint-messages-8.4.2.xml)), the 117 bytes read as follows. The decoding was done for this article by two independent programs, in Python and in JavaScript, which agree on every value.
+
+| Offset | Bytes | Field | Type | Value |
+|---|---|---|---|---|
+| 0x00 | `75 00` | Framing: message length | `uint16` | 117 |
+| 0x02 | `50 eb` | Framing: encoding type | `uint16` | `0xEB50`, SBE 1.0 little-endian |
+| 0x04 | `54 00` | SBE header: block length | `uint16` | 84 |
+| 0x06 | `64 00` | SBE header: template | `uint16` | 100, SimpleNewOrder |
+| 0x08 | `01 00` | SBE header: schema | `uint16` | 1 |
+| 0x0A | `06 00` | SBE header: schema version | `uint16` | 6 |
+| 0x0C | `01 e1 f5 05` | sessionID | `uint32` | 100000001 |
+| 0x10 | `05 00 00 00` | msgSeqNum | `uint32` | 5 |
+| 0x14 | `80 11 49 0a 04 6e 6e 17` | sendingTime | `uint64`, nanoseconds | 2023-07-03T18:11:13.942Z |
+| 0x1C | `50` | marketSegmentID | `uint8` | 80 (matching engine EQT01) |
+| 0x1E | `01`, `00` | ordTagID, mmProtectionReset | `uint8` each | 1, false |
+| 0x20 | `6b 70 f3 1c 89 01 00 00` | clOrdID | `uint64` | 1688407863403 |
+| 0x28 | `0f 00 00 00` | account | `uint32` | 15 |
+| 0x2C | `54 41 44 41 00 …` | senderLocation | 10 characters | `TADA` |
+| 0x36 | `54 41 44 41 00` | enteringTrader | 5 characters | `TADA` |
+| 0x3B | `00` | selfTradePreventionInstruction | `uint8` | 0, none |
+| 0x3C | `55 4f f0 90 2e 00 00 00` | securityID | `uint64` | 200000163669 |
+| 0x44 | `31`, `32`, `30` | side, ordType, timeInForce | characters | buy, limit, day |
+| 0x47 | `00` | routingInstruction | `uint8` | null |
+| 0x48 | `64 00 00 00 00 00 00 00` | orderQty | `uint64` | 100 |
+| 0x50 | `08 43 0f 00 00 00 00 00` | price | `int64`, exponent −4 | 1,000,200 → 100.02 |
+| 0x58 | `2c 01`, `00 00`, `40 e2 01 00` | investorID: prefix, padding, document | `uint16`, `uint32` at offset 4 | 300, 123456 |
+| 0x60 | `14` | memo length | `uint8` | 20 |
+| 0x61 | `53 49 4d …` | memo | 20 characters | `SIMPLENEWORDER BUY 5` |
+
+The root block runs from 0x0C to 0x5F, exactly the 84 bytes the header announces, and 4 + 8 + 84 + 1 + 20 = 117, the length in the framing header. The order is a buy limit order for the day, 100 units at 100.02, sent on 3 July 2023 on the equities matching engine that B3's circular identifies as segment 80. Two details in B3's own interpretation table under the dump do not match the dump: it prints the length bytes as `76 00` while decoding them as `0x0075 = 117`, and it places the memo's length byte at offset 0x62 and its text at 0x63 to 0x76, two bytes later than the dump shows ([B3, Binary EntryPoint message reference 8.4.2, section 2.2](https://www.b3.com.br/data/files/E9/37/9F/18/47F6B9105B12E5A9AC094EA8/BinaryEntryPoint-MessageReference-8.4.2-enUS.pdf)). The decoded values are right; the offsets in the table are not.
+
+### Binary market data
+
+Market data moved too. B3's page for the binary feed says that "In addition to the consumption of Market Data encoded in the FIX/FAST format, the UMDF Platform enables the consumption of Market Data with binary encoding SBE", which "offers lower latency when compared to encoding in the FIX/FAST format", UMDF being B3's Unified Market Data Feed ([B3, Binary UMDF](https://www.b3.com.br/en_us/solutions/platforms/puma-trading-system/for-developers-and-vendors/binary-umdf)). The milestones come from B3's circulars: new versions of the binary specifications were announced on 11 October 2022, after a technical workshop held on 31 March 2022 ([B3, Comunicado Externo 146/2022-VNC, 11 October 2022](https://www.b3.com.br/data/files/FE/E2/79/D5/887C38101E311E28AC094EA8/CE%20146-2022-VNC%20Market%20Data%20Binario.pdf)); parallel production began on 17 April 2023, with SBE messages only on feed B, and B3 warned that preparing its systems from 25 March 2023 could degrade the FIX/FAST feed's latency by up to 15 microseconds and that the binary feed would be "mais lento intencionalmente", intentionally slower, during the parallel phase ([B3, Comunicado Externo 026/2023-VNC, 6 April 2023](https://www.b3.com.br/data/files/55/72/AA/96/A575781064456178AC094EA8/CE%20026-2023-VNC%20Lan%C3%A7amento%20do%20Market%20Data%20Bin%C3%A1rio%20em%20Produ%C3%A7%C3%A3o%20Paralela.pdf)); and in July 2026 B3 moved the binary feed to schema version 17 while the FAST feed continued with its own templates ([B3, Comunicado Externo 040/2026-VNC, 14 July 2026](https://www.b3.com.br/data/files/B1/82/C0/73/8926F910CEC024F9AC094EA8/CE%20040-2026-VNC%20MARKET%20DATA%20B3%20ATUALIZACAO%20DE%20ESPECIFICACAO%20TECNICA%20E%20ARQUIVO%20DE%20TEMPLATES_PT.pdf)).
+
+The binary feed is not a byte-for-byte translation of the FAST one. Its guidelines, version 2.3.1.2 of 28 September 2026, say that order-depth books are published by order only (market by order, MBO), while depth by price and top-of-book views "are not available in SBE"; that indexes, securities lending data, news and some statistics stay on FIX/FAST; that every message is kept within one datagram of at most 1,400 bytes, "to be compatible with most VPNs", VPN being a virtual private network; and that each datagram starts with a 16-byte packet header carrying the channel, a sequence version, a sequence number and a sending time ([B3, Binary UMDF messaging specification guidelines 2.3.1.2, sections 4, 5.8 and 6.5.5](https://www.b3.com.br/data/files/84/B7/1D/9E/AB611A103BBB511AAC094EA8/BinaryUMDF-MessageSpecificationGuidelines-v.2.3.1.2-enUS.pdf)). The most visible design change is flattening. B3 explains that a textual FIX MarketDataIncrementalRefresh (35=X), "or its equivalent FAST representation", carries "the same cruft" and must be decoded entirely, whereas the binary feed "breaks the larger message (tag 35=X) into its components", one SBE message per entry, so that "an application can opt to skip 'high price' and 'low price' messages just by checking their template IDs" (same guidelines, section 5.4). B3's own example turns one FIX message with six entries into seven SBE messages of 34 to 64 bytes each:
+
+| SBE message | Template | Size (bytes) | Replaces in the FIX message |
+|---|---|---|---|
+| ExecutionSummary | 55 | 64 | (new summary) |
+| Trade | 53 | 56 | 269=2, the trade |
+| OpeningPrice | 15 | 40 | 269=4 |
+| HighPrice | 24 | 34 | 269=7 |
+| LowPrice | 25 | 34 | 269=8 |
+| DeleteOrder | 51 | 48 | 269=0, 279=2, the resting order removed |
+| ExecutionStatistics | 56 | 52 | 269=9, with the end-of-event flag |
+
+Source: [B3, Binary UMDF messaging specification guidelines 2.3.1.2, section 5.4](https://www.b3.com.br/data/files/84/B7/1D/9E/AB611A103BBB511AAC094EA8/BinaryUMDF-MessageSpecificationGuidelines-v.2.3.1.2-enUS.pdf). The guidelines are candid that the SBE messages "occupy more space", and that the gain is selectivity (same section). The scale they serve is on B3's page for the feed, which lists as maxima observed 883.2 million market-by-order messages on a day it dates 03/23/26, peaks of 0.26 million in one second and 5.6 million in one minute, and 23.8 million trades on a day it dates 10/26/26 ([B3, Binary UMDF, read 16 November 2026](https://www.b3.com.br/en_us/solutions/platforms/puma-trading-system/for-developers-and-vendors/binary-umdf)). How the feeds are recovered after a lost packet is the subject of [Market data: consolidated feeds and direct feeds](/learn/market-data-consolidated-feeds-and-direct-feeds).
+
+## Worked example: one price, nine encodings
+
+The price in B3's dump, 100.02, makes a convenient test. The table encodes that single value, the FIX field Price(44), in each format of this article, following the rules quoted above; every row was computed by two independent programs, in Python and in JavaScript, which agree byte for byte.
+
+| Format | Rule applied | Bytes on the wire (hex) | Size |
+|---|---|---|---|
+| `tag=value` | ASCII digits, then SOH ([TagValue Encoding](https://fixtrading.org/packages/fix-tagvalue-encoding/)) | `34 34 3d 31 30 30 2e 30 32 01` | 10 |
+| FIXML | Attribute `Px` ([FIXML 1.1](https://fixtrading.org/packages/fixml-technical-standard-version-1-1/)) | ` Px="100.02"`, 12 characters | 12 |
+| FAST | Scaled number, exponent −2, mantissa 10,002, no operator ([FAST 1.1](https://fixtrading.org/packages/fast-specification-version-1-1/)) | `fe 00 4e 92` | 4 |
+| SBE at B3 | `int64` mantissa, exponent −4 constant, little-endian ([B3 schema](https://www.b3.com.br/data/files/37/37/9B/18/47F6B9105B12E5A9AC094EA8/b3-entrypoint-messages-8.4.2.xml)) | `08 43 0f 00 00 00 00 00` | 8 |
+| SBE at CME | `int64` mantissa, exponent −9, little-endian ([CME iLink SBE](https://cmegroupclientsite.atlassian.net/wiki/spaces/EPICSANDBOX/pages/714113056/iLink+Simple+Binary+Encoding)) | `00 15 a8 49 17 00 00 00` | 8 |
+| OUCH 5.0 | 8 bytes, 4 implied decimals, big-endian ([OUCH 5.0](https://www.nasdaqtrader.com/content/technicalsupport/specifications/TradingProducts/Ouch5.0.pdf)) | `00 00 00 00 00 0f 43 08` | 8 |
+| TotalView-ITCH 5.0 | Price(4), 4 bytes, big-endian ([ITCH 5.0](https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/NQTVITCHspecification.pdf)) | `00 0f 43 08` | 4 |
+| New York Stock Exchange (NYSE) Pillar Binary | Unsigned 64 bits, price scale 8, little-endian ([NYSE Pillar Gateway Binary, version 6.1](https://www.nyse.com/publicdocs/NYSE_Pillar_Gateway_Binary_Protocol_Specification.pdf)) | `80 68 2a 54 02 00 00 00` | 8 |
+| FAST, unchanged price, copy operator | One presence-map bit, value taken from the dictionary ([FAST 1.1](https://fixtrading.org/packages/fast-specification-version-1-1/)) | none | 0 |
+
+Five things stand out.
+
+- **The same integer, mirrored.** B3 and Nasdaq both use four implied decimals, so both send the integer 1,000,200 (`0x0F4308`). B3 writes it little-endian, `08 43 0f 00…`, exactly the bytes at offset 0x50 of its own dump; OUCH and ITCH write it big-endian, `…00 0f 43 08`.
+- **Scale is a venue choice.** CME's example message carries a price as a mantissa with exponent −9 (its published New Order Single prices 100 as `00 E8 76 48 17 00 00 00`, 100,000,000,000 × 10⁻⁹), and the NYSE group's Pillar gateway uses a scale of 8, with its own example "123000000 = $1.23" ([CME Group, iLink Simple Binary Encoding](https://cmegroupclientsite.atlassian.net/wiki/spaces/EPICSANDBOX/pages/714113056/iLink+Simple+Binary+Encoding); [NYSE Pillar Gateway Binary protocol specification, version 6.1, 22 September 2026](https://www.nyse.com/publicdocs/NYSE_Pillar_Gateway_Binary_Protocol_Specification.pdf)). A decoder that assumes one scale for every venue is wrong by orders of magnitude.
+- **FAST's extra byte.** The mantissa 10,002 is 78 × 128 + 18; the group 78 (`1001110`) has its top bit set, which FAST would read as a negative sign, so a leading zero group is needed: `00 4e 92`. The optional form is the same here, because the specification adds 1 only to non-negative values and the exponent is −2.
+- **Fixed size beats short size.** FAST is the shortest non-empty form, but its length depends on the value and the dictionary state; SBE spends 8 bytes on every price, at a known offset, which is what B3 means by a message that "just behaves like a simple struct".
+- **The meaning never changed.** Every row is FIX Price(44). The binary venues kept FIX semantics, as B3 and CME say, and changed only the spelling.
+
+### Whole messages
+
+Message sizes tell the same story, with a caveat: the messages below do not carry identical content, so the comparison is indicative.
+
+| Message | Size (bytes) | Source |
+|---|---|---|
+| B3's SimpleNewOrder, binary, decoded above, with a 20-character memo | 117 | [B3 message reference 8.4.2](https://www.b3.com.br/data/files/E9/37/9F/18/47F6B9105B12E5A9AC094EA8/BinaryEntryPoint-MessageReference-8.4.2-enUS.pdf) |
+| The same order details as FIX 4.4 `tag=value`, built for this article (header, identifiers, account, two parties, instrument, side, type, validity, quantity, price, times, memo) | 264 | Computed here; BodyLength 241, CheckSum 047 |
+| CME's published New Order Single, iLink | 128 | [CME Group, iLink Simple Binary Encoding](https://cmegroupclientsite.atlassian.net/wiki/spaces/EPICSANDBOX/pages/714113056/iLink+Simple+Binary+Encoding) |
+| Nasdaq OUCH 5.0 Enter Order without options, plus 3 bytes of SoupBinTCP | 47 + 3 | [OUCH 5.0](https://www.nasdaqtrader.com/content/technicalsupport/specifications/TradingProducts/Ouch5.0.pdf); [SoupBinTCP](https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/soupbintcp.pdf) |
+| Nasdaq ITCH Add Order | 36 | [TotalView-ITCH 5.0](https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/NQTVITCHspecification.pdf) |
+
+The `tag=value` rendering, verified by recomputing its BodyLength and CheckSum with a second program, is:
+
+```
+8=FIX.4.4|9=241|35=D|49=CTAD0001|56=EXCHG|34=5|52=20230703-18:11:13.942|11=1688407863403|1=15|453=2|448=TADA|447=D|452=36|448=TADA|447=D|452=54|48=200000163669|22=8|207=BVMF|54=1|60=20230703-18:11:13.942|38=100|40=2|44=100.02|59=0|5149=SIMPLENEWORDER BUY 5|10=047|
+```
+
+The CompIDs are invented, the parties use the roles B3 gives to the entering trader (36) and the sender location (54), and the memo uses tag 5149, the identifier B3's schema assigns to it; it is an illustration, not a certified B3 message. CME's 128 bytes check out the same way: 4 bytes of framing, 8 of SBE header and the 116-byte block its header announces ([CME Group, iLink Simple Binary Encoding](https://cmegroupclientsite.atlassian.net/wiki/spaces/EPICSANDBOX/pages/714113056/iLink+Simple+Binary+Encoding)).
+
+## Why binary won at the matching engine, and what it cost
+
+### The case the venues make
+
+The arguments in the primary documents are consistent:
+
+- **Less work per message.** The FIX Trading Community's white paper says that "The number of processor cycles devoted to those transformations is substantial for tag value and other character string encodings" and claims that binary encodings are "two or three orders of magnitude faster" ([High Performance FIX for the Web Era, June 2025](https://fixtrading.org/download/white-paper-high-performance-fix-for-the-web-era/)); SBE's principle is "direct data access without complex transformations or conditional logic" ([SBE 1.0](https://fixtrading.org/packages/simple-binary-encoding-technical-specification-final/)).
+- **Predictability.** Fixed positions make reads "very predictable", and "Predefined message templates are also conducive to hardware acceleration" (same white paper, section 2.5.2). B3 calls its binary gateway "FPGA-friendly", and Nasdaq publishes an FPGA version of its ITCH feed ([B3, Binary EntryPoint guidelines 8.4.2.3](https://www.b3.com.br/data/files/69/35/F1/AB/94711A103BBB511AAC094EA8/BinaryEntryPoint-MessageSpecificationGuidelines-8.4.2.3-enUS.pdf); [TotalView-ITCH 5.0](https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/NQTVITCHspecification.pdf)).
+- **Simpler than FAST.** B3 says that "SBE encoding and decoding is much simpler and faster than FAST encoding and decoding (no presence maps, no 'dictionary contexts' containing previous values of tags in messages or repeating groups, no variable-length integers, no special rules for missing values etc.)", and that SBE is "not encumbered by any patents" ([B3, Binary UMDF guidelines 2.3.1.2, sections 4.1 and 5.1](https://www.b3.com.br/data/files/84/B7/1D/9E/AB611A103BBB511AAC094EA8/BinaryUMDF-MessageSpecificationGuidelines-v.2.3.1.2-enUS.pdf)).
+- **A session that does less.** FIXP adds no header to application messages and lets inbound orders be idempotent rather than recoverable ([FIXP 1.0](https://fixtrading.org/packages/fixp-session-layer-technical-specification-v1-0-technical-standard/); [High Performance FIX for the Web Era](https://fixtrading.org/download/white-paper-high-performance-fix-for-the-web-era/)).
+- **Measured at B3.** The latency cut that B3 announced in April 2025, from 1.2 milliseconds in 2023 to about 350 microseconds, is told in [Brazil: BM&F, Bovespa, B3 and electronic access](/learn/brazil-bmf-bovespa-b3-and-electronic-access). Among the improvements B3 credited was "a adoção de um protocolo internacional binário, que permitiu acelerar o processamento das ordens", the adoption of an international binary protocol that sped up order processing, and B3 added that the gain came "sem qualquer mudança nos controles de risco pré-negociação", without any change to pre-trade risk controls ([B3, 4 April 2025](https://www.b3.com.br/pt_br/noticias/avanco-em-tecnologia.htm)). The figure is B3's, and B3 does not separate the protocol's share from the other improvements.
+
+### The costs the same documents record
+
+- **No message without its schema.** SBE "messages are not self-describing", and B3 tells clients they must read the schema version and block length of every message rather than assume them, because later versions add fields at the end ([B3, Binary EntryPoint guidelines 8.4.2.3, sections 3.8 and 3.9](https://www.b3.com.br/data/files/69/35/F1/AB/94711A103BBB511AAC094EA8/BinaryEntryPoint-MessageSpecificationGuidelines-8.4.2.3-enUS.pdf)). A `tag=value` message can be read by a person with a terminal; a binary one needs the right decoder.
+- **Dialects again.** The common language of [The FIX protocol: origins, versions and the community](/learn/the-fix-protocol-origins-versions-and-the-community) comes back as local framing headers, local scales and local templates, as the tables above show.
+- **Flexibility traded away.** Nasdaq states the trade itself: OUCH offers "the maximum possible performance at the cost of flexibility and ease of use" ([OUCH 5.0](https://www.nasdaqtrader.com/content/technicalsupport/specifications/TradingProducts/Ouch5.0.pdf)).
+- **Text did not disappear.** The community still calls `tag=value` "the original and most widely used encoding" ([FIX Trading Community, Technical standards](https://fixtrading.org/standards/technical-standards/)); B3 keeps its FIX 4.4 gateway beside the binary one ([B3, EntryPoint FIX Order Entry](https://www.b3.com.br/en_us/solutions/platforms/puma-trading-system/for-developers-and-vendors/entrypoint-order-entry)); and, as [The FIX protocol: origins, versions and the community](/learn/the-fix-protocol-origins-versions-and-the-community) noted, CME sends drop copies of binary iLink sessions as "encoded payload messages ... in ASCII format" ([CME Group, iLink functional specification](https://cmegroupclientsite.atlassian.net/wiki/spaces/EPICSANDBOX/pages/714539039/iLink+Functional+Specification)). The binary forms won where microseconds are counted, between a member's servers and the matching engine; between an asset manager and its broker, and in clearing, the text and XML forms described above remain in service. [FIX networks: hubs and managed connectivity](/learn/fix-networks-hubs-and-managed-connectivity) describes that wider world, and [The life of an order in FIX](/learn/the-life-of-an-order-in-fix) follows one order through it.
+
+## What to remember
+
+- FIX semantics travel in several encodings: `tag=value` text (ISO 3531-1, 2022), FIXML for post-trade, FAST for compressed market data (version 1.1, 2006) and SBE for low-latency binary messages (ISO/IEC 25390:2025).
+- FAST saves bytes with templates, presence maps, stop bits and field operators; SBE saves time with fixed offsets, native integers and fixed-point decimals, at the cost of exchanging schemas beforehand.
+- SOFH frames binary messages with a 6-byte big-endian header; CME and B3 both use a 4-byte little-endian variant, with different encoding codes.
+- FIXP, derived from Nasdaq's SoupBinTCP and UFO, lets each direction choose its guarantee; B3 and CME use idempotent orders inbound and recoverable reports outbound.
+- Nasdaq's OUCH and ITCH are native, fixed-length, big-endian protocols with prices in four implied decimals, carried by SoupBinTCP and MoldUDP64.
+- B3 runs a FIX 4.4 gateway and a binary SBE gateway side by side, and FAST and SBE market data side by side; its own example order decodes to a buy of 100 at 100.02, though the table under its dump misstates two offsets.
+
+<ReaderQuestions>
+
+- If binary encodings keep FIX's meaning but every venue picks its own scale, byte order and framing, is the industry still speaking one language, or several dialects of one grammar?
+- B3's binary market data spends more bytes per event so that clients can skip what they do not need: when is selectivity worth more than compactness?
+- A published example that does not match its own interpretation table turned up in the SBE standard and in B3's reference; what should implementers do before they trust a vendor's or a standard's sample bytes?
+- Should a venue keep a text gateway and a FAST feed running indefinitely for clients who do not need microseconds, and who should pay for the parallel systems?
+- FIXP lets inbound orders be lost rather than resent late: who should carry the risk of an order that was never applied, the client that sent it or the venue that skipped it?
+
+</ReaderQuestions>
+
+## Sources
+
+- [FIX Trading Community, Technical standards: encodings (tag=value, FIXML, SBE, FAST, JSON, Google Protocol Buffers, ASN.1), session standards (FIX session, FIXP, SOFH), FIXS (accessed 16 November 2026)](https://fixtrading.org/standards/technical-standards/)
+- [FIX Trading Community, The FIX Protocol: an application-layer protocol independent of how information is sent; FIXimate recommended for navigating the specification (accessed 16 November 2026)](https://fixtrading.org/standards/fix-protocol/)
+- [FIX Trading Community, FIX TagValue Encoding technical standard, version 1.0, June 2020: field syntax and SOH (accessed 16 November 2026)](https://fixtrading.org/packages/fix-tagvalue-encoding/)
+- [FIX Trading Community, High Performance FIX for the Web Era, white paper first published 2018, updated June 2025: cost of character conversion, the speed and determinism claims, SBE templates, FIXP flows (accessed 16 November 2026)](https://fixtrading.org/download/white-paper-high-performance-fix-for-the-web-era/)
+- [ISO/IEC JTC 1, Mission, vision and principles: JTC 1 created by the International Organization for Standardization (ISO) and the International Electrotechnical Commission (IEC) (accessed 16 November 2026)](https://jtc1info.org/about/mission-and-vision/)
+- [Standards Council of Canada, record of ISO/IEC 25390:2025, Simple Binary Encoding, published 22 April 2025 (accessed 16 November 2026)](https://ccn-scc.ca/standardsdb/standards/8189780)
+- [FIX Trading Community, FIXML technical standard, version 1.1, May 2014: history from 1998, design rules, single-message example (accessed 16 November 2026)](https://fixtrading.org/packages/fixml-technical-standard-version-1-1/)
+- [FIX Trading Community, FIXML page: adoption for derivatives post-trade clearing, settlement and reporting (accessed 16 November 2026)](https://fixtrading.org/standards/fixml/)
+- [Eurex Clearing, Eurex Clearing FIXML Interface, volume 1: overview, C7 release 12.1, production from 18 May 2026: FIXML over AMQP and WebSphere MQ (accessed 16 November 2026)](https://www.eurex.com/resource/blob/4826476/66cd67909ac2177dab3f9ddb63f17c50/data/Eurex%20Clearing%20FIXML%20Interface_Vol1_Rel_12_1_V_1.0.pdf)
+- [FIXimate (Orchimate), message XMLnonFIX (35=n), added in FIX 4.3 (accessed 16 November 2026)](https://orchimate.org/fixtrading/fix-latest/messages/XMLnonFIX)
+- [FIXimate (Orchimate), field XmlData (213) (accessed 16 November 2026)](https://orchimate.org/fixtrading/fix-latest/fields/XmlData)
+- [FIXimate (Orchimate), field Price (44): FIXML abbreviation Px (accessed 16 November 2026)](https://orchimate.org/fixtrading/fix-latest/fields/Price)
+- [FIXimate (Orchimate), field TransactTime (60): FIXML abbreviation TxnTm (accessed 16 November 2026)](https://orchimate.org/fixtrading/fix-latest/fields/TransactTime)
+- [B3, Mensageria Pós Negociação B3 para mensagens ISO 20022, especificação técnica e catálogo FIX, version 2.0, September 2020: FIX 4.4 sessions carrying ISO 20022 XML in 35=n messages, no built-in FIX encryption (accessed 16 November 2026)](https://www.b3.com.br/data/files/2F/07/A8/54/214057102C784E47AC094EA8/MensageriaPosNegociacaoB3%20-%20Especificacao%20Tecnica.pdf)
+- [IETF, RFC 3629, UTF-8, a transformation format of ISO 10646, November 2003 (accessed 16 November 2026)](https://www.rfc-editor.org/rfc/rfc3629.txt)
+- [FIX Trading Community, FAST page: Market Data Optimization Working Group, purpose, documents including the CME intellectual property agreement (accessed 16 November 2026)](https://fixtrading.org/standards/fast/)
+- [FIX Trading Community, Simple Binary Encoding (SBE) page: High Performance Working Group, FAST developed in 2005, versions (accessed 16 November 2026)](https://fixtrading.org/simple-binary-encoding-sbe/)
+- [FIX Protocol Ltd, FAST specification, version 1.1, 20 December 2006: CME patent notice, field operators, stop bits, presence map, nullability, scaled numbers, appendix 3 examples (accessed 16 November 2026)](https://fixtrading.org/packages/fast-specification-version-1-1/)
+- [FIX Protocol Ltd, FAST version 1.2 extension proposal, 18 January 2009 (accessed 16 November 2026)](https://fixtrading.org/packages/fast-extension-version-1-2/)
+- [FIX Trading Community, Simple Binary Encoding technical specification, version 1.0 with errata, November 2020: scope, design principles, byte order, decimals, header, SOFH as SBE, order message example (accessed 16 November 2026)](https://fixtrading.org/packages/simple-binary-encoding-technical-specification-final/)
+- [FIX Trading Community, Simple Binary Encoding technical specification, version 2.0 release candidate 2, August 2019: order message example (accessed 16 November 2026)](https://fixtrading.org/packages/simple-binary-encoding-technical-specification-v2-rc2/)
+- [FIX Trading Community, SOFH page: purpose of the framing header (accessed 16 November 2026)](https://fixtrading.org/standards/sofh/)
+- [FIX Trading Community, Simple Open Framing Header, draft standard version 1.0, 6 September 2016: fields, byte order, encoding types (accessed 16 November 2026)](https://fixtrading.org/packages/fix-simple-open-framing-header-draft-standard-v1-0/)
+- [FIX Trading Community, FIX Performance Session Layer (FIXP) technical standard, version 1.0, 15 April 2021: derivation from SoupBinTCP and UFO, authors, flow types (accessed 16 November 2026)](https://fixtrading.org/packages/fixp-session-layer-technical-specification-v1-0-technical-standard/)
+- [CME Group, iLink functional specification: SBE and FIXP, layer table, cancel on disconnect by default, drop copy in ASCII (accessed 16 November 2026)](https://cmegroupclientsite.atlassian.net/wiki/spaces/EPICSANDBOX/pages/714539039/iLink+Functional+Specification)
+- [CME Group, iLink Simple Binary Encoding: framing header and its differences from SOFH, New Order Single example (accessed 16 November 2026)](https://cmegroupclientsite.atlassian.net/wiki/spaces/EPICSANDBOX/pages/714113056/iLink+Simple+Binary+Encoding)
+- [CME Group, iLink Binary Order Entry, session layer: weekly FIXP sessions, recoverable business messages, Not Applied, HMAC authentication (accessed 16 November 2026)](https://cmegroupclientsite.atlassian.net/wiki/spaces/EPICSANDBOX/pages/714145834/iLink+Binary+Order+Entry+-+Session+Layer)
+- [Nasdaq, OUCH 5.0 order entry specification, updated October 2025: purpose, data types, Enter Order layout, revision history (accessed 16 November 2026)](https://www.nasdaqtrader.com/content/technicalsupport/specifications/TradingProducts/Ouch5.0.pdf)
+- [Nasdaq, OUCH 4.2, updated October 2025: 4-byte prices and order tokens (accessed 16 November 2026)](https://www.nasdaqtrader.com/content/technicalsupport/specifications/TradingProducts/OUCH4.2.pdf)
+- [Nasdaq, TotalView-ITCH 5.0 specification: data types, Add Order, FPGA feed, revision log to April 2023 (accessed 16 November 2026)](https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/NQTVITCHspecification.pdf)
+- [Nasdaq, SoupBinTCP 3.00: logical packets, implied sequence numbers, revision history from 1999 (accessed 16 November 2026)](https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/soupbintcp.pdf)
+- [Nasdaq, MoldUDP64 protocol specification, version 1.00: downstream header, re-request, version control from 2004 (accessed 16 November 2026)](https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/moldudp64.pdf)
+- [NYSE Group, NYSE Pillar Gateway Binary protocol specification, version 6.1, 22 September 2026: little-endian types, price scale 8 (accessed 16 November 2026)](https://www.nyse.com/publicdocs/NYSE_Pillar_Gateway_Binary_Protocol_Specification.pdf)
+- [B3, Binary Order Entry page: based on FIX Binary 1.0 RC2, documents (accessed 16 November 2026)](https://www.b3.com.br/en_us/solutions/platforms/puma-trading-system/for-developers-and-vendors/entrypoint/)
+- [B3, Binary EntryPoint messaging guidelines, version 8.4.2.3, 28 September 2026: benefits, SBE design principles, alignment, optional fields, framing header, FIXP session messages, NotApplied, termination codes (accessed 16 November 2026)](https://www.b3.com.br/data/files/69/35/F1/AB/94711A103BBB511AAC094EA8/BinaryEntryPoint-MessageSpecificationGuidelines-8.4.2.3-enUS.pdf)
+- [B3, Binary EntryPoint message reference, version 8.4.2: SimpleNewOrder hex dump and its interpretation table (accessed 16 November 2026)](https://www.b3.com.br/data/files/E9/37/9F/18/47F6B9105B12E5A9AC094EA8/BinaryEntryPoint-MessageReference-8.4.2-enUS.pdf)
+- [B3, b3-entrypoint-messages-8.4.2.xml, SBE schema, version 6, 18 December 2025: byte order, price types, templates, FIXP flow constants, field order (accessed 16 November 2026)](https://www.b3.com.br/data/files/37/37/9B/18/47F6B9105B12E5A9AC094EA8/b3-entrypoint-messages-8.4.2.xml)
+- [B3, Circular Letter 015/2024-PRE, 24 January 2024: equities waves by matching engine and market segment, purpose of the binary gateway (accessed 16 November 2026)](https://www.b3.com.br/data/files/56/46/59/0D/3664D8103152D4C8AC094EA8/OC%20015-2024%20PRE%20%20Lan%C3%A7amento%20do%20Gateway%20Binario%20Segmento%20Bovespa%20%28Binary%20EntryPoint%29%20-%20EN.pdf)
+- [B3, B3 moderniza plataformas e reduz em 70% tempo de conclusão dos negócios, 4 April 2025: latency from 1.2 ms to about 350 µs, binary protocol, no change in pre-trade risk controls (accessed 16 November 2026)](https://www.b3.com.br/pt_br/noticias/avanco-em-tecnologia.htm)
+- [B3, Binary UMDF page: SBE alongside FIX/FAST, lower latency, observed message maxima (accessed 16 November 2026)](https://www.b3.com.br/en_us/solutions/platforms/puma-trading-system/for-developers-and-vendors/binary-umdf)
+- [B3, Binary UMDF messaging specification guidelines, version 2.3.1.2, 28 September 2026: scope, unsupported features, SBE versus FAST, flattened messages, 1,400-byte limit, packet header (accessed 16 November 2026)](https://www.b3.com.br/data/files/84/B7/1D/9E/AB611A103BBB511AAC094EA8/BinaryUMDF-MessageSpecificationGuidelines-v.2.3.1.2-enUS.pdf)
+- [B3, Comunicado Externo 146/2022-VNC, 11 October 2022: binary market data specifications after the workshop of 31 March 2022 (accessed 16 November 2026)](https://www.b3.com.br/data/files/FE/E2/79/D5/887C38101E311E28AC094EA8/CE%20146-2022-VNC%20Market%20Data%20Binario.pdf)
+- [B3, Comunicado Externo 026/2023-VNC, 6 April 2023: parallel production of Binary UMDF from 17 April 2023 (accessed 16 November 2026)](https://www.b3.com.br/data/files/55/72/AA/96/A575781064456178AC094EA8/CE%20026-2023-VNC%20Lan%C3%A7amento%20do%20Market%20Data%20Bin%C3%A1rio%20em%20Produ%C3%A7%C3%A3o%20Paralela.pdf)
+- [B3, Comunicado Externo 040/2026-VNC, 14 July 2026: Binary UMDF schema version 17 and FIX/FAST templates 5.1.19 (accessed 16 November 2026)](https://www.b3.com.br/data/files/B1/82/C0/73/8926F910CEC024F9AC094EA8/CE%20040-2026-VNC%20MARKET%20DATA%20B3%20ATUALIZACAO%20DE%20ESPECIFICACAO%20TECNICA%20E%20ARQUIVO%20DE%20TEMPLATES_PT.pdf)
+- [B3, Commercial Policy for Connectivity Services, English version with change log to September 2025: FAST and SBE market data sessions (accessed 16 November 2026)](https://www.b3.com.br/data/files/47/92/29/A6/EED1F910ADC36BE9AC094EA8/Commercial%20Politcy%20for%20Connectivity%20Services.pdf)
+- [B3, EntryPoint FIX Order Entry page: the FIX 4.4 gateway (accessed 16 November 2026)](https://www.b3.com.br/en_us/solutions/platforms/puma-trading-system/for-developers-and-vendors/entrypoint-order-entry)

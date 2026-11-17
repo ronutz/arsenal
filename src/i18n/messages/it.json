@@ -27405,13 +27405,14 @@
       "r20261112interest": "I conteggi di interesse sono nuovi: con il tuo sì, e solo allora, le pagine dicono al server del sito che cosa usi (uno strumento, un gioco, un articolo letto fino in fondo, una condivisione, una ricerca), in note che nominano la cosa e mai te. Che cosa contiene una nota, l’unico caso che porta parole che hai scritto, per quanto tempo si conservano i conteggi e i totali giornalieri e dove si cambia la scelta sono esposti in una sezione propria.",
       "r20261112desk": "La mia scrivania: la sua chiave in questo browser (ronutz:desk:v1), la sincronizzazione cifrata facoltativa (cosa conserva il server, per quanto tempo e cosa non può leggere) e il conteggio inviato quando si salva un elemento; cosa ti segue su un altro browser con la sincronizzazione, un file o un link, e cosa resta in ciascun browser (tra cui ronutz:portable:base); e, per un’impostazione cambiata in due browser, vince la modifica più recente, grazie agli orari di modifica conservati in questo browser e nella copia cifrata (ronutz:portable:times), a meno che tu non scelga nelle Impostazioni di tenere il valore di questo browser (ronutz:portable:no-times).",
       "r20261112browsers": "Punteggi dei giochi: la prima partita che un browser pubblica in un giorno di enigma porta un sì o no che lo indica, deciso dal giorno della sua ultima partita pubblicata, che quel browser conserva (ronutz:fun:posted-day) e non invia mai; il server conserva solo quel bit con la partita, e la somma giornaliera è mostrata come browser unici (browser, non persone) e conservata nei totali giornalieri.",
-      "r20261115fun": "La pagina LGTM: un video di YouTube caricato solo dopo aver premuto play, da youtube-nocookie.com; e due scelte giocose conservate nel tuo browser: l’epoca della melodia (ronutz:fun:lgtm-era) e se il simulatore del virus Ping-Pong è a piede libero sul sito (ronutz:fun:pong-virus)."
+      "r20261115fun": "La pagina LGTM: un video di YouTube caricato solo dopo aver premuto play, da youtube-nocookie.com; e due scelte giocose conservate nel tuo browser: l’epoca della melodia (ronutz:fun:lgtm-era) e se il simulatore del virus Ping-Pong è a piede libero sul sito (ronutz:fun:pong-virus).",
+      "r20261116keys": "Il paragrafo sulle scorciatoie da tastiera rimanda all’elenco completo (? o h) e dice che alcune pagine usano certi tasti per sé."
     },
     "backHome": "Torna alla home",
     "prefsTitle": "Tema, lingua e cosa ricorda questo sito",
     "prefsBody": "Le tue preferenze, la tua traccia di lettura, La mia scrivania, i due valori della dev room e i punteggi, le impostazioni e i progressi dei giochi vengono salvati solo nel localStorage di questo browser, sul tuo dispositivo; il tema viene applicato prima del primo rendering alla visita successiva. Non c’è alcun cookie né alcun account, e nessun server vede nulla di tutto ciò, con un’eccezione che controlli tu: a meno che tu non disattivi la condivisione, il risultato di un enigma del giorno che completi va nella classifica pubblica descritta in Punteggi dei giochi. Se crei un codice di sincronizzazione, anche una copia cifrata della tua scrivania va al server del sito, che non può leggerla (vedi La mia scrivania più avanti). Niente di tutto ciò può seguirti: una finestra privata, i dati del sito cancellati o un altro browser o dispositivo ti riportano alle impostazioni predefinite, per scelta progettuale. La lingua funziona su due livelli: sta nell’indirizzo stesso (/en/ e /pt-BR/ sono pagine diverse, quindi aggiungere ai segnalibri o condividere un URL nella tua lingua la conserva), e l’ultima lingua usata viene anche ricordata in questo browser, così che una visita al solo dominio arrivi lì invece che alla lingua predefinita. Anche il campo di ricerca dello spazio delle certificazioni e il suo interruttore per le certificazioni ritirate stanno nell’indirizzo, dopo il # (#q=...), una parte che il browser non invia mai in una richiesta, quindi le parole che cerchi non raggiungono il server; restano però nella cronologia, e un indirizzo condiviso le condivide. Un link più vecchio con ?q= inviava le sue parole con quella sola richiesta; lo spazio poi le sposta dopo il #. Questo è tutto il compromesso: senza account e senza tracciamento, le preferenze possono stare solo dove puoi vederle ed eliminarle.",
     "shortcutsTitle": "Scorciatoie da tastiera",
-    "shortcutsBody": "Il sito ha alcune scorciatoie a un solo tasto per navigare rapidamente, attive in ogni pagina. Premi b per il boss key, che nasconde ciò che stai leggendo dietro una convincente applicazione da ufficio degli anni Ottanta finché non premi un tasto qualsiasi o fai clic; t porta all’indice degli Strumenti; l all’indice della sezione Imparare; m apre la console Mega Brain; e z apre Meeting Bingo. Sono volutamente inattive mentre scrivi: se il focus è in un campo di testo, in una casella per incollare, in un campo di ricerca o in qualsiasi area modificabile, il tasto premuto appartiene a quel campo e la scorciatoia non fa nulla, così nulla di ciò che digiti va mai perso. Vengono ignorate anche quando è premuto un tasto modificatore, quindi le combinazioni del browser come Ctrl+T per una nuova scheda non vengono mai oscurate. Le scorciatoie vengono eseguite interamente nel tuo browser, non aggiungono alcun tracciamento e sono solo una comodità che puoi ignorare.",
+    "shortcutsBody": "Il sito ha scorciatoie a un solo tasto per navigare rapidamente; premi ? o h in qualsiasi pagina per l’elenco completo, con ciò che cambia in quella pagina. Premi b per il boss key, che nasconde ciò che stai leggendo dietro una convincente applicazione da ufficio degli anni Ottanta finché non premi un tasto qualsiasi o fai clic; t porta all’indice degli Strumenti; l all’indice della sezione Imparare; m apre la console Mega Brain; e z apre Meeting Bingo. Sono volutamente inattive mentre scrivi: se il focus è in un campo di testo, in una casella per incollare, in un campo di ricerca o in qualsiasi area modificabile, il tasto premuto appartiene a quel campo e la scorciatoia non fa nulla, così nulla di ciò che digiti va mai perso. Vengono ignorate anche quando è premuto un tasto modificatore, quindi le combinazioni del browser come Ctrl+T per una nuova scheda non vengono mai oscurate. Alcune pagine usano certi tasti per sé, come i giochi mentre giochi, e la guida lo dice lì. Le scorciatoie vengono eseguite interamente nel tuo browser, non aggiungono alcun tracciamento e sono solo una comodità che puoi ignorare.",
     "noTrackSource": "Questa sezione descrive ciò che fa il codice, e il codice è pubblico: il conteggio lo fa <analytics>worker/analytics.ts</analytics>, la pagina Statistiche è servita da <stats>worker/stats.ts</stats> e i due set di dati separati sono collegati in <config>wrangler.jsonc</config>. I conteggi sono conservati in Workers Analytics Engine di Cloudflare, che conserva ciò che vi viene scritto per tre mesi (<retention>documentazione di Cloudflare</retention>, consultata il {date}). Ciò che Cloudflare stessa tratta come fornitore di hosting è al di fuori di questo codice, ed è descritto più avanti in Hosting e log del server.",
     "metaDescription": "Cosa succede alle tue informazioni: cosa viene contato, cosa salva il tuo browser, cosa fanno gli strumenti con ciò che incolli, chi è il responsabile e i tuoi diritti secondo il GDPR e la LGPD brasiliana.",
     "hostingLogs": "Ogni richiesta di pagina passa per il Worker del sito, il piccolo programma che gira su Cloudflare davanti alle pagine, e lo stesso vale per le richieste che una pagina fa per i conteggi dei visitatori che mostra; gli script, gli stili e l’indice di ricerca, tra gli altri file, vengono serviti senza passarvi. Workers Logs di Cloudflare può conservare un record di ciascuna di queste richieste nell’account Cloudflare del sito. Cloudflare descrive ogni record come contenente la richiesta, la risposta e i relativi metadati, e tra i suoi campi indica il metodo e l’indirizzo completo, query string compresa, lo stato della risposta, il tempo di elaborazione usato dal Worker e il paese di provenienza (<logs>Workers Logs</logs> e <fields>i suoi campi di query</fields>, consultati il {date}). Cloudflare non pubblica un elenco completo, quindi questa informativa non afferma che il tuo indirizzo IP ne sia escluso. Cloudflare attiva questo logging per impostazione predefinita sui nuovi Worker, e la configurazione del sito non lo disattiva. Un record viene conservato fino a sette giorni: tre giorni con il piano Workers gratuito di Cloudflare e sette con quello a pagamento, e sette con entrambi dal 1º dicembre 2026 (<pricing>prezzi di Cloudflare</pricing>). Il codice del sito non aggiunge nulla a questi record, perché il Worker non scrive righe di log proprie, e un controllo in fase di build lo verifica. La parte di un indirizzo dopo un #, dove uno strumento riceve un valore che gli viene passato, non viene mai inviata in una richiesta, quindi non raggiunge mai questi record.",
@@ -31721,7 +31722,8 @@
       "quipChanges2": "Trovato qualcosa. Una spunta verde sarebbe stata più veloce, e sbagliata.",
       "quipChanges3": "Modifiche richieste, riga per riga, come dev’essere una revisione.",
       "chime": "Suona il campanello",
-      "homeLink": "Torna alla pagina LGTM"
+      "homeLink": "Torna alla pagina LGTM",
+      "botAgain": "Fai muovere di nuovo il robot: ogni pressione riproduce la successiva delle sue quattro mosse"
     }
   },
   "megaBrain": {
@@ -31855,7 +31857,7 @@
     "bossDismiss": "Applicazione di lavoro. Premi un tasto qualsiasi o fai clic per tornare indietro.",
     "bossHint": "‹ premi un tasto qualsiasi ›",
     "cheatClose": "Chiudi",
-    "cheatHint": "Premi Esc o fai clic all’esterno per chiudere. Puoi personalizzarle in Impostazioni.",
+    "cheatHint": "Esc, ? o h chiude questa guida, come un clic all’esterno. Impostazioni elenca tutti i tasti che puoi cambiare.",
     "cheatTitle": "Scorciatoie da tastiera",
     "contextBack": "Torna alle azioni della pagina",
     "contextClose": "Chiudi le azioni della pagina",
@@ -31875,14 +31877,54 @@
     "actionDeskSave": "Salva l’elemento di questa pagina (o togli il salvataggio)",
     "actionDeskRead": "Segna l’elemento di questa pagina come letto o fatto (o togli il segno)",
     "pongOn": "Il virus Ping-Pong è a piede libero: una pallina rimbalza sulla pagina. Digita di nuovo p e v per acchiapparla.",
-    "pongOff": "Il virus Ping-Pong è stato acchiappato. La pagina è di nuovo tranquilla."
+    "pongOff": "Il virus Ping-Pong è stato acchiappato. La pagina è di nuovo tranquilla.",
+    "helpHere": "In questa pagina",
+    "helpSite": "Scorciatoie del sito",
+    "helpOther": "Altri tasti",
+    "customize": "Personalizza",
+    "customizeAria": "Personalizza il tasto {key}",
+    "offHere": "disattivato in questa pagina",
+    "noItemHere": "nessun elemento in questa pagina",
+    "notHere": "nessuna in questa pagina",
+    "whenFocused": "Finché il gioco ha la tastiera (dopo che hai fatto clic o sei entrato con Tab nella sua griglia o nel suo terminale), le scorciatoie del sito sono disattivate e questi tasti sono del gioco. Fai clic all’esterno per riaverle.",
+    "whenPlaying": "Mentre è in corso una partita, le scorciatoie del sito sono disattivate e questi tasti sono del gioco. Tornano quando finisce.",
+    "whenAlways": "Questa pagina risponde anche a questi tasti, accanto alle scorciatoie del sito:",
+    "whenArranging": "Mentre sistemi la pagina, questi tasti agiscono sulla cornice selezionata, accanto alle scorciatoie del sito:",
+    "lettersOff": "Le scorciatoie con le lettere sono disattivate in questa pagina, perché ascolta ciò che digiti. Premi ? per questa guida qui; i tasti numerici e / continuano a funzionare.",
+    "dotHere": "Premi . per le azioni di questa pagina.",
+    "other": {
+      "dot": {
+        "label": "Le azioni della pagina, nelle pagine che le hanno. Nel pannello, il tasto accanto a una sezione porta lì.",
+        "caps": "."
+      },
+      "esc": {
+        "label": "Chiude questa guida, la ricerca e qualsiasi altro pannello o finestra di dialogo",
+        "caps": "Esc"
+      },
+      "search-chord": {
+        "label": "La ricerca, da ovunque, anche mentre scrivi in un campo",
+        "caps": "Ctrl K|⌘ K"
+      },
+      "pong": {
+        "label": "Uno dopo l’altro: il virus Ping-Pong, una pallina che rimbalza in ogni pagina finché non li digiti di nuovo",
+        "caps": "P|V"
+      },
+      "boss": {
+        "label": "Su una schermata del boss, le frecce cambiano il travestimento; qualsiasi altro tasto, o un clic, riporta la pagina",
+        "caps": "←|→"
+      },
+      "typing": {
+        "label": "Con uno di questi premuto, il tasto resta al browser; in un campo di testo, ogni tasto scrive. In nessuno dei due casi una scorciatoia lo prende.",
+        "caps": "Ctrl|Alt|⌘"
+      }
+    }
   },
   "settings_page": {
     "eyebrow": "Preferenze",
     "title": "Impostazioni",
     "lede": "Personalizza il comportamento del sito. Tutto ciò che imposti qui viene salvato solo su questo dispositivo: non ci sono account né server, quindi le tue scelte non lasciano mai il browser.",
     "shortcutsTitle": "Scorciatoie da tastiera",
-    "shortcutsBody": "Riassegna qualsiasi tasto di scelta rapida a un’altra azione. Scegli un’azione in ogni menu; la modifica si applica subito. Alcuni tasti possono essere fissati dall’amministratore del sito: in quel caso compaiono come bloccati. Premi ? in qualsiasi punto del sito per vedere a colpo d’occhio le scorciatoie attuali.",
+    "shortcutsBody": "Riassegna qualsiasi tasto di scelta rapida a un’altra azione. Scegli un’azione in ogni menu; la modifica si applica subito. Alcuni tasti possono essere fissati dall’amministratore del sito: in quel caso compaiono come bloccati. Premi ? o h in qualsiasi punto del sito per vedere a colpo d’occhio tutti i tasti, con ciò che cambia nella pagina in cui sei; i link Personalizza della guida portano alle righe qui sotto.",
     "colKey": "Tasto",
     "colAction": "Azione",
     "locked": "Bloccato",
@@ -32147,7 +32189,8 @@
       "quickref": "Riferimento degli strumenti",
       "usage": "Uso consigliato",
       "manual": "Manuale",
-      "map": "Il sito in un minuto"
+      "map": "Il sito in un minuto",
+      "keyboard": "Tastiera"
     },
     "datasheetHeading": "In sintesi",
     "datasheetIntro": "L’essenziale in un solo riquadro. Questi dati vengono generati dal sito stesso durante la build, quindi corrispondono sempre a ciò che è effettivamente pubblicato.",
@@ -32420,6 +32463,10 @@
       "beyond": {
         "h": "Oltre gli strumenti",
         "b": "Il sito non è solo calcolatori. La raccolta Imparare contiene articoli che spiegano i concetti su cui operano gli strumenti. Le pagine Vendor riuniscono gli strumenti specifici e il materiale di riferimento per piattaforme come F5, insieme alla storia aziendale dietro i nomi. E l’area Certificazioni offre guide allo studio e percorsi di lettura a chi si prepara a una certificazione. Tutto è raggiungibile dall’intestazione."
+      },
+      "keyboard": {
+        "h": "Tastiera",
+        "b": "Il sito si può usare da tastiera. In qualsiasi pagina, ? o h apre l’elenco dei tasti, a partire da ciò che cambia lì, ed Esc lo chiude; s, / o Ctrl K apre la ricerca; e il link Personalizza di un tasto porta a Impostazioni, dove puoi assegnargli un’altra azione. Nessuna scorciatoia prende mai un tasto che digiti in un campo. L’elenco completo ha una parte propria in questa guida, Tutti i tasti."
       }
     },
     "backToTools": "Sfoglia tutti gli strumenti",
@@ -32481,9 +32528,10 @@
         "nav": "Ricerca",
         "h": "Ricerca e scorciatoie",
         "p1": "Il campo di ricerca nell’intestazione, o Ctrl+K, apre una finestra di dialogo che cerca contemporaneamente strumenti, articoli, guide e pagine; i filtri sotto il campo la restringono a un solo tipo. Il campo di un hub cerca solo nel mondo di quell’hub, e il campo di una sezione (La pratica, I ruoli) solo in quella sezione, con un filtro Solo in che un clic allarga di nuovo. La ricerca viene eseguita nel tuo browser su un indice generato con il sito: le parole che inserisci non vengono inviate da nessuna parte, anche se il browser scarica dal sito le parti dell’indice in cui ricadono quelle parole.",
-        "p2": "Alcune scorciatoie a un solo tasto funzionano in ogni pagina: premi ? per vederle e riassegnale come vuoi in Impostazioni. La mappa del sito per le persone elenca ogni pagina per mondo, per le volte in cui una mappa batte una casella di ricerca.",
+        "p2": "Le scorciatoie a un solo tasto funzionano in tutto il sito: premi ? o h per l’elenco completo, a partire da ciò che cambia nella pagina in cui sei, e segui il link Personalizza di un tasto per riassegnarlo in Impostazioni. Alcune pagine usano certi tasti per sé, come i giochi mentre giochi, e la guida lo dice lì. La mappa del sito per le persone elenca ogni pagina per mondo, per le volte in cui una mappa batte una casella di ricerca.",
         "l1": "Impostazioni e scorciatoie",
-        "l2": "La mappa del sito"
+        "l2": "La mappa del sito",
+        "l3": "Tutti i tasti"
       },
       "privacy": {
         "nav": "Privacy",
@@ -32494,6 +32542,14 @@
         "l2": "Statistiche",
         "l3": "Colophon"
       }
+    },
+    "keyboard": {
+      "h": "Tutti i tasti",
+      "intro": "Questi sono i tasti come il sito li imposta di fabbrica. Premi ? o h in qualsiasi pagina per vederli come li ha questo browser, a partire da ciò che cambia in quella pagina. Il link Personalizza di un tasto porta alla sua riga in Impostazioni, dove puoi assegnargli un’altra azione; la modifica resta solo in questo browser.",
+      "colKey": "Tasto",
+      "colAction": "Cosa fa",
+      "pagesH": "Pagine con tasti propri",
+      "pagesBody": "Alcune pagine usano certi tasti per sé, e lì la guida li elenca per primi. I giochi disattivano le scorciatoie del sito mentre è in corso una partita, o finché la loro griglia o il loro terminale ha la tastiera. La Mega Brain Console e l’Importance Meter disattivano le lettere, perché ascoltano ciò che digiti, quindi lì ? apre la guida e h no. Il presentatore delle slide disattiva tutte le scorciatoie del sito ed elenca i propri tasti accanto alle slide. k e x agiscono solo in una pagina con un elemento da salvare."
     }
   },
   "disclaimer_page": {
@@ -33489,6 +33545,41 @@
       "domainLede": "{count, plural, one {{count} ambito, con} other {{count} ambiti, ognuno con}} una propria pagina: reti, sicurezza, il cloud, il mestiere stesso.",
       "mistoldSection": "Spesso raccontati male",
       "mistoldSectionLede": "{count, plural, one {{count} voce ha} other {{count} voci hanno}} il contrassegno di controversia: la storia che tutti ripetono non è quella che dicono le fonti. Ogni voce riporta la versione abituale e la correzione."
+    },
+    "browse": {
+      "letterRailLabel": "Il glossario dalla A alla Z",
+      "letterLinkAria": "{letter}: {count, plural, one {# voce} other {# voci}}",
+      "otherLetter": "numeri e simboli",
+      "letterPageTitle": "Glossario: {letter}",
+      "letterPageDescription": "{count, plural, one {# voce il cui nome inizia} other {# voci il cui nome inizia}} con {letter}, ciascuna con la sua definizione.",
+      "otherPageDescription": "{count, plural, one {# voce il cui nome inizia} other {# voci il cui nome inizia}} con una cifra o un simbolo, ciascuna con la sua definizione.",
+      "pageSearchPlaceholder": "Filtra queste voci per nome, forma estesa o altro nome",
+      "pagerLabel": "Lettere vicine",
+      "prevLetter": "Lettera precedente: {letter}",
+      "nextLetter": "Lettera successiva: {letter}",
+      "azTitle": "Sfoglia dalla A alla Z",
+      "azLede": "Tutte le {count} voci, una pagina per lettera, ciascuna con la sua definizione e un filtro per tipo, ambito e testo.",
+      "backToHub": "Torna al glossario",
+      "backToTop": "Torna su",
+      "backToLetter": "Torna a {letter}",
+      "entryPagerLabel": "Voci vicine, dalla A alla Z",
+      "prevEntry": "Voce precedente",
+      "nextEntry": "Voce successiva",
+      "neighboursTitle": "Ambiti vicini",
+      "sharedCount": "{count} in comune",
+      "alsoInLegend": "Anche in",
+      "finderLabel": "Trova un termine",
+      "finderPlaceholder": "Un nome, una sigla o la sua forma estesa",
+      "finderHint": "Cerca nei nomi, nelle forme estese e negli altri nomi mentre scrivi. Invio apre il primo risultato; le frecce scorrono l’elenco.",
+      "finderLoading": "Caricamento dell’elenco dei nomi...",
+      "finderError": "Non è stato possibile caricare l’elenco dei nomi. La A-Z qui sotto elenca tutte le voci.",
+      "finderCount": "In elenco: {shown} su {total}",
+      "finderNone": "Nessuna voce si chiama così. Prova con meno lettere, oppure cerca anche nelle definizioni.",
+      "finderFullText": "Cerca anche nelle definizioni",
+      "domainsLede": "{count} ambiti, ciascuno con la sua pagina. I termini chiave sono le voci a cui il resto del glossario rimanda più spesso.",
+      "keyTermsLabel": "Termini chiave:",
+      "recentTitle": "Verificate di recente",
+      "recentLede": "Le voci le cui fonti sono state lette più di recente, dalle più nuove."
     }
   },
   "certGuides": {
@@ -34577,7 +34668,60 @@
     "furtherReading": "Letture consigliate",
     "furtherReadingAria": "Letture consigliate",
     "status": "{n, plural, one {Un solo testo finora, pubblicato appena scritto} other {# testi finora, pubblicati man mano che vengono scritti}}, senza una cadenza fissa. Le modifiche al sito stesso sono nel <link>registro delle modifiche</link>.",
-    "bylineProfile": "profilo di istruttore presso Red Education"
+    "bylineProfile": "profilo di istruttore presso Red Education",
+    "numberPrefix": "N.",
+    "numberAria": "Testo numero {n}",
+    "topicsAria": "Temi",
+    "filter": {
+      "label": "Filtra i testi",
+      "categoryLegend": "Categoria",
+      "topicLegend": "Tema",
+      "allCategories": "Tutte",
+      "allTopics": "Tutti",
+      "moreTopics": "{count, plural, one {Un altro tema} other {Altri # temi}}",
+      "fewerTopics": "Meno temi",
+      "showing": "In elenco: {shown} su {total}",
+      "clear": "Azzera i filtri",
+      "empty": "Nessun testo corrisponde a entrambi i filtri. Azzerane uno per vederne di più."
+    },
+    "tags": {
+      "career": "Carriera",
+      "vulnerability-management": "Gestione delle vulnerabilità",
+      "ai": "Intelligenza artificiale (IA)",
+      "disclosure": "Divulgazione",
+      "brazil": "Brasile",
+      "industry": "Settore",
+      "incident-response": "Risposta agli incidenti",
+      "networking": "Reti",
+      "privacy": "Privacy",
+      "data-breach": "Violazioni di dati",
+      "threat-intelligence": "Intelligence sulle minacce",
+      "lgpd": "Legge brasiliana sulla protezione dei dati (LGPD)",
+      "teaching": "Insegnamento",
+      "operations": "Gestione operativa",
+      "supply-chain": "Catena di fornitura",
+      "security": "Sicurezza",
+      "vpn": "Reti private virtuali (VPN)",
+      "php": "PHP",
+      "waf": "Firewall per applicazioni web (WAF)",
+      "cloud": "Cloud",
+      "history": "Storia",
+      "certification": "Certificazione",
+      "psychological-operations": "Operazioni psicologiche",
+      "disinformation": "Disinformazione",
+      "iot": "Internet delle cose (IoT)",
+      "ot-security": "Sicurezza della tecnologia operativa (OT)",
+      "linux": "Linux",
+      "tcp": "Transmission Control Protocol (TCP)",
+      "firmware": "Firmware",
+      "industry-history": "Storia del settore",
+      "sources": "Fonti",
+      "channel": "Rivenditori e distributori",
+      "ransomware": "Ransomware",
+      "culture": "Cultura",
+      "games": "Giochi",
+      "books": "Libri"
+    }
   },
   "importanceMeter": {
     "metaTitle": "Importance Meter",
@@ -39481,17 +39625,16 @@
       "electronic-trading": {
         "title": "Negoziazione elettronica",
         "lede": "Dagli operatori che gridavano nei recinti alle grida ai motori di abbinamento che rispondono in microsecondi: borse, intermediari, investitori, protocolli, reti, fornitori e autorità dei mercati moderni, il protocollo FIX e le reti che lo trasportano, il trading ad alta frequenza e la disputa che lo circonda, e le borse del Brasile, ogni fatto con la sua fonte.",
-        "planned": {
-          "fixEncodings": "Le codifiche di FIX e i loro successori",
-          "orderLife": "La vita dell’ordine in FIX",
-          "omsEms": "Sistemi di gestione degli ordini e dell’esecuzione",
-          "preTradeRisk": "Rischio pre-negoziazione e accesso al mercato",
-          "interdealer": "Broker interdealer, reddito fisso e cambi elettronici",
-          "networkAnalytics": "Analisi e monitoraggio derivati dalla rete",
-          "marketData": "Dati di mercato",
-          "surveillance": "Sorveglianza e segnalazioni regolamentari",
-          "fairnessByDesign": "Equità fin dalla progettazione"
-        }
+        "planned": {}
+      },
+      "mass-hysteria": {
+        "title": "Isteria collettiva e credenze collettive",
+        "lede": "Dalle epidemie di danza e dai processi alle streghe ai focolai nelle scuole, alle bolle, alle voci e ai sintomi che viaggiano sulle piattaforme: le parole e la loro storia, i meccanismi e le loro repliche, i casi con le loro prove e controversie, chi ha guidato ogni episodio, se qualcuno lo ha fatto, e che cosa aiuta a farlo finire."
+      },
+      "redundancy": {
+        "title": "Architetture ridondanti",
+        "lede": "Come le reti sopravvivono ai guasti: che cosa compra la ridondanza e quanto costa, l’aritmetica della disponibilità e del destino condiviso, e la ridondanza di ogni livello, dall’energia e dalla fibra all’aggregazione dei collegamenti, ai gateway, all’instradamento, ai cluster con stato e al bilanciamento globale, fino ai dati, con i rapporti sui disservizi che mostrano dove ha tenuto e dove no, ogni fatto con la sua fonte.",
+        "planned": {}
       }
     },
     "parts": "Le parti",
@@ -41061,7 +41204,9 @@
     "continue": {
       "empty": "Qui compariranno le pagine che apri e il prossimo elemento del percorso che stai seguendo.",
       "next": "Prossimo in {path}",
-      "recent": "Aperti per ultimi"
+      "recent": "Aperti per ultimi",
+      "then": "Poi:",
+      "seePath": "Vedi il percorso"
     },
     "paths": {
       "untitled": "Percorso senza nome",
@@ -41113,22 +41258,29 @@
       "empty": "Non hai ancora salvato nulla. Usa Salva su uno strumento, un articolo, una voce del glossario o un gioco, oppure premi K sulla sua pagina.",
       "saveExample": "Salva",
       "removed": "Tolto dai preferiti.",
-      "remove": "Togli {title} dai preferiti"
+      "remove": "Togli {title} dai preferiti",
+      "filter": "Filtra i tuoi preferiti",
+      "noMatch": "Nessun preferito corrisponde a «{q}»."
     },
     "recent": {
-      "empty": "Ancora nulla segnato come letto. Arrivare alla fine di un articolo lo segna; Segna come letto lo fa a mano."
+      "empty": "Ancora nulla segnato come letto. Arrivare alla fine di un articolo lo segna; Segna come letto lo fa a mano.",
+      "today": "Oggi",
+      "yesterday": "Ieri"
     },
     "puzzles": {
       "solved": "Risolto",
       "played": "Giocato",
       "notYet": "Non ancora giocato",
       "streak": "{count, plural, one {# giorno di fila} other {# giorni di fila}}",
-      "all": "Tutti gli enigmi e i giochi"
+      "all": "Tutti gli enigmi e i giochi",
+      "summary": "{played, plural, =0 {Non hai ancora giocato nessuno dei {total} enigmi di oggi.} one {# su {total} giocato oggi.} other {# su {total} giocati oggi.}}",
+      "summarySolved": "{count, plural, one {# risolto.} other {# risolti.}}"
     },
     "search": {
       "label": "Cerca nel sito",
       "placeholder": "Cerca nel sito…",
-      "go": "Cerca"
+      "go": "Cerca",
+      "browse": "Oppure sfoglia"
     },
     "sync": {
       "syncedAt": "Sincronizzato alle {time}.",
@@ -41260,7 +41412,13 @@
       "today": "Oggi",
       "ago": "{count, plural, one {# giorno fa} other {# giorni fa}}",
       "on": "Il {date}",
-      "kept": "Conservato con la tua scrivania in questo browser e, quando sincronizzi, nella copia cifrata."
+      "kept": "Conservato con la tua scrivania in questo browser e, quando sincronizzi, nella copia cifrata.",
+      "weeks": "{weeks, plural, one {# settimana} other {# settimane}}{days, plural, =0 {} one { e # giorno} other { e # giorni}}",
+      "path": "Percorso da finire entro quella data",
+      "pathNone": "Nessuno",
+      "left": "{count, plural, =0 {Tutti gli elementi di <link>{path}</link> sono letti.} one {Manca # elemento in <link>{path}</link>.} other {Mancano # elementi in <link>{path}</link>.}}",
+      "pace": "Circa {perDay} al giorno per finirlo entro l’esame.",
+      "paceWeek": "Circa {perDay} al giorno, o {perWeek} a settimana, per finirlo entro l’esame."
     },
     "quick": {
       "choose": "Strumento",
@@ -41314,7 +41472,8 @@
       "next": "Prossimo: {name}",
       "toGo": "{count, plural, one {manca #} other {mancano #}}",
       "celebrate": "Traguardo raggiunto: {names}.",
-      "kept": "Contato dai tuoi segni di lettura, solo per giorno, in questo browser."
+      "kept": "Contato dai tuoi segni di lettura, solo per giorno, in questo browser.",
+      "thisWeek": "{days, plural, =0 {Niente segnato come letto questa settimana, per ora.} one {Questa settimana: # giorno di lettura, {items, plural, one {# elemento letto} other {# elementi letti}}.} other {Questa settimana: # giorni di lettura, {items, plural, one {# elemento letto} other {# elementi letti}}.}}"
     },
     "privacy": {
       "counting": "Conteggio del tuo uso",
@@ -41335,6 +41494,13 @@
       "emptied": "La tua scrivania è vuota.",
       "allSettings": "Tutte le impostazioni de La mia scrivania",
       "privacyPage": "Cosa dice la pagina sulla privacy su La mia scrivania e la sincronizzazione"
+    },
+    "jump": {
+      "label": "Su questa scrivania"
+    },
+    "fold": {
+      "hide": "Comprimi {name}",
+      "show": "Espandi {name}"
     }
   },
   "deskData": {

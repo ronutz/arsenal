@@ -27405,13 +27405,14 @@
       "r20261112interest": "Los recuentos de interés son nuevos: con tu sí, y solo entonces, las páginas le dicen al servidor del sitio qué usas (una herramienta, un juego, un artículo leído hasta el final, un uso de Compartir, una búsqueda), en avisos que nombran lo que se usó y nunca a ti. Qué contiene un aviso, el único caso que lleva palabras que escribiste, cuánto tiempo se conservan los recuentos y los totales diarios y dónde se cambia la elección se exponen en una sección propia.",
       "r20261112desk": "Mi escritorio: su clave en este navegador (ronutz:desk:v1), la sincronización cifrada opcional (lo que guarda el servidor, durante cuánto tiempo y lo que no puede leer) y el recuento que se envía al guardar un elemento; lo que viaja a otro navegador por sincronización, archivo o enlace, y lo que se queda en cada navegador (entre ello ronutz:portable:base); y, en una preferencia cambiada en dos navegadores, gana el cambio más reciente, por horas de cambio guardadas en este navegador y dentro de la copia cifrada (ronutz:portable:times), salvo que elijas en Configuración conservar el valor de este navegador (ronutz:portable:no-times).",
       "r20261112browsers": "Puntuaciones de los juegos: la primera ronda que un navegador publica en un día de reto lleva un sí o no que lo indica, decidido por el día de su última ronda publicada, que ese navegador guarda (ronutz:fun:posted-day) y nunca envía; el servidor guarda solo ese bit en la ronda, y la suma diaria se muestra como navegadores únicos (navegadores, no personas) y se guarda en los totales diarios.",
-      "r20261115fun": "La página de LGTM: un vídeo de YouTube cargado solo después de pulsar reproducir, desde youtube-nocookie.com; y dos elecciones lúdicas guardadas en tu navegador: la era de la melodía (ronutz:fun:lgtm-era) y si el simulador del virus Ping-Pong anda suelto por el sitio (ronutz:fun:pong-virus)."
+      "r20261115fun": "La página de LGTM: un vídeo de YouTube cargado solo después de pulsar reproducir, desde youtube-nocookie.com; y dos elecciones lúdicas guardadas en tu navegador: la era de la melodía (ronutz:fun:lgtm-era) y si el simulador del virus Ping-Pong anda suelto por el sitio (ronutz:fun:pong-virus).",
+      "r20261116keys": "El párrafo de los atajos de teclado remite a la lista completa (? o h) y dice que algunas páginas toman teclas para sí."
     },
     "backHome": "Volver al inicio",
     "prefsTitle": "Tema, idioma y lo que recuerda este sitio",
     "prefsBody": "Tus preferencias, tu rastro de lectura, Mi escritorio, los dos valores de las salas de desarrollo y las puntuaciones, la configuración y el progreso de los juegos se guardan solo en el localStorage de este navegador, en tu dispositivo; en tu siguiente visita, el tema se aplica antes de que la página se pinte por primera vez. No hay cookies ni cuentas, y ningún servidor ve nada de ello, con una excepción que tú controlas: salvo que desactives la opción de compartir, el resultado de un reto diario que terminas va a la tabla pública de puntuaciones descrita en Puntuaciones de los juegos. Si creas un código de sincronización, una copia cifrada de Mi escritorio también va al servidor del sitio, que no puede leerla (consulta Mi escritorio, más abajo). Nada de ello puede seguirte: una ventana privada, los datos del sitio borrados, o un navegador o un dispositivo distintos te devuelven a los valores predeterminados, y es así a propósito. Tu idioma funciona en dos capas: vive en la propia dirección (/en/ y /pt-BR/ son páginas distintas, así que guardar en marcadores o compartir una URL en tu idioma lo conserva), y el último idioma que usaste también se recuerda en este navegador, para que una visita al dominio sin ruta llegue a él y no al predeterminado. El campo de búsqueda del portal de certificaciones y su opción de certificaciones retiradas también viven en la dirección, después del # (#q=...), una parte que tu navegador nunca envía en una solicitud, así que las palabras que buscas no llegan al servidor; sí se quedan en tu historial, y una dirección compartida las comparte. Un enlace antiguo con ?q= enviaba sus palabras con esa única solicitud; después, el portal las mueve detrás del #. Ese es todo el trato: sin cuentas y sin seguimiento, las preferencias solo pueden vivir donde tú puedes verlas y borrarlas.",
     "shortcutsTitle": "Atajos de teclado",
-    "shortcutsBody": "El sitio tiene unos pocos atajos de una sola tecla para navegar rápido, activos en todas las páginas. Presiona b para la tecla del jefe (boss key), que oculta lo que estés leyendo tras una convincente aplicación de trabajo de los años ochenta hasta que presiones cualquier tecla o hagas clic; t salta al índice de Herramientas; l, al índice de Aprender; m abre la consola de Mega Brain; y z abre el Bingo de reuniones. Quedan inactivos a propósito siempre que escribes: si el foco está en un campo de texto, un cuadro para pegar, un campo de búsqueda o cualquier área editable, la pulsación pertenece a ese campo y el atajo no hace nada, así que nada de lo que escribes se pierde. También se ignoran cuando se mantiene presionada una tecla modificadora, así que las combinaciones propias de tu navegador, como Ctrl+T para una pestaña nueva, nunca quedan anuladas. Los atajos se ejecutan por completo en tu navegador, no añaden ningún seguimiento y son solo una comodidad que puedes ignorar.",
+    "shortcutsBody": "El sitio tiene atajos de una sola tecla para navegar rápido; presiona ? o h en cualquier página para ver la lista completa, con lo que cambia en esa página. Presiona b para la tecla del jefe (boss key), que oculta lo que estés leyendo tras una convincente aplicación de trabajo de los años ochenta hasta que presiones cualquier tecla o hagas clic; t salta al índice de Herramientas; l, al índice de Aprender; m abre la consola de Mega Brain; y z abre el Bingo de reuniones. Quedan inactivos a propósito siempre que escribes: si el foco está en un campo de texto, un cuadro para pegar, un campo de búsqueda o cualquier área editable, la pulsación pertenece a ese campo y el atajo no hace nada, así que nada de lo que escribes se pierde. También se ignoran cuando se mantiene presionada una tecla modificadora, así que las combinaciones propias de tu navegador, como Ctrl+T para una pestaña nueva, nunca quedan anuladas. Algunas páginas toman teclas para sí, como los juegos mientras juegas, y la ayuda lo indica en ellas. Los atajos se ejecutan por completo en tu navegador, no añaden ningún seguimiento y son solo una comodidad que puedes ignorar.",
     "noTrackSource": "Esta sección describe lo que hace el código, y el código es público: el recuento lo hace <analytics>worker/analytics.ts</analytics>, la página de estadísticas la sirve <stats>worker/stats.ts</stats> y los dos conjuntos de datos separados se vinculan en <config>wrangler.jsonc</config>. Los recuentos se guardan en Workers Analytics Engine de Cloudflare, que conserva lo que se escribe en él durante tres meses (<retention>documentación de Cloudflare</retention>, consultada el {date}). Lo que Cloudflare trata por su cuenta como proveedor de alojamiento queda fuera de este código, y se describe en Alojamiento y logs del servidor, más abajo.",
     "metaDescription": "Qué pasa aquí con tu información: qué se cuenta, qué guarda tu navegador, qué hacen las herramientas con lo que pegas, quién es el responsable y tus derechos según el RGPD (GDPR) y la LGPD de Brasil.",
     "hostingLogs": "Cada solicitud de página pasa por el Worker del sitio, el pequeño programa que se ejecuta en Cloudflare delante de las páginas, igual que las solicitudes que hace una página para los recuentos de visitantes que muestra; los scripts, los estilos y el índice de búsqueda, entre otros archivos, se sirven sin él. Los Workers Logs de Cloudflare pueden guardar un registro de cada una de estas solicitudes en la cuenta de Cloudflare del sitio. Según Cloudflare, cada registro contiene la solicitud, la respuesta y metadatos relacionados, y entre sus campos menciona el método y la dirección completa, con la cadena de consulta, el estado de la respuesta, el tiempo de procesamiento que usó el Worker y el país del visitante (<logs>Workers Logs</logs> y <fields>sus campos de consulta</fields>, consultado el {date}). Cloudflare no publica ninguna lista completa, así que este aviso no afirma que tu dirección IP quede fuera. Cloudflare activa este registro de forma predeterminada en los Workers nuevos, y la configuración del sitio no lo desactiva. Un registro se conserva hasta siete días: tres en el plan gratuito de Workers de Cloudflare y siete en su plan de pago, y siete en los dos a partir del 1 de diciembre de 2026 (<pricing>precios de Cloudflare</pricing>). El propio código del sitio no añade nada a estos registros, porque el Worker no escribe líneas de log propias, algo que verifica una comprobación de la compilación. La parte de una dirección que va después de un #, donde una herramienta recibe un valor que se le pasa, nunca se envía en una solicitud, así que nunca llega a ellos.",
@@ -31721,7 +31722,8 @@
       "quipChanges2": "He encontrado algo. Una marca verde habría sido más rápida, y errónea.",
       "quipChanges3": "Cambios solicitados, línea por línea, como debe ser una revisión.",
       "chime": "Hacer sonar la campanita",
-      "homeLink": "Volver a la página de LGTM"
+      "homeLink": "Volver a la página de LGTM",
+      "botAgain": "Hacer que el robot se mueva otra vez: cada pulsación reproduce el siguiente de sus cuatro movimientos"
     }
   },
   "megaBrain": {
@@ -31855,7 +31857,7 @@
     "bossDismiss": "Aplicación de trabajo. Presiona cualquier tecla o haz clic para volver.",
     "bossHint": "‹ presiona cualquier tecla ›",
     "cheatClose": "Cerrar",
-    "cheatHint": "Esc o un clic fuera para cerrar. Personalízalos en Configuración.",
+    "cheatHint": "Esc, ? o h cierra esta ayuda, igual que un clic fuera. Configuración enumera todas las teclas que puedes cambiar.",
     "cheatTitle": "Atajos de teclado",
     "contextBack": "Volver a las acciones de la página",
     "contextClose": "Cerrar las acciones de la página",
@@ -31875,14 +31877,54 @@
     "actionDeskSave": "Guardar el elemento de esta página (o dejar de guardarlo)",
     "actionDeskRead": "Marcar el elemento de esta página como leído o hecho (o quitar la marca)",
     "pongOn": "El virus Ping-Pong anda suelto: una pelotita rebota por la página. Teclea p y v otra vez para atraparla.",
-    "pongOff": "El virus Ping-Pong está atrapado. La página vuelve a estar tranquila."
+    "pongOff": "El virus Ping-Pong está atrapado. La página vuelve a estar tranquila.",
+    "helpHere": "En esta página",
+    "helpSite": "Atajos del sitio",
+    "helpOther": "Otras teclas",
+    "customize": "Personalizar",
+    "customizeAria": "Personalizar la tecla {key}",
+    "offHere": "desactivado en esta página",
+    "noItemHere": "ningún elemento en esta página",
+    "notHere": "ninguna en esta página",
+    "whenFocused": "Mientras el juego tiene el teclado (después de hacer clic o entrar con Tab en su tablero o su terminal), los atajos del sitio quedan desactivados y estas teclas son del juego. Haz clic fuera para recuperarlos.",
+    "whenPlaying": "Mientras hay una ronda en curso, los atajos del sitio quedan desactivados y estas teclas son del juego. Vuelven cuando termina.",
+    "whenAlways": "Esta página también responde a estas teclas, junto a los atajos del sitio:",
+    "whenArranging": "Mientras organizas la página, estas teclas funcionan en un marco enfocado, junto a los atajos del sitio:",
+    "lettersOff": "Los atajos de letra están desactivados en esta página, porque escucha lo que escribes. Presiona ? para ver esta ayuda aquí; las teclas numéricas y / siguen funcionando.",
+    "dotHere": "Presiona . para ver las acciones de esta página.",
+    "other": {
+      "dot": {
+        "label": "Acciones de la página, en las páginas que las tienen. En el panel, la tecla junto a una sección lleva a ella.",
+        "caps": "."
+      },
+      "esc": {
+        "label": "Cierra esta ayuda, la búsqueda y cualquier otro panel o diálogo",
+        "caps": "Esc"
+      },
+      "search-chord": {
+        "label": "Búsqueda, desde cualquier parte, incluso mientras escribes en un campo",
+        "caps": "Ctrl K|⌘ K"
+      },
+      "pong": {
+        "label": "Una tras otra: el virus Ping-Pong, una pelota que rebota en todas las páginas hasta que las vuelvas a escribir",
+        "caps": "P|V"
+      },
+      "boss": {
+        "label": "En una pantalla del jefe, las flechas cambian el disfraz; cualquier otra tecla, o un clic, devuelve la página",
+        "caps": "←|→"
+      },
+      "typing": {
+        "label": "Con una de ellas pulsada, la tecla es del navegador; en un campo de texto, cada tecla escribe. En ningún caso un atajo se la queda.",
+        "caps": "Ctrl|Alt|⌘"
+      }
+    }
   },
   "settings_page": {
     "eyebrow": "Preferencias",
     "title": "Configuración",
     "lede": "Personaliza el comportamiento del sitio. Todo se guarda solo en este dispositivo: no hay cuentas ni servidor, así que tus elecciones nunca salen de tu navegador.",
     "shortcutsTitle": "Atajos de teclado",
-    "shortcutsBody": "Asigna cualquier tecla de atajo a otra acción. Elige una acción en cada menú; el cambio se aplica al instante. Puede que el administrador del sitio haya fijado algunas teclas; en ese caso aparecen bloqueadas. Presiona ? en cualquier parte del sitio para ver de un vistazo los atajos actuales.",
+    "shortcutsBody": "Asigna cualquier tecla de atajo a otra acción. Elige una acción en cada menú; el cambio se aplica al instante. Puede que el administrador del sitio haya fijado algunas teclas; en ese caso aparecen bloqueadas. Presiona ? o h en cualquier parte del sitio para ver de un vistazo todas las teclas, con lo que cambia en la página en la que estás; los enlaces Personalizar de la ayuda llevan a las filas de abajo.",
     "colKey": "Tecla",
     "colAction": "Acción",
     "locked": "Bloqueada",
@@ -32147,7 +32189,8 @@
       "quickref": "Referencia de herramientas",
       "usage": "Uso sugerido",
       "manual": "Manual",
-      "map": "El sitio en un minuto"
+      "map": "El sitio en un minuto",
+      "keyboard": "Teclado"
     },
     "datasheetHeading": "De un vistazo",
     "datasheetIntro": "Lo esencial en un solo panel. Estas cifras se generan a partir del propio sitio en el momento de la compilación, así que siempre coinciden con lo que está publicado.",
@@ -32420,6 +32463,10 @@
       "beyond": {
         "h": "Más allá de las herramientas",
         "b": "El sitio es más que las calculadoras. La biblioteca de Aprender reúne artículos que explican los conceptos con los que trabajan las herramientas. Las páginas de Fabricantes agrupan las herramientas y el material de referencia específicos de plataformas como F5, junto con la historia corporativa que hay detrás de los nombres. Y el área de Certificaciones ofrece guías de estudio e itinerarios de lectura para quienes preparan una certificación. Todo se alcanza desde el encabezado."
+      },
+      "keyboard": {
+        "h": "Teclado",
+        "b": "El sitio se puede usar con el teclado. En cualquier página, ? o h abre la lista de teclas, empezando por lo que cambia allí, y Esc la cierra; s, / o Ctrl K abre la búsqueda; y el enlace Personalizar de una tecla lleva a Configuración, donde puedes darle otra acción. Ningún atajo se queda nunca con una tecla que escribes en un campo. La lista completa tiene su propia parte en esta guía, Todas las teclas."
       }
     },
     "backToTools": "Ver todas las herramientas",
@@ -32481,9 +32528,10 @@
         "nav": "Buscar",
         "h": "Búsqueda y atajos",
         "p1": "El campo de búsqueda del encabezado, o Ctrl K, abre un cuadro de diálogo que busca a la vez en herramientas, artículos, guías y páginas; las insignias bajo el campo limitan la búsqueda a un tipo. El campo propio de un portal busca solo en el mundo de ese portal, y el campo de una sección (La práctica, Los roles) solo en esa sección, con una insignia Solo en que un clic vuelve a ampliar. La búsqueda se ejecuta en tu navegador sobre un índice creado junto con el sitio: las palabras que escribes no se envían a ningún sitio, aunque el navegador descarga del sitio las partes del índice en las que caen esas palabras.",
-        "p2": "Unos pocos atajos de una sola tecla funcionan en todas las páginas: presiona ? para verlos y reasigna cualquiera de ellos en Configuración. El mapa del sitio para personas enumera todas las páginas por mundo, para cuando un mapa es mejor que un cuadro de búsqueda.",
+        "p2": "Los atajos de una sola tecla funcionan en todo el sitio: presiona ? o h para ver la lista completa, empezando por lo que cambia en la página en la que estás, y sigue el enlace Personalizar de una tecla para reasignarla en Configuración. Algunas páginas toman teclas para sí, como los juegos mientras juegas, y la ayuda lo indica en ellas. El mapa del sitio para personas enumera todas las páginas por mundo, para cuando un mapa es mejor que un cuadro de búsqueda.",
         "l1": "Configuración y atajos",
-        "l2": "El mapa del sitio"
+        "l2": "El mapa del sitio",
+        "l3": "Todas las teclas"
       },
       "privacy": {
         "nav": "Privacidad",
@@ -32494,6 +32542,14 @@
         "l2": "Estadísticas",
         "l3": "Colofón"
       }
+    },
+    "keyboard": {
+      "h": "Todas las teclas",
+      "intro": "Estas son las teclas tal como el sitio las define de fábrica. Presiona ? o h en cualquier página para verlas como las tiene este navegador, empezando por lo que cambia en esa página. El enlace Personalizar de una tecla lleva a su fila en Configuración, donde puedes darle otra acción; el cambio se guarda solo en este navegador.",
+      "colKey": "Tecla",
+      "colAction": "Qué hace",
+      "pagesH": "Páginas con teclas propias",
+      "pagesBody": "Algunas páginas toman teclas para sí, y en ellas la ayuda las enumera primero. Los juegos desactivan los atajos del sitio mientras hay una ronda en curso, o mientras su tablero o su terminal tiene el teclado. La Consola Mega Brain y el Medidor de importancia desactivan las letras, porque escuchan lo que escribes, así que allí ? abre la ayuda y h no. El presentador de diapositivas desactiva todos los atajos del sitio y enumera sus propias teclas junto a las diapositivas. k y x solo actúan en una página con un elemento que guardar."
     }
   },
   "disclaimer_page": {
@@ -33489,6 +33545,41 @@
       "domainLede": "{count, plural, one {{count} ámbito, con su propia página} other {{count} ámbitos, cada uno con su propia página}}: redes, seguridad, la nube, el propio oficio.",
       "mistoldSection": "A menudo mal contado",
       "mistoldSectionLede": "{count, plural, one {{count} entrada lleva} other {{count} entradas llevan}} la marca de discutido: la historia que todos repiten no es lo que dicen las fuentes. Cada entrada expone la versión habitual y la corrección."
+    },
+    "browse": {
+      "letterRailLabel": "El glosario de la A a la Z",
+      "letterLinkAria": "{letter}: {count, plural, one {# entrada} other {# entradas}}",
+      "otherLetter": "números y símbolos",
+      "letterPageTitle": "Glosario: {letter}",
+      "letterPageDescription": "{count, plural, one {# entrada} other {# entradas}} cuyo nombre empieza por {letter}, cada una con su definición.",
+      "otherPageDescription": "{count, plural, one {# entrada} other {# entradas}} cuyo nombre empieza por una cifra o un símbolo, cada una con su definición.",
+      "pageSearchPlaceholder": "Filtrar estas entradas por nombre, expansión u otro nombre",
+      "pagerLabel": "Letras vecinas",
+      "prevLetter": "Letra anterior: {letter}",
+      "nextLetter": "Letra siguiente: {letter}",
+      "azTitle": "Ver de la A a la Z",
+      "azLede": "Las {count} entradas, una página por letra, cada una con su definición y un filtro por tipo, ámbito y texto.",
+      "backToHub": "Volver al glosario",
+      "backToTop": "Volver arriba",
+      "backToLetter": "Volver a {letter}",
+      "entryPagerLabel": "Entradas vecinas, de la A a la Z",
+      "prevEntry": "Entrada anterior",
+      "nextEntry": "Entrada siguiente",
+      "neighboursTitle": "Ámbitos vecinos",
+      "sharedCount": "{count} en común",
+      "alsoInLegend": "También en",
+      "finderLabel": "Buscar un término",
+      "finderPlaceholder": "Un nombre, una sigla o lo que significa",
+      "finderHint": "Busca en los nombres, las expansiones y los otros nombres mientras escribes. Intro abre el primer resultado; las flechas recorren la lista.",
+      "finderLoading": "Cargando la lista de nombres...",
+      "finderError": "No se pudo cargar la lista de nombres. La A a la Z de abajo reúne todas las entradas.",
+      "finderCount": "Se muestran {shown} de {total}",
+      "finderNone": "Ninguna entrada se llama así. Prueba con menos letras, o busca también en las definiciones.",
+      "finderFullText": "Buscar también en las definiciones",
+      "domainsLede": "{count} ámbitos, cada uno con su página. Los términos clave son las entradas a las que más remite el resto del glosario.",
+      "keyTermsLabel": "Términos clave:",
+      "recentTitle": "Revisadas recientemente",
+      "recentLede": "Las entradas cuyas fuentes se leyeron más recientemente, de la más nueva a la más antigua."
     }
   },
   "certGuides": {
@@ -34577,7 +34668,60 @@
     "furtherReading": "Lecturas adicionales",
     "furtherReadingAria": "Lecturas adicionales",
     "status": "{n, plural, one {Una entrada hasta ahora} other {# entradas hasta ahora}}, que se publican a medida que se escriben, sin una cadencia fija. Lo que cambia en el propio sitio está en el <link>registro de cambios</link>.",
-    "bylineProfile": "perfil de instructor en Red Education"
+    "bylineProfile": "perfil de instructor en Red Education",
+    "numberPrefix": "N.º",
+    "numberAria": "Entrada número {n}",
+    "topicsAria": "Temas",
+    "filter": {
+      "label": "Filtrar las entradas",
+      "categoryLegend": "Categoría",
+      "topicLegend": "Tema",
+      "allCategories": "Todas",
+      "allTopics": "Todos",
+      "moreTopics": "{count, plural, one {# tema más} other {# temas más}}",
+      "fewerTopics": "Menos temas",
+      "showing": "Mostrando {shown} de {total}",
+      "clear": "Quitar filtros",
+      "empty": "Ninguna entrada cumple los dos filtros. Quite uno para ver más."
+    },
+    "tags": {
+      "career": "Carrera profesional",
+      "vulnerability-management": "Gestión de vulnerabilidades",
+      "ai": "Inteligencia artificial (IA)",
+      "disclosure": "Divulgación",
+      "brazil": "Brasil",
+      "industry": "Industria",
+      "incident-response": "Respuesta a incidentes",
+      "networking": "Redes",
+      "privacy": "Privacidad",
+      "data-breach": "Filtraciones de datos",
+      "threat-intelligence": "Inteligencia de amenazas",
+      "lgpd": "Ley brasileña de protección de datos (LGPD)",
+      "teaching": "Docencia",
+      "operations": "Operaciones",
+      "supply-chain": "Cadena de suministro",
+      "security": "Seguridad",
+      "vpn": "Redes privadas virtuales (VPN)",
+      "php": "PHP",
+      "waf": "Firewalls de aplicaciones web (WAF)",
+      "cloud": "Nube",
+      "history": "Historia",
+      "certification": "Certificación",
+      "psychological-operations": "Operaciones psicológicas",
+      "disinformation": "Desinformación",
+      "iot": "Internet de las cosas (IoT)",
+      "ot-security": "Seguridad de la tecnología operativa (OT)",
+      "linux": "Linux",
+      "tcp": "Protocolo de control de transmisión (TCP)",
+      "firmware": "Firmware",
+      "industry-history": "Historia de la industria",
+      "sources": "Fuentes",
+      "channel": "Revendedores y mayoristas",
+      "ransomware": "Ransomware",
+      "culture": "Cultura",
+      "games": "Juegos",
+      "books": "Libros"
+    }
   },
   "importanceMeter": {
     "metaTitle": "Medidor de importancia",
@@ -39481,17 +39625,16 @@
       "electronic-trading": {
         "title": "Negociación electrónica",
         "lede": "De los corredores que gritaban en los parqués a los motores de casación que responden en microsegundos: las bolsas, intermediarios, inversores, protocolos, redes, proveedores y reguladores de los mercados modernos, el protocolo FIX y las redes que lo transportan, la negociación de alta frecuencia y la disputa en torno a ella, y las bolsas de Brasil, cada dato con su fuente.",
-        "planned": {
-          "fixEncodings": "Las codificaciones de FIX y sus sucesores",
-          "orderLife": "La vida de la orden en FIX",
-          "omsEms": "Sistemas de gestión de órdenes y de ejecución",
-          "preTradeRisk": "Riesgo previo a la negociación y acceso al mercado",
-          "interdealer": "Brókeres interdealer, renta fija y divisas electrónicas",
-          "networkAnalytics": "Analítica y monitorización derivadas de la red",
-          "marketData": "Datos de mercado",
-          "surveillance": "Supervisión e informes regulatorios",
-          "fairnessByDesign": "Equidad desde el diseño"
-        }
+        "planned": {}
+      },
+      "mass-hysteria": {
+        "title": "Histeria colectiva y creencias colectivas",
+        "lede": "De las plagas de baile y los juicios por brujería a los brotes en escuelas, las burbujas, los rumores y los síntomas que viajan por las plataformas: las palabras y su historia, los mecanismos y sus replicaciones, los casos con sus pruebas y sus disputas, quién dirigió cada episodio, si alguien lo hizo, y qué ayuda a terminarlo."
+      },
+      "redundancy": {
+        "title": "Arquitecturas redundantes",
+        "lede": "Cómo sobreviven las redes a los fallos: lo que la redundancia compra y lo que cuesta, la aritmética de la disponibilidad y del destino compartido, y la redundancia de cada capa, de la energía y la fibra a la agregación de enlaces, las puertas de enlace, el enrutamiento, los clústeres con estado y el balanceo global, hasta los datos, con los informes de caídas que muestran dónde aguantó y dónde no, cada dato con su fuente.",
+        "planned": {}
       }
     },
     "parts": "Las partes",
@@ -41061,7 +41204,9 @@
     "continue": {
       "empty": "Aquí aparecerán las páginas que abras y el siguiente elemento del itinerario que estés siguiendo.",
       "next": "Siguiente en {path}",
-      "recent": "Abierto por última vez"
+      "recent": "Abierto por última vez",
+      "then": "Después:",
+      "seePath": "Ver el itinerario"
     },
     "paths": {
       "untitled": "Itinerario sin nombre",
@@ -41113,22 +41258,29 @@
       "empty": "Aún no has guardado nada. Usa Guardar en una herramienta, un artículo, una entrada del glosario o un juego, o pulsa K en su página.",
       "saveExample": "Guardar",
       "removed": "Quitado de favoritos.",
-      "remove": "Quitar {title} de favoritos"
+      "remove": "Quitar {title} de favoritos",
+      "filter": "Filtrar tus favoritos",
+      "noMatch": "Ningún favorito coincide con «{q}»."
     },
     "recent": {
-      "empty": "Aún no hay nada marcado como leído. Llegar al final de un artículo lo marca; Marcar como leído lo hace a mano."
+      "empty": "Aún no hay nada marcado como leído. Llegar al final de un artículo lo marca; Marcar como leído lo hace a mano.",
+      "today": "Hoy",
+      "yesterday": "Ayer"
     },
     "puzzles": {
       "solved": "Resuelto",
       "played": "Jugado",
       "notYet": "Aún sin jugar",
       "streak": "{count, plural, one {# día seguido} other {# días seguidos}}",
-      "all": "Todos los retos y juegos"
+      "all": "Todos los retos y juegos",
+      "summary": "{played, plural, =0 {Todavía no has jugado ninguno de los {total} retos de hoy.} one {# de {total} jugado hoy.} other {# de {total} jugados hoy.}}",
+      "summarySolved": "{count, plural, one {# resuelto.} other {# resueltos.}}"
     },
     "search": {
       "label": "Buscar en el sitio",
       "placeholder": "Buscar en el sitio…",
-      "go": "Buscar"
+      "go": "Buscar",
+      "browse": "O explora"
     },
     "sync": {
       "syncedAt": "Sincronizado a las {time}.",
@@ -41260,7 +41412,13 @@
       "today": "Hoy",
       "ago": "{count, plural, one {Hace # día} other {Hace # días}}",
       "on": "El {date}",
-      "kept": "Guardado con tu escritorio en este navegador y, cuando sincronizas, dentro de la copia cifrada."
+      "kept": "Guardado con tu escritorio en este navegador y, cuando sincronizas, dentro de la copia cifrada.",
+      "weeks": "{weeks, plural, one {# semana} other {# semanas}}{days, plural, =0 {} one { y # día} other { y # días}}",
+      "path": "Itinerario que terminar para entonces",
+      "pathNone": "Ninguno",
+      "left": "{count, plural, =0 {Todos los elementos de <link>{path}</link> están leídos.} one {Queda # elemento en <link>{path}</link>.} other {Quedan # elementos en <link>{path}</link>.}}",
+      "pace": "Unos {perDay} al día para terminarlo antes del examen.",
+      "paceWeek": "Unos {perDay} al día, o {perWeek} a la semana, para terminarlo antes del examen."
     },
     "quick": {
       "choose": "Herramienta",
@@ -41314,7 +41472,8 @@
       "next": "Siguiente: {name}",
       "toGo": "{count, plural, one {falta #} other {faltan #}}",
       "celebrate": "Hito alcanzado: {names}.",
-      "kept": "Contado a partir de tus marcas de lectura, solo por día, en este navegador."
+      "kept": "Contado a partir de tus marcas de lectura, solo por día, en este navegador.",
+      "thisWeek": "{days, plural, =0 {Nada marcado como leído esta semana todavía.} one {Esta semana: # día de lectura, {items, plural, one {# elemento leído} other {# elementos leídos}}.} other {Esta semana: # días de lectura, {items, plural, one {# elemento leído} other {# elementos leídos}}.}}"
     },
     "privacy": {
       "counting": "Recuento de tu uso",
@@ -41335,6 +41494,13 @@
       "emptied": "Tu escritorio está vacío.",
       "allSettings": "Toda la configuración de Mi escritorio",
       "privacyPage": "Lo que dice la página de privacidad sobre Mi escritorio y la sincronización"
+    },
+    "jump": {
+      "label": "En este escritorio"
+    },
+    "fold": {
+      "hide": "Contraer {name}",
+      "show": "Expandir {name}"
     }
   },
   "deskData": {

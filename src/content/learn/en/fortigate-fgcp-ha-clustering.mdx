@@ -76,6 +76,8 @@ The first shows the members, roles and health. The second is the more valuable c
 
 Election order is failed monitored interfaces, then age, then priority, then serial. Override moves priority above age and causes failback. Two heartbeat interfaces, because a single one risks split brain. Session pickup is off by default and is what makes TCP sessions survive; proxy-inspected sessions generally do not survive regardless. Checksum comparison is the check that reveals an out-of-sync cluster.
 
+The series [Redundant architectures](/learn/redundant-architectures-how-networks-survive-failure) sets FGCP's heartbeat defaults, session synchronization and split-brain defences beside seven other implementations in [Stateful clusters: active/standby, active/active and split brain](/learn/stateful-clusters-active-standby-active-active-and-split-brain).
+
 ## Sources
 
 - [Fortinet, FortiOS 7.6.6 Administration Guide, Pass-through sessions: proxy-based security profile sessions are not supported and must be restarted; flow-based sessions fail over with session pickup but are not inspected after they fail over; a session with both flow-based and proxy-based features does not resume (read 2026-10-26)](https://docs.fortinet.com/document/fortigate/7.6.6/administration-guide/126801/pass-through-sessions)

@@ -23,8 +23,8 @@
 // Limits are said in words: 20 paths, 300 items each.
 // ============================================================================
 
-// React's state and ids.
-import { useEffect, useId, useMemo, useState } from "react";
+// React's state, effects, memo, refs and ids.
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 // The page's strings.
 import { useTranslations } from "next-intl";
 // The desk's verbs and limits.
@@ -52,22 +52,53 @@ interface Undo {
 /** The collections suggested as examples on an empty desk, when the index has them. */
 const EXAMPLE_COLLECTIONS: readonly ItemId[] = ["training:netfun-1", "series:traffic-diversion"];
 
+/** The most items a trail draws one by one; a longer path shows the plain bar (segments would be under 2 px). */
+export const TRAIL_MAX = 120;
+
 /**
- * A progress line: words, then a bar in one hue on the same scale for every path.
+ * A progress line: words, then either a bar in one hue on the same scale for every path, or (second improvement pass,
+ * 16/11/2026) the path's trail: one segment per item in the path's order, filled when read, the next item ringed, so the
+ * reader sees where the gaps are and what comes next, not only how much. The words carry it for assistive technology;
+ * each segment's tooltip names its item for a pointer.
  *
- * @param props done, total and the words
+ * @param props done, total and the words; for a trail, the items, the read marks, the next item and a way to name them
  * @returns the line
  */
-export function ProgressLine(props: { done: number; total: number; text: string }) {
+export function ProgressLine(props: {
+  done: number;
+  total: number;
+  text: string;
+  items?: readonly ItemId[];
+  read?: Record<string, string>;
+  next?: ItemId | null;
+  nameOf?: (id: ItemId) => string | null;
+}) {
   // Percentage, rounded.
   const pct = props.total ? Math.round((props.done / props.total) * 100) : 0;
-  // Words first, then the bar (hidden from assistive technology: the words carry it).
+  // A trail when the items are given and there are not too many to draw one by one.
+  const trail = props.items && props.read && props.items.length > 0 && props.items.length <= TRAIL_MAX;
+  // Words first, then the trail or the bar (hidden from assistive technology: the words carry it).
   return (
-    <span className="desk-progress">
+    <span className={`desk-progress${trail ? " desk-progress--trail" : ""}`}>
       <span className="desk-progress-text mono">{props.text}</span>
-      <span className="desk-bar" aria-hidden="true">
-        <span className="desk-bar-fill" style={{ width: `${pct}%` }} />
-      </span>
+      {trail ? (
+        <span className="desk-trail" aria-hidden="true">
+          {(props.items as readonly ItemId[]).map((id, i) => {
+            // Read, and whether it is the next one.
+            const isRead = id in (props.read as Record<string, string>);
+            // The next item to read, ringed.
+            const isNext = !isRead && props.next === id;
+            // The tooltip: its place, its name and a tick when read.
+            const label = `${i + 1}. ${props.nameOf?.(id) ?? id}${isRead ? " ✓" : ""}`;
+            // One segment.
+            return <span key={`${id}-${i}`} className={`desk-trail-seg${isRead ? " desk-trail-seg--read" : ""}${isNext ? " desk-trail-seg--next" : ""}`} title={label} />;
+          })}
+        </span>
+      ) : (
+        <span className="desk-bar" aria-hidden="true">
+          <span className="desk-bar-fill" style={{ width: `${pct}%` }} />
+        </span>
+      )}
     </span>
   );
 }
@@ -98,26 +129,42 @@ export default function DeskPaths(props: { data: DeskData; index: SiteIndex | nu
   // The paths.
   const { paths, read } = props.data;
 
-  // A link to one path (/my-desk#path=<id>, from "Continue this path" on an item page): that path opened, brought into
-  // view and given focus, once, when the widget first appears.
+  // The paths as last drawn, for the link handler below (which is installed once).
+  const pathsNow = useRef(paths);
+  // Kept current.
+  pathsNow.current = paths;
+
+  // A link to one path (/my-desk#path=<id>, from "Continue this path" on an item page, or "See the path" in Continue on
+  // this page): that path opened, brought into view and given focus, on arrival and whenever the address's fragment
+  // changes to such a link while the page is open (increment E).
   useEffect(() => {
-    // The id in the address, in the store's form.
-    const m = /^#path=([a-z0-9]{4,24})$/.exec(window.location.hash);
-    // No such link, or no such path on this desk.
-    if (!m || !paths.some((p) => p.id === m[1])) return;
-    // Opened.
-    setOpen(m[1]);
-    // After the open path is drawn: shown at the top of the screen, focus on its name.
-    window.requestAnimationFrame(() => {
-      // Its row.
-      const row = document.getElementById(`desk-path-${m[1]}`);
-      // Into view.
-      row?.scrollIntoView({ block: "start" });
-      // Focus on its name, without a second scroll.
-      row?.querySelector<HTMLButtonElement>(".desk-path-name")?.focus({ preventScroll: true });
-    });
-    // Once, on arrival.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    /** Open the path the fragment names, when this desk has it. */
+    const openFromHash = () => {
+      // The id in the address, in the store's form.
+      const m = /^#path=([a-z0-9]{4,24})$/.exec(window.location.hash);
+      // No such link, or no such path on this desk.
+      if (!m || !pathsNow.current.some((p) => p.id === m[1])) return;
+      // The link leaves the address once followed (no new history entry): the widget drawn again (after arranging the
+      // page) must not take focus a second time, and the same link followed again is a change the page hears.
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
+      // Opened.
+      setOpen(m[1]);
+      // After the open path is drawn: shown at the top of the screen, focus on its name.
+      window.requestAnimationFrame(() => {
+        // Its row.
+        const row = document.getElementById(`desk-path-${m[1]}`);
+        // Into view.
+        row?.scrollIntoView({ block: "start" });
+        // Focus on its name, without a second scroll.
+        row?.querySelector<HTMLButtonElement>(".desk-path-name")?.focus({ preventScroll: true });
+      });
+    };
+    // On arrival.
+    openFromHash();
+    // And on a link followed on this page.
+    window.addEventListener("hashchange", openFromHash);
+    // Stopped when the widget goes.
+    return () => window.removeEventListener("hashchange", openFromHash);
   }, []);
 
   // The collections a reader can adopt, sorted by title (only once the index is in).
@@ -255,7 +302,6 @@ export default function DeskPaths(props: { data: DeskData; index: SiteIndex | nu
                       <span aria-hidden="true">{"↻"}</span> {t("paths.changed", { count: changed })}
                     </span>
                   )}
-                  <ProgressLine done={prog.done} total={prog.total} text={t("progress", { done: prog.done, total: prog.total })} />
                   {/* Moving the path itself: buttons, never dragging. */}
                   <span className="desk-path-move">
                     <button type="button" className="desk-icon-btn" disabled={pi === 0} aria-label={t("paths.upPath", { name: display })} onClick={() => movePath(p.id, -1)}>
@@ -265,6 +311,18 @@ export default function DeskPaths(props: { data: DeskData; index: SiteIndex | nu
                       <span aria-hidden="true">{"↓"}</span>
                     </button>
                   </span>
+                </div>
+                {/* The path's trail under its name: every item in order, read ones filled, the next one ringed. */}
+                <div className="desk-path-progress">
+                  <ProgressLine
+                    done={prog.done}
+                    total={prog.total}
+                    text={t("progress", { done: prog.done, total: prog.total })}
+                    items={p.items}
+                    read={read}
+                    next={p.items.find((i) => !(i in read)) ?? null}
+                    nameOf={(id) => titleOf(props.index, id)}
+                  />
                 </div>
                 {isOpen && (
                   <div className="desk-path-body">

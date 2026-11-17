@@ -49,6 +49,10 @@ next-env.d.ts
 # generated at prebuild by scripts/gen-home-index.mts from the registries.
 /public/home-index.json
 
+# The glossary hub's name index behind "Find a term" (16/11/2026), generated at prebuild by
+# scripts/gen-glossary-index.mts from the registry; CI regenerates it on every build.
+/public/glossary-index.json
+
 # My desk's site index (12/11/2026), one file per live language named by its content's hash, generated at prebuild by
 # scripts/gen-desk-index.mts beside the home index; the names the page asks for are in src/generated/desk-index.ts.
 /public/desk-index/

@@ -35,6 +35,9 @@
  *   interest          public   the interest counts of a window, per kind and item, and summed per kind
  *                              (one answer behind the Stats page's three interest panels and the dashboard)
  *   pulse             public   per-day pages and interest counts, this window and the one before
+ *   redirects         public   how many requests each public/_redirects rule answered in the window (queue 5af,
+ *                              PRIME 16/11/2026 00:24; worker/redirect-hits.ts): the rules and a count each, never a
+ *                              path a visitor typed
  *   history           key      the daily totals kept in D1: sections, totals, events, items, movers, split, path, days
  *   searches          key      the words of searches that found nothing
  *   rollup            key      add a day up now (POST), or report which days are added up (GET)
@@ -44,6 +47,8 @@
 import { PAGEVIEWS, PEOPLE, WINDOWS, query, type StatsEnv } from "./stats";
 // The lists a public answer's text is checked against on the way out, the same lists the write side checks on the way in.
 import { INTEREST_DETAILS, INTEREST_KINDS, INTEREST_SLUG, type InterestKind } from "../src/lib/interest/shape";
+// The per-rule redirect counts (the rules come from public/_redirects through worker/redirect-rules.json).
+import { redirectHits } from "./redirect-hits";
 // The interest counts' dataset, the adding-up itself, and the day arithmetic.
 import { EVENTS, KEEP_DAYS, lastFullDay, rollupDay, shiftDay, type RollupEnv } from "./rollup";
 
@@ -51,7 +56,7 @@ import { EVENTS, KEEP_DAYS, lastFullDay, rollupDay, shiftDay, type RollupEnv } f
 export type IntelEnv = StatsEnv & RollupEnv;
 
 /** The route names answered here. */
-const ROUTES = ["interest", "pulse", "history", "searches", "rollup"] as const;
+const ROUTES = ["interest", "pulse", "redirects", "history", "searches", "rollup"] as const;
 
 /** A sum that allows for sampling, as every total in worker/stats.ts does. */
 const N = "SUM(_sample_interval) AS n";
@@ -299,6 +304,22 @@ export async function handleIntel(request: Request, url: URL, env: IntelEnv): Pr
                                GROUP BY term, locale ORDER BY n DESC LIMIT 500`))
             .map((r) => ({ term: String(r.term ?? ""), locale: String(r.locale ?? ""), n: Number(r.n ?? 0) })),
         }, 200, true);
+
+      // How often each redirect rule answered in the window (public: the site's own rules and a count each). The
+      // answer says what it cannot see: rules on file-extension paths are not recorded, and statuses exist only from
+      // 2026-10-07, so a window reaching further back counts from that day.
+      case "redirects": {
+        // The rules and their counts, from one read of the pageviews dataset.
+        const out = await redirectHits(env, since);
+        return await keep(json({
+          window: winKey,
+          statuses_recorded_since: "2026-10-07",
+          sampled: true,
+          cut: out.cut,
+          totals: out.totals,
+          rules: out.rules,
+        }));
+      }
 
       // Unreachable: every name in ROUTES is handled above.
       default:

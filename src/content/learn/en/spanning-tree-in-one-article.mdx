@@ -90,6 +90,8 @@ There is no separate spanning tree standard any more. "IEEE Std 802.1D-2004 was 
 
 The algorithm is the work of Radia Perlman, at Digital Equipment Corporation, whose paper on it was published in 1985 ([Perlman, 1985](https://prl.khoury.northeastern.edu/img/p-sigcomm-1985.pdf)). The abstract is a poem, "Algorhyme", twelve lines that sum up the whole algorithm ([Heidelberg Laureate Forum](https://www.newsroom.hlf-foundation.org/blog/article/the-internet-chronicles-part-7-of-12-the-tree-the-internet-grows-on/)). In her own words: "I spent the remainder of the week working on the poem, which is the abstract of the paper" ([LACNIC, 2019](https://blog.lacnic.net/en?p=11775)). The Internet Hall of Fame inducted her in 2014 for designing "the spanning tree algorithm that transformed Ethernet" ([Internet Hall of Fame](https://www.internethalloffame.org/inductee/radia-perlman/)). The story of bridges and switches around her work is told in [one idea, solved twice](/learn/bridge-switch-family-history).
 
+The series [Redundant architectures](/learn/redundant-architectures-how-networks-survive-failure) works through spanning tree's timers in [Layer 2 redundancy](/learn/layer-2-redundancy-lag-mlag-and-spanning-tree): the formulas that tie them to the network's diameter, and the protections that stop a link working in one direction only from opening a loop.
+
 ## What to remember
 
 - Ethernet frames have no TTL, so a loop circulates forever; spanning tree prevents loops by blocking.

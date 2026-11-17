@@ -183,3 +183,107 @@ export function subscribeSiteShortcuts(fn: () => void): () => void {
   siteShortcutListeners.add(fn);
   return () => siteShortcutListeners.delete(fn);
 }
+
+// ============================================================================
+// THE PAGE'S OWN KEYS, FOR THE HELP (PRIME 16/11/2026 03:14: "change the contents of the help contextually, to
+// reflect the correct mapping of keys in pages that have exceptions")
+// ---------------------------------------------------------------------------
+// A page whose keys differ from the site's (a game that takes the keyboard while it is played, a board that takes it
+// while focused, a page with keys of its own beside the site's) says so here, in the reader's language, and the help
+// opened with "?" or "h" shows it first, under "On this page", with when it applies. The same module-level idiom as
+// above: a client hook writes on mount and clears on unmount. Each registration carries a token, so a page that
+// unmounts late never clears the next page's keys.
+// ============================================================================
+
+/** When the page's own keys apply, and with it whether the site's shortcuts stand down. */
+export type PageKeysWhen =
+  // While the game's board or terminal has the keyboard (clicked or tabbed into): the site's shortcuts are off.
+  | "focused"
+  // While a round or run is under way: the site's shortcuts are off.
+  | "playing"
+  // Whenever the page is open, beside the site's shortcuts (arrow keys and the like, which the site does not bind).
+  | "always"
+  // While the reader is arranging the page (My desk), beside the site's shortcuts.
+  | "arranging";
+
+/** A page's own keys: when they apply, and one or more sentences that name them (already in the reader's language). */
+export interface PageKeys {
+  /** When they apply. */
+  when: PageKeysWhen;
+  /** The sentences, as the page's own rules or hints word them. */
+  lines: string[];
+}
+
+/** The keys registered now, with their registration's token. */
+let pageKeys: { token: number; keys: PageKeys } | null = null;
+/** The last token handed out. */
+let pageKeysToken = 0;
+/** Who wants to know (the shortcut island). */
+const pageKeysListeners = new Set<() => void>();
+
+/**
+ * Register the page's own keys (replacing any before them).
+ *
+ * @param keys when they apply and the sentences that name them
+ * @returns the token to clear them with
+ */
+export function setPageKeys(keys: PageKeys): number {
+  // A new token.
+  pageKeysToken += 1;
+  // Kept.
+  pageKeys = { token: pageKeysToken, keys };
+  // Said.
+  pageKeysListeners.forEach((fn) => fn());
+  // Handed back.
+  return pageKeysToken;
+}
+
+/**
+ * Clear the page's keys, only if they are still the ones this token registered.
+ *
+ * @param token what setPageKeys returned
+ */
+export function clearPageKeys(token: number): void {
+  // Someone else's keys by now: leave them.
+  if (!pageKeys || pageKeys.token !== token) return;
+  // Gone.
+  pageKeys = null;
+  // Said.
+  pageKeysListeners.forEach((fn) => fn());
+}
+
+/** The page's own keys, or null when it has none. */
+export function getPageKeys(): PageKeys | null {
+  return pageKeys ? pageKeys.keys : null;
+}
+
+/** Be told when the page's keys change. */
+export function subscribePageKeys(fn: () => void): () => void {
+  pageKeysListeners.add(fn);
+  return () => pageKeysListeners.delete(fn);
+}
+
+// ============================================================================
+// WHETHER THE PAGE HAS A DESK ITEM (for the help: k and x act only on a page with an item to save, 16/11/2026)
+// ---------------------------------------------------------------------------
+// The page's main save-and-read controls (src/components/desk/DeskItemControls.tsx, the instance that answers the k
+// and x commands) count themselves in on mount and out on unmount.
+// ============================================================================
+
+/** How many main desk controls are mounted (one on an item page, none elsewhere). */
+let deskItems = 0;
+
+/**
+ * Count a page's main desk controls in (+1) or out (-1).
+ *
+ * @param delta +1 on mount, -1 on unmount
+ */
+export function countDeskItem(delta: 1 | -1): void {
+  // Never below zero, whatever the order of mounts.
+  deskItems = Math.max(0, deskItems + delta);
+}
+
+/** Whether the page shown has an item that k and x act on. */
+export function hasDeskItem(): boolean {
+  return deskItems > 0;
+}

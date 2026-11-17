@@ -1,0 +1,489 @@
+---
+slug: hackers-at-play-games-ctfs-and-cyber-ranges
+title: "Hackers at play: games, capture the flag and cyber ranges"
+summary: "Hacking has been played for more than forty years: as a programming duel printed in Scientific American in 1984, as a game with no instructions in 1985, as a card game born of a Secret Service raid, as terminal simulators, programming puzzles and open worlds, as card decks that teach threat modelling and incident response, and as the real thing scored as a game, from wargame sites to NATO's Locked Shields. This post lists them by kind and era, gives each a fidelity score built from sourced facts, records what each one teaches and what effects are documented, includes the Brazilian titles and ranges, and ends with a list of where to start by level."
+author: "Rodolfo Nützmann"
+date: "2026-11-16"
+number: 27
+tags: ["games", "culture", "history", "teaching", "brazil"]
+category: security
+status: reviewed
+updated: "2026-11-16"
+relatedArticles: ["capture-the-flag-competitions", "hacking-in-the-20th-century", "lod-mod-and-operation-sundevil", "the-worm-era", "the-brazilian-hacker-scene", "defcon-culture-and-the-goons"]
+---
+
+People have played at hacking in three ways. They have played games that depict it, from a 1985 disk that opened on a bare login prompt ([COMPUTE!, April 1986](https://atarimagazines.com/compute/issue71/review_hacker.php)) to an open world where the hero controls a city's traffic lights ([Kaspersky, 7 May 2014](https://blog.kaspersky.co.uk/watch-dogs/)). They have played games that teach it, from card decks that security teams use to rehearse an incident ([CSO Online, 6 January 2020](https://www.csoonline.com/article/3509467/backdoors-and-breaches-incident-response-card-game-makes-tabletop-exercises-fun.html)) to puzzles in which the player exploits real processor code in a debugger ([Hackaday, 18 January 2014](https://hackaday.com/2014/01/18/microcorruption-embedded-ctf)). And they have played the real thing, scored as a game: wargame sites reached over a real shell ([OverTheWire, Wargames](https://overthewire.org/wargames/)), student competitions in which teams take over and defend a network ([National Collegiate Cyber Defense Competition, About](https://nationalccdc.org/about.html)), and national exercises in which thousands of defenders protect virtualized power grids ([Cooperative Cyber Defence Centre of Excellence, Locked Shields 2025](https://ccdcoe.org/news/2025/locked-shields-2025-showcased-nations-commitment-to-defending-cyberspace/)). This post covers all three, with dates, makers and sources, and with a fidelity score for each work.
+
+Two subjects are covered elsewhere on the site and are only linked here. How Capture the Flag (CTF) competitions work, from jeopardy boards to attack-defence finals, is in the Learn article **[Capture the Flag: how security competitions work](/learn/capture-the-flag-competitions)**, and the CTF scene of 2026 with its Brazilian list is in the post **[Flags, finals and the Brazilian list](/blog/flags-finals-and-the-brazilian-list)**. Hackers in films, series and documentaries are the subject of **[Hackers on screen](/blog/hackers-on-screen-films-series-and-documentaries)**, and books, including the novels several of these games borrow from, of **[Hackers on the page](/blog/hackers-on-the-page-books-from-cuckoos-egg-to-now)**.
+
+## How the fidelity score works
+
+Every game, platform and exercise below gets a score from 0 to 5: one point for each of the following criteria that a fetched source documents. A point is never given for an impression, and where the sources read say nothing about how the hacking is played, the work is marked "not scored", with the reason.
+
+1. **Real interface.** The commands, languages or tools on screen are the ones used outside the game (a Unix shell, a real processor's assembly language, a named security tool), not look-alikes.
+2. **Real mechanism.** The work models a documented attack or defence mechanism (password guessing, a buffer overflow, privilege levels, logs and traces, patching, an incident's stages) rather than a metaphor such as a maze or a tile puzzle.
+3. **Real cost.** Time, effort and detection behave as the makers or reviewers say they do in reality: intrusions are not instant, they leave evidence, someone can trace them.
+4. **Checked by practitioners.** The makers name a security firm, researchers or practitioners who built or checked the hacking.
+5. **Real target.** What the player attacks or defends is actual software or hardware behaviour (a real or emulated machine, the team's own systems), so a solution would work outside the game.
+
+The score measures fidelity to security practice, not quality, fun or teaching value: a programming puzzle can score zero and still teach a great deal, which is why every table also says what each work teaches and to whom.
+
+## Video games, 1984 to 1999: duels in memory and a login prompt
+
+### Core War, 1984
+
+The first hacking game was played by programs. In the "Computer Recreations" column of *Scientific American* in May 1984, A. K. Dewdney described Core War, a game in which two programs written in a low-level language he named Redcode are placed in a circular memory called Core and executed alternately by a simulator called MARS (Memory Array Redcode Simulator), each trying to overwrite the other ([A. K. Dewdney, Scientific American, May 1984, text hosted by Carleton University](https://homeostasis.scs.carleton.ca/~soma/biosec/readings/akdewdney/First.htm); [Dewdney, March 1985](https://homeostasis.scs.carleton.ca/~soma/biosec/readings/akdewdney/Second.htm)). Dewdney wrote that the game was inspired by a story about a self-copying program called Creeper and a second program, Reaper, written to delete it ([Dewdney, May 1984](https://homeostasis.scs.carleton.ca/~soma/biosec/readings/akdewdney/First.htm)); the site's article on **[the worm era](/learn/the-worm-era)** follows the real self-replicating programs that came after.
+
+The documented effects arrived within a year. In his follow-up column of March 1985, "A Core War bestiary of viruses, worms and other threats to computer memories" ([Scientific American, Computer Recreations, March 1985](https://www.scientificamerican.com/article/computer-recreations-1985-03/)), Dewdney wrote that "it had not occurred to me how serious a topic I was raising", reported that several hundred readers had obtained the guidelines for writing a simulator and that a large percentage of them had written Core War programs, and printed a letter from two readers in Brescia, Italy, who, inspired by the Italian edition of the column, had worked out a virus that would spread between Apple II floppy disks and then decided neither to release it nor to tell anyone about it ([Dewdney, March 1985](https://homeostasis.scs.carleton.ca/~soma/biosec/readings/akdewdney/Second.htm)).
+
+**Fidelity 1/5.** Redcode is an invented language "closely related to" assembly languages but run only by the game's simulator (no point for interface or target); programs overwriting each other's instructions in shared memory is the mechanism Dewdney linked to Creeper and Reaper (one point); nothing is traced or detected, and no checking by practitioners is documented ([Dewdney, May 1984](https://homeostasis.scs.carleton.ca/~soma/biosec/readings/akdewdney/First.htm)).
+
+### Hacker, 1985, and Hacker II, 1986
+
+In 1985 Activision's president, Jim Levy, showed reporters what looked like a failed attempt to log on to the company's headquarters; when an unknown system answered with "Logon please...", he told them: "That, ladies and gentlemen, is the game" ([COMPUTE!, issue 65, October 1985](https://www.atarimagazines.com/compute/issue65/new_games.php)). *Hacker* shipped with no instructions beyond a loading card; COMPUTE!'s reviewer wrote that "The logon sequence is very realistic", that a visitor watching him guess passwords reminded him it was illegal, and that "After you enter the system, the game becomes less realistic": the player steers robots through a company's tunnels to uncover an illegal project, and the price ran from 24.95 dollars on Atari 8-bit machines to 44.95 dollars on the Amiga, Atari ST and Macintosh ([COMPUTE!, issue 71, April 1986](https://atarimagazines.com/compute/issue71/review_hacker.php)). The sequel, *Hacker II: The Doomsday Papers*, opened with the same "LOGON PLEASE" and had the player bypass 38 security cameras with a videotape loop to steal a file from a complex in Siberia ([COMPUTE!, issue 78, November 1986](https://www.atarimagazines.com/compute/issue78/026_1_Reviews_Hacker_II_The_Doomsday_Papers.php)).
+
+**Fidelity 0/5.** The reviewer found the login prompt realistic but the rest invented, from the graphics, "unlike anything you'd see on a true bulletin board system", to the robots ([COMPUTE!, April 1986](https://atarimagazines.com/compute/issue71/review_hacker.php)); no mechanism, cost, checking or real target is documented.
+
+### Shadowrun, 1993
+
+The 1993 *Shadowrun* for the Super Nintendo Entertainment System (SNES), coded by the Australian studio Beam Software and loosely based on a *Shadowrun* novel by the setting's co-creator Robert N. Charette, included mini-game elements "like entering cyberspace to hack into computer terminals", according to a retrospective with members of its team ([Time Extension, Shadowrun, 16 March 2011, updated 15 September 2022](https://www.timeextension.com/features/the-making-of-shadowrun-the-unique-snes-rpg-that-almost-never-happened)).
+
+**Fidelity 0/5.** Cyberspace runs are a metaphor for intrusion, and no source read describes real commands, mechanisms or checking.
+
+## Video games, 2000 to 2014: hacking becomes a way through the world
+
+### Deus Ex, 2000
+
+Ion Storm's *Deus Ex* "shipped in June 2000", wrote its director, Warren Spector, in a postmortem published that December ([Warren Spector, Postmortem: Ion Storm's Deus Ex, Game Developer, 6 December 2000](https://www.gamedeveloper.com/design/postmortem-ion-storm-s-i-deus-ex-i-)). Its design made hacking one route among several: in a 2020 retrospective, PC Gamer described a level in which the player can walk in through the front door after finding a key and hacking a series of cameras, or stack crates and climb past the security systems altogether ([PC Gamer, Revisiting Deus Ex, 22 June 2020](https://www.pcgamer.com/revisiting-deus-ex-ion-storms-classic-cyberpunk-rpg/)).
+
+**Not scored.** The sources read describe hacking as a choice of path, not how the hacking itself is played.
+
+### Uplink, 2001
+
+*Uplink* began as a sixth-form idea of Chris Delay, who with Mark Morris and Tom Arundel founded Introversion Software; it came out in 2001 as "an austere, menu-driven hacking simulator, where players navigated electric blue interfaces to manipulate mainframes, race against progress bars and escape without trace" ([PC Gamer, The making of Uplink, 15 December 2012](https://www.pcgamer.com/the-making-of-uplink)). Introversion describes itself as founded in 2001 by three university students ([Introversion Software](https://www.introversion.co.uk/introversion/)). Delay explained why the game does not look like real work: a real intrusion starts with a port scan of a device with perhaps a hundred open ports, and "It could be hours of work to get there and it might not even work"; the game was inspired by films such as *WarGames* ([PC Gamer, 2012](https://www.pcgamer.com/the-making-of-uplink)). Introversion's next hacking-adjacent title, *DEFCON* (2006), is a strategy game about nuclear war "inspired by the 1983 cult classic film, Wargames" ([Steam, DEFCON](https://store.steampowered.com/app/1520/)); the film itself, and the policy it set off, are in the glossary entry **[WarGames](/glossary/wargames)** and in **[Hackers on screen](/blog/hackers-on-screen-films-series-and-documentaries)**. *Uplink* has been on Steam since 23 August 2006 ([Steam, Uplink](https://store.steampowered.com/app/1510/)).
+
+**Fidelity 1/5.** The interface is menus and progress bars, not commands, and the designer chose to streamline away the hours a real intrusion takes (no points for interface or cost); the trace a player must escape is the one mechanism the sources describe (one point); no consultant is documented ([PC Gamer, 2012](https://www.pcgamer.com/the-making-of-uplink)).
+
+### CyberCIEGE, mid-2000s
+
+*CyberCIEGE* is a video game built at the Naval Postgraduate School (NPS) in Monterey, California, for security awareness training; a 2006 paper by its authors described two scenarios written for uniformed and civilian personnel of the United States Navy, one for general awareness and one for information technology staff, after a Department of Defense directive of 2004 required annual information assurance training for all its system users ([Cone, Thompson, Irvine and Nguyen, Naval Postgraduate School, 2006](https://faculty.nps.edu/irvine/Publications/Publications2006/CCIEGE_SEC06-V3.pdf)). In 2007 a college serving Air Force Space Command in Colorado Springs used it to reinforce Security+ classes; players hire and fire staff and buy and configure computers, servers and network devices with virtual money, and the game was developed by the school's Center for Information Systems Security Studies and Research with the game company Rivermind, at no cost to federal agencies ([Route Fifty, Security Games, 4 May 2007](https://route-fifty.com/cybersecurity/2007/05/security-games/311365)). Professor Cynthia Irvine of NPS said the game showed students why "you can't just leave your passwords posted underneath your drawer" ([Route Fifty, 2007](https://route-fifty.com/cybersecurity/2007/05/security-games/311365)).
+
+**Fidelity 2/5.** Configuring a network and its users securely is the documented mechanism (one point), and the game was built by security researchers for military training (one point); the interface and target are simulated, and no cost model is described ([NPS, 2006](https://faculty.nps.edu/irvine/Publications/Publications2006/CCIEGE_SEC06-V3.pdf); [Route Fifty, 2007](https://route-fifty.com/cybersecurity/2007/05/security-games/311365)).
+
+### Watch Dogs, 2014
+
+Ubisoft's *Watch Dogs* (Steam release 26 May 2014) sets its hacking in a near-future Chicago run by a city-wide operating system, ctOS ([Steam, Watch_Dogs](https://store.steampowered.com/app/243470/)). In 2013 its senior producer, Dominic Guay, said Ubisoft sent designs to the security firm Kaspersky Lab for feedback: "Sometimes they say, 'Yeah, that's possible, but change that word,' or, 'That's not the way it works.'" ([Engadget, 10 May 2013](https://www.engadget.com/2013/05/10/ubisoft-kaspersky-lab-watch-dogs/)). Kaspersky's principal security researcher Vitaly Kamluk read the script and said "It's not the typical Hollywood hacking" ([Kaspersky, 7 May 2014](https://blog.kaspersky.co.uk/watch-dogs/)). Engadget documented the changes: a scene in which the hero brute-forced a short password to copy a server's disk was rewritten, after Kamluk said "It may happen in the movies, but not in real life", so that he reboots the server, boots his own operating system from an external device and copies the disk image, which sets off an alarm; a car chase with a Global Positioning System (GPS) tag became copying data over Bluetooth at close range; and the city's addresses were moved from IPv4 to IPv6, because a city of connected devices would run out of IPv4 addresses ([Engadget, 23 May 2014](https://www.engadget.com/2014-05-23-watch-dogs-hacking-kaspersky.html)). Ubisoft's content manager Thomas Geffroyd said that real shell scripts appear in the game, that "Everything happening in the game is feasible in one way or another", and that the main departure from reality is how long a hack takes ([Engadget, 2014](https://www.engadget.com/2014-05-23-watch-dogs-hacking-kaspersky.html)).
+
+**Fidelity 3/5.** Real shell scripts on screen (one point), mechanisms revised with a security firm (two points, mechanism and checking); time compressed by design (no point for cost) and a fictional city as the target ([Engadget, 2014](https://www.engadget.com/2014-05-23-watch-dogs-hacking-kaspersky.html); [Kaspersky, 2014](https://blog.kaspersky.co.uk/watch-dogs/)).
+
+### Hack 'n' Slash, 2014
+
+Double Fine's *Hack 'n' Slash* (Steam release 9 September 2014) is a puzzle game in which the player's sword changes the variables of objects, until the player can "dive directly into the game's assembly" and modify the running code; its makers wrote: "You're hacking the game for real!" ([Steam, Hack 'n' Slash](https://store.steampowered.com/app/246070/)).
+
+**Fidelity 2/5.** On the makers' description, the game's own live code is both the mechanism and the target (two points); the interface is the game's own representation, with no named language.
+
+## Video games, 2015 to 2026: terminals, code and puzzles
+
+### Hacknet, 2015
+
+*Hacknet*, by the one-man Australian studio Team Fractal Alligator and published by Fellow Traveller, came out on 12 August 2015 ([Steam, Hacknet](https://store.steampowered.com/app/365450/)). Its publisher describes an "immersive, terminal-based hacking simulator" "Based on actual UNIX commands" ([Fellow Traveller, Hacknet](https://fellowtraveller.games/hacknet)), and PC Gamer reported before release that the promise of "real hacking" meant real Unix commands ([PC Gamer, 17 July 2015](https://www.pcgamer.com/hacknet-is-a-hacking-game-with-real-hacking)). Its creator, Matt Trobbiani, described a deliberate mix: "When I was doing the game I wanted to make it a mix between that sort of feeling and what it's really like", the feeling being the excitement of film hacking, and he wanted to introduce the experience "to people who have never been through that gross technical hell" ([Vice, 2 December 2017](https://www.vice.com/en/article/how-to-make-a-good-hacking-game-when-the-reality-is-massively-dull)). The Australian Centre for the Moving Image (ACMI) holds *Hacknet* in its collection and displays it in the Games Lab of its exhibition *The Story of the Moving Image* ([ACMI, Hacknet](https://www.acmi.net.au/works/117932--hacknet/)).
+
+**Fidelity 1/5.** Unix-style commands are the documented interface (one point); the maker describes a blend of reality and film excitement rather than a model of cost, and no checking or real target is documented.
+
+### The programming puzzles of Zachtronics, 2015 to 2022
+
+Zachtronics made programming the puzzle. *TIS-100* (20 July 2015) is "the assembly language programming game you never asked for", in which the player rewrites corrupted code to repair the TIS-100 and can print its manual ([Zachtronics, TIS-100](https://www.zachtronics.com/tis-100/); [Steam, TIS-100](https://store.steampowered.com/app/370360/)); *SHENZHEN I/O* (17 November 2016) adds circuits and a manual "which includes over 30 pages of original datasheets" ([Zachtronics, SHENZHEN I/O](https://www.zachtronics.com/shenzhen-io/); [Steam](https://store.steampowered.com/app/504210/)); and *EXAPUNKS* (22 October 2018) is set in 1997, where the player, a former hacker who now has "the phage", programs EXAs (execution agents) to move through networks, replicate, delete files and "leave without a trace", learning from an in-game underground magazine ([Zachtronics, EXAPUNKS](https://www.zachtronics.com/exapunks/); [Steam](https://store.steampowered.com/app/716490/)). The studio offers all its games free to public schools and school-like non-profits ([Zachtronics](https://www.zachtronics.com/)).
+
+The studio announced *Last Call BBS* (3 August 2022) as "the last game from Zachtronics!" ([Steam, Last Call BBS](https://store.steampowered.com/app/1511780/)), and its founder, Zach Barth, told PC Gamer: "We're definitely shutting down Zachtronics"; he had spent the previous year teaching high school students to program and concluded that he was "not really cut out to be a teacher" ([PC Gamer, 5 July 2022](https://pcgamer.com/why-last-call-bbs-is-the-last-call-for-indie-studio-zachtronics)).
+
+**Fidelity: TIS-100 and SHENZHEN I/O not scored** (they are about programming and repairing machines, not about intrusion); **EXAPUNKS 1/5** (self-replicating agents that move between hosts and remove their traces are the one documented mechanism; the language and machines are invented).
+
+### Open worlds, sandboxes and simulators, 2015 to 2021
+
+- ***Else Heart.Break()*** (24 September 2015), by Erik Svedäng and collaborators, is an adventure set in a city where "the reality of the game can be changed through programming" ([Steam](https://store.steampowered.com/app/400110/)). Not scored: the sources read do not name the language or the mechanisms.
+- ***hackmud*** (22 September 2016, ComCODE) is a multiplayer "retro cyberpunk RPG" (role-playing game) in which players write and run scripts, and use scripts written by others, in an abandoned internet ([Steam](https://store.steampowered.com/app/469920/); [hackmud](https://www.hackmud.com/)). Not scored: no source read names the scripting language or describes the intrusion mechanics.
+- ***Quadrilateral Cowboy*** (25 July 2016, Blendo Games) has the player "Type commands into our intuitive hacking interface to hijack doors, weapons, cameras, robots, and more" from a deck with a 56.6k modem ([Steam](https://store.steampowered.com/app/240440/)). Not scored: the commands are the game's own, and nothing else is documented.
+- ***Grey Hack*** (14 December 2017, Loading Home) is a "massively multiplayer hacking simulator" played through a terminal "inspired by Unix" whose commands are written in an in-game language, GreyScript; players can find errors in code and write exploits or patches, and "an administrator who discovers the intrusion may trace it back to you" ([Steam](https://store.steampowered.com/app/605230/)). **2/5** on the maker's description: exploitable code errors (mechanism) and tracing (cost); the language is invented.
+- ***NITE Team 4*** (26 February 2019, Alice & Smith) promises a training academy in "real-life cybersecurity techniques" such as information gathering, port scanning, fingerprinting, exploit research and digital forensics ([Steam](https://store.steampowered.com/app/544390/)). **1/5** on the maker's description (mechanism); no source read names real tools or a consultant.
+- ***Bitburner*** (Steam 10 December 2021, Fulcrum Games and more than 250 contributors on GitHub) is an open-source "programming-based incremental game" in which the player writes scripts in JavaScript to automate hacking a network of servers ([Steam](https://store.steampowered.com/app/1812820/)). **1/5**: JavaScript is a real language (interface); the hacking it automates is abstract.
+- ***Midnight Protocol*** (13 October 2021, LuGus Studios, published by Iceberg Interactive) is a keyboard-only role-playing game that "focuses on immersing you in a world of digital warfare without complicated hacking mechanics" ([Steam](https://store.steampowered.com/app/1162700/)). **0/5** on the maker's own description.
+- ***Hacker Simulator*** (20 October 2021, Save All Studio) has the player crack Wi-Fi networks with "a simplified and enjoyable version" of methods such as brute-force attacks, exploits and phishing, and learn the Aircrack-ng suite; its solo developer warns that it "is not a realistic 1:1 hacking simulation" ([Steam](https://store.steampowered.com/app/1754840/)). **2/5** on the maker's description: a named real tool, simplified (interface), and real attack types, simplified (mechanism).
+
+Other games put hacking inside a larger world without documenting how it is modelled, and are listed without a score: *Watch Dogs 2* (28 November 2016), whose hacker group DedSec sets out to "take down ctOS 2" in San Francisco ([Steam](https://store.steampowered.com/app/447040/)); *Orwell* (27 October 2016, Osmotic Studios), in which the player is a government surveillance program's investigator who reads chats and emails and hacks PCs ([Steam](https://store.steampowered.com/app/491950/)); *Hacktag* (14 February 2018, Piece of Cake Studios), a two-player game in which one player is an agent in the field and the other a hacker in the network ([Steam](https://store.steampowered.com/app/622770/)); and *Cyberpunk 2077* (9 December 2020, CD Projekt Red) ([Steam](https://store.steampowered.com/app/1091500/)).
+
+### NULLPTR, 2025: a Brazilian hacking puzzle
+
+*NULLPTR* is a "real-time tactical hacking puzzle" by Jeferson Silva, released on Steam on 25 November 2025, which its page says was a finalist for innovation and for best Brazilian game at Gamescom LATAM 2024 ([Steam, NULLPTR](https://store.steampowered.com/app/1579650/)). Its press release, dated São Paulo, 29 February 2024, presents him as a "Brazilian indie game developer" who started coding simple games in MSX Basic at the age of ten; the player picks an open port, has 20 seconds to reach the databases, can open new entry points with backdoors and must avoid sentinel programs and firewalls without being traced ([Game Developer, NULLPTR press release, 29 February 2024](https://www.gamedeveloper.com/press-release/nullptr-official-trailer-1-fast-paced-hacking-puzzle-game-jeferson-silva)).
+
+**Fidelity 0/5.** Ports, backdoors, firewalls and traces are named, but as pieces of an abstract real-time puzzle; no real interface, cost model, checking or target is documented.
+
+### We Got Hacked!, 2025 to 2026: a Brazilian incident simulator
+
+*We Got Hacked!* is an educational simulation game in three chapters, built on incidents such as website defacement, ransomware infection and data leaks, developed by GT-IR, a working group of the federal Hackers do Bem programme, with the experimental game studio of the University of Vale do Rio dos Sinos (UNISINOS) ([We Got Hacked!, itch.io](https://atomicrocket.itch.io/we-got-hacked)); the programme is an initiative of the Rede Nacional de Ensino e Pesquisa (RNP), Brazil's national research and education network, with the support of the Ministry of Science, Technology and Innovation (MCTI) ([Convergência Digital, 1 November 2024](https://convergenciadigital.com.br/seguranca/hackers-do-bem-cyber-simuladores-estao-entre-os-vencedores)). Its credits date the work from January 2025 to July 2026 and include a security analyst ([We Got Hacked!, itch.io](https://atomicrocket.itch.io/we-got-hacked)). The working group was one of four projects selected by the programme from 22 proposals in November 2024, alongside GT-CASTLE, a simulated environment for incident training from the Federal University of Paraná (UFPR), and GT-LFI (Learn From Incidents), a project of the Federal University of Uberlândia (UFU) that uses gamification and the classification of real incidents ([Convergência Digital, 1 November 2024](https://convergenciadigital.com.br/seguranca/hackers-do-bem-cyber-simuladores-estao-entre-os-vencedores)). The programme's own CTFs are covered in **[Flags, finals and the Brazilian list](/blog/flags-finals-and-the-brazilian-list)**.
+
+**Fidelity 2/5.** The chapters follow real incident types (mechanism) and the team includes security practitioners (checking); the pages read do not describe the interface or a real target.
+
+### When the hackers hacked the game makers
+
+Two studios that sold hacking as entertainment became victims of the real thing. In November 2020, after reports that a ransomware group called Egregor had obtained about 560 gigabytes of source code for *Watch Dogs: Legion*, Ubisoft said it was "aware of the group's claim and are currently investigating a potential data security incident" ([Game Developer, 4 November 2020](https://gamedeveloper.com/business/reports-of-i-watch-dogs-legion-i-source-code-leak-prompts-ubisoft-investigation); [Olhar Digital, 9 November 2020](https://olhardigital.com.br/games-e-consoles/noticia/ubisoft-investiga-vazamento-de-codigo-do-novo-watch-dogs-legion/109958)). In February 2021 CD Projekt, the maker of *Cyberpunk 2077*, said an unidentified actor had entered its internal network, encrypted some devices and left a ransom note claiming the source code of its games; the company said its backups remained intact and wrote: "We will not give in to the demands nor negotiate with the actor" ([Game Developer, 9 February 2021](https://gamedeveloper.com/business/-i-cyberpunk-2077-i-developer-cd-projekt-hit-by-targeted-cyber-attack-); [Engadget, 9 February 2021](https://www.engadget.com/cd-projekt-red-says-it-was-hacked-but-wont-pay-any-ransom-090055291.html)). What intact backups mean in such an attack is explained in **[Backups and ransomware recovery](/learn/backups-and-ransomware-recovery)**.
+
+### Video games at a glance
+
+| Year | Game | Makers | Platform (as sourced) | What it models | Fidelity | Sources |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1984 | Core War | A. K. Dewdney (column) | Any computer running a MARS simulator | Programs overwriting each other in memory | 1/5 | [Dewdney 1984](https://homeostasis.scs.carleton.ca/~soma/biosec/readings/akdewdney/First.htm); [1985](https://homeostasis.scs.carleton.ca/~soma/biosec/readings/akdewdney/Second.htm) |
+| 1985 | Hacker | Activision | Commodore 64 and 128, Apple II, Atari, IBM PC, Atari ST, Amiga, Macintosh | A login, then robots in tunnels | 0/5 | [COMPUTE! 1985](https://www.atarimagazines.com/compute/issue65/new_games.php); [1986](https://atarimagazines.com/compute/issue71/review_hacker.php) |
+| 1986 | Hacker II: The Doomsday Papers | Activision | Apple II, Commodore 64, IBM PC, Amiga, Macintosh, Atari ST | Camera bypass with tape loops | 0/5 | [COMPUTE! 1986](https://www.atarimagazines.com/compute/issue78/026_1_Reviews_Hacker_II_The_Doomsday_Papers.php) |
+| 1993 | Shadowrun | Beam Software | SNES | Cyberspace runs into terminals | 0/5 | [Time Extension](https://www.timeextension.com/features/the-making-of-shadowrun-the-unique-snes-rpg-that-almost-never-happened) |
+| 2000 | Deus Ex | Ion Storm | Windows | Hacking as one route through a level | Not scored | [Spector](https://www.gamedeveloper.com/design/postmortem-ion-storm-s-i-deus-ex-i-); [PC Gamer](https://www.pcgamer.com/revisiting-deus-ex-ion-storms-classic-cyberpunk-rpg/) |
+| 2001 | Uplink | Introversion Software | Windows, Mac, Linux (Steam) | Menu-driven intrusions, traces | 1/5 | [PC Gamer](https://www.pcgamer.com/the-making-of-uplink); [Steam](https://store.steampowered.com/app/1510/) |
+| 2006 (paper) | CyberCIEGE | Naval Postgraduate School with Rivermind | Windows | Running a network securely | 2/5 | [NPS](https://faculty.nps.edu/irvine/Publications/Publications2006/CCIEGE_SEC06-V3.pdf); [Route Fifty](https://route-fifty.com/cybersecurity/2007/05/security-games/311365) |
+| 2014 | Watch Dogs | Ubisoft, checked by Kaspersky Lab | Windows (Steam) | City systems, scripts, physical access | 3/5 | [Engadget](https://www.engadget.com/2014-05-23-watch-dogs-hacking-kaspersky.html) |
+| 2014 | Hack 'n' Slash | Double Fine | Windows, Mac, Linux | The game's own variables and code | 2/5 | [Steam](https://store.steampowered.com/app/246070/) |
+| 2015 | Hacknet | Team Fractal Alligator; Fellow Traveller | Windows, Mac, Linux | Unix-style terminal intrusions | 1/5 | [Fellow Traveller](https://fellowtraveller.games/hacknet); [PC Gamer](https://www.pcgamer.com/hacknet-is-a-hacking-game-with-real-hacking) |
+| 2015 | TIS-100 | Zachtronics | Windows, Mac, Linux, iOS | Assembly for an imaginary machine | Not scored | [Zachtronics](https://www.zachtronics.com/tis-100/) |
+| 2015 | Else Heart.Break() | Erik Svedäng and others | Windows, Mac, Linux | Programming a city | Not scored | [Steam](https://store.steampowered.com/app/400110/) |
+| 2016 | hackmud | ComCODE | Windows, Mac, Linux | Multiplayer scripting | Not scored | [Steam](https://store.steampowered.com/app/469920/) |
+| 2016 | Quadrilateral Cowboy | Blendo Games | Windows, Mac, Linux | A hacking deck's commands | Not scored | [Steam](https://store.steampowered.com/app/240440/) |
+| 2016 | SHENZHEN I/O | Zachtronics | Windows, Mac, Linux | Circuits and assembly | Not scored | [Zachtronics](https://www.zachtronics.com/shenzhen-io/) |
+| 2017 | Grey Hack | Loading Home | Windows, Mac, Linux | Exploits, patches, traces | 2/5 | [Steam](https://store.steampowered.com/app/605230/) |
+| 2018 | EXAPUNKS | Zachtronics | Windows, Mac, Linux | Self-replicating agents | 1/5 | [Zachtronics](https://www.zachtronics.com/exapunks/) |
+| 2019 | NITE Team 4 | Alice & Smith | Windows, Mac | Reconnaissance to forensics | 1/5 | [Steam](https://store.steampowered.com/app/544390/) |
+| 2021 | Bitburner | Fulcrum Games and contributors | Windows, Mac, Linux, web | JavaScript automation | 1/5 | [Steam](https://store.steampowered.com/app/1812820/) |
+| 2021 | Midnight Protocol | LuGus Studios | Windows, Mac, Linux | Narrative intrusions | 0/5 | [Steam](https://store.steampowered.com/app/1162700/) |
+| 2021 | Hacker Simulator | Save All Studio | Windows | Wi-Fi cracking, simplified | 2/5 | [Steam](https://store.steampowered.com/app/1754840/) |
+| 2025 | NULLPTR (Brazil) | Jeferson Silva | Windows, Linux | Real-time intrusion puzzle | 0/5 | [Steam](https://store.steampowered.com/app/1579650/); [press release](https://www.gamedeveloper.com/press-release/nullptr-official-trailer-1-fast-paced-hacking-puzzle-game-jeferson-silva) |
+| 2025–2026 | We Got Hacked! (Brazil) | GT-IR, Hackers do Bem, with UNISINOS | Web (HTML5) | Incident response to real incident types | 2/5 | [itch.io](https://atomicrocket.itch.io/we-got-hacked) |
+
+Platform and release dates for games sold on Steam are those of their Steam pages; *Uplink* and *Deus Ex* first came out in 2001 and 2000, before their Steam releases ([PC Gamer, 2012](https://www.pcgamer.com/the-making-of-uplink); [Spector, 2000](https://www.gamedeveloper.com/design/postmortem-ion-storm-s-i-deus-ex-i-)).
+
+## Board, card and tabletop games
+
+### Hacker, 1992: the game made of a raid
+
+In 1990 the United States Secret Service raided Steve Jackson Games, and the company's own page sums up what followed: "In 1992, we made a game about it" ([Steve Jackson Games, Hacker](https://www.sjgames.com/hacker/)). The raid and its consequences are told in the Learn article **[LoD, MoD and Operation Sundevil](/learn/lod-mod-and-operation-sundevil)** and the glossary entry **[Operation Sundevil](/glossary/operation-sundevil)**. *Hacker*, designed by Steve Jackson for three to six players, uses a variation of the company's *Illuminati* system: cards representing systems build a Net that is never the same twice, and players place tokens on the systems they have invaded ([Steve Jackson Games, Hacker product data](https://sjgames.com/hacker/stat_1.html)). It won the Origins Award for Best Modern-Day Boardgame of 1992, and its expansion *Hacker II: The Dark Side* the same award the next year ([Steve Jackson Games, Hacker: Deluxe Edition](https://www.sjgames.com/hacker/index-oop.html)). The company records that in its 1993 lawsuit against the Secret Service, which it won with the help of the Electronic Frontier Foundation, government attorneys argued that it had "profited from the raid" by releasing the game ([Steve Jackson Games, Hacker product data](https://sjgames.com/hacker/stat_1.html)). In 2024 the game returned as a print-and-play edition ([Steve Jackson Games, Hacker](https://www.sjgames.com/hacker/)).
+
+A reviewer writing as Deluge in *Phrack* 39 found that, while hacking is resolved by a dice roll, the game distinguishes regular from root access, operating systems and network types, back doors and raids by every level of police, and "goes pretty far toward catching the flavor of the real scene" ([Phrack 39 review, reproduced by Steve Jackson Games](https://sjgames.com/hacker/phrackrev.html)). The same page reproduces a player's worry about the behaviour the game rewards, and the reply printed after it: "it's just possible there are still some people out there who can tell the difference between games and real life" ([Steve Jackson Games](https://sjgames.com/hacker/phrackrev.html)).
+
+**Fidelity 2/5.** Root versus regular access and back doors (mechanism) and busts and raids (cost), as the *Phrack* reviewer described them; the interface is cards and dice.
+
+### Netrunner, 1996 to now
+
+*Netrunner* was published by Wizards of the Coast in 1996 to a design by Richard Garfield; Fantasy Flight Games rebooted it in 2012 as *Android: Netrunner*, an asymmetric game in which a corporation faces a lone hacker, and ended it in October 2018 when its licence from Wizards of the Coast expired ([PC Gamer, 18 June 2018](https://www.pcgamer.com/android-netrunner-to-end-after-next-card-set)). The game survived its publishers: Null Signal Games, a registered non-profit run by volunteers, designs and publishes new cards and supports tournaments ([Null Signal Games](https://nullsignal.games/)), and in 2024 the Village Voice described a community that organizes its tournaments on chat apps ([The Village Voice, 30 January 2024](https://www.villagevoice.com/net-running-how-a-defunct-trading-card-game-continues-underground/)). In the game the runner breaks into the corporation's servers past defensive programs called "ice" ([Null Signal Games, About](https://nullsignal.games/about/)).
+
+**Fidelity 0/5.** Servers and ice are a cyberpunk metaphor; nothing in the sources maps them to real mechanisms.
+
+### Elevation of Privilege, 2010, and its descendants
+
+Microsoft's *Elevation of Privilege* (EoP) card game is "the easy way to get started threat modeling", released under a Creative Commons licence ([Microsoft Download Center, Elevation of Privilege](https://www.microsoft.com/en-us/download/details.aspx?id=20303)). Adam Shostack created it in 2010 ([Shostack + Associates, Elevation of Privilege](https://shostack.org/eop)); his paper describes 84 cards in six suits that follow the STRIDE categories (spoofing, tampering, repudiation, information disclosure, denial of service and elevation of privilege), used by three to five players to find threats in a system they are designing, and records that less than 10,000 dollars went to a local design firm to design and manage production of the boxed sets and that, two years after its introduction, a company asked for 90 copies for internal use ([Adam Shostack, Elevation of Privilege: Drawing Developers into Threat Modeling, USENIX 3GSE 2014](https://www.usenix.org/system/files/conference/3gse14/3gse14-shostack.pdf)). Its descendants include *Cornucopia*, created in August 2012 for developer training by the Open Worldwide Application Security Project (OWASP) to help development teams find security requirements for their applications ([OWASP, Cornucopia](https://owasp.org/www-project-cornucopia/)), which Shostack attributes to Colin Watson ([Shostack + Associates](https://shostack.org/eop)). What a threat model is, and the STRIDE categories, are in the glossary entry **[threat model](/glossary/threat-model)**.
+
+**Fidelity 3/5 (EoP and Cornucopia).** Real threat categories (mechanism), built by a vendor's secure development team and by OWASP (checking), and played against the team's own design (target); the interface is a deck of cards.
+
+### Control-Alt-Hack, 2012, and [d0x3d!], 2013
+
+*Control-Alt-Hack* was designed at the University of Washington by Tamara Denning, Adam Lerner, Adam Shostack and Tadayoshi Kohno on a mechanic licensed from Steve Jackson Games' *Ninja Burger*, with missions such as a social engineering attack on a supervisory control and data acquisition (SCADA) system; by May 2013 about 800 free copies had gone to 150 educators, and of the 14 educators who reported classroom use, 11 said their students' awareness of security as a complex and interesting field increased, 13 would recommend the game, and two said they would not otherwise have covered the material, according to the paper its designers presented at the Association for Computing Machinery's Conference on Computer and Communications Security (ACM CCS) in 2013 ([Denning, Lerner, Shostack and Kohno, ACM CCS 2013](https://homes.cs.washington.edu/~yoshi/papers/ccs479-denning.pdf)). *[d0x3d!]*, by Mark Gondree and Zachary Peterson, is an open-source cooperative board game in which players form a hacker syndicate recovering stolen digital assets while the network's administrators patch compromised machines, raise alarms and change the topology ([Opensource.com, 25 January 2013](https://opensource.com/life/13/1/open-source-board-game-about-network-security-d0x3d); [USENIX CSET 2013](https://www.usenix.org/conference/cset13/workshop-program/presentation/gondree)); its authors' project studies games for security education in and out of the classroom ([TableTopSecurity](https://tabletopsecurity.github.io/about)).
+
+**Fidelity 2/5 each.** Documented attack and defence moves (mechanism) and academic security researchers as authors (checking); cards and boards as the interface.
+
+### Backdoors & Breaches, 2019: an incident response drill as a card game
+
+Black Hills Information Security, a penetration testing firm, introduced *Backdoors & Breaches* in webcasts in the summer and on 22 October 2019 ([Black Hills Information Security, How to Play Backdoors & Breaches, 22 October 2019](https://www.blackhillsinfosec.com/webcast-how-to-play-backdoors-breaches-incident-response-card-game/)). An "Incident Captain" secretly builds a four-stage attack (initial compromise, pivot and escalate, persistence, command and control and exfiltration) and the defenders, who win or lose together, choose detections and roll a 20-sided die to reveal it within ten turns ([Black Hills, Backdoors & Breaches, Classic](https://www.blackhillsinfosec.com/tools/backdoorsandbreaches/classic/)). In CSO Online's account, using one of the team's written procedures adds three to the roll, with a not-so-hidden question for the players: "Does your enterprise have written procedures for incident response?" ([CSO Online, 6 January 2020](https://www.csoonline.com/article/3509467/backdoors-and-breaches-incident-response-card-game-makes-tabletop-exercises-fun.html)).
+
+**Fidelity 3/5.** Real attack stages (mechanism), made by practitioners (checking), and played against the team's own procedures (target).
+
+### Segurança Online, 2025: a Brazilian board game for children
+
+In February 2025 CERT.br (Centro de Estudos, Resposta e Tratamento de Incidentes de Segurança no Brasil, Brazil's national incident response centre), part of NIC.br (Núcleo de Informação e Coordenação do Ponto BR), released *Segurança Online*, a free printable board game for children aged 8 to 12, with characters from its own *Turma do Bem* such as a burning wall (a firewall) and a clerk with a bag of saved files (a backup), launched to coincide with Safer Internet Day ([TecMundo, 13 February 2025](https://www.tecmundo.com.br/seguranca/402529-jogo-de-tabuleiro-ensina-criancas-sobre-ciberseguranca-e-privacidade-na-internet.htm)). Its squares reward and punish habits, such as losing access to files without a backup ([NIC.br, Internet Segura, Segurança Online board](https://internetsegura.br/pdf/tabuleiro/jogo-tabuleiro-segurancaonline.pdf)).
+
+**Fidelity 2/5.** The consequences of real habits such as backups (mechanism) and authorship by CERT.br (checking).
+
+### Exercises that are games by design
+
+The format these card games borrow, the tabletop exercise, is also handed out ready to play. The United States Cybersecurity and Infrastructure Security Agency (CISA) offers more than 100 tabletop exercise packages for organizations to run their own exercises ([CISA, Tabletop Exercise Packages](https://www.cisa.gov/resources-tools/services/cisa-tabletop-exercise-packages)), and the United Kingdom's National Cyber Security Centre (NCSC) offers *Exercise in a Box*, free, with 20 exercises on 12 topics including ransomware, phishing and supply chain ([NCSC, Exercise in a Box](https://www.ncsc.gov.uk/information/exercise-in-a-box)). The glossary entry **[tabletop exercise](/glossary/tabletop)** defines the format.
+
+### Board and card games at a glance
+
+| Year | Game | Makers | Format | What it teaches, to whom | Fidelity | Sources |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1992 | Hacker (Hacker II, 1993) | Steve Jackson Games | Card-driven board game, 3 to 6 players | The 1990s scene, satirized, for gamers | 2/5 | [Steve Jackson Games](https://sjgames.com/hacker/stat_1.html); [Phrack 39](https://sjgames.com/hacker/phrackrev.html) |
+| 1996, 2012, 2019 | Netrunner; Android: Netrunner; Null Signal Games sets | Wizards of the Coast; Fantasy Flight Games; Null Signal Games | Two-player card game | Cyberpunk strategy, for card players | 0/5 | [PC Gamer](https://www.pcgamer.com/android-netrunner-to-end-after-next-card-set); [Null Signal](https://nullsignal.games/) |
+| 2010 | Elevation of Privilege | Adam Shostack, Microsoft | Card game, 3 to 5 players | Threat modelling, for developers | 3/5 | [Shostack](https://shostack.org/eop); [paper](https://www.usenix.org/system/files/conference/3gse14/3gse14-shostack.pdf) |
+| 2012 | OWASP Cornucopia | OWASP (Colin Watson) | Card game | Application security requirements, for development teams | 3/5 | [OWASP](https://owasp.org/www-project-cornucopia/) |
+| 2012 | Control-Alt-Hack | University of Washington | Card game | Awareness of security work, for students | 2/5 | [ACM CCS 2013](https://homes.cs.washington.edu/~yoshi/papers/ccs479-denning.pdf) |
+| 2013 | [d0x3d!] | Mark Gondree, Zachary Peterson | Cooperative board game, open source | Network security terms, for high school and undergraduates | 2/5 | [Opensource.com](https://opensource.com/life/13/1/open-source-board-game-about-network-security-d0x3d); [TableTopSecurity](https://tabletopsecurity.github.io/about) |
+| 2019 | Backdoors & Breaches | Black Hills Information Security | Cooperative card game with a d20 | Incident response, for security teams | 3/5 | [Black Hills](https://www.blackhillsinfosec.com/tools/backdoorsandbreaches/classic/); [CSO Online](https://www.csoonline.com/article/3509467/backdoors-and-breaches-incident-response-card-game-makes-tabletop-exercises-fun.html) |
+| 2025 | Segurança Online (Brazil) | CERT.br, NIC.br | Printable board game | Safe habits, for children aged 8 to 12 | 2/5 | [TecMundo](https://www.tecmundo.com.br/seguranca/402529-jogo-de-tabuleiro-ensina-criancas-sobre-ciberseguranca-e-privacidade-na-internet.htm); [NIC.br](https://internetsegura.br/pdf/tabuleiro/jogo-tabuleiro-segurancaonline.pdf) |
+
+## The real thing, played as a game
+
+### Capture the flag
+
+CTF competitions are the oldest form of real hacking scored as a game: DEF CON's began at DEF CON 4 in 1996 ([DEF CON, Capture the Flag Archive](https://defcon.org/html/links/dc-ctf.html)), and its 2026 final mixed attack-defence and King of the Hill challenges ([DEF CON 34, Contest Results](https://defcon.org/html/defcon-34/dc-34-contest-results.html)). Their formats, history and evidence are in **[the Learn article](/learn/capture-the-flag-competitions)**, and the 2026 season, the moments players retell and the Brazilian competitions and teams in **[the CTF post](/blog/flags-finals-and-the-brazilian-list)**; the glossary entry **[Capture the Flag](/glossary/capture-the-flag)** has the short version. On this post's rubric a CTF scores 4/5: real binaries and services (interface, mechanism, target) built by experienced organizers (checking), with time deliberately compressed into a weekend.
+
+### Wargame sites and practice platforms
+
+Between competitions, people practise on permanent sites where every level is real software.
+
+- **OverTheWire** offers wargames to "learn and practice security concepts in the form of fun-filled games"; each game is reached over SSH (Secure Shell) on its own port, and Bandit "is aimed at absolute beginners", while Narnia, Behemoth, Utumno and Maze move into binary exploitation and reverse engineering ([OverTheWire, Wargames](https://overthewire.org/wargames/); [OverTheWire, Bandit](https://overthewire.org/wargames/bandit/)). **3/5**: real shell, real exploitation, real hosts.
+- **pwnable.tw** asks players to find vulnerabilities in challenges and exploit remote services to get flags, and asks them not to publish full solutions to high-scoring challenges ([pwnable.tw](https://pwnable.tw/)). **3/5**: real services, real exploitation, real targets.
+- **The Matasano crypto challenges**, now Cryptopals, were "a set of 48 practical programming exercises that Thomas Ptacek and his team at Matasano Security have developed as a kind of teaching tool (and baited hook)", sent by email in batches of eight, as the Pinboard blog described them in April 2013 ([Pinboard, 18 April 2013](https://blog.pinboard.in/2013/04/the_matasano_crypto_challenges)). The site now publishes eight sets and says the problems are "derived from weaknesses in real-world systems and modern cryptographic constructions" ([Cryptopals](https://cryptopals.com/)); NCC Group's cryptography services team says the challenges were written by its former members ([NCC Group, Cryptography Services](https://cryptoservices.github.io/)). **4/5**: any real programming language, real attacks, built by practitioners, against real constructions; no time or detection.
+- **Microcorruption**, built by Matasano Security and Square, launched in January 2014 as an online CTF about embedded security in which players reverse-engineer a fictional "Lockitall LockIT Pro" lock in a debugger; Hackaday noted that "the assembly is actual MSP430 code" and that the debugger resembles the GNU Debugger (GDB) connected to a remote target ([Square, Capture The Flag, 17 January 2014](https://developer.squareup.com/blog/capture-the-flag/); [Hackaday, 18 January 2014](https://hackaday.com/2014/01/18/microcorruption-embedded-ctf)). NCC Group added new challenges in October 2022 ([NCC Group, 31 October 2022](https://www.nccgroup.com/research/check-out-our-new-microcorruption-challenges/)). **4/5**: real instruction set, real buffer overflows, built by practitioners, emulated real chip.
+- **Hack The Box**, launched in 2017, described itself in July 2023 as a "gamified" platform of virtual labs, real-world scenario simulations, CTF-style challenges and multiplayer hacking games with more than 1.7 million members and more than 1,500 enterprise, government and university customers, when it raised 55 million dollars in a funding round led by Carlyle ([Hack The Box, 19 July 2023](https://www.hackthebox.com/blog/htb-series-b-funding)). **3/5** on the company's description: real machines, real techniques, real targets.
+- **TryHackMe**, founded in 2018 by Ben Spring and Ashu Savani, gives each learner a personal virtual machine to "actively hack and defend", and describes itself as bootstrapped "without investment" ([TryHackMe, About](https://tryhackme.com/about); [TryHackMe, Four million users](https://tryhackme.com/resources/blog/four-million-on-tryhackme)). It counted one million users in March 2022 and later four million ([TryHackMe, One million users, March 2022](https://tryhackme.com/resources/blog/one-million-users); [TryHackMe, Four million users](https://tryhackme.com/resources/blog/four-million-on-tryhackme)). **3/5**, as for Hack The Box.
+- **The Web Security Academy** of PortSwigger, the maker of Burp Suite, opened in April 2019, launched officially on 29 October 2019 under Dafydd Stuttard, author of *The Web Application Hacker's Handbook*, and passed one million users in May 2020 with nearly 150 interactive labs covering 15 vulnerability classes; it is free ([PortSwigger, 29 October 2019](https://portswigger.net/press-releases/portswigger-launches-web-security-academy); [PortSwigger, 26 May 2020](https://portswigger.net/blog/a-one-million-milestone-for-the-web-security-academy); [PortSwigger, Web Security Academy](https://portswigger.net/web-security)). **4/5**: a real testing tool, real vulnerability classes, built by a research team, against deliberately vulnerable applications.
+- **Deliberately insecure applications** turn a web shop into a game board. OWASP Juice Shop contains "a vast number of hacking challenges" tracked on a score board, and "Finding this score board is actually one of the (easy) challenges!" ([OWASP, Juice Shop](https://owasp.org/www-project-juice-shop/)). OWASP WebGoat, a deliberately insecure Java application, warns its users that "If you attempt these techniques without authorization, you are very likely to get caught" ([OWASP, WebGoat](https://owasp.org/www-project-webgoat/)). **4/5** each: real application stacks and real vulnerability classes, maintained by OWASP, run as real software on the player's machine.
+
+### Games as hiring and as a hook
+
+Several of these games were built to find people. Stripe's first CTF had 10,000 entrants and only 200 completions; "The company has made several hires through the CTF", according to an account of programming challenges as recruiting published in March 2013 ([TechCrunch, 8 March 2013](https://techcrunch.com/2013/03/08/programming-challenges-benefit-job-seekers-and-employers/)). In 2015 Erin Ptacek, formerly of Matasano, wrote that she and her partners had started a company "to help fix hiring" and chose to "build a giant game, a CTF, that replicated the experience of doing work", Starfighter, modelled on Microcorruption ([Erin Ptacek, Starfighter, Summer 2015, 13 July 2015](https://sockpuppet.org/blog/2015/07/13/starfighter/)). The National Security Agency (NSA) runs the Codebreaker Challenge, whose 2026 edition runs from 25 September 2026 to 20 January 2027, on a page that also advertises its jobs ([NSA Codebreaker Challenge](https://nsa-codebreaker.org/)).
+
+### Student competitions
+
+| Competition | Since | Organizer | Who plays | What is played | Fidelity | Sources |
+| --- | --- | --- | --- | --- | --- | --- |
+| SANS Holiday Hack Challenge | 2002 | SANS Institute | All ages, free | A story-driven set of challenges across cloud, forensics, offence and defence; more than 17,000 players in 2021 | Not scored | [SANS, 8 December 2022](https://sans.org/press/announcements/sans-2022-holiday-hack-challenge-years-most-awaited-cybersecurity-tradition-opens-players-all-skill-levels) |
+| Collegiate Cyber Defense Competition (CCDC) | April 2005 | Center for Infrastructure Assurance and Security, University of Texas at San Antonio (UTSA) | University teams | Taking over an existing "commercial" network, detecting outside threats, keeping services up and answering business requests | 4/5 | [National CCDC, About](https://nationalccdc.org/about.html) |
+| CyberPatriot | 26 and 27 February 2009 (first national contest) | Air & Space Forces Association | High and middle school teams | Securing virtual networks; "the nation's largest cyber defense competition" | 3/5 | [Air & Space Forces Magazine, 28 May 2009](https://www.airandspaceforces.com/article/0609cyberpatriot/); [CyberPatriot](https://www.uscyberpatriot.org/) |
+| National Cyber League (NCL) | 2011 | National Cyber League, with Cyber Skyline since 2015 | High school and college students, more than 17,000 a year | Real-world challenges, with a "Scouting Report" for employers | Not scored | [NCL, Our Mission](https://nationalcyberleague.org/about) |
+| Cyber Discovery (CyberStart) | November 2017 | UK Department for Digital, Culture, Media and Sport, delivered by SANS | Ages 13 to 18 | Assess, Game, Essentials and Elite Camp stages | Not scored | [GOV.UK evaluation, 13 August 2021](https://www.gov.uk/government/publications/independent-evaluations-of-cyber-discovery-and-cyberfirst-programmes/cyber-discovery-evaluation) |
+
+CCDC scores 4/5 because teams defend real services against live threats in real time (interface, mechanism, cost, target), with the pages read silent on who plays the attackers; CyberPatriot 3/5 because students secure virtual networks they are put in charge of (interface, mechanism, target).
+
+### Cyber ranges and national exercises
+
+A cyber range, in the definition of a guide published in September 2023 by the community of the National Institute of Standards and Technology's National Initiative for Cybersecurity Education (NIST NICE), is an interactive, simulated representation of networks, systems, tools and applications used for performance-based learning and assessment; the guide distinguishes simulation, overlay, emulation and hybrid ranges and warns that "high fidelity in simulation does not necessarily equate to a real-world representation" ([NIST NICE, The Cyber Range: A Guide, September 2023](https://www.nist.gov/system/files/documents/2023/09/29/The%20Cyber%20Range_A%20Guide.pdf)).
+
+- **The National Cyber Range** of the United States was developed by the Defense Advanced Research Projects Agency (DARPA) between 2009 and 2012 and transferred in October 2012 to the Department of Defense's Test Resources Management Center to serve testing, training and experimentation ([Pete Christensen, National Cyber Range, NDIA Systems Engineering Conference, October 2015](https://ndia.dtic.mil/wp-content/uploads/2015/system/17864_Christensen.pdf)); in 2012 the Pentagon planned to pay Lockheed Martin 80 million dollars over five years to support its operation ([Nextgov, 12 November 2012](https://www.nextgov.com/cio-briefing/2012/11/military-cyber-range-moves-laboratory-deployment/59432)).
+- **Locked Shields**, hosted every year since 2010 by the North Atlantic Treaty Organization's Cooperative Cyber Defence Centre of Excellence (NATO CCDCOE) in Tallinn, calls itself the world's largest and most complex international live-fire cyber defence exercise ([CCDCOE, Locked Shields](https://ccdcoe.org/exercises/locked-shields/)). In 2025, more than 4,000 people from 41 nations in 17 multinational blue teams protected virtualized national systems, from power grids and battle management systems to satellite links and 5G networks, while also being tested on legal assessment, communication and disinformation ([CCDCOE, Locked Shields 2025](https://ccdcoe.org/news/2025/locked-shields-2025-showcased-nations-commitment-to-defending-cyberspace/)). The 2025 exercise director, Dan Ungureanu, told SecurityWeek that the first edition in 2010 had four nations and 60 participants, that the 2025 teams protected more than 8,000 systems against more than 8,000 attacks, and that high scores "don't directly represent a country's overall cybersecurity readiness" ([SecurityWeek, 16 May 2025](https://www.securityweek.com/from-60-to-4000-natos-locked-shields-reflects-cyber-defense-growth/)). The 2026 edition again had 4,000 participants from 41 nations ([CCDCOE, Locked Shields](https://ccdcoe.org/exercises/locked-shields/)). Brazil's participation in 2024 is in **[the CTF post](/blog/flags-finals-and-the-brazilian-list)**.
+- **Cyber Europe**, organized every two years since 2010 by ENISA, the European Union Agency for Cybersecurity, is a series of cross-border crisis exercises; the 2024 edition tested the energy sector with 30 national cybersecurity agencies and more than 1,000 experts, and the eighth, in June 2026, transport ([ENISA, 20 June 2024](https://www.enisa.europa.eu/news/cyber-europe-tests-the-eu-cyber-preparedness-in-the-energy-sector); [ENISA, Cyber Europe](https://www.enisa.europa.eu/topics/training-and-exercises/cyber-exercises/cyber-europe-programme)).
+
+**Fidelity: Locked Shields 5/5** (real systems virtualized, real attack and defence, thousands of attacks under time and legal pressure, 450 planners and developers with industry partners, national systems as targets), with its own director's caveat that scores do not measure national readiness ([SecurityWeek, 2025](https://www.securityweek.com/from-60-to-4000-natos-locked-shields-reflects-cyber-defense-growth/)). The National Cyber Range and Cyber Europe are not scored: the pages read describe a facility and crisis scenarios, not how play works.
+
+### Brazil's ranges and simulators
+
+- **SIMOC.** In January 2013 the Brazilian Army presented the Simulador Nacional de Operações Cibernéticas (SIMOC), developed at its Communications and Electronic Warfare Centre (CCOMGEX) in a year of work by 30 military personnel with university research, in use since November 2012; its head, General Antonino Santos Guerra, said it would be offered to universities and training centres, with a condition: "Mas a pessoa [a ser treinada] precisa ter um perfil adequado, ser um hacker do bem" (but the person to be trained must have a suitable profile, be an ethical hacker) ([Baguete, 24 January 2013](https://baguete.com.br/public/noticias/exercito-lanca-simulador-para-ciberguerra)).
+- **Exercício Guardião Cibernético.** The eighth edition of the Army Cyber Defence Command's exercise ran from 21 to 25 September 2026 with about 1,300 participants from 300 organizations, in Brasília and six other cities, with scenarios of coordinated attacks on water, energy, telecommunications and the financial market ([Convergência Digital, 21 September 2026](https://convergenciadigital.com.br/governo/brasil-reune-mais-de-13-mil-participantes-para-simular-ataques-ciberneticos/)); its format and Brazil's part in Locked Shields are covered in **[the CTF post](/blog/flags-finals-and-the-brazilian-list)**.
+- **RNP CiberRange.** At the 2026 Brazilian Symposium on Cybersecurity (SBSeg), RNP authors presented RNP CiberRange, a platform for practical training through attack and defence simulations in controlled environments, with virtualization, flexible scenarios, event automation and collaborative and competitive formats ([Souza and Gemmer, SBSeg 2026, 1 September 2026](https://sol.sbc.org.br/index.php/sbseg_estendido/article/view/44541)).
+
+**Not scored.** The Brazilian ranges are documented by press notes and an abstract, not by descriptions of play.
+
+## What the record shows about effects
+
+The documented effects fall into four groups, and they cut both ways.
+
+**Training adoption.** CyberCIEGE was written for Navy training and used by an Air Force college ([NPS, 2006](https://faculty.nps.edu/irvine/Publications/Publications2006/CCIEGE_SEC06-V3.pdf); [Route Fifty, 2007](https://route-fifty.com/cybersecurity/2007/05/security-games/311365)); Control-Alt-Hack reached 150 educators in its first months ([ACM CCS 2013](https://homes.cs.washington.edu/~yoshi/papers/ccs479-denning.pdf)); Zachtronics gives its games to public schools ([Zachtronics](https://www.zachtronics.com/)); and governments publish tabletop exercises for anyone to run ([NCSC](https://www.ncsc.gov.uk/information/exercise-in-a-box)).
+
+**Careers.** Stripe hired through its CTF ([TechCrunch, 2013](https://techcrunch.com/2013/03/08/programming-challenges-benefit-job-seekers-and-employers/)), the National Cyber League gives students a report for employers ([NCL](https://nationalcyberleague.org/about)), and Hack The Box sells talent assessment to companies ([Hack The Box, 2023](https://www.hackthebox.com/blog/htb-series-b-funding)). The most careful measurement found less than the promoters hoped: the independent evaluation of the United Kingdom's Cyber Discovery programme, which had more than 100,000 registrations over four years and whose Elite participants passed professional certification exams at rates of 93% and 89%, found survey evidence that it increased skills but "no evidence that it increased interest in cyber security as a study subject or as a career", which its authors said might reflect the method, participants learning they did not want to pursue the field, or the programme's focus on an elite cohort ([GOV.UK, Cyber Discovery Evaluation, 13 August 2021](https://www.gov.uk/government/publications/independent-evaluations-of-cyber-discovery-and-cyberfirst-programmes/cyber-discovery-evaluation)). The peer-reviewed findings on what CTFs measure are in **[the Learn article](/learn/capture-the-flag-competitions)**.
+
+**Ideas that escaped.** A column about a programming game led two readers to design a virus they chose not to release ([Dewdney, 1985](https://homeostasis.scs.carleton.ca/~soma/biosec/readings/akdewdney/Second.htm)); a game made about a raid was cited by government lawyers as profit from that raid ([Steve Jackson Games](https://sjgames.com/hacker/stat_1.html)).
+
+**Fiction meets the real thing.** A game reviewed by a security firm ([Engadget, 2014](https://www.engadget.com/2014-05-23-watch-dogs-hacking-kaspersky.html)) later had its sequel's code taken in a ransomware incident ([Game Developer, 2020](https://gamedeveloper.com/business/reports-of-i-watch-dogs-legion-i-source-code-leak-prompts-ubisoft-investigation)), and the maker of a cyberpunk game refused to pay a ransom ([Game Developer, 2021](https://gamedeveloper.com/business/-i-cyberpunk-2077-i-developer-cd-projekt-hit-by-targeted-cyber-attack-)). Games end for business reasons too: *Android: Netrunner* stopped when a licence expired ([PC Gamer, 2018](https://www.pcgamer.com/android-netrunner-to-end-after-next-card-set)) and Zachtronics closed after its last game ([PC Gamer, 2022](https://pcgamer.com/why-last-call-bbs-is-the-last-call-for-indie-studio-zachtronics)).
+
+## The Brazilian list
+
+Every line was checked on 16 November 2026 against the maker's or organizer's page or the press note given. The CTF competitions and teams are in **[Flags, finals and the Brazilian list](/blog/flags-finals-and-the-brazilian-list)** and are not repeated.
+
+| Title or initiative | Kind | Makers | Year | Status found | Sources |
+| --- | --- | --- | --- | --- | --- |
+| NULLPTR | Video game, hacking puzzle | Jeferson Silva | 2025 (Steam) | Released | [Steam](https://store.steampowered.com/app/1579650/); [press release](https://www.gamedeveloper.com/press-release/nullptr-official-trailer-1-fast-paced-hacking-puzzle-game-jeferson-silva) |
+| We Got Hacked! | Incident response simulation game | GT-IR, Hackers do Bem (RNP, MCTI), with UNISINOS | 2025–2026 | Released (web) | [itch.io](https://atomicrocket.itch.io/we-got-hacked); [Convergência Digital](https://convergenciadigital.com.br/seguranca/hackers-do-bem-cyber-simuladores-estao-entre-os-vencedores) |
+| GT-CASTLE | Simulated environment for incident training | UFPR, Hackers do Bem | Selected 2024 | Project | [Convergência Digital](https://convergenciadigital.com.br/seguranca/hackers-do-bem-cyber-simuladores-estao-entre-os-vencedores) |
+| GT-LFI (Learn From Incidents) | Gamified learning from real incidents | UFU, Hackers do Bem | Selected 2024 | Project | [Convergência Digital](https://convergenciadigital.com.br/seguranca/hackers-do-bem-cyber-simuladores-estao-entre-os-vencedores) |
+| Segurança Online | Printable board game for children | CERT.br, NIC.br | 2025 | Free download | [TecMundo](https://www.tecmundo.com.br/seguranca/402529-jogo-de-tabuleiro-ensina-criancas-sobre-ciberseguranca-e-privacidade-na-internet.htm); [NIC.br](https://internetsegura.br/pdf/tabuleiro/jogo-tabuleiro-segurancaonline.pdf) |
+| SIMOC | Military cyber operations simulator | Brazilian Army, CCOMGEX | In use since November 2012 | Status after 2013 not found | [Baguete](https://baguete.com.br/public/noticias/exercito-lanca-simulador-para-ciberguerra) |
+| Exercício Guardião Cibernético | National simulation exercise | Army Cyber Defence Command | 8th edition, September 2026 | Annual | [Convergência Digital](https://convergenciadigital.com.br/governo/brasil-reune-mais-de-13-mil-participantes-para-simular-ataques-ciberneticos/) |
+| RNP CiberRange | Cyber range | RNP | Presented 2026 | Described in a paper | [SBSeg 2026](https://sol.sbc.org.br/index.php/sbseg_estendido/article/view/44541) |
+
+## Where to start, by level
+
+**Curious, no terminal yet.**
+- This site's daily puzzles: **[Phish or Legit](/dev/fun/phish-or-legit)**, fifteen links and senders a day to judge, each answer naming the tell, and **[Log Detective](/dev/fun/log-detective)**, an intruder hidden in a web or SSH log.
+- *Segurança Online* with children aged 8 to 12 ([NIC.br](https://internetsegura.br/pdf/tabuleiro/jogo-tabuleiro-segurancaonline.pdf)).
+- *Hacker*, the 2024 print-and-play edition, for the history ([Steve Jackson Games](https://www.sjgames.com/hacker/)).
+
+**Beginner, ready to type.**
+- OverTheWire's Bandit, "aimed at absolute beginners" ([OverTheWire](https://overthewire.org/wargames/bandit/)).
+- picoCTF's picoGym, which stays open between competitions (see **[the Learn article](/learn/capture-the-flag-competitions)**).
+- TryHackMe's free training labs ([TryHackMe](https://tryhackme.com/about)).
+- This site's **[Exit the Editor](/arcade/exit-the-editor)**, an escape room of thirteen programs, from vim in Insert mode to a frozen ssh session, each left the way its own manual says.
+
+**Intermediate.**
+- PortSwigger's Web Security Academy ([PortSwigger](https://portswigger.net/web-security)) and OWASP Juice Shop ([OWASP](https://owasp.org/www-project-juice-shop/)) for web applications.
+- Microcorruption for embedded code ([Square](https://developer.squareup.com/blog/capture-the-flag/)) and Cryptopals for cryptography ([Cryptopals](https://cryptopals.com/)).
+- Hack The Box machines ([Hack The Box](https://www.hackthebox.com/blog/htb-series-b-funding)).
+- For a development team: a round of Elevation of Privilege or Cornucopia on the design in hand ([Shostack](https://shostack.org/eop); [OWASP](https://owasp.org/www-project-cornucopia/)).
+
+**Advanced, or as a team.**
+- pwnable.tw ([pwnable.tw](https://pwnable.tw/)) and OverTheWire's binary exploitation games ([OverTheWire](https://overthewire.org/wargames/)).
+- A CTF from the calendar, starting with the guide in **[the Learn article](/learn/capture-the-flag-competitions)**.
+- For a security team: Backdoors & Breaches ([Black Hills](https://www.blackhillsinfosec.com/tools/backdoorsandbreaches/classic/)) or a CISA or NCSC tabletop package ([NCSC](https://www.ncsc.gov.uk/information/exercise-in-a-box)), and, for students, CCDC, CyberPatriot or the NCL.
+
+**For the fun of it.** *Hacknet*, *EXAPUNKS*, *TIS-100*, *Uplink* and *Bitburner*, with their fidelity scores and what each teaches in the table of video games above.
+
+## The site's own games
+
+The **[/dev/fun](/dev/fun)** shelf and its **[arcade](/arcade)** include games built on networking and security practice. They are listed here without a fidelity score.
+
+| Game | What it asks of the player |
+| --- | --- |
+| **[Log Detective](/dev/fun/log-detective)** | Find the attacker, the first malicious request and the line where it worked in a day's web or SSH log |
+| **[Phish or Legit](/dev/fun/phish-or-legit)** | Judge fifteen links and senders a day; every answer names the tell, from homoglyphs and punycode to the userinfo trick |
+| **[Rule Inspector](/arcade/rule-inspector)** | Permit or deny connections at a firewall desk against a policy that tightens each round: the first match decides, a state table remembers, the implicit deny waits at the end |
+| **[First Match](/arcade/first-match)** | Order Cisco IOS access control list (ACL) entries, then send packets through them |
+| **[Exit the Editor](/arcade/exit-the-editor)** | Leave thirteen terminal programs cleanly, the way each manual says |
+| **[Packet Stack](/arcade/packet-stack)** | Stack falling headers so that each names the next, from EtherType to port |
+| **[TTL](/arcade/ttl)** | Steer a packet to its host before routers take its Time to Live down to zero |
+| **[Incident Commander](/arcade/incident-commander)** | Keep a service up, answer incidents and decide whether to approve releases without review |
+
+<ReaderQuestions>
+
+- Watch Dogs rewrote a brute-force scene after a security firm objected, but kept hacks fast because realism would be boring: where should a game draw the line between teaching and entertaining, and does a wrong lesson do harm?
+- The United Kingdom's evaluation found that a large gamified programme raised skills but not career interest: is that a failure of games, of the measurement, or a sign that games help people find out the field is not for them?
+- Steve Jackson Games argued that players can tell games from real life; the Core War column led readers to design a virus they chose not to release. Where do you place a game that teaches a real technique?
+- Locked Shields' own director says high scores do not measure a country's readiness: what would a range or exercise have to show to say something about readiness?
+- Brazil has a hacking puzzle on Steam, an incident simulator from a federal programme, a children's board game from CERT.br and ranges in the Army and RNP: what is missing between them, and who should build it?
+
+</ReaderQuestions>
+
+## Sources
+
+All sources were accessed on 16 November 2026 (São Paulo time). Release dates and platforms of games sold on Steam are those shown on their Steam pages on that day.
+
+**Early games and their makers**
+
+- [A. K. Dewdney, Computer Recreations, "In the game called Core War hostile programs engage in a battle of bits", Scientific American, May 1984, text hosted by Carleton University: Redcode, MARS, Creeper and Reaper (accessed 16 November 2026)](https://homeostasis.scs.carleton.ca/~soma/biosec/readings/akdewdney/First.htm)
+- [A. K. Dewdney, Computer Recreations, "A Core War bestiary of viruses, worms and other threats to computer memories", Scientific American, March 1985, text hosted by Carleton University: readers' programs and the Brescia virus idea (accessed 16 November 2026)](https://homeostasis.scs.carleton.ca/~soma/biosec/readings/akdewdney/Second.htm)
+- [Scientific American, Computer Recreations, March 1985: the column's title and date (accessed 16 November 2026)](https://www.scientificamerican.com/article/computer-recreations-1985-03/)
+- [COMPUTE!, issue 65, October 1985, "New Games": Jim Levy's presentation of Hacker (accessed 16 November 2026)](https://www.atarimagazines.com/compute/issue65/new_games.php)
+- [COMPUTE!, issue 71, April 1986, Todd Heimarck, review of Hacker: the login and what follows, platforms and prices (accessed 16 November 2026)](https://atarimagazines.com/compute/issue71/review_hacker.php)
+- [COMPUTE!, issue 78, November 1986, Neil Randall, review of Hacker II: The Doomsday Papers (accessed 16 November 2026)](https://www.atarimagazines.com/compute/issue78/026_1_Reviews_Hacker_II_The_Doomsday_Papers.php)
+- [Time Extension, Shadowrun: The SNES Cyberpunk RPG That Almost Never Happened, 16 March 2011, updated 15 September 2022 (accessed 16 November 2026)](https://www.timeextension.com/features/the-making-of-shadowrun-the-unique-snes-rpg-that-almost-never-happened)
+- [Warren Spector, Postmortem: Ion Storm's Deus Ex, Game Developer, 6 December 2000: shipped in June 2000 (accessed 16 November 2026)](https://www.gamedeveloper.com/design/postmortem-ion-storm-s-i-deus-ex-i-)
+- [PC Gamer, Andy Kelly, Revisiting Deus Ex, Ion Storm's classic cyberpunk RPG, 22 June 2020: hacking as one route through a level (accessed 16 November 2026)](https://www.pcgamer.com/revisiting-deus-ex-ion-storms-classic-cyberpunk-rpg/)
+- [PC Gamer, Owen Hill, The making of Uplink, 15 December 2012: Chris Delay, the 2001 release, inspirations and the boredom of real hacking (accessed 16 November 2026)](https://www.pcgamer.com/the-making-of-uplink)
+- [Introversion Software, company page: founded in 2001 by three university students; Uplink and DEFCON (accessed 16 November 2026)](https://www.introversion.co.uk/introversion/)
+- [Cone, Thompson, Irvine and Nguyen, Naval Postgraduate School, Cyber Security Training and Awareness Through Game Play, 2006: CyberCIEGE for the Navy (accessed 16 November 2026)](https://faculty.nps.edu/irvine/Publications/Publications2006/CCIEGE_SEC06-V3.pdf)
+- [Route Fifty, Trudy Walsh, Security Games, 4 May 2007: CyberCIEGE at an Air Force college, its makers and Cynthia Irvine (accessed 16 November 2026)](https://route-fifty.com/cybersecurity/2007/05/security-games/311365)
+
+**Watch Dogs, Hacknet, Zachtronics and the attacks on studios**
+
+- [Engadget, Ben Gilbert, Ubisoft working with Kaspersky Lab to make Watch Dogs' hacking more true to life, 10 May 2013 (accessed 16 November 2026)](https://www.engadget.com/2013/05/10/ubisoft-kaspersky-lab-watch-dogs/)
+- [Kaspersky, Dennis Fisher, Kaspersky Lab Experts Reality Checked Watch_Dogs Hacks, 7 May 2014 (accessed 16 November 2026)](https://blog.kaspersky.co.uk/watch-dogs/)
+- [Engadget, The real-life hacking behind Watch Dogs' virtual world, 23 May 2014: the script changes, IPv6 and the speed of hacks (accessed 16 November 2026)](https://www.engadget.com/2014-05-23-watch-dogs-hacking-kaspersky.html)
+- [Fellow Traveller, Hacknet: publisher's description and the studio in Adelaide (accessed 16 November 2026)](https://fellowtraveller.games/hacknet)
+- [PC Gamer, Shaun Prescott, Hacknet is a hacking game with "real hacking", 17 July 2015 (accessed 16 November 2026)](https://www.pcgamer.com/hacknet-is-a-hacking-game-with-real-hacking)
+- [Vice, Carli Velocci, How to Make a Good Hacking Game When the Reality Is Massively Dull, 2 December 2017: Matt Trobbiani (accessed 16 November 2026)](https://www.vice.com/en/article/how-to-make-a-good-hacking-game-when-the-reality-is-massively-dull)
+- [ACMI, Australian Centre for the Moving Image, Hacknet, collection record (accessed 16 November 2026)](https://www.acmi.net.au/works/117932--hacknet/)
+- [Zachtronics, home page: games, Zachademics (accessed 16 November 2026)](https://www.zachtronics.com/)
+- [Zachtronics, TIS-100 (accessed 16 November 2026)](https://www.zachtronics.com/tis-100/)
+- [Zachtronics, SHENZHEN I/O (accessed 16 November 2026)](https://www.zachtronics.com/shenzhen-io/)
+- [Zachtronics, EXAPUNKS (accessed 16 November 2026)](https://www.zachtronics.com/exapunks/)
+- [PC Gamer, Jody Macgregor, Why Last Call BBS is the last call for indie studio Zachtronics, 5 July 2022 (accessed 16 November 2026)](https://pcgamer.com/why-last-call-bbs-is-the-last-call-for-indie-studio-zachtronics)
+- [Game Developer, Chris Kerr, Reports of Watch Dogs Legion source code leak prompts Ubisoft investigation, 4 November 2020 (accessed 16 November 2026)](https://gamedeveloper.com/business/reports-of-i-watch-dogs-legion-i-source-code-leak-prompts-ubisoft-investigation)
+- [Olhar Digital, Ubisoft investiga possível vazamento de código de Watch Dogs Legion, 9 November 2020 (accessed 16 November 2026)](https://olhardigital.com.br/games-e-consoles/noticia/ubisoft-investiga-vazamento-de-codigo-do-novo-watch-dogs-legion/109958)
+- [Game Developer, Chris Kerr, Cyberpunk 2077 developer CD Projekt hit by "targeted cyber attack", 9 February 2021 (accessed 16 November 2026)](https://gamedeveloper.com/business/-i-cyberpunk-2077-i-developer-cd-projekt-hit-by-targeted-cyber-attack-)
+- [Engadget, CD Projekt Red says it was hacked but won't pay the ransom, 9 February 2021 (accessed 16 November 2026)](https://www.engadget.com/cd-projekt-red-says-it-was-hacked-but-wont-pay-any-ransom-090055291.html)
+
+**Steam store pages (developer, publisher, release date and makers' descriptions)**
+
+- [Steam, Uplink (accessed 16 November 2026)](https://store.steampowered.com/app/1510/)
+- [Steam, DEFCON (accessed 16 November 2026)](https://store.steampowered.com/app/1520/)
+- [Steam, Watch_Dogs (accessed 16 November 2026)](https://store.steampowered.com/app/243470/)
+- [Steam, Watch_Dogs 2 (accessed 16 November 2026)](https://store.steampowered.com/app/447040/)
+- [Steam, Hack 'n' Slash (accessed 16 November 2026)](https://store.steampowered.com/app/246070/)
+- [Steam, Hacknet (accessed 16 November 2026)](https://store.steampowered.com/app/365450/)
+- [Steam, TIS-100 (accessed 16 November 2026)](https://store.steampowered.com/app/370360/)
+- [Steam, SHENZHEN I/O (accessed 16 November 2026)](https://store.steampowered.com/app/504210/)
+- [Steam, EXAPUNKS (accessed 16 November 2026)](https://store.steampowered.com/app/716490/)
+- [Steam, Last Call BBS (accessed 16 November 2026)](https://store.steampowered.com/app/1511780/)
+- [Steam, Else Heart.Break() (accessed 16 November 2026)](https://store.steampowered.com/app/400110/)
+- [Steam, hackmud (accessed 16 November 2026)](https://store.steampowered.com/app/469920/)
+- [hackmud, official site (accessed 16 November 2026)](https://www.hackmud.com/)
+- [Steam, Quadrilateral Cowboy (accessed 16 November 2026)](https://store.steampowered.com/app/240440/)
+- [Steam, Grey Hack (accessed 16 November 2026)](https://store.steampowered.com/app/605230/)
+- [Steam, NITE Team 4 - Military Hacking Division (accessed 16 November 2026)](https://store.steampowered.com/app/544390/)
+- [Steam, Bitburner (accessed 16 November 2026)](https://store.steampowered.com/app/1812820/)
+- [Steam, Midnight Protocol (accessed 16 November 2026)](https://store.steampowered.com/app/1162700/)
+- [Steam, Hacker Simulator (accessed 16 November 2026)](https://store.steampowered.com/app/1754840/)
+- [Steam, Orwell: Keeping an Eye On You (accessed 16 November 2026)](https://store.steampowered.com/app/491950/)
+- [Steam, Hacktag (accessed 16 November 2026)](https://store.steampowered.com/app/622770/)
+- [Steam, Cyberpunk 2077 (accessed 16 November 2026)](https://store.steampowered.com/app/1091500/)
+- [Steam, NULLPTR (accessed 16 November 2026)](https://store.steampowered.com/app/1579650/)
+
+**Brazilian titles**
+
+- [Game Developer, NULLPTR Official Trailer #1, press release dated São Paulo, 29 February 2024 (accessed 16 November 2026)](https://www.gamedeveloper.com/press-release/nullptr-official-trailer-1-fast-paced-hacking-puzzle-game-jeferson-silva)
+- [We Got Hacked!, itch.io page: GT-IR, Hackers do Bem, UNISINOS, chapters and credits (accessed 16 November 2026)](https://atomicrocket.itch.io/we-got-hacked)
+- [Convergência Digital, Luís Osvaldo Grossmann, Hackers do bem: cyber simuladores estão entre os vencedores, 1 November 2024 (accessed 16 November 2026)](https://convergenciadigital.com.br/seguranca/hackers-do-bem-cyber-simuladores-estao-entre-os-vencedores)
+- [TecMundo, Jogo de tabuleiro ensina crianças sobre cibersegurança e privacidade na internet, 13 February 2025, updated 15 October 2025 (accessed 16 November 2026)](https://www.tecmundo.com.br/seguranca/402529-jogo-de-tabuleiro-ensina-criancas-sobre-ciberseguranca-e-privacidade-na-internet.htm)
+- [NIC.br, Internet Segura, Segurança Online board game, printable PDF (accessed 16 November 2026)](https://internetsegura.br/pdf/tabuleiro/jogo-tabuleiro-segurancaonline.pdf)
+- [Baguete, Gláucia Kirch, Exército lança simulador para ciberguerra, 24 January 2013: SIMOC (accessed 16 November 2026)](https://baguete.com.br/public/noticias/exercito-lanca-simulador-para-ciberguerra)
+- [Convergência Digital, Brasil reúne mais de 1,3 mil participantes para simular ataques cibernéticos, 21 September 2026: Guardião Cibernético 8 (accessed 16 November 2026)](https://convergenciadigital.com.br/governo/brasil-reune-mais-de-13-mil-participantes-para-simular-ataques-ciberneticos/)
+- [Souza and Gemmer, Cibersegurança com autonomia: como a RNP capacita o Brasil com simulações de ataque e defesa, SBSeg 2026, 1 September 2026: RNP CiberRange (accessed 16 November 2026)](https://sol.sbc.org.br/index.php/sbseg_estendido/article/view/44541)
+
+**Board, card and tabletop games**
+
+- [Steve Jackson Games, Hacker: print-and-play edition and the 1990 raid (accessed 16 November 2026)](https://www.sjgames.com/hacker/)
+- [Steve Jackson Games, Hacker: Deluxe Edition, Origins Awards 1992 and 1993 (accessed 16 November 2026)](https://www.sjgames.com/hacker/index-oop.html)
+- [Steve Jackson Games, Product Data on Hacker: the Illuminati system, players and the "profited from the raid" claim (accessed 16 November 2026)](https://sjgames.com/hacker/stat_1.html)
+- [Deluge, review of Hacker in Phrack 39, with a reply from Steve Jackson Games, reproduced by Steve Jackson Games (accessed 16 November 2026)](https://sjgames.com/hacker/phrackrev.html)
+- [PC Gamer, Jonathan Bolding, Android: Netrunner to end after next card set, 18 June 2018 (accessed 16 November 2026)](https://www.pcgamer.com/android-netrunner-to-end-after-next-card-set)
+- [The Village Voice, Isai Rocha, Net Running: How A Defunct Trading Card Game Continues Underground, 30 January 2024 (accessed 16 November 2026)](https://www.villagevoice.com/net-running-how-a-defunct-trading-card-game-continues-underground/)
+- [Null Signal Games, home page (accessed 16 November 2026)](https://nullsignal.games/)
+- [Null Signal Games, About Netrunner (accessed 16 November 2026)](https://nullsignal.games/about/)
+- [Microsoft Download Center, Elevation of Privilege (EoP) Threat Modeling Card Game (accessed 16 November 2026)](https://www.microsoft.com/en-us/download/details.aspx?id=20303)
+- [Shostack + Associates, Elevation of Privilege Game: created in 2010 and its derivatives (accessed 16 November 2026)](https://shostack.org/eop)
+- [Adam Shostack, Elevation of Privilege: Drawing Developers into Threat Modeling, USENIX Summit on Gaming, Games, and Gamification in Security Education (3GSE) 2014 (accessed 16 November 2026)](https://www.usenix.org/system/files/conference/3gse14/3gse14-shostack.pdf)
+- [OWASP, Cornucopia project page (accessed 16 November 2026)](https://owasp.org/www-project-cornucopia/)
+- [Denning, Lerner, Shostack and Kohno, Control-Alt-Hack: The Design and Evaluation of a Card Game for Computer Security Awareness and Education, ACM Conference on Computer and Communications Security (CCS) 2013 (accessed 16 November 2026)](https://homes.cs.washington.edu/~yoshi/papers/ccs479-denning.pdf)
+- [Opensource.com, Davis Miller, Open source game, [d0x3d!], teaches security concepts and is fun to play, 25 January 2013 (accessed 16 November 2026)](https://opensource.com/life/13/1/open-source-board-game-about-network-security-d0x3d)
+- [USENIX, Gondree and Peterson, Valuing Security by Getting [d0x3d!], 6th Workshop on Cyber Security Experimentation and Test (CSET) 2013 (accessed 16 November 2026)](https://www.usenix.org/conference/cset13/workshop-program/presentation/gondree)
+- [TableTopSecurity, About (accessed 16 November 2026)](https://tabletopsecurity.github.io/about)
+- [Black Hills Information Security, Webcast: How to Play Backdoors & Breaches, 22 October 2019 (accessed 16 November 2026)](https://www.blackhillsinfosec.com/webcast-how-to-play-backdoors-breaches-incident-response-card-game/)
+- [Black Hills Information Security, Backdoors & Breaches, Classic: rules (accessed 16 November 2026)](https://www.blackhillsinfosec.com/tools/backdoorsandbreaches/classic/)
+- [CSO Online, J.M. Porup, Backdoors and Breaches incident response card game makes tabletop exercises fun, 6 January 2020 (accessed 16 November 2026)](https://www.csoonline.com/article/3509467/backdoors-and-breaches-incident-response-card-game-makes-tabletop-exercises-fun.html)
+- [CISA, Tabletop Exercise Packages (accessed 16 November 2026)](https://www.cisa.gov/resources-tools/services/cisa-tabletop-exercise-packages)
+- [NCSC, Exercise in a Box (accessed 16 November 2026)](https://www.ncsc.gov.uk/information/exercise-in-a-box)
+
+**Wargames, practice platforms and competitions**
+
+- [DEF CON, Capture the Flag Archive: the first CTF at DEF CON 4 in 1996 (accessed 16 November 2026)](https://defcon.org/html/links/dc-ctf.html)
+- [DEF CON 34, Contest Results, 2026: the CTF final's attack-defence and King of the Hill challenges (accessed 16 November 2026)](https://defcon.org/html/defcon-34/dc-34-contest-results.html)
+- [OverTheWire, Wargames (accessed 16 November 2026)](https://overthewire.org/wargames/)
+- [OverTheWire, Bandit (accessed 16 November 2026)](https://overthewire.org/wargames/bandit/)
+- [pwnable.tw, home page and rules (accessed 16 November 2026)](https://pwnable.tw/)
+- [Pinboard, The Matasano Crypto Challenges, 18 April 2013 (accessed 16 November 2026)](https://blog.pinboard.in/2013/04/the_matasano_crypto_challenges)
+- [Cryptopals, Welcome to the challenges (accessed 16 November 2026)](https://cryptopals.com/)
+- [NCC Group, Cryptography Services, About (accessed 16 November 2026)](https://cryptoservices.github.io/)
+- [Square, Capture The Flag, 17 January 2014: Microcorruption (accessed 16 November 2026)](https://developer.squareup.com/blog/capture-the-flag/)
+- [Hackaday, Microcorruption Embedded CTF, 18 January 2014 (accessed 16 November 2026)](https://hackaday.com/2014/01/18/microcorruption-embedded-ctf)
+- [NCC Group, Check out our new Microcorruption challenges!, 31 October 2022 (accessed 16 November 2026)](https://www.nccgroup.com/research/check-out-our-new-microcorruption-challenges/)
+- [Hack The Box, Hack The Box Secures $55 Million in Series B Funding Led by Carlyle, 19 July 2023 (accessed 16 November 2026)](https://www.hackthebox.com/blog/htb-series-b-funding)
+- [TryHackMe, About (accessed 16 November 2026)](https://tryhackme.com/about)
+- [TryHackMe, TryHackMe Has Over One Million Users!, March 2022 (accessed 16 November 2026)](https://tryhackme.com/resources/blog/one-million-users)
+- [TryHackMe, Four Million Users on TryHackMe!, undated (accessed 16 November 2026)](https://tryhackme.com/resources/blog/four-million-on-tryhackme)
+- [PortSwigger, PortSwigger launches the Web Security Academy, 29 October 2019 (accessed 16 November 2026)](https://portswigger.net/press-releases/portswigger-launches-web-security-academy)
+- [PortSwigger, Dafydd Stuttard, A one million milestone for the Web Security Academy, 26 May 2020 (accessed 16 November 2026)](https://portswigger.net/blog/a-one-million-milestone-for-the-web-security-academy)
+- [PortSwigger, Web Security Academy (accessed 16 November 2026)](https://portswigger.net/web-security)
+- [OWASP, Juice Shop project page (accessed 16 November 2026)](https://owasp.org/www-project-juice-shop/)
+- [OWASP, WebGoat project page (accessed 16 November 2026)](https://owasp.org/www-project-webgoat/)
+- [TechCrunch, How Stripe, Weebly And Cue Make Programming Challenges That Are Good For Recruiting, contributed article, 8 March 2013 (accessed 16 November 2026)](https://techcrunch.com/2013/03/08/programming-challenges-benefit-job-seekers-and-employers/)
+- [Erin Ptacek, Starfighter, Summer 2015, 13 July 2015 (accessed 16 November 2026)](https://sockpuppet.org/blog/2015/07/13/starfighter/)
+- [NSA Codebreaker Challenge, home page: the 2026 edition (accessed 16 November 2026)](https://nsa-codebreaker.org/)
+- [SANS Institute, The SANS 2022 Holiday Hack Challenge, 8 December 2022 (accessed 16 November 2026)](https://sans.org/press/announcements/sans-2022-holiday-hack-challenge-years-most-awaited-cybersecurity-tradition-opens-players-all-skill-levels)
+- [National CCDC, About: the 2004 meeting and the first competition in April 2005 (accessed 16 November 2026)](https://nationalccdc.org/about.html)
+- [Air & Space Forces Magazine, CyberPatriot Smackdown, 28 May 2009 (accessed 16 November 2026)](https://www.airandspaceforces.com/article/0609cyberpatriot/)
+- [CyberPatriot, The National Youth Cyber Education Program, home page (accessed 16 November 2026)](https://www.uscyberpatriot.org/)
+- [National Cyber League, Our Mission (accessed 16 November 2026)](https://nationalcyberleague.org/about)
+- [GOV.UK, Department for Digital, Culture, Media and Sport, Cyber Discovery Evaluation, independent report by Ecorys and the University of Kent, 13 August 2021 (accessed 16 November 2026)](https://www.gov.uk/government/publications/independent-evaluations-of-cyber-discovery-and-cyberfirst-programmes/cyber-discovery-evaluation)
+
+**Cyber ranges and exercises**
+
+- [NIST NICE, The Cyber Range: A Guide, September 2023 (accessed 16 November 2026)](https://www.nist.gov/system/files/documents/2023/09/29/The%20Cyber%20Range_A%20Guide.pdf)
+- [Pete Christensen, The National Cyber Range, NDIA Systems Engineering Conference, October 2015 (accessed 16 November 2026)](https://ndia.dtic.mil/wp-content/uploads/2015/system/17864_Christensen.pdf)
+- [Nextgov, Dawn Lim, Military cyber range moves from laboratory to deployment, 12 November 2012 (accessed 16 November 2026)](https://www.nextgov.com/cio-briefing/2012/11/military-cyber-range-moves-laboratory-deployment/59432)
+- [NATO CCDCOE, Locked Shields (accessed 16 November 2026)](https://ccdcoe.org/exercises/locked-shields/)
+- [NATO CCDCOE, Locked Shields 2025 Showcased Nations' Commitment to Defending Cyberspace, 2025 (accessed 16 November 2026)](https://ccdcoe.org/news/2025/locked-shields-2025-showcased-nations-commitment-to-defending-cyberspace/)
+- [SecurityWeek, Eduard Kovacs, From 60 to 4,000: NATO's Locked Shields Reflects Cyber Defense Growth, 16 May 2025 (accessed 16 November 2026)](https://www.securityweek.com/from-60-to-4000-natos-locked-shields-reflects-cyber-defense-growth/)
+- [ENISA, Cyber Europe tests the EU Cyber Preparedness in the Energy Sector, 20 June 2024 (accessed 16 November 2026)](https://www.enisa.europa.eu/news/cyber-europe-tests-the-eu-cyber-preparedness-in-the-energy-sector)
+- [ENISA, Cyber Europe programme: biennial since 2010, the 2026 edition (accessed 16 November 2026)](https://www.enisa.europa.eu/topics/training-and-exercises/cyber-exercises/cyber-europe-programme)

@@ -215,6 +215,25 @@
 .lgtm-stamp-toy { display: grid; gap: 1rem; }
 /* The text box keeps a code-friendly height. */
 .lgtm-stamp-input { min-height: 14rem; white-space: pre; overflow-x: auto; }
+/* The box and its line numbers in one frame (PRIME 16/11/2026 04:03): the frame carries the border and the focus ring
+   that the box had, the gutter and the box share one font, size, line height and top padding, so each number sits on
+   its line's baseline. */
+.lgtm-stamp-editor { display: grid; grid-template-columns: auto minmax(0, 1fr); background: var(--canvas-primary); border: 1px solid var(--border-strong); border-radius: var(--radius-md); overflow: hidden; }
+/* The frame takes the accent while the box has the focus, as the box alone did. */
+.lgtm-stamp-editor:focus-within { border-color: var(--accent-primary); }
+/* The gutter and the box: the same type metrics, set here so no other input rule can pull them apart. */
+.lgtm-stamp-gutter, .lgtm-stamp-editor .lgtm-stamp-input { font-family: var(--font-mono); font-size: 1rem; line-height: 1.5; padding-top: 0.7rem; }
+/* The box inside the frame: no border, radius or ground of its own, so frame and box read as one field. */
+.lgtm-stamp-editor .lgtm-stamp-input { border: 0; border-radius: 0; background: transparent; min-width: 0; padding-left: 0.75rem; }
+/* The gutter: right-aligned numbers in the quiet ink, never selected with the text; it scrolls only with the box, and
+   its extra bottom padding leaves room for the box's horizontal scrollbar, so the last number can line up too. Its size
+   is contained, so a long text's numbers never make the frame taller than the box: the box sets the height (and the
+   resize handle), the gutter stretches to it, and its width comes from the component (the longest number's digits). */
+.lgtm-stamp-gutter { contain: size; box-sizing: border-box; display: flex; flex-direction: column; align-items: flex-end; overflow: hidden; padding-left: 0.7rem; padding-right: 0.6rem; padding-bottom: 3rem; color: var(--text-tertiary); background: var(--surface-base); border-right: 1px solid var(--border-subtle); font-variant-numeric: tabular-nums; user-select: none; -webkit-user-select: none; }
+/* One number: exactly one line tall. */
+.lgtm-stamp-ln { display: block; min-height: 1.5em; }
+/* A line with a finding: its number in the danger colour, bold, the same mark the stamp uses. */
+.lgtm-stamp-ln-flagged { color: var(--color-danger); font-weight: 700; }
 /* The Stamp button on its own row. */
 .lgtm-stamp-actions { display: flex; gap: 0.75rem; }
 /* The verdict area: stamp, wry line, counts, findings. */
@@ -229,6 +248,62 @@
 .lgtm-stamp-mark-no { color: var(--color-danger); }
 /* The fall of the toy's stamp. */
 @keyframes lgtm-stamp-fall { from { transform: rotate(-6deg) scale(1.7); opacity: 0; } to { transform: rotate(-6deg) scale(1); opacity: 1; } }
+/* The stamp and its bot on one row, wrapping under each other only if the row is too narrow (PRIME 16/11/2026 03:06). */
+.lgtm-stamp-verdict { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1.1rem; }
+/* The bot: a small drawing beside the stamp, standing on its feet when it moves. */
+.lgtm-bot { display: block; flex: none; width: 72px; height: auto; transform-origin: 50% 100%; }
+/* Its face is filled with the page's surface, so the eyes and mouth read on both themes. */
+.lgtm-bot-face { fill: var(--surface-base); }
+/* Happy: the success colour; it fades in with the stamp, then hops twice once the stamp has landed. */
+.lgtm-bot-happy { color: var(--color-success); animation: lgtm-bot-in 0.2s ease-out, lgtm-bot-hop 0.7s ease-out 0.2s; }
+/* Sad: the danger colour; it fades in with the stamp, then slumps and stays leaning. */
+.lgtm-bot-sad { color: var(--color-danger); animation: lgtm-bot-in 0.2s ease-out, lgtm-bot-slump 0.7s ease-in-out 0.2s both; }
+/* The bot's arrival, timed with the stamp's fall. */
+@keyframes lgtm-bot-in { from { opacity: 0; } to { opacity: 1; } }
+/* Two hops, the second smaller. */
+@keyframes lgtm-bot-hop { 0%, 100% { transform: translateY(0); } 30% { transform: translateY(-8px); } 55% { transform: translateY(0); } 75% { transform: translateY(-3px); } }
+/* A slump: down a little and a lean to one side, held at the end. */
+@keyframes lgtm-bot-slump { from { transform: translateY(0) rotate(0); } to { transform: translateY(3px) rotate(-5deg); } }
+/* The bot is a button (PRIME 16/11/2026 03:14): each click plays its next move. No box of its own, only a focus ring. */
+.lgtm-bot-button { display: block; flex: none; padding: 0.15rem; border: 0; border-radius: var(--radius-md); background: none; color: inherit; line-height: 0; cursor: pointer; }
+/* Its keyboard focus, in the accent. */
+.lgtm-bot-button:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+/* Happy, move 1 (and every fourth click): the two hops again, without the fade. */
+.lgtm-bot-happy.lgtm-bot-m0 { animation: lgtm-bot-hop 0.7s ease-out; }
+/* Happy, move 2: a full spin about its middle. */
+.lgtm-bot-happy.lgtm-bot-m1 { transform-origin: 50% 55%; animation: lgtm-bot-spin 0.9s ease-in-out; }
+/* Happy, move 3: a wiggle from side to side, a little dance. */
+.lgtm-bot-happy.lgtm-bot-m2 { animation: lgtm-bot-wiggle 0.9s ease-in-out; }
+/* Happy, move 4: squash, stretch up, settle: a boing. */
+.lgtm-bot-happy.lgtm-bot-m3 { animation: lgtm-bot-boing 0.8s ease-out; }
+/* With the boing, its antenna light blinks. */
+.lgtm-bot-m3 .lgtm-bot-bulb { animation: lgtm-bot-blink 0.8s steps(2, jump-none) 2; }
+/* Sad, move 1 (and every fourth click): the slump again, from upright. */
+.lgtm-bot-sad.lgtm-bot-m0 { animation: lgtm-bot-slump 0.7s ease-in-out both; }
+/* Sad, move 2: a shiver, still leaning. */
+.lgtm-bot-sad.lgtm-bot-m1 { animation: lgtm-bot-shiver 0.6s linear both; }
+/* Sad, move 3: a slow shake of the head, no. */
+.lgtm-bot-sad.lgtm-bot-m2 { animation: lgtm-bot-no 0.9s ease-in-out both; }
+/* Sad, move 4: a sigh, sinking and rising once. */
+.lgtm-bot-sad.lgtm-bot-m3 { animation: lgtm-bot-sigh 1.2s ease-in-out both; }
+/* With the sigh, its tear falls and forms again. */
+.lgtm-bot-m3 .lgtm-bot-tear { animation: lgtm-bot-tear-fall 1.2s ease-in; }
+/* The spin. */
+@keyframes lgtm-bot-spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+/* The wiggle: left, right, left, right, home. */
+@keyframes lgtm-bot-wiggle { 0%, 100% { transform: rotate(0); } 20% { transform: rotate(-10deg); } 40% { transform: rotate(10deg); } 60% { transform: rotate(-8deg); } 80% { transform: rotate(6deg); } }
+/* The boing: flatten, stretch into the air, land, settle. */
+@keyframes lgtm-bot-boing { 0%, 100% { transform: translateY(0) scale(1, 1); } 20% { transform: translateY(0) scale(1.12, 0.86); } 45% { transform: translateY(-10px) scale(0.92, 1.1); } 70% { transform: translateY(0) scale(1.05, 0.95); } }
+/* The blink: off, then on. */
+@keyframes lgtm-bot-blink { 0% { opacity: 1; } 50% { opacity: 0.15; } 100% { opacity: 1; } }
+/* The shiver: small quick shakes about the leaning pose, ending in it. */
+@keyframes lgtm-bot-shiver { 0%, 100% { transform: translate(0, 3px) rotate(-5deg); } 15%, 45%, 75% { transform: translate(-2px, 3px) rotate(-5deg); } 30%, 60%, 90% { transform: translate(2px, 3px) rotate(-5deg); } }
+/* No: the lean swings one way and the other, and comes back. */
+@keyframes lgtm-bot-no { 0%, 100% { transform: translateY(3px) rotate(-5deg); } 25% { transform: translateY(3px) rotate(-12deg); } 55% { transform: translateY(3px) rotate(2deg); } 80% { transform: translateY(3px) rotate(-9deg); } }
+/* The sigh: shorter and wider, then back, still leaning. */
+@keyframes lgtm-bot-sigh { 0%, 100% { transform: translateY(3px) rotate(-5deg) scale(1, 1); } 45% { transform: translateY(5px) rotate(-6deg) scale(1.05, 0.9); } }
+/* The tear: falls and fades, then forms again where it was. */
+@keyframes lgtm-bot-tear-fall { 0% { transform: translateY(0); opacity: 0.6; } 60% { transform: translateY(10px); opacity: 0; } 61% { transform: translateY(0); opacity: 0; } 100% { transform: translateY(0); opacity: 0.6; } }
 /* The wry line. */
 .lgtm-stamp-quip { margin: 0; max-width: 66ch; font-style: italic; color: var(--text-primary); }
 /* Counts and the diff note. */
@@ -261,6 +336,8 @@
   .lgtm-stamp-finding { grid-template-columns: minmax(0, 1fr); }
   /* The line under them, full width. */
   .lgtm-stamp-excerpt { grid-column: 1; }
+  /* A smaller bot beside the smaller stamp. */
+  .lgtm-bot { width: 60px; }
 }
 
 /* ---- Reduced motion ---------------------------------------------------------- */
@@ -268,6 +345,16 @@
 @media (prefers-reduced-motion: reduce) {
   /* The stamps land without falling. */
   .lgtm-stamp, .lgtm-stamp-mark { animation: none; }
+  /* The happy bot stands still and upright. */
+  .lgtm-bot-happy { animation: none; }
+  /* The sad bot stands still, already leaning: its pose without the motion. */
+  .lgtm-bot-sad { animation: none; transform: translateY(3px) rotate(-5deg); }
+  /* Its clicked moves stand still too (this rule outranks the move classes: two classes, and later in the file). */
+  .lgtm-stamp-verdict .lgtm-bot { animation: none; }
+  /* The sad bot keeps its lean whatever move was clicked. */
+  .lgtm-stamp-verdict .lgtm-bot-sad { transform: translateY(3px) rotate(-5deg); }
+  /* The antenna light and the tear stay as drawn (two classes, later in the file: these outrank the move's own rule). */
+  .lgtm-stamp-verdict .lgtm-bot-bulb, .lgtm-stamp-verdict .lgtm-bot-tear { animation: none; }
   /* The Morse lights switch without fading. */
   .lgtm-sig { transition: none; }
 }

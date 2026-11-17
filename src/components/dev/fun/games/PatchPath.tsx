@@ -52,6 +52,8 @@ import { intlLocale } from "@/i18n/locales";
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 // Strings.
 import { useTranslations } from "next-intl";
+// The game's own keys, for the site's keyboard help (? or h; 16/11/2026).
+import { usePageKeys } from "@/components/PageKeys";
 // The frame every game sits in.
 import GameShell, { type ShellResult } from "./GameShell";
 // The shared session, its bars, the hint holder and the live line.
@@ -132,6 +134,8 @@ export default function PatchPath(props: { locale: string }) {
   const t = useTranslations("devFun.games.patch-path");
   // The shell's strings.
   const tc = useTranslations("devFun.games.common");
+  // The keys, told to the site's keyboard help (? or h, PRIME 16/11/2026 03:14): while its board has the keyboard the site's shortcuts are off.
+  usePageKeys({ when: "focused", lines: [t("rules.keys")] });
   // Today, after mount.
   const today = useToday();
   // The session: the board is the cable, as cells in order.

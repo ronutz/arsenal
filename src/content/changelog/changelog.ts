@@ -56,6 +56,247 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // The electronic-trading series, parts 386 to 388 (agents T4 and T5, brief canon/current/BRIEF-trading-series-wave2-20261116.md),
+    // integrated 16/11/2026: the series is complete; checks in canon/research/trading-wave2/; 18 glossary entries added.
+    date: "2026-11-16", // the day it was done
+    time: "18:49", // São Paulo time
+    kind: "content", // new writing and glossary entries
+    title: "The electronic trading series is complete: market data, surveillance and fairness by design, with 18 new glossary entries", // the headline
+    titlePt: "A série sobre negociação eletrônica está completa: dados de mercado, vigilância e equidade por desenho, com 18 verbetes novos no glossário", // the Portuguese headline
+    body: // what changed, in plain words
+      "The last three parts of the electronic trading series. Market data compares the United States' consolidated feeds with the venues' direct feeds and the latency between them, follows the SEC's 2020 market data rule through the courts and the consolidated tapes arriving in Europe and the United Kingdom, and reads B3's market data on the network: multicast channels, feed arbitration and snapshot recovery. Surveillance and regulatory reporting covers the rules on market manipulation in Europe, the United States and Brazil, the spoofing and layering cases that tested them, suspicious order reports and transaction reports, the Consolidated Audit Trail and its disputes, and BSM and the CVM. Fairness by design covers IEX's speed bump and the court cases over it, the delays other venues tried, frequent batch auctions and the evidence on each, and Brazil's debate on B3's retail liquidity offers. Every part of the series now links the others where it mentions them, and eighteen glossary entries define the new terms, from securities information processor to retail liquidity provider.",
+    links: [ // where to see it
+      { label: "Market data", href: "/learn/market-data-consolidated-feeds-and-direct-feeds" }, // part 386
+      { label: "Surveillance and regulatory reporting", href: "/learn/surveillance-and-regulatory-reporting-mifid-ii-cat-and-cvm" }, // part 387
+      { label: "Fairness by design", href: "/learn/fairness-by-design-speed-bumps-batch-auctions-and-iex" }, // part 388
+      { label: "The series opener", href: "/learn/electronic-trading-from-the-pit-to-the-microsecond" }, // the opener, now linking every part
+    ],
+  },
+  {
+    // The electronic-trading series, parts 384 and 385 (agent T3, brief canon/current/BRIEF-trading-series-wave2-20261116.md),
+    // integrated 16/11/2026; the one fetch-only page (Arista, 5 March 2019) read in PRIME's Chrome; 12 glossary entries added.
+    date: "2026-11-16", // the day it was done
+    time: "18:19", // São Paulo time
+    kind: "content", // new writing and glossary entries
+    title: "Electronic trading: interdealer brokers and electronic bonds and FX, and watching trading on the wire, with 12 new glossary entries", // the headline
+    titlePt: "Negociação eletrônica: corretoras interdealer e a renda fixa e o câmbio eletrônicos, e a negociação observada no cabo, com 12 verbetes novos no glossário", // the Portuguese headline
+    body: // what changed, in plain words
+      "Two more parts of the electronic trading series. Interdealer brokers and electronic fixed income and FX explains why dealers trade with each other through brokers, traces ICAP, BrokerTec, Electronic Broking Services and Reuters Matching to their current owners from the companies' own filings, retells the US Treasury flash rally of 15 October 2014 from the official report, weighs both sides of the dispute over last look in foreign exchange, and describes how Brazil trades government bonds and dollars electronically. Network-derived analytics covers capturing and time-stamping packets in trading networks, decoding the protocols from the wire, measuring latency, the vendors, and the clock and record-keeping rules of regulators, the CVM's included. Twelve glossary entries define the terms, from interdealer broker to write once, read many storage.",
+    links: [ // where to see it
+      { label: "Interdealer brokers and electronic fixed income and FX", href: "/learn/interdealer-brokers-and-electronic-fixed-income-and-fx" }, // part 384
+      { label: "Network-derived analytics", href: "/learn/network-derived-analytics-and-trading-monitoring" }, // part 385
+    ],
+  },
+  {
+    // The redundancy series, wave 2 (agents F, G, H; brief canon/current/BRIEF-redundancy-series-20261116.md): parts 374
+    // to 379, every fetch-only page read in PRIME's Chrome (canon/research/redundancy/FINDINGS-wave2-checks-20261116.md);
+    // wave 1's held links restored; 29 glossary entries added and 6 enriched.
+    date: "2026-11-16", // the day it was done
+    time: "17:48", // São Paulo time
+    kind: "content", // new writing and glossary entries
+    title: "The redundancy series is complete: gateways, layer 3, stateful clusters, load balancing, data and testing", // the headline
+    titlePt: "A série sobre redundância está completa: gateways, camada 3, clusters com estado, balanceamento, dados e testes", // the Portuguese headline
+    body: // what changed, in plain words
+      "Six more parts finish the series on redundant architectures. Default gateway redundancy at scale covers the Virtual Router Redundancy Protocol (VRRP) version 3, hundreds of groups on one pair of routers, Cisco's Gateway Load Balancing Protocol (GLBP), object tracking, IP version 6 (IPv6) and the anycast gateways of data centre fabrics. Layer 3 redundancy covers equal-cost multipath and its hashing, Bidirectional Forwarding Detection (BFD) in practice, graceful restart, loop-free alternates and the Border Gateway Protocol's (BGP) convergence, with the numbers for each step. Stateful clusters compares how eight firewall and load balancer implementations synchronize state, detect a failed peer and defend against split brain. Load balancer and site failover redundancy compares health-check defaults across eleven implementations and works out what Domain Name System (DNS) caching and anycast add to a failover between sites. Data and service redundancy covers replication, quorum, and the recovery point and recovery time objectives as the standards define them, with the operators' own incident reports. Testing redundancy covers failure drills, game days and chaos engineering, and the outages in which the standby itself failed. The opener now gives FortiGate's documented default for declaring a cluster member dead, and twenty-nine glossary entries define the series' terms.",
+    links: [ // where to see it
+      { label: "Default gateway redundancy at scale", href: "/learn/default-gateway-redundancy-vrrpv3-glbp-and-anycast-gateways" }, // part 5, 374
+      { label: "Layer 3 redundancy", href: "/learn/layer-3-redundancy-ecmp-bfd-and-fast-reroute" }, // part 6, 375
+      { label: "Stateful clusters", href: "/learn/stateful-clusters-active-standby-active-active-and-split-brain" }, // part 7, 376
+      { label: "Load balancer and site failover redundancy", href: "/learn/adc-and-gslb-redundancy-health-monitors-pools-and-site-failover" }, // part 8, 377
+      { label: "Data and service redundancy", href: "/learn/data-and-service-redundancy-replication-quorum-rpo-and-rto" }, // part 9, 378
+      { label: "Testing redundancy", href: "/learn/testing-redundancy-failure-drills-chaos-and-the-failover-never-tried" }, // part 10, 379
+    ],
+  },
+  {
+    // The electronic-trading series, parts 382 and 383 (agent T2, brief canon/current/BRIEF-trading-series-wave2-20261116.md),
+    // integrated 16/11/2026; one fetch-only source (IOSCO, 2010) paraphrased, not quoted; 12 glossary entries added.
+    date: "2026-11-16", // the day it was done
+    time: "17:33", // São Paulo time
+    kind: "content", // new writing and glossary entries
+    title: "Electronic trading: order and execution management systems, and pre-trade risk controls, with 12 new glossary entries", // the headline
+    titlePt: "Negociação eletrônica: sistemas de gestão de ordens e de execução e controles de risco pré-negociação, com 12 verbetes novos no glossário", // the Portuguese headline
+    body: // what changed, in plain words
+      "Two more parts of the electronic trading series. OMS and EMS explains what an order management system and an execution management system each do for the buy side and the sell side, where they sit in an order's path, how algorithms and smart order routing execute, and who sells them, from the vendors' own pages and filings, with the Brazilian providers on B3's certified list. Pre-trade risk and market access covers the SEC's market access rule paragraph by paragraph and the cases brought under it, sponsored and direct electronic access in US, European and Brazilian rules, the checks a gateway runs before an order reaches the market, and kill switches, with Knight Capital as the case for them. Twelve glossary entries define the systems, benchmarks and controls, from order management system to B3's LINE.",
+    links: [ // where to see it
+      { label: "OMS and EMS", href: "/learn/oms-and-ems-order-and-execution-management-systems" }, // part 382
+      { label: "Pre-trade risk and market access", href: "/learn/pre-trade-risk-and-market-access-controls" }, // part 383
+    ],
+  },
+  {
+    // The electronic-trading series, parts 380 and 381 (agent T1, brief canon/current/BRIEF-trading-series-wave2-20261116.md),
+    // integrated 16/11/2026; FINRA's pages checked in PRIME's Chrome, the specification PDF's four fetch-only quotations
+    // turned into attributed paraphrase; 12 glossary entries added.
+    date: "2026-11-16", // the day it was done
+    time: "17:21", // São Paulo time
+    kind: "content", // new writing and glossary entries
+    title: "Electronic trading: FIX's encodings and the life of an order, with 12 new glossary entries", // the headline
+    titlePt: "Negociação eletrônica: as codificações do FIX e a vida de uma ordem, com 12 verbetes novos no glossário", // the Portuguese headline
+    body: // what changed, in plain words
+      "Two more parts of the electronic trading series. FIX encodings and successors compares the tag=value form with FIXML, FAST, Simple Binary Encoding and FIXP, and with the exchanges' own binary protocols, Nasdaq's OUCH and ITCH and B3's binary EntryPoint and market data, encoding one price nine ways and decoding a published B3 order message byte by byte. The life of an order in FIX follows an order through its states, cancel and replace, rejects, partial fills, drop copies, allocations and give-ups, and FIX beyond equities, with B3's certification steps written out as eight messages whose lengths and checksums are worked out. Where the published specifications contradict themselves, the articles say so and show the arithmetic. Twelve glossary entries define the protocols and messages, from Simple Binary Encoding to give-up.",
+    links: [ // where to see it
+      { label: "FIX encodings and successors", href: "/learn/fix-encodings-and-successors-fixml-fast-sbe-and-exchange-binary-protocols" }, // part 380
+      { label: "The life of an order in FIX", href: "/learn/the-life-of-an-order-in-fix" }, // part 381
+    ],
+  },
+  {
+    // The redundancy series, wave 1 (brief canon/current/BRIEF-redundancy-series-20261116.md): the opener and parts 1 to
+    // 3, written 16/11/2026 by two agents, every fetch-only quotation checked in PRIME's Chrome and four corrected
+    // (canon/research/redundancy/FINDINGS-wave1-quote-checks-20261116.md); 19 glossary entries added and 3 enriched.
+    date: "2026-11-16", // the day it was done
+    time: "16:27", // São Paulo time
+    kind: "content", // new writing and glossary entries
+    title: "A new series on redundancy: the opener and three parts, with 19 new glossary entries", // the headline
+    titlePt: "Uma nova série sobre redundância: a abertura e três partes, com 19 verbetes novos no glossário", // the Portuguese headline
+    body: // what changed, in plain words
+      "A new Learn series follows how networks survive failure, layer by layer. The opener maps every kind of redundancy from the power feed to global load balancing, with the detection times each protocol actually documents and the outages that show what goes wrong when two of everything share one cause. The arithmetic of redundancy works through availability, MTBF and MTTR, series and parallel systems, common-cause failure and why a number of nines says less than it seems. Physical and power redundancy covers A and B feeds, N+1 and N+N supplies, what the Uptime Institute's tiers and TIA-942 promise, path and carrier diversity, and why management access must not depend on the network it rescues. Layer 2 redundancy covers link aggregation, MLAG, vPC and StackWise Virtual, and spanning tree's timers with the arithmetic behind them. Nineteen glossary entries define the series' terms, from redundancy and shared risk link groups to loop guard, and three existing entries gained depth and sources. Six more parts follow, from first-hop gateways at scale to testing redundancy.",
+    links: [ // where to see it
+      { label: "Redundant architectures", href: "/learn/redundant-architectures-how-networks-survive-failure" }, // the opener, 370
+      { label: "The arithmetic of redundancy", href: "/learn/the-arithmetic-of-redundancy-availability-mtbf-and-shared-fate" }, // part 1, 371
+      { label: "Physical and power redundancy", href: "/learn/physical-and-power-redundancy-feeds-paths-and-carriers" }, // part 2, 372
+      { label: "Layer 2 redundancy", href: "/learn/layer-2-redundancy-lag-mlag-and-spanning-tree" }, // part 3, 373
+    ],
+  },
+  {
+    // Queue 5e, 5f and 5g (PRIME 15/11/2026 03:02 and 03:04): three extra-rich culture posts, written 16/11/2026 by three
+    // agents (briefs canon/current/BRIEF-culture-posts-20261116.md), their fetch-only pages and quotations checked in
+    // PRIME's Chrome (canon/research/culture-posts/), 17 glossary entries added and 19 enriched with every source kept.
+    date: "2026-11-16", // the day it was done
+    time: "16:13", // São Paulo time
+    kind: "content", // new writing and glossary entries
+    title: "Three long posts on hacker culture: on screen, at play and on the page; 17 new glossary entries", // the headline
+    titlePt: "Três posts longos sobre a cultura hacker: na tela, em jogo e no papel; 17 verbetes novos no glossário", // the Portuguese headline
+    body: // what changed, in plain words
+      "Three blog posts follow hacking through the culture. Hackers on screen covers films, series and documentaries from WarGames to 2026, with a realism score whose checks are stated at the top (real tools on screen, a named adviser, a real attack method, the record of what a true story changed), the documented effects on policy (the night the President watched WarGames and the directive that followed), and the Brazilian titles. Hackers at play covers video games, board and card games, wargame sites and cyber ranges from Core War in 1984 to now, with a fidelity score of five checks, Brazilian games and ranges, and where to start by level. Hackers on the page covers histories, memoirs and investigations, the fiction that named cyberspace and the metaverse, the practitioner's shelf with how well each book has aged, and the Brazilian shelf with its editions. Seventeen glossary entries define the works and terms they introduce, from NSDD-145 and the Computer Fraud and Abuse Act to cyber ranges and the Cybersecurity Canon; nineteen existing entries gained dated sources, and two sentences were corrected where the sources read said otherwise (the Hackers website was defaced weeks before the film opened; Sneakers' documented cryptography consultant is Leonard Adleman).",
+    links: [ // where to see it
+      { label: "Hackers on screen", href: "/blog/hackers-on-screen-films-series-and-documentaries" }, // post 26
+      { label: "Hackers at play", href: "/blog/hackers-at-play-games-ctfs-and-cyber-ranges" }, // post 27
+      { label: "Hackers on the page", href: "/blog/hackers-on-the-page-books-from-cuckoos-egg-to-now" }, // post 28
+    ],
+  },
+  {
+    // The desk's second improvement pass (PRIME 16/11/2026 15:46: "do another pass at improving and evolving the My Desk
+    // UI and UX"), planned from the readers' jobs (scratchpad deskE/PASS2.md) after a design-system audit.
+    date: "2026-11-16", // the day it was done
+    time: "15:56", // São Paulo time
+    kind: "feature", // a change to how a page works
+    title: "My desk: an exam pace, paths drawn as trails, widgets that fold, and a filter for favourites", // the headline
+    titlePt: "Minha bancada: ritmo até a prova, trilhas desenhadas item a item, widgets que se recolhem e um filtro nos favoritos", // the Portuguese headline
+    body: // what changed, in plain words
+      "An exam countdown can now name one of your paths: it says how many of the path's items are left and the pace that finishes them by the exam, a day and, from two weeks out, a week. Every path is drawn as a trail, one mark per item in order, read ones filled and the next one ringed, so you see where the gaps are and not only how much is done; a very long path keeps the plain bar. Any widget folds to its title with the arrow at its end, and stays folded on your next visit. Favourites gets a filter once you have saved eight things, and says so plainly when nothing matches. The desk's text now follows one scale of seven sizes, so the same kind of text has the same size in every widget.",
+    links: [ // where to see it
+      { label: "My desk", href: "/my-desk" }, // the page
+    ],
+  },
+  {
+    // The desk improvement pass (increment E; queue item 1, PRIME 14:51 of 12/11/2026, widened 18:28): a critique at
+    // 390 and 1280 px against frontend-design, design critique, accessibility and UX copy, then the changes below.
+    date: "2026-11-16", // the day it was done
+    time: "14:27", // São Paulo time
+    kind: "feature", // a change to how a page works
+    title: "My desk: the next item leads, a reading calendar, puzzles at a glance, and a page that fits a phone", // the headline
+    titlePt: "Minha bancada: o próximo item em destaque, um calendário de leitura, desafios num relance e uma página que cabe no celular", // the Portuguese headline
+    body: // what changed, in plain words
+      "Continue now leads the desk: the next item of the path you are on is the largest line on the page, with its progress, what comes after it and a link that opens the whole path; the pages you opened last say when (an hour ago, yesterday). The reading streak shows a calendar of as many weeks as the widget holds, today ringed, a line for this week so far (reading days and items read), and the next milestone's progress as a bar. Today's puzzles say how many you played and solved in one line and list the games in two columns, each with its sign. Recently read groups what you read by day (Today, Yesterday, then the date). The exam countdown adds weeks and days and the exam's weekday; Search lists the four indexes with how many items each holds. Each widget keeps its own height, so a short one is no longer a large empty box. On a phone a row of links jumps to each widget, and every desk control is at least 44 pixels on a touch screen; fields have a clearer edge, the checkboxes and radio buttons take the site's colour, and removing a favourite is a quieter button. What the desk holds is kept where it was before: in your browser, and in the encrypted copy only if you sync.",
+    links: [ // where to see it
+      { label: "My desk", href: "/my-desk" }, // the page
+    ],
+  },
+  {
+    // The mass-hysteria series (PRIME 15/11/2026 23:14): sixteen parts, orders 292 to 307, written 16/11/2026 in two
+    // waves, 71 glossary entries, the "influence" subject group, and the pointer from the psyops opener.
+    date: "2026-11-16", // the day it was done
+    time: "12:03", // São Paulo time
+    kind: "content", // new writing and glossary entries
+    title: "New series: mass hysteria and collective belief, in sixteen articles; 71 new glossary entries", // the headline
+    titlePt: "Nova série: histeria coletiva e crenças coletivas, em dezesseis artigos; 71 verbetes novos no glossário", // the Portuguese headline
+    body: // what changed, in plain words
+      "A new Learn series asks how groups of people come to believe, or to feel, something the evidence does not support. The opener sets out the words used for such episodes (hysteria, mass psychogenic illness, moral panic, mania, collective delusion, social contagion) and the history each carries, with a dated timeline of cases. The parts cover conformity, cascades and contagion and how well the classic experiments have replicated; outbreaks of symptoms in schools and workplaces; the dancing plagues and possessed convents; witch hunts and moral panics; the satanic panic, false memories and São Paulo's Escola Base case; manias and bubbles from tulips to meme stocks; rumour, panic and lynching; phantom attackers and contested outbreaks; cults and failed prophecies; conspiracy theories at scale; health scares from Rio's Revolta da Vacina to the autism myth; waves of UFO sightings; social media and the spread of symptoms and beliefs; how manipulators harness collective panic; and what ends an outbreak and what helps. Each part says who, if anyone, steered the episode and how strong the evidence is. Seventy-one glossary entries define the terms, and the series is linked both ways with the series on psychological operations.",
+    articles: ["mass-hysteria-how-groups-come-to-believe-anything", "conformity-cascades-and-contagion-the-mechanisms", "mass-psychogenic-illness-when-symptoms-spread", "dancing-plagues-and-possessed-convents", "witch-hunts-and-moral-panics", "satanic-panic-false-memories-and-the-escola-base-case", "manias-and-bubbles-from-tulips-to-meme-stocks", "rumour-panic-and-lynching", "phantom-attackers-and-contested-outbreaks", "cults-failed-prophecies-and-the-closed-group", "conspiracy-theories-at-scale", "health-scares-from-the-revolta-da-vacina-to-the-autism-myth", "ufo-waves-and-skies-seen-together", "social-media-and-the-contagion-of-symptoms-and-beliefs", "how-manipulators-harness-collective-panic", "what-ends-an-outbreak-and-what-helps"], // the sixteen new Learn articles
+    links: [ // where to see it
+      { label: "The series", href: "/learn/series#mass-hysteria" }, // the series on the index
+      { label: "Glossary", href: "/glossary" }, // the new entries
+    ],
+  },
+  {
+    // The glossary split (PRIME 16/11/2026 04:27): one page per letter for the whole A to Z, the domain and kind pages
+    // with the same cards, filter and letter jumps, a light hub with a name finder, the A to Z tiles, domain cards with
+    // key terms, the kinds and people, commonly mistold and recently checked; entry pages gain their letter and their
+    // A to Z neighbours.
+    date: "2026-11-16", // the day it was done
+    time: "04:49", // São Paulo time
+    kind: "feature", // a site-wide improvement
+    title: "The glossary is split into a page per letter, with a finder and better ways between its parts", // the headline
+    titlePt: "O glossário foi dividido em uma página por letra, com um buscador e caminhos melhores entre as partes", // the Portuguese headline
+    body: // what changed, in plain words
+      "The glossary no longer loads all of its entries on one page. Each letter now has its own page with every definition and the filter by kind, domain and text. The front page finds any entry by name, abbreviation or what it stands for as you type, and shows the A to Z, each domain with its key terms, the kinds, the commonly mistold entries and the ones checked most recently. Domain and kind pages show the same cards with a letter bar, and each domain names the domains it shares the most with. Every entry links to the entries before and after it, and an old link to a letter of the single page now opens that letter's page.",
+    links: [ // where to see it
+      { label: "The glossary", href: "/glossary" }, // the hub
+      { label: "The letter S", href: "/glossary/letter/s" }, // a letter page
+      { label: "Networking terms", href: "/glossary/domain/enterprise-networking" }, // a domain page
+    ],
+  },
+  {
+    // The LGTM stamp's text box shows its line numbers (PRIME 16/11/2026 04:03), the lines with a finding marked.
+    date: "2026-11-16", // the day it was done
+    time: "04:10", // São Paulo time
+    kind: "feature", // a toy improvement
+    title: "The LGTM stamp numbers its lines", // the headline
+    titlePt: "O carimbo LGTM numera as linhas", // the Portuguese headline
+    body: // what changed, in plain words
+      "The stamp's text box now shows a line number beside each line, the same numbers its findings quote, and after a stamp the numbers of the lines with a finding turn red until you edit the text.",
+    links: [ // where to see it
+      { label: "The LGTM stamp", href: "/dev/fun/lgtm-stamp" }, // the toy
+    ],
+  },
+  {
+    // The blog index numbered and filtered (PRIME 16/11/2026 03:54): each post's number in publication order, its
+    // category beside the date, its topics as links, and a filter by one category and one topic, kept in the address;
+    // the number also opens each post's byline (PRIME 04:19).
+    date: "2026-11-16", // the day it was done
+    time: "04:10", // São Paulo time
+    kind: "feature", // a site-wide improvement
+    title: "The blog numbers its posts, and its index filters them by category and topic", // the headline
+    titlePt: "O blog numera os textos, e o índice os filtra por categoria e tema", // the Portuguese headline
+    body: // what changed, in plain words
+      "Every post on the blog index now carries its number, in the order the posts were published, with its category beside the date and its topics below the summary; each post's own page shows the same number at the start of its byline. Above the list, choose a category, a topic or both; each choice shows how many posts are behind it, a topic on any post filters by it, and the address keeps the choice, so a filtered list can be bookmarked or sent.",
+    links: [ // where to see it
+      { label: "The blog", href: "/blog" }, // the index
+    ],
+  },
+  {
+    // The keyboard help refreshed (PRIME 16/11/2026 03:14): h opens it as well as ? (Home moved to i), every key listed
+    // with a Customize link to its row in Settings, "On this page" first where a page differs, the Site User Guide's
+    // "Every key", the Settings and Privacy paragraphs; and the LGTM stamp's bot answers clicks with four moves.
+    date: "2026-11-16", // the day it was done
+    time: "03:34", // São Paulo time
+    kind: "feature", // a site-wide improvement
+    title: "The keyboard help lists every key, opens with h too, and says what differs on each page", // the headline
+    titlePt: "A ajuda do teclado lista todas as teclas, abre também com h e diz o que muda em cada página", // the Portuguese headline
+    body: // what changed, in plain words
+      "Press ? or h on any page for every key the site answers. A page whose keys differ, such as a game while you play it, a page that listens for what you type, or My desk while you arrange it, now shows its own keys first, with when they apply. Each key has a Customize link to its row in Settings. Home moved from h to i. The Site User Guide gains a part called Every key, and the bot on the LGTM stamp now plays a new move each time you click it.",
+    links: [ // where to see it
+      { label: "Every key", href: "/guide#keyboard" }, // the guide's list
+      { label: "Settings", href: "/settings#shortcuts" }, // where keys are changed
+      { label: "The LGTM stamp", href: "/dev/fun/lgtm-stamp" }, // the bot
+    ],
+  },
+  {
+    // The LGTM stamp's chimes sound by themselves when the stamp comes down, and the button stays to play them again
+    // (PRIME 16/11/2026 02:58: "sound the LGTM chimes automatically, and leave the buttons so the user can replay them
+    // at will"). The example stamped on load stays silent: sound starts only from a tap. A bot now stands beside the
+    // stamp (PRIME 16/11/2026 03:06): happy and green for LGTM, sad and red for changes requested.
+    date: "2026-11-16", // the day it was done
+    time: "03:08", // São Paulo time
+    kind: "feature", // a toy improvement
+    title: "The LGTM stamp gets a bot that cheers or sulks, and its chime now sounds with the stamp", // the headline
+    titlePt: "O carimbo LGTM ganha um robô que comemora ou fica triste, e o sininho agora toca junto com o carimbo", // the Portuguese headline
+    body: // what changed, in plain words
+      "A little bot now stands beside the stamp: green and cheering, arms up, for LGTM; red and sad, with a tear, for changes requested. Pressing Stamp also sounds the verdict's chime as the stamp lands, and the chime button stays, to play it again whenever you like. Nothing sounds when the page opens.",
+    links: [ // where to see it
+      { label: "The LGTM stamp", href: "/dev/fun/lgtm-stamp" }, // the toy
+    ],
+  },
+  {
     // The electronic-trading series, wave 1 (PRIME 15/11/2026 21:31): the opener and nine parts, 40 glossary entries,
     // the PTP entry enriched with its existing text and sources kept, and the new "Markets and trading" subject group.
     date: "2026-11-15", // the day it was done

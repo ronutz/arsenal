@@ -172,6 +172,14 @@ function assertedValues(text, locale, compound = false) { // compound: read hyph
   return found;
 }
 
+/**
+ * Proper names that contain a number word but assert no quantity, removed from a TRANSLATION before its words are read
+ * (2026-11-16): the São Paulo publisher Editora Três (IstoÉ), named in the Escola Base glossary entry, would otherwise
+ * read as "three" in Portuguese against an English text that keeps the name and asserts no three. Each name is listed
+ * whole, so the number word elsewhere is still read.
+ */
+const PROPER_NAMES = /Editora Três/gu;
+
 const files = readdirSync(DIR).filter((f) => f.endsWith(".json"));
 const en = flatten(JSON.parse(readFileSync(join(DIR, "en.json"), "utf8")));
 const failures = [];
@@ -192,8 +200,8 @@ for (const file of files) {
     // mismatch to mean anything. See the note above on why the broader rule
     // was abandoned.
     if (ours.size === 0) continue;
-    // The translation's written-out dates are not quantities (see WRITTEN_DATE).
-    const theirs = assertedValues(value.replace(WRITTEN_DATE, " "), locale, true);
+    // The translation's written-out dates and listed proper names are not quantities (see WRITTEN_DATE, PROPER_NAMES).
+    const theirs = assertedValues(value.replace(WRITTEN_DATE, " ").replace(PROPER_NAMES, " "), locale, true);
     if (theirs.size === 0) continue;
     const invented = [...theirs].filter((n) => !ours.has(n));
     if (invented.length) {

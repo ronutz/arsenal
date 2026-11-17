@@ -1,0 +1,295 @@
+---
+slug: the-arithmetic-of-redundancy-availability-mtbf-and-shared-fate
+title: "The arithmetic of redundancy: availability, MTBF and shared fate"
+summary: "Availability, mean time between failures, mean time to repair and the nines are defined in ITU-T and ISO/IEC/IEEE vocabularies and turned into formulas that anyone can run: components in series multiply, components in parallel multiply their unavailabilities, k-out-of-n systems add binomial terms, and N+1, 2N and N+M are names for how many spares stand behind a load. The same formulas assume independent failures, and published field studies and outage reports show how far shared fate moves the answer. After reading, you can compute downtime per year for any availability, the availability of a path, a pair or a k-out-of-n group, the effect of repair time and of a common cause, and say by how much the textbook number overstates what a design will deliver."
+concepts: ["availability", "mtbf", "mttf", "mttr", "nines", "series and parallel", "n+1", "2n", "n+m", "k-out-of-n", "shared fate", "common-cause failure", "beta factor", "correlated failure", "bathtub curve"]
+relatedTools: ["python-playground", "time-calculator", "vrrp-timer-calculator", "bfd-timers", "change-blast-radius-mapper"]
+relatedArticles: ["redundant-architectures-how-networks-survive-failure", "physical-and-power-redundancy-feeds-paths-and-carriers", "layer-2-redundancy-lag-mlag-and-spanning-tree", "first-hop-redundancy-vrrp-and-hsrp", "bfd-timers-the-arithmetic-of-detection", "link-aggregation-and-lacp", "cloud-and-cdn-monoculture", "security-versus-availability", "backups-and-ransomware-recovery", "default-gateway-redundancy-vrrpv3-glbp-and-anycast-gateways", "layer-3-redundancy-ecmp-bfd-and-fast-reroute", "stateful-clusters-active-standby-active-active-and-split-brain", "adc-and-gslb-redundancy-health-monitors-pools-and-site-failover", "data-and-service-redundancy-replication-quorum-rpo-and-rto", "testing-redundancy-failure-drills-chaos-and-the-failover-never-tried"]
+category: networking
+order: 371
+status: reviewed
+updated: "2026-11-16"
+---
+
+Redundancy is sold in nines and justified by multiplication: two routers at 99.9% each are supposed to make 99.9999%, half a minute of downtime a year. The multiplication is correct and the assumption under it is not, because it treats the two routers as if nothing could fail both at once. This article defines the terms from the standards that define them, works every formula with numbers you can rerun, and then measures, from field studies and operators' reports, how far shared fate moves the answer. After reading, you can turn any availability into downtime per year, compute a path, a pair, an N+1 group or a k-out-of-n quorum, show what repair time and a common cause each do to the result, and explain why the textbook figure is an upper bound. It is part 2 of the series that opens with [Redundant architectures: how networks survive failure](/learn/redundant-architectures-how-networks-survive-failure).
+
+## The words, from the documents that define them
+
+The International Telecommunication Union's Telecommunication Standardization Sector (ITU-T) defines the quality-of-service vocabulary in Recommendation E.800, and the Institute of Electrical and Electronics Engineers (IEEE), through its Computer Society, publishes the vocabulary it shares with the International Organization for Standardization (ISO) and the International Electrotechnical Commission (IEC), ISO/IEC/IEEE 24765, as the searchable Software and Systems Engineering Vocabulary (SEVOCAB). Between them they define every term the arithmetic needs:
+
+| Term | Definition (paraphrased unless quoted) | Source |
+|---|---|---|
+| Availability | An item's ability "to be in a state to perform a required function at a given instant of time or at any instant of time within a given time interval, assuming that the external resources, if required, are provided" | [ITU-T E.800 (09/2008), 3.1.1.5.4](https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-E.800-200809-I!!PDF-E&type=items) |
+| Availability, as a number | The ratio of uptime to uptime plus downtime | IEEE 982:2024, 3.1, through [SEVOCAB](https://pascal.computer.org/sev_display/index.action) |
+| Reliability | "The probability that an item can perform a required function under stated conditions for a given time interval" | [ITU-T E.800, 3.1.1.5.5](https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-E.800-200809-I!!PDF-E&type=items) |
+| Mean time between failures (MTBF) | The expectation of the time between failures, usually the arithmetic mean of a statistically significant number of samples | [ITU-T E.800, 3.3.16.3](https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-E.800-200809-I!!PDF-E&type=items); ISO/IEC/IEEE 24765:2017 through [SEVOCAB](https://pascal.computer.org/sev_display/index.action) |
+| Mean time to failure (MTTF) | The expectation of the time to failure, measured the same way | [ITU-T E.800, 3.3.16.2](https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-E.800-200809-I!!PDF-E&type=items) |
+| Mean time to restoration (MTTR) | The expectation of repair time "from the instant a fault has been reported to the instant the service restored for use by the customer" | [ITU-T E.800, 3.3.11](https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-E.800-200809-I!!PDF-E&type=items) |
+| Fault coverage | "The proportion of faults of an item that can be recognized under given conditions" | [ITU-T E.800, 3.3.12](https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-E.800-200809-I!!PDF-E&type=items) |
+
+The acronym MTTR is the slipperiest of them. E.800 gives three expansions under one entry, mean time to restoration, to recovery and to repair ([ITU-T E.800, 3.3.11](https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-E.800-200809-I!!PDF-E&type=items)), and the IEEE vocabulary records MTTR as mean time to repair in IEEE 982:2024, mean time to recovery in IEEE 2675-2021 and mean time to respond in IEEE 7005-2021 ([SEVOCAB, MTTR](https://pascal.computer.org/sev_display/index.action)). A supplier's MTTR may stop the clock when a part is replaced, an operator's when the service is back: the first question to ask of any MTTR is where its clock starts and stops.
+
+The National Institute of Standards and Technology (NIST) adds a distinction that datasheets blur. A repairable system is "restored to satisfactory operation by any action", and "It would be incorrect to talk about failure rates or hazard rates for repairable systems, as these terms apply only to the first failure times for a population of non repairable components" ([NIST/SEMATECH e-Handbook of Statistical Methods, 8.1.2.1](https://www.itl.nist.gov/div898/handbook/apr/section1/apr121.htm)). For the non-repairable population, the exponential model's mean is the MTTF and equals 1/λ, where λ is the constant failure rate ([NIST, 8.1.6.1](https://www.itl.nist.gov/div898/handbook/apr/section1/apr161.htm)); for a repairable system, the homogeneous Poisson process has a constant rate of occurrence of failures λ and 1/λ is the MTBF ([NIST, 8.1.7.1](https://www.itl.nist.gov/div898/handbook/apr/section1/apr171.htm)). Both rest on a constant rate, which holds only on the flat floor of the "bathtub" curve, after the early failures and before wear-out, where "most systems spend most of their lifetimes" ([NIST, 8.1.2.4](https://www.itl.nist.gov/div898/handbook/apr/section1/apr124.htm)).
+
+Facility redundancy has vocabularies of its own, the Uptime Institute's tiers and the ratings of the Telecommunications Industry Association (TIA) data centre standard, TIA-942; [part 3](/learn/physical-and-power-redundancy-feeds-paths-and-carriers) of this series reads them.
+
+## Availability from failures and repairs
+
+For one repairable item the long-run availability is the fraction of time it is up, and the site reliability engineering (SRE) authors at Google write it with the failure and repair means: "availability is mathematically defined as MTTF/(MTTF+MTTR), using appropriate units" ([Treynor, Dahlin, Rau and Beyer, The Calculus of Service Availability, ACM Queue, March-April 2017](https://sre.google/static/pdf/calculus_of.pdf)). With MTBF in place of MTTF, as datasheets usually give it:
+
+```text
+A = MTBF / (MTBF + MTTR)          unavailability U = 1 - A
+downtime per year = U x 8,760 h   (a 365-day year)
+```
+
+Worked for a device with an MTBF of 100,000 hours, three repair policies (every figure computed with the formulas above):
+
+| MTBF | MTTR | Availability | Downtime per year |
+|---|---|---|---|
+| 100,000 h | 4 h (spare on site) | 99.99600% | 21.02 min |
+| 100,000 h | 24 h (next-day part) | 99.97601% | 2.10 h |
+| 100,000 h | 72 h (part over a weekend) | 99.92805% | 6.30 h |
+| 50,000 h | 4 h | 99.99200% | 42.04 min |
+
+Halving the MTBF doubles the downtime, and so does doubling the MTTR; at these magnitudes the repair policy is worth as much as the hardware. An MTBF of 100,000 hours also does not mean the device lasts 11 years: under the constant-rate model its probability of surviving one year is e^(-8,760/100,000) = 0.9161, so about one unit in twelve fails in its first year of flat-floor life.
+
+The same identity works backwards from public statistics. Brazil's electricity regulator, the Agência Nacional de Energia Elétrica (ANEEL), reported that consumers were without power for 9.30 hours on average in 2025, the duração equivalente de interrupção por unidade consumidora (DEC), and suffered 4.66 interruptions on average, the frequência equivalente (FEC) ([eixos, from Estadão Conteúdo, Consumidores ficaram 9,3 horas em média sem energia em 2025, diz Aneel, 15 April 2026](https://eixos.com.br/energia-eletrica/consumidores-ficaram-93-horas-em-media-sem-energia-em-2025-diz-aneel-reducao-e-de-92-porcento/)). Computed from those two numbers: the average Brazilian supply was available 1 - 9.30/8,760 = 99.8938% of the year, each interruption lasted DEC/FEC = 1.996 hours on average, and interruptions arrived every 8,760/4.66 = 1,880 hours, about 78 days. Under three nines at the socket is why the [power part](/learn/physical-and-power-redundancy-feeds-paths-and-carriers) of this series exists.
+
+Treynor and his co-authors turn the identity into a planning rule: "A service cannot be more available than its incident frequency multiplied by its detection and recovery time", with the example that "three complete outages per year that last 20 minutes each result in a total of 60 minutes of outages" ([The Calculus of Service Availability](https://sre.google/static/pdf/calculus_of.pdf)). Sixty minutes a year is 99.9886% of a 525,600-minute year, already below four nines.
+
+## The nines, as downtime
+
+Each additional nine "corresponds to an order of magnitude improvement toward 100% availability" ([Google, Site Reliability Engineering, chapter 3, Embracing Risk](https://sre.google/sre-book/embracing-risk/)). The table converts them into allowed downtime, computed on a 365-day year (525,600 minutes), a 90-day quarter and a 30-day month, the bases of the [Site Reliability Engineering availability table](https://sre.google/sre-book/availability-table/) that it reproduces and extends:
+
+| Availability | Per year | Per quarter | Per 30-day month | Per week | Per day |
+|---|---|---|---|---|---|
+| 99% | 3.65 days (87.6 h) | 21.6 h | 7.2 h | 1.68 h | 14.4 min |
+| 99.5% | 1.825 days (43.8 h) | 10.8 h | 3.6 h | 50.4 min | 7.2 min |
+| 99.9% | 8.76 h (8 h 45 min 36 s) | 2.16 h | 43.2 min | 10.08 min | 86.4 s |
+| 99.95% | 4.38 h | 1.08 h | 21.6 min | 5.04 min | 43.2 s |
+| 99.99% | 52.56 min (52 min 33.6 s) | 12.96 min | 4.32 min | 60.48 s | 8.64 s |
+| 99.999% | 5.256 min (5 min 15.36 s) | 1.296 min | 25.92 s | 6.05 s | 0.864 s |
+| 99.9999% | 31.54 s | 7.78 s | 2.59 s | 0.60 s | 0.0864 s |
+
+The SRE book gives the same 52.56 minutes for 99.99% ([Embracing Risk](https://sre.google/sre-book/embracing-risk/)); its table rounds it to 52.6 and is computed "Assuming no planned downtime" ([Availability Table](https://sre.google/sre-book/availability-table/)). On a 365.25-day year the four-nines figure grows to 52.596 minutes, so a contract should say which year it counts. The [time calculator](/tools/time-calculator) converts any of these durations exactly, and the [Python playground](/tools/python-playground) runs every formula in this article.
+
+The Uptime Institute's research director warned in 2019 that the nines are a metric "used casually, in many different ways, and without scientific rigor", that the definition of downtime "varies according to the service and the provider", that a facility can look highly available on paper "while still having multiple single points of failure in its design", and that no number of nines corresponds directly to one of the institute's Tier levels ([Andy Lawrence, Uptime Institute Journal, 99 Red Flags: The Availability Nines, 28 October 2019](https://journal.uptimeinstitute.com/?p=6064)).
+
+Two definitional choices change the number as much as any engineering. The first is what counts as down. Google prefers aggregate availability, successful requests over total requests, because a globally distributed service is usually partly up: "a system that serves 2.5M requests in a day with a daily availability target of 99.99% can serve up to 250 errors and still hit its target for that given day" ([Embracing Risk](https://sre.google/sre-book/embracing-risk/)). The second is what is excluded. Anatel's fixed broadband quality rule of 2011 required a monthly availability of 99%, measured as the share of measurements that met it, 95% of them after the first two years, and excluded preventive maintenance announced to subscribers at least 24 hours ahead ([Anatel, Resolução nº 574, de 28 de outubro de 2011, article 21](https://informacoes.anatel.gov.br/legislacao/resolucoes/2011/57-resolucao-574)). Ninety-nine per cent of a 30-day month allows 7.2 hours, and announced maintenance came on top. The resolution was revoked by Resolução nº 717/2019 (same page).
+
+## Components in series
+
+A path works only if every component on it works. NIST's series model states the assumptions, that "Each component operates or fails independently of every other one" and that the system fails at the first component failure, and the rule: "Add failure rates and multiply reliabilities" ([NIST, 8.1.8.2](https://www.itl.nist.gov/div898/handbook/apr/section1/apr182.htm)). For availabilities of independent components the same product applies:
+
+```text
+A_series = A_1 x A_2 x ... x A_n
+```
+
+A path through an access switch (99.99%), a router (99.99%), a firewall (99.95%) and an uplink (99.9%) has an availability of 0.9999 x 0.9999 x 0.9995 x 0.999 = 99.83008%, or 893 minutes, nearly 15 hours, a year. The path is worse than its worst component, which alone would allow 525.6 minutes.
+
+ITU-T E.800 describes the same path in words: "Availability of a connection link expressed as 99.99% (metric) may be calculated by the summation of the individual availabilities (observed attributes) of the router, transmission link of access and the core network" ([ITU-T E.800, 2.13, note 2](https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-E.800-200809-I!!PDF-E&type=items)). Read literally, adding availabilities gives nonsense; what does add, to a close approximation, is the unavailabilities. The four components above have unavailabilities of 0.0001, 0.0001, 0.0005 and 0.001, which sum to 0.0017, giving 99.83000% against the exact 99.83008%, an error of 8.1 x 10^-7. The shortcut is good while each unavailability is small.
+
+Treynor and his co-authors draw the design rule from the product. "A service cannot be more available than the intersection of all its critical dependencies", so each critical dependency should offer one more nine than the service, the "rule of the extra 9" ([The Calculus of Service Availability](https://sre.google/static/pdf/calculus_of.pdf)). Their worked budget for a 99.99% service: 0.01% of 525,600 minutes is 52.56 minutes, which they round to 53; five independent critical dependencies at 0.001% each take 0.005%, 26.28 minutes, which they round to 26; 27 minutes remain for the service's own failures, and with an expected one full outage and three outages each affecting a single one of five independent shards, 20% each, an aggregate impact of 1.6, each outage must be detected and recovered in 27/1.6 = 16.9 minutes, which they give as 17 (same paper). Unrounded, the budget is 16.4 minutes.
+
+## Components in parallel
+
+A redundant group fails only when every member has failed. NIST's parallel model multiplies the members' failure probabilities, under the assumption that "All components operate independently of one another, as far as reliability is concerned" ([NIST, 8.1.8.3](https://www.itl.nist.gov/div898/handbook/apr/section1/apr183.htm)). For availability:
+
+```text
+A_parallel = 1 - (1 - A_1) x (1 - A_2) x ... x (1 - A_n)
+```
+
+| Group (independent members) | Availability | Downtime per year |
+|---|---|---|
+| 2 x 99.0% | 99.99% | 52.56 min |
+| 2 x 99.9% | 99.9999% | 31.54 s |
+| 2 x 99.95% | 99.999975% | 7.88 s |
+| 3 x 99.9% | 99.9999999% | 0.03 s |
+
+Treynor and his co-authors run the third line of reasoning on three copies of data at 99.9% each, a "theoretical availability" of nine nines "if instance failures are independent with zero correlation", and then correct it: "In the real world, the correlation is never zero (consider network backbone failures that affect many cells concurrently), so the actual availability will be nowhere close to nine 9s but is much higher than three 9s" ([The Calculus of Service Availability](https://sre.google/static/pdf/calculus_of.pdf)). The rest of this article is about the distance between those two sentences.
+
+A standby member that stays off until it is needed does a little better than an active one, because it does not age while it waits. NIST's example is a space probe computer with an MTTF of 30 months: alone, it survives a 24-month mission with probability e^(-24/30) = 0.449; with an identical standby switched in on failure, the probability rises to 0.81 ([NIST, 8.1.8.5](https://www.itl.nist.gov/div898/handbook/apr/section1/apr185.htm)). The model assumes the switch itself never fails, which the [testing part](/learn/testing-redundancy-failure-drills-chaos-and-the-failover-never-tried) of this series questions.
+
+Real designs mix the two shapes. Put the pair of 99.9% routers behind one shared component, a power feed or an upstream switch at 99.99%, and the system becomes 0.999999 x 0.9999 = 99.98990%, or 53.09 minutes a year: 99% of the downtime now comes from the shared component, and the redundant pair has bought less than a minute against the 52.56 that the shared component alone would allow. With a shared component of 99.9%, the result is 99.89990%, worse than either router alone would have been without it.
+
+## N, N+1, 2N, 2N+1 and N+M
+
+The capacity notation counts units against need. N is the number of units required to carry the load; each +1 is a unit that can be lost without losing capacity. Google's SRE book sizes a service this way: load testing showed one backend handles about 100 queries per second (QPS), the expected peak was 3,470 QPS, so N is 35 tasks; the plan is 37 tasks, N+2, because "During updates, one task at a time will be unavailable, leaving 36 tasks" and "A machine failure might occur during a task update, leaving only 35 tasks, just enough to serve peak load" ([Google, Site Reliability Engineering, chapter 2, The Production Environment at Google](https://sre.google/sre-book/production-environment/)). One spare covers maintenance, the second covers a failure during maintenance.
+
+The same chapter splits the load by region and keeps N+2 in each, ending with 17 tasks in the United States, 16 in Europe and 6 in Asia; for South America it accepts 4 tasks instead of 5, "to lower the overhead of N+2 to N+1", trading a small risk of higher latency for hardware ([chapter 2](https://sre.google/sre-book/production-environment/)). The arithmetic checks: 1,430 QPS needs 15 tasks plus 2 is 17; 1,400 needs 14 plus 2 is 16; 350 needs 4 plus 2 is 6; 290 needs 3 plus 2 is 5, run as 4; and the four regions add up to the 3,470 QPS of the global peak.
+
+The other forms read the same way. 2N is a complete second set, so the system survives the loss of an entire set; for a path this is what Request for Comments (RFC) 4427 calls 1+1 protection, traffic bridged permanently onto a working and a protection path and the better one selected at the far end ([RFC 4427, April 2006, section 6.1](https://www.rfc-editor.org/rfc/rfc4427.txt)). By the same counting, 2N+1 is two complete sets plus one spare unit. N+M is N working units sharing M spares, which RFC 4427 calls M:N protection, with 1:N as the case of one spare (sections 6.2 and 6.3). The facility vocabulary that uses these terms for power and cooling is the subject of [part 3](/learn/physical-and-power-redundancy-feeds-paths-and-carriers).
+
+Power-system operators count from the other side, in elements lost: the report of Brazil's Operador Nacional do Sistema Elétrico (ONS) on the blackout of 15 August 2023 records that certain 500 kV lines could not be re-energized until the "condição de N-1" (N-1 condition) was met at the Igaporã III substation ([ONS, RAP-ONS 00012/2023, restoration of the Sudoeste area](https://www.ons.org.br/AcervoDigitalDocumentosEPublicacoes/RAP%202023.08.15%2008h30min%20vers%c3%a3o%20final%20com%20anexos%20de%20diverg%c3%aancia_Final.pdf)). The same report is a lesson in what the count assumes: the event began with the automatic disconnection of the 500 kV line from Quixadá to Fortaleza II by its own protection, without a short circuit ("sem a incidência de curto-circuito"), and the voltage collapse after "a perda de uma única linha de transmissão" followed from wind and solar plants performing far below the mathematical models their owners had sent to the ONS; about 23,368 megawatts (MW) of load was interrupted (same report, chapter 1). One element lost, as designed for; the margin behind it was computed from models that did not match the field.
+
+## k-out-of-n
+
+Most real groups are neither all-or-nothing series nor one-is-enough parallel: four spine switches where three carry the load, five consensus servers where three must agree. NIST's r-out-of-n model covers them: n identical, independent components, of which at least r must work, give the binomial sum ([NIST, 8.1.8.4](https://www.itl.nist.gov/div898/handbook/apr/section1/apr184.htm)):
+
+```text
+A(k of n) = sum over i = k..n of  C(n, i) x A^i x (1 - A)^(n - i)
+```
+
+With k = n it is the series model and with k = 1 the parallel model (same section). An N+M group is an N-out-of-(N+M) system. Computed for members at 99.9% and at 99%:
+
+| Group | Needs | Members at 99.9% | Downtime per year | Members at 99% | Downtime per year |
+|---|---|---|---|---|---|
+| 4 spines, all needed | 4 of 4 | 99.6006% | 34.99 h | 96.0596% | 345 h |
+| 4 spines, one spare (N+1) | 3 of 4 | 99.99940% | 3.15 min | 99.94080% | 5.19 h |
+| 3 consensus servers | 2 of 3 | 99.99970% | 1.58 min | 99.97020% | 2.61 h |
+| 5 consensus servers | 3 of 5 | 99.999999% | 0.31 s | 99.99901% | 5.18 min |
+
+Consensus systems such as Raft are k-out-of-n by construction: they remain "fully functional (available) as long as any majority of the servers are operational and can communicate with each other and with clients", so "a typical cluster of five servers can tolerate the failure of any two servers" ([Ongaro and Ousterhout, In Search of an Understandable Consensus Algorithm, extended version, 2014, section 1](https://raft.github.io/raft.pdf)). A majority of 2f + 1 servers tolerates f failures: three tolerate one, five tolerate two, seven tolerate three. [Part 9](/learn/data-and-service-redundancy-replication-quorum-rpo-and-rto) covers what quorum costs in latency and what happens when the network, not a server, fails.
+
+The four-of-four row deserves a second look: adding switches that are all needed makes the system less available than one switch, 99.6% against 99.9%. Capacity added without a spare is a longer series.
+
+## Shared fate and common-cause failure
+
+Every formula so far multiplies, and multiplication is only valid for independent events. Shared fate is the name for the cases where it is not: two components that depend on one thing fail together when that thing fails. The cloud providers use the term in their own design documents; Amazon Web Services (AWS) designs its zones against "shared fate scenarios such as utility power, water disruption, fiber isolation, earthquakes, fires, tornadoes, or floods" ([AWS, AWS Fault Isolation Boundaries, Availability Zones](https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/availability-zones.html)). The word of the Internet Engineering Task Force (IETF) for the shared thing is a shared risk group, "a set of network elements that are collectively impacted by a specific fault or fault type" ([RFC 3386, November 2002, section 2.2.2](https://www.rfc-editor.org/rfc/rfc3386.txt)), and its routing attribute is the shared risk link group (SRLG), illustrated by "two fibers in the same conduit" ([RFC 4202, October 2005, section 2.3](https://www.rfc-editor.org/rfc/rfc4202.txt)). The United States Nuclear Regulatory Commission's guidelines define the common cause event, in risk assessment, as "the failure or unavailable state of more than one component during the mission time and due to the same shared cause" ([Mosleh, Rasmuson and Marshall, NUREG/CR-5485, Guidelines on Modeling Common-Cause Failures in Probabilistic Risk Assessment, November 1998, section 1.2](https://nrcoe.inl.gov/publicdocs/CCF/NUREGCR-5485_Guidelines%20on%20Modeling%20Common-Cause%20Failures%20in%20PRA.pdf)).
+
+Shared fate is not always a defect. David Clark's account of the Internet's design calls its choice to keep connection state at the endpoints "fate-sharing", and defends it: "it is acceptable to lose the state information associated with an entity if, at the same time, the entity itself is lost" ([Clark, The Design Philosophy of the DARPA Internet Protocols, SIGCOMM 1988](http://ccr.sigcomm.org/archive/1995/jan95/ccr-9501-clark.pdf)). Deliberate shared fate puts the dependency where its loss does not matter; accidental shared fate puts it where the redundancy was supposed to be.
+
+Three shapes recur in the reports, and each defeats the parallel formula differently.
+
+**One trench.** Two fibres in one conduit are one fibre for a backhoe, which is RFC 4202's own example ([RFC 4202, section 2.3](https://www.rfc-editor.org/rfc/rfc4202.txt)). The physical cases, from shared conduits to cable landing points, are in [part 3](/learn/physical-and-power-redundancy-feeds-paths-and-carriers) and in [Submarine cables: the internet is a rope on the seabed](/learn/submarine-cables-and-the-physical-internet).
+
+**One bug.** Identical copies run identical code, and a defect that waits for a condition reaches them all when the condition comes. Ireland's National Cyber Security Centre relayed in December 2019 that certain Hewlett Packard Enterprise (HPE) solid-state drives with firmware older than HPD8 would fail with data loss at 32,768 hours of operation, and that "if several disks have been installed at the same time, this may lead to failure at approximately the same time" ([NCSC Ireland, CSIRT-IE advisory IR-18122019, HPE SAS SSD Vulnerability](https://ncsc.gov.ie/pdfs/HPE_Advisory.pdf)). 32,768 is 2^15; in calendar terms it is 1,365.3 days, 3.74 years after the drives were switched on together. A mirrored pair of such drives has an MTBF on paper and a fixed date in practice. The CrowdStrike update of July 2024 is the same shape at scale: one content file, interpreted by the same sensor code on every host, with 21 input fields defined and 20 supplied ([CrowdStrike, Channel File 291 root cause analysis, 6 August 2024](https://www.crowdstrike.com/wp-content/uploads/2024/08/Channel-File-291-Incident-Root-Cause-Analysis-08.06.2024.pdf)), on an estimated 8.5 million Windows devices ([Microsoft, 20 July 2024](https://blogs.microsoft.com/blog/2024/07/20/helping-our-customers-through-the-crowdstrike-outage/)).
+
+**One operator, one file.** A change applied everywhere is a common cause by design. Gill and his co-authors found "the same configuration error made on both the primary and back up of a network connection because of a typo in the configuration script" ([Gill, Jain and Nagappan, SIGCOMM 2011, section 5.1](https://conferences.sigcomm.org/sigcomm/2011/papers/sigcomm/p350.pdf)); Optus told Australia's Senate that "almost 90 routers" reached the same preset safety limit and shut down, which "effectively disconnected all these levels of redundancy" ([Senate Environment and Communications References Committee, Optus Network Outage, September 2024, chapter 2](https://www.aph.gov.au/Parliamentary_Business/Committees/Senate/Environment_and_Communications/OptusNetworkOutage/Report/Chapter_2_-_The_Optus_network_outage)); Cloudflare's November 2025 feature file was "propagated to all the machines that make up our network" ([Cloudflare, 18 November 2025](https://blog.cloudflare.com/18-november-2025-outage/)). The [hub's outage table](/learn/redundant-architectures-how-networks-survive-failure) lists twelve cases.
+
+### Putting a number on it: the beta factor
+
+Nuclear risk analysts gave common cause a parameter. In the beta factor model, "a constant fraction" β of each component's failure probability is attributed to common cause events, and every common cause event is assumed to fail all the components of the group ([NUREG/CR-5485, appendix A](https://nrcoe.inl.gov/publicdocs/CCF/NUREGCR-5485_Guidelines%20on%20Modeling%20Common-Cause%20Failures%20in%20PRA.pdf)). For a pair that needs one member, with each member unavailable a fraction Q of the time:
+
+```text
+independent part      Q_ind = (1 - beta) x Q
+common-cause part     Q_ccf = beta x Q
+pair unavailability   U ~ Q_ind^2 + Q_ccf      (rare-event approximation)
+```
+
+Worked for the two routers at 99.9% (Q = 0.001), with illustrative values of β:
+
+| β | Pair unavailability | Pair availability | Downtime per year | Share from the common cause |
+|---|---|---|---|---|
+| 0 (independent) | 1.00 x 10^-6 | 99.9999% | 0.53 min | 0% |
+| 0.01 | 1.10 x 10^-5 | 99.99890% | 5.77 min | 91.1% |
+| 0.05 | 5.09 x 10^-5 | 99.99491% | 26.75 min | 98.2% |
+| 0.10 | 1.01 x 10^-4 | 99.98992% | 52.99 min | 99.2% |
+
+One per cent of failures in common multiplies the pair's downtime by eleven; ten per cent removes almost all the benefit of the second router, leaving the pair close to four nines. The guidelines add that estimates of β "for widely different types of components do not appear to vary appreciably" in the nuclear data they model ([NUREG/CR-5485, appendix A](https://nrcoe.inl.gov/publicdocs/CCF/NUREGCR-5485_Guidelines%20on%20Modeling%20Common-Cause%20Failures%20in%20PRA.pdf)); no comparable published estimate for network equipment was found for this article, which is why the values above are illustrative.
+
+## Correlated failure in the published studies
+
+Field measurements put the size of the correction in front of the formulas.
+
+| Study | Population | Finding on independence |
+|---|---|---|
+| [Ford and others (Google), OSDI 2010](https://www.usenix.org/legacy/event/osdi10/tech/full_papers/Ford.pdf) | A year of tens of Google storage clusters | 37% of node failures were part of a burst of at least two; most large bursts came from rack-level or multi-rack events; "failing to account for correlation of node failures typically results in overestimating availability by at least two orders of magnitude, and eight in the case of RS(8,4)" |
+| [Schroeder and Gibson, FAST 2007](https://www.usenix.org/legacy/events/fast07/tech/schroeder/schroeder.pdf) | About 100,000 disks | Datasheet MTTFs of 1,000,000 to 1,500,000 hours suggest "a nominal annual failure rate of at most 0.88%"; in the field "annual disk replacement rates typically exceed 1%, with 2-4% common and up to 13% observed"; time between replacements "exhibits significant levels of correlation, including autocorrelation and long-range dependence" |
+| [Gill, Jain and Nagappan, SIGCOMM 2011](https://conferences.sigcomm.org/sigcomm/2011/papers/sigcomm/p350.pdf) | Over a year of data centre network logs | Median traffic during a failure was 93% across the redundancy group against 65% on the link, "only 40% effective in reducing the median impact of failure" |
+| [Oppenheimer, Ganapathi and Patterson, USITS 2003](https://www.usenix.org/legacy/events/usits03/tech/full_papers/oppenheimer/oppenheimer.pdf) | Three large Internet services | In the service of its figure 4, 24% or fewer component failures became service failures except for operator errors; "Fully half of the 36 operator errors resulted in service failure" |
+| [Meza and others, IMC 2018](https://conferences.sigcomm.org/imc/2018/papers/imc18-final179.pdf) | Seven years of Facebook data centre network incidents | "2× more human errors than hardware errors as devices and routing configurations become more complex and challenging to maintain" |
+| [Turner and others, SIGCOMM 2010](https://conferences.sigcomm.org/sigcomm/2010/papers/sigcomm/p315.pdf) | Five years of failures in a regional network of over 200 routers | No partition of the core, which needed simultaneous failures in several cities, but customer sites of the Corporation for Education Network Initiatives in California (CENIC) with "only one router and only one or two links to the CENIC core" were occasionally cut off |
+
+The disk numbers can be turned around. Schroeder and Gibson's average replacement rate, weighted by the number of drives, was 3.01% a year, and 2.86%, "3.3 times higher than 0.88%", even after removing the data set with the highest rates ([Schroeder and Gibson, section 4](https://www.usenix.org/legacy/events/fast07/tech/schroeder/schroeder.pdf)); an annual rate of 3.01% corresponds to a field MTTF of 8,760/0.0301 = 291,030 hours, against the 1,000,000 on the datasheet. The datasheet arithmetic itself checks: 8,760/1,000,000 is 0.876%, and with the exponential model 1 - e^(-0.00876) is 0.872%, both under the paper's "at most 0.88%".
+
+## Why the arithmetic overstates real availability
+
+The textbook figure is an upper bound for at least seven reasons, each of which can be measured:
+
+1. **Independence is assumed, and correlation is the rule.** Every model above lists independence among its assumptions ([NIST, 8.1.8](https://www.itl.nist.gov/div898/handbook/apr/section1/apr18.htm)); Ford's study puts the error from ignoring it at two orders of magnitude or more.
+2. **Failover takes time.** A failover is detection plus four further steps ([RFC 5714, January 2010, section 4](https://www.rfc-editor.org/rfc/rfc5714.txt)), and each one spends budget. Computed: twelve failovers a year cost 43.3 seconds at the defaults of the Virtual Router Redundancy Protocol version 3 (VRRPv3), 3.6094 seconds each, 480 seconds at the sample dead interval of Open Shortest Path First (OSPF), 40 seconds, and 1,080 seconds at the suggested 90-second hold time of the Border Gateway Protocol (BGP), which caps the second case at 99.99848% before any other failure. The timer table in the [hub](/learn/redundant-architectures-how-networks-survive-failure) gives each layer's defaults, and [the arithmetic of Bidirectional Forwarding Detection](/learn/bfd-timers-the-arithmetic-of-detection) shows how to shorten one.
+3. **Failover can fail.** E.800's fault coverage is "The proportion of faults of an item that can be recognized under given conditions" ([ITU-T E.800, 3.3.12](https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-E.800-200809-I!!PDF-E&type=items)); a fault the standby cannot see is not covered, and Gill's study names "bugs in fail-over mechanisms" among the reasons redundancy fell short ([Gill and others, section 5.1](https://conferences.sigcomm.org/sigcomm/2011/papers/sigcomm/p350.pdf)).
+4. **Repair leaves a window.** While one member of a pair is being repaired, the pair is a single unit; with an MTBF of 3,996 hours and a repair of 4 hours, the chance that the survivor also fails in that window is about 4/3,996 = 0.10%, and with a 24-hour repair it is 0.60%.
+5. **Datasheets are not the field.** Disk replacement rates ran at least 3.3 times the datasheet's on average ([Schroeder and Gibson](https://www.usenix.org/legacy/events/fast07/tech/schroeder/schroeder.pdf)), and constant-rate formulas ignore the early failures and the wear-out at either end of the bathtub ([NIST, 8.1.2.4](https://www.itl.nist.gov/div898/handbook/apr/section1/apr124.htm)).
+6. **Planned downtime is often outside the number.** The SRE availability table assumes none ([Availability Table](https://sre.google/sre-book/availability-table/)); Anatel's 2011 rule excluded announced maintenance ([Resolução nº 574/2011, article 21](https://informacoes.anatel.gov.br/legislacao/resolucoes/2011/57-resolucao-574)).
+7. **People are not in the model.** Operator errors were the hardest failures to mask ([Oppenheimer and others](https://www.usenix.org/legacy/events/usits03/tech/full_papers/oppenheimer/oppenheimer.pdf)), and human errors outnumbered hardware errors two to one ([Meza and others](https://conferences.sigcomm.org/imc/2018/papers/imc18-final179.pdf)).
+
+### A pair of routers, honestly
+
+Put the corrections together for the example that opened the article, two routers at 99.9% each, with every input below computed from the formulas above and the stated assumptions:
+
+| Step | Assumption | Unavailability | Downtime per year |
+|---|---|---|---|
+| Textbook pair | Independent members at 99.9% | 1.00 x 10^-6 | 31.5 s |
+| Add a common cause | β = 0.05 | 5.09 x 10^-5 | 26.75 min |
+| Add failover time | Each router 99.9% with a 4-hour MTTR, so an MTBF of 3,996 h and 2.19 failures a year each; at most 4.38 VRRPv3 failovers of 3.6094 s | + 5.01 x 10^-7 | + 15.8 s |
+| Add a shared power feed or upstream | 99.99% | + 1.00 x 10^-4 | + 52.56 min |
+| Result | | 1.514 x 10^-4 | 79.6 min (99.9849%) |
+
+The honest pair is about 151 times less available than the textbook pair, and two thirds of its downtime comes from the component that has no partner. The failover time, the item that timer discussions focus on, is a third of one per cent of the total. The order of work follows from the table: find what the pair shares, then reduce the common cause, then shorten the timers.
+
+The whole calculation fits in a few lines that the [Python playground](/tools/python-playground) runs as written:
+
+```python
+from math import comb, prod
+YEAR_MIN = 365 * 24 * 60                                  # 525,600 minutes
+def series(*a): return prod(a)                            # all must work
+def parallel(*a): return 1 - prod(1 - x for x in a)       # one is enough
+def k_of_n(k, n, a): return sum(comb(n, i) * a**i * (1 - a)**(n - i) for i in range(k, n + 1))
+def pair_ccf(q, beta): return ((1 - beta) * q) ** 2 + beta * q   # unavailability
+print(round((1 - parallel(0.999, 0.999)) * YEAR_MIN * 60, 1))            # 31.5 s
+print(round(pair_ccf(0.001, 0.05) * YEAR_MIN, 2))                         # 26.75 min
+print(round((1 - k_of_n(3, 4, 0.999)) * YEAR_MIN, 2))                     # 3.15 min
+print(round((1 - series(0.9999, 0.9999, 0.9995, 0.999)) * YEAR_MIN, 1))   # 893.1 min
+```
+
+## What to remember
+
+- Availability is uptime over uptime plus downtime, MTTF/(MTTF+MTTR) for one repairable item; MTTR has at least four expansions, so ask where its clock starts and stops.
+- Each nine is a factor of ten: 99.9% allows 8.76 hours a year, 99.99% allows 52.56 minutes and 99.999% allows 5.256 minutes, on a 365-day year and assuming no planned downtime.
+- Series multiplies availabilities, parallel multiplies unavailabilities, and k-out-of-n adds binomial terms; capacity without a spare is a longer series.
+- N+1 and N+2 count spares against need; one spare covers maintenance, the second covers a failure during it.
+- Shared fate breaks every formula: a beta factor of only 5% turns a pair's 31.5 seconds a year into 26.75 minutes.
+- Field studies show the gap: correlation ignored overstates storage availability by two orders of magnitude or more, disks fail at three times their datasheet rate, and operator errors are the hardest failures to mask.
+
+<ReaderQuestions>
+
+- If a supplier quotes MTBF and an operator measures MTTR from the customer's report to restoration, whose numbers should an availability commitment rest on, and who should bear the gap?
+- Aggregate availability counts failed requests and time-based availability counts minutes: which better describes what a network's users experience, and which is easier to game?
+- The beta factor for network equipment has no published estimate comparable to the nuclear data: what would an operator need to record to estimate its own?
+- Should a contract that promises four nines be allowed to exclude announced maintenance, as Anatel's 2011 rule did, and what would honest disclosure of that exclusion look like?
+- When diversity means two vendors, two code bases and two sets of skills, at what point does the complexity it adds cost more availability than the common-mode failures it removes?
+
+</ReaderQuestions>
+
+## Sources
+
+- [ITU-T Recommendation E.800 (09/2008), Definitions of terms related to quality of service, approved 23 September 2008, in force: 2.13 note 2, 3.1.1.5.4, 3.1.1.5.5, 3.3.11, 3.3.12, 3.3.16.2 and 3.3.16.3 (accessed 16 November 2026)](https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-E.800-200809-I!!PDF-E&type=items)
+- [IEEE Computer Society and ISO/IEC JTC 1/SC 7, SEVOCAB (Software and Systems Engineering Vocabulary), entries availability (ISO/IEC 25010:2023 and IEEE 982:2024), mean time between failures (ISO/IEC/IEEE 24765:2017) and MTTR (IEEE 982:2024, IEEE 2675-2021, IEEE 7005-2021); definitions copyright 2026 IEEE, used by permission (accessed 16 November 2026)](https://pascal.computer.org/sev_display/index.action)
+- [NIST/SEMATECH e-Handbook of Statistical Methods, 8.1.2.1, Repairable systems, non-repairable populations and lifetime distribution models (accessed 16 November 2026)](https://www.itl.nist.gov/div898/handbook/apr/section1/apr121.htm)
+- [NIST/SEMATECH e-Handbook of Statistical Methods, 8.1.2.4, "Bathtub" curve (accessed 16 November 2026)](https://www.itl.nist.gov/div898/handbook/apr/section1/apr124.htm)
+- [NIST/SEMATECH e-Handbook of Statistical Methods, 8.1.6.1, Exponential: MTTF = 1/λ (accessed 16 November 2026)](https://www.itl.nist.gov/div898/handbook/apr/section1/apr161.htm)
+- [NIST/SEMATECH e-Handbook of Statistical Methods, 8.1.7.1, Homogeneous Poisson Process: MTBF = 1/λ (accessed 16 November 2026)](https://www.itl.nist.gov/div898/handbook/apr/section1/apr171.htm)
+- [NIST/SEMATECH e-Handbook of Statistical Methods, 8.1.8, bottom-up reliability models and their independence assumptions (accessed 16 November 2026)](https://www.itl.nist.gov/div898/handbook/apr/section1/apr18.htm)
+- [NIST/SEMATECH e-Handbook of Statistical Methods, 8.1.8.2, Series model (accessed 16 November 2026)](https://www.itl.nist.gov/div898/handbook/apr/section1/apr182.htm)
+- [NIST/SEMATECH e-Handbook of Statistical Methods, 8.1.8.3, Parallel or redundant model (accessed 16 November 2026)](https://www.itl.nist.gov/div898/handbook/apr/section1/apr183.htm)
+- [NIST/SEMATECH e-Handbook of Statistical Methods, 8.1.8.4, R out of N model (accessed 16 November 2026)](https://www.itl.nist.gov/div898/handbook/apr/section1/apr184.htm)
+- [NIST/SEMATECH e-Handbook of Statistical Methods, 8.1.8.5, Standby model: the space probe example (accessed 16 November 2026)](https://www.itl.nist.gov/div898/handbook/apr/section1/apr185.htm)
+- [Ben Treynor, Mike Dahlin, Vivek Rau and Betsy Beyer, The Calculus of Service Availability, ACM Queue, March-April 2017, PDF published by Google SRE: MTTF/(MTTF+MTTR), the rule of the extra 9, the 99.99% budget, frequency and detection, redundancy and correlation (accessed 16 November 2026)](https://sre.google/static/pdf/calculus_of.pdf)
+- [eixos, from Estadão Conteúdo, Consumidores ficaram 9,3 horas em média sem energia em 2025, diz Aneel; redução é de 9,2%, 15 April 2026: DEC 9.30 h and FEC 4.66 in 2025 (accessed 16 November 2026)](https://eixos.com.br/energia-eletrica/consumidores-ficaram-93-horas-em-media-sem-energia-em-2025-diz-aneel-reducao-e-de-92-porcento/)
+- [Google, Site Reliability Engineering, chapter 3, Embracing Risk: time-based and aggregate availability, 52.56 minutes, each nine an order of magnitude (accessed 16 November 2026)](https://sre.google/sre-book/embracing-risk/)
+- [Google, Site Reliability Engineering, Appendix A, Availability Table: allowed unavailability per year, quarter, month, week, day and hour, assuming no planned downtime (accessed 16 November 2026)](https://sre.google/sre-book/availability-table/)
+- [Andy Lawrence, Uptime Institute Journal, 99 Red Flags: The Availability Nines, 28 October 2019: the nines used without rigour, definitions of downtime, single points of failure, no direct relation to Tier levels (accessed 16 November 2026)](https://journal.uptimeinstitute.com/?p=6064)
+- [Anatel, Resolução nº 574, de 28 de outubro de 2011, Regulamento de Gestão da Qualidade do Serviço de Comunicação Multimídia, article 21 and indicator SCM9; revoked by Resolução nº 717/2019 (accessed 16 November 2026)](https://informacoes.anatel.gov.br/legislacao/resolucoes/2011/57-resolucao-574)
+- [Google, Site Reliability Engineering, chapter 2, The Production Environment at Google, from the Viewpoint of an SRE: the N+2 and N+1 sizing example (accessed 16 November 2026)](https://sre.google/sre-book/production-environment/)
+- [RFC 4427, Recovery (Protection and Restoration) Terminology for Generalized Multi-Protocol Label Switching (GMPLS), April 2006, Informational: sections 6.1 to 6.3 (accessed 16 November 2026)](https://www.rfc-editor.org/rfc/rfc4427.txt)
+- [Operador Nacional do Sistema Elétrico (ONS), RAP-ONS 00012/2023, Análise da perturbação do dia 15/08/2023 às 08h30min, final version with annexes of divergence, 18 October 2023: chapter 1 and the restoration of the Sudoeste area (accessed 16 November 2026)](https://www.ons.org.br/AcervoDigitalDocumentosEPublicacoes/RAP%202023.08.15%2008h30min%20vers%c3%a3o%20final%20com%20anexos%20de%20diverg%c3%aancia_Final.pdf)
+- [Diego Ongaro and John Ousterhout, In Search of an Understandable Consensus Algorithm (Extended Version), Stanford University, 2014: section 1 (accessed 16 November 2026)](https://raft.github.io/raft.pdf)
+- [Amazon Web Services, AWS Fault Isolation Boundaries, Availability Zones, undated web page: shared fate scenarios (accessed 16 November 2026)](https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/availability-zones.html)
+- [RFC 3386, Network Hierarchy and Multilayer Survivability, November 2002, Informational: section 2.2.2 (accessed 16 November 2026)](https://www.rfc-editor.org/rfc/rfc3386.txt)
+- [RFC 4202, Routing Extensions in Support of GMPLS, October 2005, Proposed Standard: section 2.3 (accessed 16 November 2026)](https://www.rfc-editor.org/rfc/rfc4202.txt)
+- [A. Mosleh, D. M. Rasmuson and F. M. Marshall, NUREG/CR-5485, Guidelines on Modeling Common-Cause Failures in Probabilistic Risk Assessment, US Nuclear Regulatory Commission, published November 1998, copy hosted by Idaho National Laboratory: the common cause event and the beta factor model (accessed 16 November 2026)](https://nrcoe.inl.gov/publicdocs/CCF/NUREGCR-5485_Guidelines%20on%20Modeling%20Common-Cause%20Failures%20in%20PRA.pdf)
+- [David D. Clark, The Design Philosophy of the DARPA Internet Protocols, SIGCOMM 1988, reprinted in Computer Communication Review, January 1995 (accessed 16 November 2026)](http://ccr.sigcomm.org/archive/1995/jan95/ccr-9501-clark.pdf)
+- [National Cyber Security Centre Ireland, CSIRT-IE advisory IR-18122019, HPE SAS SSD Vulnerability, 18 December 2019 (accessed 16 November 2026)](https://ncsc.gov.ie/pdfs/HPE_Advisory.pdf)
+- [CrowdStrike, External Technical Root Cause Analysis, Channel File 291, 6 August 2024 (accessed 16 November 2026)](https://www.crowdstrike.com/wp-content/uploads/2024/08/Channel-File-291-Incident-Root-Cause-Analysis-08.06.2024.pdf)
+- [Microsoft, David Weston, Helping our customers through the CrowdStrike outage, 20 July 2024 (accessed 16 November 2026)](https://blogs.microsoft.com/blog/2024/07/20/helping-our-customers-through-the-crowdstrike-outage/)
+- [Phillipa Gill, Navendu Jain and Nachiappan Nagappan, Understanding Network Failures in Data Centers: Measurement, Analysis, and Implications, SIGCOMM 2011: abstract and section 5.1 (accessed 16 November 2026)](https://conferences.sigcomm.org/sigcomm/2011/papers/sigcomm/p350.pdf)
+- [Parliament of Australia, Senate Environment and Communications References Committee, Optus Network Outage, report of September 2024, chapter 2 (accessed 16 November 2026)](https://www.aph.gov.au/Parliamentary_Business/Committees/Senate/Environment_and_Communications/OptusNetworkOutage/Report/Chapter_2_-_The_Optus_network_outage)
+- [Cloudflare Blog, Matthew Prince, Cloudflare outage on November 18, 2025, 18 November 2025 (accessed 16 November 2026)](https://blog.cloudflare.com/18-november-2025-outage/)
+- [Daniel Ford and others (Google), Availability in Globally Distributed Storage Systems, OSDI 2010: sections 1, 4 and 8.3 (accessed 16 November 2026)](https://www.usenix.org/legacy/event/osdi10/tech/full_papers/Ford.pdf)
+- [Bianca Schroeder and Garth A. Gibson, Disk failures in the real world: What does an MTTF of 1,000,000 hours mean to you?, FAST 2007: abstract and section 4 (accessed 16 November 2026)](https://www.usenix.org/legacy/events/fast07/tech/schroeder/schroeder.pdf)
+- [David Oppenheimer, Archana Ganapathi and David A. Patterson, Why do Internet services fail, and what can be done about it?, USITS 2003: abstract, section 3.1 and figure 4, read from the PDF's page images (accessed 16 November 2026)](https://www.usenix.org/legacy/events/usits03/tech/full_papers/oppenheimer/oppenheimer.pdf)
+- [Justin Meza, Tianyin Xu, Kaushik Veeraraghavan and Onur Mutlu, A Large Scale Study of Data Center Network Reliability, IMC 2018: abstract and major observations (accessed 16 November 2026)](https://conferences.sigcomm.org/imc/2018/papers/imc18-final179.pdf)
+- [Daniel Turner, Kirill Levchenko, Alex C. Snoeren and Stefan Savage, California Fault Lines: Understanding the Causes and Impact of Network Failures, SIGCOMM 2010: abstract and section 5.3 (accessed 16 November 2026)](https://conferences.sigcomm.org/sigcomm/2010/papers/sigcomm/p315.pdf)
+- [RFC 5714, IP Fast Reroute Framework, January 2010, Informational: section 4 (accessed 16 November 2026)](https://www.rfc-editor.org/rfc/rfc5714.txt)

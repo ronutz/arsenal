@@ -65,7 +65,7 @@ A negociação eletrônica acabou com a bolsa única por mercado. A SEC descreve
 
 A maioria dos investidores não manda ordem direto para a bolsa; quem manda é uma instituição participante. O museu da B3 define as corretoras como empresas autorizadas a mediar a compra e a venda de produtos financeiros na Bolsa ([MUB3, junho de 2025](https://mub3.org.br/docs/Caderno%20do%20Professor%20-%20Site.pdf)). Até 1986, a Bolsa de Londres separava rigidamente dois papéis, o dos brokers, que agiam como agentes dos investidores, e o dos dealers chamados jobbers, que formavam preços com carteira própria, um arranjo conhecido como single capacity (capacidade única) ([Bank of England, dezembro de 1985](https://www.bankofengland.co.uk/-/media/boe/files/quarterly-bulletin/1985/change-in-the-stock-exchange-and-regulation-of-the-city.pdf); [Bank of England, fevereiro de 1987](https://www.bankofengland.co.uk/-/media/boe/files/quarterly-bulletin/1987/change-in-the-stock-exchange-and-regulation-of-the-city.pdf)). Na NYSE, a lei americana permitia que um membro registrado como especialista agisse ao mesmo tempo como corretor e como dealer, com a obrigação de ajudar a manter um mercado justo e ordenado ([SEC, 24 de outubro de 2008](https://www.govinfo.gov/content/pkg/FR-2008-10-29/pdf/E8-25797.pdf)).
 
-O papel de porteiro da corretora cresceu quando as ordens passaram a vir de máquinas. Em 1º de agosto de 2012, um sistema de roteamento da Knight Capital, uma corretora americana, despejou milhões de ordens em 45 minutos ao processar 212 pequenas ordens de varejo, e a empresa perdeu mais de US$ 460 milhões; a SEC concluiu que a Knight violou a regra que obriga corretoras com acesso ao mercado a controlar os riscos desse acesso, adotada em novembro de 2010, e a multou em US$ 12 milhões ([SEC, 16 de outubro de 2013](https://www.sec.gov/litigation/admin/2013/34-70694.pdf)). Uma parte futura, sobre risco pré-negociação e acesso ao mercado, volta a essa regra.
+O papel de porteiro da corretora cresceu quando as ordens passaram a vir de máquinas. Em 1º de agosto de 2012, um sistema de roteamento da Knight Capital, uma corretora americana, despejou milhões de ordens em 45 minutos ao processar 212 pequenas ordens de varejo, e a empresa perdeu mais de US$ 460 milhões; a SEC concluiu que a Knight violou a regra que obriga corretoras com acesso ao mercado a controlar os riscos desse acesso, adotada em novembro de 2010, e a multou em US$ 12 milhões ([SEC, 16 de outubro de 2013](https://www.sec.gov/litigation/admin/2013/34-70694.pdf)). [Risco pré-negociação e acesso ao mercado](/learn/pre-trade-risk-and-market-access-controls) volta a essa regra.
 
 ### O buy side: os investidores cujas ordens circulam
 
@@ -89,7 +89,7 @@ Boa parte dessa maquinaria é vendida por fornecedores às empresas que negociam
 - **ICAP** se define como "um intermediário líder mundial nos mercados atacadistas financeiros, de energia e de commodities" que combina corretores de voz com plataformas eletrônicas e atua em 22 países; o site traz aviso de copyright da TP ICAP ([ICAP, sem data](https://icap.com/)).
 - **Pico** diz que foi fundada em 2009, tem sede em Nova York e cresceu com aquisições como a Corvil (análise de rede) e a Redline Trading Solutions (software de baixa latência); descreve a Corvil como sua plataforma de análise em nível de pacote, que "captura cada pacote" e calcula a latência de cada ordem com resolução de nanossegundos ([Pico, sem data](https://www.pico.net/)).
 
-Os fornecedores brasileiros aparecem na parte sobre o Brasil, como as próprias páginas os descrevem. Uma parte futura trata dos sistemas de gestão de ordens (order management systems, OMS) e de execução (execution management systems, EMS) e das empresas que os vendem, e outra trata da análise e do monitoramento derivados da rede.
+Os fornecedores brasileiros aparecem na parte sobre o Brasil, como as próprias páginas os descrevem. [OMS e EMS](/learn/oms-and-ems-order-and-execution-management-systems) trata dos sistemas de gestão de ordens (order management systems, OMS) e de execução (execution management systems, EMS) e das empresas que os vendem, e [Análise derivada da rede](/learn/network-derived-analytics-and-trading-monitoring) das ferramentas que observam a negociação no cabo.
 
 ### Compensação e liquidação: garantir que o negócio se complete
 
@@ -135,7 +135,23 @@ O mesmo comunicado de 2009 prometia três níveis de acesso direto ao mercado (D
 
 **[Brasil: BM&F, Bovespa, B3 e o acesso eletrônico](/learn/brazil-bmf-bovespa-b3-and-electronic-access)** cobre as bolsas brasileiras, suas plataformas, os modelos de acesso e o co-location da B3, os participantes e o crescimento do número de investidores, pelos números da B3 e da CVM.
 
-As partes seguintes, em preparação, vão tratar de: **codificações do FIX e sucessores** (as formas em linguagem de marcação e binárias do FIX e os protocolos binários próprios das bolsas, como o OUCH e o ITCH da Nasdaq e o EntryPoint da B3); **a vida da ordem no FIX** (estados da ordem, cancelamento e substituição, drop copies, alocações, o FIX além das ações); **sistemas de gestão de ordens e de execução** e seus fornecedores; **risco pré-negociação e acesso ao mercado** (a regra de acesso ao mercado da SEC, o acesso patrocinado, os kill switches); **corretoras interdealer e renda fixa e câmbio eletrônicos** (ICAP, TP ICAP, CME e suas plataformas); **análise e monitoramento derivados da rede** (Corvil, Pico); **dados de mercado** (feeds consolidados contra feeds diretos); **vigilância e reporte regulatório** (MiFID II, a Consolidated Audit Trail, a CVM); e **equidade desde a concepção** (speed bumps e leilões em lote).
+**[Codificações e sucessores do FIX: FIXML, FAST, SBE e os protocolos binários das bolsas](/learn/fix-encodings-and-successors-fixml-fast-sbe-and-exchange-binary-protocols)** compara a forma tag=value do FIX com suas codificações em XML, comprimida e binária e com os protocolos binários próprios das bolsas, como o OUCH e o ITCH da Nasdaq e o EntryPoint da B3, com um mesmo preço codificado de nove maneiras.
+
+**[A vida de uma ordem no FIX](/learn/the-life-of-an-order-in-fix)** acompanha uma ordem pelos seus estados, cancelamento e substituição, rejeições, execuções parciais, drop copies e alocações, e o FIX além das ações, com uma sequência completa de mensagens tirada dos passos de certificação da B3.
+
+**[OMS e EMS: sistemas de gestão de ordens e de execução](/learn/oms-and-ems-order-and-execution-management-systems)** mostra o que cada sistema faz para o buy side e para o sell side, onde fica no fluxo, a execução algorítmica e o smart order routing, e os fornecedores, pelas suas próprias páginas e documentos.
+
+**[Risco pré-negociação e acesso ao mercado: limites, acesso patrocinado e kill switches](/learn/pre-trade-risk-and-market-access-controls)** trata da regra de acesso ao mercado da SEC e dos seus casos de fiscalização, das regras europeias sobre negociação algorítmica, dos controles da B3 e da CVM e dos kill switches, com a Knight Capital como o caso a favor deles.
+
+**[Corretoras interdealer e a negociação eletrônica de renda fixa e câmbio](/learn/interdealer-brokers-and-electronic-fixed-income-and-fx)** acompanha as corretoras entre dealers, da ICAP e suas plataformas BrokerTec e EBS à TP ICAP e à CME, a estrutura do mercado de títulos do Tesouro americano e o seu flash rally de 15 de outubro de 2014, a disputa sobre o last look no câmbio eletrônico e as plataformas eletrônicas brasileiras de renda fixa e câmbio.
+
+**[Análise derivada da rede: a negociação observada no cabo](/learn/network-derived-analytics-and-trading-monitoring)** trata da captura de pacotes e da marcação de tempo nas redes de negociação, da decodificação do FIX e dos protocolos binários a partir do cabo, da medição de latência, dos fornecedores, da Corvil e da Pico em diante, e das regras de relógio e de guarda de registros dos reguladores, a CVM incluída.
+
+**[Dados de mercado: feeds consolidados e feeds diretos](/learn/market-data-consolidated-feeds-and-direct-feeds)** compara os feeds consolidados dos processadores de informações dos Estados Unidos com os feeds diretos dos ambientes e a latência entre eles, acompanha nos tribunais a regra de dados de mercado da SEC de 2020 e os consolidated tapes que chegam à Europa e ao Reino Unido, e lê os dados de mercado da B3 na rede: canais multicast, arbitragem de feeds e recuperação por snapshot.
+
+**[Vigilância e reporte regulatório: MiFID II, Consolidated Audit Trail e CVM](/learn/surveillance-and-regulatory-reporting-mifid-ii-cat-and-cvm)** trata das regras sobre manipulação de mercado na União Europeia, nos Estados Unidos e no Brasil, dos casos de spoofing e layering que as puseram à prova, das comunicações de operações suspeitas e dos reportes de transações do MiFIR, do Consolidated Audit Trail (CAT) com suas disputas de custo e de privacidade, e da BSM e da CVM no Brasil.
+
+**[Equidade por desenho: speed bumps, leilões em lote e a IEX](/learn/fairness-by-design-speed-bumps-batch-auctions-and-iex)** apresenta desenhos que mudam as regras da corrida em vez dos corredores: a bobina de 350 microssegundos da IEX e os processos judiciais sobre ela, os atrasos que outras bolsas testaram, os leilões frequentes em lote e as evidências sobre cada um, e o debate brasileiro sobre as ofertas Retail Liquidity Provider da B3.
 
 ## Esta série, em ordem
 
@@ -150,15 +166,15 @@ Este artigo abre a série **Negociação eletrônica**.
 7. **[Anatomia de uma mensagem FIX e a camada de sessão](/learn/anatomy-of-a-fix-message-and-the-session-layer)**. Uma mensagem, campo a campo, e a sessão que a carrega.
 8. **[Redes FIX: hubs e conectividade gerenciada](/learn/fix-networks-hubs-and-managed-connectivity)**. As redes entre as empresas.
 9. **[Brasil: BM&F, Bovespa, B3 e o acesso eletrônico](/learn/brazil-bmf-bovespa-b3-and-electronic-access)**. O mercado brasileiro e como as empresas chegam a ele.
-10. **Codificações do FIX e sucessores** (em preparação).
-11. **A vida da ordem no FIX** (em preparação).
-12. **Sistemas de gestão de ordens e de execução** (em preparação).
-13. **Risco pré-negociação e acesso ao mercado** (em preparação).
-14. **Corretoras interdealer e renda fixa e câmbio eletrônicos** (em preparação).
-15. **Análise e monitoramento derivados da rede** (em preparação).
-16. **Dados de mercado** (em preparação).
-17. **Vigilância e reporte regulatório** (em preparação).
-18. **Equidade desde a concepção** (em preparação).
+10. **[Codificações e sucessores do FIX: FIXML, FAST, SBE e os protocolos binários das bolsas](/learn/fix-encodings-and-successors-fixml-fast-sbe-and-exchange-binary-protocols)**. As codificações do FIX e os protocolos binários das bolsas.
+11. **[A vida de uma ordem no FIX](/learn/the-life-of-an-order-in-fix)**. Os estados da ordem, as alterações e o que vem depois do negócio.
+12. **[OMS e EMS: sistemas de gestão de ordens e de execução](/learn/oms-and-ems-order-and-execution-management-systems)**. Os sistemas que guardam, roteiam e executam as ordens, e seus fornecedores.
+13. **[Risco pré-negociação e acesso ao mercado: limites, acesso patrocinado e kill switches](/learn/pre-trade-risk-and-market-access-controls)**. Os controles entre o cliente e o mercado.
+14. **[Corretoras interdealer e a negociação eletrônica de renda fixa e câmbio](/learn/interdealer-brokers-and-electronic-fixed-income-and-fx)**. As corretoras entre dealers e os mercados eletrônicos de títulos e moedas.
+15. **[Análise derivada da rede: a negociação observada no cabo](/learn/network-derived-analytics-and-trading-monitoring)**. Captura, marcação de tempo e latência, lidas na própria rede.
+16. **[Dados de mercado: feeds consolidados e feeds diretos](/learn/market-data-consolidated-feeds-and-direct-feeds)**. O que os feeds consolidados e diretos trazem, quem paga e como o receptor recupera pacotes perdidos.
+17. **[Vigilância e reporte regulatório: MiFID II, Consolidated Audit Trail e CVM](/learn/surveillance-and-regulatory-reporting-mifid-ii-cat-and-cvm)**. Regras e casos de manipulação, comunicações de suspeitas e reportes de transações, o CAT, a BSM e a CVM.
+18. **[Equidade por desenho: speed bumps, leilões em lote e a IEX](/learn/fairness-by-design-speed-bumps-batch-auctions-and-iex)**. Atrasos, leilões em lote e os reguladores e tribunais que os julgaram.
 
 ## Para lembrar
 
