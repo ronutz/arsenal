@@ -56,6 +56,116 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // PRIME 17/11/2026 02:01 ("Ultra-extra-rich content on steganography and related techniques"): wave 1 (agents A, B
+    // and C, brief canon/current/BRIEF-steganography-series-20261117.md) six parts; wave 2, six parts, after the reset.
+    date: "2026-11-17", // the day it was done
+    time: "03:13", // São Paulo time
+    kind: "content", // a new Learn series and its glossary terms
+    title: "New Learn series: steganography, hiding that a message exists", // the headline
+    titlePt: "Nova série do Learn: esteganografia, esconder que uma mensagem existe", // the Portuguese headline
+    body: // what changed, in plain words
+      "Six long articles, in English and Portuguese, open a twelve-part series on steganography, the craft of hiding that a message exists at all: the opener with Simmons's prisoners' problem and a dated timeline; the history from Herodotus's wax tablets and the tattooed messenger to invisible inks, Trithemius, the Cardan grille, Bacon's cipher and the microdot, with a null cipher decoded word by word; hiding in images, from least-significant-bit embedding shown bit by bit to JPEG, F5 and adaptive schemes; steganalysis, with a chi-square attack computed on a small histogram and the BOSS and ALASKA contests; hiding in sound, video and text, with a zero-width message decoded character by character; and watermarks, fingerprints and printer tracking dots, with what the court record of the Reality Winner case actually says. Each technique comes with its first publication, a worked example and how it is detected. Twenty-three new glossary terms join them, and the Kerckhoffs's principle entry gains a paragraph on hiding. The other six parts, from network covert channels to steganography and AI, are listed as in preparation.",
+    links: [ // where to see it
+      { label: "The opener", href: "/learn/steganography-hiding-that-a-message-exists" }, // part 457
+      { label: "Steganalysis", href: "/learn/steganalysis-finding-the-hidden-message" }, // part 460
+      { label: "Printer tracking dots (glossary)", href: "/glossary/printer-tracking-dots" }, // one of the new terms
+    ],
+  },
+  {
+    // PRIME 17/11/2026 01:57 ("We need dancing bots (at least 4) to the lgtm tune"): LgtmDancers.tsx, wired into LgtmTune.
+    date: "2026-11-17", // the day it was done
+    time: "02:04", // São Paulo time
+    kind: "feature", // a new animation on an existing page
+    title: "Five robots now dance to the LGTM tune", // the headline
+    titlePt: "Cinco robôs agora dançam ao som da música do LGTM", // the Portuguese headline
+    body: // what changed, in plain words
+      "The tune on the LGTM page has a dance floor: five line-drawn robots, each with its own moves, follow the music as it plays, from the same clock that plays the notes. They bounce on the kick, nod and jump on the snare, flash their lights with the hi-hats and pop and lock on the beat; one of them lifts a green check each time an approval chimes, and all of them throw their arms up when the LGTM stamp lands. Their colours follow the era you pick, from 8-bit to 64-bit. They stand still when the tune is stopped, and never move for readers who ask their system for reduced motion.",
+    links: [ // where to see it
+      { label: "The LGTM page", href: "/dev/fun/lgtm" }, // the tune and its dancers
+    ],
+  },
+  {
+    // PRIME 17/11/2026 01:15 ("Yes start the Industry round"): 36 records from four agents (J1 to J4, brief scratchpad
+    // briefs/INDUSTRY-HACKING-WAVE-20261117.md); checks in each agent's REPORT.md.
+    date: "2026-11-17", // the day it was done
+    time: "02:04", // São Paulo time
+    kind: "content", // new Industry records
+    title: "Thirty-six companies behind the hacking-devices series join the Industry timeline", // the headline
+    titlePt: "Trinta e seis empresas por trás da série sobre dispositivos de hacking entram na linha do tempo da Indústria", // the Portuguese headline
+    body: // what changed, in plain words
+      "The makers, labs and chip companies the hacking-devices series names now have their own records, in English and Portuguese, each with its founding, owner and history from filings, company registries and the companies' own pages: the gear makers and shops (Hak5, Flipper Devices, Great Scott Gadgets, Mischief Gadgets, Lab401, Hacker Warehouse, High Code, JustCallMeKoko, ShareBrained Technology, RTL-SDR Blog, M5Stack and LILYGO), the research labs and testing firms (Security Research Labs, Riscure, now part of Keysight, Kasper & Oswald, the RFID Research Group, Kismet, Bastille Networks, Coalfire and EXPLIoT), the chip, card and radio makers (Espressif Systems, Microchip Technology, NXP Semiconductors, STMicroelectronics, Nordic Semiconductor, HID Global, Ettus Research, Parallax and SEGGER) and the hardware-security toolmakers (NewAE Technology, lowRISC, Grand Idea Studio, Dangerous Prototypes, Securing Hardware, Xipiter and Saleae). Where a founding year, an owner or a founding place could not be sourced, the record says nothing rather than guess.",
+    links: [ // where to see it
+      { label: "Hak5", href: "/industry/hak5" }, // one of the records
+      { label: "Espressif Systems", href: "/industry/espressif-systems" }, // another
+      { label: "Riscure", href: "/industry/riscure" }, // an absorbed brand with its successor
+    ],
+  },
+  {
+    // PRIME 16/11/2026 22:56 ("We need a series on hacking devices"): wave 1 (agents A to E, brief canon/current/
+    // BRIEF-hacking-devices-series-wave1-20261116.md) nine parts, wave 2 (agent F) 399 and 400; 394 defensive (agent G) pending;
+    // network implants a placeholder page (PRIME 17/11/2026 00:39 and 00:46).
+    date: "2026-11-17", // the day it was done
+    time: "00:25", // São Paulo time
+    kind: "content", // a new Learn series and its glossary terms
+    title: "New Learn series: hacking devices, from the blue box to the Flipper Zero", // the headline
+    titlePt: "Nova série do Learn: dispositivos de hacking, da blue box ao Flipper Zero", // the Portuguese headline
+    body: // what changed, in plain words
+      "Twelve long articles, in English and Portuguese, trace the special-purpose hardware that keeps appearing whenever a protocol trusts its medium: the tone boxes and in-band signalling, Hak5 and its WiFi Pineapple, keystroke injection from the Rubber Ducky to BadUSB and the O.MG Cable, the Flipper Zero and the bans that followed, the Brazilian High Boy and the ESP32 alternatives, software-defined radio and rolling codes, badges and cards from 125 kHz proximity to MIFARE Classic, the hardware hacker's bench from serial consoles and JTAG to fault injection, and what owning such gear means under the law in Brazil, the United States, the European Union and Canada. Each says how the device works in principle, what it cannot do, how defenders detect and stop it and what the law says, with dated sources. Fifty-five glossary terms arrive or grow with it, from tone box and DTMF to evil twin, rolling code, Proxmark, JTAG and readout protection. A twelfth part looks from the defender's side, at keeping rogue devices off a network with 802.1X, network access control, switch port security and physical audits, and the page for the part on network implants explains why that part is waiting.",
+    links: [ // where to see it
+      { label: "The opener", href: "/learn/hacking-devices-from-the-blue-box-to-the-flipper-zero" }, // part 389
+      { label: "The Flipper Zero", href: "/learn/the-flipper-zero-sub-ghz-rfid-nfc-infrared-and-the-panic" }, // part 395
+      { label: "Rolling code (glossary)", href: "/glossary/rolling-code" }, // one of the new terms
+    ],
+  },
+  {
+    // PRIME 16/11/2026 20:34 ("Industry entries: add all of the agents' candidates"): 56 records from six agents (I1 to I6,
+    // brief scratchpad briefs/INDUSTRY-MARKETS-WAVE-20261116.md); checks in canon/research/industry-markets-20261116/.
+    date: "2026-11-16", // the day it was done
+    time: "22:52", // São Paulo time
+    kind: "content", // new Industry records and a new category
+    title: "Fifty-six exchanges, clearing houses, regulators, brokers and trading-technology companies join the Industry timeline, with a new Markets category", // the headline
+    titlePt: "Cinquenta e seis bolsas, câmaras, reguladores, corretoras e empresas de tecnologia de negociação entram na linha do tempo da Indústria, com a nova categoria Mercados", // the Portuguese headline
+    body: // what changed, in plain words
+      "The companies behind the electronic trading series now have their own records, each in English and Portuguese, with its founding, owner and history taken from filings, regulators and the companies' own pages: the exchanges (the New York Stock Exchange, Nasdaq, CME Group, Cboe, IEX, Intercontinental Exchange, Eurex, the London Stock Exchange Group, TMX, the London Metal Exchange and SIX); Brazil's market infrastructure (B3, CERC, A5X, Base Exchange, BSM, CM Capital, RTM) and trading software houses (Cedro, Intelitrader, Inoa); order and execution management (Bloomberg, Charles River, FlexTrade, Fidessa, Raptor, TORA, Broadridge, Eze, BlackRock Aladdin); trading networks, colocation and measurement (Pico, Beeks, Endace, cPacket, Metamako, Exablaze, Spread Networks, McKay Brothers, TNS, IPC); post-trade, market data, regulators and standards (DTCC, SIAC, DataCT, EuroCTP, Ediphy, Etrading Software, the Consolidated Audit Trail, FINRA, FIA and the FIX Trading Community); and the brokers and trading firms (TP ICAP, Instinet, Nomura, Virtu, Optiver and Citadel Securities). A new Markets category gathers the exchanges, clearing houses, tapes, supervisors and market makers. Corvil's record now cites Pico's own 2019 release and corrects two details, and the timeline's first era starts in 1790, because the New York Stock Exchange dates itself to 1792.",
+    links: [ // where to see it
+      { label: "The Markets category", href: "/industry/markets" }, // the new tag page
+      { label: "B3", href: "/industry/b3" }, // one of the records
+      { label: "New York Stock Exchange", href: "/industry/nyse" }, // the earliest story on the timeline
+    ],
+  },
+  {
+    // PRIME 16/11/2026 21:53: the liveness sweep's 404s read in his Chrome; dead sources marked, never removed
+    // (canon/research/source-liveness-20261116/FINDINGS-run-43912926208.md; RULE-dead-sources-keep-content-20261115).
+    date: "2026-11-16", // the day it was done
+    time: "22:08", // São Paulo time
+    kind: "content", // sources marked, one restored
+    title: "Fifteen sources that went dead are marked as dead and kept, and one removed source is back", // the headline
+    titlePt: "Quinze fontes que saíram do ar ficam marcadas como fora do ar e mantidas, e uma fonte removida volta", // the Portuguese headline
+    body: // what changed, in plain words
+      "The weekly check of every cited address found 36 that answered not found. Each was opened in a browser: 21 were alive (nineteen pages of the Chamber of Deputies' legislation site and two company records, which refuse only the automated checker), and 15 were gone, among them two European Commission pages, a Court of Justice press release, the Cyber Safety Review Board's report on the 2023 Exchange Online intrusion, two Rwanda tribunal summaries and an RNP news page. Nothing was removed: each dead source stays where it was cited, with its address and every sentence it supports, and says \"link dead as of 16 November 2026\". The BSides São Paulo glossary entry gets back its original source, the old bsidessp.org address, marked dead beside the new one.",
+    links: [ // where to see it
+      { label: "BSides São Paulo", href: "/glossary/bsides-sao-paulo" }, // the restored source
+      { label: "The named TLS attacks", href: "/learn/the-named-tls-attacks" }, // one of the marked sources
+    ],
+  },
+  {
+    // PRIME 16/11/2026 20:34, items 2 to 4: John the Ripper's sources, ISO 22300 quoted directly in part 378 (the ISO
+    // Online Browsing Platform's terms accepted at his yes), and the rpo-rto glossary entry merged into rto-rpo.
+    // Checks recorded in canon/research/culture-posts/ and canon/research/redundancy/ FINDINGS files.
+    date: "2026-11-16", // the day it was done
+    time: "21:47", // São Paulo time
+    kind: "content", // sources and corrections
+    title: "Recovery objectives quoted from ISO 22300 itself, one glossary entry for RTO and RPO, and Mr. Robot's password cracker sourced", // the headline
+    titlePt: "Objetivos de recuperação citados da própria ISO 22300, um só verbete para RTO e RPO, e o quebrador de senhas de Mr. Robot com fontes", // the Portuguese headline
+    body: // what changed, in plain words
+      "The data redundancy article now quotes ISO 22300:2021, the third edition of the security and resilience vocabulary, for its definitions of the recovery point and recovery time objectives, with their notes, and says where the Business Continuity Institute's quotation of the first differs (\"must be restored\" against the standard's \"is restored\"); every earlier source stays. The glossary had two entries for the same pair of objectives; they are now one, RTO and RPO, carrying both entries' aliases, sources and text, the ISO definitions, and a paragraph on why an objective nobody has tested is a hypothesis; the old address redirects to it. The Mr. Robot entry now cites the episode in which Elliot cracks Tyrell Wellick's password with John the Ripper, in Wired and in The Globe and Mail, and the tool's own page at Openwall; Wired's article also documents the show's use of Kali Linux.",
+    links: [ // where to see it
+      { label: "Data and service redundancy", href: "/learn/data-and-service-redundancy-replication-quorum-rpo-and-rto" }, // part 378
+      { label: "RTO and RPO", href: "/glossary/rto-rpo" }, // the merged entry
+      { label: "Mr. Robot", href: "/glossary/mr-robot" }, // the sourced entry
+    ],
+  },
+  {
     // The electronic-trading series, parts 386 to 388 (agents T4 and T5, brief canon/current/BRIEF-trading-series-wave2-20261116.md),
     // integrated 16/11/2026: the series is complete; checks in canon/research/trading-wave2/; 18 glossary entries added.
     date: "2026-11-16", // the day it was done

@@ -121,10 +121,11 @@ jobs:
       - name: Fail on an undeclared suspect
         if: steps.audit.outcome == 'failure'
         run: |
-          echo "::error title=Citation rot::The sweep found an undeclared suspect or a stale declaration. Read the job summary."
+          # Wording updated 16/11/2026 (PRIME 21:53): a dead source is MARKED dead, never removed (GOLDEN RULE, 15/11/2026).
+          echo "::error title=Citation rot::The sweep found a 404 that is neither declared nor marked dead. Read the job summary."
           echo "A 404 is a CANDIDATE, never a verdict: confirm each with a second client."
           echo "A second client is a live reader that cannot answer from a cache (a real browser), never a fetch tool's copy."
-          echo "If it is dead, repair or remove the citation and KEEP the claim in the copy"
-          echo "(PRIME ruling 2026-09-27: a fact is not deleted for want of a source)."
-          echo "If it is alive, add it to DECLARED_SUSPECT with the finding that settled it."
+          echo "If it is dead, KEEP the citation, its address and every sentence it supports, and mark it dead in its label or"
+          echo "link text ('; link dead as of <date>', pt-BR '; link fora do ar desde <date>'): GOLDEN RULE, PRIME 15/11 and 16/11/2026."
+          echo "If it is alive, add it to DECLARED_SUSPECT with the finding that settled it (or its host to RUNNER_404_HOSTS)."
           exit 1

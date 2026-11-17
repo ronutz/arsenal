@@ -1,0 +1,46 @@
+---
+slug: network-implants-lan-turtle-packet-squirrel-shark-jack-and-key-croc
+title: "Implantes de rede: LAN Turtle, Packet Squirrel, Shark Jack e Key Croc"
+summary: "A última parte da série sobre dispositivos de hacking ainda não foi escrita. Ela trataria dos pequenos aparelhos comerciais vendidos para testes de invasão autorizados, que são ligados dentro de uma rede ou entre um teclado e um computador; o rascunho foi barrado pelas salvaguardas automáticas de cibersegurança do modelo de IA com que o site é escrito, e a parte aguarda a revisão do fornecedor. Esta página explica o que a parte vai cobrir, por que está em espera e o que ler enquanto isso."
+concepts: ["implante de rede", "acesso físico", "teste de invasão autorizado", "salvaguardas de IA", "falso positivo", "Cyber Verification Program"]
+relatedTools: []
+relatedArticles: ["hacking-devices-from-the-blue-box-to-the-flipper-zero", "hak5-from-a-video-show-to-a-hacking-gear-company", "keystroke-injection-rubber-ducky-bash-bunny-badusb-and-the-om-g-cable", "keeping-rogue-devices-off-the-network-802-1x-nac-port-security-and-physical-audits", "nac-family-history"]
+category: security
+order: 401
+status: reviewed
+updated: "2026-11-17"
+---
+
+Esta é a última parte da série que começa em [Dispositivos de hacking: da blue box ao Flipper Zero](/learn/hacking-devices-from-the-blue-box-to-the-flipper-zero), e ela ainda não foi escrita. Estava planejada como a parte 5, entre a [injeção de teclas](/learn/keystroke-injection-rubber-ducky-bash-bunny-badusb-and-the-om-g-cable) e [o Flipper Zero](/learn/the-flipper-zero-sub-ghz-rfid-nfc-infrared-and-the-panic), e foi para o fim da série pelo motivo que esta página explica.
+
+## O que esta parte vai cobrir
+
+Implantes de rede são pequenos computadores vendidos para testes de invasão autorizados, feitos para ser ligados dentro da rede de um cliente durante um trabalho contratado. A Hak5, empresa tratada na [parte 2 da série](/learn/hak5-from-a-video-show-to-a-hacking-gear-company), vende vários deles, e aquela parte os lista entre seus produtos, com as datas. O artigo pronto vai seguir o padrão do resto da série:
+
+- a história dos implantes comerciais, dos computadores de placa única improvisados aos produtos feitos para isso;
+- cada implante da Hak5, o LAN Turtle, o Packet Squirrel, o Shark Jack, o Key Croc e o Screen Crab, como a documentação do fabricante o descreve, com datas e preços de tabela;
+- o que um aparelho desses não consegue fazer e do que ele depende na rede em volta;
+- os incidentes documentados em que atacantes usaram um aparelho plantado, a partir de relatórios oficiais e de pesquisas de fabricantes de segurança;
+- como os defensores os encontram e os barram, e o que diz a lei no Brasil, nos Estados Unidos, no Reino Unido e na União Europeia.
+
+## Por que ainda não foi escrita
+
+Os artigos deste site são pesquisados e redigidos com o Claude, o modelo de inteligência artificial (IA) da Anthropic, sob as regras editoriais e as verificações automáticas do site (o [colofão](/colophon) conta como o site é feito). Em 16 de novembro de 2026, enquanto o rascunho em inglês desta parte era escrito, as salvaguardas de cibersegurança em tempo real da Anthropic, classificadores automáticos que interrompem uma resposta que julgam capaz de ajudar um ataque cibernético, o interromperam, e o aviso que veio com o bloqueio dizia para não produzir aquele conteúdo de novo, nem com outras palavras. A própria página de ajuda da Anthropic sobre o Cyber Verification Program, o programa para profissionais de segurança verificados, reconhece que seus usuários podem ter algumas recusas do modelo e bloqueios dos classificadores em trabalho de segurança permitido ([Anthropic, Claude Help Center](https://support.claude.com/en/articles/14604842-real-time-cyber-safeguards-on-claude)).
+
+O bloqueio não foi uma decisão editorial nem jurídica. As regras da série proíbem roteiros de ataque passo a passo, cargas apontadas contra terceiros e instruções para derrotar a segurança de qualquer produto, e são as mesmas regras sob as quais as outras partes foram escritas, inclusive a parte sobre [injeção de teclas](/learn/keystroke-injection-rubber-ducky-bash-bunny-badusb-and-the-om-g-cable), que descreve os parentes mais próximos desses aparelhos.
+
+## O que acontece agora
+
+Os editores estão enviando à Anthropic um relato de falso positivo pedindo uma revisão. Se a revisão liberar o assunto, esta parte será escrita no mesmo padrão do resto da série e substituirá esta página; se não liberar, esta página dirá isso. Enquanto isso, a parte 5 cobre o lado defensivo do mesmo problema, da autenticação por porta e do controle de acesso à rede (NAC, network access control) ao port security dos switches e às auditorias físicas: [Dispositivos intrusos fora da rede: 802.1X, NAC, port security e auditorias físicas](/learn/keeping-rogue-devices-off-the-network-802-1x-nac-port-security-and-physical-audits).
+
+## O que ler enquanto isso
+
+- [Hak5: de um programa em vídeo a uma empresa de equipamentos de hacking](/learn/hak5-from-a-video-show-to-a-hacking-gear-company) situa os implantes na história da empresa que os vende.
+- [Injeção de teclas: o Rubber Ducky, o Bash Bunny, o BadUSB e o O.MG Cable](/learn/keystroke-injection-rubber-ducky-bash-bunny-badusb-and-the-om-g-cable) cobre o lado USB (Universal Serial Bus) do mesmo problema de confiança, com as defesas.
+- [Controle de acesso à rede: a ideia que chegou cedo demais, duas vezes](/learn/nac-family-history) acompanha o controle de acesso à rede, a família de produtos que decide quais aparelhos podem usar uma porta de rede.
+- O verbete do glossário [802.1X](/glossary/802-1x) explica a autenticação por porta, o padrão que impede um aparelho desconhecido de usar uma porta.
+
+## Fontes
+
+- [Anthropic, Claude Help Center, "Cyber Verification Program": usuários verificados "may experience some model refusals and classifier blocks for allowed security work" (lido em 17 de novembro de 2026)](https://support.claude.com/en/articles/14604842-real-time-cyber-safeguards-on-claude)
+- [Hak5, documentação dos produtos, as descrições do próprio fabricante (lido em 16 de novembro de 2026)](https://documentation.hak5.org/)

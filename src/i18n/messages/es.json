@@ -34147,7 +34147,8 @@
       "distributor": "Distribuidor",
       "carrier": "Operador",
       "datacentre": "Centro de datos",
-      "media": "Medios"
+      "media": "Medios",
+      "markets": "Mercados"
     },
     "storyBeginsLabel": "Inicio de la historia:",
     "foundedCompanyLabel": "Año de fundación:",
@@ -34832,6 +34833,11 @@
       "title": "Prensa especializada, medios y eventos",
       "short": "medios",
       "intro": "Las revistas, los sitios de noticias y los congresos donde la industria se describe a sí misma: quién compró a quién, qué integrador cambió de nombre y qué compradores estarán en la sala. Se leen como fuentes, no como veredictos."
+    },
+    "markets": {
+      "title": "Bolsas, compensación e infraestructura de mercado",
+      "short": "mercados",
+      "intro": "Las bolsas, las cámaras de compensación, los depósitos centrales de valores, las cintas consolidadas (consolidated tapes), los corredores interdealer, los creadores de mercado y los supervisores de mercado por los que pasa la negociación electrónica: las organizaciones cuyas redes transportan órdenes medidas en microsegundos y cuyas reglas deciden qué deben registrar esas redes."
     }
   },
   "milestones": {
@@ -39635,6 +39641,23 @@
         "title": "Arquitecturas redundantes",
         "lede": "Cómo sobreviven las redes a los fallos: lo que la redundancia compra y lo que cuesta, la aritmética de la disponibilidad y del destino compartido, y la redundancia de cada capa, de la energía y la fibra a la agregación de enlaces, las puertas de enlace, el enrutamiento, los clústeres con estado y el balanceo global, hasta los datos, con los informes de caídas que muestran dónde aguantó y dónde no, cada dato con su fuente.",
         "planned": {}
+      },
+      "hacking-devices": {
+        "title": "Dispositivos de hacking",
+        "lede": "De la blue box que hablaba los tonos de la red telefónica al Flipper Zero en el bolsillo: cajas de tonos, war dialers y wardriving, inyectores de pulsaciones USB e implantes de red, radio definida por software, credenciales y tarjetas, y las navajas multiusos de bolsillo, con cómo funciona cada uno en principio, lo que no puede hacer, cómo lo detienen los defensores y lo que dice la ley en Brasil, la Unión Europea y Estados Unidos, cada dato con su fuente.",
+        "planned": {}
+      },
+      "steganography": {
+        "title": "Esteganografía",
+        "lede": "Ocultar que un mensaje existe, de las tablillas de cera y la tinta invisible a los píxeles, el sonido, el texto, las marcas de agua y los canales de red: cómo funciona cada técnica en principio, con ejemplos resueltos, y cómo se detecta y se detiene, cada dato con su fuente.",
+        "planned": {
+          "networkCovertChannels": "Canales encubiertos y túneles de red",
+          "stegomalware": "Stegomalware: lo que muestran los informes de los fabricantes",
+          "airGapChannels": "Air gaps y canales encubiertos físicos",
+          "espionageAndCourts": "La esteganografía en el espionaje y los tribunales",
+          "steganographyAndAi": "Esteganografía e inteligencia artificial",
+          "detectingAndStripping": "Detectar y eliminar contenido oculto en la práctica"
+        }
       }
     },
     "parts": "Las partes",

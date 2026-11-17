@@ -34147,7 +34147,8 @@
       "distributor": "Distributor",
       "carrier": "Carrier",
       "datacentre": "Rechenzentrum",
-      "media": "Medien"
+      "media": "Medien",
+      "markets": "Märkte"
     },
     "storyBeginsLabel": "Beginn der Geschichte:",
     "foundedCompanyLabel": "Gründungsjahr:",
@@ -34832,6 +34833,11 @@
       "title": "Fachpresse, Medien und Veranstaltungen",
       "short": "Medien",
       "intro": "Die Zeitschriften, Nachrichtenseiten und Konferenzen, in denen die Branche sich selbst beschreibt: wer wen gekauft hat, welcher Integrator seinen Namen geändert hat und welche Einkäufer im Raum sein werden. Als Quellen gelesen, nicht als Urteile."
+    },
+    "markets": {
+      "title": "Börsen, Clearing und Marktinfrastruktur",
+      "short": "Märkte",
+      "intro": "Die Börsen, Clearinghäuser, Zentralverwahrer, konsolidierten Datenströme (Consolidated Tapes), Interdealer-Broker, Market Maker und Marktaufsichten, durch die der elektronische Handel läuft: die Organisationen, deren Netze Orders in Mikrosekunden befördern und deren Regeln festlegen, was diese Netze aufzeichnen müssen."
     }
   },
   "milestones": {
@@ -39635,6 +39641,23 @@
         "title": "Redundante Architekturen",
         "lede": "Wie Netze Ausfälle überstehen: was Redundanz bringt und was sie kostet, die Arithmetik von Verfügbarkeit und gemeinsamem Schicksal, und die Redundanz jeder Schicht, von Strom und Glasfaser über Link-Aggregation, Gateways, Routing, zustandsbehaftete Cluster und globale Lastverteilung bis zu den Daten, mit den Störungsberichten, die zeigen, wo sie hielt und wo nicht, jede Tatsache mit ihrer Quelle.",
         "planned": {}
+      },
+      "hacking-devices": {
+        "title": "Hacking-Geräte",
+        "lede": "Von der Blue Box, die die Töne des Telefonnetzes sprach, bis zum Flipper Zero in der Hosentasche: Tonboxen, War Dialer und Wardriving, USB-Tasteninjektoren und Netzwerkimplantate, softwaredefiniertes Radio, Ausweise und Karten und die Taschen-Multitools, jeweils mit dem Funktionsprinzip, den Grenzen, den Gegenmaßnahmen der Verteidiger und der Rechtslage in Brasilien, der Europäischen Union und den Vereinigten Staaten, jede Angabe mit ihrer Quelle.",
+        "planned": {}
+      },
+      "steganography": {
+        "title": "Steganografie",
+        "lede": "Verbergen, dass eine Nachricht existiert, von Wachstafeln und unsichtbarer Tinte bis zu Pixeln, Ton, Text, Wasserzeichen und Netzwerkkanälen: wie jede Technik im Prinzip funktioniert, mit durchgerechneten Beispielen, und wie sie entdeckt und gestoppt wird, jede Tatsache mit ihrer Quelle.",
+        "planned": {
+          "networkCovertChannels": "Verdeckte Kanäle und Tunnel im Netzwerk",
+          "stegomalware": "Stegomalware: was die Herstellerberichte zeigen",
+          "airGapChannels": "Air Gaps und physische verdeckte Kanäle",
+          "espionageAndCourts": "Steganografie in Spionage und vor Gericht",
+          "steganographyAndAi": "Steganografie und künstliche Intelligenz",
+          "detectingAndStripping": "Versteckte Inhalte in der Praxis erkennen und entfernen"
+        }
       }
     },
     "parts": "Die Teile",

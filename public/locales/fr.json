@@ -34147,7 +34147,8 @@
       "distributor": "Distributeur",
       "carrier": "Opérateur",
       "datacentre": "Centre de données",
-      "media": "Médias"
+      "media": "Médias",
+      "markets": "Marchés"
     },
     "storyBeginsLabel": "Début de l’histoire :",
     "foundedCompanyLabel": "Année de fondation :",
@@ -34832,6 +34833,11 @@
       "title": "Presse spécialisée, médias et évènements",
       "short": "médias",
       "intro": "Les magazines, sites d’actualité et conférences où le secteur se décrit à lui-même : qui a racheté qui, quel intégrateur a changé de nom, et quels acheteurs seront dans la salle. À lire comme des sources, pas comme des verdicts."
+    },
+    "markets": {
+      "title": "Bourses, compensation et infrastructures de marché",
+      "short": "marchés",
+      "intro": "Les bourses, chambres de compensation, dépositaires centraux, flux consolidés (consolidated tapes), courtiers interdealers, teneurs de marché et autorités de surveillance des marchés par lesquels passe la négociation électronique : les organisations dont les réseaux acheminent des ordres mesurés en microsecondes et dont les règles décident de ce que ces réseaux doivent enregistrer."
     }
   },
   "milestones": {
@@ -39635,6 +39641,23 @@
         "title": "Architectures redondantes",
         "lede": "Comment les réseaux survivent aux pannes : ce que la redondance apporte et ce qu’elle coûte, l’arithmétique de la disponibilité et du destin partagé, et la redondance de chaque couche, de l’énergie et de la fibre à l’agrégation de liens, aux passerelles, au routage, aux clusters à état et à la répartition de charge globale, jusqu’aux données, avec les rapports d’incidents qui montrent où elle a tenu et où elle a cédé, chaque fait avec sa source.",
         "planned": {}
+      },
+      "hacking-devices": {
+        "title": "Appareils de hacking",
+        "lede": "De la blue box qui parlait les tonalités du réseau téléphonique au Flipper Zero dans la poche : boîtes à tonalités, war dialers et wardriving, injecteurs de frappes USB et implants réseau, radio logicielle, badges et cartes, et les couteaux suisses de poche, avec le principe de chacun, ce qu’il ne peut pas faire, comment les défenseurs l’arrêtent et ce que dit la loi au Brésil, dans l’Union européenne et aux États-Unis, chaque fait avec sa source.",
+        "planned": {}
+      },
+      "steganography": {
+        "title": "Stéganographie",
+        "lede": "Cacher qu’un message existe, des tablettes de cire et de l’encre invisible aux pixels, au son, au texte, aux tatouages numériques et aux canaux réseau : comment chaque technique fonctionne en principe, avec des exemples détaillés, et comment on la détecte et on l’arrête, chaque fait avec sa source.",
+        "planned": {
+          "networkCovertChannels": "Canaux cachés et tunnels réseau",
+          "stegomalware": "Stegomalware : ce que montrent les rapports des éditeurs",
+          "airGapChannels": "Air gaps et canaux cachés physiques",
+          "espionageAndCourts": "La stéganographie dans l’espionnage et devant les tribunaux",
+          "steganographyAndAi": "Stéganographie et intelligence artificielle",
+          "detectingAndStripping": "Détecter et supprimer les contenus cachés en pratique"
+        }
       }
     },
     "parts": "Les parties",

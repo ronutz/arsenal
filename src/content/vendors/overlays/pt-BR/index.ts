@@ -15,6 +15,10 @@ import { SHARD_5 } from "./shard-5";
 import { SHARD_6 } from "./shard-6";
 import { SHARD_7 } from "./shard-7";
 import { SHARD_8 } from "./shard-8";
+// The financial-markets companies of 16/11/2026 (Industry wave I1 to I6).
+import { SHARD_9 } from "./shard-9";
+// The companies behind the hacking-devices series, 17/11/2026 (Industry wave J1 to J4).
+import { SHARD_10 } from "./shard-10";
 
 /** Merge shard maps, refusing a slug defined twice. */
 export function mergeShards(
@@ -37,4 +41,4 @@ export function mergeShards(
 }
 
 /** All pt-BR shard overlays. */
-export const PT_BR_SHARDS = mergeShards(SHARD_1, SHARD_2, SHARD_3, SHARD_4, SHARD_5, SHARD_6, SHARD_7, SHARD_8);
+export const PT_BR_SHARDS = mergeShards(SHARD_1, SHARD_2, SHARD_3, SHARD_4, SHARD_5, SHARD_6, SHARD_7, SHARD_8, SHARD_9, SHARD_10);

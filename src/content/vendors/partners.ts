@@ -59,7 +59,11 @@ export type VendorTag =
   /** Standards bodies and industry associations. */
   | "standards"
   /** Trade press, news, events: the industry describing itself (added 2026-11-08 for IT Forum and Aranda/RTI). */
-  | "media";
+  | "media"
+  /** Financial-market infrastructure and participants: exchanges and trading venues, clearing houses and central
+   *  depositories, consolidated tapes and their processors, market supervisors and self-regulatory organizations,
+   *  interdealer brokers and market makers (added 2026-11-16 for the electronic-trading companies, PRIME 20:34). */
+  | "markets";
 
 /** The closed vocabulary, for the guard and for filter UIs. */
 export const VENDOR_TAGS: readonly VendorTag[] = [
@@ -72,6 +76,7 @@ export const VENDOR_TAGS: readonly VendorTag[] = [
   "training",
   "standards",
   "media",
+  "markets",
 ] as const;
 
 /**
@@ -7339,7 +7344,7 @@ export const partnerVendors: PartnerVendor[] = [
       "Corvil was founded in Dublin in 2000 by Professor John Lewis, three Telia employees and three Trinity College Dublin post-graduate students, and became the network data analytics company of electronic trading: appliances that capture a trading infrastructure's traffic without loss, decode the market-data and order protocols inside it, and report what happened to every order, tick and fill, and how long it took. Its customers were the exchanges and banks, NYSE, the London Stock Exchange, Nasdaq, the Moscow Exchange, Nomura, Thomson Reuters and Commerzbank among them, and it kept offices in New York, London, Tokyo, Toronto and Kraków.",
     body: [
       "The product is worth describing precisely, because it is the one corner of this catalogue where a network is measured in the currency of the application running on it. Where a conventional monitoring tool reports utilization and errors, Corvil reports feed latency and gaps, tick-to-trade times and fill ratios, with the network symptoms behind them, retransmissions, congestion and round-trip times, at one-second resolution. A millisecond has a price on a trading floor, and the analytics were built to state it.",
-      "On 9 July 2019 Pico, a New York provider of data-centre infrastructure, exchange connectivity and cloud services for the financial markets, signed a definitive agreement to acquire Corvil, expecting to close within thirty days; by late July the parties expected early August, and neither disclosed terms, both being privately held. The combined company was to serve more than four hundred banks, exchanges, asset managers, fintech vendors and trading firms across five continents, and Corvil's chief executive, Donal Byrne, became its chief technology officer. Pico itself operates some thirty-five data-centre locations and is minority-owned by Goldman Sachs, JP Morgan, UBS and Wells Fargo.",
+      "On 9 July 2019 Pico, a New York provider of data-centre infrastructure, exchange connectivity and cloud services for the financial markets, signed a definitive agreement to acquire Corvil, expecting to close within thirty days; by late July the parties expected early August, and neither disclosed terms, both being privately held. Pico's own announcement said that the combined company, serving more than four hundred banks, exchanges, asset managers, financial technology vendors and trading firms across five continents with a workforce of more than 375, would operate under the Pico brand while the Corvil name continued on its products and services, and that clients could also buy Corvil-as-a-Service, Corvil environments deployed, configured and operated by Pico; Corvil's chief executive, Donal Byrne, was to become chief technology officer, reporting to Pico's founder and chief executive, Jarrod Yuster. Pico, which then had some thirty-five data-centre locations, described itself as privately held, with a consortium of investors, many of them clients, holding a minority position, Goldman Sachs, J.P. Morgan, UBS and Wells Fargo among them.",
       "Today the name survives as Corvil Analytics, described by Pico as its network-derived analytics platform for financial markets: lossless packet capture and deep protocol decoding at up to 200 gigabits per second sustained, metrics for every order, tick and fill across the trading lifecycle. The Dublin engineering that began as university research is now the measurement layer of a Wall Street infrastructure company, which is a long way to travel on the strength of knowing exactly when a packet arrived.",
     ],
     externalUrl: "https://www.pico.net/corvil-analytics/",
@@ -7347,7 +7352,11 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "Wikipedia: Corvil - a network data analytics company based in Dublin, Ireland; founded 2000 in Dublin by Professor John Lewis, three Telia employees and three Trinity College Dublin post-graduate students; offices in New York, London, Tokyo, Toronto and Kraków; customers including NYSE, LSE, the Moscow Stock Exchange, Nasdaq, Nomura, Thomson Reuters and Commerzbank; chief executive Donal Byrne (read 2026-10-05)", url: "https://en.wikipedia.org/wiki/Corvil" },
       { label: "Markets Media, 9 July 2019 - Pico signed a definitive agreement to acquire Corvil, a market leader in real-time analytics and machine intelligence for financial markets infrastructure; the combined company to serve over 400 banks, exchanges, asset managers, fintech vendors and trading firms across five continents; closing expected within 30 days (read 2026-10-05)", url: "https://www.marketsmedia.com/pico-to-acquire-corvil" },
-      { label: "FIA MarketVoice, 26 July 2019 - Pico, New York-based provider of data centre infrastructure and exchange connectivity with 35 global data centre locations, minority-owned by Goldman Sachs, JP Morgan, UBS and Wells Fargo, expected the Corvil acquisition to close in early August 2019; terms not disclosed, both companies privately owned; Corvil's analytics identify latency issues, optimise execution and enable compliance monitoring, with metrics such as fill ratios and tick-to-trade latencies; Donal Byrne to become chief technology officer of the combined entity (read 2026-10-05)", url: "https://www.fia.org/marketvoice/articles/corvil-deal-bring-increased-transparency-data-pico-clients" },
+      // Pico's own release of 9 July 2019 (added 2026-11-16, Industry wave I4): the source for the brand, Corvil-as-a-Service, the workforce, Byrne's appointment and the minority consortium.
+      { label: "Pico, Pico to Acquire Corvil, Creating the New Benchmark for Technology Services in Financial Markets, New York, London and Dublin, 9 July 2019 - definitive agreement to acquire Corvil; a combined client base of over 400 banks, exchanges, asset managers, financial technology vendors and trading firms operating across five continents and a workforce of over 375 staff; Donal Byrne, CEO of Corvil, to take up the position of chief technology officer, reporting to Jarrod Yuster, founder and CEO of Pico; the company to operate under the Pico brand while the Corvil name continues to be used for its portfolio of products and services; Corvil-as-a-Service; closing expected within 30 days, financial details not disclosed; Pico privately held, with a consortium of investors holding a minority ownership position, many of them clients, including Goldman Sachs, J.P. Morgan, UBS and Wells Fargo (read 2026-11-16)", url: "https://www.pico.net/about/news/pico-to-acquire-corvil-creating-the-new-benchmark-for-technology-services-in-financial-markets/" },
+      // Golden Gate Capital's release of 13 July 2022 (optional, added 2026-11-16): the only page read that states the purchase was completed in 2019.
+      { label: "Golden Gate Capital, Pico Signs Agreement with Golden Gate Capital for $200 Million Investment to Accelerate Next Phase of M&A Activity, 13 July 2022 - \"In 2019 it acquired market leading trading and enterprise analytics solution Corvil Analytics\" (read 2026-11-16)", url: "https://goldengatecap.com/pico-signs-agreement-with-golden-gate-capital-for-200-million-investment-to-accelerate-next-phase-of-ma-activity/" },
+      { label: "FIA MarketVoice, 26 July 2019 - Pico, New York-based provider of data centre infrastructure and exchange connectivity with 35 global data centre locations, minority owned by a consortium of investors including Goldman Sachs, JP Morgan, UBS and Wells Fargo, expected the Corvil acquisition to close in early August 2019; terms not disclosed, both companies privately owned; Corvil's analytics identify latency issues, optimise execution and enable compliance monitoring, with metrics such as fill ratios and tick-to-trade latencies; Donal Byrne to become chief technology officer of the combined entity (read 2026-10-05)", url: "https://www.fia.org/marketvoice/articles/corvil-deal-bring-increased-transparency-data-pico-clients" },
       { label: "Pico - Corvil Analytics: \"Pico's network-derived analytics platform for financial markets\"; every order, tick and fill across the trading lifecycle; 1-second metrics for congestion, TCP retransmissions, round-trip times and errors; feed latency and gaps; up to 200Gbps sustained lossless capture and deep protocol decoding (read 2026-10-05)", url: "https://www.pico.net/corvil-analytics/" },
     ],
   },
@@ -12187,7 +12196,7 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "QD7 - company site: a cybersecurity company presenting itself under the heading of security in the post-quantum era, offering a complete authentication platform; customer statements on the site describe adapting to the Lei Geral de Protecao de Dados by implementing a cybersecurity structure to protect customer information, and dealing with the challenges of remote working and uncontrolled devices on the network", url: "https://qd7.com.br/" },
       { label: "QD7 blog - describes itself as a cybersecurity company in Sao Paulo offering consultancy, protection services against cyberattacks and security awareness training, together with continuous monitoring of corporate systems and networks using intrusion detection and network security, and incident response covering identification, containment and mitigation; its consultancy combines cybersecurity expertise with an understanding of the Brazilian regulatory landscape", url: "https://blog.qd7.com.br/empresas-de-ciberseguranca-no-brasil/" },
-      { label: "Brazilian federal tax registry via the public CNPJ service - NGX NETWORKS SERVICES LTDA, CNPJ 43.024.467/0001-84, Sao Jose do Rio Preto, activity beginning 6 August 2021", url: "https://brasilapi.com.br/api/cnpj/v1/43024467000184", sourceNote: "QD7 is the trading name; the registered company is NGX Networks Services. It is registered in Sao Jose do Rio Preto, the same interior city as WZTech." },
+      { label: "Brazilian federal tax registry via the public CNPJ service - NGX NETWORKS SERVICES LTDA, CNPJ 43.024.467/0001-84, Sao Jose do Rio Preto, activity beginning 6 August 2021; link dead as of 16 November 2026", url: "https://brasilapi.com.br/api/cnpj/v1/43024467000184", sourceNote: "QD7 is the trading name; the registered company is NGX Networks Services. It is registered in Sao Jose do Rio Preto, the same interior city as WZTech." },
     ],
     tags: ["services", "training"],
     group: "contemporary",
@@ -13562,6 +13571,5780 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Financial Reporting Council, 12 October 2023: sanctions against KPMG LLP, KPMG Audit Plc and two former partners over the audits of Carillion plc; KPMG LLP GBP 26.5 million reduced by 30% to GBP 18.55 million and KPMG Audit Plc GBP 3.5 million reduced to GBP 2.45 million, each with a severe reprimand", url: "https://www.frc.org.uk/news-and-events/news/2023/10/sanctions-against-kpmg-llp-kpmg-audit-plc-and-two-former-partners/" },
     ],
   },
+
+  // ==== Industry wave I2 (16/11/2026, PRIME 20:34): integrated from scratchpad industry-i2/ ====
+  // ---- Industry wave I2: Brazilian financial-market infrastructure, venues, brokers and trading software
+  // (PRIME 16/11/2026 20:34, "Industry entries: add all of the agents' candidates"). Every page was read on
+  // 16/11/2026; the corpus and MANIFEST.tsv are in the I2 folder. Ten records: b3, cerc, a5x, base-exchange,
+  // bsm-supervisao-de-mercados, cm-capital, rtm, cedro-technologies, intelitrader, inoa-sistemas. ----
+  {
+    // B3 - added 2026-11-16 (industry wave I2). The card's subject is B3, the name and company created by the
+    // BM&FBOVESPA and Cetip combination completed on 29 March 2017; the legal person dates from 14 December 2007
+    // (T.U.T.S.P.E., then Nova Bolsa, then BM&FBOVESPA), which the body states. The story opens with the Bolsa
+    // Livre of 1890, the Bovespa's forerunner, named in storyBegins.
+    slug: "b3",
+    // Own site read live 2026-11-16: HTTP 200 at https://www.b3.com.br/pt_br/b3/institucional/quem-somos/.
+    official: {
+      // The company's own site.
+      url: "https://www.b3.com.br",
+      // The investor-relations site carries the history and the Formulário de Referência.
+      resources: [
+        // History page of the investor-relations site.
+        { label: "B3 Relações com Investidores: Histórico", url: "https://ri.b3.com.br/pt-br/b3/historico/" },
+        // Regulatory filings, the Formulário de Referência among them.
+        { label: "B3 Relações com Investidores: Documentos Regulatórios", url: "https://ri.b3.com.br/pt-br/documentos-regulatorios/" },
+      ],
+    },
+    // An exchange, OTC market, clearing house and depository; it also sells co-location in its data centre.
+    tags: ["markets", "datacentre"],
+    // Trading today, listed on its own Novo Mercado.
+    group: "contemporary",
+    // Title.
+    name: "B3 - Brazil's exchange, clearing house and depository in one company",
+    // Founding year of the card's subject, named by the Formulário de Referência 2026 label below.
+    founded: 2017,
+    // The story opens with the Bolsa Livre of 1890, named by the Formulário de Referência 2024 label below.
+    storyBegins: { year: 1890, company: "Bolsa Livre, forerunner of the Bovespa" },
+    // Card line.
+    tagline: "Brazil's exchange, organized over-the-counter market, clearing house and central depository in one listed company, formed in 2017 by the combination of BM&FBOVESPA and Cetip and run from data centres in Santana de Parnaíba and central São Paulo.",
+    // Intro paragraph.
+    intro:
+      "B3 S.A. - Brasil, Bolsa, Balcão describes itself as one of the world's leading financial market infrastructure companies, operating both exchange and organized over-the-counter (OTC) markets. It creates and runs the trading, clearing, settlement, depository and registration systems for Brazil's main asset classes, from equities and corporate fixed income to currency, interest-rate and commodity derivatives, acts as central counterparty for most of the trades on its markets, and is itself listed on its Novo Mercado segment under the ticker B3SA3. The company was formed by the combination of BM&FBOVESPA S.A. - Bolsa de Valores, Mercadorias e Futuros and Cetip S.A. - Mercados Organizados, completed on 29 March 2017.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the three predecessors.
+      "Its predecessors run back to the nineteenth century. B3's Formulário de Referência traces the Bovespa to 1890, when São Paulo brokers formed an association called the Bolsa Livre; it did not survive the financial crisis of 1891, and in 1895, with the support of the state government, the Bolsa Oficial de Fundos Públicos de São Paulo was set up. In the early 1990s the Bovespa introduced, beside its open-outcry floor, the Computer Assisted Trading System (CATS) developed by the Toronto exchange, replaced in the middle of the decade by a system bought from the Paris bourse; in 2000 it led an integration programme with the eight other Brazilian stock exchanges that concentrated all equity trading in one exchange, and on 30 September 2005 it closed its floor and became fully electronic. The Bolsa de Mercadorias e Futuros (BM&F) was founded in January 1986, first as the Bolsa de Mercadorias de São Paulo, and ended open outcry on 30 June 2009. Cetip was set up as a non-profit body, with the support of the Banco Central do Brasil, by vote 188 of 1984 of the National Monetary Council (Conselho Monetário Nacional, CMN), and began operating in March 1986.",
+      // Paragraph 2: the listed company, the CME partnership, PUMA and the Cetip combination.
+      "The listed company itself was incorporated on 14 December 2007 as T.U.T.S.P.E. Empreendimentos e Participações S.A., later Nova Bolsa S.A., which on 8 May 2008 absorbed BM&F S.A. and the shares of Bovespa Holding S.A. and took the name BM&FBOVESPA. In 2010 it entered a strategic partnership with CME Group, and the two developed the PUMA Trading System, launched in 2011 in derivatives and foreign exchange, extended to equities in 2013 and to private fixed income in 2014; the same years brought the Close-Out Risk Evaluation (CORE) risk system, the integration of the clearing houses and a new data centre, which opened in 2014. The CME partnership ended in 2016, the year both boards approved the combination with Cetip; the Banco Central do Brasil, the Comissão de Valores Mobiliários (CVM) and the competition authority, the Conselho Administrativo de Defesa Econômica (CADE), approved it in 2017, and the second phase of the clearing integration, for equities, was completed in August 2017.",
+      // Paragraph 3: the infrastructure today.
+      "Today that infrastructure sits in two buildings. B3's manual of access to its technology infrastructure (version 8.5, February 2026) places its active data centre in Tamboré, Santana de Parnaíba, and its disaster-recovery site on Rua Quinze de Novembro in central São Paulo, and offers four ways in: the B3 communication network (RCB), an internet virtual private network (VPN), local area network (LAN) co-location inside the data centre, and an agreement with RTM, the market's private network, in which B3 holds 20 per cent. Both sites generate the Unified Market Data Feed (UMDF), a multicast service, independently. The 2026 Formulário de Referência cites binary protocols launched to reduce latency for high-frequency investors and long-term partnerships with Oracle and Microsoft for moving systems to the cloud, with Nasdaq for clearing technology and with Vermiculus for a new equities depository, and lists the systems of nineteen third parties whose failure or instability could affect it, among them Microsoft Azure, Oracle, Serpro, Ascenty, Cirion (CenturyLink), RTM, Equinix, Orange Business Services, Algar, Claro, Embratel and Telefônica (Vivo). B3 also maintains BSM Supervisão de Mercados, the association that supervises its markets.",
+      // Paragraph 4: why it matters to networks and to electronic trading, analytically.
+      "For networks the significance is concentration. Since the Bovespa absorbed the other Brazilian stock exchanges in 2000 and the 2017 combination joined exchange trading, OTC registration, clearing and the depository in one company, a Brazilian trading system connects to B3's two sites under B3's access manual and co-location policy, and the lists B3 publishes of certified order-entry, drop-copy and market-data solutions read as a register of the country's trading software. That position is what A5X, Base Exchange and CERC have set out to contest, each with its own data centres, connectivity and licences.",
+    ],
+    // The company's own history page.
+    externalUrl: "https://ri.b3.com.br/pt-br/b3/historico/",
+    // Link label.
+    externalLabel: "B3: Histórico",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // The founding year of the card's subject, the 2026 technology programme and the third-party list.
+      { label: "B3, Formulário de Referência 2026, version 10 (filed 29 May 2026), item 1.1: B3 S.A. - Brasil, Bolsa, Balcão results from the combination of BM&FBOVESPA and Cetip consummated on 29 March 2017, which in 2017 created B3 S.A.; binary protocols launched to reduce latency for high-frequency investors; long-term partnerships with Oracle and Microsoft for cloud migration, with Nasdaq for clearing technology and with Vermiculus for the equities depository; item 1.3: BSM, a non-profit civil association, is not consolidated and B3 contributed about R$405 million to it from 2007 to 31 December 2025; risk factors list nineteen third-party systems, among them Microsoft Azure, Oracle, Serpro, Ascenty, Cirion (CenturyLink), RTM, Telmex, Equinix, Orange Business Services, Algar, Claro, Embratel and Telefônica (Vivo); B3 holds 20 per cent of RTM (read 2026-11-16)", url: "https://api.mziq.com/mzfilemanager/v2/d/5fd7b7d8-54a1-472d-8426-eb896ad8a3c4/f94538b8-47c9-77ed-dd94-2c6d84a32113?origin=2", sourceNote: "Located through the investor-relations file API on 2026-11-16 (category Formulário de Referência e Cadastral, file date 29 May 2026); the PDF prints Ano 2026, Versão 10. Item 1.1 now refers readers to earlier forms for the predecessors' history, which is why the 2024 form is also cited." },
+      // The predecessors, the incorporation of the legal person and the 1890 story start.
+      { label: "B3, Formulário de Referência 2024, version 16, item 1.1: the Bovespa's history goes back to 1890, when a São Paulo brokers' association called the Bolsa Livre was created; it did not survive the crisis of 1891, and in 1895 the Bolsa Oficial de Fundos Públicos de São Paulo was set up; CATS from the Toronto exchange in the early 1990s, replaced by a system bought from the Paris bourse; integration of the eight other Brazilian exchanges in 2000; floor closed on 30 September 2005; BM&F founded in January 1986, open outcry ended 30 June 2009; the company incorporated on 14 December 2007 as T.U.T.S.P.E. Empreendimentos e Participações S.A., later Nova Bolsa S.A.; integration with BM&F and Bovespa Holding on 8 May 2008; Cetip Associação instituted by vote 188 of 1984 of the National Monetary Council, operating from March 1986 (read 2026-11-16)", url: "https://api.mziq.com/mzfilemanager/v2/d/5fd7b7d8-54a1-472d-8426-eb896ad8a3c4/8d8a1c1b-991e-904f-e699-a9cb7cc6d9e5?origin=1" },
+      // The investor-relations timeline: PUMA, CORE, the data centre, the end of the CME partnership, the approvals.
+      { label: "B3 Relações com Investidores, Histórico (last updated 25 August 2025): B3 formed by the combination of BM&FBOVESPA and Cetip, officially concluded on 29 March 2017; BM&FBOVESPA born in 2008 from BM&F and Bovespa Holding; strategic partnership with CME Group in 2010; PUMA Trading System, created by the partnership, launched in 2011 in derivatives and foreign exchange, in equities in 2013 and in private fixed income in 2014; CORE risk system and the new data centre opened in 2014; first phase of the clearing integration in 2014, second (equities) in August 2017; CME partnership ended in 2016; the combination approved in 2017 by the Banco Central, the CVM and CADE; Cetip founded in 1984 as a non-profit entity with the support of the Banco Central, operating from 1986 (read 2026-11-16)", url: "https://ri.b3.com.br/pt-br/b3/historico/" },
+      // The company's self-description.
+      { label: "B3, Quem somos: one of the main financial market infrastructure companies in the world, operating in exchange and OTC environments; shares (B3SA3) traded on the Novo Mercado; trading, clearing, settlement, depository and registration systems for all the main asset classes; central counterparty for most of the trades on its markets (read 2026-11-16)", url: "https://www.b3.com.br/pt_br/b3/institucional/quem-somos/" },
+      // The data centres, the four access modes and the market data feed.
+      { label: "B3, Manual de Acesso à Infraestrutura Tecnológica da B3, version 8.5 of 13 February 2026: Data Center 1 (active) at Rua Ricardo Prudente de Aquino 85, Tamboré, Santana de Parnaíba, and Data Center 2 (disaster recovery) at Rua Quinze de Novembro 275, central São Paulo; four access modes, RCB (Rede de Comunicação B3), VPN Internet, LAN Co-location and the agreement with RTM; UMDF, Unified Market Data Feed, a market data distribution solution over multicast channels, generated independently by both data centres (read 2026-11-16)", url: "https://b3.com.br/data/files/B9/F0/1F/4F/DC7CF91094DCD8F9AC094EA8/2026%20-%20Manual%20de%20Acesso%20a%20Infraestrutura%20Tecnologica%20da%20B3.pdf" },
+      // The co-location policy.
+      { label: "B3, Política Comercial de Serviços de Co-location B3, version 3.3 (cover dated 20 January 2022): co-location services offered in the B3 data centre at Santana de Parnaíba and XV de Novembro; racks, cross connections, GPS antenna space and smart hands (read 2026-11-16)", url: "https://www.b3.com.br/data/files/3E/03/2D/39/558C38101E311E28AC094EA8/Politica%20Comercial%20Colocation_PT_2022%20v3%20Abril22.pdf" },
+      // The group companies: RTM and BSM.
+      { label: "B3 Relações com Investidores, Empresas do Grupo (last updated 3 November 2026): B3 holds 20 per cent of its associate RTM, a private communications network created for the financial sector; BSM Supervisão de Mercados is a non-profit civil association with administrative and budgetary autonomy responsible for the self-regulation of the markets B3 administers (read 2026-11-16)", url: "https://ri.b3.com.br/pt-br/empresas-do-grupo/" },
+      // The certification lists the analytical paragraph refers to.
+      { label: "B3, Soluções certificadas, Soluções para entrada de ordens: the list of order-entry solutions certified for the PUMA Trading System, by company, solution and access form (DMA or desk) (read 2026-11-16)", url: "https://b3.com.br/pt_br/solucoes/plataformas/puma-trading-system/para-participantes-e-traders/solucoes-certificadas/solucoes-para-entrada-de-ordens/" },
+    ],
+  },
+  {
+    // CERC - added 2026-11-16 (industry wave I2). A receivables registrar authorized by the Banco Central do
+    // Brasil since 2018, licensed by the CVM on 2 December 2025 as an organized OTC market and a central
+    // securities depository. Privately held; Valor (17 November 2022) reports the two co-founders as the
+    // controlling shareholders and Mubadala Capital as a minority investor, so no parent is set.
+    slug: "cerc",
+    // Own site read live 2026-11-16: https://www.cerc.inf.br/ answered HTTP 200 and its links point to www.cerc.com.
+    official: {
+      // The company's own site.
+      url: "https://www.cerc.com",
+    },
+    // A registrar, central depository, settlement system and organized OTC market.
+    tags: ["markets"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "CERC - the receivables registrar that became a depository and OTC market",
+    // Founding year, named by the two CVM labels and the PFMI label below.
+    founded: 2015,
+    // Card line.
+    tagline: "A São Paulo registrar of receivables founded in 2015, authorized by the Banco Central do Brasil since 2018 and by the CVM in December 2025 to run an organized over-the-counter market and a central securities depository.",
+    // Intro paragraph.
+    intro:
+      "CERC S.A. presents itself as a registrar specialized in receivables: card receivables, trade bills (duplicatas), agribusiness, real-estate, utility and financial receivables, recorded so that companies can use them as collateral for credit. In its applications to the Comissão de Valores Mobiliários (CVM), the Brazilian securities regulator, it described itself as a privately held company founded in 2015 and authorized by the Banco Central do Brasil (BCB) since 2018 to register financial assets. Its co-founders Fernando Fontes and Marcelo Maziero remained its controlling shareholders after a round of R$550 million led by Mubadala Capital in 2022, Valor Econômico reported at the time.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the plan, the 2022 round, the BCB authorization of July 2025, the settlement model.
+      "The plan was to grow from registry into a complete market infrastructure. Valor described CERC in November 2022 as born a receivables registrar and setting out to act also as depository, bookkeeper, clearing house and, finally, trading platform for financial assets and securities; the 2022 round, joined by existing shareholders including Valor Capital and by the founders, was Mubadala Capital's first investment in a Brazilian financial-sector company. On 7 July 2025 the CVM was informed that the BCB had authorized CERC to operate a central depository system for financial assets and to act as a clearing and settlement house for financial assets and securities. In its self-assessment against the Principles for Financial Market Infrastructures (PFMI), CERC describes its settlement system, CLIQ, as combining deferred net settlement with real-time gross settlement on a delivery-versus-payment basis, and states that it does not act as a central counterparty.",
+      // Paragraph 2: the CVM licences of 2 December 2025.
+      "The securities licences followed. CERC asked the CVM on 10 July 2023 to be authorized as an organized OTC market administrator, and filed separately to provide central depository services for securities; after meetings on 2 September and 25 November 2025, the CVM board decided both on 2 December 2025. It unanimously authorized CERC as a central depository for book-entry receivables certificates (CR), agribusiness and real-estate receivables certificates (CRA and CRI), debentures and commercial notes of public distribution, and as an organized OTC market for the registration of securities and of previously concluded trades, conditional on approval of its market-surveillance file layouts before operations began and with an exemption from publishing the intermediaries of each trade; by majority, against its staff's opinion, it also exempted CERC from quarterly financial statements for its first twenty-four months. Self-regulation is contracted from a third party, BBCE, the Balcão Brasileiro de Energia, an authorized OTC market for energy derivatives.",
+      // Paragraph 3: the duplicata bookkeeping authorization of 2026.
+      "The registry business kept growing alongside. On 25 June 2026 the Diário Oficial da União published the BCB's authorization for CERC to keep the books of electronic trade bills (duplicatas escriturais), its new regulations and manuals took effect on 2 July 2026, and its notices of mid-July 2026 announce the bookkeeping system's entry into production.",
+      // Paragraph 4: why it matters, analytically.
+      "CERC matters to electronic markets as post-trade infrastructure built from receivables upward rather than from an exchange downward, now licensed by both regulators for securities as well as financial assets. Its CVM case also put on public record the terms on which a new entrant may compete with an incumbent: which disclosures it may postpone, and how self-regulation can be contracted from another market operator instead of built.",
+    ],
+    // The company's own site.
+    externalUrl: "https://www.cerc.com/",
+    // Link label.
+    externalLabel: "CERC",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // The depository decision, with the founding year.
+      { label: "CVM, decision of the board of 2 December 2025, CERC S.A., central depository services (Proc. 19957.015727/2022-34, Reg. 3332/25): CERC was established in 2015 and authorized by the Banco Central do Brasil in 2018 as a registrar of financial assets; OTC market application filed on 10 July 2023; discussions on 2 September and 25 November 2025; the board unanimously authorized central depository services for CR, CRA and CRI of public distribution, debentures and commercial notes (read 2026-11-16)", url: "https://conteudo.cvm.gov.br/decisoes/2025/20251202_R1/20251202_D3332.html" },
+      // The OTC market decision, with the founding year, the BCB authorization and the self-regulation contract.
+      { label: "CVM, decision of the board of 2 December 2025, CERC S.A., organized OTC market (Proc. 19957.008271/2023-37, Reg. 3333/25): CERC, a privately held company founded in 2015 with BCB authorization to register financial assets since 2018; self-regulation by BBCE, an authorized OTC market acting only in energy derivatives; the CVM informed on 7 July 2025 that the BCB had authorized CERC's central depository system and clearing and settlement house; authorization granted unanimously, conditional on approval of market-surveillance file layouts, with exemption from disclosing each trade's intermediaries; by majority, exemption from quarterly financial statements for 24 months, against the staff's opinion (read 2026-11-16)", url: "https://conteudo.cvm.gov.br/decisoes/2025/20251202_R1/20251202_D3333.html" },
+      // The meeting of 25 November 2025, where the review request was made.
+      { label: "CVM, extracts of the minutes of board meeting 43 of 25 November 2025: the CERC applications resumed after a review request of 2 September 2025; votes of the director and the substitute director; a further review request by the interim chairman; decisions published on 6 March 2026 (read 2026-11-16)", url: "https://conteudo.cvm.gov.br/decisoes/2025/20251125_R1.html" },
+      // The company's self-description.
+      { label: "CERC, home page: CERC is the registrar specialized in receivables (card, trade bill, agribusiness, real-estate, utility and financial receivables); head office at Avenida Paulista 37, São Paulo (read 2026-11-16)", url: "https://www.cerc.inf.br/" },
+      // The PFMI self-assessment.
+      { label: "CERC, Autoavaliação CERC PFMI, version 2 of 7 October 2025: CERC was constituted in 2015; authorized by the BCB and in process at the CVM as OTC market, settlement system, central depository and trade repository; the CLIQ settlement system with a deferred net module and a real-time gross module, delivery versus payment; CERC does not act as central counterparty (read 2026-11-16)", url: "https://www.cerc.com/wp-content/uploads/2025/10/CERC_125-Autoavaliacao-PFMI.pdf" },
+      // The 2022 round and the controlling shareholders.
+      { label: "Valor Econômico, 17 November 2022 (Talita Moreira): Cerc ganha impulso com aporte de R$ 550 milhões; round led by Mubadala Capital, its first investment in a Brazilian financial-sector company, joined by shareholders including Valor Capital and by the founders; born a receivables registrar, CERC plans to act as depository, bookkeeper, clearing house and trading platform; co-founders Fernando Fontes and Marcelo Maziero remain the controlling shareholders (read 2026-11-16)", url: "https://valor.globo.com/financas/noticia/2022/11/17/cerc-ganha-impulso-com-aporte-de-r-550-milhoes.ghtml", sourceNote: "Read 2026-11-16, HTTP 200. The article also reports an unnamed source's estimate of Mubadala Capital's percentage; it is not used." },
+      // The duplicata bookkeeping authorization.
+      { label: "CERC, notice of 1 July 2026: the BCB's formal authorization for the bookkeeping of electronic trade bills (duplicatas escriturais), published in the Diário Oficial da União of 25 June 2026, edition 117, section 3, page 136; new regulations and manuals in force from 2 July 2026 (read 2026-11-16)", url: "https://www.cerc.com/wp-content/uploads/2026/07/Autorizacao-da-CERC-pelo-Banco-Central-do-Brasil-para-Escrituracao-de-Duplicatas.pdf" },
+      // The production notices of July 2026.
+      { label: "CERC, Comunicados: notices of 14 and 15 July 2026 on the start of operations and the assisted production of the duplicata bookkeeping system (read 2026-11-16)", url: "https://www.cerc.com/comunicados/" },
+    ],
+  },
+  {
+    // A5X - added 2026-11-16 (industry wave I2). A derivatives exchange and clearing house in preparation. No
+    // founding year: the sources date the plan's disclosure (18 June 2024) but no page read names the year the
+    // company was constituted, so `founded` is left out and the gap is reported. The founders say they keep
+    // control, so no parent is set.
+    slug: "a5x",
+    // Own site read live 2026-11-16: HTTP 200 at https://a5x.com.br/.
+    official: {
+      // The company's own site.
+      url: "https://a5x.com.br",
+      // The technical pages a network engineer reads first.
+      resources: [
+        // Co-location at Equinix SP3.
+        { label: "A5X: Colocation", url: "https://a5x.com.br/colocation/" },
+        // Connectivity: the A5X Connectivity Network.
+        { label: "A5X: Conectividade", url: "https://a5x.com.br/conectividade/" },
+      ],
+    },
+    // A derivatives exchange and clearing house.
+    tags: ["markets"],
+    // Trading as a company today, the exchange not yet open.
+    group: "contemporary",
+    // Title.
+    name: "A5X - the derivatives exchange built to compete with B3",
+    // Card line.
+    tagline: "A derivatives exchange and clearing house in preparation, announced in June 2024 by two former XP partners, the founder of the broker Ideal and a capital-markets lawyer, running on London Stock Exchange Group technology and planning to open in the first half of 2027.",
+    // Intro paragraph.
+    intro:
+      "A5X S.A. describes itself as a new market infrastructure dedicated exclusively to derivatives, with the stated purpose of redefining the concept of an exchange in Brazil, combining London Stock Exchange Group (LSEG) technology with a team that knows the local market. Its four founders are Carlos Ferreira Filho and Karel Luketic, former partners of XP; Nilson Monteiro, co-founder and chief executive of the broker Ideal; and Julian Chediak, a capital-markets lawyer and former chairman of Cetip's self-regulation council. Capital Aberto reported the disclosure of the plan on 18 June 2024, with an initial round of R$200 million; by its Series D, in September 2026, A5X had raised more than R$730 million in four rounds.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the shareholders.
+      "Its shareholders double as design partners. The A5X release of 14 September 2026 says the market makers IMC, Jump Trading, Optiver and XTX Markets and the clearing bank ABN AMRO Clearing, together with Ideal, controlled by Itaú Unibanco, have backed it since its creation, take part in designing the platform and its products and will help provide liquidity once it operates. Its Series D of R$360 million, at a post-money valuation of R$2.7 billion, was led by Morgan Stanley, Goldman Sachs and Kaszek, and XP Inc. exercised a purchase option to join the shareholders; the founders told Brazil Journal that they keep control of the company.",
+      // Paragraph 2: the technology and the network.
+      "The technology is partly bought and partly built. Under an agreement LSEG announced on 9 June 2025, LSEG supplies pre-trade risk management, an ultra-low-latency matching engine, market-data distribution and real-time surveillance, and a post-trade platform for clearing, settlement and risk management, which A5X operates inside its own systems; the company told NeoFeed it has more than fifty complementary systems, most developed in house. Its co-location is in Equinix's SP3 data centre, with cross-connects inside the building, and the A5X Connectivity Network (ACN) also offers site-to-site virtual private networks (VPNs), direct links between local area networks (LAN-to-LAN) and access from Amazon Web Services (AWS) through Direct Connect, virtual private cloud (VPC) peering or VPC endpoints. Karel Luketic told NeoFeed in September 2026 that the platform's latency would be under 50 microseconds, against 350 microseconds at B3, a comparison presented by the company.",
+      // Paragraph 3: the calendar and the first products.
+      "The calendar has moved. LSEG's announcement aimed at regulatory testing by the fourth quarter of 2025 and a commercial launch in the first half of 2026; in September 2026 A5X said its systems were ready, expected preliminary tests by the regulators in October and November, still needed its connections to the Banco Central do Brasil and the Brazilian Payments System (SPB), and planned to open in the first half of 2027. It will start with listed, cash-settled futures and options on equity indices, equities, currencies and local interest rates, all options European-style with automatic exercise, and crypto-asset futures; it has signed a contract with B3 for the use of data.",
+      // Paragraph 4: why it matters, analytically.
+      "A5X is the clearest test of whether Brazilian listed derivatives can sustain a second venue. Brazil, as the company puts it, is one of the few derivatives markets of its size served by a single trading and post-trade infrastructure. Goldman Sachs analysts, quoted by Capital Aberto in June 2024, put listed derivatives at 32 per cent of B3's 2023 revenue and judged that most of the economics (75 per cent) lay in clearing; A5X's answer has been to build its own clearing house from the start and to bring in as shareholders the market makers on whose quotes a second order book would depend.",
+    ],
+    // The company's own page.
+    externalUrl: "https://a5x.com.br/quem-somos/",
+    // Link label.
+    externalLabel: "A5X: Quem Somos",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // The Series D release.
+      { label: "A5X, release of 14 September 2026, A5X capta R$ 360 milhões em Série D: R$360 million at a post-money valuation of R$2.7 billion, led by Morgan Stanley, Goldman Sachs and Kaszek with IMC, Jump Trading, Optiver, XTX Markets and ABN AMRO Clearing; XP Inc. exercised its purchase option; more than R$730 million raised in four rounds; Brazil one of the few markets of its size served by a single trading and post-trade infrastructure; more than 200 staff; launch planned for the first half of 2027; the strategic shareholders and Ideal CTVM, controlled by Itaú Unibanco, have backed A5X since its creation and will help provide liquidity (read 2026-11-16)", url: "https://a5x.com.br/blog/a5x/a5x-capta-r-360-milhoes-em-serie-d-liderada-por-morgan-stanley-goldman-sachs-e-kaszek-com-valuation-de-r-27-bilhoes/" },
+      // The self-description.
+      { label: "A5X, Quem Somos: a new market infrastructure built to redefine the concept of an exchange in Brazil, based on the partnership with LSEG, dedicated exclusively to the derivatives market (read 2026-11-16)", url: "https://a5x.com.br/quem-somos/" },
+      // The first products.
+      { label: "A5X, home page: operations to start with listed, cash-settled derivatives; futures and options on equity indices, equities, currencies and local interest rates, crypto-asset futures; all options European-style with automatic exercise at expiry (read 2026-11-16)", url: "https://a5x.com.br/" },
+      // The founders.
+      { label: "A5X, blog, Conheça os Fundadores da A5X: four founders, Carlos Ferreira (CEO, former controlling partner of XP), Karel Luketic (CFO, former senior partner of XP), Julian Chediak (lawyer, former chairman of Cetip's self-regulation council) and Nilson Monteiro (CEO and co-founder of Ideal CTVM) (read 2026-11-16)", url: "https://a5x.com.br/blog/a5x/conheca-os-fundadores-da-a5x-experiencia-e-visao-para-transformar-o-mercado/" },
+      // Co-location.
+      { label: "A5X, Colocation: dedicated space in an ultra-low-latency trading environment in the Equinix SP3 data centre, with internal cross-connects to A5X (read 2026-11-16)", url: "https://a5x.com.br/colocation/" },
+      // Connectivity.
+      { label: "A5X, Conectividade: the ACN (A5X Connectivity Network); site-to-site VPN, LAN-to-LAN, cross-connect in Equinix SP3 and cloud access from AWS through Direct Connect, VPC peering or VPC endpoint (read 2026-11-16)", url: "https://a5x.com.br/conectividade/" },
+      // The LSEG agreement.
+      { label: "LSEG, press release of 9 June 2025, LSEG to Power A5X, Brazil's Next Generation Derivatives Exchange: strategic agreement to provide trading, clearing and market surveillance technology to A5X, S.A.; pre-trade risk management, ultra-low-latency matching engine, market data distribution, real-time surveillance and an end-to-end post-trade platform; A5X aiming at regulatory testing by Q4 2025 and commercial launch in H1 2026 (read 2026-11-16)", url: "https://www.lseg.com/en/media-centre/press-releases/2025/lseg-to-power-a5x-brazil-next-generation-derivatives-exchange" },
+      // The 2024 disclosure and the Goldman Sachs note.
+      { label: "Capital Aberto, 19 June 2024 (Amanda Meneses): the market surprised on Tuesday 18 June by the plans for a new derivatives exchange led by Carlos Ferreira Filho, Karel Luketic, Nilson Monteiro and Julian Chediak; A5X announced a Series A and raised R$200 million; Goldman Sachs analysts put listed derivatives at 32 per cent of B3's 2023 revenue and most of the economics (75 per cent) in clearing (read 2026-11-16)", url: "https://capitalaberto.com.br/empresas/2024/06/goldman-sachs-avalia-riscos-para-a-b3-com-nova-bolsa-a-a5x" },
+      // The founders' control, the regulators' tests and the B3 data contract.
+      { label: "Brazil Journal, 14 September 2026 (Ana Paula Ragazzi): A5X says it is ready to operate; the four founders keep control; preliminary tests with the regulators expected in October and November; connections to the Banco Central and the SPB still pending; opening expected by the second quarter of 2027; futures on the dollar, indices, interest rates and equities with options; a contract with B3 for the use of data (read 2026-11-16)", url: "https://braziljournal.com/a5x-a-nova-bolsa-de-derivativos-e-futuros-se-diz-pronta-para-operar" },
+      // Latency and the in-house systems.
+      { label: "NeoFeed, 15 September 2026 (Beatriz Quesada), A dura missão de criar uma nova bolsa no Brasil: Karel Luketic says A5X's latency will be below 50 microseconds against 350 at B3, in the company's comparison; more than 50 complementary systems, mostly developed in house; launch moved to the second quarter of 2027 (read 2026-11-16)", url: "https://neofeed.com.br/?p=235944" },
+    ],
+  },
+  {
+    // BASE EXCHANGE - added 2026-11-16 (industry wave I2). A stock exchange and clearing house in preparation in
+    // Rio de Janeiro, grown out of Americas Trading Group (now Flowa Technologies). No founding year: the sources
+    // date the announcement (July 2024) and Flowa's work (from 2010), not the company's constitution.
+    // OWNER: Mubadala Capital, a fund owner. The completed transaction the sources date is the majority stake in
+    // ATG, the group from which Base came, closed on 6 February 2023; NeoFeed (15 September 2026) calls Base
+    // controlled by Mubadala. The parent note says so; the integrator may prefer to drop `since` (REPORT.md).
+    slug: "base-exchange",
+    // Own site read live 2026-11-16: HTTP 200 at https://www.baseexchange.com.br/.
+    official: {
+      // The company's own site.
+      url: "https://www.baseexchange.com.br",
+      // The technical page a network engineer reads first.
+      resources: [
+        // Connectivity: access modes, data centres and cloud.
+        { label: "Base Exchange: Conectividade", url: "https://www.baseexchange.com.br/servicos/conectividade" },
+      ],
+      // A fund: rendered "owned by". No year: the dated deal (6 February 2023) is Mubadala Capital's stake in ATG, now Flowa, not in Base itself (integrator, 16/11/2026).
+      parent: { name: "Mubadala Capital", kind: "fund", note: "Mubadala Capital, the asset-management subsidiary of Abu Dhabi's sovereign fund, completed the purchase of a majority stake in Americas Trading Group, now Flowa Technologies, on 6 February 2023; NeoFeed describes Base, which grew out of that group, as controlled by Mubadala." },
+    },
+    // A stock exchange and clearing house.
+    tags: ["markets"],
+    // Trading as a company today, the exchange not yet open.
+    group: "contemporary",
+    // Title.
+    name: "Base Exchange - the Rio de Janeiro exchange project grown from Flowa",
+    // Card line.
+    tagline: "A stock exchange and clearing house planned in Rio de Janeiro, built on the order-routing business of Flowa Technologies, formerly Americas Trading Group, controlled by Mubadala Capital and expecting to open in the second half of 2027.",
+    // Intro paragraph.
+    intro:
+      "Base Exchange, whose name Capital Aberto described in 2025 as an acronym for Brazilian Stock Exchange, is a stock exchange with its own clearing house, Base Clearing, both pre-operational and awaiting regulatory approval, and based in Rio de Janeiro. It plans to begin with equities, exchange-traded funds (ETFs) and real-estate investment funds (fundos de investimento imobiliário, FIIs), with securities lending, on trading and post-trade systems written by its own team. Its origin, in its own account, is Flowa, a company of its group that has developed since 2010 the technology Brazilian brokers and fund managers use to trade.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the lineage and the competition case.
+      "It carries one of the oldest attempts at a rival to B3. NeoFeed traces it to ATS Brasil, linked to Americas Trading Group (ATG), which was already talking about a new Brazilian exchange in 2013, in an initiative with NYSE Euronext. Mubadala Capital, the asset-management subsidiary of Abu Dhabi's sovereign fund, completed the purchase of a majority stake in ATG on 6 February 2023, according to a Reuters report; ATG is now Flowa Technologies, and Base Exchange was announced in July 2024. In Base's own telling, it faced denials of access to essential services and a tariff structure that stifled would-be competitors, took them to the competition authority, the Conselho Administrativo de Defesa Econômica (CADE), and the barriers fell for the whole market as new regulation allowed exchanges to compete in Brazil for the first time.",
+      // Paragraph 2: the installed base it relies on.
+      "Its argument is the network it already has. Base says that in 2010 less than 7 per cent of investors' orders went through electronic platforms and that by 2026 more than 60 per cent did, a change it says Flowa helped to bring about. Francisco Gurgel, a founder of Flowa and Base, was named chief executive in July 2026, succeeding Claudio Pracownik, who moved to the board; he told NeoFeed in September 2026 that Flowa connects all of Brazil's brokers and 300 asset managers, who would reach Base from its first day, while the figures given to Capital Aberto in March 2025 were 54 brokers and 320 asset managers, and Diário do Rio reported that about 8 per cent of the daily equities volume on B3 passes through Flowa's infrastructure. Flowa's software appears on B3's lists of certified order-entry, drop-copy and market-data solutions, under both the Flowa Technologies and Americas Trading Group names.",
+      // Paragraph 3: the network design.
+      "Its network design is published. Base's primary site is Equinix's SP6 data centre and its secondary site Ascenty's Vinhedo 2; participants can connect by cross-connect in SP6, dedicated circuits, Equinix Fabric, a site-to-site virtual private network (VPN) or an agreement with RTM, and its post-trade systems run in a multi-availability-zone architecture on Amazon Web Services (AWS). It says it is expanding co-location capacity for the market, with more racks and more power per rack for low-latency servers and field-programmable gate arrays (FPGAs). Participants go through an eight-phase onboarding, from initial alignment to activation, with access approved by the president.",
+      // Paragraph 4: the approval calendar and why it matters, analytically.
+      "Approval has taken longer than planned. Base first aimed to open in the second half of 2025, then early 2026; in July 2026 Diário do Rio reported, from Pipeline (Valor), that it had passed the technical tests of the Comissão de Valores Mobiliários (CVM) and was waiting for the board's decision and for the Banco Central do Brasil's tests of its clearing house, with opening expected in the second half of 2027. Gurgel told NeoFeed that Base was the first exchange to file for authorization, three and a half years earlier, and aims for 15 to 20 per cent of the market in about two years. Where A5X starts with derivatives, Base starts with the cash market, and it was built backwards from the order-routing software already installed at the brokers: an exchange built back to front, in Gurgel's phrase.",
+    ],
+    // The company's own history page.
+    externalUrl: "https://www.baseexchange.com.br/sobre-nos",
+    // Link label.
+    externalLabel: "Base Exchange: Sobre Nós",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // The self-description.
+      { label: "Base Exchange, home page: a stock exchange and a clearing built on proprietary technology; products equities, ETFs and FIIs; services trading, post-trade, securities lending, risk management and connectivity (read 2026-11-16)", url: "https://www.baseexchange.com.br/" },
+      // The company's history and the CADE case in its own words.
+      { label: "Base Exchange, Sobre Nós (Nossa História): no regulation allowed competition between exchanges in Brazil; denials of access to essential services and a tariff structure taken to CADE; the barriers fell for the whole market and new regulation allowed competition between exchanges; origin in Flowa, a group company developing trading technology since 2010; electronic platforms carried less than 7 per cent of investors' orders in 2010 and more than 60 per cent in 2026; Francisco Gurgel, founder and president (read 2026-11-16)", url: "https://www.baseexchange.com.br/sobre-nos" },
+      // The pre-operational status.
+      { label: "Base Exchange, Governança Corporativa: Base Exchange and Base Clearing are in a pre-operational phase, awaiting regulatory approvals to start their activities (read 2026-11-16)", url: "https://www.baseexchange.com.br/governanca-corporativa" },
+      // The network design.
+      { label: "Base Exchange, Conectividade: access by cross-connect in the Equinix SP6 data centre, dedicated circuits, Equinix Fabric, site-to-site VPN and RTM; primary site Equinix SP6, secondary site Ascenty Vinhedo 2; expanded co-location racks and power per rack for low-latency servers and FPGAs; post-trade hosted in a multi-AZ architecture on AWS (read 2026-11-16)", url: "https://www.baseexchange.com.br/servicos/conectividade" },
+      // The onboarding.
+      { label: "Base Exchange, Seja um Participante: participant onboarding in eight phases, from initial alignment to activation, with access approved by the president (read 2026-11-16)", url: "https://www.baseexchange.com.br/participantes/seja-um-participante" },
+      // The parent's name and the completion year.
+      { label: "Reuters, reproduced by Money Times, 6 February 2023: Mubadala Capital, the asset-management subsidiary of Abu Dhabi's sovereign fund, completed its investment in Americas Trading Group (ATG), a Brazilian technology company with an electronic trading platform, a majority shareholding; FIP ETB, previously the sole shareholder, was managed by Angra Partners (read 2026-11-16)", url: "https://www.moneytimes.com.br/mubadala-capital-conclui-compra-de-fatia-majoritaria-na-americas-trading-group/" },
+      // The lineage, the control and the calendar.
+      { label: "NeoFeed, 15 September 2026 (Beatriz Quesada), A dura missão de criar uma nova bolsa no Brasil: Base Exchange, controlled by the sovereign fund Mubadala, came from ATS Brasil, linked to ATG, today Flowa Technologies; ATG spoke of a new exchange in 2013 with NYSE Euronext; announced in July 2024 for the second half of 2025, now planned for the second half of 2027; Francisco Gurgel: first exchange to file, three and a half years ago; a 15 to 20 per cent market share target; Flowa connects 100 per cent of brokers and 300 asset managers (read 2026-11-16)", url: "https://neofeed.com.br/?p=235944" },
+      // The change of chief executive and the regulatory stage.
+      { label: "Diário do Rio, 10 July 2026 (Quintino Gomes Freire), citing Pipeline (Valor): Francisco Gurgel, a founder of Flowa and Base, becomes chief executive, succeeding Claudio Pracownik, who joins the board; Mubadala the principal shareholder; Base passed the CVM's technical tests and awaits the board's decision and the Banco Central's clearing tests; opening planned for the second half of 2027; about 8 per cent of B3's daily equities volume through Flowa; an exchange built back to front (read 2026-11-16)", url: "https://diariodorio.com/nova-bolsa-do-rio-muda-de-comando-e-prepara-operacao-para-2027" },
+      // The name, the earlier calendar and the 2025 figures.
+      { label: "Capital Aberto, 5 March 2025, interview with Claudio Pracownik: Base Exchange, an acronym for Brazilian Stock Exchange, based in Rio de Janeiro; a launch first expected at the end of 2025, then early 2026; three companies, Flowa Technologies being the former Americas Trading Group, with 320 asset managers and 54 brokers connected (read 2026-11-16)", url: "https://www.capitalaberto.com.br/alem-do-capital/2025/03/claudio-pracownik-ceo-da-base-exchange-fala-no-alem-do-capital" },
+      // Flowa on B3's certification lists.
+      { label: "B3, Soluções certificadas: Flowa Technologies (Falcon 1.0; Americas Trading Group 2.9.1) and ATG JET 1.0 on the order-entry list; Flowa Technologies Americas Trading Group DC 1.0 on the drop-copy list; Flowa Technologies ATG.CDF 1.0 on the market-data list (read 2026-11-16)", url: "https://b3.com.br/pt_br/solucoes/plataformas/puma-trading-system/para-participantes-e-traders/solucoes-certificadas/solucoes-para-entrada-de-ordens/" },
+    ],
+  },
+  {
+    // BSM SUPERVISÃO DE MERCADOS - added 2026-11-16 (industry wave I2). The self-regulatory association of B3's
+    // markets, created in 2007. B3 is its maintaining member, not its owner: an association has no shareholder
+    // and B3 does not consolidate it, so no parent is set.
+    slug: "bsm-supervisao-de-mercados",
+    // Own site read live 2026-11-16: HTTP 200 at https://www.bsmsupervisao.com.br/.
+    official: {
+      // The association's own site.
+      url: "https://www.bsmsupervisao.com.br",
+    },
+    // A market supervisor and self-regulatory organization.
+    tags: ["markets"],
+    // Operating today.
+    group: "contemporary",
+    // Title.
+    name: "BSM Supervisão de Mercados - the self-regulator of B3's markets",
+    // Founding year, named by the Formulário de Referência and Capital Aberto 2017 labels below.
+    founded: 2007,
+    // Card line.
+    tagline: "The non-profit association created in 2007, regulated by the CVM and maintained by B3, that supervises B3's markets, audits their participants and runs the investor compensation mechanism.",
+    // Intro paragraph.
+    intro:
+      "BSM Supervisão de Mercados describes itself as the main self-regulatory organization of the Brazilian capital market: a civil association under private law, constituted to supervise and police the organized markets administered by B3, with administrative and budgetary autonomy, and regulated by the Comissão de Valores Mobiliários (CVM). Under Article 17 of Law No. 6,385 of 1976, B3, as administrator of organized markets, is an auxiliary body of the CVM charged with supervising its participants and their trades; its Formulário de Referência states that it exercises that function primarily through BSM, by delegation.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: creation, funding and the 2017 redesign.
+      "Capital Aberto dates its creation to 2007, shortly before the Bovespa joined BM&F, and in 2011 called it BM&FBovespa Supervisão de Mercados. B3 is its maintaining member: from its constitution in 2007 to 31 December 2025 B3 contributed about R$405 million to its activities, and by its nature BSM is not consolidated in B3's financial statements. In 2017 Capital Aberto reported that BM&FBovespa was developing a new financial and governance model to turn BSM into a single self-regulator, after a working group coordinated by the CVM had set out the changes it would need should the exchange lose its market exclusivity.",
+      // Paragraph 2: the work and the 2025 figures.
+      "Its work is surveillance of trading and audit of intermediaries. BSM monitors offers and trades on B3's markets, audits the participants with access to them, brings administrative disciplinary proceedings (PADs) that its Self-Regulation Council judges, and administers B3's Mecanismo de Ressarcimento de Prejuízos (MRP), which compensates eligible investors for losses caused by the action or omission of their intermediaries in exchange trading, securities custody and centrally cleared over-the-counter (OTC) derivatives. Its annual report for 2025 counts 223 audits, 2,264 market analyses, 122 cases closed and about 600 indicators monitored.",
+      // Paragraph 3: why it matters to electronic trading, analytically.
+      "For algorithmic and high-frequency trading, BSM sets reference points for the brokers' own supervision. Besides its supervision rules and guidance notes, it publishes monthly benchmarks for layering and spoofing and for fund transfers, calculated from market statistics, so that intermediaries can compare their own operating patterns with those observed in the market and use them as references for their own alerts and supervision routines; the October 2026 benchmarks were published on 16 November 2026. Part of market surveillance thus runs inside the brokers' own systems, calibrated against figures the self-regulator publishes.",
+    ],
+    // The association's own page.
+    externalUrl: "https://www.bsmsupervisao.com.br/quem-somos",
+    // Link label.
+    externalLabel: "BSM: Quem Somos",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // The self-description.
+      { label: "BSM Supervisão de Mercados, Quem Somos: the main self-regulator of the Brazilian capital market; a civil association under private law constituted to supervise the organized markets administered by B3, with administrative and budgetary autonomy, regulated by the CVM; audits of participants; supervision rules and guidance notes; administration of B3's MRP for losses caused by intermediaries in exchange trading, custody and OTC derivatives with central counterparty (read 2026-11-16)", url: "https://www.bsmsupervisao.com.br/quem-somos" },
+      // The founding year, the contributions and the delegation.
+      { label: "B3, Formulário de Referência 2026, version 10, items 1.3 and 1.6: BSM is a non-profit civil association constituted to carry out self-regulation, monitoring, supervision and policing of B3's markets; since its constitution in 2007 to 31 December 2025 B3, its maintaining entity, contributed about R$405 million; BSM is not consolidated; under Article 17 of Law 6,385/1976 B3 is an auxiliary body of the CVM and the supervision is exercised primarily by BSM by delegation (read 2026-11-16)", url: "https://api.mziq.com/mzfilemanager/v2/d/5fd7b7d8-54a1-472d-8426-eb896ad8a3c4/f94538b8-47c9-77ed-dd94-2c6d84a32113?origin=2" },
+      // The founding year in the press, and the 2017 redesign.
+      { label: "Capital Aberto, 24 February 2017 (Yuki Yokoi), BM&FBovespa trabalha para transformar a BSM em autorregulador único: BSM was created in 2007, shortly before the Bovespa and BM&F combined; a new financial and governance model to make it a single self-regulator; a CVM-coordinated working group on the changes needed should BM&FBovespa lose its market exclusivity (read 2026-11-16)", url: "https://capitalaberto.com.br/empresas/2017/02/bmfbovespa-trabalha-para-transformar-a-bsm-em-autorregulador-unico" },
+      // The 2011 name.
+      { label: "Capital Aberto, 1 April 2011, Tudo vigiado: interview with the self-regulation director of BM&FBovespa Supervisão de Mercados (BSM) (read 2026-11-16)", url: "https://capitalaberto.com.br/regulacao/2011/04/tudo-vigiado" },
+      // The 2025 figures.
+      { label: "BSM Supervisão de Mercados, Relatório Anual 2025: 223 audits, 2,264 market analyses, 122 cases closed, about 600 indicators monitored, 37 MRP appeal judgments; the Self-Regulation Council judges PADs and MRP appeals (read 2026-11-16)", url: "https://www.bsmsupervisao.com.br/documents/1266368/1502039/Relat%C3%B3rio+Anual+2025.pdf/726df4f5-35da-1573-e2be-e699df474f06?version=1.0&t=1774992665214" },
+      // The benchmarks.
+      { label: "BSM Supervisão de Mercados, notice of 16 November 2026: October 2026 benchmarks for layering and spoofing and for fund transfers, calculated from statistical data, published as references for intermediaries' alerts and supervision routines (read 2026-11-16)", url: "https://www.bsmsupervisao.com.br/w/benchmarks-de-layering-spoofing-e-transfer%C3%AAncia-de-recursos-de-outubro-dispon%C3%ADveis-1" },
+    ],
+  },
+  {
+    // CM CAPITAL - added 2026-11-16 (industry wave I2). The Brazilian brokerage of C.M. Capital Markets Holding,
+    // founded in Madrid in 1986 (so its origin is ES, not BR). Compagnie Financière Tradition holds 30 per cent
+    // (a minority, equity-accounted), so no parent is set. The main site answered a bot check on 2026-11-16 and
+    // is kept as blocked; the facts rest on the company's HFT page and Tradition's own documents.
+    slug: "cm-capital",
+    // Own site: https://www.cmcapital.com.br/ answered HTTP 403 (bot check) on 2026-11-16; the HFT page answered 200.
+    official: {
+      // The company's own site.
+      url: "https://www.cmcapital.com.br",
+      // The page for foreign high-frequency firms, readable on 2026-11-16.
+      resources: [
+        // HFT Solutions page.
+        { label: "CM Capital: HFT Solutions", url: "https://mkt.cmcapital.com.br/hft" },
+      ],
+    },
+    // An interdealer broker and brokerage.
+    tags: ["markets"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "CM Capital - the Madrid broker that became a B3 derivatives specialist",
+    // Founding year, named by the HFT page and Tradition labels below.
+    founded: 1986,
+    // Card line.
+    tagline: "An independent broker founded in Spain in 1986 and operating in Brazil since 1998, active in B3's derivatives markets; the interdealer broker Tradition has owned 30 per cent of its holding company since 2010.",
+    // Intro paragraph.
+    intro:
+      "CM Capital presents itself as an independent broker free from conflicts of interest, representing only one party in each negotiation, with a strong presence in B3's financial derivatives market; its Brazilian site calls it the country's largest independent investment brokerage. Its own timeline puts its founding in Spain in 1986 and the start of its independent operation in Brazil in 1998. When Compagnie Financière Tradition agreed in December 2010 to buy 30 per cent of the holding company, C.M. Capital Markets Holding SA, it described a privately held interdealer broker (IDB) established in Madrid in 1986 and in São Paulo in 1998, brokering money-market, futures, government bond, equity, capital-markets and energy products, and one of the most active IDBs on BM&FBovespa.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the shareholders.
+      "The Tradition stake came from a bank's exit. On 3 December 2010 Tradition, with CM Capital Markets Holding and its management, agreed to buy the 45.2 per cent held by The Royal Bank of Scotland NV, formerly ABN AMRO Bank NV, a minority shareholder since 1990 alongside the founders, management and employees: 30 per cent for Tradition and 15.2 per cent for the company and its management. Tradition's annual report for 2025 still lists C.M. Capital Markets Holding S.A., Madrid, as an equity-accounted associate in which it holds 30 per cent of the capital and, at 31 December 2025, 32.63 per cent of the voting rights.",
+      // Paragraph 2: the offer to foreign high-frequency firms.
+      "Its offer to foreign trading firms is electronic access to B3. A page aimed at high-frequency traders describes guidance from initial setup to operational launch, a manual for non-resident investors, B3's PUMA Trading System with its Financial Information eXchange (FIX) and Simple Binary Encoding (SBE) protocols, B3's rules on idle order-entry sessions and on the maximum number of sessions, and its market data policy for firms with their own equipment in B3's co-location, from whose fixed monthly fee CM Capital says it can offer an exemption. Citing B3 data for 2023, the page says high-frequency traders averaged 25 million contracts a day in the products of B3's programme for them, 98 per cent of them mini contracts, and that non-residents accounted for more than 50 per cent of volume in cash equities, equity derivatives and interest-rate, currency and commodity products, and more than 70 per cent in stock-index derivatives.",
+      // Paragraph 3: why it matters, analytically.
+      "An interdealer broker's Brazilian arm selling session management and co-location advice to overseas high-frequency firms shows how B3's market is reached from abroad: through a local participant that holds the exchange connections and sessions, under B3's commercial policies for connectivity and market data.",
+    ],
+    // The company's own page readable on the read date.
+    externalUrl: "https://mkt.cmcapital.com.br/hft",
+    // Link label.
+    externalLabel: "CM Capital: HFT Solutions",
+    // Sources, each read on 2026-11-16.
+    sources: [
+      // The company's own timeline, with the founding year.
+      { label: "CM Capital, HFT Solutions: 1986, CM Capital was founded in Spain; 1998, began operating independently in Brazil; 2010, Tradition, an interdealer broker present in over 30 countries, acquired a 30 per cent stake; an independent broker free from conflicts of interest with a strong presence in B3's financial derivatives market; B3 data for 2023 on HFT and non-resident volumes; PUMA Trading System with FIX and SBE; B3 rules on idle and maximum order-entry sessions; market data policy for co-located firms; office at Rua Gomes de Carvalho 1195, São Paulo; Brazil's largest independent investment brokerage (read 2026-11-16)", url: "https://mkt.cmcapital.com.br/hft" },
+      // The 2010 agreement, with the founding year and place.
+      { label: "Compagnie Financière Tradition, press release, Lausanne, 3 December 2010: Tradition to acquire 30 per cent of CM Capital Markets Holding SA, and CMH with its management 15.2 per cent, from The Royal Bank of Scotland NV, formerly ABN AMRO Bank NV, a minority shareholder since 1990; CMH, a privately held group established in 1986 in Madrid and in 1998 in São Paulo, an interdealer broker in monetary, futures, government bond, equity, capital-markets and energy products, one of the most active IDBs on BM&F Bovespa; subject to regulatory approvals (read 2026-11-16)", url: "https://direct.tradition.com/media/162784/press%20release%20tradition-cmh%20_%20uk.pdf" },
+      // The stake today.
+      { label: "Compagnie Financière Tradition, Annual Report 2025: C.M. Capital Markets Holding S.A., Madrid, held at 30.0 per cent and accounted for by the equity method; voting rights 32.63 per cent at 31 December 2025, against 32.40 per cent a year earlier (read 2026-11-16)", url: "https://www.tradition.com/media/366169/Annual_report_ang_final.pdf" },
+      // The blocked main site, kept.
+      { label: "CM Capital, home page: answered a bot check (HTTP 403) to a script on 2026-11-16 and opened normally in a browser the same evening, where its menu lists Quem Somos, Interdealer Broker, HFT Solutions and Foreign Investor (read 2026-11-16)", url: "https://www.cmcapital.com.br/" }, // relabelled by the integrator after reading it in PRIME's Chrome; the citation is unchanged
+      // Read by the integrator in PRIME's Chrome on 16/11/2026 (corpus: industry-i2/corpus/cmcapital-quem-somos-chrome-20261116.txt).
+      { label: "CM Capital, Quem Somos (read 2026-11-16): the CM Capital Markets group founded in 1986 in Madrid; the Brazilian unit created in 1998; Compagnie Financière Tradition acquired 30 per cent of its capital in 2011; electronic high-frequency trading solutions with co-location at B3 from 2023; CM Capital Markets Holding, S.A. as the parent of the group's two Spanish securities firms and its Brazilian broker", url: "https://cmcapital.com.br/quem-somos/", sourceNote: "The company dates Tradition's stake to 2011 here and to 2010 on its HFT page; Tradition's own release of 3 December 2010 is the agreement, which the record dates." }, // the company's own account
+    ],
+  },
+  {
+    // RTM - added 2026-11-16 (industry wave I2). The financial market's private network, created by Andima (now
+    // ANBIMA) in 1997. It calls itself a company of ANBIMA and B3; B3 holds 20 per cent. ANBIMA's share is not
+    // stated in any page read, so no parent is set (REPORT.md).
+    slug: "rtm",
+    // Own site read live 2026-11-16: HTTP 200 at https://www.rtm.net.br/ and https://rtm.net.br/institucional/.
+    official: {
+      // The company's own site.
+      url: "https://www.rtm.net.br",
+    },
+    // A carrier, data-centre and services company that is one of B3's access modes and runs the payments network.
+    tags: ["carrier", "datacentre", "services", "markets"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "RTM - the private network of Brazil's financial market",
+    // Founding year, named by the RTM institutional label below.
+    founded: 1997,
+    // Card line.
+    tagline: "Created in 1997 by the association now called ANBIMA to link Brazil's financial institutions at lower cost, the network that built the payments system's network with Embratel and is one of B3's four access modes.",
+    // Intro paragraph.
+    intro:
+      "RTM, Rede de Telecomunicações para o Mercado, describes itself as a company of ANBIMA and B3 and the main integration hub of Brazil's financial sector, acting as a neutral technology agent. It was created in 1997 by Andima, now the Associação Brasileira das Entidades dos Mercados Financeiro e de Capitais (ANBIMA), as a critical communications network to interconnect the financial sector and reduce its high telecommunications costs. It now also offers data-centre, cloud, cybersecurity and investment-fund platform services, connection to Pix, Drex and Open Finance, and blockchain as a service, and says it connects more than 850 institutions in 21 Brazilian states; B3 holds 20 per cent of it.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the timeline.
+      "Its timeline follows the market's plumbing. RTM had 120 clients in 1998, at first only on the Rio de Janeiro-São Paulo axis, and covered the whole country from 1999; in 2000 Cetip, now part of B3, became a shareholder. In 2001 the Embratel-RTM consortium was selected to develop the network of the new Brazilian Payments System (SPB), and RTM still provides, with Embratel, the management structure of the National Financial System Network (RSFN). It added voice over Internet Protocol (VoIP) in 2002, its own IP and Multiprotocol Label Switching (IP/MPLS) backbone in 2013, international hotlines in 2016, a new data centre in São Paulo in 2019 and infrastructure for Pix in 2020, and in 2025 bought Galgo S.A., expanding its services for the investment-fund industry.",
+      // Paragraph 2: the access route to B3.
+      "For trading it is an access route. B3's manual of access to its technology infrastructure lists the agreement with RTM among its four access modes, with RTM's private networks on Amazon Web Services (AWS), Azure, Google Cloud, Oracle Cloud and IBM Cloud reaching B3's production and disaster-recovery data centres for post-trade services; the reverse route, B3 participants reaching RTM services through B3's own network, has been discontinued. RTM also runs more than 2,000 private lines (hotlines) connecting trading desks, and B3's Formulário de Referência names it among its telecommunications suppliers and among the third parties whose failures could affect B3. Base Exchange offers access through an agreement with RTM too.",
+      // Paragraph 3: why it matters, analytically, and the discrepancy in its own figures.
+      "RTM is the market's answer to a carrier problem: instead of each institution buying circuits to every exchange, clearing house and payments system, the market's own association built a shared network, and the same company now carries the payments system's network, links to B3's post-trade services and the voice lines of trading desks. Its own figures do not agree: the same page counts more than 850 institutions in 21 states, more than 750 in 20 states and the Federal District, and more than 700.",
+    ],
+    // The company's own page.
+    externalUrl: "https://rtm.net.br/institucional/",
+    // Link label.
+    externalLabel: "RTM: Institucional",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // The company's own account, with the founding year.
+      { label: "RTM, Institucional: a company of ANBIMA and B3, the main integration hub of the financial sector, a neutral technology agent; founded in 1997 as a critical communications network for the financial segment, created by Andima, now ANBIMA, to interconnect the financial sector and reduce high telecommunications costs; more than 850 institutions in 21 states (and, elsewhere on the page, more than 750 in 20 states and the Federal District, and more than 700); 120 clients in 1998 on the Rio-São Paulo axis; national from 1999; Cetip, now B3, a shareholder from 2000; the Embratel-RTM consortium selected in 2001 for the network of the new Brazilian Payments System; RSFN management with Embratel; VoIP 2002; own IP/MPLS backbone 2013; international hotlines 2016; new data centre in São Paulo 2019; Pix 2020; Galgo S.A. acquired in 2025; more than 2,000 private lines (read 2026-11-16)", url: "https://rtm.net.br/institucional/" },
+      // ANBIMA's full name.
+      { label: "B3, Bora Investir glossary: ANBIMA, Associação Brasileira das Entidades dos Mercados Financeiro e de Capitais (read 2026-11-16)", url: "https://borainvestir.b3.com.br/glossario/anbima-associacao-brasileira-das-entidades-dos-mercados-financeiro-e-de-capitais/" },
+      // B3's 20 per cent.
+      { label: "B3 Relações com Investidores, Empresas do Grupo (last updated 3 November 2026): B3 holds 20 per cent of its associate RTM, a private communications network created for the financial sector, managing data, voice and image services (read 2026-11-16)", url: "https://ri.b3.com.br/pt-br/empresas-do-grupo/" },
+      // The access mode.
+      { label: "B3, Manual de Acesso à Infraestrutura Tecnológica da B3, version 8.5 of 13 February 2026, chapter 6: the B3-RTM agreement among B3's four access modes; access via RTM's private networks on AWS, Azure, Google Cloud, Oracle Cloud and IBM Cloud to B3's production and DR data centres for post-trade services; B3 participants' access to RTM services through the RCB discontinued (read 2026-11-16)", url: "https://b3.com.br/data/files/B9/F0/1F/4F/DC7CF91094DCD8F9AC094EA8/2026%20-%20Manual%20de%20Acesso%20a%20Infraestrutura%20Tecnologica%20da%20B3.pdf" },
+      // B3's dependence.
+      { label: "B3, Formulário de Referência 2026, version 10: RTM - Rede de Telecomunicações para o Mercado Ltda. held at 20 per cent; RTM among B3's telecommunications suppliers and among the third-party systems whose failures could affect B3 (read 2026-11-16)", url: "https://api.mziq.com/mzfilemanager/v2/d/5fd7b7d8-54a1-472d-8426-eb896ad8a3c4/f94538b8-47c9-77ed-dd94-2c6d84a32113?origin=2" },
+      // Base's access through RTM.
+      { label: "Base Exchange, Conectividade: RTM, a dedicated connection through an agreement with RTM, among Base's access modes (read 2026-11-16)", url: "https://www.baseexchange.com.br/servicos/conectividade" },
+    ],
+  },
+  {
+    // CEDRO TECHNOLOGIES - added 2026-11-16 (industry wave I2). A market-data and order-routing software house
+    // born at the Universidade Federal de Uberlândia in 2005. Ownership is not stated by any page read.
+    slug: "cedro-technologies",
+    // Own site read live 2026-11-16: HTTP 200 at https://www.cedrotech.com/ and https://cedrotech.com/sobre-nos/.
+    official: {
+      // The company's own site.
+      url: "https://www.cedrotech.com",
+    },
+    // Makes trading software.
+    tags: ["vendor"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "Cedro Technologies - market data and order routing from Uberlândia",
+    // Founding year, named by the Cedro label below.
+    founded: 2005,
+    // Card line.
+    tagline: "A software company founded in 2005 as a start-up from a laboratory at the Federal University of Uberlândia, which redistributes B3 market data and sells order management, risk and trading platforms to brokers.",
+    // Intro paragraph.
+    intro:
+      "Cedro Technologies says it was founded in 2005 by three friends as a start-up from a laboratory inside the Universidade Federal de Uberlândia (UFU). It sells application programming interfaces (APIs) for market data, for sending and receiving orders over the Financial Information eXchange (FIX) protocol, for client registration and for balances; Market Data Cedro, which it calls the leader in redistributing exchange data; the order management system (OMS) OMS Cedro; RISK Cedro for brokers' risk control; and the trading platform Fast Trade.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the certified products and the OMS.
+      "Its software is certified by B3: Crystal Broker 3.0 for order entry by direct market access (DMA) and for drop copy, and Cedro Proxy UMDF 1.0 for the conflated version of B3's Unified Market Data Feed (UMDF). OMS Cedro is described as the server that manages orders sent to B3 or to another certified OMS: multi-asset across futures, funds, equities and the Tesouro Direto, with pre-trade risk for the BM&F and Bovespa segments, REST and FIX interfaces, integration with platforms such as Bloomberg and Sinacor, and use as a contingency OMS. Cedro notes that only a broker may have an OMS of its own connected to B3.",
+      // Paragraph 2: the scale it reports and its milestones.
+      "On figures it gave after eighteen years of operation, Cedro serves more than 400 corporate clients, handles more than 7 million FIX messages and more than 1.4 million trades a day, and serves more than a million users a month. It adopted Scrum squads and objectives and key results (OKRs) in 2019, rebranded in 2021 so that every solution carries the Cedro name, and in 2022 moved to a new head office in Uberlândia, in a complex shared with other technology companies, while restructuring its São Paulo operation.",
+      // Paragraph 3: why it matters, analytically.
+      "Cedro is a case of the layer between B3 and a broker's clients being supplied by a specialist: a university spin-off in Uberlândia that redistributes the exchange's prices and routes orders over FIX through software certified by B3.",
+    ],
+    // The company's own page.
+    externalUrl: "https://cedrotech.com/sobre-nos/",
+    // Link label.
+    externalLabel: "Cedro Technologies: Sobre nós",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // The company's own account, with the founding year.
+      { label: "Cedro Technologies, Sobre nós: founded in 2005 as a start-up from a laboratory inside the Universidade Federal de Uberlândia (UFU) by three friends; agile methods, squads and OKRs from 2019; 2021 rebranding under the single Cedro name; 2022 new head office in Uberlândia and restructuring in São Paulo; after 18 years, more than 400 corporate clients, 7 million FIX messages and 1.4 million trades processed a day, 1 million users a month; products APIs, Market Data Cedro (leader in redistributing exchange data), OMS Cedro, RISK Cedro and Fast Trade (read 2026-11-16)", url: "https://cedrotech.com/sobre-nos/" },
+      // The OMS.
+      { label: "Cedro Technologies, OMS Cedro: the server managing orders sent to B3 or to another certified OMS; multi-asset (futures, funds, equities, Tesouro Direto); REST and FIX; integration with Bloomberg and Sinacor; contingency OMS; pre-trade risk for BM&F and Bovespa; an OMS of one's own connected to B3 requires being a broker (read 2026-11-16)", url: "https://cedrotech.com/produtos/oms-cedro/" },
+      // B3 order entry.
+      { label: "B3, Soluções certificadas, Soluções para entrada de ordens: Cedro Technologies, Crystal Broker 3.0, DMA and DMA with desk (read 2026-11-16)", url: "https://b3.com.br/pt_br/solucoes/plataformas/puma-trading-system/para-participantes-e-traders/solucoes-certificadas/solucoes-para-entrada-de-ordens/" },
+      // B3 drop copy.
+      { label: "B3, Soluções certificadas, Soluções para drop copy: CEDRO TECHNOLOGIES LTDA., Crystal Broker 3.0 (read 2026-11-16)", url: "https://b3.com.br/pt_br/solucoes/plataformas/puma-trading-system/para-participantes-e-traders/solucoes-certificadas/solucoes-para-drop-copy/" },
+      // B3 market data.
+      { label: "B3, Soluções certificadas, Soluções para difusão de sinal: Cedro Technologies, Cedro Proxy UMDF 1.0, UMDF Conflated (read 2026-11-16)", url: "https://www.b3.com.br/pt_br/solucoes/plataformas/puma-trading-system/para-participantes-e-traders/solucoes-certificadas/solucoes-para-difusao-de-sinal/" },
+      // The UMDF expansion.
+      { label: "B3, Manual de Acesso à Infraestrutura Tecnológica da B3, version 8.5 of 13 February 2026: UMDF, Unified Market Data Feed, a market data distribution solution over multicast channels (read 2026-11-16)", url: "https://b3.com.br/data/files/B9/F0/1F/4F/DC7CF91094DCD8F9AC094EA8/2026%20-%20Manual%20de%20Acesso%20a%20Infraestrutura%20Tecnologica%20da%20B3.pdf" },
+    ],
+  },
+  {
+    // INTELITRADER - added 2026-11-16 (industry wave I2). A Brazilian trading-software house founded in 2011 by a
+    // former BM&F and BM&FBovespa professional. Ownership is not stated by any page read.
+    slug: "intelitrader",
+    // Own site read live 2026-11-16: HTTP 200 at https://www.intelitrader.com.br/.
+    official: {
+      // The company's own site.
+      url: "https://www.intelitrader.com.br",
+    },
+    // Makes trading software.
+    tags: ["vendor"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "Intelitrader - market data, order routing and risk software for Brazilian brokers",
+    // Founding year, named by the Intelitrader label below.
+    founded: 2011,
+    // Card line.
+    tagline: "A Brazilian software house founded in 2011 by a veteran of BM&F, BM&FBovespa and market-software companies, whose market data, order management and risk products are certified by B3.",
+    // Intro paragraph.
+    intro:
+      "Intelitrader was founded in 2011 by Rodrigo Strauss after he had worked at BM&F, BM&FBovespa, securities brokers and financial-market software companies such as MACSYS and Agência Estado, and won its first client the same year, selling InteliMarket to Octo Corretora, the forerunner of Rico. It describes itself as a software company specialized in the financial market, writing high-performance software for brokers, exchanges, banks and asset managers, with its own libraries for the Financial Information eXchange (FIX) protocol, B3's Unified Market Data Feed (UMDF) and algorithmic trading, and says all its solutions are certified by B3.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the products and their certification.
+      "Its products are InteliMarket, a high-availability quotation service compatible with B3's UMDF and conflated feeds; InteliOrder, an order management system (OMS) with FIX order routing, per-account position limits, persistence in any relational database and FIX (EntryPoint) and REST interfaces; InteliRisk, pre- and post-trade risk that centralizes the risk of all of a broker's OMSs and integrates with Sinacor and drop copy; InteliData, which consolidates equity, fixed-income, fund, Tesouro Direto and securities-lending positions; InteliMobile, a white-label app; and the Intelitrader Talk Manager (WTM), which archives WhatsApp messages for up to 65 months in line, it says, with the rules of BSM, the Banco Central and B3. B3's lists show InteliOrder 1.1.0 certified for order entry by direct market access (DMA) and for drop copy, and InteliMarket 1.0 for both the UMDF PUMA 2.0 and conflated market data feeds.",
+      // Paragraph 2: its history as it tells it.
+      "Its history, as it tells it, follows the market's demand: a securities-lending integration for home brokers in 2012 (InteliBtc), centralized custody queries in 2013 (InteliData), market data and Tesouro Direto integration for Easynvest in 2015, the institutional market in 2016, crypto-asset trading in 2018, a first contract with XP Investimentos in 2020, custom trading algorithms for a large asset manager in 2022, and the purchase of WTM from Winco in the same year.",
+      // Paragraph 3: why it matters, analytically.
+      "Intelitrader illustrates how much of a Brazilian broker's electronic chain a single specialist vendor can supply: the market-data handler, the OMS that speaks B3's EntryPoint FIX interface, the pre-trade risk check and the drop-copy consumer, each certified separately by B3.",
+    ],
+    // The company's own history page.
+    externalUrl: "https://www.intelitrader.com.br/pt/sobre.html",
+    // Link label.
+    externalLabel: "Intelitrader: Sobre nós",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // The company's history, with the founding year.
+      { label: "Intelitrader, Sobre nós (Nossa história): Rodrigo Strauss founded Intelitrader in 2011, after working at BM&F, BM&FBovespa, brokers and software companies such as MACSYS and Agência Estado; first client the same year, InteliMarket sold to Octo Corretora, forerunner of Rico; InteliBtc 2012; InteliData 2013; Easynvest 2015; institutional market 2016; crypto-assets 2018; XP Investimentos 2020; trading algorithms 2022; WTM bought from Winco in 2022 (read 2026-11-16)", url: "https://www.intelitrader.com.br/pt/sobre.html" },
+      // The self-description and the products.
+      { label: "Intelitrader, home page: high-performance software for the financial market since 2011; InteliData, InteliMarket (UMDF and Conflated, certified by B3), InteliOrder, InteliMobile, InteliRisk (centralizes the risk of all OMSs, integrates SINACOR and Drop Copy) and Intelitrader Talk Manager (WTM, WhatsApp archiving for up to 65 months per BSM, BACEN and B3); own FIX, UMDF and algotrading libraries; all solutions certified by B3 (read 2026-11-16)", url: "https://www.intelitrader.com.br/" },
+      // InteliOrder.
+      { label: "Intelitrader, InteliOrder: OMS with order routing and risk management, per-account position limits, any relational database, FIX API (ROE EntryPoint B3) and REST API (read 2026-11-16)", url: "https://www.intelitrader.com.br/pt/products/inteliorder.html" },
+      // B3 order entry.
+      { label: "B3, Soluções certificadas, Soluções para entrada de ordens: Intelitrader, InteliOrder 1.1.0, DMA (read 2026-11-16)", url: "https://b3.com.br/pt_br/solucoes/plataformas/puma-trading-system/para-participantes-e-traders/solucoes-certificadas/solucoes-para-entrada-de-ordens/" },
+      // B3 drop copy.
+      { label: "B3, Soluções certificadas, Soluções para drop copy: Intelitrader, InteliOrder 1.1.0.0 (read 2026-11-16)", url: "https://b3.com.br/pt_br/solucoes/plataformas/puma-trading-system/para-participantes-e-traders/solucoes-certificadas/solucoes-para-drop-copy/" },
+      // B3 market data.
+      { label: "B3, Soluções certificadas, Soluções para difusão de sinal: INTELITRADER, InteliMarket 1.0, UMDF PUMA 2.0 and UMDF Conflated (read 2026-11-16)", url: "https://www.b3.com.br/pt_br/solucoes/plataformas/puma-trading-system/para-participantes-e-traders/solucoes-certificadas/solucoes-para-difusao-de-sinal/" },
+      // The UMDF expansion.
+      { label: "B3, Manual de Acesso à Infraestrutura Tecnológica da B3, version 8.5 of 13 February 2026: UMDF, Unified Market Data Feed, a market data distribution solution over multicast channels (read 2026-11-16)", url: "https://b3.com.br/data/files/B9/F0/1F/4F/DC7CF91094DCD8F9AC094EA8/2026%20-%20Manual%20de%20Acesso%20a%20Infraestrutura%20Tecnologica%20da%20B3.pdf" },
+    ],
+  },
+  {
+    // INOA SISTEMAS - added 2026-11-16 (industry wave I2). A capital-markets software house created in 2009; its
+    // own account (born developing HFT and electronic post-trade) and a former partner's (a general software house
+    // until it focused on finance in 2013) differ, and the body gives both. Ownership is not stated by any page read.
+    slug: "inoa-sistemas",
+    // Own site read live 2026-11-16: HTTP 200 at https://www.inoa.com.br/.
+    official: {
+      // The company's own site.
+      url: "https://www.inoa.com.br",
+    },
+    // Makes trading and post-trade software.
+    tags: ["vendor"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "Inoa Sistemas - post-trade software behind Brazilian brokers",
+    // Founding year, named by the Startups label below.
+    founded: 2009,
+    // Card line.
+    tagline: "A Brazilian capital-markets software company created in 2009, whose BrokerTools post-trade suite it says is used by more than 95 per cent of Brazilian brokers.",
+    // Intro paragraph.
+    intro:
+      "Inoa describes itself as a specialist in critical systems for the capital market, building since 2009; in its own account it was born developing high-frequency trading (HFT) and electronic post-trade systems, built as microservices with their application programming interfaces (APIs) designed first. Its product lines are AlphaTools, for independent asset managers, wealth managers and family offices; BrokerTools, for brokers, custodians, treasuries, fund administrators and bookkeepers; and InoaHub and its financial market infrastructure (IMF) components, for clearing houses, exchanges, depositories and organized markets.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: BrokerTools, the figures it gives and the B3 certifications.
+      "BrokerTools is the post-trade core: PostTradeRouter for the capture, allocation and transfer of listed equities, derivatives and securities lending; PositionKeeper for positions, settlement, corporate events and margin; OtcBrasil for over-the-counter operations across clearing houses; LendingHub and FundDistributor, among more than sixty modules. Inoa claims native integration with every clearing and settlement house in Brazil and Chile and stress-test environments that simulate clearing for regulatory homologation. On its own figures it serves more than 130 clients, with more than R$2 trillion under management and more than R$3 trillion in custody in its systems, and more than 95 per cent of Brazilian brokers use BrokerTools. B3's lists show its ExecHub 1.0 certified for order entry by direct market access (DMA), PostTradeRouter 1.0 for drop copy, and the Conflated UMDF Adapter 1.0 and MarketData Feeder 2.5 for B3's Unified Market Data Feed (UMDF).",
+      // Paragraph 2: two accounts of the early years.
+      "Its own history and a former partner's account differ in emphasis. Inoa says it began with HFT and electronic post-trade; a former partner, interviewed by Startups in October 2025 about the company she went on to found, described Inoa as a software house created in 2009 that also served entertainment, education and health, and that decided in 2013 to focus only on the financial market.",
+      // Paragraph 3: why it matters, analytically.
+      "Inoa sits where trading meets settlement: the drop copy and post-trade routing that turn executions on B3 into allocations, positions and margin at the broker. Its InoaHub, which it describes as a network connecting asset managers, brokers, administrators, custodians and clearing houses, is a reminder that in Brazil post-trade communication is also a networking business.",
+    ],
+    // The company's own site.
+    externalUrl: "https://www.inoa.com.br/",
+    // Link label.
+    externalLabel: "Inoa",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // The company's own account.
+      { label: "Inoa, home page: building the financial market since 2009; born developing HFT and electronic post-trade, API-first microservices; AlphaTools, BrokerTools (PostTradeRouter, PositionKeeper, OtcBrasil, LendingHub, FundDistributor, more than 60 modules), InoaHub and IMF; native integration with all clearing and settlement houses of Brazil and Chile; 130+ clients, R$2 trillion+ under management, R$3 trillion+ in custody, 95%+ of Brazilian brokers (read 2026-11-16)", url: "https://www.inoa.com.br/" },
+      // The founding year, from a third party.
+      { label: "Startups, 21 October 2025, Startup carioca quer modernizar o backoffice das gestoras: Inoa, a software company created in 2009, served several markets (entertainment, education, health) and decided in 2013 to focus only on the financial market, as told by a former partner who founded Maravi (read 2026-11-16)", url: "https://startups.com.br/negocios/startup-carioca-quer-modernizar-o-backoffice-das-gestoras/" },
+      // B3 order entry.
+      { label: "B3, Soluções certificadas, Soluções para entrada de ordens: Inoa Sistemas, ExecHub 1.0, DMA (read 2026-11-16)", url: "https://b3.com.br/pt_br/solucoes/plataformas/puma-trading-system/para-participantes-e-traders/solucoes-certificadas/solucoes-para-entrada-de-ordens/" },
+      // B3 drop copy.
+      { label: "B3, Soluções certificadas, Soluções para drop copy: INOA SISTEMAS LTDA, PostTradeRouter 1.0 (read 2026-11-16)", url: "https://b3.com.br/pt_br/solucoes/plataformas/puma-trading-system/para-participantes-e-traders/solucoes-certificadas/solucoes-para-drop-copy/" },
+      // B3 market data.
+      { label: "B3, Soluções certificadas, Soluções para difusão de sinal: INOA SISTEMAS LTDA, Conflated UMDF Adapter 1.0 (UMDF Conflated) and MarketData Feeder 2.5 (UMDF PUMA 2.0) (read 2026-11-16)", url: "https://www.b3.com.br/pt_br/solucoes/plataformas/puma-trading-system/para-participantes-e-traders/solucoes-certificadas/solucoes-para-difusao-de-sinal/" },
+      // The UMDF expansion.
+      { label: "B3, Manual de Acesso à Infraestrutura Tecnológica da B3, version 8.5 of 13 February 2026: UMDF, Unified Market Data Feed, a market data distribution solution over multicast channels (read 2026-11-16)", url: "https://b3.com.br/data/files/B9/F0/1F/4F/DC7CF91094DCD8F9AC094EA8/2026%20-%20Manual%20de%20Acesso%20a%20Infraestrutura%20Tecnologica%20da%20B3.pdf" },
+    ],
+  },
+
+  // ==== Industry wave I3 (16/11/2026, PRIME 20:34): integrated from scratchpad industry-i3/ ====
+  {
+    // BLOOMBERG - added 2026-11-16 (industry wave I3). The card is Bloomberg
+    // L.P., founded in 1981 as Innovative Market Systems and renamed, so 1981 is
+    // the card's own subject's year, named by the IEEE Spectrum label.
+    // OWNER: privately held; Merrill Lynch sold its last 20% to Bloomberg Inc.
+    // in 2008 (Merrill's own filing). No `parent`: the majority owner named by
+    // Wikipedia is a person, which the parent kinds (company, fund, state) do
+    // not cover, and the article contradicts itself on Merrill's original stake.
+    slug: "bloomberg",
+    // Own site: bloomberg.com answered every automated read on 2026-11-16 with a robot check (HTTP 403); see the I3 hand-back report.
+    official: {
+      // The company's own site.
+      url: "https://www.bloomberg.com/company/",
+      // The trading products, on the company's professional-services site (read live, HTTP 200).
+      resources: [
+        // Order management: AIM and TOMS.
+        { label: "Bloomberg order management (AIM, TOMS)", url: "https://professional.bloomberg.com/products/trading/order-management-system/" },
+        // Execution management: EMSX, TSOX, FXEM.
+        { label: "Bloomberg execution management (EMSX, TSOX, FXEM)", url: "https://professional.bloomberg.com/products/trading/execution-management-system/" },
+      ],
+    },
+    // Makes trading software and runs a newsroom.
+    tags: ["vendor", "media"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "Bloomberg - the terminal company that became an order network",
+    // Founding year, named by the IEEE Spectrum label below.
+    founded: 1981,
+    // Card line.
+    tagline: "Founded in 1981 as Innovative Market Systems, with Merrill Lynch as its first client, Bloomberg built its own terminal, network and newsroom, and now sells order and execution management to both sides of the market.",
+    // Intro paragraph.
+    intro:
+      "Bloomberg began in 1981, when Michael Bloomberg, after his departure from Salomon Brothers, cofounded Innovative Market Systems (IMS) with three former Salomon colleagues, Thomas Secunda, Duncan MacMillan and Charles Zegar. Merrill Lynch, the first client, invested US$30 million for a 30 percent stake and took delivery of the first 22 Market Master terminals in 1982; five years after the launch IMS became Bloomberg LP and the Market Master became the Bloomberg Terminal. It remains a privately held company, headquartered in Midtown Manhattan.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the network and the newsroom; Merrill's exit.
+      "The terminal was never only a screen. It came with a private network, over which Bloomberg added Instant Bloomberg, so that users could message one another directly, and in 1990, worried that Dow Jones might stop supplying its stories, a news service of its own under Matthew Winkler. Merrill Lynch sold its remaining 20 percent stake in Bloomberg L.P. to Bloomberg Inc. on 17 July 2008, for US$4.425 billion, keeping a long-term service agreement.",
+      // Paragraph 2: the trading products, as Bloomberg names them, and Brazil.
+      "On that network Bloomberg sells the trading workflow from end to end. Asset and Investment Manager (AIM) is its buy-side order management system and Trade Order Management Solutions (TOMS) its sell-side counterpart; EMSX, TSOX and FXEM are its execution management solutions, and EMSX, by the company's account, reaches more than 3,700 broker destinations over the Financial Information eXchange (FIX) protocol with no additional connectivity fees. Bloomberg Tradebook, an electronic agency broker founded in 1996, appears with three versions on the list of order-entry solutions that B3, the Brazilian exchange, has certified for its PUMA Trading System.",
+      // Paragraph 3: why it matters to networks, analytically.
+      "For a network engineer Bloomberg is the clearest case of a data vendor that became an order network. The network that once carried prices to the terminal now, in Bloomberg's own description, gives buy-side clients direct access to sell-side brokers, so a trader reaches thousands of broker destinations through one provider instead of building and maintaining a separate FIX session to each: the connectivity is part of the subscription, and so is the dependence.",
+    ],
+    // The company's own trading page (bloomberg.com itself refused automated reading).
+    externalUrl: "https://professional.bloomberg.com/products/trading/execution-management-system/",
+    // Link label.
+    externalLabel: "Bloomberg trading solutions",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // The founding year, the founders, Merrill Lynch and the rename.
+      { label: "IEEE Spectrum, Allison Marsh, 'A Brief History of the Bloomberg Terminal', 30 September 2026: Michael Bloomberg entered the financial-data industry in 1981, cofounding Innovative Market Systems (IMS) after leaving Salomon Brothers, with former Salomon colleagues Thomas Secunda, Duncan MacMillan and Charles Zegar; Merrill Lynch, its first client, invested $30 million for a 30 percent stake; the first 22 Market Master terminals delivered to Merrill in 1982; five years after launch IMS became Bloomberg LP and the Market Master the Bloomberg Terminal; Instant Bloomberg messaging over the proprietary network; a news service set up in 1990 under Matthew Winkler, for fear Dow Jones would stop supplying its stories (read 2026-11-16)", url: "https://spectrum.ieee.org/bloomberg-terminal" },
+      // Privately held, headquarters, Tradebook.
+      { label: "Wikipedia, Bloomberg L.P.: a privately held financial, software, data and media company headquartered in Midtown Manhattan, New York City, founded on 1 October 1981; Bloomberg Tradebook, an electronic agency brokerage founded in 1996 as an affiliate of Bloomberg L.P. (read 2026-11-16)", url: "https://en.wikipedia.org/wiki/Bloomberg_L.P.", sourceNote: "Used only for 'privately held', the headquarters and Tradebook. The article gives Merrill Lynch's original stake as 12% in its lead and as 30% in its history section, so neither figure is taken from it; the 30% stated on this card is IEEE Spectrum's." },
+      // Merrill Lynch's exit, from Merrill's own filing.
+      { label: "Merrill Lynch & Co., press release of 17 July 2008 filed as Exhibit 99.1 to its Form 8-K: Merrill Lynch completed the sale of its 20% ownership stake in Bloomberg, L.P. to Bloomberg Inc. for $4.425 billion and entered into a long-term service agreement (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/65100/000115752308005603/a5733602ex99_1.htm" },
+      // AIM, TOMS and the Bloomberg network.
+      { label: "Bloomberg Professional Services, Order Management System: Asset and Investment Manager (AIM), the buy-side solution, and Trade Order Management Solutions (TOMS), the sell-side solution; the Bloomberg network enables direct access between buy-side clients and sell-side brokers (read 2026-11-16)", url: "https://professional.bloomberg.com/products/trading/order-management-system/" },
+      // EMSX, TSOX, FXEM.
+      { label: "Bloomberg Professional Services, Execution Management System: Bloomberg's Execution Management Solutions, including EMSX, TSOX and FXEM (read 2026-11-16)", url: "https://professional.bloomberg.com/products/trading/execution-management-system/" },
+      // EMSX reach and fees.
+      { label: "Bloomberg Professional Services, Equity Trading (listed markets): EMSX connects to 3,700+ global broker destinations via FIX with no additional connectivity fees; Tradebook direct market access for futures and options; RFQe request for quote to more than 200 dealers (read 2026-11-16)", url: "https://professional.bloomberg.com/products/trading/electronic-markets/listed/" },
+      // Brazil.
+      { label: "B3, PUMA Trading System, Soluções certificadas, Soluções para entrada de ordens (undated list): under BLOOMBERG, Tradebook 1.0, Bloomberg Tradebook 08/22/11 and Bloomberg Tradebook Futures 5.1 among the certified order-entry solutions (read 2026-11-16)", url: "https://b3.com.br/pt_br/solucoes/plataformas/puma-trading-system/para-participantes-e-traders/solucoes-certificadas/solucoes-para-entrada-de-ordens/" },
+    ],
+  },
+  {
+    // CHARLES RIVER DEVELOPMENT - added 2026-11-16 (industry wave I3). Legal
+    // name Charles River Systems, Inc.; still trades under its own name at
+    // crd.com, so a contemporary record with a parent.
+    // OWNER: State Street, a company, since the purchase completed on
+    // 1 October 2018 (State Street's own Forms 8-K).
+    // FOUNDED 1984: from a Bloomberg News article read ONLY through the fetch
+    // tool (curl failed at the proxy); the I3 hand-back report lists the words to check.
+    slug: "charles-river-development",
+    // Own site read live 2026-11-16: HTTP 200 at https://www.crd.com/company/about-us/.
+    official: {
+      // The company's own site.
+      url: "https://www.crd.com",
+      // A company owner; the State Street Forms 8-K labels name State Street and 2018.
+      parent: { name: "State Street", kind: "company", since: 2018, note: "State Street Corporation agreed to buy Charles River Development on 20 July 2018 for US$2.6 billion in cash and completed the purchase on 1 October 2018." },
+    },
+    // Makes investment-management and trading software.
+    tags: ["vendor"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "Charles River Development - Burlington's front office, inside State Street since 2018",
+    // Founding year, named by the Bloomberg News label below.
+    founded: 1984,
+    // Card line.
+    tagline: "A Massachusetts investment-management software company, founded in 1984, that State Street bought for US$2.6 billion in 2018 and made the front office of its State Street Alpha platform.",
+    // Intro paragraph.
+    intro:
+      "Charles River Development, legally Charles River Systems, Inc., makes front-office software for investment managers: its platform, Charles River IMS, covers portfolio management, risk analytics, trading and post-trade settlement, with compliance and managed data throughout. A 2018 Bloomberg News profile reported that Peter Lambertus, a former officer in the United States Navy's nuclear submarine force, founded the company in 1984 and still owned almost all of its equity when State Street agreed to buy it.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the sale, from State Street's filings.
+      "State Street Corporation announced a definitive agreement to buy the company on 20 July 2018, for US$2.6 billion in cash, and completed the purchase on 1 October 2018. The investor presentation filed with the announcement described what it was buying: a company headquartered in Burlington, Massachusetts, with 745 employees in 11 locations, more than 300 clients and US$25 trillion of assets on its platform, whose revenue had grown from US$238 million in 2013 to US$311 million in 2017. The reason it gave was an integrated front-to-back platform: Charles River's front office joined to the middle- and back-office services State Street already ran.",
+      // Paragraph 2: today, in the company's own figures.
+      "Charles River still trades under its own name, from its own site, and calls State Street Corporation its parent company. Its front-office technology, with State Street's middle- and back-office services, forms State Street Alpha. Its figures for the third quarter of 2026 are clients in about 30 countries, more than 30,000 professionals, 55 of the top 100 global firms, and US$60 trillion of assets on the platform, a figure that includes clients using it only for secondary compliance checks; another passage of the same page gives US$59 trillion.",
+      // Paragraph 3: the same-day pattern, and why it matters.
+      "The sale was one of two on the same day. SS&C Technologies completed its purchase of Eze Software on 1 October 2018 as well, and The TRADE reported the Eze deal as coming shortly after State Street completed its acquisition of Charles River. Two buy-side order management vendors passed on the same day to groups that already ran the processing behind their clients' investments, which is the commercial logic of the front-to-back platform: the order is captured by the same group that will later settle and account for it.",
+    ],
+    // The company's own page.
+    externalUrl: "https://www.crd.com/company/about-us/",
+    // Link label.
+    externalLabel: "Charles River Development",
+    // Sources, each read on 2026-11-16.
+    sources: [
+      // The founding year and the founder (fetch tool only).
+      { label: "Bloomberg News (BloombergQuint), Tom Metcalf and Charles Stein, 'Ex-Submariner Surfaces as Billionaire on Charles River Takeover', 2018: Peter Lambertus, a former officer in the U.S. Navy's nuclear submarine force, founded Charles River Systems Inc., an investment data and analytics software provider, in 1984; the Burlington, Massachusetts company; he owns almost all of its equity (read 2026-11-16 through a fetch tool); link dead as of 16 November 2026", url: "https://www.bloombergquint.com/markets/ex-submariner-surfaces-as-billionaire-on-charles-river-takeover", sourceNote: "Read 2026-11-16 as an extract through a fetch tool, the page refusing a direct download; the extract shows '©2018 Bloomberg L.P.' and no day of publication. The same evening the host no longer loaded in a browser, so the article is kept and marked dead, and the record reports it as an attributed paraphrase, never as a quotation." },
+      // The agreement.
+      { label: "State Street Corporation, Form 8-K dated 20 July 2018: a definitive agreement to acquire Charles River Systems, Inc. (dba Charles River Development), a provider of investment management front office tools and solutions, in an all cash transaction for $2.6 billion, expected to complete in the fourth quarter of 2018 (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/93751/000009375118000430/form8-kxcharlesriversystems.htm" },
+      // The company as State Street described it.
+      { label: "State Street Corporation, investor presentation furnished as Exhibit 99.1 to the Form 8-K of 20 July 2018: Charles River Development headquartered in Burlington, Massachusetts, with offices in 11 global locations and 745 employees; more than 300 clients; $25 trillion on the platform; revenue of $238 million in 2013 and $311 million in 2017; an integrated front-to-back platform as the rationale (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/93751/000009375118000430/exhibit991slidepresentat.htm" },
+      // The completion: the parent's name and year.
+      { label: "State Street Corporation, Form 8-K dated 1 October 2018: on 1 October 2018 State Street completed its acquisition of Charles River Systems, Inc. (Charles River Development), previously announced on 20 July 2018 (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/93751/000009375118000468/form8k-crdclose10x01x18.htm" },
+      // Today.
+      { label: "Charles River Development, About Charles River (statistics as of Q3 2026): Charles River IMS used in about 30 countries to manage USD 60 trillion, inclusive of secondary-compliance use (USD 59 trillion in another passage of the same page); the front-office technology of State Street Alpha; 'our parent company, State Street Corporation'; over 30,000 professionals; 55 of the top 100 global firms; footer Charles River Systems, Inc. (read 2026-11-16)", url: "https://www.crd.com/company/about-us/" },
+      // The same-day Eze deal.
+      { label: "The TRADE, 'SS&C completes $1.45 billion acquisition of Eze Software', 2 October 2018: SS&C Technologies completed its purchase of Eze Software shortly after State Street completed its acquisition of Charles River (read 2026-11-16)", url: "https://www.thetradenews.com/ssc-completes-1-45-billion-acquisition-eze-software/" },
+    ],
+  },
+  {
+    // FLEXTRADE - added 2026-11-16 (industry wave I3). FlexTrade Systems, Inc.
+    // FOUNDED 1996: the company's own words, "FlexTrade's journey started in
+    // 1996", beside its founder's name. The same page also says "For more than
+    // 30 years" (the I3 hand-back report). Ownership is not stated on any page read, so no
+    // parent and no claim either way.
+    slug: "flextrade",
+    // Own site read live 2026-11-16: HTTP 200 at https://flextrade.com/about/.
+    official: {
+      // The company's own site.
+      url: "https://flextrade.com",
+      // The flagship product's page.
+      resources: [
+        // FlexTRADER EMS.
+        { label: "FlexTRADER EMS", url: "https://flextrade.com/products/flextrader-execution-management-system/" },
+      ],
+    },
+    // Makes trading software.
+    tags: ["vendor"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "FlexTrade - the broker-neutral execution desk, founder-led since 1996",
+    // Founding year, named by the About us label below.
+    founded: 1996,
+    // Card line.
+    tagline: "A founder-led trading-software company whose journey, in its own words, started in 1996, known for FlexTRADER, an execution management system that is not tied to any one broker.",
+    // Intro paragraph.
+    intro:
+      "FlexTrade Systems makes execution and order management software for equities, fixed income, foreign exchange, futures and options. By its own account its journey started in 1996 with its founder, Vijay Kedia, who is still its President and Chief Executive Officer. It says it serves clients in 45 countries with a team of more than 500 software developers and industry specialists, and lists offices in Great Neck and New York, Milwaukee, London, Paris, Singapore, Pune, Hong Kong and Sydney.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the products, as the company names them.
+      "Its flagship is FlexTRADER, which the company calls a pioneering, broker-neutral, multi-asset execution management system (EMS), connected through its FlexLINK network to more than 300 brokers. Around it FlexTrade sells FlexONE, an order and execution management system (OEMS), FlexTCA for transaction cost analysis (TCA), and FlexAlgoWheel, a decision-support tool that automates low-touch and no-touch trading using historical and real-time TCA data, the two linked in what the company calls a feedback loop.",
+      // Paragraph 2: why it matters, analytically.
+      "Broker neutrality is the point of the product. An execution system that reaches hundreds of brokers leaves the choice of broker with the trading desk rather than with whoever supplied the screen, and an algorithm wheel fed by cost analysis turns that choice into a measured, repeatable rule. For the network that carries it, each of those brokers is one more Financial Information eXchange (FIX) counterparty that the vendor's network, not the client, has to keep connected.",
+    ],
+    // The company's own page.
+    externalUrl: "https://flextrade.com/about/",
+    // Link label.
+    externalLabel: "FlexTrade Systems",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // Founding year, founder, scale.
+      { label: "FlexTrade Systems, About us: 'FlexTrade's journey started in 1996', with its founder Vijay Kedia, today President and Chief Executive Officer; FlexTRADER, 'a pioneering, broker-neutral execution management trading system'; clients across 45 countries; over 500 software developers and industry specialists; execution and order management across equities, fixed income, foreign exchange, futures and options; © 2026 FlexTrade Systems, Inc. (read 2026-11-16)", url: "https://flextrade.com/about/", sourceNote: "The same page also says 'For more than 30 years', which overstates by a little a journey that started in 1996; this card uses 1996." },
+      // The flagship's features.
+      { label: "FlexTrade Systems, FlexTRADER EMS: the pioneering broker-neutral, multi-asset execution management system; over 300 global brokers through the FlexLINK network; FlexAlgoWheel automates low-touch and no-touch trading with historical and real-time TCA data; FlexTCA connects into FlexAlgoWheel in a feedback loop; FlexONE OEMS in the product menu (read 2026-11-16)", url: "https://flextrade.com/products/flextrader-execution-management-system/" },
+      // Offices.
+      { label: "FlexTrade Systems, Contact: offices in Great Neck and New York (New York), Milwaukee, London, Paris, Singapore, Pune, Hong Kong and Sydney (read 2026-11-16)", url: "https://flextrade.com/contact/" },
+    ],
+  },
+  {
+    // FIDESSA - added 2026-11-16 (industry wave I3). An ENDED record: the
+    // company was taken over by ION Investment Group in 2018 and fidessa.com
+    // now leads to ION's product page, so the brand is a product name, not a
+    // subsidiary trading under its own site (an ending, not a parent).
+    // FOUNDED 1996: the incorporation of the plc, as Royalblue Group plc, on
+    // 6 August 1996 (Companies House). Royalblue's earlier history was not
+    // read (the I3 hand-back report).
+    // ENDED 2018: ION Investment Group Limited became a person with
+    // significant control on 3 September 2018, and the company re-registered
+    // as private on 12 October 2018 (Companies House). No completion notice by
+    // ION itself was found.
+    slug: "fidessa",
+    // fidessa.com redirects (HTTP 200) to iongroup.com/products/markets/fidessa/, read live 2026-11-16.
+    official: {
+      // No longer trades as a company under this name.
+      defunct: true,
+      // Whose site the reader is sent to, named.
+      successor: { label: "Fidessa, now an ION product (ION's page)", url: "https://iongroup.com/products/markets/fidessa/" },
+    },
+    // Made trading software.
+    tags: ["vendor"],
+    // Ended: taken over.
+    group: "other",
+    // Title.
+    name: "Fidessa - the London sell-side trading platform that ION bought",
+    // Founding year (the plc's incorporation), named by the Companies House label below.
+    founded: 1996,
+    // Ending year, named by the Companies House labels below.
+    ended: { year: 2018, note: "Taken over by ION Investment Group, recorded at Companies House as a person with significant control from 3 September 2018; re-registered as a private company, Fidessa Group Holdings Limited, on 12 October 2018. Fidessa continues as an ION product." },
+    // Card line.
+    tagline: "A British equities and derivatives trading-software company, incorporated in 1996 as Royalblue, which ION Investment Group took over in 2018 after outbidding Temenos.",
+    // Intro paragraph.
+    intro:
+      "Fidessa group plc sold front-office trading software to the sell side, the banks and brokers that execute trades, for equities and derivatives, and also served buy-side firms. Companies House records the public company as incorporated on 6 August 1996 as Royalblue Group plc and renamed Fidessa group plc on 1 May 2007. In 2017 its turnover in the United Kingdom alone was £122 million, according to the Competition and Markets Authority (CMA), which described it as a London-based software provider.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the contested sale.
+      "Its sale was contested. Temenos had an agreed offer of £35.67 a share, announced on 21 February 2018. On 20 April 2018 ION Bidco, a subsidiary of ION Investment Group, offered £38.703 a share in cash, valuing Fidessa at about £1.5 billion, and Fidessa's board withdrew its recommendation of the Temenos offer and recommended ION's. The chairman, John Hamer, put the fit in one line: Fidessa was a leader in equities and derivatives, ION in fixed income and foreign exchange (FX).",
+      // Paragraph 2: acceptances, the CMA, and what the register shows.
+      "By 1 August 2018 holders of about 90.2 percent of the shares had accepted, enough for ION to buy the rest compulsorily, and on 3 August the CMA decided not to refer the merger, finding that the two were not close competitors in derivatives software and would have no incentive to tie their products together. Companies House records ION Investment Group Limited as a person with significant control from 3 September 2018. On 12 October 2018 the company re-registered as a private company, and it survives as Fidessa Group Holdings Limited, its registered office care of ION in London, controlled today by Ion Capital UK Limited.",
+      // Paragraph 3: today, and why it matters.
+      "Fidessa is now a product name. The www.fidessa.com address leads to ION's page for it, listed among ION's equities products beside Fidessa ADSA and Fidessa Spotlight and sold as one platform for trade execution, order management and middle office across equities, equity swaps and exchange-traded funds. The CMA's decision states plainly what was joined: ION supplied sell-side front-office software for fixed income and exchange-traded derivatives, Fidessa for equities and derivatives, so the merger put the front-office software of several of a bank's trading desks under one owner.",
+    ],
+    // The successor's page for the product.
+    externalUrl: "https://iongroup.com/products/markets/fidessa/",
+    // Link label, naming whose site it is.
+    externalLabel: "Fidessa at ION (successor)",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // Incorporation, names, ownership today.
+      { label: "Companies House, FIDESSA GROUP HOLDINGS LIMITED, company 03234176: incorporated on 6 August 1996; previous names ROYALBLUE GROUP PLC (6 August 1996 to 1 May 2007), FIDESSA GROUP PLC (1 May 2007 to 12 October 2018) and FIDESSA GROUP HOLDINGS PLC (12 October 2018); active private limited company, registered office C/O Ion, 10 Queen Street Place, London (read 2026-11-16)", url: "https://find-and-update.company-information.service.gov.uk/company/03234176" },
+      // The 2018 filings: the ending year.
+      { label: "Companies House, filing history of company 03234176, 2018 entries: notification of ION Investment Group Limited as a person with significant control on 3 September 2018; change of name resolution of 1 October 2018; re-registration from a public limited company to a private company filed on 12 October 2018 (read 2026-11-16)", url: "https://find-and-update.company-information.service.gov.uk/company/03234176/filing-history?page=3" },
+      // Control today.
+      { label: "Companies House, persons with significant control of company 03234176: Ion Capital UK Limited, ownership of 75% or more of shares and voting rights, notified 19 March 2020; ION Investment Group Limited, Dublin, from 3 September 2018 to 7 September 2022 (read 2026-11-16)", url: "https://find-and-update.company-information.service.gov.uk/company/03234176/persons-with-significant-control" },
+      // The offer.
+      { label: "Mondo Visione, 'Recommended Cash Offer For Fidessa Group Plc By ION Capital UK Limited', 20 April 2018: ION Bidco, an indirect wholly owned subsidiary of ION Investment Group Limited, offers £38.703 in cash per Fidessa share, valuing Fidessa at about £1.5 billion, 8.5% above the Temenos offer of £35.67 announced on 21 February 2018; the Fidessa board withdraws its recommendation of the Temenos offer; chairman John Hamer: Fidessa a leader in equities and derivatives, ION in fixed income and FX (read 2026-11-16)", url: "https://mondovisione.com/media-and-resources/news/recommended-cash-offer-for-fidessa-group-plc-by-ion-capital-uk-limited-2018421/" },
+      // Acceptances.
+      { label: "FinanceFeeds, 'ION updates on planned acquisition of Fidessa', 2 August 2018: valid acceptances for about 90.2% of Fidessa's shares as at 1 August 2018; ION Bidco plans to acquire the remaining shares compulsorily; completion still subject to clearance by the CMA (read 2026-11-16)", url: "https://financefeeds.com/ion-updates-planned-acquisition-fidessa/" },
+      // The CMA decision.
+      { label: "Competition and Markets Authority, ME/6745/18, 'Anticipated acquisition by ION Investment Group Limited of Fidessa group plc', decision of 3 August 2018 (full text published 22 August 2018): ION supplies sell-side front office trading software for fixed income and exchange traded derivatives, Fidessa for equities and derivatives; Fidessa a London-based software provider with UK turnover of £122 million in 2017; the parties not close competitors and without incentive to tie; the merger not referred (read 2026-11-16)", url: "https://assets.publishing.service.gov.uk/media/5b7d5c8aed915d14db8821fe/ion_fidessa_full_text_decision.pdf" },
+      // The product today.
+      { label: "ION, Fidessa product page, the destination of www.fidessa.com: Fidessa, Fidessa ADSA and Fidessa Spotlight among ION's equities products; one platform for trade execution, order management and middle office across equities, equity swaps and exchange-traded funds (read 2026-11-16)", url: "https://iongroup.com/products/markets/fidessa/" },
+    ],
+  },
+  {
+    // RAPTOR TRADING SYSTEMS - added 2026-11-16 (industry wave I3). FOUNDED
+    // 2003 and "a private, independent firm", both in the company's own words;
+    // no owner is named, so no parent. The founding PLACE is not stated (the
+    // company is headquartered in New York): the I3 hand-back report.
+    slug: "raptor-trading-systems",
+    // Own site read live 2026-11-16: HTTP 200 at https://raptortrading.com/company/.
+    official: {
+      // The company's own site.
+      url: "https://raptortrading.com",
+      // The products page.
+      resources: [
+        // Products overview.
+        { label: "Raptor products: FIX Hub, RaptorNet, Smart IOI+, OMEX", url: "https://raptortrading.com/products/" },
+      ],
+    },
+    // Makes trading software and runs a routing network.
+    tags: ["vendor"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "Raptor Trading Systems - FIX routing and order management, independent since 2003",
+    // Founding year, named by the Company page label below.
+    founded: 2003,
+    // Card line.
+    tagline: "A privately held New York trading-software firm, founded in 2003, whose products run from an order-routing hub to an order and execution management system, for buy-side and sell-side firms.",
+    // Intro paragraph.
+    intro:
+      "Raptor Trading Systems was founded in 2003 and describes itself as a private, independent firm, headquartered in New York with offices in Maryland, Toronto and London. It sells electronic trading infrastructure to both sides of the market: hedge funds, institutional asset managers and registered investment advisers (RIAs) on the buy side, and agency brokers, clearing firms, banks, proprietary trading firms and retail brokers on the sell side.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the products, as the company describes them.
+      "Its products, as the company describes them, cover the trade from end to end. FIX Hub, a routing layer for Financial Information eXchange (FIX) and other order protocols, is the control point for order flow: a single connection to exchanges, crossing networks and dark pools, with routing per client and per connection written in the company's own Raptor Scripting Language (RSL), message translation between counterparties, drop-copy routing and an order hospital for exceptions. RaptorNet is a redundant multi-asset network run as a managed service, which the company says carries overnight United States equity trading through alternative trading systems (ATSs) such as Blue Ocean ATS. OMEX is a broker-neutral order and execution management system (OEMS) for equities, options and futures, and Smart IOI+ manages indications of interest (IOIs), with analytics, risk controls, regulatory reporting and trade surveillance alongside.",
+      // Paragraph 2: Brazil and the FIX lineage.
+      "Two details place it in the wider industry. B3, the Brazilian exchange, lists the company's Raptor Order Server 8 among the order-entry solutions certified for its PUMA Trading System, with direct market access (DMA), and B3 appears on the list of exchanges FIX Hub reaches directly. And a testimonial on the company's home page, from Jim Northey of the FIX Trading Community, credits the chief executive, Teddy Lardos, with involvement in FIX 'since its inception'.",
+      // Paragraph 3: why it matters to networks, analytically.
+      "For a network engineer FIX Hub is the instructive product. By the company's description it is the control point for all order flow, where messages are routed, transformed and normalized for each counterparty under rules the customer writes in RSL rather than in new code: in effect, a router at the application layer. That is where a broker's order flow is actually steered, above the network that carries the packets, and why the company presents onboarding in days rather than months as its selling point.",
+    ],
+    // The company's own page.
+    externalUrl: "https://raptortrading.com/company/",
+    // Link label.
+    externalLabel: "Raptor Trading Systems",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // Founding year, independence, offices, product list.
+      { label: "Raptor Trading Systems, Company page and FAQ (undated): founded in 2003; 'a private, independent firm'; headquartered in New York with offices in Maryland, Toronto and London; serves hedge funds, institutional asset managers, RIAs, agency brokers, clearing firms, global banks and brokers, proprietary trading firms and retail brokers; products OMEX, FIX Hub, RaptorNet, Smart IOI+, trading analytics, risk management, compliance and regulatory reporting and trade surveillance; onboarding often measured in days rather than months (read 2026-11-16)", url: "https://raptortrading.com/company/" },
+      // The products in detail.
+      { label: "Raptor Trading Systems, Products page (undated): FIX Hub, a centralized connectivity and routing layer and control point for all order flow, with custom per-client and per-connection routing in the proprietary Raptor Scripting Language (RSL), message transformation, drop-copy routing, an Order Hospital, and DMA to exchanges including B3, LSE, NYSE, NASDAQ and TSX; RaptorNet, fully redundant multi-asset network connectivity with overnight US equity trading via venues like Blue Ocean ATS; OMEX, a multi-asset, broker-neutral OEMS for equities, options and futures; Smart IOI+ for IOIs (read 2026-11-16)", url: "https://raptortrading.com/products/" },
+      // The FIX testimonial.
+      { label: "Raptor Trading Systems, home page (undated): a testimonial by Jim Northey, Global Technical Committee co-chair of the FIX Trading Community, says the firm is led by CEO Teddy Lardos, 'who has been involved with FIX since its inception' (read 2026-11-16)", url: "https://raptortrading.com/" },
+      // Brazil.
+      { label: "B3, PUMA Trading System, Soluções certificadas, Soluções para entrada de ordens (undated list): Raptor Trading Systems, Raptor Order Server 8, certified for order entry with DMA access (read 2026-11-16)", url: "https://b3.com.br/pt_br/solucoes/plataformas/puma-trading-system/para-participantes-e-traders/solucoes-certificadas/solucoes-para-entrada-de-ordens/" },
+    ],
+  },
+  {
+    // TORA - added 2026-11-16 (industry wave I3). An ENDED record: LSEG
+    // completed the purchase on 9 August 2022 and the product is now "LSEG
+    // TORA" on lseg.com (tora.com redirects there), a brand folded into its
+    // owner's name, which is an ending rather than a parent.
+    // FOUNDED 2004 per LSEG's announcement. Founding PLACE not sourced
+    // (the I3 hand-back report). LSEG's own record is the slug `lseg` (wave I1).
+    slug: "tora",
+    // www.tora.com redirects (HTTP 200) to the LSEG TORA page, read live 2026-11-16.
+    official: {
+      // No longer trades as a company under this name.
+      defunct: true,
+      // Whose site the reader is sent to, named.
+      successor: { label: "LSEG TORA, at the London Stock Exchange Group", url: "https://www.lseg.com/en/data-analytics/trading-solutions/multi-asset-trading/tora" },
+    },
+    // Made trading software.
+    tags: ["vendor"],
+    // Ended: acquired and renamed.
+    group: "other",
+    // Title.
+    name: "TORA - a cloud trading desk founded in 2004, now LSEG TORA",
+    // Founding year, named by the LSEG announcement label below.
+    founded: 2004,
+    // Ending year, named by the LSEG Annual Report label below.
+    ended: { year: 2022, note: "Acquired by the London Stock Exchange Group on 9 August 2022; continues as LSEG TORA." },
+    // Card line.
+    tagline: "A cloud-based order and execution management vendor founded in 2004, strongest in Asia and North America, bought by the London Stock Exchange Group for US$325 million in 2022.",
+    // Intro paragraph.
+    intro:
+      "TORA, founded in 2004, sold a cloud-based order and execution management system (OEMS) and portfolio management system (PMS) to firms trading equities, fixed income, foreign exchange (FX), derivatives and digital assets. When the London Stock Exchange Group (LSEG) agreed to buy it on 22 February 2022, for US$325 million, it described TORA as having an established presence in Asia and North America and operations in Europe, and its chief executive, Robert Dykes, was reported as saying that the company had grown entirely organically since it launched in 2004 and had built all its products in-house.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the completion and LSEG's reasoning.
+      "LSEG completed the purchase on 9 August 2022, the acquisition date its 2022 annual report gives for Tora Holdings, Inc., and placed the business in Trading & Banking Solutions, within its Data & Analytics division. Its reasoning, in the announcement, was digital assets and the buy side: TORA strengthened LSEG's trading capabilities in a rapidly expanding asset class and, in the words of Dean Berry, LSEG's group head of Trading & Banking Solutions, 'at trade' capabilities for the buy side connected to its Workspace desktop.",
+      // Paragraph 2: the product today.
+      "The name survives as LSEG TORA, and www.tora.com now leads to LSEG's page for it: a multi-asset OEMS for hedge funds and asset managers, with transaction cost analysis (TCA), spread trading and workflows driven through an application programming interface (API), fed by LSEG's market data, with new deployments delivered on Microsoft Azure. The United States broker-dealers that distribute it, Tora Trading Services, LLC and REDI Global Technologies LLC, are registered with the Securities and Exchange Commission (SEC) and are members of the Financial Industry Regulatory Authority (FINRA).",
+      // Paragraph 3: why it matters, analytically.
+      "LSEG said the point was to combine TORA's multi-asset trading software with its own data and analytics, the same logic of joining the trading screen to the rest of a platform that State Street gave for buying Charles River Development in 2018. An exchange group that already sells the prices and the venues now also sells the buy-side screen from which orders are sent, which shortens the distance between the data a trader reads and the order that data prompts.",
+    ],
+    // The successor's page.
+    externalUrl: "https://www.lseg.com/en/data-analytics/trading-solutions/multi-asset-trading/tora",
+    // Link label, naming whose site it is.
+    externalLabel: "LSEG TORA (successor)",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // Founding year, products, price.
+      { label: "London Stock Exchange Group, 'LSEG to acquire TORA', press release, 22 February 2022: agreement to acquire TORA, 'Founded in 2004', a cloud-based provider of an order and execution management system (OEMS) and portfolio management system (PMS) for equities, fixed income, FX, derivatives and digital assets, with an established presence in Asia and North America and operations in Europe; $325 million; closing expected in H2 2022; Dean Berry on 'at trade' capabilities for the buy side connected to Workspace; chief executive Robert Dykes (read 2026-11-16)", url: "https://www.lseg.com/en/media-centre/press-releases/2022/lseg-acquire-tora" },
+      // The completion: the ending year.
+      { label: "London Stock Exchange Group, Annual Report 2022, notes to the financial statements: Tora Holdings, Inc. (TORA) acquired on 9 August 2022, 100% of voting rights, in the Data & Analytics segment, within Trading & Banking Solutions; 'During the year we acquired TORA' (read 2026-11-16)", url: "https://www.lseg.com/content/dam/lseg/en_us/documents/investor-relations/annual-reports/lseg-annual-report-2022.pdf", sourceNote: "Pages 168 and 189 of the 256-page PDF as read." },
+      // The product today.
+      { label: "LSEG, LSEG TORA, the destination of www.tora.com: a multi-asset OEMS for hedge funds and asset managers with TCA, spread trading and API-driven workflows and integrated LSEG market data, including digital assets; new deployments on Microsoft Azure; Tora Trading Services, LLC and REDI Global Technologies LLC are broker-dealers registered with the SEC and members of FINRA (read 2026-11-16)", url: "https://www.lseg.com/en/data-analytics/trading-solutions/multi-asset-trading/tora" },
+      // The chief executive's words on organic growth.
+      { label: "PYMNTS, 'LSEG Closes $325M Deal for TORA', 22 February 2022: despite its headline, a report of the agreement, with completion expected in the second half of 2022; TORA chief executive Robert Dykes said that since the company launched in 2004 its growth had been entirely organic and all its products were created in-house (read 2026-11-16)", url: "https://www.pymnts.com/partnerships/2022/london-stock-exchange-group-closes-325m-deal-for-tora/" },
+    ],
+  },
+  {
+    // BROADRIDGE - added 2026-11-16 (industry wave I3). Broadridge Financial
+    // Solutions, Inc., incorporated in Delaware on 29 March 2007 and spun off
+    // from ADP the next day: FOUNDED 2007, with storyBegins 1962 for the ADP
+    // Brokerage Services division the card opens with (both in the 2007 Form
+    // 10-K label). Itiviti (2021) and NYFIX are history inside it.
+    slug: "broadridge",
+    // Own site read live 2026-11-16: HTTP 200 at the press-release and NYFIX pages under https://www.broadridge.com.
+    official: {
+      // The company's own site.
+      url: "https://www.broadridge.com",
+      // The NYFIX network page.
+      resources: [
+        // NYFIX Order Routing Network.
+        { label: "NYFIX Order Routing Network", url: "https://www.broadridge.com/capability/front-office-solutions/connectivity/order-routing-network" },
+      ],
+    },
+    // Makes trading software and sells business process outsourcing.
+    tags: ["vendor", "services"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "Broadridge - ADP's back office, with Itiviti and NYFIX in front",
+    // Founding year, named by the 2007 Form 10-K label below.
+    founded: 2007,
+    // The story opens with ADP's Brokerage Services division of 1962 (PartnerVendor.storyBegins).
+    storyBegins: { year: 1962, company: "the Brokerage Services division of ADP" },
+    // Card line.
+    tagline: "Spun off from ADP in 2007, the processor behind proxy voting and trade settlement bought Itiviti in 2021, and with it the NYFIX order-routing network.",
+    // Intro paragraph.
+    intro:
+      "Broadridge Financial Solutions is the former brokerage services business of Automatic Data Processing, Inc. (ADP). The business opened in 1962 as ADP's Brokerage Services division, with one client, and added proxy services in 1989; Broadridge Financial Solutions, Inc. was incorporated in Delaware on 29 March 2007 and spun off from ADP on 30 March 2007. In its fiscal year 2026 it processed on average more than US$18 trillion a day of securities trades, tokenized and traditional, and provided fixed income trade processing to 22 of the 26 primary dealers of United States fixed income securities.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: Itiviti.
+      "Its move into the front office came in 2021. Broadridge agreed on 29 March 2021 to buy Itiviti Holding AB from Nordic Capital for €2.143 billion (about US$2.5 billion) in cash, describing the deal as extending its back-office capabilities into the front office, and completed the purchase on 12 May 2021. Itiviti, headquartered in Stockholm, had been assembled under a private equity owner: Nordic Capital took it private in 2012, it was formed of Orc Group, CameronTec and Tbricks, and on 14 March 2018 it completed a merger with ULLINK, a trading-technology company founded in 2001. At the sale Itiviti served 24 of the top 25 global investment banks and more than 2,000 brokers, trading firms and asset managers in 50 countries.",
+      // Paragraph 2: NYFIX.
+      "ULLINK brought NYFIX, which Nordic Capital called one of the industry's largest trading communities built on the Financial Information eXchange (FIX) protocol. NYFIX had passed through an exchange group first: after Nyfix's stockholders approved the deal on 3 November 2009, NYSE Euronext completed its purchase by 1 December 2009, for about US$144 million, and folded the NYFIX Marketplace and its FIX software business into NYSE Technologies, which then counted more than 450 buy-side and 600 sell-side institutions on it. Broadridge sells it today as the NYFIX Order Routing Network, a broker-independent, vendor-agnostic FIX order-routing network run as a managed service; its page gives the reach as over 2,200 buy-side and sell-side participants in one place and 1,800 firms in another.",
+      // Paragraph 3: Brazil and why it matters.
+      "The trading business is now called Broadridge Trading and Connectivity Solutions, and B3, the Brazilian exchange, lists four Broadridge products, Tbricks among them, as certified for order entry on its PUMA Trading System. NYFIX is the part that matters most to networks: a shared FIX network over which buy-side firms reach their brokers, which has belonged in turn to an independent company, an exchange group, a trading-technology vendor owned by private equity, and a listed processor whose origins are in settling trades rather than sending them.",
+    ],
+    // Itiviti, with the ULLINK merger nested.
+    acquisitions: [
+      // Itiviti, 2021.
+      {
+        // Completion year.
+        year: 2021,
+        // Target.
+        name: "Itiviti",
+        // Price, as Broadridge stated it.
+        price: "€2.143 billion (about $2.5 billion)",
+        // What it did.
+        what: "A Stockholm trading and connectivity technology provider, formed of Orc Group, CameronTec and Tbricks under Nordic Capital's ownership and merged with ULLINK in 2018, serving 24 of the top 25 global investment banks.",
+        // What it became.
+        became: "Part of Broadridge's Global Technology and Operations segment, with its management, led by CEO Rob Mackay, staying on.",
+        // Provenance.
+        sourceNote: "Agreement of 29 March 2021 and completion of 12 May 2021, both Broadridge press releases.",
+        // What Itiviti had itself combined with.
+        subAcquisitions: [
+          // ULLINK, 2018.
+          { year: 2018, name: "ULLINK", what: "A trading-technology company founded in 2001, owner of the NYFIX FIX network; the merger was completed on 14 March 2018." },
+        ],
+      },
+    ],
+    // The company's own page for NYFIX.
+    externalUrl: "https://www.broadridge.com/capability/front-office-solutions/connectivity/order-routing-network",
+    // Link label.
+    externalLabel: "Broadridge NYFIX Order Routing Network",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // Founding year and storyBegins year.
+      { label: "Broadridge Financial Solutions, Annual Report on Form 10-K for fiscal year 2007, filed 23 August 2007: the former brokerage services business of Automatic Data Processing, Inc. (ADP); in 1962 the Brokerage Services division of ADP opened for business with one client; proxy services from 1989; Broadridge Financial Solutions, Inc. incorporated in Delaware on 29 March 2007 and spun off from ADP effective 30 March 2007 (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1383312/000119312507188068/d10k.htm" },
+      // Scale today and the trading business's name.
+      { label: "Broadridge Financial Solutions, Annual Report on Form 10-K for the fiscal year ended 30 June 2026, filed 4 August 2026: Broadridge Trading and Connectivity Solutions provides trading and connectivity solutions to global capital markets; in fiscal 2026 processed on average over $18 trillion in tokenized and traditional securities trades per day and provided fixed income trade processing services to 22 of the 26 primary dealers in the U.S.; business process outsourcing; the fiscal 2021 term loans financed the acquisition of Itiviti Holding AB (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1383312/000162828026052243/br-20260630.htm" },
+      // The Itiviti agreement.
+      { label: "Broadridge, 'Broadridge Extends Capital Markets Franchise with Acquisition of Itiviti', press release, 29 March 2021: a definitive agreement to acquire Itiviti Holding AB from Nordic Capital in an all-cash transaction valued at €2.143 billion (approximately $2.5 billion); extends Broadridge's capabilities into the front office; Itiviti serves 24 of the top 25 global investment banks and over 2,000 brokers, trading firms and asset managers across 50 countries, with offices in 16 countries (read 2026-11-16)", url: "https://www.broadridge.com/press-release/2021/broadridge-agrees-to-acquire-itiviti" },
+      // The Itiviti completion.
+      { label: "Broadridge, 'Broadridge Completes Acquisition of Itiviti, Extending Capital Markets Franchise', press release, 12 May 2021: completion of the acquisition of Itiviti Holding AB; Itiviti to become part of Broadridge's Global Technology and Operations segment, with CEO Rob Mackay remaining (read 2026-11-16)", url: "https://www.broadridge.com/press-release/2021/broadridge-completes-acquisition-of-itiviti" },
+      // Nordic Capital's account of Itiviti.
+      { label: "Nordic Capital, 'Nordic Capital to sell Itiviti ... to Broadridge', press release, 29 March 2021: Nordic Capital took Itiviti private in 2012; Itiviti and Ullink combined; more than 2,000 customers and about 1,000 employees; headquartered in Stockholm, Sweden (read 2026-11-16)", url: "https://www.nordiccapital.com/news-views/press-releases/nordic-capital-to-sell-itiviti-a-leading-trading-technology-and-service-provider-to-broadridge-a-global-fintech-leader" },
+      // Itiviti's parts, ULLINK and NYFIX.
+      { label: "Nordic Capital, 'Nordic Capital-backed Itiviti announces the intention to combine with ULLINK', press release, 28 November 2017: Itiviti was formed of Orc Group, CameronTec and Tbricks; ULLINK was founded in 2001 and includes NYFIX, 'one of the industry's largest FIX based trading communities' (read 2026-11-16)", url: "https://www.nordiccapital.com/news-views/press-releases/nordic-capital-backed-itiviti-announces-the-intention-to-combine-with-ullink-to-create-a-new-global-force-in-capital-markets-technology-and-infrastructure" },
+      // The merger's completion.
+      { label: "Mondo Visione, 'Itiviti And ULLINK Complete Merger', 15 March 2018: the transaction to merge Itiviti AB with ULLINK was completed on 14 March 2018 (read 2026-11-16)", url: "https://mondovisione.com/media-and-resources/news/itiviti-and-ullink-complete-merger-to-build-a-global-technology-force-in-the-cap-2018315/" },
+      // NYFIX at NYSE Euronext.
+      { label: "Hedgeweek, 'NYSE Euronext completes acquisition of Nyfix', 1 December 2009: an all-cash deal of about $144 million; the Nyfix FIX business, including the Nyfix Marketplace and the FIX software business, becomes part of NYSE Technologies, with more than 450 buy-side and more than 600 sell-side institutions; announced 27 August and approved by Nyfix stockholders on 3 November 2009 (read 2026-11-16)", url: "https://www.hedgeweek.com/nyse-euronext-completes-acquisition-nyfix/" },
+      // NYFIX today.
+      { label: "Broadridge, NYFIX Order Routing Network: a broker-independent, vendor agnostic FIX order routing network delivered as a fully managed service; 'over 2,200 buy- and sell-side participants' in one passage and '1,800+ buy-side and sell-side firms' in another; the client portal is the former Itiviti NYFIX portal (read 2026-11-16)", url: "https://www.broadridge.com/capability/front-office-solutions/connectivity/order-routing-network" },
+      // Brazil.
+      { label: "B3, PUMA Trading System, Soluções certificadas, Soluções para entrada de ordens (undated list): under Broadridge, B3 messenger 1.0, Tbricks 2.0, DMAEntryPointTradingFIX44 1.25 and Ul Bridge 3.x (read 2026-11-16)", url: "https://b3.com.br/pt_br/solucoes/plataformas/puma-trading-system/para-participantes-e-traders/solucoes-certificadas/solucoes-para-entrada-de-ordens/" },
+    ],
+  },
+  {
+    // EZE SOFTWARE - added 2026-11-16 (industry wave I3). An ENDED record:
+    // SS&C Technologies completed the purchase on 1 October 2018 (its own
+    // release, filed with the SEC) and www.ezesoft.com now leads to SS&C
+    // Advent, so the brand survives only as product names (an ending).
+    // NO FOUNDED YEAR: the sources say only "for more than 20 years" (2018);
+    // the I3 hand-back report records the gap. SS&C has no record of its own here.
+    slug: "eze-software",
+    // www.ezesoft.com redirects (HTTP 200) to https://www.advent.com/, read live 2026-11-16.
+    official: {
+      // No longer trades as a company under this name.
+      defunct: true,
+      // Whose site the reader is sent to, named.
+      successor: { label: "SS&C Advent, where www.ezesoft.com now leads", url: "https://www.advent.com/" },
+    },
+    // Made trading and investment-management software.
+    tags: ["vendor"],
+    // Ended: acquired.
+    group: "other",
+    // Title.
+    name: "Eze Software - Eze Castle, RealTick and Tradar, now inside SS&C",
+    // Ending year, named by the SS&C and The TRADE labels below.
+    ended: { year: 2018, note: "Acquired by SS&C Technologies on 1 October 2018; www.ezesoft.com now leads to SS&C Advent, which sells the Eze EMS, Eze OMS and RealTick products." },
+    // Card line.
+    tagline: "A Boston investment-management software company, a combination of Eze Castle Software, RealTick and Tradar, bought by SS&C Technologies for US$1.45 billion in 2018.",
+    // Intro paragraph.
+    intro:
+      "Eze Software sold investment-management software to asset managers, hedge funds among them: order management, trade execution and analytics, portfolio analytics and modelling, compliance and regulatory reporting, commission management, and portfolio and investor accounting. The TRADE described it as a provider of execution management systems (EMS) and order management systems (OMS), and as a combination of Eze Castle Software, RealTick and Tradar. When SS&C Technologies completed its purchase on 1 October 2018, the Boston-based company had 1,050 employees in 15 offices, more than 2,500 client institutions in 45 countries, and US$280 million of revenue in 2017.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the purchase.
+      "SS&C announced the purchase on 31 July 2018 and paid US$1.45 billion in cash, funded with cash and US$875 million of additional term loans. It completed it on the same day, 1 October 2018, that State Street completed its purchase of Charles River Development, by the two buyers' own announcements, and The TRADE reported the Eze deal as coming shortly after State Street's.",
+      // Paragraph 2: what remains.
+      "The company no longer trades under its own name. The www.ezesoft.com address now leads to SS&C Advent, which describes itself as a business unit of SS&C Technologies, and the products survive inside it as names: an order and execution management solution (OEMS) that combines Eze EMS and Eze OMS, the RealTick execution management system, and an Eze Solutions Marketplace. SS&C Advent's customer notices still name Eze Castle Software LLC as the contracting party to the EMS subscriber agreement, among them an October 2017 amendment for 'Eze EMS (Formerly Realtick EMS)'.",
+      // Paragraph 3: why it matters, analytically.
+      "The names have outlived the company. RealTick EMS had become Eze EMS by October 2017, by those notices, and SS&C Advent lists a RealTick execution management system again today, beside an OEMS built from Eze EMS and Eze OMS. In this market the product a trader knows has proved more durable than the companies that have owned it.",
+    ],
+    // The successor's trading page.
+    externalUrl: "https://www.advent.com/solutions/?b=trading,-rebalancing-compliance",
+    // Link label, naming whose site it is.
+    externalLabel: "SS&C Advent trading solutions (successor)",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // The completion: the ending year and the company in 2018.
+      { label: "SS&C Technologies, 'SS&C Completes Acquisition of Eze Software', press release of 1 October 2018 filed as Exhibit 99.1: completion of the acquisition, announced on 31 July 2018, in an all-cash transaction of $1.45 billion, funded with cash and $875 million in incremental term loan debt; Eze Software, Boston-based, 'for more than 20 years'; 1,050 employees in 15 offices and more than 2,500 clients in 45 countries; 2017 revenues of $280 million; order management, trade execution and analytics, portfolio analytics and modeling, compliance and regulatory reporting, commission management, portfolio and investor accounting (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1402436/000156459018024003/ssnc-ex991_9.htm" },
+      // The components and the timing.
+      { label: "The TRADE, 'SS&C completes $1.45 billion acquisition of Eze Software', 2 October 2018: Eze Software provides execution management systems (EMS) and order management systems (OMS) to asset managers and exists as a combination of Eze Castle Software, RealTick and Tradar; completed shortly after State Street completed its acquisition of Charles River (read 2026-11-16)", url: "https://www.thetradenews.com/ssc-completes-1-45-billion-acquisition-eze-software/" },
+      // Charles River's completion date, for the same-day statement.
+      { label: "State Street Corporation, Form 8-K dated 1 October 2018: on 1 October 2018 State Street completed its acquisition of Charles River Systems, Inc. (Charles River Development) (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/93751/000009375118000468/form8k-crdclose10x01x18.htm" },
+      // Where the Eze address leads.
+      { label: "SS&C Advent, home page, reached from www.ezesoft.com: Advent, 'a business unit of SS&C Technologies'; © 2026 SS&C Advent (read 2026-11-16)", url: "https://www.advent.com/" },
+      // The products today.
+      { label: "SS&C Advent, Trading, Rebalancing & Compliance solutions: an order and execution management solution (OEMS) that combines Eze EMS and Eze OMS; RealTick, a global, broker-agnostic execution management system; Eze Solutions Marketplace; Eclipse (read 2026-11-16)", url: "https://www.advent.com/solutions/?b=trading,-rebalancing-compliance" },
+      // The contracting entity and RealTick's rename.
+      { label: "SS&C Advent, Eze Customer Notices: notices from 2017 to 2023 on the EMS Subscriber Agreement between customers and Eze Castle Software LLC, including the amendment of 30 October 2017 for 'Eze EMS (Formerly Realtick EMS)' (read 2026-11-16)", url: "https://www.advent.com/eze-customer-notices/" },
+    ],
+  },
+  {
+    // BLACKROCK ALADDIN - added 2026-11-16 (industry wave I3). Not a company
+    // but BlackRock's own platform, so the card has a parent, BlackRock, with
+    // no `since`: nothing was acquired, and the 10-K calls Aladdin Enterprise
+    // the company's proprietary technology platform.
+    // NO FOUNDED YEAR: no page read dates Aladdin itself; BlackRock's founding
+    // (1988) and its "since 1999" in financial technology are stated in the
+    // prose as BlackRock's, not as the card's (the I3 hand-back report).
+    slug: "blackrock-aladdin",
+    // Own page read live 2026-11-16: HTTP 200 at https://www.blackrock.com/aladdin.
+    official: {
+      // The platform's own page.
+      url: "https://www.blackrock.com/aladdin",
+      // A company owner that built it; the 10-K label names BlackRock.
+      parent: { name: "BlackRock", kind: "company", note: "Aladdin is BlackRock's own platform: the company's annual report calls Aladdin Enterprise its proprietary technology platform, used for BlackRock's portfolios and sold to other institutional investors." },
+    },
+    // Makes investment and trading software.
+    tags: ["vendor"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "BlackRock Aladdin - an asset manager's own platform, sold to its peers",
+    // Card line.
+    tagline: "BlackRock's proprietary investment and risk management platform, run for the firm's own portfolios and sold to other investors, and the larger part of its US$2.0 billion of technology revenue in 2025.",
+    // Intro paragraph.
+    intro:
+      "Aladdin is not a company but a platform inside one. BlackRock, Inc. describes Aladdin Enterprise as its proprietary technology platform, an end-to-end investment and risk management solution used both by BlackRock and by a growing number of institutional investors, and its own page calls Aladdin a platform that unifies the investment management process through a common data language, across public and private markets. BlackRock itself was founded in 1988 by Larry Fink, Rob Kapito, Sue Wagner, Barbara Novick, Ben Golub, Hugh Frater, Ralph Schlosstein and Keith Anderson, and says it has been a provider of financial technology since 1999.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the parts and Preqin.
+      "The platform's parts, as BlackRock lists them, are Aladdin Enterprise, Aladdin Risk for risk analytics, investment accounting, Aladdin Wealth for wealth managers, and eFront for alternative investments, sold alone or with Aladdin as an integrated 'Whole Portfolio' view of public and private assets. On 3 March 2025 BlackRock completed its purchase of Preqin, a private markets data provider, for £2.5 billion (about US$3.2 billion) in cash, to bring its data together with the Aladdin and eFront workflows.",
+      // Paragraph 2: the numbers.
+      "The numbers are in BlackRock's annual report for 2025. Technology services and subscription revenue was US$2.0 billion, up 24 percent, and Aladdin was the majority of it; Aladdin contracts are typically long-term, and although the system is multi-asset, most of the positions managed on it are fixed income. The report places Aladdin's competitive position in one combination: risk analytics together with portfolio management, trading and operations tools on a single platform.",
+      // Paragraph 3: regulation, and why it matters.
+      "That combination has drawn the regulators' attention. The European Union's Digital Operational Resilience Act (DORA), applicable from 2025, brought governance, incident-reporting and resilience-testing requirements to certain Aladdin clients and, BlackRock notes, may subject Aladdin itself to further oversight as European supervisors decide which technology suppliers are critical to the EU financial system. When one platform holds the risk models, the trading tools and the books of many investment managers at once, its availability becomes a question of financial stability as well as of service levels.",
+    ],
+    // The platform's own page.
+    externalUrl: "https://www.blackrock.com/aladdin",
+    // Link label.
+    externalLabel: "Aladdin by BlackRock",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // The platform, revenue, Preqin, DORA: the parent's name.
+      { label: "BlackRock, Inc., Annual Report on Form 10-K for 2025, filed 25 February 2026: Aladdin Enterprise, 'the Company's proprietary technology platform', an end-to-end investment and risk management solution for BlackRock and a growing number of institutional investors; Aladdin Risk, investment accounting, Aladdin Wealth, eFront (with a 'Whole Portfolio' solution), Preqin and Cachematrix; technology services and subscription revenue of $2.0 billion, up 24%, with Aladdin the majority; Aladdin contracts typically long-term; most positions on the platform fixed income; Preqin acquired on 3 March 2025 for £2.5 billion (about $3.2 billion); Aladdin's position rests on combining risk analytics with portfolio management, trading and operations tools; the EU's Digital Operational Resilience Act (DORA), applicable in 2025, applies to certain Aladdin clients and may subject Aladdin to additional oversight (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/2012383/000119312526071966/blk-20251231.htm" },
+      // The platform in BlackRock's own words.
+      { label: "BlackRock, Aladdin page: 'Aladdin® is a tech platform that unifies the investment management process through a common data language', with a view of the whole portfolio across public and private markets; Aladdin Risk as the platform's risk engine (read 2026-11-16)", url: "https://www.blackrock.com/aladdin" },
+      // BlackRock's founding and its technology date.
+      { label: "BlackRock, The BlackRock Story (history pages): BlackRock was founded in 1988 by Larry Fink, Rob Kapito, Sue Wagner, Barbara Novick, Ben Golub, Hugh Frater, Ralph Schlosstein and Keith Anderson; 'Since 1999, we've been a leading provider of financial technology' (read 2026-11-16)", url: "https://www.blackrock.com/corporate/about-us/blackrock-history" },
+    ],
+  },
+
+  // ==== Industry wave I4 (16/11/2026, PRIME 20:34): integrated from scratchpad industry-i4/ ====
+  {
+    // PICO - added 2026-11-16 (Industry wave I4). The successor named by the
+    // existing `corvil` record. Founding year 2009 is stated by Pico's own
+    // leadership page and by Golden Gate Capital's release of 13 July 2022.
+    // OWNER: none recorded. Pico describes itself (2019) as privately held with a
+    // consortium of minority investors; the Golden Gate Capital investment of
+    // 2022 was "an agreement for a $200 million strategic investment" with no
+    // stake size disclosed, so no parent is set.
+    slug: "pico",
+    // Own site read live 2026-11-16: HTTP 200 at https://www.pico.net/ (footer "Pico Quantitative Trading LLC").
+    official: {
+      // The company's own site.
+      url: "https://www.pico.net",
+    },
+    // Makes analytics appliances and trading software, runs managed services, colocation and its own fibre network.
+    tags: ["vendor", "services", "datacentre", "carrier"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "Pico - the trading network that bought its own measurement layer",
+    // Founding year, named by the Pico leadership-page label and the Golden Gate Capital label below.
+    founded: 2009,
+    // Card line.
+    tagline: "A New York provider of connectivity, colocation, market data and analytics for the financial markets, founded in 2009, which bought Corvil in 2019 and Redline Trading Solutions in 2022.",
+    // Intro paragraph.
+    intro:
+      "Pico was founded in 2009, by its own account to address the electronification of markets across all asset classes, and describes itself as a provider of technology services for the financial markets community: connectivity and colocation over its own fibre-optic network, PicoNet, managed infrastructure, market data, the Redline trading software and the Corvil analytics. Its founder, chairman and chief executive is Jarrod Yuster. The company says it has 18 offices and a presence in more than 55 data centres, and that its network reaches more than 900 exchange and venue products.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: Corvil, 2019.
+      "Pico was a customer before it was a buyer. By Yuster's account in July 2019, the New York company had installed Corvil extensively throughout its environment and used it to find the source of clients' problems, and decided to offer clients a direct view of their own managed operations. On 9 July 2019 it signed a definitive agreement to acquire Corvil, announcing that the company would trade under the Pico brand while the Corvil name continued on its products and services, and that clients could also buy Corvil-as-a-Service, Corvil environments deployed, configured and operated by Pico. The combined business was to serve more than 400 banks, exchanges, asset managers, financial technology vendors and trading firms with more than 375 staff, and Pico described itself in the same release as privately held, with a consortium of investors, many of them clients, holding a minority position, Goldman Sachs, J.P. Morgan, UBS and Wells Fargo among them.",
+      // Paragraph 2: Redline and the Golden Gate Capital agreement, 2022.
+      "On 4 January 2022 Pico announced that it had acquired Redline Trading Solutions, a maker of ultra-low-latency market data and trading software with common application programming interfaces (APIs) to more than 180 venues, previously backed by GS Growth, the growth investing arm of Goldman Sachs; terms were not disclosed. On 13 July 2022 Pico signed an agreement for a 200 million dollar strategic investment from Golden Gate Capital, a San Francisco private equity firm, to pursue further acquisitions. That release gave Pico more than 430 clients and 55 data centres, and named its existing strategic investors as Goldman Sachs Asset Management, Wells Fargo Strategic Capital, J.P. Morgan, UBS, CE Innovation Capital, DRW Venture Capital, Intel Capital, EDBI, Nomura and Chicago Trading Company.",
+      // Paragraph 3: the product lines today.
+      "The products carry the acquired names. Corvil Analytics, which Pico calls its network-derived analytics platform for financial markets, gained the Corvil 12000 appliance on 16 September 2025, which Pico says captures and analyses 200 gigabits per second continuously and extends a line of appliances trusted for more than two decades; the 10.2 software release of 15 September 2026 added REST (representational state transfer) APIs and connectors that feed Corvil data into observability platforms and large language model workflows. Redline is sold as software for market data, order execution and pre-trade risk, which Pico says reaches more than 230 venues through a common API.",
+      // Paragraph 4: why it matters, analytically.
+      "Pico's shape is an argument for treating latency measurement as part of the network rather than a tool beside it. Its own description of PicoNet is a network instrumented natively with Corvil to generate analytics and telemetry, so the provider that carries a client's orders and market data also keeps the packet-level record of how long they took. For a trading firm that buys connectivity, colocation and market data from one supplier, that record is the means of testing the service it is paying for.",
+    ],
+    // Acquisitions Pico made, each read in Pico's own release.
+    acquisitions: [
+      // Corvil, 2019.
+      { year: 2019, name: "Corvil", what: "The Dublin maker of real-time analytics for financial markets infrastructure, whose products Pico already used extensively in its own environment. Definitive agreement signed 9 July 2019; financial details not disclosed.", became: "Corvil Analytics, Pico's analytics product line, also sold as Corvil-as-a-Service; the corvil record tells the company's own story.", sourceNote: "Pico release, 9 July 2019; FIA MarketVoice, 26 July 2019; Golden Gate Capital release, 13 July 2022, which states that Pico acquired Corvil Analytics in 2019 (all read 2026-11-16)." },
+      // Redline Trading Solutions, 2022.
+      { year: 2022, name: "Redline Trading Solutions", what: "A maker of ultra-low-latency market data and trading software with common APIs to more than 180 venues, founded by Mark Skalabrin and previously backed by GS Growth. Announced 4 January 2022; terms not disclosed.", became: "Pico's Redline software line, sold for market data, order execution and pre-trade risk.", sourceNote: "Pico release, 4 January 2022; Pico home page (both read 2026-11-16)." },
+    ],
+    // The company's own page.
+    externalUrl: "https://www.pico.net/about/",
+    // Link label.
+    externalLabel: "Pico",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // Founding year, offices, data centres, leadership.
+      { label: "Pico, Leadership: \"Founded in 2009, Pico has expanded to 18 offices with a global presence across 55+ data centers\"; Jarrod Yuster, Chairman, Founder & CEO (read 2026-11-16)", url: "https://www.pico.net/about/leadership/" },
+      // Founding purpose, the 2022 investment agreement and the investor list.
+      { label: "Golden Gate Capital, Pico Signs Agreement with Golden Gate Capital for $200 Million Investment to Accelerate Next Phase of M&A Activity, 13 July 2022: Pico was founded in 2009 to address the electronification of markets across all asset classes; an agreement for a $200 million strategic investment from Golden Gate Capital, a San Francisco private equity firm, to pursue acquisitions; 55 data centers, more than 430 clients; in 2019 Pico acquired Corvil Analytics and in January 2022 Redline Trading Solutions; existing strategic investors Goldman Sachs Asset Management, Wells Fargo Strategic Capital, J.P. Morgan, UBS, CE Innovation Capital, DRW Venture Capital, Intel Capital, EDBI, Nomura and Chicago Trading Company (read 2026-11-16)", url: "https://goldengatecap.com/pico-signs-agreement-with-golden-gate-capital-for-200-million-investment-to-accelerate-next-phase-of-ma-activity/" },
+      // The Corvil agreement, in Pico's own words.
+      { label: "Pico, Pico to Acquire Corvil, Creating the New Benchmark for Technology Services in Financial Markets, 9 July 2019: definitive agreement to acquire Corvil; a combined client base of over 400 banks, exchanges, asset managers, financial technology vendors and trading firms and a workforce of over 375; the company to operate under the Pico brand while the Corvil name continues for its products and services; Corvil-as-a-Service; Pico privately held with a consortium of minority investors including Goldman Sachs, J.P. Morgan, UBS and Wells Fargo; PicoNet instrumented natively with Corvil; financial details not disclosed (read 2026-11-16)", url: "https://www.pico.net/about/news/pico-to-acquire-corvil-creating-the-new-benchmark-for-technology-services-in-financial-markets/" },
+      // Pico as a Corvil customer before the purchase.
+      { label: "FIA MarketVoice, Corvil deal to bring increased transparency, data to Pico clients, 26 July 2019: New York-based Pico a long-time user of Corvil products; Jarrod Yuster on installing Corvil throughout Pico's environment; 35 existing data center locations; closing expected in early August (read 2026-11-16)", url: "https://www.fia.org/marketvoice/articles/corvil-deal-bring-increased-transparency-data-pico-clients" },
+      // Redline.
+      { label: "Pico, Pico Acquires Redline Trading Solutions, New York, 4 January 2022: Redline provides ultra-low latency software solutions and common APIs to over 180 global venues; founder and CEO Mark Skalabrin; financial terms not disclosed; Redline previously backed by GS Growth, the growth investing arm of Goldman Sachs (read 2026-11-16)", url: "https://www.pico.net/about/news/pico-acquires-redline-trading-solutions/" },
+      // The network and the venue counts today.
+      { label: "Pico, home page: connectivity to 900+ exchange and venue products across 55+ global data centers; market data distribution and execution across 230+ venues through a common API; Corvil Analytics, Redline (read 2026-11-16)", url: "https://www.pico.net/" },
+      // PicoNet in Pico's words; the legal name.
+      { label: "Pico, About: PicoNet, \"Pico's ultra-low-latency, fault-tolerant and globally comprehensive fiber-optic network platform\", instrumented natively with Corvil analytics and telemetry; copyright Pico Quantitative Trading LLC (read 2026-11-16)", url: "https://www.pico.net/about/" },
+      // The Corvil 12000.
+      { label: "Pico, Pico Redefines Network Observability with 200Gbps Continuous Network Capture and Analytics, New York, 16 September 2025: launch of the Corvil 12000, 200Gbps continuous capture and real-time analytics, building on the Corvil 10000 and a flagship appliance line trusted for more than two decades (read 2026-11-16)", url: "https://www.pico.net/about/news/pico-redefines-network-observability-with-200gbps-continuous-network-capture-and-analytics/" },
+      // Corvil Analytics 10.2.
+      { label: "Pico, Pico's Corvil Analytics Unlocks Trusted Network Data for AI Workflows with 10.2 Software Release, New York, 15 September 2026: new REST APIs and connectors bringing Corvil Analytics data into observability platforms and LLM workflows (read 2026-11-16)", url: "https://www.pico.net/about/news/picos-corvil-analytics-unlocks-trusted-network-data-for-ai-workflows-with-102-software-release/" },
+    ],
+  },
+  {
+    // BEEKS GROUP - added 2026-11-16 (Industry wave I4). Listed on AIM since
+    // November 2017 (ticker BKS); no parent.
+    // FOUNDED 2010, NOT 2011: the AIM admission document (21 November 2017)
+    // says Beeks Financial Cloud Limited was incorporated on 3 June 2010 by
+    // Gordon McArthur and began operations in 2011; the company's own overview
+    // page says the Group "was established in 2011". The regulated document's
+    // year is used, and the discrepancy is recorded in the sourceNote.
+    slug: "beeks-group",
+    // Own site read live 2026-11-16: HTTP 200 at https://beeksgroup.com/.
+    official: {
+      // The company's own site.
+      url: "https://beeksgroup.com",
+    },
+    // Colocation and hosting, managed cloud services, and its own analytics software.
+    tags: ["datacentre", "services", "vendor"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "Beeks Group - the Glasgow cloud that moved into the exchanges",
+    // Founding year, named by the admission-document label below.
+    founded: 2010,
+    // Card line.
+    tagline: "A Glasgow company founded in 2010 by Gordon McArthur to rent low-latency virtual servers to retail currency traders, listed on AIM since 2017 and now running compute stacks inside exchanges' own colocation.",
+    // Intro paragraph.
+    intro:
+      "Beeks Group, legally Beeks Financial Cloud Group plc, began as Beeks Financial Cloud Limited, incorporated in Scotland on 3 June 2010 by Gordon McArthur, who is still its chief executive, and trading at first as BeeksFX VPS. In 2011 it began operations from a single site at the Equinix NY4 data centre in Secaucus, New Jersey, renting low-latency virtual private servers (VPS) to the retail automated trading market, and within six months it had added London for the foreign exchange market. The group is headquartered in Glasgow, and its shares were admitted in November 2017 to AIM, a market operated by the London Stock Exchange and designed primarily for emerging or smaller companies.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: from retail to institutions, from the admission document.
+      "The admission document traces the route from retail to institutional clients. By 2014 Beeks had become a large provider of foreign exchange VPS, with many brokers white-labelling its service; that year its American subsidiary bought the business and assets of Gallant VPS and began serving institutions with on-site services, servers and colocation, and in 2015 it bought those of VDIWare, which took it to Frankfurt and into the futures market, primarily through direct access to CME Group's futures exchange. A Hong Kong presence followed in 2016. At listing Beeks employed 28 people and operated from nine data-centre locations in London, New Jersey, Chicago, Frankfurt, Tokyo and Hong Kong, linked by a dedicated fibre network.",
+      // Paragraph 2: Velocimetrics and the analytics line.
+      "On 15 April 2020 Beeks announced the acquisition of Velocimetrics, a provider of business-flow tracking and real-time, in-stream performance analytics, whose chief executive Steve Colwill was to join the Beeks operations board. Velocimetrics was to continue as a distinct entity, and Beeks planned a software-as-a-service version of its products for what McArthur called the group's 200-plus institutional customers. Beeks now sells analytics under its own names, Beeks Analytics and Market Edge Intelligence, beside its infrastructure.",
+      // Paragraph 3: Exchange Cloud and Proximity Cloud.
+      "Its most distinctive product turns the venue into the cloud provider. Exchange Cloud is a fully managed, pre-configured, multi-tenant compute and analytics stack that Beeks deploys and operates in an exchange's colocation or in any third-party data centre, adjacent to the matching engine, with support for Layer 2 multicast and the Precision Time Protocol (PTP), so that the exchange can offer it to its own participants as a subscription service, white-labelled if it wishes; Beeks describes it as built to give those participants fair access through isolated resources. Proximity Cloud, in Beeks's words a fully managed infrastructure for the demanding workloads of financial systems, is its counterpart for trading firms.",
+      // Paragraph 4: why it matters, analytically.
+      "The company's history follows colocation downward in scale and inward in place: a retail trader's virtual server in a New Jersey data centre in 2011, institutional colocation from 2014, and by 2026 a multi-tenant stack beside an exchange's matching engine, run by Beeks and resold by the exchange. Each step puts the server closer to the venue and makes the allocation of that proximity a product someone sells, which is why the fairness of shared racks appears in the product description at all.",
+    ],
+    // Acquisitions Beeks made, each read in the admission document or the 2020 release.
+    acquisitions: [
+      // Gallant VPS, 2014.
+      { year: 2014, name: "Gallant VPS", what: "A United States provider of virtual private servers; Beeks's American subsidiary bought its business and assets.", became: "The start of Beeks's institutional business: on-site services, virtual and physical servers and colocation.", sourceNote: "Beeks Financial Cloud Group plc, AIM admission document, 21 November 2017 (read 2026-11-16)." },
+      // VDIWare, 2015.
+      { year: 2015, name: "VDIWare", what: "A United States hosting business whose business and assets Beeks's American subsidiary bought, extending Beeks to Frankfurt and to the futures market.", became: "Part of Beeks's international footprint and its direct access to CME Group's futures exchange.", sourceNote: "Beeks Financial Cloud Group plc, AIM admission document, 21 November 2017 (read 2026-11-16)." },
+      // Velocimetrics, 2020.
+      { year: 2020, name: "Velocimetrics", what: "A provider of business-flow tracking and real-time, in-stream performance analytics, maker of VMX EndToEnd and stream2Cloud.", became: "A distinct entity within the Beeks group; its chief executive was to join the Beeks operations board.", sourceNote: "Beeks release reprinted by Mondo Visione, 15 April 2020 (read 2026-11-16). Two analyst notes hosted on beeksgroup.com give different caps on the total consideration (4.55 million pounds in April 2020, 4.2 million pounds in June 2026); neither figure is used." },
+    ],
+    // The company's own page.
+    externalUrl: "https://beeksgroup.com/investor-relations/company-overview/",
+    // Link label.
+    externalLabel: "Beeks Group",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // Founding year, history, headquarters, origin.
+      { label: "Beeks Financial Cloud Group plc, AIM admission document, 21 November 2017: Beeks Financial Cloud Limited was incorporated on 3 June 2010 by CEO Gordon McArthur, trading as BeeksFX VPS; in 2011 it began operations from a single site at the Equinix NY4 data centre in Secaucus, New Jersey, serving the retail automated trading market; London added within six months; Gallant VPS (2014) and VDIWare (2015) acquired by Beeks US; Hong Kong 2016; headquartered in Glasgow, nine data-centre locations, 28 employees; Beeks Financial Cloud Limited incorporated and domiciled in Scotland; admission to trading on AIM, a market operated by the London Stock Exchange plc and designed primarily for emerging or smaller companies, timetabled for 27 November 2017 (read 2026-11-16)", url: "https://beeksgroup.com/wp-content/uploads/2024/09/Beeks-Financial-Cloud-Group-plc-Admission-Document-Final.pdf", sourceNote: "The company's own overview page says the Group \"was established in 2011\" and its about page that Beeks \"began its operations in 2011\"; the admission document separates the 2010 incorporation from the 2011 start of operations, and its year is the one used." },
+      // The company's present account of itself.
+      { label: "Beeks Group, Company overview: \"The Group was established in 2011 by CEO Gordon McArthur\" to provide low latency VPS services to the retail trading market from the Equinix NY4 data centre in New Jersey (the admission document dates the incorporation to 2010 and the start of operations to 2011); in November 2017 Beeks completed its IPO, raising £7m, and was admitted to trading on AIM under the ticker BKS (read 2026-11-16)", url: "https://beeksgroup.com/investor-relations/company-overview/" },
+      // Velocimetrics.
+      { label: "Mondo Visione, Beeks Financial Cloud Acquires Velocimetrics, 15 April 2020: Velocimetrics, provider of business flow tracking and real-time, in-stream performance analytics, acquired by Beeks Financial Cloud Group Plc (AIM: BKS); to continue as a distinct entity; Steve Colwill to join the Beeks operations board; Gordon McArthur on a SaaS version for Beeks' 200+ institutional customers (read 2026-11-16)", url: "https://mondovisione.com/news/beeks-financial-cloud-acquires-velocimetrics-2020415" },
+      // Exchange Cloud.
+      { label: "Beeks Group, Exchange Cloud: a fully managed, pre-configured, multi-tenant compute and analytics stack deployed in an exchange's colocation or any third-party data centre, adjacent to the matching engine; Layer 2 multicast and PTP support; isolated resources for fair access and competition; subscription-based and white-labelled services for exchanges (read 2026-11-16)", url: "https://beeksgroup.com/services/trading-infrastructure/cloud-services/exchange-cloud/" },
+      // Product names and the registered company.
+      { label: "Beeks Group, home and About pages: Exchange Cloud, Proximity Cloud (\"a fully managed infrastructure tailored for the demanding workload of financial systems\"), Beeks Analytics and Market Edge Intelligence; Beeks began operations in 2011 as an Infrastructure as a Service provider for low latency financial markets; Beeks Financial Cloud Group plc incorporated in Scotland, registration number SC521839 (read 2026-11-16)", url: "https://beeksgroup.com/about/" },
+    ],
+  },
+  {
+    // ENDACE - added 2026-11-16 (Industry wave I4). Founded 2001 (Endace's own
+    // About page and its 2016 release). Owned by Emulex from 2013; a
+    // management-led buyout made it "once again ... a wholly New Zealand owned
+    // and operated company" in March 2016. No parent today.
+    slug: "endace",
+    // Own site read live 2026-11-16: HTTP 200 at https://www.endace.com/ (footer "Endace Technology Limited").
+    official: {
+      // The company's own site.
+      url: "https://www.endace.com",
+    },
+    // Makes packet-capture appliances.
+    tags: ["vendor"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "Endace - the packet recorder from New Zealand",
+    // Founding year, named by the About-page label below.
+    founded: 2001,
+    // Card line.
+    tagline: "A New Zealand maker of always-on packet capture, founded in 2001, bought by Emulex in 2013 and returned to New Zealand ownership by a management buyout in 2016.",
+    // Intro paragraph.
+    intro:
+      "Endace, today Endace Technology Limited, was founded in 2001 and makes the EndaceProbe, which it calls the world's most scalable full packet capture platform: appliances that record every packet on a network continuously, for weeks or months at 100 gigabits per second and beyond, and let security, network and trading teams search the recording from their own tools. The company says it created the packet-capture category and launched the world's first network recording appliance.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: Emulex, 2013.
+      "Endace's shares were traded on AIM in London when Emulex, the network connectivity company of Costa Mesa, California, bid for them. On 26 February 2013 Emulex declared its offer of 5 pounds a share wholly unconditional, holding about 89.55 percent of Endace, and applied to cancel the shares' admission to AIM; on 1 April 2013 it reported 99.9 percent and began the compulsory acquisition of the remainder under the New Zealand Takeovers Code, through its New Zealand subsidiary.",
+      // Paragraph 2: the buyout, 2016.
+      "Three years later, on 11 March 2016, Endace announced from Auckland that it had once again become a wholly New Zealand owned and operated company, through a management-led buyout from Emulex led by its chief executive, Stuart Wilson, who had been with the company for more than a decade. The same release introduced the 9000 Series EndaceProbe, with up to 192 terabytes of storage and 20 gigabits per second of sustained recording to disk, and gave the customers as global banks, telecommunications operators, broadcasters, health organizations, retailers, governments and large enterprises.",
+      // Paragraph 3: the trading floor.
+      "Its page for banks and finance addresses trading directly. Endace says high-frequency traders use its recorders to keep accurate trading data for compliance, trade performance monitoring and algorithm tuning, and that its capture, with nanosecond-resolution timestamps, lets teams validate the exact sequence and timing of every transaction; it says financial and securities trading organizations have relied on it for more than 20 years as the definitive source of truth about what happened and exactly when.",
+      // Paragraph 4: why it matters, analytically.
+      "A packet recorder's value to a trading floor is that its record is independent of the systems it describes. When the timing of an order is in question, the packets on the wire, timestamped at capture, are evidence that neither the trading application's own logs nor a venue's reports can provide, and an always-on recording means the question can be asked after the event rather than only by someone who started a capture in time.",
+    ],
+    // The company's own page.
+    externalUrl: "https://www.endace.com/about-us",
+    // Link label.
+    externalLabel: "Endace",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // Founding year and the product.
+      { label: "Endace, About: founded in 2001, Endace is the innovator and creator of the EndaceProbe, the world's most scalable full packet capture platform; more than twenty years focused on continuous packet capture (read 2026-11-16)", url: "https://www.endace.com/about-us" },
+      // The buyout.
+      { label: "Endace, Endace Spins off from Emulex in Management-led Buyout, Auckland, 11 March 2016: once again a wholly New Zealand owned and operated company following a management-led buyout from Emulex Corp.; founded in 2001 and acquired by Emulex in 2013; created the packet capture category and launched the world's first network recording appliance; CEO Stuart Wilson; 9000 Series EndaceProbe with up to 192TB of storage and 20Gbps sustained recording to disk (read 2026-11-16)", url: "https://www.endace.com/a-word-from-the-ceo.html" },
+      // The same release, as published at the time.
+      { label: "Scoop, Endace Spins off from Emulex in Management-led Buyout, 11 March 2016: the same release as distributed in New Zealand (read 2026-11-16)", url: "https://m.scoop.co.nz/stories/BU1603/S00411/endace-spins-off-from-emulex-in-management-led-buyout.htm" },
+      // Emulex, February 2013.
+      { label: "Emulex Corporation, Form 8-K, 26 February 2013: offer for Endace Limited declared wholly unconditional on 26 February 2013, beneficial ownership of about 89.55% at GBP 5.00 a share; application to cancel the admission of Endace shares on AIM, effective 27 March 2013 (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/0000350917/000119312513076491/d491215d8k.htm" },
+      // Emulex, April 2013.
+      { label: "Emulex Corporation, Emulex Completes Acquisition of Endace, Costa Mesa, 1 April 2013 (Exhibit 99.1 to Form 8-K): beneficial ownership of 99.9% of Endace; compulsory acquisition of the remaining shares under the New Zealand Takeovers Code by its New Zealand subsidiary El Dorado Research Ventures Limited; Emulex headquartered in Costa Mesa, California (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/0000350917/000119312513135497/d511664dex991.htm" },
+      // The page for banks and trading.
+      { label: "Endace, How Endace Helps Banks and Finance Organizations: for high frequency traders, accurate trading data for compliance, trade performance monitoring and algorithmic tuning; nanosecond-resolution, high-accuracy timestamps to validate the exact sequence and timing of every transaction; copyright Endace Technology Limited (read 2026-11-16)", url: "https://www.endace.com/finance" },
+      // The home page claim on recording duration and speed.
+      { label: "Endace, home page: continuously record weeks or months of full packet capture at 100 Gbps and beyond (read 2026-11-16)", url: "https://www.endace.com/" },
+    ],
+  },
+  {
+    // CPACKET NETWORKS - added 2026-11-16 (Industry wave I4). FOUNDING YEAR NOT
+    // SOURCED: the company says only "for nearly two decades"; no page read
+    // states a year, so `founded` is left out (REPORT.md). The 2024 equity
+    // investment by Morgan Stanley Expansion Capital disclosed no stake size,
+    // so no parent is set.
+    slug: "cpacket-networks",
+    // Own site read live 2026-11-16: HTTP 200 at https://www.cpacket.com/.
+    official: {
+      // The company's own site.
+      url: "https://www.cpacket.com",
+    },
+    // Makes packet brokers, capture appliances and analytics software.
+    tags: ["vendor"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "cPacket Networks - packet brokers at the market-data tap",
+    // Card line.
+    tagline: "A Silicon Valley maker of packet brokers, capture appliances and network analytics, founded by Rony Kay, which says more than half of the world's financial market data touches its products.",
+    // Intro paragraph.
+    intro:
+      "cPacket Networks builds hardware and software for network observability: packet brokers that process traffic at line rate in networks up to 400 gigabits per second, capture appliances that record and analyse it without loss at up to 200 gigabits per second, central management and visualization, and an analysis layer it calls cPacket AI. In 2011 it was described as a start-up based in Mountain View, California, led by its founder and chief executive, Rony Kay; its chief executive today is Brendan O'Flaherty, and the company says that over half of the world's financial market data touches its solutions.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the 2011 product line and trading.
+      "Its early product line was aimed squarely at trading. When cPacket introduced the cVu family of 10-gigabit data monitoring switches in May 2011, combining aggregation, replication, filtering and load balancing, it said they were particularly valuable for financial services and trading applications that need accurate latency measurement, because an optional Precision Timing Module analysed microbursts in real time and timestamped packets with nanosecond resolution directly at the transceiver input.",
+      // Paragraph 2: the 2024 financing.
+      "On 14 February 2024 cPacket announced the completion of a 67 million dollar transaction: a primary and secondary equity investment by funds managed by Morgan Stanley Expansion Capital and a debt refinancing by Trinity Capital, the money to go into 400-gigabit products, cloud and hybrid coverage and machine learning. The size of the equity stake was not disclosed. Its chief executive named the clients as financial services, healthcare, high technology and government.",
+      // Paragraph 3: why it matters, analytically.
+      "The claim about market data is the company's own and is not independently measured; what it reflects is where a packet broker sits, at the point where every feed is copied before any application consumes it. That is also why a microburst-detecting timestamp at the transceiver, cPacket's 2011 selling point to trading firms, is a property of the monitoring fabric rather than of the trading system: the broker sees the traffic as the wire carried it.",
+    ],
+    // The company's own page.
+    externalUrl: "https://www.cpacket.com/company/about-cpacket",
+    // Link label.
+    externalLabel: "cPacket Networks",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // The 2011 product line, the founder and the start-up base.
+      { label: "Converge Digest, cPacket Launches 10G Data Monitoring Switch, 4 May 2011: cPacket Networks, a start-up based in Mountain View, California; the cVu family; Rony Kay, founder and CEO; particularly valuable for financial services and trading applications needing accurate latency measurement; optional Precision Timing Module for real-time analysis of microbursts and nanosecond-resolution time stamping at the transceiver input (read 2026-11-16)", url: "https://convergedigest.com/cpacket-launches-10g-data-monitoring/" },
+      // The company today.
+      { label: "cPacket, About Us, Company & Leadership: nearly two decades of network observability; the 2024 $67 million transaction with Morgan Stanley Expansion Capital and Trinity Capital; Brendan O'Flaherty, Chief Executive Officer (read 2026-11-16)", url: "https://www.cpacket.com/company/about-cpacket" },
+      // The 2024 financing.
+      { label: "cPacket Networks, cPacket Announces Closing of a $67M Investment from Morgan Stanley Expansion Capital and Trinity Capital Inc., Milpitas, California, 14 February 2024: primary and secondary equity investment by funds managed by Morgan Stanley Expansion Capital and a debt refinancing by Trinity Capital; funds for 400Gbps observability nodes, cloud and hybrid footprint and AI/ML; clients across financial services, healthcare, high-tech and government (read 2026-11-16)", url: "https://www.cpacket.com/resources/cpacket-announces-investment" },
+      // Product figures and the market-data claim.
+      { label: "cPacket, home page: \"Over half of the world's financial market data touches cPacket solutions\"; line-rate packet processing for networks up to 400 Gbps; lossless packet capture and analytics at up to 200 Gbps; cPacket AI (read 2026-11-16)", url: "https://www.cpacket.com/" },
+    ],
+  },
+  {
+    // METAMAKO - added 2026-11-16 (Industry wave I4). ENDED: Arista Networks
+    // completed the acquisition of Metamako Holding PTY LTD on 12 September 2018
+    // (Arista Form 10-Q for the third quarter of 2018). metamako.com now
+    // redirects to https://www.arista.com/7130-information, which answered a
+    // client challenge to automated reading on 16/11/2026 (REPORT.md).
+    slug: "metamako",
+    // Defunct brand; successor Arista, which has its own record (`arista`).
+    official: {
+      // No longer trades under this name.
+      defunct: true,
+      // The acquirer, named so the reader knows whose site it is.
+      successor: { label: "Arista Networks, which bought Metamako in 2018", url: "https://www.arista.com/" },
+    },
+    // Made network devices.
+    tags: ["vendor"],
+    // Absorbed into its acquirer.
+    group: "other",
+    // Title.
+    name: "Metamako - the Sydney layer 1 switch that Arista bought",
+    // Founding year, named by the 2017 PR Newswire label below.
+    founded: 2013,
+    // The ending: the completion date is in the Arista 10-Q label below.
+    ended: { year: 2018, note: "acquired by Arista Networks, which completed the purchase of Metamako Holding on 12 September 2018" },
+    // Card line.
+    tagline: "A Sydney maker of layer 1 and FPGA-based network devices for trading, founded in 2013 by engineers from ultra-low-latency hardware and algorithmic trading, and bought by Arista Networks in 2018.",
+    // Intro paragraph.
+    intro:
+      "Metamako was founded in 2013 and based in Sydney, and its founders, Scott Newham, Dave Snowdon and Charles Thomas, came, as the trade press put it when Arista bought the company, from ultra-low latency hardware, software and algorithmic trading. It made layer 1 switches and devices built around field-programmable gate arrays (FPGAs) for latency-sensitive applications such as trading, and by December 2017 it had offices in New York, London and Tokyo.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: growth, 2015 to 2017.
+      "Snowdon, its founder and co-chief technology officer, dated the launch to the end of 2013 when the company announced its move to the Stone & Chalk fintech hub in Sydney in August 2015. In December 2017 Deloitte ranked it tenth in the Technology Fast 50 Australia, with revenue growth of more than 800 percent over three years; the company credited its E-Series, devices carrying up to three FPGAs while keeping latency at nanosecond levels, its expansion into telecommunications, data centres and defence, and a client base that had doubled in 2017.",
+      // Paragraph 2: Arista.
+      "Arista Networks completed the acquisition of Metamako Holding on 12 September 2018, describing it in its quarterly report as a leader in solutions for latency-sensitive business applications, headquartered in Sydney, and buying it in the same quarter as Mojo Networks; the report noted that Arista had made no acquisitions before those two. Arista's release of 5 March 2019 introduced the 7130L Series as the first platform it was launching based on the Metamako acquisition, optimized for a range of network applications including MetaMux and MetaWatch.",
+      // Paragraph 3: why it matters, analytically.
+      "Metamako left a trace in the tool every network engineer opens. Wireshark has decoded a Metamako Ethernet trailer since version 2.2.0: bytes appended to each frame that carry a timestamp, the source device and port and the original frame check sequence, with a sub-nanoseconds field added in version 2.6.0. The layer 1 switch and the timestamping trailer belong to the same trade, moving a packet as fast as possible and recording, per packet, when it moved.",
+    ],
+    // The acquirer's filing, which records the purchase.
+    externalUrl: "https://www.sec.gov/Archives/edgar/data/1596532/000159653218000233/anet20180930-10q.htm",
+    // Link label: whose document it is.
+    externalLabel: "Arista Networks, Form 10-Q (Metamako acquisition)",
+    // Sources, each read on 2026-11-16 (the Arista release through the fetch tool only).
+    sources: [
+      // Founding year, base and offices.
+      { label: "PR Newswire, Deloitte Names Metamako in Top 10 Fastest Growing Australian Tech Companies, Sydney, 7 December 2017: Metamako, founded in 2013, is based in Sydney, Australia, with offices in New York, London and Tokyo; tenth with growth of over 800%; the E-Series running up to 3 FPGAs; client base doubled in 2017; Dr Dave Snowdon, founder and CTO (read 2026-11-16)", url: "https://www.prnewswire.co.uk/news-releases/deloitte-names-metamako-in-top-10-fastest-growing-australian-tech-companies-662405653.html" },
+      // The launch date in the founder's words.
+      { label: "PR Newswire, Metamako Expands Into New Stone & Chalk Fintech Hub, Sydney and New York, 25 August 2015: Dr Dave Snowdon, founder and co-CTO: \"Metamako has been growing quickly since our launch at the end of 2013\" (read 2026-11-16)", url: "https://www.prnewswire.co.uk/news-releases/metamako-expands-into-new-stone--chalk-fintech-hub-522782121.html" },
+      // The founders and the product.
+      { label: "Converge Digest, Arista acquires Metamako for FPGA-enabled switch, 16 September 2018: Metamako based in Sydney, founded by Scott Newham, Dave Snowdon and Charles Thomas, with a background in ultra-low latency hardware, software and algorithmic trading; a layer 1 switch for latency-sensitive applications such as trading; terms not disclosed (read 2026-11-16)", url: "https://convergedigest.com/arista-acquires-metamako-for-fpga/" },
+      // The completion date: the ending's year.
+      { label: "Arista Networks, Form 10-Q for the quarter ended 30 September 2018, filed 5 November 2018: on September 12, 2018 Arista completed the acquisition of Metamako Holding PTY LTD, headquartered in Sydney, a leader in solutions for latency sensitive business applications; no acquisitions made before Mojo and Metamako (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1596532/000159653218000233/anet20180930-10q.htm" },
+      // The annual report's description.
+      { label: "Arista Networks, Form 10-K for 2018, filed 15 February 2019: acquired Metamako Holding PTY LTD, a leader in low-latency, FPGA-enabled network solutions; Metamako low latency switches introduced (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1596532/000159653219000027/anet20181231-10k.htm" },
+      // The 7130L Series: read through a fetch tool only (REPORT.md, FETCH-ONLY).
+      { label: "Arista Networks, Arista Introduces Enhanced Ultra-low Latency, High-precision Network Application Platforms, Santa Clara, 5 March 2019: the 7130L Series, the first platform Arista is launching based on the Metamako acquisition; optimized for applications including MetaMux and MetaWatch (read 2026-11-16)", url: "https://www.arista.com/en/company/news/press-release/6777-pr-20190305", sourceNote: "The page refused a direct download with a client challenge; read in a browser on 2026-11-16, where both sentences used here are exact and the release is dated 5 March 2019." },
+      // The Wireshark dissector.
+      { label: "Wireshark, Display Filter Reference: Metamako ethernet trailer: fields from version 2.2.0 (timestamp, source device ID, source port, original FCS) and from 2.6.0 (sub-nanoseconds, sequence number, tag string), current to 4.6.9 (read 2026-11-16)", url: "https://www.wireshark.org/docs/dfref/m/metamako.html" },
+    ],
+  },
+  {
+    // EXABLAZE - added 2026-11-16 (Industry wave I4). ENDED: Cisco announced its
+    // intent on 16 December 2019 and later updated the post to say the
+    // acquisition was complete ("02/03/2020 Update"); Cisco's results for the
+    // third quarter of fiscal 2020 record it as closed. FOUNDING YEAR NOT SET:
+    // WatersTechnology (22 October 2013) says Exablaze "was launched in May"
+    // as a spin-off of Zomojo, which is a launch, not a founding statement
+    // naming a year (REPORT.md).
+    slug: "exablaze",
+    // Defunct brand; successor Cisco, which has its own record (`cisco`).
+    official: {
+      // No longer trades under this name.
+      defunct: true,
+      // The acquirer, named so the reader knows whose site it is.
+      successor: { label: "Cisco, which bought Exablaze in 2020", url: "https://www.cisco.com/" },
+    },
+    // Made network interface cards and switches.
+    tags: ["vendor"],
+    // Absorbed into its acquirer.
+    group: "other",
+    // Title.
+    name: "Exablaze - an in-house trading card that became Cisco's",
+    // The ending: 2020 is in the Cisco blog and 8-K labels below.
+    ended: { year: 2020, note: "acquired by Cisco, which announced its intent on 16 December 2019 and closed the purchase in the third quarter of its fiscal 2020" },
+    // Card line.
+    tagline: "A Sydney maker of ultra-low-latency network cards and switches, spun off in 2013 from Zomojo, which had built the first card for its own trading, and bought by Cisco in 2020.",
+    // Intro paragraph.
+    intro:
+      "Exablaze was a Sydney designer and manufacturer of network devices built to reduce latency: the ExaNIC network interface cards (NICs), ExaLINK switches and applications built on field-programmable gate arrays (FPGAs), with high-frequency trading as the first market Cisco named for them. WatersTechnology reported in October 2013 that Zomojo had spun Exablaze off, launched that May, to sell a card whose ownership had been the subject of an infringement case in the Australian Federal Court; Zomojo had developed early versions of the ExaNIC as a 1-gigabit card in 2008 and used them only in-house, for its own trading strategies.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: Cisco's announcement and the completion.
+      "Cisco announced its intent to acquire Exablaze on 16 December 2019, describing a privately held, Australia-based designer and manufacturer of advanced network devices aimed at reducing latency and naming high-frequency trading as the case where every sliver of time matters; a footnote identified the company as Zomojo doing business as Exablaze. The post was later updated to say the acquisition was complete, Cisco's results for the third quarter of its fiscal 2020 recorded it as closed, and Exablaze Pty Ltd appears among Cisco's subsidiaries in its 2020 annual report.",
+      // Paragraph 2: inside Cisco.
+      "On 25 March 2020 Cisco wrote that Exablaze, based in Sydney, was now fully part of Cisco, its engineers inside the data-centre organization, and that its FPGA-powered NICs and ultra-low-latency switches would serve artificial intelligence and machine-learning clusters, 5G telecommunications and defence as well as trading. The same post noted that the TradingTech Insight Awards Europe 2020 had named Exablaze's ExaLINK HPT switch the best time-stamping and latency measurement system.",
+      // Paragraph 3: why it matters, analytically.
+      "Like Metamako, Exablaze is legible in Wireshark, which has decoded an Exablaze trailer since version 3.0.0: a timestamp in seconds and fractional seconds, a device identifier, a port and the original frame check sequence, appended to each captured frame. Two Sydney companies whose products told a trading firm, per packet, when traffic passed were bought within eighteen months of each other, Metamako by Arista in September 2018 and Exablaze by Cisco by March 2020.",
+    ],
+    // The acquirer's own announcement.
+    externalUrl: "https://blogs.cisco.com/datacenter/high-performance-low-latency-network-innovations-continue-as-exablaze-joins-cisco",
+    // Link label: whose page it is.
+    externalLabel: "Exablaze joins Cisco (Cisco Blogs)",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // The spin-off and the 2008 origin of the card.
+      { label: "WatersTechnology, Post-Zeptonics Lawsuit, Zomojo Spins Off Exablaze, Releases Sub-Microsecond NIC, 22 October 2013: Exablaze, launched in May, filed a patent for the ExaNIC X4, whose ownership was previously the subject of an infringement case in the Australian Federal Court; Zomojo developed early versions of ExaNIC as a 1-Gigabit NIC in 2008 for in-house use (read 2026-11-16; subscription page, opening paragraph only)", url: "https://www.waterstechnology.com/node/2302230" },
+      // Cisco's intent and the completion update: the ending's year.
+      { label: "Cisco Blogs, Rob Salvagno, Cisco Announces Intent to Acquire Exablaze, 16 December 2019, with the update \"02/03/2020 Update: We have completed the acquisition of Exablaze\": a privately held, Australia-based designer and manufacturer of advanced network devices aimed at reducing latency; high-frequency trading; completion expected in Q3 of FY20; \"Zomojo doing business as Exablaze\" (read 2026-11-16)", url: "https://news-blogs.cisco.com/news/cisco-corporate-news-december-2019" },
+      // Cisco's results.
+      { label: "Cisco Systems, Cisco Reports Third Quarter Earnings, Exhibit 99.1 to Form 8-K, 13 May 2020: in the third quarter of fiscal 2020 Cisco closed the acquisition of Exablaze, a privately held designer and manufacturer of advanced network devices aimed at reducing latency (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/858877/000119312520141598/d932273dex991.htm" },
+      // The subsidiary list.
+      { label: "Cisco Systems, Form 10-K for fiscal 2020, Exhibit 21.1, subsidiaries: Exablaze Pty Ltd, Australia (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/858877/000085887720000010/exh211subsidiariesofth.htm" },
+      // Inside Cisco.
+      { label: "Cisco Blogs, High-Performance, Low-Latency Network Innovations Continue as Exablaze Joins Cisco, 25 March 2020: Exablaze, based in Sydney Australia, now fully part of Cisco; FPGA-powered NIC and ultra-low latency switches for trading, AI/ML, 5G and defense; ExaNIC and FPGA Firmware Development Kit; TradingTech Insight Awards Europe 2020, Best Time-Stamping/Latency Measurement System, for the ExaLINK HPT switch (read 2026-11-16)", url: "https://blogs.cisco.com/datacenter/high-performance-low-latency-network-innovations-continue-as-exablaze-joins-cisco" },
+      // The Wireshark dissector.
+      { label: "Wireshark, Display Filter Reference: Exablaze trailer: device ID, port, original FCS and a timestamp in seconds since epoch and fractional seconds, from version 3.0.0 to 4.6.9 (read 2026-11-16)", url: "https://www.wireshark.org/docs/dfref/e/exablaze.html" },
+    ],
+  },
+  {
+    // SPREAD NETWORKS - added 2026-11-16 (Industry wave I4). ENDED: Zayo Group
+    // Holdings completed the purchase on 28 February 2018 and ran the business
+    // as "Spread Networks by Zayo"; spreadnetworks.com now answers 301 to
+    // https://www.zayo.com/services/spread-networks/, which is a 404 (checked by
+    // curl 16/11/2026). FOUNDING YEAR NOT SOURCED (REPORT.md). DISCREPANCY: the
+    // route is 825 miles in the company's 2010 launch coverage and Zayo's 2017
+    // release, 827 miles in Wikipedia; 825 is used.
+    slug: "spread-networks",
+    // Defunct brand; successor Zayo (no record of its own).
+    official: {
+      // No longer trades as an independent company.
+      defunct: true,
+      // The acquirer, named so the reader knows whose site it is.
+      successor: { label: "Zayo, which bought Spread Networks in 2018", url: "https://www.zayo.com/" },
+    },
+    // Ran a long-haul dark fibre network.
+    tags: ["carrier"],
+    // Absorbed into its acquirer.
+    group: "other",
+    // Title.
+    name: "Spread Networks - the straightest fibre from Chicago to New Jersey",
+    // The ending: 2018 is in the Zayo label below.
+    ended: { year: 2018, note: "acquired by Zayo Group Holdings, which completed the purchase on 28 February 2018 and ran it as Spread Networks by Zayo; spreadnetworks.com now redirects to a Zayo page that no longer exists" },
+    // Card line.
+    tagline: "A privately owned carrier that dug a new 825-mile fibre route between Chicago and the New Jersey trading data centres, opened it in 2010 at 13.33 milliseconds round trip, and sold it to Zayo in 2018.",
+    // Intro paragraph.
+    intro:
+      "Spread Networks was a privately owned telecommunications provider founded by Dan Spivey and backed by James L. Barksdale, the former chief executive of Netscape, who was its chairman when it launched, with David Barksdale as chief executive. It built a dark fibre network between Chicago and New York on a completely new route of 825 miles, announced it in June 2010 at the Securities Industry and Financial Markets Association (SIFMA) Financial Services Technology Expo and had it live by August, quoting a round-trip latency of 13.33 milliseconds; WatersTechnology then called it a start-up based in Ridgeland, Mississippi.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the route.
+      "The route was the product. Most connections between the two financial centres had followed railway rights of way that avoided the mountainous ground of central Pennsylvania; Spread obtained permits to blast rock, dig a new trench and lay a completely new cable on the shortest path it could find, using a dispersion-compensating fibre, OFS's TrueWave RS, and placing amplification and regeneration sites to minimize hops. Brennan Carley, its senior vice president of product marketing, set out the physics in 2010: light in a vacuum would make the trip in about 8.5 milliseconds and in fibre without slack in about 12.5, so 13 milliseconds was the fastest realistic time. ADVA Optical Networking, Ciena, Infinera and JDSU supplied equipment certified for the route.",
+      // Paragraph 2: Zayo.
+      "On 27 November 2017 Zayo Group Holdings agreed to buy Spread Networks for 127 million dollars in cash. The route then served more than 60 customers and used less than a quarter of its 432 fibres, connecting 755 Secaucus Rd. in Secaucus and 1400 Federal Blvd. in Carteret, New Jersey, to 350 Cermak Rd. in Chicago. Zayo completed the purchase on 28 February 2018 and kept the name for a standalone business unit, Spread Networks by Zayo, reported within its Fiber Solutions segment.",
+      // Paragraph 3: why it matters, analytically.
+      "Spread is the clearest case of a network sold for its geometry. By its own executive's figures, 13.33 milliseconds against about 12.5 for light in fibre without slack, the new cable left less than a millisecond to gain on any fibre path, which is why later gains on the same corridor came through the air: Wikipedia records that microwave operators such as McKay Brothers advertised round trips close to the theoretical minimum, which glass cannot reach because light travels more slowly in it than in air.",
+    ],
+    // The acquirer's release, the last account of the business.
+    externalUrl: "https://www.zayo.com/newsroom/zayo-closes-acquisition-of-spread-networks/",
+    // Link label: whose page it is.
+    externalLabel: "Zayo closes acquisition of Spread Networks (Zayo)",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // The launch.
+      { label: "Lightwave, Stephen Hardy, Spread Networks to debut low latency New York to Chicago dark fiber route, 22 June 2010: debut at the SIFMA Financial Services Technology Expo; the shortest route possible, 825 fiber miles; latency quoted at 13.33 msec; partners ADVA Optical Networking, Ciena, Infinera and JDSU (read 2026-11-16)", url: "https://lightwaveonline.com/network-design/article/16671350/spread-networks-to-debut-low-latency-new-york-to-chicago-dark-fiber-route" },
+      // The people and the route's geography.
+      { label: "Converge Digest, Spread Networks Delivers 13.3ms Latency for NYC-Chicago Trading, 22 June 2010: a new privately owned telecommunications provider; a completely new 825 mile route; 13.33 ms round trip; most connections followed railroad rights of way avoiding central Pennsylvania; Jim Barksdale (Chairman), former CEO of Netscape and AT&T Wireless, and David Barksdale (CEO) (read 2026-11-16)", url: "https://convergedigest.com/spread-networks-delivers-133ms-latency/?amp=1" },
+      // The construction and the physics.
+      { label: "WatersTechnology, Spread Networks Lights Chicago-NY Link, 16 August 2010: Ridgeland, Miss.-based startup has gone live with its Chicago to New York connection; 13.33 milliseconds round trip; first announced in June; Brennan Carley on 8.5 ms in a vacuum and 12.5 ms in fibre without slack; permits to blast rock and dig a new trench; TrueWave RS dispersion compensating fiber from OFS (read 2026-11-16)", url: "https://www.waterstechnology.com/technology/1728158/spread-networks-lights-chicago-ny-link" },
+      // The founder and the backer.
+      { label: "Wikipedia: Spread Networks - a company founded by Dan Spivey and backed by James L. Barksdale (former CEO of Netscape); first cable line of 827 miles unveiled in June 2010; McKay Brothers among air-based operators with lower round-trip times; glass has a higher refractive index than air (read 2026-11-16)", url: "https://en.wikipedia.org/wiki/Spread_Networks", sourceNote: "Used for the founder, the backer and the comparison with microwave. Its 827 miles differs from the 825 miles of Lightwave, Converge Digest and Zayo; 825 is used." },
+      // The agreement.
+      { label: "Zayo Group Holdings, Zayo to Acquire Spread Networks, Boulder, 27 November 2017: definitive agreement for $127 million in cash; Spread Networks a privately-owned telecommunications provider operating an 825-mile route between New York and Chicago; more than 60 customers; less than 25 percent of 432 fibers utilized; 755 Secaucus Rd., 1400 Federal Blvd. in Carteret, 350 Cermak Rd. (read 2026-11-16)", url: "https://www.zayo.com/newsroom/zayo-to-acquire-spread-networks/" },
+      // The completion: the ending's year.
+      { label: "Zayo Group Holdings, Zayo Closes Acquisition of Spread Networks, Boulder, 28 February 2018: completed the acquisition; standalone business unit Spread Networks by Zayo, reported under the Fiber Solutions segment; acquired for $127 million in cash (read 2026-11-16)", url: "https://www.zayo.com/newsroom/zayo-closes-acquisition-of-spread-networks/" },
+      // The dead domain, kept as evidence (GOLDEN RULE).
+      { label: "spreadnetworks.com, checked 2026-11-16: answers 301 to https://www.zayo.com/services/spread-networks/, which answers 404 (Page not found | Zayo)", url: "https://www.spreadnetworks.com/" },
+    ],
+  },
+  {
+    // MCKAY BROTHERS - added 2026-11-16 (Industry wave I4). FOUNDING YEAR NOT
+    // SOURCED: the company says it "has served the financial markets' most
+    // demanding trading firms since 2012" and that it opened US long-haul
+    // microwave networks in 2012, which date service, not the company's
+    // founding (REPORT.md). OWNER: none; the co-founders hold the controlling
+    // majority after Citadel Securities' minority investment of November 2024.
+    slug: "mckay-brothers",
+    // Own site read live 2026-11-16: HTTP 200 at https://www.mckay-brothers.com/.
+    official: {
+      // The company's own site.
+      url: "https://www.mckay-brothers.com",
+    },
+    // Runs its own wireless and fibre transport.
+    tags: ["carrier"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "McKay Brothers - microwave towers for any subscriber",
+    // Card line.
+    tagline: "A wireless carrier for trading firms, co-founded by Bob Meade and Stéphane Tyč, which has run long-haul microwave networks since 2012 and sells its fastest routes to any subscriber on equal terms.",
+    // Intro paragraph.
+    intro:
+      "McKay Brothers builds and operates private transport for financial firms, proprietary wireless networks and hollow-core fibre, between Illinois and New Jersey and onward to Ontario, across Europe and in Asia, and with its sister company Quincy Data distributes market data over them. It was co-founded by Bob Meade and Stéphane Tyč, states plainly that it is not a trading firm, and says it opened long-haul microwave networks in the United States in 2012, in Europe in 2014 and in Asia in 2016.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the equal-access model.
+      "The company's distinguishing claim is commercial rather than technical. Many financial networks, it argues, are operated by trading firms, so a client's orders may pass through a competitor's infrastructure; McKay presents itself as independent and sells under what it calls a Level Playing Field policy, under which the fastest services are available to any subscriber. It describes itself as building the whole stack, from digging holes and constructing towers to building radios and programming field-programmable gate arrays (FPGAs), and as owning or exclusively licensing its spectrum.",
+      // Paragraph 2: EMClarity and the routes.
+      "In October 2019 it bought EMClarity, a Brisbane maker of high-throughput millimetre-wave point-to-point radios that had been one of its suppliers. Its announcements measure progress on named routes: in January 2024 it reported less than 1.754 milliseconds one way between the New York Stock Exchange's data centre in Mahwah, New Jersey, and the TMX Group exchanges in Markham, Ontario.",
+      // Paragraph 3: Citadel Securities.
+      "On 12 November 2024 McKay announced a minority investment by Citadel Securities, which received an equity stake while the co-founders kept the controlling majority; terms were not disclosed, and McKay said it would continue to operate independently under its equal-access principles.",
+      // Paragraph 4: why it matters, analytically.
+      "The equal-access policy is what makes the investment worth recording. McKay's stated reason for existing is that traders should not have to route their orders through a competitor's network, so its announcement of a market participant's stake was framed around autonomy, with the controlling majority and the policy both stated as unchanged; on routes where the fastest path is a chain of towers, who may buy the path is as much part of the product as its latency.",
+    ],
+    // Acquisitions McKay made.
+    acquisitions: [
+      // EMClarity, 2019.
+      { year: 2019, name: "EMClarity", what: "A Brisbane designer and maker of high-throughput, millimetre-wave, point-to-point radio systems, delivering products since 2009, and a long-standing McKay supplier.", became: "A McKay company; McKay said it would continue to support EMClarity's efforts.", sourceNote: "McKay Brothers release, PR Newswire, Oakland and Brisbane, 7 October 2019 (read 2026-11-16)." },
+    ],
+    // The company's own page.
+    externalUrl: "https://www.mckay-brothers.com/about",
+    // Link label.
+    externalLabel: "McKay Brothers",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // The company's description of itself.
+      { label: "McKay Brothers, home page: \"McKay Brothers is not a trading firm\"; independent, client-first; proprietary wireless networks and hollow-core fiber; routes Aurora to New Jersey and onward to Ontario, UK, Frankfurt, Bergamo, Tokyo, Shanghai, Hong Kong, Singapore, Sydney; trademarks of McKay Brothers, LLC (read 2026-11-16)", url: "https://www.mckay-brothers.com/" },
+      // The founders and the full stack.
+      { label: "McKay Brothers, About: \"We dig holes. We construct towers. We build radios. We program FPGAs.\"; \"We own and exclusively license spectrum\"; Bob Meade and Stéphane Tyč, co-founders (read 2026-11-16)", url: "https://www.mckay-brothers.com/about" },
+      // EMClarity and the network dates.
+      { label: "PR Newswire, McKay Brothers Acquires Leading Wireless Radio Manufacturer EMClarity, Oakland and Brisbane, 7 October 2019: acquired EMClarity Pty Ltd, a Brisbane vendor of high throughput, millimeter wave, point-to-point radio systems, delivering products since 2009; McKay opened long-haul microwave networks in the US in 2012, Europe in 2014 and Asia in 2016; co-founders Bob Meade and Stephane Tyc (read 2026-11-16)", url: "https://prnewswire.com/news-releases/mckay-brothers-acquires-leading-wireless-radio-manufacturer-emclarity-300933443.html" },
+      // Citadel Securities and the Level Playing Field policy.
+      { label: "McKay Brothers, McKay Brothers Receives Minority Investment from Citadel Securities, 12 November 2024 (on quincy-data.com): Citadel Securities receives an equity stake; co-founders Stéphane Tyč and Bob Meade continue to hold the controlling majority; terms not disclosed; McKay to operate independently; services since 2012 under a Level Playing Field policy (read 2026-11-16)", url: "https://quincy-data.com/media/20241112-mckay-brothers-receives-minority-investment-from-citadel-sec" },
+      // The press archive: the Toronto route.
+      { label: "McKay Brothers, Media: press archive, naming Quincy Data as McKay's sister company and its market data as delivered across McKay's microwave networks; including 8 January 2024, lowest known latency private bandwidth between the NYSE in Mahwah and TMX Group's exchanges in Markham, Ontario, in less than 1.754 milliseconds one way (read 2026-11-16)", url: "https://www.mckay-brothers.com/media" },
+    ],
+  },
+  {
+    // TNS (TRANSACTION NETWORK SERVICES) - added 2026-11-16 (Industry wave I4).
+    // Founded 1990 (TNS's own history page). OWNER: Koch Industries, through an
+    // affiliate of Koch Equity Development LLC, since the purchase completed on
+    // 1 June 2021. Since 2026 its financial-markets business trades as Waypoint
+    // Trading Solutions; the card stays named for the company.
+    slug: "tns",
+    // Own site read live 2026-11-16: HTTP 200 at https://tnsi.com/.
+    official: {
+      // The company's own site.
+      url: "https://tnsi.com",
+      // A company owner: rendered "part of"; the PR Newswire label names Koch Industries and the Siris label 2021.
+      parent: { name: "Koch Industries", kind: "company", since: 2021, note: "An affiliate of Koch Equity Development, Koch Industries' investment and acquisition subsidiary, completed the purchase of TNS from affiliates of Siris Capital Group on 1 June 2021, after first investing in the company in 2016." },
+    },
+    // Runs networks for payments, telecoms and trading, and managed services.
+    tags: ["carrier", "services"],
+    // Trading today under its own name, as a subsidiary.
+    group: "contemporary",
+    // Title.
+    name: "TNS - the point-of-sale network that became a trading extranet",
+    // Founding year, named by the TNS history label below.
+    founded: 1990,
+    // Card line.
+    tagline: "Founded in the United States in 1990 to carry point-of-sale transactions, owned by Koch since 2021, and in 2026 the buyer of BT's Radianz, with which its financial markets business became Waypoint Trading Solutions.",
+    // Intro paragraph.
+    intro:
+      "Transaction Network Services (TNS) was founded in the United States in 1990 to provide services to the point-of-sale industry; in 2021 it described itself as an infrastructure-as-a-service provider to thousands of financial institutions, telecommunications providers and retailers in more than 60 countries, headquartered in Reston, Virginia. Its Financial Services Division was launched in 1996 and renamed Financial Markets in 2020; since 2026 that business, combined with Radianz, trades as Waypoint Trading Solutions.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the ownership history.
+      "The ownership history is long for a network company. TNS listed on Nasdaq in 1994, was bought by PSINet in 1999 and bought back from it in 2001 by its management together with GTCR Golder Rauner, and listed on the New York Stock Exchange as TNS Inc. in 2004. Siris Capital Group took it private in 2013; Koch Equity Development invested in 2016, and on 1 June 2021 an affiliate of Koch Equity Development, the investment and acquisition subsidiary of Koch Industries, completed the purchase of TNS from Siris's affiliates and its other minority holders, making it a wholly owned subsidiary of Koch.",
+      // Paragraph 2: Radianz and Waypoint.
+      "On 2 September 2025 BT agreed to sell TNS its Radianz business, a financial information exchange network launched more than twenty years earlier that connects brokers, institutions, exchanges and clearing and settlement houses to the applications they use; the sale was completed on 2 February 2026. TNS then combined its Financial Markets business with Radianz as Waypoint Trading Solutions, which sells a low-latency trading connectivity platform with layer 1 access and hosting at venues such as the New York Stock Exchange's Mahwah data centre, Nasdaq's in Carteret and the London Stock Exchange's, what it calls the world's largest financial extranet, and Sentinel, a managed market data service.",
+      // Paragraph 3: why it matters, analytically.
+      "TNS shows how a trading extranet is assembled from inheritance. A payments network of 1990 grew a financial division in 1996, changed hands repeatedly, and in 2026 bought the extranet that BT had run as Radianz, so that a single business now offers what it calls the world's largest financial extranet: the shared network through which brokers, venues and their software suppliers reach one another is, for the clients of both, one company's product.",
+    ],
+    // Acquisitions TNS made that bear on the financial markets.
+    acquisitions: [
+      // Radianz, 2026.
+      { year: 2026, name: "Radianz", what: "BT's financial information exchange network business, launched more than twenty years earlier, connecting brokers, institutions, exchanges and clearing and settlement houses to their applications. Agreement 2 September 2025; completion 2 February 2026.", became: "Combined with TNS's Financial Markets business as Waypoint Trading Solutions.", sourceNote: "BT newsroom, 2 September 2025 and 2 February 2026; TNS, Waypoint page and history page (all read 2026-11-16)." },
+    ],
+    // The company's own page.
+    externalUrl: "https://tnsi.com/about/history/",
+    // Link label.
+    externalLabel: "TNS",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // Founding year and the ownership timeline.
+      { label: "TNS, About Our History: 1990, TNS is founded in the USA to provide services to the Point of Sale (POS) industry; 1994 Nasdaq listing; 1996 Financial Services Division (renamed Financial Markets in 2020); 1999 acquired by PSINet; 2001 bought back by management with GTCR Golder Rauner; 2004 NYSE listing of TNS Inc.; 2013 acquired by Siris Capital Group; 2016 investment from Koch Equity Development; 2021 a wholly owned subsidiary of Koch; 2026 BT Radianz acquired and Waypoint Trading Solutions formed (read 2026-11-16)", url: "https://tnsi.com/about/history/" },
+      // The 2021 completion, with the parent's full name: the parent's name and year.
+      { label: "PR Newswire, Koch Equity Development Completes Acquisition of Transaction Network Services, 1 June 2021: an affiliate of Koch Equity Development LLC, an investment and acquisition subsidiary of Koch Industries, Inc., completed its acquisition of TNS from affiliates of Siris Capital Group; TNS a wholly owned subsidiary of Koch; doing business since 1990; customers in over 60 countries (read 2026-11-16)", url: "https://www.prnewswire.com/news-releases/koch-equity-development-completes-acquisition-of-transaction-network-services-301302702.html" },
+      // The same release from the seller, with the date and headquarters.
+      { label: "Siris Capital Group, Koch Equity Development Completes Acquisition of Transaction Network Services, Wichita, 1 June 2021: TNS a wholly owned subsidiary of Koch, operating under its management from its headquarters in Reston, VA; an eight-year partnership with Siris (read 2026-11-16)", url: "https://siris.com/news/koch-equity-development-completes-acquisition-of-transaction-network-services" },
+      // The Radianz agreement.
+      { label: "BT newsroom, BT enters agreement with TNS for the sale of its Radianz business, 2 September 2025: TNS to acquire Radianz, launched over 20 years ago, providing financial information exchange networks; completion expected in the first half of 2026 (read 2026-11-16)", url: "https://newsroom.bt.com/bt-enters-agreement-with-tns-for-the-sale-of-its-radianz-business/" },
+      // The Radianz completion.
+      { label: "BT newsroom, BT completes sale of its Radianz business to TNS, 2 February 2026: sale of Radianz to Transaction Network Services completed (read 2026-11-16)", url: "https://newsroom.bt.com/bt-completes-sale-of-its-radianz-business-to-tns/" },
+      // Waypoint.
+      { label: "TNS, Waypoint: TNS Financial Markets is now Waypoint Trading Solutions, formed in 2026 following the acquisition of Radianz; low latency trading connectivity platform, the world's largest financial extranet and Sentinel managed market data; layer 1 and hosting at NYSE Mahwah, Nasdaq Carteret, LSE and other venues (read 2026-11-16)", url: "https://tnsi.com/solutions/waypoint/" },
+    ],
+  },
+  {
+    // IPC SYSTEMS - added 2026-11-16 (Industry wave I4). FOUNDING YEAR NOT SET:
+    // IPC dates its work for financial markets "since 1973" (About us) and
+    // speaks of "50 years of expertise" (2024); neither page states a founding
+    // (REPORT.md asks the integrator to decide). OWNER: funds managed by
+    // Strategic Value Partners, a fund owner, with 60 percent since the 2021
+    // recapitalization and full ownership since 9 January 2024.
+    slug: "ipc-systems",
+    // Own site read live 2026-11-16: HTTP 200 at https://www.ipc.com/ (footer "IPC Systems, Inc.").
+    official: {
+      // The company's own site.
+      url: "https://www.ipc.com",
+      // A fund: rendered "owned by"; the SVP label names Strategic Value Partners and 2021.
+      parent: { name: "Strategic Value Partners", kind: "fund", since: 2021, note: "Funds managed by Strategic Value Partners took 60 percent of IPC in its 2021 out-of-court recapitalization and acquired the remaining 40 percent on 9 January 2024." },
+    },
+    // Makes trading-desk communications systems, runs a financial extranet and managed services.
+    tags: ["vendor", "carrier", "services"],
+    // Trading today under its own name, owned by a fund.
+    group: "contemporary",
+    // Title.
+    name: "IPC Systems - the trading turret and the extranet behind it",
+    // Card line.
+    tagline: "A Jersey City provider of trading-desk communications and financial network services that dates its work for the markets to 1973, sold by Silver Lake to Centerbridge in 2015 and owned by funds of Strategic Value Partners since 2021.",
+    // Intro paragraph.
+    intro:
+      "IPC Systems makes the communications systems of the trading desk, which it counts in trading positions and now sells as a platform named IPC One, and runs network services for the financial markets under the Connexus name: an extranet, Ethernet and wide area networks, cloud connectivity, ultra-low-latency trading links, colocation and precision timing. It is headquartered in Jersey City, New Jersey, and says it has provided connectivity and trading solutions to financial markets since 1973.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: Connexus, 2011.
+      "The network business took its present name in November 2011, when IPC introduced Connexus, a financial extranet giving capital-markets firms access to trade-lifecycle services through a single connection, on a Multiprotocol Label Switching (MPLS) platform built to financial industry standards. IPC's network then reached more than 4,000 market-participant locations in over 700 cities in more than 58 countries, and the company counted more than 115,000 turrets deployed.",
+      // Paragraph 2: the owners.
+      "On 1 December 2014 IPC announced that Silver Lake Partners had agreed to sell it to Centerbridge Partners for about 1.2 billion dollars in total deal value, a sale NJBIZ reported complete in February 2015. In October 2021 an out-of-court recapitalization refinanced or restructured more than a billion dollars of debt, reduced it by more than 400 million dollars and provided 125 million dollars of new capital, and funds managed by Strategic Value Partners (SVP), one of the lenders, became a substantial equity holder. SVP held 60 percent from 2021, and on 9 January 2024 its funds acquired the remaining 40 percent.",
+      // Paragraph 3: scale and the ICE partnership.
+      "IPC's own figures in 2024 were more than 60 countries, 7,000 customer sites in over 750 cities, an installed base of about 110,000 trading positions and more than 1,000 employees. In September 2024 it launched ICE Voice with Intercontinental Exchange (ICE), joining IPC's voice service to the ICE Chat network of more than 120,000 users.",
+      // Paragraph 4: why it matters, analytically.
+      "IPC sells both halves of a trading floor's networks: the voice positions on the desk and the extranet behind them. Its 2024 partnership put that voice service inside ICE's chat network, a sign that the voice side of trading is being connected to the electronic one rather than retired, and through Connexus the supplier of the desk's voice systems is also one of the networks the electronic side runs on.",
+    ],
+    // The company's own page.
+    externalUrl: "https://www.ipc.com/about-us/",
+    // Link label.
+    externalLabel: "IPC Systems",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // The company's own dating and present description.
+      { label: "IPC, About Us: \"a dedicated Fintech company focused on providing connectivity, security and flexible trading solutions to reach financial markets everywhere since 1973\"; over 7,000 customers; over 50 years of experience in SaaS communications platforms and ultra-low latency electronic trading connectivity; copyright IPC Systems, Inc. (read 2026-11-16)", url: "https://www.ipc.com/about-us/" },
+      // Products today.
+      { label: "IPC, home page: IPC One; Connexus extranet, Ethernet, WAN, cloud connectivity, ultra-low latency trading, colocation, infrastructure services and precision timing; real-time market data (read 2026-11-16)", url: "https://www.ipc.com/" },
+      // Connexus, 2011.
+      { label: "PR Newswire, IPC Systems Introduces Connexus Financial Extranet Service, Jersey City, 21 November 2011: Connexus, a financial extranet for trade lifecycle communications through a single connection; MPLS platform adhering to financial industry standards; more than 4,000 market participant locations in over 700 cities in more than 58 countries; more than 115,000 turrets deployed; headquartered in Jersey City (read 2026-11-16)", url: "https://prnewswire.com/news-releases/ipc-systems-introduces-connexus-financial-extranet-service-134230928.html" },
+      // Silver Lake to Centerbridge.
+      { label: "Silver Lake, IPC Systems to be Acquired by Centerbridge Partners, Jersey City, 1 December 2014: agreement to be acquired by Centerbridge Partners from Silver Lake Partners for approximately $1.2 billion in total deal value; over 40 years of expertise; headquartered in Jersey City (read 2026-11-16)", url: "https://silverlake.com/ipc-systems-to-be-acquired-by-centerbridge-partners" },
+      // The completion.
+      { label: "NJBIZ, Centerbridge wraps up deal for Jersey City network services company, 9 February 2015: Centerbridge Partners has completed its $1.2 billion purchase of IPC Systems from Silver Lake Partners (read 2026-11-16)", url: "https://njbiz.com/centerbridge-wraps-up-deal-for-jersey-city-network-services-company/" },
+      // The 2021 recapitalization.
+      { label: "Kirkland & Ellis, Kirkland Advises IPC Systems on Comprehensive Transaction to Reduce Debt and Provide Significant Equity Capital, 1 October 2021: out-of-court recapitalization refinancing or restructuring more than $1 billion of debt, reducing it by more than $400 million, with $125 million of new capital; funds managed by Strategic Value Partners to become a substantial equity sponsor; Centerbridge to remain a significant equityholder (read 2026-11-16)", url: "https://www.kirkland.com/news/press-release/2021/10/kirkland-advises-ipc-systems-recap" },
+      // The parent's name and year.
+      { label: "PR Newswire, SVP Acquires Remaining 40% of IPC Resulting in Full Ownership, Greenwich, 9 January 2024: funds managed by Strategic Value Partners, LLC acquired the remaining 40% of IPC; SVP has owned 60% of IPC since 2021; 50 years of expertise; more than 60 countries, 7,000 customer sites over 750 cities, about 110,000 trading positions; headquartered in Jersey City; over 1,000 employees (read 2026-11-16)", url: "https://prnewswire.com/news-releases/svp-acquires-remaining-40-of-ipc-resulting-in-full-ownership-302029676.html" },
+      // ICE Voice.
+      { label: "IPC, IPC's CEO Kurt Adams on Innovation, Acquisition, & Development of ICE Voice: in September 2024 ICE and IPC Systems partnered to launch ICE Voice, connecting within ICE Chat's network of over 120,000 users; the 50-year-old company (read 2026-11-16)", url: "https://www.ipc.com/news-room/ipc-ceo-kurt-adams-ice-voice-nyse/" },
+    ],
+  },
+
+  // ==== Industry wave I1 (16/11/2026, PRIME 20:34): integrated from scratchpad industry-i1/ ====
+  // ---- Exchanges and their operators (industry wave I1, 16/11/2026; PRIME 16/11/2026 20:34: "Industry entries:
+  // add all of the agents' candidates"). Every fact below was read live on 2026-11-16 (Sao Paulo) and saved in the
+  // I1 corpus; the founding year of each card is named inside a substantive source label on the same card. ----
+
+  // ---------------------------------------------------------------------------
+  // NEW YORK STOCK EXCHANGE (1792)
+  // ---------------------------------------------------------------------------
+  {
+    // NYSE - added 2026-11-16 (industry wave I1). The card is the exchange; NYSE Group, the public holding company
+    // formed in 2006, is told inside it. OWNER: Intercontinental Exchange (record `ice`), since the acquisition of
+    // NYSE Euronext completed on 13 November 2013. FOUNDED 1792: the NYSE's own history calls the Buttonwood
+    // Agreement "the official founding of the NYSE"; the 1817 constitution is told in the intro, not used as the year.
+    slug: "nyse",
+    // Own site read live 2026-11-16: HTTP 200 at https://www.nyse.com/index (title "The New York Stock Exchange | NYSE").
+    official: {
+      // The exchange's own site.
+      url: "https://www.nyse.com",
+      // A company owner: rendered "part of Intercontinental Exchange (since 2013)"; named with 2013 by the NYSE history label.
+      parent: { name: "Intercontinental Exchange", slug: "ice", kind: "company", since: 2013, note: "IntercontinentalExchange Group completed its acquisition of NYSE Euronext, and with it the New York Stock Exchange, on 13 November 2013." },
+    },
+    // Financial-market infrastructure: an exchange.
+    tags: ["markets"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "New York Stock Exchange - the Buttonwood market, now part of Intercontinental Exchange",
+    // Founding year, named by the NYSE history label below.
+    founded: 1792,
+    // Card line.
+    tagline: "Dated by its own history to the Buttonwood Agreement of 17 May 1792, the New York Stock Exchange was owned by its members until the NYSE Group merger of 2006 and has been part of Intercontinental Exchange since 2013.",
+    // Intro paragraph.
+    intro:
+      "The New York Stock Exchange (NYSE) traces its origins to the Buttonwood Agreement, signed by 24 stockbrokers on 17 May 1792 in response to the first financial panic in the young United States; it set rules for how stocks could be traded and fixed commissions, and the exchange's own history calls it the official founding of the NYSE. The formal organization followed on 8 March 1817, when a constitution created the New York Stock & Exchange Board. It rented a room at 40 Wall Street, where brokers met twice a day to trade a list of 30 stocks and bonds from chairs assigned to them, the origin, the NYSE says, of the \"seat\" as the word for a membership.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the technology, in the exchange's own sequence.
+      "Its technology history is a series of new transports applied to the same auction. The stock ticker arrived in 1867 and telephones in 1878; computers made by IBM were installed, and in the 1960s data processing was first applied to market operations; in the 1970s the SuperDot system delivered orders electronically from a broker's office to the trading post and returned an execution report within seconds. Handheld devices reached the floor in 1992 and a wireless data system in 1996, and the NYSE Hybrid Market of 2005 blended the floor auction with electronic trading. The first phase of NYSE Pillar, an integrated platform giving member firms one standard protocol to every NYSE equities and options market, was completed in 2016, and by 2019 the exchange's trading technology had migrated to it; NYSE, NYSE American Equities, NYSE Arca Equities, NYSE National and NYSE Texas now run on Pillar matching engines.",
+      // Paragraph 2: the end of member ownership, and the parent.
+      "Member ownership ended in 2006. The merger of the New York Stock Exchange with Archipelago Holdings was completed on 7 March 2006, creating NYSE Group, Inc., a public holding company whose shares began trading on the NYSE the next morning under the symbol NYX; its market centres were the NYSE and NYSE Arca, formerly the Archipelago Exchange and the Pacific Exchange, which the announcement called the first open, all-electronic stock market in the United States. In 2008 the NYSE acquired the American Stock Exchange. On 13 November 2013 IntercontinentalExchange Group completed its acquisition of NYSE Euronext in a stock-and-cash transaction of about $11 billion, and the NYSE's history states that Intercontinental Exchange (ICE) remains the exchange's parent today.",
+      // Paragraph 3: why it matters to networks, analytically.
+      "For networks, the NYSE is now one group of markets on its owner's network. ICE's technical specification for the ICE Global Network, dated January 2026, describes customer colocation and low-latency connectivity at its US Liquidity Center in Mahwah, New Jersey, for access to the ICE and NYSE markets. The floor survives as a choice rather than a necessity: on 23 March 2020, for the first time in its history, the NYSE operated without a trading floor, fully electronically, because of COVID-19, and the floor partly reopened on 26 May 2020; the exchange says its data showed that operating with the floor gives investors the highest level of market quality.",
+    ],
+    // The exchange's own history page.
+    externalUrl: "https://www.nyse.com/history-of-nyse",
+    // Link label.
+    externalLabel: "NYSE: The History of NYSE",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // The founding year, the 1817 constitution, the technology sequence and the parent.
+      { label: "NYSE, The History of NYSE (undated page): the NYSE traces its origins to the Buttonwood Agreement signed by 24 stockbrokers on 17 May 1792, which \"marks the official founding of the NYSE\"; a constitution adopted on 8 March 1817 created the New York Stock & Exchange Board, which rented a room at 40 Wall Street; ticker 1867, telephones 1878, SuperDot, handhelds 1992, a wireless data system 1996, NYSE Hybrid Market 2005; Intercontinental Exchange (NYSE: ICE) listed on the NYSE on 16 November 2005; NYSE, Archipelago and the Pacific Exchange merged in 2006 to form the publicly traded NYSE Group, ending membership ownership; American Stock Exchange acquired 2008; \"By 2013, ICE acquired the NYSE and remains the parent organization of the Exchange today\"; NYSE Pillar phase 1 completed 2016, migration by 2019; first day without a trading floor 23 March 2020, partial reopening 26 May 2020 (read 2026-11-16)", url: "https://www.nyse.com/history-of-nyse" },
+      // The 2006 merger completion.
+      { label: "NYSE Group release of 7 March 2006, reposted by Mondo Visione: completion of the New York Stock Exchange and Archipelago Holdings merger; NYSE Group shares to trade from 8 March under the symbol NYX; NYSE Arca, formerly the Archipelago Exchange and the Pacific Exchange, \"the first open, all-electronic stock market in the United States\" (read 2026-11-16)", url: "https://mondovisione.com/news/new-york-stock-exchange-archipelago-holdings-merger-complete-merger-agreement-si-2011124" },
+      // The first day of trading in NYSE Group shares.
+      { label: "NYSE Group release of 8 March 2006, reposted by Mondo Visione: shares of NYSE Group, Inc. began trading on the NYSE after the merger completed on 7 March 2006 (read 2026-11-16)", url: "https://mondovisione.com/media-and-resources/news/stock-of-new-public-nyse-group-inc-begins-trading-inyse-group-is-well-positioned-2011124/" },
+      // The parent's completion of the 2013 acquisition.
+      { label: "IntercontinentalExchange Group release of 13 November 2013, filed by NYSE Euronext as Exhibit 99.1 to a Form 8-K: successful completion of the acquisition of NYSE Euronext; stock-and-cash transaction of approximately $11 billion; the combined company operates 16 global exchanges and five central clearing houses; ICE and NYSE Euronext businesses to keep their brand names (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1368007/000119312513440079/d627265dex991.htm" },
+      // The network the NYSE markets are reached through today.
+      { label: "Intercontinental Exchange, ICE Global Network & Colocation Technical Specifications, version 4.5, January 2026: customer colocation and low-latency network connectivity at the US Liquidity Center (USLC) in Mahwah, New Jersey, for access to the ICE and NYSE markets (read 2026-11-16)", url: "https://www.ice.com/publicdocs/IGN_Colocation_Mahwah_Technical_Specs.pdf" },
+    ],
+  },
+
+  // ---------------------------------------------------------------------------
+  // LONDON METAL EXCHANGE (1877)
+  // ---------------------------------------------------------------------------
+  {
+    // LME - added 2026-11-16 (industry wave I1). OWNER: HKEX (Hong Kong Exchanges and Clearing Limited; no record),
+    // since the acquisition of LME Holdings completed on 6 December 2012. FOUNDED 1877: "formally established in 1877"
+    // in the HKEX and LME research report of 8 July 2020. lme.com answered every automated request with a Cloudflare
+    // challenge ("Just a moment...") on 2026-11-16; it is listed in REPORT.md for a browser check, and not worked around.
+    slug: "lme",
+    // Own site: https://www.lme.com returned HTTP 403 with a bot challenge on 2026-11-16; the LME's PDFs under
+    // lme.com/-/media were reachable (HTTP 200), which shows the site is live.
+    official: {
+      // The exchange's own site.
+      url: "https://www.lme.com",
+      // A company owner: rendered "part of HKEX (since 2012)"; named with 2012 by the HKEX and LME report label.
+      parent: { name: "HKEX", kind: "company", since: 2012, note: "Hong Kong Exchanges and Clearing Limited completed its acquisition of LME Holdings Limited, the parent company of The London Metal Exchange, on 6 December 2012." },
+      // The trading platform documentation.
+      resources: [
+        // The new electronic platform's functional definition.
+        { label: "LMEselect v10 Functional Definition, version 1.5.1", url: "https://www.lme.com/-/media/files/trading/new-initiatives/new-trading-platform/access/documents-september-2026/lmeselect10-functional-definition-v1-5.pdf" },
+      ],
+    },
+    // Financial-market infrastructure: an exchange with its own clearing house.
+    tags: ["markets"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "London Metal Exchange - the Ring, the screen and the telephone",
+    // Founding year, named by the HKEX and LME research report label below.
+    founded: 1877,
+    // Card line.
+    tagline: "Formally established in 1877 by metal traders of the City of London, the London Metal Exchange has belonged to Hong Kong Exchanges and Clearing since 2012, and in 2020 traded base metals in an open-outcry Ring, on the LMEselect screen and by telephone.",
+    // Intro paragraph.
+    intro:
+      "The London Metal Exchange (LME) was formally established in 1877, when metal traders formed the London Metals and Mining Company and moved into their first premises, over a hat shop in Lombard Court in the City of London; copper and tin have traded on it ever since. Its customs are older. A research report published jointly by Hong Kong Exchanges and Clearing Limited (HKEX) and the LME in July 2020 traces its origins to the opening of the Royal Exchange in London in 1571, places the birth of the Ring at the Jerusalem Coffee House in the early 1800s, and dates to the opening of the Suez Canal in 1869 the system of daily prompt dates up to three months forward that the exchange still uses, born when the delivery time of tin from Malaya came to match that of copper from Chile.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: regulation, demutualization, the parent and the clearing house.
+      "The LME became a centrally cleared and regulated exchange in 1987 and a Recognised Investment Exchange (RIE) in 1988, launched its first electronic price feed, the Vendor Feed System, in 1989, and demutualized in 2000. On 6 December 2012 Hong Kong Exchanges and Clearing completed its acquisition of the entire share capital of LME Holdings Limited, the LME's parent; the LME's chief executive said that day that the exchange was more secure than at any point in its 135-year history. In 2014 it opened LME Clear, a clearing house built from scratch for the metals market, which by 2020 cleared and settled all registered LME trades, whether made in the Ring, electronically or by telephone.",
+      // Paragraph 2: the three venues and the platform being rebuilt.
+      "The 2020 report describes three venues: LMEselect, the electronic market; the Ring, where trading is by open outcry; and a 24-hour telephone market. Together they traded 176 million lots in 2019, equal to US$13.5 trillion and 3.9 billion tonnes of metal. The electronic venue is being rebuilt: the LME's functional definition of LMEselect v10, version 1.5.1, in its September 2026 document set, describes the new platform that will replace LMEselect v9.4, with market-maker protection and pre-trade risk management among its functions. Its market structure modernization of 2026, aimed at enhancing liquidity on LMEselect, brought in block trade thresholds from 30 March 2026, with enforcement deferred to 24 August 2026, and an automated crossing order type from 22 June 2026. The LME's own page on the Ring, read in November 2026, still calls it the exchange's open-outcry trading floor, where the LME Official Prices are discovered, with Ring trading from 11.40 to 17.00.",
+      // Paragraph 3: why it matters to networks, analytically.
+      "For networks the LME shows how far a market's timing rules follow its customers rather than its technology: its prompt dates still reflect nineteenth-century shipping times from Malaya and Chile, its owner's 2020 account still lists an open-outcry Ring beside the screen, and the screen is being rebuilt around market-maker protections and pre-trade risk controls.",
+    ],
+    // The exchange's own site (bot challenge on 2026-11-16; see the comment above).
+    externalUrl: "https://www.lme.com",
+    // Link label.
+    externalLabel: "London Metal Exchange",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // The founding year, the history table and the parent with its year.
+      // The LME's own pages, read by the integrator in a browser on 16/11/2026 (they refuse scripts with a bot check).
+      { label: "London Metal Exchange, About: providing producers and consumers of metal with a physical market of last resort and the ability to hedge against rising and falling metal prices, \"It's what we've been doing since 1877\" (read 2026-11-16)", url: "https://www.lme.com/about" }, // LME
+      { label: "London Metal Exchange, The Ring: \"Our open-outcry trading floor, the Ring, is central to the process of price discovery\"; the LME Official Prices are discovered on the trading floor; only Category 1 members trade in the Ring; five-minute Ring sessions per metal, trading from 11.40 to 17.00 (read 2026-11-16)", url: "https://www.lme.com/trading/trading-venues/the-ring" }, // LME
+      { label: "Hong Kong Exchanges and Clearing Limited and The London Metal Exchange, research report 'The London Metal Exchange: the world's industrial metals trading and pricing venue', 8 July 2020: \"Since being formally established in 1877\"; origins traced to the Royal Exchange of 1571; the Ring born at the Jerusalem Coffee House in the early 1800s; the 1869 Suez Canal and the three-month prompt dates; 1877 the London Metals and Mining Company over a hat shop in Lombard Court; 1987 centrally cleared and regulated; 1988 Recognised Investment Exchange; 1989 Vendor Feed System; 2000 demutualised; \"2012 The LME was acquired by Hong Kong Exchanges and Clearing Limited (HKEX)\"; 2014 LME Clear; a wholly-owned subsidiary of HKEX Group; three venues (LMEselect, the Ring, the 24-hour telephone market); 176 million lots, US$13.5 trillion and 3.9 billion tonnes in 2019 (read 2026-11-16)", url: "https://www.hkex.com.hk/-/media/HKEX-Market/News/Research-Reports/HKEx-Research-Papers/2020/LME_LMEmarkets_e_202007.pdf" },
+      // The completion of the 2012 acquisition.
+      { label: "HKEx and LME release of 6 December 2012, reposted by Mondo Visione: the acquisition of the entire issued ordinary share capital of LME Holdings Limited, parent company of The London Metal Exchange Limited, by HKEx has completed today; Martin Abbott: the LME \"is more secure than at any point in its 135-year history\" (read 2026-11-16)", url: "https://mondovisione.com/news/hkex-and-lme-announce-completion-of-transaction-2012126" },
+      // The 2026 market structure changes.
+      { label: "LME Notice 26/109, Market Structure Modernisation Delivery Update, 17 April 2026: the MVT Rule (block trade thresholds) in effect from 30 March 2026 with a grace period extended to 24 August 2026; the automated crossing order type to go live on 22 June 2026; measures to enhance liquidity on LMEselect (read 2026-11-16)", url: "https://www.lme.com/-/media/files/news/notices/2026/04/trading-26-109-market-structure-modernisation-delivery-update.pdf" },
+      // The new platform.
+      { label: "LME, LMEselect v10 Functional Definition, version 1.5.1 (September 2026 document set): the business functionality of the LME's new electronic trading platform, LMEselect v10, which will replace LMEselect v9.4; sections on market maker protection configuration and pre-trade risk management (read 2026-11-16)", url: "https://www.lme.com/-/media/files/trading/new-initiatives/new-trading-platform/access/documents-september-2026/lmeselect10-functional-definition-v1-5.pdf" },
+    ],
+  },
+
+  // ---------------------------------------------------------------------------
+  // NASDAQ (1971)
+  // ---------------------------------------------------------------------------
+  {
+    // NASDAQ - added 2026-11-16 (industry wave I1). No owner in the sources read; it files its own annual report. FOUNDED 1971: "Nasdaq was
+    // founded in 1971" in its own Form 10-K for 2025; the SEC Historical Society dates the system's go-live to February
+    // 1971. Tagged vendor as well (it sells market technology) and datacentre (it sells colocation), both from the 10-K.
+    slug: "nasdaq",
+    // Own site read live 2026-11-16: HTTP 200 at https://www.nasdaq.com/about.
+    official: {
+      // The company's own site.
+      url: "https://www.nasdaq.com",
+      // The native protocol specifications.
+      resources: [
+        // The order entry protocol.
+        { label: "Nasdaq OUCH 5.0 order entry specification", url: "https://www.nasdaqtrader.com/content/technicalsupport/specifications/TradingProducts/Ouch5.0.pdf" },
+        // The market-data feed.
+        { label: "Nasdaq TotalView-ITCH 5.0 specification", url: "https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/NQTVITCHspecification.pdf" },
+      ],
+    },
+    // An exchange operator that also sells market technology and colocation.
+    tags: ["markets", "vendor", "datacentre"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "Nasdaq - the quotation network that became an exchange company",
+    // Founding year, named by the Form 10-K label below.
+    founded: 1971,
+    // Card line.
+    tagline: "Switched on in February 1971 as an automated quotation system for the over-the-counter market, Nasdaq became a registered stock exchange, combined with OMX in 2008 and now runs 19 exchanges while selling market technology to others.",
+    // Intro paragraph.
+    intro:
+      "Nasdaq began as a network rather than a trading floor. The National Association of Securities Dealers (NASD) built a computerized substitute for the printed \"pink sheets\" of over-the-counter prices, and the NASD automated quote system went live in February 1971, linking about 1,000 market makers and listing some 3,000 securities. Nasdaq's own annual report says it was founded in 1971 as a wholly owned subsidiary of FINRA, the Financial Industry Regulatory Authority. Nasdaq, Inc. has its United States headquarters in New York and its European headquarters in Stockholm, and reports three segments: Capital Access Platforms, Financial Technology and Market Services.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: independence, INET and OMX.
+      "Ownership and status followed the technology. From 2000 FINRA sold shares in Nasdaq to its members, investment companies and listed issuers, and it had fully divested by 2006; the Securities and Exchange Commission (SEC) granted The Nasdaq Stock Market registration as a national securities exchange on 13 January 2006, and Nasdaq dates its operation as an independent registered exchange to 2007. On 8 December 2005 Nasdaq completed its purchase of Instinet Group, selling Instinet's institutional brokerage to Silver Lake Partners and keeping the INET electronic communications network (ECN), which it said gave it \"a technologically superior trading platform\". On 27 February 2008 it completed its combination with OMX AB, creating The NASDAQ OMX Group, which called itself the world's largest exchange company and said its technology supported more than 60 exchanges, clearing organizations and central securities depositories in more than 50 countries; the exchanges in Stockholm, Copenhagen, Helsinki, Iceland, Tallinn, Riga and Vilnius named in that announcement are today's Nasdaq Nordic and Nasdaq Baltic.",
+      // Paragraph 2: the markets and services today.
+      "Today Nasdaq operates 19 exchanges in North America and Europe. In the United States these are six options exchanges (Nasdaq PHLX, The Nasdaq Options Market, Nasdaq BX Options, Nasdaq ISE, Nasdaq GEMX and Nasdaq MRX) and three cash equity exchanges (The Nasdaq Stock Market, Nasdaq BX and Nasdaq PSX), and it calls The Nasdaq Stock Market the largest single venue of liquidity for trading US-listed cash equities. It rents cabinet space and power for participants' own servers inside its data centres, sells wireless links between certain data centres over millimetre-wave and microwave, and is moving markets to Amazon Web Services (AWS) on its Fusion technology platform. The acquisitions of Verafin in 2021 and of Adenza, with AxiomSL and Calypso, in 2023 took it further into software for regulatory reporting, compliance and financial crime.",
+      // Paragraph 3: why it matters to networks, analytically.
+      "For networks, Nasdaq's name is attached to native protocols. Nasdaq describes OUCH, in a specification updated in October 2025, as \"the low-level native protocol for connecting to NASDAQ\", meant for participants integrating it into their proprietary trading systems and built for maximum performance at the cost of flexibility; TotalView-ITCH is its outbound order-level data feed, specified in both software and field-programmable gate array (FPGA) versions. A system that began by replacing a printed price sheet ended up defining what an order and a market-data message look like on the wire.",
+    ],
+    // Acquisitions named in the body, with their sources.
+    acquisitions: [
+      // INET, 2005.
+      { year: 2005, name: "Instinet Group (INET ECN)", what: "Nasdaq bought Instinet Group, sold its institutional brokerage to Silver Lake Partners and kept the INET electronic communications network (ECN), expecting to move to the INET trading platform within twelve months.", sourceNote: "Nasdaq release of 8 December 2005, reposted by Mondo Visione (read 2026-11-16)." },
+      // OMX, 2008.
+      { year: 2008, name: "OMX AB", what: "Combination completed on 27 February 2008, creating The NASDAQ OMX Group; OMX's exchanges in Stockholm, Copenhagen, Helsinki, Iceland, Tallinn, Riga and Vilnius came with it.", became: "Nasdaq Nordic and Nasdaq Baltic.", sourceNote: "Nasdaq release of 27 February 2008, filed as Exhibit 99.1 to a Form 8-K; Nasdaq Form 10-K for 2025 (read 2026-11-16)." },
+    ],
+    // The company's own page.
+    externalUrl: "https://www.nasdaq.com/about",
+    // Link label.
+    externalLabel: "Nasdaq: About",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // The founding year, ownership history, segments, headquarters and markets.
+      { label: "Nasdaq, Inc., Form 10-K for 2025, filed 12 February 2026: \"Nasdaq was founded in 1971 as a wholly-owned subsidiary of FINRA\"; FINRA broadened ownership from 2000 and fully divested in 2006; The Nasdaq Stock Market became an independent registered national securities exchange in 2007; combination with OMX AB in February 2008; Verafin acquired 2021, Adenza (AxiomSL and Calypso) 2023; three segments; 19 exchanges, six US options exchanges and three US cash equity exchanges; colocation services and millimetre-wave and microwave wireless connectivity; markets moving to AWS on the Fusion platform; US headquarters New York, European headquarters Stockholm (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1120193/000162828026007703/ndaq-20251231.htm" },
+      // The go-live of the quotation system.
+      { label: "SEC Historical Society, Transformation and Regulation: Equities Market Structure 1934 to 2018, Automating the Exchanges, NASDAQ (undated exhibition page): the National Association of Securities Dealers built the NASD automated quote system to replace the pink sheets; it went live in February 1971, linking about 1,000 market makers and listing some 3,000 securities (read 2026-11-16)", url: "https://sechistorical.org/exhibition/transformation-regulation-equities-market-structure-1934-to-2018-2/automating-the-exchanges-1976-1995/nasdaq/" },
+      // The 2006 exchange registration, cited in a later SEC order.
+      { label: "SEC, Release 34-78101, In the Matter of the Application of Investors' Exchange, LLC, 17 June 2016, footnote 50: Securities Exchange Act Release No. 53128 of 13 January 2006 granting the exchange registration of Nasdaq Stock Market, Inc. (read 2026-11-16)", url: "https://s3.amazonaws.com/public-inspection.federalregister.gov/2016-14875.pdf" },
+      // INET.
+      { label: "Nasdaq release of 8 December 2005, reposted by Mondo Visione: Nasdaq completed its acquisition of the INET ECN, acquiring Instinet Group Incorporated and selling Instinet's Institutional Broker division to Silver Lake Partners; INET \"provides NASDAQ with a technologically superior trading platform\" (read 2026-11-16)", url: "https://mondovisione.com/news/nasdaq-completes-acquisition-of-inet-2011124" },
+      // OMX.
+      { label: "Nasdaq release of 27 February 2008, filed as Exhibit 99.1 to a Form 8-K: NASDAQ completed its combination with OMX AB, creating The NASDAQ OMX Group, Inc., \"the world's largest exchange company\"; technology supporting over 60 exchanges, clearing organizations and central securities depositories in more than 50 countries; OMX Nordic Exchange as the common offering of exchanges in Helsinki, Copenhagen, Stockholm, Iceland, Tallinn, Riga and Vilnius (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1120193/000119312508045251/dex991.htm" },
+      // The order entry protocol.
+      { label: "Nasdaq, OUCH 5.0 Order Entry Specification, updated October 2025: \"OUCH is the low-level native protocol for connecting to NASDAQ\", for participants integrating Nasdaq into proprietary trading systems, offering maximum performance at the cost of flexibility (read 2026-11-16)", url: "https://www.nasdaqtrader.com/content/technicalsupport/specifications/TradingProducts/Ouch5.0.pdf" },
+      // The market-data feed.
+      { label: "Nasdaq, TotalView-ITCH 5.0 specification: a direct data feed offered by The Nasdaq Stock Market, LLC, covering both the software and hardware (FPGA) versions, with order-level data tracking the life of each order (read 2026-11-16)", url: "https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/NQTVITCHspecification.pdf" },
+      // The company's own present-tense account.
+      { label: "Nasdaq, About (undated page): self-description as a technology platform; regulatory technology and financial crime management products including Nasdaq AxiomSL (read 2026-11-16)", url: "https://www.nasdaq.com/about" },
+    ],
+  },
+
+  // ---------------------------------------------------------------------------
+  // CBOE (1973)
+  // ---------------------------------------------------------------------------
+  {
+    // CBOE - added 2026-11-16 (industry wave I1). No owner in the sources read; it files its own annual report. FOUNDED 1973: the Chicago
+    // Board Options Exchange opened on 26 April 1973 (Cboe's own article of 1 March 2024); the company dates itself
+    // to that year ("It started in 1973"). The holding company was CBOE Holdings, Inc. until 13 October 2017 (EDGAR).
+    slug: "cboe",
+    // Own site read live 2026-11-16: HTTP 200 at https://www.cboe.com/ (title "Cboe Global Markets").
+    official: {
+      // The company's own site.
+      url: "https://www.cboe.com",
+    },
+    // Financial-market infrastructure: exchanges and a clearing house.
+    tags: ["markets"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "Cboe - the first listed-options exchange, with Bats inside it",
+    // Founding year, named by the Cboe article label below.
+    founded: 1973,
+    // Card line.
+    tagline: "Opened on 26 April 1973 as the world's first exchange for listed options, Cboe bought Bats Global Markets in 2017 and runs options, equities and foreign-exchange markets from Chicago.",
+    // Intro paragraph.
+    intro:
+      "Cboe began as the Chicago Board Options Exchange, which, by the company's own account, opened on 26 April 1973 as the world's first exchange for listed options, with a handful of cathode-ray tube (CRT) screens in a converted smoking lounge, eight trading posts and a short list of stocks chosen from the most actively traded on the New York Stock Exchange (NYSE); its founding president was Joe Sullivan. The listed holding company was named CBOE Holdings, Inc. until 13 October 2017 and is now Cboe Global Markets, Inc., based in Chicago, which says its subsidiaries include the largest options exchange and the third-largest equities exchange operator in the United States.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: Bats, the venues today, and the 2025 retreat.
+      "Its equities business came with Bats. On 28 February 2017 CBOE Holdings completed its merger with Bats Global Markets, Inc., under an agreement of 25 September 2016, and Bats became a wholly owned subsidiary, now known as Cboe Bats, LLC. The 2025 annual report lists the options markets Cboe Options, C2 Options, BZX Options and EDGX Options, the equities exchanges BZX, BYX, EDGX and EDGA, the BIDS Trading block-trading alternative trading system (ATS) and, in Europe, Cboe Europe Equities, with the Cboe Europe and Cboe NL exchanges, and the clearing house Cboe Clear Europe. It also records a retreat: after a strategic review in 2025 Cboe began winding down its Japanese equities business, started a sales process for Cboe Australia and Cboe Canada and dropped its corporate listings efforts in the United States and Europe, and after the year end it began winding down Cboe Europe Derivatives.",
+      // Paragraph 2: two market designs that bend the race for speed.
+      "Two Cboe market designs show an exchange bending the race for speed rather than winning it. In Europe, the Periodic Auctions Book, which Cboe calls Europe's pioneering periodic auction mechanism, matches orders within the Cboe European best bid and offer (EBBO) in short auctions with randomized durations, \"4,000x slower than continuous books\" in Cboe's words, so that size rather than speed wins; participants already connected join it with a single tag of the Financial Information eXchange (FIX) protocol. In the United States, the Securities and Exchange Commission (SEC) on 21 February 2020 disapproved a proposal that Cboe EDGA Exchange had filed on 7 June 2019 for a Liquidity Provider Protection delay, which would have held incoming orders that remove liquidity, but not market data, for up to four milliseconds.",
+      // Paragraph 3: why it matters to networks, analytically.
+      "The comparison is the useful part for anyone who builds trading networks. The SEC had approved the Investors Exchange (IEX), with a 350-microsecond delay on every incoming order and message, as a national securities exchange in 2016, and the Commodity Futures Trading Commission (CFTC) let the Passive Order Protection of Intercontinental Exchange's ICE Futures U.S., a delay only on orders that would trade against resting ones, take effect in 2019; at EDGA a delay aimed only at liquidity takers was refused. Which orders a speed bump touches, and which regulator reviews it, differed in each case, which makes the three worth reading side by side.",
+    ],
+    // Acquisitions named in the body.
+    acquisitions: [
+      // Bats, 2017.
+      { year: 2017, name: "Bats Global Markets", what: "Bats Global Markets, Inc., merged into CBOE Holdings under an agreement of 25 September 2016; it became a wholly owned subsidiary.", became: "Cboe Bats, LLC.", sourceNote: "CBOE Holdings Form 8-K filed 28 February 2017; Cboe Global Markets Form 10-K for 2025 (read 2026-11-16)." },
+    ],
+    // The company's own account of its founding.
+    externalUrl: "https://www.cboe.com/insights/posts/the-creation-of-listed-options-at-cboe",
+    // Link label.
+    externalLabel: "Cboe: The Creation of Listed Options at Cboe",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // The founding year and the first day.
+      { label: "Cboe Insights, The Creation of Listed Options at Cboe, 1 March 2024: on 26 April 1973 the Chicago Board Options Exchange opened, \"offering the world's first exchange for listed options trading\", with a handful of CRT screens in a converted smoking lounge, eight trading posts and stocks selected from the NYSE's most actively traded list; Joe Sullivan, founding president (read 2026-11-16)", url: "https://www.cboe.com/insights/posts/the-creation-of-listed-options-at-cboe" },
+      // The company dating itself to 1973.
+      { label: "Cboe, 50th anniversary page: \"It started in 1973, when we created the World's first listed options exchange\" (read 2026-11-16)", url: "https://www.cboe.com/50th_anniversary" },
+      // The holding company's names.
+      { label: "SEC EDGAR company record, Cboe Global Markets, Inc. (CIK 1374310): former name CBOE Holdings, Inc., used from 25 January 2007 to 13 October 2017; business address in Chicago (read 2026-11-16)", url: "https://data.sec.gov/submissions/CIK0001374310.json" },
+      // Bats.
+      { label: "CBOE Holdings, Form 8-K filed 28 February 2017, Item 2.01: on 28 February 2017, under the merger agreement of 25 September 2016, CBOE Holdings completed the merger with Bats Global Markets, Inc., which became a wholly-owned subsidiary (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1374310/000110465917012651/a17-7301_18k.htm" },
+      // The group today.
+      { label: "Cboe Global Markets, Form 10-K for 2025, filed 20 February 2026: subsidiaries include the largest options exchange and the third largest equities exchange operator in the US; Bats Global Markets now known as Cboe Bats, LLC; Cboe Options, C2, BZX, BYX, EDGX, EDGA, BIDS Trading, Cboe Europe Equities (Cboe Europe and Cboe NL), Cboe Clear Europe; in 2025 wind-down of the Japanese equities business, sales process for Cboe Australia and Cboe Canada, corporate listings efforts discontinued; after 31 December 2025 wind-down of Cboe Europe Derivatives (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1374310/000162828026010013/cboe-20251231.htm" },
+      // The periodic auctions.
+      { label: "Cboe Europe, Periodic Auctions Book (undated page, statistics to the third quarter of 2026): \"Europe's pioneering auction mechanism that rewards size over speed\"; \"Europe's pioneering periodic auction mechanism\"; execution within the Cboe EBBO; \"4,000x slower than continuous books\"; randomized durations; entry with FIX tag 9303=BP (read 2026-11-16)", url: "https://www.cboe.com/europe/equities/trading/periodic_auctions_book/" },
+      // The EDGA disapproval.
+      { label: "SEC, Release 34-88261, Cboe EDGA Exchange, Order Disapproving Proposed Rule Change To Introduce a Liquidity Provider Protection Delay Mechanism on EDGA, 21 February 2020 (Federal Register, 27 February 2020): filed 7 June 2019; the delay would have held incoming executable orders removing liquidity, but not market data, for up to four milliseconds (read 2026-11-16)", url: "https://www.govinfo.gov/content/pkg/FR-2020-02-27/pdf/2020-03915.pdf" },
+      // The IEX approval, for the comparison.
+      { label: "SEC, Release 34-78101, 17 June 2016: the application of Investors' Exchange LLC for registration as a national securities exchange granted; its coil equates to 350 microseconds of latency (read 2026-11-16)", url: "https://s3.amazonaws.com/public-inspection.federalregister.gov/2016-14875.pdf" },
+      // The ICE Futures U.S. outcome, for the comparison.
+      { label: "CFTC, Release 7928-19, 15 May 2019: the Division of Market Oversight statement that ICE Futures U.S. Submission 19-119 (Passive Order Protection) became effective on the expiry of the 90-day review period on 14 May 2019 (read 2026-11-16)", url: "https://www.cftc.gov/PressRoom/PressReleases/7928-19" },
+    ],
+  },
+
+  // ---------------------------------------------------------------------------
+  // EUREX (1998)
+  // ---------------------------------------------------------------------------
+  {
+    // EUREX - added 2026-11-16 (industry wave I1). Eurex and Eurex Clearing in one card. OWNER: Deutsche Börse Group
+    // (no record), sole owner since January 2012. FOUNDED 1998 ("June Eurex is founded", Deutsche Börse company
+    // history); the story begins with the Deutsche Terminbörse of 1990.
+    slug: "eurex",
+    // Own site read live 2026-11-16: HTTP 200 at https://www.eurex.com/ex-en/.
+    official: {
+      // The exchange's own site.
+      url: "https://www.eurex.com",
+      // A company owner: rendered "part of Deutsche Börse Group (since 2012)"; named with 2012 by the company history label.
+      parent: { name: "Deutsche Börse Group", kind: "company", since: 2012, note: "Deutsche Börse and the Swiss Stock Exchange founded Eurex together in 1998; Deutsche Börse became its sole owner in January 2012 by acquiring the remaining shares in Eurex Zürich AG." },
+      // The market-model documentation.
+      resources: [
+        // The delay mechanism.
+        { label: "Eurex: Passive Liquidity Protection (PLP)", url: "https://www.eurex.com/ex-en/trade/eurex-plp" },
+      ],
+    },
+    // Financial-market infrastructure: a derivatives exchange and its clearing house.
+    tags: ["markets"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "Eurex - the cross-border derivatives exchange of Frankfurt and Zurich",
+    // Founding year, named by the Deutsche Börse company history label below.
+    founded: 1998,
+    // The story opens with the German predecessor of 1990 (PartnerVendor.storyBegins: the predecessor the card opens with, named).
+    storyBegins: { year: 1990, company: "Deutsche Terminbörse (DTB)" },
+    // Card line.
+    tagline: "Founded in 1998 when Deutsche Börse and the Swiss exchange merged their futures markets, Eurex has been wholly owned by Deutsche Börse since 2012, runs on the group's T7 platform and deliberately delays aggressive orders in its options and foreign-exchange markets.",
+    // Intro paragraph.
+    intro:
+      "Eurex was founded in June 1998, when Deutsche Börse and the Swiss Stock Exchange merged their futures exchanges, the Deutsche Terminbörse (DTB) and Soffex, into what Deutsche Börse calls the world's first cross-border futures exchange. The German half was the older: the DTB was created at the beginning of 1990 and held its first trading day on 26 January 1990, when futures were traded in Germany for the first time. Eurex Clearing AG, founded in April 1998, is the group's central counterparty (CCP), clearing listed and off-exchange products, derivatives and, since March 2003, securities.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: ownership and the trading architecture.
+      "Deutsche Börse acquired the remaining shares in Eurex Zürich AG in January 2012 and became the sole owner of the Eurex derivatives exchange. In June 2013 Eurex completed its migration to T7, Deutsche Börse Group's global trading architecture; T7 went live for Xetra trading on the Frankfurt Stock Exchange in July 2017 and for Frankfurt floor trading in August 2020, so that, in the group's words, it uses the same information technology (IT) architecture for all its major trading venues, Eurex and the European Energy Exchange (EEX) included. Eurex Clearing received its clearing house licence under the European Market Infrastructure Regulation (EMIR) in April 2014.",
+      // Paragraph 2: Passive Liquidity Protection.
+      "Eurex is also one of the venues that differentiate latency on purpose. Its Passive Liquidity Protection (PLP) sends passive orders, those adding liquidity, straight into the order book, and delays aggressive orders, those that would trade against resting liquidity, by between one and three milliseconds. Eurex says it launched PLP in June 2019; its product page lists all foreign-exchange (FX) futures and options as the first products, followed by a pilot in German and French equity options from June 2019, the DAX index option from August 2020 and then all remaining equity options, the FTSE 100 index option from May 2021 and the EURO STOXX 50 index option family from October 2022.",
+      // Paragraph 3: why it matters to networks, analytically.
+      "The trade-off is stated in Eurex's own interview. T7, it says, is second to none for speed, throughput, reliability and determinism, which creates intense competition between liquidity providers but leaves market makers without the fastest technology unable to show their best prices in the book, so they quote off-book instead. PLP is an exchange spending a few milliseconds of its own speed on each aggressive order to bring that quoting back into the order book, which makes it a market-structure decision expressed as a network delay.",
+    ],
+    // The exchange's own page on the delay.
+    externalUrl: "https://www.eurex.com/ex-en/trade/eurex-plp",
+    // Link label.
+    externalLabel: "Eurex: Passive Liquidity Protection",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // The founding year, the predecessor, the clearing house and the parent with its year.
+      { label: "Deutsche Börse Group, Company History (undated chronology): 1990 DTB Deutsche Terminbörse created, first trading day 26 January 1990, futures traded in Germany for the first time; April 1998 Eurex Clearing AG founded, clearing derivatives and, from March 2003, securities; June 1998, \"Eurex is founded\": Deutsche Börse and the Swiss Stock Exchange merge DTB and Soffex into the world's first cross-border futures exchange; January 2012 Deutsche Börse acquires the remaining shares in Eurex Zürich AG, making it the sole owner of the Eurex derivatives exchange; June 2013 Eurex completes its migration to T7; April 2014 EMIR licence for Eurex Clearing; T7 live for Xetra in July 2017 and for Frankfurt floor trading in August 2020, one IT architecture for all major venues including Eurex and EEX (read 2026-11-16)", url: "https://deutsche-boerse.com/dbg-en/about-us/deutsche-boerse-group/company-history" },
+      // The delay and its rollout.
+      { label: "Eurex, Passive Liquidity Protection (PLP) (undated product page): first introduced in all FX futures and options, then a pilot for German and French equity options in June 2019; the DAX index option (ODAX) from August 2020, followed by all remaining equity options; the FTSE 100 index option (OTUK) from May 2021; the EURO STOXX 50 index option family since October 2022 (read 2026-11-16)", url: "https://www.eurex.com/ex-en/trade/eurex-plp" },
+      // The mechanism and the reasoning.
+      { label: "Eurex news, Strengthening liquidity: successful pilot phase for Eurex's Passive Liquidity Protection, 13 May 2020, interview with Randolf Roth: PLP launched in June 2019; passive orders go straight into the order book, aggressive orders are delayed by between 1 and 3 milliseconds; T7 \"second to none when it comes to speed, throughput, reliability and determinism\"; the aim to move more off-book activity into Eurex's order book (read 2026-11-16)", url: "https://www.eurex.com/ec-en/find/news/Strengthening-liquidity-successful-pilot-phase-for-Eurex-s-Passive-Liquidity-Protection--1963602" },
+    ],
+  },
+
+  // ---------------------------------------------------------------------------
+  // SIX SWISS EXCHANGE (1993)
+  // ---------------------------------------------------------------------------
+  {
+    // SIX SWISS EXCHANGE - added 2026-11-16 (industry wave I1). OWNER: SIX Group (no record), since the 2008 merger
+    // that formed it. FOUNDED 1993: the exchange "in its current state was founded in 1993" (Wikipedia, read live);
+    // the SIX pages read do not state the year, which REPORT.md records. The story begins with Geneva's brokers of 1850.
+    slug: "six-swiss-exchange",
+    // Own page read live 2026-11-16: HTTP 200 at the address below (title "SIX Swiss Exchange | SIX").
+    official: {
+      // The exchange's own pages on the SIX site.
+      url: "https://www.six-group.com/en/products-services/the-swiss-stock-exchange.html",
+      // A company owner: rendered "part of SIX Group (since 2008)"; named with 2008 by the Wikipedia and SIX labels.
+      parent: { name: "SIX Group", kind: "company", since: 2008, note: "SIX Group was formed in 2008, when SWX Swiss Exchange merged with SIS Group and Telekurs; SIX says it is owned by around 120 national and international financial institutions, which are also its main users." },
+    },
+    // Financial-market infrastructure: an exchange.
+    tags: ["markets"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "SIX Swiss Exchange - Zurich's exchange and its integrated value chain",
+    // Founding year, named by the Wikipedia label below.
+    founded: 1993,
+    // The story opens with the Geneva brokers' association of 1850 (PartnerVendor.storyBegins: the predecessor the card opens with, named).
+    storyBegins: { year: 1850, company: "Société des agents de change réunis, Geneva" },
+    // Card line.
+    tagline: "Formed in 1993 from the stock exchanges of Geneva, Basel and Zurich, the Swiss exchange moved to fully electronic trading with integrated settlement from 8 December 1995 and has been part of SIX Group since 2008.",
+    // Intro paragraph.
+    intro:
+      "SIX Swiss Exchange, based in Zurich, is Switzerland's principal stock exchange. In its current form it dates from 1993, when the stock exchanges of Geneva, Basel and Zurich merged into an association known in English as the Swiss Exchange; the oldest of them went back to 1850, when the Société des agents de change réunis was founded in Geneva. The association took over trading in 1995, was renamed SWX Swiss Exchange in 1999, became a public limited company in 2002, and took its present name in 2008, when it merged with SIS Group and Telekurs to form SIX Group, a name that stands for Swiss Infrastructure and Exchange.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: 8 December 1995.
+      "Its place in electronic trading rests on 8 December 1995. On that day, in SIX's account, the exchange became the first in the world to move from floor trading to electronic trading with fully integrated transaction processing and settlement, an end-to-end chain it calls the Swiss Value Chain, built with the companies that were the predecessors of SIX Financial Information, then Telekurs, and SIX Securities Services, then SEGA. The changeover began with the small international equities floor on 8 December 1995 and continued with Swiss equities and options on 2 August 1996 and bonds on 16 August 1996. In 2015 the exchange described its trading system as X-stream INET.",
+      // Paragraph 2: the index and the Eurex connection.
+      "The Swiss exchange also had a hand in Eurex. The Swiss Market Index (SMI) was created in the context of the Soffex derivatives exchange and launched on 30 June 1988 at 1,500 points, and the first SMI options were tradable on Soffex from 7 December 1988. In June 1998 Deutsche Börse and the Swiss Stock Exchange merged their futures exchanges, the Deutsche Terminbörse (DTB) and Soffex, to create Eurex, of which Deutsche Börse became sole owner in January 2012 by acquiring the remaining shares in Eurex Zürich AG.",
+      // Paragraph 3: the group today.
+      "Today SIX describes itself as the operator of SIX Swiss Exchange, BME Exchange in Spain and Aquis Exchange, which became part of SIX in July 2025, offering access to 16 capital markets across Europe with an aggregated pan-European equity trading market share of 15%. For networks, the Swiss record makes a point that latency figures do not: what the exchange counts as its innovation of 1995 was not the speed of the match but the integration of trading, clearing, settlement and custody into one chain, which is a systems-integration achievement before it is a trading one.",
+    ],
+    // The exchange's own page.
+    externalUrl: "https://www.six-group.com/en/products-services/the-swiss-stock-exchange.html",
+    // Link label.
+    externalLabel: "SIX Swiss Exchange",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // The founding year, the predecessor, the names and the parent with its year.
+      { label: "Wikipedia: SIX Swiss Exchange - formerly SWX Swiss Exchange, based in Zurich, Switzerland's principal stock exchange; Geneva 1850 (the Société des agents de change réunis), Basel 1866, Zurich 1873; in its current state founded in 1993 by merging the Geneva, Basel and Zurich exchanges into the Swiss Exchange; took over trading in 1995; renamed SWX Swiss Exchange in 1999; a public limited company from 2002; in 2008 merged with SIS Group and Telekurs into the new SIX Group and renamed SIX Swiss Exchange; owner SIX Group (read 2026-11-16)", url: "https://en.wikipedia.org/wiki/SIX_Swiss_Exchange", sourceNote: "Encyclopedia, read live and used only for the 1993 founding, the 1850 Geneva date and the names of 1999 to 2008, which the SIX pages read on 2026-11-16 do not state; SIX's own history page returned HTTP 404." },
+      // The group's name.
+      { label: "Wikipedia: SIX Group - founded 2008, headquarters Zurich; \"The company name SIX is an abbreviation and stands for Swiss Infrastructure and Exchange\" (read 2026-11-16)", url: "https://en.wikipedia.org/wiki/SIX_Group", sourceNote: "Encyclopedia, used only for the meaning of the name." },
+      // The parent's own account of 2008 and its owners.
+      { label: "SIX, Company (undated page): \"SIX has stood for innovation and stability on the global financial markets since 2008\"; SIX was formed from the merger of financial companies with beginnings around 1930; owned by around 120 national and international financial institutions, its main users (read 2026-11-16)", url: "https://www.six-group.com/en/company.html" },
+      // 8 December 1995.
+      { label: "SIX Swiss Exchange media release, 8 December 2015: 20 years of fully electronic trading; on 8 December 1995 the first stock exchange worldwide to switch from floor trading to electronic trading with fully integrated transaction processing and settlement, the Swiss Value Chain, with the predecessors of SIX Financial Information (Telekurs AG) and SIX Securities Services (SEGA AG); Swiss equities and options on 2 August and bonds on 16 August 1996; trading technology X-stream INET (read 2026-11-16)", url: "https://www.six-group.com/dam/download/media/press-releases/2015/1208-e-20_years_electronic_trading.pdf" },
+      // The SMI and Soffex.
+      { label: "SIX, 30 Years SMI, 30 years at a glance (undated page): the SMI created in the context of the SOFFEX derivatives exchange, known today as EUREX; launched on 30 June 1988 at 1,500 points; first SMI options tradable on SOFFEX on 7 December 1988 (read 2026-11-16)", url: "https://six-group.com/en/site/smi-30years/time-journey.html" },
+      // Eurex.
+      { label: "Deutsche Börse Group, Company History (undated chronology): June 1998, Deutsche Börse and the Swiss Stock Exchange merge DTB and Soffex to create Eurex; January 2012, Deutsche Börse acquires the remaining shares in Eurex Zürich AG (read 2026-11-16)", url: "https://deutsche-boerse.com/dbg-en/about-us/deutsche-boerse-group/company-history" },
+      // The group today.
+      { label: "SIX, About SIX brochure (PDF, with 2025 figures): operator of SIX Swiss Exchange, BME Exchange and Aquis Exchange; access to 16 capital markets across Europe; aggregated pan-European equity trading market share of 15%; Aquis became part of SIX in July 2025 (read 2026-11-16)", url: "https://www.six-group.com/dam/download/company/publications/aboutsix-en.pdf" },
+    ],
+  },
+
+  // ---------------------------------------------------------------------------
+  // INTERCONTINENTAL EXCHANGE (2000)
+  // ---------------------------------------------------------------------------
+  {
+    // ICE - added 2026-11-16 (industry wave I1). No owner in the sources read; parent of the NYSE (record `nyse`).
+    // FOUNDED 2000: "In 2000, ICE was founded" in its Form 10-K for 2025. ICE Futures U.S. and its Passive Order
+    // Protection belong here (brief). Tagged datacentre: the ICE Global Network sells colocation at Mahwah.
+    slug: "ice",
+    // Own site read live 2026-11-16: HTTP 200 at https://www.ice.com/.
+    official: {
+      // The company's own site.
+      url: "https://www.ice.com",
+      // The connectivity documentation.
+      resources: [
+        // The connectivity and colocation specification.
+        { label: "ICE Global Network & Colocation technical specifications (January 2026)", url: "https://www.ice.com/publicdocs/IGN_Colocation_Mahwah_Technical_Specs.pdf" },
+      ],
+    },
+    // Exchanges and clearing houses, and colocation at its US Liquidity Center.
+    tags: ["markets", "datacentre"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "Intercontinental Exchange - from an energy network to the New York Stock Exchange",
+    // Founding year, named by the Form 10-K label below.
+    founded: 2000,
+    // Card line.
+    tagline: "Founded in 2000 to put energy trading on an electronic network, Intercontinental Exchange bought the New York Board of Trade in 2007 and NYSE Euronext in 2013, and now runs 13 regulated exchanges and six clearing houses.",
+    // Intro paragraph.
+    intro:
+      "Intercontinental Exchange (ICE) was founded in 2000, in its annual report's words, \"with the idea of transforming energy markets by creating a network that removed barriers and provided greater transparency, efficiency and access\". With headquarters in Atlanta, Georgia and New York, it reports three segments, Exchanges, Fixed Income and Data Services, and Mortgage Technology, and operates 13 regulated exchanges and six clearing houses in the United States, the United Kingdom, the European Union, Canada, Asia Pacific and the Middle East. Its flagship Brent crude oil contract anchors a network of more than 800 related crude and refined oil products.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the two acquisitions that made it an exchange group.
+      "Two acquisitions made it an exchange group in the traditional sense. ICE listed on the New York Stock Exchange (NYSE) on 16 November 2005. On 12 January 2007 it completed its merger with the New York Board of Trade (NYBOT), the soft commodity exchange, which became a wholly owned subsidiary and, for the first time in its history, part of a for-profit public company; the deal also gave ICE a wholly owned clearing house, and NYBOT's soft commodity contracts were to move to the ICE electronic platform from 19 January 2007. Some of those contracts are old: the Commodity Futures Trading Commission (CFTC) notes that the cotton futures contract of the New York Cotton Exchange, founded in 1870, trades today on ICE Futures U.S. On 13 November 2013 IntercontinentalExchange Group completed its acquisition of NYSE Euronext, a stock-and-cash transaction of about $11 billion, creating a group of 16 exchanges and five clearing houses that kept both sets of brands, and announced plans to float the continental European exchanges separately as Euronext.",
+      // Paragraph 2: Passive Order Protection at ICE Futures U.S.
+      "ICE Futures U.S., the group's US futures exchange and a designated contract market regulated by the CFTC, is where ICE tried an asymmetric speed bump. On 1 February 2019 it self-certified an amendment to its Rule 4.26 introducing Passive Order Protection (POP): a delay of a few milliseconds for incoming orders that would immediately trade against resting, passive orders, giving the trader who placed the resting order time to react to price changes in related markets, starting with the Gold Daily and Silver Daily futures at three milliseconds, while first-in, first-out priority still applied. The CFTC's Division of Market Oversight stayed the submission for a 90-day review on 13 February 2019; the period expired on 14 May 2019 without further Commission action, and the rule became effective, as the Division stated on 15 May 2019.",
+      // Paragraph 3: why it matters to networks, analytically.
+      "ICE also runs the network to its markets. The ICE Global Network, in its technical specification of January 2026, offers colocation, hosting, timing services and low-latency connectivity at ICE's US Liquidity Center in Mahwah, New Jersey, with access to the ICE and NYSE markets and to third-party services, and the options industry's market-data plan names it as one of the connectivity routes for receiving its feed. An exchange group that started as an electronic network for energy has ended up owning the New York Stock Exchange's floor and the cables that lead to it.",
+    ],
+    // Acquisitions named in the body.
+    acquisitions: [
+      // NYBOT, 2007.
+      { year: 2007, name: "New York Board of Trade (NYBOT)", price: "10.297 million ICE shares and $400 million in cash", what: "The leading soft commodity exchange, with its own clearing house; part of a for-profit public company for the first time in its history.", became: "A wholly owned subsidiary of ICE; its soft commodity contracts listed on the ICE electronic platform from 19 January 2007.", sourceNote: "ICE and NYBOT release of 12 January 2007, reposted by Mondo Visione (read 2026-11-16)." },
+      // NYSE Euronext, 2013.
+      { year: 2013, name: "NYSE Euronext", price: "about $11 billion, in stock and cash", what: "Owner of the New York Stock Exchange and of the continental European Euronext exchanges.", became: "The NYSE stayed in the group under its own brand; Euronext was to be floated separately.", sourceNote: "IntercontinentalExchange Group release of 13 November 2013, filed by NYSE Euronext as Exhibit 99.1 to a Form 8-K (read 2026-11-16)." },
+    ],
+    // The company's own site.
+    externalUrl: "https://www.ice.com",
+    // Link label.
+    externalLabel: "Intercontinental Exchange",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // The founding year and the group today.
+      { label: "Intercontinental Exchange, Inc., Form 10-K for 2025, filed 5 February 2026: \"In 2000, ICE was founded with the idea of transforming energy markets by creating a network that removed barriers and provided greater transparency, efficiency and access\"; three segments; 13 regulated exchanges and six clearing houses; Brent crude oil and more than 800 related products; ICE Futures U.S. a designated contract market regulated by the CFTC; headquarters in Atlanta, Georgia and New York (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1571949/000157194926000004/ice-20251231.htm" },
+      // NYBOT.
+      { label: "IntercontinentalExchange and New York Board of Trade release of 12 January 2007, reposted by Mondo Visione: merger complete; NYBOT a wholly-owned subsidiary of ICE and part of a for-profit, publicly traded corporation for the first time in its history; a wholly-owned clearing house; soft commodity contracts on the ICE platform from 19 January 2007; consideration of 10.297 million ICE shares and $400 million in cash (read 2026-11-16)", url: "https://mondovisione.com/news/intercontinentalexchange-and-new-york-board-of-trade-complete-merger-2011124" },
+      // NYSE Euronext.
+      { label: "IntercontinentalExchange Group release of 13 November 2013, filed by NYSE Euronext as Exhibit 99.1 to a Form 8-K: completion of the acquisition of NYSE Euronext, approximately $11 billion in stock and cash; 16 global exchanges and five central clearing houses; brands kept; a planned IPO of the Euronext continental European exchanges as a stand-alone entity (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1368007/000119312513440079/d627265dex991.htm" },
+      // The 2005 listing.
+      { label: "NYSE, The History of NYSE (undated page): on 16 November 2005, Intercontinental Exchange (NYSE: ICE) listed on the NYSE (read 2026-11-16)", url: "https://www.nyse.com/history-of-nyse" },
+      // The cotton contract.
+      { label: "CFTC, History of the CFTC: US Futures Trading and Regulation Before the Creation of the CFTC (undated page): 1870, the New York Cotton Exchange is founded; the NYCE cotton futures contract is traded today on ICE Futures US (read 2026-11-16)", url: "https://www.cftc.gov/About/HistoryoftheCFTC/history_precftc.html" },
+      // The POP submission.
+      { label: "ICE Futures U.S., Submission No. 19-119 to the CFTC, 1 February 2019: self-certified amendments to Rule 4.26 introducing Passive Order Protection, a delay of a couple of milliseconds for incoming orders that would transact immediately against resting passive orders; Gold Daily and Silver Daily futures; a 3-millisecond delay in the example; FIFO priority maintained (read 2026-11-16)", url: "https://cftc.gov/filings/orgrules/rule022019iceusdcm001.pdf" },
+      // The CFTC outcome.
+      { label: "CFTC, Release 7928-19, 15 May 2019: Division of Market Oversight statement on ICE Futures U.S. Submission No. 19-119; stayed for a 90-day review on 13 February 2019; the review period expired on 14 May 2019 without further Commission action and the submission became effective (read 2026-11-16)", url: "https://www.cftc.gov/PressRoom/PressReleases/7928-19" },
+      // The network.
+      { label: "Intercontinental Exchange, ICE Global Network & Colocation Technical Specifications, version 4.5, January 2026: colocation (kilowatt and cabinet, hosting, timing, meet-me room), high-availability and low-latency network services at the US Liquidity Center in Mahwah, New Jersey; access to the ICE and NYSE markets and third-party services (read 2026-11-16)", url: "https://www.ice.com/publicdocs/IGN_Colocation_Mahwah_Technical_Specs.pdf" },
+      // The market-data plan's notice.
+      { label: "OPRA, LLC, notice of 1 May 2026, IEX Options LLC as a new OPRA Participant: data subscribers receiving OPRA from connectivity providers other than ICE Global Network (IGN) or the NMS Network must contact their providers (read 2026-11-16)", url: "https://cdn.opraplan.com/documents/notices/IEX_Options_New_Participant_100226.pdf" },
+    ],
+  },
+
+  // ---------------------------------------------------------------------------
+  // CME GROUP (2007)
+  // ---------------------------------------------------------------------------
+  {
+    // CME GROUP - added 2026-11-16 (industry wave I1). No owner in the sources read; it files its own annual report. FOUNDED 2007: CME Group
+    // Inc. was formed when the CME and CBOT holding companies completed their merger on 12 July 2007; the story begins
+    // with the Chicago Board of Trade of 1848 (CFTC history). The CME itself dates from 1898 (CFTC; CME 10-K for 2018).
+    // cmegroup.com refused this session's address on 2026-11-16 (HTTP 403, "blocked due to suspected web scraping");
+    // nothing here was read from it, and REPORT.md lists it for a browser check.
+    slug: "cme-group",
+    // Own site: https://www.cmegroup.com refused automated access on 2026-11-16 (HTTP 403); the Form 10-K for 2025
+    // names cmegroup.com as the company's website.
+    official: {
+      // The company's own site.
+      url: "https://www.cmegroup.com",
+    },
+    // Financial-market infrastructure: futures exchanges, cash venues and a clearing house.
+    tags: ["markets"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "CME Group - Chicago's futures exchanges on one electronic platform",
+    // Founding year, named by the merger release label below.
+    founded: 2007,
+    // The story opens with the Chicago Board of Trade (PartnerVendor.storyBegins: the predecessor the card opens with, named).
+    storyBegins: { year: 1848, company: "Chicago Board of Trade" },
+    // Card line.
+    tagline: "Formed on 12 July 2007 by the merger of the Chicago Mercantile Exchange and the Chicago Board of Trade, CME Group added the New York Mercantile Exchange in 2008 and the BrokerTec and EBS cash platforms with NEX Group in 2018, and trades primarily on its Globex platform.",
+    // Intro paragraph.
+    intro:
+      "CME Group, a Delaware corporation with its principal offices at 20 South Wacker Drive in Chicago, is the holding company for four futures exchanges, the Chicago Mercantile Exchange (CME), the Chicago Board of Trade (CBOT), the New York Mercantile Exchange (NYMEX) and the Commodity Exchange (COMEX), and for NEX Group, with their subsidiaries. It was formed on 12 July 2007, when Chicago Mercantile Exchange Holdings and CBOT Holdings completed their merger and the combined company became CME Group Inc. Its story is older than either holding company: the Commodity Futures Trading Commission (CFTC) dates the founding of the CBOT, as a cash market for grain, to 3 April 1848, and that of the Chicago Butter and Egg Board, renamed the Chicago Mercantile Exchange in 1919, to 1898. The CME demutualized in 2000, and its parent company listed its shares in 2002.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: Globex.
+      "Electronic trading predates the merger. The CME's Globex platform was launched in June 1992: the exchange gives 26 June 1992 as the trade date of the launch, when 1,893 Deutsche mark and Japanese yen futures and options changed hands on it. The first Globex ran on Reuters technology, with terminals hard-wired to Reuters' global network, anchored to a mainframe computer in Hauppauge, New York; the second generation, in 1998, used a modified version of a trading system developed by the Paris Bourse. At launch, trades were promised within three seconds; by 31 March 2002 the average time for a message to go in and out of the matching engine was 0.16 seconds.",
+      // Paragraph 2: NYMEX, NEX and the products today.
+      "The holding company then grew by acquisition. NYMEX, which had owned COMEX since 1994, became a CME Group subsidiary in 2008. On 2 November 2018 CME Group completed its acquisition of NEX Group plc by a scheme of arrangement under the United Kingdom's Companies Act 2006, bringing in the BrokerTec and EBS businesses, which its 2025 annual report describes as its cash markets: BrokerTec for fixed income cash and repurchase (repo) trading and EBS for spot and over-the-counter (OTC) foreign exchange, both primarily operated on CME Globex. Most of the group's products trade there too; open outcry survives in Chicago for options on the Secured Overnight Financing Rate (SOFR).",
+      // Paragraph 3: why it matters to networks, analytically.
+      "The next change is to the data centre itself. On 26 June 2024 CME Group and Google Cloud announced plans for a private Google Cloud region and a colocation facility in Aurora, Illinois, to host a platform for CME Group's futures and options markets with ultra-low-latency networking, where clients could choose between their own infrastructure in the colocation facility and Google Cloud's infrastructure as a service, \"both with equal network latency to the exchange\". The 2025 annual report lists the cost of maintaining both on-premise and Google Cloud environments during the transition among its risks. For a business in which proximity to the matching engine is itself a product, an exchange promising equal latency to customers inside and outside a cloud provider's platform changes what colocation means.",
+    ],
+    // Acquisitions named in the body.
+    acquisitions: [
+      // NYMEX and COMEX, 2008.
+      { year: 2008, name: "New York Mercantile Exchange (NYMEX)", what: "The New York exchange whose predecessor, the Butter and Cheese Exchange of New York, was founded in 1872, and which had owned the Commodity Exchange (COMEX) since 1994.", became: "A CME Group subsidiary, with COMEX; both are designated contract markets of the group.", sourceNote: "CFTC, History of the CFTC, pre-CFTC chronology; CME Group Form 10-K for 2018 (read 2026-11-16)." },
+      // NEX Group, 2018.
+      { year: 2018, name: "NEX Group plc", what: "Owner of BrokerTec, EBS, TriOptima and Traiana; acquired by a scheme of arrangement under Part 26 of the UK Companies Act 2006, completed on 2 November 2018.", became: "CME Group's cash markets business, BrokerTec and EBS, primarily operated on CME Globex.", sourceNote: "CME Group Form 8-K for the event of 2 November 2018; Forms 10-K for 2018 and 2025 (read 2026-11-16)." },
+    ],
+    // The company's own site (refused automated access on 2026-11-16; see the comment above).
+    externalUrl: "https://www.cmegroup.com",
+    // Link label.
+    externalLabel: "CME Group",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // The founding year: the merger completion.
+      { label: "CME Holdings and CBOT Holdings release of 12 July 2007, reposted by Mondo Visione: the merger of the two companies completed, effective that day; the combined company is CME Group Inc., a CME/Chicago Board of Trade Company; headquarters to remain in Chicago at 20 S. Wacker Drive (read 2026-11-16)", url: "https://mondovisione.com/news/cme-and-cbot-complete-merger-creating-the-leading-global-financial-exchange-2011124/" },
+      // The predecessors' foundings and NYMEX.
+      { label: "CFTC, History of the CFTC: US Futures Trading and Regulation Before the Creation of the CFTC (undated page): 3 April 1848, the Chicago Board of Trade (CBOT) is founded as a cash market for grain; 1872, the Butter and Cheese Exchange of New York, predecessor to the New York Mercantile Exchange, is founded; 1898, the Chicago Butter and Egg Board, predecessor to the Chicago Mercantile Exchange, is founded; 1919, renamed the Chicago Mercantile Exchange; COMEX a subsidiary of NYMEX since 1994, NYMEX a subsidiary of the CME Group in 2008 (read 2026-11-16)", url: "https://www.cftc.gov/About/HistoryoftheCFTC/history_precftc.html" },
+      // The group's own account of its development.
+      { label: "CME Group, Form 10-K for 2018, filed 28 February 2019: CME was founded in 1898 as a not-for-profit corporation; demutualized in 2000; its parent's initial public offering in 2002; merger with CBOT Holdings in 2007, acquisition of NYMEX and COMEX in 2008 and of NEX Group plc in November 2018; NEX, BrokerTec, EBS, TriOptima and Traiana trademarks of entities that were under NEX Group plc, all now owned by CME Group (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1156375/000115637519000010/cme-2018123110k.htm" },
+      // The group today.
+      { label: "CME Group, Form 10-K for 2025, filed 26 February 2026: holding company for CME, CBOT, NYMEX, COMEX and NEX Group plc; principal executive offices at 20 South Wacker Drive, Chicago; products traded primarily through CME Globex, with open outcry in Chicago for SOFR options; the cash markets business of BrokerTec and EBS primarily operated on CME Globex; costs of the transition to Google Cloud among the risks; website cmegroup.com (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1156375/000115637526000009/cme-20251231.htm" },
+      // Globex.
+      { label: "Chicago Mercantile Exchange release of 25 June 2002, reposted by Mondo Visione: the tenth anniversary of GLOBEX; 26 June 1992 the trade date of the launch, 1,893 Deutsche mark and Japanese yen contracts; originally based on Reuters technology with terminals hard-wired to Reuters' network and a mainframe in Hauppauge, New York; second generation in 1998 on a modified version of the trading system developed by the Paris Bourse; average response time 0.16 seconds by 31 March 2002 (read 2026-11-16)", url: "https://mondovisione.com/media-and-resources/news/cme-celebrates-10th-anniversary-of-globexsup-sup-electronic-trading-on-heels-of--2011124/" },
+      // NEX.
+      { label: "CME Group, Form 8-K, event of 2 November 2018: CME Group and CME London Limited completed the acquisition of NEX Group plc by a scheme of arrangement under Part 26 of the UK Companies Act 2006 (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1156375/000119312518322722/d644644d8k.htm" },
+      // Google Cloud.
+      { label: "Google Cloud press release, Chicago and Sunnyvale, 26 June 2024: CME Group and Google Cloud plan a private Google Cloud region and a co-location facility in Aurora, Illinois, for CME Group's futures and options markets, with ultra-low-latency networking; clients may choose self-managed infrastructure in the co-location facility or Google Cloud's infrastructure-as-a-service, \"both with equal network latency to the exchange\" (read 2026-11-16)", url: "https://www.googlecloudpresscorner.com/2024-06-26-CME-Group-and-Google-Cloud-Announce-New-Chicago-Area-Private-Cloud-Region-and-Co-location-Facility-for-CME-Groups-Markets" },
+    ],
+  },
+
+  // ---------------------------------------------------------------------------
+  // LONDON STOCK EXCHANGE GROUP (2007)
+  // ---------------------------------------------------------------------------
+  {
+    // LSEG - added 2026-11-16 (industry wave I1). No owner in the sources read (London Stock Exchange Group plc). FOUNDED 2007: "LSEG was
+    // created in October 2007" (LSEG history); the story begins with the London Stock Exchange of 1801. Refinitiv,
+    // FXall and Reuters' Matching are told as history (brief). Tagged vendor too: Workspace, data feeds, FX venues.
+    slug: "lseg",
+    // Own site read live 2026-11-16: HTTP 200 at https://www.lseg.com/en (title "Financial Markets Infrastructure and Data | LSEG").
+    official: {
+      // The group's own site.
+      url: "https://www.lseg.com",
+    },
+    // Exchange group and data and trading-software provider.
+    tags: ["markets", "vendor"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "London Stock Exchange Group - from a coffee-house price list to a data company",
+    // Founding year, named by the LSEG history label below.
+    founded: 2007,
+    // The story opens with the London Stock Exchange (PartnerVendor.storyBegins: the predecessor the card opens with, named).
+    storyBegins: { year: 1801, company: "London Stock Exchange" },
+    // Card line.
+    tagline: "Created in October 2007 when the London Stock Exchange merged with Borsa Italiana, London Stock Exchange Group (LSEG) completed its all-share acquisition of Refinitiv in January 2021 and now runs the foreign-exchange venues FXall and Matching, whose history begins at Reuters.",
+    // Intro paragraph.
+    intro:
+      "London Stock Exchange Group (LSEG) was created in October 2007, when the London Stock Exchange merged with Borsa Italiana, the Milan stock exchange. The exchange it is named for is far older. LSEG's own history begins in 1698, when John Castaing began issuing a list of stock and commodity prices, \"The Course of the Exchange and other things\", at Jonathan's Coffee House, and dates to 1801 the first regulated exchange in London and the birth of the modern Stock Exchange. The UK market was deregulated in the \"Big Bang\" of 1986, and the London Stock Exchange became a public company listed on its own market in July 2001.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the infrastructure acquisitions.
+      "As a group it first bought infrastructure. LSEG acquired MillenniumIT, a Sri Lanka-based technology provider to capital markets, in September 2009, and a majority stake in Turquoise, the pan-European equities trading platform, in December 2009; it completed the purchase of a majority stake in the clearing house LCH Group, then LCH.Clearnet, in May 2013 and raised it to 82.6 per cent in December 2018; and it bought Frank Russell Company, with the Russell Indexes, in December 2014, combining them with FTSE as FTSE Russell in May 2015.",
+      // Paragraph 2: Refinitiv.
+      "The largest step was data. Refinitiv was the Financial & Risk business of Thomson Reuters, 55 per cent of which Thomson Reuters sold in October 2018 to private equity funds managed by Blackstone for about $17 billion, keeping 45 per cent; in 2016 that business's brands had included the Eikon desktop and FXall, a dealer-to-client multibank foreign-exchange (FX) trading platform. LSEG completed its all-share acquisition of Refinitiv on 29 January 2021, after which Refinitiv's former shareholders held an economic interest of about 37 per cent and a voting interest of about 29 per cent in LSEG. Three months later the Milan half of the 2007 merger left the group: on 29 April 2021 Euronext completed its acquisition of the Borsa Italiana Group, for a cash consideration of about 4.44 billion euros that LSEG said it would use to repay debt related to the Refinitiv acquisition.",
+      // Paragraph 3: the FX venues, Reuters to LSEG.
+      "Its foreign-exchange venues carry the Reuters line. LSEG FX dates the first step to 1981, when Reuters launched the Reuters Dealing System, letting traders on its financial information terminal negotiate and confirm deals by electronic messaging. Eleven years later Reuters launched Matching, an electronic platform on which banks could show bids and offers to each other, which LSEG describes as still a primary market whose prices the whole industry uses; and FXall, connecting clients with dealing banks, made its first trade in May 2001. LSEG says its electronic venues process about US$460 billion a day and that FXall connects more than 2,400 clients with around 200 banks across 500 currency pairs.",
+      // Paragraph 4: why it matters to networks, analytically.
+      "For networks, LSEG is the case in this group of an exchange operator that also owns the terminals, data feeds and interbank trading venues that Reuters once ran for subscribers to its own financial information terminal. The London order book, a clearing house and the screens on dealers' desks now sit in one company, which makes it a data business as much as a market.",
+    ],
+    // Acquisitions named in the body, where a completion is sourced.
+    acquisitions: [
+      // Refinitiv, 2021.
+      { year: 2021, name: "Refinitiv", what: "The former Financial & Risk business of Thomson Reuters, majority-owned from October 2018 by private equity funds managed by Blackstone; acquired in an all-share transaction completed on 29 January 2021.", became: "Part of LSEG; FXall and Matching trade as LSEG FX.", sourceNote: "LSEG release of 29 January 2021; Thomson Reuters Annual Reports 2016 and 2018 (Form 40-F exhibits); LSEG FX pages (read 2026-11-16)." },
+    ],
+    // The group's own history page.
+    externalUrl: "https://www.lseg.com/en/about-us/history",
+    // Link label.
+    externalLabel: "LSEG: The history of LSEG",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // The founding year, the story's start and the infrastructure timeline.
+      { label: "LSEG, The history of LSEG (undated page): \"LSEG was created in October 2007 (as the London Stock Exchange Group) when London Stock Exchange merged with Milan Stock Exchange, Borsa Italiana\"; 1698 John Castaing's list at Jonathan's Coffee House; 1801 the first regulated exchange in London and the modern Stock Exchange; 1986 Big Bang; July 2001 public company; MillenniumIT September 2009; majority stake in Turquoise December 2009; majority stake in LCH Group May 2013, 82.6 per cent December 2018; Frank Russell Company December 2014; FTSE Russell May 2015; all-share acquisition of Refinitiv completed January 2021 (read 2026-11-16)", url: "https://www.lseg.com/en/about-us/history" },
+      // The completion of Refinitiv.
+      { label: "LSEG release of 29 January 2021, LSEG all-share acquisition of Refinitiv, transaction completion and admission to trading: the acquisition has completed; the Refinitiv shareholders acquired an approximate 37 per cent economic interest and 29 per cent voting interest in LSEG (read 2026-11-16)", url: "https://lseg.com/en/media-centre/press-releases/2021/lseg-all-share-acquisition-refinitiv-transaction-completion-and-admission-trading" },
+      // What Refinitiv was.
+      { label: "Thomson Reuters Annual Report 2018, filed as Exhibit 99.1 to Form 40-F: in October 2018 Thomson Reuters sold 55 per cent of its Financial & Risk business to private equity funds managed by Blackstone for approximately $17 billion and retained 45 per cent of the new company, now known as Refinitiv (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1075124/000119312519073387/d669805dex991.htm" },
+      // FXall inside Financial & Risk.
+      { label: "Thomson Reuters Annual Report 2016, filed as Exhibit 99.1 to Form 40-F: the Financial business's major brands included Thomson Reuters Eikon and FX Trading Solutions, among them FXall, dealer-to-client multibank trading and workflow solutions (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1075124/000119312517076946/d252082dex991.htm" },
+      // The sale of Borsa Italiana.
+      { label: "LSEG release of 29 April 2021 (dated 30 April 2021 on the web page), LSEG to complete divestment of Borsa Italiana Group to Euronext: closing expected that day for a total cash consideration of 4,443,860,471 euros; net proceeds to repay indebtedness related to the Refinitiv acquisition (read 2026-11-16)", url: "https://lseg.com/en/media-centre/press-releases/2021/lseg-complete-divestment-borsa-italiana-group-euronext" },
+      // The buyer's confirmation of the closing.
+      { label: "Euronext, Investor relations, Acquisition of the Borsa Italiana Group (event page): documents dated 29 April 2021 including \"Press release - Euronext completes the acquisition of the Borsa Italiana Group and publishes its Q1 2021 Results\" (read 2026-11-16)", url: "https://www.euronext.com/en/investor-relations/financial-calendar/acquisition-borsa-italiana-group" },
+      // The FX venues.
+      { label: "LSEG FX, Global forex trading ecosystem (undated page): the Reuters Dealing System of 1981; Matching launched eleven years later, still a primary market; FXall's first trade in May 2001; about US$460 billion traded a day on its electronic venues; 2,400+ clients, 200+ banks and 500+ currency pairs on FXall (read 2026-11-16)", url: "https://www.lseg.com/en/fx/global-forex-trading-ecosystem" },
+    ],
+  },
+
+  // ---------------------------------------------------------------------------
+  // TMX GROUP (2008)
+  // ---------------------------------------------------------------------------
+  {
+    // TMX GROUP - added 2026-11-16 (industry wave I1). No owner in the sources read. FOUNDED 2008: TSX Group
+    // and the Montreal Exchange combined on 1 May 2008 and TSX Group was renamed TMX Group on 11 June 2008; the story
+    // begins with the Toronto association of brokers of 24 October 1852. Source: TMX's own "History at a Glance"
+    // (2012), read from a copy hosted by courthouselibrary.ca because tmx.com's history page answered 404; REPORT.md says so.
+    slug: "tmx-group",
+    // Own site read live 2026-11-16: HTTP 200 at https://www.tmx.com/.
+    official: {
+      // The group's own site.
+      url: "https://www.tmx.com",
+    },
+    // Financial-market infrastructure: exchanges and clearing.
+    tags: ["markets"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "TMX Group - the Toronto Stock Exchange and Montreal's derivatives market",
+    // Founding year, named by the TMX history label below.
+    founded: 2008,
+    // The story opens with the Toronto Stock Exchange (PartnerVendor.storyBegins: the predecessor the card opens with, named).
+    storyBegins: { year: 1852, company: "Toronto Stock Exchange" },
+    // Card line.
+    tagline: "TMX Group took its name in 2008, when the group behind the Toronto Stock Exchange (TSX) combined with the Montreal Exchange; the TSX dates itself to an association of brokers of 1852, launched an automated trading system in 1977 and closed its trading floor in 1997.",
+    // Intro paragraph.
+    intro:
+      "TMX Group took its name on 11 June 2008, with shareholder approval, after the combination of TSX Group and the Montreal Exchange was completed on 1 May 2008. Its main market is much older: on 24 October 1852 a group of Toronto businessmen formed an \"Association of Brokers\" that established the framework for the Toronto Stock Exchange (TSX); a resolution formally created the exchange in 1861, and an Act of the Ontario Legislature incorporated it in 1878. Today TMX describes itself as operating global markets and building digital communities and analytic solutions, with equity and interest-rate derivatives trading and central counterparty clearing through the Montréal Exchange and its clearing house.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: early automation, demutualization, the new name.
+      "Toronto was early to automate. In 1977 the exchange launched what TMX's history calls the world's first Computer Assisted Trading System (CATS), the same year as the TSE 300 Composite Index; in 1996 it became the first exchange in North America to introduce decimal trading; and in 1997 it became the largest North American exchange to choose a floorless, electronic trading environment when it closed its trading floor. Demutualization was completed on 3 April 2000, when The Toronto Stock Exchange Inc. became a for-profit company; it adopted the TSX name on 8 April 2002, and the TSX Quantum trading platform went live on 14 December 2007.",
+      // Paragraph 2: TSX Alpha's order processing delay.
+      "Its TSX Alpha Exchange is an example of a delay written into market rules. On 16 April 2015 the Ontario Securities Commission (OSC) approved a randomized order processing delay of 1 to 3 milliseconds at Alpha Exchange Inc. on all orders except post-only orders, which cannot remove liquidity, revised from a proposed 5 to 25 milliseconds, on condition that orders displayed on Alpha would not be protected under the Order Protection Rule. In March 2023 Alpha proposed replacing the randomization with a static delay, and the exchange's page today describes a static 1-millisecond delay for new orders, amendments and cancels entered without a post-only instruction, with post-only orders subject to a minimum volume.",
+      // Paragraph 3: why it matters to networks, analytically.
+      "For networks the Canadian record shows both ends of the same idea inside one group: an exchange that automated early and gave up its floor in 1997, and a sister market that deliberately delays every order that might take liquidity, first by a random interval and now by a fixed one.",
+    ],
+    // The group's own site.
+    externalUrl: "https://www.tmx.com",
+    // Link label.
+    externalLabel: "TMX Group",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // The founding year and the story's start.
+      { label: "TMX Group, TMX Group History at a Glance (PDF, created 22 October 2012 per its metadata; copy hosted by courthouselibrary.ca): 24 October 1852 an \"Association of Brokers\" established the framework for Toronto Stock Exchange; 1861 formally created; 1878 incorporated by an Act of the Ontario Legislature; 1977 the world's first Computer Assisted Trading System (CATS) and the TSE 300 Composite Index; 1996 first in North America with decimal trading; 1997 trading floor closed; 3 April 2000 demutualization completed; 8 April 2002 TSX name adopted; 14 December 2007 TSX Quantum launched; 1 May 2008 combination of TSX Group and Montreal Exchange completed; 11 June 2008 TSX Group renamed TMX Group with shareholder approval (read 2026-11-16)", url: "https://www.courthouselibrary.ca/sites/default/files/inline-files/TMX_GroupHistoryAtAGlance.pdf", sourceNote: "TMX Group's own document, read from a third-party copy because TMX's history page (https://www.tmx.com/en/about-tmx/history) answered HTTP 404 on 2026-11-16." },
+      // The group today.
+      { label: "TMX Group, home page: \"TMX operates global markets, and builds digital communities and analytic solutions\"; equity and interest rate derivatives trading and clearing through the Montréal Exchange and its clearing house (read 2026-11-16)", url: "https://www.tmx.com/" },
+      // The 2015 approval.
+      { label: "Ontario Securities Commission, Staff Notice of Commission Approval of Proposed Changes to Alpha Exchange Inc., April 2015: approved on 16 April 2015 a randomized order processing delay of 1 to 3 milliseconds on all orders other than post-only orders, revised from the published 5 to 25 milliseconds; orders displayed on Alpha not protected under the Order Protection Rule (read 2026-11-16)", url: "https://www.osc.ca/sites/default/files/2020-12/alpha-exchange_20150421_noa-proposed-changes.pdf" },
+      // The 2023 proposal.
+      { label: "Alpha Exchange Inc., Notice of Proposed Amendments and Request for Comments, 2 March 2023: removing the 1 to 3 millisecond randomization in favour of a static 1-millisecond order processing delay on Alpha (read 2026-11-16)", url: "https://tsx.com/en/resource/2974/proposed-amendments-re-alpha-x-alpha-drk-and-order-processing-delay-2023-03-02-en.pdf" },
+      // The delay today.
+      { label: "TSX Alpha Exchange, Order Processing Delay (undated page): new orders, amendments and cancels without a post-only instruction incur a static 1-millisecond order processing delay; post-only orders subject to a minimum volume requirement (read 2026-11-16)", url: "https://tsx.com/trading/tsx-alpha-exchange/order-types-and-features/order-processing-delay" },
+    ],
+  },
+
+  // ---------------------------------------------------------------------------
+  // IEX (2012)
+  // ---------------------------------------------------------------------------
+  {
+    // IEX - added 2026-11-16 (industry wave I1). IEX Group, Inc., with Investors Exchange LLC and IEX Options LLC.
+    // No owner stated in the sources read. FOUNDED 2012 ("IEX is founded", iex.io/about). The speed bump's length is
+    // 44 miles today and was 38 miles before the 2024 data-centre move (iex.io/technology).
+    slug: "iex",
+    // Own site read live 2026-11-16: HTTP 200 at https://www.iex.io/about.
+    official: {
+      // The company's own site.
+      url: "https://www.iex.io",
+      // The design documentation.
+      resources: [
+        // The speed bump and the Signal.
+        { label: "IEX: Technology (the speed bump and the Signal)", url: "https://www.iex.io/technology" },
+      ],
+    },
+    // Financial-market infrastructure: stock and options exchanges.
+    tags: ["markets"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "IEX - the exchange that sells a fixed delay",
+    // Founding year, named by the IEX history label below.
+    founded: 2012,
+    // Card line.
+    tagline: "Founded in 2012 by colleagues who had met at the Royal Bank of Canada, the Investors Exchange (IEX) opened as an alternative trading system, became a US national securities exchange in 2016 and makes every incoming order cross a coil of optical fibre worth 350 microseconds.",
+    // Intro paragraph.
+    intro:
+      "IEX Group, Inc., the parent of the Investors Exchange (IEX), dates its origin to 2009, when its co-founders Brad Katsuyama, Ronan Ryan, Rob Park and John Schwall met at the Royal Bank of Canada (RBC), sharing, in the company's words, \"a vision for a more transparent system that better protected investors\". IEX was founded in 2012 and began building an alternative trading system (ATS), which debuted a year later; Michael Lewis's book Flash Boys told its origin story in 2014. On 17 June 2016 the Securities and Exchange Commission (SEC) granted the application of Investors' Exchange LLC, wholly owned by IEX Group, for registration as a national securities exchange.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the speed bump.
+      "The design is a deliberate delay. Users reach IEX through a point of presence (POP), which the SEC's 2016 order recorded in Secaucus, New Jersey, while the trading system sat in Weehawken; every message entering through the POP had to traverse the coil, a box of compactly coiled optical fibre, and the coil together with the distance to Weehawken equated to 350 microseconds of latency. IEX states the purpose plainly: the delay gives the exchange time to take in market data from other venues, which is not delayed, and update prices before executing trades. The coil was historically 38 miles of fibre; after IEX relocated its primary data centre in 2024 it lengthened the coil to 44 miles to keep the same 350-microsecond delay.",
+      // Paragraph 2: order types, share and options.
+      "On top of the delay sit order types driven by the Signal, a formula IEX introduced in 2014 to identify moments when a stock's price is unstable: the patented D-Peg order of 2014 and the Discretionary Limit (D-Limit) order type the SEC approved in August 2020. IEX states an exchange market share of 8.6% for the third quarter of 2026, counting exchange trading only. Its options market, IEX Options, was approved by the SEC on 18 September 2025; the Options Price Reporting Authority (OPRA) recorded its plan to begin trading on 2 October 2026, and IEX lists symbol roll-outs in six tranches through October 2026.",
+      // Paragraph 3: why it matters to networks, analytically.
+      "For networks IEX is the clearest case of latency treated as a design parameter rather than a cost to be cut. The delay is a physical length of glass, specified in miles and enforced by the speed of light in fibre, and when the matching engine moved, the glass had to grow to keep the number the same.",
+    ],
+    // The company's own page.
+    externalUrl: "https://www.iex.io/about",
+    // Link label.
+    externalLabel: "IEX: About Us",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // The founding year and the company's own timeline.
+      { label: "IEX Group, About Us, IEX History (undated page): 2009 co-founders Brad Katsuyama, Ronan Ryan, Rob Park and John Schwall meet at Royal Bank of Canada (RBC); 2012 \"IEX is founded, and begins work on its Alternative Trading System (ATS) which debuts one year later\"; 2014 Flash Boys, the Signal and D-Peg; 2016 SEC approval as an exchange; 2020 D-Limit; 2023 Signal V6; 2024 IEX Options announced (read 2026-11-16)", url: "https://www.iex.io/about" },
+      // The speed bump today.
+      { label: "IEX, Technology (undated page): 44 miles of coiled optical fibre before the matching engine, together with the distance between the POP and the matching engine, give a 350-microsecond delay so the exchange can take in market data from other venues and update prices; historically 38 miles, lengthened after the relocation of IEX's primary data center in 2024 (read 2026-11-16)", url: "https://www.iex.io/technology" },
+      // The newsroom figures.
+      { label: "IEX, Newsroom (undated page): 2012 IEX founded; June 2016 national securities exchange; August 2020 the SEC unanimously approved the D-Limit order type; January 2025 IEX Options filed; exchange market share 8.6% as of the third quarter of 2026, exchange trading only (read 2026-11-16)", url: "https://www.iex.io/news" },
+      // The exchange approval.
+      { label: "SEC, Release 34-78101, 17 June 2016, In the Matter of the Application of Investors' Exchange, LLC for Registration as a National Securities Exchange: application granted; IEX Exchange a Delaware LLC wholly owned by IEX Group; access through a POP in Secaucus, New Jersey; the coil and the distance to the trading system in Weehawken equate to 350 microseconds of latency (read 2026-11-16)", url: "https://s3.amazonaws.com/public-inspection.federalregister.gov/2016-14875.pdf" },
+      // The options approval.
+      { label: "SEC, Release 34-103998, 18 September 2025: order approving the rules for options trading on the new facility IEX Options (read 2026-11-16)", url: "https://public-inspection.federalregister.gov/2025-18380.pdf" },
+      // The planned first day.
+      { label: "OPRA, LLC, notice of 1 May 2026, IEX Options LLC as a new OPRA Participant: SEC approval on 18 September 2025; participant ID V; IEX Options plans to begin trading options on 2 October 2026 (read 2026-11-16)", url: "https://cdn.opraplan.com/documents/notices/IEX_Options_New_Participant_100226.pdf" },
+      // The roll-out.
+      { label: "IEX Options (undated page, FAQ): symbol roll-outs tentatively planned in six tranches on 2, 9, 15, 23, 27 and 30 October (read 2026-11-16)", url: "https://www.iex.io/options" },
+    ],
+  },
+
+  // ==== Industry wave I5 (16/11/2026, PRIME 20:34): integrated from scratchpad industry-i5/ ====
+  {
+    // DTCC - added 2026-11-16 (industry wave I5). The card's subject is the holding company formed in 1999;
+    // its story begins with The Depository Trust Company of 1973, carried by storyBegins.
+    // STATUS: trading under its own name, owned by its users (no parent company).
+    slug: "dtcc",
+    // Own site read live 2026-11-16: HTTP 200 at https://www.dtcc.com/about.
+    official: {
+      // The company's own site.
+      url: "https://www.dtcc.com",
+    },
+    // A clearing house and central depository: financial-market infrastructure.
+    tags: ["markets"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "DTCC - the depository built to end the paperwork crisis",
+    // Founding year of the holding company, named by the SEC Release 34-42013 and DTCC 1999 annual report labels below.
+    founded: 1999,
+    // The story opens with DTC, created in 1973 (DTCC 50th anniversary label below).
+    storyBegins: { year: 1973, company: "The Depository Trust Company (DTC)" },
+    // Card line.
+    tagline: "The Depository Trust & Clearing Corporation (DTCC), the user-owned holding company formed in 1999 over the depository created in 1973 to end Wall Street's paperwork crisis.",
+    // Intro paragraph.
+    intro:
+      "The Depository Trust & Clearing Corporation (DTCC) is the holding company of three United States clearing agencies: The Depository Trust Company (DTC), a central securities depository and securities settlement system; the National Securities Clearing Corporation (NSCC), a central counterparty for United States equities, corporate and municipal bonds, exchange-traded funds and unit investment trusts; and the Fixed Income Clearing Corporation (FICC), a central counterparty for Treasury and agency debt and agency mortgage-backed securities. The Financial Stability Oversight Council has designated all three as systemically important financial market utilities, with the Securities and Exchange Commission (SEC) as their supervisory agency.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: DTC, 1973.
+      "The story starts with DTC. By DTCC's own account the depository was created in 1973 to solve the Wall Street paperwork crisis, and one of its first acts was to digitize and create the first electronic security; the company also credits itself with introducing multilateral netting, which streamlined settlement and reduced risk. DTC's disclosure framework of March 2026 says it was organized in 1973 in response to the paperwork crisis of the late 1960s and early 1970s; the Federal Reserve describes it as a limited-purpose trust company chartered under New York State banking law, a member of the Federal Reserve System and a clearing agency registered with the SEC.",
+      // Paragraph 2: the 1999 holding company.
+      "The holding company came in 1999. On 24 August 1999 the SEC approved arrangements under which DTC and NSCC would form a New York corporation owning all of NSCC directly and all of DTC through a Delaware subsidiary. DTC's stockholders could exchange their shares one for one for the new company's common stock; the New York Stock Exchange and the National Association of Securities Dealers, then NSCC's two stockholders, were offered its preferred stock, each with the right to put one person on the board; and the rights to buy common stock were to be reallocated among the users of DTC and NSCC according to their use of the two clearing agencies, which kept separate rules and risk management. By 15 October 1999 the SEC recorded that the holding company had been established, and DTCC's annual report for that year describes DTCC as a new holding company established in 1999.",
+      // Paragraph 3: the company today.
+      "DTCC calls itself the premier post-trade market infrastructure in the industry, and DTC's 2026 disclosure framework describes it as a non-public holding company, owned by its users and governed under a shareholders agreement, that owns three systemically important financial market utilities. On the Federal Reserve's list of designated utilities, DTC, NSCC and FICC stand beside the Options Clearing Corporation, CLS Bank International, the Chicago Mercantile Exchange, ICE Clear Credit and the operator of the Clearing House Interbank Payments System; the same page notes that CLS settles payment obligations arising from credit derivatives contracts housed in DTCC's Trade Information Warehouse.",
+      // Paragraph 4: why it matters, analytically.
+      "For electronic trading the 1973 decision is the one that lasted: a security that exists only as a book entry is what allows the post-trade side to keep pace with machines. NSCC is the central counterparty for United States equities and DTC the depository that moves them, so the regulators treat the resilience of these utilities' systems as a question of financial stability rather than of service levels.",
+    ],
+    // The company's own page.
+    externalUrl: "https://www.dtcc.com/about",
+    // Link label.
+    externalLabel: "DTCC",
+    // Sources, each read on 2026-11-16.
+    sources: [
+      // The 1973 start of the story.
+      { label: "DTCC, Insights, 9 May 2023, Frank La Salla, \"Celebrating DTCC's 50th Anniversary\": DTCC has been advancing the industry since the Depository Trust Company (DTC) was created in 1973 to solve the Wall Street paperwork crisis; one of its first actions was to digitize and create the first electronic security; multilateral netting introduced (read 2026-11-16)", url: "https://www.dtcc.com/insights/2023/celebrating-dtccs-50th-anniversary" },
+      // The self-description.
+      { label: "DTCC, About DTCC: \"the premier post-trade market infrastructure in the industry\" (read 2026-11-16)", url: "https://www.dtcc.com/about" },
+      // The 1999 integration order.
+      { label: "SEC Release 34-41786, 24 August 1999, Federal Register 1 September 1999, order approving DTC's rule change on arrangements to integrate DTC and NSCC: the two to form a New York corporation owning NSCC directly and DTC through a Delaware subsidiary; DTC shares exchangeable one for one for common stock; the NYSE and the NASD, NSCC's two stockholders, offered preferred stock and one board seat each; purchase rights reallocated to users by their use of the two clearing agencies; separate rules and risk management kept (read 2026-11-16)", url: "https://www.govinfo.gov/content/pkg/FR-1999-09-01/html/99-22692.htm" },
+      // The holding company established.
+      { label: "SEC Release 34-42013, 15 October 1999, Federal Register 22 October 1999: the boards of DTC and NSCC have initiated a plan to integrate the two, and as a step in it \"a holding company has been established which will own DTC and NSCC as operating subsidiaries\" (read 2026-11-16)", url: "https://www.govinfo.gov/content/pkg/FR-1999-10-22/pdf/99-27600.pdf" },
+      // DTCC's own 1999 account.
+      { label: "DTCC, Annual Report 1999 (SEC Historical Society collection): DTCC describes itself as a new holding company, established in 1999 (read 2026-11-16 through a fetch tool); link dead as of 16 November 2026", url: "https://www.sechistorical.org/collection/papers/1990/1999_0101_DTCCAR_1.pdf", sourceNote: "Curl returned HTTP 404 for this file and 403 for the collection listing; the text was read through a fetch tool. In a browser on 2026-11-16 the file answered 404 Not Found, so it is kept and marked dead, and its wording is reported as a paraphrase, never quoted. The 1999 founding rests on SEC Release 34-42013." },
+      // DTC's 2026 disclosure framework.
+      { label: "DTC, Disclosure Framework for Covered Clearing Agencies, March 2026 (as of 31 March 2026): DTCC is a non-public holding company that owns three SIFMUs; DTC is its wholly owned subsidiary; DTCC is user owned and governed pursuant to a Shareholders Agreement; DTC was organized in 1973 in response to the paperwork crisis; DTC is a registered clearing agency and a state member bank of the Federal Reserve System, designated systemically important in July 2012 (read 2026-11-16); link dead as of 16 November 2026", url: "https://www.dtcc.com/-/media/Files/Downloads/legal/policy-and-compliance/DTC-DISCLOSURE-FRAMEWORK-2026-Q1.pdf", sourceNote: "Read through a fetch tool (curl returned HTTP 404). In a browser on 2026-11-16 the address answered DTCC's Not Found page, so the document is kept and marked dead, and the record reports it as a paraphrase, never quoted." },
+      // The Federal Reserve's list of designated utilities.
+      { label: "Federal Reserve Board, Designated Financial Market Utilities (undated page): the Financial Stability Oversight Council has designated eight FMUs, among them The Depository Trust Company, Fixed Income Clearing Corporation and National Securities Clearing Corporation, each with the SEC as Supervisory Agency; DTC, FICC and NSCC are subsidiaries of DTCC; DTC is a central securities depository chartered as a limited-purpose trust company under New York State banking law and a member of the Federal Reserve System; NSCC a central counterparty for U.S. equities, corporate and municipal bonds, ETFs and unit investment trusts; FICC's GSD and MBSD central counterparties for Treasury and agency debt and agency MBS; CLS settles obligations from contracts housed in DTCC's Trade Information Warehouse (read 2026-11-16)", url: "https://www.federalreserve.gov/paymentsystems/designated_fmu_about.htm" },
+    ],
+  },
+  {
+    // SIAC - added 2026-11-16 (industry wave I5). The Securities Industry Automation Corporation.
+    // STATUS: trading, a wholly owned subsidiary of NYSE Group since 1 November 2006 (NYSE Group 8-K label), and
+    // NYSE Group is itself a significant subsidiary of Intercontinental Exchange (ICE Exhibit 21.1 label).
+    // OFFICIAL URL: SIAC has no website of its own. The CTA Plan's site is used as the evidence that it trades: the
+    // plans name SIAC as their Processor (Odd Lots page, read 2026-11-16). REPORT.md flags this for the integrator,
+    // whose alternative is to drop url and parent and let the card read "unverified".
+    slug: "siac",
+    // The plan site where SIAC's role as Processor is published; SIAC has no site of its own.
+    official: {
+      // The CTA Plan's site (Processor named on its Odd Lots page).
+      url: "https://www.ctaplan.com/",
+      // A company: rendered "part of NYSE Group (since 2006)"; the NYSE Group 8-K label names the owner and the year.
+      parent: { name: "NYSE Group", slug: "nyse", since: 2006, note: "SIAC was a subsidiary of the New York and American stock exchanges from 1972; NYSE Group, which held two-thirds by 2006, bought the American Stock Exchange's third on 1 November 2006 and is today a subsidiary of Intercontinental Exchange." },
+    },
+    // A consolidated tape processor: financial-market infrastructure.
+    tags: ["markets"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "SIAC - the processor behind the consolidated tape",
+    // Founding year, named by the NYSE Group 8-K of 27 October 2006 label below.
+    founded: 1972,
+    // Card line.
+    tagline: "The Securities Industry Automation Corporation (SIAC), founded in 1972 by the New York and American stock exchanges, is the processor that consolidates trades and quotes from every United States market centre into the tape for New York Stock Exchange and regional listings.",
+    // Intro paragraph.
+    intro:
+      "The Securities Industry Automation Corporation (SIAC) was founded in 1972 as a subsidiary of the New York Stock Exchange (NYSE) and the American Stock Exchange (Amex), under a shareholders' agreement dated 17 July 1972, and by 2006 it ran the computer systems and communications networks that powered the two exchanges and disseminated United States market data. It is today the Processor of the Consolidated Tape Association (CTA) and Consolidated Quotation (CQ) plans, the securities information processor (SIP) for Network A and Network B securities, whose administrators are New York Stock Exchange LLC for Network A and NYSE American for Network B.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: two owners, then one.
+      "For thirty-four years SIAC belonged to two exchanges, which managed it under the 1972 shareholders' agreement and took its technology services under a facilities management agreement of 23 February 1977; by 2006 NYSE Group held two-thirds and the Amex one third. On 25 October 2006 NYSE Group agreed to buy the Amex's third for about US$40 million, and on 1 November 2006 it completed the purchase, making SIAC a wholly owned subsidiary of NYSE Group; the Amex stayed on as a customer with substantially reduced services. NYSE Group then described SIAC's systems as supporting order processing, trading, market data reporting, trade comparison and surveillance, with a subsidiary, Sector, Inc., selling communications, networking and managed services, and with SFTI, SIAC's Secure Financial Transaction Infrastructure, built to improve the resilience of the industry's telecommunications connectivity.",
+      // Paragraph 2: the SIP.
+      "The consolidated tape is why SIAC matters beyond the NYSE. Since the late 1970s, as the CTA describes it, every exchange and market centre registered with the Securities and Exchange Commission (SEC) and trading Network A or Network B securities has sent its trades and quotes to a central consolidator that produces the Consolidated Tape System (CTS) and Consolidated Quote System (CQS) data streams, and the SIP calculates and disseminates the national best bid and offer (NBBO) and the limit up-limit down (LULD) price bands. The CTA states a median latency under 20 microseconds for both feeds, a capacity of 2,700,000 quote messages and 425,000 trade messages per 100 milliseconds, hot-hot primary and backup servers and a fully redundant backup site. The SEC's market data infrastructure rule of 2020 records that the CTA/CQ SIP is located in Mahwah, New Jersey, calls SIAC an NYSE affiliate and the exclusive SIP for the two plans, and notes that SIAC also processes and disseminates a dataset used by academic researchers.",
+      // Paragraph 3: an incident and the next plan.
+      "The processor is not infallible. Intercontinental Exchange, which owns NYSE Group, reported in its annual report for 2025 that on 3 June 2024 a defect in a new software release by its NYSE subsidiary SIAC caused incorrect calculation of industry-wide trade price bands in some symbols: trades at incorrect prices had to be reversed, trading pauses were triggered, and the NYSE exchanges paid member claims. The plans SIAC serves are changing too. From the operative date of the new Consolidated Tape (CT) Plan, planned for 1 April 2027, a single independent administrator, DataCT, replaces the NYSE and Nasdaq as administrators, while the SIPs operated by SIAC and Nasdaq continue without technology changes.",
+      // Paragraph 4: why it matters, analytically.
+      "SIAC is where the fragmentation of United States equity trading is put back together, and the 2024 incident shows what that means: a consolidator's output is not only a market data feed but the reference for controls that every venue applies at the same moment. The 2020 rule's own footnote names the three data-centre locations of that work, Mahwah for the CTA/CQ SIP, Carteret for the SIP of Nasdaq-listed securities and Secaucus for other exchanges and broker-dealers, as the New Jersey Triangle, so the debate over competing consolidators that the rule opened is about geography and latency as much as about governance.",
+    ],
+    // The page where the plans name SIAC as Processor.
+    externalUrl: "https://www.ctaplan.com/odd-lots",
+    // Link label.
+    externalLabel: "CTA Plan: SIAC as Processor",
+    // Sources, each read on 2026-11-16.
+    sources: [
+      // The 2006 agreement, the 1972 shareholders' agreement and the 1977 facilities management agreement.
+      { label: "NYSE Group, Form 8-K filed 27 October 2006: agreement for NYSE Group to purchase the entire one-third interest of Amex in Securities Industry Automation Corporation (SIAC) for approximately $40,000,000; on completion the Shareholders' Agreement dated as of 17 July 1972 and Amex's participation in the Facilities Management Agreement of 23 February 1977 to be terminated; SIAC provides technology services to NYSE Group and to Amex (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1326579/000088237706003690/d582809.htm" },
+      // The founding year in the press release.
+      { label: "NYSE Group and American Stock Exchange, press release of 25 October 2006, \"NYSE Group to Acquire One-Third Interest in SIAC Held by the American Stock Exchange\" (Exhibit 99.1 to the 8-K): NYSE Group owns two-thirds of SIAC; SIAC \"was founded in 1972 as a subsidiary of the New York Stock Exchange and the American Stock Exchange\" and runs the computer systems and communications networks that power the two exchanges and disseminate U.S. market data (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1326579/000088237706003690/p06-1623ex99_1.htm" },
+      // Completion: the parent and the year.
+      { label: "NYSE Group, Form 8-K filed 3 November 2006: on 1 November 2006 NYSE Group completed the purchase of Amex's one-third interest in SIAC for approximately $40,000,000, and SIAC is now a wholly owned subsidiary of NYSE Group; the 1972 Shareholders' Agreement terminated as of that date (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1326579/000088237706003784/d586393.htm" },
+      // Sector and SFTI.
+      { label: "NYSE Group, press release of 1 November 2006, \"NYSE Group Completes Acquisition of SIAC from Amex\" (Exhibit 99.1 to the 8-K): NYSE Group now wholly owns SIAC, including Sector, Inc. and SFTI; SIAC systems support order processing, trading, market data reporting, trade comparison and surveillance; Sector offers communications, networking and managed services; SFTI, SIAC's Secure Financial Transaction Infrastructure, developed to improve the resilience of telecommunications connectivity (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1326579/000088237706003784/d586419.htm" },
+      // The CTA Plan overview.
+      { label: "CTA Plan, Overview: participants listed; New York Stock Exchange LLC is the Administrator of Network A and NYSE American of Network B; since the late 1970s all SEC-registered exchanges and market centres trading Network A or B securities send trades and quotes to a central consolidator producing the Consolidated Tape System (CTS) and Consolidated Quote System (CQS); the SIP calculates the NBBO and LULD price bands; hot/hot backup server and site; capacity of 2,700,000 quote and 425,000 trade messages per 100 milliseconds; median latency under 20 microseconds (read 2026-11-16)", url: "https://www.ctaplan.com/" },
+      // SIAC named as Processor.
+      { label: "CTA Plan, Odd Lots: \"The New York Stock Exchange serves as the Administrator for the CTA/CQ SIP Plans and the Securities Industry Automation Corporation is the Processor\" (read 2026-11-16)", url: "https://www.ctaplan.com/odd-lots" },
+      // The SEC's 2020 rule.
+      { label: "SEC Release 34-90610, Market Data Infrastructure, final rule (2020): the CTA/CQ SIP is located in Mahwah, NJ, the UTP SIP in Carteret, NJ, other exchanges and broker-dealers in Secaucus, NJ, the \"New Jersey Triangle\"; SIAC (a NYSE affiliate) is the exclusive SIP for the CTA and CQ Plans; SIAC processes and disseminates the academic TAQ dataset (read 2026-11-16)", url: "https://www.sec.gov/files/rules/final/2020/34-90610.pdf" },
+      // The 2024 incident.
+      { label: "Intercontinental Exchange, Form 10-K for 2025, filed 5 February 2026: on 3 June 2024 a defect in a new software release by NYSE subsidiary Securities Industry Automation Corporation (SIAC) caused incorrect calculation of industry-wide trade price bands, trades at incorrect prices that had to be reversed, trading pauses and member claims paid by the NYSE exchanges (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1571949/000157194926000004/ice-20251231.htm" },
+      // NYSE Group inside ICE today.
+      { label: "Intercontinental Exchange, Form 10-K for 2025, Exhibit 21.1: NYSE Group, Inc. (Delaware) among ICE's significant legal entity subsidiaries as of 31 December 2025 (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1571949/000157194926000004/ice20251231ex211.htm" },
+      // The CT Plan transition.
+      { label: "US Consolidated Tape (consolidatedtape.com), Transition to CT Plan: from 1 April 2027 the CTA and UTP Plans are replaced by the CT Plan administered by DataCT; no changes to the SIPs operated by SIAC (NYSE) and Nasdaq (read 2026-11-16)", url: "https://consolidatedtape.com/" },
+    ],
+  },
+  {
+    // DATACT - added 2026-11-16 (industry wave I5). DataCT LLC, the CT Plan's independent administrator.
+    // NO FOUNDING YEAR: neither DataCT's own site, the CT Plan site nor the SEC order states when DataCT LLC was
+    // formed; the FAQ says only that it was appointed in 2025. The card sits undated, and REPORT.md records the gap.
+    // NO PARENT: DataCT calls itself "an independent affiliate of DataBP LLC"; an affiliate is not stated to be a
+    // subsidiary, so no owner is recorded.
+    slug: "datact",
+    // Own site read live 2026-11-16: HTTP 200 at https://datact.com.
+    official: {
+      // The company's own site.
+      url: "https://datact.com",
+      // The administration portal it runs.
+      resources: [
+        // The CT Plan's administrative site, run by DataCT.
+        { label: "US Consolidated Tape: transition, agreements, policies and fees (administered by DataCT)", url: "https://consolidatedtape.com/" },
+      ],
+    },
+    // A consolidated tape's administrator: financial-market infrastructure.
+    tags: ["markets"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "DataCT - the independent administrator of the United States consolidated tape",
+    // Card line.
+    tagline: "The company appointed in 2025 as the single independent administrator of the Consolidated Tape (CT) Plan, which from April 2027 replaces the three plans that have governed United States equity market data.",
+    // Intro paragraph.
+    intro:
+      "DataCT LLC describes itself as an independent affiliate of DataBP LLC, a Delaware company it calls a world leader in securities exchange data administration technology, and as the independent administrator designated for the Consolidated Tape (CT) Plan. The CT Plan, approved as modified by the Securities and Exchange Commission (SEC) on 20 November 2024, is the single national market system (NMS) plan that is to replace the three plans governing United States equity market data: the Consolidated Tape Association (CTA) Plan, the Consolidated Quotation (CQ) Plan and the plan for Nasdaq-listed securities traded on an unlisted trading privileges basis (the UTP Plan). According to the plan's own site, DataCT was appointed in 2025.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: why an independent administrator.
+      "The independent administrator was the contested part. The SEC's governance order of May 2020 directed the exchanges and the Financial Industry Regulatory Authority (FINRA) to file a single plan; Nasdaq, the New York Stock Exchange (NYSE) and Cboe challenged the 2021 approval, and on 5 July 2022 the Court of Appeals for the District of Columbia Circuit vacated that approval but upheld the requirement of an independent administrator. In the 2024 order the SEC recorded, among the comments, one from the chief executive of DataBP, Mark Schaedel, that an independent administrator without conflicts would be the single most important factor for a successful transition, and one from Nasdaq that data vendors selling proprietary market data should also be barred from the role; the SEC declined to add that bar.",
+      // Paragraph 2: the transition.
+      "The work is administration, not technology. DataCT takes over licensing, usage reporting, billing, compliance and support for Tapes A, B and C from the two legacy administrators, the NYSE and Nasdaq, through consolidatedtape.com. Every subscriber and distributor must sign new agreements by 1 March 2027 to keep receiving data after the plan becomes operative on 1 April 2027; the plan's new fee schedule, filed in December 2025, was approved in June 2026. The site states that the securities information processors operated by SIAC and Nasdaq, and the feeds they produce, do not change.",
+      // Paragraph 3: why it matters, analytically.
+      "For anyone who builds market data systems the change is in the contracts, not the packets: the same feeds arrive over the same networks, but the entity that licenses them, audits their use and sends the invoice is no longer an exchange. Separating the business of selling the consolidated tape from the exchanges that also sell proprietary data was the point the court upheld, and DataCT is where that separation becomes a company.",
+    ],
+    // The company's own page.
+    externalUrl: "https://datact.com",
+    // Link label.
+    externalLabel: "DataCT",
+    // Sources, each read on 2026-11-16.
+    sources: [
+      // The self-description.
+      { label: "DataCT, home page: DataCT LLC has been appointed as the independent administrator of the U.S. Consolidated Tape Plan; \"DataCT LLC is an independent affiliate of DataBP LLC, a Delaware based company and world leader in securities exchange data administration technology\"; statutory basis SEC Release No. 34-101672, File No. 4-757, approved 20 November 2024 (read 2026-11-16)", url: "https://datact.com" },
+      // The appointment year and the fee schedule.
+      { label: "US Consolidated Tape, FAQ: the SEC's Governance Order of May 2020 (Release 34-88827), amended September 2023; CT Plan LLC approved in 2024; \"In 2025 DataCT LLC was appointed as the new Independent Administrator\"; fee schedule filed December 2025 and approved June 2026; operative date planned for 1 April 2027; no changes to the SIPs operated by SIAC and Nasdaq (read 2026-11-16)", url: "https://consolidatedtape.com/faq" },
+      // The transition page.
+      { label: "US Consolidated Tape, Transition to CT Plan: new agreements with DataCT, the new Administrator, required before 1 March 2027; firms without them not authorized to receive data after 1 April 2027; DataCT replaces the legacy Administrators NYSE and Nasdaq for licensing, reporting, billing, compliance and support (read 2026-11-16)", url: "https://consolidatedtape.com/" },
+      // The SEC order.
+      { label: "SEC Release 34-101672, 20 November 2024, order approving, as modified, the national market system plan regarding consolidated equity market data (CT Plan): replaces the CTA Plan, the CQ Plan and the UTP Plan for Nasdaq-listed securities traded on an unlisted trading privileges basis; history of the 2021 approval vacated by the D.C. Circuit on 5 July 2022 on a petition by Nasdaq, NYSE and Cboe, which upheld the independent administrator requirement; comments from DataBP's chief executive Mark Schaedel (letter of 23 February 2024) and from Nasdaq on the administrator; no Administrator may be owned or controlled by an entity selling its own proprietary equity market data, and the Commission \"again declines to modify the restrictions\" as Nasdaq suggested (read 2026-11-16)", url: "https://www.sec.gov/files/rules/sro/nms/2024/34-101672_0.pdf" },
+    ],
+  },
+  {
+    // EUROCTP - added 2026-11-16 (industry wave I5). EuroCTP B.V., the EU consolidated tape for shares and ETFs.
+    // FOUNDED 2024: EuroCTP's own release of 5 December 2024 states the incorporation on 23 August 2024.
+    // NO PARENT: a joint venture of exchange groups (ESMA: fifteen shareholders; EuroCTP: sixteen from July 2025).
+    // EuroCTP's pages render in JavaScript; the news texts were read through the site's own content service and are
+    // listed in REPORT.md for a browser check.
+    slug: "euroctp",
+    // Own site read live 2026-11-16: HTTP 200 at https://www.euroctp.eu/en (a JavaScript application).
+    official: {
+      // The company's own site.
+      url: "https://www.euroctp.eu",
+    },
+    // A consolidated tape provider: financial-market infrastructure.
+    tags: ["markets"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "EuroCTP - the exchanges' consolidated tape for European shares and ETFs",
+    // Founding year, named by the EuroCTP 5 December 2024 label below (incorporated 23 August 2024).
+    founded: 2024,
+    // Card line.
+    tagline: "A Dutch joint venture of European exchange groups, incorporated in 2024, which the European Securities and Markets Authority (ESMA) selected and authorized as the European Union's first consolidated tape provider for shares and exchange-traded funds (ETFs), live since 14 September 2026.",
+    // Intro paragraph.
+    intro:
+      "EuroCTP B.V. is a Dutch company, incorporated on 23 August 2024, built to run the consolidated tape of the European Union (EU) for shares and exchange-traded funds (ETFs) under the revised Markets in Financial Instruments Regulation (MiFIR). The European Securities and Markets Authority (ESMA) describes it as a joint venture based in the Netherlands with fifteen European exchange groups as shareholders; EuroCTP welcomed the Bratislava Stock Exchange as its sixteenth shareholder in July 2025 and said its shareholder base then covered all 27 member states. Its supervisory board seats six shareholder representatives, from SIX Group, the Vienna Stock Exchange, Nasdaq, Deutsche Börse, Euronext and the Bulgarian Stock Exchange, the last also on behalf of nine other exchanges.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: selection and authorization.
+      "ESMA launched the selection for the equities tape on 20 June 2025, the day EuroCTP announced that it would bid, and on 19 December 2025 selected EuroCTP after assessing its offer against the MiFIR criteria. It authorized EuroCTP B.V. on 27 July 2026 with a transition period to 30 September 2026, and EuroCTP launched the tape on 14 September 2026. The authorization runs for five years from the start of operations under ESMA's direct supervision; ESMA says retail investors, academics, civil society organizations and regulators may use the data free of charge, and other users for a reasonable fee.",
+      // Paragraph 2: the company and its scale.
+      "The company was assembled for the bid. Its chief executive, Eglantine Desautel, previously head of market operations and digital at Euronext, and its chief technology officer, Timo Pentner, were appointed in December 2024, with Jorge Yzaguirre Scharfhausen chairing the supervisory board. At launch EuroCTP said the tape consolidated data from more than 130 sources across the EU, spanning regulated markets, other trading venues and approved publication arrangements (APAs), and that the contributors onboarded at launch represented 87% of the target scope by notional trade value.",
+      // Paragraph 3: the data centre.
+      "On 28 January 2026 EuroCTP chose Equinix's FR2 data centre in Frankfurt as the tape's primary site. Its chief executive said the site was already directly connected to major EU financial venues and data consumers, which made it an ideal location for low-latency access, and the company said its system captures real-time pre-trade and post-trade data from all trading and reporting venues across the EU, including the consolidated best buy and sell orders available at any moment.",
+      // Paragraph 4: why it matters, analytically.
+      "A European tape is a connectivity project before it is a data product. Its first public measures of progress were the number of sources connected and the share of trading value covered, and its location was chosen for the venues already cross-connected in one Frankfurt building. The EU tape is a separately authorized company, owned by exchanges but chosen by a supervisor in a tender for a fixed five-year term.",
+    ],
+    // The company's own page.
+    externalUrl: "https://www.euroctp.eu/en",
+    // Link label.
+    externalLabel: "EuroCTP",
+    // Sources, each read on 2026-11-16.
+    sources: [
+      // ESMA's CTP page: the dates.
+      { label: "ESMA, Consolidated Tape Providers: selection for the equities CTP (shares and ETFs) launched 20 June 2025; EuroCTP selected 19 December 2025; authorized 27 July 2026; \"On 14 September 2026, EuroCTP launched the first EU CTP for equities (shares and ETFs)\" (read 2026-11-16)", url: "https://www.esma.europa.eu/esmas-activities/markets-and-infrastructure/consolidated-tape-providers" },
+      // ESMA's selection release: the shareholders.
+      { label: "ESMA, press release of 19 December 2025, \"ESMA selects EuroCTP to become the first Consolidated Tape Provider for shares and ETFs\" (ESMA74-276584410-11220): \"EuroCTP is a joint venture based in the Netherlands, with 15 European exchange groups as current shareholders\"; five years under ESMA's direct supervision (read 2026-11-16)", url: "https://www.esma.europa.eu/press-news/esma-news/esma-selects-euroctp-become-first-consolidated-tape-provider-shares-and-etfs" },
+      // The governance page, read by the integrator in PRIME's Chrome (it renders in JavaScript; corpus/euroctp-governance-chrome-20261116.txt).
+      { label: "EuroCTP, Our governance (read 2026-11-16): the supervisory board comprises six representatives of its shareholders not directly involved in market data activities, from SIX Group, the Vienna Stock Exchange, Nasdaq (seat to be announced), Deutsche Börse AG, Euronext and the Bulgarian Stock Exchange, whose member sits also on behalf of the exchanges of Luxembourg, Budapest, Bucharest, Warsaw, Athens, Cyprus, Ljubljana, Malta and Zagreb", url: "https://www.euroctp.eu/en/our-governance" }, // EuroCTP
+      // ESMA's authorization release.
+      { label: "ESMA, press release of 27 July 2026, \"ESMA authorises EuroCTP as the Consolidated Tape Provider for shares and exchange-traded funds\" (ESMA71-545613100-2975): EuroCTP B.V. authorized; transition period until 30 September 2026; five years from the start of operations; data free of charge for retail investors, academics, civil society organizations and regulators, others at a reasonable fee (read 2026-11-16)", url: "https://esma.europa.eu/press-news/esma-news/esma-authorises-euroctp-consolidated-tape-provider-shares-and-exchange-traded" },
+      // Incorporation and leadership.
+      { label: "EuroCTP, news, Amsterdam, 5 December 2024, \"EuroCTP Appoints Leadership and Achieves A Key Milestone in Its Development\": after the incorporation of the company on 23 August 2024, Eglantine Desautel appointed CEO and Timo Pentner CTO; Jorge Yzaguirre Scharfhausen chair of the Supervisory Board; Desautel previously Head of Market Operations and Digital for Euronext (read 2026-11-16)", url: "https://www.euroctp.eu/en/news/leadership_appointment", sourceNote: "The page renders in JavaScript; the text was read on 2026-11-16 from the site's own content service (cms.euroctp.eu, news items), which serves the same release. To be checked in a browser." },
+      // The bid announcement.
+      { label: "EuroCTP, news, Amsterdam, 20 June 2025, \"EuroCTP Welcomes Tender Procedure for European Consolidated tape, Announces Intent to Participate\": EuroCTP B.V. is a Dutch company dedicated to providing a real-time consolidated tape for shares and ETFs (read 2026-11-16)", url: "https://www.euroctp.eu/en/news/Esma_tender_process", sourceNote: "Read from the site's content service, as above; to be checked in a browser." },
+      // The sixteenth shareholder.
+      { label: "EuroCTP, news, Amsterdam, 17 July 2025, \"EuroCTP Welcomes Bratislava Stock Exchange as Our 16th Shareholder\": the shareholder base now includes all 27 EU Member States; EuroCTP as a joint venture open to new shareholders (read 2026-11-16)", url: "https://www.euroctp.eu/en/news/welcome_bratislava", sourceNote: "Read from the site's content service, as above; to be checked in a browser." },
+      // The data centre.
+      { label: "EuroCTP, news, Amsterdam, 28 January 2026, \"EuroCTP Announces The Primary Data Centre Location\": Equinix's FR2 data centre in Frankfurt selected; directly connected to major EU financial venues and data consumers, an ideal location for low-latency access; the system captures real-time pre- and post-trade data from all trading and reporting venues across the EU (read 2026-11-16)", url: "https://www.euroctp.eu/en/news/data_centre_annoucement", sourceNote: "Read from the site's content service, as above; to be checked in a browser." },
+      // The launch.
+      { label: "EuroCTP, news, Amsterdam, 14 September 2026, \"EuroCTP Launches Europe's First Consolidated Tape for Shares and ETFs\": data from over 130 sources across the EU; contributors onboarded at launch represent 87% of the target scope by notional trade value; five years under ESMA's supervision (read 2026-11-16)", url: "https://www.euroctp.eu/en/news/launching", sourceNote: "Read from the site's content service, as above; the 27 July 2026 release (authorization) adds connectivity across 130 data sources spanning regulated markets, MTFs and APAs. To be checked in a browser." },
+    ],
+  },
+  {
+    // EDIPHY - added 2026-11-16 (industry wave I5). The London company behind fairCT, the EU bond tape.
+    // FOUNDED 2018 by the company's own account ("01 · FOUNDED (2018)", ediphy.io/about). DISCREPANCY RECORDED: the
+    // UK register holds an Ediphy-named company incorporated on 10 March 2017 (now Ediphy Research Ltd, first named
+    // Ediphy Markets Limited) and Ediphy Markets Ltd on 5 December 2017; the body says which is which.
+    // NO PARENT: the register names a person, not a company, as the group's controller; nothing is recorded.
+    slug: "ediphy",
+    // Own site read live 2026-11-16: HTTP 200 at https://www.ediphy.io/.
+    official: {
+      // The company's own site.
+      url: "https://www.ediphy.io",
+      // The tape it sponsors.
+      resources: [
+        // fairCT's own site.
+        { label: "fairCT, the EU bond consolidated tape sponsored by Ediphy", url: "https://www.fairct.org/" },
+      ],
+    },
+    // Trading infrastructure for fixed income and a consolidated tape: market infrastructure and software.
+    tags: ["markets", "vendor"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "Ediphy - the fixed-income firm behind the EU bond tape",
+    // Founding year, named by the Ediphy About label below.
+    founded: 2018,
+    // Card line.
+    tagline: "A London fixed-income technology company, founded in 2018 by its own account, whose fairCT initiative the European Securities and Markets Authority (ESMA) selected in July 2025 as the first consolidated tape provider for bonds in the European Union.",
+    // Intro paragraph.
+    intro:
+      "Ediphy describes itself as the infrastructure layer for fixed income: multi-venue execution through its fairEx platform, pricing and analytics, normalized bond data and regulatory reporting services, with Ediphy Markets Ltd authorized and regulated by the Financial Conduct Authority (FCA) as an investment firm. On 3 July 2025 the European Securities and Markets Authority (ESMA) selected Ediphy (fairCT) as the first consolidated tape provider (CTP) for bonds in the European Union (EU), describing Ediphy as a fintech company in the fixed-income space that had been involved with the consolidated tape since the onset of the second Markets in Financial Instruments Directive (MiFID II) in 2018.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the company's own history and the register.
+      "By its own account Ediphy was founded in 2018 by market-infrastructure and execution specialists, spent 2019 to 2022 building multi-venue execution, the liveMid pricing stack and a post-trade consolidation layer, and was selected by ESMA in 2025. The United Kingdom register is a little older than that story: the company now called Ediphy Research Ltd, first registered as Ediphy Markets Limited, was incorporated on 10 March 2017, Ediphy Markets Ltd on 5 December 2017, and the holding company, Ediphy Group Ltd, on 3 January 2020, all at the same address in Wood Street, London.",
+      // Paragraph 2: fairCT.
+      "The bond tape is run through a separate Dutch company, fairCT B.V. of Amsterdam, which Ediphy sponsored and for which it serves as managed services partner and technology provider. On 3 June 2026 fairCT announced institutional backing from Barclays, Citadel Securities, Deutsche Bank, TP ICAP and UBS Investment Bank alongside Ediphy Group. It said the tape would publish validated trade data in real time, subject to the regulatory deferral regime, with quality scores beside each trade, and that it would launch once connected to at least 80% of European trading venues and approved publication arrangements by number, representing at least 80% of traded volume. ESMA's page still listed the authorization as ongoing in November 2026, and fairCT's own timeline gave January 2027 as the planned start, subject to authorization.",
+      // Paragraph 3: why it matters, analytically.
+      "Bonds are the harder tape to build. fairCT notes that the European bond market has had no consolidated tape since the first Markets in Financial Instruments Regulation introduced post-trade transparency requirements more than a decade ago; its 80/80 launch condition is in effect a connectivity target; and Ediphy's own Ediphy Connect product, which aggregates the EU bond tape, the United Kingdom bond tape and the United States Trade Reporting and Compliance Engine (TRACE) data into one normalized feed, shows where the company expects the commercial value to lie: in reconciling several regulators' records into one.",
+    ],
+    // The company's own page.
+    externalUrl: "https://www.ediphy.io/about/",
+    // Link label.
+    externalLabel: "Ediphy",
+    // Sources, each read on 2026-11-16.
+    sources: [
+      // ESMA's selection.
+      { label: "ESMA, press release of 3 July 2025, \"ESMA selects Ediphy (fairCT) to become the first Consolidated Tape Provider for bonds\": fairCT catalysed by Ediphy, a FinTech company in the fixed income space involved with the consolidated tape since the onset of MiFID II in 2018; five years under ESMA's direct supervision after authorization (read 2026-11-16)", url: "https://www.esma.europa.eu/press-news/esma-news/esma-selects-ediphy-fairct-become-first-consolidated-tape-provider-bonds" },
+      // ESMA's page: authorization ongoing.
+      { label: "ESMA, Consolidated Tape Providers: the bond CTP selection launched 3 January 2025; Ediphy (fairCT) selected 3 July 2025; \"The authorisation process is ongoing\" (read 2026-11-16)", url: "https://www.esma.europa.eu/esmas-activities/markets-and-infrastructure/consolidated-tape-providers" },
+      // The founding year and the company's story.
+      { label: "Ediphy, About: \"01 · FOUNDED (2018)\", Ediphy founded by market-infrastructure and execution specialists; built 2019 to 2022 (multi-venue execution, liveMid, post-trade consolidation); selected 2025; Ediphy sponsored fairCT; Ediphy Markets Ltd authorized and regulated by the FCA (FRN 823631); Ediphy Group Ltd registered in England and Wales, 88 Wood Street, London (read 2026-11-16)", url: "https://www.ediphy.io/about/" },
+      // The products.
+      { label: "Ediphy, home page: fairEx multi-venue execution across bonds, credit, rates and inflation; Ediphy Connect aggregating the EU Bond CT, UK Bond CT and US TRACE into one normalized feed; \"Ediphy sponsored fairCT and serves as its Managed Services Partner\" (read 2026-11-16)", url: "https://www.ediphy.io/" },
+      // The investors and the launch condition.
+      { label: "fairCT, news, London, 3 June 2026, \"fairCT Secures Institutional Backing from Five Major Investors to Deliver Europe's Bond Consolidated Tape\": Ediphy Group, which ran the winning bid and provides the technology platform, joined by Barclays, Citadel Securities, Deutsche Bank, TP ICAP and UBS Investment Bank; launch on the 80/80 condition; quality scores beside each trade; authorization underway (read 2026-11-16)", url: "https://www.fairct.org/blog/fairct-secures-institutional-backing-from-five-major-investors-to-deliver-europes-bond-consolidated-tape/" },
+      // fairCT's timeline.
+      { label: "fairCT, About: timeline of the bond tape; ESMA confirmed Ediphy (fairCT) on 3 July 2025; CTP operational planned January 2027 subject to authorization; fairCT B.V., Gustav Mahlerplein 2, Amsterdam, KVK 96375388 (read 2026-11-16)", url: "https://www.fairct.org/about/" },
+      // The register: the oldest Ediphy company.
+      { label: "Companies House, EDIPHY RESEARCH LTD, company 10663893: incorporated on 10 March 2017; previous name EDIPHY MARKETS LIMITED (10 March 2017 to 30 November 2017); active; 88 Wood St, London (read 2026-11-16)", url: "https://find-and-update.company-information.service.gov.uk/company/10663893" },
+      // The register: the trading company.
+      { label: "Companies House, EDIPHY MARKETS LTD, company 11096023: incorporated on 5 December 2017; active; 88 Wood St, London (read 2026-11-16)", url: "https://find-and-update.company-information.service.gov.uk/company/11096023" },
+      // The register: the holding company.
+      { label: "Companies House, EDIPHY GROUP LTD, company 12385234: incorporated on 3 January 2020; activities of financial services holding companies; active; 88 Wood St, London (read 2026-11-16)", url: "https://find-and-update.company-information.service.gov.uk/company/12385234" },
+    ],
+  },
+  {
+    // ETRADING SOFTWARE - added 2026-11-16 (industry wave I5).
+    // ONE GROUP OR TWO? The brief asked. Findings: the FCA's UK bond tape appointee, ETS Connect UK, is operated by
+    // Etrading Software (UK Bond CTP) Ltd, whose registered controller is Etrading Software Limited (Companies House
+    // PSC) and which calls itself part of the Etrading Software group (its privacy policy): the same group. ESMA's OTC
+    // derivatives appointee is named by ESMA as "Etrading Software (Netherlands) B.V."; Etrading Software's own
+    // announcement names the selected provider as Transparent Markets Europe (TME), a non-profit utility owned by a
+    // Dutch foundation, with Etrading Software as founding member and technology partner (FETCH-ONLY). The record
+    // states both and does not assert that the Dutch entity belongs to the group.
+    // NO PARENT: LDC invested in 2022, but the register now records no registrable controller of the holding company.
+    slug: "etrading-software",
+    // Own site: HTTP 403 to curl on 2026-11-16, read through the fetch tool (FETCH-ONLY in REPORT.md).
+    official: {
+      // The company's own site.
+      url: "https://etradingsoftware.com",
+      // The UK bond tape it operates.
+      resources: [
+        // ETS Connect UK, the UK bond consolidated tape.
+        { label: "ETS Connect UK: the UK bond consolidated tape, powered by Etrading Software", url: "https://ets-connect.co.uk/" },
+      ],
+    },
+    // Builds and operates market infrastructure technology: market infrastructure, software and managed services.
+    tags: ["markets", "vendor", "services"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "Etrading Software - the operator behind the UK bond tape",
+    // Founding year, named by the LDC case study and Companies House labels below.
+    founded: 2004,
+    // Card line.
+    tagline: "A London capital-markets technology company founded in 2004 that is the primary service and technology provider to the Derivatives Service Bureau (DSB), operates the United Kingdom's bond consolidated tape as ETS Connect UK, and is the technology partner of the European Union's tape for over-the-counter (OTC) derivatives.",
+    // Intro paragraph.
+    intro:
+      "Etrading Software was founded in 2004 by Sassan Danesh, its chief executive, and is headquartered in London; Etrading Software Limited was incorporated on 22 September 2004. It describes itself as a global provider of technology-led solutions that help financial institutions and industry initiatives address complex and evolving market and regulatory challenges. It is the primary service and technology provider to the Derivatives Service Bureau (DSB), the global numbering agency for over-the-counter (OTC) derivatives, a role extended to the service that generates Unique Product Identifiers (UPIs), with which regulators in G20 countries aggregate and track OTC derivative transaction data.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: ownership.
+      "In December 2022 LDC, the private equity arm of Lloyds Banking Group, made what it called a significant investment, backing the existing management team; Danesh said that one immediate benefit would be a stronger proposition for a consolidated tape in the United Kingdom and Europe. The United Kingdom register shows Etrading Software Limited controlled since 7 December 2022, with 75% or more of shares and votes, by a holding company, Tolia Bidco Limited, in which an LDC fund, LDC XI LP, held between a quarter and a half of the shares until 26 June 2025; since 6 November 2025 Tolia Bidco has stated that it has no registrable controller.",
+      // Paragraph 2: the UK bond tape.
+      "The United Kingdom tape came first. The Financial Conduct Authority (FCA) launched its tender for a bond consolidated tape provider on 7 March 2025 and appointed ETS Connect UK as the successful bidder in August 2025. A legal challenge suspended the contract award until the High Court lifted the suspension in December 2025; the FCA signed the contract in January 2026, authorized ETS Connect UK in May 2026 for a five-year term, and the tape launched on 22 June 2026. ETS Connect UK is operated by Etrading Software (UK Bond CTP) Ltd, incorporated on 1 September 2025, whose registered controller is Etrading Software Limited and which describes itself as part of the Etrading Software group.",
+      // Paragraph 3: the EU derivatives tape, as each side names it.
+      "The European Union's tape for OTC derivatives followed. On 6 July 2026 the European Securities and Markets Authority (ESMA) selected Etrading Software (Netherlands) B.V. as the consolidated tape provider for OTC derivatives, with authorization to follow and a five-year term under its direct supervision. Etrading Software's own announcement of 7 July 2026 names the selected provider differently: Transparent Markets Europe (TME), a non-profit market utility owned by a Dutch foundation, whose founding members include the German Investment Funds Association (BVI), the DSB and Etrading Software itself, with Etrading Software as technology partner, building the tape on the infrastructure it developed and operates for the United Kingdom bond tape. Neither text states how the company ESMA names relates to the utility Etrading Software names.",
+      // Paragraph 4: why it matters, analytically.
+      "The pattern is the point: an operator that builds and runs regulated market infrastructure for others, first the technology of a numbering agency for derivatives and now consolidated tapes on both sides of the Channel, from one technology base. For networks and trading systems it means that one engineering organization's choices about connectivity, resilience and latency stand behind a live United Kingdom tape for bonds and a prospective European tape for derivatives.",
+    ],
+    // The company's own page.
+    externalUrl: "https://etradingsoftware.com",
+    // Link label.
+    externalLabel: "Etrading Software",
+    // Sources, each read on 2026-11-16.
+    sources: [
+      // The investment and the DSB role.
+      { label: "LDC, news, 12 December 2022, \"LDC invests in Etrading Software\": LDC, the private equity arm of Lloyds Banking Group, has made a significant investment; Etrading Software is the primary service and technology provider to the Derivatives Service Bureau (DSB), the global numbering agency for OTC derivatives, its Management Services Partner role extended to Unique Product Identifiers (UPIs); headquartered in London; CEO Sassan Danesh founded the business in 2004 and cites the consolidated tape proposition (read 2026-11-16)", url: "https://www.ldc.co.uk/news/ldc-invests-in-etrading-software/" },
+      // The founding year and headquarters.
+      { label: "LDC, case study, \"Etrading Software: taking a software solution global\": the company, founded in 2004 and headquartered in London, provides market and reference data used by international financial institutions; LDC backed the management team led by CEO Sassan Danesh in December 2022 (read 2026-11-16)", url: "https://www.ldc.co.uk/portfolio/etrading-software-taking-a-software-solution-global/" },
+      // The register: the company.
+      { label: "Companies House, ETRADING SOFTWARE LIMITED, company 05237988: incorporated on 22 September 2004; active; First Floor, 6 Dowgate Hill, London (read 2026-11-16)", url: "https://find-and-update.company-information.service.gov.uk/company/05237988" },
+      // The register: its controller.
+      { label: "Companies House, ETRADING SOFTWARE LIMITED, persons with significant control: Tolia Bidco Limited (company 14458691), ownership of shares and voting rights 75% or more, notified 7 December 2022 (read 2026-11-16)", url: "https://find-and-update.company-information.service.gov.uk/company/05237988/persons-with-significant-control" },
+      // The register: the holding company's controllers.
+      { label: "Companies House, TOLIA BIDCO LIMITED, persons with significant control: LDC XI LP held more than 25% but not more than 50% of shares and votes from 7 December 2022 until 26 June 2025; statement since 6 November 2025 that there is no registrable person or legal entity (read 2026-11-16)", url: "https://find-and-update.company-information.service.gov.uk/company/14458691/persons-with-significant-control" },
+      // The register: the UK tape operator.
+      { label: "Companies House, ETRADING SOFTWARE (UK BOND CTP) LTD, company 16686242: incorporated on 1 September 2025; person with significant control Etrading Software Limited (company 05237988), notified 1 September 2025 (read 2026-11-16)", url: "https://find-and-update.company-information.service.gov.uk/company/16686242/persons-with-significant-control" },
+      // The FCA's account of the UK tape.
+      { label: "FCA, Bond consolidated tape (first published 9 August 2024, last updated 3 August 2026): tender launched 7 March 2025; ETS Connect UK appointed as successful bidder in August 2025; legal challenge, High Court lifted the suspension in December 2025; contract signed January 2026; ETS Connect UK authorized as UK bond CTP in May 2026 for a 5-year term; service launched 22 June 2026 (read 2026-11-16)", url: "https://www.fca.org.uk/markets/data-reporting-services-providers/bond-consolidated-tape" },
+      // The operator of ETS Connect UK.
+      { label: "ETS Connect UK, Privacy Policy: Etrading Software (UK Bond CTP) Ltd, Companies House 16686242, 6 Dowgate Hill, London, is the data controller; data may be shared with other companies in the Etrading Software group, such as Etrading Software Ltd (read 2026-11-16)", url: "https://ets-connect.co.uk/privacy-policy/" },
+      // ESMA's selection.
+      { label: "ESMA, news, 6 July 2026, \"ESMA selects Etrading Software (Netherlands) B.V. as Consolidated Tape Provider for OTC derivatives\": selected after assessment against MiFIR; to be invited to apply for authorization; five years under ESMA's direct supervision once authorized (read 2026-11-16)", url: "https://www.esma.europa.eu/press-news/esma-news/esma-selects-etrading-software-netherlands-bv-consolidated-tape-provider-otc" },
+      // Etrading Software's own description.
+      { label: "Etrading Software, home page: \"the global provider of technology-led solutions designed to assist financial institutions\" and industry initiatives; headquarters in London; technology and service provider to the Derivatives Service Bureau (DSB) (read 2026-11-16)", url: "https://etradingsoftware.com/", sourceNote: "Curl returned HTTP 403; the quotation and the London headquarters were confirmed in a browser on 2026-11-16." },
+      // Etrading Software's account of the EU derivatives tape.
+      { label: "Etrading Software, news, Amsterdam, 7 July 2026, \"Transparent Markets Europe Selected as EU Consolidated Tape Provider for OTC Derivatives\": TME, a non-profit market utility owned by an independent Dutch foundation, selected by ESMA; founding members include the German Investment Funds Association (BVI), the DSB and Etrading Software (ETS); ETS its technology partner; the tape to be built on production infrastructure developed and operated by Etrading Software for the UK bond consolidated tape, live since 22 June 2026 (read 2026-11-16)", url: "https://etradingsoftware.com/transparent-markets-europe-selected-as-eu-consolidated-tape-provider-for-otc-derivatives/", sourceNote: "The site answers 403 to curl; confirmed in a browser on 2026-11-16: dated 7 July 2026, Amsterdam; an independent not-for-profit foundation; BVI, the Derivatives Service Bureau and Etrading Software among the founding members; ETS the technology partner; built on the infrastructure of the UK bond consolidated tape." },
+    ],
+  },
+  {
+    // CONSOLIDATED AUDIT TRAIL - added 2026-11-16 (industry wave I5). Consolidated Audit Trail, LLC (CAT LLC), with
+    // FINRA CAT, LLC as its plan processor.
+    // FOUNDED 2019: the year CAT LLC became the plan's company (29 August 2019, SEC Release 34-105003 label). The
+    // 2012 rule and the 2016 plan are told in the intro; no storyBegins, because neither is a company.
+    // NO PARENT: each participant owns the company jointly with the others on an equal basis.
+    slug: "consolidated-audit-trail",
+    // Own site read live 2026-11-16: HTTP 200 at https://www.catnmsplan.com/.
+    official: {
+      // The plan's own site, run under FINRA's name.
+      url: "https://www.catnmsplan.com",
+    },
+    // A regulatory audit trail run by the self-regulatory organizations: market supervision infrastructure.
+    tags: ["markets"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "Consolidated Audit Trail - one record of United States orders for the regulators",
+    // Founding year of CAT LLC, named by the SEC Release 34-105003 label below.
+    founded: 2019,
+    // Card line.
+    tagline: "Consolidated Audit Trail, LLC, owned in equal shares by the United States exchanges and the Financial Industry Regulatory Authority (FINRA), runs the single audit trail the Securities and Exchange Commission (SEC) required in 2012, with FINRA's subsidiary FINRA CAT as plan processor since 2019.",
+    // Intro paragraph.
+    intro:
+      "The Consolidated Audit Trail (CAT) exists because the Securities and Exchange Commission (SEC) adopted Rule 613 of its rules for the national market system (NMS), Regulation NMS, on 11 July 2012, requiring the national securities exchanges and national securities associations to create, implement and maintain a consolidated audit trail capturing customer and order event information for orders in NMS securities. The SEC approved the plan that governs it, the CAT NMS Plan, on 15 November 2016, and on 29 August 2019 the participants replaced it in its entirety with the limited liability company agreement of a new company, Consolidated Audit Trail, LLC (CAT LLC). Each participant owns the company jointly with the others on an equal basis; in March 2026 there were 27, the 26 exchanges and the Financial Industry Regulatory Authority (FINRA). In the plan site's words, the CAT tracks orders throughout their life cycle and identifies the broker-dealers handling them.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the processor.
+      "The audit trail is operated for the company by a plan processor. FINRA CAT, LLC, an affiliate of FINRA, formally took over as plan processor on 26 February 2019, and CAT LLC describes it as a separate legal entity that is a subsidiary of FINRA. The plan's website is published under FINRA's copyright, and its help desk is the FINRA CAT Helpdesk.",
+      // Paragraph 2: clock synchronization.
+      "For networks the plan's most concrete requirement is time. As the plan stood when the participants assessed it on 15 May 2017, each exchange and FINRA had to synchronize its business clocks, other than those used only for manual orders, to within 100 microseconds of the time maintained by the National Institute of Standards and Technology (NIST), and to require its industry members to keep theirs within 50 milliseconds, with one second allowed for clocks used only for manual orders or allocation times. The participants surveyed the industry and concluded that it was not necessary or appropriate to amend those requirements at that time.",
+      // Paragraph 3: cost and funding.
+      "The audit trail is expensive, and the bill has been contested. On 16 March 2026 the SEC approved, as modified, an amendment implementing a revised funding model, under which FINRA CAT calculates the CAT fees and sends the invoices; the order records commenters such as Citadel arguing that the 2016 cost estimates had proved to be grossly inaccurate. CAT LLC's budget for 2027, posted in November 2026, projects total expenses of US$136.3 million, US$75.2 million of it for cloud hosting, against projected fees of about US$98.7 million from industry members and US$49.3 million from the exchanges and FINRA.",
+      // Paragraph 4: why it matters, analytically.
+      "The CAT turns every reporting firm's timestamps into regulatory evidence. Sequencing orders across venues and broker-dealers is only as good as the clocks behind the events, which is why a market surveillance plan ends up specifying tolerances against a national time standard; and the largest line in its 2027 budget is cloud hosting, the cost of keeping those events.",
+    ],
+    // The plan's own page.
+    externalUrl: "https://www.catnmsplan.com/about-cat",
+    // Link label.
+    externalLabel: "Consolidated Audit Trail (CAT NMS Plan)",
+    // Sources, each read on 2026-11-16.
+    sources: [
+      // The plan site: Rule 613 and the purpose.
+      { label: "CAT NMS Plan, About CAT: on 11 July 2012 the SEC voted to adopt Rule 613 under Regulation NMS requiring the national securities exchanges and national securities associations to submit an NMS plan to create, implement and maintain a consolidated audit trail; help through the FINRA CAT Helpdesk; site copyright FINRA (read 2026-11-16)", url: "https://www.catnmsplan.com/about-cat" },
+      // The plan site's home page.
+      { label: "CAT NMS Plan, home page: \"The Consolidated Audit Trail tracks orders throughout their life cycle and identifies the broker-dealers handling them\"; CAT LLC 2027 Financial and Operating Budget posted (read 2026-11-16)", url: "https://www.catnmsplan.com/" },
+      // The 2026 order: CAT LLC, ownership, participants, processor, funding.
+      { label: "SEC Release 34-105003, 16 March 2026, order approving, as modified, an amendment to the CAT NMS Plan implementing a revised funding model: plan approved 15 November 2016 (Release 78318); each Participant jointly owns the Company on an equal basis; on 29 August 2019 the Participants replaced the plan with the LLC agreement of a new limited liability company, CAT LLC; 27 Participants, 26 exchanges and FINRA; FINRA CAT, LLC, an affiliate of FINRA, formally took over as Plan Processor on 26 February 2019 and is described by CAT LLC as a separate legal entity that is a subsidiary of FINRA; FINRA CAT to calculate CAT fees and submit invoices; Citadel's October 2025 letter on 2016 estimates that \"proved to be grossly inaccurate\" (read 2026-11-16)", url: "https://www.sec.gov/files/rules/sro/nms/2026/34-105003.pdf" },
+      // The clock synchronization requirements.
+      { label: "CAT NMS Plan Participants, \"Assessment of the Business Clock Synchronization Requirements of the Consolidated Audit Trail\", filed with the SEC on 15 May 2017: Participants' business clocks within 100 microseconds of NIST time; Industry Members' within 50 milliseconds; one second for manual order events and allocation times; not necessary or appropriate to amend the requirements at this time (read 2026-11-16)", url: "https://acquia.catnmsplan.com/sites/default/files/2020-02/Clock-Synchronization-Assessment-Final-5.15.17.pdf" },
+      // The 2027 budget.
+      { label: "Consolidated Audit Trail, LLC, 2027 Financial and Operating Budget (file dated 13 November 2026): total expenses $136,260,830, cloud hosting services $75,209,952; projected fees from Industry Members $98,690,021 and from SROs $49,345,011 (read 2026-11-16)", url: "https://www.catnmsplan.com/sites/default/files/2026-11/11.13.26-CAT-2027-Budget.pdf" },
+    ],
+  },
+  {
+    // FINRA - added 2026-11-16 (industry wave I5). The Financial Industry Regulatory Authority.
+    // FOUNDED 2007, the year of the consolidation and of the name (SEC press release 2007-151 label); the NASD,
+    // whose corporate name FINRA took, registered in 1939 (storyBegins, FINRA Our History label, FETCH-ONLY).
+    // NO PARENT: a membership organization.
+    slug: "finra",
+    // Own site: HTTP 403 to curl on 2026-11-16, read through the fetch tool (FETCH-ONLY in REPORT.md).
+    official: {
+      // The organization's own site.
+      url: "https://www.finra.org",
+    },
+    // A self-regulatory organization: market supervision.
+    tags: ["markets"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "FINRA - the self-regulator of United States broker-dealers",
+    // Founding year, named by the SEC press release 2007-151 and Release 34-56145 labels below.
+    founded: 2007,
+    // The story opens with the NASD, registered in 1939 (FINRA Our History label below).
+    storyBegins: { year: 1939, company: "National Association of Securities Dealers (NASD)" },
+    // Card line.
+    tagline: "The Financial Industry Regulatory Authority (FINRA), formed in 2007 when the member-firm regulation of the National Association of Securities Dealers (NASD) and NYSE Regulation was consolidated, is the self-regulatory organization for broker-dealers in the United States.",
+    // Intro paragraph.
+    intro:
+      "The Financial Industry Regulatory Authority (FINRA) describes itself as a private not-for-profit membership organization and a self-regulatory organization for member broker-dealers, responsible under federal law for supervising its member firms under the oversight of the Securities and Exchange Commission (SEC). It was born of a consolidation: on 26 July 2007 the SEC gave final approval to combining the member-firm regulatory functions of the National Association of Securities Dealers (NASD) and NYSE Regulation, Inc., a subsidiary of New York Stock Exchange LLC, into a single self-regulatory organization to be known as FINRA, and the NASD's certificate was amended to its new corporate name, Financial Industry Regulatory Authority, Inc.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the lineage and the 2007 remit.
+      "The legal entity is older than the name. FINRA counts the NASD as its predecessor and dates it to 1939, when the association registered with the SEC under the Maloney Act that Congress had passed in 1938 to regulate off-exchange trading. In 2007 the SEC expected the new organization to regulate all securities firms doing business with the public, including the training, testing and licensing of registered persons, arbitration and mediation; to regulate the Nasdaq Stock Market, the American Stock Exchange and the International Securities Exchange by contract; and to operate industry utilities such as trade reporting facilities, while NYSE Regulation kept the oversight of trading on the New York Stock Exchange.",
+      // Paragraph 2: FINRA as market infrastructure.
+      "FINRA is also a piece of market infrastructure. It runs the Trade Reporting and Compliance Engine (TRACE), which it describes as the FINRA-developed vehicle that facilitates the mandatory reporting of over-the-counter transactions in eligible fixed-income securities. It is a participant in the national market system plans for the consolidated equity tape and for the Consolidated Audit Trail (CAT), and its subsidiary FINRA CAT, LLC has been the CAT's plan processor since 26 February 2019. FINRA says it monitors billions of market events a day.",
+      // Paragraph 3: why it matters, analytically.
+      "For trading networks FINRA is where off-exchange activity becomes visible. Bond trades reported to TRACE and order events reported to the CAT both depend on what broker-dealers' systems record and transmit, and the CAT plan's clock requirement for broker-dealers, within 50 milliseconds of the time kept by the National Institute of Standards and Technology (NIST) as the plan stood in 2017, is a regulatory obligation on the time distribution of the firms that report to the CAT.",
+    ],
+    // The organization's own page.
+    externalUrl: "https://www.finra.org/about",
+    // Link label.
+    externalLabel: "FINRA",
+    // Sources, each read on 2026-11-16.
+    sources: [
+      // The 2007 approval: the name and the year.
+      { label: "SEC, press release 2007-151, Washington, 26 July 2007: final regulatory approval of the consolidation of the member firm regulatory functions of the NASD and NYSE Regulation, Inc., a wholly-owned subsidiary of New York Stock Exchange LLC; \"The consolidated organization will be known as the Financial Industry Regulatory Authority, or FINRA\"; its remit, contracts with Nasdaq, Amex and ISE, and industry utilities such as trade reporting facilities (read 2026-11-16)", url: "https://www.sec.gov/news/press/2007/2007-151.htm" },
+      // The order: the corporate name.
+      { label: "SEC Release 34-56145, 26 July 2007, Federal Register 1 August 2007, order approving the amendment of the NASD By-Laws to accommodate the consolidation of the member firm regulatory functions of NASD and NYSE Regulation: the amended Certificate reflects \"NASD's change in corporate name to Financial Industry Regulatory Authority, Inc.\" (read 2026-11-16)", url: "https://www.govinfo.gov/content/pkg/FR-2007-08-01/pdf/E7-14855.pdf" },
+      // FINRA's self-description.
+      { label: "FINRA, About FINRA: \"a private not-for-profit membership organization\"; \"a self-regulatory organization for member broker-dealers\"; responsible under federal law for supervising member firms under the oversight of the SEC; monitoring billions of daily market events (read 2026-11-16)", url: "https://www.finra.org/about", sourceNote: "finra.org answers HTTP 403 to curl; all four phrases confirmed word for word in a browser on 2026-11-16." },
+      // The NASD in 1939.
+      { label: "FINRA, Our History: \"In 1939, FINRA's predecessor, the National Association of Securities Dealers (NASD), officially registered with the SEC\"; Congress passed the Maloney Act in 1938 to better regulate off-exchange trading (read 2026-11-16)", url: "https://www.finra.org/about/our-history", sourceNote: "HTTP 403 to curl; the sentence confirmed in a browser on 2026-11-16, where it continues \"as a national securities association\". The 1939 storyBegins year rests on it." },
+      // TRACE.
+      { label: "FINRA, Trade Reporting and Compliance Engine (TRACE): \"the FINRA-developed vehicle that facilitates the mandatory reporting of over-the-counter transactions\" in eligible fixed income securities (read 2026-11-16)", url: "https://www.finra.org/filing-reporting/trace", sourceNote: "HTTP 403 to curl; the quotation confirmed word for word in a browser on 2026-11-16." },
+      // FINRA in the tape plans.
+      { label: "CTA Plan, Overview: Financial Industry Regulatory Authority, Inc. among the current Participants of the CTA and CQ Plans (read 2026-11-16)", url: "https://www.ctaplan.com/" },
+      // FINRA in the CAT and FINRA CAT.
+      { label: "SEC Release 34-105003, 16 March 2026: FINRA among the 27 Participants of the CAT NMS Plan; FINRA CAT, LLC, an affiliate of FINRA, Plan Processor since 26 February 2019, a separate legal entity that is a subsidiary of FINRA (read 2026-11-16)", url: "https://www.sec.gov/files/rules/sro/nms/2026/34-105003.pdf" },
+      // The clock requirement.
+      { label: "CAT NMS Plan Participants, clock synchronization assessment filed 15 May 2017: Industry Members' business clocks within 50 milliseconds of the time maintained by NIST (read 2026-11-16)", url: "https://acquia.catnmsplan.com/sites/default/files/2020-02/Clock-Synchronization-Assessment-Final-5.15.17.pdf" },
+    ],
+  },
+  {
+    // FIA - added 2026-11-16 (industry wave I5). The Futures Industry Association.
+    // FOUNDED 1955, in New York, as the Association of Commodity Exchange Firms; renamed in 1978. Same organization,
+    // so the year is the card's own (FIA About label). NO PARENT: a trade association.
+    // TAGS: an industry association ("standards") of market participants ("markets"); REPORT.md notes the choice.
+    slug: "fia",
+    // Own site read live 2026-11-16: HTTP 200 at https://www.fia.org/about.
+    official: {
+      // The association's own site.
+      url: "https://www.fia.org",
+    },
+    // An industry association of the derivatives markets.
+    tags: ["standards", "markets"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "FIA - the trade association of the cleared derivatives markets",
+    // Founding year, named by the FIA About label below.
+    founded: 1955,
+    // Card line.
+    tagline: "Founded in New York in 1955 as the Association of Commodity Exchange Firms and renamed the Futures Industry Association in 1978, FIA is the trade organization of the futures, options and centrally cleared derivatives markets and an author of best practice for automated trading risk controls.",
+    // Intro paragraph.
+    intro:
+      "FIA, the Futures Industry Association, describes itself as the leading global trade organization for the futures, options and centrally cleared derivatives markets, with offices in Brussels, London, Singapore and Washington, D.C., to which one statement on its own page adds Amsterdam. Its members include providers of clearing and execution services, trading venues, clearinghouses, trading firms, commodity firms, buy-side firms, technology firms, law firms and other professional service providers, and its stated mission is to support open, transparent and competitive markets, protect and enhance the integrity of the financial system and promote high standards of professional conduct.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: history.
+      "FIA was founded in 1955 in New York as the Association of Commodity Exchange Firms, to give its members a forum to discuss issues, work with exchanges, represent the public customer and protect firms from fraudulent warehouse receipts, among other aims. In 1973 the New York association expanded to include Chicago firms; in 1978 it was renamed the Futures Industry Association and moved to Washington; and from the mid-1980s international organizations could join. FIA Europe began in London in 1993 as the Futures and Options Association, an Asia office opened in 2005 and became FIA Asia in Singapore in 2012, the three formed an affiliation in 2013, and in January 2016 they merged into a single organization.",
+      // Paragraph 2: automated trading risk controls.
+      "For electronic trading FIA's contribution is a rulebook that is not law. In July 2024 it published Best Practices for Automated Trading Risk Controls and System Safeguards, consolidating its earlier work on pre-trade risk management, exchange volatility control mechanisms, post-trade analysis and exchange-based conformance testing; FIA called itself a leader for over 14 years in developing best practices for mitigating the risks of electronic trading, and its president and chief executive, Walt Lukken, said the practices suited both existing technologies and evolving ones such as artificial intelligence. FIA also keeps a repository of exchange-provided risk controls and practices for its members' exclusive use.",
+      // Paragraph 3: why it matters, analytically.
+      "Pre-trade limits, volatility controls and conformance tests are implemented in order gateways and matching engines, so a trade association's best-practice paper ends up as requirements that trading-system and network engineers build to.",
+    ],
+    // The association's own page.
+    externalUrl: "https://www.fia.org/about",
+    // Link label.
+    externalLabel: "FIA",
+    // Sources, each read on 2026-11-16.
+    sources: [
+      // The founding year and the history.
+      { label: "FIA, About FIA: the leading global trade organization for the futures, options and centrally cleared derivatives markets, with offices in Brussels, London, Singapore and Washington, D.C. (a second statement on the page adds Amsterdam); members and mission; \"FIA was founded in 1955 in New York as the Association of Commodity Exchange Firms\"; Chicago members from 1973; renamed the Futures Industry Association in 1978 and moved to Washington; FIA Europe founded 1993 in London as the Futures and Options Association; FIA Asia in Singapore 2012; affiliation 2013; merger effective January 2016; Futures Industry Association, Incorporated (read 2026-11-16)", url: "https://www.fia.org/about" },
+      // The 2024 best practices.
+      { label: "FIA, press release, Washington, D.C., 18 July 2024, \"FIA releases best practices for automated trading risk controls and system safeguards\": FIA, a leader for over 14 years in best practices for mitigating the risks of electronic trading; the paper covers pre-trade risk management, exchange volatility control mechanisms, post-trade analysis and exchange-based conformance testing; Walt Lukken, President and CEO; the site's Exchange Risk Controls Repository for FIA members (read 2026-11-16)", url: "https://www.fia.org/fia/articles/fia-releases-best-practices-automated-trading-risk-controls-and-system-safeguards" },
+    ],
+  },
+  {
+    // FIX TRADING COMMUNITY - added 2026-11-16 (industry wave I5). The brand of FIX Protocol Ltd.
+    // FOUNDED 1999: FIX Protocol Ltd, company 03760285, incorporated 23 April 1999 (Companies House label).
+    // STORY BEGINS 1992: the protocol work of Fidelity and Salomon Brothers (Finance Magnates and Wikipedia labels);
+    // Kevin Houstoun's account dates first real use to 1993 (The TRADE label). REPORT.md records the two years.
+    // NO PARENT: a company limited by guarantee whose assets a purpose trust owns.
+    slug: "fix-trading-community",
+    // Own site read live 2026-11-16: HTTP 200 at https://www.fixtrading.org/who-we-are/.
+    official: {
+      // The organization's own site.
+      url: "https://www.fixtrading.org",
+      // The standards, the useful part.
+      resources: [
+        // The technical standards index.
+        { label: "FIX Trading Community: technical standards (encodings, session layers, framing, FIX over TLS)", url: "https://www.fixtrading.org/standards/technical-standards/" },
+      ],
+    },
+    // A standards body for the trading industry.
+    tags: ["standards", "markets"],
+    // Trading today.
+    group: "contemporary",
+    // Title.
+    name: "FIX Trading Community - the custodian of the FIX Protocol",
+    // Founding year of FIX Protocol Ltd, named by the Companies House label below.
+    founded: 1999,
+    // The story opens with the protocol work of 1992 (Finance Magnates and Wikipedia labels below).
+    storyBegins: { year: 1992, company: "the FIX protocol work of Fidelity and Salomon Brothers" },
+    // Card line.
+    tagline: "The non-profit standards body behind the Financial Information Exchange (FIX) Protocol, the messaging language of electronic trading, which grew from an experiment between Salomon Brothers and Fidelity and is held by FIX Protocol Ltd, a United Kingdom company limited by guarantee incorporated in 1999.",
+    // Intro paragraph.
+    intro:
+      "FIX Trading Community is a brand of FIX Protocol Ltd, a non-profit entity registered in the United Kingdom and originally created to own, maintain and develop the Financial Information Exchange (FIX) Protocol messaging language; the company, a private company limited by guarantee without share capital, was incorporated on 23 April 1999. It calls itself an independent, non-profit standards body and the custodian of the FIX Protocol, which it says is used by well over 10,000 firms sending billions of messages a day, and it is managed under a purpose trust that owns its assets so that FIX remains a non-proprietary, free and open protocol.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: origins.
+      "FIX began as an experiment between Salomon Brothers and Fidelity to automate the sending of execution reports and indications of interest. As Kevin Houstoun, a director of FIX Protocol Ltd, told the story in 2020, the protocol was first called SBX, for Salomon Brothers Exchange, was first put into real use in 1993, and was renamed the Financial Information Exchange Protocol when Goldman Sachs and Putnam joined, because Salomon's branding might deter other broker-dealers; the first public specification, FIX 2.7, written by Robert Lamoureux and Chris Morstatt, followed in 1995. Wikipedia and the trade press date the start of the work to 1992.",
+      // Paragraph 2: the organization.
+      "The organization took its present name in August 2013, when FIX Protocol Ltd announced that it would be known as FIX Trading Community, with a new website, after expanding into post-trade work; the company on the United Kingdom register still bears the name FIX Protocol Ltd. Its members are drawn from the buy side, the sell side, market infrastructure operators, financial technology firms, consultants, regulators and other industry associations, and it says that when it responds to regulators it avoids positions of advocacy and focuses on how best to make regulation work.",
+      // Paragraph 3: the standards.
+      "Its standards are where it touches networks most directly. Beside the FIX Protocol and FIX Orchestra it publishes a family of technical standards: the original FIX TagValue encoding, a simple string format that became ISO 3531 Part 1 in 2022; the classic FIX session layer, ISO 3531 Part 2, with logon, message exchange, resynchronization and logout; Simple Binary Encoding (SBE), a high-performance binary encoding for transactions and market data that became ISO/IEC 25390:2025; the FIX Performance Session Layer (FIXP), a lightweight point-to-point protocol for high-performance computing; the Simple Open Framing Header (SOFH), which tells a receiver where one message ends and the next begins on a continuous stream; and FIXS, which secures FIX sessions with Transport Layer Security.",
+      // Paragraph 4: why it matters, analytically.
+      "FIX is the reason an order can travel between firms that never agreed on a format: the session layer that resynchronizes after a broken connection, the binary encodings that trade readability for speed, and the framing header that finds message boundaries in a byte stream are the parts of a trading network that sit above the transport, and they are held in trust so that the protocol stays non-proprietary, free and open.",
+    ],
+    // The organization's own page.
+    externalUrl: "https://www.fixtrading.org/who-we-are/",
+    // Link label.
+    externalLabel: "FIX Trading Community",
+    // Sources, each read on 2026-11-16.
+    sources: [
+      // The company and its founding year.
+      { label: "Companies House, FIX PROTOCOL LTD, company 03760285: private company limited by guarantee without share capital, incorporated on 23 April 1999, active; registered office c/o TMF Group, One Angel Court, London (read 2026-11-16)", url: "https://find-and-update.company-information.service.gov.uk/company/03760285" },
+      // The brand and the purpose trust.
+      { label: "FIX Protocol Ltd, FIX Latest specification, introduction, as of EP284, November 2023: \"FIX Trading Community is a brand of FIX Protocol Ltd, a non-profit UK registered entity, originally created to own, maintain and develop the FIX Protocol messaging language\"; managed under a \"Purpose Trust\" which owns the assets so that FIX remains non-proprietary, free and open (read 2026-11-16)", url: "https://fixtrading.org/packages/fix-latest-specification-introduction/?wpdmdl=2710" },
+      // The self-description.
+      { label: "FIX Trading Community, Who we are: \"an independent, non-profit standards body\"; custodians of the FIX Protocol messaging language, used by well over 10,000 firms sending billions of messages a day; membership drawn from the buy side, sell side, market infrastructure operators, financial technology firms, consultants, regulators and industry associations; avoiding positions of advocacy (read 2026-11-16)", url: "https://www.fixtrading.org/who-we-are/" },
+      // The technical standards.
+      { label: "FIX Trading Community, Technical Standards: FIX TagValue Encoding (ISO 3531 Part 1, an ISO standard in 2022); FIX Session Layer (Classic, ISO 3531 Part 2); Simple Binary Encoding (ISO/IEC 25390:2025, an ISO/IEC standard in 2025); FIXP, the high-performance session layer; Simple Open Framing Header (SOFH); FIXS (FIX over TLS); FIXML, JSON, Google Protocol Buffers and ASN.1 encodings (read 2026-11-16)", url: "https://www.fixtrading.org/standards/technical-standards/" },
+      // The origins, told by a director.
+      { label: "The TRADE, 29 October 2020, Kevin Houstoun (chairman of Rapid Addition, director at FIX Protocol Ltd), \"The long journey to frictionless electronic trading\": FIX started as an experiment between Salomon Brothers and Fidelity; first called SBX (Salomon Brothers Exchange) and first used in anger during 1993; Goldman Sachs and Putnam invited; renamed the Financial Information Exchange Protocol; first public specification FIX.2.7 in 1995, written by Robert Lamoureux and Chris Morstatt (read 2026-11-16)", url: "https://www.thetradenews.com/the-long-journey-to-frictionless-electronic-trading/" },
+      // The 2013 name and 1992.
+      { label: "Finance Magnates, 19 August 2013, \"FIX Protocol Undergoes Rebranding To Reflect Its Recent Expansion Of Resources\": FIX Protocol Ltd announced a name change to FIX Trading Community and a new website; its existence dates back to 1992; expansion into post-trade support in January 2013 (read 2026-11-16)", url: "https://www.financemagnates.com/institutional-forex/technology/fix-protocol-rebrands-to-fix-trading-community-to-reflect-its-recent-expansion-of-resources/" },
+      // The encyclopaedia's date.
+      { label: "Wikipedia: Financial Information eXchange - the specification was originally authored in 1992 by Robert \"Bob\" Lamoureux and Chris Morstatt to enable electronic communication between Fidelity Investments, Salomon Brothers and their institutional clients (read 2026-11-16)", url: "https://en.wikipedia.org/wiki/Financial_Information_eXchange", sourceNote: "Used only for the 1992 date of the first specification work, which The TRADE's 2020 account (first use in 1993) does not give." },
+    ],
+  },
+
+  // ==== Industry wave I6 (16/11/2026, PRIME 20:34): integrated from scratchpad industry-i6/ ====
+  // ---- Brokers and trading firms (industry wave I6, 16/11/2026; PRIME 16/11/2026 20:34: "Industry entries: add all
+  // of the agents' candidates"). Every fact below was read live on 2026-11-16 (Sao Paulo) and saved in the I6
+  // corpus, except two Citadel Securities pages read only through the fetch tool (marked in the labels and in
+  // REPORT.md). Each founding year is named inside a substantive source label on the same card; each parent name
+  // and completion year likewise. ----
+
+  // ---------------------------------------------------------------------------
+  // TP ICAP (2016; heritage 1866), with ICAP's history inside it
+  // ---------------------------------------------------------------------------
+  {
+    // TP ICAP - added 2026-11-16 (industry wave I6). The card is TP ICAP Group, the listed interdealer broker;
+    // ICAP's own history (Intercapital 1986, Garban-Intercapital 1999, ICAP plc 2001, the voice business sold to
+    // Tullett Prebon in 2016, the remainder renamed NEX Group and bought by CME Group in 2018) is told inside it.
+    // FOUNDED 2016: the group and its name date from 30 December 2016, when Tullett Prebon plc completed the
+    // purchase of ICAP's global hybrid voice broking and information business and was renamed (TP ICAP's
+    // Brazilian history page and NEX's completion announcement). The 1866 heritage is the predecessor's year and
+    // goes to storyBegins. NO PARENT: TP ICAP Group plc is listed on the London Stock Exchange and is the ultimate
+    // parent of its group (Annual Report and Accounts 2025).
+    slug: "tp-icap",
+    // Own site read live 2026-11-16: HTTP 200 at https://tpicap.com/tpicap/ (copyright 2026 TP ICAP).
+    official: {
+      // The group's own site.
+      url: "https://tpicap.com/tpicap/",
+      // The group's heritage timeline and the ICAP brand's own history page.
+      resources: [
+        // The heritage timeline from 1866.
+        { label: "TP ICAP: Our Heritage", url: "https://tpicap.com/tpicap/tp-icap-heritage" },
+        // ICAP, now a TP ICAP brand, and its own history.
+        { label: "ICAP (a TP ICAP brand): About Us", url: "https://icap.com/about-us" },
+      ],
+    },
+    // Financial-market participant: an interdealer broker.
+    tags: ["markets"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "TP ICAP - Tullett Prebon and ICAP's voice brokers in one group",
+    // Founding year of the group and its name, named by the Tullett Prebon Brasil and NEX labels below.
+    founded: 2016,
+    // The story opens with the City of London broker of 1866 (PartnerVendor.storyBegins: the predecessor, named).
+    storyBegins: { year: 1866, company: "Rich, Marshall & Co." },
+    // Card line.
+    tagline: "Formed on 30 December 2016, when Tullett Prebon completed its purchase of ICAP's voice broking business and took the name TP ICAP, the group traces its heritage to a City of London broker of 1866 and calls itself the world's largest inter-dealer broker by revenue.",
+    // Intro paragraph.
+    intro:
+      "TP ICAP is an interdealer broker. It connects participants in wholesale financial, energy and commodities markets and helps them discover prices, manage risk and execute transactions, and it describes itself as a leading player in over-the-counter (OTC) markets, where there is no central exchange; its brokers act solely as intermediaries, and it does no proprietary trading. The group dates its heritage to 1866, when Matthew Marshall Junior and Joseph Rich set up Rich, Marshall & Co. at 26 Nicholas Lane in the City of London as East India exchange and discount brokers. Its present form dates from 30 December 2016, when Tullett Prebon plc completed the purchase of ICAP's global hybrid voice broking and information business and was renamed TP ICAP. It calls itself the world's largest inter-dealer broker by revenue, and at the end of 2025 it had about 5,400 employees, some 2,700 of them brokers.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the Tullett Prebon side, as the group tells it.
+      "The Tullett Prebon side is a long sequence of mergers among London money brokers, which the group tells itself. The Marshall business became M.W. Marshall & Co. in 1951, one of eight firms admitted to the new Foreign Exchange Brokers' Association; Derek Tullett founded Tullett & Riley in 1971; and in 1985 the Bank of England named six groups eligible to operate as inter-dealer brokers in the restructured market for British government securities, ahead of the deregulation of London's markets in 1986. In 1999 Tullett & Tokyo Forex merged with Liberty Brokerage Investment Corp., a firm founded in 1986 by a majority of the primary dealers in United States government securities. Collins Stewart bought Tullett for £250 million in 2003 and Prebon Yamane for £132 million in 2004; the two businesses were integrated and rebranded Tullett Prebon in 2005, and in 2006, when the stockbroking business was demerged, Collins Stewart Tullett plc took the name Tullett Prebon plc.",
+      // Paragraph 2: ICAP's history, and where its parts went.
+      "ICAP was the other half. Michael Spencer founded Intercapital in May 1986 to concentrate on the new market in interest rate swaps; it grew from four people to more than three hundred, and in September 1999 it merged with Garban plc, combining Garban's government and corporate bonds, interest rate products and money market instruments with Intercapital's swaps, options and foreign exchange options. Garban-Intercapital plc was renamed ICAP plc in July 2001. ICAP bought EBS, a major trading platform for foreign exchange, in 2006, the post-trade processing company Traiana in December 2007, and in June 2012 Plus Stock Exchange, which it relaunched as the ICAP Securities and Derivatives Exchange. In November 2015 ICAP agreed to sell its global hybrid voice broking and information business to Tullett Prebon, and the sale completed on 30 December 2016. The seller, by then called NEX Group, launched itself that day as a technology services company whose markets business ran electronic trading platforms in fixed income and foreign exchange; CME Group completed its acquisition of NEX on 2 November 2018, retired the NEX name and kept BrokerTec, EBS, Traiana and TriOptima as sub-brands. The ICAP name stayed with the brokers: ICAP is today a brand of the TP ICAP group, operating in 22 countries from 33 locations.",
+      // Paragraph 3: the group since 2016, with its Brazilian companies.
+      "Since 2016 the group has reached beyond voice broking. On 26 February 2021 TP ICAP Group plc, a company incorporated in Jersey in December 2019, became the group's listed holding company through a court-approved scheme of arrangement, and on 24 March 2021 the group completed its acquisition of Liquidnet, the electronic marketplace that Seth Merrin founded in 2001 for institutional investors to trade large blocks of stocks anonymously; the data and analytics business was rebranded Parameta Solutions the same year. The group now reports four divisions, Global Broking, Energy & Commodities, Liquidnet and Parameta Solutions. Its revenue grew 6 per cent to £2.4 billion in 2025; in the first half of 2026 it was £1,292 million, £783 million of it from Global Broking, and the group completed the purchase of Vantage Capital Markets. Brazil is one of its markets: in 2011 Tullett Prebon completed the acquisition of Convenção, a brokerage founded by Eduardo da Rocha Azevedo, a former president of the São Paulo Stock Exchange (Bovespa) and founder of the Brazilian Commodities and Futures Exchange (BM&F), and the group's subsidiaries include Tullett Prebon Brasil Corretora de Valores e Câmbio and ICAP do Brasil Corretora de Títulos e Valores Mobiliários.",
+      // Paragraph 4: why it matters, analytically.
+      "For networks and electronic trading the interest is the mix. An interdealer broker's product is the connection between dealers, and TP ICAP's runs both through brokers on the telephone and through Fusion, the cloud-based platform that, the group says, supports the whole transaction lifecycle and captures the OTC pricing data that Parameta Solutions sells; in its report for 2025 it said that 70 per cent of its technology stack ran on Amazon Web Services (AWS). The ICAP story shows the other road: the electronic platforms that stayed with ICAP's successor, EBS and BrokerTec among them, ended inside an exchange group, while the voice desks and the ICAP name went to a broker.",
+    ],
+    // Acquisitions with dated completions; ICAP's own earlier purchases are told in the body.
+    acquisitions: [
+      // Convenção, Brazil, 2011.
+      { year: 2011, name: "Convenção", what: "A Brazilian brokerage founded by Eduardo da Rocha Azevedo, a former president of the São Paulo Stock Exchange (Bovespa) and founder of the Brazilian Commodities and Futures Exchange (BM&F).", became: "Tullett Prebon Brasil.", sourceNote: "Tullett Prebon Brasil, History, on the TP ICAP site (read 2026-11-16): bought by Tullett Prebon, the group's predecessor, before the TP ICAP name existed." },
+      // PVM, 2014.
+      { year: 2014, name: "PVM Oil Associates", what: "An oil broker whose business began in New York in 1971 brokering international refined products.", sourceNote: "TP ICAP, Our Heritage (read 2026-11-16): 1971, PVM established in New York to broker international refined products; 2014, Tullett Prebon acquires PVM Oil Associates Limited." },
+      // ICAP's voice broking, 2016.
+      { year: 2016, name: "ICAP's global hybrid voice broking and information business", what: "ICAP's voice and hybrid broking desks and its information business, with associated technology and broking platforms and certain joint ventures and associates; terms agreed in November 2015.", became: "The ICAP brand of the TP ICAP group; the buyer, Tullett Prebon plc, was renamed TP ICAP on completion.", sourceNote: "NEX Group plc, Completion of Transaction and Share Consolidation, 30 December 2016 (Mondo Visione repost, read 2026-11-16)." },
+      // Liquidnet, 2021.
+      { year: 2021, name: "Liquidnet Holdings", what: "The electronic marketplace founded by Seth Merrin in 2001 on which institutional investors trade large blocks of stocks anonymously.", became: "The Liquidnet division.", sourceNote: "TP ICAP Group plc, Completion of Liquidnet Acquisition, 24 March 2021 (Mondo Visione repost); TP ICAP, Our Heritage (both read 2026-11-16)." },
+      // Vantage Capital Markets, 2026.
+      { year: 2026, name: "Vantage Capital Markets", price: "£22 million in cash", what: "Bought to strengthen the group's equities and credit offering, expand its presence in Asia-Pacific and in Europe, the Middle East and Africa, and extend its reach into the United States.", became: "Part of the Global Broking division's capabilities.", sourceNote: "TP ICAP Group plc, Interim results for the six months ended 30 June 2026 (read 2026-11-16)." },
+    ],
+    // The group's own heritage page.
+    externalUrl: "https://tpicap.com/tpicap/tp-icap-heritage",
+    // Link label.
+    externalLabel: "TP ICAP: Our Heritage",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // The heritage timeline, with the 1866 year of storyBegins.
+      { label: "TP ICAP, Our Heritage (undated page): heritage dating back to 1866, when Matthew Marshall Junior in partnership with Joseph Rich established Rich, Marshall & Co. at 26 Nicholas Lane, EC4; Marshall & Sons from 1870; renamed M.W. Marshall & Co. in 1951, one of eight firms admitted to the Foreign Exchange Brokers' Association; Tullett & Riley founded by Derek Tullett in 1971; PVM established in New York in 1971; Intercapital plc founded by Michael Spencer in 1986; Garban plc and Intercapital plc merge in 1999; Garban-Intercapital plc renamed ICAP plc in 2001; Liquidnet founded by Seth Merrin in 2001; Collins Stewart acquires Tullett in 2003 and Prebon Yamane in 2004; rebrand as Tullett Prebon in 2005; ICAP acquires Traiana in 2007 and Plus Stock Exchange in 2012; Tullett Prebon acquires PVM Oil Associates in 2014; completion of the Liquidnet acquisition and the Parameta Solutions rebrand in 2021 (read 2026-11-16)", url: "https://tpicap.com/tpicap/tp-icap-heritage", sourceNote: "The timeline puts 'Tullett Prebon acquires ICAP's global hybrid voice broking and information business' under 2015, the year terms were agreed; the completion was 30 December 2016 (NEX announcement below). It also names the 1999 company Garban-International plc where its own 2001 entry and ICAP's page say Garban-Intercapital plc; the copy follows ICAP's page." },
+      // The Brazilian subsidiary's history page, with the founding year of the group and the Convenção purchase.
+      { label: "Tullett Prebon Brasil, History (TP ICAP site, undated): origins traced to 1866 and Rich, Marshall & Co., East India exchange and discount brokers; in 1985 the Bank of England named six groups eligible to operate as inter-dealer brokers in the restructured British government securities market, ahead of the 1986 deregulation; Tullett & Tokyo Forex merged in 1999 with Liberty Brokerage Investment Corp., founded in 1986 by a majority of the primary US government securities dealers; Collins Stewart acquired Tullett for £250 million in 2003 and Prebon Yamane for £132 million a year later; Collins Stewart Tullett plc changed its name to Tullett Prebon plc in 2006; in 2011 Tullett Prebon completed the acquisition of Convenção, founded by Eduardo da Rocha Azevedo, former president of Bovespa and founder and former president of BM&F; the ICAP deal completed on 30 December 2016 and Tullett Prebon plc was renamed TP ICAP Group (read 2026-11-16)", url: "https://tpicap.com/tpbrasil/history" },
+      // The completion of the ICAP voice-broking sale, from the seller's announcement.
+      { label: "NEX Group plc, Completion of Transaction and Share Consolidation, 30 December 2016 (regulatory announcement reposted by Mondo Visione): the disposal of NEX's global hybrid voice broking and information business, with associated technology and broking platforms and certain joint ventures and associates, to Tullett Prebon plc (now renamed TP ICAP plc) completed, further to ICAP plc's announcements of 11 November 2015; Michael Spencer: a start-up of four people in 1986 that became ICAP plc; NEX Group launched as a technology services company, its NEX Markets business running electronic trading platforms in fixed income and foreign exchange (read 2026-11-16)", url: "https://mondovisione.com/news/nex-group-plc-completion-of-transaction-and-share-consolidation-20161230/" },
+      // ICAP's own history.
+      { label: "ICAP, About Us (icap.com, undated): part of the TP ICAP Group; operates in 22 countries from 33 locations; formed in September 1999 by the merger of Garban plc and Intercapital plc; Garban-Intercapital plc renamed ICAP plc in July 2001; Intercapital set up in May 1986 for the new interest rate swaps market, growing from four people to more than three hundred; EBS bought in 2006; Traiana Inc acquired in December 2007; Plus Stock Exchange plc acquired in June 2012 and relaunched as the ICAP Securities and Derivatives Exchange; terms agreed in November 2015 for the disposal of the global hybrid voice broking and information business to Tullett Prebon (read 2026-11-16)", url: "https://icap.com/about-us" },
+      // CME Group's filing on the NEX completion.
+      { label: "CME Group Inc., Form 8-K filed 8 November 2018, date of report 2 November 2018 (SEC EDGAR): on 2 November 2018 CME Group and CME London Limited completed the acquisition of NEX Group plc by scheme of arrangement; Michael Spencer appointed to CME Group's board (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1156375/000119312518322722/d644644d8k.htm" },
+      // CME Group's release on the NEX completion.
+      { label: "CME Group press release, Chicago and London, 2 November 2018, filed as Exhibit 99.1 to the 8-K (SEC EDGAR): CME Group completes acquisition of NEX; the NEX name and brand retired; BrokerTec, EBS, Traiana and TriOptima continue as sub-brands (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1156375/000119312518322722/d644644dex991.htm" },
+      // The Liquidnet completion.
+      { label: "TP ICAP Group plc, Completion of Liquidnet Acquisition, 24 March 2021 (regulatory announcement reposted by Mondo Visione): completed the acquisition of Liquidnet Holdings, Inc. (read 2026-11-16)", url: "https://mondovisione.com/media-and-resources/news/tp-icap-group-plc-completion-of-liquidnet-acquisition-2021324" },
+      // The annual report: structure, scale, technology, Brazil.
+      { label: "TP ICAP Group plc, Annual Report and Accounts 2025 (PDF, statements dated 12 March 2026): a public company incorporated in Jersey, its shares listed on the London Stock Exchange, the ultimate parent of the group; TP ICAP Group plc incorporated in Jersey on 23 December 2019 and the new listed holding company from 26 February 2021 by a court-approved scheme of arrangement; the world's largest inter-dealer broker by revenue; no proprietary trading, brokers acting solely as intermediaries; about 5,400 employees including c.2,700 brokers; revenue up 6 per cent to £2.4 billion in 2025; Fusion, the cloud-based digital platform; 70 per cent of the technology stack on AWS; subsidiaries Tullett Prebon Brasil Corretora de Valores e Câmbio Ltda and ICAP do Brasil Corretora de Títulos e Valores Mobiliários Ltda (read 2026-11-16)", url: "https://tpicap.com/tpicap/sites/g/files/escbpb106/files/2026-04/ARA_Full%20report_2025.pdf" },
+      // The four divisions.
+      { label: "TP ICAP, Who We Are (undated page): 'the network at the centre of the world's most complex financial markets'; four divisions, Global Broking, Energy & Commodities, Liquidnet and Parameta Solutions (read 2026-11-16)", url: "https://tpicap.com/tpicap/who-we-are" },
+      // The first half of 2026.
+      { label: "TP ICAP Group plc, Interim results for the six months ended 30 June 2026 (PDF, 5 August 2026): revenue £1,292 million; Global Broking revenue £783 million; completed the acquisition of Vantage Capital Markets for a cash consideration of £22 million, strengthening its Equities and Credit offering, expanding its presence in APAC and EMEA and extending its reach into the US; connects market participants to liquidity, data and insight across global financial, energy and commodities markets, helping clients discover prices, manage risk and execute transactions; a leading global player in OTC markets, where there are no central exchanges; more than 60 offices across 28 countries (read 2026-11-16)", url: "https://tpicap.com/tpicap/sites/g/files/escbpb106/files/2026-08/TP%20ICAP%20H1%202026%20Interim%20results.pdf" },
+    ],
+  },
+
+  // ---------------------------------------------------------------------------
+  // INSTINET (1969), part of Nomura since 2007
+  // ---------------------------------------------------------------------------
+  {
+    // INSTINET - added 2026-11-16 (industry wave I6). FOUNDED 1969: Instinet's own history and its 2001 annual
+    // report (Instinet Group 10-K) both give 1969, and the 10-K says it has been headquartered in New York ever
+    // since. OWNER: Nomura Holdings (record `nomura`), since the purchase from Silver Lake Partners and management
+    // took effect on 1 February 2007 (Nomura's Form 6-K of 6 February 2007; closing announced 2 February).
+    slug: "instinet",
+    // Own site read live 2026-11-16: HTTP 200 at https://www.instinet.com (copyright 2026 Instinet Incorporated).
+    official: {
+      // The company's own site.
+      url: "https://www.instinet.com",
+      // The company's own history timeline.
+      resources: [
+        // History from 1969.
+        { label: "Instinet: History", url: "https://instinet.com/history" },
+      ],
+      // A company owner: rendered "part of Nomura Holdings (since 2007)"; named with 2007 by the Nomura 6-K label.
+      parent: { name: "Nomura Holdings", slug: "nomura", kind: "company", since: 2007, note: "Nomura Holdings bought Instinet from its majority owner, Silver Lake Partners, and its management for US$1.2 billion; the purchase took effect on 1 February 2007, and Instinet became the group's global execution arm in 2012." },
+    },
+    // An agency broker and venue operator that also sells trading software (the Newport desktop).
+    tags: ["markets", "vendor"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "Instinet - the institutional network of 1969, now Nomura's execution arm",
+    // Founding year, named by the Instinet history, SEC Historical Society and Instinet Group 10-K labels below.
+    founded: 1969,
+    // Card line.
+    tagline: "A New York company since 1969, when its electronic network first let institutions trade shares with each other, Instinet passed through Reuters, a public listing and Nasdaq before Nomura bought it in 2007.",
+    // Intro paragraph.
+    intro:
+      "Instinet began in 1969 as the Institutional Networks Corporation, whose system, as the SEC Historical Society (named for the US Securities and Exchange Commission) describes it, let banks, insurance companies and mutual funds trade shares with each other with no brokers, no exorbitant commissions and complete anonymity, at all hours of the day. Instinet itself calls the Instinet Communication System that went live that year the market's first electronic communication network (ECN). It has been headquartered in New York since its founding. Today it describes itself as an agency-model broker, and since 2012 it has been the global execution arm of Nomura, which has owned it since 2007.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the early years, in the SEC Historical Society's account and Instinet's own timeline.
+      "It was slow to take off: in the 1970s, the Society notes, people still wanted to talk to a broker. Its owner Jerry Pustilnik joined the Pacific Exchange so that Instinet could handle order flow from the third market, and by 1983 Bill Lupien was running it, linking it with Nasdaq and the London Stock Exchange; by 1987 it even had a link to the floor of the New York Stock Exchange (NYSE), though orders had to be printed out and carried to a specialist by hand. In the market break of October 1987, when Nasdaq market makers and exchange specialists failed to provide liquidity, Instinet kept working, and by 1990 it was doing about 13 per cent of the NYSE's volume. Instinet's own timeline adds the first US stock quote montage, the Green Screen, in 1977, the first point-in-time cross in the United States in 1986, one of the earliest order management systems for equities in 1993 and Helix, a smart-routing technology for a fragmenting market, in 1999.",
+      // Paragraph 2: the owners, 1987 to 2007.
+      "Its owners changed with the market. Reuters Group PLC owned it outright from May 1987 until the initial public offering of Instinet Group in May 2001, and still held about 83.3 per cent of the shares in early 2002. On 20 September 2002 Instinet Group completed its merger with Island ECN, which by its own count handled about one in five trades in Nasdaq securities. On 8 December 2005 The Nasdaq Stock Market completed its purchase of Instinet Group for about $1.878 billion in cash, kept the INET ECN and sold Instinet's institutional broker division to an affiliate of Silver Lake Partners for $207.5 million. On 2 November 2006 Nomura Holdings agreed to buy that business, Instinet Incorporated, from Silver Lake and Instinet's management; the purchase, for US$1.2 billion, took effect on 1 February 2007. Instinet then had about 1,500 institutional clients and 605 employees.",
+      // Paragraph 3: venues and tools, and the company today.
+      "Its venues and tools kept coming. Instinet launched Chi-X Europe in 2006, which within five years became, by Instinet's account, the largest pan-European trading platform; its BlockMatch dark multilateral trading facility (MTF) followed in Europe in 2009; it acquired the BlockCross alternative trading system (ATS) in 2017 and FIS Execution Services, with the Fox River alpha-signal technology, in 2022; and it completed the global roll-out of BlockCross in Asia in 2023. Its menu now lists algorithmic and high-touch trading, low-latency solutions, crossing venues in the United States, Canada, Europe and Asia, among them the CBX US ATS, and the Newport trading desktop for buy-side and sell-side firms. Nomura's annual report for the year to March 2026 lists Instinet Incorporated as a wholly owned United States subsidiary, and Instinet, LLC as a broker-dealer registered with the Securities and Exchange Commission (SEC) and a member of the Financial Industry Regulatory Authority (FINRA).",
+      // Paragraph 4: why it matters, analytically.
+      "Instinet is the oldest of the electronic networks that turned trading into a networking problem. The SEC Historical Society calls it the most comprehensive of the early automated markets, and its own timeline runs from a terminal network for institutions to smart order routing across fragmented venues and conditional block crossing. Its owners at each stage, Reuters Group, the public market, an exchange operator, a private equity firm and a Japanese securities group, are a record of who thought such a network was worth owning, and why: Nomura said in 2007 that institutional investors increasingly wanted to place orders with firms that could deliver sophisticated trading technologies and execution services.",
+    ],
+    // Acquisitions made by Instinet itself after 2007, from its own timeline.
+    acquisitions: [
+      // BlockCross, 2017.
+      { year: 2017, name: "BlockCross ATS", what: "A block trading alternative trading system.", became: "Instinet's BlockCross conditional block platform, rolled out in Asia in 2023.", sourceNote: "Instinet, History (read 2026-11-16)." },
+      // FIS Execution Services, 2022.
+      { year: 2022, name: "FIS Execution Services", what: "An execution business with the Fox River alpha-signal technology.", became: "Part of Instinet's suite of algorithmic strategies.", sourceNote: "Instinet, History (read 2026-11-16)." },
+    ],
+    // The company's own history page.
+    externalUrl: "https://instinet.com/history",
+    // Link label.
+    externalLabel: "Instinet: History",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // The company's own timeline, with the founding year.
+      { label: "Instinet, History (undated page): 'In 1969, we were upstarts with a radical idea: an electronic network for trading stocks'; 1969, the Instinet Communication System, the market's first ECN, goes live; 1977, the first US stock quote montage, the Green Screen; 1986, the first point-in-time cross in the US; 1993, Instinet OMS among the earliest order management systems for equities; 1999, Helix smart routing; 2006, Chi-X Europe launched, within five years the largest pan-European trading platform; 2009, BlockMatch dark MTF; 2012, global execution arm of Nomura; 2017, BlockCross ATS acquired; 2022, FIS Execution Services and Fox River acquired; 2023, BlockCross in Asia; copyright Instinet Incorporated (read 2026-11-16)", url: "https://instinet.com/history" },
+      // The SEC Historical Society's account.
+      { label: "SEC Historical Society, Transformation & Regulation: Equities Market Structure, 1934 to 2018, 'Instinet': the most comprehensive of the early automated markets; from its founding in 1969 The Institutional Networks Corporation system let banks, insurance companies and mutual funds trade with no brokers and in complete anonymity at all hours; slow to take off in the 1970s; owner Jerry Pustilnik joined the Pacific Exchange; Bill Lupien running it by 1983, linking it with Nasdaq and the London Stock Exchange; a manual link to the NYSE floor by 1987; kept functioning in the October 1987 market break; about 13 per cent of NYSE volume by 1990 (read 2026-11-16)", url: "https://sechistorical.org/exhibition/transformation-regulation-equities-market-structure-1934-to-2018-2/automating-the-exchanges-1976-1995/instinet/" },
+      // Instinet Group's own annual report: founding, New York, Reuters.
+      { label: "Instinet Group Incorporated, Form 10-K for 2001, filed 27 March 2002 (SEC EDGAR): 'We were founded in 1969 and, although continuously headquartered in New York since then, were a wholly owned subsidiary of Reuters Group PLC from May 1987 until our initial public offering in May 2001'; Reuters owning approximately 83.3 per cent; London office opened in 1988 (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1132327/000095012302002976/y58681e10-k.txt" },
+      // The Island merger.
+      { label: "Instinet Group and Island ECN, Instinet and Island ECN Close Historic Merger, 20 September 2002 (reposted by Mondo Visione): Island Holding Company became a wholly owned subsidiary of Instinet Group; Island handling about one in five trades in Nasdaq securities by its own calculation; Instinet acting solely as an agent for its customers (read 2026-11-16)", url: "https://mondovisione.com/news/instinet-and-island-ecn-close-historic-merger-2011124" },
+      // Nasdaq's purchase and the Silver Lake sale.
+      { label: "The Nasdaq Stock Market, Inc., Form 8-K filed 14 December 2005 (SEC EDGAR): on 8 December 2005 Nasdaq completed the acquisition of Instinet Group Incorporated for an aggregate purchase price of approximately $1.878 billion in cash, sold Instinet's Institutional Broker division to an affiliate of Silver Lake Partners for $207.5 million, and owns the INET ECN (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1120193/000119312505242699/d8k.htm" },
+      // Nomura's agreement.
+      { label: "Nomura Holdings, Inc., Form 6-K of 2 November 2006 (SEC EDGAR), Nomura Holdings to Acquire Global Agency Broker Instinet: agreement to buy 100 per cent of Instinet Inc. from majority owner Silver Lake Partners and Instinet's management; head office 3 Times Square, New York; 605 employees as of April 2006; established in 1969; about 1,500 institutional clients (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1163653/000119312506221330/d6k.htm" },
+      // Nomura's completion: the parent's name and year.
+      { label: "Nomura Holdings, Inc., Form 6-K of 6 February 2007 (SEC EDGAR): Nomura Holdings purchased a 100 per cent stake in global agency broker Instinet Incorporated for USD 1.2 billion from majority owner Silver Lake Partners and Instinet's management, through its subsidiary NHI Acquisition Holding Inc.; date of the change 1 February 2007 (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1163653/000119312507020750/d6k.htm" },
+      // The closing as announced, in a repost.
+      { label: "Nomura, Nomura Closes Instinet Acquisition, Announces New Board of Directors, reposted by Mondo Visione on 13 February 2007: Nomura Holdings announced on 2 February 2007 that it had closed its acquisition of Instinet for a final price of US$1.2 billion, as institutional investors increasingly look to firms that can deliver sophisticated trading technologies and execution services (read 2026-11-16)", url: "https://mondovisione.com/news/nomura-closes-instinet-acquisition-announces-new-board-of-directors-2011124" },
+      // Nomura's own release address, now dead, kept.
+      { label: "Nomura Holdings news release of 2 February 2007 on the Instinet closing: the address now returns Nomura's Media Room index and no longer serves the release (dead link, read 2026-11-16)", url: "https://www.nomuraholdings.com/news/nr/holdings/20070202/20070202.html" },
+      // The company today.
+      { label: "Instinet, home page: an agency-model broker; execution services, algorithmic and high-touch trading, low-latency solutions; crossing venues BlockCross, CBX US ATS, ICX Canada, BlockMatch UK, Europe and Asia; Newport desktop, buy-side and sell-side (read 2026-11-16)", url: "https://www.instinet.com/" },
+      // The parent's annual report.
+      { label: "Nomura Holdings, Inc., Form 20-F for the year ended 31 March 2026, filed 22 June 2026 (SEC EDGAR): Instinet Incorporated listed as a 100 per cent owned US subsidiary; Instinet, LLC a broker-dealer registered with the SEC and a member of FINRA (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1163653/000119312526277134/d116282d20f.htm" },
+    ],
+  },
+
+  // ---------------------------------------------------------------------------
+  // NOMURA (1925)
+  // ---------------------------------------------------------------------------
+  {
+    // NOMURA - added 2026-11-16 (industry wave I6). The card is Nomura Holdings, Inc., the listed holding company,
+    // which is the same legal company as The Nomura Securities Co., Ltd. incorporated on 25 December 1925 (renamed
+    // on 1 October 2001, when a new subsidiary took the securities business). FOUNDED 1925 from the 20-F and from
+    // Nomura's history page. No storyBegins: the money-changing business of Tokushichi Nomura I is dated only "the
+    // late 1800s", with no year. No parent: listed in Tokyo and, as ADSs, on the NYSE. Parent of `instinet`.
+    slug: "nomura",
+    // Own site read live 2026-11-16: HTTP 200 at https://www.nomuraholdings.com (title "Home | NOMURA").
+    official: {
+      // The group's corporate site, as its 20-F names it.
+      url: "https://www.nomuraholdings.com",
+      // The group's history page.
+      resources: [
+        // Corporate history.
+        { label: "Nomura: Our Corporate History", url: "https://www.nomuraholdings.com/company/history/" },
+      ],
+    },
+    // Financial-market participant: a securities and investment banking group.
+    tags: ["markets"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "Nomura - the Osaka securities house that bought Instinet",
+    // Founding year, named by the 20-F and corporate-history labels below.
+    founded: 1925,
+    // Card line.
+    tagline: "Founded in 1925 when the securities division of The Osaka Nomura Bank became a company of its own, Nomura is a Japanese financial services group listed in Tokyo and New York that has owned the agency broker Instinet since 2007.",
+    // Intro paragraph.
+    intro:
+      "Nomura Holdings, Inc. was incorporated in Japan on 25 December 1925 as The Nomura Securities Co., Ltd., when the securities division of The Osaka Nomura Bank became a separate company specializing in the trading and distribution of debt securities. The group traces its origins to the late 1800s, when Tokushichi Nomura I set up a money changing business in Osaka; his son, Tokushichi Nomura II, took over that business and founded Nomura Securities with 89 employees. It describes itself as one of the leading financial services groups in Japan, organized into Wealth Management, Investment Management, Wholesale and Banking, and for the year to 31 March 2026 it reported net revenue of ¥2,167.7 billion, 14.5 per cent more than the year before.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: international expansion and the holding company.
+      "By its own account it was the first Japanese securities company to develop its business internationally, opening a representative office in New York in 1927. It began trading equities in 1938 and organized Japan's first investment trust in 1941; it took a controlling interest in Nomura International (Hong Kong) in 1967, set up Nomura Securities International in the United States as a broker-dealer in 1969 and Nomura International Limited, now Nomura International plc, in the United Kingdom in 1981. On 1 October 2001 it adopted a holding company structure: the listed company took the name Nomura Holdings, Inc. and a wholly owned subsidiary assumed the securities business as Nomura Securities Co., Ltd. The same year it listed on the New York Stock Exchange (NYSE), where its American depositary shares trade as NMR; it remains listed on the Tokyo Stock Exchange.",
+      // Paragraph 2: the acquisitions abroad.
+      "Its large acquisitions abroad followed. On 2 November 2006 it agreed to buy Instinet, the electronic agency broker, from its majority owner Silver Lake Partners and its management, and the purchase, for US$1.2 billion, took effect on 1 February 2007; Instinet became the group's global execution arm in 2012. In 2008 Nomura acquired and integrated the operations of Lehman Brothers in Asia Pacific, Europe and the Middle East, and in 2025 it acquired the US and European public asset management business of Macquarie Group.",
+      // Paragraph 3: why it matters, analytically.
+      "For electronic trading Nomura is chiefly an owner and a customer. Its annual report lists Instinet Incorporated among its wholly owned United States subsidiaries, with Instinet, LLC registered with the Securities and Exchange Commission (SEC) as a broker-dealer, a member of the Financial Industry Regulatory Authority (FINRA) and an introducing broker registered with the Commodity Futures Trading Commission (CFTC); and Nomura is named among the existing strategic investors and clients of Pico, a provider of technology services, software, data and analytics for the financial markets, in Pico's announcement of July 2022 of an agreement for a strategic investment from Golden Gate Capital. Buying an electronic broker rather than building one was the route its own announcement of 2007 explained: institutional investors increasingly wanted to place orders with firms that could deliver sophisticated trading technologies and execution services, and Instinet already had them.",
+    ],
+    // Acquisitions named in the 20-F and the 2006 and 2007 filings.
+    acquisitions: [
+      // Instinet, 2007.
+      { year: 2007, name: "Instinet", price: "US$1.2 billion", what: "A global agency broker providing institutional investors with electronic trading, bought from its majority owner Silver Lake Partners and its management.", became: "Nomura's global execution arm, from 2012.", sourceNote: "Nomura Holdings, Forms 6-K of 2 November 2006 and 6 February 2007 (SEC EDGAR); Instinet, History (read 2026-11-16)." },
+      // Lehman Brothers operations, 2008.
+      { year: 2008, name: "Lehman Brothers (Asia Pacific, Europe and the Middle East operations)", what: "The operations of Lehman Brothers in Asia Pacific, Europe and the Middle East.", became: "Integrated into Nomura.", sourceNote: "Nomura Holdings, Form 20-F for the year ended 31 March 2026 (read 2026-11-16)." },
+      // Macquarie's public asset management business, 2025.
+      { year: 2025, name: "Macquarie Group's US and European public asset management business", what: "The US and European public asset management business of Macquarie Group Limited.", sourceNote: "Nomura Holdings, Form 20-F for the year ended 31 March 2026 (read 2026-11-16)." },
+    ],
+    // The group's own history page.
+    externalUrl: "https://www.nomuraholdings.com/company/history/",
+    // Link label.
+    externalLabel: "Nomura: Our Corporate History",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // The annual report: founding, history, listing, segments, revenue, Instinet.
+      { label: "Nomura Holdings, Inc., Form 20-F for the year ended 31 March 2026, filed 22 June 2026 (SEC EDGAR): the Company, previously The Nomura Securities Co., Ltd., incorporated in Japan on 25 December 1925 when the securities division of The Osaka Nomura Bank became a separate entity specializing in debt securities; the first Japanese securities company to develop its business internationally, with a New York representative office in 1927; equities from 1938; Japan's first investment trust in 1941; Nomura International (Hong Kong) 1967; Nomura Securities International 1969; Nomura International Limited 1981; holding company structure and renaming to Nomura Holdings, Inc. on 1 October 2001, with a wholly owned subsidiary named Nomura Securities Co., Ltd.; NYSE listing in 2001; Lehman Brothers operations in Asia Pacific, Europe and the Middle East in 2008; Macquarie Group's US and European public asset management business in 2025; Wealth Management, Investment Management, Wholesale and Banking; net revenue of ¥2,167.7 billion, up 14.5 per cent; ADSs registered on the NYSE as NMR; Instinet Incorporated 100 per cent owned; Instinet, LLC registered with the SEC, a FINRA member and a CFTC-registered introducing broker (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1163653/000119312526277134/d116282d20f.htm" },
+      // The group's own history page.
+      { label: "Nomura, Our Corporate History (undated page): origins in the late 1800s, when Tokushichi Nomura I set up a money changing business in Osaka; his son Tokushichi Nomura II took it over and in 1925 founded Nomura Securities with 89 employees; a global network spanning over 30 countries (read 2026-11-16)", url: "https://www.nomuraholdings.com/company/history/" },
+      // The Instinet agreement.
+      { label: "Nomura Holdings, Inc., Form 6-K of 2 November 2006 (SEC EDGAR), Nomura Holdings to Acquire Global Agency Broker Instinet: agreement to purchase 100 per cent of Instinet from majority owner Silver Lake Partners and Instinet's management, in an all-cash transaction (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1163653/000119312506221330/d6k.htm" },
+      // The Instinet completion.
+      { label: "Nomura Holdings, Inc., Form 6-K of 6 February 2007 (SEC EDGAR): purchase of a 100 per cent stake in Instinet Incorporated for USD 1.2 billion through NHI Acquisition Holding Inc.; date of the change 1 February 2007 (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1163653/000119312507020750/d6k.htm" },
+      // The stated reason, in the closing announcement.
+      { label: "Nomura, Nomura Closes Instinet Acquisition, Announces New Board of Directors, reposted by Mondo Visione on 13 February 2007: the acquisition comes as hedge funds and other institutional investors increasingly look to place orders with firms that can deliver sophisticated trading technologies and execution services (read 2026-11-16)", url: "https://mondovisione.com/news/nomura-closes-instinet-acquisition-announces-new-board-of-directors-2011124" },
+      // Nomura among Pico's investors.
+      { label: "Golden Gate Capital, Pico signs agreement with Golden Gate Capital for $200 million investment, 13 July 2022: existing Pico strategic investors and clients include Goldman Sachs Asset Management, Wells Fargo Strategic Capital, J.P. Morgan, UBS, CE Innovation Capital, DRW Venture Capital, Intel Capital, EDBI, Nomura and Chicago Trading Company (read 2026-11-16)", url: "https://goldengatecap.com/pico-signs-agreement-with-golden-gate-capital-for-200-million-investment-to-accelerate-next-phase-of-ma-activity/" },
+    ],
+  },
+
+  // ---------------------------------------------------------------------------
+  // VIRTU FINANCIAL (2008), with ITG and Triton as history
+  // ---------------------------------------------------------------------------
+  {
+    // VIRTU FINANCIAL - added 2026-11-16 (industry wave I6). FOUNDED 2008: the 2015 prospectus (S-1/A) says the
+    // chief executive had been with the company "since our founding in 2008" and that Vincent Viola founded Virtu
+    // East in 2008; Madison Tyler Holdings (2002) is told in the intro, not used as the year. ITG (POSIT, 1987;
+    // Triton) is told as history: Virtu completed the purchase on 1 March 2019. NO PARENT: Virtu is listed on the
+    // NYSE; an affiliate of its founder, controlled by his family, holds about 87.1 per cent of the voting power
+    // (10-K for 2025), which is control by a founder's family, not ownership by a company, fund or state.
+    // Virtu's own site answered HTTP 403 to a script on 2026-11-16 and is kept as blocked.
+    slug: "virtu-financial",
+    // Own site: https://www.virtu.com answered HTTP 403 (nginx) on 2026-11-16; the 10-K names it as the website.
+    official: {
+      // The company's own site.
+      url: "https://www.virtu.com",
+    },
+    // A market maker that also sells trading software and a routing network (Triton, ITG Net).
+    tags: ["markets", "vendor"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "Virtu Financial - the market maker that bought ITG's trading tools",
+    // Founding year, named by the S-1/A label below.
+    founded: 2008,
+    // Card line.
+    tagline: "A market maker headquartered in New York, founded in 2008 and listed since 2015, which bought KCG Holdings in 2017 and Investment Technology Group in 2019, and so sells the Triton execution management system and the ITG Net network beside its own trading.",
+    // Intro paragraph.
+    intro:
+      "Virtu Financial is an electronic market maker: as it describes itself, it commits its own capital to quote buy and sell prices continuously across global equities, fixed income, currencies, cryptocurrencies and commodities, in cash, futures and options markets, and it is registered as a market maker or liquidity provider on nearly every exchange or venue that offers such programmes. Its prospectus of 2015 dates its founding to 2008, when Vincent Viola, a former chairman of the New York Mercantile Exchange (NYMEX), founded Virtu East; on 8 July 2011 Virtu combined that business with Madison Tyler Holdings, a firm Viola had co-founded in 2002. Virtu Financial, Inc. was formed in Delaware on 16 October 2013 as the holding company for its initial public offering of April 2015, and it is headquartered in New York.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the two acquisitions and the two segments.
+      "Two acquisitions added a broker to the market maker. On 20 July 2017 Virtu completed the all-cash acquisition of KCG Holdings, and on 1 March 2019 it completed the acquisition of Investment Technology Group (ITG), paying $30.30 a share in cash under a merger agreement of 6 November 2018. The company says the two expanded and complemented its original electronic trading and market making business; it now reports two operating segments, Market Making and Execution Services, the second offering agency execution, the crossing venues Virtu MatchIt, POSIT ATS and POSIT MTF (an alternative trading system and a multilateral trading facility), workflow technology and trading analytics.",
+      // Paragraph 2: ITG and Triton, as history and as products.
+      "ITG's story runs back to POSIT, an electronic stock crossing system introduced in 1987 by a joint venture of Jefferies & Company and BARRA, whose rights Jefferies assigned to ITG in 1993; ITG described it in 2001 as a technology-based solution to the trade execution needs of quantitative and passive investment managers. By 2017 ITG offered Triton, a multi-asset, broker-neutral execution management system (EMS), and ITG Net, a financial communications network. Both survive under Virtu: Triton Valor, the latest release, includes the Algo Wheel, an algorithmic way for a portfolio manager to allocate volume among different providers, and ITG Net connects buy-side and sell-side firms for multi-asset order routing and indications of interest, with about 9,000 billable connections to more than 600 execution destinations.",
+      // Paragraph 3: listing and control.
+      "Virtu is listed but controlled. Its Class A shares began trading on Nasdaq under the symbol VIRT after the 2015 offering and moved to the New York Stock Exchange (NYSE) in 2025. At the end of 2025 the public company held about 57.2 per cent of its operating company, Virtu Financial LLC, while an affiliate of Viola, controlled by members of his family, held about 87.1 per cent of the combined voting power, which makes Virtu a controlled company under the NYSE's rules. On 4 November 2026 its board approved reincorporating the company from Delaware to Texas, and TJMT Holdings LLC, the holder of a majority of the voting power, approved it by written consent.",
+      // Paragraph 4: why it matters, analytically.
+      "For networks Virtu sits on both sides of the same connection. Its market making rests, it says, on software written by its own engineers and on infrastructure optimized to integrate directly with the exchanges and venues where it provides liquidity, with each trade processed automatically from execution to settlement; its execution business sells other firms the routing network and the execution desktop through which their orders reach brokers and venues. A market maker that also runs the order-routing network its clients use shows how, in electronic trading, the same firm can be both a counterparty and part of the plumbing.",
+    ],
+    // Acquisitions named in the S-1/A, the 10-K and the 8-K.
+    acquisitions: [
+      // Madison Tyler, 2011.
+      { year: 2011, name: "Madison Tyler Holdings", price: "about $536.5 million in cash, plus interests in Virtu Financial", what: "An electronic trading firm co-founded in 2002 by Vincent Viola.", became: "Combined with Virtu East, Virtu's historical business, to form the Virtu Financial of today.", founder: "Vincent Viola (co-founder)", sourceNote: "Virtu Financial, Form S-1/A of 6 April 2015 (SEC EDGAR, read 2026-11-16): completed on 8 July 2011." },
+      // KCG, 2017.
+      { year: 2017, name: "KCG Holdings", what: "Bought in an all-cash transaction under a merger agreement of 20 April 2017, completed on 20 July 2017.", became: "One of the two acquisitions that, Virtu says, expanded and complemented its original electronic trading and market making business.", sourceNote: "Virtu Financial, Form 10-K for 2025, filed 20 February 2026 (SEC EDGAR, read 2026-11-16)." },
+      // ITG, 2019.
+      { year: 2019, name: "Investment Technology Group (ITG)", price: "$30.30 a share in cash", what: "An agency broker and trading technology firm whose POSIT crossing system dates from 1987, with the Triton execution management system and the ITG Net network.", became: "Products of Virtu's Execution Services segment: POSIT, Triton and ITG Net.", sourceNote: "Virtu Financial, Form 8-K of 1 March 2019; Form 10-K for 2025 (SEC EDGAR, read 2026-11-16)." },
+    ],
+    // The company's annual report, the fullest own account read (its site answered 403).
+    externalUrl: "https://www.sec.gov/Archives/edgar/data/1592386/000159238626000009/virt-20251231.htm",
+    // Link label.
+    externalLabel: "Virtu Financial: Annual Report on Form 10-K for 2025 (SEC EDGAR)",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // The prospectus: the founding year.
+      { label: "Virtu Financial, Inc., Form S-1/A filed 6 April 2015 (SEC EDGAR): chief executive Douglas A. Cifu 'has been with us since our founding in 2008'; Vincent Viola, founder and executive chairman, former chairman of NYMEX, the founder of Virtu East in 2008 and a founder of Madison Tyler Holdings in 2002; the Madison Tyler acquisition completed on 8 July 2011 for about $536.5 million in cash and interests in Virtu Financial, combining Virtu East with Madison Tyler; formed as a Delaware corporation on 16 October 2013; headquarters in New York (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1592386/000104746915003193/a2224040zs-1a.htm" },
+      // The annual report: business, acquisitions, listing, control.
+      { label: "Virtu Financial, Inc., Form 10-K for 2025, filed 20 February 2026 (SEC EDGAR): market making in cash, futures and options across global equities, fixed income, currencies, cryptocurrencies and commodities; registered as a market maker or liquidity provider on nearly every exchange or venue that offers such programmes; in-house software and infrastructure integrated directly with venues; KCG acquisition completed 20 July 2017 and ITG acquisition 1 March 2019; IPO in April 2015 on Nasdaq as VIRT, listing transferred to the NYSE in 2025; 57.2 per cent of Virtu Financial LLC held by the Company and 87.1 per cent of voting power held by an affiliate of Mr Viola controlled by his family members; a controlled company under NYSE rules; segments Market Making and Execution Services; Virtu MatchIt, POSIT ATS and POSIT MTF; Triton Valor and the Algo Wheel; ITG Net with about 9,000 billable connections to more than 600 execution destinations (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1592386/000159238626000009/virt-20251231.htm" },
+      // The ITG completion.
+      { label: "Virtu Financial, Inc., Form 8-K of 1 March 2019 (SEC EDGAR): completed the acquisition of Investment Technology Group, Inc. under the merger agreement of 6 November 2018; each ITG share converted into the right to receive $30.30 in cash (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1592386/000110465919012016/a19-5723_18k.htm" },
+      // ITG's own early account of POSIT.
+      { label: "Investment Technology Group, Inc., Form 10-K for 2000, filed 29 March 2001 (SEC EDGAR): POSIT introduced in 1987 as a technology-based solution to the trade execution needs of quantitative and passive investment managers; in 1987 Jefferies & Company, Inc. and BARRA Inc. formed a joint venture to develop and market POSIT, and in 1993 Jefferies assigned its rights to ITG (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/920424/000091205701008687/a2042705z10-k.txt" },
+      // ITG's later account of Triton.
+      { label: "Investment Technology Group, Inc., Form 10-K for 2017, filed 1 March 2018 (SEC EDGAR): Triton, ITG's multi-asset and broker-neutral EMS; ITG Net and POSIT among ITG's registered marks; POSIT launched in 1987 as a point-in-time electronic crossing network (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/920424/000155837018001321/itg-20171231x10k.htm" },
+      // The reincorporation, and the headquarters today.
+      { label: "Virtu Financial, Inc., Schedule 14C information statement dated 16 November 2026 (SEC EDGAR): on 4 November 2026 the board, on a special committee's recommendation, approved reincorporation from Delaware to Texas by conversion, and TJMT Holdings LLC, holder of a majority of the voting power, approved it by written consent; address 1633 Broadway, New York (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1592386/000110465926128310/tm2629052-2_def14c.htm" },
+      // The blocked own site, kept.
+      { label: "Virtu Financial, home page: \"As a leading financial services firm, we leverage cutting-edge technology to provide execution services and data, analytics and connectivity products to our clients and deliver liquidity to the global markets\" (read 2026-11-16)", url: "https://www.virtu.com/", sourceNote: "The page answered HTTP 403 to a script on 2026-11-16 and opened normally in a browser the same evening, where the quoted sentence was read." },
+    ],
+  },
+
+  // ---------------------------------------------------------------------------
+  // OPTIVER (1986)
+  // ---------------------------------------------------------------------------
+  {
+    // OPTIVER - added 2026-11-16 (industry wave I6). FOUNDED 1986, in Amsterdam: the company's own boilerplate
+    // ("a global market maker founded in Amsterdam ... Established in 1986"). The holding company is Optiver
+    // Holding B.V.; NO PARENT and no ownership statement: the annual review mentions shareholders without naming
+    // them, so ownership is a reported gap rather than a sentence.
+    slug: "optiver",
+    // Own site read live 2026-11-16: HTTP 200 at https://optiver.com.
+    official: {
+      // The company's own site.
+      url: "https://optiver.com",
+      // The annual review and the insights the record cites.
+      resources: [
+        // The 2025 results and the review linked from it.
+        { label: "Optiver reports robust financial results for 2025", url: "https://optiver.com/insights/news/optiver-reports-robust-financial-results-for-2025/" },
+      ],
+    },
+    // Financial-market participant: a market maker.
+    tags: ["markets"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "Optiver - the Amsterdam market maker that invests in market plumbing",
+    // Founding year, named by the 2025 results label below.
+    founded: 1986,
+    // Card line.
+    tagline: "A market maker founded in Amsterdam in 1986 that trades with its own capital on more than a hundred exchanges, argues in public for speed bumps in options markets, and has invested in a wireless network operator and a Brazilian exchange.",
+    // Intro paragraph.
+    intro:
+      "Optiver is, in its own words, a global market maker founded in Amsterdam and established in 1986: it quotes buy and sell prices continuously, with its own capital and at its own risk, in listed derivatives, cash equities, exchange-traded funds (ETFs), bonds and foreign currencies. Its holding company is Optiver Holding B.V. For 2025, its fortieth year, it reported net trading income of €4.556 billion, up 30 per cent, a net profit attributable to equity holders of €1.769 billion and 2,233 full-time employees, with offices in Amsterdam, London, Chicago, Austin, New York, Sydney, Shanghai, Hong Kong, Singapore, Taipei and Mumbai.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: scale, technology and people.
+      "Its own figures give the scale of the machine: more than ten million trades a day, more than a million instruments priced and technology connected to more than a hundred exchanges, each of which, it notes, brings its own protocols, rules and market structure. Its 2025 annual review pictures its co-founder, Johann Kaemingk, beside Jan Boomaars, the chief executive and chair of the management board, and other senior executives.",
+      // Paragraph 2: public positions on market structure, with the Brazilian paper.
+      "It takes positions on market structure in public. In October 2022 it welcomed Eurex's extension of passive liquidity protection, a short delay the exchange applies to incoming aggressive orders, to EURO STOXX 50 Index options; it called the mechanism an asymmetric speed bump, recalled that Eurex had introduced it for DAX Index options in June 2019 with a delay of 1.5 milliseconds, later reduced to 1.0, cited the exchange's finding that competition at the top of the order book had increased and liquidity improved, and asked for it in fixed income options too. In 2025 it took part in the US Securities and Exchange Commission's (SEC) roundtable on the trade-through prohibition of Rule 611 and in exchange advisory boards and regulatory committees including the London Metal Exchange and the Secondary Markets Working Group of the European Securities and Markets Authority (ESMA). In August 2025 it published proposals to modernize Brazil's securities borrowing and lending (SBL) market, praising the centralized Banco de Títulos CBLC (BTC) system that B3 operates while criticizing a structural imbalance of supply and demand, a lack of transparency and manual processes.",
+      // Paragraph 3: the investments, and the 2026 acquisition.
+      "Its Principal Strategic Investments team has invested in more than twenty companies, chosen, it says, for their relevance to Optiver's trading and for insight into trading, technology, data and connectivity. In 2025 the portfolio added JapanNext, the Japanese alternative trading venue; Digital Asset, the company behind the Canton Network; Nasdaq Private Market; Optimal, a new US listed-options execution platform; and McKay Brothers, the ultra-low-latency market data and wireless network company, building on an existing commercial relationship. A5X, the Brazilian exchange and clearing house, raised capital in 2025 from existing investors including Optiver. On 3 November 2026 Optiver completed the purchase of a majority stake in Northpool, a European power and gas trading firm based in Leiden, which keeps its name and its chief executive.",
+      // Paragraph 4: why it matters, analytically.
+      "For networks Optiver is a customer with views on how the network should behave. It argues for exchange-imposed delays that protect a market maker's standing quotes from being picked off before they can be updated, and it invests in a provider of ultra-low-latency wireless links; both answer the same problem, the time a price takes to travel from one venue to another, seen from the side of the firm whose quotes are resting in the book.",
+    ],
+    // The 2026 majority purchase.
+    acquisitions: [
+      // Northpool, 2026.
+      { year: 2026, name: "Northpool (majority stake)", what: "A European power and gas trading firm headquartered in Leiden, the Netherlands, with more than a decade of expertise in short-term power and gas markets; agreed on 18 August 2026 and completed on 3 November 2026.", became: "Continues under its own name, with Roald Noort as chief executive.", sourceNote: "Optiver, Optiver completes acquisition of majority stake in Northpool, 3 November 2026 (read 2026-11-16)." },
+    ],
+    // The company's own account of its year and of itself.
+    externalUrl: "https://optiver.com/insights/news/optiver-reports-robust-financial-results-for-2025/",
+    // Link label.
+    externalLabel: "Optiver: financial results for 2025",
+    // Sources, each read live on 2026-11-16.
+    sources: [
+      // The results release, with the founding year and place.
+      { label: "Optiver, Optiver reports robust financial results for 2025, 31 March 2026: net profit attributable to equity holders €1.769 billion, net trading income €4.556 billion, up 30 per cent, total equity €5.490 billion, 2,233 full-time employees; investments in JapanNext, Digital Asset, McKay Brothers, Nasdaq Private Market and Optimal; 'Optiver is a global market maker founded in Amsterdam ... Established in 1986', with offices in London, Chicago, Austin, New York, Sydney, Shanghai, Hong Kong, Singapore, Taipei and Mumbai, providing liquidity with its own capital, at its own risk, in listed derivatives, cash equities, ETFs, bonds and foreign currencies (read 2026-11-16)", url: "https://optiver.com/insights/news/optiver-reports-robust-financial-results-for-2025/" },
+      // The annual review.
+      { label: "Optiver Holding B.V., Annual Review 2025 (PDF linked from the results release): Principal Strategic Investments has invested in more than 20 companies; McKay Brothers, a leader in ultra-low latency market data and wireless networks, building on an existing commercial relationship; A5X, the Brazilian exchange and clearing house, raised capital from existing investors including Optiver; participation in the SEC's Roundtable on Trade-Through Prohibitions (Rule 611); advisory boards including the London Metal Exchange and ESMA's Secondary Markets Working Group; executive photograph naming Jan Boomaars (CEO, Chair of the Management Board) and Johann Kaemingk (Co-Founder) (read 2026-11-16)", url: "https://fchsja.files.cmp.optimizely.com/download/d3b451584f9f11f1af66bacdec88592c" },
+      // The home page figures.
+      { label: "Optiver, home page: 10M+ trades executed every day; 1M+ financial instruments priced; 100+ global exchanges connected by its technology, each with its own protocols, rules and market structure; 'Since 1986' (read 2026-11-16)", url: "https://optiver.com/" },
+      // The speed-bump article.
+      { label: "Optiver, The verdict is in for Eurex's passive liquidity protection, 11 October 2022: welcomes PLP in EURO STOXX 50 Index options from 10 October; 'an asymmetric speed bump'; a short delay the exchange applies to aggressing orders; introduced in June 2019 at 1.5 milliseconds in DAX Index options, reduced to 1.0 millisecond, and 3 milliseconds for certain single-stock options; according to the exchange, latency arbitrage fell and competition at the top of the order book and liquidity improved; asks Eurex to extend it to fixed income options (read 2026-11-16)", url: "https://optiver.com/insights/the-verdict-is-in-for-eurexs-passive-liquidity-protection/" },
+      // The Brazilian paper.
+      { label: "Optiver, Lend, borrow, grow: Improving Brazil's SBL market, 26 August 2025: B3's Banco de Títulos CBLC (BTC) system a clear strength as a centralized clearing house for securities lending; shortcomings in a structural supply-demand imbalance, a lack of transparency and a manual process; proposed reforms (read 2026-11-16)", url: "https://optiver.com/insights/markets/lend-borrow-grow-improving-brazils-sbl-market/" },
+      // The Northpool completion.
+      { label: "Optiver, Optiver completes acquisition of majority stake in Northpool, 3 November 2026: completion of the majority stake in Northpool, a European energy trading firm headquartered in Leiden; Northpool keeps its name, with Roald Noort as chief executive; the agreement announced on 18 August 2026 (read 2026-11-16)", url: "https://optiver.com/insights/news/optiver-completes-acquisition-northpool/" },
+    ],
+  },
+
+  // ---------------------------------------------------------------------------
+  // CITADEL SECURITIES (2002)
+  // ---------------------------------------------------------------------------
+  {
+    // CITADEL SECURITIES - added 2026-11-16 (industry wave I6). FOUNDED 2002: the only source read that states a
+    // year is Sequoia Capital's portfolio page ("Founded 2002"), quoted inside a substantive label; the company's
+    // own site answered a bot check to curl and could be read only in part through the fetch tool (REPORT.md lists
+    // the pages for the integrator's browser). NO PARENT: the broker-dealer's sole member is an affiliate (CSHC US
+    // LLC), and the filings read do not name the ultimate owner; Sequoia and Paradigm hold a minority investment
+    // (January 2022). Its two petitions against the SEC's approvals of IEX's designs are told as the courts recorded
+    // them, with its arguments attributed and the holdings stated.
+    slug: "citadel-securities",
+    // Own site: https://www.citadelsecurities.com answered a bot check to curl on 2026-11-16; read through the fetch tool.
+    official: {
+      // The company's own site.
+      url: "https://www.citadelsecurities.com",
+    },
+    // Financial-market participant: a market maker.
+    tags: ["markets"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "Citadel Securities - a market maker in the argument over speed bumps",
+    // Founding year, named by the Sequoia label below.
+    founded: 2002,
+    // Card line.
+    tagline: "A market maker in US options, equities, government securities and foreign exchange, dated to 2002 by its investor Sequoia, whose challenges to the Securities and Exchange Commission's approval of the Investors Exchange's anti-latency-arbitrage designs were denied by two federal appeals courts.",
+    // Intro paragraph.
+    intro:
+      "Citadel Securities LLC, a Delaware limited liability company registered with the US Securities and Exchange Commission (SEC) as a broker and dealer and a member of the Financial Industry Regulatory Authority (FINRA), engages primarily in market making and liquidity provision in US options, equities, government securities and foreign exchange products, according to its audited statement of financial condition for 2023. Its options page states that it executes more than 30 per cent of US consolidated equity options volume and is the first options market maker by the share the Options Clearing Corporation (OCC) records; the Court of Appeals for the Eleventh Circuit, citing the company's page, gave the share as 30 per cent in 2026; and its home page gives more than $800 billion in notional value traded a day across more than fifty equity and fixed income markets. Sequoia Capital, an investor since 2022, dates the firm to 2002. The SEC's records give its address in Miami and show that the registered broker-dealer was called Citadel Derivatives Group LLC until 2009.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: structure and investors.
+      "The broker-dealer's sole member is an affiliate, CSHC US LLC, and another affiliate, Citadel Securities Group LP, is its manager; it is a clearing member of the Depository Trust Company, the National Securities Clearing Corporation and the Fixed Income Clearing Corporation, grouped in the statement as the Depository Trust & Clearing Corporation (DTCC), and a participant in the stock loan programme of the Options Clearing Corporation (OCC). On 11 January 2022 Citadel Securities announced a $1.15 billion minority investment from Sequoia and Paradigm, led by Sequoia, whose partner Alfred Lin joined its board; its chairman was Ken Griffin and its chief executive Peng Zhao, and its institutional business served more than 1,600 clients, including many of the world's largest sovereign wealth funds and central banks.",
+      // Paragraph 2: the first petition, D-Limit.
+      "Its best-known public argument is about time. In 2020 the SEC approved D-Limit, a displayed order type of the Investors Exchange (IEX) that combines the exchange's speed bump, a thirty-eight-mile coil that every incoming order must traverse, taking about 350 microseconds, with a crumbling quote indicator that predicts imminent changes in the national best bid or offer, so that IEX can reprice resting orders while incoming orders from liquidity takers are still in the coil. Citadel Securities, described by the court as a high-frequency trader and objecting commenter, petitioned for review, arguing that the SEC lacked substantial evidence that the indicator identified latency arbitrage rather than normal trading activity and that the SEC's conclusion that D-Limit narrowly targeted latency arbitrage was arbitrary and capricious; on 29 July 2022 the Court of Appeals for the District of Columbia Circuit denied the petition.",
+      // Paragraph 3: the second petition, IEX Options, and its other stakes in market infrastructure.
+      "It petitioned again when the SEC approved IEX Options in September 2025, contesting among other things the SEC's findings that latency arbitrage exists in options markets and that IEX's model would target it accurately. On 29 May 2026 the Court of Appeals for the Eleventh Circuit, describing Citadel Securities as a leading high-frequency trader and market maker, concluded that its positions lacked merit and denied the petition; the court noted that five options market makers had told the SEC in public comments that latency arbitrage is a common and costly problem in options trading. Citadel Securities also takes stakes in market infrastructure: in November 2024 it made a minority investment in McKay Brothers, the ultra-low-latency wireless network and market data company, whose co-founders kept the controlling majority, and in June 2026 it was named among the institutions backing fairCT, the European consolidated tape provider for bonds.",
+      // Paragraph 4: why it matters, analytically.
+      "The dispute is as much about networks as about markets. A speed bump is a deliberate latency, added on the path into one venue but not on the feeds it receives from the others; in both cases the argument was over evidence, whether the delay and the signal behind it singled out latency arbitrage rather than ordinary trading, and in both the courts left the SEC's approval standing. For anyone who measures microseconds for a living, the two opinions are a public record of how a few hundred of them are argued over by a market maker, an exchange and a regulator.",
+    ],
+    // The company's own site (read only through the fetch tool on 2026-11-16; a script got a bot check).
+    externalUrl: "https://www.citadelsecurities.com",
+    // Link label.
+    externalLabel: "Citadel Securities",
+    // Sources, read on 2026-11-16.
+    sources: [
+      // The founding year, from the investor's page.
+      { label: "Sequoia Capital, Citadel Securities (portfolio page, undated): 'a leading global market maker that provides both institutional and retail investors with the liquidity they need to execute transactions across a broad array of equity and fixed income products'; milestones 'Founded 2002' and 'Partnered 2022'; team Ken Griffin and Peng Zhao (read 2026-11-16)", url: "https://sequoiacap.com/companies/citadel-securities/", sourceNote: "An investor's page, used for the founding year because the company's own pages answered a bot check; the year is to be confirmed on the company's own site." },
+      // The audited statement: what the broker-dealer is.
+      { label: "Citadel Securities LLC, Statement of Financial Condition as of 31 December 2023 (Form X-17A-5, filed 28 February 2024, SEC EDGAR): a Delaware limited liability company registered with the SEC as a broker and dealer, a member of FINRA and the Securities Investor Protection Corporation; CSHC US LLC, an affiliate, the sole member; Citadel Securities Group LP, an affiliate, the manager; clearing member of DTC, NSCC and FICC and participant in the OCC stock loan programme; primarily market making and liquidity provision in US options, equities, government securities and foreign exchange products (read 2026-11-16)", url: "https://www.sec.gov/Archives/edgar/data/1146184/000114618424000001/CDRG_BS_Only_2023.pdf" },
+      // The SEC's company record: address and former name.
+      { label: "SEC EDGAR, company record of Citadel Securities LLC (CIK 1146184): business address 830 Brickell Plaza, Miami, Florida; former name Citadel Derivatives Group LLC, 2004 to 2009; annual X-17A-5 filings to 27 February 2026 (read 2026-11-16)", url: "https://data.sec.gov/submissions/CIK0001146184.json" },
+      // The options market share, read through the fetch tool only.
+      { label: "Citadel Securities, Options (what we do): 'a leading liquidity provider across the options ecosystem'; '#1 options market maker based on OCC market share'; '30%+ of U.S. consolidated equity options volume executed' (read 2026-11-16)", url: "https://www.citadelsecurities.com/what-we-do/options/", sourceNote: "The page answered a bot check to curl; read in a browser on 2026-11-16, where the earlier fetch-tool wording ('approximately 30% market share across the U.S. listed options markets') does not appear: the label gives the page as it reads." },
+      // The home page figure, read through the fetch tool only.
+      { label: "Citadel Securities, home page: '$800B+ Notional traded a day across 50+ equity and fixed income markets'; 1,800+ employees; 1,600 institutional clients (read 2026-11-16)", url: "https://www.citadelsecurities.com/", sourceNote: "The page answered a bot check to curl; the quotation confirmed in a browser on 2026-11-16." },
+      // The company's own release of 2022, blocked, kept.
+      { label: "Citadel Securities, Citadel Securities Announces $1.15 Billion Investment from Sequoia and Paradigm (11 January 2022): answered a bot check (HTTP 403) to a script on 2026-11-16; its text is read from the reprint below (read 2026-11-16)", url: "https://www.citadelsecurities.com/news/citadel-securities-announces-1-15-billion-investment-from-sequoia-and-paradigm/" },
+      // The 2022 release as reprinted.
+      { label: "Markets Media, Citadel Securities Sells Stake to Sequoia and Paradigm, 11 January 2022 (source: Citadel Securities): a $1.15 billion minority investment from Sequoia and Paradigm, led by Sequoia; Sequoia partner Alfred Lin to join the board; chairman Ken Griffin; chief executive Peng Zhao; an institutional business serving more than 1,600 clients, including many of the world's largest sovereign wealth funds and central banks (read 2026-11-16)", url: "https://www.marketsmedia.com/citadel-securities-sells-1-15bn-stake-to-sequoia-and-paradigm" },
+      // The investors' counsel.
+      { label: "Cleary Gottlieb, Sequoia and Paradigm to Invest $1.15 Billion in Citadel Securities, 11 January 2022: Cleary represented Sequoia and Paradigm in their $1.15 billion minority investment in Citadel Securities, a leading global market maker; Sequoia led the round (read 2026-11-16)", url: "https://www.clearygottlieb.com/news-and-insights/news-listing/sequoia-and-paradigm-to-invest-1-15-billion-in-citadel-securities" },
+      // The D-Limit case.
+      { label: "US Court of Appeals for the District of Columbia Circuit, Citadel Securities LLC v. SEC, No. 20-1424, decided 29 July 2022: IEX's thirty-eight-mile coil 'speedbump' of about 350 microseconds and its crumbling quote indicator; the SEC's order of 1 September 2020 approving D-Limit; Citadel Securities, 'a high-frequency trader and objecting commenter', argued that the SEC lacked substantial evidence that the indicator identifies latency arbitrage rather than normal trading activity and that its narrow-targeting conclusion was arbitrary and capricious; petition denied (read 2026-11-16)", url: "https://media.cadc.uscourts.gov/opinions/docs/2022/07/20-1424-1956972.pdf" },
+      // The IEX Options case.
+      { label: "US Court of Appeals for the Eleventh Circuit, Citadel Securities LLC v. SEC, No. 25-13631, filed 29 May 2026: the SEC's approval of IEX Options (90 Fed. Reg. 45861, 23 September 2025); Citadel, 'a leading high-frequency trader and market maker', making up 30 per cent of US consolidated equity options trading volume per its own page; its challenges to the findings that latency arbitrage exists in options and that IEX's model targets it; five options market makers' comments that latency arbitrage is a common and costly problem; 'Citadel's positions lack merit', petition denied (read 2026-11-16)", url: "https://media.ca11.uscourts.gov/opinions/pub/files/202513631.pdf" },
+      // The McKay Brothers investment.
+      { label: "McKay Brothers, McKay Brothers Receives Minority Investment from Citadel Securities, 12 November 2024 (Quincy Data): Citadel Securities receives an equity stake; co-founders Stéphane Tyč and Bob Meade keep the controlling majority; terms not disclosed (read 2026-11-16)", url: "https://quincy-data.com/media/20241112-mckay-brothers-receives-minority-investment-from-citadel-sec" },
+      // The fairCT backing.
+      { label: "fairCT, fairCT Secures Institutional Backing from Five Major Investors to Deliver Europe's Bond Consolidated Tape, London, 3 June 2026: Ediphy Group joined by Barclays, Citadel Securities, Deutsche Bank, TP ICAP and UBS Investment Bank (read 2026-11-16)", url: "https://www.fairct.org/blog/fairct-secures-institutional-backing-from-five-major-investors-to-deliver-europes-bond-consolidated-tape/" },
+    ],
+  },
+
+  // ==== Industry wave J1 (17/11/2026, PRIME 01:15): integrated from scratchpad industry-j1/ ====
+  {
+    // HAK5 - added 2026-11-17 (Industry wave J1). Founding year 2005 from the
+    // company's own Our Story and Code of Ethics pages. OWNER: none named on any
+    // page read (no investor, parent or shareholder). CONTRADICTION recorded in
+    // the report: Hak5's media page calls its logos the property of Hak5 LLC
+    // under "Registered Trademark #87390067", while the USPTO register shows
+    // 87390067 as the serial number of the HAK5 mark (registration 5,328,343),
+    // owned by Darren Kitchen as an individual.
+    slug: "hak5",
+    // Own site read live 2026-11-17: HTTP 200 at https://hak5.org (footer "Hak5 LLC, 5473 Blair Rd, Ste 100 PMB 39371, Dallas, TX 75231").
+    official: {
+      // The company's own site.
+      url: "https://hak5.org",
+    },
+    // Makes its own gear; resells Great Scott Gadgets and Mischief Gadgets; runs a video network; sells training.
+    tags: ["vendor", "reseller", "media"], // training tag dropped at integration 17/11/2026 (check-learning-geography needs a geography.ts row)
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "Hak5 - the podcast that became a maker of penetration-testing gear",
+    // Founding year, named by the Our Story and Code of Ethics labels below.
+    founded: 2005,
+    // Card line.
+    tagline: "Founded in 2005 as a self-titled video podcast by Darren Kitchen, Hak5 makes penetration-testing devices such as the USB Rubber Ducky and the WiFi Pineapple, runs a network of security shows and sells other makers' gear, Mischief Gadgets' O.MG line among it.",
+    // Intro paragraph.
+    intro:
+      "Hak5 began in 2005 as a self-titled video podcast and, by its own account, has been developing penetration-testing devices, online media and information security training since that year. Its founder is the security researcher Darren Kitchen, who presents its shows with Shannon Morse. The company trades as Hak5 LLC, with a Dallas, Texas, address on its site and in its software licence and a San Francisco address in its business-to-business agreement and product documentation. It says its hardware is designed and tested in the United States and manufactured and assembled in the People's Republic of China, and that its software is developed in the United States and the United Kingdom.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the devices, dated from the company's documentation.
+      "Its best-known device is the USB Rubber Ducky, a Universal Serial Bus (USB) tool. Hak5's documentation says the company introduced keystroke injection in 2010 with it, a technique Kitchen developed to automate routine tasks at his information technology (IT) job, and dates the hardware's first version to 2011 and its second to 2022, when its scripting language, DuckyScript, reached version 3.0; the language had been carried into the Bash Bunny in 2017 and into the Shark Jack and the Key Croc. The licence agreement names the rest of the line: the WiFi Pineapple, LAN Turtle, Bash Bunny, Packet Squirrel, Plunder Bug, Signal Owl, Screen Crab, Shark Jack and Key Croc, with Cloud C2, Payload Studio and Payload Hub as its software.",
+      // Paragraph 2: the shows, the trademark and the training.
+      "The company is also a broadcaster. The Hak5 show, which it calls the flagship of its network, airs weekly on YouTube and syndicates through Discovery Digital Networks, formerly Revision3, beside the sister shows HakTip, ThreatWire, Metasploit Minute and TekThing; Hak5 describes itself as the longest continuously running channel on YouTube. The United States Patent and Trademark Office (USPTO) registered the HAK5 mark on 7 November 2017 for information-security hardware and software and for instructional videos and training, recording a first use in commerce on 5 August 2005; the register names Kitchen himself as the owner, while Hak5's media page calls its logos the property of Hak5 LLC. Training is sold as Pentest with Hak5, which the company presents as a simulated red-team engagement.",
+      // Paragraph 3: the shop, the resellers and the export classification.
+      "Hak5 also sells other makers' hardware: its shop lists Great Scott Gadgets' HackRF Pro under that maker's name, and the O.MG cables, plugs and adapters of Mischief Gadgets under the vendor name MG.LOL, and Mischief Gadgets calls Hak5 its exclusive reseller. For its own gear Hak5 names six authorized resellers, Firewire Revolution, HackmoD, Lab401, SAPSAN, FoneFunShop and KSEC, and self-classifies its products for United States export as mass-market items under Export Control Classification Numbers (ECCN) 5A992.c and 5D992.c.",
+      // Paragraph 4: why it matters, analytically.
+      "For network defenders the catalogue is a reference list of what can be bought off the shelf: devices that sit on a USB port, an Ethernet cable or a wireless network, sold with documentation, a licence and an export classification, under a footer that limits their use to authorized auditing and security analysis where permitted. The same company explains the gear on its own video channel, so product and explanation come from one source.",
+    ],
+    // The company's own page.
+    externalUrl: "https://hak5.org/pages/our-story",
+    // Link label.
+    externalLabel: "Hak5",
+    // Sources, each read live on 2026-11-17.
+    sources: [
+      // Founding year, the show, the training and the Dallas address.
+      { label: "Hak5, Our Story: \"Hak5 has been developing innovative penetration testing devices, award winning online media and immersive information security training since 2005\"; beginning in 2005 as the self-titled podcast, the flagship show airs weekly on YouTube and syndicates via Discovery Digital Networks (formerly Revision3), with sister shows HakTip, ThreatWire, Metasploit Minute and TekThing; Pentest with Hak5 as a simulated engagement; footer Hak5 LLC, Dallas, TX (read 2026-11-17)", url: "https://hak5.org/pages/our-story" },
+      // Founding year again, manufacturing and software development places, export class.
+      { label: "Hak5, Code of Ethics: \"Founded in 2005, Hak5's mission is to advance the InfoSec industry\"; hardware designed and tested in the United States, with manufacturing and assembly in the People's Republic of China; software designed and tested in the United States, with development in the United States and the United Kingdom; products classified unrestricted, mass market, ECCN 5D992.c (read 2026-11-17)", url: "https://hak5.org/pages/code-of-ethics" },
+      // Founder, hosts, the YouTube claim and the trademark claim.
+      { label: "Hak5, Media Inquiry: hosts Darren Kitchen and Shannon Morse; \"Founded by security researcher Darren Kitchen\"; \"the longest continuously running channel on YouTube\"; Hak5 logos described as trademarks (\"Registered Trademark #87390067\") and property of Hak5 LLC (read 2026-11-17)", url: "https://hak5.org/pages/media-inquiry" },
+      // The trademark register: dates and the owner of record.
+      { label: "USPTO Trademark Status and Document Retrieval, HAK5, serial 87390067: filed 29 March 2017, registered 7 November 2017 as no. 5,328,343; class 9 computer hardware and software for information security and class 41 instructional videos and training in information security; first use and use in commerce 5 August 2005; owner Kitchen, Darren, an individual, San Francisco; Section 8 declaration accepted 30 January 2025 (read 2026-11-17)", url: "https://tsdr.uspto.gov/statusview/sn87390067" },
+      // The Rubber Ducky chronology.
+      { label: "Hak5 documentation, USB Rubber Ducky: \"Hak5 introduced Keystroke Injection in 2010 with the USB Rubber Ducky\", a technique developed by Hak5 founder Darren Kitchen; hardware mark I (2011) and II (2022); DuckyScript 3.0 introduced with the new USB Rubber Ducky in 2022; DuckyScript coupled with the Bash Bunny in 2017 and used in the Shark Jack and Key Croc; licensed to the O.MG Platform by Mischief Gadgets (read 2026-11-17)", url: "https://documentation.hak5.org/hak5-usb-rubber-ducky/master.md" },
+      // The San Francisco address on product documentation.
+      { label: "Hak5 documentation, Key Croc: \"Made in China. Designed in San Francisco by Hak5 LLC, 548 Market Street\" (read 2026-11-17)", url: "https://documentation.hak5.org/key-croc/master.md" },
+      // The product names and the Dallas address in the licence.
+      { label: "Hak5, Software License Agreement: an agreement with Hak5 LLC of Dallas, Texas, covering the WiFi Pineapple, USB Rubber Ducky, LAN Turtle, Bash Bunny, Packet Squirrel, Plunder Bug, Signal Owl, Screen Crab, Shark Jack and Key Croc and the software Ducky Script, Cloud C2, Payload Studio and Payload Hub; governed by California law (read 2026-11-17)", url: "https://hak5.org/pages/software-license-agreement" },
+      // The San Francisco address in the B2B agreement.
+      { label: "Hak5, B2B Agreement: entered into by Hak5, LLC, located at 548 Market Street, San Francisco; Texas law; arbitration in Austin, Texas (read 2026-11-17)", url: "https://hak5.org/pages/b2b-agreement" },
+      // Export classification and the reseller list.
+      { label: "Hak5, Compliance: representations by Hak5 LLC under FAR 52.204-24 and 52.204-25; products typically classified ECCN 5A992(c) or 5D992(c), mass market, most exportable under License Exception ENC; authorized resellers Firewire Revolution, HackmoD, Lab401, SAPSAN, FoneFunShop and KSEC (read 2026-11-17)", url: "https://hak5.org/pages/compliance" },
+      // The authorized resellers.
+      { label: "Hak5, Global Authorized Resellers: Firewire Revolution, HackmoD, Lab401, SAPSAN, FoneFunShop and KSEC (read 2026-11-17)", url: "https://hak5.org/pages/authorized-resellers" },
+      // Great Scott Gadgets on the Hak5 shop.
+      { label: "Hak5 shop, HackRF Pro product record: vendor Great Scott Gadgets; record created 19 June 2025 (read 2026-11-17)", url: "https://hak5.org/products/hackrf-pro.json" },
+      // Mischief Gadgets on the Hak5 shop.
+      { label: "Hak5 shop, O.MG Cable product record: vendor MG.LOL (read 2026-11-17)", url: "https://hak5.org/products/omg-cable.json" },
+      // Mischief Gadgets' own statement about its reseller.
+      { label: "Mischief Gadgets, home page: \"all of our products are sold through our exclusive reseller\" (read 2026-11-17)", url: "https://mischiefgadgets.com/" },
+    ],
+  },
+  {
+    // FLIPPER DEVICES - added 2026-11-17 (Industry wave J1). Founding year 2020
+    // from TechCrunch ("started in Russia in 2020"); the company's correction in
+    // the same article disputes "Russian", not the year. The corporation's own
+    // incorporation date was not found (OpenCorporates refused the request).
+    // OWNER: none named. The record states both sides of the Russia question,
+    // attributed, and the regulators' actions in Brazil and Canada, attributed.
+    slug: "flipper-devices",
+    // Own site read live 2026-11-17: HTTP 200 at https://flipperdevices.com ("Copyright © 2025 Flipper Devices Inc.", Claymont, Delaware).
+    official: {
+      // The company's own site.
+      url: "https://flipperdevices.com",
+      // The product site and its documentation.
+      resources: [
+        // Compliance documents for the products.
+        { label: "Flipper compliance documents", url: "https://flipper.net/pages/compliance" },
+      ],
+    },
+    // Makes the product.
+    tags: ["vendor"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "Flipper Devices - the Flipper Zero and the arguments over it",
+    // Founding year, named by the TechCrunch label below.
+    founded: 2020,
+    // Card line.
+    tagline: "The maker of the Flipper Zero, a portable multi-tool for exploring radio protocols, access-control systems and hardware, crowdfunded on Kickstarter in 2020 and since then refused by Amazon, seized at import in Brazil and named in a Canadian ban announcement.",
+    // Intro paragraph.
+    intro:
+      "Flipper Devices Inc. is a Delaware corporation whose first product, the Flipper Zero, it describes as a Swiss Army knife for exploring access control systems, appealing to hardware and do-it-yourself (DIY) enthusiasts and usable as a platform for learning to program. Its co-founder and chief executive is Pavel Zhovner and its chief operating officer is Alex Kulagin. The company says it raised 4.8 million dollars in a Kickstarter campaign in 2020; Zhovner wrote on 28 August 2020 that the campaign had raised a million dollars on its first day and nearly five million by then. Its United States registration of the FLIPPER ZERO mark, applied for on 18 August 2020 and granted on 1 March 2022, gives the corporation an office in Moscow. TechCrunch reported in June 2023 that the company started in Russia in 2020 and left the country at the start of the war; a company spokesperson replied that it is not Russian, that its chief executive is Ukrainian and that it is building its headquarters in London.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the products and the company's own figures.
+      "The Flipper Zero, model FZ.1 in the company's compliance documents, has been joined by a WiFi Devboard (model WD.1) and a Video Game Module, and the company says the community around the device has passed half a million people. In a post of 21 May 2026 Zhovner made public the Flipper One, a Linux handheld the company calls a cyberdeck, for which it partnered with Collabora to bring full support for the Rockchip RK3576 chip into the mainline Linux kernel; the post put the number of Flipper Zero devices in people's hands at about one million. TechCrunch reported the company's own sales figures in June 2023: almost 5 million dollars of Kickstarter preorders, a claimed 25 million dollars of sales in 2022 and 80 million expected for 2023.",
+      // Paragraph 2: the regulators and the company's answers, attributed.
+      "Regulators and platforms have argued over the device. In March 2023 Brazil's National Telecommunications Agency (Anatel), working with the Federal Revenue Service, said it had seized more than 340 Flipper Zero units as they arrived in the country and had been refusing certification for products of the kind under Resolution 715 of 2019, which allows refusal when a product lends itself to unlawful ends; the Electronic Frontier Foundation (EFF) answered that the intrusions Anatel feared depended on vulnerabilities in the systems themselves, which can only be fixed once security research has found them. In April 2023 Amazon stopped its sale, classing it as a card-skimming device, and Zhovner told BleepingComputer the company had asked Amazon to reconsider because the device could not skim bank cards. In February 2024 Canada's industry minister, François-Philippe Champagne, announced a ban on the importation, sale and use of \"consumer hacking devices, like flippers, used to commit these crimes\", as part of the government's response to car theft; Kulagin replied that the Flipper Zero cannot be used to hijack cars produced after the 1990s, whose security systems use rolling codes.",
+      // Paragraph 3: why it matters, analytically, without a verdict.
+      "For networks and security teams the record is a compact version of a dispute as old as security tools. Regulators in Brazil and Canada judged the device by the crimes it could facilitate; the company and the EFF pointed to the weaknesses of the systems it reads. Both positions are on the public record.",
+    ],
+    // The company's own page.
+    externalUrl: "https://flipperdevices.com/",
+    // Link label.
+    externalLabel: "Flipper Devices",
+    // Sources, each read live on 2026-11-17.
+    sources: [
+      // The company's self-description, the Kickstarter figure and the address.
+      { label: "Flipper Devices, company page: \"Flipper Devices Inc.\"; Flipper Zero \"a Swiss Army knife for exploring access control systems\", appealing to hardware and DIY enthusiasts and as a programming learning platform; \"In 2020, we've launched a crowdfunding Kickstarter campaign and raised $4.8M\"; community of over half a million people; 2803 Philadelphia Pike, Claymont, Delaware (read 2026-11-17)", url: "https://flipperdevices.com/" },
+      // The trademark certificate: Delaware corporation, Moscow office, filing date.
+      { label: "USPTO registration certificate for FLIPPER ZERO, Reg. No. 6,660,671, registered 1 March 2022, serial 90-121,012 filed 18 August 2020: registrant Flipper Devices Inc. (Delaware corporation), Office 301, Hohlovskiy per. 7-9 str. 2, Moscow, Russian Federation; first use August 2021; the certificate as published by Flipper Devices (read 2026-11-17)", url: "https://cdn.flipper.net/Flipper_Zero_US_Trademark__90121012.pdf" },
+      // The founding year, the Russia question both ways, and the sales claims.
+      { label: "TechCrunch, Haje Jan Kamps, Flipper hacking device on track to make $80M worth of sales, 26 June 2023: the company \"started in Russia in 2020, left the country at the start of the war\"; almost $5 million of Kickstarter preorders, a claimed $25 million of sales the previous year and $80 million expected for 2023; correction: a spokesperson said the company is not Russian, its CEO is Ukrainian, more than 10% of team members are Ukrainian, and it is building its HQ in London (read 2026-11-17)", url: "https://techcrunch.com/2023/06/26/flipper-sales/" },
+      // The campaign in the co-founder's words.
+      { label: "Hackaday.io, Flipper Zero project log by Pavel Zhovner, 28 August 2020: \"on the first day, we raised a whopping $1 million\" and \"to date, we have raised nearly $5 million\" (read 2026-11-17)", url: "https://hackaday.io/project/170875-flipper-zero-multi-tool-device-for-hackers/log/182857-20-hours-till-the-end-of-campaign" },
+      // Zhovner as co-founder.
+      { label: "Flipper blog, Pavel Zhovner and Alex Kulagin, 13 May 2022: an afterword from \"the co-founder of the project Pavel @Zhovner\" (read 2026-11-17)", url: "https://blog.flipper.net/quick-start-guide-and-shipping-update/" },
+      // Flipper One.
+      { label: "Flipper blog, Pavel Zhovner, Flipper One: We Need Your Help, 21 May 2026: Flipper One, a Linux cyberdeck; partnership with Collabora to push full support for the Rockchip RK3576 into the mainline Linux kernel; \"There are about 1 million Flipper Zero devices in people's hands now\" (read 2026-11-17)", url: "https://blog.flipper.net/flipper-one-we-need-your-help/" },
+      // The product models.
+      { label: "Flipper, Compliance: compliance documents of Flipper Devices Inc products, models FZ.1 and WD.1; WiFi Devboard; Video Game Module; marks USPTO 6660671, 6563982 and 6660670 (read 2026-11-17)", url: "https://flipper.net/pages/compliance" },
+      // Amazon and the chief executive's answer.
+      { label: "BleepingComputer, Flipper Zero banned by Amazon for being a 'card skimming device', 7 April 2023: Amazon no longer allows its sale; Flipper Devices' CEO Pavel Zhovner said the company asked Amazon to reconsider as the device is not capable of skimming bank cards; Brazil's telecommunications agency seizing imports (read 2026-11-17)", url: "https://www.bleepingcomputer.com/news/technology/flipper-zero-banned-by-amazon-for-being-a-card-skimming-device-/" },
+      // Anatel's seizures and the EFF's answer.
+      { label: "Convergência Digital, Anatel apreendeu mais de 340 Flipper Zero importados por suposto uso criminoso, 17 March 2023: Anatel, with the Receita Federal, seized more than 340 Flipper Zero units on import; it has been refusing certification under Resolution 715/19 where a product lends itself to unlawful ends; the EFF's criticism (read 2026-11-17)", url: "https://convergenciadigital.com.br/telecom/anatel-apreendeu-mais-de-340-flipper-zero-importados-por-suposto-uso-criminoso" },
+      // Canada and the chief operating officer's answer.
+      { label: "BleepingComputer, Canada wants to ban the Flipper Zero to stop surge in car thefts, 9 February 2024: Industry Minister François-Philippe Champagne announced a ban on the importation, sale and use of consumer hacking devices; Flipper Devices COO Alex Kulagin said the device cannot hijack cars produced after the 1990s, whose security systems use rolling codes (read 2026-11-17)", url: "https://www.bleepingcomputer.com/news/security/canada-wants-to-ban-the-flipper-zero-to-stop-surge-in-car-thefts/" },
+    ],
+  },
+  {
+    // GREAT SCOTT GADGETS - added 2026-11-17 (Industry wave J1). No founding
+    // year: the site footer reads "© 2009 - 2026", a copyright span, and the
+    // trademark register gives a first use of the name on 20 May 2011; neither
+    // is a founding statement, so `founded` is left out (gap in the report).
+    // OWNER: none named. Organized in Colorado per the USPTO register.
+    slug: "great-scott-gadgets",
+    // Own site read live 2026-11-17: HTTP 200 at https://greatscottgadgets.com.
+    official: {
+      // The company's own site.
+      url: "https://greatscottgadgets.com",
+    },
+    // Makes the products; teaches through a video series and in-person classes.
+    tags: ["vendor"], // training tag dropped at integration 17/11/2026 (check-learning-geography needs a geography.ts row)
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "Great Scott Gadgets - open-source radios from Colorado",
+    // Card line.
+    tagline: "A Colorado company that releases all of its hardware designs, software and teaching material under open-source licences, maker of the HackRF software-defined radios, the YARD Stick One, the GreatFET One and Cynthion.",
+    // Intro paragraph.
+    intro:
+      "Great Scott Gadgets, a limited liability company organized in Colorado according to its trademark registration, says that everything it produces, hardware designs, software and educational content, is open source, and states its mission as putting open source tools into the hands of innovative people. Its founder and chief technology officer is Michael Ossmann, who does most of the hardware design for its products and speaks at security conferences on wireless communication security; its chief operating officer and chief executive is Liz Hendrex Stephens, who joined the team in 2016.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: HackRF, from the Jawbreaker beta to the HackRF Pro.
+      "Its best-known product is HackRF. In a post of 9 May 2013 Ossmann wrote that the project had been open source from the beginning, that he and Jared Boone had wanted an open-source hardware platform for software-defined radio (SDR) before it started, and that the support of the Defense Advanced Research Projects Agency's (DARPA) Cyber Fast Track programme had enabled both its development and the production of more than 500 beta units of the Jawbreaker design, nearly all of which he planned to give away. The HackRF One that followed transmits or receives from 1 MHz to 6 GHz. On 26 June 2025 the company announced the HackRF Pro, covering 100 kHz to 6 GHz and compatible with HackRF One software, and on 16 January 2026, after delays, it said that all prepaid reseller preorders had shipped.",
+      // Paragraph 2: the rest of the catalogue, the trademark and Brazil.
+      "The catalogue also includes the YARD Stick One, the GreatFET One, Cynthion, the Opera Cake, the ANT500 and ANT700 antennas and the Throwing Star LAN Tap; the Ubertooth One, a 2.4 GHz platform for Bluetooth experimentation, is retired. The company teaches through a video series on SDR with HackRF and in-person training classes. Its registration of the GREAT SCOTT GADGETS mark, granted on 5 March 2024, records a first use of the name on hardware on 20 May 2011. Among its past projects is the badge for the tenth anniversary of the Hackers to Hackers Conference (H2HC) in Brazil, in 2013. In January 2026 it listed nineteen authorized resellers carrying the HackRF Pro, Hak5, Hacker Warehouse and Lab401 among them.",
+      // Paragraph 3: why it matters, analytically.
+      "The decision to publish everything shows in what others built on it. ShareBrained Technology's PortaPack turned the HackRF One into a portable radio, and Great Scott Gadgets designed the HackRF Pro to work with most PortaPacks and third-party enclosures. For anyone studying the security of wireless systems, that openness is the point: the hardware designs, the firmware and the teaching material are all published.",
+    ],
+    // The company's own page.
+    externalUrl: "https://greatscottgadgets.com/about/",
+    // Link label.
+    externalLabel: "Great Scott Gadgets",
+    // Sources, each read live on 2026-11-17.
+    sources: [
+      // Mission, open source, leadership.
+      { label: "Great Scott Gadgets, About: \"Great Scott Gadgets puts open source tools into the hands of innovative people\"; all hardware designs, software and educational content open source; Michael Ossmann founder and CTO, doing most of the hardware design; Liz Hendrex Stephens COO and CEO, with the team since 2016; footer \"© 2009 - 2026\" (a copyright span, not used as a founding date) (read 2026-11-17)", url: "https://greatscottgadgets.com/about/" },
+      // The register: the LLC, Colorado, first use 2011.
+      { label: "USPTO Trademark Status and Document Retrieval, GREAT SCOTT GADGETS, serial 97471012: filed 22 June 2022, registered 5 March 2024 as no. 7,319,117; owner Great Scott Gadgets, LLC, a limited liability company organized in Colorado, Lakewood, Colorado; first use 20 May 2011 for computer hardware, peripherals and antennas (read 2026-11-17)", url: "https://tsdr.uspto.gov/statusview/sn97471012" },
+      // The HackRF beta and DARPA.
+      { label: "Michael Ossmann, Giving Away HackRF, 9 May 2013: the HackRF project open source from the very beginning; Jared Boone and Ossmann had each started their own businesses devoted to open source hardware development; more than 500 Jawbreaker beta units, nearly all to be given away; support of the DARPA Cyber Fast Track program (read 2026-11-17)", url: "https://ossmann.blogspot.com/2013/05/giving-away-hackrf.html" },
+      // HackRF One.
+      { label: "Great Scott Gadgets, HackRF One: a Software Defined Radio peripheral transmitting or receiving from 1 MHz to 6 GHz, open source hardware; HackRF Pro available for preorder from select retailers; Software Defined Radio video series by Michael Ossmann and in-person training classes (read 2026-11-17)", url: "https://greatscottgadgets.com/hackrf/one/" },
+      // HackRF Pro announced.
+      { label: "Great Scott Gadgets, Meet HackRF Pro, 26 June 2025: HackRF Pro, 100 kHz to 6 GHz, backward compatible with HackRF One software, designed to work with Opera Cake and most PortaPacks and third-party enclosures; preorder through authorized resellers (read 2026-11-17)", url: "https://greatscottgadgets.com/2025/06-26-meet-hackrf-pro/" },
+      // HackRF Pro shipped, and the reseller list.
+      { label: "Great Scott Gadgets, HackRF Pro Shipping Update, 16 January 2026: after additional unexpected delays all prepaid reseller preorders have shipped; nineteen authorized resellers carrying HackRF Pro, including Hacker Warehouse (US), Hak5 (US) and Lab401 (FR/US) (read 2026-11-17)", url: "https://greatscottgadgets.com/2026/01-16-hackrf-pro-shipping-update/" },
+      // Ubertooth retired.
+      { label: "Great Scott Gadgets, Ubertooth One: \"Ubertooth One is a retired product at this time\"; an open source 2.4 GHz wireless development platform for Bluetooth experimentation (read 2026-11-17)", url: "https://greatscottgadgets.com/ubertoothone/" },
+      // The Brazilian badge.
+      { label: "Great Scott Gadgets, H2HC 2013 Badge: celebrates the 10th anniversary of the Hackers to Hackers Conference in Brasil (read 2026-11-17)", url: "https://greatscottgadgets.com/h2hc2013badge/" },
+      // The PortaPack, from the GSG side.
+      { label: "Great Scott Gadgets, PortaPack H1 at DEF CON 23, 23 August 2015: Jared Boone of ShareBrained Technology demonstrated the PortaPack H1, an add-on that turns HackRF One into a portable SDR platform (read 2026-11-17)", url: "https://greatscottgadgets.com/2015/08-23-portapack-h1-at-def-con-23/" },
+    ],
+  },
+  {
+    // MISCHIEF GADGETS - added 2026-11-17 (Industry wave J1). No founding year
+    // and no owner on any page read. The O.MG cable's author is named by Tom's
+    // Hardware (Mike Grover, 14 February 2019); the Darknet Diaries transcript
+    // calls him MG only, and no page read names Grover as the founder or owner
+    // of Mischief Gadgets LLC, so the record does not say so (report).
+    slug: "mischief-gadgets",
+    // Own site read live 2026-11-17: HTTP 200 at https://mischiefgadgets.com ("MISCHIEF GADGETS LLC", San Francisco).
+    official: {
+      // The company's own site.
+      url: "https://mischiefgadgets.com",
+      // The product site.
+      resources: [
+        // The O.MG catalogue and setup pages.
+        { label: "O.MG product site", url: "https://o.mg.lol/" },
+      ],
+    },
+    // Makes the product.
+    tags: ["vendor"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "Mischief Gadgets - the makers of the O.MG cable",
+    // Card line.
+    tagline: "A small San Francisco research and development company for security hardware, maker of the O.MG cables, plugs and adapters and of a detector for them, sold through Hak5.",
+    // Intro paragraph.
+    intro:
+      "Mischief Gadgets LLC describes itself as a small group of security professionals and researchers doing research and development for security hardware, whose tools are used around the world for security testing, training, education and research. It gives an address on Market Street, San Francisco, and says that all of its products are currently sold through its exclusive reseller and that it has no plans to open its own storefront; its O.MG site sends buyers to Hak5 for the full catalogue and names shops in the United States, the European Union and the United Kingdom for parts of it.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the products, in the company's words.
+      "The products carry the O.MG name. The O.MG Cable, which the company describes as a hand-made Universal Serial Bus (USB) cable with an advanced Wi-Fi implant inside, designed to let red teams emulate attack scenarios previously possible only with cables costing 20,000 dollars and to give defence teams new detection opportunities, comes as Basic and Elite and in a woven version; the same implant is sold in the O.MG Plug, the O.MG Adapter and the O.MG UnBlocker. The company also sells a Malicious Cable Detector, which it says detects all known malicious cables and doubles as a USB data blocker. Hak5's documentation says its scripting language, DuckyScript, is licensed to the O.MG platform, and Hak5's shop lists the line under the vendor name MG.LOL.",
+      // Paragraph 2: the cable's author, attributed to each source.
+      "The cable has a known author. Tom's Hardware reported on 14 February 2019 that the security researcher Mike Grover had demonstrated a USB cable with an embedded Wi-Fi controller, which he called the O.MG cable. On the Darknet Diaries podcast in July 2025 the cable's maker, introduced as MG, said the name came from his initials and that the first cables he made by hand sold out at DEF CON in August 2019; the episode recounts that Hak5's Darren Kitchen let him sell them from Hak5's booth and taught him how to have them mass-produced, and MG recalled that online sales from the Hak5 warehouse began at the start of 2020. The O.MG site's team page lists MG among its active members.",
+      // Paragraph 3: why it matters, analytically.
+      "The catalogue pairs the attack with the defence, under the company's own line \"We create the problem... and the solution\". For anyone defending a network it is a reminder that a peripheral as ordinary as a charging cable can carry a radio and a processor of its own.",
+    ],
+    // The company's own page.
+    externalUrl: "https://mischiefgadgets.com/",
+    // Link label.
+    externalLabel: "Mischief Gadgets",
+    // Sources, each read live on 2026-11-17.
+    sources: [
+      // The company's self-description, reseller and address.
+      { label: "Mischief Gadgets, home page: \"MISCHIEF GADGETS LLC\"; \"R&D for Security Hardware\"; \"We are a small group of security professionals and researchers\"; \"Currently, all of our products are sold through our exclusive reseller. We do not currently have plans to open our own storefront\"; 548 Market Street, San Francisco, CA (read 2026-11-17)", url: "https://mischiefgadgets.com/" },
+      // The product descriptions and the reseller channels.
+      { label: "O.MG, home page: \"FULL O.MG CATALOG AVAILABLE VIA HAK5\"; secondary resellers with partial catalogue: HackerWarehouse (US), Firewire Revolution, HackmoD and Lab401 (EU), FoneFunShop (UK); O.MG Cables are \"hand made USB cables with an advance WiFi implant inside\" for red teams and defense teams; O.MG Cable Basic and Elite, woven version; O.MG Plug, O.MG Adapter, O.MG UnBlocker; Malicious Cable Detector, \"We create the problem... and the solution\" (read 2026-11-17)", url: "https://o.mg.lol/" },
+      // The team page.
+      { label: "O.MG, Team: active team members including MG (read 2026-11-17)", url: "https://o.mg.lol/team" },
+      // The DuckyScript licence.
+      { label: "Hak5 documentation, USB Rubber Ducky: third-party tools designed in partnership with Hak5 licensed DuckyScript, \"notably the O.MG Platform of malicious cables and adapters by Mischief Gadgets\" (read 2026-11-17)", url: "https://documentation.hak5.org/hak5-usb-rubber-ducky/master.md" },
+      // The Hak5 shop vendor name.
+      { label: "Hak5 shop, O.MG Cable product record: vendor MG.LOL (read 2026-11-17)", url: "https://hak5.org/products/omg-cable.json" },
+      // The researcher's name.
+      { label: "Tom's Hardware, Here Come the Malicious USB Cables, 14 February 2019: security researcher Mike Grover demonstrated a USB cable, dubbed the \"O.MG cable\", with an embedded Wi-Fi controller (read 2026-11-17)", url: "https://www.tomshardware.com/news/malicious-usb-cables-wi-fi-controller,38603.html" },
+      // The maker's own account.
+      { label: "Darknet Diaries, EP 161: MG, 15 July 2025, episode page and transcript: MG, behind the OMG Cable; the name from his initials; cables sold at DEF CON in August 2019 from the Hak5 booth; Darren Kitchen teaching him mass production; first batch sent to the Hak5 warehouse, online sales starting \"I think it was January 1, 2020\" (read 2026-11-17)", url: "https://darknetdiaries.com/transcript/161/" },
+    ],
+  },
+  {
+    // LAB401 - added 2026-11-17 (Industry wave J1). Founding year 2016 from the
+    // company's own home page ("Established in 2016"). The legal entity it names,
+    // ETOILE 401 SAS, was created on 23 October 2020 according to the French
+    // business register (read through the French State's company-search API);
+    // both dates are stated in the record, and the difference is in the report.
+    // OWNER: the register names a company, AT Security, as president; no parent
+    // relationship is stated anywhere, so none is set.
+    slug: "lab401",
+    // Own site read live 2026-11-17: HTTP 200 at https://lab401.com.
+    official: {
+      // The company's own site.
+      url: "https://lab401.com",
+    },
+    // Sells other makers' gear; designs Flipper Zero add-ons of its own.
+    tags: ["reseller", "vendor"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "Lab401 - the French shop for RFID and penetration-testing hardware",
+    // Founding year, named by the Lab401 home-page label below.
+    founded: 2016,
+    // Card line.
+    tagline: "A French seller of penetration-testing and radio-frequency identification hardware, established in 2016 and trading through ETOILE 401 SAS of Lyon, an official Proxmark distributor that also designs add-ons of its own for the Flipper Zero.",
+    // Intro paragraph.
+    intro:
+      "Lab401 says it was established in 2016 and has served the penetration-testing and audit communities since, and that its founders are experts in radio-frequency identification (RFID) security, red-teaming, physical security audits and law-enforcement agency (LEA) operations. It trades as ETOILE 401 SAS, which it describes as an entity registered in France; the French business register records ETOILE 401 as a simplified joint-stock company (société par actions simplifiée, SAS) created on 23 October 2020, active, with its seat in Lyon and another Lyon company, AT Security, as its president.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: what it sells and what it makes.
+      "Most of what it sells is other makers' equipment. The Proxmark project names Lab401 and Hacker Warehouse as the only two official distributors of the Proxmark 3 RDV4 and Lab401 as an official distributor of the Proxmark 5; Great Scott Gadgets listed it, as Lab401 (FR/US), among the authorized resellers of the HackRF Pro in January 2026; Hak5 lists it among its authorized resellers; and Mischief Gadgets' O.MG site names it as a secondary reseller in the European Union. It also designs products: its site presents the DigiLab and the LightMessenger as Lab401's own add-ons for the Flipper Zero, and it runs Lab401 Academy, which the Proxmark project describes as tutorials on RFID, radio and penetration testing.",
+      // Paragraph 2: the shipping map, Brazil included.
+      "Its shipping policy draws a map. Lab401 ships from warehouses in Los Angeles and Paris to sixty-four countries in North America, Europe, East and Southeast Asia and Oceania, plus South Africa and the Caribbean Netherlands, and lists the rest as countries it cannot serve because of logistical or legal restrictions, among them all twelve countries of South America, Brazil included, every African country but South Africa, all of South Asia, India included, the Middle East, Russia and Belarus.",
+      // Paragraph 3: why it matters, analytically.
+      "The same few shops recur in the makers' own reseller lists: Lab401 appears on those of Hak5, Great Scott Gadgets, the Proxmark project and the O.MG line. Research hardware made by small companies reaches its buyers through a handful of specialist channels, and each shop's shipping rules decide where its catalogue can go.",
+    ],
+    // The company's own page.
+    externalUrl: "https://lab401.com/",
+    // Link label.
+    externalLabel: "Lab401",
+    // Sources, each read live on 2026-11-17.
+    sources: [
+      // Founding year, founders' expertise, own products.
+      { label: "Lab401, home page: \"Established in 2016, Lab401 has proudly served the needs of pentest and audit communities for over 10 years\"; \"Lab401's founders are experts in RFID security, red-teaming, physical security audits and LEA operations\"; Lab401's DigiLab and LightMessenger for Flipper Zero (read 2026-11-17)", url: "https://lab401.com/" },
+      // The legal entity, the warehouses and the shipping lists.
+      { label: "Lab401, FAQ: \"Lab401 (ETOILE 401 SAS) is an EU-Registered entity in France\"; US (Los Angeles) and French (Paris) warehouses; ships to 64 listed countries; \"Due to logistical or legal restrictions, we are unable to ship to the following countries\", including all twelve countries of South America, Brazil among them (read 2026-11-17)", url: "https://lab401.com/pages/faq" },
+      // The French register, through the State's official company-search API.
+      { label: "French State company search (recherche-entreprises.api.gouv.fr, SIRENE register data), ETOILE 401: SIREN 890817711, société par actions simplifiée created 23 October 2020, active, seat Lyon 69008; president AT SECURITY, a Lyon SAS created 1 November 2018 (read 2026-11-17)", url: "https://recherche-entreprises.api.gouv.fr/search?q=etoile%20401", sourceNote: "The human page of the same register, annuaire-entreprises.data.gouv.fr/entreprise/890817711, answered with a bot check and was not bypassed; it is listed for reading in a browser." },
+      // The Proxmark distributors.
+      { label: "Proxmark (proxmark.com): \"For the Proxmark RDV4, there are only two official distributors: Lab401 and Hacker Warehouse\"; \"The Proxmark 5 is available from Lab401, an official distributor\"; Lab401 Academy tutorials on RFID, RF and pen-testing (read 2026-11-17)", url: "https://proxmark.com/" },
+      // The HackRF Pro resellers.
+      { label: "Great Scott Gadgets, HackRF Pro Shipping Update, 16 January 2026: authorized resellers carrying HackRF Pro include Lab401 (FR/US) (read 2026-11-17)", url: "https://greatscottgadgets.com/2026/01-16-hackrf-pro-shipping-update/" },
+      // Hak5's reseller list.
+      { label: "Hak5, Global Authorized Resellers: Lab401 among six authorized resellers (read 2026-11-17)", url: "https://hak5.org/pages/authorized-resellers" },
+      // The O.MG reseller list.
+      { label: "O.MG, home page: secondary resellers with partial catalogue availability, EU: Firewire Revolution, HackmoD, Lab401 (read 2026-11-17)", url: "https://o.mg.lol/" },
+    ],
+  },
+  {
+    // HACKER WAREHOUSE - added 2026-11-17 (Industry wave J1). No founding year
+    // and no founder's name on any page read (the about page is written in the
+    // first person by an unnamed founder). OWNER: "HackerWarehouse.com is owned
+    // and operated by Godai Group LLC" (its own about page); Godai Group is the
+    // operating company, not a parent of a separate subsidiary, so no parent is set.
+    slug: "hacker-warehouse",
+    // Own site read live 2026-11-17: HTTP 200 at https://hackerwarehouse.com (footer "Godai Group LLC 2026 ©").
+    official: {
+      // The company's own site.
+      url: "https://hackerwarehouse.com",
+    },
+    // A shop selling other makers' gear.
+    tags: ["reseller"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "Hacker Warehouse - the shop a penetration tester wanted",
+    // Card line.
+    tagline: "A Californian shop for security-testing hardware, run by Godai Group LLC and started by a former penetration tester who worked at the Federal Reserve Bank, and one of the two official distributors of the Proxmark 3 RDV4.",
+    // Intro paragraph.
+    intro:
+      "HackerWarehouse.com is owned and operated by Godai Group LLC, which describes itself as a minority-owned small business located in San Francisco and Santa Ana, California, with its main location in Santa Ana. Its about page is written by its founder, a former penetration tester who says he worked at the Federal Reserve Bank between 2005 and 2013, where one of his roles was to make sure the team had the equipment it needed, and that he created the shop he had wanted then: one place selling products reviewed and validated by people in the computer security industry, for academic, research and professional buyers.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the makers it sells for.
+      "Its catalogue is other makers' equipment. The Proxmark project names Hacker Warehouse and Lab401 as the only two official distributors of the Proxmark 3 RDV4, a radio-frequency identification (RFID) research tool, and says Hacker Warehouse provides training videos for RFID and penetration-testing tools; Great Scott Gadgets listed it among the authorized resellers carrying the HackRF Pro in January 2026; and Mischief Gadgets' O.MG site names it as the secondary reseller in the United States for part of the O.MG catalogue. The about page publishes the company's Data Universal Numbering System (DUNS) number and its Commercial and Government Entity (CAGE) code.",
+    ],
+    // The company's own page.
+    externalUrl: "https://hackerwarehouse.com/about-us/",
+    // Link label.
+    externalLabel: "Hacker Warehouse",
+    // Sources, each read live on 2026-11-17.
+    sources: [
+      // Owner, location, the founder's account.
+      { label: "Hacker Warehouse, About Us: \"HackerWarehouse.com is owned and operated by Godai Group LLC\", a minority owned small business located in San Francisco, CA and Santa Ana, CA, main location Santa Ana; DUNS and CAGE numbers; the founder's account: \"I worked at the Federal Reserve Bank between 2005 and 2013\" (read 2026-11-17)", url: "https://hackerwarehouse.com/about-us/" },
+      // The shop's own line.
+      { label: "Hacker Warehouse, home page: \"Your one stop computer security shop\"; footer Godai Group LLC 2026 (read 2026-11-17)", url: "https://hackerwarehouse.com/" },
+      // The Proxmark distributors and the training videos.
+      { label: "Proxmark (proxmark.com): \"For the Proxmark RDV4, there are only two official distributors: Lab401 and Hacker Warehouse\"; \"Hacker Warehouse provides high-quality training videos for RFID and Pentesting tools\" (read 2026-11-17)", url: "https://proxmark.com/" },
+      // The HackRF Pro resellers.
+      { label: "Great Scott Gadgets, HackRF Pro Shipping Update, 16 January 2026: authorized resellers carrying HackRF Pro include Hacker Warehouse (US) (read 2026-11-17)", url: "https://greatscottgadgets.com/2026/01-16-hackrf-pro-shipping-update/" },
+      // The O.MG reseller list.
+      { label: "O.MG, home page: secondary resellers with partial catalogue availability, US: HackerWarehouse (read 2026-11-17)", url: "https://o.mg.lol/" },
+    ],
+  },
+  {
+    // HIGH CODE - added 2026-11-17 (Industry wave J1). No founding year: the
+    // firmware's "Copyright (c) 2025 HIGH CODE LLC" is a copyright line, and
+    // Desbugados says the company was founded in the United States without a
+    // date; the state of the LLC is not stated. OWNER: none named. The four
+    // students are not named on any page read.
+    slug: "high-code",
+    // Own site read live 2026-11-17: HTTP 200 at https://highboy.com.br ("High Boy, the pocket pentesting device by High Code").
+    official: {
+      // The company's product site.
+      url: "https://highboy.com.br",
+    },
+    // Makes the product.
+    tags: ["vendor"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "High Code - the Brazilian team behind the High Boy",
+    // Card line.
+    tagline: "A company founded in the United States by four Brazilian students to ease international logistics, maker of the High Boy, an open-source handheld for exploring wireless signals that raised nearly 170,000 dollars on Kickstarter in November 2025.",
+    // Intro paragraph.
+    intro:
+      "High Code, HIGH CODE LLC in the copyright line of its firmware, makes the High Boy, which it describes as a pocket-sized tool for exploring wireless signals and hardware, with six radios and infrared in one handheld: Wi-Fi 6, Bluetooth 5.3 Low Energy, sub-gigahertz, LoRa, near-field communication (NFC) and 125 kHz radio-frequency identification (RFID). The Brazilian site Desbugados reported on 27 November 2025 that the device was developed by four Brazilian students, who founded the company in the United States to ease international logistics.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the project and the campaign.
+      "The project page on Hackaday.io, created on 15 April 2025, says the High Boy began out of curiosity and in answer to the Flipper Zero, which had become restricted in some countries, Brazil especially, and calls it open source and open hardware; its firmware, TentacleOS, is published under the GNU General Public License, version 3 or later. Notebookcheck reported the device on Kickstarter on 19 November 2025, and Desbugados reported eight days later that the campaign had raised nearly 170,000 dollars against a goal of 7,000, more than twenty times the target, and that the team planned to deal with the regulatory side in Brazil early in 2026. The campaign has since moved to Indiegogo.",
+      // Paragraph 2: research the company has published.
+      "High Code also publishes security research. On 28 April 2026 the Brazilian site Ciência Embarcada described a technical report in which High Code's researchers analysed a counterfeit Ledger hardware wallet bought on JD.com, a marketplace in mainland China, in March 2026, finding a commercially manufactured circuit board, firmware supporting twenty blockchains and a trojanized companion app with more than 35 malicious components.",
+      // Paragraph 3: why it matters, analytically.
+      "The company's structure tells the story Desbugados reported: a Brazilian team that incorporated abroad to sell a device of the same class as one Brazil's telecommunications regulator had been seizing at import, while saying it plans to deal with the regulatory side in Brazil.",
+    ],
+    // The company's own page.
+    externalUrl: "https://highboy.com.br/",
+    // Link label.
+    externalLabel: "High Boy by High Code",
+    // Sources, each read live on 2026-11-17.
+    sources: [
+      // The product site.
+      { label: "High Boy (highboy.com.br): \"High Boy, the pocket pentesting device by High Code\"; a pocket-sized tool for exploring wireless signals and hardware with Wi-Fi 6, Bluetooth 5.3 LE, Sub-GHz, LoRa, NFC and 125 kHz RFID; campaign on Indiegogo (read 2026-11-17)", url: "https://highboy.com.br/" },
+      // The legal name in the firmware.
+      { label: "TentacleOS README (GitHub, HighCodeh/TentacleOS, dev branch): \"Copyright (c) 2025 HIGH CODE LLC\"; firmware in development for the High Boy platform; GNU General Public License version 3 or later (read 2026-11-17)", url: "https://raw.githubusercontent.com/HighCodeh/TentacleOS/dev/README.md" },
+      // The project's own account.
+      { label: "Hackaday.io, High Boy: The Brazilian Answer to the Flipper Zero, project created 15 April 2025: inspired by the Flipper Zero \"but with a 100% Brazilian soul\"; open source, open hardware; started out of curiosity; the Flipper restricted in some countries, especially Brazil (read 2026-11-17)", url: "https://hackaday.io/project/202872-high-boy-the-brazilian-answer-to-the-flipper-zero" },
+      // The Kickstarter launch.
+      { label: "Notebookcheck, Alex Alderson, High Boy hacking device reaches Kickstarter with retro gaming handheld vibes, 19 November 2025: available to back on Kickstarter now; creator High Code (read 2026-11-17)", url: "https://www.notebookcheck.net/High-Boy-hacking-device-reaches-Kickstarter-with-retro-gaming-handheld-vibes.1166738.0.html" },
+      // The founders, the US incorporation and the campaign total.
+      { label: "Desbugados, O 'Canivete Suíço Hacker' brasileiro: Rival do Flipper Zero arrecada 20x a meta no Kickstarter, 27 November 2025: developed by four Brazilian students; nearly US$170,000 raised against a US$7,000 goal; the team founded High Code in the United States to ease international logistics and plans to handle the regulatory side in Brazil in early 2026 (read 2026-11-17)", url: "https://www.desbugados.com.br/noticias/2025/11/27/o-canivete-suico-hacker-brasileiro-rival-do-flipper-zero-arrecada-20x-a-meta-no-kickstarter" },
+      // The counterfeit-wallet research.
+      { label: "Ciência Embarcada, L. R. Guerra da Silva, Pesquisadores da High Code descobrem ataque com Ledger falsa, Recife, 28 April 2026: High Code's technical report on a counterfeit Ledger bought on JD.com in March 2026; commercially manufactured PCB, firmware supporting 20 blockchains, a trojanized app with more than 35 malicious components (read 2026-11-17)", url: "https://cienciaembarcada.com.br/publicacoes/pesquisadores-da-high-code-descobrem-ataque-de-ledger-falsa/" },
+    ],
+  },
+  {
+    // JUSTCALLMEKOKO - added 2026-11-17 (Industry wave J1). A thin record: no
+    // founding year, no founder's name, no location and no owner on any page
+    // read. "Copyright (c) 2020 Just Call Me Koko" is the firmware licence's
+    // copyright line, not a founding date. GitHub's own pages were refused to
+    // this session (report); the README, licence and wiki were read raw.
+    slug: "justcallmekoko",
+    // Own site read live 2026-11-17: HTTP 200 at https://www.justcallmekokollc.com ("© 2026, JustCallMeKoko LLC").
+    official: {
+      // The company's own shop.
+      url: "https://www.justcallmekokollc.com",
+    },
+    // Makes the product.
+    tags: ["vendor"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "JustCallMeKoko - the maker of the ESP32 Marauder hardware",
+    // Card line.
+    tagline: "The company behind the ESP32 Marauder, an open-source suite of Wi-Fi and Bluetooth tools for the ESP32, and the official Marauder hardware sold through its own shop.",
+    // Intro paragraph.
+    intro:
+      "JustCallMeKoko LLC sells the official hardware for the ESP32 Marauder, firmware published under the MIT License with a 2020 copyright line in the name of Just Call Me Koko, which its README describes as a suite of Wi-Fi and Bluetooth offensive and defensive tools for the ESP32. The project's wiki calls Marauder a portable Wi-Fi and Bluetooth analysis toolkit and asks users to run it only on systems and radio environments they own or are explicitly authorized to assess.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the hardware generations and the shop's terms.
+      "The official hardware has gone through several generations. The wiki lists as current the Marauder v8, a full-size touch unit built on the ESP32-C5 with dual-band Wi-Fi, Bluetooth Low Energy, storage and a Global Positioning System (GPS) receiver, the Marauder Mini v3 and the BFFB v2, an expansion board for the Flipper Zero; it lists the Marauder v7, the original Mini, the v6 generations, the v4, which it calls the original full-size touch hardware, and a user-assembled kit as legacy hardware. The shop also sells the C5 Wardriver v2, and the README gives the Federal Communications Commission (FCC) identifiers of the ESP32 radio modules fitted to each generation. The shop's terms say the company is not affiliated with Flipper Devices and that its products are intended for lawful, ethical and educational use by authorized individuals.",
+      // Paragraph 2: the model, analytically.
+      "The firmware is open and also runs on community and development boards, which the wiki lists, while the company sells the hardware it designs for it.",
+    ],
+    // The company's own page.
+    externalUrl: "https://www.justcallmekokollc.com",
+    // Link label.
+    externalLabel: "JustCallMeKoko",
+    // Sources, each read live on 2026-11-17.
+    sources: [
+      // The shop.
+      { label: "JustCallMeKoko shop, home page: \"© 2026, JustCallMeKoko LLC\"; Marauder v8 and C5 Wardriver v2; BFFB v2 for Flipper Zero (read 2026-11-17)", url: "https://www.justcallmekokollc.com" },
+      // The shop's terms.
+      { label: "JustCallMeKoko, Terms of Service: products sold by JustCallMeKoko LLC intended for lawful, ethical and educational use by authorized individuals; no affiliation with Flipper Devices (read 2026-11-17)", url: "https://www.justcallmekokollc.com/policies/terms-of-service" },
+      // The README.
+      { label: "ESP32 Marauder README (GitHub, justcallmekoko/ESP32Marauder): \"A suite of WiFi/Bluetooth offensive and defensive tools for the ESP32\"; FCC identifiers of the ESP32-C5-WROOM-U, ESP32-WROOM-32U and ESP32-WROOM-32E modules fitted to JustCallMeKoko hardware; official hardware for sale at justcallmekokollc.com (read 2026-11-17)", url: "https://raw.githubusercontent.com/justcallmekoko/ESP32Marauder/master/README.md" },
+      // The licence.
+      { label: "ESP32 Marauder LICENSE: MIT License, \"Copyright (c) 2020 Just Call Me Koko\" (read 2026-11-17)", url: "https://raw.githubusercontent.com/justcallmekoko/ESP32Marauder/master/LICENSE" },
+      // The wiki home.
+      { label: "ESP32 Marauder wiki, Home: \"a portable Wi-Fi and Bluetooth analysis toolkit for supported ESP32 hardware\"; use only on systems and radio environments owned or explicitly authorized; official hardware from the JustCallMeKoko shop; community and development-board targets (read 2026-11-17)", url: "https://raw.githubusercontent.com/wiki/justcallmekoko/ESP32Marauder/Home.md" },
+      // The hardware generations.
+      { label: "ESP32 Marauder wiki, Official Marauder Hardware: current Marauder v8 (ESP32-C5, dual-band Wi-Fi, BLE, SD, GPS), Marauder Mini v3, BFFB v2 (Flipper Zero expansion); legacy Marauder v7, Marauder Mini, v6/v6.1/v6.2, v4 (\"original full-size touch hardware\"), ESP32 Marauder Kit (read 2026-11-17)", url: "https://raw.githubusercontent.com/wiki/justcallmekoko/ESP32Marauder/Marauder-Versions.md" },
+    ],
+  },
+  {
+    // SHAREBRAINED TECHNOLOGY - added 2026-11-17 (Industry wave J1). A thin
+    // record: no founding year, no legal form and no owner on any page read.
+    // The company is Jared Boone's (GSG, 23 August 2015: "Jared Boone of
+    // ShareBrained Technology"; Ossmann, 9 May 2013, on Boone's own business).
+    // 2014 is the PortaPack's year, not the company's.
+    slug: "sharebrained-technology",
+    // Own site read live 2026-11-17: HTTP 200 at https://sharebrained.com.
+    official: {
+      // The company's own site.
+      url: "https://sharebrained.com",
+    },
+    // Makes the product.
+    tags: ["vendor"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "ShareBrained Technology - the PortaPack's first maker",
+    // Card line.
+    tagline: "Jared Boone's open-source hardware company, which worked on HackRF beside Great Scott Gadgets and created the PortaPack add-on for the HackRF One in 2014.",
+    // Intro paragraph.
+    intro:
+      "ShareBrained Technology describes itself as a company that creates and collaborates on open-source hardware for radio, music, art and vintage electronics, a small company located in a United States state with no sales tax. It is Jared Boone's company: when Michael Ossmann of Great Scott Gadgets wrote in May 2013 about the beta of the HackRF software-defined radio (SDR), he said that he and Boone had wanted an open-source hardware platform for SDR before the project began, and that each had started his own business devoted to open-source hardware development.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the PortaPack and the project list.
+      "Its best-known product is the PortaPack, a portability add-on for the HackRF One whose original open-source hardware design and firmware ShareBrained says it created in 2014. Great Scott Gadgets reported on 23 August 2015 that Boone had demonstrated the PortaPack H1 at the DEF CON 23 Demo Lab, describing it as turning the HackRF One into a portable SDR platform with a display, navigation controls and audio. ShareBrained's own list of present and past projects also names HackRF architecture and firmware development, decoding weather-satellite images from the National Oceanic and Atmospheric Administration (NOAA) and research into the radio transmissions of automotive tyre-pressure monitors.",
+      // Paragraph 2: the design that outgrew its maker.
+      "The design outgrew its maker. ShareBrained says the project has been forked many times, manufactured by many other parties and enhanced far beyond its original vision, that it no longer manufactures PortaPacks itself, and that it makes no recommendation among the third-party versions or vendors.",
+    ],
+    // The company's own page.
+    externalUrl: "https://sharebrained.com/portapack/",
+    // Link label.
+    externalLabel: "ShareBrained Technology",
+    // Sources, each read live on 2026-11-17.
+    sources: [
+      // Self-description, project list, location.
+      { label: "ShareBrained Technology, About: \"ShareBrained Technology creates and collaborates on open-source hardware for radio, music, art, and vintage electronics\"; projects: the PortaPack add-on for the HackRF One, decoding NOAA weather satellite images, HackRF architecture and firmware development, automotive tire pressure monitor radio transmissions; \"we're a small company\"; located in a US state with no sales tax (read 2026-11-17)", url: "https://sharebrained.com/about/" },
+      // The PortaPack's year and its later history.
+      { label: "ShareBrained Technology, PortaPack: \"ShareBrained Technology created the original open-source hardware design and firmware in 2014\"; forked multiple times and manufactured by myriad other parties; \"ShareBrained Technology no longer manufactures PortaPacks\" (read 2026-11-17)", url: "https://sharebrained.com/portapack/" },
+      // DEF CON 23.
+      { label: "Great Scott Gadgets, PortaPack H1 at DEF CON 23, 23 August 2015: \"Jared Boone of ShareBrained Technology gave demonstrations of his new PortaPack H1\" at the DEF CON 23 Demo Lab; PortaPack H1 turns HackRF One into a portable SDR platform with an LCD, navigation control and audio (read 2026-11-17)", url: "https://greatscottgadgets.com/2015/08-23-portapack-h1-at-def-con-23/" },
+      // Boone's business, in Ossmann's words.
+      { label: "Michael Ossmann, Giving Away HackRF, 9 May 2013: \"Both Jared and I had started our own businesses devoted to open source hardware development\"; Jared Boone and Ossmann wanted an open source hardware platform for SDR before the project began (read 2026-11-17)", url: "https://ossmann.blogspot.com/2013/05/giving-away-hackrf.html" },
+    ],
+  },
+  {
+    // RTL-SDR BLOG - added 2026-11-17 (Industry wave J1). A thin record: no
+    // founding year, no legal entity, no founder and no owner on any page read
+    // (its contact and terms pages returned 404). The "media" tag is for the
+    // news site; "vendor" for the dongles it designs and sells.
+    slug: "rtl-sdr-blog",
+    // Own site read live 2026-11-17: HTTP 200 at https://www.rtl-sdr.com.
+    official: {
+      // The site and shop.
+      url: "https://www.rtl-sdr.com",
+    },
+    // Designs and sells its own receivers; publishes radio news.
+    tags: ["vendor", "media"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "RTL-SDR Blog - the news site that sells its own receivers",
+    // Card line.
+    tagline: "A news and tutorial site about software-defined radio built on cheap RTL2832U television dongles, which also designs and sells improved receivers of its own under the RTL-SDR Blog and RTL-SDR.COM brands.",
+    // Intro paragraph.
+    intro:
+      "RTL-SDR Blog publishes news and projects about the RTL-SDR, the use of mass-produced Digital Video Broadcasting, Terrestrial (DVB-T) television tuner dongles built on the Realtek RTL2832U chipset as wideband software-defined radio (SDR) receivers, and about other low-cost radios such as Airspy, HackRF and SDRplay. Its account of the RTL-SDR's origins credits the combined efforts of Antti Palosaari, Eric Fry and Osmocom, in particular Steve Markgraf, with finding that the chipset's raw in-phase and quadrature (I/Q) data could be read directly, and Markgraf with the driver that turned the tuner into a wideband radio; it asks readers to donate to Osmocom.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: its own receivers and how it sells them.
+      "Beside the site it sells its own receivers. It says no one owns the RTL-SDR concept, so anyone can sell such dongles, and that it sells custom, modified and improved versions under the brands RTL-SDR Blog and RTL-SDR.COM: the V3, built around the R860 (R820T2) tuner; the V4, with the R828D tuner, improved front-end filtering and a built-in high-frequency (HF) upconverter; and the V4L, a lighter design with the R828S tuner. Hackaday, writing on 31 July 2019 about seven years of the RTL-SDR, described the RTL-SDR Blog V3 as one of the most popular next-generation RTL-SDR receivers. The shop ships from a warehouse in China, lists local resellers in twenty countries, Brazil and Argentina among them, warns against counterfeits sold under its brand names and no longer ships to Russia or Belarus because of sanctions.",
+      // Paragraph 2: media and vendor at once, analytically.
+      "The site is publisher and vendor at once: the publication that reports on the RTL-SDR ecosystem also designs and sells receivers for it, and says so, disclosing that it earns affiliate commissions on links to its own products and to some third-party ones.",
+    ],
+    // The company's own page.
+    externalUrl: "https://www.rtl-sdr.com/about-rtl-sdr/",
+    // Link label.
+    externalLabel: "RTL-SDR Blog",
+    // Sources, each read live on 2026-11-17.
+    sources: [
+      // The site's subject and the origins of RTL-SDR.
+      { label: "RTL-SDR.com, About RTL-SDR: RTL-SDR (RTL2832U) and software defined radio news and projects, also featuring Airspy, HackRF, FCD, SDRplay; the origins stem from DVB-T TV tuner dongles based on the RTL2832U; Antti Palosaari, Eric Fry and Osmocom (in particular Steve Markgraf) found the raw I/Q data could be accessed directly, with a custom driver by Steve Markgraf; readers asked to donate to Osmocom (read 2026-11-17)", url: "https://www.rtl-sdr.com/about-rtl-sdr/" },
+      // The brands, models, warehouse, resellers, counterfeits, sanctions, affiliates.
+      { label: "RTL-SDR.com, Buy RTL-SDR Dongles: \"No one in particular owns the 'RTL-SDR' concept\"; \"we sell our own custom modified and improved RTL-SDRs under our brand 'RTL-SDR Blog' and 'RTL-SDR.COM'\"; RTL-SDR Blog V3 R860 (R820T2), V4 (R828D) and V4L (R828S); ships from a warehouse in China; local resellers including Brazil and Argentina; counterfeit warning; no shipping to Russia or Belarus due to war sanctions; eBay and Amazon affiliate links on its own and some third-party products (read 2026-11-17)", url: "https://www.rtl-sdr.com/buy-rtl-sdr-dvb-t-dongles/" },
+      // The V4.
+      { label: "RTL-SDR.com, RTL-SDR Blog V4 Users Guide: updated drivers required for the V4 because of changes to the circuitry (read 2026-11-17)", url: "https://www.rtl-sdr.com/v4/" },
+      // The V3 in the press.
+      { label: "Hackaday, Tom Nardi, RTL-SDR: Seven Years Later, 31 July 2019: the \"RTL-SDR Blog v3\" receiver, \"one of the most popular 'next generation' RTL-SDR receivers\" (read 2026-11-17)", url: "https://hackaday.com/2019/07/31/rtl-sdr-seven-years-later/" },
+    ],
+  },
+  {
+    // M5STACK - added 2026-11-17 (Industry wave J1). Founding year 2017 from
+    // M5Stack's own corporate overview ("Founded in China in 2017").
+    // OWNER: Espressif Systems, majority stake, announced as acquired on
+    // 22 April 2024 (Espressif's release, "has announced its acquisition of a
+    // majority stake"); M5Stack's overview lists "Acquired by Espressif" under
+    // 2024. The percentage is not stated. Parent slug espressif-systems is the
+    // record written by wave J3.
+    slug: "m5stack",
+    // Own site read live 2026-11-17: HTTP 200 at https://m5stack.com ("Copyright ©2026 M5Stack Technology Co., Ltd.").
+    official: {
+      // The company's own site.
+      url: "https://m5stack.com",
+      // Majority-owned by the chipmaker; the M5Stack and Espressif labels name Espressif Systems and 2024.
+      parent: { name: "Espressif Systems", slug: "espressif-systems", since: 2024, note: "Espressif announced on 22 April 2024 that it had acquired a majority stake in M5Stack, which had been an Espressif investee since 2018; the size of the stake was not stated." },
+    },
+    // Makes the product.
+    tags: ["vendor"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "M5Stack - the five-centimetre stack that Espressif bought",
+    // Founding year, named by the corporate-overview label below.
+    founded: 2017,
+    // Card line.
+    tagline: "A Shenzhen maker of stackable, five-centimetre modular development kits built on Espressif's ESP32 chips, founded in China in 2017 and majority-owned by Espressif Systems since 2024.",
+    // Intro paragraph.
+    intro:
+      "M5Stack describes itself as a provider of modular, open-source Internet of Things (IoT) development solutions: stackable hardware modules five centimetres square and a graphical programming platform, UIFlow, for industrial IoT, home automation, smart retail and education in science, technology, engineering and mathematics (STEM). Its corporate overview of July 2025 says it was founded in China in 2017, is headquartered in Shenzhen and has sold more than three million M5 products; its site signs itself M5Stack Technology Co., Ltd.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the milestones, in the company's own overview.
+      "The overview's milestones run from the company's founding and the M5 Basic Core in 2017, through a first distributor, Switch-Science, an investment from Espressif and the launch of UIFlow in 2018, the M5StickC in 2019 and the Core2 and Atom series in 2020, to the CoreS3 in 2023 and, in 2024, the acquisition by Espressif, a move to new headquarters and a series of large language model (LLM) products. It reports more than 400 catalogue items, more than 50 distributors, coverage of more than 110 countries, an engineering and research team of more than forty people and a factory able to produce more than 2,000 units a day.",
+      // Paragraph 2: the parent, in the parent's words.
+      "Espressif Systems, the Shanghai chip company listed as 688018.SH, announced on 22 April 2024 that it had acquired a majority stake in M5Stack, noting that M5Stack's flagship controller modules are built on Espressif's ESP32 series and that M5Stack also offers the low-code UIFlow platform and the EZData data service; Espressif's own milestones list the purchase under 2024, and M5Stack now presents itself as part of Espressif.",
+      // Paragraph 3: why it matters, analytically.
+      "With M5Stack the chipmaker owns not only the silicon but one of the makers of the development kits built on it, so a buyer of an M5Stack kit is buying from Espressif's own group.",
+    ],
+    // The company's own page.
+    externalUrl: "https://m5stack.com/",
+    // Link label.
+    externalLabel: "M5Stack",
+    // Sources, each read live on 2026-11-17.
+    sources: [
+      // The parent's announcement: name and year.
+      { label: "Espressif Systems, Espressif Acquires Majority Stake in M5Stack, Enhancing AIoT Ecosystem, 22 April 2024: \"Espressif Systems (SSE: 688018.SH) has announced its acquisition of a majority stake in M5Stack\"; M5Stack's flagship main control module powered by Espressif's ESP32 series; the low-code UIFlow platform and EZData data service (read 2026-11-17)", url: "https://www.espressif.com/en/news/Espressif_Acquires_M5Stack" },
+      // The company's own overview: founding year, milestones, scale.
+      { label: "M5Stack Corporate Overview (Allen Chao), \"PART OF ESPRESSIF\", PDF dated 31 July 2025 on Espressif's download server: \"Founded in China in 2017\"; milestones 2017 M5Stack founded and M5 Basic Core, 2018 first distributor Switch-Science, invested by Espressif and UIFlow, 2019 M5StickC, 2020 Core2 and Atom series, 2023 CoreS3, 2024 \"Acquired by Espressif\", new headquarters and the LLM series; headquartered in Shenzhen; 3 million+ M5 products sold, 400+ SKUs, 50+ distributors, 110+ countries, 40+ engineering and R&D staff, 2,000+ units daily capacity (read 2026-11-17)", url: "https://dl.espressif.com/public/10-00-Allen-Chao-M5Stack-Corporate-Overview.pdf" },
+      // The parent's own milestones.
+      { label: "Espressif Systems, Milestones: 2024, Espressif Acquires Majority Stake in M5Stack (read 2026-11-17)", url: "https://www.espressif.com/en/company/about-us/milestones" },
+      // The legal name and address.
+      { label: "M5Stack, home page: \"Copyright ©2026 M5Stack Technology Co., Ltd.\"; Bao'an District, Shenzhen, China (read 2026-11-17)", url: "https://m5stack.com/" },
+    ],
+  },
+  {
+    // LILYGO - added 2026-11-17 (Industry wave J1). A thin record: no founding
+    // year and no owner on any page read. Legal name from its own about page.
+    slug: "lilygo",
+    // Own site read live 2026-11-17: HTTP 200 at https://lilygo.cc.
+    official: {
+      // The company's own site.
+      url: "https://lilygo.cc",
+    },
+    // Makes the product.
+    tags: ["vendor"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "LILYGO - factory-direct ESP32 boards from Shenzhen",
+    // Card line.
+    tagline: "A Shenzhen company, legally Shenzhen Xinyuan Electronic Technology Co., Ltd, that designs, makes and sells open-source development boards and handhelds such as the T-Display and T-Beam series and the T-Embed CC1101.",
+    // Intro paragraph.
+    intro:
+      "LILYGO describes itself as a company integrating research and development, production and sales, shipping directly from its own factory to buyers on its official platforms, which it calls factory-you. Its about page gives the legal name Shenzhen Xinyuan Electronic Technology Co., Ltd and an address in Bantian, in Shenzhen's Longgang district, and says it has released a series of open-source hardware products ranging from microcontroller (MCU) boards to Internet of Things (IoT) modules and education kits.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the products and the fairs.
+      "Its catalogue includes the T-Display and T-Beam series and the T-Embed CC1101, a handheld that pairs an ESP32-S3 with a sub-gigahertz module based on a CC1101 transceiver, a PN532 near-field communication (NFC) and 13.56 MHz radio-frequency identification (RFID) module and an infrared transmitter and receiver; the company gives the radio's bands as 300 to 348, 387 to 464 and 779 to 928 MHz and sells a Plus version with an nRF24L01 module. In 2025 it showed its hardware at Maker Faire Hannover, at Maker Faire Tokyo on 5 October and at Maker Faire Rome on 17 October.",
+    ],
+    // The company's own page.
+    externalUrl: "https://lilygo.cc/pages/about-us",
+    // Link label.
+    externalLabel: "LILYGO",
+    // Sources, each read live on 2026-11-17.
+    sources: [
+      // Legal name, address and model.
+      { label: "LILYGO, About Us: \"LILYGO® is a company integrating R&D, production, and sales\"; shipped directly from the factory (\"factory-you\"); Shenzhen Xinyuan Electronic Technology Co., Ltd; Bantian, Longgang, Shenzhen, Guangdong; open-source hardware from MCU to IoT modules and STEM education kits (read 2026-11-17)", url: "https://lilygo.cc/pages/about-us" },
+      // The T-Embed CC1101.
+      { label: "LILYGO, T-Embed CC1101: ESP32-S3 dual-core LX7; Sub-GHz module based on a CC1101 transceiver, operating at 300-348, 387-464 and 779-928 MHz; PN532 NFC/RFID module, 13.56 MHz; IR transmit and receive; T-Embed CC1101 Plus with an nRF24L01 module (read 2026-11-17)", url: "https://lilygo.cc/products/t-embed-cc1101" },
+      // Product series and the 2025 fairs.
+      { label: "LILYGO, home page: T-Display and T-Beam series; Maker Faire Hannover 2025; Maker Faire Tokyo, 5 October 2025; Maker Faire Rome, 17 October 2025 (read 2026-11-17)", url: "https://lilygo.cc/" },
+    ],
+  },
+
+  // ==== Industry wave J2 (17/11/2026, PRIME 01:15): integrated from scratchpad industry-j2/ ====
+  {
+    // SECURITY RESEARCH LABS (SRLabs) - added 2026-11-17 (Industry wave J2).
+    // FOUNDED 2010: the about page says "a hacking think tank in Berlin, working
+    // since 2010" and names Karsten Nohl as the founder; Wikipedia says he has led
+    // it since 2010. The page says "working since", not "founded in": REPORT flags
+    // this for the integrator.
+    // OWNER: Allurity, which "completes the strategic acquisition" of SRLabs on
+    // 20 February 2024 (Allurity's release via Cision); a company, not a fund
+    // (Allurity is itself backed by Trill Impact, which the parent note says).
+    slug: "srlabs",
+    // Own site read live 2026-11-17: HTTP 200 at https://srlabs.de/ (footer "SR Security Research Labs GmbH").
+    official: {
+      // The company's own site.
+      url: "https://srlabs.de",
+      // The research index and the open-source tools.
+      resources: [
+        // Write-ups since 2010.
+        { label: "SRLabs research write-ups", url: "https://srlabs.de/blog" },
+        // Published tools.
+        { label: "SRLabs on GitHub", url: "https://github.com/srlabs/" },
+      ],
+      // A company owner: rendered "part of Allurity (since 2024)"; the Cision label names Allurity and 2024.
+      parent: { name: "Allurity", since: 2024, note: "Allurity, a European group of cybersecurity companies backed by the Swedish impact investor Trill Impact, completed the acquisition on 20 February 2024." },
+    },
+    // Penetration testing, research and consultancy.
+    tags: ["services"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "Security Research Labs - the Berlin hacking think tank that publishes what it finds",
+    // Founding year, named by the about-page label and the Wikipedia label below.
+    founded: 2010,
+    // Card line.
+    tagline: "A Berlin security consultancy and research lab, working since 2010 by its own account, best known for BadUSB in 2014, and part of the Allurity cybersecurity group since February 2024.",
+    // Intro paragraph.
+    intro:
+      "Security Research Labs, SRLabs for short, describes itself as a hacking think tank in Berlin, working since 2010, where more than fifty security researchers, hackers and software engineers work in Berlin and Hong Kong. It was founded, and led as chief executive, by Karsten Nohl. Its legal entity is SR Security Research Labs GmbH, registered under HRB 128449 B at the district court of Berlin-Charlottenburg, with a Hong Kong company, Security Research Partners Ltd, beside it. It states its model in three sentences: \"We test systems and we publish what we find. The consulting pays for the research. The research is where the methods come from.\"",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the research record.
+      "The published record starts with cryptography and radio-frequency identification (RFID): the oldest write-ups in its research index are on Legic Prime RFID cards, dated 20 July 2010, and on decrypting Global System for Mobile Communications (GSM) phone calls, a week later. The company's own list of landmarks runs from the A5/1 cracker, Mifare and Legic Prime through GSM and third-generation (3G) interception, attacks on subscriber identity module (SIM) cards, abuse of Signalling System No. 7 (SS7), point-of-sale terminals, BadUSB, the Android and Ethereum patch gaps and evasion of endpoint detection and response (EDR) tools, to fifth-generation (5G) radio access networks and Qualcomm basebands. BadUSB, published on 31 July 2014, is the one SRLabs calls probably its best known: by its account, the work showed that the controller firmware in an ordinary Universal Serial Bus (USB) device can be reprogrammed to impersonate another device, and that reinstalling the operating system does not remove it. The tools are published with the write-ups, SIMtester, gsmmap and SnoopSnitch among them.",
+      // Paragraph 2: Allurity, 2024 and 2025.
+      "On 20 February 2024 Allurity, a European group of cybersecurity companies whose growth strategy is backed by the Swedish impact investor Trill Impact, completed the acquisition of SRLabs. The group then had seven companies, among them Aiuken in Spain, Arctic Group and ID North in Sweden, CloudComputing in Portugal, CSIS in Denmark and SECURIX in Switzerland, and about 100 million euros of revenue. Nohl said SRLabs \"was founded to make the world a more secure place, one small step at a time.\" On 13 February 2025 Wolf Richter, Allurity's chief commercial officer, who had spent 20 years at McKinsey and co-founded and led its European cybersecurity practice, became chief executive of SRLabs, and Nohl moved to the group as chief innovation officer. Allurity, which says it was founded in 2021, now lists fifteen companies in its family, and its chief executive and chief financial officer, Frida Westerberg and Åsa Agerman, sit beside Richter and Nohl as managing directors of the Berlin company.",
+      // Paragraph 3: why it matters, analytically.
+      "SRLabs matters to networks because so much of its research looked at the infrastructure itself rather than at what runs on it: the cipher of the radio link, the signalling between operators and the SIM card in the subscriber's phone. Its gsmmap work compared operators directly: of the 107 networks mapped on gsmmap.org by May 2012, it reported, five used A5/3 encryption, eight strict authentication and twelve home routing. The company says the mobile networks it has tested serve more than 400 million subscribers, and its arrangement, consulting revenue paying for research whose findings and tools are then published, is how much of that comparison came to be public.",
+    ],
+    // The company's own page.
+    externalUrl: "https://srlabs.de/about",
+    // Link label.
+    externalLabel: "Security Research Labs",
+    // Sources, each read live on 2026-11-17.
+    sources: [
+      // Founding year (working since 2010), founder, size, model, research landmarks, legal entity.
+      { label: "SRLabs, About us: \"SRLabs is a hacking think tank in Berlin, working since 2010\"; more than fifty security researchers, hackers and software engineers in Berlin and Hong Kong; \"We test systems and we publish what we find. The consulting pays for the research.\"; clients in 21 countries; mobile networks tested serve more than 400 million subscribers; landmarks from the A5/1 cracker, Mifare and Legic Prime to BadUSB, the Android and Ethereum patch gaps and Qualcomm basebands; tools SIMtester, gsmmap, SnoopSnitch; Karsten Nohl, founder, \"Founded SRLabs and led it as CEO\", now Chief Innovation Officer at Allurity; Wolf Richter, CEO; footer: SR Security Research Labs GmbH, Revaler Strasse 29, 10245 Berlin, HRB 128449 B, district court Berlin-Charlottenburg, managing directors Dr. Wolf Richter, Dr. Karsten Nohl, Frida Westerberg, Åsa Agerman; Security Research Partners Ltd, Hong Kong; \"Security Research Labs is a member of the Allurity family\" (read 2026-11-17)", url: "https://srlabs.de/about" },
+      // The founder's tenure since 2010.
+      { label: "Wikipedia: Karsten Nohl - \"Since 2010 Nohl has served as the Managing Director and Chief Scientist of the Berlin-based consultancy and think tank, Security Research Labs\" (read 2026-11-17)", url: "https://en.wikipedia.org/wiki/Karsten_Nohl" },
+      // The dated research index.
+      { label: "SRLabs, Research: \"Write-ups going back to 2010\"; Legic Prime RFID cards, 20 July 2010; Decrypting GSM phone calls, 27 July 2010; USB peripherals can turn against their users (BadUSB), 31 July 2014; Mobile networks differ widely in security, 14 July 2012: of 107 networks mapped on gsmmap.org by May 2012, five used A5/3 encryption, eight strict authentication and twelve home routing; A decade of hacking, 11 August 2020 (read 2026-11-17)", url: "https://srlabs.de/blog" },
+      // BadUSB, dated.
+      { label: "SRLabs, USB peripherals can turn against their users, 31 July 2014: the BadUSB research on reprogramming the controller chips of USB peripherals (read 2026-11-17)", url: "https://srlabs.de/blog/usb-peripherals-turn" },
+      // The acquisition: the parent's name and year.
+      { label: "Allurity press release via Cision, Stockholm, 20 February 2024: Allurity, a European group of leading tech-enabled cybersecurity companies, \"completes the strategic acquisition of Security Research Labs (SRLabs)\", a cyber consultancy based in Berlin and Hong Kong; the group comprises seven companies (Aiuken, Arctic Group, ID North, CloudComputing, CSIS, SECURIX, SRLabs) with approximately EUR 100 million in revenue; Allurity's growth strategy backed by Trill Impact, a Swedish impact investor; Karsten Nohl: \"SRLabs was founded to make the world a more secure place, one small step at a time\" (read 2026-11-17)", url: "https://news.cision.com/allurity/r/cybersecurity-group-allurity-strengthens-its-position-through-the-acquisition-of-globally-recognized,c3932341" },
+      // The 2025 change of chief executive.
+      { label: "Allurity press release via Cision, 13 February 2025: Wolf Richter appointed CEO of Security Research Labs, succeeding its founder Karsten Nohl, who becomes Chief Innovation Officer at Allurity; Richter, Allurity's Chief Commercial Officer, spent 20 years at McKinsey, where he co-founded and led the firm's European cybersecurity practice (read 2026-11-17)", url: "https://news.cision.com/allurity/r/wolf-richter-appointed-ceo-of-security-research-labs--succeeding-founder-karsten-nohl,c4104562" },
+      // The group today.
+      { label: "Allurity, About: \"Founded in 2021, Allurity is one of Europe's fastest-growing cybersecurity groups\", around 800 cybersecurity specialists; the Allurity family of fifteen companies, Security Research Labs (Berlin) among them; management: Frida Westerberg, CEO, Åsa Agerman, CFO, Wolf Richter, CCO at Allurity and CEO at SRLabs (read 2026-11-17)", url: "https://allurity.com/about/" },
+    ],
+  },
+  {
+    // RISCURE - added 2026-11-17 (Industry wave J2).
+    // FOUNDED 2001: Riscure B.V.'s own pitch at ITEA's Dutch roadshow (25 May 2023)
+    // gives "Creation date: 2001"; a single company-supplied source, flagged in REPORT.
+    // OWNER: Keysight, which "acquired all the outstanding share capital of Riscure
+    // Holding B.V." on 21 February 2024 (Keysight 10-Q and FY2024 10-K, SEC).
+    // STATUS TO CONFIRM: riscure.com answered with a Cloudflare block to curl and
+    // refuses the fetch tool by robots.txt; whether it still presents Riscure under
+    // its own name is for the integrator's browser. If it now redirects to Keysight,
+    // the record becomes ended (REPORT gives the change).
+    slug: "riscure",
+    // Own site NOT read: https://www.riscure.com returned a Cloudflare "Attention Required" page on 2026-11-17.
+    official: {
+      // riscure.com now redirects to Keysight's fault-injection page (read in a browser on 17 November 2026), so the
+      // brand is absorbed: no own url and no parent; the successor is Keysight's page for the former Riscure products.
+      defunct: true,
+      // Where the products live now.
+      successor: { label: "Riscure products at Keysight", url: "https://www.keysight.com/us/en/products/vulnerability-assessment/device-vulnerability-analysis/fault-injection.html" },
+    },
+    // A test lab that sells evaluation services and the tools for it.
+    tags: ["services", "vendor"],
+    // Status: absorbed into Keysight (converted at integration, 17/11/2026; riscure.com redirects to Keysight).
+    group: "other", // absorbed into Keysight (riscure.com redirects to Keysight since at least 17 November 2026)
+    // Ended: the year comes from the Keysight 10-Q label on this record.
+    ended: { year: 2024, note: "Acquired by Keysight Technologies on 21 February 2024; its products are sold under the Keysight name" },
+    // Title.
+    name: "Riscure - the Delft chip-security lab that Keysight bought",
+    // Founding year, named by the ITEA label below.
+    founded: 2001,
+    // Card line.
+    tagline: "A Dutch security evaluation lab and tool maker for chips and embedded devices, created in 2001 by its own account and bought by Keysight Technologies on 21 February 2024.",
+    // Intro paragraph.
+    intro:
+      "Riscure B.V. presented itself in May 2023 as a company created in 2001, with about 200 employees in the Netherlands, the United States and China, whose core business was technology to help hardware and software developers test their products, and services to ensure smooth evaluation and certification. The trade weekly Bits&Chips called it a Delft-based security tools vendor in 2020, when its chief executive was Marc Witteman, whom Keysight now introduces as the founder of Riscure Security Solutions.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: what it sold and to whom.
+      "Its customers, by its own list, were chip makers, intellectual property and firmware developers, government agencies, forensic institutes, defence contractors and security evaluation laboratories, and it sold to them through security analysis and development tools, evaluation lab services, workforce development programmes and consultancy. Bits&Chips described its tools in February 2020 as solutions to test chips and devices against side-channel and fault-injection attacks, with further products to find weaknesses in software and to evaluate automotive designs. That month Riscure and Keysight Technologies announced a collaboration on fifth-generation (5G) mobile security, pairing Riscure's security tools with Keysight's network emulation products.",
+      // Paragraph 2: the acquisition.
+      "Four years later the partner became the owner. On 21 February 2024 Keysight acquired all the outstanding share capital of Riscure Holding B.V. for 78 million dollars, net of cash acquired, to expand its automated security assessment for semiconductors, embedded systems and connected devices, as its quarterly report to the United States Securities and Exchange Commission (SEC) records; its annual report for fiscal 2024 counts Riscure among its wholly owned subsidiaries and assigns the goodwill to its Communications Solutions Group. By April 2024 Keysight was selling Riscure's Inspector as Keysight Inspector, \"part of the company's recently acquired device security research and test lab Riscure\", and The Hague Security Delta reported the acquisition on 27 May 2024.",
+      // Paragraph 3: why it matters, analytically.
+      "The arc is a security evaluation lab absorbed into a test and measurement company. In 2020 the device and the 5G network it would join were tested by two firms working side by side; from 2024 the device tests belong to the firm that sold the network emulation, and a chip maker seeking certification deals with a lab owned by a supplier of network test equipment.",
+    ],
+    // The company's own page (to be confirmed, see above).
+    externalUrl: "https://www.keysight.com/us/en/products/vulnerability-assessment/device-vulnerability-analysis/fault-injection.html", // the successor page (riscure.com redirects there)
+    // Link label.
+    externalLabel: "Riscure products at Keysight", // labelled as the successor's page
+    // Sources, each read on 2026-11-17 (the Keysight product pages through the fetch tool, see REPORT).
+    sources: [
+      // Founding year, size, countries, business: the company's own slide.
+      { label: "ITEA, 25 years of ITEA roadshow, the Netherlands, Utrecht, 25 May 2023: Riscure BV pitch - Riscure B.V., creation date 2001, about 200 employees, in the Netherlands, the US and China; core business robust technology to help hardware and software developers test their solutions and services to ensure smooth evaluation and certification; customers chip makers, IP developers, firmware developers, government agencies, forensics institutes, defense contractors and security evaluation laboratories, served through security analysis tools, security development tools, security evaluation lab services, workforce development programs and consultancy (read 2026-11-17)", url: "https://itea4.org/publication/download/25-years-of-itea-the-netherlands-riscure-bv-pitch.pdf" },
+      // Delft, the chief executive, the tools, the 2020 collaboration.
+      { label: "Bits&Chips, Riscure and Keysight lock arms for 5G security, 18 February 2020: Delft-based security tools vendor Riscure joins forces with Keysight Technologies on 5G security; Riscure's tools test chips and devices against side-channel and fault injection attacks, with solutions to identify weaknesses in software and evaluate automotive designs; Marc Witteman, CEO of Riscure (read 2026-11-17)", url: "https://bits-chips.com/article/riscure-and-keysight-lock-arms-for-5g-security/" },
+      // The acquisition: the parent's name, the date, the price.
+      { label: "Keysight Technologies, Inc., Form 10-Q for the quarter ended 30 April 2024 (SEC): \"On February 21, 2024, we acquired all the outstanding share capital of Riscure Holding B.V. (\"Riscure\") for $78 million, net of cash acquired, expanding our automated security assessment capabilities and solutions for semiconductors, embedded systems, and connected devices\" (read 2026-11-17)", url: "https://www.sec.gov/Archives/edgar/data/1601046/000160104624000043/keys-20240430.htm" },
+      // Subsidiary status and segment.
+      { label: "Keysight Technologies, Inc., Form 10-K for fiscal 2024 (SEC): acquisition of Riscure Holding B.V., providing testing solutions and software for semiconductor, embedded systems and IoT devices, completed on 21 February 2024; Riscure a wholly-owned subsidiary; goodwill assigned to the Communications Solutions Group (CSG) reportable segment (read 2026-11-17)", url: "https://www.sec.gov/Archives/edgar/data/1601046/000160104624000159/keys-20241031.htm" },
+      // Inspector under Keysight's name.
+      { label: "Keysight press release via Business Wire, Santa Rosa, California, 30 April 2024: \"Keysight Inspector, part of the company's recently acquired device security research and test lab Riscure\"; Riscure has been working with PQShield on pre- and post-silicon analyses (read 2026-11-17 through the fetch tool)", url: "https://businesswire.com/news/home/20240430030207/en/Keysight-Introduces-New-Testing-Capabilities-to-Strengthen-Post-Quantum-Cryptography" },
+      // The founder, as Keysight names him today.
+      { label: "Keysight, Fault Injection product page: \"Watch Marc Witteman, Founder of Riscure Security Solutions, share the fundamentals of device security\"; the Embedded Security Testbench fault-injection line (read 2026-11-17 through the fetch tool)", url: "https://www.keysight.com/us/en/products/network-test/device-vulnerability-analysis.html" },
+      // The Dutch cluster's report of the deal.
+      { label: "The Hague Security Delta (HSD), Riscure Acquired by Keysight Technologies, 27 May 2024: Riscure, a global leader in end point security and vulnerability testing, has been acquired by Keysight Technologies; clients across the semiconductor, mobile security, mobile payment, automotive and premium content industries and the public sector (read 2026-11-17)", url: "https://securitydelta.nl/news/overview/riscure-acquired-by-keysight-technologies" },
+    ],
+  },
+  {
+    // KASPER & OSWALD - added 2026-11-17 (Industry wave J2).
+    // FOUNDED 2012: "The company was founded in 2012 by Timo Kasper and David Oswald"
+    // (spin-offs page of the Chair for Embedded Security, Ruhr University Bochum).
+    // OWNER: none stated; both founders are managing directors (imprint), so no parent.
+    slug: "kasper-oswald",
+    // Own site read live 2026-11-17: HTTP 200 at https://www.kasper-oswald.de/ (footer "© 2026 Kasper & Oswald GmbH").
+    official: {
+      // The company's own site.
+      url: "https://www.kasper-oswald.de",
+      // The English pages, the product and its open repository.
+      resources: [
+        // English home page.
+        { label: "Kasper & Oswald in English", url: "https://kasper-oswald.de/gb/" },
+        // The product page.
+        { label: "ChameleonMini (Kasper & Oswald)", url: "https://www.kasper-oswald.de/chameleonmini/" },
+        // The open-source repository.
+        { label: "ChameleonMini repository", url: "https://github.com/emsec/ChameleonMini" },
+      ],
+    },
+    // Security analysis and testing, and the maker of the ChameleonMini.
+    tags: ["services", "vendor"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "Kasper & Oswald - the Bochum spin-off that builds the ChameleonMini",
+    // Founding year, named by the Ruhr University Bochum label below.
+    founded: 2012,
+    // Card line.
+    tagline: "An embedded-security engineering firm founded in 2012 by two researchers from Ruhr University Bochum's Chair for Embedded Security, which tests embedded systems and makes the ChameleonMini.",
+    // Intro paragraph.
+    intro:
+      "Kasper & Oswald GmbH was founded in 2012 by Timo Kasper and David Oswald and is listed among the spin-offs of the Chair for Embedded Security at Ruhr University Bochum, where both had worked as research assistants. In its own words it provides consulting services and product development in the security of embedded systems and information technology (IT) applications: security analyses and penetration testing, hardware and software development, consulting and training, with current focus areas that include automotive, wireless protocols, secure boot and the Cyber Resilience Act (CRA). It is registered at the Bochum district court under HRB 14184, and both founders are its managing directors.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the ChameleonMini.
+      "Its product is the ChameleonMini, which the company describes as a freely programmable, portable tool for security analysis and penetration testing of contactless cards under the International Organization for Standardization (ISO) standards 14443 and 15693 and of near-field communication (NFC). Revision G was realized by Kasper & Oswald thanks to more than 1,700 backers of a Kickstarter campaign, and is sold through the company's webshop; the schematics, layout, documentation and firmware are published in an open repository. That repository warns of third-party ChameleonMini clones, some of them defective and some in breach of the project's licence, which the company does not support.",
+      // Paragraph 2: research and publicly funded projects.
+      "The research behind it is listed on the company's pages: side-channel analysis and fault injection, contactless smartcards and RFID tokens from Mifare Classic to DESFire, the KeeLoq scheme common in garage doors, radio keys for vehicles and the bitstream encryption of field-programmable gate arrays (FPGAs). Much of it has run through projects of the Federal Ministry of Education and Research (BMBF): DEFUSE (wireless defusing of unconventional explosive and incendiary devices), started on 1 May 2017 with the Bochum chair, the Federal Police headquarters and the Federal Police's GSG 9 unit, which examined the security of various radio systems to support the forces countering terrorist attacks; COMPACT (2017 to 2020) with Infineon Technologies, Robert Bosch and others on secure Internet of Things nodes; SATiSFy (2018 to 2021) on autonomous vehicles; DevToSCA (2022 to 2025) with Ruhr University Bochum, Rohde & Schwarz Cybersecurity and the Bonn-Rhein-Sieg University of Applied Sciences; and FreeSBee (2023 to 2026) with AbsInt and the FZI Forschungszentrum Informatik in Karlsruhe on side-channel-free software.",
+      // Paragraph 3: the founders and the university.
+      "Both founders came from the academic side of the field. Kasper's dissertation won first place in the Promotionspreis für IT-Sicherheit 2012, a doctoral prize for IT security, and Oswald completed his, Implementation Attacks: From Theory to Practice, with distinction in 2013. In September 2026 the Max Planck Society, reporting the UNIPRENEURS award to Christof Paar for his record of university spin-offs, counted Kasper-Oswald among the deep-tech start-ups from his chair that he had mentored or co-founded, and described it as a highly specialized consultancy working mainly for the automotive sector and public authorities. The ChameleonMini is the visible result of that path: a research tool funded by its users through Kickstarter, published openly and sold by a firm whose management is its two founders.",
+    ],
+    // The company's own page.
+    externalUrl: "https://kasper-oswald.de/gb/",
+    // Link label.
+    externalLabel: "Kasper & Oswald",
+    // Sources, each read live on 2026-11-17.
+    sources: [
+      // Founding year and founders, from the university.
+      { label: "Ruhr University Bochum, Chair for Embedded Security, Spin-offs: Kasper & Oswald GmbH - \"The company was founded in 2012 by Timo Kasper and David Oswald\" and offers product and consulting services in the security of embedded systems and IT applications (read 2026-11-17)", url: "https://informatik.rub.de/en/embedded-security/spin-offs/" },
+      // Self-description and focus areas.
+      { label: "Kasper & Oswald, Welcome (English): the engineering company Kasper & Oswald GmbH provides consulting services and product development in embedded security and IT applications; security analyses and penetration testing, hardware and software development, consulting and training; current focus areas automotive, wireless protocols, secure boot and the Cyber Resilience Act (CRA); the ChameleonMini RevG available from the webshop (read 2026-11-17)", url: "https://kasper-oswald.de/gb/" },
+      // Registry data and managing directors.
+      { label: "Kasper & Oswald, Impressum: Kasper & Oswald GmbH, Mühlenweg 14 b, 44809 Bochum; Amtsgericht Bochum HRB 14184; authorised representatives Dr.-Ing. Timo Kasper and Dr.-Ing. David Oswald (read 2026-11-17)", url: "https://www.kasper-oswald.de/impressum/" },
+      // The founders' careers.
+      { label: "Kasper & Oswald, Team: managing directors Timo Kasper, research assistant at the Chair for Embedded Security from October 2006, whose dissertation took first place in the Promotionspreis für IT-Sicherheit 2012, and David Oswald, research assistant at the same chair, dissertation Implementation Attacks: From Theory to Practice completed with distinction in 2013 (read 2026-11-17)", url: "https://www.kasper-oswald.de/team/" },
+      // The product.
+      { label: "Kasper & Oswald, ChameleonMini: developed by Kasper & Oswald, a freely programmable, portable tool for ISO14443 / ISO15693 / NFC security analyses and penetration tests; schematics, layout, documentation and firmware of the RevG free on GitHub; orders through the webshop (read 2026-11-17)", url: "https://www.kasper-oswald.de/chameleonmini/" },
+      // The Kickstarter and the clones.
+      { label: "ChameleonMini repository, README: thanks to over 1700 backers of the Kickstarter project, Revision G has been realized by Kasper & Oswald GmbH and is available through the Kasper & Oswald webshop; warning about third-party clones, some defective and some violating the ChameleonMini licence (read 2026-11-17)", url: "https://github.com/emsec/ChameleonMini" },
+      // Research areas and funded projects.
+      { label: "Kasper & Oswald, Forschung & Referenzen: research areas (side-channel analysis and fault injection, contactless smartcards and RFID from Mifare Classic to DESFire MF3ICD40, KeeLoq and access control, vehicle radio keys, FPGAs and bitstream encryption); BMBF projects DEFUSE from 1 May 2017 with the Chair for Embedded Security, the Bundespolizeipräsidium and GSG9, COMPACT 2017-2020 with Infineon Technologies and Robert Bosch, SATiSFy 2018-2021, DevToSCA 2022-2025 with Ruhr-Universität Bochum, Rohde & Schwarz Cybersecurity and Hochschule Bonn-Rhein-Sieg, FreeSBee 2023-2026 with AbsInt and FZI (read 2026-11-17)", url: "https://www.kasper-oswald.de/forschung/" },
+      // The 2026 award article.
+      { label: "Max-Planck-Gesellschaft, Christof Paar erhält UNIPRENEURS-Auszeichnung 2026, 22 September 2026: Paar as mentor and co-founder of deep-tech start-ups from his chair, among them the Kasper-Oswald GmbH, a highly specialised consultancy working mainly in automotive and for public authorities (read 2026-11-17)", url: "https://www.mpg.de/26994833/christof-paar-erhalt-unipreneurs-auszeichnung-2026" },
+    ],
+  },
+  {
+    // RFID RESEARCH GROUP (RRG) - added 2026-11-17 (Industry wave J2).
+    // FOUNDED: not set. No page read states when or where the group was formed;
+    // proxmark.com says only "a company formed by four people instrumental to the
+    // Proxmark 3". OWNER: not stated; no parent.
+    // DOMAIN WARNING (brief, 17/11/2026): the group's former web domain served
+    // unrelated spam text on 16/11/2026 (agent hack-e's saved copy). It is NOT
+    // linked anywhere here: the official link is the GitHub organization, and the
+    // facts come from proxmark.com and the organization's repositories.
+    slug: "rfid-research-group",
+    // GitHub organization: its HTML page cannot be read through this sandbox's proxy (GitHub pages are restricted
+    // to configured repositories); its repositories' raw files were read live on 2026-11-17 (REPORT).
+    official: {
+      // The group's own public home.
+      url: "https://github.com/RfidResearchGroup",
+      // The two projects it maintains, and the Proxmark project's site.
+      resources: [
+        // The firmware and client.
+        { label: "proxmark3 (Iceman repository)", url: "https://github.com/RfidResearchGroup/proxmark3" },
+        // The ChameleonUltra.
+        { label: "ChameleonUltra", url: "https://github.com/RfidResearchGroup/ChameleonUltra" },
+        // The project site that names RRG as the RDV4's maker.
+        { label: "Proxmark project site", url: "https://proxmark.com/" },
+      ],
+    },
+    // Designs and manufactures hardware; maintains its firmware.
+    tags: ["vendor"],
+    // Active today (firmware release of 18 September 2026; Proxmark 5 support in 2026).
+    group: "contemporary",
+    // Title.
+    name: "RFID Research Group - the makers of the Proxmark 3 RDV4",
+    // Card line.
+    tagline: "A company formed by four people instrumental to the Proxmark 3, which designs and manufactures the Proxmark 3 RDV4 and maintains the open-source Iceman firmware and the ChameleonUltra on GitHub.",
+    // Intro paragraph.
+    intro:
+      "The RFID Research Group (RRG) is described on proxmark.com, the Proxmark project's site, as a company formed by four people instrumental to the Proxmark 3, among them the Proxmark forum moderators Chris Hermann, known as iceman, and Kevin, known as 0xFFFF, which designs and manufactures the Proxmark 3 RDV4, a revision built for the penetration-testing community and released in 2018. The Proxmark itself, the same site says, was originally built by Jonathan Westhues and has evolved into the industry standard tool for radio-frequency identification (RFID) analysis. The group's public home is its GitHub organization, RfidResearchGroup.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the firmware repository and the hardware line.
+      "Its proxmark3 repository, which the README calls the Iceman fork, is free software under the GNU General Public License (GPL), version 3 or later. The changelog runs from the iceman fork releases of 2017 to version 4.23346, named Frosty Lemon, of 18 September 2026, and the same repository and client now also build the firmware for the Proxmark 5, which was funded through an Indiegogo campaign in 2026 and is sold by Lab401 as an official distributor. For the RDV4, proxmark.com names only two official distributors, Lab401 in Europe and Hacker Warehouse in the United States.",
+      // Paragraph 2: the ChameleonUltra.
+      "The organization also hosts the ChameleonUltra, whose README lists authorized distributors in Lyon (Lab401), Santa Ana (Hacker Warehouse), Hastings, Montreal, Shenzhen and Guangdong, and an online store labelled \"Aliexpress by RRG\". Its technical whitepaper credits the hardware of the ChameleonUltra and the ChameleonLite to the \"Proxgrind team\" and explains why it was built on the nRF52840 chip.",
+      // Paragraph 3: why it matters, analytically.
+      "RRG is a hardware company whose product line is largely public: firmware, client and documentation live in open repositories, and its sales run mostly through specialist distributors. A tool first built by one researcher has passed, by the project site's account, through several generations and revisions of hardware, and one maintained client now serves both the Proxmark 3 and the Proxmark 5. The same openness lets others copy the hardware, which is why the project site warns buyers away from grey-market clones.",
+    ],
+    // The group's own public home.
+    externalUrl: "https://github.com/RfidResearchGroup",
+    // Link label.
+    externalLabel: "RFID Research Group on GitHub",
+    // Sources, each read live on 2026-11-17.
+    sources: [
+      // The company's description and the RDV4.
+      { label: "Proxmark.com, Proxmark 3 RDV4: the latest revision of the Proxmark 3 platform, designed for the pen-testing community; \"It is designed and manufactured by RRG, a company formed by four people instrumental to the Proxmark 3\", including Chris Hermann (iceman) and Kevin (0xFFFF), moderators of the proxmark forums (read 2026-11-17)", url: "https://proxmark.com/proxmark-3-hardware/proxmark-3-rdv4" },
+      // The Proxmark 5 and the RDV4's release year.
+      { label: "Proxmark.com, Proxmark 5: the RDV4 it replaces was released in 2018; funded through an Indiegogo campaign in 2026; its firmware developed in the RFID Research Group (RRG) proxmark3 repository, one client for Proxmark 3 and Proxmark 5; Lab401 an official distributor (read 2026-11-17)", url: "https://proxmark.com/proxmark-3-hardware/proxmark-5" },
+      // The Proxmark's origin and the distributors.
+      { label: "Proxmark.com, home page: the Proxmark \"Originally built by Jonathan Westhues over 10 years ago\", evolved into the industry standard tool for RFID analysis; for the Proxmark RDV4 \"only two official distributors: Lab401 and Hacker Warehouse\" (read 2026-11-17)", url: "https://proxmark.com/" },
+      // The repository's licence.
+      { label: "RfidResearchGroup/proxmark3, README: Iceman Fork - Proxmark; the Proxmark3 source code under the GPLv3 or later; Proxmark5 instructions in a Getting Started guide (read 2026-11-17)", url: "https://github.com/RfidResearchGroup/proxmark3" },
+      // The release history.
+      { label: "RfidResearchGroup/proxmark3, CHANGELOG: releases from 1.6.7 iceman fork (2017-01-05) to Frosty Lemon.4.23346 (2026-09-18) (read 2026-11-17)", url: "https://github.com/RfidResearchGroup/proxmark3/blob/master/CHANGELOG.md" },
+      // The ChameleonUltra distributors.
+      { label: "RfidResearchGroup/ChameleonUltra, README: authorized distributors in Lyon (Lab401), Santa Ana (Hackerwarehouse), Hastings (KSEC), Montreal (TechSecurityTools), Shenzhen (Sneaktechnology), Guangdong (MTools Tec) and \"Aliexpress by RRG\" (read 2026-11-17)", url: "https://github.com/RfidResearchGroup/ChameleonUltra" },
+      // The hardware credit and the chip.
+      { label: "RfidResearchGroup/ChameleonUltra wiki, technical whitepaper: \"Why nRF52840?\"; ChameleonUltra and ChameleonLite hardware \"carefully designed by Proxgrind team\" (read 2026-11-17)", url: "https://github.com/RfidResearchGroup/ChameleonUltra/wiki/technical_whitepaper" },
+    ],
+  },
+  {
+    // KISMET WIRELESS - added 2026-11-17 (Industry wave J2).
+    // An open-source project and its brand, not an incorporated company: no legal
+    // entity is named on any page read. Hak5 sells its hardware mods under the vendor
+    // name "Kismet Wireless", and the site signs itself "Kismet Wireless".
+    // FOUNDED 2001: "Kismet has been around since 2001" (Mike Kershaw, SharkFest 2019
+    // slides). "Been around since", not "founded in": flagged in REPORT.
+    // OWNER: none; no parent.
+    slug: "kismet-wireless",
+    // Own site read live 2026-11-17: HTTP 200 at https://www.kismetwireless.net/ (release 2026-10-R1 of 29 October 2026).
+    official: {
+      // The project's own site.
+      url: "https://www.kismetwireless.net",
+      // Documentation and code.
+      resources: [
+        // The documentation.
+        { label: "Kismet documentation", url: "https://www.kismetwireless.net/docs/readme/intro/kismet/" },
+        // The source code.
+        { label: "Kismet on GitHub", url: "https://github.com/kismetwireless/kismet" },
+      ],
+    },
+    // Writes the software and designs the hardware accessories Hak5 sells.
+    tags: ["vendor"],
+    // Active today.
+    group: "contemporary",
+    // Title.
+    name: "Kismet Wireless - the open-source wireless sniffer that has run since 2001",
+    // Founding year, named by the SharkFest label below.
+    founded: 2001,
+    // Card line.
+    tagline: "The open-source Wi-Fi, Bluetooth and radio sniffer, wireless intrusion detection system and wardriving tool that Mike Kershaw has written since 2001, with case and LED mods for Hak5's WiFi Pineapple sold by Hak5.",
+    // Intro paragraph.
+    intro:
+      "Kismet is, in its own description, a sniffer, wireless intrusion detection system (WIDS) and wardriving tool for Wi-Fi, Bluetooth, Zigbee, radio-frequency (RF) sensors and more, which runs on Linux and macOS, and on Windows for remote capture through the Windows Subsystem for Linux (WSL). It is free software under the GNU General Public License (GPL), version 2 or later. Its author, Mike Kershaw, who writes as Dragorn, told the SharkFest conference in 2019 that Kismet had been around since 2001. Kismet Wireless is the name the project's site signs with and the vendor name under which Hak5 sells its hardware.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: how it began.
+      "Kershaw described the beginning to the HERT group in an interview published on 19 August 2004. He had bought a cheap Linksys card and found AirSnort; Kismet's very beginnings, he said, were a set of modifications to AirSnort to display network names and log the data to a dump file that Ethereal could read, and once he had a Cisco card he had to rewrite the capture system to support different drivers, after which it grew into a program of its own. At the time he worked on IBM mainframes by day and wrote Kismet at night; on 10 July 2004 he had told the same story at The Fifth HOPE conference.",
+      // Paragraph 2: the project today.
+      "Kershaw still signs the releases, which carry date-based names: 2023-07-R1, 2025-09-R1 and, on 29 October 2026, 2026-10-R1, which added data sources for cellular modems, userspace USB Wi-Fi, Wi-Fi HaLow and the Automatic Identification System (AIS), and expanded Bluetooth, Zigbee and Meshtastic decoding. Kismet logs to a unified kismetdb file based on SQLite and offers a representational state transfer (REST) application programming interface (API); the project is funded through GitHub sponsorship and hardware affiliate links, and its site also hosts LORCON (Loss Of Radio CONtrol), a packet creation and injection library. Hak5 sells, under the vendor name Kismet Wireless, a Kismet Case Mod, a Kismet LED Module and a Kismet Tactical Case for the WiFi Pineapple Mark VII, made by Dragorn with all proceeds going to the Kismet Wireless project.",
+      // Paragraph 3: why it matters, analytically.
+      "Kismet shows how thin the line is between an attacker's wireless tool and a defender's. The passive capture that lets a wardriver list the networks around a car is the sensor layer of a wireless intrusion detection system, and the project's own pages describe the defensive use: remote capture over the network, so that sensors spread around a building report to one server. The same author's program reads Hak5's WiFi Coconut as a data source, and his cases and lights dress Hak5's WiFi Pineapple: the defender's sensor and the penetration tester's kit come from one workbench.",
+    ],
+    // The project's own page.
+    externalUrl: "https://www.kismetwireless.net",
+    // Link label.
+    externalLabel: "Kismet",
+    // Sources, each read live on 2026-11-17.
+    sources: [
+      // Self-description, platforms, releases, remote capture, funding.
+      { label: "Kismet, home page: \"Kismet is a sniffer, WIDS, and wardriving tool for Wi-Fi, Bluetooth, Zigbee, RF, and more, which runs on Linux and macOS\"; Windows remote capture via WSL; remote capture so sensors spread around a building report to one place; unified kismetdb log based on sqlite3; REST API; Kismet 2026-10-R1 out on 2026-10-29 (new datasources for cellular modems, userspace USB Wi-Fi, HaLow, AIS; expanded Bluetooth, Zigbee and Meshtastic decoding), 2025-09-R1 on 2025-09-04, 2023-07-R1 on 2023-07-21; free and open source, GitHub Sponsor Program; site footer \"Kismet Wireless\" (read 2026-11-17)", url: "https://www.kismetwireless.net/" },
+      // Founding year, in the author's words.
+      { label: "Mike Kershaw, Wi-Fi Monitoring & Kismet, SharkFest 2019 (Wireshark developer and user conference), slides: \"Kismet has been around since 2001\"; \"Kismet is over 18 years old now\" (read 2026-11-17)", url: "https://sharkfest.wireshark.org/retrospective/sfus/presentations19/32.pdf" },
+      // The beginning.
+      { label: "Information Security News mailing list (Seclists.org archive), 20 August 2004: HERT interviews Kismet's author, Mike Kershaw, 19 August 2004 - Kershaw (Dragorn) works on IBM mainframes by day; \"Kismets very beginnings were a set of modifications to airsnort to display SSIDs and log the data to a dumpfile that ethereal could read\"; rewritten to support different drivers after he got a Cisco card (read 2026-11-17)", url: "https://seclists.org/isn/2004/Aug/75" },
+      // The 2004 talk.
+      { label: "InfoconDB, The Fifth HOPE (2004), The Kismet Story, 10 July 2004: the creator of the wireless network detector, sniffer and intrusion detection system tells how it came to be; presenter Dragorn, \"the author of Kismet\" (read 2026-11-17)", url: "https://infocondb.org/con/hope/the-fifth-hope/the-kismet-story" },
+      // The release authorship.
+      { label: "Kismet, Posts: release notes for 2026-10-R1 (29 October 2026), 2025-09-R1 (4 September 2025) and 2023-07-R1, each posted by Mike Kershaw / Dragorn (read 2026-11-17)", url: "https://www.kismetwireless.net/posts/" },
+      // LORCON and the Pineapple mods.
+      { label: "Kismet, Projects: Hak5 Wi-Fi Pineapple mods (the acrylic WiFi Pineapple MK7 case and the LED mod); LORCON (Loss Of Radio CONtrol), a packet creation and injection library (read 2026-11-17)", url: "https://www.kismetwireless.net/projects/" },
+      // The data sources, Hak5's WiFi Coconut among them.
+      { label: "Kismet documentation, Introduction: an open source sniffer, WIDS, wardriver and packet capture tool for Wi-Fi, Bluetooth, BTLE, wireless thermometers, airplanes, power meters, Zigbee and more; data sources include the Hak5 Wifi Coconut (read 2026-11-17)", url: "https://www.kismetwireless.net/docs/readme/intro/kismet/" },
+      // The licence.
+      { label: "kismetwireless/kismet, kismet_server.cc header: Kismet is free software under the GNU General Public License, version 2 or (at your option) any later version (read 2026-11-17)", url: "https://github.com/kismetwireless/kismet/blob/master/kismet_server.cc" },
+      // Hak5's listings under the vendor name.
+      { label: "Hak5 shop product records, vendor \"Kismet Wireless\": Kismet Case Mod (created 21 August 2020), Kismet LED Module and Kismet Tactical Case (both created 20 January 2022), for the WiFi Pineapple Mark VII, made by \"Kismet developer Dragorn with all proceeds going to the Kismet Wireless project\" (read 2026-11-17)", url: "https://hak5.org/products/kismet-tactical-case" },
+    ],
+  },
+  {
+    // BASTILLE NETWORKS - added 2026-11-17 (Industry wave J2).
+    // FOUNDED 2014: "The company was founded in April 2014" (CMSWire, 6 August 2015,
+    // with the founder and chief executive Chris Rouland quoted).
+    // OWNER: none recorded. Venture-backed (Bessemer, Comcast, Goldman Sachs Asset
+    // Management's Growth Equity led the 2024 Series C); no controlling owner is
+    // stated, so no parent. The site signs "Bastille Networks Inc."
+    slug: "bastille-networks",
+    // Own site read live 2026-11-17: HTTP 200 at https://bastille.net/ (footer "Bastille Networks Inc. © 2019 - 2026").
+    official: {
+      // The company's own site.
+      url: "https://bastille.net",
+      // The research pages.
+      resources: [
+        // Research index.
+        { label: "Bastille research", url: "https://bastille.net/research/" },
+      ],
+    },
+    // Makes sensors and a detection platform.
+    tags: ["vendor"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "Bastille - the company that watches the radio spectrum inside buildings",
+    // Founding year, named by the CMSWire label below.
+    founded: 2014,
+    // Card line.
+    tagline: "A wireless security company founded in Atlanta in April 2014, which detects and locates radio, cellular and Internet of Things devices with software-defined radio, disclosed MouseJack in 2016 and raised a 44 million dollar Series C in 2024.",
+    // Intro paragraph.
+    intro:
+      "Bastille Networks, Inc. was founded in April 2014, and in August 2015 was an Atlanta-based start-up billing itself as the first cybersecurity company focused specifically on the Internet of Things (IoT), with Chris Rouland as founder and chief executive. The company also credits Bob Baxley, previously director of the Software Defined Radio Lab at Georgia Tech, as a co-founder. It now describes its product as a Wireless Airspace Cybersecurity platform that detects and locates wireless devices, networks and threats, and sells wireless intrusion detection systems (WIDS), technical surveillance countermeasures (TSCM) and sensor arrays to companies and governments.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: funding.
+      "Its first money came from Bessemer Venture Partners, the cybersecurity entrepreneur Tom Noonan and Rouland himself: an angel round of 2.5 million dollars in 2014, then a 9 million dollar Series A led by Bessemer in August 2015, when the product, sensors and software scanning devices across more than 100 protocols, was in beta with delivery planned for the first quarter of 2016. On 25 January 2024, in a release datelined Santa Cruz, California, Bastille announced a 44 million dollar Series C led by Growth Equity at Goldman Sachs Asset Management, itself a Bastille customer, with Bessemer taking part and Comcast named among earlier investors. The chief executive was by then Chris Risley, who said the company had tripled its annual recurring revenue in 2023; in October 2025 it was on the Inc. 5000 list of fast-growing private companies for a fifth consecutive year.",
+      // Paragraph 2: research.
+      "Its research has a public face. MouseJack, announced by Bastille in 2016, is in its description a class of vulnerabilities affecting the vast majority of wireless, non-Bluetooth keyboards and mice, which the company says still affects devices sold today; KeyJack, KeySniffer, CableTap and SweynTooth sit beside it on its research pages. Another set of pages profiles the hacking devices sold openly to penetration testers, Hak5's WiFi Pineapple, USB Rubber Ducky and Bash Bunny, the O.MG cable and the Flipper Zero among them, from the point of view of the defender who has to find them. By the company's account, in 2019 it built the first solution able to detect and locate cell phones by their cellular signal alone, and it holds 34 patents.",
+      // Paragraph 3: why it matters, analytically.
+      "Bastille's argument is that a network's perimeter does not end at its cables and access points. Phones, wearables, Bluetooth peripherals and Internet of Things radios inside a building form an attack surface that wired and Wi-Fi monitoring does not see, so what it sells a security team is the location of every transmitting device that breaks the building's policy. The research pages on the WiFi Pineapple and the Flipper Zero are the other side of the hacking-device trade: the products penetration testers buy openly are the ones its pages teach defenders to detect.",
+    ],
+    // The company's own page.
+    externalUrl: "https://bastille.net/about/",
+    // Link label.
+    externalLabel: "Bastille",
+    // Sources, each read live on 2026-11-17.
+    sources: [
+      // Founding year and month, founder, city, early funding.
+      { label: "CMSWire, 6 August 2015: Bastille, an Atlanta-based startup billing itself as the first cybersecurity company focusing specifically on the Internet of Things, lands $9 million in Series A funding led by Bessemer Venture, with Tom Noonan and founder and CEO Chris Rouland investing; all three invested $2.5 million in the angel round the year before; \"The company was founded in April 2014\"; product in beta, delivery planned for the first quarter of 2016; sensors and software covering more than 100 protocols (read 2026-11-17)", url: "https://www.cmswire.com/internet-of-things/firm-gets-9m-to-secure-the-iot/" },
+      // Co-founder.
+      { label: "Bastille, Meet our Research Team: Dr. Bob Baxley, Chief Scientist; \"Prior to co-founding Bastille, Bob was the Director of the Software Defined Radio Lab at Georgia Tech\" (read 2026-11-17)", url: "https://bastille.net/research-team" },
+      // Self-description, management, patents, 2019 claim.
+      { label: "Bastille, About: \"In 2019, we pioneered the world's first solution capable of accurately detecting and locating cell phones just by their cellular signal\"; Wireless Airspace Cybersecurity platform; 34 patents; WIDS, TSCM and sensor arrays in the menu; management team led by Chris Risley, Chief Executive Officer (read 2026-11-17)", url: "https://bastille.net/about/" },
+      // The Series C.
+      { label: "Bastille press release, Santa Cruz, California, 25 January 2024: Bastille Networks, Inc. announces a Series C investment of $44 million led by Growth Equity at Goldman Sachs Asset Management, with existing investor Bessemer Venture Partners; previous investors include Comcast and Bessemer; Chris Risley, CEO: annual recurring revenue tripled in the last year; Goldman Sachs a Bastille customer (read 2026-11-17)", url: "https://bastille.net/press-release/bastille-raises-44-million-series-c-investment-led-by-goldman-sachs-asset-management/" },
+      // Inc. 5000.
+      { label: "Bastille press release, San Francisco, 16 October 2025: Bastille named to the Inc. 5000 list for the fifth consecutive year; Chris Risley, CEO of Bastille Networks (read 2026-11-17)", url: "https://bastille.net/press-release/bastille-makes-inc-5000-list-of-fastest-growing-private-companies-for-5th-straight-year/" },
+      // MouseJack.
+      { label: "Bastille, MouseJack: \"Announced by Bastille in 2016, MouseJack is still an open vulnerability affecting devices sold today\"; a class of vulnerabilities affecting the vast majority of wireless, non-Bluetooth keyboards and mice (read 2026-11-17)", url: "https://bastille.net/research/vulnerabilities-mousejack/" },
+      // The research index, including the hacking-device pages.
+      { label: "Bastille, Research: KeySniffer, MouseJack, KeyJack, SweynTooth, CableTap; device pages on the USB O.MG Cable, USB Ninja Cable, Wi-Fi Pineapple, Flipper Zero, USB Rubber Ducky and Bash Bunny (read 2026-11-17)", url: "https://bastille.net/research/" },
+      // The Pineapple page.
+      { label: "Bastille, Research, Wi-Fi Pineapple: Is It Still a Threat, and How to Detect It - the Hak5 Wi-Fi Pineapple, a commercially sold wireless auditing platform built for penetration testers (read 2026-11-17)", url: "https://bastille.net/research/wifi-pineapple/" },
+    ],
+  },
+  {
+    // COALFIRE - added 2026-11-17 (Industry wave J2).
+    // FOUNDED 2001: "Founded in 2001, Coalfire is a cybersecurity advisor..." (Apax
+    // release, 13 December 2019; Baird Capital, same day).
+    // OWNER: the Apax Funds (funds advised by Apax Partners), a fund owner, since the
+    // purchase completed in April 2020 (Washington Technology, 27 April 2020). No later
+    // change of ownership was found; no 2026 page read restates the owner (REPORT).
+    slug: "coalfire",
+    // Own site read live 2026-11-17: HTTP 200 at https://coalfire.com/ (press release of 13 October 2026 listed).
+    official: {
+      // The company's own site.
+      url: "https://coalfire.com",
+      // A fund: rendered "owned by Apax Funds (since 2020)"; the Apax and Washington Technology labels name both.
+      parent: { name: "Apax Funds", kind: "fund", since: 2020, note: "Funds advised by Apax Partners agreed in December 2019 to buy Coalfire from The Carlyle Group and The Chertoff Group, and completed the purchase in April 2020." },
+    },
+    // Compliance assessment, advisory and penetration testing.
+    tags: ["services"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "Coalfire - compliance assessment, penetration testing and the Iowa courthouse case",
+    // Founding year, named by the Apax and Baird labels below.
+    founded: 2001,
+    // Card line.
+    tagline: "A cybersecurity advisory and assessment firm founded in 2001 and based in Westminster, Colorado, owned by funds advised by Apax Partners since 2020, whose penetration testers' arrest in Iowa in 2019 raised the question of how such engagements are authorized.",
+    // Intro paragraph.
+    intro:
+      "Coalfire was founded in 2001 and describes itself as a cybersecurity advisor that helps organizations avert threats, close gaps and manage cyber risk. When funds advised by Apax Partners agreed to buy it in December 2019, it had more than 1,800 government and commercial clients and more than 730 employees in 11 locations in the United States and the United Kingdom. It is one of the third-party assessors of the Federal Risk and Authorization Management Program (FedRAMP), the government-wide cloud computing programme of the United States, and says it was the first to assess compliance with frameworks including the Cybersecurity Maturity Model Certification (CMMC) and the Payment Card Industry (PCI) standards. Its chief executive is Brad Little, previously global head of professional services at Google Cloud.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: owners and acquisitions.
+      "Its owners changed as it grew. Tom McAndrew, then chief executive, credited Carlyle, The Chertoff Group and Baird Capital with its success over the four years before 13 December 2019, when the Apax Funds agreed to buy Coalfire from The Carlyle Group and The Chertoff Group; the purchase was completed in April 2020, leaving the firm, as Washington Technology put it, with a single private equity backer instead of several. In June 2021 Coalfire bought Denim Group of San Antonio, Texas, an application security company and maker of the ThreadFix platform, and in October 2026 it announced a new office in Buenos Aires, bringing Argentina Integrated Solutions into its global delivery model.",
+      // Paragraph 2: the Iowa case, both sides.
+      "Its penetration-testing arm, Coalfire Labs, became known outside the trade in 2019. On 11 September two of its testers, hired by Iowa's State Court Administration to test the physical and network security of the state's judicial system, were arrested at the Dallas County courthouse after an alarm sounded, jailed and charged with burglary, charges later reduced to trespass; on 30 January 2020 the prosecutors dropped them in a joint statement with Coalfire. McAndrew told KrebsOnSecurity that the client had not wanted Coalfire to warn local law enforcement and that state officials never did so themselves, that there had been ambiguity over whether the state or the county owned the buildings, and that the company would probably insist on law enforcement being told in advance of tests for public entities: \"There's no standard in the industry,\" he said of the legal side of red teaming. Not everyone sided with the firm. Iowa lawmakers held hearings, one state senator complaining that a branch of government had contracted with a company to commit crimes, and Chris Nickerson, founder of LARES Consulting, blamed poor planning and contract management for putting the testers in harm's way.",
+      // Paragraph 3: why it matters, analytically.
+      "Coalfire sits where compliance meets testing: the same firm assesses clients against government and card-industry frameworks and sends testers into buildings under contract. In the company's own account of Iowa, what failed was not the test but its authorization: a contract with a client that, it turned out, did not own every building it had asked to be tested, and no industry standard saying when the police must be told.",
+    ],
+    // Acquisitions Coalfire made.
+    acquisitions: [
+      // Denim Group, 2021.
+      { year: 2021, name: "Denim Group", what: "A privately held application security company headquartered in San Antonio, Texas, with consulting services and the ThreadFix application security orchestration and correlation platform. Announced in June 2021; terms not disclosed.", became: "Part of Coalfire's application security practice.", sourceNote: "Coalfire release (PR Newswire, Westminster, Colorado) as reproduced by Growthpoint Technology Partners, posted 1 June 2021 (read 2026-11-17). No Coalfire-hosted copy could be read: its older release URLs now redirect to the press index." },
+    ],
+    // The company's own page.
+    externalUrl: "https://coalfire.com/about",
+    // Link label.
+    externalLabel: "Coalfire",
+    // Sources, each read live on 2026-11-17.
+    sources: [
+      // Founding year, size, sellers: the parent's name.
+      { label: "Apax, Funds advised by Apax Partners to acquire Coalfire from The Carlyle Group and The Chertoff Group, Westminster, Colorado and New York, 13 December 2019: the Apax Funds reach an agreement to acquire Coalfire, completion expected in early 2020; \"Founded in 2001, Coalfire is a cybersecurity advisor that helps organizations avert threats, close gaps, and effectively manage cyber risk\"; more than 1,800 government and commercial clients; more than 730 employees in 11 locations in the United States and the United Kingdom; Tom McAndrew, Coalfire CEO, credits Carlyle, Chertoff and Baird Capital over the last four years (read 2026-11-17)", url: "https://www.apax.com/news-views/funds-advised-by-apax-partners-to-acquire-coalfire-from-the-carlyle-group-and-the-chertoff-group/" },
+      // Founding year, a second statement.
+      { label: "Baird, Baird Capital Portfolio Company Coalfire Acquired by Apax Partners, 13 December 2019: \"Founded in 2001, Coalfire helps clients develop scalable programs that improve their security posture\" (read 2026-11-17)", url: "https://www.rwbaird.com/newsroom/news/2019/12/baird-capital-portfolio-company-coalfire-acquired-by-apax-partners/" },
+      // Completion: the year.
+      { label: "Washington Technology, Coalfire completes sale to new private equity owner, 27 April 2020: \"Private equity firm Apax Partners has completed its acquisition of Coalfire\"; from several private equity owners to a single backer; Coalfire one of several third-party assessors for the government-wide FedRAMP cloud computing program; federal practice led by President Bill Malone (read 2026-11-17)", url: "https://www.washingtontechnology.com/2020/04/coalfire-completes-sale-to-new-private-equity-owner/354950/" },
+      // Self-description today.
+      { label: "Coalfire, About: 1,000+ clients and 1,000+ team members; 20+ years in cybersecurity; \"First to assess compliance with key frameworks including CMMC and PCI\" (read 2026-11-17)", url: "https://coalfire.com/about" },
+      // The chief executive today.
+      { label: "Coalfire, Leadership: Brad Little, CEO, most recently Global Head of Professional Services at Google Cloud; Bill Malone, President, Coalfire Federal (read 2026-11-17)", url: "https://coalfire.com/about/leadership" },
+      // Buenos Aires, 2026.
+      { label: "Coalfire, Press Releases: Coalfire Expands Global Delivery Capabilities with New Buenos Aires Office, 13 October 2026: Argentina Integrated Solutions brings cybersecurity and compliance talent into Coalfire's global delivery model (read 2026-11-17)", url: "https://coalfire.com/insights/news-and-events/press-releases" },
+      // Denim Group.
+      { label: "Growthpoint Technology Partners, Denim Group Acquisition by Coalfire, a portfolio company of Apax, posted 1 June 2021: Coalfire's release (Westminster, Colorado, PRNewswire) announcing the acquisition of Denim Group, a privately held application security company headquartered in San Antonio, Texas, with the ThreadFix platform; terms not disclosed (read 2026-11-17)", url: "https://growthpoint.com/transaction/denim-group-acquisition-by-coalfire-a-portfolio-company-of-apax/" },
+      // The Iowa case.
+      { label: "KrebsOnSecurity, Iowa Prosecutors Drop Charges Against Men Hired to Test Their Security, 31 January 2020: two Coalfire Labs penetration testers, hired by Iowa's State Court Administration, arrested on 11 September 2019 at the Dallas County courthouse, charged with burglary, later reduced to trespass; charges dropped on 30 January 2020 with a joint statement by Coalfire and the Dallas County Attorney; Coalfire Labs \"a security firm based in Westminster, Colo.\"; CEO Tom McAndrew: \"There's no standard in the industry\"; criticism from Iowa state senators and from Chris Nickerson of LARES Consulting (read 2026-11-17)", url: "https://krebsonsecurity.com/2020/01/iowa-prosecutors-drop-charges-against-men-hired-to-test-their-security/" },
+    ],
+  },
+  {
+    // EXPLIOT - added 2026-11-17 (Industry wave J2).
+    // FOUNDED: not set. No page read gives the year the company (EXPLIoT BV) was
+    // formed; the framework's author dates his idea to 2014, which is not a founding.
+    // OWNER: not stated. Payatu lists EXPLIoT among its products and expliot.io's
+    // footer names Payatu beside EXPLIoT BV, but no page states who owns EXPLIoT BV,
+    // so no parent is set (REPORT).
+    slug: "expliot",
+    // Own site read only through the fetch tool on 2026-11-17 (curl refused with HTTP 403 to agent hack-f); its store,
+    // https://store.expliot.io/, read live by curl.
+    official: {
+      // The company's own site.
+      url: "https://expliot.io",
+      // The open-source framework and the store.
+      resources: [
+        // The framework's documentation.
+        { label: "EXPLIoT Framework documentation", url: "https://expliot.readthedocs.io/en/latest/" },
+        // The framework's source.
+        { label: "EXPLIoT Framework source (GitLab)", url: "https://gitlab.com/expliot_framework/expliot" },
+        // The hardware store.
+        { label: "EXPLIoT Store", url: "https://store.expliot.io/" },
+      ],
+    },
+    // Makes the platform and sells hardware; runs an academy.
+    tags: ["vendor"], // training tag dropped at integration 17/11/2026 (check-learning-geography needs a geography.ts row)
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "EXPLIoT - the IoT testing framework that became a hardware maker",
+    // Card line.
+    tagline: "The Internet of Things security testing brand of Aseem Jakhar and the Pune firm Payatu, with a Dutch company behind its site, which has made and maintained the JTAGulator since July 2025.",
+    // Intro paragraph.
+    intro:
+      "EXPLIoT began as a framework: an open-source Python project for security testing of Internet of Things (IoT) products and infrastructure, \"conceptualized, designed and implemented by Aseem Jakhar\", who writes that he started dreaming of an IoT vulnerability scanner in 2014, wrote the first version in Ruby and rewrote it in Python. The framework is published under the GNU Affero General Public License version 3 (AGPLv3). The expliot.io site now presents the EXPLIoT Platform for automated device security and compliance assessment, with a Community Edition, a hardware store and an IoT Security Kit, and names two companies in its footer: EXPLIoT BV in The Hague, registered with the Netherlands Chamber of Commerce (KvK) under number 92449530, and Payatu Security Consulting Pvt. Ltd. in Pune, India.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: Payatu.
+      "Payatu, the Pune security firm that lists EXPLIoT, EXPLIoT Academy and the EXPLIoT Store among its products and training, was founded in 2011 by Aseem Jakhar, Murtuja Bharmal and Antriksh Shah. The three had started null, an open security community, in Pune in 2008, ran the first Nullcon conference in Goa in 2010, and in 2015 the Nullcon team started Hardwear.io, a hardware and IoT security conference first held in The Hague. Payatu says Jakhar continues to lead it along with EXPLIoT, \"the IoT Security Hardware Store\", and EXPLIoT Academy, its courses on IoT and device security.",
+      // Paragraph 2: the JTAGulator and the store.
+      "As of July 2025 EXPLIoT is the official hardware manufacturer and project maintainer of the JTAGulator, the open-source hardware tool of Grand Idea Studio that assists in identifying on-chip debug interfaces on a device, and which Parallax manufactured from 2013 to 2023; Grand Idea Studio keeps the JTAGulator name and logo as registered trademarks. The EXPLIoT store sells it beside the BUS Auditor, the EXPLIoT-Nano, an IoT Security Learning Kit and a Proxmark3 kit (RDV4.01).",
+      // Paragraph 3: why it matters, analytically.
+      "EXPLIoT follows a path common in security tooling. Jakhar's account of the framework begins with consultants writing their own scripts because no single tool covered the different devices each IoT test brought, and the brand that grew from those scripts now covers an open framework, a commercial platform and a store that also builds and maintains another designer's hardware. The legal arrangement is less visible than the products: a Dutch company and an Indian consultancy share one footer, and neither company's site says which owns what.",
+    ],
+    // The company's own page.
+    externalUrl: "https://expliot.io",
+    // Link label.
+    externalLabel: "EXPLIoT",
+    // Sources, each read on 2026-11-17 (expliot.io through the fetch tool, see REPORT).
+    sources: [
+      // The site and the two companies.
+      { label: "EXPLIoT, home page: footer \"EXPLIoT BV\", \"KvK number:92449530, WTC The Hague Business Center, Prinses Margrietplantsoen, 33 2595 AM Hague, The Netherlands\", and \"Payatu Security Consulting Pvt. Ltd.\", Sky Vista, Viman Nagar, Pune, Maharashtra; the EXPLIoT Platform for automated device security and compliance assessment with a Community Edition; IoT Security Kit; Hardware Store; JTAGulator \"now officially manufactured and maintained by EXPLIoT\" (read 2026-11-17 through the fetch tool)", url: "https://expliot.io/" },
+      // The framework's history, author and licence.
+      { label: "EXPLIoT Framework documentation, About: \"I started dreaming about an IoT vulnerability scanner way back in 2014\"; first version written in Ruby, rewritten in Python; licensed under the GNU AGPLv3; \"conceptualized, designed and implemented by Aseem Jakhar\" (read 2026-11-17)", url: "https://expliot.readthedocs.io/en/latest/about.html" },
+      // The framework's description.
+      { label: "EXPLIoT Framework documentation, home: a framework for security testing and exploiting IoT products and IoT infrastructure, written in Python; website expliot.io; source repository gitlab.com/expliot_framework/expliot; ©2019-2024, The EXPLIoT developers (read 2026-11-17)", url: "https://expliot.readthedocs.io/en/latest/" },
+      // Payatu's history and its link to EXPLIoT.
+      { label: "Payatu, About Us: Aseem Jakhar, Murtuja Bharmal and Antriksh Shah start null in 2008, run the first Nullcon in Goa in 2010 and found Payatu in Pune in 2011; Hardwear.io first held in The Hague in 2015; Aseem Jakhar, co-founder and Director R&D, \"continues to lead Payatu along with EXPLIoT - the IoT Security Hardware Store, and EXPLIoT Academy\"; products menu: EXPLIoT, EXPLIoT Academy, EXPLIoT Store (read 2026-11-17)", url: "https://payatu.com/about-us" },
+      // The JTAGulator handover.
+      { label: "Grand Idea Studio, JTAGulator: an open source hardware tool that assists in identifying on-chip debug interfaces; \"From 2013 to 2023, Parallax, Inc. was the official hardware manufacturer of the JTAGulator. As of July 2025, EXPLIoT is the official hardware manufacturer and project maintainer\"; the JTAGulator name and logo are registered trademarks of Grand Idea Studio, Inc. (read 2026-11-17)", url: "http://www.grandideastudio.com/jtagulator/" },
+      // The store's catalogue.
+      { label: "EXPLIoT Store: EXPLIoT IoT Security Learning Kit, BUS Auditor, EXPLIoT-Nano, Diva + Nano Combo, JTAGulator, Proxmark3 Kit (RDV4.01) (read 2026-11-17)", url: "https://store.expliot.io/" },
+    ],
+  },
+
+  // ==== Industry wave J3 (17/11/2026, PRIME 01:15): integrated from scratchpad industry-j3/ ====
+  {
+    // ESPRESSIF SYSTEMS - added 2026-11-17 (Industry wave J3). Founding year
+    // 2008 is stated by Espressif's own milestones page ("April 2008, Espressif
+    // Systems Founded") and by the CEO letter ("started in 2008").
+    // OWNER: none recorded. Listed on the STAR Market of the Shanghai Stock
+    // Exchange since 22 July 2019; the largest shareholder at 31 December 2025,
+    // Espressif (Hong Kong) Investment Ltd., held 36.62%, not a majority, so no
+    // parent is set.
+    slug: "espressif-systems",
+    // Own site read live 2026-11-17: HTTP 200 at https://www.espressif.com/.
+    official: {
+      // The company's own site.
+      url: "https://www.espressif.com",
+      // The useful part: the developer documentation and the security advisories.
+      resources: [
+        // ESP-IDF documentation, the framework every ESP32 product page points to.
+        { label: "ESP-IDF programming guide (Espressif documentation)", url: "https://docs.espressif.com/projects/esp-idf/en/latest/" },
+      ],
+    },
+    // Designs and sells the chips (fabless).
+    tags: ["vendor"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "Espressif Systems - the Shanghai chipmaker behind the ESP8266 and the ESP32",
+    // Founding year, named by the milestones label and the CEO-letter label below.
+    founded: 2008,
+    // Card line.
+    tagline: "A fabless Shanghai chip company founded in 2008 whose Wi-Fi and Bluetooth microcontrollers, the ESP8266 of 2014 and the ESP32 of 2016, have taken its shipments past 1.5 billion chips.",
+    // Intro paragraph.
+    intro:
+      "Espressif Systems was founded in April 2008, when, by its own milestones page, its headquarters were inaugurated at the Zhangjiang Hi-Tech Park in Shanghai. Its founder and chief executive is Teo Swee Ann. The company describes itself as a fabless semiconductor company providing wireless connectivity and edge intelligence for Internet of Things (IoT) devices, built around its ESP32 family, and it has been listed on the Sci-Tech Innovation Board (STAR Market) of the Shanghai Stock Exchange since 22 July 2019, under the code 688018.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the products, in the company's own dated order.
+      "Its first product, in June 2013, was the ESP8089, a 2.4 GHz Wi-Fi system on chip (SoC) for tablets and set-top boxes. The breakthrough came in May 2014 with the ESP8266EX, a low-power Wi-Fi SoC needing as few as seven external components, which Espressif calls the industry's first highly integrated Wi-Fi chip; in September 2016 it released the ESP32, a 32-bit microcontroller with Wi-Fi and Bluetooth that it calls its flagship. Later families adopted the open RISC-V instruction set, the ESP32-C3 of November 2020 being the first such chip on its milestones page, and the ESP32-E22 of January 2026 is its first Wi-Fi 6E chip. In September 2023 Espressif announced that its cumulative shipments had passed one billion chips since the ESP8266, Teo saying it had sold almost 200 million in the previous year alone; its 2025 annual report gives more than 1.5 billion.",
+      // Paragraph 2: money, ownership, M5Stack and Brazil.
+      "The company raised funding from the Fosun Group in 2016 and from Intel Capital and the Beijing Singularity Power Investment Fund in May 2018, and at its listing in July 2019 priced its shares at 62.60 yuan; its guests that day included a representative of Intel Capital, attending as a shareholder, a partner of a Xiaomi industrial investment fund, which the company described as both a shareholder and a client, and partners from Fosun and SAIF Partners. For 2025 it reported revenue of 2.57 billion yuan, up from 2.01 billion in 2024, net income attributable to the company of 498 million yuan and 898 employees, 70% of them in research and development (R&D) across nine R&D centres; its largest shareholder at the end of 2025 was Espressif (Hong Kong) Investment Ltd., with 36.62% of the shares. In April 2024 it bought a majority stake in M5Stack, the maker of modular development kits built on its ESP32 chips. Brazil is one of its R&D locations: Espressif established an R&D centre there in April 2020, its 2025 annual report names Brazil among its innovation hubs with India, Singapore and the Czech Republic, and its first in-person event in the country, the Espressif Summit Brazil, was held in Campinas on 17 and 18 July 2024 with talks mostly in Portuguese; the second edition, on 5 and 6 August 2025 in Campinas, added hardware hacking sessions.",
+      // Paragraph 3: the 2019 advisory, as the vendor stated it.
+      "The chips' popularity made their security a public matter. On 1 November 2019 Espressif published an advisory, CVE-2019-17391, stating that an attacker with physical access could use fault injection, carefully timed disturbances of voltage or clock, to corrupt eFuse reads on the ESP32 chips then shipping and so bypass the read protection of the keys for flash encryption and secure boot; the researcher LimitedResults had reported it on 24 July 2019, and for hardware already deployed there was no software mitigation. Espressif's answer was in the silicon: the ESP32-D0WD-V3 revision added checks to its read-only memory (ROM) and a Secure Boot V2 scheme based on asymmetric cryptography, which needs no read-protected key. The advisory also records that in May 2019 Espressif had worked with security analysts from Riscure to review and harden the ESP32 boot ROM.",
+      // Paragraph 4: why it matters, analytically.
+      "When Gartner named Espressif a Cool Vendor in 2016, it was recognized, its milestones page says, for Wi-Fi chips that had enabled postage-stamp-sized wireless computers costing less than three dollars. With that, the security of very large numbers of small connected devices came to rest on features such as flash encryption, secure boot and keys held in eFuses, and the 2019 advisory is valuable because it sets out, in the vendor's own words, where those features stop: once an attacker holds the device and has the time and equipment, protection depends on per-device keys and on the silicon revision, not on software.",
+    ],
+    // Acquisitions Espressif made, read in its own release and annual report.
+    acquisitions: [
+      // M5Stack, 2024.
+      { year: 2024, name: "M5Stack", what: "A maker of a modular, open-source hardware platform for IoT and embedded prototyping, with the UIFlow low-code platform and the EZData data service, whose main control modules are built on Espressif's ESP32 chips. Espressif announced its acquisition of a majority stake on 22 April 2024.", became: "A majority-owned part of Espressif whose development kits appear in its annual report; the m5stack record tells the company's own story.", sourceNote: "Espressif release, 22 April 2024; Espressif Systems 2025 Annual Report, which dates the purchase to the second quarter of 2024 (both read 2026-11-17)." },
+    ],
+    // The company's own page.
+    externalUrl: "https://www.espressif.com/en/company/about-us/milestones",
+    // Link label.
+    externalLabel: "Espressif Systems: milestones",
+    // Sources, each read live on 2026-11-17.
+    sources: [
+      // Founding year and place, products, investors, IPO, Brazil R&D centre.
+      { label: "Espressif Systems, Milestones: April 2008, Espressif Systems founded, headquarters inaugurated in Shanghai, China, at ZhangJiang Hi-Tech Park; June 2013, first product ESP8089, a 2.4 GHz Wi-Fi SoC for tablets and set-top boxes; May 2014, ESP8266EX, requiring a minimum of 7 external components; May 2016, named \"Cool Vendor in IoT 'Thingification' in 2016\" by Gartner for Wi-Fi chips \"that have enabled the creation of postage-stamp-sized wireless computers costing less than $3\"; September 2016, flagship chip ESP32 and funding from the Fosun Group; May 2018, investment from Intel Capital and Beijing Singularity Power Investment Fund; July 2019, IPO on the STAR board of the Shanghai Stock Exchange (688018.SH); April 2020, R&D center in Brazil; November 2020, ESP32-C3, RISC-V-based; September 2023, over 1 billion shipments; April 2024, majority stake in M5Stack; January 2026, ESP32-E22, its first Wi-Fi 6E SoC (read 2026-11-17)", url: "https://www.espressif.com/en/company/about-us/milestones" },
+      // The founding year again, in the founder's letter.
+      { label: "Espressif Systems, CEO Messages (Teo Swee Ann, 15 March 2018): \"Espressif Systems started in 2008\" and grew from a small startup in China (read 2026-11-17)", url: "https://www.espressif.com/en/company/about-us/ceo-letter" },
+      // The billion-chip release and the founder's title.
+      { label: "Espressif Systems, Espressif Leads the IoT Chip Market with Over 1 Billion Global Shipments, 22 September 2023: cumulative chip shipments above one billion since the launch of ESP8266; Teo Swee Ann, Founder and CEO: \"we sold almost 200 million chips in the past year alone\"; ESP8266 launched in 2014 as \"the industry's first highly integrated Wi-Fi chip\"; ESP32 in 2016 (read 2026-11-17)", url: "https://www.espressif.com/en/news/1_Billion_Chip_Sales" },
+      // The listing.
+      { label: "Espressif Systems, Espressif (688018.SH) Celebrated Its Successful Initial Public Offering on Shanghai's Stock Exchange, 26 July 2019: debut on Monday 22 July among 25 companies on the STAR board; IPO price CNY 62.60 per share; Nick Washburn attended as a shareholder representative of Intel Capital; Pan Jiutang, partner in Xiaomi Group's Industrial Investment Fund, \"a company that is both an Espressif shareholder and client\"; guests from Fosun Group and SAIF partners; ESP32-S2 demonstrated (read 2026-11-17)", url: "https://www.espressif.com/en/news/Espressif_IPO" },
+      // The annual report: figures, shareholders, hubs, M5Stack.
+      { label: "Espressif Systems 2025 Annual Report: fabless semiconductor company (SSE: 688018.SH); revenue CNY 2,565,275,432 in 2025 and 2,006,919,687 in 2024; net income attributable to Espressif CNY 497,840,142; 898 employees, 70% in R&D, 9 R&D centers; more than 1.5 billion cumulative IoT chip shipments; listing date 2019-07-22; largest shareholder Espressif (Hong Kong) Investment Ltd. with 36.62% at 31 December 2025; innovation hubs in India, Singapore, the Czech Republic and Brazil; majority stake in M5Stack acquired in 2024 Q2 (read 2026-11-17)", url: "https://www.espressif.com/sites/default/files/financial/Espressif%20Systems%202025%20Annual%20Report.pdf" },
+      // M5Stack.
+      { label: "Espressif Systems, Espressif Acquires Majority Stake in M5Stack, 22 April 2024: a modular, open-source platform for IoT and embedded systems built around Espressif's ESP32 chips, with the UIFlow low-code platform and the EZData data service (read 2026-11-17)", url: "https://www.espressif.com/en/news/Espressif_Acquires_M5Stack" },
+      // The 2019 advisory.
+      { label: "Espressif Systems, Security Advisory concerning fault injection and eFuse protections (CVE-2019-17391), 1 November 2019: physical fault injection after reset can corrupt eFuse reads on ESP32-D0WD, ESP32-D2WD, ESP32-S0WD and ESP32-PICO-D4 and bypass read protection of Flash Encryption and Secure Boot keys; reported by LimitedResults on 24 July 2019; no software mitigation for deployed hardware; ESP32-D0WD-V3 adds ROM checks and Secure Boot V2; review of the boot ROM with Riscure in May 2019 (read 2026-11-17)", url: "https://www.espressif.com/en/news/Security_Advisory_Concerning_Fault_Injection_and_eFuse_Protections" },
+      // Brazil, 2024.
+      { label: "Espressif Developer Portal, Summit Brazil 2024, 7 June 2024: the first in-person Espressif event in Brazil, in Campinas from 17 to 18 July, talks and workshops mostly in Portuguese (read 2026-11-17)", url: "https://developer.espressif.com/events/summit-brazil-24/" },
+      // Brazil, 2025.
+      { label: "Espressif Developer Portal, Espressif Summit Brazil 2025, 17 June 2025: second edition on 5 and 6 August in Campinas (SP), at the Hotel Vitória Concept, with talks, workshops and interactive hardware hacking sessions; registration through the Portal Embarcados (read 2026-11-17)", url: "https://developer.espressif.com/events/summit-brazil-25/" },
+    ],
+  },
+  {
+    // MICROCHIP TECHNOLOGY - added 2026-11-17 (Industry wave J3), Atmel as
+    // history. Founding year 1989 is stated by its own 10-K for fiscal 2026
+    // ("incorporated in Delaware in 1989") and by its 1997 10-K ("the
+    // acquisition and formation of the Company in 1989").
+    // OWNER: none; a Nasdaq-listed company. microchip.com refused curl (HTTP
+    // 403) and the fetch tool; the SEC filings carry every fact.
+    slug: "microchip-technology",
+    // Own site: https://www.microchip.com answered HTTP 403 to the shell client on 2026-11-17 (bot protection); the 10-K of 21 May 2026 is the evidence that the company trades.
+    official: {
+      // The company's own site.
+      url: "https://www.microchip.com",
+    },
+    // Designs, makes and sells the chips.
+    tags: ["vendor"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "Microchip Technology - the PIC maker that bought KeeLoq and Atmel",
+    // Founding year, named by the two 10-K labels below.
+    founded: 1989,
+    // Card line.
+    tagline: "An Arizona maker of microcontrollers formed in 1989, owner since 1995 of the KeeLoq code-hopping technology used in car remotes and garage openers, and since 2016 of Atmel, the AVR maker.",
+    // Intro paragraph.
+    intro:
+      "Microchip Technology Incorporated was incorporated in Delaware in 1989; its 1997 annual report dates \"the acquisition and formation of the Company\" to that year, in connection with which it obtained a nonexclusive, royalty-free licence under certain semiconductor patents owned by General Instrument. It went public in 1993, has its executive offices in Chandler, Arizona, and is listed on the Nasdaq Global Select Market. Its PIC microcontrollers, which it then called a price/performance leader in the worldwide 8-bit market, had passed 400 million units shipped since 1990 by 1997. Steve Sanghi, chief executive from October 1991 to March 2021 and chair of the board since October 1993, returned as chief executive and president on an interim basis on 18 November 2024 and permanently on 2 July 2025.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: KeeLoq, from Nanoteq to the cryptanalysts.
+      "The acquisition that matters most for security was a small one. On 17 November 1995 Microchip bought the KeeLoq hopping-code technology and patents developed by Nanoteq Ltd of South Africa, with the marketing rights, for 12.9 million dollars, most of it written off as in-process research and development. It sold KeeLoq security products for low-cost, secure, one-way communication and verification: automotive remote keyless entry, immobilizers, garage and gate openers and smart cards. Its HCS301 encoder, in a 2011 datasheet, sends a 66-bit transmission carrying a 32-bit hopping code under a programmable 64-bit key, so that each transmission is unique. KeeLoq then became a classic subject of academic cryptanalysis: at CRYPTO 2008 Thomas Eisenbarth, Timo Kasper, Amir Moradi, Christof Paar, Mahmoud Salmasizadeh and Mohammad T. Manzuri Shalmani presented what they called a complete break of the KeeLoq code-hopping scheme by differential power analysis of commercial products, recovering both a remote's secret key and the manufacturer key stored in a receiver.",
+      // Paragraph 2: Atmel and Microsemi.
+      "In 2016 Microchip bought Atmel. Atmel, incorporated in California in December 1984, reincorporated in Delaware in October 1999 and based in San Jose, made the AVR 8-bit and 32-bit microcontrollers, the Atmel SMART families built on Arm cores and the maXTouch touch controllers. The merger agreement of 19 January 2016 was completed on 4 April 2016, each Atmel share becoming 7.00 dollars in cash and 0.0237 of a Microchip share. Atmel's catalogue included low-frequency radio-frequency identification (RFID) chips such as the ATA5577C, a read/write transponder for 100 to 150 kHz compatible with the Atmel T5557 and ATA5567, whose 2014 Atmel datasheet Microchip still publishes. On 29 May 2018 Microchip completed its purchase of Microsemi.",
+      // Paragraph 3: the company today, and the 2024 intrusion.
+      "For the year to 31 March 2026 Microchip reported net sales of 4,713.1 million dollars, 7.1% more than the 4,401.6 million of the year before, and a workforce of about 17,900 people; about 35% of its sales came from products made in its own wafer fabs in the United States, and it closed its Fab 2 in May 2025. In August 2024 it determined that an unauthorized party had disrupted its use of certain servers and some of its business operations, leaving some manufacturing facilities running below normal levels for a time; the company says it restored normal operations without a material impact on the business.",
+      // Paragraph 4: why it matters, analytically.
+      "Microchip's place in the history of radio security research is less the chips on the bench than the security schemes it owns. KeeLoq was bought as a product line and became a case study: a code-hopping scheme with a 64-bit key, sold for exactly the one-way radio links of car remotes and garage doors, whose published breaks are results about the remotes and receivers that use it. The purchase of Atmel added the AVR and low-frequency RFID lineages to the same catalogue.",
+    ],
+    // Acquisitions, each read in Microchip's or Atmel's own SEC filings.
+    acquisitions: [
+      // KeeLoq, 1995.
+      { year: 1995, name: "KeeLoq (Nanoteq)", what: "The KeeLoq hopping-code technology and patents developed by Nanoteq Ltd of the Republic of South Africa, with the related marketing rights, bought on 17 November 1995 for 12,948,000 dollars including costs and treated as an asset purchase.", became: "Microchip's KeeLoq security products for remote keyless entry, immobilizers, garage and gate openers.", sourceNote: "Microchip Form 10-K for the fiscal year ended 31 March 1997, note 2, Acquisitions (read 2026-11-17)." },
+      // Atmel, 2016.
+      { year: 2016, name: "Atmel", what: "The San Jose maker of AVR and Atmel SMART ARM-based microcontrollers and maXTouch touch controllers, incorporated in California in December 1984. Merger agreement of 19 January 2016, completed on 4 April 2016 for 7.00 dollars in cash and 0.0237 of a Microchip share per Atmel share.", became: "A wholly owned indirect subsidiary of Microchip; its product lines continue under Microchip.", sourceNote: "Microchip Form 8-K, 4 April 2016; Atmel Form 10-K for 2015 (both read 2026-11-17)." },
+      // Microsemi, 2018.
+      { year: 2018, name: "Microsemi", what: "A Delaware semiconductor company; merger agreement of 1 March 2018, completed on 29 May 2018.", became: "A wholly owned subsidiary of Microchip; the Microsemi brand survives on storage controllers.", sourceNote: "Microchip Form 8-K, 29 May 2018; Microchip Form 10-K for fiscal 2026, which names Microsemi-branded storage controllers (both read 2026-11-17)." },
+    ],
+    // The company's own SEC annual report (its site refused automated reading).
+    externalUrl: "https://www.sec.gov/Archives/edgar/data/827054/000082705426000016/mchp-20260331.htm",
+    // Link label.
+    externalLabel: "Microchip Technology: annual report on Form 10-K, fiscal 2026",
+    // Sources, each read live on 2026-11-17.
+    sources: [
+      // Founding year, sales, people, Sanghi, fabs, the 2024 incident, Microsemi brand.
+      { label: "Microchip Technology, Form 10-K for the fiscal year ended 31 March 2026, filed 21 May 2026: \"Microchip Technology Incorporated was incorporated in Delaware in 1989\"; executive offices in Chandler, Arizona; went public in 1993; Nasdaq Global Select Market; net sales of $4,713.1 million against $4,401.6 million (up 7.1%); approximately 17,900 people; about 35% of sales from its own U.S. wafer fabs; Fab 2 closure completed in May 2025; in August 2024 an unauthorized party disrupted its use of certain servers and some business operations; Steve Sanghi CEO from October 1991 to March 2021, interim CEO and President from 18 November 2024 and permanent from 2 July 2025, Chair since October 1993; Microsemi-branded storage controllers (read 2026-11-17)", url: "https://www.sec.gov/Archives/edgar/data/827054/000082705426000016/mchp-20260331.htm" },
+      // The 1989 formation, PIC shipments and KeeLoq.
+      { label: "Microchip Technology, Form 10-K for the fiscal year ended 31 March 1997: a nonexclusive, royalty-free licence under General Instrument patents acquired \"in connection with the acquisition and formation of the Company in 1989\"; believes that its PIC product family is a price/performance leader in the worldwide 8-bit microcontroller market; more than 400 million PIC microcontrollers shipped since 1990; KEELOQ security products for automotive remote keyless entry, immobilizers, garage and gate openers and smart cards; on 17 November 1995 the Company acquired the Keeloq hopping code technology and patents developed by Nanoteq Ltd. of the Republic of South Africa, for $12,948,000 (read 2026-11-17)", url: "https://www.sec.gov/Archives/edgar/data/827054/0000950147-97-000358.txt" },
+      // Atmel's completion.
+      { label: "Microchip Technology, Form 8-K, 4 April 2016, Item 2.01: on 4 April 2016 Hero Acquisition Corporation merged with and into Atmel Corporation, which survived as a wholly owned indirect subsidiary of Microchip; merger agreement of 19 January 2016; each Atmel share converted into $7.00 in cash and 0.0237 of a Microchip share (read 2026-11-17)", url: "https://www.sec.gov/Archives/edgar/data/827054/000119312516529460/d174903d8k.htm" },
+      // Atmel's own history and products.
+      { label: "Atmel Corporation, Form 10-K for 2015, filed 29 February 2016: originally incorporated in California in December 1984, reincorporated in Delaware in October 1999; principal offices at 1600 Technology Drive, San Jose; AVR 8-bit and 32-bit families, Atmel SMART ARM-based products, maXTouch and QTouch (read 2026-11-17)", url: "https://www.sec.gov/Archives/edgar/data/872448/000087244816000043/atml-201510k.htm" },
+      // Microsemi's completion.
+      { label: "Microchip Technology, Form 8-K, 29 May 2018: merger agreement with Microsemi Corporation of 1 March 2018; on 29 May 2018 Maple Acquisition Corporation merged with and into Microsemi (read 2026-11-17)", url: "https://www.sec.gov/Archives/edgar/data/827054/000119312518176340/d567764d8k.htm" },
+      // The KeeLoq encoder.
+      { label: "Microchip Technology, HCS301 KEELOQ Code Hopping Encoder datasheet DS21143C, 2011: programmable 28-bit serial number and 64-bit encryption key, 66-bit transmission code with a 32-bit hopping code, each transmission unique, for remote keyless entry and access control (read 2026-11-17)", url: "https://ww1.microchip.com/downloads/en/DeviceDoc/21143c.pdf" },
+      // The Atmel RFID transponder.
+      { label: "Atmel, ATA5577C Read/Write LF RFID IDIC 100 to 150kHz datasheet, revision 9187H, July 2014, hosted by Microchip: compatible with the Atmel T5557 and ATA5567, 363 bits of EEPROM, password mode (read 2026-11-17)", url: "https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-9187-RFID-ATA5577C_Datasheet.pdf" },
+      // The CRYPTO 2008 paper.
+      { label: "Universität zu Lübeck research portal: Eisenbarth, Kasper, Moradi, Paar, Salmasizadeh and Shalmani, On the Power of Power Analysis in the Real World: A Complete Break of the KeeLoq Code Hopping Scheme, Advances in Cryptology, CRYPTO 2008, LNCS 5157, pp. 203 to 220: the first successful differential power analysis attacks on commercial products employing KeeLoq code hopping, revealing the secret key of a remote transmitter and the manufacturer key stored in a receiver (read 2026-11-17)", url: "https://research.uni-luebeck.de/en/publications/on-the-power-of-power-analysis-in-the-real-world-a-complete-break/" },
+    ],
+  },
+  {
+    // NXP SEMICONDUCTORS - added 2026-11-17 (Industry wave J3), Philips
+    // Semiconductors and Freescale as history. Founding year 2006 is stated by
+    // its 10-K for 2025 ("incorporated in the Netherlands in 2006") and by its
+    // IPO prospectus (KASLION Acquisition B.V., 2 August 2006). No storyBegins:
+    // no page read gives a year for the start of Philips's semiconductor
+    // business ("over 50 years" in 2010, "over 70 years" in 2026 are not years).
+    // OWNER: none; Nasdaq-listed since 5 August 2010. Qualcomm's agreement to
+    // buy it was terminated on 26 July 2018 and never completed.
+    slug: "nxp-semiconductors",
+    // Own site: https://www.nxp.com answered HTTP 404 to the shell client on 2026-11-17; its About page was read through the fetch tool (FETCH-ONLY, REPORT).
+    official: {
+      // The company's own site.
+      url: "https://www.nxp.com",
+    },
+    // Designs, makes and sells the chips.
+    tags: ["vendor"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "NXP Semiconductors - Philips's chip business, MIFARE and Freescale",
+    // Founding year, named by the 10-K and prospectus labels below.
+    founded: 2006,
+    // Card line.
+    tagline: "The Eindhoven chipmaker carved out of Philips in 2006, maker of the MIFARE contactless cards, which absorbed Motorola's former Freescale in 2015 and saw Qualcomm's purchase of it collapse in 2018.",
+    // Intro paragraph.
+    intro:
+      "NXP Semiconductors was incorporated in the Netherlands on 2 August 2006 as KASLION Acquisition B.V., in connection with the sale by Philips of 80.1% of its semiconductor business to a consortium of funds advised by KKR, Bain Capital, Silver Lake, Apax and AlpInvest. It became a public company named NXP Semiconductors N.V. on 21 May 2010, listed on Nasdaq on 5 August 2010, and has its corporate seat in Eindhoven; its own site marked the company's 20th anniversary in 2026. For 2025 it reported revenue of 12,269 million dollars and about 32,169 employees, and on 28 October 2025 Rafael Sotomayor succeeded Kurt Sievers as president and chief executive.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: MIFARE and NFC, the Philips inheritance.
+      "Its identification business is the Philips inheritance. MIFARE, a family of contactless cards that in 2008 consisted of Ultralight, Classic, DESFire and SmartMX, had sold more than a billion cards by NXP's own figures as Radboud University researchers cited them that year, with about 200 million MIFARE Classic tags in use and about 85% of the contactless smart-card market; their paper described the maker as NXP Semiconductors, formerly Philips Semiconductors. In 2004 Royal Philips Electronics, with Nokia and Sony, had announced the formation of the NFC Forum, the body behind near-field communication (NFC).",
+      // Paragraph 2: the 2008 court case and the São Paulo migration.
+      "In March 2008 researchers at Radboud University Nijmegen led by Professor Bart Jacobs showed that the MIFARE Classic chip, used among other things in the Dutch national public-transport card, had shortcomings, and confidentially informed the Dutch government and NXP. At the beginning of July NXP sought an injunction to prevent publication of their scientific article; on 18 July 2008 the preliminary-injunction judge in Arnhem refused it, ruling that publishing the article fell under freedom of expression and that the university had acted with due care, and the paper appeared at the ESORICS 2008 conference. Five years later NXP was selling the migration in Brazil: on 11 July 2013 it announced that SPTrans, which manages São Paulo's public-transport network, would move its Bilhete Único smart card, based on MIFARE Classic since its launch in 2004 with about 40 million cards deployed and more than 340 million transactions a month, to MIFARE Plus.",
+      // Paragraph 3: Freescale, Nexperia, Qualcomm.
+      "The other half of today's NXP came from Motorola. Freescale Semiconductor, incorporated in Delaware in 2003, received substantially all of Motorola's semiconductor businesses in 2004, went public on 21 July 2004 and became fully independent when Motorola distributed its remaining shares on 2 December 2004; a consortium including Blackstone, Carlyle, Permira and TPG took it private on 1 December 2006. NXP agreed to merge with it on 2 March 2015 and completed the merger on 7 December 2015, for a total consideration of about 11.6 billion dollars. On 6 February 2017 NXP sold its Standard Products business, renamed Nexperia, to JAC Capital and Wise Road Capital. Qualcomm agreed on 27 October 2016 to buy NXP for 110 dollars a share, about 38 billion dollars, and on 26 July 2018 terminated the agreement after failing to obtain the approval of China's State Administration for Market Regulation (SAMR) in time; NXP received 2 billion dollars in termination compensation the same day.",
+      // Paragraph 4: why it matters, analytically.
+      "NXP's history holds both sides of a question that runs through security research on hardware. The Arnhem ruling of 2008 settled, in that court, that a manufacturer could not stop the publication of research on the weaknesses of its own chip; São Paulo's move from MIFARE Classic to MIFARE Plus shows the other side, an operator replacing a card population counted in tens of millions. A contactless card's cryptography outlives the year it was designed in, and the cost of its weaknesses falls on whoever deployed it.",
+    ],
+    // Acquisitions, read in NXP's and Freescale's own SEC filings.
+    acquisitions: [
+      // Freescale, 2015.
+      { year: 2015, name: "Freescale Semiconductor", what: "Motorola's former semiconductor business, transferred to Freescale in 2004, listed on 21 July 2004, distributed by Motorola on 2 December 2004 and taken private on 1 December 2006 by a consortium including Blackstone, Carlyle, Permira and TPG; a maker of microcontrollers, digital networking processors and automotive chips based in Austin, Texas. Merger agreed on 2 March 2015 and completed on 7 December 2015 for a total consideration of about 11.6 billion dollars.", became: "Part of NXP; the motorola record tells the story of its original parent.", sourceNote: "NXP Form 20-F for 2015; Freescale Semiconductor Form 10-K for 2014 (both read 2026-11-17)." },
+    ],
+    // The company's own page.
+    externalUrl: "https://www.nxp.com/company/about-nxp/about-nxp:ABOUT-NXP",
+    // Link label.
+    externalLabel: "About NXP",
+    // Sources, each read live on 2026-11-17.
+    sources: [
+      // Founding year, seat, revenue, people, CEO.
+      { label: "NXP Semiconductors N.V., Form 10-K for 2025, filed 19 February 2026: \"We were incorporated in the Netherlands in 2006\"; corporate seat in Eindhoven, High Tech Campus 60; revenue of $12,269 million in 2025 against $12,614 million in 2024; approximately 32,169 employees at 31 December 2025; Kurt Sievers retired as CEO effective 28 October 2025 and was succeeded by Rafael Sotomayor; former parent companies Philips and Motorola (read 2026-11-17)", url: "https://www.sec.gov/Archives/edgar/data/1413447/000141344726000008/nxpi-20251231.htm" },
+      // The 2006 formation.
+      { label: "NXP Semiconductors N.V., IPO prospectus (Form 424B4), 6 August 2010: incorporated as KASLION Acquisition B.V. on 2 August 2006 in connection with the sale by Philips of 80.1% of its semiconductor business to a consortium of funds advised by KKR, Bain Capital Partners, Silver Lake, Apax Partners and AlpInvest Partners; converted into a public company and renamed NXP Semiconductors N.V. on 21 May 2010 (read 2026-11-17)", url: "https://www.sec.gov/Archives/edgar/data/1413447/000119312510180623/d424b4.htm" },
+      // The listing and the Freescale merger.
+      { label: "NXP Semiconductors N.V., Form 20-F for 2015, filed 26 February 2016: initial public offering of 34 million shares on 5 August 2010 and listing on the NASDAQ Global Select Market; definitive merger agreement with Freescale Semiconductor of 2 March 2015, consummated on 7 December 2015, for a total consideration of approximately $11.6 billion (read 2026-11-17)", url: "https://www.sec.gov/Archives/edgar/data/1413447/000119312516481954/d18493d20f.htm" },
+      // Nexperia and the Qualcomm termination.
+      { label: "NXP Semiconductors N.V., Form 20-F for 2018, filed 1 March 2019: Standard Products divested on 6 February 2017 to JAC Capital and Wise Road Capital (subsequently named Nexperia); Qualcomm purchase agreement of 27 October 2016 at $110 per share, about $38 billion; on 26 July 2018 Qualcomm terminated it after failing to obtain SAMR approval, and NXP received $2 billion in termination compensation (read 2026-11-17)", url: "https://www.sec.gov/Archives/edgar/data/1413447/000156459019005657/nxpi-20f_20181231.htm" },
+      // Freescale's origin in Motorola.
+      { label: "Freescale Semiconductor Ltd., Form 10-K for 2014, filed 6 February 2015: Freescale Semiconductor, Inc. incorporated in Delaware in 2003; Motorola transferred substantially all of its semiconductor businesses to it in the second quarter of 2004; IPO completed on 21 July 2004; Motorola distributed its remaining interest on 2 December 2004; acquired on 1 December 2006 by a consortium including The Blackstone Group, The Carlyle Group, funds advised by Permira and TPG Capital; principal offices in Austin, Texas (read 2026-11-17)", url: "https://www.sec.gov/Archives/edgar/data/1392522/000139252215000003/a201410-k.htm" },
+      // The company's own page (fetch tool).
+      { label: "NXP Semiconductors, About NXP: \"This year marks NXP's 20th anniversary\"; about 32,000 team members; present in more than 30 countries (read 2026-11-17)", url: "https://www.nxp.com/company/about-nxp/about-nxp:ABOUT-NXP", sourceNote: "Read through the fetch tool, because the shell client received HTTP 404 from nxp.com; the page and its figures confirmed in a browser on 17 November 2026." },
+      // MIFARE figures in 2008.
+      { label: "Garcia, de Koning Gans, Muijrers, van Rossum, Verdult, Wichers Schreur and Jacobs, Dismantling MIFARE Classic, ESORICS 2008, LNCS 5283: MIFARE is a product family from \"NXP Semiconductors (formerly Philips Semiconductors)\" of Ultralight, Classic, DESFire and SmartMX; according to NXP more than 1 billion MIFARE cards sold and about 200 million MIFARE Classic tags in use, about 85% of the contactless smart card market (read 2026-11-17)", url: "https://sos.cs.ru.nl/applications/rfid/2008-esorics.pdf" },
+      // The 2008 court decision.
+      { label: "Radboud University Nijmegen, Digital Security, press release, 18 July 2008: Radboud University Nijmegen allowed to publish Mifare Classic Chip article; the preliminary injunction judge in Arnhem ruled that publication falls under freedom of expression; researchers led by Professor Bart Jacobs had shown in March 2008 that the chip had shortcomings and informed the Dutch government and NXP; NXP took out an injunction at the beginning of July (read 2026-11-17)", url: "https://sos.cs.ru.nl/applications/rfid/pressrelease-courtdecision.en.html" },
+      // NFC Forum, 2004.
+      { label: "NFC Forum, 15 Years of Innovation: Celebrating the NFC Forum's 15th Anniversary, June 2019: in 2004 Nokia Corporation, Royal Philips Electronics (NXP) and Sony Corporation announced the formation of the NFC Forum (read 2026-11-17)", url: "https://nfc-forum.org/news/2019-06-15-years-of-innovation-celebrating-the-nfc-forums-15th-anniversary" },
+      // SPTrans, 2013.
+      { label: "Electronic Specifier, NXP upgrade SPTrans with its MIFARE Plus, 11 July 2013: the Bilhete Unico smart card based on MIFARE Classic with about 40 million cards deployed since its launch in 2004, seven million regular users and more than 340 million transactions a month, migrating to MIFARE Plus (read 2026-11-17)", url: "https://www.electronicspecifier.com/products/design-automation/mifare-plus-nxp-upgrade-sptrans-with-its-mifare-plus" },
+    ],
+  },
+  {
+    // STMICROELECTRONICS - added 2026-11-17 (Industry wave J3). Founding year
+    // 1987 is stated by its own 20-F for 2025 ("formed and incorporated in
+    // 1987"). ORIGIN is two countries (SGS Italian, Thomson French) in a Dutch
+    // company: see ORIGINS.ts.
+    // OWNER: none recorded. ST Holding, controlled jointly by the French and
+    // Italian states, held about 27.5% at 31 December 2025, which the 20-F calls
+    // a controlling shareholder but which is not a majority stake, so no parent
+    // is set; the prose states it.
+    slug: "stmicroelectronics",
+    // Own site: https://www.st.com reset the shell client's HTTP/2 stream on 2026-11-17 (not worked around); the 20-F of 26 February 2026 is the evidence that the company trades.
+    official: {
+      // The company's own site.
+      url: "https://www.st.com",
+    },
+    // Designs, makes and sells the chips.
+    tags: ["vendor"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "STMicroelectronics - the Franco-Italian chipmaker behind the STM32",
+    // Founding year, named by the 20-F label below.
+    founded: 1987,
+    // Card line.
+    tagline: "Formed in 1987 from Italy's SGS Microelettronica and France's Thomson Semiconducteurs, a Dutch-registered, Geneva-run chipmaker whose largest shareholder is a holding controlled by the French and Italian states, and the maker of the STM32 microcontrollers.",
+    // Intro paragraph.
+    intro:
+      "STMicroelectronics N.V. was formed and incorporated in 1987 by combining the semiconductor business of SGS Microelettronica, then owned by the Italian STET, with the non-military business of Thomson Semiconducteurs, then owned by Thomson-CSF, now Thales. It traded as SGS-Thomson Microelectronics until May 1998. It is organized under Dutch law, with its legal seat in Amsterdam and head offices at Schiphol, while its headquarters and operational offices are in Plan-les-Ouates, Geneva. It listed in December 1994 in Paris and on the New York Stock Exchange (NYSE), and in 1998 on the Borsa Italiana. Jean-Marc Chery, who joined Thomson Semiconducteurs in 1986, has been president and chief executive since May 2018.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the states' holding.
+      "The two states never left. At 31 December 2025 STMicroelectronics Holding N.V. (ST Holding) owned about 27.5% of ST's issued shares. Its shareholders, Bpifrance on the French side and the Italian Ministry of the Economy and Finance on the Italian, are each ultimately controlled by their government, each held 13.9% of ST's capital indirectly at the end of 2024, and are bound by a shareholders' agreement to which ST is not a party and which lets each side propose the same number of supervisory board members. ST's annual report calls ST Holding its controlling shareholder and lists among its risks that the holding's interests may conflict with those of other investors.",
+      // Paragraph 2: products, figures and Brazil.
+      "Its microcontroller line is the STM32 family, built on Arm Cortex-M and Cortex-A processors and supported by the STM32Cube software, with more than 140 ready-made models in its STM32 AI model zoo by 2025. The STM32N6 carries ST's own neural processing unit, and the STM32V8 of 2025 is, by ST's account, the first microcontroller built on an 18 nm fully depleted silicon-on-insulator (FD-SOI) process, with embedded phase-change memory. In 2025 ST also began mass production of the ST67W module, combining Wi-Fi 6, Bluetooth Low Energy 5.4 and Matter, the first product of a collaboration with Qualcomm Technologies announced in 2024. Net revenues were 11,800 million dollars in 2025, against 13,269 million in 2024, and the group counted 49,157 people at the end of 2025, 30,546 of them in manufacturing. In Brazil it has a wholly owned subsidiary, STMicroelectronics Ltda, in São Paulo.",
+      // Paragraph 3: why it matters, analytically.
+      "ST shows a strategic chipmaker held in part by states: two governments act through one holding with about a quarter of the shares, under an agreement to which the company itself is not a party, while its shares trade in Paris, Milan and New York. On the bench the more visible fact is the ecosystem around the STM32: SEGGER, whose own record follows, announced day-one support for ST's new STM32G5 microcontrollers in its debug probes.",
+    ],
+    // The company's own SEC annual report (its site refused automated reading).
+    externalUrl: "https://www.sec.gov/Archives/edgar/data/932787/000093278726000009/stm-20251231.htm",
+    // Link label.
+    externalLabel: "STMicroelectronics: annual report on Form 20-F, 2025",
+    // Sources, each read live on 2026-11-17.
+    sources: [
+      // Founding year, history, seats, listing, holding, products, figures, subsidiary.
+      { label: "STMicroelectronics N.V., Form 20-F for 2025, filed 26 February 2026: \"STMicroelectronics N.V. was formed and incorporated in 1987\" from the semiconductor business of SGS Microelettronica (owned by S.T.E.T.) and the non-military business of Thomson Semiconducteurs (owned by Thomson-CSF, now Thales); IPO in December 1994 in Paris and on the NYSE, Borsa Italiana in 1998; SGS-Thomson Microelectronics N.V. until May 1998; legal seat in Amsterdam, head offices at Schiphol, headquarters in Plan-les-Ouates, Geneva; ST Holding owned 250,704,754 shares, approximately 27.5%, at 31 December 2025, its shareholders Bpifrance and the Italian MEF each ultimately controlled by the French or Italian government and each holding 13.9% indirectly at 31 December 2024; STM32, STM32N6, STM32V8 on 18nm FD-SOI with embedded Phase Change Memory, over 140 models in the STM32 AI model zoo, ST67W module with Qualcomm Technologies; net revenues $11,800 million in 2025 and $13,269 million in 2024; total headcount 49,157 at the end of 2025, 30,546 in manufacturing; STMicroelectronics Ltda, Sao Paulo, 100% owned; Jean-Marc Chery President and CEO since May 2018, joined Thomson Semiconducteurs in 1986 (read 2026-11-17)", url: "https://www.sec.gov/Archives/edgar/data/932787/000093278726000009/stm-20251231.htm" },
+      // SEGGER's day-one support.
+      { label: "SEGGER, About us (news list): \"SEGGER delivers day-one support for ST's new STM32G5 microcontrollers\" with its J-Link debug probes, J-Trace trace probes and Flasher programmers (read 2026-11-17)", url: "https://www.segger.com/about-us/" },
+    ],
+  },
+  {
+    // NORDIC SEMICONDUCTOR - added 2026-11-17 (Industry wave J3). Founding year
+    // 1983 is stated by the company's About page (read through the fetch tool;
+    // FETCH-ONLY, REPORT) and by Nordic Credit Rating's report of 26 September
+    // 2025 (read by curl). The Brønnøysund Register dates the listed legal
+    // entity, Nordic Semiconductor ASA, to 20 January 1993: the prose says so.
+    // OWNER: none; listed in Oslo since 1996, largest shareholder the
+    // Government Pension Fund of Norway (not a majority).
+    slug: "nordic-semiconductor",
+    // Own site: https://www.nordicsemi.com answered HTTP 403 with a Cloudflare challenge to the shell client on 2026-11-17 (not worked around); its About page was read through the fetch tool.
+    official: {
+      // The company's own site.
+      url: "https://www.nordicsemi.com",
+    },
+    // Designs and sells the chips (fabless).
+    tags: ["vendor"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "Nordic Semiconductor - the Trondheim chipmaker of Bluetooth Low Energy",
+    // Founding year, named by the About-page label and the rating-report label below.
+    founded: 1983,
+    // Card line.
+    tagline: "A fabless Norwegian chip company established in 1983 and listed in Oslo since 1996, whose nRF chips made it a leader in Bluetooth Low Energy.",
+    // Intro paragraph.
+    intro:
+      "Nordic Semiconductor says it was established in 1983 and has provided integrated electronics design services and products since then. It is headquartered in Trondheim, Norway, and listed on the Oslo stock exchange under the ticker NOD, where, by Nordic Credit Rating's account, its shares have traded since 1996. In the Brønnøysund Register Centre the listed company, Nordic Semiconductor ASA, is recorded as established on 20 January 1993 and as having carried the name Nordic VLSI ASA until 8 May 2004. The company reports about 1,450 employees around the world.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the business, as the rating agency describes it.
+      "Nordic is a fabless company: it designs its chips and owns the designs, while production, warehousing and distribution are outsourced, mainly in Asia, in Nordic Credit Rating's description of September 2025. Its business is wireless, and Bluetooth Low Energy (BLE) provided more than half of its revenue; the agency named the nRF54 series as Nordic's fourth generation of BLE systems on chip, and Amazon, Google and Microsoft among its customers. The company's own claim is that its Bluetooth LE solutions pioneered ultra-low-power wireless and made it the global market leader. Revenue, as the agency tabulated it, was 611 million dollars in 2021, 777 million in 2022, 543 million in 2023 and 511 million in 2024, and its largest shareholder is the Government Pension Fund of Norway.",
+      // Paragraph 2: the 2020 APPROTECT notice.
+      "In June 2020 CNX Software reported that the researcher known as LimitedResults had bypassed, with physical access and fault injection, the access port protection (APPROTECT) that is meant to disable the debug interface of nRF52 chips and keep their firmware from being read back. Nordic issued an information notice; because the issue lay in the hardware, the mitigations were to prevent physical access to a device or to detect and respond to a breach of its enclosure, and Nordic noted, as CNX Software quoted it, that the nRF52 series, \"like many standard microcontroller circuits, are not hardened against fault injection techniques\".",
+      // Paragraph 3: why it matters, analytically.
+      "Nordic's chips are the radios inside small battery-powered things, from wireless PC peripherals and sport and fitness devices to mobile phone accessories and toys, in the rating agency's list. The 2020 notice states plainly what readback protection on a general-purpose microcontroller can and cannot do once an attacker holds the device, the same limit Espressif had described for the ESP32 the previous November.",
+    ],
+    // The company's own page.
+    externalUrl: "https://www.nordicsemi.com/About-us",
+    // Link label.
+    externalLabel: "About Nordic Semiconductor",
+    // Sources, each read live on 2026-11-17.
+    sources: [
+      // The company's own page (fetch tool).
+      { label: "Nordic Semiconductor, About us: established in 1983 and headquartered in Norway, with about 1,450 employees; a provider of integrated electronics design services and products since 1983; listed on the Oslo stock exchange (OSX: NOD); headquarters in Trondheim; its Bluetooth Low Energy (LE) solutions described as pioneering ultra-low-power wireless and making it the global market leader (read 2026-11-17)", url: "https://www.nordicsemi.com/About-us", sourceNote: "Read through the fetch tool, because the shell client received a Cloudflare challenge (HTTP 403); a browser met the same challenge on 17 November 2026, so the page's words are paraphrased here, not quoted." },
+      // The rating report.
+      { label: "Nordic Credit Rating, Nordic Semiconductor ASA, Full Rating Report, 26 September 2025: \"Founded in 1983, Nordic Semiconductor specialises in wireless communication technology\"; a pioneer in Bluetooth Low Energy; customers including Amazon, Google and Microsoft; a fabless company with production, warehousing and distribution outsourced, mainly in Asia; more than 1,400 employees; shares listed on the Oslo Stock Exchange since 1996; largest shareholder the Government Pension Fund of Norway; revenues of USD 611 million (2021), 777 million (2022), 543 million (2023) and 511 million (2024); more than 50% of revenues from BLE; nRF54 Series, its fourth generation of BLE SoCs (read 2026-11-17)", url: "https://nordiccreditrating.com/uploads/2025-09/NCR%20-%20Nordic_Semiconductor_ASA%20-%20Full%20Rating%20Report%2026%20Sep.%202025.pdf" },
+      // The register.
+      { label: "Brønnøysund Register Centre, Central Coordinating Register for Legal Entities, organisation number 966011726: NORDIC SEMICONDUCTOR ASA, public limited company, established (stiftelsesdato) 20 January 1993, registered in the Register of Business Enterprises on 19 February 1993, business address in Trondheim; earlier name NORDIC VLSI ASA until 8 May 2004 (read 2026-11-17)", url: "https://data.brreg.no/enhetsregisteret/api/enheter/966011726" },
+      // The 2020 notice.
+      { label: "CNX Software, Nordic Semi nRF52 WiSoCs are Susceptible to Debug Resurrection using APProtect Bypass, 15 June 2020: LimitedResults bypassed APProtect with physical access and fault injection; Nordic issued an informational notice, the mitigations being to prevent physical access or detect and respond to enclosure breach; Nordic: the nRF52-series of SoCs, \"like many standard microcontroller circuits, are not hardened against fault injection techniques\" (read 2026-11-17)", url: "https://www.cnx-software.com/2020/06/15/nordic-semi-nrf52-wisocs-are-susceptible-to-debug-resurrection-using-approtect-bypass/" },
+    ],
+  },
+  {
+    // HID GLOBAL - added 2026-11-17 (Industry wave J3). Founding year 1991 is
+    // stated by ASSA ABLOY's interim report of 13 November 2000 ("In 1991,
+    // Hughes Identification Devices (HID) was created in the USA") and by
+    // Wikipedia. CONTRADICTION recorded in REPORT: ASSA ABLOY's year-end report
+    // of 7 February 2001 says HID "was formed in 1994".
+    // OWNER: ASSA ABLOY (company) since 2000, completion year from the year-end
+    // report ("acquisitions ... completed during 2000: ... HID").
+    // hidglobal.com refused curl and most fetch-tool reads (Cloudflare).
+    slug: "hid-global",
+    // Own site: https://www.hidglobal.com answered HTTP 403 (Cloudflare challenge) to the shell client on 2026-11-17; its home page was read through the fetch tool.
+    official: {
+      // The company's own site.
+      url: "https://www.hidglobal.com",
+      // A company: rendered "part of"; the ASSA ABLOY labels name the group and the year 2000.
+      parent: { name: "ASSA ABLOY", kind: "company", since: 2000, note: "ASSA ABLOY announced the purchase of HID on 13 November 2000, at 250 million dollars for the debt-free company plus a possible 30 million dollar earn-out, and listed it among the acquisitions completed during 2000; HID is now about 60% of its Global Technologies division." },
+    },
+    // Designs, makes and sells cards, readers and identity products.
+    tags: ["vendor"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "HID Global - the access-card company inside ASSA ABLOY",
+    // Founding year, named by the ASSA ABLOY interim-report label and the Wikipedia label below.
+    founded: 1991,
+    // Card line.
+    tagline: "Created in 1991 as Hughes Identification Devices, a Hughes Aircraft subsidiary, and owned since 2000 by the lock group ASSA ABLOY, the maker of the Prox, iCLASS and Seos access-control cards and readers.",
+    // Intro paragraph.
+    intro:
+      "HID was created in the United States in 1991 as Hughes Identification Devices, a subsidiary of Hughes Aircraft Company, and in 1995 was part of a management buy-out backed by Citicorp Venture Capital and led by former executives of IBM and Hughes, as ASSA ABLOY recorded when it announced the purchase. HID Global, as the company is now called, is based in Austin, Texas. Inside ASSA ABLOY it is about 60% of the Global Technologies division and is organized in six business areas, the largest being physical access control solutions; Björn Lidefelt has led the business unit since 2020.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: ASSA ABLOY's purchase and what followed.
+      "The Swedish lock group bought it to fill what it called the missing link in its portfolio, electronic identification. Its interim report of 13 November 2000 said that 70% of all new access-control systems sold in the world were based on contactless reading and that HID held 40% of that market, with sales expected to reach 100 million dollars; the price for the debt-free company was 250 million dollars, with a further 30 million dollars of earn-out depending on the next year's profit. The year-end report of 7 February 2001 listed HID among the acquisitions completed during 2000. Its own purchases since include, by Wikipedia's account, Motorola's Indala radio-frequency identification (RFID) access-control business in 2001, Fargo Electronics, adding card issuance, in 2006, ActivIdentity in 2010, LaserCard in 2011, IdenTrust, a provider of digital identities, in 2014, Crossmatch in 2018 and ZeroSSL in 2024.",
+      // Paragraph 2: iCLASS and the 2012 research.
+      "iCLASS was introduced in 2002 as a secure replacement for the HID Prox card, which had no cryptographic capability, and by 2012 more than 300 million iCLASS cards had been sold, by the manufacturer's figure. That year Flavio Garcia, Gerhard de Koning Gans and Roel Verdult of Radboud University Nijmegen and Milosch Meriac of Bitmanufaktur reverse engineered the card's security mechanisms, published them at ESORICS 2012 and reported six critical weaknesses, with attacks against both iCLASS Standard and iCLASS Elite. HID's current credential platform is Seos, which ASSA ABLOY presents as delivering trusted security and user privacy.",
+      // Paragraph 3: why it matters, analytically.
+      "HID shows physical security turning into a branch of network security. A business created inside Hughes Aircraft to sell radio-frequency identification now also sells digital certificates through IdenTrust and ZeroSSL alongside its readers, and the card on an office door is, like a network credential, only as strong as the cryptography and key management behind it; the iCLASS research of 2012 made that point about a card population counted in hundreds of millions.",
+    ],
+    // The company's own site (its inner pages refused automated reading; the home page was read through the fetch tool).
+    externalUrl: "https://www.hidglobal.com",
+    // Link label.
+    externalLabel: "HID Global",
+    // Sources, each read live on 2026-11-17.
+    sources: [
+      // Founding year, the 1995 buy-out, the purchase terms.
+      { label: "ASSA ABLOY AB, Interim report January to September 2000 (press release no. 19/00), 13 November 2000: acquisition of HID, world leader in cards and readers for access control; \"In 1991, Hughes Identification Devices (HID) was created in the USA as a subsidiary of Hughes Aircraft Company\"; management buy-out in 1995 backed by Citicorp Venture Capital and led by former executives from IBM and Hughes; 70% of new access control systems based on contactless reading, HID's market share 40%; sales expected to reach USD 100 M; price for a debt-free company USD 250 M plus an earn-out of USD 30 M (read 2026-11-17)", url: "https://www.assaabloy.com/group/en/documents/investors/interim-reports/2000/Q3%20report%202000.pdf" },
+      // Completion in 2000.
+      { label: "ASSA ABLOY AB, Year-end report 2000 (press release no. 3/01), 7 February 2001: \"A number of significant acquisitions have been completed during 2000\", including HID, the world leader in identification by proximity cards and readers, with expected sales of USD 110 M, \"since it was formed in 1994\" (read 2026-11-17)", url: "https://www.assaabloy.com/group/en/documents/investors/interim-reports/2000/Year-end%20report%202000.pdf", sourceNote: "Used for the completion of the purchase in 2000. Its \"formed in 1994\" contradicts the interim report's 1991 and Wikipedia's 1991; the record follows 1991." },
+      // HID inside ASSA ABLOY today.
+      { label: "ASSA ABLOY AB, Annual Report 2025: the Global Technologies division comprises HID (about 60%) and Global Solutions (about 40%); HID is organized into six business areas, the largest being Physical Access Control Solutions; Björn Lidefelt, Executive Vice President and Head of Global Technologies business unit HID since 2020; \"HID Seos delivers trusted security and user privacy\" (read 2026-11-17)", url: "https://www.assaabloy.com/group/en/documents/investors/annual-reports/2025/Annual%20Report%202025.pdf" },
+      // Wikipedia: formation, Austin, acquisitions.
+      { label: "Wikipedia: HID Global - an American manufacturer of secure identity products and an independent subsidiary of Assa Abloy; formed in 1991 as Hughes Identification Devices, a subsidiary of Hughes Aircraft Company; acquired by Assa Abloy five years after the 1995 Palomar Technologies formation; based in Austin, Texas; acquisitions of Motorola's Indala (2001), Fargo Electronics (2006), ActivIdentity (2010), LaserCard (2011), IdenTrust, a provider of digital identities (2014), Crossmatch (2018) and ZeroSSL (2024); certificates through HID IdenTrust, a certificate authority, and SSL/TLS certificate services through ZeroSSL (read 2026-11-17)", url: "https://en.wikipedia.org/wiki/HID_Global" },
+      // iCLASS, 2012.
+      { label: "Garcia, de Koning Gans, Verdult and Meriac, Dismantling iClass and iClass Elite, ESORICS 2012: HID iClass introduced in 2002 as a secure replacement for the HID Prox card; according to the manufacturer more than 300 million iClass cards sold; security mechanisms reverse engineered and six critical weaknesses found, with attacks against iClass Standard and iClass Elite (read 2026-11-17)", url: "https://www.cs.ru.nl/~rverdult/Dismantling_iClass_and_iClass_Elite-ESORICS_2012.pdf" },
+      // The company's own home page (fetch tool).
+      { label: "HID Global, home page: \"Powering Trusted Identities\"; \"HID connects billions of people, places and things through trusted identity solutions\" (read 2026-11-17)", url: "https://www.hidglobal.com/", sourceNote: "Read through the fetch tool, because the shell client received a Cloudflare challenge (HTTP 403); both quotations confirmed in a browser on 17 November 2026." },
+    ],
+  },
+  {
+    // ETTUS RESEARCH - added 2026-11-17 (Industry wave J3). Founding year 2004 is
+    // stated by Matt Ettus's own announcement of 5 February 2010 ("Ettus
+    // Research LLC was founded in 2004") and by NI's GNU Radio note of 14
+    // September 2020 (the USRP "started as a project in Matt Ettus's garage
+    // back in 2004").
+    // OWNER: NI (company) since 2010 ("an NI brand since 2010"); NI itself has
+    // been a wholly owned subsidiary of Emerson since 11 October 2023, which the
+    // parent note states. REPORT: Ettus Research LLC is not in NI's 2022 list of
+    // subsidiaries; the integrator may prefer Emerson as the named parent.
+    slug: "ettus-research",
+    // Own site read live 2026-11-17: HTTP 200 at https://www.ettus.com/ (footer "©2026 NI").
+    official: {
+      // The brand's own site.
+      url: "https://www.ettus.com",
+      // A company: rendered "part of"; the ettus.com label names NI and 2010.
+      parent: { name: "NI", kind: "company", since: 2010, note: "National Instruments, which bought Ettus Research in February 2010 and made NI its official name in 2020, has been a wholly owned subsidiary of Emerson since 11 October 2023." },
+    },
+    // Designs and sells the software-defined radio hardware.
+    tags: ["vendor"],
+    // Trading today under its own name, as an NI brand.
+    group: "contemporary",
+    // Title.
+    name: "Ettus Research - the garage maker of the USRP software radio",
+    // Founding year, named by the GNU Radio list label and the 2020 NI label below.
+    founded: 2004,
+    // Card line.
+    tagline: "Founded by Matt Ettus in 2004 to make software radio affordable, the maker of the Universal Software Radio Peripheral (USRP), and an NI brand since 2010.",
+    // Intro paragraph.
+    intro:
+      "Ettus Research LLC was founded in 2004, in Matt Ettus's words, \"to produce high quality, low cost software radio systems, and bring these capabilities to everyone\". Ettus had joined the open-source GNU Radio project when it started in 2001, while he was working at a Bluetooth chip company, and designed the Universal Software Radio Peripheral (USRP) because no hardware at a reasonable price existed to connect GNU Radio code to an antenna: \"I was customer number one\", he said in 2015. By February 2010 the company, which started in a garage, had shipped thousands of products to users in more than 67 countries.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: NI, 2010, and Emerson, 2023.
+      "On 5 February 2010 Ettus announced that National Instruments had acquired the company, which would go on operating separately as a wholly owned subsidiary, selling directly and supporting GNU Radio, two of whose core developers, Matt Ettus and Josh Blum, it employed; the same message announced the USRP Hardware Driver (UHD), a single cross-platform driver for all its hardware, and promised LabVIEW drivers. NI, the name National Instruments made official in 2020, presents Ettus Research as an NI brand since 2010, and National Instruments itself became a wholly owned subsidiary of Emerson on 11 October 2023.",
+      // Paragraph 2: the products and their users.
+      "The USRP family covers radio-frequency applications from direct current (DC) to 6 GHz, including multiple-antenna (MIMO) systems, in networked, X, bus and embedded series programmed through UHD with GNU Radio, LabVIEW or MATLAB. The USRP B210, a two-channel board built on Analog Devices' AD9361 transceiver, covers 70 MHz to 6 GHz with up to 56 MHz of real-time bandwidth. In January 2015 Ettus described his users: wireless researchers, spectrum monitoring and surveillance, people who had used USRPs in security research to prove that certain wireless standards were completely insecure, the link to implantable pacemakers among them, and people who had built mobile base stations at Burning Man and in places without other infrastructure.",
+      // Paragraph 3: why it matters, analytically.
+      "The USRP put the radio interface itself within reach of researchers. By its inventor's account, no device at a reasonable price connected signal-processing software to an antenna before it; afterwards an open-source library and an affordable front end could work with signals anywhere in the USRP's range, up to 6 GHz, which is why its maker's own list of users runs from teaching and spectrum monitoring to security research on the wireless standards that networks rely on.",
+    ],
+    // The brand's own page.
+    externalUrl: "https://www.ettus.com/about/",
+    // Link label.
+    externalLabel: "About Ettus Research",
+    // Sources, each read live on 2026-11-17.
+    sources: [
+      // The parent and its year, and the product scope.
+      { label: "Ettus Research, About: \"Ettus Research, an NI brand since 2010, is the world's leading supplier of software-defined radio platforms, including the Universal Software Radio Peripheral (USRP) family of products\"; RF applications from DC to 6 GHz including MIMO; UHD, GNU Radio and LabVIEW; footer \"©2026 NI\" (read 2026-11-17)", url: "https://www.ettus.com/about/" },
+      // The founding year and the 2010 acquisition, in the founder's words.
+      { label: "Matt Ettus, Ettus Research News, discuss-gnuradio mailing list, 5 February 2010: \"Ettus Research LLC was founded in 2004 to produce high quality, low cost software radio systems\"; started in a garage; thousands of products shipped to users in over 67 countries; acquired by National Instruments Corporation, to operate separately as a wholly owned subsidiary; the Universal Hardware Driver (UHD); Matt Ettus and Josh Blum, core GNU Radio developers employed by Ettus Research (read 2026-11-17)", url: "https://lists.gnu.org/archive/html/discuss-gnuradio/2010-02/msg00110.html" },
+      // The founder's own account of the USRP and its users.
+      { label: "Ettus Research, An Interview With the Inventor of USRP: Happy 10th Birthday, 16 January 2015: Matt Ettus joined GNU Radio when it started in 2001, while working at a Bluetooth chip company; \"I was customer number one\"; users in security research showed certain wireless standards to be completely insecure, including communications to implantable pacemakers; USRPs used for cell phone base stations at Burning Man and in places without infrastructure (read 2026-11-17)", url: "https://www.ettus.com/an-interview-with-the-inventor-of-usrp-on-the-10th-birthday/" },
+      // NI's 2020 note: 2004, the garage, the NI name.
+      { label: "GNU Radio, News, By NI, 14 September 2020: ten years since NI acquired Ettus Research; \"The USRP started as a project in Matt Ettus's garage back in 2004\"; \"NI\" became the official company name that year (read 2026-11-17)", url: "https://gnuradio.org/news/2020-09-14-ni-what-a-difference" },
+      // The B210.
+      { label: "Ettus Research, USRP B210 SDR Kit - Dual Channel Transceiver (70 MHz - 6GHz): two-channel USRP on the Analog Devices AD9361 direct-conversion transceiver, up to 56 MHz of real-time bandwidth (read 2026-11-17)", url: "https://www.ettus.com/all-products/ub210-kit/" },
+      // Emerson, 2023.
+      { label: "National Instruments Corporation, Form 8-K, 11 October 2023: the acquisition of National Instruments by Emerson Electric Co. was completed on 11 October 2023, the company surviving as a wholly owned subsidiary of Emerson (read 2026-11-17)", url: "https://www.sec.gov/Archives/edgar/data/935494/000114036123047693/ef20012268_8k.htm" },
+    ],
+  },
+  {
+    // PARALLAX - added 2026-11-17 (Industry wave J3). Founding year 1987 is
+    // stated by Parallax's own Our Story page ("He and longtime friend Lance
+    // Walley formed Parallax in 1987").
+    // OWNER: not stated on any page read (gap); no parent is set.
+    slug: "parallax",
+    // Own site read live 2026-11-17: HTTP 200 at https://www.parallax.com/ (Parallax Inc., Rocklin, California).
+    official: {
+      // The company's own site.
+      url: "https://www.parallax.com",
+    },
+    // Makes microcontrollers, boards and educational robots. "training" (it says "We train teachers") is left off: that
+    // tag requires a row in the learning geography (check-learning-geography), which the REPORT leaves to the integrator.
+    tags: ["vendor"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "Parallax - the Californian maker of the BASIC Stamp and the Propeller",
+    // Founding year, named by the Our Story label below.
+    founded: 1987,
+    // Card line.
+    tagline: "Formed in California in 1987 by Chip Gracey and Lance Walley, the maker of the BASIC Stamp, the Boe-Bot and its own Propeller multicore microcontrollers, and from 2013 to 2023 the manufacturer of the JTAGulator.",
+    // Intro paragraph.
+    intro:
+      "Parallax was formed in 1987 by Chip Gracey and his longtime friend Lance Walley. Gracey, who had been fascinated by programming since he was 13 in Sacramento, had started a business from his bedroom while still in high school and sold about 20,000 ISEPIC hardware devices for the Commodore 64; after graduating in 1986 he chose building technology over a conventional college path. By its own account Parallax began in a California apartment; it is now Parallax Inc., of Rocklin, California, and says many of its products are designed and manufactured in California.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: from PIC programmers to the BASIC Stamp.
+      "Its first products were Apple II sound digitizers, programming hardware and tools for 8051 microcontrollers. In 1990 it introduced one of the first third-party programmers for Microchip's new PIC microcontrollers, and in 1992 the BASIC Stamp, a module about the size of a postage stamp that packaged an embedded computer and was programmed in a version of BASIC, which Parallax calls the first major hobbyist microcontroller available to the public. The BASIC Stamp 2 followed in 1995 and is still made; by the end of 1998 Parallax had sold more than 125,000 BASIC Stamp modules through more than 40 sales channels, and by 2002 more than three million were in use.",
+      // Paragraph 2: education and the Propeller.
+      "Teachers took the Stamp up, and in 1997 Parallax formally embraced education with Stamps in Class and What's a Microcontroller?; the Boe-Bot robot followed, and Parallax reports that more than a million robots have been produced through its educational programmes, the latest, the cyber:bot, developed with CYBER.ORG for cybersecurity teaching. After working with Scenix Semiconductor on the SX microcontroller in the late 1990s, Parallax began an architecture of its own in 2001: the Propeller 1, released in 2006, has eight independent 32-bit processors, called cogs, and the Propeller 2 followed in November 2020 after about fourteen years of development, making Parallax, in its words, a fabless semiconductor company designing its own multicore processors.",
+      // Paragraph 3: the JTAGulator, and why it matters.
+      "Parallax also has a place in the history of hardware-hacking tools. From 2013 to 2023 it was the official hardware manufacturer of the JTAGulator, Grand Idea Studio's open-source tool for identifying on-chip debug interfaces on a target device, whose resources still list Parallax's Propeller Tool; EXPLIoT took over manufacturing in July 2025. A company that set out to make microcontrollers understandable to students spent a decade manufacturing a tool for finding the debug ports left on boards, which is the same idea, learning by connecting to the hardware, applied from the other side.",
+    ],
+    // The company's own page.
+    externalUrl: "https://www.parallax.com/pages/our-story",
+    // Link label.
+    externalLabel: "Parallax: our story",
+    // Sources, each read live on 2026-11-17.
+    sources: [
+      // Founding year and the whole dated history.
+      { label: "Parallax, Our Story: the story starts in Sacramento in the early 1980s; Chip Gracey started Innovative Software Engineering from his bedroom and sold about 20,000 ISEPIC devices for the Commodore 64; after graduating in 1986, \"He and longtime friend Lance Walley formed Parallax in 1987\"; one of the first third-party programmers for Microchip's PIC in 1990; the BASIC Stamp in 1992, the BASIC Stamp 2 in 1995, more than 125,000 sold by the end of 1998 and more than three million in use by 2002; Stamps in Class in 1997; Boe-Bot; more than one million robots; SX with Scenix; architecture work from 2001, Propeller 1 in 2006, Propeller 2 in November 2020 after about fourteen years; cyber:bot with CYBER.ORG; \"We train teachers\"; began in a California apartment; Parallax Inc., 599 Menlo Drive, Rocklin, CA (read 2026-11-17)", url: "https://www.parallax.com/pages/our-story" },
+      // The team page: the founder.
+      { label: "Parallax, Team: \"Chip Gracey is the founder of Parallax\"; microcontroller development tools, custom microcontrollers, programming languages since the 1980s (read 2026-11-17)", url: "https://www.parallax.com/pages/team" },
+      // The JTAGulator.
+      { label: "Grand Idea Studio, JTAGulator: an open source hardware tool that assists in identifying on-chip debug interfaces; \"From 2013 to 2023, Parallax, Inc. was the official hardware manufacturer of the JTAGulator\"; as of July 2025 EXPLIoT is the official hardware manufacturer and project maintainer; resources list the Parallax Propeller Tool for Windows (read 2026-11-17)", url: "http://www.grandideastudio.com/jtagulator/" },
+    ],
+  },
+  {
+    // SEGGER - added 2026-11-17 (Industry wave J3). Founding year 1992 is stated
+    // by SEGGER's own company history ("In 1992, Rolf Segger founded SEGGER")
+    // and by Wikipedia. CONTRADICTION in REPORT: Wikipedia places the founding
+    // in Hilden; SEGGER's own timeline has the company moving to Hilden in 1997.
+    // OWNER: not stated by the company (Wikipedia: a private company); no
+    // parent is set.
+    slug: "segger",
+    // Own site read live 2026-11-17: HTTP 200 at https://www.segger.com/.
+    official: {
+      // The company's own site.
+      url: "https://www.segger.com",
+      // The useful part: the public knowledge base.
+      resources: [
+        // The wiki that documents debug interfaces and probes.
+        { label: "SEGGER Knowledge Base", url: "https://kb.segger.com/" },
+      ],
+    },
+    // Makes the software, probes and programmers.
+    tags: ["vendor"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "SEGGER - the Rhineland house of embOS and the J-Link",
+    // Founding year, named by the company-history label and the Wikipedia label below.
+    founded: 1992,
+    // Card line.
+    tagline: "A German embedded-software and tools company founded by Rolf Segger in 1992, maker of the embOS real-time operating system and of the J-Link debug probes.",
+    // Intro paragraph.
+    intro:
+      "SEGGER was founded in 1992 by Rolf Segger to offer developers and companies a real-time operating system (RTOS), embOS, that could be used across a wide variety of applications; embOS was its first major product and, the company says, has been deployed in billions of devices. SEGGER Microcontroller GmbH, registered at the Düsseldorf local court under HRB 57453, has its headquarters in Monheim am Rhein, where it moved in 2018 after two decades in Hilden, and offices near Boston, in Milpitas and in Shanghai. It reports around 100 employees worldwide and is run by Ivo Geilenbrügge, managing director since 2009, and Hendrik Sawukajtis, joint managing director since 2024.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the tools, in the company's dated order.
+      "Its tools grew out of the operating system. The emWin graphics library and the first Flasher production programmer came in 1999; the first J-Link debug probe and an office near Boston in 2004; the first J-Trace trace probe for Arm in 2006; the Ethernet-enabled J-Link Pro in 2008; the J-Link EDU, for educational and non-commercial use, in 2010; Real-Time Transfer (RTT) and the Ozone debugger in 2014; SystemView in 2015; the Embedded Studio PRO development package in 2016; and in 2017 SEGGER joined the RISC-V Foundation and extended its whole portfolio to RISC-V. J-Link probes now support more than 14,000 microcontrollers, and the company says all its software is developed in-house, with no open-source or third-party code.",
+      // Paragraph 2: chipmakers and the knowledge base.
+      "Chipmakers build on it. SEGGER records that NXP began offering its customers a free version of emWin in 2011, and Wikipedia lists J-Link variants sold under other companies' names, Atmel's SAM-ICE among them; SEGGER's news announces day-one support for new parts such as ST's STM32G5. It also publishes a public knowledge base documenting debug interfaces, among them Arm's Serial Wire Debug (SWD), the two-pin replacement for the five-pin Joint Test Action Group (JTAG) interface.",
+      // Paragraph 3: why it matters, analytically.
+      "A debug probe is the tool that opens a microcontroller: the same J-Link that loads firmware on a production line can read it back on a bench, and readback protections such as Nordic's APPROTECT or Espressif's eFuse key protection exist to decide which of the two a probe may do on a finished product. SEGGER's significance lies in being the maker of that tool.",
+    ],
+    // The company's own page.
+    externalUrl: "https://www.segger.com/about-us/company-history",
+    // Link label.
+    externalLabel: "SEGGER: company history",
+    // Sources, each read live on 2026-11-17.
+    sources: [
+      // Founding year and the dated timeline.
+      { label: "SEGGER, Company history, SEGGER's journey from 1992 to today: \"In 1992, Rolf Segger founded SEGGER\" with the real-time operating system embOS; 1997 moved to Hilden; 1999 emWin and the first Flasher; 2004 first J-Link and US office near Boston; 2006 first J-Trace; 2008 J-Link Pro; 2009 Ivo Geilenbruegge appointed managing director; 2010 J-Link EDU; 2011 NXP offers a free version of emWin; 2014 J-Link RTT and Ozone; 2015 SystemView; 2016 Embedded Studio PRO; 2017 joined the RISC-V Foundation; 2018 offices in Milpitas and headquarters moved to Monheim am Rhein; 2020 office in Shanghai; 2024 Hendrik Sawukajtis joint Managing Director (read 2026-11-17)", url: "https://www.segger.com/about-us/company-history" },
+      // The company page: people, embOS, J-Link reach, in-house software.
+      { label: "SEGGER, Who we are: around 100 employees worldwide; embOS SEGGER's first major product, deployed in billions of devices; J-Links support more than 14,000 microcontrollers; \"All SEGGER software is fully developed in-house - no open source or third-party code\" (read 2026-11-17)", url: "https://www.segger.com/about-us/company/" },
+      // The register entry as the company prints it.
+      { label: "SEGGER, Imprint: SEGGER Microcontroller GmbH, Ecolab-Allee 5, 40789 Monheim am Rhein; registered at Amtsgericht Düsseldorf, HRB 57453; Managing Directors Ivo Geilenbrügge and Hendrik Sawukajtis; SEGGER Microcontroller Systems LLC (USA) and SEGGER Microcontroller China Co., Ltd. (read 2026-11-17)", url: "https://www.segger.com/legal/imprint/" },
+      // Wikipedia: private company, Hilden, OEM variants.
+      { label: "Wikipedia: Segger Microcontroller Systems - a private company; founded in 1992 by Rolf Segger in Hilden, Germany; headquartered in Monheim am Rhein with offices in Gardner, Massachusetts, Milpitas, California and Shanghai; J-Link repackaged as an OEM item by Atmel as the SAM-ICE among others (read 2026-11-17)", url: "https://en.wikipedia.org/wiki/Segger_Microcontroller_Systems", sourceNote: "Used for the private status and the OEM variants; its founding place, Hilden, sits awkwardly with SEGGER's own timeline, which has the company moving to Hilden in 1997." },
+      // The knowledge base.
+      { label: "SEGGER Knowledge Base, SWD: Arm's Serial Wire Debug replaces the traditional 5-pin JTAG debug interface with a 2-pin interface, a clock (SWDCLK) and a bidirectional data pin (SWDIO) (read 2026-11-17)", url: "https://kb.segger.com/SWD" },
+    ],
+  },
+
+  // ==== Industry wave J4 (17/11/2026, PRIME 01:15): integrated from scratchpad industry-j4/ ====
+  // ---- Hardware-security toolmakers (industry wave J4, 17/11/2026; PRIME 17/11/2026 01:15: "Yes start the Industry
+  // round and hold the build until it's ready"). Every fact below was read live on 2026-11-17 (Sao Paulo) and saved in
+  // the J4 corpus (scratchpad industry-j4/corpus, MANIFEST.tsv). Each founding year is named inside a substantive
+  // source label on the same card, and so are the one parent name and its completion year (newae-technology). Pages
+  // that are inaccessible in a browser (dangerousprototypes.com, int3.cc, xipiter.com) are labelled as such and
+  // listed in the agent's REPORT with the exact words to check. Records describe companies, people, products by
+  // their makers' names and dated history; never how a product is used against a system. ----
+
+  // ---------------------------------------------------------------------------
+  // GRAND IDEA STUDIO (2002)
+  // ---------------------------------------------------------------------------
+  {
+    // GRAND IDEA STUDIO - added 2026-11-17 (industry wave J4). FOUNDED 2002: the studio's own About page ("Founded in
+    // 2002 by Joe Grand"), confirmed by Grand's curriculum vitae ("2002-present Founder and Principal Engineer"). The
+    // site footer's "2002 - 2026" is a copyright span and is not the basis. NO PARENT: no owner other than the founder
+    // is stated; the company is Grand Idea Studio, Inc., a Massachusetts corporation (USPTO owner record) registered
+    // in Oregon as a foreign business corporation on 20 December 2013 (Oregon Secretary of State data).
+    slug: "grand-idea-studio",
+    // Own site read live 2026-11-17: HTTP 200 at https://www.grandideastudio.com/about (footer "2002 - 2026 Grand Idea Studio").
+    official: {
+      // The studio's own site.
+      url: "https://www.grandideastudio.com",
+      // The JTAGulator page, the studio's best-known open hardware design.
+      resources: [
+        // Product page with the manufacturer history and the licence.
+        { label: "Grand Idea Studio: JTAGulator", url: "https://www.grandideastudio.com/jtagulator/" },
+      ],
+    },
+    // Designs and licenses products, researches and discloses vulnerabilities, teaches courses.
+    tags: ["vendor", "services"], // training tag dropped at integration 17/11/2026 (check-learning-geography needs a geography.ts row)
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "Grand Idea Studio - Joe Grand's design, research and teaching studio",
+    // Founding year, named by the About and curriculum vitae labels below.
+    founded: 2002,
+    // Card line.
+    tagline: "The Portland, Oregon studio Joe Grand founded in 2002, which designs and licenses embedded products, discloses hardware vulnerabilities, teaches hardware hacking and published the JTAGulator.",
+    // Intro paragraph.
+    intro:
+      "Grand Idea Studio, Inc. describes itself as a technology development, licensing and consulting firm based in Portland, Oregon, founded in 2002 by Joe Grand. Its work has three strands, as the studio states them: product development, chiefly embedded systems that it develops and licenses; identifying and disclosing vulnerabilities in products, to raise awareness and improve the state of hardware security; and hands-on hardware hacking courses. The company is a Massachusetts corporation, registered in Oregon as a foreign business corporation since 20 December 2013.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the founder.
+      "Grand, sometimes known as Kingpin, was a member of the Boston hacker group L0pht Heavy Industries, where, in the studio's words, he helped raise awareness of the hacker ethos and of independent security vulnerability research. His curriculum vitae lists him as L0pht's director and design engineer from 1993 to 2000 and as a co-founder and research scientist of @stake, in Cambridge, Massachusetts, from 2000 to 2002, the year he started the studio. He holds a Bachelor of Science in Computer Engineering from Boston University, co-hosted Discovery Channel's Prototype This in 2007 and 2008, and received the DEF CON Uber Lifetime Achievement Award in 2023.",
+      // Paragraph 2: the products, ending with the JTAGulator.
+      "The products in his curriculum vitae run from the Emic Text-to-Speech Module of September 2003 and modules sold under the Parallax name, a radio frequency identification (RFID) reader in May 2005 and a Global Positioning System (GPS) receiver in September 2006, to the electronic badges of the DEF CON conference from 2006 to 2010 and again in 2019, for DEF CON China 1.0 and DEF CON 27. For security work its central design is the JTAGulator of April 2013, an open-source hardware tool that, as the studio describes it, assists in identifying on-chip debug interfaces from the test points, vias, component pads or connectors of a device, published under a Creative Commons Attribution-ShareAlike 4.0 licence. The name is a registered trademark of Grand Idea Studio: the application was filed with the United States Patent and Trademark Office (USPTO) on 15 October 2014, claiming first use in commerce on 7 May 2013, and registered on 9 June 2015. Parallax was its official manufacturer from 2013 to 2023; since July 2025 EXPLIoT has been its official manufacturer and project maintainer.",
+      // Paragraph 3: teaching and the hardware-security training community.
+      "Teaching runs through the studio's history. In April 2014 Grand's Black Hat webcast, Tools of the Hardware Hacking Trade, surveyed the instruments of the field, among them the Saleae Logic analyser, Dangerous Prototypes' Bus Pirate and Bus Blaster, and Colin O'Flynn's ChipWhisperer. In November 2017 he taught at HardwareSecurity.Training in San Francisco beside Joe FitzPatrick of SecuringHardware.com, Dmitry Nedospasov and O'Flynn, a joint event of what FitzPatrick called the short list of professional hardware security trainers. His curriculum vitae also records him as an advisor to Crowd Supply, the Portland crowdfunding platform, from 2014 to 2018.",
+      // Paragraph 4: why it matters, analytically.
+      "The studio's own JTAGulator page notes that on-chip debug interfaces are a primary vector used by engineers, researchers and hackers alike. Publishing an openly licensed tool that finds them, and having an electronics company build it in quantity, put that search within reach of anyone evaluating a device, including the people responsible for closing those interfaces before a product ships.",
+    ],
+    // The studio's own account of itself.
+    externalUrl: "https://www.grandideastudio.com/about",
+    // Link label.
+    externalLabel: "Grand Idea Studio: About",
+    // Sources, each read live on 2026-11-17.
+    sources: [
+      // The founding year and place.
+      { label: "Grand Idea Studio, About: 'Grand Idea Studio, Inc. is a technology development, licensing, and consulting firm based in Portland, Oregon. Founded in 2002 by Joe Grand'; Joe Grand, product designer, hardware hacker and founder, sometimes known as Kingpin, a member of L0pht Heavy Industries and co-host of Discovery Channel's Prototype This; Bachelor of Science in Computer Engineering, Boston University (read 2026-11-17)", url: "https://www.grandideastudio.com/about" },
+      // The three strands of work.
+      { label: "Grand Idea Studio, home page: develops and licenses engineering technologies, primarily focused on embedded systems; identifies and discloses vulnerabilities within products to raise awareness and improve the state of hardware security; hands-on courses (read 2026-11-17)", url: "https://www.grandideastudio.com/" },
+      // The curriculum vitae: career, products, advisory roles, award.
+      { label: "Joe Grand, Curriculum Vitae, 23 May 2026 (PDF published by Grand Idea Studio): Director and Design Engineer, L0pht Heavy Industries, 1993 to 2000; Co-Founder and Research Scientist, @stake, Cambridge, Massachusetts, 2000 to 2002; Co-Host, Prototype This, Discovery Channel, 2007 to 2008; Founder and Principal Engineer, Grand Idea Studio, Portland, Oregon, from 2002; Advisor, Crowd Supply, 2014 to 2018; DEFCON Uber Lifetime Achievement Award, 2023; products including the Emic Text-to-Speech Module (September 2003), Parallax RFID Reader Module (May 2005), Parallax GPS Receiver Module (September 2006), DEFCON 14 to 18 badges (2006 to 2010), JTAGulator (April 2013) and the DEFCON China 1.0 and DEFCON 27 badges (2019) (read 2026-11-17)", url: "https://www.grandideastudio.com/media/grand_cv.pdf" },
+      // The JTAGulator page: manufacturers, licence, trademark.
+      { label: "Grand Idea Studio, JTAGulator: an open source hardware tool that assists in identifying on-chip debug (OCD) interfaces from test points, vias, component pads or connectors; OCD interfaces 'a primary vector used by engineers, researchers, and hackers'; Parallax, Inc. the official hardware manufacturer from 2013 to 2023; 'As of July 2025, EXPLIoT is the official hardware manufacturer and project maintainer'; Creative Commons Attribution-ShareAlike 4.0; name and logo registered trademarks of Grand Idea Studio, Inc. (read 2026-11-17)", url: "https://www.grandideastudio.com/jtagulator/" },
+      // The trademark record.
+      { label: "USPTO, Trademark Status and Document Retrieval (TSDR), serial 86424483, JTAGULATOR: filed 15 October 2014; registration 4,751,675 of 9 June 2015, renewed; first use in commerce 7 May 2013; owner Grand Idea Studio, Inc., a corporation organized in Massachusetts, Portland, Oregon (read 2026-11-17)", url: "https://tsdr.uspto.gov/statusview/sn86424483" },
+      // The Oregon registration.
+      { label: "Oregon Secretary of State, Active Businesses dataset (data.oregon.gov): GRAND IDEA STUDIO, INC., registry number 98372296, foreign business corporation, jurisdiction Massachusetts, registered 20 December 2013, principal place of business Portland (read 2026-11-17)", url: "https://data.oregon.gov/resource/tckn-sxa6.json?$q=GRAND%20IDEA%20STUDIO" },
+      // The 2014 webcast.
+      { label: "Joe Grand, Tools of the Hardware Hacking Trade, Black Hat Webcast, 23 April 2014 (slides): PC-based logic analysers including the Saleae Logic; the Bus Pirate and the Bus Blaster of Dangerous Prototypes; the ChipWhisperer of Colin O'Flynn; the JTAGulator (read 2026-11-17)", url: "https://www.blackhat.com/docs/webcast/04232014-tools-of-the-hardware-hacking-trade.pdf" },
+      // The 2017 joint training event.
+      { label: "SecuringHardware.com, HardwareSecurity.Training coming in November, 26 May 2017: 'There's a short list of professional hardware security trainers in the world'; Joe FitzPatrick, Dmitry Nedospasov, Joe Grand and Colin O'Flynn each offering their classes at the Bentley Reserve in San Francisco, 6 to 9 November 2017 (read 2026-11-17)", url: "https://securinghardware.com/news/HardwareSecurity.Training/" },
+    ],
+  },
+
+  // ---------------------------------------------------------------------------
+  // SALEAE (2005)
+  // ---------------------------------------------------------------------------
+  {
+    // SALEAE - added 2026-11-17 (industry wave J4). FOUNDED 2005: the company's own support page ("Our founders, Mark
+    // and Joe, actually came up with the name Saleae in 2005 so we could register an LLC"), with The Amp Hour's notes
+    // of 19 February 2015 ("The idea for Saleae started back in 2005"). The first Logic was sold on 3 June 2008. The
+    // company is Saleae, Inc., a Delaware corporation (USPTO owner records); when the 2005 LLC became the corporation is
+    // not stated by any source read (gap). NO PARENT: no owner or investor is named by any source read.
+    slug: "saleae",
+    // Own site read live 2026-11-17: HTTP 200 at https://www.saleae.com (footer "© 2026 Saleae, Inc.").
+    official: {
+      // The company's own site.
+      url: "https://www.saleae.com",
+      // The product pages the record cites.
+      resources: [
+        // The logic analysers.
+        { label: "Saleae: Logic", url: "https://www.saleae.com/logic" },
+        // The mixed-signal oscilloscope.
+        { label: "Saleae: Logic MSO", url: "https://www.saleae.com/logic-mso" },
+      ],
+    },
+    // Makes the product: logic analysers, an oscilloscope and their software.
+    tags: ["vendor"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "Saleae - the logic analyser that fits in a pocket",
+    // Founding year, named by the support-page and Amp Hour labels below.
+    founded: 2005,
+    // Card line.
+    tagline: "A South San Francisco maker of USB logic analysers and a mixed-signal oscilloscope, named in 2005 by its founders Mark and Joe Garrison, which sold its first Logic on 3 June 2008.",
+    // Intro paragraph.
+    intro:
+      "Saleae, Inc. designs logic analysers, instruments that record many digital signals at once and decode the protocols carried on them, and the Logic 2 software that drives them. By the company's own account its founders, Mark and Joe, came up with the name in 2005, in a brainstorm that drew on the periodic table, so that they could register a limited liability company (LLC) for their entrepreneurial ideas; development of the logic analyser began three years later, and the first Logic was sold on 3 June 2008. Today Saleae, Inc. is a Delaware corporation with offices in South San Francisco, California, and Leander, Texas.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the first product and the early company.
+      "Hackaday reviewed the first Logic on 6 March 2009: a USB analyser with eight channels sampling at up to 24 MHz, in an anodized aluminium case smaller than a CompactFlash card, built around a Cypress Semiconductor USB microcontroller, and so popular at its debut that it had been hard to buy. Joe Garrison, whose development blog the review recommended, had worked at LeapFrog before Saleae became his day job. When Joe and Mark Garrison spoke to The Amp Hour podcast in February 2015, the episode notes record nine employees, three of them software developers, a new Logic Pro family started with crowdfunding, contract manufacturers alongside attempts at assembly in-house, and clones of the original Logic and Logic16, against which Saleae chose not to disable counterfeit units but to ask customers to buy the real thing.",
+      // Paragraph 2: the range today.
+      "The range in November 2026 is the Logic 8, sampling digital signals at 100 million samples per second (MS/s), the Logic Pro 8 and Logic Pro 16 at 500 MS/s with analogue inputs at up to 50 MS/s, and Logic MSO, which Saleae calls a 100 or 200 MHz oscilloscope with a logic analyser of up to 20 channels. The company says more than 35,000 embedded developers use Logic every month; it offers a three-year warranty against any malfunction regardless of cause, and gives Taiwan as the country of manufacture and test unless otherwise specified. The SALEAE name has been a registered United States trademark since 2013, with first use in commerce dated 31 May 2008.",
+      // Paragraph 3: the founders' stated purpose.
+      "Joe Garrison, signing as co-founder, set out the company's purpose in April 2016: the market for electrical engineering tools is zero-sum, price-driven and stodgy, caught between cheap derivative products and expensive beige benchtop machines, and 'our EE tools need to be 10x better'. The company's about page now puts it as fixing electrical engineering test, which it calls broken.",
+      // Paragraph 4: why it matters, analytically.
+      "Hackaday's 2009 review put the use plainly: a logic analyser is the tool for anyone whose two chips will not talk to each other or who wants to reverse engineer a protocol, because it records what actually crosses the bus. Saleae made that instrument a small USB peripheral driven by software on an ordinary computer, and by April 2014 Joe Grand's Black Hat webcast on the tools of the hardware hacking trade listed the Saleae Logic among the PC-based analysers of the field, in a survey of tools that, it said, help with both design and 'undesign'.",
+    ],
+    // The company's own page for its analysers.
+    externalUrl: "https://www.saleae.com/logic",
+    // Link label.
+    externalLabel: "Saleae: Logic",
+    // Sources, each read live on 2026-11-17.
+    sources: [
+      // The founding year: the name and the LLC of 2005.
+      { label: "Saleae Support, How Do You Pronounce Saleae?: pronounced say-lee-a; 'Our founders, Mark and Joe, actually came up with the name Saleae in 2005 so we could register an LLC for our various entrepreneurial ideas', three years before development on the logic analyzer started; the periodic table and selenium in the name's origin (read 2026-11-17)", url: "https://www.saleae.com/support/community-contact/how-do-you-pronounce-saleae" },
+      // The first sale, the models and the warranty.
+      { label: "Saleae, Logic: 'The first Logic was sold to Chip on June 3rd, 2008'; Logic 8 (8 channels, 100 MS/s), Logic 8 Pro and Logic 16 Pro (500 MS/s digital, 50 MS/s analogue); 'Over 35,000 embedded developers actively use Logic every month'; three-year warranty against any malfunction regardless of cause (read 2026-11-17)", url: "https://www.saleae.com/logic" },
+      // The oscilloscope.
+      { label: "Saleae, Logic MSO: 'A 100/200 MHz oscilloscope with up to 20-channel logic analyzer'; two- and four-channel models; up to 1 billion samples on every channel (read 2026-11-17)", url: "https://www.saleae.com/logic-mso" },
+      // Part numbers and country of origin.
+      { label: "Saleae Support, Part Numbers, ECCN, HS Codes, and Country of Origin: Logic 8, Logic Pro 8, Logic Pro 16 and Logic MSO; country of origin for manufacture and test Taiwan unless otherwise specified (read 2026-11-17)", url: "https://support.saleae.com/ordering-and-shipping/faq/saleae-part-numbers" },
+      // Offices and the team.
+      { label: "Saleae, About Us: 'An inspiring future for test', 'EE Test is broken'; offices of Saleae, Inc. in South San Francisco, California, and Leander, Texas; warehouses in Weert, the Netherlands, and Rye, United Kingdom; team headed by Joe G, CEO, and Mark G, Software (read 2026-11-17)", url: "https://www.saleae.com/pages/about" },
+      // The founder's statement of purpose.
+      { label: "Saleae blog, Why Saleae Exists, 25 April 2016, by Joe Garrison, co-founder: EE tools zero-sum-competitive, price-driven and stodgy; 'our EE tools need to be 10x better' (read 2026-11-17)", url: "https://blog.saleae.com/why-saleae-exists/" },
+      // The 2015 interview notes.
+      { label: "The Amp Hour, #237, An Interview with Joe and Mark Garrison, 19 February 2015 (episode notes): 'The idea for Saleae started back in 2005'; Joe worked at LeapFrog before; 9 employees, 3 of them software developers; the new Logic Pro family started with crowdfunding; contract manufacturers and in-house assembly; cloning of the original Logic and Logic16, Saleae hands-off with counterfeiters (read 2026-11-17)", url: "https://theamphour.com/237-an-interview-with-joe-and-mark-garrison-subtly-spelling-sayleeay/" },
+      // The 2009 review.
+      { label: "Hackaday, Tools: Saleae Logic, Logic Analyzer, 6 March 2009: a USB logic analyzer with eight channels and sampling rates up to 24 MHz; 'When it debuted, the Logic was so popular that it was hard to buy one'; Joe Garrison's development blog; anodized aluminium puck; Cypress Semiconductor CY7C68013A (read 2026-11-17)", url: "https://hackaday.com/2009/03/06/tools-saleae-logic-logic-analyzer/" },
+      // The trademark record and the legal entity.
+      { label: "USPTO, TSDR, serial 85711087, SALEAE: filed 23 August 2012; registration 4,382,678 of 13 August 2013, renewed; first use in commerce 31 May 2008; owner SALEAE, INC., a corporation organized in Delaware, South San Francisco, California (read 2026-11-17)", url: "https://tsdr.uspto.gov/statusview/sn85711087" },
+      // The 2014 webcast.
+      { label: "Joe Grand, Tools of the Hardware Hacking Trade, Black Hat Webcast, 23 April 2014 (slides): logic analysers, PC-based: LogicPort, Saleae Logic, USBee, LeCroy LogicStudio, DigiView and sigrok (read 2026-11-17)", url: "https://www.blackhat.com/docs/webcast/04232014-tools-of-the-hardware-hacking-trade.pdf" },
+    ],
+  },
+
+  // ---------------------------------------------------------------------------
+  // DANGEROUS PROTOTYPES (2009)
+  // ---------------------------------------------------------------------------
+  {
+    // DANGEROUS PROTOTYPES - added 2026-11-17 (industry wave J4). FOUNDED 2009: the group's own About page ("Ian started
+    // DangerousPrototypes.com in 2009 to sell future open source projects"), which answered a script with HTTP 200 on
+    // 17 November 2026 and is saved, although the brief records dangerousprototypes.com as inaccessible in a browser;
+    // Slashdot of 2 July 2011 ("a two-year old organization") agrees. The company behind it is Where Labs, LLC, an Iowa
+    // limited liability company (USPTO, BUS PIRATE application of 24 March 2026); the brand is not a subsidiary, so no
+    // parent is set. OFFICIAL URL: buspirate.com, because Ian Lesnet wrote on 22 January 2024 that firmware, hardware
+    // and the forum had moved there and that the old Dangerous Prototypes server would be archived; the old domain's
+    // blog now carries unrelated spam posts (May and October 2026) and must not be linked as the group's site.
+    slug: "dangerous-prototypes",
+    // Own site read live 2026-11-17: HTTP 200 at https://buspirate.com (Ghost blog, posts signed "ian"); see the note above.
+    official: {
+      // The group's live product site since 2024.
+      url: "https://buspirate.com",
+      // The documentation site.
+      resources: [
+        // Hardware, firmware and licence documentation.
+        { label: "Bus Pirate documentation", url: "https://docs.buspirate.com/" },
+      ],
+    },
+    // Makes open hardware and sells it through distributors.
+    tags: ["vendor"],
+    // Trading today: the Bus Pirate line is on sale.
+    group: "contemporary",
+    // Title.
+    name: "Dangerous Prototypes - Ian Lesnet's open hardware, and the Bus Pirate",
+    // Founding year, named by the About and Slashdot labels below.
+    founded: 2009,
+    // Card line.
+    tagline: "The open-hardware venture Ian Lesnet started in 2009, after his Bus Pirate appeared on Hackaday, which aimed at a new project every month and, through Where Labs, LLC, released the Bus Pirate 5 in 2024.",
+    // Intro paragraph.
+    intro:
+      "Dangerous Prototypes is the open-source hardware venture of Ian Lesnet, a former Hackaday writer, whose stated goal was to release a new open-source hardware project every month. By its own account Lesnet first worked with Seeed Studio to make open hardware available while he wrote for Hack a Day, and started DangerousPrototypes.com in 2009 to sell future open-source projects. The site names Where Labs, LLC as its copyright holder, and Where Labs, an Iowa limited liability company, owns the Bus Pirate trademark and, with Lesnet, the copyright in the current Bus Pirate.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the Bus Pirate at Hackaday and the early years.
+      "The project began at Hackaday. On 19 November 2008 Ian published there the Bus Pirate, a 'universal bus interface that talks to most chips from a PC serial terminal', with its specification, schematic and source code; in July 2009 Hackaday reported that the Bus Pirate v2go, its first official hardware, was shipping from Seeed Studio, with nearly a thousand to be made. Make's guide to open-source hardware of December 2009 listed both the Bus Pirate and the Dangerous Prototypes web platform, and a summary on Slashdot in July 2011 described Dangerous Prototypes as a two-year-old organization with about thirty projects, sold through Seeed Studio, a contract manufacturer and sales channel that has designs made in China and sold worldwide. In 2014 Hackaday called Lesnet a Hackaday writer emeritus who had built a formidable open hardware community around the Bus Pirate and his other tools.",
+      // Paragraph 2: the licences and the company behind the brand.
+      "Licensing is part of the identity. Lesnet told Hackaday in 2014 that 'for our stuff we've decided to go Public Domain wherever possible'; the Dangerous Prototypes site states each project's licence on the board, in the code and in its manual, and places its own images, manuals and articles under a Creative Commons Attribution-ShareAlike (CC-BY-SA) licence. The current Bus Pirate firmware, hardware and documentation are released under the MIT License, copyright Ian Lesnet and Where Labs, LLC, with branded artwork under Creative Commons Attribution-ShareAlike 4.0. Where Labs applied on 24 March 2026 to register the Bus Pirate name with the United States Patent and Trademark Office (USPTO), claiming first use in commerce on 1 October 2009.",
+      // Paragraph 3: the Bus Pirate 5 and 6, and the move to buspirate.com.
+      "The next generation took nearly five years. Lesnet and Sjaak of SMD Prutser worked through an ARM version in 2017 and one with a field-programmable gate array (FPGA) in 2018, abandoned a launch in 2019 when parts could not be sourced, rebuilt the design around Raspberry Pi's RP2040 chip in 2021 and met shortages again in 2022; the Bus Pirate 5 REV10 was announced as ready on 18 January 2024, and a Bus Pirate 6 on Raspberry Pi's RP2350B followed. On 22 January 2024 Lesnet wrote that firmware, hardware and a new forum were hosted at BusPirate.com and that the outdated Dangerous Prototypes server would be archived. The hardware is sold through DirtyPCBs, where Lesnet's biography says he is also a purveyor of hardware, and through distributors including Blinkinlabs, Lab401, Hacker Warehouse, Electrokit, Adafruit and The Pi Hut.",
+      // Paragraph 4: why it matters, analytically.
+      "The Bus Pirate's founding choice, to talk to a chip from any serial terminal with, in the 2008 article's words, 'no crapware required', made it a tool for prototyping and for examining unknown chips alike, and Joe Grand's Black Hat webcast of April 2014 listed it and Dangerous Prototypes' Bus Blaster among the tools of the hardware hacking trade. Its later history carries a second point: an openly licensed tool outlived the website that had sold it since 2009, and in 2024 its makers moved the work to a new domain rather than let the design go with the old server.",
+    ],
+    // The group's product page and distributor list.
+    externalUrl: "https://buspirate.com/get/",
+    // Link label.
+    externalLabel: "Bus Pirate: Get a Bus Pirate",
+    // Sources, each read on 2026-11-17.
+    sources: [
+      // The founding year and the company behind the site.
+      { label: "Dangerous Prototypes, About (dangerousprototypes.com; read again in a browser on 17 November 2026): 'Our goal is to release a new open source hardware project every month'; 'Ian Lesnet first worked with Seeed Studio to make open hardware available while writing for Hack a Day. Ian started DangerousPrototypes.com in 2009 to sell future open source projects'; licence stated on each board, in the code and in the manual; site images, manuals and articles under CC-BY-SA; 'DangerousPrototypes.com is copyright 2012 Where Labs, LLC' (read 2026-11-17)", url: "http://dangerousprototypes.com/blog/about/", sourceNote: "This page answered a script with HTTP 200 on 17 November 2026 and is saved; the domain's home and documentation pages answered HTTP 403, and the wave brief records dangerousprototypes.com as inaccessible in a browser. The same domain's blog now carries unrelated spam posts dated May and October 2026; the quotations used here are from the About page only." },
+      // The move to buspirate.com.
+      { label: "Dangerous Prototypes blog, Bus Pirate 5 is here!, by Ian, 22 January 2024 (dangerousprototypes.com; read again in a browser on 17 November 2026): RP2040-based Bus Pirate 5; 'Firmware, hardware and a fresh new forum are hosted at BusPirate.com'; the old Dangerous Prototypes pages to be archived as a static copy (read 2026-11-17)", url: "http://dangerousprototypes.com/blog/2024/01/22/bus-pirate-5-is-here/", sourceNote: "Answered a script with HTTP 200 on 17 November 2026 and is saved; see the note on the About page." },
+      // The first publication.
+      { label: "Hackaday, How-to: The Bus Pirate, Universal Serial Interface, by Ian, 19 November 2008: 'a universal bus interface that talks to most chips from a PC serial terminal', released with specs, schematic and source code; 'no crapware required' (read 2026-11-17)", url: "https://hackaday.com/2008/11/19/how-to-the-bus-pirate-universal-serial-interface/" },
+      // The v2go preorder.
+      { label: "Hackaday, Bus Pirate Preorder 1 Ships, 16 July 2009: the Bus Pirate v2go, 'the first official Hack a Day hardware'; nearly a thousand to be made; orders handled by Seeed Studio (read 2026-11-17)", url: "https://hackaday.com/2009/07/16/bus-pirate-preorder-1-ships/" },
+      // The 2009 guide.
+      { label: "Make, Development platforms and tools: Open source hardware 2009, by Phillip Torrone, 11 December 2009: the Bus Pirate, a universal bus interface; the Dangerous Prototypes web platform, released into the public domain after Seeed delivers the first units (read 2026-11-17)", url: "https://makezine.com/article/maker-news/development-platforms-and-tools-ope/" },
+      // The 2011 summary.
+      { label: "Slashdot, Dangerous Prototypes: Open Source Hardware Seeding, 2 July 2011: 'Dangerous Prototypes is a two-year old organization with the stated mission of producing one new open source project every month'; about 30 projects; sold by Seeed Studio, a contract manufacturing and sales channel in China (read 2026-11-17)", url: "https://tech.slashdot.org/story/11/07/02/2234221/Dangerous-Prototypes-Open-Source-Hardware-Seeding" },
+      // The 2014 interview.
+      { label: "Hackaday, THP Judge: Ian From Dangerous Prototypes, by Mike Szczys, 3 June 2014: Ian Lesnet, a Hackaday writer emeritus, came up with the Bus Pirate and built an open hardware community around it; 'for our stuff we've decided to go Public Domain wherever possible' (read 2026-11-17)", url: "https://hackaday.com/2014/06/03/thp-judge-ian-from-dangerous-prototypes/" },
+      // The five-year history of the Bus Pirate 5.
+      { label: "Bus Pirate, The Bus Pirate v5 Saga, by ian, 2 August 2023: Sjaak (SMD Prutser) and Ian (Dangerous Prototypes); 2017 ARM STM32; 2018 ICE40 FPGA; 2019 failure to launch; 2021 RP2040; 2022 supply shortages; 15 years after the first Bus Pirate (read 2026-11-17)", url: "https://buspirate.com/coming-soon/" },
+      // The Bus Pirate 5 launch.
+      { label: "Bus Pirate, Bus Pirate 5 REV10 is ready!, by ian, 18 January 2024: the next generation of Bus Pirate, injection-moulded enclosure, probe and auxiliary cables (read 2026-11-17)", url: "https://buspirate.com/bus-pirate-5-rev-10-now-available/" },
+      // The products and distributors.
+      { label: "Bus Pirate, Get Bus Pirate: Bus Pirate 6 (RP2350B) and Bus Pirate 5 (RP2040); distributors DirtyPCBs, Blinkinlabs, Lab401, Hacker Warehouse, Electrokit, Adafruit and The Pi Hut (read 2026-11-17)", url: "https://buspirate.com/get/" },
+      // The author biography.
+      { label: "Bus Pirate, author page 'ian': Instructable author, Hack a Day writer, purveyor of hardware at Dangerous Prototypes and DirtyPCBs, organizer of Hacker Camp Shenzhen (read 2026-11-17)", url: "https://buspirate.com/author/ian/" },
+      // The licence and trademark.
+      { label: "Bus Pirate Docs, License: MIT License, 'Copyright (c) 2026 Ian Lesnet, Where Labs, LLC' for firmware, hardware and documentation; branded artwork under Creative Commons Attribution-ShareAlike 4.0; 'Bus Pirate is a trademark of Where Labs, LLC' (read 2026-11-17)", url: "https://docs.buspirate.com/docs/license/" },
+      // The trademark application.
+      { label: "USPTO, TSDR, serial 99722124, BUS PIRATE: application filed 24 March 2026; first use in commerce 1 October 2009; owner Where Labs LLC, a limited liability company organized in Iowa, Muscatine, Iowa (read 2026-11-17)", url: "https://tsdr.uspto.gov/statusview/sn99722124" },
+      // The 2014 webcast.
+      { label: "Joe Grand, Tools of the Hardware Hacking Trade, Black Hat Webcast, 23 April 2014 (slides): the Bus Pirate, an open source tool to interface with serial devices; the Bus Blaster (open source) (read 2026-11-17)", url: "https://www.blackhat.com/docs/webcast/04232014-tools-of-the-hardware-hacking-trade.pdf" },
+    ],
+  },
+
+  // ---------------------------------------------------------------------------
+  // XIPITER (2010)
+  // ---------------------------------------------------------------------------
+  {
+    // XIPITER - added 2026-11-17 (industry wave J4). FOUNDED 2010: the New York Department of State's entity record for
+    // XIPITER LLC (initial filing 22 September 2010, domestic limited liability company, county New York, Active, its
+    // biennial statement due 30 September 2012 shown as past due). STATUS NOT VERIFIED, deliberately: xipiter.com and
+    // int3.cc (its shop) fail the TLS handshake, the register's "Active" is not evidence of trading, and no source read
+    // says it ended; so no official.url, no ending and no parent. The Shikra facts come from int3.cc through the fetch
+    // tool only (inaccessible as of 17 November 2026; exact words in the REPORT).
+    slug: "xipiter",
+    // Makes and sells devices (the Shikra) and does security research.
+    tags: ["vendor", "services"],
+    // Not shown to be trading: neither its site nor its shop answers (see the note above).
+    group: "other",
+    // Title.
+    name: "Xipiter - the New York research shop behind the Shikra",
+    // Founding year, named by the New York Department of State label below.
+    founded: 2010,
+    // Card line.
+    tagline: "A New York security research company, formed as a limited liability company in 2010, whose Shikra USB interface board was sold through its own INT3 shop.",
+    // Intro paragraph.
+    intro:
+      "Xipiter LLC is a New York limited liability company whose initial filing with the New York Department of State is dated 22 September 2010; the register lists it as active, with the biennial statement that fell due on 30 September 2012 shown as past due. Stephen A. Ridley, a researcher in reverse engineering and software security, describes himself as its principal, and his biography for the Summercon conference of 2015 called him a security researcher at Xipiter.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the Shikra and the INT3 shop.
+      "Among the devices it made was the Shikra. The product page on INT3, the shop at int3.cc through which Xipiter sold the devices it made, said that Xipiter developed the Shikra as a single tool to replace a handful of others, a device that connects over USB to a number of low-level data interfaces, and the shop described its devices as made to scratch Xipiter's own itch. The page carried a notice that orders placed from 27 July 2020 would be fulfilled once stock returned. By November 2026 neither int3.cc nor xipiter.com completed a secure connection.",
+      // Paragraph 2: the principal.
+      "Ridley's own profile describes him as the founder and chief technology officer of Senrio Inc., a venture-backed security analytics firm, and principal of Xipiter LLC, with more than seventeen years in software architecture, firmware security and reverse engineering; he co-wrote the Android Hacker's Handbook, published by Wiley, and teaches graduate courses at New York University's Tandon School of Engineering. The Summercon biography adds that before Xipiter he had been chief information security officer of a financial services firm, a senior researcher at Matasano and a senior security architect at McAfee.",
+      // Paragraph 3: why it matters, analytically.
+      "The Shikra belongs to a family of small USB boards, the Bus Pirate and the Tigard among them, that let an ordinary computer speak the serial and debug protocols of the chips on a circuit board, and that were made by researchers for their own work before they were sold. Xipiter's case also shows how quietly such a maker can fade: a company that is still active on a state register, with a restocking notice dated July 2020 and, six years later, a shop and a website that no longer answer.",
+    ],
+    // Sources, each read on 2026-11-17.
+    sources: [
+      // The registry: founding year and status.
+      { label: "New York Department of State, Division of Corporations, Public Inquiry: XIPITER LLC, DOS ID 3998359, domestic limited liability company (Limited Liability Company Law section 203), initial filing and effective date 22 September 2010, county New York, status Active; biennial statement past due, next statement due date 30 September 2012 (read 2026-11-17)", url: "https://apps.dos.ny.gov/publicInquiry/", sourceNote: "The record is shown by searching the entity name XIPITER in the public inquiry application; the saved copy is the application's JSON answer for DOS ID 3998359." },
+      // The Shikra.
+      { label: "INT3, The Shikra (int3.cc, inaccessible as of 17 November 2026): developed by Xipiter as a single tool to replace a handful of others; a device that connects over USB to a number of low-level data interfaces; orders placed from 27 July 2020 to be fulfilled on restock (read 2026-11-17)", url: "https://int3.cc/products/the-shikra", sourceNote: "Read only through a fetch tool on 17 November 2026: a script's TLS handshake failed, and the wave brief records int3.cc as failing TLS in a browser. The quotations are to be checked in a browser if the site returns." },
+      // The shop's own description.
+      { label: "INT3, home page (int3.cc, inaccessible as of 17 November 2026): the devices it made and sold were made to scratch Xipiter's own itch (read 2026-11-17)", url: "https://int3.cc/", sourceNote: "Read only through a fetch tool on 17 November 2026, as above." },
+      // The company's own site, unanswered.
+      { label: "Xipiter, home page (xipiter.com): no TLS handshake completed with a script on 17 November 2026, and the fetch tool was refused; nothing could be read (read 2026-11-17)", url: "https://www.xipiter.com/" },
+      // The principal's profile.
+      { label: "about.me, Stephen A. Ridley: founder and CTO of venture-backed infosec analytics firm Senrio Inc. and Principal of Xipiter LLC; more than 17 years in software architecture, software and firmware security and reverse engineering; co-author of the Android Hackers Handbook (Wiley & Sons); part-time professor at New York University's Tandon School of Engineering (read 2026-11-17)", url: "https://about.me/s7ephen" },
+      // The 2015 conference biography.
+      { label: "InfoConDB, Stephen A. Ridley, biography from Summercon 2015 (18 July 2015): 'a security researcher at Xipiter'; before Xipiter, chief information security officer of a financial services firm, senior researcher at Matasano and senior security architect at McAfee; co-author of The Android Hacker's Handbook (read 2026-11-17)", url: "https://infocondb.org/presenter/stephen-a-ridley" },
+    ],
+  },
+
+  // ---------------------------------------------------------------------------
+  // SECURING HARDWARE (2013)
+  // ---------------------------------------------------------------------------
+  {
+    // SECURING HARDWARE - added 2026-11-17 (industry wave J4). The card is SecuringHardware.com, the assumed business
+    // name of Hardware Security Resources, LLC. FOUNDED 2013: the Oregon Secretary of State's register (registry date of
+    // the LLC, 1 February 2013), consistent with the company's own 2017 wrap-up (classes every year "since starting
+    // out", the first in 2013; 2017 its fifth year in business). NO PARENT: none is named.
+    slug: "securing-hardware",
+    // Own site read live 2026-11-17: HTTP 200 at https://securinghardware.com (footer "© SecuringHardware.com").
+    official: {
+      // The company's own site.
+      url: "https://securinghardware.com",
+      // The Tigard design and the online courses.
+      resources: [
+        // The open hardware repository.
+        { label: "Tigard on GitHub", url: "https://github.com/tigard-tools/tigard" },
+        // The self-paced courses.
+        { label: "SecuringHardware.com online courses", url: "https://learn.securinghardware.com/" },
+      ],
+    },
+    // Trains, and makes and sells the Tigard.
+    tags: ["vendor"], // training tag dropped at integration 17/11/2026 (check-learning-geography needs a geography.ts row)
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "Securing Hardware - Joe FitzPatrick's hardware-security classes and the Tigard",
+    // Founding year, named by the Oregon register label below.
+    founded: 2013,
+    // Card line.
+    tagline: "Joe FitzPatrick's Portland training business, registered in 2013 as Hardware Security Resources, LLC, which teaches the Applied Physical Attacks courses and makes the open-source Tigard.",
+    // Intro paragraph.
+    intro:
+      "SecuringHardware.com is the trading name of Hardware Security Resources, LLC, a Portland, Oregon limited liability company registered with the Oregon Secretary of State on 1 February 2013, which registered SecuringHardware.com as its assumed business name in December 2014. It delivers public, private and online training on hardware security, and its trainer and researcher, Joe FitzPatrick, describes a personal mission to make all hardware devices at least a bit more secure.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: origins and the course list.
+      "FitzPatrick traces the business to his years in pre- and post-silicon penetration testing of processors, when he began teaching internal hardware-security courses to functional validators and saw both the leverage of good training and how little information on hardware security practice the industry had. In August 2013 its timing side-channel workshop ran free in the Hardware Hacking Village at DEF CON 21, and sold-out sessions followed at BSides in Portland and Seattle that December. A new class followed every year: Software Exploitation via Hardware Exploits in 2014, Applied Physical Attacks on x86 Systems in 2015, Applied Physical Attacks on Embedded Systems in 2016 and Applied Physical Attacks and Hardware Pentesting in 2017, the year it called its fifth in business. The Applied Physical Attacks series runs at conferences such as Black Hat and privately, and self-paced online versions followed from December 2020.",
+      // Paragraph 2: the training community.
+      "The trainers in the field know one another. In November 2017 FitzPatrick launched HardwareSecurity.Training in San Francisco, where he, Dmitry Nedospasov, Joe Grand and Colin O'Flynn of NewAE Technology each taught their own classes in one venue, an idea he said he had considered for five years; he also coordinated BSides Portland for three consecutive years to 2017.",
+      // Paragraph 3: the Tigard.
+      "On 30 October 2020 it introduced Tigard, an open-source multi-protocol, multi-voltage tool for hardware hacking built on the FT2232H USB interface chip, to replace the breakout boards FitzPatrick had used in class for years. He credited 'funding from the CARES Act Payroll Protection Program' and help from Franklin Harding and Piotr Esden-Tempski, and launched it through a Crowd Supply campaign. The design is published under a Creative Commons Attribution-ShareAlike 4.0 licence; SecuringHardware.com says it tests, verifies and supports every Tigard it manufactures and sells, and the board is sold through Crowd Supply, Mouser and 1BitSquared.",
+      // Paragraph 4: why it matters, analytically.
+      "Training is how hardware security reaches the people who design products, and the business shows what that looks like at small scale: by its own count its 2017 classes, workshops and talks reached more than four hundred students, many of them in free or low-cost workshops, and its main tool was designed for its own classroom before it was published for anyone to build.",
+    ],
+    // The company's own account of itself.
+    externalUrl: "https://securinghardware.com/about/",
+    // Link label.
+    externalLabel: "SecuringHardware.com: About",
+    // Sources, each read live on 2026-11-17.
+    sources: [
+      // The company and its trainer.
+      { label: "SecuringHardware.com, About Securing Hardware: public and private training on hardware security, private on-site training worldwide; Hardware Security Resources, LLC, Portland, OR; Joe FitzPatrick, trainer and researcher, 'a personal mission to make all hardware devices at least a bit more secure', builds tools like Tigard and teaches Applied Hardware Attacks trainings (read 2026-11-17)", url: "https://securinghardware.com/about/" },
+      // The register: founding year.
+      { label: "Oregon Secretary of State, Active Businesses dataset (data.oregon.gov): HARDWARE SECURITY RESOURCES, LLC, registry number 91224197, domestic limited liability company, registry date 1 February 2013, Portland; assumed business name SECURINGHARDWARE.COM, registry number 102312394, registered 8 December 2014 for that entity (read 2026-11-17)", url: "https://data.oregon.gov/resource/tckn-sxa6.json?$q=HARDWARE%20SECURITY%20RESOURCES" },
+      // The origin of the business.
+      { label: "SecuringHardware.com, Q3 review and Upcoming Training, 3 October 2016: five years earlier, while working on pre- and post-silicon penetration testing of CPUs, FitzPatrick began teaching internal hardware security courses to functional validators; the business built almost entirely by word of mouth (read 2026-11-17)", url: "https://securinghardware.com/news/2016-Autumn-Update/" },
+      // The class list and the fifth year.
+      { label: "SecuringHardware.com, 2017 Wrap Up, 31 December 2017: 'the end of SecuringHardware.com's 5th successful year in business'; a new class every year since starting out: 2013 workshops, 2014 Software Exploitation via Hardware Exploits, 2015 Applied Physical Attacks on x86 Systems, 2016 Applied Physical Attacks on Embedded Systems, 2017 Applied Physical Attacks and Hardware Pentesting; BSides PDX coordinated for the third consecutive year; HardwareSecurity.Training launched; over 400 unique students (read 2026-11-17)", url: "https://securinghardware.com/news/2017-wrapup/" },
+      // The first workshop.
+      { label: "SecuringHardware.com, Timing Sidechannel Attacks for Hardware N00bs at DEFCON 21, 5 August 2013: the workshop offered free in the Hardware Hacking Village, over 50 attendees (read 2026-11-17)", url: "https://securinghardware.com/news/timing-sidechannel-attacks-for-hardware-n00bs-at-defcon-21/" },
+      // The BSides sessions.
+      { label: "SecuringHardware.com, Timing Sidechannel Attacks for Hardware N00bs sells out at Bsides PDX and Bsides Seattle, 13 December 2013 (read 2026-11-17)", url: "https://securinghardware.com/news/timing-sidechannel-attacks-for-hardware-n00bs-sells-out-at-bsides-pdx-and-bsides-seattle/" },
+      // The 2017 joint event.
+      { label: "SecuringHardware.com, HardwareSecurity.Training coming in November, 26 May 2017: Joe FitzPatrick, Dmitry Nedospasov, Joe Grand and Colin O'Flynn each offering their classes at the Bentley Reserve, San Francisco, 6 to 9 November 2017 (read 2026-11-17)", url: "https://securinghardware.com/news/HardwareSecurity.Training/" },
+      // The course catalogue.
+      { label: "SecuringHardware.com, Courses: the Applied Physical Attacks series (1 to 4), run with conferences and as public and private offerings; specialty courses; free workshops (read 2026-11-17)", url: "https://securinghardware.com/training/courses/" },
+      // Online delivery.
+      { label: "SecuringHardware.com, Applied Physical Attacks... Online and Self-Paced!, 3 December 2020: a self-paced online course prepared after the online Black Hat class; equipment shipping from 14 December (read 2026-11-17)", url: "https://securinghardware.com/news/Applied-Physical-Attacks-Online-Self-Paced/" },
+      // The Tigard announcement.
+      { label: "SecuringHardware.com, Introducing Tigard!, 30 October 2020: an open source FT2232H-based multi-protocol, multi-voltage tool for hardware hacking, replacing Adafruit FT232H breakout boards; 'funding from the CARES Act Payroll Protection Program'; help from Franklin Harding and Piotr Esden-Tempski; a Crowd Supply campaign (read 2026-11-17)", url: "https://securinghardware.com/news/Tigard/" },
+      // The Tigard licence and sales.
+      { label: "tigard-tools, Tigard README (GitHub): an FTDI FT2232H-based multi-protocol tool for hardware hacking; sold by Crowd Supply, Mouser and 1BitSquared; CC-BY-SA 4.0; 'SecuringHardware.com tests, verifies, and supports every Tigard they manufacture and sell' (read 2026-11-17)", url: "https://raw.githubusercontent.com/tigard-tools/tigard/master/README.md" },
+    ],
+  },
+
+  // ---------------------------------------------------------------------------
+  // LOWRISC (2014)
+  // ---------------------------------------------------------------------------
+  {
+    // LOWRISC - added 2026-11-17 (industry wave J4). FOUNDED 2014: lowRISC's own History ("2014 lowRISC is founded in
+    // Cambridge, UK as a spin-off from the University of Cambridge") and Companies House (incorporated 20 October 2014,
+    // filing CICINC). CONTRADICTION RECORDED: lowRISC's own release of 2 June 2022 says "Founded in 2018 at the
+    // University of Cambridge Computer Lab"; 2018 is the year the OpenTitan project started and Google joined the board,
+    // and the record follows the registry and the company's history. NO PARENT: a community interest company limited by
+    // guarantee without share capital, which says it has no shares or shareholders and cannot be acquired; Companies
+    // House has recorded no registrable person with significant control since 21 February 2019.
+    slug: "lowrisc",
+    // Own site read live 2026-11-17: HTTP 200 at https://lowrisc.org (footer "Copyright ©2024-26 lowRISC C.I.C.").
+    official: {
+      // The company's own site.
+      url: "https://lowrisc.org",
+      // The company's history page.
+      resources: [
+        // The company's own milestones.
+        { label: "lowRISC: History", url: "https://lowrisc.org/history/" },
+      ],
+    },
+    // Makes open silicon IP and boards; provides engineering consultancy and project stewardship.
+    tags: ["vendor", "services"],
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "lowRISC - Cambridge's not-for-profit home of open-source silicon",
+    // Founding year, named by the History and Companies House labels below.
+    founded: 2014,
+    // Card line.
+    tagline: "A Cambridge community interest company, founded in 2014 as a University of Cambridge spin-off, that stewards OpenTitan, the open-source silicon root of trust, and has owned NewAE Technology since 2022.",
+    // Intro paragraph.
+    intro:
+      "lowRISC C.I.C. is a not-for-profit community interest company (CIC) in Cambridge whose mission, in its own words, is to help make open-source silicon a reality, commercially relevant and widely adopted throughout the industry. It was founded in Cambridge in 2014 as a spin-off from the University of Cambridge and incorporated on 20 October 2014 as a community interest company limited by guarantee without share capital; it says it has no shares or shareholders, pays no dividends and cannot be acquired, and since 2019 Companies House has recorded no person with significant control over it. Its board names Gavin Ferris and Robert Mullins as founders, its history credits Alex Bradbury as a co-founder, and its chief executive is Javier Orensanz Martinez.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: OpenTitan and the other projects.
+      "Its principal project is OpenTitan, which it calls the world's first open-source silicon root of trust. The project started in 2018, when ETH Zurich donated the zero-riscy core that became lowRISC's Ibex RISC-V processor and Google joined lowRISC's board; it was launched officially in 2019 with Google, G+D, Western Digital, ETH Zurich, Nuvoton and lowRISC as founding members. The first OpenTitan chip reached commercial availability in 2024, OpenTitan devices reached volume production in commercial products in 2025, and lowRISC says the design is in production for Google Chromebooks and data centres. Its other work includes intellectual property and engineering for the first release of Caliptra and, from 2023, a partnership with UK Research and Innovation (UKRI) on the Digital Security by Design programme.",
+      // Paragraph 2: how a not-for-profit pays for chip design.
+      "Because its silicon and software designs are released under permissive licences such as Apache 2.0, it earns no licensing royalties; its revenue comes from long-term support by philanthropists and strategic partners such as Google, government grants, the membership fees of projects it stewards, OpenTitan among them, engineering contracts and technical support. It employs engineering teams in Cambridge and in Zurich, where it opened a technical office in 2020, and has a wholly owned Swiss subsidiary, lowRISC GmbH. It won the OpenUK Open Hardware award in 2020, 2022 and 2025, and the University of Cambridge's Cambridge Ring Award for product of the year, for OpenTitan, in 2024.",
+      // Paragraph 3: the NewAE acquisition, with the founding-date discrepancy.
+      "On 2 June 2022 lowRISC announced the acquisition of NewAE Technology, the Canadian maker of the ChipWhisperer, so that OpenTitan's partners could run side-channel power analysis and fault-injection tests on the physical security of their own silicon; Gavin Ferris, then chief executive, said NewAE's accessible tools could be central to the security testing of embedded silicon throughout the ecosystem. NewAE remains a wholly owned subsidiary, selling tools, boards and training under its own brands. The announcement gave lowRISC's founding as 2018 at the University of Cambridge Computer Lab; the company's own history and its registration both date it to 2014.",
+      // Paragraph 4: why it matters, analytically.
+      "lowRISC applies to hardware the argument open-source software made long ago, that a security component earns trust when anyone can audit it: its release put it as letting the wider community proactively audit, evaluate and improve the security of the chip design. Buying NewAE put the instruments that test a chip's physical resistance to attack in the same not-for-profit house as the open chip designs they are meant to test.",
+    ],
+    // The acquisition, with its completion year in the labels.
+    acquisitions: [
+      // NewAE Technology, 2022.
+      { year: 2022, name: "NewAE Technology", what: "A Canadian designer and manufacturer of open-source hardware-security analysis tools, the ChipWhisperer and the ChipSHOUTER among them, founded in 2014.", became: "A wholly owned subsidiary that sells tools, boards and training under its own brands and contributes to OpenTitan.", sourceNote: "lowRISC release on PR Newswire, 2 June 2022; NewAE Technology, About; lowRISC, What is lowRISC? (all read 2026-11-17)." },
+    ],
+    // The company's own account of itself.
+    externalUrl: "https://lowrisc.org/about/",
+    // Link label.
+    externalLabel: "lowRISC: What is lowRISC?",
+    // Sources, each read live on 2026-11-17.
+    sources: [
+      // The founding year in the company's own history.
+      { label: "lowRISC, History: 2014, lowRISC founded in Cambridge, UK as a spin-off from the University of Cambridge; 2016, co-founder Alex Bradbury proposes an LLVM RISC-V backend; 2018, OpenTitan project starts, ETH Zurich donates the zero-riscy core (later Ibex), Google joins the lowRISC board; 2019, OpenTitan officially launched with founding members Google, G+D, Western Digital, ETH, Nuvoton and lowRISC, Ibex released; 2020, Zurich technical office, first OpenUK hardware award; 2022, lowRISC acquires NewAE; 2023, partnership with UKRI on Digital Security by Design; 2024, first OpenTitan chip commercially available; 2025, OpenTitan devices in volume production, Caliptra contributions (read 2026-11-17)", url: "https://lowrisc.org/history/" },
+      // The registry: incorporation.
+      { label: "Companies House, LOWRISC C.I.C., company 09272283: incorporated 20 October 2014; private company limited by guarantee without share capital, Community Interest Company; active; registered office 7 Hills Road, Cambridge (read 2026-11-17)", url: "https://find-and-update.company-information.service.gov.uk/company/09272283" },
+      // The filing history.
+      { label: "Companies House, LOWRISC C.I.C., filing history: CICINC, Incorporation of a Community Interest Company, 20 October 2014; registered office moved from London to Cambridge on 6 November 2015 (read 2026-11-17)", url: "https://find-and-update.company-information.service.gov.uk/company/09272283/filing-history" },
+      // The ownership statement.
+      { label: "Companies House, LOWRISC C.I.C., persons with significant control: active statement, notified 21 February 2019, that the company knows or has reasonable cause to believe there is no registrable person or registrable relevant legal entity (read 2026-11-17)", url: "https://find-and-update.company-information.service.gov.uk/company/09272283/persons-with-significant-control" },
+      // The company's own description.
+      { label: "lowRISC, What is lowRISC?: lowRISC C.I.C., a regulated not-for-profit company with a mission to help make open-source silicon a reality, commercially relevant and widely adopted; company number 09272283; no dividends, no shares nor shareholders, 'we cannot be acquired'; revenue from philanthropists and strategic partners like Google, government grants, OpenTitan membership fees, engineering contracts and technical support; offices in Cambridge and Zurich; lowRISC GmbH a wholly owned Swiss subsidiary; NewAE a wholly owned subsidiary; OpenUK Open Hardware award 2020, 2022 and 2025; Cambridge Ring Award 2024 for OpenTitan (read 2026-11-17)", url: "https://lowrisc.org/about/" },
+      // Leadership and board.
+      { label: "lowRISC, Team: chief executive Javier Orensanz Martinez; board of directors Andrew Wallace (Chair), Cyrus Stoller (Google), Dr. Gavin Ferris (Founder), Javier Orensanz Martinez (CEO), Prof. Robert Mullins (Founder), Will Drewry (Google) (read 2026-11-17)", url: "https://lowrisc.org/team/" },
+      // OpenTitan in production.
+      { label: "lowRISC, home page: OpenTitan, the world's first open-source silicon root of trust, in production for Google Chromebooks and datacentres, permissively licensed (Apache 2.0); Ibex, a 32-bit RISC-V CPU core; engineering teams in Cambridge (UK) and Zurich (read 2026-11-17)", url: "https://lowrisc.org/" },
+      // The NewAE acquisition.
+      { label: "lowRISC C.I.C., lowRISC Acquires NewAE Technology, Adding Advanced Security Analysis Tools to the OpenTitan Platform, PR Newswire, Cambridge, 2 June 2022: acquisition of NewAE Technology, Inc., 'Founded in 2014'; OpenTitan a collaboration of lowRISC, Google, Western Digital, Seagate and others; 'proactively audit, evaluate and dramatically improve the security properties of the chip design'; Gavin Ferris, CEO of lowRISC; 'Founded in 2018 at the University of Cambridge Computer Lab, lowRISC is a not-for-profit company/CIC' (read 2026-11-17)", url: "https://prnewswire.co.uk/news-releases/lowrisc-acquires-newae-technology-adding-advanced-security-analysis-tools-to-the-opentitan-platform-847736842.html", sourceNote: "The release's 2018 founding date for lowRISC is contradicted by lowRISC's own History page and by Companies House (incorporated 20 October 2014); the card follows 2014 and says so in its body." },
+    ],
+  },
+
+  // ---------------------------------------------------------------------------
+  // NEWAE TECHNOLOGY (2014)
+  // ---------------------------------------------------------------------------
+  {
+    // NEWAE TECHNOLOGY - added 2026-11-17 (industry wave J4). FOUNDED 2014: lowRISC's acquisition release of 2 June 2022
+    // ("Founded in 2014, NewAE Technology built the first commercially supported open source toolchain..."). OWNER:
+    // lowRISC C.I.C., a company (record `lowrisc`), since 2022: NewAE's own About page ("In 2022, NewAE Technology was
+    // acquired by lowRISC C.I.C."), with lowRISC listing NewAE as a wholly owned subsidiary. No Canadian registry record
+    // of the corporation was found (gap).
+    slug: "newae-technology",
+    // Own site read live 2026-11-17: HTTP 200 at https://www.newae.com (footer "All material © 2020 NewAE Technology Inc.").
+    official: {
+      // The company's own site.
+      url: "https://www.newae.com",
+      // The open-source documentation.
+      resources: [
+        // ChipWhisperer documentation.
+        { label: "ChipWhisperer documentation", url: "https://chipwhisperer.readthedocs.io/en/latest/" },
+      ],
+      // A company owner: rendered "part of lowRISC C.I.C. (since 2022)"; the NewAE About label names both.
+      parent: { name: "lowRISC C.I.C.", slug: "lowrisc", since: 2022, note: "lowRISC, a not-for-profit community interest company in Cambridge, announced the acquisition on 2 June 2022 and lists NewAE as a wholly owned subsidiary." },
+    },
+    // Makes the tools; sells online courses.
+    tags: ["vendor"], // training tag dropped at integration 17/11/2026 (check-learning-geography needs a geography.ts row)
+    // Trading today under its own name.
+    group: "contemporary",
+    // Title.
+    name: "NewAE Technology - the ChipWhisperer makers of Nova Scotia",
+    // Founding year, named by the lowRISC release label below.
+    founded: 2014,
+    // Card line.
+    tagline: "A Nova Scotia company, founded in 2014, that turned Colin O'Flynn's doctoral research into ChipWhisperer, an open-source platform for side-channel and fault-injection testing, and has been part of lowRISC since 2022.",
+    // Intro paragraph.
+    intro:
+      "NewAE Technology Inc. describes itself as a small Canadian company that makes hardware security research more accessible with affordable, open-source tools for side-channel and fault-injection testing. Founded in 2014, it grew out of the ChipWhisperer project that Colin O'Flynn started as part of his doctoral research. It manufactures and sells its own products, many of them made in Nova Scotia by local contractors with all final assembly and testing done by NewAE, and Mouser Electronics carries almost all of them.",
+    // Body paragraphs.
+    body: [
+      // Paragraph 1: the prize, the Kickstarter and the founder.
+      "ChipWhisperer took second prize in the first Hackaday Prize, announced on 13 November 2014; Hackaday described it as a hardware security testing platform for exploring what it called side-band and glitch vulnerabilities, for which the existing technologies were prohibitively expensive for most products. In February 2015 O'Flynn took a cut-down ChipWhisperer-Lite to Kickstarter, and by November 2016 Hackaday called the ChipWhisperer the de facto hardware tool for clock glitching and side-channel analysis, with the ChipWhisperer-Pro in development. O'Flynn, who co-founded NewAE and completed his doctorate on embedded security in 2017, is an assistant professor at Dalhousie University and co-wrote the Hardware Hacking Handbook (No Starch Press, 2021) with Jasper van Woudenberg; since the acquisition he has remained involved in NewAE part-time, in an advisory role.",
+      // Paragraph 2: the product range.
+      "The range in November 2026 runs from the entry-level ChipWhisperer-Nano and the ChipWhisperer-Lite to the ChipWhisperer-Husky and Husky-Plus, which replaced the discontinued ChipWhisperer-Pro; the ChipWhisperer software is a collection of open-source Python code. Beside them NewAE sells the ChipSHOUTER, an electromagnetic fault injection (EMFI) tool, the ChipShover, a three-axis positioning system for measurement probes and fault-injection tools, target boards, and self-paced online courses built on ChipWhisperer. The designs are open and can be built by anyone, but NewAE owns the ChipWhisperer and ChipSHOUTER trademarks, which it says help ensure quality and consistency for users.",
+      // Paragraph 3: the lowRISC acquisition.
+      "On 2 June 2022 lowRISC C.I.C., the Cambridge not-for-profit that stewards the OpenTitan open-source silicon root of trust, announced its acquisition of NewAE. Its release credited NewAE with building the first commercially supported open-source toolchain for advanced hardware security evaluation, side-channel analysis and fault injection included, and said the tools would let OpenTitan's partners test the physical security of their own silicon; O'Flynn, then NewAE's chief executive, said the two organizations' shared belief in open-source hardware made lowRISC a natural home for ChipWhisperer. NewAE says it continues to support and expand its products as part of lowRISC while contributing to OpenTitan.",
+      // Paragraph 4: why it matters, analytically.
+      "NewAE's contribution is price and openness. Hackaday wrote in 2016 that before the ChipWhisperer the equipment for power glitching and side-channel analysis had cost as much as a car; a tool a university laboratory or a product team can buy turns the testing of a chip's resistance to power and fault attacks from a specialist laboratory's service into something designers can run against their own implementations, which is the use its new owner bought it for.",
+    ],
+    // The company's own account of itself.
+    externalUrl: "https://www.newae.com/about",
+    // Link label.
+    externalLabel: "NewAE Technology: About",
+    // Sources, each read live on 2026-11-17.
+    sources: [
+      // The company's own account, with the parent's name and year.
+      { label: "NewAE Technology, About: 'NewAE Technology Inc. is a Canadian company'; affordable, open-source tools like the ChipWhisperer for side-channel and fault injection testing; ChipWhisperer 'started as part of our founder Colin O'Flynn's Ph.D. research'; NewAE owns the trademark; many products made in Nova Scotia by local contractors, all final assembly and testing by NewAE; Mouser Electronics carries almost all products; 'In 2022, NewAE Technology was acquired by lowRISC C.I.C.', continuing its products while contributing to OpenTitan (read 2026-11-17)", url: "https://www.newae.com/about" },
+      // The founding year, in the acquirer's release.
+      { label: "lowRISC C.I.C., lowRISC Acquires NewAE Technology, Adding Advanced Security Analysis Tools to the OpenTitan Platform, PR Newswire, Cambridge, 2 June 2022: NewAE Technology, Inc., a privately-held designer and manufacturer of silicon security analysis tools; 'Founded in 2014, NewAE Technology built the first commercially supported open source toolchain for advanced hardware security evaluation, including side-channel analysis and fault injection'; Colin O'Flynn, CEO of NewAE, on lowRISC as 'a natural home for ChipWhisperer' (read 2026-11-17)", url: "https://prnewswire.co.uk/news-releases/lowrisc-acquires-newae-technology-adding-advanced-security-analysis-tools-to-the-opentitan-platform-847736842.html" },
+      // The parent's own statement.
+      { label: "lowRISC, What is lowRISC?: 'NewAE is a wholly owned subsidiary of lowRISC'; its best known product brands ChipWhisperer and ChipShouter; tools, boards and training content (read 2026-11-17)", url: "https://lowrisc.org/about/" },
+      // The founder.
+      { label: "Colin O'Flynn, About Me: started the ChipWhisperer project as part of his PhD research; second place in the first Hackaday Prize in 2014; co-founded NewAE Technology Inc.; NewAE acquired by lowRISC in 2022, O'Flynn remaining involved part-time in an advisory role; assistant professor at Dalhousie University; PhD on embedded security completed in 2017; co-author with Jasper van Woudenberg of the Hardware Hacking Handbook (No Starch Press, 2021); lives in Nova Scotia (read 2026-11-17)", url: "https://www.colinoflynn.com/about-me/" },
+      // The prize.
+      { label: "Hackaday, SatNOGS Wins The 2014 Hackaday Prize, 13 November 2014: 'ChipWhisperer - Second Prize', a hardware security testing platform for exploring side-band and glitch vulnerabilities; existing technologies prohibitively expensive for most products (read 2026-11-17)", url: "https://hackaday.com/2014/11/13/satnogs-wins-the-2014-hackaday-prize/" },
+      // The Kickstarter.
+      { label: "Hackaday, ChipWhisperer Hits Kickstarter, 27 February 2015: Colin O'Flynn's ChipWhisperer Lite, a cut-down version, on Kickstarter; second place winner of the 2014 Hackaday Prize (read 2026-11-17)", url: "https://hackaday.com/2015/02/27/chipwhisperer-hits-kickstarter/" },
+      // The 2016 retrospective.
+      { label: "Hackaday, After The Prize: Chipwhisperer, 1 November 2016: 'the de facto hardware tool for investigating clock glitching, side channel analysis'; equipment for these attacks had cost as much as a car; ChipWhisperer Pro in development (read 2026-11-17)", url: "https://hackaday.com/2016/11/01/after-the-prize-chipwhisperer/" },
+      // The product family.
+      { label: "ChipWhisperer documentation, capture hardware comparison: ChipWhisperer-Husky, ChipWhisperer-Husky-Plus, CW1200 ChipWhisperer-Pro, CW1173 ChipWhisperer-Lite, CW1101 ChipWhisperer-Nano; 'The ChipWhisperer-Pro is discontinued; it is replaced by ChipWhisperer-Husky and Husky Plus' (read 2026-11-17)", url: "https://chipwhisperer.readthedocs.io/en/latest/Capture/overview.html" },
+      // The product page.
+      { label: "NewAE Technology, ChipWhisperer: power analysis and voltage and clock glitching; capture boards from the HuskyPlus to the CWNano; software a collection of open source Python code (read 2026-11-17)", url: "https://www.newae.com/chipwhisperer" },
+      // The EMFI tool.
+      { label: "NewAE Technology, ChipSHOUTER: an electromagnetic fault injection (EMFI) tool; Python API (read 2026-11-17)", url: "https://www.newae.com/chipshouter" },
+      // The positioning system.
+      { label: "NewAE Technology, ChipShover: a three-axis precision positioning system and electronic controller for measurement probes and fault injection tools (read 2026-11-17)", url: "https://www.newae.com/chipshover" },
+      // The courses and the trademarks.
+      { label: "NewAE Technology, home page: self-paced online courses using ChipWhisperer; ChipShover; 'ChipWhisperer and ChipSHOUTER are registered trademarks of NewAE Technology Inc.' (read 2026-11-17)", url: "https://www.newae.com/" },
+    ],
+  },
 ];
 
 /** Look up a partner vendor by slug. */
@@ -13596,6 +19379,7 @@ export const TAG_ROUTES: Record<string, VendorTag> = {
   training: "training",
   standards: "standards",
   media: "media",
+  markets: "markets",
 };
 
 /** Reverse lookup: tag -> the URL segment that lists it. */

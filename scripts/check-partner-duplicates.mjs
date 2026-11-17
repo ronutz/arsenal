@@ -250,6 +250,59 @@ if (sharedCopy.length) {
 // tell that from two unrelated problems.
 const DECLARED_OVERLAPS = new Map([
   [
+    "token:gadgets:great-scott-gadgets|mischief-gadgets",
+    "Two distinct companies that share one English word: Great Scott Gadgets is Michael Ossmann's Colorado maker " +
+      "of HackRF; Mischief Gadgets is the San Francisco maker of the O.MG line. Declared 2026-11-17 (Industry wave J1, PRIME 01:15).",
+  ],
+  [
+    "token:research:ettus-research|rfid-research-group|srlabs",
+    "Three distinct companies that share one English word: Ettus Research (the USRP radios, an NI brand), the RFID " +
+      "Research Group (the Proxmark3 RDV4) and Security Research Labs (Berlin). Declared 2026-11-17 (Industry waves J2 and J3).",
+  ],
+  [
+    "token:exchange:base-exchange|ice|lme|lseg|nyse|six-swiss-exchange",
+    "Six distinct companies that share the generic noun of their trade. `nyse` is the New York " +
+      "Stock Exchange, `ice` Intercontinental Exchange, `lseg` the London Stock Exchange Group, " +
+      "`lme` the London Metal Exchange, `six-swiss-exchange` the Zurich exchange and " +
+      "`base-exchange` the Rio de Janeiro exchange project. Ownership links between some of " +
+      "them (ICE owns the NYSE) are recorded on the cards themselves; none is another under a " +
+      "second name. Declared 2026-11-16 when the Industry wave records were added (PRIME 20:34).",
+  ],
+  [
+    "token:trading:fix-trading-community|raptor-trading-systems",
+    "Two distinct organizations that share one English word. `fix-trading-community` is the " +
+      "FIX Protocol's standards body (FIX Protocol Ltd, London, 1999); `raptor-trading-systems` " +
+      "is the New York order and execution management software firm of 2003. Nothing but the " +
+      "noun is common to them. Declared 2026-11-16 (Industry wave, PRIME 20:34).",
+  ],
+  [
+    "token:stock:lseg|nyse",
+    "Two distinct exchange groups that share one English word: the London Stock Exchange Group " +
+      "and the New York Stock Exchange. Declared 2026-11-16 (Industry wave, PRIME 20:34).",
+  ],
+  [
+    "token:london:lme|lseg",
+    "Two distinct companies that share the city in their names: the London Metal Exchange, " +
+      "owned by Hong Kong Exchanges and Clearing since 2012, and the London Stock Exchange " +
+      "Group. Declared 2026-11-16 (Industry wave, PRIME 20:34).",
+  ],
+  [
+    "token:development:charles-river-development|lotus",
+    "Two distinct companies that share one English word. `lotus` is Lotus Development " +
+      "Corporation; `charles-river-development` is Charles River Development (Charles River " +
+      "Systems, Inc.), the Burlington, Massachusetts investment-management software company " +
+      "State Street bought in 2018. Nothing but the noun is common to them. Declared " +
+      "2026-11-16 when the Industry wave I3 records were added (PRIME 20:34).",
+  ],
+  [
+    "token:sistemas:inoa-sistemas|seal",
+    "Two distinct companies that share one Portuguese word. `seal` is Seal Sistemas, the " +
+      "Brazilian integrator in mobility, automation and enterprise visibility of 2001; `inoa-sistemas` is Inoa " +
+      "Sistemas, the Brazilian capital-markets software house of 2009. Nothing but the " +
+      "generic noun \"sistemas\" is common to them. Declared 2026-11-16 when the Industry " +
+      "wave I2 records were added (PRIME 20:34).",
+  ],
+  [
     "token:point:check-point|coyote-point",
     "Two distinct companies that share one English word. `check-point` is Check Point " +
       "Software Technologies, the Israeli firewall vendor of 1993; `coyote-point` is Coyote " +
@@ -266,11 +319,12 @@ const DECLARED_OVERLAPS = new Map([
       "Declared 2026-10-06 when the eEye record was added at PRIME's request.",
   ],
   [
-    "token:labs:bell-labs-lucent-alcatel|grafana-labs|q1-labs",
-    "Three distinct companies that share the suffix 'Labs'. `bell-labs-lucent-alcatel` " +
+    "token:labs:bell-labs-lucent-alcatel|grafana-labs|q1-labs|srlabs",
+    "Distinct companies that share the suffix 'Labs'. `bell-labs-lucent-alcatel` " +
       "is the Bell Labs lineage; `q1-labs` is the Fredericton company behind QRadar, " +
       "bought by IBM in 2011; `grafana-labs` is the 2014 company behind the Grafana " +
-      "dashboard. Declared 2026-10-06 when the latter two were added at PRIME's request.",
+      "dashboard. Declared 2026-10-06 when the latter two were added at PRIME's request. " +
+      "`srlabs` (Security Research Labs, Berlin) joined the token on 2026-11-17 (Industry wave J2): a fourth, unrelated company.",
   ],
   [
     "stem:intel|intel-amd",

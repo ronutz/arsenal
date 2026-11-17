@@ -20,9 +20,12 @@
 //      no members, a renamed item whose new name is not an entry or whose old
 //      name still is one, a kind with no entry at all, an English-fallback
 //      flag on the English index;
-//   4. a file is over the SIZE CEILING (raw and gzip) or lists more items than
-//      the ceiling allows; the ceilings leave room to grow and are stated
-//      below with the size they were set against.
+//   4. (REPORTED, NEVER FAILED since PRIME's ruling of 16/11/2026 21:49: "ALWAYS
+//      raise the page size limit when needed, DO NOT abide to the size
+//      limitations - always prioritize the CONTENT. For every page") a file over
+//      the SIZE CEILING (raw and gzip) or listing more items than the ceiling;
+//      the ceilings are reference figures, stated below with the size they were
+//      set against, raised to the new size when a note shows they were passed.
 // Prints the counts and the sizes. Read-only.
 // ============================================================================
 
@@ -56,6 +59,8 @@ interface Index { v: number; locale: string; day: string; items: Entry[]; redire
 
 /** Every failure, one line each. */
 const failures: string[] = [];
+/** Every size or item ceiling passed: reported, never failed (content first, PRIME 16/11/2026 21:49). */
+const notes: string[] = [];
 /** The size report. */
 const sizes: string[] = [];
 
@@ -97,9 +102,9 @@ for (const loc of LIVE_LOCALE_CODES) {
   // Sizes.
   const gz = zlib.gzipSync(text, { level: 9 }).length;
   // Over a ceiling.
-  if (text.length > MAX_RAW) failures.push(`${loc}: ${(text.length / 1024).toFixed(0)} KB raw, over the ${MAX_RAW / 1024} KB ceiling`);
-  if (gz > MAX_GZIP) failures.push(`${loc}: ${(gz / 1024).toFixed(0)} KB gzip, over the ${MAX_GZIP / 1024} KB ceiling`);
-  if (idx.items.length > MAX_ITEMS) failures.push(`${loc}: ${idx.items.length} items, over the ${MAX_ITEMS} ceiling`);
+  if (text.length > MAX_RAW) notes.push(`${loc}: ${(text.length / 1024).toFixed(0)} KB raw, over the ${MAX_RAW / 1024} KB ceiling`);
+  if (gz > MAX_GZIP) notes.push(`${loc}: ${(gz / 1024).toFixed(0)} KB gzip, over the ${MAX_GZIP / 1024} KB ceiling`);
+  if (idx.items.length > MAX_ITEMS) notes.push(`${loc}: ${idx.items.length} items, over the ${MAX_ITEMS} ceiling`);
   // Reported.
   sizes.push(`${loc} ${idx.items.length} items, ${(text.length / 1024).toFixed(0)} KB (${(gz / 1024).toFixed(0)} KB gzip)`);
   // Kept.
@@ -179,6 +184,8 @@ if (en) {
   }
 }
 
+// The size notes first: printed, never failed (content first, PRIME 16/11/2026 21:49).
+for (const n of notes) console.log(`${TAG} NOTE: ${n}; reported, not failed: raise the reference ceiling to the new size.`);
 // The verdict.
 if (failures.length) {
   // Said.

@@ -32,6 +32,8 @@ import { useTranslations } from "next-intl";
 import { ERAS, buildScore, type Era, type NoteEvent, type Score } from "@/lib/fun/lgtm/score";
 // Media playback for an iPhone in silent mode, and the audio context.
 import { enterMediaPlayback, leaveMediaPlayback, newAudioContext } from "./lgtmAudio";
+// The dancing bots on the stage (PRIME 17/11/2026 01:57).
+import LgtmDancers, { type DancersHandle } from "./LgtmDancers";
 
 /** Where this browser remembers the era (registered in src/lib/desk/registry.ts as local only). */
 export const ERA_KEY = "ronutz:fun:lgtm-era";
@@ -769,6 +771,10 @@ export default function LgtmTune() {
   const timers = useRef<{ pump: number | null; raf: number | null }>({ pump: null, raf: null });
   // Light timers, so a flash ends.
   const flashes = useRef<number[]>([]);
+  // The dancers on the stage, moved from the frame loop.
+  const dancers = useRef<DancersHandle>(null);
+  // The current section for the dancers' beat: its start in seconds, its tempo, and the beats counted before it.
+  const section = useRef({ t: 0, bpm: 132, beats: 0 });
 
   // The remembered era, read once after mount (storage can throw in a private window).
   useEffect(() => {
@@ -801,6 +807,10 @@ export default function LgtmTune() {
     setProgress(0);
     // Nothing played.
     setElapsed(0);
+    // The dancers stand at rest.
+    dancers.current?.rest();
+    // The beat counts from the start again.
+    section.current = { t: 0, bpm: 132, beats: 0 };
   }, []);
 
   // Stop: timers cleared, the context closed, the session handed back.
@@ -821,6 +831,8 @@ export default function LgtmTune() {
     setPlaying(false);
     // Whether it reached the end.
     setEnded(done);
+    // Stopped early: the dancers stand at rest (at the end they keep their finale pose).
+    if (!done) dancers.current?.rest();
   }, []);
 
   // Start the given era's tune from the beginning (inside the tap that asked for it).
@@ -875,6 +887,10 @@ export default function LgtmTune() {
         const ev = s.all[ptr.current.ui++];
         // A section's cue.
         if (ev.kind === "cue") {
+          // The beats counted so far, carried into the new section for the dancers.
+          const sec = section.current;
+          // The new section starts here, at its own tempo.
+          section.current = { t: ev.t, bpm: ev.bpm, beats: sec.beats + ((ev.t - sec.t) * sec.bpm) / 60 };
           // Its line.
           setStatus(ev.say);
           // Its tempo.
@@ -884,6 +900,8 @@ export default function LgtmTune() {
           // Next event.
           continue;
         }
+        // A drum hit moves the dancers.
+        if (ev.voice === "kick" || ev.voice === "snare" || ev.voice === "hat" || ev.voice === "ohat" || ev.voice === "crash") dancers.current?.hit(ev.voice);
         // A Morse signal lights for a moment.
         if (ev.morse !== undefined) {
           // Lit.
@@ -891,8 +909,13 @@ export default function LgtmTune() {
           // And off again.
           flashes.current.push(window.setTimeout(() => setLit(-1), 150));
         }
-        // A chime adds approvals.
-        if (ev.chime) setApprovals((a) => a + (ev.chime ?? 0));
+        // A chime adds approvals, and a dancer shows the green check.
+        if (ev.chime) {
+          // The count.
+          setApprovals((a) => a + (ev.chime ?? 0));
+          // The check.
+          dancers.current?.approve();
+        }
         // The second charge flashes the border.
         if (ev.glitch) {
           // On.
@@ -900,9 +923,18 @@ export default function LgtmTune() {
           // Off.
           flashes.current.push(window.setTimeout(() => setGlitch(false), 70));
         }
-        // The stamp lands.
-        if (ev.stamp) setStamped(true);
+        // The stamp lands, and every dancer throws its arms up.
+        if (ev.stamp) {
+          // The stamp.
+          setStamped(true);
+          // The finale.
+          dancers.current?.finale();
+        }
       }
+      // The dancers move to the beat of the current section.
+      const sec = section.current;
+      // Beats since the start: those before this section plus those into it.
+      dancers.current?.tick(sec.beats + (Math.max(0, now - sec.t) * sec.bpm) / 60);
       // The bar.
       setProgress(Math.max(0, Math.min(1, now / s.total)));
       // The time.
@@ -989,6 +1021,8 @@ export default function LgtmTune() {
         <p className="lgtm-status" aria-live="polite">
           {t(`status.${status}`)}
         </p>
+        {/* The dancing bots, moved by the music (decorative: hidden from screen readers). */}
+        <LgtmDancers ref={dancers} />
         <div className="lgtm-morse" aria-hidden="true">
           {MORSE_DRAWN.map((l) => (
             <div key={l.letter} className="lgtm-letter">

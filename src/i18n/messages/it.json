@@ -34147,7 +34147,8 @@
       "distributor": "Distributore",
       "carrier": "Operatore",
       "datacentre": "Data center",
-      "media": "Media"
+      "media": "Media",
+      "markets": "Mercati"
     },
     "storyBeginsLabel": "Inizio della storia:",
     "foundedCompanyLabel": "Anno di fondazione:",
@@ -34832,6 +34833,11 @@
       "title": "Stampa di settore, media ed eventi",
       "short": "media",
       "intro": "Le riviste, i siti di notizie e le conferenze in cui il settore racconta sé stesso a sé stesso: chi ha comprato chi, quale integratore ha cambiato nome e quali acquirenti saranno in sala. Da leggere come fonti, non come verdetti."
+    },
+    "markets": {
+      "title": "Borse, compensazione e infrastrutture di mercato",
+      "short": "mercati",
+      "intro": "Le borse, le camere di compensazione, i depositari centrali, i nastri consolidati (consolidated tape), i broker interdealer, i market maker e le autorità di vigilanza dei mercati attraverso cui passa la negoziazione elettronica: le organizzazioni le cui reti trasportano ordini misurati in microsecondi e le cui regole stabiliscono che cosa quelle reti devono registrare."
     }
   },
   "milestones": {
@@ -39635,6 +39641,23 @@
         "title": "Architetture ridondanti",
         "lede": "Come le reti sopravvivono ai guasti: che cosa compra la ridondanza e quanto costa, l’aritmetica della disponibilità e del destino condiviso, e la ridondanza di ogni livello, dall’energia e dalla fibra all’aggregazione dei collegamenti, ai gateway, all’instradamento, ai cluster con stato e al bilanciamento globale, fino ai dati, con i rapporti sui disservizi che mostrano dove ha tenuto e dove no, ogni fatto con la sua fonte.",
         "planned": {}
+      },
+      "hacking-devices": {
+        "title": "Dispositivi di hacking",
+        "lede": "Dalla blue box che parlava i toni della rete telefonica al Flipper Zero in tasca: scatole di toni, war dialer e wardriving, iniettori di tasti USB e impianti di rete, radio definita dal software, badge e tessere e i coltellini multiuso tascabili, con il principio di funzionamento di ciascuno, ciò che non può fare, come lo fermano i difensori e cosa dice la legge in Brasile, nell’Unione europea e negli Stati Uniti, ogni fatto con la sua fonte.",
+        "planned": {}
+      },
+      "steganography": {
+        "title": "Steganografia",
+        "lede": "Nascondere che un messaggio esiste, dalle tavolette di cera e dall’inchiostro invisibile ai pixel, al suono, al testo, alle filigrane e ai canali di rete: come funziona in principio ogni tecnica, con esempi svolti, e come la si rileva e la si ferma, ogni fatto con la sua fonte.",
+        "planned": {
+          "networkCovertChannels": "Canali nascosti e tunnel di rete",
+          "stegomalware": "Stegomalware: cosa mostrano i rapporti dei produttori",
+          "airGapChannels": "Air gap e canali nascosti fisici",
+          "espionageAndCourts": "La steganografia nello spionaggio e nei tribunali",
+          "steganographyAndAi": "Steganografia e intelligenza artificiale",
+          "detectingAndStripping": "Rilevare e rimuovere i contenuti nascosti nella pratica"
+        }
       }
     },
     "parts": "Le parti",

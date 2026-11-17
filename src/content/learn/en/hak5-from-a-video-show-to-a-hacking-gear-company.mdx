@@ -1,0 +1,278 @@
+---
+slug: hak5-from-a-video-show-to-a-hacking-gear-company
+title: "Hak5: from a video show to a hacking-gear company"
+summary: "Hak5 began in 2005 as an amateur video show about technology and grew into the best-known maker of penetration-testing gadgets: the WiFi Pineapple, the USB Rubber Ducky, a family of network implants, a payload ecosystem on GitHub and a self-hosted command-and-control server. After reading, you can date each product from Hak5's own shop, documentation and firmware portal, read its prices and export classifications for what they are, separate the company's account of itself from its critics and its misusers, and know where Brazil stands in Hak5's own compliance pages."
+concepts: ["hak5", "darren kitchen", "wifi pineapple", "usb rubber ducky", "keystroke injection", "network implant", "payload", "cloud c2", "duckyscript", "export control", "dual use"]
+relatedTools: []
+relatedArticles: ["hacking-devices-from-the-blue-box-to-the-flipper-zero", "the-wifi-pineapple-rogue-access-points-and-the-karma-attack", "keystroke-injection-rubber-ducky-bash-bunny-badusb-and-the-om-g-cable", "the-flipper-zero-sub-ghz-rfid-nfc-infrared-and-the-panic", "phone-phreaking-and-the-blue-box", "hacking-in-the-20th-century", "the-brazilian-hacker-scene"]
+category: security
+order: 391
+status: reviewed
+updated: "2026-11-16"
+---
+
+Hak5 is two things that grew into each other: a video programme about hacking that has run since 2005, and a company that sells the hardware its presenters once built on camera. This part of the series opened by [the map from the blue box to the Flipper Zero](/learn/hacking-devices-from-the-blue-box-to-the-flipper-zero) follows both. It follows the show, the gadgets (wireless tools, keystroke injectors and implants for local area networks (LANs)), the payloads that run on them and the command-and-control (C2) server that manages them, and it is built from a sweep of Hak5's own public web presence on 16 November 2026: the shop's sitemaps and product records, every page of its documentation site, its firmware download portal, the GitHub organization and the show's catalogued episodes. After reading, you can date each product from the company's own records, read its prices and export classifications for what they are, separate the company's account of itself from its critics and from the people who misused its gear, and know what Hak5's compliance pages imply for a buyer in Brazil.
+
+## The show: from a pilot in 2005 to a channel that never stopped
+
+Hak5 says it began "in 2005 as the self-titled podcast" and calls itself the flagship show of its network ([Hak5, Our Story](https://hak5.org/pages/our-story)). TheTVDB, a community catalogue of television and web series, lists the pilot of "Hak.5" on 5 August 2005, an episode that tested whether driving speed affects how many wireless access points a war driver picks up, alongside a GameCube modification for disc playback and a Windows XP installation tip ([TheTVDB, Hak5, Season 1](https://thetvdb.com/series/hak5/allseasons/official)). The YouTube feed of the Hak5 channel gives the channel itself a creation date of 7 September 2005 ([YouTube, Hak5 channel feed](https://www.youtube.com/feeds/videos.xml?channel_id=UC3s0BtrBJpwNDaflRSoiieQ)).
+
+The company makes two different superlative claims about that history: its About page says Hak5 "is the longest running series on YouTube" ([Hak5, About](https://hak5.org/pages/about)), while its media page calls it "the longest continuously running channel on YouTube" ([Hak5, Media Inquiry](https://hak5.org/pages/media-inquiry)). Neither claim comes with a method, and none was found tested elsewhere.
+
+Hak5 describes the show as weekly, carried on YouTube and syndicated "via Discovery Digital Networks (formerly Revision3)", with sister shows HakTip, ThreatWire, Metasploit Minute and TekThing ([Hak5, Our Story](https://hak5.org/pages/our-story)). TheTVDB records the show's numbered seasons as follows ([TheTVDB, Hak5 series page](https://thetvdb.com/series/hak5)):
+
+| Seasons (TheTVDB numbering) | Period | Episodes per season | What the catalogue shows |
+|---|---|---|---|
+| 1 to 3 | August 2005 to August 2008 | 10 to 11 | Roughly one season a year, long variety episodes |
+| 4 to 12 | September 2008 to February 2013 | 25 to 27 (68 in season 10) | Two seasons a year, the Revision3 era |
+| 14 to 25 | February 2013 to July 2019 | 24 to 26 | Two seasons a year; no season 13 is listed |
+| 26 | August 2019 to April 2020 | 14 | The last full numbered season in the catalogue |
+
+TheTVDB marks the series as ended and lists only single episodes as seasons 27 and 28, the last on 31 December 2020 ([TheTVDB, Hak5, all seasons](https://thetvdb.com/series/hak5/allseasons/official)). The channel did not stop, though: its feed on 16 November 2026 showed weekly ThreatWire news episodes, a live stream with Darren Kitchen on 3 November 2026 and product videos for the WiFi Pineapple Pager ([YouTube, Hak5 channel feed](https://www.youtube.com/feeds/videos.xml?channel_id=UC3s0BtrBJpwNDaflRSoiieQ)). Hak5's own episode codes join season and episode, which is why a 2019 firmware announcement points readers to "episode 2514", season 25, episode 14 ([Hak5, Release: WiFi Pineapple Firmware version 2.5, 18 April 2019](https://hak5.org/blogs/guides/release-wifi-pineapple-firmware-version-2-5)).
+
+### The people
+
+Darren Kitchen is named by Hak5 as its founder ([Hak5, Media Inquiry](https://hak5.org/pages/media-inquiry)). A conference biography from 2015 describes Hak5 as an Internet television show for hackers and information technology (IT) professionals since 2005 and says Kitchen broke out of "the 1990s phone phreak scene" before working as a systems administrator, presenter, instructor and inventor ([InfoconDB, Darren Kitchen, bio from BSidesLV 2015](https://infocondb.org/presenter/darren-kitchen)), a lineage the series traces back to [phreaking](/glossary/phreaking) and [the blue box](/learn/phone-phreaking-and-the-blue-box). The company quotes him on its community page: "Growing up with a 1200 baud modem, I found solace in cyberspace... I was accepted" ([Hak5, Community](https://hak5.org/pages/community)).
+
+Hak5's media page names its hosts as Darren Kitchen and Shannon Morse ([Hak5, Media Inquiry](https://hak5.org/pages/media-inquiry)). Morse's biography on the TWiT network says she hosted Hak5 and HakTip on Revision3, "a Discovery Digital Network", and hosted TekThing and Threat Wire as independent shows ([TWiT, Shannon Morse](https://twit.tv/people/shannon-morse)). Sebastian Kinne presented with Kitchen at BSidesLV in August 2015 ("WiFi Pineapple: Winning the WiFi Battlefield") and at DeepSec 2016, where Robin Wood joined them ([InfoconDB, Darren Kitchen](https://infocondb.org/presenter/darren-kitchen)). The catalogue also records Rob Fuller, known as Mubix, joining the season 4 premiere in September 2008 ([TheTVDB, Hak5, all seasons](https://thetvdb.com/series/hak5/allseasons/official)), and Fuller's own blog credits him with the idea that became the first WiFi Pineapple software, as the next section shows ([Rob Fuller, Jasager: Past, Present and Future, 9 October 2008](https://malicious.link/posts/2008/2008-10-09-jasager-past-present-and-future/)).
+
+## How episodes became products
+
+Hak5's hardware business grew directly out of segments on the show. Two stories show the pattern.
+
+**The Pineapple, 2008.** Fuller wrote that he heard Dino Dai Zovi present the Karma wireless attack at ShmooCon 2006, put Karma on a small Fonera router in early 2007 and then explained it to his "friend Darren Kitchen", who brought in the developer Robin Wood; the project was renewed under the name Jasager ([Rob Fuller, 9 October 2008](https://malicious.link/posts/2008/2008-10-09-jasager-past-present-and-future/)). Wood's project page calls Jasager "Karma on the Fon", dates its launch to 17 September 2008 and its release 2.0 to 17 November 2008, and credits "Darren @ Hak5" with "Testing, hardware supplier and promotion" ([Robin Wood, Jasager: Todo and Change Log](https://digi.ninja/jasager/todo); [Jasager, Credits](https://digi.ninja/jasager/credits)). The show's season 4 premiere of 7 September 2008 was titled "Wi-Fi Pineapples", and an episode of 17 September 2008 opened "the Pineapple" to demonstrate Jasager ([TheTVDB, Hak5, all seasons](https://thetvdb.com/series/hak5/allseasons/official)). The full history of that device, generation by generation, is the subject of the [next part of this series](/learn/the-wifi-pineapple-rogue-access-points-and-the-karma-attack).
+
+**The Rubber Ducky, 2010 to 2011.** Hak5's documentation says it "introduced Keystroke Injection in 2010 with the USB Rubber Ducky", a technique Kitchen developed to automate chores at his IT job, and in the same page dates the first Universal Serial Bus (USB) Rubber Ducky hardware to 2011 and the second to 2022 ([Hak5 Documentation, USB Rubber Ducky](https://documentation.hak5.org/hak5-usb-rubber-ducky/master.md)). The catalogue shows both steps: "USB Rubber Ducky Part 1" on 13 April 2010, then an episode of 27 September 2011 in which "After years of development the Hak5 team debuts" the device ([TheTVDB, Hak5, all seasons](https://thetvdb.com/series/hak5/allseasons/official)). How keystroke injection works, and how it is stopped, is covered in [the part on keystroke injection](/learn/keystroke-injection-rubber-ducky-bash-bunny-badusb-and-the-om-g-cable).
+
+Kitchen explained the habit in a 2012 interview with Computerworld: "When I was little my favorite 007 character was Q", and he said he liked "putting deadly hacker hardware inside rubber duckies, pineapples and monkeys" ([Darlene Storm, Computerworld, 2 February 2012](https://www.computerworld.com/article/2472217/sneak-pineapple-peak--hak5-creates-even-more-lethal-wi-fi-hot-spot-honeypot-hackin.html)).
+
+## The product line, in order
+
+Hak5 publishes no single dated product history. The table below is assembled from four kinds of Hak5 record, each named in the last column: the show's catalogued launch episodes, the firmware portal's release dates ([Hak5 Download Portal API, devices](https://downloads.hak5.org/api/devices/)), the shop's product records and the documentation. Where they disagree, the note says so.
+
+| Year | Product | What Hak5 says it is | Dating evidence |
+|---|---|---|---|
+| 2008 | WiFi Pineapple (first generation, Jasager on a Fonera router) | A Karma rogue access point | [Jasager change log, 17 September 2008](https://digi.ninja/jasager/todo); [episode of 7 September 2008](https://thetvdb.com/series/hak5/allseasons/official) |
+| 2010 | WiFi Pineapple Mark II | The "airport friendly" Pineapple used in an on-air challenge | [Episode of 16 March 2010](https://thetvdb.com/series/hak5/allseasons/official) |
+| 2011 | USB Rubber Ducky | Keystroke injection tool, DuckyScript 1.0 | [Documentation](https://documentation.hak5.org/hak5-usb-rubber-ducky/master.md); [debut episode, 27 September 2011](https://thetvdb.com/series/hak5/allseasons/official) |
+| 2011 | WiFi Pineapple Mark III | A "major revamp" with man-in-the-middle tools and a web interface | [Episode of 16 November 2011](https://thetvdb.com/series/hak5/episodes/4210214) |
+| 2012 | WiFi Pineapple Mark IV | Built with Alfa Networks, second Ethernet port, USB and 802.11n | [Computerworld, 2 February 2012](https://www.computerworld.com/article/2472217/sneak-pineapple-peak--hak5-creates-even-more-lethal-wi-fi-hot-spot-honeypot-hackin.html) |
+| 2013 | WiFi Pineapple Mark V | Unveiled at a Hak5 launch event | [Episode of 17 October 2013](https://thetvdb.com/series/hak5/allseasons/official) |
+| 2015 | LAN Turtle | A USB Ethernet adapter with a covert remote-access toolkit | [Episode "Introducing the LAN Turtle", 27 July 2015](https://thetvdb.com/series/hak5/allseasons/official); [first portal firmware, 27 July 2015](https://downloads.hak5.org/api/devices/lanturtle/firmwares) |
+| 2016 | WiFi Pineapple NANO and TETRA (sixth generation) | Pocket single-band and amplified dual-band Pineapples | [NANO firmware from 11 January 2016](https://downloads.hak5.org/api/devices/wifipineapplenano/firmwares); [TETRA firmware 1.0.0, 8 February 2016](https://downloads.hak5.org/api/devices/wifipineappletetra/firmwares) |
+| 2017 | Bash Bunny | A USB attack platform that emulates trusted devices | [Episode of 1 March 2017](https://thetvdb.com/series/hak5/allseasons/official); [firmware 1.1, 6 April 2017](https://downloads.hak5.org/api/devices/bashbunny) |
+| 2017 | Packet Squirrel | A pocket Ethernet man-in-the-middle | [Episode of 25 October 2017](https://thetvdb.com/series/hak5/allseasons/official); [firmware 1.1, 30 October 2017](https://downloads.hak5.org/api/devices/packetsquirrel) |
+| 2018 | Cloud C2 | Self-hosted command and control for Hak5 gear | [NANO firmware 2.4.0 "adds support for the Hak5 Cloud C2", 1 October 2018](https://downloads.hak5.org/api/devices/wifipineapplenano/firmwares) |
+| 2019 | Plunder Bug | A USB-C LAN tap | [Episode of 4 March 2019](https://thetvdb.com/series/hak5/allseasons/official) |
+| 2019 | Screen Crab and Signal Owl | A High-Definition Multimedia Interface (HDMI) screen grabber; a payload-based signals platform | [Episode of 5 August 2019](https://thetvdb.com/series/hak5/allseasons/official); [Signal Owl firmware 1.0.0, 5 August 2019](https://downloads.hak5.org/api/devices/signalowl/firmwares) |
+| 2019 | Shark Jack | A pocket wired-network attack tool | [Firmware 1.0.0, 5 August 2019](https://downloads.hak5.org/api/devices/sharkjack) |
+| 2020 | Key Croc | A keylogger implant with pattern-matching payloads | [Firmware 1.2, 12 May 2020](https://downloads.hak5.org/api/devices/keycroc/firmwares) |
+| 2020 | WiFi Pineapple Mark VII | The seventh-generation Pineapple | [Firmware 1.0.0, 9 September 2020](https://downloads.hak5.org/api/devices/wifipineapplemk7/firmwares) |
+| 2021 | Bash Bunny Mark II | Second-generation Bash Bunny | [Firmware 1.7, 29 June 2021](https://downloads.hak5.org/api/devices/bashbunnymk2/firmwares) |
+| 2022 | Shark Jack Cable | Second-generation Shark Jack | [Firmware 1.2.0, 16 February 2022](https://downloads.hak5.org/api/devices/sharkjack-cable/firmwares) |
+| 2022 | WiFi Pineapple Enterprise | A rack-mountable, four-radio Pineapple | [Beta firmware from 4 April 2022, stable 2.1.0 on 9 August 2022](https://downloads.hak5.org/api/devices/wifipineappleent1/firmwares) |
+| 2022 | USB Rubber Ducky, second hardware, with DuckyScript 3.0 | Keystroke injection with a structured language | [Documentation](https://documentation.hak5.org/hak5-usb-rubber-ducky/master.md) |
+| 2022 | WiFi Coconut | A USB device with 14 receive-only 2.4 GHz radios | [Documentation](https://documentation.hak5.org/wifi-coconut/introduction/introduction.md); [shop listing published 11 August 2022](https://hak5.org/products/wifi-coconut) |
+| 2023 | Packet Squirrel Mark II | Second-generation Packet Squirrel | [Firmware 4.0.0, 24 July 2023](https://downloads.hak5.org/api/devices/packetsquirrelmk2/firmwares) |
+| 2024 | LAN Turtle Hub | A USB hub with Ethernet and a hidden remote-access tool | [Firmware 1.0.0, 3 October 2024](https://downloads.hak5.org/api/devices/lanturtlehub/firmwares); [shop record created 26 July 2026](https://hak5.org/products/lan-turtle-hub) |
+| 2025 | WiFi Pineapple Pager | A battery-powered, screen-equipped Pineapple | [Shop listing published 5 August 2025](https://hak5.org/products/pager); [firmware 1.0.0, 26 November 2025](https://downloads.hak5.org/api/devices/wifipineapplepager/firmwares) |
+| 2026 | Shark Jack Display | Third-generation Shark Jack with a screen | [Firmware 1.0.0, 9 June 2026](https://downloads.hak5.org/api/devices/sharkjack-display/firmwares) |
+| 2026 | Theme Studio Pro | A browser editor for Pager themes | [Shop listing, 29 October 2026](https://hak5.org/products/theme-studio-pro) |
+
+Two notes on this table. The LAN Turtle Hub is the clearest case where Hak5's own records disagree: the firmware portal lists version 1.0.0 on 3 October 2024 ([Hak5 Download Portal](https://downloads.hak5.org/api/devices/lanturtlehub/firmwares)), while the shop's product record for it was created on 26 July 2026 ([Hak5, LAN Turtle Hub](https://hak5.org/products/lan-turtle-hub)). And the firmware portal does not reach back to the start of every line: its NANO history begins at version 1.0.2, so 11 January 2016 is the earliest NANO firmware it lists, not necessarily the product's launch ([Hak5 Download Portal, NANO](https://downloads.hak5.org/api/devices/wifipineapplenano/firmwares)). Hak5's end-user licence still names products it no longer stocks, such as the Signal Owl ([Hak5, Software License Agreement](https://hak5.org/pages/software-license-agreement)), and its export table keeps Universal Product Codes for the TETRA and NANO ([Hak5, Compliance](https://hak5.org/pages/compliance)).
+
+The implants (LAN Turtle, Packet Squirrel, Shark Jack, Key Croc, Screen Crab) are the subject of [the series' last part, on network implants](/learn/network-implants-lan-turtle-packet-squirrel-shark-jack-and-key-croc); the Pineapple generations, with their specifications, in [the part on the WiFi Pineapple](/learn/the-wifi-pineapple-rogue-access-points-and-the-karma-attack).
+
+## What the shop sells, and at what list price
+
+Hak5's storefront runs on Shopify; its sitemap listed 246 product records and 105 collections on 16 November 2026 ([Hak5, product sitemap](https://hak5.org/sitemap.xml)). Prices below are the list prices the product pages showed that day, in United States (US) dollars; some carried a crossed-out higher price during a seasonal sale, given in brackets. They are reported as facts about the listing, not as advice.
+
+| Product | List price shown, 16 November 2026 | Source |
+|---|---|---|
+| WiFi Pineapple Mark VII | US$250 (Mark VII+AC bundle US$300, unavailable) | [Hak5, WiFi Pineapple](https://hak5.org/products/wifi-pineapple) |
+| WiFi Pineapple Pager | Basic US$300 (US$320), Pro US$330 (US$360) | [Hak5, WiFi Pineapple Pager](https://hak5.org/products/pager) |
+| WiFi Pineapple Enterprise | Basic US$850, Standard US$1,200, Pentest US$6,600 | [Hak5, WiFi Pineapple Enterprise](https://hak5.org/products/wifi-pineapple-enterprise) |
+| USB Rubber Ducky | US$100 | [Hak5, USB Rubber Ducky](https://hak5.org/products/usb-rubber-ducky) |
+| Bash Bunny Mark II | US$200 | [Hak5, Bash Bunny](https://hak5.org/products/bash-bunny) |
+| Key Croc | US$200 | [Hak5, Key Croc](https://hak5.org/products/key-croc) |
+| Screen Crab | US$330 | [Hak5, Screen Crab](https://hak5.org/products/screen-crab) |
+| Plunder Bug | US$130 | [Hak5, Plunder Bug LAN Tap](https://hak5.org/products/bug) |
+| Packet Squirrel Mark II | US$150 | [Hak5, Packet Squirrel Mark II](https://hak5.org/products/packet-squirrel-mark-ii) |
+| LAN Turtle Hub | US$120 | [Hak5, LAN Turtle Hub](https://hak5.org/products/lan-turtle-hub) |
+| Shark Jack Cable | US$120 | [Hak5, Shark Jack](https://hak5.org/products/shark-jack) |
+| Shark Jack Display | US$120 | [Hak5, Shark Jack Display](https://hak5.org/products/shark-jack-display) |
+| WiFi Coconut | US$200 (unavailable) | [Hak5, WiFi Coconut](https://hak5.org/products/wifi-coconut) |
+| PayloadStudio Pro | US$60 | [Hak5, Payload Studio Pro](https://hak5.org/products/payload-studio-pro) |
+| Theme Studio Pro | US$50 (US$60) | [Hak5, Theme Studio Pro](https://hak5.org/products/theme-studio-pro) |
+
+The shop is also a reseller. It carries the O.MG Cable at US$200 under the vendor name MG.LOL ([Hak5, O.MG Cable](https://hak5.org/products/omg-cable)), whose payload library Hak5 hosts as the "Official payload library for the O.MG line of products from Mischief Gadgets" ([GitHub, hak5 organization, repository list](https://github.com/orgs/hak5/repositories?type=all)). It sells Great Scott Gadgets hardware such as the HackRF Pro ([Hak5, HackRF Pro](https://hak5.org/products/hackrf-pro)), a Kismet case modification for the Mark VII ([Hak5, Kismet Case Mod](https://hak5.org/products/wifi-pineapple-mark-vii-limited-edition-case-mod)) and add-ons for the Pager by a maker the shop calls "maker prodigy Glytch", including a Global Positioning System (GPS) module built on a Quectel LC86 receiver ([Hak5, Glytch GPS Mod for Pager](https://hak5.org/products/glytch-gps-mod-for-pager)). Outside the US, Hak5 lists six authorized resellers, four in the European Union (EU) and two in the United Kingdom (UK), Lab401 among them ([Hak5, Authorized Resellers](https://hak5.org/pages/authorized-resellers)).
+
+## The payload ecosystem
+
+Hak5's devices are platforms: the hardware runs scripts, called payloads, that users write and share. The GitHub organization listed 34 public repositories on 16 November 2026, with the USB Rubber Ducky payload repository at about 6,200 stars and 1,700 forks and the Bash Bunny repository at about 3,000 stars ([GitHub, hak5 organization, repository list](https://github.com/orgs/hak5/repositories?type=all)). The newest are the Pager's repositories for payloads, themes and ringtones, and the Pager's product page counts "more than 400 payload submissions and more than 100 theme submissions" ([Hak5, WiFi Pineapple Pager](https://hak5.org/products/pager)). The organization also keeps an OpenWrt build tree with NANO and TETRA board support and a C library for building and parsing 802.11 frames ([GitHub, hak5 organization, repository list](https://github.com/orgs/hak5/repositories?type=all)).
+
+The language that ties most devices together is DuckyScript. Hak5's documentation describes it as the language of the Rubber Ducky and "Hak5® hotplug attack gear and officially licensed devices", says it began with three commands and is now "a feature rich structured programming language" in version 3.0, and marks it as a trademark with a 2010 copyright ([Hak5 Documentation, USB Rubber Ducky](https://documentation.hak5.org/hak5-usb-rubber-ducky/master.md)). The Pager uses it too, with commands such as `DEAUTH_CLIENT` documented alongside their limits ([Hak5 Documentation, Pager, DEAUTH_CLIENT](https://documentation.hak5.org/wifi-pineapple-pager/wifi-pineapple-commands/deauth_client.md)).
+
+Hak5 pays for contributions in three ways:
+
+- **Payload Awards.** Weekly featured payloads win US$100 in Hak5 prizes and a yearly "Payload Hero of the Year" wins US$2,000; entries are pull requests to the device's GitHub repository, and "black-hat" language disqualifies a submission ([Hak5, Payload Awards](https://hak5.org/pages/payload-awards)).
+- **Payload Hub.** Hak5's payload site listed 665 payload write-ups in its sitemap on 16 November 2026, most last modified in 2023 and 2024 ([Payload Hub, articles sitemap](https://payloadhub.com/sitemap_articles_1.xml)).
+- **Developer Program.** For modules for the Mark VII, Hak5 offers grants of US$100 to US$1,000 depending on module complexity, development kits and one-time stipends ([Hak5, Developer Program](https://hak5.org/pages/developer-program)).
+
+## Cloud C2: the command-and-control server
+
+Hak5 describes Cloud C2 as "a self-hosted web-based command and control suite for networked Hak5 gear that lets you pentest from anywhere": Linux, Mac and Windows computers can host the server, devices such as the WiFi Pineapple, LAN Turtle and Packet Squirrel are provisioned as clients, and the tester manages them through a web interface ([Hak5 Documentation, Cloud C2 basics](https://documentation.hak5.org/cloud-c2/getting-started/cloud-c-basics.md)). Its marketing compresses this into three steps, "Setup", "Ship" and "Access": provision the device, ship it to the client site where "All they do is plug it in", then test the client's network over the web ([Hak5, Cloud C2 Introduction](https://hak5.org/pages/cloud-c2-introduction)). In the terms of the [command-and-control](/glossary/command-and-control) concept, it is an operator console for implants that call home, sold for authorized engagements.
+
+The editions, as Hak5's comparison page lists them ([Hak5, Cloud C2 Compare 3.0](https://hak5.org/pages/cloud-c2-compare-3-0)):
+
+| Edition | Devices | Users and sites | Licence | Price on the comparison page |
+|---|---|---|---|---|
+| Community | Up to 10 | Single user, single site | Non-commercial, perpetual | Free |
+| Professional | Up to 50 | Single user, single site | Commercial, perpetual | US$200 |
+| Teams Silver | 50 | 5 users, 5 sites | Commercial, perpetual | US$1,000 |
+| Teams Gold | 100 | 10 users, 10 sites | Commercial, perpetual | US$1,500 |
+| Teams Platinum | 200 | 20 users, 20 sites | Commercial, perpetual | US$2,000 |
+
+The Teams prices are a second place where Hak5's own pages disagree: the product page for the same software lists Teams Silver at US$500 and Teams Gold at US$750, with Platinum at US$2,000 on both ([Hak5, C2 product page](https://hak5.org/products/c2)). The firmware portal's latest Cloud C2 release on 16 November 2026 was 3.5.2, dated 1 October 2025 ([Hak5 Download Portal, Cloud C2](https://downloads.hak5.org/api/devices/cloudc2/firmwares)). Not everything joins it: the Pager "has its own interface and does not support Cloud C² management" ([Hak5, WiFi Pineapple Pager](https://hak5.org/products/pager)).
+
+## Training, books and the missing certificate
+
+Hak5's story page describes a training product called "Pentest with Hak5", an "immersive hacking adventure" in which the student plays a member of a red team ([Hak5, Our Story](https://hak5.org/pages/our-story)). The concrete course in the shop is the Advanced DuckyScript Course, US$60, hosted on Thinkific, which Hak5 says contains "7 hours of video instruction covering 54 lessons" with exercises, quizzes and eight projects ([Hak5, Advanced DuckyScript Course](https://hak5.org/products/advanced-duckyscript-course)). The shop also sells a USB Rubber Ducky textbook at US$40 and a pocket guide at US$10 ([Hak5, USB Rubber Ducky Textbook](https://hak5.org/products/usb-rubber-ducky-textbook)), and its export table lists the second edition of "USB Rubber Ducky: A Guide to Keystroke Injection Attacks" under an International Standard Book Number (ISBN) ([Hak5, Compliance](https://hak5.org/pages/compliance)). No certification programme or examination was found anywhere in the sweep of the shop, the documentation or the GitHub organization.
+
+## The company's own account
+
+**Who and where.** Hak5 trades as a limited liability company (LLC); its Code of Ethics is issued by "Hak5 LLC" and says the company was "Founded in 2005" with a mission "to advance the InfoSec industry" ([Hak5, Code of Ethics](https://hak5.org/pages/code-of-ethics)). Its own agreements give different addresses: the end-user licence names a private mailbox in Dallas, Texas, and California law ([Hak5, Software License Agreement](https://hak5.org/pages/software-license-agreement)), while the business-to-business (B2B) agreement names a suite on Market Street in San Francisco and Texas law, with arbitration in Austin ([Hak5, B2B Agreement](https://hak5.org/pages/b2b-agreement)). The media page says the Hak5 logos are covered by "Registered Trademark #87390067" ([Hak5, Media Inquiry](https://hak5.org/pages/media-inquiry)).
+
+**What the gear is for.** The terms of service state that "Hak5 Gear is penetration testing tools for authorized auditing and security analysis purposes only where permitted" and that users "are solely responsible for compliance with all laws of their locality" ([Hak5, Terms of Service](https://hak5.org/pages/terms-of-service)). The community rules put it more briefly: "Security research == good. Crime == bad." ([Hak5, Community](https://hak5.org/pages/community)). The Partner Program, which pays referral commissions, bans "black-hat" language with "zero tolerance" ([Hak5, Partner Program](https://hak5.org/pages/partner-program)).
+
+**Where it is made, and how it is classified for export.** The Code of Ethics says Hak5 software is designed and tested in the US with development in the US and the UK, and that its hardware is designed and tested in the US with "manufacturing and assembly occuring in the People's Republic of China" ([Hak5, Code of Ethics](https://hak5.org/pages/code-of-ethics)). The compliance page classifies the WiFi Pineapple, the Rubber Ducky, the LAN Turtle and the other devices under Export Control Classification Number (ECCN) 5A992.c as mass-market items, and Cloud C2 and PayloadStudio under 5D992.c, all self-classified, and says most Hak5 products may be exported under License Exception ENC, the encryption exception of the Export Administration Regulations (EAR) ([Hak5, Compliance](https://hak5.org/pages/compliance)). The same page carries representations under section 889 of the 2019 National Defense Authorization Act (NDAA) and the Federal Acquisition Regulation (FAR) that Hak5 does not supply or use equipment from Huawei, ZTE, Hytera, Hikvision or Dahua ([Hak5, Compliance](https://hak5.org/pages/compliance)).
+
+**Counterfeits.** Hak5 says it runs "an anti-counterfeiting program" that removes fake websites and marketplace listings and pursues "investigations and legal actions against criminal elements" ([Hak5, Brand Protection](https://hak5.org/pages/brand-protection)).
+
+**A patent claim without a number.** Hak5's feature pages call the Pineapple's software "Patented PineAP Suite" ([Hak5, WiFi Pineapple Features](https://hak5.org/pages/wifi-pineapple-features)). No patent number appears on the pages swept, and the public patent search tried for this article refused automated reading, so the claim is reported here as Hak5's own.
+
+**Fame.** Hak5 says its devices have appeared in the television series Mr Robot and Person of Interest and in the film Jason Bourne ([Hak5, Our Story](https://hak5.org/pages/our-story)).
+
+## Criticism, controversy and misuse
+
+**"Toys" made by "clowns".** In 2012 Computerworld put to Kitchen a criticism, attributed to an unnamed company, that the Pineapple and the Ducky were toys with "no legitimate use" ([Darlene Storm, Computerworld, 2 February 2012](https://www.computerworld.com/article/2472217/sneak-pineapple-peak--hak5-creates-even-more-lethal-wi-fi-hot-spot-honeypot-hackin.html)). Kitchen answered that they "could have just as easily been called the WiFi Auto-Probe-Response Attack Platform and the USB Human Interface Deceit Device", that the critic sells virtual private network (VPN) services it claims protect users from Hak5's tools, and that the "no legitimate use" claim contradicts "the countless government agencies and penetration testers who've used the WiFi Pineapple in authorized security audits" (same source). The same interview reports him saying that law enforcement agencies had told Hak5 they used the Pineapple in investigations, "though never a whole lot of details".
+
+**Hak5's own bugs.** The Pineapple has had vulnerabilities of its own. Hak5's change log for NANO and TETRA firmware 2.4.2, released on 24 October 2018, records the fix of "an unauthenticated file disclosure bug" that let an attacker download any file from the device through a Structured Query Language (SQL) injection in its file download function, and credits the researcher who reported it ([Hak5 Download Portal, NANO firmware history](https://downloads.hak5.org/api/devices/wifipineapplenano/firmwares)).
+
+**A Pineapple in an intelligence officer's backpack.** A US federal indictment announced on 4 October 2018 charged seven officers of Russia's military intelligence service (GRU) with hacking anti-doping and other organizations, partly through "close access" operations against hotel Wi-Fi ([US Attorney's Office, Western District of Pennsylvania, US v. Aleksei Sergeyevich Morenets](https://www.justice.gov/usao-wdpa/vw/us-v-Aleksei-Sergeyevich-Morenets)). It alleges that when the Dutch defence intelligence service disrupted a team parked beside the Organisation for the Prohibition of Chemical Weapons (OPCW) in The Hague in April 2018, a backpack left behind held equipment to intercept Wi-Fi, "including a “Wi-Fi Pineapple.”" ([Indictment, United States v. Morenets et al., W.D. Pa., DocumentCloud copy](https://assets.documentcloud.org/documents/4954153/10-4-18-US-v-Morenets.pdf)). An indictment is an accusation, not a finding of guilt; the defendants are Russian nationals living in Russia ([US Attorney's Office, Western District of Pennsylvania](https://www.justice.gov/usao-wdpa/vw/us-v-Aleksei-Sergeyevich-Morenets)).
+
+**An evil twin in Australian airports.** In November 2025 the Australian Federal Police (AFP) announced that a Western Australian man had been sentenced to seven years and four months for offences that included fake Wi-Fi networks at airports and on domestic flights, built with "a portable wireless access device, sometimes known as a WiFi Pineapple" ([Australian Federal Police, 28 November 2025](https://afp.gov.au/news-centre/media-release/wa-man-jailed-stealing-intimate-material-and-using-evil-twin-wifi)). The mechanism is explained in [the next part](/learn/the-wifi-pineapple-rogue-access-points-and-the-karma-attack).
+
+**The defenders' view.** Bastille, a company that sells wireless intrusion detection, argued in September 2026 that the Pineapple is "legitimate equipment used by legitimate testers" that also made rogue access point attacks possible without specialist skill, and recommends treating it "as a category rather than a product" alongside the Flipper Zero, the O.MG Cable and the Rubber Ducky ([Bastille, Wi-Fi Pineapple: Is It Still a Threat, 1 September 2026](https://bastille.net/research/wifi-pineapple/)). That is a vendor of defences describing a vendor of attacks; both have a commercial stake in the threat being taken seriously.
+
+## Brazil in Hak5's own pages
+
+Hak5's Code of Ethics contains a sentence that matters for Brazilian buyers, citing the US Bureau of Industry and Security (BIS): "Hak5 products and technology are only available to BIS recognized license exception ENC favorable treatment countries pursuant to US 15 CFR Supplement No 3 to Part 740" ([Hak5, Code of Ethics](https://hak5.org/pages/code-of-ethics)). That supplement of the Code of Federal Regulations (CFR) lists 36 countries, from Austria and Australia to Turkey and the UK; Brazil is not on it ([eCFR, 15 CFR Part 740, Supplement No. 3](https://www.ecfr.gov/current/title-15/subtitle-B/chapter-VII/subchapter-C/part-740/appendix-Supplement%20No.%203%20to%20Part%20740)). The Payload Awards and the Developer Program repeat the same list as the countries where prizes and grants can be redeemed, adding the US ([Hak5, Payload Awards](https://hak5.org/pages/payload-awards); [Hak5, Developer Program](https://hak5.org/pages/developer-program)).
+
+Hak5's compliance page reads differently: it describes most products as exportable under License Exception ENC and defines "ENC-Unrestricted" as exportable "to government or non-government end users in all countries, except embargoed or sanctioned countries" ([Hak5, Compliance](https://hak5.org/pages/compliance)). The two pages do not say the same thing, and neither mentions Brazil by name. No Hak5 page swept names a reseller in Latin America ([Hak5, Authorized Resellers](https://hak5.org/pages/authorized-resellers)).
+
+Brazilian law adds its own layer. Since Lei 12.737 of 30 November 2012, article 154-A of the Código Penal has made it a crime to break into someone else's computing device, and its paragraph 1 applies the same penalty to whoever "produz, oferece, distribui, vende ou difunde dispositivo ou programa de computador com o intuito de permitir a prática da conduta definida no caput" ("produces, offers, distributes, sells or spreads a device or computer program with the intent of enabling the conduct defined in the main clause") ([Lei nº 12.737, de 30 de novembro de 2012, Senado Federal](https://legis.senado.leg.br/norma/588113/publicacao/15773241)). The offence turns on intent, not on the object. Lei 14.155 of 27 May 2021 rewrote the main clause and raised the penalty to "reclusão, de 1 (um) a 4 (quatro) anos, e multa" ([Lei nº 14.155, de 27 de maio de 2021, Câmara dos Deputados](https://www2.camara.leg.br/legin/fed/lei/2021/lei-14155-27-maio-2021-791396-publicacaooriginal-162901-pl.html)). Radio equipment sold in Brazil also falls under the National Telecommunications Agency (Anatel), whose certification and homologation, in its own words, ensure that telecommunications products respect regulated standards "visando uso eficiente e racional do espectro radioelétrico" ("aiming at efficient and rational use of the radio spectrum") ([Anatel, Certificação de Produtos, page modified 8 October 2026](https://www.gov.br/anatel/pt-br/regulado/certificacao-de-produtos)); whether any Hak5 radio product holds an Anatel homologation could not be checked from Anatel's new search platform for this article. Owning such gear legally in Brazil, including imports, is the subject of a later part of this series; the scene that bought it is described in [the Brazilian hacker scene](/learn/the-brazilian-hacker-scene).
+
+## What to remember
+
+- Hak5 began as a self-titled show in 2005; TheTVDB lists the pilot on 5 August 2005, the numbered seasons ended in 2020, and the channel still publishes ThreatWire and product videos.
+- The product line grew from on-air projects: the Pineapple from Jasager in 2008, the Rubber Ducky from 2010 to 2011, then implants, Cloud C2 (2018), the Mark VII (2020), the Enterprise (2022) and the Pager (2025).
+- Hak5's own records disagree in places: the LAN Turtle Hub's dates, the Cloud C2 Teams prices, and the Code of Ethics against the compliance page on where products may go.
+- The company frames its gear as tools for authorized testing and bans "black-hat" language in its programmes; misuse is on record in a 2018 US indictment and a 2025 Australian sentence.
+- Brazil is not on the export list Hak5's Code of Ethics cites, and article 154-A of the Código Penal punishes selling a device "com o intuito de permitir" an intrusion.
+
+<ReaderQuestions>
+
+- Hak5's records date its products from show episodes, firmware releases and shop listings that do not always agree: which of those would you trust to date a product's launch, and why?
+- Hak5 forbids "black-hat" language in its partner and payload programmes: does a vendor's wording change how its tools are used, or only how they are sold?
+- Cloud C2 lets a tester ship a device to a client site and reach it over the internet: what written terms would you require before plugging such a device into your own network?
+- The Code of Ethics and the compliance page describe export limits differently: if you were a Brazilian buyer, which page would you take as Hak5's policy, and how would you check?
+- Article 154-A punishes selling a device with intent to enable an intrusion: how should a court tell a penetration-testing product from a tool sold for crime?
+
+</ReaderQuestions>
+
+## Sources
+
+- [Hak5, Our Story, undated page: 2005 start as a podcast, sister shows, syndication, design philosophy, training, film and television appearances (accessed 16 November 2026)](https://hak5.org/pages/our-story)
+- [Hak5, About, undated page: "longest running series on YouTube" (accessed 16 November 2026)](https://hak5.org/pages/about)
+- [Hak5, Media Inquiry, undated page: hosts, founder, "longest continuously running channel", trademark (accessed 16 November 2026)](https://hak5.org/pages/media-inquiry)
+- [Hak5, Community, undated page: Kitchen quotation, community rules (accessed 16 November 2026)](https://hak5.org/pages/community)
+- [TheTVDB, Hak5 series page: first aired 5 August 2005, seasons, status ended (accessed 16 November 2026)](https://thetvdb.com/series/hak5)
+- [TheTVDB, Hak5, all seasons: pilot, Wi-Fi Pineapple and Jasager episodes of 2008, Mark II (2010), Rubber Ducky (2010, 2011), Mark V (2013), product launch episodes 2015 to 2019, last episodes of 2020 (accessed 16 November 2026)](https://thetvdb.com/series/hak5/allseasons/official)
+- [TheTVDB, Hak5, WiFi Pineapple Mark III episode, 16 November 2011 (accessed 16 November 2026)](https://thetvdb.com/series/hak5/episodes/4210214)
+- [YouTube, Hak5 channel feed: channel created 7 September 2005, latest videos to 16 November 2026 (accessed 16 November 2026)](https://www.youtube.com/feeds/videos.xml?channel_id=UC3s0BtrBJpwNDaflRSoiieQ)
+- [Hak5, Release: WiFi Pineapple Firmware version 2.5, 18 April 2019: rewritten PineAP, episode 2514 (accessed 16 November 2026)](https://hak5.org/blogs/guides/release-wifi-pineapple-firmware-version-2-5)
+- [InfoconDB, Darren Kitchen: BSidesLV 2015 biography, BSidesLV 2015 and DeepSec 2016 talks with Sebastian Kinne and Robin Wood (accessed 16 November 2026)](https://infocondb.org/presenter/darren-kitchen)
+- [TWiT, Shannon Morse, undated biography: Hak5 and HakTip on Revision3, TekThing and Threat Wire (accessed 16 November 2026)](https://twit.tv/people/shannon-morse)
+- [Rob Fuller, Jasager: Past, Present and Future, malicious.link, 9 October 2008: origin of Jasager (accessed 16 November 2026)](https://malicious.link/posts/2008/2008-10-09-jasager-past-present-and-future/)
+- [Robin Wood, Jasager: Todo and Change Log, digi.ninja: launch 17 September 2008, release 2.0 17 November 2008 (accessed 16 November 2026)](https://digi.ninja/jasager/todo)
+- [Robin Wood, Jasager: Credits, digi.ninja: Darren at Hak5 credited for testing, hardware and promotion (accessed 16 November 2026)](https://digi.ninja/jasager/credits)
+- [Hak5 Documentation, USB Rubber Ducky, page dated 2026: keystroke injection introduced 2010, hardware 2011 and 2022, DuckyScript 1.0 and 3.0, trademark (accessed 16 November 2026)](https://documentation.hak5.org/hak5-usb-rubber-ducky/master.md)
+- [Darlene Storm, Sneak Pineapple peak: Hak5 creates even more lethal Wi-Fi hot spot honeypot hacking tool, Computerworld, 2 February 2012: Mark IV, interview with Kitchen, criticism and reply (accessed 16 November 2026)](https://www.computerworld.com/article/2472217/sneak-pineapple-peak--hak5-creates-even-more-lethal-wi-fi-hot-spot-honeypot-hackin.html)
+- [Hak5 Download Portal API, device list with latest firmware (accessed 16 November 2026)](https://downloads.hak5.org/api/devices/)
+- [Hak5 Download Portal API, WiFi Pineapple NANO firmware history 2016 to 2020, including 2.4.0 (Cloud C2) and 2.4.2 (file disclosure fix) (accessed 16 November 2026)](https://downloads.hak5.org/api/devices/wifipineapplenano/firmwares)
+- [Hak5 Download Portal API, WiFi Pineapple TETRA firmware history from 8 February 2016 (accessed 16 November 2026)](https://downloads.hak5.org/api/devices/wifipineappletetra/firmwares)
+- [Hak5 Download Portal API, WiFi Pineapple Mark VII firmware history from 9 September 2020 (accessed 16 November 2026)](https://downloads.hak5.org/api/devices/wifipineapplemk7/firmwares)
+- [Hak5 Download Portal API, WiFi Pineapple Enterprise firmware history from 4 April 2022 (accessed 16 November 2026)](https://downloads.hak5.org/api/devices/wifipineappleent1/firmwares)
+- [Hak5 Download Portal API, WiFi Pineapple Pager firmware history, 26 November 2025 to 29 October 2026 (accessed 16 November 2026)](https://downloads.hak5.org/api/devices/wifipineapplepager/firmwares)
+- [Hak5 Download Portal API, LAN Turtle firmware from 27 July 2015 (accessed 16 November 2026)](https://downloads.hak5.org/api/devices/lanturtle/firmwares)
+- [Hak5 Download Portal API, LAN Turtle Hub firmware from 3 October 2024 (accessed 16 November 2026)](https://downloads.hak5.org/api/devices/lanturtlehub/firmwares)
+- [Hak5 Download Portal API, Bash Bunny firmware from 6 April 2017 (accessed 16 November 2026)](https://downloads.hak5.org/api/devices/bashbunny)
+- [Hak5 Download Portal API, Bash Bunny Mark II firmware 1.7, 29 June 2021 (accessed 16 November 2026)](https://downloads.hak5.org/api/devices/bashbunnymk2/firmwares)
+- [Hak5 Download Portal API, Packet Squirrel firmware from 30 October 2017 (accessed 16 November 2026)](https://downloads.hak5.org/api/devices/packetsquirrel)
+- [Hak5 Download Portal API, Packet Squirrel Mark II firmware 4.0.0, 24 July 2023 (accessed 16 November 2026)](https://downloads.hak5.org/api/devices/packetsquirrelmk2/firmwares)
+- [Hak5 Download Portal API, Signal Owl firmware from 5 August 2019 (accessed 16 November 2026)](https://downloads.hak5.org/api/devices/signalowl/firmwares)
+- [Hak5 Download Portal API, Shark Jack firmware from 5 August 2019 (accessed 16 November 2026)](https://downloads.hak5.org/api/devices/sharkjack)
+- [Hak5 Download Portal API, Shark Jack Cable firmware 1.2.0, 16 February 2022 (accessed 16 November 2026)](https://downloads.hak5.org/api/devices/sharkjack-cable/firmwares)
+- [Hak5 Download Portal API, Shark Jack Display firmware from 9 June 2026 (accessed 16 November 2026)](https://downloads.hak5.org/api/devices/sharkjack-display/firmwares)
+- [Hak5 Download Portal API, Key Croc firmware from 12 May 2020 (accessed 16 November 2026)](https://downloads.hak5.org/api/devices/keycroc/firmwares)
+- [Hak5 Download Portal API, Cloud C2 releases, latest 3.5.2 of 1 October 2025 (accessed 16 November 2026)](https://downloads.hak5.org/api/devices/cloudc2/firmwares)
+- [Hak5 Documentation, WiFi Coconut introduction: 14 radios, receive only (accessed 16 November 2026)](https://documentation.hak5.org/wifi-coconut/introduction/introduction.md)
+- [Hak5 Documentation, Cloud C2 basics: self-hosted server, supported devices (accessed 16 November 2026)](https://documentation.hak5.org/cloud-c2/getting-started/cloud-c-basics.md)
+- [Hak5 Documentation, WiFi Pineapple Pager, DEAUTH_CLIENT command (accessed 16 November 2026)](https://documentation.hak5.org/wifi-pineapple-pager/wifi-pineapple-commands/deauth_client.md)
+- [Hak5, product sitemap index: 246 product records, 105 collections (accessed 16 November 2026)](https://hak5.org/sitemap.xml)
+- [Hak5, WiFi Pineapple (Mark VII) product page: list prices (accessed 16 November 2026)](https://hak5.org/products/wifi-pineapple)
+- [Hak5, WiFi Pineapple Pager product page: prices, specifications, community counts, no Cloud C2 support, listing published 5 August 2025 (accessed 16 November 2026)](https://hak5.org/products/pager)
+- [Hak5, WiFi Pineapple Enterprise product page: prices (accessed 16 November 2026)](https://hak5.org/products/wifi-pineapple-enterprise)
+- [Hak5, USB Rubber Ducky product page (accessed 16 November 2026)](https://hak5.org/products/usb-rubber-ducky)
+- [Hak5, Bash Bunny product page (accessed 16 November 2026)](https://hak5.org/products/bash-bunny)
+- [Hak5, Key Croc product page (accessed 16 November 2026)](https://hak5.org/products/key-croc)
+- [Hak5, Screen Crab product page (accessed 16 November 2026)](https://hak5.org/products/screen-crab)
+- [Hak5, Plunder Bug LAN Tap product page (accessed 16 November 2026)](https://hak5.org/products/bug)
+- [Hak5, Packet Squirrel Mark II product page (accessed 16 November 2026)](https://hak5.org/products/packet-squirrel-mark-ii)
+- [Hak5, LAN Turtle Hub product page: record created 26 July 2026 (accessed 16 November 2026)](https://hak5.org/products/lan-turtle-hub)
+- [Hak5, Shark Jack product page: Shark Jack Cable variant (accessed 16 November 2026)](https://hak5.org/products/shark-jack)
+- [Hak5, Shark Jack Display product page (accessed 16 November 2026)](https://hak5.org/products/shark-jack-display)
+- [Hak5, WiFi Coconut product page (accessed 16 November 2026)](https://hak5.org/products/wifi-coconut)
+- [Hak5, Payload Studio Pro product page (accessed 16 November 2026)](https://hak5.org/products/payload-studio-pro)
+- [Hak5, Theme Studio Pro product page, listed 29 October 2026 (accessed 16 November 2026)](https://hak5.org/products/theme-studio-pro)
+- [Hak5, O.MG Cable product page, vendor MG.LOL (accessed 16 November 2026)](https://hak5.org/products/omg-cable)
+- [Hak5, HackRF Pro product page, vendor Great Scott Gadgets (accessed 16 November 2026)](https://hak5.org/products/hackrf-pro)
+- [Hak5, Kismet Case Mod product page (accessed 16 November 2026)](https://hak5.org/products/wifi-pineapple-mark-vii-limited-edition-case-mod)
+- [Hak5, Glytch GPS Mod MK1 for Pager product page (accessed 16 November 2026)](https://hak5.org/products/glytch-gps-mod-for-pager)
+- [Hak5, Advanced DuckyScript Course product page (accessed 16 November 2026)](https://hak5.org/products/advanced-duckyscript-course)
+- [Hak5, USB Rubber Ducky Textbook product page (accessed 16 November 2026)](https://hak5.org/products/usb-rubber-ducky-textbook)
+- [Hak5, C2 (Cloud Command and Control) product page: edition prices (accessed 16 November 2026)](https://hak5.org/products/c2)
+- [Hak5, Cloud C2 Compare 3.0, undated page: editions, devices, users, prices (accessed 16 November 2026)](https://hak5.org/pages/cloud-c2-compare-3-0)
+- [Hak5, Cloud C2 Introduction, undated page: Setup, Ship, Access (accessed 16 November 2026)](https://hak5.org/pages/cloud-c2-introduction)
+- [Hak5, Authorized Resellers, undated page: six resellers in the EU and UK (accessed 16 November 2026)](https://hak5.org/pages/authorized-resellers)
+- [Hak5, Payload Awards, undated page: prizes, rules, eligible countries (accessed 16 November 2026)](https://hak5.org/pages/payload-awards)
+- [Hak5, Developer Program, undated page: grants, stipends, eligible countries (accessed 16 November 2026)](https://hak5.org/pages/developer-program)
+- [Hak5, Partner Program, undated page: rule against black-hat language (accessed 16 November 2026)](https://hak5.org/pages/partner-program)
+- [Payload Hub, articles sitemap: 665 payload write-ups (accessed 16 November 2026)](https://payloadhub.com/sitemap_articles_1.xml)
+- [GitHub, hak5 organization, repository list: 34 repositories, stars and forks (accessed 16 November 2026; read again 17 November 2026 in a browser)](https://github.com/orgs/hak5/repositories?type=all)
+- [Hak5, Code of Ethics, undated page: Hak5 LLC founded 2005, manufacturing, export statement on favourable-treatment countries (accessed 16 November 2026)](https://hak5.org/pages/code-of-ethics)
+- [Hak5, Compliance, undated page: FAR and NDAA representations, resellers, export classification table (accessed 16 November 2026)](https://hak5.org/pages/compliance)
+- [Hak5, Software License Agreement, undated page: Hak5 LLC address, products named, authorized use, California law (accessed 16 November 2026)](https://hak5.org/pages/software-license-agreement)
+- [Hak5, B2B Agreement, undated page: San Francisco address, Texas law (accessed 16 November 2026)](https://hak5.org/pages/b2b-agreement)
+- [Hak5, Terms of Service, undated page: authorized use clause (accessed 16 November 2026)](https://hak5.org/pages/terms-of-service)
+- [Hak5, Brand Protection, undated page: anti-counterfeiting programme (accessed 16 November 2026)](https://hak5.org/pages/brand-protection)
+- [Hak5, WiFi Pineapple Features, undated page: "Patented PineAP Suite" (accessed 16 November 2026)](https://hak5.org/pages/wifi-pineapple-features)
+- [US Attorney's Office, Western District of Pennsylvania, US v. Aleksei Sergeyevich Morenets, published 4 October 2018, updated 13 April 2023 (accessed 16 November 2026)](https://www.justice.gov/usao-wdpa/vw/us-v-Aleksei-Sergeyevich-Morenets)
+- [Indictment, United States v. Aleksei Sergeyevich Morenets et al., W.D. Pa., 2018, DocumentCloud copy: paragraphs 91 to 93 on the OPCW operation and the Wi-Fi Pineapple (accessed 16 November 2026)](https://assets.documentcloud.org/documents/4954153/10-4-18-US-v-Morenets.pdf)
+- [Australian Federal Police, WA man jailed for stealing intimate material and using 'evil twin' WiFi networks, 28 November 2025 (accessed 16 November 2026)](https://afp.gov.au/news-centre/media-release/wa-man-jailed-stealing-intimate-material-and-using-evil-twin-wifi)
+- [Bastille, Wi-Fi Pineapple: Is It Still a Threat, and How to Detect It, 1 September 2026 (accessed 16 November 2026)](https://bastille.net/research/wifi-pineapple/)
+- [eCFR, 15 CFR Part 740, Supplement No. 3, License Exception ENC Favorable Treatment Countries (accessed 16 November 2026 through the eCFR API)](https://www.ecfr.gov/current/title-15/subtitle-B/chapter-VII/subchapter-C/part-740/appendix-Supplement%20No.%203%20to%20Part%20740)
+- [Senado Federal, Lei nº 12.737, de 30 de novembro de 2012: article 154-A and its paragraph 1 (accessed 16 November 2026)](https://legis.senado.leg.br/norma/588113/publicacao/15773241)
+- [Câmara dos Deputados, Lei nº 14.155, de 27 de maio de 2021, original publication: new wording and penalty of article 154-A (accessed 16 November 2026)](https://www2.camara.leg.br/legin/fed/lei/2021/lei-14155-27-maio-2021-791396-publicacaooriginal-162901-pl.html)
+- [Anatel, Certificação de Produtos, published 4 November 2020, modified 8 October 2026 (accessed 16 November 2026)](https://www.gov.br/anatel/pt-br/regulado/certificacao-de-produtos)

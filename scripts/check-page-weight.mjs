@@ -3,7 +3,18 @@
 // ============================================================================
 // scripts/check-page-weight.mjs  —  POST-BUILD, because it weighs the export.
 // ----------------------------------------------------------------------------
-// A WEIGHT BUDGET PER TEMPLATE, AS A RATCHET.
+// A WEIGHT REPORT PER TEMPLATE. IT NEVER FAILS A BUILD (PRIME, 16/11/2026 21:49).
+//
+// *** THE RULING THAT GOVERNS THIS FILE. *** "ALWAYS raise the page size limit
+// when needed, DO NOT abide to the size limitations - always prioritize the
+// CONTENT. For every page, not only glossary." Content is never cut, folded or
+// held back to meet a weight; the ceilings below are now reference figures. A
+// page over its ceiling is printed as a NOTE with its weight, and the ceiling is
+// raised to that weight plus about five per cent in the same change that next
+// touches this file, with the date; the build goes on either way. What follows
+// is the history of the ratchet this guard used to be, kept as written.
+//
+// (Former title: A WEIGHT BUDGET PER TEMPLATE, AS A RATCHET.)
 //
 // WHAT HAPPENED. The production audit of 2026-10-15 (finding F07) measured the
 // decoded HTML of the directory pages: the glossary at 3,253,001 bytes, the
@@ -99,14 +110,19 @@ const CEILINGS = new Map([
   // the growth is the new articles of 15 and 16 November, each a card on the index (the psyops Arcs 2 to 6, the
   // electronic-trading series' ten and the mass-hysteria series' sixteen, PRIME 15/11 21:31 and 23:14), not a template
   // change. Folding the index remains the F07 decision for this page. New ceiling: that weight plus about five per cent.
-  ["/learn", 2_930_000],
+  // RAISED 2026-11-17 (build of 17/11, pt-BR 3,005,370; en 2,870,520): the hacking-devices and steganography series' new
+  // cards, content first (PRIME 16/11/2026 21:49). New ceiling: the pt-BR weight plus about five per cent.
+  ["/learn", 3_160_000],
   // The industry index: every organisation record's card (2026-10-19: en 1,516,848; pt-BR 1,525,955). RAISED 2026-11-09
   // (pt-BR 1,634,488 at the 00:37 build; en 1,608,222, da 1,609,443): the growth is new organisation records, each a
   // card on the index, not a template change; the ceiling was crossed by those added on 08/11/2026 at PRIME's requests
   // (the Brazilian Industry records, SAP and IBM, the consultancies and KPMG; 382 records in all). The page still renders every card; folding or paginating it is the same
   // rendering decision the changelog took on 2026-10-26 (audit F07), PRIME's to take. New ceiling: the heavier locale,
   // pt-BR, plus about five per cent.
-  ["/industry", 1_720_000],
+  // RAISED 2026-11-17 (build of 17/11, pt-BR 2,010,221; en 1,978,268): the 92 Industry records of 16 and 17/11/2026 (the
+  // markets waves and the hacking-devices companies), each a card on the index; content first (PRIME 16/11/2026 21:49).
+  // New ceiling: the pt-BR weight plus about five per cent.
+  ["/industry", 2_110_000],
 ]);
 // Ceilings for a FAMILY of routes, matched by pattern after the exact routes above, each with its reason.
 const PATTERN_CEILINGS = [
@@ -132,9 +148,11 @@ const PATTERN_CEILINGS = [
   // RE-BASED AGAIN 2026-11-16 night, at the build that carried the day's 123 new terms (the redundancy and
   // electronic-trading series and the culture posts, all at PRIME's requests): the pt-BR terms page weighed 2,188,335
   // bytes, over 2,170,000 by growth of content, not of template. New ceiling: that weight plus about five per cent.
-  // The terms page grows with every glossary batch; splitting it (by letter or in pages) is PRIME's rendering decision,
-  // raised with him the same night, and the ceiling is not to be raised again without it.
-  { re: /^\/glossary\/(domain|kind)\/[a-z0-9-]+$/, ceiling: 2_300_000 },
+  // The terms page grows with every glossary batch. PRIME's answer the same night (21:49): always raise the limit, the
+  // content comes first, for every page; this ceiling is a reference figure, never a reason to cut or split content.
+  // RAISED 2026-11-17 (build of 17/11, pt-BR /glossary/kind/term/ 2,331,352): the 55 hacking-devices and 23 steganography
+  // terms. New ceiling: that weight plus about five per cent.
+  { re: /^\/glossary\/(domain|kind)\/[a-z0-9-]+$/, ceiling: 2_450_000 },
 ];
 // The ceiling for every other route: a page a phone can take in one breath. Raised only with a reason written here.
 const DEFAULT_CEILING = 1_200_000;
@@ -166,8 +184,8 @@ function walk(dir, acc = []) {
 
 // The weights: one row per built page.
 const rows = [];
-// Each failure is one sentence a reader can act on.
-const failures = [];
+// Each page over its reference ceiling, one sentence each (reported, never failed: PRIME 16/11/2026 21:49).
+const over = [];
 // Each built locale.
 for (const loc of locales) {
   // The locale's pages.
@@ -182,9 +200,9 @@ for (const loc of locales) {
     // The ceiling that applies.
     // An exact route first, then a route family, then the default.
     const ceiling = CEILINGS.get(route) ?? PATTERN_CEILINGS.find((p) => p.re.test(route))?.ceiling ?? DEFAULT_CEILING;
-    // Over it: a failure that names the page, its weight and its ceiling (an exempt route is weighed, never failed).
+    // Over it: a note that names the page, its weight and its reference ceiling (an exempt route is only weighed).
     if (bytes > ceiling && !EXEMPT.has(route)) {
-      failures.push(`/${loc}${route}/ is ${bytes.toLocaleString("en")} bytes, over its ceiling of ${ceiling.toLocaleString("en")}.`);
+      over.push(`/${loc}${route}/ is ${bytes.toLocaleString("en")} bytes, over its ceiling of ${ceiling.toLocaleString("en")}.`);
     }
   }
 }
@@ -196,10 +214,13 @@ for (const r of rows.slice(0, 10)) {
   console.log(`${TAG}   ${r.bytes.toLocaleString("en").padStart(11)} bytes  /${r.loc}${r.route}/`);
 }
 
-// The verdict.
-if (failures.length) {
-  console.error(`${TAG} FAIL: ${failures.length} page(s) over their weight ceiling.`);
-  for (const f of failures) console.error(`${TAG}   - ${f}`);
-  process.exit(1);
+// The verdict: a note, never a failure (content first, PRIME 16/11/2026 21:49).
+if (over.length) {
+  // Say so plainly, so the reference ceilings can be raised to the new weights in the next change to this file.
+  console.log(`${TAG} NOTE: ${over.length} page(s) over their reference ceiling; reported, not failed (content first, PRIME 16/11/2026 21:49): raise the ceiling to the new weight.`);
+  // Each page, its weight and its old ceiling.
+  for (const f of over) console.log(`${TAG}   - ${f}`);
+  // The build goes on.
+  process.exit(0);
 }
 console.log(`${TAG} OK: every page within its ceiling (declared: ${[...CEILINGS.keys()].join(", ")}; families: ${PATTERN_CEILINGS.map((p) => p.re.source).join(", ")}; default ${DEFAULT_CEILING.toLocaleString("en")} bytes).`);

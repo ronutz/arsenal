@@ -1,0 +1,46 @@
+---
+slug: network-implants-lan-turtle-packet-squirrel-shark-jack-and-key-croc
+title: "Network implants: LAN Turtle, Packet Squirrel, Shark Jack and Key Croc"
+summary: "The last part of the hacking devices series is not written yet. It was to cover the small commercial devices sold for authorized penetration tests that are connected inside a network or between a keyboard and a computer; its draft was stopped by the automated cyber safeguards of the AI model the site is written with, and it waits for the provider's review. This page explains what the part will cover, why it is waiting and what to read meanwhile."
+concepts: ["network implant", "physical access", "authorized penetration testing", "AI safeguards", "false positive", "Cyber Verification Program"]
+relatedTools: []
+relatedArticles: ["hacking-devices-from-the-blue-box-to-the-flipper-zero", "hak5-from-a-video-show-to-a-hacking-gear-company", "keystroke-injection-rubber-ducky-bash-bunny-badusb-and-the-om-g-cable", "keeping-rogue-devices-off-the-network-802-1x-nac-port-security-and-physical-audits", "nac-family-history"]
+category: security
+order: 401
+status: reviewed
+updated: "2026-11-17"
+---
+
+This is the last part of the series that began with [Hacking devices: from the blue box to the Flipper Zero](/learn/hacking-devices-from-the-blue-box-to-the-flipper-zero), and it is not written yet. It was planned as part 5, between [keystroke injection](/learn/keystroke-injection-rubber-ducky-bash-bunny-badusb-and-the-om-g-cable) and [the Flipper Zero](/learn/the-flipper-zero-sub-ghz-rfid-nfc-infrared-and-the-panic), and it moved to the end of the series for the reason this page explains.
+
+## What this part will cover
+
+Network implants are small computers sold for authorized penetration tests, meant to be connected inside a client's network during an engagement. Hak5, the company covered in [part 2 of the series](/learn/hak5-from-a-video-show-to-a-hacking-gear-company), sells several of them, and that part lists them among its products with their dates. The finished article will follow the pattern of the rest of the series:
+
+- the history of commercial implants, from improvised single-board computers to purpose-built products;
+- each of Hak5's implants, the LAN Turtle, the Packet Squirrel, the Shark Jack, the Key Croc and the Screen Crab, as its maker's documentation describes it, with dates and list prices;
+- what such a device cannot do, and what it depends on in the network around it;
+- the documented incidents in which attackers used a planted device, from official and vendor-research reports;
+- how defenders find and stop them, and what the law says in Brazil, the United States, the United Kingdom and the European Union.
+
+## Why it is not written yet
+
+The articles on this site are researched and drafted with Claude, the artificial intelligence (AI) model made by Anthropic, under the site's editorial rules and automated checks (the [colophon](/colophon) says how the site is made). On 16 November 2026, while the English draft of this part was being written, Anthropic's real-time cyber safeguards, automated classifiers that stop a response they judge could help a cyberattack, stopped it, and the notice that came with the block said not to produce that content again, even reworded. Anthropic's own help page on its Cyber Verification Program, the programme for verified security professionals, acknowledges that its users "may experience some model refusals and classifier blocks for allowed security work" ([Anthropic, Claude Help Center](https://support.claude.com/en/articles/14604842-real-time-cyber-safeguards-on-claude)).
+
+The block was not an editorial or a legal decision. The series' rules forbid step-by-step attack procedures, payloads aimed at third parties and instructions for defeating any product's security, and they are the same rules under which its other parts were written, including the part on [keystroke injection](/learn/keystroke-injection-rubber-ducky-bash-bunny-badusb-and-the-om-g-cable), which describes the closest relatives of these devices.
+
+## What happens next
+
+The editors are sending Anthropic a false-positive report that asks for a review. If the review clears the subject, this part will be written to the same standard as the rest of the series and will replace this page; if it does not, this page will say so. Meanwhile, part 5 covers the defensive side of the same problem, from port-based authentication and network access control (NAC) to switch port security and physical audits: [Keeping rogue devices off the network: 802.1X, NAC, port security and physical audits](/learn/keeping-rogue-devices-off-the-network-802-1x-nac-port-security-and-physical-audits).
+
+## What to read meanwhile
+
+- [Hak5: from a video show to a hacking-gear company](/learn/hak5-from-a-video-show-to-a-hacking-gear-company) places the implants in the history of the company that sells them.
+- [Keystroke injection: the Rubber Ducky, the Bash Bunny, BadUSB and the O.MG Cable](/learn/keystroke-injection-rubber-ducky-bash-bunny-badusb-and-the-om-g-cable) covers the Universal Serial Bus (USB) side of the same trust problem, with its defences.
+- [Network Access Control: The Idea That Was Right Too Early, Twice](/learn/nac-family-history) traces network access control, the family of products that decides which devices may use a network port.
+- The glossary entry [802.1X](/glossary/802-1x) explains port-based authentication, the standard that keeps an unknown device from using a port.
+
+## Sources
+
+- [Anthropic, Claude Help Center, "Cyber Verification Program": verified users "may experience some model refusals and classifier blocks for allowed security work" (read 17 November 2026)](https://support.claude.com/en/articles/14604842-real-time-cyber-safeguards-on-claude)
+- [Hak5, product documentation, the maker's own descriptions of its devices (read 16 November 2026)](https://documentation.hak5.org/)

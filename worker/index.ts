@@ -208,6 +208,9 @@ const MERGED_GLOSSARY_SLUGS = new Map<string, string>([
   // PRIME 12/11/2026 01:48 ("Region: merge"): the thin cloud-region entry merged into region, which the content sweep had
   // just rewritten in full (batch 5B); the old address answers with a 308 to the survivor.
   ["cloud-region", "region"],
+  // PRIME 16/11/2026 20:34 ("Glossary duplicate: merge rpo-rto and rto-rpo"): rto-rpo, the richer entry, keeps the
+  // slug; rpo-rto's aliases, neighbours, source and prose moved into it, and its address redirects here.
+  ["rpo-rto", "rto-rpo"],
   // PRIME 12/11/2026 12:42 ("Do the c2 and doh, caa and pmtud merges as recommended"): each thinner or duplicate
   // entry merged into the one the content sweep had written in full; the old addresses answer with a 308.
   ["c2", "command-and-control"],

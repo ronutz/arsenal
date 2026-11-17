@@ -142,6 +142,15 @@ function markdownTargets(line) {
 }
 
 // --- collect every cited URL, remembering where each one is cited ----------
+// *** DEAD-MARKED CITATIONS NEVER FAIL (PRIME, 16/11/2026 21:53). *** "Remember to never remove content because the
+// links to the sources have gone dead. Mark the links as dead and maybe remove the hyperlink from them so that the
+// source liveness checks don't fail." A citation is marked in its own label or link text, on the line that carries
+// its address: "link dead as of <date>" (English), "link fora do ar desde <date>" (Portuguese), or "inaccessible as of"
+// / "inacessível desde". The address stays exactly as it was (GOLDEN RULE, 15/11/2026); when EVERY place that cites
+// an address marks it, a 404 there is MARKED-DEAD: printed, counted, never a failure. One unmarked place keeps it
+// undeclared, so the run names the line still to mark.
+const DEAD_MARKER = /link dead as of|link fora do ar desde|inaccessible as of|inacessível desde/;
+const marked = new Map(); // url -> Set of "file:line" whose line marks the link dead
 const where = new Map(); // url -> Set of "file:line"
 for (const root of ROOTS) {
   for (const file of walk(root)) {
@@ -188,6 +197,12 @@ for (const root of ROOTS) {
       for (const u of found) {
         if (!where.has(u)) where.set(u, new Set());
         where.get(u).add(`${file}:${i + 1}`);
+        // A citation whose own line marks it dead (the GOLDEN RULE's forms, canon RULE-dead-sources-keep-content-20261115)
+        // is recorded, so a 404 on it is reported as MARKED-DEAD and never fails the run (PRIME 16/11/2026 21:53).
+        if (DEAD_MARKER.test(line)) {
+          if (!marked.has(u)) marked.set(u, new Set());
+          marked.get(u).add(`${file}:${i + 1}`);
+        }
       }
     });
   }
@@ -263,6 +278,16 @@ const DECLARED_SUSPECT = new Map([
   // (2003) and inLearn (2008) history, so the citation is kept as the record of what was read on 2026-10-05, its label
   // says the page was removed, and the entries' externalUrl links to it were taken out. Revisit if the group republishes.
   ["https://www.cylk.com.br/grupo-ihc/", "dead since at least 2026-10-26; kept as the dated record of the 2026-10-05 read, labelled as removed"],
+  // 16/11/2026 (run 43912926208, read the same evening in PRIME's Chrome): ten declarations came off because the runner
+  // got answers from their hosts (seven matrixbcg.com pages, olam.business/audiocodes, two skytap.com pages); every one of
+  // their citations keeps its "link dead as of" label, which the audit now honours (MARKED-DEAD). In the browser:
+  // matrixbcg.com shows a certificate ("Privacy error") page, olam.business/audiocodes redirects to an unrelated
+  // article, and both skytap.com pages redirect to Kyndryl Cloud Uplift: none serves the page that was cited.
+  // ALIVE, 16/11/2026: the runner got 404 from BrasilAPI for these two CNPJ records; PRIME's Chrome got the JSON record
+  // for each (200, with the company's partners listed). A third (43024467000184) answered "CNPJ ... não encontrado" in
+  // the browser too and is marked dead where cited.
+  ["https://brasilapi.com.br/api/cnpj/v1/04709662000196", "alive in PRIME's Chrome on 16/11/2026 (the CNPJ record, 200); 404 to the CI runner"],
+  ["https://brasilapi.com.br/api/cnpj/v1/68588326000115", "alive in PRIME's Chrome on 16/11/2026 (the CNPJ record, 200); 404 to the CI runner"],
   // 15/11/2026, the GOLDEN RULE (PRIME 20:43; canon RULE-dead-sources-keep-content-20261115): every citation that had been
   // removed or replaced because its page was dead is back beside its replacement, its label marked "link dead as of
   // <date>" ("link fora do ar desde" in Portuguese). The date is the day the canon recorded it dead.
@@ -284,16 +309,8 @@ const DECLARED_SUSPECT = new Map([
   ["https://en.wikipedia.org/wiki/Recife_Center_for_Advanced_Studies_and_Systems", "dead since 2026-10-18 (canon record); kept under the golden rule, its label marked dead"],
   ["https://en.wikipedia.org/wiki/Wall_of_Sheep", "dead since 2026-09-30 (canon record); kept under the golden rule, its label marked dead"],
   ["https://investsp.org.br/fundo-apax-compra-controle-da-tivit/", "dead since 2026-09-27 (canon record); kept under the golden rule, its label marked dead"],
-  ["https://matrixbcg.com/blogs/brief-history/equinix", "dead since 2026-09-27 (canon record); kept under the golden rule, its label marked dead"],
-  ["https://matrixbcg.com/blogs/brief-history/hcltech", "dead since 2026-09-27 (canon record); kept under the golden rule, its label marked dead"],
-  ["https://matrixbcg.com/blogs/brief-history/kyndryl", "dead since 2026-09-27 (canon record); kept under the golden rule, its label marked dead"],
-  ["https://matrixbcg.com/blogs/brief-history/scansource", "dead since 2026-09-27 (canon record); kept under the golden rule, its label marked dead"],
-  ["https://matrixbcg.com/blogs/brief-history/tdsynnex", "dead since 2026-09-27 (canon record); kept under the golden rule, its label marked dead"],
-  ["https://matrixbcg.com/blogs/owners/dynatrace", "dead since 2026-09-27 (canon record); kept under the golden rule, its label marked dead"],
-  ["https://matrixbcg.com/blogs/owners/qualys", "dead since 2026-09-27 (canon record); kept under the golden rule, its label marked dead"],
   ["https://my.f5.com/manage/s/documentation", "dead since 2026-10-18 (canon record); kept under the golden rule, its label marked dead"],
   ["https://newsroom.ibm.com/2019-07-09-IBM-Closes-Landmark-Acquisition-of-Red-Hat-for-34-Billion-Defines-Open-Hybrid-Cloud-Future", "dead since 2026-09-27 (canon record); kept under the golden rule, its label marked dead"],
-  ["https://olam.business/audiocodes", "dead since 2026-10-18 (canon record); kept under the golden rule, its label marked dead"],
   ["https://portersfiveforce.com/blogs/brief-history/audiocodes", "dead since 2026-09-27 (canon record); kept under the golden rule, its label marked dead"],
   ["https://portersfiveforce.com/blogs/brief-history/cloudflare", "dead since 2026-09-27 (canon record); kept under the golden rule, its label marked dead"],
   ["https://portersfiveforce.com/blogs/brief-history/sailpoint", "dead since 2026-09-27 (canon record); kept under the golden rule, its label marked dead"],
@@ -313,8 +330,17 @@ const DECLARED_SUSPECT = new Map([
   ["https://www.latincounsel.com/?Noticias=Acquisition_of_Intersmart_Comercio_Importaiio_e_Exportaiio_de_Equipamentos_Eletrinicos_SA_Network1", "dead since 2026-10-18 (canon record); kept under the golden rule, its label marked dead"],
   ["https://www.readytech.com/about-rt-training-delivery", "dead since 2026-10-26 (canon record); kept under the golden rule, its label marked dead"],
   ["https://www.reedsmith.com/en/news/2018/10/reed-smith-advises-nexit-ventures-on-the-sale-of-ekahau-to-ookla-llc", "dead since 2026-10-18 (canon record); kept under the golden rule, its label marked dead"],
-  ["https://www.skytap.com/about-us/", "dead since 2026-10-07 (canon record); kept under the golden rule, its label marked dead"],
-  ["https://www.skytap.com/course-manager-cma/", "dead since 2026-10-07 (canon record); kept under the golden rule, its label marked dead"],
+]);
+
+// --- hosts that answer 404 to the CI runner and serve the same pages to a real browser -----------------------
+// Keyed by hostname, with the finding that settled it. A 404 from one of these hosts is RUNNER-404: printed, never a
+// failure, never a reason to mark a live citation dead.
+const RUNNER_404_HOSTS = new Map([
+  // 16/11/2026, run 43912926208 (ffe49238): every one of the 19 cited www2.camara.leg.br/legin pages answered 404 to the
+  // GitHub runner. The same evening, in PRIME's Chrome, all 19 answered 200 with their own texts (a same-origin fetch
+  // from a legin page, cache: "no-store": LEI Nº 13.709, LEI Nº 12.965, DECRETO Nº 12.573, MEDIDA PROVISÓRIA
+  // Nº 2.200-2 and the rest, each by its number); the host's root answers the runner, so the control did not catch it.
+  ["www2.camara.leg.br", "alive in PRIME's Chrome on 16/11/2026 (all 19 cited legin pages, 200 with their law texts); 404 to the CI runner only"],
 ]);
 
 const results = [];
@@ -356,11 +382,23 @@ async function worker(queue) {
 const queue = [...urls];
 await Promise.all(Array.from({ length: CONCURRENCY }, () => worker(queue)));
 
+// Re-bucket the 404s that are settled without a declaration: a citation marked dead wherever it is cited
+// (MARKED-DEAD), and a host that 404s the runner only (RUNNER-404). Neither fails a run.
+for (const r of results) {
+  // Only the 404 buckets.
+  if (r.status !== "SUSPECT" && r.status !== "SUSPECT-MOVED") continue;
+  // Every place that cites it marks it dead.
+  const m = marked.get(r.url);
+  if (m && [...where.get(r.url)].every((loc) => m.has(loc))) { r.status = "MARKED-DEAD"; continue; }
+  // A host declared as answering 404 to the runner only.
+  if (RUNNER_404_HOSTS.has(new URL(r.url).hostname)) r.status = "RUNNER-404";
+}
+
 const by = results.reduce((a, r) => ((a[r.status] = (a[r.status] || 0) + 1), a), {});
 fs.writeFileSync(".source-liveness.json", JSON.stringify({ at: new Date().toISOString(), by, results }, null, 1));
 
 console.log("\n[audit-source-liveness] summary");
-for (const k of ["OK", "REDIRECT", "REDIRECT-UNRESOLVED", "BLOCKED", "SERVER", "UNREACHABLE", "HOST-REFUSED", "SUSPECT", "SUSPECT-MOVED"]) {
+for (const k of ["OK", "REDIRECT", "REDIRECT-UNRESOLVED", "BLOCKED", "SERVER", "UNREACHABLE", "HOST-REFUSED", "SUSPECT", "SUSPECT-MOVED", "MARKED-DEAD", "RUNNER-404"]) {
   if (by[k]) console.log(`  ${k.padEnd(12)} ${by[k]}`);
 }
 
@@ -374,8 +412,12 @@ const declared = suspects.filter((r) => DECLARED_SUSPECT.has(r.url));
 // `probed` and not `where`: on a --limit run most cited URLs were never asked,
 // and absence from the suspect list would then look like a repair.
 const probed = new Set(results.map((r) => r.url));
+// A declared address that answers again is good news, not a defect: since PRIME's ruling of 16/11/2026 21:53 (the
+// liveness check must not fail over dead links) it is printed as a NOTE and never fails a run; remove it from
+// DECLARED_SUSPECT (or let the citation's dead marker cover it) when convenient. A dead-marked citation that answers
+// again keeps its marker: the label records a dated reading, which stays true.
 const staleDeclarations = [...DECLARED_SUSPECT.keys()].filter(
-  (u) => probed.has(u) && !suspects.some((r) => r.url === u),
+  (u) => probed.has(u) && !suspects.some((r) => r.url === u) && !results.some((r) => r.url === u && r.status === "MARKED-DEAD"),
 );
 
 if (declared.length) {
@@ -384,8 +426,17 @@ if (declared.length) {
 }
 
 if (staleDeclarations.length) {
-  console.log(`\n  *** ${staleDeclarations.length} STALE DECLARATION(S) - no longer suspect, remove from DECLARED_SUSPECT: ***\n`);
+  console.log(`\n  NOTE: ${staleDeclarations.length} declaration(s) no longer answer 404 (not a failure; remove from DECLARED_SUSPECT when convenient):\n`);
   for (const u of staleDeclarations) console.log(`  ${u}`);
+}
+
+// The citations marked dead, and the runner-only 404s: printed for the record, never failed.
+const markedDead = results.filter((r) => r.status === "MARKED-DEAD");
+if (markedDead.length) console.log(`\n  ${markedDead.length} citation address(es) marked dead where cited (GOLDEN RULE; never a failure).`);
+const runner404 = results.filter((r) => r.status === "RUNNER-404");
+if (runner404.length) {
+  console.log(`\n  ${runner404.length} address(es) on hosts that 404 the CI runner only (never a failure):\n`);
+  for (const r of runner404.slice(0, 40)) console.log(`  ${r.code}  ${r.url}\n        ${RUNNER_404_HOSTS.get(new URL(r.url).hostname)}`);
 }
 
 if (undeclared.length) {
@@ -403,18 +454,18 @@ console.log("\n  Full report: .source-liveness.json");
 // that goes red only on an undeclared suspect or a stale declaration is a signal
 // worth reading. The distinction is the whole reason this file is an audit.
 if (args.includes("--strict")) {
-  const problems = undeclared.length + staleDeclarations.length;
+  // Only an undeclared, unmarked 404 fails: the signal to confirm it in a browser and mark it dead (or declare it alive).
+  const problems = undeclared.length;
   if (problems > 0) {
     console.error(
-      `\n[audit-source-liveness] STRICT FAIL: ${undeclared.length} undeclared suspect(s), ` +
-        `${staleDeclarations.length} stale declaration(s).\n` +
+      `\n[audit-source-liveness] STRICT FAIL: ${undeclared.length} undeclared suspect(s) not marked dead.\n` +
         `      Confirm each with a LIVE SECOND CLIENT (a real browser, never a cached fetch) before treating it as dead. If it is dead, ` +
-        `repair or remove the citation and keep the claim in the copy\n` +
-        `      (PRIME 2026-09-27: a fact is not deleted for want of a source). If it is alive, ` +
-        `add it to DECLARED_SUSPECT with the finding that settled it.\n`,
+        `KEEP the citation, its address and every sentence it supports, and mark it dead in its label or link text\n` +
+        `      ("; link dead as of <date>", pt-BR "; link fora do ar desde <date>": GOLDEN RULE, PRIME 15/11 and 16/11/2026). If it is alive, ` +
+        `add it to DECLARED_SUSPECT with the finding that settled it (or its host to RUNNER_404_HOSTS).\n`,
     );
     process.exit(1);
   }
-  console.log("\n[audit-source-liveness] STRICT OK: no undeclared suspects, no stale declarations.");
+  console.log("\n[audit-source-liveness] STRICT OK: no undeclared suspect; every 404 is declared, marked dead where cited, or a runner-only host.");
 }
 console.log("  SUSPECT is a CANDIDATE, never a verdict. This environment can 404 a\n  specific path on a host whose root answers fine - four live Wikipedia\n  articles came back 404 here on 2026-09-27 and served content to another\n  client. Confirm every SUSPECT with a different client before acting.");

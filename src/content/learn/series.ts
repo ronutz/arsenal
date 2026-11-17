@@ -455,6 +455,26 @@ export const LEARN_SERIES: LearnSeries[] = [
     ],
   },
   {
+    // Steganography and related techniques, hiding that a message exists (PRIME 17/11/2026 02:01; wave 1 written
+    // 17/11/2026 by agents A, B and C; wave 2, parts 463 to 468, after the weekly usage reset).
+    id: "steganography", // copy at learnSeries.items.steganography
+    group: "crypto", // beside cryptography: hiding that a message exists, as against what it says
+    opener: "steganography-hiding-that-a-message-exists", // 457
+    parts: [
+      { slug: "steganography-before-computers-wax-tablets-invisible-ink-and-microdots" }, // 458
+      { slug: "hiding-in-images-lsb-jpeg-and-adaptive-steganography" }, // 459
+      { slug: "steganalysis-finding-the-hidden-message" }, // 460
+      { slug: "hiding-in-sound-video-and-text-from-echo-hiding-to-zero-width-characters" }, // 461
+      { slug: "watermarks-and-fingerprints-marking-content-to-trace-it" }, // 462
+      { planned: "networkCovertChannels" }, // 463, wave 2: network covert channels and tunnels
+      { planned: "stegomalware" }, // 464, wave 2: stegomalware, from the vendor reports
+      { planned: "airGapChannels" }, // 465, wave 2: air gaps and physical covert channels
+      { planned: "espionageAndCourts" }, // 466, wave 2: espionage and the courts
+      { planned: "steganographyAndAi" }, // 467, wave 2: steganography and AI
+      { planned: "detectingAndStripping" }, // 468, wave 2: detecting and stripping hidden content
+    ],
+  },
+  {
     // The browser's security headers (LS-1a).
     id: "web-security-headers",
     group: "web",
@@ -823,6 +843,29 @@ export const LEARN_SERIES: LearnSeries[] = [
       { slug: "cvss-temporal-and-environmental" },
       { slug: "cvss-severity-bands-and-limits" },
       { slug: "cvss-v3-vs-v4" },
+    ],
+  },
+  {
+    // Hacking devices (PRIME 16/11/2026 22:56: "We need a series on hacking devices. As usual, history, evolution,
+    // current technologies, offerings, gadgets, systems"). Wave 1 (16/11/2026, agents A to E): 389 to 398, except 394;
+    // 394 is the defensive part (agent G) since PRIME 17/11/2026 00:39, and the original network-implants part is planned
+    // last, pending Anthropic's review; wave 2 (agent F): 399 and 400, named in the packs as planned parts until they land. The order is the opener's own "This series, in order" list.
+    id: "hacking-devices",
+    group: "security",
+    opener: "hacking-devices-from-the-blue-box-to-the-flipper-zero", // 389
+    parts: [
+      { slug: "tone-boxes-the-blue-box-the-red-box-and-in-band-signalling" }, // 390
+      { slug: "hak5-from-a-video-show-to-a-hacking-gear-company" }, // 391
+      { slug: "the-wifi-pineapple-rogue-access-points-and-the-karma-attack" }, // 392
+      { slug: "keystroke-injection-rubber-ducky-bash-bunny-badusb-and-the-om-g-cable" }, // 393
+      { slug: "keeping-rogue-devices-off-the-network-802-1x-nac-port-security-and-physical-audits" }, // 394: keeping rogue devices off the network (defensive part, agent G, PRIME 17/11/2026 00:39)
+      { slug: "the-flipper-zero-sub-ghz-rfid-nfc-infrared-and-the-panic" }, // 395
+      { slug: "high-boy-esp32-marauder-and-the-flipper-alternatives" }, // 396
+      { slug: "radio-for-hackers-sdr-hackrf-rtl-sdr-and-rolling-codes" }, // 397
+      { slug: "badges-and-cards-rfid-nfc-the-proxmark-and-mifare" }, // 398
+      { slug: "the-hardware-hackers-bench-bus-pirate-jtag-uart-and-chipwhisperer" }, // 399: the hardware hacker's bench (wave 2, agent F)
+      { slug: "owning-hacking-gear-legally-brazil-the-us-the-eu-and-canada" }, // 400: owning hacking gear legally (wave 2, agent F)
+      { slug: "network-implants-lan-turtle-packet-squirrel-shark-jack-and-key-croc" }, // network implants, placeholder page since 17/11/2026: network implants: stopped by Anthropic's cyber safeguards classifier on 16/11/2026; last part, pending Anthropic's review of a false-positive report (PRIME 17/11/2026 00:39)
     ],
   },
   // ------------------------------------------------------------------------------------------------------------------

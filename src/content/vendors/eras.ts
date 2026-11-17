@@ -41,7 +41,9 @@ const THIS_YEAR = new Date().getUTCFullYear();
 export const INDUSTRY_ERAS: readonly IndustryEra[] = [
   // Everything before the first ARPANET link: the telegraph, the telephone, the transistor, the integrated
   // circuit and the modem; the companies founded here (Nokia, Siemens, Bell Labs, IBM) predate networking.
-  { key: "before-the-network", from: 1800, to: 1968, anchors: ["integrated-circuit", "first-modem", "moores-law"] },
+  // From 1790 since 16/11/2026: the New York Stock Exchange dates itself to the Buttonwood Agreement of 1792, the
+  // earliest story year on the timeline once the financial-markets companies arrived (check-eras: contiguous from it).
+  { key: "before-the-network", from: 1790, to: 1968, anchors: ["integrated-circuit", "first-modem", "moores-law"] },
   // From the first ARPANET links (1969) to the day the ARPANET switched to TCP/IP (1 January 1983): the packet,
   // Ethernet, the TCP paper, DNS.
   { key: "the-packet-and-the-wire", from: 1969, to: 1983, anchors: ["arpanet", "ethernet-memo", "tcp-paper", "tcpip-flag-day"] },

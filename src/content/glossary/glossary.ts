@@ -1470,13 +1470,19 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     ], // twenty-seven sources, one object per line
   },
   {
-    slug: "war-dialing",
-    headword: "War dialing",
-    kind: "jargon",
-    domains: ["hacking", "isp-telecom"],
-    aliases: ["wardialing", "demon dialing", "toneloc"],
-    relatedTerms: ["wargames", "phreaking", "pentest"],
-    sources: [{ label: "Wardialing - technique and origin", href: "https://en.wikipedia.org/wiki/Wardialing" }],
+    // war-dialing (ENRICHMENT, replaces the existing object): keeps its Wikipedia source and aliases, adds the Jargon File and NIST.
+    slug: "war-dialing", // unchanged address
+    headword: "War dialing", // unchanged headword
+    kind: "jargon", // unchanged kind
+    domains: ["hacking", "isp-telecom"], // unchanged domains
+    aliases: ["wardialing", "demon dialing", "toneloc", "war dialer", "wargames dialer"], // the existing three, then the tool name and the Jargon File's etymology
+    relatedTerms: ["wargames", "phreaking", "pentest", "war-driving", "tone-box"], // the existing three, then the successor and this batch
+    relatedArticles: ["hacking-devices-from-the-blue-box-to-the-flipper-zero", "hacking-in-the-20th-century"], // the opener and the history field guide
+    sources: [ // every label says what the page says and when it was read
+      { label: "Wardialing - technique and origin", href: "https://en.wikipedia.org/wiki/Wardialing" }, // the existing source, kept (golden rule)
+      { label: "The Jargon File, version 4.4.7, entries 'war dialer' and 'demon dialer' (read 2026-11-16): from 'wargames dialer', after the film; a program that calls a list or range of numbers and records those answering with handshake tones; evolved from the demon dialers of the blue-box days", href: "https://jargon-file.org/archive/jargon-4.4.7.dos.txt" }, // the hackers' definition
+      { label: "NIST, Special Publication 800-115, Technical Guide to Information Security Testing and Assessment, September 2008, appendix D (read 2026-11-16): war dialers used by administrators and attackers; four modems can dial 10,000 numbers in days; organizations should war dial at least once a year; a modem can bypass perimeter security", href: "https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-115.pdf" }, // the defender's use
+    ], // three sources, one object per line
   },
   {
     slug: "irc",
@@ -2329,10 +2335,12 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     kind: "lore",
     domains: ["cyber-security", "ops-culture"],
     aliases: ["elliot alderson", "fsociety", "sam esmail", "sociedade hacker"], // + the Brazilian title (Apple TV Brasil, 16/11/2026)
-    relatedTerms: ["the-matrix", "social-engineering", "anonymous", "metasploit"], // + a tool Wired confirms on screen
+    relatedTerms: ["the-matrix", "social-engineering", "anonymous", "metasploit", "solar-designer", "brute-force"], // + a tool Wired confirms on screen; + John the Ripper's author and its attack class (16/11/2026)
     sources: [
       { label: "Mr. Robot", href: "https://en.wikipedia.org/wiki/Mr._Robot" },
-      { label: "Wired, A Peek Inside Mr. Robot's Toolbox, 26 August 2015 (read 2026-11-16): DeepSound, ProtonMail, a Raspberry Pi into HVAC, Tastic RFID Thief, RSA SecurID, Metasploit and Meterpreter, SET SMS spoofing, FlexiSPY; technical adviser Michael Bazzell", href: "https://www.wired.com/2015/08/peek-inside-mr-robots-toolbox/" },
+      { label: "Wired, A Peek Inside Mr. Robot's Toolbox, 26 August 2015 (read 2026-11-16): Kali Linux, BackTrack's successor, used in multiple episodes; John the Ripper, which Elliot used in the second episode to crack Tyrell's password; DeepSound, ProtonMail, a Raspberry Pi into HVAC, Tastic RFID Thief, RSA SecurID, Metasploit and Meterpreter, SET SMS spoofing, FlexiSPY; technical adviser Michael Bazzell", href: "https://www.wired.com/2015/08/peek-inside-mr-robots-toolbox/" },
+      { label: "The Globe and Mail, Five hacks from Mr. Robot and how they work, 27 June 2016 (read 2026-11-16): brute-force password hack, episode 2: Elliot uses a common dictionary word search with John the Ripper to crack the password of Evil Corp's interim chief technology officer, Tyrell Wellick", href: "https://www.theglobeandmail.com/report-on-business/rob-magazine/what-your-company-can-learn-from-mr-robot/article30522546/" }, // the episode and the tool (PRIME 16/11/2026 20:34)
+      { label: "Openwall, John the Ripper (read 2026-11-16): an open source password security auditing and password recovery tool available for many operating systems", href: "https://www.openwall.com/john/" }, // the tool's own page
       { label: "Vice, Where Mr. Robot Gets Inspiration for Its Hacks, 20 June 2016 (read 2026-11-16): Kor Adana, every attack based on a real attack", href: "https://www.vice.com/en/article/where-mr-robot-gets-inspiration-for-its-hacks" },
       { label: "Comcast, Mr. Robot Wins Prestigious Peabody Award, 22 April 2016 (read 2026-11-16)", href: "https://corporate.comcast.com/news-information/news-feed/usa-networks-universal-cable-productions-mr-robot-wins-prestigious-peabody-award" },
     ],
@@ -3771,17 +3779,8 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     kind: "term",
     domains: ["it-support", "cyber-security"],
     aliases: ["3-2-1", "object lock", "worm storage", "offline copy", "air-gapped backup"],
-    relatedTerms: ["ransomware", "air-gap", "rpo-rto"],
+    relatedTerms: ["ransomware", "air-gap", "rto-rpo"],
     sources: [{ label: "CISA - #StopRansomware Guide", href: "https://www.cisa.gov/stopransomware/ransomware-guide" }],
-  },
-  {
-    slug: "rpo-rto",
-    headword: "RPO and RTO (recovery objectives)",
-    kind: "acronym",
-    domains: ["it-support", "grc"],
-    aliases: ["recovery point objective", "recovery time objective", "restore test"],
-    relatedTerms: ["immutable-backup", "ransomware", "blast-radius"],
-    sources: [{ label: "NIST SP 800-34 Rev. 1 - Contingency Planning Guide", href: "https://csrc.nist.gov/pubs/sp/800/34/r1/upd1/final" }],
   },
   {
     slug: "bcp38",
@@ -6628,7 +6627,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
       { label: "curl, curl.1 the man page (read 2026-11-11): http_proxy, HTTPS_PROXY, ALL_PROXY, NO_PROXY; http_proxy is only available in lower case", href: "https://curl.se/docs/manpage.html" }, // curl
       { label: "httpoxy.org (read 2026-11-11): RFC 3875 (CGI) puts the Proxy request header into HTTP_PROXY; an attacker may proxy a CGI application's outgoing requests; disclosed mid-2016; CVE-2016-5385 (PHP), CVE-2016-5387 (Apache HTTP Server) and others; block the Proxy header", href: "https://httpoxy.org/" }, // httpoxy.org (read 2026-11-11): RFC 3875 
       { label: "NDSS Symposium 2017, Durumeric, Ma, Springall, Barnes, Sullivan, Bursztein, Bailey, Halderman, Paxson, The Security Impact of HTTPS Interception (read 2026-11-11): measured at Firefox update servers, e-commerce sites and Cloudflare; more than an order of magnitude more interception than estimated; nearly all products reduce connection security and many introduce severe vulnerabilities", href: "https://www.ndss-symposium.org/ndss2017/ndss-2017-programme/security-impact-https-interception/" }, // NDSS Symposium 2017
-      { label: "F5 DevCentral, What is a Proxy? (read 2026-11-11): a full proxy creates a client connection along with a separate server connection with a little gap in the middle, never blended; BIG-IP is a full proxy architecture", href: "https://devcentral.f5.com/s/articles/what-is-a-proxy-25839" }, // F5 DevCentral
+      { label: "F5 DevCentral, What is a Proxy? (read 2026-11-11): a full proxy creates a client connection along with a separate server connection with a little gap in the middle, never blended; BIG-IP is a full proxy architecture; link dead as of 16 November 2026", href: "https://devcentral.f5.com/s/articles/what-is-a-proxy-25839" }, // F5 DevCentral
       { label: "IETF, RFC 7239, Forwarded HTTP Extension, June 2014 (read 2026-11-11): replaces the non-standard X-Forwarded-For, X-Forwarded-By and X-Forwarded-Proto with one Forwarded field (for, by, proto); it cannot be relied upon, since every node including the client may modify it", href: "https://www.rfc-editor.org/rfc/rfc7239.txt" }, // IETF
     ], // 12 sources, one object per line
   },
@@ -7031,7 +7030,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["ops-culture", "cyber-security"],
     aliases: ["restore"],
     relatedArticles: ["backups-and-ransomware-recovery", "bigip-ucs-archives", "the-stj-ransomware-attack", "fortimanager-scripts-revisions-and-troubleshooting"], // the Learn articles that teach it (batch 3C/3D)
-    relatedTerms: ["ransomware", "fault-tolerance", "immutable-backup", "three-two-one-backup", "rpo-rto", "schroedingers-backup", "raid-is-not-a-backup", "replication", "shadow-copy", "air-gap", "hot-warm-cold-standby", "data-retention"], // its neighbours, the existing ones first (batch 3C/3D)
+    relatedTerms: ["ransomware", "fault-tolerance", "immutable-backup", "three-two-one-backup", "rto-rpo", "schroedingers-backup", "raid-is-not-a-backup", "replication", "shadow-copy", "air-gap", "hot-warm-cold-standby", "data-retention"], // its neighbours, the existing ones first (batch 3C/3D)
     sources: [ // every label says what the page says and when it was read (batch 3C/3D)
       { label: "NIST CSRC Glossary, 'backup' (read 2026-11-11): a copy of files and programs made to facilitate recovery if necessary (SP 800-34 Rev. 1); for keys, a copy of key information to facilitate recovery during the cryptoperiod (SP 800-57)", href: "https://csrc.nist.gov/glossary/term/backup" }, // NIST CSRC Glossary
       { label: "NIST SP 800-34 Rev. 1, Marianne Swanson and others, Contingency Planning Guide for Federal Information Systems, May 2010 (read 2026-11-11): MTD, RTO and RPO definitions; full, incremental and differential backups; offsite storage criteria", href: "https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-34r1.pdf" }, // NIST SP 800-34 Rev. 1
@@ -7655,23 +7654,25 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     relatedTerms: ["api", "rollback"],
   },
   {
-    // rto-rpo (enrichment, 16/11/2026, redundancy part 9): sources, articles and neighbours added; existing fields kept. Note: rpo-rto is a near-duplicate entry (see INTEGRATION.md).
+    // rto-rpo (enrichment, 16/11/2026, redundancy part 9): sources, articles and neighbours added; existing fields kept. rpo-rto was merged into it on 16/11/2026 (PRIME 20:34).
     slug: "rto-rpo", // unchanged
     headword: "RTO and RPO", // unchanged
     kind: "term", // unchanged
-    domains: ["grc", "ops-culture"], // unchanged
+    domains: ["grc", "ops-culture", "it-support"], // + it-support, from the merged rpo-rto (16/11/2026)
     expansion: "Recovery Time and Recovery Point Objectives", // unchanged
-    aliases: ["RTO", "RPO"], // unchanged; the full names stay with rpo-rto, which owns them
+    aliases: ["RTO", "RPO", "recovery point objective", "recovery time objective", "restore test"], // + the full names and "restore test", from the merged rpo-rto (PRIME 16/11/2026 20:34)
     relatedArticles: ["data-and-service-redundancy-replication-quorum-rpo-and-rto", "testing-redundancy-failure-drills-chaos-and-the-failover-never-tried", "redundant-architectures-how-networks-survive-failure", "backups-and-ransomware-recovery"], // added: the parts that define and test them, the hub and the backup article
-    relatedTerms: ["backup", "fault-tolerance", "risk", "rpo-rto", "replication", "mttr", "disaster-recovery", "business-continuity", "point-in-time-recovery", "replication-lag"], // the existing three first, then existing neighbours, then this batch
+    relatedTerms: ["backup", "fault-tolerance", "risk", "replication", "mttr", "disaster-recovery", "business-continuity", "point-in-time-recovery", "replication-lag", "immutable-backup", "ransomware", "blast-radius"], // the existing three first, then existing neighbours, then this batch; rpo-rto merged in (its own neighbours last, 16/11/2026)
     sources: [ // added: every label says what the page says and when it was read
       { label: "NIST, SP 800-34 Rev. 1, Contingency Planning Guide for Federal Information Systems, May 2010, section 3.2.1 (read 2026-11-16): MTD, RTO and RPO defined in the business impact analysis; RTO normally shorter than MTD; RPO not part of MTD; the shorter the RTO, the more expensive the recovery", href: "https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-34r1.pdf" }, // NIST
+      { label: "NIST SP 800-34 Rev. 1 - Contingency Planning Guide", href: "https://csrc.nist.gov/pubs/sp/800/34/r1/upd1/final" }, // from the merged rpo-rto entry, kept as it was (16/11/2026)
+      { label: "ISO 22300:2021, Security and resilience: Vocabulary, third edition, ISO Online Browsing Platform (read 2026-11-16): 3.1.202 recovery point objective, the point to which information used by an activity is restored to enable the activity to operate on resumption, also called maximum data loss; 3.1.203 recovery time objective, the period of time following an incident within which a product and service or an activity is resumed, or resources are recovered", href: "https://www.iso.org/obp/ui/#iso:std:iso:22300:ed-3:v1:en" }, // ISO's own wording (terms accepted with PRIME's yes, 16/11/2026 20:34)
       { label: "Amazon Web Services, AWS Well-Architected, Reliability Pillar, Disaster Recovery (DR) objectives, marked for historical reference (read 2026-11-16): RTO as the maximum acceptable delay between interruption and restoration, RPO as the maximum acceptable time since the last recovery point; MTTR is a mean, RTO a target for one event", href: "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/disaster-recovery-dr-objectives.html" }, // AWS
       { label: "Google Cloud, Disaster recovery planning guide, last updated 5 July 2024 (read 2026-11-16): RTO and RPO set by a business impact analysis; RPO describes only a length of time, not the amount or quality of data lost; both are measurable and should be treated as SLOs", href: "https://cloud.google.com/architecture/dr-scenarios-planning-guide" }, // Google Cloud
       { label: "ISO/IEC 27031:2025, ICT readiness for business continuity, second edition, May 2025, preview published by VDE Verlag (read 2026-11-16): the standard serves the MBCO, the RPO and the RTO and has a clause on determining target ICT RTO and RPO", href: "https://www.vde-verlag.de/iec-normen/preview-pdf/info_isoiec27031%7Bed2.0%7Den.pdf" }, // ISO/IEC, through an authorized preview
       { label: "European Union, Regulation (EU) 2022/2554 (DORA), 14 December 2022, article 12(6) (read 2026-11-16): recovery time and recovery point objectives set for each function, considering criticality and the impact on market efficiency", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32022R2554" }, // EU law
       { label: "Atlassian, Post-Incident Review on the Atlassian April 2022 outage, 29 April 2022 (read 2026-11-16): a one-hour RPO met with at most five minutes of data lost, and the RTO missed, with restoration taking up to 14 days", href: "https://www.atlassian.com/engineering/post-incident-review-april-2022-outage" }, // Atlassian
-    ], // six sources, one object per line
+    ], // eight sources, one object per line (two added with the rpo-rto merge, 16/11/2026)
   },
   {
     slug: "secure-boot",
@@ -10778,6 +10779,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     relatedArticles: ["the-brazilian-hacker-scene"], // the Learn articles that teach it (sweep 11A+11C)
     relatedTerms: ["garoa-hacker-clube", "ysts", "defcon", "hackerspace", "capture-the-flag", "h2hc", "mind-the-sec", "roadsec", "black-hat", "bhack", "nullbyte-con", "cryptorave"], // its neighbours, the existing ones first (sweep 11A+11C)
     sources: [ // every label says what the page says and when it was read (sweep 11A+11C)
+      { label: "BSidesSP (official); link dead as of 12 November 2026", href: "https://bsidessp.org" }, // the original citation, replaced on 12/11/2026 because the domain stopped resolving, restored beside its replacement under the GOLDEN RULE (PRIME 15/11 and 16/11/2026)
       { label: "BSidesSP (official), now at securitybsides.com.br (read 2026-11-12: bsidessp.org no longer resolves; the new address redirects to the 2026 edition)", href: "https://securitybsides.com.br/" }, // BSidesSP (official)
       { label: "Security BSides (global)", href: "https://www.securitybsides.com" }, // Security BSides (global)
       { label: "Security BSides São Paulo, official site for edition 21, 2026 (read 2026-11-12): the villages of 2026, including 4Kids, and the CTF", href: "https://www.securitybsides.com.br" }, // Security BSides São Paulo
@@ -12609,7 +12611,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
       { label: "United States v. Morris (1991)" }, // United States v. Morris (1991)
       { label: "Spafford, 'The Internet Worm Program: An Analysis' (1988), at his own Purdue page", href: "https://spaf.cerias.purdue.edu/tech-reps/823.pdf" }, // Spafford
       { label: "Purdue e-Pubs, record for Eugene H. Spafford, 'The Internet Worm Program: An Analysis', technical report 88-823 (read 2026-11-12): version dated 18 November 1988, 41 pages", href: "https://docs.lib.purdue.edu/cstech/702/" }, // Purdue e-Pubs
-      { label: "United States Court of Appeals for the Second Circuit, United States v. Morris, 928 F.2d 504, argued 4 December 1990, decided 7 March 1991, opinion by Judge Jon O. Newman, as published by vLex (read 2026-11-12): first-year graduate student in Cornell's computer science PhD programme; released the worm on 2 November 1988 from a computer at MIT; four routes of entry; duplication on every seventh 'yes'; section 1030(a)(5)(A) does not require proof of intent to prevent authorized use; conviction affirmed", href: "https://case-law.vlex.com/vid/928-f-2d-504-594871010" }, // United States Court of Appeals for the S
+      { label: "United States Court of Appeals for the Second Circuit, United States v. Morris, 928 F.2d 504, argued 4 December 1990, decided 7 March 1991, opinion by Judge Jon O. Newman, as published by vLex (read 2026-11-12): first-year graduate student in Cornell's computer science PhD programme; released the worm on 2 November 1988 from a computer at MIT; four routes of entry; duplication on every seventh 'yes'; section 1030(a)(5)(A) does not require proof of intent to prevent authorized use; conviction affirmed; link dead as of 16 November 2026", href: "https://case-law.vlex.com/vid/928-f-2d-504-594871010" }, // United States Court of Appeals for the S
       { label: "Mark W. Eichin and Jon A. Rochlis, MIT, 'With Microscope and Tweezers: An Analysis of the Internet Virus of November 1988', 9 February 1989, copy hosted for a Berkeley course (read 2026-11-12): times in EST; sendmail attack tested from 19 October; tested or launched at 5:01:59pm on 2 November per Cornell logs, disputed by those who place the start at MIT; Stanford and RAND hit at 9:00pm, Berkeley at 11:00pm; lost logs; gateways and mail bridges shut; cutting off mail judged a serious mistake, delaying messages by up to twenty hours; the 432-word list; a one-in-seven chance of not checking for another copy", href: "https://people.eecs.berkeley.edu/~daw/teaching/cs261-f98/papers/internet_worm.txt" }, // Mark W. Eichin and Jon A. Rochlis
       { label: "IETF, RFC 1135, J. Reynolds, 'The Helminthiasis of the Internet', December 1989 (read 2026-11-12): VAX and Sun-3 systems running 4.2 and 4.3 BSD; sendmail debug and the fingerd gets overflow on 4.3BSD VAX; rsh and rexec trust; password guessing; Berkeley and MIT teams; eliminated within 48 to 72 hours; why known fixes were not installed; the NSF ethics statement of 30 November 1988", href: "https://www.rfc-editor.org/rfc/rfc1135.txt" }, // IETF
       { label: "US General Accounting Office, 'Computer Security: Virus Highlights Need for Improved Internet Management', GAO/IMTEC-89-57, 12 June 1989 (read 2026-11-12): over 60,000 computers connected; about 6,000 infected by press accounts extrapolated from MIT, 1,000 to 3,000 by a Harvard estimate; losses of 100,000 to 10 million dollars; CERT established by DARPA in mid-November 1988 at the Software Engineering Institute, with no authority", href: "https://www.gao.gov/assets/imtec-89-57.pdf" }, // US General Accounting Office
@@ -13635,12 +13637,20 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     sources: [{ label: "Sturgeon's law - Wikipedia", href: "https://en.wikipedia.org/wiki/Sturgeon%27s_law" }],
   },
   {
-    slug: "kerckhoffs-principle",
-    headword: "Kerckhoffs's principle",
-    kind: "expression",
-    domains: ["crypto", "cyber-security"],
-    aliases: ["Shannon's maxim", "the enemy knows the system"],
-    sources: [{ label: "Auguste Kerckhoffs, 'La cryptographie militaire' (1883)", href: "https://en.wikipedia.org/wiki/Kerckhoffs%27s_principle" }],
+    // Kerckhoffs's principle (enriched): the system may be public, only the key secret; applied to steganography as well as to ciphers.
+    slug: "kerckhoffs-principle", // unchanged
+    headword: "Kerckhoffs's principle", // unchanged
+    kind: "expression", // unchanged
+    domains: ["crypto", "cyber-security"], // unchanged
+    aliases: ["Shannon's maxim", "the enemy knows the system"], // unchanged
+    relatedTerms: ["steganography", "prisoners-problem"], // new: the steganography series applies the principle to hiding
+    relatedArticles: ["security-through-obscurity", "steganography-hiding-that-a-message-exists"], // new: the article on the principle itself and the steganography opener
+    sources: [ // the existing source first, then the added ones
+      { label: "Auguste Kerckhoffs, 'La cryptographie militaire' (1883)", href: "https://en.wikipedia.org/wiki/Kerckhoffs%27s_principle" }, // existing source, kept unchanged
+      { label: "Fabien Petitcolas, Kerckhoffs' principles from La cryptographie militaire (read 2026-11-17): Journal des sciences militaires, vol. IX, January and February 1883; the six principles in English, the second that the system must not require secrecy and can be stolen by the enemy without causing trouble", href: "https://www.petitcolas.net/kerckhoffs/" }, // the 1883 text and an English version
+      { label: "Fabien A. P. Petitcolas, Ross J. Anderson and Markus G. Kuhn, Information Hiding: A Survey, Proceedings of the IEEE 87(7), July 1999 (read 2026-11-17): a secure stego-system is one where an opponent who understands the system but lacks the key gets no evidence that communication took place; methods for wide use should be published; a pseudo-random generator's key as stego-key", href: "https://www.cl.cam.ac.uk/~rja14/Papers/ieee99-infohiding.pdf" }, // applied to hiding
+      { label: "Niels Provos and Peter Honeyman, Hide and Seek: An Introduction to Steganography, IEEE Security and Privacy, May/June 2003 (read 2026-11-17): modern steganography detectable only if a secret key is known, similar to Kerckhoffs's principle; classical systems relied on the secrecy of the encoding", href: "https://www.cs.princeton.edu/~chazelle/courses/BIB/stegano-honeyman.pdf" }, // the contrast with classical hiding
+    ], // four sources, one object per line
   },
   {
     slug: "linus-law",
@@ -16640,9 +16650,18 @@ const GLOSSARY_PART_3: GlossaryEntry[] = [
     slug: "asset-management",
     headword: "IT asset management",
     kind: "term",
-    domains: ["it-support"],
-    aliases: [],
-    relatedTerms: ["cmdb", "patch-management"],
+    domains: ["it-support", "grc"], // grc added: the inventory controls of CIS, NIST and the NCSC
+    aliases: ["asset inventory", "enterprise asset inventory", "hardware inventory", "inventário de ativos"], // checked absent 17/11/2026; the "asset" entry keeps the bare alias "inventory"
+    relatedTerms: ["cmdb", "patch-management", "asset", "nist-csf", "rogue-device"], // existing first, then this batch
+    relatedArticles: ["keeping-rogue-devices-off-the-network-802-1x-nac-port-security-and-physical-audits", "fortisiem-analytics-queries-and-cmdb"], // part 394 and a CMDB article
+    sources: [ // every label says what the page says and when it was read
+      { label: "Center for Internet Security, CIS Controls Navigator, version 8 (read 2026-11-17 through WebFetch): 1.1 detailed enterprise asset inventory reviewed twice a year; 1.2 address unauthorized assets weekly; 1.3 active discovery daily; 1.4 DHCP logging; 1.5 passive discovery", href: "https://www.cisecurity.org/controls/cis-controls-navigator/v8" }, // the safeguards
+      { label: "NIST SP 800-53 Revision 5, September 2020 (read 2026-11-17): CM-8 system component inventory; CM-8(3) automated unauthorized component detection; agents and supplicants not available on some IoT devices and sensors", href: "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r5.pdf" }, // the control
+      { label: "NIST, Cybersecurity Framework 2.0, 26 February 2024 (read 2026-11-17): ID.AM-01 inventories of hardware managed by the organization are maintained", href: "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf" }, // the outcome
+      { label: "NCSC, 10 Steps to Cyber Security: Asset management, 11 May 2021 (read 2026-11-17): use asset discovery tools to identify unknown assets; test that unauthorised devices can be detected; a complete understanding of assets is unlikely", href: "https://www.ncsc.gov.uk/collection/10-steps/asset-management" }, // UK guidance
+      { label: "NASA Office of Inspector General, IG-19-022, 18 June 2019 (read 2026-11-16): JPL's inventory database incomplete and inaccurate; 8 of 11 administrators kept separate spreadsheets; an unauthorized Raspberry Pi targeted by the April 2018 attacker", href: "https://oig.nasa.gov/docs/IG-19-022.pdf" }, // what a failed inventory costs
+      { label: "Ministério da Gestão e da Inovação em Serviços Públicos, Guia do Framework PPSI 2.0, version 1.2, 30 January 2026 (read 2026-11-16): measures 1.1 to 1.5 carry the CIS inventory safeguards into Brazilian federal practice, building on Chapter II of IN GSI/PR nº 3/2021", href: "https://www.gov.br/governodigital/pt-br/privacidade-e-seguranca/ppsi-2.0/arquivos/guiafwppsi2-0-v1-2-11062026.pdf" }, // Brazil
+    ], // six sources, one object per line
   },
   {
     slug: "remote-desktop",
@@ -17418,7 +17437,7 @@ const GLOSSARY_PART_3: GlossaryEntry[] = [
       { label: "AWS, AWS Secrets Manager User Guide, Lambda function rotation strategies (read 2026-11-12): single user, simplest, with a brief risk of denied calls mitigated by retries; alternating users, two users in one secret updated in turn, needing superuser credentials to clone the user", href: "https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotation-strategy.html" }, // AWS
       { label: "CA/Browser Forum, Baseline Requirements for TLS Server Certificates, current text on GitHub (read 2026-11-12): maximum validity of subscriber certificates 200 days from 2026-03-15, 100 days from 2027-03-15 and 47 days from 2029-03-15", href: "https://raw.githubusercontent.com/cabforum/servercert/main/docs/BR.md" }, // CA/Browser Forum
       { label: "CA/Browser Forum, Ballot SC081v3: Introduce Schedule of Reducing Validity and Data Reuse Periods, 11 April 2025 (read 2026-11-12): maximum validity reduced from 398 days to 47 days in steps from March 2026 to March 2029", href: "https://cabforum.org/2025/04/11/ballot-sc081v3-introduce-schedule-of-reducing-validity-and-data-reuse-periods/" }, // CA/Browser Forum
-      { label: "Cyber Safety Review Board, Review of the Summer 2023 Microsoft Exchange Online Intrusion, 20 March 2024 (read 2026-11-12 through WebFetch): tokens signed by a key Microsoft created in 2016, intended to be retired in March 2021 but delayed; Microsoft stopped rotation of consumer keys entirely in 2021 after a major cloud outage linked to the manual rotation process; with automatic rotation the 2016 key would not have been valid in 2023", href: "https://www.cisa.gov/sites/default/files/2024-04/CSRB_Review_of_the_Summer_2023_MEO_Intrusion_Final_508c.pdf" }, // Cyber Safety Review Board
+      { label: "Cyber Safety Review Board, Review of the Summer 2023 Microsoft Exchange Online Intrusion, 20 March 2024 (read 2026-11-12 through WebFetch): tokens signed by a key Microsoft created in 2016, intended to be retired in March 2021 but delayed; Microsoft stopped rotation of consumer keys entirely in 2021 after a major cloud outage linked to the manual rotation process; with automatic rotation the 2016 key would not have been valid in 2023; link dead as of 16 November 2026", href: "https://www.cisa.gov/sites/default/files/2024-04/CSRB_Review_of_the_Summer_2023_MEO_Intrusion_Final_508c.pdf" }, // Cyber Safety Review Board
       { label: "MSRC, Results of Major Technical Investigations for Storm-0558 Key Acquisition, 6 September 2023, updated 12 March 2024 (read 2026-11-12): the update says no crash dump containing the impacted key material has been found", href: "https://www.microsoft.com/en-us/msrc/blog/2023/09/results-of-major-technical-investigations-for-storm-0558-key-acquisition" }, // MSRC
       { label: "GitHub blog, Mike Hanley, We updated our RSA SSH host key, March 2023 (read 2026-11-12): at about 05:00 UTC on 24 March 2023 GitHub replaced its RSA SSH host key after the private key was briefly exposed in a public repository; ECDSA and Ed25519 users unaffected", href: "https://github.blog/news-insights/company-news/we-updated-our-rsa-ssh-host-key/" }, // GitHub blog
       { label: "CircleCI, Rob Zuber, CircleCI security alert: Rotate any secrets stored in CircleCI, 4 January 2023, updated 13 January 2023 (read 2026-11-12): customers asked to rotate any and all secrets stored in CircleCI; the guidance went out at 18:30 Pacific time on 4 January", href: "https://circleci.com/blog/january-4-2023-security-alert/" }, // CircleCI
@@ -17804,7 +17823,7 @@ const GLOSSARY_PART_3: GlossaryEntry[] = [
       { label: "Senado Notícias, 'Sancionada lei que cria a Agência Nacional de Proteção de Dados', 26 February 2026 (read 2026-11-12): Law 15.352 of 2026 turns the Autoridade into the Agência Nacional de Proteção de Dados, from Provisional Measure 1.317/2025; 200 specialist posts; the agency regulates the ECA Digital (Law 15.211 of 2025), in force on 17 March 2026", href: "https://www12.senado.leg.br/noticias/materias/2026/02/26/sancionada-lei-que-cria-a-agencia-nacional-de-protecao-de-dados" }, // Senado Notícias
       { label: "ANPD, 'ANPD ganha nova estrutura e se consolida como agência reguladora', 8 April 2026 (read 2026-11-12): began in 2020 as an authority linked to the Presidency of the Republic, with five directors in November 2020; Decree 12.881/2026 and Resolution 33 of 6 April 2026 complete the change into a regulatory agency; about 500 people", href: "https://www.gov.br/anpd/pt-br/assuntos/noticias/anpd-ganha-nova-estrutura-e-se-consolida-como-agencia-reguladora" }, // ANPD
       { label: "European Commission, Adequacy decisions (read 2026-11-12): the European Commission and Brazil adopted mutual adequacy decisions (news of 27 January 2026; adequacy decision for Brazil dated 26 January 2026)", href: "https://commission.europa.eu/law/law-topic/data-protection/international-dimension-data-protection/adequacy-decisions_en" }, // European Commission
-      { label: "European Commission, 'When can personal data be processed?' (read 2026-11-12): the six grounds of article 6 of the GDPR, none of them about credit protection", href: "https://commission.europa.eu/law/law-topic/data-protection/rules-business-and-organisations/legal-grounds-processing-data/grounds-processing/when-can-personal-data-be-processed_en" }, // European Commission
+      { label: "European Commission, 'When can personal data be processed?' (read 2026-11-12): the six grounds of article 6 of the GDPR, none of them about credit protection; link dead as of 16 November 2026", href: "https://commission.europa.eu/law/law-topic/data-protection/rules-business-and-organisations/legal-grounds-processing-data/grounds-processing/when-can-personal-data-be-processed_en" }, // European Commission
     ], // 10 sources, one object per line
   },
   {
@@ -18138,11 +18157,11 @@ const GLOSSARY_PART_3: GlossaryEntry[] = [
     sources: [ // every label says what the page says and when it was read (sweep 11D)
       { label: "Article 29 Data Protection Working Party, Guidelines on Automated individual decision-making and Profiling for the purposes of Regulation 2016/679, WP251rev.01, adopted 3 October 2017, last revised 6 February 2018 (read 2026-11-12): the Article 4(4) definition; three elements; statistical deduction from people who appear similar; simple classification for aggregate statistics is not profiling; the Council of Europe Recommendation CM/Rec(2010)13 three stages; general profiling, decisions based on profiling and solely automated decisions; human involvement must be meaningful, not a token gesture; Recital 71 examples; significant effects on credit, health, employment, education; advertising and differential pricing; the right to object to profiling for direct marketing", href: "https://ec.europa.eu/newsroom/article29/redirection/document/49826" }, // Article 29 Data Protection Working Party
       { label: "European Commission, Can I be subject to automated individual decision-making, including profiling? (read 2026-11-12, through a web fetch tool after curl got a 429): profiling evaluates personal aspects to make predictions, even without a decision; the right not to be subject to solely automated decisions with legal or similarly significant effects; contract and explicit consent exceptions; human intervention, point of view, contest; the online bank loan example", href: "https://commission.europa.eu/law/law-topic/data-protection/reform/rights-citizens/my-rights/can-i-be-subject-automated-individual-decision-making-including-profiling_en" }, // European Commission
-      { label: "European Commission, Are there restrictions on the use of automated decision-making? (read 2026-11-12): allowed only where necessary for a contract, authorized by EU or national law with safeguards, or with explicit consent; information on the logic; procedures to express a point of view and contest; avoid such decisions for children", href: "https://commission.europa.eu/law/law-topic/data-protection/rules-business-and-organisations/dealing-citizens/are-there-restrictions-use-automated-decision-making_en" }, // European Commission
+      { label: "European Commission, Are there restrictions on the use of automated decision-making? (read 2026-11-12): allowed only where necessary for a contract, authorized by EU or national law with safeguards, or with explicit consent; information on the logic; procedures to express a point of view and contest; avoid such decisions for children; link dead as of 16 November 2026", href: "https://commission.europa.eu/law/law-topic/data-protection/rules-business-and-organisations/dealing-citizens/are-there-restrictions-use-automated-decision-making_en" }, // European Commission
       { label: "Câmara dos Deputados, Legislação Informatizada, Lei nº 13.709, de 14 de agosto de 2018 (LGPD), updated text (read 2026-11-12): article 12, paragraph 2, data used to form the behavioural profile of an identified person may be personal data; article 20, review of decisions taken solely on automated processing, including decisions defining a personal, professional, consumer or credit profile or aspects of personality; information on criteria and procedures subject to commercial and industrial secrecy; audit for discriminatory aspects; caput rewritten by Provisional Measure 869 of 27 December 2018, converted into Law 13.853 of 8 July 2019; paragraph 3 vetoed", href: "https://www2.camara.leg.br/legin/fed/lei/2018/lei-13709-14-agosto-2018-787077-normaatualizada-pl.html" }, // Câmara dos Deputados
       { label: "Câmara dos Deputados, Lei nº 13.709, de 14 de agosto de 2018, original publication (read 2026-11-12): article 20 as first enacted gave the right to request review, by a natural person, of solely automated decisions", href: "https://www2.camara.leg.br/legin/fed/lei/2018/lei-13709-14-agosto-2018-787077-publicacaooriginal-156212-pl.html" }, // Câmara dos Deputados
       { label: "Court of Justice of the European Union, Press Release No 186/23, Judgment in Case C-634/21, SCHUFA Holding (Scoring), 7 December 2023 (read 2026-11-12, through a web fetch tool after curl got a 403): the automated establishment of a credit score is an automated individual decision where clients such as banks attribute to it a determining role in granting credit", href: "https://curia.europa.eu/jcms/upload/docs/application/pdf/2023-12/cp230186en.pdf" }, // Court of Justice of the European Union
-      { label: "Court of Justice of the European Union, Press Release No 22/25, Judgment in Case C-203/22, Dun & Bradstreet Austria, 27 February 2025 (read 2026-11-12): a mobile operator refused a contract of 10 euros a month on an automated credit assessment; the controller must explain the procedure and principles actually applied; the mere communication of an algorithm is not a sufficient explanation; trade secrets are disclosed to the supervisory authority or court, which balances the interests", href: "https://curia.europa.eu/jcms/jcms/p1_4811088/en" }, // Court of Justice of the European Union
+      { label: "Court of Justice of the European Union, Press Release No 22/25, Judgment in Case C-203/22, Dun & Bradstreet Austria, 27 February 2025 (read 2026-11-12): a mobile operator refused a contract of 10 euros a month on an automated credit assessment; the controller must explain the procedure and principles actually applied; the mere communication of an algorithm is not a sufficient explanation; trade secrets are disclosed to the supervisory authority or court, which balances the interests; link dead as of 16 November 2026", href: "https://curia.europa.eu/jcms/jcms/p1_4811088/en" }, // Court of Justice of the European Union
       { label: "Superior Tribunal de Justiça, Segunda Seção, Súmula 550, approved 14 October 2015, Diário da Justiça Eletrônico of 19 October 2015 (read 2026-11-12): a credit score is a statistical risk-assessment method that is not a database, needs no consent, and gives the consumer the right to ask which personal information was weighed and from which sources", href: "https://stj.jus.br/internet_docs/biblioteca/clippinglegislacao/Sumula_547_548_549_550_551_2015_Segunda_Secao.pdf" }, // Superior Tribunal de Justiça
       { label: "Kosinski M., Stillwell D., Graepel T., \"Private traits and attributes are predictable from digital records of human behavior\" (title as published), Proceedings of the National Academy of Sciences 110(15):5802-5805, 9 April 2013, PubMed abstract (read 2026-11-12): over 58,000 volunteers; Facebook Likes predict sexual orientation, ethnicity, religious and political views, personality and more; correct discrimination in 88%, 95% and 85% of cases for the three binary examples", href: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=23479631&rettype=abstract&retmode=text" }, // Kosinski M.
       { label: "Federal Trade Commission, FTC Recommends Congress Require the Data Broker Industry to be More Transparent and Give Consumers Greater Control Over Their Personal Information, 27 May 2014 (read 2026-11-12): a study of nine data brokers; billions of data elements on nearly every United States consumer; 1.4 billion transactions and 700 billion data elements at one broker; inferred ethnicity, income, religion, political leanings, age and health; segments such as Urban Scramble, Mobile Mixers and Rural Everlasting; health segments such as pregnancy, diabetes and high cholesterol", href: "https://www.ftc.gov/news-events/news/press-releases/2014/05/ftc-recommends-congress-require-data-broker-industry-be-more-transparent-give-consumers-greater" }, // Federal Trade Commission
@@ -19836,7 +19855,7 @@ const GLOSSARY_PART_3: GlossaryEntry[] = [
       { label: "OASIS, Bindings for the OASIS Security Assertion Markup Language (SAML) V2.0, 15 March 2005 (read 2026-11-11): SOAP, PAOS, HTTP Redirect, HTTP POST, HTTP Artifact and URI bindings; the Redirect binding applies DEFLATE, then base64, then URL-encoding into SAMLRequest or SAMLResponse, with SigAlg and Signature query parameters; RelayState MUST NOT exceed 80 bytes; the POST binding base64-encodes the XML into a hidden form control", href: "https://docs.oasis-open.org/security/saml/v2.0/saml-bindings-2.0-os.pdf" }, // OASIS
       { label: "OASIS, Profiles for the OASIS Security Assertion Markup Language (SAML) V2.0, 15 March 2005 (read 2026-11-11): Web Browser SSO profile; assertions MUST be signed with the HTTP POST binding; SSL 3.0 or TLS 1.0 recommended; the SP MUST verify signatures, Recipient against the assertion consumer service URL, NotOnOrAfter subject to allowable clock skew, and InResponseTo against the AuthnRequest ID, absent in unsolicited responses; WantAssertionsSigned and AuthnRequestsSigned metadata attributes", href: "https://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf" }, // OASIS
       { label: "OASIS SSTC, Security Assertion Markup Language (SAML) V2.0 Technical Overview, Committee Draft 02, 25 March 2008 (read 2026-11-11): an XML-based framework for describing and exchanging security information between on-line business partners; IdP-initiated and SP-initiated web SSO; Shibboleth's use of transient pseudonyms", href: "https://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html" }, // OASIS SSTC
-      { label: "saml.xml.org (OASIS), An historical timeline for SAML, 2008 (read 2026-11-11): SSTC first met January 2001; SAML V1.0 an OASIS Standard in November 2002; Liberty contributes ID-FF to OASIS and SAML V1.1 ratified in September 2003; SAML V2.0 an OASIS Standard in March 2005; errata approved 14 July 2007", href: "https://saml.xml.org/wiki/an-historical-timeline-for-saml" }, // saml.xml.org (OASIS)
+      { label: "saml.xml.org (OASIS), An historical timeline for SAML, 2008 (read 2026-11-11): SSTC first met January 2001; SAML V1.0 an OASIS Standard in November 2002; Liberty contributes ID-FF to OASIS and SAML V1.1 ratified in September 2003; SAML V2.0 an OASIS Standard in March 2005; errata approved 14 July 2007; link dead as of 16 November 2026", href: "https://saml.xml.org/wiki/an-historical-timeline-for-saml" }, // saml.xml.org (OASIS)
       { label: "Juraj Somorovsky, Andreas Mayer, Jorg Schwenk, Marco Kampmann, Meiko Jensen, On Breaking SAML: Be Whoever You Want to Be, 21st USENIX Security Symposium, August 2012 (read 2026-11-11): 14 major SAML frameworks analysed; 11 of them, including Salesforce, Shibboleth and IBM XS40, had critical XML Signature wrapping vulnerabilities", href: "https://www.usenix.org/conference/usenixsecurity12/technical-sessions/presentation/somorovsky" }, // Juraj Somorovsky
       { label: "GitHub Security Lab (Peter Stockli), Sign in as anyone: Bypassing SAML SSO authentication with parser differentials, 12 March 2025 (read 2026-11-11): ruby-saml up to 1.17.0, CVE-2025-25291 and CVE-2025-25292, fixed in 1.18.0; REXML and Nokogiri select different Signature elements; one valid signature, even from signed IdP metadata, is enough; follows CVE-2024-45409 of October 2024", href: "https://github.blog/security/sign-in-as-anyone-bypassing-saml-sso-authentication-with-parser-differentials/" }, // GitHub Security Lab (Peter Stockli)
       { label: "CyberArk (Shaked Reiner), Golden SAML: Newly Discovered Attack Technique Forges Authentication to Cloud Apps, 21 November 2017 (read 2026-11-11): forging SAML responses with the IdP's token-signing private key; named after the Kerberos golden ticket; the AD FS user account is enough to reach the key; the shimit tool", href: "https://www.cyberark.com/threat-research-blog/golden-saml-newly-discovered-attack-technique-forges-authentication-cloud-apps/" }, // CyberArk (Shaked Reiner)
@@ -26055,10 +26074,18 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     kind: "acronym",
     domains: ["enterprise-networking", "cyber-security", "vendors"],
     expansion: "MAC Authentication Bypass: 802.1X's fallback that authenticates a device by its MAC address",
-    aliases: ["mac authentication bypass", "mac auth", "mac-based authentication", "mac bypass"],
-    relatedTerms: ["802-1x", "radius", "mac-address", "webauth", "eap"],
-    relatedArticles: ["802-1x-and-eap-methods", "web-authentication-and-captive-portals", "nac-family-history"],
-    sources: [{ label: "Cisco IOS configuration guide, Configuring MAC Authentication Bypass: a MAC-address-based mechanism for clients with no supplicant or outside administrative control, cash registers, fax machines and printers; the RADIUS request with the MAC in Calling-Station-Id (31) and Service-Type (6) of 10; MAB once only a failover for 802.1X (read 2026-10-06)", href: "https://www.cisco.com/en/US/docs/ios-xml/ios/sec_usr_aaa/configuration/15-2mt/sec-config-mab.html" }, { label: "Wikipedia, IEEE 802.1X: the port first checks for 802.1X and, with no reaction, authenticates with the device's MAC address as username and password (read 2026-10-06)", href: "https://en.wikipedia.org/wiki/IEEE_802.1X" }],
+    aliases: ["mac authentication bypass", "mac auth", "mac-based authentication", "mac bypass", "mac radius"], // "mac radius" is Juniper's name (checked absent 17/11/2026)
+    relatedTerms: ["802-1x", "radius", "mac-address", "webauth", "eap", "radius-coa", "rogue-device"], // the last is this batch's
+    relatedArticles: ["802-1x-and-eap-methods", "web-authentication-and-captive-portals", "nac-family-history", "keeping-rogue-devices-off-the-network-802-1x-nac-port-security-and-physical-audits"], // part 394 added
+    sources: [
+      { label: "Cisco IOS configuration guide, Configuring MAC Authentication Bypass: a MAC-address-based mechanism for clients with no supplicant or outside administrative control, cash registers, fax machines and printers; the RADIUS request with the MAC in Calling-Station-Id (31) and Service-Type (6) of 10; MAB once only a failover for 802.1X (read 2026-10-06)", href: "https://www.cisco.com/en/US/docs/ios-xml/ios/sec_usr_aaa/configuration/15-2mt/sec-config-mab.html" }, // existing, kept
+      { label: "Wikipedia, IEEE 802.1X: the port first checks for 802.1X and, with no reaction, authenticates with the device's MAC address as username and password (read 2026-10-06)", href: "https://en.wikipedia.org/wiki/IEEE_802.1X" }, // existing, kept
+      { label: "Cisco, MAC Authentication Bypass Deployment Guide, last updated 6 September 2011 (read 2026-11-17 through WebFetch): not a strong authentication method; defeatable by spoofing the MAC of a valid device; PAP request by default, Service-Type 10 Call-Check; waits for 802.1X to time out, 90 seconds with default timers; a current MAC database is one of the primary challenges; dynamic VLAN and ACL; four CoA actions", href: "https://www.cisco.com/c/en/us/td/docs/solutions/Enterprise/Security/TrustSec_1-99/MAB/MAB_Dep_Guide.html" }, // the vendor's own limits
+      { label: "Extreme Networks, ExtremeXOS 33.1.1 User Guide, Web-Based, MAC-Based, and 802.1X Authentication, October 2024 (read 2026-11-17): MAC-based security rests on the client's MAC, so the network is more vulnerable to spoofing; the MAC is also the password if none is configured", href: "https://documentation.extremenetworks.com/ExtremeXOS%20v33.1.1%20User%20Guide/GUID-7BF5CC6D-5F2C-44D3-9164-AC849C93565B.shtml" }, // second vendor
+      { label: "Juniper Networks, 802.1X Authentication, 25 June 2025 (read 2026-11-17): MAC RADIUS simulates the supplicant using the client's MAC address as username and password", href: "https://www.juniper.net/documentation/us/en/software/junos/user-access/topics/topic-map/802-1x-authentication-switching-devices.html" }, // third vendor
+      { label: "Cisco, Configure Anomalous Endpoint Detection and Enforcement on ISE 2.2, document 200973, updated 16 May 2018 (read 2026-11-17 through WebFetch): detection of MAC address spoofing through changes in NAS-Port-Type, DHCP class identifier or endpoint profile, followed by CoA or quarantine", href: "https://www.cisco.com/c/en/us/support/docs/security/identity-services-engine-22/200973-configure-anomalous-endpoint-detection-a.html" }, // the documented mitigation
+      { label: "Blast-RADIUS, CVE-2024-3596 (read 2026-11-17): RADIUS over UDP with non-EAP methods vulnerable to forged accepts by a man in the middle; EAP methods protected; require Message-Authenticator, move to RADIUS over TLS", href: "https://www.blastradius.fail/" }, // why MAB's PAP requests need the fix
+    ], // seven sources, one object per line
   },
   {
     slug: "radius-coa",
@@ -33371,7 +33398,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     aliases: ["disaster recovery plan", "drp", "pilot light", "multi-site active-active", "recuperação de desastres"], // the plan, two of the AWS strategy names and the Portuguese term; no bare "dr" (designated-router owns it)
     relatedTools: ["incident-timeline-rca-builder", "time-calculator"], // timing a recovery against its objective
     relatedArticles: ["data-and-service-redundancy-replication-quorum-rpo-and-rto", "testing-redundancy-failure-drills-chaos-and-the-failover-never-tried", "redundant-architectures-how-networks-survive-failure", "backups-and-ransomware-recovery"], // the two parts that teach it, the series hub and the backup article
-    relatedTerms: ["rto-rpo", "rpo-rto", "backup", "replication", "hot-warm-cold-standby", "failover", "failure-domain", "availability-zone", "region", "business-continuity", "point-in-time-recovery"], // existing entries first, then this batch
+    relatedTerms: ["rto-rpo", "backup", "replication", "hot-warm-cold-standby", "failover", "failure-domain", "availability-zone", "region", "business-continuity", "point-in-time-recovery"], // existing entries first, then this batch
     sources: [ // every label says what the page says and when it was read
       { label: "Amazon Web Services, AWS Well-Architected Framework, REL13-BP02, Use defined recovery strategies to meet the recovery objectives (read 2026-11-16): backup and restore (RPO hours, RTO up to a day), pilot light (minutes, tens of minutes), warm standby (seconds, minutes), multi-site active-active (towards zero); a fully scaled warm standby becomes hot standby; replication alone does not make a workload recoverable", href: "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel13-bp02.html" }, // AWS
       { label: "Amazon Web Services, Disaster Recovery of Workloads on AWS: Recovery in the Cloud, High availability is not disaster recovery (read 2026-11-16): availability is about components, disaster recovery about discrete copies of the whole workload; deletions and corruption replicate, so a point-in-time backup is also required", href: "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/high-availability-is-not-disaster-recovery.html" }, // AWS
@@ -33388,7 +33415,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     domains: ["grc", "ops-culture"], // governance and operations
     aliases: ["business continuity", "bcm", "business continuity plan", "business impact analysis", "bia", "iso 22301", "continuidade de negócios"], // the short form, the acronyms, its main artefacts, the standard and the Portuguese term; no bare "bcp" (an IETF Best Current Practice is also a BCP)
     relatedArticles: ["data-and-service-redundancy-replication-quorum-rpo-and-rto", "testing-redundancy-failure-drills-chaos-and-the-failover-never-tried", "backups-and-ransomware-recovery"], // the two parts that teach it and the backup article
-    relatedTerms: ["rto-rpo", "rpo-rto", "tabletop", "risk", "backup", "disaster-recovery", "game-day"], // existing entries first, then this batch
+    relatedTerms: ["rto-rpo", "tabletop", "risk", "backup", "disaster-recovery", "game-day"], // existing entries first, then this batch
     sources: [ // every label says what the page says and when it was read
       { label: "ISO 22301:2019, Security and resilience: Business continuity management systems: Requirements, second edition, ISO/TC 292, contents and terms 3.1 to 3.14, preview published by iTeh Standards (read 2026-11-16): business continuity as the capability to continue delivering products and services within acceptable time frames at predefined capacity during a disruption; clause 8.2.2 business impact analysis, 8.5 exercise programme", href: "https://cdn.standards.iteh.ai/samples/75106/93796e84e77c4ea283721dff7333671e/ISO-22301-2019.pdf" }, // ISO, through an authorized preview
       { label: "ISO/IEC 27031:2025, Cybersecurity: ICT readiness for business continuity, second edition, May 2025, preview published by VDE Verlag (read 2026-11-16): serves the MBCO, RPO and RTO; terms from ISO 22300 and ISO 22301; clauses on equipment redundancy planning, target ICT RTO and RPO, and testing, exercise and auditing", href: "https://www.vde-verlag.de/iec-normen/preview-pdf/info_isoiec27031%7Bed2.0%7Den.pdf" }, // ISO/IEC, through an authorized preview
@@ -33496,21 +33523,24 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     ], // four sources, one object per line
   },
   {
-    // fault-injection (new entry): deliberately introducing a failure to see how a system responds.
-    slug: "fault-injection", // the /glossary/fault-injection address
-    headword: "fault injection", // the plain term
-    kind: "term", // a defined testing technique
-    domains: ["ops-culture", "programming", "cloud"], // operations, software testing, cloud reliability
-    aliases: ["failure injection", "failure injection testing", "fault injection testing", "injeção de falhas"], // other names, Netflix's FIT, and the Portuguese term
-    relatedTools: ["fault-hypothesis-builder"], // phrasing the hypothesis an injection tests
-    relatedArticles: ["testing-redundancy-failure-drills-chaos-and-the-failover-never-tried"], // the part that teaches it
-    relatedTerms: ["chaos-monkey", "blast-radius", "chaos-engineering", "game-day"], // existing entries first, then this batch
+    // fault-injection (enriched 17/11/2026, hacking-devices part 399): adds hardware fault injection (voltage, clock, electromagnetic glitching) beside the reliability-testing sense.
+    slug: "fault-injection", // unchanged address
+    headword: "fault injection", // unchanged
+    kind: "term", // unchanged
+    domains: ["ops-culture", "programming", "cloud", "cyber-security"], // existing three, plus cyber-security for the hardware sense (four, the maximum)
+    aliases: ["failure injection", "failure injection testing", "fault injection testing", "injeção de falhas", "glitch attack", "voltage glitching", "clock glitching", "electromagnetic fault injection"], // existing four, then the hardware forms
+    relatedTools: ["fault-hypothesis-builder"], // unchanged
+    relatedArticles: ["testing-redundancy-failure-drills-chaos-and-the-failover-never-tried", "the-hardware-hackers-bench-bus-pirate-jtag-uart-and-chipwhisperer"], // existing, then the hardware part
+    relatedTerms: ["chaos-monkey", "blast-radius", "chaos-engineering", "game-day", "side-channel-attack", "chipwhisperer", "readout-protection"], // existing four, then this batch
     sources: [ // every label says what the page says and when it was read
-      { label: "Ali Basiri and others (Netflix), Chaos Engineering, IEEE Software, May-June 2016 (read 2026-11-16): Failure Injection Testing exercises fail requests between services to check graceful degradation; inputs include terminated instances, injected latency, failed services and a region made unavailable by redirecting traffic", href: "https://arxiv.org/pdf/1702.05843" }, // Netflix authors
-      { label: "Microsoft Learn, What is Azure Chaos Studio? (read 2026-11-16): a managed service for chaos engineering and resilience testing; service-direct faults through a resource's management API and agent-based faults inside virtual machines", href: "https://learn.microsoft.com/en-us/azure/chaos-studio/chaos-studio-overview" }, // Microsoft
-      { label: "Microsoft Learn, Azure Well-Architected Framework, Architecture strategies for designing a reliability testing strategy, updated 29 May 2026 (read 2026-11-16): fault-injection testing in production can be disruptive and cause downtime; safeguards to stop experiments and roll back", href: "https://learn.microsoft.com/en-us/azure/well-architected/reliability/testing-strategy" }, // Microsoft
-      { label: "Google, Site Reliability Engineering, chapter 14, Emergency Response (read 2026-11-16): a test blocking one database out of a hundred caused a wide outage; untested rollback procedures lengthened it; rollback now tested before large-scale tests", href: "https://sre.google/sre-book/emergency-response/" }, // Google SRE
-    ], // four sources, one object per line
+      { label: "Ali Basiri and others (Netflix), Chaos Engineering, IEEE Software, May-June 2016 (read 2026-11-16): Failure Injection Testing exercises fail requests between services to check graceful degradation; inputs include terminated instances, injected latency, failed services and a region made unavailable by redirecting traffic", href: "https://arxiv.org/pdf/1702.05843" }, // Netflix authors // kept verbatim
+      { label: "Microsoft Learn, What is Azure Chaos Studio? (read 2026-11-16): a managed service for chaos engineering and resilience testing; service-direct faults through a resource's management API and agent-based faults inside virtual machines", href: "https://learn.microsoft.com/en-us/azure/chaos-studio/chaos-studio-overview" }, // Microsoft // kept verbatim
+      { label: "Microsoft Learn, Azure Well-Architected Framework, Architecture strategies for designing a reliability testing strategy, updated 29 May 2026 (read 2026-11-16): fault-injection testing in production can be disruptive and cause downtime; safeguards to stop experiments and roll back", href: "https://learn.microsoft.com/en-us/azure/well-architected/reliability/testing-strategy" }, // Microsoft // kept verbatim
+      { label: "Google, Site Reliability Engineering, chapter 14, Emergency Response (read 2026-11-16): a test blocking one database out of a hundred caused a wide outage; untested rollback procedures lengthened it; rollback now tested before large-scale tests", href: "https://sre.google/sre-book/emergency-response/" }, // Google SRE // kept verbatim
+      { label: "Espressif, Security Advisory Concerning Fault Injection and eFuse Protections (CVE-2019-17391), 1 November 2019 (read 2026-11-16): fault injection disrupts hardware by timed voltage or clock fluctuations; all hardware is vulnerable to some types; requires physical access", href: "https://espressif.com/en/news/Security_Advisory_Concerning_Fault_Injection_and_eFuse_Protections" }, // the hardware sense, defined by a maker
+      { label: "MITRE, CWE-1247, Improper Protection Against Voltage and Clock Glitches (read 2026-11-16): missing or faulty glitch detection circuitry or sensors", href: "https://cwe.mitre.org/data/definitions/1247.html" }, // the catalogued weakness
+      { label: "NewAE Technology, ChipSHOUTER (read 2026-11-17): electromagnetic fault injection without electrical contact, 150 to 500 V", href: "https://www.newae.com/chipshouter" }, // EMFI tooling
+    ], // seven sources (four kept, three added), one object per line
   },
   {
     // black-box-monitoring (new entry): watching a system from outside, with its white-box counterpart, as Google's SRE book separates them.
@@ -34027,6 +34057,1379 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
       { label: "B3, Ofício Circular 038/2025-VNC, 30 September 2025 (read 2026-11-16): CVM decision of 13 August 2024 making the RLP permanent in WIN and WDO and extending the equity experiment 18 months in 20 stocks; new rules from 3 November 2025", href: "https://www.b3.com.br/data/files/17/B4/88/14/AEA99910F5D34899AC094EA8/OC%20038-2025-VNC%20NOVAS%20REGRAS%20DE%20FUNCIONAMENTO%20DE%20OFERTA%20RLP%20NO%20MERCADO%20DE%20ACOES%20E%20PARA%20OS%20MINICONTRATOS%20FUTUROS%20WIN%20E%20WDO_PT.pdf" }, // permanence
       { label: "CVM, ASA, Internalização de Ordens, February 2026 (read 2026-11-16): keep internalization within exchange procedures such as the RLP, remove limits on eligible stocks and retail volume, evaluate within five years, standardize best-execution disclosure; authors' views, not necessarily the CVM's", href: "https://www.gov.br/cvm/pt-br/centrais-de-conteudo/publicacoes/estudos/internalizacao-de-ordens_air_2026-02-11_asa.pdf/@@download/file" }, // the 2026 study
     ], // five sources, one object per line
+  },
+  {
+    // tone-box (new entry): the phreaks' family of signal-imitating devices, named by colour, read against the Bell System's own tables.
+    slug: "tone-box", // the /glossary/tone-box address
+    headword: "tone box", // the generic term; the colours are aliases
+    kind: "jargon", // phreak vocabulary
+    domains: ["hacking", "isp-telecom"], // hacker history and telephone signalling
+    aliases: ["tone boxes", "phreaking box", "phreaking boxes", "colour boxes", "color boxes", "box colours", "black box phreaking", "green box", "silver box", "beige box", "caixa de tom"], // the plural, the colour family and the Portuguese term
+    relatedTerms: ["blue-box", "red-box", "in-band-signalling", "multifrequency-signalling", "dtmf", "common-channel-signalling", "phreaking", "captain-crunch"], // existing entries and this batch
+    relatedArticles: ["tone-boxes-the-blue-box-the-red-box-and-in-band-signalling", "hacking-devices-from-the-blue-box-to-the-flipper-zero", "phone-phreaking-and-the-blue-box"], // the part, the opener and the people story
+    sources: [ // every label says what the page says and when it was read
+      { label: "textfiles.com, 'Phone Phreaking : Boxes and Box Plans', index (read 2026-11-16): boxes of 'every box color in the visible spectrum'; the curator's warning that the listed function 'has nothing to do with the plan's actual success at its goal'", href: "http://textfiles.com/phreak/BOXES/" }, // the period archive
+      { label: "'What do all the colored boxes do?', undated list, textfiles.com (read 2026-11-16): blue, red, green, black, silver and beige among some fifty colours, the rainbow box marked as a joke", href: "http://textfiles.com/phreak/BOXES/allboxes.txt" }, // a period list
+      { label: "The Vandal, 'The Underground Box List', 20 August 1987, addendum of 25 January 1991, textfiles.com (read 2026-11-16): red box 'Make coin tones for payphones'; green box as a hold button; 'Doubt it works' on the blotto box", href: "http://textfiles.com/phreak/BOXES/boxlist.txt" }, // a dated period list that disagrees on green
+      { label: "The Jargon File, version 4.4.7, entry 'blue box' (read 2026-11-16): other colours, red, black and silver, 'but the blue box was the original and archetype'", href: "https://jargon-file.org/archive/jargon-4.4.7.dos.txt" }, // the hackers' dictionary
+      { label: "AT&T, Notes on the Network, 1980, section 5, Internet Archive (read 2026-11-16): SF supervision at 2600 Hz (paragraph 7.36), MF codes and their expanded inband meanings (Figure 35), the 16 Touch-Tone signals (12.36), the coin denomination tones (Table T, item 32), no-charge calls without answer supervision (7.35)", href: "https://archive.org/details/bitsavers_westernEleesonTheNetwork1980_26249557" }, // the signals the boxes imitated
+      { label: "FBI, Phone Phreak Activities: AUTOVON Intrusions, 1967 to 1975, Internet Archive (read 2026-11-16): a 25B3 Touch-Tone pad modified with two microswitches for 16-button frequencies and AUTOVON priority calls; the briefing of 20 April 1967", href: "https://archive.org/details/PhonePhreakAUTOVONIntrusions" }, // the silver box's real target
+      { label: "C. A. Dahlbom and J. S. Ryan, Common Channel Interoffice Signaling: History and Description of a New Signaling System, Bell System Technical Journal, February 1978 (read 2026-11-16): 'Fraudulent manipulation of the telephone network is eliminated in an all CCIS environment'", href: "https://archive.org/details/bstj57-2-225" }, // what ended them
+    ], // seven sources, one object per line
+  },
+  {
+    // red-box (new entry): the payphone coin-tone imitator, ACTS and the defences that closed it.
+    slug: "red-box", // the /glossary/red-box address
+    headword: "red box", // the phreak term
+    kind: "jargon", // phreak vocabulary
+    domains: ["hacking", "isp-telecom"], // hacker history and payphone signalling
+    aliases: ["red boxing", "coin tone generator", "coin tone fraud", "caixa vermelha"], // the verb form, descriptive names and Portuguese
+    relatedTerms: ["tone-box", "blue-box", "in-band-signalling", "phreaking", "inductive-phone-card"], // this batch and existing entries
+    relatedArticles: ["tone-boxes-the-blue-box-the-red-box-and-in-band-signalling", "hacking-devices-from-the-blue-box-to-the-flipper-zero"], // the part and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "AT&T, Notes on the Network, 1980, section 5, Table T, item 32, Internet Archive (read 2026-11-16): coin denomination tones; single-slot stations 2200 + 1700 Hz, one beep for 5 cents, two for 10, five for 25; three-slot stations bells and a gong", href: "https://archive.org/details/bitsavers_westernEleesonTheNetwork1980_26249557" }, // the tones
+      { label: "M. Berger, J. C. Dalby Jr., V. L. Ransom and E. M. Prell, Traffic Service Position System No. 1: Automated Coin Toll Service: Overall Description, Bell System Technical Journal, July to August 1979 (read 2026-11-16): ACTS first in service in Phoenix on 26 November 1977, general availability mid-1978; walkaway records to reduce fraudulent use of coin phones", href: "https://archive.org/details/bstj58-6-1207" }, // the service it fooled
+      { label: "G. T. Clark, K. Streisand and D. H. Larson, Hardware for Automated Coin Toll Service, Bell System Technical Journal, July to August 1979 (read 2026-11-16): the single-slot station of 1966; dual-frequency oscillators fitted from 1975; the coin tone receiver must 'Operate in the presence of speech' and 'Reject coin simulations'", href: "https://archive.org/details/bstj58-6-1225" }, // the receiver's design
+      { label: "H. Weaver Jordan, US Patent 5,150,403, Coin fraud prevention system for coin telephones, filed 28 May 1991, granted 22 September 1992, Google Patents (read 2026-11-16): a small tone generator emulating coin tones, 'usually entered via the transmitter of the coin telephone'; sensing at the transmitter, dial lock-out and alarm", href: "https://patents.google.com/patent/US5150403A/en" }, // the attack and a defence
+      { label: "AT&T Bell Laboratories, US Patent 4,625,078, Fraud prevention in an electronic coin telephone set, filed 30 December 1983, granted 25 November 1986, Google Patents (read 2026-11-16): a microcomputer-controlled coin set that prevents coin call fraud", href: "https://patents.google.com/patent/US4625078A/en" }, // the electronic coin set
+      { label: "Dial Tone, The Art of Red Boxing, Circle-A Productions, 24 January 1992, textfiles.com (read 2026-11-16): a period claim that new digital pay phones and COCOTs did not accept red-box tones", href: "http://textfiles.com/phreak/BOXES/circa-01.txt" }, // the period view of its decline
+    ], // six sources, one object per line
+  },
+  {
+    // in-band-signalling (new entry): control tones inside the voice channel, the engineering basis of the tone boxes.
+    slug: "in-band-signalling", // the /glossary/in-band-signalling address (Oxford spelling)
+    headword: "in-band signalling", // the plain term
+    kind: "term", // a telephony design term
+    domains: ["isp-telecom", "cyber-security"], // telephone signalling and the security lesson
+    aliases: ["in-band signaling", "inband signalling", "single-frequency signalling", "sf signalling", "2600 hz supervision", "sinalização dentro da banda"], // the American spelling, variants, the SF system and Portuguese
+    relatedTerms: ["common-channel-signalling", "multifrequency-signalling", "dtmf", "tone-box", "blue-box", "phreaking", "ss7"], // this batch and existing entries
+    relatedArticles: ["tone-boxes-the-blue-box-the-red-box-and-in-band-signalling", "hacking-devices-from-the-blue-box-to-the-flipper-zero", "phone-phreaking-and-the-blue-box"], // the part, the opener and the people story
+    sources: [ // every label says what the page says and when it was read
+      { label: "A. Weaver and N. A. Newell, In-Band Single-Frequency Signaling, Bell System Technical Journal, November 1954 (read 2026-11-16): tone on idle; signalling by removing and reapplying the tone; 2600 cycles on four-wire lines and 2400 for the other direction on two-wire lines; guard action; over 90 per cent of imitations at 2600 cycles caused by the long e vowel", href: "https://archive.org/details/bstj33-6-1309" }, // the design and its weakness measured
+      { label: "C. Breen and C. A. Dahlbom, Signaling Systems for Control of Telephone Switching, Bell System Technical Journal, November 1960 (read 2026-11-16): 1600 cycles during the war, raised to 2600 after it; MF between 700 and 1700 cycles", href: "https://archive.org/details/bstj39-6-1381" }, // the frequencies' history
+      { label: "AT&T, Notes on the Network, 1980, section 5, paragraphs 7.04 to 7.36, Internet Archive (read 2026-11-16): protection against voice interference; the 2600 Hz band elimination filter; 'pure tones near 2600 Hz will cause the far-end (receiving) unit to go on-hook'", href: "https://archive.org/details/bitsavers_westernEleesonTheNetwork1980_26249557" }, // the operator's manual
+      { label: "A. E. Ritchie and J. Z. Menard, Common Channel Interoffice Signaling: An Overview, Bell System Technical Journal, February 1978 (read 2026-11-16): voice-frequency signalling on customer circuits 'vulnerable to interference and susceptible to fraud'", href: "https://archive.org/details/bstj57-2-221" }, // the operator's own verdict
+      { label: "ITU-T, Recommendation Q.411, System R2 line signalling, analogue version, Blue Book, 1988 (read 2026-11-16): tone on idle on a signalling channel outside the speech frequency band", href: "https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-Q.411-198811-I!!PDF-E&type=items" }, // the out-of-band contrast
+    ], // five sources, one object per line
+  },
+  {
+    // common-channel-signalling (new entry): control moved to a shared data link, CCIS and SS7, and the trust problem that followed.
+    slug: "common-channel-signalling", // the /glossary/common-channel-signalling address (ss7 already exists)
+    headword: "common-channel signalling", // the plain term
+    kind: "term", // a telephony design term
+    domains: ["isp-telecom", "cyber-security"], // telephone signalling and its security
+    aliases: ["common-channel signaling", "common channel interoffice signaling", "ccis", "out-of-band signalling", "ccitt system no. 6", "sinalização por canal comum"], // spellings, AT&T's system, the CCITT predecessor of SS7 and Portuguese
+    relatedTerms: ["ss7", "in-band-signalling", "multifrequency-signalling", "tone-box", "blue-box", "number-porting"], // existing entries and this batch
+    relatedArticles: ["tone-boxes-the-blue-box-the-red-box-and-in-band-signalling", "hacking-devices-from-the-blue-box-to-the-flipper-zero"], // the part and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "A. E. Ritchie and J. Z. Menard, Common Channel Interoffice Signaling: An Overview, Bell System Technical Journal, February 1978 (read 2026-11-16): first CCIS link in May 1976 between Madison, Wisconsin, and Chicago; limits of SF and MF; about 80 percent of intertoll trunks on CCIS by 1985", href: "https://archive.org/details/bstj57-2-221" }, // the first link
+      { label: "C. A. Dahlbom and J. S. Ryan, Common Channel Interoffice Signaling: History and Description of a New Signaling System, Bell System Technical Journal, February 1978 (read 2026-11-16): complete separation of trunk control from the communication channel; fraudulent manipulation eliminated; set-up from about 10 seconds to 1-2 seconds; CCITT No. 6 approved October 1976", href: "https://archive.org/details/bstj57-2-225" }, // the design and its consequence
+      { label: "ITU-T, Recommendation Q.700, Introduction to CCITT Signalling System No. 7 (read 2026-11-16): the edition of March 1993 in force, superseding November 1988", href: "https://www.itu.int/rec/T-REC-Q.700/en" }, // SS7
+      { label: "Tobias Engel, SS7: Locate. Track. Manipulate., 31st Chaos Communication Congress, 27 December 2014, media.ccc.de (read 2026-11-16): companies selling phone tracking to within 50 metres through SS7", href: "https://media.ccc.de/v/31c3_-_6249_-_en_-_saal_1_-_201412271715_-_ss7_locate_track_manipulate_-_tobias_engel" }, // the new trust problem
+      { label: "ENISA, Signalling Security in Telecom SS7/Diameter/5G, March 2018 (read 2026-11-16): a medium to high level of risk in interconnection signalling", href: "https://www.enisa.europa.eu/publications/signalling-security-in-telecom-ss7-diameter-5g" }, // the regulator's assessment
+    ], // five sources, one object per line
+  },
+  {
+    // multifrequency-signalling (new entry): the Bell System's trunk address code, KP and ST, and its international relatives.
+    slug: "multifrequency-signalling", // the /glossary/multifrequency-signalling address
+    headword: "multifrequency signalling (MF)", // the term and its usual abbreviation
+    kind: "term", // a telephony signalling code
+    domains: ["isp-telecom"], // telephone signalling
+    expansion: "multifrequency", // MF spelled out
+    aliases: ["mf signalling", "mf signaling", "multi-frequency signalling", "mf pulsing", "kp and st", "key pulse", "r2 mfc", "sinalização multifrequencial"], // abbreviations, the control signals, the R2 relative and Portuguese
+    relatedTerms: ["in-band-signalling", "dtmf", "tone-box", "blue-box", "common-channel-signalling", "phreaking"], // this batch and existing entries
+    relatedArticles: ["tone-boxes-the-blue-box-the-red-box-and-in-band-signalling", "phone-phreaking-and-the-blue-box"], // the part and the people story
+    sources: [ // every label says what the page says and when it was read
+      { label: "C. Breen and C. A. Dahlbom, Signaling Systems for Control of Telephone Switching, Bell System Technical Journal, November 1960, section 5.3.5 and Table IV (read 2026-11-16): two of five frequencies per digit, a sixth for control, 200 cycles apart from 700 to 1700; fifteen pairs; KP and ST; parity check with reorder", href: "https://archive.org/details/bstj39-6-1381" }, // the code
+      { label: "AT&T, Notes on the Network, 1980, section 5, paragraphs 7.43 to 7.51 and Figure 35, Internet Archive (read 2026-11-16): the receiver deaf until KP; two-and-only-two check; 68 ± 7 ms pulses, 10 per second for CCITT No. 5; expanded inband meanings Coin Collect, Coin Return, Ringback, Operator Released and Attached; System No. 5 codes KP1, KP2, Code 11, Code 12", href: "https://archive.org/details/bitsavers_westernEleesonTheNetwork1980_26249557" }, // the operating detail
+      { label: "Phil Lapsley, Exploding the Phone, Some Historical Documents (read 2026-11-16): Dahlbom, Horton and Moody, AIEE Transactions, 1949, as the first public description of MF signalling he knew of; Breen and Dahlbom often cited as giving away 'the keys to the kingdom'", href: "https://explodingthephone.com/docs.php" }, // publication history
+      { label: "C. A. Dahlbom and J. S. Ryan, Common Channel Interoffice Signaling: History and Description, Bell System Technical Journal, February 1978 (read 2026-11-16): CCITT System No. 5 line signals on 2400 and 2600 Hz and MF address signals at 10 digits per second, on undersea cables and satellite circuits", href: "https://archive.org/details/bstj57-2-225" }, // the international version
+      { label: "ITU-T, Recommendation Q.441, System R2 interregister signalling code, Blue Book, 1988 (read 2026-11-16): compelled multifrequency code, forward 1380 to 1980 Hz, backward 1140 to 540 Hz", href: "https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-Q.441-198811-I!!PDF-E&type=items" }, // the R2 relative
+    ], // five sources, one object per line
+  },
+  {
+    // dtmf (new entry): the push-button tone code, its 16 signals and the fourth column the silver box used.
+    slug: "dtmf", // the /glossary/dtmf address
+    headword: "DTMF (dual-tone multifrequency)", // the acronym and its expansion
+    kind: "acronym", // an acronym first
+    domains: ["isp-telecom", "it-support"], // telephony and everyday support
+    expansion: "dual-tone multifrequency", // spelled out
+    aliases: ["touch-tone", "touch tone", "tone dialling", "tone dialing", "dual-tone multi-frequency", "multifrequência de dois tons", "discagem por tom"], // the Bell trade name, dialling terms and Portuguese
+    relatedTerms: ["multifrequency-signalling", "in-band-signalling", "tone-box"], // this batch
+    relatedArticles: ["tone-boxes-the-blue-box-the-red-box-and-in-band-signalling"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "AT&T, Notes on the Network, 1980, section 5, paragraphs 12.35 and 12.36, Internet Archive (read 2026-11-16): 16 signals, each one frequency from a low group (697, 770, 852, 941 Hz) and one from a high group (1209, 1336, 1477, 1633 Hz), geometrically spaced and not harmonically related; digits as short as 40 ms registered, under 23 ms rejected; A, B, C, D in the 1633 Hz column", href: "https://archive.org/details/bitsavers_westernEleesonTheNetwork1980_26249557" }, // the code
+      { label: "FBI, Phone Phreak Activities: AUTOVON Intrusions, 1967 to 1975, Internet Archive (read 2026-11-16): a ten-button pad modified for 16-button frequencies, compatible with AUTOVON priority up to Flash Override", href: "https://archive.org/details/PhonePhreakAUTOVONIntrusions" }, // the fourth column abused
+      { label: "C. Breen and C. A. Dahlbom, Signaling Systems for Control of Telephone Switching, Bell System Technical Journal, November 1960 (read 2026-11-16): systems based on MF objectives considered for customer pushbutton signalling, with a different coding system", href: "https://archive.org/details/bstj39-6-1381" }, // the origin
+      { label: "Marcos Assano, CPqD and Telebrás, Telefonia pública a cartão indutivo, Revista da Sociedade Brasileira de Telecomunicações, June 1997 (read 2026-11-16): the Brazilian card phone dials by decadic pulses or DTMF", href: "https://jcis.sbrt.org.br/jcis/article/download/215/129/671" }, // Brazilian use
+    ], // four sources, one object per line
+  },
+  {
+    // inductive-phone-card (new entry): the Brazilian payphone card whose credits are fuses burned by induction, its history, frauds and end.
+    slug: "inductive-phone-card", // the /glossary/inductive-phone-card address
+    headword: "cartão indutivo (inductive phone card)", // the Portuguese name stays in every locale, with the English gloss
+    kind: "term", // a technology
+    domains: ["isp-telecom", "cyber-security"], // telephony and payment security
+    aliases: ["cartão indutivo", "cartao indutivo", "cartão telefônico", "inductive card", "tp-cartão", "telephone card brazil", "orelhão card"], // spellings, the system name and English descriptions
+    relatedTerms: ["red-box", "tone-box", "telebras", "telesp", "anatel"], // this batch and existing entries
+    relatedArticles: ["tone-boxes-the-blue-box-the-red-box-and-in-band-signalling", "the-brazilian-hacker-scene"], // the part and the Brazilian scene
+    sources: [ // every label says what the page says and when it was read
+      { label: "Marcos Assano, CPqD and Telebrás, Telefonia pública a cartão indutivo: uma solução adaptada à realidade brasileira, Revista da Sociedade Brasileira de Telecomunicações, vol. 12 no. 1, June 1997 (read 2026-11-16, quotations checked against the page images): over 250,000 token phones; magnetic and chip cards rejected; each credit a fuse ruptured by induction, irreversibly; charging pulses by line reversal or 12 kHz; remote supervision and tamper sensors; Rio pilot March 1992; Eco-92; 206,000 terminals in April 1997; Brazil the only country using the technology", href: "https://jcis.sbrt.org.br/jcis/article/download/215/129/671" }, // the engineering account
+      { label: "Gazeta do Povo, Inventor do cartão telefônico cobra royalties de operadoras em ação milionária, 13 March 2016 (read 2026-11-16): Nelson Bardini, recognized by Telebrás as inventor; research from 1976; Signal Card's patent and the litigation since 1998", href: "https://www.gazetadopovo.com.br/economia/inventor-do-cartao-telefonico-cobra-royalties-de-operadoras-em-acao-milionaria-8nluwosndyyp1phtcht1mkx0j" }, // the disputed invention
+      { label: "INPI, Procuradoria-Geral, Nota 050/02 and Parecer on PI 9006534-4, 20 and 21 May 2002 (read 2026-11-16): application filed 17 December 1990 by Nelson Guilherme Bardini and Geraldo Rospendowiski Junior; a technical opinion citing a 1990 Telebrás 50-unit inductive card", href: "https://www.gov.br/inpi/pt-br/acesso-a-informacao/manifestacoes-juridicas-de-pi/arquivos/documentos/2002/nota-050-2002.pdf" }, // the patent office record
+      { label: "Diário Online (DOL), Relembre o truque dos cartões usados em orelhões nos anos 90, 6 February 2025 (read 2026-11-16): a 1995 Jornal Nacional report of a fraud costing Telesp over 10 million reais through a memory fault in the phones", href: "https://dol.com.br/tuedoide/curiosidades/893492/relembre-o-truque-dos-cartoes-usados-em-orelhoes-nos-anos-90" }, // a fraud at the terminal
+      { label: "Tribuna do Paraná, Cartões telefônicos levam vigarista à cadeia, 29 January 2004 (read 2026-11-16): adulterated cards sold in Curitiba; an estelionato charge; Brasil Telecom's statement", href: "https://www.tribunapr.com.br/painel-do-crime/cartoes-telefonicos-levam-vigarista-a-cadeia/amp/" }, // a fraud on the card
+      { label: "Ministério das Comunicações, Símbolo urbano por décadas, orelhões entram em processo de desativação, 21 January 2026 (read 2026-11-16): about 38,000 left; concessions ended December 2025; about 9,000 kept until 31 December 2028; free calls where no card is available because producing cards costs more than the call", href: "https://www.gov.br/mcom/pt-br/noticias/2026/janeiro/simbolo-urbano-por-decadas-orelhoes-entram-em-processo-de-desativacao-mas-seguem-onde-nao-ha-outro-servico-de-voz" }, // the end
+    ], // six sources, one object per line
+  },
+  {
+    // dual-use-security-tools (new entry): how the law separates a security tool from an offence, by intent, in the EU, Brazil and the US.
+    slug: "dual-use-security-tools", // the /glossary/dual-use-security-tools address
+    headword: "dual-use security tools (in law)", // the concept with its scope
+    kind: "term", // a legal and policy term
+    domains: ["grc", "hacking", "cyber-security"], // law, the tools and their use
+    aliases: ["dual-use tools", "hacking tools law", "tools used for committing offences", "ferramentas de uso dual", "art. 154-a § 1º"], // common names, the EU article's title and the Brazilian provision
+    relatedTerms: ["anatel-homologation", "anatel", "war-dialing", "tone-box", "pentest"], // this batch and existing entries
+    relatedArticles: ["hacking-devices-from-the-blue-box-to-the-flipper-zero", "tone-boxes-the-blue-box-the-red-box-and-in-band-signalling"], // the opener and the tone-box part
+    sources: [ // every label says what the page says and when it was read
+      { label: "EU, Directive 2013/40/EU of 12 August 2013 on attacks against information systems, EUR-Lex (read 2026-11-16): article 7 on tools made available with the intention that they be used for an offence; recital 16 on tools produced for legitimate purposes and a direct intent requirement; recital 17 on mandated testing; recital 15 on building on the 2001 Convention", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32013L0040" }, // the EU rule
+      { label: "Senado Federal, Lei 12.737 of 30 November 2012 (read 2026-11-16): article 154-A of the Código Penal and its paragraph 1 on producing, offering, distributing, selling or spreading a device or program with the intent of enabling the invasion", href: "https://legis.senado.leg.br/norma/588113/publicacao/15773241" }, // the Brazilian rule
+      { label: "Senado Federal, Lei 14.155 of 27 May 2021 (read 2026-11-16): new text of article 154-A and a penalty of one to four years' reclusão and a fine", href: "https://legis.senado.leg.br/norma/34016289/publicacao/34016562" }, // the 2021 change
+      { label: "Senado Federal, Decreto 11.491 of 12 April 2023 (read 2026-11-16): promulgation of the Convention on Cybercrime signed in Budapest on 23 November 2001, in force for Brazil from 1 March 2023", href: "https://legis.senado.leg.br/norma/36966539/publicacao/36967744" }, // Brazil and the Convention
+      { label: "Legal Information Institute, 18 U.S. Code 1029 (read 2026-11-16): paragraphs (a)(7) to (a)(9) with intent to defraud or knowledge; the research or development defence in (g)(2) for (a)(9), except producing or trafficking", href: "https://www.law.cornell.edu/uscode/text/18/1029" }, // the US rule
+      { label: "NIST, Special Publication 800-115, September 2008 (read 2026-11-16): war dialing recommended to organizations against themselves", href: "https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-115.pdf" }, // the defender's use
+      { label: "BleepingComputer, Brazil seizing Flipper Zero shipments to prevent use in crime, 11 March 2023 (read 2026-11-16): the EFF's view that tools related to security research should not be criminalized or restricted", href: "https://www.bleepingcomputer.com/news/security/brazil-seizing-flipper-zero-shipments-to-prevent-use-in-crime/" }, // the researchers' side
+    ], // seven sources, one object per line
+  },
+  {
+    // anatel-homologation (enriched 17/11/2026, hacking-devices part 400): own-use declaration, articles 33 and 64, marketplaces jointly liable since August 2025, enforcement at ports.
+    slug: "anatel-homologation", // unchanged address
+    headword: "homologação da Anatel (Anatel homologation)", // unchanged
+    kind: "term", // unchanged
+    domains: ["grc", "isp-telecom"], // unchanged
+    aliases: ["homologação", "homologação anatel", "anatel certification", "certificação anatel", "resolução 715", "homologação para uso próprio", "declaração de conformidade", "certifica anatel"], // existing six, plus the own-use instrument and the new platform
+    relatedTerms: ["anatel", "dual-use-security-tools", "remessa-conforme", "flipper-zero", "misuse-of-devices"], // existing two, then wave-1 and this batch
+    relatedArticles: ["hacking-devices-from-the-blue-box-to-the-flipper-zero", "owning-hacking-gear-legally-brazil-the-us-the-eu-and-canada", "the-flipper-zero-sub-ghz-rfid-nfc-infrared-and-the-panic", "high-boy-esp32-marauder-and-the-flipper-alternatives"], // the opener, the legal part, the Flipper and High Boy parts
+    sources: [ // every label says what the page says and when it was read
+      { label: "Anatel, Resolução 715 of 23 October 2019, Regulamento de Avaliação da Conformidade e de Homologação de Produtos para Telecomunicações, as published with amendments to October 2026 (read 2026-11-16): article 20, III, anyone may apply for their own use; article 55, homologation a mandatory prerequisite for use and sale in Brazil; article 60, II, refusal when the product lends itself to unlawful ends or facilitates a crime", href: "https://informacoes.anatel.gov.br/legislacao/resolucoes/2019/1350-resolucao-715" }, // the rule (kept)
+      { label: "Teletime, Regulamento de Avaliação da Conformidade e Homologação de produtos de telecom é publicado, 25 October 2019 (read 2026-11-16): the new regulation approved by Anatel's board; who may apply", href: "https://teletime.com.br/25/10/2019/regulamento-de-avaliacao-da-conformidade-e-homologacao-de-produtos-de-telecom-e-publicado/" }, // its adoption (kept)
+      { label: "BleepingComputer, Brazil seizing Flipper Zero shipments to prevent use in crime, 11 March 2023 (read 2026-11-16): Anatel's letter rejecting all homologation requests for the Flipper Zero under article 60, II", href: "https://www.bleepingcomputer.com/news/security/brazil-seizing-flipper-zero-shipments-to-prevent-use-in-crime/" }, // the 2023 use (kept)
+      { label: "Convergência Digital, Anatel apreendeu mais de 340 Flipper Zero importados por suposto uso criminoso, 17 March 2023 (read 2026-11-16): more than 340 units seized with the Receita Federal; Anatel's reasoning quoted", href: "https://convergenciadigital.com.br/telecom/anatel-apreendeu-mais-de-340-flipper-zero-importados-por-suposto-uso-criminoso" }, // the seizures (kept)
+      { label: "Anatel, Resolução 715/2019, consolidated text (read 2026-11-16): article 33, declaration of conformity preferred for products built by hand or imported for the applicant's own use; article 64, such a certificate gives the holder the right of use only; article 55, paragraph 2, inserted by Resolução 780 of 1 August 2025, marketplaces jointly liable with sellers", href: "https://informacoes.anatel.gov.br/legislacao/resolucoes/2019/1350-resolucao-715" }, // the own-use rules and the 2025 amendment (same page as the kept first source, read for other articles)
+      { label: "Anatel, Manual de Orientações, Homologação de Produtos, Uso próprio/pessoal, Declaração de Conformidade, version 2.0, 1 March 2018 (read 2026-11-16): applicant type importer for own use, normally with restrictions on sale", href: "https://sistemas.anatel.gov.br/anexar-api/publico/anexos/download/6b6b7fbe4c10d3369afbefe22a125180" }, // the procedure
+      { label: "Minha Operadora, Anatel divulga nota sobre certificação do Flipper Zero, 29 March 2023 (read 2026-11-16): declaration of conformity not appropriate for the Flipper, as for jammers and TV boxes; institutional homologation for security bodies", href: "https://www.minhaoperadora.com.br/2023/03/anatel-divulga-nota-sobre-certificacao-do-flipper-zero.html" }, // Anatel's reasoning
+      { label: "Agência Gov, via Receita Federal, 6 October 2026 (read 2026-11-17): 1,303 products without certification and homologation seized near Fortaleza; retained products may be disposed of if not regularized in time", href: "https://agenciagov.ebc.com.br/noticias/202610/receita-federal-em-operacao-conjunta-com-a-anatel-retem-mais-de-1-300-produtos-eletronicos-em-situacao-irregular" }, // enforcement at import
+    ], // eight sources (four kept, four added), one object per line
+  },
+  {
+    // Hak5 (new entry): the video show of 2005 that became the best-known maker of penetration-testing gadgets.
+    slug: "hak5", // the /glossary/hak5 address
+    headword: "Hak5", // the company's own spelling
+    kind: "term", // a company and its programme
+    domains: ["vendors", "hacking"], // a vendor whose products are hacking tools
+    aliases: ["hak5 llc", "hak5 gear", "hakshop"], // the legal name, the product family name, the old shop name (Computerworld 2012)
+    relatedTerms: ["wifi-pineapple", "cloud-c2", "jasager", "karma-attack", "usb-rubber-ducky", "duckyscript", "keystroke-injection", "command-and-control", "pentest", "red-team", "phreaking"], // this batch, then wave-1 siblings (agent C: usb-rubber-ducky, duckyscript, keystroke-injection; lan-turtle left out because agent C did not propose it), then existing entries
+    relatedArticles: ["hak5-from-a-video-show-to-a-hacking-gear-company", "the-wifi-pineapple-rogue-access-points-and-the-karma-attack", "keystroke-injection-rubber-ducky-bash-bunny-badusb-and-the-om-g-cable"], // parts 391 to 394
+    sources: [ // every label says what the page says and when it was read
+      { label: "Hak5, Our Story, undated (read 2026-11-16): penetration testing devices, online media and training since 2005; began in 2005 as the self-titled podcast; syndicated via Discovery Digital Networks (formerly Revision3); sister shows HakTip, ThreatWire, Metasploit Minute and TekThing", href: "https://hak5.org/pages/our-story" }, // the company's account
+      { label: "Hak5, Code of Ethics, undated (read 2026-11-16): Hak5 LLC founded in 2005; software designed and tested in the US with development in the US and UK; hardware manufactured and assembled in the People's Republic of China; products only available to License Exception ENC favourable treatment countries", href: "https://hak5.org/pages/code-of-ethics" }, // legal entity and manufacturing
+      { label: "TheTVDB, Hak5, all seasons (read 2026-11-16): pilot of 5 August 2005; Wi-Fi Pineapples episode of 7 September 2008; USB Rubber Ducky debut on 27 September 2011; LAN Turtle (27 July 2015), Bash Bunny (1 March 2017), Packet Squirrel (25 October 2017) launch episodes", href: "https://thetvdb.com/series/hak5/allseasons/official" }, // the show's catalogue
+      { label: "Hak5 Download Portal API, devices (read 2026-11-16): latest firmware per device, including WiFi Pineapple Pager 2.0.0 of 29 October 2026 and Cloud C2 3.5.2 of 1 October 2025", href: "https://downloads.hak5.org/api/devices/" }, // product dates
+      { label: "Hak5, Compliance, undated (read 2026-11-16): products classified ECCN 5A992.c (hardware) and 5D992.c (Cloud C2, PayloadStudio), mass market, self-classified; NDAA section 889 and FAR representations; six authorized resellers in the EU and UK", href: "https://hak5.org/pages/compliance" }, // export classification
+      { label: "Hak5, Terms of Service, undated (read 2026-11-16): Hak5 Gear is penetration testing tools for authorized auditing and security analysis purposes only where permitted; users solely responsible for compliance with local laws", href: "https://hak5.org/pages/terms-of-service" }, // stated purpose
+      { label: "Darlene Storm, Sneak Pineapple peak, Computerworld, 2 February 2012 (read 2026-11-16): WiFi Pineapple Mark IV previewed at ShmooCon 2012 and sold at HakShop; Kitchen's reply to the criticism that the tools were toys with no legitimate use", href: "https://www.computerworld.com/article/2472217/sneak-pineapple-peak--hak5-creates-even-more-lethal-wi-fi-hot-spot-honeypot-hackin.html" }, // criticism and reply
+    ], // seven sources, one object per line
+  },
+  {
+    // WiFi Pineapple (new entry): Hak5's rogue access point and Wi-Fi auditing platform, 2008 to the 2025 Pager.
+    slug: "wifi-pineapple", // the /glossary/wifi-pineapple address
+    headword: "WiFi Pineapple", // Hak5's spelling (registered mark)
+    kind: "term", // a product line
+    domains: ["hacking", "enterprise-networking"], // an attack tool that works on Wi-Fi networks
+    aliases: ["pineapple", "wi-fi pineapple", "wifi pineapple pager", "wifi pineapple mark vii", "pineap"], // the short name, the spelling with a hyphen, the current models, its software suite
+    relatedTerms: ["hak5", "karma-attack", "evil-twin", "rogue-access-point", "probe-request", "deauthentication-attack", "protected-management-frames", "jasager", "cloud-c2", "ssid", "man-in-the-middle", "captive-portal", "wpa3"], // this batch, then existing entries
+    relatedArticles: ["the-wifi-pineapple-rogue-access-points-and-the-karma-attack", "hak5-from-a-video-show-to-a-hacking-gear-company", "krack-and-the-wifi-handshake", "traffic-diversion-and-the-man-in-the-middle"], // part 392 first
+    sources: [ // every label says what the page says and when it was read
+      { label: "Hak5 Documentation, About the WiFi Pineapple NANO and TETRA (read 2026-11-16): a Linux-based wireless auditing platform in development since 2008, best known for gathering intelligence, tracking Wi-Fi devices and deploying a rogue access point for man-in-the-middle attacks", href: "https://documentation.hak5.org/wifi-pineapple-6th-gen-nano-tetra/getting-started/about-the-wifi-pineapple-nano-tetra.md" }, // what it is
+      { label: "Hak5 Documentation, The PineAP Suite (read 2026-11-16): Allow Associations, known as Karma before the fifth generation; Beacon Response; Capture SSIDs to Pool; Broadcast SSID Pool, known on the Mark V as Dogma", href: "https://documentation.hak5.org/wifi-pineapple-6th-gen-nano-tetra/getting-started/the-pineap-suite.md" }, // how it works
+      { label: "Robin Wood, Jasager: Todo and Change Log (read 2026-11-16): Jasager, Karma on the Fon, launched 17 September 2008; release 2.0 on 17 November 2008", href: "https://digi.ninja/jasager/todo" }, // the first generation's software
+      { label: "Hak5, WiFi Pineapple Mark VII Compare, undated (read 2026-11-16): Mark VII with three role-based radios, 256 MB RAM and 2 GB eMMC; Enterprise with four 2x2 radios, 1 GB RAM, 4 GB eMMC, dual Gigabit Ethernet", href: "https://hak5.org/pages/wifi-pineapple-mark-vii-compare" }, // current specifications
+      { label: "Hak5, WiFi Pineapple Pager product page (read 2026-11-16): tri-band 2.4, 5 and 6 GHz Wi-Fi with Bluetooth, 2,000 mAh battery, eighth-generation PineAP engine, no Cloud C2 support; Basic US$300 and Pro US$330 on 16 November 2026", href: "https://hak5.org/products/pager" }, // the newest model
+      { label: "Hak5 Documentation, WiFi Pineapple Pager, DEAUTH_CLIENT (read 2026-11-16): networks using Protected Management Frames or 802.11w are not susceptible to injected disconnection packets; all WPA3 networks enable PMF; 6 GHz networks must use WPA3 features", href: "https://documentation.hak5.org/wifi-pineapple-pager/wifi-pineapple-commands/deauth_client.md" }, // its limits
+      { label: "Australian Federal Police, WA man jailed for stealing intimate material and using 'evil twin' WiFi networks, 28 November 2025 (read 2026-11-16): a portable wireless access device, sometimes known as a WiFi Pineapple, used to create matching networks at airports and on flights; sentence of seven years and four months", href: "https://afp.gov.au/news-centre/media-release/wa-man-jailed-stealing-intimate-material-and-using-evil-twin-wifi" }, // misuse on record
+    ], // seven sources, one object per line
+  },
+  {
+    // Cloud C2 (new entry): Hak5's self-hosted command-and-control server for its implants and Pineapples.
+    slug: "cloud-c2", // the /glossary/cloud-c2 address; the bare alias "c2" belongs to command-and-control and is not reused
+    headword: "Cloud C2 (Hak5)", // the product name with its maker, so it is not read as the generic term
+    kind: "term", // a product
+    domains: ["vendors", "hacking"], // a vendor's offensive-operations software
+    aliases: ["hak5 cloud c2", "cloud c²", "hak5 c2"], // the forms Hak5 writes
+    relatedTerms: ["command-and-control", "hak5", "wifi-pineapple", "hardware-implant", "red-team"], // the generic concept first, then this batch, then existing entries
+    relatedArticles: ["hak5-from-a-video-show-to-a-hacking-gear-company"], // part 391, then part 394
+    sources: [ // every label says what the page says and when it was read
+      { label: "Hak5 Documentation, Cloud C2 basics (read 2026-11-16): a self-hosted web-based command and control suite for networked Hak5 gear; Linux, Mac and Windows hosts; WiFi Pineapple, LAN Turtle and Packet Squirrel provisioned as clients", href: "https://documentation.hak5.org/cloud-c2/getting-started/cloud-c-basics.md" }, // what it is
+      { label: "Hak5, Cloud C2 Compare 3.0, undated (read 2026-11-16): Community free up to 10 devices; Professional US$200 up to 50; Teams Silver, Gold and Platinum US$1,000, US$1,500 and US$2,000 for 50 to 200 devices with role-based access control and auditing", href: "https://hak5.org/pages/cloud-c2-compare-3-0" }, // editions
+      { label: "Hak5, C2 product page (read 2026-11-16): Teams Silver listed at US$500 and Teams Gold at US$750, Platinum at US$2,000 (differs from the comparison page)", href: "https://hak5.org/products/c2" }, // the contradiction
+      { label: "Hak5 Download Portal API, WiFi Pineapple NANO firmware (read 2026-11-16): firmware 2.4.0 of 1 October 2018 adds support for the Hak5 Cloud C2", href: "https://downloads.hak5.org/api/devices/wifipineapplenano/firmwares" }, // first dated support
+      { label: "Hak5 Download Portal API, Cloud C2 releases (read 2026-11-16): versions from 3.0.0 (22 October 2020) to 3.5.2 (1 October 2025)", href: "https://downloads.hak5.org/api/devices/cloudc2/firmwares" }, // versions
+      { label: "Hak5, Cloud C2 Introduction, undated (read 2026-11-16): Setup, Ship, Access: provision the device, ship it to the client site where all they do is plug it in, test their LAN and Wi-Fi over the web", href: "https://hak5.org/pages/cloud-c2-introduction" }, // the use case
+    ], // six sources, one object per line
+  },
+  {
+    // Jasager (new entry): Karma on the Fonera router, 2008, the software of the first WiFi Pineapple.
+    slug: "jasager", // the /glossary/jasager address
+    headword: "Jasager", // German, kept in the original language
+    kind: "lore", // its story dominates; sources required and given
+    domains: ["hacking"], // a hacking tool's history
+    aliases: ["karma on the fon"], // its project tagline
+    relatedTerms: ["karma-attack", "wifi-pineapple", "hak5", "rogue-access-point"], // this batch
+    relatedArticles: ["the-wifi-pineapple-rogue-access-points-and-the-karma-attack", "hak5-from-a-video-show-to-a-hacking-gear-company"], // parts 392 and 391
+    sources: [ // every label says what the page says and when it was read
+      { label: "Robin Wood, Jasager: Karma on the Fon, project home (read 2026-11-16): an implementation of Karma designed to run on OpenWrt on the Fon, with a web interface listing connected clients and the SSID each associated with", href: "https://digi.ninja/jasager/" }, // what it was
+      { label: "Robin Wood, Jasager: Todo and Change Log (read 2026-11-16): project launched 17 September 2008; release 2.0 on 17 November 2008 with a module system and MAC filtering", href: "https://digi.ninja/jasager/todo" }, // dates
+      { label: "Robin Wood, Jasager: Credits (read 2026-11-16): Robin Wood design and build; Darren at Hak5 testing, hardware supplier and promotion; Mubix original idea; Orange of Piranha the OpenWrt Makefile", href: "https://digi.ninja/jasager/credits" }, // who
+      { label: "Rob Fuller, Jasager: Past, Present and Future, 9 October 2008 (read 2026-11-16): heard Dai Zovi present Karma at ShmooCon 2006, put it on a Fonera in early 2007, took the idea to Darren Kitchen, who brought in Robin Wood", href: "https://malicious.link/posts/2008/2008-10-09-jasager-past-present-and-future/" }, // origin
+    ], // four sources, one object per line
+  },
+  {
+    // Karma attack (new entry): a rogue access point that answers to any network name a client probes for.
+    slug: "karma-attack", // the /glossary/karma-attack address
+    headword: "Karma attack", // the research name with "attack"
+    kind: "term", // an attack technique
+    domains: ["hacking", "cyber-security"], // offensive technique with defensive consequences
+    expansion: "KARMA Attacks Radioed Machines Automatically", // the recursive expansion on the author's page
+    aliases: ["karma", "karma (wireless attack)", "ataque karma"], // the bare name and the Portuguese
+    relatedTerms: ["probe-request", "rogue-access-point", "evil-twin", "wifi-pineapple", "jasager", "deauthentication-attack", "ssid", "mac-address"], // this batch, then existing entries
+    relatedArticles: ["the-wifi-pineapple-rogue-access-points-and-the-karma-attack", "traffic-diversion-and-the-man-in-the-middle"], // part 392 first
+    sources: [ // every label says what the page says and when it was read
+      { label: "Dino A. Dai Zovi and Shane A. Macaulay, Attacking Automatic Wireless Network Selection, 18 March 2005 (read 2026-11-16): Windows XP SP2 and Mac OS X 10.3.8 reveal preferred networks in directed probe requests; a patched MADWiFi driver answers any requested SSID; spoofed disassociation frames force clients to search again", href: "https://theta44.org/karma/aawns.pdf" }, // the research
+      { label: "Dino A. Dai Zovi, KARMA project page (read 2026-11-16): discovers clients and their preferred networks by listening for probe requests, responds to probes and association requests for any SSID; not updated since 2006; successors include Jasager and the WiFi Pineapple", href: "https://theta44.org/karma/" }, // the tool
+      { label: "Dino A. Dai Zovi, Presentations (read 2026-11-16): PacSec Tokyo November 2004, Immunity NYC Security Shindig January 2005, Microsoft BlueHat March 2005, CanSecWest May 2005", href: "https://theta44.org/presentations.html" }, // dates
+      { label: "Microsoft, Security Advisory 917021, 17 October 2006 (read 2026-11-16): defence-in-depth changes to Windows XP SP2 wireless client behaviour in non-broadcast and ad hoc networks and to the default parking behaviour", href: "https://learn.microsoft.com/en-us/security-updates/securityadvisories/2006/917021" }, // vendor response
+      { label: "Hak5 Documentation, WiFi Pineapple Pager, Pineapple Open AP (read 2026-11-16): using a Wi-Fi attack called karma, a Pineapple in mimicry mode answers any request for a network name with a response for that same name", href: "https://documentation.hak5.org/wifi-pineapple-pager/pineapple-open-ap.md" }, // current implementation
+    ], // five sources, one object per line
+  },
+  {
+    // Evil twin (new entry): a rogue access point that impersonates one specific known network.
+    slug: "evil-twin", // the /glossary/evil-twin address
+    headword: "evil twin", // lower case, a common noun
+    kind: "term", // an attack technique
+    domains: ["cyber-security", "enterprise-networking"], // a Wi-Fi attack and its network defences
+    aliases: ["evil twin attack", "evil twin access point", "gêmeo maligno"], // the forms in use and the Portuguese
+    relatedTerms: ["rogue-access-point", "karma-attack", "deauthentication-attack", "wifi-pineapple", "protected-management-frames", "802-1x", "captive-portal", "wpa3", "man-in-the-middle"], // this batch, then existing entries
+    relatedArticles: ["the-wifi-pineapple-rogue-access-points-and-the-karma-attack", "traffic-diversion-and-the-man-in-the-middle", "802-1x-and-eap-methods"], // part 392 first
+    sources: [ // every label says what the page says and when it was read
+      { label: "Dai Zovi and Macaulay, Attacking Automatic Wireless Network Selection, 18 March 2005 (read 2026-11-16): a cloned base station (Evil Twin) can produce a stronger signal than the legitimate base station and divert unsuspecting clients", href: "https://theta44.org/karma/aawns.pdf" }, // early description
+      { label: "Bastille, Wi-Fi Pineapple: Is It Still a Threat, and How to Detect It, 1 September 2026 (read 2026-11-16): an evil twin impersonates one specific known SSID, unlike a rogue AP (any unauthorized AP) or KARMA (answering any name); 802.1X with enforced server certificate validation as the strongest control (a vendor's view)", href: "https://bastille.net/research/wifi-pineapple/" }, // the distinctions
+      { label: "Hak5 Documentation, WiFi Pineapple Mark VII, PineAP (read 2026-11-16): Evil WPA serves a new WPA network or copies an existing one; Evil Enterprise serves WPA-Enterprise; properly configured enterprise clients reject unknown certificates", href: "https://documentation.hak5.org/wifi-pineapple/ui-overview/pineap.md" }, // a commercial implementation and its limit
+      { label: "Australian Federal Police, Man charged over creation of 'evil twin' free WiFi networks to access personal data, 28 June 2024 (read 2026-11-16): fake free Wi-Fi at Perth, Melbourne and Adelaide airports and on domestic flights led to a page asking for email or social media logins", href: "https://afp.gov.au/news-centre/media-release/man-charged-over-creation-evil-twin-free-wifi-networks-access-personal" }, // a case
+      { label: "Australian Federal Police, WA man jailed for stealing intimate material and using 'evil twin' WiFi networks, 28 November 2025 (read 2026-11-16): sentence of seven years and four months; the device listened for probe requests and created matching networks", href: "https://afp.gov.au/news-centre/media-release/wa-man-jailed-stealing-intimate-material-and-using-evil-twin-wifi" }, // the outcome
+    ], // five sources, one object per line
+  },
+  {
+    // Probe request (new entry): the 802.11 management frame a client sends to find networks.
+    slug: "probe-request", // the /glossary/probe-request address
+    headword: "probe request", // lower case, the frame's name
+    kind: "term", // a protocol element
+    domains: ["enterprise-networking", "privacy"], // Wi-Fi mechanics with a privacy cost
+    aliases: ["probe request frame", "directed probe", "broadcast probe request"], // the forms the sources use
+    relatedTerms: ["ssid", "mac-address", "karma-attack", "wifi-pineapple", "rogue-access-point", "ieee-802-11", "wifi"], // existing first, then this batch
+    relatedArticles: ["the-wifi-pineapple-rogue-access-points-and-the-karma-attack", "wireless-networking-from-802-11-to-wifi-7"], // part 392 first
+    sources: [ // every label says what the page says and when it was read
+      { label: "Hak5 Documentation, WiFi Pineapple, Management Frames (read 2026-11-16): probe requests are sent by clients seeking access points, either general or directed at a particular SSID; this is active scanning; probe responses carry the same information as beacons", href: "https://documentation.hak5.org/wifi-pineapple/wifi-basics/management-frames.md" }, // what it is
+      { label: "Linux kernel, include/linux/ieee80211.h (read 2026-11-16): management frame type 0; IEEE80211_STYPE_PROBE_REQ 0x0040 and IEEE80211_STYPE_PROBE_RESP 0x0050 in the frame control field", href: "https://raw.githubusercontent.com/torvalds/linux/master/include/linux/ieee80211.h" }, // the encoding
+      { label: "Dai Zovi and Macaulay, Attacking Automatic Wireless Network Selection, 18 March 2005 (read 2026-11-16): Windows XP SP2 probes in order for each network on its Preferred Networks List; a listener can recreate the list", href: "https://theta44.org/karma/aawns.pdf" }, // the leak
+      { label: "IETF, RFC 9724, State of Affairs for Randomized and Changing MAC Addresses, March 2025 (read 2026-11-16): while actively scanning, the MAC address is used in the Probe Request frames sent by the device; random addresses as the remedy", href: "https://www.rfc-editor.org/rfc/rfc9724.txt" }, // the tracking risk
+      { label: "Apple Support, Recommended settings for Wi-Fi routers and access points (read 2026-11-16): hiding the network name does not conceal it and, because of how devices search for networks, may expose information that identifies the user and the hidden networks used", href: "https://support.apple.com/en-us/102766" }, // hidden networks
+    ], // five sources, one object per line
+  },
+  {
+    // Deauthentication attack (new entry): forged 802.11 deauthentication frames that disconnect clients.
+    slug: "deauthentication-attack", // the /glossary/deauthentication-attack address
+    headword: "deauthentication attack", // lower case
+    kind: "term", // an attack technique
+    domains: ["cyber-security", "enterprise-networking"], // a Wi-Fi attack and its network defences
+    aliases: ["deauth", "deauth attack", "deauth flood", "ataque de desautenticação"], // practitioners' short forms and the Portuguese
+    relatedTerms: ["protected-management-frames", "evil-twin", "wifi-pineapple", "karma-attack", "wpa3", "krack", "replay-attack"], // this batch, then existing entries
+    relatedArticles: ["the-wifi-pineapple-rogue-access-points-and-the-karma-attack", "krack-and-the-wifi-handshake", "fortiap-monitoring-threats-and-troubleshooting"], // part 392 first
+    sources: [ // every label says what the page says and when it was read
+      { label: "Hak5 Documentation, WiFi Pineapple, Management Frames (read 2026-11-16): deauthentication frames terminate communications; when this unencrypted management frame is spoofed by a third party, the technique is often called a deauth attack", href: "https://documentation.hak5.org/wifi-pineapple/wifi-basics/management-frames.md" }, // definition
+      { label: "Linux kernel, include/linux/ieee80211.h (read 2026-11-16): IEEE80211_STYPE_DEAUTH 0x00C0; management header with destination, source and BSSID addresses; a 2-byte reason code (for example WLAN_REASON_DEAUTH_LEAVING = 3); protected bit 0x4000", href: "https://raw.githubusercontent.com/torvalds/linux/master/include/linux/ieee80211.h" }, // the frame
+      { label: "Hak5 Documentation, WiFi Pineapple Pager, DEAUTH_CLIENT (read 2026-11-16): used to redirect clients to a Pineapple or to force reassociation when harvesting WPA handshakes; not effective against PMF, 802.11w or WPA3 networks; 6 GHz requires WPA3 features; DFS channels prohibit transmission; may be illegal in some jurisdictions", href: "https://documentation.hak5.org/wifi-pineapple-pager/wifi-pineapple-commands/deauth_client.md" }, // purpose and limits
+      { label: "FCC, Enforcement Advisory No. 2015-01, DA 15-113, 27 January 2015 (read 2026-11-16): Wi-Fi blocking violates Section 333 of the Communications Act; Marriott deployed a Wi-Fi deauthentication protocol against guests' hotspots and paid a civil penalty of US$600,000", href: "https://docs.fcc.gov/public/attachments/DA-15-113A1_Rcd.pdf" }, // the law in the United States
+      { label: "Dai Zovi and Macaulay, Attacking Automatic Wireless Network Selection, 18 March 2005 (read 2026-11-16): disassociation frames are always sent in the clear, even on encrypted networks; the attacker needs only the base station's address from its beacons", href: "https://theta44.org/karma/aawns.pdf" }, // why it worked
+    ], // five sources, one object per line
+  },
+  {
+    // Protected management frames (new entry): IEEE 802.11w, the amendment that authenticates management frames.
+    slug: "protected-management-frames", // the /glossary/protected-management-frames address
+    headword: "protected management frames", // the standard's name in lower case
+    kind: "term", // a protocol feature
+    domains: ["enterprise-networking", "cyber-security"], // a Wi-Fi security mechanism
+    expansion: "PMF", // the acronym the Wi-Fi Alliance and Hak5 use
+    aliases: ["pmf", "802.11w", "ieee 802.11w"], // the acronym and the amendment
+    relatedTerms: ["wpa3", "deauthentication-attack", "evil-twin", "wifi", "ieee-802-11", "krack"], // existing and this batch
+    relatedArticles: ["the-wifi-pineapple-rogue-access-points-and-the-karma-attack", "krack-and-the-wifi-handshake", "wireless-networking-from-802-11-to-wifi-7"], // part 392 first
+    sources: [ // every label says what the page says and when it was read
+      { label: "IEEE 802.11 Working Group, Official project timelines (read 2026-11-16): P802.11w, Protected Management Frames, task group TGw; project started 20 March 2005; approved 11 September 2009", href: "https://www.ieee802.org/11/Reports/802.11_Timelines.htm" }, // the standard
+      { label: "Wi-Fi Alliance, Security (read 2026-11-16): WPA3 networks require Protected Management Frames; PMF extends protection to unicast and multicast management action frames; PMF is required for all new certified devices", href: "https://www.wi-fi.org/discover-wi-fi/security" }, // certification requirement
+      { label: "Hak5 Documentation, WiFi Pineapple Pager, DEAUTH_CLIENT (read 2026-11-16): networks using Protected Management Frames or 802.11w are not susceptible to injected disconnection packets; all WPA3 networks enable PMF", href: "https://documentation.hak5.org/wifi-pineapple-pager/wifi-pineapple-commands/deauth_client.md" }, // the attacker's own admission
+      { label: "Linux kernel, include/linux/ieee80211.h (read 2026-11-16): the Protected bit 0x4000 in frame control; the SA Query action category 8 with request 0 and response 1", href: "https://raw.githubusercontent.com/torvalds/linux/master/include/linux/ieee80211.h" }, // the mechanism's fields
+      { label: "Bastille, Wi-Fi Pineapple: Is It Still a Threat, 1 September 2026 (read 2026-11-16): PMF stops deauthentication only where 802.11w is fully enforced; mixed-mode deployments and legacy or IoT clients leave gaps (a vendor's view)", href: "https://bastille.net/research/wifi-pineapple/" }, // its limit
+    ], // five sources, one object per line
+  },
+  {
+    // Rogue access point (new entry): any unauthorized access point in an organization's airspace or on its network.
+    slug: "rogue-access-point", // the /glossary/rogue-access-point address
+    headword: "rogue access point", // lower case
+    kind: "term", // a security category
+    domains: ["cyber-security", "enterprise-networking"], // a threat and its detection
+    aliases: ["rogue ap", "rogue wireless access point", "ponto de acesso falso", "ap falso"], // English short form and Portuguese
+    relatedTerms: ["evil-twin", "karma-attack", "wifi-pineapple", "probe-request", "802-1x", "wlan"], // this batch, then existing entries
+    relatedArticles: ["the-wifi-pineapple-rogue-access-points-and-the-karma-attack", "fortiap-monitoring-threats-and-troubleshooting"], // part 392 first
+    sources: [ // every label says what the page says and when it was read
+      { label: "NIST, SP 800-153, Guidelines for Securing Wireless Local Area Networks, February 2012 (read 2026-11-16): an attacker's AP configured to appear part of the organization's WLAN can backdoor the wired network and put clients that connect to it in a man-in-the-middle position; continuous monitoring for rogue APs and triangulation to locate them", href: "https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-153.pdf" }, // the reference definition and defence
+      { label: "Bastille, Wi-Fi Pineapple: Is It Still a Threat, 1 September 2026 (read 2026-11-16): a rogue access point is any unauthorized AP operating in your space, including an employee's personal hotspot; distinct from an evil twin and from KARMA (a vendor's view)", href: "https://bastille.net/research/wifi-pineapple/" }, // the distinctions
+      { label: "Hak5 Documentation, About the WiFi Pineapple NANO and TETRA (read 2026-11-16): the WiFi Pineapple can be deployed as an extremely effective rogue access point by mimicking the preferred networks of client devices", href: "https://documentation.hak5.org/wifi-pineapple-6th-gen-nano-tetra/getting-started/about-the-wifi-pineapple-nano-tetra.md" }, // a commercial example
+      { label: "FCC, Enforcement Advisory No. 2015-01, 27 January 2015 (read 2026-11-16): intentional interference with Wi-Fi hot spots, including by deauthentication, is illegal under Section 333; relevant to automatic rogue containment", href: "https://docs.fcc.gov/public/attachments/DA-15-113A1_Rcd.pdf" }, // the limit on containment
+    ], // four sources, one object per line
+  },
+  {
+    // Keystroke injection (new entry): a device that announces itself as a USB keyboard and types a script; why hosts trust it; the defences and their limits.
+    slug: "keystroke-injection", // the /glossary/keystroke-injection address
+    headword: "keystroke injection", // lower case, a plain technique name
+    kind: "term", // an attack technique
+    domains: ["hacking", "cyber-security"], // offensive tooling and its defence
+    aliases: ["keystroke injection attack", "HID attack", "HID injection", "hotplug attack", "injeção de teclas"], // common names, Hak5's umbrella term, Portuguese
+    relatedTerms: ["usb-rubber-ducky", "duckyscript", "badusb", "om-g-cable", "hardware-implant", "social-engineering", "pentest", "red-team", "edr", "hak5"], // this batch, existing entries, then a wave sibling (hak5: agent B)
+    relatedArticles: ["keystroke-injection-rubber-ducky-bash-bunny-badusb-and-the-om-g-cable", "social-engineering-pretexting-vishing-and-baiting"], // the part and the baiting article
+    sources: [ // every label says what the page says and when it was read
+      { label: "USB Implementers Forum, Device Class Definition for HID 1.11, 27 June 2001 (read 2026-11-16): boot keyboard subclass; eight-byte input report (modifiers, reserved, six key codes); one-byte LED output report", href: "https://www.usb.org/sites/default/files/hid1_11.pdf" }, // the protocol trusted
+      { label: "Tian, Scaife, Kumar, Bailey, Bates and Butler, SoK: Plug & Pray Today, IEEE S&P 2018 (read 2026-11-16): all USB attacks abuse the trust-by-default nature of the ecosystem; no existing defence is complete", href: "https://faculty.cc.gatech.edu/~mbailey/publications/oakland18_usb.pdf" }, // systematization
+      { label: "InfoconDB, DEF CON 18, Adrian Crenshaw, Programmable HID USB Keystroke Dongle, 31 July 2010 (read 2026-11-16): Teensy-based device typing stored keystrokes on plug-in, after a delay or on sensor triggers", href: "https://infocondb.org/con/def-con/def-con-18/programmable-hid-usb-keystroke-dongle-using-the-teensy-as-a-pen-testing-device" }, // 2010 origin, one of two
+      { label: "Hak5 documentation, USB Rubber Ducky (read 2026-11-16): Hak5 says it introduced keystroke injection in 2010 with the USB Rubber Ducky; hardware mark I (2011) and II (2022)", href: "https://documentation.hak5.org/hak5-usb-rubber-ducky/master.md" }, // the vendor's account
+      { label: "WaterISAC, FBI FLASH: FIN7 Cyber Actors Target US Businesses Through USB Keystroke Injection Attacks, 11 January 2022 (read 2026-11-16): packages with BadUSB or Bad Beetle USB devices; the device injects keystrokes to download and execute malware", href: "https://www.waterisac.org/?p=18551" }, // criminal use
+      { label: "Google Open Source Blog, USB Keystroke Injection Protection, 10 March 2020 (read 2026-11-16): UKIP measures keystroke timing, monitor and hardening modes, not a silver bullet", href: "https://opensource.googleblog.com/2020/03/usb-keystroke-injection-protection.html" }, // a defence
+    ], // six sources, one object per line
+  },
+  {
+    // USB Rubber Ducky (new entry): Hak5's keystroke injection tool, 2010/2011 to the 2022 model, what it presents to a host, its list price and terms.
+    slug: "usb-rubber-ducky", // the /glossary/usb-rubber-ducky address
+    headword: "USB Rubber Ducky", // the product name as Hak5 writes it
+    kind: "term", // a named tool
+    domains: ["hacking", "cyber-security"], // offensive tooling and its defence
+    aliases: ["Rubber Ducky", "USB Rubber Ducky Mark II"], // short name and the 2022 generation
+    relatedTerms: ["keystroke-injection", "duckyscript", "badusb", "om-g-cable", "pentest", "red-team", "exfiltration", "hak5"], // this batch, existing entries, then a wave sibling (hak5: agent B)
+    relatedArticles: ["keystroke-injection-rubber-ducky-bash-bunny-badusb-and-the-om-g-cable", "hak5-from-a-video-show-to-a-hacking-gear-company"], // the part and the Hak5 part (wave sibling)
+    sources: [ // every label says what the page says and when it was read
+      { label: "Hak5 documentation, USB Rubber Ducky (read 2026-11-16): introduced in 2010 by founder Darren Kitchen; mark I (2011) and II (2022); DuckyScript 1.0 to 3.0; legal notice and export statement", href: "https://documentation.hak5.org/hak5-usb-rubber-ducky/master.md" }, // vendor history
+      { label: "Hak5 shop, USB Rubber Ducky product data (read 2026-11-16): listing published 20 September 2011; $100, Pro $110, Elite $130; USB-A and USB-C connectors, microSD; keyboard, mass storage or both", href: "https://shop.hak5.org/products/usb-rubber-ducky.json" }, // list price and hardware
+      { label: "Hak5 documentation, Attack Modes (read 2026-11-16): HID, STORAGE, OFF; VID and PID spoofing; default identifiers USB Input Device and serial 111111111111", href: "https://documentation.hak5.org/hak5-usb-rubber-ducky/attack-modes-constants-and-variables/attack-modes.md" }, // what a host sees
+      { label: "Hak5 documentation, Exfiltration (read 2026-11-16): Keystroke Reflection uses the lock-key LED output report as an exfiltration path; Windows and Linux, very limited macOS", href: "https://documentation.hak5.org/hak5-usb-rubber-ducky/advanced-features/exfiltration.md" }, // the 2022 feature
+      { label: "TechRadar, 17 August 2022 (read 2026-11-16): Darren Kitchen showed the new Rubber Ducky at DEF CON; OS detection and exfiltration through keyboard lights", href: "https://www.techradar.com/news/this-iconic-dangerous-usb-hacking-tool-is-back-with-a-vengeance" }, // launch coverage
+    ], // five sources, one object per line
+  },
+  {
+    // DuckyScript (new entry): the scripting language of Hak5's injection tools, from three commands to version 3.0; licensed to O.MG.
+    slug: "duckyscript", // the /glossary/duckyscript address
+    headword: "DuckyScript", // the trademark as written by Hak5
+    kind: "term", // a programming language
+    domains: ["hacking", "programming"], // offensive tooling and a language
+    aliases: ["Ducky Script", "DuckyScript 3.0"], // spaced spelling and current version
+    relatedTerms: ["usb-rubber-ducky", "keystroke-injection", "om-g-cable", "hak5"], // this batch, then a wave sibling (hak5: agent B)
+    relatedArticles: ["keystroke-injection-rubber-ducky-bash-bunny-badusb-and-the-om-g-cable"], // the part with the worked listing
+    sources: [ // every label says what the page says and when it was read
+      { label: "Hak5 documentation, USB Rubber Ducky (read 2026-11-16): originally three commands; DuckyScript 1.0 (2010) a macro language of keystrokes and delays; coupled with Bash on the Bash Bunny (2017); 3.0 (2022) adds conditionals, loops, functions, extensions; licensed to the O.MG platform by Mischief Gadgets", href: "https://documentation.hak5.org/hak5-usb-rubber-ducky/master.md" }, // history
+      { label: "Hak5 documentation, Hello, World! (read 2026-11-16): REM, DELAY, STRING and special keys; compilation to inject.bin in Payload Studio; the Language File per keyboard language", href: "https://documentation.hak5.org/hak5-usb-rubber-ducky/ducky-script-basics/hello-world.md" }, // the basics
+      { label: "Hak5 documentation, Jitter (read 2026-11-16): randomized delay between key presses, 20 ms default maximum", href: "https://documentation.hak5.org/hak5-usb-rubber-ducky/advanced-features/jitter.md" }, // timing feature relevant to defences
+      { label: "Hak5 documentation, Bash Bunny ATTACKMODE (read 2026-11-16): DuckyScript command choosing serial, RNDIS or ECM Ethernet, storage and HID; default VID 0xF000 per mode combination", href: "https://documentation.hak5.org/bash-bunny/writing-payloads/attackmode.md" }, // device-specific commands
+    ], // four sources, one object per line
+  },
+  {
+    // BadUSB (new entry): SRLabs' 2014 finding that USB controller firmware can be reprogrammed so a peripheral becomes another device; the drift of the term.
+    slug: "badusb", // the /glossary/badusb address
+    headword: "BadUSB", // as SRLabs wrote it
+    kind: "term", // a class of attack, named by its researchers
+    domains: ["hacking", "cyber-security"], // research and defence
+    aliases: ["Bad USB", "malicious USB firmware"], // spelling variant and descriptive form
+    relatedTerms: ["keystroke-injection", "usb-rubber-ducky", "firmware", "supply-chain-attack", "black-hat", "air-gap"], // this batch and existing entries
+    relatedArticles: ["keystroke-injection-rubber-ducky-bash-bunny-badusb-and-the-om-g-cable"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "SRLabs, USB peripherals can turn against their users, 31 July 2014 (read 2026-11-16): controller chips in thumb drives have no protection from reprogramming; keyboard emulation, network-card spoofing to change DNS, pre-boot virus; no effective defences known; Android proof of concept only", href: "https://srlabs.de/blog/usb-peripherals-turn" }, // the finding
+      { label: "InfoconDB, Black Hat USA 2014, Nohl and Lell, BadUSB - On Accessories that Turn Evil, 7 August 2014 (read 2026-11-16): malware operating from controller chips; full system compromise and a self-replicating USB virus", href: "https://infocondb.org/con/black-hat/black-hat-usa-2014/badusb-on-accessories-that-turn-evil" }, // the talk
+      { label: "SRLabs, BadUSB PacSec 2014 slides (read 2026-11-16): 52 chip families from the top 8 vendors and 33 devices; up to half of USB chips BadUSB-vulnerable; one chip family with fuse bits, none with firmware signing; no vendor patches", href: "https://srlabs.de/_app/immutable/assets/SRLabs-BadUSB-Pacsec-v2.nYRTaRo6.pdf" }, // the survey
+      { label: "Adam Caudill, Making BadUSB Work For You: DerbyCon, 2 October 2014 (read 2026-11-16): code for the Phison 2251-03 released with Brandon Wilson, including HID custom firmware and a hidden partition patch, to push for signed firmware updates", href: "https://adamcaudill.com/2014/10/02/making-badusb-work-for-you-derbycon/" }, // public code
+      { label: "Tian, Bates and Butler, GoodUSB, ACSAC 2015 (read 2026-11-16): BadUSB's root cause is the lack of access control in USB enumeration; permissions enforced from the user's expectation of the device", href: "https://www.cise.ufl.edu/%7Ebutler/pubs/acsac15.pdf" }, // a research defence
+    ], // five sources, one object per line
+  },
+  {
+    // O.MG Cable (new entry): Mike Grover's Wi-Fi-controlled implant inside a USB cable, made by Mischief Gadgets and sold by Hak5; how it is detected.
+    slug: "om-g-cable", // the /glossary/om-g-cable address (slug fixed by the wave brief)
+    headword: "O.MG Cable", // the product name as written by its maker
+    kind: "term", // a named tool
+    domains: ["hacking", "cyber-security"], // offensive tooling and its defence
+    aliases: ["OMG Cable", "O.MG", "malicious USB cable", "cabo malicioso"], // spellings, the brand, the generic term, Portuguese
+    relatedTerms: ["keystroke-injection", "duckyscript", "hardware-implant", "supply-chain-attack", "command-and-control", "exfiltration", "red-team", "hak5"], // this batch, existing entries, then a wave sibling (hak5: agent B)
+    relatedArticles: ["keystroke-injection-rubber-ducky-bash-bunny-badusb-and-the-om-g-cable"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Darknet Diaries, episode 161, MG, 15 July 2025, transcript (read 2026-11-16): inspired by the NSA ANT catalogue's COTTONMOUTH; Wi-Fi control; hand-made for DEF CON in August 2019 at eight hours per cable with half failing; first factory batch sent to Hak5 around 1 January 2020", href: "https://darknetdiaries.com/transcript/161/" }, // the maker's account
+      { label: "Vice (Motherboard), 10 August 2019 (read 2026-11-16): hand-modified Apple Lightning cable opening a terminal on a Mac remotely; up to 300 feet from a phone, unlimited through a nearby Wi-Fi network", href: "https://www.vice.com/en/article/these-iphone-lightning-cables-will-hack-your-computer/" }, // first demonstration in the press
+      { label: "Hak5 shop, O.MG Cable product data (read 2026-11-16): hand-made cable with an implant, compared with the $20,000 COTTONMOUTH-I; 1 m; Basic $150, Elite $180 to $220", href: "https://shop.hak5.org/products/omg-cable.json" }, // list price
+      { label: "O.MG, main page (read 2026-11-16): full catalogue via Hak5; Elite adds covert exfiltration and comms channel, hardware keylogger and networked C2; Plug, Adapter, UnBlocker and Malicious Cable Detector", href: "https://o.mg.lol/" }, // the maker's catalogue
+      { label: "Hak5 shop, Malicious Cable Detector product data (read 2026-11-16): O.MG cables invisible on the data lines until a payload is triggered; detection by power side-channel analysis 200,000 times per second", href: "https://shop.hak5.org/products/malicious-cable-detector-by-o-mg.json" }, // detection, vendor claim
+      { label: "Tom's Hardware, 5 December 2024 (read 2026-11-16): Lumafield's CT scan of an O.MG USB-C cable shows antenna, microcontroller and a second hidden die nearly invisible on 2D X-ray", href: "https://www.tomshardware.com/tech-industry/cyber-security/o-mg-usb-c-cable-ct-scan-reveals-sinister-active-electronics-contains-a-hidden-antenna-and-another-die-embedded-in-the-microcontroller" }, // independent imaging
+    ], // six sources, one object per line
+  },
+  {
+    // Flipper Zero (new entry): the pocket multitool for sub-GHz, RFID, NFC, infrared and iButton, and the restrictions it met.
+    slug: "flipper-zero", // the /glossary/flipper-zero address
+    headword: "Flipper Zero", // the product name
+    kind: "term", // a named product
+    domains: ["hacking", "vendors"], // a hacking tool and a vendor product
+    aliases: ["flipper", "flipperzero", "flipper devices", "fz.1"], // short name, spelling, the maker, the model number
+    relatedTerms: ["sub-ghz", "flipper-custom-firmware", "cc1101", "replay-attack", "anatel", "esp32-marauder", "high-boy", "rolling-code", "mifare-classic", "badusb", "anatel-homologation"], // this batch, existing entries, siblings (rolling-code, mifare-classic: E; badusb: C; anatel-homologation: A)
+    relatedArticles: ["the-flipper-zero-sub-ghz-rfid-nfc-infrared-and-the-panic", "high-boy-esp32-marauder-and-the-flipper-alternatives", "hacking-devices-from-the-blue-box-to-the-flipper-zero"], // the part, the alternatives, the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "Flipper Docs, Tech specs, updated 14 September 2026 (read 2026-11-16): STM32WB55RG, CC1101 sub-1 GHz with -20 dBm max, ST25R3916 NFC, 125 kHz RFID, infrared, iButton, BLE 5.4, 2100 mAh, 102 g", href: "https://docs.flipper.net/zero/development/hardware/tech-specs" }, // hardware
+      { label: "Flipper blog, Funded in 8 Minutes, New Outfit & Bluetooth Unlocked, 30 July 2020 (read 2026-11-16): Kickstarter goal reached in eight minutes", href: "https://blog.flipper.net/funded-in-8-minutes/" }, // launch
+      { label: "Flipper Devices, company page (read 2026-11-16): Kickstarter campaign in 2020 raised $4.8M; Claymont, Delaware address", href: "https://flipperdevices.com/" }, // maker
+      { label: "FCC, grant of equipment authorization, FCC ID 2A2V6-FZ, 14 January 2022, published by Flipper Devices (read 2026-11-16): Part 15.231 at 304.5–321.95, 433.075–434.775 and 915.0–927.95 MHz", href: "https://cdn.flipper.net/FCC_-_2A2V6-FZGrant-DSC.pdf" }, // certification
+      { label: "BleepingComputer, Brazil seizing Flipper Zero shipments to prevent use in crime, 11 March 2023 (read 2026-11-16): Anatel refused all homologation requests under article 60, II, of Resolução 715", href: "https://www.bleepingcomputer.com/news/security/brazil-seizing-flipper-zero-shipments-to-prevent-use-in-crime/" }, // Brazil
+      { label: "BleepingComputer, Flipper Zero banned by Amazon for being a 'card skimming device', 7 April 2023 (read 2026-11-16): sellers' notices; CEO Pavel Zhovner says it cannot skim bank cards", href: "https://www.bleepingcomputer.com/news/technology/flipper-zero-banned-by-amazon-for-being-a-card-skimming-device-/" }, // Amazon
+      { label: "ISED, Question Period Note ISI-2024-QP-00053, received 20 September 2024 (read 2026-11-16): intent announced 8 February 2024; Bill C-69 amended the Radiocommunication Act, royal assent 20 June 2024; consultation closed August 2024", href: "https://search.open.canada.ca/qpnotes/record/ic%2CISI-2024-QP-00053" }, // Canada
+    ], // seven sources, one object per line
+  },
+  {
+    // sub-GHz (new entry): the radio bands below 1 GHz used by remotes, alarms and sensors, and the rules for transmitting in them.
+    slug: "sub-ghz", // the /glossary/sub-ghz address
+    headword: "sub-GHz (sub-1 GHz)", // the jargon and its long form
+    kind: "jargon", // practitioners' shorthand for a frequency range
+    domains: ["enterprise-networking", "hacking"], // radio engineering and the hacking tools that use it
+    expansion: "below one gigahertz: radio frequencies under 1,000 MHz, in practice the 300–928 MHz bands of short-range devices", // the formal sense
+    aliases: ["sub-1 ghz", "sub 1 ghz", "subghz", "sub-ghz radio", "faixa sub-ghz"], // spellings and Portuguese
+    relatedTerms: ["ism-band", "radio-spectrum", "cc1101", "flipper-zero", "replay-attack", "lora", "rolling-code"], // existing entries, this batch, sibling (rolling-code: E)
+    relatedArticles: ["the-flipper-zero-sub-ghz-rfid-nfc-infrared-and-the-panic", "radio-for-hackers-sdr-hackrf-rtl-sdr-and-rolling-codes", "radio-spectrum"], // the part, the radio part, the existing primer
+    sources: [ // every label says what the page says and when it was read
+      { label: "Flipper Docs, Sub-GHz (read 2026-11-16): receives and transmits 300–928 MHz; remotes for gates, barriers, radio locks, doorbells; CC1101 and antenna for 300–348, 387–464 and 779–928 MHz; 50 m maximum range", href: "https://docs.flipper.net/zero/sub-ghz" }, // device view
+      { label: "Flipper Docs, Frequencies (read 2026-11-16): transmission unlocked only on frequencies allowed for civilian use in the region; table of bands by region", href: "https://docs.flipper.net/zero/sub-ghz/frequencies" }, // region lock
+      { label: "eCFR, 47 CFR 15.231 (read 2026-11-16): periodic operation above 70 MHz for control signals; 5-second limits; two seconds per hour of supervision; field-strength table", href: "https://www.ecfr.gov/api/renderer/v1/content/enhanced/current/title-47?part=15&section=15.231" }, // United States
+      { label: "CEPT ECC, ERC Recommendation 70-03, amended 9 October 2026 (read 2026-11-16): band g1 433.05–434.79 MHz, 10 mW e.r.p., ≤10% duty cycle; band h1.5 868–868.6 MHz, 25 mW e.r.p., ≤1% duty cycle", href: "https://docdb.cept.org/download/5013" }, // Europe
+      { label: "Anatel, Ato 14448, 4 December 2017 (read 2026-11-16): item 6, periodic-operation devices above 70 MHz for alarms, door openers and remote keys; item 4.1.5, 433–435 MHz at up to 10 mW EIRP", href: "https://informacoes.anatel.gov.br/legislacao/atos-de-requisitos-tecnicos-de-gestao-do-espectro/2017/1139-ato-14448" }, // Brazil
+      { label: "Texas Instruments, CC1101 product page (read 2026-11-16): low-power sub-1 GHz transceiver, 300–348, 387–464 and 779–928 MHz", href: "https://www.ti.com/product/CC1101" }, // the common chip
+    ], // six sources, one object per line
+  },
+  {
+    // Flipper Zero custom firmware (new entry): the community forks (Unleashed, Xtreme, Momentum, RogueMaster) and what they unlock.
+    slug: "flipper-custom-firmware", // the /glossary/flipper-custom-firmware address (the brief's momentum-firmware, widened to the term the sources use)
+    headword: "Flipper Zero custom firmware", // the term the forks use for themselves
+    kind: "term", // a defined category of software
+    domains: ["hacking"], // hacking tools
+    aliases: ["custom firmware", "cfw", "unleashed", "unleashed firmware", "momentum firmware", "xtreme firmware", "roguemaster", "firmware customizado"], // the term, its abbreviation, the projects, Portuguese
+    relatedTerms: ["flipper-zero", "sub-ghz", "firmware", "replay-attack", "rolling-code", "open-source"], // this batch, existing entries, sibling (rolling-code: E)
+    relatedArticles: ["the-flipper-zero-sub-ghz-rfid-nfc-infrared-and-the-panic"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Unleashed firmware, README (read 2026-11-16): a fork of the original firmware; regional TX restrictions removed; extra sub-GHz frequencies; many rolling-code protocols can save and send captured signals; not affiliated with Flipper Devices", href: "https://raw.githubusercontent.com/DarkFlippers/unleashed-firmware/dev/ReadMe.md" }, // Unleashed
+      { label: "Momentum firmware, README (read 2026-11-16): a direct continuation of the Xtreme firmware; settings to extend sub-GHz frequencies to 281-361, 378-481, 749-962 MHz", href: "https://raw.githubusercontent.com/Next-Flip/Momentum-Firmware/dev/ReadMe.md" }, // Momentum
+      { label: "Xtreme firmware, README (read 2026-11-16): Xtreme is no longer in development", href: "https://raw.githubusercontent.com/Flipper-XFW/Xtreme-Firmware/dev/ReadMe.md" }, // Xtreme
+      { label: "RogueMaster firmware, README (read 2026-11-16): a fork of all Flipper Zero community projects", href: "https://raw.githubusercontent.com/RogueMaster/flipperzero-firmware-wPlugins/420/ReadMe.md" }, // RogueMaster
+      { label: "Flipper blog, Under the pressure of unexpected fame, 3 August 2020 (read 2026-11-16): official firmware will have no potentially illegal features; with third-party firmware all responsibility is on the user", href: "https://blog.flipper.net/under-the-pressure/" }, // the maker's line
+      { label: "Ars Technica, 2 November 2023 (read 2026-11-16): the iPhone pop-up flood on a Dutch train came from a Flipper running Xtreme firmware and its 'iOS 17 attack' setting", href: "https://arstechnica.com/security/2023/11/flipper-zero-gadget-that-doses-iphones-takes-once-esoteric-attacks-mainstream/" }, // the episode
+    ], // six sources, one object per line
+  },
+  {
+    // CC1101 (new entry): the Texas Instruments sub-1 GHz transceiver inside the Flipper Zero and most of its alternatives.
+    slug: "cc1101", // the /glossary/cc1101 address
+    headword: "CC1101", // the part number
+    kind: "term", // a named component
+    domains: ["enterprise-networking", "hacking"], // radio engineering and hacking tools
+    expansion: "Texas Instruments low-power sub-1 GHz RF transceiver", // the maker's description
+    aliases: ["ti cc1101", "cc1101 transceiver", "cc1101 module"], // common spellings
+    relatedTerms: ["sub-ghz", "flipper-zero", "high-boy", "esp32", "ism-band"], // this batch, existing entry
+    relatedArticles: ["the-flipper-zero-sub-ghz-rfid-nfc-infrared-and-the-panic", "high-boy-esp32-marauder-and-the-flipper-alternatives"], // the two parts
+    sources: [ // every label says what the page says and when it was read
+      { label: "Texas Instruments, CC1101 product page (read 2026-11-16): status active; 300–348, 387–464 and 779–928 MHz; up to 12 dBm; sensitivity down to -116 dBm; 0.6 to 600 kbps; 2-FSK, 4-FSK, GFSK, MSK and OOK", href: "https://www.ti.com/product/CC1101" }, // maker
+      { label: "Flipper blog, Our Response to the Canadian Government, 19 March 2024 (read 2026-11-16): the CC1101 has been widely used since its release in 2007, in radio toys and educational kits", href: "https://blog.flipper.net/response-to-canadian-government/" }, // age
+      { label: "Flipper Docs, Tech specs (read 2026-11-16): sub-1 GHz module on a CC1101, TX power -20 dBm max", href: "https://docs.flipper.net/zero/development/hardware/tech-specs" }, // in the Flipper
+      { label: "LILYGO, T-Embed CC1101 (read 2026-11-16): ESP32-S3 board with a built-in CC1101 module", href: "https://lilygo.cc/products/t-embed-cc1101" }, // in an alternative
+      { label: "High Boy, official site (read 2026-11-16): CC1101 sub-GHz radio for 315, 433, 868 and 915 MHz beside an SX1262 LoRa radio", href: "https://highboy.com.br/" }, // in the High Boy
+    ], // five sources, one object per line
+  },
+  {
+    // High Boy (new entry): High Code's Brazilian answer to the Flipper Zero, its crowdfunding and its regulatory status.
+    slug: "high-boy", // the /glossary/high-boy address
+    headword: "High Boy", // the product name
+    kind: "term", // a named product
+    domains: ["hacking", "vendors"], // a hacking tool and a product
+    aliases: ["highboy", "high code", "high code llc", "tentacleos", "octobit"], // spelling, the maker, the firmware, the mascot
+    relatedTerms: ["flipper-zero", "esp32", "cc1101", "lora", "anatel", "anatel-homologation"], // this batch, existing entries, sibling (anatel-homologation: A)
+    relatedArticles: ["high-boy-esp32-marauder-and-the-flipper-alternatives", "the-flipper-zero-sub-ghz-rfid-nfc-infrared-and-the-panic", "the-brazilian-hacker-scene"], // the part, the Flipper part, the Brazilian scene
+    sources: [ // every label says what the page says and when it was read
+      { label: "High Code, High Boy: The Brazilian Answer to the Flipper Zero, Hackaday.io, created 15 April 2025 (read 2026-11-16): ESP32-S3, open source and open hardware; started because the Flipper became restricted in Brazil; Kickstarter launch 17 November 2025; goal reached in 10 minutes and over $140k by 24 November 2025", href: "https://hackaday.io/project/202872" }, // project
+      { label: "High Boy, official site (read 2026-11-16): ESP32-P4 and ESP32-C5, CC1101, SX1262 LoRa, ST25R3916 NFC, 125 kHz RFID in development; a product in development; regulatory certification not completed", href: "https://highboy.com.br/" }, // current state
+      { label: "HighCodeh, TentacleOS, README (read 2026-11-16): Copyright (c) 2025 HIGH CODE LLC; GPL-3.0; beta and incomplete", href: "https://raw.githubusercontent.com/HighCodeh/TentacleOS/dev/README.md" }, // firmware
+      { label: "HighCodeh, Highboy_PCB, README (read 2026-11-16): revision 2.2 MVP board with ESP32-S3, CC1101, PN7150 NFC and 2500 mAh battery", href: "https://raw.githubusercontent.com/HighCodeh/Highboy_PCB/main/README.md" }, // hardware history
+      { label: "Desbugados, 27 November 2025 (read 2026-11-16): four Brazilian students; company founded in the United States; US$7,000 goal, nearly US$170,000 raised; plans for Brazilian regulation in early 2026", href: "https://www.desbugados.com.br/noticias/2025/11/27/o-canivete-suico-hacker-brasileiro-rival-do-flipper-zero-arrecada-20x-a-meta-no-kickstarter" }, // press
+    ], // five sources, one object per line
+  },
+  {
+    // ESP32 Marauder (new entry): JustCallMeKoko's Wi-Fi and Bluetooth offensive and defensive toolkit for ESP32 boards.
+    slug: "esp32-marauder", // the /glossary/esp32-marauder address
+    headword: "ESP32 Marauder", // the project name
+    kind: "term", // a named tool
+    domains: ["hacking"], // hacking tools
+    aliases: ["marauder", "esp32marauder", "marauder firmware", "justcallmekoko"], // short name, repository name, the maker
+    relatedTerms: ["esp32", "flipper-zero", "wifi", "wpa3", "captive-portal", "deauthentication-attack", "evil-twin"], // this batch, existing entries, siblings (deauthentication-attack, evil-twin: B)
+    relatedArticles: ["high-boy-esp32-marauder-and-the-flipper-alternatives", "the-wifi-pineapple-rogue-access-points-and-the-karma-attack"], // the part and the Wi-Fi part
+    sources: [ // every label says what the page says and when it was read
+      { label: "justcallmekoko, ESP32Marauder, README (read 2026-11-16): a suite of WiFi/Bluetooth offensive and defensive tools for the ESP32; FCC module identifiers are module grants, not end-product grants", href: "https://raw.githubusercontent.com/justcallmekoko/ESP32Marauder/master/README.md" }, // project
+      { label: "justcallmekoko, ESP32Marauder, LICENSE (read 2026-11-16): MIT License, copyright 2020 Just Call Me Koko", href: "https://raw.githubusercontent.com/justcallmekoko/ESP32Marauder/master/LICENSE" }, // licence
+      { label: "ESP32 Marauder wiki, Applications (read 2026-11-16; read again 2026-11-17 in a browser): wardriving, Wi-Fi sniffers with deauthentication detection, Wi-Fi attacks for authorized testing, BLE detection of AirTags, Flippers and skimmers, Flipper Zero companion", href: "https://github.com/justcallmekoko/ESP32Marauder/wiki/applications" }, // features
+      { label: "ESP32Marauder, releases (read 2026-11-16; read again 2026-11-17 in a browser): v1.20.0 of 28 October 2026", href: "https://github.com/justcallmekoko/ESP32Marauder/releases" }, // version
+      { label: "JustCallMeKoko LLC, shop (read 2026-11-16): Marauder v8 US$100, C5 Wardriver v2 US$75", href: "https://www.justcallmekokollc.com" }, // hardware
+    ], // five sources, one object per line
+  },
+  {
+    // ESP32 (new entry): Espressif's Wi-Fi and Bluetooth microcontroller family, the base of most cheap hacking gadgets.
+    slug: "esp32", // the /glossary/esp32 address (distinct from the existing esp, Encapsulating Security Payload)
+    headword: "ESP32", // the product family
+    kind: "term", // a named chip family
+    domains: ["programming", "vendors"], // embedded development and a vendor product
+    aliases: ["esp32-s3", "esp32-c5", "esp32-p4", "esp8266", "espressif", "espressif esp32"], // family members, predecessor, maker
+    relatedTerms: ["cc1101", "esp32-marauder", "bruce-firmware", "high-boy", "wifi", "lora", "s-in-iot"], // this batch and existing entries
+    relatedArticles: ["high-boy-esp32-marauder-and-the-flipper-alternatives"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Espressif, Milestones (read 2026-11-16): founded April 2008 in Shanghai; ESP8266EX May 2014; ESP32 September 2016; IPO 22 July 2019; ESP32-S3 December 2020; ESP32-C5 announced June 2022; ESP32-P4 January 2023; one billion chips September 2023; M5Stack majority stake April 2024", href: "https://www.espressif.com/en/company/about-us/milestones" }, // history
+      { label: "Espressif, Espressif Leads the IoT Chip Market with Over 1 Billion Shipments Worldwide, September 2023 (read 2026-11-16): founder and CEO Teo Swee Ann; almost 200 million chips in the past year (the company's figure)", href: "https://www.espressif.com/en/news/1_Billion_Chip_Sales" }, // scale
+      { label: "Espressif, Espressif Acquires Majority Stake in M5Stack, 22 April 2024 (read 2026-11-16): M5Stack's ecosystem built on ESP32 chips", href: "https://www.espressif.com/en/news/Espressif_Acquires_M5Stack" }, // kits
+      { label: "Flipper Docs, Wi-Fi Developer Board schematics (read 2026-11-16): the Flipper's Wi-Fi board uses an ESP32-S2-WROVER-N4R2", href: "https://docs.flipper.net/zero/development/hardware/devboard-schematics" }, // in the Flipper ecosystem
+    ], // four sources, one object per line
+  },
+  {
+    // Pwnagotchi (new entry): evilsocket's reinforcement-learning Wi-Fi handshake collector with a cartoon face.
+    slug: "pwnagotchi", // the /glossary/pwnagotchi address
+    headword: "Pwnagotchi", // the project name
+    kind: "term", // a named tool
+    domains: ["hacking"], // hacking tools
+    aliases: ["pwnagotchi.ai", "pwnagotchi.org"], // the project sites
+    relatedTerms: ["wpa", "wpa3", "esp32-marauder", "flipper-zero", "deauthentication-attack"], // existing entries, this batch, sibling (deauthentication-attack: B)
+    relatedArticles: ["high-boy-esp32-marauder-and-the-flipper-alternatives", "krack-and-the-wifi-handshake"], // the part and the handshake article
+    sources: [ // every label says what the page says and when it was read
+      { label: "evilsocket, Weaponizing and Gamifying AI for WiFi Hacking: Presenting Pwnagotchi 1.0.0, 19 October 2019 (read 2026-11-16): a summer project that started out of boredom", href: "https://www.evilsocket.net/2019/10/19/Weaponizing-and-Gamifying-AI-for-WiFi-Hacking-Presenting-Pwnagotchi-1-0-0/" }, // launch
+      { label: "evilsocket/pwnagotchi, README (read 2026-11-16): A2C agent driving bettercap to maximize crackable WPA key material, passively or by authentication and association attacks; PMKIDs and full and half handshakes; units cooperate over a parasite protocol on dot11; GPL3", href: "https://raw.githubusercontent.com/evilsocket/pwnagotchi/master/README.md" }, // mechanism
+      { label: "jayofelony/pwnagotchi, README (read 2026-11-16): maintained fork for Raspberry Pi Zero W (32-bit) and Zero 2 W, 3, 4 and 5 (64-bit)", href: "https://raw.githubusercontent.com/jayofelony/pwnagotchi/master/README.md" }, // today
+      { label: "Pwnagotchi, Introduction (read 2026-11-16): states shown on the display as moods, expressions and sentences; with AI disabled still an automated deauther and handshake sniffer", href: "https://pwnagotchi.ai/intro/" }, // character
+      { label: "Ars Technica, 2 November 2023 (read 2026-11-16): Flipper Devices wrote that Flipper was inspired by the pwnagotchi project", href: "https://arstechnica.com/security/2023/11/flipper-zero-gadget-that-doses-iphones-takes-once-esoteric-attacks-mainstream/" }, // influence
+    ], // five sources, one object per line
+  },
+  {
+    // Bruce (new entry): the AGPL multitool firmware for M5Stack, LILYGO and other ESP32 boards that absorbed its predecessors.
+    slug: "bruce-firmware", // the /glossary/bruce-firmware address (the bare "bruce" is left free)
+    headword: "Bruce (ESP32 firmware)", // the project name with its kind
+    kind: "term", // a named tool
+    domains: ["hacking"], // hacking tools
+    aliases: ["bruce firmware", "bruce.computer", "bruce rf reaper"], // names and the devkit
+    relatedTerms: ["esp32", "esp32-marauder", "cc1101", "flipper-zero", "captive-portal", "badusb"], // this batch, existing entry, sibling (badusb: C)
+    relatedArticles: ["high-boy-esp32-marauder-and-the-flipper-alternatives"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "pr3y, Bruce, README (read 2026-11-16): versatile ESP32 firmware of offensive-security tools for red teams; supports M5Stack, LILYGO, Elecrow and others; features from Wi-Fi attacks to CC1101 replay, PN532 RFID, Wire Tools and jammer items; credits ESP32Marauder, Launcher, Evil-M5Project and M5Stick-Nemo; for legal and authorized testing only", href: "https://raw.githubusercontent.com/pr3y/Bruce/main/README.md" }, // project
+      { label: "Bruce, bruce.computer (read 2026-11-16): firmware under AGPL, hardware under CERN-OHL-P-2.0; release v1.17; RF Reaper devkit", href: "https://bruce.computer/" }, // site
+      { label: "pr3y, Bruce, LICENSE (read 2026-11-16): GNU Affero General Public License version 3", href: "https://raw.githubusercontent.com/pr3y/Bruce/main/LICENSE" }, // licence
+      { label: "CapibaraZero, fw, README (read 2026-11-16): the project is deprecated; switch to Bruce firmware", href: "https://raw.githubusercontent.com/CapibaraZero/fw/main/README.md" }, // consolidation
+    ], // four sources, one object per line
+  },
+  {
+    // software-defined-radio (new entry): radio whose physical layer is software, from the industry definition to the hobby hardware.
+    slug: "software-defined-radio", // the /glossary/software-defined-radio address
+    headword: "SDR (software-defined radio)", // the abbreviation people use, spelled out
+    kind: "acronym", // SDR is the form in use
+    domains: ["isp-telecom", "hacking"], // a radio technology, and the hacker's general-purpose radio
+    expansion: "Software-Defined Radio", // the expansion
+    aliases: ["sdr", "software defined radio", "software-defined radio", "software radio", "rádio definido por software", "radio definido por software"], // the abbreviation, the spellings and the Portuguese
+    relatedTerms: ["rtl-sdr", "hackrf-one", "rolling-code", "replay-attack", "radio-spectrum", "ism-band", "amateur-radio"], // this batch, then existing entries
+    relatedArticles: ["radio-for-hackers-sdr-hackrf-rtl-sdr-and-rolling-codes", "radio-spectrum", "amateur-radio", "hacking-devices-from-the-blue-box-to-the-flipper-zero"], // the part, the spectrum articles and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "Wireless Innovation Forum, Introduction to SDR, undated (read 2026-11-17 in a browser; the old address now redirects to the series index): definition, 'Radio in which some or all of the physical layer functions are software defined'", href: "https://winnforum.org/introduction-to-software-definied-radio-winnforum-sdr-101/" }, // the industry definition
+      { label: "GNU Radio, About GNU Radio, undated (read 2026-11-16): a free and open-source toolkit of signal processing blocks to implement software radios; the same hardware can make many kinds of radio", href: "https://www.gnuradio.org/about/" }, // the toolkit
+      { label: "Michael Ossmann, Introducing HackRF, 22 June 2012, blog posts labelled hardware (read 2026-11-16): SDR as the application of digital signal processing to radio waveforms; 'like a very fast sound card with the speaker and microphone replaced by an antenna'", href: "https://ossmann.blogspot.com/search/label/hardware" }, // a designer's explanation
+      { label: "Great Scott Gadgets, HackRF One, product page (read 2026-11-16): 8-bit quadrature samples (8-bit I and 8-bit Q), 1 MHz to 6 GHz, half-duplex", href: "https://greatscottgadgets.com/hackrf/one/" }, // I/Q samples in a product
+      { label: "RTL-SDR Blog, About RTL-SDR (read 2026-11-16): radio components traditionally analogue hardware now implemented in software; the cheap RTL2832U receiver", href: "https://www.rtl-sdr.com/about-rtl-sdr/" }, // the cheap end
+    ], // five sources, one object per line
+  },
+  {
+    // rtl-sdr (new entry): the DVB-T television dongle that became a receive-only SDR in 2012.
+    slug: "rtl-sdr", // the /glossary/rtl-sdr address
+    headword: "RTL-SDR", // the community name
+    kind: "term", // a product family's common name
+    domains: ["hacking", "isp-telecom"], // hobby and research radio
+    aliases: ["rtl sdr", "rtlsdr", "rtl2832u", "rtl2832", "dvb-t dongle", "rtl dongle", "rtl-sdr blog"], // spellings, the chip and the dongle
+    relatedTerms: ["software-defined-radio", "hackrf-one", "rolling-code", "radio-spectrum", "amateur-radio"], // this batch, then existing entries
+    relatedArticles: ["radio-for-hackers-sdr-hackrf-rtl-sdr-and-rolling-codes", "hacking-devices-from-the-blue-box-to-the-flipper-zero", "radio-spectrum"], // the part, the opener, the spectrum article
+    sources: [ // every label says what the page says and when it was read
+      { label: "Alexandru Csete, RTL2832U based software defined radios, 2 April 2012 (read 2026-11-16): Antti Palosaari found an ezcap RTL2832U dongle could stream raw I/Q samples; Steve Markgraf's rtl-sdr package; Balint Seeber's GNU Radio block; a dongle for £9.50", href: "https://www.oz9aec.net/radios/gnu-radio/rtl2832u-based-software-defined-radios" }, // the contemporary record
+      { label: "RTL-SDR Blog, About RTL-SDR (read 2026-11-16): discovery credited to Antti Palosaari, Eric Fry and Osmocom (Steve Markgraf); about US$30; 500 kHz to 1.75 GHz by model; 'Note that RTL-SDRs cannot transmit'; 3.2 MS/s maximum, 2.56 MS/s without drops; 8 bits; 'No person or company owns RTL-SDR'", href: "https://www.rtl-sdr.com/about-rtl-sdr/" }, // the main community site
+      { label: "RTL-SDR Blog, Buy RTL-SDR dongles (read 2026-11-16): V3 (R860) US$34.95 to US$39.95; V4L (R828S) US$37.95; 1 PPM TCXO, SMA, 4.5 V bias tee; counterfeit warning", href: "https://www.rtl-sdr.com/buy-rtl-sdr-dvb-t-dongles/" }, // list prices
+      { label: "RTL-SDR Blog, V4 users guide (read 2026-11-16): HF reception by upconversion on the V4, no direct sampling; software bias tee", href: "https://www.rtl-sdr.com/v4/" }, // the current model
+    ], // four sources, one object per line
+  },
+  {
+    // hackrf-one (new entry): Great Scott Gadgets' open-source transmit-and-receive SDR, from Jawbreaker to HackRF Pro.
+    slug: "hackrf-one", // the /glossary/hackrf-one address
+    headword: "HackRF One", // the product name
+    kind: "term", // a product name
+    domains: ["hacking", "vendors"], // the hacker's transceiver, Great Scott Gadgets' product
+    aliases: ["hackrf", "hackrf pro", "hackrf jawbreaker", "portapack"], // the family, the successor, the beta and the add-on
+    relatedTerms: ["software-defined-radio", "rtl-sdr", "rolling-code", "replay-attack", "defcon"], // this batch, then existing entries
+    relatedArticles: ["radio-for-hackers-sdr-hackrf-rtl-sdr-and-rolling-codes", "hacking-devices-from-the-blue-box-to-the-flipper-zero", "hak5-from-a-video-show-to-a-hacking-gear-company"], // the part, the opener and the Hak5 part (a reseller)
+    sources: [ // every label says what the page says and when it was read
+      { label: "Great Scott Gadgets, HackRF One (read 2026-11-16): 1 MHz to 6 GHz, half-duplex, up to 20 million samples per second, 8-bit I/Q, open source hardware, USB-powered", href: "https://greatscottgadgets.com/hackrf/one/" }, // the maker's specifications
+      { label: "HackRF documentation, HackRF One (read 2026-11-16): first production hardware platform; 2 to 20 Msps; maximum input -5 dBm; transmit power by band, 0 to 10 dBm up to 4 GHz; 'Before you transmit, know your laws'", href: "https://hackrf.readthedocs.io/en/latest/hackrf_one.html" }, // the documentation
+      { label: "Michael Ossmann, Giving Away HackRF, 9 May 2013 (read 2026-11-16): more than 500 Jawbreaker beta units, 30 MHz to 6 GHz, DARPA Cyber Fast Track support", href: "https://ossmann.blogspot.com/2013/05/giving-away-hackrf.html" }, // the beta
+      { label: "CNX Software, $275 HackRF Open Source Software Defined Radio (SDR) Platform, 12 August 2013 (read 2026-11-16): Kickstarter target US$80,000 passed, more than US$300,000 pledged, US$275 pledge, delivery expected January 2014", href: "https://www.cnx-software.com/2013/08/12/275-hackrf-open-source-software-defined-radio-sdr-platform/" }, // the crowdfunding
+      { label: "Great Scott Gadgets, Meet HackRF Pro, 26 June 2025 (read 2026-11-16): announcement; 100 kHz to 6 GHz; production from July 2025", href: "https://greatscottgadgets.com/2025/06-26-meet-hackrf-pro/" }, // the successor
+      { label: "Great Scott Gadgets, HackRF Pro (read 2026-11-16): tunable 0 Hz to 7.1 GHz, FPGA, TCXO, 16-bit and 4-bit modes, 'Facility to hardware-disable transmit mode'", href: "https://greatscottgadgets.com/hackrf/pro/" }, // the successor's specifications
+      { label: "Great Scott Gadgets, PortaPack H1 at DEF CON 23, 23 August 2015 (read 2026-11-16): ShareBrained Technology's add-on turns HackRF One into a portable SDR", href: "https://greatscottgadgets.com/2015/08-23-portapack-h1-at-def-con-23/" }, // the add-on
+    ], // seven sources, one object per line
+  },
+  {
+    // rolling-code (new entry): the counter-based hopping code of remotes and key fobs, KeeLoq's window and every published way it fell.
+    slug: "rolling-code", // the /glossary/rolling-code address
+    headword: "rolling code", // the common term
+    kind: "term", // a technical term
+    domains: ["cyber-security", "crypto", "hacking"], // physical access security, its cryptography, its attacks
+    aliases: ["rolling codes", "hopping code", "hopping codes", "code hopping", "keeloq", "rolljam", "código rolante", "código saltitante", "codigo rolante"], // spellings, the main implementation, the best-known attack, Portuguese
+    relatedTerms: ["replay-attack", "nonce", "hmac", "aes", "block-cipher", "software-defined-radio", "hackrf-one"], // existing entries, then this batch
+    relatedArticles: ["radio-for-hackers-sdr-hackrf-rtl-sdr-and-rolling-codes", "the-flipper-zero-sub-ghz-rfid-nfc-infrared-and-the-panic", "totp-and-hotp", "validating-totp-codes", "security-through-obscurity"], // the part, the Flipper part, the one-time password articles, obscurity
+    sources: [ // every label says what the page says and when it was read
+      { label: "Microchip Technology, HCS301 KeeLoq Code Hopping Encoder datasheet DS21143C, 2011 (read 2026-11-16): 66-bit code word, 32-bit hopping code, 28-bit serial number, 64-bit key; learning; synchronization windows of 16 codes (single operation) and 32K (double operation), the rest blocked", href: "https://ww1.microchip.com/downloads/en/DeviceDoc/21143c.pdf" }, // the implementation
+      { label: "Google Patents, US5517187A (read 2026-11-16): inventors Bruwer, Smit and Kuhn; original assignee Nanoteq Pty Ltd; priority 29 May 1990; published 14 May 1996; Microchip among current assignees", href: "https://patents.google.com/patent/US5517187A/en" }, // the patent
+      { label: "University of Haifa research portal, A practical attack on KeeLoq, EUROCRYPT 2008 (read 2026-11-16): 2^16 known plaintexts, 2^44.5 encryptions, 7.8 days on 64 cores; one key-derivation scheme leaks the master secret", href: "https://cris.haifa.ac.il/en/publications/a-practical-attack-on-keeloq-2/" }, // cryptanalysis
+      { label: "University of Lübeck research portal, On the Power of Power Analysis in the Real World, CRYPTO 2008 (read 2026-11-16): remote cloned from ten power traces; manufacturer key extracted; cloning from two eavesdropped messages", href: "https://research.uni-luebeck.de/en/publications/on-the-power-of-power-analysis-in-the-real-world-a-complete-break/" }, // power analysis
+      { label: "Andy Greenberg, WIRED, This Hacker's Tiny Device Unlocks Cars And Opens Garages, 6 August 2015 (read 2026-11-16): RollJam, a US$32 device that jams, captures and replays rolling codes", href: "https://www.wired.com/2015/08/hackers-tiny-device-unlocks-cars-opens-garages/" }, // jam and replay
+      { label: "NVD, CVE-2021-46145, published 6 January 2022 (read 2026-11-16): Honda Civic 2012 keyfob replay, 'non-expiring rolling code and counter resynchronization'", href: "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2021-46145" }, // resynchronization
+      { label: "Csikor et al., RollBack, arXiv 2210.11923, 14 September 2022 (read 2026-11-16): replay-and-resynchronize attack without jamming; about 70% of tested makes vulnerable", href: "https://arxiv.org/abs/2210.11923" }, // the generalization
+    ], // seven sources, one object per line
+  },
+  {
+    // proxmark (new entry): Jonathan Westhues's open RFID instrument and its descendants, the RDV4 and the Proxmark 5.
+    slug: "proxmark", // the /glossary/proxmark address
+    headword: "Proxmark", // the instrument's name
+    kind: "term", // a tool's name
+    domains: ["hacking", "cyber-security"], // the RFID researcher's and pentester's tool
+    aliases: ["proxmark3", "proxmark 3", "proxmark3 rdv4", "proxmark 3 rdv4", "proxmark 5", "proxmark5", "proxmarkii", "iceman fork"], // the generations and the main firmware
+    relatedTerms: ["mifare-classic", "rolling-code", "software-defined-radio", "replay-attack", "nonce"], // this batch, then existing entries
+    relatedArticles: ["badges-and-cards-rfid-nfc-the-proxmark-and-mifare", "hacking-devices-from-the-blue-box-to-the-flipper-zero", "the-flipper-zero-sub-ghz-rfid-nfc-infrared-and-the-panic"], // the part, the opener, the Flipper part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Jonathan Westhues, proxmarkii, December 2005 (read 2026-11-16): ARM7 with USB; nearly any 125 kHz card and many 13.56 MHz cards; ID-only tags clonable, cryptographic tags resist over-the-air cloning", href: "https://cq.cx/proxmarkii.pl" }, // the predecessor
+      { label: "Jonathan Westhues, A Test Instrument for HF/LF RFID (proxmark3), February 2009 (read 2026-11-16): reader, eavesdropper, tag emulator; FPGA; GPL release proxmark3-may23-2007.zip; Nijmegen MIFARE Classic attacks", href: "https://cq.cx/proxmark3.pl" }, // the design
+      { label: "RFID Research Group, Proxmark3 Iceman repository README (read 2026-11-16): 'the swiss-army tool of RFID', originally built by Jonathan Westhues; GPLv3 or later; Proxmark5 hardware; firmware not stable", href: "https://raw.githubusercontent.com/RfidResearchGroup/proxmark3/master/README.md" }, // the maintained firmware
+      { label: "Proxmark.com, Proxmark 3 RDV4 (read 2026-11-16): designed and manufactured by RRG; 54 x 87 x 10 mm; SAM7S512; LF 70 mm and HF 88 mm read distances", href: "https://proxmark.com/proxmark-3-hardware/proxmark-3-rdv4" }, // the current model
+      { label: "Proxmark.com, Proxmark 5 (read 2026-11-16): Indiegogo 2026; firmware in beta as of September 2026; AT32F435 at 288 MHz, Gowin FPGA; RDV4 released in 2018", href: "https://proxmark.com/proxmark-3-hardware/proxmark-5" }, // the new model
+      { label: "Verdult, Garcia and Balasch, Gone in 360 Seconds: Hijacking with Hitag2, USENIX Security 2012 (read 2026-11-16): the Proxmark III, originally developed by Jonathan Westhues, as the central element of the platform", href: "https://www.usenix.org/system/files/conference/usenixsecurity12/sec12-final95.pdf" }, // use in research
+    ], // six sources, one object per line
+  },
+  {
+    // mifare-classic (new entry): NXP's 13.56 MHz card, its CRYPTO1 cipher, the 2008 break and the court case.
+    slug: "mifare-classic", // the /glossary/mifare-classic address
+    headword: "MIFARE Classic", // the product name as NXP writes it
+    kind: "term", // a product name
+    domains: ["crypto", "cyber-security", "vendors"], // its broken cipher, access control, NXP's product
+    aliases: ["mifare", "crypto1", "crypto-1", "mifare classic 1k", "mifare 1k", "mifare classic ev1"], // the family, the cipher, the common variants
+    relatedTerms: ["proxmark", "stream-cipher", "nonce", "kerckhoffs-principle", "chaos-computer-club", "ccc-congress", "replay-attack"], // this batch, then existing entries
+    relatedArticles: ["badges-and-cards-rfid-nfc-the-proxmark-and-mifare", "security-through-obscurity", "hacking-devices-from-the-blue-box-to-the-flipper-zero"], // the part, the obscurity article, the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "Garcia et al., Dismantling MIFARE Classic, ESORICS 2008, LNCS 5283, pp. 97-114 (read 2026-11-16): more than 1 billion MIFARE cards sold and about 200 million Classic tags in use according to NXP; sectors and keys A and B; 48-bit CRYPTO1 LFSR; 16-bit tag nonce generator; key from a genuine reader in under a second", href: "https://sos.cs.ru.nl/applications/rfid/2008-esorics.pdf" }, // the main paper
+      { label: "Nohl, Evans, Starbug and Plötz, Reverse-Engineering a Cryptographic RFID Tag, USENIX Security 2008 (read 2026-11-16): CRYPTO1 reconstructed from the silicon; undisclosed for 14 years despite more than a billion units", href: "https://www.usenix.org/legacy/event/sec08/tech/full_papers/nohl/nohl.pdf" }, // the silicon reverse engineering
+      { label: "Radboud University Nijmegen, Digital Security group, press release, 12 March 2008 (read 2026-11-16): flaw found on 7 March 2008; access card cloned; shared-key systems extremely vulnerable", href: "https://sos.cs.ru.nl/applications/rfid/pressrelease.en.html" }, // the announcement
+      { label: "Rechtbank Arnhem, summary judgment of 18 July 2008, LJN BD7578, case 171900 / KG ZA 08-415 (read 2026-11-16): NXP has marketed MIFARE Classic since 1995; NXP's claims to stop publication rejected under article 10(2) of the European Convention on Human Rights", href: "https://sos.cs.ru.nl/applications/rfid/kortgeding-vonnis.pdf" }, // the court
+      { label: "Garcia, van Rossum, Verdult and Wichers Schreur, Wirelessly Pickpocketing a Mifare Classic Card, IEEE S&P 2009 (read 2026-11-16): card-only key recovery in under a second", href: "https://www.cs.ru.nl/~rverdult/Wirelessly_Pickpocketing_a_Mifare_Classic_Card-SNP_2009.pdf" }, // card-only attacks
+      { label: "NXP, Security Statement on Crypto1 Implementations, 12 October 2015 (read 2026-11-16): NXP advised against designing MIFARE Classic into any security-relevant application; link dead as of 17 November 2026", href: "https://www.mifare.net/en/security-statement-on-crypto1-implementations/" }, // the maker's position
+      { label: "Meijer and Verdult, Ciphertext-only Cryptanalysis on Hardened Mifare Classic Cards, ACM CCS 2015 (read 2026-11-16): card-only, ciphertext-only attack on hardened cards in a few minutes", href: "https://www.cs.ru.nl/~rverdult/Ciphertext-only_Cryptanalysis_on_Hardened_Mifare_Classic_Cards-CCS_2015.pdf" }, // hardened cards
+      { label: "Philippe Teuwen, MIFARE Classic: exposing the static encrypted nonce variant, IACR ePrint 2024/1275, received 12 August 2024 (read 2026-11-16): hardware backdoor in the unlicensed FM11RF08S", href: "https://eprint.iacr.org/2024/1275" }, // compatible chips
+    ], // eight sources, one object per line
+  },
+  {
+    // UART (new entry): the asynchronous serial port behind every embedded console; framing, speeds, levels, and why open consoles are a weakness.
+    slug: "uart", // the /glossary/uart address
+    headword: "UART", // the initials as engineers write them
+    kind: "acronym", // known by its initials
+    expansion: "universal asynchronous receiver-transmitter", // the full name
+    domains: ["enterprise-networking", "hacking", "it-support"], // console ports, hardware hacking, field support
+    aliases: ["universal asynchronous receiver-transmitter", "serial console", "console serial", "8n1", "uart console"], // the full name, the use, the settings shorthand
+    relatedTools: ["bit-numbering-and-order"], // UART bit order is worked there
+    relatedArticles: ["the-hardware-hackers-bench-bus-pirate-jtag-uart-and-chipwhisperer", "terminal-shell-tty-console", "least-and-most-significant-bit"], // the part, the console article, the bit-order article
+    relatedTerms: ["jtag", "bus-pirate", "jtagulator", "logic-analyzer", "embedded-system", "firmware"], // this batch, then existing entries
+    sources: [ // every label says what the page says and when it was read
+      { label: "Texas Instruments, TL16C550D datasheet, SLLS597E, April 2004, revised December 2008 (read 2026-11-17): serial-to-parallel conversion; 5 to 8 data bits, even, odd or no parity, 1, 1.5 or 2 stop bits; divisor = XIN / (baud x 16); bit 0 sent first; output at marking level after reset; character time of start, 8 data and stop bits", href: "https://www.ti.com/lit/ds/symlink/tl16c550d.pdf" }, // the classic UART
+      { label: "U-Boot, drivers/serial/Kconfig (read 2026-11-17): config BAUDRATE, default 115200", href: "https://raw.githubusercontent.com/u-boot/u-boot/master/drivers/serial/Kconfig" }, // the common console speed
+      { label: "Hackaday, How-to: The Bus Pirate, Universal Serial Interface, 19 November 2008 (read 2026-11-16): a transceiver converting 3.3 V serial output to +/-10 V RS-232 signals", href: "https://hackaday.com/2008/11/19/how-to-the-bus-pirate-universal-serial-interface/" }, // logic level versus RS-232
+      { label: "ETSI EN 303 645 V2.1.1, June 2020 (read 2026-11-16): debug interface examples include UART; provision 5.6-4, a physically accessible debug interface shall be disabled in software; example 5, a UART disabled in the bootloader with no logon prompt or menu", href: "https://www.etsi.org/deliver/etsi_en/303600_303699/303645/02.01.01_60/en_303645v020101p.pdf" }, // the security requirement
+      { label: "Tigard README (read 2026-11-16): UART header pin order VTGT, ground, TX, RX, then RTS, CTS, DTR, DSR, DCD; level shifters 1.8 to 5.5 V", href: "https://raw.githubusercontent.com/tigard-tools/tigard/master/README.md" }, // a header in practice
+    ], // five sources, one object per line
+  },
+  {
+    // JTAG (new entry): the IEEE 1149.1 test access port from the 1985 Joint Test Action Group, reused for on-chip debug; signals, IDCODE, protection.
+    slug: "jtag", // the /glossary/jtag address
+    headword: "JTAG", // the initials, as the industry uses them
+    kind: "acronym", // known by its initials
+    expansion: "Joint Test Action Group", // the group that gave the port its name
+    domains: ["hacking", "cyber-security", "enterprise-networking"], // hardware hacking, its defence, network equipment boards
+    aliases: ["joint test action group", "ieee 1149.1", "test access port", "jtag port", "jtag interface"], // the group, the standard, the port
+    relatedArticles: ["the-hardware-hackers-bench-bus-pirate-jtag-uart-and-chipwhisperer"], // the part
+    relatedTerms: ["boundary-scan", "swd-serial-wire-debug", "jtagulator", "uart", "readout-protection", "secure-boot", "firmware", "embedded-system"], // this batch, then existing entries
+    sources: [ // every label says what the page says and when it was read
+      { label: "Texas Instruments, IEEE Std 1149.1 (JTAG) Testability Primer, SSYA002C, 1997 (read 2026-11-16): Joint Test Action Group formed in 1985, over 200 members; IEEE Std 1149.1-1990 adopted in February 1990; four extra pins; TAP reset with TMS high for five TCKs; nine instructions, three required; IDCODE layout and JEP106", href: "https://www.ti.com/lit/an/ssya002c/ssya002c.pdf" }, // history and mechanism
+      { label: "IEEE Standards Association, IEEE 1149.1-2013 (read 2026-11-16): approved 6 February 2013, published 13 May 2013, Inactive-Reserved", href: "https://standards.ieee.org/ieee/1149.1/4484/" }, // current status
+      { label: "OpenOCD, tcl/target/stm32f1x.cfg and src/helper/jep106.h (read 2026-11-16 and 2026-11-17): expected IDCODE 0x3BA00477 over JTAG; manufacturer field split into bank and 7-bit identifier", href: "https://raw.githubusercontent.com/openocd-org/openocd/master/tcl/target/stm32f1x.cfg" }, // a worked IDCODE
+      { label: "Grand Idea Studio, JTAGulator slides, revised 16 September 2018 (read 2026-11-16): on-chip debug as an attack vector; JTAG protection vendor-specific, not part of the standard: software disable, removed traces, fuses, passwords, challenge-response, encryption", href: "http://www.grandideastudio.com/media/jtagulator_slides.pdf" }, // the security view
+      { label: "MITRE, CWE-1191, On-Chip Debug and Test Interface With Improper Access Control (read 2026-11-16): the weakness; CVE-2019-18827, JTAG not disabled during ROM code execution", href: "https://cwe.mitre.org/data/definitions/1191.html" }, // the catalogued weakness
+    ], // five sources, one object per line
+  },
+  {
+    // boundary scan (new entry): the test method JTAG was created for: a shift register around a chip's pins that sets and reads them without probes.
+    slug: "boundary-scan", // the /glossary/boundary-scan address
+    headword: "boundary scan", // the plain technical term
+    kind: "term", // a test technique
+    domains: ["enterprise-networking", "hacking"], // board test and hardware analysis
+    aliases: ["boundary-scan register", "bsr", "bsdl", "boundary scan description language"], // the register, its description language
+    relatedArticles: ["the-hardware-hackers-bench-bus-pirate-jtag-uart-and-chipwhisperer"], // the part
+    relatedTerms: ["jtag", "swd-serial-wire-debug", "embedded-system"], // this batch, then an existing entry
+    sources: [ // every label says what the page says and when it was read
+      { label: "XJTAG, JTAG: A technical overview (read 2026-11-16): the Boundary Scan Register intercepts the signals between core logic and pins and can set and read pin values in test mode; IDCODE links a device to its BSDL file", href: "https://www.xjtag.com/about-jtag/jtag-a-technical-overview/" }, // mechanism
+      { label: "Texas Instruments, IEEE Std 1149.1 (JTAG) Testability Primer, SSYA002C, 1997 (read 2026-11-16): the board-test problem behind the standard; BYPASS, SAMPLE/PRELOAD and EXTEST required", href: "https://www.ti.com/lit/an/ssya002c/ssya002c.pdf" }, // origin and instructions
+      { label: "OpenOCD User's Guide, Debug Adapter Configuration, 8.3.2 SWD Transport (read 2026-11-17): SWD is debug-oriented and does not support boundary scan testing", href: "https://openocd.org/doc/html/Debug-Adapter-Configuration.html" }, // contrast with SWD
+    ], // three sources, one object per line
+  },
+  {
+    // Serial Wire Debug (new entry): Arm's two-wire debug port overlaid on the JTAG pins; no boundary scan; SWO trace.
+    slug: "swd-serial-wire-debug", // the /glossary/swd-serial-wire-debug address (slug fixed by the wave brief)
+    headword: "SWD", // the initials engineers use
+    kind: "acronym", // known by its initials
+    expansion: "Serial Wire Debug", // Arm's name
+    domains: ["hacking", "cyber-security"], // hardware hacking and its defence
+    aliases: ["serial wire debug", "swdio", "swclk", "sw-dp"], // the name, its two signals, the debug port
+    relatedArticles: ["the-hardware-hackers-bench-bus-pirate-jtag-uart-and-chipwhisperer"], // the part
+    relatedTerms: ["jtag", "boundary-scan", "readout-protection", "jtagulator", "firmware"], // this batch, then an existing entry
+    sources: [ // every label says what the page says and when it was read
+      { label: "SEGGER Knowledge Base, Target Interface SWD (read 2026-11-17): replaces the 5-pin JTAG interface with a clock (SWDCLK) and one bidirectional data pin (SWDIO) overlaid on TCK and TMS; optional SWO output; no daisy-chaining", href: "https://kb.segger.com/SWD" }, // the interface
+      { label: "OpenOCD User's Guide, 8.3.2 SWD Transport (read 2026-11-17): Arm-specific transport, fewer signal wires than JTAG, debug-oriented, no boundary scan", href: "https://openocd.org/doc/html/Debug-Adapter-Configuration.html" }, // limits
+      { label: "Tigard README (read 2026-11-16): standard 10-pin 1.27 mm Cortex pinout with SWDIO or TMS on pin 2 and SWDCLK or TCK on pin 4", href: "https://raw.githubusercontent.com/tigard-tools/tigard/master/README.md" }, // the connector
+      { label: "CNX Software, 15 June 2020 (read 2026-11-16): nRF52 APPROTECT, meant to enable readback protection and disable the debug interface, bypassed by voltage glitching", href: "https://www.cnx-software.com/2020/06/15/nordic-semi-nrf52-wisocs-are-susceptible-to-debug-resurrection-using-approtect-bypass/" }, // a lockout defeated
+    ], // four sources, one object per line
+  },
+  {
+    // Bus Pirate (new entry): the open-hardware serial multi-tool, from the 2008 Hackaday design to the RP2040 and RP2350 generations.
+    slug: "bus-pirate", // the /glossary/bus-pirate address
+    headword: "Bus Pirate", // the product name
+    kind: "term", // a named tool
+    domains: ["hacking", "vendors"], // a hacking tool and its makers
+    aliases: ["buspirate", "bus pirate 5", "bus pirate 6", "bus pirate v3"], // spelling and generations
+    relatedTools: ["bit-numbering-and-order"], // bus bit order
+    relatedArticles: ["the-hardware-hackers-bench-bus-pirate-jtag-uart-and-chipwhisperer"], // the part
+    relatedTerms: ["uart", "jtag", "logic-analyzer", "jtagulator", "firmware"], // this batch, then an existing entry
+    sources: [ // every label says what the page says and when it was read
+      { label: "Hackaday, How-to: The Bus Pirate, Universal Serial Interface, 19 November 2008 (read 2026-11-16): first Bus Pirate published with specs, schematic and source; PIC24FJ64GA002; 3.3 V pins tolerant of 5 V", href: "https://hackaday.com/2008/11/19/how-to-the-bus-pirate-universal-serial-interface/" }, // origin
+      { label: "Dangerous Prototypes, Bus Pirate (read 2026-11-16): open source hacker multi-tool; v0a and v1a serial prototypes; v2go first USB version, about 1,000 sold for Hack a Day; v3 sold October 2009 to June 2012; v3.6 from June 2012; CC-0 firmware and PCB art; inaccessible as of 17 November 2026", href: "http://dangerousprototypes.com/docs/Bus_Pirate" }, // lineage and licences
+      { label: "Bus Pirate, Bus Pirate 5 REV10 is ready!, 18 January 2024 (read 2026-11-16): talks to chips over 1-Wire, I2C, SPI, UART and more", href: "https://buspirate.com/bus-pirate-5-rev-10-now-available/" }, // fifth generation
+      { label: "Bus Pirate documentation, hardware (read 2026-11-16): trusted by hackers since 2008; Bus Pirate 5 RP2040 125 MHz, 264 KB; Bus Pirate 6 RP2350 133 MHz, 512 KB, follow-along logic analyser; 8 IO pins 1.2 to 5 V; JTAG and SWD discovery", href: "https://docs.buspirate.com/docs/overview/hardware/" }, // current specifications
+    ], // four sources, one object per line
+  },
+  {
+    // JTAGulator (new entry): Joe Grand's open-hardware tool that finds JTAG, SWD and UART pins on unmarked boards.
+    slug: "jtagulator", // the /glossary/jtagulator address
+    headword: "JTAGulator", // the product name
+    kind: "term", // a named tool
+    domains: ["hacking", "vendors"], // a hacking tool and its makers
+    aliases: ["jtag finder", "jtag pin finder"], // descriptive names
+    relatedArticles: ["the-hardware-hackers-bench-bus-pirate-jtag-uart-and-chipwhisperer"], // the part
+    relatedTerms: ["jtag", "uart", "swd-serial-wire-debug", "bus-pirate", "boundary-scan"], // this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "Grand Idea Studio, JTAGulator (read 2026-11-16): identifies on-chip debug interfaces from test points, vias, pads or connectors; JTAG, ARM SWD and UART detection; 24 channels; 1.4 to 3.3 V; Parallax manufacturer 2013 to 2023, EXPLIoT from July 2025; CC BY-SA 4.0", href: "http://www.grandideastudio.com/jtagulator/" }, // the maker's page
+      { label: "Grand Idea Studio, JTAGulator slides, revised 16 September 2018 (read 2026-11-16): goals, inspiration (JTAG Finder, JTAGenum, DARPA Cyber Fast Track), Parallax Propeller, hardware document of 19 April 2013, bill of materials of $50.73, IDCODE and BYPASS scans", href: "http://www.grandideastudio.com/media/jtagulator_slides.pdf" }, // design and method
+    ], // two sources, one object per line
+  },
+  {
+    // logic analyser (new entry): an instrument that records many digital lines at once and decodes bus protocols; Saleae and sigrok.
+    slug: "logic-analyzer", // the /glossary/logic-analyzer address (slug fixed by the wave brief; headword in Oxford spelling)
+    headword: "logic analyser", // Oxford spelling; the slug keeps the brief's form
+    kind: "term", // an instrument
+    domains: ["hacking", "enterprise-networking", "it-support"], // hardware analysis and bench troubleshooting
+    aliases: ["logic analyzer", "analisador lógico", "protocol decoder", "pulseview"], // US spelling, Portuguese, function, a common viewer
+    relatedTools: ["bit-numbering-and-order"], // reading captured bits
+    relatedArticles: ["the-hardware-hackers-bench-bus-pirate-jtag-uart-and-chipwhisperer", "capture-the-flag-competitions"], // the part, and CTF hardware challenges
+    relatedTerms: ["uart", "jtag", "bus-pirate", "side-channel-attack"], // this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "Saleae, Logic (read 2026-11-17): the first Logic sold on 3 June 2008", href: "https://www.saleae.com/logic" }, // commercial history
+      { label: "Saleae, Compare Logic analyzers (read 2026-11-17): Logic 8, 8 channels, 100 MS/s digital, 10 MS/s analogue, USB 2.0; Logic Pro 8 and 16, 500 MS/s digital, 50 MS/s analogue, USB 3.0", href: "https://www.saleae.com/compare-logic" }, // current models
+      { label: "sigrok, main page (read 2026-11-16): open-source signal analysis suite (libsigrok, libsigrokdecode, PulseView, sigrok-cli) for logic analysers, oscilloscopes and meters; protocol decoders in Python", href: "https://sigrok.org/wiki/Main_Page" }, // the open suite
+      { label: "sigrok, Protocol decoders (read 2026-11-16): 131 supported protocol decoders", href: "https://sigrok.org/wiki/Protocol_decoders" }, // decoder count
+    ], // four sources, one object per line
+  },
+  {
+    // side-channel attack (new entry): recovering secrets from timing, power or emanations rather than outputs; Kocher 1996 and 1998; CWE-1300; defences.
+    slug: "side-channel-attack", // the /glossary/side-channel-attack address
+    headword: "side-channel attack", // the plain term
+    kind: "term", // a class of attack
+    domains: ["crypto", "hacking", "cyber-security"], // cryptographic implementations, the attack, the defence
+    aliases: ["side channel attack", "side-channel analysis", "power analysis", "differential power analysis", "simple power analysis", "timing attack", "ataque de canal lateral"], // spellings, the main families, Portuguese
+    relatedArticles: ["the-hardware-hackers-bench-bus-pirate-jtag-uart-and-chipwhisperer", "radio-for-hackers-sdr-hackrf-rtl-sdr-and-rolling-codes"], // the part, and KeeLoq's power-analysis break
+    relatedTerms: ["chipwhisperer", "fault-injection", "spectre", "meltdown", "rsa", "aes", "hsm", "rolling-code"], // this batch, then existing entries
+    sources: [ // every label says what the page says and when it was read
+      { label: "Paul C. Kocher, Timing Attacks on Implementations of Diffie-Hellman, RSA, DSS, and Other Systems, Cryptography Research (read 2026-11-16): timing of private-key operations reveals fixed exponents and factors keys; countermeasures", href: "https://www.paulkocher.com/doc/TimingAttacks.pdf" }, // timing
+      { label: "Paul Kocher, Joshua Jaffe and Benjamin Jun, Differential Power Analysis, Cryptography Research (read 2026-11-16): chips leak information about their operations; SPA and DPA; a 50-ohm resistor in series with power or ground", href: "https://www.paulkocher.com/doc/DifferentialPowerAnalysis.pdf" }, // power
+      { label: "MITRE, CWE-1300, Improper Protection of Physical Side Channels (read 2026-11-16): the weakness; reference to Kocher, Jaffe and Jun, 1998", href: "https://cwe.mitre.org/data/definitions/1300.html" }, // the catalogued weakness and date
+      { label: "Cryptology ePrint Archive, Paper 2014/204, O'Flynn and Chen, ChipWhisperer, COSADE 2014 (read 2026-11-16): open toolbox with synchronous capture reducing the required sample rate", href: "https://eprint.iacr.org/2014/204" }, // accessible tooling
+    ], // four sources, one object per line
+  },
+  {
+    // ChipWhisperer (new entry): NewAE's open-source platform for power analysis and glitching, from the 2014 paper to the Husky; lowRISC since 2022.
+    slug: "chipwhisperer", // the /glossary/chipwhisperer address
+    headword: "ChipWhisperer", // the registered product name
+    kind: "term", // a named tool
+    domains: ["hacking", "crypto", "vendors"], // the tool, its cryptographic targets, its maker
+    aliases: ["chipwhisperer-husky", "chipwhisperer-lite", "chipwhisperer-nano", "chipshouter", "newae"], // models, the EMFI sibling, the maker
+    relatedArticles: ["the-hardware-hackers-bench-bus-pirate-jtag-uart-and-chipwhisperer"], // the part
+    relatedTerms: ["side-channel-attack", "fault-injection", "readout-protection", "aes"], // this batch, then existing entries
+    sources: [ // every label says what the page says and when it was read
+      { label: "Cryptology ePrint Archive, Paper 2014/204, Colin O'Flynn and Zhizhang (David) Chen, COSADE 2014 (read 2026-11-16): complete side-channel toolbox, capture hardware, target, capture and analysis software", href: "https://eprint.iacr.org/2014/204" }, // the paper
+      { label: "NewAE Technology, About (read 2026-11-16): small Canadian company; ChipWhisperer began in Colin O'Flynn's Ph.D.; products made in Nova Scotia; acquired by lowRISC C.I.C. in 2022", href: "https://www.newae.com/about" }, // the maker
+      { label: "PR Newswire, lowRISC Acquires NewAE Technology, 2 June 2022 (read 2026-11-16): NewAE founded in 2014; first commercially supported open-source toolchain for side-channel analysis and fault injection; lowRISC founded 2018 at the University of Cambridge", href: "https://prnewswire.co.uk/news-releases/lowrisc-acquires-newae-technology-adding-advanced-security-analysis-tools-to-the-opentitan-platform-847736842.html" }, // ownership
+      { label: "ChipWhisperer documentation, Overview and Comparison (read 2026-11-16): Husky 12-bit 200 MS/s, Husky-Plus 250 MS/s, Lite 10-bit 105 MS/s, Nano 8-bit 20 MS/s voltage glitch only; Pro discontinued; synchronous capture", href: "https://chipwhisperer.readthedocs.io/en/latest/Capture/overview.html" }, // models
+      { label: "NewAE Technology, ChipSHOUTER (read 2026-11-17): electromagnetic fault injection without electrical contact; 150 to 500 V charge voltage", href: "https://www.newae.com/chipshouter" }, // the EMFI tool
+    ], // five sources, one object per line
+  },
+  {
+    // readout protection (new entry): microcontroller settings that block reading internal flash through debug; STM32 levels, ESP32 and nRF52 cases.
+    slug: "readout-protection", // the /glossary/readout-protection address
+    headword: "readout protection", // the term as vendors and researchers use it
+    kind: "term", // a protection mechanism
+    domains: ["cyber-security", "hacking"], // the defence and its attackers
+    aliases: ["read-out protection", "readback protection", "flash readout protection", "approtect", "proteção de leitura"], // spellings, Nordic's name, Portuguese (the bare "rdp" is taken by the Remote Desktop Protocol entry)
+    relatedArticles: ["the-hardware-hackers-bench-bus-pirate-jtag-uart-and-chipwhisperer"], // the part
+    relatedTerms: ["jtag", "swd-serial-wire-debug", "fault-injection", "secure-boot", "firmware", "chipwhisperer"], // this batch, then existing entries
+    sources: [ // every label says what the page says and when it was read
+      { label: "Obermaier and Tatschner, Shedding too much Light on a Microcontroller's Firmware Protection, USENIX WOOT 2017 (read 2026-11-16): STM32F0 RDP Levels 0, 1 and 2; option bytes 0xAA/0x55 and 0xCC/0x33; cold-boot stepping, downgrade and debug race; why Level 1 persists", href: "https://www.usenix.org/system/files/conference/woot17/woot17-paper-obermaier.pdf" }, // the levels and their weaknesses
+      { label: "Espressif, Security Advisory Concerning Fault Injection and eFuse Protections (CVE-2019-17391), 1 November 2019 (read 2026-11-16): glitching after reset bypasses eFuse read protection; ESP32-D0WD-V3 ROM checks; per-device keys; no software mitigation for deployed chips", href: "https://espressif.com/en/news/Security_Advisory_Concerning_Fault_Injection_and_eFuse_Protections" }, // a bypass and the response
+      { label: "CNX Software, 15 June 2020 (read 2026-11-16): nRF52 APPROTECT readback protection bypassed by voltage glitching; mitigations limited to physical access control and enclosure-breach response", href: "https://www.cnx-software.com/2020/06/15/nordic-semi-nrf52-wisocs-are-susceptible-to-debug-resurrection-using-approtect-bypass/" }, // another bypass
+      { label: "Espressif, ESP-IDF security overview for ESP32 (read 2026-11-16): JTAG stays disabled when any security feature is enabled; can be disabled by eFuse", href: "https://docs.espressif.com/projects/esp-idf/en/latest/esp32/security/security.html" }, // debug lockout in practice
+    ], // four sources, one object per line
+  },
+  {
+    // Remessa Conforme (new entry): the Receita Federal's compliance programme for cross-border e-commerce parcels, August 2023, and the 2024 import tax.
+    slug: "remessa-conforme", // the /glossary/remessa-conforme address
+    headword: "Remessa Conforme", // the programme's name
+    kind: "term", // a named government programme
+    domains: ["grc"], // tax and customs compliance
+    aliases: ["programa remessa conforme", "prc", "taxa das blusinhas", "in rfb 2.146"], // the full name, the initials, the popular name of the 2024 tax, the instrument
+    relatedArticles: ["owning-hacking-gear-legally-brazil-the-us-the-eu-and-canada"], // the part
+    relatedTerms: ["anatel-homologation", "anatel"], // homologation is separate from tax
+    sources: [ // every label says what the page says and when it was read
+      { label: "Receita Federal, Nota Copad/Coana/Suana 49, 22 April 2024 (read 2026-11-17): programme created by IN RFB 2.146 of 29 June 2023, in force 1 August 2023; Portaria MF 612/2023; 30,605,649 parcels in February and March 2024, 96.06% declared under the programme", href: "https://www.gov.br/receitafederal/pt-br/assuntos/aduana-e-comercio-exterior/manuais/remessas-postal-e-expressa/nota-49_2024.pdf" }, // the programme
+      { label: "Senado Notícias, Lula sanciona taxação de compra internacional e criação do Programa Mover, 28 June 2024 (read 2026-11-17): Lei 14.902/2024; 20% import tax up to US$50, 60% above up to US$3,000 with US$20 deduction, from August 2024; 17% ICMS", href: "https://www12.senado.leg.br/noticias/materias/2024/06/28/lula-sanciona-taxacao-de-compra-internacional-e-criacao-do-programa-mover" }, // the 2024 law
+      { label: "Agência Gov, via Receita Federal, 6 October 2026 (read 2026-11-17): products without Anatel homologation retained by the Receita may be disposed of", href: "https://agenciagov.ebc.com.br/noticias/202610/receita-federal-em-operacao-conjunta-com-a-anatel-retem-mais-de-1-300-produtos-eletronicos-em-situacao-irregular" }, // tax status does not replace homologation
+    ], // three sources, one object per line
+  },
+  {
+    // misuse of devices (new entry): article 6 of the Budapest Convention, its research carve-out, and its echo in Brazil, the EU, the UK and Canada.
+    slug: "misuse-of-devices", // the /glossary/misuse-of-devices address
+    headword: "misuse of devices (Budapest Convention, article 6)", // the article's English title with its source
+    kind: "term", // a legal term
+    domains: ["grc", "hacking"], // law and the field it reaches
+    aliases: ["uso indevido de aparelhagem", "budapest convention article 6", "convention on cybercrime article 6", "convenção de budapeste art. 6"], // the official Portuguese title and search forms
+    relatedArticles: ["owning-hacking-gear-legally-brazil-the-us-the-eu-and-canada", "hacking-devices-from-the-blue-box-to-the-flipper-zero"], // the legal part and the opener
+    relatedTerms: ["dual-use-security-tools", "lei-carolina-dieckmann", "cfaa", "rules-of-engagement", "anatel-homologation"], // existing and this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "Câmara dos Deputados, Decreto 11.491 of 12 April 2023, original text (read 2026-11-16): preamble (text of 23 November 2001; Decreto Legislativo 37 of 16 December 2021; ratification deposited 30 November 2022; in force for Brazil 1 March 2023); article 6, paragraphs 1 to 3, including authorized testing excluded", href: "https://www2.camara.leg.br/legin/fed/decret/2023/decreto-11491-12-abril-2023-794051-publicacaooriginal-167576-pe.html" }, // the text in force in Brazil
+      { label: "EUR-Lex, Directive 2013/40/EU, article 7 and recitals 16 and 17 (read 2026-11-16): tools without right and with intent; direct intent; mandated testing excluded", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32013L0040" }, // the EU transposition
+      { label: "legislation.gov.uk, Computer Misuse Act 1990, section 3A (read 2026-11-16): making, supplying or obtaining articles with intent or belief of likely use; two years on indictment", href: "https://www.legislation.gov.uk/ukpga/1990/18/section/3A" }, // the UK version
+      { label: "Justice Laws Website, Criminal Code of Canada, section 342.2 (read 2026-11-17): devices designed or adapted primarily for computer offences, without lawful excuse and with knowledge", href: "https://laws-lois.justice.gc.ca/eng/acts/c-46/section-342.2.html" }, // the Canadian version
+    ], // four sources, one object per line
+  },
+  {
+    // rules of engagement (new entry): the signed document that authorizes a security test and bounds it; NIST SP 800-115, PTES, PPSI 2.0, Dallas County 2019.
+    slug: "rules-of-engagement", // the /glossary/rules-of-engagement address
+    headword: "rules of engagement (security testing)", // the term with its scope (the FIX Orchestra entry uses "machine-readable rules of engagement" for trading)
+    kind: "term", // a practice term
+    domains: ["cyber-security", "hacking", "grc"], // testing, the testers, the law
+    aliases: ["roe (security testing)", "permission to test", "get-out-of-jail letter", "scope letter", "regras de engajamento"], // the abbreviation qualified, PTES's term, the practitioners' name, the scoping document, Portuguese
+    relatedArticles: ["owning-hacking-gear-legally-brazil-the-us-the-eu-and-canada", "social-engineering-pretexting-vishing-and-baiting", "bug-bounties-and-vulnerability-disclosure"], // the legal part and related practice
+    relatedTerms: ["pentest", "red-team", "purple-team", "misuse-of-devices", "dual-use-security-tools", "cfaa"], // existing entries and this batch
+    sources: [ // every label says what the page says and when it was read
+      { label: "NIST, Special Publication 800-115, September 2008 (read 2026-11-16): ROE address activities usually prohibited and provide authorization; signed copy of the plan; legal advisors for intrusive tests; Appendix B template incl. test equipment (2.4), exclude list (4), a signed form to show police or guards (5.1), signature page (7)", href: "https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-115.pdf" }, // the template
+      { label: "The Penetration Testing Execution Standard, Pre-engagement Interactions, PTES Team, 2016 (read 2026-11-17): Permission to Test signed before testing; clients do not speak for third parties; lock picks question; local laws", href: "https://pentest-standard.readthedocs.io/en/latest/preengagement_interactions.html" }, // the practitioners' standard
+      { label: "Governo Digital, Guia do Framework PPSI 2.0, version 1.2, 30 January 2026 (read 2026-11-16): each organization must define a clear scope and rules of engagement; control 18.1 on pentest programmes", href: "https://www.gov.br/governodigital/pt-br/privacidade-e-seguranca/ppsi-2.0/arquivos/guiafwppsi2-0-v1-2-11062026.pdf" }, // the Brazilian federal framework
+      { label: "Krebs on Security, Iowa Prosecutors Drop Charges Against Men Hired to Test Their Security, 31 January 2020 (read 2026-11-17): Coalfire testers arrested 11 September 2019 at the Dallas County courthouse despite an authorization letter; the county, not the state, owned the building; charges dropped 30 January 2020", href: "https://krebsonsecurity.com/2020/01/iowa-prosecutors-drop-charges-against-men-hired-to-test-their-security/" }, // the case
+    ], // four sources, one object per line
+  },
+  {
+    // Rogue device (new entry): any device connected without authorization to an organization's network port, cabling or a computer's peripheral port; the wired-side counterpart of the rogue access point.
+    slug: "rogue-device", // the /glossary/rogue-device address
+    headword: "rogue device", // lower case, a plain term
+    kind: "term", // a security category
+    domains: ["cyber-security", "enterprise-networking"], // a threat and its detection
+    aliases: ["unauthorized device", "unauthorised device", "rogue hardware", "dispositivo intruso", "dispositivo não autorizado"], // both spellings, then Portuguese
+    relatedTerms: ["rogue-access-point", "hardware-implant", "802-1x", "mab", "port-security", "dhcp-snooping", "keystroke-injection", "asset-management", "macsec", "tamper-evident-seal"], // existing entries first, then this batch
+    relatedArticles: ["keeping-rogue-devices-off-the-network-802-1x-nac-port-security-and-physical-audits", "keystroke-injection-rubber-ducky-bash-bunny-badusb-and-the-om-g-cable", "the-wifi-pineapple-rogue-access-points-and-the-karma-attack"], // part 394 first
+    sources: [ // every label says what the page says and when it was read
+      { label: "MITRE ATT&CK, T1200 Hardware Additions, version 1.7, last modified 24 October 2025 (read 2026-11-16): adversaries may physically introduce computer accessories, networking hardware or other computing devices as a vector to gain access; DarkVishnya (G0105) as procedure example; mitigations M1035 (802.1X with device certificates) and M1034 (limit hardware installation)", href: "https://attack.mitre.org/techniques/T1200/" }, // the technique
+      { label: "NIST SP 800-53 Revision 5, September 2020 (read 2026-11-17): CM-8(3) detect unauthorized hardware, software and firmware components and disable their network access, isolate them or notify; CM-7(9) prohibit the use or connection of unauthorized hardware; SI-4 monitor for unauthorized local, network and remote connections", href: "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r5.pdf" }, // the controls
+      { label: "Kaspersky, Securelist, DarkVishnya: Banks attacked through direct connection to local network, 6 December 2018 (read 2026-11-16): at least eight Eastern European banks; an unknown device connected to the local network, for example in meeting rooms, by visitors posing as couriers or job seekers; remote access through a GPRS/3G/LTE modem", href: "https://securelist.com/darkvishnya/89169/" }, // the planted case
+      { label: "NASA Office of Inspector General, IG-19-022, 18 June 2019 (read 2026-11-16): in April 2018 the attacker targeted a Raspberry Pi that was not authorized to be attached to the JPL network; an incomplete inventory let assets join the network without being identified and vetted", href: "https://oig.nasa.gov/docs/IG-19-022.pdf" }, // the unapproved-by-insider case
+      { label: "Group-IB, UNC2891 Bank Heist, 30 July 2025 (read 2026-11-16): a Raspberry Pi with a 4G modem connected to the same switch as an ATM; found through network forensics (beaconing every 600 seconds); recommends physically securing switch ports", href: "https://www.group-ib.com/blog/unc2891-bank-heist/" }, // the 2024 case
+      { label: "Banco Central do Brasil, Resolução CMN nº 4.893, consolidated with Resolução CMN nº 5.274 of 18 December 2025 (read 2026-11-17): periodic scans to identify devices improperly connected to the corporate network that can connect to external technology assets; corporate network access restricted to duly authorized devices", href: "https://www.bcb.gov.br/estabilidadefinanceira/exibenormativo?tipo=Resolu%C3%A7%C3%A3o%20CMN&numero=4893" }, // Brazilian rule
+    ], // six sources, one object per line
+  },
+  {
+    // Dynamic ARP inspection (new entry): a switch feature that checks ARP packets on untrusted ports against the DHCP snooping bindings and drops forged ones.
+    slug: "dynamic-arp-inspection", // the /glossary/dynamic-arp-inspection address
+    headword: "dynamic ARP inspection", // as the vendors write it
+    kind: "term", // a switch security feature
+    domains: ["enterprise-networking", "cyber-security"], // a LAN feature against spoofing
+    aliases: ["DAI", "ARP inspection", "inspeção dinâmica de ARP"], // acronym, short form, Portuguese
+    relatedTerms: ["arp", "arp-poisoning", "dhcp-snooping", "port-security", "gratuitous-arp", "mac-address", "vlan", "ip-source-guard"], // existing entries first, then this batch
+    relatedArticles: ["arp-and-mac-addresses", "keeping-rogue-devices-off-the-network-802-1x-nac-port-security-and-physical-audits", "fortiswitch-port-security-and-diagnostics"], // the protocol, part 394, one vendor's feature set
+    sources: [ // every label says what the page says and when it was read
+      { label: "Juniper Networks, Overview of Port Security, 24 November 2023 (read 2026-11-17): DAI prevents ARP spoofing by comparing ARP requests and replies with the DHCP snooping database; enabled per VLAN; blocked packets logged with the sender's IP and MAC; DHCP snooping not enabled by default", href: "https://www.juniper.net/documentation/us/en/software/junos/security-services/topics/topic-map/overview-port-security.html" }, // vendor definition
+      { label: "Cisco, Troubleshoot Dynamic ARP Inspection (DAI), document 222274, updated 5 August 2024 (read 2026-11-17 through WebFetch): intercepts, logs and discards ARP packets with invalid IP-to-MAC bindings, validated against the DHCP snooping binding database; interfaces untrusted once snooping is enabled; default limit of 15 packets per second of ARP on untrusted interfaces", href: "https://www.cisco.com/c/en/us/support/docs/switches/lan-switch-software/222274-troubleshoot-dynamic-arp-inspection-dai.html" }, // second vendor
+      { label: "Juniper Networks, Example: Configuring IP Source Guard with Other EX Series Switch Features, 6 December 2025 (read 2026-11-17): IP source guard combined with 802.1X, DHCP snooping and dynamic ARP inspection against address spoofing on untrusted access interfaces", href: "https://www.juniper.net/documentation/us/en/software/junos/security-services/topics/example/port-security-ip-source-guard-plus-other-switch-features.html" }, // features in combination
+    ], // three sources, one object per line
+  },
+  {
+    // IP source guard (new entry): a switch feature that drops packets from untrusted access ports whose source address does not match a DHCP snooping binding or a static entry.
+    slug: "ip-source-guard", // the /glossary/ip-source-guard address
+    headword: "IP source guard", // as Cisco and Juniper write it
+    kind: "term", // a switch security feature
+    domains: ["enterprise-networking", "cyber-security"], // a LAN feature against spoofing
+    aliases: ["IPSG", "IPv4 source guard", "IPv6 source guard"], // acronym and the per-family names (Fortinet, Juniper)
+    relatedTerms: ["dhcp-snooping", "dynamic-arp-inspection", "port-security", "mac-address", "arp-poisoning"], // existing entries, then this batch
+    relatedArticles: ["keeping-rogue-devices-off-the-network-802-1x-nac-port-security-and-physical-audits", "fortiswitch-port-security-and-diagnostics"], // part 394 and one vendor's feature set
+    sources: [ // every label says what the page says and when it was read
+      { label: "Juniper Networks, Overview of Port Security, 24 November 2023 (read 2026-11-17): the source IP of packets from an untrusted access interface is validated against the DHCP snooping database and discarded if it cannot be validated; enabled per VLAN or bridge domain; IPv6 source guard as the IPv6 counterpart", href: "https://www.juniper.net/documentation/us/en/software/junos/security-services/topics/topic-map/overview-port-security.html" }, // definition
+      { label: "Juniper Networks, Example: Configuring IP Source Guard with Other EX Series Switch Features, 6 December 2025 (read 2026-11-17): if the source IP and MAC in a binding are not valid, the switch does not forward the packet", href: "https://www.juniper.net/documentation/us/en/software/junos/security-services/topics/example/port-security-ip-source-guard-plus-other-switch-features.html" }, // behaviour
+      { label: "Fortinet, FortiSwitch 7.6.0 FortiLink Guide, Configuring IPv4 source guard (read 2026-11-17): only traffic from specific IPv4 addresses allowed on a port; static entries and dynamic entries learned through DHCP snooping, static winning on conflict; disabled by default, enabled per port; discarded addresses are not logged; error above 2,048 entries from a FortiGate", href: "https://docs.fortinet.com/document/fortiswitch/7.6.0/fortilink-guide/749330" }, // a second vendor's limits
+    ], // three sources, one object per line
+  },
+  {
+    // MACsec (new entry): IEEE 802.1AE MAC Security, hop-by-hop integrity, origin authenticity and optional confidentiality for Ethernet frames, keyed by MKA from IEEE 802.1X.
+    slug: "macsec", // the /glossary/macsec address
+    headword: "MACsec (IEEE 802.1AE MAC Security)", // the common name and the standard
+    kind: "acronym", // MAC Security
+    domains: ["enterprise-networking", "cyber-security", "crypto"], // link-layer cryptography
+    expansion: "Media Access Control Security, specified by IEEE 802.1AE", // the expansion
+    aliases: ["802.1ae", "ieee 802.1ae", "mac security", "media access control security"], // standard numbers and spelled-out forms
+    relatedTerms: ["802-1x", "eap-tls", "radius", "vlan", "ieee", "rogue-device"], // existing entries, then this batch
+    relatedArticles: ["keeping-rogue-devices-off-the-network-802-1x-nac-port-security-and-physical-audits", "802-1x-and-eap-methods", "ieee-802-working-groups"], // part 394, the 802.1X article, the working groups
+    sources: [ // every label says what the page says and when it was read
+      { label: "IEEE 802.1 Working Group, 802.1AE: MAC Security (MACsec) (read 2026-11-17): physical access usually not practical to secure; connectionless confidentiality, integrity, data origin authenticity and privacy; MKA in 802.1X elects a Key Server that distributes SAKs; first edition 2006, 802.1AEbn-2011 (GCM-AES-256), 802.1AEbw-2013 (extended packet numbering), 802.1AEcg-2017 (Ethernet Data Encryption devices), 802.1AE-2018, 802.1AEdk-2023 (MAC Privacy Protection)", href: "https://1.ieee802.org/security/802-1ae/" }, // the standard's own page
+      { label: "Cisco, Security Configuration Guide, IOS XE Dublin 17.12.x (Catalyst 9300), Configuring MACsec Encryption, updated 28 July 2023 (read 2026-11-17 through WebFetch): MKA on switch-to-host links with the switch as key server; should-secure sends clear text to a non-MACsec peer, must-secure drops unencrypted packets except EAPOL; point-to-point only; default GCM-AES-128; 256-bit and XPN suites need the Network Advantage licence", href: "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/software/release/17-12/configuration_guide/sec/b_1712_sec_9300_cg/macsec_encryption.html" }, // a vendor's deployment limits
+      { label: "Juniper Networks, Understanding Media Access Control Security (MACsec), 9 June 2026 (read 2026-11-17): 8-byte header and 16-byte tail, frames failing integrity dropped; encryption optional; static CAK (pre-shared) for switch links, dynamic CAK from 802.1X with EAP-TLS for switch-to-host; VLAN tags not encrypted on logical interfaces; Juniper's claim that MACsec prevents most threats including man-in-the-middle and passive wiretapping", href: "https://www.juniper.net/documentation/us/en/software/junos/security-services/topics/topic-map/understanding_media_access_control_security_qfx_ex.html" }, // a second vendor
+      { label: "IEEE 802.1 Working Group, 802.1X: Port-Based Network Access Control (read 2026-11-17): 802.1X specifies the MACsec Key Agreement protocol to protect Controlled Port communication with 802.1AE", href: "https://1.ieee802.org/security/802-1x/" }, // the key agreement's home
+    ], // four sources, one object per line
+  },
+  {
+    // Tamper-evident seal (new entry): a seal that records, but does not prevent, opening or tampering; its value depends on the protocol for issuing, inspecting and logging it.
+    slug: "tamper-evident-seal", // the /glossary/tamper-evident-seal address
+    headword: "tamper-evident seal", // lower case, the common term
+    kind: "term", // a physical security device
+    domains: ["cyber-security", "grc"], // physical security and audit
+    aliases: ["tamper-indicating seal", "tamper-indicating device", "security seal", "lacre de segurança", "lacre de evidência de violação"], // the laboratory's terms, then Portuguese
+    relatedTerms: ["wiring-closet", "patch-panel", "chain-of-custody", "supply-chain-attack", "rogue-device"], // existing entries, then this batch
+    relatedArticles: ["keeping-rogue-devices-off-the-network-802-1x-nac-port-security-and-physical-audits"], // part 394
+    sources: [ // every label says what the page says and when it was read
+      { label: "Roger G. Johnston and Anthony R. E. Garcia, Physical Security and Tamper-Indicating Devices, LA-UR-96-3827, Los Alamos National Laboratory, 1996 (read 2026-11-17): seals record, not prevent, physical access; 94 seals studied, all defeated with rapid, inexpensive, low-tech methods; cost not a predictor of security; improvements through the protocol of procurement, storage, installation, inspection, removal, disposal and training", href: "https://www.osti.gov/servlets/purl/459707" }, // the vulnerability study and its remedy
+      { label: "Roger G. Johnston, Tamper-indicating seals: practices, problems, and standards, World Customs Organization security meeting, February 2003, OSTI record (read 2026-11-17): seals used by customs for over 7,000 years; confusion, misconceptions and poor practice; over 200 seal types analysed", href: "https://www.osti.gov/biblio/976504" }, // the overview
+      { label: "NIST SP 800-53 Revision 5, September 2020 (read 2026-11-17): PE-3(5) anti-tamper technologies, including tamper-detection seals, to detect or prevent tampering with hardware; SR-9 tamper resistance and detection programme", href: "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r5.pdf" }, // the control
+      { label: "PCI Security Standards Council, Information Supplement: PCI DSS Wireless Guidelines, version 2.0, August 2011 (read 2026-11-17): tamper-resistant and tamper-evident casings in the example of a standalone retail kiosk; physical inspections give a current view but miss devices removed before the inspection", href: "https://listings.pcisecuritystandards.org/pdfs/PCI_DSS_v2_Wireless_Guidelines.pdf" }, // an industry use
+    ], // four sources, one object per line
+  },
+  {
+    // Steganography (new entry): hiding that a message exists, as against hiding what it says; the series' anchor term.
+    slug: "steganography", // the /glossary/steganography address
+    headword: "steganography", // lower case, a plain technical term
+    kind: "term", // a discipline and its techniques
+    domains: ["crypto", "cyber-security", "privacy"], // next to cryptography; detection is a security task; covert speech is a privacy matter
+    aliases: ["stego", "covered writing", "information hiding", "esteganografia"], // the short form, the Greek gloss, the umbrella term the 1996 workshop used, and Portuguese (checked absent 17/11/2026)
+    relatedTerms: ["prisoners-problem", "subliminal-channel", "kerckhoffs-principle", "null-cipher", "invisible-ink", "microdot", "cardan-grille", "bacon-cipher", "steganalysis", "lsb-steganography", "linguistic-steganography", "digital-watermarking", "exfiltration", "ai-watermarking"], // this batch, then wave-1 siblings (steganalysis and lsb-steganography, agent B; linguistic-steganography and digital-watermarking, agent C), then existing entries
+    relatedArticles: ["steganography-hiding-that-a-message-exists", "steganography-before-computers-wax-tablets-invisible-ink-and-microdots", "hiding-in-images-lsb-jpeg-and-adaptive-steganography", "steganalysis-finding-the-hidden-message", "hiding-in-sound-video-and-text-from-echo-hiding-to-zero-width-characters", "watermarks-and-fingerprints-marking-content-to-trace-it"], // the six wave-1 parts of the series
+    sources: [ // every label says what the page says and when it was read
+      { label: "NIST Computer Security Resource Center, glossary, steganography (read 2026-11-17): the art, science and practice of communicating in a way that hides the existence of the communication; a second definition adapted from NIST SP 800-72", href: "https://csrc.nist.gov/glossary/term/steganography" }, // the definition
+      { label: "Ross J. Anderson and Fabien A. P. Petitcolas, On the Limits of Steganography, IEEE Journal on Selected Areas in Communications 16(4), May 1998 (read 2026-11-17): cryptography conceals content, steganography conceals existence; the prisoners' problem with the mechanism known to the warden; the arms-control origin", href: "https://www.cl.cam.ac.uk/archive/rja14/Papers/jsac98-limsteg.pdf" }, // the contrast
+      { label: "Fabien A. P. Petitcolas, Ross J. Anderson and Markus G. Kuhn, Information Hiding: A Survey, Proceedings of the IEEE 87(7), July 1999 (read 2026-11-17): the 1996 Cambridge workshop and its terminology (embedded data, cover, stego-object, stego-key); technical and linguistic steganography; Kerckhoffs applied to hiding", href: "https://www.cl.cam.ac.uk/~rja14/Papers/ieee99-infohiding.pdf" }, // the terminology
+      { label: "Niels Provos and Peter Honeyman, Hide and Seek: An Introduction to Steganography, IEEE Security and Privacy, May/June 2003 (read 2026-11-17): capacity, security and robustness contend with each other; modern steganography should be detectable only with the secret key; the cover must stay secret", href: "https://www.cs.princeton.edu/~chazelle/courses/BIB/stegano-honeyman.pdf" }, // the trade-off
+      { label: "Elżbieta Zielińska, Wojciech Mazurczyk and Krzysztof Szczypiorski, Trends in Steganography, Communications of the ACM 57(3), March 2014 (read 2026-11-17): covered writing versus secret writing; comparison tables with cryptography and watermarking; legitimate and illicit uses", href: "https://staff.elka.pw.edu.pl/~wmazurc1/art/CACM-trends.pdf" }, // etymology and uses
+      { label: "Andrew D. Ker, Tomáš Pevný, Jan Kodovský and Jessica Fridrich, The square root law of steganographic capacity, ACM Workshop on Multimedia and Security, Oxford, September 2008, abstract (read 2026-11-17): secure capacity of a cover proportional to the square root of its size", href: "https://researchconnect.suny.edu/en/publications/the-square-root-law-of-steganographic-capacity/" }, // capacity
+      { label: "Niels Provos and Peter Honeyman, Detecting Steganographic Content on the Internet, CITI Technical Report 01-11, University of Michigan, 31 August 2001 (read 2026-11-17): two million eBay images analysed, no hidden message found; the press reports unsubstantiated", href: "http://www.citi.umich.edu/techreports/reports/citi-tr-01-11.pdf" }, // the folklore test
+    ], // seven sources, one object per line
+  },
+  {
+    // Prisoners' problem (new entry): Simmons's 1983 model of covert communication under a warden who reads everything.
+    slug: "prisoners-problem", // the /glossary/prisoners-problem address
+    headword: "prisoners' problem", // the name Simmons gave it, lower case
+    kind: "term", // a formal model
+    domains: ["crypto", "cyber-security"], // a cryptographic model of a security problem
+    aliases: ["prisoners problem", "Simmons's prisoners' problem", "Alice, Bob and Willie", "problema dos prisioneiros"], // spellings, the cast of the retelling, Portuguese (checked absent 17/11/2026)
+    relatedTerms: ["steganography", "subliminal-channel", "kerckhoffs-principle", "digital-signature"], // this batch, then existing entries
+    relatedArticles: ["steganography-hiding-that-a-message-exists", "steganography-before-computers-wax-tablets-invisible-ink-and-microdots"], // the opener, and the part where wartime censors act as active wardens
+    sources: [ // every label says what the page says and when it was read
+      { label: "Gustavus J. Simmons, The Prisoners' Problem and the Subliminal Channel, in Advances in Cryptology, ed. D. Chaum, Plenum Press, 1984, Springer chapter page (read 2026-11-17): two accomplices in widely separated cells, a warden who allows only readable messages and hopes to deceive them, a subliminal channel with authentication", href: "https://www.doi.org/10.1007/978-1-4684-4730-9_5" }, // the original
+      { label: "Fabien A. P. Petitcolas, Ross J. Anderson and Markus G. Kuhn, Information Hiding: A Survey, Proceedings of the IEEE 87(7), July 1999 (read 2026-11-17): Alice, Bob and the warden Willie; first formalized by Simmons in 1983 at CRYPTO'83, Santa Barbara; passive and active wardens; the supraliminal channel", href: "https://www.cl.cam.ac.uk/~rja14/Papers/ieee99-infohiding.pdf" }, // the retelling
+      { label: "Ross J. Anderson and Fabien A. P. Petitcolas, On the Limits of Steganography, IEEE Journal on Selected Areas in Communications 16(4), May 1998 (read 2026-11-17): the mechanism known to the warden, security resting on a shared key; the formulation a ruse to draw attention to the classified problem of verifying nuclear arms control treaties", href: "https://www.cl.cam.ac.uk/archive/rja14/Papers/jsac98-limsteg.pdf" }, // the arms-control origin
+    ], // three sources, one object per line
+  },
+  {
+    // Subliminal channel (new entry): a hidden channel inside the randomness of an ordinary cryptographic protocol, such as a signature.
+    slug: "subliminal-channel", // the /glossary/subliminal-channel address
+    headword: "subliminal channel", // lower case, Simmons's term
+    kind: "term", // a cryptographic construction
+    domains: ["crypto"], // a property of signature and protocol design
+    aliases: ["subliminal channels", "canal subliminar"], // the plural and Portuguese (checked absent 17/11/2026)
+    relatedTerms: ["prisoners-problem", "steganography", "digital-signature"], // this batch, then the existing digital-signature entry
+    relatedArticles: ["steganography-hiding-that-a-message-exists"], // the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "Gustavus J. Simmons, The Prisoners' Problem and the Subliminal Channel, in Advances in Cryptology, Plenum Press, 1984, Springer chapter page (read 2026-11-17): the prisoners want to communicate covertly through a subliminal channel hidden within the open messages", href: "https://www.doi.org/10.1007/978-1-4684-4730-9_5" }, // the name
+      { label: "Fabien A. P. Petitcolas, Ross J. Anderson and Markus G. Kuhn, Information Hiding: A Survey, Proceedings of the IEEE 87(7), July 1999 (read 2026-11-17): such a channel exists in certain digital signature schemes, the random message key manipulated to contain short messages that cannot even in principle be detected", href: "https://www.cl.cam.ac.uk/~rja14/Papers/ieee99-infohiding.pdf" }, // the mechanism
+      { label: "Ross J. Anderson and Fabien A. P. Petitcolas, On the Limits of Steganography, IEEE Journal on Selected Areas in Communications 16(4), May 1998 (read 2026-11-17): treaty sensors that report some facts but must not smuggle others past the other country's monitoring", href: "https://www.cl.cam.ac.uk/archive/rja14/Papers/jsac98-limsteg.pdf" }, // why it mattered
+    ], // three sources, one object per line
+  },
+  {
+    // Null cipher (new entry): a message hidden in the letters or words of an innocent text by an agreed rule.
+    slug: "null-cipher", // the /glossary/null-cipher address
+    headword: "null cipher", // lower case, a plain term
+    kind: "term", // a technique
+    domains: ["crypto"], // classical cryptography and steganography
+    aliases: ["null ciphers", "cifra nula", "cifras nulas"], // the plural and Portuguese (checked absent 17/11/2026)
+    relatedTerms: ["steganography", "bacon-cipher", "cardan-grille", "linguistic-steganography"], // this batch, then agent C's linguistic-steganography
+    relatedArticles: ["steganography-before-computers-wax-tablets-invisible-ink-and-microdots", "hiding-in-sound-video-and-text-from-echo-hiding-to-zero-width-characters"], // the part with the worked example, and the text-methods part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Neil F. Johnson and Sushil Jajodia, Exploring Steganography: Seeing the Unseen, IEEE Computer 31(2), February 1998 (read 2026-11-17): null ciphers camouflage the real message in an innocent-sounding missive; the message decoded by the second letter of each word as Pershing sails from NY June 1, described as sent by a German spy in WWII, citing Kahn", href: "http://www.jjtc.com/pub/r2026.pdf" }, // the classic example
+      { label: "United States Army, This Week in Military Intelligence History, 28 May 1917, on dvidshub.net (read 2026-11-17): Pershing sailed to Europe aboard the Baltic on 28 May 1917, which dates the Pershing message to the First World War", href: "https://dvidshub.net/news/445752/major-nolan-sails-france-aef-g-2-28-may-1917" }, // the dating
+      { label: "Jim Reeds, Solved: The Ciphers in Book III of Trithemius's Steganographia, Cryptologia 22(4), October 1998 (read 2026-11-17): the 1606 key shows the spells of Books I and II hide text, for example every other letter of every other word giving primus apex", href: "https://www.gwern.net/doc/cs/cryptography/steganography/1998-reeds.pdf" }, // a Renaissance null cipher
+      { label: "Fabien A. P. Petitcolas, Ross J. Anderson and Markus G. Kuhn, Information Hiding: A Survey, Proceedings of the IEEE 87(7), July 1999 (read 2026-11-17): acrostics and semagrams; covers laborious to construct and odd enough to alert the censor", href: "https://www.cl.cam.ac.uk/~rja14/Papers/ieee99-infohiding.pdf" }, // why they are caught
+      { label: "Ross J. Anderson and Fabien A. P. Petitcolas, On the Limits of Steganography, IEEE Journal on Selected Areas in Communications 16(4), May 1998 (read 2026-11-17): a censor changed father is dead to father is deceased; the reply asked is father dead or deceased", href: "https://www.cl.cam.ac.uk/archive/rja14/Papers/jsac98-limsteg.pdf" }, // the defence by rewording
+    ], // five sources, one object per line
+  },
+  {
+    // Invisible ink (new entry): writing that cannot be seen until heat, a reagent or light reveals it; its chemistry and its detection.
+    slug: "invisible-ink", // the /glossary/invisible-ink address
+    headword: "invisible ink", // lower case, the common name
+    kind: "term", // a material and a technique
+    domains: ["crypto"], // physical steganography, filed beside its digital relatives
+    aliases: ["secret ink", "sympathetic ink", "secret writing", "tinta invisível", "tinta simpática"], // the trade names and Portuguese (checked absent 17/11/2026)
+    relatedTerms: ["steganography", "microdot", "null-cipher"], // this batch
+    relatedArticles: ["steganography-before-computers-wax-tablets-invisible-ink-and-microdots"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Wynne Parry, The Chemistry of Deception, ChemMatters (American Chemical Society), December 2022 (read 2026-11-17): Ovid's milk ink; lemon juice charring faster than paper; tannic acid with iron(II) sulfate in James Jay's ink; the silver ink Argyrol and its electrolytic developer; ultraviolet inks", href: "https://teachchemistry.org/pdf/2023/02/13/09/24/43/0c5bf36a-e015-4727-a6b0-b704880f4c2b/the-chemistry-of-deception-how-invisible-ink-fueled-espionage-and-other-trickery-throughout-history.pdf" }, // the chemistry
+      { label: "Royal Society of Chemistry, Education, invisible inks practical (read 2026-11-17): organic substances that oxidize when heated turn brown or black; other inks change colour with acid or base", href: "https://edu.rsc.org/resources/invisible-inks/1948.article" }, // the two classes
+      { label: "The National Archives (United Kingdom), Karl Muller and the fatal lemon (read 2026-11-17): letters to a German cover address revealed with a warm flat iron in 1915; lemons and lemon cells on pen nibs as evidence; over 4,000 censorship workers by the war's end", href: "https://www.nationalarchives.gov.uk/explore-the-collection/stories/karl-muller-and-the-fatal-lemon/" }, // a case
+      { label: "Central Intelligence Agency, news release of 19 April 2011, hosted by the Federation of American Scientists (read 2026-11-17): the six oldest classified US documents, from 1917 and 1918, on secret writing, declassified", href: "https://irp.fas.org/news/2011/04/cia041911.html" }, // the declassification
+      { label: "National Archives and Records Administration, press release of 11 July 2011 (read 2026-11-17): a 14 June 1918 Office of Naval Intelligence document gives a German secret ink of powdered aspirin in pure water", href: "https://www.archives.gov/press/press-releases/2011-60" }, // a formula
+      { label: "Louis Fiset, Return to Sender, Prologue 33(1), spring 2001 (read 2026-11-17): Second World War evasion with ink inside steamed envelopes and under stamps; the Office of Censorship laboratory with chemical and x-ray analysis; sensitized glazed letterforms", href: "https://www.archives.gov/publications/prologue/2001/spring/mail-censorship-in-world-war-two-1.html" }, // the censors' answer
+    ], // six sources, one object per line
+  },
+  {
+    // Microdot (new entry): a photograph of a page reduced to the size of a printed full stop and hidden in an innocent document.
+    slug: "microdot", // the /glossary/microdot address
+    headword: "microdot", // lower case, the common name
+    kind: "term", // a technique and an object
+    domains: ["crypto"], // physical steganography
+    aliases: ["microdots", "microphotograph", "microponto"], // the plural, the FBI's word, Portuguese (checked absent 17/11/2026)
+    relatedTerms: ["steganography", "invisible-ink", "dead-drop"], // this batch, then the existing dead-drop entry
+    relatedArticles: ["steganography-before-computers-wax-tablets-invisible-ink-and-microdots"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Fabien A. P. Petitcolas, Ross J. Anderson and Markus G. Kuhn, Information Hiding: A Survey, Proceedings of the IEEE 87(7), July 1999 (read 2026-11-17): Brewster in 1857 on messages in spaces no larger than a full stop; microfilm by pigeon from Paris in 1870 to 1871; by the First World War spies' messages reduced to microdots stuck on printed full stops", href: "https://www.cl.cam.ac.uk/~rja14/Papers/ieee99-infohiding.pdf" }, // the history
+      { label: "Michael Buckland, As we may recall: four forgotten pioneers, Interactions 16(6), 2009 (read 2026-11-17): Emanuel Goldberg presented microdots in 1925 at a resolution of the Bible fifty times over per square inch; Hoover's April 1946 Reader's Digest article credited an imaginary Professor Zapp", href: "https://escholarship.org/content/qt34g811bg/qt34g811bg.pdf" }, // the inventor dispute
+      { label: "Neil F. Johnson and Sushil Jajodia, Exploring Steganography: Seeing the Unseen, IEEE Computer 31(2), February 1998 (read 2026-11-17): Hoover called microdot technology the enemy's masterpiece of espionage; photographs the size of a printed period with the clarity of typewritten pages", href: "http://www.jjtc.com/pub/r2026.pdf" }, // the FBI's phrase
+      { label: "Federal Bureau of Investigation, Duquesne Spy Ring, read through a fetch tool (read 2026-11-17): Sebold given five microphotographs with instructions for preparing a code; microphotographs carried to South American ports", href: "https://www.fbi.gov/history/cases-and-criminals/duquesne-spy-ring" }, // a case
+      { label: "Central Intelligence Agency, CIA Museum, microdot camera (read 2026-11-17): Cold War camera reducing whole pages onto film as small as a full stop, embedded in letters or hidden in rings and hollow coins, read with a special viewer", href: "https://www.cia.gov/legacy/museum/artifact/microdot-camera" }, // the Cold War
+    ], // five sources, one object per line
+  },
+  {
+    // Cardan grille (new entry): a perforated template laid over a letter so that only the hidden message shows through its holes.
+    slug: "cardan-grille", // the /glossary/cardan-grille address
+    headword: "Cardan grille", // Cardano's latinized name, as the field uses it
+    kind: "term", // a device and a method
+    domains: ["crypto"], // classical cryptography and steganography
+    aliases: ["Cardano grille", "grille cipher", "grelha de Cardano"], // the Italian form, the generic name, Portuguese (checked absent 17/11/2026)
+    relatedTerms: ["steganography", "null-cipher", "bacon-cipher"], // this batch
+    relatedArticles: ["steganography-before-computers-wax-tablets-invisible-ink-and-microdots"], // the part, with a toy grille
+    sources: [ // every label says what the page says and when it was read
+      { label: "Fabien A. P. Petitcolas, Ross J. Anderson and Markus G. Kuhn, Information Hiding: A Survey, Proceedings of the IEEE 87(7), July 1999 (read 2026-11-17): an ancient Chinese paper mask with random holes; Cardan (1501 to 1576) reinvented the method; a British bank's weak 1992 reinvention for cash card numbers", href: "https://www.cl.cam.ac.uk/~rja14/Papers/ieee99-infohiding.pdf" }, // the history
+      { label: "National Security Agency, National Cryptologic Museum, The Rare Book Collection, read through a fetch tool (read 2026-11-17): the Cardano grille a sheet of stiff material with irregularly placed rectangular holes; its major fault the awkwardness of phrasing the surrounding message; De subtilitate held in a 1554 edition", href: "https://media.defense.gov/2021/Jul/13/2002761896/-1/-1/0/RARE%20BOOKS.PDF" }, // the device and its weakness
+    ], // two sources, one object per line
+  },
+  {
+    // Bacon's cipher (new entry): Francis Bacon's biliteral alphabet, five a-or-b symbols per letter, carried by any two kinds of thing.
+    slug: "bacon-cipher", // the /glossary/bacon-cipher address
+    headword: "Bacon's cipher", // the usual English name
+    kind: "term", // a code and a hiding method
+    domains: ["crypto"], // classical cryptography and steganography
+    aliases: ["Baconian cipher", "biliteral cipher", "cifra de Bacon", "alfabeto biliteral"], // the other English names and Portuguese (checked absent 17/11/2026)
+    relatedTerms: ["steganography", "null-cipher", "cardan-grille"], // this batch
+    relatedArticles: ["steganography-before-computers-wax-tablets-invisible-ink-and-microdots"], // the part, with "fly" worked through
+    sources: [ // every label says what the page says and when it was read
+      { label: "William H. Sherman, How to Make Anything Signify Anything, Cabinet 40, winter 2010 to 2011 (read 2026-11-17): devised in the late 1570s, described in De augmentis scientiarum (1623, English 1640); the 24-group key; Do not go til I come hiding fly; Friedman's 1918 Aurora photograph spelling Knowledge is power", href: "https://cabinetmagazine.org/issues/40/sherman.php" }, // the cipher and its uses
+      { label: "Fabien A. P. Petitcolas, Ross J. Anderson and Markus G. Kuhn, Information Hiding: A Survey, Proceedings of the IEEE 87(7), July 1999 (read 2026-11-17): each letter a five-bit binary code embedded by printing letters in normal or italic fonts; sixteenth-century typography as camouflage; the link to the Shakespeare authorship controversy", href: "https://www.cl.cam.ac.uk/~rja14/Papers/ieee99-infohiding.pdf" }, // as steganography
+      { label: "Fine Books and Collections, Decoding the Renaissance: 500 Years of Codes and Ciphers at the Folger, 4 November 2014 (read 2026-11-17): William and Elizebeth Friedman's 1957 book debunked claims of cipher messages in Shakespeare's early printed plays; Sherman the exhibition's curator", href: "https://www.finebooksmagazine.com/news/decoding-renaissance-500-years-codes-and-ciphers-folger" }, // the authorship claims
+    ], // three sources, one object per line
+  },
+  {
+    // LSB steganography (new entry): hiding bits in the least significant bit of pixel or sample values, its variants and why it is easy to detect.
+    slug: "lsb-steganography", // the /glossary/lsb-steganography address
+    headword: "LSB steganography", // the usual name
+    kind: "term", // a technique
+    domains: ["cyber-security", "crypto"], // information hiding sits with security and cryptography
+    expansion: "least significant bit steganography", // the acronym spelled out
+    aliases: ["least significant bit steganography", "lsb embedding", "lsb replacement", "lsb matching", "±1 embedding", "esteganografia lsb", "bit menos significativo"], // names and Portuguese
+    relatedTerms: ["steganography", "steganalysis", "chi-square-attack", "rs-analysis", "jpeg-steganography", "kerckhoffs-principle"], // this wave, then existing
+    relatedArticles: ["hiding-in-images-lsb-jpeg-and-adaptive-steganography", "steganalysis-finding-the-hidden-message", "steganography-hiding-that-a-message-exists"], // the two parts and the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "Petitcolas, Anderson and Kuhn, Information Hiding: A Survey, Proceedings of the IEEE 87(7), July 1999 (read 2026-11-17): many writers proposed embedding in the least significant bits; pseudo-randomly chosen pixels make the generator's key the stego key", href: "https://www.cl.cam.ac.uk/~rja14/Papers/ieee99-infohiding.pdf" }, // survey
+      { label: "Petitcolas, The image downgrading problem (read 2026-11-17): Kurak and McHugh's 1992 warning; low bit planes of one image replaced by high bit planes of another", href: "https://petitcolas.net/steganography/image_downgrading" }, // origin
+      { label: "Westfeld and Pfitzmann, Attacks on Steganographic Systems, Information Hiding 1999 (read 2026-11-17): EzStego, S-Tools, Steganos and JSteg assume LSBs are uncorrelated noise; visual and chi-square attacks; proposal to increment instead of overwrite", href: "https://users.ece.cmu.edu/~adrian/487-s06/westfeld-pfitzmann-ihw99.pdf" }, // first attacks
+      { label: "Crandall, Some Notes on Steganography, 18 December 1998 (read 2026-11-17): two bits per changed pixel; incrementing or decrementing in non-paletted images; parity of cells in paletted images", href: "https://www2.htw-dresden.de/~westfeld/crandall.pdf" }, // mechanics
+      { label: "Fridrich, Goljan and Du, Reliable Detection of LSB Steganography in Color and Grayscale Images, 2001 (read 2026-11-17): RS analysis; 0.005 bits per pixel experimentally safe for LSB embedding", href: "https://www.cs.uaf.edu/2015/spring/cs463/lecture/04_06_stego/stego_detection_2001.pdf" }, // detection bound
+      { label: "Fridrich and Kodovský, Rich Models for Steganalysis of Digital Images, IEEE TIFS 2012 (read 2026-11-17): ±1 embedding at 0.4 bpp detected with 7.85% median error on BOSSbase 0.92", href: "http://dde.binghamton.edu/kodovsky/pdf/TIFS2012-SRM.pdf" }, // LSB matching detectability
+    ], // six sources, one object per line
+  },
+  {
+    // JPEG steganography (new entry): hiding in the quantized DCT coefficients of JPEG files, from JSteg to J-UNIWARD.
+    slug: "jpeg-steganography", // the /glossary/jpeg-steganography address
+    headword: "JPEG steganography", // the usual name
+    kind: "term", // a family of techniques
+    domains: ["cyber-security", "crypto"], // information hiding
+    aliases: ["dct steganography", "jsteg", "outguess", "j-uniward", "nsf5", "esteganografia em jpeg", "coeficientes dct"], // tool and scheme names, Portuguese
+    relatedTerms: ["f5-algorithm", "matrix-embedding", "lsb-steganography", "steganalysis", "rich-models", "steganography"], // this wave
+    relatedArticles: ["hiding-in-images-lsb-jpeg-and-adaptive-steganography", "steganalysis-finding-the-hidden-message"], // the two parts
+    sources: [ // every label says what the page says and when it was read
+      { label: "ITU-T, Recommendation T.81 (09/92), approved 18 September 1992, in force (read 2026-11-17)", href: "https://www.itu.int/rec/T-REC-T.81-199209-I/en" }, // the JPEG standard
+      { label: "Westfeld, F5: ein steganographischer Algorithmus, VIS 2001 (read 2026-11-17): DCT, quantization and Huffman pipeline; histogram properties; Upham's JSteg skips 0 and 1; 12.8% capacity", href: "https://www2.htw-dresden.de/~westfeld/publikationen/westfeld.vis01.pdf" }, // JSteg and F5
+      { label: "Provos, Defending Against Statistical Steganalysis, USENIX Security, August 2001 (read 2026-11-17): OutGuess's keyed selection, 50% cap and histogram-correcting transform", href: "https://www.usenix.org/legacy/events/sec01/full_papers/provos/provos.pdf" }, // OutGuess
+      { label: "Fridrich, Pevný and Kodovský, Statistically Undetectable JPEG Steganography, ACM MM&Sec 2007 (read 2026-11-17): nsF5 with wet paper codes; about 0.05 bits per non-zero AC coefficient for quality 70", href: "http://dde.binghamton.edu/kodovsky/pdf/Fri07-ACM.pdf" }, // capacity
+      { label: "Holub, Fridrich and Denemark, Universal Distortion Function for Steganography in an Arbitrary Domain, EURASIP JIS 2014 (read 2026-11-17): J-UNIWARD; bits per non-zero AC coefficient", href: "http://dde.binghamton.edu/vholub/pdf/EURASIP14_Universal_Distortion_Function_for_Steganography_in_an_Arbitrary_Domain.pdf" }, // adaptive JPEG
+      { label: "ALASKA challenge site (read 2026-11-17): ALASKA#2 used J-UNIWARD, UERD and J-MiPOD at an average 0.4 bpnzAC on colour JPEGs at quality 95, 90 and 75", href: "https://alaska.utt.fr" }, // benchmark
+    ], // six sources, one object per line
+  },
+  {
+    // F5 (new entry): Westfeld's 2001 JPEG steganography algorithm and its fate.
+    slug: "f5-algorithm", // the /glossary/f5-algorithm address; never the bare alias "f5" (the vendor)
+    headword: "F5 (steganographic algorithm)", // disambiguated from the company F5
+    kind: "term", // a named algorithm
+    domains: ["cyber-security", "crypto"], // information hiding
+    aliases: ["f5 steganography", "f5 algorithm", "westfeld f5", "f5 steganographic algorithm", "algoritmo f5"], // never "f5" alone
+    relatedTerms: ["jpeg-steganography", "matrix-embedding", "steganalysis", "lsb-steganography"], // this wave
+    relatedArticles: ["hiding-in-images-lsb-jpeg-and-adaptive-steganography", "steganalysis-finding-the-hidden-message"], // the two parts
+    sources: [ // every label says what the page says and when it was read
+      { label: "DDE Lab, Binghamton University, Steganographic Algorithms (read 2026-11-17): Westfeld, High capacity despite better steganalysis, Information Hiding 2001, Pittsburgh, 25 to 27 April 2001, LNCS 2137, pp. 289 to 302; original Java implementation", href: "https://dde.binghamton.edu/download/stego_algorithms" }, // publication data
+      { label: "Westfeld, F5: ein steganographischer Algorithmus, VIS 2001 (read 2026-11-17): F3, F4, F5, shrinkage, permutative straddling, matrix encoding; 217 bytes with 1,157 changes in F4 and 459 in F5", href: "https://www2.htw-dresden.de/~westfeld/publikationen/westfeld.vis01.pdf" }, // the design
+      { label: "Fridrich, Goljan and Hogea, Steganalysis of JPEG Images: Breaking the F5 Algorithm, Information Hiding 2002 (read 2026-11-17): calibration by cropping four pixels and recompressing; 10% of usable coefficients detectable", href: "http://ws2.binghamton.edu/fridrich/Research/f5.pdf" }, // the break
+      { label: "Fridrich, Pevný and Kodovský, ACM MM&Sec 2007 (read 2026-11-17): nsF5, F5 without shrinkage using wet paper codes", href: "http://dde.binghamton.edu/kodovsky/pdf/Fri07-ACM.pdf" }, // successor
+    ], // four sources, one object per line
+  },
+  {
+    // Matrix embedding (new entry): syndrome coding that carries several message bits with fewer changes, from Crandall (1998) to syndrome-trellis codes.
+    slug: "matrix-embedding", // the /glossary/matrix-embedding address
+    headword: "matrix embedding", // lower case, a technique
+    kind: "term", // a coding technique
+    domains: ["crypto", "cyber-security"], // coding theory used for hiding
+    aliases: ["matrix encoding", "syndrome coding", "syndrome-trellis codes", "stc", "hamming code steganography", "codificação matricial"], // names and Portuguese
+    relatedTerms: ["f5-algorithm", "jpeg-steganography", "lsb-steganography", "steganography"], // this wave
+    relatedArticles: ["hiding-in-images-lsb-jpeg-and-adaptive-steganography"], // the part that teaches it
+    sources: [ // every label says what the page says and when it was read
+      { label: "Crandall, Some Notes on Steganography, 18 December 1998 (read 2026-11-17): the (1, 3, 2) design, Hamming codes, (1, 7, 3), (1, 15, 4), (1, 31, 5)", href: "https://www2.htw-dresden.de/~westfeld/crandall.pdf" }, // origin
+      { label: "Westfeld, F5: ein steganographischer Algorithmus, VIS 2001 (read 2026-11-17): (dmax, n, k) codes, change density, embedding rate and efficiency table", href: "https://www2.htw-dresden.de/~westfeld/publikationen/westfeld.vis01.pdf" }, // first implementation
+      { label: "Filler, Judas and Fridrich, Minimizing Additive Distortion in Steganography Using Syndrome-Trellis Codes, IEEE TIFS 2011 (read 2026-11-17): Crandall's 1998 mailing-list essay, Bierbrauer, syndrome coding, Viterbi, linear complexity", href: "http://dde.binghamton.edu/filler/pdf/Fill10tifs-stc.pdf" }, // generalization
+      { label: "Fridrich, Pevný and Kodovský, ACM MM&Sec 2007 (read 2026-11-17): matrix embedding markedly improves security by diluting the number of changes", href: "http://dde.binghamton.edu/kodovsky/pdf/Fri07-ACM.pdf" }, // security effect
+    ], // four sources, one object per line
+  },
+  {
+    // Steganalysis (new entry): detecting hidden messages and estimating their length.
+    slug: "steganalysis", // the /glossary/steganalysis address
+    headword: "steganalysis", // lower case
+    kind: "term", // a discipline
+    domains: ["cyber-security", "crypto"], // detection side of information hiding
+    aliases: ["stego detection", "steganography detection", "esteganálise", "detecção de esteganografia"], // names and Portuguese
+    relatedTerms: ["steganography", "chi-square-attack", "rs-analysis", "rich-models", "lsb-steganography", "forensics", "dlp", "exfiltration"], // this wave, then existing
+    relatedArticles: ["steganalysis-finding-the-hidden-message", "hiding-in-images-lsb-jpeg-and-adaptive-steganography", "steganography-hiding-that-a-message-exists", "capture-the-flag-competitions"], // the part, the sibling, the opener, CTF
+    sources: [ // every label says what the page says and when it was read
+      { label: "Johnson and Jajodia, Steganalysis: The Investigation of Hidden Information, IEEE IT Conference 1998 (read 2026-11-17): the term; tool signatures", href: "https://www.cse.buffalo.edu/courses/cse725/peter/Johnson_1997.pdf" }, // definition
+      { label: "Fridrich, Goljan and Hogea, Breaking the F5 Algorithm, 2002 (read 2026-11-17): method public except the key; broken if a detector beats random guessing", href: "http://ws2.binghamton.edu/fridrich/Research/f5.pdf" }, // rules
+      { label: "Provos and Honeyman, Hide and Seek: An Introduction to Steganography, IEEE Security and Privacy, May/June 2003 (read 2026-11-17): two million eBay and one million Usenet images, over 1% flagged, no hidden message found", href: "https://www.cs.princeton.edu/~chazelle/courses/BIB/stegano-honeyman.pdf" }, // at scale
+      { label: "Fridrich, Kodovský, Holub and Goljan, Breaking HUGO: the Process Discovery, Information Hiding 2011 (read 2026-11-17): BOSS, camera fingerprints, cover-source mismatch, 80.3%", href: "http://ws2.binghamton.edu/fridrich/Research/hugobreakers05.pdf" }, // competition
+      { label: "ALASKA challenge site (read 2026-11-17): ALASKA#1 and ALASKA#2, datasets, metrics, hall of fame", href: "https://alaska.utt.fr" }, // competitions
+      { label: "NIST SP 800-53 Rev. 5, September 2020 (read 2026-11-17): monitoring for steganography under SC-7(10); covert exfiltration means include steganography under SI-4(18)", href: "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r5.pdf" }, // controls
+    ], // six sources, one object per line
+  },
+  {
+    // Chi-square attack (new entry): Westfeld and Pfitzmann's 1999 test for LSB replacement.
+    slug: "chi-square-attack", // the /glossary/chi-square-attack address
+    headword: "chi-square attack", // lower case
+    kind: "term", // a detection method
+    domains: ["cyber-security", "crypto"], // steganalysis
+    aliases: ["chi-squared attack", "chi-square steganalysis", "westfeld-pfitzmann attack", "pairs of values attack", "ataque qui-quadrado"], // names and Portuguese
+    relatedTerms: ["steganalysis", "lsb-steganography", "rs-analysis", "jpeg-steganography"], // this wave
+    relatedArticles: ["steganalysis-finding-the-hidden-message", "hiding-in-images-lsb-jpeg-and-adaptive-steganography"], // the part, the sibling
+    sources: [ // every label says what the page says and when it was read
+      { label: "Westfeld and Pfitzmann, Attacks on Steganographic Systems, Information Hiding 1999 (read 2026-11-17): pairs of values, expected and observed frequencies, k − 1 degrees of freedom, p as probability of embedding; EzStego, S-Tools, Steganos and JSteg experiments", href: "https://users.ece.cmu.edu/~adrian/487-s06/westfeld-pfitzmann-ihw99.pdf" }, // the method
+      { label: "Provos, Defending Against Statistical Steganalysis, USENIX Security 2001 (read 2026-11-17): extended test with a sliding 3.2% sample; OutGuess's corrections defeat it", href: "https://www.usenix.org/legacy/events/sec01/full_papers/provos/provos.pdf" }, // refinement
+      { label: "Westfeld, F5: ein steganographischer Algorithmus, VIS 2001 (read 2026-11-17): the test on a JSteg image at 50% capacity, 1.00 up to 54% of the sample, 0.00 from 59%", href: "https://www2.htw-dresden.de/~westfeld/publikationen/westfeld.vis01.pdf" }, // JPEG use
+      { label: "Fridrich, Goljan and Du, 2001 (read 2026-11-17): reliable for known placement; scattered messages detected only when comparable to the number of pixels", href: "https://www.cs.uaf.edu/2015/spring/cs463/lecture/04_06_stego/stego_detection_2001.pdf" }, // limits
+    ], // four sources, one object per line
+  },
+  {
+    // RS analysis (new entry): Fridrich, Goljan and Du's 2001 estimator of LSB message length.
+    slug: "rs-analysis", // the /glossary/rs-analysis address
+    headword: "RS analysis", // the usual name
+    kind: "term", // a detection method
+    domains: ["cyber-security", "crypto"], // steganalysis
+    expansion: "regular-singular analysis, named after its regular and singular pixel groups", // the name explained
+    aliases: ["rs steganalysis", "regular singular analysis", "sample pair analysis", "spa steganalysis", "análise rs"], // names, the related SPA, Portuguese
+    relatedTerms: ["steganalysis", "chi-square-attack", "lsb-steganography"], // this wave
+    relatedArticles: ["steganalysis-finding-the-hidden-message"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Fridrich, Goljan and Du, Reliable Detection of LSB Steganography in Color and Grayscale Images, 2001 (read 2026-11-17): discrimination function, flipping F1 and F−1, regular, singular and unusable groups, RS diagram, 0.005 bpp", href: "https://www.cs.uaf.edu/2015/spring/cs463/lecture/04_06_stego/stego_detection_2001.pdf" }, // the method
+      { label: "Google Patents, US6831991B2 (read 2026-11-17): filed 22 June 2001, granted 14 December 2004, Fridrich and Goljan, Research Foundation of SUNY, US Air Force grants, messages as short as 1% of pixels, expired", href: "https://patents.google.com/patent/US6831991" }, // patent
+      { label: "Dumitrescu, Wu and Wang, Detection of LSB Steganography via Sample Pair Analysis, IEEE TSP 2003 (read 2026-11-17): trace multisets, quadratic estimate, 29 images, proofs of RS observations", href: "https://www.ece.mcmaster.ca/~sorina/papers/LSBfinalTSP.pdf" }, // successor
+    ], // three sources, one object per line
+  },
+  {
+    // Rich models (new entry): high-dimensional noise-residual features with ensemble classifiers, the 2012 standard of feature-based steganalysis.
+    slug: "rich-models", // the /glossary/rich-models address
+    headword: "rich models (steganalysis)", // disambiguated
+    kind: "term", // a detection method
+    domains: ["cyber-security", "crypto"], // steganalysis
+    aliases: ["spatial rich model", "srm", "jpeg rich model", "jrm", "ensemble classifier steganalysis", "rich models for steganalysis"], // names
+    relatedTerms: ["steganalysis", "jpeg-steganography", "lsb-steganography"], // this wave
+    relatedArticles: ["steganalysis-finding-the-hidden-message", "hiding-in-images-lsb-jpeg-and-adaptive-steganography"], // the part, the sibling
+    sources: [ // every label says what the page says and when it was read
+      { label: "Fridrich and Kodovský, Rich Models for Steganalysis of Digital Images, IEEE TIFS 2012 (read 2026-11-17): union of submodels of quantized noise residuals, 34,671 features, ensemble classifiers, BOSSbase 0.92 results", href: "http://dde.binghamton.edu/kodovsky/pdf/TIFS2012-SRM.pdf" }, // the model
+      { label: "Kodovský, Fridrich and Holub, Ensemble Classifiers for Steganalysis of Digital Media, IEEE TIFS 2012 (read 2026-11-17): random forests of Fisher linear discriminants on feature subspaces", href: "http://dde.binghamton.edu/kodovsky/pdf/TIFS-2011-ensemble.pdf" }, // the classifier
+      { label: "DDE Lab, Feature Extractors (read 2026-11-17): SRM, JRM, maxSRM and later extractors published for download", href: "https://dde.binghamton.edu/download/feature_extractors" }, // code
+      { label: "Chaumont, Deep Learning in Steganography and Steganalysis from 2015 to 2018, arXiv 1904.01444 (read 2026-11-17): CNNs approached EC + RM in 2015 and surpassed it from late 2017", href: "https://arxiv.org/abs/1904.01444" }, // successor
+    ], // four sources, one object per line
+  },
+  {
+    // Echo hiding (new entry): data carried by short echoes in audio, from the MIT patent of 1996 to its attacks and its detection.
+    slug: "echo-hiding", // the /glossary/echo-hiding address
+    headword: "echo hiding", // lower case, a plain technical term
+    kind: "term", // a technique
+    domains: ["crypto", "cyber-security"], // information hiding, and its detection
+    aliases: ["echo data hiding", "echo steganography", "echo watermarking", "ocultação por eco", "esteganografia por eco"], // the patent's name, descriptive forms, Portuguese
+    relatedTerms: ["steganography", "steganalysis", "spread-spectrum-watermarking", "digital-watermarking"], // this wave
+    relatedArticles: ["hiding-in-sound-video-and-text-from-echo-hiding-to-zero-width-characters", "watermarks-and-fingerprints-marking-content-to-trace-it", "steganography-hiding-that-a-message-exists"], // the part, the watermarks part, the opener
+    sources: [ // every label says what the page says and when it was read
+      { label: "Google Patents, US 5,893,067, Method and apparatus for echo data hiding in audio signals, Massachusetts Institute of Technology, filed 31 May 1996, granted 6 April 1999 (read 2026-11-17): inventors Walter Bender, Daniel Gruhl and Norishige Morimoto; one or more echoes offset by a value tied to the bit; at least 85% of bits recovered for decay rates 0.3 to 0.85; an echo of 1 ms not resolvable by the average listener; decoding by the autocorrelation of the cepstrum", href: "https://patents.google.com/patent/US5893067A/en" }, // patent
+      { label: "Crossref, Daniel Gruhl, Anthony Lu and Walter Bender, Echo hiding, Information Hiding, Lecture Notes in Computer Science 1174:295-315, 1996 (read 2026-11-17): bibliographic record of the first paper", href: "https://doi.org/10.1007/3-540-61996-8_48" }, // paper
+      { label: "Ross J. Anderson and Fabien A. P. Petitcolas, On the Limits of Steganography, IEEE Journal on Selected Areas in Communications 16(4), May 1998 (read 2026-11-17): a delay of 0.5 ms for a 0 and 1.0 ms for a 1, too short to be perceptible in most circumstances but detectable with cepstral transforms", href: "https://www.cl.cam.ac.uk/~rja14/Papers/jsac98-limsteg.pdf" }, // summary
+      { label: "Fabien A. P. Petitcolas, Ross J. Anderson and Markus G. Kuhn, Information Hiding: A Survey, Proceedings of the IEEE 87(7), July 1999 (read 2026-11-17): delays of 0.5 to 2 ms and relative amplitude around 0.8; the attack that estimates the delay with a modified cepstrum between 0.5 and 3 ms and cancels the echo", href: "https://www.cl.cam.ac.uk/~fapp2/publications/ieee99-infohiding.pdf" }, // attack
+      { label: "Scott A. Craver and seven co-authors, Reading Between the Lines: Lessons from the SDMI Challenge, 10th USENIX Security Symposium, August 2001 (read 2026-11-17): one SDMI watermark was a complex echo system with delays of 2 to 7 times 0.25 ms hopping per frame; all four watermark technologies defeated", href: "https://www.usenix.org/legacy/events/sec01/craver.pdf" }, // a fielded echo system broken
+      { label: "Hamzeh Ghasemzadeh and Mohammad H. Kayvanrad, Comprehensive Review of Audio Steganalysis Methods, IET Signal Processing 2018, arXiv 1701.05611 (read 2026-11-17): echo kernels (basic, positive-negative, forward-backward) and their steganalysis", href: "https://arxiv.org/abs/1701.05611" }, // detection
+    ], // six sources, one object per line
+  },
+  {
+    // Spread-spectrum watermarking (new entry): a few bits spread over many samples with a secret sequence, detected by correlation.
+    slug: "spread-spectrum-watermarking", // the /glossary/spread-spectrum-watermarking address
+    headword: "spread-spectrum watermarking", // lower case, hyphenated as the papers write it
+    kind: "term", // a technique
+    domains: ["crypto", "cyber-security"], // information hiding and copyright marking
+    aliases: ["spread spectrum watermark", "spread spectrum watermarking", "DSSS watermarking", "direct-sequence spread spectrum watermarking", "marca-d'água por espalhamento espectral"], // spellings, the radio term, Portuguese
+    relatedTerms: ["digital-watermarking", "echo-hiding", "traitor-tracing", "steganography"], // this wave
+    relatedArticles: ["watermarks-and-fingerprints-marking-content-to-trace-it", "hiding-in-sound-video-and-text-from-echo-hiding-to-zero-width-characters"], // the parts that teach it
+    sources: [ // every label says what the page says and when it was read
+      { label: "Fabien A. P. Petitcolas, Ross J. Anderson and Markus G. Kuhn, Information Hiding: A Survey, Proceedings of the IEEE 87(7), July 1999 (read 2026-11-17): spread spectrum radio since the mid-1940s; Tirkel et al. first to note it could serve digital watermarking; Cox et al. embed in the n most perceptually significant DCT coefficients by v'(i) = v(i)(1 + alpha w(i)) and detect by similarity against a threshold; robust to rescaling, JPEG, dithering, clipping, printing and scanning but needs the original and carries one bit", href: "https://www.cl.cam.ac.uk/~fapp2/publications/ieee99-infohiding.pdf" }, // mechanism and history
+      { label: "Crossref, R. G. van Schyndel, A. Z. Tirkel and C. F. Osborne, A digital watermark, Proceedings of the 1st International Conference on Image Processing, 1994 (read 2026-11-17): bibliographic record", href: "https://doi.org/10.1109/ICIP.1994.413536" }, // early paper
+      { label: "Crossref, I. J. Cox, J. Kilian, F. T. Leighton and T. Shamoon, Secure spread spectrum watermarking for multimedia, IEEE Transactions on Image Processing 6(12), December 1997 (read 2026-11-17): bibliographic record", href: "https://doi.org/10.1109/83.650120" }, // the reference paper
+      { label: "Norishige Morimoto, Techniques for Data Hiding in Audio Files, MIT master's thesis, 1995 (read 2026-11-17 with a reading tool): direct-sequence spread spectrum adds a synthesized code signal to the host; 20 bits per second of sound", href: "https://core.ac.uk/download/4390467.pdf" }, // audio rate
+      { label: "Crossref, L. Boney, A. H. Tewfik and K. N. Hamdy, Digital watermarks for audio signals, IEEE ICMCS 1996; and D. Kirovski and H. S. Malvar, Spread-spectrum watermarking of audio signals, IEEE Transactions on Signal Processing 51(4), April 2003 (read 2026-11-17): bibliographic records", href: "https://doi.org/10.1109/TSP.2003.809384" }, // audio watermarking
+    ], // five sources, one object per line
+  },
+  {
+    // Zero-width steganography (new entry): bits carried by invisible Unicode characters, its fingerprinting use and its detection.
+    slug: "zero-width-steganography", // the /glossary/zero-width-steganography address
+    headword: "zero-width steganography", // lower case
+    kind: "term", // a technique
+    domains: ["crypto", "cyber-security", "privacy"], // hiding, detection, and the exposure of sources
+    aliases: ["zero-width character steganography", "zero-width fingerprinting", "invisible character steganography", "Unicode character smuggling", "Unicode tag smuggling", "esteganografia de largura zero"], // descriptive forms, the 2025 AWS name, Portuguese
+    relatedTerms: ["unicode", "utf-8", "linguistic-steganography", "steganography", "large-language-model"], // existing entries, then this wave
+    relatedArticles: ["hiding-in-sound-video-and-text-from-echo-hiding-to-zero-width-characters", "hidden-and-lookalike-characters", "character-encoding"], // the part, the character article, encoding
+    sources: [ // every label says what the page says and when it was read
+      { label: "Zach Aysan, Zero-Width Characters: Invisibly fingerprinting text, 30 December 2017 (read 2026-11-17): the idea from early 2016; presence or absence of one invisible character fingerprints even short text; not removed with formatting; countermeasures for journalists (retype excerpts, compare copies, allow-list filtering)", href: "https://www.zachaysan.com/writing/2017-12-30-zero-width-characters" }, // fingerprinting
+      { label: "Amazon Web Services, AWS Security Blog, Defending LLM applications against Unicode character smuggling, 30 September 2025 (read 2026-11-17): tag block U+E0000 to U+E007F, flag sequences, models reading hidden tags, single-pass Java filters re-creating tags from orphaned surrogates, recursive sanitization", href: "https://aws.amazon.com/blogs/security/defending-llm-applications-against-unicode-character-smuggling/" }, // tag characters
+      { label: "Stefano Giovanni Rizzo, Flavio Bertini and Danilo Montesi, Fine-grain watermarking for intellectual property protection, EURASIP Journal on Information Security, 12 July 2019 (read 2026-11-17 with a reading tool): one bit per Latin letter by homoglyph substitution and three bits per space; 64-bit mark in 101 characters on average; destroyed by retyping", href: "https://link.springer.com/article/10.1186/s13635-019-0094-2" }, // the neighbouring homoglyph method
+    ], // three sources, one object per line
+  },
+  {
+    // Linguistic steganography (new entry): hiding in the words themselves, by substitution or generation, and its detection.
+    slug: "linguistic-steganography", // the /glossary/linguistic-steganography address
+    headword: "linguistic steganography", // lower case
+    kind: "term", // a family of techniques
+    domains: ["crypto", "cyber-security"], // information hiding and steganalysis
+    aliases: ["lexical steganography", "text steganography", "synonym substitution steganography", "generative text steganography", "neural linguistic steganography", "esteganografia linguística", "esteganografia em texto"], // the 1998 name, the carrier, the two methods, Portuguese
+    relatedTerms: ["steganography", "steganalysis", "zero-width-steganography", "large-language-model", "ai-watermarking"], // this wave, then existing entries
+    relatedArticles: ["hiding-in-sound-video-and-text-from-echo-hiding-to-zero-width-characters", "steganography-hiding-that-a-message-exists", "generative-ai-and-influence-operations"], // the part, the opener, AI text marks
+    sources: [ // every label says what the page says and when it was read
+      { label: "Keith Winstein, Lexical Steganography Through Adaptive Modulation of the Word Choice Hash, 1998 (read 2026-11-17): typesetting methods fall to retypesetting; disjoint synonym sets of 2^n words carry n bits; sets built from WordNet; the 'cool' and 'chilly' problem", href: "https://web.mit.edu/keithw/tlex/lsteg.pdf" }, // substitution
+      { label: "Crossref, Peter Wayner, Mimic Functions, Cryptologia 16(3), July 1992 (read 2026-11-17): bibliographic record of grammar-based generation", href: "https://doi.org/10.1080/0161-119291866883" }, // generation by grammar
+      { label: "Ching-Yun Chang and Stephen Clark, Practical Linguistic Steganography using Contextual Synonym Substitution and a Novel Vertex Coding Method, Computational Linguistics 40(2), 2014 (read 2026-11-17): Google n-gram checks in context; words as vertices, synonyms as edges, vertex coding", href: "https://aclanthology.org/J14-2006/" }, // contextual substitution
+      { label: "CERIAS, Cuneyt M. Taskiran, Umut Topkara, Mercan Topkara and Edward J. Delp, Attacks on lexical natural language steganography systems, SPIE 6072, February 2006 (read 2026-11-17): language models and support vector machines; 84.9% accuracy", href: "https://www.cerias.purdue.edu/apps/reports_and_papers/view/3697" }, // detection
+      { label: "Tina Fang, Martin Jaggi and Katerina Argyraki, Generating Steganographic Text with LSTMs, Student Research Workshop of the Association for Computational Linguistics, 2017 (read 2026-11-17): vocabulary split into 2^|B| bins as the shared key; |B| bits per word", href: "https://aclanthology.org/P17-3017/" }, // neural generation
+      { label: "Zachary M. Ziegler, Yuntian Deng and Alexander M. Rush, Neural Linguistic Steganography, EMNLP-IJCNLP 2019 (read 2026-11-17): arithmetic coding over GPT-2 probabilities; security measured by KL divergence", href: "https://aclanthology.org/D19-1115/" }, // arithmetic coding
+    ], // six sources, one object per line
+  },
+  {
+    // Digital watermarking (new entry): robust, fragile and forensic marks, their industries, attacks and legal protection.
+    slug: "digital-watermarking", // the /glossary/digital-watermarking address
+    headword: "digital watermarking", // lower case
+    kind: "term", // a field and technique
+    domains: ["crypto", "cyber-security", "grc"], // marking, its attacks, and the rights-management law around it
+    aliases: ["digital watermark", "robust watermark", "fragile watermark", "forensic watermarking", "forensic marking", "copyright marking", "marca-d'água digital", "marcas-d'água digitais"], // forms, the DCI term, the survey's umbrella term, Portuguese (hyphenated; the bare "marca d'água" belongs to ai-watermarking)
+    relatedTerms: ["spread-spectrum-watermarking", "traitor-tracing", "printer-tracking-dots", "echo-hiding", "steganography", "ai-watermarking", "content-credentials", "dmca"], // this wave, then existing entries
+    relatedArticles: ["watermarks-and-fingerprints-marking-content-to-trace-it", "hiding-in-sound-video-and-text-from-echo-hiding-to-zero-width-characters", "verification-and-fact-checking"], // the part, the audio part, provenance
+    sources: [ // every label says what the page says and when it was read
+      { label: "Fabien A. P. Petitcolas, Ross J. Anderson and Markus G. Kuhn, Information Hiding: A Survey, Proceedings of the IEEE 87(7), July 1999 (read 2026-11-17): copyright marking needs robustness; fragile marks prove an object was not doctored; fingerprints are hidden serial numbers, watermarks name the owner; paper watermarks from the end of the 13th century; StirMark", href: "https://www.cl.cam.ac.uk/~fapp2/publications/ieee99-infohiding.pdf" }, // definitions
+      { label: "Google Patents, US 3,004,104, Identification of sound and like signals, Emil Frank Hembrooke, Muzak Corporation, filed 29 April 1954, granted 10 October 1961 (read 2026-11-17): a narrow band near 1,000 cycles per second suppressed in a coded pattern; 'may be likened to a watermark in paper'", href: "https://patents.google.com/patent/US3004104A/en" }, // early audio mark
+      { label: "IBM Research, Scott Craver, Nasir Memon, B.-L. Yeo and M. M. Yeung, Resolving rightful ownerships with invisible watermarking techniques, IEEE JSAC, May 1998 (read 2026-11-17): ownership cannot be resolved by watermarking alone; counterfeit schemes; non-invertible remedy", href: "https://research.ibm.com/publications/resolving-rightful-ownerships-with-invisible-watermarking-techniques-limitations-attacks-and-implications" }, // ambiguity attack
+      { label: "Digital Cinema Initiatives, Digital Cinema System Specification 1.5.1, approved 20 October 2026 (read 2026-11-17): forensic marking of image and audio in every media block; 16-bit time stamp every 15 minutes and 19 or 20-bit location; all bits in each five-minute segment; recovery from up to 30 minutes; survival of collusion and of 10% speed changes", href: "https://documents.dcimovies.com/DCSS/release/1.5.1/Digital-Cinema-System-Specification-1.5.1.pdf" }, // cinema
+      { label: "ATSC, A/335:2026-04, Video Watermark Emission, 14 April 2026 (read 2026-11-17): luma of the top two lines; 30 bytes per frame (1X) or 60 (2X); not intended to be tamper-resistant or indelible", href: "https://www.atsc.org/wp-content/uploads/2026/04/A335-2026-04-Video-Watermark-Emission.pdf" }, // broadcast
+      { label: "WIPO, WIPO Copyright Treaty, adopted in Geneva on 20 December 1996, Article 12 (read 2026-11-17): remedies against removing or altering electronic rights management information, including numbers or codes that represent it", href: "https://www.wipo.int/wipolex/en/text/295166" }, // treaty
+      { label: "Câmara dos Deputados, Lei nº 9.610, de 19 de fevereiro de 1998, article 107 (read 2026-11-17): damages for altering or suppressing technical devices, coded signals or rights management information, and for distributing works knowing they were removed", href: "https://www2.camara.leg.br/legin/fed/lei/1998/lei-9610-19-fevereiro-1998-365399-normaatualizada-pl.html" }, // Brazil
+    ], // seven sources, one object per line
+  },
+  {
+    // Printer tracking dots (new entry): the machine identification code of colour laser printers, its decoding, research and the Winner case.
+    slug: "printer-tracking-dots", // the /glossary/printer-tracking-dots address
+    headword: "printer tracking dots", // lower case
+    kind: "term", // a forensic marking technique
+    domains: ["privacy", "cyber-security"], // surveillance of documents, and forensics
+    aliases: ["yellow dots", "tracking dots", "machine identification code", "DocuColor tracking dots", "pontos amarelos", "pontos de rastreamento de impressora"], // the common names, EFF's project name, Portuguese
+    relatedTerms: ["digital-watermarking", "traitor-tracing", "steganography", "eff", "forensics", "metadata"], // this wave, then existing entries
+    relatedArticles: ["watermarks-and-fingerprints-marking-content-to-trace-it", "steganography-before-computers-wax-tablets-invisible-ink-and-microdots"], // the part, the physical-methods part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Electronic Frontier Foundation, Secret Code in Color Printers Lets Government Track You, 16 October 2005 (read 2026-11-17): code broken for the Xerox DocuColor line; date, time and serial number; yellow dots under 1 mm visible under blue light; the Secret Service's and Xerox's admissions as EFF reports them", href: "https://www.eff.org/press/archives/2005/10/16" }, // decoding
+      { label: "Electronic Frontier Foundation, DocuColor Tracking Dot Decoding Guide (read 2026-11-17): 15 x 8 grid, 14 seven-bit bytes, odd parity, columns for minute, hour, day, month, year and BCD serial number", href: "https://w2.eff.org/Privacy/printers/docucolor/" }, // format
+      { label: "Electronic Frontier Foundation, List of Printers Which Do or Do Not Display Tracking Dots, notes of 2015 and 2017 (read 2026-11-17): likely that all recent commercial colour laser printers print some forensic tracking code, visible or not", href: "https://www.eff.org/pages/list-printers-which-do-or-do-not-display-tracking-dots" }, // scope
+      { label: "CPS-VO, Timo Richter, Stephan Escher, Dagmar Schönfeld and Thorsten Strufe, Forensic Analysis and Anonymisation of Printed Documents, ACM IH&MMSec 2018, abstract (read 2026-11-17): an extrinsic signature in nearly all modern colour laser printers; new pattern; anonymization; the DEDA toolkit", href: "https://archive.cps-vo.org/node/60777" }, // research
+      { label: "US Department of Justice, FBI affidavit in support of arrest warrant, United States v. Winner, 1:17-mj-00024, filed 5 June 2017 (read 2026-11-17): folded or creased pages, an audit of six people who printed the report, e-mail contact with the outlet; no mention of the dots", href: "https://www.justice.gov/opa/press-release/file/971331/download" }, // court record
+      { label: "Electronic Frontier Foundation, Printer Tracking Dots Back in the News, 6 June 2017 (read 2026-11-17): the dots could have played a role, but quite possibly none; a later generation rearranges expected dots", href: "https://www.eff.org/deeplinks/2017/06/printer-tracking-dots-back-news" }, // status of the claim
+    ], // six sources, one object per line
+  },
+  {
+    // Traitor tracing (new entry): per-copy fingerprints designed so that colluding recipients can still be identified.
+    slug: "traitor-tracing", // the /glossary/traitor-tracing address
+    headword: "traitor tracing", // lower case
+    kind: "term", // a cryptographic and coding problem
+    domains: ["crypto", "cyber-security"], // codes and forensic marking
+    aliases: ["fingerprinting codes", "collusion-secure fingerprinting", "collusion-resistant fingerprinting", "Tardos codes", "Boneh-Shaw codes", "rastreamento de traidores", "códigos de impressão digital"], // the coding names, the two named constructions, Portuguese
+    relatedTerms: ["digital-watermarking", "printer-tracking-dots", "spread-spectrum-watermarking", "steganography"], // this wave
+    relatedArticles: ["watermarks-and-fingerprints-marking-content-to-trace-it"], // the part
+    sources: [ // every label says what the page says and when it was read
+      { label: "Crossref, Benny Chor, Amos Fiat and Moni Naor, Tracing Traitors, Advances in Cryptology, CRYPTO '94, pages 257-270 (read 2026-11-17): bibliographic record", href: "https://doi.org/10.1007/3-540-48658-5_25" }, // the name
+      { label: "Dan Boneh and J. Shaw, Collusion secure fingerprinting for digital data, abstract (read 2026-11-17): marked copies can be compared, the differences located and altered to mask identities; a general solution secure against collusion; Crypto '95 and IEEE Transactions on Information Theory 44(5), 1998", href: "https://crypto.stanford.edu/~dabo/pubs/abstracts/finger.html" }, // collusion
+      { label: "Crossref, Gábor Tardos, Optimal probabilistic fingerprint codes, Journal of the ACM 55(2), May 2008, abstract (read 2026-11-17): codes for n users secure against c pirates of length O(c^2 log(n/eps)), about the square root of Boneh and Shaw's; matching lower bound", href: "https://doi.org/10.1145/1346330.1346335" }, // optimal length
+      { label: "Thijs Laarhoven, Capacities and Capacity-Achieving Decoders for Various Fingerprinting Games, arXiv 1401.5688 (read 2026-11-17): the Boneh-Shaw marking assumption; Tardos's explicit length 100 c^2 ln(n/eps1); later bounds near 2 c^2 ln n", href: "https://arxiv.org/abs/1401.5688" }, // later work
+      { label: "MovieLabs, Specification for Enhanced Content Protection 1.4, August 2024 (read 2026-11-17): forensic marks robust against corruption including collusion attacks", href: "https://movielabs.com/ngvideo/MovieLabs_ECP_Spec_v1.4.pdf" }, // industry requirement
+      { label: "AWS for M&E Blog, Securing premium live content with NAGRA NexGuard forensic watermarking on AWS (read 2026-11-17): per-session sequences of A and B segment variants; extraction from an excerpt of about five minutes", href: "https://aws.amazon.com/blogs/media/securing-premium-live-content-with-nagra-nexguard-forensic-watermarking-on-aws/" }, // A/B practice
+    ], // six sources, one object per line
   },
 ];
 

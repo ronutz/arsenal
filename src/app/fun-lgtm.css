@@ -18,8 +18,9 @@
    site theme; everything around it (the era switch, the prose, the video, the
    toy) takes the site theme's own tokens.
 
-   Motion: the Morse lights and the stamp's fall are the only animations, and
-   reduced motion turns both off. Phone width: the stats go to two columns and
+   Motion: the Morse lights, the stamp's fall and the dancing bots (moved by
+   LgtmDancers from the tune's audio clock, only while the tune plays) are the
+   only animations, and reduced motion turns all three off. Phone width: the stats go to two columns and
    the dashes shorten under 33rem.
    ============================================================================ */
 
@@ -342,7 +343,48 @@
 
 /* ---- Reduced motion ---------------------------------------------------------- */
 
+/* ---- The dancing bots (PRIME 17/11/2026 01:57) ------------------------------ */
+
+/* Each era's five dancer colours, from its own palette. */
+.lgtm-stage { --lgtm-d0: #61e8a6; --lgtm-d1: #ffc761; --lgtm-d2: #ff62a8; --lgtm-d3: #7cc8ff; --lgtm-d4: #f1edff; }
+/* 16-bit: the brighter console palette. */
+.lgtm-stage[data-era="16"] { --lgtm-d0: #7cf29a; --lgtm-d1: #ffd34d; --lgtm-d2: #ff6fa0; --lgtm-d3: #8fb4ff; --lgtm-d4: #f4f6ff; }
+/* 32-bit: the brushed-metal palette. */
+.lgtm-stage[data-era="32"] { --lgtm-d0: #2ee6d6; --lgtm-d1: #ff8a1f; --lgtm-d2: #ff3d6e; --lgtm-d3: #9fb3ff; --lgtm-d4: #e8eef6; }
+/* 64-bit: the glow palette. */
+.lgtm-stage[data-era="64"] { --lgtm-d0: #5df0c0; --lgtm-d1: #22d3ee; --lgtm-d2: #ff5c8a; --lgtm-d3: #8b6cff; --lgtm-d4: #f6f5ff; }
+/* The five dancers in one row on the stage floor, each in its own column. */
+.lgtm-dancers { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.4rem; align-items: end; justify-items: center; }
+/* One dancer: as wide as its column, never larger than a hand's width, its moves free to leave the box. */
+.lgtm-dancer { display: block; width: 100%; max-width: 86px; height: auto; overflow: visible; }
+/* The box. */
+.lgtm-dancer-0 { color: var(--lgtm-d0); }
+/* The dome. */
+.lgtm-dancer-1 { color: var(--lgtm-d1); }
+/* The tall one. */
+.lgtm-dancer-2 { color: var(--lgtm-d2); }
+/* The wheel. */
+.lgtm-dancer-3 { color: var(--lgtm-d3); }
+/* The twin antennas. */
+.lgtm-dancer-4 { color: var(--lgtm-d4); }
+/* Heads and bodies filled with the screen's own dark, so the line drawing reads. */
+.lgtm-dancer-face { fill: var(--lgtm-stamp-bg); }
+/* 8-bit: hard pixel edges. */
+.lgtm-stage[data-era="8"] .lgtm-dancer { shape-rendering: crispEdges; }
+/* 64-bit: each dancer glows in its colour. */
+.lgtm-stage[data-era="64"] .lgtm-dancer { filter: drop-shadow(0 0 5px currentColor); }
+/* The green check over a dancer's head: hidden until an approval chimes. */
+.lgtm-dancer-check { opacity: 0; transition: opacity 0.12s ease-out; }
+/* Shown. */
+.lgtm-dancer-check-on { opacity: 1; }
+/* Its disc, in the era's approval green. */
+.lgtm-dancer-check-disc { fill: var(--lgtm-check); }
+/* Its tick, cut out in the screen's dark. */
+.lgtm-dancer-check-tick { fill: none; stroke: var(--lgtm-stamp-bg); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
 @media (prefers-reduced-motion: reduce) {
+  /* The dancers' checks appear without a fade (LgtmDancers keeps the dancers themselves still). */
+  .lgtm-dancer-check { transition: none; }
   /* The stamps land without falling. */
   .lgtm-stamp, .lgtm-stamp-mark { animation: none; }
   /* The happy bot stands still and upright. */
