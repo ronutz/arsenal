@@ -30,6 +30,8 @@
 .lgtm-page { display: grid; gap: 2.25rem; }
 /* Each part: its heading, then its content. */
 .lgtm-part { display: grid; gap: 0.9rem; }
+/* The tune's part is a link target (#tune, 17/11/2026): it lands below the sticky header, like the site's other anchors. */
+.lgtm-part--anchor { scroll-margin-top: var(--sticky-anchor-offset); }
 /* A part's heading, in the site's heading voice. */
 .lgtm-part-title { margin: 0; font-size: 1.35rem; line-height: 1.25; text-wrap: balance; color: var(--text-primary); }
 /* Running prose, kept to a readable measure. */

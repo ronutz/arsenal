@@ -38,7 +38,7 @@ import { fileURLToPath } from "node:url"; // this file's own path
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), ".."); // the repository root
 const GIB = 1024 ** 3; // one gibibyte in bytes
-const PER_LOCALE = Number(process.env.BUILD_SPACE_GIB_PER_LOCALE ?? 2.4); // the peak per built language, in GiB (12/11/2026: 13.8 GiB for six)
+const PER_LOCALE = Number(process.env.BUILD_SPACE_GIB_PER_LOCALE ?? 2.9); // the peak per built language, in GiB (12/11/2026: 13.8 GiB for six; RAISED 17/11/2026 from 2.4 after an ENOSPC at the export copy with 17.0 GiB free)
 const MARGIN = Number(process.env.BUILD_SPACE_MARGIN_GIB ?? 2); // room for pagefind, machine-legible files and logs, in GiB
 const verify = (process.env.VERIFY_LOCALES ?? "").split(/[,|]/).map((s) => s.trim()).filter(Boolean); // the languages a sandbox build makes
 const inCi = Boolean(process.env.GITHUB_ACTIONS || process.env.CI); // a CI runner, which frees its own disk

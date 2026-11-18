@@ -39,6 +39,51 @@ interface Rule {
 /** The most rows one read asks for (path and status pairs); an answer that reaches it says so (cut: true). */
 export const REDIRECT_ROW_LIMIT = 20000;
 
+/**
+ * The largest WHERE clause for the rules' paths in one statement, in bytes. Cloudflare's SQL API refuses a statement
+ * over 10 KiB (the /api/stats/redirects 422 of 17/11/2026, with 408 rules in one statement); 9,000 bytes of paths leave
+ * room for the rest of the SELECT.
+ */
+export const CHUNK_BYTES = 9000;
+
+/**
+ * The rules' path conditions split into groups that each fit in one statement: greedy, in order. The static paths go
+ * into IN lists, the dynamic ones are LIKE conditions; a group never exceeds the size given.
+ *
+ * @param exact the static paths, as SQL literals
+ * @param likes the dynamic conditions, already written as blob1 LIKE '...'
+ * @param size the most bytes one group's condition may take
+ * @returns one condition per statement
+ */
+export function chunkPaths(exact: string[], likes: string[], size: number): string[] {
+  // The finished conditions, and the group being filled (its IN items and LIKE conditions).
+  const out: string[] = [];
+  let ins: string[] = [];
+  let lk: string[] = [];
+  // The condition a group stands for: its IN list, then its LIKE conditions, joined by OR.
+  const cond = (i: string[], l: string[]): string =>
+    [i.length ? `blob1 IN (${i.join(", ")})` : "", ...l].filter(Boolean).join(" OR ");
+  // Close the current group, if it holds anything.
+  const flush = (): void => {
+    if (ins.length || lk.length) out.push(cond(ins, lk));
+    ins = [];
+    lk = [];
+  };
+  for (const e of exact) {
+    // A static path joins the IN list unless that would overflow the group.
+    if (cond([...ins, e], lk).length > size) flush();
+    ins.push(e);
+  }
+  for (const l of likes) {
+    // A dynamic condition joins the group unless that would overflow it.
+    if (cond(ins, [...lk, l]).length > size) flush();
+    lk.push(l);
+  }
+  // The last group.
+  flush();
+  return out;
+}
+
 /** One rule with its count, as the route answers it. */
 export interface RuleHits extends Rule {
   /** Requests it redirected in the window, or null when the dataset cannot see its requests. */
@@ -117,14 +162,31 @@ export async function redirectHits(env: StatsEnv, since: string): Promise<{
   const likes = countable.filter((r) => isDynamic(r.source)).map((r) => `blob1 LIKE ${likePattern(r.source)}`);
   // Every status a rule can answer with, as literals.
   const statuses = [...new Set(countable.map((r) => String(r.status)))].map(literal);
-  // The rules' paths, one condition (the IN list for the static rules, the LIKE patterns for the dynamic ones).
-  const paths = [exact.length ? `blob1 IN (${exact.join(", ")})` : "", ...likes].filter(Boolean).join(" OR ");
-  // One read: per path and status, the sampled sum, only for the rules' paths and the redirect statuses.
-  const rows = paths
-    ? ((await query(env, `SELECT blob1 AS path, blob6 AS status, SUM(_sample_interval) AS n FROM ${PAGEVIEWS}
+  // The statement for one group of paths: per path and status, the sampled sum, only for the redirect statuses.
+  const statement = (paths: string): string =>
+    `SELECT blob1 AS path, blob6 AS status, SUM(_sample_interval) AS n FROM ${PAGEVIEWS}
          WHERE ${since} AND blob6 IN (${statuses.join(", ")}) AND (${paths})
-         GROUP BY path, status ORDER BY n DESC LIMIT ${REDIRECT_ROW_LIMIT}`)) as Array<{ path?: unknown; status?: unknown; n?: unknown }>)
-    : [];
+         GROUP BY path, status ORDER BY n DESC LIMIT ${REDIRECT_ROW_LIMIT}`;
+  // The rules' paths in groups small enough for the SQL API's 10 KiB statement limit, read one group at a time.
+  const merged = new Map<string, { path: string; status: number; n: number }>();
+  // Whether any group's read reached its row limit.
+  let cutAny = false;
+  for (const paths of chunkPaths(exact, likes, CHUNK_BYTES)) {
+    // One group's rows.
+    const part = (await query(env, statement(paths))) as Array<{ path?: unknown; status?: unknown; n?: unknown }>;
+    if (part.length >= REDIRECT_ROW_LIMIT) cutAny = true;
+    for (const row of part) {
+      // The row's values, typed. A LIKE condition in one group may return a path another group also returned (the
+      // same requests counted by both reads), so a path and status are kept once, with the larger count, never summed.
+      const path = String(row.path ?? "");
+      const status = Number(row.status ?? 0);
+      const key = `${path}\u0000${status}`;
+      const prev = merged.get(key);
+      merged.set(key, { path, status, n: Math.max(prev?.n ?? 0, Number(row.n ?? 0)) });
+    }
+  }
+  // Every path and status once.
+  const rows = [...merged.values()];
 
   // Each countable rule's expression, compiled once.
   const compiled = countable.map((r) => ({ rule: r, re: sourcePattern(r.source) }));
@@ -152,8 +214,8 @@ export async function redirectHits(env: StatsEnv, since: string): Promise<{
   const counted = rules.filter((r) => r.hits !== null);
   return {
     rules,
-    // Reaching the limit means some path-status pairs were left out: the answer must say so.
-    cut: rows.length >= REDIRECT_ROW_LIMIT,
+    // Reaching the limit in any group means some path-status pairs were left out: the answer must say so.
+    cut: cutAny,
     totals: {
       rules: rules.length,
       counted: counted.length,

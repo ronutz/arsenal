@@ -236,6 +236,8 @@ const VANITY_REDIRECTS = new Map<string, string>([
   // PRIME 15/11/2026 20:56: "Redirect https://ronutz.com/lgtm/ to https://ronutz.com/en/dev/fun/lgtm/". The LGTM homage;
   // a Worker entry, so it costs nothing against Cloudflare's _redirects limits (2,000 static, 100 dynamic).
   ["/lgtm", "/en/dev/fun/lgtm/"],
+  // PRIME 17/11/2026 15:56 (an anchor to share the tune itself): the player's part on the same page.
+  ["/lgtm/tune", "/en/dev/fun/lgtm/#tune"],
 ]);
 
 export default {
@@ -460,7 +462,8 @@ export default {
         return new Response(null, {
           status: 302,
           headers: {
-            Location: new URL(`${vanityDest}${url.search}`, url.origin).toString(),
+            // A destination may end in a fragment (/lgtm/tune): the request's query goes before it, never after.
+            Location: new URL(`${vanityDest.split("#")[0]}${url.search}${vanityDest.includes("#") ? `#${vanityDest.split("#")[1]}` : ""}`, url.origin).toString(),
             "Cache-Control": "no-store",
           },
         });

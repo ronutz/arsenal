@@ -116,7 +116,8 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
             </section>
 
             {/* 3. The tune, in four eras. */}
-            <section className="lgtm-part" aria-labelledby="lgtm-tune">
+            {/* id="tune": the shareable address of the player (/en/dev/fun/lgtm/#tune, or /lgtm/tune; PRIME 17/11/2026 15:56). */}
+            <section id="tune" className="lgtm-part lgtm-part--anchor" aria-labelledby="lgtm-tune">
               <h2 id="lgtm-tune" className="lgtm-part-title">
                 {t("tuneTitle")}
               </h2>
